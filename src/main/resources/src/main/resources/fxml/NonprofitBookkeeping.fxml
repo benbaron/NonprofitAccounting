@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.stage.Stage?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="nonprofitbookkeeping.ui.NonprofitBookkeepingController">
+    <MenuBar>
+        <menus>
+            <!-- File Menu -->
+            <Menu text="File">
+                <MenuItem text="Load Company File..." onAction="#handleLoadCompanyFile"/>
+                <MenuItem text="Store Company File..." onAction="#handleStoreCompanyFile"/>
+                <MenuItem text="Create or Edit Company" onAction="#handleCreateOrEditCompany"/>
+                <MenuItem text="Import File" onAction="#handleImportFile"/>
+                <MenuItem text="Export File" onAction="#handleExportFile"/>
+            </Menu>
+            <!-- Run Menu -->
+            <Menu text="Run">
+                <MenuItem text="Show Settings" onAction="#handleShowSettings"/>
+                <MenuItem text="Documents/ Attachments" onAction="#handleDocuments"/>
+                <MenuItem text="Inventory/ Depreciation" onAction="#handleInventory"/>
+                <MenuItem text="Funds/ Fund Accounting" onAction="#handleFunds"/>
+                <MenuItem text="Reconcile" onAction="#handleReconcile"/>
+            </Menu>
+            <!-- Reports Menu -->
+            <Menu text="Reports">
+                <MenuItem text="Generate Reports" onAction="#handleGenerateReports"/>
+                <MenuItem text="Show Reports" onAction="#handleShowReports"/>
+                <MenuItem text="Show Dashboard" onAction="#handleShowDashboard"/>
+                <MenuItem text="Show Journal" onAction="#handleShowJournal"/>
+                <MenuItem text="Generate Income Statement" onAction="#handleGenerateIncomeStatement"/>
+            </Menu>
+            <!-- Panels Menu -->
+            <Menu text="Panels">
+                <MenuItem text="Donors" onAction="#handleDonors"/>
+                <MenuItem text="Donations" onAction="#handleDonations"/>
+                <MenuItem text="Grants" onAction="#handleGrants"/>
+            </Menu>
+            <!-- Help Menu -->
+            <Menu text="Help">
+                <MenuItem text="Help" onAction="#handleHelp"/>
+            </Menu>
+        </menus>
+    </MenuBar>
+    <AnchorPane fx:id="contentPane" layoutX="20.0" layoutY="100.0" prefHeight="600.0" prefWidth="960.0"/>
+</AnchorPane>

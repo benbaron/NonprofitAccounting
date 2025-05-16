@@ -1,0 +1,169 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>nonprofitbookkeeping</groupId>
+	<artifactId>nonprofitbookkeeping</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<!-- JavaFX dependencies -->
+	<properties>
+		<javafx.version>21.0.6</javafx.version>
+	</properties>
+
+	<build>
+	  <plugins>
+	    <plugin>
+	      <groupId>org.apache.maven.plugins</groupId>
+	      <artifactId>maven-toolchains-plugin</artifactId>
+	      <version>3.2.0</version>
+	
+	      <!-- makes the compiler pick the JDK 17 toolchain -->
+	      <executions>
+	        <execution>
+	          <goals><goal>toolchain</goal></goals>
+	        </execution>
+	      </executions>
+	
+	      <configuration>
+	        <toolchains>
+	          <jdk>
+	            <version>17</version>
+	            <vendor>*</vendor>
+	          </jdk>
+	        </toolchains>
+	      </configuration>
+	    </plugin>
+	
+	    <!-- compiler still needs the release flag -->
+	    <plugin>
+	      <groupId>org.apache.maven.plugins</groupId>
+	      <artifactId>maven-compiler-plugin</artifactId>
+	      <version>3.11.0</version>
+	      <configuration>
+	        <release>17</release>
+	      </configuration>
+	    </plugin>
+	  </plugins>
+	</build>
+	
+	<repositories>
+	  	<repository>
+	    <id>jitpack.io</id>
+	    <url>https://jitpack.io</url>
+	  	</repository>
+	</repositories>
+	<dependencies>
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>6.19.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.jaxb</groupId>
+			<artifactId>jaxb-runtime</artifactId>
+			<version>4.0.2</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.jxls</groupId>
+			<artifactId>jxls-poi</artifactId>
+			<version>2.12.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jxls</groupId>
+			<artifactId>jxls-reader</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+						
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.15.2</version>
+		</dependency>
+		
+	    <dependency>
+	      <groupId>com.fasterxml.jackson.datatype</groupId>
+	      <artifactId>jackson-datatype-jsr310</artifactId>
+	      <version>2.15.2</version>
+	    </dependency>
+	    
+		<dependency>
+    		<groupId>com.google.guava</groupId>
+    		<artifactId>guava</artifactId>
+   			<version>30.1-jre</version> <!-- Use the latest version -->
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.22</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Mockito Core for creating mocks -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>5.4.0</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<!-- Mockito JUnit Jupiter integration for using Mockito with JUnit 5 -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<version>5.4.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+		    <groupId>io.github.lzh0379</groupId>
+		    <artifactId>jdatepicker</artifactId>
+		    <version>2.0.3</version>
+		</dependency>
+
+		<dependency>
+		    <groupId>org.openjfx</groupId>
+		    <artifactId>javafx-controls</artifactId>
+		    <version>${javafx.version}</version>
+		</dependency>
+
+	    <dependency>
+	        <groupId>org.openjfx</groupId>
+	        <artifactId>javafx-fxml</artifactId>
+	        <version>${javafx.version}</version> 
+	    </dependency>
+	    
+		<dependency>
+		    <groupId>org.openjfx</groupId>
+		    <artifactId>javafx-web</artifactId>
+		    <version>${javafx.version}</version>         
+		</dependency>
+
+		<dependency>
+		  	<groupId>org.openjfx</groupId>
+		  	<artifactId>javafx-swing</artifactId>
+ 			<version>${javafx.version}</version>        		
+ 		</dependency>
+ 		
+		<dependency>
+		    <groupId>org.apache.pdfbox</groupId>
+		    <artifactId>pdfbox</artifactId>
+		    <version>2.0.31</version>   <!-- latest stable as of May 2025 -->
+		</dependency>
+
+    <!-- I/O layer: OFXParser, AggregateUnmarshaller, etc. -->
+		<dependency>
+	    <groupId>com.webcohesion.ofx4j</groupId>
+	    <artifactId>ofx4j</artifactId>
+	    <version>1.38</version>
+		</dependency>
+
+		
+	</dependencies>
+	
+
+</project>

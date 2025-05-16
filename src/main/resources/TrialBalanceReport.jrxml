@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+                                  http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="TrialBalanceReport"
+              language="java"
+              pageWidth="595"
+              pageHeight="842"
+              leftMargin="70"
+              rightMargin="70"
+              topMargin="70"
+              bottomMargin="70"
+              columnWidth="540">
+
+    <!-- Title Section (Report Header) -->
+    <title>
+        <band height="130">
+            <textField>
+                <reportElement x="55%" y="1" width="45%" height="16" alignment="right"/>
+                <textFieldExpression><![CDATA["Trial Balance Report"]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="1" y="1" width="50%" height="16" alignment="left"/>
+                <textFieldExpression><![CDATA["Report Title"]]></textFieldExpression>
+            </textField>
+            <line>
+                <reportElement x="0" y="18" width="540" height="2" forecolor="#000000"/>
+            </line>
+            <image>
+                <reportElement x="250" y="21" width="100%" height="67"/>
+                <imageExpression><![CDATA[$F{iconheader}]]></imageExpression>
+            </image>
+            <textField>
+                <reportElement x="1" y="19" width="118" height="10" alignment="left"/>
+                <textFieldExpression><![CDATA[$F{reportdate}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="120" y="19" width="128" height="10" alignment="left"/>
+                <textFieldExpression><![CDATA[$F{dateToday}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="1" y="29" width="118" height="10" alignment="left"/>
+                <textFieldExpression><![CDATA[$F{companytext}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="120" y="29" width="128" height="10" alignment="left"/>
+                <textFieldExpression><![CDATA[$F{company}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="1" y="39" width="118" height="10" alignment="left"/>
+                <textFieldExpression><![CDATA[$F{startdatetext}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="120" y="39" width="128" height="10" alignment="left"/>
+                <textFieldExpression><![CDATA[$F{dateFrom}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="1" y="49" width="118" height="10" alignment="left"/>
+                <textFieldExpression><![CDATA[$F{stopdatetext}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="120" y="49" width="128" height="10" alignment="left"/>
+                <textFieldExpression><![CDATA[$F{dateTo}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="1" y="59" width="118" height="10" alignment="left"/>
+                <textFieldExpression><![CDATA[$F{transfromtext}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="120" y="59" width="128" height="10" alignment="left"/>
+                <textFieldExpression><![CDATA[$F{transfrom}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="1" y="69" width="118" height="10" alignment="left"/>
+                <textFieldExpression><![CDATA[$F{transtotext}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="120" y="69" width="128" height="10" alignment="left"/>
+                <textFieldExpression><![CDATA[$F{transto}]]></textFieldExpression>
+            </textField>
+            <label  x="120" y="79" width="238" height="10" alignment="left"/>
+            <line name="linerepheadbottom" x1="0" y1="90" x2="0" y2="90" weight="3.0"/>
+            <string-field x="0" y="110" width="39" height="7" alignment="left" fontsize="6" fieldname="accnum" />
+            <string-field x="40" y="110" width="184" height="7" alignment="left" fontsize="6" fieldname="accname" />
+            <string-field x="225" y="110" width="74" height="7" alignment="right" fontsize="6" fieldname="incomming" />
+            <string-field x="300" y="110" width="74" height="7" alignment="right" fontsize="6" fieldname="amount" />
+            <string-field x="375" y="110" width="74" height="7" alignment="right" fontsize="6" fieldname="outgoing" />
+            <line name="linerepheadbottom" x1="0" y1="120" x2="0" y2="120" weight="0.5"/>
+        </band>
+    </title>
+
+    <!-- Page Footer (Including page number and date) -->
+    <pageFooter>
+        <band height="18">
+            <textField>
+                <reportElement x="50%" y="4" width="100%" height="18" alignment="right"/>
+                <textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of " + $V{PAGE_COUNT}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="4" width="100" height="18" alignment="left"/>
+                <textFieldExpression><![CDATA[$F{dateToday}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
+
+    <!-- Trial Balance Data Rows -->
+    <detail>
+        <band height="10">
+            <textField x="0" y="0" width="39" height="8" alignment="left" fieldname="ACCOUNTNUM"/>
+            <textField x="40" y="0" width="184" height="8" alignment="left" fieldname="ACCOUNTDESC"/>
+            <textField x="225" y="0" width="74" height="8" alignment="right" fieldname="FORMATED_INCOMMINGAMOUNT"/>
+            <textField x="300" y="0" width="74" height="8" alignment="right" fieldname="FORMATED_AMOUNT"/>
+            <textField x="375" y="0" width="74" height="8" alignment="right" fieldname="FORMATED_OUTGOINGAMOUNT"/>
+        </band>
+    </detail>
+
+    <functions>
+        <!-- WARNING!!!! FontChangeFunction will change all the font names in this report!!!! -->
+        <function name="fontmod" class="nu.lazy8.util.help.FontChangeFunction"/>
+
+        <function name="backgroundTrigger" class="org.jfree.report.function.ElementVisibilitySwitchFunction">
+            <properties>
+                <property name="element">background</property>
+            </properties>
+        </function>
+
+        <function name="PageNumber" class="org.jfree.report.function.PageFunction"/>
+        <function name="PageTotal" class="org.jfree.report.function.PageTotalFunction"/>
+        <expression name="pageXofY" class="org.jfree.report.function.TextFormatExpression">
+            <properties>
+                <property name="pattern">Page {0} ({1})</property>
+                <property name="0">PageNumber</property>
+                <property name="1">PageTotal</property>
+            </properties>
+        </expression>
+        <property-ref name="dateFrom"/>
+        <property-ref name="dateTo"/>
+        <property-ref name="dateToday"/>
+        <property-ref name="reporttitle"/>
+        <property-ref name="company"/>
+        <property-ref name="companytext"/>
+        <property-ref name="startdatetext"/>
+        <property-ref name="stopdatetext"/>
+        <property-ref name="trialbalancereport"/>
+        <property-ref name="accnum"/>
+        <property-ref name="accname"/>
+        <property-ref name="incomming"/>
+        <property-ref name="amount"/>
+        <property-ref name="outgoing"/>
+        <property-ref name="iconheader"/>
+        <property-ref name="reportdate"/>
+        <property-ref name="LastTransactionNumberText"/>
+        <property-ref name="LastTransactionNumber"/>
+    </functions>
+</jasperReport>

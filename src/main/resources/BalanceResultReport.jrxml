@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+                                  http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="BalanceResultReport"
+              language="java"
+              pageWidth="595"
+              pageHeight="842"
+              leftMargin="70"
+              rightMargin="70"
+              topMargin="70"
+              bottomMargin="70"
+              columnWidth="540">
+
+    <!-- Title Section (Report Header) -->
+    <title>
+        <band height="100">
+            <textField>
+                <reportElement x="55%" y="1" width="45%" height="16" alignment="right"/>
+                <textFieldExpression><![CDATA["Balance Result Report"]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="1" y="1" width="50%" height="16" alignment="left"/>
+                <textFieldExpression><![CDATA["Report Title"]]></textFieldExpression>
+            </textField>
+            <line>
+                <reportElement x="0" y="18" width="540" height="2" forecolor="#000000"/>
+            </line>
+            <image>
+                <reportElement x="250" y="21" width="100%" height="67"/>
+                <imageExpression><![CDATA[$F{iconheader}]]></imageExpression>
+            </image>
+            <textField>
+                <reportElement x="1" y="19" width="118" height="10" alignment="left"/>
+                <textFieldExpression><![CDATA[$F{reportdate}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="120" y="19" width="128" height="10" alignment="left"/>
+                <textFieldExpression><![CDATA[$F{dateToday}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="1" y="29" width="118" height="10" alignment="left"/>
+                <textFieldExpression><![CDATA[$F{companytext}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="120" y="29" width="128" height="10" alignment="left"/>
+                <textFieldExpression><![CDATA[$F{company}]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+
+    <!-- Page Footer (Including page number and date) -->
+    <pageFooter>
+        <band height="18">
+            <textField>
+                <reportElement x="50%" y="4" width="100%" height="18" alignment="right"/>
+                <textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of " + $V{PAGE_COUNT}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="4" width="100" height="18" alignment="left"/>
+                <textFieldExpression><![CDATA[$F{dateToday}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
+
+    <!-- Report Group (Group for the Report) -->
+    <group name="Report Group">
+        <groupHeader>
+            <band height="16">
+                <textField>
+                    <reportElement x="1" y="1" width="100%" height="16" alignment="left"/>
+                    <textFieldExpression><![CDATA[$F{REPORTNAME}]]></textFieldExpression>
+                </textField>
+            </band>
+        </groupHeader>
+
+        <groupFooter>
+            <band height="20">
+                <line>
+                    <reportElement x="225" y="0" width="250" height="0.5" forecolor="#000000"/>
+                </line>
+                <textField>
+                    <reportElement x="60" y="3" width="164" height="10" alignment="left"/>
+                    <textFieldExpression><![CDATA[$F{REPORTNAME}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="225" y="3" width="74" height="10" alignment="right"/>
+                    <textFieldExpression><![CDATA[$F{FReportIncommingSum}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="300" y="3" width="74" height="10" alignment="right"/>
+                    <textFieldExpression><![CDATA[$F{FReportAmountSum}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="375" y="3" width="74" height="10" alignment="right"/>
+                    <textFieldExpression><![CDATA[$F{FReportOutgoingSum}]]></textFieldExpression>
+                </textField>
+            </band>
+        </groupFooter>
+    </group>
+
+    <!-- Account Type Group -->
+    <group name="Account Type Group">
+        <groupHeader>
+            <band height="33">
+                <textField>
+                    <reportElement x="10" y="1" width="100%" height="16" alignment="left"/>
+                    <textFieldExpression><![CDATA[$F{ACCOUNTTYPE}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="20" y="22" width="39" height="7" alignment="left"/>
+                    <textFieldExpression><![CDATA[$F{accnum}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="60" y="22" width="164" height="7" alignment="left"/>
+                    <textFieldExpression><![CDATA[$F{accname}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="225" y="22" width="74" height="7" alignment="right"/>
+                    <textFieldExpression><![CDATA[$F{incomming}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="300" y="22" width="74" height="7" alignment="right"/>
+                    <textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="375" y="22" width="74" height="7" alignment="right"/>
+                    <textFieldExpression><![CDATA[$F{outgoing}]]></textFieldExpression>
+                </textField>
+            </band>
+        </groupHeader>
+
+        <groupFooter>
+            <band height="15">
+                <line>
+                    <reportElement x="225" y="0" width="250" height="0.5" forecolor="#000000"/>
+                </line>
+                <textField>
+                    <reportElement x="60" y="3" width="164" height="10" alignment="left"/>
+                    <textFieldExpression><![CDATA[$F{ACCOUNTTYPE}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="225" y="3" width="74" height="10" alignment="right"/>
+                    <textFieldExpression><![CDATA[$F{FIncommingSum}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="300" y="3" width="74" height="10" alignment="right"/>
+                    <textFieldExpression><![CDATA[$F{FAmountSum}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="375" y="3" width="74" height="10" alignment="right"/>
+                    <textFieldExpression><![CDATA[$F{FOutgoingSum}]]></textFieldExpression>
+                </textField>
+            </band>
+        </groupFooter>
+    </group>
+
+    <!-- Detail Section -->
+    <detail>
+        <band height="10">
+            <textField>
+                <reportElement x="20" y="0" width="40" height="10" alignment="left"/>
+                <textFieldExpression><![CDATA[$F{ACCOUNTNUM}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="60" y="0" width="164" height="10" alignment="left"/>
+                <textFieldExpression><![CDATA[$F{ACCOUNTDESC}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="225" y="0" width="75" height="10" alignment="right"/>
+                <textFieldExpression><![CDATA[$F{FORMATED_INCOMMINGAMOUNT}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="300" y="0" width="75" height="10" alignment="right"/>
+                <textFieldExpression><![CDATA[$F{FORMATED_AMOUNT}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="375" y="0" width="75" height="10" alignment="right"/>
+                <textFieldExpression><![CDATA[$F{FORMATED_OUTGOINGAMOUNT}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+    <!-- Functions Section -->
+    <functions>
+        <function name="IncommingSum" class="org.jfree.report.function.TotalGroupSumFunction">
+            <properties>
+                <property name="field">INCOMMINGAMOUNT</property>
+                <property name="group">Account Type Group</property>
+            </properties>
+        </function>
+        <function name="AmountSum" class="org.jfree.report.function.TotalGroupSumFunction">
+            <properties>
+                <property name="field">AMOUNT</property>
+                <property name="group">Account Type Group</property>
+            </properties>
+        </function>
+        <function name="OutgoingSum" class="org.jfree.report.function.TotalGroupSumFunction">
+            <properties>
+                <property name="field">OUTGOINGAMOUNT</property>
+                <property name="group">Account Type Group</property>
+            </properties>
+        </function>
+        <!-- Additional expressions for formatted sums -->
+        <expression name="FIncommingSum" class="nu.lazy8.util.help.DoubleExpression">
+            <properties>
+                <property name="doublevalue">IncommingSum</property>
+            </properties>
+        </expression>
+        <expression name="FAmountSum" class="nu.lazy8.util.help.DoubleExpression">
+            <properties>
+                <property name="doublevalue">AmountSum</property>
+            </properties>
+        </expression>
+        <expression name="FOutgoingSum" class="nu.lazy8.util.help.DoubleExpression">
+            <properties>
+                <property name="doublevalue">OutgoingSum</property>
+            </properties>
+        </expression>
+    </functions>
+
+</jasperReport>
