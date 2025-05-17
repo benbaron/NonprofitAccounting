@@ -123,8 +123,9 @@ public class DashboardPanelFX extends BorderPane
 		}
 		
 		this.companyLbl.setText(cdf.getCompanyProfile().getCompanyName());
-		/* populate selector */
+		
 		ChartOfAccounts coa = cdf.getLedger().getCoa();
+				
 		Collection<AccountDetails> accs = coa.getAccountNumberToAccountDetails().values();
 		this.accountSelector.getItems().setAll(
 			accs.stream().map(AccountDetails::getAccountName).sorted().toList());

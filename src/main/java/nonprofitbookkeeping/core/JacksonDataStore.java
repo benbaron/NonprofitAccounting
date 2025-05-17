@@ -6,8 +6,12 @@ package nonprofitbookkeeping.core;
 import nonprofitbookkeeping.api.DataStore;
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
+import nonprofitbookkeeping.model.CompanyDataFile;
+import nonprofitbookkeeping.ui.actions.OpenCompanyFileAction;
 import nonprofitbookkeeping.ui.panels.AlertBox;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -46,6 +50,7 @@ public class JacksonDataStore implements DataStore
 			.disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES)
 			.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)			
 			.enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE);
+		this.mapper.configOverride(List.class).setSetterInfo(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY));
 	}
 	
 	/**

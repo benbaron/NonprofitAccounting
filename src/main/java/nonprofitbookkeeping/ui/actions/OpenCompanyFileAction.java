@@ -7,9 +7,6 @@ package nonprofitbookkeeping.ui.actions;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.IOException;
-
-import nonprofitbookkeeping.core.JacksonDataStore;
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.exception.NoFileException;
@@ -23,19 +20,14 @@ import nonprofitbookkeeping.ui.panels.AlertBox;
  */
 public class OpenCompanyFileAction
 {
-
-	private JacksonDataStore dataStore;
-	private File currentInputFile;
+	public File currentInputFile;
 
 	/**  
 	 * Constructor LoadCompanyFileAction
 	 * @param currentInputFile
-	 * @param dataStore 
 	 */
-	public OpenCompanyFileAction(File currentInputFile, 
-	                             JacksonDataStore dataStore)
+	public OpenCompanyFileAction(File currentInputFile)
 	{
-		this.dataStore = dataStore;
 		this.currentInputFile = currentInputFile;
 	}
 
@@ -60,12 +52,11 @@ public class OpenCompanyFileAction
 				CurrentInputFile.setCurrentInputFile(this.currentInputFile);
 			}
 			
-			CompanyDataFile companyDataFile = this.dataStore.load(CompanyDataFile.class, 	
-				this.currentInputFile);
-			CompanyDataFile.setCompanyDataFile(companyDataFile);
+			// Load company from the data store
+			CompanyDataFile.getCompanyDataFile().load(this.currentInputFile);
 			AlertBox.showInfo(null, "Loaded "+ this.currentInputFile.toString());
 		}
-		catch (IOException | ActionCancelledException | NoFileCreatedException e1)
+		catch (ActionCancelledException | NoFileCreatedException e1)
 		{
 			AlertBox.showError(null, "Error loading file:" + e1.getMessage());
 			e1.printStackTrace();

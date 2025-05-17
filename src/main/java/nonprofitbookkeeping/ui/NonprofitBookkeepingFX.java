@@ -91,7 +91,7 @@ public class NonprofitBookkeepingFX extends Application
 		add(file, "Open Company File…",
 			e -> new OpenCompanyFileActionFX(this.primaryStage, JacksonDataStore.dataStore).handle(e));
 		add(file, "Close Company File…",
-			e -> new CloseCompanyFileAction(CurrentInputFile.currentInputFile, JacksonDataStore.dataStore, CompanyDataFile.getCompanyDataFile()));
+			e -> new CloseCompanyFileAction());
 		add(file, "Save Company File…",
 			e -> new SaveCompanyFileAction(CurrentInputFile.currentInputFile, JacksonDataStore.dataStore, CompanyDataFile.getCompanyDataFile()));
 		add(file, "Create or Edit Company",

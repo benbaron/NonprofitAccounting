@@ -1,7 +1,3 @@
-/**
- * nonprofit-scaledger-ribbon.zip_expanded AbstractReportGenerator.java
- * AbstractReportGenerator
- */
 
 package nonprofitbookkeeping.reports.generator;
 
@@ -16,8 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractReportGenerator
-{
-	
+{	
 	// Abstract method to get data specific to the report
 	protected abstract List<?> getReportData();
 	

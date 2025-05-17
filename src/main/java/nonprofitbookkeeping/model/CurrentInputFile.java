@@ -13,7 +13,7 @@ import java.io.File;
 public class CurrentInputFile
 {
 
-	public static File currentInputFile;
+	public static File currentInputFile = null;
 
 	/**
 	 * @return the currentInputFile
@@ -26,9 +26,9 @@ public class CurrentInputFile
 	/**
 	 * @param currentInputFile the currentInputFile to set
 	 */
-	public static void setCurrentInputFile(File currentInputFile)
+	public static void setCurrentInputFile(File currentInputFileIn)
 	{
-		currentInputFile = currentInputFile;
+		currentInputFile = currentInputFileIn;
 	}
 	
 }

@@ -52,7 +52,7 @@ public class CreateCompanyPanel extends JPanel
         // Step 1: Company Info
         JPanel companyInfoPanel = new JPanel(new GridLayout(6, 2, 10, 5));
         companyInfoPanel.setBorder(new TitledBorder("Company Information"));
-        this.nameField = new JTextField(existingProfile != null && existingProfile.getCompanyProfile() != null ? existingProfile.getCompanyProfile().getCompanyName() : "");
+        this.nameField = new JTextField(existingProfile != null && existingProfile.getCompanyDataFile().getCompanyProfile() != null ? existingProfile.getCompanyProfile().getCompanyName() : "");
         this.taxIdField = new JTextField(existingProfile != null && existingProfile.getCompanyProfile() != null ? existingProfile.getCompanyProfile().getTaxId() : "");
         this.addressField = new JTextField(existingProfile != null && existingProfile.getCompanyProfile() != null ? existingProfile.getCompanyProfile().getAddress() : "");
         this.phoneField = new JTextField(existingProfile != null && existingProfile.getCompanyProfile() != null ? existingProfile.getCompanyProfile().getPhone() : "");

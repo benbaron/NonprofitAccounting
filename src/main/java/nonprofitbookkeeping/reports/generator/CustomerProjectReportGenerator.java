@@ -68,7 +68,11 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 		
 	}
 	
-	private Map<String, Object> getReportParameters()
+	/**
+	 * 
+	 * @return
+	 */
+	private static Map<String, Object> getReportParameters()
 	{
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("reporttitle", "Customer/Project Report");
@@ -78,7 +82,7 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 		return parameters;
 	}
 	
-	@Override public void exportToPDF(JasperPrint jasperPrint, String outputFilePath)
+	public static void exportToPDF(JasperPrint jasperPrint, String outputFilePath)
 	{
 		
 		try
@@ -93,7 +97,12 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 		
 	}
 	
-	@Override public void exportToHTML(JasperPrint jasperPrint, String outputFilePath)
+	/**
+	 * 
+	 * @param jasperPrint
+	 * @param outputFilePath
+	 */
+	public static void exportToHTML(JasperPrint jasperPrint, String outputFilePath)
 	{
 		
 		try

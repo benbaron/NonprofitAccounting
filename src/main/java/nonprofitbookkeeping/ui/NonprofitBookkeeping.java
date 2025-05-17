@@ -18,8 +18,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
-
-import nonprofitbookkeeping.core.JacksonDataStore;
 import nonprofitbookkeeping.model.CompanyDataFile;
 import nonprofitbookkeeping.service.AccountService;
 import nonprofitbookkeeping.service.DocumentStorageService;
@@ -61,7 +59,6 @@ import nonprofitbookkeeping.ui.panels.SettingsPanel;
 public class NonprofitBookkeeping
 {
 	public static File currentInputFile;
-	public static JacksonDataStore dataStore = new JacksonDataStore();
 	public static CompanyDataFile companyDataFile;
 	
 	public static Map<String, Object> beans = new HashMap<>();
@@ -134,11 +131,11 @@ public class NonprofitBookkeeping
 		
 		List<MenuItemData> fileMenuItems = Arrays.asList(
 			new MenuItemData("Load Company File...", e -> {				
-					new OpenCompanyFileAction(currentInputFile, dataStore).actionPerformed(e);
+					new OpenCompanyFileAction(currentInputFile).actionPerformed(e);
 
 				
 			}),
-			new MenuItemData("Store Company File...", e -> new CloseCompanyFileAction(currentInputFile, dataStore, companyDataFile).actionPerformed(e)),
+			new MenuItemData("Store Company File...", e -> new CloseCompanyFileAction().actionPerformed(e)),
 			new MenuItemData("Create or Edit Company", e -> new CreateOrEditCompanyAction(PanelContainer.frame).actionPerformed(e)),
 			new MenuItemData("Import File", e -> new ImportFileAction().actionPerformed(e)),  // Add Import File
 			new MenuItemData("Export File", e -> new ExportFileAction().actionPerformed(e))   // Add Export File
@@ -202,7 +199,7 @@ public class NonprofitBookkeeping
 			new MenuItemData("Show Dashboard", e -> showPanel(new DashboardPanel(companyDataFile), "Dashboard")),
 			new MenuItemData("Show Journal", e -> showPanel(new JournalPanel(), "Journal")),
 			new MenuItemData("Show Accounts", e -> showPanel(new AccountsPanel(new AccountService()), "Chart of Accounts")),
-			new MenuItemData("Show Account Activity", e -> showPanel(new AccountsActivityPanel(companyDataFile.getLedger()), "Account Activity")),
+			new MenuItemData("Show Account Activity", e -> showPanel(new AccountsActivityPanel(companyDataFile.getCompanyDataFile().getLedger()), "Account Activity")),
 			new MenuItemData("Generate Income Statement", e -> new GenerateIncomeStatementAction(ServiceContainer.reportService).actionPerformed(e)),
 			new MenuItemData("Generate Balance Sheet", e -> new GenerateBalanceSheetAction(ServiceContainer.reportService).actionPerformed(e))
 		);
