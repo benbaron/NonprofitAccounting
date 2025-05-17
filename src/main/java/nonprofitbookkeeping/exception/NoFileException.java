@@ -3,7 +3,7 @@
  * NoFileException.java
  * NoFileException
  */
-package nonprofitbookkeeping.service;
+package nonprofitbookkeeping.exception;
 
 /**
  * Thrown when no file is available.

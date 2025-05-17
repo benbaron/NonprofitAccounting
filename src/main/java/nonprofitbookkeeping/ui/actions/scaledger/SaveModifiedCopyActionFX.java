@@ -57,7 +57,9 @@ public class SaveModifiedCopyActionFX implements EventHandler<ActionEvent>
 		
 		File output = chooser.showSaveDialog(this.owner);
 		if (output == null)
+		{
 			return; // cancelled
+		}
 			
 		try
 		{

@@ -3,7 +3,7 @@
  * ActionCancelledException.java
  * ActionCancelledException
  */
-package nonprofitbookkeeping.ui.helpers;
+package nonprofitbookkeeping.exception;
 
 /**
  * 

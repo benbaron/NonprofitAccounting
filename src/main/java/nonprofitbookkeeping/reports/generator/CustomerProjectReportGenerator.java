@@ -30,7 +30,7 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 		super(customerService);
 	}
 	
-	public void generateAndExportReport(String format)
+	@Override public void generateAndExportReport(String format)
 	{
 		
 		try
@@ -78,7 +78,7 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 		return parameters;
 	}
 	
-	public void exportToPDF(JasperPrint jasperPrint, String outputFilePath)
+	@Override public void exportToPDF(JasperPrint jasperPrint, String outputFilePath)
 	{
 		
 		try
@@ -93,7 +93,7 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 		
 	}
 	
-	public void exportToHTML(JasperPrint jasperPrint, String outputFilePath)
+	@Override public void exportToHTML(JasperPrint jasperPrint, String outputFilePath)
 	{
 		
 		try

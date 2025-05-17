@@ -1,9 +1,9 @@
 
 package nonprofitbookkeeping.ui.panels;
 
+import nonprofitbookkeeping.exception.NoFileException;
 import nonprofitbookkeeping.model.CompanyDataFile;
 import nonprofitbookkeeping.service.CompanyLoader;
-import nonprofitbookkeeping.service.NoFileException;
 import nonprofitbookkeeping.service.PreferencesService;
 
 import javax.swing.*;

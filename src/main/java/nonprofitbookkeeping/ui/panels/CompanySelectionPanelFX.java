@@ -10,9 +10,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import nonprofitbookkeeping.exception.NoFileException;
 import nonprofitbookkeeping.model.CompanyDataFile;
 import nonprofitbookkeeping.service.CompanyLoader;
-import nonprofitbookkeeping.service.NoFileException;
 import nonprofitbookkeeping.service.PreferencesService;
 
 /**

@@ -10,9 +10,9 @@ import java.io.File;
 import java.io.IOException;
 
 import nonprofitbookkeeping.core.JacksonDataStore;
+import nonprofitbookkeeping.exception.ActionCancelledException;
+import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.model.CompanyDataFile;
-import nonprofitbookkeeping.ui.helpers.ActionCancelledException;
-import nonprofitbookkeeping.ui.helpers.NoFileCreatedException;
 
 /**
  * This saves the file to persistent memory without closing the company file

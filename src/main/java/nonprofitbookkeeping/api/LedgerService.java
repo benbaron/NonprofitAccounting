@@ -2,8 +2,8 @@
 
 package nonprofitbookkeeping.api;
 
-import nonprofitbookkeeping.ui.helpers.ActionCancelledException;
-import nonprofitbookkeeping.ui.helpers.NoFileCreatedException;
+import nonprofitbookkeeping.exception.ActionCancelledException;
+import nonprofitbookkeeping.exception.NoFileCreatedException;
 
 /**
  * Defines core ledger operations for creating and managing transactions,

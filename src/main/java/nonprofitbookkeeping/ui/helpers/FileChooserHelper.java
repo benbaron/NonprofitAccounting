@@ -1,6 +1,8 @@
 
 package nonprofitbookkeeping.ui.helpers;
 
+import nonprofitbookkeeping.exception.ActionCancelledException;
+import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.preferences.PreferencesManager;
 import javax.swing.*;
 import java.io.File;
@@ -38,8 +40,8 @@ public class FileChooserHelper
 		// If an extension is provided, set the filter to that extension
 		if (extension != null)
 		{
-//			fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
-//				"Files (*" + extension + ")", extension));
+			fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+				"Files (*" + extension + ")", extension));
 		}
 		
 		int returnValue = fileChooser.showDialog(null, "Select");

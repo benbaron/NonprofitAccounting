@@ -15,12 +15,13 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Alert.AlertType;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import nonprofitbookkeeping.exception.NoFileException;
 import nonprofitbookkeeping.model.BeanShell;
 import nonprofitbookkeeping.model.CurrentInputFile;
 import nonprofitbookkeeping.preferences.PreferencesManager;
 import nonprofitbookkeeping.ui.NonprofitBookkeepingFX;
+import nonprofitbookkeeping.ui.helpers.NpbkFileChooserFX;
 
 /**
  * JavaFX replacement for the Swing {@code LoadXlsmTableAction}. Opens an .xlsm file, converts the
@@ -40,22 +41,21 @@ public class LoadXlsmTableActionFX implements EventHandler<ActionEvent>
 	
 	@Override public void handle(ActionEvent e)
 	{
-		FileChooser chooser = new FileChooser();
-		chooser.setTitle("Select XLSM File");
-		chooser.getExtensionFilters().add(
-			new FileChooser.ExtensionFilter("Excel Macro-Enabled", "*.xlsm"));
 		
-		// Default directory
-		String lastDir = PreferencesManager.getLastDirectory();
-		if (lastDir == null)
-			lastDir = System.getProperty("user.home");
-		File dir = new File(lastDir);
-		if (dir.exists())
-			chooser.setInitialDirectory(dir);
+		String title = "Select XLSM File";
+		String description = "Excel Macro-Enabled";
+		String fileQualifier = "*.xlsm";
 		
-		File file = chooser.showOpenDialog(this.owner);
-		if (file == null)
-			return; // user cancelled
+		File file = null;
+		
+		try
+		{
+			file = NpbkFileChooserFX.chooseExisting(title, description, fileQualifier, this.owner);
+		}
+		catch (NoFileException e1)
+		{
+			e1.printStackTrace();
+		}
 			
 		try
 		{
@@ -85,7 +85,7 @@ public class LoadXlsmTableActionFX implements EventHandler<ActionEvent>
 		}
 		
 	}
-	
+
 	/**
 	 * Convert a Swing {@link javax.swing.table.DefaultTableModel} to a JavaFX {@link TableView}
 	 * without using {@code MapValueFactory}.  Each row is a {@code Map<String,Object>} and each

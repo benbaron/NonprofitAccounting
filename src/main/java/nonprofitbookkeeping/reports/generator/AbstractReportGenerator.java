@@ -9,8 +9,8 @@ import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.HtmlExporter;
 import net.sf.jasperreports.export.*;
-import nonprofitbookkeeping.ui.helpers.ActionCancelledException;
-import nonprofitbookkeeping.ui.helpers.NoFileCreatedException;
+import nonprofitbookkeeping.exception.ActionCancelledException;
+import nonprofitbookkeeping.exception.NoFileCreatedException;
 
 import java.util.List;
 import java.util.Map;

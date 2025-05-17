@@ -74,7 +74,12 @@ public class ReportGenerator
 		return null;
 	}
 	
-	public void exportToPDF(JasperPrint jasperPrint, String outputFilePath)
+	/**
+	 * 
+	 * @param jasperPrint
+	 * @param outputFilePath
+	 */
+	public static void exportToPDF(JasperPrint jasperPrint, String outputFilePath)
 	{
 		
 		try
@@ -90,6 +95,11 @@ public class ReportGenerator
 		
 	}
 	
+	/**
+	 * 
+	 * @param jasperPrint
+	 * @param outputFilePath
+	 */
 	public static void exportToXLSX(JasperPrint jasperPrint, String outputFilePath)
 	{
 		
@@ -120,6 +130,11 @@ public class ReportGenerator
 		
 	}
 	
+	/**
+	 * 
+	 * @param jasperPrint
+	 * @param outputFilePath
+	 */
 	public static void exportToCSV(JasperPrint jasperPrint, String outputFilePath)
 	{
 		
@@ -147,7 +162,7 @@ public class ReportGenerator
 	}
 	
 	
-	public void exportToTXT(JasperPrint jasperPrint, String outputFilePath)
+	public static void exportToTXT(JasperPrint jasperPrint, String outputFilePath)
 	{
 		
 		try
@@ -174,7 +189,7 @@ public class ReportGenerator
 	}
 	
 	// Method to export JasperPrint to HTML
-	public void exportToHTML(JasperPrint jasperPrint, String outputFilePath)
+	public static void exportToHTML(JasperPrint jasperPrint, String outputFilePath)
 	{
 		
 		try

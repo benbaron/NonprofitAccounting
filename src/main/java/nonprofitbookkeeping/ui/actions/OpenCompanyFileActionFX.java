@@ -11,10 +11,10 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.core.JacksonDataStore;
+import nonprofitbookkeeping.exception.ActionCancelledException;
+import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.model.CompanyDataFile;
 import nonprofitbookkeeping.model.CurrentInputFile;
-import nonprofitbookkeeping.ui.helpers.ActionCancelledException;
-import nonprofitbookkeeping.ui.helpers.NoFileCreatedException;
 
 public class OpenCompanyFileActionFX implements EventHandler<ActionEvent>
 {

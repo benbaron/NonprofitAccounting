@@ -3,7 +3,7 @@
  * NoFileCreatedException.java
  * NoFileCreatedException
  */
-package nonprofitbookkeeping.ui.helpers;
+package nonprofitbookkeeping.exception;
 
 /**
  * 

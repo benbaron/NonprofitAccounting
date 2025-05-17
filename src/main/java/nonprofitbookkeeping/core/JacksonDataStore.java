@@ -4,8 +4,8 @@
 package nonprofitbookkeeping.core;
 
 import nonprofitbookkeeping.api.DataStore;
-import nonprofitbookkeeping.ui.helpers.ActionCancelledException;
-import nonprofitbookkeeping.ui.helpers.NoFileCreatedException;
+import nonprofitbookkeeping.exception.ActionCancelledException;
+import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.ui.panels.AlertBox;
 
 import com.fasterxml.jackson.core.exc.StreamReadException;

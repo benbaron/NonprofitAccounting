@@ -1,10 +1,10 @@
 
 package nonprofitbookkeeping.ui.actions;
 
+import nonprofitbookkeeping.exception.NoFileException;
 import nonprofitbookkeeping.model.CompanyDataFile;
 import nonprofitbookkeeping.model.CompanyProfileModel;
 import nonprofitbookkeeping.service.CompanyLoader;
-import nonprofitbookkeeping.service.NoFileException;
 import nonprofitbookkeeping.service.PreferencesService;
 import nonprofitbookkeeping.ui.panels.CreateCompanyPanelFX;
 

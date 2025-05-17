@@ -5,8 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import nonprofitbookkeeping.ui.helpers.ActionCancelledException;
-import nonprofitbookkeeping.ui.helpers.NoFileCreatedException;
+import nonprofitbookkeeping.exception.ActionCancelledException;
+import nonprofitbookkeeping.exception.NoFileCreatedException;
 
 /**
  * Abstraction for JSON-backed persistence of domain objects.

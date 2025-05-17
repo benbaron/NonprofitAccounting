@@ -10,10 +10,10 @@ import java.io.File;
 import java.io.IOException;
 
 import nonprofitbookkeeping.core.JacksonDataStore;
+import nonprofitbookkeeping.exception.ActionCancelledException;
+import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.model.CompanyDataFile;
 import nonprofitbookkeeping.model.CurrentInputFile;
-import nonprofitbookkeeping.ui.helpers.ActionCancelledException;
-import nonprofitbookkeeping.ui.helpers.NoFileCreatedException;
 
 /**
  * 

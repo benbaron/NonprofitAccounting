@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import nonprofitbookkeeping.service.AccountService;
-import nonprofitbookkeeping.ui.helpers.ActionCancelledException;
 import nonprofitbookkeeping.ui.helpers.FileChooserHelper;
-import nonprofitbookkeeping.ui.helpers.NoFileCreatedException;
+import nonprofitbookkeeping.exception.ActionCancelledException;
+import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.model.CompanyDataFile;
 
 public class BalanceResultReportGenerator extends AbstractReportGenerator
