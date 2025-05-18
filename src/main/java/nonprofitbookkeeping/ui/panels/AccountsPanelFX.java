@@ -117,12 +117,12 @@ public class AccountsPanelFX extends BorderPane
 		
 		public AccountRow(Account a)
 		{
-			this.code = a.getAccountDetails().getAccountCode();
-			this.name = a.getAccountDetails().getAccountName();
-			this.type = a.getAccountDetails().getAccountType();
-			this.parent = a.getAccountDetails().getParentAccount();
-			this.currency = a.getAccountDetails().getCurrency();
-			this.opening = a.getAccountDetails().getOpeningBalance();
+			this.code = a.getAccountCode();
+			this.name = a.getName();
+			this.type = a.getAccountType();
+			this.parent = a.getParentAccount();
+			this.currency = a.getCurrency();
+			this.opening = a.getOpeningBalance();
 		}
 		
 		/* getters / setters for PropertyValueFactory */

@@ -44,7 +44,7 @@ public class OpenCompanyFileActionFX implements EventHandler<ActionEvent>
 		}
 		
 		// Load file from the data store
-		CompanyDataFile.getCompanyDataFile().load(file);
+		CompanyDataFile.getCdf().load(file);
 		showInfo("Loaded " + file.getAbsolutePath());
 		
 	}

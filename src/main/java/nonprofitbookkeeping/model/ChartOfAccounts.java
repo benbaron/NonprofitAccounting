@@ -1,20 +1,12 @@
 
 package nonprofitbookkeeping.model;
 
-import com.google.common.base.MoreObjects;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nonprofitbookkeeping.api.AccountDetails;
-
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.ArrayList;
+import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,40 +19,76 @@ public class ChartOfAccounts implements Serializable
 	 * serialVersionUID : long
 	 */
 	private static final long serialVersionUID = 6545569795380871696L;
-	private final Map<String, AccountDetails> accountNumberToAccountDetails;
-	
+
+	ArrayList<Account> chartOfAccounts = new ArrayList<>();
 	/**
 	 * 
 	 * Constructor ChartOfAccounts
-	 * @param accountDetails
 	 */
-	public ChartOfAccounts(Set<AccountDetails> accountDetails)
+	public ChartOfAccounts()
 	{
-		checkNotNull(accountDetails);
-		checkArgument(!accountDetails.isEmpty());
-		this.accountNumberToAccountDetails = new HashMap<>();
-		accountDetails
-			.forEach(ad -> this.accountNumberToAccountDetails.put(ad.getAccountNumber(), ad));
+
 	}
-	
+
 	/**
-	 * 
 	 * @return
 	 */
-	public Map<String, AccountDetails> getAccountNumberToAccountDetails()
+	public List<Account> getRootAccounts()
 	{
-		return new HashMap<>(this.accountNumberToAccountDetails);
+		ArrayList<Account> roots = new ArrayList<>();
+		for (Account root : roots)
+		{
+			if (!root.hasParent())
+			{
+				roots.add(root);
+			}
+		}
+		return roots;
 	}
-	
+
 	/**
-	 * 
-	 * Override @see java.lang.Object#toString()
+	 * @param a
+	 * @return
 	 */
-	@Override public String toString()
+	public List<Account> getChildren(Account a)
 	{
-		return MoreObjects.toStringHelper(this)
-			.add("accounts", this.accountNumberToAccountDetails.values())
-			.toString();
+		// TODO Auto-generated method stub
+		return null;
 	}
-	
+
+	/**
+	 * @param det
+	 */
+	public void addAccount(Account det)
+	{
+		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * @param parent
+	 * @param det
+	 */
+	public void addSubAccount(Account parent, Account det)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * @param target
+	 */
+	public void removeAccount(Account target)
+	{
+		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * @return
+	 */
+	public String getNames()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -13,8 +13,7 @@ import nonprofitbookkeeping.preferences.PreferencesManager;
 
 /**
  * JavaFX equivalent of the Swing {@code SaveModifiedCopyAction}. 
- * Saves the edited XLSM workbook to
- * a user-chosen location.  Relies on
+ * Saves the edited XLSM workbook to a user-chosen location.  Relies on
  * {@link ExcelDataWriter#writeModifiedCopy(File, File, Object,
  * javax.swing.table.TableModel)} for the actual export.
  */
@@ -67,7 +66,7 @@ public class SaveModifiedCopyActionFX implements EventHandler<ActionEvent>
 				input,
 				output,
 				null,
-				nonprofitbookkeeping.ui.panels.PageViewer.getTableModel());
+				PageViewer.getTableModel());
 			new Alert(Alert.AlertType.INFORMATION, "Workbook saved successfully.").showAndWait();
 			PreferencesManager.setLastDirectory(output.getParent());
 		}

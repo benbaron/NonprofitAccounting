@@ -51,8 +51,8 @@ public class CompanyLoader
 		
 		try
 		{
-			CompanyDataFile data = mapper.readValue(file, CompanyDataFile.class);
-			return data;
+			CompanyDataFile cdf = mapper.readValue(file, CompanyDataFile.class);
+			return cdf;
 		}
 		catch (IOException e)
 		{
@@ -70,10 +70,8 @@ public class CompanyLoader
 	 */
 	public static boolean saveCompanyProfile(File file, CompanyProfileModel profile)
 	{
-		Ledger data = new Ledger();
-		data.companyProfile = profile;
-
-		return saveCompanyData(file, data);
+		CompanyDataFile.getCdf().setCompanyProfileModel(profile);
+		return true;
 	}
 	
 	/**

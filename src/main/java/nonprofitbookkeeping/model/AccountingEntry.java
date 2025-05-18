@@ -10,7 +10,8 @@ import static com.google.common.base.Preconditions.*;
 
 /**
  * Represents an Accounting Entry.
- * The transaction reference is set automatically when an AccountingEntry is passed to the transaction constructor.
+ * The transaction reference is set automatically when an 
+ * AccountingEntry is passed to the transaction constructor.
  * Once the transaction is set, it can't be changed.
  */
 public final class AccountingEntry implements Serializable

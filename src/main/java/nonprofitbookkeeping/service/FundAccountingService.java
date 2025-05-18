@@ -57,13 +57,13 @@ public class FundAccountingService
 	public void addAccount(Account account)
 	{
 		
-		if (this.accountMap.containsKey(account.getAccountName()))
+		if (this.accountMap.containsKey(account.getName()))
 		{
 			throw new IllegalArgumentException(
-				"Account with name '" + account.getAccountName() + "' already exists.");
+				"Account with name '" + account.getName() + "' already exists.");
 		}
 		
-		this.accountMap.put(account.getAccountName(), account);
+		this.accountMap.put(account.getName(), account);
 	}
 	
 	// Remove an account by name

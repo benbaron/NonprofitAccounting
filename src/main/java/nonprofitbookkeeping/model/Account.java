@@ -1,6 +1,7 @@
 
 package nonprofitbookkeeping.model;
 
+import com.google.common.base.MoreObjects;
 
 import nonprofitbookkeeping.api.AccountDetails;
 
@@ -8,8 +9,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Represents an account with entries, supporting many-to-many relationship with funds.
@@ -24,18 +23,24 @@ final public class Account implements Serializable
 	
 	private List<Fund> associatedFunds = new ArrayList<>(); // List to hold associated funds
 	
-	private AccountDetails accountDetails = new AccountDetailsImpl(null, null, null);
+
+	private String accountNumber;
 	
-	/**
-	 * 
-	 * Constructor Account
-	 * @param accountDetails
-	 */
-	public Account(AccountDetails accountDetails)
-	{
-		this.accountDetails = checkNotNull(accountDetails);
-	}
+	private AccountSide increaseSide;
+		
+	private String name;
+
+	private String accountCode;
+
+	private String accountType;
+
+	private Account parentAccount;
+
+	private String currency;
+
+	private BigDecimal openingBalance;
 	
+
 	/**
 	 * 
 	 * Constructor Account
@@ -45,7 +50,9 @@ final public class Account implements Serializable
 	 */
 	public Account(String accountNumber, String name, AccountSide increaseSide)
 	{
-		this.accountDetails = new AccountDetailsImpl(accountNumber, name, increaseSide);
+		this.accountNumber = accountNumber;
+		this.name = name;
+		this.increaseSide = increaseSide;
 	}
 	
 
@@ -74,34 +81,17 @@ final public class Account implements Serializable
 		this.associatedFunds.remove(fund);
 		fund.removeAccount(this); // Remove this account from the fund's list of accounts
 	}
-	
-
 
 	/**
-	 * @return
-	 */
-	public String getAccountName()
-	{
-		// TODO Auto-generated method stub
-		return this.accountDetails.getAccountName();
-	}
-
-	/**
-	 * @return
-	 */
-	public List<Fund> getFunds()
-	{
-		return this.associatedFunds;
-	}
-
-	/**
-	 * @return
+	 * Tally and return the balance.
+	 * @return balance on the account
 	 */
 	public BigDecimal getBalance()
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 
 	/**
 	 * @return the associatedFunds
@@ -111,6 +101,7 @@ final public class Account implements Serializable
 		return this.associatedFunds;
 	}
 
+
 	/**
 	 * @param associatedFunds the associatedFunds to set
 	 */
@@ -119,20 +110,166 @@ final public class Account implements Serializable
 		this.associatedFunds = associatedFunds;
 	}
 
+
 	/**
-	 * @return the accountDetails
+	 * @return the accountNumber
 	 */
-	public AccountDetails getAccountDetails()
+	public String getAccountNumber()
 	{
-		return this.accountDetails;
+		return this.accountNumber;
+	}
+
+
+	/**
+	 * @param accountNumber the accountNumber to set
+	 */
+	public void setAccountNumber(String accountNumber)
+	{
+		this.accountNumber = accountNumber;
+	}
+
+
+	/**
+	 * @return the increaseSide
+	 */
+	public AccountSide getIncreaseSide()
+	{
+		return this.increaseSide;
+	}
+
+
+	/**
+	 * @param increaseSide the increaseSide to set
+	 */
+	public void setIncreaseSide(AccountSide increaseSide)
+	{
+		this.increaseSide = increaseSide;
+	}
+
+
+	/**
+	 * @return the name
+	 */
+	public String getName()
+	{
+		return this.name;
+	}
+
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+
+	/**
+	 * @return the accountCode
+	 */
+	public String getAccountCode()
+	{
+		return this.accountCode;
+	}
+
+
+	/**
+	 * @param accountCode the accountCode to set
+	 */
+	public void setAccountCode(String accountCode)
+	{
+		this.accountCode = accountCode;
+	}
+
+
+	/**
+	 * @return the accountType
+	 */
+	public String getAccountType()
+	{
+		return this.accountType;
+	}
+
+
+	/**
+	 * @param accountType the accountType to set
+	 */
+	public void setAccountType(String accountType)
+	{
+		this.accountType = accountType;
+	}
+
+
+	/**
+	 * @return the parentAccount
+	 */
+	public Account getParentAccount()
+	{
+		return this.parentAccount;
+	}
+
+
+	/**
+	 * @param parentAccount the parentAccount to set
+	 */
+	public void setParentAccount(Account parentAccount)
+	{
+		this.parentAccount = parentAccount;
+	}
+
+
+	/**
+	 * @return the currency
+	 */
+	public String getCurrency()
+	{
+		return this.currency;
+	}
+
+
+	/**
+	 * @param currency the currency to set
+	 */
+	public void setCurrency(String currency)
+	{
+		this.currency = currency;
+	}
+
+
+	/**
+	 * @return the openingBalance
+	 */
+	public BigDecimal getOpeningBalance()
+	{
+		return this.openingBalance;
+	}
+
+
+	/**
+	 * @param openingBalance the openingBalance to set
+	 */
+	public void setOpeningBalance(BigDecimal openingBalance)
+	{
+		this.openingBalance = openingBalance;
 	}
 
 	/**
-	 * @param accountDetails the accountDetails to set
+	 * @return
 	 */
-	public void setAccountDetails(AccountDetails accountDetails)
+	public List<Fund> getFunds()
 	{
-		this.accountDetails = accountDetails;
+		return getAssociatedFunds();
+	}
+
+
+	/**
+	 * @return
+	 */
+	public boolean hasParent()
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

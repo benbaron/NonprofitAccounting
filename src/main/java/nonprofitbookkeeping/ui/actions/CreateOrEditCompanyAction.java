@@ -36,7 +36,7 @@ public class CreateOrEditCompanyAction extends AbstractAction
 	@Override public void actionPerformed(ActionEvent e)
 	{
 		// Retrieve the existing company profile if available
-		CompanyDataFile existingProfile = CompanyDataFile.getCompanyDataFile();
+		CompanyDataFile existingProfile = CompanyDataFile.getCdf();
 			
 		
 		// Create a new JFrame to host the company creation/editing form

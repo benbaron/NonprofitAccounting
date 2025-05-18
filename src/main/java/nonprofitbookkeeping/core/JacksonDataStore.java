@@ -6,8 +6,6 @@ package nonprofitbookkeeping.core;
 import nonprofitbookkeeping.api.DataStore;
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
-import nonprofitbookkeeping.model.CompanyDataFile;
-import nonprofitbookkeeping.ui.actions.OpenCompanyFileAction;
 import nonprofitbookkeeping.ui.panels.AlertBox;
 
 import com.fasterxml.jackson.annotation.JsonSetter;

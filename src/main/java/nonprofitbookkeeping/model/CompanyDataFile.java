@@ -31,6 +31,7 @@ public class CompanyDataFile implements Serializable
 
 	private CompanyProfileModel companyProfileModel = new CompanyProfileModel();
 	private Ledger ledger = new Ledger();
+	private ChartOfAccounts chartOfAccounts = new ChartOfAccounts();
 	/**  
 	 * Constructor CompanyDataFile
 	 */
@@ -50,7 +51,7 @@ public class CompanyDataFile implements Serializable
 	 * getCompanyDataFile
 	 * @return
 	 */
-	public static CompanyDataFile getCompanyDataFile()
+	public static CompanyDataFile getCdf()
 	{
 		// return the CompanyDataFile from the wrapper
 		return companyObs.get();
@@ -144,6 +145,15 @@ public class CompanyDataFile implements Serializable
 	public void setLedger(Ledger ledger)
 	{
 		this.ledger = ledger;
+	}
+
+	/**
+	 * @return
+	 */
+	public ChartOfAccounts getCoA()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

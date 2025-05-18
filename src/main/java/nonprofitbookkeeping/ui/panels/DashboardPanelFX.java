@@ -51,14 +51,14 @@ public class DashboardPanelFX extends BorderPane
 		
 		// If a company is loaded later, refresh() will populate everything:
 		CompanyDataFile.getCompanyDataFileProperty().addListener((obs, o, n) -> loadCompany(n));
-		loadCompany(CompanyDataFile.getCompanyDataFile()); // initial
+		loadCompany(CompanyDataFile.getCdf()); // initial
 	}
 	
 	/* ---------------------------------------------------------- */
 	private void buildTopBanner()
 	{
 		this.companyLbl.getStyleClass().add("company-indicator");
-		this.reloadBtn.setOnAction(e -> loadCompany(CompanyDataFile.getCompanyDataFile()));
+		this.reloadBtn.setOnAction(e -> loadCompany(CompanyDataFile.getCdf()));
 		HBox banner = new HBox(10, new Label("Current Company:"), this.companyLbl, this.reloadBtn);
 		banner.setPadding(new Insets(4));
 		banner.setStyle("-fx-background-color:#f0f0f0; -fx-border-color:lightgray;");
@@ -124,14 +124,8 @@ public class DashboardPanelFX extends BorderPane
 		
 		this.companyLbl.setText(cdf.getCompanyProfile().getCompanyName());
 		
-		ChartOfAccounts coa = cdf.getLedger().getCoa();
+		ChartOfAccounts coa = cdf.getCoA();
 				
-		Collection<AccountDetails> accs = coa.getAccountNumberToAccountDetails().values();
-		this.accountSelector.getItems().setAll(
-			accs.stream().map(AccountDetails::getAccountName).sorted().toList());
-		this.accountSelector.getSelectionModel().selectFirst();
-		this.accountSelector.setOnAction(e -> refresh());
-		
 		this.allTxns = cdf.getLedger().getTransactions();
 		refresh();
 	}

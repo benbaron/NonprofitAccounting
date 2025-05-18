@@ -3,9 +3,6 @@ package nonprofitbookkeeping.model;
 
 import com.google.common.base.MoreObjects;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import nonprofitbookkeeping.api.AccountDetails;
 
 import java.io.Serializable;
@@ -49,13 +46,9 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 	                          String name, 
 	                          AccountSide increaseSide)
 	{
-		this.accountNumber = checkNotNull(accountNumber);
-		this.increaseSide = checkNotNull(increaseSide);
-		this.name = checkNotNull(name);
-		
-		checkArgument(!accountNumber.isEmpty());
-		checkArgument(!name.isEmpty());
-		
+		this.accountNumber = accountNumber;
+		this.increaseSide = increaseSide;
+		this.name = name;
 	}
 	
 
@@ -122,67 +115,6 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 		return this.openingBalance;
 	}
 
-
-	/**
-	 * Override @see nonprofitbookkeeping.api.AccountDetails#getAccountNumber() 
-	 */
-	@Override public String getAccountNumber()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	/**
-	 * Override @see nonprofitbookkeeping.api.AccountDetails#getIncreaseSide() 
-	 */
-	@Override public AccountSide getIncreaseSide()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	/**
-	 * Override @see nonprofitbookkeeping.api.AccountDetails#getName() 
-	 */
-	@Override public String getName()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	/**
-	 * Override @see nonprofitbookkeeping.api.AccountDetails#setAccountNumber(java.lang.String) 
-	 */
-	@Override public void setAccountNumber(String accountNumber)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	/**
-	 * Override @see nonprofitbookkeeping.api.AccountDetails#setIncreaseSide(nonprofitbookkeeping.model.AccountSide) 
-	 */
-	@Override public void setIncreaseSide(AccountSide increaseSide)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	/**
-	 * Override @see nonprofitbookkeeping.api.AccountDetails#setName(java.lang.String) 
-	 */
-	@Override public void setName(String name)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-
 	/**
 	 * @param accountCode the accountCode to set
 	 */
@@ -190,7 +122,6 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 	{
 		this.accountCode = accountCode;
 	}
-
 
 	/**
 	 * @param accountType the accountType to set
@@ -200,7 +131,6 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 		this.accountType = accountType;
 	}
 
-
 	/**
 	 * @param parentAccount the parentAccount to set
 	 */
@@ -208,7 +138,6 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 	{
 		this.parentAccount = parentAccount;
 	}
-
 
 	/**
 	 * @param currency the currency to set
@@ -227,7 +156,54 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 		this.openingBalance = openingBalance;
 	}
 
+	/**
+	 * @return the accountNumber
+	 */
+	@Override public String getAccountNumber()
+	{
+		return this.accountNumber;
+	}
 
+	/**
+	 * @param accountNumber the accountNumber to set
+	 */
+	@Override public void setAccountNumber(String accountNumber)
+	{
+		this.accountNumber = accountNumber;
+	}
+
+
+	/**
+	 * @return the increaseSide
+	 */
+	@Override public AccountSide getIncreaseSide()
+	{
+		return this.increaseSide;
+	}
+
+	/**
+	 * @param increaseSide the increaseSide to set
+	 */
+	@Override public void setIncreaseSide(AccountSide increaseSide)
+	{
+		this.increaseSide = increaseSide;
+	}
+
+	/**
+	 * @return the name
+	 */
+	@Override public String getName()
+	{
+		return this.name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	@Override public void setName(String name)
+	{
+		this.name = name;
+	}
 
 }
 

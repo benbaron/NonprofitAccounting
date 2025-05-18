@@ -55,7 +55,7 @@ public class ChartOfAccountsBuilder
 	 */
 	public ChartOfAccounts build()
 	{
-		return new ChartOfAccounts(this.accountDetails);
+		return new ChartOfAccounts();
 	}
 	
 }

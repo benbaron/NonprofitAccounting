@@ -93,7 +93,7 @@ public class NonprofitBookkeepingFX extends Application
 		add(file, "Close Company File…",
 			e -> new CloseCompanyFileAction());
 		add(file, "Save Company File…",
-			e -> new SaveCompanyFileAction(CurrentInputFile.currentInputFile, JacksonDataStore.dataStore, CompanyDataFile.getCompanyDataFile()));
+			e -> new SaveCompanyFileAction(CurrentInputFile.currentInputFile, JacksonDataStore.dataStore, CompanyDataFile.getCdf()));
 		add(file, "Create or Edit Company",
 			e -> new CreateOrEditCompanyActionFX(this.primaryStage).handle(e));
 		add(file, "Import File", e -> new ImportFileActionFX(this.primaryStage).handle(e));
@@ -111,6 +111,8 @@ public class NonprofitBookkeepingFX extends Application
 			e -> showPanel(new FundsPanelFX(ServiceContainer.fas), "Funds"));
 		add(run, "Reconcile",
 			e -> showPanel(new ReconcilePanelFX(new ReconciliationService()), "Reconciliation"));
+		add(run, "Edit Chart of Accounts",
+			e -> showPanel(new CoaEditorPanelFX(CompanyDataFile.getCdf().getCoA()), "Chart of Accounts"));
 		
 		/* SCA Ledger submenu */
 		Menu sca = new Menu("SCA Ledger");
@@ -134,7 +136,7 @@ public class NonprofitBookkeepingFX extends Application
 		add(reports, "Show Accounts",
 			e -> showPanel(new AccountsPanelFX(new AccountService()), "Chart of Accounts"));
 		add(reports, "Show Account Activity",
-			e -> showPanel(new AccountsActivityPanelFX(CompanyDataFile.getCompanyDataFile().getLedger()),
+			e -> showPanel(new AccountsActivityPanelFX(CompanyDataFile.getCdf().getLedger()),
 				"Account Activity"));
 		add(reports, "Generate Income Statement",
 			e -> new GenerateIncomeStatementAction(ServiceContainer.reportService)

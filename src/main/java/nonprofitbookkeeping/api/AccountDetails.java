@@ -24,19 +24,6 @@ public interface AccountDetails
 	
 	void setName(String name);
 	
-	@Override boolean equals(java.lang.Object o);
-	
-	@Override int hashCode();
-	
-	/**
-	 * 
-	 * Override @see java.lang.Object#toString()
-	 */
-	@Override String toString();
-	
-	/**
-	 * Override @see nonprofitbookkeeping.model.AccountDetails#getAccountName() 
-	 */
 	String getAccountName();
 
 	/**
@@ -63,5 +50,14 @@ public interface AccountDetails
 	 * @return
 	 */
 	BigDecimal getOpeningBalance();
+	
+	
+	@Override boolean equals(java.lang.Object o);
+	
+	@Override int hashCode();
+	
+	
+	@Override String toString();
+	
 	
 }

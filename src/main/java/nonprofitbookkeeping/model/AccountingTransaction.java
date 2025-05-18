@@ -39,7 +39,7 @@ public class AccountingTransaction implements Serializable
 	
 	final private Integer transactionId;
 	
-	final private String date;
+	private String date;
 	
 	private String memo;
 	
@@ -231,7 +231,7 @@ public class AccountingTransaction implements Serializable
 	 */
 	public String getAccountName()
 	{
-		return this.account.getAccountDetails().getAccountName();
+		return this.account.getName();
 	}
 	
 	/**
@@ -253,23 +253,20 @@ public class AccountingTransaction implements Serializable
 		
 	}
 
-
 	/**
 	 * @param valueOf
 	 */
 	public void setTotalAmount(BigDecimal valueOf)
 	{
 		// TODO Auto-generated method stub
-		
 	}
-
 
 	/**
 	 * @param string
 	 */
 	public void setDate(String string)
 	{
-		// TODO Auto-generated method stub
+		date = string;
 		
 	}
 

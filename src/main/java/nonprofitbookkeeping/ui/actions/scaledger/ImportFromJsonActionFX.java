@@ -19,7 +19,6 @@ import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.preferences.PreferencesManager;
-import nonprofitbookkeeping.ui.panels.PageViewer;
 
 /**
  * JavaFX version of the Swing {@code ImportFromJsonAction}. Opens a JSON file, converts it to a

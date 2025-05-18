@@ -38,7 +38,7 @@ public class CreateOrEditCompanyActionFX implements EventHandler<Event>
 	{
 
 	    // 1. Existing profile if you’re in “edit” mode
-	    CompanyDataFile existingProfile = CompanyDataFile.getCompanyDataFile();
+	    CompanyDataFile existingProfile = CompanyDataFile.getCdf();
 
 	    // 2. Dialog-style stage
 	    Stage dialog = new Stage();
