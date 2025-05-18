@@ -70,7 +70,7 @@ public class AccountsActivityPanelFX extends BorderPane
 		box.setPadding(new Insets(5));
 		box.setStyle(
 			"-fx-border-color: lightgray; -fx-border-radius: 4; -fx-border-insets: 4; -fx-border-style: segments(4)");
-		this.accountSelector.getItems().addAll(CompanyDataFile.getCdf().getCoA().getNames());
+		this.accountSelector.getItems().addAll(CompanyDataFile.getCompanyDataFile().getChartOfAccounts().getNames());
 		this.accountSelector.getSelectionModel().selectFirst();
 		this.accountSelector.setOnAction(e -> applyFilters());
 		box.getChildren().addAll(new Label("Account:"), this.accountSelector);
@@ -174,7 +174,7 @@ public class AccountsActivityPanelFX extends BorderPane
 			this.date.set(t.getDate());
 			this.description.set(t.getDescription());
 			this.amount.set(t.getTotalAmount());
-			this.balance.set(t.getAccountBalance());
+			this.balance.set(t.countAccountBalance());
 			this.memo.set(t.getMemo());
 		}
 		

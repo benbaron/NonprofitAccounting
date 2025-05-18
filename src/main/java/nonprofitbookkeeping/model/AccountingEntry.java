@@ -43,11 +43,9 @@ public final class AccountingEntry implements Serializable
 	                       String accountNumber, 
 	                       AccountSide accountSide)
 	{
-		this.amount = checkNotNull(amount);
-		this.accountNumber = checkNotNull(accountNumber);
-		this.accountSide = checkNotNull(accountSide);
-		checkArgument(amount.signum() == 1, "Accounting entries can't have a negative amount");
-		checkArgument(!accountNumber.isEmpty());
+		this.amount = amount;
+		this.accountNumber = accountNumber;
+		this.accountSide = accountSide;
 	}
 	
 	/**
@@ -58,7 +56,6 @@ public final class AccountingEntry implements Serializable
 	 */
 	public AccountingTransaction getTransaction()
 	{
-		checkNotNull(this.transaction, "Getter returning null. You have to set a transaction.");
 		return this.transaction;
 	}
 	
@@ -69,8 +66,6 @@ public final class AccountingEntry implements Serializable
 	 */
 	public void setTransaction(AccountingTransaction transaction)
 	{
-		checkState(!this.freeze, "An AccountingEntry's transaction can only be set once");
-		checkNotNull(transaction);
 		this.transaction = transaction;
 		this.freeze = true;
 	}

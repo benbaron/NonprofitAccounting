@@ -2,7 +2,7 @@
  * nonprofit-scaledger-ribbon.zip_expanded AlertBox.java AlertBox
  */
 
-package nonprofitbookkeeping.ui.panels;
+package nonprofitbookkeeping.ui.helpers;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;

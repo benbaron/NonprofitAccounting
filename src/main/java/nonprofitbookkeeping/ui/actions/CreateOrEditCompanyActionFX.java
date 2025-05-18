@@ -2,7 +2,7 @@
 package nonprofitbookkeeping.ui.actions;
 
 import nonprofitbookkeeping.model.CompanyDataFile;
-import nonprofitbookkeeping.service.CompanyLoader;
+import nonprofitbookkeeping.service.CompanyLoaderService;
 import nonprofitbookkeeping.service.PreferencesService;
 import nonprofitbookkeeping.ui.panels.CreateCompanyPanelFX;
 
@@ -21,7 +21,6 @@ public class CreateOrEditCompanyActionFX implements EventHandler<Event>
 {
 	private Window ownerStage;
 
-	
 	/**  
 	 * Constructor CreateOrEditCompanyAction
 	 * @param primaryStage
@@ -38,11 +37,11 @@ public class CreateOrEditCompanyActionFX implements EventHandler<Event>
 	{
 
 	    // 1. Existing profile if you’re in “edit” mode
-	    CompanyDataFile existingProfile = CompanyDataFile.getCdf();
+	    CompanyDataFile existingProfile = CompanyDataFile.getCompanyDataFile();
 
 	    // 2. Dialog-style stage
 	    Stage dialog = new Stage();
-	    dialog.initOwner(this.ownerStage);                       // ownerStage was passed in
+	    dialog.initOwner(this.ownerStage);
 	    dialog.setTitle(existingProfile != null ? 
 	                    "Edit Company" : "Create Company");
 
@@ -54,15 +53,16 @@ public class CreateOrEditCompanyActionFX implements EventHandler<Event>
 	                    PreferencesService.getDefaultCompanyDir(),
 	                    created.getCompanyName() + ".npbk");
 
-	            CompanyLoader.saveCompanyProfile(out, created);
+	            CompanyLoaderService.saveCompanyProfile(out, created);
+	            
 	            PreferencesService.setLastUsedCompanyFile(out.getAbsolutePath());
 
-	            dialog.close();              // close the FX window, not a JFrame
+	            dialog.close();
 	        });
 
 	    // 4. Show it
 	    dialog.setScene(new Scene(panel, 800, 600));
-	    dialog.show();                       // JavaFX packs automatically
+	    dialog.show();
 	}
 
 

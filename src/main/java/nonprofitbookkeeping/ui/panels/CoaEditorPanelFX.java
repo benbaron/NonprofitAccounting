@@ -1,6 +1,3 @@
-/* ────────────────────────────────────────────────────────────── */
-/* CoaEditorPanelFX.java – ladder-view editor for the chart */
-/* ────────────────────────────────────────────────────────────── */
 
 package nonprofitbookkeeping.ui.panels;
 
@@ -14,6 +11,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import nonprofitbookkeeping.model.*;
 import nonprofitbookkeeping.service.ChartOfAccountsService;
+import java.math.BigDecimal;
 
 public class CoaEditorPanelFX extends BorderPane
 {
@@ -21,6 +19,12 @@ public class CoaEditorPanelFX extends BorderPane
 	private final ChartOfAccountsService svc;
 	private final TreeTableView<Account> tree = new TreeTableView<>();
 	private final TreeItem<Account> rootItem = new TreeItem<>();
+	TextField numF = new TextField();
+	TextField nameF = new TextField();
+	TextField typeF = new TextField();
+	TextField balF = new TextField();
+
+
 	
 	/**
 	 * 
@@ -38,12 +42,10 @@ public class CoaEditorPanelFX extends BorderPane
 		
 		refresh(); // first load
 	}
+	/* same fields … */
 	
-	/**
-	 * 
-	 */
 	/* ------------------- UI scaffolding ---------------------- */
-	@SuppressWarnings({ "unchecked", "deprecation" }) 
+	@SuppressWarnings({ "deprecation", "unchecked" }) 
 	private void buildTree()
 	{
 		this.tree.setShowRoot(false);
@@ -52,10 +54,59 @@ public class CoaEditorPanelFX extends BorderPane
 		this.tree.getColumns().addAll(
 			makeCol("Number", Account::getAccountNumber),
 			makeCol("Name", Account::getName),
-			makeCol("Type", Account::getAccountType));
-		
+			makeCol("Type", Account::getAccountType),
+			makeCol("Opening Balance", Account::getOpeningBalance));
 		this.tree.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
+
 	}
+	
+	/* ------------------ add / edit dialog -------------------- */
+	private void dialog(Account parentContext)
+	{
+		Account editing = selected();
+		boolean isEdit = editing != null;
+		
+		Dialog<Account> dlg = new Dialog<>();
+		dlg.setTitle(isEdit ? "Edit Account" :
+			(parentContext == null ? "Add Root Account" : "Add Sub-account"));
+		dlg.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+		
+		/* form fields */
+		this.numF = new TextField(isEdit ? editing.getAccountNumber() : "");
+		this.nameF = new TextField(isEdit ? editing.getName() : "");
+		this.typeF = new TextField(isEdit ? editing.getAccountType() : "");
+		this.balF = new TextField(isEdit ? editing.getOpeningBalance().toPlainString() : "0.00"); // NEW
+		
+		GridPane gp = new GridPane();
+		gp.setHgap(10);
+		gp.setVgap(8);
+		gp.addRow(0, new Label("Number"), this.numF);
+		gp.addRow(1, new Label("Name"), this.nameF);
+		gp.addRow(2, new Label("Type"), this.typeF);
+		gp.addRow(3, new Label("Opening Balance"), this.balF); // NEW
+		dlg.getDialogPane().setContent(gp);
+		
+		dlg.setResultConverter(btn -> btn == ButtonType.OK ? build() : null);
+		dlg.showAndWait().ifPresent(det -> {
+			if (isEdit)
+				ChartOfAccountsService.update(editing,
+					det.getName(),
+					det.getAccountType(),
+					det.getOpeningBalance()); // pass balance
+			else if (parentContext == null)
+			{
+				this.svc.addRoot(det);
+			}
+			else
+			{
+				this.svc.addChild(parentContext, det);
+			}
+			refresh();
+		});
+		
+		
+	}
+	
 	
 	/**
 	 * Make column
@@ -64,8 +115,8 @@ public class CoaEditorPanelFX extends BorderPane
 	 * @param fn column function
 	 * @return column
 	 */
-	private static <T> TreeTableColumn<Account, T> makeCol(String name,
-	                                                       Function<Account, T> fn)
+	private static <T> TreeTableColumn<Account, T> makeCol(	String name,
+															Function<Account, T> fn)
 	{
 		TreeTableColumn<Account, T> col = new TreeTableColumn<>(name);
 		col.setCellValueFactory(
@@ -73,7 +124,7 @@ public class CoaEditorPanelFX extends BorderPane
 		return col;
 	}
 	
-
+	
 	/**
 	 * Build Buttons
 	 * @return horizontal box
@@ -128,49 +179,32 @@ public class CoaEditorPanelFX extends BorderPane
 		var sel = this.tree.getSelectionModel().getSelectedItem();
 		return sel == null ? null : sel.getValue();
 	}
+
 	
-	/* ------------------ add / edit dialog -------------------- */
-	private void dialog(Account parentContext) {
-        Account editing = selected();
-        boolean isEdit  = editing != null;
-
-        Dialog<Account> dlg = new Dialog<>();
-        dlg.setTitle(isEdit ? "Edit Account" :
-                     (parentContext == null ? "Add Root Account" : "Add Sub-account"));
-        dlg.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-        TextField numF  = new TextField(isEdit ? editing.getAccountNumber() : "");
-        TextField nameF = new TextField(isEdit ? editing.getName()  : "");
-        TextField typeF = new TextField(isEdit ? editing.getAccountType()  : "");
-
-        GridPane gp = new GridPane();
-        gp.setHgap(10); gp.setVgap(8);
-        gp.addRow(0, new Label("Number:"), numF);
-        gp.addRow(1, new Label("Name:"),   nameF);
-        gp.addRow(2, new Label("Type:"),   typeF);
-        dlg.getDialogPane().setContent(gp);
-
-        dlg.setResultConverter(btn -> btn == ButtonType.OK ? build() : null);
-
-        dlg.showAndWait().ifPresent(det -> {
-            if (isEdit) ChartOfAccountsService.update(editing, det.getName(), det.getAccountType());
-            else if (parentContext == null) this.svc.addRoot(det);
-            else this.svc.addChild(parentContext, det);
-            refresh();
-        });
-
-    }
+	/* builds an Account instance from dialog values */
+	Account build()
+	{
+		Account d = new Account();
+		d.setAccountNumber(this.numF.getText().trim());
+		d.setName(this.nameF.getText().trim());
+		d.setAccountType(this.typeF.getText().trim());
+		BigDecimal bal = BigDecimal.ZERO;
+		
+		try
+		{
+			bal = new BigDecimal(this.balF.getText().trim());
+		}
+		catch (NumberFormatException ignore)
+		{
+		}
+		
+		d.setOpeningBalance(bal); // NEW
+		return d;
+	}
 	
 	/**
-	 * @return
+	 * 
 	 */
-	private static Account build()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* -------------------- load → TreeItems ------------------- */
 	private void refresh()
 	{
 		this.rootItem.getChildren().clear();
@@ -178,6 +212,11 @@ public class CoaEditorPanelFX extends BorderPane
 		this.tree.refresh();
 	}
 	
+	/**
+	 * 
+	 * @param acc
+	 * @return
+	 */
 	private TreeItem<Account> makeNode(Account acc)
 	{
 		TreeItem<Account> item = new TreeItem<>(acc);

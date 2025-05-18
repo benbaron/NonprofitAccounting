@@ -43,8 +43,7 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 	 * @param  aColumn  Description of the Parameter
 	 * @return          The columnClass value
 	 */
-	@SuppressWarnings("unchecked") 
-	@Override public Class getColumnClass(int aColumn)
+	@Override public Class<?> getColumnClass(int aColumn)
 	{
 		return this.model.getColumnClass(aColumn);
 	}

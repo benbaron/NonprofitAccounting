@@ -9,6 +9,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
+import javafx.stage.Stage;
 
 /**
  * JavaFX port of the original Swing {@code SettingsPanel}.
@@ -18,8 +19,9 @@ public class SettingsPanelFX extends BorderPane
 	/**
 	 * 
 	 * Constructor SettingsPanelFX
+	 * @param primaryStage 
 	 */
-	public SettingsPanelFX()
+	public SettingsPanelFX(Stage primaryStage)
 	{
 		setPadding(new Insets(10));
 		TabPane tabs = new TabPane();

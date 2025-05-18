@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CompanyLoader
+public class CompanyLoaderService
 {
 	private static final ObjectMapper mapper = new ObjectMapper();
 	
@@ -70,7 +70,7 @@ public class CompanyLoader
 	 */
 	public static boolean saveCompanyProfile(File file, CompanyProfileModel profile)
 	{
-		CompanyDataFile.getCdf().setCompanyProfileModel(profile);
+		CompanyDataFile.getCompanyDataFile().setCompanyProfileModel(profile);
 		return true;
 	}
 	

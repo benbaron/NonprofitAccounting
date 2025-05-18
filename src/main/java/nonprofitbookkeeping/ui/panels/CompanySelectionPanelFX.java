@@ -12,7 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.exception.NoFileException;
 import nonprofitbookkeeping.model.CompanyDataFile;
-import nonprofitbookkeeping.service.CompanyLoader;
+import nonprofitbookkeeping.service.CompanyLoaderService;
 import nonprofitbookkeeping.service.PreferencesService;
 
 /**
@@ -91,7 +91,7 @@ public class CompanySelectionPanelFX extends BorderPane
 		{
 			dir.mkdirs();
 		}
-		this.npbkFiles.addAll(CompanyLoader.findCompanyFiles(dir));
+		this.npbkFiles.addAll(CompanyLoaderService.findCompanyFiles(dir));
 		if (!this.npbkFiles.isEmpty())
 		{
 			this.companyList.getSelectionModel().selectFirst();
@@ -113,7 +113,7 @@ public class CompanySelectionPanelFX extends BorderPane
 		
 		try
 		{
-			CompanyDataFile cdf = CompanyLoader.loadCompanyProfile(f);
+			CompanyDataFile cdf = CompanyLoaderService.loadCompanyProfile(f);
 			this.previewArea.setText(cdf == null ? "Failed to load company." : cdf.toString());
 		}
 		catch (NoFileException ex)

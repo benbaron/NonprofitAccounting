@@ -1,10 +1,6 @@
 
 package nonprofitbookkeeping.model;
 
-import com.google.common.base.MoreObjects;
-
-import nonprofitbookkeeping.api.AccountDetails;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -56,6 +52,15 @@ final public class Account implements Serializable
 	}
 	
 
+	/**  
+	 * Constructor Account
+	 */
+	public Account()
+	{
+		// TODO Auto-generated constructor stub
+	}
+
+
 	/**
 	 * Associates a fund with this account.
 	 *
@@ -86,7 +91,7 @@ final public class Account implements Serializable
 	 * Tally and return the balance.
 	 * @return balance on the account
 	 */
-	public BigDecimal getBalance()
+	public BigDecimal totalAccountBalance()
 	{
 		// TODO Auto-generated method stub
 		return null;

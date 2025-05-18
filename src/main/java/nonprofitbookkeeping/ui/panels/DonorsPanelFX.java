@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 
 import java.util.UUID;
 
@@ -20,7 +21,7 @@ public class DonorsPanelFX extends BorderPane
 	private final ObservableList<Donor> donors = FXCollections.observableArrayList();
 	private final TableView<Donor> table = new TableView<>();
 	
-	public DonorsPanelFX()
+	public DonorsPanelFX(Stage primaryStage)
 	{
 		setPadding(new Insets(10));
 		buildTable();

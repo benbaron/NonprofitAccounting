@@ -15,6 +15,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 
 /**
  * JavaFX port of {@code SalesAndCOGPanel}. Maintains an in‑memory table of sale
@@ -28,7 +29,7 @@ public class SalesAndCOGPanelFX extends BorderPane
 	private final TableView<SaleRow> table = new TableView<>();
 	private final Label totalLbl = new Label("Gross Profit: 0.00");
 	
-	public SalesAndCOGPanelFX(@SuppressWarnings("unused") Void unused)
+	public SalesAndCOGPanelFX(@SuppressWarnings("unused") Stage primaryStage)
 	{ // kept signature compatible with caller
 		setPadding(new Insets(10));
 		buildTable();

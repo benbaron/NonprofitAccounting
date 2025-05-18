@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 
 /**
  * JavaFX replacement for the Swing {@code DonationsPanel}. Keeps an in‑memory
@@ -24,7 +25,7 @@ public class DonationsPanelFX extends BorderPane
 	
 	private final ObservableList<Donation> donations = FXCollections.observableArrayList();
 	private final TableView<Donation> table = new TableView<>();
-	public DonationsPanelFX()
+	public DonationsPanelFX(Stage primaryStage)
 	{
 		setPadding(new Insets(10));
 		buildTable();

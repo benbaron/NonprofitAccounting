@@ -2,8 +2,8 @@
 package nonprofitbookkeeping.service;
 
 import nonprofitbookkeeping.reports.ReportContext;
+import nonprofitbookkeeping.reports.ReportMetadata;
 import nonprofitbookkeeping.reports.writer.LedgerReportWriter;
-import nonprofitbookkeeping.ui.panels.ReportMetadata;
 
 import java.io.File;
 import java.io.IOException;

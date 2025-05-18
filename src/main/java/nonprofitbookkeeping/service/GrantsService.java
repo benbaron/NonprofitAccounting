@@ -3,9 +3,11 @@
  * GrantsService.java
  * GrantsService
  */
-package nonprofitbookkeeping.ui.panels;
+package nonprofitbookkeeping.service;
 
 import java.util.List;
+
+import nonprofitbookkeeping.model.Grant;
 
 /**
  * 

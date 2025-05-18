@@ -8,7 +8,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import nonprofitbookkeeping.model.CurrentInputFile;
+import nonprofitbookkeeping.model.NonCompanyFile;
 import nonprofitbookkeeping.preferences.PreferencesManager;
 
 /**
@@ -30,7 +30,7 @@ public class SaveModifiedCopyActionFX implements EventHandler<ActionEvent>
 	@Override public void handle(ActionEvent e)
 	{
 		// Ensure an input workbook is loaded
-		File input = CurrentInputFile.getCurrentInputFile();
+		File input = NonCompanyFile.getCurrentFile();
 		
 		if (input == null)
 		{

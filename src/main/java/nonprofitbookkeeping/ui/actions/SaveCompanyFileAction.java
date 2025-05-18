@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 
+import javafx.stage.Stage;
 import nonprofitbookkeeping.core.JacksonDataStore;
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
@@ -27,15 +28,11 @@ public class SaveCompanyFileAction
 	/**
 	 * 
 	 * Constructor SaveCompanyFileAction
-	 * @param currentInputFile
-	 * @param dataStore2
-	 * @param cdf
+	 * @param primaryStage 
 	 */
-	public SaveCompanyFileAction(File currentInputFile, JacksonDataStore dataStore2, CompanyDataFile cdf)
+	public SaveCompanyFileAction(Stage primaryStage)
 	{
-		this.cdf = cdf;
-		this.currentInputFile = currentInputFile;
-		this.dataStore = dataStore2;
+
 	}
 
 	/**

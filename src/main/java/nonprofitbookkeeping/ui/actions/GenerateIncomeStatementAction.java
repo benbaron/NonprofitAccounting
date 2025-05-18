@@ -9,7 +9,12 @@ import java.io.File;
 import java.time.LocalDate;
 
 public class GenerateIncomeStatementAction extends AbstractAction {
-    public GenerateIncomeStatementAction(ReportService reportService) {
+    /**
+	 * serialVersionUID : long
+	 */
+	private static final long serialVersionUID = -6004544138078222664L;
+
+	public GenerateIncomeStatementAction(ReportService reportService) {
         super("Generate Income Statement");
     }
 

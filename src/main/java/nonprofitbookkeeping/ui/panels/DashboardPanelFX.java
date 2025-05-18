@@ -13,7 +13,6 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
-import nonprofitbookkeeping.api.AccountDetails;
 import nonprofitbookkeeping.model.*;
 
 public class DashboardPanelFX extends BorderPane
@@ -33,7 +32,13 @@ public class DashboardPanelFX extends BorderPane
 	private final TableView<Row> table = new TableView<>();
 	private final ObservableList<Row> rows = FXCollections.observableArrayList();
 	private List<AccountingTransaction> allTxns = List.of(); // empty until a file is open
+	private BigDecimal amtF = null;
+	private ReadOnlyObjectProperty<CompanyDataFile> prop;
+
 	
+	/**
+	 * Constructor DashboardPanelFX
+	 */
 	public DashboardPanelFX()
 	{
 		setPadding(new Insets(10));
@@ -50,21 +55,28 @@ public class DashboardPanelFX extends BorderPane
 		});
 		
 		// If a company is loaded later, refresh() will populate everything:
-		CompanyDataFile.getCompanyDataFileProperty().addListener((obs, o, n) -> loadCompany(n));
-		loadCompany(CompanyDataFile.getCdf()); // initial
+		this.prop = CompanyDataFile.getCompanyDataFileProperty();
+		this.prop.addListener((obs, o, n) -> loadCompany(n));
+		
+		loadCompany(CompanyDataFile.getCompanyDataFile()); // initial
 	}
 	
-	/* ---------------------------------------------------------- */
+	/**
+	 * Top Banner widget
+	 */
 	private void buildTopBanner()
 	{
 		this.companyLbl.getStyleClass().add("company-indicator");
-		this.reloadBtn.setOnAction(e -> loadCompany(CompanyDataFile.getCdf()));
+		this.reloadBtn.setOnAction(e -> loadCompany(CompanyDataFile.getCompanyDataFile()));
 		HBox banner = new HBox(10, new Label("Current Company:"), this.companyLbl, this.reloadBtn);
 		banner.setPadding(new Insets(4));
 		banner.setStyle("-fx-background-color:#f0f0f0; -fx-border-color:lightgray;");
 		setTop(banner);
 	}
 	
+	/**
+	 * Top Filters widget
+	 */
 	private void buildTopFilters()
 	{
 		/* selector */
@@ -88,12 +100,16 @@ public class DashboardPanelFX extends BorderPane
 		setTop(new VBox(getTop(), top)); // banner + filters
 	}
 	
-	@SuppressWarnings({ "unchecked", "deprecation" }) private void buildTable()
+	/**
+	 * Build Table widget
+	 */
+	@SuppressWarnings(
+	{ "unchecked", "deprecation" }) private void buildTable()
 	{
 		TableColumn<Row, Object> dateCol = mkCol("Date", r -> r.date);
 		TableColumn<Row, Object> descCol = mkCol("Description", r -> r.desc);
-		TableColumn<Row, Object> amtCol =  mkCol("Amount", r -> r.amount);
-		TableColumn<Row, Object> balCol =  mkCol("Balance", r -> r.balance);
+		TableColumn<Row, Object> amtCol = mkCol("Amount", r -> r.amount);
+		TableColumn<Row, Object> balCol = mkCol("Balance", r -> r.balance);
 		TableColumn<Row, Object> memoCol = mkCol("Memo", r -> r.memo);
 		
 		this.table.getColumns().addAll(dateCol, descCol, amtCol, balCol, memoCol);
@@ -101,6 +117,14 @@ public class DashboardPanelFX extends BorderPane
 		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 	}
 	
+	/**
+	 * TableColumn widget builder
+	 * 
+	 * @param <T>
+	 * @param n
+	 * @param f
+	 * @return the table column
+	 */
 	private static <T> TableColumn<Row, T> mkCol(String n, Function<Row, T> f)
 	{
 		TableColumn<Row, T> c = new TableColumn<>(n);
@@ -108,8 +132,10 @@ public class DashboardPanelFX extends BorderPane
 		return c;
 	}
 	
-	/* ---------------------------------------------------------- */
-	/** Called whenever the user opens/closes a company file. */
+	/** 
+	 * Called whenever the user opens/closes a company file.
+	 * @param cdf CompanyDataFile
+	 */
 	private void loadCompany(CompanyDataFile cdf)
 	{
 		
@@ -123,17 +149,12 @@ public class DashboardPanelFX extends BorderPane
 		}
 		
 		this.companyLbl.setText(cdf.getCompanyProfile().getCompanyName());
-		
-		ChartOfAccounts coa = cdf.getCoA();
-				
 		this.allTxns = cdf.getLedger().getTransactions();
 		refresh();
 	}
 	
-	BigDecimal amtF = null;
-	
 	/**
-	 * 
+	 * refresh
 	 */
 	private void refresh()
 	{
@@ -147,7 +168,7 @@ public class DashboardPanelFX extends BorderPane
 		
 		String dateF = this.dateFilter.getText().trim();
 		String memoF = this.memoFilter.getText().trim().toLowerCase();
-
+		
 		
 		if (!this.amountFilter.getText().isBlank())
 		{
@@ -163,18 +184,21 @@ public class DashboardPanelFX extends BorderPane
 		}
 		
 		Predicate<AccountingTransaction> p = t -> t.getAccountName().equals(acct) &&
-			(dateF.isEmpty() || t.getDate().contains(dateF)) &&
-			(memoF.isEmpty() || t.getMemo().toLowerCase().contains(memoF)) &&
-			(this.amtF == null || t.getNetAmountForAccount(acct).compareTo(this.amtF) == 0);
+			(dateF.isEmpty() ||
+				t.getDate().contains(dateF)) &&
+			(memoF.isEmpty() ||
+				t.getMemo().toLowerCase().contains(memoF)) &&
+			(this.amtF == null);
 		
-		List<AccountingTransaction> list = this.allTxns.stream().filter(p).collect(Collectors.toList());
+		List<AccountingTransaction> list =
+			this.allTxns.stream().filter(p).collect(Collectors.toList());
 		
 		this.rows.clear();
 		BigDecimal running = BigDecimal.ZERO;
 		
 		for (var t : list)
 		{
-			BigDecimal amt = t.getNetAmountForAccount(acct);
+			BigDecimal amt = t.getTotalAmount();
 			running = running.add(amt);
 			this.rows.add(new Row(t, amt, running));
 		}

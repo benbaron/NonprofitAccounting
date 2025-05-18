@@ -118,6 +118,15 @@ public class AccountingTransaction implements Serializable
 		return debitTotal;
 	}
 	
+	 /**
+	  * setTotalAmount
+	  * @param valueOf
+	  */
+	public void setTotalAmount(BigDecimal valueOf)
+	{
+		// TODO Auto-generated method stub
+	}
+	
 	/**
 	 * Is Balanced comparator
 	 * @return true/false
@@ -209,14 +218,6 @@ public class AccountingTransaction implements Serializable
 		return this.transactionId.toString();
 	}
 	
-	/**
-	 * @param account1
-	 * @return net amount
-	 */
-	public BigDecimal getNetAmountForAccount(String account1)
-	{
-		return this.account.getBalance();
-	}
 	
 	/**
 	 * @return
@@ -234,15 +235,6 @@ public class AccountingTransaction implements Serializable
 		return this.account.getName();
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
-	public BigDecimal getAccountBalance()
-	{
-		return this.account.getBalance();
-	}
-
 
 	/**
 	 * @param object
@@ -253,21 +245,22 @@ public class AccountingTransaction implements Serializable
 		
 	}
 
-	/**
-	 * @param valueOf
-	 */
-	public void setTotalAmount(BigDecimal valueOf)
-	{
-		// TODO Auto-generated method stub
-	}
 
 	/**
 	 * @param string
 	 */
 	public void setDate(String string)
 	{
-		date = string;
+		this.date = string;
 		
+	}
+
+	/**
+	 * @return
+	 */
+	public BigDecimal countAccountBalance()
+	{
+		return this.account.totalAccountBalance();
 	}
 
 

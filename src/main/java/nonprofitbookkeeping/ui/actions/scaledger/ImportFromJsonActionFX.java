@@ -36,6 +36,10 @@ public class ImportFromJsonActionFX implements EventHandler<ActionEvent>
 		this.owner = owner;
 	}
 	
+	/**
+	 * 
+	 * Override @see javafx.event.EventHandler#handle(javafx.event.Event)
+	 */
 	@Override public void handle(ActionEvent e)
 	{
 		FileChooser chooser = new FileChooser();
@@ -48,12 +52,16 @@ public class ImportFromJsonActionFX implements EventHandler<ActionEvent>
 		{
 			File dir = new File(lastDir);
 			if (dir.exists())
+			{
 				chooser.setInitialDirectory(dir);
+			}
 		}
 		
 		File file = chooser.showOpenDialog(this.owner);
 		if (file == null)
+		{
 			return; // cancelled
+		}
 			
 		try
 		{
@@ -102,7 +110,9 @@ public class ImportFromJsonActionFX implements EventHandler<ActionEvent>
 		// rows
 		Set<String> columns = new LinkedHashSet<>();
 		for (Map<String, Object> row : rows)
+		{
 			columns.addAll(row.keySet());
+		}
 		
 		// 3. Build DefaultTableModel with those columns
 		Vector<String> columnVector = new Vector<>(columns);
@@ -113,7 +123,9 @@ public class ImportFromJsonActionFX implements EventHandler<ActionEvent>
 		{
 			Vector<Object> vec = new Vector<>(columns.size());
 			for (String col : columns)
+			{
 				vec.add(row.get(col));
+			}
 			model.addRow(vec);
 		}
 		

@@ -13,9 +13,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import nonprofitbookkeeping.core.JacksonDataStore;
 import nonprofitbookkeeping.model.CompanyDataFile;
-import nonprofitbookkeeping.model.CurrentInputFile;
 import nonprofitbookkeeping.service.*;
 import nonprofitbookkeeping.ui.panels.*;
 import nonprofitbookkeeping.ui.actions.*;
@@ -29,13 +27,10 @@ import nonprofitbookkeeping.ui.actions.scaledger.*;
  * implementation opened new {@code JFrame}s.
  */
 public class NonprofitBookkeepingFX extends Application
-{
-	
+{	
 	private Stage primaryStage;
-	private BorderPane root;
+	private BorderPane root = new BorderPane();
 	private final DashboardPanelFX dashboard = new DashboardPanelFX();
-	// The company file and its object wrapper
-	private static CompanyDataFile companyDataFile;
 
 	/** Container for singletons we re-use across panels. */
 	private static final class ServiceContainer
@@ -49,7 +44,8 @@ public class NonprofitBookkeepingFX extends Application
 	
 
 	/**
-	 * main
+	 * Main 
+	 * 
 	 * @param args
 	 */
 	public static void main(String[] args)
@@ -88,12 +84,12 @@ public class NonprofitBookkeepingFX extends Application
 		
 		/* FILE */
 		Menu file = new Menu("File");
-		add(file, "Open Company File…",
-			e -> new OpenCompanyFileActionFX(this.primaryStage, JacksonDataStore.dataStore).handle(e));
-		add(file, "Close Company File…",
-			e -> new CloseCompanyFileAction());
-		add(file, "Save Company File…",
-			e -> new SaveCompanyFileAction(CurrentInputFile.currentInputFile, JacksonDataStore.dataStore, CompanyDataFile.getCdf()));
+		add(file, "Open Company File",
+			e -> new OpenCompanyFileActionFX(this.primaryStage).handle(e));
+		add(file, "Close Company File",
+			e -> new CloseCompanyFileAction(this.primaryStage));
+		add(file, "Save Company File",
+			e -> new SaveCompanyFileAction(this.primaryStage));
 		add(file, "Create or Edit Company",
 			e -> new CreateOrEditCompanyActionFX(this.primaryStage).handle(e));
 		add(file, "Import File", e -> new ImportFileActionFX(this.primaryStage).handle(e));
@@ -102,7 +98,7 @@ public class NonprofitBookkeepingFX extends Application
 		
 		/* RUN */
 		Menu run = new Menu("Run");
-		add(run, "Show Settings", e -> showPanel(new SettingsPanelFX(), "Settings"));
+		add(run, "Show Settings", e -> showPanel(new SettingsPanelFX(this.primaryStage), "Settings"));
 		add(run, "Documents & Attachments",
 			e -> showPanel(new DocumentsPanelFX(ServiceContainer.dss), "Documents"));
 		add(run, "Inventory & Depreciation",
@@ -112,12 +108,12 @@ public class NonprofitBookkeepingFX extends Application
 		add(run, "Reconcile",
 			e -> showPanel(new ReconcilePanelFX(new ReconciliationService()), "Reconciliation"));
 		add(run, "Edit Chart of Accounts",
-			e -> showPanel(new CoaEditorPanelFX(CompanyDataFile.getCdf().getCoA()), "Chart of Accounts"));
+			e -> showPanel(new CoaEditorPanelFX(CompanyDataFile.getCompanyDataFile().getChartOfAccounts()), "Chart of Accounts"));
 		
 		/* SCA Ledger submenu */
 		Menu sca = new Menu("SCA Ledger");
-		add(sca, "Input File…", e -> new InputFileActionFX(this.primaryStage).handle(e));
-		add(sca, "Output File…", e -> new OutputFileActionFX(this.primaryStage).handle(e));
+		add(sca, "Input File", e -> new InputFileActionFX(this.primaryStage).handle(e));
+		add(sca, "Output File", e -> new OutputFileActionFX(this.primaryStage).handle(e));
 		add(sca, "Load XLSM Table", e -> new LoadXlsmTableActionFX(this.primaryStage).handle(e));
 		add(sca, "Apply Formulas", e -> new ApplyFormulasActionFX(this.primaryStage).handle(e));
 		add(sca, "Save Modified Copy",
@@ -136,7 +132,7 @@ public class NonprofitBookkeepingFX extends Application
 		add(reports, "Show Accounts",
 			e -> showPanel(new AccountsPanelFX(new AccountService()), "Chart of Accounts"));
 		add(reports, "Show Account Activity",
-			e -> showPanel(new AccountsActivityPanelFX(CompanyDataFile.getCdf().getLedger()),
+			e -> showPanel(new AccountsActivityPanelFX(CompanyDataFile.getCompanyDataFile().getLedger()),
 				"Account Activity"));
 		add(reports, "Generate Income Statement",
 			e -> new GenerateIncomeStatementAction(ServiceContainer.reportService)
@@ -148,25 +144,25 @@ public class NonprofitBookkeepingFX extends Application
 		
 		/* PANELS */
 		Menu panels = new Menu("Panels");
-		add(panels, "Donors", e -> showPanel(new DonorsPanelFX(), "Donors"));
-		add(panels, "Donations", e -> showPanel(new DonationsPanelFX(), "Donations"));
-		add(panels, "Grants", e -> showPanel(new GrantsPanelFX(), "Grants"));
-		add(panels, "Sales & COG", e -> showPanel(new SalesAndCOGPanelFX(null), "Sales & COG"));
+		add(panels, "Donors", e -> showPanel(new DonorsPanelFX(this.primaryStage), "Donors"));
+		add(panels, "Donations", e -> showPanel(new DonationsPanelFX(this.primaryStage), "Donations"));
+		add(panels, "Grants", e -> showPanel(new GrantsPanelFX(this.primaryStage), "Grants"));
+		add(panels, "Sales & COG", e -> showPanel(new SalesAndCOGPanelFX(this.primaryStage), "Sales & COG"));
 		bar.getMenus().add(panels);
 		
 		/* HELP */
 		Menu help = new Menu("Help");
-		add(help, "Help", e -> showPanel(new HelpPanelFX(), "Help"));
+		add(help, "Help", e -> showPanel(new HelpPanelFX(this.primaryStage), "Help"));
 		bar.getMenus().add(help);
 		
 		return bar;
 	}
 	
 	/**
-	 * 
-	 * @param menu
-	 * @param label
-	 * @param handler
+	 * Add a menu item
+	 * @param menu The item
+	 * @param label its label
+	 * @param handler Its handler
 	 */
 	private static void add(Menu menu,
 							String label,
@@ -182,9 +178,10 @@ public class NonprofitBookkeepingFX extends Application
 	/* ───────────────────────────────────────────────────────────────────────── */
 	
 	/**
+	 * Show a panel
 	 * 
-	 * @param panel
-	 * @param title
+	 * @param panel the panel to show
+	 * @param title title on the panel
 	 */
 	private void showPanel(Node panel, String title)
 	{
@@ -215,7 +212,7 @@ public class NonprofitBookkeepingFX extends Application
 	}
 
 	/**
-	 * @return the root
+	 * @return the root pane
 	 */
 	public BorderPane getRoot()
 	{
@@ -223,7 +220,7 @@ public class NonprofitBookkeepingFX extends Application
 	}
 
 	/**
-	 * @param root the root to set
+	 * @param root the root pane to set
 	 */
 	public void setRoot(BorderPane root)
 	{
@@ -231,7 +228,7 @@ public class NonprofitBookkeepingFX extends Application
 	}
 
 	/**
-	 * @return the dashboard
+	 * @return the dashboard pane
 	 */
 	public DashboardPanelFX getDashboard()
 	{

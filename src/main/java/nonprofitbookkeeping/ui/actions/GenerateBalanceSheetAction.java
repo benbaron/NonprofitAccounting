@@ -11,6 +11,11 @@ import java.time.LocalDate;
 
 public class GenerateBalanceSheetAction extends AbstractAction
 {
+	/**
+	 * serialVersionUID : long
+	 */
+	private static final long serialVersionUID = 6928002424885396171L;
+
 	public GenerateBalanceSheetAction(ReportService service)
 	{
 		super("Generate Balance Sheet");

@@ -19,6 +19,7 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
  */
 public class CompanyDataFile implements Serializable
 {
+
 	/**
 	 * serialVersionUID : long
 	 */
@@ -32,6 +33,7 @@ public class CompanyDataFile implements Serializable
 	private CompanyProfileModel companyProfileModel = new CompanyProfileModel();
 	private Ledger ledger = new Ledger();
 	private ChartOfAccounts chartOfAccounts = new ChartOfAccounts();
+
 	/**  
 	 * Constructor CompanyDataFile
 	 */
@@ -43,15 +45,15 @@ public class CompanyDataFile implements Serializable
 
 	public CompanyDataFile()
 	{
-		companyProfileModel = new CompanyProfileModel();
-		ledger = new Ledger();
+		this.companyProfileModel = new CompanyProfileModel();
+		this.ledger = new Ledger();
 	}
 	
 	/**
 	 * getCompanyDataFile
 	 * @return
 	 */
-	public static CompanyDataFile getCdf()
+	public static CompanyDataFile getCompanyDataFile()
 	{
 		// return the CompanyDataFile from the wrapper
 		return companyObs.get();
@@ -59,7 +61,7 @@ public class CompanyDataFile implements Serializable
 	
 	public static void setCompanyDataFile(CompanyDataFile cdf)
 	{
-		CompanyDataFile.companyObs.set(cdf);
+		companyObs.set(cdf);
 	}
 
 	/**
@@ -83,10 +85,12 @@ public class CompanyDataFile implements Serializable
 	 */
 	public static void load(File currentFile1)
 	{
-		CompanyDataFile cdf;
+		currentFile = currentFile1;
+		
+		CompanyDataFile cdf = getCompanyDataFile();
 		try
 		{
-			cdf = CompanyDataFile.dataStore.load(CompanyDataFile.class, currentFile1);
+			cdf = dataStore.load(CompanyDataFile.class, currentFile1);
 			setCompanyDataFile(cdf);
 		}
 		catch (IOException | ActionCancelledException | NoFileCreatedException e)
@@ -97,14 +101,6 @@ public class CompanyDataFile implements Serializable
 
 
 	/**
-	 * @return the companyobs
-	 */
-	public static ReadOnlyObjectWrapper<CompanyDataFile> getCompanyobs()
-	{
-		return CompanyDataFile.companyObs;
-	}
-	
-	/**
 	 * For setting a listener/observer
 	 * 
 	 * @return the property
@@ -112,7 +108,7 @@ public class CompanyDataFile implements Serializable
 	public static ReadOnlyObjectProperty<CompanyDataFile> 
 		getCompanyDataFileProperty()
 	{
-		return CompanyDataFile.companyObs.getReadOnlyProperty();
+		return companyObs.getReadOnlyProperty();
 	}
 
 	/**
@@ -136,7 +132,7 @@ public class CompanyDataFile implements Serializable
 	 */
 	public Ledger getLedger()
 	{
-		return ledger;
+		return this.ledger;
 	}
 
 	/**
@@ -146,14 +142,62 @@ public class CompanyDataFile implements Serializable
 	{
 		this.ledger = ledger;
 	}
+	
+	/**
+	 * @return the currentFile
+	 */
+	public static File getCurrentFile()
+	{
+		return currentFile;
+	}
 
 	/**
-	 * @return
+	 * @param currentFile the currentFile to set
 	 */
-	public ChartOfAccounts getCoA()
+	public static void setCurrentFile(File currentFile)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		CompanyDataFile.currentFile = currentFile;
 	}
+
+	/**
+	 * @return the dataStore
+	 */
+	public static JacksonDataStore getDataStore()
+	{
+		return dataStore;
+	}
+
+	/**
+	 * @param dataStore the dataStore to set
+	 */
+	public static void setDataStore(JacksonDataStore dataStore)
+	{
+		CompanyDataFile.dataStore = dataStore;
+	}
+
+	/**
+	 * @return the chartOfAccounts
+	 */
+	public ChartOfAccounts getChartOfAccounts()
+	{
+		return this.chartOfAccounts;
+	}
+
+	/**
+	 * @param chartOfAccounts the chartOfAccounts to set
+	 */
+	public void setChartOfAccounts(ChartOfAccounts chartOfAccounts)
+	{
+		this.chartOfAccounts = chartOfAccounts;
+	}
+
+	/**
+	 * @return the companyProfileModel
+	 */
+	public CompanyProfileModel getCompanyProfileModel()
+	{
+		return this.companyProfileModel;
+	}
+
 
 }

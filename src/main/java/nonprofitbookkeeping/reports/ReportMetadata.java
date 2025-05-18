@@ -3,7 +3,7 @@
  * ReportMetadata.java
  * ReportMetadata
  */
-package nonprofitbookkeeping.ui.panels;
+package nonprofitbookkeeping.reports;
 
 /**
  * 

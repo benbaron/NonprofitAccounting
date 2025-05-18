@@ -34,13 +34,13 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 	{
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Import File");
-		File file = chooser.showOpenDialog(owner);
+		File file = chooser.showOpenDialog(this.owner);
 		if (file == null)
 			return; // user cancelled
 			
 		boolean success = FileImportService.importFile(file);
 		Alert alert = new Alert(success ? AlertType.INFORMATION : AlertType.ERROR);
-		alert.initOwner(owner);
+		alert.initOwner(this.owner);
 		alert.setHeaderText(null);
 		alert
 			.setContentText(success ? "File imported successfully." : "Failed to import the file.");

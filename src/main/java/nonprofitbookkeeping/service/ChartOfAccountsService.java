@@ -1,17 +1,14 @@
-/* ────────────────────────────────────────────────────────────── */
-/* ChartOfAccountsService.java – simple façade around the model */
-/* ────────────────────────────────────────────────────────────── */
 
 package nonprofitbookkeeping.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 import nonprofitbookkeeping.model.*;
 
 public class ChartOfAccountsService
-{
-	
+{	
 	private final ChartOfAccounts coa;
 	
 	public ChartOfAccountsService(ChartOfAccounts coa)
@@ -19,44 +16,83 @@ public class ChartOfAccountsService
 		this.coa = coa;
 	}
 	
-	/* ------------- simple CRUD wrappers ---------------------- */
+	/**
+	 * 
+	 * @return
+	 */
 	public List<Account> roots()
 	{
-		return coa.getRootAccounts();
+		return this.coa.getRootAccounts();
 	}
 	
+	/**
+	 * 
+	 * @param a
+	 * @return
+	 */
 	public List<Account> childrenOf(Account a)
 	{
-		return coa.getChildren(a);
+		return this.coa.getChildren(a);
 	}
 	
+	/**
+	 * 
+	 * @param det
+	 */
 	public void addRoot(Account det)
 	{
-		coa.addAccount(det);
+		this.coa.addAccount(det);
 	}
 	
+	/**
+	 * 
+	 * @param parent
+	 * @param det
+	 */
 	public void addChild(Account parent, Account det)
 	{
-		coa.addSubAccount(parent, det);
+		this.coa.addSubAccount(parent, det);
 	}
 	
-	public static void update(Account target, String name, String type)
-	{
-		target.setName(name);
-		target.setAccountType(type);
-	}
-	
+
+	/**
+	 * 
+	 * @param target
+	 */
 	public void delete(Account target)
 	{
-		coa.removeAccount(target);
+		this.coa.removeAccount(target);
 	}
 	
-	public Optional<Account> findByNumber(String num)
+
+	/**
+	 * 
+	 * @param tgt
+	 * @param name
+	 * @param type
+	 * @param openingBal
+	 */
+	public static void update(	Account tgt,
+						String name,
+						String type,
+						BigDecimal openingBal)
 	{
-//		return coa.getAccountNumberToAccountDetails().values()
-//			.stream()
-//			.filter(a -> a.getAccountNumber().equals(num))
-//			.findFirst();
+		tgt.setName(name);
+		tgt.setAccountType(type);
+		tgt.setOpeningBalance(openingBal);
+	}
+	
+	/**
+	 * 
+	 * @param num
+	 * @return
+	 */
+	public static Optional<Account> findByNumber(String num)
+	{
+// return coa.getAccountNumberToAccountDetails().values()
+// .stream()
+// .filter(a -> a.getAccountNumber().equals(num))
+// .findFirst();
 		return null;
 	}
 	

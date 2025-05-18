@@ -18,7 +18,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.exception.NoFileException;
 import nonprofitbookkeeping.model.BeanShell;
-import nonprofitbookkeeping.model.CurrentInputFile;
+import nonprofitbookkeeping.model.NonCompanyFile;
 import nonprofitbookkeeping.preferences.PreferencesManager;
 import nonprofitbookkeeping.ui.NonprofitBookkeepingFX;
 import nonprofitbookkeeping.ui.helpers.NpbkFileChooserFX;
@@ -26,7 +26,7 @@ import nonprofitbookkeeping.ui.helpers.NpbkFileChooserFX;
 /**
  * JavaFX replacement for the Swing {@code LoadXlsmTableAction}. Opens an .xlsm file, converts the
  * first sheet into a {@link TableView}, and shows that table in a new window.  The selected file is
- * stored in {@link NonprofitBookkeepingFX#currentInputFile} and beans are loaded through
+ * stored in {@link NonprofitBookkeepingFX#currentFile} and beans are loaded through
  * {@link SCALedgerDataLoader} just like the original code.
  */
 public class LoadXlsmTableActionFX implements EventHandler<ActionEvent>
@@ -61,12 +61,12 @@ public class LoadXlsmTableActionFX implements EventHandler<ActionEvent>
 		{
 			// Existing helper converts Excel sheet to Swing TableModel
 			javax.swing.table.DefaultTableModel model =
-				XlsmTableViewer.readXlsmToTableModel(file, 0);
+				XlsmTableViewerFX.readXlsmToTableModel(file, 0);
 			
 			TableView<Map<String, Object>> table = createFxTable(model);
 			
 			// Persist globals & prefs
-			CurrentInputFile.setCurrentInputFile(file);
+			NonCompanyFile.setCurrentFile(file);
 			PreferencesManager.setLastDirectory(file.getParent());
 			BeanShell.setBeans(SCALedgerDataLoader.loadData(new File("jxlsMapping.xml"), file));
 			

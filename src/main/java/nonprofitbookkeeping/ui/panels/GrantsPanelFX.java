@@ -9,6 +9,9 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
+import nonprofitbookkeeping.model.Grant;
+import nonprofitbookkeeping.service.GrantsService;
 
 /**
  * JavaFX port of {@code GrantsPanel}. Displays grant records in a table with a
@@ -21,7 +24,7 @@ public class GrantsPanelFX extends BorderPane
 	private final ObservableList<GrantRow> rows = FXCollections.observableArrayList();
 	private final TableView<GrantRow> table = new TableView<>();
 	
-	public GrantsPanelFX()
+	public GrantsPanelFX(Stage primaryStage)
 	{
 		this.grantsService = new GrantsService();
 		setPadding(new Insets(10));

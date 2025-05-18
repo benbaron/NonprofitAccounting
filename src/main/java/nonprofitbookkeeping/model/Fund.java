@@ -77,7 +77,7 @@ public class Fund
 		
 		for (Account account : this.accounts)
 		{
-			totalBalance = totalBalance.add(account.getBalance()); // Sum up the balance of each
+			totalBalance = totalBalance.add(account.totalAccountBalance()); // Sum up the balance of each
 																	// associated account
 		}
 		

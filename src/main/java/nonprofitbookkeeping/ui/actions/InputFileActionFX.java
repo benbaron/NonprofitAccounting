@@ -14,7 +14,7 @@ import javafx.event.EventHandler;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.model.BeanShell;
-import nonprofitbookkeeping.model.CurrentInputFile;
+import nonprofitbookkeeping.model.CompanyDataFile;
 import nonprofitbookkeeping.preferences.PreferencesManager;
 import nonprofitbookkeeping.ui.NonprofitBookkeepingFX;
 import nonprofitbookkeeping.ui.actions.scaledger.SCALedgerDataLoader;
@@ -22,7 +22,7 @@ import nonprofitbookkeeping.ui.actions.scaledger.SCALedgerDataLoader;
 /**
  * JavaFX replacement for the Swing {@code InputFileAction}. Opens a native file
  * chooser, remembers the last directory via {@link PreferencesManager}, stores
- * the selected file in {@link NonprofitBookkeepingFX#currentInputFile}, and
+ * the selected file in {@link NonprofitBookkeepingFX#currentFile}, and
  * feeds it to {@link SCALedgerDataLoader} to populate the global
  * {@link BeanShell#beans} map.
  */
@@ -63,7 +63,7 @@ public class InputFileActionFX implements EventHandler<ActionEvent>
 		}
 			
 		// remember + update singletons
-		CurrentInputFile.setCurrentInputFile(selected);
+		CompanyDataFile.setCurrentFile(selected);
 		PreferencesManager.setLastDirectory(selected.getParent());
 		
 		printCurrentWorkingDirectory();

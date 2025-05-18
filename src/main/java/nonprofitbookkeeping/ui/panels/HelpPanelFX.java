@@ -12,16 +12,17 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebView;
+import javafx.stage.Stage;
 
 /**
  * JavaFX version of {@code HelpPanel}. Attempts to load an embedded HTML help
  * page ("/help/index.html"). If unavailable, falls back to displaying a simple
- * Markdown‑like text explaining keyboard shortcuts and where to find docs.
+ * Markdown-like text explaining keyboard shortcuts and where to find docs.
  */
 public class HelpPanelFX extends BorderPane
 {
 	
-	public HelpPanelFX()
+	public HelpPanelFX(Stage primaryStage)
 	{
 		setPadding(new Insets(10));
 		setTop(new Label("Help & Documentation"));
@@ -30,10 +31,8 @@ public class HelpPanelFX extends BorderPane
 	
 	private ScrollPane loadHelpContent()
 	{
-		
 		try (InputStream in = getClass().getResourceAsStream("/help/index.html"))
 		{
-			
 			if (in != null)
 			{
 				String html = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))
