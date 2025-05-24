@@ -10,10 +10,10 @@ import java.io.File;
 import java.io.IOException;
 
 import javafx.stage.Stage;
-import nonprofitbookkeeping.core.JacksonDataStore;
+import nonprofitbookkeeping.core.JacksonDataStorer;
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
-import nonprofitbookkeeping.model.CompanyDataFile;
+import nonprofitbookkeeping.model.Company;
 
 /**
  * This saves the file to persistent memory without closing the company file
@@ -21,8 +21,8 @@ import nonprofitbookkeeping.model.CompanyDataFile;
 public class SaveCompanyFileAction
 {
 
-	private CompanyDataFile cdf;
-	private JacksonDataStore dataStore;
+	private Company cdf;
+	private JacksonDataStorer dataStorer;
 	private File currentInputFile;
 
 	/**
@@ -42,7 +42,7 @@ public class SaveCompanyFileAction
 	{
 		try
 		{
-			this.dataStore.save(this.cdf, this.currentInputFile);
+			this.dataStorer.saveData(this.cdf, this.currentInputFile);
 		}
 		catch (IOException | ActionCancelledException | NoFileCreatedException e1)
 		{

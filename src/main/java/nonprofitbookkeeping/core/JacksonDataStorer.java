@@ -3,7 +3,7 @@
  */
 package nonprofitbookkeeping.core;
 
-import nonprofitbookkeeping.api.DataStore;
+import nonprofitbookkeeping.api.DataStorer;
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
@@ -25,22 +25,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Jackson-based implementation of the DataStore interface.
+ * Jackson-based implementation of the DataStorer interface.
  * Uses Jackson's ObjectMapper to serialize and deserialize JSON,
  * including support for Java 8 date/time types.
  */
-public class JacksonDataStore implements DataStore
+public class JacksonDataStorer implements DataStorer
 {
-	
 	private ObjectMapper mapper;
-	public static JacksonDataStore dataStore = new JacksonDataStore();
+	public static JacksonDataStorer dataStorer = new JacksonDataStorer();
 	
 	/**
 	 * Constructs a new JacksonDataStore with default settings:
 	 * - Registers the JavaTimeModule for LocalDate/Instant support
 	 * - Enables pretty-printing of JSON output
 	 */
-	public JacksonDataStore()
+	public JacksonDataStorer()
 	{
 		this.mapper = new ObjectMapper()
 			.registerModule(new JavaTimeModule())
@@ -58,7 +57,7 @@ public class JacksonDataStore implements DataStore
 	 * @throws ActionCancelledException 
 	 * @throws NoFileCreatedException 
 	 */
-	@Override public <T> T load(Class<T> type, File file) throws IOException, ActionCancelledException, NoFileCreatedException
+	@Override public <T> T loadData(Class<T> type, File file) throws IOException, ActionCancelledException, NoFileCreatedException
 	{
 		ObjectReader r = this.mapper.reader();
 		
@@ -90,7 +89,7 @@ public class JacksonDataStore implements DataStore
 	 * @throws ActionCancelledException 
 	 * @throws NoFileCreatedException 
 	 */
-	@Override public void save(Object obj, File file) throws IOException, ActionCancelledException, NoFileCreatedException
+	@Override public void saveData(Object obj, File file) throws IOException, ActionCancelledException, NoFileCreatedException
 	{
 		
 		if (file == null)
@@ -122,19 +121,19 @@ public class JacksonDataStore implements DataStore
 	}
 
 	/**
-	 * @param dataStore the dataStore to set
+	 * @param dataStorer the dataStore to set
 	 */
-	public static void setDataStore(JacksonDataStore dataStoreIn)
+	public static void setDataStorer(JacksonDataStorer dataStorerIn)
 	{
-		JacksonDataStore.dataStore = dataStoreIn;
+		JacksonDataStorer.dataStorer = dataStorerIn;
 	}
 
 	/**
 	 * @return the dataStore
 	 */
-	public static JacksonDataStore getDataStore()
+	public static JacksonDataStorer getDataStorer()
 	{
-		return JacksonDataStore.dataStore;
+		return JacksonDataStorer.dataStorer;
 	}
 	
 	

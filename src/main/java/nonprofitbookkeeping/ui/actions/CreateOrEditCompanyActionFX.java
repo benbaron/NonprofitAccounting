@@ -1,7 +1,7 @@
 
 package nonprofitbookkeeping.ui.actions;
 
-import nonprofitbookkeeping.model.CompanyDataFile;
+import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.service.CompanyLoaderService;
 import nonprofitbookkeeping.service.PreferencesService;
 import nonprofitbookkeeping.ui.panels.CreateCompanyPanelFX;
@@ -37,7 +37,7 @@ public class CreateOrEditCompanyActionFX implements EventHandler<Event>
 	{
 
 	    // 1. Existing profile if you’re in “edit” mode
-	    CompanyDataFile existingProfile = CompanyDataFile.getCompanyDataFile();
+	    Company existingProfile = Company.getCompany();
 
 	    // 2. Dialog-style stage
 	    Stage dialog = new Stage();

@@ -13,7 +13,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import nonprofitbookkeeping.model.CompanyDataFile;
+import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.service.*;
 import nonprofitbookkeeping.ui.panels.*;
 import nonprofitbookkeeping.ui.actions.*;
@@ -108,7 +108,7 @@ public class NonprofitBookkeepingFX extends Application
 		add(run, "Reconcile",
 			e -> showPanel(new ReconcilePanelFX(new ReconciliationService()), "Reconciliation"));
 		add(run, "Edit Chart of Accounts",
-			e -> showPanel(new CoaEditorPanelFX(CompanyDataFile.getCompanyDataFile().getChartOfAccounts()), "Chart of Accounts"));
+			e -> showPanel(new CoaEditorPanelFX(Company.getCompany().getChartOfAccounts()), "Chart of Accounts"));
 		
 		/* SCA Ledger submenu */
 		Menu sca = new Menu("SCA Ledger");
@@ -132,7 +132,7 @@ public class NonprofitBookkeepingFX extends Application
 		add(reports, "Show Accounts",
 			e -> showPanel(new AccountsPanelFX(new AccountService()), "Chart of Accounts"));
 		add(reports, "Show Account Activity",
-			e -> showPanel(new AccountsActivityPanelFX(CompanyDataFile.getCompanyDataFile().getLedger()),
+			e -> showPanel(new AccountsActivityPanelFX(Company.getCompany().getLedger()),
 				"Account Activity"));
 		add(reports, "Generate Income Statement",
 			e -> new GenerateIncomeStatementAction(ServiceContainer.reportService)

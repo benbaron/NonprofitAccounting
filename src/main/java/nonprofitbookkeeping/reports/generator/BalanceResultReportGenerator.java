@@ -9,7 +9,7 @@ import java.util.Map;
 import nonprofitbookkeeping.service.AccountService;
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
-import nonprofitbookkeeping.model.CompanyDataFile;
+import nonprofitbookkeeping.model.Company;
 
 public class BalanceResultReportGenerator extends AbstractReportGenerator
 {
@@ -35,8 +35,8 @@ public class BalanceResultReportGenerator extends AbstractReportGenerator
 																// "2025-04-15")
 		
 		// Fetch real company details from the Company model/service
-		CompanyDataFile company = getCompanyDetails(); // You need to implement this method
-		parameters.put("company", CompanyDataFile.getCompanyDataFile().getCompanyProfile().getCompanyName()); // Assuming Company class has a getName()
+		Company company = getCompanyDetails(); // You need to implement this method
+		parameters.put("company", Company.getCompany().getCompanyProfile().getCompanyName()); // Assuming Company class has a getName()
 														// method
 		parameters.put("companytext", company.getCompanyProfile().toString()); // Assuming Company class has a
 																// getDetails() method
@@ -62,7 +62,7 @@ public class BalanceResultReportGenerator extends AbstractReportGenerator
 	}
 	
 	// This is just an example method for fetching company details
-	private static CompanyDataFile getCompanyDetails()
+	private static Company getCompanyDetails()
 	{
 		// Assuming a CompanyService or similar exists to fetch company details
 		// You can replace this with real logic to fetch company data, maybe from a

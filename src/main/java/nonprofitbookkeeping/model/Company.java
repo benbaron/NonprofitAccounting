@@ -1,7 +1,7 @@
 
 package nonprofitbookkeeping.model;
 
-import nonprofitbookkeeping.core.JacksonDataStore;
+import nonprofitbookkeeping.core.JacksonDataStorer;
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
 
@@ -14,36 +14,37 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 
 
 /**
- * Company Data File. 
- * This is a wrapper around the Ledger type.
+ * Company
  */
-public class CompanyDataFile implements Serializable
+public class Company implements Serializable
 {
-
 	/**
 	 * serialVersionUID : long
 	 */
 	private static final long serialVersionUID = 6728014646115467637L;
-
-	private static final ReadOnlyObjectWrapper<CompanyDataFile> companyObs =
+	private static final ReadOnlyObjectWrapper<Company> companyObs =
 		new ReadOnlyObjectWrapper<>();
 	private static File currentFile = null;
-	private static JacksonDataStore dataStore = new JacksonDataStore();
+	private static JacksonDataStorer dataStorer = new JacksonDataStorer();
 
 	private CompanyProfileModel companyProfileModel = new CompanyProfileModel();
 	private Ledger ledger = new Ledger();
 	private ChartOfAccounts chartOfAccounts = new ChartOfAccounts();
 
 	/**  
-	 * Constructor CompanyDataFile
+	 * Constructor Company
 	 */
-	public CompanyDataFile(CompanyProfileModel companyProfileModel, Ledger ledger )
+	public Company(CompanyProfileModel companyProfileModel, Ledger ledger)
 	{
 		this.companyProfileModel = companyProfileModel;
 		this.ledger = ledger;
 	}
 
-	public CompanyDataFile()
+	/**
+	 * 
+	 * Constructor Company
+	 */
+	public Company()
 	{
 		this.companyProfileModel = new CompanyProfileModel();
 		this.ledger = new Ledger();
@@ -53,13 +54,13 @@ public class CompanyDataFile implements Serializable
 	 * getCompanyDataFile
 	 * @return
 	 */
-	public static CompanyDataFile getCompanyDataFile()
+	public static Company getCompany()
 	{
-		// return the CompanyDataFile from the wrapper
+		// return the Company from the wrapper
 		return companyObs.get();
 	}
 	
-	public static void setCompanyDataFile(CompanyDataFile cdf)
+	public static void setCompany(Company cdf)
 	{
 		companyObs.set(cdf);
 	}
@@ -71,7 +72,7 @@ public class CompanyDataFile implements Serializable
 	{
 		try
 		{
-			dataStore.save(companyObs, currentFile);
+			dataStorer.saveData(companyObs, currentFile);
 		}
 		catch (IOException | ActionCancelledException | NoFileCreatedException e)
 		{
@@ -87,11 +88,11 @@ public class CompanyDataFile implements Serializable
 	{
 		currentFile = currentFile1;
 		
-		CompanyDataFile cdf = getCompanyDataFile();
+		Company company = getCompany();
 		try
 		{
-			cdf = dataStore.load(CompanyDataFile.class, currentFile1);
-			setCompanyDataFile(cdf);
+			company = dataStorer.loadData(Company.class, currentFile1);
+			setCompany(company);
 		}
 		catch (IOException | ActionCancelledException | NoFileCreatedException e)
 		{
@@ -105,8 +106,8 @@ public class CompanyDataFile implements Serializable
 	 * 
 	 * @return the property
 	 */
-	public static ReadOnlyObjectProperty<CompanyDataFile> 
-		getCompanyDataFileProperty()
+	public static ReadOnlyObjectProperty<Company> 
+		getCompanyProperty()
 	{
 		return companyObs.getReadOnlyProperty();
 	}
@@ -156,23 +157,7 @@ public class CompanyDataFile implements Serializable
 	 */
 	public static void setCurrentFile(File currentFile)
 	{
-		CompanyDataFile.currentFile = currentFile;
-	}
-
-	/**
-	 * @return the dataStore
-	 */
-	public static JacksonDataStore getDataStore()
-	{
-		return dataStore;
-	}
-
-	/**
-	 * @param dataStore the dataStore to set
-	 */
-	public static void setDataStore(JacksonDataStore dataStore)
-	{
-		CompanyDataFile.dataStore = dataStore;
+		Company.currentFile = currentFile;
 	}
 
 	/**

@@ -8,8 +8,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.exception.NoFileException;
-import nonprofitbookkeeping.model.CompanyDataFile;
-import nonprofitbookkeeping.model.NonCompanyFile;
+import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.ui.helpers.NpbkFileChooserFX;
 
 public class OpenCompanyFileActionFX implements EventHandler<ActionEvent>
@@ -29,7 +28,7 @@ public class OpenCompanyFileActionFX implements EventHandler<ActionEvent>
 	@Override public void handle(ActionEvent e)
 	{
 		
-		File file = CompanyDataFile.getCurrentFile();
+		File file = Company.getCurrentFile();
 		
 		try
 		{
@@ -40,11 +39,11 @@ public class OpenCompanyFileActionFX implements EventHandler<ActionEvent>
 		}
 		catch (NoFileException e1)
 		{
-			
+			e1.printStackTrace();
 		}
 		
 		// Load file from the data store
-		CompanyDataFile.load(file);
+		Company.load(file);
 		showInfo("Loaded " + file.getAbsolutePath());
 		
 	}

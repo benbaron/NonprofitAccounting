@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import nonprofitbookkeeping.model.Ledger;
 import nonprofitbookkeeping.exception.NoFileException;
-import nonprofitbookkeeping.model.CompanyDataFile;
+import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CompanyProfileModel;
 
 import java.io.File;
@@ -46,12 +46,12 @@ public class CompanyLoaderService
 	 * @return
 	 * @throws NoFileException 
 	 */
-	public static CompanyDataFile loadCompanyProfile(File file) throws NoFileException
+	public static Company loadCompanyProfile(File file) throws NoFileException
 	{
 		
 		try
 		{
-			CompanyDataFile cdf = mapper.readValue(file, CompanyDataFile.class);
+			Company cdf = mapper.readValue(file, Company.class);
 			return cdf;
 		}
 		catch (IOException e)
@@ -70,7 +70,7 @@ public class CompanyLoaderService
 	 */
 	public static boolean saveCompanyProfile(File file, CompanyProfileModel profile)
 	{
-		CompanyDataFile.getCompanyDataFile().setCompanyProfileModel(profile);
+		Company.getCompany().setCompanyProfileModel(profile);
 		return true;
 	}
 	

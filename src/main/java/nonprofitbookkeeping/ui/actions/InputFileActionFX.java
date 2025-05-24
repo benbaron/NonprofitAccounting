@@ -14,7 +14,7 @@ import javafx.event.EventHandler;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.model.BeanShell;
-import nonprofitbookkeeping.model.CompanyDataFile;
+import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.preferences.PreferencesManager;
 import nonprofitbookkeeping.ui.NonprofitBookkeepingFX;
 import nonprofitbookkeeping.ui.actions.scaledger.SCALedgerDataLoader;
@@ -63,7 +63,7 @@ public class InputFileActionFX implements EventHandler<ActionEvent>
 		}
 			
 		// remember + update singletons
-		CompanyDataFile.setCurrentFile(selected);
+		Company.setCurrentFile(selected);
 		PreferencesManager.setLastDirectory(selected.getParent());
 		
 		printCurrentWorkingDirectory();

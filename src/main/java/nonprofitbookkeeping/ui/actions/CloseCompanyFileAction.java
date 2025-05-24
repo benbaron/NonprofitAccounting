@@ -8,8 +8,8 @@ package nonprofitbookkeeping.ui.actions;
 import java.awt.event.ActionEvent;
 
 import javafx.stage.Stage;
-import nonprofitbookkeeping.core.JacksonDataStore;
-import nonprofitbookkeeping.model.CompanyDataFile;
+import nonprofitbookkeeping.core.JacksonDataStorer;
+import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.NonCompanyFile;
 
 /**
@@ -33,15 +33,15 @@ public class CloseCompanyFileAction
 	 */
 	public static void actionPerformed(ActionEvent e)
 	{
-		CompanyDataFile.store();
+		Company.store();
 		
 		// Indicate that the company file is now closed
 		// This is not the best way to do this since it
 		// strongly couples the method to the data model.
 		
-		CompanyDataFile.setCompanyDataFile(null);
-		CompanyDataFile.setCurrentFile(null);
-		JacksonDataStore.setDataStore(null);
+		Company.setCompany(null);
+		Company.setCurrentFile(null);
+		JacksonDataStorer.setDataStorer(null);
 	}
 	
 }

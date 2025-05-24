@@ -11,7 +11,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.exception.NoFileException;
-import nonprofitbookkeeping.model.CompanyDataFile;
+import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.service.CompanyLoaderService;
 import nonprofitbookkeeping.service.PreferencesService;
 
@@ -113,7 +113,7 @@ public class CompanySelectionPanelFX extends BorderPane
 		
 		try
 		{
-			CompanyDataFile cdf = CompanyLoaderService.loadCompanyProfile(f);
+			Company cdf = CompanyLoaderService.loadCompanyProfile(f);
 			this.previewArea.setText(cdf == null ? "Failed to load company." : cdf.toString());
 		}
 		catch (NoFileException ex)

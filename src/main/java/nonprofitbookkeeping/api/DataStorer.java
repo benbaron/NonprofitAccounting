@@ -15,7 +15,7 @@ import nonprofitbookkeeping.exception.NoFileCreatedException;
  * as well as listing files in a directory with a given extension.
  * </p>
  */
-public interface DataStore {
+public interface DataStorer {
 
     /**
      * Loads an instance of the given type from the specified file.
@@ -28,7 +28,7 @@ public interface DataStore {
      * @throws ActionCancelledException if file chooser is cancelled
      * @throws NoFileCreatedException 
      */
-    <T> T load(Class<T> type, File file) throws IOException, ActionCancelledException, NoFileCreatedException;
+    <T> T loadData(Class<T> type, File file) throws IOException, ActionCancelledException, NoFileCreatedException;
 
     /**
      * Saves the given object to the specified file in JSON format.
@@ -39,7 +39,7 @@ public interface DataStore {
      * @throws ActionCancelledException if file chooser is cancelled
      * @throws NoFileCreatedException 
      */
-    void save(Object obj, File file) throws IOException, ActionCancelledException, NoFileCreatedException;
+    void saveData(Object obj, File file) throws IOException, ActionCancelledException, NoFileCreatedException;
 
     /**
      * Lists all files in the given directory (non-recursively) whose names end

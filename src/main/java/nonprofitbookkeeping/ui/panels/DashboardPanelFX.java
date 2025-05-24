@@ -33,7 +33,7 @@ public class DashboardPanelFX extends BorderPane
 	private final ObservableList<Row> rows = FXCollections.observableArrayList();
 	private List<AccountingTransaction> allTxns = List.of(); // empty until a file is open
 	private BigDecimal amtF = null;
-	private ReadOnlyObjectProperty<CompanyDataFile> prop;
+	private ReadOnlyObjectProperty<Company> prop;
 
 	
 	/**
@@ -55,10 +55,10 @@ public class DashboardPanelFX extends BorderPane
 		});
 		
 		// If a company is loaded later, refresh() will populate everything:
-		this.prop = CompanyDataFile.getCompanyDataFileProperty();
+		this.prop = Company.getCompanyProperty();
 		this.prop.addListener((obs, o, n) -> loadCompany(n));
 		
-		loadCompany(CompanyDataFile.getCompanyDataFile()); // initial
+		loadCompany(Company.getCompany()); // initial
 	}
 	
 	/**
@@ -67,7 +67,7 @@ public class DashboardPanelFX extends BorderPane
 	private void buildTopBanner()
 	{
 		this.companyLbl.getStyleClass().add("company-indicator");
-		this.reloadBtn.setOnAction(e -> loadCompany(CompanyDataFile.getCompanyDataFile()));
+		this.reloadBtn.setOnAction(e -> loadCompany(Company.getCompany()));
 		HBox banner = new HBox(10, new Label("Current Company:"), this.companyLbl, this.reloadBtn);
 		banner.setPadding(new Insets(4));
 		banner.setStyle("-fx-background-color:#f0f0f0; -fx-border-color:lightgray;");
@@ -134,9 +134,9 @@ public class DashboardPanelFX extends BorderPane
 	
 	/** 
 	 * Called whenever the user opens/closes a company file.
-	 * @param cdf CompanyDataFile
+	 * @param cdf Company
 	 */
-	private void loadCompany(CompanyDataFile cdf)
+	private void loadCompany(Company cdf)
 	{
 		
 		if (cdf == null)

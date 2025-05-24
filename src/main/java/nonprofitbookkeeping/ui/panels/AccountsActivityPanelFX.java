@@ -14,7 +14,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import nonprofitbookkeeping.model.AccountingTransaction;
-import nonprofitbookkeeping.model.CompanyDataFile;
+import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.Ledger;
 
 /**
@@ -70,7 +70,7 @@ public class AccountsActivityPanelFX extends BorderPane
 		box.setPadding(new Insets(5));
 		box.setStyle(
 			"-fx-border-color: lightgray; -fx-border-radius: 4; -fx-border-insets: 4; -fx-border-style: segments(4)");
-		this.accountSelector.getItems().addAll(CompanyDataFile.getCompanyDataFile().getChartOfAccounts().getNames());
+		this.accountSelector.getItems().addAll(Company.getCompany().getChartOfAccounts().getNames());
 		this.accountSelector.getSelectionModel().selectFirst();
 		this.accountSelector.setOnAction(e -> applyFilters());
 		box.getChildren().addAll(new Label("Account:"), this.accountSelector);

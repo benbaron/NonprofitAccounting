@@ -9,7 +9,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import nonprofitbookkeeping.api.CompanyCreatedCallback;
-import nonprofitbookkeeping.model.CompanyDataFile;
+import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CompanyProfileModel;
 
 /**
@@ -56,7 +56,7 @@ public class CreateCompanyPanelFX extends BorderPane
 	 * @param existing
 	 * @param cb
 	 */
-	public CreateCompanyPanelFX(CompanyDataFile existing, CompanyCreatedCallback cb)
+	public CreateCompanyPanelFX(Company existing, CompanyCreatedCallback cb)
 	{
 		this.callback = cb;
 		setPadding(new Insets(10));
@@ -69,7 +69,7 @@ public class CreateCompanyPanelFX extends BorderPane
 	}
 	
 	/* --------------------------------------------------------------------- */
-	private void buildSteps(CompanyDataFile ex)
+	private void buildSteps(Company ex)
 	{
 		
 		/* Prefill if editing */
