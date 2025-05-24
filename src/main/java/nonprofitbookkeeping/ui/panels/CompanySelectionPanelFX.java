@@ -2,6 +2,8 @@
 package nonprofitbookkeeping.ui.panels;
 
 import java.io.File;
+import java.io.IOException;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -10,10 +12,12 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import nonprofitbookkeeping.exception.NoFileException;
+import nonprofitbookkeeping.exception.ActionCancelledException;
+import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.service.CompanyLoaderService;
 import nonprofitbookkeeping.service.PreferencesService;
+import nonprofitbookkeeping.ui.helpers.AlertBox;
 
 /**
  * JavaFX version of {@code CompanySelectionPanel}. Lets the user pick an .npbk
@@ -110,16 +114,16 @@ public class CompanySelectionPanelFX extends BorderPane
 			this.previewArea.clear();
 			return;
 		}
-		
+
 		try
 		{
-			Company cdf = CompanyLoaderService.loadCompanyProfile(f);
-			this.previewArea.setText(cdf == null ? "Failed to load company." : cdf.toString());
+			Company.getCompany().loadFromPersistent(f);
 		}
-		catch (NoFileException ex)
+		catch (IOException | ActionCancelledException | NoFileCreatedException e)
 		{
-			this.previewArea.setText("Failed to load company: " + ex.getMessage());
+			AlertBox.showError(null, "File Load Failed");
 		}
+		Company.getCompany().open();
 		
 	}
 	

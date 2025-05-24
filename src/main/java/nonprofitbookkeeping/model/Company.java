@@ -22,96 +22,103 @@ public class Company implements Serializable
 	 * serialVersionUID : long
 	 */
 	private static final long serialVersionUID = 6728014646115467637L;
-	private static final ReadOnlyObjectWrapper<Company> companyObs =
-		new ReadOnlyObjectWrapper<>();
-	private static File currentFile = null;
-	private static JacksonDataStorer dataStorer = new JacksonDataStorer();
-
+	private ReadOnlyObjectWrapper<Company> companyObservable =
+		new ReadOnlyObjectWrapper<Company>(selfInstance);
+	private File currentFile = null;
+	private JacksonDataStorer dataStorer = new JacksonDataStorer();
+	
 	private CompanyProfileModel companyProfileModel = new CompanyProfileModel();
 	private Ledger ledger = new Ledger();
 	private ChartOfAccounts chartOfAccounts = new ChartOfAccounts();
-
-	/**  
-	 * Constructor Company
-	 */
-	public Company(CompanyProfileModel companyProfileModel, Ledger ledger)
-	{
-		this.companyProfileModel = companyProfileModel;
-		this.ledger = ledger;
-	}
-
+	private boolean companyIsOpen = false;
+	private static Company selfInstance = null;
+	
+	
 	/**
 	 * 
 	 * Constructor Company
 	 */
-	public Company()
+	private Company()
 	{
+		this.companyObservable =
+			new ReadOnlyObjectWrapper<Company>(selfInstance);
+		this.currentFile = null;
+		this.dataStorer = new JacksonDataStorer();
+		
 		this.companyProfileModel = new CompanyProfileModel();
 		this.ledger = new Ledger();
+		this.chartOfAccounts = new ChartOfAccounts();
 	}
 	
 	/**
-	 * getCompanyDataFile
+	 * getCompany
 	 * @return
 	 */
 	public static Company getCompany()
 	{
+		
+		if (selfInstance == null)
+		{
+			selfInstance = new Company();
+		}
+		
 		// return the Company from the wrapper
-		return companyObs.get();
+		return selfInstance.companyObservable.get();
 	}
 	
-	public static void setCompany(Company cdf)
+	public static void setCompany(Company company)
 	{
-		companyObs.set(cdf);
+		// set the Company to the wrapper
+		selfInstance.companyObservable.set(company);
 	}
-
+	
+	
 	/**
-	 * Store back the data to the currentInputFile
+	 * Store back the data to persistent
+	 * @throws NoFileCreatedException 
+	 * @throws ActionCancelledException 
+	 * @throws IOException 
 	 */
-	public static void store()
+	public void persist() throws IOException, ActionCancelledException, NoFileCreatedException
 	{
-		try
-		{
-			dataStorer.saveData(companyObs, currentFile);
-		}
-		catch (IOException | ActionCancelledException | NoFileCreatedException e)
-		{
-			e.printStackTrace();
-		}
+		
+		this.dataStorer.saveData(this.companyObservable,
+			this.currentFile);
+		
+		
 	}
 	
 	/**
-	 * @param currentFile1 The file to load into the model from the 
-	 *                     data store
+	 * @param currentFile1 The file to load into the 
+	 * model from the data store
+	 * @throws NoFileCreatedException 
+	 * @throws ActionCancelledException 
+	 * @throws IOException 
 	 */
-	public static void load(File currentFile1)
+	public void loadFromPersistent(File currentFile1)	throws IOException, ActionCancelledException,
+														NoFileCreatedException
 	{
-		currentFile = currentFile1;
+		this.currentFile = currentFile1;
 		
 		Company company = getCompany();
-		try
-		{
-			company = dataStorer.loadData(Company.class, currentFile1);
-			setCompany(company);
-		}
-		catch (IOException | ActionCancelledException | NoFileCreatedException e)
-		{
-			e.printStackTrace();
-		}
+		
+		company = this.dataStorer.loadData(Company.class, currentFile1);
+		setCompany(company);
+		
 	}
-
-
+	
 	/**
 	 * For setting a listener/observer
 	 * 
 	 * @return the property
 	 */
-	public static ReadOnlyObjectProperty<Company> 
-		getCompanyProperty()
+	public
+			ReadOnlyObjectProperty<Company>
+			getCompanyObserver()
 	{
-		return companyObs.getReadOnlyProperty();
+		return this.companyObservable.getReadOnlyProperty();
 	}
-
+	
 	/**
 	 * @return the companyProfileModel
 	 */
@@ -119,7 +126,7 @@ public class Company implements Serializable
 	{
 		return this.companyProfileModel;
 	}
-
+	
 	/**
 	 * @param companyProfileModel the companyProfileModel to set
 	 */
@@ -135,7 +142,7 @@ public class Company implements Serializable
 	{
 		return this.ledger;
 	}
-
+	
 	/**
 	 * @param ledger the ledger to set
 	 */
@@ -147,19 +154,19 @@ public class Company implements Serializable
 	/**
 	 * @return the currentFile
 	 */
-	public static File getCurrentFile()
+	public File getCurrentFile()
 	{
-		return currentFile;
+		return this.currentFile;
 	}
-
+	
 	/**
 	 * @param currentFile the currentFile to set
 	 */
-	public static void setCurrentFile(File currentFile)
+	public void setCurrentFile(File currentFile)
 	{
-		Company.currentFile = currentFile;
+		this.currentFile = currentFile;
 	}
-
+	
 	/**
 	 * @return the chartOfAccounts
 	 */
@@ -167,22 +174,30 @@ public class Company implements Serializable
 	{
 		return this.chartOfAccounts;
 	}
-
+	
 	/**
-	 * @param chartOfAccounts the chartOfAccounts to set
+	 * 
 	 */
-	public void setChartOfAccounts(ChartOfAccounts chartOfAccounts)
+	public void close()
 	{
-		this.chartOfAccounts = chartOfAccounts;
+		this.companyIsOpen = false;
 	}
-
+	
 	/**
-	 * @return the companyProfileModel
+	 * @return Open(T/F)
 	 */
-	public CompanyProfileModel getCompanyProfileModel()
+	public boolean isOpen()
 	{
-		return this.companyProfileModel;
+		return this.companyIsOpen;
 	}
-
-
+	
+	/**
+	 * Mark company as open
+	 */
+	public void open()
+	{
+		this.companyIsOpen = true;
+	}
+	
+	
 }

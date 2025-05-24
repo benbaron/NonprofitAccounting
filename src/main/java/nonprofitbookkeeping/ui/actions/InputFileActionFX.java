@@ -62,8 +62,6 @@ public class InputFileActionFX implements EventHandler<ActionEvent>
 			return; // user cancelled
 		}
 			
-		// remember + update singletons
-		Company.setCurrentFile(selected);
 		PreferencesManager.setLastDirectory(selected.getParent());
 		
 		printCurrentWorkingDirectory();

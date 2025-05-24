@@ -5,12 +5,9 @@
  */
 package nonprofitbookkeeping.ui.actions;
 
-import java.awt.event.ActionEvent;
-import java.io.File;
 import java.io.IOException;
 
 import javafx.stage.Stage;
-import nonprofitbookkeeping.core.JacksonDataStorer;
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.model.Company;
@@ -21,10 +18,6 @@ import nonprofitbookkeeping.model.Company;
 public class SaveCompanyFileAction
 {
 
-	private Company cdf;
-	private JacksonDataStorer dataStorer;
-	private File currentInputFile;
-
 	/**
 	 * 
 	 * Constructor SaveCompanyFileAction
@@ -32,23 +25,17 @@ public class SaveCompanyFileAction
 	 */
 	public SaveCompanyFileAction(Stage primaryStage)
 	{
-
-	}
-
-	/**
-	 * @param e
-	 */
-	public void actionPerformed(ActionEvent e)
-	{
+		// Store thyself to the file system
 		try
 		{
-			this.dataStorer.saveData(this.cdf, this.currentInputFile);
+			Company.getCompany().persist();
 		}
-		catch (IOException | ActionCancelledException | NoFileCreatedException e1)
+		catch (IOException | ActionCancelledException | NoFileCreatedException e)
 		{
-			e1.printStackTrace();
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
 	}
+
 	
 }

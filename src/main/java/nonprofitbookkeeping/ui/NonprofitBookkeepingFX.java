@@ -41,7 +41,8 @@ public class NonprofitBookkeepingFX extends Application
 		private static final FundAccountingService fas = new FundAccountingService();
 		
 	}
-	
+	// Get and hold the company singleton
+	Company c = Company.getCompany();
 
 	/**
 	 * Main 
@@ -85,13 +86,14 @@ public class NonprofitBookkeepingFX extends Application
 		/* FILE */
 		Menu file = new Menu("File");
 		add(file, "Open Company File",
-			e -> new OpenCompanyFileActionFX(this.primaryStage).handle(e));
+			e -> new OpenCompanyFileActionFX(this.primaryStage));
 		add(file, "Close Company File",
 			e -> new CloseCompanyFileAction(this.primaryStage));
 		add(file, "Save Company File",
 			e -> new SaveCompanyFileAction(this.primaryStage));
 		add(file, "Create or Edit Company",
-			e -> new CreateOrEditCompanyActionFX(this.primaryStage).handle(e));
+			e -> new CreateOrEditCompanyActionFX(this.primaryStage));
+		
 		add(file, "Import File", e -> new ImportFileActionFX(this.primaryStage).handle(e));
 		add(file, "Export File", e -> new ExportFileActionFX(this.primaryStage).handle(e));
 		bar.getMenus().add(file);
@@ -108,7 +110,7 @@ public class NonprofitBookkeepingFX extends Application
 		add(run, "Reconcile",
 			e -> showPanel(new ReconcilePanelFX(new ReconciliationService()), "Reconciliation"));
 		add(run, "Edit Chart of Accounts",
-			e -> showPanel(new CoaEditorPanelFX(Company.getCompany().getChartOfAccounts()), "Chart of Accounts"));
+			e -> showPanel(new CoaEditorPanelFX(Company.getCompany().getCompany().getChartOfAccounts()), "Chart of Accounts"));
 		
 		/* SCA Ledger submenu */
 		Menu sca = new Menu("SCA Ledger");
@@ -125,14 +127,13 @@ public class NonprofitBookkeepingFX extends Application
 		
 		/* REPORTS */
 		Menu reports = new Menu("Reports");
-		add(reports, "Generate Reports", e -> {
-			/* implement */});
+		add(reports, "Generate Reports", e -> {/* implement */});
 		add(reports, "Show Reports", e -> showPanel(new ReportsPanelFX(), "Reports"));
 		add(reports, "Show Journal", e -> showPanel(new JournalPanelFX(), "Journal"));
 		add(reports, "Show Accounts",
 			e -> showPanel(new AccountsPanelFX(new AccountService()), "Chart of Accounts"));
 		add(reports, "Show Account Activity",
-			e -> showPanel(new AccountsActivityPanelFX(Company.getCompany().getLedger()),
+			e -> showPanel(new AccountsActivityPanelFX(Company.getCompany().getCompany().getLedger()),
 				"Account Activity"));
 		add(reports, "Generate Income Statement",
 			e -> new GenerateIncomeStatementAction(ServiceContainer.reportService)

@@ -5,12 +5,12 @@
  */
 package nonprofitbookkeeping.ui.actions;
 
-import java.awt.event.ActionEvent;
+import java.io.IOException;
 
 import javafx.stage.Stage;
-import nonprofitbookkeeping.core.JacksonDataStorer;
+import nonprofitbookkeeping.exception.ActionCancelledException;
+import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.model.Company;
-import nonprofitbookkeeping.model.NonCompanyFile;
 
 /**
  * 
@@ -24,24 +24,18 @@ public class CloseCompanyFileAction
 	 */
 	public CloseCompanyFileAction(Stage primaryStage)
 	{
+		// Store thyself
+		try
+		{
+			Company.getCompany().persist();
+		}
+		catch (IOException | ActionCancelledException | NoFileCreatedException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Company.getCompany().close();
 	}
 
-	
-
-	/**
-	 * @param e
-	 */
-	public static void actionPerformed(ActionEvent e)
-	{
-		Company.store();
-		
-		// Indicate that the company file is now closed
-		// This is not the best way to do this since it
-		// strongly couples the method to the data model.
-		
-		Company.setCompany(null);
-		Company.setCurrentFile(null);
-		JacksonDataStorer.setDataStorer(null);
-	}
 	
 }

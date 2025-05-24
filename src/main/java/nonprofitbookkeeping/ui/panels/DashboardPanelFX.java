@@ -55,7 +55,7 @@ public class DashboardPanelFX extends BorderPane
 		});
 		
 		// If a company is loaded later, refresh() will populate everything:
-		this.prop = Company.getCompanyProperty();
+		this.prop = Company.getCompany().getCompanyObserver();
 		this.prop.addListener((obs, o, n) -> loadCompany(n));
 		
 		loadCompany(Company.getCompany()); // initial

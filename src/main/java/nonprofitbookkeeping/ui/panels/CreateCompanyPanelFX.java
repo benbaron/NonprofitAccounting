@@ -215,7 +215,7 @@ public class CreateCompanyPanelFX extends BorderPane
 		
 		if (this.callback != null)
 		{
-			this.callback.onCompanyCreated(m);
+			this.callback.onCreatedProfileModel(m);
 		}
 		else
 		{
