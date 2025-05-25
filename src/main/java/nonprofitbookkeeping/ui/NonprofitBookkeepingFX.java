@@ -25,6 +25,7 @@ import nonprofitbookkeeping.service.*;
 import nonprofitbookkeeping.ui.panels.*;
 import nonprofitbookkeeping.ui.actions.*;
 import nonprofitbookkeeping.ui.actions.scaledger.*;
+import nonprofitbookkeeping.model.CurrentCompany;
 
 /**
  * JavaFX rewrite of the original Swing based {@code NonprofitBookkeeping} launcher.
@@ -38,7 +39,7 @@ public class NonprofitBookkeepingFX extends Application
 	private Stage primaryStage;
 	private BorderPane root;
 	private DashboardPanelFX dashboard;
-	@SuppressWarnings("unused") private Company c;
+	@SuppressWarnings("unused") private CurrentCompany c;
 	private ReadOnlyObjectProperty<Company> prop;
 	
 	/** Container for singletons we re-use across panels. */
@@ -74,12 +75,11 @@ public class NonprofitBookkeepingFX extends Application
 		
 		this.primaryStage = stage;
 		
-		
 		// Get and hold the company singleton
-		this.c = Company.getCompany();
+		this.c = new CurrentCompany();
+		
 		// pass its observer property into the dashboard panel
-		this.prop = Company.getCompany().getCompanyObserver();
-		this.dashboard = new DashboardPanelFX(this.prop);
+		this.dashboard = new DashboardPanelFX();
 		
 		this.root = new BorderPane();
 		this.root.setCenter(this.dashboard);
@@ -126,7 +126,7 @@ public class NonprofitBookkeepingFX extends Application
 			e -> showPanel(new FundsPanelFX(ServiceContainer.fas), "Funds"));
 		add(run, "Reconcile",
 			e -> showPanel(new ReconcilePanelFX(new ReconciliationService()), "Reconciliation"));
-		Company.getCompany();
+		CurrentCompany.getCompany();
 		add(run, "Edit Chart of Accounts",
 			e -> showCoaEditor());
 		
@@ -152,10 +152,10 @@ public class NonprofitBookkeepingFX extends Application
 		add(reports, "Show Journal", e -> showPanel(new JournalPanelFX(), "Journal"));
 		add(reports, "Show Accounts",
 			e -> showPanel(new AccountsPanelFX(new AccountService()), "Chart of Accounts"));
-		Company.getCompany();
+		CurrentCompany.getCompany();
 		add(reports, "Show Account Activity",
 			e -> showPanel(
-				new AccountsActivityPanelFX(Company.getCompany().getLedger()),
+				new AccountsActivityPanelFX(CurrentCompany.getCompany().getLedger()),
 				"Account Activity"));
 		add(reports, "Generate Income Statement",
 			e -> new GenerateIncomeStatementAction(ServiceContainer.reportService)
@@ -227,9 +227,10 @@ public class NonprofitBookkeepingFX extends Application
 	{
 		Node previousView = this.root.getCenter();
 		
-		Company activeCompany = Company.getCompany();
+		Company activeCompany = CurrentCompany.getCompany();
+		
 		CoaEditorPanelFX editor = new CoaEditorPanelFX(
-			activeCompany.getChartOfAccounts(),
+			CurrentCompany.getCompany().getChartOfAccounts(),
 			
 			/* onSave */
 			new Consumer<ChartOfAccounts>()
@@ -239,7 +240,7 @@ public class NonprofitBookkeepingFX extends Application
 					activeCompany.setChartOfAccounts(chart);
 					try
 					{
-						activeCompany.persist();
+						CurrentCompany.persist();
 					}
 					catch (IOException | ActionCancelledException | NoFileCreatedException e)
 					{
@@ -262,5 +263,5 @@ public class NonprofitBookkeepingFX extends Application
 		this.root.setCenter(editor);
 		
 	}
-	
+
 }

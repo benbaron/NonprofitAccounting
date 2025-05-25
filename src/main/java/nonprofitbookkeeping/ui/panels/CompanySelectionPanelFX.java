@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.service.CompanyLoaderService;
 import nonprofitbookkeeping.service.PreferencesService;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
@@ -117,8 +118,8 @@ public class CompanySelectionPanelFX extends BorderPane
 
 		try
 		{
-			Company.getCompany().loadFromPersistent(f);
-			Company.getCompany().open();
+			CurrentCompany.loadFromPersistent(f);
+			CurrentCompany.open();
 		}
 		catch (IOException | ActionCancelledException | NoFileCreatedException e)
 		{

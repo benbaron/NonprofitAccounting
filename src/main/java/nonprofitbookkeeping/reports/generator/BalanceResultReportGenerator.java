@@ -10,6 +10,7 @@ import nonprofitbookkeeping.service.AccountService;
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CurrentCompany;
 
 public class BalanceResultReportGenerator extends AbstractReportGenerator
 {
@@ -36,7 +37,7 @@ public class BalanceResultReportGenerator extends AbstractReportGenerator
 		
 		// Fetch real company details from the Company model/service
 		Company company = getCompanyDetails(); // You need to implement this method
-		parameters.put("company", Company.getCompany().getCompanyProfile().getCompanyName()); // Assuming Company class has a getName()
+		parameters.put("company", CurrentCompany.getCompany().getCompanyProfile().getCompanyName()); // Assuming Company class has a getName()
 														// method
 		parameters.put("companytext", company.getCompanyProfile().toString()); // Assuming Company class has a
 																// getDetails() method

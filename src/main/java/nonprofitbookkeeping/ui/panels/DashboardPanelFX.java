@@ -14,6 +14,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
 import nonprofitbookkeeping.model.*;
+import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 
 public class DashboardPanelFX extends BorderPane
 {
@@ -33,14 +34,16 @@ public class DashboardPanelFX extends BorderPane
 	private final ObservableList<Row> rows = FXCollections.observableArrayList();
 	private List<AccountingTransaction> allTxns = List.of(); // empty until a file is open
 	private BigDecimal amtF = null;
-	private ReadOnlyObjectProperty<Company> prop;
+	private DashboardListener listener = new DashboardListener(this);
 
 	
 	/**
 	 * Constructor DashboardPanelFX
 	 */
-	public DashboardPanelFX(ReadOnlyObjectProperty<Company> prop)
+	public DashboardPanelFX()
 	{
+		CurrentCompany.CompanyListener.addCompanyListener(this.listener);
+		
 		setPadding(new Insets(10));
 		
 		buildTopBanner();  // always visible
@@ -54,11 +57,6 @@ public class DashboardPanelFX extends BorderPane
 			
 		});
 		
-		// If a company is loaded later, refresh() will populate everything:
-
-		prop.addListener((obs, o, n) -> loadCompany(n));
-		
-		loadCompany(Company.getCompany()); // initial
 	}
 	
 	/**
@@ -67,8 +65,13 @@ public class DashboardPanelFX extends BorderPane
 	private void buildTopBanner()
 	{
 		this.companyLbl.getStyleClass().add("company-indicator");
-		this.reloadBtn.setOnAction(e -> loadCompany(Company.getCompany()));
-		HBox banner = new HBox(10, new Label("Current Company:"), this.companyLbl, this.reloadBtn);
+		this.reloadBtn.setOnAction(e -> loadCompany(CurrentCompany.getCompany()));
+		
+		HBox banner = new HBox(10, 
+			new Label("Current Company:"), 
+			this.companyLbl, 
+			this.reloadBtn);
+		
 		banner.setPadding(new Insets(4));
 		banner.setStyle("-fx-background-color:#f0f0f0; -fx-border-color:lightgray;");
 		setTop(banner);
@@ -131,14 +134,13 @@ public class DashboardPanelFX extends BorderPane
 		c.setCellValueFactory(cd -> new ReadOnlyObjectWrapper<>(f.apply(cd.getValue())));
 		return c;
 	}
-	
+
 	/** 
 	 * Called whenever the user opens/closes a company file.
-	 * @param cdf Company
+	 * @param cdf Company (null = closed)	
 	 */
 	private void loadCompany(Company cdf)
 	{
-		
 		if (cdf == null)
 		{
 			this.companyLbl.setText("None");
@@ -171,16 +173,14 @@ public class DashboardPanelFX extends BorderPane
 		
 		
 		if (!this.amountFilter.getText().isBlank())
-		{
-			
+		{			
 			try
 			{
 				this.amtF = new BigDecimal(this.amountFilter.getText().trim());
 			}
-			catch (NumberFormatException ignore)
+			catch (@SuppressWarnings("unused") NumberFormatException ignore)
 			{
-			}
-			
+			}			
 		}
 		
 		Predicate<AccountingTransaction> p = t -> t.getAccountName().equals(acct) &&
@@ -232,4 +232,28 @@ public class DashboardPanelFX extends BorderPane
 		
 	}
 	
+	
+	class DashboardListener implements CompanyChangeListener
+	{
+		DashboardPanelFX dashboardPanelFX = null;
+		/**  
+		 * Constructor DashboardListener
+		 * @param dashboardPanelFX
+		 */
+		public DashboardListener(DashboardPanelFX dashboardPanelFX)
+		{
+			this.dashboardPanelFX = dashboardPanelFX;
+		}
+
+
+		/**
+		 * Override @see nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener#companyChange(boolean) 
+		 */
+		@Override public void companyChange(boolean b)
+		{
+			this.dashboardPanelFX.loadCompany(b ? CurrentCompany.getCompany() : null);	
+			
+		}
+		
+	}
 }

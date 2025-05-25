@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.exception.NoFileException;
-import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.helpers.NpbkFileChooserFX;
 
@@ -36,8 +36,8 @@ public class OpenCompanyFileActionFX
 				owner);
 			
 			// Load file from the file system
-			Company.getCompany().loadFromPersistent(file);
-			Company.getCompany().open();
+			CurrentCompany.loadFromPersistent(file);
+			CurrentCompany.open();
 			
 			showInfo("Loaded " + file.getAbsolutePath());
 		}
