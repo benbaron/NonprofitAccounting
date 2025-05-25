@@ -1,6 +1,7 @@
 
 package nonprofitbookkeeping.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class Journal implements Serializable
 	 * serialVersionUID : long
 	 */
 	private static final long serialVersionUID = -8125095337696271045L;
-	final private List<AccountingTransaction> journalTransactions = new ArrayList<>();
+	@JsonProperty final private List<AccountingTransaction> journalTransactions = new ArrayList<>();
 	
 	/**
 	 * 

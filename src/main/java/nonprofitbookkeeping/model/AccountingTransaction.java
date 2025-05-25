@@ -3,6 +3,8 @@ package nonprofitbookkeeping.model;
 
 import javax.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Builder;
 import lombok.Data;
 
@@ -29,19 +31,19 @@ public class AccountingTransaction implements Serializable
 	 */
 	private static final long serialVersionUID = -8821254116304310L;
 	
-	final private Set<AccountingEntry> entries;
+	@JsonProperty final private Set<AccountingEntry> entries;
 	
-	final private long bookingDateTimestamp;
+	@JsonProperty final private long bookingDateTimestamp;
 	
-	final private Map<String, String> info;
+	@JsonProperty final private Map<String, String> info;
 	
-	final private Account account;
+	@JsonProperty final private Account account;
 	
-	final private Integer transactionId;
+	@JsonProperty final private Integer transactionId;
 	
-	private String date;
+	@JsonProperty private String date;
 	
-	private String memo;
+	@JsonProperty private String memo;
 	
 	/**
 	 * 

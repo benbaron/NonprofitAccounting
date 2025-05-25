@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Data
 @AllArgsConstructor
@@ -15,9 +16,9 @@ import lombok.NoArgsConstructor;
 public class Fund
 {
 	
-	private String name;
-	private List<Account> accounts; // List to hold associated accounts (many-to-many relationship)
-	private BigDecimal balance; // The balance of the fund is the sum of all associated accounts'
+	@JsonProperty private String name;
+	@JsonProperty private List<Account> accounts; // List to hold associated accounts (many-to-many relationship)
+	@JsonProperty private BigDecimal balance; // The balance of the fund is the sum of all associated accounts'
 								// balances
 	
 	// Constructor

@@ -1,6 +1,7 @@
 
 package nonprofitbookkeeping.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 
 import java.io.Serializable;
@@ -22,15 +23,12 @@ public final class AccountingEntry implements Serializable
 	 */
 	private static final long serialVersionUID = 5837792781542533633L;
 
-	final private BigDecimal amount;
-	
-	final private AccountSide accountSide;
-	
-	final private String accountNumber;
-	
-	private AccountingTransaction transaction;
+	@JsonProperty final private BigDecimal amount;	
+	@JsonProperty final private AccountSide accountSide;
+	@JsonProperty final private String accountNumber;
+	@JsonProperty private AccountingTransaction transaction;
 	// Indicates if the transaction was set
-	private boolean freeze = false;
+	@JsonProperty private boolean freeze = false;
 	
 	/**
 	 * 
@@ -43,9 +41,9 @@ public final class AccountingEntry implements Serializable
 	                       String accountNumber, 
 	                       AccountSide accountSide)
 	{
-		this.amount = amount;
-		this.accountNumber = accountNumber;
-		this.accountSide = accountSide;
+		this.amount = checkNotNull(amount);
+		this.accountNumber = checkNotNull(accountNumber);
+		this.accountSide = checkNotNull(accountSide);
 	}
 	
 	/**
@@ -66,7 +64,7 @@ public final class AccountingEntry implements Serializable
 	 */
 	public void setTransaction(AccountingTransaction transaction)
 	{
-		this.transaction = transaction;
+		this.transaction = checkNotNull(transaction);
 		this.freeze = true;
 	}
 	

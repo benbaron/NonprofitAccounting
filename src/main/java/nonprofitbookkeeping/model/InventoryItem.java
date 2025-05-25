@@ -7,6 +7,8 @@ package nonprofitbookkeeping.model;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,9 +21,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class InventoryItem
 {
-	private String id, name, acquired;
-	private BigDecimal cost, accDep, netValue;
-	private int lifeYears;
+	@JsonProperty private String id, name, acquired;
+	@JsonProperty private BigDecimal cost, accDep, netValue;
+	@JsonProperty private int lifeYears;
 
 	/**  
 	 * Constructor InventoryItem

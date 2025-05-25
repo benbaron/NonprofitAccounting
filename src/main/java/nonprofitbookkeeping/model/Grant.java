@@ -4,7 +4,7 @@
  * Grant
  */
 package nonprofitbookkeeping.model;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 
 /**
@@ -12,12 +12,12 @@ import java.math.BigDecimal;
  */
 public class Grant
 {
-	String grantId = "";
-	String grantor = "";
-	BigDecimal amount = new BigDecimal(0);
-	String dateAwarded= "";
-	String purpose= "";
-	String status= "";
+	@JsonProperty String grantId = "";
+	@JsonProperty String grantor = "";
+	@JsonProperty BigDecimal amount = new BigDecimal(0);
+	@JsonProperty String dateAwarded= "";
+	@JsonProperty String purpose= "";
+	@JsonProperty String status= "";
 	
 	
 	/**  

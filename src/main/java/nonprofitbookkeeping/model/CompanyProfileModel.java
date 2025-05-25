@@ -5,6 +5,8 @@ package nonprofitbookkeeping.model;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,25 +19,25 @@ public class CompanyProfileModel implements Serializable
 	 * serialVersionUID : long
 	 */
 	private static final long serialVersionUID = 2138956211273265518L;
-	private String companyName;
-	private String legalStructure;
-	private String taxId;
-	private String address;
-	private String phone;
-	private String email;
+	@JsonProperty private String companyName;
+	@JsonProperty private String legalStructure;
+	@JsonProperty private String taxId;
+	@JsonProperty private String address;
+	@JsonProperty private String phone;
+	@JsonProperty private String email;
 	
-	private String fiscalYearStart;
-	private String baseCurrency;
-	private String startingBalanceDate;
-	private String chartOfAccountsType;
+	@JsonProperty private String fiscalYearStart;
+	@JsonProperty private String baseCurrency;
+	@JsonProperty private String startingBalanceDate;
+	@JsonProperty private String chartOfAccountsType;
 	
-	private String adminUsername;
-	private String adminPassword;
-	private String defaultBankAccount;
+	@JsonProperty private String adminUsername;
+	@JsonProperty private String adminPassword;
+	@JsonProperty private String defaultBankAccount;
 	
-	private boolean enableFundAccounting;
-	private boolean enableInventory;
-	private boolean enableMultiCurrency;
+	@JsonProperty private boolean enableFundAccounting;
+	@JsonProperty private boolean enableInventory;
+	@JsonProperty private boolean enableMultiCurrency;
 
 	
 	/**

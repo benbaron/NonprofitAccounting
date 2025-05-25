@@ -4,91 +4,98 @@ package nonprofitbookkeeping.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Mutable container that holds every {@link Account} in the company and
+ * supports parent/child relationships.
+ */
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
-/**
- * Represents an immutable collection of available accounts.
- */
-public class ChartOfAccounts implements Serializable
+@NoArgsConstructor public class ChartOfAccounts implements Serializable
 {
-	/**
-	 * serialVersionUID : long
-	 */
+	
 	private static final long serialVersionUID = 6545569795380871696L;
-
-	ArrayList<Account> chartOfAccounts = new ArrayList<>();
-	/**
-	 * 
-	 * Constructor ChartOfAccounts
-	 */
-	public ChartOfAccounts()
-	{
-
-	}
-
-	/**
-	 * @return
-	 */
+	
+	/** flat list of <em>all</em> accounts, root and child alike */
+	@JsonProperty private final List<Account> chartOfAccounts = new ArrayList<>();
+	
+	/* ------------------------------------------------------------------ */
+	/** Returns every account that has no parent. */
 	public List<Account> getRootAccounts()
 	{
-		ArrayList<Account> roots = new ArrayList<>();
-		for (Account root : roots)
-		{
-			if (!root.hasParent())
-			{
-				roots.add(root);
-			}
-		}
-		return roots;
+		return this.chartOfAccounts.stream()
+			.filter(a -> !a.hasParent())
+			.collect(Collectors.toCollection(ArrayList::new));
 	}
-
-	/**
-	 * @param a
-	 * @return
-	 */
-	public List<Account> getChildren(Account a)
+	
+	/* ------------------------------------------------------------------ */
+	/** Returns direct children of {@code parent}. */
+	public List<Account> getChildren(Account parent)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return this.chartOfAccounts.stream()
+			.filter(a -> parent.equals(a.getParentAccount()))
+			.collect(Collectors.toCollection(ArrayList::new));
 	}
-
-	/**
-	 * @param det
-	 */
-	public void addAccount(Account det)
+	
+	/* ------------------------------------------------------------------ */
+	/** Adds a top-level (root) account. */
+	public void addAccount(Account root)
 	{
-		// TODO Auto-generated method stub
+		Objects.requireNonNull(root, "account");
+		root.setParentAccount(null);
+		this.chartOfAccounts.add(root);
 	}
-
-	/**
-	 * @param parent
-	 * @param det
-	 */
-	public void addSubAccount(Account parent, Account det)
+	
+	/* ------------------------------------------------------------------ */
+	/** Adds {@code child} under the given parent. */
+	public void addSubAccount(Account parent, Account child)
 	{
-		// TODO Auto-generated method stub
-		
+		Objects.requireNonNull(parent, "parent");
+		Objects.requireNonNull(child, "child");
+		child.setParentAccount(parent);
+		this.chartOfAccounts.add(child);
 	}
-
+	
+	/* ------------------------------------------------------------------ */
 	/**
-	 * @param target
+	 * Removes {@code target} and all its descendants (if any) from the chart.
 	 */
 	public void removeAccount(Account target)
 	{
-		// TODO Auto-generated method stub
+		if (target == null)
+			return;
+		/* remove children first (depth-first) */
+		getChildren(target).forEach(this::removeAccount);
+		this.chartOfAccounts.remove(target);
 	}
-
-	/**
-	 * @return
-	 */
+	
+	/* ------------------------------------------------------------------ */
+	/** Convenience—comma-separated list of every account’s name. */
 	public String getNames()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return this.chartOfAccounts.stream()
+			.map(Account::getName)
+			.collect(Collectors.joining(", "));
 	}
-
+	
+	/* ------------------------------------------------------------------ */
+	/**
+	 * Builds a <kbd>Map accountNumber → Account</kbd> for quick lookup.
+	 *
+	 * @return unmodifiable map keyed by {@link Account#getAccountNumber()}.
+	 */
+	public Map<String, Account> getAccountNumberToAccountDetails()
+	{
+		return this.chartOfAccounts.stream()
+			.collect(Collectors.toUnmodifiableMap(Account::getAccountNumber,
+				a -> a,
+				(a, b) -> a)); // keep first
+	}
+	
 }

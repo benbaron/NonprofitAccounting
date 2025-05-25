@@ -4,98 +4,95 @@ package nonprofitbookkeeping.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 /**
- * Represents an account with entries, supporting many-to-many relationship with funds.
+ * Represents an account with entries and a many-to-many relationship with
+ * {@link Fund}s.
  */
-
-final public class Account implements Serializable
+public final class Account implements Serializable
 {
-	/**
-	 * serialVersionUID : long
-	 */
+	
 	private static final long serialVersionUID = -1149966185433260549L;
 	
-	private List<Fund> associatedFunds = new ArrayList<>(); // List to hold associated funds
+	/* ─────────────────────────────────────────────── fields ──────────── */
+	@JsonProperty private List<Fund> associatedFunds = new ArrayList<>();
+	@JsonProperty private String accountNumber;
+	@JsonProperty private AccountSide increaseSide;
+	@JsonProperty private String name;
+	@JsonProperty private String accountCode;
+	@JsonProperty private String accountType;
+	@JsonProperty private Account parentAccount;
+	@JsonProperty private String currency;
+	@JsonProperty private BigDecimal openingBalance = BigDecimal.ZERO;
 	
-
-	private String accountNumber;
-	
-	private AccountSide increaseSide;
-		
-	private String name;
-
-	private String accountCode;
-
-	private String accountType;
-
-	private Account parentAccount;
-
-	private String currency;
-
-	private BigDecimal openingBalance;
-	
-
-	/**
-	 * 
-	 * Constructor Account
-	 * @param accountNumber
-	 * @param name
-	 * @param increaseSide
-	 */
+	/* ------------------------------------------------------------------ */
 	public Account(String accountNumber, String name, AccountSide increaseSide)
 	{
-		this.accountNumber = accountNumber;
+		this.accountNumber = checkNotNull(accountNumber);
 		this.name = name;
 		this.increaseSide = increaseSide;
 	}
 	
-
-	/**  
-	 * Constructor Account
-	 */
 	public Account()
 	{
-	}
-
-
-	/**
-	 * Associates a fund with this account.
-	 *
-	 * @param fund the fund to associate
-	 */
+		/* default ctor for Jackson / JPA */ }
+		
+	/* ================= fund helpers =================================== */
 	public void addFund(Fund fund)
-	{		
+	{
+		
 		if (!this.associatedFunds.contains(fund))
 		{
 			this.associatedFunds.add(fund);
-			fund.addAccount(this); // Add this account to the fund's list of accounts
+			fund.addAccount(this);
 		}
 		
 	}
 	
-	/**
-	 * Removes an associated fund from this account.
-	 *
-	 * @param fund the fund to remove
-	 */
 	public void removeFund(Fund fund)
 	{
 		this.associatedFunds.remove(fund);
-		fund.removeAccount(this); // Remove this account from the fund's list of accounts
+		fund.removeAccount(this);
 	}
-
-	/**
-	 * Tally and return the balance.
-	 * @return balance on the account
-	 */
+	
+	/* =================== IMPLEMENTED METHODS ========================== */
+	
+	/** Calculates the account’s balance. */
 	public BigDecimal totalAccountBalance()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		// In the current model we only know the opening balance. If you later
+		// attach transactions or sub-accounts, extend this method to include them.
+		return this.openingBalance == null ? BigDecimal.ZERO : this.openingBalance;
 	}
-
+	
+	/** @return {@code true} if this account is a child of another. */
+	public boolean hasParent()
+	{
+		return this.parentAccount != null;
+	}
+	
+	/** Convenience overload that stores the enum’s name. */
+	public void setAccountType(AccountType type)
+	{
+		this.accountType = type == null ? null : type.name();
+	}
+	
+	/**
+	 * Returns a one-element collection containing this account.  The method is
+	 * here mainly for compatibility with map-like code that expects a
+	 * {@code Collection<Account>}.  If you later store sub-accounts directly
+	 * inside the class, change this to return an unmodifiable view of that list.
+	 */
+	public Collection<Account> values()
+	{
+		return Collections.singleton(this);
+	}
 
 	/**
 	 * @return the associatedFunds
@@ -105,7 +102,6 @@ final public class Account implements Serializable
 		return this.associatedFunds;
 	}
 
-
 	/**
 	 * @param associatedFunds the associatedFunds to set
 	 */
@@ -113,7 +109,6 @@ final public class Account implements Serializable
 	{
 		this.associatedFunds = associatedFunds;
 	}
-
 
 	/**
 	 * @return the accountNumber
@@ -123,7 +118,6 @@ final public class Account implements Serializable
 		return this.accountNumber;
 	}
 
-
 	/**
 	 * @param accountNumber the accountNumber to set
 	 */
@@ -131,7 +125,6 @@ final public class Account implements Serializable
 	{
 		this.accountNumber = accountNumber;
 	}
-
 
 	/**
 	 * @return the increaseSide
@@ -141,7 +134,6 @@ final public class Account implements Serializable
 		return this.increaseSide;
 	}
 
-
 	/**
 	 * @param increaseSide the increaseSide to set
 	 */
@@ -149,7 +141,6 @@ final public class Account implements Serializable
 	{
 		this.increaseSide = increaseSide;
 	}
-
 
 	/**
 	 * @return the name
@@ -159,7 +150,6 @@ final public class Account implements Serializable
 		return this.name;
 	}
 
-
 	/**
 	 * @param name the name to set
 	 */
@@ -167,7 +157,6 @@ final public class Account implements Serializable
 	{
 		this.name = name;
 	}
-
 
 	/**
 	 * @return the accountCode
@@ -177,7 +166,6 @@ final public class Account implements Serializable
 		return this.accountCode;
 	}
 
-
 	/**
 	 * @param accountCode the accountCode to set
 	 */
@@ -185,7 +173,6 @@ final public class Account implements Serializable
 	{
 		this.accountCode = accountCode;
 	}
-
 
 	/**
 	 * @return the accountType
@@ -195,7 +182,6 @@ final public class Account implements Serializable
 		return this.accountType;
 	}
 
-
 	/**
 	 * @param accountType the accountType to set
 	 */
@@ -203,7 +189,6 @@ final public class Account implements Serializable
 	{
 		this.accountType = accountType;
 	}
-
 
 	/**
 	 * @return the parentAccount
@@ -213,7 +198,6 @@ final public class Account implements Serializable
 		return this.parentAccount;
 	}
 
-
 	/**
 	 * @param parentAccount the parentAccount to set
 	 */
@@ -221,7 +205,6 @@ final public class Account implements Serializable
 	{
 		this.parentAccount = parentAccount;
 	}
-
 
 	/**
 	 * @return the currency
@@ -231,7 +214,6 @@ final public class Account implements Serializable
 		return this.currency;
 	}
 
-
 	/**
 	 * @param currency the currency to set
 	 */
@@ -239,7 +221,6 @@ final public class Account implements Serializable
 	{
 		this.currency = currency;
 	}
-
 
 	/**
 	 * @return the openingBalance
@@ -249,7 +230,6 @@ final public class Account implements Serializable
 		return this.openingBalance;
 	}
 
-
 	/**
 	 * @param openingBalance the openingBalance to set
 	 */
@@ -258,22 +238,6 @@ final public class Account implements Serializable
 		this.openingBalance = openingBalance;
 	}
 
-	/**
-	 * @return
-	 */
-	public List<Fund> getFunds()
-	{
-		return getAssociatedFunds();
-	}
-
-
-	/**
-	 * @return
-	 */
-	public boolean hasParent()
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
+	
 
 }

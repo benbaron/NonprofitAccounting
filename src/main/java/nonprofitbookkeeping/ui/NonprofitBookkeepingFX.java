@@ -1,7 +1,11 @@
 
 package nonprofitbookkeeping.ui;
 
+import java.io.IOException;
+import java.util.function.Consumer;
+
 import javafx.application.Application;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -13,6 +17,9 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import nonprofitbookkeeping.exception.ActionCancelledException;
+import nonprofitbookkeeping.exception.NoFileCreatedException;
+import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.service.*;
 import nonprofitbookkeeping.ui.panels.*;
@@ -27,11 +34,13 @@ import nonprofitbookkeeping.ui.actions.scaledger.*;
  * implementation opened new {@code JFrame}s.
  */
 public class NonprofitBookkeepingFX extends Application
-{	
+{
 	private Stage primaryStage;
-	private BorderPane root = new BorderPane();
-	private final DashboardPanelFX dashboard = new DashboardPanelFX();
-
+	private BorderPane root;
+	private DashboardPanelFX dashboard;
+	@SuppressWarnings("unused") private Company c;
+	private ReadOnlyObjectProperty<Company> prop;
+	
 	/** Container for singletons we re-use across panels. */
 	private static final class ServiceContainer
 	{
@@ -41,9 +50,8 @@ public class NonprofitBookkeepingFX extends Application
 		private static final FundAccountingService fas = new FundAccountingService();
 		
 	}
-	// Get and hold the company singleton
-	Company c = Company.getCompany();
-
+	
+	
 	/**
 	 * Main 
 	 * 
@@ -55,6 +63,7 @@ public class NonprofitBookkeepingFX extends Application
 	}
 	
 	/**
+	 * start()
 	 * 
 	 * Override @see javafx.application.Application#start(javafx.stage.Stage)
 	 */
@@ -65,8 +74,15 @@ public class NonprofitBookkeepingFX extends Application
 		
 		this.primaryStage = stage;
 		
+		
+		// Get and hold the company singleton
+		this.c = Company.getCompany();
+		// pass its observer property into the dashboard panel
+		this.prop = Company.getCompany().getCompanyObserver();
+		this.dashboard = new DashboardPanelFX(this.prop);
+		
 		this.root = new BorderPane();
-		this.root.setCenter(this.dashboard); 
+		this.root.setCenter(this.dashboard);
 		this.root.setTop(buildMenuBar());
 		
 		Scene scene = new Scene(this.root, 1000, 700);
@@ -100,7 +116,8 @@ public class NonprofitBookkeepingFX extends Application
 		
 		/* RUN */
 		Menu run = new Menu("Run");
-		add(run, "Show Settings", e -> showPanel(new SettingsPanelFX(this.primaryStage), "Settings"));
+		add(run, "Show Settings",
+			e -> showPanel(new SettingsPanelFX(this.primaryStage), "Settings"));
 		add(run, "Documents & Attachments",
 			e -> showPanel(new DocumentsPanelFX(ServiceContainer.dss), "Documents"));
 		add(run, "Inventory & Depreciation",
@@ -109,8 +126,10 @@ public class NonprofitBookkeepingFX extends Application
 			e -> showPanel(new FundsPanelFX(ServiceContainer.fas), "Funds"));
 		add(run, "Reconcile",
 			e -> showPanel(new ReconcilePanelFX(new ReconciliationService()), "Reconciliation"));
+		Company.getCompany();
 		add(run, "Edit Chart of Accounts",
-			e -> showPanel(new CoaEditorPanelFX(Company.getCompany().getCompany().getChartOfAccounts()), "Chart of Accounts"));
+			e -> showCoaEditor());
+		
 		
 		/* SCA Ledger submenu */
 		Menu sca = new Menu("SCA Ledger");
@@ -127,13 +146,16 @@ public class NonprofitBookkeepingFX extends Application
 		
 		/* REPORTS */
 		Menu reports = new Menu("Reports");
-		add(reports, "Generate Reports", e -> {/* implement */});
+		add(reports, "Generate Reports", e -> {
+			/* implement */});
 		add(reports, "Show Reports", e -> showPanel(new ReportsPanelFX(), "Reports"));
 		add(reports, "Show Journal", e -> showPanel(new JournalPanelFX(), "Journal"));
 		add(reports, "Show Accounts",
 			e -> showPanel(new AccountsPanelFX(new AccountService()), "Chart of Accounts"));
+		Company.getCompany();
 		add(reports, "Show Account Activity",
-			e -> showPanel(new AccountsActivityPanelFX(Company.getCompany().getCompany().getLedger()),
+			e -> showPanel(
+				new AccountsActivityPanelFX(Company.getCompany().getLedger()),
 				"Account Activity"));
 		add(reports, "Generate Income Statement",
 			e -> new GenerateIncomeStatementAction(ServiceContainer.reportService)
@@ -146,9 +168,11 @@ public class NonprofitBookkeepingFX extends Application
 		/* PANELS */
 		Menu panels = new Menu("Panels");
 		add(panels, "Donors", e -> showPanel(new DonorsPanelFX(this.primaryStage), "Donors"));
-		add(panels, "Donations", e -> showPanel(new DonationsPanelFX(this.primaryStage), "Donations"));
+		add(panels, "Donations",
+			e -> showPanel(new DonationsPanelFX(this.primaryStage), "Donations"));
 		add(panels, "Grants", e -> showPanel(new GrantsPanelFX(this.primaryStage), "Grants"));
-		add(panels, "Sales & COG", e -> showPanel(new SalesAndCOGPanelFX(this.primaryStage), "Sales & COG"));
+		add(panels, "Sales & COG",
+			e -> showPanel(new SalesAndCOGPanelFX(this.primaryStage), "Sales & COG"));
 		bar.getMenus().add(panels);
 		
 		/* HELP */
@@ -161,6 +185,7 @@ public class NonprofitBookkeepingFX extends Application
 	
 	/**
 	 * Add a menu item
+	 * 
 	 * @param menu The item
 	 * @param label its label
 	 * @param handler Its handler
@@ -195,45 +220,47 @@ public class NonprofitBookkeepingFX extends Application
 		sub.show();
 	}
 	
-
 	/**
-	 * @return the primaryStage
+	 * 
 	 */
-	public Stage getPrimaryStage()
+	private void showCoaEditor()
 	{
-		return this.primaryStage;
-	}
-
-	/**
-	 * @param primaryStage the primaryStage to set
-	 */
-	public void setPrimaryStage(Stage primaryStage)
-	{
-		this.primaryStage = primaryStage;
-	}
-
-	/**
-	 * @return the root pane
-	 */
-	public BorderPane getRoot()
-	{
-		return this.root;
-	}
-
-	/**
-	 * @param root the root pane to set
-	 */
-	public void setRoot(BorderPane root)
-	{
-		this.root = root;
-	}
-
-	/**
-	 * @return the dashboard pane
-	 */
-	public DashboardPanelFX getDashboard()
-	{
-		return this.dashboard;
+		Node previousView = this.root.getCenter();
+		
+		Company activeCompany = Company.getCompany();
+		CoaEditorPanelFX editor = new CoaEditorPanelFX(
+			activeCompany.getChartOfAccounts(),
+			
+			/* onSave */
+			new Consumer<ChartOfAccounts>()
+			{
+				@Override public void accept(ChartOfAccounts chart)
+				{
+					activeCompany.setChartOfAccounts(chart);
+					try
+					{
+						activeCompany.persist();
+					}
+					catch (IOException | ActionCancelledException | NoFileCreatedException e)
+					{
+						e.printStackTrace();
+					}
+				}
+				
+			},
+			
+			/* onClose */
+			new Runnable()
+			{
+				@Override public void run()
+				{
+					NonprofitBookkeepingFX.this.root.setCenter(previousView);
+				}
+				
+			});
+		
+		this.root.setCenter(editor);
+		
 	}
 	
 }

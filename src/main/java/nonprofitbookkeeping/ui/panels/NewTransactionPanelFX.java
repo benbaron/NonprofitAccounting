@@ -19,7 +19,6 @@ import nonprofitbookkeeping.model.JournalEntry;
  */
 public class NewTransactionPanelFX extends BorderPane
 {
-	
 	private final DatePicker datePicker = new DatePicker(LocalDate.now());
 	private final ComboBox<String> accountBox = new ComboBox<>();
 	private final TextField debitField = new TextField("0.00");

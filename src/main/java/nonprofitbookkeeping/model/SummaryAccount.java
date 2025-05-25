@@ -6,6 +6,8 @@ import lombok.ToString;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Getter          // Automatically generates getter methods
 @Setter          // Automatically generates setter methods
 @AllArgsConstructor // Generates a constructor with all fields
@@ -16,8 +18,8 @@ public class SummaryAccount implements Serializable
 	 * serialVersionUID : long
 	 */
 	private static final long serialVersionUID = -7092733266234310917L;
-	private String accountName = "";
-	private double startValue = 0.0;
+	@JsonProperty private String accountName = "";
+	@JsonProperty private double startValue = 0.0;
     
     public SummaryAccount()
     {

@@ -3,6 +3,9 @@ package nonprofitbookkeeping.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.AllArgsConstructor;
@@ -20,8 +23,8 @@ public class Summary implements Serializable
 	private static final long serialVersionUID = 2708260956061642813L;
 
 	
-	private List<SummaryAccount> accounts = new ArrayList<>();
-	private List<SummaryFund> funds = new ArrayList<>();
+	@JsonProperty private List<SummaryAccount> accounts = new ArrayList<>();
+	@JsonProperty private List<SummaryFund> funds = new ArrayList<>();
     
 	/**  
 	 * Constructor Summary

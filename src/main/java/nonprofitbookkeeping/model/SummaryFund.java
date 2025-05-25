@@ -1,6 +1,9 @@
 package nonprofitbookkeeping.model;
 
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.AllArgsConstructor;
@@ -16,8 +19,8 @@ public class SummaryFund implements Serializable
 	 * serialVersionUID : long
 	 */
 	private static final long serialVersionUID = 5590898658697260597L;
-	private String fundName = "";
-	private double startValue = 0.0;
+	@JsonProperty private String fundName = "";
+	@JsonProperty private double startValue = 0.0;
     
     public SummaryFund()
     {

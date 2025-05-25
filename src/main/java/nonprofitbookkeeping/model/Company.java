@@ -9,9 +9,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Company
@@ -22,33 +26,39 @@ public class Company implements Serializable
 	 * serialVersionUID : long
 	 */
 	private static final long serialVersionUID = 6728014646115467637L;
-	private ReadOnlyObjectWrapper<Company> companyObservable =
-		new ReadOnlyObjectWrapper<Company>(selfInstance);
-	private File currentFile = null;
-	private JacksonDataStorer dataStorer = new JacksonDataStorer();
+
+	@JsonIgnore	private ReadOnlyObjectWrapper<Company> companyObservable;
+	@JsonIgnore	private File currentFile = null;
+	@JsonIgnore	private JacksonDataStorer dataStorer = new JacksonDataStorer();
+	@JsonIgnore	private boolean companyIsOpen = false;
+	@JsonIgnore	private static Company selfInstance = null;
 	
-	private CompanyProfileModel companyProfileModel = new CompanyProfileModel();
-	private Ledger ledger = new Ledger();
-	private ChartOfAccounts chartOfAccounts = new ChartOfAccounts();
-	private boolean companyIsOpen = false;
-	private static Company selfInstance = null;
+	@JsonProperty private CompanyProfileModel companyProfileModel = new CompanyProfileModel();
+	@JsonProperty private Ledger ledger = new Ledger();
+	@JsonProperty private ChartOfAccounts chartOfAccounts = new ChartOfAccounts();
+
 	
-	
-	/**
-	 * 
+	/**  
 	 * Constructor Company
+	 * @param companyObservable
+	 * @param currentFile
+	 * @param dataStorer
+	 * @param companyProfileModel
+	 * @param ledger
+	 * @param chartOfAccounts
+	 * @param companyIsOpen
 	 */
 	private Company()
-	{
-		this.companyObservable =
-			new ReadOnlyObjectWrapper<Company>(selfInstance);
-		this.currentFile = null;
+	{	
+		Company.selfInstance = this;	
+		this.companyObservable = new ReadOnlyObjectWrapper<Company>(checkNotNull(selfInstance));
 		this.dataStorer = new JacksonDataStorer();
-		
 		this.companyProfileModel = new CompanyProfileModel();
 		this.ledger = new Ledger();
 		this.chartOfAccounts = new ChartOfAccounts();
+		this.companyIsOpen = false;
 	}
+
 	
 	/**
 	 * getCompany
@@ -61,15 +71,19 @@ public class Company implements Serializable
 		{
 			selfInstance = new Company();
 		}
-		
+
 		// return the Company from the wrapper
-		return selfInstance.companyObservable.get();
+		return checkNotNull(selfInstance.companyObservable.get());
 	}
 	
+	/**
+	 * 
+	 * @param company
+	 */
 	public static void setCompany(Company company)
 	{
 		// set the Company to the wrapper
-		selfInstance.companyObservable.set(company);
+		selfInstance.companyObservable.set(checkNotNull(company));
 	}
 	
 	
@@ -82,9 +96,9 @@ public class Company implements Serializable
 	public void persist() throws IOException, ActionCancelledException, NoFileCreatedException
 	{
 		
-		this.dataStorer.saveData(this.companyObservable,
-			this.currentFile);
-		
+		this.dataStorer.saveData(
+			checkNotNull(this.companyObservable),
+			checkNotNull(this.currentFile));
 		
 	}
 	
@@ -98,10 +112,8 @@ public class Company implements Serializable
 	public void loadFromPersistent(File currentFile1)	throws IOException, ActionCancelledException,
 														NoFileCreatedException
 	{
-		this.currentFile = currentFile1;
-		
-		Company company = getCompany();
-		
+		this.currentFile = checkNotNull(currentFile1);
+		Company company = getCompany();		
 		company = this.dataStorer.loadData(Company.class, currentFile1);
 		setCompany(company);
 		
@@ -112,9 +124,7 @@ public class Company implements Serializable
 	 * 
 	 * @return the property
 	 */
-	public
-			ReadOnlyObjectProperty<Company>
-			getCompanyObserver()
+	public ReadOnlyObjectProperty<Company>	getCompanyObserver()
 	{
 		return this.companyObservable.getReadOnlyProperty();
 	}
@@ -132,7 +142,7 @@ public class Company implements Serializable
 	 */
 	public void setCompanyProfileModel(CompanyProfileModel companyProfileModel)
 	{
-		this.companyProfileModel = companyProfileModel;
+		this.companyProfileModel = checkNotNull(companyProfileModel);
 	}
 	
 	/**
@@ -148,7 +158,7 @@ public class Company implements Serializable
 	 */
 	public void setLedger(Ledger ledger)
 	{
-		this.ledger = ledger;
+		this.ledger = checkNotNull(ledger);
 	}
 	
 	/**
@@ -164,7 +174,7 @@ public class Company implements Serializable
 	 */
 	public void setCurrentFile(File currentFile)
 	{
-		this.currentFile = currentFile;
+		this.currentFile = checkNotNull(currentFile);
 	}
 	
 	/**
@@ -197,6 +207,16 @@ public class Company implements Serializable
 	public void open()
 	{
 		this.companyIsOpen = true;
+	}
+
+
+	/**
+	 * @param chart
+	 */
+	public void setChartOfAccounts(ChartOfAccounts chart)
+	{
+		this.chartOfAccounts = checkNotNull(chart);
+		
 	}
 	
 	

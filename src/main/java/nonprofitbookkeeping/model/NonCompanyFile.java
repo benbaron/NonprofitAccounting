@@ -7,13 +7,15 @@ package nonprofitbookkeeping.model;
 
 import java.io.File;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * 
  */
 public class NonCompanyFile
 {
 
-	public static File currentFile = null;
+	@JsonProperty public static File currentFile = null;
 
 	/**
 	 * @return the currentInputFile

@@ -7,6 +7,8 @@ package nonprofitbookkeeping.model;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,12 +21,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class JournalEntry
 {
-	private String id;
-	private String date;
-    private BigDecimal debit;
-    private BigDecimal credit;
-	private String memo;
-	private String account;
+	@JsonProperty private String id;
+	@JsonProperty private String date;
+	@JsonProperty private BigDecimal debit;
+    @JsonProperty private BigDecimal credit;
+    @JsonProperty private String memo;
+    @JsonProperty private String account;
 	
 	
 	/**  

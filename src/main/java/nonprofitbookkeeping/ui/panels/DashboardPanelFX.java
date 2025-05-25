@@ -39,7 +39,7 @@ public class DashboardPanelFX extends BorderPane
 	/**
 	 * Constructor DashboardPanelFX
 	 */
-	public DashboardPanelFX()
+	public DashboardPanelFX(ReadOnlyObjectProperty<Company> prop)
 	{
 		setPadding(new Insets(10));
 		
@@ -55,8 +55,8 @@ public class DashboardPanelFX extends BorderPane
 		});
 		
 		// If a company is loaded later, refresh() will populate everything:
-		this.prop = Company.getCompany().getCompanyObserver();
-		this.prop.addListener((obs, o, n) -> loadCompany(n));
+
+		prop.addListener((obs, o, n) -> loadCompany(n));
 		
 		loadCompany(Company.getCompany()); // initial
 	}

@@ -118,12 +118,12 @@ public class CompanySelectionPanelFX extends BorderPane
 		try
 		{
 			Company.getCompany().loadFromPersistent(f);
+			Company.getCompany().open();
 		}
 		catch (IOException | ActionCancelledException | NoFileCreatedException e)
 		{
 			AlertBox.showError(null, "File Load Failed");
 		}
-		Company.getCompany().open();
 		
 	}
 	

@@ -2,6 +2,9 @@
 package nonprofitbookkeeping.model;
 
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +24,7 @@ final public class Ledger implements Serializable
 	 */
 	private static final long serialVersionUID = 8752049840895321935L;
 
-	final private Journal journal = new Journal();
+	@JsonProperty final private Journal journal = new Journal();
 	
 	/**  
 	 * Constructor Ledger

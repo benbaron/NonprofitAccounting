@@ -4,6 +4,8 @@ package nonprofitbookkeeping.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,17 +19,17 @@ import lombok.NoArgsConstructor;
 public class SettingsModel
 {
 	// Company Info
-	private String organizationName;
-	private String fiscalYearStart;
-	private String defaultCurrency;
+	@JsonProperty private String organizationName;
+	@JsonProperty private String fiscalYearStart;
+	@JsonProperty private String defaultCurrency;
 	
 	// User Accounts
-	private List<User> users = new ArrayList<>();
+	@JsonProperty private List<User> users = new ArrayList<>();
 	
 	// Accounting Settings
-	private String defaultIncomeAccount;
-	private String defaultExpenseAccount;
-	private boolean autoNumberVouchers;
+	@JsonProperty private String defaultIncomeAccount;
+	@JsonProperty private String defaultExpenseAccount;
+	@JsonProperty private boolean autoNumberVouchers;
 	
 	// UI Preferences
 	private String theme;

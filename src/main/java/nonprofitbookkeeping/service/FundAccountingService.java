@@ -7,11 +7,13 @@ import nonprofitbookkeeping.model.Fund;
 import java.math.BigDecimal;
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class FundAccountingService
 {
 	
-	private final Map<String, Fund> fundMap;
-	private final Map<String, Account> accountMap;
+	@JsonProperty private final Map<String, Fund> fundMap;
+	@JsonProperty private final Map<String, Account> accountMap;
 	
 	public FundAccountingService()
 	{
@@ -75,7 +77,7 @@ public class FundAccountingService
 		{
 			
 			// Remove this account from all funds
-			for (Fund fund : account.getFunds())
+			for (Fund fund : account.getAssociatedFunds())
 			{
 				fund.removeAccount(account);
 			}
