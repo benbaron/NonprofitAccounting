@@ -2,104 +2,233 @@
 package nonprofitbookkeeping.ui.panels;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
-
+import java.util.function.Function;
+import javafx.beans.property.*;
+import javafx.collections.*;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import nonprofitbookkeeping.model.JournalEntry;
+import javafx.util.converter.BigDecimalStringConverter;
+
+import nonprofitbookkeeping.model.*;
 
 /**
- * JavaFX rewrite of {@code NewTransactionPanel}. Presents a simple form for
- * entering or editing a single debit/credit journal entry (one account).
- * On Save it passes a populated {@link JournalEntry} to the provided callback.
+ * Form that collects multiple accounting-entry lines until the transaction is
+ * balanced; Save stays disabled until debits = credits and > 0.
  */
 public class NewTransactionPanelFX extends BorderPane
 {
-	private final DatePicker datePicker = new DatePicker(LocalDate.now());
-	private final ComboBox<String> accountBox = new ComboBox<>();
-	private final TextField debitField = new TextField("0.00");
-	private final TextField creditField = new TextField("0.00");
-	private final TextArea memoArea = new TextArea();
 	
-	private final Consumer<JournalEntry> onSave;
-	private final String existingId;
-	
-	/** Create a blank transaction form. */
-	public NewTransactionPanelFX(Consumer<JournalEntry> onSave)
+	/* ===== static row model ===== */
+	public static final class Line
 	{
-		this(null, onSave);
+		public StringProperty account;
+		public ObjectProperty<AccountSide> side;
+		public ObjectProperty<BigDecimal> amount;
+		
+		/**
+		 * Constructor Line
+		 * @param a
+		 * @param amount
+		 */
+		Line(Account acc, AccountSide a, BigDecimal amount)
+		{
+			this.account = new SimpleStringProperty(acc.getName());
+			this.side = new SimpleObjectProperty<>(a);
+			this.amount = new SimpleObjectProperty<>(amount);
+		}
+		
+		/**  
+		 * Constructor Line
+		 */
+		public Line()
+		{
+			this.account = new SimpleStringProperty("");
+			this.side = new SimpleObjectProperty<>(AccountSide.DEBIT);
+			this.amount = new SimpleObjectProperty<>(BigDecimal.ZERO);
+		}
+		
 	}
 	
-	/** Edit constructor — fills fields with existing entry values. */
-	public NewTransactionPanelFX(JournalEntry existing, Consumer<JournalEntry> onSave)
+	/* ------------------------------------------------------------------ */
+	private final ObservableList<Line> lines = FXCollections.observableArrayList();
+	private final TableView<Line> table = new TableView<>(this.lines);
+	
+	private final DatePicker datePicker = new DatePicker(LocalDate.now());
+	private final TextArea memoArea = new TextArea();
+	private Button saveBtn;
+	private final Consumer<AccountingTransaction> onSave;
+	
+	public NewTransactionPanelFX(Consumer<AccountingTransaction> onSave)
 	{
 		this.onSave = onSave;
-		this.existingId = existing != null ? existing.getId() : null;
 		setPadding(new Insets(10));
 		buildUI();
-		if (existing != null)
-			fill(existing);
+		this.lines.addListener((ListChangeListener<Line>) c -> recalcTotals());
+		recalcTotals();
 	}
 	
+	/**  
+	 * Constructor NewTransactionPanelFX
+	 * @param existing
+	 * @param consumer
+	 */
+	public NewTransactionPanelFX(AccountingTransaction existing,
+		Consumer<AccountingTransaction> onSave)
+	{
+		this.onSave = onSave;
+		setPadding(new Insets(10));
+		buildUI(existing);
+		this.lines.addListener((ListChangeListener<Line>) c -> recalcTotals());
+		recalcTotals();
+	}
+	
+	/**
+	 * Populates the UI with an existing balanced transaction so the user can
+	 * correct or extend entry lines.
+	 */
+	private void buildUI(AccountingTransaction existing)
+	{
+		buildUI(); // reuse the default layout
+		
+		/* 1. header fields */
+		this.datePicker.setValue(LocalDate.parse(existing.getDate()));
+		this.memoArea.setText(existing.getMemo());
+		
+		/* 2. entry lines */
+		this.lines.clear();
+		
+		// Add the lines from the existing entries.
+		for (AccountingEntry e : existing.getEntries())
+		{
+			Account stub = new Account(); // minimal account holder
+			stub.setName(e.getAccountNumber());
+			this.lines.add(new Line(stub, e.getAccountSide(), e.getAmount()));
+		}
+		
+	}
+	
+	
+	/* ===== UI build ===== */
 	private void buildUI()
 	{
-		this.accountBox.getItems().addAll("Cash", "Bank Checking", "Donations", "Supplies Expense",
-			"Accounts Receivable");
-		this.accountBox.getSelectionModel().selectFirst();
-		this.memoArea.setPrefRowCount(3);
+		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		this.table.getColumns().addAll(
+			strCol("Account", l -> l.account),
+			sideCol(),
+			amtCol("Amount", l -> l.amount));
+		this.table.setEditable(true);                        // enable inline edits
+
+		this.table.setRowFactory(tv -> {                     // double-click edit row
+		    TableRow<Line> row = new TableRow<>();
+		    row.setOnMouseClicked(ev -> {
+		        if (ev.getClickCount() == 2 && !row.isEmpty()) {
+		            this.table.edit(row.getIndex(), this.table.getColumns().get(0)); // start edit
+		        }
+		    });
+		    return row;
+		});
 		
-		GridPane grid = new GridPane();
-		grid.setHgap(10);
-		grid.setVgap(8);
-		grid.setPadding(new Insets(10));
-		grid.addRow(0, new Label("Date:"), this.datePicker);
-		grid.addRow(1, new Label("Account:"), this.accountBox);
-		grid.addRow(2, new Label("Debit:"), this.debitField);
-		grid.addRow(3, new Label("Credit:"), this.creditField);
-		grid.addRow(4, new Label("Memo:"), this.memoArea);
-		setCenter(grid);
+		Button add = new Button("+ Entry");
+		add.setOnAction(e -> this.lines.add(new Line()));
 		
-		Button save = new Button("Save");
-		save.setDefaultButton(true);
-		save.setOnAction(e -> save());
-		setBottom(save);
-		BorderPane.setMargin(save, new Insets(8));
+		Button del = new Button("Remove");
+		del.setOnAction(e -> {
+			Line sel = this.table.getSelectionModel().getSelectedItem();
+			if (sel != null)
+				this.lines.remove(sel);
+		});
+		
+		this.saveBtn = new Button("Save");
+		this.saveBtn.setDisable(true); // enabled only when balanced
+		this.saveBtn.setOnAction(e -> persist());
+		
+		GridPane top = new GridPane();
+		top.setHgap(10);
+		top.setVgap(8);
+		top.addRow(0, new Label("Date:"), this.datePicker);
+		top.addRow(1, new Label("Memo:"), this.memoArea);
+		
+		setTop(top);
+		setCenter(this.table);
+		setBottom(new ToolBar(add, del, new Separator(), this.saveBtn));
 	}
 	
-	private void fill(JournalEntry e)
+	/* ===== build columns ===== */
+	private static TableColumn<Line, String> strCol(String t,
+													Function<Line, Property<String>> fx)
 	{
-		this.datePicker.setValue(LocalDate.parse(e.getDate()));
-		this.accountBox.setValue(e.getAccount());
-		this.debitField.setText(e.getDebit().toPlainString());
-		this.creditField.setText(e.getCredit().toPlainString());
-		this.memoArea.setText(e.getMemo());
+		TableColumn<Line, String> c = new TableColumn<>(t);
+		c.setCellValueFactory(cell -> fx.apply(cell.getValue()));
+		c.setCellFactory(TextFieldTableCell.forTableColumn());
+		return c;
 	}
 	
-	private void save()
+	/**
+	 * 
+	 * @return
+	 */
+	private static TableColumn<Line, AccountSide> sideCol()
 	{
+		TableColumn<Line, AccountSide> c = new TableColumn<>("Side");
+		c.setCellValueFactory(cell -> cell.getValue().side);
+		c.setCellFactory(ChoiceBoxTableCell.forTableColumn(AccountSide.values()));
+		return c;
+	}
+	
+	/**
+	 * 
+	 * @param t
+	 * @param fx
+	 * @return
+	 */
+	private static TableColumn<Line, BigDecimal> amtCol(String t,
+														Function<Line, Property<BigDecimal>> fx)
+	{
+		TableColumn<Line, BigDecimal> c = new TableColumn<>(t);
+		c.setCellValueFactory(cell -> fx.apply(cell.getValue()));
+		c.setCellFactory(TextFieldTableCell.forTableColumn(new BigDecimalStringConverter()));
+		return c;
+	}
+	
+	/* ===== logic ===== */
+	private void recalcTotals()
+	{
+		BigDecimal debit = BigDecimal.ZERO, credit = BigDecimal.ZERO;
 		
-		try
+		for (Line l : this.lines)
 		{
-			BigDecimal debit = new BigDecimal(this.debitField.getText().trim());
-			BigDecimal credit = new BigDecimal(this.creditField.getText().trim());
-			String id = this.existingId != null ? this.existingId : UUID.randomUUID().toString();
-			JournalEntry entry = new JournalEntry(id,
-				this.datePicker.getValue().toString(),
-				this.accountBox.getValue(),
-				debit, credit,
-				this.memoArea.getText());
-			if (this.onSave != null)
-				this.onSave.accept(entry);
-		}
-		catch (@SuppressWarnings("unused") NumberFormatException ex)
-		{
-			new Alert(Alert.AlertType.ERROR, "Debit and Credit must be numeric").showAndWait();
+			BigDecimal amt = l.amount.get() != null ? l.amount.get() : BigDecimal.ZERO;
+			if (l.side.get() == AccountSide.DEBIT)
+				debit = debit.add(amt);
+			else
+				credit = credit.add(amt);
 		}
 		
+		this.saveBtn.setDisable(debit.signum() == 0 || debit.compareTo(credit) != 0);
+	}
+	
+	private void persist()
+	{
+		Set<AccountingEntry> entries = new LinkedHashSet<>();
+		
+		for (Line l : this.lines)
+		{
+			entries.add(new AccountingEntry(
+				l.amount.get(), l.account.get(), l.side.get()));
+		}
+		
+		AccountingTransaction tx = new AccountingTransaction(
+			new Account(), entries, Map.of(), Instant.now().toEpochMilli());
+		tx.setDate(this.datePicker.getValue().toString());
+		tx.setDescription(this.memoArea.getText());
+		this.onSave.accept(tx);
 	}
 	
 }

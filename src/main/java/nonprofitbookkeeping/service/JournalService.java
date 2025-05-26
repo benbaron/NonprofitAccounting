@@ -1,63 +1,54 @@
-/**
- * nonprofit-scaledger-ribbon.zip_expanded
- * JournalService.java
- * JournalService
- */
+
 package nonprofitbookkeeping.service;
 
-import nonprofitbookkeeping.model.JournalEntry;
-import nonprofitbookkeeping.ui.panels.JournalPanelFX.EntryRow;
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import nonprofitbookkeeping.model.AccountingTransaction;
 
 /**
- * 
+ * Thread-safe in-memory journal store.
  */
 public class JournalService
 {
-
-	/**
-	 * @param id
-	 */
-	public void deleteEntry(String id)
+	
+	private final Map<String, AccountingTransaction> store =
+		new ConcurrentHashMap<>();
+	
+	public void add(AccountingTransaction tx)
 	{
-		// TODO Auto-generated method stub
-		
+		put(tx);
 	}
-
-	/**
-	 * @param txn
-	 */
-	public void addEntry(JournalEntry txn)
+	
+	public void update(AccountingTransaction tx)
 	{
-		// TODO Auto-generated method stub
-		
+		put(tx);
 	}
-
-	/**
-	 * @param txn
-	 */
-	public void updateEntry(JournalEntry txn)
+	
+	public void delete(String id)
 	{
-		// TODO Auto-generated method stub
-		
+		this.store.remove(id);
 	}
-
-	/**
-	 * @return
-	 */
-	public Iterable<EntryRow> listEntries()
+	
+	public AccountingTransaction get(String id)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return this.store.get(id);
 	}
-
-	/**
-	 * @param id
-	 * @return
-	 */
-	public JournalEntry getEntry(String id)
+	
+	public Collection<AccountingTransaction> list()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return this.store.values();
+	}
+	
+	/* ---- helper ---- */
+	private void put(AccountingTransaction tx)
+	{
+		if (tx == null || tx.getId() == null)
+		{
+			throw new IllegalArgumentException("Null tx or id");
+		}
+		this.store.put(tx.getId(), tx);
 	}
 	
 }

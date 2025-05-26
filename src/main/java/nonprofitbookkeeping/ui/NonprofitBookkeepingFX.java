@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.function.Consumer;
 
 import javafx.application.Application;
-import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -328,6 +327,7 @@ public class NonprofitBookkeepingFX extends Application
 	            this.panels.setDisable(false);
 	            this.reports.setDisable(false);
 	        }
+			default -> throw new IllegalArgumentException("Unexpected value: " + s);
 	    }
 	}
 

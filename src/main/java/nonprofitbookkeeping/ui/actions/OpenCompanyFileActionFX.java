@@ -11,7 +11,6 @@ import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.exception.NoFileException;
 import nonprofitbookkeeping.model.CurrentCompany;
-import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.helpers.NpbkFileChooserFX;
 
 /**
@@ -21,7 +20,6 @@ public class OpenCompanyFileActionFX
 {
 	
 	/**
-	 * 
 	 * Constructor OpenCompanyFileActionFX
 	 * @param owner
 	 * @throws Exception 
@@ -44,7 +42,6 @@ public class OpenCompanyFileActionFX
 		}
 		catch (NoFileException | IOException | ActionCancelledException | NoFileCreatedException e1)
 		{
-			AlertBox.showError(owner, "File Load Failed");
 			throw e1;
 		}
 
