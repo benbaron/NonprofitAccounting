@@ -15,6 +15,8 @@ import javafx.scene.control.cell.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.util.converter.BigDecimalStringConverter;
+import javafx.util.converter.DefaultStringConverter; // Added import
+import nonprofitbookkeeping.ui.helpers.FocusCommitTextFieldTableCell; // Added import
 
 import nonprofitbookkeeping.model.*;
 
@@ -166,7 +168,8 @@ public class NewTransactionPanelFX extends BorderPane
 	{
 		TableColumn<Line, String> c = new TableColumn<>(t);
 		c.setCellValueFactory(cell -> fx.apply(cell.getValue()));
-		c.setCellFactory(TextFieldTableCell.forTableColumn());
+		// Use FocusCommitTextFieldTableCell with DefaultStringConverter
+		c.setCellFactory(param -> new FocusCommitTextFieldTableCell<>(new DefaultStringConverter()));
 		return c;
 	}
 	
@@ -193,7 +196,8 @@ public class NewTransactionPanelFX extends BorderPane
 	{
 		TableColumn<Line, BigDecimal> c = new TableColumn<>(t);
 		c.setCellValueFactory(cell -> fx.apply(cell.getValue()));
-		c.setCellFactory(TextFieldTableCell.forTableColumn(new BigDecimalStringConverter()));
+		// Use FocusCommitTextFieldTableCell with BigDecimalStringConverter
+		c.setCellFactory(param -> new FocusCommitTextFieldTableCell<>(new BigDecimalStringConverter()));
 		return c;
 	}
 	
