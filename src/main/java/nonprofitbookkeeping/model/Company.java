@@ -72,5 +72,21 @@ public class Company implements Serializable
 		this.chartOfAccounts = checkNotNull(chart);
 		
 	}
+
+	/**
+	 * @param created
+	 */
+	public void setCompanyProfileModel(CompanyProfileModel created)
+	{
+		this.companyProfileModel = created;
+	}
+
+	/**
+	 * @return the companyProfileModel
+	 */
+	public CompanyProfileModel getCompanyProfileModel()
+	{
+		return this.companyProfileModel;
+	}
 	
 }

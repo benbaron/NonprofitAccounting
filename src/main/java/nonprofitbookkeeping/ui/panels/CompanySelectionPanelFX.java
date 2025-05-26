@@ -14,7 +14,6 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
-import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.service.CompanyLoaderService;
 import nonprofitbookkeeping.service.PreferencesService;
@@ -92,15 +91,19 @@ public class CompanySelectionPanelFX extends BorderPane
 	{
 		this.npbkFiles.clear();
 		File dir = new File(PreferencesService.getDefaultCompanyDir());
+		
 		if (!dir.exists())
 		{
 			dir.mkdirs();
 		}
+		
 		this.npbkFiles.addAll(CompanyLoaderService.findCompanyFiles(dir));
+		
 		if (!this.npbkFiles.isEmpty())
 		{
 			this.companyList.getSelectionModel().selectFirst();
 		}
+		
 	}
 	
 	/**
@@ -115,7 +118,7 @@ public class CompanySelectionPanelFX extends BorderPane
 			this.previewArea.clear();
 			return;
 		}
-
+		
 		try
 		{
 			CurrentCompany.loadFromPersistent(f);
@@ -134,10 +137,12 @@ public class CompanySelectionPanelFX extends BorderPane
 	private void openSelected()
 	{
 		File sel = this.companyList.getSelectionModel().getSelectedItem();
+		
 		if (sel == null)
 		{
 			return;
 		}
+		
 		Alert a = new Alert(Alert.AlertType.INFORMATION, "Opening company: " + sel.getName());
 		a.showAndWait();
 		// TODO: notify application controller
@@ -151,10 +156,14 @@ public class CompanySelectionPanelFX extends BorderPane
 		// Reuse the CreateCompanyPanelFX in a new dialog
 		Stage dlg = new Stage();
 		dlg.setTitle("Create New Company");
-		CreateCompanyPanelFX form = new CreateCompanyPanelFX(null, model -> {
-			dlg.close();
-			reloadCompanyList();
-		});
+		
+		CreateCompanyPanelFX form =
+			new CreateCompanyPanelFX(null,
+				model ->
+				{
+					dlg.close();
+					reloadCompanyList();
+				});
 		dlg.setScene(new Scene(form, 800, 600));
 		dlg.show();
 	}

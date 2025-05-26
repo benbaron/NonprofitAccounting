@@ -12,6 +12,7 @@ import nonprofitbookkeeping.api.CompanyCreatedCallback;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CompanyProfileModel;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * JavaFX wizard for creating or editing a company profile.
  * Replaces the Swing {@code CreateCompanyPanel}.
@@ -58,9 +59,14 @@ public class CreateCompanyPanelFX extends BorderPane
 	 */
 	public CreateCompanyPanelFX(Company existing, CompanyCreatedCallback cb)
 	{
-		this.callback = cb;
+		checkNotNull(existing);
+		checkNotNull(cb);
+		
+		this.callback = cb; // save the callback
+		
 		setPadding(new Insets(10));
 		
+		// run the wizard
 		buildSteps(existing);
 		
 		setCenter(this.steps[0]);
@@ -69,29 +75,36 @@ public class CreateCompanyPanelFX extends BorderPane
 	}
 	
 	/* --------------------------------------------------------------------- */
-	private void buildSteps(Company ex)
+	
+	/**
+	 * Create the step panels
+	 * 
+	 * @param company Company's steps to create
+	 */
+	private void buildSteps(Company company)
 	{
 		
 		/* Prefill if editing */
-		if (ex != null && ex.getCompanyProfile() != null)
+		if (company != null && company.getCompanyProfile() != null)
 		{
-			var p = ex.getCompanyProfile();
-			this.nameField.setText(p.getCompanyName());
-			this.taxIdField.setText(p.getTaxId());
-			this.addressField.setText(p.getAddress());
-			this.phoneField.setText(p.getPhone());
-			this.emailField.setText(p.getEmail());
-			this.legalCb.setValue(p.getLegalStructure());
-			this.fiscalStartField.setText(p.getFiscalYearStart());
-			this.currencyCb.setValue(p.getBaseCurrency());
-			this.startBalField.setText(p.getStartingBalanceDate());
-			this.chartCb.setValue(p.getChartOfAccountsType());
-			this.adminUserField.setText(p.getAdminUsername());
-			this.adminPass.setText(p.getAdminPassword());
-			this.bankAcctField.setText(p.getDefaultBankAccount());
-			this.fundBox.setSelected(p.isEnableFundAccounting());
-			this.inventoryBox.setSelected(p.isEnableInventory());
-			this.multiCurBox.setSelected(p.isEnableMultiCurrency());
+			var profile = company.getCompanyProfile();
+			
+			this.nameField.setText(profile.getCompanyName());
+			this.taxIdField.setText(profile.getTaxId());
+			this.addressField.setText(profile.getAddress());
+			this.phoneField.setText(profile.getPhone());
+			this.emailField.setText(profile.getEmail());
+			this.legalCb.setValue(profile.getLegalStructure());
+			this.fiscalStartField.setText(profile.getFiscalYearStart());
+			this.currencyCb.setValue(profile.getBaseCurrency());
+			this.startBalField.setText(profile.getStartingBalanceDate());
+			this.chartCb.setValue(profile.getChartOfAccountsType());
+			this.adminUserField.setText(profile.getAdminUsername());
+			this.adminPass.setText(profile.getAdminPassword());
+			this.bankAcctField.setText(profile.getDefaultBankAccount());
+			this.fundBox.setSelected(profile.isEnableFundAccounting());
+			this.inventoryBox.setSelected(profile.isEnableInventory());
+			this.multiCurBox.setSelected(profile.isEnableMultiCurrency());
 		}
 		
 		/* Company Info */
@@ -127,7 +140,7 @@ public class CreateCompanyPanelFX extends BorderPane
 	}
 	
 	/**
-	 * 
+	 * Build grid
 	 * @param rows
 	 * @return
 	 */
@@ -137,15 +150,19 @@ public class CreateCompanyPanelFX extends BorderPane
 		g.setHgap(10);
 		g.setVgap(8);
 		g.setPadding(new Insets(10));
+		
 		ColumnConstraints c1 = new ColumnConstraints();
 		c1.setPercentWidth(30);
+		
 		ColumnConstraints c2 = new ColumnConstraints();
 		c2.setPercentWidth(70);
+		
 		g.getColumnConstraints().addAll(c1, c2);
 		return g;
 	}
 	
 	/**
+	 * Build a titled pane
 	 * 
 	 * @param title
 	 * @param content
@@ -159,27 +176,30 @@ public class CreateCompanyPanelFX extends BorderPane
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Build buttons
+	 * @return 
 	 */
 	private HBox buildButtons()
 	{
 		HBox box = new HBox(10, this.back, this.next, this.finish);
 		box.setPadding(new Insets(10));
+		
 		this.back.setOnAction(e -> {
 			this.step--;
 			updateStep();
 		});
+		
 		this.next.setOnAction(e -> {
 			this.step++;
 			updateStep();
 		});
+		
 		this.finish.setOnAction(e -> saveAndExit());
 		return box;
 	}
 	
 	/**
-	 * 
+	 * update step
 	 */
 	private void updateStep()
 	{
@@ -195,31 +215,33 @@ public class CreateCompanyPanelFX extends BorderPane
 	 */
 	private void saveAndExit()
 	{
-		CompanyProfileModel m = new CompanyProfileModel();
-		m.setCompanyName(this.nameField.getText());
-		m.setLegalStructure(this.legalCb.getValue());
-		m.setTaxId(this.taxIdField.getText());
-		m.setAddress(this.addressField.getText());
-		m.setPhone(this.phoneField.getText());
-		m.setEmail(this.emailField.getText());
-		m.setFiscalYearStart(this.fiscalStartField.getText());
-		m.setBaseCurrency(this.currencyCb.getValue());
-		m.setStartingBalanceDate(this.startBalField.getText());
-		m.setChartOfAccountsType(this.chartCb.getValue());
-		m.setAdminUsername(this.adminUserField.getText());
-		m.setAdminPassword(this.adminPass.getText());
-		m.setDefaultBankAccount(this.bankAcctField.getText());
-		m.setEnableFundAccounting(this.fundBox.isSelected());
-		m.setEnableInventory(this.inventoryBox.isSelected());
-		m.setEnableMultiCurrency(this.multiCurBox.isSelected());
+		CompanyProfileModel model = new CompanyProfileModel();
+		
+		model.setCompanyName(this.nameField.getText());
+		model.setLegalStructure(this.legalCb.getValue());
+		model.setTaxId(this.taxIdField.getText());
+		model.setAddress(this.addressField.getText());
+		model.setPhone(this.phoneField.getText());
+		model.setEmail(this.emailField.getText());
+		model.setFiscalYearStart(this.fiscalStartField.getText());
+		model.setBaseCurrency(this.currencyCb.getValue());
+		model.setStartingBalanceDate(this.startBalField.getText());
+		model.setChartOfAccountsType(this.chartCb.getValue());
+		model.setAdminUsername(this.adminUserField.getText());
+		model.setAdminPassword(this.adminPass.getText());
+		model.setDefaultBankAccount(this.bankAcctField.getText());
+		model.setEnableFundAccounting(this.fundBox.isSelected());
+		model.setEnableInventory(this.inventoryBox.isSelected());
+		model.setEnableMultiCurrency(this.multiCurBox.isSelected());
 		
 		if (this.callback != null)
 		{
-			this.callback.onCreatedProfileModel(m);
+			this.callback.onCreatedProfileModel(model);
 		}
 		else
 		{
-			new Alert(Alert.AlertType.INFORMATION, "Company saved: " + m.getCompanyName()).showAndWait();
+			new Alert(Alert.AlertType.INFORMATION, "Company saved: " + 
+				model.getCompanyName()).showAndWait();
 		}
 	}
 	

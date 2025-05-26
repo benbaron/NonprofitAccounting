@@ -33,6 +33,7 @@ public class CurrentCompany
 	public CurrentCompany()
 	{
 		company = new Company();
+		companyIsOpen = false;
 	}
 	
 	/**
@@ -76,18 +77,21 @@ public class CurrentCompany
 	
 	/**
 	 * Store back the data to persistent
+	 * 
 	 * @throws NoFileCreatedException 
 	 * @throws ActionCancelledException 
 	 * @throws IOException 
 	 */
 	public static void persist() throws IOException, ActionCancelledException, NoFileCreatedException
 	{
-		CurrentCompany.dataStorer.saveData(company,
+		CurrentCompany.dataStorer.saveData(
+			company,
 			checkNotNull(CurrentCompany.currentFile));
 		
 	}
 	
 	/**
+	 * loadFromPersistent
 	 * @param file
 	 * @throws NoFileCreatedException 
 	 * @throws ActionCancelledException 
@@ -95,10 +99,12 @@ public class CurrentCompany
 	 */
 	public static void loadFromPersistent(File file) throws IOException, ActionCancelledException, NoFileCreatedException
 	{
-		CurrentCompany.dataStorer.loadData(Company.class, file);
+		company = CurrentCompany.dataStorer.loadData(
+			Company.class, 
+			checkNotNull(file));
 	}
 	/**
-	 * 
+	 * close
 	 */
 	public static void close()
 	{
@@ -123,13 +129,18 @@ public class CurrentCompany
 		CompanyListener.fireChanged(true);
 	}
 	
+	/**
+	 * CompanyChangeListener
+	 */
 	public interface CompanyChangeListener extends EventListener
 	{
 		void companyChange(boolean b);
 		
 	}
 	
-	
+	/**
+	 * Company Listener
+	 */
 	public static class CompanyListener
 	{
 		private final static EventListenerList listeners = new EventListenerList();
@@ -145,8 +156,8 @@ public class CurrentCompany
 		}
 		
 		/**
-		 * @param b 
-		 * 
+		 * Fire changed action
+		 * @param b (open/closed)
 		 */
 		private static void fireChanged(boolean b)
 		{
@@ -160,6 +171,4 @@ public class CurrentCompany
 		
 	}
 
-
-	
 }

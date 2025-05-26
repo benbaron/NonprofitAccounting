@@ -7,6 +7,7 @@ import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.service.PreferencesService;
 import nonprofitbookkeeping.ui.panels.CreateCompanyPanelFX;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -44,18 +45,17 @@ public class CreateOrEditCompanyActionFX
 		// 3. Build the FX panel
 		CreateCompanyPanelFX panel = new CreateCompanyPanelFX(
 			existingCompany,
-			/* CompanyProfileModel */
+			// void onCreatedProfileModel(CompanyProfileModel created)
 			created ->
-			{
+			{				
 				// callback fires when the wizard saves
 				File out = new File(
 					PreferencesService.getDefaultCompanyDir(),
 					created.getCompanyName() + ".npbk");
 				
-				// get the company singleton,
-				// set its filename,
-				// store it
+				// Set the current filename.
 				CurrentCompany.setCurrentFile(out);
+				CurrentCompany.getCompany().setCompanyProfileModel(checkNotNull(created));
 				
 				try
 				{
@@ -63,7 +63,6 @@ public class CreateOrEditCompanyActionFX
 				}
 				catch (IOException | ActionCancelledException | NoFileCreatedException e)
 				{
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				

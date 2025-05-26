@@ -27,7 +27,7 @@ import nonprofitbookkeeping.preferences.PreferencesManager;
 public final class NpbkFileChooserFX
 {
 	
-	/* --------------------------------------------------------------------- */
+	/* ---------------------------------------------------*/
 	/** Original behaviour: just pick a file; must exist. */
 	public static File chooseExisting(	String title,
 										String description,
