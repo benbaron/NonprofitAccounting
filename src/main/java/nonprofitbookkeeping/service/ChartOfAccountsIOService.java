@@ -36,7 +36,7 @@ public final class ChartOfAccountsIOService
 	
 	public ChartOfAccountsIOService()
 	{
-		mapper = new ObjectMapper()
+		this.mapper = new ObjectMapper()
 			.registerModule(new JavaTimeModule())
 			.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 			.enable(SerializationFeature.INDENT_OUTPUT);
@@ -53,7 +53,7 @@ public final class ChartOfAccountsIOService
 	public void exportToJson(ChartOfAccounts coa, Path path) throws IOException
 	{
 		Files.createDirectories(path.getParent());
-		mapper.writeValue(path.toFile(), coa);
+		this.mapper.writeValue(path.toFile(), coa);
 	}
 	
 	/* ------------------------------------------------------------------ */
@@ -67,7 +67,7 @@ public final class ChartOfAccountsIOService
 	 */
 	public ChartOfAccounts importFromJson(Path path) throws IOException
 	{
-		return mapper.readValue(path.toFile(), ChartOfAccounts.class);
+		return this.mapper.readValue(path.toFile(), ChartOfAccounts.class);
 	}
 	
 }

@@ -14,7 +14,6 @@ import javafx.event.EventHandler;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.model.BeanShell;
-import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.preferences.PreferencesManager;
 import nonprofitbookkeeping.ui.NonprofitBookkeepingFX;
 import nonprofitbookkeeping.ui.actions.scaledger.SCALedgerDataLoader;

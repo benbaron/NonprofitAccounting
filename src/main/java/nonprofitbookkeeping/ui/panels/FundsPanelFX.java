@@ -33,7 +33,9 @@ public class FundsPanelFX extends BorderPane
 		this.service = service;
 		setPadding(new Insets(10));
 		buildTransferPane();
+		
 		buildTable();
+		
 		buildManagementPane();
 		refresh();
 	}
@@ -82,9 +84,10 @@ public class FundsPanelFX extends BorderPane
 	}
 	
 	/**
-	 * 
+	 * buildTable
 	 */
-	@SuppressWarnings({ "unchecked", "deprecation" }) private void buildTable()
+	@SuppressWarnings({ "unchecked", "deprecation" }) 
+	private void buildTable()
 	{
 		TableColumn<FundRow, String> nameCol = new TableColumn<>("Fund");
 		nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -140,7 +143,7 @@ public class FundsPanelFX extends BorderPane
 	}
 	
 	/**
-	 * 
+	 * deleteFundDialog
 	 */
 	private void deleteFundDialog()
 	{

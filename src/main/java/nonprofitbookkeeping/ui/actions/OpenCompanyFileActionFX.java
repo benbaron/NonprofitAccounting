@@ -24,8 +24,9 @@ public class OpenCompanyFileActionFX
 	 * 
 	 * Constructor OpenCompanyFileActionFX
 	 * @param owner
+	 * @throws Exception 
 	 */
-	public OpenCompanyFileActionFX(Stage owner)
+	public OpenCompanyFileActionFX(Stage owner) throws Exception
 	{
 	
 		try
@@ -44,6 +45,7 @@ public class OpenCompanyFileActionFX
 		catch (NoFileException | IOException | ActionCancelledException | NoFileCreatedException e1)
 		{
 			AlertBox.showError(owner, "File Load Failed");
+			throw e1;
 		}
 
 	}

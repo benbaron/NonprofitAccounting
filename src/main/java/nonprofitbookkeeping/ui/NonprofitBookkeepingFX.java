@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.function.Consumer;
 
 import javafx.application.Application;
-import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -25,6 +25,7 @@ import nonprofitbookkeeping.service.*;
 import nonprofitbookkeeping.ui.panels.*;
 import nonprofitbookkeeping.ui.actions.*;
 import nonprofitbookkeeping.ui.actions.scaledger.*;
+import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.model.CurrentCompany;
 
 /**
@@ -40,7 +41,19 @@ public class NonprofitBookkeepingFX extends Application
 	private BorderPane root;
 	private DashboardPanelFX dashboard;
 	@SuppressWarnings("unused") private CurrentCompany c;
-	private ReadOnlyObjectProperty<Company> prop;
+	
+
+	
+	private enum AppState { NO_COMPANY, CREATING_COMPANY, COMPANY_OPEN }
+	private AppState state = AppState.NO_COMPANY;      // current mode
+	
+
+	
+	/* menu item refs we enable/disable */
+	private MenuItem miOpen, miClose, miSave;
+	private MenuItem miEditCompany, miEditCoa, miEditJournal;
+	
+	private Menu run, reports, panels;
 	
 	/** Container for singletons we re-use across panels. */
 	private static final class ServiceContainer
@@ -88,6 +101,9 @@ public class NonprofitBookkeepingFX extends Application
 		Scene scene = new Scene(this.root, 1000, 700);
 		this.primaryStage.setScene(scene);
 		this.primaryStage.setTitle("Nonprofit Bookkeeping (JavaFX)");
+		
+		// set after creating the menu items
+		setState(AppState.NO_COMPANY);
 		this.primaryStage.show();
 	}
 	
@@ -101,35 +117,33 @@ public class NonprofitBookkeepingFX extends Application
 		
 		/* FILE */
 		Menu file = new Menu("File");
-		add(file, "Open Company File",
-			e -> new OpenCompanyFileActionFX(this.primaryStage));
-		add(file, "Close Company File",
-			e -> new CloseCompanyFileAction(this.primaryStage));
-		add(file, "Save Company File",
-			e -> new SaveCompanyFileAction(this.primaryStage));
-		add(file, "Create or Edit Company",
-			e -> new CreateOrEditCompanyActionFX(this.primaryStage));
+		this.miOpen = add(file, "Open Company File", e -> doOpenCompany());
+		this.miClose = add(file, "Close Company File", e -> doCloseCompany());
+		this.miSave = add(file, "Save Company File", e -> doSaveCompany());
 		
 		add(file, "Import File", e -> new ImportFileActionFX(this.primaryStage).handle(e));
 		add(file, "Export File", e -> new ExportFileActionFX(this.primaryStage).handle(e));
 		bar.getMenus().add(file);
 		
+		/* EDIT */
+		Menu edit = new Menu("Edit");
+		this.miEditCompany = add(edit, "Create or Edit Company", e -> startCreateWizard());
+		this.miEditCoa = add(edit, "Edit Chart of Accounts", e -> showCoaEditor());
+		this.miEditJournal = add(edit, "Edit Journal", e -> showPanel(new JournalPanelFX(), "Journal"));
+		bar.getMenus().add(edit);
+		
 		/* RUN */
-		Menu run = new Menu("Run");
-		add(run, "Show Settings",
-			e -> showPanel(new SettingsPanelFX(this.primaryStage), "Settings"));
-		add(run, "Documents & Attachments",
+		this.run = new Menu("Run");
+		
+		add(this.run, "Documents & Attachments",
 			e -> showPanel(new DocumentsPanelFX(ServiceContainer.dss), "Documents"));
-		add(run, "Inventory & Depreciation",
+		add(this.run, "Inventory & Depreciation",
 			e -> showPanel(new InventoryPanelFX(ServiceContainer.iss), "Inventory"));
-		add(run, "Funds & Fund Accounting",
+		add(this.run, "Funds & Fund Accounting",
 			e -> showPanel(new FundsPanelFX(ServiceContainer.fas), "Funds"));
-		add(run, "Reconcile",
+		add(this.run, "Reconcile",
 			e -> showPanel(new ReconcilePanelFX(new ReconciliationService()), "Reconciliation"));
 		CurrentCompany.getCompany();
-		add(run, "Edit Chart of Accounts",
-			e -> showCoaEditor());
-		
 		
 		/* SCA Ledger submenu */
 		Menu sca = new Menu("SCA Ledger");
@@ -141,39 +155,44 @@ public class NonprofitBookkeepingFX extends Application
 			e -> new SaveModifiedCopyActionFX(this.primaryStage).handle(e));
 		add(sca, "Import from JSON", e -> new ImportFromJsonActionFX(this.primaryStage).handle(e));
 		add(sca, "Undo Last Edit", e -> new UndoEditAction().actionPerformed(null));
-		run.getItems().add(sca);
-		bar.getMenus().add(run);
+		this.run.getItems().add(sca);
+		
+		bar.getMenus().add(this.run);
 		
 		/* REPORTS */
-		Menu reports = new Menu("Reports");
-		add(reports, "Generate Reports", e -> {
+		this.reports = new Menu("Reports");
+		add(this.reports, "Generate Reports", e -> {
 			/* implement */});
-		add(reports, "Show Reports", e -> showPanel(new ReportsPanelFX(), "Reports"));
-		add(reports, "Show Journal", e -> showPanel(new JournalPanelFX(), "Journal"));
-		add(reports, "Show Accounts",
+		add(this.reports, "Show Reports", e -> showPanel(new ReportsPanelFX(), "Reports"));
+		add(this.reports, "Show Accounts",
 			e -> showPanel(new AccountsPanelFX(new AccountService()), "Chart of Accounts"));
 		CurrentCompany.getCompany();
-		add(reports, "Show Account Activity",
-			e -> showPanel(
-				new AccountsActivityPanelFX(CurrentCompany.getCompany().getLedger()),
+		add(this.reports, "Show Account Activity",
+			e -> showPanel(new AccountsActivityPanelFX(CurrentCompany.getCompany().getLedger()),
 				"Account Activity"));
-		add(reports, "Generate Income Statement",
+		add(this.reports, "Generate Income Statement",
 			e -> new GenerateIncomeStatementAction(ServiceContainer.reportService)
 				.actionPerformed(null));
-		add(reports, "Generate Balance Sheet",
+		add(this.reports, "Generate Balance Sheet",
 			e -> new GenerateBalanceSheetAction(ServiceContainer.reportService)
 				.actionPerformed(null));
-		bar.getMenus().add(reports);
+		bar.getMenus().add(this.reports);
 		
 		/* PANELS */
-		Menu panels = new Menu("Panels");
-		add(panels, "Donors", e -> showPanel(new DonorsPanelFX(this.primaryStage), "Donors"));
-		add(panels, "Donations",
+		this.panels = new Menu("Panels");
+		add(this.panels, "Donors", e -> showPanel(new DonorsPanelFX(this.primaryStage), "Donors"));
+		add(this.panels, "Donations",
 			e -> showPanel(new DonationsPanelFX(this.primaryStage), "Donations"));
-		add(panels, "Grants", e -> showPanel(new GrantsPanelFX(this.primaryStage), "Grants"));
-		add(panels, "Sales & COG",
+		add(this.panels, "Grants", e -> showPanel(new GrantsPanelFX(this.primaryStage), "Grants"));
+		add(this.panels, "Sales & COG",
 			e -> showPanel(new SalesAndCOGPanelFX(this.primaryStage), "Sales & COG"));
-		bar.getMenus().add(panels);
+		bar.getMenus().add(this.panels);
+		
+		/* SETTINGS */
+		Menu settings = new Menu("Settings");
+		add(settings, "Show Settings",
+			e -> showPanel(new SettingsPanelFX(this.primaryStage), "Settings"));
+		bar.getMenus().add(settings);
 		
 		/* HELP */
 		Menu help = new Menu("Help");
@@ -190,13 +209,15 @@ public class NonprofitBookkeepingFX extends Application
 	 * @param label its label
 	 * @param handler Its handler
 	 */
-	private static void add(Menu menu,
-							String label,
-							EventHandler<ActionEvent> handler)
+	/** helper now returns the created MenuItem */
+	private static MenuItem add(Menu menu, 
+	                            String label, 
+	                            EventHandler<ActionEvent> handler)
 	{
 		MenuItem item = new MenuItem(label);
 		item.setOnAction(handler);
 		menu.getItems().add(item);
+		return item;
 	}
 	
 	/* ───────────────────────────────────────────────────────────────────────── */
@@ -238,6 +259,7 @@ public class NonprofitBookkeepingFX extends Application
 				@Override public void accept(ChartOfAccounts chart)
 				{
 					activeCompany.setChartOfAccounts(chart);
+					
 					try
 					{
 						CurrentCompany.persist();
@@ -246,6 +268,7 @@ public class NonprofitBookkeepingFX extends Application
 					{
 						e.printStackTrace();
 					}
+					
 				}
 				
 			},
@@ -263,5 +286,139 @@ public class NonprofitBookkeepingFX extends Application
 		this.root.setCenter(editor);
 		
 	}
+	
+	/* ====== state machine wiring ===================================== */
+	private void setState(AppState s) {
+	    this.state = s;            // store new mode
 
+	    switch (s) {
+	        case NO_COMPANY -> {
+	            this.miOpen.setDisable(false);
+	            this.miClose.setDisable(true);
+	            this.miSave.setDisable(true);
+	            this.miEditCompany.setDisable(false);
+	            this.miEditCoa.setDisable(true);
+	            this.miEditJournal.setDisable(true);
+	            
+	            this.run.setDisable(true);
+	            this.panels.setDisable(true);
+	            this.reports.setDisable(true);
+	        }
+	        case CREATING_COMPANY -> {
+	            this.miOpen.setDisable(true);
+	            this.miClose.setDisable(true);
+	            this.miSave.setDisable(true);
+	            this.miEditCompany.setDisable(true);
+	            this.miEditCoa.setDisable(true);
+	            this.miEditJournal.setDisable(true);
+	            
+	            this.run.setDisable(true);
+	            this.panels.setDisable(true);
+	            this.reports.setDisable(true);
+	        }
+	        case COMPANY_OPEN -> {
+	            this.miOpen.setDisable(true);
+	            this.miClose.setDisable(false);
+	            this.miSave.setDisable(false);
+	            this.miEditCompany.setDisable(false);
+	            this.miEditCoa.setDisable(false);
+	            this.miEditJournal.setDisable(false);
+	            
+	            this.run.setDisable(false);
+	            this.panels.setDisable(false);
+	            this.reports.setDisable(false);
+	        }
+	    }
+	}
+
+	
+	/* ====== workflow methods that flip the state ===================== */
+	
+	/**
+	 * doOpenCompany
+	 */
+	@SuppressWarnings("unused") private void doOpenCompany()
+	{
+		try
+		{
+			OpenCompanyFileActionFX openCompanyFileActionFX = new OpenCompanyFileActionFX(this.primaryStage);
+			setState(AppState.COMPANY_OPEN);
+		}
+		catch (Exception e)
+		{
+			AlertBox.showError(null, e.getMessage());
+		}
+	}
+	
+	/**
+	 * doCloseCompany
+	 */
+	@SuppressWarnings("unused") private void doCloseCompany()
+	{
+		try
+		{
+			CloseCompanyFileAction closeCompanyFileAction = 
+				new CloseCompanyFileAction(this.primaryStage);
+			setState(AppState.NO_COMPANY);
+		}
+		catch (Exception e)
+		{
+			AlertBox.showError(null, e.getMessage());
+		}
+		
+		this.root.setCenter(this.dashboard);
+	}
+	
+	/**
+	 * doSaveCompany
+	 */
+	@SuppressWarnings("unused") private void doSaveCompany()
+	{		
+		try
+		{
+			SaveCompanyFileAction saveCompanyFileAction =
+				new SaveCompanyFileAction(this.primaryStage);
+			AlertBox.showInfo(null, "Company saved.");
+		}
+		catch (Exception ex)
+		{
+			AlertBox.showError(null, ex.getMessage());
+		}
+		
+	}
+	
+	/**
+	 * startCreateWizard
+	 */
+	@SuppressWarnings("unused") private void startCreateWizard()
+	{
+		AppState saved = getState();
+		setState(AppState.CREATING_COMPANY);
+		
+		try
+		{
+			CreateOrEditCompanyActionFX createOrEditCompanyActionFX = 
+				new CreateOrEditCompanyActionFX(this.primaryStage);
+			setState(AppState.COMPANY_OPEN);
+		}
+		catch (Exception e)
+		{
+			// roll back state if create failed.
+			setState(saved);
+			e.printStackTrace();
+			AlertBox.showError(null, e.getMessage());
+		}
+		
+		
+	}
+
+	/**
+	 * @return
+	 */
+	private AppState getState()
+	{
+		return this.state;
+	}
+		
+	
 }

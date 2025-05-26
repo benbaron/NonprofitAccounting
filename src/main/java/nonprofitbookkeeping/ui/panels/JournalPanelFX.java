@@ -23,6 +23,10 @@ public class JournalPanelFX extends BorderPane
 	private final ObservableList<EntryRow> rows = FXCollections.observableArrayList();
 	private final TableView<EntryRow> table = new TableView<>();
 	
+	/**
+	 * 
+	 * Constructor JournalPanelFX
+	 */
 	public JournalPanelFX()
 	{
 		this.service = new JournalService();
@@ -34,7 +38,8 @@ public class JournalPanelFX extends BorderPane
 	}
 	
 	/* ------------------------------------------------------------------ */
-	@SuppressWarnings({ "unchecked", "deprecation" }) private void buildTable()
+	@SuppressWarnings({ "unchecked", "deprecation" }) 
+	private void buildTable()
 	{
 		TableColumn<EntryRow, String> idCol = col("ID", "id");
 		TableColumn<EntryRow, String> dateCol = col("Date", "date");
@@ -80,6 +85,9 @@ public class JournalPanelFX extends BorderPane
 		return new ToolBar(add, edit, del);
 	}
 	
+	/**
+	 * 
+	 */
 	private void newTransaction()
 	{
 		NewTransactionPanelFX pane = new NewTransactionPanelFX(txn -> {
@@ -93,6 +101,10 @@ public class JournalPanelFX extends BorderPane
 		dlg.showAndWait();
 	}
 	
+	/**
+	 * 
+	 * @param row
+	 */
 	private void editTransaction(EntryRow row)
 	{
 		JournalEntry entry = this.service.getEntry(row.id);
