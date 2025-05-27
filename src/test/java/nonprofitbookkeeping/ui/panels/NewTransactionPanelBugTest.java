@@ -57,7 +57,7 @@ public class NewTransactionPanelBugTest {
     // FxRobot lookups are generally safer.
 
     @Test
-    void reproduceDataErasureBug(FxRobot robot) {
+    void reproduceDataErasureBug(FxRobot robot1) {
         // Step 1: Setup is done in @Start
 
         // Step 2: Add an initial empty line to the table
@@ -68,34 +68,34 @@ public class NewTransactionPanelBugTest {
         WaitForAsyncUtils.waitForFxEvents(); // Wait for UI updates
 
         // Verify line was added
-        Assertions.assertThat(this.linesTable.getItems()).hasSize(1);
+        org.assertj.core.api.Assertions.assertThat(this.linesTable.getItems()).hasSize(1);
         Line addedLine = this.linesTable.getItems().get(0);
-        Assertions.assertThat(addedLine.amount.get()).isEqualTo(BigDecimal.ZERO);
+        org.assertj.core.api.Assertions.assertThat(addedLine.amount.get()).isEqualTo(BigDecimal.ZERO);
 
 
         // Step 3 & 4: Target the "Amount" cell of the first row and start editing.
         // "Amount" is the 3rd column (index 2).
         // Using direct node lookup for the cell.
         // Ensure row exists before trying to click on it.
-        org.testfx.service.query.NodeQuery rowQuery = robot.lookup(".table-row-cell").nth(0);
-        Assertions.assertThat(rowQuery.queryAll()).isNotEmpty(); // Make sure row is there
+        org.testfx.service.query.NodeQuery rowQuery = robot1.lookup(".table-row-cell").nth(0);
+        org.assertj.core.api.Assertions.assertThat(rowQuery.queryAll()).isNotEmpty(); // Make sure row is there
 
         org.testfx.service.query.NodeQuery cellQuery = rowQuery.lookup(".table-cell").nth(2);
         
-        Assertions.assertThat(cellQuery.queryAll()).isNotEmpty(); // Make sure cell is there
+        org.assertj.core.api.Assertions.assertThat(cellQuery.queryAll()).isNotEmpty(); // Make sure cell is there
         
-        robot.doubleClickOn(null); // FIXME
+        robot1.doubleClickOn(null); // FIXME
 
         WaitForAsyncUtils.waitForFxEvents();
 
         
         // Step 5: Simulate typing a new value
-        robot.write("100.00");
+        robot1.write("100.00");
         WaitForAsyncUtils.waitForFxEvents();
 
         // Step 6: Click on another UI element (Memo TextArea) to make the cell lose focus
         Assertions.assertThat(this.memoTextArea).isNotNull(); // Ensure memoTextArea was found
-        robot.clickOn(this.memoTextArea);
+        robot1.clickOn(this.memoTextArea);
         WaitForAsyncUtils.waitForFxEvents();
 
         // Step 7: Retrieve the value from the cell's underlying model item
@@ -105,7 +105,7 @@ public class NewTransactionPanelBugTest {
         // Step 8: Assert that the value has reverted to BigDecimal.ZERO (the default for new Line's amount)
         // This assertion is the core of the bug reproduction.
         // If the bug exists, the value "100.00" was not committed, and it reverted.
-        Assertions.assertThat(amountAfterLosingFocus)
+        org.assertj.core.api.Assertions.assertThat(amountAfterLosingFocus)
             .as("Amount in the first line after losing focus and typing '100.00'")
             .isEqualTo(BigDecimal.ZERO); 
             // If it was not BigDecimal.ZERO but some other default, this would need to change.

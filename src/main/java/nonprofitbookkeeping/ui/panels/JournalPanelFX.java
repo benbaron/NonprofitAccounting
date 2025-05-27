@@ -2,7 +2,6 @@
 package nonprofitbookkeeping.ui.panels;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 import javafx.collections.*;
@@ -46,14 +45,14 @@ public class JournalPanelFX extends BorderPane
 			col("Memo", "memo"));
 	}
 	
-	private TableColumn<AccountingTransaction, String> col(String t, String p)
+	private static TableColumn<AccountingTransaction, String> col(String t, String p)
 	{
 		TableColumn<AccountingTransaction, String> c = new TableColumn<>(t);
 		c.setCellValueFactory(new PropertyValueFactory<>(p));
 		return c;
 	}
 	
-	private TableColumn<AccountingTransaction, BigDecimal> num(String t, String p)
+	private static TableColumn<AccountingTransaction, BigDecimal> num(String t, String p)
 	{
 		TableColumn<AccountingTransaction, BigDecimal> c = new TableColumn<>(t);
 		c.setCellValueFactory(new PropertyValueFactory<>(p));

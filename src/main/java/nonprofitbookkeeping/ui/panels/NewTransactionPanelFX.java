@@ -97,7 +97,8 @@ public class NewTransactionPanelFX extends BorderPane
 	 */
 	private void buildUI(AccountingTransaction existing)
 	{
-		buildUI(); // reuse the default layout
+		buildUI(); 
+		this.lines.forEach(this::watch);  
 		
 		/* 1. header fields */
 		this.datePicker.setValue(LocalDate.parse(existing.getDate()));
@@ -109,13 +110,14 @@ public class NewTransactionPanelFX extends BorderPane
 		// Add the lines from the existing entries.
 		for (AccountingEntry e : existing.getEntries())
 		{
-			Account stub = new Account(); // minimal account holder
+			Account stub = new Account();
 			stub.setName(e.getAccountNumber());
-			this.lines.add(new Line(stub, e.getAccountSide(), e.getAmount()));
+			Line line = new Line(stub, e.getAccountSide(), e.getAmount());
+			this.lines.add(line);
+			watch(line);
 		}
 		
 	}
-	
 	
 	/* ===== UI build ===== */
 	private void buildUI()
@@ -125,26 +127,36 @@ public class NewTransactionPanelFX extends BorderPane
 			strCol("Account", l -> l.account),
 			sideCol(),
 			amtCol("Amount", l -> l.amount));
-		this.table.setEditable(true);                        // enable inline edits
-
-		this.table.setRowFactory(tv -> {                     // double-click edit row
-		    TableRow<Line> row = new TableRow<>();
-		    row.setOnMouseClicked(ev -> {
-		        if (ev.getClickCount() == 2 && !row.isEmpty()) {
-		            this.table.edit(row.getIndex(), this.table.getColumns().get(0)); // start edit
-		        }
-		    });
-		    return row;
+		this.table.setEditable(true); // enable inline edits
+		
+		this.table.setRowFactory(tv -> { // double-click edit row
+			TableRow<Line> row = new TableRow<>();
+			row.setOnMouseClicked(ev -> {
+				
+				if (ev.getClickCount() == 2 && !row.isEmpty())
+				{
+					this.table.edit(row.getIndex(), this.table.getColumns().get(0)); // start edit
+				}
+				
+			});
+			return row;
 		});
 		
 		Button add = new Button("+ Entry");
-		add.setOnAction(e -> this.lines.add(new Line()));
+		add.setOnAction(e -> {
+			Line line = new Line();
+			this.lines.add(line);
+			watch(line);
+		});
+		
 		
 		Button del = new Button("Remove");
 		del.setOnAction(e -> {
 			Line sel = this.table.getSelectionModel().getSelectedItem();
 			if (sel != null)
+			{
 				this.lines.remove(sel);
+			}
 		});
 		
 		this.saveBtn = new Button("Save");
@@ -169,7 +181,8 @@ public class NewTransactionPanelFX extends BorderPane
 		TableColumn<Line, String> c = new TableColumn<>(t);
 		c.setCellValueFactory(cell -> fx.apply(cell.getValue()));
 		// Use FocusCommitTextFieldTableCell with DefaultStringConverter
-		c.setCellFactory(param -> new FocusCommitTextFieldTableCell<>(new DefaultStringConverter()));
+		c.setCellFactory(
+			param -> new FocusCommitTextFieldTableCell<>(new DefaultStringConverter()));
 		return c;
 	}
 	
@@ -197,7 +210,8 @@ public class NewTransactionPanelFX extends BorderPane
 		TableColumn<Line, BigDecimal> c = new TableColumn<>(t);
 		c.setCellValueFactory(cell -> fx.apply(cell.getValue()));
 		// Use FocusCommitTextFieldTableCell with BigDecimalStringConverter
-		c.setCellFactory(param -> new FocusCommitTextFieldTableCell<>(new BigDecimalStringConverter()));
+		c.setCellFactory(
+			param -> new FocusCommitTextFieldTableCell<>(new BigDecimalStringConverter()));
 		return c;
 	}
 	
@@ -210,14 +224,21 @@ public class NewTransactionPanelFX extends BorderPane
 		{
 			BigDecimal amt = l.amount.get() != null ? l.amount.get() : BigDecimal.ZERO;
 			if (l.side.get() == AccountSide.DEBIT)
+			{
 				debit = debit.add(amt);
+			}
 			else
+			{
 				credit = credit.add(amt);
+			}
 		}
 		
 		this.saveBtn.setDisable(debit.signum() == 0 || debit.compareTo(credit) != 0);
 	}
 	
+	/**
+	 * 
+	 */
 	private void persist()
 	{
 		Set<AccountingEntry> entries = new LinkedHashSet<>();
@@ -233,6 +254,15 @@ public class NewTransactionPanelFX extends BorderPane
 		tx.setDate(this.datePicker.getValue().toString());
 		tx.setDescription(this.memoArea.getText());
 		this.onSave.accept(tx);
+	}
+	
+	/* ── helper ────────────────────────────────────────────────────────── */
+	private void watch(Line l)
+	{
+		l.amount.addListener((obs, o, n) -> recalcTotals());
+		l.side.addListener((obs, o, n) -> recalcTotals());
+		l.account.addListener((obs, o, n) -> {
+			/* account text change doesn’t affect totals but keeps UI fresh */});
 	}
 	
 }

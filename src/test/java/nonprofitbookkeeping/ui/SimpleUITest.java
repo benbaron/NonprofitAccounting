@@ -23,10 +23,10 @@ public class SimpleUITest {
      */
     @Start
     private void start(Stage stage) {
-        button = new Button("click me!");
-        button.setId("myButton");
-        button.setOnAction(actionEvent -> button.setText("clicked!"));
-        stage.setScene(new Scene(new StackPane(button), 100, 100));
+        this.button = new Button("click me!");
+        this.button.setId("myButton");
+        this.button.setOnAction(actionEvent -> this.button.setText("clicked!"));
+        stage.setScene(new Scene(new StackPane(this.button), 100, 100));
         stage.show();
     }
 
@@ -35,7 +35,7 @@ public class SimpleUITest {
      */
     @Test
     void should_contain_button_with_text(FxRobot robot) {
-        Assertions.assertThat(button).hasText("click me!");
+        Assertions.assertThat(this.button).hasText("click me!");
         // or (lookup by css id):
         Assertions.assertThat(robot.lookup("#myButton").queryAs(Button.class)).hasText("click me!");
         // or (lookup by css class):
@@ -48,7 +48,7 @@ public class SimpleUITest {
         robot.clickOn(".button");
 
         // then:
-        Assertions.assertThat(button).hasText("clicked!");
+        Assertions.assertThat(this.button).hasText("clicked!");
         // or (lookup by css id):
         Assertions.assertThat(robot.lookup("#myButton").queryAs(Button.class)).hasText("clicked!");
         // or (lookup by css class):
