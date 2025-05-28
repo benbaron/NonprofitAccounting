@@ -18,22 +18,26 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import nonprofitbookkeeping.plugins.scaledger.SCALedgerPlugin; // Added
+import nonprofitbookkeeping.plugins.scaledger.ui.PageViewerPanel; // Added
 import nonprofitbookkeeping.preferences.PreferencesManager;
 
 /**
  * JavaFX version of the Swing {@code ImportFromJsonAction}. Opens a JSON file, converts it to a
- * Swing {@link DefaultTableModel}, then drops that data into the current {@link PageViewer}
- * table model so the ledger grid updates live.
+ * Swing {@link DefaultTableModel}, then drops that data into the plugin's {@link PageViewerPanel}
+ * table model and displays the panel.
  */
 public class ImportFromJsonActionFX implements EventHandler<ActionEvent>
 {
 	
 	private final Stage owner;
 	private final ObjectMapper mapper = new ObjectMapper();
+	private final SCALedgerPlugin plugin; // Added
 	
-	public ImportFromJsonActionFX(Stage owner)
+	public ImportFromJsonActionFX(Stage owner, SCALedgerPlugin plugin) // Updated constructor
 	{
 		this.owner = owner;
+		this.plugin = plugin; // Added
 	}
 	
 	/**
@@ -67,13 +71,16 @@ public class ImportFromJsonActionFX implements EventHandler<ActionEvent>
 		{
 			DefaultTableModel imported = importJsonToTableModel(file);
 			
-			// Push data into the existing PageViewer model
-			Vector<String> cols = new Vector<>();
-			for (int i = 0; i < imported.getColumnCount(); i++)
-				cols.add(imported.getColumnName(i));
-			PageViewer.getTableModel().setDataVector(imported.getDataVector(), cols);
+            PageViewerPanel pvp = this.plugin.getPageViewerPanel();
+            if (pvp == null) {
+                new Alert(Alert.AlertType.ERROR, "PageViewerPanel not initialized in plugin.").showAndWait();
+                return;
+            }
+            
+            pvp.loadData(imported);
+            pvp.displayInWindow(this.owner, "JSON Import Viewer - " + file.getName());
 			
-			new Alert(Alert.AlertType.INFORMATION, "Ledger imported from JSON.")
+			new Alert(Alert.AlertType.INFORMATION, "Data loaded into viewer from JSON.") // Updated message
 				.showAndWait();
 			PreferencesManager.setLastDirectory(file.getParent());
 		}

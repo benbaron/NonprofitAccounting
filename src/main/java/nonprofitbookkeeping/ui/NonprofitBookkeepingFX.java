@@ -22,8 +22,26 @@ import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.service.*;
 import nonprofitbookkeeping.ui.panels.*;
+import nonprofitbookkeeping.ui.actions.GenerateBalanceSheetAction;
+import nonprofitbookkeeping.ui.actions.GenerateCashFlowStatementAction; // Added
+import nonprofitbookkeeping.ui.actions.GenerateBalanceSheetAction;
+import nonprofitbookkeeping.ui.actions.GenerateBudgetVsActualsReportAction; // Added
+import nonprofitbookkeeping.ui.actions.GenerateCashFlowStatementAction; 
+import nonprofitbookkeeping.ui.actions.GenerateAccountActivityReportAction; // Added
+import nonprofitbookkeeping.ui.actions.GenerateBalanceSheetAction;
+import nonprofitbookkeeping.ui.actions.GenerateBudgetVsActualsReportAction; 
+import nonprofitbookkeeping.ui.actions.GenerateCashFlowStatementAction; 
+import nonprofitbookkeeping.ui.actions.GenerateIncomeStatementAction;
+import nonprofitbookkeeping.ui.actions.GenerateTrialBalanceAction;
 import nonprofitbookkeeping.ui.actions.*;
 import nonprofitbookkeeping.ui.actions.scaledger.*;
+import nonprofitbookkeeping.service.BudgetService; 
+import nonprofitbookkeeping.ui.panels.BudgetPanel; 
+import nonprofitbookkeeping.service.ReportConfigurationService; 
+import nonprofitbookkeeping.ui.panels.ManageReportConfigurationsDialog; 
+import java.io.File; 
+import java.util.ArrayList; 
+import nonprofitbookkeeping.model.Fund; 
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.model.CurrentCompany;
 
@@ -59,6 +77,8 @@ public class NonprofitBookkeepingFX extends Application
 	{
 		private static final InventoryService iss = new InventoryService();
 		private static final ReportService reportService = new ReportService();
+		private static final BudgetService budgetService = new BudgetService(); 
+		private static final ReportConfigurationService reportConfigurationService = new ReportConfigurationService(); // Added
 		private static final DocumentStorageService dss = new DocumentStorageService();
 		private static final FundAccountingService fas = new FundAccountingService();
 		
@@ -129,6 +149,35 @@ public class NonprofitBookkeepingFX extends Application
 		this.miEditCompany = add(edit, "Create or Edit Company", e -> startCreateWizard());
 		this.miEditCoa = add(edit, "Edit Chart of Accounts", e -> showCoaEditor());
 		this.miEditJournal = add(edit, "Edit Journal", e -> showPanel(new JournalPanelFX(), "Journal"));
+		
+		add(edit, "Open Budget Editor", e -> {
+            Company currentCompany = CurrentCompany.getCompany();
+            if (currentCompany == null) {
+                AlertBox.showError(this.primaryStage, "No company open.");
+                return;
+            }
+            File companyDir = null;
+            if (currentCompany.getCompanyFile() != null) {
+                companyDir = currentCompany.getCompanyFile().getParentFile();
+            }
+            if (companyDir == null) {
+                 AlertBox.showError(this.primaryStage, "Company directory not found. Cannot manage budgets.");
+                 return;
+            }
+
+            // For V1, always open to create a new budget.
+            // Company.getFunds() does not exist, so pass an empty list for now.
+            List<Fund> funds = new ArrayList<>(); 
+            BudgetPanel budgetPanel = new BudgetPanel(
+                null, // Owner Frame for Swing JDialog
+                currentCompany.getChartOfAccounts(),
+                funds, 
+                ServiceContainer.budgetService,
+                companyDir,
+                null // Passing null for budgetToEdit to create a new budget
+            );
+            budgetPanel.setVisible(true); 
+        });
 		bar.getMenus().add(edit);
 		
 		/* RUN */
@@ -169,12 +218,51 @@ public class NonprofitBookkeepingFX extends Application
 		add(this.reports, "Show Account Activity",
 			e -> showPanel(new AccountsActivityPanelFX(CurrentCompany.getCompany().getLedger()),
 				"Account Activity"));
-		add(this.reports, "Generate Income Statement",
-			e -> new GenerateIncomeStatementAction(ServiceContainer.reportService)
-				.actionPerformed(null));
-		add(this.reports, "Generate Balance Sheet",
-			e -> new GenerateBalanceSheetAction(ServiceContainer.reportService)
-				.actionPerformed(null));
+		GenerateIncomeStatementAction incomeStatementAction = new GenerateIncomeStatementAction(ServiceContainer.reportService);
+		add(this.reports, "Generate Income Statement", incomeStatementAction::actionPerformed);
+		
+		GenerateBalanceSheetAction balanceSheetAction = new GenerateBalanceSheetAction(ServiceContainer.reportService);
+		add(this.reports, "Generate Balance Sheet", balanceSheetAction::actionPerformed);
+
+		GenerateTrialBalanceAction trialBalanceAction = new GenerateTrialBalanceAction(ServiceContainer.reportService);
+		add(this.reports, "Generate Trial Balance", trialBalanceAction::actionPerformed);
+		
+		GenerateCashFlowStatementAction cashFlowStatementAction = new GenerateCashFlowStatementAction(ServiceContainer.reportService);
+		add(this.reports, "Generate Cash Flow Statement", cashFlowStatementAction::actionPerformed);
+		
+		GenerateBudgetVsActualsReportAction bvaAction = new GenerateBudgetVsActualsReportAction(ServiceContainer.reportService, ServiceContainer.budgetService);
+        add(this.reports, "Generate Budget vs. Actuals Report", bvaAction::actionPerformed);
+		
+        add(this.reports, "Manage Saved Reports", e -> {
+            Company currentCompany = CurrentCompany.getCompany();
+            if (currentCompany == null) { // Check currentCompany first
+                AlertBox.showError(this.primaryStage, "No company open.");
+                return;
+            }
+            File companyFile = currentCompany.getCompanyFile();
+            if (companyFile == null) {
+                 AlertBox.showError(this.primaryStage, "Company file path not set. Cannot manage saved reports.");
+                 return;
+            }
+            File companyDir = companyFile.getParentFile();
+            if (companyDir == null) {
+                 AlertBox.showError(this.primaryStage, "Company directory not found. Cannot manage saved reports.");
+                 return;
+            }
+
+            ManageReportConfigurationsDialog manageDialog = new ManageReportConfigurationsDialog(
+                null, // Swing owner Frame
+                ServiceContainer.reportConfigurationService,
+                companyDir,
+                new ArrayList<Fund>(), // availableFunds placeholder
+                ServiceContainer.reportService 
+            );
+            manageDialog.setVisible(true);
+        });
+
+        GenerateAccountActivityReportAction aaAction = new GenerateAccountActivityReportAction(ServiceContainer.reportService);
+        add(this.reports, "Generate Account Activity Detail", aaAction::actionPerformed);
+
 		bar.getMenus().add(this.reports);
 		
 		/* PANELS */

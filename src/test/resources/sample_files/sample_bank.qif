@@ -1,0 +1,25 @@
+!Type:Bank
+D1/5/2023
+T-50.75
+PStarbucks
+MCoffee
+N101
+^
+D1/15/2023
+T1250.00
+PDeposit
+MSalary
+^
+D1/20/23
+T-105.00
+PUtility Company
+MElectric Bill
+NCK2345
+^
+D2/5'23
+T-15.20
+PGroceries
+^
+!Account
+Name:Checking Account
+^

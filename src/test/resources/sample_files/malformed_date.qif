@@ -1,0 +1,13 @@
+!Type:Bank
+D1/5/2023
+T-50.00
+POK Transaction
+^
+DINVALID_DATE_HERE
+T-20.00
+PBad Date Transaction
+^
+D1/10/2023
+T100.00
+PAnother OK Transaction
+^

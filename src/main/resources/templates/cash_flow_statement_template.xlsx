@@ -1,0 +1,32 @@
+Cash Flow Statement
+For the period: ${reportStartDate} to ${reportEndDate}
+Report Generated: ${reportDate}
+
+**Cash flows from operating activities:**
+Net Income: ${netIncome}
+Adjustments to reconcile net income to net cash provided by operating activities:
+<jx:forEach items="${operatingActivitiesItems}" var="item" >
+  ${item.name}: ${item.amount}
+</jx:forEach>
+Net cash provided by (used in) operating activities: ${cashFromOperations}
+
+**Cash flows from investing activities:**
+<jx:forEach items="${investingActivitiesItems}" var="item" >
+  ${item.name}: ${item.amount}
+</jx:forEach>
+Net cash provided by (used in) investing activities: ${cashFromInvesting}
+
+**Cash flows from financing activities:**
+<jx:forEach items="${financingActivitiesItems}" var="item" >
+  ${item.name}: ${item.amount}
+</jx:forEach>
+Net cash provided by (used in) financing activities: ${cashFromFinancing}
+
+Net increase (decrease) in cash and cash equivalents: ${netChangeInCash}
+Cash and cash equivalents at beginning of period: ${cashAtBeginningOfPeriod}
+Cash and cash equivalents at end of period: ${cashAtEndOfPeriod}
+
+**Reconciliation Check:**
+Calculated Net Change in Cash: ${netChangeInCashCalculated}
+Actual Net Change in Cash (End - Beginning): ${netChangeInCashActual}
+Discrepancy: ${discrepancy}

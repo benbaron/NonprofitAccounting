@@ -1,0 +1,65 @@
+OFXHEADER:100
+DATA:OFXSGML
+VERSION:102
+SECURITY:NONE
+ENCODING:USASCII
+CHARSET:1252
+COMPRESSION:NONE
+OLDFILEUID:NONE
+NEWFILEUID:NONE
+
+<OFX>
+  <SIGNONMSGSRSV1>
+    <SONRS>
+      <STATUS>
+        <CODE>0</CODE>
+        <SEVERITY>INFO</SEVERITY>
+      </STATUS>
+      <DTSERVER>20231026000000</DTSERVER>
+      <LANGUAGE>ENG</LANGUAGE>
+    </SONRS>
+  </SIGNONMSGSRSV1>
+  <CREDITCARDMSGSRSV1>
+    <CCSTMTTRNRS>
+      <TRNUID>2</TRNUID>
+      <STATUS>
+        <CODE>0</CODE>
+        <SEVERITY>INFO</SEVERITY>
+      </STATUS>
+      <CCSTMTRS>
+        <CURDEF>USD</CURDEF>
+        <CCACCTFROM>
+          <ACCTID>9876543210000</ACCTID>
+        </CCACCTFROM>
+        <BANKTRANLIST>
+          <DTSTART>20230201</DTSTART>
+          <DTEND>20230228</DTEND>
+          <STMTTRN>
+            <TRNTYPE>DEBIT</TRNTYPE> <!- Payment to CC company ->
+            <DTPOSTED>20230205000000</DTPOSTED>
+            <TRNAMT>150.00</TRNAMT> <!- Positive for payment ->
+            <FITID>FITIDCC001</FITID>
+            <NAME>Payment Received</NAME>
+            <MEMO>Online Payment</MEMO>
+          </STMTTRN>
+          <STMTTRN>
+            <TRNTYPE>CREDIT</TRNTYPE> <!- Charge on CC ->
+            <DTPOSTED>20230210000000</DTPOSTED>
+            <TRNAMT>-75.20</TRNAMT> <!- Negative for charge ->
+            <FITID>FITIDCC002</FITID>
+            <NAME>Restaurant Charge</NAME>
+            <MEMO>Dinner with client</MEMO>
+          </STMTTRN>
+          <STMTTRN>
+            <TRNTYPE>CREDIT</TRNTYPE>
+            <DTPOSTED>20230215000000</DTPOSTED>
+            <TRNAMT>-30.00</TRNAMT>
+            <FITID>FITIDCC003</FITID>
+            <NAME>Office Supplies</NAME>
+            <MEMO>Stationery</MEMO>
+          </STMTTRN>
+        </BANKTRANLIST>
+      </CCSTMTRS>
+    </CCSTMTTRNRS>
+  </CREDITCARDMSGSRSV1>
+</OFX>

@@ -27,13 +27,13 @@ import java.util.ArrayList; // Added
 import java.util.List; // Added
 import java.util.Optional; 
 
-public class GenerateBalanceSheetAction extends AbstractAction {
+public class GenerateTrialBalanceAction extends AbstractAction {
 
     private static final long serialVersionUID = 1L;
-    private final String reportType = "balance_sheet"; // Added field
+    private final String reportType = "trial_balance"; // Added field
 
-    public GenerateBalanceSheetAction(ReportService reportService) {
-        super("Generate Balance Sheet");
+    public GenerateTrialBalanceAction(ReportService reportService) {
+        super("Generate Trial Balance");
     }
 
     @Override
@@ -48,9 +48,9 @@ public class GenerateBalanceSheetAction extends AbstractAction {
 
             Optional<ReportCriteria> criteriaOpt = ReportCriteriaDialog.showDialog(
                 null, 
-                "Balance Sheet Criteria",
+                "Trial Balance Criteria",
                 availableFunds,
-                ReportCriteriaDialog.DateSelectionMode.SINGLE_DATE,
+                ReportCriteriaDialog.DateSelectionMode.DATE_RANGE_OPTIONAL_START,
                 true // Show fund selector
             );
 
@@ -59,7 +59,8 @@ public class GenerateBalanceSheetAction extends AbstractAction {
             }
 
             ReportCriteria criteria = criteriaOpt.get();
-            LocalDate endDate = criteria.getEndDate(); 
+            LocalDate startDate = criteria.getStartDate(); 
+            LocalDate endDate = criteria.getEndDate();     
             List<String> selectedFundIds = criteria.getSelectedFundIds();
             String configNameToSave = criteria.getNameForSaving();
 
@@ -74,7 +75,7 @@ public class GenerateBalanceSheetAction extends AbstractAction {
                         configNameToSave,
                         this.reportType,
                         criteria.getDateSelectionMode(),
-                        criteria.getStartDate(), // Will be null for SINGLE_DATE mode from dialog
+                        startDate,
                         endDate,
                         selectedFundIds
                     );
@@ -97,7 +98,7 @@ public class GenerateBalanceSheetAction extends AbstractAction {
             
             ReportContext ctx = new ReportContext();
             ctx.setReportType(this.reportType);
-            ctx.setStartDate(criteria.getStartDate()); // Pass along, even if null for BS
+            ctx.setStartDate(startDate); 
             ctx.setEndDate(endDate);
             ctx.setFundIds(selectedFundIds);
             ctx.setOutputFormat("xlsx");
@@ -116,13 +117,12 @@ public class GenerateBalanceSheetAction extends AbstractAction {
             }
             
             File f = ReportService.generate(ctx, ledger, chartOfAccounts);
-            JOptionPane.showMessageDialog(null, "Balance Sheet saved to: " + f.getAbsolutePath(), "Success", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Trial Balance saved to: " + f.getAbsolutePath(), "Success", JOptionPane.INFORMATION_MESSAGE);
 
         } catch (Exception ex) {
-            // Log to console for debugging by developer
-            System.err.println("Error during Balance Sheet generation: " + ex.getMessage());
+            System.err.println("Error during Trial Balance generation: " + ex.getMessage());
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Failed to generate Balance Sheet: " + ex.getMessage(), "Generation Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Failed to generate Trial Balance: " + ex.getMessage(), "Generation Error", JOptionPane.ERROR_MESSAGE);
         } catch (IOException ex) { // Catch IOException from config saving
             System.err.println("IO Error related to report configuration: " + ex.getMessage());
             ex.printStackTrace();
