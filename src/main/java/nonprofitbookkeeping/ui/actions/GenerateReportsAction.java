@@ -96,10 +96,10 @@ public class GenerateReportsAction extends AbstractAction
 			
 			// Create and populate ReportContext.
 			ReportContext ctx = new ReportContext();
-			ctx.reportType = reportType;
-			ctx.startDate = startDate;
-			ctx.endDate = endDate;
-			ctx.outputFormat = outputFormat;
+			ctx.setReportType(reportType);
+			ctx.setStartDate(startDate);
+			ctx.setEndDate(endDate);
+			ctx.setOutputFormat(outputFormat);
 			
 			// Generate the report.
 			File output = ReportService.generate(ctx);

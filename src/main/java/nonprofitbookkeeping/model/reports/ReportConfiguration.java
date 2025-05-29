@@ -1,10 +1,12 @@
 package nonprofitbookkeeping.model.reports;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.ui.helpers.DateSelectionMode; // Import the top-level enum
 
 @Data
@@ -39,6 +41,180 @@ public class ReportConfiguration {
         // this.relativeDateRange can be set separately if/when implemented
         // this.outputFormat defaults to "xlsx"
     }
+
+
+
+	/**
+	 * @return the reportType
+	 */
+	public String getReportType()
+	{
+		return reportType;
+	}
+
+	/**
+	 * @param reportType the reportType to set
+	 */
+	public void setReportType(String reportType)
+	{
+		this.reportType = reportType;
+	}
+
+	/**
+	 * @return the dateSelectionMode
+	 */
+	public DateSelectionMode getDateSelectionMode()
+	{
+		return dateSelectionMode;
+	}
+
+	/**
+	 * @param dateSelectionMode the dateSelectionMode to set
+	 */
+	public void setDateSelectionMode(DateSelectionMode dateSelectionMode)
+	{
+		this.dateSelectionMode = dateSelectionMode;
+	}
+
+	/**
+	 * @return the relativeDateRange
+	 */
+	public String getRelativeDateRange()
+	{
+		return relativeDateRange;
+	}
+
+	/**
+	 * @param relativeDateRange the relativeDateRange to set
+	 */
+	public void setRelativeDateRange(String relativeDateRange)
+	{
+		this.relativeDateRange = relativeDateRange;
+	}
+
+	/**
+	 * @return the specificStartDate
+	 */
+	public LocalDate getSpecificStartDate()
+	{
+		return specificStartDate;
+	}
+
+	/**
+	 * @param specificStartDate the specificStartDate to set
+	 */
+	public void setSpecificStartDate(LocalDate specificStartDate)
+	{
+		this.specificStartDate = specificStartDate;
+	}
+
+	/**
+	 * @return the specificEndDate
+	 */
+	public LocalDate getSpecificEndDate()
+	{
+		return specificEndDate;
+	}
+
+	/**
+	 * @param specificEndDate the specificEndDate to set
+	 */
+	public void setSpecificEndDate(LocalDate specificEndDate)
+	{
+		this.specificEndDate = specificEndDate;
+	}
+
+	/**
+	 * @return the fundIds
+	 */
+	public List<String> getFundIds()
+	{
+		return fundIds;
+	}
+
+	/**
+	 * @param fundIds the fundIds to set
+	 */
+	public void setFundIds(List<String> fundIds)
+	{
+		this.fundIds = fundIds;
+	}
+
+	/**
+	 * @return the outputFormat
+	 */
+	public String getOutputFormat()
+	{
+		return outputFormat;
+	}
+
+	/**
+	 * @param configurationId the configurationId to set
+	 */
+	public void setConfigurationId(String configurationId)
+	{
+		this.configurationId = configurationId;
+	}
+
+	/**
+	 * @param userGivenName the userGivenName to set
+	 */
+	public void setUserGivenName(String userGivenName)
+	{
+		this.userGivenName = userGivenName;
+	}
+
+
+
+	/**
+	 * @return the configurationId
+	 */
+	public String getConfigurationId()
+	{
+		return configurationId;
+	}
+
+
+
+	/**
+	 * @return the userGivenName
+	 */
+	public String getUserGivenName()
+	{
+		return userGivenName;
+	}
+
+
+
+	/**
+	 * @param outputFormat the outputFormat to set
+	 */
+	public void setOutputFormat(String outputFormat)
+	{
+		this.outputFormat = outputFormat;
+	}
+
+
+
+	/**
+	 * @param selectedAccountIds
+	 */
+	public void setAccountIdsForDetailReport(List<String> selectedAccountIds)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	// FIXME 
+	/**
+	 * @return
+	 */
+	public List<String> getAccountIdsForDetailReport()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 
     // Lombok's @Data will generate:
     // - Getters for all fields

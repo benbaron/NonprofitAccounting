@@ -13,7 +13,6 @@ import nonprofitbookkeeping.plugins.scaledger.ui.PageViewerPanel; // Added
 import nonprofitbookkeeping.ui.actions.ApplyFormulasActionFX; 
 import nonprofitbookkeeping.ui.actions.InputFileActionFX; 
 import nonprofitbookkeeping.ui.actions.OutputFileActionFX; 
-import nonprofitbookkeeping.ui.actions.UndoEditAction; 
 import nonprofitbookkeeping.ui.actions.scaledger.ImportFromJsonActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.LoadXlsmTableActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.SaveModifiedCopyActionFX;
@@ -81,7 +80,7 @@ public class SCALedgerPlugin implements Plugin {
         MenuItem importJsonItem = new MenuItem("Import from JSON (SCA)");
         // ImportFromJsonActionFX does not use BeanShell/NonCompanyFile directly based on previous investigation.
         // If it needs plugin context for other reasons later (e.g. PageViewer), its constructor would change.
-        importJsonItem.setOnAction(e -> new ImportFromJsonActionFX(primaryStage).handle(e)); 
+        importJsonItem.setOnAction(e -> new ImportFromJsonActionFX(primaryStage, null).handle(e)); 
         scaMenu.getItems().add(importJsonItem);
         
         MenuItem saveModifiedItem = new MenuItem("Save Modified Copy (SCA)");
@@ -106,7 +105,7 @@ public class SCALedgerPlugin implements Plugin {
         MenuItem undoEditItem = new MenuItem("Undo Last Edit (SCA)"); // Clarified name
         // UndoEditAction is Swing-based and its actionPerformed is called with null
         // This will need refactoring for JavaFX and plugin state.
-        undoEditItem.setOnAction(e -> new UndoEditAction().actionPerformed(null));
+        undoEditItem.setOnAction(e -> new nonprofitbookkeeping.ui.actions.scaledger.UndoEditAction().actionPerformed(null));
         scaMenu.getItems().add(undoEditItem);
 
         // Initial state of the menu (enabled/disabled)

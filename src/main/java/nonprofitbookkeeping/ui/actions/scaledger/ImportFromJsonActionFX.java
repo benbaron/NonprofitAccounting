@@ -78,7 +78,7 @@ public class ImportFromJsonActionFX implements EventHandler<ActionEvent>
             }
             
             pvp.loadData(imported);
-            pvp.displayInWindow(this.owner, "JSON Import Viewer - " + file.getName());
+            pvp.displayInWindow(null, "JSON Import Viewer - " + file.getName());
 			
 			new Alert(Alert.AlertType.INFORMATION, "Data loaded into viewer from JSON.") // Updated message
 				.showAndWait();

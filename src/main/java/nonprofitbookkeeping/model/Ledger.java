@@ -38,5 +38,14 @@ final public class Ledger implements Serializable
 	{
 		return this.journal.getJournalTransactions();
 	}
+
+
+	/**
+	 * @return
+	 */
+	public Journal getJournal()
+	{
+		return journal;
+	}
 	
 }

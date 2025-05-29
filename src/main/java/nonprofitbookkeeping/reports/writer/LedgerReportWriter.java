@@ -36,8 +36,8 @@ public class LedgerReportWriter implements ReportWriterIntf
 		try (FileWriter writer = new FileWriter(file))
 		{
 			writer.write("Ledger Report\n");
-			writer.write("From: " + context.startDate + " To: " + context.endDate + "\n");
-			writer.write("Format: " + context.outputFormat + "\n");
+			writer.write("From: " + context.getStartDate() + " To: " + context.getEndDate() + "\n");
+			writer.write("Format: " + context.getOutputFormat() + "\n");
 			writer.write("...ledger report content here...");
 		}
 		

@@ -84,7 +84,9 @@ public class ImportFileActionFX implements EventHandler<ActionEvent> {
                     if (typeStr == null) return false;
                     try {
                         AccountType type = AccountType.valueOf(typeStr.toUpperCase());
-                        return type == AccountType.BANK || type == AccountType.CASH || type == AccountType.CREDITCARD;
+                        return type == AccountType.BANK || 
+                        	type == AccountType.CASH || 
+                        	type == AccountType.CREDITCARD;
                     } catch (IllegalArgumentException e) {
                         return false;
                     }

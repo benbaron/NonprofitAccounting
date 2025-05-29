@@ -98,4 +98,13 @@ public class ApplicationContextImpl implements ApplicationContext {
             runnable.run(); 
         }
     }
+
+	/**
+	 * Override @see nonprofitbookkeeping.core.ApplicationContext#getMenuBar() 
+	 */
+	@Override public MenuBar getMenuBar()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -11,6 +11,7 @@ import nonprofitbookkeeping.reports.ReportCriteria;
 import nonprofitbookkeeping.service.ReportConfigurationService;
 import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
+import nonprofitbookkeeping.ui.helpers.DateSelectionMode;
 import nonprofitbookkeeping.ui.helpers.ReportCriteriaDialog;
 
 import javax.swing.*;
@@ -64,7 +65,7 @@ public class GenerateAccountActivityReportAction extends AbstractAction {
                 "Account Activity Report Criteria",
                 availableFunds,
                 coa, // Pass ChartOfAccounts for account selection
-                ReportCriteriaDialog.DateSelectionMode.DATE_RANGE_MANDATORY_START,
+                DateSelectionMode.DATE_RANGE_MANDATORY_START,
                 true, // Show fund selector
                 true, // Show account selector
                 null  // No initial configuration to load
