@@ -24,6 +24,8 @@ public class InventoryItem
 	@JsonProperty private String id, name, acquired;
 	@JsonProperty private BigDecimal cost, accDep, netValue;
 	@JsonProperty private int lifeYears;
+	@JsonProperty private BigDecimal depreciationRate; // e.g., 0.10 for 10%
+	@JsonProperty private String depreciationMethod; // e.g., "Straight-Line"
 
 	/**  
 	 * Constructor InventoryItem
@@ -44,6 +46,8 @@ public class InventoryItem
 		this.cost = cost;
 		this.acquired = acquired;
 		this.lifeYears = lifeYears;
+		this.depreciationRate = null; // Default to null
+		this.depreciationMethod = "Straight-Line"; // Default method
 	}
 
 	/**
@@ -67,7 +71,6 @@ public class InventoryItem
 	 */
 	public String getAcquiredDate()
 	{
-		// TODO Auto-generated method stub
 		return this.acquired;
 	}
 
@@ -109,8 +112,15 @@ public class InventoryItem
 	 */
 	public InventoryItem withAccumDep(BigDecimal accDep1)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		this.accDep = accDep1;
+		if (this.cost == null) {
+			this.netValue = null;
+		} else if (this.accDep == null) {
+			this.netValue = this.cost;
+		} else {
+			this.netValue = this.cost.subtract(this.accDep);
+		}
+		return this;
 	}
 	
 }
