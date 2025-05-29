@@ -25,7 +25,7 @@ public final class Account implements Serializable
 	@JsonProperty private AccountSide increaseSide;
 	@JsonProperty private String name;
 	@JsonProperty private String accountCode;
-	@JsonProperty private String accountType;
+	@JsonProperty private AccountType accountType;
 	@JsonProperty private Account parentAccount;
 	@JsonProperty private String currency;
 	@JsonProperty private BigDecimal openingBalance = BigDecimal.ZERO;
@@ -75,13 +75,7 @@ public final class Account implements Serializable
 	{
 		return this.parentAccount != null;
 	}
-	
-	/** Convenience overload that stores the enum’s name. */
-	public void setAccountType(AccountType type)
-	{
-		this.accountType = type == null ? null : type.name();
-	}
-	
+		
 	/**
 	 * Returns a one-element collection containing this account.  The method is
 	 * here mainly for compatibility with map-like code that expects a
@@ -176,7 +170,7 @@ public final class Account implements Serializable
 	/**
 	 * @return the accountType
 	 */
-	public String getAccountType()
+	public AccountType getAccountType()
 	{
 		return this.accountType;
 	}
@@ -184,7 +178,7 @@ public final class Account implements Serializable
 	/**
 	 * @param accountType the accountType to set
 	 */
-	public void setAccountType(String accountType)
+	public void setAccountType(AccountType accountType)
 	{
 		this.accountType = accountType;
 	}

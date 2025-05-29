@@ -35,7 +35,7 @@ public class JournalPanelFX extends BorderPane
 	/* -------- Table -------- */
 	private void buildTable()
 	{
-		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 		this.table.getColumns().addAll(
 			col("ID", "id"),
 			col("Date", "date"),

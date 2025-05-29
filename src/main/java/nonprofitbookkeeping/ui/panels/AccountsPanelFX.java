@@ -12,6 +12,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import nonprofitbookkeeping.model.Account;
+import nonprofitbookkeeping.model.AccountType;
 import nonprofitbookkeeping.service.AccountService;
 
 /**
@@ -107,9 +108,11 @@ public class AccountsPanelFX extends BorderPane
 	/* --------------------------------------------------------------------- */
 	public static class AccountRow
 	{
-		private String code = "", name = "", type = "Asset", currency = "USD";
+		private String code = "", name = "", currency = "USD";
 		Account parent;
 		private BigDecimal opening = BigDecimal.ZERO;
+		
+		private AccountType type;
 		
 		public AccountRow()
 		{
@@ -146,12 +149,12 @@ public class AccountsPanelFX extends BorderPane
 			this.name = s;
 		}
 		
-		public String getType()
+		public AccountType getType()
 		{
 			return this.type;
 		}
 		
-		public void setType(String s)
+		public void setType(AccountType s)
 		{
 			this.type = s;
 		}

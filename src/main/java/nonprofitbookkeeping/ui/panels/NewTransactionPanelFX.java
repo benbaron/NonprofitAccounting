@@ -143,7 +143,7 @@ public class NewTransactionPanelFX extends BorderPane
 			sideCol(),
 			amtCol("Amount", l -> l.amount));
 		
-		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 		
 		this.table.setEditable(true); // enable inline edits
 		
@@ -267,7 +267,7 @@ public class NewTransactionPanelFX extends BorderPane
 					.toList());
 		
 		Map<String, Account> byName =
-		    coa.getAccountNumberToAccountDetails()
+		    this.coa.getAccountNumberToAccountDetails()
 		       .values()
 		       .stream()
 		       .collect(Collectors.toMap(

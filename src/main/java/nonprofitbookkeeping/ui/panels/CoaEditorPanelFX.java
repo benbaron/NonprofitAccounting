@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
@@ -50,8 +51,10 @@ public class CoaEditorPanelFX extends BorderPane
 	private final ChartOfAccountsIOService ioSvc = new ChartOfAccountsIOService();
 	
 	/* dialog fields (re-used so we can read them in build()) */
-	private TextField numF, nameF, typeF, balF;
+	private TextField numF, nameF, balF;
 	
+	/* dialog fields */
+	private ComboBox<AccountType> typeBox;
 	
 	/** 
 	 * convenience when no callbacks are needed 
@@ -90,20 +93,30 @@ public class CoaEditorPanelFX extends BorderPane
 	}
 	
 	/* ------------------------------------------------------------------ */
+	
+	/**
+	 * buildTree
+	 */
 	@SuppressWarnings("unchecked") private void buildTree()
 	{
 		this.tree.setShowRoot(false);
 		this.tree.setRoot(this.rootItem);
 		
+		//
 		this.tree.getColumns().addAll(
 			makeCol("Number", Account::getAccountNumber),
 			makeCol("Name", Account::getName),
 			makeCol("Type", a -> a.getAccountType().toString()),
 			makeCol("Opening Balance", Account::getOpeningBalance));
-		this.tree.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
+		
+		this.tree.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 	}
 	
 	/* ------------------------------------------------------------------ */
+	/**
+	 * buildButtons
+	 * @return HBox
+	 */
 	private HBox buildButtons()
 	{
 		Button addRoot = new Button("Add Root");
@@ -111,6 +124,7 @@ public class CoaEditorPanelFX extends BorderPane
 		Button edit = new Button("Edit");
 		Button del = new Button("Delete");
 		Button saveBtn = new Button("Save");
+		
 		Button importBtn = new Button("Import JSON…");
 		Button exportBtn = new Button("Export JSON…");
 		Button cancel = new Button("Cancel");
@@ -162,18 +176,28 @@ public class CoaEditorPanelFX extends BorderPane
 	}
 	
 	/* ------------------------------------------------------------------ */
+	/**
+	 * showDialog
+	 * 
+	 * @param parent
+	 * @param editing
+	 */
 	private void showDialog(Account parent, Account editing)
 	{
 		boolean isEdit = editing != null;
 		
 		Dialog<Account> dlg = new Dialog<>();
 		dlg.setTitle(
-			isEdit ? "Edit Account" : (parent == null ? "Add Root Account" : "Add Sub-account"));
+			isEdit ?
+				"Edit Account" :
+				(parent == null ? "Add Root Account" : "Add Sub-account"));
 		dlg.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 		
 		this.numF = new TextField(isEdit ? editing.getAccountNumber() : "");
 		this.nameF = new TextField(isEdit ? editing.getName() : "");
-		this.typeF = new TextField(isEdit ? editing.getAccountType().toString() : "");
+		this.typeBox = new ComboBox<>(FXCollections.observableArrayList(AccountType.values()));
+		AccountType a = isEdit ? editing.getAccountType() : AccountType.ASSET;
+		this.typeBox.getSelectionModel().select(a);		
 		this.balF = new TextField(isEdit ? editing.getOpeningBalance().toPlainString() : "0.00");
 		
 		GridPane gp = new GridPane();
@@ -181,18 +205,45 @@ public class CoaEditorPanelFX extends BorderPane
 		gp.setVgap(8);
 		gp.addRow(0, new Label("Number"), this.numF);
 		gp.addRow(1, new Label("Name"), this.nameF);
-		gp.addRow(2, new Label("Type"), this.typeF);
+		gp.addRow(2, new Label("Type"), this.typeBox); // combo instead of text
 		gp.addRow(3, new Label("Opening Balance"), this.balF);
-		
 		dlg.getDialogPane().setContent(gp);
-		dlg.setResultConverter(btn -> btn == ButtonType.OK ? buildAccount() : null);
+		dlg.setResultConverter(btn -> {
+			if (btn != ButtonType.OK)
+				return null;
+			
+			/* 1) validate account number */
+			String number = this.numF.getText().trim();
+			
+			if (!number.matches("\\d+"))
+			{
+				AlertBox.showError(null, "Account number must be a positive integer.");
+				return null;
+			}
+			
+			boolean duplicate = this.svc.findByNumber(number)
+				.filter(acc -> !acc.equals(editing)) // ignore self when editing
+				.isPresent();
+			
+			if (duplicate)
+			{
+				AlertBox.showError(null, "Account number already exists.");
+				return null;
+			}
+			
+			/* 2) build Account */
+			return buildAccount(number); // pass number in
+		});
 		
+		// --------------
 		dlg.showAndWait().ifPresent(det -> {
 			
 			if (isEdit)
 			{
 				ChartOfAccountsService.update(editing,
-					det.getName(), det.getAccountType(), det.getOpeningBalance());
+					det.getName(),
+					det.getAccountType(),
+					det.getOpeningBalance());
 				this.tree.refresh();
 			}
 			else
@@ -214,6 +265,9 @@ public class CoaEditorPanelFX extends BorderPane
 	}
 	
 	/* ------------------------------------------------------------------ */
+	/**
+	 * deleteSelected
+	 */
 	private void deleteSelected()
 	{
 		Account sel = selected();
@@ -233,6 +287,9 @@ public class CoaEditorPanelFX extends BorderPane
 		
 	}
 	
+	/**
+	 * importJson
+	 */
 	/* ------------------------------------------------------------------ */
 	private void importJson()
 	{
@@ -309,6 +366,9 @@ public class CoaEditorPanelFX extends BorderPane
 	}
 	
 	/* ------------------------------------------------------------------ */
+	/**
+	 * refresh
+	 */
 	private void refresh()
 	{
 		this.rootItem.getChildren().clear();
@@ -322,13 +382,17 @@ public class CoaEditorPanelFX extends BorderPane
 		return ti == null ? null : ti.getValue();
 	}
 	
+	/**
+	 * buildAccount
+	 * @return
+	 */
 	/* ------------------------------------------------------------------ */
-	private Account buildAccount()
+	private Account buildAccount(String number)
 	{
 		Account a = new Account();
-		a.setAccountNumber(this.numF.getText().trim());
+		a.setAccountNumber(number);
 		a.setName(this.nameF.getText().trim());
-		a.setAccountType(AccountType.fromString(this.typeF.getText().trim()));
+		a.setAccountType(this.typeBox.getValue()); // use ComboBox selection
 		
 		try
 		{
@@ -342,6 +406,12 @@ public class CoaEditorPanelFX extends BorderPane
 		return a;
 	}
 	
+	
+	/**
+	 * makeNode
+	 * @param acc
+	 * @return TreeItem
+	 */
 	/* ------------------------------------------------------------------ */
 	private TreeItem<Account> makeNode(Account acc)
 	{
@@ -351,8 +421,15 @@ public class CoaEditorPanelFX extends BorderPane
 		return ti;
 	}
 	
-	private <T> TreeTableColumn<Account, T> makeCol(String name,
-													Function<Account, T> fn)
+	/**
+	 * 
+	 * @param <T>
+	 * @param name
+	 * @param fn
+	 * @return
+	 */
+	private static <T> TreeTableColumn<Account, T> makeCol(	String name,
+															Function<Account, T> fn)
 	{
 		TreeTableColumn<Account, T> c = new TreeTableColumn<>(name);
 		c.setCellValueFactory(
@@ -381,6 +458,12 @@ public class CoaEditorPanelFX extends BorderPane
 		
 	}
 	
+	/**
+	 * find
+	 * @param n
+	 * @param acc
+	 * @return
+	 */
 	private TreeItem<Account> find(TreeItem<Account> n, Account acc)
 	{
 		
