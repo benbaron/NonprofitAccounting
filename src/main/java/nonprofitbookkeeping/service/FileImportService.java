@@ -74,27 +74,24 @@ public class FileImportService
 			.getMessageSet(MessageSetType.banking)
 			.getResponseMessages();
 		
-		if (bankResponse != null)
+		if (bankResponse != null && bankResponse.getWrappedMessage() != null)
 		{
+			// Assuming bankResponse is a single statement object, not a collection
+			BankStatementResponse statement = bankResponse.getWrappedMessage();
+			BankAccountDetails bankAccount = statement.getAccount();
+			String accountNumber = bankAccount.getAccountNumber();
+			String accountType = bankAccount.getAccountType() != null ?
+				bankAccount.getAccountType().toString() : "BANK";
+			String currencyCode = statement.getCurrencyCode();
+			TransactionList transactionList = statement.getTransactionList();
 			
-			for (BankStatementResponse statement : bankResponse.getWrappedMessage())
+			if (transactionList != null)
 			{
-				BankAccountDetails bankAccount = statement.getAccount();
-				String accountNumber = bankAccount.getAccountNumber();
-				String accountType = bankAccount.getAccountType() != null ?
-					bankAccount.getAccountType().toString() : "BANK";
-				String currencyCode = statement.getCurrencyCode();
-				TransactionList transactionList = statement.getTransactionList();
 				
-				if (transactionList != null)
+				for (Transaction ofxTransaction : transactionList.getTransactions())
 				{
-					
-					for (Transaction ofxTransaction : transactionList.getTransactions())
-					{
-						importedTransactions.add(mapToImportedTransaction(ofxTransaction,
-							accountNumber, accountType, currencyCode));
-					}
-					
+					importedTransactions.add(mapToImportedTransaction(ofxTransaction,
+						accountNumber, accountType, currencyCode));
 				}
 				
 			}
@@ -106,27 +103,24 @@ public class FileImportService
 				.getMessageSet(MessageSetType.creditcard)
 				.getResponseMessages();
 		
-		if (ccResponse != null)
+		if (ccResponse != null && ccResponse.getStatements() != null)
 		{
+			// Assuming ccResponse is a single statement object, not a collection
+			CreditCardStatementResponse statement = ccResponse.getStatements();
+			CreditCardAccountDetails ccAccount =
+				statement.getAccount();
+			String accountNumber = ccAccount.getAccountNumber();
+			String accountType = "CREDITCARD";
+			String currencyCode = statement.getCurrencyCode();
+			TransactionList transactionList = statement.getTransactionList();
 			
-			for (CreditCardStatementResponse statement : ccResponse.getStatements())
+			if (transactionList != null)
 			{
-				CreditCardAccountDetails ccAccount =
-					statement.getAccount();
-				String accountNumber = ccAccount.getAccountNumber();
-				String accountType = "CREDITCARD";
-				String currencyCode = statement.getCurrencyCode();
-				TransactionList transactionList = statement.getTransactionList();
 				
-				if (transactionList != null)
+				for (Transaction ofxTransaction : transactionList.getTransactions())
 				{
-					
-					for (Transaction ofxTransaction : transactionList.getTransactions())
-					{
-						importedTransactions.add(mapToImportedTransaction(ofxTransaction,
-							accountNumber, accountType, currencyCode));
-					}
-					
+					importedTransactions.add(mapToImportedTransaction(ofxTransaction,
+						accountNumber, accountType, currencyCode));
 				}
 				
 			}

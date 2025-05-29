@@ -12,10 +12,13 @@ import nonprofitbookkeeping.service.ReportConfigurationService;
 import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.helpers.DateSelectionMode;
-import nonprofitbookkeeping.ui.helpers.ReportCriteriaDialog;
+import nonprofitbookkeeping.ui.helpers.ReportCriteriaDialog; // Uncommented
 
-import javax.swing.*;
-import java.awt.event.ActionEvent;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.stage.Window; // Added for parent window
+// import javax.swing.*; // Unused Swing import
+// import java.awt.event.ActionEvent; // Unused AWT import
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -23,9 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class GenerateAccountActivityReportAction extends AbstractAction {
+public class GenerateAccountActivityReportAction implements EventHandler<ActionEvent> {
 
-    private static final long serialVersionUID = 1L;
+    // private static final long serialVersionUID = 1L; // Not needed for EventHandler
     private final String reportType = "account_activity_detail";
 
     // reportService field is not strictly needed if only static methods are used,
@@ -33,12 +36,12 @@ public class GenerateAccountActivityReportAction extends AbstractAction {
     private final ReportService reportService; 
 
     public GenerateAccountActivityReportAction(ReportService reportService) {
-        super("Generate Account Activity Detail");
+        // super("Generate Account Activity Detail"); // Not needed for EventHandler
         this.reportService = reportService; // Stored if needed by non-static methods later
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void handle(ActionEvent event) {
         Company currentCompany = CurrentCompany.getCompany();
         if (currentCompany == null) {
             AlertBox.showError(null, "No company is currently open.");
@@ -58,10 +61,15 @@ public class GenerateAccountActivityReportAction extends AbstractAction {
         // companyDir can be null if companyFile is not set, saving config will be skipped.
 
         List<Fund> availableFunds = new ArrayList<>(); // Placeholder, as Fund list isn't available from Company/COA
+        // Attempt to get the parent window from the event source
+        Window parentWindow = null;
+        if (event.getSource() instanceof javafx.scene.Node) {
+            parentWindow = ((javafx.scene.Node)event.getSource()).getScene().getWindow();
+        }
 
         try {
             Optional<ReportCriteria> criteriaOpt = ReportCriteriaDialog.showDialog(
-                null, // Or determine parent component from e.getSource()
+                parentWindow, 
                 "Account Activity Report Criteria",
                 availableFunds,
                 coa, // Pass ChartOfAccounts for account selection
@@ -109,14 +117,14 @@ public class GenerateAccountActivityReportAction extends AbstractAction {
                         List<ReportConfiguration> allConfigs = configService.loadConfigurations(companyDir);
                         allConfigs.add(newConfig); 
                         configService.saveConfigurations(allConfigs, companyDir);
-                        JOptionPane.showMessageDialog(null, "Report configuration '" + configNameToSave + "' saved.", "Configuration Saved", JOptionPane.INFORMATION_MESSAGE);
+                        AlertBox.showInfo(null, "Report configuration '" + configNameToSave + "' saved.");
                     } catch (IOException ex) {
                         System.err.println("Error saving report configuration: " + ex.getMessage());
                         ex.printStackTrace();
-                        JOptionPane.showMessageDialog(null, "Error saving report configuration: " + ex.getMessage(), "Save Error", JOptionPane.ERROR_MESSAGE);
+                        AlertBox.showError(null, "Error saving report configuration: " + ex.getMessage());
                     }
                 } else {
-                     JOptionPane.showMessageDialog(null, "Could not determine company directory. Configuration not saved.", "Save Error", JOptionPane.WARNING_MESSAGE);
+                     AlertBox.showInfo(null, "Could not determine company directory. Configuration not saved."); // Changed from WARNING to INFO
                 }
             }
 
@@ -134,17 +142,17 @@ public class GenerateAccountActivityReportAction extends AbstractAction {
                 return;
             }
 
-            File f = ReportService.generate(ctx, ledger, coa);
-            JOptionPane.showMessageDialog(null, "Account Activity Detail report saved to: " + f.getAbsolutePath(), "Success", JOptionPane.INFORMATION_MESSAGE);
+            File f = ReportService.generate(ctx, ledger, coa); // Assuming ReportService is static or instance is available
+            AlertBox.showInfo(parentWindow, "Account Activity Detail report saved to: " + f.getAbsolutePath());
 
         } catch (IOException ex) { 
             System.err.println("IO Error related to report configuration loading/saving: " + ex.getMessage());
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(null, "IO Error with report configuration: " + ex.getMessage(), "Configuration IO Error", JOptionPane.ERROR_MESSAGE);
+            AlertBox.showError(parentWindow, "IO Error with report configuration: " + ex.getMessage());
         } catch (Exception ex) {
             System.err.println("Error during Account Activity Detail report generation: " + ex.getMessage());
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Failed to generate report: " + ex.getMessage(), "Generation Error", JOptionPane.ERROR_MESSAGE);
+            AlertBox.showError(parentWindow, "Failed to generate report: " + ex.getMessage());
         }
     }
 }
