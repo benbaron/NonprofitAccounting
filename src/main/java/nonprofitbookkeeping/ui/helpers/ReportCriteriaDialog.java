@@ -1,490 +1,301 @@
 
 package nonprofitbookkeeping.ui.helpers;
 
-import nonprofitbookkeeping.model.Account; // Added
-import nonprofitbookkeeping.model.ChartOfAccounts; // Added
+package nonprofitbookkeeping.ui.helpers;
+
+import nonprofitbookkeeping.model.Account;
+import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Fund;
-import nonprofitbookkeeping.model.reports.ReportConfiguration; // Added
+import nonprofitbookkeeping.model.reports.ReportConfiguration;
 import nonprofitbookkeeping.reports.ReportCriteria;
-import javax.swing.*;
 
-import org.jdatepicker.UtilDateModel;
-
-import java.awt.*;
-import java.awt.event.ItemEvent;
+import javafx.geometry.Insets;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Window;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Properties;
-import java.util.stream.Collectors;
+import java.util.stream.Collectors; // Added
+import javafx.scene.control.TextInputDialog; // Added
+import javafx.scene.control.ButtonBar; // Added
+// Swing imports to be removed
+// import javax.swing.*;
+// import org.jdatepicker.UtilDateModel;
+// import java.awt.*;
+// import java.awt.event.ItemEvent;
+// import java.time.ZoneId;
+// import java.util.Calendar;
+// import java.util.Properties;
 
-public class ReportCriteriaDialog
-{
-	
-	// DateSelectionMode enum has been moved to its own file: DateSelectionMode.java
-	
-	private static Component fundListScrollPane;
+
+public class ReportCriteriaDialog {
+
+    // FundItem and AccountItem classes remain mostly the same,
+    // ensure they are compatible with JavaFX ListView if needed for custom cell factories.
+    // For now, assuming standard ListView<String> or ListView<FundItem/AccountItem> with toString()
+    private static class FundItem {
+        private final Fund fund;
+        public FundItem(Fund fund) { this.fund = fund; }
+        public Fund getFund() { return fund; }
+        public String getId() { return fund.getFundId(); }
+        @Override public String toString() { return fund.getName(); }
+        @Override public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            FundItem fundItem = (FundItem) o;
+            return Objects.equals(getId(), fundItem.getId());
+        }
+        @Override public int hashCode() { return Objects.hash(getId()); }
+    }
+
+    private static class AccountItem {
+        private final Account account;
+        public AccountItem(Account account) { this.account = account; }
+        public Account getAccount() { return account; }
+        public String getId() { return account.getAccountNumber(); }
+        @Override public String toString() { return account.getName() + " (" + account.getAccountNumber() + ")"; }
+        @Override public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            AccountItem that = (AccountItem) o;
+            return Objects.equals(account.getAccountNumber(), that.account.getAccountNumber());
+        }
+        @Override public int hashCode() { return Objects.hash(account.getAccountNumber()); }
+    }
 
 
-	private static class FundItem
-	{
-		private final Fund fund;
-		
-		public FundItem(Fund fund)
-		{
-			this.fund = fund;
-		}
-		
-		public Fund getFund()
-		{
-			return fund;
-		}
-		
-		public String getId()
-		{
-			// Assuming Fund has getId() or similar unique identifier method.
-			// If it's getFundId(), adjust accordingly.
-			return fund.getFundId(); // Updated to getFundId as per BudgetPanel example
-		}
-		
-		@Override public String toString()
-		{
-			// Assuming Fund has getName().
-			return fund.getName();
-		}
-		
-		@Override public boolean equals(Object o)
-		{
-			if (this == o)
-				return true;
-			if (o == null || getClass() != o.getClass())
-				return false;
-			FundItem fundItem = (FundItem) o;
-			return Objects.equals(getId(), fundItem.getId());
-		}
-		
-		@Override public int hashCode()
-		{
-			return Objects.hash(getId());
-		}
-		
-	}
-	
-	public static Optional<ReportCriteria> showDialog(
-														Component parentComponent,
-														String title,
-														List<Fund> availableFunds,
-														DateSelectionMode dateMode,
-														boolean showFundSelector)
-	{
-		// Call the main overloaded method with null for initialConfig, chartOfAccounts,
-		// and false for showAccountSelector
-		return showDialog(parentComponent, title, availableFunds, null, dateMode, showFundSelector,
-			false, null);
-	}
-	
-	// Overloaded method that takes initialConfig but not
-	// chartOfAccounts/showAccountSelector
-	public static Optional<ReportCriteria> showDialog(
-														Component parentComponent,
-														String title,
-														List<Fund> availableFunds,
-														DateSelectionMode dateMode,
-														boolean showFundSelector,
-														ReportConfiguration initialConfig)
-	{
-		return showDialog(parentComponent, title, availableFunds, null, dateMode, showFundSelector,
-			false, initialConfig);
-	}
-	
-	// New Inner Class AccountItem
-	private static class AccountItem
-	{
-		private final Account account;
-		
-		public AccountItem(Account account)
-		{
-			this.account = account;
-		}
-		
-		public Account getAccount()
-		{
-			return account;
-		}
-		
-		public String getId()
-		{
-			return account.getAccountNumber();
-		} // Using AccountNumber as ID
-		
-		@Override public String toString()
-		{
-			return account.getName() + " (" + account.getAccountNumber() + ")";
-		}
-		
-		@Override public boolean equals(Object o)
-		{
-			if (this == o)
-				return true;
-			if (o == null || getClass() != o.getClass())
-				return false;
-			AccountItem that = (AccountItem) o;
-			return Objects.equals(account.getAccountNumber(), that.account.getAccountNumber());
-		}
-		
-		@Override public int hashCode()
-		{
-			return Objects.hash(account.getAccountNumber());
-		}
-		
-	}
-	
-	
-	// Main overloaded method with all parameters
-	public static Optional<ReportCriteria> showDialog(
-														Component parentComponent,
-														String title,
-														List<Fund> availableFunds,
-														ChartOfAccounts chartOfAccounts, // Added
-														DateSelectionMode dateMode,
-														boolean showFundSelector,
-														boolean showAccountSelector, // Added
-														ReportConfiguration initialConfig)
-	{
-		
-		final DateSelectionMode actualDateMode =
-			(initialConfig != null && initialConfig.getDateSelectionMode() != null) ?
-				initialConfig.getDateSelectionMode() : dateMode;
-		
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.insets = new Insets(4, 4, 4, 4);
-		
-		Properties datePickerProps = new Properties();
-		datePickerProps.put("text.today", "Today");
-		datePickerProps.put("text.month", "Month");
-		datePickerProps.put("text.year", "Year");
-		
-		JDatePickerImpl startDatePicker = null;
-		JDatePickerImpl endDatePicker = null;
-		UtilDateModel startDateModel = new UtilDateModel();
-		UtilDateModel endDateModel = new UtilDateModel();
-		
-		if (initialConfig != null && initialConfig.getSpecificStartDate() != null)
-		{
-			LocalDate sd = initialConfig.getSpecificStartDate();
-			startDateModel.setDate(sd.getYear(), sd.getMonthValue() - 1, sd.getDayOfMonth());
-			startDateModel.setSelected(true);
-		}
-		
-		if (initialConfig != null && initialConfig.getSpecificEndDate() != null)
-		{
-			LocalDate ed = initialConfig.getSpecificEndDate();
-			endDateModel.setDate(ed.getYear(), ed.getMonthValue() - 1, ed.getDayOfMonth());
-			endDateModel.setSelected(true);
-		}
-		
-		if (actualDateMode == DateSelectionMode.DATE_RANGE_MANDATORY_START ||
-			actualDateMode == DateSelectionMode.DATE_RANGE_OPTIONAL_START)
-		{
-			panel.add(new JLabel("Start Date:"), gbc);
-			gbc.gridx++;
-			JDatePanelImpl startDatePanel = new JDatePanelImpl(startDateModel, datePickerProps);
-			startDatePicker = new JDatePickerImpl(startDatePanel, null);
-				//new JDatePickerImpl.JFormattedTextFieldFactory());
-			// FIXME
-			// panel.add(startDatePicker, gbc);
-			gbc.gridy++;
-			gbc.gridx = 0;
-		}
-		
-		String endDateLabelText =
-			(actualDateMode == DateSelectionMode.SINGLE_DATE) ? "Date:" : "End Date:";
-		panel.add(new JLabel(endDateLabelText), gbc);
-		gbc.gridx++;
-		JDatePanelImpl endDatePanel = new JDatePanelImpl(endDateModel, datePickerProps);
-		endDatePicker =
-			new JDatePickerImpl(endDatePanel, null);
-		//new JDatePickerImpl.JFormattedTextFieldFactory());
-		// FIXME panel.add(endDatePicker, gbc);
-		gbc.gridy++;
-		gbc.gridx = 0;
-		
-		JList<FundItem> fundList = null;
-		JCheckBox selectAllFundsCheckbox = null;
-		
-		if (showFundSelector)
-		{
-			// ... (existing fund selector UI code remains here, unchanged) ...
-			// For brevity, this part is not repeated in the diff if it's identical.
-			// Ensure it's the same as before.
-			gbc.gridwidth = 2;
-			gbc.fill = GridBagConstraints.HORIZONTAL;
-			panel.add(new JSeparator(SwingConstants.HORIZONTAL), gbc);
-			gbc.gridy++;
-			gbc.fill = GridBagConstraints.NONE;
-			gbc.gridwidth = 1;
-			
-			boolean initiallySelectAllFunds = true;
-			List<String> initialFundIds = null;
-			
-			if (initialConfig != null && initialConfig.getFundIds() != null &&
-				!initialConfig.getFundIds().isEmpty())
-			{
-				initiallySelectAllFunds = false;
-				initialFundIds = initialConfig.getFundIds();
-			}
-			
-			selectAllFundsCheckbox = new JCheckBox("Select All Funds", initiallySelectAllFunds);
-			panel.add(selectAllFundsCheckbox, gbc);
-			gbc.gridy++;
-			List<Fund> funds = availableFunds != null ? availableFunds : new ArrayList<>();
-			FundItem[] fundItems = funds.stream().map(FundItem::new).toArray(FundItem[]::new);
-			fundList = new JList<>(fundItems);
-			fundList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-			fundList.setEnabled(!selectAllFundsCheckbox.isSelected());
-			
-			if (!initiallySelectAllFunds && initialFundIds != null)
-			{
-				List<Integer> indicesToSelect = new ArrayList<>();
-				
-				for (int i = 0; i < fundItems.length; i++)
-				{
-					if (initialFundIds.contains(fundItems[i].getId()))
-						indicesToSelect.add(i);
-				}
-				
-				fundList.setSelectedIndices(
-					indicesToSelect.stream().mapToInt(Integer::intValue).toArray());
-			}
-			
-			JScrollPane fundListScrollPane = new JScrollPane(fundList);
-			fundListScrollPane.setPreferredSize(new Dimension(250, 100));
-			gbc.gridwidth = 2;
-			gbc.fill = GridBagConstraints.HORIZONTAL;
-			panel.add(fundListScrollPane, gbc);
-			gbc.gridy++;
-			final JList<FundItem> finalFundList = fundList;
-			
-			if (selectAllFundsCheckbox != null)
-			{ // Check if checkbox was created
-				selectAllFundsCheckbox.addItemListener(e -> {
-					
-					if (finalFundList != null)
-					{
-						finalFundList.setEnabled(e.getStateChange() == ItemEvent.DESELECTED);
-						if (e.getStateChange() == ItemEvent.SELECTED)
-							finalFundList.clearSelection();
-					}
-					
-				});
-			}
-			
-		}
-		
-		JList<AccountItem> accountListJList = null; // Renamed to avoid conflict with java.awt.List
-		
-		if (showAccountSelector)
-		{
-			gbc.gridwidth = 2;
-			gbc.fill = GridBagConstraints.HORIZONTAL;
-			gbc.gridx = 0;
-			panel.add(new JSeparator(SwingConstants.HORIZONTAL), gbc);
-			gbc.gridy++;
-			gbc.fill = GridBagConstraints.NONE;
-			gbc.gridwidth = 1;
-			panel.add(new JLabel("Select Accounts (for Detail Reports):"), gbc);
-			gbc.gridy++;
-			
-			List<Account> accounts =
-				(chartOfAccounts != null && chartOfAccounts.getAccounts() != null) ?
-					chartOfAccounts.getAccounts() : new ArrayList<>();
-			AccountItem[] accountItems = accounts.stream()
-				.sorted(java.util.Comparator.comparing(Account::getName)) // Sort by name
-				.map(AccountItem::new)
-				.toArray(AccountItem[]::new);
-			accountListJList = new JList<>(accountItems);
-			accountListJList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-			
-			if (initialConfig != null && initialConfig.getAccountIdsForDetailReport() != null &&
-				!initialConfig.getAccountIdsForDetailReport().isEmpty())
-			{
-				List<String> initialAccountIds = 
-					initialConfig.getAccountIdsForDetailReport();
-				List<Integer> indicesToSelect = new ArrayList<>();
-				
-				for (int i = 0; i < accountItems.length; i++)
-				{
-					
-					if (initialAccountIds.contains(accountItems[i].getId()))
-					{
-						indicesToSelect.add(i);
-					}
-					
-				}
-				
-				accountListJList.setSelectedIndices(
-					indicesToSelect.stream().mapToInt(Integer::intValue).toArray());
-			}
-			
-			JScrollPane accountListScrollPane = new JScrollPane(accountListJList);
-			fundListScrollPane.setPreferredSize(new Dimension(250, 100)); // Set preferred size for
-																			// scroll pane
-			gbc.gridwidth = 2;
-			gbc.fill = GridBagConstraints.HORIZONTAL;
-			panel.add(fundListScrollPane, gbc);
-			gbc.gridy++;
-			
-			final JList<FundItem> finalFundList = fundList; // For use in lambda
-			selectAllFundsCheckbox.addItemListener(e -> {
-				
-				if (finalFundList != null)
-				{
-					finalFundList.setEnabled(e.getStateChange() == ItemEvent.DESELECTED);
-					
-					if (e.getStateChange() == ItemEvent.SELECTED)
-					{
-						finalFundList.clearSelection();
-					}
-					
-				}
-				
-			});
-		}
-		
-		// Custom buttons for the dialog
-		Object[] options =
-		{ "Run Report", "Save Configuration...", "Cancel" };
-		int result = JOptionPane.showOptionDialog(parentComponent, panel, title,
-			JOptionPane.YES_NO_CANCEL_OPTION,
-			JOptionPane.PLAIN_MESSAGE,
-			null, // do not use a custom Icon
-			options, // the titles of buttons
-			options[0]); // default button title
-		
-		if (result == JOptionPane.YES_OPTION || result == JOptionPane.NO_OPTION)
-		{ // "Run Report" or "Save Configuration..."
-			LocalDate startDate = null;
-			
-			if (startDatePicker != null)
-			{
-				Calendar selectedStartCal = null;
-				// FIXME (Calendar) startDatePicker.getModel().getValue();
-				
-//				if (selectedStartCal != null)
-//				{
-//					startDate =
-//						selectedStartCal.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-//				}
-				
-			}
-			
-			LocalDate endDate = null;
-			Calendar selectedEndCal = null;
-			// FIXME (Calendar) endDatePicker.getModel().getValue();
-			
-			if (selectedEndCal != null)
-			{
-				endDate = selectedEndCal.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-			}
-			
-			List<String> selectedFundIds = new ArrayList<>();
-			
-			if (showFundSelector && selectAllFundsCheckbox != null &&
-				!selectAllFundsCheckbox.isSelected() && fundList != null)
-			{
-				selectedFundIds = fundList.getSelectedValuesList().stream()
-					.map(FundItem::getId)
-					.collect(Collectors.toList());
-			}
-			// If "Select All Funds" is checked, selectedFundIds remains empty, signifying
-			// no specific fund filter.
-			
-			// Validation for dates (as before)
-			if (actualDateMode == DateSelectionMode.SINGLE_DATE && endDate == null)
-			{
-				JOptionPane.showMessageDialog(panel, "Date is required.", "Input Error",
-					JOptionPane.ERROR_MESSAGE);
-				return showDialog(parentComponent, title, availableFunds, chartOfAccounts,
-					actualDateMode, showFundSelector, showAccountSelector, initialConfig);
-			}
-			
-			if (actualDateMode == DateSelectionMode.DATE_RANGE_MANDATORY_START &&
-				(startDate == null || endDate == null))
-			{
-				JOptionPane.showMessageDialog(panel, "Both Start Date and End Date are required.",
-					"Input Error", JOptionPane.ERROR_MESSAGE);
-				return showDialog(parentComponent, title, availableFunds, chartOfAccounts,
-					actualDateMode, showFundSelector, showAccountSelector, initialConfig);
-			}
-			
-			if (actualDateMode == DateSelectionMode.DATE_RANGE_OPTIONAL_START && endDate == null)
-			{
-				JOptionPane.showMessageDialog(panel, "End Date is required.", "Input Error",
-					JOptionPane.ERROR_MESSAGE);
-				return showDialog(parentComponent, title, availableFunds, chartOfAccounts,
-					actualDateMode, showFundSelector, showAccountSelector, initialConfig);
-			}
-			
-			if (startDate != null && endDate != null && endDate.isBefore(startDate))
-			{
-				JOptionPane.showMessageDialog(panel, "End Date cannot be before Start Date.",
-					"Input Error", JOptionPane.ERROR_MESSAGE);
-				return showDialog(parentComponent, title, availableFunds, chartOfAccounts,
-					actualDateMode, showFundSelector, showAccountSelector, initialConfig);
-			}
-			
-			List<String> selectedAccountIds = new ArrayList<>();
-			
-			if (showAccountSelector && accountListJList != null &&
-				accountListJList.getSelectedValuesList() != null)
-			{
-				selectedAccountIds = accountListJList.getSelectedValuesList().stream()
-					.map(AccountItem::getId)
-					.collect(Collectors.toList());
-			}
-			
-			ReportCriteria criteria = new ReportCriteria(startDate, endDate, selectedFundIds,
-				actualDateMode, selectedAccountIds);
-			
-			if (result == JOptionPane.NO_OPTION)
-			{ // "Save Configuration..."
-				String initialName =
-					(initialConfig != null && initialConfig.getUserGivenName() != null) ?
-						initialConfig.getUserGivenName() : "";
-				String configName = JOptionPane.showInputDialog(panel,
-					"Enter a name for this report configuration:", initialName);
-				
-				if (configName != null && !configName.trim().isEmpty())
-				{
-					criteria.setNameForSaving(configName.trim());
-				}
-				else if (configName == null)
-				{
-					// User cancelled name input, effectively cancelling "Save Configuration"
-					// Revert to "Run Report" behavior or re-prompt main dialog?
-					// For simplicity, if name input is cancelled, we still run the report without
-					// saving name.
-					// If configName is empty string, it's also run without saving name.
-					// To force a name or cancel entirely, more complex loop needed.
-					// Current: If name is null (cancel) or empty, nameForSaving remains null.
-				}
-				
-			}
-			
-			// For both YES_OPTION ("Run Report") and NO_OPTION ("Save Config" -> then run)
-			return Optional.of(criteria);
-		}
-		
-		// CANCEL_OPTION or dialog closed
-		return Optional.empty();
-	}
-	
+    // Overloaded public methods to maintain API compatibility for now
+    public static Optional<ReportCriteria> showDialog(
+            Window parentWindow, // Changed from Component to Window
+            String title,
+            List<Fund> availableFunds,
+            DateSelectionMode dateMode,
+            boolean showFundSelector) {
+        return showDialog(parentWindow, title, availableFunds, null, dateMode, showFundSelector, false, null);
+    }
+
+    public static Optional<ReportCriteria> showDialog(
+            Window parentWindow, // Changed from Component to Window
+            String title,
+            List<Fund> availableFunds,
+            DateSelectionMode dateMode,
+            boolean showFundSelector,
+            ReportConfiguration initialConfig) {
+        return showDialog(parentWindow, title, availableFunds, null, dateMode, showFundSelector, false, initialConfig);
+    }
+
+
+    // Main dialog logic
+    public static Optional<ReportCriteria> showDialog(
+            Window parentWindow, // Changed from Component to Window
+            String dialogTitle,
+            List<Fund> availableFunds,
+            ChartOfAccounts chartOfAccounts,
+            DateSelectionMode dateMode,
+            boolean showFundSelector,
+            boolean showAccountSelector,
+            ReportConfiguration initialConfig) {
+
+        Dialog<ReportCriteria> dialog = new Dialog<>();
+        dialog.initOwner(parentWindow);
+        dialog.setTitle(dialogTitle);
+
+        DialogPane dialogPane = dialog.getDialogPane();
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        final DateSelectionMode actualDateMode =
+                (initialConfig != null && initialConfig.getDateSelectionMode() != null) ?
+                        initialConfig.getDateSelectionMode() : dateMode;
+
+        DatePicker startDatePicker = new DatePicker();
+        DatePicker endDatePicker = new DatePicker();
+
+        if (initialConfig != null && initialConfig.getSpecificStartDate() != null) {
+            startDatePicker.setValue(initialConfig.getSpecificStartDate());
+        }
+        if (initialConfig != null && initialConfig.getSpecificEndDate() != null) {
+            endDatePicker.setValue(initialConfig.getSpecificEndDate());
+        }
+
+        int rowIndex = 0;
+
+        if (actualDateMode == DateSelectionMode.DATE_RANGE_MANDATORY_START ||
+            actualDateMode == DateSelectionMode.DATE_RANGE_OPTIONAL_START) {
+            grid.add(new Label("Start Date:"), 0, rowIndex);
+            grid.add(startDatePicker, 1, rowIndex++);
+        }
+
+        String endDateLabelText = (actualDateMode == DateSelectionMode.SINGLE_DATE) ? "Date:" : "End Date:";
+        grid.add(new Label(endDateLabelText), 0, rowIndex);
+        grid.add(endDatePicker, 1, rowIndex++);
+
+
+        // --- Fund Selector (Placeholder for now) ---
+        if (showFundSelector) {
+            grid.add(new Separator(), 0, rowIndex++, 2, 1);
+        grid.add(new Label("Fund Selection:"), 0, rowIndex++, 2, 1);
+
+            CheckBox selectAllFundsCheckbox = new CheckBox("Select All Funds");
+            ListView<FundItem> fundListView = new ListView<>();
+            fundListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+            boolean initiallySelectAllFunds = true;
+            List<String> initialFundIds = null;
+
+            if (initialConfig != null && initialConfig.getFundIds() != null && !initialConfig.getFundIds().isEmpty()) {
+                initiallySelectAllFunds = false;
+                initialFundIds = initialConfig.getFundIds();
+            }
+            selectAllFundsCheckbox.setSelected(initiallySelectAllFunds);
+            fundListView.setDisable(initiallySelectAllFunds);
+
+            if (availableFunds != null) {
+                for (Fund fund : availableFunds) {
+                    fundListView.getItems().add(new FundItem(fund));
+                }
+            }
+
+            if (!initiallySelectAllFunds && initialFundIds != null) {
+                for (FundItem item : fundListView.getItems()) {
+                    if (initialFundIds.contains(item.getId())) {
+                        fundListView.getSelectionModel().select(item);
+                    }
+                }
+            }
+
+            selectAllFundsCheckbox.selectedProperty().addListener((obs, wasSelected, isNowSelected) -> {
+                fundListView.setDisable(isNowSelected);
+                if (isNowSelected) {
+                    fundListView.getSelectionModel().clearSelection();
+                }
+            });
+
+            ScrollPane fundScrollPane = new ScrollPane(fundListView);
+            fundScrollPane.setFitToWidth(true);
+            fundScrollPane.setPrefHeight(100); // Similar to Swing's preferred size
+
+            grid.add(selectAllFundsCheckbox, 0, rowIndex++, 2, 1);
+            grid.add(fundScrollPane, 0, rowIndex++, 2, 1);
+        }
+
+        // --- Account Selector ---
+        if (showAccountSelector) {
+            grid.add(new Separator(), 0, rowIndex++, 2, 1);
+            grid.add(new Label("Select Accounts (for Detail Reports):"), 0, rowIndex++, 2, 1);
+
+            ListView<AccountItem> accountListView = new ListView<>();
+            accountListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+            if (chartOfAccounts != null && chartOfAccounts.getAccounts() != null) {
+                List<Account> accounts = new ArrayList<>(chartOfAccounts.getAccounts());
+                accounts.sort(java.util.Comparator.comparing(Account::getName)); // Sort by name
+                for (Account account : accounts) {
+                    accountListView.getItems().add(new AccountItem(account));
+                }
+            }
+
+            if (initialConfig != null && initialConfig.getAccountIdsForDetailReport() != null && !initialConfig.getAccountIdsForDetailReport().isEmpty()) {
+                List<String> initialAccountIds = initialConfig.getAccountIdsForDetailReport();
+                for (AccountItem item : accountListView.getItems()) {
+                    if (initialAccountIds.contains(item.getId())) {
+                        accountListView.getSelectionModel().select(item);
+                    }
+                }
+            }
+
+            ScrollPane accountScrollPane = new ScrollPane(accountListView);
+            accountScrollPane.setFitToWidth(true);
+            accountScrollPane.setPrefHeight(150); // Set preferred height for account list
+
+            grid.add(accountScrollPane, 0, rowIndex++, 2, 1);
+        }
+
+
+        dialogPane.setContent(grid);
+
+        // --- Buttons ---
+        ButtonType runButtonType = new ButtonType("Run Report", ButtonBar.ButtonData.OK_DONE);
+        ButtonType saveRunButtonType = new ButtonType("Save Configuration & Run", ButtonBar.ButtonData.OTHER);
+        dialogPane.getButtonTypes().addAll(runButtonType, saveRunButtonType, ButtonType.CANCEL);
+
+        // Store references to controls that will be needed in the result converter
+        final DatePicker finalStartDatePicker = startDatePicker;
+        final DatePicker finalEndDatePicker = endDatePicker;
+
+        // Note: Retrieving controls from the grid like this can be fragile.
+        // If the layout changes significantly, these retrievals might break.
+        // For more complex dialogs, consider a dedicated controller class or builder pattern.
+        final CheckBox finalSelectAllFundsCheckbox = showFundSelector ? (CheckBox) grid.getChildren().stream().filter(node -> node instanceof CheckBox && "Select All Funds".equals(((CheckBox)node).getText())).findFirst().orElse(null) : null;
+        final ListView<FundItem> finalFundListView = showFundSelector ? (ListView<FundItem>) ((ScrollPane) grid.getChildren().stream().filter(node -> node instanceof ScrollPane).findFirst().orElse(new ScrollPane(new ListView<>()))) .getContent() : null;
+        final ListView<AccountItem> finalAccountListView = showAccountSelector ? (ListView<AccountItem>) ((ScrollPane) grid.getChildren().stream().filter(node -> node instanceof ScrollPane).skip(showFundSelector ? 1 : 0).findFirst().orElse(new ScrollPane(new ListView<>()))) .getContent() : null;
+
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == runButtonType || dialogButton == saveRunButtonType) {
+                LocalDate startDate = null;
+                if (finalStartDatePicker.isVisible()) {
+                    startDate = finalStartDatePicker.getValue();
+                }
+                LocalDate endDate = finalEndDatePicker.getValue();
+
+                // Date Validation
+                if (actualDateMode == DateSelectionMode.SINGLE_DATE && endDate == null) {
+                    AlertBox.showError(parentWindow, "Date is required.");
+                    return null; // Prevents dialog from closing / or re-triggers if validation logic is more complex
+                }
+                if (actualDateMode == DateSelectionMode.DATE_RANGE_MANDATORY_START && (startDate == null || endDate == null)) {
+                    AlertBox.showError(parentWindow, "Both Start Date and End Date are required.");
+                    return null;
+                }
+                if (actualDateMode == DateSelectionMode.DATE_RANGE_OPTIONAL_START && endDate == null) { // Only end date is strictly mandatory here
+                    AlertBox.showError(parentWindow, "End Date is required.");
+                    return null;
+                }
+                if (startDate != null && endDate != null && endDate.isBefore(startDate)) {
+                    AlertBox.showError(parentWindow, "End Date cannot be before Start Date.");
+                    return null;
+                }
+
+                List<String> selectedFundIds = new ArrayList<>();
+                if (showFundSelector && finalSelectAllFundsCheckbox != null && !finalSelectAllFundsCheckbox.isSelected() && finalFundListView != null) {
+                    selectedFundIds = finalFundListView.getSelectionModel().getSelectedItems().stream()
+                            .map(FundItem::getId)
+                            .collect(Collectors.toList());
+                }
+
+                List<String> selectedAccountIds = new ArrayList<>();
+                if (showAccountSelector && finalAccountListView != null) {
+                    selectedAccountIds = finalAccountListView.getSelectionModel().getSelectedItems().stream()
+                            .map(AccountItem::getId)
+                            .collect(Collectors.toList());
+                }
+                
+                ReportCriteria criteria = new ReportCriteria(startDate, endDate, selectedFundIds, actualDateMode, selectedAccountIds);
+
+                if (dialogButton == saveRunButtonType) {
+                    TextInputDialog nameDialog = new TextInputDialog(initialConfig != null ? initialConfig.getUserGivenName() : "");
+                    nameDialog.initOwner(parentWindow);
+                    nameDialog.setTitle("Save Configuration");
+                    nameDialog.setHeaderText("Enter a name for this report configuration:");
+                    nameDialog.setContentText("Name:");
+                    Optional<String> nameResult = nameDialog.showAndWait();
+                    if (nameResult.isPresent() && !nameResult.get().trim().isEmpty()) {
+                        criteria.setNameForSaving(nameResult.get().trim());
+                    } else if (!nameResult.isPresent()) { // User cancelled the name input
+                        return null; // Cancel the whole operation
+                    }
+                }
+                return criteria;
+            }
+            return null; // Cancel or close button
+        });
+
+        return dialog.showAndWait();
+    }
 }
