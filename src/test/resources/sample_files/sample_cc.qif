@@ -1,0 +1,19 @@
+!Type:CCard
+D2/5/2023
+T150.00
+PPayment to CC
+MOnline Pmt
+NPMT001
+^
+D2/10/2023
+T-75.20
+PRestaurant ABC
+MDinner
+^
+D2/15/23
+T-30.00
+PStationery Store
+^
+!Account
+Name:Visa Card
+^

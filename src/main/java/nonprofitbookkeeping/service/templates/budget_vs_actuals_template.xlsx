@@ -1,0 +1,25 @@
+Budget vs. Actuals Report
+Budget Name: ${budgetName}
+Fiscal Year: ${fiscalYear}
+Report Period: ${reportStartDate} to ${reportEndDate}
+Report Generated: ${reportDate}
+
+| Account ID | Account Name | Budgeted | Actual | Variance ($) | Variance (%) |
+|------------|--------------|----------|--------|--------------|--------------|
+<jx:forEach items="${reportItems}" var="item">
+| ${item.accountId} | ${item.accountName} | ${item.budgeted} | ${item.actual} | ${item.variance} | ${item.variancePercent} |
+</jx:forEach>
+
+Totals:
+Income:
+  Budgeted: ${totalBudgetedIncome}
+  Actual: ${totalActualIncome}
+  Variance: ${totalIncomeVariance}
+Expenses:
+  Budgeted: ${totalBudgetedExpenses}
+  Actual: ${totalActualExpenses}
+  Variance: ${totalExpenseVariance}
+Net:
+  Budgeted: ${totalBudgetedNet}
+  Actual: ${totalActualNet}
+  Variance: ${totalNetVariance}

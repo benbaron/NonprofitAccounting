@@ -37,6 +37,9 @@ public enum AccountType
 	MONEYMKRT,
 	MUTUAL,
 	ROOT,
+	FIXED_ASSET, 
+	LONG_TERM_LIABILITY,
+	CREDITCARD,
 	@JsonEnumDefaultValue UNKNOWN;
 	
 	/**

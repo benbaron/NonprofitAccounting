@@ -19,7 +19,7 @@ public class Fund
 	@JsonProperty private String name;
 	@JsonProperty private List<Account> accounts; // List to hold associated accounts (many-to-many relationship)
 	@JsonProperty private BigDecimal balance; // The balance of the fund is the sum of all associated accounts'
-								// balances
+												// balances
 	
 	// Constructor
 	public Fund(String name)
@@ -101,6 +101,15 @@ public class Fund
 			"name='" + this.name + '\'' +
 			", balance=" + this.balance +
 			'}';
+	}
+
+	/**
+	 * @return
+	 */
+	public String getFundId()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	
