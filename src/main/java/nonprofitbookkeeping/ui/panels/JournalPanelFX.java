@@ -2,7 +2,6 @@
 package nonprofitbookkeeping.ui.panels;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 import javafx.collections.*;
@@ -36,7 +35,7 @@ public class JournalPanelFX extends BorderPane
 	/* -------- Table -------- */
 	private void buildTable()
 	{
-		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 		this.table.getColumns().addAll(
 			col("ID", "id"),
 			col("Date", "date"),
@@ -46,14 +45,14 @@ public class JournalPanelFX extends BorderPane
 			col("Memo", "memo"));
 	}
 	
-	private TableColumn<AccountingTransaction, String> col(String t, String p)
+	private static TableColumn<AccountingTransaction, String> col(String t, String p)
 	{
 		TableColumn<AccountingTransaction, String> c = new TableColumn<>(t);
 		c.setCellValueFactory(new PropertyValueFactory<>(p));
 		return c;
 	}
 	
-	private TableColumn<AccountingTransaction, BigDecimal> num(String t, String p)
+	private static TableColumn<AccountingTransaction, BigDecimal> num(String t, String p)
 	{
 		TableColumn<AccountingTransaction, BigDecimal> c = new TableColumn<>(t);
 		c.setCellValueFactory(new PropertyValueFactory<>(p));

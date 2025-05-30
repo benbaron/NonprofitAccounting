@@ -42,16 +42,29 @@ public class ChartOfAccountsService
 		this.coa.addSubAccount(p, det);
 	}
 	
+	/**
+	 * 
+	 * @param target
+	 */
 	public void delete(Account target)
 	{
 		this.coa.removeAccount(target);
 	}
 	
-	public static void update(	Account tgt, String name,
-								String type, BigDecimal openingBal)
+	/**
+	 * 
+	 * @param tgt
+	 * @param name
+	 * @param accountType
+	 * @param openingBal
+	 */
+	public static void update(	Account tgt, 
+	                          	String name,
+								AccountType accountType, 
+								BigDecimal openingBal)
 	{
 		tgt.setName(name);
-		tgt.setAccountType(type);
+		tgt.setAccountType(accountType);
 		tgt.setOpeningBalance(openingBal);
 	}
 	
@@ -65,11 +78,11 @@ public class ChartOfAccountsService
 	 */
 	public Optional<Account> findByNumber(String num)
 	{
-		return this.coa.getAccountNumberToAccountDetails().values()
-			.stream()
+		return this.coa.getAccountNumberToAccountDetails().values().stream()
 			.filter(a -> a.getAccountNumber().equals(num))
 			.findFirst();
 	}
+	
 	
 	/** Returns a live reference to the wrapped {@link ChartOfAccounts}. */
 	public ChartOfAccounts asChart()
@@ -96,7 +109,7 @@ public class ChartOfAccountsService
 	
 	/* helper ----------------------------------------------------------- */
 	private void copyRecursive(Account src, Account parentDest)
-	{		
+	{
 		/* clone basic fields */
 		Account clone = new Account();
 		clone.setAccountNumber(src.getAccountNumber());
@@ -117,5 +130,6 @@ public class ChartOfAccountsService
 		}
 		
 	}
+	
 	
 }

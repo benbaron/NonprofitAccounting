@@ -506,7 +506,7 @@ public class TableSorter extends TableMap
 	{
 		this.ascending = ascending1;
 		this.sortingColumns.removeAllElements();
-		this.sortingColumns.addElement(new Integer(column));
+		this.sortingColumns.addElement(column);
 		sort(this);
 		super.tableChanged(new TableModelEvent(this));
 	}

@@ -97,5 +97,24 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 				a -> a,
 				(a, b) -> a)); // keep first
 	}
+
+	/**
+	 * @param account
+	 * @return
+	 */
+	public Account getAccount(String account)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @return
+	 */
+	public List<Account> getAccounts()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

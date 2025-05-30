@@ -1,6 +1,7 @@
 
 package nonprofitbookkeeping.model;
 
+import java.io.File;
 import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -87,6 +88,23 @@ public class Company implements Serializable
 	public CompanyProfileModel getCompanyProfileModel()
 	{
 		return this.companyProfileModel;
+	}
+
+	/**
+	 * @return
+	 */
+	public File getCompanyFile()
+	{
+		return null;
+	}
+
+	/**
+	 * @return
+	 */
+	public File getParentFile()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

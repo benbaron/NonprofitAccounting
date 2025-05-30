@@ -17,10 +17,11 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.exception.NoFileException;
-import nonprofitbookkeeping.model.BeanShell;
-import nonprofitbookkeeping.model.NonCompanyFile;
+// import nonprofitbookkeeping.model.BeanShell; // Replaced by plugin
+// import nonprofitbookkeeping.model.NonCompanyFile; // Replaced by plugin
+import nonprofitbookkeeping.plugins.scaledger.SCALedgerPlugin; // Added
 import nonprofitbookkeeping.preferences.PreferencesManager;
-import nonprofitbookkeeping.ui.NonprofitBookkeepingFX;
+// import nonprofitbookkeeping.ui.NonprofitBookkeepingFX; // NonprofitBookkeepingFX.currentFile was an error
 import nonprofitbookkeeping.ui.helpers.NpbkFileChooserFX;
 
 /**
@@ -33,10 +34,12 @@ public class LoadXlsmTableActionFX implements EventHandler<ActionEvent>
 {
 	
 	private final Stage owner;
+	private final SCALedgerPlugin plugin; // Added
 	
-	public LoadXlsmTableActionFX(Stage owner)
+	public LoadXlsmTableActionFX(Stage owner, SCALedgerPlugin plugin) // Updated constructor
 	{
 		this.owner = owner;
+		this.plugin = plugin; // Added
 	}
 	
 	@Override public void handle(ActionEvent e)
@@ -66,9 +69,13 @@ public class LoadXlsmTableActionFX implements EventHandler<ActionEvent>
 			TableView<Map<String, Object>> table = createFxTable(model);
 			
 			// Persist globals & prefs
-			NonCompanyFile.setCurrentFile(file);
+            if (this.plugin == null) {
+                new Alert(AlertType.ERROR, "Plugin not initialized for LoadXlsmTableActionFX.").showAndWait();
+                return;
+            }
+			this.plugin.setCurrentScaFile(file); // Use plugin
 			PreferencesManager.setLastDirectory(file.getParent());
-			BeanShell.setBeans(SCALedgerDataLoader.loadData(new File("jxlsMapping.xml"), file));
+			this.plugin.setScaBeans(SCALedgerDataLoader.loadData(new File("jxlsMapping.xml"), file)); // Use plugin
 			
 			// Show viewer window
 			Stage viewer = new Stage();

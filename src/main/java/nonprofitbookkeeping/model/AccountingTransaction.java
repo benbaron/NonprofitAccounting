@@ -266,4 +266,14 @@ public class AccountingTransaction implements Serializable
 	}
 
 
+	/**
+	 * @param memo2
+	 */
+	public void setMemo(String memo2)
+	{
+		this.memo = memo2;
+		
+	}
+
+
 }
