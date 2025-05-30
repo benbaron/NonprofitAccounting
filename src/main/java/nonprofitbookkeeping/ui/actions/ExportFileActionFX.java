@@ -54,22 +54,53 @@ public class ExportFileActionFX  implements EventHandler<ActionEvent>
 	public void handle(ActionEvent event)
 	{
 		FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Export File");
-		fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt"),
-                new FileChooser.ExtensionFilter("All files (*.*)", "*.*")
-        );
+		fileChooser.setTitle("Export File As");
 
-        File file = fileChooser.showSaveDialog(this.ownerStage);
+        // Define extension filters
+        FileChooser.ExtensionFilter ofxFilter = new FileChooser.ExtensionFilter("OFX files (*.ofx)", "*.ofx");
+        FileChooser.ExtensionFilter qfxFilter = new FileChooser.ExtensionFilter("QFX files (*.qfx)", "*.qfx");
+        FileChooser.ExtensionFilter qifFilter = new FileChooser.ExtensionFilter("QIF files (*.qif)", "*.qif");
+        FileChooser.ExtensionFilter allFilter = new FileChooser.ExtensionFilter("All files (*.*)", "*.*");
 
-        if (file != null) {
-            try (FileWriter writer = new FileWriter(file)) {
-                writer.write("Exported data placeholder from Nonprofit Bookkeeping application.");
+        fileChooser.getExtensionFilters().addAll(ofxFilter, qfxFilter, qifFilter, allFilter);
+        fileChooser.setSelectedExtensionFilter(ofxFilter); // Default to OFX
+
+        File selectedFile = fileChooser.showSaveDialog(this.ownerStage);
+
+        if (selectedFile != null) {
+            FileChooser.ExtensionFilter selectedFilter = fileChooser.getSelectedExtensionFilter();
+            String chosenFormatString = "selected format"; // Default
+            String fileExtension = "";
+
+            if (selectedFilter == ofxFilter) {
+                chosenFormatString = "OFX";
+                fileExtension = ".ofx";
+            } else if (selectedFilter == qfxFilter) {
+                chosenFormatString = "QFX";
+                fileExtension = ".qfx";
+            } else if (selectedFilter == qifFilter) {
+                chosenFormatString = "QIF";
+                fileExtension = ".qif";
+            }
+            // If "All files" was selected, we might try to infer from filename or use a default.
+            // For this placeholder, we'll rely on the filter selection primarily.
+
+            String finalFileName = selectedFile.getAbsolutePath();
+            // Ensure the file has the correct extension based on the filter, if not "All Files"
+            if (!fileExtension.isEmpty() && !finalFileName.toLowerCase().endsWith(fileExtension)) {
+                finalFileName += fileExtension;
+            }
+            File finalFileToWrite = new File(finalFileName);
+
+
+            try (FileWriter writer = new FileWriter(finalFileToWrite)) {
+                String content = "Placeholder for " + chosenFormatString + " data export from Nonprofit Bookkeeping application.";
+                writer.write(content);
                 
                 Alert successAlert = new Alert(AlertType.INFORMATION);
                 successAlert.setTitle("Export Successful");
                 successAlert.setHeaderText(null);
-                successAlert.setContentText("File exported successfully to " + file.getAbsolutePath());
+                successAlert.setContentText("File exported successfully as " + chosenFormatString + " to " + finalFileToWrite.getAbsolutePath());
                 successAlert.initOwner(this.ownerStage);
                 successAlert.showAndWait();
             } catch (IOException ex) {
