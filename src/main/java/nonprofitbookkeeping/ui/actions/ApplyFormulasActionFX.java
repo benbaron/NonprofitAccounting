@@ -21,35 +21,49 @@ public class ApplyFormulasActionFX implements EventHandler<ActionEvent> // Imple
     private final SCALedgerPlugin plugin; // Added
 
 	/**  
-	 * Constructor ApplyFormulasActionFX
-	 * @param owner The parent stage.
-     * @param plugin The SCALedgerPlugin instance for state management.
+	 * Constructs an ApplyFormulasActionFX event handler.
+	 * 
+	 * @param owner The parent {@link Stage} which owns any UI dialogs that might be shown.
+     *              This is typically the main application window. Must not be null.
+     * @param plugin The {@link SCALedgerPlugin} instance that provides access to application
+     *               state and data (e.g., ledger beans, current file). Must not be null.
+     * @throws IllegalArgumentException if either {@code owner} or {@code plugin} is null.
 	 */
 	public ApplyFormulasActionFX(Stage owner, SCALedgerPlugin plugin) // Updated constructor
 	{
+		if (owner == null) {
+            throw new IllegalArgumentException("Owner stage cannot be null.");
+        }
+        if (plugin == null) {
+            throw new IllegalArgumentException("SCALedgerPlugin cannot be null.");
+        }
 		this.owner = owner;
         this.plugin = plugin;
-		// TODO: Actual constructor logic if needed
 	}
 
+	// Note: Imports for Alert and AlertType will be ensured at the top by the tool or next step.
+
 	/**
-	 * Handles the action event.
-	 * Currently a stub. If implemented, would use this.plugin.getScaBeans() etc.
-	 * @param e The action event.
+	 * Handles the action event triggered to apply formulas.
+	 * Currently, this method serves as a placeholder and displays an informational alert
+	 * indicating that the formula application logic is pending implementation.
+	 * It uses the owner stage provided in the constructor to properly display the alert.
+	 *
+	 * @param event The {@link ActionEvent} that triggered this handler.
 	 */
-	@Override // Added Override annotation
-	public void handle(ActionEvent e) // Changed return type to void
+	@Override 
+	public void handle(ActionEvent event) 
 	{
-		// TODO: Implement formula application logic using this.plugin instance
-        // e.g., Map<String, Object> beans = this.plugin.getScaBeans();
-        // File currentFile = this.plugin.getCurrentScaFile();
-        // if (beans == null || currentFile == null) {
-        //     new Alert(Alert.AlertType.WARNING, "No SCA data loaded to apply formulas to.").showAndWait();
-        //     return;
-        // }
-        // ... actual formula application ...
-        System.out.println("ApplyFormulasActionFX: Action performed (stub). Plugin instance: " + (this.plugin != null));
-		// return null; // No longer returns Object
+		Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Apply Formulas");
+        alert.setHeaderText("Action Triggered");
+        alert.setContentText("Apply Formulas action triggered. The actual formula application logic using SCALedgerPlugin is pending implementation.");
+        
+        if (this.owner != null) {
+            alert.initOwner(this.owner);
+        }
+        
+        alert.showAndWait();
 	}
 	
 }
