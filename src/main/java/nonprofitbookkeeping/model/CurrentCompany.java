@@ -102,7 +102,9 @@ public class CurrentCompany
 		company = CurrentCompany.dataStorer.loadData(
 			Company.class, 
 			checkNotNull(file));
+		setCurrentFile(file);
 	}
+	
 	/**
 	 * close
 	 */
@@ -135,7 +137,6 @@ public class CurrentCompany
 	public interface CompanyChangeListener extends EventListener
 	{
 		void companyChange(boolean b);
-		
 	}
 	
 	/**

@@ -31,7 +31,6 @@ public class CompanySelectionPanelFX extends BorderPane
 	private final TextArea previewArea = new TextArea();
 	
 	/**
-	 * 
 	 * Constructor CompanySelectionPanelFX
 	 */
 	public CompanySelectionPanelFX()
@@ -153,12 +152,12 @@ public class CompanySelectionPanelFX extends BorderPane
 	 */
 	private void createNew()
 	{
-		// Reuse the CreateCompanyPanelFX in a new dialog
+		// Reuse the CreateOrEditCompanyPanelFX in a new dialog
 		Stage dlg = new Stage();
 		dlg.setTitle("Create New Company");
 		
-		CreateCompanyPanelFX form =
-			new CreateCompanyPanelFX(null,
+		CreateOrEditCompanyPanelFX form =
+			new CreateOrEditCompanyPanelFX(null,
 				model ->
 				{
 					dlg.close();

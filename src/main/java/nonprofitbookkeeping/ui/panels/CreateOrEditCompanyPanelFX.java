@@ -17,7 +17,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * JavaFX wizard for creating or editing a company profile.
  * Replaces the Swing {@code CreateCompanyPanel}.
  */
-public class CreateCompanyPanelFX extends BorderPane
+public class CreateOrEditCompanyPanelFX extends BorderPane
 {
 	
 	private int step = 0;
@@ -53,11 +53,11 @@ public class CreateCompanyPanelFX extends BorderPane
 	
 	/**
 	 * 
-	 * Constructor CreateCompanyPanelFX
+	 * Constructor CreateOrEditCompanyPanelFX
 	 * @param existing
 	 * @param cb
 	 */
-	public CreateCompanyPanelFX(Company existing, CompanyCreatedCallback cb)
+	public CreateOrEditCompanyPanelFX(Company existing, CompanyCreatedCallback cb)
 	{
 		checkNotNull(existing);
 		checkNotNull(cb);
