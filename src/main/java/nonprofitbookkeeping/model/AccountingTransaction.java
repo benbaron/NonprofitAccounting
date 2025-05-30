@@ -120,15 +120,6 @@ public class AccountingTransaction implements Serializable
 		return debitTotal;
 	}
 	
-	 /**
-	  * setTotalAmount
-	  * @param valueOf
-	  */
-	public void setTotalAmount(BigDecimal valueOf)
-	{
-		// TODO Auto-generated method stub
-	}
-	
 	/**
 	 * Is Balanced comparator
 	 * @return true/false
