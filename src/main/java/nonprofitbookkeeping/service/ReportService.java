@@ -36,11 +36,21 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-
+/**
+ * Provides services for generating various financial reports.
+ * This class handles the logic for preparing data contexts for different report types
+ * (e.g., Income Statement, Balance Sheet, Trial Balance, Cash Flow, Budget vs. Actuals, Account Activity)
+ * and then uses Jxls to process templates with this data.
+ * It also manages a registry of custom report writers and tracks metadata of generated reports.
+ * Most report generation logic is handled via the static {@code generate} method.
+ */
 public class ReportService
 {
 	private static final Logger LOGGER = Logger.getLogger(ReportService.class.getName());
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
+	
+	private static final Map<String, nonprofitbookkeeping.api.ReportWriterIntf> reportWriters = new HashMap<>();
+	private static final List<ReportMetadata> generatedReports = new ArrayList<>();
 	
 	
 	static Map<String, Object> prepareIncomeStatementContext(	ReportContext context, Ledger ledger,
@@ -1413,6 +1423,12 @@ public class ReportService
 			}
 			
 			LOGGER.info("Stub report generated: " + outputFile.getAbsolutePath());
+            // Add metadata for the stub report
+            generatedReports.add(new ReportMetadata(
+                "generic_report_" + reportType,
+                Instant.now().toString(),
+                outputFile.getAbsolutePath()
+            ));
 			return outputFile;
 		}
 		
@@ -1442,6 +1458,12 @@ public class ReportService
 				JxlsHelper.getInstance().processTemplate(is, os, jxlsInnerContext);
 				LOGGER.info(
 					reportType + " generated successfully at: " + outputFile.getAbsolutePath());
+                // Add metadata for successfully generated Jxls report
+                generatedReports.add(new ReportMetadata(
+                    outputFileNamePrefix, // Or context.getReportType() for more generic name
+                    Instant.now().toString(),
+                    outputFile.getAbsolutePath()
+                ));
 			}
 			
 		}
@@ -1449,23 +1471,64 @@ public class ReportService
 		return outputFile;
 	}
 	
-	public void registerWriter(String reportType, LedgerReportWriter writer)
+	/**
+     * Registers a {@link ReportWriterIntf} for a specific report type.
+     * If the reportType or writer is null or if reportType is blank,
+     * the registration is ignored.
+     * Registered writers can potentially be used by the generate method in a more dynamic setup.
+     *
+     * @param reportType The type of report (e.g., "trial_balance_custom_format").
+     * @param writer The {@link ReportWriterIntf} instance capable of generating this report type.
+     */
+	public void registerWriter(String reportType, nonprofitbookkeeping.api.ReportWriterIntf writer)
 	{
-		/* ... */ }
+		if (reportType == null || reportType.trim().isEmpty() || writer == null) {
+            LOGGER.warning("Attempted to register a writer with null or blank reportType, or null writer.");
+            return;
+        }
+        reportWriters.put(reportType, writer);
+        LOGGER.info("Report writer registered for type: " + reportType);
+	}
 		
+	/**
+     * Lists metadata for all reports generated during the current application session.
+     *
+     * @return A new {@code List<ReportMetadata>} containing metadata for each generated report.
+     *         Returns an empty list if no reports have been generated. The returned list is a copy.
+     */
 	public List<ReportMetadata> listGeneratedReports()
 	{
-		return new ArrayList<>();
+		if (generatedReports == null) { // Should not happen due to static initialization
+            return new ArrayList<>();
+        }
+		return new ArrayList<>(generatedReports);
 	}
 
+	// Removed the stub: public static File generate(ReportContext ctx)
+
 	/**
-	 * @param ctx
-	 * @return
+	 * Resets the static collections of report writers and generated reports.
+	 * This method clears the internal lists {@code reportWriters} and {@code generatedReports}.
+	 * It is primarily intended for use in testing environments to ensure that each test
+	 * runs with a clean state, preventing interference from previous test executions.
 	 */
-	public static File generate(ReportContext ctx)
-	{
-		// TODO Auto-generated method stub
-		return null;
+	public static void resetForTesting() {
+		if (reportWriters != null) {
+			reportWriters.clear();
+		} else {
+			// This case should ideally not be reached if fields are final and initialized.
+			// However, adding for robustness in case of unforeseen reflection or errors.
+			// reportWriters = new HashMap<>(); // Cannot reassign final field
+		}
+		if (generatedReports != null) {
+			generatedReports.clear();
+		} else {
+			// generatedReports = new ArrayList<>(); // Cannot reassign final field
+		}
+		// If not final, re-initialization would be:
+        // reportWriters = new HashMap<>();
+        // generatedReports = new ArrayList<>();
+        // Since they are final and initialized, .clear() is sufficient.
 	}
 	
 }
