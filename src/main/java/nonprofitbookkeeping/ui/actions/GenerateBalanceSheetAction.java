@@ -19,6 +19,7 @@ import javafx.event.ActionEvent; // Added
 import javafx.event.EventHandler; // Added
 import javafx.stage.Window; // Added
 
+
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -26,9 +27,16 @@ import java.util.ArrayList; // Added
 import java.util.List; // Added
 import java.util.Optional;
 
-public class GenerateBalanceSheetAction implements EventHandler<ActionEvent> {
+import javax.swing.AbstractAction;
 
-    // private static final long serialVersionUID = 1L; // Removed
+
+public class GenerateBalanceSheetAction extends AbstractAction implements EventHandler<ActionEvent> {
+
+    /**
+	 * serialVersionUID : long
+	 */
+	private static final long serialVersionUID = -5351611721074763080L;
+	// private static final long serialVersionUID = 1L; // Removed
     private final String reportType = "balance_sheet";
     private final ReportService reportService; // Retained if needed
 
@@ -147,4 +155,22 @@ public class GenerateBalanceSheetAction implements EventHandler<ActionEvent> {
                     "Failed to generate Balance Sheet: " + ex.getMessage());
         }
     }
+
+	/**
+	 * Override @see net.sf.jasperreports.web.actions.AbstractAction#performAction() 
+	 */
+	public void performAction() 
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * Override @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent) 
+	 */
+	@Override public void actionPerformed(java.awt.event.ActionEvent e)
+	{
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -47,25 +47,25 @@ public class TrialBalanceService implements TrialBalanceServiceIntf
 
         @Override
         public Map<String, Double> getDebitSums() {
-            if (internalDebitMap == null) {
+            if (this.internalDebitMap == null) {
                 return Collections.emptyMap();
             }
-            return internalDebitMap.entrySet().stream()
+            return this.internalDebitMap.entrySet().stream()
                     .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().doubleValue()));
         }
 
         @Override
         public Map<String, Double> getCreditSums() {
-            if (internalCreditMap == null) {
+            if (this.internalCreditMap == null) {
                 return Collections.emptyMap();
             }
-            return internalCreditMap.entrySet().stream()
+            return this.internalCreditMap.entrySet().stream()
                     .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().doubleValue()));
         }
 
         @Override
         public boolean isBalanced() {
-            return isBalanced;
+            return this.isBalanced;
         }
     }
 

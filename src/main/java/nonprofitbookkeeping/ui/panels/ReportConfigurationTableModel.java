@@ -23,22 +23,22 @@ public class ReportConfigurationTableModel extends AbstractTableModel {
 
     @Override
     public int getRowCount() {
-        return configurations.size();
+        return this.configurations.size();
     }
 
     @Override
     public int getColumnCount() {
-        return columnNames.length;
+        return this.columnNames.length;
     }
 
     @Override
     public String getColumnName(int columnIndex) {
-        return columnNames[columnIndex];
+        return this.columnNames[columnIndex];
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        ReportConfiguration config = configurations.get(rowIndex);
+        ReportConfiguration config = this.configurations.get(rowIndex);
         switch (columnIndex) {
             case 0: // Name
                 return config.getUserGivenName();
@@ -68,11 +68,11 @@ public class ReportConfigurationTableModel extends AbstractTableModel {
 
         switch (mode) {
             case SINGLE_DATE:
-                return (endDate != null) ? endDate.format(dateFormatter) : "N/A";
+                return (endDate != null) ? endDate.format(this.dateFormatter) : "N/A";
             case DATE_RANGE_MANDATORY_START:
             case DATE_RANGE_OPTIONAL_START:
-                String startStr = (startDate != null) ? startDate.format(dateFormatter) : "Beginning";
-                String endStr = (endDate != null) ? endDate.format(dateFormatter) : "N/A";
+                String startStr = (startDate != null) ? startDate.format(this.dateFormatter) : "Beginning";
+                String endStr = (endDate != null) ? endDate.format(this.dateFormatter) : "N/A";
                 return startStr + " - " + endStr;
             default:
                 return "Invalid Date Mode";
@@ -88,15 +88,15 @@ public class ReportConfigurationTableModel extends AbstractTableModel {
     }
 
     public ReportConfiguration getConfigurationAt(int rowIndex) {
-        if (rowIndex >= 0 && rowIndex < configurations.size()) {
-            return configurations.get(rowIndex);
+        if (rowIndex >= 0 && rowIndex < this.configurations.size()) {
+            return this.configurations.get(rowIndex);
         }
         return null;
     }
 
     public void removeConfiguration(int rowIndex) {
-        if (rowIndex >= 0 && rowIndex < configurations.size()) {
-            configurations.remove(rowIndex);
+        if (rowIndex >= 0 && rowIndex < this.configurations.size()) {
+            this.configurations.remove(rowIndex);
             fireTableRowsDeleted(rowIndex, rowIndex);
         }
     }

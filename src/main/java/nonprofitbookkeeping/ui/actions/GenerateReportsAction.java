@@ -134,4 +134,13 @@ public class GenerateReportsAction implements EventHandler<ActionEvent> {
             AlertBox.showError(parentWindow, "Error generating report: " + ex.getMessage());
         }
     }
+
+	/**
+	 * @param object
+	 */
+	public void actionPerformed(Object object)
+	{
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -28,19 +28,19 @@ class BudgetServiceTest {
 
     @BeforeEach
     void setUp() {
-        budgetService = new BudgetService();
-        companyDirectory = tempDir.toFile(); // Use the temp directory as the company directory
+        this.budgetService = new BudgetService();
+        this.companyDirectory = this.tempDir.toFile(); // Use the temp directory as the company directory
     }
 
     @Test
     void testSaveAndLoad_EmptyList() throws IOException {
         List<Budget> emptyList = new ArrayList<>();
-        budgetService.saveBudgets(emptyList, companyDirectory);
+        this.budgetService.saveBudgets(emptyList, this.companyDirectory);
 
-        File budgetsFile = new File(companyDirectory, "budgets.json");
+        File budgetsFile = new File(this.companyDirectory, "budgets.json");
         assertTrue(budgetsFile.exists(), "budgets.json file should be created.");
 
-        List<Budget> loadedBudgets = budgetService.loadBudgets(companyDirectory);
+        List<Budget> loadedBudgets = this.budgetService.loadBudgets(this.companyDirectory);
         assertNotNull(loadedBudgets, "Loaded budgets should not be null.");
         assertTrue(loadedBudgets.isEmpty(), "Loaded budgets should be an empty list.");
     }
@@ -59,9 +59,9 @@ class BudgetServiceTest {
         budget.addBudgetLine(line2);
 
         List<Budget> budgetsToSave = List.of(budget);
-        budgetService.saveBudgets(budgetsToSave, companyDirectory);
+        this.budgetService.saveBudgets(budgetsToSave, this.companyDirectory);
 
-        List<Budget> loadedBudgets = budgetService.loadBudgets(companyDirectory);
+        List<Budget> loadedBudgets = this.budgetService.loadBudgets(this.companyDirectory);
         assertNotNull(loadedBudgets);
         assertEquals(1, loadedBudgets.size(), "Should load one budget.");
 
@@ -103,9 +103,9 @@ class BudgetServiceTest {
         budget2.addBudgetLine(new BudgetLine("INC200", "Gala Event", new BigDecimal("150000"), Periodicity.ANNUAL));
 
         List<Budget> budgetsToSave = List.of(budget1, budget2);
-        budgetService.saveBudgets(budgetsToSave, companyDirectory);
+        this.budgetService.saveBudgets(budgetsToSave, this.companyDirectory);
 
-        List<Budget> loadedBudgets = budgetService.loadBudgets(companyDirectory);
+        List<Budget> loadedBudgets = this.budgetService.loadBudgets(this.companyDirectory);
         assertNotNull(loadedBudgets);
         assertEquals(2, loadedBudgets.size(), "Should load two budgets.");
 
@@ -125,17 +125,17 @@ class BudgetServiceTest {
     @Test
     void testLoadBudgets_FileNotFound() throws IOException {
         // Ensure budgets.json does not exist (it shouldn't in a fresh tempDir)
-        List<Budget> loadedBudgets = budgetService.loadBudgets(companyDirectory);
+        List<Budget> loadedBudgets = this.budgetService.loadBudgets(this.companyDirectory);
         assertNotNull(loadedBudgets);
         assertTrue(loadedBudgets.isEmpty(), "Should return an empty list if file not found.");
     }
 
     @Test
     void testLoadBudgets_CorruptJsonFile() throws IOException {
-        File budgetsFile = new File(companyDirectory, "budgets.json");
+        File budgetsFile = new File(this.companyDirectory, "budgets.json");
         Files.writeString(budgetsFile.toPath(), "{invalid json content,,}");
 
-        List<Budget> loadedBudgets = budgetService.loadBudgets(companyDirectory);
+        List<Budget> loadedBudgets = this.budgetService.loadBudgets(this.companyDirectory);
         assertNotNull(loadedBudgets);
         assertTrue(loadedBudgets.isEmpty(), "Should return an empty list for corrupt JSON.");
         // Verification of logging would require a log capture mechanism,
@@ -144,10 +144,10 @@ class BudgetServiceTest {
     
     @Test
     void testLoadBudgets_EmptyJsonFile() throws IOException {
-        File budgetsFile = new File(companyDirectory, "budgets.json");
+        File budgetsFile = new File(this.companyDirectory, "budgets.json");
         Files.writeString(budgetsFile.toPath(), ""); // Empty file
 
-        List<Budget> loadedBudgets = budgetService.loadBudgets(companyDirectory);
+        List<Budget> loadedBudgets = this.budgetService.loadBudgets(this.companyDirectory);
         assertNotNull(loadedBudgets);
         assertTrue(loadedBudgets.isEmpty(), "Should return an empty list for an empty JSON file.");
     }
@@ -157,7 +157,7 @@ class BudgetServiceTest {
     void testSaveBudgets_NullCompanyDirectory() {
         List<Budget> budgets = List.of(new Budget("Test Budget", 2024));
         Exception exception = assertThrows(IOException.class, () -> {
-            budgetService.saveBudgets(budgets, null);
+            this.budgetService.saveBudgets(budgets, null);
         });
         assertEquals("Company directory is invalid or not provided.", exception.getMessage());
     }
@@ -165,11 +165,11 @@ class BudgetServiceTest {
     @Test
     void testSaveBudgets_InvalidCompanyDirectory() throws IOException {
         List<Budget> budgets = List.of(new Budget("Test Budget", 2024));
-        File testFileAsDirectory = new File(companyDirectory, "not_a_directory.txt");
+        File testFileAsDirectory = new File(this.companyDirectory, "not_a_directory.txt");
         assertTrue(testFileAsDirectory.createNewFile(), "Failed to create test file.");
 
         Exception exception = assertThrows(IOException.class, () -> {
-            budgetService.saveBudgets(budgets, testFileAsDirectory);
+            this.budgetService.saveBudgets(budgets, testFileAsDirectory);
         });
         assertEquals("Company directory is invalid or not provided.", exception.getMessage());
         
@@ -179,8 +179,8 @@ class BudgetServiceTest {
     @Test
     void testSaveBudgets_NullBudgetsList() throws IOException {
         // As per BudgetService implementation, this logs a warning and does not create the file.
-        budgetService.saveBudgets(null, companyDirectory);
-        File budgetsFile = new File(companyDirectory, "budgets.json");
+        this.budgetService.saveBudgets(null, this.companyDirectory);
+        File budgetsFile = new File(this.companyDirectory, "budgets.json");
         assertFalse(budgetsFile.exists(), "budgets.json should not be created for null list.");
     }
 
@@ -188,18 +188,18 @@ class BudgetServiceTest {
     @Test
     void testLoadBudgets_NullCompanyDirectory() throws IOException {
         // Current implementation logs a warning and returns an empty list.
-        List<Budget> loadedBudgets = budgetService.loadBudgets(null);
+        List<Budget> loadedBudgets = this.budgetService.loadBudgets(null);
         assertNotNull(loadedBudgets);
         assertTrue(loadedBudgets.isEmpty(), "Should return an empty list if company directory is null.");
     }
     
     @Test
     void testLoadBudgets_InvalidCompanyDirectory() throws IOException {
-        File testFileAsDirectory = new File(companyDirectory, "not_a_directory_for_load.txt");
+        File testFileAsDirectory = new File(this.companyDirectory, "not_a_directory_for_load.txt");
         assertTrue(testFileAsDirectory.createNewFile(), "Failed to create test file for loading.");
 
         // Current implementation logs a warning and returns an empty list.
-        List<Budget> loadedBudgets = budgetService.loadBudgets(testFileAsDirectory);
+        List<Budget> loadedBudgets = this.budgetService.loadBudgets(testFileAsDirectory);
         assertNotNull(loadedBudgets);
         assertTrue(loadedBudgets.isEmpty(), "Should return an empty list if company directory is not a directory.");
 

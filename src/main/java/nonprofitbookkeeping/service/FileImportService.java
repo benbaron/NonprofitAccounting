@@ -3,6 +3,7 @@ package nonprofitbookkeeping.service;
 
 import com.webcohesion.ofx4j.domain.data.MessageSetType;
 import com.webcohesion.ofx4j.domain.data.ResponseEnvelope;
+import com.webcohesion.ofx4j.domain.data.ResponseMessage;
 import com.webcohesion.ofx4j.domain.data.banking.BankAccountDetails;
 import com.webcohesion.ofx4j.domain.data.banking.BankStatementResponse;
 import com.webcohesion.ofx4j.domain.data.banking.BankStatementResponseTransaction;
@@ -22,8 +23,6 @@ import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Ledger; // Added
 import nonprofitbookkeeping.model.impex.ImportedTransaction;
-import nonprofitbookkeeping.model.impex.*;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -67,60 +66,70 @@ public class FileImportService
 			new AggregateUnmarshaller<>(ResponseEnvelope.class);
 		ResponseEnvelope envelope = unmarshaller.unmarshal(inputStream);
 		
+		List<ResponseMessage> r = envelope
+			.getMessageSet(MessageSetType.banking).getResponseMessages();
 		
-		BankStatementResponseTransaction bankResponse =	
-			(BankStatementResponseTransaction) 
-			envelope
-			.getMessageSet(MessageSetType.banking)
-			.getResponseMessages();
 		
-		if (bankResponse != null && bankResponse.getWrappedMessage() != null)
+		for (int i = 0; i < r.size(); i++)
 		{
-			// Assuming bankResponse is a single statement object, not a collection
-			BankStatementResponse statement = bankResponse.getWrappedMessage();
-			BankAccountDetails bankAccount = statement.getAccount();
-			String accountNumber = bankAccount.getAccountNumber();
-			String accountType = bankAccount.getAccountType() != null ?
-				bankAccount.getAccountType().toString() : "BANK";
-			String currencyCode = statement.getCurrencyCode();
-			TransactionList transactionList = statement.getTransactionList();
+			BankStatementResponseTransaction bankResponse =
+				(BankStatementResponseTransaction) r.get(i);
 			
-			if (transactionList != null)
+			if (bankResponse != null && bankResponse.getWrappedMessage() != null)
 			{
+				BankStatementResponse statement = bankResponse.getWrappedMessage();
+				BankAccountDetails bankAccount = statement.getAccount();
+				String accountNumber = bankAccount.getAccountNumber();
+				String accountType = bankAccount.getAccountType() != null ?
+					bankAccount.getAccountType().toString() : "BANK";
+				String currencyCode = statement.getCurrencyCode();
+				TransactionList transactionList = statement.getTransactionList();
 				
-				for (Transaction ofxTransaction : transactionList.getTransactions())
+				if (transactionList != null)
 				{
-					importedTransactions.add(mapToImportedTransaction(ofxTransaction,
-						accountNumber, accountType, currencyCode));
+					
+					for (Transaction ofxTransaction : transactionList.getTransactions())
+					{
+						importedTransactions.add(mapToImportedTransaction(ofxTransaction,
+							accountNumber, accountType, currencyCode));
+					}
+					
 				}
 				
 			}
 			
 		}
 		
-		CreditCardStatementResponseTransaction ccResponse =
-			(CreditCardStatementResponseTransaction) envelope
-				.getMessageSet(MessageSetType.creditcard)
-				.getResponseMessages();
+		List<ResponseMessage> r2 = envelope
+			.getMessageSet(MessageSetType.creditcard).getResponseMessages();
 		
-		if (ccResponse != null && ccResponse.getStatements() != null)
+		for (int i = 0; i < r2.size(); i++)
 		{
-			// Assuming ccResponse is a single statement object, not a collection
-			CreditCardStatementResponse statement = ccResponse.getStatements();
-			CreditCardAccountDetails ccAccount =
-				statement.getAccount();
-			String accountNumber = ccAccount.getAccountNumber();
-			String accountType = "CREDITCARD";
-			String currencyCode = statement.getCurrencyCode();
-			TransactionList transactionList = statement.getTransactionList();
+			CreditCardStatementResponseTransaction ccResponse =
+				(CreditCardStatementResponseTransaction) r.get(i);
 			
-			if (transactionList != null)
+			
+			// FIXME: this could also be an unwrapped message i.e ccResponse.getMessage()
+			if (ccResponse != null && ccResponse.getWrappedMessage() != null)
 			{
+				CreditCardStatementResponse statement = ccResponse.getWrappedMessage();
 				
-				for (Transaction ofxTransaction : transactionList.getTransactions())
+				CreditCardAccountDetails ccAccount =
+					statement.getAccount();
+				String accountNumber = ccAccount.getAccountNumber();
+				String accountType = "CREDITCARD";
+				String currencyCode = statement.getCurrencyCode();
+				TransactionList transactionList = statement.getTransactionList();
+				
+				if (transactionList != null)
 				{
-					importedTransactions.add(mapToImportedTransaction(ofxTransaction,
-						accountNumber, accountType, currencyCode));
+					
+					for (Transaction ofxTransaction : transactionList.getTransactions())
+					{
+						importedTransactions.add(mapToImportedTransaction(ofxTransaction,
+							accountNumber, accountType, currencyCode));
+					}
+					
 				}
 				
 			}
@@ -265,6 +274,9 @@ public class FileImportService
 						else
 							LOGGER.warning("Skipping incomplete QIF transaction: " + currentTx);
 						currentTx = null;
+						break;
+						
+					default:
 						break;
 				}
 				
@@ -752,11 +764,12 @@ public class FileImportService
 		return false;
 	}
 	
-	private static List<AccountingTransaction> mapToAccountingTransactions1(
-					List<ImportedTransaction> importedTxns,
-					Account targetAccount,
-					ChartOfAccounts chartOfAccounts,
-					Ledger existingLedger)
+	private static
+			List<AccountingTransaction>
+			mapToAccountingTransactions1(	List<ImportedTransaction> importedTxns,
+											Account targetAccount,
+											ChartOfAccounts chartOfAccounts,
+											Ledger existingLedger)
 	
 	{ // Added existingLedger
 		

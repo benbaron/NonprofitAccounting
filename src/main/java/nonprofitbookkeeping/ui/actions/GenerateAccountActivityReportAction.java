@@ -155,4 +155,14 @@ public class GenerateAccountActivityReportAction implements EventHandler<ActionE
             AlertBox.showError(parentWindow, "Failed to generate report: " + ex.getMessage());
         }
     }
+
+	/**
+	 * @param object
+	 * @return
+	 */
+	public Object actionPerformed(Object object)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -21,7 +21,7 @@ class ExportFileActionFXTest {
     @Test
     @DisplayName("Constructor: Valid Stage should create instance successfully")
     void testConstructor_validStage_succeeds() {
-        ExportFileActionFX action = new ExportFileActionFX(mockStage);
+        ExportFileActionFX action = new ExportFileActionFX(this.mockStage);
         assertNotNull(action, "Instance should be created with a valid Stage.");
     }
 
@@ -38,7 +38,7 @@ class ExportFileActionFXTest {
     @Test
     @DisplayName("handle: Basic call with null ActionEvent should not throw unexpected exceptions")
     void testHandle_basicCall_noUnexpectedExceptions() {
-        ExportFileActionFX action = new ExportFileActionFX(mockStage);
+        ExportFileActionFX action = new ExportFileActionFX(this.mockStage);
         // The handle method shows a FileChooser, which requires a JavaFX environment.
         // This test can only verify that it doesn't crash immediately without a full FX toolkit.
         // For a placeholder, we primarily test it doesn't throw NPEs due to its own logic before UI interaction.

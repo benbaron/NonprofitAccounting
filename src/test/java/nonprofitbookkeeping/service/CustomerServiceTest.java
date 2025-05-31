@@ -21,7 +21,7 @@ class CustomerServiceTest {
 
     // --- addCustomer(Customer customer) Tests ---
     @Test
-    @DisplayName("addCustomer: Valid customer should be added")
+    @DisplayName("addCustomer: Valid customer should be added") static
     void testAddCustomer_validCustomer_shouldBeAdded() {
         Customer customer = new Customer("C001", "Valid Customer");
         CustomerService.addCustomer(customer);

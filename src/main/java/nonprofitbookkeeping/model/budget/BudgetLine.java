@@ -106,7 +106,7 @@ import java.util.ArrayList;
 	 */
 	public String getAccountId()
 	{
-		return accountId;
+		return this.accountId;
 	}
 
 	/**
@@ -122,7 +122,7 @@ import java.util.ArrayList;
 	 */
 	public String getAccountName()
 	{
-		return accountName;
+		return this.accountName;
 	}
 
 	/**
@@ -138,7 +138,7 @@ import java.util.ArrayList;
 	 */
 	public BigDecimal getTotalBudgetedAmount()
 	{
-		return totalBudgetedAmount;
+		return this.totalBudgetedAmount;
 	}
 
 	/**
@@ -154,7 +154,7 @@ import java.util.ArrayList;
 	 */
 	public String getFundId()
 	{
-		return fundId;
+		return this.fundId;
 	}
 
 	/**
@@ -170,7 +170,7 @@ import java.util.ArrayList;
 	 */
 	public List<BigDecimal> getPeriodicAmounts()
 	{
-		return periodicAmounts;
+		return this.periodicAmounts;
 	}
 
 	/**
@@ -178,7 +178,7 @@ import java.util.ArrayList;
 	 */
 	public Periodicity getPeriodicity()
 	{
-		return periodicity;
+		return this.periodicity;
 	}
 	
 }

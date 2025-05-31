@@ -29,8 +29,8 @@ class ReportConfigurationServiceTest {
 
     @BeforeEach
     void setUp() {
-        configService = new ReportConfigurationService();
-        companyDirectory = tempDir.toFile(); 
+        this.configService = new ReportConfigurationService();
+        this.companyDirectory = this.tempDir.toFile(); 
     }
 
     private ReportConfiguration createSampleConfig(String name) {
@@ -63,15 +63,15 @@ class ReportConfigurationServiceTest {
     @Test
     void testSaveAndLoad_EmptyList() throws IOException {
         List<ReportConfiguration> emptyList = new ArrayList<>();
-        configService.saveConfigurations(emptyList, companyDirectory);
+        this.configService.saveConfigurations(emptyList, this.companyDirectory);
 
-        File configFile = new File(companyDirectory, "report_configurations.json");
+        File configFile = new File(this.companyDirectory, "report_configurations.json");
         assertTrue(configFile.exists(), "report_configurations.json file should be created.");
         // An empty list results in an empty JSON array "[]"
         assertTrue(Files.readString(configFile.toPath()).trim().equals("[]"), "File content should be an empty JSON array.");
 
 
-        List<ReportConfiguration> loadedConfigs = configService.loadConfigurations(companyDirectory);
+        List<ReportConfiguration> loadedConfigs = this.configService.loadConfigurations(this.companyDirectory);
         assertNotNull(loadedConfigs, "Loaded configurations should not be null.");
         assertTrue(loadedConfigs.isEmpty(), "Loaded configurations should be an empty list.");
     }
@@ -82,9 +82,9 @@ class ReportConfigurationServiceTest {
         // The constructor already assigns a UUID to configurationId
         
         List<ReportConfiguration> configsToSave = List.of(config1);
-        configService.saveConfigurations(configsToSave, companyDirectory);
+        this.configService.saveConfigurations(configsToSave, this.companyDirectory);
 
-        List<ReportConfiguration> loadedConfigs = configService.loadConfigurations(companyDirectory);
+        List<ReportConfiguration> loadedConfigs = this.configService.loadConfigurations(this.companyDirectory);
         assertNotNull(loadedConfigs);
         assertEquals(1, loadedConfigs.size(), "Should load one configuration.");
 
@@ -101,9 +101,9 @@ class ReportConfigurationServiceTest {
         config2.setFundIds(Collections.emptyList()); // No specific funds
 
         List<ReportConfiguration> configsToSave = List.of(config1, config2);
-        configService.saveConfigurations(configsToSave, companyDirectory);
+        this.configService.saveConfigurations(configsToSave, this.companyDirectory);
 
-        List<ReportConfiguration> loadedConfigs = configService.loadConfigurations(companyDirectory);
+        List<ReportConfiguration> loadedConfigs = this.configService.loadConfigurations(this.companyDirectory);
         assertNotNull(loadedConfigs);
         assertEquals(2, loadedConfigs.size(), "Should load two configurations.");
 
@@ -119,17 +119,17 @@ class ReportConfigurationServiceTest {
     @Test
     void testLoadConfigurations_FileNotFound() {
         // Action: Attempt to load from a directory where the file doesn't exist
-        List<ReportConfiguration> loadedConfigs = configService.loadConfigurations(companyDirectory);
+        List<ReportConfiguration> loadedConfigs = this.configService.loadConfigurations(this.companyDirectory);
         assertNotNull(loadedConfigs);
         assertTrue(loadedConfigs.isEmpty(), "Should return an empty list if file not found.");
     }
 
     @Test
     void testLoadConfigurations_CorruptJsonFile() throws IOException {
-        File configFile = new File(companyDirectory, "report_configurations.json");
+        File configFile = new File(this.companyDirectory, "report_configurations.json");
         Files.writeString(configFile.toPath(), "{invalid json content,,}");
 
-        List<ReportConfiguration> loadedConfigs = configService.loadConfigurations(companyDirectory);
+        List<ReportConfiguration> loadedConfigs = this.configService.loadConfigurations(this.companyDirectory);
         assertNotNull(loadedConfigs);
         assertTrue(loadedConfigs.isEmpty(), "Should return an empty list for corrupt JSON.");
         // Log message verification is outside scope of simple unit test assertions
@@ -137,10 +137,10 @@ class ReportConfigurationServiceTest {
     
     @Test
     void testLoadConfigurations_EmptyJsonFile() throws IOException {
-        File configFile = new File(companyDirectory, "report_configurations.json");
+        File configFile = new File(this.companyDirectory, "report_configurations.json");
         Files.writeString(configFile.toPath(), ""); // Empty file
 
-        List<ReportConfiguration> loadedConfigs = configService.loadConfigurations(companyDirectory);
+        List<ReportConfiguration> loadedConfigs = this.configService.loadConfigurations(this.companyDirectory);
         assertNotNull(loadedConfigs);
         assertTrue(loadedConfigs.isEmpty(), "Should return an empty list for an empty JSON file.");
     }
@@ -151,7 +151,7 @@ class ReportConfigurationServiceTest {
         List<ReportConfiguration> configs = List.of(config);
         
         Exception exception = assertThrows(IOException.class, () -> {
-            configService.saveConfigurations(configs, null);
+            this.configService.saveConfigurations(configs, null);
         });
         assertEquals("Invalid company directory for saving report configurations.", exception.getMessage());
     }
@@ -160,11 +160,11 @@ class ReportConfigurationServiceTest {
     void testSaveConfigurations_InvalidCompanyDirectory() throws IOException {
         ReportConfiguration config = createSampleConfig("Test Config");
         List<ReportConfiguration> configs = List.of(config);
-        File testFileAsDir = new File(companyDirectory, "not_a_directory.txt");
+        File testFileAsDir = new File(this.companyDirectory, "not_a_directory.txt");
         assertTrue(testFileAsDir.createNewFile(), "Failed to create test file.");
 
         Exception exception = assertThrows(IOException.class, () -> {
-            configService.saveConfigurations(configs, testFileAsDir);
+            this.configService.saveConfigurations(configs, testFileAsDir);
         });
         assertEquals("Invalid company directory for saving report configurations.", exception.getMessage());
         
@@ -174,25 +174,25 @@ class ReportConfigurationServiceTest {
     @Test
     void testSaveConfigurations_NullConfigsList() throws IOException {
         // Service method logs warning and returns, does not throw, does not create file.
-        configService.saveConfigurations(null, companyDirectory);
-        File configFile = new File(companyDirectory, "report_configurations.json");
+        this.configService.saveConfigurations(null, this.companyDirectory);
+        File configFile = new File(this.companyDirectory, "report_configurations.json");
         assertFalse(configFile.exists(), "Config file should not be created for null list.");
     }
 
     @Test
     void testLoadConfigurations_NullCompanyDirectory() {
         // Service method logs warning and returns empty list.
-        List<ReportConfiguration> loadedConfigs = configService.loadConfigurations(null);
+        List<ReportConfiguration> loadedConfigs = this.configService.loadConfigurations(null);
         assertNotNull(loadedConfigs);
         assertTrue(loadedConfigs.isEmpty());
     }
     
     @Test
     void testLoadConfigurations_InvalidCompanyDirectoryNotADirectory() throws IOException {
-        File testFileAsDir = new File(companyDirectory, "not_a_directory_for_load.txt");
+        File testFileAsDir = new File(this.companyDirectory, "not_a_directory_for_load.txt");
         assertTrue(testFileAsDir.createNewFile(), "Failed to create test file for loading.");
 
-        List<ReportConfiguration> loadedConfigs = configService.loadConfigurations(testFileAsDir);
+        List<ReportConfiguration> loadedConfigs = this.configService.loadConfigurations(testFileAsDir);
         assertNotNull(loadedConfigs);
         assertTrue(loadedConfigs.isEmpty(), "Should return an empty list if company directory is not a directory.");
 
@@ -204,10 +204,10 @@ class ReportConfigurationServiceTest {
         // Simulate a JSON file where a configuration object has a null ID
         // (though ReportConfiguration constructor should prevent this on creation)
         String jsonContent = "[{\"configurationId\":null,\"userGivenName\":\"Test Null ID\",\"reportType\":\"balance_sheet\",\"dateSelectionMode\":\"SINGLE_DATE\",\"specificEndDate\":\"2023-12-31\",\"outputFormat\":\"xlsx\"}]";
-        File configFile = new File(companyDirectory, "report_configurations.json");
+        File configFile = new File(this.companyDirectory, "report_configurations.json");
         Files.writeString(configFile.toPath(), jsonContent);
 
-        List<ReportConfiguration> loadedConfigs = configService.loadConfigurations(companyDirectory);
+        List<ReportConfiguration> loadedConfigs = this.configService.loadConfigurations(this.companyDirectory);
         assertNotNull(loadedConfigs);
         assertEquals(1, loadedConfigs.size());
         ReportConfiguration loadedConfig = loadedConfigs.get(0);

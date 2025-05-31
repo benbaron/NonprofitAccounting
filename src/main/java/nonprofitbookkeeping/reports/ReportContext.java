@@ -24,42 +24,42 @@ public class ReportContext
     // Getters and Setters for all fields
 
 	public String getReportType() {
-		return reportType;
+		return this.reportType;
 	}
 	public void setReportType(String reportType) {
 		this.reportType = reportType;
 	}
 
 	public LocalDate getStartDate() {
-		return startDate;
+		return this.startDate;
 	}
 	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
 
 	public LocalDate getEndDate() {
-		return endDate;
+		return this.endDate;
 	}
 	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
 	}
 
 	public String getOutputFormat() {
-		return outputFormat;
+		return this.outputFormat;
 	}
 	public void setOutputFormat(String outputFormat) {
 		this.outputFormat = outputFormat;
 	}
 
     public Budget getSelectedBudget() {
-        return selectedBudget;
+        return this.selectedBudget;
     }
     public void setSelectedBudget(Budget selectedBudget) {
         this.selectedBudget = selectedBudget;
     }
 
     public List<String> getFundIds() {
-        return fundIds;
+        return this.fundIds;
     }
     public void setFundIds(List<String> fundIds) {
         this.fundIds = fundIds;
@@ -67,7 +67,7 @@ public class ReportContext
 
     // Getter and Setter for accountIdsForDetailReport
     public List<String> getAccountIdsForDetailReport() {
-        return accountIdsForDetailReport;
+        return this.accountIdsForDetailReport;
     }
     public void setAccountIdsForDetailReport(List<String> accountIdsForDetailReport) {
         this.accountIdsForDetailReport = accountIdsForDetailReport;

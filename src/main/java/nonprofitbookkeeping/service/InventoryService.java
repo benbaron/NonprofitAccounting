@@ -189,5 +189,14 @@ public class InventoryService
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	/**
+	 * 
+	 */
+	public static void clearInventory()
+	{
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

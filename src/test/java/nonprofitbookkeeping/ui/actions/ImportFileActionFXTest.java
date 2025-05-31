@@ -20,7 +20,7 @@ class ImportFileActionFXTest {
     @Test
     @DisplayName("Constructor: Valid Stage should create instance successfully")
     void testConstructor_validStage_succeeds() {
-        ImportFileActionFX action = new ImportFileActionFX(mockStage);
+        ImportFileActionFX action = new ImportFileActionFX(this.mockStage);
         assertNotNull(action, "Instance should be created with a valid Stage.");
     }
 
@@ -37,7 +37,7 @@ class ImportFileActionFXTest {
     @Test
     @DisplayName("handle: Basic call with null ActionEvent should not throw unexpected exceptions")
     void testHandle_basicCall_noUnexpectedExceptions() {
-        ImportFileActionFX action = new ImportFileActionFX(mockStage);
+        ImportFileActionFX action = new ImportFileActionFX(this.mockStage);
 
         // Similar to ExportFileActionFXTest, this is a basic sanity check.
         // The handle method shows a FileChooser and then an Alert.

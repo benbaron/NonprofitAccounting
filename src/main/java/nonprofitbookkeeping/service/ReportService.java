@@ -112,8 +112,7 @@ public class ReportService
 						
 					}
 					
-					String accountTypeStr = account.getAccountType();
-					
+					String accountTypeStr = account.getAccountType().toString();					
 					if (accountTypeStr == null)
 					{
 						LOGGER.warning("IS: Account type is null for account: " +

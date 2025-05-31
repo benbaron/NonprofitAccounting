@@ -60,6 +60,15 @@ public enum AccountType
 		}
 		
 	}
+
+	/**
+	 * @return
+	 */
+	public String toUpperCase()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 }

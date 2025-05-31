@@ -10,7 +10,6 @@ import javafx.stage.Stage; // For action constructors
 
 // Import SCA Action classes
 import nonprofitbookkeeping.plugins.scaledger.ui.PageViewerPanel; // Added
-import nonprofitbookkeeping.ui.actions.ApplyFormulasActionFX; 
 import nonprofitbookkeeping.ui.actions.InputFileActionFX; 
 import nonprofitbookkeeping.ui.actions.OutputFileActionFX; 
 import nonprofitbookkeeping.ui.actions.scaledger.ImportFromJsonActionFX;
@@ -86,11 +85,6 @@ public class SCALedgerPlugin implements Plugin {
         MenuItem saveModifiedItem = new MenuItem("Save Modified Copy (SCA)");
         saveModifiedItem.setOnAction(e -> new SaveModifiedCopyActionFX(primaryStage, this).handle(e)); // Pass plugin instance
         scaMenu.getItems().add(saveModifiedItem);
-
-        // Actions from nonprofitbookkeeping.ui.actions package
-        MenuItem applyFormulasItem = new MenuItem("Apply Formulas (SCA)");
-        applyFormulasItem.setOnAction(e -> new ApplyFormulasActionFX(primaryStage, this).handle(e)); // Pass plugin instance
-        scaMenu.getItems().add(applyFormulasItem);
         
         // Generic actions - these might be general utilities or need context
         // For now, assuming they are part of the desired SCA menu as per original structure

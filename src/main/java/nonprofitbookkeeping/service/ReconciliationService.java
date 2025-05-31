@@ -64,7 +64,7 @@ public class ReconciliationService
 	/**
 	 * @return
 	 */
-	public String listReconcilableAccounts()
+	public List<String> listReconcilableAccounts()
 	{
 		// TODO Auto-generated method stub
 		return null;
@@ -77,6 +77,15 @@ public class ReconciliationService
 	 * @param clearedIds
 	 */
 	public void reconcile(String value, String string, BigDecimal ending, List<String> clearedIds)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * @param mockTx1
+	 */
+	public void addTransactionToReconcile(AccountingTransaction mockTx1)
 	{
 		// TODO Auto-generated method stub
 		

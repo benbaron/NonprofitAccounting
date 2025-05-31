@@ -25,13 +25,13 @@ class ChartOfAccountsTest {
 
     @BeforeEach
     void setUp() {
-        chart = new ChartOfAccounts();
+        this.chart = new ChartOfAccounts();
 
         // Initialize sample accounts - using direct instantiation
         // Assuming AccountSide is an accessible enum. If not, this might need adjustment or mocking.
-        acc101 = new Account("101", "Cash", AccountSide.DEBIT);
-        acc202 = new Account("202", "Accounts Payable", AccountSide.CREDIT);
-        acc303 = new Account("303", "Revenue", AccountSide.CREDIT);
+        this.acc101 = new Account("101", "Cash", AccountSide.DEBIT);
+        this.acc202 = new Account("202", "Accounts Payable", AccountSide.CREDIT);
+        this.acc303 = new Account("303", "Revenue", AccountSide.CREDIT);
     }
 
     // --- Tests for getAccount(String accountNumber) ---
@@ -39,49 +39,49 @@ class ChartOfAccountsTest {
     @Test
     @DisplayName("getAccount: Retrieve existing account by correct number")
     void testGetAccount_existingAccount_returnsCorrectAccount() {
-        chart.addAccount(acc101);
-        chart.addAccount(acc202);
+        this.chart.addAccount(this.acc101);
+        this.chart.addAccount(this.acc202);
 
-        Account foundAccount = chart.getAccount("101");
+        Account foundAccount = this.chart.getAccount("101");
         assertNotNull(foundAccount);
-        assertSame(acc101, foundAccount, "Should return the same Account instance for '101'.");
+        assertSame(this.acc101, foundAccount, "Should return the same Account instance for '101'.");
         assertEquals("Cash", foundAccount.getName());
 
-        Account foundAccount2 = chart.getAccount("202");
+        Account foundAccount2 = this.chart.getAccount("202");
         assertNotNull(foundAccount2);
-        assertSame(acc202, foundAccount2, "Should return the same Account instance for '202'.");
+        assertSame(this.acc202, foundAccount2, "Should return the same Account instance for '202'.");
     }
 
     @Test
     @DisplayName("getAccount: Retrieve with non-existent account number returns null")
     void testGetAccount_nonExistentAccountNumber_returnsNull() {
-        chart.addAccount(acc101);
-        assertNull(chart.getAccount("999"), "Should return null for a non-existent account number.");
+        this.chart.addAccount(this.acc101);
+        assertNull(this.chart.getAccount("999"), "Should return null for a non-existent account number.");
     }
 
     @Test
     @DisplayName("getAccount: Retrieve with null account number returns null")
     void testGetAccount_nullAccountNumber_returnsNull() {
-        chart.addAccount(acc101);
-        assertNull(chart.getAccount(null), "Should return null when accountNumber is null.");
+        this.chart.addAccount(this.acc101);
+        assertNull(this.chart.getAccount(null), "Should return null when accountNumber is null.");
     }
 
     @Test
     @DisplayName("getAccount: Retrieve with blank account number returns null")
     void testGetAccount_blankAccountNumber_returnsNull() {
-        chart.addAccount(acc101);
-        assertNull(chart.getAccount("   "), "Should return null when accountNumber is blank.");
+        this.chart.addAccount(this.acc101);
+        assertNull(this.chart.getAccount("   "), "Should return null when accountNumber is blank.");
     }
 
     @Test
     @DisplayName("getAccount: After adding multiple accounts, retrieves correctly")
     void testGetAccount_afterAddingMultiple_retrievesCorrectly() {
-        chart.addAccount(acc101);
-        chart.addAccount(acc202);
-        chart.addAccount(acc303);
+        this.chart.addAccount(this.acc101);
+        this.chart.addAccount(this.acc202);
+        this.chart.addAccount(this.acc303);
 
-        assertSame(acc202, chart.getAccount("202"));
-        assertSame(acc303, chart.getAccount("303"));
+        assertSame(this.acc202, this.chart.getAccount("202"));
+        assertSame(this.acc303, this.chart.getAccount("303"));
     }
 
     // --- Tests for getAccounts() ---
@@ -89,7 +89,7 @@ class ChartOfAccountsTest {
     @Test
     @DisplayName("getAccounts: Empty chart returns an empty list")
     void testGetAccounts_emptyChart_returnsEmptyList() {
-        List<Account> accounts = chart.getAccounts();
+        List<Account> accounts = this.chart.getAccounts();
         assertNotNull(accounts, "getAccounts() should not return null for an empty chart.");
         assertTrue(accounts.isEmpty(), "List should be empty for a newly initialized chart.");
     }
@@ -97,32 +97,32 @@ class ChartOfAccountsTest {
     @Test
     @DisplayName("getAccounts: With one account, returns list with that one account")
     void testGetAccounts_withOneAccount_returnsListWithOneAccount() {
-        chart.addAccount(acc101);
-        List<Account> accounts = chart.getAccounts();
+        this.chart.addAccount(this.acc101);
+        List<Account> accounts = this.chart.getAccounts();
         assertEquals(1, accounts.size());
-        assertSame(acc101, accounts.get(0), "The list should contain the added account.");
+        assertSame(this.acc101, accounts.get(0), "The list should contain the added account.");
     }
 
     @Test
     @DisplayName("getAccounts: With multiple accounts, returns list with all accounts")
     void testGetAccounts_withMultipleAccounts_returnsListWithAllAccounts() {
-        chart.addAccount(acc101);
-        chart.addAccount(acc202);
-        chart.addAccount(acc303);
+        this.chart.addAccount(this.acc101);
+        this.chart.addAccount(this.acc202);
+        this.chart.addAccount(this.acc303);
 
-        List<Account> accounts = chart.getAccounts();
+        List<Account> accounts = this.chart.getAccounts();
         assertEquals(3, accounts.size());
-        assertTrue(accounts.contains(acc101), "List should contain acc101.");
-        assertTrue(accounts.contains(acc202), "List should contain acc202.");
-        assertTrue(accounts.contains(acc303), "List should contain acc303.");
+        assertTrue(accounts.contains(this.acc101), "List should contain acc101.");
+        assertTrue(accounts.contains(this.acc202), "List should contain acc202.");
+        assertTrue(accounts.contains(this.acc303), "List should contain acc303.");
     }
 
     @Test
     @DisplayName("getAccounts: Returned list is a defensive copy")
     void testGetAccounts_isDefensiveCopy() {
-        chart.addAccount(acc101);
+        this.chart.addAccount(this.acc101);
 
-        List<Account> accountsList1 = chart.getAccounts();
+        List<Account> accountsList1 = this.chart.getAccounts();
         int originalSize = accountsList1.size();
         assertNotNull(accountsList1);
 
@@ -136,7 +136,7 @@ class ChartOfAccountsTest {
         }
 
         // Verify the original list in ChartOfAccounts is unchanged
-        List<Account> accountsList2 = chart.getAccounts();
+        List<Account> accountsList2 = this.chart.getAccounts();
         assertEquals(originalSize, accountsList2.size(), "Modifying the returned list should not affect the internal list in ChartOfAccounts.");
         assertFalse(accountsList2.contains(newAccInCopy), "Internal list should not contain the account added to the copy.");
 

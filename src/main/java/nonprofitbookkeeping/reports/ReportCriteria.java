@@ -22,11 +22,11 @@ public class ReportCriteria {
     }
 
     public LocalDate getStartDate() {
-        return startDate;
+        return this.startDate;
     }
 
     public LocalDate getEndDate() {
-        return endDate;
+        return this.endDate;
     }
 
     /**
@@ -35,11 +35,11 @@ public class ReportCriteria {
      * @return A list of fund IDs, or null/empty.
      */
     public List<String> getSelectedFundIds() {
-        return selectedFundIds;
+        return this.selectedFundIds;
     }
 
     public String getNameForSaving() {
-        return nameForSaving;
+        return this.nameForSaving;
     }
 
     public void setNameForSaving(String nameForSaving) {
@@ -47,10 +47,10 @@ public class ReportCriteria {
     }
 
     public DateSelectionMode getDateSelectionMode() { 
-        return dateSelectionMode;
+        return this.dateSelectionMode;
     }
 
     public List<String> getSelectedAccountIds() { // Added getter
-        return selectedAccountIds;
+        return this.selectedAccountIds;
     }
 }

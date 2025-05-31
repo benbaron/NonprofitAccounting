@@ -27,7 +27,11 @@ import java.util.ArrayList; // Added
 import java.util.List; // Added
 import java.util.Optional;
 
-public class GenerateTrialBalanceAction implements EventHandler<ActionEvent> {
+import javax.swing.AbstractAction;
+
+
+
+public class GenerateTrialBalanceAction extends AbstractAction implements EventHandler<ActionEvent> {
 
     // private static final long serialVersionUID = 1L; // Removed
     private final String reportType = "trial_balance";
@@ -150,4 +154,15 @@ public class GenerateTrialBalanceAction implements EventHandler<ActionEvent> {
                     "Failed to generate Trial Balance: " + ex.getMessage());
         }
     }
+
+
+
+	/**
+	 * Override @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent) 
+	 */
+	@Override public void actionPerformed(java.awt.event.ActionEvent e)
+	{
+		// TODO Auto-generated method stub
+		
+	}
 }

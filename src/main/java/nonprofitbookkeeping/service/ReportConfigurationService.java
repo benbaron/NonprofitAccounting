@@ -55,7 +55,7 @@ public class ReportConfigurationService
 		
 		try
 		{
-			objectMapper.writeValue(configFile, configs);
+			this.objectMapper.writeValue(configFile, configs);
 			LOGGER.info("Report configurations saved to: " + configFile.getAbsolutePath());
 		}
 		catch (IOException e)
@@ -91,7 +91,7 @@ public class ReportConfigurationService
 		try
 		{
 			List<ReportConfiguration> configs =
-				objectMapper.readValue(configFile, new TypeReference<List<ReportConfiguration>>()
+				this.objectMapper.readValue(configFile, new TypeReference<List<ReportConfiguration>>()
 				{
 				});
 			LOGGER.info(

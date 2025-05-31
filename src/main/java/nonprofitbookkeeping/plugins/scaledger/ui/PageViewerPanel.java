@@ -16,19 +16,19 @@ public class PageViewerPanel extends JPanel
 	public PageViewerPanel()
 	{
 		// Initialize components
-		tableModel = new DefaultTableModel();
-		table = new JTable(tableModel);
+		this.tableModel = new DefaultTableModel();
+		this.table = new JTable(this.tableModel);
 		
 		// Configure table properties
-		table.setFillsViewportHeight(true);
-		table.setAutoCreateRowSorter(true);
+		this.table.setFillsViewportHeight(true);
+		this.table.setAutoCreateRowSorter(true);
 		
 		// Initialize scroll pane and add table to it
-		scrollPane = new JScrollPane(table);
+		this.scrollPane = new JScrollPane(this.table);
 		
 		// Set layout for the panel and add scrollPane
 		setLayout(new BorderLayout());
-		add(scrollPane, BorderLayout.CENTER);
+		add(this.scrollPane, BorderLayout.CENTER);
 	}
 	
 	/**
@@ -50,12 +50,12 @@ public class PageViewerPanel extends JPanel
 		if (newModelData == null)
 		{
 			// Clear existing data if new data is null
-			tableModel.setDataVector(new Vector<>(), new Vector<>()); // Empty data and columns
+			this.tableModel.setDataVector(new Vector<>(), new Vector<>()); // Empty data and columns
 			return;
 		}
 		
 		// Replace data and columns with newModelData's content
-		tableModel.setDataVector(
+		this.tableModel.setDataVector(
 			newModelData.getDataVector(),
 			null);
 			// FIXME newModelData.getColumnIdentifiers());

@@ -18,6 +18,8 @@ import nonprofitbookkeeping.ui.helpers.ReportCriteriaDialog;
 import javafx.event.ActionEvent; // Added
 import javafx.event.EventHandler; // Added
 import javafx.stage.Window; // Added
+
+
 // import javax.swing.*; // Removed
 // import java.awt.event.ActionEvent; // Removed
 import java.io.File;
@@ -27,7 +29,10 @@ import java.util.ArrayList; // Added
 import java.util.List; // Added
 import java.util.Optional;
 
-public class GenerateCashFlowStatementAction implements EventHandler<ActionEvent> {
+import javax.swing.AbstractAction;
+
+
+public class GenerateCashFlowStatementAction extends AbstractAction  implements EventHandler<ActionEvent> {
 
     // private static final long serialVersionUID = 1L; // Removed
     private final String reportType = "cash_flow_statement";
@@ -152,4 +157,15 @@ public class GenerateCashFlowStatementAction implements EventHandler<ActionEvent
                     "Failed to generate Cash Flow Statement: " + ex.getMessage());
         }
     }
+
+	/**
+	 * Override @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent) 
+	 */
+	@Override public void actionPerformed(java.awt.event.ActionEvent e)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+
 }

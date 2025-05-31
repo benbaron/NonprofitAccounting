@@ -49,7 +49,7 @@ public class ReportConfiguration {
 	 */
 	public String getReportType()
 	{
-		return reportType;
+		return this.reportType;
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class ReportConfiguration {
 	 */
 	public DateSelectionMode getDateSelectionMode()
 	{
-		return dateSelectionMode;
+		return this.dateSelectionMode;
 	}
 
 	/**
@@ -81,7 +81,7 @@ public class ReportConfiguration {
 	 */
 	public String getRelativeDateRange()
 	{
-		return relativeDateRange;
+		return this.relativeDateRange;
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class ReportConfiguration {
 	 */
 	public LocalDate getSpecificStartDate()
 	{
-		return specificStartDate;
+		return this.specificStartDate;
 	}
 
 	/**
@@ -113,7 +113,7 @@ public class ReportConfiguration {
 	 */
 	public LocalDate getSpecificEndDate()
 	{
-		return specificEndDate;
+		return this.specificEndDate;
 	}
 
 	/**
@@ -129,7 +129,7 @@ public class ReportConfiguration {
 	 */
 	public List<String> getFundIds()
 	{
-		return fundIds;
+		return this.fundIds;
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class ReportConfiguration {
 	 */
 	public String getOutputFormat()
 	{
-		return outputFormat;
+		return this.outputFormat;
 	}
 
 	/**
@@ -171,7 +171,7 @@ public class ReportConfiguration {
 	 */
 	public String getConfigurationId()
 	{
-		return configurationId;
+		return this.configurationId;
 	}
 
 
@@ -181,7 +181,7 @@ public class ReportConfiguration {
 	 */
 	public String getUserGivenName()
 	{
-		return userGivenName;
+		return this.userGivenName;
 	}
 
 

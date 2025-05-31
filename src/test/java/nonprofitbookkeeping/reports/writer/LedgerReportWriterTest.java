@@ -23,7 +23,7 @@ class LedgerReportWriterTest {
     @Test
     @DisplayName("Constructor: Valid inputs should create instance successfully")
     void testConstructor_validInputs_succeeds() {
-        LedgerReportWriter writer = new LedgerReportWriter(mockTrialBalanceService, mockLedger);
+        LedgerReportWriter writer = new LedgerReportWriter(this.mockTrialBalanceService, this.mockLedger);
         assertNotNull(writer, "Writer instance should be created successfully with valid inputs.");
         // In a more comprehensive test, one might check if these dependencies are used by other methods.
         // For now, successful instantiation is the key check.
@@ -33,7 +33,7 @@ class LedgerReportWriterTest {
     @DisplayName("Constructor: Null TrialBalanceService should throw IllegalArgumentException")
     void testConstructor_nullTrialBalanceService_throwsIllegalArgumentException() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new LedgerReportWriter(null, mockLedger);
+            new LedgerReportWriter(null, this.mockLedger);
         });
         assertEquals("TrialBalanceService cannot be null.", exception.getMessage(),
                      "Exception message should indicate TrialBalanceService is null.");
@@ -43,7 +43,7 @@ class LedgerReportWriterTest {
     @DisplayName("Constructor: Null Ledger should throw IllegalArgumentException")
     void testConstructor_nullLedger_throwsIllegalArgumentException() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new LedgerReportWriter(mockTrialBalanceService, null);
+            new LedgerReportWriter(this.mockTrialBalanceService, null);
         });
         assertEquals("Ledger cannot be null.", exception.getMessage(),
                      "Exception message should indicate Ledger is null.");

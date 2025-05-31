@@ -1,11 +1,8 @@
 package nonprofitbookkeeping.ui.actions;
 
-import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
-import nonprofitbookkeeping.model.Ledger;
 import nonprofitbookkeeping.model.budget.Budget;
-import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.service.BudgetService;
 import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.ui.helpers.AlertBox; // Added
@@ -19,13 +16,14 @@ import javafx.stage.Window; // Added
 // import java.awt.event.ActionEvent; // Removed
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.swing.AbstractAction;
 
-public class GenerateBudgetVsActualsReportAction implements EventHandler<ActionEvent> {
+
+public class GenerateBudgetVsActualsReportAction extends AbstractAction implements EventHandler<ActionEvent> {
 
     // private static final long serialVersionUID = 1L; // Removed
     private final BudgetService budgetService;
@@ -164,4 +162,13 @@ public class GenerateBudgetVsActualsReportAction implements EventHandler<ActionE
             AlertBox.showError(parentWindow, "Failed to generate report: " + ex.getMessage());
         }
     }
+
+	/**
+	 * Override @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent) 
+	 */
+	@Override public void actionPerformed(java.awt.event.ActionEvent e)
+	{
+		// TODO Auto-generated method stub
+		
+	}
 }

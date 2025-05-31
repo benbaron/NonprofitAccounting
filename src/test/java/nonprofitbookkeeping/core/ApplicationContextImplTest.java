@@ -39,25 +39,25 @@ class ApplicationContextImplTest {
     @DisplayName("Constructor: Valid inputs should initialize all fields correctly")
     void testConstructor_validInputs_gettersReturnCorrectInstances() {
         ApplicationContextImpl context = new ApplicationContextImpl(
-                mockPrimaryStage,
-                mockMenuBar,
-                mockReportService,
-                mockBudgetService,
-                mockReportConfigurationService,
-                mockInventoryService,
-                mockDocumentStorageService,
-                mockFundAccountingService
+                this.mockPrimaryStage,
+                this.mockMenuBar,
+                this.mockReportService,
+                this.mockBudgetService,
+                this.mockReportConfigurationService,
+                this.mockInventoryService,
+                this.mockDocumentStorageService,
+                this.mockFundAccountingService
         );
 
         assertNotNull(context, "ApplicationContextImpl instance should not be null.");
-        assertSame(mockPrimaryStage, context.getPrimaryStage(), "getPrimaryStage() should return the mocked Stage.");
-        assertSame(mockMenuBar, context.getMenuBar(), "getMenuBar() should return the mocked MenuBar.");
-        assertSame(mockReportService, context.getReportService(), "getReportService() should return the mocked ReportService.");
-        assertSame(mockBudgetService, context.getBudgetService(), "getBudgetService() should return the mocked BudgetService.");
-        assertSame(mockReportConfigurationService, context.getReportConfigurationService(), "getReportConfigurationService() should return the mocked ReportConfigurationService.");
-        assertSame(mockInventoryService, context.getInventoryService(), "getInventoryService() should return the mocked InventoryService.");
-        assertSame(mockDocumentStorageService, context.getDocumentStorageService(), "getDocumentStorageService() should return the mocked DocumentStorageService.");
-        assertSame(mockFundAccountingService, context.getFundAccountingService(), "getFundAccountingService() should return the mocked FundAccountingService.");
+        assertSame(this.mockPrimaryStage, context.getPrimaryStage(), "getPrimaryStage() should return the mocked Stage.");
+        assertSame(this.mockMenuBar, context.getMenuBar(), "getMenuBar() should return the mocked MenuBar.");
+        assertSame(this.mockReportService, context.getReportService(), "getReportService() should return the mocked ReportService.");
+        assertSame(this.mockBudgetService, context.getBudgetService(), "getBudgetService() should return the mocked BudgetService.");
+        assertSame(this.mockReportConfigurationService, context.getReportConfigurationService(), "getReportConfigurationService() should return the mocked ReportConfigurationService.");
+        assertSame(this.mockInventoryService, context.getInventoryService(), "getInventoryService() should return the mocked InventoryService.");
+        assertSame(this.mockDocumentStorageService, context.getDocumentStorageService(), "getDocumentStorageService() should return the mocked DocumentStorageService.");
+        assertSame(this.mockFundAccountingService, context.getFundAccountingService(), "getFundAccountingService() should return the mocked FundAccountingService.");
     }
 
     @Test
@@ -66,13 +66,13 @@ class ApplicationContextImplTest {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             new ApplicationContextImpl(
                     null, // Null PrimaryStage
-                    mockMenuBar,
-                    mockReportService,
-                    mockBudgetService,
-                    mockReportConfigurationService,
-                    mockInventoryService,
-                    mockDocumentStorageService,
-                    mockFundAccountingService
+                    this.mockMenuBar,
+                    this.mockReportService,
+                    this.mockBudgetService,
+                    this.mockReportConfigurationService,
+                    this.mockInventoryService,
+                    this.mockDocumentStorageService,
+                    this.mockFundAccountingService
             );
         });
         assertEquals("PrimaryStage cannot be null.", exception.getMessage(),
@@ -84,14 +84,14 @@ class ApplicationContextImplTest {
     void testConstructor_nullMenuBar_throwsIllegalArgumentException() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             new ApplicationContextImpl(
-                    mockPrimaryStage,
+                    this.mockPrimaryStage,
                     null, // Null MenuBar
-                    mockReportService,
-                    mockBudgetService,
-                    mockReportConfigurationService,
-                    mockInventoryService,
-                    mockDocumentStorageService,
-                    mockFundAccountingService
+                    this.mockReportService,
+                    this.mockBudgetService,
+                    this.mockReportConfigurationService,
+                    this.mockInventoryService,
+                    this.mockDocumentStorageService,
+                    this.mockFundAccountingService
             );
         });
         assertEquals("MenuBar cannot be null.", exception.getMessage(),

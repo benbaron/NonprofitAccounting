@@ -1,7 +1,6 @@
 
 package nonprofitbookkeeping.ui.panels;
 
-import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Fund;
@@ -14,12 +13,10 @@ import javax.swing.*;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.math.BigDecimal;
 import java.io.File; // Added
 import java.io.IOException; // Added
 import java.time.LocalDate; // Added for new budget year
 import java.util.ArrayList;
-import java.util.Calendar; // Keep for default year if needed, or use LocalDate
 import java.util.List;
 import java.util.Vector;
 
@@ -88,25 +85,25 @@ public class BudgetPanel extends JDialog
 	
 	private void populateUIFromCurrentBudget()
 	{
-		txtBudgetName.setText(currentBudget.getBudgetName());
-		spnFiscalYear.setValue(currentBudget.getFiscalYear());
-		txtDescription
-			.setText(currentBudget.getDescription() == null ? "" : currentBudget.getDescription());
-		txtCurrency.setText(currentBudget.getCurrency());
+		this.txtBudgetName.setText(this.currentBudget.getBudgetName());
+		this.spnFiscalYear.setValue(this.currentBudget.getFiscalYear());
+		this.txtDescription
+			.setText(this.currentBudget.getDescription() == null ? "" : this.currentBudget.getDescription());
+		this.txtCurrency.setText(this.currentBudget.getCurrency());
 		
 		// Applicable Fund ComboBox
-		if (currentBudget.getApplicableFundId() == null)
+		if (this.currentBudget.getApplicableFundId() == null)
 		{
-			cmbApplicableFund.setSelectedItem("All Funds");
+			this.cmbApplicableFund.setSelectedItem("All Funds");
 		}
 		else
 		{
-			availableFunds.stream()
-				.filter(f -> currentBudget.getApplicableFundId().equals(f.getFundId()))
+			this.availableFunds.stream()
+				.filter(f -> this.currentBudget.getApplicableFundId().equals(f.getFundId()))
 				.findFirst()
 				.ifPresentOrElse(
-					fund -> cmbApplicableFund.setSelectedItem(fund.getName()),
-					() -> cmbApplicableFund.setSelectedItem("All Funds") // Fallback
+					fund -> this.cmbApplicableFund.setSelectedItem(fund.getName()),
+					() -> this.cmbApplicableFund.setSelectedItem("All Funds") // Fallback
 				);
 		}
 		
@@ -121,40 +118,40 @@ public class BudgetPanel extends JDialog
 	{
 		// Budget Properties - Initialize them first, then populate in
 		// populateUIFromCurrentBudget
-		txtBudgetName = new JTextField(20);
-		spnFiscalYear =
+		this.txtBudgetName = new JTextField(20);
+		this.spnFiscalYear =
 			new JSpinner(new SpinnerNumberModel(LocalDate.now().getYear(), 2000, 2100, 1));
-		JSpinner.NumberEditor editor = new JSpinner.NumberEditor(spnFiscalYear, "#");
-		spnFiscalYear.setEditor(editor);
-		txtDescription = new JTextField(30);
+		JSpinner.NumberEditor editor = new JSpinner.NumberEditor(this.spnFiscalYear, "#");
+		this.spnFiscalYear.setEditor(editor);
+		this.txtDescription = new JTextField(30);
 		
 		Vector<String> fundNames = new Vector<>();
 		fundNames.add("All Funds");
 		
-		for (Fund fund : availableFunds)
+		for (Fund fund : this.availableFunds)
 		{
 			fundNames.add(fund.getName());
 		}
 		
-		cmbApplicableFund = new JComboBox<>(fundNames);
-		txtCurrency = new JTextField(5);
-		txtCurrency.setEditable(false);
+		this.cmbApplicableFund = new JComboBox<>(fundNames);
+		this.txtCurrency = new JTextField(5);
+		this.txtCurrency.setEditable(false);
 		
 		// Budget Lines Table
 		// Ensure currentBudget.getBudgetLines() is not null if currentBudget could be
 		// partially constructed
-		if (currentBudget.getBudgetLines() == null)
+		if (this.currentBudget.getBudgetLines() == null)
 		{
-			currentBudget.setBudgetLines(new ArrayList<>());
+			this.currentBudget.setBudgetLines(new ArrayList<>());
 		}
 		
-		budgetLineTableModel = new BudgetLineTableModel(currentBudget.getBudgetLines(),
-			chartOfAccounts, availableFunds);
-		tblBudgetLines = new JTable(budgetLineTableModel);
+		this.budgetLineTableModel = new BudgetLineTableModel(this.currentBudget.getBudgetLines(),
+			this.chartOfAccounts, this.availableFunds);
+		this.tblBudgetLines = new JTable(this.budgetLineTableModel);
 		
 		// Setup JComboBox for Periodicity column
 		JComboBox<Periodicity> periodicityComboBox = new JComboBox<>(Periodicity.values());
-		TableColumn periodicityColumn = tblBudgetLines.getColumnModel().getColumn(2); // Assuming
+		TableColumn periodicityColumn = this.tblBudgetLines.getColumnModel().getColumn(2); // Assuming
 																						// index 2
 																						// for
 																						// Periodicity
@@ -167,18 +164,18 @@ public class BudgetPanel extends JDialog
 		if (!lineFundNames.contains("None"))
 			lineFundNames.add(0, "None"); // Option for no specific fund on a line
 		JComboBox<String> lineFundComboBox = new JComboBox<>(lineFundNames);
-		TableColumn lineFundColumn = tblBudgetLines.getColumnModel().getColumn(3); // Assuming index
+		TableColumn lineFundColumn = this.tblBudgetLines.getColumnModel().getColumn(3); // Assuming index
 																					// 3 for Line
 																					// Fund
 		lineFundColumn.setCellEditor(new DefaultCellEditor(lineFundComboBox));
 		
 		
 		// Buttons
-		btnAddLine = new JButton("Add Line");
-		btnEditLine = new JButton("Edit Line");
-		btnRemoveLine = new JButton("Remove Line");
-		btnSaveBudget = new JButton("Save Budget");
-		btnClose = new JButton("Close");
+		this.btnAddLine = new JButton("Add Line");
+		this.btnEditLine = new JButton("Edit Line");
+		this.btnRemoveLine = new JButton("Remove Line");
+		this.btnSaveBudget = new JButton("Save Budget");
+		this.btnClose = new JButton("Close");
 	}
 	
 	private void layoutComponents()
@@ -195,39 +192,39 @@ public class BudgetPanel extends JDialog
 		gbc.gridy = 0;
 		pnlProperties.add(new JLabel("Budget Name:"), gbc);
 		gbc.gridx = 1;
-		pnlProperties.add(txtBudgetName, gbc);
+		pnlProperties.add(this.txtBudgetName, gbc);
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		pnlProperties.add(new JLabel("Fiscal Year:"), gbc);
 		gbc.gridx = 1;
-		pnlProperties.add(spnFiscalYear, gbc);
+		pnlProperties.add(this.spnFiscalYear, gbc);
 		gbc.gridx = 0;
 		gbc.gridy = 2;
 		pnlProperties.add(new JLabel("Description:"), gbc);
 		gbc.gridx = 1;
-		pnlProperties.add(txtDescription, gbc);
+		pnlProperties.add(this.txtDescription, gbc);
 		gbc.gridx = 0;
 		gbc.gridy = 3;
 		pnlProperties.add(new JLabel("Applicable Fund:"), gbc);
 		gbc.gridx = 1;
-		pnlProperties.add(cmbApplicableFund, gbc);
+		pnlProperties.add(this.cmbApplicableFund, gbc);
 		gbc.gridx = 0;
 		gbc.gridy = 4;
 		pnlProperties.add(new JLabel("Currency:"), gbc);
 		gbc.gridx = 1;
-		pnlProperties.add(txtCurrency, gbc);
+		pnlProperties.add(this.txtCurrency, gbc);
 		
 		add(pnlProperties, BorderLayout.NORTH);
 		
 		// Middle Panel for Budget Lines Table
-		JScrollPane scrollPane = new JScrollPane(tblBudgetLines);
+		JScrollPane scrollPane = new JScrollPane(this.tblBudgetLines);
 		add(scrollPane, BorderLayout.CENTER);
 		
 		// Button Panel for Table Management (could be part of Middle or Bottom)
 		JPanel pnlTableButtons = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		pnlTableButtons.add(btnAddLine);
-		pnlTableButtons.add(btnEditLine);
-		pnlTableButtons.add(btnRemoveLine);
+		pnlTableButtons.add(this.btnAddLine);
+		pnlTableButtons.add(this.btnEditLine);
+		pnlTableButtons.add(this.btnRemoveLine);
 		// Adding table buttons above the main action buttons, typically below the table
 		// For now, let's put it in a panel that goes above the main save/close buttons.
 		
@@ -236,8 +233,8 @@ public class BudgetPanel extends JDialog
 		
 		// Bottom Panel for Actions
 		JPanel pnlActions = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		pnlActions.add(btnSaveBudget);
-		pnlActions.add(btnClose);
+		pnlActions.add(this.btnSaveBudget);
+		pnlActions.add(this.btnClose);
 		pnlSouthOuter.add(pnlActions, BorderLayout.SOUTH);
 		
 		add(pnlSouthOuter, BorderLayout.SOUTH);
@@ -245,48 +242,48 @@ public class BudgetPanel extends JDialog
 	
 	private void attachListeners()
 	{
-		btnClose.addActionListener(e -> dispose());
+		this.btnClose.addActionListener(e -> dispose());
 		
-		btnAddLine.addActionListener(this::actionAddLine);
-		btnEditLine.addActionListener(this::actionEditLine);
-		btnRemoveLine.addActionListener(this::actionRemoveLine);
-		btnSaveBudget.addActionListener(this::actionSaveBudget);
+		this.btnAddLine.addActionListener(this::actionAddLine);
+		this.btnEditLine.addActionListener(this::actionEditLine);
+		this.btnRemoveLine.addActionListener(this::actionRemoveLine);
+		this.btnSaveBudget.addActionListener(this::actionSaveBudget);
 		
 		// Update currentBudget object when UI fields change
-		txtBudgetName.addActionListener(e -> currentBudget.setBudgetName(txtBudgetName.getText()));
-		txtBudgetName.addFocusListener(new java.awt.event.FocusAdapter()
+		this.txtBudgetName.addActionListener(e -> this.currentBudget.setBudgetName(this.txtBudgetName.getText()));
+		this.txtBudgetName.addFocusListener(new java.awt.event.FocusAdapter()
 		{
 			public void focusLost(java.awt.event.FocusEvent evt)
 			{
-				currentBudget.setBudgetName(txtBudgetName.getText());
+				BudgetPanel.this.currentBudget.setBudgetName(BudgetPanel.this.txtBudgetName.getText());
 			}
 			
 		});
-		spnFiscalYear.addChangeListener(
-			e -> currentBudget.setFiscalYear((Integer) spnFiscalYear.getValue()));
-		txtDescription
-			.addActionListener(e -> currentBudget.setDescription(txtDescription.getText()));
-		txtDescription.addFocusListener(new java.awt.event.FocusAdapter()
+		this.spnFiscalYear.addChangeListener(
+			e -> this.currentBudget.setFiscalYear((Integer) this.spnFiscalYear.getValue()));
+		this.txtDescription
+			.addActionListener(e -> this.currentBudget.setDescription(this.txtDescription.getText()));
+		this.txtDescription.addFocusListener(new java.awt.event.FocusAdapter()
 		{
 			public void focusLost(java.awt.event.FocusEvent evt)
 			{
-				currentBudget.setDescription(txtDescription.getText());
+				BudgetPanel.this.currentBudget.setDescription(BudgetPanel.this.txtDescription.getText());
 			}
 			
 		});
-		cmbApplicableFund.addActionListener(e -> {
-			String selectedFundName = (String) cmbApplicableFund.getSelectedItem();
+		this.cmbApplicableFund.addActionListener(e -> {
+			String selectedFundName = (String) this.cmbApplicableFund.getSelectedItem();
 			
 			if ("All Funds".equals(selectedFundName) || selectedFundName == null)
 			{
-				currentBudget.setApplicableFundId(null);
+				this.currentBudget.setApplicableFundId(null);
 			}
 			else
 			{
-				availableFunds.stream()
+				this.availableFunds.stream()
 					.filter(f -> selectedFundName.equals(f.getName()))
 					.findFirst()
-					.ifPresent(fund -> currentBudget.setApplicableFundId(fund.getFundId()));
+					.ifPresent(fund -> this.currentBudget.setApplicableFundId(fund.getFundId()));
 			}
 			
 		});
@@ -295,7 +292,7 @@ public class BudgetPanel extends JDialog
 	private void actionAddLine(ActionEvent e)
 	{
 		BudgetLineDialog dialog =
-			new BudgetLineDialog(this, "Add Budget Line", chartOfAccounts, availableFunds, null);
+			new BudgetLineDialog(this, "Add Budget Line", this.chartOfAccounts, this.availableFunds, null);
 		dialog.setVisible(true);
 		
 		if (dialog.isSaved())
@@ -304,8 +301,8 @@ public class BudgetPanel extends JDialog
 			
 			if (newLine != null)
 			{
-				currentBudget.addBudgetLine(newLine);
-				budgetLineTableModel.fireTableDataChanged();
+				this.currentBudget.addBudgetLine(newLine);
+				this.budgetLineTableModel.fireTableDataChanged();
 			}
 			
 		}
@@ -314,20 +311,20 @@ public class BudgetPanel extends JDialog
 	
 	private void actionEditLine(ActionEvent e)
 	{
-		int selectedRow = tblBudgetLines.getSelectedRow();
+		int selectedRow = this.tblBudgetLines.getSelectedRow();
 		
 		if (selectedRow >= 0)
 		{
-			BudgetLine lineToEdit = budgetLineTableModel.getBudgetLineAt(selectedRow);
+			BudgetLine lineToEdit = this.budgetLineTableModel.getBudgetLineAt(selectedRow);
 			BudgetLineDialog dialog = new BudgetLineDialog(this, "Edit Budget Line",
-				chartOfAccounts, availableFunds, lineToEdit);
+				this.chartOfAccounts, this.availableFunds, lineToEdit);
 			dialog.setVisible(true);
 			
 			if (dialog.isSaved())
 			{
 				// The dialog modifies the lineToEdit object directly or returns a new one
 				// For simplicity, assume dialog modifies the passed lineToEdit object
-				budgetLineTableModel.fireTableRowsUpdated(selectedRow, selectedRow);
+				this.budgetLineTableModel.fireTableRowsUpdated(selectedRow, selectedRow);
 			}
 			
 		}
@@ -341,7 +338,7 @@ public class BudgetPanel extends JDialog
 	
 	private void actionRemoveLine(ActionEvent e)
 	{
-		int selectedRow = tblBudgetLines.getSelectedRow();
+		int selectedRow = this.tblBudgetLines.getSelectedRow();
 		
 		if (selectedRow >= 0)
 		{
@@ -349,7 +346,7 @@ public class BudgetPanel extends JDialog
 			if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this line?",
 				"Confirm Remove", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
 			{
-				budgetLineTableModel.removeRow(selectedRow);
+				this.budgetLineTableModel.removeRow(selectedRow);
 				// currentBudget.getBudgetLines() is directly modified by table model
 			}
 			
@@ -365,52 +362,52 @@ public class BudgetPanel extends JDialog
 	private void actionSaveBudget(ActionEvent e)
 	{
 		// Update budget properties from UI just before saving
-		currentBudget.setBudgetName(txtBudgetName.getText());
-		currentBudget.setFiscalYear((Integer) spnFiscalYear.getValue());
-		currentBudget.setDescription(txtDescription.getText());
-		String selectedFundName = (String) cmbApplicableFund.getSelectedItem();
+		this.currentBudget.setBudgetName(this.txtBudgetName.getText());
+		this.currentBudget.setFiscalYear((Integer) this.spnFiscalYear.getValue());
+		this.currentBudget.setDescription(this.txtDescription.getText());
+		String selectedFundName = (String) this.cmbApplicableFund.getSelectedItem();
 		
 		if ("All Funds".equals(selectedFundName) || selectedFundName == null)
 		{
-			currentBudget.setApplicableFundId(null);
+			this.currentBudget.setApplicableFundId(null);
 		}
 		else
 		{
-			availableFunds.stream()
+			this.availableFunds.stream()
 				.filter(f -> selectedFundName.equals(f.getName()))
 				.findFirst()
-				.ifPresent(fund -> currentBudget.setApplicableFundId(fund.getFundId()));
+				.ifPresent(fund -> this.currentBudget.setApplicableFundId(fund.getFundId()));
 		}
 		// Currency is read-only from company profile
 		
 		// Update currentBudget from UI fields
-		currentBudget.setBudgetName(txtBudgetName.getText());
-		currentBudget.setFiscalYear((Integer) spnFiscalYear.getValue());
-		currentBudget.setDescription(txtDescription.getText());
-		String selectedFundName1 = (String) cmbApplicableFund.getSelectedItem();
+		this.currentBudget.setBudgetName(this.txtBudgetName.getText());
+		this.currentBudget.setFiscalYear((Integer) this.spnFiscalYear.getValue());
+		this.currentBudget.setDescription(this.txtDescription.getText());
+		String selectedFundName1 = (String) this.cmbApplicableFund.getSelectedItem();
 		
 		if ("All Funds".equals(selectedFundName1) || selectedFundName1 == null)
 		{
-			currentBudget.setApplicableFundId(null);
+			this.currentBudget.setApplicableFundId(null);
 		}
 		else
 		{
-			availableFunds.stream()
+			this.availableFunds.stream()
 				.filter(f -> selectedFundName1.equals(f.getName()))
 				.findFirst()
-				.ifPresent(fund -> currentBudget.setApplicableFundId(fund.getFundId()));
+				.ifPresent(fund -> this.currentBudget.setApplicableFundId(fund.getFundId()));
 		}
 		// currentBudget.setBudgetLines() is already managed by the table model directly
 		// modifying the list.
 		
 		try
 		{
-			List<Budget> allBudgets = budgetService.loadBudgets(companyDirectory);
+			List<Budget> allBudgets = this.budgetService.loadBudgets(this.companyDirectory);
 			
 			// Ensure budgetId is generated for new budgets before comparison
-			if (currentBudget.getBudgetId() == null || currentBudget.getBudgetId().trim().isEmpty())
+			if (this.currentBudget.getBudgetId() == null || this.currentBudget.getBudgetId().trim().isEmpty())
 			{
-				currentBudget.getBudgetId(); // This will trigger UUID generation if it's null.
+				this.currentBudget.getBudgetId(); // This will trigger UUID generation if it's null.
 			}
 			
 			boolean found = false;
@@ -418,9 +415,9 @@ public class BudgetPanel extends JDialog
 			for (int i = 0; i < allBudgets.size(); i++)
 			{
 				
-				if (currentBudget.getBudgetId().equals(allBudgets.get(i).getBudgetId()))
+				if (this.currentBudget.getBudgetId().equals(allBudgets.get(i).getBudgetId()))
 				{
-					allBudgets.set(i, currentBudget); // Replace existing
+					allBudgets.set(i, this.currentBudget); // Replace existing
 					found = true;
 					break;
 				}
@@ -429,10 +426,10 @@ public class BudgetPanel extends JDialog
 			
 			if (!found)
 			{
-				allBudgets.add(currentBudget); // Add new
+				allBudgets.add(this.currentBudget); // Add new
 			}
 			
-			budgetService.saveBudgets(allBudgets, companyDirectory);
+			this.budgetService.saveBudgets(allBudgets, this.companyDirectory);
 			JOptionPane.showMessageDialog(this, "Budget saved successfully!", "Success",
 				JOptionPane.INFORMATION_MESSAGE);
 			// Optionally, dispose or indicate saved state

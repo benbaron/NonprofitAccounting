@@ -57,7 +57,7 @@ public class ImportedTransaction {
 	 */
 	public LocalDate getDatePosted()
 	{
-		return datePosted;
+		return this.datePosted;
 	}
 	/**
 	 * @param datePosted the datePosted to set
@@ -71,7 +71,7 @@ public class ImportedTransaction {
 	 */
 	public BigDecimal getAmount()
 	{
-		return amount;
+		return this.amount;
 	}
 	/**
 	 * @param amount the amount to set
@@ -85,7 +85,7 @@ public class ImportedTransaction {
 	 */
 	public String getDescription()
 	{
-		return description;
+		return this.description;
 	}
 	/**
 	 * @param description the description to set
@@ -99,7 +99,7 @@ public class ImportedTransaction {
 	 */
 	public String getMemo()
 	{
-		return memo;
+		return this.memo;
 	}
 	/**
 	 * @param memo the memo to set
@@ -113,7 +113,7 @@ public class ImportedTransaction {
 	 */
 	public String getTransactionId()
 	{
-		return transactionId;
+		return this.transactionId;
 	}
 	/**
 	 * @param transactionId the transactionId to set
@@ -127,7 +127,7 @@ public class ImportedTransaction {
 	 */
 	public String getCurrency()
 	{
-		return currency;
+		return this.currency;
 	}
 	/**
 	 * @param currency the currency to set
@@ -141,7 +141,7 @@ public class ImportedTransaction {
 	 */
 	public String getOriginalAccountType()
 	{
-		return originalAccountType;
+		return this.originalAccountType;
 	}
 	/**
 	 * @param originalAccountType the originalAccountType to set
@@ -155,7 +155,7 @@ public class ImportedTransaction {
 	 */
 	public String getOriginalAccountNumber()
 	{
-		return originalAccountNumber;
+		return this.originalAccountNumber;
 	}
 	/**
 	 * @param originalAccountNumber the originalAccountNumber to set

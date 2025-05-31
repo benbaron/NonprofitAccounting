@@ -122,5 +122,50 @@ public class InventoryItem
 		}
 		return this;
 	}
+
+	/**
+	 * @param valueOf
+	 */
+	public void setAccumulatedDepreciation(BigDecimal valueOf)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * @param valueOf
+	 */
+	public void setDepreciationRate(BigDecimal valueOf)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * @return
+	 */
+	public BigDecimal getDepreciationRate()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @param object
+	 */
+	public void setDepreciationMethod(Object object)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * @return
+	 */
+	public BigDecimal getNetValue()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

@@ -267,4 +267,14 @@ public class AccountingTransaction implements Serializable
 	}
 
 
+	/**
+	 * @param valueOf
+	 */
+	public void setTotalAmount(BigDecimal valueOf)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+
 }

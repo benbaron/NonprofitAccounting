@@ -41,12 +41,12 @@ public class BudgetLineDialog extends JDialog
 		
 		public Account getAccount()
 		{
-			return account;
+			return this.account;
 		}
 		
 		@Override public String toString()
 		{
-			return account.getName() + " (" + account.getAccountNumber() + ")";
+			return this.account.getName() + " (" + this.account.getAccountNumber() + ")";
 		}
 		
 		@Override public boolean equals(Object o)
@@ -56,12 +56,12 @@ public class BudgetLineDialog extends JDialog
 			if (o == null || getClass() != o.getClass())
 				return false;
 			AccountItem that = (AccountItem) o;
-			return Objects.equals(account.getAccountNumber(), that.account.getAccountNumber());
+			return Objects.equals(this.account.getAccountNumber(), that.account.getAccountNumber());
 		}
 		
 		@Override public int hashCode()
 		{
-			return Objects.hash(account.getAccountNumber());
+			return Objects.hash(this.account.getAccountNumber());
 		}
 		
 	}
@@ -85,17 +85,17 @@ public class BudgetLineDialog extends JDialog
 		
 		public Fund getFund()
 		{
-			return fund;
+			return this.fund;
 		}
 		
 		public String getFundId()
 		{
-			return fund != null ? fund.getFundId() : null;
+			return this.fund != null ? this.fund.getFundId() : null;
 		}
 		
 		@Override public String toString()
 		{
-			return displayName;
+			return this.displayName;
 		}
 		
 		@Override public boolean equals(Object o)
@@ -106,20 +106,20 @@ public class BudgetLineDialog extends JDialog
 				return false;
 			FundItem that = (FundItem) o;
 			
-			if (fund != null && that.fund != null)
+			if (this.fund != null && that.fund != null)
 			{
-				return Objects.equals(fund.getFundId(), that.fund.getFundId());
+				return Objects.equals(this.fund.getFundId(), that.fund.getFundId());
 			}
 			
-			return Objects.equals(displayName, that.displayName); // Compare by name if one or both
+			return Objects.equals(this.displayName, that.displayName); // Compare by name if one or both
 																	// funds are null (e.g. "None")
 		}
 		
 		@Override public int hashCode()
 		{
-			if (fund != null)
-				return Objects.hash(fund.getFundId());
-			return Objects.hash(displayName);
+			if (this.fund != null)
+				return Objects.hash(this.fund.getFundId());
+			return Objects.hash(this.displayName);
 		}
 		
 	}
@@ -143,29 +143,29 @@ public class BudgetLineDialog extends JDialog
 		populateFields();
 		attachListeners();
 		
-		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setSize(450, 250);
 		setLocationRelativeTo(owner);
 	}
 	
 	private void initComponents()
 	{
-		Vector<AccountItem> accountItems = chartOfAccounts.getAccounts().stream()
+		Vector<AccountItem> accountItems = this.chartOfAccounts.getAccounts().stream()
 			.sorted(Comparator.comparing(Account::getName))
 			.map(AccountItem::new)
 			.collect(Collectors.toCollection(Vector::new));
-		cmbAccount = new JComboBox<>(accountItems);
+		this.cmbAccount = new JComboBox<>(accountItems);
 		
-		txtTotalAmount = new JTextField(15);
-		cmbPeriodicity = new JComboBox<>(Periodicity.values());
+		this.txtTotalAmount = new JTextField(15);
+		this.cmbPeriodicity = new JComboBox<>(Periodicity.values());
 		
 		Vector<FundItem> fundItems = new Vector<>();
 		fundItems.add(new FundItem("None")); // Option for no specific fund
-		availableFunds.stream()
+		this.availableFunds.stream()
 			.sorted(Comparator.comparing(Fund::getName))
 			.map(FundItem::new)
 			.forEach(fundItems::add);
-		cmbFund = new JComboBox<>(fundItems);
+		this.cmbFund = new JComboBox<>(fundItems);
 	}
 	
 	private void layoutComponents()
@@ -184,7 +184,7 @@ public class BudgetLineDialog extends JDialog
 		gbc.gridy = 0;
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.weightx = 1.0;
-		add(cmbAccount, gbc);
+		add(this.cmbAccount, gbc);
 		gbc.weightx = 0; // Reset
 		
 		// Total Amount
@@ -195,7 +195,7 @@ public class BudgetLineDialog extends JDialog
 		gbc.gridx = 1;
 		gbc.gridy = 1;
 		gbc.anchor = GridBagConstraints.WEST;
-		add(txtTotalAmount, gbc);
+		add(this.txtTotalAmount, gbc);
 		
 		// Periodicity
 		gbc.gridx = 0;
@@ -205,7 +205,7 @@ public class BudgetLineDialog extends JDialog
 		gbc.gridx = 1;
 		gbc.gridy = 2;
 		gbc.anchor = GridBagConstraints.WEST;
-		add(cmbPeriodicity, gbc);
+		add(this.cmbPeriodicity, gbc);
 		
 		// Fund
 		gbc.gridx = 0;
@@ -215,7 +215,7 @@ public class BudgetLineDialog extends JDialog
 		gbc.gridx = 1;
 		gbc.gridy = 3;
 		gbc.anchor = GridBagConstraints.WEST;
-		add(cmbFund, gbc);
+		add(this.cmbFund, gbc);
 		
 		// Buttons
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -239,31 +239,31 @@ public class BudgetLineDialog extends JDialog
 	private void populateFields()
 	{
 		
-		if (budgetLine.getAccountId() != null)
+		if (this.budgetLine.getAccountId() != null)
 		{
-			Account acc = chartOfAccounts.getAccount(budgetLine.getAccountId());
+			Account acc = this.chartOfAccounts.getAccount(this.budgetLine.getAccountId());
 			
 			if (acc != null)
 			{
-				cmbAccount.setSelectedItem(new AccountItem(acc));
+				this.cmbAccount.setSelectedItem(new AccountItem(acc));
 			}
 			
 		}
 		
-		txtTotalAmount.setText(budgetLine.getTotalBudgetedAmount() != null ?
-			budgetLine.getTotalBudgetedAmount().toPlainString() : "");
-		cmbPeriodicity.setSelectedItem(budgetLine.getPeriodicity());
+		this.txtTotalAmount.setText(this.budgetLine.getTotalBudgetedAmount() != null ?
+			this.budgetLine.getTotalBudgetedAmount().toPlainString() : "");
+		this.cmbPeriodicity.setSelectedItem(this.budgetLine.getPeriodicity());
 		
-		if (budgetLine.getFundId() != null)
+		if (this.budgetLine.getFundId() != null)
 		{
-			availableFunds.stream()
-				.filter(f -> budgetLine.getFundId().equals(f.getFundId()))
+			this.availableFunds.stream()
+				.filter(f -> this.budgetLine.getFundId().equals(f.getFundId()))
 				.findFirst()
-				.ifPresent(fund -> cmbFund.setSelectedItem(new FundItem(fund)));
+				.ifPresent(fund -> this.cmbFund.setSelectedItem(new FundItem(fund)));
 		}
 		else
 		{
-			cmbFund.setSelectedItem(new FundItem("None"));
+			this.cmbFund.setSelectedItem(new FundItem("None"));
 		}
 		
 	}
@@ -276,7 +276,7 @@ public class BudgetLineDialog extends JDialog
 	
 	private void saveAndClose()
 	{
-		AccountItem selectedAccountItem = (AccountItem) cmbAccount.getSelectedItem();
+		AccountItem selectedAccountItem = (AccountItem) this.cmbAccount.getSelectedItem();
 		
 		if (selectedAccountItem == null || selectedAccountItem.getAccount() == null)
 		{
@@ -287,7 +287,7 @@ public class BudgetLineDialog extends JDialog
 		
 		Account selectedAccount = selectedAccountItem.getAccount();
 		
-		String amountStr = txtTotalAmount.getText().trim();
+		String amountStr = this.txtTotalAmount.getText().trim();
 		
 		if (amountStr.isEmpty())
 		{
@@ -317,38 +317,38 @@ public class BudgetLineDialog extends JDialog
 			return;
 		}
 		
-		budgetLine.setAccountId(selectedAccount.getAccountNumber()); // Assuming getAccountNumber()
+		this.budgetLine.setAccountId(selectedAccount.getAccountNumber()); // Assuming getAccountNumber()
 																		// is the ID
-		budgetLine.setAccountName(selectedAccount.getName()); // Store name for convenience
-		budgetLine.setTotalBudgetedAmount(totalAmount);
-		budgetLine.setPeriodicity((Periodicity) cmbPeriodicity.getSelectedItem());
+		this.budgetLine.setAccountName(selectedAccount.getName()); // Store name for convenience
+		this.budgetLine.setTotalBudgetedAmount(totalAmount);
+		this.budgetLine.setPeriodicity((Periodicity) this.cmbPeriodicity.getSelectedItem());
 		
-		FundItem selectedFundItem = (FundItem) cmbFund.getSelectedItem();
+		FundItem selectedFundItem = (FundItem) this.cmbFund.getSelectedItem();
 		
 		if (selectedFundItem != null && selectedFundItem.getFund() != null)
 		{
-			budgetLine.setFundId(selectedFundItem.getFundId());
+			this.budgetLine.setFundId(selectedFundItem.getFundId());
 		}
 		else
 		{
-			budgetLine.setFundId(null); // "None" selected or no fund
+			this.budgetLine.setFundId(null); // "None" selected or no fund
 		}
 		
 		// Note: periodicAmounts are not handled in this V1 dialog.
 		// They would need additional input fields based on periodicity.
 		
-		saved = true;
+		this.saved = true;
 		dispose();
 	}
 	
 	public boolean isSaved()
 	{
-		return saved;
+		return this.saved;
 	}
 	
 	public BudgetLine getBudgetLine()
 	{
-		return budgetLine;
+		return this.budgetLine;
 	}
 	
 }

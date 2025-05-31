@@ -23,7 +23,7 @@ class TrialBalanceReportWriterTest {
     @Test
     @DisplayName("Constructor: Valid inputs should create instance successfully")
     void testConstructor_validInputs_succeeds() {
-        TrialBalanceReportWriter writer = new TrialBalanceReportWriter(mockTrialBalanceService, mockLedger);
+        TrialBalanceReportWriter writer = new TrialBalanceReportWriter(this.mockTrialBalanceService, this.mockLedger);
         assertNotNull(writer, "Writer instance should be created successfully with valid inputs.");
         // Further tests would involve calling methods on 'writer' to verify field assignment,
         // but for a constructor-only test, notNull is the primary check.
@@ -33,7 +33,7 @@ class TrialBalanceReportWriterTest {
     @DisplayName("Constructor: Null TrialBalanceService should throw IllegalArgumentException")
     void testConstructor_nullTrialBalanceService_throwsIllegalArgumentException() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new TrialBalanceReportWriter(null, mockLedger);
+            new TrialBalanceReportWriter(null, this.mockLedger);
         });
         assertEquals("TrialBalanceService cannot be null.", exception.getMessage(),
                      "Exception message should indicate TrialBalanceService is null.");
@@ -43,7 +43,7 @@ class TrialBalanceReportWriterTest {
     @DisplayName("Constructor: Null Ledger should throw IllegalArgumentException")
     void testConstructor_nullLedger_throwsIllegalArgumentException() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new TrialBalanceReportWriter(mockTrialBalanceService, null);
+            new TrialBalanceReportWriter(this.mockTrialBalanceService, null);
         });
         assertEquals("Ledger cannot be null.", exception.getMessage(),
                      "Exception message should indicate Ledger is null.");

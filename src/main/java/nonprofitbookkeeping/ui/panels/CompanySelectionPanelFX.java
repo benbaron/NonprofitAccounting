@@ -14,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
+import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.service.CompanyLoaderService;
 import nonprofitbookkeeping.service.PreferencesService;
@@ -26,6 +27,23 @@ import nonprofitbookkeeping.ui.helpers.AlertBox;
 public class CompanySelectionPanelFX extends BorderPane
 {
 	
+	/**
+		 * 
+		 */
+	public class OnCompanyOpenedHandler
+	{
+
+		/**
+		 * @param any
+		 */
+		public void onCompanyOpened(Company any)
+		{
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+
 	private final ListView<File> companyList = new ListView<>();
 	private final ObservableList<File> npbkFiles = FXCollections.observableArrayList();
 	private final TextArea previewArea = new TextArea();
@@ -40,6 +58,15 @@ public class CompanySelectionPanelFX extends BorderPane
 		reloadCompanyList();
 	}
 	
+	/**  
+	 * Constructor CompanySelectionPanelFX
+	 * @param object
+	 */
+	public CompanySelectionPanelFX(Object object)
+	{
+		// TODO Auto-generated constructor stub
+	}
+
 	/* --------------------------------------------------------------------- */
 	private void buildUI()
 	{
@@ -133,7 +160,7 @@ public class CompanySelectionPanelFX extends BorderPane
 	/**
 	 * 
 	 */
-	private void openSelected()
+	void openSelected()
 	{
 		File sel = this.companyList.getSelectionModel().getSelectedItem();
 		
