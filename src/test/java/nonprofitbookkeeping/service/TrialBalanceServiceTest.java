@@ -143,7 +143,7 @@ class TrialBalanceServiceTest {
         when(mockEntry1.getAccountNumber()).thenReturn("ACC1");
         when(mockEntry1.getAmount()).thenReturn(BigDecimal.valueOf(50));
         when(mockEntry1.getAccountSide()).thenReturn(AccountSide.DEBIT);
-        
+
         when(mockLedger.getTransactions()).thenReturn(Arrays.asList(mockTx1, mockTx2));
         TrialBalanceResultIntf result = TrialBalanceService.compute(mockLedger, TEST_FROM_DATE, TEST_TO_DATE);
 
@@ -170,7 +170,7 @@ class TrialBalanceServiceTest {
         assertEquals(100.0, result.getCreditSums().get("ACC_CREDIT"), 0.001);
         assertTrue(result.isBalanced());
     }
-    
+
     @Test
     @DisplayName("compute: Correctly sums debits and credits, unbalanced")
     void testCompute_multipleEntries_unbalanced_correctSumsAndBalanceFalse() {
@@ -222,7 +222,7 @@ class TrialBalanceServiceTest {
         assertTrue(result.getCreditSums().isEmpty());
         assertTrue(result.isBalanced());
     }
-    
+
     @Test
     @DisplayName("compute: Skips null entry in transaction's entry set")
     void testCompute_skipsNullEntryInTransaction() {
@@ -255,12 +255,12 @@ class TrialBalanceServiceTest {
         TrialBalanceResultIntf result = TrialBalanceService.compute(mockLedger, TEST_FROM_DATE, TEST_TO_DATE);
         assertTrue(result.getDebitSums().isEmpty());
     }
-    
+
     @Test
     @DisplayName("compute: Skips entry with null or blank account number")
     void testCompute_skipsEntryWithNullOrBlankAccountNumber() {
         when(mockTx1.getDate()).thenReturn(TEST_FROM_DATE.format(DATE_FORMATTER));
-        
+
         when(mockEntry1.getAccountNumber()).thenReturn(null); // Null account number
         when(mockEntry1.getAmount()).thenReturn(BigDecimal.TEN);
         when(mockEntry1.getAccountSide()).thenReturn(AccountSide.DEBIT);
@@ -268,8 +268,8 @@ class TrialBalanceServiceTest {
         when(mockEntry2.getAccountNumber()).thenReturn("  "); // Blank account number
         when(mockEntry2.getAmount()).thenReturn(BigDecimal.valueOf(20));
         when(mockEntry2.getAccountSide()).thenReturn(AccountSide.DEBIT);
-        
-        when(mockEntry3.getAccountNumber()).thenReturn("ACC_VALID"); 
+
+        when(mockEntry3.getAccountNumber()).thenReturn("ACC_VALID");
         when(mockEntry3.getAmount()).thenReturn(BigDecimal.valueOf(30));
         when(mockEntry3.getAccountSide()).thenReturn(AccountSide.DEBIT);
 
@@ -301,7 +301,7 @@ class TrialBalanceServiceTest {
                              .thenReturn(mockTrialBalanceResultFromStatic);
 
             TrialBalanceService serviceInstance = new TrialBalanceService(mockLedger, TEST_FROM_DATE, TEST_TO_DATE);
-            
+
             // Verify static compute was called by constructor
             mockedStaticService.verify(() -> TrialBalanceService.compute(mockLedger, TEST_FROM_DATE, TEST_TO_DATE));
 
@@ -321,7 +321,7 @@ class TrialBalanceServiceTest {
         try (MockedStatic<TrialBalanceService> mockedStaticService = mockStatic(TrialBalanceService.class)) {
             mockedStaticService.when(() -> TrialBalanceService.compute(any(Ledger.class), any(LocalDate.class), any(LocalDate.class)))
                              .thenReturn(mockTrialBalanceResultFromStatic);
-            
+
             TrialBalanceService serviceInstance = new TrialBalanceService(mockLedger, TEST_FROM_DATE, TEST_TO_DATE);
             assertEquals(expectedDebits, serviceInstance.getDebitSums());
         }
@@ -336,7 +336,7 @@ class TrialBalanceServiceTest {
         try (MockedStatic<TrialBalanceService> mockedStaticService = mockStatic(TrialBalanceService.class)) {
             mockedStaticService.when(() -> TrialBalanceService.compute(any(Ledger.class), any(LocalDate.class), any(LocalDate.class)))
                              .thenReturn(mockTrialBalanceResultFromStatic);
-            
+
             TrialBalanceService serviceInstance = new TrialBalanceService(mockLedger, TEST_FROM_DATE, TEST_TO_DATE);
             assertEquals(expectedCredits, serviceInstance.getCreditSums());
         }
@@ -351,7 +351,7 @@ class TrialBalanceServiceTest {
         try (MockedStatic<TrialBalanceService> mockedStaticService = mockStatic(TrialBalanceService.class)) {
             mockedStaticService.when(() -> TrialBalanceService.compute(any(Ledger.class), any(LocalDate.class), any(LocalDate.class)))
                              .thenReturn(mockTrialBalanceResultFromStatic);
-            
+
             TrialBalanceService serviceInstance = new TrialBalanceService(mockLedger, TEST_FROM_DATE, TEST_TO_DATE);
             assertEquals(expectedIsBalanced, serviceInstance.isBalanced());
         }

@@ -42,13 +42,13 @@ class TransactionServiceTest {
 
         lenient().when(mockTx2.getId()).thenReturn("TXN2");
         lenient().when(mockTx2.getAccount()).thenReturn(mockAccount2);
-        
+
         lenient().when(mockTx3.getId()).thenReturn("TXN3");
         lenient().when(mockTx3.getAccount()).thenReturn(mockAccount1); // Another transaction for ACC1
 
         lenient().when(mockTxNullId.getId()).thenReturn(null);
         lenient().when(mockTxNullId.getAccount()).thenReturn(mockAccount1);
-        
+
         lenient().when(mockTxNullAccount.getId()).thenReturn("TXN_NULL_ACC");
         lenient().when(mockTxNullAccount.getAccount()).thenReturn(null);
 
@@ -81,7 +81,7 @@ class TransactionServiceTest {
     void testRemoveTransaction_existingId_removesTransactionAndReturnsTrue() {
         TransactionService.addTransaction(mockTx1);
         TransactionService.addTransaction(mockTx2);
-        
+
         assertTrue(TransactionService.removeTransaction("TXN1"));
         List<AccountingTransaction> acc1Txs = TransactionService.getTransactionsForAccount("ACC1");
         assertTrue(acc1Txs.isEmpty());
@@ -111,18 +111,18 @@ class TransactionServiceTest {
         assertFalse(TransactionService.removeTransaction("   "));
         assertEquals(1, TransactionService.getTransactionsForAccount("ACC1").size());
     }
-    
+
     @Test
     @DisplayName("removeTransaction: Skips transaction with null ID during removal scan")
     void testRemoveTransaction_withTransactionHavingNullIdInList_handlesGracefully() {
         TransactionService.addTransaction(mockTxNullId); // This transaction has a null ID
         TransactionService.addTransaction(mockTx1); // TXN1
-        
+
         // Attempt to remove a valid ID, should not be affected by mockTxNullId
         assertTrue(TransactionService.removeTransaction("TXN1"));
         // Attempt to remove using null, should not remove mockTxNullId by this specific call
-        assertFalse(TransactionService.removeTransaction(null)); 
-        
+        assertFalse(TransactionService.removeTransaction(null));
+
         List<AccountingTransaction> acc1Txs = TransactionService.getTransactionsForAccount("ACC1");
         // Expecting mockTxNullId to still be there if it was for ACC1
         // and if removeTransaction(null) didn't remove it.
@@ -194,7 +194,7 @@ class TransactionServiceTest {
     void testGetTransactionsForAccount_handlesTransactionWithNullAccount() {
         TransactionService.addTransaction(mockTx1); // ACC1
         TransactionService.addTransaction(mockTxNullAccount); // Has null account
-        
+
         List<AccountingTransaction> acc1Txs = TransactionService.getTransactionsForAccount("ACC1");
         assertEquals(1, acc1Txs.size());
         assertSame(mockTx1, acc1Txs.get(0));
@@ -209,7 +209,7 @@ class TransactionServiceTest {
         List<AccountingTransaction> acc1Txs = TransactionService.getTransactionsForAccount("ACC1");
         assertEquals(1, acc1Txs.size());
         assertSame(mockTx1, acc1Txs.get(0));
-        
+
         // Also check that it doesn't get returned for a null query if that were possible
         // (current service logic requires non-blank accountId for query)
     }

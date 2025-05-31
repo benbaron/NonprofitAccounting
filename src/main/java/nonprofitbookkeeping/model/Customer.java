@@ -19,13 +19,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Customer
 {
-	/** 
-	 * The unique identifier for the customer. 
+	/**
+	 * The unique identifier for the customer.
 	 */
 	private String id;
 
-	/** 
-	 * The name of the customer. 
+	/**
+	 * The name of the customer.
 	 */
 	private String name;
 	

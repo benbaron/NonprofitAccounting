@@ -13,7 +13,7 @@ class ReportMetadataTest {
         String reportName = "Monthly Financial Summary";
         String created = "2023-01-15T10:30:00Z";
         String filePath = "/reports/monthly_summary_jan_2023.pdf";
-        
+
         ReportMetadata metadata = new ReportMetadata(reportName, created, filePath);
 
         assertEquals(reportName, metadata.getReportName(), "getReportName() should return the name provided in constructor.");

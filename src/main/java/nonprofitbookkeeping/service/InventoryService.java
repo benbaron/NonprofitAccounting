@@ -9,14 +9,14 @@ import java.util.List;
 import java.util.Map;
 // Note: nonprofitbookkeeping.model.InventoryItem is implicitly imported by usage because it's in the same package (oops, no it's not, it's in .model, so it would be imported)
 // For clarity, explicit import is better if not in same package. Assuming it's handled by IDE or build tools.
-// import nonprofitbookkeeping.model.InventoryItem; 
+// import nonprofitbookkeeping.model.InventoryItem;
 
 /**
  * Manages inventory items for the nonprofit bookkeeping system.
  * This service provides an in-memory storage solution for inventory items
  * and includes methods for item retrieval, addition, modification, deletion,
  * and depreciation.
- * 
+ *
  * The inventory is stored as a map where keys are item IDs (String) and
  * values are {@link nonprofitbookkeeping.model.InventoryItem} objects.
  */
@@ -101,7 +101,7 @@ public class InventoryService
 	 * Applies yearly depreciation to all applicable inventory items.
 	 * This method iterates through each item in the inventory and applies depreciation
 	 * based on the item's specified {@code depreciationRate} and {@code depreciationMethod}.
-	 * 
+	 *
 	 * Currently, only the "Straight-Line" depreciation method is supported.
 	 * For an item to be depreciated:
 	 * <ul>
@@ -113,7 +113,7 @@ public class InventoryService
 	 * This amount is then added to the item's {@code accumulatedDepreciation}.
 	 * The item's {@code netValue} is updated to {@code originalCost - accumulatedDepreciation}.
 	 * The item's original cost ({@code cost} field) is preserved and not altered by this process.
-	 * 
+	 *
 	 * If the inventory map is null, this method does nothing.
 	 */
 	public void applyYearlyDepreciation()
@@ -133,22 +133,22 @@ public class InventoryService
 			    method != null && "Straight-Line".equalsIgnoreCase(method)) {
 
 				BigDecimal depreciationAmount = originalCost.multiply(rate);
-				
+
 				BigDecimal currentAccDep = item.getAccumulatedDepreciation();
 				if (currentAccDep == null) {
 					currentAccDep = BigDecimal.ZERO;
 				}
 				BigDecimal newAccDep = currentAccDep.add(depreciationAmount);
-				
+
 				// Ensure accumulated depreciation does not exceed original cost
 				// though standard accounting might allow net value to be <= 0.
 				// For simplicity here, we just set it.
 				item.setAccumulatedDepreciation(newAccDep);
-				
+
 				// Update net book value
 				// Cost remains original cost, netValue is originalCost - newAccDep
 				item.setNetValue(originalCost.subtract(newAccDep));
-				
+
 				// Note: The item.getCost() (original cost) is NOT changed.
 			}
 			// Else, if parameters are missing or method is not "Straight-Line", do nothing for this item.
@@ -184,7 +184,7 @@ public class InventoryService
 	/**
 	 * Updates an existing inventory item in the system using the provided item object.
 	 * The item to be updated is identified by {@code item.getId()}.
-	 * 
+	 *
 	 * If the provided {@code item}, its ID ({@code item.getId()}), or the ID trimmed is blank,
 	 * or if the inventory map is null, the method does nothing.
 	 * If no item with the given ID is found in the inventory, this method also does nothing.
@@ -211,7 +211,7 @@ public class InventoryService
 
 	/**
 	 * Retrieves a list of all inventory items currently stored in the system.
-	 * 
+	 *
 	 * If the inventory map is null or empty, this method returns an empty list
 	 * (specifically, {@code Collections.emptyList()}). Otherwise, it returns a new
 	 * {@code ArrayList} containing all {@link nonprofitbookkeeping.model.InventoryItem}

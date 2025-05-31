@@ -21,7 +21,7 @@ public class TrialBalanceReportWriter
 
 	/**  
 	 * Constructs a new TrialBalanceReportWriter.
-	 * 
+	 *
 	 * @param trialBalanceService The service used to compute trial balance data. Must not be null.
 	 * @param ledger The ledger containing the financial data. Must not be null.
 	 * @throws IllegalArgumentException if either {@code trialBalanceService} or {@code ledger} is null.

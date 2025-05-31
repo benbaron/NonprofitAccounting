@@ -115,7 +115,7 @@ class InventoryServiceTest {
 
         InventoryItem updatedItemInfo = new InventoryItem("U001", "Updated Name", BigDecimal.valueOf(75), "2023-02-02", 4);
         // Ensure all fields are set for the update, as it replaces the object
-        updatedItemInfo.setAccumulatedDepreciation(BigDecimal.valueOf(10)); 
+        updatedItemInfo.setAccumulatedDepreciation(BigDecimal.valueOf(10));
         updatedItemInfo.setDepreciationRate(BigDecimal.valueOf(0.15));
 
         service.updateItem(updatedItemInfo);
@@ -157,7 +157,7 @@ class InventoryServiceTest {
         service.updateItem(itemToUpdate);
         assertEquals("Original", service.listItems().get(0).getName()); // Should remain unchanged
     }
-    
+
     @Test
     @DisplayName("Test updating with an item having a blank ID")
     void testUpdateItemBlankId() {
@@ -210,9 +210,9 @@ class InventoryServiceTest {
         // item.setDepreciationMethod("Straight-Line") is default
         item.setDepreciationMethod(null); // Explicitly set method to null
         service.addItem(item);
-        
+
         service.applyYearlyDepreciation();
-        
+
         InventoryItem itemAfter = service.listItems().get(0);
         assertNull(itemAfter.getAccumulatedDepreciation());
         assertNull(itemAfter.getNetValue());
@@ -236,12 +236,12 @@ class InventoryServiceTest {
         assertEquals(0, BigDecimal.valueOf(900).compareTo(itemAfter.getNetValue())); // 1000 - 100
         assertEquals(0, BigDecimal.valueOf(1000).compareTo(itemAfter.getCost())); // Original cost unchanged
     }
-    
+
     @Test
     @DisplayName("Test depreciation with Straight-Line, valid rate, existing AccDep")
     void testDepreciationStraightLineValidRateWithExistingAccDep() {
         InventoryItem item = new InventoryItem("D002_AD", "Dep Item AD", BigDecimal.valueOf(1000), "2023-01-01", 5);
-        item.setDepreciationRate(BigDecimal.valueOf(0.10)); 
+        item.setDepreciationRate(BigDecimal.valueOf(0.10));
         item.setAccumulatedDepreciation(BigDecimal.valueOf(50)); // Pre-existing AccDep
         service.addItem(item);
 
@@ -264,7 +264,7 @@ class InventoryServiceTest {
         assertNull(itemAfter.getAccumulatedDepreciation()); // Or BigDecimal.ZERO if we want to initialize it
         assertNull(itemAfter.getNetValue());
     }
-    
+
     @Test
     @DisplayName("Test depreciation with negative rate")
     void testDepreciationNegativeRate() {
@@ -288,7 +288,7 @@ class InventoryServiceTest {
         InventoryItem itemYear1 = service.listItems().get(0); // Re-fetch or ensure service returns modified instance
         assertEquals(0, BigDecimal.valueOf(100).compareTo(itemYear1.getAccumulatedDepreciation()));
         assertEquals(0, BigDecimal.valueOf(900).compareTo(itemYear1.getNetValue()));
-        
+
         // To test on the *same instance* that's in the map, we need to update the item in the map
         // or ensure applyYearlyDepreciation modifies the instance in the map directly (which it does).
         service.applyYearlyDepreciation(); // Year 2
@@ -308,7 +308,7 @@ class InventoryServiceTest {
         assertNull(itemAfter.getAccumulatedDepreciation());
         assertNull(itemAfter.getNetValue());
     }
-    
+
     @Test
     @DisplayName("Test depreciation with null initial accumulated depreciation")
     void testDepreciationNullInitialAccDep() {

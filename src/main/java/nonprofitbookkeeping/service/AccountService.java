@@ -39,7 +39,7 @@ public class AccountService
 	 * Retrieves the balance for all accounts.
 	 * This method iterates through all stored accounts, computes their balances,
 	 * and returns a list of {@link AccountBalance} objects.
-	 * 
+	 *
 	 * @return A {@code List<AccountBalance>} containing the ID, name, and balance
 	 *         for each account. Returns an empty list if no accounts are stored.
 	 */
@@ -60,7 +60,7 @@ public class AccountService
 
 	/**
 	 * Retrieves all accounts currently stored in the system.
-	 * 
+	 *
 	 * @return A new {@code List<Account>} containing all stored accounts.
 	 *         Returns an empty list if no accounts are present.
 	 *         This is a copy of the internal list, so modifications to the

@@ -38,17 +38,17 @@ class HelpActionTest {
     @DisplayName("handle: Basic call should attempt to show UI (Alert for missing resource)")
     void testHandle_basicCall_showsAlertWhenResourceMissing() {
         HelpAction action = new HelpAction(mockStage);
-        
+
         // In a standard unit test environment, getResource("/help/help.html") will likely return null
         // because the resources might not be on the test classpath or accessible in the same way.
         // The HelpAction.handle() method is designed to show an Alert if the resource is null.
         // This test verifies that calling handle() doesn't throw an NPE in this common scenario
         // and proceeds to the point where it would try to show an Alert.
         // Full UI testing of the Alert display would require TestFX.
-        
+
         assertDoesNotThrow(() -> action.handle(null), // Pass null for ActionEvent as it's not used
             "Calling handle(null) should not throw unexpected exceptions, even if help resource is missing.");
-            
+
         // We can't easily verify the Alert is shown without TestFX, but we know the code path
         // for a null resource URL leads to creating and trying to show an Alert.
         // The main point here is no NPE due to missing resource.

@@ -8,7 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 // Import for ActionEvent if needed for handle, though passing null for basic test
-// import javafx.event.ActionEvent; 
+// import javafx.event.ActionEvent;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -45,7 +45,7 @@ class ExportFileActionFXTest {
         // A true UI test would require TestFX or similar.
         // Since showSaveDialog will likely return null in a non-FX environment,
         // the file writing part will be skipped.
-        assertDoesNotThrow(() -> action.handle(null), 
+        assertDoesNotThrow(() -> action.handle(null),
             "Calling handle(null) should not throw unexpected exceptions in its current placeholder state.");
     }
 }

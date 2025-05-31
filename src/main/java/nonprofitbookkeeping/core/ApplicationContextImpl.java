@@ -10,7 +10,7 @@ import nonprofitbookkeeping.service.*; // Import all from service
 public class ApplicationContextImpl implements ApplicationContext {
 
     private final Stage primaryStage;
-    // private final MenuBar menuBar; // Removed
+    private final MenuBar menuBar;
     private final ReportService reportService;
     private final BudgetService budgetService;
     private final ReportConfigurationService reportConfigurationService;
@@ -21,15 +21,24 @@ public class ApplicationContextImpl implements ApplicationContext {
     // For now, assuming they are not managed singletons in ServiceContainer.
 
     public ApplicationContextImpl(Stage primaryStage,
-                                  // MenuBar menuBar, // Removed
+                                  MenuBar menuBar,
                                   ReportService reportService,
                                   BudgetService budgetService,
                                   ReportConfigurationService reportConfigurationService,
                                   InventoryService inventoryService,
                                   DocumentStorageService documentStorageService,
                                   FundAccountingService fundAccountingService) {
+        if (primaryStage == null) {
+            throw new IllegalArgumentException("PrimaryStage cannot be null.");
+        }
+        if (menuBar == null) {
+            throw new IllegalArgumentException("MenuBar cannot be null.");
+        }
+        // Null checks for other services would also be good practice here,
+        // but are outside the scope of this specific subtask.
+
         this.primaryStage = primaryStage;
-        // this.menuBar = menuBar; // Removed
+        this.menuBar = menuBar;
         this.reportService = reportService;
         this.budgetService = budgetService;
         this.reportConfigurationService = reportConfigurationService;
@@ -44,7 +53,7 @@ public class ApplicationContextImpl implements ApplicationContext {
     }
 
     // @Override
-    // public MenuBar getMenuBar() { // Removed
+    // public MenuBar getMenuBar() { // This comment block can be removed
     //     return this.menuBar;
     // }
 
@@ -100,11 +109,12 @@ public class ApplicationContextImpl implements ApplicationContext {
     }
 
 	/**
-	 * Override @see nonprofitbookkeeping.core.ApplicationContext#getMenuBar() 
+	 * Gets the main MenuBar for the application.
+	 * Implements {@link ApplicationContext#getMenuBar()}.
+	 * @return The application's main {@link MenuBar}.
 	 */
 	@Override public MenuBar getMenuBar()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return this.menuBar;
 	}
 }

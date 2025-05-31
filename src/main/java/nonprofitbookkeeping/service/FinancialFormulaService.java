@@ -48,7 +48,7 @@ public class FinancialFormulaService
 				}
 			}
 		}
-		
+
 		return sum.doubleValue();
 	}
 	

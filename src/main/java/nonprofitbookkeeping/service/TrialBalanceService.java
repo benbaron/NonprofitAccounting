@@ -150,7 +150,7 @@ public class TrialBalanceService implements TrialBalanceServiceIntf
 		if (transactions.isEmpty()) {
 			return new TrialBalanceResultImpl(debitSums, creditSums, true);
 		}
-        
+
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE; // Assumes "YYYY-MM-DD"
 
 		for (AccountingTransaction tx : transactions) {
@@ -165,7 +165,7 @@ public class TrialBalanceService implements TrialBalanceServiceIntf
             } catch (DateTimeParseException e) {
                 // Log error or skip transaction if date is unparsable
                 System.err.println("Could not parse date for transaction: " + tx.getId() + ", date string: " + tx.getDate());
-                continue; 
+                continue;
             }
 
             if (transactionDate.isBefore(from) || transactionDate.isAfter(to)) {

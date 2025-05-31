@@ -148,9 +148,9 @@ public class ReconciliationService
 			return;
 		}
 		
-		this.unreconciledTransactions.removeIf(tx -> 
-			tx != null && 
-			tx.getAccount() != null && 
+		this.unreconciledTransactions.removeIf(tx ->
+			tx != null &&
+			tx.getAccount() != null &&
 			accountId.equals(tx.getAccount().getAccountNumber()) &&
 			tx.getId() != null && // Ensure transaction ID itself is not null before checking containment
 			clearedTransactionIds.contains(tx.getId())

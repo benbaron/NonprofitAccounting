@@ -51,7 +51,7 @@ public class ReportService
 	
 	private static final Map<String, nonprofitbookkeeping.api.ReportWriterIntf> reportWriters = new HashMap<>();
 	private static final List<ReportMetadata> generatedReports = new ArrayList<>();
-	
+
 	
 	static Map<String, Object> prepareIncomeStatementContext(	ReportContext context, Ledger ledger,
 																ChartOfAccounts chartOfAccounts)

@@ -83,8 +83,8 @@ public class TransactionService
 		if (txId == null || txId.trim().isEmpty() || allTransactions == null) {
 			return false;
 		}
-		return allTransactions.removeIf(tx -> 
-			tx != null && 
+		return allTransactions.removeIf(tx ->
+			tx != null &&
 			tx.getId() != null && // Ensure transaction ID itself is not null
 			txId.equals(tx.getId())
 		);

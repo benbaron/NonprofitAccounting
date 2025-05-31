@@ -22,7 +22,7 @@ public class LedgerReportWriter implements ReportWriterIntf
 
 	/**  
 	 * Constructs a new LedgerReportWriter.
-	 * 
+	 *
 	 * @param trialBalanceService The service that might be used for related financial computations
 	 *                            or summary data for the ledger report. Must not be null.
 	 * @param ledger The ledger containing the financial data to be reported. Must not be null.

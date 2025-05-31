@@ -29,7 +29,7 @@ class ReconciliationServiceTest {
 
     @Mock
     private Account mockAccount1, mockAccount2, mockAccountNullNum;
-    
+
     // Common statement details (not used by current reconcile logic but part of signature)
     private final String STATEMENT_DATE = "2023-01-31";
     private final BigDecimal STATEMENT_ENDING_BALANCE = new BigDecimal("1000.00");
@@ -46,13 +46,13 @@ class ReconciliationServiceTest {
 
         lenient().when(mockTx1.getAccount()).thenReturn(mockAccount1);
         lenient().when(mockTx1.getId()).thenReturn("TXN101");
-        
+
         lenient().when(mockTx2.getAccount()).thenReturn(mockAccount1); // Another tx for ACC1
         lenient().when(mockTx2.getId()).thenReturn("TXN102");
 
         lenient().when(mockTx3.getAccount()).thenReturn(mockAccount2); // Tx for ACC2
         lenient().when(mockTx3.getId()).thenReturn("TXN201");
-        
+
         lenient().when(mockTx4.getAccount()).thenReturn(mockAccount1); // Tx for ACC1 with different ID
         lenient().when(mockTx4.getId()).thenReturn("TXN103");
     }
@@ -125,7 +125,7 @@ class ReconciliationServiceTest {
         service.addTransactionToReconcile(mockTx1); // ACC1
         assertTrue(service.getUnreconciled("NONEXISTENT_ACC").isEmpty());
     }
-    
+
     @Test
     @DisplayName("getUnreconciled: Transaction with null Account object should be skipped")
     void testGetUnreconciled_transactionWithNullAccount_isSkipped() {
@@ -176,11 +176,11 @@ class ReconciliationServiceTest {
     @DisplayName("listReconcilableAccounts: Handles transactions with null account or account number gracefully")
     void testListReconcilableAccounts_withNullOrPartialTransactionData_handlesGracefully() {
         service.addTransactionToReconcile(mockTx1); // ACC1
-        
+
         AccountingTransaction txWithNullAccount = mock(AccountingTransaction.class);
         when(txWithNullAccount.getAccount()).thenReturn(null);
         service.addTransactionToReconcile(txWithNullAccount);
-        
+
         AccountingTransaction txWithNullAccNum = mock(AccountingTransaction.class);
         when(txWithNullAccNum.getAccount()).thenReturn(mockAccountNullNum); // Account with null number
         service.addTransactionToReconcile(txWithNullAccNum);
@@ -241,10 +241,10 @@ class ReconciliationServiceTest {
     void testReconcile_clearedIdsDoNotMatchAnyTransactions_noChange() {
         service.addTransactionToReconcile(mockTx1); // ACC1, TXN101
         service.addTransactionToReconcile(mockTx2); // ACC1, TXN102
-        
+
         List<String> nonMatchingClearedIds = Arrays.asList("TXN999", "TXN888");
         service.reconcile("ACC1", STATEMENT_DATE, STATEMENT_ENDING_BALANCE, nonMatchingClearedIds);
-        
+
         assertEquals(2, service.getUnreconciled("ACC1").size(), "No transactions should be removed if IDs don't match.");
     }
 
@@ -254,14 +254,14 @@ class ReconciliationServiceTest {
         service.addTransactionToReconcile(mockTx1); // ACC1, TXN101
         service.addTransactionToReconcile(mockTx2); // ACC1, TXN102
         service.addTransactionToReconcile(mockTx3); // ACC2, TXN201
-        
+
         List<String> allAcc1ClearedIds = Arrays.asList("TXN101", "TXN102");
         service.reconcile("ACC1", STATEMENT_DATE, STATEMENT_ENDING_BALANCE, allAcc1ClearedIds);
-        
+
         assertTrue(service.getUnreconciled("ACC1").isEmpty(), "ACC1 should have no unreconciled transactions left.");
         assertFalse(service.getUnreconciled("ACC2").isEmpty(), "ACC2 transactions should remain.");
     }
-    
+
     @Test
     @DisplayName("reconcile: Transaction with null ID in service is not removed by reconcile")
     void testReconcile_transactionWithNullId_isNotRemoved() {

@@ -28,7 +28,7 @@ class FinancialFormulaServiceTest {
 
     @Mock
     private AccountingTransaction mockTxn2; // Mocked Transaction 2
-    
+
     @Mock
     private AccountingTransaction mockTxn3; // Mocked Transaction 3
 
@@ -101,7 +101,7 @@ class FinancialFormulaServiceTest {
         double result = FinancialFormulaService.applyFormulas(mockLedger);
         assertEquals(250.00, result, 0.001, "Result should sum amounts from non-null transactions, skipping null transaction objects.");
     }
-    
+
     @Test
     @DisplayName("applyFormulas: Ledger with all transaction amounts being null")
     void testApplyFormulas_allTransactionAmountsNull() {
@@ -120,7 +120,7 @@ class FinancialFormulaServiceTest {
         when(mockTxn2.getTotalAmount()).thenReturn(BigDecimal.ZERO);
         when(mockTxn3.getTotalAmount()).thenReturn(new BigDecimal("5.00"));
         when(mockLedger.getTransactions()).thenReturn(Arrays.asList(mockTxn1, mockTxn2, mockTxn3));
-        
+
         double result = FinancialFormulaService.applyFormulas(mockLedger);
         assertEquals(15.00, result, 0.001, "Result should correctly include transactions with zero amount.");
     }

@@ -7,7 +7,7 @@ package nonprofitbookkeeping.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import nonprofitbookkeeping.model.Grant; 
+import nonprofitbookkeeping.model.Grant;
 
 /**
  * Service class for managing {@link Grant} objects.
@@ -31,7 +31,7 @@ public class GrantsService
 
 	/**
 	 * Retrieves all grants currently stored in this service instance.
-	 * 
+	 *
 	 * @return A new {@code List<Grant>} containing all stored grants.
 	 *         Returns an empty list if no grants are present. This is a copy,
 	 *         so modifications to the returned list do not affect internal storage.

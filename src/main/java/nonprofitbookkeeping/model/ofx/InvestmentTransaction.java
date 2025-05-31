@@ -37,7 +37,7 @@ public class InvestmentTransaction extends Transaction
 			BigDecimal quantity,
 			BigDecimal price,
 			BigDecimal fees) {
-		
+
 		// Calculate the 'trnAmt' for the superclass.
 		// This interpretation assumes 'trnAmt' is the net cash effect or principal value.
 		// For a BUY, this might be negative. For a SELL, positive.
@@ -52,7 +52,7 @@ public class InvestmentTransaction extends Transaction
 			BigDecimal transactionFees = (fees == null) ? BigDecimal.ZERO : fees;
 			calculatedSuperAmount = calculatedSuperAmount.subtract(transactionFees); // Or .add for cost basis of a buy
 		} else {
-			calculatedSuperAmount = BigDecimal.ZERO; 
+			calculatedSuperAmount = BigDecimal.ZERO;
 		}
 		// The parent constructor is: Transaction(String trnType, String dtPosted, BigDecimal trnAmt, String fitId, String checkNum, String name, String memo)
 		super(transactionType, dtPosted, calculatedSuperAmount, fitId, null /* checkNum */, transactionName, memo);

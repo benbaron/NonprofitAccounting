@@ -44,7 +44,7 @@ class ReportServiceTest {
     @Mock
     private ChartOfAccounts mockCoa;
     @Mock
-    private JxlsHelper mockJxlsHelper; 
+    private JxlsHelper mockJxlsHelper;
 
     private MockedStatic<JxlsHelper> mockedStaticJxlsHelper;
     private MockedStatic<ReportService> mockedStaticReportServiceForStream;
@@ -52,12 +52,12 @@ class ReportServiceTest {
 
     @BeforeEach
     void setUp() {
-        ReportService.resetForTesting(); 
+        ReportService.resetForTesting();
         lenient().when(mockContext.getReportType()).thenReturn("income_statement");
         lenient().when(mockContext.getStartDate()).thenReturn(LocalDate.of(2023,1,1));
         lenient().when(mockContext.getEndDate()).thenReturn(LocalDate.of(2023,1,31));
         // Stubbing for ChartOfAccounts to avoid NPEs in prepare...Context methods
-        lenient().when(mockCoa.getAccounts()).thenReturn(Collections.emptyList()); 
+        lenient().when(mockCoa.getAccounts()).thenReturn(Collections.emptyList());
         // Stubbing for Ledger to avoid NPEs
         lenient().when(mockLedger.getTransactions()).thenReturn(Collections.emptyList());
     }
@@ -75,18 +75,18 @@ class ReportServiceTest {
         new File("balance_sheet_2023-01-31.xlsx").delete(); // If balance_sheet test creates this
         new File("generated_report_stub_test_type.txt").delete();
     }
-    
+
     @Test
     @DisplayName("resetForTesting: Clears writers and generated reports")
     void testResetForTesting_clearsReportWritersAndGeneratedReports() {
-        ReportService reportServiceInstance = new ReportService(); 
-        reportServiceInstance.registerWriter("dummy_type", mockReportWriter); 
-        
+        ReportService reportServiceInstance = new ReportService();
+        reportServiceInstance.registerWriter("dummy_type", mockReportWriter);
+
         // Simulate a report generation to add to generatedReports
         // For this specific test of reset, we manually ensure lists are clear
         // by calling reset then checking.
         ReportService.resetForTesting(); // Call it again to ensure it works on potentially non-empty lists
-        
+
         assertTrue(ReportService.listGeneratedReports().isEmpty(), "Generated reports should be empty after reset.");
         // Verifying reportWriters is cleared is tricky without a getter.
         // We rely on the fact that if it wasn't cleared, other tests might fail or show inconsistent behavior.
@@ -135,18 +135,18 @@ class ReportServiceTest {
         // For now, we test the copy behavior on an empty list.
         List<ReportMetadata> list1 = ReportService.listGeneratedReports();
         assertNotNull(list1);
-        
+
         try {
             list1.add(new ReportMetadata("dummy", "dummyTime", "dummyPath"));
         } catch (UnsupportedOperationException e) {
             // This would be if an unmodifiable list was returned.
             // ReportService returns new ArrayList<>() which is modifiable.
         }
-        
+
         // The key is that modifying list1 (a copy) does not affect the internal list.
         // Since the internal list is empty and list1 is a copy, internal should remain empty.
         assertEquals(0, ReportService.listGeneratedReports().size(), "Internal list should remain empty if copy is modified.");
-        
+
         List<ReportMetadata> list2 = ReportService.listGeneratedReports();
         assertNotSame(list1, list2, "Should return a new list instance.");
     }
@@ -223,7 +223,7 @@ class ReportServiceTest {
         }
         assertTrue(ReportService.listGeneratedReports().isEmpty(), "No metadata should be recorded on JXLS error.");
     }
-    
+
     @Test
     @DisplayName("generate: Unrecognized report type records metadata for stub TXT file")
     void testGenerate_unrecognizedReportType_recordsMetadataForStub() throws IOException {
@@ -245,7 +245,7 @@ class ReportServiceTest {
             resultFile = ReportService.generate(mockContext, mockLedger, mockCoa);
             assertNotNull(resultFile);
             assertEquals("generated_report_" + unknownReportType + ".txt", resultFile.getName());
-            assertTrue(resultFile.exists()); 
+            assertTrue(resultFile.exists());
 
             List<ReportMetadata> generated = ReportService.listGeneratedReports();
             assertEquals(1, generated.size());

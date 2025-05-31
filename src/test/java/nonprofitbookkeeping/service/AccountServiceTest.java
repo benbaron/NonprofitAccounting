@@ -95,7 +95,7 @@ class AccountServiceTest {
         assertTrue(accounts.stream().anyMatch(a -> "A001".equals(a.getAccountNumber())));
         assertTrue(accounts.stream().anyMatch(a -> "A002".equals(a.getAccountNumber())));
     }
-    
+
     @Test
     @DisplayName("getAllAccounts: Ensure returned list is a copy")
     void testGetAllAccounts_ensureReturnedListIsCopy() {
@@ -112,7 +112,7 @@ class AccountServiceTest {
              // To test true immutability of the *service's* list, we check size after trying to mod external copy.
             list1.add(new Account("A002", "Dummy", AccountSide.CREDIT));
         }, "If getAllAccounts returned an unmodifiable list, adding would throw UOE. If it's a mutable copy, this won't throw.");
-        
+
         // If the above doesn't throw (because it's a mutable copy), this check is key:
         assertEquals(1, AccountService.getAllAccounts().size(), "Modifying the list returned by getAllAccounts should not affect the internal list.");
 
@@ -190,13 +190,13 @@ class AccountServiceTest {
         assertFalse(AccountService.removeAccount("   "));
         assertEquals(1, AccountService.getAllAccounts().size());
     }
-    
+
     @Test
     @DisplayName("removeAccount: Removing last account should result in empty list")
     void testRemoveAccount_removingLastAccount_shouldResultInEmptyList() {
         Account acc1 = new Account("R001", "OnlyAccount", AccountSide.DEBIT);
         AccountService.addAccount(acc1);
-        
+
         assertTrue(AccountService.removeAccount("R001"));
         assertTrue(AccountService.getAllAccounts().isEmpty());
     }
@@ -208,9 +208,9 @@ class AccountServiceTest {
     void testClearAccounts_shouldEmptyTheAccountList() {
         AccountService.addAccount(new Account("C001", "Clear Test", AccountSide.DEBIT));
         assertFalse(AccountService.getAllAccounts().isEmpty(), "List should not be empty before clear");
-        
+
         AccountService.clearAccounts();
-        
+
         assertTrue(AccountService.getAllAccounts().isEmpty(), "getAllAccounts should be empty after clearAccounts.");
         assertTrue(AccountService.getBalanceResults().isEmpty(), "getBalanceResults should be empty after clearAccounts.");
     }

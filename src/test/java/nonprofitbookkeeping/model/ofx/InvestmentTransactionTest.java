@@ -156,7 +156,7 @@ class InvestmentTransactionTest {
         // (0 * 5) - 0 = 0
         assertEquals(0, BigDecimal.ZERO.compareTo(tx2.getTotal()));
     }
-    
+
     @Test
     @DisplayName("getTotal: Zero price and zero/null fees")
     void testGetTotal_withZeroPriceAndZeroOrNullFees() {

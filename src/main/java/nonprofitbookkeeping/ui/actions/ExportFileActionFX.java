@@ -27,7 +27,7 @@ public class ExportFileActionFX  implements EventHandler<ActionEvent>
 
 	/**  
 	 * Constructs a new ExportFileActionFX.
-	 * 
+	 *
 	 * @param primaryStage The primary stage of the JavaFX application, which will own
 	 *                     any dialogs opened by this action. Must not be null.
 	 * @throws IllegalArgumentException if primaryStage is null.
@@ -96,7 +96,7 @@ public class ExportFileActionFX  implements EventHandler<ActionEvent>
             try (FileWriter writer = new FileWriter(finalFileToWrite)) {
                 String content = "Placeholder for " + chosenFormatString + " data export from Nonprofit Bookkeeping application.";
                 writer.write(content);
-                
+
                 Alert successAlert = new Alert(AlertType.INFORMATION);
                 successAlert.setTitle("Export Successful");
                 successAlert.setHeaderText(null);

@@ -7,7 +7,7 @@ package nonprofitbookkeeping.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import nonprofitbookkeeping.model.Customer; 
+import nonprofitbookkeeping.model.Customer;
 
 /**
  * Service class for managing {@link Customer} objects.
@@ -28,7 +28,7 @@ public class CustomerService
 	 * or data shaping related to projects in a more complex system. Currently, it
 	 * returns all customers.
 	 * </p>
-	 * 
+	 *
 	 * @return A new {@code List<Customer>} containing all stored customers.
 	 *         Returns an empty list if no customers are present. This is a copy,
 	 *         so modifications to the returned list do not affect internal storage.

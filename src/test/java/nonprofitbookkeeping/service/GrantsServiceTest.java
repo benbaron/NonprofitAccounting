@@ -146,7 +146,7 @@ class GrantsServiceTest {
 
     // --- getAllGrants() Tests ---
     // testGetAllGrants_onNewInstance_shouldReturnEmptyList is covered by constructor test.
-    
+
     @Test
     @DisplayName("getAllGrants: After adding, should return all added grants for instance")
     void testGetAllGrants_afterAdding_shouldReturnAllAddedGrantsForInstance() {
@@ -176,9 +176,9 @@ class GrantsServiceTest {
         } catch (UnsupportedOperationException e) {
             // Expected if an unmodifiable list is returned.
         }
-        
+
         assertEquals(1, service.getAllGrants().size(), "Modifying the list returned by getAllGrants should not affect the instance's internal list.");
-        
+
         List<Grant> list2 = service.getAllGrants();
         assertNotSame(list1, list2, "getAllGrants should return a new list instance (a copy).");
     }

@@ -154,9 +154,9 @@ class CustomerServiceTest {
         } catch (UnsupportedOperationException e) {
             // This would happen if an unmodifiable list is returned, which is also a valid way to return a copy.
         }
-        
+
         assertEquals(1, CustomerService.getCustomerProjectData().size(), "Modifying the list returned by getCustomerProjectData should not affect the internal list.");
-        
+
         List<Customer> list2 = CustomerService.getCustomerProjectData();
         assertNotSame(list1, list2, "getCustomerProjectData should return a new list instance (a copy).");
     }
