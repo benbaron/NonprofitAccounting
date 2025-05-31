@@ -1,9 +1,9 @@
 package nonprofitbookkeeping.ui.helpers;
 
 import javax.swing.*;
-
 import org.jdatepicker.UtilDateModel;
-
+import org.jdatepicker.impl.JDatePanelImpl; // Added import
+import org.jdatepicker.impl.JDatePickerImpl; // Added import
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -11,8 +11,20 @@ import java.util.Calendar;
 import java.util.Optional;
 import java.util.Properties;
 
+/**
+ * A utility class for displaying date selection dialogs using Swing components
+ * from the JDatePicker library. It provides methods to show dialogs for selecting
+ * a single date or a date range.
+ * <p>
+ * Note: This dialog uses Swing components. For use in JavaFX applications,
+ * consider future refactoring to native JavaFX dialogs and controls for
+ * optimal integration and theming. The current implementation relies on Swing's
+ * interoperability when used within a JavaFX context (if applicable via SwingNode
+ * or by running Swing dialogs on the EDT).
+ * </p>
+ */
 public class DatePickerDialog {
-	// FIXME - lots of stuff broken
+	// The FIXME comment was here, removing it as part of Javadoc cleanup.
 	
     /**
      * Shows a dialog prompting the user to select a date range.
@@ -43,9 +55,9 @@ public class DatePickerDialog {
         p.put("text.year", "Year");
         JDatePanelImpl startDatePanel = new JDatePanelImpl(startDateModel, p);
         JDatePickerImpl startDatePicker = 
-        	new JDatePickerImpl(startDatePanel, null);
-        		//new JDatePickerImpl.JFormattedTextFieldFactory());
-       // panel.add(startDatePicker, gbc);
+		new JDatePickerImpl(startDatePanel, new JDatePickerImpl.JFormattedTextFieldFactory());
+
+        panel.add(startDatePicker, gbc);
 
         // End Date Picker
         gbc.gridy++;
@@ -54,24 +66,22 @@ public class DatePickerDialog {
         gbc.gridx++;
         UtilDateModel endDateModel = new UtilDateModel();
         JDatePanelImpl endDatePanel = new JDatePanelImpl(endDateModel, p); // Reuse properties
-        JDatePickerImpl endDatePicker = new JDatePickerImpl(endDatePanel, null);
-        	//new JDatePickerImpl.JFormattedTextFieldFactory());
-       // panel.add(endDatePicker, gbc);
+        JDatePickerImpl endDatePicker = new JDatePickerImpl(endDatePanel, new JDatePickerImpl.JFormattedTextFieldFactory());
+
+        panel.add(endDatePicker, gbc);
 
         int result = JOptionPane.showConfirmDialog(parentComponent, panel, title,
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
         if (result == JOptionPane.OK_OPTION) {
             LocalDate startDate = null;
-            Calendar selectedStartCal = null;
-            	//(Calendar) startDatePicker.getModel().getValue();
+            Calendar selectedStartCal = (Calendar) startDatePicker.getModel().getValue();
             if (selectedStartCal != null) {
                 startDate = selectedStartCal.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             }
 
             LocalDate endDate = null;
-            Calendar selectedEndCal = null;
-            //(Calendar) endDatePicker.getModel().getValue();
+            Calendar selectedEndCal = (Calendar) endDatePicker.getModel().getValue();
             if (selectedEndCal != null) {
                 endDate = selectedEndCal.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             }
@@ -99,17 +109,17 @@ public class DatePickerDialog {
         p.put("text.month", "Month");
         p.put("text.year", "Year");
         JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
-        JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, null);
-        	//new JDatePickerImpl.JFormattedTextFieldFactory());
+        JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new JDatePickerImpl.JFormattedTextFieldFactory());
+
 
         panel.add(new JLabel(dateLabel));
-        //panel.add(datePicker);
+        panel.add(datePicker);
 
         int result = JOptionPane.showConfirmDialog(parentComponent, panel, title,
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
         if (result == JOptionPane.OK_OPTION) {
-            Calendar selectedCal = null; //(Calendar) datePicker.getModel().getValue();
+            Calendar selectedCal = (Calendar) datePicker.getModel().getValue();
             if (selectedCal != null) {
                 return Optional.of(selectedCal.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
             }

@@ -14,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
+import nonprofitbookkeeping.model.Company; // Added import for OnCompanyOpenedHandler
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.service.CompanyLoaderService;
 import nonprofitbookkeeping.service.PreferencesService;
@@ -22,20 +23,44 @@ import nonprofitbookkeeping.ui.helpers.AlertBox;
 /**
  * JavaFX version of {@code CompanySelectionPanel}. Lets the user pick an .npbk
  * company file, preview its profile, open it, or create a new company.
+ * This panel uses a callback mechanism ({@link OnCompanyOpenedHandler}) to notify
+ * the application when a company has been successfully opened.
  */
 public class CompanySelectionPanelFX extends BorderPane
 {
+	/**
+     * Functional interface for a callback to be invoked when a company
+     * has been successfully opened or processed by this panel.
+     */
+    @FunctionalInterface
+    public static interface OnCompanyOpenedHandler {
+        /**
+         * Called when a company's data has been successfully loaded/processed.
+         *
+         * @param company The {@link Company} object that was opened or processed.
+         */
+        void onCompanyOpened(Company company);
+    }
 	
 	private final ListView<File> companyList = new ListView<>();
 	private final ObservableList<File> npbkFiles = FXCollections.observableArrayList();
 	private final TextArea previewArea = new TextArea();
+	private final OnCompanyOpenedHandler companyOpenedHandler;
 	
 	/**
-	 * 
-	 * Constructor CompanySelectionPanelFX
+	 * Constructs a new CompanySelectionPanelFX.
+	 *
+	 * @param openedHandler The handler to be called when a company is successfully opened
+     *                      or processed. Must not be null.
+     * @throws IllegalArgumentException if openedHandler is null.
 	 */
-	public CompanySelectionPanelFX()
+	public CompanySelectionPanelFX(OnCompanyOpenedHandler openedHandler)
 	{
+		if (openedHandler == null) {
+            throw new IllegalArgumentException("OnCompanyOpenedHandler cannot be null.");
+        }
+        this.companyOpenedHandler = openedHandler;
+
 		setPadding(new Insets(10));
 		buildUI();
 		reloadCompanyList();
@@ -132,20 +157,45 @@ public class CompanySelectionPanelFX extends BorderPane
 	}
 	
 	/**
-	 * 
+	 * Handles opening the selected company file.
+	 * It loads the company data from the persistent file, opens it via {@link CurrentCompany},
+	 * and then invokes the {@code companyOpenedHandler} callback with the loaded company.
+	 * Errors during loading or opening are displayed to the user via an alert dialog.
 	 */
 	private void openSelected()
 	{
-		File sel = this.companyList.getSelectionModel().getSelectedItem();
+		File selectedFile = this.companyList.getSelectionModel().getSelectedItem();
 		
-		if (sel == null)
+		if (selectedFile == null)
 		{
-			return;
+			return; // No file selected, do nothing.
 		}
 		
-		Alert a = new Alert(Alert.AlertType.INFORMATION, "Opening company: " + sel.getName());
-		a.showAndWait();
-		// TODO: notify application controller
+		try {
+            CurrentCompany.loadFromPersistent(selectedFile);
+            CurrentCompany.open(); // This should trigger listeners and update CurrentCompany.getCompany()
+
+            Company openedCompany = CurrentCompany.getCompany();
+
+            if (openedCompany != null) {
+                // Notify the registered handler that a company has been successfully opened.
+                this.companyOpenedHandler.onCompanyOpened(openedCompany);
+            } else {
+                // This case should ideally not happen if loadFromPersistent and open succeed
+                // without exceptions but CurrentCompany.getCompany() is still null.
+                AlertBox.showError("Company Open Error",
+                                   "Failed to retrieve company data after attempting to load and open the file. " +
+                                   "The company object is unexpectedly null.");
+            }
+        } catch (IOException | ActionCancelledException | NoFileCreatedException e) {
+            AlertBox.showError("Error Opening Company",
+                               "Failed to load company data from file: " + selectedFile.getName() +
+                               "\nError: " + e.getMessage());
+        } catch (Exception e) {
+            // Catch any other unexpected exceptions during the process
+            AlertBox.showError("Unexpected Error",
+                               "An unexpected error occurred while opening the company: " + e.getMessage());
+        }
 	}
 	
 	/**

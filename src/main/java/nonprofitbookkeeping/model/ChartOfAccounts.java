@@ -99,22 +99,41 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	}
 
 	/**
-	 * @param account
-	 * @return
+	 * Retrieves a specific {@link Account} from the chart by its account number.
+	 * This method provides a convenient way to look up an account using its unique identifier.
+	 * It utilizes an internally generated map for efficient retrieval.
+	 *
+	 * @param accountNumber The account number of the account to retrieve.
+	 *                      If null or blank, this method will return null.
+	 * @return The {@link Account} object if found, or {@code null} if no account
+	 *         matches the given account number, or if the input accountNumber is invalid.
 	 */
-	public Account getAccount(String account)
+	public Account getAccount(String accountNumber)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		if (accountNumber == null || accountNumber.trim().isEmpty()) {
+            return null;
+        }
+        Map<String, Account> accountMap = this.getAccountNumberToAccountDetails();
+        return accountMap.get(accountNumber);
 	}
 
 	/**
-	 * @return
+	 * Returns a list of all accounts contained in this chart of accounts.
+	 * This list includes all accounts, whether they are root accounts or child accounts.
+	 * <p>
+	 * The returned list is a shallow copy of the internal list of accounts.
+	 * Modifications to the returned list will not affect the chart of accounts itself.
+	 * However, modifications to the {@link Account} objects within the list will affect
+	 * the accounts stored in the chart.
+	 * </p>
+	 *
+	 * @return A new {@code List<Account>} containing all accounts in the chart.
+	 *         Returns an empty list if the chart of accounts has no accounts.
 	 */
 	public List<Account> getAccounts()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		// this.chartOfAccounts is final and initialized, so it won't be null.
+        return new ArrayList<>(this.chartOfAccounts);
 	}
 	
 }
