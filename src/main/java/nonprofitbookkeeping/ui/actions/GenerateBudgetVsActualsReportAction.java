@@ -9,7 +9,6 @@ import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.service.BudgetService;
 import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.ui.helpers.AlertBox; // Added
-// import nonprofitbookkeeping.ui.helpers.DatePickerDialog; // Commented out for now
 
 import javafx.event.ActionEvent; // Added
 import javafx.event.EventHandler; // Added
@@ -24,6 +23,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+// JavaFX imports for the new dialog
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.ButtonType;
+import javafx.scene.layout.GridPane;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
+
 
 public class GenerateBudgetVsActualsReportAction implements EventHandler<ActionEvent> {
 
@@ -37,6 +46,27 @@ public class GenerateBudgetVsActualsReportAction implements EventHandler<ActionE
         this.budgetService = budgetService;
     }
 
+    /**
+     * Handles the action event for generating a Budget vs. Actuals report.
+     * This multi-step process involves:
+     * <ol>
+     *   <li>Verifying that a company is open and its directory is accessible.</li>
+     *   <li>Loading available budgets using {@link BudgetService}. If none, an info alert is shown.</li>
+     *   <li>Prompting the user to select a budget via a {@link ChoiceDialog}.</li>
+     *   <li>Prompting the user to select a date range for the 'Actuals' data using a custom JavaFX dialog
+     *       ( {@link #showJavaFXDateRangeDialog(Window, String, String, String, String)} ) which uses two {@link DatePicker} controls.</li>
+     *   <li>Validating the selected dates (start date, end date, and ensure end date is not before start date).
+     *       The custom dialog also performs some of this validation.</li>
+     *   <li>Setting up a {@link ReportContext} with the chosen budget, date range, and report type ("budget_vs_actuals").</li>
+     *   <li>Retrieving the {@link Ledger} and {@link ChartOfAccounts} from the {@link CurrentCompany}.</li>
+     *   <li>Calling {@link ReportService#generate(ReportContext, Ledger, ChartOfAccounts)} to produce the report file.</li>
+     *   <li>Displaying a success message with the report file path using {@link AlertBox}, or an error message
+     *       if any step fails (e.g., I/O errors loading budgets, missing company data, report generation failure).</li>
+     * </ol>
+     * The action may be aborted if the user cancels any dialog, or if essential data is missing or invalid at any stage.
+     *
+     * @param event The {@link ActionEvent} that triggered this handler.
+     */
     @Override
     public void handle(ActionEvent event) {
         Window parentWindow = null;
@@ -98,36 +128,31 @@ public class GenerateBudgetVsActualsReportAction implements EventHandler<ActionE
             }
             
             // 3. Select Date Range
-            // TODO: Refactor DatePickerDialog.showDateRangeDialog to JavaFX or use an alternative JavaFX date range picker
-            // For now, commenting out this section and subsequent logic.
-            AlertBox.showInfo(parentWindow, "Date range selection is temporarily unavailable. Report generation aborted.");
-            return; 
-            /*
-            Optional<LocalDate[]> datesOpt = DatePickerDialog.showDateRangeDialog(
-                parentWindow, // Pass Window object
+            Optional<LocalDate[]> datesOpt = showJavaFXDateRangeDialog(
+                parentWindow,
                 "Select Report Period for Actuals",
+                "Please select the start and end dates for the report period.",
                 "Start Date:",
                 "End Date:"
             );
 
             if (!datesOpt.isPresent()) {
-                return; // User cancelled
+                // User cancelled, or dates were invalid (e.g., end before start, handled in dialog)
+                // Optional: show a message that action was cancelled or dates were invalid.
+                // For now, just return as the dialog itself would have shown an error if necessary.
+                return;
             }
 
             LocalDate[] dates = datesOpt.get();
-            LocalDate startDate = dates[0];
-            LocalDate endDate = dates[1];
+            LocalDate startDate = dates[0]; // Guaranteed non-null if datesOpt.isPresent()
+            LocalDate endDate = dates[1];   // Guaranteed non-null if datesOpt.isPresent()
 
-            if (startDate == null) {
-                AlertBox.showError(parentWindow, "Start Date is required.");
-                return;
-            }
-            if (endDate == null) {
-                AlertBox.showError(parentWindow, "End Date is required.");
-                return;
-            }
+            // The check 'endDate.isBefore(startDate)' is now handled within showJavaFXDateRangeDialog's
+            // result converter. If it was true, datesOpt would be empty.
+            // So, this explicit check here is likely redundant but harmless as a defensive check.
             if (endDate.isBefore(startDate)) {
-                AlertBox.showError(parentWindow, "End Date cannot be before Start Date.");
+                // This block should ideally not be reached if dialog logic is correct.
+                AlertBox.showError(parentWindow, "Date Selection Error", "End Date cannot be before Start Date. Please try again.");
                 return;
             }
 
@@ -152,7 +177,6 @@ public class GenerateBudgetVsActualsReportAction implements EventHandler<ActionE
             
             // 6. Show Success Message
             AlertBox.showInfo(parentWindow, "Budget vs. Actuals report saved to: " + f.getAbsolutePath());
-            */
 
         } catch (IOException ioe) {
             System.err.println("Error loading budgets: " + ioe.getMessage());
@@ -163,5 +187,74 @@ public class GenerateBudgetVsActualsReportAction implements EventHandler<ActionE
             ex.printStackTrace();
             AlertBox.showError(parentWindow, "Failed to generate report: " + ex.getMessage());
         }
+    }
+
+    /**
+     * Displays a JavaFX dialog for selecting a date range.
+     *
+     * @param owner The parent window for this dialog.
+     * @param title The title of the dialog window.
+     * @param headerText The header text to display within the dialog.
+     * @param startDateLabelText The label text for the start date picker.
+     * @param endDateLabelText The label text for the end date picker.
+     * @return An {@code Optional<LocalDate[]>} containing an array with two {@link LocalDate} objects
+     *         (start date at index 0, end date at index 1) if the user confirms the selection
+     *         and both dates are selected. Returns {@code Optional.empty()} if the dialog is
+     *         cancelled or closed.
+     */
+    private static Optional<LocalDate[]> showJavaFXDateRangeDialog(
+            Window owner, String title, String headerText,
+            String startDateLabelText, String endDateLabelText) {
+
+        Dialog<LocalDate[]> dialog = new Dialog<>();
+        dialog.initOwner(owner);
+        dialog.setTitle(title);
+        dialog.setHeaderText(headerText);
+
+        DialogPane dialogPane = dialog.getDialogPane();
+        dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        DatePicker startDatePicker = new DatePicker();
+        startDatePicker.setPromptText("Start Date");
+        DatePicker endDatePicker = new DatePicker();
+        endDatePicker.setPromptText("End Date");
+
+        grid.add(new Label(startDateLabelText), 0, 0);
+        grid.add(startDatePicker, 1, 0);
+        grid.add(new Label(endDateLabelText), 0, 1);
+        grid.add(endDatePicker, 1, 1);
+
+        dialogPane.setContent(grid);
+
+        Node okButton = dialogPane.lookupButton(ButtonType.OK);
+        okButton.setDisable(true); // Disable OK button initially
+
+        // Add listeners to enable OK button only if both dates are selected
+        Runnable updateOkButtonState = () -> {
+            okButton.setDisable(startDatePicker.getValue() == null || endDatePicker.getValue() == null);
+        };
+        startDatePicker.valueProperty().addListener((obs, oldVal, newVal) -> updateOkButtonState.run());
+        endDatePicker.valueProperty().addListener((obs, oldVal, newVal) -> updateOkButtonState.run());
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == ButtonType.OK) {
+                // Additional validation can be added here, e.g., startDate <= endDate
+                if (startDatePicker.getValue() != null && endDatePicker.getValue() != null) {
+                     if (endDatePicker.getValue().isBefore(startDatePicker.getValue())) {
+                        AlertBox.showError(owner, "Invalid Date Range", "End date cannot be before start date.");
+                        return null; // Keep dialog open or indicate error
+                    }
+                    return new LocalDate[]{startDatePicker.getValue(), endDatePicker.getValue()};
+                }
+            }
+            return null; // No valid result or cancelled
+        });
+
+        return dialog.showAndWait();
     }
 }
