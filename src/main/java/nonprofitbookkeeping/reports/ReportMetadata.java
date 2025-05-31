@@ -6,36 +6,57 @@
 package nonprofitbookkeeping.reports;
 
 /**
- * 
+ * Holds metadata associated with a generated report.
+ * This includes information such as the report's name, creation timestamp,
+ * and the file path where the report is stored.
  */
 public class ReportMetadata
 {
+	private String reportName;
+	private String created; // e.g., ISO date/time string
+	private String filePath;
 
 	/**
-	 * @return
+	 * Constructs a new ReportMetadata object.
+	 *
+	 * @param reportName The name of the report.
+	 * @param created The creation timestamp of the report (e.g., as an ISO date/time string).
+	 * @param filePath The file path where the report is stored.
+	 */
+	public ReportMetadata(String reportName, String created, String filePath) {
+		this.reportName = reportName;
+		this.created = created;
+		this.filePath = filePath;
+	}
+
+	/**
+	 * Gets the name of the report.
+	 *
+	 * @return The report name.
 	 */
 	public String getReportName()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return this.reportName;
 	}
 
 	/**
-	 * @return
+	 * Gets the creation timestamp of the report.
+	 *
+	 * @return The creation timestamp, typically as an ISO date/time string.
 	 */
 	public String getCreated()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return this.created;
 	}
 
 	/**
-	 * @return
+	 * Gets the file path where the report is stored.
+	 *
+	 * @return The file path of the report.
 	 */
 	public String getFilePath()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return this.filePath;
 	}
 	
 }

@@ -11,18 +11,33 @@ import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.service.TrialBalanceService;
 
 /**
- * 
+ * Responsible for generating and writing ledger reports.
+ * This class utilizes a {@link TrialBalanceService} (potentially for summary data)
+ * and a {@link Ledger} to compile and format the ledger report.
  */
 public class LedgerReportWriter implements ReportWriterIntf
 {
+	private final TrialBalanceService trialBalanceService;
+	private final Ledger ledger;
+
 	/**  
-	 * Constructor LedgerReportWriter
-	 * @param trialBalanceService
-	 * @param ledger
+	 * Constructs a new LedgerReportWriter.
+	 *
+	 * @param trialBalanceService The service that might be used for related financial computations
+	 *                            or summary data for the ledger report. Must not be null.
+	 * @param ledger The ledger containing the financial data to be reported. Must not be null.
+	 * @throws IllegalArgumentException if either {@code trialBalanceService} or {@code ledger} is null.
 	 */
 	public LedgerReportWriter(TrialBalanceService trialBalanceService, Ledger ledger)
 	{
-		// TODO Auto-generated constructor stub
+		if (trialBalanceService == null) {
+            throw new IllegalArgumentException("TrialBalanceService cannot be null.");
+        }
+        if (ledger == null) {
+            throw new IllegalArgumentException("Ledger cannot be null.");
+        }
+		this.trialBalanceService = trialBalanceService;
+		this.ledger = ledger;
 	}
 
 	/**

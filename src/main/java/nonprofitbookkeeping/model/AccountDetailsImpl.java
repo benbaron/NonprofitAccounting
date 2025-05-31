@@ -93,7 +93,6 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 	 */
 	@Override public Account getParentAccount()
 	{
-		// TODO Auto-generated method stub
 		return this.parentAccount;
 	}
 

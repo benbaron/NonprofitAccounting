@@ -10,45 +10,87 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Represents a fund within the nonprofit bookkeeping system.
+ * A fund is a distinct financial entity used to track resources designated for specific purposes
+ * or by specific donors. It holds a name (which also serves as its ID), a list of associated
+ * accounts, and a calculated balance derived from these accounts.
+ * This class uses Lombok for boilerplate code like getters, setters, and constructors.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Fund
 {
 	
+	/** The name of the fund, serving as its primary identifier. */
 	@JsonProperty private String name;
-	@JsonProperty private List<Account> accounts; // List to hold associated accounts (many-to-many relationship)
-	@JsonProperty private BigDecimal balance; // The balance of the fund is the sum of all associated accounts'
-												// balances
+	/** List of accounts associated with this fund, forming a many-to-many relationship. */
+	@JsonProperty private List<Account> accounts;
+	/**
+	 * The calculated balance of the fund.
+	 * This balance is derived from the sum of balances of all accounts associated with this fund.
+	 * It is updated via the {@link #updateBalance()} method.
+	 */
+	@JsonProperty private BigDecimal balance;
 	
-	// Constructor
+	/**
+     * Constructs a new Fund with the specified name.
+     * Initializes the list of associated accounts as empty and the balance to zero.
+     *
+     * @param name The name of the fund. This name also serves as the fund's identifier via {@link #getFundId()}.
+     */
 	public Fund(String name)
 	{
 		this.name = name;
 		this.accounts = new ArrayList<>();
-		this.balance = BigDecimal.ZERO; // Initial balance set to BigDecimal.ZERO
+		this.balance = BigDecimal.ZERO;
 	}
 	
+	/**
+     * Gets the name of the fund.
+     * @return The name of the fund.
+     */
 	public String getName()
 	{
 		return this.name;
 	}
 	
+	/**
+     * Gets the current calculated balance of the fund.
+     * The balance is updated by calling {@link #updateBalance()}.
+     * @return The current balance of the fund as a {@link BigDecimal}.
+     */
 	public BigDecimal getBalance()
 	{
 		return this.balance;
 	}
 	
+	/**
+     * Gets the list of accounts associated with this fund.
+     * Note: This method returns a direct reference to the internal list.
+     * Modifications to the returned list will directly affect the fund's state.
+     * Consider using {@link #addAccount(Account)} and {@link #removeAccount(Account)}
+     * for managing associated accounts to ensure balance updates are triggered.
+     *
+     * @return A list of {@link Account} objects associated with this fund.
+     */
 	public List<Account> getAccounts()
 	{
 		return this.accounts;
 	}
 	
 	/**
-	 * Adds an account to this fund.
+	 * Adds an account to this fund if it's not already present.
+     * This method establishes a bi-directional relationship by also adding this fund
+     * to the specified account's list of associated funds. After adding the account,
+     * the fund's balance is recalculated by calling {@link #updateBalance()}.
+     *
+     * @param account The {@link Account} to associate with this fund. If null, the method does nothing.
 	 */
 	public void addAccount(Account account)
 	{
+		if (account == null) return; // Guard against null account
 		
 		if (!this.accounts.contains(account))
 		{
@@ -61,16 +103,28 @@ public class Fund
 	
 	/**
 	 * Removes an account from this fund.
+     * This method breaks the bi-directional relationship by also removing this fund
+     * from the specified account's list of associated funds. After removing the account,
+     * the fund's balance is recalculated by calling {@link #updateBalance()}.
+     *
+     * @param account The {@link Account} to disassociate from this fund. If null, or if the account
+     *                is not associated with this fund, the method does nothing.
 	 */
 	public void removeAccount(Account account)
 	{
-		this.accounts.remove(account);
-		account.removeFund(this); // Remove this fund from the account
-		updateBalance(); // Recalculate the fund's balance
+		if (account == null) return; // Guard against null account
+
+		boolean removed = this.accounts.remove(account);
+		if (removed) { // Only proceed if the account was actually part of this fund
+			account.removeFund(this); // Remove this fund from the account
+			updateBalance(); // Recalculate the fund's balance
+		}
 	}
 	
 	/**
-	 * Updates the balance of this fund by summing the balances of all associated accounts.
+	 * Updates (recalculates) the balance of this fund by summing the balances
+	 * (obtained via {@link Account#totalAccountBalance()}) of all accounts currently
+	 * associated with this fund.
 	 */
 	public void updateBalance()
 	{
@@ -87,11 +141,17 @@ public class Fund
 	
 
 	/**
-	 * @param balance2
+	 * Sets the balance of this fund directly.
+	 * Note: This method bypasses the automatic balance calculation based on associated accounts.
+	 * It should be used with caution, primarily for scenarios like initial data loading from
+	 * a source where balances are pre-calculated, or for testing purposes.
+	 * Consider using {@link #updateBalance()} for standard balance recalculation.
+	 *
+	 * @param newBalance The new balance to set for the fund.
 	 */
-	public void setBalance(BigDecimal balance2)
+	public void setBalance(BigDecimal newBalance)
 	{
-		this.balance = balance2;
+		this.balance = newBalance;
 		
 	}
 	
@@ -104,12 +164,14 @@ public class Fund
 	}
 
 	/**
-	 * @return
-	 */
+     * Gets the identifier for this fund. In the current implementation,
+     * the fund's name serves as its unique identifier.
+     *
+     * @return The name of the fund, used as its ID.
+     */
 	public String getFundId()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return this.name;
 	}
 	
 	

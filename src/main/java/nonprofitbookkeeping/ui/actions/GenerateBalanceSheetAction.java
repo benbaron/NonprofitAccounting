@@ -18,8 +18,7 @@ import nonprofitbookkeeping.ui.helpers.ReportCriteriaDialog;
 import javafx.event.ActionEvent; // Added
 import javafx.event.EventHandler; // Added
 import javafx.stage.Window; // Added
-// import javax.swing.*; // Removed
-// import java.awt.event.ActionEvent; // Removed
+
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;

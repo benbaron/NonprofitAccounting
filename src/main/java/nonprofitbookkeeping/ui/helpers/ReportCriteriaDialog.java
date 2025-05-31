@@ -1,8 +1,6 @@
 
 package nonprofitbookkeeping.ui.helpers;
 
-package nonprofitbookkeeping.ui.helpers;
-
 import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Fund;
