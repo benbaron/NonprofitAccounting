@@ -83,6 +83,10 @@ public class NonprofitBookkeepingFX extends Application
 	
 	@Override public void start(Stage stage)
 	{
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			// Save data
+			doSaveCompany();
+		}));
 		SLF4JBridgeHandler.removeHandlersForRootLogger();
 		SLF4JBridgeHandler.install();
 		
@@ -493,6 +497,7 @@ public class NonprofitBookkeepingFX extends Application
 			
 		}
 		
+		doSaveCompany();
 		super.stop();
 	}
 	
