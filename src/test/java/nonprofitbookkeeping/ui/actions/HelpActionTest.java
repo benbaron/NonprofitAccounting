@@ -20,7 +20,7 @@ class HelpActionTest {
     @Test
     @DisplayName("Constructor: Valid Stage should create instance successfully")
     void testConstructor_validStage_succeeds() {
-        HelpAction action = new HelpAction(mockStage);
+        HelpAction action = new HelpAction(this.mockStage);
         assertNotNull(action, "Instance should be created with a valid Stage.");
     }
 
@@ -37,7 +37,7 @@ class HelpActionTest {
     @Test
     @DisplayName("handle: Basic call should attempt to show UI (Alert for missing resource)")
     void testHandle_basicCall_showsAlertWhenResourceMissing() {
-        HelpAction action = new HelpAction(mockStage);
+        HelpAction action = new HelpAction(this.mockStage);
 
         // In a standard unit test environment, getResource("/help/help.html") will likely return null
         // because the resources might not be on the test classpath or accessible in the same way.

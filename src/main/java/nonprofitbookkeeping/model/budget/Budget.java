@@ -66,7 +66,7 @@ public class Budget {
 	 */
 	public String getBudgetName()
 	{
-		return budgetName;
+		return this.budgetName;
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class Budget {
 	 */
 	public int getFiscalYear()
 	{
-		return fiscalYear;
+		return this.fiscalYear;
 	}
 
 	/**
@@ -98,7 +98,7 @@ public class Budget {
 	 */
 	public String getDescription()
 	{
-		return description;
+		return this.description;
 	}
 
 	/**
@@ -114,7 +114,7 @@ public class Budget {
 	 */
 	public List<BudgetLine> getBudgetLines()
 	{
-		return budgetLines;
+		return this.budgetLines;
 	}
 
 	/**
@@ -130,7 +130,7 @@ public class Budget {
 	 */
 	public String getCurrency()
 	{
-		return currency;
+		return this.currency;
 	}
 
 	/**
@@ -146,7 +146,7 @@ public class Budget {
 	 */
 	public String getApplicableFundId()
 	{
-		return applicableFundId;
+		return this.applicableFundId;
 	}
 
 	/**

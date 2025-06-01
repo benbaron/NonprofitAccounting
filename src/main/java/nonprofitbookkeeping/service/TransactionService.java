@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import nonprofitbookkeeping.model.AccountingTransaction;
-import nonprofitbookkeeping.model.Account; // Needed for getAccount().getAccountNumber()
 
 /**
  * Service class for managing {@link AccountingTransaction} objects globally.

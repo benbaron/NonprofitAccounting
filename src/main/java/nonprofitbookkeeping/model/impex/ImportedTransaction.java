@@ -1,26 +1,53 @@
+
 package nonprofitbookkeeping.model.impex;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.webcohesion.ofx4j.domain.data.common.Currency;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class ImportedTransaction {
-    private LocalDate datePosted;
-    private BigDecimal amount;
-    private String description; // Payee or name of the transaction
-    private String memo; // Additional memo or details
-    private String transactionId; // e.g., FITID from OFX
-    private String currency; // Optional, currency code
-    private String originalAccountType; // e.g., "BANK", "CREDITCARD"
-    private String originalAccountNumber; // Account number from the imported file
+
+public class ImportedTransaction
+{
+	private LocalDate datePosted;
+	private BigDecimal amount;
+	private String description; // Payee or name of the transaction
+	private String memo; // Additional memo or details
+	private String transactionId; // e.g., FITID from OFX
+	private String currency; // Optional, currency code
+	private String originalAccountType; // e.g., "BANK", "CREDITCARD"
+	private String originalAccountNumber; // Account number from the imported file
+	
+	public ImportedTransaction()
+	{
+		
+	}
+	/**  
+	 * Constructor ImportedTransaction
+	 * @param datePosted
+	 * @param amount
+	 * @param description
+	 * @param memo
+	 * @param transactionId
+	 * @param currency
+	 * @param originalAccountType
+	 * @param originalAccountNumber
+	 */
+	public ImportedTransaction(LocalDate datePosted, BigDecimal amount, String description,
+		String memo, String transactionId, String currency, String originalAccountType,
+		String originalAccountNumber)
+	{
+		this.datePosted = datePosted;
+		this.amount = amount;
+		this.description = description;
+		this.memo = memo;
+		this.transactionId = transactionId;
+		this.currency = currency;
+		this.originalAccountType = originalAccountType;
+		this.originalAccountNumber = originalAccountNumber;
+	}
+
 	/**
 	 * @return the datePosted
 	 */
@@ -28,6 +55,7 @@ public class ImportedTransaction {
 	{
 		return this.datePosted;
 	}
+	
 	/**
 	 * @param datePosted the datePosted to set
 	 */
@@ -35,6 +63,7 @@ public class ImportedTransaction {
 	{
 		this.datePosted = datePosted;
 	}
+	
 	/**
 	 * @return the amount
 	 */
@@ -42,6 +71,7 @@ public class ImportedTransaction {
 	{
 		return this.amount;
 	}
+	
 	/**
 	 * @param amount the amount to set
 	 */
@@ -49,6 +79,7 @@ public class ImportedTransaction {
 	{
 		this.amount = amount;
 	}
+	
 	/**
 	 * @return the description
 	 */
@@ -56,6 +87,7 @@ public class ImportedTransaction {
 	{
 		return this.description;
 	}
+	
 	/**
 	 * @param description the description to set
 	 */
@@ -63,6 +95,7 @@ public class ImportedTransaction {
 	{
 		this.description = description;
 	}
+	
 	/**
 	 * @return the memo
 	 */
@@ -70,6 +103,7 @@ public class ImportedTransaction {
 	{
 		return this.memo;
 	}
+	
 	/**
 	 * @param memo the memo to set
 	 */
@@ -77,6 +111,7 @@ public class ImportedTransaction {
 	{
 		this.memo = memo;
 	}
+	
 	/**
 	 * @return the transactionId
 	 */
@@ -84,6 +119,7 @@ public class ImportedTransaction {
 	{
 		return this.transactionId;
 	}
+	
 	/**
 	 * @param transactionId the transactionId to set
 	 */
@@ -91,6 +127,7 @@ public class ImportedTransaction {
 	{
 		this.transactionId = transactionId;
 	}
+	
 	/**
 	 * @return the currency
 	 */
@@ -98,6 +135,7 @@ public class ImportedTransaction {
 	{
 		return this.currency;
 	}
+	
 	/**
 	 * @param currency the currency to set
 	 */
@@ -105,6 +143,7 @@ public class ImportedTransaction {
 	{
 		this.currency = currency;
 	}
+	
 	/**
 	 * @return the originalAccountType
 	 */
@@ -112,6 +151,7 @@ public class ImportedTransaction {
 	{
 		return this.originalAccountType;
 	}
+	
 	/**
 	 * @param originalAccountType the originalAccountType to set
 	 */
@@ -119,6 +159,7 @@ public class ImportedTransaction {
 	{
 		this.originalAccountType = originalAccountType;
 	}
+	
 	/**
 	 * @return the originalAccountNumber
 	 */
@@ -126,6 +167,7 @@ public class ImportedTransaction {
 	{
 		return this.originalAccountNumber;
 	}
+	
 	/**
 	 * @param originalAccountNumber the originalAccountNumber to set
 	 */
@@ -133,6 +175,7 @@ public class ImportedTransaction {
 	{
 		this.originalAccountNumber = originalAccountNumber;
 	}
+	
 	/**
 	 * @param currency2
 	 */
@@ -141,5 +184,5 @@ public class ImportedTransaction {
 		this.currency = currency2.toString();
 		
 	}
-
+	
 }

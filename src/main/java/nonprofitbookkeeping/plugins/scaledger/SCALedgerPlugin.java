@@ -131,7 +131,7 @@ public class SCALedgerPlugin implements Plugin {
 
     // Methods for managing SCA state, to replace static access:
     public Map<String, Object> getScaBeans() {
-        return scaBeans;
+        return this.scaBeans;
     }
 
     public void setScaBeans(Map<String, Object> scaBeans) {
@@ -139,7 +139,7 @@ public class SCALedgerPlugin implements Plugin {
     }
 
     public File getCurrentScaFile() {
-        return currentScaFile;
+        return this.currentScaFile;
     }
 
     public void setCurrentScaFile(File currentScaFile) {

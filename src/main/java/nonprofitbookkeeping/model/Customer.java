@@ -29,12 +29,23 @@ public class Customer
 	 */
 	private String name;
 	
+	/**  
+	 * Constructor Customer
+	 * @param id
+	 * @param name
+	 */
+	public Customer(String id, String name)
+	{
+		this.id = id;
+		this.name = name;
+	}
+
 	/**
 	 * @return the id
 	 */
 	public String getId()
 	{
-		return id;
+		return this.id;
 	}
 
 	/**
@@ -50,7 +61,7 @@ public class Customer
 	 */
 	public String getName()
 	{
-		return name;
+		return this.name;
 	}
 
 	/**

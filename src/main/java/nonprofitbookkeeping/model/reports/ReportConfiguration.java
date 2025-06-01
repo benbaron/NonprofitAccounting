@@ -1,12 +1,10 @@
 package nonprofitbookkeeping.model.reports;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.ui.helpers.DateSelectionMode; // Import the top-level enum
 
 @Data

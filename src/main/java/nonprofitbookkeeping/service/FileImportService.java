@@ -408,6 +408,8 @@ public class FileImportService
 							LOGGER.warning("Skipping incomplete QIF transaction: " + currentTx);
 						currentTx = null;
 						break;
+					default:
+						break;
 				}
 				
 			}

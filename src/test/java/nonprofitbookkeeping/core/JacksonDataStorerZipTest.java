@@ -33,7 +33,7 @@ public class JacksonDataStorerZipTest {
         originalCompany.setCompanyProfileModel(profile); // Corrected method name
         // Add more simple, serializable data to the company if needed for a more robust test
 
-        File testFile = tempDir.resolve("test_company.npbk").toFile();
+        File testFile = this.tempDir.resolve("test_company.npbk").toFile();
 
         // 2. Use JacksonDataStorer.saveData() to save it
         try {

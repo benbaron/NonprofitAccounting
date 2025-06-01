@@ -5,10 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.io.Serializable;
 
 /**
@@ -35,7 +32,7 @@ final public class Ledger implements Serializable
 	 */
 	public Journal getJournal()
 	{
-		return journal;
+		return this.journal;
 	}
 	
 }

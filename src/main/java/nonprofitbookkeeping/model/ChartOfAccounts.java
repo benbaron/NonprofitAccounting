@@ -1,10 +1,7 @@
 
 package nonprofitbookkeeping.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -85,7 +82,7 @@ public class ChartOfAccounts implements Serializable
 	
 	/* ------------------------------------------------------------------ */
 	/**
-	 * Builds a <kbd>Map accountNumber → Account</kbd> for quick lookup.
+	 * Builds a Map accountNumber → Account for quick lookup.
 	 *
 	 * @return unmodifiable map keyed by {@link Account#getAccountNumber()}.
 	 */

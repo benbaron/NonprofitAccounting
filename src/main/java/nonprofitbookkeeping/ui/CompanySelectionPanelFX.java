@@ -45,6 +45,7 @@ public class CompanySelectionPanelFX extends VBox {
         // Example:
         // javafx.scene.control.Label titleLabel = new javafx.scene.control.Label("Select or Create Company");
         // getChildren().add(titleLabel);
+        
         // TODO: Add UI elements for company selection, creation, opening.
         // These elements would eventually use this.companyOpenedHandler.onCompanyOpened(company);
     }

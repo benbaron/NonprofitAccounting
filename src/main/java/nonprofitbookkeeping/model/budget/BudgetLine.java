@@ -1,18 +1,13 @@
 
 package nonprofitbookkeeping.model.budget;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.ArrayList;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor public class BudgetLine
+public class BudgetLine
 {
+
 	private String accountId; // Assumes Account.getId() is the unique identifier
 	private String accountName; // For display/reference
 	private BigDecimal totalBudgetedAmount;
@@ -20,6 +15,31 @@ import java.util.ArrayList;
 	private List<BigDecimal> periodicAmounts = new ArrayList<>(); // Initialize to avoid null
 	private String fundId; // Optional
 	
+	public BudgetLine()
+	{
+		
+	}
+	
+	/**  
+	 * Constructor BudgetLine
+	 * @param accountId
+	 * @param accountName
+	 * @param totalBudgetedAmount
+	 * @param periodicity
+	 * @param periodicAmounts
+	 * @param fundId
+	 */
+	public BudgetLine(String accountId, String accountName, BigDecimal totalBudgetedAmount,
+		Periodicity periodicity, List<BigDecimal> periodicAmounts, String fundId)
+	{
+		this.accountId = accountId;
+		this.accountName = accountName;
+		this.totalBudgetedAmount = totalBudgetedAmount;
+		this.periodicity = periodicity;
+		this.periodicAmounts = periodicAmounts;
+		this.fundId = fundId;
+	}
+
 	// Custom setter for periodicity to potentially validate periodicAmounts size.
 	// For now, just a standard setter. Validation can be added later.
 	public void setPeriodicity(Periodicity periodicity)
