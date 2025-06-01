@@ -5,6 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects; // Import for Objects.equals
+import java.util.Optional; // Import for Optional
+import java.util.ListIterator; // Import for ListIterator
+
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -27,7 +31,10 @@ public class Journal implements Serializable
 	 * serialVersionUID : long
 	 */
 	private static final long serialVersionUID = -8125095337696271045L;
-	@JsonProperty final private List<AccountingTransaction> journalTransactions = new ArrayList<>();
+	// Ensure @JsonProperty is appropriate if this list is directly set during deserialization.
+    // If only add/update/delete methods are used post-construction, it's fine.
+	@JsonProperty
+    final private List<AccountingTransaction> journalTransactions = new ArrayList<>();
 	
 	/**
 	 * 
@@ -35,7 +42,8 @@ public class Journal implements Serializable
 	 */
 	public void addTransaction(AccountingTransaction transaction)
 	{
-		checkNotNull(transaction);
+		checkNotNull(transaction, "Transaction cannot be null");
+        checkNotNull(transaction.getId(), "Transaction ID cannot be null for add operation");
 		this.journalTransactions.add(transaction);
 	}
 	
@@ -45,8 +53,42 @@ public class Journal implements Serializable
 	 */
 	public List<AccountingTransaction> getJournalTransactions()
 	{
+		// Returns a defensive copy, so direct modification of the returned list won't affect the original.
+        // This is good practice. Callers will need to use add/update/delete methods of this class.
 		return new ArrayList<>(this.journalTransactions);
 	}
+
+    /**
+     * Updates an existing transaction in the journal.
+     * The transaction is identified by its ID.
+     *
+     * @param transaction The transaction with updated information. Must not be null and must have an ID.
+     * @return true if a transaction was found and updated, false otherwise.
+     */
+    public boolean updateTransaction(AccountingTransaction transaction) {
+        checkNotNull(transaction, "Input transaction cannot be null for update");
+        checkNotNull(transaction.getId(), "Transaction ID cannot be null for update operation");
+
+        for (int i = 0; i < this.journalTransactions.size(); i++) {
+            AccountingTransaction existingTx = this.journalTransactions.get(i);
+            if (Objects.equals(existingTx.getId(), transaction.getId())) {
+                this.journalTransactions.set(i, transaction); // Replace the old transaction
+                return true;
+            }
+        }
+        return false; // Transaction with the given ID not found
+    }
+
+    /**
+     * Deletes a transaction from the journal based on its ID.
+     *
+     * @param transactionId The ID of the transaction to delete. Must not be null.
+     * @return true if a transaction was found and removed, false otherwise.
+     */
+    public boolean deleteTransaction(String transactionId) {
+        checkNotNull(transactionId, "Transaction ID cannot be null for delete operation");
+        return this.journalTransactions.removeIf(tx -> Objects.equals(tx.getId(), transactionId));
+    }
 	
 	/**
 	 * 

@@ -1,4 +1,3 @@
-
 package nonprofitbookkeeping.service;
 
 import java.util.Collection;
