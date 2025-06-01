@@ -19,15 +19,7 @@ public class ExcelWorkbookPage
      * The tabular data from the spreadsheet.
      * Each inner Vector represents a row; each String is a cell.
      */
-    private Vector<Vector<String>> data;
-
-    /**
-     * Constructs an empty ExcelWorkbookPage.
-     */
-    public ExcelWorkbookPage()
-    {
-        this.data = new Vector<>();
-    }
+    private Vector<Vector<String>> data = new Vector<>();
 
     /**
      * Gets the stored data.

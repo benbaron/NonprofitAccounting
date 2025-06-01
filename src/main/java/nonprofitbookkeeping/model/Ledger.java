@@ -15,8 +15,6 @@ import java.io.Serializable;
  * Represents a set of accounts and their transactions.
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 final public class Ledger implements Serializable
 {
 	/**
@@ -25,14 +23,6 @@ final public class Ledger implements Serializable
 	private static final long serialVersionUID = 8752049840895321935L;
 
 	@JsonProperty final private Journal journal = new Journal();
-	
-	/**  
-	 * Constructor Ledger
-	 */
-	public Ledger()
-	{
-	}
-	
 	
 	public List<AccountingTransaction>getTransactions()
 	{

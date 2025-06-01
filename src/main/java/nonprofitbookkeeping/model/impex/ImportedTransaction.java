@@ -21,37 +21,6 @@ public class ImportedTransaction {
     private String currency; // Optional, currency code
     private String originalAccountType; // e.g., "BANK", "CREDITCARD"
     private String originalAccountNumber; // Account number from the imported file
-	/**  
-	 * Constructor ImportedTransaction
-	 * @param datePosted
-	 * @param amount
-	 * @param description
-	 * @param memo
-	 * @param transactionId
-	 * @param currency
-	 * @param originalAccountType
-	 * @param originalAccountNumber
-	 */
-	public ImportedTransaction(LocalDate datePosted, BigDecimal amount, String description,
-		String memo, String transactionId, String currency, String originalAccountType,
-		String originalAccountNumber)
-	{
-		this.datePosted = datePosted;
-		this.amount = amount;
-		this.description = description;
-		this.memo = memo;
-		this.transactionId = transactionId;
-		this.currency = currency;
-		this.originalAccountType = originalAccountType;
-		this.originalAccountNumber = originalAccountNumber;
-	}
-	/**  
-	 * Constructor ImportedTransaction
-	 */
-	public ImportedTransaction()
-	{
-		// TODO Auto-generated constructor stub
-	}
 	/**
 	 * @return the datePosted
 	 */

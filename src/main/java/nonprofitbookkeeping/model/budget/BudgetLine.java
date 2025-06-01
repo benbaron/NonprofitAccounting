@@ -20,49 +20,6 @@ import java.util.ArrayList;
 	private List<BigDecimal> periodicAmounts = new ArrayList<>(); // Initialize to avoid null
 	private String fundId; // Optional
 	
-	/**
-	 * Constructor with essential fields, defaulting periodicity.
-	 * @param accountId The unique ID of the account.
-	 * @param accountName The name of the account.
-	 * @param totalBudgetedAmount The total budgeted amount for the account.
-	 */
-	public BudgetLine(String accountId, 
-	                  String accountName, 
-	                  BigDecimal totalBudgetedAmount)
-	{
-		this.accountId = accountId;
-		this.accountName = accountName;
-		this.totalBudgetedAmount = totalBudgetedAmount;
-		// periodicity defaults to ANNUAL
-		// periodicAmounts defaults to empty list
-	}
-	
-	/**
-	 * Constructor with essential fields and specific periodicity.
-	 * @param accountId The unique ID of the account.
-	 * @param accountName The name of the account.
-	 * @param totalBudgetedAmount The total budgeted amount for the account.
-	 * @param periodicity The periodicity of the budget line.
-	 */
-	public BudgetLine(String accountId, String accountName, BigDecimal totalBudgetedAmount,
-		Periodicity periodicity)
-	{
-		this.accountId = accountId;
-		this.accountName = accountName;
-		this.totalBudgetedAmount = totalBudgetedAmount;
-		this.periodicity = periodicity;
-		// periodicAmounts defaults to empty list, to be populated based on periodicity
-		// if needed
-	}
-	
-	/**  
-	 * Constructor BudgetLine
-	 */
-	public BudgetLine()
-	{
-		
-	}
-
 	// Custom setter for periodicity to potentially validate periodicAmounts size.
 	// For now, just a standard setter. Validation can be added later.
 	public void setPeriodicity(Periodicity periodicity)
