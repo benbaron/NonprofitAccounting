@@ -10,6 +10,8 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.slf4j.bridge.SLF4JBridgeHandler;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -36,6 +38,7 @@ import nonprofitbookkeeping.ui.actions.*;
 import nonprofitbookkeeping.ui.actions.scaledger.*;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.panels.*;
+
 
 public class NonprofitBookkeepingFX extends Application
 {
@@ -80,6 +83,9 @@ public class NonprofitBookkeepingFX extends Application
 	
 	@Override public void start(Stage stage)
 	{
+		SLF4JBridgeHandler.removeHandlersForRootLogger();
+		SLF4JBridgeHandler.install();
+		
 		stage.getIcons().addAll(new Image(getClass().getResourceAsStream("../../cg-128px.png")));
 		this.primaryStage = stage;
 		this.c = new CurrentCompany();

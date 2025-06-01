@@ -17,6 +17,24 @@
         <Root level="info">
             <AppenderRef ref="Console" />
             <AppenderRef ref="File" />
-        </Root>
+        </Root>        
+        
+        <!-- ①  Add one Logger for all Jackson packages -->
+	    <Logger name="com.fasterxml.jackson" level="DEBUG" additivity="false">
+	        <AppenderRef ref="STDOUT"/>
+	    </Logger>
+	
+	    <!-- (Optional) Finer control per module  
+	    <Logger name="com.fasterxml.jackson.databind" level="DEBUG" additivity="false">
+	        <AppenderRef ref="STDOUT"/>
+	    </Logger>
+	    <Logger name="com.fasterxml.jackson.core" level="INFO" additivity="false">
+	        <AppenderRef ref="STDOUT"/>
+	    </Logger>
+	        -->
     </Loggers>
+    
+    
+    
 </Configuration>
+

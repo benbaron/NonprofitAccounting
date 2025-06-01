@@ -7,6 +7,7 @@
 	<artifactId>nonprofitbookkeeping</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
+	
 	<!-- JavaFX dependencies -->
 	<properties>
 		<javafx.version>21.0.6</javafx.version>
@@ -53,38 +54,88 @@
 	    <id>jitpack.io</id>
 	    <url>https://jitpack.io</url>
 	  	</repository>
-	</repositories>
-	<dependencies>
-		<dependency>
-			<groupId>net.sf.jasperreports</groupId>
-			<artifactId>jasperreports</artifactId>
-			<version>6.19.0</version>
-		</dependency>
+	</repositories>	
 
+						
+	<dependencies>
 		<dependency>
 			<groupId>org.glassfish.jaxb</groupId>
 			<artifactId>jaxb-runtime</artifactId>
-			<version>4.0.2</version>
-		</dependency>
+		<version>4.0.2</version>
+		</dependency>	
 		
 		<dependency>
 			<groupId>org.jxls</groupId>
 			<artifactId>jxls-poi</artifactId>
 			<version>2.12.0</version>
-		</dependency>
-
+				<exclusions>
+					<exclusion>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-core</artifactId>
+					</exclusion>
+				</exclusions>			
+		</dependency>	
+		
 		<dependency>
 			<groupId>org.jxls</groupId>
 			<artifactId>jxls-reader</artifactId>
 			<version>2.1.0</version>
+		</dependency>	
+	
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>6.19.0</version>				
+			<exclusions>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>jackson-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>jackson-annotations</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-						
+	
+		<!-- JUL → SLF4J bridge (current 2.x line) -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
+			<version>2.0.17</version>   <!-- match your slf4j-api version -->
+		</dependency>
+		
+		<!-- SLF4J API (pick the line that matches the bridge) -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>2.0.17</version>
+		</dependency>
+		
+			<!-- Binding: SLF4J calls → Log4j 2 -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j2-impl</artifactId>
+			<version>2.23.1</version>   <!-- match your Log4j 2 core version -->
+		</dependency>
+		
+		<!-- One concrete logger implementation, e.g. Logback -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.5.3</version>  <!-- or the version your stack requires -->
+		</dependency>
+			
+
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>2.15.2</version>
-		</dependency>
-		
+		</dependency>		
 	    <dependency>
 	      <groupId>com.fasterxml.jackson.datatype</groupId>
 	      <artifactId>jackson-datatype-jsr310</artifactId>
@@ -110,51 +161,43 @@
 			<artifactId>mockito-core</artifactId>
 			<version>5.4.0</version>
 			<scope>test</scope>
-		</dependency>
-		
+		</dependency>		
 		<!-- Mockito JUnit Jupiter integration for using Mockito with JUnit 5 -->
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-junit-jupiter</artifactId>
 			<version>5.4.0</version>
 			<scope>test</scope>
-		</dependency>
-<dependency>
-    <groupId>org.testfx</groupId>
-    <artifactId>testfx-core</artifactId>
-    <version>4.0.18</version>
-    <scope>test</scope>
-</dependency>
-<dependency>
-    <groupId>org.testfx</groupId>
-    <artifactId>testfx-junit5</artifactId>
-    <version>4.0.18</version>
-    <scope>test</scope>
-</dependency>
+		</dependency>				
 		<dependency>
-		    <groupId>io.github.lzh0379</groupId>
-		    <artifactId>jdatepicker</artifactId>
-		    <version>2.0.3</version>
+			<groupId>org.testfx</groupId>
+			<artifactId>testfx-core</artifactId>
+			<version>4.0.18</version>
+			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>org.testfx</groupId>
+			<artifactId>testfx-junit5</artifactId>
+			<version>4.0.18</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<!-- openjfx -->
 		<dependency>
 		    <groupId>org.openjfx</groupId>
 		    <artifactId>javafx-controls</artifactId>
 		    <version>${javafx.version}</version>
 		</dependency>
-
 	    <dependency>
 	        <groupId>org.openjfx</groupId>
 	        <artifactId>javafx-fxml</artifactId>
 	        <version>${javafx.version}</version> 
 	    </dependency>
-	    
 		<dependency>
 		    <groupId>org.openjfx</groupId>
 		    <artifactId>javafx-web</artifactId>
 		    <version>${javafx.version}</version>         
 		</dependency>
-
 		<dependency>
 		  	<groupId>org.openjfx</groupId>
 		  	<artifactId>javafx-swing</artifactId>
@@ -169,13 +212,11 @@
 
     <!-- I/O layer: OFXParser, AggregateUnmarshaller, etc. -->
 		<dependency>
-	    <groupId>com.webcohesion.ofx4j</groupId>
-	    <artifactId>ofx4j</artifactId>
-	    <version>1.38</version>
+			<groupId>com.webcohesion.ofx4j</groupId>
+			<artifactId>ofx4j</artifactId>
+			<version>1.38</version>
 		</dependency>
-
 		
 	</dependencies>
-	
 
 </project>
