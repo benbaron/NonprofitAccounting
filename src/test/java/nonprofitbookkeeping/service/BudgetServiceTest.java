@@ -52,8 +52,8 @@ class BudgetServiceTest {
         budget.setDescription("Main budget for the year");
         budget.setCurrency("USD");
 
-        BudgetLine line1 = new BudgetLine("ACC101", "Donations", new BigDecimal("50000.00"), Periodicity.ANNUAL);
-        BudgetLine line2 = new BudgetLine("ACC201", "Grants", new BigDecimal("25000.00"), Periodicity.QUARTERLY);
+        BudgetLine line1 = new BudgetLine("ACC101", "Donations", new BigDecimal("50000.00"), Periodicity.ANNUAL, new ArrayList<>(), null);
+        BudgetLine line2 = new BudgetLine("ACC201", "Grants", new BigDecimal("25000.00"), Periodicity.QUARTERLY, new ArrayList<>(), null);
         line2.setPeriodicAmounts(List.of(new BigDecimal("6250"), new BigDecimal("6250"), new BigDecimal("6250"), new BigDecimal("6250")));
         budget.addBudgetLine(line1);
         budget.addBudgetLine(line2);
@@ -96,11 +96,11 @@ class BudgetServiceTest {
     void testSaveAndLoad_MultipleBudgets() throws IOException {
         Budget budget1 = new Budget("Q1 Operations", 2024);
         budget1.setBudgetId(UUID.randomUUID().toString());
-        budget1.addBudgetLine(new BudgetLine("EXP100", "Office Supplies", new BigDecimal("5000"), Periodicity.QUARTERLY));
+        budget1.addBudgetLine(new BudgetLine("EXP100", "Office Supplies", new BigDecimal("5000"), Periodicity.QUARTERLY, new ArrayList<>(), null));
 
         Budget budget2 = new Budget("Annual Fundraising", 2024);
         budget2.setBudgetId(UUID.randomUUID().toString());
-        budget2.addBudgetLine(new BudgetLine("INC200", "Gala Event", new BigDecimal("150000"), Periodicity.ANNUAL));
+        budget2.addBudgetLine(new BudgetLine("INC200", "Gala Event", new BigDecimal("150000"), Periodicity.ANNUAL, new ArrayList<>(), null));
 
         List<Budget> budgetsToSave = List.of(budget1, budget2);
         this.budgetService.saveBudgets(budgetsToSave, this.companyDirectory);

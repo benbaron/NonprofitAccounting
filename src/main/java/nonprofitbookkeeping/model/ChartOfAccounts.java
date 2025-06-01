@@ -16,8 +16,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * supports parent/child relationships.
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor public class ChartOfAccounts implements Serializable
+public class ChartOfAccounts implements Serializable
 {
 	
 	private static final long serialVersionUID = 6545569795380871696L;

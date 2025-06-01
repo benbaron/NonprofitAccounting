@@ -29,16 +29,6 @@ public class Customer
 	 */
 	private String name;
 	
-	/**  
-	 * Constructor Customer
-	 * @param string
-	 * @param string2
-	 */
-	public Customer(String string, String string2)
-	{
-		// TODO Auto-generated constructor stub
-	}
-
 	/**
 	 * @return the id
 	 */
