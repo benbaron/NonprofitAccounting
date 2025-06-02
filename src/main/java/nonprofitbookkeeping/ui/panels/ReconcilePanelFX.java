@@ -144,7 +144,7 @@ public class ReconcilePanelFX extends BorderPane
 			return;
 		}
 		
-		List<String> clearedIds = this.rows.stream()
+		List<Long> clearedIds = this.rows.stream()
 			.filter(r -> r.getCleared().isSelected()) // was r.cleared.getValue()
 			.map(TxnRow::getId) // method-reference for clarity
 			.toList();
@@ -167,13 +167,14 @@ public class ReconcilePanelFX extends BorderPane
 	/* Row wrapper */
 	public static class TxnRow
 	{
-		final String id, date, memo;
+		final long id;
+		final String date, memo;
 		final BigDecimal amount;
 		final CheckBox cleared = new CheckBox();
 		
 		TxnRow(AccountingTransaction t)
 		{
-			this.id = t.getId();
+			this.id = t.getBookingDateTimestamp();
 			this.date = t.getDate();
 			this.memo = t.getMemo();
 			this.amount = t.getTotalAmount();
@@ -199,7 +200,7 @@ public class ReconcilePanelFX extends BorderPane
 			return this.amount;
 		}
 		
-		public String getId() 
+		public long getId() 
 		{ 
 			return this.id; 
 		}

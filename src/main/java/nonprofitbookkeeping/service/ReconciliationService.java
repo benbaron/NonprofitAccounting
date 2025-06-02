@@ -42,10 +42,10 @@ public class ReconciliationService
 	 * @param txnId the transaction ID
 	 * @return true if reconciliation was successful, false otherwise
 	 */
-	public static boolean reconcileEntry(String txnId)
+	public static boolean reconcileEntry(Long txnId)
 	{
-		// In a real implementation, the transaction ID would be marked as reconciled in
-		// a database
+		// In a real implementation, the transaction ID 
+		// would be marked as reconciled in a database
 		System.out.println("Reconciled transaction ID: " + txnId);
 		return true;
 	}
@@ -55,7 +55,7 @@ public class ReconciliationService
 	 * @param value
 	 * @return
 	 */
-	public List<AccountingTransaction> getUnreconciled(String value)
+	public static List<AccountingTransaction> getUnreconciled(String value)
 	{
 		// TODO Auto-generated method stub
 		return null;
@@ -64,7 +64,7 @@ public class ReconciliationService
 	/**
 	 * @return
 	 */
-	public List<String> listReconcilableAccounts()
+	public static List<String> listReconcilableAccounts()
 	{
 		// TODO Auto-generated method stub
 		return null;
@@ -76,7 +76,7 @@ public class ReconciliationService
 	 * @param ending
 	 * @param clearedIds
 	 */
-	public void reconcile(String value, String string, BigDecimal ending, List<String> clearedIds)
+	public void reconcile(String value, String string, BigDecimal ending, List<Long> clearedIds)
 	{
 		// TODO Auto-generated method stub
 		

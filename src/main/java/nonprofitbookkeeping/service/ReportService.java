@@ -83,7 +83,7 @@ public class ReportService
 				
 				if (entries == null)
 				{
-					LOGGER.fine("Transaction with ID " + transaction.getTransactionId() +
+					LOGGER.fine("Transaction with ID " + transaction.getBookingDateTimestamp() +
 						" has no entries.");
 					entries = new java.util.HashSet<>();
 				}
@@ -1239,8 +1239,7 @@ public class ReportService
 					{
 						Map<String, Object> entryData = new HashMap<>();
 						entryData.put("date", transactionDate.format(DATE_FORMATTER));
-						entryData.put("transactionId", transaction.getTransactionId() != null ?
-							transaction.getTransactionId().toString() : "N/A");
+						entryData.put("transactionId", transaction.getBookingDateTimestamp());
 						entryData.put("description",
 							transaction.getMemo() != null ? transaction.getMemo() : "");
 						

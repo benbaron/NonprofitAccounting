@@ -83,8 +83,10 @@ public class AccountingTransactionBuilder
 	 */
 	public AccountingTransaction build()
 	{
-		return new AccountingTransaction(this.account, this.entries, 
-			this.info, Instant.now().toEpochMilli());
+		return new AccountingTransaction(this.account, 
+			this.entries, 
+			this.info, 
+			Instant.now().toEpochMilli());
 	}
 	
 }
