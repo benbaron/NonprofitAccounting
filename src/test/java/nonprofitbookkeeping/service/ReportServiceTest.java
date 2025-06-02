@@ -172,15 +172,15 @@ import static org.mockito.Mockito.when;
 		lenient().when(mock.getAssociatedFunds()).thenReturn(new ArrayList<>()); // Default empty
 	}
 	
-	private AccountingTransaction createMockTransaction(long timestamp, String id, String memo,
-														Set<AccountingEntry> entries)
+	private static AccountingTransaction 
+	createMockTransaction(long timestamp, 
+	                      String memo,
+	                      Set<AccountingEntry> entries)
 	{
 		AccountingTransaction transaction = Mockito.mock(AccountingTransaction.class);
 		when(transaction.getBookingDateTimestamp()).thenReturn(timestamp);
 		when(transaction.getEntries()).thenReturn(entries);
-		lenient().when(transaction.getTransactionId()).thenReturn(Integer.parseInt(id)); // Assuming
-																							// ID is
-																							// int
+		lenient().when(transaction.getBookingDateTimestamp()).thenReturn((long) 0); 
 		lenient().when(transaction.getMemo()).thenReturn(memo);
 		return transaction;
 	}
@@ -315,10 +315,10 @@ import static org.mockito.Mockito.when;
 		
 		AccountingEntry entry1 =
 			new AccountingEntry(new BigDecimal("50.00"), "ASSET100", AccountSide.DEBIT);
-		createMockTransaction(this.startDateMillis, "TX1", "Tx Memo 1", Set.of(entry1));
+		createMockTransaction(this.startDateMillis, "Tx Memo 1", Set.of(entry1));
 		AccountingEntry entry2 =
 			new AccountingEntry(new BigDecimal("20.00"), "ASSET100", AccountSide.CREDIT);
-		createMockTransaction(this.startDateMillis + 1000, "TX2", "Tx Memo 2", Set.of(entry2));
+		createMockTransaction(this.startDateMillis + 1000, "Tx Memo 2", Set.of(entry2));
 		
 		when(this.mockLedger.getTransactions()).thenReturn(null, null);
 		
@@ -379,10 +379,10 @@ import static org.mockito.Mockito.when;
 		
 		AccountingEntry entry1 =
 			new AccountingEntry(new BigDecimal("100.00"), "LIAB100", AccountSide.CREDIT);
-		createMockTransaction(this.startDateMillis, "TX1", "Credit Entry", Set.of(entry1));
+		createMockTransaction(this.startDateMillis, "Credit Entry", Set.of(entry1));
 		AccountingEntry entry2 =
 			new AccountingEntry(new BigDecimal("30.00"), "LIAB100", AccountSide.DEBIT);
-		createMockTransaction(this.startDateMillis + 1000, "TX2", "Debit Entry", Set.of(entry2));
+		createMockTransaction(this.startDateMillis + 1000, "Debit Entry", Set.of(entry2));
 		
 		when(this.mockLedger.getTransactions()).thenReturn(null);
 		
@@ -424,15 +424,15 @@ import static org.mockito.Mockito.when;
 		
 		createMockTransaction(
 			LocalDate.of(2023, 1, 15).atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli(),
-			"TX_BEFORE", "",
+			"",
 			Set.of(new AccountingEntry(new BigDecimal("50.00"), "ASSET100", AccountSide.DEBIT)));
 		createMockTransaction(
 			LocalDate.of(2023, 2, 15).atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli(),
-			"TX_DURING", "",
+			"",
 			Set.of(new AccountingEntry(new BigDecimal("100.00"), "ASSET100", AccountSide.DEBIT)));
 		createMockTransaction(
 			LocalDate.of(2023, 3, 15).atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli(),
-			"TX_AFTER", "",
+			"",
 			Set.of(new AccountingEntry(new BigDecimal("200.00"), "ASSET100", AccountSide.DEBIT)));
 		
 		when(this.mockLedger.getTransactions()).thenReturn(null);
@@ -492,7 +492,7 @@ import static org.mockito.Mockito.when;
 		this.aaReportContext.setFundIds(List.of("Operations")); // FundA
 		
 		BigDecimal fundASpecificOpeningBalance = new BigDecimal("77.00");
-		createMockTransaction(this.startDateMillis, "TX_FUND_A", "",
+		createMockTransaction(this.startDateMillis, "",
 			Set.of(new AccountingEntry(new BigDecimal("23.00"), "ASSET100", AccountSide.DEBIT)));
 		when(this.mockLedger.getTransactions()).thenReturn(null);
 		

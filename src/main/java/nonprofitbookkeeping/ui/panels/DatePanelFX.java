@@ -15,13 +15,13 @@ import javafx.scene.layout.BorderPane;
  * a {@link #valueProperty()} so legacy calling code can bind / listen just like
  * before (where it used the model).
  */
-public class JDatePanelFX extends BorderPane
+public class DatePanelFX extends BorderPane
 {
 	
 	private final DatePicker picker = new DatePicker(LocalDate.now());
 	private final ObjectProperty<LocalDate> value = new SimpleObjectProperty<>(LocalDate.now());
 	
-	public JDatePanelFX()
+	public DatePanelFX()
 	{
 		setPadding(new Insets(4));
 		setCenter(this.picker);

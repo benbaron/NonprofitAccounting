@@ -10,8 +10,6 @@ import nonprofitbookkeeping.model.budget.Periodicity;
 import javax.swing.table.AbstractTableModel;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class BudgetLineTableModel extends AbstractTableModel
 {

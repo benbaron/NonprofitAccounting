@@ -83,7 +83,7 @@ public class JournalPanelFX extends BorderPane
 				
 				if (journal != null)
 				{
-					journal.deleteTransaction(sel.getId());
+					journal.deleteTransaction(sel.getBookingDateTimestamp());
 					refresh();
 				}
 				

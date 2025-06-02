@@ -39,7 +39,7 @@ public class Journal implements Serializable
 	public void addTransaction(AccountingTransaction transaction)
 	{
 		checkNotNull(transaction, "Transaction cannot be null");
-		checkNotNull(transaction.getId(), "Transaction ID cannot be null for add operation");
+		checkNotNull(transaction.getBookingDateTimestamp(), "Transaction ID cannot be null for add operation");
 		this.journalTransactions.add(transaction);
 	}
 	
@@ -66,14 +66,14 @@ public class Journal implements Serializable
 	public boolean updateTransaction(AccountingTransaction transaction)
 	{
 		checkNotNull(transaction, "Input transaction cannot be null for update");
-		checkNotNull(transaction.getId(),
+		checkNotNull(transaction.getBookingDateTimestamp(),
 			"Transaction ID cannot be null for update operation");
 		
 		for (int i = 0; i < this.journalTransactions.size(); i++)
 		{
 			AccountingTransaction existingTx = this.journalTransactions.get(i);
 			
-			if (Objects.equals(existingTx.getId(), transaction.getId()))
+			if (Objects.equals(existingTx.getBookingDateTimestamp(), transaction.getBookingDateTimestamp()))
 			{
 				this.journalTransactions.set(i, transaction); // Replace the old transaction
 				return true;
@@ -87,15 +87,15 @@ public class Journal implements Serializable
 	/**
 	 * Deletes a transaction from the journal based on its ID.
 	 *
-	 * @param transactionId The ID of the transaction to delete. Must not be null.
+	 * @param l The ID of the transaction to delete. Must not be null.
 	 * @return true if a transaction was found and removed, false otherwise.
 	 */
-	public boolean deleteTransaction(String transactionId)
+	public boolean deleteTransaction(long l)
 	{
-		checkNotNull(transactionId, 
+		checkNotNull(l, 
 			"Transaction ID cannot be null for delete operation");
-		return this.journalTransactions.removeIf(tx -> Objects.equals(tx.getId(), 
-			transactionId));
+		return this.journalTransactions.removeIf(tx -> Objects.equals(tx.getBookingDateTimestamp(), 
+			l));
 	}
 	
 	/**

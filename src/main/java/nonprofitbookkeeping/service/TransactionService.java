@@ -78,14 +78,13 @@ public class TransactionService
 	 *         {@code false} otherwise (including if the txId is invalid or no
 	 *         such transaction was found).
 	 */
-	public static boolean removeTransaction(String txId) {
-		if (txId == null || txId.trim().isEmpty() || allTransactions == null) {
+	public static boolean removeTransaction(Long txId) {
+		if (allTransactions == null) {
 			return false;
 		}
 		return allTransactions.removeIf(tx ->
 			tx != null &&
-			tx.getId() != null && // Ensure transaction ID itself is not null
-			txId.equals(tx.getId())
+			txId.equals(tx.getBookingDateTimestamp())
 		);
 	}
 
