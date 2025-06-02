@@ -12,13 +12,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 
 import nonprofitbookkeeping.model.*;
-import nonprofitbookkeeping.service.JournalService;
+// Will be removed nonprofitbookkeeping.service.JournalService;
 
 /** Shows transactions and lets user add / edit / delete them. */
 public class JournalPanelFX extends BorderPane
 {
 	
-	private final JournalService service = new JournalService();
+	// private final JournalService service = new JournalService(); // REMOVE THIS
 	private final ObservableList<AccountingTransaction> rows =
 		FXCollections.observableArrayList();
 	private final TableView<AccountingTransaction> table = new TableView<>(this.rows);
@@ -79,8 +79,11 @@ public class JournalPanelFX extends BorderPane
 			
 			if (sel != null)
 			{
-				this.service.delete(sel.getId());
-				refresh();
+				Journal journal = CurrentCompany.getCompany().getLedger().getJournal();
+				if (journal != null) {
+					journal.deleteTransaction(sel.getId());
+					refresh();
+				}
 			}
 			
 		});
@@ -89,31 +92,43 @@ public class JournalPanelFX extends BorderPane
 	
 	/* -------- CRUD -------- */
 	private void openEditor(AccountingTransaction existing) {
+		Journal mainJournal = CurrentCompany.getCompany().getLedger().getJournal();
+		if (mainJournal == null) {
+			// Optionally, show an error dialog if the main journal isn't available
+			System.err.println("Error: Journal not available in CurrentCompany.");
+			// You might want to disable add/edit buttons if mainJournal is null
+			return;
+		}
 
-	    NewTransactionPanelFX pane =
-	        (existing == null)
-	        ? new NewTransactionPanelFX(          // create
-	              (AccountingTransaction tx) -> {
-	                  this.service.add(tx);
-	                  refresh();
-	              })
-	        : new NewTransactionPanelFX(existing,
-	            (Consumer<AccountingTransaction>) tx ->  {
-	                  this.service.update(tx);
-	                  refresh();
-	              });
+		NewTransactionPanelFX pane =
+			(existing == null)
+			? new NewTransactionPanelFX(          // Create new
+				  (AccountingTransaction tx) -> { // onSave consumer for new
+					  mainJournal.addTransaction(tx);
+					  refresh();
+				  })
+			: new NewTransactionPanelFX(existing, // Edit existing
+				(Consumer<AccountingTransaction>) tx ->  { // onSave consumer for edit
+					  mainJournal.updateTransaction(tx);
+					  refresh();
+				  });
 
-	    Dialog<Void> d = new Dialog<>();
-	    d.setTitle(existing == null ? "New Transaction" : "Edit Transaction");
-	    d.getDialogPane().setContent(pane);
-	    d.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
-	    d.showAndWait();
+		Dialog<Void> d = new Dialog<>();
+		d.setTitle(existing == null ? "New Transaction" : "Edit Transaction");
+		d.getDialogPane().setContent(pane);
+		d.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+		d.showAndWait();
 	}
 
 	
 	private void refresh()
 	{
-		this.rows.setAll(this.service.list());
+		Journal journal = CurrentCompany.getCompany().getLedger().getJournal();
+		if (journal != null) {
+			this.rows.setAll(journal.getJournalTransactions());
+		} else {
+			this.rows.clear(); // Or handle as an error/empty state
+		}
 	}
 	
 }
