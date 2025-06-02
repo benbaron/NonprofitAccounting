@@ -384,11 +384,14 @@ public class NonprofitBookkeepingFX extends Application
 		// A more granular approach would involve plugins registering their top-level
 		// menus with the core app, and the core app managing their disable state based on broader context like
 		// COMPANY_OPEN.
+		
 		// Or, plugins can check ApplicationContext.getCurrentCompany() themselves in
 		// their actions.
+		
 		// The SCALedgerPlugin's menu is added directly to the bar, so it won't be
 		// covered by this.run.setDisable(). It should ideally also be disabled if no company is open if its actions
 		// require one.
+		
 		// This can be handled by the plugin itself in its addMenuItems or if the main
 		// app manages plugin menus. For now, SCALedgerPlugin's menu is always enabled once added. This is a V2
 		// improvement area.

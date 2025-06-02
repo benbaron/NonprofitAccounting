@@ -151,9 +151,10 @@ public class NewTransactionPanelFX extends BorderPane
 			TableRow<Line> row = new TableRow<>();
 			row.setOnMouseClicked(ev -> {
 				
-				if (ev.getClickCount() == 2 && !row.isEmpty())
+				if (ev.getClickCount() == 1 && !row.isEmpty())
 				{
-					this.table.edit(row.getIndex(), this.table.getColumns().get(0)); // start edit
+					this.table.edit(row.getIndex(), 
+						this.table.getColumns().get(0)); // start edit
 				}
 				
 			});
@@ -340,10 +341,16 @@ public class NewTransactionPanelFX extends BorderPane
 				l.amount.get(), l.account.get(), l.side.get()));
 		}
 		
+		// Save the timestamp as transaction id
 		AccountingTransaction tx = new AccountingTransaction(
-			new Account(), entries, Map.of(), Instant.now().toEpochMilli());
+			new Account(), 
+			entries, 
+			Map.of(), 
+			Instant.now().toEpochMilli());
+		
 		tx.setDate(this.datePicker.getValue().toString());
 		tx.setDescription(this.memoArea.getText());
+		
 		this.onSave.accept(tx);
 	}
 	
