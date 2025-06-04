@@ -23,6 +23,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import nonprofitbookkeeping.ui.MainApplicationView;
 import nonprofitbookkeeping.core.ApplicationContext;
 import nonprofitbookkeeping.core.ApplicationContextImpl;
 import nonprofitbookkeeping.exception.ActionCancelledException;
@@ -91,8 +92,10 @@ public class NonprofitBookkeepingFX extends Application
 		this.primaryStage = stage;
 		this.c = new CurrentCompany();
 		this.dashboard = new DashboardPanelFX();
-		this.root = new BorderPane();
-		this.root.setCenter(this.dashboard);
+		// this.root = new BorderPane(); // Old root
+		MainApplicationView mainView = new MainApplicationView();
+		this.root = mainView; // Assign MainApplicationView to root
+		// this.root.setCenter(this.dashboard); // MainApplicationView handles its own center
 		
 		// Instantiate ApplicationContextImpl
 		// Services are passed from the static ServiceContainer
@@ -134,9 +137,10 @@ public class NonprofitBookkeepingFX extends Application
 		
 		// MenuBar must be built *after* plugins are loaded so 
 		// they can add their items.
-		this.root.setTop(buildMenuBar());
+		// this.root.setTop(buildMenuBar()); // Now root is MainApplicationView
+		mainView.setTop(buildMenuBar()); // Set menu on MainApplicationView instance
 		
-		Scene scene = new Scene(this.root, 1000, 700);
+		Scene scene = new Scene(mainView, 1000, 700); // Use mainView for the scene
 		this.primaryStage.setScene(scene);
 		this.primaryStage.setTitle("Nonprofit Bookkeeping (JavaFX)");
 		
@@ -161,9 +165,10 @@ public class NonprofitBookkeepingFX extends Application
 		/* EDIT */
 		Menu edit = new Menu("Edit");
 		this.miEditCompany = add(edit, "Create or Edit Company", e -> startCreateWizard());
-		this.miEditCoa = add(edit, "Edit Chart of Accounts", e -> showCoaEditor());
-		this.miEditJournal =
-			add(edit, "Edit Journal", e -> showPanel(new JournalPanelFX(), "Journal"));
+		// this.miEditCoa = add(edit, "Edit Chart of Accounts", e -> showCoaEditor()); // Old
+		this.miEditCoa = add(edit, "Edit Chart of Accounts", e -> ((MainApplicationView)this.root).showPanel(MainApplicationView.PanelType.COA));
+		// this.miEditJournal = add(edit, "Edit Journal", e -> showPanel(new JournalPanelFX(), "Journal")); // Old
+		this.miEditJournal = add(edit, "Edit Journal", e -> ((MainApplicationView)this.root).showPanel(MainApplicationView.PanelType.JOURNAL));
 		
 		add(edit, "Open Budget Editor", e -> {
 			Company currentCompany = CurrentCompany.getCompany();
@@ -207,9 +212,10 @@ public class NonprofitBookkeepingFX extends Application
 		this.reports = new Menu("Reports");
 		// add(this.reports, "Generate Reports", e -> { /* implement */}); // Old
 		// placeholder
-		add(this.reports, "Show Reports", e -> showPanel(new ReportsPanelFX(), "Reports"));
+		// add(this.reports, "Show Reports", e -> showPanel(new ReportsPanelFX(), "Reports")); // Old
+		add(this.reports, "Show Reports", e -> ((MainApplicationView)this.root).showPanel(MainApplicationView.PanelType.REPORTS));
 		add(this.reports, "Show Accounts",
-			e -> showPanel(new AccountsPanelFX(new AccountService()), "Chart of Accounts"));
+			e -> showPanel(new AccountsPanelFX(new AccountService()), "Chart of Accounts")); // Stays as new window for now
 		add(this.reports, "Show Account Activity", e -> {
 			Company currentCompany = CurrentCompany.getCompany();
 			
@@ -327,7 +333,8 @@ public class NonprofitBookkeepingFX extends Application
 		sub.show();
 	}
 	
-	private void showCoaEditor()
+	/*
+	private void showCoaEditor() // Replaced by menu action calling mainView.showPanel()
 	{
 		Node previousView = this.root.getCenter();
 		Company activeCompany = CurrentCompany.getCompany();
@@ -357,6 +364,7 @@ public class NonprofitBookkeepingFX extends Application
 			() -> this.root.setCenter(previousView));
 		this.root.setCenter(editor);
 	}
+	*/
 	
 	private void setState(AppState s)
 	{
@@ -428,7 +436,13 @@ public class NonprofitBookkeepingFX extends Application
 			AlertBox.showError(null, e.getMessage());
 		}
 		
-		this.root.setCenter(this.dashboard);
+		// this.root.setCenter(this.dashboard); // Old way
+		if (this.root instanceof MainApplicationView) {
+			((MainApplicationView)this.root).showPanel(MainApplicationView.PanelType.DASHBOARD);
+		} else {
+			// Fallback or error if root is not what we expect, though it should be.
+			this.root.setCenter(this.dashboard);
+		}
 	}
 	
 	@SuppressWarnings("unused") private void doSaveCompany()
