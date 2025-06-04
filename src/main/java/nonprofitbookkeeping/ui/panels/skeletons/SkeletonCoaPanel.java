@@ -8,116 +8,199 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
-import javafx.scene.control.cell.TreeItemPropertyValueFactory;
+// TreeItemPropertyValueFactory is not used if we use lambdas for cellData.getValue().getValue()
+// import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType; // Explicit import for ButtonType
+
+import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.model.ChartOfAccounts;
+import nonprofitbookkeeping.model.Account;
+import nonprofitbookkeeping.model.AccountType;
+import java.util.List;
+import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 
 public class SkeletonCoaPanel extends BorderPane {
+
+    private TreeTableView<Account> coaTreeTable;
+    private TreeItem<Account> rootAccountsNode;
+    private CompanyChangeListener companyChangeListener;
+
+    private Button addAccountButton;
+    private Button editAccountButton;
+    private Button deleteAccountButton;
+    private HBox crudButtonsHBox;
 
     public SkeletonCoaPanel() {
         setPadding(new Insets(15)); // Overall padding
 
-        // Chart of Accounts Tree Table (Center)
-        TreeTableView<AccountData> treeTableView = new TreeTableView<>();
-        treeTableView.setPlaceholder(new Label("No chart of accounts data to display."));
-
-        TreeTableColumn<AccountData, String> numberCol = new TreeTableColumn<>("Account Number");
-        numberCol.setPrefWidth(150);
-        numberCol.setCellValueFactory(new TreeItemPropertyValueFactory<>("number"));
-
-        TreeTableColumn<AccountData, String> nameCol = new TreeTableColumn<>("Account Name");
-        nameCol.setPrefWidth(300);
-        nameCol.setCellValueFactory(new TreeItemPropertyValueFactory<>("name"));
-
-        TreeTableColumn<AccountData, String> typeCol = new TreeTableColumn<>("Type");
-        typeCol.setPrefWidth(150);
-        typeCol.setCellValueFactory(new TreeItemPropertyValueFactory<>("type"));
-
-        treeTableView.getColumns().addAll(numberCol, nameCol, typeCol);
-
-        // Create data
-        TreeItem<AccountData> rootNode = new TreeItem<>(new AccountData("0", "COA Root", ""));
-        rootNode.setExpanded(true);
-
-        TreeItem<AccountData> assets = new TreeItem<>(new AccountData("1000", "Assets", "Category"));
-        assets.setExpanded(true);
-        TreeItem<AccountData> currentAssets = new TreeItem<>(new AccountData("1100", "Current Assets", "Asset"));
-        currentAssets.setExpanded(true);
-        TreeItem<AccountData> bankAccounts = new TreeItem<>(new AccountData("1110", "Bank Accounts", "Asset"));
-        bankAccounts.setExpanded(true);
-        bankAccounts.getChildren().add(new TreeItem<>(new AccountData("1111", "Checking Account", "Asset")));
-        bankAccounts.getChildren().add(new TreeItem<>(new AccountData("1112", "Savings Account", "Asset")));
-        currentAssets.getChildren().add(bankAccounts);
-        TreeItem<AccountData> receivables = new TreeItem<>(new AccountData("1200", "Accounts Receivable", "Asset"));
-        currentAssets.getChildren().add(receivables);
-        assets.getChildren().add(currentAssets);
-
-        TreeItem<AccountData> fixedAssets = new TreeItem<>(new AccountData("1500", "Fixed Assets", "Asset"));
-        fixedAssets.getChildren().add(new TreeItem<>(new AccountData("1510", "Equipment", "Asset")));
-        assets.getChildren().add(fixedAssets);
-        rootNode.getChildren().add(assets);
-
-        TreeItem<AccountData> liabilities = new TreeItem<>(new AccountData("2000", "Liabilities", "Category"));
-        liabilities.setExpanded(true);
-        TreeItem<AccountData> currentLiabilities = new TreeItem<>(new AccountData("2100", "Current Liabilities", "Liability"));
-        currentLiabilities.getChildren().add(new TreeItem<>(new AccountData("2110", "Accounts Payable", "Liability")));
-        liabilities.getChildren().add(currentLiabilities);
-        rootNode.getChildren().add(liabilities);
-
-        TreeItem<AccountData> equity = new TreeItem<>(new AccountData("3000", "Equity", "Category"));
-        equity.setExpanded(true);
-        equity.getChildren().add(new TreeItem<>(new AccountData("3100", "Net Assets", "Equity")));
-        rootNode.getChildren().add(equity);
-
-        TreeItem<AccountData> income = new TreeItem<>(new AccountData("4000", "Income", "Category"));
-        income.setExpanded(true);
-        income.getChildren().add(new TreeItem<>(new AccountData("4100", "Donations", "Income")));
-        income.getChildren().add(new TreeItem<>(new AccountData("4200", "Grants", "Income")));
-        rootNode.getChildren().add(income);
-
-        TreeItem<AccountData> expenses = new TreeItem<>(new AccountData("5000", "Expenses", "Category"));
-        expenses.setExpanded(true);
-        expenses.getChildren().add(new TreeItem<>(new AccountData("5100", "Office Supplies", "Expense")));
-        expenses.getChildren().add(new TreeItem<>(new AccountData("5200", "Rent", "Expense")));
-        rootNode.getChildren().add(expenses);
-
-        treeTableView.setRoot(rootNode);
-        treeTableView.setShowRoot(false); // Hide the dummy root
-
-        this.setCenter(treeTableView);
+        // Initialize TreeTableView and its root
+        // The root's value can be null as it's not shown.
+        // Or use a dummy account if preferred for clarity, but it won't be visible.
+        rootAccountsNode = new TreeItem<>();
+        coaTreeTable = new TreeTableView<>(rootAccountsNode);
+        coaTreeTable.setShowRoot(false); // Hide the dummy root
+        coaTreeTable.setPlaceholder(new Label("No Chart of Accounts data to display or company not open."));
+        this.setCenter(coaTreeTable);
 
         // Action Buttons (Bottom)
-        HBox actionButtonsBox = new HBox();
-        actionButtonsBox.setPadding(new Insets(10, 0, 0, 0)); // Top padding
-        actionButtonsBox.setSpacing(10);
-        actionButtonsBox.setAlignment(Pos.CENTER_LEFT);
+        crudButtonsHBox = new HBox();
+        crudButtonsHBox.setPadding(new Insets(10, 0, 0, 0)); // Top padding
+        crudButtonsHBox.setSpacing(10);
+        crudButtonsHBox.setAlignment(Pos.CENTER_LEFT);
 
-        Button addAccountButton = new Button("Add Account");
-        Button editAccountButton = new Button("Edit Account");
-        Button deleteAccountButton = new Button("Delete Account");
+        addAccountButton = new Button("Add Account");
+        editAccountButton = new Button("Edit Account");
+        deleteAccountButton = new Button("Delete Account");
+        crudButtonsHBox.getChildren().addAll(addAccountButton, editAccountButton, deleteAccountButton);
+        this.setBottom(crudButtonsHBox);
 
-        actionButtonsBox.getChildren().addAll(addAccountButton, editAccountButton, deleteAccountButton);
-        this.setBottom(actionButtonsBox);
+        // Setup columns and listeners
+        setupTreeTableColumns();
+        setupEventListenersAndRefresh();
     }
 
-    public static class AccountData {
-        private final SimpleStringProperty number;
-        private final SimpleStringProperty name;
-        private final SimpleStringProperty type;
+    private void setupTreeTableColumns() {
+        coaTreeTable.getColumns().clear();
 
-        public AccountData(String number, String name, String type) {
-            this.number = new SimpleStringProperty(number);
-            this.name = new SimpleStringProperty(name);
-            this.type = new SimpleStringProperty(type);
+        TreeTableColumn<Account, String> numberCol = new TreeTableColumn<>("Account Number");
+        numberCol.setCellValueFactory(cellData -> {
+            Account acc = cellData.getValue().getValue();
+            return new SimpleStringProperty(acc != null ? acc.getAccountNumber() : "");
+        });
+        numberCol.setPrefWidth(150);
+
+        TreeTableColumn<Account, String> nameCol = new TreeTableColumn<>("Account Name");
+        nameCol.setCellValueFactory(cellData -> {
+            Account acc = cellData.getValue().getValue();
+            return new SimpleStringProperty(acc != null ? acc.getName() : "");
+        });
+        nameCol.setPrefWidth(280); // Increased width for longer names
+
+        TreeTableColumn<Account, String> typeCol = new TreeTableColumn<>("Type");
+        typeCol.setCellValueFactory(cellData -> {
+            Account acc = cellData.getValue().getValue();
+            AccountType accType = acc != null ? acc.getAccountType() : null;
+            return new SimpleStringProperty(accType != null ? accType.toString() : "");
+        });
+        typeCol.setPrefWidth(150);
+
+        // Example for a balance column (requires data in Account object or external fetching)
+        // TreeTableColumn<Account, String> balanceCol = new TreeTableColumn<>("Balance");
+        // balanceCol.setCellValueFactory(cellData -> {
+        //     Account acc = cellData.getValue().getValue();
+        //     // Assuming Account has a getBalance() method returning BigDecimal or similar
+        //     return new SimpleStringProperty(acc != null && acc.getBalance() != null ? acc.getBalance().toPlainString() : "0.00");
+        // });
+        // balanceCol.setPrefWidth(120);
+        // balanceCol.setStyle("-fx-alignment: CENTER-RIGHT;");
+
+        coaTreeTable.getColumns().addAll(numberCol, nameCol, typeCol); // Add balanceCol if implemented
+    }
+
+    private void loadCoaData() {
+        rootAccountsNode.getChildren().clear();
+        Company company = CurrentCompany.getCompany();
+        if (company != null && company.getChartOfAccounts() != null) {
+            ChartOfAccounts coa = company.getChartOfAccounts();
+            List<Account> rootLevelAccounts = coa.getRootAccounts(); // Assuming this method exists
+            if (rootLevelAccounts != null) {
+                for (Account acc : rootLevelAccounts) {
+                    TreeItem<Account> accountNode = createAccountTreeItem(acc, coa);
+                    rootAccountsNode.getChildren().add(accountNode);
+                }
+            }
         }
-
-        public String getNumber() { return number.get(); }
-        public SimpleStringProperty numberProperty() { return number; }
-
-        public String getName() { return name.get(); }
-        public SimpleStringProperty nameProperty() { return name; }
-
-        public String getType() { return type.get(); }
-        public SimpleStringProperty typeProperty() { return type; }
+        // coaTreeTable.refresh(); // Not always needed if root's children list modification triggers update
     }
+
+    private TreeItem<Account> createAccountTreeItem(Account account, ChartOfAccounts coa) {
+        TreeItem<Account> item = new TreeItem<>(account);
+        item.setExpanded(true); // Expand by default
+        List<Account> children = coa.getChildren(account); // Assuming this method exists
+        if (children != null) {
+            for (Account child : children) {
+                item.getChildren().add(createAccountTreeItem(child, coa));
+            }
+        }
+        return item;
+    }
+
+    private void setupEventListenersAndRefresh() {
+        companyChangeListener = new CompanyChangeListener() {
+            @Override
+            public void companyChange(boolean companyNowOpen) {
+                loadCoaData();
+            }
+        };
+        CurrentCompany.CompanyListener.addCompanyListener(companyChangeListener);
+
+        addAccountButton.setOnAction(e -> {
+            System.out.println("Add Account clicked - Placeholder");
+            // TODO: Implement dialog for adding new account
+            // Example: new AddAccountDialog(getScene().getWindow(), CurrentCompany.getCompany().getChartOfAccounts()).showAndWait();
+            // Then: loadCoaData();
+            Alert info = new Alert(Alert.AlertType.INFORMATION, "Add Account functionality not yet implemented.");
+            info.setHeaderText("Placeholder");
+            info.showAndWait();
+        });
+
+        editAccountButton.setOnAction(e -> {
+            TreeItem<Account> selectedItem = coaTreeTable.getSelectionModel().getSelectedItem();
+            if (selectedItem != null && selectedItem.getValue() != null) {
+                Account selectedAccount = selectedItem.getValue();
+                System.out.println("Edit Account clicked for: " + selectedAccount.getName() + " - Placeholder");
+                // TODO: Implement dialog for editing account
+                // Example: new EditAccountDialog(getScene().getWindow(), CurrentCompany.getCompany().getChartOfAccounts(), selectedAccount).showAndWait();
+                // Then: loadCoaData(); // or selective refresh
+                 Alert info = new Alert(Alert.AlertType.INFORMATION, "Edit Account for '" + selectedAccount.getName() + "' not yet implemented.");
+                info.setHeaderText("Placeholder");
+                info.showAndWait();
+            } else {
+                Alert error = new Alert(Alert.AlertType.WARNING, "No account selected for editing.");
+                error.setHeaderText("Selection Missing");
+                error.showAndWait();
+            }
+        });
+
+        deleteAccountButton.setOnAction(e -> {
+            TreeItem<Account> selectedItem = coaTreeTable.getSelectionModel().getSelectedItem();
+            if (selectedItem != null && selectedItem.getValue() != null) {
+                Account selectedAccount = selectedItem.getValue();
+                Company company = CurrentCompany.getCompany();
+                if (company != null && company.getChartOfAccounts() != null) {
+                    Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION,
+                            "Are you sure you want to delete account '" + selectedAccount.getName() +
+                            "' (" + selectedAccount.getAccountNumber() + ") and all its sub-accounts (if any)? " +
+                            "This action cannot be undone and may affect existing transactions if not handled carefully by the backend.",
+                            ButtonType.YES, ButtonType.NO);
+                    confirmation.setHeaderText("Confirm Deletion");
+                    confirmation.setTitle("Delete Account");
+
+                    confirmation.showAndWait().ifPresent(response -> {
+                        if (response == ButtonType.YES) {
+                            boolean deleted = company.getChartOfAccounts().removeAccount(selectedAccount.getAccountNumber()); // Assuming remove by ID
+                            if (deleted) {
+                                loadCoaData();
+                                System.out.println("Deleted account: " + selectedAccount.getName());
+                            } else {
+                                Alert error = new Alert(Alert.AlertType.ERROR, "Failed to delete account '" + selectedAccount.getName() + "'. It might be in use or a core account.");
+                                error.setHeaderText("Deletion Failed");
+                                error.showAndWait();
+                            }
+                        }
+                    });
+                }
+            } else {
+                Alert error = new Alert(Alert.AlertType.WARNING, "No account selected for deletion.");
+                error.setHeaderText("Selection Missing");
+                error.showAndWait();
+            }
+        });
+        loadCoaData(); // Initial data load
+    }
+    // AccountData inner class is removed
 }
