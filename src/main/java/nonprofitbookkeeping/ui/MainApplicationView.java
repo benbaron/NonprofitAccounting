@@ -1,17 +1,19 @@
 package nonprofitbookkeeping.ui;
 
-import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.geometry.Insets;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+// import javafx.scene.layout.VBox; // No longer needed for sidebar
+// import javafx.scene.Node; // No longer needed for setContent
+// import javafx.geometry.Insets; // No longer needed for sidebar
+// import javafx.scene.control.Button; // No longer needed for sidebar
+// import javafx.scene.layout.StackPane; // No longer needed for contentArea
+
+import nonprofitbookkeeping.ui.panels.skeletons.SkeletonCoaPanel;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonDashboardPanel;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonJournalPanel;
-import nonprofitbookkeeping.ui.panels.skeletons.SkeletonCoaPanel;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonReportsPanel;
 
 public class MainApplicationView extends BorderPane {
@@ -20,59 +22,67 @@ public class MainApplicationView extends BorderPane {
         DASHBOARD, JOURNAL, COA, REPORTS
     }
 
-    private StackPane contentArea;
+    private TabPane tabPane;
+    private MenuBar menuBar; // To be set from NonprofitBookkeepingFX
+
+    // Tab instances as fields
+    private Tab dashboardTab;
+    private Tab journalTab;
+    private Tab coaTab;
+    private Tab reportsTab;
 
     public MainApplicationView() {
-        // Sidebar
-        VBox sidebar = new VBox();
-        sidebar.setPadding(new Insets(10));
-        sidebar.setSpacing(10);
+        this.menuBar = null; // Initialize menuBar, will be set via setter
 
-        Button dashboardButton = new Button("Dashboard");
-        Button journalButton = new Button("Journal");
-        Button chartOfAccountsButton = new Button("Chart of Accounts");
-        Button reportsButton = new Button("Reports");
+        tabPane = new TabPane();
 
-        sidebar.getChildren().addAll(dashboardButton, journalButton, chartOfAccountsButton, reportsButton);
-        this.setLeft(sidebar);
+        // Create Tab instances
+        dashboardTab = new Tab("Dashboard", new SkeletonDashboardPanel());
+        journalTab = new Tab("Journal", new SkeletonJournalPanel());
+        coaTab = new Tab("Chart of Accounts", new SkeletonCoaPanel());
+        reportsTab = new Tab("Reports", new SkeletonReportsPanel());
 
-        // Content Area
-        contentArea = new StackPane();
-        this.setCenter(contentArea);
+        // Set tabs to be non-closable
+        dashboardTab.setClosable(false);
+        journalTab.setClosable(false);
+        coaTab.setClosable(false);
+        reportsTab.setClosable(false);
 
-        // Button Actions
-        dashboardButton.setOnAction(e -> setContent(new SkeletonDashboardPanel()));
-        journalButton.setOnAction(e -> setContent(new SkeletonJournalPanel()));
-        chartOfAccountsButton.setOnAction(e -> setContent(new SkeletonCoaPanel()));
-        reportsButton.setOnAction(e -> setContent(new SkeletonReportsPanel()));
+        // Add tabs to the tabPane
+        tabPane.getTabs().addAll(dashboardTab, journalTab, coaTab, reportsTab);
 
-        // Set initial content
-        setContent(new SkeletonDashboardPanel());
+        // Set the TabPane as the center of the BorderPane
+        setCenter(tabPane);
+
+        // The TOP will be set via setMenuBar()
     }
 
-    private void setContent(Node node) {
-        contentArea.getChildren().clear();
-        contentArea.getChildren().add(node);
+    public void setMenuBar(MenuBar menuBar) {
+        this.menuBar = menuBar;
+        setTop(this.menuBar); // Directly set the MenuBar to the top
     }
 
     public void showPanel(PanelType panelType) {
         switch (panelType) {
             case DASHBOARD:
-                setContent(new SkeletonDashboardPanel());
+                tabPane.getSelectionModel().select(dashboardTab);
                 break;
             case JOURNAL:
-                setContent(new SkeletonJournalPanel());
+                tabPane.getSelectionModel().select(journalTab);
                 break;
             case COA:
-                setContent(new SkeletonCoaPanel());
+                tabPane.getSelectionModel().select(coaTab);
                 break;
             case REPORTS:
-                setContent(new SkeletonReportsPanel());
+                tabPane.getSelectionModel().select(reportsTab);
                 break;
             default:
-                // Optionally, show a default panel or log an error
-                setContent(new Label("Unknown panel type: " + panelType));
+                // Optionally, log an error or select a default tab
+                System.err.println("Unknown panel type: " + panelType);
+                // tabPane.getSelectionModel().select(dashboardTab); // Fallback to dashboard
                 break;
         }
     }
+
+    // setContent(Node node) method is removed as TabPane handles content directly.
 }

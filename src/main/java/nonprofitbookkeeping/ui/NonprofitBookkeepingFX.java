@@ -137,8 +137,9 @@ public class NonprofitBookkeepingFX extends Application
 		
 		// MenuBar must be built *after* plugins are loaded so 
 		// they can add their items.
-		// this.root.setTop(buildMenuBar()); // Now root is MainApplicationView
-		mainView.setTop(buildMenuBar()); // Set menu on MainApplicationView instance
+		// mainView.setTop(buildMenuBar()); // Old way of setting menu bar directly
+		MenuBar menuBar = buildMenuBar();
+		mainView.setMenuBar(menuBar); // New way: Pass MenuBar to MainApplicationView
 		
 		Scene scene = new Scene(mainView, 1000, 700); // Use mainView for the scene
 		this.primaryStage.setScene(scene);
