@@ -7,6 +7,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane; // Added import
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -35,7 +36,15 @@ public class SkeletonJournalPanel extends BorderPane {
         Button applyFilterButton = new Button("Apply Filter");
 
         filterControlsBox.getChildren().addAll(filterLabel, searchField, dateFilterField, applyFilterButton);
-        this.setTop(filterControlsBox);
+
+        ScrollPane filterScrollPane = new ScrollPane();
+        filterScrollPane.setContent(filterControlsBox);
+        filterScrollPane.setFitToWidth(true);
+        filterScrollPane.setFitToHeight(true); // Useful for HBox if it has fixed height elements
+        filterScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        filterScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED); // Usually not needed for HBox unless it wraps or has tall elements
+
+        this.setTop(filterScrollPane);
 
         // Journal Entries Table (Center)
         TableView<JournalEntryData> journalTable = new TableView<>();

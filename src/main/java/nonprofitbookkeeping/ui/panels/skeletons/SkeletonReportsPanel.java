@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane; // Added import
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -47,7 +48,13 @@ public class SkeletonReportsPanel extends BorderPane {
         HBox buttonBox = new HBox(generateButton); // To align button to right if needed or add more
         controlsGrid.add(buttonBox, 1, 3);
 
-        this.setTop(controlsGrid);
+        ScrollPane controlsScrollPane = new ScrollPane();
+        controlsScrollPane.setContent(controlsGrid);
+        controlsScrollPane.setFitToWidth(true);
+        controlsScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        controlsScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+        this.setTop(controlsScrollPane);
 
         // Generated Reports List (Center)
         TableView<ReportInfo> reportsTable = new TableView<>();

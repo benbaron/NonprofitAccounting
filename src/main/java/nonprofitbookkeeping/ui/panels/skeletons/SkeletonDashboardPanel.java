@@ -7,6 +7,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane; // Added import
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -34,7 +35,15 @@ public class SkeletonDashboardPanel extends BorderPane {
         keyFiguresGrid.add(new Label("YTD Income:"), 2, 1);
         keyFiguresGrid.add(new Label("$25,000"), 3, 1);
 
-        this.setTop(keyFiguresGrid);
+        ScrollPane keyFiguresScrollPane = new ScrollPane();
+        keyFiguresScrollPane.setContent(keyFiguresGrid);
+        keyFiguresScrollPane.setFitToWidth(true);
+        keyFiguresScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        keyFiguresScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        // Optional: Set a preferred height for the scrollable area if it tends to be too large or too small
+        // keyFiguresScrollPane.setPrefHeight(100); // Example: Max height for the key figures area
+
+        this.setTop(keyFiguresScrollPane);
 
         // Recent Transactions Section (Center)
         TableView<TransactionData> transactionTable = new TableView<>();
