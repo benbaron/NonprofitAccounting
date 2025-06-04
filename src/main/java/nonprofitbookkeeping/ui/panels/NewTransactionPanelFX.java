@@ -23,12 +23,11 @@ import nonprofitbookkeeping.ui.helpers.FocusCommitTextFieldTableCell; // Added i
 import nonprofitbookkeeping.model.*;
 
 /**
- * Form that collects multiple accounting-entry lines until the transaction is
+ * Form that collects multiple accounting-entry transactionLines until the transaction is
  * balanced; Save stays disabled until debits = credits and > 0.
  */
 public class NewTransactionPanelFX extends BorderPane
 {
-	
 	
 	/* ===== static row model ===== */
 	public static final class Line
@@ -62,18 +61,18 @@ public class NewTransactionPanelFX extends BorderPane
 	}
 	
 	/* ------------------------------------------------------------------ */
-	private final ObservableList<Line> lines = FXCollections.observableArrayList();
-	private final TableView<Line> table = new TableView<>(this.lines);
+	private final ObservableList<Line> transactionLines = FXCollections.observableArrayList();
+	private final TableView<Line> table = new TableView<>(this.transactionLines);
 	
 	private final DatePicker datePicker = new DatePicker(LocalDate.now());
 	private final TextArea memoArea = new TextArea();
 	private Button saveBtn;
 	private Consumer<AccountingTransaction> onSave;
-	private ChartOfAccounts coa; 
+	private ChartOfAccounts coa;
 	
 	/**
-	 * 
-	 * Constructor NewTransactionPanelFX
+	 * overloaded Constructor NewTransactionPanelFX
+	 * This version for a new transaction
 	 * @param onSave
 	 */
 	public NewTransactionPanelFX(Consumer<AccountingTransaction> onSave)
@@ -82,13 +81,14 @@ public class NewTransactionPanelFX extends BorderPane
 		this.onSave = onSave;
 		setPadding(new Insets(10));
 		buildUI();
-		this.lines.addListener((ListChangeListener<Line>) c -> recalcTotals());
+		this.transactionLines.addListener((ListChangeListener<Line>) c -> recalcTotals());
 		
 		recalcTotals();
 	}
 	
 	/**  
-	 * Constructor NewTransactionPanelFX
+	 * overloaded Constructor NewTransactionPanelFX
+	 * This version for an existing transaction
 	 * @param existing
 	 * @param consumer
 	 */
@@ -104,56 +104,26 @@ public class NewTransactionPanelFX extends BorderPane
 	}
 	
 	/**
-	 * Populates the UI with an existing balanced transaction so the user can
-	 * correct or extend entry lines.
-	 * 
-	 * @param existing
-	 */
-	private void buildUI(AccountingTransaction existing)
-	{
-		buildUI();
-		this.lines.forEach(this::watch);
-		
-		/* 1. header fields */
-		this.datePicker.setValue(LocalDate.parse(existing.getDate()));
-		this.memoArea.setText(existing.getMemo());
-		
-		/* 2. entry lines */
-		this.lines.clear();
-		
-		// Add the lines from the existing entries.
-		for (AccountingEntry e : existing.getEntries())
-		{
-			Account stub = new Account();
-			stub.setName(e.getAccountNumber());
-			Line line = new Line(stub, e.getAccountSide(), e.getAmount());
-			this.lines.add(line);
-			watch(line);
-		}
-		
-	}
-	
-	/**
-	 * buildUI
+	 * buildUI overloaded for new transactions
 	 */
 	@SuppressWarnings("unchecked") private void buildUI()
 	{
 		this.table.getColumns().addAll(
 			accountCol(), // new combo column
-			sideCol(),
-			amtCol("Amount", l -> l.amount));
+			sideColumn(),
+			amountCol("Amount", l -> l.amount));
 		
 		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 		
 		this.table.setEditable(true); // enable inline edits
 		
-		this.table.setRowFactory(tv -> { // double-click edit row
+		this.table.setRowFactory(tv -> { // click edit row
 			TableRow<Line> row = new TableRow<>();
 			row.setOnMouseClicked(ev -> {
 				
 				if (ev.getClickCount() == 1 && !row.isEmpty())
 				{
-					this.table.edit(row.getIndex(), 
+					this.table.edit(row.getIndex(),
 						this.table.getColumns().get(0)); // start edit
 				}
 				
@@ -164,7 +134,7 @@ public class NewTransactionPanelFX extends BorderPane
 		Button add = new Button("+ Entry");
 		add.setOnAction(e -> {
 			Line line = new Line();
-			this.lines.add(line);
+			this.transactionLines.add(line);
 			watch(line);
 		});
 		
@@ -175,7 +145,7 @@ public class NewTransactionPanelFX extends BorderPane
 			
 			if (sel != null)
 			{
-				this.lines.remove(sel);
+				this.transactionLines.remove(sel);
 			}
 			
 		});
@@ -195,19 +165,49 @@ public class NewTransactionPanelFX extends BorderPane
 		setBottom(new ToolBar(add, del, new Separator(), this.saveBtn));
 	}
 	
-	/* ===== build columns ===== */
-
 	/**
-	 * strCol
+	 * Populates the UI with an existing balanced transaction so the user can
+	 * correct or extend entry transactionLines.
+	 * 
+	 * @param existing
+	 */
+	private void buildUI(AccountingTransaction existing)
+	{
+		buildUI();
+		this.transactionLines.forEach(this::watch);
+		
+		/* 1. header fields */
+		this.datePicker.setValue(LocalDate.parse(existing.getDate()));
+		this.memoArea.setText(existing.getMemo());
+		
+		/* 2. entry transactionLines */
+		this.transactionLines.clear();
+		
+		// Add the transactionLines from the existing entries.
+		for (AccountingEntry e : existing.getEntries())
+		{
+			Account stub = new Account();
+			stub.setName(e.getAccountNumber());
+			Line line = new Line(stub, e.getAccountSide(), e.getAmount());
+			this.transactionLines.add(line);
+			watch(line);
+		}
+		
+	}
+	
+	
+	/* ===== build columns ===== */
+	
+	/**
+	 * stringColumn
 	 * @param t
 	 * @param fx
 	 * 
 	 * @return TableColumn
 	 */
 	@SuppressWarnings("unused") 
-	private static TableColumn<Line, String> strCol
-						(String t,
-						 Function<Line, Property<String>> fx)
+	private static TableColumn<Line, String> stringColumn(	String t,
+	                                                      	Function<Line, Property<String>> fx)
 	{
 		TableColumn<Line, String> c = new TableColumn<>(t);
 		c.setCellValueFactory(cell -> fx.apply(cell.getValue()));
@@ -219,11 +219,11 @@ public class NewTransactionPanelFX extends BorderPane
 	}
 	
 	/**
-	 * sideCol
+	 * sideColumn
 	 * 
 	 * @return TableColumn
 	 */
-	private static TableColumn<Line, AccountSide> sideCol()
+	private static TableColumn<Line, AccountSide> sideColumn()
 	{
 		TableColumn<Line, AccountSide> c = new TableColumn<>("Side");
 		c.setCellValueFactory(cell -> cell.getValue().side);
@@ -232,15 +232,15 @@ public class NewTransactionPanelFX extends BorderPane
 	}
 	
 	/**
-	 * amtCol
+	 * amountCol
 	 * 
 	 * @param t
 	 * @param fx
 	 * 
 	 * @return TableColumn
 	 */
-	private static TableColumn<Line, BigDecimal> amtCol(String t,
-														Function<Line, Property<BigDecimal>> fx)
+	private static TableColumn<Line, BigDecimal> amountCol(	String t,
+															Function<Line, Property<BigDecimal>> fx)
 	{
 		TableColumn<Line, BigDecimal> c = new TableColumn<>(t);
 		c.setCellValueFactory(cell -> fx.apply(cell.getValue()));
@@ -268,16 +268,16 @@ public class NewTransactionPanelFX extends BorderPane
 					.toList());
 		
 		Map<String, Account> byName =
-		    this.coa.getAccountNumberToAccountDetails()
-		       .values()
-		       .stream()
-		       .collect(Collectors.toMap(
-		           Account::getName,          // key  = name
-		           a -> a,                    // value = Account
-		           (a, b) -> a,               // merge: keep the first duplicate
-		           LinkedHashMap::new         // (optional) keep insertion order
-		       ));
-		
+			this.coa.getAccountNumberToAccountDetails()
+				.values()
+				.stream()
+				.collect(Collectors.toMap(
+					Account::getName, // key = name
+					a -> a, // value = Account
+					(a, b) -> a, // merge: keep the first duplicate
+					LinkedHashMap::new // (optional) keep insertion order
+				));
+				
 		TableColumn<Line, String> col = new TableColumn<>("Account");
 		col.setCellValueFactory(cd -> cd.getValue().account);
 		
@@ -310,7 +310,7 @@ public class NewTransactionPanelFX extends BorderPane
 	{
 		BigDecimal debit = BigDecimal.ZERO, credit = BigDecimal.ZERO;
 		
-		for (Line l : this.lines)
+		for (Line l : this.transactionLines)
 		{
 			BigDecimal amt = l.amount.get() != null ? l.amount.get() : BigDecimal.ZERO;
 			
@@ -335,7 +335,7 @@ public class NewTransactionPanelFX extends BorderPane
 	{
 		Set<AccountingEntry> entries = new LinkedHashSet<>();
 		
-		for (Line l : this.lines)
+		for (Line l : this.transactionLines)
 		{
 			entries.add(new AccountingEntry(
 				l.amount.get(), l.account.get(), l.side.get()));
@@ -343,9 +343,9 @@ public class NewTransactionPanelFX extends BorderPane
 		
 		// Save the timestamp as transaction id
 		AccountingTransaction tx = new AccountingTransaction(
-			new Account(), 
-			entries, 
-			Map.of(), 
+			new Account(),
+			entries,
+			Map.of(),
 			Instant.now().toEpochMilli());
 		
 		tx.setDate(this.datePicker.getValue().toString());
@@ -364,8 +364,7 @@ public class NewTransactionPanelFX extends BorderPane
 		l.amount.addListener((obs, o, n) -> recalcTotals());
 		l.side.addListener((obs, o, n) -> recalcTotals());
 		l.account.addListener((obs, o, n) -> {
-			/* account text change doesn’t 
-			 * affect totals but keeps UI fresh */
+			/* account text change doesn’t affect totals but keeps UI fresh */
 		});
 	}
 	
