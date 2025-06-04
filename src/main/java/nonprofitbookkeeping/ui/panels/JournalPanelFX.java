@@ -16,44 +16,78 @@ import nonprofitbookkeeping.model.*;
 /** Shows transactions and lets user add / edit / delete them. */
 public class JournalPanelFX extends BorderPane
 {
-	
 	private final ObservableList<AccountingTransaction> rows =
 		FXCollections.observableArrayList();
-	private final TableView<AccountingTransaction> table = new TableView<>(this.rows);
 	
+	/** transaction table - rows of transactions */
+	private final TableView<AccountingTransaction> transactionTableView = 
+		new TableView<AccountingTransaction>(this.rows);
+	
+	/**
+	 * 
+	 * Constructor JournalPanelFX
+	 */
 	public JournalPanelFX()
 	{
 		setPadding(new Insets(10));
 		buildTable();
-		setCenter(this.table);
+		setCenter(this.transactionTableView);
 		setBottom(toolBar());
 		refresh();
 	}
 	
 	/* -------- Table -------- */
+	/**
+	 * buildTable
+	 */
 	private void buildTable()
 	{
-		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
-		this.table.getColumns().addAll(
-			col("ID", "id"),
-			col("Date", "date"),
-			col("Account", "accountName"),
-			num("Debit", "debit"),
-			num("Credit", "credit"),
-			col("Memo", "memo"));
+		
+		// FIXME : the property fields must be 
+		// names of actual AccountingTransaction fields
+		this.transactionTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+		this.transactionTableView.getColumns().addAll(
+			stringColumn("ID", "id"),
+			stringColumn("Date", "date"),
+			stringColumn("Account", "accountName"),
+			bigDecimalColumn("Debit", "debit"),
+			bigDecimalColumn("Credit", "credit"),
+			stringColumn("Memo", "memo"));
 	}
 	
-	private static TableColumn<AccountingTransaction, String> col(String t, String p)
+	/**
+	 * Table Column of Accounting Transaction, string-type
+	 * 
+	 * @param tableColumn
+	 * @param property
+	 * @return
+	 */
+	private static
+			TableColumn<AccountingTransaction, String>
+			stringColumn(String tableColumn,
+			             String property)
 	{
-		TableColumn<AccountingTransaction, String> c = new TableColumn<>(t);
-		c.setCellValueFactory(new PropertyValueFactory<>(p));
+		TableColumn<AccountingTransaction, String> c = 
+			new TableColumn<AccountingTransaction, String>(tableColumn);
+		c.setCellValueFactory(new PropertyValueFactory<>(property));
 		return c;
 	}
 	
-	private static TableColumn<AccountingTransaction, BigDecimal> num(String t, String p)
+	/**
+	 * Number column
+	 * 
+	 * @param tableColumn
+	 * @param property
+	 * 
+	 * @return column
+	 */
+	private static
+			TableColumn<AccountingTransaction, BigDecimal>
+			bigDecimalColumn(String tableColumn,
+			                 String property)
 	{
-		TableColumn<AccountingTransaction, BigDecimal> c = new TableColumn<>(t);
-		c.setCellValueFactory(new PropertyValueFactory<>(p));
+		TableColumn<AccountingTransaction, BigDecimal> c = new TableColumn<>(tableColumn);
+		c.setCellValueFactory(new PropertyValueFactory<>(property));
 		return c;
 	}
 	
@@ -64,36 +98,24 @@ public class JournalPanelFX extends BorderPane
 		Button edit = new Button("Edit");
 		Button del = new Button("Delete");
 		
+		// On add
 		add.setOnAction(e -> openEditor(null));
-		edit.setOnAction(e -> {
-			AccountingTransaction sel = this.table.getSelectionModel().getSelectedItem();
-			
-			if (sel != null)
-			{
-				openEditor(sel);
-			}
-			
-		});
-		del.setOnAction(e -> {
-			AccountingTransaction sel = this.table.getSelectionModel().getSelectedItem();
-			
-			if (sel != null)
-			{
-				Journal journal = CurrentCompany.getCompany().getLedger().getJournal();
-				
-				if (journal != null)
-				{
-					journal.deleteTransaction(sel.getBookingDateTimestamp());
-					refresh();
-				}
-				
-			}
-			
-		});
+		// On edit
+		edit.setOnAction(e -> editAction());
+		// On delete
+		del.setOnAction(e -> deleteAction());
+		
 		return new ToolBar(add, edit, del);
 	}
 	
+	
 	/* -------- CRUD -------- */
+	
+	/**
+	 * openEditor
+	 * 
+	 * @param existing
+	 */
 	private void openEditor(AccountingTransaction existing)
 	{
 		Journal mainJournal = CurrentCompany.getCompany().getLedger().getJournal();
@@ -108,14 +130,18 @@ public class JournalPanelFX extends BorderPane
 		}
 		
 		NewTransactionPanelFX pane =
-			(existing == null) ? new NewTransactionPanelFX( // Create new
-				(AccountingTransaction tx) ->
-				{ // onSave consumer for new
-					mainJournal.addTransaction(tx);
-					refresh();
-				}) : new NewTransactionPanelFX(existing, // Edit existing
+			(existing == null) ?
+				new NewTransactionPanelFX( 			// Create new
+					(AccountingTransaction tx) ->
+					{ 
+						// onSave consumer for new
+						mainJournal.addTransaction(tx);
+						refresh();
+					}) :
+				new NewTransactionPanelFX(existing, // Edit existing
 					(Consumer<AccountingTransaction>) tx ->
-					{ // onSave consumer for edit
+					{ 
+						// onSave consumer for edit
 						mainJournal.updateTransaction(tx);
 						refresh();
 					});
@@ -127,7 +153,45 @@ public class JournalPanelFX extends BorderPane
 		d.showAndWait();
 	}
 	
+	/**
+	 * 
+	 */
+	void editAction()
+	{
+		AccountingTransaction sel = this.transactionTableView.getSelectionModel().getSelectedItem();
+		
+		if (sel != null)
+		{
+			openEditor(sel);
+		}
+		
+	}
 	
+	/**
+	 * 
+	 */
+	void deleteAction()
+	{
+		AccountingTransaction sel = this.transactionTableView.getSelectionModel().getSelectedItem();
+		
+		if (sel != null)
+		{
+			Journal journal = CurrentCompany.getCompany().getLedger().getJournal();
+			
+			if (journal != null)
+			{
+				journal.deleteTransaction(sel.getBookingDateTimestamp());
+				refresh();
+			}
+			
+		}
+		
+	}
+	
+	
+	/**
+	 * refresh
+	 */
 	private void refresh()
 	{
 		Journal journal = CurrentCompany.getCompany().getLedger().getJournal();
