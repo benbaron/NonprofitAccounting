@@ -1,17 +1,23 @@
+<jx:comment>
+Overall Report Header (conceptual - would be formatted in Excel cells)
 Report: Account Activity Detail
-Report Period: ${reportStartDate} to ${reportEndDate}
-Generated On: ${reportDate}
+Overall Report Period: ${reportStartDate} to ${reportEndDate}
+Report Generated: ${reportDate}
+</jx:comment>
 
-<jx:forEach items="${accountsDetail}" var="accountData">
-Account: ${accountData.accountName} (${accountData.accountNumber})
-Opening Balance: ${accountData.openingBalance}
+<jx:forEach items="${accountsDetail}" var="accountData" lastCell="F1"> <jx:comment>Adjust lastCell based on actual Excel layout below this loop for multiple accounts</jx:comment>
+Account Name: ${accountData.accountName}
+Account Number: ${accountData.accountNumber}
+
+Opening Balance: ${accountData.openingBalance} #[#,##0.00]
 
 | Date       | Transaction ID | Description          | Debit      | Credit     | Running Balance |
-|------------|----------------|----------------------|------------|------------|-----------------|
-<jx:forEach items="${accountData.entries}" var="entry">
-| ${entry.date} | ${entry.transactionId} | ${entry.description} | ${entry.debit} | ${entry.credit} | ${entry.runningBalance} |
+<jx:forEach items="${accountData.entries}" var="entry" lastCell="F9"> <jx:comment>Assuming the table starts around row 8-9 and is 6 columns wide (A-F). Adjust lastCell based on actual Excel layout.</jx:comment>
+| ${entry.date} | ${entry.transactionId} | ${entry.description} | ${entry.debit} #[#,##0.00] | ${entry.credit} #[#,##0.00] | ${entry.runningBalance} #[#,##0.00] |
 </jx:forEach>
-Closing Balance: ${accountData.closingBalance}
 
-----------------------------------------------------
+Closing Balance: ${accountData.closingBalance} #[#,##0.00]
+
+---------------------------------------------------- <jx:comment> This is a visual separator for the text version. In Excel, use borders or spacing. </jx:comment>
 </jx:forEach>
+<jx:comment> End of JXLS processing instructions. Any content below the main forEach loop would appear once at the end of the report. </jx:comment>

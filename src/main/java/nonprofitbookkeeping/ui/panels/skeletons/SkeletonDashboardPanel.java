@@ -10,8 +10,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-// PropertyValueFactory is not strictly needed if using lambdas for all columns
-// import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -20,9 +18,17 @@ import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.Ledger;
+import nonprofitbookkeeping.model.Account;
+import nonprofitbookkeeping.model.AccountType;
+import nonprofitbookkeeping.model.ChartOfAccounts;
+import nonprofitbookkeeping.model.AccountingEntry;
+import nonprofitbookkeeping.model.AccountSide;
+
 import java.util.List;
-import java.util.ArrayList; // Not strictly needed if using subList directly
-import java.math.BigDecimal; // For amount formatting
+import java.util.ArrayList;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 
 
@@ -31,7 +37,6 @@ public class SkeletonDashboardPanel extends BorderPane {
     private final TableView<AccountingTransaction> recentTransactionsTable = new TableView<>();
     private final ObservableList<AccountingTransaction> transactionDataList = FXCollections.observableArrayList();
 
-    // Labels for key figures - made fields to be potentially updatable later
     private Label totalAssetsValueLabel = new Label("$0.00");
     private Label totalLiabilitiesValueLabel = new Label("$0.00");
     private Label equityValueLabel = new Label("$0.00");
@@ -45,9 +50,8 @@ public class SkeletonDashboardPanel extends BorderPane {
     };
 
     public SkeletonDashboardPanel() {
-        setPadding(new Insets(15)); // Overall padding for the dashboard
+        setPadding(new Insets(15));
 
-        // Key Figures Section (Top)
         GridPane keyFiguresGrid = new GridPane();
         keyFiguresGrid.setPadding(new Insets(10));
         keyFiguresGrid.setHgap(20);
@@ -69,17 +73,14 @@ public class SkeletonDashboardPanel extends BorderPane {
         keyFiguresScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         this.setTop(keyFiguresScrollPane);
 
-        // Recent Transactions Section (Center)
         recentTransactionsTable.setPlaceholder(new Label("No recent transactions to display."));
-        recentTransactionsTable.setItems(transactionDataList); // Link data list
+        recentTransactionsTable.setItems(transactionDataList);
 
         TableColumn<AccountingTransaction, String> dateCol = new TableColumn<>("Date");
         dateCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDate()));
         dateCol.setPrefWidth(100);
 
         TableColumn<AccountingTransaction, String> accountCol = new TableColumn<>("Account");
-        // Displaying primary affected account or a summary. For simplicity, using getAccountName()
-        // which might need refinement based on how AccountingTransaction represents multiple accounts.
         accountCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAccountName()));
         accountCol.setPrefWidth(150);
 
@@ -91,7 +92,7 @@ public class SkeletonDashboardPanel extends BorderPane {
 
         TableColumn<AccountingTransaction, String> amountCol = new TableColumn<>("Amount");
         amountCol.setCellValueFactory(cellData -> {
-            BigDecimal totalAmount = cellData.getValue().getTotalAmount(); // This is sum of debits
+            BigDecimal totalAmount = cellData.getValue().getTotalAmount();
             return new SimpleStringProperty(totalAmount != null ? totalAmount.toPlainString() : "0.00");
         });
         amountCol.setPrefWidth(100);
@@ -101,7 +102,6 @@ public class SkeletonDashboardPanel extends BorderPane {
         this.setCenter(recentTransactionsTable);
         BorderPane.setMargin(recentTransactionsTable, new Insets(10, 0, 10, 0));
 
-        // Action Buttons (Bottom)
         HBox actionButtonsBox = new HBox();
         actionButtonsBox.setPadding(new Insets(10, 0, 0, 0));
         actionButtonsBox.setSpacing(10);
@@ -110,28 +110,99 @@ public class SkeletonDashboardPanel extends BorderPane {
         Button refreshButton = new Button("Refresh Dashboard");
         refreshButton.setOnAction(e -> loadData());
         actionButtonsBox.getChildren().add(refreshButton);
-
         this.setBottom(actionButtonsBox);
 
-        // Initial data load and listener registration
         loadData();
         CurrentCompany.CompanyListener.addCompanyListener(companyChangeListener);
-        // TODO: Consider removing listener if panel is destroyed:
-        // this.sceneProperty().addListener((obs, oldScene, newScene) -> {
-        // if (newScene == null) { CurrentCompany.CompanyListener.removeCompanyListener(companyChangeListener); }
-        // });
     }
 
     private void loadData() {
         transactionDataList.clear();
         Company company = CurrentCompany.getCompany();
 
+        BigDecimal totalAssets = BigDecimal.ZERO;
+        BigDecimal totalLiabilities = BigDecimal.ZERO;
+        BigDecimal totalEquity = BigDecimal.ZERO; // Represents sum of equity type accounts, not necessarily total book equity
+        BigDecimal totalIncome = BigDecimal.ZERO;
+        BigDecimal totalExpenses = BigDecimal.ZERO;
+        List<AccountingTransaction> transactions = null;
+
+
         if (company != null && company.getLedger() != null) {
             Ledger ledger = company.getLedger();
-            List<AccountingTransaction> transactions = ledger.getTransactions();
+            transactions = ledger.getTransactions(); // Get all transactions for balance calculation
+            ChartOfAccounts coa = company.getChartOfAccounts();
+
+            if (coa != null && coa.getAccounts() != null) {
+                Map<String, BigDecimal> accountBalances = new HashMap<>();
+                for (Account acc : coa.getAccounts()) {
+                    accountBalances.put(acc.getAccountNumber(), acc.getOpeningBalance() != null ? acc.getOpeningBalance() : BigDecimal.ZERO);
+                }
+
+                if (transactions != null) {
+                    for (AccountingTransaction tx : transactions) {
+                        if (tx.getEntries() != null) {
+                            for (AccountingEntry entry : tx.getEntries()) {
+                                Account entryAccount = entry.getAccount(); // This should be the specific account from COA
+                                if (entryAccount != null && entryAccount.getAccountNumber() != null && entry.getAmount() != null) {
+                                    BigDecimal currentBalance = accountBalances.getOrDefault(entryAccount.getAccountNumber(), BigDecimal.ZERO);
+                                    BigDecimal entryAmount = entry.getAmount();
+                                    // AccountType type = entryAccount.getAccountType(); // From COA linked account
+
+                                    // Use the type from the account object fetched from COA for consistency
+                                    Account coaAccountInstance = coa.getAccountByNumber(entryAccount.getAccountNumber());
+                                    AccountType type = (coaAccountInstance != null) ? coaAccountInstance.getAccountType() : null;
+
+
+                                    if (type != null) {
+                                        if (entry.getAccountSide() == AccountSide.DEBIT) {
+                                            if (type == AccountType.ASSET || type == AccountType.EXPENSE) {
+                                                currentBalance = currentBalance.add(entryAmount);
+                                            } else {
+                                                currentBalance = currentBalance.subtract(entryAmount);
+                                            }
+                                        } else { // CREDIT entry
+                                            if (type == AccountType.ASSET || type == AccountType.EXPENSE) {
+                                                currentBalance = currentBalance.subtract(entryAmount);
+                                            } else {
+                                                currentBalance = currentBalance.add(entryAmount);
+                                            }
+                                        }
+                                    }
+                                    accountBalances.put(entryAccount.getAccountNumber(), currentBalance);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                for (Account acc : coa.getAccounts()) {
+                    BigDecimal liveBalance = accountBalances.getOrDefault(acc.getAccountNumber(), acc.getOpeningBalance() != null ? acc.getOpeningBalance() : BigDecimal.ZERO);
+                    AccountType type = acc.getAccountType();
+                    if (type != null) {
+                        switch (type) {
+                            case ASSET:
+                                totalAssets = totalAssets.add(liveBalance);
+                                break;
+                            case LIABILITY:
+                                totalLiabilities = totalLiabilities.add(liveBalance);
+                                break;
+                            case EQUITY: // This sums up accounts of type EQUITY (e.g., Retained Earnings, Common Stock)
+                                totalEquity = totalEquity.add(liveBalance);
+                                break;
+                            case INCOME:
+                                totalIncome = totalIncome.add(liveBalance); // Income increases this balance (typically credits)
+                                break;
+                            case EXPENSE:
+                                totalExpenses = totalExpenses.add(liveBalance); // Expenses increase this balance (typically debits)
+                                break;
+                        }
+                    }
+                }
+            }
+             // Populate recent transactions list for UI (after all balance calculations)
             if (transactions != null && !transactions.isEmpty()) {
-                int limit = Math.min(transactions.size(), 10); // Show last 10 transactions
-                 // Add transactions in reverse order to show newest first, then reverse list for table
+                int limit = Math.min(transactions.size(), 10);
                 List<AccountingTransaction> recent = new ArrayList<>();
                 for (int i = transactions.size() - 1; i >= transactions.size() - limit; i--) {
                     recent.add(transactions.get(i));
@@ -140,19 +211,19 @@ public class SkeletonDashboardPanel extends BorderPane {
             }
         }
 
-        // Key figures are still static as per subtask instructions for now
-        // These would be calculated from company data in a real implementation
-        totalAssetsValueLabel.setText("$150,000"); // Placeholder
-        totalLiabilitiesValueLabel.setText("$30,000"); // Placeholder
-        equityValueLabel.setText("$120,000"); // Placeholder
-        ytdIncomeValueLabel.setText("$25,000"); // Placeholder
+        BigDecimal ytdIncome = totalIncome.subtract(totalExpenses); // Income is positive, Expenses are positive contributions to their types
+
+        totalAssetsValueLabel.setText("$" + totalAssets.toPlainString());
+        totalLiabilitiesValueLabel.setText("$" + totalLiabilities.toPlainString());
+        equityValueLabel.setText("$" + totalEquity.toPlainString());
+        ytdIncomeValueLabel.setText("YTD Net Income: $" + ytdIncome.toPlainString());
+
 
         if (transactionDataList.isEmpty()) {
             recentTransactionsTable.setPlaceholder(new Label("No transactions found for the current company."));
         } else {
-            recentTransactionsTable.setPlaceholder(new Label("No recent transactions to display.")); // Default
+            // Keep default placeholder or set to null if items are present
+            // recentTransactionsTable.setPlaceholder(new Label("No recent transactions to display."));
         }
     }
-
-    // TransactionData inner class is removed
 }

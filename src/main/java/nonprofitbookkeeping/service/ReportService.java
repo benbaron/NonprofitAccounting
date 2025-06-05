@@ -7,6 +7,8 @@ import nonprofitbookkeeping.model.budget.BudgetLine;
 import nonprofitbookkeeping.model.budget.Periodicity;
 import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.reports.ReportMetadata;
+import nonprofitbookkeeping.reports.writer.LedgerReportWriter;
+
 import org.jxls.common.Context;
 import org.jxls.util.JxlsHelper;
 
@@ -1445,6 +1447,10 @@ public class ReportService
 		return outputFile;
 	}
 	
+	public void registerWriter(String reportType, LedgerReportWriter writer)
+	{
+		/* ... */ }
+
 	public List<ReportMetadata> listGeneratedReports()
 	{
 		return new ArrayList<>();

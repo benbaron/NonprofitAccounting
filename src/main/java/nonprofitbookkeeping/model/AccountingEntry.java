@@ -1,3 +1,4 @@
+
 package nonprofitbookkeeping.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -25,7 +26,7 @@ public final class AccountingEntry implements Serializable
 	@JsonProperty final private BigDecimal amount;	
 	@JsonProperty final private AccountSide accountSide;
 	@JsonProperty final private String accountNumber;
-	@com.fasterxml.jackson.annotation.JsonIgnore private AccountingTransaction transaction;
+	@JsonProperty private AccountingTransaction transaction;
 	// Indicates if the transaction was set
 	@JsonProperty private boolean freeze = false;
 	
@@ -36,10 +37,9 @@ public final class AccountingEntry implements Serializable
 	 * @param accountNumber
 	 * @param accountSide
 	 */
-	@com.fasterxml.jackson.annotation.JsonCreator
-	public AccountingEntry(@JsonProperty("amount") BigDecimal amount, 
-	                       @JsonProperty("accountNumber") String accountNumber, 
-	                       @JsonProperty("accountSide") AccountSide accountSide)
+	public AccountingEntry(BigDecimal amount,
+	                       String accountNumber,
+	                       AccountSide accountSide)
 	{
 		this.amount = checkNotNull(amount);
 		this.accountNumber = checkNotNull(accountNumber);

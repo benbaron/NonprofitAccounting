@@ -21,19 +21,14 @@ final public class Ledger implements Serializable
 
 	@JsonProperty final private Journal journal = new Journal();
 	
-	/**
-	 * getTransactions
-	 * @return list of transactions
-	 */
-	public List<AccountingTransaction> getTransactions()
+	public List<AccountingTransaction>getTransactions()
 	{
 		return this.journal.getJournalTransactions();
 	}
 
 
 	/**
-	 * getJournal
-	 * @return the journal
+	 * @return
 	 */
 	public Journal getJournal()
 	{

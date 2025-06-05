@@ -3,6 +3,7 @@ package nonprofitbookkeeping.ui.panels.skeletons;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent; // Added import
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -12,8 +13,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-// PropertyValueFactory is not strictly needed if using lambdas for all columns
-// import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -23,13 +22,19 @@ import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 import nonprofitbookkeeping.reports.ReportMetadata;
-import nonprofitbookkeeping.service.ReportService; // Assuming this exists and is correct
+import nonprofitbookkeeping.service.ReportService;
+import nonprofitbookkeeping.ui.actions.GenerateBalanceSheetAction; // Added import
+import nonprofitbookkeeping.ui.actions.GenerateCashFlowStatementAction; // Added import
+import nonprofitbookkeeping.ui.actions.GenerateIncomeStatementAction; // Added import
+import nonprofitbookkeeping.ui.actions.GenerateTrialBalanceAction; // Added import
+import nonprofitbookkeeping.ui.helpers.AlertBox; // Added import for AlertBox
+
 import java.util.List;
-import java.util.ArrayList;
+// import java.util.ArrayList; // No longer strictly needed with current code
 import java.io.File;
-import java.awt.Desktop; // For opening files
+import java.awt.Desktop;
 import java.io.IOException;
-import java.time.LocalDate; // For DatePicker values
+import java.time.LocalDate;
 
 public class SkeletonReportsPanel extends BorderPane {
 
@@ -43,21 +48,18 @@ public class SkeletonReportsPanel extends BorderPane {
     private ReportService reportService;
     private CompanyChangeListener companyChangeListener;
 
-    // UI elements for layout
     private GridPane controlsGrid;
     private ScrollPane controlsScrollPane;
 
 
     public SkeletonReportsPanel() {
-        setPadding(new Insets(15)); // Overall padding
-        reportService = new ReportService(); // Initialize service
+        setPadding(new Insets(15));
+        reportService = new ReportService();
 
-        // Initialize collections and table
         generatedReportsDataList = FXCollections.observableArrayList();
         generatedReportsTable = new TableView<>(generatedReportsDataList);
         generatedReportsTable.setPlaceholder(new Label("No reports found or company not open."));
 
-        // Report Generation Controls (Top)
         controlsGrid = new GridPane();
         controlsGrid.setPadding(new Insets(10));
         controlsGrid.setHgap(10);
@@ -80,7 +82,6 @@ public class SkeletonReportsPanel extends BorderPane {
 
         generateReportButton = new Button("Generate Report");
         generateReportButton.setDefaultButton(true);
-        // Using HBox for alignment, though not strictly necessary for a single button here
         HBox buttonBox = new HBox(generateReportButton);
         controlsGrid.add(buttonBox, 1, 3);
 
@@ -90,11 +91,9 @@ public class SkeletonReportsPanel extends BorderPane {
         controlsScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         this.setTop(controlsScrollPane);
 
-        // Center Area: Table
         this.setCenter(generatedReportsTable);
         BorderPane.setMargin(generatedReportsTable, new Insets(10, 0, 0, 0));
 
-        // Setup and initial load
         setupGeneratedReportsTableColumns();
         setupEventListenersAndRefresh();
     }
@@ -107,8 +106,6 @@ public class SkeletonReportsPanel extends BorderPane {
         nameCol.setPrefWidth(250);
 
         TableColumn<ReportMetadata, String> dateGenCol = new TableColumn<>("Date Generated");
-        // Assuming getCreated() returns a String like "YYYY-MM-DD HH:MM:SS"
-        // Might need formatting if it's a Timestamp or Date object
         dateGenCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCreated()));
         dateGenCol.setPrefWidth(150);
 
@@ -136,20 +133,20 @@ public class SkeletonReportsPanel extends BorderPane {
                                 if (Desktop.isDesktopSupported()) {
                                     Desktop.getDesktop().open(reportFile);
                                 } else {
-                                     new Alert(Alert.AlertType.WARNING, "Desktop operations not supported to open file.").showAndWait();
+                                     AlertBox.showError(getScene().getWindow(), "Desktop operations not supported to open file.");
                                 }
                             } else {
-                                new Alert(Alert.AlertType.ERROR, "Report file not found: " + reportMeta.getFilePath()).showAndWait();
+                                AlertBox.showError(getScene().getWindow(), "Report file not found: " + reportMeta.getFilePath());
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
-                            new Alert(Alert.AlertType.ERROR, "Could not open report file: " + e.getMessage()).showAndWait();
+                            AlertBox.showError(getScene().getWindow(), "Could not open report file: " + e.getMessage());
                         } catch (UnsupportedOperationException e) {
                             e.printStackTrace();
-                            new Alert(Alert.AlertType.ERROR, "Desktop operations not supported on this platform (e.g. headless server).").showAndWait();
+                            AlertBox.showError(getScene().getWindow(), "Desktop operations not supported on this platform (e.g. headless server).");
                         }
                     } else {
-                        new Alert(Alert.AlertType.WARNING, "Report path is not available.").showAndWait();
+                        AlertBox.showWarning(getScene().getWindow(), "Report path is not available.");
                     }
                 });
             }
@@ -166,27 +163,18 @@ public class SkeletonReportsPanel extends BorderPane {
 
     private void loadGeneratedReports() {
         generatedReportsDataList.clear();
-        // Assuming ReportService is configured to find reports correctly
-        // or that reports are stored in a globally known location.
-        // If ReportService needs a company context (like parent directory), it would be:
-        // Company company = CurrentCompany.getCompany();
-        // if (company != null && company.getParentFile() != null) {
-        //    List<ReportMetadata> reports = reportService.listGeneratedReports(company.getParentFile());
-        //    ...
-        // } else { handle no company or no parent file }
         try {
-             List<ReportMetadata> reports = reportService.listGeneratedReports(); // Using no-arg version
-             if (reports != null) { // listGeneratedReports might return null on error
+             List<ReportMetadata> reports = reportService.listGeneratedReports();
+             if (reports != null) {
                 generatedReportsDataList.addAll(reports);
              }
         } catch (Exception e) {
             System.err.println("Error loading generated reports: " + e.getMessage());
-            e.printStackTrace(); // Good for debugging
+            e.printStackTrace();
             generatedReportsTable.setPlaceholder(new Label("Could not load generated reports: " + e.getMessage()));
         }
 
         if (generatedReportsDataList.isEmpty() && generatedReportsTable.getPlaceholder() instanceof Label) {
-            // Only update placeholder if it's still the default one or an error one we set
              ((Label)generatedReportsTable.getPlaceholder()).setText("No generated reports found.");
         }
     }
@@ -195,46 +183,46 @@ public class SkeletonReportsPanel extends BorderPane {
         companyChangeListener = new CompanyChangeListener() {
             @Override
             public void companyChange(boolean companyNowOpen) {
-                // Report listing might be company-dependent if reports are stored within company folders
-                // or if ReportService internals change based on current company.
-                // For now, assuming listGeneratedReports() is global or handles CurrentCompany internally.
                 loadGeneratedReports();
             }
         };
         CurrentCompany.CompanyListener.addCompanyListener(companyChangeListener);
 
-        generateReportButton.setOnAction(e -> {
-            String reportType = reportTypeComboBox.getValue();
-            LocalDate startDate = startDatePicker.getValue(); // Can be null
-            LocalDate endDate = endDatePicker.getValue();   // Can be null
+        generateReportButton.setOnAction(event -> { // event is an ActionEvent from the button click
+            String reportTypeKey = reportTypeComboBox.getValue(); // This is the display name
+            Company currentCompany = CurrentCompany.getCompany();
 
-            if (reportType == null || reportType.isEmpty()) {
-                new Alert(Alert.AlertType.WARNING, "Please select a report type.").showAndWait();
+            if (currentCompany == null) {
+                AlertBox.showError(this.getScene().getWindow(), "No company is currently open.");
                 return;
             }
-            // Date validation could be added here if dates are mandatory for all report types
+            if (reportTypeKey == null) {
+                AlertBox.showError(this.getScene().getWindow(), "Please select a report type.");
+                return;
+            }
 
-            System.out.println("Generate Report clicked for: " + reportType +
-                               (startDate != null ? " from " + startDate : "") +
-                               (endDate != null ? " to " + endDate : "") +
-                               " - Placeholder action.");
+            ActionEvent newEvent = new ActionEvent(generateReportButton, null);
 
-            // TODO: Implement actual report generation logic using ReportService
-            // This would involve:
-            // 1. Getting Company context (e.g., company.getParentFile() for report path, CurrentCompany.getCompany())
-            // 2. Calling appropriate method on reportService (e.g., reportService.generateIncomeStatement(CurrentCompany.getCompany(), startDate, endDate))
-            // 3. After generation, call loadGeneratedReports() to refresh the list.
-
-            // For now, just show an alert.
-            Alert infoAlert = new Alert(Alert.AlertType.INFORMATION, "Report generation for '" + reportType + "' is a placeholder and not yet fully implemented.");
-            infoAlert.setHeaderText("Feature Not Implemented");
-            infoAlert.showAndWait();
-
-            loadGeneratedReports(); // Refresh list to see if anything changed (e.g. if user manually added a report)
+            try {
+                if ("Income Statement".equals(reportTypeKey)) {
+                    new GenerateIncomeStatementAction(this.reportService).handle(newEvent);
+                } else if ("Balance Sheet".equals(reportTypeKey)) {
+                    new GenerateBalanceSheetAction(this.reportService).handle(newEvent);
+                } else if ("Trial Balance".equals(reportTypeKey)) {
+                    new GenerateTrialBalanceAction(this.reportService).handle(newEvent);
+                } else if ("Cash Flow Statement".equals(reportTypeKey)) {
+                    new GenerateCashFlowStatementAction(this.reportService).handle(newEvent);
+                } else {
+                    AlertBox.showError(this.getScene().getWindow(), "Report type '" + reportTypeKey + "' generation not implemented yet.");
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                AlertBox.showError(this.getScene().getWindow(), "Error generating report: " + ex.getMessage());
+            } finally {
+                loadGeneratedReports(); // Refresh the list of generated reports
+            }
         });
 
-        loadGeneratedReports(); // Initial data load
+        loadGeneratedReports();
     }
-
-    // ReportInfo inner class is removed
 }

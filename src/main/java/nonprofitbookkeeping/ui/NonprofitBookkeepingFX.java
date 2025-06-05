@@ -173,23 +173,34 @@ public class NonprofitBookkeepingFX extends Application
 		
 		add(edit, "Open Budget Editor", e -> {
 			Company currentCompany = CurrentCompany.getCompany();
-			
-			if (currentCompany == null)
-			{
-				AlertBox.showError(this.primaryStage, "No company open.");
+
+			if (currentCompany == null) {
+				AlertBox.showError(this.primaryStage, "No company is currently open. Please open or create a company first.");
+				return;
+			}
+
+			File companyFile = currentCompany.getCompanyFile();
+			if (companyFile == null) {
+				AlertBox.showError(this.primaryStage, "The current company has not been saved to a file yet. Please save your company before managing budgets.");
+				return;
+			}
+
+			File companyDir = companyFile.getParentFile();
+			if (companyDir == null) {
+				// This case is less likely if companyFile is not null and is a valid file path,
+				// but it's a good safeguard.
+				AlertBox.showError(this.primaryStage, "Could not determine the company's directory from its saved file path. Cannot manage budgets.");
 				return;
 			}
 			
-			File companyDir = (currentCompany.getCompanyFile() != null) ?
-				currentCompany.getCompanyFile().getParentFile() : null;
-			
-			if (companyDir == null)
-			{
-				AlertBox.showError(this.primaryStage,
-					"Company directory not found. Cannot manage budgets.");
+			// Check if the directory actually exists, as an additional safeguard,
+			// though BudgetService might also handle this.
+			if (!companyDir.exists() || !companyDir.isDirectory()) {
+				AlertBox.showError(this.primaryStage, "The company directory '" + companyDir.getAbsolutePath() + "' does not exist or is not a directory. Cannot manage budgets.");
 				return;
 			}
-			
+
+			// If all checks pass, proceed to open the BudgetPanel
 			new BudgetPanel(null, currentCompany.getChartOfAccounts(), new ArrayList<Fund>(),
 				ServiceContainer.budgetService, companyDir, null).setVisible(true);
 		});

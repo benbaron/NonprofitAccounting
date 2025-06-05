@@ -39,8 +39,7 @@ public class Journal implements Serializable
 	public void addTransaction(AccountingTransaction transaction)
 	{
 		checkNotNull(transaction, "Transaction cannot be null");
-		checkNotNull(transaction.getBookingDateTimestamp(), 
-			"Transaction ID cannot be null for add operation");
+		checkNotNull(transaction.getBookingDateTimestamp(), "Transaction ID cannot be null for add operation");
 		this.journalTransactions.add(transaction);
 	}
 	
@@ -50,12 +49,9 @@ public class Journal implements Serializable
 	 */
 	public List<AccountingTransaction> getJournalTransactions()
 	{
-		// Returns a defensive copy, 
-		// so direct modification of the returned list won't
+		// Returns a defensive copy, so direct modification of the returned list won't
 		// affect the original.
-		//
-		// This is good practice. Callers will need to use 
-		// add/update/delete methods of
+		// This is good practice. Callers will need to use add/update/delete methods of
 		// this class.
 		return new ArrayList<>(this.journalTransactions);
 	}
@@ -64,8 +60,7 @@ public class Journal implements Serializable
 	 * Updates an existing transaction in the journal.
 	 * The transaction is identified by its ID.
 	 *
-	 * @param transaction The transaction with updated information. 
-	 * 						Must not be null and must have an ID.
+	 * @param transaction The transaction with updated information. Must not be null and must have an ID.
 	 * @return true if a transaction was found and updated, false otherwise.
 	 */
 	public boolean updateTransaction(AccountingTransaction transaction)
@@ -78,8 +73,7 @@ public class Journal implements Serializable
 		{
 			AccountingTransaction existingTx = this.journalTransactions.get(i);
 			
-			if (Objects.equals(existingTx.getBookingDateTimestamp(), 
-				transaction.getBookingDateTimestamp()))
+			if (Objects.equals(existingTx.getBookingDateTimestamp(), transaction.getBookingDateTimestamp()))
 			{
 				this.journalTransactions.set(i, transaction); // Replace the old transaction
 				return true;
@@ -100,9 +94,7 @@ public class Journal implements Serializable
 	{
 		checkNotNull(l, 
 			"Transaction ID cannot be null for delete operation");
-		
-		return this.journalTransactions.removeIf(
-			tx -> Objects.equals(tx.getBookingDateTimestamp(), 
+		return this.journalTransactions.removeIf(tx -> Objects.equals(tx.getBookingDateTimestamp(),
 			l));
 	}
 	
