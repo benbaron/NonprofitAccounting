@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Represents an account with entries and a many-to-many relationship with
  * {@link Fund}s.
@@ -30,7 +31,21 @@ public final class Account implements Serializable
 	@JsonProperty private String currency;
 	@JsonProperty private BigDecimal openingBalance = BigDecimal.ZERO;
 	
-	/* ------------------------------------------------------------------ */
+	/**
+	 * 
+	 * Constructor Account
+	 */
+	public Account()
+	{
+		/* default ctor for Jackson / JPA */
+	}
+	
+	/**
+	 * Constructor Account
+	 * @param accountNumber
+	 * @param name
+	 * @param increaseSide
+	 */
 	public Account(String accountNumber, String name, AccountSide increaseSide)
 	{
 		this.accountNumber = checkNotNull(accountNumber);
@@ -38,11 +53,9 @@ public final class Account implements Serializable
 		this.increaseSide = increaseSide;
 	}
 	
-	public Account()
-	{
-		/* default ctor for Jackson / JPA */ }
-		
+
 	/* ================= fund helpers =================================== */
+	
 	public void addFund(Fund fund)
 	{
 		
@@ -75,7 +88,7 @@ public final class Account implements Serializable
 	{
 		return this.parentAccount != null;
 	}
-		
+	
 	/**
 	 * Returns a one-element collection containing this account.  The method is
 	 * here mainly for compatibility with map-like code that expects a
@@ -86,7 +99,7 @@ public final class Account implements Serializable
 	{
 		return Collections.singleton(this);
 	}
-
+	
 	/**
 	 * @return the associatedFunds
 	 */
@@ -94,7 +107,7 @@ public final class Account implements Serializable
 	{
 		return this.associatedFunds;
 	}
-
+	
 	/**
 	 * @param associatedFunds the associatedFunds to set
 	 */
@@ -102,7 +115,7 @@ public final class Account implements Serializable
 	{
 		this.associatedFunds = associatedFunds;
 	}
-
+	
 	/**
 	 * @return the accountNumber
 	 */
@@ -110,7 +123,7 @@ public final class Account implements Serializable
 	{
 		return this.accountNumber;
 	}
-
+	
 	/**
 	 * @param accountNumber the accountNumber to set
 	 */
@@ -118,7 +131,7 @@ public final class Account implements Serializable
 	{
 		this.accountNumber = accountNumber;
 	}
-
+	
 	/**
 	 * @return the increaseSide
 	 */
@@ -126,7 +139,7 @@ public final class Account implements Serializable
 	{
 		return this.increaseSide;
 	}
-
+	
 	/**
 	 * @param increaseSide the increaseSide to set
 	 */
@@ -134,7 +147,7 @@ public final class Account implements Serializable
 	{
 		this.increaseSide = increaseSide;
 	}
-
+	
 	/**
 	 * @return the name
 	 */
@@ -142,7 +155,7 @@ public final class Account implements Serializable
 	{
 		return this.name;
 	}
-
+	
 	/**
 	 * @param name the name to set
 	 */
@@ -150,7 +163,7 @@ public final class Account implements Serializable
 	{
 		this.name = name;
 	}
-
+	
 	/**
 	 * @return the accountCode
 	 */
@@ -158,7 +171,7 @@ public final class Account implements Serializable
 	{
 		return this.accountCode;
 	}
-
+	
 	/**
 	 * @param accountCode the accountCode to set
 	 */
@@ -166,7 +179,7 @@ public final class Account implements Serializable
 	{
 		this.accountCode = accountCode;
 	}
-
+	
 	/**
 	 * @return the accountType
 	 */
@@ -174,7 +187,7 @@ public final class Account implements Serializable
 	{
 		return this.accountType;
 	}
-
+	
 	/**
 	 * @param accountType the accountType to set
 	 */
@@ -182,7 +195,7 @@ public final class Account implements Serializable
 	{
 		this.accountType = accountType;
 	}
-
+	
 	/**
 	 * @return the parentAccount
 	 */
@@ -190,7 +203,7 @@ public final class Account implements Serializable
 	{
 		return this.parentAccount;
 	}
-
+	
 	/**
 	 * @param parentAccount the parentAccount to set
 	 */
@@ -198,7 +211,7 @@ public final class Account implements Serializable
 	{
 		this.parentAccount = parentAccount;
 	}
-
+	
 	/**
 	 * @return the currency
 	 */
@@ -206,7 +219,7 @@ public final class Account implements Serializable
 	{
 		return this.currency;
 	}
-
+	
 	/**
 	 * @param currency the currency to set
 	 */
@@ -214,7 +227,7 @@ public final class Account implements Serializable
 	{
 		this.currency = currency;
 	}
-
+	
 	/**
 	 * @return the openingBalance
 	 */
@@ -222,7 +235,7 @@ public final class Account implements Serializable
 	{
 		return this.openingBalance;
 	}
-
+	
 	/**
 	 * @param openingBalance the openingBalance to set
 	 */
@@ -230,7 +243,6 @@ public final class Account implements Serializable
 	{
 		this.openingBalance = openingBalance;
 	}
-
 	
-
+	
 }

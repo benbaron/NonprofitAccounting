@@ -22,7 +22,11 @@ public class ChartOfAccounts implements Serializable
 	@JsonProperty private final List<Account> chartOfAccounts = new ArrayList<>();
 	
 	/* ------------------------------------------------------------------ */
-	/** Returns every account that has no parent. */
+	
+	/** 
+	 * Returns every account that has no parent. 
+	 * @return List of account
+	 */
 	public List<Account> getRootAccounts()
 	{
 		return this.chartOfAccounts.stream()
@@ -40,7 +44,11 @@ public class ChartOfAccounts implements Serializable
 	}
 	
 	/* ------------------------------------------------------------------ */
-	/** Adds a top-level (root) account. */
+	/** 
+	 * Adds a top-level (root) account. 
+	 *  
+	 * @param root : account
+	 */
 	public void addAccount(Account root)
 	{
 		Objects.requireNonNull(root, "account");
@@ -49,7 +57,11 @@ public class ChartOfAccounts implements Serializable
 	}
 	
 	/* ------------------------------------------------------------------ */
-	/** Adds {@code child} under the given parent. */
+	/** 
+	 * Adds {@code child} under the given parent. 
+	 * @param parent
+	 * @param child
+	 */
 	public void addSubAccount(Account parent, Account child)
 	{
 		Objects.requireNonNull(parent, "parent");
@@ -58,21 +70,41 @@ public class ChartOfAccounts implements Serializable
 		this.chartOfAccounts.add(child);
 	}
 	
-	/* ------------------------------------------------------------------ */
 	/**
 	 * Removes {@code target} and all its descendants (if any) from the chart.
+	 * 
+	 * @param accountNumber
+	 * 
+	 * @return removed (T/F)
+	 */
+	public boolean removeAccount(String accountNumber)
+	{
+		removeAccount(getAccount(accountNumber));
+		return true;
+	}
+	
+	/**
+	 * Removes {@code target} and all its descendants (if any) from the chart.
+	 * @param target
 	 */
 	public void removeAccount(Account target)
 	{
 		if (target == null)
+		{
 			return;
+		}
+		
 		/* remove children first (depth-first) */
 		getChildren(target).forEach(this::removeAccount);
 		this.chartOfAccounts.remove(target);
 	}
 	
 	/* ------------------------------------------------------------------ */
-	/** Convenience—comma-separated list of every account’s name. */
+	/** 
+	 * Convenience—comma-separated list of every account’s name.
+	 * 
+	 * @return names
+	 */
 	public String getNames()
 	{
 		return this.chartOfAccounts.stream()
@@ -131,5 +163,7 @@ public class ChartOfAccounts implements Serializable
 		// this.chartOfAccounts is final and initialized, so it won't be null.
         return new ArrayList<>(this.chartOfAccounts);
 	}
+
+
 	
 }

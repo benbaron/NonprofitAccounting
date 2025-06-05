@@ -63,7 +63,6 @@ public class NewTransactionPanelFX extends BorderPane
 	/* ------------------------------------------------------------------ */
 	private final ObservableList<Line> transactionLines = FXCollections.observableArrayList();
 	private final TableView<Line> table = new TableView<>(this.transactionLines);
-	
 	private final DatePicker datePicker = new DatePicker(LocalDate.now());
 	private final TextArea memoArea = new TextArea();
 	private Button saveBtn;
@@ -73,6 +72,7 @@ public class NewTransactionPanelFX extends BorderPane
 	/**
 	 * overloaded Constructor NewTransactionPanelFX
 	 * This version for a new transaction
+	 * 
 	 * @param onSave
 	 */
 	public NewTransactionPanelFX(Consumer<AccountingTransaction> onSave)
@@ -272,10 +272,10 @@ public class NewTransactionPanelFX extends BorderPane
 				.values()
 				.stream()
 				.collect(Collectors.toMap(
-					Account::getName, // key = name
-					a -> a, // value = Account
-					(a, b) -> a, // merge: keep the first duplicate
-					LinkedHashMap::new // (optional) keep insertion order
+					Account::getName, 		// key = name
+					a -> a, 				// value = Account
+					(a, b) -> a, 			// merge: keep the first duplicate
+					LinkedHashMap::new 		// (optional) keep insertion order
 				));
 				
 		TableColumn<Line, String> col = new TableColumn<>("Account");
@@ -338,7 +338,9 @@ public class NewTransactionPanelFX extends BorderPane
 		for (Line l : this.transactionLines)
 		{
 			entries.add(new AccountingEntry(
-				l.amount.get(), l.account.get(), l.side.get()));
+				l.amount.get(), 
+				l.account.get(), 
+				l.side.get()));
 		}
 		
 		// Save the timestamp as transaction id
