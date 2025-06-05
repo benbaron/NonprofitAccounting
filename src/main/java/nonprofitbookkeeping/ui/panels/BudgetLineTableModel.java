@@ -13,6 +13,10 @@ import java.util.List;
 
 public class BudgetLineTableModel extends AbstractTableModel
 {
+	/**
+	 * serialVersionUID : long
+	 */
+	private static final long serialVersionUID = -3365164030606050465L;
 	private final List<BudgetLine> budgetLines;
 	private final ChartOfAccounts chartOfAccounts; // To resolve account names
 	private final List<Fund> availableFunds; // To resolve fund names

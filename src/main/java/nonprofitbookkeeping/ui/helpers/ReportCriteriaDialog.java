@@ -46,11 +46,6 @@ public class ReportCriteriaDialog
 			this.fund = fund;
 		}
 		
-		public Fund getFund()
-		{
-			return this.fund;
-		}
-		
 		public String getId()
 		{
 			return this.fund.getFundId();
@@ -85,11 +80,6 @@ public class ReportCriteriaDialog
 		public AccountItem(Account account)
 		{
 			this.account = account;
-		}
-		
-		public Account getAccount()
-		{
-			return this.account;
 		}
 		
 		public String getId()

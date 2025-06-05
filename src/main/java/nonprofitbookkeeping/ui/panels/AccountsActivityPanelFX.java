@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Objects; // Added import
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.Arrays; // Added import for Arrays.asList
-
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
