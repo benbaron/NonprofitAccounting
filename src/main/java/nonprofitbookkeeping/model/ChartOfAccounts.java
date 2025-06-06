@@ -131,25 +131,5 @@ public class ChartOfAccounts implements Serializable
 		// this.chartOfAccounts is final and initialized, so it won't be null.
         return new ArrayList<>(this.chartOfAccounts);
 	}
-
-	/**
-	 * @param accountNumber
-	 * @return
-	 */
-	public boolean removeAccount(String accountNumber)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/**
-	 * @param accountNumber
-	 * @return
-	 */
-	public Account getAccountByNumber(String accountNumber)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 }

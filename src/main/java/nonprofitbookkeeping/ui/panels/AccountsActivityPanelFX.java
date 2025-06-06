@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Objects; // Added import
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.Arrays; // Added import for Arrays.asList
+
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -15,7 +17,6 @@ import javafx.scene.layout.*;
 import nonprofitbookkeeping.model.Account; // Added import
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.ChartOfAccounts; // Added import
-import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Ledger;
 

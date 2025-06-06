@@ -2,6 +2,7 @@
 package nonprofitbookkeeping.ui;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -22,8 +23,11 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import nonprofitbookkeeping.ui.MainApplicationView;
 import nonprofitbookkeeping.core.ApplicationContext;
 import nonprofitbookkeeping.core.ApplicationContextImpl;
+import nonprofitbookkeeping.exception.ActionCancelledException;
+import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Fund;
@@ -88,8 +92,10 @@ public class NonprofitBookkeepingFX extends Application
 		this.primaryStage = stage;
 		this.c = new CurrentCompany();
 		this.dashboard = new DashboardPanelFX();
+		// this.root = new BorderPane(); // Old root
 		MainApplicationView mainView = new MainApplicationView();
 		this.root = mainView; // Assign MainApplicationView to root
+		// this.root.setCenter(this.dashboard); // MainApplicationView handles its own center
 		
 		// Instantiate ApplicationContextImpl
 		// Services are passed from the static ServiceContainer
@@ -108,7 +114,8 @@ public class NonprofitBookkeepingFX extends Application
 		ServiceLoader<Plugin> pluginLoader = ServiceLoader.load(Plugin.class);
 		
 		for (Plugin plugin : pluginLoader)
-		{			
+		{
+
 			try
 			{
 				LOGGER.info(
@@ -128,6 +135,9 @@ public class NonprofitBookkeepingFX extends Application
 		
 		LOGGER.info("Plugin discovery complete. Loaded " + this.loadedPlugins.size() + " plugins.");
 		
+		// MenuBar must be built *after* plugins are loaded so
+		// they can add their items.
+		// mainView.setTop(buildMenuBar()); // Old way of setting menu bar directly
 		MenuBar menuBar = buildMenuBar();
 		mainView.setMenuBar(menuBar); // New way: Pass MenuBar to MainApplicationView
 		
@@ -156,7 +166,9 @@ public class NonprofitBookkeepingFX extends Application
 		/* EDIT */
 		Menu edit = new Menu("Edit");
 		this.miEditCompany = add(edit, "Create or Edit Company", e -> startCreateWizard());
+		// this.miEditCoa = add(edit, "Edit Chart of Accounts", e -> showCoaEditor()); // Old
 		this.miEditCoa = add(edit, "Edit Chart of Accounts", e -> ((MainApplicationView)this.root).showPanel(MainApplicationView.PanelType.COA));
+		// this.miEditJournal = add(edit, "Edit Journal", e -> showPanel(new JournalPanelFX(), "Journal")); // Old
 		this.miEditJournal = add(edit, "Edit Journal", e -> ((MainApplicationView)this.root).showPanel(MainApplicationView.PanelType.JOURNAL));
 		
 		add(edit, "Open Budget Editor", e -> {
@@ -204,11 +216,15 @@ public class NonprofitBookkeepingFX extends Application
 			e -> showPanel(new FundsPanelFX(ServiceContainer.fas), "Funds"));
 		add(this.run, "Reconcile",
 			e -> showPanel(new ReconcilePanelFX(new ReconciliationService()), "Reconciliation"));
-
+		// Note: The SCA Ledger submenu was here. It will be added by the
+		// SCALedgerPlugin if loaded.
 		bar.getMenus().add(this.run);
 		
 		/* REPORTS */
 		this.reports = new Menu("Reports");
+		// add(this.reports, "Generate Reports", e -> { /* implement */}); // Old
+		// placeholder
+		// add(this.reports, "Show Reports", e -> showPanel(new ReportsPanelFX(), "Reports")); // Old
 		add(this.reports, "Show Reports", e -> ((MainApplicationView)this.root).showPanel(MainApplicationView.PanelType.REPORTS));
 		add(this.reports, "Show Accounts",
 			e -> showPanel(new AccountsPanelFX(new AccountService()), "Chart of Accounts")); // Stays as new window for now
@@ -329,6 +345,38 @@ public class NonprofitBookkeepingFX extends Application
 		sub.show();
 	}
 	
+	/*
+	private void showCoaEditor() // Replaced by menu action calling mainView.showPanel()
+	{
+		Node previousView = this.root.getCenter();
+		Company activeCompany = CurrentCompany.getCompany();
+
+		if (activeCompany == null || activeCompany.getChartOfAccounts() == null)
+		{
+			AlertBox.showError(this.primaryStage, "No company or Chart of Accounts open.");
+			return;
+		}
+
+		CoaEditorPanelFX editor = new CoaEditorPanelFX(
+			activeCompany.getChartOfAccounts(),
+			chart ->
+			{
+				activeCompany.setChartOfAccounts(chart);
+
+				try
+				{
+					CurrentCompany.persist();
+				}
+				catch (IOException | ActionCancelledException | NoFileCreatedException ex)
+				{
+					ex.printStackTrace();
+				}
+
+			},
+			() -> this.root.setCenter(previousView));
+		this.root.setCenter(editor);
+	}
+	*/
 	
 	private void setState(AppState s)
 	{

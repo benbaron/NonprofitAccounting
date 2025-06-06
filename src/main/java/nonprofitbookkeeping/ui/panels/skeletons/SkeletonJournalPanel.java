@@ -217,8 +217,8 @@ public class SkeletonJournalPanel extends BorderPane {
             this.transactionId = new SimpleStringProperty(String.valueOf(tx.getBookingDateTimestamp()));
             this.description = new SimpleStringProperty(tx.getDescription() != null ? tx.getDescription() : (tx.getMemo() != null ? tx.getMemo() : ""));
 
-            if (entry != null && entry.getAccountNumber() != null) {
-                this.accountName = new SimpleStringProperty(entry.getAccountNumber());
+            if (entry != null && entry.getAccount() != null) {
+                this.accountName = new SimpleStringProperty(entry.getAccount().getName());
                 BigDecimal amount = entry.getAmount() != null ? entry.getAmount() : BigDecimal.ZERO;
                 if (entry.getAccountSide() == AccountSide.DEBIT) {
                     this.debit = new SimpleStringProperty(amount.toPlainString());
