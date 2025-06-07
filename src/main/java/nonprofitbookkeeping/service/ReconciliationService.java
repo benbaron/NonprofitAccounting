@@ -11,7 +11,7 @@ import java.util.ArrayList;
 /**
  * Provides functionality for reconciling entries.
  */
-public class ReconciliationService 
+public class ReconciliationService
 {
 	
 	/**
@@ -44,13 +44,13 @@ public class ReconciliationService
 	 */
 	public static boolean reconcileEntry(Long txnId)
 	{
-		// In a real implementation, the transaction ID 
+		// In a real implementation, the transaction ID
 		// would be marked as reconciled in a database
 		System.out.println("Reconciled transaction ID: " + txnId);
 		return true;
 	}
-
-
+	
+	
 	/**
 	 * @param value
 	 * @return
@@ -60,7 +60,7 @@ public class ReconciliationService
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -69,7 +69,7 @@ public class ReconciliationService
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 	/**
 	 * @param value
 	 * @param string
@@ -81,7 +81,7 @@ public class ReconciliationService
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	/**
 	 * @param mockTx1
 	 */

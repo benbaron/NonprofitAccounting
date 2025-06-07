@@ -34,7 +34,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 
 public class ReportService
@@ -42,7 +41,13 @@ public class ReportService
 	private static final Logger LOGGER = Logger.getLogger(ReportService.class.getName());
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
 	
-	
+	/**
+	 * 
+	 * @param context
+	 * @param ledger
+	 * @param chartOfAccounts
+	 * @return
+	 */
 	static Map<String, Object> prepareIncomeStatementContext(	ReportContext context, Ledger ledger,
 																ChartOfAccounts chartOfAccounts)
 	{
@@ -193,6 +198,13 @@ public class ReportService
 		return jxlsContext;
 	}
 	
+	/**
+	 * 
+	 * @param account
+	 * @param selectedFundNames
+	 * @param chartOfAccounts
+	 * @return
+	 */
 	private static boolean doesAccountMatchFunds(	Account account, List<String> selectedFundNames,
 													ChartOfAccounts chartOfAccounts)
 	{
@@ -226,6 +238,13 @@ public class ReportService
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param context
+	 * @param ledger
+	 * @param chartOfAccounts
+	 * @return
+	 */
 	static Map<String, Object> prepareBalanceSheetContext(	ReportContext context, Ledger ledger,
 															ChartOfAccounts chartOfAccounts)
 	{
@@ -360,6 +379,16 @@ public class ReportService
 		return jxlsContext;
 	}
 	
+	/**
+	 * 
+	 * @param account
+	 * @param date
+	 * @param ledger
+	 * @param chartOfAccounts
+	 * @param selectedFundNames
+	 * @param applyFundFilter
+	 * @return
+	 */
 	static BigDecimal getAccountBalanceAsOfDate(Account account, LocalDate date, Ledger ledger,
 												ChartOfAccounts chartOfAccounts,
 												List<String> selectedFundNames,
@@ -438,6 +467,13 @@ public class ReportService
 		return balance;
 	}
 	
+	/**
+	 * 
+	 * @param context
+	 * @param ledger
+	 * @param chartOfAccounts
+	 * @return
+	 */
 	static Map<String, Object> prepareTrialBalanceContext(	ReportContext context, Ledger ledger,
 															ChartOfAccounts chartOfAccounts)
 	{
@@ -590,6 +626,13 @@ public class ReportService
 		return jxlsContext;
 	}
 	
+	/**
+	 * 
+	 * @param context
+	 * @param ledger
+	 * @param chartOfAccounts
+	 * @return
+	 */
 	static Map<String, Object> prepareCashFlowStatementContext(	ReportContext context, Ledger ledger,
 																ChartOfAccounts chartOfAccounts)
 	{
@@ -1122,6 +1165,13 @@ public class ReportService
 		return jxlsContext;
 	}
 	
+	/**
+	 * 
+	 * @param context
+	 * @param ledger
+	 * @param chartOfAccounts
+	 * @return
+	 */
 	static Map<String, Object> prepareAccountActivityContext(	ReportContext context, Ledger ledger,
 																ChartOfAccounts chartOfAccounts)
 	{
@@ -1280,7 +1330,14 @@ public class ReportService
 		return jxlsContext;
 	}
 	
-	
+	/**
+	 * 
+	 * @param context
+	 * @param ledger
+	 * @param chartOfAccounts
+	 * @return
+	 * @throws IOException
+	 */
 	public static File generate(ReportContext context, Ledger ledger,
 								ChartOfAccounts chartOfAccounts) throws IOException
 	{
@@ -1447,10 +1504,20 @@ public class ReportService
 		return outputFile;
 	}
 	
+	/**
+	 * 
+	 * @param reportType
+	 * @param writer
+	 */
 	public void registerWriter(String reportType, LedgerReportWriter writer)
 	{
-		/* ... */ }
+		/* ... */ 
+	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public List<ReportMetadata> listGeneratedReports()
 	{
 		return new ArrayList<>();

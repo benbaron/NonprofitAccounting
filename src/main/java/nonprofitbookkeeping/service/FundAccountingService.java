@@ -9,12 +9,19 @@ import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * 
+ */
 public class FundAccountingService
 {
 	
 	@JsonProperty private final Map<String, Fund> fundMap;
 	@JsonProperty private final Map<String, Account> accountMap;
 	
+	/**
+	 * 
+	 * Constructor FundAccountingService
+	 */
 	public FundAccountingService()
 	{
 		this.fundMap = new HashMap<>();
