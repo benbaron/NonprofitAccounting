@@ -33,16 +33,6 @@ public final class AccountingEntry implements Serializable
 	/**
 	 * 
 	 * Constructor AccountingEntry
-	 */
-	public AccountingEntry()
-	{
-		this.amount = null;
-		this.accountSide = null;
-		this.accountNumber = "";		
-	}
-	/**
-	 * 
-	 * Constructor AccountingEntry
 	 * @param amount
 	 * @param accountNumber
 	 * @param accountSide
@@ -128,15 +118,6 @@ public final class AccountingEntry implements Serializable
 	public String getAccountNumber()
 	{
 		return this.accountNumber;
-	}
-
-	/**
-	 * @return
-	 */
-	public Account getAccount()
-	{
-		// TODO Auto-generated method stub
-		return null;
 	}
 	
 	

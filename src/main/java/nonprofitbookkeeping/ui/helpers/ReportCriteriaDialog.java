@@ -35,13 +35,8 @@ public class ReportCriteriaDialog
 	// FundItem and AccountItem classes remain mostly the same,
 	// ensure they are compatible with JavaFX ListView if needed for custom cell
 	// factories.
-	
 	// For now, assuming standard ListView<String> or ListView<FundItem/AccountItem>
 	// with toString()
-	
-	/**
-	 * FundItem
-	 */
 	private static class FundItem
 	{
 		private final Fund fund;
@@ -83,9 +78,6 @@ public class ReportCriteriaDialog
 		
 	}
 	
-	/**
-	 * AccountItem
-	 */
 	private static class AccountItem
 	{
 		private final Account account;
@@ -127,18 +119,12 @@ public class ReportCriteriaDialog
 		
 	}
 	
-	/**
-	 * 
-	 * @param parentWindow
-	 * @param title
-	 * @param availableFunds
-	 * @param dateMode
-	 * @param showFundSelector
-	 * @return
-	 */
+
 	// Overloaded public methods to maintain API compatibility for now
 	public static Optional<ReportCriteria> showDialog(
-														Window parentWindow,
+														Window parentWindow, // Changed from
+																				// Component to
+																				// Window
 														String title,
 														List<Fund> availableFunds,
 														DateSelectionMode dateMode,
@@ -148,18 +134,10 @@ public class ReportCriteriaDialog
 			false, null);
 	}
 	
-	/**
-	 * 
-	 * @param parentWindow
-	 * @param title
-	 * @param availableFunds
-	 * @param dateMode
-	 * @param showFundSelector
-	 * @param initialConfig
-	 * @return
-	 */
 	public static Optional<ReportCriteria> showDialog(
-														Window parentWindow,
+														Window parentWindow, // Changed from
+																				// Component to
+																				// Window
 														String title,
 														List<Fund> availableFunds,
 														DateSelectionMode dateMode,
@@ -172,27 +150,17 @@ public class ReportCriteriaDialog
 	
 	
 	// Main dialog logic
-	/**
-	 * 
-	 * @param parentWindow
-	 * @param dialogTitle
-	 * @param availableFunds
-	 * @param chartOfAccounts
-	 * @param dateMode
-	 * @param showFundSelector
-	 * @param showAccountSelector
-	 * @param initialConfig
-	 * @return
-	 */
 	public static Optional<ReportCriteria> showDialog(
-	                                                  Window parentWindow,
-	                                                  String dialogTitle,
-	                                                  List<Fund> availableFunds,
-	                                                  ChartOfAccounts chartOfAccounts,
-	                                                  DateSelectionMode dateMode,
-	                                                  boolean showFundSelector,
-	                                                  boolean showAccountSelector,
-	                                                  ReportConfiguration initialConfig)
+														Window parentWindow, // Changed from
+																				// Component to
+																				// Window
+														String dialogTitle,
+														List<Fund> availableFunds,
+														ChartOfAccounts chartOfAccounts,
+														DateSelectionMode dateMode,
+														boolean showFundSelector,
+														boolean showAccountSelector,
+														ReportConfiguration initialConfig)
 	{
 		
 		Dialog<ReportCriteria> dialog = new Dialog<>();

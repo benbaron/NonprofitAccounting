@@ -46,21 +46,4 @@ public class AlertBox
 		
 	}
 
-	/**
-	 * @param window
-	 * @param string
-	 */
-	public static void showWarning(Window owner, String message)
-	{
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.initOwner(owner); // optional – ties it to your main stage
-		alert.setTitle("Information");
-		alert.setHeaderText(message);
-		// alert.setContentText(message);
-		// add extra buttons or graphics if you want
-		// alert.getButtonTypes().setAll(ButtonType.OK, ButtonType.CANCEL);
-		
-		alert.showAndWait(); // blocks until the user clicks OK
-	}
-
 }

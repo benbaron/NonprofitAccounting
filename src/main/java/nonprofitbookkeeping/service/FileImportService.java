@@ -58,13 +58,6 @@ public class FileImportService
 	
 	// --- OFX Parsing Logic ---
 	// Package-private for testing
-	/**
-	 * 
-	 * @param inputStream
-	 * @return
-	 * @throws IOException
-	 * @throws OFXParseException
-	 */
 	static List<ImportedTransaction> parseOfx(InputStream inputStream)	throws IOException,
 																		OFXParseException
 	{
@@ -146,14 +139,6 @@ public class FileImportService
 		return importedTransactions;
 	}
 	
-	/**
-	 * 
-	 * @param ofxTransaction
-	 * @param accountNumber
-	 * @param accountType
-	 * @param currencyCode
-	 * @return
-	 */
 	private static ImportedTransaction mapToImportedTransaction(Transaction ofxTransaction,
 																String accountNumber,
 																String accountType,
@@ -195,14 +180,6 @@ public class FileImportService
 	
 	// --- QIF Parsing Logic ---
 	// Package-private for testing
-	/**
-	 * 
-	 * @param inputStream
-	 * @param targetAccountTypeHint
-	 * @return
-	 * @throws IOException
-	 */
-
 	static List<ImportedTransaction> parseQif(	InputStream inputStream,
 												String targetAccountTypeHint) throws IOException
 	{
@@ -315,9 +292,6 @@ public class FileImportService
 		return importedTransactions;
 	}
 	
-	/**
-	 * 
-	 */
 	private static final DateTimeFormatter QIF_DATE_FORMATTER_MDY_YY =
 		new DateTimeFormatterBuilder()
 			.appendPattern("M/d/yy")
@@ -338,14 +312,9 @@ public class FileImportService
 	private static final DateTimeFormatter QIF_DATE_FORMATTER_DMYYYY =
 		DateTimeFormatter.ofPattern("d/M/yyyy");
 	
-	/**
-	 * 
-	 * @param inputStream
-	 * @param targetAccountTypeHint
-	 * @return
-	 * @throws IOException
-	 */
-	private static List<ImportedTransaction>parseQif1(InputStream inputStream, String targetAccountTypeHint) throws IOException
+	private static
+			List<ImportedTransaction>
+			parseQif1(InputStream inputStream, String targetAccountTypeHint) throws IOException
 	{
 		List<ImportedTransaction> importedTransactions = new ArrayList<>();
 		ImportedTransaction currentTx = null;
@@ -455,12 +424,6 @@ public class FileImportService
 		return importedTransactions;
 	}
 	
-	/**
-	 * 
-	 * @param dateStr
-	 * @return
-	 * @throws DateTimeParseException
-	 */
 	private static LocalDate parseQifDate(String dateStr) throws DateTimeParseException
 	{
 		
@@ -507,11 +470,6 @@ public class FileImportService
 		return LocalDate.parse(dateStr);
 	}
 	
-	/**
-	 * 
-	 * @param tx
-	 * @return
-	 */
 	private static boolean isValidTransaction(ImportedTransaction tx)
 	{
 		return tx.getDatePosted() != null && tx.getAmount() != null;
@@ -520,20 +478,12 @@ public class FileImportService
 	// --- Duplicate Detection & Mapping Logic ---
 	// Package-private for testing (though isPotentialDuplicate remains private and
 	// is tested via this)
-	/**
-	 * 
-	 * @param importedTxns
-	 * @param targetAccount
-	 * @param chartOfAccounts
-	 * @param existingLedger
-	 * @return
-	 */
-	static List<AccountingTransaction> mapToAccountingTransactions
-	(
-	 List<ImportedTransaction> importedTxns,
-	 Account targetAccount,
-	 ChartOfAccounts chartOfAccounts,
-	 Ledger existingLedger)
+	static List<AccountingTransaction> mapToAccountingTransactions(
+																	List<
+																		ImportedTransaction> importedTxns,
+																	Account targetAccount,
+																	ChartOfAccounts chartOfAccounts,
+																	Ledger existingLedger)
 	{
 		
 		List<AccountingTransaction> accountingTransactions = new ArrayList<>();
@@ -654,13 +604,6 @@ public class FileImportService
 		return accountingTransactions;
 	}
 	
-	/**
-	 * 
-	 * @param impTxn
-	 * @param targetAccount
-	 * @param existingLedger
-	 * @return
-	 */
 	private static boolean isPotentialDuplicate(ImportedTransaction impTxn, Account targetAccount,
 												Ledger existingLedger)
 	{
@@ -772,7 +715,11 @@ public class FileImportService
 			
 			// Compare description (payee)
 			String impDescription = impTxn.getDescription() != null ? impTxn.getDescription() : "";
-			String existingDescription = existingTx.getMemo() != null ? existingTx.getMemo() : "";
+			String existingDescription = existingTx.getMemo() != null ? existingTx.getMemo() : ""; // Or
+																									// a
+																									// specific
+																									// entry's
+																									// memo/description
 			// For V1 heuristic, using existingTx.getMemo() as a general descriptor.
 			// A more robust check might look at the description of the "Needs
 			// Categorization" entry.
@@ -819,20 +766,12 @@ public class FileImportService
 		return false;
 	}
 	
-	/**
-	 * 
-	 * @param importedTxns
-	 * @param targetAccount
-	 * @param chartOfAccounts
-	 * @param existingLedger
-	 * @return
-	 */
 	private static
 			List<AccountingTransaction>
-			mapToAccountingTransactions1(List<ImportedTransaction> importedTxns,
-			                             Account targetAccount,
-			                             ChartOfAccounts chartOfAccounts,
-			                             Ledger existingLedger)
+			mapToAccountingTransactions1(	List<ImportedTransaction> importedTxns,
+											Account targetAccount,
+											ChartOfAccounts chartOfAccounts,
+											Ledger existingLedger)
 	
 	{ // Added existingLedger
 		
@@ -959,14 +898,6 @@ public class FileImportService
 	}
 	
 	// Updated importFile method signature
-	/**
-	 * 
-	 * @param file
-	 * @param targetAccountInCOA
-	 * @param chartOfAccounts
-	 * @param ledger
-	 * @return
-	 */
 	public static List<AccountingTransaction> importFile(	File file, Account targetAccountInCOA,
 															ChartOfAccounts chartOfAccounts,
 															Ledger ledger)

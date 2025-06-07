@@ -16,7 +16,7 @@ class InventoryServiceTest {
 
     @BeforeEach
     void setUp() {
-        service.clearInventory(); // Clear the static map
+        InventoryService.clearInventory(); // Clear the static map
         this.service = new InventoryService(); // Re-initialize service, which ensures map is ready
     }
 
@@ -173,7 +173,7 @@ class InventoryServiceTest {
     @Test
     @DisplayName("Test getInventoryItems on empty inventory")
     void testGetInventoryItemsEmpty() {
-        List<String[]> stringArrays = this.service.getInventoryItems();
+        List<String[]> stringArrays = InventoryService.getInventoryItems();
         assertTrue(stringArrays.isEmpty());
     }
 
@@ -185,7 +185,7 @@ class InventoryServiceTest {
         this.service.addItem(item1);
         this.service.addItem(item2);
 
-        List<String[]> stringArrays = this.service.getInventoryItems();
+        List<String[]> stringArrays = InventoryService.getInventoryItems();
         assertEquals(2, stringArrays.size());
 
         for (String[] arr : stringArrays) {

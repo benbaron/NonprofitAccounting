@@ -49,8 +49,8 @@ public class ReconciliationService
 		System.out.println("Reconciled transaction ID: " + txnId);
 		return true;
 	}
-	
-	
+
+
 	/**
 	 * @param value
 	 * @return
@@ -60,7 +60,7 @@ public class ReconciliationService
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -69,7 +69,7 @@ public class ReconciliationService
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	/**
 	 * @param value
 	 * @param string
@@ -81,7 +81,7 @@ public class ReconciliationService
 		// TODO Auto-generated method stub
 		
 	}
-	
+
 	/**
 	 * @param mockTx1
 	 */
