@@ -22,6 +22,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import nonprofitbookkeeping.ui.MainApplicationView;
 import nonprofitbookkeeping.core.ApplicationContext;
 import nonprofitbookkeeping.core.ApplicationContextImpl;
 import nonprofitbookkeeping.model.Company;
@@ -90,8 +91,15 @@ public class NonprofitBookkeepingFX extends Application
 		this.primaryStage = stage;
 		this.c = new CurrentCompany();
 		this.dashboard = new DashboardPanelFX();
+<<<<<<< HEAD
 		MainApplicationView mainView = new MainApplicationView();
 		this.root = mainView; // Assign MainApplicationView to root
+=======
+		// this.root = new BorderPane(); // Old root
+		MainApplicationView mainView = new MainApplicationView();
+		this.root = mainView; // Assign MainApplicationView to root
+		// this.root.setCenter(this.dashboard); // MainApplicationView handles its own center
+>>>>>>> branch 'skeleton-ui-workflow-demo' of https://github.com/benbaron/NonprofitAccounting.git
 		
 		// Instantiate ApplicationContextImpl
 		// Services are passed from the static ServiceContainer
@@ -151,6 +159,22 @@ public class NonprofitBookkeepingFX extends Application
 		}
 		
 		LOGGER.info("Plugin discovery complete. Loaded " + this.loadedPlugins.size() + " plugins.");
+<<<<<<< HEAD
+=======
+		
+		// MenuBar must be built *after* plugins are loaded so 
+		// they can add their items.
+		// mainView.setTop(buildMenuBar()); // Old way of setting menu bar directly
+		MenuBar menuBar = buildMenuBar();
+		mainView.setMenuBar(menuBar); // New way: Pass MenuBar to MainApplicationView
+		
+		Scene scene = new Scene(mainView, 1000, 700); // Use mainView for the scene
+		this.primaryStage.setScene(scene);
+		this.primaryStage.setTitle("Nonprofit Bookkeeping (JavaFX)");
+		
+		setState(AppState.NO_COMPANY);
+		this.primaryStage.show();
+>>>>>>> branch 'skeleton-ui-workflow-demo' of https://github.com/benbaron/NonprofitAccounting.git
 	}
 	
 	private MenuBar buildMenuBar()
@@ -168,6 +192,7 @@ public class NonprofitBookkeepingFX extends Application
 		
 		/* EDIT */
 		Menu edit = new Menu("Edit");
+<<<<<<< HEAD
 		this.miEditCompany = add(edit, "Create or Edit Company",
 			e -> startCreateWizard());
 		this.miEditCoa = add(edit, "Edit Chart of Accounts",
@@ -177,6 +202,47 @@ public class NonprofitBookkeepingFX extends Application
 				.showPanel(MainApplicationView.PanelType.JOURNAL));
 		this.miEditBudget = add(edit, "Open Budget Editor",
 			e -> doBudgetEditorAction());
+=======
+		this.miEditCompany = add(edit, "Create or Edit Company", e -> startCreateWizard());
+		// this.miEditCoa = add(edit, "Edit Chart of Accounts", e -> showCoaEditor()); // Old
+		this.miEditCoa = add(edit, "Edit Chart of Accounts", e -> ((MainApplicationView)this.root).showPanel(MainApplicationView.PanelType.COA));
+		// this.miEditJournal = add(edit, "Edit Journal", e -> showPanel(new JournalPanelFX(), "Journal")); // Old
+		this.miEditJournal = add(edit, "Edit Journal", e -> ((MainApplicationView)this.root).showPanel(MainApplicationView.PanelType.JOURNAL));
+		
+		add(edit, "Open Budget Editor", e -> {
+			Company currentCompany = CurrentCompany.getCompany();
+
+			if (currentCompany == null) {
+				AlertBox.showError(this.primaryStage, "No company is currently open. Please open or create a company first.");
+				return;
+			}
+
+			File companyFile = currentCompany.getCompanyFile();
+			if (companyFile == null) {
+				AlertBox.showError(this.primaryStage, "The current company has not been saved to a file yet. Please save your company before managing budgets.");
+				return;
+			}
+
+			File companyDir = companyFile.getParentFile();
+			if (companyDir == null) {
+				// This case is less likely if companyFile is not null and is a valid file path,
+				// but it's a good safeguard.
+				AlertBox.showError(this.primaryStage, "Could not determine the company's directory from its saved file path. Cannot manage budgets.");
+				return;
+			}
+			
+			// Check if the directory actually exists, as an additional safeguard,
+			// though BudgetService might also handle this.
+			if (!companyDir.exists() || !companyDir.isDirectory()) {
+				AlertBox.showError(this.primaryStage, "The company directory '" + companyDir.getAbsolutePath() + "' does not exist or is not a directory. Cannot manage budgets.");
+				return;
+			}
+
+			// If all checks pass, proceed to open the BudgetPanel
+			new BudgetPanel(null, currentCompany.getChartOfAccounts(), new ArrayList<Fund>(),
+				ServiceContainer.budgetService, companyDir, null).setVisible(true);
+		});
+>>>>>>> branch 'skeleton-ui-workflow-demo' of https://github.com/benbaron/NonprofitAccounting.git
 		bar.getMenus().add(edit);
 		
 		/* RUN */
@@ -195,9 +261,17 @@ public class NonprofitBookkeepingFX extends Application
 		
 		/* REPORTS */
 		this.reports = new Menu("Reports");
+<<<<<<< HEAD
 		add(this.reports, "Show Reports", e -> ((MainApplicationView) this.root)
 			.showPanel(MainApplicationView.PanelType.REPORTS));
+=======
+		// add(this.reports, "Generate Reports", e -> { /* implement */}); // Old
+		// placeholder
+		// add(this.reports, "Show Reports", e -> showPanel(new ReportsPanelFX(), "Reports")); // Old
+		add(this.reports, "Show Reports", e -> ((MainApplicationView)this.root).showPanel(MainApplicationView.PanelType.REPORTS));
+>>>>>>> branch 'skeleton-ui-workflow-demo' of https://github.com/benbaron/NonprofitAccounting.git
 		add(this.reports, "Show Accounts",
+<<<<<<< HEAD
 			e -> showPanel(new AccountsPanelFX(new AccountService()), "Chart of Accounts")); // Stays
 																								// as
 																								// new
@@ -206,6 +280,23 @@ public class NonprofitBookkeepingFX extends Application
 																								// now
 		add(this.reports, "Show Account Activity",
 			e -> showAccountActivityAction());
+=======
+			e -> showPanel(new AccountsPanelFX(new AccountService()), "Chart of Accounts")); // Stays as new window for now
+		add(this.reports, "Show Account Activity", e -> {
+			Company currentCompany = CurrentCompany.getCompany();
+			
+			if (currentCompany != null && currentCompany.getLedger() != null)
+			{
+				showPanel(new AccountsActivityPanelFX(currentCompany.getLedger()),
+					"Account Activity");
+			}
+			else
+			{
+				AlertBox.showError(this.primaryStage, "No company or ledger open.");
+			}
+			
+		});
+>>>>>>> branch 'skeleton-ui-workflow-demo' of https://github.com/benbaron/NonprofitAccounting.git
 		add(this.reports, "Generate Income Statement",
 			e -> new GenerateIncomeStatementAction(ServiceContainer.reportService)
 				.actionPerformed(null));
@@ -403,6 +494,41 @@ public class NonprofitBookkeepingFX extends Application
 		sub.show();
 	}
 	
+<<<<<<< HEAD
+=======
+	/*
+	private void showCoaEditor() // Replaced by menu action calling mainView.showPanel()
+	{
+		Node previousView = this.root.getCenter();
+		Company activeCompany = CurrentCompany.getCompany();
+		
+		if (activeCompany == null || activeCompany.getChartOfAccounts() == null)
+		{
+			AlertBox.showError(this.primaryStage, "No company or Chart of Accounts open.");
+			return;
+		}
+		
+		CoaEditorPanelFX editor = new CoaEditorPanelFX(
+			activeCompany.getChartOfAccounts(),
+			chart ->
+			{
+				activeCompany.setChartOfAccounts(chart);
+				
+				try
+				{
+					CurrentCompany.persist();
+				}
+				catch (IOException | ActionCancelledException | NoFileCreatedException ex)
+				{
+					ex.printStackTrace();
+				}
+				
+			},
+			() -> this.root.setCenter(previousView));
+		this.root.setCenter(editor);
+	}
+	*/
+>>>>>>> branch 'skeleton-ui-workflow-demo' of https://github.com/benbaron/NonprofitAccounting.git
 	
 	/**
 	 * Sets the visibility state of menu items
@@ -491,6 +617,7 @@ public class NonprofitBookkeepingFX extends Application
 		}
 		
 		// this.root.setCenter(this.dashboard); // Old way
+<<<<<<< HEAD
 		if (this.root instanceof MainApplicationView)
 		{
 			((MainApplicationView) this.root).showPanel(MainApplicationView.PanelType.DASHBOARD);
@@ -501,6 +628,14 @@ public class NonprofitBookkeepingFX extends Application
 			this.root.setCenter(this.dashboard);
 		}
 		
+=======
+		if (this.root instanceof MainApplicationView) {
+			((MainApplicationView)this.root).showPanel(MainApplicationView.PanelType.DASHBOARD);
+		} else {
+			// Fallback or error if root is not what we expect, though it should be.
+			this.root.setCenter(this.dashboard);
+		}
+>>>>>>> branch 'skeleton-ui-workflow-demo' of https://github.com/benbaron/NonprofitAccounting.git
 	}
 	
 	/**

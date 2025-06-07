@@ -17,7 +17,10 @@ import javafx.scene.layout.*;
 import nonprofitbookkeeping.model.Account; // Added import
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.ChartOfAccounts; // Added import
+<<<<<<< HEAD
 import nonprofitbookkeeping.model.Company;
+=======
+>>>>>>> branch 'skeleton-ui-workflow-demo' of https://github.com/benbaron/NonprofitAccounting.git
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Ledger;
 
