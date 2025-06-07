@@ -119,6 +119,15 @@ public final class AccountingEntry implements Serializable
 	{
 		return this.accountNumber;
 	}
+
+	/**
+	 * @return
+	 */
+	public Account getAccount()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 }

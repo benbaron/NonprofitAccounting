@@ -104,6 +104,15 @@ public class ChartOfAccounts implements Serializable
 	 * @return The {@link Account} object if found, or {@code null} if no account
 	 *         matches the given account number, or if the input accountNumber is invalid.
 	 */
+	/**
+	 * @param accountNumber
+	 * @return
+	 */
+	public Account getAccountByNumber(String accountNumber)
+	{
+		return getAccount(accountNumber);
+	}
+	
 	public Account getAccount(String accountNumber)
 	{
 		if (accountNumber == null || accountNumber.trim().isEmpty()) {
@@ -131,5 +140,16 @@ public class ChartOfAccounts implements Serializable
 		// this.chartOfAccounts is final and initialized, so it won't be null.
         return new ArrayList<>(this.chartOfAccounts);
 	}
+
+	/**
+	 * @param accountNumber
+	 * @return
+	 */
+	public boolean removeAccount(String accountNumber)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	
 }

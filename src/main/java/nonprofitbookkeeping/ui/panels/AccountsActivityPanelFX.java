@@ -17,6 +17,7 @@ import javafx.scene.layout.*;
 import nonprofitbookkeeping.model.Account; // Added import
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.ChartOfAccounts; // Added import
+import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Ledger;
 
