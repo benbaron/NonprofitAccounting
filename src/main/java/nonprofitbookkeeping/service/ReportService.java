@@ -1515,7 +1515,7 @@ public class ReportService
                     if (entry == null || entry.getAccountNumber() == null || entry.getAmount() == null) continue;
 
                     Account account = chartOfAccounts.getAccount(entry.getAccountNumber());
-                    if (account == null || account.getAccountTypeEnum() == null || account.getName() == null) { // Changed to getAccountTypeEnum
+                    if (account == null || account.getAccountType() == null || account.getName() == null) { // Changed to getAccountTypeEnum
                         LOGGER.warning("IS Data: Account or critical account info not found for number: " + entry.getAccountNumber());
                         continue;
                     }
@@ -1526,7 +1526,7 @@ public class ReportService
                         }
                     }
 
-                    AccountType accountType = account.getAccountTypeEnum(); // Changed to getAccountTypeEnum
+                    AccountType accountType = account.getAccountType(); // Changed to getAccountTypeEnum
                     String accountName = account.getName();
                     BigDecimal amount = entry.getAmount();
                     AccountSide side = entry.getAccountSide();
@@ -1662,13 +1662,13 @@ public class ReportService
         Set<String> cashEquivalentAccountNumbers = new HashSet<>();
         for (Account acc : chartOfAccounts.getAccounts()) {
             // Assuming getAccountTypeEnum() is the correct method returning AccountType enum
-            if (acc.getAccountTypeEnum() == AccountType.BANK || acc.getAccountTypeEnum() == AccountType.CASH) {
+            if (acc.getAccountType() == AccountType.BANK || acc.getAccountType() == AccountType.CASH) {
                 cashEquivalentAccountNumbers.add(acc.getAccountNumber());
             }
         }
 
         for (Account account : chartOfAccounts.getAccounts()) {
-            if (account.getAccountTypeEnum() == AccountType.FIXED_ASSET && !cashEquivalentAccountNumbers.contains(account.getAccountNumber())) {
+            if (account.getAccountType() == AccountType.FIXED_ASSET && !cashEquivalentAccountNumbers.contains(account.getAccountNumber())) {
                 if (applyFundFilter && !doesAccountMatchFunds(account, selectedFundIds, chartOfAccounts)) {
                     continue;
                 }
@@ -1690,7 +1690,7 @@ public class ReportService
         BigDecimal totalFinancingCashFlow = BigDecimal.ZERO;
         for (Account account : chartOfAccounts.getAccounts()) {
             // Assuming getAccountTypeEnum() is the correct method
-            if (account.getAccountTypeEnum() == AccountType.LONG_TERM_LIABILITY || account.getAccountTypeEnum() == AccountType.EQUITY) {
+            if (account.getAccountType() == AccountType.LONG_TERM_LIABILITY || account.getAccountType() == AccountType.EQUITY) {
                 if ("Current Period Net Income".equalsIgnoreCase(account.getName()) || "Retained Earnings".equalsIgnoreCase(account.getName())) {
                     // continue; // Decided to include them if they change, representing new capital or distributions
                 }
@@ -1719,7 +1719,7 @@ public class ReportService
 
         for(Account cashAccount : chartOfAccounts.getAccounts()){
             // Assuming getAccountTypeEnum()
-            if(cashAccount.getAccountTypeEnum() == AccountType.BANK || cashAccount.getAccountTypeEnum() == AccountType.CASH){
+            if(cashAccount.getAccountType() == AccountType.BANK || cashAccount.getAccountType() == AccountType.CASH){
                 if (applyFundFilter && !doesAccountMatchFunds(cashAccount, selectedFundIds, chartOfAccounts)) {
                     continue;
                 }
@@ -1769,7 +1769,7 @@ public class ReportService
         accountsToList.sort(Comparator.comparing(Account::getAccountNumber));
 
         for (Account account : accountsToList) {
-            if (account == null || account.getAccountNumber() == null || account.getName() == null || account.getAccountTypeEnum() == null) { // Use getAccountTypeEnum
+            if (account == null || account.getAccountNumber() == null || account.getName() == null || account.getAccountType() == null) { // Use getAccountTypeEnum
                 LOGGER.warning("TB Data: Skipping account with missing critical information: " + (account != null ? account.getAccountNumber() : "null account object"));
                 continue;
             }
@@ -1797,7 +1797,7 @@ public class ReportService
                             continue;
                         }
 
-                        AccountType type = account.getAccountTypeEnum(); // Use getAccountTypeEnum
+                        AccountType type = account.getAccountType(); // Use getAccountTypeEnum
                         if (type == AccountType.ASSET || type == AccountType.EXPENSE) {
                             if (entry.getAccountSide() == AccountSide.DEBIT) {
                                 accountBalance = accountBalance.add(entry.getAmount());
@@ -1818,7 +1818,7 @@ public class ReportService
             BigDecimal debitAmount = BigDecimal.ZERO;
             BigDecimal creditAmount = BigDecimal.ZERO;
 
-            AccountType type = account.getAccountTypeEnum(); // Use getAccountTypeEnum
+            AccountType type = account.getAccountType(); // Use getAccountTypeEnum
             if (type == AccountType.ASSET || type == AccountType.EXPENSE) {
                 if (accountBalance.compareTo(BigDecimal.ZERO) >= 0) {
                     debitAmount = accountBalance;

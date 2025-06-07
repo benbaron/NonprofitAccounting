@@ -95,6 +95,15 @@ public class InventoryService {
         System.out.println("Inventory cleared.");
     }
 
+	/**
+	 * @return
+	 */
+	public static List<String[]> getInventoryItems()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
     // Removed private static inner class InventoryItem
     // Removed old getInventoryItems()
     // Removed old updateInventoryItem(String id, String name, int quantity, double cost)
