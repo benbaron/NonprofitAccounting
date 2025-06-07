@@ -36,6 +36,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import nonprofitbookkeeping.reports.datasource.IncomeStatementRowBean;
+import nonprofitbookkeeping.reports.datasource.CashFlowStatementRowBean;
+import nonprofitbookkeeping.reports.datasource.TrialBalanceRowBean; // Added import
+import nonprofitbookkeeping.reports.generator.AbstractReportGenerator;
+import nonprofitbookkeeping.reports.generator.IncomeStatementJasperGenerator;
+import nonprofitbookkeeping.reports.generator.CashFlowStatementJasperGenerator;
+
 
 public class ReportService
 {
@@ -1465,5 +1472,418 @@ public class ReportService
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
+    // New method for JasperReports data
+    public List<IncomeStatementRowBean> prepareIncomeStatementJasperData(
+            ReportContext context, Ledger ledger, ChartOfAccounts chartOfAccounts) {
+
+        List<IncomeStatementRowBean> reportData = new ArrayList<>();
+
+        if (context.getStartDate() == null || context.getEndDate() == null) {
+            LOGGER.warning("Start date and end date must be provided for income statement data preparation.");
+            return reportData; // Return empty list
+        }
+        if (ledger == null || chartOfAccounts == null) {
+             LOGGER.warning("Ledger or Chart of Accounts not available for income statement data.");
+             return reportData;
+        }
+
+        Map<String, BigDecimal> incomeAccountBalances = new HashMap<>();
+        Map<String, BigDecimal> expenseAccountBalances = new HashMap<>();
+
+        List<String> selectedFundIds = context.getFundIds();
+        boolean applyFundFilter = (selectedFundIds != null && !selectedFundIds.isEmpty());
+
+        long startDateMillis = context.getStartDate().atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
+        long endDateMillisExclusive = context.getEndDate().plusDays(1).atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
+
+        List<AccountingTransaction> transactions = ledger.getTransactions();
+        if (transactions == null) {
+            transactions = new ArrayList<>();
+        }
+
+        for (AccountingTransaction transaction : transactions) {
+            if (transaction == null) continue;
+
+            if (transaction.getBookingDateTimestamp() >= startDateMillis &&
+                transaction.getBookingDateTimestamp() < endDateMillisExclusive) {
+
+                Set<AccountingEntry> entries = transaction.getEntries();
+                if (entries == null) continue;
+
+                for (AccountingEntry entry : entries) {
+                    if (entry == null || entry.getAccountNumber() == null || entry.getAmount() == null) continue;
+
+                    Account account = chartOfAccounts.getAccount(entry.getAccountNumber());
+                    if (account == null || account.getAccountTypeEnum() == null || account.getName() == null) { // Changed to getAccountTypeEnum
+                        LOGGER.warning("IS Data: Account or critical account info not found for number: " + entry.getAccountNumber());
+                        continue;
+                    }
+
+                    if (applyFundFilter) {
+                        if (!doesAccountMatchFunds(account, selectedFundIds, chartOfAccounts)) {
+                             continue;
+                        }
+                    }
+
+                    AccountType accountType = account.getAccountTypeEnum(); // Changed to getAccountTypeEnum
+                    String accountName = account.getName();
+                    BigDecimal amount = entry.getAmount();
+                    AccountSide side = entry.getAccountSide();
+
+                    if (accountType == AccountType.INCOME) {
+                        BigDecimal currentTotal = incomeAccountBalances.getOrDefault(accountName, BigDecimal.ZERO);
+                        if (side == AccountSide.CREDIT) {
+                            incomeAccountBalances.put(accountName, currentTotal.add(amount));
+                        } else if (side == AccountSide.DEBIT) {
+                            incomeAccountBalances.put(accountName, currentTotal.subtract(amount));
+                        }
+                    } else if (accountType == AccountType.EXPENSE) {
+                        BigDecimal currentTotal = expenseAccountBalances.getOrDefault(accountName, BigDecimal.ZERO);
+                        if (side == AccountSide.DEBIT) {
+                            expenseAccountBalances.put(accountName, currentTotal.add(amount));
+                        } else if (side == AccountSide.CREDIT) {
+                            expenseAccountBalances.put(accountName, currentTotal.subtract(amount));
+                        }
+                    }
+                }
+            }
+        }
+
+        for (Map.Entry<String, BigDecimal> entry : incomeAccountBalances.entrySet()) {
+            if (entry.getValue().compareTo(BigDecimal.ZERO) != 0) {
+                reportData.add(new IncomeStatementRowBean("Income", entry.getKey(), entry.getValue()));
+            }
+        }
+
+        for (Map.Entry<String, BigDecimal> entry : expenseAccountBalances.entrySet()) {
+             if (entry.getValue().compareTo(BigDecimal.ZERO) != 0) {
+                reportData.add(new IncomeStatementRowBean("Expenses", entry.getKey(), entry.getValue()));
+             }
+        }
+
+        // Optional: Sort data if JRXML doesn't handle it or specific order is needed before grouping
+        // reportData.sort(Comparator.comparing(IncomeStatementRowBean::getAccountCategory)
+        //                          .thenComparing(IncomeStatementRowBean::getAccountName));
+
+        return reportData;
+    }
+
+    // New method for Cash Flow Statement JasperReports data
+    public List<CashFlowStatementRowBean> prepareCashFlowStatementJasperData(
+            ReportContext context, Ledger ledger, ChartOfAccounts chartOfAccounts) {
+
+        List<CashFlowStatementRowBean> reportData = new ArrayList<>();
+        int sortOrder = 0;
+
+        if (context.getStartDate() == null || context.getEndDate() == null || ledger == null || chartOfAccounts == null) {
+            LOGGER.warning("Missing required data (dates, ledger, or COA) for Cash Flow Statement data preparation.");
+            return reportData; // Return empty list
+        }
+
+        LocalDate reportStartDate = context.getStartDate();
+        LocalDate reportEndDate = context.getEndDate();
+        List<String> selectedFundIds = context.getFundIds();
+        boolean applyFundFilter = (selectedFundIds != null && !selectedFundIds.isEmpty());
+
+        // --- Net Income (from Operating Activities) ---
+        ReportContext incomeStatementPeriodContext = new ReportContext();
+        incomeStatementPeriodContext.setStartDate(reportStartDate);
+        incomeStatementPeriodContext.setEndDate(reportEndDate);
+        incomeStatementPeriodContext.setFundIds(selectedFundIds);
+
+        Map<String, Object> incomeStatementContextMap = prepareIncomeStatementContext(incomeStatementPeriodContext, ledger, chartOfAccounts);
+        BigDecimal netIncome = (BigDecimal) incomeStatementContextMap.getOrDefault("netIncome", BigDecimal.ZERO);
+        reportData.add(new CashFlowStatementRowBean("Operating Activities", "Net Income", netIncome, false, sortOrder++));
+
+        // --- Adjustments for Non-Cash Items (Operating Activities) ---
+        BigDecimal totalOperatingAdjustments = BigDecimal.ZERO;
+        BigDecimal totalDepreciationAmortization = BigDecimal.ZERO;
+        Set<String> deprAmortAccountNames = Set.of("Depreciation Expense", "Amortization Expense", "Depreciation", "Amortization");
+
+        long periodStartDateMillis = reportStartDate.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
+        long periodEndDateMillisExclusive = reportEndDate.plusDays(1).atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
+
+        for (Account account : chartOfAccounts.getAccounts()) {
+            if (account.getName() != null && deprAmortAccountNames.contains(account.getName())) {
+                if (applyFundFilter && !doesAccountMatchFunds(account, selectedFundIds, chartOfAccounts)) {
+                    continue;
+                }
+                for (AccountingTransaction transaction : ledger.getTransactions()) {
+                    if (transaction.getBookingDateTimestamp() >= periodStartDateMillis &&
+                        transaction.getBookingDateTimestamp() < periodEndDateMillisExclusive) {
+                        for (AccountingEntry entry : transaction.getEntries()) {
+                            if (entry.getAccountNumber().equals(account.getAccountNumber()) &&
+                                entry.getAccountSide() == AccountSide.DEBIT) {
+                                totalDepreciationAmortization = totalDepreciationAmortization.add(entry.getAmount());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (totalDepreciationAmortization.compareTo(BigDecimal.ZERO) != 0) {
+            reportData.add(new CashFlowStatementRowBean("Operating Activities", "Depreciation & Amortization", totalDepreciationAmortization, false, sortOrder++));
+            totalOperatingAdjustments = totalOperatingAdjustments.add(totalDepreciationAmortization);
+        }
+
+        // --- Changes in Working Capital (Operating Activities) ---
+        Map<String, String> workingCapitalConfig = new HashMap<>(Map.of(
+            "Accounts Receivable", "asset", "Inventory", "asset", "Prepaid Expenses", "asset",
+            "Accounts Payable", "liability", "Accrued Expenses", "liability", "Deferred Revenue", "liability"
+        ));
+        LocalDate beginningDateForChanges = reportStartDate.minusDays(1);
+
+        for (Account account : chartOfAccounts.getAccounts()) {
+            if (account.getName() != null && workingCapitalConfig.containsKey(account.getName())) {
+                if (applyFundFilter && !doesAccountMatchFunds(account, selectedFundIds, chartOfAccounts)) {
+                    continue;
+                }
+                String category = workingCapitalConfig.get(account.getName());
+                BigDecimal endBalance = getAccountBalanceAsOfDate(account, reportEndDate, ledger, chartOfAccounts, selectedFundIds, applyFundFilter);
+                BigDecimal beginningBalance = getAccountBalanceAsOfDate(account, beginningDateForChanges, ledger, chartOfAccounts, selectedFundIds, applyFundFilter);
+                BigDecimal change = endBalance.subtract(beginningBalance);
+
+                if (change.compareTo(BigDecimal.ZERO) == 0) continue;
+
+                String itemName = (change.compareTo(BigDecimal.ZERO) > 0 ? "Increase in " : "Decrease in ") + account.getName();
+                BigDecimal adjustmentAmount = "asset".equals(category) ? change.negate() : change;
+
+                reportData.add(new CashFlowStatementRowBean("Operating Activities", itemName, adjustmentAmount, false, sortOrder++));
+                totalOperatingAdjustments = totalOperatingAdjustments.add(adjustmentAmount);
+            }
+        }
+        BigDecimal cashFromOperations = netIncome.add(totalOperatingAdjustments);
+        reportData.add(new CashFlowStatementRowBean("Operating Activities", "Net Cash from Operating Activities", cashFromOperations, true, sortOrder++));
+
+        // --- Investing Activities ---
+        sortOrder = 200;
+        BigDecimal totalInvestingCashFlow = BigDecimal.ZERO;
+        Set<String> cashEquivalentAccountNumbers = new HashSet<>();
+        for (Account acc : chartOfAccounts.getAccounts()) {
+            // Assuming getAccountTypeEnum() is the correct method returning AccountType enum
+            if (acc.getAccountTypeEnum() == AccountType.BANK || acc.getAccountTypeEnum() == AccountType.CASH) {
+                cashEquivalentAccountNumbers.add(acc.getAccountNumber());
+            }
+        }
+
+        for (Account account : chartOfAccounts.getAccounts()) {
+            if (account.getAccountTypeEnum() == AccountType.FIXED_ASSET && !cashEquivalentAccountNumbers.contains(account.getAccountNumber())) {
+                if (applyFundFilter && !doesAccountMatchFunds(account, selectedFundIds, chartOfAccounts)) {
+                    continue;
+                }
+                BigDecimal endBalance = getAccountBalanceAsOfDate(account, reportEndDate, ledger, chartOfAccounts, selectedFundIds, applyFundFilter);
+                BigDecimal beginningBalance = getAccountBalanceAsOfDate(account, beginningDateForChanges, ledger, chartOfAccounts, selectedFundIds, applyFundFilter);
+                BigDecimal change = endBalance.subtract(beginningBalance);
+
+                if (change.compareTo(BigDecimal.ZERO) != 0) {
+                    BigDecimal cashFlowImpact = change.negate();
+                    reportData.add(new CashFlowStatementRowBean("Investing Activities", "Change in " + account.getName(), cashFlowImpact, false, sortOrder++));
+                    totalInvestingCashFlow = totalInvestingCashFlow.add(cashFlowImpact);
+                }
+            }
+        }
+        reportData.add(new CashFlowStatementRowBean("Investing Activities", "Net Cash from Investing Activities", totalInvestingCashFlow, true, sortOrder++));
+
+        // --- Financing Activities ---
+        sortOrder = 300;
+        BigDecimal totalFinancingCashFlow = BigDecimal.ZERO;
+        for (Account account : chartOfAccounts.getAccounts()) {
+            // Assuming getAccountTypeEnum() is the correct method
+            if (account.getAccountTypeEnum() == AccountType.LONG_TERM_LIABILITY || account.getAccountTypeEnum() == AccountType.EQUITY) {
+                if ("Current Period Net Income".equalsIgnoreCase(account.getName()) || "Retained Earnings".equalsIgnoreCase(account.getName())) {
+                    // continue; // Decided to include them if they change, representing new capital or distributions
+                }
+                if (applyFundFilter && !doesAccountMatchFunds(account, selectedFundIds, chartOfAccounts)) {
+                    continue;
+                }
+                BigDecimal endBalance = getAccountBalanceAsOfDate(account, reportEndDate, ledger, chartOfAccounts, selectedFundIds, applyFundFilter);
+                BigDecimal beginningBalance = getAccountBalanceAsOfDate(account, beginningDateForChanges, ledger, chartOfAccounts, selectedFundIds, applyFundFilter);
+                BigDecimal change = endBalance.subtract(beginningBalance);
+
+                if (change.compareTo(BigDecimal.ZERO) != 0) {
+                    reportData.add(new CashFlowStatementRowBean("Financing Activities", "Change in " + account.getName(), change, false, sortOrder++));
+                    totalFinancingCashFlow = totalFinancingCashFlow.add(change);
+                }
+            }
+        }
+        reportData.add(new CashFlowStatementRowBean("Financing Activities", "Net Cash from Financing Activities", totalFinancingCashFlow, true, sortOrder++));
+
+        // --- Summary: Net Change in Cash ---
+        sortOrder = 400;
+        BigDecimal netChangeInCashCalculated = cashFromOperations.add(totalInvestingCashFlow).add(totalFinancingCashFlow);
+        reportData.add(new CashFlowStatementRowBean("Summary", "Net Increase/Decrease in Cash", netChangeInCashCalculated, true, sortOrder++));
+
+        BigDecimal cashAtBeginningOfPeriod = BigDecimal.ZERO;
+        BigDecimal cashAtEndOfPeriod = BigDecimal.ZERO;
+
+        for(Account cashAccount : chartOfAccounts.getAccounts()){
+            // Assuming getAccountTypeEnum()
+            if(cashAccount.getAccountTypeEnum() == AccountType.BANK || cashAccount.getAccountTypeEnum() == AccountType.CASH){
+                if (applyFundFilter && !doesAccountMatchFunds(cashAccount, selectedFundIds, chartOfAccounts)) {
+                    continue;
+                }
+                cashAtBeginningOfPeriod = cashAtBeginningOfPeriod.add(getAccountBalanceAsOfDate(cashAccount, beginningDateForChanges, ledger, chartOfAccounts, selectedFundIds, applyFundFilter));
+                cashAtEndOfPeriod = cashAtEndOfPeriod.add(getAccountBalanceAsOfDate(cashAccount, reportEndDate, ledger, chartOfAccounts, selectedFundIds, applyFundFilter));
+            }
+        }
+        reportData.add(new CashFlowStatementRowBean("Summary", "Cash at Beginning of Period", cashAtBeginningOfPeriod, false, sortOrder++));
+        reportData.add(new CashFlowStatementRowBean("Summary", "Cash at End of Period", cashAtEndOfPeriod, true, sortOrder++));
+
+        // Optional: Verification
+        // BigDecimal actualNetChange = cashAtEndOfPeriod.subtract(cashAtBeginningOfPeriod);
+        // if (netChangeInCashCalculated.abs().subtract(actualNetChange.abs()).abs().compareTo(new BigDecimal("0.01")) > 0) { // Compare absolute values for safety
+        //    LOGGER.warning("Cash Flow Statement discrepancy: Calculated Net Change " + netChangeInCashCalculated +
+        //                   " vs Actual Net Change from balances " + actualNetChange + ". Difference: " + netChangeInCashCalculated.subtract(actualNetChange) );
+        // }
+
+        return reportData;
+    }
+
+    public List<TrialBalanceRowBean> prepareTrialBalanceJasperData(
+            ReportContext context, Ledger ledger, ChartOfAccounts chartOfAccounts) {
+
+        List<TrialBalanceRowBean> reportData = new ArrayList<>();
+
+        if (context.getEndDate() == null || ledger == null || chartOfAccounts == null) {
+            LOGGER.warning("End date, ledger, or COA missing for Trial Balance data preparation.");
+            return reportData;
+        }
+
+        LocalDate reportEndDate = context.getEndDate();
+        long reportEndDateMillisInclusive = reportEndDate.plusDays(1).atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
+
+        long reportStartDateMillis = 0;
+        if (context.getStartDate() != null) {
+            reportStartDateMillis = context.getStartDate().atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
+        }
+
+        List<String> selectedFundIds = context.getFundIds();
+        boolean applyFundFilter = (selectedFundIds != null && !selectedFundIds.isEmpty());
+
+        List<Account> accountsToList = chartOfAccounts.getAccounts();
+        if (accountsToList == null) {
+            accountsToList = new ArrayList<>();
+        }
+
+        accountsToList.sort(Comparator.comparing(Account::getAccountNumber));
+
+        for (Account account : accountsToList) {
+            if (account == null || account.getAccountNumber() == null || account.getName() == null || account.getAccountTypeEnum() == null) { // Use getAccountTypeEnum
+                LOGGER.warning("TB Data: Skipping account with missing critical information: " + (account != null ? account.getAccountNumber() : "null account object"));
+                continue;
+            }
+
+            if (applyFundFilter && !doesAccountMatchFunds(account, selectedFundIds, chartOfAccounts)) {
+                continue;
+            }
+
+            BigDecimal accountBalance = account.getOpeningBalance() != null ? account.getOpeningBalance() : BigDecimal.ZERO;
+
+            List<AccountingTransaction> transactions = ledger.getTransactions();
+            if (transactions != null) {
+                for (AccountingTransaction transaction : transactions) {
+                    if (transaction == null || transaction.getBookingDateTimestamp() >= reportEndDateMillisInclusive) {
+                        continue;
+                    }
+                    if (reportStartDateMillis > 0 && transaction.getBookingDateTimestamp() < reportStartDateMillis) {
+                        continue;
+                    }
+
+                    if (transaction.getEntries() == null) continue;
+
+                    for (AccountingEntry entry : transaction.getEntries()) {
+                        if (entry == null || !account.getAccountNumber().equals(entry.getAccountNumber()) || entry.getAmount() == null) {
+                            continue;
+                        }
+
+                        AccountType type = account.getAccountTypeEnum(); // Use getAccountTypeEnum
+                        if (type == AccountType.ASSET || type == AccountType.EXPENSE) {
+                            if (entry.getAccountSide() == AccountSide.DEBIT) {
+                                accountBalance = accountBalance.add(entry.getAmount());
+                            } else {
+                                accountBalance = accountBalance.subtract(entry.getAmount());
+                            }
+                        } else {
+                            if (entry.getAccountSide() == AccountSide.CREDIT) {
+                                accountBalance = accountBalance.add(entry.getAmount());
+                            } else {
+                                accountBalance = accountBalance.subtract(entry.getAmount());
+                            }
+                        }
+                    }
+                }
+            }
+
+            BigDecimal debitAmount = BigDecimal.ZERO;
+            BigDecimal creditAmount = BigDecimal.ZERO;
+
+            AccountType type = account.getAccountTypeEnum(); // Use getAccountTypeEnum
+            if (type == AccountType.ASSET || type == AccountType.EXPENSE) {
+                if (accountBalance.compareTo(BigDecimal.ZERO) >= 0) {
+                    debitAmount = accountBalance;
+                } else {
+                    creditAmount = accountBalance.abs();
+                }
+            } else {
+                if (accountBalance.compareTo(BigDecimal.ZERO) >= 0) {
+                    creditAmount = accountBalance;
+                } else {
+                    debitAmount = accountBalance.abs();
+                }
+            }
+
+            reportData.add(new TrialBalanceRowBean(account.getAccountNumber(), account.getName(), debitAmount, creditAmount));
+        }
+        return reportData;
+    }
+
+    public File generateJasperReport(ReportContext context, String outputFormat) throws Exception {
+        Company currentCompany = CurrentCompany.getCompany();
+        if (currentCompany == null) {
+            System.err.println("No company is currently open. Cannot generate report.");
+            throw new IllegalStateException("No company is currently open. Cannot generate report.");
+        }
+
+        AbstractReportGenerator reportGeneratorInstance = null;
+        String reportType = context.getReportType();
+
+        if (reportType == null || reportType.trim().isEmpty()) {
+            throw new IllegalArgumentException("Report type must be specified in ReportContext.");
+        }
+
+        switch (reportType) {
+            case "income_statement_jasper":
+                reportGeneratorInstance = new IncomeStatementJasperGenerator(context, this);
+                break;
+            case "cash_flow_statement_jasper":
+                reportGeneratorInstance = new CashFlowStatementJasperGenerator(context, this);
+                break;
+            // TODO: Add cases for other Jasper reports
+            default:
+                System.err.println("Unsupported or unknown Jasper report type: " + reportType);
+                throw new IllegalArgumentException("Unsupported Jasper report type: " + reportType);
+        }
+
+        if (reportGeneratorInstance != null) {
+            // --- NEW FILE HANDLING ---
+            File generatedFile = reportGeneratorInstance.generateAndExportReport(outputFormat);
+
+            if (generatedFile != null && generatedFile.exists()) {
+                System.out.println("ReportService: Successfully received generated file: " + generatedFile.getAbsolutePath());
+                return generatedFile;
+            } else if (generatedFile != null && !generatedFile.exists()) {
+                System.err.println("ReportService: Generator returned a File object, but the file does not exist at: " + generatedFile.getAbsolutePath());
+                throw new java.io.FileNotFoundException("Generated report file reference returned by generator, but file not found: " + generatedFile.getAbsolutePath());
+            } else {
+                System.err.println("ReportService: Report generator failed to return a valid file object for report type: " + reportType + ".");
+                throw new Exception("Report generation failed to produce a file for report type: " + reportType + ".");
+            }
+            // --- END NEW FILE HANDLING ---
+        } else {
+            // This case should ideally be caught by the default in the switch
+            System.err.println("ReportService: No report generator instance for type: " + reportType);
+            throw new IllegalArgumentException("No report generator configured for report type: " + reportType);
+        }
+    }
 }

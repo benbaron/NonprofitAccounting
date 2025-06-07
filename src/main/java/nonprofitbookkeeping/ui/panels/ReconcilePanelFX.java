@@ -101,8 +101,26 @@ public class ReconcilePanelFX extends BorderPane
 	private void loadTransactions()
 	{
 		this.rows.clear();
-		List<AccountingTransaction> list = this.service.getUnreconciled(this.accountBox.getValue());
-		list.forEach(t -> this.rows.add(new TxnRow(t)));
+		String selectedAccount = this.accountBox.getValue();
+		if (selectedAccount == null) {
+			// Or show a placeholder in the table, or disable table, etc.
+			System.err.println("ReconcilePanelFX: No account selected.");
+			updateDifference(); // Ensure difference is updated even if list is empty
+			return;
+		}
+		List<AccountingTransaction> list = this.service.getUnreconciled(selectedAccount);
+
+		if (list != null) { // Check if the list itself is null
+			list.forEach(t -> {
+				if (t != null) { // Check for null transactions within the list
+					this.rows.add(new TxnRow(t));
+				} else {
+					System.err.println("ReconcilePanelFX: Service returned a null AccountingTransaction in the list for account: " + selectedAccount);
+				}
+			});
+		} else {
+			System.err.println("ReconcilePanelFX: Service returned a null list for unreconciled transactions for account: " + selectedAccount);
+		}
 		updateDifference();
 	}
 	
@@ -177,7 +195,7 @@ public class ReconcilePanelFX extends BorderPane
 			this.id = t.getBookingDateTimestamp();
 			this.date = t.getDate();
 			this.memo = t.getMemo();
-			this.amount = t.getTotalAmount();
+			this.amount = t.getTotalAmount() != null ? t.getTotalAmount() : BigDecimal.ZERO;
 		}
 		
 		public CheckBox getCleared()
