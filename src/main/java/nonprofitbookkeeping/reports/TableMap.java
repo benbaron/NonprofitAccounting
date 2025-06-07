@@ -35,8 +35,8 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 	 */
 	private static final long serialVersionUID = 2746620878654011822L;
 	protected TableModel model;
-	
-	
+
+
 	/**
 	 *  Gets the columnClass attribute of the TableMap object
 	 *
@@ -47,8 +47,8 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 	{
 		return this.model.getColumnClass(aColumn);
 	}
-	
-	
+
+
 	/**
 	 *  Gets the columnCount attribute of the TableMap object
 	 *
@@ -58,8 +58,8 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 	{
 		return (this.model == null) ? 0 : this.model.getColumnCount();
 	}
-	
-	
+
+
 	/**
 	 *  Gets the columnName attribute of the TableMap object
 	 *
@@ -70,8 +70,8 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 	{
 		return this.model.getColumnName(aColumn);
 	}
-	
-	
+
+
 	/**
 	 *  Gets the model attribute of the TableMap object
 	 *
@@ -81,8 +81,8 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 	{
 		return this.model;
 	}
-	
-	
+
+
 	/**
 	 *  Gets the rowCount attribute of the TableMap object
 	 *
@@ -92,8 +92,8 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 	{
 		return (this.model == null) ? 0 : this.model.getRowCount();
 	}
-	
-	
+
+
 	/**
 	 *  Gets the valueAt attribute of the TableMap object
 	 *
@@ -105,8 +105,8 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 	{
 		return this.model.getValueAt(aRow, aColumn);
 	}
-	
-	
+
+
 	/**
 	 *  Gets the cellEditable attribute of the TableMap object
 	 *
@@ -118,8 +118,8 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 	{
 		return this.model.isCellEditable(row, column);
 	}
-	
-	
+
+
 	/**
 	 *  Sets the model attribute of the TableMap object
 	 *
@@ -130,8 +130,8 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 		this.model = model;
 		model.addTableModelListener(this);
 	}
-	
-	
+
+
 	/**
 	 *  Sets the valueAt attribute of the TableMap object
 	 *
@@ -143,8 +143,8 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 	{
 		this.model.setValueAt(aValue, aRow, aColumn);
 	}
-	
-	
+
+
 	/**
 	 *  Description of the Method
 	 *
@@ -154,6 +154,5 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 	{
 		fireTableChanged(e);
 	}
-	
-}
 
+}

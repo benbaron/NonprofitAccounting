@@ -41,7 +41,7 @@ public final class Account implements Serializable
 	public Account()
 	{
 		/* default ctor for Jackson / JPA */ }
-		
+
 	/* ================= fund helpers =================================== */
 	public void addFund(Fund fund)
 	{
@@ -75,7 +75,7 @@ public final class Account implements Serializable
 	{
 		return this.parentAccount != null;
 	}
-		
+
 	/**
 	 * Returns a one-element collection containing this account.  The method is
 	 * here mainly for compatibility with map-like code that expects a

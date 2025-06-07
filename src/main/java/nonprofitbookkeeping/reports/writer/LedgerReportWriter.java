@@ -20,7 +20,7 @@ public class LedgerReportWriter implements ReportWriterIntf
 	private final TrialBalanceService trialBalanceService;
 	private final Ledger ledger;
 
-	/**  
+	/**
 	 * Constructs a new LedgerReportWriter.
 	 *
 	 * @param trialBalanceService The service that might be used for related financial computations
@@ -41,13 +41,13 @@ public class LedgerReportWriter implements ReportWriterIntf
 	}
 
 	/**
-	 * 
+	 *
 	 * Override @see nonprofitbookkeeping.reports.ReportWriter#writeReport(nonprofitbookkeeping.reports.ReportContext)
 	 */
 	@Override public File writeReport(ReportContext context) throws IOException
 	{
 		File file = File.createTempFile("ledger_report_", ".txt");
-		
+
 		try (FileWriter writer = new FileWriter(file))
 		{
 			writer.write("Ledger Report\n");
@@ -55,7 +55,7 @@ public class LedgerReportWriter implements ReportWriterIntf
 			writer.write("Format: " + context.getOutputFormat() + "\n");
 			writer.write("...ledger report content here...");
 		}
-		
+
 		return file;
 	}
 

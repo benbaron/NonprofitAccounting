@@ -34,22 +34,22 @@ class TransactionServiceTest {
         lenient().when(this.mockAccountForNullNum.getAccountNumber()).thenReturn(null);
 
 
-        lenient().when(this.mockTx1.getId()).thenReturn("TXN1");
+        lenient().when(this.mockTx1.getBookingDateTimestamp()).thenReturn(1L);
         lenient().when(this.mockTx1.getAccount()).thenReturn(this.mockAccount1);
 
-        lenient().when(this.mockTx2.getId()).thenReturn("TXN2");
+        lenient().when(this.mockTx2.getBookingDateTimestamp()).thenReturn(2L);
         lenient().when(this.mockTx2.getAccount()).thenReturn(this.mockAccount2);
 
-        lenient().when(this.mockTx3.getId()).thenReturn("TXN3");
+        lenient().when(this.mockTx3.getBookingDateTimestamp()).thenReturn(3L);
         lenient().when(this.mockTx3.getAccount()).thenReturn(this.mockAccount1); // Another transaction for ACC1
 
-        lenient().when(this.mockTxNullId.getId()).thenReturn(null);
+        lenient().when(this.mockTxNullId.getBookingDateTimestamp()).thenReturn(null);
         lenient().when(this.mockTxNullId.getAccount()).thenReturn(this.mockAccount1);
 
-        lenient().when(this.mockTxNullAccount.getId()).thenReturn("TXN_NULL_ACC");
+        lenient().when(this.mockTxNullAccount.getBookingDateTimestamp()).thenReturn(-1L);
         lenient().when(this.mockTxNullAccount.getAccount()).thenReturn(null);
 
-        lenient().when(this.mockTxNullAccNum.getId()).thenReturn("TXN_NULL_ACC_NUM");
+        lenient().when(this.mockTxNullAccNum.getBookingDateTimestamp()).thenReturn(-1L);
         lenient().when(this.mockTxNullAccNum.getAccount()).thenReturn(this.mockAccountForNullNum);
 
     }
@@ -79,7 +79,7 @@ class TransactionServiceTest {
         TransactionService.addTransaction(this.mockTx1);
         TransactionService.addTransaction(this.mockTx2);
 
-        assertTrue(TransactionService.removeTransaction("TXN1"));
+        assertTrue(TransactionService.removeTransaction(1L));
         List<AccountingTransaction> acc1Txs = TransactionService.getTransactionsForAccount("ACC1");
         assertTrue(acc1Txs.isEmpty());
         assertEquals(1, TransactionService.getTransactionsForAccount("ACC2").size()); // ACC2 should still have its tx
@@ -89,7 +89,7 @@ class TransactionServiceTest {
     @DisplayName("removeTransaction: Non-existent ID does nothing and returns false")
     void testRemoveTransaction_nonExistentId_doesNothingAndReturnsFalse() {
         TransactionService.addTransaction(this.mockTx1);
-        assertFalse(TransactionService.removeTransaction("TXN_NON_EXISTENT"));
+        assertFalse(TransactionService.removeTransaction(-1L));
         assertEquals(1, TransactionService.getTransactionsForAccount("ACC1").size());
     }
 
@@ -105,7 +105,7 @@ class TransactionServiceTest {
     @DisplayName("removeTransaction: Blank ID does nothing and returns false")
     void testRemoveTransaction_blankId_doesNothingAndReturnsFalse() {
         TransactionService.addTransaction(this.mockTx1);
-        assertFalse(TransactionService.removeTransaction("   "));
+        assertFalse(TransactionService.removeTransaction(-2L));
         assertEquals(1, TransactionService.getTransactionsForAccount("ACC1").size());
     }
 
@@ -116,7 +116,7 @@ class TransactionServiceTest {
         TransactionService.addTransaction(this.mockTx1); // TXN1
 
         // Attempt to remove a valid ID, should not be affected by mockTxNullId
-        assertTrue(TransactionService.removeTransaction("TXN1"));
+        assertTrue(TransactionService.removeTransaction(1L));
         // Attempt to remove using null, should not remove mockTxNullId by this specific call
         assertFalse(TransactionService.removeTransaction(null));
 
@@ -144,8 +144,8 @@ class TransactionServiceTest {
     }
 
     @Test
-    @DisplayName("getTransactionsForAccount: No transactions exist returns empty list")
-    void testGetTransactionsForAccount_noTransactionsExist_returnsEmptyList() {
+    @DisplayName("getTransactionsForAccount: No transactions exist returns empty list") 
+    static void testGetTransactionsForAccount_noTransactionsExist_returnsEmptyList() {
         assertTrue(TransactionService.getTransactionsForAccount("ACC1").isEmpty());
     }
 

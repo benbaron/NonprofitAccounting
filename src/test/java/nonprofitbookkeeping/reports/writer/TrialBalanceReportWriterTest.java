@@ -50,7 +50,7 @@ class TrialBalanceReportWriterTest {
     }
 
     @Test
-    @DisplayName("Constructor: Both inputs null should throw IllegalArgumentException")
+    @DisplayName("Constructor: Both inputs null should throw IllegalArgumentException") static
     void testConstructor_bothInputsNull_throwsIllegalArgumentException() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             new TrialBalanceReportWriter(null, null);

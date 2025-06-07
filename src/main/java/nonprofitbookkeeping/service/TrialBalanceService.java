@@ -164,7 +164,7 @@ public class TrialBalanceService implements TrialBalanceServiceIntf
                 transactionDate = LocalDate.parse(tx.getDate(), formatter);
             } catch (DateTimeParseException e) {
                 // Log error or skip transaction if date is unparsable
-                System.err.println("Could not parse date for transaction: " + tx.getId() + ", date string: " + tx.getDate());
+                System.err.println("Could not parse date for transaction: " + tx.getBookingDateTimestamp() + ", date string: " + tx.getDate());
                 continue;
             }
 

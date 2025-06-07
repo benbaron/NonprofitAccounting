@@ -14,7 +14,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 
+ *
  */
 @Data
 @AllArgsConstructor
@@ -27,9 +27,9 @@ public class JournalEntry
     @JsonProperty private BigDecimal credit;
     @JsonProperty private String memo;
     @JsonProperty private String account;
-	
-	
-	/**  
+
+
+	/**
 	 * Constructor JournalEntry
 	 * @param id
 	 * @param string
@@ -38,10 +38,10 @@ public class JournalEntry
 	 * @param credit
 	 * @param memo
 	 */
-	public JournalEntry(String id, 
-	                    String date, 
-	                    String value, 
-	                    BigDecimal debit, 
+	public JournalEntry(String id,
+	                    String date,
+	                    String value,
+	                    BigDecimal debit,
 	                    BigDecimal credit,
 	                    String text)
 	{
@@ -99,5 +99,5 @@ public class JournalEntry
 	{
 		return this.memo;
 	}
-	
+
 }

@@ -33,6 +33,12 @@ public class ReportConfigurationService
 																					// if needed
 	}
 	
+	/**
+	 * 
+	 * @param configs
+	 * @param companyDirectory
+	 * @throws IOException
+	 */
 	public void saveConfigurations(	List<ReportConfiguration> configs,
 									File companyDirectory) throws IOException
 	{
@@ -67,6 +73,11 @@ public class ReportConfigurationService
 		
 	}
 	
+	/**
+	 * 
+	 * @param companyDirectory
+	 * @return
+	 */
 	public List<ReportConfiguration> loadConfigurations(File companyDirectory)
 	{
 		

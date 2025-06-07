@@ -19,7 +19,7 @@ public class TrialBalanceReportWriter
 	private final TrialBalanceService trialBalanceService;
 	private final Ledger ledger;
 
-	/**  
+	/**
 	 * Constructs a new TrialBalanceReportWriter.
 	 *
 	 * @param trialBalanceService The service used to compute trial balance data. Must not be null.
@@ -37,5 +37,5 @@ public class TrialBalanceReportWriter
 		this.trialBalanceService = trialBalanceService;
 		this.ledger = ledger;
 	}
-	
+
 }

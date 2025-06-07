@@ -33,12 +33,22 @@ public final class AccountingEntry implements Serializable
 	/**
 	 * 
 	 * Constructor AccountingEntry
+	 */
+	public AccountingEntry()
+	{
+		this.amount = null;
+		this.accountSide = null;
+		this.accountNumber = "";		
+	}
+	/**
+	 * 
+	 * Constructor AccountingEntry
 	 * @param amount
 	 * @param accountNumber
 	 * @param accountSide
 	 */
-	public AccountingEntry(BigDecimal amount, 
-	                       String accountNumber, 
+	public AccountingEntry(BigDecimal amount,
+	                       String accountNumber,
 	                       AccountSide accountSide)
 	{
 		this.amount = checkNotNull(amount);
@@ -118,6 +128,15 @@ public final class AccountingEntry implements Serializable
 	public String getAccountNumber()
 	{
 		return this.accountNumber;
+	}
+
+	/**
+	 * @return
+	 */
+	public Account getAccount()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

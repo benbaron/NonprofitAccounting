@@ -1,6 +1,7 @@
 
 package nonprofitbookkeeping.service;
 
+import nonprofitbookkeeping.model.InventoryItem; // Correct import
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,190 +14,121 @@ import java.util.Map;
 public class InventoryService
 {
 	
-	// Internal map to store inventory items, keyed by their unique ID.
-	private static Map<String, InventoryItem> inventory;
+	// Instance field to store inventory items, keyed by their unique ID.
+	private final Map<String, InventoryItem> items;
 	
 	/**
 	 * Constructs an InventoryService, initializing an empty inventory.
-	 * Optionally, you could pre-populate this map with sample items.
 	 */
 	public InventoryService()
 	{
-		InventoryService.inventory = new HashMap<>();
-		
+		this.items = new HashMap<>();
 		// Optionally pre-populate with sample data:
-//		inventory.put("I001", new InventoryItem("I001", "Item A", 100, 2.50));
-//		inventory.put("I002", new InventoryItem("I002", "Item B", 50, 7.99));
+		// addItem(new InventoryItem("I001", "Item A", 100, 2.50, "Some Category",
+		// "2023-01-01", 0.1));
+		// addItem(new InventoryItem("I002", "Item B", 50, 7.99, "Another Category",
+		// "2023-02-01", 0.05));
 	}
 	
 	/**
-	 * Retrieves a list of inventory items.
-	 * Each inventory item is represented as a String array with columns:
-	 * "ID", "Name", "Quantity", "Cost".
+	 * Retrieves a list of all inventory items.
 	 *
-	 * @return a list of String arrays representing inventory items.
+	 * @return a list of InventoryItem objects.
 	 */
-	public static List<String[]> getInventoryItems()
+	public List<InventoryItem> listItems()
 	{
-		List<String[]> list = new ArrayList<>();
+		return new ArrayList<>(this.items.values());
+	}
+	
+	/**
+	 * Adds a new inventory item to the collection.
+	 * If the item is null or its ID is null, the item is not added.
+	 *
+	 * @param item the InventoryItem to add.
+	 */
+	public void addItem(InventoryItem item)
+	{
 		
-		for (InventoryItem item : inventory.values())
+		if (item != null && item.getId() != null)
 		{
-			list.add(new String[]
+			this.items.put(item.getId(), item);
+		}
+		
+	}
+	
+	/**
+	 * Updates an existing inventory item.
+	 * If the item or its ID is null, or if the item does not exist in the inventory,
+	 * no action is taken.
+	 *
+	 * @param item the InventoryItem to update.
+	 */
+	public void updateItem(InventoryItem item)
+	{
+		
+		if (item != null && item.getId() != null)
+		{
+			
+			if (this.items.containsKey(item.getId()))
 			{
-				item.getId(),
-				item.getName(),
-				String.valueOf(item.getQuantity()),
-				String.format("%.2f", item.getCost())
-			});
+				this.items.put(item.getId(), item);
+			}
+			
+			// Else: Could throw an exception or log if item to update is not found.
 		}
 		
-		return list;
 	}
 	
 	/**
-	 * Updates an inventory item with the provided details. If the item does not exist,
-	 * it is created.
+	 * Deletes an inventory item based on its ID.
+	 * If the ID is null, no action is taken.
 	 *
-	 * @param id       the unique identifier of the inventory item.
-	 * @param name     the new name for the item.
-	 * @param quantity the new quantity.
-	 * @param cost     the new cost per unit.
-	 * @throws IllegalArgumentException if the id is null or empty.
-	 */
-	public void updateInventoryItem(String id, String name, int quantity, double cost)
-	{
-		
-		if (id == null || id.trim().isEmpty())
-		{
-			throw new IllegalArgumentException("Inventory item ID must not be blank.");
-		}
-		
-		InventoryItem item = inventory.get(id);
-		
-		if (item == null)
-		{
-			// Create a new item if it doesn't exist.
-			item = new InventoryItem(id, name, quantity, cost);
-			inventory.put(id, item);
-		}
-		else
-		{
-			// Otherwise, update the existing item.
-			item.setName(name);
-			item.setQuantity(quantity);
-			item.setCost(cost);
-		}
-		
-	}
-	
-	/**
-	 * Private inner class representing a single inventory item.
-	 */
-	private static class InventoryItem
-	{
-		private String id;
-		private String name;
-		private int quantity;
-		private double cost;
-		
-		public InventoryItem(String id, String name, int quantity, double cost)
-		{
-			this.id = id;
-			this.name = name;
-			this.quantity = quantity;
-			this.cost = cost;
-		}
-		
-		public String getId()
-		{
-			return this.id;
-		}
-		
-		public String getName()
-		{
-			return this.name;
-		}
-		
-		public int getQuantity()
-		{
-			return this.quantity;
-		}
-		
-		public double getCost()
-		{
-			return this.cost;
-		}
-		
-		public void setName(String name)
-		{
-			this.name = name;
-		}
-		
-		public void setQuantity(int quantity)
-		{
-			this.quantity = quantity;
-		}
-		
-		public void setCost(double cost)
-		{
-			this.cost = cost;
-		}
-		
-	}
-
-	/**
-	 * @param id
+	 * @param id the unique identifier of the inventory item to delete.
 	 */
 	public void deleteItem(String id)
 	{
-		// TODO Auto-generated method stub
+		
+		if (id != null)
+		{
+			this.items.remove(id);
+		}
 		
 	}
-
+	
 	/**
-	 * 
+	 * Applies yearly depreciation to all applicable inventory items.
+	 * (This is a stub and needs actual implementation based on depreciation rules).
 	 */
 	public void applyYearlyDepreciation()
 	{
-		// TODO Auto-generated method stub
-		
+		// TODO: Implement depreciation logic for items that are depreciable.
+		// This might involve iterating through items, checking their depreciation rate,
+		// and updating their current value or accumulated depreciation.
+		System.out.println("applyYearlyDepreciation() called - Placeholder");
 	}
-
+	
 	/**
-	 * @param item
+	 * Clears all items from the inventory.
+	 * (This is a stub, confirm if static access is intended or instance method)
+	 * For now, making it an instance method to clear this service's items.
 	 */
-	public void addItem(nonprofitbookkeeping.model.InventoryItem item)
+	public void clearInventory()
 	{
-		// TODO Auto-generated method stub
-		
+		this.items.clear();
+		System.out.println("Inventory cleared.");
 	}
-
-	/**
-	 * @param item
-	 */
-	public void updateItem(nonprofitbookkeeping.model.InventoryItem item)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
+	
 	/**
 	 * @return
 	 */
-	public List<nonprofitbookkeeping.model.InventoryItem> listItems()
+	public List<String[]> getInventoryItems()
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	/**
-	 * 
-	 */
-	public static void clearInventory()
-	{
-		// TODO Auto-generated method stub
-		
-	}
 	
+	// Removed private static inner class InventoryItem
+	// Removed old getInventoryItems()
+	// Removed old updateInventoryItem(String id, String name, int quantity, double
+	// cost)
 }

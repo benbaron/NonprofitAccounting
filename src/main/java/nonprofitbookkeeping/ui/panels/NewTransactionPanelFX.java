@@ -29,7 +29,7 @@ import nonprofitbookkeeping.model.*;
 public class NewTransactionPanelFX extends BorderPane
 {
 	
-	
+
 	/* ===== static row model ===== */
 	public static final class Line
 	{
@@ -64,12 +64,12 @@ public class NewTransactionPanelFX extends BorderPane
 	/* ------------------------------------------------------------------ */
 	private final ObservableList<Line> lines = FXCollections.observableArrayList();
 	private final TableView<Line> table = new TableView<>(this.lines);
-	
+
 	private final DatePicker datePicker = new DatePicker(LocalDate.now());
 	private final TextArea memoArea = new TextArea();
 	private Button saveBtn;
 	private Consumer<AccountingTransaction> onSave;
-	private ChartOfAccounts coa; 
+	private ChartOfAccounts coa;
 	
 	/**
 	 * 
@@ -106,21 +106,21 @@ public class NewTransactionPanelFX extends BorderPane
 	/**
 	 * Populates the UI with an existing balanced transaction so the user can
 	 * correct or extend entry lines.
-	 * 
+	 *
 	 * @param existing
 	 */
 	private void buildUI(AccountingTransaction existing)
 	{
 		buildUI();
 		this.lines.forEach(this::watch);
-		
+
 		/* 1. header fields */
 		this.datePicker.setValue(LocalDate.parse(existing.getDate()));
 		this.memoArea.setText(existing.getMemo());
-		
+
 		/* 2. entry lines */
 		this.lines.clear();
-		
+
 		// Add the lines from the existing entries.
 		for (AccountingEntry e : existing.getEntries())
 		{
@@ -130,9 +130,9 @@ public class NewTransactionPanelFX extends BorderPane
 			this.lines.add(line);
 			watch(line);
 		}
-		
+
 	}
-	
+
 	/**
 	 * buildUI
 	 */
@@ -151,9 +151,10 @@ public class NewTransactionPanelFX extends BorderPane
 			TableRow<Line> row = new TableRow<>();
 			row.setOnMouseClicked(ev -> {
 				
-				if (ev.getClickCount() == 2 && !row.isEmpty())
+				if (ev.getClickCount() == 1 && !row.isEmpty())
 				{
-					this.table.edit(row.getIndex(), this.table.getColumns().get(0)); // start edit
+					this.table.edit(row.getIndex(),
+						this.table.getColumns().get(0)); // start edit
 				}
 				
 			});
@@ -276,7 +277,7 @@ public class NewTransactionPanelFX extends BorderPane
 		           (a, b) -> a,               // merge: keep the first duplicate
 		           LinkedHashMap::new         // (optional) keep insertion order
 		       ));
-		
+
 		TableColumn<Line, String> col = new TableColumn<>("Account");
 		col.setCellValueFactory(cd -> cd.getValue().account);
 		
@@ -340,10 +341,16 @@ public class NewTransactionPanelFX extends BorderPane
 				l.amount.get(), l.account.get(), l.side.get()));
 		}
 		
+		// Save the timestamp as transaction id
 		AccountingTransaction tx = new AccountingTransaction(
-			new Account(), entries, Map.of(), Instant.now().toEpochMilli());
+			new Account(),
+			entries,
+			Map.of(),
+			Instant.now().toEpochMilli());
+		
 		tx.setDate(this.datePicker.getValue().toString());
 		tx.setDescription(this.memoArea.getText());
+		
 		this.onSave.accept(tx);
 	}
 	
@@ -357,7 +364,7 @@ public class NewTransactionPanelFX extends BorderPane
 		l.amount.addListener((obs, o, n) -> recalcTotals());
 		l.side.addListener((obs, o, n) -> recalcTotals());
 		l.account.addListener((obs, o, n) -> {
-			/* account text change doesn’t 
+			/* account text change doesn’t
 			 * affect totals but keeps UI fresh */
 		});
 	}

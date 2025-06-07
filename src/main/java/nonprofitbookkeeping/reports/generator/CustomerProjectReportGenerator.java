@@ -20,36 +20,36 @@ import java.util.HashMap;
 
 public class CustomerProjectReportGenerator extends ReportGenerator
 {
-	/**  
+	/**
 	 * Constructor CustomerProjectReportGenerator
 	 * @param accountService
 	 */
-	
+
 	public CustomerProjectReportGenerator(CustomerService customerService)
 	{
 		super(customerService);
 	}
-	
+
 	@Override public void generateAndExportReport(String format)
 	{
-		
+
 		try
 		{
 			// Compile JRXML into JasperReport
 			String reportPath = "path/to/CustomerProjectReport.jrxml"; // Replace with the actual
 																		// path
 			JasperReport jasperReport = JasperCompileManager.compileReport(reportPath);
-			
+
 			// Fetch data for the report
 			List<Customer> customerData = CustomerService.getCustomerProjectData();
-			
+
 			// Fill the report with the data
 			JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(customerData);
 			Map<String, Object> parameters = getReportParameters();
-			
+
 			JasperPrint jasperPrint =
 				JasperFillManager.fillReport(jasperReport, parameters, dataSource);
-			
+
 			// Export report to the desired format (PDF, HTML)
 			if ("pdf".equalsIgnoreCase(format))
 			{
@@ -59,17 +59,17 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 			{
 				exportToHTML(jasperPrint, "CustomerProjectReport.html");
 			}
-			
+
 		}
 		catch (JRException e)
 		{
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	private static Map<String, Object> getReportParameters()
@@ -81,10 +81,10 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 		parameters.put("companytext", "Company Details");
 		return parameters;
 	}
-	
+
 	public static void exportToPDF(JasperPrint jasperPrint, String outputFilePath)
 	{
-		
+
 		try
 		{
 			JasperExportManager.exportReportToPdfFile(jasperPrint, outputFilePath);
@@ -94,17 +94,17 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 		{
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param jasperPrint
 	 * @param outputFilePath
 	 */
 	public static void exportToHTML(JasperPrint jasperPrint, String outputFilePath)
 	{
-		
+
 		try
 		{
 			HtmlExporter exporter = new HtmlExporter();
@@ -117,16 +117,16 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 		{
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	public static void main(String[] args)
 	{
 		CustomerService customerService = new CustomerService();
 		ReportGenerator reportGenerator = new ReportGenerator(customerService);
-		
+
 		// Generate and export the report to HTML or PDF
 		reportGenerator.generateAndExportReport("html"); // Use "pdf" for PDF export
 	}
-	
+
 }
