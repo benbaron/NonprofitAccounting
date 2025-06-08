@@ -20,9 +20,13 @@ import java.time.LocalDate; // Added import
 public class GenerateReportPanelFX extends BorderPane
 {
 	/**
+	 * Constructs a new {@code GenerateReportPanelFX}.
+	 * This panel provides a user interface for selecting and generating various types of reports
+	 * using the provided {@link ReportService}. It includes a ComboBox for report selection,
+	 * a "Generate Report" button, and a TextArea to display output or status messages.
 	 * 
-	 * Constructor GenerateReportPanelFX
-	 * @param reportService
+	 * @param reportService The {@link ReportService} instance that will be used to generate the reports.
+	 *                      It is responsible for the actual report generation logic. Must not be null.
 	 */
 	public GenerateReportPanelFX(ReportService reportService)
 	{

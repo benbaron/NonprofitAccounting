@@ -22,6 +22,13 @@ import javafx.stage.Stage;
 public class HelpPanelFX extends BorderPane
 {
 	
+	/**
+	 * Constructs a new {@code HelpPanelFX}.
+	 * Initializes the panel layout, sets a title label ("Help & Documentation"),
+	 * and loads the help content (HTML or fallback text) into the center of the panel.
+	 *
+	 * @param primaryStage The primary stage of the application. This parameter is currently not used within the constructor.
+	 */
 	public HelpPanelFX(Stage primaryStage)
 	{
 		setPadding(new Insets(10));
@@ -29,6 +36,17 @@ public class HelpPanelFX extends BorderPane
 		setCenter(loadHelpContent());
 	}
 	
+	/**
+	 * Attempts to load help content from an embedded HTML file ({@code /help/index.html}).
+	 * If the HTML file is found and successfully read, its content is loaded into a {@link WebView}
+	 * which is then wrapped in a {@link ScrollPane}.
+	 * If the HTML file cannot be loaded (e.g., not found, I/O error), it falls back to displaying
+	 * a predefined string of fallback text (containing basic shortcuts and documentation info)
+	 * within a {@link Label}, also wrapped in a {@link ScrollPane}.
+	 *
+	 * @return A {@link ScrollPane} containing either the loaded HTML content in a {@link WebView}
+	 *         or the fallback help text in a {@link Label}.
+	 */
 	private ScrollPane loadHelpContent()
 	{
 		try (InputStream in = getClass().getResourceAsStream("/help/index.html"))

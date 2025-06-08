@@ -39,23 +39,46 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.time.LocalDate;
 
+/**
+ * A JavaFX panel for generating new reports and viewing a list of previously generated reports.
+ * It provides UI controls for selecting report type, start date, and end date.
+ * Generated reports are displayed in a {@link TableView} with an option to open the report file.
+ * The panel uses a {@link ReportService} to handle report generation and listing,
+ * and it listens for {@link CurrentCompany} changes to refresh the list of generated reports.
+ */
 public class SkeletonReportsPanel extends BorderPane
 {
 	
+	/** ComboBox for selecting the type of report to generate. */
 	private ComboBox<String> reportTypeComboBox;
+	/** DatePicker for selecting the start date for report generation. */
 	private DatePicker startDatePicker;
+	/** DatePicker for selecting the end date for report generation. */
 	private DatePicker endDatePicker;
+	/** Button to trigger the generation of the selected report. */
 	private Button generateReportButton;
+	/** TableView to display metadata of previously generated reports. */
 	private TableView<ReportMetadata> generatedReportsTable;
+	/** ObservableList that backs the {@link #generatedReportsTable}, containing {@link ReportMetadata} objects. */
 	private ObservableList<ReportMetadata> generatedReportsDataList;
 	
+	/** Service layer for report generation and listing operations. */
 	private ReportService reportService;
+	/** Listener to react to changes in the {@link CurrentCompany}, triggering a reload of the generated reports list. */
 	private CompanyChangeListener companyChangeListener;
 	
+	/** GridPane containing the report generation controls (type, dates, button). */
 	private GridPane controlsGrid;
+	/** ScrollPane to ensure report generation controls are accessible if they overflow. */
 	private ScrollPane controlsScrollPane;
 	
 	
+	/**
+	 * Constructs a new {@code SkeletonReportsPanel}.
+	 * Initializes the UI layout, including report generation controls at the top
+	 * and a table for displaying previously generated reports in the center.
+	 * Sets up table columns, event listeners, and performs an initial load of generated reports.
+	 */
 	public SkeletonReportsPanel()
 	{
 		setPadding(new Insets(15));
@@ -108,6 +131,14 @@ public class SkeletonReportsPanel extends BorderPane
 		setupEventListenersAndRefresh();
 	}
 	
+	/**
+	 * Sets up the columns for the {@link #generatedReportsTable}.
+	 * Defines columns for Report Name, Date Generated, Format, and an Actions column
+	 * containing an "Open" button for each report.
+	 * The "Open" button attempts to open the report file using the system's default application.
+	 * Cell value factories are configured using lambda expressions or {@link PropertyValueFactory}
+	 * to bind to properties of the {@link ReportMetadata} class.
+	 */
 	private void setupGeneratedReportsTableColumns()
 	{
 		this.generatedReportsTable.getColumns().clear();
@@ -209,6 +240,14 @@ public class SkeletonReportsPanel extends BorderPane
 				formatCol, actionsCol);
 	}
 	
+	/**
+	 * Loads the list of previously generated reports using the {@link #reportService}
+	 * and populates the {@link #generatedReportsTable}.
+	 * It clears any existing items in the table before loading new ones.
+	 * If an error occurs during loading, an error message is printed to the console,
+	 * and a placeholder message is updated in the table.
+	 * If no reports are found, an appropriate placeholder message is displayed.
+	 */
 	private void loadGeneratedReports()
 	{
 		this.generatedReportsDataList.clear();
@@ -239,6 +278,19 @@ public class SkeletonReportsPanel extends BorderPane
 		
 	}
 	
+	/**
+	 * Sets up event listeners for UI components and performs an initial data refresh.
+	 * This includes:
+	 * <ul>
+	 *   <li>Registering a {@link CompanyChangeListener} to reload the list of generated reports
+	 *       when the current company changes.</li>
+	 *   <li>Setting an action handler for the {@link #generateReportButton} to trigger report generation
+	 *       based on selected criteria (report type, start/end dates). This process involves
+	 *       creating a {@link ReportContext}, calling the {@link ReportService#generateJasperReport(ReportContext, String)},
+	 *       and attempting to open the generated file. Alerts are shown for success or errors.</li>
+	 *   <li>Performing an initial call to {@link #loadGeneratedReports()} to populate the table.</li>
+	 * </ul>
+	 */
 	private void setupEventListenersAndRefresh()
 	{
 		this.companyChangeListener = new CompanyChangeListener()

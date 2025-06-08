@@ -25,20 +25,36 @@ import nonprofitbookkeeping.model.AccountType;
 import java.util.List;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 
+/**
+ * A JavaFX panel that displays a company's Chart of Accounts (COA) in a {@link TreeTableView}.
+ * It provides basic CRUD (Create, Read, Update, Delete) functionalities for managing accounts,
+ * though some actions (Add, Edit) are currently placeholders showing informational alerts.
+ * The panel listens for changes in the {@link CurrentCompany} and reloads the COA data accordingly.
+ */
 public class SkeletonCoaPanel extends BorderPane
 {
 	
+	/** The TreeTableView used to display the hierarchical chart of accounts. */
 	private TreeTableView<Account> coaTreeTable;
+	/** The root {@link TreeItem} for the {@link #coaTreeTable}; it is hidden in the UI. */
 	private TreeItem<Account> rootAccountsNode;
+	/** Listener to react to changes in the {@link CurrentCompany}, triggering a reload of COA data. */
 	private CompanyChangeListener companyChangeListener;
 	
+	/** Button to initiate adding a new account (currently a placeholder). */
 	private Button addAccountButton;
+	/** Button to initiate editing a selected account (currently a placeholder). */
 	private Button editAccountButton;
+	/** Button to delete a selected account and its sub-accounts after confirmation. */
 	private Button deleteAccountButton;
+	/** HBox container for the CRUD action buttons. */
 	private HBox crudButtonsHBox;
 	
 	/**
-	 * Constructor SkeletonCoaPanel
+	 * Constructs a new {@code SkeletonCoaPanel}.
+	 * Initializes the UI components, including the {@link TreeTableView} for the Chart of Accounts,
+	 * action buttons for Add, Edit, and Delete operations, and sets up event listeners.
+	 * It also performs an initial load of the COA data.
 	 */
 	public SkeletonCoaPanel()
 	{
@@ -75,7 +91,10 @@ public class SkeletonCoaPanel extends BorderPane
 	
 	
 	/**
-	 * 
+	 * Sets up the columns for the {@link #coaTreeTable}.
+	 * Defines columns for Account Number, Account Name, and Account Type.
+	 * Cell value factories are configured using lambda expressions to extract data from {@link Account} objects.
+	 * Placeholder comments suggest where a "Balance" column could be added if account balances were available.
 	 */
 	private void setupTreeTableColumns()
 	{
@@ -123,7 +142,10 @@ public class SkeletonCoaPanel extends BorderPane
 	}
 	
 	/**
-	 * 
+	 * Loads the Chart of Accounts data for the {@link CurrentCompany} and populates the {@link #coaTreeTable}.
+	 * It clears any existing items in the tree, retrieves the root-level accounts from the company's COA,
+	 * and recursively builds the tree structure using {@link #createAccountTreeItem(Account, ChartOfAccounts)}.
+	 * If no company is open or the COA is unavailable, the table will remain empty or show its placeholder.
 	 */
 	private void loadCoaData()
 	{
@@ -153,10 +175,12 @@ public class SkeletonCoaPanel extends BorderPane
 	}
 	
 	/**
+	 * Recursively creates a {@link TreeItem} for a given {@link Account} and its children.
+	 * Each created {@code TreeItem} is set to be expanded by default to show its children.
 	 * 
-	 * @param account
-	 * @param coa
-	 * @return
+	 * @param account The {@link Account} for which to create a {@code TreeItem}. Must not be null.
+	 * @param coa The {@link ChartOfAccounts} instance, used to fetch child accounts. Must not be null.
+	 * @return A {@link TreeItem<Account>} representing the given account and its descendants.
 	 */
 	private TreeItem<Account> createAccountTreeItem(Account account, ChartOfAccounts coa)
 	{
@@ -178,7 +202,14 @@ public class SkeletonCoaPanel extends BorderPane
 	}
 	
 	/**
-	 * 
+	 * Sets up event listeners for UI components and performs an initial data refresh.
+	 * This includes:
+	 * <ul>
+	 *   <li>Registering a {@link CompanyChangeListener} to reload COA data when the current company changes.</li>
+	 *   <li>Setting action handlers for the "Add Account", "Edit Account", and "Delete Account" buttons.
+	 *       (Note: Add and Edit actions currently show placeholder alerts.)</li>
+	 *   <li>Performing an initial call to {@link #loadCoaData()} to populate the table.</li>
+	 * </ul>
 	 */
 	private void setupEventListenersAndRefresh()
 	{

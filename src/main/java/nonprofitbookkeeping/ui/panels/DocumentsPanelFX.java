@@ -20,13 +20,23 @@ import nonprofitbookkeeping.service.DocumentStorageService;
 public class DocumentsPanelFX extends BorderPane
 {
 	
+	/** The service responsible for handling document storage operations. */
 	private final DocumentStorageService service;
 	
 	/* UI fields */
+	/** TextField for user to input the transaction ID to associate the document with. */
 	private final TextField txnIdField = new TextField();
+	/** TextField to display the name of the file chosen by the user. This field is not editable directly. */
 	private final TextField chosenFileField = new TextField();
+	/** Holds the {@link File} object selected by the user via the FileChooser. Null if no file is chosen. */
 	private File chosen;
 	
+	/**
+	 * Constructs a new {@code DocumentsPanelFX}.
+	 * Initializes the panel with the necessary {@link DocumentStorageService} and builds the user interface.
+	 *
+	 * @param service The {@link DocumentStorageService} to be used for attaching documents to transactions. Must not be null.
+	 */
 	public DocumentsPanelFX(DocumentStorageService service)
 	{
 		this.service = service;
@@ -34,6 +44,12 @@ public class DocumentsPanelFX extends BorderPane
 		buildUI();
 	}
 	
+	/**
+	 * Builds the user interface of the panel.
+	 * This includes a {@link FlowPane} containing labels, text fields for transaction ID and chosen file,
+	 * and buttons for choosing a file and attaching it. This pane is then wrapped in a non-collapsible
+	 * {@link TitledPane} and set as the top content of this {@link BorderPane}.
+	 */
 	private void buildUI()
 	{
 		FlowPane pane = new FlowPane(10, 10);
@@ -52,6 +68,14 @@ public class DocumentsPanelFX extends BorderPane
 		});
 	}
 	
+	/**
+	 * Creates and configures the "Choose File" button.
+	 * When clicked, this button opens a {@link FileChooser} allowing the user to select a file.
+	 * If a file is selected, the {@link #chosen} field is updated, and the file's name is displayed
+	 * in the {@link #chosenFileField}.
+	 *
+	 * @return The configured "Choose File" {@link Button}.
+	 */
 	private Button chooseBtn()
 	{
 		Button b = new Button("Choose File");
@@ -69,6 +93,16 @@ public class DocumentsPanelFX extends BorderPane
 		return b;
 	}
 	
+	/**
+	 * Creates and configures the "Attach" button.
+	 * When clicked, this button attempts to attach the {@link #chosen} file to the transaction ID
+	 * entered in {@link #txnIdField}, using the {@link #service}.
+	 * It performs validation to ensure a file is chosen and a transaction ID is provided.
+	 * It displays alerts for success or failure of the attachment process.
+	 * On successful attachment, it clears the input fields and the chosen file.
+	 *
+	 * @return The configured "Attach" {@link Button}.
+	 */
 	private Button attachBtn()
 	{
 		Button b = new Button("Attach");
@@ -99,8 +133,10 @@ public class DocumentsPanelFX extends BorderPane
 	}
 	
 	/**
+	 * Utility method to get the {@link Stage} (window) that owns this panel's scene.
+	 * This is typically used as the owner window for dialogs like {@link FileChooser} or {@link Alert}.
 	 * 
-	 * @return
+	 * @return The parent {@link Stage} of this panel, or null if the scene or window is not available.
 	 */
 	private Stage getSceneWindow()
 	{
@@ -109,8 +145,9 @@ public class DocumentsPanelFX extends BorderPane
 	}
 	
 	/**
+	 * Displays a simple informational alert dialog with an OK button.
 	 * 
-	 * @param msg
+	 * @param msg The message to be displayed in the alert dialog.
 	 */
 	private static void alert(String msg)
 	{

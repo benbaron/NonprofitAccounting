@@ -33,19 +33,32 @@ import java.util.HashMap;
 import java.util.Map;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 
-
+/**
+ * A JavaFX panel that serves as a dashboard, displaying key financial figures
+ * (Total Assets, Total Liabilities, Equity, YTD Income) and a list of recent transactions.
+ * The panel listens for changes in the {@link CurrentCompany} and reloads its data accordingly.
+ * Key financial figures are calculated by iterating through accounts and transactions
+ * from the current company's {@link Ledger} and {@link ChartOfAccounts}.
+ */
 public class SkeletonDashboardPanel extends BorderPane
 {
 	
+	/** TableView to display a list of recent accounting transactions. */
 	private final TableView<AccountingTransaction> recentTransactionsTable = new TableView<>();
+	/** ObservableList that backs the {@link #recentTransactionsTable}, containing {@link AccountingTransaction} objects. */
 	private final ObservableList<AccountingTransaction> transactionDataList =
 		FXCollections.observableArrayList();
 	
+	/** Label to display the calculated total assets value. Initializes with a value from {@link CompanySummary}. */
 	private Label totalAssetsValueLabel = new Label(CompanySummary.getTotalAssets());
+	/** Label to display the calculated total liabilities value. Initializes with a value from {@link CompanySummary}. */
 	private Label totalLiabilitiesValueLabel = new Label(CompanySummary.getTotalLiabilities());
+	/** Label to display the calculated total equity value. Initializes with a value from {@link CompanySummary}. */
 	private Label equityValueLabel = new Label(CompanySummary.getTotalEquity());
+	/** Label to display the calculated year-to-date (YTD) income value. Initializes with a value from {@link CompanySummary}. */
 	private Label ytdIncomeValueLabel = new Label(CompanySummary.getYtdIncomeValue());
 	
+	/** Listener that triggers {@link #loadData()} when the {@link CurrentCompany} changes. */
 	private final CompanyChangeListener companyChangeListener = new CompanyChangeListener()
 	{
 		@Override public void companyChange(boolean companyNowOpen)
@@ -55,6 +68,12 @@ public class SkeletonDashboardPanel extends BorderPane
 		
 	};
 	
+	/**
+	 * Constructs a new {@code SkeletonDashboardPanel}.
+	 * Initializes the UI layout, including a grid for key financial figures at the top,
+	 * a table for recent transactions in the center, and a refresh button at the bottom.
+	 * It also sets up a listener for company changes and performs an initial data load.
+	 */
 	public SkeletonDashboardPanel()
 	{
 		setPadding(new Insets(15));
@@ -127,6 +146,24 @@ public class SkeletonDashboardPanel extends BorderPane
 		CurrentCompany.CompanyListener.addCompanyListener(this.companyChangeListener);
 	}
 	
+	/**
+	 * Loads and processes data from the {@link CurrentCompany} to update the dashboard.
+	 * This method performs the following steps:
+	 * <ol>
+	 *   <li>Clears the existing list of recent transactions.</li>
+	 *   <li>Retrieves the current {@link Company}, {@link Ledger}, and {@link ChartOfAccounts}.</li>
+	 *   <li>If company data is available, it calculates account balances by starting with opening balances
+	 *       and applying all transaction entries.</li>
+	 *   <li>Sums these account balances to determine Total Assets, Total Liabilities, and Total Equity
+	 *       (sum of equity-type accounts), Total Income, and Total Expenses.</li>
+	 *   <li>Calculates Year-to-Date (YTD) Net Income (Total Income - Total Expenses).</li>
+	 *   <li>Updates the corresponding labels ({@link #totalAssetsValueLabel}, etc.) with these calculated figures.</li>
+	 *   <li>Populates the {@link #recentTransactionsTable} with a limited number of the most recent transactions (up to 10).</li>
+	 *   <li>Sets appropriate placeholder text for the recent transactions table if no data is available.</li>
+	 * </ol>
+	 * If no company is loaded, or essential data like the ledger or chart of accounts is missing,
+	 * the key figures will typically default to zero or initial values, and the transaction list will be empty.
+	 */
 	private void loadData()
 	{
 		this.transactionDataList.clear();
