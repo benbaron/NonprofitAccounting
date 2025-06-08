@@ -22,13 +22,24 @@ public final class AccountingEntry implements Serializable
 	 * serialVersionUID : long
 	 */
 	private static final long serialVersionUID = 5837792781542533633L;
-
-	@JsonProperty final private BigDecimal amount;	
+	
+	@JsonProperty final private BigDecimal amount;
 	@JsonProperty final private AccountSide accountSide;
 	@JsonProperty final private String accountNumber;
 	@JsonProperty private AccountingTransaction transaction;
 	// Indicates if the transaction was set
 	@JsonProperty private boolean freeze = false;
+	
+	
+	/**
+	 * Constructor AccountingEntry
+	 */
+	AccountingEntry()
+	{
+		this.amount = null;
+		this.accountSide = null;
+		this.accountNumber = "";
+	}
 	
 	/**
 	 * 
@@ -38,8 +49,8 @@ public final class AccountingEntry implements Serializable
 	 * @param accountSide
 	 */
 	public AccountingEntry(BigDecimal amount,
-	                       String accountNumber,
-	                       AccountSide accountSide)
+		String accountNumber,
+		AccountSide accountSide)
 	{
 		this.amount = checkNotNull(amount);
 		this.accountNumber = checkNotNull(accountNumber);
@@ -79,7 +90,7 @@ public final class AccountingEntry implements Serializable
 			.addValue(this.accountSide)
 			.toString();
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -87,7 +98,7 @@ public final class AccountingEntry implements Serializable
 	{
 		return this.accountSide;
 	}
-
+	
 	/**
 	 * @return the freeze
 	 */
@@ -95,7 +106,7 @@ public final class AccountingEntry implements Serializable
 	{
 		return this.freeze;
 	}
-
+	
 	/**
 	 * @param freeze the freeze to set
 	 */
@@ -103,7 +114,7 @@ public final class AccountingEntry implements Serializable
 	{
 		this.freeze = freeze;
 	}
-
+	
 	/**
 	 * @return the amount
 	 */
@@ -111,7 +122,7 @@ public final class AccountingEntry implements Serializable
 	{
 		return this.amount;
 	}
-
+	
 	/**
 	 * @return the accountNumber
 	 */
@@ -119,14 +130,17 @@ public final class AccountingEntry implements Serializable
 	{
 		return this.accountNumber;
 	}
-
+	
 	/**
+	 * Get account from Account string
 	 * @return
 	 */
 	public Account getAccount()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return CurrentCompany
+			.getCompany()
+			.getChartOfAccounts()
+			.getAccount(this.accountNumber);
 	}
 	
 	

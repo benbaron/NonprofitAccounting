@@ -59,50 +59,50 @@ public class SkeletonReportsPanel extends BorderPane
 	public SkeletonReportsPanel()
 	{
 		setPadding(new Insets(15));
-		reportService = new ReportService();
+		this.reportService = new ReportService();
 		
-		generatedReportsDataList = FXCollections.observableArrayList();
-		generatedReportsTable = new TableView<>(generatedReportsDataList);
-		generatedReportsTable.setPlaceholder(new Label("No reports found or company not open."));
+		this.generatedReportsDataList = FXCollections.observableArrayList();
+		this.generatedReportsTable = new TableView<>(this.generatedReportsDataList);
+		this.generatedReportsTable.setPlaceholder(new Label("No reports found or company not open."));
 		
-		controlsGrid = new GridPane();
-		controlsGrid.setPadding(new Insets(10));
-		controlsGrid.setHgap(10);
-		controlsGrid.setVgap(10);
+		this.controlsGrid = new GridPane();
+		this.controlsGrid.setPadding(new Insets(10));
+		this.controlsGrid.setHgap(10);
+		this.controlsGrid.setVgap(10);
 		
-		controlsGrid.add(new Label("Report Type:"), 0, 0);
-		reportTypeComboBox = new ComboBox<>();
+		this.controlsGrid.add(new Label("Report Type:"), 0, 0);
+		this.reportTypeComboBox = new ComboBox<>();
 		// Ensure "Balance Sheet" and "Trial Balance" are included for the new logic
-		reportTypeComboBox.setItems(FXCollections.observableArrayList(
+		this.reportTypeComboBox.setItems(FXCollections.observableArrayList(
 			"Income Statement", "Balance Sheet", "Trial Balance", "Cash Flow Statement"
 		// Add other JXLS reports here if they are to be handled by a different
 		// mechanism
 		// e.g., "Budget vs. Actuals"
 		));
-		reportTypeComboBox.setPromptText("Select Report");
-		controlsGrid.add(reportTypeComboBox, 1, 0);
+		this.reportTypeComboBox.setPromptText("Select Report");
+		this.controlsGrid.add(this.reportTypeComboBox, 1, 0);
 		
-		controlsGrid.add(new Label("Start Date:"), 0, 1);
-		startDatePicker = new DatePicker();
-		controlsGrid.add(startDatePicker, 1, 1);
+		this.controlsGrid.add(new Label("Start Date:"), 0, 1);
+		this.startDatePicker = new DatePicker();
+		this.controlsGrid.add(this.startDatePicker, 1, 1);
 		
-		controlsGrid.add(new Label("End Date:"), 0, 2);
-		endDatePicker = new DatePicker();
-		controlsGrid.add(endDatePicker, 1, 2);
+		this.controlsGrid.add(new Label("End Date:"), 0, 2);
+		this.endDatePicker = new DatePicker();
+		this.controlsGrid.add(this.endDatePicker, 1, 2);
 		
-		generateReportButton = new Button("Generate Report");
-		generateReportButton.setDefaultButton(true);
-		HBox buttonBox = new HBox(generateReportButton);
-		controlsGrid.add(buttonBox, 1, 3);
+		this.generateReportButton = new Button("Generate Report");
+		this.generateReportButton.setDefaultButton(true);
+		HBox buttonBox = new HBox(this.generateReportButton);
+		this.controlsGrid.add(buttonBox, 1, 3);
 		
-		controlsScrollPane = new ScrollPane(controlsGrid);
-		controlsScrollPane.setFitToWidth(true);
-		controlsScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-		controlsScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-		this.setTop(controlsScrollPane);
+		this.controlsScrollPane = new ScrollPane(this.controlsGrid);
+		this.controlsScrollPane.setFitToWidth(true);
+		this.controlsScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+		this.controlsScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+		this.setTop(this.controlsScrollPane);
 		
-		this.setCenter(generatedReportsTable);
-		BorderPane.setMargin(generatedReportsTable, new Insets(10, 0, 0, 0));
+		this.setCenter(this.generatedReportsTable);
+		BorderPane.setMargin(this.generatedReportsTable, new Insets(10, 0, 0, 0));
 		
 		setupGeneratedReportsTableColumns();
 		setupEventListenersAndRefresh();
@@ -110,7 +110,7 @@ public class SkeletonReportsPanel extends BorderPane
 	
 	private void setupGeneratedReportsTableColumns()
 	{
-		generatedReportsTable.getColumns().clear();
+		this.generatedReportsTable.getColumns().clear();
 		
 		TableColumn<ReportMetadata, String> nameCol = new TableColumn<>("Report Name");
 		nameCol.setCellValueFactory(
@@ -141,7 +141,7 @@ public class SkeletonReportsPanel extends BorderPane
 		{
 			private final Button openButton = new Button("Open");
 			{
-				openButton.setOnAction(event -> {
+				this.openButton.setOnAction(event -> {
 					ReportMetadata reportMeta = getTableView().getItems().get(getIndex());
 					
 					if (reportMeta != null && reportMeta.getFilePath() != null)
@@ -198,26 +198,28 @@ public class SkeletonReportsPanel extends BorderPane
 			@Override protected void updateItem(Void item, boolean empty)
 			{
 				super.updateItem(item, empty);
-				setGraphic(empty ? null : openButton);
+				setGraphic(empty ? null : this.openButton);
 			}
 			
 		});
 		actionsCol.setPrefWidth(100);
 		
-		generatedReportsTable.getColumns().addAll(nameCol, dateGenCol, formatCol, actionsCol);
+		this.generatedReportsTable.getColumns()
+			.addAll(nameCol, dateGenCol, 	
+				formatCol, actionsCol);
 	}
 	
 	private void loadGeneratedReports()
 	{
-		generatedReportsDataList.clear();
+		this.generatedReportsDataList.clear();
 		
 		try
 		{
-			List<ReportMetadata> reports = reportService.listGeneratedReports();
+			List<ReportMetadata> reports = this.reportService.listGeneratedReports();
 			
 			if (reports != null)
 			{
-				generatedReportsDataList.addAll(reports);
+				this.generatedReportsDataList.addAll(reports);
 			}
 			
 		}
@@ -225,21 +227,21 @@ public class SkeletonReportsPanel extends BorderPane
 		{
 			System.err.println("Error loading generated reports: " + e.getMessage());
 			e.printStackTrace();
-			generatedReportsTable
+			this.generatedReportsTable
 				.setPlaceholder(new Label("Could not load generated reports: " + e.getMessage()));
 		}
 		
-		if (generatedReportsDataList.isEmpty() &&
-			generatedReportsTable.getPlaceholder() instanceof Label)
+		if (this.generatedReportsDataList.isEmpty() &&
+			this.generatedReportsTable.getPlaceholder() instanceof Label)
 		{
-			((Label) generatedReportsTable.getPlaceholder()).setText("No generated reports found.");
+			((Label) this.generatedReportsTable.getPlaceholder()).setText("No generated reports found.");
 		}
 		
 	}
 	
 	private void setupEventListenersAndRefresh()
 	{
-		companyChangeListener = new CompanyChangeListener()
+		this.companyChangeListener = new CompanyChangeListener()
 		{
 			@Override public void companyChange(boolean companyNowOpen)
 			{
@@ -247,10 +249,10 @@ public class SkeletonReportsPanel extends BorderPane
 			}
 			
 		};
-		CurrentCompany.CompanyListener.addCompanyListener(companyChangeListener);
+		CurrentCompany.CompanyListener.addCompanyListener(this.companyChangeListener);
 		
-		generateReportButton.setOnAction(event -> {
-			String reportTypeDisplay = reportTypeComboBox.getValue();
+		this.generateReportButton.setOnAction(event -> {
+			String reportTypeDisplay = this.reportTypeComboBox.getValue();
 			Company currentCompany = CurrentCompany.getCompany();
 			Window ownerWindow = this.getScene().getWindow();
 			
@@ -266,8 +268,8 @@ public class SkeletonReportsPanel extends BorderPane
 				return;
 			}
 			
-			LocalDate startDate = startDatePicker.getValue();
-			LocalDate endDate = endDatePicker.getValue();
+			LocalDate startDate = this.startDatePicker.getValue();
+			LocalDate endDate = this.endDatePicker.getValue();
 			
 			String reportTypeKey;
 			boolean isJasperReport = true;

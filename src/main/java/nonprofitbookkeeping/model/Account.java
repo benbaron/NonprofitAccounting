@@ -40,7 +40,8 @@ public final class Account implements Serializable
 	
 	public Account()
 	{
-		/* default ctor for Jackson / JPA */ }
+		/* default ctor for Jackson / JPA */ 
+	}
 
 	/* ================= fund helpers =================================== */
 	public void addFund(Fund fund)

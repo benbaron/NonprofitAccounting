@@ -44,25 +44,25 @@ public class SkeletonCoaPanel extends BorderPane
 		// Initialize TreeTableView and its root
 		// The root's value can be null as it's not shown.
 		// Or use a dummy account if preferred for clarity, but it won't be visible.
-		rootAccountsNode = new TreeItem<>();
-		coaTreeTable = new TreeTableView<>(rootAccountsNode);
-		coaTreeTable.setShowRoot(false); // Hide the dummy root
-		coaTreeTable
+		this.rootAccountsNode = new TreeItem<>();
+		this.coaTreeTable = new TreeTableView<>(this.rootAccountsNode);
+		this.coaTreeTable.setShowRoot(false); // Hide the dummy root
+		this.coaTreeTable
 			.setPlaceholder(new Label("No Chart of Accounts data to display or company not open."));
-		this.setCenter(coaTreeTable);
+		this.setCenter(this.coaTreeTable);
 		
 		// Action Buttons (Bottom)
-		crudButtonsHBox = new HBox();
-		crudButtonsHBox.setPadding(new Insets(10, 0, 0, 0)); // Top padding
-		crudButtonsHBox.setSpacing(10);
-		crudButtonsHBox.setAlignment(Pos.CENTER_LEFT);
+		this.crudButtonsHBox = new HBox();
+		this.crudButtonsHBox.setPadding(new Insets(10, 0, 0, 0)); // Top padding
+		this.crudButtonsHBox.setSpacing(10);
+		this.crudButtonsHBox.setAlignment(Pos.CENTER_LEFT);
 		
-		addAccountButton = new Button("Add Account");
-		editAccountButton = new Button("Edit Account");
-		deleteAccountButton = new Button("Delete Account");
-		crudButtonsHBox.getChildren().addAll(addAccountButton, editAccountButton,
-			deleteAccountButton);
-		this.setBottom(crudButtonsHBox);
+		this.addAccountButton = new Button("Add Account");
+		this.editAccountButton = new Button("Edit Account");
+		this.deleteAccountButton = new Button("Delete Account");
+		this.crudButtonsHBox.getChildren().addAll(this.addAccountButton, this.editAccountButton,
+			this.deleteAccountButton);
+		this.setBottom(this.crudButtonsHBox);
 		
 		// Setup columns and listeners
 		setupTreeTableColumns();
@@ -71,7 +71,7 @@ public class SkeletonCoaPanel extends BorderPane
 	
 	private void setupTreeTableColumns()
 	{
-		coaTreeTable.getColumns().clear();
+		this.coaTreeTable.getColumns().clear();
 		
 		TreeTableColumn<Account, String> numberCol = new TreeTableColumn<>("Account Number");
 		numberCol.setCellValueFactory(cellData -> {
@@ -108,13 +108,13 @@ public class SkeletonCoaPanel extends BorderPane
 		// balanceCol.setPrefWidth(120);
 		// balanceCol.setStyle("-fx-alignment: CENTER-RIGHT;");
 		
-		coaTreeTable.getColumns().addAll(numberCol, nameCol, typeCol); // Add balanceCol if
-																		// implemented
+		this.coaTreeTable.getColumns().addAll(numberCol, nameCol, typeCol); // Add balanceCol if
+		// implemented
 	}
 	
 	private void loadCoaData()
 	{
-		rootAccountsNode.getChildren().clear();
+		this.rootAccountsNode.getChildren().clear();
 		Company company = CurrentCompany.getCompany();
 		
 		if (company != null && company.getChartOfAccounts() != null)
@@ -128,7 +128,7 @@ public class SkeletonCoaPanel extends BorderPane
 				for (Account acc : rootLevelAccounts)
 				{
 					TreeItem<Account> accountNode = createAccountTreeItem(acc, coa);
-					rootAccountsNode.getChildren().add(accountNode);
+					this.rootAccountsNode.getChildren().add(accountNode);
 				}
 				
 			}
@@ -160,7 +160,7 @@ public class SkeletonCoaPanel extends BorderPane
 	
 	private void setupEventListenersAndRefresh()
 	{
-		companyChangeListener = new CompanyChangeListener()
+		this.companyChangeListener = new CompanyChangeListener()
 		{
 			@Override public void companyChange(boolean companyNowOpen)
 			{
@@ -168,9 +168,9 @@ public class SkeletonCoaPanel extends BorderPane
 			}
 			
 		};
-		CurrentCompany.CompanyListener.addCompanyListener(companyChangeListener);
+		CurrentCompany.CompanyListener.addCompanyListener(this.companyChangeListener);
 		
-		addAccountButton.setOnAction(e -> {
+		this.addAccountButton.setOnAction(e -> {
 			System.out.println("Add Account clicked - Placeholder");
 			// TODO: Implement dialog for adding new account
 			// Example: new AddAccountDialog(getScene().getWindow(),
@@ -182,8 +182,9 @@ public class SkeletonCoaPanel extends BorderPane
 			info.showAndWait();
 		});
 		
-		editAccountButton.setOnAction(e -> {
-			TreeItem<Account> selectedItem = coaTreeTable.getSelectionModel().getSelectedItem();
+		this.editAccountButton.setOnAction(e -> {
+			TreeItem<Account> selectedItem =
+				this.coaTreeTable.getSelectionModel().getSelectedItem();
 			
 			if (selectedItem != null && selectedItem.getValue() != null)
 			{
@@ -210,8 +211,9 @@ public class SkeletonCoaPanel extends BorderPane
 			
 		});
 		
-		deleteAccountButton.setOnAction(e -> {
-			TreeItem<Account> selectedItem = coaTreeTable.getSelectionModel().getSelectedItem();
+		this.deleteAccountButton.setOnAction(e -> {
+			TreeItem<Account> selectedItem =
+				this.coaTreeTable.getSelectionModel().getSelectedItem();
 			
 			if (selectedItem != null && selectedItem.getValue() != null)
 			{

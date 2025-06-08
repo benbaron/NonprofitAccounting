@@ -16,6 +16,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 
 import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CompanySummary;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.Ledger;
@@ -40,10 +41,10 @@ public class SkeletonDashboardPanel extends BorderPane
 	private final ObservableList<AccountingTransaction> transactionDataList =
 		FXCollections.observableArrayList();
 	
-	private Label totalAssetsValueLabel = new Label("$0.00");
-	private Label totalLiabilitiesValueLabel = new Label("$0.00");
-	private Label equityValueLabel = new Label("$0.00");
-	private Label ytdIncomeValueLabel = new Label("$0.00");
+	private Label totalAssetsValueLabel = new Label(CompanySummary.getTotalAssets());
+	private Label totalLiabilitiesValueLabel = new Label(CompanySummary.getTotalLiabilities());
+	private Label equityValueLabel = new Label(CompanySummary.getTotalEquity());
+	private Label ytdIncomeValueLabel = new Label(CompanySummary.getYtdIncomeValue());
 	
 	private final CompanyChangeListener companyChangeListener = new CompanyChangeListener()
 	{
@@ -64,13 +65,13 @@ public class SkeletonDashboardPanel extends BorderPane
 		keyFiguresGrid.setVgap(10);
 		
 		keyFiguresGrid.add(new Label("Total Assets:"), 0, 0);
-		keyFiguresGrid.add(totalAssetsValueLabel, 1, 0);
+		keyFiguresGrid.add(this.totalAssetsValueLabel, 1, 0);
 		keyFiguresGrid.add(new Label("Total Liabilities:"), 0, 1);
-		keyFiguresGrid.add(totalLiabilitiesValueLabel, 1, 1);
+		keyFiguresGrid.add(this.totalLiabilitiesValueLabel, 1, 1);
 		keyFiguresGrid.add(new Label("Equity:"), 2, 0);
-		keyFiguresGrid.add(equityValueLabel, 3, 0);
+		keyFiguresGrid.add(this.equityValueLabel, 3, 0);
 		keyFiguresGrid.add(new Label("YTD Income:"), 2, 1);
-		keyFiguresGrid.add(ytdIncomeValueLabel, 3, 1);
+		keyFiguresGrid.add(this.ytdIncomeValueLabel, 3, 1);
 		
 		ScrollPane keyFiguresScrollPane = new ScrollPane();
 		keyFiguresScrollPane.setContent(keyFiguresGrid);
@@ -79,8 +80,8 @@ public class SkeletonDashboardPanel extends BorderPane
 		keyFiguresScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 		this.setTop(keyFiguresScrollPane);
 		
-		recentTransactionsTable.setPlaceholder(new Label("No recent transactions to display."));
-		recentTransactionsTable.setItems(transactionDataList);
+		this.recentTransactionsTable.setPlaceholder(new Label("No recent transactions to display."));
+		this.recentTransactionsTable.setItems(this.transactionDataList);
 		
 		TableColumn<AccountingTransaction, String> dateCol = new TableColumn<>("Date");
 		dateCol.setCellValueFactory(
@@ -108,9 +109,9 @@ public class SkeletonDashboardPanel extends BorderPane
 		amountCol.setPrefWidth(100);
 		amountCol.setStyle("-fx-alignment: CENTER-RIGHT;");
 		
-		recentTransactionsTable.getColumns().addAll(dateCol, accountCol, descriptionCol, amountCol);
-		this.setCenter(recentTransactionsTable);
-		BorderPane.setMargin(recentTransactionsTable, new Insets(10, 0, 10, 0));
+		this.recentTransactionsTable.getColumns().addAll(dateCol, accountCol, descriptionCol, amountCol);
+		this.setCenter(this.recentTransactionsTable);
+		BorderPane.setMargin(this.recentTransactionsTable, new Insets(10, 0, 10, 0));
 		
 		HBox actionButtonsBox = new HBox();
 		actionButtonsBox.setPadding(new Insets(10, 0, 0, 0));
@@ -123,12 +124,12 @@ public class SkeletonDashboardPanel extends BorderPane
 		this.setBottom(actionButtonsBox);
 		
 		loadData();
-		CurrentCompany.CompanyListener.addCompanyListener(companyChangeListener);
+		CurrentCompany.CompanyListener.addCompanyListener(this.companyChangeListener);
 	}
 	
 	private void loadData()
 	{
-		transactionDataList.clear();
+		this.transactionDataList.clear();
 		Company company = CurrentCompany.getCompany();
 		
 		BigDecimal totalAssets = BigDecimal.ZERO;
@@ -293,7 +294,7 @@ public class SkeletonDashboardPanel extends BorderPane
 					recent.add(transactions.get(i));
 				}
 				
-				transactionDataList.addAll(recent);
+				this.transactionDataList.addAll(recent);
 			}
 			
 		}
@@ -302,15 +303,15 @@ public class SkeletonDashboardPanel extends BorderPane
 																	// are positive contributions to
 																	// their types
 		
-		totalAssetsValueLabel.setText("$" + totalAssets.toPlainString());
-		totalLiabilitiesValueLabel.setText("$" + totalLiabilities.toPlainString());
-		equityValueLabel.setText("$" + totalEquity.toPlainString());
-		ytdIncomeValueLabel.setText("YTD Net Income: $" + ytdIncome.toPlainString());
+		this.totalAssetsValueLabel.setText("$" + totalAssets.toPlainString());
+		this.totalLiabilitiesValueLabel.setText("$" + totalLiabilities.toPlainString());
+		this.equityValueLabel.setText("$" + totalEquity.toPlainString());
+		this.ytdIncomeValueLabel.setText("YTD Net Income: $" + ytdIncome.toPlainString());
 		
 		
-		if (transactionDataList.isEmpty())
+		if (this.transactionDataList.isEmpty())
 		{
-			recentTransactionsTable
+			this.recentTransactionsTable
 				.setPlaceholder(new Label("No transactions found for the current company."));
 		}
 		else
