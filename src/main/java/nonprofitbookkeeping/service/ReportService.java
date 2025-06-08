@@ -42,6 +42,7 @@ import nonprofitbookkeeping.reports.datasource.TrialBalanceRowBean; // Added imp
 import nonprofitbookkeeping.reports.generator.AbstractReportGenerator;
 import nonprofitbookkeeping.reports.generator.IncomeStatementJasperGenerator;
 import nonprofitbookkeeping.reports.generator.CashFlowStatementJasperGenerator;
+import nonprofitbookkeeping.reports.generator.TrialBalanceJasperGenerator;
 
 
 public class ReportService
@@ -1858,6 +1859,9 @@ public class ReportService
                 break;
             case "cash_flow_statement_jasper":
                 reportGeneratorInstance = new CashFlowStatementJasperGenerator(context, this);
+                break;
+            case "trial_balance_jasper":
+                reportGeneratorInstance = new TrialBalanceJasperGenerator(context, this);
                 break;
             // TODO: Add cases for other Jasper reports
             default:
