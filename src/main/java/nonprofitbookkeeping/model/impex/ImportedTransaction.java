@@ -7,32 +7,48 @@ import java.time.LocalDate;
 
 import com.webcohesion.ofx4j.domain.data.common.Currency;
 
-
+/**
+ * Represents a transaction imported from an external source, such as an OFX file.
+ * This class holds the raw details of the transaction as imported, before it is
+ * processed and converted into the application's internal transaction format.
+ */
 public class ImportedTransaction
 {
+	/** The date the transaction was posted. */
 	private LocalDate datePosted;
+	/** The monetary amount of the transaction. */
 	private BigDecimal amount;
+	/** The description of the transaction, often representing the payee or a general name. */
 	private String description; // Payee or name of the transaction
+	/** Additional memo or details associated with the transaction. */
 	private String memo; // Additional memo or details
+	/** The unique identifier for the transaction from the original source (e.g., FITID from OFX). */
 	private String transactionId; // e.g., FITID from OFX
+	/** The currency code of the transaction amount (e.g., "USD"). Optional. */
 	private String currency; // Optional, currency code
+	/** The type of account from which the transaction was imported (e.g., "BANK", "CREDITCARD"). */
 	private String originalAccountType; // e.g., "BANK", "CREDITCARD"
+	/** The account number from the imported file. */
 	private String originalAccountNumber; // Account number from the imported file
 	
+	/**
+	 * Default constructor.
+	 * Initializes all fields to their default values (null for objects, 0 for primitives if any).
+	 */
 	public ImportedTransaction()
 	{
 		
 	}
 	/**  
-	 * Constructor ImportedTransaction
-	 * @param datePosted
-	 * @param amount
-	 * @param description
-	 * @param memo
-	 * @param transactionId
-	 * @param currency
-	 * @param originalAccountType
-	 * @param originalAccountNumber
+	 * Constructs an ImportedTransaction with all its details.
+	 * @param datePosted The date the transaction was posted.
+	 * @param amount The monetary amount of the transaction.
+	 * @param description The primary description or payee of the transaction.
+	 * @param memo Additional memo or details for the transaction.
+	 * @param transactionId The unique ID of the transaction from its original source.
+	 * @param currency The currency code of the transaction amount.
+	 * @param originalAccountType The type of the account from the source file (e.g., "BANK").
+	 * @param originalAccountNumber The account number from the source file.
 	 */
 	public ImportedTransaction(LocalDate datePosted, BigDecimal amount, String description,
 		String memo, String transactionId, String currency, String originalAccountType,
@@ -49,7 +65,8 @@ public class ImportedTransaction
 	}
 
 	/**
-	 * @return the datePosted
+	 * Gets the date when the transaction was posted.
+	 * @return The posting date.
 	 */
 	public LocalDate getDatePosted()
 	{
@@ -57,7 +74,8 @@ public class ImportedTransaction
 	}
 	
 	/**
-	 * @param datePosted the datePosted to set
+	 * Sets the date when the transaction was posted.
+	 * @param datePosted The posting date to set.
 	 */
 	public void setDatePosted(LocalDate datePosted)
 	{
@@ -65,7 +83,8 @@ public class ImportedTransaction
 	}
 	
 	/**
-	 * @return the amount
+	 * Gets the monetary amount of the transaction.
+	 * @return The transaction amount.
 	 */
 	public BigDecimal getAmount()
 	{
@@ -73,7 +92,8 @@ public class ImportedTransaction
 	}
 	
 	/**
-	 * @param amount the amount to set
+	 * Sets the monetary amount of the transaction.
+	 * @param amount The transaction amount to set.
 	 */
 	public void setAmount(BigDecimal amount)
 	{
@@ -81,7 +101,8 @@ public class ImportedTransaction
 	}
 	
 	/**
-	 * @return the description
+	 * Gets the primary description of the transaction (often the payee).
+	 * @return The transaction description.
 	 */
 	public String getDescription()
 	{
@@ -89,7 +110,8 @@ public class ImportedTransaction
 	}
 	
 	/**
-	 * @param description the description to set
+	 * Sets the primary description of the transaction.
+	 * @param description The transaction description to set.
 	 */
 	public void setDescription(String description)
 	{
@@ -97,7 +119,8 @@ public class ImportedTransaction
 	}
 	
 	/**
-	 * @return the memo
+	 * Gets the additional memo or details for the transaction.
+	 * @return The transaction memo.
 	 */
 	public String getMemo()
 	{
@@ -105,7 +128,8 @@ public class ImportedTransaction
 	}
 	
 	/**
-	 * @param memo the memo to set
+	 * Sets the additional memo or details for the transaction.
+	 * @param memo The transaction memo to set.
 	 */
 	public void setMemo(String memo)
 	{
@@ -113,7 +137,8 @@ public class ImportedTransaction
 	}
 	
 	/**
-	 * @return the transactionId
+	 * Gets the unique transaction identifier from the original source.
+	 * @return The transaction ID (e.g., FITID).
 	 */
 	public String getTransactionId()
 	{
@@ -121,7 +146,8 @@ public class ImportedTransaction
 	}
 	
 	/**
-	 * @param transactionId the transactionId to set
+	 * Sets the unique transaction identifier from the original source.
+	 * @param transactionId The transaction ID to set.
 	 */
 	public void setTransactionId(String transactionId)
 	{
@@ -129,7 +155,8 @@ public class ImportedTransaction
 	}
 	
 	/**
-	 * @return the currency
+	 * Gets the currency code of the transaction.
+	 * @return The currency code (e.g., "USD"), or null if not set.
 	 */
 	public String getCurrency()
 	{
@@ -137,7 +164,8 @@ public class ImportedTransaction
 	}
 	
 	/**
-	 * @param currency the currency to set
+	 * Sets the currency code of the transaction.
+	 * @param currency The currency code to set (e.g., "USD").
 	 */
 	public void setCurrency(String currency)
 	{
@@ -145,7 +173,8 @@ public class ImportedTransaction
 	}
 	
 	/**
-	 * @return the originalAccountType
+	 * Gets the original account type from the imported file (e.g., "BANK", "CREDITCARD").
+	 * @return The original account type.
 	 */
 	public String getOriginalAccountType()
 	{
@@ -153,7 +182,8 @@ public class ImportedTransaction
 	}
 	
 	/**
-	 * @param originalAccountType the originalAccountType to set
+	 * Sets the original account type from the imported file.
+	 * @param originalAccountType The original account type to set.
 	 */
 	public void setOriginalAccountType(String originalAccountType)
 	{
@@ -161,7 +191,8 @@ public class ImportedTransaction
 	}
 	
 	/**
-	 * @return the originalAccountNumber
+	 * Gets the original account number from the imported file.
+	 * @return The original account number.
 	 */
 	public String getOriginalAccountNumber()
 	{
@@ -169,7 +200,8 @@ public class ImportedTransaction
 	}
 	
 	/**
-	 * @param originalAccountNumber the originalAccountNumber to set
+	 * Sets the original account number from the imported file.
+	 * @param originalAccountNumber The original account number to set.
 	 */
 	public void setOriginalAccountNumber(String originalAccountNumber)
 	{
@@ -177,11 +209,13 @@ public class ImportedTransaction
 	}
 	
 	/**
-	 * @param currency2
+	 * Sets the currency of the transaction using an OFX4J {@link Currency} object.
+	 * The currency code is stored as a string.
+	 * @param currencyInstance The {@link Currency} object from which to set the currency. If null, the behavior depends on {@code toString()}.
 	 */
-	public void setCurrency(Currency currency2)
+	public void setCurrency(Currency currencyInstance)
 	{
-		this.currency = currency2.toString();
+		this.currency = (currencyInstance != null) ? currencyInstance.toString() : null;
 		
 	}
 	

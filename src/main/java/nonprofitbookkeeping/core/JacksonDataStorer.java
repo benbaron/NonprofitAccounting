@@ -33,6 +33,10 @@ public class JacksonDataStorer implements DataStorer
 	public static JacksonDataStorer dataStorer = new JacksonDataStorer();
 	private static final String JSON_ENTRY_NAME = "company_data.json";
 	
+	/**
+	 * Constructs a JacksonDataStorer and initializes the Jackson ObjectMapper
+	 * with specific configurations for serialization and deserialization.
+	 */
 	public JacksonDataStorer()
 	{
 		this.mapper = new ObjectMapper()
@@ -45,6 +49,10 @@ public class JacksonDataStorer implements DataStorer
 			.setSetterInfo(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY));
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * This implementation reads data from a ZIP file, expecting a JSON entry named "company_data.json".
+	 */
 	@Override public <T> T loadData(Class<T> type, File file)	throws IOException,
 																ActionCancelledException,
 																NoFileCreatedException
@@ -101,6 +109,10 @@ public class JacksonDataStorer implements DataStorer
 		return value;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * This implementation writes data to a ZIP file, storing it as a JSON entry named "company_data.json".
+	 */
 	@Override public void saveData(Object obj, File file)	throws IOException,
 															ActionCancelledException,
 															NoFileCreatedException
@@ -146,6 +158,9 @@ public class JacksonDataStorer implements DataStorer
 		
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override public List<File> listFiles(File directory, String extension)
 	{
 		
@@ -162,11 +177,19 @@ public class JacksonDataStorer implements DataStorer
 		return result;
 	}
 	
+	/**
+	 * Sets the static dataStorer instance.
+	 * @param dataStorerIn The JacksonDataStorer instance to set.
+	 */
 	public static void setDataStorer(JacksonDataStorer dataStorerIn)
 	{
 		JacksonDataStorer.dataStorer = dataStorerIn;
 	}
 	
+	/**
+	 * Gets the static dataStorer instance.
+	 * @return The static JacksonDataStorer instance.
+	 */
 	public static JacksonDataStorer getDataStorer()
 	{
 		return JacksonDataStorer.dataStorer;

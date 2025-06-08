@@ -27,10 +27,11 @@ public class Ofx20Writer
 	/**
 	 * Writes the given list of transactions to an OFX 2.0 XML file.
 	 * 
-	 * @param transactions the list of transactions to export.
-	 * @param outputFile the file to which the OFX XML should be written.
-	 * @return the output file.
-	 * @throws Exception if an error occurs during XML generation or file writing.
+	 * @param transactions The list of {@link Transaction} objects to export.
+	 * @param outputFile The {@link File} to which the OFX XML data should be written.
+	 *                   This file will be created or overwritten.
+	 * @return The output file that was written.
+	 * @throws Exception if any error occurs during XML document generation or file writing.
 	 */
 	public static File writeTransactions(	List<Transaction> transactions,
 											File outputFile) throws Exception

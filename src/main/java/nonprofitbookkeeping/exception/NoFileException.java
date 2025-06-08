@@ -11,18 +11,19 @@ package nonprofitbookkeeping.exception;
 public class NoFileException extends Exception
 {
 	/**
-	 * serialVersionUID : long
+	 * The unique identifier for this serializable class.
 	 */
 	private static final long serialVersionUID = -4430741390829154968L;
 	final String s;
 	
 	/**  
-	 * Constructor NoFileException
-	 * @param string
+	 * Constructs a NoFileException with the specified detail message.
+	 * @param message The detail message (which is saved for later retrieval by the {@link #getMessage()} method).
 	 */
-	public NoFileException(String string)
+	public NoFileException(String message)
 	{
-		this.s = string;
+		super(message); // Pass the message to the superclass constructor
+		this.s = message;
 	}
 	
 }

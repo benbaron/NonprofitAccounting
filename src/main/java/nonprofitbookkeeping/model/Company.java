@@ -15,12 +15,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class Company implements Serializable
 {
 	/**
-	 * serialVersionUID : long
+	 * The unique identifier for this serializable class.
 	 */
 	private static final long serialVersionUID = 6728014646115467637L;
 	
+	/** The profile information for the company (e.g., name, address). Initialized by default. */
 	@JsonProperty private CompanyProfileModel companyProfileModel = new CompanyProfileModel();
+	/** The ledger containing all financial transactions for the company. Initialized by default. */
 	@JsonProperty private Ledger ledger = new Ledger();
+	/** The chart of accounts defining the structure of accounts for the company. Initialized by default. */
 	@JsonProperty private ChartOfAccounts chartOfAccounts = new ChartOfAccounts();
 	
 	/**
@@ -31,8 +34,9 @@ public class Company implements Serializable
 	private File companyFile = null;
 
 	/**
-	 * 
-	 * Constructor Company
+	 * Constructs a new Company object.
+	 * Initializes the company profile, ledger, and chart of accounts with default instances.
+	 * The company file is initially null.
 	 */
 	public Company()
 	{			
@@ -42,7 +46,8 @@ public class Company implements Serializable
 	}
 	
 	/**
-	 * @return the companyProfileModel
+	 * Gets the company's profile information.
+	 * @return The {@link CompanyProfileModel} associated with this company.
 	 */
 	public CompanyProfileModel getCompanyProfile()
 	{
@@ -51,7 +56,8 @@ public class Company implements Serializable
 	
 	
 	/**
-	 * @return the ledger
+	 * Gets the company's ledger, which contains all financial transactions.
+	 * @return The {@link Ledger} for this company.
 	 */
 	public Ledger getLedger()
 	{
@@ -59,7 +65,9 @@ public class Company implements Serializable
 	}
 	
 	/**
-	 * @param ledger the ledger to set
+	 * Sets the company's ledger.
+	 * @param ledger The {@link Ledger} to set. Must not be null.
+	 * @throws NullPointerException if ledger is null.
 	 */
 	public void setLedger(Ledger ledger)
 	{
@@ -67,7 +75,8 @@ public class Company implements Serializable
 	}
 	
 	/**
-	 * @return the chartOfAccounts
+	 * Gets the company's chart of accounts.
+	 * @return The {@link ChartOfAccounts} for this company.
 	 */
 	public ChartOfAccounts getChartOfAccounts()
 	{
@@ -75,7 +84,9 @@ public class Company implements Serializable
 	}
 	
 	/**
-	 * @param chart
+	 * Sets the company's chart of accounts.
+	 * @param chart The {@link ChartOfAccounts} to set. Must not be null.
+	 * @throws NullPointerException if chart is null.
 	 */
 	public void setChartOfAccounts(ChartOfAccounts chart)
 	{
@@ -84,7 +95,8 @@ public class Company implements Serializable
 	}
 
 	/**
-	 * @param created
+	 * Sets the company's profile model.
+	 * @param created The {@link CompanyProfileModel} to set.
 	 */
 	public void setCompanyProfileModel(CompanyProfileModel created)
 	{
@@ -92,7 +104,9 @@ public class Company implements Serializable
 	}
 
 	/**
-	 * @return the companyProfileModel
+	 * Gets the company's profile model.
+	 * This is an alias for {@link #getCompanyProfile()}.
+	 * @return The {@link CompanyProfileModel} associated with this company.
 	 */
 	public CompanyProfileModel getCompanyProfileModel()
 	{

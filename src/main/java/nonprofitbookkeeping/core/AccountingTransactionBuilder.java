@@ -21,21 +21,20 @@ public class AccountingTransactionBuilder
 	final private Account account;
 	
 	/**
-	 * 
-	 * Constructor AccountingTransactionBuilder
-	 * @param account
-	 * @param info
+	 * Constructs an AccountingTransactionBuilder.
+	 * @param account The account associated with the transaction. Can be null.
+	 * @param info Additional information about the transaction. Can be null.
 	 */
-	private AccountingTransactionBuilder(Account account, @Nullable Map<String, String> info)
+	private AccountingTransactionBuilder(@Nullable Account account, @Nullable Map<String, String> info)
 	{
 		this.info = info;
 		this.account = account;
 	}
 	
 	/**
-	 * 
-	 * @param info
-	 * @return
+	 * Creates a new AccountingTransactionBuilder with the given information.
+	 * @param info Additional information about the transaction. Can be null.
+	 * @return A new AccountingTransactionBuilder instance.
 	 */
 	public static AccountingTransactionBuilder create
 		(@Nullable Map<String, String> info)
@@ -44,9 +43,9 @@ public class AccountingTransactionBuilder
 	}
 	
 	/**
-	 * 
-	 * @param account
-	 * @return
+	 * Creates a new AccountingTransactionBuilder with the given account.
+	 * @param account The account associated with the transaction.
+	 * @return A new AccountingTransactionBuilder instance.
 	 */
 	public static AccountingTransactionBuilder create(Account account)
 	{
@@ -54,10 +53,10 @@ public class AccountingTransactionBuilder
 	}
 	
 	/**
-	 * 
-	 * @param amount
-	 * @param accountNumber
-	 * @return
+	 * Adds a debit entry to the transaction.
+	 * @param amount The amount to debit.
+	 * @param accountNumber The account number to debit.
+	 * @return This AccountingTransactionBuilder instance for chaining.
 	 */
 	public AccountingTransactionBuilder debit(BigDecimal amount, String accountNumber)
 	{
@@ -66,10 +65,10 @@ public class AccountingTransactionBuilder
 	}
 	
 	/**
-	 * 
-	 * @param amount
-	 * @param accountNumber
-	 * @return
+	 * Adds a credit entry to the transaction.
+	 * @param amount The amount to credit.
+	 * @param accountNumber The account number to credit.
+	 * @return This AccountingTransactionBuilder instance for chaining.
 	 */
 	public AccountingTransactionBuilder credit(BigDecimal amount, String accountNumber)
 	{
@@ -78,8 +77,8 @@ public class AccountingTransactionBuilder
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Builds the AccountingTransaction.
+	 * @return A new AccountingTransaction instance.
 	 */
 	public AccountingTransaction build()
 	{

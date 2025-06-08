@@ -12,6 +12,11 @@ public class StateMachine
 	private AppState currentState;
 	private final EnumMap<AppState, JMenuItem[]> menuStateMapping;
 	
+	/**
+	 * Constructs a StateMachine.
+	 * Initializes the state to {@link AppState#NO_FILE_OPEN} and sets up menu item states.
+	 * @param menuBar The JMenuBar whose items will be managed by this state machine.
+	 */
 	public StateMachine(JMenuBar menuBar)
 	{
 		// Default state
@@ -46,14 +51,21 @@ public class StateMachine
 		updateMenuItems();
 	}
 	
-	// Set the current state and update the menu items accordingly
+	/**
+	 * Sets the current state of the application and updates the menu items accordingly.
+	 * @param newState The new application state.
+	 */
 	public void setCurrentState(AppState newState)
 	{
 		this.currentState = newState;
 		updateMenuItems();
 	}
 	
-	// Enable or disable menu items based on the current state
+	/**
+	 * Enables or disables menu items based on the current application state.
+	 * It first disables all relevant menu items and then enables only those
+	 * that are appropriate for the current state.
+	 */
 	private void updateMenuItems()
 	{
 		
@@ -71,7 +83,11 @@ public class StateMachine
 		
 	}
 	
-	// Get all JMenuItems (you may want to map all items in your GUI here)
+	/**
+	 * Retrieves all JMenuItems that are managed by the state machine.
+	 * This is a helper method for {@link #updateMenuItems()}.
+	 * @return An array of JMenuItems.
+	 */
 	private JMenuItem[] getAllMenuItems()
 	{
 		return new JMenuItem[]
@@ -82,6 +98,10 @@ public class StateMachine
 		};
 	}
 	
+	/**
+	 * Static inner class serving as a container for JMenuItem instances.
+	 * This allows menu items to be centrally defined and accessed.
+	 */
 	static class PanelContainer
 	{
 		public static JMenuItem openItem = new JMenuItem("Open File...");
@@ -94,6 +114,10 @@ public class StateMachine
 	
 }
 
+/**
+ * Enum representing the different states of the application.
+ * These states are used by the {@link StateMachine} to control UI behavior.
+ */
 // public class NonprofitBookkeeping {
 // public static void main(String[] args) {
 // SwingUtilities.invokeLater(() -> {
@@ -124,11 +148,18 @@ public class StateMachine
 // }
 // }
 
-
+/**
+ * Enum representing the different states of the application.
+ * These states are used by the {@link StateMachine} to control UI behavior.
+ */
 enum AppState
 {
+	/** State when no file is open in the application. */
 	NO_FILE_OPEN,
+	/** State when a file is open and being viewed or edited. */
 	FILE_OPEN,
+	/** State when a transaction is actively being entered or processed. */
 	TRANSACTION_IN_PROGRESS,
+	/** State when a report is being generated. */
 	REPORT_GENERATION
 }

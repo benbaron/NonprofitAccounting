@@ -20,7 +20,9 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Represents a group of related account entries.
+ * Represents a financial transaction, which is a collection of related {@link AccountingEntry} instances.
+ * A transaction must be balanced, meaning the sum of its debit entries equals the sum of its credit entries.
+ * This class uses Lombok for boilerplate code generation like getters, setters, constructors, etc.
  */
 @Builder
 @Data
@@ -30,19 +32,27 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class AccountingTransaction implements Serializable
 {
 	/**
-	 * serialVersionUID : long
+	 * The unique identifier for this serializable class.
 	 */
 	private static final long serialVersionUID = -8821254116304310L;
 	
+	/** The primary account associated with this transaction, if any. */
 	@JsonProperty private Account account;
+	/** The set of accounting entries that make up this transaction. Must not be null or empty. */
 	@JsonProperty private Set<AccountingEntry> entries;
+	/** Additional information or metadata about the transaction, stored as key-value pairs. */
 	@JsonProperty private Map<String, String> info;
+	/** The timestamp when the transaction was booked/recorded, in milliseconds since epoch. */
 	@JsonProperty private long bookingDateTimestamp;
+	/** The date of the transaction, typically in a string format like "YYYY-MM-DD". */
 	@JsonProperty private String date; // Non-final
+	/** A descriptive memo or note for the transaction. */
 	@JsonProperty private String memo; // Non-final
 	
 	/**
-	 * Constructor AccountingTransaction
+	 * Default constructor.
+	 * Used by Lombok and Jackson for instantiation.
+	 * Initializes fields to default values (e.g., null for objects, 0 for primitives).
 	 */
 	public AccountingTransaction()
 	{
@@ -50,7 +60,18 @@ public class AccountingTransaction implements Serializable
 	}
 	
 	/**
-	 * Public constructor for existing code.
+	 * Constructs an AccountingTransaction with specified details.
+	 * Ensures that entries are not null and the transaction is balanced.
+	 * Note: The process of setting the transaction back onto its entries is commented out
+	 * to avoid circular dependency issues during construction and may need to be handled
+	 * post-construction or via a builder pattern.
+	 *
+	 * @param account The primary account associated with this transaction. Must not be null.
+	 * @param entries The set of accounting entries for this transaction. Must not be null and must contain at least two entries.
+	 * @param info Optional map of additional information about the transaction. Can be null.
+	 * @param bookingDateTimestamp The timestamp when the transaction was booked.
+	 * @throws NullPointerException if account or entries are null.
+	 * @throws IllegalArgumentException if entries is empty, contains less than two entries, or if the transaction is not balanced.
 	 */
 	public AccountingTransaction(Account account,
 		Set<AccountingEntry> entries,
@@ -108,7 +129,8 @@ public class AccountingTransaction implements Serializable
 	}
 	
 	/**
-	 * @return the account
+	 * Gets the primary account associated with this transaction.
+	 * @return The account, or null if no specific account is associated at the transaction level.
 	 */
 	public Account getAccount()
 	{
@@ -116,7 +138,8 @@ public class AccountingTransaction implements Serializable
 	}
 
 	/**
-	 * @param account the account to set
+	 * Sets the primary account for this transaction.
+	 * @param account The account to set.
 	 */
 	public void setAccount(Account account)
 	{
@@ -124,7 +147,8 @@ public class AccountingTransaction implements Serializable
 	}
 
 	/**
-	 * @return the entries
+	 * Gets the set of accounting entries that make up this transaction.
+	 * @return An unmodifiable set of accounting entries.
 	 */
 	public Set<AccountingEntry> getEntries()
 	{
@@ -132,7 +156,9 @@ public class AccountingTransaction implements Serializable
 	}
 
 	/**
-	 * @param entries the entries to set
+	 * Sets the accounting entries for this transaction.
+	 * Note: If immutability is desired after construction, this method might be restricted or handled by a builder.
+	 * @param entries The set of accounting entries to set.
 	 */
 	public void setEntries(Set<AccountingEntry> entries)
 	{
@@ -140,7 +166,8 @@ public class AccountingTransaction implements Serializable
 	}
 
 	/**
-	 * @return the info
+	 * Gets the additional information or metadata associated with this transaction.
+	 * @return An unmodifiable map of information, or an empty map if no info is set.
 	 */
 	public Map<String, String> getInfo()
 	{
@@ -148,7 +175,8 @@ public class AccountingTransaction implements Serializable
 	}
 
 	/**
-	 * @param info the info to set
+	 * Sets the additional information for this transaction.
+	 * @param info A map of key-value pairs representing additional information.
 	 */
 	public void setInfo(Map<String, String> info)
 	{
@@ -156,16 +184,26 @@ public class AccountingTransaction implements Serializable
 	}
 
 	/**
-	 * @return the bookingDateTimestamp
+	 * Gets the booking date timestamp of the transaction.
+	 * This is typically represented as milliseconds since the epoch.
+	 * @return The booking date timestamp.
 	 */
 	public long getBookingDateTimestamp()
 	{
 		return this.bookingDateTimestamp;
 	}
 
+	/**
+	 * Sets the booking date timestamp for this transaction.
+	 * @param bookingDateTimestamp The timestamp in milliseconds since epoch.
+	 */
+	public void setBookingDateTimestamp(long bookingDateTimestamp) {
+		this.bookingDateTimestamp = bookingDateTimestamp;
+	}
 
 	/**
-	 * @return the serialversionuid
+	 * Gets the serial version UID for serialization.
+	 * @return The serial version UID.
 	 */
 	public static long getSerialversionuid()
 	{
@@ -173,7 +211,8 @@ public class AccountingTransaction implements Serializable
 	}
 
 	/**
-	 * @return the memo
+	 * Gets the memo or description of the transaction.
+	 * @return The transaction memo.
 	 */
 	public String getMemo()
 	{
@@ -181,13 +220,14 @@ public class AccountingTransaction implements Serializable
 	}
 
 	/**
-	 * getTotalAmount
-	 * @return
+	 * Calculates the total debit amount of the transaction.
+	 * Iterates through all entries and sums the amounts of debit entries.
+	 * @return The total debit amount as a BigDecimal. Returns BigDecimal.ZERO if entries are null.
 	 */
 	public BigDecimal getTotalAmount()
 	{
 		BigDecimal debitTotal = BigDecimal.ZERO;
-		BigDecimal creditTotal = BigDecimal.ZERO; // Not used
+		// BigDecimal creditTotal = BigDecimal.ZERO; // Not used in current implementation of this method
 		
 		if (this.entries == null)
 			return BigDecimal.ZERO; // Guard against null entries
@@ -199,22 +239,28 @@ public class AccountingTransaction implements Serializable
 			{
 				debitTotal = debitTotal.add(e.getAmount());
 			}
-			else
-			{
-				creditTotal = creditTotal.add(e.getAmount());
-			}
+			// else: credit entries are not summed in this specific method's current logic for return value
+			// {
+			// creditTotal = creditTotal.add(e.getAmount());
+			// }
 			
 		}
 		
 		return debitTotal;
 	}
 	
+	/**
+	 * Checks if the transaction is balanced.
+	 * A transaction is balanced if the sum of all debit entries equals the sum of all credit entries.
+	 * An empty or null set of entries is considered unbalanced (or could be defined as balanced based on rules).
+	 * @return {@code true} if the transaction is balanced, {@code false} otherwise.
+	 */
 	public boolean isBalanced()
 	{
 		
-		if (this.entries == null || this.entries.isEmpty())
-		{ // Or size < 2
-			return false; // Or true, depending on definition for empty/single-entry transactions
+		if (this.entries == null || this.entries.isEmpty()) // Or entries.size() < 2
+		{
+			return false; // Or true, depending on business rule for empty/single-entry transactions
 		}
 		
 		BigDecimal balance = this.entries.stream()
@@ -224,6 +270,10 @@ public class AccountingTransaction implements Serializable
 		return balance.compareTo(BigDecimal.ZERO) == 0;
 	}
 	
+	/**
+	 * Returns a string representation of the transaction, including its booking date and entries.
+	 * @return A string summary of the transaction.
+	 */
 	@Override public String toString()
 	{
 		StringBuilder sb = new StringBuilder();
@@ -243,38 +293,55 @@ public class AccountingTransaction implements Serializable
 		return sb.toString();
 	}
 	
-
+	/**
+	 * Gets the description of the transaction, which is equivalent to its memo.
+	 * @return The transaction description (memo).
+	 */
 	public String getDescription()
 	{
 		return this.memo;
 	}
 	
+	/**
+	 * Gets the name of the primary account associated with this transaction.
+	 * @return The name of the account, or null if no account is associated or the account has no name.
+	 */
 	public String getAccountName()
 	{
 		return this.account != null ? this.account.getName() : null;
 	}
 	
+	/**
+	 * Sets the description (memo) of the transaction.
+	 * @param description The description to set.
+	 */
 	public void setDescription(String description)
 	{
 		this.memo = description;
 	}
 	
 	/**
-	 * @return
+	 * Gets the date of the transaction.
+	 * @return The transaction date string.
 	 */
 	public String getDate()
 	{
 		return this.date;
 	}
 
-	public void setDate(String string)
+	/**
+	 * Sets the date of the transaction.
+	 * @param date The date string to set (e.g., "YYYY-MM-DD").
+	 */
+	public void setDate(String date)
 	{
-		this.date = string;
+		this.date = date;
 	}
 	
 	/**
-	 *
-	 * @return
+	 * Calculates the total balance of the primary account associated with this transaction.
+	 * If no account is associated, returns BigDecimal.ZERO.
+	 * @return The total balance of the associated account.
 	 */
 	public BigDecimal countAccountBalance()
 	{
@@ -284,27 +351,27 @@ public class AccountingTransaction implements Serializable
 	}
 	
 	/**
-	 *
-	 * @param memo2
+	 * Sets the memo for this transaction.
+	 * This is an alias for {@link #setDescription(String)}.
+	 * @param memo The memo text to set.
 	 */
-	public void setMemo(String memo2)
+	public void setMemo(String memo)
 	{
-		this.memo = memo2;
+		this.memo = memo;
 	}
 	
 	/**
-	 * 
-	 * @param valueOf
+	 * Placeholder method for setting the total amount.
+	 * Currently, this method is a stub and does not modify the transaction's entries.
+	 * Modifying the total amount would typically involve adjusting the underlying entries,
+	 * which should be handled carefully, possibly via a builder or by creating a new transaction instance.
+	 * @param valueOf The new total amount (currently unused).
 	 */
 	public void setTotalAmount(BigDecimal valueOf)
 	{
 		// This method was a stub. If it's meant to do something,
 		// it would likely need to adjust entries, which are now final and unmodifiable
-		// via this instance after construction.
+		// via this instance after construction (if entries are made unmodifiable).
 		// This suggests mutation should happen via new instances or builder.
 	}
-
-
-
-	
 }
