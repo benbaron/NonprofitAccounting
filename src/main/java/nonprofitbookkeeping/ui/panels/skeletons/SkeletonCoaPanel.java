@@ -37,6 +37,9 @@ public class SkeletonCoaPanel extends BorderPane
 	private Button deleteAccountButton;
 	private HBox crudButtonsHBox;
 	
+	/**
+	 * Constructor SkeletonCoaPanel
+	 */
 	public SkeletonCoaPanel()
 	{
 		setPadding(new Insets(15)); // Overall padding
@@ -44,6 +47,7 @@ public class SkeletonCoaPanel extends BorderPane
 		// Initialize TreeTableView and its root
 		// The root's value can be null as it's not shown.
 		// Or use a dummy account if preferred for clarity, but it won't be visible.
+		
 		this.rootAccountsNode = new TreeItem<>();
 		this.coaTreeTable = new TreeTableView<>(this.rootAccountsNode);
 		this.coaTreeTable.setShowRoot(false); // Hide the dummy root
@@ -69,6 +73,10 @@ public class SkeletonCoaPanel extends BorderPane
 		setupEventListenersAndRefresh();
 	}
 	
+	
+	/**
+	 * 
+	 */
 	private void setupTreeTableColumns()
 	{
 		this.coaTreeTable.getColumns().clear();
@@ -97,11 +105,13 @@ public class SkeletonCoaPanel extends BorderPane
 		
 		// Example for a balance column (requires data in Account object or external
 		// fetching)
-		// TreeTableColumn<Account, String> balanceCol = new
-		// TreeTableColumn<>("Balance");
+		//
+		// TreeTableColumn<Account, String> balanceCol = new TreeTableColumn<>("Balance");
 		// balanceCol.setCellValueFactory(cellData -> {
 		// Account acc = cellData.getValue().getValue();
+		//
 		// // Assuming Account has a getBalance() method returning BigDecimal or similar
+		//
 		// return new SimpleStringProperty(acc != null && acc.getBalance() != null ?
 		// acc.getBalance().toPlainString() : "0.00");
 		// });
@@ -112,6 +122,9 @@ public class SkeletonCoaPanel extends BorderPane
 		// implemented
 	}
 	
+	/**
+	 * 
+	 */
 	private void loadCoaData()
 	{
 		this.rootAccountsNode.getChildren().clear();
@@ -139,6 +152,12 @@ public class SkeletonCoaPanel extends BorderPane
 		// modification triggers update
 	}
 	
+	/**
+	 * 
+	 * @param account
+	 * @param coa
+	 * @return
+	 */
 	private TreeItem<Account> createAccountTreeItem(Account account, ChartOfAccounts coa)
 	{
 		TreeItem<Account> item = new TreeItem<>(account);
@@ -158,6 +177,9 @@ public class SkeletonCoaPanel extends BorderPane
 		return item;
 	}
 	
+	/**
+	 * 
+	 */
 	private void setupEventListenersAndRefresh()
 	{
 		this.companyChangeListener = new CompanyChangeListener()

@@ -133,7 +133,8 @@ public final class AccountingEntry implements Serializable
 	
 	/**
 	 * Get account from Account string
-	 * @return
+	 * 
+	 * @return Account object
 	 */
 	public Account getAccount()
 	{
