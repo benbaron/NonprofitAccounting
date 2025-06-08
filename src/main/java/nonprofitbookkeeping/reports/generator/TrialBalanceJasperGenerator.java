@@ -128,10 +128,10 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 		
 		String reportAsOfDate = "N/A";
 		
-		if (reportContext.getEndDate() != null)
+		if (this.reportContext.getEndDate() != null)
 		{
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
-			reportAsOfDate = "As of " + reportContext.getEndDate().format(formatter);
+			reportAsOfDate = "As of " + this.reportContext.getEndDate().format(formatter);
 		}
 		
 		params.put("P_AS_OF_DATE", reportAsOfDate);
@@ -168,7 +168,7 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 		File generatedFile = null;
 		String currentDateStr = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
 		String reportBaseName = "Trial_Balance_Report_" +
-			(reportContext.getEndDate() != null ? reportContext.getEndDate().toString() :
+			(this.reportContext.getEndDate() != null ? this.reportContext.getEndDate().toString() :
 				currentDateStr);
 		
 		String jrxmlPath = getReportPath();

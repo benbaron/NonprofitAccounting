@@ -203,10 +203,19 @@ public class CurrentCompany
 			
 			for (CompanyChangeListener l : listeners.getListeners(CompanyChangeListener.class))
 			{
-				l.companyChange(b);
+				l.companyChange(isOpen);
 			}
 			
 		}
+		
+	}
+
+	/**
+	 * @param companyChangeListener
+	 */
+	public static void addCompanyChangeListener(CompanyChangeListener companyChangeListener)
+	{
+		// TODO Auto-generated method stub
 		
 	}
 

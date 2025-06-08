@@ -41,11 +41,11 @@ public class CashFlowStatementJasperGenerator extends AbstractReportGenerator {
      * Constructs a {@code CashFlowStatementJasperGenerator}.
      *
      * @param reportContext The {@link ReportContext} containing criteria and settings for the report.
-     * @param reportService The {@link ReportService} used to prepare the data for the report.
+     * @param reportService2 The {@link ReportService} used to prepare the data for the report.
      */
-    public CashFlowStatementJasperGenerator(ReportContext reportContext, ReportService reportService) {
+    public CashFlowStatementJasperGenerator(ReportContext reportContext, ReportService reportService2) {
         this.reportContext = reportContext;
-        this.reportService = reportService;
+        this.reportService = reportService2;
     }
 
     /**

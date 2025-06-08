@@ -10,6 +10,7 @@ import nonprofitbookkeeping.model.budget.Periodicity;
 import javax.swing.table.AbstractTableModel;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A Swing {@link javax.swing.table.AbstractTableModel} implementation for displaying

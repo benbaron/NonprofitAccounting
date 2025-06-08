@@ -40,11 +40,12 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 /**
- * A JavaFX panel for generating new reports and viewing a list of previously generated reports.
- * It provides UI controls for selecting report type, start date, and end date.
- * Generated reports are displayed in a {@link TableView} with an option to open the report file.
- * The panel uses a {@link ReportService} to handle report generation and listing,
- * and it listens for {@link CurrentCompany} changes to refresh the list of generated reports.
+ * A JavaFX panel for generating new reports and viewing a list of previously
+ * generated reports. It provides UI controls for selecting report type, start
+ * date, and end date. Generated reports are displayed in a {@link TableView}
+ * with an option to open the report file. The panel uses a
+ * {@link ReportService} to handle report generation and listing, and it listens
+ * for {@link CurrentCompany} changes to refresh the list of generated reports.
  */
 public class SkeletonReportsPanel extends BorderPane
 {
@@ -86,7 +87,8 @@ public class SkeletonReportsPanel extends BorderPane
 		
 		this.generatedReportsDataList = FXCollections.observableArrayList();
 		this.generatedReportsTable = new TableView<>(this.generatedReportsDataList);
-		this.generatedReportsTable.setPlaceholder(new Label("No reports found or company not open."));
+		this.generatedReportsTable
+			.setPlaceholder(new Label("No reports found or company not open."));
 		
 		this.controlsGrid = new GridPane();
 		this.controlsGrid.setPadding(new Insets(10));
@@ -236,7 +238,7 @@ public class SkeletonReportsPanel extends BorderPane
 		actionsCol.setPrefWidth(100);
 		
 		this.generatedReportsTable.getColumns()
-			.addAll(nameCol, dateGenCol, 	
+			.addAll(nameCol, dateGenCol,
 				formatCol, actionsCol);
 	}
 	
@@ -273,7 +275,8 @@ public class SkeletonReportsPanel extends BorderPane
 		if (this.generatedReportsDataList.isEmpty() &&
 			this.generatedReportsTable.getPlaceholder() instanceof Label)
 		{
-			((Label) this.generatedReportsTable.getPlaceholder()).setText("No generated reports found.");
+			((Label) this.generatedReportsTable.getPlaceholder())
+				.setText("No generated reports found.");
 		}
 		
 	}
@@ -331,23 +334,23 @@ public class SkeletonReportsPanel extends BorderPane
 				case "Income Statement":
 					reportTypeKey = "income_statement_jasper";
 					break;
-					
+				
 				case "Balance Sheet":
 					reportTypeKey = "balance_sheet_jasper";
 					// AlertBox.showInfo(ownerWindow, "Balance Sheet via Jasper is chosen, but
 					// ensure its generator is fully implemented in ReportService.");
 					break;
-					
+				
 				case "Trial Balance":
 					reportTypeKey = "trial_balance_jasper";
 					// AlertBox.showInfo(ownerWindow, "Trial Balance via Jasper is chosen, but
 					// ensure its generator is fully implemented in ReportService.");
 					break;
-					
+				
 				case "Cash Flow Statement":
 					reportTypeKey = "cash_flow_statement_jasper";
 					break;
-					
+				
 				default:
 					AlertBox.showError(ownerWindow, "Report type '" + reportTypeDisplay +
 						"' generation not configured for Jasper system.");

@@ -1,15 +1,10 @@
 package nonprofitbookkeeping.ui;
 
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
-// import javafx.scene.layout.VBox; // No longer needed for sidebar
-// import javafx.scene.Node; // No longer needed for setContent
-// import javafx.geometry.Insets; // No longer needed for sidebar
-// import javafx.scene.control.Button; // No longer needed for sidebar
-// import javafx.scene.layout.StackPane; // No longer needed for contentArea
+
 
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonCoaPanel;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonDashboardPanel;
@@ -70,29 +65,29 @@ public class MainApplicationView extends BorderPane {
     public MainApplicationView() {
         this.menuBar = null; // Initialize menuBar, will be set via setter
 
-        tabPane = new TabPane();
+        this.tabPane = new TabPane();
 
         // Create Tab instances
-        dashboardTab = new Tab("Dashboard", new SkeletonDashboardPanel());
-        journalTab = new Tab("Journal", new SkeletonJournalPanel());
-        coaTab = new Tab("Chart of Accounts", new SkeletonCoaPanel());
-        reportsTab = new Tab("Reports", new SkeletonReportsPanel());
+        this.dashboardTab = new Tab("Dashboard", new SkeletonDashboardPanel());
+        this.journalTab = new Tab("Journal", new SkeletonJournalPanel());
+        this.coaTab = new Tab("Chart of Accounts", new SkeletonCoaPanel());
+        this.reportsTab = new Tab("Reports", new SkeletonReportsPanel());
 
         // Set tabs to be non-closable
-        dashboardTab.setClosable(false);
-        journalTab.setClosable(false);
-        coaTab.setClosable(false);
-        reportsTab.setClosable(false);
+        this.dashboardTab.setClosable(false);
+        this.journalTab.setClosable(false);
+        this.coaTab.setClosable(false);
+        this.reportsTab.setClosable(false);
 
         // Add new tab for Account Details
-        accountDetailsTab = new Tab("Account Details", new AccountTransactionDetailsPanelFX());
-        accountDetailsTab.setClosable(false);
+        this.accountDetailsTab = new Tab("Account Details", new AccountTransactionDetailsPanelFX());
+        this.accountDetailsTab.setClosable(false);
 
         // Add tabs to the tabPane
-        tabPane.getTabs().addAll(dashboardTab, journalTab, coaTab, reportsTab, accountDetailsTab);
+        this.tabPane.getTabs().addAll(this.dashboardTab, this.journalTab, this.coaTab, this.reportsTab, this.accountDetailsTab);
 
         // Set the TabPane as the center of the BorderPane
-        setCenter(tabPane);
+        setCenter(this.tabPane);
 
         // The TOP will be set via setMenuBar()
     }
@@ -119,19 +114,19 @@ public class MainApplicationView extends BorderPane {
     public void showPanel(PanelType panelType) {
         switch (panelType) {
             case DASHBOARD:
-                tabPane.getSelectionModel().select(dashboardTab);
+                this.tabPane.getSelectionModel().select(this.dashboardTab);
                 break;
             case JOURNAL:
-                tabPane.getSelectionModel().select(journalTab);
+                this.tabPane.getSelectionModel().select(this.journalTab);
                 break;
             case COA:
-                tabPane.getSelectionModel().select(coaTab);
+                this.tabPane.getSelectionModel().select(this.coaTab);
                 break;
             case REPORTS:
-                tabPane.getSelectionModel().select(reportsTab);
+                this.tabPane.getSelectionModel().select(this.reportsTab);
                 break;
             case ACCOUNT_DETAILS:
-                tabPane.getSelectionModel().select(accountDetailsTab);
+                this.tabPane.getSelectionModel().select(this.accountDetailsTab);
                 break;
             default:
                 // Optionally, log an error or select a default tab

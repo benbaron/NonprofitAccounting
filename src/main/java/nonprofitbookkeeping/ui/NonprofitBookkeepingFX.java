@@ -2,7 +2,6 @@
 package nonprofitbookkeeping.ui;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -23,11 +22,8 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import nonprofitbookkeeping.ui.MainApplicationView;
 import nonprofitbookkeeping.core.ApplicationContext;
 import nonprofitbookkeeping.core.ApplicationContextImpl;
-import nonprofitbookkeeping.exception.ActionCancelledException;
-import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Fund;
@@ -481,8 +477,8 @@ public class NonprofitBookkeepingFX extends Application
 	{
 		this.state = newState;
 		boolean companyOpen = (newState == AppState.COMPANY_OPEN);
-		boolean noCompany = (s == AppState.NO_COMPANY);
-		boolean creatingCompany = (s == AppState.CREATING_COMPANY);
+		boolean noCompany = (newState == AppState.NO_COMPANY);
+		boolean creatingCompany = (newState == AppState.CREATING_COMPANY);
 		
 		this.miOpen.setDisable(companyOpen || creatingCompany);
 		this.miClose.setDisable(noCompany || creatingCompany);

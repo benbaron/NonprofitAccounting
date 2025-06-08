@@ -55,7 +55,7 @@ public class CashFlowStatementRowBean {
      * @return The section name.
      */
     public String getSectionName() {
-        return sectionName;
+        return this.sectionName;
     }
 
     /**
@@ -63,7 +63,7 @@ public class CashFlowStatementRowBean {
      * @return The item description.
      */
     public String getItemDescription() {
-        return itemDescription;
+        return this.itemDescription;
     }
 
     /**
@@ -71,7 +71,7 @@ public class CashFlowStatementRowBean {
      * @return The item amount as a {@link BigDecimal}.
      */
     public BigDecimal getItemAmount() {
-        return itemAmount;
+        return this.itemAmount;
     }
 
     /**
@@ -81,7 +81,7 @@ public class CashFlowStatementRowBean {
      * @return True if this row is a subtotal, false otherwise.
      */
     public boolean getIsSubtotal() {
-        return isSubtotal;
+        return this.isSubtotal;
     }
 
     /**
@@ -90,7 +90,7 @@ public class CashFlowStatementRowBean {
      * @return True if this row is a subtotal, false otherwise.
      */
     public boolean isSubtotal() {
-        return isSubtotal;
+        return this.isSubtotal;
     }
 
     /**
@@ -98,7 +98,7 @@ public class CashFlowStatementRowBean {
      * @return The sort order.
      */
     public int getSortOrder() {
-        return sortOrder;
+        return this.sortOrder;
     }
 
     /**

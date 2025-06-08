@@ -4,8 +4,10 @@ package nonprofitbookkeeping.ui.panels;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.logging.Logger;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -16,6 +18,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import nonprofitbookkeeping.model.*;
 import nonprofitbookkeeping.service.ChartOfAccountsIOService;
 import nonprofitbookkeeping.service.ChartOfAccountsService;
@@ -42,7 +45,8 @@ import nonprofitbookkeeping.ui.helpers.AlertBox;
  */
 public class CoaEditorPanelFX extends BorderPane
 {
-	
+    private static final Logger LOGGER = Logger.getLogger(CoaEditorPanelFX.class.getName());
+
 	/** Service layer for Chart of Accounts operations. */
 	private final ChartOfAccountsService svc;
 	/** Callback to be executed when the "Save" button is clicked and changes are applied. Can be null. */

@@ -1,6 +1,7 @@
 
 package nonprofitbookkeeping.ui.panels;
 
+import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Fund;
@@ -18,6 +19,7 @@ import java.io.IOException; // Added
 import java.time.LocalDate; // Added for new budget year
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Vector;
 
 /**
@@ -42,7 +44,7 @@ public class BudgetPanel extends JDialog
 	private BudgetService budgetService;
 	/** The directory of the current company, used for saving/loading budget files. */
 	private File companyDirectory;
-
+	
 	/** TextField for the budget's name. */
 	private JTextField txtBudgetName;
 	/** Spinner for selecting the budget's fiscal year. */
@@ -53,12 +55,12 @@ public class BudgetPanel extends JDialog
 	private JComboBox<String> cmbApplicableFund;
 	/** TextField to display the budget's currency (usually non-editable). */
 	private JTextField txtCurrency;
-
+	
 	/** JTable to display and manage individual budget lines. */
 	private JTable tblBudgetLines;
 	/** The {@link BudgetLineTableModel} that backs the {@code tblBudgetLines}. */
 	private BudgetLineTableModel budgetLineTableModel;
-
+	
 	/** Button to add a new budget line. */
 	private JButton btnAddLine;
 	/** Button to edit the selected budget line. */
@@ -69,91 +71,116 @@ public class BudgetPanel extends JDialog
 	private JButton btnSaveBudget;
 	/** Button to close the dialog without saving. */
 	private JButton btnClose;
-
+	
 	/**
-     * Wrapper class for displaying {@link Account} objects in a JComboBox.
-     * This is identical to the one in {@link BudgetLineDialog}.
-     * Overrides {@code toString} to show account name and number. Equality is based on account number.
-     */
+	 * Wrapper class for displaying {@link Account} objects in a JComboBox.
+	 * This is identical to the one in {@link BudgetLineDialog}.
+	 * Overrides {@code toString} to show account name and number. Equality is based on account number.
+	 */
 	private static class AccountItem
 	{
 		/** The wrapped Account object. */
 		Account account;
-
-		/** Constructs an AccountItem. @param account The {@link Account} to wrap. */
-		public AccountItem(Account account) { this.account = Objects.requireNonNull(account); }
-		/** Gets the wrapped {@link Account}. @return The account. */
-		public Account getAccount() { return this.account; }
-		/** Returns a string representation for display. @return Formatted string: "Account Name (AccountNumber)". */
-		@Override public String toString() { return this.account.getName() + " (" + this.account.getAccountNumber() + ")"; }
+		
+		/** 
+		 * Returns a string representation for display. 
+		 * @return Formatted string: "Account Name (AccountNumber)". 
+		 */
+		@Override public String toString()
+		{
+			return this.account.getName() + " (" + this.account.getAccountNumber() + ")";
+		}
+		
 		/** Compares this AccountItem to another object for equality based on account number. @param o The object to compare with. @return True if equal. */
-		@Override public boolean equals(Object o) {
-			if (this == o) return true;
-			if (o == null || getClass() != o.getClass()) return false;
+		@Override public boolean equals(Object o)
+		{
+			if (this == o)
+				return true;
+			if (o == null || getClass() != o.getClass())
+				return false;
 			AccountItem that = (AccountItem) o;
 			return Objects.equals(this.account.getAccountNumber(), that.account.getAccountNumber());
 		}
+		
 		/** Generates a hash code based on the account number. @return The hash code. */
-		@Override public int hashCode() { return Objects.hash(this.account.getAccountNumber()); }
+		@Override public int hashCode()
+		{
+			return Objects.hash(this.account.getAccountNumber());
+		}
+		
 	}
-
+	
 	/**
-     * Wrapper class for displaying {@link Fund} objects in a JComboBox.
-     * This is identical to the one in {@link BudgetLineDialog}.
-     * Includes a special constructor for a "None" option. Equality is based on fund ID or display name.
-     */
+	 * Wrapper class for displaying {@link Fund} objects in a JComboBox.
+	 * This is identical to the one in {@link BudgetLineDialog}.
+	 * Includes a special constructor for a "None" option. Equality is based on fund ID or display name.
+	 */
 	private static class FundItem
 	{
 		/** The wrapped Fund object; null for the "None" item. */
 		Fund fund;
 		/** The display name, used for "None" or derived from fund name. */
 		String displayName;
-
-		/** Constructs a FundItem wrapping a {@link Fund}. @param fund The {@link Fund} to wrap. */
-		public FundItem(Fund fund) { this.fund = Objects.requireNonNull(fund); this.displayName = fund.getName(); }
-		/** Constructs a FundItem for a special display name (e.g., "None"). @param displayName The string to display. */
-		public FundItem(String displayName) { this.displayName = displayName; this.fund = null; }
-		/** Gets the wrapped {@link Fund}. @return The fund, or null. */
-		public Fund getFund() { return this.fund; }
-		/** Gets the ID of the wrapped fund. @return The fund ID, or null. */
-		public String getFundId() { return this.fund != null ? this.fund.getFundId() : null; }
+		
 		/** Returns the display name of this item. @return The display name. */
-		@Override public String toString() { return this.displayName; }
+		@Override public String toString()
+		{
+			return this.displayName;
+		}
+		
 		/** Compares this FundItem for equality. @param o The object to compare. @return True if equal. */
-		@Override public boolean equals(Object o) {
-			if (this == o) return true;
-			if (o == null || getClass() != o.getClass()) return false;
+		@Override public boolean equals(Object o)
+		{
+			if (this == o)
+			{
+				return true;
+			}
+			if (o == null || getClass() != o.getClass())
+			{
+				return false;
+			}
 			FundItem that = (FundItem) o;
-			if (this.fund != null && that.fund != null) return Objects.equals(this.fund.getFundId(), that.fund.getFundId());
+			if (this.fund != null && that.fund != null)
+			{
+				return Objects.equals(this.fund.getFundId(), that.fund.getFundId());
+			}
 			return Objects.equals(this.displayName, that.displayName);
 		}
+		
 		/** Generates a hash code. @return The hash code. */
-		@Override public int hashCode() {
-			if (this.fund != null) return Objects.hash(this.fund.getFundId());
+		@Override public int hashCode()
+		{
+			if (this.fund != null)
+			{
+				return Objects.hash(this.fund.getFundId());
+			}
 			return Objects.hash(this.displayName);
 		}
+		
 	}
-
+	
 	/**
-     * Constructs a new {@code BudgetPanel} dialog.
-     *
-     * @param owner The parent {@link Frame} that owns this dialog.
-     * @param chartOfAccounts The {@link ChartOfAccounts} for the current company, used for populating account choices. Must not be null.
-     * @param funds A list of available {@link Fund}s for populating fund selection choices. If null, an empty list is used.
-     * @param budgetService The {@link BudgetService} used for saving and loading budget data. Must not be null.
-     * @param companyDirectory The {@link File} representing the current company's data directory, used to locate budget files. Must not be null.
-     * @param budgetToEdit The {@link Budget} object to edit. If null, the dialog is configured for creating a new budget.
-     * @throws NullPointerException if {@code chartOfAccounts}, {@code budgetService}, or {@code companyDirectory} is null.
-     */
+	 * Constructs a new {@code BudgetPanel} dialog.
+	 *
+	 * @param owner The parent {@link Frame} that owns this dialog.
+	 * @param chartOfAccounts The {@link ChartOfAccounts} for the current company, used for populating account choices. Must not be null.
+	 * @param funds A list of available {@link Fund}s for populating fund selection choices. If null, an empty list is used.
+	 * @param budgetService The {@link BudgetService} used for saving and loading budget data. Must not be null.
+	 * @param companyDirectory The {@link File} representing the current company's data directory, used to locate budget files. Must not be null.
+	 * @param budgetToEdit The {@link Budget} object to edit. If null, the dialog is configured for creating a new budget.
+	 * @throws NullPointerException if {@code chartOfAccounts}, {@code budgetService}, or {@code companyDirectory} is null.
+	 */
 	public BudgetPanel(Frame owner, ChartOfAccounts chartOfAccounts, List<Fund> funds,
 		BudgetService budgetService, File companyDirectory, Budget budgetToEdit)
 	{
 		super(owner, "Budget Editor", true); // Modal dialog
-		this.chartOfAccounts = Objects.requireNonNull(chartOfAccounts, "ChartOfAccounts cannot be null.");
+		this.chartOfAccounts =
+			Objects.requireNonNull(chartOfAccounts, "ChartOfAccounts cannot be null.");
 		this.availableFunds = (funds != null) ? funds : new ArrayList<>();
 		this.budgetService = Objects.requireNonNull(budgetService, "BudgetService cannot be null.");
-		this.companyDirectory = Objects.requireNonNull(companyDirectory, "CompanyDirectory cannot be null.");
-
+		this.companyDirectory =
+			Objects.requireNonNull(companyDirectory, "CompanyDirectory cannot be null.");
+		
 		if (budgetToEdit != null)
 		{
 			this.currentBudget = budgetToEdit;
@@ -161,46 +188,49 @@ public class BudgetPanel extends JDialog
 		else
 		{
 			this.currentBudget = new Budget("New Budget", LocalDate.now().getYear());
-
+			
 			// Attempt to set default currency from current company profile
 			if (CurrentCompany.getCompany() != null &&
 				CurrentCompany.getCompany().getCompanyProfile() != null)
 			{
-				String baseCurrency = CurrentCompany.getCompany().getCompanyProfile().getBaseCurrency();
+				String baseCurrency =
+					CurrentCompany.getCompany().getCompanyProfile().getBaseCurrency();
 				this.currentBudget
-					.setCurrency((baseCurrency != null && !baseCurrency.isEmpty()) ? baseCurrency : "USD");
+					.setCurrency(
+						(baseCurrency != null && !baseCurrency.isEmpty()) ? baseCurrency : "USD");
 			}
 			else
 			{
 				this.currentBudget.setCurrency("USD"); // Default if company context not available
 			}
-
+			
 		}
-
+		
 		initComponents(); // Initializes UI components
 		populateUIFromCurrentBudget(); // Populates UI with currentBudget data
 		layoutComponents();
 		attachListeners();
-
+		
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setSize(800, 600);
 		setLocationRelativeTo(owner);
 	}
-
+	
 	/**
-     * Populates the UI fields of the dialog with data from the {@link #currentBudget} object.
-     * This method is called during initialization to set initial values for budget name,
-     * fiscal year, description, currency, and the applicable fund.
-     * It also ensures the budget line table reflects the lines in the current budget.
-     */
+	 * Populates the UI fields of the dialog with data from the {@link #currentBudget} object.
+	 * This method is called during initialization to set initial values for budget name,
+	 * fiscal year, description, currency, and the applicable fund.
+	 * It also ensures the budget line table reflects the lines in the current budget.
+	 */
 	private void populateUIFromCurrentBudget()
 	{
 		this.txtBudgetName.setText(this.currentBudget.getBudgetName());
 		this.spnFiscalYear.setValue(this.currentBudget.getFiscalYear());
 		this.txtDescription
-			.setText(this.currentBudget.getDescription() == null ? "" : this.currentBudget.getDescription());
+			.setText(this.currentBudget.getDescription() == null ? "" :
+				this.currentBudget.getDescription());
 		this.txtCurrency.setText(this.currentBudget.getCurrency());
-
+		
 		// Applicable Fund ComboBox
 		if (this.currentBudget.getApplicableFundId() == null)
 		{
@@ -209,30 +239,38 @@ public class BudgetPanel extends JDialog
 		else
 		{
 			this.availableFunds.stream()
-				.filter(f -> f!= null && this.currentBudget.getApplicableFundId().equals(f.getFundId())) // Added null check for f
+				.filter(f -> f != null &&
+					this.currentBudget.getApplicableFundId().equals(f.getFundId())) // Added null
+																					// check for f
 				.findFirst()
 				.ifPresentOrElse(
 					fund -> this.cmbApplicableFund.setSelectedItem(fund.getName()),
-					() -> this.cmbApplicableFund.setSelectedItem("All Funds") // Fallback if fund ID not found
+					() -> this.cmbApplicableFund.setSelectedItem("All Funds") // Fallback if fund ID
+																				// not found
 				);
 		}
-
-		// The BudgetLineTableModel is already initialized with currentBudget.getBudgetLines()
+		
+		// The BudgetLineTableModel is already initialized with
+		// currentBudget.getBudgetLines()
 		// in initComponents, so it will reflect the current budget's lines.
 		// If budgetLines could be null initially in currentBudget, ensure it's handled:
-		if (this.currentBudget.getBudgetLines() == null) {
-		    this.currentBudget.setBudgetLines(new ArrayList<>());
+		if (this.currentBudget.getBudgetLines() == null)
+		{
+			this.currentBudget.setBudgetLines(new ArrayList<>());
 		}
-		// Re-assign or update model if necessary, though current setup in initComponents should handle it.
-		this.budgetLineTableModel = new BudgetLineTableModel(this.currentBudget.getBudgetLines(), this.chartOfAccounts, this.availableFunds);
+		
+		// Re-assign or update model if necessary, though current setup in
+		// initComponents should handle it.
+		this.budgetLineTableModel = new BudgetLineTableModel(this.currentBudget.getBudgetLines(),
+			this.chartOfAccounts, this.availableFunds);
 		this.tblBudgetLines.setModel(this.budgetLineTableModel);
 	}
-
+	
 	/**
-     * Initializes all UI components for the dialog, including text fields, spinners,
-     * combo boxes, table, and buttons. It also sets up cell editors for specific
-     * columns in the budget lines table (Periodicity and Line Fund).
-     */
+	 * Initializes all UI components for the dialog, including text fields, spinners,
+	 * combo boxes, table, and buttons. It also sets up cell editors for specific
+	 * columns in the budget lines table (Periodicity and Line Fund).
+	 */
 	private void initComponents()
 	{
 		// Budget Properties - Initialize them first, then populate in
@@ -240,57 +278,76 @@ public class BudgetPanel extends JDialog
 		this.txtBudgetName = new JTextField(20);
 		this.spnFiscalYear =
 			new JSpinner(new SpinnerNumberModel(LocalDate.now().getYear(), 2000, 2100, 1));
-		JSpinner.NumberEditor editor = new JSpinner.NumberEditor(this.spnFiscalYear, "#"); // No decimal for year
+		JSpinner.NumberEditor editor = new JSpinner.NumberEditor(this.spnFiscalYear, "#"); // No
+																							// decimal
+																							// for
+																							// year
 		this.spnFiscalYear.setEditor(editor);
 		this.txtDescription = new JTextField(30);
-
+		
 		Vector<String> fundNames = new Vector<>();
 		fundNames.add("All Funds"); // Default option for budget-wide fund
-
-		if (this.availableFunds != null) { // Guard against null availableFunds
-		for (Fund fund : this.availableFunds)
-		{
-			if (fund != null && fund.getName() != null) { // Guard against null fund or name
-			    fundNames.add(fund.getName());
+		
+		if (this.availableFunds != null)
+		{ // Guard against null availableFunds
+			
+			for (Fund fund : this.availableFunds)
+			{
+				
+				if (fund != null && fund.getName() != null)
+				{ // Guard against null fund or name
+					fundNames.add(fund.getName());
+				}
+				
 			}
+			
 		}
-        }
-
+		
 		this.cmbApplicableFund = new JComboBox<>(fundNames);
 		this.txtCurrency = new JTextField(5);
 		this.txtCurrency.setEditable(false); // Currency is usually derived
-
+		
 		// Budget Lines Table
 		// Ensure currentBudget.getBudgetLines() is not null
 		if (this.currentBudget.getBudgetLines() == null)
 		{
 			this.currentBudget.setBudgetLines(new ArrayList<>());
 		}
-
+		
 		this.budgetLineTableModel = new BudgetLineTableModel(this.currentBudget.getBudgetLines(),
 			this.chartOfAccounts, this.availableFunds);
 		this.tblBudgetLines = new JTable(this.budgetLineTableModel);
-
+		
 		// Setup JComboBox for Periodicity column in the table
 		JComboBox<Periodicity> periodicityComboBox = new JComboBox<>(Periodicity.values());
-		TableColumn periodicityColumn = this.tblBudgetLines.getColumnModel().getColumn(2); // Column index 2 for Periodicity
+		TableColumn periodicityColumn = this.tblBudgetLines.getColumnModel().getColumn(2); // Column
+																							// index
+																							// 2 for
+																							// Periodicity
 		periodicityColumn.setCellEditor(new DefaultCellEditor(periodicityComboBox));
-
+		
 		// Setup JComboBox for Fund column (line-specific fund) in the table
-		Vector<String> lineFundNames = new Vector<>(); // Create a new Vector for line-specific fund choices
+		Vector<String> lineFundNames = new Vector<>(); // Create a new Vector for line-specific fund
+														// choices
 		lineFundNames.add("None"); // Option for no specific fund on a line
-        if (this.availableFunds != null) {
-		this.availableFunds.stream()
-                .filter(Objects::nonNull)
-                .map(Fund::getName)
-                .filter(Objects::nonNull)
-			.forEach(lineFundNames::add);
-        }
+		
+		if (this.availableFunds != null)
+		{
+			this.availableFunds.stream()
+				.filter(Objects::nonNull)
+				.map(Fund::getName)
+				.filter(Objects::nonNull)
+				.forEach(lineFundNames::add);
+		}
+		
 		JComboBox<String> lineFundComboBox = new JComboBox<>(lineFundNames);
-		TableColumn lineFundColumn = this.tblBudgetLines.getColumnModel().getColumn(3); // Column index 3 for Line Fund
+		TableColumn lineFundColumn = this.tblBudgetLines.getColumnModel().getColumn(3); // Column
+																						// index 3
+																						// for Line
+																						// Fund
 		lineFundColumn.setCellEditor(new DefaultCellEditor(lineFundComboBox));
-
-
+		
+		
 		// Buttons
 		this.btnAddLine = new JButton("Add Line");
 		this.btnEditLine = new JButton("Edit Line");
@@ -298,22 +355,22 @@ public class BudgetPanel extends JDialog
 		this.btnSaveBudget = new JButton("Save Budget");
 		this.btnClose = new JButton("Close");
 	}
-
+	
 	/**
-     * Lays out the UI components on the dialog panel using {@link BorderLayout} and {@link GridBagLayout}.
-     * Budget properties are placed at the top (NORTH), the budget lines table in the center (CENTER),
-     * and action buttons at the bottom (SOUTH).
-     */
+	 * Lays out the UI components on the dialog panel using {@link BorderLayout} and {@link GridBagLayout}.
+	 * Budget properties are placed at the top (NORTH), the budget lines table in the center (CENTER),
+	 * and action buttons at the bottom (SOUTH).
+	 */
 	private void layoutComponents()
 	{
 		setLayout(new BorderLayout(5, 5));
-
+		
 		// Top Panel for Budget Properties
 		JPanel pnlProperties = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(2, 2, 2, 2);
 		gbc.anchor = GridBagConstraints.WEST;
-
+		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		pnlProperties.add(new JLabel("Budget Name:"), gbc);
@@ -339,71 +396,77 @@ public class BudgetPanel extends JDialog
 		pnlProperties.add(new JLabel("Currency:"), gbc);
 		gbc.gridx = 1;
 		pnlProperties.add(this.txtCurrency, gbc);
-
+		
 		add(pnlProperties, BorderLayout.NORTH);
-
+		
 		// Middle Panel for Budget Lines Table
 		JScrollPane scrollPane = new JScrollPane(this.tblBudgetLines);
 		add(scrollPane, BorderLayout.CENTER);
-
+		
 		// Button Panel for Table Management (could be part of Middle or Bottom)
 		JPanel pnlTableButtons = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		pnlTableButtons.add(this.btnAddLine);
 		pnlTableButtons.add(this.btnEditLine);
 		pnlTableButtons.add(this.btnRemoveLine);
-
+		
 		JPanel pnlSouthOuter = new JPanel(new BorderLayout());
-		pnlSouthOuter.add(pnlTableButtons, BorderLayout.NORTH); // Table buttons above main action buttons
-
+		pnlSouthOuter.add(pnlTableButtons, BorderLayout.NORTH); // Table buttons above main action
+																// buttons
+		
 		// Bottom Panel for Actions
 		JPanel pnlActions = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		pnlActions.add(this.btnSaveBudget);
 		pnlActions.add(this.btnClose);
 		pnlSouthOuter.add(pnlActions, BorderLayout.SOUTH);
-
+		
 		add(pnlSouthOuter, BorderLayout.SOUTH);
 	}
-
+	
 	/**
-     * Attaches action listeners to the dialog's buttons and change listeners to input fields
-     * to update the {@link #currentBudget} object dynamically as the user interacts with the UI.
-     */
+	 * Attaches action listeners to the dialog's buttons and change listeners to input fields
+	 * to update the {@link #currentBudget} object dynamically as the user interacts with the UI.
+	 */
 	private void attachListeners()
 	{
 		this.btnClose.addActionListener(e -> dispose());
-
+		
 		this.btnAddLine.addActionListener(this::actionAddLine);
 		this.btnEditLine.addActionListener(this::actionEditLine);
 		this.btnRemoveLine.addActionListener(this::actionRemoveLine);
 		this.btnSaveBudget.addActionListener(this::actionSaveBudget);
-
-		// Update currentBudget object when UI fields change (on action or focus lost for text fields)
-		this.txtBudgetName.addActionListener(e -> this.currentBudget.setBudgetName(this.txtBudgetName.getText()));
+		
+		// Update currentBudget object when UI fields change (on action or focus lost
+		// for text fields)
+		this.txtBudgetName
+			.addActionListener(e -> this.currentBudget.setBudgetName(this.txtBudgetName.getText()));
 		this.txtBudgetName.addFocusListener(new java.awt.event.FocusAdapter()
 		{
 			@Override // Ensure @Override is used for clarity
 			public void focusLost(java.awt.event.FocusEvent evt)
 			{
-				BudgetPanel.this.currentBudget.setBudgetName(BudgetPanel.this.txtBudgetName.getText());
+				BudgetPanel.this.currentBudget
+					.setBudgetName(BudgetPanel.this.txtBudgetName.getText());
 			}
-
+			
 		});
 		this.spnFiscalYear.addChangeListener(
 			e -> this.currentBudget.setFiscalYear((Integer) this.spnFiscalYear.getValue()));
 		this.txtDescription
-			.addActionListener(e -> this.currentBudget.setDescription(this.txtDescription.getText()));
+			.addActionListener(
+				e -> this.currentBudget.setDescription(this.txtDescription.getText()));
 		this.txtDescription.addFocusListener(new java.awt.event.FocusAdapter()
 		{
 			@Override // Ensure @Override is used
 			public void focusLost(java.awt.event.FocusEvent evt)
 			{
-				BudgetPanel.this.currentBudget.setDescription(BudgetPanel.this.txtDescription.getText());
+				BudgetPanel.this.currentBudget
+					.setDescription(BudgetPanel.this.txtDescription.getText());
 			}
-
+			
 		});
 		this.cmbApplicableFund.addActionListener(e -> {
 			String selectedFundName = (String) this.cmbApplicableFund.getSelectedItem();
-
+			
 			if ("All Funds".equals(selectedFundName) || selectedFundName == null)
 			{
 				this.currentBudget.setApplicableFundId(null);
@@ -411,124 +474,138 @@ public class BudgetPanel extends JDialog
 			else
 			{
 				this.availableFunds.stream()
-					.filter(f -> f != null && selectedFundName.equals(f.getName())) // Add null check for fund
+					.filter(f -> f != null && selectedFundName.equals(f.getName())) // Add null
+																					// check for
+																					// fund
 					.findFirst()
 					.ifPresent(fund -> this.currentBudget.setApplicableFundId(fund.getFundId()));
 			}
-
+			
 		});
 	}
-
+	
 	/**
-     * Handles the action of adding a new budget line.
-     * Opens a {@link BudgetLineDialog} to gather details for the new line.
-     * If the user saves the new line, it's added to the {@link #currentBudget}
-     * and the budget lines table is updated.
-     *
-     * @param e The {@link ActionEvent} that triggered this action.
-     */
+	 * Handles the action of adding a new budget line.
+	 * Opens a {@link BudgetLineDialog} to gather details for the new line.
+	 * If the user saves the new line, it's added to the {@link #currentBudget}
+	 * and the budget lines table is updated.
+	 *
+	 * @param e The {@link ActionEvent} that triggered this action.
+	 */
 	private void actionAddLine(ActionEvent e)
 	{
 		BudgetLineDialog dialog =
-			new BudgetLineDialog(this, "Add Budget Line", this.chartOfAccounts, this.availableFunds, null);
+			new BudgetLineDialog(this, "Add Budget Line", this.chartOfAccounts, this.availableFunds,
+				null);
 		dialog.setVisible(true);
-
+		
 		if (dialog.isSaved())
 		{
 			BudgetLine newLine = dialog.getBudgetLine();
-
+			
 			if (newLine != null)
 			{
-				this.currentBudget.addBudgetLine(newLine); // Assumes addBudgetLine exists and handles null list
-				this.budgetLineTableModel.fireTableDataChanged(); // More specific event might be better
+				this.currentBudget.addBudgetLine(newLine); // Assumes addBudgetLine exists and
+															// handles null list
+				this.budgetLineTableModel.fireTableDataChanged(); // More specific event might be
+																	// better
 			}
-
+			
 		}
-
+		
 	}
-
+	
 	/**
-     * Handles the action of editing an existing budget line.
-     * Opens a {@link BudgetLineDialog} pre-populated with the data of the selected line from the table.
-     * If the user saves the changes, the budget lines table is updated to reflect the modifications.
-     *
-     * @param e The {@link ActionEvent} that triggered this action.
-     */
+	 * Handles the action of editing an existing budget line.
+	 * Opens a {@link BudgetLineDialog} pre-populated with the data of the selected line from the table.
+	 * If the user saves the changes, the budget lines table is updated to reflect the modifications.
+	 *
+	 * @param e The {@link ActionEvent} that triggered this action.
+	 */
 	private void actionEditLine(ActionEvent e)
 	{
 		int selectedRow = this.tblBudgetLines.getSelectedRow();
-
+		
 		if (selectedRow >= 0)
 		{
 			BudgetLine lineToEdit = this.budgetLineTableModel.getBudgetLineAt(selectedRow);
-			if (lineToEdit == null) { // Should not happen if row is selected, but defensive
-			    JOptionPane.showMessageDialog(this, "Selected line data is not available.", "Error", JOptionPane.ERROR_MESSAGE);
-			    return;
+			
+			if (lineToEdit == null)
+			{ // Should not happen if row is selected, but defensive
+				JOptionPane.showMessageDialog(this, "Selected line data is not available.", "Error",
+					JOptionPane.ERROR_MESSAGE);
+				return;
 			}
+			
 			BudgetLineDialog dialog = new BudgetLineDialog(this, "Edit Budget Line",
 				this.chartOfAccounts, this.availableFunds, lineToEdit);
 			dialog.setVisible(true);
-
+			
 			if (dialog.isSaved())
 			{
-				// The dialog modifies the lineToEdit object directly if it's passed by reference
-                // and the dialog works on that instance. Or it returns a new/modified instance.
-                // Assuming dialog.getBudgetLine() returns the potentially modified instance.
-                BudgetLine editedLine = dialog.getBudgetLine();
-                if (editedLine != lineToEdit) { // If dialog returned a new instance
-                    this.currentBudget.getBudgetLines().set(selectedRow, editedLine);
-                }
+				// The dialog modifies the lineToEdit object directly if it's passed by
+				// reference
+				// and the dialog works on that instance. Or it returns a new/modified instance.
+				// Assuming dialog.getBudgetLine() returns the potentially modified instance.
+				BudgetLine editedLine = dialog.getBudgetLine();
+				
+				if (editedLine != lineToEdit)
+				{ // If dialog returned a new instance
+					this.currentBudget.getBudgetLines().set(selectedRow, editedLine);
+				}
+				
 				this.budgetLineTableModel.fireTableRowsUpdated(selectedRow, selectedRow);
 			}
-
+			
 		}
 		else
 		{
 			JOptionPane.showMessageDialog(this, "Please select a line to edit.", "No Selection",
 				JOptionPane.WARNING_MESSAGE);
 		}
-
+		
 	}
-
+	
 	/**
-     * Handles the action of removing a selected budget line from the table.
-     * Prompts the user for confirmation before removing the line.
-     * If confirmed, the line is removed from the {@link #currentBudget} and the table is updated.
-     *
-     * @param e The {@link ActionEvent} that triggered this action.
-     */
+	 * Handles the action of removing a selected budget line from the table.
+	 * Prompts the user for confirmation before removing the line.
+	 * If confirmed, the line is removed from the {@link #currentBudget} and the table is updated.
+	 *
+	 * @param e The {@link ActionEvent} that triggered this action.
+	 */
 	private void actionRemoveLine(ActionEvent e)
 	{
 		int selectedRow = this.tblBudgetLines.getSelectedRow();
-
+		
 		if (selectedRow >= 0)
 		{
-
+			
 			if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this line?",
 				"Confirm Remove", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
 			{
-				this.budgetLineTableModel.removeRow(selectedRow); // This modifies currentBudget.getBudgetLines()
+				this.budgetLineTableModel.removeRow(selectedRow); // This modifies
+																	// currentBudget.getBudgetLines()
 			}
-
+			
 		}
 		else
 		{
 			JOptionPane.showMessageDialog(this, "Please select a line to remove.", "No Selection",
 				JOptionPane.WARNING_MESSAGE);
 		}
-
+		
 	}
-
+	
 	/**
-     * Handles the action of saving the current budget (new or edited).
-     * It first updates the {@link #currentBudget} object with the latest values from all UI fields.
-     * Then, it uses the {@link BudgetService} to load all existing budgets, replaces the
-     * current budget if it already exists (by ID) or adds it as a new budget, and then
-     * saves the entire list of budgets back.
-     * Displays success or error messages using {@link JOptionPane}.
-     *
-     * @param e The {@link ActionEvent} that triggered this action.
-     */
+	 * Handles the action of saving the current budget (new or edited).
+	 * It first updates the {@link #currentBudget} object with the latest values from all UI fields.
+	 * Then, it uses the {@link BudgetService} to load all existing budgets, replaces the
+	 * current budget if it already exists (by ID) or adds it as a new budget, and then
+	 * saves the entire list of budgets back.
+	 * Displays success or error messages using {@link JOptionPane}.
+	 *
+	 * @param e The {@link ActionEvent} that triggered this action.
+	 */
 	private void actionSaveBudget(ActionEvent e)
 	{
 		// Update budget properties from UI just before saving
@@ -536,7 +613,7 @@ public class BudgetPanel extends JDialog
 		this.currentBudget.setFiscalYear((Integer) this.spnFiscalYear.getValue());
 		this.currentBudget.setDescription(this.txtDescription.getText().trim());
 		String selectedFundName = (String) this.cmbApplicableFund.getSelectedItem();
-
+		
 		if ("All Funds".equals(selectedFundName) || selectedFundName == null)
 		{
 			this.currentBudget.setApplicableFundId(null);
@@ -544,43 +621,53 @@ public class BudgetPanel extends JDialog
 		else
 		{
 			this.availableFunds.stream()
-				.filter(f -> f != null && selectedFundName.equals(f.getName())) // Null check for fund
+				.filter(f -> f != null && selectedFundName.equals(f.getName())) // Null check for
+																				// fund
 				.findFirst()
 				.ifPresent(fund -> this.currentBudget.setApplicableFundId(fund.getFundId()));
 		}
-		// Currency is typically read-only, derived from company profile, so no set here.
-
-		// Note: currentBudget.getBudgetLines() is already up-to-date due to BudgetLineTableModel
+		// Currency is typically read-only, derived from company profile, so no set
+		// here.
+		
+		// Note: currentBudget.getBudgetLines() is already up-to-date due to
+		// BudgetLineTableModel
 		// directly operating on this list instance.
-
+		
 		try
 		{
 			List<Budget> allBudgets = this.budgetService.loadBudgets(this.companyDirectory);
-			if (allBudgets == null) allBudgets = new ArrayList<>(); // Ensure list is not null
-
+			if (allBudgets == null)
+				allBudgets = new ArrayList<>(); // Ensure list is not null
+				
 			// Ensure budgetId is generated for new budgets before comparison
 			// The getBudgetId() in Budget model should handle UUID generation if null.
 			String currentBudgetId = this.currentBudget.getBudgetId();
-
+			
 			boolean found = false;
-			if (currentBudgetId != null && !currentBudgetId.trim().isEmpty()) { // Only try to replace if ID exists
-			for (int i = 0; i < allBudgets.size(); i++)
-			{
-				Budget existing = allBudgets.get(i);
-				if (existing != null && currentBudgetId.equals(existing.getBudgetId()))
+			
+			if (currentBudgetId != null && !currentBudgetId.trim().isEmpty())
+			{ // Only try to replace if ID exists
+				
+				for (int i = 0; i < allBudgets.size(); i++)
 				{
-					allBudgets.set(i, this.currentBudget); // Replace existing
-					found = true;
-					break;
+					Budget existing = allBudgets.get(i);
+					
+					if (existing != null && currentBudgetId.equals(existing.getBudgetId()))
+					{
+						allBudgets.set(i, this.currentBudget); // Replace existing
+						found = true;
+						break;
+					}
+					
 				}
+				
 			}
-            }
-
+			
 			if (!found)
 			{
 				allBudgets.add(this.currentBudget); // Add as new if not found or if ID was new
 			}
-
+			
 			this.budgetService.saveBudgets(allBudgets, this.companyDirectory);
 			JOptionPane.showMessageDialog(this, "Budget saved successfully!", "Success",
 				JOptionPane.INFORMATION_MESSAGE);
@@ -593,18 +680,18 @@ public class BudgetPanel extends JDialog
 			JOptionPane.showMessageDialog(this, "Error saving budget: " + ex.getMessage(), "Error",
 				JOptionPane.ERROR_MESSAGE);
 		}
-
+		
 	}
-
+	
 	/**
-     * Main method for testing the {@code BudgetPanel} dialog independently.
-     * Note: This method requires adaptation to properly instantiate and provide
-     * dependencies like {@link ChartOfAccounts}, {@link Fund} list, {@link BudgetService},
-     * and a company directory {@link File}.
-     * The current implementation only prints a message about needed adaptations.
-     *
-     * @param args Command line arguments (not used).
-     */
+	 * Main method for testing the {@code BudgetPanel} dialog independently.
+	 * Note: This method requires adaptation to properly instantiate and provide
+	 * dependencies like {@link ChartOfAccounts}, {@link Fund} list, {@link BudgetService},
+	 * and a company directory {@link File}.
+	 * The current implementation only prints a message about needed adaptations.
+	 *
+	 * @param args Command line arguments (not used).
+	 */
 	public static void main(String[] args)
 	{
 		// This main method needs to be updated to provide BudgetService and File
@@ -617,7 +704,7 @@ public class BudgetPanel extends JDialog
 		// BudgetService mockBudgetService = new BudgetService(); // Or a mock
 		// File mockCompanyDir = new File("."); // Placeholder
 		// Budget budgetToEdit = null; // For new budget
-
+		
 		// if (CurrentCompany.getCompany() == null) {
 		// nonprofitbookkeeping.model.Company testCompany = new
 		// nonprofitbookkeeping.model.Company();
@@ -627,7 +714,7 @@ public class BudgetPanel extends JDialog
 		// testCompany.setCompanyProfileModel(profile);
 		// CurrentCompany.setCompany(testCompany);
 		// }
-
+		
 		// SwingUtilities.invokeLater(() -> {
 		// BudgetPanel panel = new BudgetPanel(null, coa, funds, mockBudgetService,
 		// mockCompanyDir, budgetToEdit);
@@ -636,5 +723,5 @@ public class BudgetPanel extends JDialog
 		System.out.println(
 			"BudgetPanel main method needs adaptation for new constructor dependencies (BudgetService, companyDirectory).");
 	}
-
+	
 }

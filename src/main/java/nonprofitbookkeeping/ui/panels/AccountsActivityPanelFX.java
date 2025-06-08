@@ -179,7 +179,7 @@ public class AccountsActivityPanelFX extends BorderPane {
      * if not strictly matching bean property naming conventions, but lambdas avoid this.
      * Here, lambdas are used for cell value factories, which is type-safe.
      */
-    @SuppressWarnings({ "unchecked", "deprecation" }) // Review if still necessary with lambda cell factories
+    @SuppressWarnings({ "unchecked" }) // Review if still necessary with lambda cell factories
     private void configureTable() {
         TableColumn<TransactionRow, String> dateCol = new TableColumn<>("Date");
         dateCol.setCellValueFactory(d -> d.getValue().dateProperty()); // Use property for binding
