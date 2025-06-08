@@ -29,6 +29,14 @@ The project is a desktop application designed for nonprofit bookkeeping. It aims
 *   `MainApplicationView` uses a `TabPane` for primary navigation (Dashboard, Journal, COA, Reports, Account Details).
 *   Some functionalities use separate dialogs/stages.
 
+## 5. Code Documentation and Quality Tracking
+
+### 5.1. Javadoc Documentation
+As of a recent project-wide effort, a comprehensive pass was made to add Javadoc documentation to all Java source files across all packages in the project. This includes documentation for classes, methods, fields, enums, and constructors, aiming to improve code maintainability and understanding.
+
+### 5.2. TODO List for Observed Issues
+A `TODO.md` file has been added to the root directory of the project. This file catalogs observed code issues, potential bugs, and areas for improvement that were identified during the Javadoc documentation effort and other development activities. It serves as a supplementary tracking document for items not yet in a formal issue tracker or for quick notes on code quality aspects. Refer to `TODO.md` for specific details.
+
 ---
 
 ## Current Major Task & Objectives: Enhancing Reporting with JasperReports
