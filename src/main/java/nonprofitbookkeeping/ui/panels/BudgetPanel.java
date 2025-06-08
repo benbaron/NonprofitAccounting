@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Vector;
+import java.util.function.BiConsumer; // Added for refactoring focus listeners
 
 /**
  * A Swing {@link JDialog} that provides a user interface for creating and editing {@link Budget} objects.
@@ -266,6 +267,21 @@ public class BudgetPanel extends JDialog
 		this.tblBudgetLines.setModel(this.budgetLineTableModel);
 	}
 	
+	private Vector<String> createFundNameVector(String initialElement) {
+		Vector<String> fundNames = new Vector<>();
+		if (initialElement != null) {
+			fundNames.add(initialElement);
+		}
+		if (this.availableFunds != null) {
+			this.availableFunds.stream()
+				.filter(Objects::nonNull)
+				.map(Fund::getName)
+				.filter(Objects::nonNull)
+				.forEach(fundNames::add);
+		}
+		return fundNames;
+	}
+
 	/**
 	 * Initializes all UI components for the dialog, including text fields, spinners,
 	 * combo boxes, table, and buttons. It also sets up cell editors for specific
@@ -285,25 +301,7 @@ public class BudgetPanel extends JDialog
 		this.spnFiscalYear.setEditor(editor);
 		this.txtDescription = new JTextField(30);
 		
-		Vector<String> fundNames = new Vector<>();
-		fundNames.add("All Funds"); // Default option for budget-wide fund
-		
-		if (this.availableFunds != null)
-		{ // Guard against null availableFunds
-			
-			for (Fund fund : this.availableFunds)
-			{
-				
-				if (fund != null && fund.getName() != null)
-				{ // Guard against null fund or name
-					fundNames.add(fund.getName());
-				}
-				
-			}
-			
-		}
-		
-		this.cmbApplicableFund = new JComboBox<>(fundNames);
+		this.cmbApplicableFund = new JComboBox<>(createFundNameVector("All Funds"));
 		this.txtCurrency = new JTextField(5);
 		this.txtCurrency.setEditable(false); // Currency is usually derived
 		
@@ -327,20 +325,7 @@ public class BudgetPanel extends JDialog
 		periodicityColumn.setCellEditor(new DefaultCellEditor(periodicityComboBox));
 		
 		// Setup JComboBox for Fund column (line-specific fund) in the table
-		Vector<String> lineFundNames = new Vector<>(); // Create a new Vector for line-specific fund
-														// choices
-		lineFundNames.add("None"); // Option for no specific fund on a line
-		
-		if (this.availableFunds != null)
-		{
-			this.availableFunds.stream()
-				.filter(Objects::nonNull)
-				.map(Fund::getName)
-				.filter(Objects::nonNull)
-				.forEach(lineFundNames::add);
-		}
-		
-		JComboBox<String> lineFundComboBox = new JComboBox<>(lineFundNames);
+		JComboBox<String> lineFundComboBox = new JComboBox<>(createFundNameVector("None"));
 		TableColumn lineFundColumn = this.tblBudgetLines.getColumnModel().getColumn(3); // Column
 																						// index 3
 																						// for Line
@@ -426,6 +411,18 @@ public class BudgetPanel extends JDialog
 	 * Attaches action listeners to the dialog's buttons and change listeners to input fields
 	 * to update the {@link #currentBudget} object dynamically as the user interacts with the UI.
 	 */
+	private void updateCurrentBudgetApplicableFund() {
+		String selectedFundName = (String) this.cmbApplicableFund.getSelectedItem();
+		if ("All Funds".equals(selectedFundName) || selectedFundName == null) {
+			this.currentBudget.setApplicableFundId(null);
+		} else {
+			this.availableFunds.stream()
+				.filter(f -> f != null && selectedFundName.equals(f.getName())) // Add null check for fund
+				.findFirst()
+				.ifPresent(fund -> this.currentBudget.setApplicableFundId(fund.getFundId()));
+		}
+	}
+
 	private void attachListeners()
 	{
 		this.btnClose.addActionListener(e -> dispose());
@@ -435,53 +432,29 @@ public class BudgetPanel extends JDialog
 		this.btnRemoveLine.addActionListener(this::actionRemoveLine);
 		this.btnSaveBudget.addActionListener(this::actionSaveBudget);
 		
-		// Update currentBudget object when UI fields change (on action or focus lost
-		// for text fields)
+		// Helper for focus listeners
+		BiConsumer<JTextField, BiConsumer<Budget, String>> addBudgetUpdateFocusListener =
+			(textField, setter) -> textField.addFocusListener(new java.awt.event.FocusAdapter() {
+				@Override
+				public void focusLost(java.awt.event.FocusEvent evt) {
+					setter.accept(BudgetPanel.this.currentBudget, textField.getText());
+				}
+			});
+
+		// Update currentBudget object when UI fields change
 		this.txtBudgetName
 			.addActionListener(e -> this.currentBudget.setBudgetName(this.txtBudgetName.getText()));
-		this.txtBudgetName.addFocusListener(new java.awt.event.FocusAdapter()
-		{
-			@Override // Ensure @Override is used for clarity
-			public void focusLost(java.awt.event.FocusEvent evt)
-			{
-				BudgetPanel.this.currentBudget
-					.setBudgetName(BudgetPanel.this.txtBudgetName.getText());
-			}
-			
-		});
+		addBudgetUpdateFocusListener.accept(this.txtBudgetName, Budget::setBudgetName);
+
 		this.spnFiscalYear.addChangeListener(
 			e -> this.currentBudget.setFiscalYear((Integer) this.spnFiscalYear.getValue()));
+
 		this.txtDescription
 			.addActionListener(
 				e -> this.currentBudget.setDescription(this.txtDescription.getText()));
-		this.txtDescription.addFocusListener(new java.awt.event.FocusAdapter()
-		{
-			@Override // Ensure @Override is used
-			public void focusLost(java.awt.event.FocusEvent evt)
-			{
-				BudgetPanel.this.currentBudget
-					.setDescription(BudgetPanel.this.txtDescription.getText());
-			}
-			
-		});
-		this.cmbApplicableFund.addActionListener(e -> {
-			String selectedFundName = (String) this.cmbApplicableFund.getSelectedItem();
-			
-			if ("All Funds".equals(selectedFundName) || selectedFundName == null)
-			{
-				this.currentBudget.setApplicableFundId(null);
-			}
-			else
-			{
-				this.availableFunds.stream()
-					.filter(f -> f != null && selectedFundName.equals(f.getName())) // Add null
-																					// check for
-																					// fund
-					.findFirst()
-					.ifPresent(fund -> this.currentBudget.setApplicableFundId(fund.getFundId()));
-			}
-			
-		});
+		addBudgetUpdateFocusListener.accept(this.txtDescription, Budget::setDescription);
+
+		this.cmbApplicableFund.addActionListener(e -> updateCurrentBudgetApplicableFund());
 	}
 	
 	/**
@@ -612,20 +585,7 @@ public class BudgetPanel extends JDialog
 		this.currentBudget.setBudgetName(this.txtBudgetName.getText().trim());
 		this.currentBudget.setFiscalYear((Integer) this.spnFiscalYear.getValue());
 		this.currentBudget.setDescription(this.txtDescription.getText().trim());
-		String selectedFundName = (String) this.cmbApplicableFund.getSelectedItem();
-		
-		if ("All Funds".equals(selectedFundName) || selectedFundName == null)
-		{
-			this.currentBudget.setApplicableFundId(null);
-		}
-		else
-		{
-			this.availableFunds.stream()
-				.filter(f -> f != null && selectedFundName.equals(f.getName())) // Null check for
-																				// fund
-				.findFirst()
-				.ifPresent(fund -> this.currentBudget.setApplicableFundId(fund.getFundId()));
-		}
+		updateCurrentBudgetApplicableFund();
 		// Currency is typically read-only, derived from company profile, so no set
 		// here.
 		

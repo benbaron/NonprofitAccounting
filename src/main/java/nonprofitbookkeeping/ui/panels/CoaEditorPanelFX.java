@@ -7,7 +7,8 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -45,7 +46,7 @@ import nonprofitbookkeeping.ui.helpers.AlertBox;
  */
 public class CoaEditorPanelFX extends BorderPane
 {
-    private static final Logger LOGGER = Logger.getLogger(CoaEditorPanelFX.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(CoaEditorPanelFX.class);
 
 	/** Service layer for Chart of Accounts operations. */
 	private final ChartOfAccountsService svc;

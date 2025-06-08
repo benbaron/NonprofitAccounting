@@ -1,19 +1,13 @@
 
 package nonprofitbookkeeping.core;
 
-import nonprofitbookkeeping.api.AccountDetails;
 import nonprofitbookkeeping.model.*;
-
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * 
  */
 public class ChartOfAccountsBuilder
 {
-	private Set<AccountDetails> accountDetails = new HashSet<>();
 	
 	/**
 	 * Constructs a ChartOfAccountsBuilder.
@@ -42,9 +36,8 @@ public class ChartOfAccountsBuilder
 	                                         	String name,
 												AccountSide increaseSide)
 	{
-		AccountDetails accountDetails1 = 
-			new AccountDetailsImpl(accountNumber, name, increaseSide);
-		this.accountDetails.add(accountDetails1);
+		// The accountDetails field has been removed as it was not used by the build() method.
+		// Consequently, the logic to add account details here has also been removed.
 		return this;
 	}
 	

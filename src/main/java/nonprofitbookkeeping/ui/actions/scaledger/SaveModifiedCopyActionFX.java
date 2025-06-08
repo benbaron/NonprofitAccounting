@@ -123,7 +123,7 @@ public class SaveModifiedCopyActionFX implements EventHandler<ActionEvent>
 			ExcelDataWriter.writeModifiedCopy(
 				input,
 				output,
-				null, // sheetName - still null, potential issue in ExcelDataWriter
+				"Sheet1", // sheetName - Using "Sheet1" as a default
 				modelToSave);
 			new Alert(Alert.AlertType.INFORMATION, "Workbook saved successfully.").showAndWait();
 			PreferencesManager.setLastDirectory(output.getParent());

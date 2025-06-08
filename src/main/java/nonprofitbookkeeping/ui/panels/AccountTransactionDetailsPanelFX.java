@@ -501,10 +501,6 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 			}
 			
 		};
-		// FIXME: The following line causes a StackOverflowError due to recursion.
-		// It should typically be CurrentCompany.addCompanyChangeListener(this.companyChangeListener);
-		// or a similar registration mechanism. For now, commenting out the recursive call.
-		// setupCompanyChangeListener(); // Register the listener
 		CurrentCompany.addCompanyChangeListener(this.companyChangeListener); // Assuming this is the intended registration
 	}
 	

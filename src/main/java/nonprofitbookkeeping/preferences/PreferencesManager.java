@@ -21,7 +21,7 @@ public class PreferencesManager
 	 * Key for storing the last directory used by a file chooser for write/save operations.
 	 * Currently, this is identical to {@link #LAST_DIR_KEY}, leading to an overlap.
 	 */
-	private static final String LAST_WRITE_DIR_KEY = "lastFileChooserDirectory";
+	private static final String LAST_WRITE_DIR_KEY = "last_write_directory";
 	/** The {@link Preferences} node used for storing preferences for this class. */
 	private static final Preferences prefs =
 		Preferences.userNodeForPackage(PreferencesManager.class);
