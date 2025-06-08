@@ -24,25 +24,58 @@ import nonprofitbookkeeping.preferences.PreferencesManager;
 
 /**
  * JavaFX version of the Swing {@code ImportFromJsonAction}. Opens a JSON file, converts it to a
- * Swing {@link DefaultTableModel}, then drops that data into the plugin's {@link PageViewerPanel}
- * table model and displays the panel.
+ * Swing {@link DefaultTableModel}, then loads this data into the {@link PageViewerPanel}
+ * associated with the provided {@link SCALedgerPlugin}, and displays the panel in a new window.
+ * It handles file selection using a JavaFX {@link FileChooser} and remembers the last directory.
  */
 public class ImportFromJsonActionFX implements EventHandler<ActionEvent>
 {
 	
+	/** The owner Stage for dialogs (FileChooser, Alerts). */
 	private final Stage owner;
+	/** Jackson ObjectMapper for reading JSON data. */
 	private final ObjectMapper mapper = new ObjectMapper();
-	private final SCALedgerPlugin plugin; // Added
+	/** The {@link SCALedgerPlugin} instance this action interacts with, particularly for accessing its {@link PageViewerPanel}. */
+	private final SCALedgerPlugin plugin;
 	
-	public ImportFromJsonActionFX(Stage owner, SCALedgerPlugin plugin) // Updated constructor
+	/**
+     * Constructs a new {@code ImportFromJsonActionFX}.
+     *
+     * @param owner The owner {@link Stage} for displaying file choosers and alerts.
+     *              This is necessary for proper dialog modality and context.
+     * @param plugin The {@link SCALedgerPlugin} instance that owns the {@link PageViewerPanel}
+     *               where the imported data will be displayed. This provides the context for UI updates.
+     * @throws NullPointerException if {@code owner} or {@code plugin} is null (though not explicitly checked currently).
+     */
+	public ImportFromJsonActionFX(Stage owner, SCALedgerPlugin plugin)
 	{
 		this.owner = owner;
-		this.plugin = plugin; // Added
+		this.plugin = plugin;
 	}
 	
 	/**
-	 * 
-	 * Override @see javafx.event.EventHandler#handle(javafx.event.Event)
+	 * {@inheritDoc}
+     * <p>
+     * Handles the action event triggered to import ledger data from a JSON file.
+     * This method performs the following steps:
+     * <ol>
+     *   <li>Displays a {@link FileChooser} to allow the user to select a ".json" file.
+     *       The initial directory is based on the last used directory preference.</li>
+     *   <li>If a file is selected:
+     *     <ul>
+     *       <li>Calls {@link #importJsonToTableModel(File)} to parse the JSON file into a {@link DefaultTableModel}.</li>
+     *       <li>Retrieves the {@link PageViewerPanel} from the associated {@link SCALedgerPlugin}.</li>
+     *       <li>If the panel is available, loads the imported data into it using {@link PageViewerPanel#loadData(DefaultTableModel)}.</li>
+     *       <li>Displays the {@code PageViewerPanel} in a new window.</li>
+     *       <li>Shows an information alert indicating successful data loading.</li>
+     *       <li>Updates the last used directory preference.</li>
+     *     </ul>
+     *   </li>
+     *   <li>If file selection is cancelled, or if any error occurs during import or display,
+     *       an error alert is shown (exceptions are printed to standard error).</li>
+     * </ol>
+     * </p>
+     * @param e The {@link ActionEvent} that triggered this handler.
 	 */
 	@Override public void handle(ActionEvent e)
 	{

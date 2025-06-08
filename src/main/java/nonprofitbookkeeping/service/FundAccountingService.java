@@ -9,22 +9,42 @@ import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Service class for managing fund accounting operations.
+ * This includes managing funds and accounts, their relationships,
+ * retrieving fund balances, and performing fund transfers.
+ * Funds and accounts are stored in in-memory maps.
+ */
 public class FundAccountingService
 {
 	
+	/** In-memory map storing funds, keyed by fund name. */
 	@JsonProperty private final Map<String, Fund> fundMap;
+	/** In-memory map storing accounts, keyed by account name. */
 	@JsonProperty private final Map<String, Account> accountMap;
 	
+	/**
+	 * Constructs a new {@code FundAccountingService}.
+	 * Initializes empty maps for storing funds and accounts.
+	 */
 	public FundAccountingService()
 	{
 		this.fundMap = new HashMap<>();
 		this.accountMap = new HashMap<>();
 	}
 	
-	// Add a new fund
+	/**
+	 * Adds a new fund to the service.
+	 * The fund is stored using its name as the key.
+	 *
+	 * @param fund The {@link Fund} to add. Must not be null.
+	 * @throws IllegalArgumentException if a fund with the same name already exists, or if {@code fund} or its name is null.
+	 */
 	public void addFund(Fund fund)
 	{
-		
+		if (fund == null || fund.getName() == null) {
+            throw new IllegalArgumentException("Fund and fund name must not be null.");
+        }
 		if (this.fundMap.containsKey(fund.getName()))
 		{
 			throw new IllegalArgumentException(
@@ -34,18 +54,30 @@ public class FundAccountingService
 		this.fundMap.put(fund.getName(), fund);
 	}
 	
-	// Remove a fund by name
+	/**
+	 * Removes a fund from the service by its name.
+	 * This method also ensures that the removed fund is disassociated from any accounts
+	 * it was previously linked with by calling {@link Account#removeFund(Fund)}.
+	 *
+	 * @param fundName The name of the fund to remove.
+	 * @return {@code true} if the fund was found and removed, {@code false} otherwise.
+	 */
 	public boolean removeFund(String fundName)
 	{
+		if (fundName == null) {
+            return false;
+        }
 		Fund fund = this.fundMap.get(fundName);
 		
 		if (fund != null)
 		{
 			
-			// Remove this fund from all accounts
-			for (Account account : fund.getAccounts())
+			// Create a copy of the accounts list to iterate over, to avoid ConcurrentModificationException
+            // if account.removeFund(fund) modifies the fund's account list indirectly.
+            List<Account> associatedAccounts = new ArrayList<>(fund.getAccounts());
+			for (Account account : associatedAccounts)
 			{
-				account.removeFund(fund);
+				account.removeFund(fund); // This should also trigger fund.removeAccount(this)
 			}
 			
 			this.fundMap.remove(fundName);
@@ -55,10 +87,18 @@ public class FundAccountingService
 		return false;
 	}
 	
-	// Add a new account
+	/**
+	 * Adds a new account to the service.
+	 * The account is stored using its name as the key.
+	 *
+	 * @param account The {@link Account} to add. Must not be null.
+	 * @throws IllegalArgumentException if an account with the same name already exists, or if {@code account} or its name is null.
+	 */
 	public void addAccount(Account account)
 	{
-		
+		if (account == null || account.getName() == null) {
+            throw new IllegalArgumentException("Account and account name must not be null.");
+        }
 		if (this.accountMap.containsKey(account.getName()))
 		{
 			throw new IllegalArgumentException(
@@ -68,18 +108,28 @@ public class FundAccountingService
 		this.accountMap.put(account.getName(), account);
 	}
 	
-	// Remove an account by name
+	/**
+	 * Removes an account from the service by its name.
+	 * This method also ensures that the removed account is disassociated from any funds
+	 * it was previously linked with by calling {@link Fund#removeAccount(Account)}.
+	 *
+	 * @param accountName The name of the account to remove.
+	 * @return {@code true} if the account was found and removed, {@code false} otherwise.
+	 */
 	public boolean removeAccount(String accountName)
 	{
+		if (accountName == null) {
+            return false;
+        }
 		Account account = this.accountMap.get(accountName);
 		
 		if (account != null)
 		{
-			
-			// Remove this account from all funds
-			for (Fund fund : account.getAssociatedFunds())
+			// Create a copy for iteration to avoid ConcurrentModificationException
+            List<Fund> associatedFunds = new ArrayList<>(account.getAssociatedFunds());
+			for (Fund fund : associatedFunds)
 			{
-				fund.removeAccount(account);
+				fund.removeAccount(account); // This should also trigger account.removeFund(this)
 			}
 			
 			this.accountMap.remove(accountName);
@@ -89,19 +139,35 @@ public class FundAccountingService
 		return false;
 	}
 	
-	// List all funds
+	/**
+	 * Retrieves a list of all funds currently managed by this service.
+	 *
+	 * @return A new {@link ArrayList} containing all {@link Fund} objects.
+	 *         This is a copy, so modifications to the returned list will not affect internal storage.
+	 */
 	public List<Fund> listFunds()
 	{
 		return new ArrayList<>(this.fundMap.values());
 	}
 	
-	// List all accounts
+	/**
+	 * Retrieves a list of all accounts currently managed by this service.
+	 *
+	 * @return A new {@link ArrayList} containing all {@link Account} objects.
+	 *         This is a copy, so modifications to the returned list will not affect internal storage.
+	 */
 	public List<Account> listAccounts()
 	{
 		return new ArrayList<>(this.accountMap.values());
 	}
 	
-	// Get the balances for all funds (using BigDecimal)
+	/**
+	 * Gets the current balances for all funds.
+	 * The balance for each fund is obtained via {@link Fund#getBalance()}.
+	 *
+	 * @return A {@link Map} where keys are fund names (String) and values are their
+	 *         corresponding balances ({@link BigDecimal}).
+	 */
 	public Map<String, BigDecimal> getFundBalances()
 	{
 		Map<String, BigDecimal> balances = new HashMap<>();
@@ -114,11 +180,20 @@ public class FundAccountingService
 		return balances;
 	}
 	
-	// Transfer funds between two funds or accounts (using BigDecimal)
+	/**
+	 * Transfers a specified amount between two funds.
+	 * This method directly adjusts the balances of the source and destination funds
+	 * using {@link Fund#setBalance(BigDecimal)}. It does not create accounting transactions.
+	 *
+	 * @param fromFund The name of the fund from which the amount will be transferred.
+	 * @param toFund The name of the fund to which the amount will be transferred.
+	 * @param amount The {@link BigDecimal} amount to transfer. Must be greater than zero.
+	 * @throws IllegalArgumentException if {@code amount} is not greater than zero,
+	 *                                  or if either {@code fromFund} or {@code toFund} does not exist.
+	 */
 	public void transferFunds(String fromFund, String toFund, BigDecimal amount)
 	{
-		
-		if (amount.compareTo(BigDecimal.ZERO) <= 0)
+		if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0)
 		{
 			throw new IllegalArgumentException("Amount must be greater than zero.");
 		}

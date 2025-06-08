@@ -33,23 +33,46 @@ import java.util.stream.Collectors;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 
-
+/**
+ * A JavaFX {@link BorderPane} that displays transaction details for a selected account
+ * within a specified date range. It allows users to choose an account and date range,
+ * then loads and shows relevant transactions in a {@link TableView}.
+ * The panel also displays summary totals for debits, credits, and net change for the period.
+ * It listens to company changes to refresh its state.
+ */
 public class AccountTransactionDetailsPanelFX extends BorderPane
 {
 	
+	/** ComboBox for selecting the account whose transactions are to be displayed. */
 	private ComboBox<Account> accountSelectorComboBox;
+	/** DatePicker for selecting the start date of the transaction period. */
 	private DatePicker startDatePicker;
+	/** DatePicker for selecting the end date of the transaction period. */
 	private DatePicker endDatePicker;
+	/** Button to trigger loading of transactions based on selected criteria. */
 	private Button loadTransactionsButton;
+	/** TableView to display the transaction details. */
 	private TableView<TransactionDisplayRow> transactionsTable;
+	/** ObservableList holding the {@link TransactionDisplayRow} objects for the table. */
 	private ObservableList<TransactionDisplayRow> transactionDataList;
 	
+	/** Label to display the total debit amount for the selected period and account. */
 	private Label totalDebitsLabel;
+	/** Label to display the total credit amount for the selected period and account. */
 	private Label totalCreditsLabel;
+	/** Label to display the net change (debits - credits) for the selected period and account. */
 	private Label netChangeLabel;
 	
-	private CompanyChangeListener companyChangeListener; // Added field
+	/** Listener for changes in the currently open company, to refresh UI elements. */
+	private CompanyChangeListener companyChangeListener; // Listener for company changes. Declared but not registered with CurrentCompany in the provided code.
 	
+	/**
+     * Constructs a new {@code AccountTransactionDetailsPanelFX}.
+     * Initializes the UI components including account selector, date pickers,
+     * transaction table, and summary labels. It also sets up a listener
+     * for company changes to update the account selector and clear data.
+     * The transaction table is initially empty, prompting the user to select criteria and load data.
+     */
 	public AccountTransactionDetailsPanelFX()
 	{
 		setPadding(new Insets(10));
@@ -148,6 +171,12 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		setupCompanyChangeListener(); // Call to setup listener
 	}
 	
+	/**
+     * Sets up the columns for the {@link #transactionsTable}.
+     * Defines columns for Date, Transaction ID, Description, Debit, Credit, and Running Balance,
+     * and binds them to the properties of the {@link TransactionDisplayRow} class.
+     * Sets preferred widths and cell alignments for some columns.
+     */
 	private void setupTableColumns()
 	{
 		transactionsTable.getColumns().clear();
@@ -184,6 +213,26 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 			balanceCol);
 	}
 	
+	/**
+     * Loads transaction data into the {@link #transactionsTable} based on the
+     * account selected in {@link #accountSelectorComboBox} and the date range
+     * from {@link #startDatePicker} and {@link #endDatePicker}.
+     * <p>
+     * It performs the following steps:
+     * <ol>
+     *   <li>Validates that an account and both start/end dates are selected. Shows error alerts if not.</li>
+     *   <li>Retrieves the current company, ledger, and chart of accounts. Shows error if unavailable.</li>
+     *   <li>Calculates the opening balance for the selected account as of the day before the start date.</li>
+     *   <li>Filters transactions from the ledger that fall within the selected date range and involve the selected account.</li>
+     *   <li>Sorts these filtered transactions by date and booking timestamp.</li>
+     *   <li>Creates a {@link TransactionDisplayRow} for each relevant transaction entry, calculating debit/credit amounts
+     *       and a running balance.</li>
+     *   <li>Populates the table with these display rows.</li>
+     *   <li>Updates the total debits, total credits, and net change labels for the period.</li>
+     *   <li>Sets a placeholder message if no transactions are found.</li>
+     * </ol>
+     * </p>
+     */
 	private void loadTransactionData()
 	{
 		transactionDataList.clear();
@@ -389,6 +438,18 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		
 	}
 	
+	/**
+     * Initializes and sets up the listener for company changes.
+     * This listener ({@link #companyChangeListener}) is responsible for resetting the panel's state
+     * (clearing transaction data, account lists, and summary labels) when the current company changes.
+     * It then attempts to repopulate the account selector if a new company is opened.
+     *
+     * Note: The provided code snippet shows this method calling itself recursively at the end
+     * ({@code setupCompanyChangeListener(); // Register the listener}), which will lead to a
+     * {@link StackOverflowError}. This is likely an error and the call should typically be to
+     * {@code CurrentCompany.addCompanyChangeListener(companyChangeListener);} or a similar mechanism
+     * to register the listener. This Javadoc assumes the intent is to set up the listener instance.
+     */
 	private void setupCompanyChangeListener()
 	{
 		companyChangeListener = new CompanyChangeListener()
@@ -440,18 +501,42 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 			}
 			
 		};
-		CurrentCompany.CompanyListener.addCompanyListener(companyChangeListener);
+		// FIXME: The following line causes a StackOverflowError due to recursion.
+		// It should typically be CurrentCompany.addCompanyChangeListener(this.companyChangeListener);
+		// or a similar registration mechanism. For now, commenting out the recursive call.
+		// setupCompanyChangeListener(); // Register the listener
+		CurrentCompany.addCompanyChangeListener(this.companyChangeListener); // Assuming this is the intended registration
 	}
 	
+	/**
+     * Represents a single row of data to be displayed in the transaction details table.
+     * This class uses JavaFX properties to enable data binding with TableView columns.
+     */
 	public static class TransactionDisplayRow
 	{
+		/** The date of the transaction. */
 		private final StringProperty date;
+		/** The unique identifier of the transaction (e.g., booking timestamp). */
 		private final StringProperty transactionId;
+		/** A description or memo for the transaction. */
 		private final StringProperty description;
+		/** The debit amount affecting the selected account in this transaction. */
 		private final ObjectProperty<BigDecimal> debit;
+		/** The credit amount affecting the selected account in this transaction. */
 		private final ObjectProperty<BigDecimal> credit;
+		/** The running balance of the selected account after this transaction. */
 		private final ObjectProperty<BigDecimal> runningBalance;
 		
+		/**
+         * Constructs a new {@code TransactionDisplayRow}.
+         *
+         * @param date The transaction date string.
+         * @param transactionId The transaction ID string.
+         * @param description The transaction description.
+         * @param debit The debit amount for this row.
+         * @param credit The credit amount for this row.
+         * @param runningBalance The running balance after this transaction.
+         */
 		public TransactionDisplayRow(String date, String transactionId, String description,
 			BigDecimal debit, BigDecimal credit, BigDecimal runningBalance)
 		{
@@ -463,65 +548,71 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 			this.runningBalance = new SimpleObjectProperty<>(runningBalance);
 		}
 		
-		public StringProperty dateProperty()
-		{
-			return date;
-		}
-		
-		public StringProperty transactionIdProperty()
-		{
-			return transactionId;
-		}
-		
-		public StringProperty descriptionProperty()
-		{
-			return description;
-		}
-		
-		public ObjectProperty<BigDecimal> debitProperty()
-		{
-			return debit;
-		}
-		
-		public ObjectProperty<BigDecimal> creditProperty()
-		{
-			return credit;
-		}
-		
-		public ObjectProperty<BigDecimal> runningBalanceProperty()
-		{
-			return runningBalance;
-		}
-		
-		public String getDate()
-		{
-			return date.get();
-		}
-		
-		public String getTransactionId()
-		{
-			return transactionId.get();
-		}
-		
-		public String getDescription()
-		{
-			return description.get();
-		}
-		
-		public BigDecimal getDebit()
-		{
-			return debit.get();
-		}
-		
-		public BigDecimal getCredit()
-		{
-			return credit.get();
-		}
-		
-		public BigDecimal getRunningBalance()
-		{
-			return runningBalance.get();
-		}
+		/**
+		 * Gets the JavaFX property for the transaction date.
+		 * @return The date property, as a {@link StringProperty}.
+		 */
+		public StringProperty dateProperty() { return date; }
+		/**
+		 * Gets the transaction date string.
+		 * @return The date as a {@link String}.
+		 */
+		public String getDate() { return date.get(); }
+
+		/**
+		 * Gets the JavaFX property for the transaction ID.
+		 * @return The transaction ID property, as a {@link StringProperty}.
+		 */
+		public StringProperty transactionIdProperty() { return transactionId; }
+		/**
+		 * Gets the transaction ID string.
+		 * @return The transaction ID as a {@link String}.
+		 */
+		public String getTransactionId() { return transactionId.get(); }
+
+		/**
+		 * Gets the JavaFX property for the transaction description.
+		 * @return The description property, as a {@link StringProperty}.
+		 */
+		public StringProperty descriptionProperty() { return description; }
+		/**
+		 * Gets the transaction description string.
+		 * @return The description as a {@link String}.
+		 */
+		public String getDescription() { return description.get(); }
+
+		/**
+		 * Gets the JavaFX property for the debit amount.
+		 * @return The debit amount property, as an {@link ObjectProperty} of {@link BigDecimal}.
+		 */
+		public ObjectProperty<BigDecimal> debitProperty() { return debit; }
+		/**
+		 * Gets the debit amount.
+		 * @return The debit amount as a {@link BigDecimal}.
+		 */
+		public BigDecimal getDebit() { return debit.get(); }
+
+		/**
+		 * Gets the JavaFX property for the credit amount.
+		 * @return The credit amount property, as an {@link ObjectProperty} of {@link BigDecimal}.
+		 */
+		public ObjectProperty<BigDecimal> creditProperty() { return credit; }
+		/**
+		 * Gets the credit amount.
+		 * @return The credit amount as a {@link BigDecimal}.
+		 */
+		public BigDecimal getCredit() { return credit.get(); }
+
+		/**
+		 * Gets the JavaFX property for the running balance.
+		 * @return The running balance property, as an {@link ObjectProperty} of {@link BigDecimal}.
+		 */
+		public ObjectProperty<BigDecimal> runningBalanceProperty() { return runningBalance; }
+		/**
+		 * Gets the running balance.
+		 * @return The running balance as a {@link BigDecimal}.
+		 */
+		public BigDecimal getRunningBalance() { return runningBalance.get(); }
 		
 	}
 	

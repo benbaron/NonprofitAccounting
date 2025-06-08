@@ -26,20 +26,60 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * JavaFX action handler for generating an Account Activity Detail report.
+ * This action prompts the user for report criteria (date range, funds, accounts)
+ * using a {@link ReportCriteriaDialog}, then uses the {@link ReportService}
+ * to prepare the data and generate the report (typically as an XLSX file using JXLS).
+ * It also handles saving the report configuration if a name is provided.
+ */
 public class GenerateAccountActivityReportAction implements EventHandler<ActionEvent> {
 
     // private static final long serialVersionUID = 1L; // Not needed for EventHandler
+    /** The specific report type identifier for the Account Activity Detail report. */
     private final String reportType = "account_activity_detail";
 
-    // reportService field is not strictly needed if only static methods are used,
-    // but kept for consistency if this pattern changes or for DI frameworks.
+    /**
+     * The {@link ReportService} instance used to generate the report and prepare data.
+     * This field is not strictly needed if only static methods of ReportService are used,
+     * but it's kept for consistency or potential future use with instance methods.
+     */
     private final ReportService reportService; 
 
+    /**
+     * Constructs a new {@code GenerateAccountActivityReportAction}.
+     *
+     * @param reportService The {@link ReportService} to be used for report generation.
+     *                      While the current static {@code ReportService.generate} method is used,
+     *                      this parameter is kept for potential future dependency injection or
+     *                      use of instance methods on {@code reportService}.
+     */
     public GenerateAccountActivityReportAction(ReportService reportService) {
         // super("Generate Account Activity Detail"); // Not needed for EventHandler
         this.reportService = reportService; // Stored if needed by non-static methods later
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Handles the action event for generating an Account Activity Detail report. It performs these steps:
+     * <ol>
+     *   <li>Checks if a company is open; shows an error and returns if not.</li>
+     *   <li>Displays a {@link ReportCriteriaDialog} to gather report parameters from the user (dates, funds, accounts).</li>
+     *   <li>If the user cancels the dialog, the action terminates.</li>
+     *   <li>Validates that at least one account was selected; shows an error and returns if not.</li>
+     *   <li>If a name for saving the configuration was provided and a company directory is available,
+     *       it creates a {@link ReportConfiguration}, saves it using {@link ReportConfigurationService}.</li>
+     *   <li>Constructs a {@link ReportContext} from the gathered criteria.</li>
+     *   <li>Calls the static {@link ReportService#generate(ReportContext, Ledger, ChartOfAccounts)}
+     *       method to produce the report file (typically an XLSX).</li>
+     *   <li>Shows an information alert with the path to the generated report, or an error alert if generation fails.</li>
+     * </ol>
+     * Catches and displays {@link IOException} related to configuration saving and any general {@link Exception}
+     * during report generation.
+     * </p>
+     * @param event The {@link ActionEvent} that triggered this handler.
+     */
     @Override
     public void handle(ActionEvent event) {
         Company currentCompany = CurrentCompany.getCompany();
@@ -157,12 +197,17 @@ public class GenerateAccountActivityReportAction implements EventHandler<ActionE
     }
 
 	/**
-	 * @param object
-	 * @return
+	 * Placeholder method, potentially from a previous Swing ActionListener implementation.
+	 * This method is not part of the JavaFX {@link EventHandler} interface and is currently a stub.
+	 *
+	 * @param actionEvent The event object (parameter name changed from 'object' for clarity, though type is Object).
+	 * @return Currently returns null as it's a stub. The intended return type and behavior are undefined.
 	 */
-	public Object actionPerformed(Object object)
+	public Object actionPerformed(Object actionEvent)
 	{
 		// TODO Auto-generated method stub
+		// This method signature resembles ActionListener.actionPerformed(ActionEvent),
+		// but with a generic Object parameter. It's not used in the JavaFX event handling flow.
 		return null;
 	}
 }

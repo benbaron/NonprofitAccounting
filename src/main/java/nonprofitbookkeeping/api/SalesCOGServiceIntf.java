@@ -1,6 +1,10 @@
 
 package nonprofitbookkeeping.api;
 
+/**
+ * Defines services related to sales and Cost of Goods Sold (COGS) calculations.
+ * This interface provides methods to calculate COGS and total sales for a specified period.
+ */
 public interface SalesCOGServiceIntf
 {
 	/**

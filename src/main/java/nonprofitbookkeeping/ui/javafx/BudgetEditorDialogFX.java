@@ -18,29 +18,89 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
 
+/**
+ * A JavaFX {@link Dialog} for creating a new budget or editing an existing one.
+ * This dialog allows users to define budget properties such as name, fiscal year,
+ * description, applicable fund, and currency. It also includes a section for
+ * managing budget lines (though the detailed implementation for budget lines is
+ * marked as TODO).
+ * <p>
+ * The dialog interacts with {@link BudgetService} (though currently unused) and
+ * uses {@link ChartOfAccounts} and a list of {@link Fund}s for context, such as populating
+ * a ComboBox for fund selection.
+ * </p>
+ * <p>
+ * Upon successful completion (e.g., clicking a "Save Budget" button, which is not fully
+ * implemented with a result converter yet), it would typically return the created or
+ * modified {@link Budget} object.
+ * </p>
+ */
 public class BudgetEditorDialogFX extends Dialog<Budget>
 {
 	
+	/** The {@link Budget} object being created or edited. */
 	private Budget currentBudget;
-	private ChartOfAccounts chartOfAccounts; // Unused in this initial structure but kept for
-												// context
+	/**
+	 * The {@link ChartOfAccounts} for the current company.
+	 * Currently unused in this dialog's direct logic but kept for potential future context.
+	 */
+	private ChartOfAccounts chartOfAccounts;
+	/** List of available {@link Fund}s to populate the fund selector ComboBox. */
 	private List<Fund> availableFunds;
-	private BudgetService budgetService; // Unused in this initial structure but kept for context
-	private File companyDirectory; // Unused in this initial structure but kept for context
+	/**
+	 * The {@link BudgetService} for budget-related operations.
+	 * Currently unused in this dialog's direct logic but kept for potential future context.
+	 */
+	private BudgetService budgetService;
+	/**
+	 * The company directory, potentially used for saving/loading budget-related files.
+	 * Currently unused in this dialog's direct logic but kept for potential future context.
+	 */
+	private File companyDirectory;
 	
 	// UI Fields for Budget Properties
+	/** TextField for entering or displaying the budget name. */
 	private TextField budgetNameField;
+	/** Spinner for selecting or displaying the fiscal year of the budget. */
 	private Spinner<Integer> fiscalYearSpinner;
+	/** TextField for entering or displaying an optional description for the budget. */
 	private TextField descriptionField;
+	/** ComboBox for selecting an applicable fund for the budget. Can be "All Funds". */
 	private ComboBox<Fund> applicableFundComboBox;
+	/** TextField for displaying the budget's currency (typically non-editable, derived from company settings). */
 	private TextField currencyField;
 	
-	// UI Fields for Budget Lines (Placeholder for now)
-	private TableView<Object> budgetLinesTable;
+	// UI Fields for Budget Lines (Placeholder for detailed implementation)
+	/** TableView intended to display budget lines. Currently shows a placeholder. */
+	private TableView<Object> budgetLinesTable; // Should be TableView<BudgetLineFX> or similar
+	/** Button to trigger adding a new budget line. Functionality is TODO. */
 	private Button addLineButton;
+	/** Button to trigger editing an existing budget line. Functionality is TODO. */
 	private Button editLineButton;
+	/** Button to trigger removing an existing budget line. Functionality is TODO. */
 	private Button removeLineButton;
 	
+	/**
+     * Constructs a new {@code BudgetEditorDialogFX}.
+     * Initializes the UI components for editing budget properties and managing budget lines.
+     * If {@code budgetToEdit} is provided, the dialog populates its fields with the data from this budget
+     * (edit mode). Otherwise, it initializes fields for creating a new budget (create mode),
+     * defaulting the fiscal year to the current year and currency from {@link CurrentCompany} if available.
+     * <p>
+     * Note: The parameters {@code chartOfAccounts}, {@code budgetService}, and {@code companyDirectory}
+     * are stored but not actively used in the current UI logic of this dialog, suggesting they
+     * are for future enhancements or were part of a previous design.
+     * The management of budget lines (add, edit, remove) and the dialog's result conversion
+     * (saving the budget) are marked as TODO.
+     * </p>
+     *
+     * @param owner The parent {@link Window} for this dialog, used for proper modality.
+     * @param chartOfAccounts The {@link ChartOfAccounts} of the current company (currently unused).
+     * @param funds A list of available {@link Fund}s to populate the fund selector. Can be null or empty.
+     * @param budgetService The {@link BudgetService} (currently unused).
+     * @param companyDirectory The company's data directory (currently unused).
+     * @param budgetToEdit The {@link Budget} to edit. If null, the dialog enters "create new budget" mode.
+     */
 	public BudgetEditorDialogFX(Window owner, ChartOfAccounts chartOfAccounts, List<Fund> funds,
 		BudgetService budgetService, File companyDirectory, Budget budgetToEdit)
 	{
@@ -138,14 +198,31 @@ public class BudgetEditorDialogFX extends Dialog<Budget>
 		
 		populateFieldsFromBudget();
 		
-		// TODO: Set result converter for save
-		// TODO: Add event handlers for line buttons & save logic
+		// TODO: Set result converter for the dialog to return the currentBudget upon save.
+		// TODO: Add event handlers for addLineButton, editLineButton, removeLineButton.
+		// TODO: Implement logic for collecting data from UI fields back into currentBudget upon save (collectFieldsToBudget method).
+		// TODO: Consider creating a BudgetLineFX class for TableView and a BudgetLineDialogFX for line editing.
 	}
 	
+	/**
+     * Populates the dialog's UI fields with data from the {@link #currentBudget} object.
+     * This method is called during dialog initialization to display an existing budget's
+     * details or to set defaults for a new budget.
+     * It handles setting the budget name, fiscal year, description, currency,
+     * and the selected fund in the ComboBox.
+     */
 	private void populateFieldsFromBudget()
 	{
-		if (this.currentBudget == null)
+		if (this.currentBudget == null) {
+			// Should not happen if constructor logic for new budget is correct
+			this.budgetNameField.setText("");
+            this.fiscalYearSpinner.getValueFactory().setValue(LocalDate.now().getYear());
+            this.descriptionField.setText("");
+            this.currencyField.setText("USD"); // Default fallback
+            this.applicableFundComboBox.getSelectionModel().clearSelection();
+            this.applicableFundComboBox.setPromptText("Select Fund");
 			return;
+        }
 		this.budgetNameField.setText(this.currentBudget.getBudgetName());
 		
 		// fiscalYearSpinner value is set during initialization

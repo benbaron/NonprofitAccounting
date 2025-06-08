@@ -25,23 +25,66 @@ import nonprofitbookkeeping.preferences.PreferencesManager;
 import nonprofitbookkeeping.ui.helpers.NpbkFileChooserFX;
 
 /**
- * JavaFX replacement for the Swing {@code LoadXlsmTableAction}. Opens an .xlsm file, converts the
- * first sheet into a {@link TableView}, and shows that table in a new window.  The selected file is
- * stored in {@link NonprofitBookkeepingFX#currentFile} and beans are loaded through
- * {@link SCALedgerDataLoader} just like the original code.
+ * JavaFX action handler for loading data from an Excel XLSM file.
+ * This action prompts the user to select an .xlsm file using a {@link FileChooser}.
+ * Upon selection, it reads the first sheet of the workbook into a Swing {@link javax.swing.table.DefaultTableModel}
+ * (via {@link XlsmTableViewerFX#readXlsmToTableModel(File, int)}), then converts this model
+ * into a JavaFX {@link TableView} which is displayed in a new window.
+ * <p>
+ * The selected file's path is stored via the associated {@link SCALedgerPlugin},
+ * preferences are updated, and data is loaded using {@link SCALedgerDataLoader}
+ * into the plugin's bean map (typically using "jxlsMapping.xml").
+ * </p>
  */
 public class LoadXlsmTableActionFX implements EventHandler<ActionEvent>
 {
 	
+	/** The owner {@link Stage} for displaying dialogs like the FileChooser and new windows. */
 	private final Stage owner;
-	private final SCALedgerPlugin plugin; // Added
+	/** The {@link SCALedgerPlugin} instance used for managing state related to the loaded SCA ledger file and its data. */
+	private final SCALedgerPlugin plugin;
 	
-	public LoadXlsmTableActionFX(Stage owner, SCALedgerPlugin plugin) // Updated constructor
+	/**
+     * Constructs a new {@code LoadXlsmTableActionFX}.
+     *
+     * @param owner The owner {@link Stage} for any dialogs or new windows created by this action.
+     *              Must not be null.
+     * @param plugin The {@link SCALedgerPlugin} instance that will manage the state of the
+     *               loaded XLSM file and its processed data. Must not be null.
+     * @throws NullPointerException if {@code owner} or {@code plugin} is null (though not explicitly checked here,
+     *                              they are later used and would cause NPE if null).
+     */
+	public LoadXlsmTableActionFX(Stage owner, SCALedgerPlugin plugin)
 	{
 		this.owner = owner;
-		this.plugin = plugin; // Added
+		this.plugin = plugin;
 	}
 	
+	/**
+     * {@inheritDoc}
+     * <p>
+     * Handles the action event, typically from a menu item, to load and display an XLSM file's first sheet.
+     * The process includes:
+     * <ol>
+     *   <li>Presenting a {@link FileChooser} to the user to select an ".xlsm" file.
+     *       The initial directory is based on preferences.</li>
+     *   <li>If a file is selected:
+     *     <ul>
+     *       <li>The first sheet of the XLSM file is read into a Swing {@code DefaultTableModel}.</li>
+     *       <li>This Swing model is converted to a JavaFX {@code TableView<Map<String, Object>>}.</li>
+     *       <li>The selected file is set as the current SCA file in the associated {@link SCALedgerPlugin}.</li>
+     *       <li>The last directory preference is updated.</li>
+     *       <li>Data is loaded from the XLSM file into the plugin's beans using {@link SCALedgerDataLoader}
+     *           (with a hardcoded "jxlsMapping.xml" file).</li>
+     *       <li>The JavaFX {@code TableView} is displayed in a new {@link Stage}.</li>
+     *     </ul>
+     *   </li>
+     *   <li>If file selection is cancelled, or if any {@link Exception} occurs during processing
+     *       (e.g., file reading, data loading), an error alert is shown and the stack trace is printed.</li>
+     * </ol>
+     * </p>
+     * @param e The {@link ActionEvent} that triggered this handler.
+     */
 	@Override public void handle(ActionEvent e)
 	{
 		
@@ -94,11 +137,25 @@ public class LoadXlsmTableActionFX implements EventHandler<ActionEvent>
 	}
 
 	/**
-	 * Convert a Swing {@link javax.swing.table.DefaultTableModel} to a JavaFX {@link TableView}
-	 * without using {@code MapValueFactory}.  Each row is a {@code Map<String,Object>} and each
-	 * column pulls its value with a simple lambda.
+	 * Converts a Swing {@link javax.swing.table.DefaultTableModel} into a JavaFX {@link TableView}.
+	 * Each row in the resulting {@code TableView} is represented as a {@code Map<String, Object>},
+	 * where keys are column names (obtained from the {@code DefaultTableModel}) and values are the
+	 * corresponding cell data.
+	 * <p>
+	 * Columns for the {@code TableView} are created dynamically based on the column names from the input model.
+	 * Cell values are populated using a lambda expression for the cell value factory, which looks up
+	 * values in the row map by column name. The table view is configured with a constrained column resize policy.
+	 * </p>
+	 *
+	 * @param model The Swing {@link javax.swing.table.DefaultTableModel} to convert. Must not be null.
+	 * @return A JavaFX {@link TableView} populated with data from the input model.
+	 * @deprecated The {@code @SuppressWarnings("deprecation")} annotation in the original code suggests
+	 *             potential use of deprecated APIs, though not immediately obvious from the current implementation.
+	 *             Consider reviewing if any underlying Swing/JavaFX interop parts are subject to deprecation.
+	 *             The method itself is functional for converting table data.
 	 */
-	@SuppressWarnings("deprecation") private static TableView<Map<String, Object>> createFxTable(javax.swing.table.DefaultTableModel model)
+	@SuppressWarnings("deprecation") // Retained from original code; review if specific deprecated API is used.
+	private static TableView<Map<String, Object>> createFxTable(javax.swing.table.DefaultTableModel model)
 	{
 		TableView<Map<String, Object>> tv = new TableView<>();
 		

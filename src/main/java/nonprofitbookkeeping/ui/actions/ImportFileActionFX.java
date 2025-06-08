@@ -14,18 +14,22 @@ import java.io.File;
  * This class implements {@link EventHandler} for {@link ActionEvent} to trigger
  * the file import process. It opens a file dialog for the user to select a file
  * and currently acts as a placeholder, showing an alert with the selected file's details.
- * It requires an owner {@link Stage} to properly manage dialogs.
+ * It requires an owner {@link Stage} to properly manage dialogs such as the {@link FileChooser}.
+ * The current implementation identifies the selected file and its likely format but
+ * does not perform the actual data import; that logic is noted as pending.
  */
 public class ImportFileActionFX implements EventHandler<ActionEvent> {
 
+    /** The owner Stage for any dialogs created by this action. */
     private final Stage ownerStage;
 
     /**
-     * Constructs a new ImportFileActionFX.
+     * Constructs a new {@code ImportFileActionFX}.
      *
-     * @param ownerStage The primary stage of the JavaFX application, which will own
-     *                   any dialogs opened by this action. Must not be null.
-     * @throws IllegalArgumentException if ownerStage is null.
+     * @param ownerStage The primary {@link Stage} of the JavaFX application. This stage will act
+     *                   as the owner for any dialogs (e.g., FileChooser, Alert) displayed by this action.
+     *                   Must not be null.
+     * @throws IllegalArgumentException if {@code ownerStage} is null.
      */
     public ImportFileActionFX(Stage ownerStage) {
         if (ownerStage == null) {
@@ -35,13 +39,25 @@ public class ImportFileActionFX implements EventHandler<ActionEvent> {
     }
 
     /**
-     * Handles the action event to trigger the file import process.
-     * This method opens a {@link FileChooser} to allow the user to select a file
-     * for import, supporting OFX, QFX, and QIF formats. If a file is selected,
-     * an informational alert is displayed acknowledging the selection and the
-     * determined format. Actual file parsing and import logic is pending.
-     *
-     * @param event The {@link ActionEvent} that triggered this handler.
+     * {@inheritDoc}
+     * <p>
+     * Handles the action event, typically triggered by a menu item or button click,
+     * to initiate the file import process. This method performs the following steps:
+     * <ol>
+     *   <li>Creates and configures a {@link FileChooser} with the title "Import File" and
+     *       relevant file extension filters (OFX, QFX, QIF, All Files).</li>
+     *   <li>Displays an "open" dialog to the user, owned by the {@code ownerStage}.</li>
+     *   <li>If the user selects a file:
+     *     <ul>
+     *       <li>Determines the likely file format based on the selected extension filter or filename extension.</li>
+     *       <li>Displays an {@link Alert} dialog confirming the selected file and its inferred format,
+     *           noting that the actual import logic is pending implementation.</li>
+     *     </ul>
+     *   </li>
+     *   <li>If the user cancels the dialog, no further action is taken.</li>
+     * </ol>
+     * </p>
+     * @param event The {@link ActionEvent} that triggered this handler (e.g., a menu item click).
      */
     @Override
     public void handle(ActionEvent event) {

@@ -9,59 +9,69 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Window;
 
 /**
- * Light wrapper around the JavaFX alert box
+ * Utility class providing static methods to display common JavaFX {@link Alert} dialogs.
+ * This class simplifies showing error, information, and warning alerts by
+ * pre-configuring {@link Alert} instances and handling their display.
  */
 public class AlertBox
 {
-	/** Pops an error dialog and waits for the user to dismiss it. */
+	/**
+	 * Displays an error dialog with a predefined title ("Error") and header text ("Something went wrong").
+	 * The dialog is modal with respect to the owner window and waits for the user to dismiss it.
+	 *
+	 * @param owner The owner {@link Window} for this alert dialog. Can be null, in which case
+	 *              the dialog is not owned by any window.
+	 * @param message The main content message to be displayed in the error dialog.
+	 */
 	public static void showError(Window owner, String message)
 	{
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.initOwner(owner); // optional – ties it to your main stage
 		alert.setTitle("Error");
-		alert.setHeaderText("Something went wrong");
+		alert.setHeaderText("Something went wrong"); // Standard header for errors
 		alert.setContentText(message);
 		
-		// add extra buttons or graphics if you want
+		// Example for custom buttons (not used by default):
 		// alert.getButtonTypes().setAll(ButtonType.OK, ButtonType.CANCEL);
 		
-		alert.showAndWait(); // blocks until the user clicks OK
+		alert.showAndWait(); // blocks until the user clicks OK (or another button if configured)
 	}
 
 	/**
-	 * @param object
-	 * @param string
+	 * Displays an informational dialog with a predefined title ("Information").
+	 * The provided message is used as the header text of the alert.
+	 * The dialog is modal with respect to the owner window and waits for the user to dismiss it.
+	 *
+	 * @param owner The owner {@link Window} for this alert dialog. Can be null.
+	 * @param message The message to be displayed as the header text of the information dialog.
 	 */
 	public static void showInfo(Window owner, String message)
 	{
 		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.initOwner(owner); // optional – ties it to your main stage
+		alert.initOwner(owner);
 		alert.setTitle("Information");
-		alert.setHeaderText(message);
-		// alert.setContentText(message);
-		// add extra buttons or graphics if you want
-		// alert.getButtonTypes().setAll(ButtonType.OK, ButtonType.CANCEL);
+		alert.setHeaderText(message); // Message used as header
+		// alert.setContentText(message); // Content text is not set, header is primary display for message
 		
-		alert.showAndWait(); // blocks until the user clicks OK
-		
+		alert.showAndWait();
 	}
 
 	/**
-	 * @param object
-	 * @param string
+	 * Displays a warning dialog with a predefined title ("Warning").
+	 * The provided message is used as the header text of the alert.
+	 * The dialog is modal with respect to the owner window and waits for the user to dismiss it.
+	 *
+	 * @param owner The owner {@link Window} for this alert dialog. Can be null.
+	 * @param message The message to be displayed as the header text of the warning dialog.
 	 */
 	public static void showWarning(Window owner, String message)
 	{
 		Alert alert = new Alert(AlertType.WARNING);
-		alert.initOwner(owner); // optional – ties it to your main stage
-		alert.setTitle("Information");
-		alert.setHeaderText(message);
-		// alert.setContentText(message);
-		// add extra buttons or graphics if you want
-		// alert.getButtonTypes().setAll(ButtonType.OK, ButtonType.CANCEL);
+		alert.initOwner(owner);
+		alert.setTitle("Warning"); // Title changed to "Warning" for consistency
+		alert.setHeaderText(message); // Message used as header
 		
-		alert.showAndWait(); // blocks until the user clicks OK
-		
+		alert.showAndWait();
 	}
 
 }
