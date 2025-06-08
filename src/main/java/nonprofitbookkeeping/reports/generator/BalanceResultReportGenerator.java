@@ -26,12 +26,22 @@ import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 // JasperExportManager and HtmlExporter are used in inherited methods
 
+/**
+ * Report generator for creating a "Balance Result Report".
+ * This report typically shows account balances.
+ * It extends {@link AbstractReportGenerator} to leverage common report generation
+ * and export functionalities.
+ */
 public class BalanceResultReportGenerator extends AbstractReportGenerator
 {
 	
 	/**
-	 * Constructor BalanceResultReportGenerator
-	 * @param accountService (currently unused as getReportData calls a static method)
+	 * Constructs a {@code BalanceResultReportGenerator}.
+	 *
+	 * @param accountService The account service, which is currently not directly used by this generator's
+	 *                       methods as {@link #getReportData()} makes a static call to
+	 *                       {@code AccountService.getBalanceResults()}. This parameter might be used
+	 *                       if {@code AccountService} were refactored to be an instance service.
 	 */
 	public BalanceResultReportGenerator(AccountService accountService)
 	{
@@ -41,6 +51,20 @@ public class BalanceResultReportGenerator extends AbstractReportGenerator
 		// change.
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * <p>Provides parameters specific to the Balance Result Report. This includes:
+	 * <ul>
+	 *   <li>{@code reporttitle}: "Balance Result Report"</li>
+	 *   <li>{@code dateToday}: Current date as a string (e.g., "YYYY-MM-DD")</li>
+	 *   <li>{@code company}: Name of the current company, or "N/A"</li>
+	 *   <li>{@code companytext}: Formatted string "Report for: [CompanyName]"</li>
+	 *   <li>Other general parameters like {@code P_REPORT_TITLE}, {@code P_GENERATION_DATE},
+	 *       {@code P_COMPANY_NAME}, and {@code P_REPORT_PERIOD} are also set.</li>
+	 * </ul>
+	 * </p>
+	 * @return A map of parameters for the JasperReport.
+	 */
 	@Override protected Map<String, Object> getReportParameters()
 	{
 		Map<String, Object> parameters = new HashMap<>();
@@ -88,6 +112,12 @@ public class BalanceResultReportGenerator extends AbstractReportGenerator
 		return parameters;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @return The classpath resource path "reports/BalanceResultReport.jrxml".
+	 * @throws ActionCancelledException Not directly thrown by this implementation, but declared due to the interface.
+	 * @throws NoFileCreatedException Not directly thrown by this implementation, but declared due to the interface.
+	 */
 	@Override protected String getReportPath()	throws ActionCancelledException,
 												NoFileCreatedException
 	{
@@ -95,6 +125,16 @@ public class BalanceResultReportGenerator extends AbstractReportGenerator
 		return "reports/BalanceResultReport.jrxml";
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * <p>Fetches data for the Balance Result Report by calling the static method
+	 * {@code AccountService.getBalanceResults()}. The returned list should contain
+	 * {@link AccountService.AccountBalance} objects or a compatible JavaBean structure
+	 * that matches the fields defined in the {@code BalanceResultReport.jrxml} template
+	 * (e.g., name, number, type, balance_currency_string).
+	 * </p>
+	 * @return A list of {@link AccountService.AccountBalance} objects, or an empty list if no data is available.
+	 */
 	@Override protected List<?> getReportData()
 	{
 		// This method fetches data using a static call.
@@ -107,6 +147,20 @@ public class BalanceResultReportGenerator extends AbstractReportGenerator
 		return balanceResults != null ? balanceResults : Collections.emptyList();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * <p>This implementation generates the "Balance Result Report". It compiles the JRXML template specified by
+	 * {@link #getReportPath()}, fills it with data from {@link #getReportData()} and parameters from
+	 * {@link #getReportParameters()}, and then exports the report to the specified format (PDF or HTML).
+	 * If an unsupported format is requested, it defaults to PDF.
+	 * The output file is named "Balance_Result_Report_[current_date].[format]" and saved in the directory
+	 * provided by {@link #getOutputDirectory()}.
+	 * </p>
+	 * @param format The desired output format ("pdf" or "html"). Defaults to "pdf" if unsupported.
+	 * @return The generated {@link File}.
+	 * @throws Exception If any error occurs during report generation, compilation, filling, or export,
+	 *                   including {@link FileNotFoundException} if the JRXML template is not found.
+	 */
 	@Override public File generateAndExportReport(String format) throws Exception
 	{
 		File generatedFile = null;

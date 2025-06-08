@@ -18,30 +18,39 @@ import nonprofitbookkeeping.model.Account;
  * Provides methods for retrieving and manipulating accounts.
  * Accounts are stored in an in-memory list.
  */
+/**
+ * Service class providing static methods for managing {@link Account} objects.
+ * This includes operations such as retrieving all accounts, calculating account balances,
+ * adding new accounts, removing accounts, and clearing the account list.
+ * Accounts are stored in a static in-memory list, making this service suitable for
+ * scenarios where a shared, application-wide account list is appropriate.
+ * For more complex applications, consider instance-based services and proper dependency injection.
+ */
 public class AccountService
 {
 	/**
-	 * In-memory list to store Account objects.
+	 * In-memory list to store {@link Account} objects.
+	 * This static list serves as the central storage for accounts managed by this service.
 	 */
 	private static List<Account> accounts = new ArrayList<>();
 
 	/**
-	 * Represents the balance of a specific account.
-	 * This record is used to return structured account balance information.
+	 * Represents the balance of a specific account, including its ID, name, and balance amount.
+	 * This is a Java Record, providing a concise way to group related data.
 	 *
-	 * @param accountId The unique identifier of the account.
+	 * @param accountId The unique identifier (account number) of the account.
 	 * @param accountName The name of the account.
-	 * @param balance The current balance of the account.
+	 * @param balance The current financial balance of the account.
 	 */
 	public static record AccountBalance(String accountId, String accountName, BigDecimal balance) {}
 
 	/**
-	 * Retrieves the balance for all accounts.
-	 * This method iterates through all stored accounts, computes their balances,
-	 * and returns a list of {@link AccountBalance} objects.
+	 * Retrieves the balance for all accounts currently managed by this service.
+	 * This method iterates through all stored accounts, computes their individual balances
+	 * using {@link Account#totalAccountBalance()}, and returns a list of {@link AccountBalance} records.
 	 *
 	 * @return A {@code List<AccountBalance>} containing the ID, name, and balance
-	 *         for each account. Returns an empty list if no accounts are stored.
+	 *         for each account. Returns an empty list if no accounts are stored or available.
 	 */
 	public static List<AccountBalance> getBalanceResults()
 	{
@@ -59,60 +68,62 @@ public class AccountService
 	}
 
 	/**
-	 * Retrieves all accounts currently stored in the system.
+	 * Retrieves all accounts currently managed by this service.
 	 *
 	 * @return A new {@code List<Account>} containing all stored accounts.
-	 *         Returns an empty list if no accounts are present.
-	 *         This is a copy of the internal list, so modifications to the
-	 *         returned list will not affect the internal storage.
+	 *         Returns an empty list if no accounts are currently stored.
+	 *         The returned list is a shallow copy of the internal list, so modifications
+	 *         to the list itself (e.g., adding/removing elements) will not affect the
+	 *         service's internal storage. However, modifications to the {@link Account}
+	 *         objects within the list will affect the original objects.
 	 */
 	public static List<Account> getAllAccounts()
 	{
-		// Return a copy to prevent external modification of the internal list
+		// Return a copy to prevent external modification of the internal list structure
 		return new ArrayList<>(accounts);
 	}
 
 	/**
-	 * Clears all accounts from the in-memory storage.
-	 * This method is primarily intended for testing purposes to ensure a clean state
-	 * between test executions.
+	 * Clears all accounts from the internal in-memory storage.
+	 * This method is useful for resetting the state, for example, during testing
+	 * or when loading a new set of company data.
 	 */
 	public static void clearAccounts() {
 		if (accounts != null) {
 			accounts.clear();
 		} else {
-			// Should not happen if initialized at declaration, but defensive
+			// This case should ideally not be reached if 'accounts' is always initialized.
 			accounts = new ArrayList<>();
 		}
 	}
 
 	/**
-	 * Adds a new account to the in-memory storage.
-	 * If the provided account is null, or its account number is null or blank,
-	 * the account is not added. This implementation allows duplicate accounts
-	 * if their account numbers are the same (as List allows duplicates).
+	 * Adds a new {@link Account} to the in-memory storage.
+	 * The account is not added if it is null, or if its account number is null or blank.
+	 * Note: This method does not check for duplicate account numbers; the underlying list
+	 * will allow accounts with the same account number if added.
 	 *
 	 * @param account The {@link Account} object to be added.
 	 */
 	public static void addAccount(Account account) {
 		if (account == null || account.getAccountNumber() == null || account.getAccountNumber().trim().isEmpty()) {
-			// Optionally, log a warning here
+			// Optionally, log a warning or throw an IllegalArgumentException here
 			return;
 		}
-		if (accounts == null) { // Defensive check, though initialized at declaration
+		if (accounts == null) { // Defensive check, though 'accounts' is initialized at declaration
 			accounts = new ArrayList<>();
 		}
 		accounts.add(account);
 	}
 
 	/**
-	 * Removes an account from the in-memory storage based on its account ID.
-	 * If the provided account ID is null or blank, no action is taken.
+	 * Removes an account from the in-memory storage based on its account ID (account number).
+	 * No action is taken if the provided {@code accountId} is null or blank, or if the internal
+	 * accounts list is not initialized.
 	 *
-	 * @param accountId The unique identifier (account number) of the account to be removed.
-	 * @return {@code true} if an account was removed as a result of this call,
-	 *         {@code false} otherwise (including if the accountId is invalid or no
-	 *         such account was found).
+	 * @param accountId The unique identifier (account number) of the {@link Account} to be removed.
+	 * @return {@code true} if an account with the specified ID was found and removed;
+	 *         {@code false} otherwise (e.g., if {@code accountId} is invalid, or no such account exists).
 	 */
 	public static boolean removeAccount(String accountId) {
 		if (accountId == null || accountId.trim().isEmpty() || accounts == null) {

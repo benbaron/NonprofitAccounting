@@ -18,26 +18,43 @@ import java.util.Map;
 import java.util.HashMap;
 
 
+/**
+ * Generates a "Customer/Project Report" using JasperReports.
+ * This class extends {@link ReportGenerator} and is responsible for compiling a JRXML template,
+ * fetching customer project data using {@link CustomerService}, filling the report,
+ * and exporting it to PDF or HTML format.
+ */
 public class CustomerProjectReportGenerator extends ReportGenerator
 {
 	/**
-	 * Constructor CustomerProjectReportGenerator
-	 * @param accountService
+	 * Constructs a {@code CustomerProjectReportGenerator}.
+	 *
+	 * @param customerService The {@link CustomerService} instance used to fetch data for the report.
+	 *                        It is passed to the superclass constructor.
 	 */
-
 	public CustomerProjectReportGenerator(CustomerService customerService)
 	{
 		super(customerService);
 	}
 
+	/**
+	 * Generates and exports the Customer/Project report to the specified format.
+	 * This method compiles the "CustomerProjectReport.jrxml" template (path needs to be correctly configured),
+	 * fetches customer data using {@link CustomerService#getCustomerProjectData()},
+	 * fills the report, and then exports it to either PDF ("CustomerProjectReport.pdf")
+	 * or HTML ("CustomerProjectReport.html") in the application's root directory.
+	 * Errors during the process are printed to the standard error stream.
+	 *
+	 * @param format A string indicating the desired output format. Accepts "pdf" or "html" (case-insensitive).
+	 *               If another format is provided, no export will occur.
+	 */
 	@Override public void generateAndExportReport(String format)
 	{
 
 		try
 		{
 			// Compile JRXML into JasperReport
-			String reportPath = "path/to/CustomerProjectReport.jrxml"; // Replace with the actual
-																		// path
+			String reportPath = "path/to/CustomerProjectReport.jrxml"; // TODO: Replace with the actual classpath or file system path
 			JasperReport jasperReport = JasperCompileManager.compileReport(reportPath);
 
 			// Fetch data for the report
@@ -63,25 +80,34 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 		}
 		catch (JRException e)
 		{
-			e.printStackTrace();
+			e.printStackTrace(); // Consider more robust error handling/logging
 		}
 
 	}
 
 	/**
+	 * Retrieves the parameters required for the Customer/Project report.
+	 * This includes a report title, a static date, and placeholder company information.
 	 *
-	 * @return
+	 * @return A {@link Map} containing parameter names as keys and their corresponding values.
 	 */
 	private static Map<String, Object> getReportParameters()
 	{
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("reporttitle", "Customer/Project Report");
-		parameters.put("dateToday", "2023-04-15"); // Example static date, replace as needed
-		parameters.put("company", "Your Company Name");
-		parameters.put("companytext", "Company Details");
+		parameters.put("dateToday", "2023-04-15"); // Example static date, replace as needed or make dynamic
+		parameters.put("company", "Your Company Name"); // Placeholder, should be dynamic
+		parameters.put("companytext", "Company Details"); // Placeholder, should be dynamic
 		return parameters;
 	}
 
+	/**
+	 * Exports the provided {@link JasperPrint} object to a PDF file.
+	 * The output file path is specified, and a success message or stack trace is printed to standard output/error.
+	 *
+	 * @param jasperPrint The compiled and filled {@link JasperPrint} object to export.
+	 * @param outputFilePath The path (including filename) where the PDF report will be saved.
+	 */
 	public static void exportToPDF(JasperPrint jasperPrint, String outputFilePath)
 	{
 
@@ -92,15 +118,17 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 		}
 		catch (JRException e)
 		{
-			e.printStackTrace();
+			e.printStackTrace(); // Consider more robust error handling/logging
 		}
 
 	}
 
 	/**
+	 * Exports the provided {@link JasperPrint} object to an HTML file.
+	 * The output file path is specified, and a success message or stack trace is printed to standard output/error.
 	 *
-	 * @param jasperPrint
-	 * @param outputFilePath
+	 * @param jasperPrint The compiled and filled {@link JasperPrint} object to export.
+	 * @param outputFilePath The path (including filename) where the HTML report will be saved.
 	 */
 	public static void exportToHTML(JasperPrint jasperPrint, String outputFilePath)
 	{
@@ -115,11 +143,19 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 		}
 		catch (JRException e)
 		{
-			e.printStackTrace();
+			e.printStackTrace(); // Consider more robust error handling/logging
 		}
 
 	}
 
+	/**
+	 * Main method for demonstrating or testing the generation of the Customer/Project report.
+	 * It instantiates a {@link CustomerService} and {@link ReportGenerator} (which seems to be the base class here,
+	 * though {@code CustomerProjectReportGenerator} itself is a more specific generator),
+	 * then calls {@code generateAndExportReport} to produce an HTML report by default.
+	 *
+	 * @param args Command line arguments (not used).
+	 */
 	public static void main(String[] args)
 	{
 		CustomerService customerService = new CustomerService();

@@ -6,6 +6,13 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.Vector; // For DefaultTableModel data
 
+/**
+ * A Swing JPanel designed to display tabular data using a JTable.
+ * It includes functionality to load data from a {@link DefaultTableModel}
+ * and to display itself within a JDialog window.
+ * This panel is typically used to view pages or sheets of data, for example,
+ * from an imported ledger or spreadsheet.
+ */
 public class PageViewerPanel extends JPanel
 {
 	
@@ -13,6 +20,11 @@ public class PageViewerPanel extends JPanel
 	private DefaultTableModel tableModel;
 	private JScrollPane scrollPane;
 	
+	/**
+	 * Constructs a new PageViewerPanel.
+	 * Initializes the JTable, its DefaultTableModel, and a JScrollPane to contain the table.
+	 * The table is configured to fill the viewport height and to allow auto-sorting by columns.
+	 */
 	public PageViewerPanel()
 	{
 		// Initialize components
@@ -41,8 +53,16 @@ public class PageViewerPanel extends JPanel
 	}
 	
 	/**
-	 * Loads new data into the table, replacing existing data and columns.
-	 * @param newModelData The DefaultTableModel containing the new data.
+	 * Loads new data into the table from the provided {@link DefaultTableModel}.
+	 * This method replaces any existing data and columns in the table.
+	 * If {@code newModelData} is null, the table will be cleared (both data and columns).
+	 * <p>
+	 * Note: There is a FIXME comment in the original code regarding setting column identifiers.
+	 * The current implementation passes null for column identifiers to {@code setDataVector},
+	 * which might not be the intended behavior if columns from {@code newModelData} are desired.
+	 * </p>
+	 * @param newModelData The {@link DefaultTableModel} containing the new data and potentially column structure.
+	 *                     If null, clears the table.
 	 */
 	public void loadData(DefaultTableModel newModelData)
 	{
@@ -63,8 +83,13 @@ public class PageViewerPanel extends JPanel
 	}
 	
 	/**
-	 * Displays this PageViewerPanel in a new non-modal JDialog window.
-	 * @param parentComponentForLocation Component to center the dialog relative to (can be null).
+	 * Displays this PageViewerPanel in a new non-modal {@link JDialog} window.
+	 * The dialog is configured to dispose on close. It attempts to find a parent Frame
+	 * from {@code parentComponentForLocation} to act as its owner.
+	 * The dialog is packed and then sized to a reasonable default if it's too small.
+	 *
+	 * @param parentComponentForLocation The {@link Component} to which the dialog's location will be relative.
+	 *                                   Can be null, in which case the dialog may be centered on the screen.
 	 * @param title The title for the dialog window.
 	 */
 	public void displayInWindow(Component parentComponentForLocation, String title)
@@ -104,7 +129,12 @@ public class PageViewerPanel extends JPanel
 		dialog.setVisible(true);
 	}
 	
-	// Example main method for testing the panel (optional)
+	/**
+	 * Main method for testing the {@link PageViewerPanel} independently.
+	 * Creates a PageViewerPanel, loads it with sample data, and displays it in a JFrame.
+	 * This is primarily for development and testing purposes.
+	 * @param args Command line arguments (not used).
+	 */
 	public static void main(String[] args)
 	{
 		SwingUtilities.invokeLater(() -> {

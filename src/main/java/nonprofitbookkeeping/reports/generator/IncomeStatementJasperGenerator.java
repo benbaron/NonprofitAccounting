@@ -27,17 +27,33 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 // JasperExportManager and HtmlExporter related imports are not needed here
 // if exportToPDF and exportToHTML are properly inherited from AbstractReportGenerator.
 
-
+/**
+ * Generates an Income Statement (Profit & Loss) report using JasperReports.
+ * This class extends {@link AbstractReportGenerator} and is responsible for
+ * providing the specific data, parameters, and JRXML template path for the
+ * Income Statement. It utilizes a {@link ReportService} to prepare the data
+ * and a {@link ReportContext} for report criteria.
+ */
 public class IncomeStatementJasperGenerator extends AbstractReportGenerator {
 
     private ReportContext reportContext;
     private ReportService reportService;
 
+    /**
+     * Constructs an {@code IncomeStatementJasperGenerator}.
+     *
+     * @param reportContext The {@link ReportContext} containing criteria and settings for the report.
+     * @param reportService The {@link ReportService} used to prepare the data for the report.
+     */
     public IncomeStatementJasperGenerator(ReportContext reportContext, ReportService reportService) {
         this.reportContext = reportContext;
         this.reportService = reportService;
     }
 
+    /**
+     * {@inheritDoc}
+     * @return The classpath resource path "jrxml/income_statement.jrxml" for the Income Statement template.
+     */
     @Override
     protected String getReportPath() {
         // Assuming JRXML files are in 'src/main/resources/jrxml/'
@@ -45,11 +61,21 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator {
         return "jrxml/income_statement.jrxml";
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Prepares and returns the data for the Income Statement.
+     * It retrieves the current company's ledger and chart of accounts, then uses the
+     * {@link ReportService} to generate a list of {@link IncomeStatementRowBean} objects
+     * based on the provided {@link ReportContext}.
+     * If essential company data is missing, an error is logged, and an empty list is returned.
+     * </p>
+     * @return A list of {@link IncomeStatementRowBean} objects for the report, or an empty list if data cannot be prepared.
+     */
     @Override
     protected List<IncomeStatementRowBean> getReportData() {
         Company company = CurrentCompany.getCompany();
         if (company == null || company.getLedger() == null || company.getChartOfAccounts() == null) {
-            System.err.println("IncomeStatementJasperGenerator: Company, Ledger, or COA is null. Cannot generate data.");
+            System.err.println("IncomeStatementJasperGenerator: Company, Ledger, or COA is null. Cannot generate data."); // Consider using a logger
             return Collections.emptyList();
         }
         Ledger ledger = company.getLedger();
@@ -58,6 +84,19 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator {
         return this.reportService.prepareIncomeStatementJasperData(this.reportContext, ledger, coa);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>Provides parameters for the Income Statement report. This includes:
+     * <ul>
+     *   <li>{@code P_REPORT_TITLE}: "Income Statement"</li>
+     *   <li>{@code P_COMPANY_NAME}: The name of the current company, or "N/A".</li>
+     *   <li>{@code P_REPORT_PERIOD}: A formatted string representing the report period (start date - end date), or "N/A".</li>
+     *   <li>{@code P_GENERATION_DATE}: The current date, formatted.</li>
+     * </ul>
+     * Parameters for Net Income are assumed to be calculated within the JRXML or are part of the bean list.
+     * </p>
+     * @return A map of parameters for the JasperReport.
+     */
     @Override
     protected Map<String, Object> getReportParameters() {
         Map<String, Object> params = new HashMap<>();
@@ -86,6 +125,18 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator {
         return params;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This implementation generates the "Income Statement". It compiles the JRXML template,
+     * fills it with data and parameters, and exports to the specified format (PDF or HTML)
+     * using helper methods from {@link AbstractReportGenerator}.
+     * If an unsupported format is requested, it defaults to PDF.
+     * The output file is named "Income_Statement_[report_end_date_or_current_date].[format]".
+     * </p>
+     * @param format The desired output format ("pdf" or "html"). Defaults to "pdf" if unsupported.
+     * @return The generated {@link File}.
+     * @throws Exception If any error occurs during report generation, including {@link java.io.FileNotFoundException} if the JRXML template is not found.
+     */
     @Override
     public File generateAndExportReport(String format) throws Exception {
         File generatedFile = null;
@@ -95,7 +146,7 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator {
 
         try (InputStream reportStream = getClass().getClassLoader().getResourceAsStream(getReportPath())) {
             if (reportStream == null) {
-                System.err.println("Cannot find report template: " + getReportPath());
+                System.err.println("Cannot find report template: " + getReportPath()); // Consider using a logger
                 throw new java.io.FileNotFoundException("Report template not found: " + getReportPath());
             }
 

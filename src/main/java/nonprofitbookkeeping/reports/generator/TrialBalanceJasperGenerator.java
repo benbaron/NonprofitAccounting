@@ -29,18 +29,39 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
+/**
+ * Generates a Trial Balance report using JasperReports.
+ * This class extends {@link AbstractReportGenerator} and is responsible for
+ * providing the specific data, parameters, and JRXML template path for the
+ * Trial Balance report. It utilizes a {@link ReportService} to prepare the data
+ * based on the provided {@link ReportContext}.
+ */
 public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 {
 	
 	private ReportContext reportContext;
 	private ReportService reportService;
 	
+	/**
+	 * Constructs a {@code TrialBalanceJasperGenerator}.
+	 *
+	 * @param reportContext The {@link ReportContext} containing criteria and settings for the report,
+	 *                      such as the end date for the trial balance.
+	 * @param reportService The {@link ReportService} used to prepare the data (list of {@link TrialBalanceRowBean})
+	 *                      for the report.
+	 */
 	public TrialBalanceJasperGenerator(ReportContext reportContext, ReportService reportService)
 	{
 		this.reportContext = reportContext;
 		this.reportService = reportService;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * @return The classpath resource path "reports/TrialBalanceReport.jrxml" for the Trial Balance template.
+	 * @throws ActionCancelledException Not directly thrown by this implementation, but declared due to the interface.
+	 * @throws NoFileCreatedException Not directly thrown by this implementation, but declared due to the interface.
+	 */
 	@Override protected String getReportPath()	throws ActionCancelledException,
 												NoFileCreatedException
 	{
@@ -48,13 +69,23 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 		return "reports/TrialBalanceReport.jrxml";
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * <p>Prepares and returns the data for the Trial Balance report.
+	 * It retrieves the current company's ledger and chart of accounts, then uses the
+	 * {@link ReportService} to generate a list of {@link TrialBalanceRowBean} objects
+	 * based on the provided {@link ReportContext}.
+	 * If essential company data is missing, an error is logged, and an empty list is returned.
+	 * </p>
+	 * @return A list of {@link TrialBalanceRowBean} objects for the report, or an empty list if data cannot be prepared.
+	 */
 	@Override protected List<TrialBalanceRowBean> getReportData()
 	{
 		Company company = CurrentCompany.getCompany();
 		
 		if (company == null || company.getLedger() == null || company.getChartOfAccounts() == null)
 		{
-			System.err.println(
+			System.err.println( // Consider using a logger
 				"TrialBalanceJasperGenerator: Company, Ledger, or COA is null. Cannot generate data.");
 			return Collections.emptyList();
 		}
@@ -65,6 +96,18 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 		return this.reportService.prepareTrialBalanceJasperData(this.reportContext, ledger, coa);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * <p>Provides parameters for the Trial Balance report. This includes:
+	 * <ul>
+	 *   <li>Standard parameters (prefixed with {@code P_}): {@code P_REPORT_TITLE}, {@code P_COMPANY_NAME},
+	 *       {@code P_AS_OF_DATE}, {@code P_GENERATION_DATE}.</li>
+	 *   <li>JRXML-specific parameters: {@code reporttitle}, {@code dateToday}, {@code companyname}.</li>
+	 * </ul>
+	 * The company name and "as of" date are derived from the current company and report context.
+	 * </p>
+	 * @return A map of parameters for the JasperReport.
+	 */
 	@Override protected Map<String, Object> getReportParameters()
 	{
 		Map<String, Object> params = new HashMap<>();
@@ -101,14 +144,25 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 		// <parameter name="companyname" class="java.lang.String"/>
 		// It seems the JRXML uses lowercase for these specific ones. Let's ensure they
 		// are provided.
-		params.put("reporttitle", "Trial Balance");
-		params.put("dateToday", LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)); // YYYY-MM-DD
-																							// format
-		params.put("companyname", companyName); // JRXML might expect "companyname"
+		params.put("reporttitle", "Trial Balance"); // Specific for JRXML
+		params.put("dateToday", LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)); // YYYY-MM-DD format, specific for JRXML
+		params.put("companyname", companyName); // Specific for JRXML, might be redundant with P_COMPANY_NAME if JRXML is standardized
 		
 		return params;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * <p>This implementation generates the "Trial Balance Report". It compiles the JRXML template,
+	 * fills it with data and parameters, and exports to the specified format (PDF or HTML)
+	 * using helper methods from {@link AbstractReportGenerator}.
+	 * If an unsupported format is requested, it defaults to PDF.
+	 * The output file is named "Trial_Balance_Report_[report_end_date_or_current_date].[format]".
+	 * </p>
+	 * @param format The desired output format ("pdf" or "html"). Defaults to "pdf" if unsupported.
+	 * @return The generated {@link File}.
+	 * @throws Exception If any error occurs during report generation, including {@link FileNotFoundException} if the JRXML template is not found.
+	 */
 	@Override public File generateAndExportReport(String format) throws Exception
 	{
 		File generatedFile = null;

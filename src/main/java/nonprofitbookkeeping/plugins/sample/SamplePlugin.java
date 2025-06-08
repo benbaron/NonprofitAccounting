@@ -9,21 +9,42 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import java.util.logging.Logger;
 
+/**
+ * A sample plugin implementation to demonstrate and test the plugin framework.
+ * This plugin adds a "Show Sample Plugin Alert" item to the "Tools" menu
+ * (or creates a "Tools" menu if one doesn't exist). Clicking this item
+ * displays an informational alert.
+ */
 public class SamplePlugin implements Plugin {
 
     private static final Logger LOGGER = Logger.getLogger(SamplePlugin.class.getName());
     private ApplicationContext applicationContext;
 
+    /**
+     * {@inheritDoc}
+     * @return The name "Sample Test Plugin".
+     */
     @Override
     public String getName() {
         return "Sample Test Plugin";
     }
 
+    /**
+     * {@inheritDoc}
+     * @return A description indicating this is a simple plugin for demonstration and testing.
+     */
     @Override
     public String getDescription() {
         return "A simple plugin to demonstrate and test the plugin framework functionality.";
     }
 
+    /**
+     * {@inheritDoc}
+     * This implementation stores the provided {@link ApplicationContext} for later use
+     * and logs the initialization event.
+     * @param context The application context provided by the main application.
+     * @throws Exception If any error occurs during initialization (not thrown by this sample).
+     */
     @Override
     public void initialize(ApplicationContext context) throws Exception {
         this.applicationContext = context;
@@ -32,6 +53,13 @@ public class SamplePlugin implements Plugin {
         // LOGGER.info("Primary stage from context: " + (context.getPrimaryStage() != null));
     }
 
+    /**
+     * {@inheritDoc}
+     * This implementation adds a "Show Sample Plugin Alert" menu item to a "Tools" menu.
+     * If a "Tools" menu does not exist, it creates one. The new menu item, when clicked,
+     * shows an alert dialog using the primary stage from the {@link ApplicationContext}.
+     * @param mainMenuBar The main menu bar of the application.
+     */
     @Override
     public void addMenuItems(MenuBar mainMenuBar) {
         LOGGER.info("SamplePlugin: Adding menu items...");
@@ -86,6 +114,11 @@ public class SamplePlugin implements Plugin {
         LOGGER.info("SamplePlugin: 'Show Sample Plugin Alert' menu item added to Tools menu.");
     }
 
+    /**
+     * {@inheritDoc}
+     * This implementation logs the shutdown event and releases its reference to the
+     * {@link ApplicationContext}.
+     */
     @Override
     public void shutdown() {
         LOGGER.info(getName() + " shutting down.");

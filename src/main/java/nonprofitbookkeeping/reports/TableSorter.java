@@ -32,19 +32,33 @@ import javax.swing.table.TableModel;
  * @author     Lazy Eight Data HB, Thomas Dilts
  * @created    den 5 mars 2002
  */
+/**
+ * A decorator for {@link TableModel} that provides sorting capabilities for a {@link JTable}.
+ * It extends {@link TableMap} and allows users to sort table rows by clicking on column headers.
+ * Supports multi-column sorting (though primary interaction is single-column via header click)
+ * and ascending/descending order.
+ */
 public class TableSorter extends TableMap
 {
 	/**
-	 * serialVersionUID : long
+	 * The unique identifier for this serializable class.
 	 */
 	private static final long serialVersionUID = -1240594602058594949L;
+	/** Stores the indices of columns currently used for sorting. */
 	Vector<Integer> sortingColumns = new Vector<Integer>();
+	/** Flag indicating whether the current sort order is ascending (true) or descending (false). */
 	boolean ascending = true;
+	/** Counter for the number of comparisons performed during a sort operation. */
 	int compares;
+	/**
+	 * An array of integers mapping sorted row indices to the original model's row indices.
+	 * {@code indexes[i]} is the original model row index for the sorted view's row {@code i}.
+	 */
 	int indexes[];
 
 	/**
-	 *  Constructor for the TableSorter object
+	 *  Default constructor for the TableSorter.
+	 *  Initializes an empty mapping for row indexes.
 	 */
 	public TableSorter()
 	{
@@ -53,9 +67,9 @@ public class TableSorter extends TableMap
 	}
 
 	/**
-	 *  Constructor for the TableSorter object
+	 *  Constructs a TableSorter that wraps the given {@link TableModel}.
 	 *
-	 * @param  model  Description of the Parameter
+	 * @param  model  The {@link TableModel} to be sorted.
 	 */
 	public TableSorter(TableModel model)
 	{
@@ -63,11 +77,12 @@ public class TableSorter extends TableMap
 	}
 
 	/**
-	 *  There is no-where else to put this. Add a mouse listener to the Table to
-	 *  trigger a table sort when a column heading is clicked in the JTable.
+	 * Adds a mouse listener to the header of the specified {@link JTable}.
+	 * This listener enables sorting of the table by clicking on column headers.
+	 * A single click sorts in ascending order (or toggles if already sorted by that column).
+	 * A Shift-click sorts in the current direction (or toggles if already sorted by that column, potentially reversing).
 	 *
-	 * @param  table  The feature to be added to the MouseListenerToHeaderInTable
-	 *      attribute
+	 * @param  table  The {@link JTable} to which the sort-on-header-click functionality will be added.
 	 */
 	public void addMouseListenerToHeaderInTable(JTable table)
 	{
@@ -101,7 +116,9 @@ public class TableSorter extends TableMap
 
 
 	/**
-	 *  Description of the Method
+	 * Checks if the internal row index mapping ({@code indexes}) is consistent with the
+	 * underlying model's row count. This method currently contains commented-out logic
+	 * and does not perform any actions. It might be intended for validation or re-synchronization.
 	 */
 	public void checkModel()
 	{
@@ -109,11 +126,14 @@ public class TableSorter extends TableMap
 	}
 
 	/**
-	 *  Description of the Method
+	 * Compares two rows based on the current sorting columns and order.
+	 * Iterates through the {@link #sortingColumns} and uses {@link #compareRowsByColumn(int, int, int)}
+	 * for each column until a non-zero result is found.
 	 *
-	 * @param  row1  Description of the Parameter
-	 * @param  row2  Description of the Parameter
-	 * @return       Description of the Return Value
+	 * @param  row1  The index of the first row (in the original model) to compare.
+	 * @param  row2  The index of the second row (in the original model) to compare.
+	 * @return A negative integer, zero, or a positive integer as the first row is less than, equal to, or greater than the second.
+	 *         The result is adjusted based on the {@link #ascending} flag.
 	 */
 	public int compare(int row1, int row2)
 	{
@@ -135,12 +155,15 @@ public class TableSorter extends TableMap
 	}
 
 	/**
-	 *  Description of the Method
+	 * Compares two rows based on the values in a specific column.
+	 * Handles various data types including {@link Number}, {@link Date}, {@link String}, and {@link Boolean}.
+	 * Null values are considered less than non-null values. Blank strings are typically sorted after non-blank strings.
 	 *
-	 * @param  row1    Description of the Parameter
-	 * @param  row2    Description of the Parameter
-	 * @param  column  Description of the Parameter
-	 * @return         Description of the Return Value
+	 * @param  row1    The index of the first row (in the original model).
+	 * @param  row2    The index of the second row (in the original model).
+	 * @param  column  The index of the column to compare by.
+	 * @return A negative integer, zero, or a positive integer as the value in the first row/column
+	 *         is less than, equal to, or greater than the value in the second row/column.
 	 */
 	public int compareRowsByColumn(int row1, int row2, int column)
 	{
@@ -316,21 +339,25 @@ public class TableSorter extends TableMap
 
 
 	/**
-	 *  Gets the valueAt attribute of the TableSorter object
-	 *
-	 * @param  aRow     Description of the Parameter
-	 * @param  aColumn  Description of the Parameter
-	 * @return          The valueAt value
+	 * {@inheritDoc}
+	 * Returns the value at the mapped row index in the underlying model.
+	 * {@code aRow} is the row index in the sorted view, which is then mapped to
+	 * the original model's row index using the {@code indexes} array.
+	 * @param  aRow     The row in the sorted view whose value is to be queried.
+	 * @param  aColumn  The column whose value is to be queried.
+	 * @return          The value Object at the specified cell in the underlying model.
 	 */
 	@Override public Object getValueAt(int aRow, int aColumn)
 	{
-		checkModel();
+		checkModel(); // Potentially validates or updates model state
 		return this.model.getValueAt(this.indexes[aRow], aColumn);
 	}
 
 
 	/**
-	 *  Description of the Method
+	 * A simple N^2 sorting algorithm (selection sort variant).
+	 * This method is present but {@link #shuttlesort} is used by the main {@link #sort} method.
+	 * It sorts the {@code indexes} array in place.
 	 */
 	public void n2sort()
 	{
@@ -341,9 +368,9 @@ public class TableSorter extends TableMap
 			for (int j = i + 1; j < getRowCount(); j++)
 			{
 
-				if (compare(this.indexes[i], this.indexes[j]) == -1)
+				if (compare(this.indexes[i], this.indexes[j]) == -1) // If element i is less than element j by current sort criteria
 				{
-					swap(i, j);
+					swap(i, j); // Swaps the view indices, effectively reordering rows
 				}
 
 			}
@@ -354,7 +381,9 @@ public class TableSorter extends TableMap
 
 
 	/**
-	 *  Description of the Method
+	 * Reinitializes the internal {@code indexes} array to match the current row count
+	 * of the underlying model. Each index is initially set to its own value (identity mapping),
+	 * representing an unsorted state.
 	 */
 	public void reallocateIndexes()
 	{
@@ -374,9 +403,10 @@ public class TableSorter extends TableMap
 
 
 	/**
-	 *  Sets the model attribute of the TableSorter object
-	 *
-	 * @param  model  The new model value
+	 * {@inheritDoc}
+	 * Sets the underlying {@link TableModel} for this sorter.
+	 * After setting the model, it calls {@link #reallocateIndexes()} to reset the sort order.
+	 * @param  model  The new {@link TableModel} to use.
 	 */
 	@Override public void setModel(TableModel model)
 	{
@@ -386,31 +416,37 @@ public class TableSorter extends TableMap
 
 
 	/**
-	 *  Sets the valueAt attribute of the TableSorter object
-	 *
-	 * @param  aValue   The new valueAt value
-	 * @param  aRow     The new valueAt value
-	 * @param  aColumn  The new valueAt value
+	 * {@inheritDoc}
+	 * Sets the value in the cell at {@code aRow}, {@code aColumn} in the underlying model,
+	 * using the mapped row index from the sorted view.
+	 * @param  aValue   The new value.
+	 * @param  aRow     The row in the sorted view whose value is to be changed.
+	 * @param  aColumn  The column whose value is to be changed.
 	 */
 	@Override public void setValueAt(Object aValue, int aRow, int aColumn)
 	{
-		checkModel();
+		checkModel(); // Potentially validates or updates model state
 		this.model.setValueAt(aValue, this.indexes[aRow], aColumn);
 	}
 
 
 	/**
-	 *  This is a home-grown implementation which we have not had time to research
+	 * A stable merge sort algorithm used to sort the row indexes.
+	 * This implementation sorts the {@code from} array and stores the result in the {@code to} array.
+	 * It operates on a sub-array defined by {@code low} (inclusive) and {@code high} (exclusive) indices.
+	 * <p>
+	 * The original comment mentions:
+	 * "This is a home-grown implementation which we have not had time to research
 	 *  - it may perform poorly in some circumstances. It requires twice the space
-	 *  of an in-place algorithm and makes NlogN assigments shuttling the values
+	 *  of an in-place algorithm and makes NlogN assignments shuttling the values
 	 *  between the two arrays. The number of compares appears to vary between N-1
 	 *  and NlogN depending on the initial order but the main reason for using it
-	 *  here is that, unlike qsort, it is stable.
-	 *
-	 * @param  from  Description of the Parameter
-	 * @param  to    Description of the Parameter
-	 * @param  low   Description of the Parameter
-	 * @param  high  Description of the Parameter
+	 *  here is that, unlike qsort, it is stable."
+	 * </p>
+	 * @param  from  The source array of row indexes to be sorted.
+	 * @param  to    The destination array where the sorted row indexes will be placed.
+	 * @param  low   The starting index (inclusive) of the sub-array to sort.
+	 * @param  high  The ending index (exclusive) of the sub-array to sort.
 	 */
 	public void shuttlesort(int from[], int to[], int low, int high)
 	{
@@ -469,26 +505,28 @@ public class TableSorter extends TableMap
 
 
 	/**
-	 *  Description of the Method
+	 * Performs the sort operation on the current model's data.
+	 * It uses the {@link #shuttlesort} algorithm on the {@code indexes} array.
+	 * The {@code sender} parameter is not used in the current implementation.
 	 *
-	 * @param  sender  Description of the Parameter
+	 * @param  sender  The object that initiated the sort (not currently used).
 	 */
 	public void sort(Object sender)
 	{
-		checkModel();
+		checkModel(); // Potentially validates or updates model state
 
 		this.compares = 0;
-		// n2sort();
-		// qsort(0, indexes.length-1);
+		// n2sort(); // Alternative N^2 sort
+		// qsort(0, indexes.length-1); // Placeholder for qsort
 		shuttlesort(this.indexes.clone(), this.indexes, 0, this.indexes.length);
 		// SystemLog.ProblemPrintln("Compares: "+compares);
 	}
 
 
 	/**
-	 *  Description of the Method
+	 * Sorts the table by a single specified column in ascending order.
 	 *
-	 * @param  column  Description of the Parameter
+	 * @param  column  The index of the column to sort by.
 	 */
 	public void sortByColumn(int column)
 	{
@@ -497,26 +535,29 @@ public class TableSorter extends TableMap
 
 
 	/**
-	 *  Description of the Method
+	 * Sorts the table by a single specified column in the given order.
+	 * Clears any previous sorting columns and sets the new one.
+	 * After sorting, it fires a {@link TableModelEvent} to notify the JTable to refresh.
 	 *
-	 * @param  column     Description of the Parameter
-	 * @param  ascending1  Description of the Parameter
+	 * @param  column     The index of the column to sort by.
+	 * @param  ascending  True for ascending order, false for descending order.
 	 */
-	public void sortByColumn(int column, boolean ascending1)
+	public void sortByColumn(int column, boolean ascending)
 	{
-		this.ascending = ascending1;
+		this.ascending = ascending;
 		this.sortingColumns.removeAllElements();
 		this.sortingColumns.addElement(column);
-		sort(this);
-		super.tableChanged(new TableModelEvent(this));
+		sort(this); // 'this' is passed as sender
+		super.tableChanged(new TableModelEvent(this)); // Notify listeners (e.g., JTable)
 	}
 
 
 	/**
-	 *  Description of the Method
+	 * Swaps two elements in the internal {@code indexes} array.
+	 * This is a helper method used by sorting algorithms.
 	 *
-	 * @param  i  Description of the Parameter
-	 * @param  j  Description of the Parameter
+	 * @param  i  The index of the first element to swap.
+	 * @param  j  The index of the second element to swap.
 	 */
 	public void swap(int i, int j)
 	{
@@ -527,14 +568,15 @@ public class TableSorter extends TableMap
 
 
 	/**
-	 *  Description of the Method
-	 *
-	 * @param  e  Description of the Parameter
+	 * {@inheritDoc}
+	 * Called when the underlying table model has changed.
+	 * This implementation first calls {@link #reallocateIndexes()} to reset the sort
+	 * to an identity mapping, and then forwards the event to its own listeners.
+	 * @param  e  The {@link TableModelEvent} from the underlying model.
 	 */
 	@Override public void tableChanged(TableModelEvent e)
 	{
 		reallocateIndexes();
-
 		super.tableChanged(e);
 	}
 

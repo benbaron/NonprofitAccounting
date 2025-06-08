@@ -14,17 +14,32 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Service class for managing {@link Budget} data.
+ * This class provides functionalities to save a list of budgets to a JSON file
+ * and load them back. It uses Jackson for JSON serialization and deserialization.
+ * Budgets are stored in a file named "budgets.json" within a specified company directory.
+ */
 public class BudgetService {
 
+    /** Logger for this class. */
     private static final Logger LOGGER = Logger.getLogger(BudgetService.class.getName());
+    /** The standard filename used for storing budget data in JSON format. */
     private static final String BUDGETS_FILENAME = "budgets.json";
 
     /**
-     * Saves a list of budgets to a JSON file within the specified company directory.
+     * Saves a list of {@link Budget} objects to a JSON file named "budgets.json"
+     * within the specified company directory.
+     * If the provided list of budgets is null, no file will be written.
+     * If the list is empty, an empty JSON array will be saved.
+     * The JSON output is pretty-printed for readability.
      *
-     * @param budgets The list of Budget objects to save.
-     * @param companyDirectory The directory where the company's data is stored.
-     * @throws IOException If an error occurs during file writing or serialization.
+     * @param budgets The list of {@link Budget} objects to save. Can be null or empty.
+     * @param companyDirectory The {@link File} object representing the directory where the
+     *                         company's data (including the budgets file) should be stored.
+     *                         Must not be null and must be a valid directory.
+     * @throws IOException If the {@code companyDirectory} is invalid, or if an error occurs
+     *                     during file writing or JSON serialization.
      */
     public void saveBudgets(List<Budget> budgets, File companyDirectory) throws IOException {
         if (budgets == null) {
@@ -56,13 +71,24 @@ public class BudgetService {
     }
 
     /**
-     * Loads a list of budgets from a JSON file within the specified company directory.
+     * Loads a list of {@link Budget} objects from a JSON file named "budgets.json"
+     * located within the specified company directory.
+     * <p>
+     * If the {@code companyDirectory} is invalid, or if the "budgets.json" file does not exist,
+     * is not a file, or is empty, an empty list is returned and appropriate messages are logged.
+     * If an error occurs during JSON deserialization, an error is logged, and an empty list is returned.
+     * </p>
      *
-     * @param companyDirectory The directory where the company's data is stored.
-     * @return A List of Budget objects. Returns an empty list if the file doesn't exist or
-     *         if there's an error during deserialization (after logging the error).
-     * @throws IOException If a critical I/O error occurs (other than file not found or parse error,
-     *                     which return empty list).
+     * @param companyDirectory The {@link File} object representing the directory where the
+     *                         company's "budgets.json" file is located. Must not be null and
+     *                         must be a valid directory.
+     * @return A {@code List<Budget>} objects. Returns an empty list if the file doesn't exist,
+     *         is empty, or if there's an error during deserialization (after logging the error).
+     * @throws IOException If a critical I/O error occurs that prevents determining the file status
+     *                     (other than file not found or parse error, which result in an empty list).
+     *                     Note: The current implementation catches most IOExceptions from Jackson and returns
+     *                     an empty list, so this specific throws declaration might only cover edge cases
+     *                     related to {@code companyDirectory} validation if it were to throw IOException directly.
      */
     public List<Budget> loadBudgets(File companyDirectory) throws IOException {
         if (companyDirectory == null || !companyDirectory.isDirectory()) {
