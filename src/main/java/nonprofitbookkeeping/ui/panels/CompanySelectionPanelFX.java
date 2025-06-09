@@ -28,8 +28,8 @@ public class CompanySelectionPanelFX extends BorderPane
 {
 	
 	/**
-		 * 
-		 */
+	 * 
+	 */
 	public class OnCompanyOpenedHandler
 	{
 
@@ -38,8 +38,7 @@ public class CompanySelectionPanelFX extends BorderPane
 		 */
 		public void onCompanyOpened(Company any)
 		{
-			// TODO Auto-generated method stub
-			
+			// TODO Auto-generated method stub			
 		}
 		
 	}
