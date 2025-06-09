@@ -13,29 +13,52 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ * A general-purpose report generator class that utilizes JasperReports to create reports
+ * in various formats (PDF, XLSX, CSV, TXT, HTML).
+ * It relies on a stubbed {@link #generateReport()} method to produce a {@link JasperPrint} object,
+ * which is then exported using format-specific helper methods.
+ * This class can be extended by more specific report generators that provide concrete
+ * implementations for report data and parameters.
+ */
 public class ReportGenerator
 {
 	
 	
 	/**  
-	 * Constructor ReportGenerator
-	 * @param customerService
+	 * Constructs a {@code ReportGenerator}.
+	 * The provided {@code customerService} parameter is not used in the current
+	 * stub implementation of this constructor.
+	 *
+	 * @param customerService A {@link CustomerService} instance. Currently unused.
 	 */
 	public ReportGenerator(CustomerService customerService)
 	{
 		// TODO Auto-generated constructor stub
+		// This constructor currently does nothing with customerService.
+		// It might be intended for subclasses or future use where customerService is needed
+		// to fetch data for the generateReport() method.
 	}
 	
 	
 	/**
+	 * Generates a report (currently using a stub {@link #generateReport()} method)
+	 * and exports it to the specified format.
+	 * Supported formats are "pdf", "xlsx", "csv", "txt", and "html" (case-insensitive).
+	 * If an unsupported format is provided, a message is printed to standard output.
 	 * 
-	 * @param format
+	 * @param format The desired output format string.
 	 */
 	public void generateAndExportReport(String format)
 	{
 		// Fetch data and generate the JasperPrint object
 		JasperPrint jasperPrint = generateReport(); // Your method to generate the report
 		
+		if (jasperPrint == null) {
+		    System.out.println("JasperPrint object is null, cannot generate report for format: " + format);
+		    return;
+		}
+
 		switch(format.toLowerCase())
 		{
 			case "pdf":
@@ -66,18 +89,30 @@ public class ReportGenerator
 	}
 	
 	/**
-	 * @return
+	 * Generates the {@link JasperPrint} object for the report.
+	 * Note: This is a stub implementation and currently returns null.
+	 * Subclasses or a concrete implementation should override this to compile a JRXML template,
+	 * fill it with data and parameters, and return the resulting {@link JasperPrint} object.
+	 *
+	 * @return A {@link JasperPrint} object, or null if the report generation is not implemented.
 	 */
 	private static JasperPrint generateReport()
 	{
 		// TODO Auto-generated method stub
+		// This method needs to be implemented to:
+		// 1. Load and compile a JRXML report template.
+		// 2. Prepare a data source (e.g., JRBeanCollectionDataSource).
+		// 3. Prepare report parameters (Map<String, Object>).
+		// 4. Fill the report using JasperFillManager.fillReport().
 		return null;
 	}
 	
 	/**
+	 * Exports the given {@link JasperPrint} object to a PDF file.
+	 * A success message or stack trace is printed to standard output/error.
 	 * 
-	 * @param jasperPrint
-	 * @param outputFilePath
+	 * @param jasperPrint The compiled and filled {@link JasperPrint} object to export.
+	 * @param outputFilePath The path (including filename) where the PDF report will be saved.
 	 */
 	public static void exportToPDF(JasperPrint jasperPrint, String outputFilePath)
 	{
@@ -90,15 +125,17 @@ public class ReportGenerator
 		}
 		catch (JRException e)
 		{
-			e.printStackTrace();
+			e.printStackTrace(); // Consider more robust error handling
 		}
 		
 	}
 	
 	/**
+	 * Exports the given {@link JasperPrint} object to an XLSX (Excel) file.
+	 * A success message or stack trace is printed to standard output/error.
 	 * 
-	 * @param jasperPrint
-	 * @param outputFilePath
+	 * @param jasperPrint The compiled and filled {@link JasperPrint} object to export.
+	 * @param outputFilePath The path (including filename) where the XLSX report will be saved.
 	 */
 	public static void exportToXLSX(JasperPrint jasperPrint, String outputFilePath)
 	{
@@ -123,17 +160,19 @@ public class ReportGenerator
 			exporter.exportReport();
 			System.out.println("Report exported to XLSX: " + outputFilePath);
 		}
-		catch (Exception e)
+		catch (Exception e) // Catches JRException and IOException
 		{
-			e.printStackTrace();
+			e.printStackTrace(); // Consider more robust error handling
 		}
 		
 	}
 	
 	/**
+	 * Exports the given {@link JasperPrint} object to a CSV file.
+	 * A success message or stack trace is printed to standard output/error.
 	 * 
-	 * @param jasperPrint
-	 * @param outputFilePath
+	 * @param jasperPrint The compiled and filled {@link JasperPrint} object to export.
+	 * @param outputFilePath The path (including filename) where the CSV report will be saved.
 	 */
 	public static void exportToCSV(JasperPrint jasperPrint, String outputFilePath)
 	{
@@ -156,12 +195,18 @@ public class ReportGenerator
 		}
 		catch (JRException | IOException e)
 		{
-			e.printStackTrace();
+			e.printStackTrace(); // Consider more robust error handling
 		}
 		
 	}
 	
-	
+	/**
+	 * Exports the given {@link JasperPrint} object to a plain text (TXT) file.
+	 * A success message or stack trace is printed to standard output/error.
+	 *
+	 * @param jasperPrint The compiled and filled {@link JasperPrint} object to export.
+	 * @param outputFilePath The path (including filename) where the TXT report will be saved.
+	 */
 	public static void exportToTXT(JasperPrint jasperPrint, String outputFilePath)
 	{
 		
@@ -183,12 +228,18 @@ public class ReportGenerator
 		}
 		catch (JRException | IOException e)
 		{
-			e.printStackTrace();
+			e.printStackTrace(); // Consider more robust error handling
 		}
 		
 	}
 	
-	// Method to export JasperPrint to HTML
+	/**
+	 * Exports the given {@link JasperPrint} object to an HTML file.
+	 * A success message or stack trace is printed to standard output/error.
+	 *
+	 * @param jasperPrint The compiled and filled {@link JasperPrint} object to export.
+	 * @param outputFilePath The path (including filename) where the HTML report will be saved.
+	 */
 	public static void exportToHTML(JasperPrint jasperPrint, String outputFilePath)
 	{
 		

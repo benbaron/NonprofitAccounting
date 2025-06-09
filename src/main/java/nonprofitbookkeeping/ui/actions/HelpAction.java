@@ -14,18 +14,20 @@ import java.net.URL; // For getResource
  * Handles the action of displaying help content in a JavaFX application.
  * This class implements {@link EventHandler} for {@link ActionEvent} to trigger
  * the display of help information, typically loaded from an HTML file into a WebView.
- * It requires an owner {@link Stage} to properly manage the help window.
+ * It requires an owner {@link Stage} to properly manage the help window, ensuring
+ * the help dialog is appropriately parented.
  */
 public class HelpAction implements EventHandler<ActionEvent> {
 
+    /** The owner Stage for the help window, used to ensure proper window modality and positioning. */
     private final Stage ownerStage;
 
     /**
-     * Constructs a new HelpAction.
+     * Constructs a new {@code HelpAction}.
      *
-     * @param ownerStage The primary stage of the JavaFX application, which will own
-     *                   the help window. Must not be null.
-     * @throws IllegalArgumentException if ownerStage is null.
+     * @param ownerStage The primary {@link Stage} of the JavaFX application, which will serve as
+     *                   the owner for the help window. This parameter must not be null.
+     * @throws IllegalArgumentException if {@code ownerStage} is null.
      */
     public HelpAction(Stage ownerStage) {
         if (ownerStage == null) {
@@ -35,12 +37,16 @@ public class HelpAction implements EventHandler<ActionEvent> {
     }
 
     /**
-     * Handles the action event to display the help content.
-     * This method attempts to load and display an HTML file (`/help/help.html`)
-     * in a new window with a {@link WebView}. If the help file cannot be found,
-     * an error alert is shown.
+     * {@inheritDoc}
+     * <p>
+     * Handles the action event, typically triggered by selecting a "Help" menu item or button.
+     * This method creates and displays a new {@link Stage} containing a {@link WebView}
+     * that loads and renders the help content from an HTML file.
+     * The help file is expected to be located at the classpath resource path {@code "/help/help.html"}.
+     * If the help file cannot be found or loaded, an error {@link Alert} is displayed to the user.
+     * </p>
      *
-     * @param event The {@link ActionEvent} that triggered this handler.
+     * @param event The {@link ActionEvent} that triggered this handler (e.g., a menu item click).
      */
     @Override
     public void handle(ActionEvent event) {

@@ -36,11 +36,12 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 	private BigDecimal openingBalance;
 	
 	/**
-	 * 
-	 * Constructor AccountDetailsImpl
-	 * @param accountNumber
-	 * @param name
-	 * @param increaseSide
+	 * Constructs an AccountDetailsImpl with essential account details.
+	 * Other details like accountCode, accountType, parentAccount, currency,
+	 * and openingBalance are initialized to null or default values and can be set using setters.
+	 * @param accountNumber The account number.
+	 * @param name The name of the account.
+	 * @param increaseSide The side (Debit or Credit) where the account balance increases.
 	 */
 	public AccountDetailsImpl(String accountNumber, 
 	                          String name, 
@@ -53,7 +54,7 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 	
 
 	/**
-	 * Override @see nonprofitbookkeeping.model.AccountDetails#toString() 
+	 * {@inheritDoc}
 	 */
 	@Override public String toString()
 	{
@@ -65,7 +66,7 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 	}
 	
 	/**
-	 * Override @see nonprofitbookkeeping.model.AccountDetails#getAccountName() 
+	 * {@inheritDoc}
 	 */
 	@Override public String getAccountName()
 	{
@@ -73,7 +74,7 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 	}
 
 	/**
-	 * Override @see nonprofitbookkeeping.api.AccountDetails#getAccountCode() 
+	 * {@inheritDoc}
 	 */
 	@Override public String getAccountCode()
 	{
@@ -81,7 +82,7 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 	}
 
 	/**
-	 * Override @see nonprofitbookkeeping.api.AccountDetails#getAccountType() 
+	 * {@inheritDoc}
 	 */
 	@Override public String getAccountType()
 	{
@@ -89,7 +90,7 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 	}
 
 	/**
-	 * Override @see nonprofitbookkeeping.api.AccountDetails#getParentAccount() 
+	 * {@inheritDoc}
 	 */
 	@Override public Account getParentAccount()
 	{
@@ -98,7 +99,7 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 
 
 	/**
-	 * Override @see nonprofitbookkeeping.api.AccountDetails#getCurrency() 
+	 * {@inheritDoc}
 	 */
 	@Override public String getCurrency()
 	{
@@ -107,7 +108,7 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 
 
 	/**
-	 * Override @see nonprofitbookkeeping.api.AccountDetails#getOpeningBalance() 
+	 * {@inheritDoc}
 	 */
 	@Override public BigDecimal getOpeningBalance()
 	{
@@ -115,6 +116,7 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 	}
 
 	/**
+	 * Sets the account code.
 	 * @param accountCode the accountCode to set
 	 */
 	public void setAccountCode(String accountCode)
@@ -123,6 +125,7 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 	}
 
 	/**
+	 * Sets the account type.
 	 * @param accountType the accountType to set
 	 */
 	public void setAccountType(String accountType)
@@ -131,6 +134,7 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 	}
 
 	/**
+	 * Sets the parent account.
 	 * @param parentAccount the parentAccount to set
 	 */
 	public void setParentAccount(Account parentAccount)
@@ -139,6 +143,7 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 	}
 
 	/**
+	 * Sets the currency of the account.
 	 * @param currency the currency to set
 	 */
 	public void setCurrency(String currency)
@@ -148,6 +153,7 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 
 
 	/**
+	 * Sets the opening balance of the account.
 	 * @param openingBalance the openingBalance to set
 	 */
 	public void setOpeningBalance(BigDecimal openingBalance)
@@ -156,7 +162,7 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 	}
 
 	/**
-	 * @return the accountNumber
+	 * {@inheritDoc}
 	 */
 	@Override public String getAccountNumber()
 	{
@@ -164,7 +170,7 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 	}
 
 	/**
-	 * @param accountNumber the accountNumber to set
+	 * {@inheritDoc}
 	 */
 	@Override public void setAccountNumber(String accountNumber)
 	{
@@ -173,7 +179,7 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 
 
 	/**
-	 * @return the increaseSide
+	 * {@inheritDoc}
 	 */
 	@Override public AccountSide getIncreaseSide()
 	{
@@ -181,7 +187,7 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 	}
 
 	/**
-	 * @param increaseSide the increaseSide to set
+	 * {@inheritDoc}
 	 */
 	@Override public void setIncreaseSide(AccountSide increaseSide)
 	{
@@ -189,7 +195,7 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 	}
 
 	/**
-	 * @return the name
+	 * {@inheritDoc}
 	 */
 	@Override public String getName()
 	{
@@ -197,7 +203,7 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 	}
 
 	/**
-	 * @param name the name to set
+	 * {@inheritDoc}
 	 */
 	@Override public void setName(String name)
 	{

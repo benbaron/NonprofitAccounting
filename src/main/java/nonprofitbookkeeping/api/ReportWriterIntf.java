@@ -7,16 +7,19 @@ import java.io.IOException;
 import nonprofitbookkeeping.reports.ReportContext;
 
 /**
- * 
+ * Defines the contract for report writers.
+ * Implementations of this interface are responsible for generating a report
+ * based on the provided context and writing it to a file.
  */
 public interface ReportWriterIntf
 {
 	/**
-	 * writeReport
-	 * @param context Report Context
-	 * @return Report File
-	 * @throws IOException
-	 * @throws Exception
+	 * Writes a report based on the provided report context.
+	 *
+	 * @param context The context containing data and configuration for the report.
+	 * @return A {@link File} object representing the generated report file.
+	 * @throws IOException If an I/O error occurs during report writing.
+	 * @throws Exception If any other error occurs during report generation.
 	 */
 	File writeReport(ReportContext context) throws IOException, Exception;
 	

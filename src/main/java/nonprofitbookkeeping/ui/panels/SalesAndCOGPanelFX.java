@@ -25,10 +25,20 @@ import javafx.stage.Stage;
 public class SalesAndCOGPanelFX extends BorderPane
 {
 	
+	/** ObservableList to hold {@link SaleRow} objects for display in the table. */
 	private final ObservableList<SaleRow> rows = FXCollections.observableArrayList();
+	/** TableView to display the list of sale transactions. */
 	private final TableView<SaleRow> table = new TableView<>();
+	/** Label to display the calculated total gross profit from all sales. */
 	private final Label totalLbl = new Label("Gross Profit: 0.00");
 	
+	/**
+	 * Constructs a new {@code SalesAndCOGPanelFX}.
+	 * Initializes the panel with a table to display sale transactions, buttons for managing sales,
+	 * and a label to show total gross profit. A demo sale row is added for illustrative purposes.
+	 *
+	 * @param primaryStage The primary stage of the application. This parameter is currently unused.
+	 */
 	public SalesAndCOGPanelFX(@SuppressWarnings("unused") Stage primaryStage)
 	{ // kept signature compatible with caller
 		setPadding(new Insets(10));
@@ -42,6 +52,15 @@ public class SalesAndCOGPanelFX extends BorderPane
 	}
 	
 	/* ------------------------------------------------------------------ */
+	/**
+	 * Builds and configures the {@link TableView} ({@link #table}) for displaying sale transactions.
+	 * It defines columns for Date, Item, Quantity, Price, Cost, and Margin,
+	 * using {@link PropertyValueFactory} (via the {@link #col(String, String)} helper for String columns)
+	 * to bind them to the properties of the {@link SaleRow} class.
+	 * The table is bound to the {@link #rows} observable list and a column resize policy is set.
+	 * The {@code @SuppressWarnings({ "unchecked", "deprecation" })} is used because {@link PropertyValueFactory}
+	 * uses reflection and can lead to type safety warnings. "deprecation" might relate to older patterns.
+	 */
 	@SuppressWarnings({ "unchecked", "deprecation" }) private void buildTable()
 	{
 		TableColumn<SaleRow, String> dateCol = col("Date", "date");
@@ -59,6 +78,13 @@ public class SalesAndCOGPanelFX extends BorderPane
 		this.table.setItems(this.rows);
 	}
 	
+	/**
+	 * Utility method to create a {@link TableColumn} for displaying String properties in the sales table.
+	 *
+	 * @param t The title of the column for the table header.
+	 * @param p The name of the property in {@link SaleRow} to bind this column to (e.g., "item" for getItem()).
+	 * @return A configured {@link TableColumn} for displaying String data from a {@link SaleRow}.
+	 */
 	private static TableColumn<SaleRow, String> col(String t, String p)
 	{
 		TableColumn<SaleRow, String> c = new TableColumn<>(t);
@@ -66,6 +92,15 @@ public class SalesAndCOGPanelFX extends BorderPane
 		return c;
 	}
 	
+	/**
+	 * Builds and returns an {@link HBox} containing "Add Sale" and "Delete" buttons,
+	 * along with the {@link #totalLbl} for displaying gross profit.
+	 * These buttons provide functionality to manage sale records in the table.
+	 * "Add Sale" opens the {@link #saleDialog(SaleRow)}.
+	 * "Delete" removes the selected sale from the table and updates totals.
+	 *
+	 * @return A configured {@link HBox} with action buttons and the total gross profit label.
+	 */
 	private HBox buildButtons()
 	{
 		Button add = new Button("Add Sale");
@@ -86,6 +121,18 @@ public class SalesAndCOGPanelFX extends BorderPane
 		return box;
 	}
 	
+	/**
+	 * Displays a dialog for adding a new sale or editing an existing one.
+	 * If {@code existing} is null, the dialog is configured for adding a new sale.
+	 * Otherwise, the dialog fields (Date, Item, Quantity, Price, Cost) are pre-populated
+	 * with the data from the {@code existing} sale row.
+	 * Upon confirmation (OK button) and valid input, a new {@link SaleRow} object is created
+	 * (or the existing one updated) and added to/refreshed in the {@link #rows} list and table.
+	 * Totals are updated after adding or editing a sale.
+	 * An error alert is shown for invalid input.
+	 *
+	 * @param existing The {@link SaleRow} representing the sale to edit. If null, the dialog will facilitate creating a new sale.
+	 */
 	private void saleDialog(SaleRow existing)
 	{
 		Dialog<SaleRow> dlg = new Dialog<>();
@@ -155,6 +202,11 @@ public class SalesAndCOGPanelFX extends BorderPane
 		});
 	}
 	
+	/**
+	 * Calculates and updates the total gross profit displayed in {@link #totalLbl}.
+	 * The gross profit is calculated by summing the 'margin' from all {@link SaleRow} objects
+	 * currently in the {@link #rows} list.
+	 */
 	private void updateTotals()
 	{
 		BigDecimal profit =
@@ -163,16 +215,39 @@ public class SalesAndCOGPanelFX extends BorderPane
 	}
 	
 	/* ------------------------------------------------------------------ */
+	/**
+	 * Represents a single sale transaction row in the table.
+	 * This class uses JavaFX properties for data binding with {@link TableView} columns.
+	 * It includes details such as date, item, quantity, price, cost, and calculated margin.
+	 * Each sale row is assigned a unique ID.
+	 */
 	public static class SaleRow
 	{
+		/** A unique identifier for the sale transaction. */
 		final String id = UUID.randomUUID().toString();
+		/** The date of the sale, as a {@link SimpleStringProperty}. */
 		final SimpleStringProperty date = new SimpleStringProperty();
+		/** The name or description of the item sold, as a {@link SimpleStringProperty}. */
 		final SimpleStringProperty item = new SimpleStringProperty();
+		/** The quantity of items sold, as a {@link SimpleObjectProperty} of {@link Integer}. */
 		final SimpleObjectProperty<Integer> qty = new SimpleObjectProperty<>();
+		/** The unit price of the item sold, as a {@link SimpleObjectProperty} of {@link BigDecimal}. */
 		final SimpleObjectProperty<BigDecimal> price = new SimpleObjectProperty<>();
+		/** The unit cost of the item sold, as a {@link SimpleObjectProperty} of {@link BigDecimal}. */
 		final SimpleObjectProperty<BigDecimal> cost = new SimpleObjectProperty<>();
+		/** The calculated margin for this sale (Quantity * (Price - Cost)), as a {@link SimpleObjectProperty} of {@link BigDecimal}. */
 		final SimpleObjectProperty<BigDecimal> margin = new SimpleObjectProperty<>();
 		
+		/**
+		 * Constructs a new {@code SaleRow}.
+		 * Initializes the row with the given sale details and calculates the initial margin.
+		 *
+		 * @param d The date of the sale.
+		 * @param it The name/description of the item sold.
+		 * @param q The quantity sold.
+		 * @param p The unit price of the item.
+		 * @param c The unit cost of the item.
+		 */
 		SaleRow(LocalDate d, String it, int q, BigDecimal p, BigDecimal c)
 		{
 			this.date.set(d.toString());
@@ -183,11 +258,22 @@ public class SalesAndCOGPanelFX extends BorderPane
 			calcMargin();
 		}
 		
+		/**
+		 * Calculates the margin for this sale entry (Quantity * (Price - Cost))
+		 * and updates the {@link #margin} property.
+		 */
 		void calcMargin()
 		{
 			this.margin.set(this.price.get().subtract(this.cost.get()).multiply(new BigDecimal(this.qty.get())));
 		} // extended margin = qty*(price-cost)
 		
+		/**
+		 * Copies data from another {@link SaleRow} object into this one.
+		 * This is used when updating an existing row after an edit operation.
+		 * After copying, the margin is recalculated.
+		 *
+		 * @param other The {@link SaleRow} from which to copy data. Must not be null.
+		 */
 		void copyFrom(SaleRow other)
 		{
 			this.date.set(other.date.get());
@@ -198,36 +284,61 @@ public class SalesAndCOGPanelFX extends BorderPane
 			calcMargin();
 		}
 		
+		/**
+		 * Gets the date of the sale.
+		 * @return The sale date as a String.
+		 */
 		public String getDate()
 		{
 			return this.date.get();
 		}
 		
+		/**
+		 * Gets the name/description of the item sold.
+		 * @return The item name/description.
+		 */
 		public String getItem()
 		{
 			return this.item.get();
 		}
 		
+		/**
+		 * Gets the quantity of items sold.
+		 * @return The quantity sold.
+		 */
 		public int getQty()
 		{
 			return this.qty.get();
 		}
 		
+		/**
+		 * Gets the unit price of the item sold.
+		 * @return The unit price as a {@link BigDecimal}.
+		 */
 		public BigDecimal getPrice()
 		{
 			return this.price.get();
 		}
 		
+		/**
+		 * Gets the unit cost of the item sold.
+		 * @return The unit cost as a {@link BigDecimal}.
+		 */
 		public BigDecimal getCost()
 		{
 			return this.cost.get();
 		}
 		
+		/**
+		 * Gets the calculated margin for this sale.
+		 * @return The margin as a {@link BigDecimal}.
+		 */
 		public BigDecimal getMargin()
 		{
 			return this.margin.get();
 		}
 		
+		// Note: The 'id' field does not have a public getter, implies it's for internal use or PropertyValueFactory access.
 	}
 	
 }

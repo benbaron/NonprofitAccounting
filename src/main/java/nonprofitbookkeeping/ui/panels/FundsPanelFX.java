@@ -25,9 +25,18 @@ import nonprofitbookkeeping.service.FundAccountingService;
 public class FundsPanelFX extends BorderPane
 {
 	
+	/** The service layer for fund accounting operations. */
 	private final FundAccountingService service;
+	/** TableView to display fund names and their balances. */
 	private final TableView<FundRow> table = new TableView<>();
 	
+	/**
+	 * Constructs a new {@code FundsPanelFX}.
+	 * Initializes the panel with the necessary {@link FundAccountingService} and builds the UI components,
+	 * including sections for fund transfers, a table displaying fund balances, and fund management actions.
+	 *
+	 * @param service The {@link FundAccountingService} to be used for all fund-related operations. Must not be null.
+	 */
 	public FundsPanelFX(FundAccountingService service)
 	{
 		this.service = service;
@@ -42,6 +51,12 @@ public class FundsPanelFX extends BorderPane
 	
 	/* ───────────────────────── UI sections ───────────────────────── */
 	
+	/**
+	 * Builds the UI section for transferring funds.
+	 * This section includes TextFields for "From" fund, "To" fund, and "Amount",
+	 * and a "Transfer" button. It's placed at the top of the panel.
+	 * Error handling for invalid input (non-positive amount, non-existent funds) is included.
+	 */
 	private void buildTransferPane()
 	{
 		TextField fromField = new TextField();
@@ -84,7 +99,14 @@ public class FundsPanelFX extends BorderPane
 	}
 	
 	/**
-	 * buildTable
+	 * Builds and configures the {@link TableView} ({@link #table}) for displaying fund information.
+	 * It defines columns for Fund Name and Balance, using {@link PropertyValueFactory}
+	 * to bind them to the properties of the {@link FundRow} class.
+	 * The table is centered in this {@link BorderPane}.
+	 * The {@code @SuppressWarnings({ "unchecked", "deprecation" })} is used because {@link PropertyValueFactory}
+	 * uses reflection and can lead to type safety warnings if property names don't strictly match
+	 * Java bean conventions or if raw types are inferred. "deprecation" might relate to older patterns
+	 * of using PropertyValueFactory.
 	 */
 	@SuppressWarnings({ "unchecked", "deprecation" }) 
 	private void buildTable()
@@ -98,6 +120,10 @@ public class FundsPanelFX extends BorderPane
 		setCenter(this.table);
 	}
 	
+	/**
+	 * Builds the UI section for fund management.
+	 * This section includes "Add Fund" and "Delete Fund" buttons and is placed at the bottom of the panel.
+	 */
 	private void buildManagementPane()
 	{
 		Button add = new Button("Add Fund");
@@ -113,6 +139,14 @@ public class FundsPanelFX extends BorderPane
 	
 	/* ───────────────────────── Dialog helpers ───────────────────────── */
 	
+	/**
+	 * Displays a dialog sequence for adding a new fund.
+	 * First, it prompts for the new fund's name using a {@link TextInputDialog}.
+	 * If a name is provided, it then prompts for the initial balance for that fund, defaulting to "0.00".
+	 * If both are provided and the balance is valid, a new {@link Fund} is created,
+	 * added via the {@link #service}, and the table is refreshed.
+	 * Alerts are shown for success or invalid balance input.
+	 */
 	private void addFundDialog()
 	{
 		TextInputDialog nameDlg = new TextInputDialog();
@@ -143,7 +177,11 @@ public class FundsPanelFX extends BorderPane
 	}
 	
 	/**
-	 * deleteFundDialog
+	 * Displays a dialog for deleting an existing fund.
+	 * It prompts the user to enter the name of the fund they wish to delete using a {@link TextInputDialog}.
+	 * If a name is provided, it attempts to remove the fund via the {@link #service}.
+	 * Alerts are shown indicating whether the fund was successfully deleted or not found,
+	 * and the table is refreshed on success.
 	 */
 	private void deleteFundDialog()
 	{
@@ -165,6 +203,11 @@ public class FundsPanelFX extends BorderPane
 	
 	/* ───────────────────────── Utility ───────────────────────── */
 	
+	/**
+	 * Refreshes the data displayed in the funds {@link #table}.
+	 * It fetches the current list of all funds from the {@link #service} and
+	 * repopulates the table with {@link FundRow} objects created from these funds.
+	 */
 	private void refresh()
 	{
 		List<Fund> funds = this.service.listFunds();
@@ -172,8 +215,9 @@ public class FundsPanelFX extends BorderPane
 	}
 	
 	/**
+	 * Displays a simple informational alert dialog with an OK button.
 	 * 
-	 * @param msg
+	 * @param msg The message to be displayed in the alert dialog.
 	 */
 	private static void alert(String msg)
 	{
@@ -181,25 +225,40 @@ public class FundsPanelFX extends BorderPane
 	}
 	
 	/**
-	 * 
+	 * A simple data class (POJO) used to represent a row in the funds {@link TableView}.
+	 * It wraps a {@link Fund} object's name and balance for easy display with {@link PropertyValueFactory}.
 	 */
-	/* Row wrapper for TableView */
 	public static class FundRow
 	{
+		/** The name of the fund. */
 		private final String name;
+		/** The current balance of the fund. */
 		private final BigDecimal balance;
 		
+		/**
+		 * Constructs a {@code FundRow} from a {@link Fund} object.
+		 *
+		 * @param f The {@link Fund} object from which to extract data. Must not be null.
+		 */
 		public FundRow(Fund f)
 		{
 			this.name = f.getName();
 			this.balance = f.getBalance();
 		}
 		
+		/**
+		 * Gets the name of the fund.
+		 * @return The fund's name.
+		 */
 		public String getName()
 		{
 			return this.name;
 		}
 		
+		/**
+		 * Gets the balance of the fund.
+		 * @return The fund's balance as a {@link BigDecimal}.
+		 */
 		public BigDecimal getBalance()
 		{
 			return this.balance;

@@ -50,19 +50,37 @@ public class LedgerReconcilePanelFX extends BorderPane
 {
 	
 	/* ----------------------------------------------------------- */
+	/** Service layer for reconciliation operations, providing access to ledger data. */
 	private final ReconciliationService ledgerSvc;
 	
+	/** ComboBox for selecting the account to reconcile. */
 	private final ComboBox<String> accountBox = new ComboBox<>();
+	/** Label to display the current ledger balance for the selected account. */
 	private final Label ledgerBalLbl = new Label();
+	/** Label to display the total balance of cleared transactions. */
 	private final Label clearedBalLbl = new Label();
+	/** Label to display the difference between the ledger balance and cleared balance. */
 	private final Label diffLbl = new Label();
 	
+	/** TableView to display merged ledger and bank transactions for reconciliation. */
 	private final TableView<Row> table = new TableView<>();
+	/** ObservableList that backs the {@link #table}, containing {@link Row} objects. */
 	private final ObservableList<Row> rows = FXCollections.observableArrayList();
 	
-	/** bankTxns keyed by account → list of imported/manual transactions */
+	/**
+	 * Stores imported or manually added bank transactions.
+	 * The map is keyed by account name (String), and the value is a list of {@link AccountingTransaction} objects
+	 * representing transactions from the bank statement for that account.
+	 */
 	private final Map<String, List<AccountingTransaction>> bankTxns = new HashMap<>();
 	
+	/**
+	 * Constructs a new {@code LedgerReconcilePanelFX}.
+	 * Initializes the panel with the necessary {@link ReconciliationService} and builds the UI components,
+	 * including account selection, balance displays, the main reconciliation table, and action buttons.
+	 *
+	 * @param svc The {@link ReconciliationService} to be used for accessing ledger data and account information. Must not be null.
+	 */
 	public LedgerReconcilePanelFX(ReconciliationService svc)
 	{
 		this.ledgerSvc = svc;
@@ -75,6 +93,12 @@ public class LedgerReconcilePanelFX extends BorderPane
 	}
 	
 	/* ----------------------- UI builders ----------------------- */
+	/**
+	 * Builds the top section of the panel.
+	 * This section includes a {@link ComboBox} ({@link #accountBox}) for account selection
+	 * and labels ({@link #ledgerBalLbl}, {@link #clearedBalLbl}, {@link #diffLbl}) to display balance information.
+	 * An action is set on the accountBox to reload rows when the selection changes.
+	 */
 	private void buildTop()
 	{
 		GridPane g = new GridPane();
@@ -87,6 +111,16 @@ public class LedgerReconcilePanelFX extends BorderPane
 		setTop(g);
 	}
 	
+	/**
+	 * Builds and configures the main {@link TableView} ({@link #table}) for displaying reconciliation items.
+	 * It defines columns for "Cleared" (CheckBox), Date, Description, Amount, and Source,
+	 * using the {@link #col(String, Function)} helper for most columns.
+	 * The "Cleared" column is editable and triggers {@link #updateTotals()} on commit.
+	 * The table is bound to the {@link #rows} observable list and set to be editable.
+	 * The {@code @SuppressWarnings({ "unchecked", "deprecation" })} is likely related to generic types
+	 * with {@code TableColumn} and {@code PropertyValueFactory} or similar mechanisms if used internally
+	 * by helper methods, especially with older JavaFX patterns.
+	 */
 	@SuppressWarnings({ "unchecked", "deprecation" }) private void buildTable()
 	{
 		TableColumn<Row, Boolean> clrCol = new TableColumn<>("Cleared");
@@ -106,6 +140,15 @@ public class LedgerReconcilePanelFX extends BorderPane
 		clrCol.setOnEditCommit(ev -> updateTotals());
 	}
 	
+	/**
+	 * Utility method to create a {@link TableColumn} for the reconciliation table.
+	 *
+	 * @param <T> The type of the data to be displayed in this column's cells.
+	 * @param name The title of the column (to be displayed in the header).
+	 * @param fn A {@link Function} that takes a {@link Row} object (the value of the TableView row)
+	 *           and returns the value of type {@code T} to be displayed in the cell for that row.
+	 * @return A configured {@link TableColumn} for displaying data of type {@code T} from a {@link Row}.
+	 */
 	private static <T> TableColumn<Row, T> col(String name, Function<Row, T> fn)
 	{
 		TableColumn<Row, T> tc = new TableColumn<>(name);
@@ -113,6 +156,13 @@ public class LedgerReconcilePanelFX extends BorderPane
 		return tc;
 	}
 	
+	/**
+	 * Builds and returns an {@link HBox} containing action buttons for the reconciliation panel:
+	 * "Import OFX", "Add Bank Txn", and "Export Uncleared".
+	 * Each button is configured with an appropriate event handler (e.g., {@link ImportOfxHandler}).
+	 *
+	 * @return An {@link HBox} populated with control buttons.
+	 */
 	private HBox buildButtons()
 	{
 		Button importBtn = new Button("Import OFX");
@@ -130,6 +180,12 @@ public class LedgerReconcilePanelFX extends BorderPane
 	}
 	
 	/* --------------------- data operations --------------------- */
+	/**
+	 * Refreshes the list of accounts available in the {@link #accountBox} ComboBox.
+	 * It fetches reconcilable accounts from the {@link #ledgerSvc}, populates the ComboBox,
+	 * selects the first account if the list is not empty, and then calls {@link #reloadRows()}
+	 * to load data for the selected account.
+	 */
 	private void refreshAccountList()
 	{
 		this.accountBox.getItems().setAll(this.ledgerSvc.listReconcilableAccounts());
@@ -138,6 +194,13 @@ public class LedgerReconcilePanelFX extends BorderPane
 		reloadRows();
 	}
 	
+	/**
+	 * Reloads the rows in the {@link #table} for the currently selected account in {@link #accountBox}.
+	 * It fetches unreconciled transactions from the {@link #ledgerSvc} and merges them with
+	 * any imported or manually added bank transactions (from {@link #bankTxns}) for that account
+	 * using {@link Matcher#merge(List, List)}. The table is then updated, and totals are recalculated.
+	 * If no account is selected, the method returns without action.
+	 */
 	private void reloadRows()
 	{
 		String acct = this.accountBox.getValue();
@@ -149,6 +212,13 @@ public class LedgerReconcilePanelFX extends BorderPane
 		updateTotals();
 	}
 	
+	/**
+	 * Calculates and updates the ledger balance, cleared balance, and the difference
+	 * displayed in the labels ({@link #ledgerBalLbl}, {@link #clearedBalLbl}, {@link #diffLbl}).
+	 * Ledger balance is the sum of amounts from "Ledger" source rows.
+	 * Cleared balance is the sum of amounts from rows marked as "cleared".
+	 * The difference is ledger balance minus cleared balance.
+	 */
 	private void updateTotals()
 	{
 		BigDecimal ledgerBal = this.rows.stream()
@@ -167,12 +237,33 @@ public class LedgerReconcilePanelFX extends BorderPane
 	}
 	
 	/* -------------------------- models ------------------------- */
+	/**
+	 * Represents a single row in the reconciliation table ({@link #table}).
+	 * Each row can originate either from the ledger or a bank statement and includes
+	 * details like date, description, amount, source, and a "cleared" status.
+	 * The "cleared" status is a {@link SimpleBooleanProperty} to support JavaFX table cell binding.
+	 */
 	private static class Row
 	{
+		/** Boolean property indicating if the transaction is marked as cleared. Bound to the CheckBox in the table. */
 		final SimpleBooleanProperty cleared = new SimpleBooleanProperty(false);
-		final String date, desc, source;
+		/** The date of the transaction, as a String. */
+		final String date;
+		/** The description or memo of the transaction. */
+		final String desc;
+		/** The source of the transaction (e.g., "Ledger" or "Bank"). */
+		final String source;
+		/** The monetary amount of the transaction. */
 		final BigDecimal amount;
 		
+		/**
+		 * Constructs a new {@code Row} for the reconciliation table.
+		 *
+		 * @param d The date of the transaction (String).
+		 * @param m The description or memo of the transaction.
+		 * @param a The amount of the transaction.
+		 * @param s The source of the transaction (e.g., "Ledger", "Bank").
+		 */
 		Row(String d, String m, BigDecimal a, String s)
 		{
 			this.date = d;
@@ -184,8 +275,21 @@ public class LedgerReconcilePanelFX extends BorderPane
 	}
 	
 	/* --------------------- OFX import via ofx4j ----------------- */
+	/**
+	 * Handles the "Import OFX" button action.
+	 * Prompts the user to select an OFX file using a {@link FileChooser}.
+	 * If a file is selected, it attempts to read and parse the OFX file using {@link #readOfx(Path)},
+	 * stores the imported bank transactions in {@link #bankTxns} for the current account,
+	 * reloads the table rows, and shows a confirmation or error alert.
+	 */
 	private class ImportOfxHandler implements EventHandler<ActionEvent>
 	{
+		/**
+		 * {@inheritDoc}
+		 * Opens a {@link FileChooser} for OFX files, processes the selected file,
+		 * updates the internal bank transaction list, and refreshes the UI.
+		 * Displays alerts for success or failure.
+		 */
 		@Override public void handle(ActionEvent e)
 		{
 			FileChooser fc = new FileChooser();
@@ -217,9 +321,21 @@ public class LedgerReconcilePanelFX extends BorderPane
 	}
 	
 	/**
-	 * Parses an OFX file with ofx4j 1.38 and converts each bank entry into our
-	 * AccountingTransaction model.
-	 * @param <BankTransactionList>
+	 * Parses an OFX file using the ofx4j library (version 1.38 or as per project dependency)
+	 * and converts bank transactions found within the file into a list of
+	 * {@link AccountingTransaction} model objects.
+	 * <p>
+	 * This method handles reading the OFX file, unmarshalling its content into
+	 * OFX4J domain objects, and then mapping relevant transaction data (date, description/memo, amount)
+	 * to new {@code AccountingTransaction} instances.
+	 * </p>
+	 * It specifically processes banking message sets and extracts transactions from the first statement response.
+	 *
+	 * @param path The {@link Path} to the OFX file to be read. Must not be null.
+	 * @return A {@link List} of {@link AccountingTransaction} objects derived from the OFX file.
+	 *         Returns an empty list if no transactions are found or if the relevant OFX structures are missing.
+	 * @throws Exception if an error occurs during file reading (e.g., {@link java.io.IOException})
+	 *                   or OFX parsing (e.g., {@link OFXParseException}).
 	 */
 	private static List<AccountingTransaction> readOfx(Path path) throws Exception
 	{
@@ -264,8 +380,22 @@ public class LedgerReconcilePanelFX extends BorderPane
 	
 	
 	/* ------------------- manual entry dialog ------------------- */
+	/**
+	 * Handles the "Add Bank Txn" button action.
+	 * Displays a dialog prompting the user to manually enter details for a bank transaction
+	 * (Date, Description, Amount). If the user confirms and provides valid input,
+	 * a new {@link AccountingTransaction} is created (though the creation logic in {@link #build()} is currently a stub),
+	 * added to the {@link #bankTxns} list for the current account, and the table is reloaded.
+	 */
 	private class ManualEntryHandler implements EventHandler<ActionEvent>
 	{
+		/**
+		 * {@inheritDoc}
+		 * Shows a dialog for manual bank transaction entry.
+		 * On OK, it attempts to build an {@link AccountingTransaction} using the {@link #build()} method
+		 * (which is currently a stub and returns null). If a transaction were successfully built,
+		 * it would be added to the current account's bank transactions, and the table would be reloaded.
+		 */
 		@Override public void handle(ActionEvent e)
 		{
 			Dialog<AccountingTransaction> dlg = new Dialog<>();
@@ -301,26 +431,54 @@ public class LedgerReconcilePanelFX extends BorderPane
 		}
 			
 		/**
-		 * @return
+		 * Builds an {@link AccountingTransaction} from the dialog's input fields.
+		 * <p><b>Note:</b> This method currently contains a "TODO Auto-generated method stub" and returns {@code null}.
+		 * It needs to be implemented to correctly parse and use the dialog's input fields
+		 * (which are local to the {@code handle} method: {@code dateP}, {@code descF}, {@code amtF})
+		 * to construct and return a valid {@link AccountingTransaction}. The current structure
+		 * would require refactoring for this {@code build} method to access those fields,
+		 * or for the data to be passed into this method.</p>
+		 *
+		 * @return A new {@link AccountingTransaction} based on dialog inputs; currently returns {@code null} due to stub implementation.
 		 */
 		public AccountingTransaction build()
 		{
 			// TODO Auto-generated method stub
+			// Implementation should correctly access and parse data from dateP, descF, amtF
+			// which are currently local to the handle() method. This structure needs refactoring
+			// for build() to access those fields, or for data to be passed to build().
 			return null;
 		}
 		
 	}
 	
 	/* -------------------- export uncleared CSV ----------------- */
+	/**
+	 * Handles the "Export Uncleared" button action.
+	 * Filters the current {@link #rows} in the table to find all transactions not marked as "cleared".
+	 * If uncleared items exist, it prompts the user for a file location using a {@link FileChooser}
+	 * (defaulting to CSV format) and writes the uncleared items to the selected file as CSV.
+	 * Displays alerts for success, failure, or if no uncleared items are found.
+	 */
 	class ExportUnclearedHandler implements EventHandler<ActionEvent>
 	{
+		/** Reference to the parent {@link LedgerReconcilePanelFX} to access its rows and scene. */
 		private final LedgerReconcilePanelFX p;
 		
+		/**
+		 * Constructs a new {@code ExportUnclearedHandler}.
+		 * @param p The instance of {@link LedgerReconcilePanelFX} from which to export data.
+		 */
 		ExportUnclearedHandler(LedgerReconcilePanelFX p)
 		{
 			this.p = p;
 		}
 		
+		/**
+		 * {@inheritDoc}
+		 * Filters uncleared rows, prompts for a save file location (CSV),
+		 * and writes the data. Shows alerts for outcomes.
+		 */
 		@Override public void handle(ActionEvent e)
 		{
 			List<Row> uncleared = this.p.rows.stream()
@@ -360,9 +518,23 @@ public class LedgerReconcilePanelFX extends BorderPane
 	}
 	
 	/* ------------------ simple matching example ---------------- */
+	/**
+	 * Provides a simple merging strategy for ledger and bank transactions.
+	 * This example class contains a static method to combine two lists of transactions
+	 * into a single list of {@link Row} objects for display, marking their source.
+	 */
 	class Matcher
 	{
-		/** Merges two lists (ledger + bank) without duplicate matching rules. */
+		/**
+		 * Merges two lists of {@link AccountingTransaction}s (one from the ledger, one from the bank)
+		 * into a single list of {@link Row} objects for display in the reconciliation table.
+		 * Each row is marked with its source ("Ledger" or "Bank").
+		 * This is a simple merge; it does not perform any matching or duplicate detection.
+		 *
+		 * @param ledger A list of {@link AccountingTransaction}s from the ledger.
+		 * @param bank A list of {@link AccountingTransaction}s from the bank statement.
+		 * @return A new {@link List} of {@link Row} objects containing all transactions from both sources.
+		 */
 		static List<Row> merge(	List<AccountingTransaction> ledger,
 								List<AccountingTransaction> bank)
 		{

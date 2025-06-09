@@ -8,31 +8,38 @@ import javafx.scene.layout.VBox; // Using VBox as a basic layout pane
  * create, or open a company data file.
  * It uses a callback mechanism ({@link OnCompanyOpenedHandler}) to notify
  * other parts of the application when a company has been successfully opened or processed.
+ * This panel would typically include UI elements for browsing, selecting, or creating company files.
  */
 public class CompanySelectionPanelFX extends VBox {
 
     /**
      * Functional interface for a callback to be invoked when a company
-     * has been successfully opened or processed by this panel.
+     * has been successfully opened, created, or otherwise processed by this panel.
+     * The implementing class will handle the {@link Company} object (e.g., by updating the UI).
      */
     @FunctionalInterface
     public interface OnCompanyOpenedHandler {
         /**
-         * Called when a company's data has been successfully loaded/processed.
+         * Called when a company's data has been successfully loaded or a new company profile
+         * has been processed and is ready for use.
          *
-         * @param company The {@link Company} object that was opened or processed.
+         * @param company The {@link Company} object that was opened, created, or processed.
+         *                This object contains the company's data.
          */
         void onCompanyOpened(Company company);
     }
 
+    /** Handler to be called when a company is opened or processed. */
     private final OnCompanyOpenedHandler companyOpenedHandler;
 
     /**
-     * Constructs a new CompanySelectionPanelFX.
+     * Constructs a new {@code CompanySelectionPanelFX}.
+     * The panel is initialized with basic VBox spacing. UI elements for company
+     * selection, creation, and opening need to be added to this panel.
      *
-     * @param openedHandler The handler to be called when a company is successfully opened
-     *                      or processed. Must not be null.
-     * @throws IllegalArgumentException if openedHandler is null.
+     * @param openedHandler The handler (callback) to be invoked when a company is successfully opened
+     *                      or processed. This handler must not be null.
+     * @throws IllegalArgumentException if {@code openedHandler} is null.
      */
     public CompanySelectionPanelFX(OnCompanyOpenedHandler openedHandler) {
         if (openedHandler == null) {

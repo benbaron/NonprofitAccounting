@@ -1,9 +1,4 @@
-/**
- * nonprofit-scaledger-ribbon.zip_expanded SettingsPanelFX.java SettingsPanelFX
- */
-
 package nonprofitbookkeeping.ui.panels;
-
 
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -17,9 +12,12 @@ import javafx.stage.Stage;
 public class SettingsPanelFX extends BorderPane
 {
 	/**
+	 * Constructs a new {@code SettingsPanelFX}.
+	 * Initializes the panel with a {@link TabPane} containing various settings categories:
+	 * Company Info, Users, Accounting, Backup, and UI Preferences.
 	 * 
-	 * Constructor SettingsPanelFX
-	 * @param primaryStage 
+	 * @param primaryStage The primary stage of the application. This parameter is currently not
+	 *                     used within this constructor or its helper methods.
 	 */
 	public SettingsPanelFX(Stage primaryStage)
 	{
@@ -38,6 +36,13 @@ public class SettingsPanelFX extends BorderPane
 	
 	/* ───────────────────────── Tab builders ───────────────────────── */
 	
+	/**
+	 * Builds and returns the "Company Info" tab for the settings panel.
+	 * This tab contains fields for editing basic organization information such as
+	 * name, fiscal year start, and default currency.
+	 *
+	 * @return A {@link Tab} configured with company information settings.
+	 */
 	private static Tab companyInfoTab()
 	{
 		GridPane grid = grid(3, 2);
@@ -60,8 +65,14 @@ public class SettingsPanelFX extends BorderPane
 	}
 	
 	/**
+	 * Builds and returns the "Users" tab for the settings panel.
+	 * This tab displays a table of users ({@link UserRow}) with their usernames and roles.
+	 * Currently, it shows demo data.
+	 * The {@code @SuppressWarnings({ "unchecked", "deprecation" })} is used because {@link PropertyValueFactory}
+	 * uses reflection and can lead to type safety warnings if property names don't strictly match
+	 * Java bean conventions or if raw types are inferred. "deprecation" might relate to older patterns.
 	 * 
-	 * @return
+	 * @return A {@link Tab} configured with user management settings.
 	 */
 	@SuppressWarnings({ "unchecked", "deprecation" }) private static Tab usersTab()
 	{
@@ -81,8 +92,11 @@ public class SettingsPanelFX extends BorderPane
 	}
 	
 	/**
+	 * Builds and returns the "Accounting" tab for the settings panel.
+	 * This tab includes settings related to default accounts (income, expense)
+	 * and options like auto-numbering for vouchers.
 	 * 
-	 * @return
+	 * @return A {@link Tab} configured with accounting-related settings.
 	 */
 	private static Tab accountingTab()
 	{
@@ -105,8 +119,11 @@ public class SettingsPanelFX extends BorderPane
 	}
 	
 	/**
+	 * Builds and returns the "Backup" tab for the settings panel.
+	 * This tab provides buttons for creating and restoring backups.
+	 * Current actions are placeholders that show alert messages.
 	 * 
-	 * @return
+	 * @return A {@link Tab} configured with backup and restore options.
 	 */
 	private static Tab backupTab()
 	{
@@ -123,8 +140,10 @@ public class SettingsPanelFX extends BorderPane
 	}
 	
 	/**
+	 * Builds and returns the "UI Preferences" tab for the settings panel.
+	 * This tab includes options for selecting UI theme and language.
 	 * 
-	 * @return
+	 * @return A {@link Tab} configured with UI preference settings.
 	 */
 	private static Tab uiPrefsTab()
 	{
@@ -154,6 +173,17 @@ public class SettingsPanelFX extends BorderPane
 	
 	/* ───────────────────────── Helpers ───────────────────────── */
 	
+	/**
+	 * Utility method to create a {@link GridPane} with a predefined two-column layout
+	 * (each 50% width) and standard padding and gap settings.
+	 * The {@code @SuppressWarnings("unused")} indicates that the parameters {@code rows} and {@code cols}
+	 * are not currently used in the method body, though they might have been intended for future use
+	 * or were part of an earlier design.
+	 *
+	 * @param rows The number of rows intended for the grid (currently unused).
+	 * @param cols The number of columns intended for the grid (currently unused, fixed at 2).
+	 * @return A configured {@link GridPane} instance.
+	 */
 	@SuppressWarnings("unused") 
 	private static GridPane grid(int rows, int cols)
 	{
@@ -168,10 +198,12 @@ public class SettingsPanelFX extends BorderPane
 	}
 	
 	/**
+	 * Creates a non-collapsible {@link TitledPane} with the given title and content node.
+	 * This is a utility method for wrapping content within tabs or sections of the settings panel.
 	 * 
-	 * @param title
-	 * @param content
-	 * @return
+	 * @param title The title to be displayed on the pane.
+	 * @param content The {@link javafx.scene.Node} to be set as the content of the pane.
+	 * @return A configured {@link TitledPane} instance.
 	 */
 	private static TitledPane titled(String title, javafx.scene.Node content)
 	{
@@ -181,8 +213,9 @@ public class SettingsPanelFX extends BorderPane
 	}
 	
 	/**
+	 * Displays a simple informational alert dialog with an OK button.
 	 * 
-	 * @param msg
+	 * @param msg The message to be displayed in the alert dialog.
 	 */
 	private static void alert(String msg)
 	{
@@ -190,22 +223,42 @@ public class SettingsPanelFX extends BorderPane
 	}
 	
 	/* ───────────────────────── Table model ───────────────────────── */
+	/**
+	 * Represents a single row in the user management table within the "Users" tab.
+	 * This class holds username and role information for display.
+	 */
 	public static class UserRow
 	{
+		/** The username of the user. */
 		private final String username;
+		/** The role assigned to the user (e.g., "Administrator", "Viewer"). */
 		private final String role;
 		
+		/**
+		 * Constructs a new {@code UserRow}.
+		 *
+		 * @param u The username for this user row.
+		 * @param r The role for this user row.
+		 */
 		public UserRow(String u, String r)
 		{
 			this.username = u;
 			this.role = r;
 		}
 		
+		/**
+		 * Gets the username.
+		 * @return The username string.
+		 */
 		public String getUsername()
 		{
 			return this.username;
 		}
 		
+		/**
+		 * Gets the role.
+		 * @return The role string.
+		 */
 		public String getRole()
 		{
 			return this.role;

@@ -28,20 +28,26 @@ import javax.swing.table.TableModel;
  * @author     Lazy Eight Data HB, Thomas Dilts
  * @created    den 5 mars 2002
  */
+/**
+ * A TableModel decorator that wraps another TableModel.
+ * This class extends {@link AbstractTableModel} and implements {@link TableModelListener}.
+ * It delegates most of the TableModel interface methods to the underlying model.
+ * This can be used as a base for further TableModel transformations or filtering.
+ */
 public class TableMap extends AbstractTableModel implements TableModelListener
 {
 	/**
-	 * serialVersionUID : long
+	 * The unique identifier for this serializable class.
 	 */
 	private static final long serialVersionUID = 2746620878654011822L;
 	protected TableModel model;
 
 
 	/**
-	 *  Gets the columnClass attribute of the TableMap object
-	 *
-	 * @param  aColumn  Description of the Parameter
-	 * @return          The columnClass value
+	 * {@inheritDoc}
+	 * This implementation delegates to the underlying model's {@code getColumnClass} method.
+	 * @param aColumn the column being queried.
+	 * @return the Class of the objects in the specified column.
 	 */
 	@Override public Class<?> getColumnClass(int aColumn)
 	{
@@ -50,9 +56,10 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 
 
 	/**
-	 *  Gets the columnCount attribute of the TableMap object
-	 *
-	 * @return    The columnCount value
+	 * {@inheritDoc}
+	 * This implementation delegates to the underlying model's {@code getColumnCount} method.
+	 * Returns 0 if the underlying model is null.
+	 * @return the number of columns in the model.
 	 */
 	@Override public int getColumnCount()
 	{
@@ -61,10 +68,10 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 
 
 	/**
-	 *  Gets the columnName attribute of the TableMap object
-	 *
-	 * @param  aColumn  Description of the Parameter
-	 * @return          The columnName value
+	 * {@inheritDoc}
+	 * This implementation delegates to the underlying model's {@code getColumnName} method.
+	 * @param aColumn the column being queried.
+	 * @return a string containing the name of {@code aColumn}.
 	 */
 	@Override public String getColumnName(int aColumn)
 	{
@@ -73,9 +80,9 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 
 
 	/**
-	 *  Gets the model attribute of the TableMap object
+	 * Gets the underlying {@link TableModel} that this {@code TableMap} is wrapping.
 	 *
-	 * @return    The model value
+	 * @return The underlying table model.
 	 */
 	public TableModel getModel()
 	{
@@ -84,9 +91,10 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 
 
 	/**
-	 *  Gets the rowCount attribute of the TableMap object
-	 *
-	 * @return    The rowCount value
+	 * {@inheritDoc}
+	 * This implementation delegates to the underlying model's {@code getRowCount} method.
+	 * Returns 0 if the underlying model is null.
+	 * @return the number of rows in the model.
 	 */
 	@Override public int getRowCount()
 	{
@@ -95,11 +103,11 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 
 
 	/**
-	 *  Gets the valueAt attribute of the TableMap object
-	 *
-	 * @param  aRow     Description of the Parameter
-	 * @param  aColumn  Description of the Parameter
-	 * @return          The valueAt value
+	 * {@inheritDoc}
+	 * This implementation delegates to the underlying model's {@code getValueAt} method.
+	 * @param aRow the row whose value is to be queried.
+	 * @param aColumn the column whose value is to be queried.
+	 * @return the value Object at the specified cell.
 	 */
 	@Override public Object getValueAt(int aRow, int aColumn)
 	{
@@ -108,11 +116,11 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 
 
 	/**
-	 *  Gets the cellEditable attribute of the TableMap object
-	 *
-	 * @param  row     Description of the Parameter
-	 * @param  column  Description of the Parameter
-	 * @return         The cellEditable value
+	 * {@inheritDoc}
+	 * This implementation delegates to the underlying model's {@code isCellEditable} method.
+	 * @param row the row whose value is to be queried.
+	 * @param column the column whose value is to be queried.
+	 * @return true if the cell is editable.
 	 */
 	@Override public boolean isCellEditable(int row, int column)
 	{
@@ -121,9 +129,10 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 
 
 	/**
-	 *  Sets the model attribute of the TableMap object
+	 * Sets the underlying {@link TableModel} that this {@code TableMap} will wrap.
+	 * This {@code TableMap} will also be added as a {@link TableModelListener} to the new model.
 	 *
-	 * @param  model  The new model value
+	 * @param model The new underlying table model to set.
 	 */
 	public void setModel(TableModel model)
 	{
@@ -133,11 +142,11 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 
 
 	/**
-	 *  Sets the valueAt attribute of the TableMap object
-	 *
-	 * @param  aValue   The new valueAt value
-	 * @param  aRow     The new valueAt value
-	 * @param  aColumn  The new valueAt value
+	 * {@inheritDoc}
+	 * This implementation delegates to the underlying model's {@code setValueAt} method.
+	 * @param aValue the new value.
+	 * @param aRow the row whose value is to be changed.
+	 * @param aColumn the column whose value is to be changed.
 	 */
 	@Override public void setValueAt(Object aValue, int aRow, int aColumn)
 	{
@@ -146,9 +155,11 @@ public class TableMap extends AbstractTableModel implements TableModelListener
 
 
 	/**
-	 *  Description of the Method
-	 *
-	 * @param  e  Description of the Parameter
+	 * {@inheritDoc}
+	 * This implementation is called when the underlying model changes.
+	 * It forwards the {@link TableModelEvent} to listeners of this {@code TableMap}
+	 * by calling {@code fireTableChanged(e)}.
+	 * @param e a {@code TableModelEvent} tolanguageTagthis model's listeners.
 	 */
 	@Override public void tableChanged(TableModelEvent e)
 	{

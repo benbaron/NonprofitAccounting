@@ -23,12 +23,24 @@ import nonprofitbookkeeping.preferences.PreferencesManager;
  *   <li>{@link #chooseAndCreate} adds extension enforcement, remembers the last
  *       directory, and (optionally) creates the file if it does not exist.</li>
  * </ul>
+ * This class is final and cannot be instantiated.
  */
 public final class NpbkFileChooserFX
 {
 	
-	/* ---------------------------------------------------*/
-	/** Original behaviour: just pick a file; must exist. */
+	/**
+     * Displays a JavaFX {@link FileChooser} configured to select an existing file.
+     * The dialog uses the provided title, description, and file pattern for its filter.
+     * It sets the initial directory based on {@link PreferencesManager#getLastDirectory()}.
+     * If a file is selected, its parent directory is saved back to preferences.
+     *
+     * @param title The title for the file chooser dialog window.
+     * @param description The description for the file extension filter (e.g., "Company file").
+     * @param filePattern The file extension pattern (e.g., "*.npbk").
+     * @param owner The owner {@link Stage} for the dialog. This helps with proper modality.
+     * @return The selected {@link File}.
+     * @throws NoFileException if the user cancels the dialog or no file is selected.
+     */
 	public static File chooseExisting(	String title,
 										String description,
 										String filePattern,
@@ -41,24 +53,42 @@ public final class NpbkFileChooserFX
 			.add(new FileChooser.ExtensionFilter(description, filePattern));
 		
 		setInitialDir(ch);
-		File f = ch.showOpenDialog(owner);
+		File f = ch.showOpenDialog(owner); // Shows an "Open" dialog
 		if (f == null)
 		{
-			throw new NoFileException("User cancelled.");
+			throw new NoFileException("User cancelled file selection.");
 		}
 		PreferencesManager.setLastDirectory(f.getParent());
 		return f;
 	}
 	
-	/* --------------------------------------------------------------------- */
 	/**
-	 * Enhanced chooser: remembers last dir, enforces {@code extension},
-	 * optionally creates the file.  Throws:
-	 * <ul>
-	 *   <li>{@link ActionCancelledException} if the dialog is cancelled</li>
-	 *   <li>{@link NoFileCreatedException}  if user declines or creation fails</li>
-	 * </ul>
-	 */
+     * Displays a JavaFX {@link FileChooser} that allows the user to select an existing file
+     * or specify a new filename. It can enforce a specific file {@code extension} and
+     * optionally prompt to create the file if it doesn't exist.
+     * <p>
+     * The dialog's initial directory is set from {@link PreferencesManager#getLastDirectory()}.
+     * If a file is chosen (either existing or a new name):
+     * <ul>
+     *   <li>The parent directory is saved to preferences.</li>
+     *   <li>If an {@code extension} is provided and the selected filename doesn't have it,
+     *       the extension is appended.</li>
+     *   <li>If the (potentially extension-modified) file does not exist, the user is prompted
+     *       with a confirmation dialog to create it. If declined, {@link NoFileCreatedException} is thrown.
+     *       If creation fails due to an {@link IOException}, {@link NoFileCreatedException} is also thrown,
+     *       wrapping the original IO error.</li>
+     * </ul>
+     * </p>
+     *
+     * @param owner The owner {@link Stage} for the dialogs.
+     * @param title The title for the file chooser dialog window.
+     * @param extension The desired file extension (e.g., ".npbk" or "npbk"). If null, no specific
+     *                  extension is enforced or added, though a generic filter might still be applied.
+     * @return The selected or created {@link File}.
+     * @throws ActionCancelledException if the user cancels the initial file chooser dialog.
+     * @throws NoFileCreatedException if the user declines to create a new file when prompted,
+     *                                or if file creation fails.
+     */
 	public static File chooseAndCreate(	Stage owner,
 										String title,
 										String extension)
@@ -116,22 +146,38 @@ public final class NpbkFileChooserFX
 		return selected;
 	}
 	
-	/* --------------------------------------------------------------------- */
-	/** Utility — set chooser’s initial directory from PreferencesManager. */
+	/**
+     * Sets the initial directory for the given {@link FileChooser} based on the
+     * last used directory stored in {@link PreferencesManager}.
+     * If no last directory is found in preferences, it defaults to the user's home directory.
+     * The chooser's initial directory is only set if the determined path exists.
+     *
+     * @param ch The {@link FileChooser} whose initial directory is to be set.
+     */
 	private static void setInitialDir(FileChooser ch)
 	{
 		String lastDir = PreferencesManager.getLastDirectory();
-		if (lastDir == null)
+		if (lastDir == null || lastDir.trim().isEmpty()) // Check for empty string too
 		{
 			lastDir = System.getProperty("user.home");
 		}
 		File dir = new File(lastDir);
-		if (dir.exists())
+		if (dir.exists() && dir.isDirectory()) // Ensure it's a directory
 		{
 			ch.setInitialDirectory(dir);
-		}
+		} else {
+            // Fallback if preferred directory doesn't exist or isn't a directory
+            File homeDir = new File(System.getProperty("user.home"));
+            if (homeDir.exists() && homeDir.isDirectory()) {
+                ch.setInitialDirectory(homeDir);
+            }
+            // If home also fails, FileChooser will use its own default.
+        }
 	}
 	
+	/**
+     * Private constructor to prevent instantiation of this utility class.
+     */
 	private NpbkFileChooserFX()
 	{
 	} // utility class

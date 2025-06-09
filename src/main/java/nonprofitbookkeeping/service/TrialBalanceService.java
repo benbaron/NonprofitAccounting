@@ -26,25 +26,32 @@ import nonprofitbookkeeping.model.AccountSide;
 /**
  * Service to compute trial balance from a ledger within a specified date range.
  * This service also implements {@link TrialBalanceServiceIntf} for instance-based
- * results, though the primary computation logic is provided via a static method.
+ * results, where the trial balance is computed upon instantiation. The primary computation logic
+ * is also available via a static {@link #compute(Ledger, LocalDate, LocalDate)} method.
  */
 public class TrialBalanceService implements TrialBalanceServiceIntf
 {
 
     /**
-     * A private static record implementing {@link TrialBalanceResultIntf}.
-     * It stores debit and credit sums using {@link BigDecimal} for precision internally,
-     * but converts them to {@link Double} when exposing them via the interface methods.
+     * A private static record implementing {@link TrialBalanceResultIntf} to hold the results
+     * of a trial balance computation.
+     * It stores debit and credit sums internally using {@link BigDecimal} for precision,
+     * but converts these to {@link Double} when accessed via the interface methods,
+     * which might lead to precision loss if not handled carefully by the caller.
      *
-     * @param internalDebitMap A map of account IDs to their total debit sums (as BigDecimal).
-     * @param internalCreditMap A map of account IDs to their total credit sums (as BigDecimal).
-     * @param isBalanced True if total debits equal total credits, false otherwise.
+     * @param internalDebitMap A map of account IDs (String) to their total debit sums (as {@link BigDecimal}).
+     * @param internalCreditMap A map of account IDs (String) to their total credit sums (as {@link BigDecimal}).
+     * @param isBalanced A boolean indicating if the total debits equal total credits.
      */
     private static record TrialBalanceResultImpl(
             Map<String, BigDecimal> internalDebitMap,
             Map<String, BigDecimal> internalCreditMap,
             boolean isBalanced) implements TrialBalanceResultIntf {
 
+        /**
+         * {@inheritDoc}
+         * Converts internal BigDecimal debit sums to Double for the returned map.
+         */
         @Override
         public Map<String, Double> getDebitSums() {
             if (this.internalDebitMap == null) {
@@ -54,6 +61,10 @@ public class TrialBalanceService implements TrialBalanceServiceIntf
                     .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().doubleValue()));
         }
 
+        /**
+         * {@inheritDoc}
+         * Converts internal BigDecimal credit sums to Double for the returned map.
+         */
         @Override
         public Map<String, Double> getCreditSums() {
             if (this.internalCreditMap == null) {
@@ -63,34 +74,41 @@ public class TrialBalanceService implements TrialBalanceServiceIntf
                     .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().doubleValue()));
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public boolean isBalanced() {
             return this.isBalanced;
         }
     }
 
+	/** Stores the result of the trial balance computation performed at the time of service instantiation. */
 	private final TrialBalanceResultIntf computedResult;
 
     /**
-     * Constructs a new TrialBalanceService instance.
+     * Constructs a new {@code TrialBalanceService} instance.
      * The trial balance is computed immediately upon instantiation using the provided
-     * ledger and date range, and the result is stored for subsequent retrieval by
-     * the getter methods.
+     * {@link Ledger} and date range ({@code from} and {@code to}, inclusive).
+     * The result of this computation is stored and made available through the
+     * {@link TrialBalanceServiceIntf} methods implemented by this class.
      *
      * @param ledger The {@link Ledger} for which to compute the trial balance.
-     * @param from The start date of the period (inclusive).
-     * @param to The end date of the period (inclusive).
+     *               If null, the computed result will be empty and balanced.
+     * @param from The start date of the period (inclusive) for which to compute the trial balance.
+     *             If null, the computed result will be empty and balanced.
+     * @param to The end date of the period (inclusive) for which to compute the trial balance.
+     *           If null, or if {@code from} is after {@code to}, the computed result will be empty and balanced.
      */
     public TrialBalanceService(Ledger ledger, LocalDate from, LocalDate to) {
         this.computedResult = compute(ledger, from, to);
     }
 
 	/**
-	 * Gets the map of account IDs to total debit sums from the trial balance
-	 * computed when this service instance was created.
-	 *
-	 * @return A map where keys are account IDs (String) and values are total debit amounts (Double).
-	 *         Implements {@link TrialBalanceServiceIntf#getDebitSums()}.
+	 * {@inheritDoc}
+	 * <p>Returns the map of account IDs to total debit sums (as {@link Double}) from the trial balance
+	 * that was computed when this service instance was created.
+	 * </p>
 	 */
 	@Override public Map<String, Double> getDebitSums()
 	{
@@ -98,11 +116,10 @@ public class TrialBalanceService implements TrialBalanceServiceIntf
 	}
 
 	/**
-	 * Gets the map of account IDs to total credit sums from the trial balance
-	 * computed when this service instance was created.
-	 *
-	 * @return A map where keys are account IDs (String) and values are total credit amounts (Double).
-	 *         Implements {@link TrialBalanceServiceIntf#getCreditSums()}.
+	 * {@inheritDoc}
+	 * <p>Returns the map of account IDs to total credit sums (as {@link Double}) from the trial balance
+	 * that was computed when this service instance was created.
+	 * </p>
 	 */
 	@Override public Map<String, Double> getCreditSums()
 	{
@@ -110,11 +127,10 @@ public class TrialBalanceService implements TrialBalanceServiceIntf
 	}
 
 	/**
-	 * Checks if the trial balance computed when this service instance was created is balanced
-	 * (i.e., total debits equal total credits).
-	 *
-	 * @return {@code true} if the trial balance is balanced, {@code false} otherwise.
-	 *         Implements {@link TrialBalanceServiceIntf#isBalanced()}.
+	 * {@inheritDoc}
+	 * <p>Returns whether the trial balance computed when this service instance was created
+	 * is balanced (i.e., total debits equal total credits).
+	 * </p>
 	 */
 	@Override public boolean isBalanced()
 	{
@@ -122,16 +138,23 @@ public class TrialBalanceService implements TrialBalanceServiceIntf
 	}
 
 	/**
-     * Computes the trial balance for a given ledger within a specified date range.
-     * It aggregates total debits and credits for each account based on transactions
-     * falling within the date range (inclusive).
+     * Computes the trial balance for a given {@link Ledger} within a specified date range.
+     * This static method aggregates total debits and credits for each account by processing
+     * transactions that fall within the {@code from} and {@code to} dates (inclusive).
+     * Account balances are calculated using {@link BigDecimal} for precision.
      *
      * @param ledger The {@link Ledger} containing financial transactions.
+     *               If null or contains no transactions, an empty, balanced result is returned.
      * @param from The start date of the period (inclusive).
+     *             If null, or if {@code from} is after {@code to}, an empty, balanced result is returned.
      * @param to The end date of the period (inclusive).
-     * @return A {@link TrialBalanceResultIntf} object containing the debit sums,
-     *         credit sums, and the balance status. Returns an empty, balanced result
-     *         if the ledger is null, has no transactions, or the date range is invalid.
+     *           If null, or if {@code from} is after {@code to}, an empty, balanced result is returned.
+     * @return A {@link TrialBalanceResultIntf} object encapsulating the debit sums per account,
+     *         credit sums per account, and the overall balance status.
+     *         The maps within the result use account numbers as keys and {@link BigDecimal} sums as values,
+     *         though the interface methods {@link TrialBalanceResultIntf#getDebitSums()} and
+     *         {@link TrialBalanceResultIntf#getCreditSums()} in the returned {@link TrialBalanceResultImpl}
+     *         convert these to {@link Double}.
      */
 	public static TrialBalanceResultIntf compute(Ledger ledger, LocalDate from, LocalDate to)
 	{
