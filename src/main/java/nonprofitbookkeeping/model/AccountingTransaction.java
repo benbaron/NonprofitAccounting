@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 import lombok.AllArgsConstructor; // Ensure this is present
-import lombok.NoArgsConstructor; // Added
+import lombok.NoArgsConstructor;  // Added
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
