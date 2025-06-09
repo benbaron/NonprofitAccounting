@@ -81,6 +81,10 @@ public class NonprofitBookkeepingFX extends Application
 	private MenuItem miEditCoa;
 	/** Menu item for editing the Journal. */
 	private MenuItem miEditJournal;
+	/** Menu item for importing COA from JSON. */
+	private MenuItem miImportCoaJson;
+	/** Menu item for exporting COA from JSON. */
+	private MenuItem miExportCoaJson;
 	
 	// Menus that need their state managed
 	/** Top-level menu for running various tools and plugin features. */
@@ -229,6 +233,8 @@ public class NonprofitBookkeepingFX extends Application
 		this.miOpen = add(file, "Open Company File", e -> doOpenCompany());
 		this.miClose = add(file, "Close Company File", e -> doCloseCompany());
 		this.miSave = add(file, "Save Company File", e -> doSaveCompany());
+		this.miImportCoaJson = add(file, "Import COA (JSON)", e -> new ImportCoaJsonActionFX(this.primaryStage).handle(e));
+		this.miExportCoaJson = add(file, "Export COA (JSON)", e -> new ExportCoaJsonActionFX(this.primaryStage).handle(e));
 
 		add(file, "Import File", e -> new ImportFileActionFX(this.primaryStage).handle(e));
 		add(file, "Export File", e -> new ExportFileActionFX(this.primaryStage).handle(e));
@@ -487,6 +493,8 @@ public class NonprofitBookkeepingFX extends Application
 														// company
 		this.miEditCoa.setDisable(noCompany || creatingCompany);
 		this.miEditJournal.setDisable(noCompany || creatingCompany);
+		this.miImportCoaJson.setDisable(noCompany || creatingCompany);
+		this.miExportCoaJson.setDisable(noCompany || creatingCompany);
 		
 		this.run.setDisable(noCompany || creatingCompany);
 		this.panels.setDisable(noCompany || creatingCompany);
