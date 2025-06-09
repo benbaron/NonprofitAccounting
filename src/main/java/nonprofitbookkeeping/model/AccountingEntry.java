@@ -33,6 +33,18 @@ public final class AccountingEntry implements Serializable
 	/**
 	 * 
 	 * Constructor AccountingEntry
+	 */
+	public AccountingEntry ()
+	{
+		this.amount = null;
+		this.accountSide = null;
+		this.accountNumber = "";
+	}
+	
+	
+	/**
+	 * 
+	 * Constructor AccountingEntry
 	 * @param amount
 	 * @param accountNumber
 	 * @param accountSide
