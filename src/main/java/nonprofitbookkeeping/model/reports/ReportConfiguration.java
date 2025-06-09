@@ -44,6 +44,9 @@ public class ReportConfiguration {
     /** The desired output format for the report (e.g., "xlsx", "pdf"). Defaults to "xlsx". */
     private String outputFormat = "xlsx";
 
+    /** A list of account IDs to filter a detail report by. Can be null or empty. */
+    private List<String> accountIdsForDetailReport;
+
     /**
      * Constructs a new ReportConfiguration with essential details.
      * A unique {@code configurationId} is automatically generated.
@@ -252,23 +255,16 @@ public class ReportConfiguration {
 	 */
 	public void setAccountIdsForDetailReport(List<String> selectedAccountIds)
 	{
-		// TODO Auto-generated method stub
-		// Implementation would likely involve storing selectedAccountIds in a new field.
+		this.accountIdsForDetailReport = selectedAccountIds;
 	}
 
-
-	// FIXME 
 	/**
 	 * Gets the account IDs used for filtering a detail report.
-	 * Note: This is a stub method and currently returns null.
-	 * It should return the list of account IDs set by {@link #setAccountIdsForDetailReport(List)}.
-	 * @return A list of account ID strings, or null if not implemented or no IDs are set.
+	 * @return A list of account ID strings, or null if not set.
 	 */
 	public List<String> getAccountIdsForDetailReport()
 	{
-		// TODO Auto-generated method stub
-		// Implementation would likely involve returning a new field that stores these IDs.
-		return null;
+		return this.accountIdsForDetailReport;
 	}
 
     // Lombok's @Data will generate:

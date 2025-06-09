@@ -127,13 +127,13 @@ public class FileImportService
 		for (int i = 0; i < r2.size(); i++)
 		{
 			CreditCardStatementResponseTransaction ccResponse =
-				(CreditCardStatementResponseTransaction) r.get(i);
+				(CreditCardStatementResponseTransaction) r2.get(i); // Corrected from r.get(i)
 			
 			
-			// FIXME: this could also be an unwrapped message i.e ccResponse.getMessage()
-			if (ccResponse != null && ccResponse.getWrappedMessage() != null)
+			// Using getMessage() as suggested by OFX4J patterns for TransactionWrapper
+			if (ccResponse != null && ccResponse.getMessage() != null)
 			{
-				CreditCardStatementResponse statement = ccResponse.getWrappedMessage();
+				CreditCardStatementResponse statement = ccResponse.getMessage(); // Changed from getWrappedMessage()
 				
 				CreditCardAccountDetails ccAccount =
 					statement.getAccount();

@@ -57,11 +57,9 @@ public class PageViewerPanel extends JPanel
 	 * This method replaces any existing data and columns in the table.
 	 * If {@code newModelData} is null, the table will be cleared (both data and columns).
 	 * <p>
-	 * Note: There is a FIXME comment in the original code regarding setting column identifiers.
-	 * The current implementation passes null for column identifiers to {@code setDataVector},
-	 * which might not be the intended behavior if columns from {@code newModelData} are desired.
+	 * Note: Column identifiers are now correctly extracted from {@code newModelData}.
 	 * </p>
-	 * @param newModelData The {@link DefaultTableModel} containing the new data and potentially column structure.
+	 * @param newModelData The {@link DefaultTableModel} containing the new data and column structure.
 	 *                     If null, clears the table.
 	 */
 	public void loadData(DefaultTableModel newModelData)
@@ -74,11 +72,16 @@ public class PageViewerPanel extends JPanel
 			return;
 		}
 		
+		// Extract column identifiers from the newModelData
+		Vector<String> columnIdentifiers = new Vector<>();
+		for (int i = 0; i < newModelData.getColumnCount(); i++) {
+			columnIdentifiers.add(newModelData.getColumnName(i));
+		}
+
 		// Replace data and columns with newModelData's content
 		this.tableModel.setDataVector(
 			newModelData.getDataVector(),
-			null);
-			// FIXME newModelData.getColumnIdentifiers());
+			columnIdentifiers);
 		// No need to call fireTableStructureChanged() as setDataVector does this.
 	}
 	

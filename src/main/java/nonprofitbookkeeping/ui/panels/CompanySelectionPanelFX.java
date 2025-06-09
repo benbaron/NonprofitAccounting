@@ -67,6 +67,9 @@ public class CompanySelectionPanelFX extends BorderPane
 	private final ObservableList<File> npbkFiles = FXCollections.observableArrayList();
 	/** TextArea used to display a preview or details of the company file selected in the {@code companyList}. */
 	private final TextArea previewArea = new TextArea();
+
+    /** Handler for when a company is successfully opened. */
+    private OnCompanyOpenedHandler companyOpenedHandler;
 	
 	/**
 	 * Default constructor for {@code CompanySelectionPanelFX}.
@@ -79,20 +82,6 @@ public class CompanySelectionPanelFX extends BorderPane
 		setPadding(new Insets(10));
 		buildUI();
 		reloadCompanyList();
-	}
-	
-	/**  
-	 * Alternative constructor for {@code CompanySelectionPanelFX}.
-	 * Note: This is currently a stub and does not utilize the {@code object} parameter.
-	 * Its intended purpose is unclear. Consider removing or implementing if a specific
-	 * use case is identified.
-	 *
-	 * @param object An object parameter (currently unused and its purpose is undefined).
-	 */
-	public CompanySelectionPanelFX(Object object)
-	{
-		// TODO Auto-generated constructor stub: Implement if this constructor has a specific purpose,
-        // otherwise consider removing it to avoid confusion.
 	}
 
 	/**
@@ -255,13 +244,27 @@ public class CompanySelectionPanelFX extends BorderPane
 		                        "\n(Note: Company might have already been loaded for preview).");
 		alert.initOwner(this.getScene() != null ? this.getScene().getWindow() : null); // Set owner if scene is available
 		alert.showAndWait();
-		// TODO: notify application controller. This might involve using an instance of OnCompanyOpenedHandler
-        // if it were properly defined as a functional interface and passed to this panel.
-        // Example: if (onCompanyOpenedHandler != null && CurrentCompany.getCompany() != null) {
-        //              onCompanyOpenedHandler.onCompanyOpened(CurrentCompany.getCompany());
-        //          }
+
+        if (this.companyOpenedHandler != null && CurrentCompany.getCompany() != null) {
+            this.companyOpenedHandler.onCompanyOpened(CurrentCompany.getCompany());
+        } else {
+            if (this.companyOpenedHandler == null) {
+                System.err.println("CompanySelectionPanelFX: companyOpenedHandler is null. Cannot notify.");
+            }
+            if (CurrentCompany.getCompany() == null) {
+                 System.err.println("CompanySelectionPanelFX: CurrentCompany.getCompany() is null. Cannot notify with company data.");
+            }
+        }
 	}
 	
+    /**
+     * Sets the handler to be called when a company is opened.
+     * @param handler The handler to set.
+     */
+    public void setOnCompanyOpenedHandler(OnCompanyOpenedHandler handler) {
+        this.companyOpenedHandler = handler;
+    }
+
 	/**
 	 * Initiates the process of creating a new company.
 	 * This method opens a new {@link Stage} containing a {@link CreateOrEditCompanyPanelFX}
