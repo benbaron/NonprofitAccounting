@@ -50,14 +50,35 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Service class for importing financial transactions from various file formats like OFX and QIF.
+ * It handles parsing these files, mapping the data to intermediate {@link ImportedTransaction} objects,
+ * detecting potential duplicates against existing ledger data, and finally converting them into
+ * the application's standard {@link AccountingTransaction} format.
+ * Transactions are typically mapped to a target account and a "needs categorization" suspense account.
+ */
 public class FileImportService
 {
+	/** Logger for this class. */
 	private static final Logger LOGGER = Logger.getLogger(FileImportService.class.getName());
+	/**
+	 * The account number designated for transactions that need further categorization after import.
+	 * This is a suspense account.
+	 */
 	public static final String NEEDS_CATEGORIZATION_ACCOUNT_NUMBER = "SUSPENSE-UNCATEGORIZED";
+	/** Key used in transaction info map to store the original Financial Institution Transaction ID (FITID). */
 	private static final String FITID_KEY = "IMPORT_ID";
 	
-	// --- OFX Parsing Logic ---
-	// Package-private for testing
+	/**
+	 * Parses an OFX (Open Financial Exchange) file from an input stream and converts its transactions
+	 * into a list of {@link ImportedTransaction} objects.
+	 * It handles both banking (BankStatementResponse) and credit card (CreditCardStatementResponse) messages.
+	 *
+	 * @param inputStream The input stream of the OFX file.
+	 * @return A list of {@link ImportedTransaction} objects parsed from the OFX data.
+	 * @throws IOException If an I/O error occurs while reading the stream.
+	 * @throws OFXParseException If an error occurs during the parsing of the OFX content.
+	 */
 	static List<ImportedTransaction> parseOfx(InputStream inputStream)	throws IOException,
 																		OFXParseException
 	{
@@ -106,13 +127,13 @@ public class FileImportService
 		for (int i = 0; i < r2.size(); i++)
 		{
 			CreditCardStatementResponseTransaction ccResponse =
-				(CreditCardStatementResponseTransaction) r.get(i);
+				(CreditCardStatementResponseTransaction) r2.get(i); // Corrected from r.get(i)
 			
 			
-			// FIXME: this could also be an unwrapped message i.e ccResponse.getMessage()
-			if (ccResponse != null && ccResponse.getWrappedMessage() != null)
+			// Using getMessage() as suggested by OFX4J patterns for TransactionWrapper
+			if (ccResponse != null && ccResponse.getMessage() != null)
 			{
-				CreditCardStatementResponse statement = ccResponse.getWrappedMessage();
+				CreditCardStatementResponse statement = ccResponse.getMessage(); // Changed from getWrappedMessage()
 				
 				CreditCardAccountDetails ccAccount =
 					statement.getAccount();
@@ -139,6 +160,15 @@ public class FileImportService
 		return importedTransactions;
 	}
 	
+	/**
+	 * Maps an OFX4J {@link Transaction} object to this application's {@link ImportedTransaction} format.
+	 *
+	 * @param ofxTransaction The source OFX transaction object from ofx4j library.
+	 * @param accountNumber The account number associated with this transaction in the OFX file.
+	 * @param accountType The type of account (e.g., "BANK", "CREDITCARD") from the OFX file.
+	 * @param currencyCode The default currency code from the OFX statement, used if transaction has no specific currency.
+	 * @return A new {@link ImportedTransaction} object populated with data from the OFX transaction.
+	 */
 	private static ImportedTransaction mapToImportedTransaction(Transaction ofxTransaction,
 																String accountNumber,
 																String accountType,
@@ -178,8 +208,19 @@ public class FileImportService
 		return importedTx;
 	}
 	
-	// --- QIF Parsing Logic ---
-	// Package-private for testing
+	/**
+	 * Parses a QIF (Quicken Interchange Format) file from an input stream.
+	 * It processes standard QIF fields (Date, Amount, Payee/Description, Memo, Check Number, Category/Transfer)
+	 * and converts them into a list of {@link ImportedTransaction} objects.
+	 * The method attempts to determine the account type from the QIF header (e.g., "!Type:Bank")
+	 * or uses the provided {@code targetAccountTypeHint}.
+	 *
+	 * @param inputStream The input stream of the QIF file.
+	 * @param targetAccountTypeHint A hint for the account type (e.g., "BANK", "CREDITCARD") if not specified
+	 *                              or ambiguously specified in the QIF header.
+	 * @return A list of {@link ImportedTransaction} objects parsed from the QIF data.
+	 * @throws IOException If an I/O error occurs while reading the stream.
+	 */
 	static List<ImportedTransaction> parseQif(	InputStream inputStream,
 												String targetAccountTypeHint) throws IOException
 	{
@@ -292,26 +333,41 @@ public class FileImportService
 		return importedTransactions;
 	}
 	
+	/** Date formatter for QIF dates like "M/d/yy", defaulting to current year if year is ambiguous (e.g. "1/15/98" vs "1/15/20"). */
 	private static final DateTimeFormatter QIF_DATE_FORMATTER_MDY_YY =
 		new DateTimeFormatterBuilder()
 			.appendPattern("M/d/yy")
-			.parseDefaulting(ChronoField.YEAR_OF_ERA, LocalDate.now().getYear())
+			.parseDefaulting(ChronoField.YEAR_OF_ERA, LocalDate.now().getYear()) // Sensible default for yy
 			.toFormatter();
+	/** Date formatter for QIF dates like "M/d''yy" (e.g., "1/15''98"). */
 	private static final DateTimeFormatter QIF_DATE_FORMATTER_MD_YY_APOSTROPHE =
 		new DateTimeFormatterBuilder()
 			.appendPattern("M/d''yy")
-			.parseDefaulting(ChronoField.YEAR_OF_ERA, LocalDate.now().getYear())
+			.parseDefaulting(ChronoField.YEAR_OF_ERA, LocalDate.now().getYear()) // Sensible default for yy
 			.toFormatter();
+	/** Date formatter for QIF dates like "M/d/yyyy". */
 	private static final DateTimeFormatter QIF_DATE_FORMATTER_MDYYYY =
 		DateTimeFormatter.ofPattern("M/d/yyyy");
+	/** Date formatter for QIF dates like "d/M/yy". */
 	private static final DateTimeFormatter QIF_DATE_FORMATTER_DMY_YY =
 		new DateTimeFormatterBuilder()
 			.appendPattern("d/M/yy")
-			.parseDefaulting(ChronoField.YEAR_OF_ERA, LocalDate.now().getYear())
+			.parseDefaulting(ChronoField.YEAR_OF_ERA, LocalDate.now().getYear()) // Sensible default for yy
 			.toFormatter();
+	/** Date formatter for QIF dates like "d/M/yyyy". */
 	private static final DateTimeFormatter QIF_DATE_FORMATTER_DMYYYY =
 		DateTimeFormatter.ofPattern("d/M/yyyy");
 	
+	/**
+	 * Parses a QIF (Quicken Interchange Format) file from an input stream (seems to be a duplicate of parseQif).
+	 * This method appears to be an older or alternative version of {@link #parseQif(InputStream, String)}.
+	 * It processes standard QIF fields and converts them into a list of {@link ImportedTransaction} objects.
+	 *
+	 * @param inputStream The input stream of the QIF file.
+	 * @param targetAccountTypeHint A hint for the account type if not specified in the QIF header.
+	 * @return A list of {@link ImportedTransaction} objects parsed from the QIF data.
+	 * @throws IOException If an I/O error occurs while reading the stream.
+	 */
 	private static
 			List<ImportedTransaction>
 			parseQif1(InputStream inputStream, String targetAccountTypeHint) throws IOException
@@ -424,6 +480,16 @@ public class FileImportService
 		return importedTransactions;
 	}
 	
+	/**
+	 * Parses a date string commonly found in QIF files into a {@link LocalDate}.
+	 * It tries multiple common QIF date formats (M/d/yyyy, M/d/yy, M/d''yy, d/M/yyyy, d/M/yy).
+	 * If all known formats fail, it attempts a direct parse using {@link LocalDate#parse(CharSequence)},
+	 * which expects ISO-8601 format by default.
+	 *
+	 * @param dateStr The date string to parse.
+	 * @return The parsed {@link LocalDate}.
+	 * @throws DateTimeParseException if the date string cannot be parsed by any of the attempted formats.
+	 */
 	private static LocalDate parseQifDate(String dateStr) throws DateTimeParseException
 	{
 		
@@ -467,17 +533,39 @@ public class FileImportService
 		{
 		}
 		
+		// Fallback to default ISO parse if other formats fail
 		return LocalDate.parse(dateStr);
 	}
 	
+	/**
+	 * Validates if an {@link ImportedTransaction} has the minimum required data (date and amount)
+	 * to be considered a valid transaction for further processing.
+	 *
+	 * @param tx The {@link ImportedTransaction} to validate.
+	 * @return {@code true} if the transaction has both date posted and amount set, {@code false} otherwise.
+	 */
 	private static boolean isValidTransaction(ImportedTransaction tx)
 	{
-		return tx.getDatePosted() != null && tx.getAmount() != null;
+		return tx != null && tx.getDatePosted() != null && tx.getAmount() != null;
 	}
 	
-	// --- Duplicate Detection & Mapping Logic ---
-	// Package-private for testing (though isPotentialDuplicate remains private and
-	// is tested via this)
+	/**
+	 * Maps a list of {@link ImportedTransaction} objects to a list of {@link AccountingTransaction} objects.
+	 * This process involves:
+	 * 1. Filtering out potential duplicate transactions by comparing against an existing ledger.
+	 * 2. For non-duplicate, valid transactions:
+	 *    a. Determining booking date, memo, and informational details.
+	 *    b. Creating balanced accounting entries: one for the {@code targetAccount} and one for the
+	 *       "needs categorization" suspense account (identified by {@link #NEEDS_CATEGORIZATION_ACCOUNT_NUMBER}).
+	 *    c. Constructing new {@link AccountingTransaction} objects.
+	 *
+	 * @param importedTxns The list of {@link ImportedTransaction}s to map.
+	 * @param targetAccount The primary {@link Account} to which these transactions should be posted.
+	 * @param chartOfAccounts The {@link ChartOfAccounts} used to find the "needs categorization" account.
+	 * @param existingLedger The {@link Ledger} containing existing transactions, used for duplicate detection.
+	 * @return A list of newly created {@link AccountingTransaction}s.
+	 * @throws IllegalArgumentException if the "needs categorization" account is not found in the chart of accounts.
+	 */
 	static List<AccountingTransaction> mapToAccountingTransactions(
 																	List<
 																		ImportedTransaction> importedTxns,
@@ -604,17 +692,38 @@ public class FileImportService
 		return accountingTransactions;
 	}
 	
+	/**
+	 * Checks if an imported transaction is a potential duplicate of an existing transaction in the ledger.
+	 * This method uses two main strategies for duplicate detection:
+	 * <ol>
+	 *   <li><b>OFX FITID Check:</b> If the imported transaction has a non-empty transaction ID (FITID)
+	 *       and its original account type is "BANK" or "CREDITCARD", it checks if any existing
+	 *       transaction in the ledger has the same FITID stored in its info map (under the key {@link #FITID_KEY}).
+	 *       This is considered a strong match for OFX imports.</li>
+	 *   <li><b>QIF/Fallback Heuristic Check:</b> If the FITID check doesn't find a duplicate (or isn't applicable),
+	 *       this heuristic compares the imported transaction's date, amount (net effect on target account),
+	 *       and description/memo against existing transactions associated with the {@code targetAccount}.
+	 *       This is a more complex comparison involving checking entry details.</li>
+	 * </ol>
+	 *
+	 * @param impTxn The {@link ImportedTransaction} to check for duplication.
+	 * @param targetAccount The {@link Account} against which the transaction is being imported.
+	 *                      This is used to find relevant existing transactions and determine amount signs.
+	 * @param existingLedger The {@link Ledger} containing existing transactions to check against.
+	 * @return {@code true} if the imported transaction is deemed a potential duplicate, {@code false} otherwise.
+	 */
 	private static boolean isPotentialDuplicate(ImportedTransaction impTxn, Account targetAccount,
 												Ledger existingLedger)
 	{
 		
 		if (existingLedger == null || existingLedger.getTransactions() == null)
 		{
-			return false;
+			return false; // No existing transactions to compare against.
 		}
 		
 		// OFX Duplicate Check (Primary using FITID)
 		if (impTxn.getTransactionId() != null && !impTxn.getTransactionId().isEmpty() &&
+			impTxn.getOriginalAccountType() != null && // Ensure originalAccountType is not null
 			(impTxn.getOriginalAccountType().equals("BANK") ||
 				impTxn.getOriginalAccountType().equals("CREDITCARD")))
 		{ // FITID is strong for OFX
@@ -625,6 +734,7 @@ public class FileImportService
 				
 				if (info != null && impTxn.getTransactionId().equals(info.get(FITID_KEY)))
 				{
+					LOGGER.info("Potential OFX duplicate (FITID match): Imported FITID=" + impTxn.getTransactionId() + ", Existing Tx BookingDate=" + Instant.ofEpochMilli(existingTx.getBookingDateTimestamp()));
 					return true; // Found duplicate by FITID
 				}
 				
@@ -633,31 +743,36 @@ public class FileImportService
 		}
 		
 		// QIF/Fallback Heuristic Duplicate Check
-		// Exact match on Date, abs(Amount), and Payee/Description (case-sensitive for
-		// V1 simplicity)
-		// for transactions associated with the targetAccount.
+		// Exact match on Date, net Amount on targetAccount, and Payee/Description.
+		if (impTxn.getDatePosted() == null || impTxn.getAmount() == null) {
+		    return false; // Cannot perform heuristic check without date or amount
+		}
+
 		for (AccountingTransaction existingTx : existingLedger.getTransactions())
 		{
 			boolean targetAccountMatchInExistingTx = false;
-			
+			BigDecimal existingTxAmountForTarget = BigDecimal.ZERO;
+
 			if (existingTx.getEntries() != null)
 			{
-				
 				for (AccountingEntry entry : existingTx.getEntries())
 				{
-					
 					if (entry.getAccountNumber().equals(targetAccount.getAccountNumber()))
 					{
 						targetAccountMatchInExistingTx = true;
-						break;
+						// Calculate net effect on target account based on entry side relative to account's normal increase side
+						if (targetAccount.getIncreaseSide() == entry.getAccountSide()) { // Matches normal increase (e.g., Debit for Asset, Credit for Liability)
+							existingTxAmountForTarget = existingTxAmountForTarget.add(entry.getAmount().abs());
+						} else { // Opposite of normal increase
+							existingTxAmountForTarget = existingTxAmountForTarget.subtract(entry.getAmount().abs());
+						}
 					}
-					
 				}
-				
 			}
 			
-			if (!targetAccountMatchInExistingTx)
+			if (!targetAccountMatchInExistingTx) {
 				continue; // Skip if existing TX doesn't involve the target account
+			}
 				
 			LocalDate existingTxDate = Instant.ofEpochMilli(existingTx.getBookingDateTimestamp())
 				.atZone(ZoneId.systemDefault()).toLocalDate();
@@ -668,104 +783,73 @@ public class FileImportService
 				continue;
 			}
 			
-			// Compare amount (absolute value)
-			// Need to determine the amount related to the targetAccount in existingTx
-			BigDecimal existingTxAmountForTarget = BigDecimal.ZERO;
-			
-			for (AccountingEntry entry : existingTx.getEntries())
-			{
-				
-				if (entry.getAccountNumber().equals(targetAccount.getAccountNumber()))
-				{
-					
-					if (targetAccount.getIncreaseSide() == entry.getAccountSide())
-					{ // Inflow-like for target
-						existingTxAmountForTarget =
-							existingTxAmountForTarget.add(entry.getAmount());
-					}
-					else
-					{ // Outflow-like for target
-						existingTxAmountForTarget =
-							existingTxAmountForTarget.subtract(entry.getAmount());
-					}
-					
-				}
-				
+			// Compare amount:
+			// For bank accounts (DEBIT normal balance): positive imported amount is DEBIT, negative is CREDIT.
+			// For credit cards (CREDIT normal balance): positive imported amount (payment) is DEBIT, negative (charge) is CREDIT.
+			// The existingTxAmountForTarget represents the net change.
+			// We need to align the sign of impTxn.getAmount() with how it would affect the target account's balance.
+			BigDecimal comparableImportedAmount = impTxn.getAmount();
+			if (targetAccount.getAccountType() == AccountType.CREDITCARD || targetAccount.getAccountType() == AccountType.LIABILITY) {
+			    // For credit-normal accounts, OFX often has charges as negative.
+			    // If our existingTxAmountForTarget reflects increase in liability as positive, then flip sign of imported.
+			    // This logic is complex and depends on how amounts are signed in QIF/OFX vs. internal representation.
+			    // A simpler heuristic for now: compare impTxn.getAmount() directly with existingTxAmountForTarget,
+			    // ASSUMING that existingTxAmountForTarget correctly reflects the signed impact on the account.
 			}
-			
-			// For comparison, we use the imported transaction's amount sign convention.
-			// If target is DEBIT normal (Bank): positive impTxn.getAmount() is inflow
-			// (DEBIT).
-			// If target is CREDIT normal (CC): negative impTxn.getAmount() is inflow
-			// (CREDIT to liability, but represents a charge).
-			// This heuristic is tricky. Simpler: compare absolute values of
-			// impTxn.getAmount() with transaction's total impact on target account.
-			// For V1: We compare impTxn.getAmount() with how it *would* affect the target
-			// account.
-			// If target is DEBIT normal: impTxn.getAmount() is what we care about.
-			// If target is CREDIT normal: impTxn.getAmount() (e.g. charge -100 for CC) is
-			// what we care about.
-			// The existingTxAmountForTarget above calculates the net change to
-			// targetAccount.
-			// So, compare impTxn.getAmount() with existingTxAmountForTarget.
-			if (impTxn.getAmount().compareTo(existingTxAmountForTarget) != 0)
+
+
+			if (comparableImportedAmount.compareTo(existingTxAmountForTarget) != 0)
 			{
 				continue;
 			}
 			
-			// Compare description (payee)
-			String impDescription = impTxn.getDescription() != null ? impTxn.getDescription() : "";
-			String existingDescription = existingTx.getMemo() != null ? existingTx.getMemo() : ""; // Or
-																									// a
-																									// specific
-																									// entry's
-																									// memo/description
-			// For V1 heuristic, using existingTx.getMemo() as a general descriptor.
-			// A more robust check might look at the description of the "Needs
-			// Categorization" entry.
-			
-			if (!impDescription.equals(existingDescription))
+			// Compare description (payee/memo)
+			String impDescription = (impTxn.getDescription() != null ? impTxn.getDescription() : "").trim();
+			String existingTxMemo = (existingTx.getMemo() != null ? existingTx.getMemo() : "").trim();
+
+			// Simple direct comparison for V1 heuristic. Could be more sophisticated (fuzzy match, check other entry descriptions).
+			if (!impDescription.equalsIgnoreCase(existingTxMemo)) // Using equalsIgnoreCase for more lenient matching
 			{
-				
-				if (existingTx.getEntries() != null)
-				{ // Check entry memos if main memo doesn't match
-					boolean entryMemoMatch = false;
-					
-					for (AccountingEntry entry : existingTx.getEntries())
-					{
-						
-						if (!entry.getAccountNumber().equals(targetAccount.getAccountNumber()) && // check
-																									// other
-																									// side
-							entry.getTransaction() != null &&
-							entry.getTransaction().getMemo() != null &&
-							entry.getTransaction().getMemo().equals(impDescription))
-						{
-							entryMemoMatch = true;
-							break;
-						}
-						
-					}
-					
-					if (!entryMemoMatch)
-						continue;
+				// Fallback: check if imported description matches the "other side" entry's memo in existing transaction
+				boolean otherSideMatch = false;
+				if (existingTx.getEntries() != null) {
+				    for (AccountingEntry entry : existingTx.getEntries()) {
+				        if (!entry.getAccountNumber().equals(targetAccount.getAccountNumber())) { // The "other" leg
+				            String otherEntryMemo = entry.getTransaction() != null && entry.getTransaction().getMemo() != null ?
+				                                    entry.getTransaction().getMemo().trim() : "";
+				            if (impDescription.equalsIgnoreCase(otherEntryMemo)) {
+				                otherSideMatch = true;
+				                break;
+				            }
+				        }
+				    }
 				}
-				else
-				{
-					continue;
-				}
-				
+				if (!otherSideMatch) continue;
 			}
 			
-			// If all match, it's a potential duplicate by heuristic
+			// If all heuristic checks pass
 			LOGGER.info(
-				"Potential QIF duplicate found: Imported=" + impTxn + " vs Existing=" + existingTx);
+				"Potential heuristic duplicate found: Imported=" + impTxn.getDatePosted() + "|" + impTxn.getAmount() + "|" + impDescription +
+				" vs Existing=" + existingTxDate + "|" + existingTxAmountForTarget + "|" + existingTxMemo);
 			return true;
 		}
 		
 		return false;
 	}
 	
+	/**
+	 * Maps a list of {@link ImportedTransaction}s to {@link AccountingTransaction}s.
+	 * This method appears to be an older or alternative version of
+	 * {@link #mapToAccountingTransactions(List, Account, ChartOfAccounts, Ledger)}.
+	 * It includes logic for duplicate detection and creating balanced accounting entries.
+	 *
+	 * @param importedTxns List of imported transactions.
+	 * @param targetAccount The target account for these transactions.
+	 * @param chartOfAccounts The chart of accounts.
+	 * @param existingLedger The existing ledger for duplicate checking.
+	 * @return A list of {@link AccountingTransaction}s.
+	 * @throws IllegalArgumentException if the "needs categorization" account is not found.
+	 */
 	private static
 			List<AccountingTransaction>
 			mapToAccountingTransactions1(	List<ImportedTransaction> importedTxns,
@@ -897,15 +981,29 @@ public class FileImportService
 		return accountingTransactions;
 	}
 	
-	// Updated importFile method signature
+	/**
+	 * Imports transactions from a specified file (OFX or QIF) and maps them to accounting transactions.
+	 * The method determines the file type based on its extension, parses it,
+	 * checks for potential duplicates against the existing ledger, and then maps valid,
+	 * non-duplicate imported transactions to {@link AccountingTransaction} objects.
+	 * These transactions are typically balanced against a "needs categorization" suspense account.
+	 *
+	 * @param file The financial data file to import (OFX or QIF). Must not be null and must exist.
+	 * @param targetAccountInCOA The {@link Account} in the Chart of Accounts to which these transactions primarily relate. Must not be null.
+	 * @param chartOfAccounts The complete {@link ChartOfAccounts}, used to find the suspense account. Must not be null.
+	 * @param ledger The current {@link Ledger} containing existing transactions, used for duplicate detection. Must not be null.
+	 * @return A list of {@link AccountingTransaction}s generated from the imported file.
+	 *         Returns an empty list if the file is invalid, unsupported, cannot be parsed,
+	 *         or if critical setup (like the suspense account) is missing, or if all transactions are duplicates or invalid.
+	 */
 	public static List<AccountingTransaction> importFile(	File file, Account targetAccountInCOA,
 															ChartOfAccounts chartOfAccounts,
 															Ledger ledger)
-	{ // Added Ledger
+	{
 		
 		if (file == null || !file.exists())
 		{
-			LOGGER.warning("Import file is null or does not exist.");
+			LOGGER.warning("Import file is null or does not exist. Path: " + (file != null ? file.getAbsolutePath() : "null"));
 			return Collections.emptyList();
 		}
 		
@@ -922,7 +1020,7 @@ public class FileImportService
 		}
 		
 		if (ledger == null)
-		{ // Added check for ledger
+		{
 			LOGGER.warning("Ledger is null. Cannot check for duplicates or save transactions.");
 			return Collections.emptyList();
 		}

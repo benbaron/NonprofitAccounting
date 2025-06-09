@@ -4,8 +4,11 @@ package nonprofitbookkeeping.ui.panels;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -16,6 +19,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import nonprofitbookkeeping.model.*;
 import nonprofitbookkeeping.service.ChartOfAccountsIOService;
 import nonprofitbookkeeping.service.ChartOfAccountsService;
@@ -36,31 +40,44 @@ import nonprofitbookkeeping.ui.helpers.AlertBox;
  * );
  * root.setCenter(editor);
  * }</pre>
+ * This panel uses a {@link TreeTableView} to display the hierarchical chart of accounts
+ * and provides buttons for adding root accounts, sub-accounts, editing, deleting,
+ * importing/exporting as JSON, saving changes, and cancelling.
  */
 public class CoaEditorPanelFX extends BorderPane
 {
-	
-	/* ------------------------------------------------------------------ */
+    private static final Logger LOGGER = LoggerFactory.getLogger(CoaEditorPanelFX.class);
+
+	/** Service layer for Chart of Accounts operations. */
 	private final ChartOfAccountsService svc;
+	/** Callback to be executed when the "Save" button is clicked and changes are applied. Can be null. */
 	private final Consumer<ChartOfAccounts> onSave;
+	/** Callback to be executed when the panel is closed (e.g., via "Save" or "Cancel"). Can be null. */
 	private final Runnable onClose;
 	
+	/** The TreeTableView used to display and interact with the chart of accounts. */
 	private final TreeTableView<Account> tree = new TreeTableView<>();
+	/** The root item for the {@link #tree}; it is hidden in the UI. */
 	private final TreeItem<Account> rootItem = new TreeItem<>();
 	
+	/** Service for importing and exporting Chart of Accounts data to/from JSON. */
 	private final ChartOfAccountsIOService ioSvc = new ChartOfAccountsIOService();
 	
-	/* dialog fields (re-used so we can read them in build()) */
-	private TextField numF, nameF, balF;
-	
-	/* dialog fields */
+	// Dialog fields - these are instance members because they are accessed by the dialog's result converter lambda.
+	/** TextField for account number input in the add/edit dialog. */
+	private TextField numF;
+	/** TextField for account name input in the add/edit dialog. */
+	private TextField nameF;
+	/** TextField for opening balance input in the add/edit dialog. */
+	private TextField balF;
+	/** ComboBox for selecting account type in the add/edit dialog. */
 	private ComboBox<AccountType> typeBox;
 	
 	/** 
-	 * convenience when no callbacks are needed 
+	 * Convenience constructor for {@code CoaEditorPanelFX} when no specific save or close callbacks are needed.
+	 * Calls the main constructor with null for {@code onSave} and {@code onClose} callbacks.
 	 * 
-	 * Constructor CoaEditorPanelFX
-	 * @param chart
+	 * @param chart The {@link ChartOfAccounts} to be edited. Must not be null.
 	 */
 	public CoaEditorPanelFX(ChartOfAccounts chart)
 	{
@@ -68,16 +85,22 @@ public class CoaEditorPanelFX extends BorderPane
 	}
 	
 	/**
-	 * Constructor CoaEditorPanelFX
-	 * @param chart
-	 * @param onSave  	CALLBACK
-	 * @param onClose	CALLBACK
+	 * Constructs a new {@code CoaEditorPanelFX}.
+	 * Initializes the panel with the given chart of accounts and sets up callbacks for save and close actions.
+	 * The UI for the tree table view and control buttons is built and displayed.
+	 *
+	 * @param chart The {@link ChartOfAccounts} to be displayed and edited. Must not be null.
+	 * @param onSave A {@link Consumer} callback that accepts the modified {@link ChartOfAccounts}
+	 *               when the "Save" action is performed. Can be null if no save callback is needed.
+	 * @param onClose A {@link Runnable} callback that is executed when the panel is closed,
+	 *                either by saving or cancelling. Can be null if no close callback is needed.
+	 * @throws NullPointerException if {@code chart} is null.
 	 */
 	public CoaEditorPanelFX(ChartOfAccounts chart,
-		Consumer<ChartOfAccounts> onSave, //
+		Consumer<ChartOfAccounts> onSave,
 		Runnable onClose)
 	{
-		this.svc = new ChartOfAccountsService(chart);
+		this.svc = new ChartOfAccountsService(Objects.requireNonNull(chart, "ChartOfAccounts cannot be null."));
 		this.onSave = onSave;
 		this.onClose = onClose;
 		
@@ -95,32 +118,38 @@ public class CoaEditorPanelFX extends BorderPane
 	/* ------------------------------------------------------------------ */
 	
 	/**
-	 * buildTree
+	 * Initializes and configures the {@link TreeTableView} component ({@link #tree}).
+	 * Sets the root item (hidden), defines columns for Account Number, Name, Type, and Opening Balance,
+	 * and sets a column resize policy.
+	 * Column cell value factories are set up using the {@link #makeCol} helper method.
 	 */
-	@SuppressWarnings("unchecked") private void buildTree()
+	@SuppressWarnings("unchecked") // For varargs in getColumns().addAll()
+	private void buildTree()
 	{
-		this.tree.setShowRoot(false);
+		this.tree.setShowRoot(false); // The actual root item is a dummy, its children are the top-level accounts
 		this.tree.setRoot(this.rootItem);
 		
-		//
 		this.tree.getColumns().addAll(
 			makeCol("Number", Account::getAccountNumber),
 			makeCol("Name", Account::getName),
-			makeCol("Type", a -> a.getAccountType().toString()),
-			makeCol("Opening Balance", Account::getOpeningBalance));
+			makeCol("Type", a -> (a.getAccountType() != null) ? a.getAccountType().toString() : ""), // Handle null AccountType
+			makeCol("Opening Balance", Account::getOpeningBalance)
+		);
 		
-		this.tree.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+		this.tree.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN); // Nice default resize policy
 	}
 	
-	/* ------------------------------------------------------------------ */
 	/**
-	 * buildButtons
-	 * @return HBox
+	 * Creates and configures an {@link HBox} containing action buttons for managing the chart of accounts.
+	 * Buttons include: Add Root, Add Sub, Edit, Delete, Import JSON, Export JSON, Save, and Cancel.
+	 * Event handlers are set for each button to trigger corresponding actions.
+	 *
+	 * @return An {@link HBox} populated with control buttons.
 	 */
 	private HBox buildButtons()
 	{
 		Button addRoot = new Button("Add Root");
-		Button addSub = new Button("Add Sub");
+		Button addSub = new Button("Add Sub-account"); // Clarified label
 		Button edit = new Button("Edit");
 		Button del = new Button("Delete");
 		Button saveBtn = new Button("Save");
@@ -175,12 +204,27 @@ public class CoaEditorPanelFX extends BorderPane
 		};
 	}
 	
-	/* ------------------------------------------------------------------ */
 	/**
-	 * showDialog
+	 * Displays a dialog for adding a new account or editing an existing one.
+	 * The dialog includes fields for account number, name, type, and opening balance.
+	 * <p>
+	 * If {@code editing} is null, the dialog is configured for adding a new account.
+	 * If {@code parent} is null in add mode, a root account is added. Otherwise, a sub-account to {@code parent} is added.
+	 * If {@code editing} is not null, the dialog fields are pre-populated with its data.
+	 * </p>
+	 * <p>
+	 * Input validation is performed for the account number (must be a positive integer and unique,
+	 * unless editing the same account).
+	 * Upon successful confirmation (OK button), the new or updated account details are processed:
+	 * <ul>
+	 *   <li>For edits, {@link ChartOfAccountsService#update} is called.</li>
+	 *   <li>For new accounts, {@link ChartOfAccountsService#addRoot} or {@link ChartOfAccountsService#addChild} is called.</li>
+	 * </ul>
+	 * The tree view is then refreshed or updated accordingly.
+	 * </p>
 	 * 
-	 * @param parent
-	 * @param editing
+	 * @param parent The parent {@link Account} if adding a sub-account; null if adding a root account or editing.
+	 * @param editing The {@link Account} to edit; null if adding a new account.
 	 */
 	private void showDialog(Account parent, Account editing)
 	{
@@ -190,15 +234,16 @@ public class CoaEditorPanelFX extends BorderPane
 		dlg.setTitle(
 			isEdit ?
 				"Edit Account" :
-				(parent == null ? "Add Root Account" : "Add Sub-account"));
+				(parent == null ? "Add Root Account" : "Add Sub-account to " + parent.getName())); // More context for sub-account
 		dlg.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 		
-		this.numF = new TextField(isEdit ? editing.getAccountNumber() : "");
-		this.nameF = new TextField(isEdit ? editing.getName() : "");
+		// Initialize dialog fields
+		this.numF = new TextField(isEdit && editing.getAccountNumber() != null ? editing.getAccountNumber() : "");
+		this.nameF = new TextField(isEdit && editing.getName() != null ? editing.getName() : "");
 		this.typeBox = new ComboBox<>(FXCollections.observableArrayList(AccountType.values()));
-		AccountType a = isEdit ? editing.getAccountType() : AccountType.ASSET;
-		this.typeBox.getSelectionModel().select(a);		
-		this.balF = new TextField(isEdit ? editing.getOpeningBalance().toPlainString() : "0.00");
+		AccountType initialType = isEdit && editing.getAccountType() != null ? editing.getAccountType() : AccountType.ASSET;
+		this.typeBox.getSelectionModel().select(initialType);
+		this.balF = new TextField(isEdit && editing.getOpeningBalance() != null ? editing.getOpeningBalance().toPlainString() : "0.00");
 		
 		GridPane gp = new GridPane();
 		gp.setHgap(10);
@@ -264,9 +309,11 @@ public class CoaEditorPanelFX extends BorderPane
 		});
 	}
 	
-	/* ------------------------------------------------------------------ */
 	/**
-	 * deleteSelected
+	 * Deletes the currently selected account from the {@link TreeTableView} and the
+	 * underlying {@link ChartOfAccountsService}.
+	 * If no account is selected, this method does nothing.
+	 * The corresponding node is removed from the tree view.
 	 */
 	private void deleteSelected()
 	{
@@ -274,108 +321,140 @@ public class CoaEditorPanelFX extends BorderPane
 		
 		if (sel == null)
 		{
+			AlertBox.showWarning(null, "No account selected for deletion."); // Provide feedback
 			return;
 		}
 		
-		this.svc.delete(sel);
-		TreeItem<Account> node = this.tree.getSelectionModel().getSelectedItem();
+		this.svc.delete(sel); // Delete from the service/model
+		TreeItem<Account> selectedTreeItem = this.tree.getSelectionModel().getSelectedItem();
 		
-		if (node != null)
+		if (selectedTreeItem != null)
 		{
-			node.getParent().getChildren().remove(node);
+			// Remove from tree:
+			// If it's a root item's child:
+			if (selectedTreeItem.getParent() == this.rootItem) {
+			    this.rootItem.getChildren().remove(selectedTreeItem);
+			}
+			// If it's a child of another account node:
+			else if (selectedTreeItem.getParent() != null) {
+			    selectedTreeItem.getParent().getChildren().remove(selectedTreeItem);
+			}
+			this.tree.refresh(); // Refresh the tree view
 		}
 		
 	}
 	
 	/**
-	 * importJson
+	 * Initiates the process of importing a Chart of Accounts from a JSON file.
+	 * Displays a {@link FileChooser} for selecting the JSON file. If a file is selected,
+	 * it uses {@link ChartOfAccountsIOService#importFromJson(java.nio.file.Path)} to read the data,
+	 * then {@link ChartOfAccountsService#replaceChart(ChartOfAccounts)} to update the current chart,
+	 * and finally refreshes the tree view.
+	 * Errors during import are displayed in an alert dialog.
 	 */
-	/* ------------------------------------------------------------------ */
 	private void importJson()
 	{
 		FileChooser fc = new FileChooser();
-		fc.setTitle("Import Chart of Accounts");
-		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON", "*.json"));
-		File f = fc.showOpenDialog(getScene().getWindow());
+		fc.setTitle("Import Chart of Accounts from JSON");
+		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"));
+		File f = fc.showOpenDialog(getScene() != null ? getScene().getWindow() : null); // Set owner if possible
 		
 		if (f == null)
 		{
-			return;
+			return; // User cancelled
 		}
 		
 		try
 		{
 			ChartOfAccounts imported = this.ioSvc.importFromJson(f.toPath());
-			this.svc.replaceChart(imported);
-			refresh();
+			this.svc.replaceChart(imported); // Replace current COA with imported one
+			refresh(); // Refresh the tree view
+			AlertBox.showInfo(null, "Chart of Accounts imported successfully from " + f.getName());
 		}
-		catch (IOException ex)
+		catch (IOException | NullPointerException ex) // Catch more specific exceptions
 		{
+			ex.printStackTrace(); // Log full stack trace for debugging
 			AlertBox.showError(null, "Import failed: " + ex.getMessage());
 		}
 		
 	}
 	
 	/**
-	 * 
+	 * Initiates the process of exporting the current Chart of Accounts to a JSON file.
+	 * Displays a {@link FileChooser} (save dialog) for selecting the destination file.
+	 * If a file path is chosen, it uses {@link ChartOfAccountsIOService#exportToJson(ChartOfAccounts, java.nio.file.Path)}
+	 * to save the data.
+	 * Success or error messages are displayed in alert dialogs.
 	 */
 	private void exportJson()
 	{
 		FileChooser fc = new FileChooser();
-		fc.setTitle("Export Chart of Accounts");
+		fc.setTitle("Export Chart of Accounts to JSON");
 		fc.setInitialFileName("chart-of-accounts.json");
-		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON", "*.json"));
-		File f = fc.showSaveDialog(getScene().getWindow());
+		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"));
+		File f = fc.showSaveDialog(getScene() != null ? getScene().getWindow() : null); // Set owner
 		
 		if (f == null)
 		{
-			return;
+			return; // User cancelled
 		}
 		
 		try
 		{
 			this.ioSvc.exportToJson(this.svc.asChart(), f.toPath());
-			AlertBox.showInfo(null, "Exported to " + f);
+			AlertBox.showInfo(null, "Chart of Accounts exported successfully to " + f.getAbsolutePath());
 		}
-		catch (IOException ex)
+		catch (IOException | NullPointerException ex) // Catch more specific exceptions
 		{
+			ex.printStackTrace(); // Log full stack trace
 			AlertBox.showError(null, "Export failed: " + ex.getMessage());
 		}
 		
 	}
 	
-	/* ------------------------------------------------------------------ */
+	/**
+     * Closes this editor panel. If an {@code onClose} callback was provided during construction,
+     * it is executed. Otherwise, if this panel is hosted in its own {@link Stage} (e.g., as part of a dialog),
+     * that stage is closed.
+     */
 	private void closePanel()
 	{
 		
 		if (this.onClose != null)
 		{
-			this.onClose.run(); // caller handles UI restore
+			this.onClose.run(); // Execute the provided callback (e.g., caller restores previous view)
 		}
 		else
 		{
-			Stage s = (Stage) getScene().getWindow();
-			
-			if (s != null)
-			{
-				s.close(); // standalone stage case
+			// Fallback if no specific close handler: try to close the window this panel is in.
+			Window window = getScene() != null ? getScene().getWindow() : null;
+			if (window instanceof Stage) {
+				((Stage) window).close();
 			}
-			
 		}
 		
 	}
 	
-	/* ------------------------------------------------------------------ */
 	/**
-	 * refresh
-	 */
+     * Refreshes the {@link TreeTableView} display.
+     * It clears all existing items from the root and rebuilds the tree structure
+     * by fetching root accounts from the {@link ChartOfAccountsService} and recursively
+     * adding their children using {@link #makeNode(Account)}.
+     */
 	private void refresh()
 	{
 		this.rootItem.getChildren().clear();
 		this.svc.roots().forEach(r -> this.rootItem.getChildren().add(makeNode(r)));
-		this.tree.refresh();
+		// this.tree.refresh(); // TreeTableView.refresh() is often needed if underlying data of existing items changes.
+		                       // Here, structure changes, so clearing and adding might be sufficient,
+		                       // but refresh() ensures view consistency.
 	}
 	
+	/**
+     * Gets the {@link Account} object currently selected in the {@link TreeTableView}.
+     *
+     * @return The selected {@link Account}, or null if no item is selected or the selected item is null.
+     */
 	private Account selected()
 	{
 		TreeItem<Account> ti = this.tree.getSelectionModel().getSelectedItem();
@@ -383,24 +462,27 @@ public class CoaEditorPanelFX extends BorderPane
 	}
 	
 	/**
-	 * buildAccount
-	 * @return
-	 */
-	/* ------------------------------------------------------------------ */
+     * Constructs an {@link Account} object from the data entered in the add/edit dialog fields.
+     * This method is typically called from the dialog's result converter.
+     *
+     * @param number The account number string from the dialog's number field.
+     * @return A new {@link Account} populated with data from the dialog fields (name, type, opening balance).
+     *         Opening balance defaults to {@link BigDecimal#ZERO} if parsing fails.
+     */
 	private Account buildAccount(String number)
 	{
 		Account a = new Account();
-		a.setAccountNumber(number);
+		a.setAccountNumber(number); // Assumes number is already validated
 		a.setName(this.nameF.getText().trim());
-		a.setAccountType(this.typeBox.getValue()); // use ComboBox selection
+		a.setAccountType(this.typeBox.getValue()); // Get selected AccountType from ComboBox
 		
 		try
 		{
 			a.setOpeningBalance(new BigDecimal(this.balF.getText().trim()));
 		}
-		catch (NumberFormatException ignore)
+		catch (NumberFormatException ignore) // Or show an error to the user
 		{
-			a.setOpeningBalance(BigDecimal.ZERO);
+			a.setOpeningBalance(BigDecimal.ZERO); // Default if parsing fails
 		}
 		
 		return a;
@@ -408,66 +490,90 @@ public class CoaEditorPanelFX extends BorderPane
 	
 	
 	/**
-	 * makeNode
-	 * @param acc
-	 * @return TreeItem
-	 */
-	/* ------------------------------------------------------------------ */
+     * Recursively creates a {@link TreeItem} for the given {@link Account} ({@code acc})
+     * and all its children (obtained via {@link ChartOfAccountsService#childrenOf(Account)}).
+     * Each created {@code TreeItem} is set to be expanded by default.
+     *
+     * @param acc The {@link Account} for which to create a {@code TreeItem}.
+     * @return A {@link TreeItem<Account>} representing the given account and its descendants.
+     */
 	private TreeItem<Account> makeNode(Account acc)
 	{
 		TreeItem<Account> ti = new TreeItem<>(acc);
+		// Recursively add children
 		this.svc.childrenOf(acc).forEach(child -> ti.getChildren().add(makeNode(child)));
-		ti.setExpanded(true);
+		ti.setExpanded(true); // Expand nodes by default
 		return ti;
 	}
 	
 	/**
-	 * 
-	 * @param <T>
-	 * @param name
-	 * @param fn
-	 * @return
-	 */
+     * Utility method to create a {@link TreeTableColumn} for the {@link TreeTableView}.
+     *
+     * @param <T> The type of the data to be displayed in this column's cells.
+     * @param name The title of the column (to be displayed in the header).
+     * @param fn A {@link Function} that takes an {@link Account} object (the value of the TreeItem)
+     *           and returns the value of type {@code T} to be displayed in the cell for that account.
+     * @return A configured {@link TreeTableColumn}.
+     */
 	private static <T> TreeTableColumn<Account, T> makeCol(	String name,
 															Function<Account, T> fn)
 	{
 		TreeTableColumn<Account, T> c = new TreeTableColumn<>(name);
+		// CellValueFactory that extracts a value from the Account object wrapped by the TreeItem
 		c.setCellValueFactory(
 			cd -> new ReadOnlyObjectWrapper<>(fn.apply(cd.getValue().getValue())));
 		return c;
 	}
 	
-	/* insert new node --------------------------------------------------- */
+	/**
+     * Inserts a new {@link TreeItem} representing the {@link Account} {@code det}
+     * into the {@link #tree}.
+     * If {@code parent} is null, the new item is added as a child of the root item.
+     * Otherwise, it attempts to find the {@code TreeItem} for the {@code parent} account
+     * and adds the new item as its child.
+     *
+     * @param det The {@link Account} for which the new {@link TreeItem} is to be inserted.
+     * @param parent The parent {@link Account} under which to insert the new item.
+     *               If null, {@code det} is added as a root-level account in the tree.
+     */
 	private void insertIntoTree(Account det, Account parent)
 	{
 		
 		if (parent == null)
 		{
-			this.rootItem.getChildren().add(makeNode(det));
+			this.rootItem.getChildren().add(makeNode(det)); // Add as a child of the (hidden) root
 		}
 		else
 		{
-			TreeItem<Account> parentItem = find(this.rootItem, parent);
+			TreeItem<Account> parentItem = find(this.rootItem, parent); // Find the parent TreeItem
 			
 			if (parentItem != null)
 			{
 				parentItem.getChildren().add(makeNode(det));
-			}
+				parentItem.setExpanded(true); // Ensure parent is expanded to show new child
+			} else {
+			    // Should not happen if parent is valid and tree is consistent
+                LOGGER.warn("Could not find parent TreeItem for account: " + parent.getName() + " when inserting child " + det.getName());
+                // As a fallback, could add to root, but this indicates an issue.
+                this.rootItem.getChildren().add(makeNode(det));
+            }
 			
 		}
-		
+		this.tree.refresh(); // Refresh to show the new item
 	}
 	
 	/**
-	 * find
-	 * @param n
-	 * @param acc
-	 * @return
-	 */
+     * Recursively searches for a {@link TreeItem} within the subtree of {@code n}
+     * that wraps the specified {@link Account} {@code acc}.
+     *
+     * @param n The current {@link TreeItem} node to search from.
+     * @param acc The {@link Account} to find within the tree.
+     * @return The {@link TreeItem} that wraps {@code acc} if found; otherwise, null.
+     */
 	private TreeItem<Account> find(TreeItem<Account> n, Account acc)
 	{
 		
-		if (n.getValue() == acc)
+		if (n.getValue() == acc) // Direct object comparison, assumes 'acc' is the exact instance from the tree
 		{
 			return n;
 		}

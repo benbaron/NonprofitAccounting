@@ -14,26 +14,45 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 
+ * Represents an inventory item, typically a fixed asset, subject to depreciation.
+ * This class stores details about the item's cost, acquisition date, useful life,
+ * and depreciation information.
+ * Lombok's {@code @Data}, {@code @AllArgsConstructor}, and {@code @NoArgsConstructor}
+ * are used for boilerplate code generation.
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class InventoryItem
 {
-	@JsonProperty private String id, name, acquired;
-	@JsonProperty private BigDecimal cost, accDep, netValue;
+	/** The unique identifier for the inventory item. */
+	@JsonProperty private String id;
+	/** The name or description of the inventory item. */
+	@JsonProperty private String name;
+	/** The date when the inventory item was acquired, typically in "YYYY-MM-DD" format. */
+	@JsonProperty private String acquired;
+	/** The original cost of the inventory item. */
+	@JsonProperty private BigDecimal cost;
+	/** The accumulated depreciation amount for the item. */
+	@JsonProperty private BigDecimal accDep;
+	/** The net book value of the item (Cost - Accumulated Depreciation). */
+	@JsonProperty private BigDecimal netValue;
+	/** The estimated useful life of the item in years. */
 	@JsonProperty private int lifeYears;
-	@JsonProperty private BigDecimal depreciationRate; // e.g., 0.10 for 10%
-	@JsonProperty private String depreciationMethod; // e.g., "Straight-Line"
+	/** The annual depreciation rate (e.g., 0.10 for 10%). Can be null if not applicable or calculated differently. */
+	@JsonProperty private BigDecimal depreciationRate;
+	/** The depreciation method used (e.g., "Straight-Line"). */
+	@JsonProperty private String depreciationMethod;
 
 	/**  
-	 * Constructor InventoryItem
-	 * @param object
-	 * @param text
-	 * @param cost
-	 * @param string
-	 * @param life
+	 * Constructs an InventoryItem with essential details.
+	 * Initializes depreciationRate to null and depreciationMethod to "Straight-Line" by default.
+	 * Accumulated depreciation and net value are not set by this constructor initially.
+	 * @param id The unique identifier for the item.
+	 * @param name The name of the item.
+	 * @param cost The original cost of the item.
+	 * @param acquired The acquisition date of the item (e.g., "YYYY-MM-DD").
+	 * @param lifeYears The estimated useful life of the item in years.
 	 */
 	public InventoryItem(String id, 
 	                     String name, 
@@ -51,7 +70,8 @@ public class InventoryItem
 	}
 
 	/**
-	 * @return
+	 * Gets the unique identifier of the inventory item.
+	 * @return The item ID.
 	 */
 	public String getId()
 	{
@@ -59,7 +79,8 @@ public class InventoryItem
 	}
 
 	/**
-	 * @return
+	 * Gets the name of the inventory item.
+	 * @return The item name.
 	 */
 	public String getName()
 	{
@@ -67,7 +88,8 @@ public class InventoryItem
 	}
 
 	/**
-	 * @return
+	 * Gets the acquisition date of the inventory item.
+	 * @return The acquisition date as a string (e.g., "YYYY-MM-DD").
 	 */
 	public String getAcquiredDate()
 	{
@@ -75,7 +97,8 @@ public class InventoryItem
 	}
 
 	/**
-	 * @return
+	 * Gets the original cost of the inventory item.
+	 * @return The item cost.
 	 */
 	public BigDecimal getCost()
 	{
@@ -83,7 +106,9 @@ public class InventoryItem
 	}
 
 	/**
-	 * @return
+	 * Gets the accumulated depreciation of the inventory item.
+	 * This value is typically set via {@link #withAccumDep(BigDecimal)} or a direct setter.
+	 * @return The accumulated depreciation amount.
 	 */
 	public BigDecimal getAccumulatedDepreciation()
 	{
@@ -91,7 +116,9 @@ public class InventoryItem
 	}
 
 	/**
-	 * @return
+	 * Gets the net book value of the inventory item.
+	 * This value is calculated as Cost - Accumulated Depreciation.
+	 * @return The net book value.
 	 */
 	public BigDecimal getNetBookValue()
 	{
@@ -99,7 +126,8 @@ public class InventoryItem
 	}
 
 	/**
-	 * @return
+	 * Gets the estimated useful life of the inventory item in years.
+	 * @return The useful life in years.
 	 */
 	public int getLifeYears()
 	{
@@ -107,12 +135,14 @@ public class InventoryItem
 	}
 
 	/**
-	 * @param accDep1
-	 * @return
+	 * Sets the accumulated depreciation for this item and recalculates its net book value.
+	 * This method provides a fluent interface.
+	 * @param accDep The accumulated depreciation amount to set.
+	 * @return This InventoryItem instance for chaining.
 	 */
-	public InventoryItem withAccumDep(BigDecimal accDep1)
+	public InventoryItem withAccumDep(BigDecimal accDep)
 	{
-		this.accDep = accDep1;
+		this.accDep = accDep;
 		if (this.cost == null) {
 			this.netValue = null;
 		} else if (this.accDep == null) {
@@ -124,47 +154,65 @@ public class InventoryItem
 	}
 
 	/**
-	 * @param valueOf
+	 * Sets the accumulated depreciation for the item.
+	 * Note: This is a stub method. The {@code @Data} annotation from Lombok should provide this setter.
+	 * Consider using {@link #withAccumDep(BigDecimal)} for recalculating net value.
+	 * @param valueOf The accumulated depreciation amount to set.
 	 */
 	public void setAccumulatedDepreciation(BigDecimal valueOf)
 	{
 		// TODO Auto-generated method stub
-		
+		// Lombok @Data should generate: this.accDep = valueOf;
+		// Also, consider if netValue should be updated here.
 	}
 
 	/**
-	 * @param valueOf
+	 * Sets the depreciation rate for the item.
+	 * Note: This is a stub method. The {@code @Data} annotation from Lombok should provide this setter.
+	 * @param valueOf The depreciation rate to set (e.g., 0.10 for 10%).
 	 */
 	public void setDepreciationRate(BigDecimal valueOf)
 	{
 		// TODO Auto-generated method stub
-		
+		// Lombok @Data should generate: this.depreciationRate = valueOf;
 	}
 
 	/**
-	 * @return
+	 * Gets the depreciation rate of the item.
+	 * Note: This is a stub method and currently returns null.
+	 * The {@code @Data} annotation from Lombok should provide this getter.
+	 * @return The depreciation rate, or null if not set or if stub is not replaced.
 	 */
 	public BigDecimal getDepreciationRate()
 	{
 		// TODO Auto-generated method stub
+		// Lombok @Data should generate: return this.depreciationRate;
 		return null;
 	}
 
 	/**
-	 * @param object
+	 * Sets the depreciation method for the item.
+	 * Note: This is a stub method. The {@code @Data} annotation from Lombok should provide this setter.
+	 * @param method The depreciation method to set (e.g., "Straight-Line").
 	 */
-	public void setDepreciationMethod(Object object)
+	public void setDepreciationMethod(Object method) // Parameter type should likely be String
 	{
 		// TODO Auto-generated method stub
-		
+		// Lombok @Data should generate: this.depreciationMethod = (String) method;
 	}
 
 	/**
-	 * @return
+	 * Gets the net book value of the item.
+	 * Note: This is a stub method and currently returns null.
+	 * The {@code @Data} annotation from Lombok should provide a getter for 'netValue'.
+	 * The actual calculation is typically Cost - Accumulated Depreciation.
+	 * @return The net book value, or null if not calculated or if stub is not replaced.
 	 */
 	public BigDecimal getNetValue()
 	{
 		// TODO Auto-generated method stub
+		// Lombok @Data should generate: return this.netValue;
+		// This should ideally return the calculated netValue field.
 		return null;
 	}
 	

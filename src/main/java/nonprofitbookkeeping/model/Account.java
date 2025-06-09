@@ -31,6 +31,13 @@ public final class Account implements Serializable
 	@JsonProperty private BigDecimal openingBalance = BigDecimal.ZERO;
 	
 	/* ------------------------------------------------------------------ */
+	/**
+	 * Constructs an Account with the specified account number, name, and increase side.
+	 * @param accountNumber The account number. Must not be null.
+	 * @param name The name of the account.
+	 * @param increaseSide The side (Debit or Credit) where the account balance increases.
+	 * @throws NullPointerException if accountNumber is null.
+	 */
 	public Account(String accountNumber, String name, AccountSide increaseSide)
 	{
 		this.accountNumber = checkNotNull(accountNumber);
@@ -38,11 +45,33 @@ public final class Account implements Serializable
 		this.increaseSide = increaseSide;
 	}
 	
+	/**
+	 * Default constructor for Jackson deserialization or JPA.
+	 */
 	public Account()
 	{
-		/* default ctor for Jackson / JPA */ }
-		
+		/* default ctor for Jackson / JPA */ 
+	}
+
+	/**  
+	 * Constructor Account
+	 * @param string
+	 * @param bankAccountName
+	 * @param asset
+	 * @param zero
+	 */
+	public Account(String string, String bankAccountName, AccountType asset, BigDecimal zero)
+	{
+		// TODO Auto-generated constructor stub
+	}
+
 	/* ================= fund helpers =================================== */
+	/**
+	 * Associates a fund with this account.
+	 * If the fund is not already associated, it adds the fund to this account's list
+	 * of associated funds and adds this account to the fund's list of associated accounts.
+	 * @param fund The fund to associate with this account.
+	 */
 	public void addFund(Fund fund)
 	{
 		
@@ -54,6 +83,12 @@ public final class Account implements Serializable
 		
 	}
 	
+	/**
+	 * Disassociates a fund from this account.
+	 * Removes the fund from this account's list of associated funds and
+	 * removes this account from the fund's list of associated accounts.
+	 * @param fund The fund to disassociate from this account.
+	 */
 	public void removeFund(Fund fund)
 	{
 		this.associatedFunds.remove(fund);
@@ -75,7 +110,7 @@ public final class Account implements Serializable
 	{
 		return this.parentAccount != null;
 	}
-		
+
 	/**
 	 * Returns a one-element collection containing this account.  The method is
 	 * here mainly for compatibility with map-like code that expects a
@@ -88,7 +123,8 @@ public final class Account implements Serializable
 	}
 
 	/**
-	 * @return the associatedFunds
+	 * Gets the list of funds associated with this account.
+	 * @return The list of associated funds.
 	 */
 	public List<Fund> getAssociatedFunds()
 	{
@@ -96,7 +132,8 @@ public final class Account implements Serializable
 	}
 
 	/**
-	 * @param associatedFunds the associatedFunds to set
+	 * Sets the list of funds associated with this account.
+	 * @param associatedFunds The list of funds to associate.
 	 */
 	public void setAssociatedFunds(List<Fund> associatedFunds)
 	{
@@ -104,7 +141,8 @@ public final class Account implements Serializable
 	}
 
 	/**
-	 * @return the accountNumber
+	 * Gets the account number.
+	 * @return The account number.
 	 */
 	public String getAccountNumber()
 	{
@@ -112,7 +150,8 @@ public final class Account implements Serializable
 	}
 
 	/**
-	 * @param accountNumber the accountNumber to set
+	 * Sets the account number.
+	 * @param accountNumber The account number to set.
 	 */
 	public void setAccountNumber(String accountNumber)
 	{
@@ -120,7 +159,8 @@ public final class Account implements Serializable
 	}
 
 	/**
-	 * @return the increaseSide
+	 * Gets the side (Debit or Credit) where the account balance increases.
+	 * @return The increase side of the account.
 	 */
 	public AccountSide getIncreaseSide()
 	{
@@ -128,7 +168,8 @@ public final class Account implements Serializable
 	}
 
 	/**
-	 * @param increaseSide the increaseSide to set
+	 * Sets the side (Debit or Credit) where the account balance increases.
+	 * @param increaseSide The increase side to set.
 	 */
 	public void setIncreaseSide(AccountSide increaseSide)
 	{
@@ -136,7 +177,8 @@ public final class Account implements Serializable
 	}
 
 	/**
-	 * @return the name
+	 * Gets the name of the account.
+	 * @return The name of the account.
 	 */
 	public String getName()
 	{
@@ -144,7 +186,8 @@ public final class Account implements Serializable
 	}
 
 	/**
-	 * @param name the name to set
+	 * Sets the name of the account.
+	 * @param name The name to set.
 	 */
 	public void setName(String name)
 	{
@@ -152,7 +195,8 @@ public final class Account implements Serializable
 	}
 
 	/**
-	 * @return the accountCode
+	 * Gets the account code.
+	 * @return The account code.
 	 */
 	public String getAccountCode()
 	{
@@ -160,7 +204,8 @@ public final class Account implements Serializable
 	}
 
 	/**
-	 * @param accountCode the accountCode to set
+	 * Sets the account code.
+	 * @param accountCode The account code to set.
 	 */
 	public void setAccountCode(String accountCode)
 	{
@@ -168,7 +213,8 @@ public final class Account implements Serializable
 	}
 
 	/**
-	 * @return the accountType
+	 * Gets the type of the account.
+	 * @return The account type.
 	 */
 	public AccountType getAccountType()
 	{
@@ -176,7 +222,8 @@ public final class Account implements Serializable
 	}
 
 	/**
-	 * @param accountType the accountType to set
+	 * Sets the type of the account.
+	 * @param accountType The account type to set.
 	 */
 	public void setAccountType(AccountType accountType)
 	{
@@ -184,7 +231,8 @@ public final class Account implements Serializable
 	}
 
 	/**
-	 * @return the parentAccount
+	 * Gets the parent account of this account, if any.
+	 * @return The parent account, or null if this is a top-level account.
 	 */
 	public Account getParentAccount()
 	{
@@ -192,7 +240,8 @@ public final class Account implements Serializable
 	}
 
 	/**
-	 * @param parentAccount the parentAccount to set
+	 * Sets the parent account of this account.
+	 * @param parentAccount The parent account to set.
 	 */
 	public void setParentAccount(Account parentAccount)
 	{
@@ -200,7 +249,8 @@ public final class Account implements Serializable
 	}
 
 	/**
-	 * @return the currency
+	 * Gets the currency of the account.
+	 * @return The currency code (e.g., "USD").
 	 */
 	public String getCurrency()
 	{
@@ -208,7 +258,8 @@ public final class Account implements Serializable
 	}
 
 	/**
-	 * @param currency the currency to set
+	 * Sets the currency of the account.
+	 * @param currency The currency code to set (e.g., "USD").
 	 */
 	public void setCurrency(String currency)
 	{
@@ -216,7 +267,8 @@ public final class Account implements Serializable
 	}
 
 	/**
-	 * @return the openingBalance
+	 * Gets the opening balance of the account.
+	 * @return The opening balance.
 	 */
 	public BigDecimal getOpeningBalance()
 	{
@@ -224,11 +276,30 @@ public final class Account implements Serializable
 	}
 
 	/**
-	 * @param openingBalance the openingBalance to set
+	 * Sets the opening balance of the account.
+	 * @param openingBalance The opening balance to set.
 	 */
 	public void setOpeningBalance(BigDecimal openingBalance)
 	{
 		this.openingBalance = openingBalance;
+	}
+
+	/**
+	 * @param object
+	 */
+	public void ifPresent(Object object)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * @param bank
+	 */
+	public void addChild(Account bank)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 
 	

@@ -22,8 +22,8 @@ public final class AccountingEntry implements Serializable
 	 * serialVersionUID : long
 	 */
 	private static final long serialVersionUID = 5837792781542533633L;
-
-	@JsonProperty final private BigDecimal amount;	
+	
+	@JsonProperty final private BigDecimal amount;
 	@JsonProperty final private AccountSide accountSide;
 	@JsonProperty final private String accountNumber;
 	@JsonProperty private AccountingTransaction transaction;
@@ -31,28 +31,28 @@ public final class AccountingEntry implements Serializable
 	@JsonProperty private boolean freeze = false;
 	
 	
+
 	/**
-	 * 
-	 * Constructor AccountingEntry
+	 * Default constructor for Jackson deserialization.
+	 * Initializes amount, accountSide to null and accountNumber to an empty string.
 	 */
-	public AccountingEntry ()
+	AccountingEntry()
 	{
 		this.amount = null;
 		this.accountSide = null;
 		this.accountNumber = "";
 	}
 	
-	
 	/**
-	 * 
-	 * Constructor AccountingEntry
-	 * @param amount
-	 * @param accountNumber
-	 * @param accountSide
+	 * Constructs an AccountingEntry with the specified amount, account number, and account side.
+	 * @param amount The monetary amount of the entry. Must not be null.
+	 * @param accountNumber The account number associated with this entry. Must not be null.
+	 * @param accountSide The side of the account (Debit or Credit) this entry affects. Must not be null.
+	 * @throws NullPointerException if any of the parameters are null.
 	 */
-	public AccountingEntry(BigDecimal amount, 
-	                       String accountNumber, 
-	                       AccountSide accountSide)
+	public AccountingEntry(BigDecimal amount,
+		String accountNumber,
+		AccountSide accountSide)
 	{
 		this.amount = checkNotNull(amount);
 		this.accountNumber = checkNotNull(accountNumber);
@@ -61,9 +61,7 @@ public final class AccountingEntry implements Serializable
 	
 	/**
 	 * Gets the associated transaction.
-	 * Throws a NullPointerException if no transaction is associated.
-	 *
-	 * @return Associated transaction
+	 * @return Associated transaction, or null if no transaction is associated.
 	 */
 	public AccountingTransaction getTransaction()
 	{
@@ -71,9 +69,11 @@ public final class AccountingEntry implements Serializable
 	}
 	
 	/**
-	 * This setter is required to enable circular references between entries and transactions.
-	 *
-	 * @param transaction The transaction belonging to this entry
+	 * Sets the transaction this entry belongs to.
+	 * This method is required to enable circular references between entries and transactions.
+	 * Once set, the transaction is "frozen" and cannot be changed.
+	 * @param transaction The transaction belonging to this entry. Must not be null.
+	 * @throws NullPointerException if the transaction is null.
 	 */
 	public void setTransaction(AccountingTransaction transaction)
 	{
@@ -82,8 +82,7 @@ public final class AccountingEntry implements Serializable
 	}
 	
 	/**
-	 * 
-	 * Override @see java.lang.Object#toString()
+	 * {@inheritDoc}
 	 */
 	@Override public String toString()
 	{
@@ -92,45 +91,65 @@ public final class AccountingEntry implements Serializable
 			.addValue(this.accountSide)
 			.toString();
 	}
-
+	
 	/**
-	 * @return
+	 * Gets the side of the account (Debit or Credit) this entry affects.
+	 * @return The account side.
 	 */
 	public AccountSide getAccountSide()
 	{
 		return this.accountSide;
 	}
-
+	
 	/**
-	 * @return the freeze
+	 * Checks if the transaction for this entry is frozen (i.e., has been set).
+	 * @return {@code true} if the transaction has been set, {@code false} otherwise.
 	 */
 	public boolean isFreeze()
 	{
 		return this.freeze;
 	}
-
+	
 	/**
-	 * @param freeze the freeze to set
+	 * Sets the freeze status of the transaction association.
+	 * This is typically managed internally when {@link #setTransaction(AccountingTransaction)} is called.
+	 * @param freeze {@code true} to indicate the transaction is set and frozen, {@code false} otherwise.
 	 */
 	public void setFreeze(boolean freeze)
 	{
 		this.freeze = freeze;
 	}
-
+	
 	/**
-	 * @return the amount
+	 * Gets the monetary amount of this accounting entry.
+	 * @return The amount.
 	 */
 	public BigDecimal getAmount()
 	{
 		return this.amount;
 	}
-
+	
 	/**
-	 * @return the accountNumber
+	 * Gets the account number associated with this entry.
+	 * @return The account number.
 	 */
 	public String getAccountNumber()
 	{
 		return this.accountNumber;
+	}
+	
+	/**
+	 * Retrieves the {@link Account} object associated with this entry's account number
+	 * from the current company's chart of accounts.
+	 * 
+	 * @return Account object
+	 */
+	public Account getAccount()
+	{
+		return CurrentCompany
+			.getCompany()
+			.getChartOfAccounts()
+			.getAccount(this.accountNumber);
 	}
 	
 	

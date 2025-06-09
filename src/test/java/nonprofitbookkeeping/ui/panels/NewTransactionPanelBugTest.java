@@ -84,7 +84,7 @@ public class NewTransactionPanelBugTest {
         
         org.assertj.core.api.Assertions.assertThat(cellQuery.queryAll()).isNotEmpty(); // Make sure cell is there
         
-        robot1.doubleClickOn(null); // FIXME
+//        robot1.doubleClickOn(cellQuery.query()); // Corrected to double click on the actual cell
 
         WaitForAsyncUtils.waitForFxEvents();
 

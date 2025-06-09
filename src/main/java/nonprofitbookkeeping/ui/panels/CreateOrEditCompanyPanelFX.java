@@ -20,42 +20,71 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class CreateOrEditCompanyPanelFX extends BorderPane
 {
 	
+	/** Tracks the current step in the wizard (0-indexed). */
 	private int step = 0;
+	/** Array holding the UI {@link Node} for each step of the wizard. */
 	private final Node[] steps = new Node[3];
 	
+	/** Button to navigate to the previous step in the wizard. */
 	private final Button back = new Button("Back");
+	/** Button to navigate to the next step in the wizard. */
 	private final Button next = new Button("Next");
+	/** Button to finalize and save the company profile. */
 	private final Button finish = new Button("Save Company");
 	
 	/* ——— Company Info fields ——— */
+	/** TextField for the company's name. */
 	private final TextField nameField = new TextField();
+	/** ComboBox for selecting the company's legal structure (e.g., 501(c)(3), LLC). */
 	private final ComboBox<String> legalCb = new ComboBox<>();
+	/** TextField for the company's tax identification number. */
 	private final TextField taxIdField = new TextField();
+	/** TextField for the company's physical address. */
 	private final TextField addressField = new TextField();
+	/** TextField for the company's phone number. */
 	private final TextField phoneField = new TextField();
+	/** TextField for the company's email address. */
 	private final TextField emailField = new TextField();
 	
 	/* ——— Fiscal Settings ——— */
+	/** TextField for specifying the fiscal year start date (e.g., "YYYY-MM-DD"). */
 	private final TextField fiscalStartField = new TextField("2025-01-01");
+	/** ComboBox for selecting the company's base currency (e.g., USD, EUR). */
 	private final ComboBox<String> currencyCb = new ComboBox<>();
+	/** TextField for specifying the starting balance date for accounting records. */
 	private final TextField startBalField = new TextField("2025-01-01");
+	/** ComboBox for selecting the type of Chart of Accounts to use (e.g., Standard Nonprofit). */
 	private final ComboBox<String> chartCb = new ComboBox<>();
 	
 	/* ——— Admin / Features ——— */
+	/** TextField for the administrator's username. */
 	private final TextField adminUserField = new TextField("admin");
+	/** PasswordField for the administrator's password. */
 	private final PasswordField adminPass = new PasswordField();
+	/** TextField for the default bank account name. */
 	private final TextField bankAcctField = new TextField("Bank Checking");
+	/** CheckBox to enable or disable fund accounting features. */
 	private final CheckBox fundBox = new CheckBox("Enable Fund Accounting");
+	/** CheckBox to enable or disable inventory tracking features. */
 	private final CheckBox inventoryBox = new CheckBox("Enable Inventory Tracking");
+	/** CheckBox to enable or disable multi-currency support. */
 	private final CheckBox multiCurBox = new CheckBox("Enable Multi-Currency");
 	
+	/** Callback interface invoked when the company profile is created or successfully edited and saved. */
 	private final CompanyCreatedCallback callback;
 	
 	/**
+	 * Constructs a new {@code CreateOrEditCompanyPanelFX} wizard.
+	 * This panel guides the user through multiple steps to input company profile information.
+	 * If an {@code existing} company is provided, its data is used to pre-fill the wizard fields.
+	 * The {@code cb} callback is invoked upon successful completion and saving of the company profile.
 	 * 
-	 * Constructor CreateOrEditCompanyPanelFX
-	 * @param existing
-	 * @param cb
+	 * @param existing The {@link Company} object to edit. If a new company is being created,
+	 *                 this should be a new {@code Company} instance (or null, though current code uses `checkNotNull`).
+	 *                 Its profile data will be used to pre-populate the fields. Must not be null.
+	 * @param cb The {@link CompanyCreatedCallback} to be invoked when the company profile is saved.
+	 *           This callback receives the newly created or updated {@link CompanyProfileModel}. Must not be null.
+	 * @throws NullPointerException if {@code existing} or {@code cb} is null.
 	 */
 	public CreateOrEditCompanyPanelFX(Company existing, CompanyCreatedCallback cb)
 	{
@@ -77,9 +106,18 @@ public class CreateOrEditCompanyPanelFX extends BorderPane
 	/* --------------------------------------------------------------------- */
 	
 	/**
-	 * Create the step panels
+	 * Creates the UI panels for each step of the wizard.
+	 * If a {@code company} object is provided and contains a profile, its data is used to pre-fill the input fields.
+	 * The steps are:
+	 * <ol>
+	 *   <li>Company Information (name, legal structure, tax ID, address, phone, email).</li>
+	 *   <li>Fiscal Settings (fiscal year start, base currency, starting balance date, chart of accounts type).</li>
+	 *   <li>Admin & Features (admin user/pass, default bank account, feature toggles for fund accounting, inventory, multi-currency).</li>
+	 * </ol>
+	 * Each step is a {@link TitledPane} containing a {@link GridPane} with the respective fields.
 	 * 
-	 * @param company Company's steps to create
+	 * @param company The {@link Company} object whose data may be used to pre-fill the wizard fields.
+	 *                If {@code company} or its profile is null, fields will have default or empty values.
 	 */
 	private void buildSteps(Company company)
 	{
@@ -140,9 +178,13 @@ public class CreateOrEditCompanyPanelFX extends BorderPane
 	}
 	
 	/**
-	 * Build grid
-	 * @param rows
-	 * @return
+	 * Builds a {@link GridPane} with a predefined two-column layout (30%/70% width)
+	 * and standard padding and gap settings. This is a utility method for constructing
+	 * the layout of each wizard step.
+	 *
+	 * @param rows The number of rows this grid will initially be configured for (though more can be added).
+	 *             This parameter is not strictly used to limit rows but might be for initial capacity or context.
+	 * @return A configured {@link GridPane} instance.
 	 */
 	private static GridPane grid(int rows)
 	{
@@ -162,11 +204,12 @@ public class CreateOrEditCompanyPanelFX extends BorderPane
 	}
 	
 	/**
-	 * Build a titled pane
+	 * Creates a non-collapsible {@link TitledPane} with the given title and content.
+	 * This is a utility method for wrapping each wizard step's content.
 	 * 
-	 * @param title
-	 * @param content
-	 * @return
+	 * @param title The title to be displayed on the pane.
+	 * @param content The {@link Node} (typically a {@link GridPane}) to be set as the content of the pane.
+	 * @return A configured {@link TitledPane} instance.
 	 */
 	private static TitledPane titled(String title, Node content)
 	{
@@ -176,8 +219,10 @@ public class CreateOrEditCompanyPanelFX extends BorderPane
 	}
 	
 	/**
-	 * Build buttons
-	 * @return 
+	 * Builds the {@link HBox} containing the navigation buttons for the wizard (Back, Next, Save Company).
+	 * Sets up action handlers for these buttons to control step navigation and final save action.
+	 *
+	 * @return An {@link HBox} containing the configured navigation buttons.
 	 */
 	private HBox buildButtons()
 	{
@@ -199,7 +244,10 @@ public class CreateOrEditCompanyPanelFX extends BorderPane
 	}
 	
 	/**
-	 * update step
+	 * Updates the wizard's UI to reflect the current step.
+	 * This involves setting the central content of the {@link BorderPane} to the current step's UI Node,
+	 * and adjusting the visibility and enabled state of the navigation buttons (Back, Next, Save Company)
+	 * based on whether the current step is the first, last, or an intermediate step.
 	 */
 	private void updateStep()
 	{
@@ -211,7 +259,10 @@ public class CreateOrEditCompanyPanelFX extends BorderPane
 	}
 	
 	/**
-	 * 
+	 * Collects all data from the wizard's input fields, populates a {@link CompanyProfileModel},
+	 * and then invokes the {@link #callback} with this model.
+	 * If no callback is configured (which shouldn't happen based on constructor preconditions but is checked),
+	 * it shows an informational alert. This method is called when the "Save Company" button is clicked.
 	 */
 	private void saveAndExit()
 	{

@@ -21,17 +21,43 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * A Swing {@link JDialog} that allows users to manage saved report configurations.
+ * Users can view a list of their saved configurations, run/review them (which typically
+ * re-opens a criteria dialog pre-filled with the configuration), or delete them.
+ * <p>
+ * This dialog interacts with {@link ReportConfigurationService} to load and save configurations
+ * and uses a {@link ReportConfigurationTableModel} to display them in a {@link JTable}.
+ * It can also initiate report actions via {@link ReportService} when a configuration is run.
+ * </p>
+ */
 public class ManageReportConfigurationsDialog extends JDialog
 {
 	
+	/** Service for loading and saving report configurations. */
 	private final ReportConfigurationService configService;
+	/** The directory of the current company, used for storing/retrieving configuration files. */
 	private final File companyDirectory;
-	private final List<Fund> availableFunds; // Passed in, likely empty for now
-	private final ReportService reportService; // For instantiating actions
+	/** A list of available {@link Fund}s, passed to criteria dialogs when reviewing/running a configuration. */
+	private final List<Fund> availableFunds;
+	/** Service used to instantiate report actions when a configuration is run. */
+	private final ReportService reportService;
 	
+	/** Table to display the list of saved report configurations. */
 	private JTable configsTable;
+	/** Table model backing the {@link #configsTable}. */
 	private ReportConfigurationTableModel tableModel;
 	
+	/**
+	 * Constructs a new {@code ManageReportConfigurationsDialog}.
+	 *
+	 * @param owner The parent {@link Frame} of this dialog.
+	 * @param configService The {@link ReportConfigurationService} used for loading and saving configurations. Must not be null.
+	 * @param companyDirectory The {@link File} representing the current company's data directory. Must not be null.
+	 * @param availableFunds A list of available {@link Fund}s, used to populate fund selectors in criteria dialogs.
+	 *                       If null, an empty list is used.
+	 * @param reportService The {@link ReportService} used to obtain instances of report actions. Must not be null.
+	 */
 	public ManageReportConfigurationsDialog(Frame owner, ReportConfigurationService configService,
 		File companyDirectory, List<Fund> availableFunds,
 		ReportService reportService)
@@ -53,6 +79,11 @@ public class ManageReportConfigurationsDialog extends JDialog
 		setLocationRelativeTo(owner);
 	}
 	
+	/**
+	 * Initializes the UI components of the dialog, primarily the {@link JTable}
+	 * ({@link #configsTable}) and its associated {@link ReportConfigurationTableModel} ({@link #tableModel}).
+	 * Sets table properties like selection mode and viewport filling.
+	 */
 	private void initComponents()
 	{
 		this.tableModel = new ReportConfigurationTableModel(new ArrayList<>());
@@ -61,6 +92,12 @@ public class ManageReportConfigurationsDialog extends JDialog
 		this.configsTable.setFillsViewportHeight(true);
 	}
 	
+	/**
+	 * Lays out the UI components on the dialog panel.
+	 * The main component is a {@link JScrollPane} containing the {@link #configsTable},
+	 * placed in the center. Action buttons ("Run/Review Selected", "Delete Selected", "Close")
+	 * are placed in a panel at the bottom (SOUTH).
+	 */
 	private void layoutComponents()
 	{
 		setLayout(new BorderLayout(5, 5));
@@ -84,17 +121,40 @@ public class ManageReportConfigurationsDialog extends JDialog
 		add(buttonPanel, BorderLayout.SOUTH);
 	}
 	
+	/**
+	 * Attaches action listeners to the dialog's buttons.
+	 * Note: In the current implementation, listeners are attached directly within {@link #layoutComponents()}.
+	 * This method serves as a placeholder or for future refactoring if listener attachment becomes more complex.
+	 */
 	private void attachListeners()
 	{
 		// Listeners are attached directly in layoutComponents for simplicity here
 	}
 	
+	/**
+	 * Loads the saved report configurations from the {@link #companyDirectory} using the
+	 * {@link #configService} and updates the {@link #tableModel} to display them in the table.
+	 */
 	private void loadAndDisplayConfigurations()
 	{
 		List<ReportConfiguration> configs = this.configService.loadConfigurations(this.companyDirectory);
 		this.tableModel.setConfigurations(configs);
 	}
 	
+	/**
+	 * Handles the action of running or reviewing a selected report configuration.
+	 * When a configuration is selected in the table and this action is triggered:
+	 * <ol>
+	 *   <li>A {@link ReportCriteriaDialog} is shown, pre-filled with the details of the selected configuration.</li>
+	 *   <li>The user can review, modify, and then choose to "Run Report" or "Save Configuration" (potentially as new) from that dialog.</li>
+	 *   <li>If the user saves the configuration (even if modified), this method handles updating or adding it via {@link #configService}.</li>
+	 *   <li>The actual execution of the report is assumed to be driven by the user's interaction with the {@code ReportCriteriaDialog}
+	 *       and the corresponding report action class that originally would have shown it. This method primarily facilitates
+	 *       re-opening that dialog with saved settings.</li>
+	 * </ol>
+	 *
+	 * @param e The {@link ActionEvent} that triggered this action.
+	 */
 	private void actionRunReviewConfiguration(ActionEvent e)
 	{
 		int selectedRow = this.configsTable.getSelectedRow();
@@ -255,6 +315,20 @@ public class ManageReportConfigurationsDialog extends JDialog
 	// Helper to get an instance of the correct report action.
 	// This is a simplified approach. A more robust system might use a factory or
 	// service locator.
+	/**
+	 * Helper method to obtain an instance of the appropriate {@link AbstractAction}
+	 * for a given report type string. This is used to simulate triggering the report
+	 * if the user were to "run" it directly after reviewing criteria, though the primary
+	 * interaction flow relies on the re-shown {@link ReportCriteriaDialog}.
+	 * <p>
+	 * Note: This method creates new instances of action classes. For actions requiring
+	 * specific context or services (like {@code BudgetService}), it attempts to provide them.
+	 * </p>
+	 *
+	 * @param reportType A string identifier for the report type (e.g., "income_statement").
+	 * @return An {@link AbstractAction} corresponding to the report type, or {@code null} if
+	 *         the type is not recognized or a required service is unavailable.
+	 */
 	private AbstractAction getActionForReportType(String reportType)
 	{
 		if (reportType == null)
@@ -302,6 +376,14 @@ public class ManageReportConfigurationsDialog extends JDialog
 	}
 	
 	
+	/**
+	 * Handles the action of deleting a selected report configuration.
+	 * Prompts the user for confirmation before deleting. If confirmed, the selected configuration
+	 * is removed from the list managed by {@link #configService} and the list is re-saved.
+	 * The table display is then refreshed.
+	 *
+	 * @param e The {@link ActionEvent} that triggered this action.
+	 */
 	private void actionDeleteConfiguration(ActionEvent e)
 	{
 		int selectedRow = this.configsTable.getSelectedRow();

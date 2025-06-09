@@ -29,6 +29,18 @@ public class ReportMetadata
 		this.filePath = filePath;
 	}
 
+	/**  
+	 * Constructor ReportMetadata
+	 * @param string
+	 * @param format
+	 * @param nonExistentFilePath
+	 * @param string2
+	 */
+	public ReportMetadata(String string, String format, String nonExistentFilePath, String string2)
+	{
+		// TODO Auto-generated constructor stub
+	}
+
 	/**
 	 * Gets the name of the report.
 	 *

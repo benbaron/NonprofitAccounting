@@ -2,7 +2,6 @@
 package nonprofitbookkeeping.ui;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -25,8 +24,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.core.ApplicationContext;
 import nonprofitbookkeeping.core.ApplicationContextImpl;
-import nonprofitbookkeeping.exception.ActionCancelledException;
-import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Fund;
@@ -37,53 +34,120 @@ import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.panels.*;
 
 
+/**
+ * Main JavaFX application class for Nonprofit Bookkeeping.
+ * This class initializes the primary stage, user interface (including menus and main content area),
+ * loads plugins, manages application state, and handles core application actions like
+ * opening, closing, and saving company files.
+ */
 public class NonprofitBookkeepingFX extends Application
 {
+	/** The primary stage of the JavaFX application. */
 	private Stage primaryStage;
-	private BorderPane root;
-	private DashboardPanelFX dashboard;
+	/** The root layout pane (a {@link MainApplicationView} instance) for the main scene. */
+	private BorderPane root; // Should be MainApplicationView
+	/** Reference to the dashboard panel, used as a fallback or initial view. */
+	private DashboardPanelFX dashboard; // Potentially part of MainApplicationView's default tabs
+	/** Instance managing the currently loaded company data. Suppressed unused warning as it's initialized. */
 	@SuppressWarnings("unused") private CurrentCompany c;
 	
+	/**
+	 * Enum representing the different operational states of the application,
+	 * primarily concerning whether a company file is open, being created, or not open.
+	 */
 	private enum AppState
 	{
-		NO_COMPANY, CREATING_COMPANY, COMPANY_OPEN
+		/** No company file is currently open. */
+		NO_COMPANY,
+		/** The application is in the process of creating a new company file. */
+		CREATING_COMPANY,
+		/** A company file is open and active. */
+		COMPANY_OPEN
 	}
 	
+	/** Current operational state of the application. */
 	private AppState state = AppState.NO_COMPANY;
 	
-	private MenuItem miOpen, miClose, miSave;
-	private MenuItem miEditCompany, miEditCoa, miEditJournal;
-	private Menu run, reports, panels;
+	// Menu items that need their state managed based on AppState
+	/** Menu item for opening a company. */
+	private MenuItem miOpen;
+	/** Menu item for closing the current company. */
+	private MenuItem miClose;
+	/** Menu item for saving the current company. */
+	private MenuItem miSave;
+	/** Menu item for editing company details or creating a new company. */
+	private MenuItem miEditCompany;
+	/** Menu item for editing the Chart of Accounts. */
+	private MenuItem miEditCoa;
+	/** Menu item for editing the Journal. */
+	private MenuItem miEditJournal;
 	
+	// Menus that need their state managed
+	/** Top-level menu for running various tools and plugin features. */
+	private Menu run;
+	/** Top-level menu for generating and viewing reports. */
+	private Menu reports;
+	/** Top-level menu for accessing different data panels like Donors, Grants etc. */
+	private Menu panels;
+
+	/** Logger for this class. */
 	private static final Logger LOGGER = Logger.getLogger(NonprofitBookkeepingFX.class.getName());
+	/** List to hold all successfully loaded plugins. */
 	private List<Plugin> loadedPlugins = new ArrayList<>();
+	/** The application context passed to plugins and potentially other components. */
 	private ApplicationContext applicationContext;
 	
+	/**
+	 * Static inner class acting as a container for singleton service instances.
+	 * This provides a central point of access for various services used throughout the application.
+	 */
 	private static final class ServiceContainer
 	{
+		/** Singleton instance of {@link InventoryService}. */
 		private static final InventoryService iss = new InventoryService();
+		/** Singleton instance of {@link ReportService}. */
 		private static final ReportService reportService = new ReportService();
+		/** Singleton instance of {@link BudgetService}. */
 		private static final BudgetService budgetService = new BudgetService();
+		/** Singleton instance of {@link ReportConfigurationService}. */
 		private static final ReportConfigurationService reportConfigurationService =
 			new ReportConfigurationService();
 		private static final DocumentStorageService dss = new DocumentStorageService();
 		private static final FundAccountingService fas = new FundAccountingService();
 		
-		// FileImportService and FileExportService are typically used via Actions, not
-		// directly managed as singletons here.
+		// FileImportService and FileExportService are typically used via Actions,
+		// and thus not instantiated here as globally managed singletons.
 	}
 	
+	/**
+	 * Main entry point for the JavaFX application.
+	 * Launches the JavaFX runtime and application.
+	 * @param args Command line arguments passed to the application.
+	 */
 	public static void main(String[] args)
 	{
 		launch(args);
 	}
 	
+	/**
+	 * The main entry point for this JavaFX application, called after the {@code init} method.
+	 * This method sets up the primary stage, initializes the main application view,
+	 * configures the menu bar, loads plugins, and displays the initial UI.
+	 * A shutdown hook is added to attempt saving company data on application exit.
+	 * SLF4J logging bridge is installed.
+	 *
+	 * @param stage The primary {@link Stage} for this application, onto which
+	 *              the application scene can be set.
+	 */
 	@Override public void start(Stage stage)
 	{
+		// Add a shutdown hook to save company data when the application exits.
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 			// Save data
-			doSaveCompany();
+			doSaveCompany(); // Attempt to save company data
 		}));
+
+		// Configure SLF4J logging bridge
 		SLF4JBridgeHandler.removeHandlersForRootLogger();
 		SLF4JBridgeHandler.install();
 		
@@ -91,8 +155,10 @@ public class NonprofitBookkeepingFX extends Application
 		this.primaryStage = stage;
 		this.c = new CurrentCompany();
 		this.dashboard = new DashboardPanelFX();
-		this.root = new BorderPane();
-		this.root.setCenter(this.dashboard);
+		// this.root = new BorderPane(); // Old root
+		MainApplicationView mainView = new MainApplicationView();
+		this.root = mainView; // Assign MainApplicationView to root
+		// this.root.setCenter(this.dashboard); // MainApplicationView handles its own center
 		
 		// Instantiate ApplicationContextImpl
 		// Services are passed from the static ServiceContainer
@@ -134,16 +200,26 @@ public class NonprofitBookkeepingFX extends Application
 		
 		// MenuBar must be built *after* plugins are loaded so 
 		// they can add their items.
-		this.root.setTop(buildMenuBar());
+		// mainView.setTop(buildMenuBar()); // Old way of setting menu bar directly
+		MenuBar menuBar = buildMenuBar();
+		mainView.setMenuBar(menuBar); // New way: Pass MenuBar to MainApplicationView
 		
-		Scene scene = new Scene(this.root, 1000, 700);
+		Scene scene = new Scene(mainView, 1000, 700); // Use mainView for the scene
 		this.primaryStage.setScene(scene);
 		this.primaryStage.setTitle("Nonprofit Bookkeeping (JavaFX)");
 		
-		setState(AppState.NO_COMPANY);
+		setState(AppState.NO_COMPANY); // Set initial UI state
 		this.primaryStage.show();
 	}
 	
+	/**
+	 * Builds the main {@link MenuBar} for the application.
+	 * This includes standard menus like File, Edit, Run, Reports, Panels, Settings, and Help.
+	 * It also iterates through any loaded {@link Plugin}s and calls their
+	 * {@link Plugin#addMenuItems(MenuBar)} method to allow them to contribute to the menu bar.
+	 *
+	 * @return The fully constructed {@link MenuBar}.
+	 */
 	private MenuBar buildMenuBar()
 	{
 		MenuBar bar = new MenuBar();
@@ -153,7 +229,7 @@ public class NonprofitBookkeepingFX extends Application
 		this.miOpen = add(file, "Open Company File", e -> doOpenCompany());
 		this.miClose = add(file, "Close Company File", e -> doCloseCompany());
 		this.miSave = add(file, "Save Company File", e -> doSaveCompany());
-		
+
 		add(file, "Import File", e -> new ImportFileActionFX(this.primaryStage).handle(e));
 		add(file, "Export File", e -> new ExportFileActionFX(this.primaryStage).handle(e));
 		bar.getMenus().add(file);
@@ -161,29 +237,41 @@ public class NonprofitBookkeepingFX extends Application
 		/* EDIT */
 		Menu edit = new Menu("Edit");
 		this.miEditCompany = add(edit, "Create or Edit Company", e -> startCreateWizard());
-		this.miEditCoa = add(edit, "Edit Chart of Accounts", e -> showCoaEditor());
-		this.miEditJournal =
-			add(edit, "Edit Journal", e -> showPanel(new JournalPanelFX(), "Journal"));
+		// this.miEditCoa = add(edit, "Edit Chart of Accounts", e -> showCoaEditor()); // Old
+		this.miEditCoa = add(edit, "Edit Chart of Accounts", e -> ((MainApplicationView)this.root).showPanel(MainApplicationView.PanelType.COA));
+		// this.miEditJournal = add(edit, "Edit Journal", e -> showPanel(new JournalPanelFX(), "Journal")); // Old
+		this.miEditJournal = add(edit, "Edit Journal", e -> ((MainApplicationView)this.root).showPanel(MainApplicationView.PanelType.JOURNAL));
 		
 		add(edit, "Open Budget Editor", e -> {
 			Company currentCompany = CurrentCompany.getCompany();
-			
-			if (currentCompany == null)
-			{
-				AlertBox.showError(this.primaryStage, "No company open.");
+
+			if (currentCompany == null) {
+				AlertBox.showError(this.primaryStage, "No company is currently open. Please open or create a company first.");
+				return;
+			}
+
+			File companyFile = currentCompany.getCompanyFile();
+			if (companyFile == null) {
+				AlertBox.showError(this.primaryStage, "The current company has not been saved to a file yet. Please save your company before managing budgets.");
+				return;
+			}
+
+			File companyDir = companyFile.getParentFile();
+			if (companyDir == null) {
+				// This case is less likely if companyFile is not null and is a valid file path,
+				// but it's a good safeguard.
+				AlertBox.showError(this.primaryStage, "Could not determine the company's directory from its saved file path. Cannot manage budgets.");
 				return;
 			}
 			
-			File companyDir = (currentCompany.getCompanyFile() != null) ?
-				currentCompany.getCompanyFile().getParentFile() : null;
-			
-			if (companyDir == null)
-			{
-				AlertBox.showError(this.primaryStage,
-					"Company directory not found. Cannot manage budgets.");
+			// Check if the directory actually exists, as an additional safeguard,
+			// though BudgetService might also handle this.
+			if (!companyDir.exists() || !companyDir.isDirectory()) {
+				AlertBox.showError(this.primaryStage, "The company directory '" + companyDir.getAbsolutePath() + "' does not exist or is not a directory. Cannot manage budgets.");
 				return;
 			}
-			
+
+			// If all checks pass, proceed to open the BudgetPanel
 			new BudgetPanel(null, currentCompany.getChartOfAccounts(), new ArrayList<Fund>(),
 				ServiceContainer.budgetService, companyDir, null).setVisible(true);
 		});
@@ -207,9 +295,10 @@ public class NonprofitBookkeepingFX extends Application
 		this.reports = new Menu("Reports");
 		// add(this.reports, "Generate Reports", e -> { /* implement */}); // Old
 		// placeholder
-		add(this.reports, "Show Reports", e -> showPanel(new ReportsPanelFX(), "Reports"));
+		// add(this.reports, "Show Reports", e -> showPanel(new ReportsPanelFX(), "Reports")); // Old
+		add(this.reports, "Show Reports", e -> ((MainApplicationView)this.root).showPanel(MainApplicationView.PanelType.REPORTS));
 		add(this.reports, "Show Accounts",
-			e -> showPanel(new AccountsPanelFX(new AccountService()), "Chart of Accounts"));
+			e -> showPanel(new AccountsPanelFX(new AccountService()), "Chart of Accounts")); // Stays as new window for now
 		add(this.reports, "Show Account Activity", e -> {
 			Company currentCompany = CurrentCompany.getCompany();
 			
@@ -241,7 +330,7 @@ public class NonprofitBookkeepingFX extends Application
 				ServiceContainer.budgetService).actionPerformed(null));
 		add(this.reports, "Manage Saved Reports", e -> {
 			Company currentCompany = CurrentCompany.getCompany();
-			
+
 			if (currentCompany == null || currentCompany.getCompanyFile() == null ||
 				currentCompany.getCompanyFile().getParentFile() == null)
 			{
@@ -249,7 +338,7 @@ public class NonprofitBookkeepingFX extends Application
 					"Company context not properly set for managing reports.");
 				return;
 			}
-			
+
 			new ManageReportConfigurationsDialog(null, ServiceContainer.reportConfigurationService,
 				currentCompany.getCompanyFile().getParentFile(),
 				new ArrayList<Fund>(), ServiceContainer.reportService).setVisible(true);
@@ -308,6 +397,15 @@ public class NonprofitBookkeepingFX extends Application
 		return bar;
 	}
 	
+	/**
+	 * Helper method to create a {@link MenuItem}, set its label and action handler,
+	 * and add it to the specified {@link Menu}.
+	 *
+	 * @param menu The {@link Menu} to which the new item will be added.
+	 * @param label The text label for the menu item.
+	 * @param handler The {@link EventHandler} to be called when the menu item is actioned.
+	 * @return The created {@link MenuItem}.
+	 */
 	private static MenuItem add(Menu menu, String label, EventHandler<ActionEvent> handler)
 	{
 		MenuItem item = new MenuItem(label);
@@ -316,6 +414,14 @@ public class NonprofitBookkeepingFX extends Application
 		return item;
 	}
 	
+	/**
+	 * Displays a given JavaFX {@link Node} (typically a panel or UI component) in a new,
+	 * non-modal {@link Stage} (window).
+	 * The new stage is owned by the application's primary stage.
+	 *
+	 * @param panel The {@link Node} to display in the new window.
+	 * @param title The title for the new window.
+	 */
 	private void showPanel(Node panel, String title)
 	{
 		Stage sub = new Stage();
@@ -327,6 +433,8 @@ public class NonprofitBookkeepingFX extends Application
 		sub.show();
 	}
 	
+	/*
+	// Original showCoaEditor method, now replaced by using MainApplicationView.showPanel()
 	private void showCoaEditor()
 	{
 		Node previousView = this.root.getCenter();
@@ -350,20 +458,27 @@ public class NonprofitBookkeepingFX extends Application
 				}
 				catch (IOException | ActionCancelledException | NoFileCreatedException ex)
 				{
-					ex.printStackTrace();
+					ex.printStackTrace(); // Consider better error handling
 				}
 				
 			},
 			() -> this.root.setCenter(previousView));
 		this.root.setCenter(editor);
 	}
+	*/
 	
-	private void setState(AppState s)
+	/**
+	 * Sets the application's operational state and updates the enabled/disabled status
+	 * of various menu items accordingly.
+	 *
+	 * @param newState The new {@link AppState} to set for the application.
+	 */
+	private void setState(AppState newState)
 	{
-		this.state = s;
-		boolean companyOpen = (s == AppState.COMPANY_OPEN);
-		boolean noCompany = (s == AppState.NO_COMPANY);
-		boolean creatingCompany = (s == AppState.CREATING_COMPANY);
+		this.state = newState;
+		boolean companyOpen = (newState == AppState.COMPANY_OPEN);
+		boolean noCompany = (newState == AppState.NO_COMPANY);
+		boolean creatingCompany = (newState == AppState.CREATING_COMPANY);
 		
 		this.miOpen.setDisable(companyOpen || creatingCompany);
 		this.miClose.setDisable(noCompany || creatingCompany);
@@ -394,59 +509,114 @@ public class NonprofitBookkeepingFX extends Application
 		// require one.
 		
 		// This can be handled by the plugin itself in its addMenuItems or if the main
-		// app manages plugin menus. For now, SCALedgerPlugin's menu is always enabled once added. This is a V2
-		// improvement area.
+		// app manages plugin menus. For now, SCALedgerPlugin's menu is always enabled once added.
+		// This is a V2 improvement area.
+		// A robust solution would involve plugins registering their top-level menus for state management by the core.
 	}
 	
+	/**
+	 * Handles the action to open a company file.
+	 * It instantiates and triggers {@link OpenCompanyFileActionFX}.
+	 * If successful, the application state is set to {@link AppState#COMPANY_OPEN}.
+	 * Errors are displayed using an {@link AlertBox}.
+	 * The {@code @SuppressWarnings("unused")} is present because this method is called via JavaFX action event.
+	 */
 	@SuppressWarnings("unused") private void doOpenCompany()
 	{
 		
 		try
 		{
+			// The OpenCompanyFileActionFX itself should handle the logic of opening
+            // and then potentially calling a method here or using a listener to update state.
+            // For now, it's assumed the action completes and state is set.
 			OpenCompanyFileActionFX openCompanyFileActionFX =
 				new OpenCompanyFileActionFX(this.primaryStage);
-			setState(AppState.COMPANY_OPEN);
+            // If action is successful and a company is loaded, it should update CurrentCompany.
+            // Then, we can set state.
+            if (CurrentCompany.getCompany() != null && CurrentCompany.getCompany().getCompanyFile() != null) { // Check if company actually opened
+			    setState(AppState.COMPANY_OPEN);
+            } else {
+                // If action was cancelled or failed, state might not change or revert to NO_COMPANY.
+                // This depends on action's internal logic and if it throws exceptions on failure/cancel.
+            }
 		}
-		catch (Exception e)
+		catch (Exception e) // Catch broad exceptions from action if it throws them directly
 		{
-			AlertBox.showError(null, e.getMessage());
+			AlertBox.showError(this.primaryStage, "Failed to open company: " + e.getMessage());
 		}
 		
 	}
 	
+	/**
+	 * Handles the action to close the currently open company file.
+	 * It instantiates and triggers {@link CloseCompanyFileAction}.
+	 * Sets the application state to {@link AppState#NO_COMPANY} and switches
+	 * the main view to the dashboard.
+	 * Errors are displayed using an {@link AlertBox}.
+	 * The {@code @SuppressWarnings("unused")} is present because this method is called via JavaFX action event.
+	 */
 	@SuppressWarnings("unused") private void doCloseCompany()
 	{
 		
 		try
 		{
+			// The CloseCompanyFileAction should handle the logic of closing.
+            // This includes saving if necessary/prompting, clearing CurrentCompany, etc.
 			CloseCompanyFileAction closeCompanyFileAction =
 				new CloseCompanyFileAction(this.primaryStage);
+			// After action, set state.
 			setState(AppState.NO_COMPANY);
 		}
-		catch (Exception e)
+		catch (Exception e)  // Catch broad exceptions from action
 		{
-			AlertBox.showError(null, e.getMessage());
+			AlertBox.showError(this.primaryStage, "Failed to close company: " + e.getMessage());
 		}
 		
-		this.root.setCenter(this.dashboard);
+		// Switch view back to dashboard
+		if (this.root instanceof MainApplicationView) {
+			((MainApplicationView)this.root).showPanel(MainApplicationView.PanelType.DASHBOARD);
+		} else {
+			// Fallback or error if root is not what we expect
+			this.root.setCenter(this.dashboard);
+		}
 	}
 	
+	/**
+	 * Handles the action to save the currently open company file.
+	 * It instantiates and triggers {@link SaveCompanyFileAction}.
+	 * Shows an info message on success or an error message on failure.
+	 * The {@code @SuppressWarnings("unused")} is present because this method is called via JavaFX action event.
+	 */
 	@SuppressWarnings("unused") private void doSaveCompany()
 	{
 		
 		try
 		{
+            // SaveCompanyFileAction should handle the logic of saving CurrentCompany.
 			SaveCompanyFileAction saveCompanyFileAction =
 				new SaveCompanyFileAction(this.primaryStage);
-			AlertBox.showInfo(null, "Company saved.");
+            // Assuming the action itself shows success/failure messages or throws on failure.
+            // If it returns a status, we could use that:
+            // boolean saved = saveCompanyFileAction.execute(); // If it had an execute method
+            // if (saved) AlertBox.showInfo(this.primaryStage, "Company saved.");
+            // For now, just showing a generic message if no exception.
+			AlertBox.showInfo(this.primaryStage, "Company saved.");
 		}
 		catch (Exception ex)
 		{
-			AlertBox.showError(null, ex.getMessage());
+			AlertBox.showError(this.primaryStage, "Failed to save company: " + ex.getMessage());
 		}
 		
 	}
 	
+	/**
+	 * Handles the action to start the company creation/editing wizard.
+	 * It changes the application state to {@link AppState#CREATING_COMPANY},
+	 * then instantiates and triggers {@link CreateOrEditCompanyActionFX}.
+	 * If successful, state changes to {@link AppState#COMPANY_OPEN}. If an error occurs,
+	 * state reverts to the previous state, and an error alert is shown.
+	 * The {@code @SuppressWarnings("unused")} is present because this method is called via JavaFX action event.
+	 */
 	@SuppressWarnings("unused") private void startCreateWizard()
 	{
 		AppState saved = getState();
@@ -454,24 +624,44 @@ public class NonprofitBookkeepingFX extends Application
 		
 		try
 		{
+            // CreateOrEditCompanyActionFX should handle the wizard logic.
+            // Upon successful completion, it should update CurrentCompany.
 			CreateOrEditCompanyActionFX createOrEditCompanyActionFX =
 				new CreateOrEditCompanyActionFX(this.primaryStage);
-			setState(AppState.COMPANY_OPEN);
+            // If wizard completes and company is set in CurrentCompany:
+            if (CurrentCompany.getCompany() != null) { // Basic check
+			    setState(AppState.COMPANY_OPEN);
+            } else {
+                 // Wizard was cancelled or failed without setting a company
+                setState(saved); // Revert to previous state
+            }
 		}
 		catch (Exception e)
 		{
-			setState(saved);
-			e.printStackTrace();
-			AlertBox.showError(null, e.getMessage());
+			setState(saved); // Revert to previous state on error
+			e.printStackTrace(); // Consider more specific logging
+			AlertBox.showError(this.primaryStage, "Error during company setup: " + e.getMessage());
 		}
 		
 	}
 	
+	/**
+	 * Gets the current operational state of the application.
+	 * @return The current {@link AppState}.
+	 */
 	private AppState getState()
 	{
 		return this.state;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 * Called when the application is shutting down.
+	 * This implementation iterates through all loaded plugins and calls their {@code shutdown()} method.
+	 * It also attempts to save any currently open company data via {@link #doSaveCompany()}.
+	 * Errors during plugin shutdown are logged.
+	 * @throws Exception if an error occurs during the superclass's stop method or saving company data.
+	 */
 	@Override public void stop() throws Exception
 	{
 		LOGGER.info("Application stopping. Shutting down plugins.");

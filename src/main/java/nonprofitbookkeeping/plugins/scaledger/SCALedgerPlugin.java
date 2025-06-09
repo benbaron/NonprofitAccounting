@@ -20,6 +20,13 @@ import java.io.File;
 import java.util.Map; 
 import java.util.logging.Logger;
 
+/**
+ * Plugin for handling SCA (Standard Chart of Accounts) Ledger functionalities.
+ * This plugin provides UI elements and actions to load, process, and save
+ * SCA ledger data from XLSM and JSON formats. It manages its own state
+ * for SCA-specific beans and the currently active SCA file, replacing
+ * previous static access patterns.
+ */
 public class SCALedgerPlugin implements Plugin {
 
     private static final Logger LOGGER = Logger.getLogger(SCALedgerPlugin.class.getName());
@@ -35,16 +42,31 @@ public class SCALedgerPlugin implements Plugin {
     // Potentially an instance of PageViewer (once it's not a stub)
     // private PageViewerPanel pageViewerPanel; 
 
+    /**
+     * {@inheritDoc}
+     * @return The name of this plugin: "SCA Ledger Tools".
+     */
     @Override
     public String getName() {
         return PLUGIN_NAME;
     }
 
+    /**
+     * {@inheritDoc}
+     * @return A description of the plugin's purpose, focusing on SCA ledger processing.
+     */
     @Override
     public String getDescription() {
         return "Provides tools for loading, viewing, and processing specialized SCA (Standard Chart of Accounts) formatted ledgers from XLSM and JSON files.";
     }
 
+    /**
+     * {@inheritDoc}
+     * Initializes the plugin by storing the application context and preparing
+     * internal components like the {@link PageViewerPanel}.
+     * @param context The application context provided by the main application.
+     * @throws Exception If any error occurs during initialization (not thrown by this implementation).
+     */
     @Override
     public void initialize(ApplicationContext context) throws Exception {
         this.applicationContext = context;
@@ -55,6 +77,14 @@ public class SCALedgerPlugin implements Plugin {
         // this.pageViewerPanel = new PageViewerPanel(); // Assuming PageViewer becomes a real UI panel
     }
 
+    /**
+     * {@inheritDoc}
+     * Adds a new "SCA Ledger" top-level menu to the application's main menu bar.
+     * This menu includes items for loading XLSM tables, importing JSON, saving modified copies,
+     * generic file input/output actions (contextualized for SCA), and an undo edit action.
+     * Actions are instantiated and linked to their respective menu items.
+     * @param mainMenuBar The main menu bar of the application.
+     */
     @Override
     public void addMenuItems(MenuBar mainMenuBar) {
         LOGGER.info("Adding menu items for " + PLUGIN_NAME);
@@ -129,26 +159,45 @@ public class SCALedgerPlugin implements Plugin {
         }
     }
 
-    // Methods for managing SCA state, to replace static access:
+    /**
+     * Gets the map of SCA-specific beans (objects) managed by this plugin.
+     * This replaces the static `BeanShell.beans`.
+     * @return The map of SCA beans.
+     */
     public Map<String, Object> getScaBeans() {
         return this.scaBeans;
     }
 
+    /**
+     * Sets the map of SCA-specific beans for this plugin.
+     * @param scaBeans The map of SCA beans to set.
+     */
     public void setScaBeans(Map<String, Object> scaBeans) {
         this.scaBeans = scaBeans;
     }
 
+    /**
+     * Gets the currently active SCA file being processed by this plugin.
+     * This replaces the static `NonCompanyFile.currentFile`.
+     * @return The current SCA {@link File}, or null if none is active.
+     */
     public File getCurrentScaFile() {
         return this.currentScaFile;
     }
 
+    /**
+     * Sets the currently active SCA file for this plugin.
+     * @param currentScaFile The SCA {@link File} to set as current.
+     */
     public void setCurrentScaFile(File currentScaFile) {
         this.currentScaFile = currentScaFile;
     }
     
-    // If PageViewer becomes a real panel owned by the plugin:
-    // public PageViewerPanel getPageViewerPanel() { return pageViewerPanel; }
-
+    /**
+     * Gets the {@link PageViewerPanel} instance associated with this plugin.
+     * This panel is used for displaying SCA ledger pages.
+     * @return The {@link PageViewerPanel} instance.
+     */
     public PageViewerPanel getPageViewerPanel() { // Added getter
         return this.pageViewerPanel;
     }

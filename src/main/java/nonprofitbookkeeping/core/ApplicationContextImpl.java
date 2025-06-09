@@ -23,6 +23,18 @@ public class ApplicationContextImpl implements ApplicationContext
 	// ServiceContainer
 	// For now, assuming they are not managed singletons in ServiceContainer.
 	
+	/**
+	 * Constructs an ApplicationContextImpl.
+	 * @param primaryStage The primary stage of the application.
+	 * @param menuBar The menu bar of the application.
+	 * @param reportService The report service.
+	 * @param budgetService The budget service.
+	 * @param reportConfigurationService The report configuration service.
+	 * @param inventoryService The inventory service.
+	 * @param documentStorageService The document storage service.
+	 * @param fundAccountingService The fund accounting service.
+	 * @throws IllegalArgumentException if primaryStage or menuBar is null.
+	 */
 	public ApplicationContextImpl(Stage primaryStage,
 		MenuBar menuBar,
 		ReportService reportService,
@@ -55,34 +67,37 @@ public class ApplicationContextImpl implements ApplicationContext
 		this.fundAccountingService = fundAccountingService;
 	}
 	
-	/**  
-	 * Constructor ApplicationContextImpl
-	 * @param primaryStage2
-	 * @param reportservice2
-	 * @param budgetservice2
-	 * @param reportconfigurationservice2
-	 * @param iss
-	 * @param dss
-	 * @param fas
+	/**
+	 * Constructs an ApplicationContextImpl with default instances for services and UI components.
+	 * @param primaryStage The primary stage of the application.
+	 * @param reportService The report service.
+	 * @param budgetService The budget service.
+	 * @param reportConfigurationService The report configuration service.
+	 * @param inventoryService The inventory service.
+	 * @param documentStorageService The document storage service.
+	 * @param fundAccountingService The fund accounting service.
 	 */
-	public ApplicationContextImpl(Stage primaryStage2,
-		ReportService reportservice2,
-		BudgetService budgetservice2,
-		ReportConfigurationService reportconfigurationservice2,
-		InventoryService iss,
-		DocumentStorageService dss,
-		FundAccountingService fas)
+	public ApplicationContextImpl(Stage primaryStage, // Renamed parameter for clarity
+		ReportService reportService, // Renamed parameter for clarity
+		BudgetService budgetService, // Renamed parameter for clarity
+		ReportConfigurationService reportConfigurationService, // Renamed parameter for clarity
+		InventoryService inventoryService, // Renamed parameter for clarity
+		DocumentStorageService documentStorageService, // Renamed parameter for clarity
+		FundAccountingService fundAccountingService) // Renamed parameter for clarity
 	{
-		this.primaryStage = new Stage();
-		this.menuBar = new MenuBar();
-		this.reportService = new ReportService();
-		this.budgetService = new BudgetService();
-		this.reportConfigurationService = new ReportConfigurationService();
-		this.inventoryService = new InventoryService();
-		this.documentStorageService = new DocumentStorageService();
-		this.fundAccountingService = new FundAccountingService();
+		this.primaryStage = primaryStage != null ? primaryStage : new Stage(); // Use provided or new Stage
+		this.menuBar = new MenuBar(); // Always create a new MenuBar for this constructor
+		this.reportService = reportService != null ? reportService : new ReportService();
+		this.budgetService = budgetService != null ? budgetService : new BudgetService();
+		this.reportConfigurationService = reportConfigurationService != null ? reportConfigurationService : new ReportConfigurationService();
+		this.inventoryService = inventoryService != null ? inventoryService : new InventoryService();
+		this.documentStorageService = documentStorageService != null ? documentStorageService : new DocumentStorageService();
+		this.fundAccountingService = fundAccountingService != null ? fundAccountingService : new FundAccountingService();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override public Stage getPrimaryStage()
 	{
 		return this.primaryStage;
@@ -93,41 +108,65 @@ public class ApplicationContextImpl implements ApplicationContext
 	// return this.menuBar;
 	// }
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override public Company getCurrentCompany()
 	{
 		return CurrentCompany.getCompany();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override public ReportService getReportService()
 	{
 		return this.reportService;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override public BudgetService getBudgetService()
 	{
 		return this.budgetService;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override public ReportConfigurationService getReportConfigurationService()
 	{
 		return this.reportConfigurationService;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override public InventoryService getInventoryService()
 	{
 		return this.inventoryService;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override public DocumentStorageService getDocumentStorageService()
 	{
 		return this.documentStorageService;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override public FundAccountingService getFundAccountingService()
 	{
 		return this.fundAccountingService;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override public void runLater(Runnable runnable)
 	{
 		if (runnable == null)

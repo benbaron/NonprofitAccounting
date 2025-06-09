@@ -15,46 +15,63 @@ import lombok.ToString;
 @Setter          // Automatically generates setter methods
 @AllArgsConstructor // Generates a constructor with all fields
 @ToString         // Automatically generates a toString() method
+/**
+ * Represents a summary of financial data, typically including summaries of accounts and funds.
+ * This class uses Lombok annotations for generating getters, setters, an all-args constructor,
+ * and a {@code toString()} method.
+ */
 public class Summary implements Serializable
 {
     /**
-	 * serialVersionUID : long
+	 * The unique identifier for this serializable class.
 	 */
 	private static final long serialVersionUID = 2708260956061642813L;
 
 	
+	/** A list of account summaries. Initialized to an empty ArrayList. */
 	@JsonProperty private List<SummaryAccount> accounts = new ArrayList<>();
+	/** A list of fund summaries. Initialized to an empty ArrayList. */
 	@JsonProperty private List<SummaryFund> funds = new ArrayList<>();
     
 	/**  
-	 * Constructor Summary
+	 * Default constructor.
+	 * Initializes an empty Summary object.
+	 * Lombok's {@code @AllArgsConstructor} will also create a constructor with all fields.
 	 */
 	public Summary()
 	{
 	}
+
+	// Explicit getters and setters are generally not needed due to Lombok @Getter/@Setter,
+	// but are documented as they exist.
+
 	/**
-	 * @return the accounts
+	 * Gets the list of account summaries.
+	 * @return A list of {@link SummaryAccount} objects.
 	 */
 	public List<SummaryAccount> getAccounts()
 	{
 		return this.accounts;
 	}
 	/**
-	 * @param accounts the accounts to set
+	 * Sets the list of account summaries.
+	 * @param accounts A list of {@link SummaryAccount} objects to set.
 	 */
 	public void setAccounts(List<SummaryAccount> accounts)
 	{
 		this.accounts = accounts;
 	}
 	/**
-	 * @return the funds
+	 * Gets the list of fund summaries.
+	 * @return A list of {@link SummaryFund} objects.
 	 */
 	public List<SummaryFund> getFunds()
 	{
 		return this.funds;
 	}
 	/**
-	 * @param funds the funds to set
+	 * Sets the list of fund summaries.
+	 * @param funds A list of {@link SummaryFund} objects to set.
 	 */
 	public void setFunds(List<SummaryFund> funds)
 	{

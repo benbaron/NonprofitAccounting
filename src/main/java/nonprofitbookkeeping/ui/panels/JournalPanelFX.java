@@ -12,17 +12,28 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 
 import nonprofitbookkeeping.model.*;
-import nonprofitbookkeeping.service.JournalService;
 
-/** Shows transactions and lets user add / edit / delete them. */
+/**
+ * JavaFX panel for displaying and managing journal transactions.
+ * It provides a table view of {@link AccountingTransaction} objects and
+ * allows users to add, edit, or delete these transactions via a toolbar
+ * and a dialog ({@link NewTransactionPanelFX}).
+ * Data is typically sourced from the {@link Journal} of the {@link CurrentCompany}.
+ */
 public class JournalPanelFX extends BorderPane
 {
-	
-	private final JournalService service = new JournalService();
+
+	/** ObservableList that backs the {@link #table}, containing {@link AccountingTransaction} objects. */
 	private final ObservableList<AccountingTransaction> rows =
 		FXCollections.observableArrayList();
+	/** TableView used to display the journal transactions. */
 	private final TableView<AccountingTransaction> table = new TableView<>(this.rows);
 	
+	/**
+	 * Constructs a new {@code JournalPanelFX}.
+	 * Initializes the panel layout, builds the transaction table, sets up the toolbar
+	 * with action buttons (New, Edit, Delete), and performs an initial refresh of data.
+	 */
 	public JournalPanelFX()
 	{
 		setPadding(new Insets(10));
@@ -33,6 +44,11 @@ public class JournalPanelFX extends BorderPane
 	}
 	
 	/* -------- Table -------- */
+	/**
+	 * Builds and configures the {@link TableView} ({@link #table}) for displaying journal transactions.
+	 * Sets a column resize policy and defines columns for ID, Date, Account, Debit, Credit, and Memo
+	 * using the helper methods {@link #col(String, String)} and {@link #num(String, String)}.
+	 */
 	private void buildTable()
 	{
 		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
@@ -45,6 +61,15 @@ public class JournalPanelFX extends BorderPane
 			col("Memo", "memo"));
 	}
 	
+	/**
+	 * Utility method to create a {@link TableColumn} for displaying String properties
+	 * from an {@link AccountingTransaction}.
+	 *
+	 * @param t The title of the column for the table header.
+	 * @param p The name of the property in {@link AccountingTransaction} to bind this column to
+	 *          (e.g., "date" for getDate()).
+	 * @return A configured {@link TableColumn} for displaying String data.
+	 */
 	private static TableColumn<AccountingTransaction, String> col(String t, String p)
 	{
 		TableColumn<AccountingTransaction, String> c = new TableColumn<>(t);
@@ -52,6 +77,15 @@ public class JournalPanelFX extends BorderPane
 		return c;
 	}
 	
+	/**
+	 * Utility method to create a {@link TableColumn} for displaying {@link BigDecimal} properties
+	 * from an {@link AccountingTransaction}.
+	 *
+	 * @param t The title of the column for the table header.
+	 * @param p The name of the property in {@link AccountingTransaction} to bind this column to
+	 *          (e.g., "debit" for getDebit()).
+	 * @return A configured {@link TableColumn} for displaying BigDecimal data.
+	 */
 	private static TableColumn<AccountingTransaction, BigDecimal> num(String t, String p)
 	{
 		TableColumn<AccountingTransaction, BigDecimal> c = new TableColumn<>(t);
@@ -60,6 +94,14 @@ public class JournalPanelFX extends BorderPane
 	}
 	
 	/* -------- Toolbar -------- */
+	/**
+	 * Builds and returns a {@link ToolBar} containing "New", "Edit", and "Delete" buttons
+	 * for managing journal transactions.
+	 * These buttons trigger actions to open an editor dialog ({@link #openEditor(AccountingTransaction)})
+	 * for new or existing transactions, or to delete the selected transaction from the journal.
+	 *
+	 * @return A {@link ToolBar} node populated with action buttons.
+	 */
 	private Node toolBar()
 	{
 		Button add = new Button("New");
@@ -69,51 +111,99 @@ public class JournalPanelFX extends BorderPane
 		add.setOnAction(e -> openEditor(null));
 		edit.setOnAction(e -> {
 			AccountingTransaction sel = this.table.getSelectionModel().getSelectedItem();
+
 			if (sel != null)
 			{
 				openEditor(sel);
 			}
+
 		});
 		del.setOnAction(e -> {
 			AccountingTransaction sel = this.table.getSelectionModel().getSelectedItem();
-			
+
 			if (sel != null)
 			{
-				this.service.delete(sel.getId());
-				refresh();
+				Journal journal = CurrentCompany.getCompany().getLedger().getJournal();
+
+				if (journal != null)
+				{
+					journal.deleteTransaction(sel.getBookingDateTimestamp());
+					refresh();
+				}
+
 			}
-			
+
 		});
 		return new ToolBar(add, edit, del);
 	}
 	
 	/* -------- CRUD -------- */
-	private void openEditor(AccountingTransaction existing) {
-
-	    NewTransactionPanelFX pane =
-	        (existing == null)
-	        ? new NewTransactionPanelFX(          // create
-	              (AccountingTransaction tx) -> {
-	                  this.service.add(tx);
-	                  refresh();
-	              })
-	        : new NewTransactionPanelFX(existing,
-	            (Consumer<AccountingTransaction>) tx ->  {
-	                  this.service.update(tx);
-	                  refresh();
-	              });
-
-	    Dialog<Void> d = new Dialog<>();
-	    d.setTitle(existing == null ? "New Transaction" : "Edit Transaction");
-	    d.getDialogPane().setContent(pane);
-	    d.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
-	    d.showAndWait();
-	}
-
-	
-	private void refresh()
+	/**
+	 * Opens a dialog (using {@link NewTransactionPanelFX}) for creating a new journal transaction
+	 * or editing an existing one.
+	 * If {@code existing} is null, the dialog is configured for adding a new transaction.
+	 * Otherwise, it's configured for editing the provided {@code existing} transaction.
+	 * The dialog handles the save/update logic via callbacks that interact with the
+	 * main {@link Journal} from the {@link CurrentCompany}.
+	 * The table is refreshed upon successful save or update.
+	 * If the main journal is not available from {@code CurrentCompany}, an error is printed,
+	 * and the dialog is not shown.
+	 *
+	 * @param existing The {@link AccountingTransaction} to edit. If null, a new transaction will be created.
+	 */
+	private void openEditor(AccountingTransaction existing)
 	{
-		this.rows.setAll(this.service.list());
+		Journal mainJournal = CurrentCompany.getCompany().getLedger().getJournal();
+		
+		if (mainJournal == null)
+		{
+			// Optionally, show an error dialog if the main journal isn't available
+			System.err.println("Error: Journal not available in CurrentCompany.");
+			
+			// You might want to disable add/edit buttons if mainJournal is null
+			return;
+		}
+		
+		NewTransactionPanelFX pane =
+			(existing == null) ? new NewTransactionPanelFX( // Create new
+				(AccountingTransaction tx) ->
+				{ // onSave consumer for new
+					mainJournal.addTransaction(tx);
+					refresh();
+				}) : new NewTransactionPanelFX(existing, // Edit existing
+					(Consumer<AccountingTransaction>) tx ->
+					{ // onSave consumer for edit
+						mainJournal.updateTransaction(tx);
+						refresh();
+					});
+					
+		Dialog<Void> d = new Dialog<>();
+		d.setTitle(existing == null ? "New Transaction" : "Edit Transaction");
+		d.getDialogPane().setContent(pane);
+		d.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+		d.showAndWait();
+	}
+	
+	
+	/**
+	 * Refreshes the data displayed in the journal transaction {@link #table}.
+	 * It retrieves the current list of transactions from the {@link Journal} of the
+	 * {@link CurrentCompany}. If the journal or company is not available, the table is cleared.
+	 * Otherwise, the table's backing list ({@link #rows}) is updated with the fetched transactions.
+	 */
+	void refresh()
+	{
+		Journal journal = CurrentCompany.getCompany().getLedger().getJournal();
+		
+		if (journal != null)
+		{
+			this.rows.setAll(journal.getJournalTransactions());
+		}
+		else
+		{
+			this.rows.clear(); // Or handle as an error/empty state
+		}
+		
 	}
 	
 }

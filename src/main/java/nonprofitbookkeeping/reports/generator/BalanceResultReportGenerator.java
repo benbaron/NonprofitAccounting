@@ -1,74 +1,249 @@
 
 package nonprofitbookkeeping.reports.generator;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.IOException; // For exportToHTML
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Collections; // For Collections.emptyList()
 
 import nonprofitbookkeeping.service.AccountService;
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
+// Assuming AccountService.AccountBalance or similar class that
+// getBalanceResults returns
+// import nonprofitbookkeeping.model.Account; // If
+// AccountService.AccountBalance is actually Account
 
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+// JasperExportManager and HtmlExporter are used in inherited methods
+
+/**
+ * Report generator for creating a "Balance Result Report".
+ * This report typically shows account balances.
+ * It extends {@link AbstractReportGenerator} to leverage common report generation
+ * and export functionalities.
+ */
 public class BalanceResultReportGenerator extends AbstractReportGenerator
 {
 	
 	/**
-	 * Constructor BalanceResultReportGenerator
-	 * @param accountService
+	 * Constructs a {@code BalanceResultReportGenerator}.
+	 *
+	 * @param accountService The account service, which is currently not directly used by this generator's
+	 *                       methods as {@link #getReportData()} makes a static call to
+	 *                       {@code AccountService.getBalanceResults()}. This parameter might be used
+	 *                       if {@code AccountService} were refactored to be an instance service.
 	 */
 	public BalanceResultReportGenerator(AccountService accountService)
 	{
+		// accountService parameter is not currently used by this generator's methods
+		// as getReportData() calls AccountService.getBalanceResults() statically.
+		// If AccountService were to become an instance service, this would need to
+		// change.
 	}
 	
-	// Override method to set parameters specific to this report
+	/**
+	 * {@inheritDoc}
+	 * <p>Provides parameters specific to the Balance Result Report. This includes:
+	 * <ul>
+	 *   <li>{@code reporttitle}: "Balance Result Report"</li>
+	 *   <li>{@code dateToday}: Current date as a string (e.g., "YYYY-MM-DD")</li>
+	 *   <li>{@code company}: Name of the current company, or "N/A"</li>
+	 *   <li>{@code companytext}: Formatted string "Report for: [CompanyName]"</li>
+	 *   <li>Other general parameters like {@code P_REPORT_TITLE}, {@code P_GENERATION_DATE},
+	 *       {@code P_COMPANY_NAME}, and {@code P_REPORT_PERIOD} are also set.</li>
+	 * </ul>
+	 * </p>
+	 * @return A map of parameters for the JasperReport.
+	 */
 	@Override protected Map<String, Object> getReportParameters()
 	{
 		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("P_REPORT_TITLE", "Balance Result Report"); // Match typical JRXML param
+																	// names
+		parameters.put("P_GENERATION_DATE",
+			LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM d, yyyy")));
 		
-		// Set the report title
+		Company currentCompany = CurrentCompany.getCompany();
+		String companyName = "N/A";
+		String companyDetailsText = "Company details not available."; // Default text
+		
+		if (currentCompany != null && currentCompany.getCompanyProfile() != null)
+		{
+			companyName = currentCompany.getCompanyProfile().getCompanyName() != null ?
+				currentCompany.getCompanyProfile().getCompanyName() : "N/A";
+			// For companytext, using a simpler approach.
+			// If CompanyProfileModel had a formatted address or details string, that could
+			// be used.
+			companyDetailsText = "Report for: " + companyName;
+		}
+		
+		parameters.put("P_COMPANY_NAME", companyName);
+		// The JRXML for BalanceResultReport might not have P_COMPANY_DETAILS or
+		// P_REPORT_PERIOD.
+		// Adjust parameters based on actual JRXML. For now, providing common ones.
+		// parameters.put("P_COMPANY_DETAILS", companyDetailsText); // If JRXML uses
+		// this
+		parameters.put("P_REPORT_PERIOD",
+			"As of " + LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM d, yyyy")));
+		
+		
+		// Parameters from original BalanceResultReport.jrxml:
+		// <parameter name="company" class="java.lang.String"/>
+		// <parameter name="companytext" class="java.lang.String"/>
+		// <parameter name="dateToday" class="java.lang.String"/>
+		// <parameter name="reporttitle" class="java.lang.String"/>
+		// Mapping to these specific names based on the provided JRXML structure:
 		parameters.put("reporttitle", "Balance Result Report");
+		parameters.put("dateToday", LocalDate.now().toString()); // e.g., "2024-01-15"
+		parameters.put("company", companyName);
+		parameters.put("companytext", companyDetailsText);
 		
-		// Set the current date dynamically
-		parameters.put("dateToday", LocalDate.now().toString()); // Gets the current date (e.g.,
-																// "2025-04-15")
-		
-		// Fetch real company details from the Company model/service
-		Company company = getCompanyDetails(); // You need to implement this method
-		parameters.put("company", CurrentCompany.getCompany().getCompanyProfile().getCompanyName()); // Assuming Company class has a getName()
-														// method
-		parameters.put("companytext", company.getCompanyProfile().toString()); // Assuming Company class has a
-																// getDetails() method
 		
 		return parameters;
 	}
 	
-	// Override method to provide the path to the JRXML file
-	@Override protected String getReportPath() throws ActionCancelledException, NoFileCreatedException
+	/**
+	 * {@inheritDoc}
+	 * @return The classpath resource path "reports/BalanceResultReport.jrxml".
+	 * @throws ActionCancelledException Not directly thrown by this implementation, but declared due to the interface.
+	 * @throws NoFileCreatedException Not directly thrown by this implementation, but declared due to the interface.
+	 */
+	@Override protected String getReportPath()	throws ActionCancelledException,
+												NoFileCreatedException
 	{
-		return null;
+		// Path relative to the root of the classpath (e.g., src/main/resources)
+		return "reports/BalanceResultReport.jrxml";
 	}
 	
 	/**
-	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
+	 * {@inheritDoc}
+	 * <p>Fetches data for the Balance Result Report by calling the static method
+	 * {@code AccountService.getBalanceResults()}. The returned list should contain
+	 * {@link AccountService.AccountBalance} objects or a compatible JavaBean structure
+	 * that matches the fields defined in the {@code BalanceResultReport.jrxml} template
+	 * (e.g., name, number, type, balance_currency_string).
+	 * </p>
+	 * @return A list of {@link AccountService.AccountBalance} objects, or an empty list if no data is available.
 	 */
 	@Override protected List<?> getReportData()
 	{
-		// Fetch real data for the report
-		// Assuming AccountService has a method that returns a list of balances or
-		// transaction data for the report
-		return AccountService.getBalanceResults(); // Modify based on your service's actual method
+		// This method fetches data using a static call.
+		// The data structure returned by AccountService.getBalanceResults()
+		// must be a List of JavaBeans compatible with the fields defined in
+		// BalanceResultReport.jrxml.
+		// Fields in BalanceResultReport.jrxml: name, number, type,
+		// balance_currency_string
+		List<AccountService.AccountBalance> balanceResults = AccountService.getBalanceResults();
+		return balanceResults != null ? balanceResults : Collections.emptyList();
 	}
 	
-	// This is just an example method for fetching company details
-	private static Company getCompanyDetails()
+	/**
+	 * {@inheritDoc}
+	 * <p>This implementation generates the "Balance Result Report". It compiles the JRXML template specified by
+	 * {@link #getReportPath()}, fills it with data from {@link #getReportData()} and parameters from
+	 * {@link #getReportParameters()}, and then exports the report to the specified format (PDF or HTML).
+	 * If an unsupported format is requested, it defaults to PDF.
+	 * The output file is named "Balance_Result_Report_[current_date].[format]" and saved in the directory
+	 * provided by {@link #getOutputDirectory()}.
+	 * </p>
+	 * @param format The desired output format ("pdf" or "html"). Defaults to "pdf" if unsupported.
+	 * @return The generated {@link File}.
+	 * @throws Exception If any error occurs during report generation, compilation, filling, or export,
+	 *                   including {@link FileNotFoundException} if the JRXML template is not found.
+	 */
+	@Override public File generateAndExportReport(String format) throws Exception
 	{
-		// Assuming a CompanyService or similar exists to fetch company details
-		// You can replace this with real logic to fetch company data, maybe from a
-		// database or config
-		return null;
+		File generatedFile = null;
+		String currentDateStr = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
+		String reportBaseName = "Balance_Result_Report_" + currentDateStr;
+		
+		String jrxmlPath = getReportPath();
+		
+		if (jrxmlPath == null || jrxmlPath.trim().isEmpty())
+		{
+			throw new NoFileCreatedException(
+				"JRXML path not specified in BalanceResultReportGenerator.");
+		}
+		
+		try (InputStream reportStream = getClass().getClassLoader().getResourceAsStream(jrxmlPath))
+		{
+			
+			if (reportStream == null)
+			{
+				System.err.println("Cannot find report template: " + jrxmlPath);
+				throw new FileNotFoundException("Report template not found: " + jrxmlPath);
+			}
+			
+			JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
+			
+			List<?> reportDataList = getReportData();
+			JRDataSource dataSource = new JRBeanCollectionDataSource(reportDataList);
+			
+			Map<String, Object> parameters = getReportParameters();
+			
+			JasperPrint jasperPrint =
+				JasperFillManager.fillReport(jasperReport, parameters, dataSource);
+			
+			File outputDir = new File(getOutputDirectory());
+			
+			if (!outputDir.exists())
+			{
+				outputDir.mkdirs();
+			}
+			
+			String outputFileName = reportBaseName + "." + format.toLowerCase();
+			File outputFile = new File(outputDir, outputFileName);
+			
+			if ("pdf".equalsIgnoreCase(format))
+			{
+				generatedFile = exportToPDF(jasperPrint, outputFile.getAbsolutePath());
+			}
+			else if ("html".equalsIgnoreCase(format))
+			{
+				generatedFile = exportToHTML(jasperPrint, outputFile.getAbsolutePath());
+			}
+			else
+			{
+				System.out.println("Unsupported format for Balance Result Report: " + format +
+					". Defaulting to PDF.");
+				File defaultOutputFile = new File(outputDir, reportBaseName + ".pdf");
+				generatedFile = exportToPDF(jasperPrint, defaultOutputFile.getAbsolutePath());
+			}
+			
+			if (generatedFile != null && generatedFile.exists())
+			{
+				System.out.println(reportBaseName + " generated successfully at: " +
+					generatedFile.getAbsolutePath());
+			}
+			else
+			{
+				String attemptedPath = (generatedFile != null) ? generatedFile.getAbsolutePath() :
+					outputFile.getAbsolutePath();
+				System.err.println("Report file " + attemptedPath +
+					" was not created or found after export attempt.");
+				throw new FileNotFoundException(
+					"Generated report file could not be confirmed after export: " + attemptedPath);
+			}
+			
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			throw e;
+		}
+		
+		return generatedFile;
 	}
 	
+
 }

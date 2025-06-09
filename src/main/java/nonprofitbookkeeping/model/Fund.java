@@ -47,6 +47,14 @@ public class Fund
 		this.balance = BigDecimal.ZERO;
 	}
 	
+	/**  
+	 * Constructor Fund
+	 */
+	public Fund()
+	{
+		// TODO Auto-generated constructor stub
+	}
+
 	/**
      * Gets the name of the fund.
      * @return The name of the fund.
@@ -172,6 +180,24 @@ public class Fund
 	public String getFundId()
 	{
 		return this.name;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setName(String string)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setFundId(String string)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

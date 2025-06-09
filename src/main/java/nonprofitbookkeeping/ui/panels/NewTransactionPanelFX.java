@@ -29,28 +29,40 @@ import nonprofitbookkeeping.model.*;
 public class NewTransactionPanelFX extends BorderPane
 {
 	
-	
+
 	/* ===== static row model ===== */
+	/**
+	 * Represents a single line (entry) in an accounting transaction.
+	 * Each line has an account, an account side (Debit/Credit), and an amount.
+	 * This class uses JavaFX properties to enable data binding with the TableView.
+	 */
 	public static final class Line
 	{
+		/** The name of the account for this transaction line. Represented as a StringProperty. */
 		public StringProperty account;
+		/** The side of the account (Debit or Credit) for this transaction line. Represented as an ObjectProperty. */
 		public ObjectProperty<AccountSide> side;
+		/** The monetary amount of this transaction line. Represented as an ObjectProperty of BigDecimal. */
 		public ObjectProperty<BigDecimal> amount;
 		
 		/**
-		 * Constructor Line
-		 * @param a
-		 * @param amount
+		 * Constructs a new {@code Line} with specified account, side, and amount.
+		 *
+		 * @param acc The {@link Account} object from which the account name is derived. Must not be null.
+		 * @param accountSide The {@link AccountSide} (Debit or Credit) for this line.
+		 * @param amount The monetary amount for this line.
 		 */
-		Line(Account acc, AccountSide a, BigDecimal amount)
+		Line(Account acc, AccountSide accountSide, BigDecimal amount)
 		{
 			this.account = new SimpleStringProperty(acc.getName());
-			this.side = new SimpleObjectProperty<>(a);
+			this.side = new SimpleObjectProperty<>(accountSide);
 			this.amount = new SimpleObjectProperty<>(amount);
 		}
 		
 		/**  
-		 * Constructor Line
+		 * Constructs a new, empty {@code Line} with default values.
+		 * Account name is empty, side defaults to Debit, and amount defaults to BigDecimal.ZERO.
+		 * This is typically used for creating a new row in the UI for the user to fill.
 		 */
 		public Line()
 		{
@@ -62,19 +74,29 @@ public class NewTransactionPanelFX extends BorderPane
 	}
 	
 	/* ------------------------------------------------------------------ */
+	/** ObservableList that backs the {@link #table}, containing {@link Line} objects representing transaction entries. */
 	private final ObservableList<Line> lines = FXCollections.observableArrayList();
+	/** TableView used to display and edit the transaction lines (entries). */
 	private final TableView<Line> table = new TableView<>(this.lines);
-	
+
+	/** DatePicker for selecting the transaction date. Defaults to the current date. */
 	private final DatePicker datePicker = new DatePicker(LocalDate.now());
+	/** TextArea for entering a memo or description for the transaction. */
 	private final TextArea memoArea = new TextArea();
+	/** Button to save the transaction. Enabled only when the transaction is balanced. */
 	private Button saveBtn;
+	/** Callback {@link Consumer} to be invoked when the transaction is saved. It receives the created {@link AccountingTransaction}. */
 	private Consumer<AccountingTransaction> onSave;
-	private ChartOfAccounts coa; 
+	/** Reference to the current company's {@link ChartOfAccounts}, used for account selection. */
+	private ChartOfAccounts coa;
 	
 	/**
+	 * Constructs a new {@code NewTransactionPanelFX} for creating a new transaction.
+	 * Initializes the UI components and sets up listeners to recalculate totals
+	 * and enable/disable the save button based on whether the transaction is balanced.
 	 * 
-	 * Constructor NewTransactionPanelFX
-	 * @param onSave
+	 * @param onSave A {@link Consumer} callback that will be invoked with the successfully created
+	 *               {@link AccountingTransaction} when the user saves. Must not be null.
 	 */
 	public NewTransactionPanelFX(Consumer<AccountingTransaction> onSave)
 	{
@@ -88,9 +110,13 @@ public class NewTransactionPanelFX extends BorderPane
 	}
 	
 	/**  
-	 * Constructor NewTransactionPanelFX
-	 * @param existing
-	 * @param consumer
+	 * Constructs a new {@code NewTransactionPanelFX} for editing an existing transaction.
+	 * Initializes the UI components, pre-fills them with data from the {@code existing} transaction,
+	 * and sets up listeners to recalculate totals and enable/disable the save button.
+	 *
+	 * @param existing The {@link AccountingTransaction} to be edited. Its details will populate the panel. Must not be null.
+	 * @param onSave A {@link Consumer} callback that will be invoked with the successfully updated
+	 *               {@link AccountingTransaction} when the user saves. Must not be null.
 	 */
 	public NewTransactionPanelFX(AccountingTransaction existing,
 		Consumer<AccountingTransaction> onSave)
@@ -104,23 +130,27 @@ public class NewTransactionPanelFX extends BorderPane
 	}
 	
 	/**
-	 * Populates the UI with an existing balanced transaction so the user can
-	 * correct or extend entry lines.
-	 * 
-	 * @param existing
+	 * Populates the UI with data from an existing {@link AccountingTransaction}.
+	 * This method is called when the panel is constructed for editing an existing transaction.
+	 * It first calls the base {@link #buildUI()} method to set up the general structure,
+	 * then sets the transaction date and memo from the {@code existing} transaction.
+	 * Finally, it clears any default lines and populates the {@link #lines} list (and thus the table)
+	 * with {@link Line} objects derived from the entries in the {@code existing} transaction.
+	 *
+	 * @param existing The {@link AccountingTransaction} whose data is to be loaded into the UI.
 	 */
 	private void buildUI(AccountingTransaction existing)
 	{
 		buildUI();
 		this.lines.forEach(this::watch);
-		
+
 		/* 1. header fields */
 		this.datePicker.setValue(LocalDate.parse(existing.getDate()));
 		this.memoArea.setText(existing.getMemo());
-		
+
 		/* 2. entry lines */
 		this.lines.clear();
-		
+
 		// Add the lines from the existing entries.
 		for (AccountingEntry e : existing.getEntries())
 		{
@@ -130,11 +160,18 @@ public class NewTransactionPanelFX extends BorderPane
 			this.lines.add(line);
 			watch(line);
 		}
-		
+
 	}
-	
+
 	/**
-	 * buildUI
+	 * Builds the main user interface for the transaction panel.
+	 * This includes setting up the {@link #table} with columns for Account, Side (Debit/Credit), and Amount.
+	 * It configures cell factories for editable cells, including ComboBoxes for account and side selection.
+	 * It also sets up buttons for adding/removing lines and saving the transaction.
+	 * The general layout includes a top section for date and memo, the table in the center,
+	 * and a toolbar with action buttons at the bottom.
+	 * The {@code @SuppressWarnings("unchecked")} is used because {@code table.getColumns().addAll()}
+	 * is a varargs method and can cause warnings with generic TableColumn types.
 	 */
 	@SuppressWarnings("unchecked") private void buildUI()
 	{
@@ -151,9 +188,10 @@ public class NewTransactionPanelFX extends BorderPane
 			TableRow<Line> row = new TableRow<>();
 			row.setOnMouseClicked(ev -> {
 				
-				if (ev.getClickCount() == 2 && !row.isEmpty())
+				if (ev.getClickCount() == 1 && !row.isEmpty())
 				{
-					this.table.edit(row.getIndex(), this.table.getColumns().get(0)); // start edit
+					this.table.edit(row.getIndex(),
+						this.table.getColumns().get(0)); // start edit
 				}
 				
 			});
@@ -197,11 +235,16 @@ public class NewTransactionPanelFX extends BorderPane
 	/* ===== build columns ===== */
 
 	/**
-	 * strCol
-	 * @param t
-	 * @param fx
+	 * Creates a {@link TableColumn} for displaying and editing String properties of a {@link Line}.
+	 * This method is marked as unused, suggesting it might be a helper that was deprecated or replaced
+	 * by more specific column creation methods like {@link #accountCol()}.
+	 * It configures the column with a cell factory for text field-based editing.
+	 * The {@code @SuppressWarnings("unused")} indicates that this method is not currently called.
 	 * 
-	 * @return TableColumn
+	 * @param t The title of the column for the table header.
+	 * @param fx A {@link Function} that takes a {@link Line} object and returns the {@link Property}
+	 *           (specifically a {@code StringProperty}) to be bound to this column's cells.
+	 * @return A configured {@link TableColumn} for displaying and editing String data.
 	 */
 	@SuppressWarnings("unused") 
 	private static TableColumn<Line, String> strCol
@@ -218,9 +261,12 @@ public class NewTransactionPanelFX extends BorderPane
 	}
 	
 	/**
-	 * sideCol
+	 * Creates and configures a {@link TableColumn} for selecting the {@link AccountSide} (Debit/Credit)
+	 * for a transaction {@link Line}.
+	 * The column uses a {@link ChoiceBoxTableCell} populated with {@code AccountSide.values()}
+	 * to allow users to choose between Debit and Credit.
 	 * 
-	 * @return TableColumn
+	 * @return A configured {@link TableColumn} for {@link AccountSide} selection.
 	 */
 	private static TableColumn<Line, AccountSide> sideCol()
 	{
@@ -231,12 +277,15 @@ public class NewTransactionPanelFX extends BorderPane
 	}
 	
 	/**
-	 * amtCol
+	 * Creates and configures a {@link TableColumn} for displaying and editing the monetary amount
+	 * (as a {@link BigDecimal}) of a transaction {@link Line}.
+	 * The column uses a {@link FocusCommitTextFieldTableCell} with a {@link BigDecimalStringConverter}
+	 * to allow users to input and edit numeric amounts.
 	 * 
-	 * @param t
-	 * @param fx
-	 * 
-	 * @return TableColumn
+	 * @param t The title of the column for the table header (e.g., "Amount").
+	 * @param fx A {@link Function} that takes a {@link Line} object and returns the {@link Property}
+	 *           (specifically an {@code ObjectProperty<BigDecimal>}) to be bound to this column's cells.
+	 * @return A configured {@link TableColumn} for {@link BigDecimal} input.
 	 */
 	private static TableColumn<Line, BigDecimal> amtCol(String t,
 														Function<Line, Property<BigDecimal>> fx)
@@ -250,9 +299,14 @@ public class NewTransactionPanelFX extends BorderPane
 	}
 	
 	/**
-	 * accountCol
+	 * Creates and configures a {@link TableColumn} for selecting an account for a transaction {@link Line}.
+	 * The column uses a {@link ComboBoxTableCell} populated with account names from the
+	 * current company's {@link ChartOfAccounts} ({@link #coa}).
+	 * When an account is selected or its name is edited in the cell, an edit commit handler
+	 * updates the {@code Line}'s account name and attempts to automatically set the
+	 * {@code AccountSide} (Debit/Credit) based on the selected account's natural increase side.
 	 * 
-	 * @return TableColumn
+	 * @return A configured {@link TableColumn} for account selection.
 	 */
 	private TableColumn<Line, String> accountCol()
 	{
@@ -276,7 +330,7 @@ public class NewTransactionPanelFX extends BorderPane
 		           (a, b) -> a,               // merge: keep the first duplicate
 		           LinkedHashMap::new         // (optional) keep insertion order
 		       ));
-		
+
 		TableColumn<Line, String> col = new TableColumn<>("Account");
 		col.setCellValueFactory(cd -> cd.getValue().account);
 		
@@ -305,6 +359,12 @@ public class NewTransactionPanelFX extends BorderPane
 	
 	
 	/* ===== logic ===== */
+	/**
+	 * Recalculates the total debit and credit amounts from all {@link Line}s in the table.
+	 * After calculating the totals, it updates the enabled state of the {@link #saveBtn}.
+	 * The save button is enabled only if the total debits are greater than zero and
+	 * total debits equal total credits (i.e., the transaction is balanced).
+	 */
 	private void recalcTotals()
 	{
 		BigDecimal debit = BigDecimal.ZERO, credit = BigDecimal.ZERO;
@@ -328,7 +388,12 @@ public class NewTransactionPanelFX extends BorderPane
 	}
 	
 	/**
-	 * persist
+	 * Persists the current transaction.
+	 * This method is called when the "Save" button is clicked. It constructs an
+	 * {@link AccountingTransaction} object from the current UI state (date, memo, and all {@link Line} entries).
+	 * A unique booking timestamp is generated for the transaction.
+	 * The {@link #onSave} consumer (provided during panel construction) is then invoked with the
+	 * newly created {@code AccountingTransaction}.
 	 */
 	private void persist()
 	{
@@ -340,24 +405,35 @@ public class NewTransactionPanelFX extends BorderPane
 				l.amount.get(), l.account.get(), l.side.get()));
 		}
 		
+		// Save the timestamp as transaction id
 		AccountingTransaction tx = new AccountingTransaction(
-			new Account(), entries, Map.of(), Instant.now().toEpochMilli());
+			new Account(),
+			entries,
+			Map.of(),
+			Instant.now().toEpochMilli());
+		
 		tx.setDate(this.datePicker.getValue().toString());
 		tx.setDescription(this.memoArea.getText());
+		
 		this.onSave.accept(tx);
 	}
 	
 	/**
-	 * watch
+	 * Attaches change listeners to the properties of a given transaction {@link Line}.
+	 * Specifically, it listens for changes to the line's {@code amount} and {@code side} properties.
+	 * When these properties change, {@link #recalcTotals()} is called to update the transaction totals
+	 * and the enabled state of the save button.
+	 * It also includes a listener for the {@code account} property, though its body is currently empty,
+	 * implying that account text changes do not directly affect totals but might be used for UI freshness.
 	 * 
-	 * @param l
+	 * @param l The {@link Line} object whose properties are to be observed for changes.
 	 */
 	private void watch(Line l)
 	{
 		l.amount.addListener((obs, o, n) -> recalcTotals());
 		l.side.addListener((obs, o, n) -> recalcTotals());
 		l.account.addListener((obs, o, n) -> {
-			/* account text change doesn’t 
+			/* account text change doesn’t
 			 * affect totals but keeps UI fresh */
 		});
 	}

@@ -7,26 +7,59 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nonprofitbookkeeping.ui.helpers.DateSelectionMode; // Import the top-level enum
 
+/**
+ * Represents the configuration for generating a specific report.
+ * This includes details about the report type, date ranges, filters (like fund IDs),
+ * and output format. It is used to save and recall user-defined report settings.
+ * Lombok's {@code @Data} and {@code @NoArgsConstructor} are used for boilerplate code generation.
+ */
 @Data
 @NoArgsConstructor
 public class ReportConfiguration {
 
+    /** A unique identifier for this report configuration, typically a UUID. */
     private String configurationId;
-    private String userGivenName; // e.g., "Q1 Income Statement - Operations Fund"
-    private String reportType;    // e.g., "income_statement", "balance_sheet" 
+    /** A user-friendly name for this saved report configuration (e.g., "Q1 Income Statement - Operations Fund"). */
+    private String userGivenName;
+    /** The type of report to generate (e.g., "income_statement", "balance_sheet"). */
+    private String reportType;
     
     // Date related fields
-    private DateSelectionMode dateSelectionMode; // The mode used (SINGLE_DATE, DATE_RANGE_MANDATORY_START etc.)
-    private String relativeDateRange; // Optional: e.g., "LAST_MONTH", "YEAR_TO_DATE" (for V2, can be null for V1)
-    private LocalDate specificStartDate;   // Nullable
-    private LocalDate specificEndDate;     // Nullable, but usually present if specific dates are used
+    /** The mode used for date selection (e.g., SINGLE_DATE, DATE_RANGE_MANDATORY_START). See {@link DateSelectionMode}. */
+    private DateSelectionMode dateSelectionMode;
+    /**
+     * An optional string representing a relative date range (e.g., "LAST_MONTH", "YEAR_TO_DATE").
+     * Can be null, especially if specific start/end dates are used.
+     */
+    private String relativeDateRange;
+    /** The specific start date for the report period. Nullable if not applicable for the selected {@code dateSelectionMode}. */
+    private LocalDate specificStartDate;
+    /** The specific end date for the report period. Nullable, but usually present if specific dates are used or implied by the mode. */
+    private LocalDate specificEndDate;
 
     // Filter related fields
-    private List<String> fundIds; // Stores fund names for filtering
+    /** A list of fund IDs (typically fund names) to filter the report by. Can be null or empty for no fund filtering. */
+    private List<String> fundIds;
 
-    private String outputFormat = "xlsx"; // Default or saved format
+    /** The desired output format for the report (e.g., "xlsx", "pdf"). Defaults to "xlsx". */
+    private String outputFormat = "xlsx";
 
-    // Constructor to ensure ID is generated and essential fields are set
+    /** A list of account IDs to filter a detail report by. Can be null or empty. */
+    private List<String> accountIdsForDetailReport;
+
+    /**
+     * Constructs a new ReportConfiguration with essential details.
+     * A unique {@code configurationId} is automatically generated.
+     * {@code relativeDateRange} is not set by this constructor and can be set separately.
+     * {@code outputFormat} defaults to "xlsx".
+     *
+     * @param userGivenName A user-friendly name for this configuration.
+     * @param reportType The type of report (e.g., "income_statement").
+     * @param dateSelectionMode The mode for date selection.
+     * @param specificStartDate The specific start date, if applicable. Can be null.
+     * @param specificEndDate The specific end date, if applicable. Can be null.
+     * @param fundIds A list of fund IDs to filter by. Can be null or empty.
+     */
     public ReportConfiguration(String userGivenName, String reportType, DateSelectionMode dateSelectionMode, 
                                LocalDate specificStartDate, LocalDate specificEndDate, List<String> fundIds) {
         this.configurationId = UUID.randomUUID().toString();
@@ -37,13 +70,15 @@ public class ReportConfiguration {
         this.specificEndDate = specificEndDate;
         this.fundIds = fundIds;
         // this.relativeDateRange can be set separately if/when implemented
-        // this.outputFormat defaults to "xlsx"
+        // this.outputFormat defaults to "xlsx" as per field initializer
     }
 
-
+    // Explicit getters and setters below are mostly redundant due to Lombok @Data,
+    // but are documented as they exist.
 
 	/**
-	 * @return the reportType
+	 * Gets the type of the report.
+	 * @return The report type string (e.g., "income_statement").
 	 */
 	public String getReportType()
 	{
@@ -51,7 +86,8 @@ public class ReportConfiguration {
 	}
 
 	/**
-	 * @param reportType the reportType to set
+	 * Sets the type of the report.
+	 * @param reportType The report type string to set.
 	 */
 	public void setReportType(String reportType)
 	{
@@ -59,7 +95,8 @@ public class ReportConfiguration {
 	}
 
 	/**
-	 * @return the dateSelectionMode
+	 * Gets the date selection mode for the report.
+	 * @return The {@link DateSelectionMode} enum value.
 	 */
 	public DateSelectionMode getDateSelectionMode()
 	{
@@ -67,7 +104,8 @@ public class ReportConfiguration {
 	}
 
 	/**
-	 * @param dateSelectionMode the dateSelectionMode to set
+	 * Sets the date selection mode for the report.
+	 * @param dateSelectionMode The {@link DateSelectionMode} to set.
 	 */
 	public void setDateSelectionMode(DateSelectionMode dateSelectionMode)
 	{
@@ -75,7 +113,8 @@ public class ReportConfiguration {
 	}
 
 	/**
-	 * @return the relativeDateRange
+	 * Gets the relative date range string (e.g., "LAST_MONTH").
+	 * @return The relative date range string, or null if not set.
 	 */
 	public String getRelativeDateRange()
 	{
@@ -83,7 +122,8 @@ public class ReportConfiguration {
 	}
 
 	/**
-	 * @param relativeDateRange the relativeDateRange to set
+	 * Sets the relative date range string.
+	 * @param relativeDateRange The relative date range string to set.
 	 */
 	public void setRelativeDateRange(String relativeDateRange)
 	{
@@ -91,7 +131,8 @@ public class ReportConfiguration {
 	}
 
 	/**
-	 * @return the specificStartDate
+	 * Gets the specific start date for the report period.
+	 * @return The specific start {@link LocalDate}, or null if not set.
 	 */
 	public LocalDate getSpecificStartDate()
 	{
@@ -99,7 +140,8 @@ public class ReportConfiguration {
 	}
 
 	/**
-	 * @param specificStartDate the specificStartDate to set
+	 * Sets the specific start date for the report period.
+	 * @param specificStartDate The specific start {@link LocalDate} to set.
 	 */
 	public void setSpecificStartDate(LocalDate specificStartDate)
 	{
@@ -107,7 +149,8 @@ public class ReportConfiguration {
 	}
 
 	/**
-	 * @return the specificEndDate
+	 * Gets the specific end date for the report period.
+	 * @return The specific end {@link LocalDate}, or null if not set.
 	 */
 	public LocalDate getSpecificEndDate()
 	{
@@ -115,7 +158,8 @@ public class ReportConfiguration {
 	}
 
 	/**
-	 * @param specificEndDate the specificEndDate to set
+	 * Sets the specific end date for the report period.
+	 * @param specificEndDate The specific end {@link LocalDate} to set.
 	 */
 	public void setSpecificEndDate(LocalDate specificEndDate)
 	{
@@ -123,7 +167,8 @@ public class ReportConfiguration {
 	}
 
 	/**
-	 * @return the fundIds
+	 * Gets the list of fund IDs to filter the report by.
+	 * @return A list of fund ID strings. Can be null or empty.
 	 */
 	public List<String> getFundIds()
 	{
@@ -131,7 +176,8 @@ public class ReportConfiguration {
 	}
 
 	/**
-	 * @param fundIds the fundIds to set
+	 * Sets the list of fund IDs to filter the report by.
+	 * @param fundIds A list of fund ID strings to set.
 	 */
 	public void setFundIds(List<String> fundIds)
 	{
@@ -139,7 +185,8 @@ public class ReportConfiguration {
 	}
 
 	/**
-	 * @return the outputFormat
+	 * Gets the output format for the report.
+	 * @return The output format string (e.g., "xlsx").
 	 */
 	public String getOutputFormat()
 	{
@@ -147,7 +194,9 @@ public class ReportConfiguration {
 	}
 
 	/**
-	 * @param configurationId the configurationId to set
+	 * Sets the unique identifier for this report configuration.
+	 * While typically auto-generated, this allows setting it if needed (e.g., when loading from persistence).
+	 * @param configurationId The configuration ID to set.
 	 */
 	public void setConfigurationId(String configurationId)
 	{
@@ -155,7 +204,8 @@ public class ReportConfiguration {
 	}
 
 	/**
-	 * @param userGivenName the userGivenName to set
+	 * Sets the user-given name for this report configuration.
+	 * @param userGivenName The user-friendly name to set.
 	 */
 	public void setUserGivenName(String userGivenName)
 	{
@@ -165,7 +215,8 @@ public class ReportConfiguration {
 
 
 	/**
-	 * @return the configurationId
+	 * Gets the unique identifier for this report configuration.
+	 * @return The configuration ID string.
 	 */
 	public String getConfigurationId()
 	{
@@ -175,7 +226,8 @@ public class ReportConfiguration {
 
 
 	/**
-	 * @return the userGivenName
+	 * Gets the user-given name for this report configuration.
+	 * @return The user-friendly name.
 	 */
 	public String getUserGivenName()
 	{
@@ -185,7 +237,8 @@ public class ReportConfiguration {
 
 
 	/**
-	 * @param outputFormat the outputFormat to set
+	 * Sets the output format for the report.
+	 * @param outputFormat The output format string to set (e.g., "xlsx", "pdf").
 	 */
 	public void setOutputFormat(String outputFormat)
 	{
@@ -195,23 +248,23 @@ public class ReportConfiguration {
 
 
 	/**
-	 * @param selectedAccountIds
+	 * Sets the account IDs to be used for filtering a detail report.
+	 * Note: This is a stub method and needs to be implemented.
+	 * The actual storage for these account IDs is not yet defined in this class.
+	 * @param selectedAccountIds A list of account ID strings.
 	 */
 	public void setAccountIdsForDetailReport(List<String> selectedAccountIds)
 	{
-		// TODO Auto-generated method stub
-		
+		this.accountIdsForDetailReport = selectedAccountIds;
 	}
 
-
-	// FIXME 
 	/**
-	 * @return
+	 * Gets the account IDs used for filtering a detail report.
+	 * @return A list of account ID strings, or null if not set.
 	 */
 	public List<String> getAccountIdsForDetailReport()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return this.accountIdsForDetailReport;
 	}
 
     // Lombok's @Data will generate:

@@ -24,15 +24,55 @@ import java.util.Optional; // Added
  * GenerateReportsAction prompts the user to choose a report type,
  * date range, and output format, then generates the specified report using the ReportService.
  */
+/**
+ * JavaFX action handler for generating various types of reports.
+ * This action prompts the user to select a report type (e.g., ledger, income statement),
+ * a date range (start and end dates), and an output format (e.g., xlsx, csv, pdf).
+ * It then utilizes the {@link ReportService} to generate the specified report.
+ * User input is gathered through a series of {@link ChoiceDialog} and {@link TextInputDialog} instances.
+ */
 public class GenerateReportsAction implements EventHandler<ActionEvent> {
-    // private static final long serialVersionUID = 3474943577654997739L; // Removed
-    private final ReportService reportService; // Retained
+    // private static final long serialVersionUID = 3474943577654997739L; // Not applicable for JavaFX EventHandler
+    /**
+     * The {@link ReportService} instance used for report generation.
+     * Stored for potential use if {@code ReportService.generate} were non-static or if other service methods were needed.
+     */
+    private final ReportService reportService;
 
+    /**
+     * Constructs a new {@code GenerateReportsAction}.
+     *
+     * @param service The {@link ReportService} to be used for generating reports.
+     *                While the current implementation calls a static {@code ReportService.generate} method,
+     *                this instance is stored for potential future refactoring or extended use.
+     */
     public GenerateReportsAction(ReportService service) {
-        // super("Generate All Ledger Reports"); // Removed
+        // super("Generate All Ledger Reports"); // Constructor for AbstractAction, not used here
         this.reportService = service;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Handles the JavaFX action event to orchestrate the report generation process:
+     * <ol>
+     *   <li>Prompts the user to select a report type from a predefined list
+     *       (ledger, income_statement, balance_sheet, trial_balance, cash_flow, general_ledger)
+     *       using a {@link ChoiceDialog}.</li>
+     *   <li>Prompts for start and end dates using {@link TextInputDialog}s.
+     *       (TODO: Replace with JavaFX DatePicker controls for better UX).
+     *       Validates that dates are provided and in "yyyy-MM-dd" format, and that end date is not before start date.</li>
+     *   <li>Prompts for the output format (xlsx, csv, pdf) using a {@link ChoiceDialog}.</li>
+     *   <li>If any dialog is cancelled by the user, the action terminates.</li>
+     *   <li>Constructs a {@link ReportContext} with the selected criteria.</li>
+     *   <li>Calls the static {@link ReportService#generate(ReportContext)} method to produce the report file.</li>
+     *   <li>Shows an information alert with the path to the generated report, or an error alert if generation fails.</li>
+     * </ol>
+     * Catches and displays {@link DateTimeParseException} for invalid date inputs and general {@link Exception}
+     * for other errors during the process.
+     * </p>
+     * @param event The {@link ActionEvent} that triggered this handler (e.g., a menu item click).
+     */
     @Override
     public void handle(ActionEvent event) {
         Window parentWindow = null;
@@ -136,11 +176,15 @@ public class GenerateReportsAction implements EventHandler<ActionEvent> {
     }
 
 	/**
-	 * @param object
+	 * Placeholder method, potentially from a previous Swing context or an unimplemented interface.
+	 * This method is not part of the JavaFX {@link EventHandler} interface and is currently a stub.
+	 *
+	 * @param object The event object (type is generic Object, specific context unknown).
 	 */
 	public void actionPerformed(Object object)
 	{
 		// TODO Auto-generated method stub
-		
+		// This method's purpose is unclear in the current JavaFX context.
+		// If it were from java.awt.event.ActionListener, the parameter would be java.awt.event.ActionEvent.
 	}
 }
