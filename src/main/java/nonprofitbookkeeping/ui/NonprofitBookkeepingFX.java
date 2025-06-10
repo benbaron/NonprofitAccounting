@@ -534,19 +534,13 @@ public class NonprofitBookkeepingFX extends Application
 		
 		try
 		{
-			// The OpenCompanyFileActionFX itself should handle the logic of opening
-            // and then potentially calling a method here or using a listener to update state.
-            // For now, it's assumed the action completes and state is set.
+			// The OpenCompanyFileActionFX itself should handle the logic of opening.
+            // It will call the provided callback on success.
 			OpenCompanyFileActionFX openCompanyFileActionFX =
-				new OpenCompanyFileActionFX(this.primaryStage);
-            // If action is successful and a company is loaded, it should update CurrentCompany.
-            // Then, we can set state.
-            if (CurrentCompany.getCompany() != null && CurrentCompany.getCompany().getCompanyFile() != null) { // Check if company actually opened
-			    setState(AppState.COMPANY_OPEN);
-            } else {
-                // If action was cancelled or failed, state might not change or revert to NO_COMPANY.
-                // This depends on action's internal logic and if it throws exceptions on failure/cancel.
-            }
+				new OpenCompanyFileActionFX(this.primaryStage, () -> setState(AppState.COMPANY_OPEN));
+            // The old state update logic below is now handled by the callback.
+            // Exceptions thrown by OpenCompanyFileActionFX (e.g., on cancellation or load failure)
+            // will be caught by the catch block.
 		}
 		catch (Exception e) // Catch broad exceptions from action if it throws them directly
 		{
