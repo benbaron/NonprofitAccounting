@@ -44,6 +44,6 @@ This document lists potential code issues, areas for improvement, or bugs that w
     *   **Recommendation:** Investigate if passing `sheetName` as null to `ExcelDataWriter.writeModifiedCopy` is intentional and handled correctly, or if a valid sheet name should be provided.
 
 9.  **Panel Reset Tests**
-    *   **Issue:** UI tests rely on `CurrentCompany.forceCompanyLoad()` but panel resets remain unreliable.
-    *   **Recommendation:** Review listener registration in panels and ensure `forceCompanyLoad()` triggers updates correctly.
+    *   **Issue:** UI tests relied on `CurrentCompany.forceCompanyLoad()` but several "Skeleton" panels did not clear data when the company closed.
+    *   **Resolution:** `SkeletonDashboardPanel`, `SkeletonJournalPanel`, `SkeletonCoaPanel`, and `SkeletonReportsPanel` now check `CurrentCompany.isOpen()` in their refresh methods and display placeholder text when no company is active.
     *   **Note:** Maven plugin resolution issues currently prevent test execution.
