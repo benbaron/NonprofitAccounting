@@ -21,6 +21,7 @@ import nonprofitbookkeeping.ui.helpers.NpbkFileChooserFX;
  */
 public class OpenCompanyFileActionFX
 {
+	private final Runnable onSuccessCallback;
 	
 	/**
 	 * Constructs and executes the action to open an existing company file.
@@ -40,15 +41,16 @@ public class OpenCompanyFileActionFX
 	 * </p>
 	 *
 	 * @param owner The owner {@link Stage} for the file chooser dialog.
+	 * @param onSuccessCallback A {@link Runnable} to be executed upon successful company file opening.
 	 * @throws NoFileException If the user cancels the file selection or no file is chosen.
 	 * @throws IOException If an I/O error occurs during file loading.
 	 * @throws ActionCancelledException If the file loading action is explicitly cancelled by other means.
 	 * @throws NoFileCreatedException If {@code CurrentCompany.loadFromPersistent} fails in a way that indicates no valid file was processed (though typically IOException or NoFileException might be more direct from chooser/loading).
 	 * @throws Exception For any other unspecified errors during the process.
 	 */
-	public OpenCompanyFileActionFX(Stage owner) throws Exception
+	public OpenCompanyFileActionFX(Stage owner, Runnable onSuccessCallback) throws Exception
 	{
-	
+		this.onSuccessCallback = onSuccessCallback;
 		try
 		{
 			File file = NpbkFileChooserFX.chooseExisting("Open File",
@@ -60,6 +62,11 @@ public class OpenCompanyFileActionFX
 			CurrentCompany.loadFromPersistent(file); // This can throw various exceptions
 			CurrentCompany.open(); // Mark company as open in the application context
 			
+			// If all above operations were successful, run the callback
+			if (this.onSuccessCallback != null) {
+				this.onSuccessCallback.run();
+			}
+
 			showInfo("Loaded " + file.getAbsolutePath());
 		}
 		catch (NoFileException | IOException | ActionCancelledException | NoFileCreatedException e1)

@@ -81,6 +81,10 @@ public class NonprofitBookkeepingFX extends Application
 	private MenuItem miEditCoa;
 	/** Menu item for editing the Journal. */
 	private MenuItem miEditJournal;
+	/** Menu item for importing COA from JSON. */
+	private MenuItem miImportCoaJson;
+	/** Menu item for exporting COA from JSON. */
+	private MenuItem miExportCoaJson;
 	
 	// Menus that need their state managed
 	/** Top-level menu for running various tools and plugin features. */
@@ -229,6 +233,8 @@ public class NonprofitBookkeepingFX extends Application
 		this.miOpen = add(file, "Open Company File", e -> doOpenCompany());
 		this.miClose = add(file, "Close Company File", e -> doCloseCompany());
 		this.miSave = add(file, "Save Company File", e -> doSaveCompany());
+		this.miImportCoaJson = add(file, "Import COA (JSON)", e -> new ImportCoaJsonActionFX(this.primaryStage).handle(e));
+		this.miExportCoaJson = add(file, "Export COA (JSON)", e -> new ExportCoaJsonActionFX(this.primaryStage).handle(e));
 
 		add(file, "Import File", e -> new ImportFileActionFX(this.primaryStage).handle(e));
 		add(file, "Export File", e -> new ExportFileActionFX(this.primaryStage).handle(e));
@@ -487,6 +493,8 @@ public class NonprofitBookkeepingFX extends Application
 														// company
 		this.miEditCoa.setDisable(noCompany || creatingCompany);
 		this.miEditJournal.setDisable(noCompany || creatingCompany);
+		this.miImportCoaJson.setDisable(noCompany || creatingCompany);
+		this.miExportCoaJson.setDisable(noCompany || creatingCompany);
 		
 		this.run.setDisable(noCompany || creatingCompany);
 		this.panels.setDisable(noCompany || creatingCompany);
@@ -526,19 +534,13 @@ public class NonprofitBookkeepingFX extends Application
 		
 		try
 		{
-			// The OpenCompanyFileActionFX itself should handle the logic of opening
-            // and then potentially calling a method here or using a listener to update state.
-            // For now, it's assumed the action completes and state is set.
+			// The OpenCompanyFileActionFX itself should handle the logic of opening.
+            // It will call the provided callback on success.
 			OpenCompanyFileActionFX openCompanyFileActionFX =
-				new OpenCompanyFileActionFX(this.primaryStage);
-            // If action is successful and a company is loaded, it should update CurrentCompany.
-            // Then, we can set state.
-            if (CurrentCompany.getCompany() != null && CurrentCompany.getCompany().getCompanyFile() != null) { // Check if company actually opened
-			    setState(AppState.COMPANY_OPEN);
-            } else {
-                // If action was cancelled or failed, state might not change or revert to NO_COMPANY.
-                // This depends on action's internal logic and if it throws exceptions on failure/cancel.
-            }
+				new OpenCompanyFileActionFX(this.primaryStage, () -> setState(AppState.COMPANY_OPEN));
+            // The old state update logic below is now handled by the callback.
+            // Exceptions thrown by OpenCompanyFileActionFX (e.g., on cancellation or load failure)
+            // will be caught by the catch block.
 		}
 		catch (Exception e) // Catch broad exceptions from action if it throws them directly
 		{
