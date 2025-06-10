@@ -221,15 +221,6 @@ public class CurrentCompany
 	}
 
 	/**
-	 * @param companyChangeListener
-	 */
-	public static void addCompanyChangeListener(CompanyChangeListener companyChangeListener)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	/**
 	 * @param company2
 	 */
 	public static void forceCompanyLoad(Company company2)

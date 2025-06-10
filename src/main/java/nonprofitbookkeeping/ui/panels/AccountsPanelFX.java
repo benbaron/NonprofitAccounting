@@ -15,6 +15,7 @@ import javafx.scene.layout.HBox;
 import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountType;
 import nonprofitbookkeeping.service.AccountService;
+import nonprofitbookkeeping.model.CurrentCompany; // Added for listener
 
 /**
  * JavaFX port of {@code AccountsPanel}. Shows the chart of accounts and basic
@@ -28,31 +29,29 @@ public class AccountsPanelFX extends BorderPane
 	/** The ObservableList that backs the {@code table}, containing {@link AccountRow} objects. */
 	private final ObservableList<AccountRow> rows = FXCollections.observableArrayList();
 
-	/**
-     * Constructs a new {@code AccountsPanelFX}.
-     * Initializes the panel layout, builds the table structure, sets up control buttons
-     * (Add, Edit, Delete), and performs an initial refresh of account data from the
-     * provided {@link AccountService}.
-     *
-     * @param service The {@link AccountService} used to fetch and potentially manage account data.
-     *                The {@code @SuppressWarnings("unused")} suggests it might not be fully utilized
-     *                if all operations are static on {@code AccountService} or if some features are pending.
-     *                Currently, {@code AccountService.getAllAccounts()} is used in {@link #refresh()}.
-     */
-	public AccountsPanelFX(@SuppressWarnings("unused") AccountService service) // service param is used in refresh() via static call
-	{
-		setPadding(new Insets(10));
-		buildTable();
-		setCenter(new TitledPane("Chart of Accounts", this.table)
-		{
-			{
-				setCollapsible(false); // TitledPane is not collapsible
-			}
-			
-		});
-		setBottom(buildControls());
-		refresh();
-	}
+    private AccountsPanelCompanyListener companyListener;
+    private HBox actionButtonsBox; // To store the controls
+
+    public AccountsPanelFX(AccountService service) { // service param is kept for signature compatibility
+        setPadding(new Insets(10));
+        buildTable();
+        setCenter(new TitledPane("Chart of Accounts", this.table) {
+            {
+                setCollapsible(false);
+            }
+        });
+
+        // buildControls() now assigns to this.actionButtonsBox
+        // setBottom(buildControls()); // Old way
+        this.actionButtonsBox = buildControls(); // New: call and store
+        setBottom(this.actionButtonsBox); // New: set stored HBox
+
+        this.companyListener = new AccountsPanelCompanyListener(this);
+        CurrentCompany.CompanyListener.addCompanyListener(this.companyListener);
+
+        // refresh(); // Old call, replaced by handleCompanyChange for initial state
+        handleCompanyChange(CurrentCompany.isOpen());
+    }
 	
 	/**
      * Builds and configures the columns for the accounts {@link TableView}.
@@ -107,39 +106,38 @@ public class AccountsPanelFX extends BorderPane
      * </ul>
      * @return An {@link HBox} with configured control buttons.
      */
-	private HBox buildControls()
-	{
-		HBox box = new HBox(10);
-		box.setPadding(new Insets(8));
-		Button add = new Button("Add Account");
-		Button edit = new Button("Edit Account");
-		Button delete = new Button("Delete Account");
-		
-		add.setOnAction(e -> this.rows.add(new AccountRow())); // Adds a new default row
-		edit.setOnAction(e -> {
-			
-			if (this.table.getSelectionModel().isEmpty())
-			{
-				alert("Please select an account to edit.");
-			}
-			else
-			{
-				// Start editing the first column of the selected row
-				this.table.edit(this.table.getSelectionModel().getSelectedIndex(), this.table.getColumns().get(0));
-			}
-			
-		});
-		delete.setOnAction(e -> {
-			int idx = this.table.getSelectionModel().getSelectedIndex();
-			if (idx >= 0) { // Check if a row is actually selected
-				this.rows.remove(idx);
+    private HBox buildControls() { // Signature remains HBox as it's convenient for initialization
+        HBox box = new HBox(10);
+        box.setPadding(new Insets(8));
+        Button add = new Button("Add Account");
+        Button edit = new Button("Edit Account");
+        Button delete = new Button("Delete Account");
+
+        add.setOnAction(e -> {
+            // Consider if AccountService needs to be involved in adding/validating new accounts
+            // For now, matches existing behavior of adding directly to rows.
+            // This action should ideally be disabled if no company is open.
+            this.rows.add(new AccountRow());
+        });
+        edit.setOnAction(e -> {
+            if (this.table.getSelectionModel().isEmpty()) {
+                alert("Please select an account to edit.");
+            } else {
+                this.table.edit(this.table.getSelectionModel().getSelectedIndex(), this.table.getColumns().get(0));
+            }
+        });
+        delete.setOnAction(e -> {
+            int idx = this.table.getSelectionModel().getSelectedIndex();
+            if (idx >= 0) {
+                // Consider if AccountService needs to be notified of deletion
+                this.rows.remove(idx);
             } else {
                 alert("Please select an account to delete.");
             }
-		});
-		box.getChildren().addAll(add, edit, delete);
-		return box;
-	}
+        });
+        box.getChildren().addAll(add, edit, delete);
+        return box;
+    }
 	
 	/**
      * Displays a simple informational alert dialog.
@@ -157,17 +155,88 @@ public class AccountsPanelFX extends BorderPane
      * from {@link AccountService#getAllAccounts()} and converting each {@link Account}
      * to an {@link AccountRow}.
      */
-	private void refresh()
-	{
-		this.rows.clear();
-		List<Account> accounts = AccountService.getAllAccounts(); // Static call
-		if (accounts != null) { // Guard against null from service
-		    accounts.forEach(a -> this.rows.add(new AccountRow(a)));
-		}
-	}
-	
-	/**
-     * Represents a single row in the accounts table ({@link AccountsPanelFX#table}).
+	private void refresh() {
+        this.rows.clear();
+        // Assuming AccountService.getAllAccounts() is aware of CurrentCompany
+        // or returns an empty list if no company is active.
+        List<Account> accounts = AccountService.getAllAccounts();
+        if (accounts != null) {
+            accounts.forEach(a -> this.rows.add(new AccountRow(a)));
+        }
+    }
+
+    // New method to handle company state changes
+    private void handleCompanyChange(boolean isOpen) {
+        if (isOpen) {
+            refresh(); // Load data
+            if (this.actionButtonsBox != null) {
+                this.actionButtonsBox.getChildren().forEach(node -> {
+                    if (node instanceof Button) {
+                        ((Button) node).setDisable(false);
+                    }
+                });
+            }
+        } else {
+            this.rows.clear(); // Clear data
+            if (this.actionButtonsBox != null) {
+                this.actionButtonsBox.getChildren().forEach(node -> {
+                    if (node instanceof Button) {
+                        ((Button) node).setDisable(true);
+                    }
+                });
+            }
+        }
+    }
+
+    // New inner class for CompanyChangeListener
+    private class AccountsPanelCompanyListener implements CurrentCompany.CompanyChangeListener {
+        private AccountsPanelFX panel;
+
+        public AccountsPanelCompanyListener(AccountsPanelFX panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void companyChange(boolean isOpen) {
+            panel.handleCompanyChange(isOpen);
+        }
+    }
+
+    // AccountRow class remains unchanged
+    public static class AccountRow {
+        private String code = "";
+        private String name = "";
+        private String currency = "USD";
+        private Account parent;
+        private BigDecimal opening = BigDecimal.ZERO;
+        private AccountType type;
+
+        public AccountRow() { }
+
+        public AccountRow(Account a) {
+            Objects.requireNonNull(a, "Account cannot be null for AccountRow construction.");
+            this.code = a.getAccountCode();
+            this.name = a.getName();
+            this.type = a.getAccountType();
+            this.parent = a.getParentAccount();
+            this.currency = a.getCurrency();
+            this.opening = a.getOpeningBalance();
+        }
+
+        public String getCode() { return this.code; }
+        public void setCode(String s) { this.code = s; }
+        public String getName() { return this.name; }
+        public void setName(String s) { this.name = s; }
+        public AccountType getType() { return this.type; }
+        public void setType(AccountType s) { this.type = s; }
+        public Account getParent() { return this.parent; }
+        public void setParent(Account s) { this.parent = s; }
+        public String getCurrency() { return this.currency; }
+        public void setCurrency(String s) { this.currency = s; }
+        public BigDecimal getOpening() { return this.opening; }
+        public void setOpening(BigDecimal b) { this.opening = (b != null) ? b : BigDecimal.ZERO; }
+    }
+}
      * This class acts as a data bean for JavaFX's {@link PropertyValueFactory}
      * to populate table cells. It typically wraps an {@link Account} object or holds
      * data for a new/editable account row.
@@ -197,96 +266,4 @@ public class AccountsPanelFX extends BorderPane
          * typically used when adding a new account via the UI.
          * Initializes fields to default values.
          */
-		public AccountRow()
-		{
-		}
-		
-		/**
-         * Constructs an {@code AccountRow} populated with data from an existing {@link Account} object.
-         *
-         * @param a The {@link Account} object to represent as a table row. Must not be null.
-         * @throws NullPointerException if {@code a} is null.
-         */
-		public AccountRow(Account a)
-		{
-			Objects.requireNonNull(a, "Account cannot be null for AccountRow construction.");
-			this.code = a.getAccountCode();
-			this.name = a.getName();
-			this.type = a.getAccountType();
-			this.parent = a.getParentAccount();
-			this.currency = a.getCurrency();
-			this.opening = a.getOpeningBalance();
-		}
-		
-		// Getters and Setters for TableView PropertyValueFactory binding
-
-		/**
-		 * Gets the account code.
-		 * @return The account code as a String.
-		 */
-		public String getCode() { return this.code; }
-		/**
-		 * Sets the account code.
-		 * @param s The new account code. If null, it might be stored as null or an empty string depending on desired behavior.
-		 */
-		public void setCode(String s) { this.code = s; }
-		
-		/**
-		 * Gets the account name.
-		 * @return The account name as a String.
-		 */
-		public String getName() { return this.name; }
-		/**
-		 * Sets the account name.
-		 * @param s The new account name. If null, it might be stored as null or an empty string.
-		 */
-		public void setName(String s) { this.name = s; }
-		
-		/**
-		 * Gets the account type.
-		 * @return The {@link AccountType}, or {@code null} if not set.
-		 */
-		public AccountType getType() { return this.type; }
-		/**
-		 * Sets the account type.
-		 * @param s The new {@link AccountType}. Can be {@code null}.
-		 */
-		public void setType(AccountType s) { this.type = s; }
-		
-		/**
-		 * Gets the parent account.
-		 * @return The parent {@link Account}, or {@code null} if this is a top-level account or not set.
-		 */
-		public Account getParent() { return this.parent; }
-		/**
-		 * Sets the parent account.
-		 * @param s The new parent {@link Account}. Can be {@code null}.
-		 */
-		public void setParent(Account s) { this.parent = s; }
-		
-		/**
-		 * Gets the currency code for the account.
-		 * @return The currency code as a String (e.g., "USD").
-		 */
-		public String getCurrency() { return this.currency; }
-		/**
-		 * Sets the currency code for the account.
-		 * @param s The new currency code. Standard ISO 4217 codes are recommended (e.g., "USD", "EUR").
-		 */
-		public void setCurrency(String s) { this.currency = s; }
-		
-		/**
-		 * Gets the opening balance of the account.
-		 * @return The opening balance as a {@link BigDecimal}. Defaults to {@link BigDecimal#ZERO}.
-		 */
-		public BigDecimal getOpening() { return this.opening; }
-		/**
-		 * Sets the opening balance of the account.
-		 * If the provided BigDecimal is {@code null}, the balance is set to {@link BigDecimal#ZERO}.
-		 * @param b The new opening balance.
-		 */
-		public void setOpening(BigDecimal b) { this.opening = (b != null) ? b : BigDecimal.ZERO; }
-		
-	}
-	
-}
+     * Represents a single row in the accounts table ({@link AccountsPanelFX#table}).

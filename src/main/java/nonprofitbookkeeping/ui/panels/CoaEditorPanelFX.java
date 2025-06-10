@@ -24,6 +24,9 @@ import nonprofitbookkeeping.model.*;
 import nonprofitbookkeeping.service.ChartOfAccountsIOService;
 import nonprofitbookkeeping.service.ChartOfAccountsService;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
+// Added for listener
+import nonprofitbookkeeping.model.CurrentCompany;
+import javafx.scene.Node; // For iterating over children of HBox if needed
 
 /**
  * Interactive ladder view for editing a company's Chart of Accounts.
@@ -72,6 +75,9 @@ public class CoaEditorPanelFX extends BorderPane
 	private TextField balF;
 	/** ComboBox for selecting account type in the add/edit dialog. */
 	private ComboBox<AccountType> typeBox;
+
+    private CoaEditorPanelCompanyListener companyListener;
+    private HBox actionButtonsBox;
 	
 	/** 
 	 * Convenience constructor for {@code CoaEditorPanelFX} when no specific save or close callbacks are needed.
@@ -110,9 +116,18 @@ public class CoaEditorPanelFX extends BorderPane
 		buildTree();
 		
 		setCenter(this.tree);
-		setBottom(buildButtons());
-		
-		refresh();
+        // this.actionButtonsBox = buildButtons(); // Assign here
+        // setBottom(this.actionButtonsBox); // Set here
+        // Replaced by:
+        this.actionButtonsBox = buildButtonsInternal(); // Renamed to avoid conflict if buildButtons() is public API
+        setBottom(this.actionButtonsBox);
+
+
+        this.companyListener = new CoaEditorPanelCompanyListener(this);
+        CurrentCompany.CompanyListener.addCompanyListener(this.companyListener);
+
+        // refresh(); // Old call, replaced by handleCompanyChange
+        handleCompanyChange(CurrentCompany.isOpen());
 	}
 	
 	/* ------------------------------------------------------------------ */
@@ -146,8 +161,10 @@ public class CoaEditorPanelFX extends BorderPane
 	 *
 	 * @return An {@link HBox} populated with control buttons.
 	 */
-	private HBox buildButtons()
-	{
+    // Renamed to buildButtonsInternal to avoid potential signature clashes if a subclass
+    // or external code expects buildButtons() to be part of a public/protected API.
+    // If it's purely private helper, original name is fine. Assuming it's a helper.
+    private HBox buildButtonsInternal() { // Original name: buildButtons
 		Button addRoot = new Button("Add Root");
 		Button addSub = new Button("Add Sub-account"); // Clarified label
 		Button edit = new Button("Edit");
@@ -194,14 +211,9 @@ public class CoaEditorPanelFX extends BorderPane
 		cancel.setOnAction(e -> closePanel());
 		
 		//
-		return new HBox(8, addRoot, addSub, edit, del,
-			importBtn, exportBtn, saveBtn, cancel)
-		{
-			{
-				setPadding(new Insets(6));
-			}
-			
-		};
+        HBox hbox = new HBox(8, addRoot, addSub, edit, del, importBtn, exportBtn, saveBtn, cancel);
+        hbox.setPadding(new Insets(6));
+        return hbox;
 	}
 	
 	/**
@@ -226,8 +238,13 @@ public class CoaEditorPanelFX extends BorderPane
 	 * @param parent The parent {@link Account} if adding a sub-account; null if adding a root account or editing.
 	 * @param editing The {@link Account} to edit; null if adding a new account.
 	 */
-	private void showDialog(Account parent, Account editing)
-	{
+	private void showDialog(Account parent, Account editing) {
+        // Check if company is open before showing dialog that modifies COA
+        if (!CurrentCompany.isOpen()) {
+            AlertBox.showError("No Company Open", "Cannot perform this action as no company is currently open.");
+            return;
+        }
+        // ... rest of the method remains the same
 		boolean isEdit = editing != null;
 		
 		Dialog<Account> dlg = new Dialog<>();
@@ -315,10 +332,13 @@ public class CoaEditorPanelFX extends BorderPane
 	 * If no account is selected, this method does nothing.
 	 * The corresponding node is removed from the tree view.
 	 */
-	private void deleteSelected()
-	{
+	private void deleteSelected() {
+        if (!CurrentCompany.isOpen()) {
+            AlertBox.showError("No Company Open", "Cannot perform this action as no company is currently open.");
+            return;
+        }
+        // ... rest of the method
 		Account sel = selected();
-		
 		if (sel == null)
 		{
 			AlertBox.showWarning(null, "No account selected for deletion."); // Provide feedback
@@ -352,8 +372,12 @@ public class CoaEditorPanelFX extends BorderPane
 	 * and finally refreshes the tree view.
 	 * Errors during import are displayed in an alert dialog.
 	 */
-	private void importJson()
-	{
+	private void importJson() {
+        if (!CurrentCompany.isOpen()) { // Check added
+            AlertBox.showError("No Company Open", "Cannot import Chart of Accounts as no company is currently open.");
+            return;
+        }
+        // ... rest of the method
 		FileChooser fc = new FileChooser();
 		fc.setTitle("Import Chart of Accounts from JSON");
 		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"));
@@ -386,8 +410,12 @@ public class CoaEditorPanelFX extends BorderPane
 	 * to save the data.
 	 * Success or error messages are displayed in alert dialogs.
 	 */
-	private void exportJson()
-	{
+	private void exportJson() {
+        if (!CurrentCompany.isOpen() || this.svc.asChart().getAccounts().isEmpty()) { // Check added & ensure chart has content
+            AlertBox.showError("No Data to Export", "Cannot export Chart of Accounts as no company is open or the chart is empty.");
+            return;
+        }
+        // ... rest of the method
 		FileChooser fc = new FileChooser();
 		fc.setTitle("Export Chart of Accounts to JSON");
 		fc.setInitialFileName("chart-of-accounts.json");
@@ -441,13 +469,16 @@ public class CoaEditorPanelFX extends BorderPane
      * by fetching root accounts from the {@link ChartOfAccountsService} and recursively
      * adding their children using {@link #makeNode(Account)}.
      */
-	private void refresh()
-	{
+	private void refresh() {
+        // This method populates the tree based on this.svc.
+        // If handleCompanyChange(false) was called, this.svc might be stale if it's tied to an old company.
+        // However, CoaEditorPanelFX is initialized with a specific chart.
+        // If isOpen is true, we assume the chart it was initialized with is the one to show.
 		this.rootItem.getChildren().clear();
-		this.svc.roots().forEach(r -> this.rootItem.getChildren().add(makeNode(r)));
-		// this.tree.refresh(); // TreeTableView.refresh() is often needed if underlying data of existing items changes.
-		                       // Here, structure changes, so clearing and adding might be sufficient,
-		                       // but refresh() ensures view consistency.
+        if (CurrentCompany.isOpen()) { // Only populate if a company is open
+             this.svc.roots().forEach(r -> this.rootItem.getChildren().add(makeNode(r)));
+        }
+        this.tree.refresh();
 	}
 	
 	/**
@@ -570,11 +601,8 @@ public class CoaEditorPanelFX extends BorderPane
      * @param acc The {@link Account} to find within the tree.
      * @return The {@link TreeItem} that wraps {@code acc} if found; otherwise, null.
      */
-	private TreeItem<Account> find(TreeItem<Account> n, Account acc)
-	{
-		
-		if (n.getValue() == acc) // Direct object comparison, assumes 'acc' is the exact instance from the tree
-		{
+	private TreeItem<Account> find(TreeItem<Account> n, Account acc) {
+        if (Objects.equals(n.getValue(), acc)) { // Use Objects.equals for null-safe comparison
 			return n;
 		}
 		
@@ -591,5 +619,45 @@ public class CoaEditorPanelFX extends BorderPane
 		
 		return null;
 	}
-	
+
+    // New method to handle company state changes
+    private void handleCompanyChange(boolean isOpen) {
+        if (isOpen) {
+            // If a company is opened, this panel should reflect the ChartOfAccounts
+            // it was initially constructed with, assuming it's relevant to the CurrentCompany.
+            // The 'svc' (ChartOfAccountsService) holds the chart it was given.
+            refresh();
+            if (this.actionButtonsBox != null) {
+                this.actionButtonsBox.getChildren().forEach(node -> {
+                    if (node instanceof Button) {
+                        ((Button) node).setDisable(false);
+                    }
+                });
+            }
+        } else {
+            this.rootItem.getChildren().clear();
+            this.tree.refresh();
+            if (this.actionButtonsBox != null) {
+                this.actionButtonsBox.getChildren().forEach(node -> {
+                    if (node instanceof Button) {
+                        ((Button) node).setDisable(true);
+                    }
+                });
+            }
+        }
+    }
+
+    // New inner class for CompanyChangeListener
+    private class CoaEditorPanelCompanyListener implements CurrentCompany.CompanyChangeListener {
+        private CoaEditorPanelFX panel;
+
+        public CoaEditorPanelCompanyListener(CoaEditorPanelFX panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void companyChange(boolean isOpen) {
+            panel.handleCompanyChange(isOpen);
+        }
+    }
 }
