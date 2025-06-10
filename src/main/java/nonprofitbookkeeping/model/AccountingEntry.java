@@ -26,7 +26,11 @@ public final class AccountingEntry implements Serializable
 	@JsonProperty final private BigDecimal amount;
 	@JsonProperty final private AccountSide accountSide;
 	@JsonProperty final private String accountNumber;
-	@JsonProperty private AccountingTransaction transaction;
+
+	// Future versions can include this.
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	private AccountingTransaction transaction;
+	
 	// Indicates if the transaction was set
 	@JsonProperty private boolean freeze = false;
 	
@@ -63,6 +67,7 @@ public final class AccountingEntry implements Serializable
 	 * Gets the associated transaction.
 	 * @return Associated transaction, or null if no transaction is associated.
 	 */
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	public AccountingTransaction getTransaction()
 	{
 		return this.transaction;
