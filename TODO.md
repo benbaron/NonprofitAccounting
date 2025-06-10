@@ -42,3 +42,8 @@ This document lists potential code issues, areas for improvement, or bugs that w
     *   **Issue:** `sheetName` parameter passed as null.
     *   **Observation:** Subtask for turn 58 noted: "noting the `sheetName` parameter being passed as null to the writer."
     *   **Recommendation:** Investigate if passing `sheetName` as null to `ExcelDataWriter.writeModifiedCopy` is intentional and handled correctly, or if a valid sheet name should be provided.
+
+9.  **Panel Reset Tests**
+    *   **Issue:** UI tests rely on `CurrentCompany.forceCompanyLoad()` but panel resets remain unreliable.
+    *   **Recommendation:** Review listener registration in panels and ensure `forceCompanyLoad()` triggers updates correctly.
+    *   **Note:** Maven plugin resolution issues currently prevent test execution.
