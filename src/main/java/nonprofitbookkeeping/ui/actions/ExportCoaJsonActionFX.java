@@ -6,11 +6,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import nonprofitbookkeeping.backend.Account;
-import nonprofitbookkeeping.backend.ChartOfAccounts;
-import nonprofitbookkeeping.backend.Company;
-import nonprofitbookkeeping.backend.CurrentCompany;
-import nonprofitbookkeeping.backend.io.ChartOfAccountsIOService;
+import nonprofitbookkeeping.model.Account;
+import nonprofitbookkeeping.model.ChartOfAccounts;
+import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.service.ChartOfAccountsIOService;
 
 import java.io.File;
 import java.io.IOException;
