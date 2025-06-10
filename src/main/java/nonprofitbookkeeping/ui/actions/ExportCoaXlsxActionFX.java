@@ -6,7 +6,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
@@ -17,13 +16,16 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ExportCoaJsonActionFX implements EventHandler<ActionEvent> {
+/**
+ * Handles exporting the current company's Chart of Accounts to an XLSX file.
+ */
+public class ExportCoaXlsxActionFX implements EventHandler<ActionEvent> {
 
-    private static final Logger logger = Logger.getLogger(ExportCoaJsonActionFX.class.getName());
+    private static final Logger logger = Logger.getLogger(ExportCoaXlsxActionFX.class.getName());
 
     private final Stage ownerStage;
 
-    public ExportCoaJsonActionFX(Stage ownerStage) {
+    public ExportCoaXlsxActionFX(Stage ownerStage) {
         this.ownerStage = ownerStage;
     }
 
@@ -55,13 +57,12 @@ public class ExportCoaJsonActionFX implements EventHandler<ActionEvent> {
         }
 
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Export Chart of Accounts to JSON");
-        FileChooser.ExtensionFilter jsonFilter = new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json");
-        fileChooser.getExtensionFilters().add(jsonFilter);
-        fileChooser.setSelectedExtensionFilter(jsonFilter);
+        fileChooser.setTitle("Export Chart of Accounts to XLSX");
+        FileChooser.ExtensionFilter xlsxFilter = new FileChooser.ExtensionFilter("Excel files (*.xlsx)", "*.xlsx");
+        fileChooser.getExtensionFilters().add(xlsxFilter);
+        fileChooser.setSelectedExtensionFilter(xlsxFilter);
 
-        // Suggest a filename
-        String suggestedName = "chart_of_accounts.json";
+        String suggestedName = "chart_of_accounts.xlsx";
         if (currentCompany.getCompanyProfile() != null) {
             suggestedName = currentCompany.getCompanyProfile().getCompanyFileName();
         }
@@ -72,7 +73,7 @@ public class ExportCoaJsonActionFX implements EventHandler<ActionEvent> {
         if (selectedFile != null) {
             ChartOfAccountsIOService coaService = new ChartOfAccountsIOService();
             try {
-                coaService.exportToJson(coa, selectedFile.toPath());
+                coaService.exportToXlsx(coa, selectedFile.toPath());
                 Alert alert = new Alert(AlertType.INFORMATION);
                 alert.setTitle("Export Successful");
                 alert.setHeaderText(null);
@@ -91,7 +92,6 @@ public class ExportCoaJsonActionFX implements EventHandler<ActionEvent> {
                 logger.log(Level.SEVERE, "Error exporting Chart of Accounts to " + selectedFile.getAbsolutePath(), e);
             }
         } else {
-            // User cancelled the dialog
             logger.log(Level.INFO, "Chart of Accounts export was cancelled by the user.");
         }
     }

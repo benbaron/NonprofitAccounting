@@ -6,7 +6,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
@@ -17,30 +16,33 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ImportCoaJsonActionFX implements EventHandler<ActionEvent> {
+/**
+ * Handles the action of importing a Chart of Accounts from an XLSX file.
+ */
+public class ImportCoaXlsxActionFX implements EventHandler<ActionEvent> {
 
-    private static final Logger logger = Logger.getLogger(ImportCoaJsonActionFX.class.getName());
+    private static final Logger logger = Logger.getLogger(ImportCoaXlsxActionFX.class.getName());
 
     private final Stage ownerStage;
 
-    public ImportCoaJsonActionFX(Stage ownerStage) {
+    public ImportCoaXlsxActionFX(Stage ownerStage) {
         this.ownerStage = ownerStage;
     }
 
     @Override
     public void handle(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Import Chart of Accounts from JSON");
-        FileChooser.ExtensionFilter jsonFilter = new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json");
-        fileChooser.getExtensionFilters().add(jsonFilter);
-        fileChooser.setSelectedExtensionFilter(jsonFilter);
+        fileChooser.setTitle("Import Chart of Accounts from XLSX");
+        FileChooser.ExtensionFilter xlsxFilter = new FileChooser.ExtensionFilter("Excel files (*.xlsx)", "*.xlsx");
+        fileChooser.getExtensionFilters().add(xlsxFilter);
+        fileChooser.setSelectedExtensionFilter(xlsxFilter);
 
         File selectedFile = fileChooser.showOpenDialog(ownerStage);
 
         if (selectedFile != null) {
             ChartOfAccountsIOService coaService = new ChartOfAccountsIOService();
             try {
-                ChartOfAccounts importedCOA = coaService.importFromJson(selectedFile.toPath());
+                ChartOfAccounts importedCOA = coaService.importFromXlsx(selectedFile.toPath());
                 Company currentCompany = CurrentCompany.getCompany();
 
                 if (currentCompany != null) {
@@ -53,7 +55,6 @@ public class ImportCoaJsonActionFX implements EventHandler<ActionEvent> {
                     alert.showAndWait();
                     logger.log(Level.INFO, "Chart of Accounts imported successfully from " + selectedFile.getName());
                 } else {
-                    // This case should ideally not happen if UI enables this action only when a company is open
                     Alert alert = new Alert(AlertType.WARNING);
                     alert.setTitle("Import Warning");
                     alert.setHeaderText(null);
@@ -71,7 +72,7 @@ public class ImportCoaJsonActionFX implements EventHandler<ActionEvent> {
                 alert.initOwner(ownerStage);
                 alert.showAndWait();
                 logger.log(Level.SEVERE, "Error importing Chart of Accounts from " + selectedFile.getName(), e);
-            } catch (Exception e) { // Catching broader exceptions from Jackson or other issues
+            } catch (Exception e) {
                 Alert alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Import Error");
                 alert.setHeaderText("Unexpected Error Importing Chart of Accounts");
@@ -81,7 +82,6 @@ public class ImportCoaJsonActionFX implements EventHandler<ActionEvent> {
                 logger.log(Level.SEVERE, "Unexpected error importing Chart of Accounts from " + selectedFile.getName(), e);
             }
         } else {
-            // User cancelled the dialog
             logger.log(Level.INFO, "Chart of Accounts import was cancelled by the user.");
         }
     }
