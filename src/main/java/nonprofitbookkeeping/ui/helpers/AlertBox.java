@@ -74,4 +74,22 @@ public class AlertBox
 		alert.showAndWait();
 	}
 
+	/**
+	 * @param string
+	 * @param message
+	 */
+	public static void showError(Window win, String header, String message)
+	{
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle("Error");
+		alert.setHeaderText(header); // Standard header for errors
+		alert.setContentText(message);
+		
+		// Example for custom buttons (not used by default):
+		// alert.getButtonTypes().setAll(ButtonType.OK, ButtonType.CANCEL);
+		
+		alert.showAndWait(); // blocks until the user clicks OK (or another button if configured)
+	}
+
+
 }

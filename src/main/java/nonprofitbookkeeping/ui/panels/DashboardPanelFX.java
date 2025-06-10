@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javafx.beans.property.*;
 import javafx.collections.*;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
@@ -115,8 +116,8 @@ public class DashboardPanelFX extends BorderPane
 	private void buildTopFilters()
 	{
 		/* selector */
-		HBox selector = new HBox(10, new Label("Account:"), this.accountSelector);
-		selector.setPadding(new Insets(5));
+		HBox selectorBox = new HBox(10, new Label("Account:"), 
+			this.accountSelector);
 		selectorBox.setPadding(new Insets(5));
 		selectorBox.setStyle("-fx-border-color: lightgray;");
 

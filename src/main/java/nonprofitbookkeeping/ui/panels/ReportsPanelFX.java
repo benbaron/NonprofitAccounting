@@ -216,6 +216,9 @@ public class ReportsPanelFX extends BorderPane
         }
     }
 
+    /** 
+     * It wraps {@link ReportMetadata} for easy display with {@link PropertyValueFactory}.
+	 */
     public static class ReportRow {
         final String name;
         final String date;
@@ -232,5 +235,4 @@ public class ReportsPanelFX extends BorderPane
         public String getPath() { return this.path; }
     }
 }
-	 * It wraps {@link ReportMetadata} for easy display with {@link PropertyValueFactory}.
-	 */
+

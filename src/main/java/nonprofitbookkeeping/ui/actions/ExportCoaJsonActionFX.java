@@ -42,7 +42,7 @@ public class ExportCoaJsonActionFX implements EventHandler<ActionEvent> {
             return;
         }
 
-        ChartOfAccounts<Account> coa = currentCompany.getChartOfAccounts();
+        ChartOfAccounts coa = currentCompany.getChartOfAccounts();
         if (coa == null) {
             Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Export Warning");
@@ -50,7 +50,7 @@ public class ExportCoaJsonActionFX implements EventHandler<ActionEvent> {
             alert.setContentText("The current company does not have a Chart of Accounts to export.");
             alert.initOwner(ownerStage);
             alert.showAndWait();
-            logger.log(Level.WARNING, "Export COA action triggered but company '" + currentCompany.getCompanyName() + "' has no COA.");
+            logger.log(Level.WARNING, "Export COA action triggered but company '" + currentCompany.getCompanyProfile() + "' has no COA.");
             return;
         }
 
@@ -62,8 +62,8 @@ public class ExportCoaJsonActionFX implements EventHandler<ActionEvent> {
 
         // Suggest a filename
         String suggestedName = "chart_of_accounts.json";
-        if (currentCompany.getCompanyName() != null && !currentCompany.getCompanyName().isEmpty()) {
-            suggestedName = currentCompany.getCompanyName().replaceAll("[^a-zA-Z0-9_\\-]", "_") + "_coa.json";
+        if (currentCompany.getCompanyProfile() != null) {
+            suggestedName = currentCompany.getCompanyProfile().getCompanyFileName();
         }
         fileChooser.setInitialFileName(suggestedName);
 

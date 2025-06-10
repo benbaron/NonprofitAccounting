@@ -40,7 +40,7 @@ public class ImportCoaJsonActionFX implements EventHandler<ActionEvent> {
         if (selectedFile != null) {
             ChartOfAccountsIOService coaService = new ChartOfAccountsIOService();
             try {
-                ChartOfAccounts<Account> importedCOA = coaService.importFromJson(selectedFile.toPath());
+                ChartOfAccounts importedCOA = coaService.importFromJson(selectedFile.toPath());
                 Company currentCompany = CurrentCompany.getCompany();
 
                 if (currentCompany != null) {
