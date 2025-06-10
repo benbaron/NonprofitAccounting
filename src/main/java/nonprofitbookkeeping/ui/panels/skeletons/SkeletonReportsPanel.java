@@ -250,18 +250,25 @@ public class SkeletonReportsPanel extends BorderPane
 	 * and a placeholder message is updated in the table.
 	 * If no reports are found, an appropriate placeholder message is displayed.
 	 */
-	private void loadGeneratedReports()
-	{
-		this.generatedReportsDataList.clear();
-		
-		try
-		{
-			List<ReportMetadata> reports = this.reportService.listGeneratedReports();
-			
-			if (reports != null)
-			{
-				this.generatedReportsDataList.addAll(reports);
-			}
+        private void loadGeneratedReports()
+        {
+                this.generatedReportsDataList.clear();
+
+                if (!CurrentCompany.isOpen() || CurrentCompany.getCompany() == null)
+                {
+                        this.generatedReportsTable
+                                .setPlaceholder(new Label("No company open."));
+                        return;
+                }
+
+                try
+                {
+                        List<ReportMetadata> reports = this.reportService.listGeneratedReports();
+
+                        if (reports != null)
+                        {
+                                this.generatedReportsDataList.addAll(reports);
+                        }
 			
 		}
 		catch (Exception e)
