@@ -45,7 +45,7 @@ import javafx.scene.Node; // For iterating over children of HBox if needed
  * }</pre>
  * This panel uses a {@link TreeTableView} to display the hierarchical chart of accounts
  * and provides buttons for adding root accounts, sub-accounts, editing, deleting,
- * importing/exporting as JSON, saving changes, and cancelling.
+ * importing/exporting as XLSX, saving changes, and cancelling.
  */
 public class CoaEditorPanelFX extends BorderPane
 {
@@ -63,8 +63,8 @@ public class CoaEditorPanelFX extends BorderPane
 	/** The root item for the {@link #tree}; it is hidden in the UI. */
 	private final TreeItem<Account> rootItem = new TreeItem<>();
 	
-	/** Service for importing and exporting Chart of Accounts data to/from JSON. */
-	private final ChartOfAccountsIOService ioSvc = new ChartOfAccountsIOService();
+        /** Service for importing and exporting Chart of Accounts data to/from XLSX. */
+        private final ChartOfAccountsIOService ioSvc = new ChartOfAccountsIOService();
 	
 	// Dialog fields - these are instance members because they are accessed by the
 	// dialog's result converter lambda.
@@ -164,7 +164,7 @@ public class CoaEditorPanelFX extends BorderPane
 	
 	/**
 	 * Creates and configures an {@link HBox} containing action buttons for managing the chart of accounts.
-	 * Buttons include: Add Root, Add Sub, Edit, Delete, Import JSON, Export JSON, Save, and Cancel.
+         * Buttons include: Add Root, Add Sub, Edit, Delete, Import XLSX, Export XLSX, Save, and Cancel.
 	 * Event handlers are set for each button to trigger corresponding actions.
 	 *
 	 * @return An {@link HBox} populated with control buttons.
@@ -181,8 +181,8 @@ public class CoaEditorPanelFX extends BorderPane
 		Button del = new Button("Delete");
 		Button saveBtn = new Button("Save");
 		
-		Button importBtn = new Button("Import JSON…");
-		Button exportBtn = new Button("Export JSON…");
+                Button importBtn = new Button("Import XLSX…");
+                Button exportBtn = new Button("Export XLSX…");
 		Button cancel = new Button("Cancel");
 		
 		// button actions
@@ -206,8 +206,8 @@ public class CoaEditorPanelFX extends BorderPane
 			
 		});
 		del.setOnAction(e -> deleteSelected());
-		importBtn.setOnAction(e -> importJson());
-		exportBtn.setOnAction(e -> exportJson());
+                importBtn.setOnAction(e -> importXlsx());
+                exportBtn.setOnAction(e -> exportXlsx());
 		saveBtn.setOnAction(e -> {
 			
 			if (this.onSave != null)
@@ -396,16 +396,16 @@ public class CoaEditorPanelFX extends BorderPane
 		
 	}
 	
-	/**
-	 * Initiates the process of importing a Chart of Accounts from a JSON file.
-	 * Displays a {@link FileChooser} for selecting the JSON file. If a file is selected,
-	 * it uses {@link ChartOfAccountsIOService#importFromJson(java.nio.file.Path)} to read the data,
-	 * then {@link ChartOfAccountsService#replaceChart(ChartOfAccounts)} to update the current chart,
-	 * and finally refreshes the tree view.
-	 * Errors during import are displayed in an alert dialog.
-	 */
-	private void importJson()
-	{
+        /**
+         * Initiates the process of importing a Chart of Accounts from an XLSX file.
+         * Displays a {@link FileChooser} for selecting the XLSX file. If a file is selected,
+         * it uses {@link ChartOfAccountsIOService#importFromXlsx(java.nio.file.Path)} to read the data,
+         * then {@link ChartOfAccountsService#replaceChart(ChartOfAccounts)} to update the current chart,
+         * and finally refreshes the tree view.
+         * Errors during import are displayed in an alert dialog.
+         */
+        private void importXlsx()
+        {
 		
 		if (!CurrentCompany.isOpen())
 		{ // Check added
@@ -416,9 +416,9 @@ public class CoaEditorPanelFX extends BorderPane
 		
 		// ... rest of the method
 		FileChooser fc = new FileChooser();
-		fc.setTitle("Import Chart of Accounts from JSON");
-		fc.getExtensionFilters()
-			.add(new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"));
+                fc.setTitle("Import Chart of Accounts from XLSX");
+                fc.getExtensionFilters()
+                        .add(new FileChooser.ExtensionFilter("Excel files (*.xlsx)", "*.xlsx"));
 		File f = fc.showOpenDialog(getScene() != null ? getScene().getWindow() : null); // Set owner
 																						// if
 																						// possible
@@ -430,7 +430,7 @@ public class CoaEditorPanelFX extends BorderPane
 		
 		try
 		{
-			ChartOfAccounts imported = this.ioSvc.importFromJson(f.toPath());
+                        ChartOfAccounts imported = this.ioSvc.importFromXlsx(f.toPath());
 			this.svc.replaceChart(imported); // Replace current COA with imported one
 			refresh(); // Refresh the tree view
 			AlertBox.showInfo(null, "Chart of Accounts imported successfully from " + f.getName());
@@ -443,15 +443,15 @@ public class CoaEditorPanelFX extends BorderPane
 		
 	}
 	
-	/**
-	 * Initiates the process of exporting the current Chart of Accounts to a JSON file.
-	 * Displays a {@link FileChooser} (save dialog) for selecting the destination file.
-	 * If a file path is chosen, it uses {@link ChartOfAccountsIOService#exportToJson(ChartOfAccounts, java.nio.file.Path)}
-	 * to save the data.
-	 * Success or error messages are displayed in alert dialogs.
-	 */
-	private void exportJson()
-	{
+        /**
+         * Initiates the process of exporting the current Chart of Accounts to an XLSX file.
+         * Displays a {@link FileChooser} (save dialog) for selecting the destination file.
+         * If a file path is chosen, it uses {@link ChartOfAccountsIOService#exportToXlsx(ChartOfAccounts, java.nio.file.Path)}
+         * to save the data.
+         * Success or error messages are displayed in alert dialogs.
+         */
+        private void exportXlsx()
+        {
 		
 		if (!CurrentCompany.isOpen() || this.svc.asChart().getAccounts().isEmpty())
 		{ // Check added & ensure chart has content
@@ -462,10 +462,10 @@ public class CoaEditorPanelFX extends BorderPane
 		
 		// ... rest of the method
 		FileChooser fc = new FileChooser();
-		fc.setTitle("Export Chart of Accounts to JSON");
-		fc.setInitialFileName("chart-of-accounts.json");
-		fc.getExtensionFilters()
-			.add(new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json"));
+                fc.setTitle("Export Chart of Accounts to XLSX");
+                fc.setInitialFileName("chart-of-accounts.xlsx");
+                fc.getExtensionFilters()
+                        .add(new FileChooser.ExtensionFilter("Excel files (*.xlsx)", "*.xlsx"));
 		File f = fc.showSaveDialog(getScene() != null ? getScene().getWindow() : null); // Set owner
 		
 		if (f == null)
@@ -475,7 +475,7 @@ public class CoaEditorPanelFX extends BorderPane
 		
 		try
 		{
-			this.ioSvc.exportToJson(this.svc.asChart(), f.toPath());
+                        this.ioSvc.exportToXlsx(this.svc.asChart(), f.toPath());
 			AlertBox.showInfo(null,
 				"Chart of Accounts exported successfully to " + f.getAbsolutePath());
 		}
