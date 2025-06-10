@@ -6,12 +6,15 @@ import java.util.function.Consumer;
 
 import javafx.collections.*;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
+// import javafx.scene.Node; // Not strictly needed after toolBar() refactor
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 
 import nonprofitbookkeeping.model.*;
+import nonprofitbookkeeping.model.CurrentCompany; // Explicit import for inner class usage
+import javafx.scene.control.Button; // For casting items in toolbar
+import javafx.scene.control.ToolBar; // For the actionToolBar field
 
 /**
  * JavaFX panel for displaying and managing journal transactions.
@@ -20,29 +23,28 @@ import nonprofitbookkeeping.model.*;
  * and a dialog ({@link NewTransactionPanelFX}).
  * Data is typically sourced from the {@link Journal} of the {@link CurrentCompany}.
  */
-public class JournalPanelFX extends BorderPane
-{
+public class JournalPanelFX extends BorderPane {
 
-	/** ObservableList that backs the {@link #table}, containing {@link AccountingTransaction} objects. */
-	private final ObservableList<AccountingTransaction> rows =
-		FXCollections.observableArrayList();
-	/** TableView used to display the journal transactions. */
-	private final TableView<AccountingTransaction> table = new TableView<>(this.rows);
-	
-	/**
-	 * Constructs a new {@code JournalPanelFX}.
-	 * Initializes the panel layout, builds the transaction table, sets up the toolbar
-	 * with action buttons (New, Edit, Delete), and performs an initial refresh of data.
-	 */
-	public JournalPanelFX()
-	{
-		setPadding(new Insets(10));
-		buildTable();
-		setCenter(this.table);
-		setBottom(toolBar());
-		refresh();
-	}
-	
+    private final ObservableList<AccountingTransaction> rows = FXCollections.observableArrayList();
+    private final TableView<AccountingTransaction> table = new TableView<>(this.rows);
+
+    private JournalPanelCompanyListener companyListener;
+    private ToolBar actionToolBar; // Field to store the toolbar
+
+    public JournalPanelFX() {
+        setPadding(new Insets(10));
+        buildTable();
+        setCenter(this.table);
+
+        buildToolBar(); // Creates and assigns to this.actionToolBar
+        setBottom(this.actionToolBar); // Sets the stored toolbar
+
+        this.companyListener = new JournalPanelCompanyListener(this);
+        CurrentCompany.CompanyListener.addCompanyListener(this.companyListener);
+
+        handleCompanyChange(CurrentCompany.isOpen());
+    }
+
 	/* -------- Table -------- */
 	/**
 	 * Builds and configures the {@link TableView} ({@link #table}) for displaying journal transactions.
@@ -102,40 +104,32 @@ public class JournalPanelFX extends BorderPane
 	 *
 	 * @return A {@link ToolBar} node populated with action buttons.
 	 */
-	private Node toolBar()
-	{
-		Button add = new Button("New");
-		Button edit = new Button("Edit");
-		Button del = new Button("Delete");
-		
-		add.setOnAction(e -> openEditor(null));
-		edit.setOnAction(e -> {
-			AccountingTransaction sel = this.table.getSelectionModel().getSelectedItem();
+    private void buildToolBar() {
+        Button add = new Button("New");
+        Button edit = new Button("Edit");
+        Button del = new Button("Delete");
 
-			if (sel != null)
-			{
-				openEditor(sel);
-			}
-
-		});
-		del.setOnAction(e -> {
-			AccountingTransaction sel = this.table.getSelectionModel().getSelectedItem();
-
-			if (sel != null)
-			{
-				Journal journal = CurrentCompany.getCompany().getLedger().getJournal();
-
-				if (journal != null)
-				{
-					journal.deleteTransaction(sel.getBookingDateTimestamp());
-					refresh();
-				}
-
-			}
-
-		});
-		return new ToolBar(add, edit, del);
-	}
+        add.setOnAction(e -> openEditor(null));
+        edit.setOnAction(e -> {
+            AccountingTransaction sel = this.table.getSelectionModel().getSelectedItem();
+            if (sel != null) {
+                openEditor(sel);
+            }
+        });
+        del.setOnAction(e -> {
+            AccountingTransaction sel = this.table.getSelectionModel().getSelectedItem();
+            if (sel != null) {
+                if (CurrentCompany.isOpen() && CurrentCompany.getCompany() != null && CurrentCompany.getCompany().getLedger() != null) {
+                    Journal journal = CurrentCompany.getCompany().getLedger().getJournal();
+                    if (journal != null) {
+                        journal.deleteTransaction(sel.getBookingDateTimestamp());
+                        refresh();
+                    }
+                }
+            }
+        });
+        this.actionToolBar = new ToolBar(add, edit, del);
+    }
 	
 	/* -------- CRUD -------- */
 	/**
@@ -151,38 +145,35 @@ public class JournalPanelFX extends BorderPane
 	 *
 	 * @param existing The {@link AccountingTransaction} to edit. If null, a new transaction will be created.
 	 */
-	private void openEditor(AccountingTransaction existing)
-	{
-		Journal mainJournal = CurrentCompany.getCompany().getLedger().getJournal();
-		
-		if (mainJournal == null)
-		{
-			// Optionally, show an error dialog if the main journal isn't available
-			System.err.println("Error: Journal not available in CurrentCompany.");
-			
-			// You might want to disable add/edit buttons if mainJournal is null
-			return;
-		}
-		
-		NewTransactionPanelFX pane =
-			(existing == null) ? new NewTransactionPanelFX( // Create new
-				(AccountingTransaction tx) ->
-				{ // onSave consumer for new
-					mainJournal.addTransaction(tx);
-					refresh();
-				}) : new NewTransactionPanelFX(existing, // Edit existing
-					(Consumer<AccountingTransaction>) tx ->
-					{ // onSave consumer for edit
-						mainJournal.updateTransaction(tx);
-						refresh();
-					});
-					
-		Dialog<Void> d = new Dialog<>();
-		d.setTitle(existing == null ? "New Transaction" : "Edit Transaction");
-		d.getDialogPane().setContent(pane);
-		d.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
-		d.showAndWait();
-	}
+	private void openEditor(AccountingTransaction existing) {
+        if (!CurrentCompany.isOpen() || CurrentCompany.getCompany() == null || CurrentCompany.getCompany().getLedger() == null) {
+            System.err.println("Error: Cannot open transaction editor. No active company or journal.");
+            return;
+        }
+        Journal mainJournal = CurrentCompany.getCompany().getLedger().getJournal();
+
+        if (mainJournal == null) {
+            System.err.println("Error: Journal not available in CurrentCompany.");
+            return;
+        }
+
+        NewTransactionPanelFX pane =
+            (existing == null) ? new NewTransactionPanelFX(
+                (AccountingTransaction tx) -> {
+                    mainJournal.addTransaction(tx);
+                    refresh();
+                }) : new NewTransactionPanelFX(existing,
+                    (Consumer<AccountingTransaction>) tx -> {
+                        mainJournal.updateTransaction(tx);
+                        refresh();
+                    });
+
+        Dialog<Void> d = new Dialog<>();
+        d.setTitle(existing == null ? "New Transaction" : "Edit Transaction");
+        d.getDialogPane().setContent(pane);
+        d.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        d.showAndWait();
+    }
 	
 	
 	/**
@@ -191,19 +182,51 @@ public class JournalPanelFX extends BorderPane
 	 * {@link CurrentCompany}. If the journal or company is not available, the table is cleared.
 	 * Otherwise, the table's backing list ({@link #rows}) is updated with the fetched transactions.
 	 */
-	void refresh()
-	{
-		Journal journal = CurrentCompany.getCompany().getLedger().getJournal();
-		
-		if (journal != null)
-		{
-			this.rows.setAll(journal.getJournalTransactions());
-		}
-		else
-		{
-			this.rows.clear(); // Or handle as an error/empty state
-		}
-		
-	}
-	
+    void refresh() {
+        if (CurrentCompany.isOpen() && CurrentCompany.getCompany() != null && CurrentCompany.getCompany().getLedger() != null) {
+            Journal journal = CurrentCompany.getCompany().getLedger().getJournal();
+            if (journal != null) {
+                this.rows.setAll(journal.getJournalTransactions());
+            } else {
+                this.rows.clear();
+            }
+        } else {
+             this.rows.clear();
+        }
+    }
+
+    private void handleCompanyChange(boolean isOpen) {
+        if (isOpen) {
+            refresh();
+            if (this.actionToolBar != null) {
+                this.actionToolBar.getItems().forEach(item -> {
+                    if (item instanceof Button) {
+                        ((Button) item).setDisable(false);
+                    }
+                });
+            }
+        } else {
+            this.rows.clear();
+            if (this.actionToolBar != null) {
+                this.actionToolBar.getItems().forEach(item -> {
+                    if (item instanceof Button) {
+                        ((Button) item).setDisable(true);
+                    }
+                });
+            }
+        }
+    }
+
+    private class JournalPanelCompanyListener implements CurrentCompany.CompanyChangeListener {
+        private JournalPanelFX panel;
+
+        public JournalPanelCompanyListener(JournalPanelFX panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void companyChange(boolean isOpen) {
+            panel.handleCompanyChange(isOpen);
+        }
+    }
 }

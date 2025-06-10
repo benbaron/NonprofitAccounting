@@ -501,7 +501,7 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 			}
 			
 		};
-		CurrentCompany.addCompanyChangeListener(this.companyChangeListener); // Assuming this is the intended registration
+		CurrentCompany.CompanyListener.addCompanyListener(this.companyChangeListener); // Assuming this is the intended registration
 	}
 	
 	/**

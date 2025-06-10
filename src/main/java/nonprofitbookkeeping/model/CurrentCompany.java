@@ -209,33 +209,55 @@ public class CurrentCompany
 			
 		}
 
-		/**
-		 * @return
-		 */
-		public static List<CompanyChangeListener> getListeners()
-		{
-			// TODO Auto-generated method stub
-			return null;
-		}
+               /**
+                * Returns the list of currently registered {@link CompanyChangeListener}s.
+                *
+                * <p>This method exposes the listeners primarily for testing
+                * purposes so that UI tests can manually trigger company change
+                * events. The returned list is a snapshot &ndash; modifications
+                * to it will <strong>not</strong> affect the internal listener
+                * registry.</p>
+                *
+                * @return an immutable {@link List} of registered listeners, or
+                *         an empty list if none are registered
+                */
+               public static List<CompanyChangeListener> getListeners()
+               {
+                       CompanyChangeListener[] arr =
+                               CompanyListener.listeners.getListeners(CompanyChangeListener.class);
+                       return List.of(arr);
+               }
 		
 	}
 
-	/**
-	 * @param companyChangeListener
-	 */
-	public static void addCompanyChangeListener(CompanyChangeListener companyChangeListener)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+       /**
+        * For test environments or specialized workflows where the caller needs
+        * to directly set the current {@link Company} and immediately notify all
+        * {@link CompanyChangeListener}s, this helper provides that ability.
+        *
+        * <p>If {@code company2} is {@code null} the current company reference is
+        * cleared and listeners are notified as if the company was closed.
+        * Otherwise the provided company becomes the active company and listeners
+        * are notified that a company is open.</p>
+        *
+        * @param company2 the company to set as the current one, or {@code null}
+        *                 to simulate closing the current company
+        */
+       public static void forceCompanyLoad(Company company2)
+       {
+               CurrentCompany.company = company2;
 
-	/**
-	 * @param company2
-	 */
-	public static void forceCompanyLoad(Company company2)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+               if (company2 != null)
+               {
+                       CurrentCompany.companyIsOpen = true;
+                       CompanyListener.fireChanged(true);
+               }
+               else
+               {
+                       CurrentCompany.companyIsOpen = false;
+                       CompanyListener.fireChanged(false);
+               }
+
+       }
 
 }

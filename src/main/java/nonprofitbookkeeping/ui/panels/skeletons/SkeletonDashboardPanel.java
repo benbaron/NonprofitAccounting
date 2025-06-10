@@ -164,18 +164,30 @@ public class SkeletonDashboardPanel extends BorderPane
 	 * If no company is loaded, or essential data like the ledger or chart of accounts is missing,
 	 * the key figures will typically default to zero or initial values, and the transaction list will be empty.
 	 */
-	private void loadData()
-	{
-		this.transactionDataList.clear();
-		Company company = CurrentCompany.getCompany();
-		
-		BigDecimal totalAssets = BigDecimal.ZERO;
-		BigDecimal totalLiabilities = BigDecimal.ZERO;
-		BigDecimal totalEquity = BigDecimal.ZERO; // Represents sum of equity type accounts, not
-													// necessarily total book equity
-		BigDecimal totalIncome = BigDecimal.ZERO;
-		BigDecimal totalExpenses = BigDecimal.ZERO;
-		List<AccountingTransaction> transactions = null;
+        private void loadData()
+        {
+                this.transactionDataList.clear();
+
+                if (!CurrentCompany.isOpen() || CurrentCompany.getCompany() == null)
+                {
+                        this.totalAssetsValueLabel.setText("$0.00");
+                        this.totalLiabilitiesValueLabel.setText("$0.00");
+                        this.equityValueLabel.setText("$0.00");
+                        this.ytdIncomeValueLabel.setText("YTD Net Income: $0.00");
+                        this.recentTransactionsTable
+                                .setPlaceholder(new Label("No company open."));
+                        return;
+                }
+
+                Company company = CurrentCompany.getCompany();
+
+                BigDecimal totalAssets = BigDecimal.ZERO;
+                BigDecimal totalLiabilities = BigDecimal.ZERO;
+                BigDecimal totalEquity = BigDecimal.ZERO; // Represents sum of equity type accounts, not
+                                                                               // necessarily total book equity
+                BigDecimal totalIncome = BigDecimal.ZERO;
+                BigDecimal totalExpenses = BigDecimal.ZERO;
+                List<AccountingTransaction> transactions = null;
 		
 		
 		if (company != null && company.getLedger() != null)

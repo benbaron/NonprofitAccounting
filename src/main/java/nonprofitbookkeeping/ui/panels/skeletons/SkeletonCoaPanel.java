@@ -147,12 +147,19 @@ public class SkeletonCoaPanel extends BorderPane
 	 * and recursively builds the tree structure using {@link #createAccountTreeItem(Account, ChartOfAccounts)}.
 	 * If no company is open or the COA is unavailable, the table will remain empty or show its placeholder.
 	 */
-	private void loadCoaData()
-	{
-		this.rootAccountsNode.getChildren().clear();
-		Company company = CurrentCompany.getCompany();
-		
-		if (company != null && company.getChartOfAccounts() != null)
+        private void loadCoaData()
+        {
+                this.rootAccountsNode.getChildren().clear();
+
+                if (!CurrentCompany.isOpen() || CurrentCompany.getCompany() == null)
+                {
+                        this.coaTreeTable.setPlaceholder(new Label("No company open."));
+                        return;
+                }
+
+                Company company = CurrentCompany.getCompany();
+
+                if (company != null && company.getChartOfAccounts() != null)
 		{
 			ChartOfAccounts coa = company.getChartOfAccounts();
 			List<Account> rootLevelAccounts = coa.getRootAccounts(); // Assuming this method exists

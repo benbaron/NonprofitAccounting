@@ -15,6 +15,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.reports.ReportMetadata;
 import nonprofitbookkeeping.service.ReportService;
+// Added for listener
+import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
+import javafx.scene.Node; // For iterating over toolbar items
 
 /**
  * JavaFX rewrite of {@code ReportsPanel}. Lets the user generate a new report
@@ -30,6 +34,9 @@ public class ReportsPanelFX extends BorderPane
 	private final ObservableList<ReportRow> rows = FXCollections.observableArrayList();
 	/** TableView to display metadata of previously generated reports. */
 	private final TableView<ReportRow> table = new TableView<>();
+
+    private ReportsPanelCompanyListener companyListener;
+    private ToolBar generatorToolBar;
 	
 	/**
 	 * Constructs a new {@code ReportsPanelFX}.
@@ -42,8 +49,15 @@ public class ReportsPanelFX extends BorderPane
 		setPadding(new Insets(10));
 		buildTable();
 		setCenter(this.table);
-		setTop(buildGeneratorBar());
-		refresh();
+
+        this.generatorToolBar = buildGeneratorBarInternal(); // Call internal method
+        setTop(this.generatorToolBar);
+
+        this.companyListener = new ReportsPanelCompanyListener(this);
+        CurrentCompany.CompanyListener.addCompanyListener(this.companyListener);
+
+        // refresh(); // Old call, replaced by handleCompanyChange
+        handleCompanyChange(CurrentCompany.isOpen());
 	}
 	
 	/* ------------------------------------------------------------------ */
@@ -56,25 +70,28 @@ public class ReportsPanelFX extends BorderPane
 	 *
 	 * @return A configured {@link ToolBar} for report generation controls.
 	 */
-	private ToolBar buildGeneratorBar()
-	{
-		ComboBox<String> typeBox = new ComboBox<>();
-		typeBox.getItems().addAll("Income Statement", "Balance Sheet", "Cash Flow", "Donor Summary",
-			"Fund Activity Report");
-		typeBox.getSelectionModel().selectFirst();
-		DatePicker from = new DatePicker(LocalDate.now().withDayOfYear(1));
-		DatePicker to = new DatePicker(LocalDate.now());
-		Button gen = new Button("Generate");
-		gen.setOnAction(e -> {
-			Stage dlg = new Stage();
-			dlg.setTitle("Generating Report");
-			dlg.setScene(new Scene(new GenerateReportPanelFX(this.reportService), 600, 400));
-			dlg.showAndWait();
-			refresh();
-		});
-		return new ToolBar(new Label("Type:"), typeBox, new Label("From:"), from, new Label("To:"),
-			to, gen);
-	}
+    // Renamed to avoid potential API conflicts if buildGeneratorBar was considered public/protected
+    private ToolBar buildGeneratorBarInternal() {
+        ComboBox<String> typeBox = new ComboBox<>();
+        typeBox.getItems().addAll("Income Statement", "Balance Sheet", "Cash Flow", "Donor Summary", "Fund Activity Report");
+        // typeBox.getSelectionModel().selectFirst(); // Selection can be set in handleCompanyChange or when enabled
+        DatePicker from = new DatePicker(LocalDate.now().withDayOfYear(1));
+        DatePicker to = new DatePicker(LocalDate.now());
+        Button gen = new Button("Generate");
+        gen.setOnAction(e -> {
+            // This action itself should ideally be disabled if no company is open.
+            // The GenerateReportPanelFX might also need its own company checks.
+            Stage dlg = new Stage();
+            dlg.setTitle("Generating Report");
+            // Ensure GenerateReportPanelFX handles cases where no company is open if it's possible to reach here.
+            dlg.setScene(new Scene(new GenerateReportPanelFX(this.reportService), 600, 400));
+            dlg.showAndWait();
+            if (CurrentCompany.isOpen()) { // Only refresh if a company is still open
+                refresh();
+            }
+        });
+        return new ToolBar(new Label("Type:"), typeBox, new Label("From:"), from, new Label("To:"), to, gen);
+    }
 	
 	/**
 	 * Builds and configures the {@link TableView} ({@link #table}) for displaying metadata of generated reports.
@@ -143,66 +160,79 @@ public class ReportsPanelFX extends BorderPane
 	 * from the {@link #reportService}, converts each {@link ReportMetadata} into a {@link ReportRow},
 	 * and adds them to the {@link #rows} observable list, which updates the table view.
 	 */
-	private void refresh()
-	{
-		this.rows.clear();
-		List<ReportMetadata> list = this.reportService.listGeneratedReports();
-		list.forEach(r -> this.rows.add(new ReportRow(r)));
-	}
-	
-	/* ------------------------------------------------------------------ */
-	/**
-	 * A simple data class (POJO) used to represent a row in the generated reports {@link TableView}.
-	 * It wraps {@link ReportMetadata} for easy display with {@link PropertyValueFactory}.
+	private void refresh() {
+        this.rows.clear();
+        // Assuming reportService.listGeneratedReports() is company-aware
+        // or returns empty list if no company.
+        if (CurrentCompany.isOpen()) {
+            List<ReportMetadata> list = this.reportService.listGeneratedReports();
+            if (list != null) { // Guard against null list from service
+                list.forEach(r -> this.rows.add(new ReportRow(r)));
+            }
+        }
+    }
+
+    private void handleCompanyChange(boolean isOpen) {
+        // Disable/Enable all items in the generatorToolBar
+        if (this.generatorToolBar != null) {
+            for (Node node : this.generatorToolBar.getItems()) {
+                // Check for specific types if needed, e.g., ComboBox, DatePicker, Button
+                node.setDisable(!isOpen);
+            }
+        }
+        // Specifically handle ComboBox selection placeholder if needed
+        ComboBox<String> typeBox = null;
+        if (this.generatorToolBar != null && this.generatorToolBar.getItems().size() > 1 && this.generatorToolBar.getItems().get(1) instanceof ComboBox) {
+             @SuppressWarnings("unchecked")
+             ComboBox<String> tempCb = (ComboBox<String>) this.generatorToolBar.getItems().get(1);
+             typeBox = tempCb;
+        }
+
+
+        if (isOpen) {
+            if (typeBox != null && !typeBox.getItems().isEmpty()) {
+                typeBox.getSelectionModel().selectFirst();
+            }
+            refresh();
+        } else {
+            this.rows.clear();
+            if (typeBox != null) {
+                typeBox.getSelectionModel().clearSelection();
+                // typeBox.setPlaceholder(new Label("No company")); // Placeholder if desired
+            }
+        }
+    }
+
+    private class ReportsPanelCompanyListener implements CompanyChangeListener {
+        private ReportsPanelFX panel;
+
+        public ReportsPanelCompanyListener(ReportsPanelFX panel) {
+            this.panel = panel;
+        }
+
+        @Override
+        public void companyChange(boolean isOpen) {
+            panel.handleCompanyChange(isOpen);
+        }
+    }
+
+    /** 
+     * It wraps {@link ReportMetadata} for easy display with {@link PropertyValueFactory}.
 	 */
-	public static class ReportRow
-	{
-		/** The name of the report. */
-		final String name;
-		/** The creation date of the report, as a String. */
-		final String date;
-		/** The file path where the report is stored. */
-		final String path;
-		
-		/**
-		 * Constructs a {@code ReportRow} from {@link ReportMetadata}.
-		 *
-		 * @param m The {@link ReportMetadata} object containing details of a generated report. Must not be null.
-		 */
-		ReportRow(ReportMetadata m)
-		{
-			this.name = m.getReportName();
-			this.date = m.getCreated();
-			this.path = m.getFilePath();
-		}
-		
-		/**
-		 * Gets the name of the report.
-		 * @return The report's name.
-		 */
-		public String getName()
-		{
-			return this.name;
-		}
-		
-		/**
-		 * Gets the creation date of the report.
-		 * @return The creation date as a String.
-		 */
-		public String getDate()
-		{
-			return this.date;
-		}
-		
-		/**
-		 * Gets the file path of the generated report.
-		 * @return The file path string.
-		 */
-		public String getPath()
-		{
-			return this.path;
-		}
-		
-	}
-	
+    public static class ReportRow {
+        final String name;
+        final String date;
+        final String path;
+
+        ReportRow(ReportMetadata m) {
+            this.name = m.getReportName();
+            this.date = m.getCreated();
+            this.path = m.getFilePath();
+        }
+
+        public String getName() { return this.name; }
+        public String getDate() { return this.date; }
+        public String getPath() { return this.path; }
+    }
 }
+
