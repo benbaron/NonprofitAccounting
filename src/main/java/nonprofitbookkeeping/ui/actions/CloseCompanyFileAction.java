@@ -6,7 +6,10 @@
 package nonprofitbookkeeping.ui.actions;
 
 import java.io.IOException;
+import java.util.Optional;
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
@@ -37,20 +40,27 @@ public class CloseCompanyFileAction
 	 *                     intended for displaying dialogs or interacting with the UI in a
 	 *                     more complete implementation (e.g., confirming save on close).
 	 */
-	public CloseCompanyFileAction(Stage primaryStage)
-	{
-		// Store thyself
-		try
-		{
-			CurrentCompany.persist();
-		}
-		catch (IOException | ActionCancelledException | NoFileCreatedException e)
-		{
-			// In a production application, show an error dialog to the user.
-			e.printStackTrace();
-		}
-		CurrentCompany.close();
-	}
+        public CloseCompanyFileAction(Stage primaryStage)
+        {
+                Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                        "Save company before closing?");
+                confirm.initOwner(primaryStage);
+                Optional<ButtonType> res = confirm.showAndWait();
+
+                if (res.isPresent() && res.get() == ButtonType.OK)
+                {
+                        try
+                        {
+                                CurrentCompany.persist();
+                        }
+                        catch (IOException | ActionCancelledException | NoFileCreatedException e)
+                        {
+                                e.printStackTrace();
+                        }
+                }
+
+                CurrentCompany.close();
+        }
 
 	
 }

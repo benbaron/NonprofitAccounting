@@ -315,14 +315,14 @@ public class SkeletonReportsPanel extends BorderPane
 		
 		this.generateReportButton.setOnAction(event -> {
 			String reportTypeDisplay = this.reportTypeComboBox.getValue();
-			Company currentCompany = CurrentCompany.getCompany();
-			Window ownerWindow = this.getScene().getWindow();
-			
-			if (currentCompany == null)
-			{
-				AlertBox.showError(ownerWindow, "No company is currently open.");
-				return;
-			}
+                        Company currentCompany = CurrentCompany.getCompany();
+                        Window ownerWindow = this.getScene().getWindow();
+
+                        if (!CurrentCompany.isOpen() || currentCompany == null)
+                        {
+                                AlertBox.showError(ownerWindow, "No company is currently open.");
+                                return;
+                        }
 			
 			if (reportTypeDisplay == null)
 			{

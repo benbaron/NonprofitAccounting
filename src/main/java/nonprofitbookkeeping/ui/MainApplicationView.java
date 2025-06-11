@@ -11,6 +11,7 @@ import nonprofitbookkeeping.ui.panels.skeletons.SkeletonDashboardPanel;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonJournalPanel;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonReportsPanel;
 import nonprofitbookkeeping.ui.panels.AccountTransactionDetailsPanelFX; // Added import
+import nonprofitbookkeeping.ui.CompanySelectionPanelFX;
 
 /**
  * Represents the main application view, structured as a {@link BorderPane}.
@@ -53,6 +54,8 @@ public class MainApplicationView extends BorderPane {
     private Tab reportsTab;
     /** Tab for displaying Account Transaction Details. */
     private Tab accountDetailsTab;
+    /** Tab for selecting or creating a company when none is open. */
+    private Tab companySelectTab;
 
     /**
      * Constructs a new {@code MainApplicationView}.
@@ -83,8 +86,12 @@ public class MainApplicationView extends BorderPane {
         this.accountDetailsTab = new Tab("Account Details", new AccountTransactionDetailsPanelFX());
         this.accountDetailsTab.setClosable(false);
 
+        // Tab shown when no company is open
+        this.companySelectTab = new Tab("Select Company", new CompanySelectionPanelFX(c -> {}));
+        this.companySelectTab.setClosable(false);
+
         // Add tabs to the tabPane
-        this.tabPane.getTabs().addAll(this.dashboardTab, this.journalTab, this.coaTab, this.reportsTab, this.accountDetailsTab);
+        this.tabPane.getTabs().addAll(this.dashboardTab, this.journalTab, this.coaTab, this.reportsTab, this.accountDetailsTab, this.companySelectTab);
 
         // Set the TabPane as the center of the BorderPane
         setCenter(this.tabPane);
@@ -133,6 +140,30 @@ public class MainApplicationView extends BorderPane {
                 System.err.println("Unknown panel type: " + panelType); // Consider using a logger
                 // tabPane.getSelectionModel().select(dashboardTab); // Fallback to dashboard
                 break;
+        }
+    }
+
+    /**
+     * Enables or disables primary tabs based on whether a company is open
+     * and shows or hides the company selection tab accordingly.
+     *
+     * @param companyOpen {@code true} if a company is currently open.
+     */
+    public void updateCompanyOpenState(boolean companyOpen) {
+        this.dashboardTab.setDisable(!companyOpen);
+        this.journalTab.setDisable(!companyOpen);
+        this.coaTab.setDisable(!companyOpen);
+        this.reportsTab.setDisable(!companyOpen);
+        this.accountDetailsTab.setDisable(!companyOpen);
+
+        if (companyOpen) {
+            this.tabPane.getTabs().remove(this.companySelectTab);
+            this.tabPane.getSelectionModel().select(this.dashboardTab);
+        } else {
+            if (!this.tabPane.getTabs().contains(this.companySelectTab)) {
+                this.tabPane.getTabs().add(0, this.companySelectTab);
+            }
+            this.tabPane.getSelectionModel().select(this.companySelectTab);
         }
     }
 

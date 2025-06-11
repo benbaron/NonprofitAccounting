@@ -249,12 +249,12 @@ public class NonprofitBookkeepingFX extends Application
 		this.miEditJournal = add(edit, "Edit Journal", e -> ((MainApplicationView)this.root).showPanel(MainApplicationView.PanelType.JOURNAL));
 		
 		add(edit, "Open Budget Editor", e -> {
-			Company currentCompany = CurrentCompany.getCompany();
+                        Company currentCompany = CurrentCompany.getCompany();
 
-			if (currentCompany == null) {
-				AlertBox.showError(this.primaryStage, "No company is currently open. Please open or create a company first.");
-				return;
-			}
+                        if (!CurrentCompany.isOpen() || currentCompany == null) {
+                                AlertBox.showError(this.primaryStage, "No company is currently open. Please open or create a company first.");
+                                return;
+                        }
 
 			File companyFile = currentCompany.getCompanyFile();
 			if (companyFile == null) {
@@ -291,8 +291,8 @@ public class NonprofitBookkeepingFX extends Application
 			e -> showPanel(new InventoryPanelFX(ServiceContainer.iss), "Inventory"));
 		add(this.run, "Funds & Fund Accounting",
 			e -> showPanel(new FundsPanelFX(ServiceContainer.fas), "Funds"));
-		add(this.run, "Reconcile",
-			e -> showPanel(new ReconcilePanelFX(new ReconciliationService()), "Reconciliation"));
+                add(this.run, "Reconcile",
+                        e -> showPanel(new LedgerReconcilePanelFX(new ReconciliationService()), "Reconciliation"));
 		// Note: The SCA Ledger submenu was here. It will be added by the
 		// SCALedgerPlugin if loaded.
 		bar.getMenus().add(this.run);
@@ -479,10 +479,10 @@ public class NonprofitBookkeepingFX extends Application
 	 *
 	 * @param newState The new {@link AppState} to set for the application.
 	 */
-	private void setState(AppState newState)
-	{
-		this.state = newState;
-		boolean companyOpen = (newState == AppState.COMPANY_OPEN);
+        private void setState(AppState newState)
+        {
+                this.state = newState;
+                boolean companyOpen = (newState == AppState.COMPANY_OPEN);
 		boolean noCompany = (newState == AppState.NO_COMPANY);
 		boolean creatingCompany = (newState == AppState.CREATING_COMPANY);
 		
@@ -498,7 +498,11 @@ public class NonprofitBookkeepingFX extends Application
 		
 		this.run.setDisable(noCompany || creatingCompany);
 		this.panels.setDisable(noCompany || creatingCompany);
-		this.reports.setDisable(noCompany || creatingCompany);
+                this.reports.setDisable(noCompany || creatingCompany);
+
+                if (this.root instanceof MainApplicationView) {
+                        ((MainApplicationView)this.root).updateCompanyOpenState(companyOpen);
+                }
 		
 		// Plugin menus are added by plugins themselves. The core app enables/disables
 		// the top-level "SCA Ledger" menu (or other plugin menus) if those plugins make that possible

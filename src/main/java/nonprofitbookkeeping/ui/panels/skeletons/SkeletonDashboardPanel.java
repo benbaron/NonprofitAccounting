@@ -14,6 +14,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CompanySummary;
@@ -56,7 +57,10 @@ public class SkeletonDashboardPanel extends BorderPane
 	/** Label to display the calculated total equity value. Initializes with a value from {@link CompanySummary}. */
 	private Label equityValueLabel = new Label(CompanySummary.getTotalEquity());
 	/** Label to display the calculated year-to-date (YTD) income value. Initializes with a value from {@link CompanySummary}. */
-	private Label ytdIncomeValueLabel = new Label(CompanySummary.getYtdIncomeValue());
+        private Label ytdIncomeValueLabel = new Label(CompanySummary.getYtdIncomeValue());
+
+        /** Label showing the name of the currently open company. */
+        private final Label companyNameLabel = new Label("No company loaded");
 	
 	/** Listener that triggers {@link #loadData()} when the {@link CurrentCompany} changes. */
 	private final CompanyChangeListener companyChangeListener = new CompanyChangeListener()
@@ -78,10 +82,10 @@ public class SkeletonDashboardPanel extends BorderPane
 	{
 		setPadding(new Insets(15));
 		
-		GridPane keyFiguresGrid = new GridPane();
-		keyFiguresGrid.setPadding(new Insets(10));
-		keyFiguresGrid.setHgap(20);
-		keyFiguresGrid.setVgap(10);
+                GridPane keyFiguresGrid = new GridPane();
+                keyFiguresGrid.setPadding(new Insets(10));
+                keyFiguresGrid.setHgap(20);
+                keyFiguresGrid.setVgap(10);
 		
 		keyFiguresGrid.add(new Label("Total Assets:"), 0, 0);
 		keyFiguresGrid.add(this.totalAssetsValueLabel, 1, 0);
@@ -92,12 +96,14 @@ public class SkeletonDashboardPanel extends BorderPane
 		keyFiguresGrid.add(new Label("YTD Income:"), 2, 1);
 		keyFiguresGrid.add(this.ytdIncomeValueLabel, 3, 1);
 		
-		ScrollPane keyFiguresScrollPane = new ScrollPane();
-		keyFiguresScrollPane.setContent(keyFiguresGrid);
-		keyFiguresScrollPane.setFitToWidth(true);
-		keyFiguresScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-		keyFiguresScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-		this.setTop(keyFiguresScrollPane);
+                ScrollPane keyFiguresScrollPane = new ScrollPane();
+                keyFiguresScrollPane.setContent(keyFiguresGrid);
+                keyFiguresScrollPane.setFitToWidth(true);
+                keyFiguresScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+                keyFiguresScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+                VBox topBox = new VBox(5, this.companyNameLabel, keyFiguresScrollPane);
+                this.setTop(topBox);
 		
 		this.recentTransactionsTable.setPlaceholder(new Label("No recent transactions to display."));
 		this.recentTransactionsTable.setItems(this.transactionDataList);
@@ -170,6 +176,7 @@ public class SkeletonDashboardPanel extends BorderPane
 
                 if (!CurrentCompany.isOpen() || CurrentCompany.getCompany() == null)
                 {
+                        this.companyNameLabel.setText("No company loaded");
                         this.totalAssetsValueLabel.setText("$0.00");
                         this.totalLiabilitiesValueLabel.setText("$0.00");
                         this.equityValueLabel.setText("$0.00");
@@ -180,6 +187,7 @@ public class SkeletonDashboardPanel extends BorderPane
                 }
 
                 Company company = CurrentCompany.getCompany();
+                this.companyNameLabel.setText(company.getCompanyProfile().getCompanyName());
 
                 BigDecimal totalAssets = BigDecimal.ZERO;
                 BigDecimal totalLiabilities = BigDecimal.ZERO;
