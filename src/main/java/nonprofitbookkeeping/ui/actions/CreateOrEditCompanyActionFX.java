@@ -103,9 +103,10 @@ public class CreateOrEditCompanyActionFX
 					e.printStackTrace();
 				}
 				
-				PreferencesService.setLastUsedCompanyFile(out.getAbsolutePath());
-				
-				dialog.close();
+                                PreferencesService.setLastUsedCompanyFile(out.getAbsolutePath());
+                                CurrentCompany.open();
+
+                                dialog.close();
 			});
 			
 		// 4. Show it

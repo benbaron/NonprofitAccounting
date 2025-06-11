@@ -16,6 +16,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType; // Explicit import for ButtonType
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+import nonprofitbookkeeping.ui.helpers.AlertBox;
+import nonprofitbookkeeping.ui.panels.CoaEditorPanelFX;
 
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
@@ -230,17 +234,7 @@ public class SkeletonCoaPanel extends BorderPane
 		};
 		CurrentCompany.CompanyListener.addCompanyListener(this.companyChangeListener);
 		
-		this.addAccountButton.setOnAction(e -> {
-			System.out.println("Add Account clicked - Placeholder");
-			// TODO: Implement dialog for adding new account
-			// Example: new AddAccountDialog(getScene().getWindow(),
-			// CurrentCompany.getCompany().getChartOfAccounts()).showAndWait();
-			// Then: loadCoaData();
-			Alert info = new Alert(Alert.AlertType.INFORMATION,
-				"Add Account functionality not yet implemented.");
-			info.setHeaderText("Placeholder");
-			info.showAndWait();
-		});
+                this.addAccountButton.setOnAction(e -> openEditor());
 		
 		this.editAccountButton.setOnAction(e -> {
 			TreeItem<Account> selectedItem =
@@ -249,25 +243,15 @@ public class SkeletonCoaPanel extends BorderPane
 			if (selectedItem != null && selectedItem.getValue() != null)
 			{
 				Account selectedAccount = selectedItem.getValue();
-				System.out.println(
-					"Edit Account clicked for: " + selectedAccount.getName() + " - Placeholder");
-				// TODO: Implement dialog for editing account
-				// Example: new EditAccountDialog(getScene().getWindow(),
-				// CurrentCompany.getCompany().getChartOfAccounts(),
-				// selectedAccount).showAndWait();
-				// Then: loadCoaData(); // or selective refresh
-				Alert info = new Alert(Alert.AlertType.INFORMATION,
-					"Edit Account for '" + selectedAccount.getName() + "' not yet implemented.");
-				info.setHeaderText("Placeholder");
-				info.showAndWait();
-			}
-			else
-			{
-				Alert error =
-					new Alert(Alert.AlertType.WARNING, "No account selected for editing.");
-				error.setHeaderText("Selection Missing");
-				error.showAndWait();
-			}
+                                openEditor();
+                                }
+                        else
+                        {
+                                Alert error =
+                                        new Alert(Alert.AlertType.WARNING, "No account selected for editing.");
+                                error.setHeaderText("Selection Missing");
+                                error.showAndWait();
+                        }
 			
 		});
 		
@@ -328,8 +312,40 @@ public class SkeletonCoaPanel extends BorderPane
 			}
 			
 		});
-		loadCoaData(); // Initial data load
-	}
+                loadCoaData(); // Initial data load
+        }
+
+        /** Opens the full Chart of Accounts editor in a new window. */
+        private void openEditor()
+        {
+                Company company = CurrentCompany.getCompany();
+
+                if (company == null || company.getChartOfAccounts() == null)
+                {
+                        AlertBox.showError(getScene().getWindow(), "No company open.");
+                        return;
+                }
+
+                CoaEditorPanelFX editor = new CoaEditorPanelFX(
+                        company.getChartOfAccounts(),
+                        coa -> {
+                                company.setChartOfAccounts(coa);
+                                try {
+                                        CurrentCompany.persist();
+                                } catch (Exception ex) {
+                                        ex.printStackTrace();
+                                }
+                                CurrentCompany.open();
+                                loadCoaData();
+                        },
+                        null);
+
+                Stage s = new Stage();
+                s.setTitle("Chart of Accounts Editor");
+                s.initOwner(getScene().getWindow());
+                s.setScene(new Scene(editor, 800, 600));
+                s.showAndWait();
+        }
 	
 	// AccountData inner class is removed
 }

@@ -16,6 +16,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import nonprofitbookkeeping.ui.helpers.AlertBox;
+import nonprofitbookkeeping.ui.panels.NewTransactionPanelFX;
 
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
@@ -254,10 +258,7 @@ public class SkeletonJournalPanel extends BorderPane
 			loadData();
 		});
 		
-		this.newEntryButton.setOnAction(e -> {
-			System.out.println("New Entry clicked - Placeholder");
-			// TODO: Implement dialog/panel for new transaction entry
-		});
+                this.newEntryButton.setOnAction(e -> openEditor(null));
 		
 		this.editEntryButton.setOnAction(e -> {
 			JournalDisplayEntry selected =
@@ -266,9 +267,7 @@ public class SkeletonJournalPanel extends BorderPane
 			if (selected != null)
 			{
 				AccountingTransaction originalTx = selected.getOriginalTransaction();
-				System.out.println("Edit Entry clicked for TX ID: " +
-					originalTx.getBookingDateTimestamp() + " - Placeholder");
-				// TODO: Implement dialog/panel for editing, passing originalTx
+                                openEditor(originalTx);
 			}
 			else
 			{
@@ -278,9 +277,9 @@ public class SkeletonJournalPanel extends BorderPane
 			
 		});
 		
-		this.deleteEntryButton.setOnAction(e -> {
-			JournalDisplayEntry selected =
-				this.journalDisplayTable.getSelectionModel().getSelectedItem();
+                this.deleteEntryButton.setOnAction(e -> {
+                        JournalDisplayEntry selected =
+                                this.journalDisplayTable.getSelectionModel().getSelectedItem();
 			
 			if (selected != null)
 			{
@@ -314,11 +313,43 @@ public class SkeletonJournalPanel extends BorderPane
 				System.out.println("No journal entry selected for deletion.");
 				// Consider AlertBox.showError(getScene().getWindow(), "No entry selected for
 				// deletion.");
-			}
-			
-		});
-		loadData(); // Initial data load
-	}
+                        }
+
+                });
+                loadData(); // Initial data load
+        }
+
+        /** Opens the NewTransactionPanelFX for creating or editing a transaction. */
+        private void openEditor(AccountingTransaction existing)
+        {
+                Company company = CurrentCompany.getCompany();
+
+                if (company == null || company.getLedger() == null ||
+                        company.getLedger().getJournal() == null)
+                {
+                        AlertBox.showError(getScene().getWindow(), "No company open.");
+                        return;
+                }
+
+                Journal journal = company.getLedger().getJournal();
+
+                NewTransactionPanelFX pane =
+                        (existing == null)
+                                ? new NewTransactionPanelFX(tx -> {
+                                        journal.addTransaction(tx);
+                                        loadData();
+                                })
+                                : new NewTransactionPanelFX(existing, tx -> {
+                                        journal.updateTransaction(tx);
+                                        loadData();
+                                });
+
+                Stage s = new Stage();
+                s.setTitle(existing == null ? "New Transaction" : "Edit Transaction");
+                s.initOwner(getScene().getWindow());
+                s.setScene(new Scene(pane, 800, 600));
+                s.showAndWait();
+        }
 	
 	/**
 	 * Represents a single displayable row in the journal table.

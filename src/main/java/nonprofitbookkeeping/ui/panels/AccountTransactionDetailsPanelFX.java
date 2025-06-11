@@ -117,10 +117,14 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 			
 		}
 		
-		if (this.accountSelectorComboBox.getItems().isEmpty())
-		{
-			this.accountSelectorComboBox.setPlaceholder(new Label("No accounts in COA"));
-		}
+                if (this.accountSelectorComboBox.getItems().isEmpty())
+                {
+                        this.accountSelectorComboBox.setPromptText("No accounts in COA");
+                }
+                else
+                {
+                        this.accountSelectorComboBox.setPromptText("Select Account");
+                }
 		
 		this.accountSelectorComboBox.setOnAction(e -> {
 			this.transactionDataList.clear();
@@ -489,14 +493,14 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 					
 				}
 				
-				if (AccountTransactionDetailsPanelFX.this.accountSelectorComboBox.getItems().isEmpty())
-				{
-					AccountTransactionDetailsPanelFX.this.accountSelectorComboBox.setPlaceholder(new Label("No accounts in COA"));
-				}
-				else
-				{
-					AccountTransactionDetailsPanelFX.this.accountSelectorComboBox.setPlaceholder(new Label("Select Account"));
-				}
+                                if (AccountTransactionDetailsPanelFX.this.accountSelectorComboBox.getItems().isEmpty())
+                                {
+                                        AccountTransactionDetailsPanelFX.this.accountSelectorComboBox.setPromptText("No accounts in COA");
+                                }
+                                else
+                                {
+                                        AccountTransactionDetailsPanelFX.this.accountSelectorComboBox.setPromptText("Select Account");
+                                }
 				
 			}
 			
