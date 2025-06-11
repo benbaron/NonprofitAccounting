@@ -11,7 +11,7 @@ import nonprofitbookkeeping.ui.panels.skeletons.SkeletonDashboardPanel;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonJournalPanel;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonReportsPanel;
 import nonprofitbookkeeping.ui.panels.AccountTransactionDetailsPanelFX; // Added import
-import nonprofitbookkeeping.ui.CompanySelectionPanelFX;
+import nonprofitbookkeeping.ui.panels.CompanySelectionPanelFX;
 
 /**
  * Represents the main application view, structured as a {@link BorderPane}.

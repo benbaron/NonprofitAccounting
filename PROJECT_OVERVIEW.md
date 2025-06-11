@@ -39,6 +39,25 @@ A `TODO.md` file has been added to the root directory of the project. This file 
 
 ---
 
+### Outstanding UI Issues (Observed)
+
+The following user-facing problems have been noted in the current JavaFX UI implementation.  These items remain to be addressed in code:
+
+1. **Select Company Tab** – should display `CompanySelectionPanelFX` but currently loads a placeholder class resulting in a blank pane.
+2. **Dashboard Totals** – summary totals should reflect live ledger data; the existing labels do not refresh with current values.
+3. **Journal Transactions** – newly created transactions do not show debit and credit values because `AccountingTransaction` lacks working getters/setters.
+4. **Journal Filters** – filtering controls are not functional; the date filter should use a `DatePicker`.
+5. **Edit Transaction UI** – row highlighting makes selection difficult; focus should remain on the active field only.
+6. **Edit Transaction Layout** – the date chooser and memo should appear as columns within the entry table, not as separate controls.
+7. **Debit/Credit Selection** – the side of an entry should default from the account’s natural side rather than an explicit user choice.
+8. **Generate Report Action** – menu actions should invoke JasperReports generators but currently do nothing.
+9. **Account Details Filtering** – fails to display journal entries even with valid ranges and should default to all entries when no range is set.
+10. **Reconcile Panel** – selecting the menu option should open `ReconcilePanelFX` but presently does not.
+11. **Save Company Dialog** – needs explicit `OK`, `No`, and `Cancel` buttons.
+12. **Budget Editor Access** – opening the budget editor fails even when a company file is loaded.
+13. **Settings Panel** – all values are placeholders; real getters/setters must be implemented.
+
+
 ## Current Major Task & Objectives: Enhancing Reporting with JasperReports
 
 The primary focus is to **standardize and expand the application's reporting capabilities by fully adopting JasperReports and moving away from JXLS.**

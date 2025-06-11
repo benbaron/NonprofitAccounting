@@ -37,28 +37,44 @@ public class AccountingTransaction implements Serializable
 	 */
 	private static final long serialVersionUID = -8821254116304310L;
 	
-	/** The primary account associated with this transaction, if any. */
-	@JsonProperty private Account account;
-	/** The set of accounting entries that make up this transaction. Must not be null or empty. */
-	@JsonProperty private Set<AccountingEntry> entries;
-	/** Additional information or metadata about the transaction, stored as key-value pairs. */
-	@JsonProperty private Map<String, String> info;
-	/** The timestamp when the transaction was booked/recorded, in milliseconds since epoch. */
-	@JsonProperty private long bookingDateTimestamp;
-	/** The date of the transaction, typically in a string format like "YYYY-MM-DD". */
-	@JsonProperty private String date; // Non-final
-	/** A descriptive memo or note for the transaction. */
-	@JsonProperty private String memo; // Non-final
+        /** Unique identifier for the transaction. */
+        @JsonProperty private int id;
+        /** The primary account associated with this transaction, if any. */
+        @JsonProperty private Account account;
+        /** Optional explicit account name stored for convenience. */
+        @JsonProperty private String accountName;
+        /** The set of accounting entries that make up this transaction. Must not be null or empty. */
+        @JsonProperty private Set<AccountingEntry> entries;
+        /** Additional information or metadata about the transaction, stored as key-value pairs. */
+        @JsonProperty private Map<String, String> info;
+        /** The timestamp when the transaction was booked/recorded, in milliseconds since epoch. */
+        @JsonProperty private long bookingDateTimestamp;
+        /** The date of the transaction, typically in a string format like "YYYY-MM-DD". */
+        @JsonProperty private String date; // Non-final
+        /** A descriptive memo or note for the transaction. */
+        @JsonProperty private String memo; // Non-final
+        /** Convenience debit total for simple table views. */
+        @JsonProperty private BigDecimal debit = BigDecimal.ZERO;
+        /** Convenience credit total for simple table views. */
+        @JsonProperty private BigDecimal credit = BigDecimal.ZERO;
 	
 	/**
 	 * Default constructor.
 	 * Used by Lombok and Jackson for instantiation.
 	 * Initializes fields to default values (e.g., null for objects, 0 for primitives).
 	 */
-	public AccountingTransaction()
-	{
-
-	}
+        public AccountingTransaction()
+        {
+                this.account = null;
+                this.accountName = null;
+                this.entries = null;
+                this.info = null;
+                this.bookingDateTimestamp = 0L;
+                this.date = null;
+                this.memo = null;
+                this.debit = BigDecimal.ZERO;
+                this.credit = BigDecimal.ZERO;
+        }
 	
 	/**
 	 * Constructs an AccountingTransaction with specified details.
@@ -142,10 +158,13 @@ public class AccountingTransaction implements Serializable
 	 * Sets the primary account for this transaction.
 	 * @param account The account to set.
 	 */
-	public void setAccount(Account account)
-	{
-		this.account = account;
-	}
+        public void setAccount(Account account)
+        {
+                this.account = account;
+                if (account != null) {
+                        this.accountName = account.getName();
+                }
+        }
 
 	/**
 	 * Gets the set of accounting entries that make up this transaction.
@@ -307,10 +326,13 @@ public class AccountingTransaction implements Serializable
 	 * Gets the name of the primary account associated with this transaction.
 	 * @return The name of the account, or null if no account is associated or the account has no name.
 	 */
-	public String getAccountName()
-	{
-		return this.account != null ? this.account.getName() : null;
-	}
+        public String getAccountName()
+        {
+                if (this.accountName != null) {
+                        return this.accountName;
+                }
+                return this.account != null ? this.account.getName() : null;
+        }
 	
 	/**
 	 * Sets the description (memo) of the transaction.
@@ -379,81 +401,75 @@ public class AccountingTransaction implements Serializable
 	/**
 	 * @return
 	 */
-	public Object getId()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+        public Object getId()
+        {
+                return this.id;
+        }
 
 	/**
 	 * @param string
 	 */
-	public void setAccountName(String string)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+        public void setAccountName(String string)
+        {
+                this.accountName = string;
+        }
 
 	/**
 	 * @param accountingEntry
 	 */
-	public void addEntry(AccountingEntry accountingEntry)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+        public void addEntry(AccountingEntry accountingEntry)
+        {
+                if (this.entries == null) {
+                        this.entries = new LinkedHashSet<>();
+                }
+                this.entries.add(accountingEntry);
+        }
 
 	/**
 	 * @param i
 	 */
-	public void setId(int i)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+        public void setId(int i)
+        {
+                this.id = i;
+        }
 
 	/**
 	 * @param bigDecimal
 	 */
-	public void setCredit(BigDecimal bigDecimal)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+        public void setCredit(BigDecimal bigDecimal)
+        {
+                this.credit = bigDecimal;
+        }
 
 	/**
 	 * @param zero
 	 */
-	public void setDebit(BigDecimal zero)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+        public void setDebit(BigDecimal zero)
+        {
+                this.debit = zero;
+        }
 
 	/**
 	 * @param from
 	 */
-	public void setBookingDateTimestamp(Timestamp from)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+        public void setBookingDateTimestamp(Timestamp from)
+        {
+                this.bookingDateTimestamp = from != null ? from.getTime() : 0L;
+        }
 
 	/**
 	 * @return
 	 */
-	public BigDecimal getCredit()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+        public BigDecimal getCredit()
+        {
+                return this.credit;
+        }
 
 	/**
 	 * @return
 	 */
-	public BigDecimal getDebit()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+        public BigDecimal getDebit()
+        {
+                return this.debit;
+        }
 }
