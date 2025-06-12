@@ -11,7 +11,7 @@ import nonprofitbookkeeping.ui.panels.skeletons.SkeletonDashboardPanel;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonJournalPanel;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonReportsPanel;
 import nonprofitbookkeeping.ui.panels.AccountTransactionDetailsPanelFX; // Added import
-import nonprofitbookkeeping.ui.CompanySelectionPanelFX;
+import nonprofitbookkeeping.ui.panels.CompanySelectionPanelFX;
 
 /**
  * Represents the main application view, structured as a {@link BorderPane}.
@@ -87,7 +87,14 @@ public class MainApplicationView extends BorderPane {
         this.accountDetailsTab.setClosable(false);
 
         // Tab shown when no company is open
-        this.companySelectTab = new Tab("Select Company", new CompanySelectionPanelFX(c -> {}));
+        CompanySelectionPanelFX selectPanel = new CompanySelectionPanelFX();
+        selectPanel.setOnCompanyOpenedHandler(selectPanel.new OnCompanyOpenedHandler() {
+            @Override
+            public void onCompanyOpened(nonprofitbookkeeping.model.Company company) {
+                updateCompanyOpenState(true);
+            }
+        });
+        this.companySelectTab = new Tab("Select Company", selectPanel);
         this.companySelectTab.setClosable(false);
 
         // Add tabs to the tabPane

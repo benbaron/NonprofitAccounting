@@ -151,15 +151,16 @@ public class NewTransactionPanelFX extends BorderPane
 		/* 2. entry lines */
 		this.lines.clear();
 
-		// Add the lines from the existing entries.
-		for (AccountingEntry e : existing.getEntries())
-		{
-			Account stub = new Account();
-			stub.setName(e.getAccountNumber());
-			Line line = new Line(stub, e.getAccountSide(), e.getAmount());
-			this.lines.add(line);
-			watch(line);
-		}
+                // Add the lines from the existing entries.
+                for (AccountingEntry e : existing.getEntries())
+                {
+                        Account acc = this.coa.getAccount(e.getAccountNumber());
+                        Account stub = new Account();
+                        stub.setName(acc != null ? acc.getName() : e.getAccountNumber());
+                        Line line = new Line(stub, e.getAccountSide(), e.getAmount());
+                        this.lines.add(line);
+                        watch(line);
+                }
 
 	}
 
@@ -395,28 +396,50 @@ public class NewTransactionPanelFX extends BorderPane
 	 * The {@link #onSave} consumer (provided during panel construction) is then invoked with the
 	 * newly created {@code AccountingTransaction}.
 	 */
-	private void persist()
-	{
-		Set<AccountingEntry> entries = new LinkedHashSet<>();
-		
-		for (Line l : this.lines)
-		{
-			entries.add(new AccountingEntry(
-				l.amount.get(), l.account.get(), l.side.get()));
-		}
-		
-		// Save the timestamp as transaction id
-		AccountingTransaction tx = new AccountingTransaction(
-			new Account(),
-			entries,
-			Map.of(),
-			Instant.now().toEpochMilli());
-		
-		tx.setDate(this.datePicker.getValue().toString());
-		tx.setDescription(this.memoArea.getText());
-		
-		this.onSave.accept(tx);
-	}
+        private void persist()
+        {
+                Set<AccountingEntry> entries = new LinkedHashSet<>();
+                BigDecimal debitTotal = BigDecimal.ZERO;
+                BigDecimal creditTotal = BigDecimal.ZERO;
+
+                for (Line l : this.lines)
+                {
+                        String name = l.account.get();
+                        Account account = this.coa.getAccountByName(name);
+                        String acctNum = account != null ? account.getAccountNumber() : name;
+
+                        entries.add(new AccountingEntry(
+                                l.amount.get(), acctNum, l.side.get()));
+
+                        BigDecimal amt = l.amount.get() != null ? l.amount.get() : BigDecimal.ZERO;
+
+                        if (l.side.get() == AccountSide.DEBIT)
+                        {
+                                debitTotal = debitTotal.add(amt);
+                        }
+                        else
+                        {
+                                creditTotal = creditTotal.add(amt);
+                        }
+                }
+
+                // Save the timestamp as transaction id
+                AccountingTransaction tx = new AccountingTransaction(
+                        new Account(),
+                        entries,
+                        Map.of(),
+                        Instant.now().toEpochMilli());
+
+                tx.setDate(this.datePicker.getValue().toString());
+                tx.setDescription(this.memoArea.getText());
+                if (!this.lines.isEmpty()) {
+                        tx.setAccountName(this.lines.get(0).account.get());
+                }
+                tx.setDebit(debitTotal);
+                tx.setCredit(creditTotal);
+
+                this.onSave.accept(tx);
+        }
 	
 	/**
 	 * Attaches change listeners to the properties of a given transaction {@link Line}.

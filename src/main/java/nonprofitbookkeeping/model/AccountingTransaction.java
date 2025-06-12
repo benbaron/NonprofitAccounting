@@ -37,28 +37,44 @@ public class AccountingTransaction implements Serializable
 	 */
 	private static final long serialVersionUID = -8821254116304310L;
 	
-	/** The primary account associated with this transaction, if any. */
-	@JsonProperty private Account account;
-	/** The set of accounting entries that make up this transaction. Must not be null or empty. */
-	@JsonProperty private Set<AccountingEntry> entries;
-	/** Additional information or metadata about the transaction, stored as key-value pairs. */
-	@JsonProperty private Map<String, String> info;
-	/** The timestamp when the transaction was booked/recorded, in milliseconds since epoch. */
-	@JsonProperty private long bookingDateTimestamp;
-	/** The date of the transaction, typically in a string format like "YYYY-MM-DD". */
-	@JsonProperty private String date; // Non-final
-	/** A descriptive memo or note for the transaction. */
-	@JsonProperty private String memo; // Non-final
+        /** Unique identifier for the transaction. */
+        @JsonProperty private int id;
+        /** The primary account associated with this transaction, if any. */
+        @JsonProperty private Account account;
+        /** Optional explicit account name stored for convenience. */
+        @JsonProperty private String accountName;
+        /** The set of accounting entries that make up this transaction. Must not be null or empty. */
+        @JsonProperty private Set<AccountingEntry> entries;
+        /** Additional information or metadata about the transaction, stored as key-value pairs. */
+        @JsonProperty private Map<String, String> info;
+        /** The timestamp when the transaction was booked/recorded, in milliseconds since epoch. */
+        @JsonProperty private long bookingDateTimestamp;
+        /** The date of the transaction, typically in a string format like "YYYY-MM-DD". */
+        @JsonProperty private String date; // Non-final
+        /** A descriptive memo or note for the transaction. */
+        @JsonProperty private String memo; // Non-final
+        /** Convenience debit total for simple table views. */
+        @JsonProperty private BigDecimal debit = BigDecimal.ZERO;
+        /** Convenience credit total for simple table views. */
+        @JsonProperty private BigDecimal credit = BigDecimal.ZERO;
 	
 	/**
 	 * Default constructor.
 	 * Used by Lombok and Jackson for instantiation.
 	 * Initializes fields to default values (e.g., null for objects, 0 for primitives).
 	 */
-	public AccountingTransaction()
-	{
-
-	}
+        public AccountingTransaction()
+        {
+                this.account = null;
+                this.accountName = null;
+                this.entries = null;
+                this.info = null;
+                this.bookingDateTimestamp = 0L;
+                this.date = null;
+                this.memo = null;
+                this.debit = BigDecimal.ZERO;
+                this.credit = BigDecimal.ZERO;
+        }
 	
 	/**
 	 * Constructs an AccountingTransaction with specified details.
@@ -74,11 +90,11 @@ public class AccountingTransaction implements Serializable
 	 * @throws NullPointerException if account or entries are null.
 	 * @throws IllegalArgumentException if entries is empty, contains less than two entries, or if the transaction is not balanced.
 	 */
-	public AccountingTransaction(Account account,
-		Set<AccountingEntry> entries,
-		@Nullable Map<String, String> info,
-		long bookingDateTimestamp)
-	{
+        public AccountingTransaction(Account account,
+                Set<AccountingEntry> entries,
+                @Nullable Map<String, String> info,
+                long bookingDateTimestamp)
+        {
 		this.account = checkNotNull(account, "account cannot be null");
 		
 		// Ensure immutability for collections passed in
@@ -126,8 +142,20 @@ public class AccountingTransaction implements Serializable
 		// For now, to proceed with compilation, this line is commented out.
 		// It will likely need to be addressed for full functionality.
 
-		// this.entries.forEach(e -> e.setTransaction(this));
-	}
+                // this.entries.forEach(e -> e.setTransaction(this));
+
+                // Compute running debit/credit totals from provided entries so
+                // simple table views can immediately display the amounts.
+                this.debit = this.entries.stream()
+                        .filter(e -> e.getAccountSide() == AccountSide.DEBIT)
+                        .map(AccountingEntry::getAmount)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                this.credit = this.entries.stream()
+                        .filter(e -> e.getAccountSide() == AccountSide.CREDIT)
+                        .map(AccountingEntry::getAmount)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+        }
 	
 	/**
 	 * Gets the primary account associated with this transaction.
@@ -142,10 +170,13 @@ public class AccountingTransaction implements Serializable
 	 * Sets the primary account for this transaction.
 	 * @param account The account to set.
 	 */
-	public void setAccount(Account account)
-	{
-		this.account = account;
-	}
+        public void setAccount(Account account)
+        {
+                this.account = account;
+                if (account != null) {
+                        this.accountName = account.getName();
+                }
+        }
 
 	/**
 	 * Gets the set of accounting entries that make up this transaction.
@@ -307,10 +338,13 @@ public class AccountingTransaction implements Serializable
 	 * Gets the name of the primary account associated with this transaction.
 	 * @return The name of the account, or null if no account is associated or the account has no name.
 	 */
-	public String getAccountName()
-	{
-		return this.account != null ? this.account.getName() : null;
-	}
+        public String getAccountName()
+        {
+                if (this.accountName != null) {
+                        return this.accountName;
+                }
+                return this.account != null ? this.account.getName() : null;
+        }
 	
 	/**
 	 * Sets the description (memo) of the transaction.
@@ -379,81 +413,100 @@ public class AccountingTransaction implements Serializable
 	/**
 	 * @return
 	 */
-	public Object getId()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+        public Object getId()
+        {
+                return this.id;
+        }
 
 	/**
 	 * @param string
 	 */
-	public void setAccountName(String string)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+        public void setAccountName(String string)
+        {
+                this.accountName = string;
+        }
 
 	/**
 	 * @param accountingEntry
 	 */
-	public void addEntry(AccountingEntry accountingEntry)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+        public void addEntry(AccountingEntry accountingEntry)
+        {
+                if (this.entries == null) {
+                        this.entries = new LinkedHashSet<>();
+                }
+                this.entries.add(accountingEntry);
+        }
 
 	/**
 	 * @param i
 	 */
-	public void setId(int i)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+        public void setId(int i)
+        {
+                this.id = i;
+        }
 
 	/**
 	 * @param bigDecimal
 	 */
-	public void setCredit(BigDecimal bigDecimal)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+        public void setCredit(BigDecimal bigDecimal)
+        {
+                this.credit = bigDecimal;
+        }
 
 	/**
 	 * @param zero
 	 */
-	public void setDebit(BigDecimal zero)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+        public void setDebit(BigDecimal zero)
+        {
+                this.debit = zero;
+        }
 
 	/**
 	 * @param from
 	 */
-	public void setBookingDateTimestamp(Timestamp from)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+        public void setBookingDateTimestamp(Timestamp from)
+        {
+                this.bookingDateTimestamp = from != null ? from.getTime() : 0L;
+        }
 
-	/**
-	 * @return
-	 */
-	public BigDecimal getCredit()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+        /**
+         * Returns the total credit amount for this transaction. If explicit
+         * credit and debit fields were not populated (e.g. older transactions
+         * loaded from disk), the values are computed on demand from the
+         * underlying {@link #entries} collection.
+         *
+         * @return The total credit amount of the transaction.
+         */
+        public BigDecimal getCredit()
+        {
+                if ((this.credit == null || this.credit.signum() == 0)
+                        && this.entries != null && !this.entries.isEmpty())
+                {
+                        this.credit = this.entries.stream()
+                                .filter(e -> e.getAccountSide() == AccountSide.CREDIT)
+                                .map(AccountingEntry::getAmount)
+                                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                }
+                return this.credit == null ? BigDecimal.ZERO : this.credit;
+        }
 
-	/**
-	 * @return
-	 */
-	public BigDecimal getDebit()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+        /**
+         * Returns the total debit amount for this transaction. Like
+         * {@link #getCredit()}, this method falls back to computing the value
+         * from the transaction's entries if the stored field is empty.
+         *
+         * @return The total debit amount of the transaction.
+         */
+        public BigDecimal getDebit()
+        {
+                if ((this.debit == null || this.debit.signum() == 0)
+                        && this.entries != null && !this.entries.isEmpty())
+                {
+                        this.debit = this.entries.stream()
+                                .filter(e -> e.getAccountSide() == AccountSide.DEBIT)
+                                .map(AccountingEntry::getAmount)
+                                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                }
+                return this.debit == null ? BigDecimal.ZERO : this.debit;
+        }
 }

@@ -85,6 +85,15 @@ public class CompanySelectionPanelFX extends BorderPane
 		reloadCompanyList();
 	}
 
+	/**  
+	 * Constructor CompanySelectionPanelFX
+	 * @param object
+	 */
+	public CompanySelectionPanelFX(OnCompanyOpenedHandler companyOpenedHandler)
+	{
+		this.companyOpenedHandler = companyOpenedHandler;
+	}
+
 	/**
      * Constructs and arranges the primary UI elements of this panel.
      * This method sets up:

@@ -122,13 +122,38 @@ public class ChartOfAccounts implements Serializable
 	 *
 	 * @return An unmodifiable {@code Map<String, Account>}.
 	 */
-	public Map<String, Account> getAccountNumberToAccountDetails()
-	{
-		return this.chartOfAccounts.stream()
-			.collect(Collectors.toUnmodifiableMap(Account::getAccountNumber,
-				a -> a,
-				(a, b) -> a)); // keep first
-	}
+        public Map<String, Account> getAccountNumberToAccountDetails()
+        {
+                return this.chartOfAccounts.stream()
+                        .collect(Collectors.toUnmodifiableMap(Account::getAccountNumber,
+                                a -> a,
+                                (a, b) -> a)); // keep first
+        }
+
+        /**
+         * Retrieves an account by its display name.
+         * This is a convenience lookup used when UI components store the
+         * account name instead of the unique account number.
+         *
+         * @param accountName the name of the account
+         * @return the matching {@link Account} or {@code null} if none found
+         */
+        public Account getAccountByName(String accountName)
+        {
+                if (accountName == null || accountName.isBlank()) {
+                        return null;
+                }
+
+                for (Account acc : this.chartOfAccounts)
+                {
+                        if (accountName.equals(acc.getName()))
+                        {
+                                return acc;
+                        }
+                }
+
+                return null;
+        }
 
 	/**
 	 * Retrieves a specific {@link Account} from the chart by its account number.
