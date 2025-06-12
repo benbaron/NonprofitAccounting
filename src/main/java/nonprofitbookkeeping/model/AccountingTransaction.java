@@ -90,11 +90,11 @@ public class AccountingTransaction implements Serializable
 	 * @throws NullPointerException if account or entries are null.
 	 * @throws IllegalArgumentException if entries is empty, contains less than two entries, or if the transaction is not balanced.
 	 */
-	public AccountingTransaction(Account account,
-		Set<AccountingEntry> entries,
-		@Nullable Map<String, String> info,
-		long bookingDateTimestamp)
-	{
+        public AccountingTransaction(Account account,
+                Set<AccountingEntry> entries,
+                @Nullable Map<String, String> info,
+                long bookingDateTimestamp)
+        {
 		this.account = checkNotNull(account, "account cannot be null");
 		
 		// Ensure immutability for collections passed in
@@ -142,8 +142,20 @@ public class AccountingTransaction implements Serializable
 		// For now, to proceed with compilation, this line is commented out.
 		// It will likely need to be addressed for full functionality.
 
-		// this.entries.forEach(e -> e.setTransaction(this));
-	}
+                // this.entries.forEach(e -> e.setTransaction(this));
+
+                // Compute running debit/credit totals from provided entries so
+                // simple table views can immediately display the amounts.
+                this.debit = this.entries.stream()
+                        .filter(e -> e.getAccountSide() == AccountSide.DEBIT)
+                        .map(AccountingEntry::getAmount)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                this.credit = this.entries.stream()
+                        .filter(e -> e.getAccountSide() == AccountSide.CREDIT)
+                        .map(AccountingEntry::getAmount)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+        }
 	
 	/**
 	 * Gets the primary account associated with this transaction.
@@ -467,8 +479,10 @@ public class AccountingTransaction implements Serializable
          */
         public BigDecimal getCredit()
         {
-                if (this.entries != null && !this.entries.isEmpty()) {
-                        return this.entries.stream()
+                if ((this.credit == null || this.credit.signum() == 0)
+                        && this.entries != null && !this.entries.isEmpty())
+                {
+                        this.credit = this.entries.stream()
                                 .filter(e -> e.getAccountSide() == AccountSide.CREDIT)
                                 .map(AccountingEntry::getAmount)
                                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -485,8 +499,10 @@ public class AccountingTransaction implements Serializable
          */
         public BigDecimal getDebit()
         {
-                if (this.entries != null && !this.entries.isEmpty()) {
-                        return this.entries.stream()
+                if ((this.debit == null || this.debit.signum() == 0)
+                        && this.entries != null && !this.entries.isEmpty())
+                {
+                        this.debit = this.entries.stream()
                                 .filter(e -> e.getAccountSide() == AccountSide.DEBIT)
                                 .map(AccountingEntry::getAmount)
                                 .reduce(BigDecimal.ZERO, BigDecimal::add);
