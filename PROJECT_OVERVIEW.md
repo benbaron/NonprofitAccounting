@@ -43,9 +43,9 @@ A `TODO.md` file has been added to the root directory of the project. This file 
 
 The following user-facing problems have been noted in the current JavaFX UI implementation.  These items remain to be addressed in code:
 
-1. **Select Company Tab** – should display `CompanySelectionPanelFX` but currently loads a placeholder class resulting in a blank pane.
+1. **Select Company Tab** – once a company is chosen, the selection pane should close automatically.
 2. **Dashboard Totals** – summary totals should reflect live ledger data; the existing labels do not refresh with current values.
-3. **Journal Transactions** – newly created transactions now populate debit and credit totals when saved, allowing the journal table to display these values correctly.
+3. **Journal Transactions** – a created transaction doesn't show the Debit/Credit entries.
 4. **Journal Filters** – filtering controls are not functional; the date filter should use a `DatePicker`.
 5. **Edit Transaction UI** – row highlighting makes selection difficult; focus should remain on the active field only.
 6. **Edit Transaction Layout** – the date chooser and memo should appear as columns within the entry table, not as separate controls.
