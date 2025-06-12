@@ -45,7 +45,7 @@ The following user-facing problems have been noted in the current JavaFX UI impl
 
 1. **Select Company Tab** – should display `CompanySelectionPanelFX` but currently loads a placeholder class resulting in a blank pane.
 2. **Dashboard Totals** – summary totals should reflect live ledger data; the existing labels do not refresh with current values.
-3. **Journal Transactions** – newly created transactions do not show debit and credit values because `AccountingTransaction` lacks working getters/setters.
+3. **Journal Transactions** – newly created transactions now populate debit and credit totals when saved, allowing the journal table to display these values correctly.
 4. **Journal Filters** – filtering controls are not functional; the date filter should use a `DatePicker`.
 5. **Edit Transaction UI** – row highlighting makes selection difficult; focus should remain on the active field only.
 6. **Edit Transaction Layout** – the date chooser and memo should appear as columns within the entry table, not as separate controls.
