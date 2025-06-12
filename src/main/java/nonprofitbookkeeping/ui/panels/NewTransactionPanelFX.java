@@ -151,15 +151,16 @@ public class NewTransactionPanelFX extends BorderPane
 		/* 2. entry lines */
 		this.lines.clear();
 
-		// Add the lines from the existing entries.
-		for (AccountingEntry e : existing.getEntries())
-		{
-			Account stub = new Account();
-			stub.setName(e.getAccountNumber());
-			Line line = new Line(stub, e.getAccountSide(), e.getAmount());
-			this.lines.add(line);
-			watch(line);
-		}
+                // Add the lines from the existing entries.
+                for (AccountingEntry e : existing.getEntries())
+                {
+                        Account acc = this.coa.getAccount(e.getAccountNumber());
+                        Account stub = new Account();
+                        stub.setName(acc != null ? acc.getName() : e.getAccountNumber());
+                        Line line = new Line(stub, e.getAccountSide(), e.getAmount());
+                        this.lines.add(line);
+                        watch(line);
+                }
 
 	}
 
@@ -403,12 +404,21 @@ public class NewTransactionPanelFX extends BorderPane
 
                 for (Line l : this.lines)
                 {
+                        String name = l.account.get();
+                        Account account = this.coa.getAccountByName(name);
+                        String acctNum = account != null ? account.getAccountNumber() : name;
+
                         entries.add(new AccountingEntry(
-                                l.amount.get(), l.account.get(), l.side.get()));
+                                l.amount.get(), acctNum, l.side.get()));
+
                         BigDecimal amt = l.amount.get() != null ? l.amount.get() : BigDecimal.ZERO;
-                        if (l.side.get() == AccountSide.DEBIT) {
+
+                        if (l.side.get() == AccountSide.DEBIT)
+                        {
                                 debitTotal = debitTotal.add(amt);
-                        } else {
+                        }
+                        else
+                        {
                                 creditTotal = creditTotal.add(amt);
                         }
                 }
