@@ -21,17 +21,11 @@ import nonprofitbookkeeping.model.CompanySummary;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.Ledger;
-import nonprofitbookkeeping.model.Account;
-import nonprofitbookkeeping.model.AccountType;
-import nonprofitbookkeeping.model.ChartOfAccounts;
-import nonprofitbookkeeping.model.AccountingEntry;
-import nonprofitbookkeeping.model.AccountSide;
+
 
 import java.util.List;
 import java.util.ArrayList;
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 
 /**
@@ -189,181 +183,36 @@ public class SkeletonDashboardPanel extends BorderPane
                 Company company = CurrentCompany.getCompany();
                 this.companyNameLabel.setText(company.getCompanyProfile().getCompanyName());
 
-                BigDecimal totalAssets = BigDecimal.ZERO;
-                BigDecimal totalLiabilities = BigDecimal.ZERO;
-                BigDecimal totalEquity = BigDecimal.ZERO; // Represents sum of equity type accounts, not
-                                                                               // necessarily total book equity
-                BigDecimal totalIncome = BigDecimal.ZERO;
-                BigDecimal totalExpenses = BigDecimal.ZERO;
                 List<AccountingTransaction> transactions = null;
-		
-		
-		if (company != null && company.getLedger() != null)
-		{
-			Ledger ledger = company.getLedger();
-			transactions = ledger.getTransactions(); // Get all transactions for balance calculation
-			ChartOfAccounts coa = company.getChartOfAccounts();
-			
-			if (coa != null && coa.getAccounts() != null)
-			{
-				Map<String, BigDecimal> accountBalances = new HashMap<>();
-				
-				for (Account acc : coa.getAccounts())
-				{
-					accountBalances.put(acc.getAccountNumber(), acc.getOpeningBalance() != null ?
-						acc.getOpeningBalance() : BigDecimal.ZERO);
-				}
-				
-				if (transactions != null)
-				{
-					
-					for (AccountingTransaction tx : transactions)
-					{
-						
-						if (tx.getEntries() != null)
-						{
-							
-							for (AccountingEntry entry : tx.getEntries())
-							{
-								Account entryAccount = entry.getAccount(); // This should be the
-																			// specific account from
-																			// COA
-								
-								if (entryAccount != null &&
-									entryAccount.getAccountNumber() != null &&
-									entry.getAmount() != null)
-								{
-									BigDecimal currentBalance = accountBalances.getOrDefault(
-										entryAccount.getAccountNumber(), BigDecimal.ZERO);
-									BigDecimal entryAmount = entry.getAmount();
-									// AccountType type = entryAccount.getAccountType(); // From COA
-									// linked account
-									
-									// Use the type from the account object fetched from COA for
-									// consistency
-									Account coaAccountInstance =
-										coa.getAccount(entryAccount.getAccountNumber());
-									AccountType type = (coaAccountInstance != null) ?
-										coaAccountInstance.getAccountType() : null;
-									
-									
-									if (type != null)
-									{
-										
-										if (entry.getAccountSide() == AccountSide.DEBIT)
-										{
-											
-											if (type == AccountType.ASSET ||
-												type == AccountType.EXPENSE)
-											{
-												currentBalance = currentBalance.add(entryAmount);
-											}
-											else
-											{
-												currentBalance =
-													currentBalance.subtract(entryAmount);
-											}
-											
-										}
-										else
-										{ // CREDIT entry
-											
-											if (type == AccountType.ASSET ||
-												type == AccountType.EXPENSE)
-											{
-												currentBalance =
-													currentBalance.subtract(entryAmount);
-											}
-											else
-											{
-												currentBalance = currentBalance.add(entryAmount);
-											}
-											
-										}
-										
-									}
-									
-									accountBalances.put(entryAccount.getAccountNumber(),
-										currentBalance);
-								}
-								
-							}
-							
-						}
-						
-					}
-					
-				}
-				
-				for (Account acc : coa.getAccounts())
-				{
-					BigDecimal liveBalance = accountBalances.getOrDefault(acc.getAccountNumber(),
-						acc.getOpeningBalance() != null ? acc.getOpeningBalance() :
-							BigDecimal.ZERO);
-					AccountType type = acc.getAccountType();
-					
-					if (type != null)
-					{
-						
-						switch(type)
-						{
-							case ASSET:
-								totalAssets = totalAssets.add(liveBalance);
-								break;
-								
-							case LIABILITY:
-								totalLiabilities = totalLiabilities.add(liveBalance);
-								break;
-								
-							case EQUITY: // This sums up accounts of type EQUITY (e.g., Retained
-											// Earnings, Common Stock)
-								totalEquity = totalEquity.add(liveBalance);
-								break;
-								
-							case INCOME:
-								totalIncome = totalIncome.add(liveBalance); // Income increases this
-																			// balance (typically
-																			// credits)
-								break;
-								
-							case EXPENSE:
-								totalExpenses = totalExpenses.add(liveBalance); // Expenses increase
-																				// this balance
-																				// (typically
-																				// debits)
-								break;
-						}
-						
-					}
-					
-				}
-				
-			}
-			
-			// Populate recent transactions list for UI (after all balance calculations)
-			if (transactions != null && !transactions.isEmpty())
-			{
-				int limit = Math.min(transactions.size(), 10);
-				List<AccountingTransaction> recent = new ArrayList<>();
-				
-				for (int i = transactions.size() - 1; i >= transactions.size() - limit; i--)
-				{
-					recent.add(transactions.get(i));
-				}
-				
-				this.transactionDataList.addAll(recent);
-			}
-			
-		}
-		
-		BigDecimal ytdIncome = totalIncome.subtract(totalExpenses); // Income is positive, Expenses
-																	// are positive contributions to
-																	// their types
-		
-		this.totalAssetsValueLabel.setText("$" + totalAssets.toPlainString());
-		this.totalLiabilitiesValueLabel.setText("$" + totalLiabilities.toPlainString());
-		this.equityValueLabel.setText("$" + totalEquity.toPlainString());
-		this.ytdIncomeValueLabel.setText("YTD Net Income: $" + ytdIncome.toPlainString());
+
+                if (company != null && company.getLedger() != null)
+                {
+                        Ledger ledger = company.getLedger();
+                        transactions = ledger.getTransactions();
+
+                        if (transactions != null && !transactions.isEmpty())
+                        {
+                                int limit = Math.min(transactions.size(), 10);
+                                List<AccountingTransaction> recent = new ArrayList<>();
+
+                                for (int i = transactions.size() - 1; i >= transactions.size() - limit; i--)
+                                {
+                                        recent.add(transactions.get(i));
+                                }
+
+                                this.transactionDataList.addAll(recent);
+                        }
+                }
+
+                BigDecimal totalAssets = new BigDecimal(CompanySummary.getTotalAssets());
+                BigDecimal totalLiabilities = new BigDecimal(CompanySummary.getTotalLiabilities());
+                BigDecimal totalEquity = new BigDecimal(CompanySummary.getTotalEquity());
+                BigDecimal ytdIncome = new BigDecimal(CompanySummary.getYtdIncomeValue());
+
+                this.totalAssetsValueLabel.setText("$" + totalAssets.toPlainString());
+                this.totalLiabilitiesValueLabel.setText("$" + totalLiabilities.toPlainString());
+                this.equityValueLabel.setText("$" + totalEquity.toPlainString());
+                this.ytdIncomeValueLabel.setText("YTD Net Income: $" + ytdIncome.toPlainString());
 		
 		
 		if (this.transactionDataList.isEmpty())
