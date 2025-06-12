@@ -87,7 +87,10 @@ public class MainApplicationView extends BorderPane {
         this.accountDetailsTab.setClosable(false);
 
         // Tab shown when no company is open
-        this.companySelectTab = new Tab("Select Company", new CompanySelectionPanelFX());
+        CompanySelectionPanelFX selectPanel = new CompanySelectionPanelFX((CompanySelectionPanelFX.OnCompanyOpenedHandler)(company)-> {
+            updateCompanyOpenState(true);
+        });
+        this.companySelectTab = new Tab("Select Company", selectPanel);
         this.companySelectTab.setClosable(false);
 
         // Add tabs to the tabPane

@@ -457,19 +457,40 @@ public class AccountingTransaction implements Serializable
                 this.bookingDateTimestamp = from != null ? from.getTime() : 0L;
         }
 
-	/**
-	 * @return
-	 */
+        /**
+         * Returns the total credit amount for this transaction. If explicit
+         * credit and debit fields were not populated (e.g. older transactions
+         * loaded from disk), the values are computed on demand from the
+         * underlying {@link #entries} collection.
+         *
+         * @return The total credit amount of the transaction.
+         */
         public BigDecimal getCredit()
         {
-                return this.credit;
+                if (this.entries != null && !this.entries.isEmpty()) {
+                        return this.entries.stream()
+                                .filter(e -> e.getAccountSide() == AccountSide.CREDIT)
+                                .map(AccountingEntry::getAmount)
+                                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                }
+                return this.credit == null ? BigDecimal.ZERO : this.credit;
         }
 
-	/**
-	 * @return
-	 */
+        /**
+         * Returns the total debit amount for this transaction. Like
+         * {@link #getCredit()}, this method falls back to computing the value
+         * from the transaction's entries if the stored field is empty.
+         *
+         * @return The total debit amount of the transaction.
+         */
         public BigDecimal getDebit()
         {
-                return this.debit;
+                if (this.entries != null && !this.entries.isEmpty()) {
+                        return this.entries.stream()
+                                .filter(e -> e.getAccountSide() == AccountSide.DEBIT)
+                                .map(AccountingEntry::getAmount)
+                                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                }
+                return this.debit == null ? BigDecimal.ZERO : this.debit;
         }
 }
