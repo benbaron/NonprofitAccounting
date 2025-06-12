@@ -43,7 +43,7 @@ A `TODO.md` file has been added to the root directory of the project. This file 
 
 The following user-facing problems have been noted in the current JavaFX UI implementation.  These items remain to be addressed in code:
 
-1. **Select Company Tab** – once a company is chosen, the selection pane should close automatically.
+1. **Select Company Tab** – now loads the full selection panel; it should close automatically once a company is chosen.
 2. **Dashboard Totals** – summary totals should reflect live ledger data; the existing labels do not refresh with current values.
 3. **Journal Transactions** – a created transaction doesn't show the Debit/Credit entries.
 4. **Journal Filters** – filtering controls are not functional; the date filter should use a `DatePicker`.
