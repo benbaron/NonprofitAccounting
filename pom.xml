@@ -14,34 +14,15 @@
 	</properties>
 
 	<build>
-	  <plugins>
-	    <plugin>
-	      <groupId>org.apache.maven.plugins</groupId>
-	      <artifactId>maven-toolchains-plugin</artifactId>
-	      <version>3.2.0</version>
-	
-	      <!-- makes the compiler pick the JDK 17 toolchain -->
-	      <executions>
-	        <execution>
-	          <goals><goal>toolchain</goal></goals>
-	        </execution>
-	      </executions>
-	
-	      <configuration>
-	        <toolchains>
-	          <jdk>
-	            <version>17</version>
-	            <vendor>*</vendor>
-	          </jdk>
-	        </toolchains>
-	      </configuration>
-	    </plugin>
-	
-	    <!-- compiler still needs the release flag -->
-	    <plugin>
-	      <groupId>org.apache.maven.plugins</groupId>
-	      <artifactId>maven-compiler-plugin</artifactId>
-	      <version>3.11.0</version>
+          <plugins>
+            <!-- Use the default JDK available in the environment. The
+                 toolchains plugin requires downloading additional
+                 artifacts which fails in this offline environment. -->
+            <!-- compiler still needs the release flag -->
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <version>3.11.0</version>
 	      <configuration>
 	        <release>17</release>
 	        <fork>true</fork>
@@ -58,11 +39,6 @@
 	            --add-opens jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
 	        </argLine>
 	      </configuration>
-	    </plugin>
-	    <plugin>
-	        <groupId>org.apache.maven.plugins</groupId>
-	        <artifactId>maven-surefire-plugin</artifactId>
-	        <version>3.2.5</version>
 	    </plugin>
 	  </plugins>
 	</build>
