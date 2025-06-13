@@ -103,7 +103,6 @@ public class CreateOrEditCompanyPanelFX extends BorderPane
 		updateStep();
 	}
 	
-	/* --------------------------------------------------------------------- */
 	
 	/**
 	 * Creates the UI panels for each step of the wizard.

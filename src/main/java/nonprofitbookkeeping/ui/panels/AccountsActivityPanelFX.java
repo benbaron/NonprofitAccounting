@@ -3,11 +3,9 @@ package nonprofitbookkeeping.ui.panels;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects; // Added import
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-// import java.util.Arrays; // No longer strictly needed with
-// FXCollections.emptyObservableList
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -16,13 +14,12 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import nonprofitbookkeeping.model.Account; // Added import
+import nonprofitbookkeeping.model.Account; 
 import nonprofitbookkeeping.model.AccountingTransaction;
-import nonprofitbookkeeping.model.ChartOfAccounts; // Added import
+import nonprofitbookkeeping.model.ChartOfAccounts; 
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Ledger;
-// Required for CompanyChangeListener
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 
 /**
@@ -50,20 +47,19 @@ public class AccountsActivityPanelFX extends BorderPane
 	/** ObservableList that backs the {@code table}, holding {@link TransactionRow} objects. */
 	private final ObservableList<TransactionRow> backingList = FXCollections.observableArrayList();
 	
-	private List<AccountingTransaction> transactions; // Made non-final to allow potential re-init,
-														// though not done in this step
+	private List<AccountingTransaction> transactions; 
+	// Made non-final to allow potential re-init,
+	// though not done in this step
 	
 	/** Stores the parsed BigDecimal value from the amount filter field ({@link #filterAmountField}).
 	 *  It is updated by {@link #applyFilters()} and used in the filtering predicate.
 	 *  Will be {@code null} if the amount filter field is empty or contains an invalid number format. */
-	private BigDecimal amountFilter = null; // Renamed from the local variable in applyFilters to be
-											// a field
+	private BigDecimal amountFilter = null; 
+	// Renamed from the local variable in applyFilters to be
+	// a field
 	
 	private AccountsActivityPanelCompanyListener companyListener;
-	// Fields for UI control groups might not be strictly necessary if we disable
-	// individual components
-	// private HBox accountSelectorBox;
-	// private HBox filterControlsBox;
+
 	private HBox bottomButtonBar;
 	
 	
@@ -103,7 +99,6 @@ public class AccountsActivityPanelFX extends BorderPane
 		this.companyListener = new AccountsActivityPanelCompanyListener(this);
 		CurrentCompany.CompanyListener.addCompanyListener(this.companyListener);
 		
-		// applyFilters(); // Old call, replaced by handleCompanyChange
 		handleCompanyChange(CurrentCompany.isOpen());
 	}
 	
@@ -122,8 +117,7 @@ public class AccountsActivityPanelFX extends BorderPane
 		box.setPadding(new Insets(5));
 		box.setStyle(
 			"-fx-border-color: lightgray; -fx-border-radius: 4; -fx-border-insets: 4; -fx-border-style: segments(4)");
-		// Account selector population moved to populateAccountSelector() and called by
-		// handleCompanyChange
+
 		this.accountSelector.setOnAction(e -> applyFilters());
 		box.getChildren().addAll(new Label("Account:"), this.accountSelector);
 		return box;
@@ -195,7 +189,8 @@ public class AccountsActivityPanelFX extends BorderPane
 		box.setPadding(new Insets(10));
 		Button reconcile = new Button("Reconcile");
 		reconcile.setOnAction(
-			e -> new Alert(Alert.AlertType.INFORMATION, "Reconciliation process would start here.")
+			e -> new Alert(Alert.AlertType.INFORMATION, 
+				"Reconciliation process would start here.")
 				.showAndWait());
 		Button importBtn = new Button("Import Statement (CSV/QIF/OFX)");
 		importBtn.setOnAction(
@@ -217,8 +212,7 @@ public class AccountsActivityPanelFX extends BorderPane
 	 * if not strictly matching bean property naming conventions, but lambdas avoid this.
 	 * Here, lambdas are used for cell value factories, which is type-safe.
 	 */
-	@SuppressWarnings(
-	{ "unchecked" }) // Review if still necessary with lambda cell factories
+	@SuppressWarnings({ "unchecked" }) // Review if still necessary with lambda cell factories
 	private void configureTable()
 	{
 		TableColumn<TransactionRow, String> dateCol = new TableColumn<>("Date");
@@ -235,11 +229,11 @@ public class AccountsActivityPanelFX extends BorderPane
 		
 		TableColumn<TransactionRow, String> memoCol = new TableColumn<>("Memo");
 		memoCol.setCellValueFactory(d -> d.getValue().memoProperty());
+
+		// Use setAll to replace existing columns
+		this.table.getColumns().
+			setAll(dateCol, descCol, amtCol, balCol, memoCol);
 		
-		this.table.getColumns().setAll(dateCol, descCol, amtCol, balCol, memoCol); // Use setAll to
-																					// replace
-																					// existing
-																					// columns
 		this.table.setItems(this.backingList);
 		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 	}
@@ -254,8 +248,7 @@ public class AccountsActivityPanelFX extends BorderPane
 	 * Each transaction is converted to a {@link TransactionRow} for display.
 	 */
 	private void applyFilters()
-	{
-		
+	{		
 		// Guard: Only apply filters if a company is open, otherwise table should be
 		// empty.
 		if (!CurrentCompany.isOpen())
@@ -286,31 +279,7 @@ public class AccountsActivityPanelFX extends BorderPane
 		}
 		
 		Predicate<AccountingTransaction> predicate = t -> {
-			if (t == null)
-				return false;
-			if (acct == null)
-				return false;
-			
-			String accountName = t.getAccountName();
-			if (!Objects.equals(accountName, acct))
-				return false;
-			String transactionDate = t.getDate();
-			if (!dateFilterStr.isEmpty() &&
-				(transactionDate == null || !transactionDate.contains(dateFilterStr)))
-				return false;
-			String transactionMemo = t.getMemo();
-			if (!memoFilterStr.isEmpty() &&
-				(transactionMemo == null || !transactionMemo.toLowerCase().contains(memoFilterStr)))
-				return false;
-				
-			if (this.amountFilter != null)
-			{
-				BigDecimal totalAmount = t.getTotalAmount();
-				if (totalAmount == null || totalAmount.compareTo(this.amountFilter) != 0)
-					return false;
-			}
-			
-			return true;
+			return accountingTransactionPred(acct, dateFilterStr, memoFilterStr, t);
 		};
 		
 		this.backingList.clear();
@@ -324,11 +293,62 @@ public class AccountsActivityPanelFX extends BorderPane
 					.filter(predicate)
 					.collect(Collectors.toList());
 			this.backingList
-				.setAll(filtered.stream().map(TransactionRow::new).collect(Collectors.toList()));
+				.setAll(filtered.stream().map(TransactionRow::new)
+					.collect(Collectors.toList()));
 		}
 		
 	}
+
+	/**
+	 * accountingTransactionPred
+	 * 
+	 * @param acct
+	 * @param dateFilterStr
+	 * @param memoFilterStr
+	 * @param t
+	 * 
+	 * @return
+	 */
+	boolean accountingTransactionPred
+	(
+	 	String acct, 
+	 	String dateFilterStr, 
+	 	String memoFilterStr,
+	 	AccountingTransaction t)
+	{
+		
+		if (t == null)
+			return false;
+		if (acct == null)
+			return false;
+		
+		String accountName = t.getAccountName();
+		if (!Objects.equals(accountName, acct))
+			return false;
+		String transactionDate = t.getDate();
+		if (!dateFilterStr.isEmpty() &&
+			(transactionDate == null || !transactionDate.contains(dateFilterStr)))
+			return false;
+		String transactionMemo = t.getMemo();
+		if (!memoFilterStr.isEmpty() &&
+			(transactionMemo == null || !transactionMemo.toLowerCase().contains(memoFilterStr)))
+			return false;
+			
+		if (this.amountFilter != null)
+		{
+			BigDecimal totalAmount = t.getTotalAmount();
+			if (totalAmount == null || totalAmount.compareTo(this.amountFilter) != 0)
+				return false;
+		}
+		
+		return true;
+		
+	}
 	
+	/**
+	 * Handle Company Change
+	 * @param isOpen
+	 */
 	private void handleCompanyChange(boolean isOpen)
 	{
 		this.accountSelector.setDisable(!isOpen);
@@ -350,8 +370,8 @@ public class AccountsActivityPanelFX extends BorderPane
 		{
 			populateAccountSelector();
 			// If the ledger (and thus this.transactions) itself should change with the
-			// company,
-			// this.transactions would need to be updated here from
+			// company, this.transactions would need to be updated here from
+			
 			// CurrentCompany.getCompany().getLedger().
 			// For now, it uses the ledger provided at construction.
 			// If CurrentCompany's ledger is the one to use, then:
@@ -361,8 +381,9 @@ public class AccountsActivityPanelFX extends BorderPane
 			// } else {
 			// this.transactions = FXCollections.emptyObservableList();
 			// }
-			applyFilters(); // This will refresh the table with potentially new accounts list and
-							// existing transactions
+			applyFilters(); 
+			// This will refresh the table with potentially new accounts list and
+			// existing transactions
 		}
 		else
 		{
@@ -376,6 +397,9 @@ public class AccountsActivityPanelFX extends BorderPane
 		
 	}
 	
+	/**
+	 * AccountsActivityPanelCompanyListener
+	 */
 	private class AccountsActivityPanelCompanyListener implements CompanyChangeListener
 	{
 		private AccountsActivityPanelFX panel;

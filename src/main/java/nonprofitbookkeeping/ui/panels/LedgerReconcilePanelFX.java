@@ -517,7 +517,6 @@ public class LedgerReconcilePanelFX extends BorderPane
 		
 	}
 	
-	/* ------------------ simple matching example ---------------- */
 	/**
 	 * Provides a simple merging strategy for ledger and bank transactions.
 	 * This example class contains a static method to combine two lists of transactions

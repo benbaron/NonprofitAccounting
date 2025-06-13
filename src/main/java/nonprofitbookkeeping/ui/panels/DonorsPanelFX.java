@@ -41,7 +41,6 @@ public class DonorsPanelFX extends BorderPane
 		this.donors.add(new Donor("Bob", "bob@example.com", "555‑5678"));
 	}
 	
-	/* ------------------------------------------------------------------ */
 	/**
 	 * Builds and configures the {@link TableView} ({@link #table}) for displaying donor records.
 	 * It defines columns for ID, Name, Email, and Phone, using {@link PropertyValueFactory}
@@ -130,7 +129,9 @@ public class DonorsPanelFX extends BorderPane
 			new Label("Email:"), emailF,
 			new Label("Phone:"), phoneF));
 		dlg.setResultConverter(
-			btn -> btn == okType ? new Donor(existing == null ? null : existing.id, nameF.getText(),
+			btn -> btn == okType ? new Donor(existing == null ? 
+				null : 
+					existing.id, nameF.getText(),
 				emailF.getText(), phoneF.getText()) : null);
 		dlg.showAndWait().ifPresent(d -> {
 			
@@ -147,7 +148,6 @@ public class DonorsPanelFX extends BorderPane
 		});
 	}
 	
-	/* ------------------------------------------------------------------ */
 	/**
 	 * Represents a single donor record.
 	 * This class holds information about a donor, including their ID, name, email, and phone number.

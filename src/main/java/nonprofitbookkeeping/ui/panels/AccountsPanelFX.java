@@ -33,26 +33,27 @@ public class AccountsPanelFX extends BorderPane
 	private HBox actionButtonsBox; // To store the controls
 	
 	public AccountsPanelFX(AccountService service)
-	{ // service param is kept for signature compatibility
+	{
+		// service param is kept for signature compatibility
 		setPadding(new Insets(10));
 		buildTable();
-		setCenter(new TitledPane("Chart of Accounts", this.table)
-		{
+		setCenter(
+			new TitledPane("Chart of Accounts", this.table)
 			{
-				setCollapsible(false);
-			}
-			
-		});
+				{
+					setCollapsible(false);
+				}
+				
+			});
 		
 		// buildControls() now assigns to this.actionButtonsBox
-		// setBottom(buildControls()); // Old way
+		
 		this.actionButtonsBox = buildControls(); // New: call and store
 		setBottom(this.actionButtonsBox); // New: set stored HBox
 		
 		this.companyListener = new AccountsPanelCompanyListener(this);
 		CurrentCompany.CompanyListener.addCompanyListener(this.companyListener);
 		
-		// refresh(); // Old call, replaced by handleCompanyChange for initial state
 		handleCompanyChange(CurrentCompany.isOpen());
 	}
 	
@@ -65,28 +66,25 @@ public class AccountsPanelFX extends BorderPane
 	 * don't strictly follow Java bean conventions (though "opening" for "openingBalance" is common).
 	 */
 	@SuppressWarnings(
-	{ "unchecked", "deprecation" }) // PropertyValueFactory can lead to these if not careful with
-									// property names
+	{ "unchecked", "deprecation" })
+	
 	private void buildTable()
 	{
 		TableColumn<AccountRow, String> codeCol = col("Account Code", "code");
 		TableColumn<AccountRow, String> nameCol = col("Account Name", "name");
-		TableColumn<AccountRow, String> typeCol = col("Type", "type"); // Will use
-																		// AccountType.toString()
-		TableColumn<AccountRow, String> parentCol = col("Parent Account", "parent"); // Will use
-																						// Account.toString()
-																						// or name
+		TableColumn<AccountRow, String> typeCol = col("Type", "type");
+		TableColumn<AccountRow, String> parentCol = col("Parent Account", "parent");
 		TableColumn<AccountRow, String> curCol = col("Currency", "currency");
 		TableColumn<AccountRow, BigDecimal> balCol = new TableColumn<>("Opening Balance");
-		balCol.setCellValueFactory(new PropertyValueFactory<>("opening")); // Assumes AccountRow has
-																			// getOpening()
 		
-		this.table.getColumns().addAll(codeCol, nameCol,
-			typeCol, parentCol,
-			curCol, balCol);
+		balCol.setCellValueFactory(new PropertyValueFactory<>("opening"));
+		
+		this.table.getColumns()
+			.addAll(codeCol, nameCol,
+				typeCol, parentCol,
+				curCol, balCol);
 		this.table.setItems(this.rows);
-		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY); // Ensures columns
-																				// fit width
+		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 	}
 	
 	/**
@@ -117,49 +115,56 @@ public class AccountsPanelFX extends BorderPane
 	 * @return An {@link HBox} with configured control buttons.
 	 */
 	private HBox buildControls()
-	{ // Signature remains HBox as it's convenient for initialization
+	{
 		HBox box = new HBox(10);
 		box.setPadding(new Insets(8));
 		Button add = new Button("Add Account");
 		Button edit = new Button("Edit Account");
 		Button delete = new Button("Delete Account");
 		
-		add.setOnAction(e -> {
-			// Consider if AccountService needs to be involved in adding/validating new
-			// accounts
-			// For now, matches existing behavior of adding directly to rows.
-			// This action should ideally be disabled if no company is open.
-			this.rows.add(new AccountRow());
-		});
-		edit.setOnAction(e -> {
-			
-			if (this.table.getSelectionModel().isEmpty())
-			{
-				alert("Please select an account to edit.");
-			}
-			else
-			{
-				this.table.edit(this.table.getSelectionModel().getSelectedIndex(),
-					this.table.getColumns().get(0));
-			}
-			
-		});
-		delete.setOnAction(e -> {
-			int idx = this.table.getSelectionModel().getSelectedIndex();
-			
-			if (idx >= 0)
-			{
-				// Consider if AccountService needs to be notified of deletion
-				this.rows.remove(idx);
-			}
-			else
-			{
-				alert("Please select an account to delete.");
-			}
-			
-		});
+		add.setOnAction(e -> this.rows.add(new AccountRow()));
+		edit.setOnAction(e -> onEditAction());
+		delete.setOnAction(e -> onDeleteAction());
+		
 		box.getChildren().addAll(add, edit, delete);
 		return box;
+	}
+	
+	/**
+	 * onDeleteAction
+	 */
+	void onDeleteAction()
+	{
+		int idx = this.table.getSelectionModel().getSelectedIndex();
+		
+		if (idx >= 0)
+		{
+			// Consider if AccountService needs to be notified of deletion
+			this.rows.remove(idx);
+		}
+		else
+		{
+			alert("Please select an account to delete.");
+		}
+		
+	}
+	
+	/**
+	 * onEditAction
+	 */
+	void onEditAction()
+	{
+		
+		if (this.table.getSelectionModel().isEmpty())
+		{
+			alert("Please select an account to edit.");
+		}
+		else
+		{
+			this.table.edit(this.table.getSelectionModel().getSelectedIndex(),
+				this.table.getColumns().get(0));
+		}
+		
 	}
 	
 	/**
@@ -194,24 +199,21 @@ public class AccountsPanelFX extends BorderPane
 	
 	// New method to handle company state changes
 	private void handleCompanyChange(boolean isOpen)
-	{
-		
+	{	
 		if (isOpen)
 		{
 			refresh(); // Load data
 			
 			if (this.actionButtonsBox != null)
 			{
-				this.actionButtonsBox.getChildren().forEach(node -> {
-					
+				this.actionButtonsBox.getChildren().forEach(node -> 
+				{
 					if (node instanceof Button)
 					{
 						((Button) node).setDisable(false);
-					}
-					
+					}					
 				});
-			}
-			
+			}			
 		}
 		else
 		{
@@ -219,8 +221,8 @@ public class AccountsPanelFX extends BorderPane
 			
 			if (this.actionButtonsBox != null)
 			{
-				this.actionButtonsBox.getChildren().forEach(node -> {
-					
+				this.actionButtonsBox.getChildren().forEach(node -> 
+				{					
 					if (node instanceof Button)
 					{
 						((Button) node).setDisable(true);
@@ -233,7 +235,10 @@ public class AccountsPanelFX extends BorderPane
 		
 	}
 	
-	// New inner class for CompanyChangeListener
+
+	/**
+	 * AccountsPanelCompanyListener
+	 */
 	private class AccountsPanelCompanyListener implements CurrentCompany.CompanyChangeListener
 	{
 		private AccountsPanelFX panel;
@@ -251,7 +256,7 @@ public class AccountsPanelFX extends BorderPane
 	}
 	
 	
-/////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////
 	/* This class acts as a data bean for JavaFX's {@link PropertyValueFactory} to
 	 * populate table cells. It typically wraps an {@link Account} object or holds
 	 * data for a new/editable account row. */
@@ -279,13 +284,16 @@ public class AccountsPanelFX extends BorderPane
 		 * Default constructor for creating an empty {@code AccountRow},
 		 * typically used when adding a new account via the UI.
 		 * Initializes fields to default values.
-		 */
-		
-		
+		 */		
 		public AccountRow()
 		{
 		}
 		
+		/**
+		 * 
+		 * Constructor AccountRow
+		 * @param a
+		 */
 		public AccountRow(Account a)
 		{
 			Objects.requireNonNull(a, "Account cannot be null for AccountRow construction.");

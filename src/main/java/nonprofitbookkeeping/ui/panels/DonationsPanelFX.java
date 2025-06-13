@@ -13,6 +13,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import nonprofitbookkeeping.ui.panels.DonationsPanelFX.Donation;
 
 /**
  * JavaFX replacement for the Swing {@code DonationsPanel}. Keeps an in‑memory
@@ -43,7 +44,9 @@ public class DonationsPanelFX extends BorderPane
 		setBottom(buildButtons());
 		
 		// demo row
-		this.donations.add(new Donation(LocalDate.now(), "Alice", "General", new BigDecimal("150.00"),
+		this.donations.add(new Donation(LocalDate.now(), 
+			"Alice", "General", 
+			new BigDecimal("150.00"),
 			"Online gift"));
 	}
 	
@@ -125,30 +128,49 @@ public class DonationsPanelFX extends BorderPane
 		grid.addRow(4, new Label("Memo:"), memoField);
 		dlg.getDialogPane().setContent(grid);
 		
-		dlg.setResultConverter(btn -> {
-			
-			if (btn == ButtonType.OK)
-			{
-				
-				try
-				{
-					BigDecimal amt = new BigDecimal(amtField.getText().trim());
-					return new Donation(datePicker.getValue(), donorField.getText(),
-						fundField.getText(), amt, memoField.getText());
-				}
-				catch (@SuppressWarnings("unused") NumberFormatException ex)
-				{
-					new Alert(Alert.AlertType.ERROR, "Amount must be numeric").showAndWait();
-				}
-				
-			}
-			
-			return null;
+		dlg.setResultConverter(btn -> {	
+			return resultConverterCallback(datePicker, donorField, 
+				fundField, amtField, memoField,
+				btn);
 		});
 		dlg.showAndWait().ifPresent(this.donations::add);
 	}
+
+	/**
+	 * resultConverterCallback
+	 * @param datePicker
+	 * @param donorField
+	 * @param fundField
+	 * @param amtField
+	 * @param memoField
+	 * @param btn
+	 * @return
+	 */
+	static Donation resultConverterCallback(DatePicker datePicker, TextField donorField,
+	                                        TextField fundField, TextField amtField,
+	                                        TextField memoField, ButtonType btn)
+	{
+		
+		if (btn == ButtonType.OK)
+		{
+			
+			try
+			{
+				BigDecimal amt = new BigDecimal(amtField.getText().trim());
+				return new Donation(datePicker.getValue(), donorField.getText(),
+					fundField.getText(), amt, memoField.getText());
+			}
+			catch (@SuppressWarnings("unused") NumberFormatException ex)
+			{
+				new Alert(Alert.AlertType.ERROR, "Amount must be numeric").showAndWait();
+			}
+			
+		}
+		
+		return null;
+		
+	}
 	
-	/* ------------------------------------------------------------------ */
 	/**
 	 * Represents a single donation record.
 	 * This class holds details about a donation such as its date, donor, fund,

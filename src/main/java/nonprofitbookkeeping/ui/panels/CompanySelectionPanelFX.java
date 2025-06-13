@@ -36,41 +36,42 @@ public class CompanySelectionPanelFX extends BorderPane
 {
 	
 	/**
-     * Inner class intended to handle callbacks when a company is opened.
-     * Note: This is currently a simple class with a stub method and is not a
-     * functional interface. For robust callback mechanisms in JavaFX,
-     * consider using a standard {@link javafx.event.EventHandler} or a custom
-     * {@code @FunctionalInterface}.
-     * @see nonprofitbookkeeping.ui.CompanySelectionPanelFX.OnCompanyOpenedHandler for an example of a functional interface.
-     */
+	 * Inner class intended to handle callbacks when a company is opened.
+	 * Note: This is currently a simple class with a stub method and is not a
+	 * functional interface. For robust callback mechanisms in JavaFX,
+	 * consider using a standard {@link javafx.event.EventHandler} or a custom
+	 * {@code @FunctionalInterface}.
+	 * @see nonprofitbookkeeping.ui.CompanySelectionPanelFX.OnCompanyOpenedHandler for an example of a functional interface.
+	 */
 	public class OnCompanyOpenedHandler
 	{
-
+		
 		/**
-         * Intended to be called when a company's data has been successfully loaded or processed.
-         * Note: This is a stub implementation and currently does nothing.
-         *
-         * @param company The {@link Company} object that was opened or processed.
-         */
+		 * Intended to be called when a company's data has been successfully loaded or processed.
+		 * Note: This is a stub implementation and currently does nothing.
+		 *
+		 * @param company The {@link Company} object that was opened or processed.
+		 */
 		public void onCompanyOpened(Company company)
 		{
-
-			// TODO Auto-generated method stub: Implement callback logic to notify the application
-            // that a company has been opened or processed. This might involve updating the main UI,
-            // enabling/disabling features, etc.
+			// TODO Auto-generated method stub: Implement callback logic to notify the
+			// application
+			// that a company has been opened or processed. This might involve updating the
+			// main UI,
+			// enabling/disabling features, etc.
 		}
 		
 	}
-
+	
 	/** ListView component to display the list of discoverable ".npbk" company files. */
 	private final ListView<File> companyList = new ListView<>();
 	/** ObservableList that backs the {@code companyList}, holding the {@link File} objects. */
 	private final ObservableList<File> npbkFiles = FXCollections.observableArrayList();
 	/** TextArea used to display a preview or details of the company file selected in the {@code companyList}. */
 	private final TextArea previewArea = new TextArea();
-
-    /** Handler for when a company is successfully opened. */
-    private OnCompanyOpenedHandler companyOpenedHandler;
+	
+	/** Handler for when a company is successfully opened. */
+	private OnCompanyOpenedHandler companyOpenedHandler;
 	
 	/**
 	 * Default constructor for {@code CompanySelectionPanelFX}.
@@ -84,7 +85,7 @@ public class CompanySelectionPanelFX extends BorderPane
 		buildUI();
 		reloadCompanyList();
 	}
-
+	
 	/**  
 	 * Constructor CompanySelectionPanelFX
 	 * @param object
@@ -93,19 +94,19 @@ public class CompanySelectionPanelFX extends BorderPane
 	{
 		this.companyOpenedHandler = companyOpenedHandler;
 	}
-
+	
 	/**
-     * Constructs and arranges the primary UI elements of this panel.
-     * This method sets up:
-     * <ul>
-     *   <li>A {@link ListView} ({@code companyList}) on the left to display company files.</li>
-     *   <li>A {@link TextArea} ({@code previewArea}) on the right for showing details of the selected file.</li>
-     *   <li>A {@link SplitPane} to manage the layout of the list and preview area.</li>
-     *   <li>"Open Selected" and "Create New Company..." buttons at the bottom.</li>
-     * </ul>
-     * It also configures cell factories for the list view and adds a listener to update the
-     * preview area when the list selection changes.
-     */
+	 * Constructs and arranges the primary UI elements of this panel.
+	 * This method sets up:
+	 * <ul>
+	 *   <li>A {@link ListView} ({@code companyList}) on the left to display company files.</li>
+	 *   <li>A {@link TextArea} ({@code previewArea}) on the right for showing details of the selected file.</li>
+	 *   <li>A {@link SplitPane} to manage the layout of the list and preview area.</li>
+	 *   <li>"Open Selected" and "Create New Company..." buttons at the bottom.</li>
+	 * </ul>
+	 * It also configures cell factories for the list view and adds a listener to update the
+	 * preview area when the list selection changes.
+	 */
 	private void buildUI()
 	{
 		/* LEFT list */
@@ -151,13 +152,13 @@ public class CompanySelectionPanelFX extends BorderPane
 	}
 	
 	/**
-     * Reloads the list of company files displayed in the {@code companyList}.
-     * It first clears the existing items, then determines the default company directory
-     * using {@link PreferencesService#getDefaultCompanyDir()}. If this directory doesn't exist,
-     * it attempts to create it. Finally, it populates the list with ".npbk" files found
-     * in that directory via {@link CompanyLoaderService#findCompanyFiles(File)}.
-     * If any files are found, the first one in the list is automatically selected.
-     */
+	 * Reloads the list of company files displayed in the {@code companyList}.
+	 * It first clears the existing items, then determines the default company directory
+	 * using {@link PreferencesService#getDefaultCompanyDir()}. If this directory doesn't exist,
+	 * it attempts to create it. Finally, it populates the list with ".npbk" files found
+	 * in that directory via {@link CompanyLoaderService#findCompanyFiles(File)}.
+	 * If any files are found, the first one in the list is automatically selected.
+	 */
 	private void reloadCompanyList()
 	{
 		this.npbkFiles.clear();
@@ -209,19 +210,29 @@ public class CompanySelectionPanelFX extends BorderPane
 			// without altering CurrentCompany state until "Open Selected" is clicked.
 			CurrentCompany.loadFromPersistent(f); // This can throw various exceptions.
 			CurrentCompany.open(); // Sets the company as globally open.
-			// The previewArea is not explicitly updated here with company details from CurrentCompany.
+			// The previewArea is not explicitly updated here with company details from
+			// CurrentCompany.
 			// It might be intended to show details from CurrentCompany after it's loaded.
 			// For example:
-			if (CurrentCompany.getCompany() != null && CurrentCompany.getCompany().getCompanyProfileModel() != null) {
-			    this.previewArea.setText("Company: " + CurrentCompany.getCompany().getCompanyProfileModel().getCompanyName() +
-			                             "\nFile: " + f.getName());
-			} else {
-			    this.previewArea.setText("Preview for: " + f.getName() + "\n(Could not load full details for preview)");
+			
+			if (CurrentCompany.getCompany() != null &&
+				CurrentCompany.getCompany().getCompanyProfileModel() != null)
+			{
+				this.previewArea.setText("Company: " +
+					CurrentCompany.getCompany().getCompanyProfileModel().getCompanyName() +
+					"\nFile: " + f.getName());
 			}
+			else
+			{
+				this.previewArea.setText(
+					"Preview for: " + f.getName() + "\n(Could not load full details for preview)");
+			}
+			
 		}
 		catch (IOException | ActionCancelledException | NoFileCreatedException e)
 		{
-			this.previewArea.setText("Could not load preview for: " + f.getName() + "\nError: " + e.getMessage());
+			this.previewArea.setText(
+				"Could not load preview for: " + f.getName() + "\nError: " + e.getMessage());
 			AlertBox.showError(null, "File Load Failed: " + e.getMessage());
 		}
 		
@@ -244,37 +255,51 @@ public class CompanySelectionPanelFX extends BorderPane
 		
 		if (sel == null)
 		{
-			// AlertBox.showWarning(getScene()?.getWindow(), "No Company Selected", "Please select a company file from the list to open.");
+			AlertBox.showWarning(getScene().getWindow(),
+				"No Company Selected");
 			return;
 		}
 		
-		// Assuming showPreview already loaded it into CurrentCompany and set it as open.
+		// Assuming showPreview already loaded it into CurrentCompany and set it as
+		// open.
 		// If not, the loading logic would be here.
-		Alert alert = new Alert(Alert.AlertType.INFORMATION, "Opening company: " + sel.getName() +
-		                        "\n(Note: Company might have already been loaded for preview).");
-		alert.initOwner(this.getScene() != null ? this.getScene().getWindow() : null); // Set owner if scene is available
+		Alert alert = new Alert(Alert.AlertType.INFORMATION,
+			"Opening company: " + sel.getName() +
+				"\n(Note: Company might have already been loaded for preview).");
+		alert.initOwner(this.getScene() != null ? this.getScene().getWindow() : null);
 		alert.showAndWait();
-
-        if (this.companyOpenedHandler != null && CurrentCompany.getCompany() != null) {
-            this.companyOpenedHandler.onCompanyOpened(CurrentCompany.getCompany());
-        } else {
-            if (this.companyOpenedHandler == null) {
-                System.err.println("CompanySelectionPanelFX: companyOpenedHandler is null. Cannot notify.");
-            }
-            if (CurrentCompany.getCompany() == null) {
-                 System.err.println("CompanySelectionPanelFX: CurrentCompany.getCompany() is null. Cannot notify with company data.");
-            }
-        }
+		
+		if (this.companyOpenedHandler != null && CurrentCompany.getCompany() != null)
+		{
+			this.companyOpenedHandler.onCompanyOpened(CurrentCompany.getCompany());
+		}
+		else
+		{			
+			if (this.companyOpenedHandler == null)
+			{
+				System.err.println(
+					"CompanySelectionPanelFX: companyOpenedHandler is null. Cannot notify.");
+			}
+			
+			if (CurrentCompany.getCompany() == null)
+			{
+				System.err.println(
+					"CompanySelectionPanelFX: CurrentCompany.getCompany() is null. Cannot notify with company data.");
+			}
+			
+		}
+		
 	}
 	
-    /**
-     * Sets the handler to be called when a company is opened.
-     * @param handler The handler to set.
-     */
-    public void setOnCompanyOpenedHandler(OnCompanyOpenedHandler handler) {
-        this.companyOpenedHandler = handler;
-    }
-
+	/**
+	 * Sets the handler to be called when a company is opened.
+	 * @param handler The handler to set.
+	 */
+	public void setOnCompanyOpenedHandler(OnCompanyOpenedHandler handler)
+	{
+		this.companyOpenedHandler = handler;
+	}
+	
 	/**
 	 * Initiates the process of creating a new company.
 	 * This method opens a new {@link Stage} containing a {@link CreateOrEditCompanyPanelFX}

@@ -6,7 +6,6 @@ import java.util.function.Consumer;
 
 import javafx.collections.*;
 import javafx.geometry.Insets;
-// import javafx.scene.Node; // Not strictly needed after toolBar() refactor
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;

@@ -1,3 +1,4 @@
+
 package nonprofitbookkeeping.ui.panels;
 
 import javafx.geometry.Insets;
@@ -74,7 +75,8 @@ public class SettingsPanelFX extends BorderPane
 	 * 
 	 * @return A {@link Tab} configured with user management settings.
 	 */
-	@SuppressWarnings({ "unchecked", "deprecation" }) private static Tab usersTab()
+	@SuppressWarnings(
+	{ "unchecked", "deprecation" }) private static Tab usersTab()
 	{
 		TableView<UserRow> table = new TableView<>();
 		TableColumn<UserRow, String> userCol = new TableColumn<>("Username");
@@ -184,8 +186,7 @@ public class SettingsPanelFX extends BorderPane
 	 * @param cols The number of columns intended for the grid (currently unused, fixed at 2).
 	 * @return A configured {@link GridPane} instance.
 	 */
-	@SuppressWarnings("unused") 
-	private static GridPane grid(int rows, int cols)
+	@SuppressWarnings("unused") private static GridPane grid(int rows, int cols)
 	{
 		GridPane g = new GridPane();
 		g.setHgap(10);

@@ -20,13 +20,11 @@ import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+// Added for listener
 import nonprofitbookkeeping.model.*;
 import nonprofitbookkeeping.service.ChartOfAccountsIOService;
 import nonprofitbookkeeping.service.ChartOfAccountsService;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
-// Added for listener
-import nonprofitbookkeeping.model.CurrentCompany;
-import javafx.scene.Node; // For iterating over children of HBox if needed
 
 /**
  * Interactive ladder view for editing a company's Chart of Accounts.
@@ -63,8 +61,8 @@ public class CoaEditorPanelFX extends BorderPane
 	/** The root item for the {@link #tree}; it is hidden in the UI. */
 	private final TreeItem<Account> rootItem = new TreeItem<>();
 	
-        /** Service for importing and exporting Chart of Accounts data to/from XLSX. */
-        private final ChartOfAccountsIOService ioSvc = new ChartOfAccountsIOService();
+	/** Service for importing and exporting Chart of Accounts data to/from XLSX. */
+	private final ChartOfAccountsIOService ioSvc = new ChartOfAccountsIOService();
 	
 	// Dialog fields - these are instance members because they are accessed by the
 	// dialog's result converter lambda.
@@ -118,22 +116,16 @@ public class CoaEditorPanelFX extends BorderPane
 		buildTree();
 		
 		setCenter(this.tree);
-		// this.actionButtonsBox = buildButtons(); // Assign here
-		// setBottom(this.actionButtonsBox); // Set here
-		// Replaced by:
-		this.actionButtonsBox = buildButtonsInternal(); // Renamed to avoid conflict if
-														// buildButtons() is public API
-		setBottom(this.actionButtonsBox);
 		
+		this.actionButtonsBox = buildButtonsInternal();
+		setBottom(this.actionButtonsBox);
 		
 		this.companyListener = new CoaEditorPanelCompanyListener(this);
 		CurrentCompany.CompanyListener.addCompanyListener(this.companyListener);
 		
-		// refresh(); // Old call, replaced by handleCompanyChange
 		handleCompanyChange(CurrentCompany.isOpen());
 	}
 	
-	/* ------------------------------------------------------------------ */
 	
 	/**
 	 * Initializes and configures the {@link TreeTableView} component ({@link #tree}).
@@ -144,86 +136,92 @@ public class CoaEditorPanelFX extends BorderPane
 	@SuppressWarnings("unchecked") // For varargs in getColumns().addAll()
 	private void buildTree()
 	{
-		this.tree.setShowRoot(false); // The actual root item is a dummy, its children are the
-										// top-level accounts
+		this.tree.setShowRoot(false);
+		// The actual root item is a dummy, its children are the
+		// top-level accounts
 		this.tree.setRoot(this.rootItem);
 		
 		this.tree.getColumns().addAll(
 			makeCol("Number", Account::getAccountNumber),
 			makeCol("Name", Account::getName),
-			makeCol("Type", a -> (a.getAccountType() != null) ? a.getAccountType().toString() : ""), // Handle
-																										// null
-																										// AccountType
+			makeCol("Type", a -> (a.getAccountType() != null) ?
+				a.getAccountType().toString() : ""),
 			makeCol("Opening Balance", Account::getOpeningBalance));
 		
-		this.tree.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN); // Nice
-																									// default
-																									// resize
-																									// policy
+		this.tree.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 	}
 	
 	/**
 	 * Creates and configures an {@link HBox} containing action buttons for managing the chart of accounts.
-         * Buttons include: Add Root, Add Sub, Edit, Delete, Import XLSX, Export XLSX, Save, and Cancel.
+	 * Buttons include: Add Root, Add Sub, Edit, Delete, Import XLSX, Export XLSX, Save, and Cancel.
 	 * Event handlers are set for each button to trigger corresponding actions.
 	 *
 	 * @return An {@link HBox} populated with control buttons.
 	 */
-	// Renamed to buildButtonsInternal to avoid potential signature clashes if a
-	// subclass
-	// or external code expects buildButtons() to be part of a public/protected API.
-	// If it's purely private helper, original name is fine. Assuming it's a helper.
 	private HBox buildButtonsInternal()
-	{ // Original name: buildButtons
+	{
 		Button addRoot = new Button("Add Root");
-		Button addSub = new Button("Add Sub-account"); // Clarified label
+		Button addSub = new Button("Add Sub-account"); 
 		Button edit = new Button("Edit");
 		Button del = new Button("Delete");
-		Button saveBtn = new Button("Save");
-		
-                Button importBtn = new Button("Import XLSX…");
-                Button exportBtn = new Button("Export XLSX…");
+		Button saveBtn = new Button("Save");		
+		Button importBtn = new Button("Import XLSX");
+		Button exportBtn = new Button("Export XLSX");
 		Button cancel = new Button("Cancel");
 		
 		// button actions
 		addRoot.setOnAction(e -> showDialog(null, null));
-		addSub.setOnAction(e -> {
-			Account parent = selected();
-			
-			if (parent != null)
-			{
-				showDialog(parent, null);
-			}
-			
-		});
-		edit.setOnAction(e -> {
-			Account sel = selected();
-			
-			if (sel != null)
-			{
-				showDialog(sel.getParentAccount(), sel);
-			}
-			
-		});
+		addSub.setOnAction(e -> onSubAccountAction());
+		edit.setOnAction(e -> onEditAction());
 		del.setOnAction(e -> deleteSelected());
-                importBtn.setOnAction(e -> importXlsx());
-                exportBtn.setOnAction(e -> exportXlsx());
-		saveBtn.setOnAction(e -> {
-			
-			if (this.onSave != null)
-			{
-				// On save, do this.
-				this.onSave.accept(this.svc.asChart());
-			}
-			
-			closePanel();
-		});
+		importBtn.setOnAction(e -> importXlsx());
+		exportBtn.setOnAction(e -> exportXlsx());
+		saveBtn.setOnAction(e -> saveButtonAction());
 		cancel.setOnAction(e -> closePanel());
 		
-		//
-		HBox hbox = new HBox(8, addRoot, addSub, edit, del, importBtn, exportBtn, saveBtn, cancel);
+		HBox hbox = new HBox(8, addRoot, addSub, edit, del, 
+			importBtn, exportBtn, saveBtn, cancel);
 		hbox.setPadding(new Insets(6));
 		return hbox;
+	}
+
+	/**
+	 * onSubAccountAction
+	 */
+	void onSubAccountAction()
+	{
+		Account parent = selected();
+		
+		if (parent != null)
+		{
+			showDialog(parent, null);
+		}
+	}
+
+	/**
+	 * onEditAction
+	 */
+	void onEditAction()
+	{
+		Account sel = selected();
+		
+		if (sel != null)
+		{
+			showDialog(sel.getParentAccount(), sel);
+		}
+	}
+
+	/**
+	 * saveButtonAction
+	 */
+	void saveButtonAction()
+	{		
+		if (this.onSave != null)
+		{
+			// On save, do this.
+			this.onSave.accept(this.svc.asChart());
+		}		
+		closePanel();		
 	}
 	
 	/**
@@ -254,9 +252,9 @@ public class CoaEditorPanelFX extends BorderPane
 		// Check if company is open before showing dialog that modifies COA
 		if (!CurrentCompany.isOpen())
 		{
-			AlertBox
-				.showError(null, "No Company Open",
-					"Cannot perform this action as no company is currently open.");
+			AlertBox.showError(null, 
+				"No Company Open",
+				"Cannot perform this action as no company is currently open.");
 			return;
 		}
 		
@@ -267,18 +265,16 @@ public class CoaEditorPanelFX extends BorderPane
 		dlg.setTitle(
 			isEdit ?
 				"Edit Account" :
-				(parent == null ? "Add Root Account" : "Add Sub-account to " + parent.getName())); // More
-																									// context
-																									// for
-																									// sub-account
+					(parent == null ? 
+						"Add Root Account" : "Add Sub-account to " + parent.getName())); 
 		dlg.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 		
 		// Initialize dialog fields
-		this.numF = new TextField(
-			isEdit && editing.getAccountNumber() != null ? editing.getAccountNumber() : "");
+		this.numF = new TextField(isEdit && editing.getAccountNumber() != null ? editing.getAccountNumber() : "");
 		this.nameF = new TextField(isEdit && editing.getName() != null ? editing.getName() : "");
 		this.typeBox = new ComboBox<>(FXCollections.observableArrayList(AccountType.values()));
-		AccountType initialType = isEdit && editing.getAccountType() != null ?
+		AccountType initialType = isEdit && 
+			editing.getAccountType() != null ?
 			editing.getAccountType() : AccountType.ASSET;
 		this.typeBox.getSelectionModel().select(initialType);
 		this.balF = new TextField(isEdit && editing.getOpeningBalance() != null ?
@@ -291,61 +287,81 @@ public class CoaEditorPanelFX extends BorderPane
 		gp.addRow(1, new Label("Name"), this.nameF);
 		gp.addRow(2, new Label("Type"), this.typeBox); // combo instead of text
 		gp.addRow(3, new Label("Opening Balance"), this.balF);
-		dlg.getDialogPane().setContent(gp);
-		dlg.setResultConverter(btn -> {
-			if (btn != ButtonType.OK)
-				return null;
-			
-			/* 1) validate account number */
-			String number = this.numF.getText().trim();
-			
-			if (!number.matches("\\d+"))
-			{
-				AlertBox.showError(null, "Account number must be a positive integer.");
-				return null;
-			}
-			
-			boolean duplicate = this.svc.findByNumber(number)
-				.filter(acc -> !acc.equals(editing)) // ignore self when editing
-				.isPresent();
-			
-			if (duplicate)
-			{
-				AlertBox.showError(null, "Account number already exists.");
-				return null;
-			}
-			
-			/* 2) build Account */
-			return buildAccount(number); // pass number in
-		});
 		
-		// --------------
-		dlg.showAndWait().ifPresent(det -> {
+		dlg.getDialogPane().setContent(gp);
+		dlg.setResultConverter(btn -> { return resultConverterCallback(editing, btn); });
+		dlg.showAndWait().ifPresent(det -> showAndWaitCallback(parent, editing, isEdit, det));
+	}
+
+	/**
+	 * showAndWaitCallback
+	 * @param parent
+	 * @param editing
+	 * @param isEdit
+	 * @param det
+	 */
+	void showAndWaitCallback(Account parent, Account editing, boolean isEdit, Account det)
+	{
+		
+		if (isEdit)
+		{
+			ChartOfAccountsService.update(editing,
+				det.getName(),
+				det.getAccountType(),
+				det.getOpeningBalance());
+			this.tree.refresh();
+		}
+		else
+		{
 			
-			if (isEdit)
+			if (parent == null)
 			{
-				ChartOfAccountsService.update(editing,
-					det.getName(),
-					det.getAccountType(),
-					det.getOpeningBalance());
-				this.tree.refresh();
+				this.svc.addRoot(det);
 			}
 			else
 			{
-				
-				if (parent == null)
-				{
-					this.svc.addRoot(det);
-				}
-				else
-				{
-					this.svc.addChild(parent, det);
-				}
-				
-				insertIntoTree(det, parent);
+				this.svc.addChild(parent, det);
 			}
 			
-		});
+			insertIntoTree(det, parent);
+		}
+		
+	}
+
+	/**
+	 * resultConverterCallback
+	 * @param editing
+	 * @param btn
+	 * @return
+	 */
+	Account resultConverterCallback(Account editing, ButtonType btn)
+	{
+		
+		if (btn != ButtonType.OK)
+			return null;
+		
+		/* 1) validate account number */
+		String number = this.numF.getText().trim();
+		
+		if (!number.matches("\\d+"))
+		{
+			AlertBox.showError(null, "Account number must be a positive integer.");
+			return null;
+		}
+		
+		boolean duplicate = this.svc.findByNumber(number)
+			.filter(acc -> !acc.equals(editing)) // ignore self when editing
+			.isPresent();
+		
+		if (duplicate)
+		{
+			AlertBox.showError(null, "Account number already exists.");
+			return null;
+		}
+		
+		/* 2) build Account */
+		return buildAccount(number); // pass number in
+		
 	}
 	
 	/**
@@ -377,8 +393,7 @@ public class CoaEditorPanelFX extends BorderPane
 		TreeItem<Account> selectedTreeItem = this.tree.getSelectionModel().getSelectedItem();
 		
 		if (selectedTreeItem != null)
-		{
-			
+		{		
 			// Remove from tree:
 			// If it's a root item's child:
 			if (selectedTreeItem.getParent() == this.rootItem)
@@ -396,17 +411,16 @@ public class CoaEditorPanelFX extends BorderPane
 		
 	}
 	
-        /**
-         * Initiates the process of importing a Chart of Accounts from an XLSX file.
-         * Displays a {@link FileChooser} for selecting the XLSX file. If a file is selected,
-         * it uses {@link ChartOfAccountsIOService#importFromXlsx(java.nio.file.Path)} to read the data,
-         * then {@link ChartOfAccountsService#replaceChart(ChartOfAccounts)} to update the current chart,
-         * and finally refreshes the tree view.
-         * Errors during import are displayed in an alert dialog.
-         */
-        private void importXlsx()
-        {
-		
+	/**
+	 * Initiates the process of importing a Chart of Accounts from an XLSX file.
+	 * Displays a {@link FileChooser} for selecting the XLSX file. If a file is selected,
+	 * it uses {@link ChartOfAccountsIOService#importFromXlsx(java.nio.file.Path)} to read the data,
+	 * then {@link ChartOfAccountsService#replaceChart(ChartOfAccounts)} to update the current chart,
+	 * and finally refreshes the tree view.
+	 * Errors during import are displayed in an alert dialog.
+	 */
+	private void importXlsx()
+	{
 		if (!CurrentCompany.isOpen())
 		{ // Check added
 			AlertBox.showError(null, "No Company Open",
@@ -416,13 +430,11 @@ public class CoaEditorPanelFX extends BorderPane
 		
 		// ... rest of the method
 		FileChooser fc = new FileChooser();
-                fc.setTitle("Import Chart of Accounts from XLSX");
-                fc.getExtensionFilters()
-                        .add(new FileChooser.ExtensionFilter("Excel files (*.xlsx)", "*.xlsx"));
-		File f = fc.showOpenDialog(getScene() != null ? getScene().getWindow() : null); // Set owner
-																						// if
-																						// possible
-		
+		fc.setTitle("Import Chart of Accounts from XLSX");
+		fc.getExtensionFilters()
+			.add(new FileChooser.ExtensionFilter("Excel files (*.xlsx)", "*.xlsx"));
+		File f = fc.showOpenDialog(getScene() != null ? getScene().getWindow() : null); 
+			
 		if (f == null)
 		{
 			return; // User cancelled
@@ -430,10 +442,11 @@ public class CoaEditorPanelFX extends BorderPane
 		
 		try
 		{
-                        ChartOfAccounts imported = this.ioSvc.importFromXlsx(f.toPath());
+			ChartOfAccounts imported = this.ioSvc.importFromXlsx(f.toPath());
 			this.svc.replaceChart(imported); // Replace current COA with imported one
 			refresh(); // Refresh the tree view
-			AlertBox.showInfo(null, "Chart of Accounts imported successfully from " + f.getName());
+			AlertBox.showInfo(null, "Chart of Accounts imported successfully from " + 
+				f.getName());
 		}
 		catch (IOException | NullPointerException ex) // Catch more specific exceptions
 		{
@@ -443,15 +456,15 @@ public class CoaEditorPanelFX extends BorderPane
 		
 	}
 	
-        /**
-         * Initiates the process of exporting the current Chart of Accounts to an XLSX file.
-         * Displays a {@link FileChooser} (save dialog) for selecting the destination file.
-         * If a file path is chosen, it uses {@link ChartOfAccountsIOService#exportToXlsx(ChartOfAccounts, java.nio.file.Path)}
-         * to save the data.
-         * Success or error messages are displayed in alert dialogs.
-         */
-        private void exportXlsx()
-        {
+	/**
+	 * Initiates the process of exporting the current Chart of Accounts to an XLSX file.
+	 * Displays a {@link FileChooser} (save dialog) for selecting the destination file.
+	 * If a file path is chosen, it uses {@link ChartOfAccountsIOService#exportToXlsx(ChartOfAccounts, java.nio.file.Path)}
+	 * to save the data.
+	 * Success or error messages are displayed in alert dialogs.
+	 */
+	private void exportXlsx()
+	{
 		
 		if (!CurrentCompany.isOpen() || this.svc.asChart().getAccounts().isEmpty())
 		{ // Check added & ensure chart has content
@@ -462,10 +475,10 @@ public class CoaEditorPanelFX extends BorderPane
 		
 		// ... rest of the method
 		FileChooser fc = new FileChooser();
-                fc.setTitle("Export Chart of Accounts to XLSX");
-                fc.setInitialFileName("chart-of-accounts.xlsx");
-                fc.getExtensionFilters()
-                        .add(new FileChooser.ExtensionFilter("Excel files (*.xlsx)", "*.xlsx"));
+		fc.setTitle("Export Chart of Accounts to XLSX");
+		fc.setInitialFileName("chart-of-accounts.xlsx");
+		fc.getExtensionFilters()
+			.add(new FileChooser.ExtensionFilter("Excel files (*.xlsx)", "*.xlsx"));
 		File f = fc.showSaveDialog(getScene() != null ? getScene().getWindow() : null); // Set owner
 		
 		if (f == null)
@@ -475,7 +488,7 @@ public class CoaEditorPanelFX extends BorderPane
 		
 		try
 		{
-                        this.ioSvc.exportToXlsx(this.svc.asChart(), f.toPath());
+			this.ioSvc.exportToXlsx(this.svc.asChart(), f.toPath());
 			AlertBox.showInfo(null,
 				"Chart of Accounts exported successfully to " + f.getAbsolutePath());
 		}
@@ -493,12 +506,12 @@ public class CoaEditorPanelFX extends BorderPane
 	 * that stage is closed.
 	 */
 	private void closePanel()
-	{
-		
+	{		
 		if (this.onClose != null)
 		{
-			this.onClose.run(); // Execute the provided callback (e.g., caller restores previous
-								// view)
+			this.onClose.run(); // Execute the provided callback 
+			// (e.g., caller restores previous
+			// view)
 		}
 		else
 		{
@@ -523,12 +536,6 @@ public class CoaEditorPanelFX extends BorderPane
 	 */
 	private void refresh()
 	{
-		// This method populates the tree based on this.svc.
-		// If handleCompanyChange(false) was called, this.svc might be stale if it's
-		// tied to an old company.
-		// However, CoaEditorPanelFX is initialized with a specific chart.
-		// If isOpen is true, we assume the chart it was initialized with is the one to
-		// show.
 		this.rootItem.getChildren().clear();
 		
 		if (CurrentCompany.isOpen())
@@ -686,7 +693,10 @@ public class CoaEditorPanelFX extends BorderPane
 		return null;
 	}
 	
-	// New method to handle company state changes
+	/**
+	 * handleCompanyChange
+	 * @param isOpen
+	 */
 	private void handleCompanyChange(boolean isOpen)
 	{
 		
@@ -732,7 +742,9 @@ public class CoaEditorPanelFX extends BorderPane
 		
 	}
 	
-	// New inner class for CompanyChangeListener
+	/**
+	 * CoaEditorPanelCompanyListener
+	 */
 	private class CoaEditorPanelCompanyListener implements CurrentCompany.CompanyChangeListener
 	{
 		private CoaEditorPanelFX panel;

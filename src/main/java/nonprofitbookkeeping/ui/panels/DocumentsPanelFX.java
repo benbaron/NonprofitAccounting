@@ -24,6 +24,7 @@ public class DocumentsPanelFX extends BorderPane
 	private final DocumentStorageService service;
 	
 	/* UI fields */
+	
 	/** TextField for user to input the transaction ID to associate the document with. */
 	private final TextField txnIdField = new TextField();
 	/** TextField to display the name of the file chosen by the user. This field is not editable directly. */

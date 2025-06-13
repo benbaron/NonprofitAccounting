@@ -4,7 +4,6 @@ package nonprofitbookkeeping.ui.panels.skeletons;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-// import javafx.event.ActionEvent; // No longer needed with lambda 'event ->'
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -17,7 +16,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-// import javafx.scene.control.Alert; // Replaced by AlertBox
 import javafx.stage.Window; // Added for getScene().getWindow()
 
 import nonprofitbookkeeping.model.Company;
@@ -26,11 +24,6 @@ import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 import nonprofitbookkeeping.reports.ReportContext; // Added import
 import nonprofitbookkeeping.reports.ReportMetadata;
 import nonprofitbookkeeping.service.ReportService;
-// Action class imports are no longer directly needed in this event handler
-// import nonprofitbookkeeping.ui.actions.GenerateBalanceSheetAction;
-// import nonprofitbookkeeping.ui.actions.GenerateCashFlowStatementAction;
-// import nonprofitbookkeeping.ui.actions.GenerateIncomeStatementAction;
-// import nonprofitbookkeeping.ui.actions.GenerateTrialBalanceAction;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 
 import java.util.List;
@@ -97,13 +90,8 @@ public class SkeletonReportsPanel extends BorderPane
 		
 		this.controlsGrid.add(new Label("Report Type:"), 0, 0);
 		this.reportTypeComboBox = new ComboBox<>();
-		// Ensure "Balance Sheet" and "Trial Balance" are included for the new logic
 		this.reportTypeComboBox.setItems(FXCollections.observableArrayList(
-			"Income Statement", "Balance Sheet", "Trial Balance", "Cash Flow Statement"
-		// Add other JXLS reports here if they are to be handled by a different
-		// mechanism
-		// e.g., "Budget vs. Actuals"
-		));
+			"Income Statement", "Balance Sheet", "Trial Balance", "Cash Flow Statement"));
 		this.reportTypeComboBox.setPromptText("Select Report");
 		this.controlsGrid.add(this.reportTypeComboBox, 1, 0);
 		
@@ -238,8 +226,10 @@ public class SkeletonReportsPanel extends BorderPane
 		actionsCol.setPrefWidth(100);
 		
 		this.generatedReportsTable.getColumns()
-			.addAll(nameCol, dateGenCol,
-				formatCol, actionsCol);
+			.addAll(nameCol,
+				dateGenCol,
+				formatCol,
+				actionsCol);
 	}
 	
 	/**
@@ -250,25 +240,25 @@ public class SkeletonReportsPanel extends BorderPane
 	 * and a placeholder message is updated in the table.
 	 * If no reports are found, an appropriate placeholder message is displayed.
 	 */
-        private void loadGeneratedReports()
-        {
-                this.generatedReportsDataList.clear();
-
-                if (!CurrentCompany.isOpen() || CurrentCompany.getCompany() == null)
-                {
-                        this.generatedReportsTable
-                                .setPlaceholder(new Label("No company open."));
-                        return;
-                }
-
-                try
-                {
-                        List<ReportMetadata> reports = this.reportService.listGeneratedReports();
-
-                        if (reports != null)
-                        {
-                                this.generatedReportsDataList.addAll(reports);
-                        }
+	private void loadGeneratedReports()
+	{
+		this.generatedReportsDataList.clear();
+		
+		if (!CurrentCompany.isOpen() || CurrentCompany.getCompany() == null)
+		{
+			this.generatedReportsTable
+				.setPlaceholder(new Label("No company open."));
+			return;
+		}
+		
+		try
+		{
+			List<ReportMetadata> reports = this.reportService.listGeneratedReports();
+			
+			if (reports != null)
+			{
+				this.generatedReportsDataList.addAll(reports);
+			}
 			
 		}
 		catch (Exception e)
@@ -315,14 +305,14 @@ public class SkeletonReportsPanel extends BorderPane
 		
 		this.generateReportButton.setOnAction(event -> {
 			String reportTypeDisplay = this.reportTypeComboBox.getValue();
-                        Company currentCompany = CurrentCompany.getCompany();
-                        Window ownerWindow = this.getScene().getWindow();
-
-                        if (!CurrentCompany.isOpen() || currentCompany == null)
-                        {
-                                AlertBox.showError(ownerWindow, "No company is currently open.");
-                                return;
-                        }
+			Company currentCompany = CurrentCompany.getCompany();
+			Window ownerWindow = this.getScene().getWindow();
+			
+			if (!CurrentCompany.isOpen() || currentCompany == null)
+			{
+				AlertBox.showError(ownerWindow, "No company is currently open.");
+				return;
+			}
 			
 			if (reportTypeDisplay == null)
 			{
@@ -344,14 +334,14 @@ public class SkeletonReportsPanel extends BorderPane
 				
 				case "Balance Sheet":
 					reportTypeKey = "balance_sheet_jasper";
-					// AlertBox.showInfo(ownerWindow, "Balance Sheet via Jasper is chosen, but
-					// ensure its generator is fully implemented in ReportService.");
+					AlertBox.showInfo(ownerWindow,
+						"Balance Sheet via Jasper is chosen, but ensure its generator is fully implemented in ReportService.");
 					break;
 				
 				case "Trial Balance":
 					reportTypeKey = "trial_balance_jasper";
-					// AlertBox.showInfo(ownerWindow, "Trial Balance via Jasper is chosen, but
-					// ensure its generator is fully implemented in ReportService.");
+					AlertBox.showInfo(ownerWindow,
+						"Trial Balance via Jasper is chosen, but ensure its generator is fully implemented in ReportService.");
 					break;
 				
 				case "Cash Flow Statement":
@@ -359,7 +349,8 @@ public class SkeletonReportsPanel extends BorderPane
 					break;
 				
 				default:
-					AlertBox.showError(ownerWindow, "Report type '" + reportTypeDisplay +
+					AlertBox.showError(ownerWindow, "Report type '" +
+						reportTypeDisplay +
 						"' generation not configured for Jasper system.");
 					return;
 			}
@@ -396,7 +387,8 @@ public class SkeletonReportsPanel extends BorderPane
 				
 				if (startDate != null && endDate != null && endDate.isBefore(startDate))
 				{
-					AlertBox.showError(ownerWindow, "End Date cannot be before Start Date.");
+					AlertBox.showError(ownerWindow,
+						"End Date cannot be before Start Date.");
 					return;
 				}
 				
@@ -407,13 +399,15 @@ public class SkeletonReportsPanel extends BorderPane
 					if (generatedFile != null && generatedFile.exists())
 					{
 						AlertBox.showInfo(ownerWindow,
-							reportTypeDisplay + " generated: " + generatedFile.getAbsolutePath());
+							reportTypeDisplay + " generated: " +
+								generatedFile.getAbsolutePath());
 						
 						try
 						{
 							
 							if (Desktop.isDesktopSupported())
-							{ // Check if Desktop API is supported
+							{ 
+								// Check if Desktop API is supported
 								Desktop.getDesktop().open(generatedFile);
 							}
 							else
@@ -428,10 +422,11 @@ public class SkeletonReportsPanel extends BorderPane
 						{
 							ex.printStackTrace();
 							AlertBox.showError(ownerWindow,
-								"Could not open report file: " + ex.getMessage() +
-									(ex instanceof UnsupportedOperationException ?
-										"\nDesktop operations not supported on this platform." :
-										""));
+								"Could not open report file: " + 
+							ex.getMessage() +
+							(ex instanceof UnsupportedOperationException ?
+								"\nDesktop operations not supported on this platform." :
+								""));
 						}
 						
 					}
@@ -457,8 +452,10 @@ public class SkeletonReportsPanel extends BorderPane
 			else
 			{
 				// This block would handle non-Jasper reports if any were configured
-				AlertBox.showInfo(ownerWindow, "Generation for non-Jasper report type '" +
-					reportTypeDisplay + "' is not handled by this path.");
+				AlertBox.showInfo(ownerWindow, 
+					"Generation for non-Jasper report type '" +
+					reportTypeDisplay + 
+					"' is not handled by this path.");
 			}
 			
 		});

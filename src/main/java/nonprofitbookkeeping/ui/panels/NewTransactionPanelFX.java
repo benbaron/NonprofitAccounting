@@ -29,7 +29,6 @@ import nonprofitbookkeeping.model.*;
 public class NewTransactionPanelFX extends BorderPane
 {
 	
-
 	/* ===== static row model ===== */
 	/**
 	 * Represents a single line (entry) in an accounting transaction.
@@ -78,7 +77,7 @@ public class NewTransactionPanelFX extends BorderPane
 	private final ObservableList<Line> lines = FXCollections.observableArrayList();
 	/** TableView used to display and edit the transaction lines (entries). */
 	private final TableView<Line> table = new TableView<>(this.lines);
-
+	
 	/** DatePicker for selecting the transaction date. Defaults to the current date. */
 	private final DatePicker datePicker = new DatePicker(LocalDate.now());
 	/** TextArea for entering a memo or description for the transaction. */
@@ -143,27 +142,27 @@ public class NewTransactionPanelFX extends BorderPane
 	{
 		buildUI();
 		this.lines.forEach(this::watch);
-
+		
 		/* 1. header fields */
 		this.datePicker.setValue(LocalDate.parse(existing.getDate()));
 		this.memoArea.setText(existing.getMemo());
-
+		
 		/* 2. entry lines */
 		this.lines.clear();
-
-                // Add the lines from the existing entries.
-                for (AccountingEntry e : existing.getEntries())
-                {
-                        Account acc = this.coa.getAccount(e.getAccountNumber());
-                        Account stub = new Account();
-                        stub.setName(acc != null ? acc.getName() : e.getAccountNumber());
-                        Line line = new Line(stub, e.getAccountSide(), e.getAmount());
-                        this.lines.add(line);
-                        watch(line);
-                }
-
+		
+		// Add the lines from the existing entries.
+		for (AccountingEntry e : existing.getEntries())
+		{
+			Account acc = this.coa.getAccount(e.getAccountNumber());
+			Account stub = new Account();
+			stub.setName(acc != null ? acc.getName() : e.getAccountNumber());
+			Line line = new Line(stub, e.getAccountSide(), e.getAmount());
+			this.lines.add(line);
+			watch(line);
+		}
+		
 	}
-
+	
 	/**
 	 * Builds the main user interface for the transaction panel.
 	 * This includes setting up the {@link #table} with columns for Account, Side (Debit/Credit), and Amount.
@@ -174,7 +173,8 @@ public class NewTransactionPanelFX extends BorderPane
 	 * The {@code @SuppressWarnings("unchecked")} is used because {@code table.getColumns().addAll()}
 	 * is a varargs method and can cause warnings with generic TableColumn types.
 	 */
-	@SuppressWarnings("unchecked") private void buildUI()
+	@SuppressWarnings("unchecked") 
+	private void buildUI()
 	{
 		this.table.getColumns().addAll(
 			accountCol(), // new combo column
@@ -233,8 +233,7 @@ public class NewTransactionPanelFX extends BorderPane
 		setBottom(new ToolBar(add, del, new Separator(), this.saveBtn));
 	}
 	
-	/* ===== build columns ===== */
-
+	
 	/**
 	 * Creates a {@link TableColumn} for displaying and editing String properties of a {@link Line}.
 	 * This method is marked as unused, suggesting it might be a helper that was deprecated or replaced
@@ -248,9 +247,8 @@ public class NewTransactionPanelFX extends BorderPane
 	 * @return A configured {@link TableColumn} for displaying and editing String data.
 	 */
 	@SuppressWarnings("unused") 
-	private static TableColumn<Line, String> strCol
-						(String t,
-						 Function<Line, Property<String>> fx)
+	private static TableColumn<Line, String> strCol(String t,
+	                                                Function<Line,Property<String>> fx)
 	{
 		TableColumn<Line, String> c = new TableColumn<>(t);
 		c.setCellValueFactory(cell -> fx.apply(cell.getValue()));
@@ -322,16 +320,16 @@ public class NewTransactionPanelFX extends BorderPane
 					.toList());
 		
 		Map<String, Account> byName =
-		    this.coa.getAccountNumberToAccountDetails()
-		       .values()
-		       .stream()
-		       .collect(Collectors.toMap(
-		           Account::getName,          // key  = name
-		           a -> a,                    // value = Account
-		           (a, b) -> a,               // merge: keep the first duplicate
-		           LinkedHashMap::new         // (optional) keep insertion order
-		       ));
-
+			this.coa.getAccountNumberToAccountDetails()
+				.values()
+				.stream()
+				.collect(Collectors.toMap(
+					Account::getName, // key = name
+					a -> a, // value = Account
+					(a, b) -> a, // merge: keep the first duplicate
+					LinkedHashMap::new // (optional) keep insertion order
+				));
+				
 		TableColumn<Line, String> col = new TableColumn<>("Account");
 		col.setCellValueFactory(cd -> cd.getValue().account);
 		
@@ -396,50 +394,54 @@ public class NewTransactionPanelFX extends BorderPane
 	 * The {@link #onSave} consumer (provided during panel construction) is then invoked with the
 	 * newly created {@code AccountingTransaction}.
 	 */
-        private void persist()
-        {
-                Set<AccountingEntry> entries = new LinkedHashSet<>();
-                BigDecimal debitTotal = BigDecimal.ZERO;
-                BigDecimal creditTotal = BigDecimal.ZERO;
-
-                for (Line l : this.lines)
-                {
-                        String name = l.account.get();
-                        Account account = this.coa.getAccountByName(name);
-                        String acctNum = account != null ? account.getAccountNumber() : name;
-
-                        entries.add(new AccountingEntry(
-                                l.amount.get(), acctNum, l.side.get()));
-
-                        BigDecimal amt = l.amount.get() != null ? l.amount.get() : BigDecimal.ZERO;
-
-                        if (l.side.get() == AccountSide.DEBIT)
-                        {
-                                debitTotal = debitTotal.add(amt);
-                        }
-                        else
-                        {
-                                creditTotal = creditTotal.add(amt);
-                        }
-                }
-
-                // Save the timestamp as transaction id
-                AccountingTransaction tx = new AccountingTransaction(
-                        new Account(),
-                        entries,
-                        Map.of(),
-                        Instant.now().toEpochMilli());
-
-                tx.setDate(this.datePicker.getValue().toString());
-                tx.setDescription(this.memoArea.getText());
-                if (!this.lines.isEmpty()) {
-                        tx.setAccountName(this.lines.get(0).account.get());
-                }
-                tx.setDebit(debitTotal);
-                tx.setCredit(creditTotal);
-
-                this.onSave.accept(tx);
-        }
+	private void persist()
+	{
+		Set<AccountingEntry> entries = new LinkedHashSet<>();
+		BigDecimal debitTotal = BigDecimal.ZERO;
+		BigDecimal creditTotal = BigDecimal.ZERO;
+		
+		for (Line l : this.lines)
+		{
+			String name = l.account.get();
+			Account account = this.coa.getAccountByName(name);
+			String acctNum = account != null ? account.getAccountNumber() : name;
+			
+			entries.add(new AccountingEntry(
+				l.amount.get(), acctNum, l.side.get()));
+			
+			BigDecimal amt = l.amount.get() != null ? l.amount.get() : BigDecimal.ZERO;
+			
+			if (l.side.get() == AccountSide.DEBIT)
+			{
+				debitTotal = debitTotal.add(amt);
+			}
+			else
+			{
+				creditTotal = creditTotal.add(amt);
+			}
+			
+		}
+		
+		// Save the timestamp as transaction id
+		AccountingTransaction tx = new AccountingTransaction(
+			new Account(),
+			entries,
+			Map.of(),
+			Instant.now().toEpochMilli());
+		
+		tx.setDate(this.datePicker.getValue().toString());
+		tx.setDescription(this.memoArea.getText());
+		
+		if (!this.lines.isEmpty())
+		{
+			tx.setAccountName(this.lines.get(0).account.get());
+		}
+		
+		tx.setDebit(debitTotal);
+		tx.setCredit(creditTotal);
+		
+		this.onSave.accept(tx);
+	}
 	
 	/**
 	 * Attaches change listeners to the properties of a given transaction {@link Line}.
@@ -456,8 +458,7 @@ public class NewTransactionPanelFX extends BorderPane
 		l.amount.addListener((obs, o, n) -> recalcTotals());
 		l.side.addListener((obs, o, n) -> recalcTotals());
 		l.account.addListener((obs, o, n) -> {
-			/* account text change doesn’t
-			 * affect totals but keeps UI fresh */
+			/* account text change doesn’t affect totals but keeps UI fresh */
 		});
 	}
 	

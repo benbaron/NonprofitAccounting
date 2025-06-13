@@ -45,7 +45,7 @@ public class DashboardPanelFX extends BorderPane
 	private final TextField memoFilter = new TextField();
 	/** TextField for filtering transactions by a specific amount. */
 	private final TextField amountFilter = new TextField();
-    private Button applyFiltersButton; // Made into a field
+	private Button applyFiltersButton; // Made into a field
 	
 	/* data table */
 	/** TableView to display the journal transactions. */
@@ -58,7 +58,7 @@ public class DashboardPanelFX extends BorderPane
 	BigDecimal amtF = null;
 	/** Listener instance to handle changes in the {@link CurrentCompany}. */
 	private DashboardListener listener = new DashboardListener(this);
-
+	
 	
 	/**
 	 * Constructs a new {@code DashboardPanelFX}.
@@ -66,22 +66,25 @@ public class DashboardPanelFX extends BorderPane
 	 * It also registers a {@link CompanyChangeListener} to react to company load/close events.
 	 * The table is initially empty or shows data based on the company loaded at application start (if any).
 	 */
-	public DashboardPanelFX() {
-        setPadding(new Insets(10));
-
-        buildTopBanner();
-        buildTopFilters();
-        buildTable();
-        setCenter(new TitledPane("Journal Transactions", this.table) {
-            {
-                setCollapsible(false);
-            }
-        });
-
-        CurrentCompany.CompanyListener.addCompanyListener(this.listener);
-        // Set initial state based on current company status
-        loadCompany(CurrentCompany.isOpen() ? CurrentCompany.getCompany() : null);
-    }
+	public DashboardPanelFX()
+	{
+		setPadding(new Insets(10));
+		
+		buildTopBanner();
+		buildTopFilters();
+		buildTable();
+		setCenter(new TitledPane("Journal Transactions", this.table)
+		{
+			{
+				setCollapsible(false);
+			}
+			
+		});
+		
+		CurrentCompany.CompanyListener.addCompanyListener(this.listener);
+		// Set initial state based on current company status
+		loadCompany(CurrentCompany.isOpen() ? CurrentCompany.getCompany() : null);
+	}
 	
 	/**
 	 * Builds and configures the top banner of the dashboard.
@@ -93,9 +96,9 @@ public class DashboardPanelFX extends BorderPane
 		this.companyLbl.getStyleClass().add("company-indicator");
 		this.reloadBtn.setOnAction(e -> loadCompany(CurrentCompany.getCompany()));
 		
-		HBox banner = new HBox(10, 
-			new Label("Current Company:"), 
-			this.companyLbl, 
+		HBox banner = new HBox(10,
+			new Label("Current Company:"),
+			this.companyLbl,
 			this.reloadBtn);
 		
 		banner.setPadding(new Insets(4));
@@ -116,30 +119,28 @@ public class DashboardPanelFX extends BorderPane
 	private void buildTopFilters()
 	{
 		/* selector */
-		HBox selectorBox = new HBox(10, new Label("Account:"), 
+		HBox selectorBox = new HBox(10, new Label("Account:"),
 			this.accountSelector);
 		selectorBox.setPadding(new Insets(5));
 		selectorBox.setStyle("-fx-border-color: lightgray;");
-
-        this.applyFiltersButton = new Button("Apply"); // Assign to field
-        this.applyFiltersButton.setOnAction(e -> refresh());
-
-        HBox filterBox = new HBox(10,
-            new Label("Date (yyyy-mm-dd):"), this.dateFilter,
-            new Label("Memo:"), this.memoFilter,
-            new Label("Amount:"), this.amountFilter,
-            this.applyFiltersButton); // Use field
-        filterBox.setPadding(new Insets(5));
-        filterBox.setStyle("-fx-border-color: lightgray;");
-
-        VBox topControls = new VBox(selectorBox, filterBox);
-        setMargin(topControls, new Insets(0, 0, 5, 0));
-        // Assuming getTop() already returns the banner HBox from buildTopBanner()
-        // If getTop() is null initially, this needs care. buildTopBanner sets this.setTop().
-        // So, retrieve current top (banner), then add new controls.
-        Node currentTop = getTop(); // This will be the banner
-        VBox newTopStructure = new VBox(currentTop, topControls);
-        setTop(newTopStructure);
+		
+		this.applyFiltersButton = new Button("Apply"); // Assign to field
+		this.applyFiltersButton.setOnAction(e -> refresh());
+		
+		HBox filterBox = new HBox(10,
+			new Label("Date (yyyy-mm-dd):"), this.dateFilter,
+			new Label("Memo:"), this.memoFilter,
+			new Label("Amount:"), this.amountFilter,
+			this.applyFiltersButton); // Use field
+		filterBox.setPadding(new Insets(5));
+		filterBox.setStyle("-fx-border-color: lightgray;");
+		
+		VBox topControls = new VBox(selectorBox, filterBox);
+		setMargin(topControls, new Insets(0, 0, 5, 0));
+		
+		Node currentTop = getTop(); // This will be the banner
+		VBox newTopStructure = new VBox(currentTop, topControls);
+		setTop(newTopStructure);
 	}
 	
 	/**
@@ -181,7 +182,7 @@ public class DashboardPanelFX extends BorderPane
 		c.setCellValueFactory(cd -> new ReadOnlyObjectWrapper<>(f.apply(cd.getValue())));
 		return c;
 	}
-
+	
 	/** 
 	 * Loads or unloads company data into the dashboard.
 	 * This method is called when the current company changes (e.g., a file is opened or closed).
@@ -193,58 +194,76 @@ public class DashboardPanelFX extends BorderPane
 	 *
 	 * @param cdf The {@link Company} to load. If null, indicates that the current company has been closed.
 	 */
-    private void loadCompany(Company cdf) {
-        boolean companyIsOpen = (cdf != null);
-
-        // Manage UI component states
-        this.reloadBtn.setDisable(!companyIsOpen);
-        this.accountSelector.setDisable(!companyIsOpen);
-        this.dateFilter.setDisable(!companyIsOpen);
-        this.memoFilter.setDisable(!companyIsOpen);
-        this.amountFilter.setDisable(!companyIsOpen);
-        if (this.applyFiltersButton != null) { // Ensure applyFiltersButton is initialized
-            this.applyFiltersButton.setDisable(!companyIsOpen);
-        }
-
-        if (!companyIsOpen) {
-            this.companyLbl.setText("None");
-            this.accountSelector.getItems().clear();
-            this.accountSelector.setPlaceholder(new Label("No company open"));
-            this.rows.clear();
-            this.allTxns = List.of();
-            this.dateFilter.clear();
-            this.memoFilter.clear();
-            this.amountFilter.clear();
-            // reloadBtn.setOnAction(null); // Or keep old action, it will just reload null
-        } else {
-            this.companyLbl.setText(cdf.getCompanyProfile().getCompanyName());
-
-            // Populate accountSelector
-            this.accountSelector.getItems().clear();
-            if (cdf.getChartOfAccounts() != null && cdf.getChartOfAccounts().getAccounts() != null) {
-                List<String> accountNames = cdf.getChartOfAccounts().getAccounts().stream()
-                                               .map(Account::getName)
-                                               .filter(Objects::nonNull)
-                                               .sorted()
-                                               .collect(Collectors.toList());
-                this.accountSelector.getItems().addAll(accountNames);
-                if (!accountNames.isEmpty()) {
-                    this.accountSelector.getSelectionModel().selectFirst();
-                } else {
-                    this.accountSelector.setPlaceholder(new Label("No accounts in COA"));
-                }
-            } else {
-                this.accountSelector.setPlaceholder(new Label("COA not available"));
-            }
-
-            this.allTxns = (cdf.getLedger() != null && cdf.getLedger().getTransactions() != null)
-                           ? cdf.getLedger().getTransactions()
-                           : List.of();
-
-            this.reloadBtn.setOnAction(e -> loadCompany(CurrentCompany.getCompany())); // Ensure reload action is set
-            refresh(); // Refresh table content
-        }
-    }
+	private void loadCompany(Company cdf)
+	{
+		boolean companyIsOpen = (cdf != null);
+		
+		// Manage UI component states
+		this.reloadBtn.setDisable(!companyIsOpen);
+		this.accountSelector.setDisable(!companyIsOpen);
+		this.dateFilter.setDisable(!companyIsOpen);
+		this.memoFilter.setDisable(!companyIsOpen);
+		this.amountFilter.setDisable(!companyIsOpen);
+		
+		if (this.applyFiltersButton != null)
+		{ // Ensure applyFiltersButton is initialized
+			this.applyFiltersButton.setDisable(!companyIsOpen);
+		}
+		
+		if (!companyIsOpen)
+		{
+			this.companyLbl.setText("None");
+			this.accountSelector.getItems().clear();
+			this.accountSelector.setPlaceholder(new Label("No company open"));
+			this.rows.clear();
+			this.allTxns = List.of();
+			this.dateFilter.clear();
+			this.memoFilter.clear();
+			this.amountFilter.clear();
+			// reloadBtn.setOnAction(null); // Or keep old action, it will just reload null
+		}
+		else
+		{
+			this.companyLbl.setText(cdf.getCompanyProfile().getCompanyName());
+			
+			// Populate accountSelector
+			this.accountSelector.getItems().clear();
+			
+			if (cdf.getChartOfAccounts() != null && cdf.getChartOfAccounts().getAccounts() != null)
+			{
+				List<String> accountNames = cdf.getChartOfAccounts().getAccounts().stream()
+					.map(Account::getName)
+					.filter(Objects::nonNull)
+					.sorted()
+					.collect(Collectors.toList());
+				this.accountSelector.getItems().addAll(accountNames);
+				
+				if (!accountNames.isEmpty())
+				{
+					this.accountSelector.getSelectionModel().selectFirst();
+				}
+				else
+				{
+					this.accountSelector.setPlaceholder(new Label("No accounts in COA"));
+				}
+				
+			}
+			else
+			{
+				this.accountSelector.setPlaceholder(new Label("COA not available"));
+			}
+			
+			this.allTxns = (cdf.getLedger() != null && cdf.getLedger().getTransactions() != null) ?
+				cdf.getLedger().getTransactions() : List.of();
+			
+			this.reloadBtn.setOnAction(e -> loadCompany(CurrentCompany.getCompany())); // Ensure
+																						// reload
+																						// action is
+																						// set
+			refresh(); // Refresh table content
+		}
+		
+	}
 	
 	/**
 	 * Refreshes the transaction table ({@link #table}) based on the current filter settings
@@ -256,54 +275,69 @@ public class DashboardPanelFX extends BorderPane
 	 * and the table is updated with these rows.
 	 * If no account is selected or no transactions are available, the table is cleared.
 	 */
-    private void refresh() {
-        // Only proceed if a company is considered open and account selector has a value
-        if (!CurrentCompany.isOpen() || this.accountSelector.getValue() == null || this.allTxns.isEmpty()) {
-            if (CurrentCompany.isOpen() && this.accountSelector.getValue() == null && !this.accountSelector.getItems().isEmpty()){
-                // If company is open, but no account selected yet, do nothing, or prompt selection.
-                // For now, just clear if no account selected.
-                 this.rows.clear();
-            } else if (!CurrentCompany.isOpen()){
-                 this.rows.clear(); // Ensure table is clear if no company
-            }
-            // If allTxns is empty but an account is selected, table will also be cleared by logic below.
-            // return; // This return might be too aggressive if an account is selected but allTxns is empty.
-        }
-
-        String acct = this.accountSelector.getValue();
-        if (acct == null && CurrentCompany.isOpen() && !this.accountSelector.getItems().isEmpty()) {
-             // If an account should be auto-selected, do it here or ensure loadCompany handles it.
-             // For now, if no account is selected, clear rows.
-             this.rows.clear();
-             return;
-        } else if (acct == null) { // No account selected, and either no company or no accounts.
-            this.rows.clear();
-            return;
-        }
-
-
-        String dateFText = this.dateFilter.getText().trim();
-        String memoFText = this.memoFilter.getText().trim().toLowerCase();
-
-        this.amtF = null; // Reset before parsing amount filter
-        if (!this.amountFilter.getText().isBlank()) {
-            try {
-                this.amtF = new BigDecimal(this.amountFilter.getText().trim());
-            } catch (NumberFormatException ignore) {
-                // Optionally provide user feedback about invalid amount format
-            }
-        }
-
-        Predicate<AccountingTransaction> p = t ->
-            t != null && // Ensure transaction object is not null
-            Objects.equals(t.getAccountName(), acct) && // Use Objects.equals for null-safe comparison of account name
-            (dateFText.isEmpty() || (t.getDate() != null && t.getDate().contains(dateFText))) &&
-            (memoFText.isEmpty() || (t.getMemo() != null && t.getMemo().toLowerCase().contains(memoFText))) &&
-            (this.amtF == null || (t.getTotalAmount() != null && t.getTotalAmount().compareTo(this.amtF) == 0)); // Check totalAmount for null
-
-        List<AccountingTransaction> list = this.allTxns.stream()
-            .filter(p)
-            .collect(Collectors.toList());
+	private void refresh()
+	{
+		
+		// Only proceed if a company is considered open and account selector has a value
+		if (!CurrentCompany.isOpen() || this.accountSelector.getValue() == null ||
+			this.allTxns.isEmpty())
+		{
+			
+			if (CurrentCompany.isOpen() && this.accountSelector.getValue() == null &&
+				!this.accountSelector.getItems().isEmpty())
+			{
+				this.rows.clear();
+			}
+			else if (!CurrentCompany.isOpen())
+			{
+				this.rows.clear(); // Ensure table is clear if no company
+			}
+			
+		}
+		
+		String acct = this.accountSelector.getValue();
+		
+		if (acct == null && CurrentCompany.isOpen() && !this.accountSelector.getItems().isEmpty())
+		{
+			this.rows.clear();
+			return;
+		}
+		else if (acct == null)
+		{ // No account selected, and either no company or no accounts.
+			this.rows.clear();
+			return;
+		}
+		
+		String dateFText = this.dateFilter.getText().trim();
+		String memoFText = this.memoFilter.getText().trim().toLowerCase();
+		
+		this.amtF = null; // Reset before parsing amount filter
+		
+		if (!this.amountFilter.getText().isBlank())
+		{
+			
+			try
+			{
+				this.amtF = new BigDecimal(this.amountFilter.getText().trim());
+			}
+			catch (NumberFormatException ignore)
+			{
+				// Optionally provide user feedback about invalid amount format
+			}
+			
+		}
+		
+		Predicate<AccountingTransaction> p = t -> t != null && 
+			Objects.equals(t.getAccountName(), acct) && 
+			(dateFText.isEmpty() || (t.getDate() != null && t.getDate().contains(dateFText))) &&
+			(memoFText.isEmpty() ||
+				(t.getMemo() != null && t.getMemo().toLowerCase().contains(memoFText))) &&
+			(this.amtF == null ||
+				(t.getTotalAmount() != null && t.getTotalAmount().compareTo(this.amtF) == 0)); 
+		
+		List<AccountingTransaction> list = this.allTxns.stream()
+			.filter(p)
+			.collect(Collectors.toList());
 		
 		this.rows.clear();
 		BigDecimal running = BigDecimal.ZERO;
@@ -317,7 +351,6 @@ public class DashboardPanelFX extends BorderPane
 		
 	}
 	
-	/* ---------------------- row helper ------------------------- */
 	/**
 	 * Represents a single row of data to be displayed in the dashboard's transaction table.
 	 * This class uses JavaFX properties ({@link StringProperty}, {@link ObjectProperty}) to enable
@@ -367,13 +400,18 @@ public class DashboardPanelFX extends BorderPane
 	{
 		/** Reference to the {@link DashboardPanelFX} that this listener will update. */
 		DashboardPanelFX dashboardPanelFX = null;
-        public DashboardListener(DashboardPanelFX dashboardPanelFX) {
-            this.dashboardPanelFX = dashboardPanelFX;
-        }
-
-        @Override public void companyChange(boolean companyNowOpen) {
-            // Pass the actual company object or null to loadCompany
-            this.dashboardPanelFX.loadCompany(companyNowOpen ? CurrentCompany.getCompany() : null);
-        }
-    }
+		
+		public DashboardListener(DashboardPanelFX dashboardPanelFX)
+		{
+			this.dashboardPanelFX = dashboardPanelFX;
+		}
+		
+		@Override public void companyChange(boolean companyNowOpen)
+		{
+			// Pass the actual company object or null to loadCompany
+			this.dashboardPanelFX.loadCompany(companyNowOpen ? CurrentCompany.getCompany() : null);
+		}
+		
+	}
+	
 }

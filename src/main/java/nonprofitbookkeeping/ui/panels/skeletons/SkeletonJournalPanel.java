@@ -27,11 +27,9 @@ import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.Journal;
-import java.util.List;
-import java.util.ArrayList;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 import java.math.BigDecimal;
-
+import java.util.List;
 /**
  * A JavaFX panel that displays journal entries from the current company's ledger.
  * It provides a table view ({@link #journalDisplayTable}) for individual debit/credit entries
@@ -93,17 +91,25 @@ public class SkeletonJournalPanel extends BorderPane
 		this.filterControlsBox.setSpacing(10);
 		this.filterControlsBox.setAlignment(Pos.CENTER_LEFT);
 		
+		// Filter
 		Label filterLabel = new Label("Filter:");
+		// search
 		this.searchFilterField = new TextField();
 		this.searchFilterField.setPromptText("Search description/account...");
 		this.searchFilterField.setPrefWidth(200);
+		// date
 		this.dateFilterField = new TextField();
 		this.dateFilterField.setPromptText("Date (YYYY-MM-DD)");
 		this.dateFilterField.setPrefWidth(150);
+		// apply
 		this.applyFilterButton = new Button("Apply Filter");
-		this.filterControlsBox.getChildren().addAll(filterLabel, this.searchFilterField, this.dateFilterField,
-			this.applyFilterButton);
+		this.filterControlsBox.getChildren()
+			.addAll(filterLabel,
+				this.searchFilterField,
+				this.dateFilterField,
+				this.applyFilterButton);
 		
+		// scroll pane
 		this.filterScrollPane = new ScrollPane(this.filterControlsBox);
 		this.filterScrollPane.setFitToWidth(true);
 		this.filterScrollPane.setFitToHeight(true);
@@ -120,12 +126,14 @@ public class SkeletonJournalPanel extends BorderPane
 		this.newEntryButton = new Button("New Entry");
 		this.editEntryButton = new Button("Edit Entry");
 		this.deleteEntryButton = new Button("Delete Entry");
-		this.crudButtonsHBox.getChildren().addAll(this.newEntryButton, this.editEntryButton, this.deleteEntryButton);
+		this.crudButtonsHBox.getChildren().addAll(this.newEntryButton, this.editEntryButton,
+			this.deleteEntryButton);
 		this.setBottom(this.crudButtonsHBox);
 		
 		// Setup and initial load
 		setupTableColumns();
 		setCenter(this.journalDisplayTable); // Place table in center
+		
 		setupEventListenersAndRefresh();
 	}
 	
@@ -166,8 +174,11 @@ public class SkeletonJournalPanel extends BorderPane
 		creditCol.setPrefWidth(90);
 		
 		this.journalDisplayTable.getColumns()
-			.addAll(dateCol, transIdCol, 
-				accountCol, descCol, debitCol,
+			.addAll(dateCol,
+				transIdCol,
+				accountCol,
+				descCol,
+				debitCol,
 				creditCol);
 	}
 	
@@ -180,21 +191,22 @@ public class SkeletonJournalPanel extends BorderPane
 	 * Transactions are typically displayed in reverse chronological order (newest first).
 	 * If no company is open or no entries are found, a placeholder message is shown in the table.
 	 */
-        private void loadData()
-        {
-                this.journalDataList.clear();
-
-                if (!CurrentCompany.isOpen() || CurrentCompany.getCompany() == null)
-                {
-                        this.journalDisplayTable
-                                .setPlaceholder(new Label("No journal entries found or company not open."));
-                        return;
-                }
-
-                Company company = CurrentCompany.getCompany();
-
-                if (company != null && company.getLedger() != null &&
-                        company.getLedger().getJournal() != null)
+	>>>>>>>>> On Journal Change
+	private void loadData()
+	{
+		this.journalDataList.clear();
+		
+		if (!CurrentCompany.isOpen() || CurrentCompany.getCompany() == null)
+		{
+			this.journalDisplayTable
+				.setPlaceholder(new Label("No journal entries found or company not open."));
+			return;
+		}
+		
+		Company company = CurrentCompany.getCompany();
+		
+		if (company != null && company.getLedger() != null &&
+			company.getLedger().getJournal() != null)
 		{
 			Journal journal = company.getLedger().getJournal();
 			// Iterate in reverse to show newest transactions first at the top of the list
@@ -239,6 +251,7 @@ public class SkeletonJournalPanel extends BorderPane
 	 */
 	private void setupEventListenersAndRefresh()
 	{
+		// On company change
 		this.companyChangeListener = new CompanyChangeListener()
 		{
 			@Override public void companyChange(boolean companyNowOpen)
@@ -249,107 +262,136 @@ public class SkeletonJournalPanel extends BorderPane
 		};
 		CurrentCompany.CompanyListener.addCompanyListener(this.companyChangeListener);
 		
-		this.applyFilterButton.setOnAction(e -> {
-			// TODO: Implement actual filtering logic based on searchFilterField and
-			// dateFilterField
-			// For now, just reload all data as a placeholder for filter action
-			System.out.println("Filter button clicked. Search: " + this.searchFilterField.getText() +
-				", Date: " + this.dateFilterField.getText());
-			loadData();
-		});
+		// On filter
+		this.applyFilterButton.setOnAction(e -> onFilterButtonAction());
+		// on New Entry
+		this.newEntryButton.setOnAction(e -> openEditor(null));
+		// on Edit Entry
+		this.editEntryButton.setOnAction(e -> onEditAction());
+		// on Delete
+		this.deleteEntryButton.setOnAction(e -> onDeleteAction());
 		
-                this.newEntryButton.setOnAction(e -> openEditor(null));
+		loadData(); // Initial data load
+	}
+	
+	/**
+	 * On Filter Button
+	 */
+	void onFilterButtonAction()
+	{
+		// TODO: Implement actual filtering logic based on searchFilterField and
+		// dateFilterField
 		
-		this.editEntryButton.setOnAction(e -> {
-			JournalDisplayEntry selected =
-				this.journalDisplayTable.getSelectionModel().getSelectedItem();
-			
-			if (selected != null)
-			{
-				AccountingTransaction originalTx = selected.getOriginalTransaction();
-                                openEditor(originalTx);
-			}
-			else
-			{
-				System.out.println("No journal entry selected for editing.");
-				// Consider AlertBox.showError(getScene().getWindow(), "No entry selected.");
-			}
-			
-		});
+		// For now, just reload all data as a placeholder for filter action
+		System.out.println("Filter button clicked. Search: " +
+			this.searchFilterField.getText() +
+			", Date: " +
+			this.dateFilterField.getText());
 		
-                this.deleteEntryButton.setOnAction(e -> {
-                        JournalDisplayEntry selected =
-                                this.journalDisplayTable.getSelectionModel().getSelectedItem();
+		loadData();
+	}
+	
+	/**
+	 * On Edit Button
+	 */
+	void onEditAction()
+	{
+		JournalDisplayEntry selected =
+			this.journalDisplayTable.getSelectionModel().getSelectedItem();
+		
+		if (selected != null)
+		{
+			AccountingTransaction originalTx = selected.getOriginalTransaction();
+			openEditor(originalTx);
+		}
+		else
+		{
+			System.out.println("No journal entry selected for editing.");
+			AlertBox.showError(getScene().getWindow(), "No entry selected.");
+		}
+		
+	}
+	
+	/**
+	 * On delete button
+	 */
+	void onDeleteAction()
+	{
+		JournalDisplayEntry selected =
+			this.journalDisplayTable.getSelectionModel().getSelectedItem();
+		
+		if (selected != null)
+		{
+			AccountingTransaction originalTx = selected.getOriginalTransaction();
+			Company company = CurrentCompany.getCompany();
 			
-			if (selected != null)
+			if (company != null && company.getLedger() != null &&
+				company.getLedger().getJournal() != null)
 			{
-				AccountingTransaction originalTx = selected.getOriginalTransaction();
-				Company company = CurrentCompany.getCompany();
+				boolean deleted = company.getLedger().getJournal()
+					.deleteTransaction(originalTx.getBookingDateTimestamp());
 				
-				if (company != null && company.getLedger() != null &&
-					company.getLedger().getJournal() != null)
+				if (deleted)
 				{
-					boolean deleted = company.getLedger().getJournal()
-						.deleteTransaction(originalTx.getBookingDateTimestamp());
-					
-					if (deleted)
-					{
-						loadData(); // Refresh table
-						System.out.println(
-							"Successfully deleted TX ID: " + originalTx.getBookingDateTimestamp());
-					}
-					else
-					{
-						System.out.println(
-							"Failed to delete TX ID: " + originalTx.getBookingDateTimestamp());
-						// Consider AlertBox.showError(getScene().getWindow(), "Deletion failed.");
-					}
-					
+					loadData(); // Refresh table
+					System.out.println(
+						"Successfully deleted TX ID: " + originalTx.getBookingDateTimestamp());
+				}
+				else
+				{
+					System.out.println(
+						"Failed to delete TX ID: " + originalTx.getBookingDateTimestamp());
+					AlertBox.showError(getScene().getWindow(), "Deletion failed.");
 				}
 				
 			}
-			else
-			{
-				System.out.println("No journal entry selected for deletion.");
-				// Consider AlertBox.showError(getScene().getWindow(), "No entry selected for
-				// deletion.");
-                        }
-
-                });
-                loadData(); // Initial data load
-        }
-
-        /** Opens the NewTransactionPanelFX for creating or editing a transaction. */
-        private void openEditor(AccountingTransaction existing)
-        {
-                Company company = CurrentCompany.getCompany();
-
-                if (company == null || company.getLedger() == null ||
-                        company.getLedger().getJournal() == null)
-                {
-                        AlertBox.showError(getScene().getWindow(), "No company open.");
-                        return;
-                }
-
-                Journal journal = company.getLedger().getJournal();
-
-                NewTransactionPanelFX pane =
-                        (existing == null)
-                                ? new NewTransactionPanelFX(tx -> {
-                                        journal.addTransaction(tx);
-                                        loadData();
-                                })
-                                : new NewTransactionPanelFX(existing, tx -> {
-                                        journal.updateTransaction(tx);
-                                        loadData();
-                                });
-
-                Stage s = new Stage();
-                s.setTitle(existing == null ? "New Transaction" : "Edit Transaction");
-                s.initOwner(getScene().getWindow());
-                s.setScene(new Scene(pane, 800, 600));
-                s.showAndWait();
-        }
+			
+		}
+		else
+		{
+			System.out.println("No journal entry selected for deletion.");
+			AlertBox.showError(getScene().getWindow(),
+				"No entry selected for deletion.");
+		}
+		
+	}
+	
+	/** Opens the NewTransactionPanelFX for creating or editing a transaction. */
+	private void openEditor(AccountingTransaction existing)
+	{
+		Company company = CurrentCompany.getCompany();
+		
+		if (company == null ||
+			company.getLedger() == null ||
+			company.getLedger().getJournal() == null)
+		{
+			AlertBox.showError(getScene().getWindow(), "No company open.");
+			return;
+		}
+		
+		Journal journal = company.getLedger().getJournal();
+		
+		NewTransactionPanelFX pane =
+			(existing == null) ? 
+				new NewTransactionPanelFX(tx ->
+				{
+					// On Save
+					journal.addTransaction(tx);	
+					loadData();
+				}) :
+				new NewTransactionPanelFX(existing, tx ->
+				{
+					// On Save
+					journal.updateTransaction(tx);
+					loadData();
+				});
+				
+		Stage s = new Stage();
+		s.setTitle(existing == null ? "New Transaction" : "Edit Transaction");
+		s.initOwner(getScene().getWindow());
+		s.setScene(new Scene(pane, 800, 600));
+		s.showAndWait();
+	}
 	
 	/**
 	 * Represents a single displayable row in the journal table.
@@ -409,7 +451,8 @@ public class SkeletonJournalPanel extends BorderPane
 				
 			}
 			else
-			{ // Fallback, should ideally not occur with valid data
+			{ 
+				// Fallback, should ideally not occur with valid data
 				this.accountName = new SimpleStringProperty("Error: No Account");
 				this.debit = new SimpleStringProperty("");
 				this.credit = new SimpleStringProperty("");
@@ -481,37 +524,51 @@ public class SkeletonJournalPanel extends BorderPane
 			return this.originalTransaction;
 		}
 		
-		/** Gets the transaction date string. @return The date. */
+		/** 
+		 * Gets the transaction date string. @return The date. 
+		 * */
 		public String getDate()
 		{
 			return this.date.get();
 		}
 		
-		/** Gets the transaction ID string. @return The transaction ID. */
+		/** 
+		 * Gets the transaction ID string. @return The transaction ID. 
+		 * */
 		public String getTransactionId()
 		{
 			return this.transactionId.get();
 		}
 		
-		/** Gets the account name string for this entry line. @return The account name. */
+		/** 
+		 * Gets the account name string for this entry line. @return The account name. 
+		 * */
 		public String getAccountName()
 		{
 			return this.accountName.get();
 		}
 		
-		/** Gets the transaction description/memo string. @return The description. */
+		/** 
+		 * Gets the transaction description/memo string. @return The description. 
+		 * */
 		public String getDescription()
 		{
 			return this.description.get();
 		}
 		
-		/** Gets the debit amount string for this entry line. Empty if it's a credit. @return The debit amount. */
+		/** 
+		 * Gets the debit amount string for this entry line. 
+		 * Empty if it's a credit. @return The debit amount. 
+		 * */
 		public String getDebit()
 		{
 			return this.debit.get();
 		}
 		
-		/** Gets the credit amount string for this entry line. Empty if it's a debit. @return The credit amount. */
+		/** 
+		 * Gets the credit amount string for this entry line. 
+		 * Empty if it's a debit. @return The credit amount. 
+		 * */
 		public String getCredit()
 		{
 			return this.credit.get();

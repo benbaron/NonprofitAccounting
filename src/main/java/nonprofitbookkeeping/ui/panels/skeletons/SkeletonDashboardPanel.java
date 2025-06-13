@@ -51,10 +51,10 @@ public class SkeletonDashboardPanel extends BorderPane
 	/** Label to display the calculated total equity value. Initializes with a value from {@link CompanySummary}. */
 	private Label equityValueLabel = new Label(CompanySummary.getTotalEquity());
 	/** Label to display the calculated year-to-date (YTD) income value. Initializes with a value from {@link CompanySummary}. */
-        private Label ytdIncomeValueLabel = new Label(CompanySummary.getYtdIncomeValue());
-
-        /** Label showing the name of the currently open company. */
-        private final Label companyNameLabel = new Label("No company loaded");
+	private Label ytdIncomeValueLabel = new Label(CompanySummary.getYtdIncomeValue());
+	
+	/** Label showing the name of the currently open company. */
+	private final Label companyNameLabel = new Label("No company loaded");
 	
 	/** Listener that triggers {@link #loadData()} when the {@link CurrentCompany} changes. */
 	private final CompanyChangeListener companyChangeListener = new CompanyChangeListener()
@@ -76,10 +76,10 @@ public class SkeletonDashboardPanel extends BorderPane
 	{
 		setPadding(new Insets(15));
 		
-                GridPane keyFiguresGrid = new GridPane();
-                keyFiguresGrid.setPadding(new Insets(10));
-                keyFiguresGrid.setHgap(20);
-                keyFiguresGrid.setVgap(10);
+		GridPane keyFiguresGrid = new GridPane();
+		keyFiguresGrid.setPadding(new Insets(10));
+		keyFiguresGrid.setHgap(20);
+		keyFiguresGrid.setVgap(10);
 		
 		keyFiguresGrid.add(new Label("Total Assets:"), 0, 0);
 		keyFiguresGrid.add(this.totalAssetsValueLabel, 1, 0);
@@ -90,16 +90,17 @@ public class SkeletonDashboardPanel extends BorderPane
 		keyFiguresGrid.add(new Label("YTD Income:"), 2, 1);
 		keyFiguresGrid.add(this.ytdIncomeValueLabel, 3, 1);
 		
-                ScrollPane keyFiguresScrollPane = new ScrollPane();
-                keyFiguresScrollPane.setContent(keyFiguresGrid);
-                keyFiguresScrollPane.setFitToWidth(true);
-                keyFiguresScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-                keyFiguresScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-
-                VBox topBox = new VBox(5, this.companyNameLabel, keyFiguresScrollPane);
-                this.setTop(topBox);
+		ScrollPane keyFiguresScrollPane = new ScrollPane();
+		keyFiguresScrollPane.setContent(keyFiguresGrid);
+		keyFiguresScrollPane.setFitToWidth(true);
+		keyFiguresScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+		keyFiguresScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 		
-		this.recentTransactionsTable.setPlaceholder(new Label("No recent transactions to display."));
+		VBox topBox = new VBox(5, this.companyNameLabel, keyFiguresScrollPane);
+		this.setTop(topBox);
+		
+		this.recentTransactionsTable
+			.setPlaceholder(new Label("No recent transactions to display."));
 		this.recentTransactionsTable.setItems(this.transactionDataList);
 		
 		TableColumn<AccountingTransaction, String> dateCol = new TableColumn<>("Date");
@@ -128,7 +129,12 @@ public class SkeletonDashboardPanel extends BorderPane
 		amountCol.setPrefWidth(100);
 		amountCol.setStyle("-fx-alignment: CENTER-RIGHT;");
 		
-		this.recentTransactionsTable.getColumns().addAll(dateCol, accountCol, descriptionCol, amountCol);
+		this.recentTransactionsTable.getColumns()
+			.addAll(dateCol,
+				accountCol,
+				descriptionCol,
+				amountCol);
+		
 		this.setCenter(this.recentTransactionsTable);
 		BorderPane.setMargin(this.recentTransactionsTable, new Insets(10, 0, 10, 0));
 		
@@ -143,6 +149,7 @@ public class SkeletonDashboardPanel extends BorderPane
 		this.setBottom(actionButtonsBox);
 		
 		loadData();
+		
 		CurrentCompany.CompanyListener.addCompanyListener(this.companyChangeListener);
 	}
 	
@@ -164,56 +171,56 @@ public class SkeletonDashboardPanel extends BorderPane
 	 * If no company is loaded, or essential data like the ledger or chart of accounts is missing,
 	 * the key figures will typically default to zero or initial values, and the transaction list will be empty.
 	 */
-        private void loadData()
-        {
-                this.transactionDataList.clear();
-
-                if (!CurrentCompany.isOpen() || CurrentCompany.getCompany() == null)
-                {
-                        this.companyNameLabel.setText("No company loaded");
-                        this.totalAssetsValueLabel.setText("$0.00");
-                        this.totalLiabilitiesValueLabel.setText("$0.00");
-                        this.equityValueLabel.setText("$0.00");
-                        this.ytdIncomeValueLabel.setText("YTD Net Income: $0.00");
-                        this.recentTransactionsTable
-                                .setPlaceholder(new Label("No company open."));
-                        return;
-                }
-
-                Company company = CurrentCompany.getCompany();
-                this.companyNameLabel.setText(company.getCompanyProfile().getCompanyName());
-
-                List<AccountingTransaction> transactions = null;
-
-                if (company != null && company.getLedger() != null)
-                {
-                        Ledger ledger = company.getLedger();
-                        transactions = ledger.getTransactions();
-
-                        if (transactions != null && !transactions.isEmpty())
-                        {
-                                int limit = Math.min(transactions.size(), 10);
-                                List<AccountingTransaction> recent = new ArrayList<>();
-
-                                for (int i = transactions.size() - 1; i >= transactions.size() - limit; i--)
-                                {
-                                        recent.add(transactions.get(i));
-                                }
-
-                                this.transactionDataList.addAll(recent);
-                        }
-                }
-
-                BigDecimal totalAssets = new BigDecimal(CompanySummary.getTotalAssets());
-                BigDecimal totalLiabilities = new BigDecimal(CompanySummary.getTotalLiabilities());
-                BigDecimal totalEquity = new BigDecimal(CompanySummary.getTotalEquity());
-                BigDecimal ytdIncome = new BigDecimal(CompanySummary.getYtdIncomeValue());
-
-                this.totalAssetsValueLabel.setText("$" + totalAssets.toPlainString());
-                this.totalLiabilitiesValueLabel.setText("$" + totalLiabilities.toPlainString());
-                this.equityValueLabel.setText("$" + totalEquity.toPlainString());
-                this.ytdIncomeValueLabel.setText("YTD Net Income: $" + ytdIncome.toPlainString());
+	private void loadData()
+	{
+		this.transactionDataList.clear();
 		
+		if (!CurrentCompany.isOpen() || CurrentCompany.getCompany() == null)
+		{
+			this.companyNameLabel.setText("No company loaded");
+			this.totalAssetsValueLabel.setText("$0.00");
+			this.totalLiabilitiesValueLabel.setText("$0.00");
+			this.equityValueLabel.setText("$0.00");
+			this.ytdIncomeValueLabel.setText("YTD Net Income: $0.00");
+			this.recentTransactionsTable
+				.setPlaceholder(new Label("No company open."));
+			return;
+		}
+		
+		Company company = CurrentCompany.getCompany();
+		this.companyNameLabel.setText(company.getCompanyProfile().getCompanyName());
+		
+		List<AccountingTransaction> transactions = null;
+		
+		if (company != null && company.getLedger() != null)
+		{
+			Ledger ledger = company.getLedger();
+			transactions = ledger.getTransactions();
+			
+			if (transactions != null && !transactions.isEmpty())
+			{
+				int limit = Math.min(transactions.size(), 10);
+				List<AccountingTransaction> recent = new ArrayList<>();
+				
+				for (int i = transactions.size() - 1; i >= transactions.size() - limit; i--)
+				{
+					recent.add(transactions.get(i));
+				}
+				
+				this.transactionDataList.addAll(recent);
+			}
+			
+		}
+		
+		BigDecimal totalAssets = new BigDecimal(CompanySummary.getTotalAssets());
+		BigDecimal totalLiabilities = new BigDecimal(CompanySummary.getTotalLiabilities());
+		BigDecimal totalEquity = new BigDecimal(CompanySummary.getTotalEquity());
+		BigDecimal ytdIncome = new BigDecimal(CompanySummary.getYtdIncomeValue());
+		
+		this.totalAssetsValueLabel.setText("$" + totalAssets.toPlainString());
+		this.totalLiabilitiesValueLabel.setText("$" + totalLiabilities.toPlainString());
+		this.equityValueLabel.setText("$" + totalEquity.toPlainString());
+		this.ytdIncomeValueLabel.setText("YTD Net Income: $" + ytdIncome.toPlainString());
 		
 		if (this.transactionDataList.isEmpty())
 		{
@@ -223,8 +230,8 @@ public class SkeletonDashboardPanel extends BorderPane
 		else
 		{
 			// Keep default placeholder or set to null if items are present
-			// recentTransactionsTable.setPlaceholder(new Label("No recent transactions to
-			// display."));
+			this.recentTransactionsTable.setPlaceholder(
+				new Label("No recent transactions to display."));
 		}
 		
 	}

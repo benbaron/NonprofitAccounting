@@ -7,8 +7,7 @@ import nonprofitbookkeeping.reports.ReportCriteria;
 import nonprofitbookkeeping.service.BudgetService;
 import nonprofitbookkeeping.service.ReportConfigurationService;
 import nonprofitbookkeeping.ui.helpers.ReportCriteriaDialog;
-// Import specific action classes if needed for direct invocation (not for V1
-// "pre-fill" approach)
+
 import nonprofitbookkeeping.ui.actions.*; // Wildcard for action classes
 import nonprofitbookkeeping.service.ReportService; // For actions constructor
 

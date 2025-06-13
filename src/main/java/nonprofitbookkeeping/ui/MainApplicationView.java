@@ -1,3 +1,4 @@
+
 package nonprofitbookkeeping.ui;
 
 import javafx.scene.control.MenuBar;
@@ -19,160 +20,183 @@ import nonprofitbookkeeping.ui.panels.CompanySelectionPanelFX;
  * like Dashboard, Journal, Chart of Accounts, Reports, and Account Details.
  * The top area is reserved for a {@link MenuBar}.
  */
-public class MainApplicationView extends BorderPane {
-
-    /**
-     * Enum defining the different types of panels/tabs that can be displayed
-     * in the main application view.
-     */
-    public enum PanelType {
-        /** Represents the Dashboard panel. */
-        DASHBOARD,
-        /** Represents the Journal panel. */
-        JOURNAL,
-        /** Represents the Chart of Accounts panel. */
-        COA,
-        /** Represents the Reports panel. */
-        REPORTS,
-        /** Represents the Account Transaction Details panel. */
-        ACCOUNT_DETAILS
-    }
-
-    /** The TabPane used to display different application sections. */
-    private TabPane tabPane;
-    /** The main MenuBar for the application, set externally. */
-    private MenuBar menuBar;
-
-    // Tab instances as fields for easy reference
-    /** Tab for displaying the Dashboard. */
-    private Tab dashboardTab;
-    /** Tab for displaying the Journal. */
-    private Tab journalTab;
-    /** Tab for displaying the Chart of Accounts. */
-    private Tab coaTab;
-    /** Tab for displaying Reports. */
-    private Tab reportsTab;
-    /** Tab for displaying Account Transaction Details. */
-    private Tab accountDetailsTab;
-    /** Tab for selecting or creating a company when none is open. */
-    private Tab companySelectTab;
-
-    /**
-     * Constructs a new {@code MainApplicationView}.
-     * Initializes the {@link TabPane} and creates non-closable tabs for Dashboard,
-     * Journal, Chart of Accounts, Reports, and Account Details, each populated
-     * with their respective panels (currently skeleton or placeholder panels).
-     * The TabPane is set as the center content of this BorderPane.
-     * The MenuBar is initialized to null and is expected to be set via {@link #setMenuBar(MenuBar)}.
-     */
-    public MainApplicationView() {
-        this.menuBar = null; // Initialize menuBar, will be set via setter
-
-        this.tabPane = new TabPane();
-
-        // Create Tab instances
-        this.dashboardTab = new Tab("Dashboard", new SkeletonDashboardPanel());
-        this.journalTab = new Tab("Journal", new SkeletonJournalPanel());
-        this.coaTab = new Tab("Chart of Accounts", new SkeletonCoaPanel());
-        this.reportsTab = new Tab("Reports", new SkeletonReportsPanel());
-
-        // Set tabs to be non-closable
-        this.dashboardTab.setClosable(false);
-        this.journalTab.setClosable(false);
-        this.coaTab.setClosable(false);
-        this.reportsTab.setClosable(false);
-
-        // Add new tab for Account Details
-        this.accountDetailsTab = new Tab("Account Details", new AccountTransactionDetailsPanelFX());
-        this.accountDetailsTab.setClosable(false);
-
-        // Tab shown when no company is open
-        CompanySelectionPanelFX selectPanel = new CompanySelectionPanelFX();
-        selectPanel.setOnCompanyOpenedHandler(selectPanel.new OnCompanyOpenedHandler() {
-            @Override
-            public void onCompanyOpened(nonprofitbookkeeping.model.Company company) {
-                updateCompanyOpenState(true);
-            }
-        });
-        this.companySelectTab = new Tab("Select Company", selectPanel);
-        this.companySelectTab.setClosable(false);
-
-        // Add tabs to the tabPane
-        this.tabPane.getTabs().addAll(this.dashboardTab, this.journalTab, this.coaTab, this.reportsTab, this.accountDetailsTab, this.companySelectTab);
-
-        // Set the TabPane as the center of the BorderPane
-        setCenter(this.tabPane);
-
-        // The TOP will be set via setMenuBar()
-    }
-
-    /**
-     * Sets the main {@link MenuBar} for the application view.
-     * The provided MenuBar will be placed in the top region of this BorderPane.
-     *
-     * @param menuBar The {@link MenuBar} to be displayed at the top of the application.
-     */
-    public void setMenuBar(MenuBar menuBar) {
-        this.menuBar = menuBar;
-        setTop(this.menuBar); // Directly set the MenuBar to the top
-    }
-
-    /**
-     * Switches the visible tab in the central {@link TabPane} to the one
-     * corresponding to the specified {@link PanelType}.
-     * If an unknown panel type is provided, an error message is printed to standard error,
-     * and no tab selection change occurs (unless a fallback is implemented).
-     *
-     * @param panelType The {@link PanelType} indicating which tab/panel to display.
-     */
-    public void showPanel(PanelType panelType) {
-        switch (panelType) {
-            case DASHBOARD:
-                this.tabPane.getSelectionModel().select(this.dashboardTab);
-                break;
-            case JOURNAL:
-                this.tabPane.getSelectionModel().select(this.journalTab);
-                break;
-            case COA:
-                this.tabPane.getSelectionModel().select(this.coaTab);
-                break;
-            case REPORTS:
-                this.tabPane.getSelectionModel().select(this.reportsTab);
-                break;
-            case ACCOUNT_DETAILS:
-                this.tabPane.getSelectionModel().select(this.accountDetailsTab);
-                break;
-            default:
-                // Optionally, log an error or select a default tab
-                System.err.println("Unknown panel type: " + panelType); // Consider using a logger
-                // tabPane.getSelectionModel().select(dashboardTab); // Fallback to dashboard
-                break;
-        }
-    }
-
-    /**
-     * Enables or disables primary tabs based on whether a company is open
-     * and shows or hides the company selection tab accordingly.
-     *
-     * @param companyOpen {@code true} if a company is currently open.
-     */
-    public void updateCompanyOpenState(boolean companyOpen) {
-        this.dashboardTab.setDisable(!companyOpen);
-        this.journalTab.setDisable(!companyOpen);
-        this.coaTab.setDisable(!companyOpen);
-        this.reportsTab.setDisable(!companyOpen);
-        this.accountDetailsTab.setDisable(!companyOpen);
-
-        if (companyOpen) {
-            this.tabPane.getTabs().remove(this.companySelectTab);
-            this.tabPane.getSelectionModel().select(this.dashboardTab);
-        } else {
-            if (!this.tabPane.getTabs().contains(this.companySelectTab)) {
-                this.tabPane.getTabs().add(0, this.companySelectTab);
-            }
-            this.tabPane.getSelectionModel().select(this.companySelectTab);
-        }
-    }
-
-    // setContent(Node node) method is removed as TabPane handles content directly.
+public class MainApplicationView extends BorderPane
+{
+	
+	/**
+	 * Enum defining the different types of panels/tabs that can be displayed
+	 * in the main application view.
+	 */
+	public enum PanelType
+	{
+		/** Represents the Dashboard panel. */
+		DASHBOARD,
+		/** Represents the Journal panel. */
+		JOURNAL,
+		/** Represents the Chart of Accounts panel. */
+		COA,
+		/** Represents the Reports panel. */
+		REPORTS,
+		/** Represents the Account Transaction Details panel. */
+		ACCOUNT_DETAILS
+	}
+	
+	/** The TabPane used to display different application sections. */
+	private TabPane tabPane;
+	/** The main MenuBar for the application, set externally. */
+	private MenuBar menuBar;
+	
+	// Tab instances as fields for easy reference
+	/** Tab for displaying the Dashboard. */
+	private Tab dashboardTab;
+	/** Tab for displaying the Journal. */
+	private Tab journalTab;
+	/** Tab for displaying the Chart of Accounts. */
+	private Tab coaTab;
+	/** Tab for displaying Reports. */
+	private Tab reportsTab;
+	/** Tab for displaying Account Transaction Details. */
+	private Tab accountDetailsTab;
+	/** Tab for selecting or creating a company when none is open. */
+	private Tab companySelectTab;
+	
+	/**
+	 * Constructs a new {@code MainApplicationView}.
+	 * Initializes the {@link TabPane} and creates non-closable tabs for Dashboard,
+	 * Journal, Chart of Accounts, Reports, and Account Details, each populated
+	 * with their respective panels (currently skeleton or placeholder panels).
+	 * The TabPane is set as the center content of this BorderPane.
+	 * The MenuBar is initialized to null and is expected to be set via {@link #setMenuBar(MenuBar)}.
+	 */
+	public MainApplicationView()
+	{
+		this.menuBar = null; // Initialize menuBar, will be set via setter
+		
+		this.tabPane = new TabPane();
+		
+		// Create Tab instances
+		this.dashboardTab = new Tab("Dashboard", new SkeletonDashboardPanel());
+		this.journalTab = new Tab("Journal", new SkeletonJournalPanel());
+		this.coaTab = new Tab("Chart of Accounts", new SkeletonCoaPanel());
+		this.reportsTab = new Tab("Reports", new SkeletonReportsPanel());
+		
+		// Set tabs to be non-closable
+		this.dashboardTab.setClosable(false);
+		this.journalTab.setClosable(false);
+		this.coaTab.setClosable(false);
+		this.reportsTab.setClosable(false);
+		
+		// Add new tab for Account Details
+		this.accountDetailsTab = new Tab("Account Details", new AccountTransactionDetailsPanelFX());
+		this.accountDetailsTab.setClosable(false);
+		
+		// Tab shown when no company is open
+		CompanySelectionPanelFX selectPanel = new CompanySelectionPanelFX();
+		selectPanel.setOnCompanyOpenedHandler(selectPanel.new OnCompanyOpenedHandler()
+		{
+			@Override public void onCompanyOpened(nonprofitbookkeeping.model.Company company)
+			{
+				updateCompanyOpenState(true);
+			}
+			
+		});
+		this.companySelectTab = new Tab("Select Company", selectPanel);
+		this.companySelectTab.setClosable(false);
+		
+		// Add tabs to the tabPane
+		this.tabPane.getTabs().addAll(this.dashboardTab, this.journalTab, this.coaTab,
+			this.reportsTab, this.accountDetailsTab, this.companySelectTab);
+		
+		// Set the TabPane as the center of the BorderPane
+		setCenter(this.tabPane);
+		
+		// The TOP will be set via setMenuBar()
+	}
+	
+	/**
+	 * Sets the main {@link MenuBar} for the application view.
+	 * The provided MenuBar will be placed in the top region of this BorderPane.
+	 *
+	 * @param menuBar The {@link MenuBar} to be displayed at the top of the application.
+	 */
+	public void setMenuBar(MenuBar menuBar)
+	{
+		this.menuBar = menuBar;
+		setTop(this.menuBar); // Directly set the MenuBar to the top
+	}
+	
+	/**
+	 * Switches the visible tab in the central {@link TabPane} to the one
+	 * corresponding to the specified {@link PanelType}.
+	 * If an unknown panel type is provided, an error message is printed to standard error,
+	 * and no tab selection change occurs (unless a fallback is implemented).
+	 *
+	 * @param panelType The {@link PanelType} indicating which tab/panel to display.
+	 */
+	public void showPanel(PanelType panelType)
+	{
+		
+		switch(panelType)
+		{
+			case DASHBOARD:
+				this.tabPane.getSelectionModel().select(this.dashboardTab);
+				break;
+				
+			case JOURNAL:
+				this.tabPane.getSelectionModel().select(this.journalTab);
+				break;
+				
+			case COA:
+				this.tabPane.getSelectionModel().select(this.coaTab);
+				break;
+				
+			case REPORTS:
+				this.tabPane.getSelectionModel().select(this.reportsTab);
+				break;
+				
+			case ACCOUNT_DETAILS:
+				this.tabPane.getSelectionModel().select(this.accountDetailsTab);
+				break;
+				
+			default:
+				// Optionally, log an error or select a default tab
+				System.err.println("Unknown panel type: " + panelType); // Consider using a logger
+				// tabPane.getSelectionModel().select(dashboardTab); // Fallback to dashboard
+				break;
+		}
+		
+	}
+	
+	/**
+	 * Enables or disables primary tabs based on whether a company is open
+	 * and shows or hides the company selection tab accordingly.
+	 *
+	 * @param companyOpen {@code true} if a company is currently open.
+	 */
+	public void updateCompanyOpenState(boolean companyOpen)
+	{
+		this.dashboardTab.setDisable(!companyOpen);
+		this.journalTab.setDisable(!companyOpen);
+		this.coaTab.setDisable(!companyOpen);
+		this.reportsTab.setDisable(!companyOpen);
+		this.accountDetailsTab.setDisable(!companyOpen);
+		
+		if (companyOpen)
+		{
+			this.tabPane.getTabs().remove(this.companySelectTab);
+			this.tabPane.getSelectionModel().select(this.dashboardTab);
+		}
+		else
+		{
+			
+			if (!this.tabPane.getTabs().contains(this.companySelectTab))
+			{
+				this.tabPane.getTabs().add(0, this.companySelectTab);
+			}
+			
+			this.tabPane.getSelectionModel().select(this.companySelectTab);
+		}
+		
+	}
+	
 }

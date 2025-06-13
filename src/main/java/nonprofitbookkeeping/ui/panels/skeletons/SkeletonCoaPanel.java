@@ -9,9 +9,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
-// TreeItemPropertyValueFactory is not used if we use lambdas for
-// cellData.getValue().getValue()
-// import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.Alert;
@@ -63,10 +60,6 @@ public class SkeletonCoaPanel extends BorderPane
 	public SkeletonCoaPanel()
 	{
 		setPadding(new Insets(15)); // Overall padding
-		
-		// Initialize TreeTableView and its root
-		// The root's value can be null as it's not shown.
-		// Or use a dummy account if preferred for clarity, but it won't be visible.
 		
 		this.rootAccountsNode = new TreeItem<>();
 		this.coaTreeTable = new TreeTableView<>(this.rootAccountsNode);
@@ -129,7 +122,8 @@ public class SkeletonCoaPanel extends BorderPane
 		// Example for a balance column (requires data in Account object or external
 		// fetching)
 		//
-		// TreeTableColumn<Account, String> balanceCol = new TreeTableColumn<>("Balance");
+		// TreeTableColumn<Account, String> balanceCol = new
+		// TreeTableColumn<>("Balance");
 		// balanceCol.setCellValueFactory(cellData -> {
 		// Account acc = cellData.getValue().getValue();
 		//
@@ -141,8 +135,9 @@ public class SkeletonCoaPanel extends BorderPane
 		// balanceCol.setPrefWidth(120);
 		// balanceCol.setStyle("-fx-alignment: CENTER-RIGHT;");
 		
-		this.coaTreeTable.getColumns().addAll(numberCol, nameCol, typeCol); // Add balanceCol if
-		// implemented
+		this.coaTreeTable.getColumns().addAll(numberCol,
+			nameCol,
+			typeCol); // Add balanceCol if // implemented
 	}
 	
 	/**
@@ -151,19 +146,19 @@ public class SkeletonCoaPanel extends BorderPane
 	 * and recursively builds the tree structure using {@link #createAccountTreeItem(Account, ChartOfAccounts)}.
 	 * If no company is open or the COA is unavailable, the table will remain empty or show its placeholder.
 	 */
-        private void loadCoaData()
-        {
-                this.rootAccountsNode.getChildren().clear();
-
-                if (!CurrentCompany.isOpen() || CurrentCompany.getCompany() == null)
-                {
-                        this.coaTreeTable.setPlaceholder(new Label("No company open."));
-                        return;
-                }
-
-                Company company = CurrentCompany.getCompany();
-
-                if (company != null && company.getChartOfAccounts() != null)
+	private void loadCoaData()
+	{
+		this.rootAccountsNode.getChildren().clear();
+		
+		if (!CurrentCompany.isOpen() || CurrentCompany.getCompany() == null)
+		{
+			this.coaTreeTable.setPlaceholder(new Label("No company open."));
+			return;
+		}
+		
+		Company company = CurrentCompany.getCompany();
+		
+		if (company != null && company.getChartOfAccounts() != null)
 		{
 			ChartOfAccounts coa = company.getChartOfAccounts();
 			List<Account> rootLevelAccounts = coa.getRootAccounts(); // Assuming this method exists
@@ -234,118 +229,154 @@ public class SkeletonCoaPanel extends BorderPane
 		};
 		CurrentCompany.CompanyListener.addCompanyListener(this.companyChangeListener);
 		
-                this.addAccountButton.setOnAction(e -> openEditor());
+		this.addAccountButton.setOnAction(e -> openEditor());		
+		this.editAccountButton.setOnAction(e -> onEditAction());		
+		this.deleteAccountButton.setOnAction(e -> onDeleteAction());
 		
-		this.editAccountButton.setOnAction(e -> {
-			TreeItem<Account> selectedItem =
-				this.coaTreeTable.getSelectionModel().getSelectedItem();
-			
-			if (selectedItem != null && selectedItem.getValue() != null)
-			{
-				Account selectedAccount = selectedItem.getValue();
-                                openEditor();
-                                }
-                        else
-                        {
-                                Alert error =
-                                        new Alert(Alert.AlertType.WARNING, "No account selected for editing.");
-                                error.setHeaderText("Selection Missing");
-                                error.showAndWait();
-                        }
-			
-		});
+		loadCoaData(); // Initial data load
+	}
+
+
+	/**
+	 * On Edit button
+	 */
+	void onEditAction()
+	{
+		TreeItem<Account> selectedItem =
+			this.coaTreeTable.getSelectionModel().getSelectedItem();
 		
-		this.deleteAccountButton.setOnAction(e -> {
-			TreeItem<Account> selectedItem =
-				this.coaTreeTable.getSelectionModel().getSelectedItem();
+		if (selectedItem != null && selectedItem.getValue() != null)
+		{
+			Account selectedAccount = selectedItem.getValue();
+			openEditor();
+		}
+		else
+		{
+			Alert error =
+				new Alert(Alert.AlertType.WARNING, "No account selected for editing.");
+			error.setHeaderText("Selection Missing");
+			error.showAndWait();
+		}
+	}
+
+
+	/**
+	 * On Delete Button
+	 */
+	void onDeleteAction()
+	{
+		TreeItem<Account> selectedItem =
+			this.coaTreeTable.getSelectionModel().getSelectedItem();
+		
+		if (selectedItem != null && selectedItem.getValue() != null)
+		{
+			Account selectedAccount = selectedItem.getValue();
+			Company company = CurrentCompany.getCompany();
 			
-			if (selectedItem != null && selectedItem.getValue() != null)
+			if (company != null && company.getChartOfAccounts() != null)
 			{
-				Account selectedAccount = selectedItem.getValue();
-				Company company = CurrentCompany.getCompany();
+				Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION,
+					"Are you sure you want to delete account '" + selectedAccount.getName() +
+						"' (" + selectedAccount.getAccountNumber() +
+						") and all its sub-accounts (if any)? " +
+						"This action cannot be undone and may affect existing transactions if not handled carefully by the backend.",
+					ButtonType.YES, ButtonType.NO);
+				confirmation.setHeaderText("Confirm Deletion");
+				confirmation.setTitle("Delete Account");
 				
-				if (company != null && company.getChartOfAccounts() != null)
-				{
-					Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION,
-						"Are you sure you want to delete account '" + selectedAccount.getName() +
-							"' (" + selectedAccount.getAccountNumber() +
-							") and all its sub-accounts (if any)? " +
-							"This action cannot be undone and may affect existing transactions if not handled carefully by the backend.",
-						ButtonType.YES, ButtonType.NO);
-					confirmation.setHeaderText("Confirm Deletion");
-					confirmation.setTitle("Delete Account");
-					
-					confirmation.showAndWait().ifPresent(response -> {
-						
-						if (response == ButtonType.YES)
-						{
-							boolean deleted = company.getChartOfAccounts()
-								.removeAccount(selectedAccount.getAccountNumber()); // Assuming
-																					// remove by ID
-							
-							if (deleted)
-							{
-								loadCoaData();
-								System.out.println("Deleted account: " + selectedAccount.getName());
-							}
-							else
-							{
-								Alert error = new Alert(Alert.AlertType.ERROR,
-									"Failed to delete account '" + selectedAccount.getName() +
-										"'. It might be in use or a core account.");
-								error.setHeaderText("Deletion Failed");
-								error.showAndWait();
-							}
-							
-						}
-						
-					});
-				}
-				
+				confirmation.showAndWait().ifPresent(
+					response -> onConfirm(selectedAccount, company, response));
+			}
+			
+		}
+		else
+		{
+			Alert error = new Alert(Alert.AlertType.WARNING, 
+				"No account selected for deletion.");
+			error.setHeaderText("Selection Missing");
+			error.showAndWait();
+		}
+	}
+
+
+	/**
+	 * @param selectedAccount
+	 * @param company
+	 * @param response
+	 */
+	void onConfirm(Account selectedAccount, Company company, ButtonType response)
+	{		
+		if (response == ButtonType.YES)
+		{
+			boolean deleted = company.getChartOfAccounts()
+				.removeAccount(selectedAccount.getAccountNumber()); // Assuming remove by ID
+			
+			if (deleted)
+			{
+				loadCoaData();
+				System.out.println("Deleted account: " + selectedAccount.getName());
 			}
 			else
 			{
-				Alert error =
-					new Alert(Alert.AlertType.WARNING, "No account selected for deletion.");
-				error.setHeaderText("Selection Missing");
+				Alert error = new Alert(Alert.AlertType.ERROR,
+					"Failed to delete account '" + selectedAccount.getName() +
+						"'. It might be in use or a core account.");
+				error.setHeaderText("Deletion Failed");
 				error.showAndWait();
 			}
 			
-		});
-                loadCoaData(); // Initial data load
-        }
-
-        /** Opens the full Chart of Accounts editor in a new window. */
-        private void openEditor()
-        {
-                Company company = CurrentCompany.getCompany();
-
-                if (company == null || company.getChartOfAccounts() == null)
-                {
-                        AlertBox.showError(getScene().getWindow(), "No company open.");
-                        return;
-                }
-
-                CoaEditorPanelFX editor = new CoaEditorPanelFX(
-                        company.getChartOfAccounts(),
-                        coa -> {
-                                company.setChartOfAccounts(coa);
-                                try {
-                                        CurrentCompany.persist();
-                                } catch (Exception ex) {
-                                        ex.printStackTrace();
-                                }
-                                CurrentCompany.open();
-                                loadCoaData();
-                        },
-                        null);
-
-                Stage s = new Stage();
-                s.setTitle("Chart of Accounts Editor");
-                s.initOwner(getScene().getWindow());
-                s.setScene(new Scene(editor, 800, 600));
-                s.showAndWait();
-        }
+		}
+		
+	}
 	
-	// AccountData inner class is removed
+	/** 
+	 * Opens the full Chart of Accounts editor in a new window. 
+	 */
+	private void openEditor()
+	{
+		Company company = CurrentCompany.getCompany();
+		
+		if (company == null || company.getChartOfAccounts() == null)
+		{
+			AlertBox.showError(getScene().getWindow(), "No company open.");
+			return;
+		}
+		
+		// Launch Editor Panel
+		CoaEditorPanelFX editor = new CoaEditorPanelFX(
+			company.getChartOfAccounts(),
+			coa ->chartOfAccountsCallback(company, coa),
+			null); // on close
+			
+		Stage s = new Stage();
+		s.setTitle("Chart of Accounts Editor");
+		s.initOwner(getScene().getWindow());
+		s.setScene(new Scene(editor, 800, 600));
+		s.showAndWait();
+	}
+
+
+	/**
+	 * Chart of accounts callback
+	 * 
+	 * @param company
+	 * @param coa
+	 */
+	void chartOfAccountsCallback(Company company, ChartOfAccounts coa)
+	{
+		company.setChartOfAccounts(coa);
+		
+		try
+		{
+			CurrentCompany.persist();
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		
+		CurrentCompany.open();
+		loadCoaData();
+	}
+	
 }

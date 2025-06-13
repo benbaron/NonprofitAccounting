@@ -119,8 +119,6 @@ public class NonprofitBookkeepingFX extends Application
 		private static final DocumentStorageService dss = new DocumentStorageService();
 		private static final FundAccountingService fas = new FundAccountingService();
 		
-		// FileImportService and FileExportService are typically used via Actions,
-		// and thus not instantiated here as globally managed singletons.
 	}
 	
 	/**
@@ -242,12 +240,9 @@ public class NonprofitBookkeepingFX extends Application
 		/* EDIT */
 		Menu edit = new Menu("Edit");
 		this.miEditCompany = add(edit, "Create or Edit Company", e -> startCreateWizard());
-		// this.miEditCoa = add(edit, "Edit Chart of Accounts", e -> showCoaEditor());
 		// // Old
 		this.miEditCoa = add(edit, "Edit Chart of Accounts",
 			e -> ((MainApplicationView) this.root).showPanel(MainApplicationView.PanelType.COA));
-		// this.miEditJournal = add(edit, "Edit Journal", e -> showPanel(new
-		// JournalPanelFX(), "Journal")); // Old
 		this.miEditJournal = add(edit, "Edit Journal", e -> ((MainApplicationView) this.root)
 			.showPanel(MainApplicationView.PanelType.JOURNAL));
 		
@@ -274,15 +269,11 @@ public class NonprofitBookkeepingFX extends Application
 			
 			if (companyDir == null)
 			{
-				// This case is less likely if companyFile is not null and is a valid file path,
-				// but it's a good safeguard.
 				AlertBox.showError(this.primaryStage,
 					"Could not determine the company's directory from its saved file path. Cannot manage budgets.");
 				return;
 			}
 			
-			// Check if the directory actually exists, as an additional safeguard,
-			// though BudgetService might also handle this.
 			if (!companyDir.exists() || !companyDir.isDirectory())
 			{
 				AlertBox.showError(this.primaryStage,
@@ -315,12 +306,7 @@ public class NonprofitBookkeepingFX extends Application
 		add(this.reports, "Show Reports", e -> ((MainApplicationView) this.root)
 			.showPanel(MainApplicationView.PanelType.REPORTS));
 		add(this.reports, "Show Accounts",
-			e -> showPanel(new AccountsPanelFX(new AccountService()), "Chart of Accounts")); // Stays
-																								// as
-																								// new
-																								// window
-																								// for
-																								// now
+			e -> showPanel(new AccountsPanelFX(new AccountService()), "Chart of Accounts")); 
 		add(this.reports, "Show Account Activity", e -> {
 			Company currentCompany = CurrentCompany.getCompany();
 			
@@ -396,11 +382,9 @@ public class NonprofitBookkeepingFX extends Application
 			(this.loadedPlugins != null ? this.loadedPlugins.size() : 0));
 		
 		if (this.loadedPlugins != null)
-		{
-			
+		{		
 			for (Plugin plugin : this.loadedPlugins)
-			{
-				
+			{				
 				try
 				{
 					LOGGER.info("Adding menu items for plugin: " + plugin.getName());
@@ -472,8 +456,7 @@ public class NonprofitBookkeepingFX extends Application
 		this.miOpen.setDisable(companyOpen || creatingCompany);
 		this.miClose.setDisable(noCompany || creatingCompany);
 		this.miSave.setDisable(noCompany || creatingCompany);
-		this.miEditCompany.setDisable(creatingCompany); // Can edit if open, can create if no
-														// company
+		this.miEditCompany.setDisable(creatingCompany); 
 		this.miEditCoa.setDisable(noCompany || creatingCompany);
 		this.miEditJournal.setDisable(noCompany || creatingCompany);
 		this.miImportCoaXlsx.setDisable(noCompany || creatingCompany);
@@ -502,13 +485,11 @@ public class NonprofitBookkeepingFX extends Application
 		
 		try
 		{
-			// The OpenCompanyFileActionFX itself should handle the logic of opening.
-			// It will call the provided callback on success.
 			OpenCompanyFileActionFX openCompanyFileActionFX =
 				new OpenCompanyFileActionFX(this.primaryStage,
 					() -> setState(AppState.COMPANY_OPEN));
 		}
-		catch (Exception e) // Catch broad exceptions from action if it throws them directly
+		catch (Exception e) 
 		{
 			AlertBox.showError(this.primaryStage, "Failed to open company: " + e.getMessage());
 		}
@@ -528,8 +509,6 @@ public class NonprofitBookkeepingFX extends Application
 		
 		try
 		{
-			// The CloseCompanyFileAction should handle the logic of closing.
-			// This includes saving if necessary/prompting, clearing CurrentCompany, etc.
 			CloseCompanyFileAction closeCompanyFileAction =
 				new CloseCompanyFileAction(this.primaryStage);
 			// After action, set state.
@@ -564,16 +543,8 @@ public class NonprofitBookkeepingFX extends Application
 		
 		try
 		{
-			// SaveCompanyFileAction should handle the logic of saving CurrentCompany.
 			SaveCompanyFileAction saveCompanyFileAction =
 				new SaveCompanyFileAction(this.primaryStage);
-			// Assuming the action itself shows success/failure messages or throws on
-			// failure.
-			// If it returns a status, we could use that:
-			// boolean saved = saveCompanyFileAction.execute(); // If it had an execute
-			// method
-			// if (saved) AlertBox.showInfo(this.primaryStage, "Company saved.");
-			// For now, just showing a generic message if no exception.
 			AlertBox.showInfo(this.primaryStage, "Company saved.");
 		}
 		catch (Exception ex)
@@ -598,8 +569,6 @@ public class NonprofitBookkeepingFX extends Application
 		
 		try
 		{
-			// CreateOrEditCompanyActionFX should handle the wizard logic.
-			// Upon successful completion, it should update CurrentCompany.
 			CreateOrEditCompanyActionFX createOrEditCompanyActionFX =
 				new CreateOrEditCompanyActionFX(this.primaryStage);
 			
