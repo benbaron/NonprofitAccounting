@@ -71,10 +71,7 @@ public class JacksonDataStorer implements DataStorer
 				
 				if (JSON_ENTRY_NAME.equals(zipEntry.getName()))
 				{
-					// System.out.println("loadData: Found entry 'company_data.json', attempting
-					// deserialization - START");
 					value = this.mapper.readValue(zis, type);
-					// System.out.println("loadData: Deserialization from zip entry - END");
 					entryFound = true;
 					break;
 				}
@@ -130,23 +127,11 @@ public class JacksonDataStorer implements DataStorer
 			ZipOutputStream zos = new ZipOutputStream(fos))
 		{
 			
-			// System.out.println("saveData: JSON serialization to ByteArrayOutputStream -
-				// START");
 			this.mapper.writeValue(baos, obj);
-			// System.out.println("saveData: JSON serialization to ByteArrayOutputStream -
-			// END");
-			
-			// System.out.println("saveData: ZipOutputStream creation - START");
-			// System.out.println("saveData: ZipOutputStream creation - END");
 			
 			ZipEntry zipEntry = new ZipEntry(JSON_ENTRY_NAME);
-			// System.out.println("saveData: Writing zip entry 'company_data.json' -
-			// START");
 			zos.putNextEntry(zipEntry);
-			// System.out.println("saveData: Writing zip entry 'company_data.json' - WRITING
-			// BYTES");
 			zos.write(baos.toByteArray());
-			// System.out.println("saveData: Writing zip entry 'company_data.json' - END");
 			zos.closeEntry();
 			System.out.println("DEBUG: Exiting saveData"); // Minimal logging
 		}
@@ -164,7 +149,6 @@ public class JacksonDataStorer implements DataStorer
 	@Override public List<File> listFiles(File directory, String extension)
 	{
 		
-		// System.out.println("DEBUG: Entering listFiles");
 		if (directory == null || !directory.isDirectory())
 		{
 			return List.of();
@@ -173,7 +157,6 @@ public class JacksonDataStorer implements DataStorer
 		List<File> result =
 			Arrays.stream(directory.listFiles((dir, name) -> name.endsWith(extension)))
 				.collect(Collectors.toList());
-		// System.out.println("DEBUG: Exiting listFiles");
 		return result;
 	}
 	

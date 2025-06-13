@@ -10,7 +10,6 @@ import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.ui.JavaFXTestBase;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -26,7 +25,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.testfx.api.FxAssert.verifyThat;
-import static org.testfx.matcher.control.TextInputControlMatchers.hasText; // For TextArea
 import static org.testfx.matcher.control.ComboBoxMatchers.hasItems;
 
 

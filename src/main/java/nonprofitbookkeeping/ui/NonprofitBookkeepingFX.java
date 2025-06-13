@@ -81,10 +81,10 @@ public class NonprofitBookkeepingFX extends Application
 	private MenuItem miEditCoa;
 	/** Menu item for editing the Journal. */
 	private MenuItem miEditJournal;
-        /** Menu item for importing COA from XLSX. */
-        private MenuItem miImportCoaXlsx;
-        /** Menu item for exporting COA to XLSX. */
-        private MenuItem miExportCoaXlsx;
+	/** Menu item for importing COA from XLSX. */
+	private MenuItem miImportCoaXlsx;
+	/** Menu item for exporting COA to XLSX. */
+	private MenuItem miExportCoaXlsx;
 	
 	// Menus that need their state managed
 	/** Top-level menu for running various tools and plugin features. */
@@ -93,7 +93,7 @@ public class NonprofitBookkeepingFX extends Application
 	private Menu reports;
 	/** Top-level menu for accessing different data panels like Donors, Grants etc. */
 	private Menu panels;
-
+	
 	/** Logger for this class. */
 	private static final Logger LOGGER = Logger.getLogger(NonprofitBookkeepingFX.class.getName());
 	/** List to hold all successfully loaded plugins. */
@@ -150,7 +150,7 @@ public class NonprofitBookkeepingFX extends Application
 			// Save data
 			doSaveCompany(); // Attempt to save company data
 		}));
-
+		
 		// Configure SLF4J logging bridge
 		SLF4JBridgeHandler.removeHandlersForRootLogger();
 		SLF4JBridgeHandler.install();
@@ -159,10 +159,8 @@ public class NonprofitBookkeepingFX extends Application
 		this.primaryStage = stage;
 		this.c = new CurrentCompany();
 		this.dashboard = new DashboardPanelFX();
-		// this.root = new BorderPane(); // Old root
 		MainApplicationView mainView = new MainApplicationView();
 		this.root = mainView; // Assign MainApplicationView to root
-		// this.root.setCenter(this.dashboard); // MainApplicationView handles its own center
 		
 		// Instantiate ApplicationContextImpl
 		// Services are passed from the static ServiceContainer
@@ -202,11 +200,10 @@ public class NonprofitBookkeepingFX extends Application
 		
 		LOGGER.info("Plugin discovery complete. Loaded " + this.loadedPlugins.size() + " plugins.");
 		
-		// MenuBar must be built *after* plugins are loaded so 
+		// MenuBar must be built *after* plugins are loaded so
 		// they can add their items.
-		// mainView.setTop(buildMenuBar()); // Old way of setting menu bar directly
 		MenuBar menuBar = buildMenuBar();
-		mainView.setMenuBar(menuBar); // New way: Pass MenuBar to MainApplicationView
+		mainView.setMenuBar(menuBar);
 		
 		Scene scene = new Scene(mainView, 1000, 700); // Use mainView for the scene
 		this.primaryStage.setScene(scene);
@@ -233,9 +230,11 @@ public class NonprofitBookkeepingFX extends Application
 		this.miOpen = add(file, "Open Company File", e -> doOpenCompany());
 		this.miClose = add(file, "Close Company File", e -> doCloseCompany());
 		this.miSave = add(file, "Save Company File", e -> doSaveCompany());
-                this.miImportCoaXlsx = add(file, "Import COA (XLSX)", e -> new ImportCoaXlsxActionFX(this.primaryStage).handle(e));
-                this.miExportCoaXlsx = add(file, "Export COA (XLSX)", e -> new ExportCoaXlsxActionFX(this.primaryStage).handle(e));
-
+		this.miImportCoaXlsx = add(file, "Import COA (XLSX)",
+			e -> new ImportCoaXlsxActionFX(this.primaryStage).handle(e));
+		this.miExportCoaXlsx = add(file, "Export COA (XLSX)",
+			e -> new ExportCoaXlsxActionFX(this.primaryStage).handle(e));
+		
 		add(file, "Import File", e -> new ImportFileActionFX(this.primaryStage).handle(e));
 		add(file, "Export File", e -> new ExportFileActionFX(this.primaryStage).handle(e));
 		bar.getMenus().add(file);
@@ -243,40 +242,55 @@ public class NonprofitBookkeepingFX extends Application
 		/* EDIT */
 		Menu edit = new Menu("Edit");
 		this.miEditCompany = add(edit, "Create or Edit Company", e -> startCreateWizard());
-		// this.miEditCoa = add(edit, "Edit Chart of Accounts", e -> showCoaEditor()); // Old
-		this.miEditCoa = add(edit, "Edit Chart of Accounts", e -> ((MainApplicationView)this.root).showPanel(MainApplicationView.PanelType.COA));
-		// this.miEditJournal = add(edit, "Edit Journal", e -> showPanel(new JournalPanelFX(), "Journal")); // Old
-		this.miEditJournal = add(edit, "Edit Journal", e -> ((MainApplicationView)this.root).showPanel(MainApplicationView.PanelType.JOURNAL));
+		// this.miEditCoa = add(edit, "Edit Chart of Accounts", e -> showCoaEditor());
+		// // Old
+		this.miEditCoa = add(edit, "Edit Chart of Accounts",
+			e -> ((MainApplicationView) this.root).showPanel(MainApplicationView.PanelType.COA));
+		// this.miEditJournal = add(edit, "Edit Journal", e -> showPanel(new
+		// JournalPanelFX(), "Journal")); // Old
+		this.miEditJournal = add(edit, "Edit Journal", e -> ((MainApplicationView) this.root)
+			.showPanel(MainApplicationView.PanelType.JOURNAL));
 		
 		add(edit, "Open Budget Editor", e -> {
-                        Company currentCompany = CurrentCompany.getCompany();
-
-                        if (!CurrentCompany.isOpen() || currentCompany == null) {
-                                AlertBox.showError(this.primaryStage, "No company is currently open. Please open or create a company first.");
-                                return;
-                        }
-
-			File companyFile = currentCompany.getCompanyFile();
-			if (companyFile == null) {
-				AlertBox.showError(this.primaryStage, "The current company has not been saved to a file yet. Please save your company before managing budgets.");
+			Company currentCompany = CurrentCompany.getCompany();
+			
+			if (!CurrentCompany.isOpen() || currentCompany == null)
+			{
+				AlertBox.showError(this.primaryStage,
+					"No company is currently open. Please open or create a company first.");
 				return;
 			}
-
+			
+			File companyFile = currentCompany.getCompanyFile();
+			
+			if (companyFile == null)
+			{
+				AlertBox.showError(this.primaryStage,
+					"The current company has not been saved to a file yet. Please save your company before managing budgets.");
+				return;
+			}
+			
 			File companyDir = companyFile.getParentFile();
-			if (companyDir == null) {
+			
+			if (companyDir == null)
+			{
 				// This case is less likely if companyFile is not null and is a valid file path,
 				// but it's a good safeguard.
-				AlertBox.showError(this.primaryStage, "Could not determine the company's directory from its saved file path. Cannot manage budgets.");
+				AlertBox.showError(this.primaryStage,
+					"Could not determine the company's directory from its saved file path. Cannot manage budgets.");
 				return;
 			}
 			
 			// Check if the directory actually exists, as an additional safeguard,
 			// though BudgetService might also handle this.
-			if (!companyDir.exists() || !companyDir.isDirectory()) {
-				AlertBox.showError(this.primaryStage, "The company directory '" + companyDir.getAbsolutePath() + "' does not exist or is not a directory. Cannot manage budgets.");
+			if (!companyDir.exists() || !companyDir.isDirectory())
+			{
+				AlertBox.showError(this.primaryStage,
+					"The company directory '" + companyDir.getAbsolutePath() +
+						"' does not exist or is not a directory. Cannot manage budgets.");
 				return;
 			}
-
+			
 			// If all checks pass, proceed to open the BudgetPanel
 			new BudgetPanel(null, currentCompany.getChartOfAccounts(), new ArrayList<Fund>(),
 				ServiceContainer.budgetService, companyDir, null).setVisible(true);
@@ -291,20 +305,22 @@ public class NonprofitBookkeepingFX extends Application
 			e -> showPanel(new InventoryPanelFX(ServiceContainer.iss), "Inventory"));
 		add(this.run, "Funds & Fund Accounting",
 			e -> showPanel(new FundsPanelFX(ServiceContainer.fas), "Funds"));
-                add(this.run, "Reconcile",
-                        e -> showPanel(new LedgerReconcilePanelFX(new ReconciliationService()), "Reconciliation"));
-		// Note: The SCA Ledger submenu was here. It will be added by the
-		// SCALedgerPlugin if loaded.
+		add(this.run, "Reconcile",
+			e -> showPanel(new LedgerReconcilePanelFX(new ReconciliationService()),
+				"Reconciliation"));
 		bar.getMenus().add(this.run);
 		
 		/* REPORTS */
 		this.reports = new Menu("Reports");
-		// add(this.reports, "Generate Reports", e -> { /* implement */}); // Old
-		// placeholder
-		// add(this.reports, "Show Reports", e -> showPanel(new ReportsPanelFX(), "Reports")); // Old
-		add(this.reports, "Show Reports", e -> ((MainApplicationView)this.root).showPanel(MainApplicationView.PanelType.REPORTS));
+		add(this.reports, "Show Reports", e -> ((MainApplicationView) this.root)
+			.showPanel(MainApplicationView.PanelType.REPORTS));
 		add(this.reports, "Show Accounts",
-			e -> showPanel(new AccountsPanelFX(new AccountService()), "Chart of Accounts")); // Stays as new window for now
+			e -> showPanel(new AccountsPanelFX(new AccountService()), "Chart of Accounts")); // Stays
+																								// as
+																								// new
+																								// window
+																								// for
+																								// now
 		add(this.reports, "Show Account Activity", e -> {
 			Company currentCompany = CurrentCompany.getCompany();
 			
@@ -336,7 +352,7 @@ public class NonprofitBookkeepingFX extends Application
 				ServiceContainer.budgetService).actionPerformed(null));
 		add(this.reports, "Manage Saved Reports", e -> {
 			Company currentCompany = CurrentCompany.getCompany();
-
+			
 			if (currentCompany == null || currentCompany.getCompanyFile() == null ||
 				currentCompany.getCompanyFile().getParentFile() == null)
 			{
@@ -344,7 +360,7 @@ public class NonprofitBookkeepingFX extends Application
 					"Company context not properly set for managing reports.");
 				return;
 			}
-
+			
 			new ManageReportConfigurationsDialog(null, ServiceContainer.reportConfigurationService,
 				currentCompany.getCompanyFile().getParentFile(),
 				new ArrayList<Fund>(), ServiceContainer.reportService).setVisible(true);
@@ -439,39 +455,6 @@ public class NonprofitBookkeepingFX extends Application
 		sub.show();
 	}
 	
-	/*
-	// Original showCoaEditor method, now replaced by using MainApplicationView.showPanel()
-	private void showCoaEditor()
-	{
-		Node previousView = this.root.getCenter();
-		Company activeCompany = CurrentCompany.getCompany();
-		
-		if (activeCompany == null || activeCompany.getChartOfAccounts() == null)
-		{
-			AlertBox.showError(this.primaryStage, "No company or Chart of Accounts open.");
-			return;
-		}
-		
-		CoaEditorPanelFX editor = new CoaEditorPanelFX(
-			activeCompany.getChartOfAccounts(),
-			chart ->
-			{
-				activeCompany.setChartOfAccounts(chart);
-				
-				try
-				{
-					CurrentCompany.persist();
-				}
-				catch (IOException | ActionCancelledException | NoFileCreatedException ex)
-				{
-					ex.printStackTrace(); // Consider better error handling
-				}
-				
-			},
-			() -> this.root.setCenter(previousView));
-		this.root.setCenter(editor);
-	}
-	*/
 	
 	/**
 	 * Sets the application's operational state and updates the enabled/disabled status
@@ -479,10 +462,10 @@ public class NonprofitBookkeepingFX extends Application
 	 *
 	 * @param newState The new {@link AppState} to set for the application.
 	 */
-        private void setState(AppState newState)
-        {
-                this.state = newState;
-                boolean companyOpen = (newState == AppState.COMPANY_OPEN);
+	private void setState(AppState newState)
+	{
+		this.state = newState;
+		boolean companyOpen = (newState == AppState.COMPANY_OPEN);
 		boolean noCompany = (newState == AppState.NO_COMPANY);
 		boolean creatingCompany = (newState == AppState.CREATING_COMPANY);
 		
@@ -493,37 +476,18 @@ public class NonprofitBookkeepingFX extends Application
 														// company
 		this.miEditCoa.setDisable(noCompany || creatingCompany);
 		this.miEditJournal.setDisable(noCompany || creatingCompany);
-                this.miImportCoaXlsx.setDisable(noCompany || creatingCompany);
-                this.miExportCoaXlsx.setDisable(noCompany || creatingCompany);
+		this.miImportCoaXlsx.setDisable(noCompany || creatingCompany);
+		this.miExportCoaXlsx.setDisable(noCompany || creatingCompany);
 		
 		this.run.setDisable(noCompany || creatingCompany);
 		this.panels.setDisable(noCompany || creatingCompany);
-                this.reports.setDisable(noCompany || creatingCompany);
-
-                if (this.root instanceof MainApplicationView) {
-                        ((MainApplicationView)this.root).updateCompanyOpenState(companyOpen);
-                }
+		this.reports.setDisable(noCompany || creatingCompany);
 		
-		// Plugin menus are added by plugins themselves. The core app enables/disables
-		// the top-level "SCA Ledger" menu (or other plugin menus) if those plugins make that possible
-		// via ApplicationContext. For now, top-level plugin menus added by plugins will be enabled/disabled
-		// along with "Run", "Reports", etc.
+		if (this.root instanceof MainApplicationView)
+		{
+			((MainApplicationView) this.root).updateCompanyOpenState(companyOpen);
+		}
 		
-		// A more granular approach would involve plugins registering their top-level
-		// menus with the core app, and the core app managing their disable state based on broader context like
-		// COMPANY_OPEN.
-		
-		// Or, plugins can check ApplicationContext.getCurrentCompany() themselves in
-		// their actions.
-		
-		// The SCALedgerPlugin's menu is added directly to the bar, so it won't be
-		// covered by this.run.setDisable(). It should ideally also be disabled if no company is open if its actions
-		// require one.
-		
-		// This can be handled by the plugin itself in its addMenuItems or if the main
-		// app manages plugin menus. For now, SCALedgerPlugin's menu is always enabled once added.
-		// This is a V2 improvement area.
-		// A robust solution would involve plugins registering their top-level menus for state management by the core.
 	}
 	
 	/**
@@ -539,12 +503,10 @@ public class NonprofitBookkeepingFX extends Application
 		try
 		{
 			// The OpenCompanyFileActionFX itself should handle the logic of opening.
-            // It will call the provided callback on success.
+			// It will call the provided callback on success.
 			OpenCompanyFileActionFX openCompanyFileActionFX =
-				new OpenCompanyFileActionFX(this.primaryStage, () -> setState(AppState.COMPANY_OPEN));
-            // The old state update logic below is now handled by the callback.
-            // Exceptions thrown by OpenCompanyFileActionFX (e.g., on cancellation or load failure)
-            // will be caught by the catch block.
+				new OpenCompanyFileActionFX(this.primaryStage,
+					() -> setState(AppState.COMPANY_OPEN));
 		}
 		catch (Exception e) // Catch broad exceptions from action if it throws them directly
 		{
@@ -567,24 +529,28 @@ public class NonprofitBookkeepingFX extends Application
 		try
 		{
 			// The CloseCompanyFileAction should handle the logic of closing.
-            // This includes saving if necessary/prompting, clearing CurrentCompany, etc.
+			// This includes saving if necessary/prompting, clearing CurrentCompany, etc.
 			CloseCompanyFileAction closeCompanyFileAction =
 				new CloseCompanyFileAction(this.primaryStage);
 			// After action, set state.
 			setState(AppState.NO_COMPANY);
 		}
-		catch (Exception e)  // Catch broad exceptions from action
+		catch (Exception e) // Catch broad exceptions from action
 		{
 			AlertBox.showError(this.primaryStage, "Failed to close company: " + e.getMessage());
 		}
 		
 		// Switch view back to dashboard
-		if (this.root instanceof MainApplicationView) {
-			((MainApplicationView)this.root).showPanel(MainApplicationView.PanelType.DASHBOARD);
-		} else {
+		if (this.root instanceof MainApplicationView)
+		{
+			((MainApplicationView) this.root).showPanel(MainApplicationView.PanelType.DASHBOARD);
+		}
+		else
+		{
 			// Fallback or error if root is not what we expect
 			this.root.setCenter(this.dashboard);
 		}
+		
 	}
 	
 	/**
@@ -598,14 +564,16 @@ public class NonprofitBookkeepingFX extends Application
 		
 		try
 		{
-            // SaveCompanyFileAction should handle the logic of saving CurrentCompany.
+			// SaveCompanyFileAction should handle the logic of saving CurrentCompany.
 			SaveCompanyFileAction saveCompanyFileAction =
 				new SaveCompanyFileAction(this.primaryStage);
-            // Assuming the action itself shows success/failure messages or throws on failure.
-            // If it returns a status, we could use that:
-            // boolean saved = saveCompanyFileAction.execute(); // If it had an execute method
-            // if (saved) AlertBox.showInfo(this.primaryStage, "Company saved.");
-            // For now, just showing a generic message if no exception.
+			// Assuming the action itself shows success/failure messages or throws on
+			// failure.
+			// If it returns a status, we could use that:
+			// boolean saved = saveCompanyFileAction.execute(); // If it had an execute
+			// method
+			// if (saved) AlertBox.showInfo(this.primaryStage, "Company saved.");
+			// For now, just showing a generic message if no exception.
 			AlertBox.showInfo(this.primaryStage, "Company saved.");
 		}
 		catch (Exception ex)
@@ -630,17 +598,22 @@ public class NonprofitBookkeepingFX extends Application
 		
 		try
 		{
-            // CreateOrEditCompanyActionFX should handle the wizard logic.
-            // Upon successful completion, it should update CurrentCompany.
+			// CreateOrEditCompanyActionFX should handle the wizard logic.
+			// Upon successful completion, it should update CurrentCompany.
 			CreateOrEditCompanyActionFX createOrEditCompanyActionFX =
 				new CreateOrEditCompanyActionFX(this.primaryStage);
-            // If wizard completes and company is set in CurrentCompany:
-            if (CurrentCompany.getCompany() != null) { // Basic check
-			    setState(AppState.COMPANY_OPEN);
-            } else {
-                 // Wizard was cancelled or failed without setting a company
-                setState(saved); // Revert to previous state
-            }
+			
+			// If wizard completes and company is set in CurrentCompany:
+			if (CurrentCompany.getCompany() != null)
+			{ // Basic check
+				setState(AppState.COMPANY_OPEN);
+			}
+			else
+			{
+				// Wizard was cancelled or failed without setting a company
+				setState(saved); // Revert to previous state
+			}
+			
 		}
 		catch (Exception e)
 		{

@@ -1,7 +1,6 @@
 package nonprofitbookkeeping.ui.panels;
 
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -10,7 +9,6 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountSide;
@@ -37,12 +35,8 @@ import org.testfx.util.WaitForAsyncUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
-
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -69,7 +63,7 @@ public class NewTransactionPanelFXTest extends JavaFXTestBase {
     public void start(Stage stage) throws Exception {
         MockitoAnnotations.openMocks(this);
 
-        testCoa = new ChartOfAccounts();
+        this.testCoa = new ChartOfAccounts();
         Account assetAcc = new Account("1010", "Bank", AccountType.ASSET, BigDecimal.ZERO);
         assetAcc.setIncreaseSide(AccountSide.DEBIT); // Explicitly set for test
         Account expenseAcc = new Account("6010", "Office Supplies", AccountType.EXPENSE, BigDecimal.ZERO);
@@ -77,25 +71,25 @@ public class NewTransactionPanelFXTest extends JavaFXTestBase {
         Account incomeAcc = new Account("4010", "Donations", AccountType.INCOME, BigDecimal.ZERO);
         incomeAcc.setIncreaseSide(AccountSide.CREDIT);
 
-        testCoa.addRootAccount(assetAcc);
-        testCoa.addRootAccount(expenseAcc);
-        testCoa.addRootAccount(incomeAcc);
+        this.testCoa.addRootAccount(assetAcc);
+        this.testCoa.addRootAccount(expenseAcc);
+        this.testCoa.addRootAccount(incomeAcc);
 
-        testCompany = new Company();
+        this.testCompany = new Company();
         CompanyProfileModel profile = new CompanyProfileModel();
         profile.setCompanyName("Test NewTransaction Co");
-        testCompany.setCompanyProfile(profile);
-        testCompany.setChartOfAccounts(testCoa);
+        this.testCompany.setCompanyProfile(profile);
+        this.testCompany.setChartOfAccounts(this.testCoa);
 
-        CurrentCompany.forceCompanyLoad(testCompany);
+        CurrentCompany.forceCompanyLoad(this.testCompany);
 
         // For creating a new transaction
-        panel = new NewTransactionPanelFX(mockOnSave);
-        Scene scene = new Scene(panel, 800, 600);
+        this.panel = new NewTransactionPanelFX(this.mockOnSave);
+        Scene scene = new Scene(this.panel, 800, 600);
         stage.setScene(scene);
         stage.show();
 
-        table = lookup(".table-view").queryTableView();
+        this.table = lookup(".table-view").queryTableView();
     }
 
     @AfterEach
@@ -107,13 +101,13 @@ public class NewTransactionPanelFXTest extends JavaFXTestBase {
     public void testInitialState_SaveDisabled_OneEmptyLine() {
         verifyThat("#datePicker", (DatePicker dp) -> dp.getValue().equals(LocalDate.now()));
         verifyThat("#memoArea", (TextArea ta) -> ta.getText().isEmpty());
-        verifyThat(table, hasNumRows(0)); // Panel starts with 0 lines, user clicks "+ Entry"
+        verifyThat(this.table, hasNumRows(0)); // Panel starts with 0 lines, user clicks "+ Entry"
 
         clickOn("+ Entry"); // Add first line
         WaitForAsyncUtils.waitForFxEvents();
-        verifyThat(table, hasNumRows(1));
+        verifyThat(this.table, hasNumRows(1));
 
-        Line firstLine = table.getItems().get(0);
+        Line firstLine = this.table.getItems().get(0);
         assertEquals("", firstLine.account.get());
         assertEquals(AccountSide.DEBIT, firstLine.side.get());
         assertEquals(BigDecimal.ZERO, firstLine.amount.get());
@@ -125,23 +119,23 @@ public class NewTransactionPanelFXTest extends JavaFXTestBase {
     public void testAddAndRemoveLines() {
         clickOn("+ Entry");
         WaitForAsyncUtils.waitForFxEvents();
-        verifyThat(table, hasNumRows(1));
+        verifyThat(this.table, hasNumRows(1));
 
         clickOn("+ Entry");
         WaitForAsyncUtils.waitForFxEvents();
-        verifyThat(table, hasNumRows(2));
+        verifyThat(this.table, hasNumRows(2));
 
-        Platform.runLater(() -> table.getSelectionModel().select(0));
+        Platform.runLater(() -> this.table.getSelectionModel().select(0));
         WaitForAsyncUtils.waitForFxEvents();
         clickOn("Remove");
         WaitForAsyncUtils.waitForFxEvents();
-        verifyThat(table, hasNumRows(1));
+        verifyThat(this.table, hasNumRows(1));
 
-        Platform.runLater(() -> table.getSelectionModel().select(0));
+        Platform.runLater(() -> this.table.getSelectionModel().select(0));
         WaitForAsyncUtils.waitForFxEvents();
         clickOn("Remove");
         WaitForAsyncUtils.waitForFxEvents();
-        verifyThat(table, hasNumRows(0));
+        verifyThat(this.table, hasNumRows(0));
         verifyThat("#saveBtn", isDisabled());
     }
 
@@ -156,7 +150,7 @@ public class NewTransactionPanelFXTest extends JavaFXTestBase {
         editCell(0, 1, AccountSide.DEBIT); // Side column
         editCell(0, 2, "100.00"); // Amount column
 
-        Line line1 = table.getItems().get(0);
+        Line line1 = this.table.getItems().get(0);
         assertEquals("Bank", line1.account.get());
         assertEquals(AccountSide.DEBIT, line1.side.get());
         assertEquals(new BigDecimal("100.00"), line1.amount.get());
@@ -167,7 +161,7 @@ public class NewTransactionPanelFXTest extends JavaFXTestBase {
         editCell(1, 1, AccountSide.CREDIT);
         editCell(1, 2, "100.00");
 
-        Line line2 = table.getItems().get(1);
+        Line line2 = this.table.getItems().get(1);
         assertEquals("Donations", line2.account.get());
         assertEquals(AccountSide.CREDIT, line2.side.get());
         assertEquals(new BigDecimal("100.00"), line2.amount.get());
@@ -205,7 +199,7 @@ public class NewTransactionPanelFXTest extends JavaFXTestBase {
         WaitForAsyncUtils.waitForFxEvents();
 
         ArgumentCaptor<AccountingTransaction> captor = ArgumentCaptor.forClass(AccountingTransaction.class);
-        verify(mockOnSave, times(1)).accept(captor.capture());
+        verify(this.mockOnSave, times(1)).accept(captor.capture());
 
         AccountingTransaction savedTx = captor.getValue();
         assertNotNull(savedTx);
@@ -229,20 +223,20 @@ public class NewTransactionPanelFXTest extends JavaFXTestBase {
 
         // Create a new panel instance for editing
         Platform.runLater(() -> {
-            NewTransactionPanelFX editPanel = new NewTransactionPanelFX(existingTx, mockOnSave);
-            Stage stage = (Stage) panel.getScene().getWindow(); // Reuse stage for simplicity
+            NewTransactionPanelFX editPanel = new NewTransactionPanelFX(existingTx, this.mockOnSave);
+            Stage stage = (Stage) this.panel.getScene().getWindow(); // Reuse stage for simplicity
             stage.setScene(new Scene(editPanel, 800, 600));
             // Update table reference for this test
-            table = from(editPanel).lookup(".table-view").queryTableView();
+            this.table = from(editPanel).lookup(".table-view").queryTableView();
         });
         WaitForAsyncUtils.waitForFxEvents();
 
         verifyThat("#datePicker", (DatePicker dp) -> dp.getValue().equals(LocalDate.of(2023,11,1)));
         verifyThat("#memoArea", (TextArea ta) -> ta.getText().equals("Existing Memo"));
 
-        verifyThat(table, hasNumRows(2));
-        Line line1 = table.getItems().get(0); // Order might not be guaranteed from Set to List
-        Line line2 = table.getItems().get(1);
+        verifyThat(this.table, hasNumRows(2));
+        Line line1 = this.table.getItems().get(0); // Order might not be guaranteed from Set to List
+        Line line2 = this.table.getItems().get(1);
 
         boolean foundSupplies = false;
         boolean foundBank = false;
@@ -275,7 +269,7 @@ public class NewTransactionPanelFXTest extends JavaFXTestBase {
     @SuppressWarnings("unchecked")
     private void editCell(int rowIndex, int colIndex, Object value) {
         Platform.runLater(() -> {
-            table.edit(rowIndex, table.getColumns().get(colIndex));
+            this.table.edit(rowIndex, this.table.getColumns().get(colIndex));
         });
         WaitForAsyncUtils.waitForFxEvents();
 
@@ -306,7 +300,7 @@ public class NewTransactionPanelFXTest extends JavaFXTestBase {
     // More robust editCell, particularly for ComboBoxTableCell used for "Account"
     private void editCell(int rowIndex, int colIndex, String textValueForComboBox) {
         Platform.runLater(() -> {
-            table.edit(rowIndex, table.getColumns().get(colIndex));
+            this.table.edit(rowIndex, this.table.getColumns().get(colIndex));
         });
         WaitForAsyncUtils.waitForFxEvents();
 
@@ -323,7 +317,7 @@ public class NewTransactionPanelFXTest extends JavaFXTestBase {
     // For setting AccountSide which uses ChoiceBoxTableCell
     private void editCell(int rowIndex, int colIndex, AccountSide sideValue) {
          Platform.runLater(() -> {
-            table.edit(rowIndex, table.getColumns().get(colIndex));
+            this.table.edit(rowIndex, this.table.getColumns().get(colIndex));
         });
         WaitForAsyncUtils.waitForFxEvents();
 
@@ -341,14 +335,14 @@ public class NewTransactionPanelFXTest extends JavaFXTestBase {
     @BeforeEach
     public void assignFxIds() {
         Platform.runLater(() -> {
-            if (panel == null) return;
+            if (this.panel == null) return;
             lookup( (Node n) -> n instanceof DatePicker).queryAs(DatePicker.class).setId("datePicker");
             lookup( (Node n) -> n instanceof TextArea).queryAs(TextArea.class).setId("memoArea");
 
             // Buttons are in a ToolBar. Toolbar buttons don't get IDs easily unless set.
             // We'll rely on text lookup for buttons like "+ Entry", "Remove", "Save".
             // For saveBtn, panel field is used.
-            Button saveButton = from(panel).lookup((Node node) -> node instanceof Button && "Save".equals(((Button)node).getText())).queryButton();
+            Button saveButton = from(this.panel).lookup((Node node) -> node instanceof Button && "Save".equals(((Button)node).getText())).queryButton();
             if (saveButton != null) saveButton.setId("saveBtn");
         });
         WaitForAsyncUtils.waitForFxEvents();

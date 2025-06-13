@@ -1,15 +1,12 @@
 package nonprofitbookkeeping.ui.javafx;
 
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane; // Added for applyFxIdsToDialog
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import nonprofitbookkeeping.model.Fund;
 import nonprofitbookkeeping.model.budget.Budget;
 import nonprofitbookkeeping.model.ChartOfAccounts;
@@ -20,7 +17,6 @@ import nonprofitbookkeeping.service.BudgetService;
 import nonprofitbookkeeping.ui.JavaFXTestBase;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach; // Keep this
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations; // Keep this
@@ -35,10 +31,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-import static org.testfx.api.FxAssert.verifyThat;
-import static org.testfx.matcher.control.LabeledMatchers.hasText;
-import static org.testfx.matcher.control.ComboBoxMatchers.hasItems;
 
 
 public class BudgetEditorDialogFXTest extends JavaFXTestBase {
@@ -66,21 +58,21 @@ public class BudgetEditorDialogFXTest extends JavaFXTestBase {
         company.setCompanyProfile(profile);
         CurrentCompany.forceCompanyLoad(company);
 
-        fund1 = new Fund();
-        fund1.setFundId("F001");
-        fund1.setName("General Fund");
-        fund2 = new Fund();
-        fund2.setFundId("F002");
-        fund2.setName("Building Fund");
-        availableFunds = new ArrayList<>(List.of(fund1, fund2));
+        this.fund1 = new Fund();
+        this.fund1.setFundId("F001");
+        this.fund1.setName("General Fund");
+        this.fund2 = new Fund();
+        this.fund2.setFundId("F002");
+        this.fund2.setName("Building Fund");
+        this.availableFunds = new ArrayList<>(List.of(this.fund1, this.fund2));
     }
 
     private void showDialog(Budget budgetToEdit) {
         Platform.runLater(() -> {
-            dialog = new BudgetEditorDialogFX(ownerStage, mockCoa, availableFunds, mockBudgetService, mockCompanyDirectory, budgetToEdit);
+            this.dialog = new BudgetEditorDialogFX(this.ownerStage, this.mockCoa, this.availableFunds, this.mockBudgetService, this.mockCompanyDirectory, budgetToEdit);
             // Apply IDs after dialog content is created but before showing
-            applyFxIdsToDialog(dialog.getDialogPane());
-            dialog.showAndWait();
+            applyFxIdsToDialog(this.dialog.getDialogPane());
+            this.dialog.showAndWait();
         });
         WaitForAsyncUtils.waitForFxEvents(1000); // Increased wait for dialog and IDs
     }
@@ -110,8 +102,8 @@ public class BudgetEditorDialogFXTest extends JavaFXTestBase {
 
     @AfterEach
     public void closeDialogAfterTest() {
-        if (dialog != null && dialog.isShowing()) {
-            Platform.runLater(() -> dialog.close());
+        if (this.dialog != null && this.dialog.isShowing()) {
+            Platform.runLater(() -> this.dialog.close());
             WaitForAsyncUtils.waitForFxEvents();
         }
         CurrentCompany.close();
@@ -121,7 +113,7 @@ public class BudgetEditorDialogFXTest extends JavaFXTestBase {
     public void testCreateMode_InitialStateAndFields() {
         showDialog(null);
 
-        assertEquals("Create New Budget", dialog.getTitle());
+        assertEquals("Create New Budget", this.dialog.getTitle());
 
   //      TextField budgetNameField = lookup("#budgetNameField")..queryAs(TextField.class);
         Spinner<Integer> fiscalYearSpinner = lookup("#fiscalYearSpinner").queryAs(Spinner.class);
@@ -141,8 +133,8 @@ public class BudgetEditorDialogFXTest extends JavaFXTestBase {
         assertNotNull(lookup("Edit Line").queryButton());
         assertNotNull(lookup("Remove Line").queryButton());
 
-        assertNotNull(dialog.getDialogPane().lookupButton(new ButtonType("Save Budget", ButtonBar.ButtonData.OK_DONE)));
-        assertNotNull(dialog.getDialogPane().lookupButton(ButtonType.CANCEL));
+        assertNotNull(this.dialog.getDialogPane().lookupButton(new ButtonType("Save Budget", ButtonBar.ButtonData.OK_DONE)));
+        assertNotNull(this.dialog.getDialogPane().lookupButton(ButtonType.CANCEL));
     }
 
     @Test
@@ -154,7 +146,7 @@ public class BudgetEditorDialogFXTest extends JavaFXTestBase {
 
         showDialog(existingBudget);
 
-        assertEquals("Edit Budget", dialog.getTitle());
+        assertEquals("Edit Budget", this.dialog.getTitle());
     //    assertEquals("Annual Operations", lookup("#budgetNameField")..queryAs(TextField.class).getText());
         assertEquals(2023, ((Spinner<Integer>)lookup("#fiscalYearSpinner").queryAs(Spinner.class)).getValue().intValue());
         assertEquals("Operational budget for 2023", lookup("#descriptionField").queryAs(TextField.class).getText());
@@ -176,7 +168,7 @@ public class BudgetEditorDialogFXTest extends JavaFXTestBase {
         TextInputControl budgetNameField = null;
 		Platform.runLater(() -> budgetNameField.setText("Q1 Budget"));
         Platform.runLater(() -> fiscalYearSpinner.getValueFactory().setValue(2025));
-        Platform.runLater(() -> fundComboBox.setValue(fund1));
+        Platform.runLater(() -> fundComboBox.setValue(this.fund1));
         WaitForAsyncUtils.waitForFxEvents();
 
         assertEquals("Q1 Budget", budgetNameField.getText());
@@ -188,21 +180,21 @@ public class BudgetEditorDialogFXTest extends JavaFXTestBase {
     public void testSaveButton_ClosesDialog() {
         showDialog(null);
 
-        Button saveButton = (Button) dialog.getDialogPane().lookupButton(new ButtonType("Save Budget", ButtonBar.ButtonData.OK_DONE));
+        Button saveButton = (Button) this.dialog.getDialogPane().lookupButton(new ButtonType("Save Budget", ButtonBar.ButtonData.OK_DONE));
         clickOn(saveButton);
         WaitForAsyncUtils.waitForFxEvents();
 
-        assertFalse(dialog.isShowing(), "Dialog should close after clicking Save Budget.");
+        assertFalse(this.dialog.isShowing(), "Dialog should close after clicking Save Budget.");
     }
 
     @Test
     public void testCancelButton_ClosesDialog() {
         showDialog(null);
 
-        Button cancelButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+        Button cancelButton = (Button) this.dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
         clickOn(cancelButton);
         WaitForAsyncUtils.waitForFxEvents();
 
-        assertFalse(dialog.isShowing(), "Dialog should close after clicking Cancel.");
+        assertFalse(this.dialog.isShowing(), "Dialog should close after clicking Cancel.");
     }
 }

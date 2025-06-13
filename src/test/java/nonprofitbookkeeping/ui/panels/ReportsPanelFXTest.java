@@ -1,14 +1,11 @@
 package nonprofitbookkeeping.ui.panels;
 
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.reports.ReportMetadata;
-import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.ui.JavaFXTestBase;
 import nonprofitbookkeeping.ui.panels.ReportsPanelFX.ReportRow;
 
@@ -27,7 +24,6 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,8 +32,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.matcher.control.TableViewMatchers.hasNumRows;
-import static org.testfx.matcher.control.TableViewMatchers.containsRow;
-import static org.testfx.matcher.control.LabeledMatchers.hasText;
 
 
 public class ReportsPanelFXTest extends JavaFXTestBase {

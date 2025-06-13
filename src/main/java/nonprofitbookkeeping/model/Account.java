@@ -17,9 +17,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public final class Account implements Serializable
 {
 	
+
+
 	private static final long serialVersionUID = -1149966185433260549L;
 	
-	/* ─────────────────────────────────────────────── fields ──────────── */
+	/* ───────────────── fields ──────────── */
 	@JsonProperty private List<Fund> associatedFunds = new ArrayList<>();
 	@JsonProperty private String accountNumber;
 	@JsonProperty private AccountSide increaseSide;
@@ -27,10 +29,19 @@ public final class Account implements Serializable
 	@JsonProperty private String accountCode;
 	@JsonProperty private AccountType accountType;
 	@JsonProperty private Account parentAccount;
+	@JsonProperty private Account childAccount;
 	@JsonProperty private String currency;
 	@JsonProperty private BigDecimal openingBalance = BigDecimal.ZERO;
 	
 	/* ------------------------------------------------------------------ */
+	/**
+	 * Default constructor for Jackson deserialization or JPA.
+	 */
+	public Account()
+	{
+		/* default ctor for Jackson / JPA */ 
+	}
+	
 	/**
 	 * Constructs an Account with the specified account number, name, and increase side.
 	 * @param accountNumber The account number. Must not be null.
@@ -45,13 +56,7 @@ public final class Account implements Serializable
 		this.increaseSide = increaseSide;
 	}
 	
-	/**
-	 * Default constructor for Jackson deserialization or JPA.
-	 */
-	public Account()
-	{
-		/* default ctor for Jackson / JPA */ 
-	}
+
 
 	/**  
 	 * Constructor Account
@@ -60,12 +65,14 @@ public final class Account implements Serializable
 	 * @param asset
 	 * @param zero
 	 */
-	public Account(String string, String bankAccountName, AccountType asset, BigDecimal zero)
+	public Account(String string, String bankAccountName, 
+	               AccountType asset, BigDecimal zero)
 	{
 		// TODO Auto-generated constructor stub
 	}
 
 	/* ================= fund helpers =================================== */
+	
 	/**
 	 * Associates a fund with this account.
 	 * If the fund is not already associated, it adds the fund to this account's list
@@ -246,6 +253,7 @@ public final class Account implements Serializable
 	public void setParentAccount(Account parentAccount)
 	{
 		this.parentAccount = parentAccount;
+		parentAccount.childAccount = this;
 	}
 
 	/**
@@ -285,23 +293,27 @@ public final class Account implements Serializable
 	}
 
 	/**
-	 * @param object
+	 * @param child
 	 */
-	public void ifPresent(Object object)
+	public void addChild(Account child)
+	{	
+		this.childAccount = child;
+		child.parentAccount = this;
+	}
+	/**
+	 * @return the childAccount
+	 */
+	public Account getChildAccount()
 	{
-		// TODO Auto-generated method stub
-		
+		return this.childAccount;
 	}
 
 	/**
-	 * @param bank
+	 * @param childAccount the childAccount to set
 	 */
-	public void addChild(Account bank)
+	public void setChildAccount(Account child)
 	{
-		// TODO Auto-generated method stub
-		
+		this.childAccount = child;
+		child.parentAccount = this;
 	}
-
-	
-
 }

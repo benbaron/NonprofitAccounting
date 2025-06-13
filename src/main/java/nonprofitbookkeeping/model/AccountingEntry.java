@@ -33,8 +33,7 @@ public final class AccountingEntry implements Serializable
 	
 	// Indicates if the transaction was set
 	@JsonProperty private boolean freeze = false;
-	
-	
+		
 
 	/**
 	 * Default constructor for Jackson deserialization.

@@ -10,9 +10,7 @@ import nonprofitbookkeeping.service.ReportConfigurationService;
 import nonprofitbookkeeping.service.InventoryService;
 import nonprofitbookkeeping.service.DocumentStorageService;
 import nonprofitbookkeeping.service.FundAccountingService;
-// Assuming FileImportService and FileExportService
-// are not in ServiceContainer,
-// but they could be added if plugins need them.
+
 
 public interface ApplicationContext
 {
@@ -22,7 +20,6 @@ public interface ApplicationContext
 	 */
 	Stage getPrimaryStage();
 	
-	// MenuBar getMenuBar(); // Removed as per guidance
 	/**
 	 * Gets the currently active company.
 	 * @return The current company.
@@ -66,7 +63,6 @@ public interface ApplicationContext
 	 */
 	FundAccountingService getFundAccountingService();
 	
-	// Utility for UI updates from non-FX threads if plugins use them
 	/**
 	 * Runs the specified {@link Runnable} on the JavaFX application thread at some unspecified time in the future.
 	 * @param runnable The runnable to be executed.

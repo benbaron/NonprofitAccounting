@@ -19,8 +19,6 @@ import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.matcher.control.LabeledMatchers.hasText;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
 import static org.testfx.matcher.base.NodeMatchers.isEnabled;
-import static org.testfx.matcher.base.NodeMatchers.isDisabled;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -68,8 +66,8 @@ public class CompanySelectionPanelFXTest extends JavaFXTestBase {
             e.printStackTrace(); // Handle exception during test setup
         }
 
-        panel = new CompanySelectionPanelFX();
-        Scene scene = new Scene(panel, 800, 600);
+        this.panel = new CompanySelectionPanelFX();
+        Scene scene = new Scene(this.panel, 800, 600);
         stage.setScene(scene);
         stage.show();
     }

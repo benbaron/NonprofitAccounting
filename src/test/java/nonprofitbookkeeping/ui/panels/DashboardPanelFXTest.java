@@ -2,7 +2,6 @@ package nonprofitbookkeeping.ui.panels;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -51,11 +50,11 @@ public class DashboardPanelFXTest extends JavaFXTestBase {
         MockitoAnnotations.openMocks(this); // Initialize mocks
 
         // Setup a test company
-        testCompany = new Company();
+        this.testCompany = new Company();
         CompanyProfileModel profile = new CompanyProfileModel();
         profile.setCompanyName("Test Dashboard Co");
-        testCompany.setCompanyProfile(profile);
-        testCompany.setLedger(mockLedger); // Use the mocked ledger
+        this.testCompany.setCompanyProfile(profile);
+        this.testCompany.setLedger(this.mockLedger); // Use the mocked ledger
 
         // Initial transactions for the mock ledger
         AccountingTransaction tx1 = new AccountingTransaction();
@@ -80,26 +79,26 @@ public class DashboardPanelFXTest extends JavaFXTestBase {
         tx3.setMemo("Govt Grant");
 
 
-        when(mockLedger.getTransactions()).thenReturn(Arrays.asList(tx1, tx2, tx3));
+        when(this.mockLedger.getTransactions()).thenReturn(Arrays.asList(tx1, tx2, tx3));
         // when(mockLedger.getUniqueAccountNames()).thenReturn(FXCollections.observableArrayList("Income", "Expenses"));
         // The panel itself doesn't use getUniqueAccountNames to populate the selector.
         // It's a manual process or not implemented in the provided DashboardPanelFX code for accountSelector population.
         // So, we will manually populate the selector for testing purposes.
 
-        panel = new DashboardPanelFX(); // Panel initializes and registers its listener
+        this.panel = new DashboardPanelFX(); // Panel initializes and registers its listener
 
         // Find the listener instance created by the panel
         // This is a bit of a workaround. Ideally, the listener could be injected or accessed.
         // For now, we assume there's only one listener of this type after panel creation.
         List<CurrentCompany.CompanyChangeListener> listeners = CurrentCompany.CompanyListener.getListeners();
-        companyChangeListenerToTest = listeners.stream()
+        this.companyChangeListenerToTest = listeners.stream()
                                              .filter(l -> l instanceof DashboardPanelFX.DashboardListener)
                                              .findFirst()
                                              .orElse(null);
-        assertNotNull(companyChangeListenerToTest, "DashboardListener instance not found.");
+        assertNotNull(this.companyChangeListenerToTest, "DashboardListener instance not found.");
 
 
-        Scene scene = new Scene(panel, 1024, 768);
+        Scene scene = new Scene(this.panel, 1024, 768);
         stage.setScene(scene);
         stage.show();
     }
@@ -110,8 +109,8 @@ public class DashboardPanelFXTest extends JavaFXTestBase {
         CurrentCompany.close(); // Make sure no company is loaded
         Platform.runLater(() -> {
             // Manually trigger the listener as if a company was closed.
-             if (companyChangeListenerToTest != null) {
-                companyChangeListenerToTest.companyChange(false);
+             if (this.companyChangeListenerToTest != null) {
+                this.companyChangeListenerToTest.companyChange(false);
             }
             // Manually populate account selector for tests, as panel doesn't do it from Company object
             ComboBox<String> accountSelector = lookup("#accountSelector").queryComboBox();
@@ -127,8 +126,8 @@ public class DashboardPanelFXTest extends JavaFXTestBase {
         // Clean up CurrentCompany state
         CurrentCompany.close();
          Platform.runLater(() -> {
-            if (companyChangeListenerToTest != null) {
-                companyChangeListenerToTest.companyChange(false);
+            if (this.companyChangeListenerToTest != null) {
+                this.companyChangeListenerToTest.companyChange(false);
             }
         });
         WaitForAsyncUtils.waitForFxEvents();
@@ -151,10 +150,10 @@ public class DashboardPanelFXTest extends JavaFXTestBase {
     @Test
     public void testLoadCompany_UpdatesUIAndTable() {
         // Simulate loading the test company
-        CurrentCompany.forceCompanyLoad(testCompany); // Utility to set company and notify listeners
+        CurrentCompany.forceCompanyLoad(this.testCompany); // Utility to set company and notify listeners
          Platform.runLater(() -> {
-            if (companyChangeListenerToTest != null) {
-                companyChangeListenerToTest.companyChange(true);
+            if (this.companyChangeListenerToTest != null) {
+                this.companyChangeListenerToTest.companyChange(true);
             }
             // Manually populate account selector for tests
             ComboBox<String> accountSelector = lookup("#accountSelector").queryComboBox();
@@ -181,10 +180,10 @@ public class DashboardPanelFXTest extends JavaFXTestBase {
 
     @Test
     public void testFilterFunctionality_DateAndMemo() {
-        CurrentCompany.forceCompanyLoad(testCompany);
+        CurrentCompany.forceCompanyLoad(this.testCompany);
         Platform.runLater(() -> {
-            if (companyChangeListenerToTest != null) {
-                companyChangeListenerToTest.companyChange(true);
+            if (this.companyChangeListenerToTest != null) {
+                this.companyChangeListenerToTest.companyChange(true);
             }
             ComboBox<String> accountSelector = lookup("#accountSelector").queryComboBox();
             accountSelector.setItems(FXCollections.observableArrayList("Income", "Expenses"));
@@ -215,10 +214,10 @@ public class DashboardPanelFXTest extends JavaFXTestBase {
 
     @Test
     public void testFilterFunctionality_Amount() {
-        CurrentCompany.forceCompanyLoad(testCompany);
+        CurrentCompany.forceCompanyLoad(this.testCompany);
         Platform.runLater(() -> {
-            if (companyChangeListenerToTest != null) {
-                companyChangeListenerToTest.companyChange(true);
+            if (this.companyChangeListenerToTest != null) {
+                this.companyChangeListenerToTest.companyChange(true);
             }
             ComboBox<String> accountSelector = lookup("#accountSelector").queryComboBox();
             accountSelector.setItems(FXCollections.observableArrayList("Income", "Expenses"));
@@ -243,7 +242,7 @@ public class DashboardPanelFXTest extends JavaFXTestBase {
         ((TextField)lookup("#amountFilter").query()).clear();
         // Manually reset the internal amtF in the panel for the test, as clearing text field doesn't nullify internal BigDecimal immediately
         // This is a limitation of testing black-box. Better if panel explicitly nulled amtF on clear/empty.
-        interact(() -> panel.amtF = null); // panel.amtF is package-private in real code, this is illustrative
+        interact(() -> this.panel.amtF = null); // panel.amtF is package-private in real code, this is illustrative
                                           // For actual test, we rely on next "Apply" to re-evaluate.
                                           // The panel code sets amtF = null if amountFilter is blank *before* parsing.
                                           // So clearing and applying should work.
@@ -266,13 +265,13 @@ public class DashboardPanelFXTest extends JavaFXTestBase {
         // In a real scenario, it's better to have IDs in the production code.
         // Or use more robust TestFX selectors that don't rely on IDs.
         Platform.runLater(() -> {
-            if (panel == null) return;
+            if (this.panel == null) return;
             // Top Banner
-            panel.lookupAll(".label").stream()
+            this.panel.lookupAll(".label").stream()
                  .filter(n -> n instanceof Label && ((Label)n).getText().startsWith("Current Company:"))
                  .findFirst().ifPresent(n -> n.setId("companyBannerLabel")); // Not companyLbl directly
-            if (panel.lookup("#companyLbl") == null) { // panel.companyLbl is private
-                 Label companyDisplayLabel = (Label) panel.lookupAll(".label").stream()
+            if (this.panel.lookup("#companyLbl") == null) { // panel.companyLbl is private
+                 Label companyDisplayLabel = (Label) this.panel.lookupAll(".label").stream()
                     .filter(l -> "No company loaded".equals(((Label)l).getText()) || CurrentCompany.getCompany() != null && CurrentCompany.getCompany().getCompanyProfile().getCompanyName().equals(((Label)l).getText()))
                     .filter(l -> ((HBox)l.getParent()).getChildren().size() > 1 && ((HBox)l.getParent()).getChildren().get(2) instanceof Button) // Heuristic
                     .findFirst().orElse(null);
@@ -280,28 +279,28 @@ public class DashboardPanelFXTest extends JavaFXTestBase {
             }
 
 
-            Button reloadButton = (Button) panel.lookupAll(".button").stream().filter(n -> n instanceof Button && "Reload".equals(((Button)n).getText())).findFirst().orElse(null);
+            Button reloadButton = (Button) this.panel.lookupAll(".button").stream().filter(n -> n instanceof Button && "Reload".equals(((Button)n).getText())).findFirst().orElse(null);
             if(reloadButton != null) reloadButton.setId("reloadBtn");
 
             // Filters
-            if(panel.lookup("#accountSelector") == null) {
-                ComboBox accSel = ((NodeQuery) panel.lookup(".combo-box")).queryComboBox();
+            if(this.panel.lookup("#accountSelector") == null) {
+                ComboBox accSel = ((NodeQuery) this.panel.lookup(".combo-box")).queryComboBox();
                 if(accSel != null) accSel.setId("accountSelector");
             }
 
-            List<TextField> tfs = panel.lookupAll(".text-field").stream().map(n->(TextField)n).collect(Collectors.toList());
+            List<TextField> tfs = this.panel.lookupAll(".text-field").stream().map(n->(TextField)n).collect(Collectors.toList());
             if(tfs.size() >= 3) { // date, memo, amount
                 // Assuming order if IDs are not set
                 // This is fragile; IDs in source are better
                 // For demo, we'll try to find by prompt text if available, or rely on order.
                 // The panel code does not set prompt text for these.
                 // We will assume they are the first three text fields after the accountSelector's parent VBox
-                if(panel.lookup("#dateFilter")==null && tfs.get(0) != null) tfs.get(0).setId("dateFilter");
-                if(panel.lookup("#memoFilter")==null && tfs.get(1) != null) tfs.get(1).setId("memoFilter");
-                if(panel.lookup("#amountFilter")==null && tfs.get(2) != null) tfs.get(2).setId("amountFilter");
+                if(this.panel.lookup("#dateFilter")==null && tfs.get(0) != null) tfs.get(0).setId("dateFilter");
+                if(this.panel.lookup("#memoFilter")==null && tfs.get(1) != null) tfs.get(1).setId("memoFilter");
+                if(this.panel.lookup("#amountFilter")==null && tfs.get(2) != null) tfs.get(2).setId("amountFilter");
             }
 
-            Button applyButton = (Button) panel.lookupAll(".button").stream().filter(n -> n instanceof Button && "Apply".equals(((Button)n).getText())).findFirst().orElse(null);
+            Button applyButton = (Button) this.panel.lookupAll(".button").stream().filter(n -> n instanceof Button && "Apply".equals(((Button)n).getText())).findFirst().orElse(null);
             if(applyButton != null) applyButton.setId("applyBtn"); // Though lookup("Apply") works too
         });
         WaitForAsyncUtils.waitForFxEvents();
