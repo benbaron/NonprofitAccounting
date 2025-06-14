@@ -184,46 +184,55 @@ public class AccountsPanelFX extends BorderPane
 	 * from {@link AccountService#getAllAccounts()} and converting each {@link Account}
 	 * to an {@link AccountRow}.
 	 */
-        private void refresh()
-        {
-                this.rows.clear();
-
-                if (!CurrentCompany.isOpen())
-                {
-                        return;
-                }
-
-                Company company = CurrentCompany.getCompany();
-
-                if (company != null && company.getChartOfAccounts() != null)
-                {
-                        List<Account> accounts = company.getChartOfAccounts().getAccounts();
-
-                        if (accounts != null)
-                        {
-                                accounts.forEach(a -> this.rows.add(new AccountRow(a)));
-                        }
-                }
-
-        }
+	private void refresh()
+	{
+		this.rows.clear();
+		
+		if (!CurrentCompany.isOpen())
+		{
+			return;
+		}
+		
+		Company company = CurrentCompany.getCompany();
+		
+		if (company != null && company.getChartOfAccounts() != null)
+		{
+			List<Account> accounts = company.getChartOfAccounts().getAccounts();
+			
+			if (accounts != null)
+			{
+				accounts.forEach(a -> this.rows.add(new AccountRow(a)));
+			}
+			
+		}
+		
+	}
 	
-	// New method to handle company state changes
-        private void handleCompanyChange(boolean isOpen)
-        {
-		if (isOpen)
+	
+	/**
+	 * New method to handle company state changes
+	 * 
+	 * @param companyIsOpen
+	 */
+	private void handleCompanyChange(boolean companyIsOpen)
+	{
+		if (companyIsOpen)
 		{
 			refresh(); // Load data
 			
 			if (this.actionButtonsBox != null)
-			{
-				this.actionButtonsBox.getChildren().forEach(node -> 
+			{				
+				this.actionButtonsBox.getChildren()
+				.forEach(node ->
 				{
+					// to prevent key bounce
 					if (node instanceof Button)
 					{
 						((Button) node).setDisable(false);
-					}					
+					}
+					
 				});
-			}			
+			}
 		}
 		else
 		{
@@ -231,35 +240,37 @@ public class AccountsPanelFX extends BorderPane
 			
 			if (this.actionButtonsBox != null)
 			{
-				this.actionButtonsBox.getChildren().forEach(node -> 
-				{					
+				this.actionButtonsBox.getChildren().forEach(node -> {
+					
 					if (node instanceof Button)
 					{
 						((Button) node).setDisable(true);
 					}
 					
 				});
-                }
-
-        }
-
-        /**
-         * Should be called when this panel is no longer needed. It unregisters
-         * the panel from {@link CurrentCompany.CompanyListener} to avoid memory
-         * leaks from dangling listeners.
-         */
-        public void dispose()
-        {
-                if (this.companyListener != null)
-                {
-                        CurrentCompany.CompanyListener.removeCompanyListener(this.companyListener);
-                        this.companyListener = null;
-                }
-        }
+			}
+			
+		}
 		
 	}
 	
-
+	/**
+	 * Should be called when this panel is no longer needed. It unregisters
+	 * the panel from {@link CurrentCompany.CompanyListener} to avoid memory
+	 * leaks from dangling listeners.
+	 */
+	public void dispose()
+	{
+		
+		if (this.companyListener != null)
+		{
+			CurrentCompany.CompanyListener.removeCompanyListener(this.companyListener);
+			this.companyListener = null;
+		}
+		
+	}
+	
+	
 	/**
 	 * AccountsPanelCompanyListener
 	 */
@@ -308,7 +319,7 @@ public class AccountsPanelFX extends BorderPane
 		 * Default constructor for creating an empty {@code AccountRow},
 		 * typically used when adding a new account via the UI.
 		 * Initializes fields to default values.
-		 */		
+		 */
 		public AccountRow()
 		{
 		}
