@@ -29,46 +29,52 @@ public class GenerateBudgetVsActualsReportAction extends AbstractAction
 	implements EventHandler<ActionEvent>
 {
 	
-	// private static final long serialVersionUID = 1L; // Not needed as this is primarily a JavaFX EventHandler
+	// private static final long serialVersionUID = 1L; // Not needed as this is
+		// primarily a JavaFX EventHandler
 	/** The {@link BudgetService} used to load available budgets. */
 	private final BudgetService budgetService;
-	// private final ReportService reportService; // Field is present but not used in current constructor/handle logic
+	// private final ReportService reportService; // Field is present but not used
+	// in current constructor/handle logic
 	
 	/**
-     * Constructs a new {@code GenerateBudgetVsActualsReportAction}.
-     *
-     * @param reportService The {@link ReportService}. This parameter is currently not stored or used
-     *                      within this action's primary logic but is accepted by the constructor.
-     * @param budgetService The {@link BudgetService} used to load available budgets for selection.
-     *                      This service is stored and used by the action.
-     */
-	public GenerateBudgetVsActualsReportAction(ReportService reportService, // Parameter currently not assigned to a field
+	 * Constructs a new {@code GenerateBudgetVsActualsReportAction}.
+	 *
+	 * @param reportService The {@link ReportService}. This parameter is currently not stored or used
+	 *                      within this action's primary logic but is accepted by the constructor.
+	 * @param budgetService The {@link BudgetService} used to load available budgets for selection.
+	 *                      This service is stored and used by the action.
+	 */
+	public GenerateBudgetVsActualsReportAction(ReportService reportService, // Parameter currently
+																			// not assigned to a
+																			// field
 		BudgetService budgetService)
 	{
-		// super("Generate Budget vs. Actuals Report"); // Constructor for AbstractAction, not directly used for JavaFX
-		// this.reportService = reportService; // This line was commented out in the original code
+		// super("Generate Budget vs. Actuals Report"); // Constructor for
+		// AbstractAction, not directly used for JavaFX
+		// this.reportService = reportService; // This line was commented out in the
+		// original code
 		this.budgetService = budgetService;
 	}
 	
 	/**
-     * {@inheritDoc}
-     * <p>
-     * Handles the JavaFX action event for generating a Budget vs. Actuals report. It performs these steps:
-     * <ol>
-     *   <li>Checks if a company is open and company file information is available; shows errors and returns if not.</li>
-     *   <li>Loads available budgets using {@link BudgetService#loadBudgets(File)}. If none, informs user and returns.</li>
-     *   <li>Prompts the user to select a budget using a {@link ChoiceDialog}. If cancelled, returns.</li>
-     *   <li><strong>Note:</strong> The section for selecting a date range (originally using a Swing-based {@code DatePickerDialog})
-     *       is currently commented out with a TODO to refactor for JavaFX. Consequently, the report generation
-     *       logic that depends on this date range is also bypassed, and an informational alert is shown.</li>
-     *   <li>(Intended logic after date selection) Sets up a {@link ReportContext} with the chosen budget and dates.</li>
-     *   <li>(Intended logic) Calls {@link ReportService#generate(ReportContext, Ledger, ChartOfAccounts)} to produce the report.</li>
-     *   <li>(Intended logic) Shows success or error alerts.</li>
-     * </ol>
-     * Catches {@link IOException} from loading budgets and general {@link Exception} during the process.
-     * </p>
-     * @param event The {@link ActionEvent} that triggered this handler (e.g., a menu item click).
-     */
+	 * {@inheritDoc}
+	 * <p>
+	 * Handles the JavaFX action event for generating a Budget vs. Actuals report. It performs these steps:
+	 * <ol>
+	 *   <li>Checks if a company is open and company file information is available; shows errors and returns if not.</li>
+	 *   <li>Loads available budgets using {@link BudgetService#loadBudgets(File)}. If none, informs user and returns.</li>
+	 *   <li>Prompts the user to select a budget using a {@link ChoiceDialog}. If cancelled, returns.</li>
+	 *   <li><strong>Note:</strong> The section for selecting a date range (originally using a Swing-based {@code DatePickerDialog})
+	 *       is currently commented out with a TODO to refactor for JavaFX. Consequently, the report generation
+	 *       logic that depends on this date range is also bypassed, and an informational alert is shown.</li>
+	 *   <li>(Intended logic after date selection) Sets up a {@link ReportContext} with the chosen budget and dates.</li>
+	 *   <li>(Intended logic) Calls {@link ReportService#generate(ReportContext, Ledger, ChartOfAccounts)} to produce the report.</li>
+	 *   <li>(Intended logic) Shows success or error alerts.</li>
+	 * </ol>
+	 * Catches {@link IOException} from loading budgets and general {@link Exception} during the process.
+	 * </p>
+	 * @param event The {@link ActionEvent} that triggered this handler (e.g., a menu item click).
+	 */
 	@Override public void handle(ActionEvent event)
 	{
 		Window parentWindow = null;
@@ -109,7 +115,9 @@ public class GenerateBudgetVsActualsReportAction extends AbstractAction
 			
 			if (availableBudgets == null || availableBudgets.isEmpty())
 			{
-				AlertBox.showInfo(parentWindow, "No budgets found. Please create a budget first."); // Changed																						// Info
+				AlertBox.showInfo(parentWindow, "No budgets found. Please create a budget first."); // Changed
+																									// //
+																									// Info
 				return;
 			}
 			
@@ -203,7 +211,8 @@ public class GenerateBudgetVsActualsReportAction extends AbstractAction
 	@Override public void actionPerformed(java.awt.event.ActionEvent e)
 	{
 		// TODO Auto-generated method stub
-		// This method would be called if this action were triggered by a Swing component.
+		// This method would be called if this action were triggered by a Swing
+		// component.
 	}
 	
 }

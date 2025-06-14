@@ -47,8 +47,6 @@ public class AccountsPanelFX extends BorderPane
 				
 			});
 		
-		// buildControls() now assigns to this.actionButtonsBox
-		
 		this.actionButtonsBox = buildControls(); // New: call and store
 		setBottom(this.actionButtonsBox); // New: set stored HBox
 		
@@ -143,12 +141,12 @@ public class AccountsPanelFX extends BorderPane
 			// Consider if AccountService needs to be notified of deletion
 			this.rows.remove(idx);
 		}
-                else
-                {
-                        alert("Please select an account to delete.");
-                }
-
-        }
+		else
+		{
+			alert("Please select an account to delete.");
+		}
+		
+	}
 	
 	/**
 	 * onEditAction
@@ -225,29 +223,18 @@ public class AccountsPanelFX extends BorderPane
 				this.actionButtonsBox.getChildren()
 				.forEach(node ->
 				{
-					// to prevent key bounce
+					// to prevent key bounce on select
 					if (node instanceof Button)
 					{
 						((Button) node).setDisable(false);
 					}
 					
 				});
-			this.rows.clear(); // Clear data
+				this.rows.clear(); // Clear data
 			
-			if (this.actionButtonsBox != null)
-			{
-				this.actionButtonsBox.getChildren().forEach(node -> {
-					
-					if (node instanceof Button)
-					{
-						((Button) node).setDisable(true);
-					}
-					
-				});
 			}
 			
 		}
-		
 	}
 	
 	/**

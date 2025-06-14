@@ -34,63 +34,67 @@ import javax.swing.AbstractAction;
 
 
 /**
- * JavaFX action handler for generating an Income Statement (Profit & Loss) report.
- * This class extends {@link javax.swing.AbstractAction} (Swing-specific) and implements
- * the JavaFX {@link javafx.event.EventHandler} for {@link ActionEvent}. This dual inheritance
- * is atypical for a pure JavaFX application.
+ * JavaFX action handler for generating an Income Statement (Profit & Loss)
+ * report. This class extends {@link javax.swing.AbstractAction}
+ * (Swing-specific) and implements the JavaFX {@link javafx.event.EventHandler}
+ * for {@link ActionEvent}. This dual inheritance is atypical for a pure JavaFX
+ * application.
  * <p>
  * The action prompts the user for report criteria (date range, funds) using a
- * {@link ReportCriteriaDialog}, then utilizes the {@link ReportService} to generate the report,
- * typically as an XLSX file via JXLS templates. It also supports saving the chosen
- * report configuration.
+ * {@link ReportCriteriaDialog}, then utilizes the {@link ReportService} to
+ * generate the report, typically as an XLSX file via JXLS templates. It also
+ * supports saving the chosen report configuration.
  * </p>
  */
-public class GenerateIncomeStatementAction extends AbstractAction implements EventHandler<ActionEvent>
+public class GenerateIncomeStatementAction extends AbstractAction
+	implements EventHandler<ActionEvent>
 {
 	
-	// private static final long serialVersionUID = -6004544138078222664L; // Not applicable for JavaFX EventHandler
+	// private static final long serialVersionUID = -6004544138078222664L; // Not
+		// applicable for JavaFX EventHandler
 	/** The specific report type identifier for the Income Statement. */
 	private final String reportType = "income_statement";
 	/**
-     * The {@link ReportService} instance used for report generation.
-     * Stored for potential use if {@code ReportService.generate} were non-static or if other service methods were needed.
-     */
+	 * The {@link ReportService} instance used for report generation.
+	 * Stored for potential use if {@code ReportService.generate} were non-static or if other service methods were needed.
+	 */
 	private final ReportService reportService;
 	
 	/**
-     * Constructs a new {@code GenerateIncomeStatementAction}.
-     *
-     * @param reportService The {@link ReportService} to be used for report generation.
-     *                      While the current implementation calls a static {@code ReportService.generate} method,
-     *                      this instance is stored for potential future refactoring or extended use.
-     */
+	 * Constructs a new {@code GenerateIncomeStatementAction}.
+	 *
+	 * @param reportService The {@link ReportService} to be used for report generation.
+	 *                      While the current implementation calls a static {@code ReportService.generate} method,
+	 *                      this instance is stored for potential future refactoring or extended use.
+	 */
 	public GenerateIncomeStatementAction(ReportService reportService)
 	{
-		// super("Generate Income Statement"); // Constructor for AbstractAction, not used for JavaFX
+		// super("Generate Income Statement"); // Constructor for AbstractAction, not
+		// used for JavaFX
 		this.reportService = reportService;
 	}
 	
 	/**
-     * {@inheritDoc}
-     * <p>
-     * Handles the JavaFX action event for generating an Income Statement. The process includes:
-     * <ol>
-     *   <li>Verifying that a company is currently open.</li>
-     *   <li>Displaying a {@link ReportCriteriaDialog} to collect user input for the report's
-     *       date range and any fund-specific filters. Account selection is disabled for this report type.</li>
-     *   <li>If the user cancels the dialog, the action is aborted.</li>
-     *   <li>If the user provides a name for saving the configuration, the current criteria
-     *       (report type, dates, funds, default output format "xlsx") are saved
-     *       using {@link ReportConfigurationService}.</li>
-     *   <li>A {@link ReportContext} is created based on the user's criteria.</li>
-     *   <li>The static {@link ReportService#generate(ReportContext, Ledger, ChartOfAccounts)} method
-     *       is invoked to produce the report file.</li>
-     *   <li>A confirmation message with the report file path is shown, or an error message if any step fails.</li>
-     * </ol>
-     * Exceptions during configuration saving or report generation are caught and displayed to the user.
-     * </p>
-     * @param event The {@link ActionEvent} that triggered this handler (e.g., a menu item click).
-     */
+	 * {@inheritDoc}
+	 * <p>
+	 * Handles the JavaFX action event for generating an Income Statement. The process includes:
+	 * <ol>
+	 *   <li>Verifying that a company is currently open.</li>
+	 *   <li>Displaying a {@link ReportCriteriaDialog} to collect user input for the report's
+	 *       date range and any fund-specific filters. Account selection is disabled for this report type.</li>
+	 *   <li>If the user cancels the dialog, the action is aborted.</li>
+	 *   <li>If the user provides a name for saving the configuration, the current criteria
+	 *       (report type, dates, funds, default output format "xlsx") are saved
+	 *       using {@link ReportConfigurationService}.</li>
+	 *   <li>A {@link ReportContext} is created based on the user's criteria.</li>
+	 *   <li>The static {@link ReportService#generate(ReportContext, Ledger, ChartOfAccounts)} method
+	 *       is invoked to produce the report file.</li>
+	 *   <li>A confirmation message with the report file path is shown, or an error message if any step fails.</li>
+	 * </ol>
+	 * Exceptions during configuration saving or report generation are caught and displayed to the user.
+	 * </p>
+	 * @param event The {@link ActionEvent} that triggered this handler (e.g., a menu item click).
+	 */
 	@Override public void handle(ActionEvent event)
 	{
 		Window parentWindow = null;
@@ -118,11 +122,11 @@ public class GenerateIncomeStatementAction extends AbstractAction implements Eve
 				parentWindow,
 				"Income Statement Criteria",
 				availableFunds,
-				null, 		// chartOfAccounts
+				null, // chartOfAccounts
 				DateSelectionMode.DATE_RANGE_MANDATORY_START,
-				true, 		// showFundSelector
-				false, 		// showAccountSelector
-				null 		// initialConfig
+				true, // showFundSelector
+				false, // showAccountSelector
+				null // initialConfig
 			);
 			
 			if (!criteriaOpt.isPresent())
@@ -239,9 +243,10 @@ public class GenerateIncomeStatementAction extends AbstractAction implements Eve
 	public void performAction() throws ActionException
 	{
 		// TODO Auto-generated method stub
-		// This method would contain logic if this action were used in a Swing/JasperReports web context.
+		// This method would contain logic if this action were used in a
+		// Swing/JasperReports web context.
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 * <p>
@@ -255,7 +260,8 @@ public class GenerateIncomeStatementAction extends AbstractAction implements Eve
 	@Override public void actionPerformed(java.awt.event.ActionEvent e)
 	{
 		// TODO Auto-generated method stub
-		// This method would be called if this action were triggered by a Swing component.
+		// This method would be called if this action were triggered by a Swing
+		// component.
 	}
 	
 }

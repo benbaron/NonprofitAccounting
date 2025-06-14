@@ -71,9 +71,9 @@ public class NewTransactionPanelFXTest extends JavaFXTestBase {
         Account incomeAcc = new Account("4010", "Donations", AccountType.INCOME, BigDecimal.ZERO);
         incomeAcc.setIncreaseSide(AccountSide.CREDIT);
 
-        this.testCoa.addRootAccount(assetAcc);
-        this.testCoa.addRootAccount(expenseAcc);
-        this.testCoa.addRootAccount(incomeAcc);
+        this.testCoa.addAccount(assetAcc);
+        this.testCoa.addAccount(expenseAcc);
+        this.testCoa.addAccount(incomeAcc);
 
         this.testCompany = new Company();
         CompanyProfileModel profile = new CompanyProfileModel();

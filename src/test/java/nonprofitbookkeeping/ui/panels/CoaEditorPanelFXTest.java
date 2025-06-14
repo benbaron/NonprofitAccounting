@@ -50,10 +50,10 @@ public class CoaEditorPanelFXTest extends JavaFXTestBase
 		Account rootAsset = new Account("1000", "Assets", AccountType.ASSET, BigDecimal.ZERO);
 		Account bank = new Account("1010", "Bank", AccountType.ASSET, new BigDecimal("1000.00"));
 		rootAsset.addChild(bank);
-		this.testCoa.addRootAccount(rootAsset);
+		this.testCoa.addAccount(rootAsset);
 		
 		Account rootEquity = new Account("3000", "Equity", AccountType.EQUITY, BigDecimal.ZERO);
-		this.testCoa.addRootAccount(rootEquity);
+		this.testCoa.addAccount(rootEquity);
 		
 		this.mockOnSave = mock(Consumer.class);
 		this.mockOnClose = mock(Runnable.class);
