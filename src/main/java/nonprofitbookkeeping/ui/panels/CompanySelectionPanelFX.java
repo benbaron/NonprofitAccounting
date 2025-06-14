@@ -182,8 +182,8 @@ public class CompanySelectionPanelFX extends BorderPane
 	 * Attempts to load the selected company file {@code f} into the {@link CurrentCompany} context
 	 * and displays some information in the preview area.
 	 * <p>
-	 * Note: This method effectively "opens" the company by calling {@link CurrentCompany#loadFromPersistent(File)}
-	 * and {@link CurrentCompany#open()} merely for previewing. This might have unintended side effects if the user
+         * Note: This method effectively "opens" the company by calling {@link CurrentCompany#loadFromPersistent(File)}
+         * and {@link CurrentCompany#markCompanyOpen()} merely for previewing. This might have unintended side effects if the user
 	 * does not proceed to click the "Open Selected" button. A less invasive preview mechanism
 	 * (e.g., reading only metadata) might be preferable.
 	 * </p>
@@ -208,8 +208,8 @@ public class CompanySelectionPanelFX extends BorderPane
 			// This "preview" actually loads and opens the company.
 			// For a true preview without side effects, it should parse metadata or summary
 			// without altering CurrentCompany state until "Open Selected" is clicked.
-			CurrentCompany.loadFromPersistent(f); // This can throw various exceptions.
-			CurrentCompany.open(); // Sets the company as globally open.
+                        CurrentCompany.loadFromPersistent(f); // This can throw various exceptions.
+                        CurrentCompany.markCompanyOpen(); // Sets the company as globally open.
 			// The previewArea is not explicitly updated here with company details from
 			// CurrentCompany.
 			// It might be intended to show details from CurrentCompany after it's loaded.

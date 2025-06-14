@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountType;
 import nonprofitbookkeeping.model.ChartOfAccounts;
+import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.ui.JavaFXTestBase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import org.mockito.MockedStatic;
 
 
 public class CoaEditorPanelFXTest extends JavaFXTestBase
@@ -168,14 +170,25 @@ public class CoaEditorPanelFXTest extends JavaFXTestBase
 		// were made
 	}
 	
-	@Test public void testCancelButton_InvokesCallback()
-	{
-		clickOn("Cancel");
-		WaitForAsyncUtils.waitForFxEvents();
-		
-		verify(this.mockOnSave, never()).accept(any());
-		verify(this.mockOnClose, times(1)).run();
-	}
+        @Test public void testCancelButton_InvokesCallback()
+        {
+                clickOn("Cancel");
+                WaitForAsyncUtils.waitForFxEvents();
+
+                verify(this.mockOnSave, never()).accept(any());
+                verify(this.mockOnClose, times(1)).run();
+        }
+
+        @Test public void testClosePanel_FiresCompanyOpenEvent()
+        {
+                try (MockedStatic<CurrentCompany> mocked = mockStatic(CurrentCompany.class))
+                {
+                        clickOn("Cancel");
+                        WaitForAsyncUtils.waitForFxEvents();
+
+                        mocked.verify(CurrentCompany::markCompanyOpen, times(1));
+                }
+        }
 	
 	// --- Helper methods for dialogs and tree ---
 	

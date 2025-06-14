@@ -375,7 +375,7 @@ public class SkeletonCoaPanel extends BorderPane
 			ex.printStackTrace();
 		}
 		
-		CurrentCompany.open();
+                CurrentCompany.markCompanyOpen();
 		loadCoaData();
 	}
 	

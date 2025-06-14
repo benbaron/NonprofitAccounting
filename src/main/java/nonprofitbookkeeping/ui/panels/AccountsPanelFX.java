@@ -16,6 +16,7 @@ import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountType;
 import nonprofitbookkeeping.service.AccountService;
 import nonprofitbookkeeping.model.CurrentCompany; // Added for listener
+import nonprofitbookkeeping.model.Company;
 
 /**
  * JavaFX port of {@code AccountsPanel}. Shows the chart of accounts and basic
@@ -183,23 +184,32 @@ public class AccountsPanelFX extends BorderPane
 	 * from {@link AccountService#getAllAccounts()} and converting each {@link Account}
 	 * to an {@link AccountRow}.
 	 */
-	private void refresh()
-	{
-		this.rows.clear();
-		// Assuming AccountService.getAllAccounts() is aware of CurrentCompany
-		// or returns an empty list if no company is active.
-		List<Account> accounts = AccountService.getAllAccounts();
-		
-		if (accounts != null)
-		{
-			accounts.forEach(a -> this.rows.add(new AccountRow(a)));
-		}
-		
-	}
+        private void refresh()
+        {
+                this.rows.clear();
+
+                if (!CurrentCompany.isOpen())
+                {
+                        return;
+                }
+
+                Company company = CurrentCompany.getCompany();
+
+                if (company != null && company.getChartOfAccounts() != null)
+                {
+                        List<Account> accounts = company.getChartOfAccounts().getAccounts();
+
+                        if (accounts != null)
+                        {
+                                accounts.forEach(a -> this.rows.add(new AccountRow(a)));
+                        }
+                }
+
+        }
 	
 	// New method to handle company state changes
-	private void handleCompanyChange(boolean isOpen)
-	{	
+        private void handleCompanyChange(boolean isOpen)
+        {
 		if (isOpen)
 		{
 			refresh(); // Load data
@@ -229,9 +239,23 @@ public class AccountsPanelFX extends BorderPane
 					}
 					
 				});
-			}
-			
-		}
+                }
+
+        }
+
+        /**
+         * Should be called when this panel is no longer needed. It unregisters
+         * the panel from {@link CurrentCompany.CompanyListener} to avoid memory
+         * leaks from dangling listeners.
+         */
+        public void dispose()
+        {
+                if (this.companyListener != null)
+                {
+                        CurrentCompany.CompanyListener.removeCompanyListener(this.companyListener);
+                        this.companyListener = null;
+                }
+        }
 		
 	}
 	

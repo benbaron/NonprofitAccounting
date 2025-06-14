@@ -47,7 +47,7 @@ public class ImportCoaXlsxActionFX implements EventHandler<ActionEvent> {
 
                 if (currentCompany != null) {
                     currentCompany.setChartOfAccounts(importedCOA);
-                    CurrentCompany.open();
+                    CurrentCompany.markCompanyOpen();
                     Alert alert = new Alert(AlertType.INFORMATION);
                     alert.setTitle("Import Successful");
                     alert.setHeaderText(null);

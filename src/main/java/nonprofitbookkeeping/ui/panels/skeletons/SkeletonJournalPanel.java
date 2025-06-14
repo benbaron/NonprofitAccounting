@@ -373,18 +373,34 @@ public class SkeletonJournalPanel extends BorderPane
 		
 		NewTransactionPanelFX pane =
 			(existing == null) ? 
-				new NewTransactionPanelFX(tx ->
-				{
-					// On Save
-					journal.addTransaction(tx);	
-					loadData();
-				}) :
-				new NewTransactionPanelFX(existing, tx ->
-				{
-					// On Save
-					journal.updateTransaction(tx);
-					loadData();
-				});
+                                new NewTransactionPanelFX(tx ->
+                                {
+                                        // On Save
+                                        journal.addTransaction(tx);
+                                        try
+                                        {
+                                                CurrentCompany.persist();
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                                ex.printStackTrace();
+                                        }
+                                        loadData();
+                                }) :
+                                new NewTransactionPanelFX(existing, tx ->
+                                {
+                                        // On Save
+                                        journal.updateTransaction(tx);
+                                        try
+                                        {
+                                                CurrentCompany.persist();
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                                ex.printStackTrace();
+                                        }
+                                        loadData();
+                                });
 				
 		Stage s = new Stage();
 		s.setTitle(existing == null ? "New Transaction" : "Edit Transaction");

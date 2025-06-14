@@ -33,7 +33,7 @@ public class OpenCompanyFileActionFX
 	 *       filtered for ".npbk" files.</li>
 	 *   <li>If a file is selected, it loads the company data from this file using
 	 *       {@link CurrentCompany#loadFromPersistent(File)}.</li>
-	 *   <li>Marks the company as open using {@link CurrentCompany#open()}.</li>
+         *   <li>Marks the company as open using {@link CurrentCompany#markCompanyOpen()}.</li>
 	 *   <li>Displays an informational alert showing the path of the loaded file.</li>
 	 * </ol>
 	 * If the user cancels the file selection or if any error occurs during file loading
@@ -59,8 +59,8 @@ public class OpenCompanyFileActionFX
 				owner);
 			
 			// Load file from the file system
-			CurrentCompany.loadFromPersistent(file); // This can throw various exceptions
-			CurrentCompany.open(); // Mark company as open in the application context
+                        CurrentCompany.loadFromPersistent(file); // This can throw various exceptions
+                        CurrentCompany.markCompanyOpen(); // Mark company as open in the application context
 			
 			// If all above operations were successful, run the callback
 			if (this.onSuccessCallback != null) {
