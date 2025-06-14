@@ -191,7 +191,8 @@ public class SkeletonJournalPanel extends BorderPane
 	 * Transactions are typically displayed in reverse chronological order (newest first).
 	 * If no company is open or no entries are found, a placeholder message is shown in the table.
 	 */
-	// >>>>>>>>> On Journal Change
+
+	// FIXME: >>>>>>>>> On Journal Change
 	private void loadData()
 	{
 		this.journalDataList.clear();
