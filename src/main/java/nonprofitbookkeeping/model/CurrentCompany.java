@@ -123,8 +123,8 @@ public class CurrentCompany
 		company = CurrentCompany.dataStorer.loadData(
 			Company.class, 
 			checkNotNull(file, "File cannot be null for load operation."));
-		setCurrentFile(file);
-		// Consider calling open() here if loading implies opening
+                setCurrentFile(file);
+                // Consider calling markCompanyOpen() here if loading implies opening
 	}
 	
 	/**
@@ -147,15 +147,20 @@ public class CurrentCompany
 		return CurrentCompany.companyIsOpen;
 	}
 	
-	/**
-	 * Marks the current company as open.
-	 * Sets the company open status to true and notifies listeners.
-	 */
-	public static void open()
-	{
-		CurrentCompany.companyIsOpen = true;
-		CompanyListener.fireChanged(true);
-	}
+        /**
+         * Marks the current company as open and notifies listeners.
+         * <p>
+         * This method does <strong>not</strong> load any company data. It merely
+         * updates the "company is open" flag and fires a change event so that
+         * UI panels can refresh themselves. It is typically called after the
+         * company has been loaded from disk.
+         * </p>
+         */
+        public static void markCompanyOpen()
+        {
+                CurrentCompany.companyIsOpen = true;
+                CompanyListener.fireChanged(true);
+        }
 	
 	/**
 	 * Listener interface for receiving notifications about company state changes (e.g., opened or closed).

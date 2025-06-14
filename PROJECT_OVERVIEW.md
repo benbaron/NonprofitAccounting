@@ -28,6 +28,11 @@ The project is a desktop application designed for nonprofit bookkeeping. It aims
 *   Main application window (`NonprofitBookkeepingFX`) uses `MainApplicationView`.
 *   `MainApplicationView` uses a `TabPane` for primary navigation (Dashboard, Journal, COA, Reports, Account Details).
 *   Some functionalities use separate dialogs/stages.
+*   Panels observe company open/close events by registering a
+    `CurrentCompany.CompanyChangeListener` with
+    `CurrentCompany.CompanyListener.addCompanyListener(...)`. Panels should
+    unregister via `removeCompanyListener(...)` when destroyed so their UI
+    updates correctly and listeners do not leak.
 
 ## 5. Code Documentation and Quality Tracking
 

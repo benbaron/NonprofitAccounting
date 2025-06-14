@@ -505,28 +505,31 @@ public class CoaEditorPanelFX extends BorderPane
 	 * it is executed. Otherwise, if this panel is hosted in its own {@link Stage} (e.g., as part of a dialog),
 	 * that stage is closed.
 	 */
-	private void closePanel()
-	{		
-		if (this.onClose != null)
-		{
-			this.onClose.run(); // Execute the provided callback 
-			// (e.g., caller restores previous
-			// view)
-		}
-		else
-		{
-			// Fallback if no specific close handler: try to close the window this panel is
-			// in.
-			Window window = getScene() != null ? getScene().getWindow() : null;
-			
-			if (window instanceof Stage)
-			{
-				((Stage) window).close();
-			}
-			
-		}
-		
-	}
+        private void closePanel()
+        {
+                if (this.onClose != null)
+                {
+                        this.onClose.run(); // Execute the provided callback
+                        // (e.g., caller restores previous
+                        // view)
+                }
+                else
+                {
+                        // Fallback if no specific close handler: try to close the window this panel is
+                        // in.
+                        Window window = getScene() != null ? getScene().getWindow() : null;
+
+                        if (window instanceof Stage)
+                        {
+                                ((Stage) window).close();
+                        }
+
+                }
+
+                // Notify other panels that the chart of accounts may have changed
+                CurrentCompany.markCompanyOpen();
+
+        }
 	
 	/**
 	 * Refreshes the {@link TreeTableView} display.

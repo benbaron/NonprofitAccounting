@@ -6,13 +6,11 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
 
-
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonCoaPanel;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonDashboardPanel;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonJournalPanel;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonReportsPanel;
 import nonprofitbookkeeping.ui.panels.AccountTransactionDetailsPanelFX; // Added import
-import nonprofitbookkeeping.ui.panels.CompanySelectionPanelFX;
 
 /**
  * Represents the main application view, structured as a {@link BorderPane}.
@@ -57,8 +55,9 @@ public class MainApplicationView extends BorderPane
 	private Tab reportsTab;
 	/** Tab for displaying Account Transaction Details. */
 	private Tab accountDetailsTab;
-	/** Tab for selecting or creating a company when none is open. */
-	private Tab companySelectTab;
+	
+//	/** Tab for selecting or creating a company when none is open. */
+//	private Tab companySelectTab;
 	
 	/**
 	 * Constructs a new {@code MainApplicationView}.
@@ -91,26 +90,32 @@ public class MainApplicationView extends BorderPane
 		this.accountDetailsTab.setClosable(false);
 		
 		// Tab shown when no company is open
-		CompanySelectionPanelFX selectPanel = new CompanySelectionPanelFX();
-		selectPanel.setOnCompanyOpenedHandler(selectPanel.new OnCompanyOpenedHandler()
-		{
-			@Override public void onCompanyOpened(nonprofitbookkeeping.model.Company company)
-			{
-				updateCompanyOpenState(true);
-			}
-			
-		});
-		this.companySelectTab = new Tab("Select Company", selectPanel);
-		this.companySelectTab.setClosable(false);
+		// Commented out. The previewer opens the file to look at it
+		// which is misleading and complicated.
+//		CompanySelectionPanelFX selectPanel = new CompanySelectionPanelFX();
+//		selectPanel.setOnCompanyOpenedHandler(selectPanel.new OnCompanyOpenedHandler()
+//		{
+//			@Override public void onCompanyOpened(nonprofitbookkeeping.model.Company company)
+//			{
+//				updateCompanyOpenState(true);
+//			}
+//			
+//		});
+//		this.companySelectTab = new Tab("Select Company", selectPanel);
+//		this.companySelectTab.setClosable(false);
 		
 		// Add tabs to the tabPane
-		this.tabPane.getTabs().addAll(this.dashboardTab, this.journalTab, this.coaTab,
-			this.reportsTab, this.accountDetailsTab, this.companySelectTab);
+		this.tabPane.getTabs()
+		.addAll(this.dashboardTab, 
+			this.journalTab, 
+			this.coaTab,
+			this.reportsTab, 
+			this.accountDetailsTab
+			//this.companySelectTab
+			);
 		
 		// Set the TabPane as the center of the BorderPane
 		setCenter(this.tabPane);
-		
-		// The TOP will be set via setMenuBar()
 	}
 	
 	/**
@@ -181,21 +186,21 @@ public class MainApplicationView extends BorderPane
 		this.reportsTab.setDisable(!companyOpen);
 		this.accountDetailsTab.setDisable(!companyOpen);
 		
-		if (companyOpen)
-		{
-			this.tabPane.getTabs().remove(this.companySelectTab);
-			this.tabPane.getSelectionModel().select(this.dashboardTab);
-		}
-		else
-		{
-			
-			if (!this.tabPane.getTabs().contains(this.companySelectTab))
-			{
-				this.tabPane.getTabs().add(0, this.companySelectTab);
-			}
-			
-			this.tabPane.getSelectionModel().select(this.companySelectTab);
-		}
+//		if (companyOpen)
+//		{
+//			this.tabPane.getTabs().remove(this.companySelectTab);
+//			this.tabPane.getSelectionModel().select(this.dashboardTab);
+//		}
+//		else
+//		{
+//			
+//			if (!this.tabPane.getTabs().contains(this.companySelectTab))
+//			{
+//				this.tabPane.getTabs().add(0, this.companySelectTab);
+//			}
+//			
+//			this.tabPane.getSelectionModel().select(this.companySelectTab);
+//		}
 		
 	}
 	

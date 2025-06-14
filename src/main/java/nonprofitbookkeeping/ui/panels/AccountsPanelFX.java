@@ -16,6 +16,7 @@ import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountType;
 import nonprofitbookkeeping.service.AccountService;
 import nonprofitbookkeeping.model.CurrentCompany; // Added for listener
+import nonprofitbookkeeping.model.Company;
 
 /**
  * JavaFX port of {@code AccountsPanel}. Shows the chart of accounts and basic
@@ -45,8 +46,6 @@ public class AccountsPanelFX extends BorderPane
 				}
 				
 			});
-		
-		// buildControls() now assigns to this.actionButtonsBox
 		
 		this.actionButtonsBox = buildControls(); // New: call and store
 		setBottom(this.actionButtonsBox); // New: set stored HBox
@@ -186,56 +185,75 @@ public class AccountsPanelFX extends BorderPane
 	private void refresh()
 	{
 		this.rows.clear();
-		// Assuming AccountService.getAllAccounts() is aware of CurrentCompany
-		// or returns an empty list if no company is active.
-		List<Account> accounts = AccountService.getAllAccounts();
 		
-		if (accounts != null)
+		if (!CurrentCompany.isOpen())
 		{
-			accounts.forEach(a -> this.rows.add(new AccountRow(a)));
+			return;
 		}
 		
-	}
-	
-	// New method to handle company state changes
-	private void handleCompanyChange(boolean isOpen)
-	{	
-		if (isOpen)
+		Company company = CurrentCompany.getCompany();
+		
+		if (company != null && company.getChartOfAccounts() != null)
 		{
-			refresh(); // Load data
+			List<Account> accounts = company.getChartOfAccounts().getAccounts();
 			
-			if (this.actionButtonsBox != null)
+			if (accounts != null)
 			{
-				this.actionButtonsBox.getChildren().forEach(node -> 
-				{
-					if (node instanceof Button)
-					{
-						((Button) node).setDisable(false);
-					}					
-				});
-			}			
-		}
-		else
-		{
-			this.rows.clear(); // Clear data
-			
-			if (this.actionButtonsBox != null)
-			{
-				this.actionButtonsBox.getChildren().forEach(node -> 
-				{					
-					if (node instanceof Button)
-					{
-						((Button) node).setDisable(true);
-					}
-					
-				});
+				accounts.forEach(a -> this.rows.add(new AccountRow(a)));
 			}
 			
 		}
 		
 	}
 	
-
+	
+	/**
+	 * New method to handle company state changes
+	 * 
+	 * @param companyIsOpen
+	 */
+	private void handleCompanyChange(boolean companyIsOpen)
+	{
+		if (companyIsOpen)
+		{
+			refresh(); // Load data
+			
+			if (this.actionButtonsBox != null)
+			{				
+				this.actionButtonsBox.getChildren()
+				.forEach(node ->
+				{
+					// to prevent key bounce on select
+					if (node instanceof Button)
+					{
+						((Button) node).setDisable(false);
+					}
+					
+				});
+				this.rows.clear(); // Clear data
+			
+			}
+			
+		}
+	}
+	
+	/**
+	 * Should be called when this panel is no longer needed. It unregisters
+	 * the panel from {@link CurrentCompany.CompanyListener} to avoid memory
+	 * leaks from dangling listeners.
+	 */
+	public void dispose()
+	{
+		
+		if (this.companyListener != null)
+		{
+			CurrentCompany.CompanyListener.removeCompanyListener(this.companyListener);
+			this.companyListener = null;
+		}
+		
+	}
+	
+	
 	/**
 	 * AccountsPanelCompanyListener
 	 */
@@ -284,7 +302,7 @@ public class AccountsPanelFX extends BorderPane
 		 * Default constructor for creating an empty {@code AccountRow},
 		 * typically used when adding a new account via the UI.
 		 * Initializes fields to default values.
-		 */		
+		 */
 		public AccountRow()
 		{
 		}

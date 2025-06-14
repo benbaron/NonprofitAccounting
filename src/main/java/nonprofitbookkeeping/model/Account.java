@@ -252,8 +252,12 @@ public final class Account implements Serializable
 	 */
 	public void setParentAccount(Account parentAccount)
 	{
-		this.parentAccount = parentAccount;
-		parentAccount.childAccount = this;
+		if (parentAccount != null)
+		{
+			this.parentAccount = parentAccount;
+			parentAccount.childAccount = this;
+		}
+		
 	}
 
 	/**

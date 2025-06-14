@@ -24,6 +24,8 @@ public class OpenCompanyFileActionFX
 	private final Runnable onSuccessCallback;
 	
 	/**
+	 * Constructor 
+	 * 
 	 * Constructs and executes the action to open an existing company file.
 	 * This constructor immediately initiates the file selection process.
 	 * <p>
@@ -33,7 +35,7 @@ public class OpenCompanyFileActionFX
 	 *       filtered for ".npbk" files.</li>
 	 *   <li>If a file is selected, it loads the company data from this file using
 	 *       {@link CurrentCompany#loadFromPersistent(File)}.</li>
-	 *   <li>Marks the company as open using {@link CurrentCompany#open()}.</li>
+	     *   <li>Marks the company as open using {@link CurrentCompany#markCompanyOpen()}.</li>
 	 *   <li>Displays an informational alert showing the path of the loaded file.</li>
 	 * </ol>
 	 * If the user cancels the file selection or if any error occurs during file loading
@@ -48,9 +50,11 @@ public class OpenCompanyFileActionFX
 	 * @throws NoFileCreatedException If {@code CurrentCompany.loadFromPersistent} fails in a way that indicates no valid file was processed (though typically IOException or NoFileException might be more direct from chooser/loading).
 	 * @throws Exception For any other unspecified errors during the process.
 	 */
-	public OpenCompanyFileActionFX(Stage owner, Runnable onSuccessCallback) throws Exception
+	public OpenCompanyFileActionFX(Stage owner, 
+	                               Runnable onSuccessCallback) throws Exception
 	{
 		this.onSuccessCallback = onSuccessCallback;
+		
 		try
 		{
 			File file = NpbkFileChooserFX.chooseExisting("Open File",
@@ -60,20 +64,23 @@ public class OpenCompanyFileActionFX
 			
 			// Load file from the file system
 			CurrentCompany.loadFromPersistent(file); // This can throw various exceptions
-			CurrentCompany.open(); // Mark company as open in the application context
+			CurrentCompany.markCompanyOpen(); // Mark company as open in the application context
 			
 			// If all above operations were successful, run the callback
-			if (this.onSuccessCallback != null) {
+			if (this.onSuccessCallback != null)
+			{
 				this.onSuccessCallback.run();
 			}
-
+			
 			showInfo("Loaded " + file.getAbsolutePath());
 		}
 		catch (NoFileException | IOException | ActionCancelledException | NoFileCreatedException e1)
 		{
-			// Re-throw caught exceptions to be handled by the caller or a global exception handler.
+			// Re-throw caught exceptions to be handled by the caller or a global exception
+			// handler.
 			throw e1;
 		}
+		
 		// Other RuntimeExceptions or Errors will propagate naturally.
 	}
 	

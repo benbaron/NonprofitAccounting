@@ -8,12 +8,12 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+
 /**
  * Mutable container that holds every {@link Account} in the company and
  * supports parent/child relationships.
  */
-@Data
-public class ChartOfAccounts implements Serializable
+@Data public class ChartOfAccounts implements Serializable
 {
 	
 	private static final long serialVersionUID = 6545569795380871696L;
@@ -105,13 +105,13 @@ public class ChartOfAccounts implements Serializable
 	 * @return A string containing all account names, separated by commas.
 	 *         Returns an empty string if there are no accounts.
 	 */
-	public String getNames()
+	public String getAccountNames()
 	{
 		return this.chartOfAccounts.stream()
 			.map(Account::getName)
 			.collect(Collectors.joining(", "));
 	}
-	
+
 	/* ------------------------------------------------------------------ */
 	/**
 	 * Builds and returns an unmodifiable Map where keys are account numbers
@@ -122,39 +122,43 @@ public class ChartOfAccounts implements Serializable
 	 *
 	 * @return An unmodifiable {@code Map<String, Account>}.
 	 */
-        public Map<String, Account> getAccountNumberToAccountDetails()
-        {
-                return this.chartOfAccounts.stream()
-                        .collect(Collectors.toUnmodifiableMap(Account::getAccountNumber,
-                                a -> a,
-                                (a, b) -> a)); // keep first
-        }
-
-        /**
-         * Retrieves an account by its display name.
-         * This is a convenience lookup used when UI components store the
-         * account name instead of the unique account number.
-         *
-         * @param accountName the name of the account
-         * @return the matching {@link Account} or {@code null} if none found
-         */
-        public Account getAccountByName(String accountName)
-        {
-                if (accountName == null || accountName.isBlank()) {
-                        return null;
-                }
-
-                for (Account acc : this.chartOfAccounts)
-                {
-                        if (accountName.equals(acc.getName()))
-                        {
-                                return acc;
-                        }
-                }
-
-                return null;
-        }
-
+	public Map<String, Account> getAccountNumberToAccountDetails()
+	{
+		return this.chartOfAccounts.stream()
+			.collect(Collectors.toUnmodifiableMap(Account::getAccountNumber,
+				a -> a,
+				(a, b) -> a)); // keep first
+	}
+	
+	/**
+	 * Retrieves an account by its display name.
+	 * This is a convenience lookup used when UI components store the
+	 * account name instead of the unique account number.
+	 *
+	 * @param accountName the name of the account
+	 * @return the matching {@link Account} or {@code null} if none found
+	 */
+	public Account getAccountByName(String accountName)
+	{
+		
+		if (accountName == null || accountName.isBlank())
+		{
+			return null;
+		}
+		
+		for (Account acc : this.chartOfAccounts)
+		{
+			
+			if (accountName.equals(acc.getName()))
+			{
+				return acc;
+			}
+			
+		}
+		
+		return null;
+	}
+	
 	/**
 	 * Retrieves a specific {@link Account} from the chart by its account number.
 	 * This method provides a convenient way to look up an account using its unique identifier.
@@ -166,14 +170,16 @@ public class ChartOfAccounts implements Serializable
 	 *         matches the given account number, or if the input accountNumber is invalid.
 	 */
 	public Account getAccount(String accountNumber)
-	{
-		if (accountNumber == null || accountNumber.trim().isEmpty()) {
-            return null;
-        }
-        Map<String, Account> accountMap = this.getAccountNumberToAccountDetails();
-        return accountMap.get(accountNumber);
+	{		
+		if (accountNumber == null || accountNumber.trim().isEmpty())
+		{
+			return null;
+		}
+		
+		Map<String, Account> accountMap = this.getAccountNumberToAccountDetails();
+		return accountMap.get(accountNumber);
 	}
-
+	
 	/**
 	 * Returns a list of all accounts contained in this chart of accounts.
 	 * This list includes all accounts, whether they are root accounts or child accounts.
@@ -190,9 +196,9 @@ public class ChartOfAccounts implements Serializable
 	public List<Account> getAccounts()
 	{
 		// this.chartOfAccounts is final and initialized, so it won't be null.
-        return new ArrayList<>(this.chartOfAccounts);
+		return new ArrayList<>(this.chartOfAccounts);
 	}
-
+	
 	/**
 	 * Removes an account (and its descendants) from the chart of accounts using its account number.
 	 * @param accountNumber The account number of the account to remove.
@@ -204,30 +210,17 @@ public class ChartOfAccounts implements Serializable
 	public boolean removeAccount(String accountNumber)
 	{
 		Account accountToRemove = getAccount(accountNumber);
-        if (accountToRemove != null) {
-            removeAccount(accountToRemove);
-            return true; // Account found and removal attempted
-        }
-        return false; // Account not found
-	}
-
-	/**
-	 * @return
-	 */
-	public Object getAccountNames()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * @param rootAsset
-	 */
-	public void addRootAccount(Account rootAsset)
-	{
-		// TODO Auto-generated method stub
 		
+		if (accountToRemove != null)
+		{
+			removeAccount(accountToRemove);
+			return true; // Account found and removal attempted
+		}
+		
+		return false; // Account not found
 	}
+	
 
+	
 
 }
