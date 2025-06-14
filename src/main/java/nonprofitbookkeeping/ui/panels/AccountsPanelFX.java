@@ -143,12 +143,12 @@ public class AccountsPanelFX extends BorderPane
 			// Consider if AccountService needs to be notified of deletion
 			this.rows.remove(idx);
 		}
-		else
-		{
-			alert("Please select an account to delete.");
-		}
-		
-	}
+                else
+                {
+                        alert("Please select an account to delete.");
+                }
+
+        }
 	
 	/**
 	 * onEditAction
@@ -232,10 +232,6 @@ public class AccountsPanelFX extends BorderPane
 					}
 					
 				});
-			}
-		}
-		else
-		{
 			this.rows.clear(); // Clear data
 			
 			if (this.actionButtonsBox != null)
