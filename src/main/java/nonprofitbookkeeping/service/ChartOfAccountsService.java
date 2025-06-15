@@ -15,8 +15,8 @@ import nonprofitbookkeeping.model.*;
 public class ChartOfAccountsService
 {
 	
-	/** The underlying {@link ChartOfAccounts} model instance this service operates on. */
-	private final ChartOfAccounts coa;
+        /** The underlying {@link ChartOfAccounts} model instance this service operates on. */
+        private ChartOfAccounts coa;
 	
 	/**
 	 * Constructs a new {@code ChartOfAccountsService} that will operate on the given
@@ -25,13 +25,13 @@ public class ChartOfAccountsService
 	 * @param coa The {@link ChartOfAccounts} model to be managed by this service. Must not be null.
 	 * @throws NullPointerException if {@code coa} is null.
 	 */
-	public ChartOfAccountsService(ChartOfAccounts coa)
-	{
-		if (coa == null) {
+        public ChartOfAccountsService(ChartOfAccounts coa)
+        {
+                if (coa == null) {
             throw new NullPointerException("ChartOfAccounts cannot be null.");
         }
-		this.coa = coa;
-	}
+                this.coa = coa;
+        }
 	
 	/* ------------------------------------------------------------------ */
 	/**
@@ -141,10 +141,27 @@ public class ChartOfAccountsService
 	 *
 	 * @return The wrapped {@link ChartOfAccounts} object.
 	 */
-	public ChartOfAccounts asChart()
-	{
-		return this.coa;
-	}
+        public ChartOfAccounts asChart()
+        {
+                return this.coa;
+        }
+
+        /**
+         * Replaces the underlying {@link ChartOfAccounts} instance this service
+         * operates on.
+         *
+         * @param newChart the new chart of accounts to manage
+         * @throws NullPointerException if {@code newChart} is null
+         */
+        public void setChart(ChartOfAccounts newChart)
+        {
+                if (newChart == null)
+                {
+                        throw new NullPointerException("ChartOfAccounts cannot be null.");
+                }
+
+                this.coa = newChart;
+        }
 	
 	/* ------------------------------------------------------------------ */
 	/**
@@ -168,8 +185,8 @@ public class ChartOfAccountsService
 		new java.util.ArrayList<>(this.coa.getRootAccounts()).forEach(this.coa::removeAccount);
 		
 		/* 2) deep-copy each root (and its subtree) from the imported chart */
-		imported.getRootAccounts().forEach(root -> copyRecursive(root, null));
-	}
+                imported.getRootAccounts().forEach(root -> copyRecursive(imported, root, null));
+        }
 	
 	/**
 	 * Recursively copies an account ({@code src}) and its entire subtree of child accounts
@@ -183,8 +200,8 @@ public class ChartOfAccountsService
 	 *                   the {@code src} account (and its children) should be copied.
 	 *                   If null, {@code src} is copied as a root account.
 	 */
-	private void copyRecursive(Account src, Account parentDest)
-	{
+        private void copyRecursive(ChartOfAccounts sourceChart, Account src, Account parentDest)
+        {
 		/* clone basic fields */
 		Account clone = new Account();
 		clone.setAccountNumber(src.getAccountNumber());
@@ -199,10 +216,10 @@ public class ChartOfAccountsService
 			this.coa.addSubAccount(parentDest, clone);
 		
 		/* recurse into children */
-		for (Account child : this.coa.getChildren(src))
-		{
-			copyRecursive(child, clone);
-		}
+                for (Account child : sourceChart.getChildren(src))
+                {
+                        copyRecursive(sourceChart, child, clone);
+                }
 		
 	}
 	
