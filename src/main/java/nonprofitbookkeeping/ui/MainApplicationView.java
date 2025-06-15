@@ -219,15 +219,6 @@ public class MainApplicationView extends BorderPane
                        {
                                this.coaEditorPanel.setChartOfAccounts(coa);
                        }
-
-                       this.coaEditorPanel.getTreeTable().setPlaceholder(new javafx.scene.control.Label("No accounts available."));
-               }
-               else
-               {
-                       if (this.coaEditorPanel != null)
-                       {
-                               this.coaEditorPanel.getTreeTable().setPlaceholder(new javafx.scene.control.Label("No company open."));
-                       }
                }
 		
 //		if (companyOpen)

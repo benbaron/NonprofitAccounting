@@ -89,7 +89,15 @@ public class CoaEditorPanelFX extends BorderPane
 	private ComboBox<AccountType> typeBox;
 	
 	private CoaEditorPanelCompanyListener companyListener;
-	private HBox actionButtonsBox;
+       private HBox actionButtonsBox;
+       private Button addRootBtn;
+       private Button addSubBtn;
+       private Button editBtn;
+       private Button deleteBtn;
+       private Button saveBtn;
+       private Button importBtn;
+       private Button exportBtn;
+       private Button cancelBtn;
 	
 	/** 
 	 * Convenience constructor for {@code CoaEditorPanelFX} when no specific save or close callbacks are needed.
@@ -174,8 +182,8 @@ public class CoaEditorPanelFX extends BorderPane
                 // top-level accounts
                 this.tree.setRoot(this.rootItem);
 
-                this.tree.setPlaceholder(
-                        new Label("No Chart of Accounts data to display or company not open."));
+               this.tree.setPlaceholder(
+                       new Label("No accounts. Use 'Add Root' to create one."));
 		
 		this.tree.getColumns().addAll(
 			makeCol("Number", Account::getAccountNumber),
@@ -194,32 +202,49 @@ public class CoaEditorPanelFX extends BorderPane
 	 *
 	 * @return An {@link HBox} populated with control buttons.
 	 */
-	private HBox buildButtonsInternal()
-	{
-		Button addRoot = new Button("Add Root");
-		Button addSub = new Button("Add Sub-account");
-		Button edit = new Button("Edit");
-		Button del = new Button("Delete");
-		Button saveBtn = new Button("Save");
-		Button importBtn = new Button("Import XLSX");
-		Button exportBtn = new Button("Export XLSX");
-		Button cancel = new Button("Cancel");
-		
-		// button actions
-		addRoot.setOnAction(e -> showDialog(null, null));
-		addSub.setOnAction(e -> onSubAccountAction());
-		edit.setOnAction(e -> onEditAction());
-		del.setOnAction(e -> deleteSelected());
-		importBtn.setOnAction(e -> importXlsx());
-		exportBtn.setOnAction(e -> exportXlsx());
-		saveBtn.setOnAction(e -> saveButtonAction());
-		cancel.setOnAction(e -> closePanel());
-		
-		HBox hbox = new HBox(8, addRoot, addSub, edit, del,
-			importBtn, exportBtn, saveBtn, cancel);
-		hbox.setPadding(new Insets(6));
-		return hbox;
-	}
+       private HBox buildButtonsInternal()
+       {
+               this.addRootBtn = new Button("Add Root");
+               this.addSubBtn = new Button("Add Sub-account");
+               this.editBtn = new Button("Edit");
+               this.deleteBtn = new Button("Delete");
+               this.saveBtn = new Button("Save");
+               this.importBtn = new Button("Import XLSX");
+               this.exportBtn = new Button("Export XLSX");
+               this.cancelBtn = new Button("Cancel");
+
+               // button actions
+               this.addRootBtn.setOnAction(e -> showDialog(null, null));
+               this.addSubBtn.setOnAction(e -> onSubAccountAction());
+               this.editBtn.setOnAction(e -> onEditAction());
+               this.deleteBtn.setOnAction(e -> deleteSelected());
+               this.importBtn.setOnAction(e -> importXlsx());
+               this.exportBtn.setOnAction(e -> exportXlsx());
+               this.saveBtn.setOnAction(e -> saveButtonAction());
+               this.cancelBtn.setOnAction(e -> closePanel());
+
+               HBox hbox = new HBox(8, this.addRootBtn, this.addSubBtn, this.editBtn, this.deleteBtn,
+                       this.importBtn, this.exportBtn, this.saveBtn, this.cancelBtn);
+               hbox.setPadding(new Insets(6));
+               this.tree.getSelectionModel().selectedItemProperty().addListener((obs, o, n) -> updateButtonsForSelection());
+               updateButtonsForSelection();
+               return hbox;
+       }
+
+       /** Updates enablement of edit-related buttons based on selection. */
+       private void updateButtonsForSelection()
+       {
+               boolean hasSel = selected() != null;
+
+               if (this.addSubBtn != null)
+                       this.addSubBtn.setDisable(!hasSel);
+
+               if (this.editBtn != null)
+                       this.editBtn.setDisable(!hasSel);
+
+               if (this.deleteBtn != null)
+                       this.deleteBtn.setDisable(!hasSel);
+       }
 	
 	/**
 	 * onSubAccountAction
@@ -583,17 +608,27 @@ public class CoaEditorPanelFX extends BorderPane
 	 * by fetching root accounts from the {@link ChartOfAccountsService} and recursively
 	 * adding their children using {@link #makeNode(Account)}.
 	 */
-	private void refresh()
-	{
-		this.rootItem.getChildren().clear();
-		
-		if (CurrentCompany.isOpen())
-		{ // Only populate if a company is open
-			this.svc.roots().forEach(r -> this.rootItem.getChildren().add(makeNode(r)));
-		}
-		
-		this.tree.refresh();
-	}
+       private void refresh()
+       {
+               this.rootItem.getChildren().clear();
+
+               if (CurrentCompany.isOpen())
+               { // Only populate if a company is open
+                       this.svc.roots().forEach(r -> this.rootItem.getChildren().add(makeNode(r)));
+               }
+
+               if (!CurrentCompany.isOpen())
+               {
+                       this.tree.setPlaceholder(new Label("No company open."));
+               }
+               else if (this.rootItem.getChildren().isEmpty())
+               {
+                       this.tree.setPlaceholder(new Label("No accounts. Use 'Add Root' to create one."));
+               }
+
+               updateButtonsForSelection();
+               this.tree.refresh();
+       }
 	
 	/**
 	 * Gets the {@link Account} object currently selected in the {@link TreeTableView}.
@@ -749,46 +784,39 @@ public class CoaEditorPanelFX extends BorderPane
         private void handleCompanyChange(boolean isOpen)
         {
 
-                if (isOpen)
-                {
-			// If a company is opened, this panel should reflect the ChartOfAccounts
-			// it was initially constructed with, assuming it's relevant to the
-			// CurrentCompany.
-			// The 'svc' (ChartOfAccountsService) holds the chart it was given.
-			refresh();
-			
-			if (this.actionButtonsBox != null)
-			{
-				this.actionButtonsBox.getChildren().forEach(node -> {
-					
-					if (node instanceof Button)
-					{
-						((Button) node).setDisable(false);
-					}
-					
-				});
-			}
-			
-                }
-                else
-                {
-                        this.rootItem.getChildren().clear();
-                        this.tree.refresh();
-                        this.tree.setPlaceholder(new Label("No company open."));
+               if (isOpen)
+               {
+                       refresh();
 
-                        if (this.actionButtonsBox != null)
-                        {
-                                this.actionButtonsBox.getChildren().forEach(node -> {
-					
-					if (node instanceof Button)
-					{
-						((Button) node).setDisable(true);
-					}
-					
-                                        });
-                        }
+                       if (this.actionButtonsBox != null)
+                       {
+                               this.actionButtonsBox.getChildren().forEach(node -> {
+                                       if (node instanceof Button)
+                                       {
+                                               ((Button) node).setDisable(false);
+                                       }
+                               });
+                               updateButtonsForSelection();
+                       }
 
-                }
+               }
+               else
+               {
+                       this.rootItem.getChildren().clear();
+                       this.tree.refresh();
+                       this.tree.setPlaceholder(new Label("No company open."));
+
+                       if (this.actionButtonsBox != null)
+                       {
+                               this.actionButtonsBox.getChildren().forEach(node -> {
+                                       if (node instanceof Button)
+                                       {
+                                               ((Button) node).setDisable(true);
+                                       }
+                               });
+                       }
+
+               }
 
         }
 	
