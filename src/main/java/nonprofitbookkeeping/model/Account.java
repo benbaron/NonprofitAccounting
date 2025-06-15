@@ -9,11 +9,15 @@ import java.util.Collections;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Represents an account with entries and a many-to-many relationship with
  * {@link Fund}s.
  */
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+                  property = "accountNumber")
 public final class Account implements Serializable
 {
 	
@@ -29,7 +33,6 @@ public final class Account implements Serializable
 	@JsonProperty private String accountCode;
 	@JsonProperty private AccountType accountType;
 	@JsonProperty private Account parentAccount;
-	@JsonProperty private Account childAccount;
 	@JsonProperty private String currency;
 	@JsonProperty private BigDecimal openingBalance = BigDecimal.ZERO;
 	
@@ -151,10 +154,11 @@ public final class Account implements Serializable
 	 * Gets the account number.
 	 * @return The account number.
 	 */
-	public String getAccountNumber()
-	{
-		return this.accountNumber;
-	}
+        public String getAccountNumber()
+        {
+                return checkNotNull(this.accountNumber,
+                        "accountNumber cannot be null when serializing");
+        }
 
 	/**
 	 * Sets the account number.
@@ -252,11 +256,10 @@ public final class Account implements Serializable
 	 */
 	public void setParentAccount(Account parentAccount)
 	{
-		if (parentAccount != null)
-		{
-			this.parentAccount = parentAccount;
-			parentAccount.childAccount = this;
-		}
+                if (parentAccount != null)
+                {
+                        this.parentAccount = parentAccount;
+                }
 		
 	}
 
@@ -296,28 +299,7 @@ public final class Account implements Serializable
 		this.openingBalance = openingBalance;
 	}
 
-	/**
-	 * @param child
-	 */
-	public void addChild(Account child)
-	{	
-		this.childAccount = child;
-		child.parentAccount = this;
-	}
-	/**
-	 * @return the childAccount
-	 */
-	public Account getChildAccount()
-	{
-		return this.childAccount;
-	}
-
-	/**
-	 * @param childAccount the childAccount to set
-	 */
-	public void setChildAccount(Account child)
-	{
-		this.childAccount = child;
-		child.parentAccount = this;
-	}
+        // The following child account helpers were removed. The application
+        // manages parent/child relationships solely via {@link #parentAccount}
+        // and the {@code ChartOfAccounts} container.
 }
