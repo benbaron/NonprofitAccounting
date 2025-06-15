@@ -231,48 +231,75 @@ public class CoaEditorPanelFX extends BorderPane
                return hbox;
        }
 
-       /** Updates enablement of edit-related buttons based on selection. */
+       /**
+        * Updates enablement of action buttons based on whether a company is
+        * open. Buttons remain enabled even if no account is selected so users
+        * can see the available actions when a company is loaded.
+        */
        private void updateButtonsForSelection()
        {
-               boolean hasSel = selected() != null;
+               boolean companyOpen = CurrentCompany.isOpen();
 
                if (this.addSubBtn != null)
-                       this.addSubBtn.setDisable(!hasSel);
+                       this.addSubBtn.setDisable(!companyOpen);
 
                if (this.editBtn != null)
-                       this.editBtn.setDisable(!hasSel);
+                       this.editBtn.setDisable(!companyOpen);
 
                if (this.deleteBtn != null)
-                       this.deleteBtn.setDisable(!hasSel);
+                       this.deleteBtn.setDisable(!companyOpen);
+
+               if (this.addRootBtn != null)
+                       this.addRootBtn.setDisable(!companyOpen);
+
+               if (this.saveBtn != null)
+                       this.saveBtn.setDisable(!companyOpen);
+
+               if (this.importBtn != null)
+                       this.importBtn.setDisable(!companyOpen);
+
+               if (this.exportBtn != null)
+                       this.exportBtn.setDisable(!companyOpen);
+
+               if (this.cancelBtn != null)
+                       this.cancelBtn.setDisable(!companyOpen);
        }
 	
 	/**
 	 * onSubAccountAction
 	 */
-	void onSubAccountAction()
-	{
-		Account parent = selected();
-		
-		if (parent != null)
-		{
-			showDialog(parent, null);
-		}
-		
-	}
+       void onSubAccountAction()
+       {
+               Account parent = selected();
+
+               if (parent != null)
+               {
+                       showDialog(parent, null);
+               }
+               else
+               {
+                       AlertBox.showWarning(null, "No account selected for sub-account.");
+               }
+
+       }
 	
 	/**
 	 * onEditAction
 	 */
-	void onEditAction()
-	{
-		Account sel = selected();
-		
-		if (sel != null)
-		{
-			showDialog(sel.getParentAccount(), sel);
-		}
-		
-	}
+       void onEditAction()
+       {
+               Account sel = selected();
+
+               if (sel != null)
+               {
+                       showDialog(sel.getParentAccount(), sel);
+               }
+               else
+               {
+                       AlertBox.showWarning(null, "No account selected for editing.");
+               }
+
+       }
 	
 	/**
 	 * saveButtonAction
