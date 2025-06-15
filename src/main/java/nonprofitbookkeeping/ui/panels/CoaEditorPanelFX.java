@@ -50,16 +50,29 @@ public class CoaEditorPanelFX extends BorderPane
 	private static final Logger LOGGER = LoggerFactory.getLogger(CoaEditorPanelFX.class);
 	
 	/** Service layer for Chart of Accounts operations. */
-	private final ChartOfAccountsService svc;
+        private final ChartOfAccountsService svc;
 	/** Callback to be executed when the "Save" button is clicked and changes are applied. Can be null. */
 	private final Consumer<ChartOfAccounts> onSave;
 	/** Callback to be executed when the panel is closed (e.g., via "Save" or "Cancel"). Can be null. */
 	private final Runnable onClose;
 	
-	/** The TreeTableView used to display and interact with the chart of accounts. */
-	private final TreeTableView<Account> tree = new TreeTableView<>();
-	/** The root item for the {@link #tree}; it is hidden in the UI. */
-	private final TreeItem<Account> rootItem = new TreeItem<>();
+        /** The TreeTableView used to display and interact with the chart of accounts. */
+        private final TreeTableView<Account> tree = new TreeTableView<>();
+        /** The root item for the {@link #tree}; it is hidden in the UI. */
+        private final TreeItem<Account> rootItem = new TreeItem<>();
+
+        /**
+         * Returns the {@link TreeTableView} displaying the chart of accounts.
+         * <p>
+         * This is primarily exposed so embedding containers can adjust
+         * properties such as the placeholder node when no company is open.
+         *
+         * @return the underlying {@code TreeTableView} component
+         */
+        public TreeTableView<Account> getTreeTable()
+        {
+                return this.tree;
+        }
 	
 	/** Service for importing and exporting Chart of Accounts data to/from XLSX. */
 	private final ChartOfAccountsIOService ioSvc = new ChartOfAccountsIOService();
@@ -101,12 +114,12 @@ public class CoaEditorPanelFX extends BorderPane
 	 *                either by saving or cancelling. Can be null if no close callback is needed.
 	 * @throws NullPointerException if {@code chart} is null.
 	 */
-	public CoaEditorPanelFX(ChartOfAccounts chart,
-		Consumer<ChartOfAccounts> onSave,
-		Runnable onClose)
-	{
-		this.svc = new ChartOfAccountsService(
-			Objects.requireNonNull(chart, "ChartOfAccounts cannot be null."));
+        public CoaEditorPanelFX(ChartOfAccounts chart,
+                Consumer<ChartOfAccounts> onSave,
+                Runnable onClose)
+        {
+                this.svc = new ChartOfAccountsService(
+                        Objects.requireNonNull(chart, "ChartOfAccounts cannot be null."));
 		this.onSave = onSave;
 		this.onClose = onClose;
 		
@@ -123,8 +136,20 @@ public class CoaEditorPanelFX extends BorderPane
 		this.companyListener = new CoaEditorPanelCompanyListener(this);
 		CurrentCompany.CompanyListener.addCompanyListener(this.companyListener);
 		
-		handleCompanyChange(CurrentCompany.isOpen());
-	}
+                handleCompanyChange(CurrentCompany.isOpen());
+        }
+
+        /**
+         * Replaces the currently displayed chart of accounts with the provided one
+         * and refreshes the view.
+         *
+         * @param chart the new {@link ChartOfAccounts} to display
+         */
+        public void setChartOfAccounts(ChartOfAccounts chart)
+        {
+                this.svc.replaceChart(Objects.requireNonNull(chart, "ChartOfAccounts cannot be null."));
+                refresh();
+        }
 	
 	
 	/**
@@ -134,12 +159,15 @@ public class CoaEditorPanelFX extends BorderPane
 	 * Column cell value factories are set up using the {@link #makeCol} helper method.
 	 */
 	@SuppressWarnings("unchecked") // For varargs in getColumns().addAll()
-	private void buildTree()
-	{
-		this.tree.setShowRoot(false);
-		// The actual root item is a dummy, its children are the
-		// top-level accounts
-		this.tree.setRoot(this.rootItem);
+        private void buildTree()
+        {
+                this.tree.setShowRoot(false);
+                // The actual root item is a dummy, its children are the
+                // top-level accounts
+                this.tree.setRoot(this.rootItem);
+
+                this.tree.setPlaceholder(
+                        new Label("No Chart of Accounts data to display or company not open."));
 		
 		this.tree.getColumns().addAll(
 			makeCol("Number", Account::getAccountNumber),
@@ -710,11 +738,11 @@ public class CoaEditorPanelFX extends BorderPane
 	 * handleCompanyChange
 	 * @param isOpen
 	 */
-	private void handleCompanyChange(boolean isOpen)
-	{
-		
-		if (isOpen)
-		{
+        private void handleCompanyChange(boolean isOpen)
+        {
+
+                if (isOpen)
+                {
 			// If a company is opened, this panel should reflect the ChartOfAccounts
 			// it was initially constructed with, assuming it's relevant to the
 			// CurrentCompany.
@@ -733,27 +761,28 @@ public class CoaEditorPanelFX extends BorderPane
 				});
 			}
 			
-		}
-		else
-		{
-			this.rootItem.getChildren().clear();
-			this.tree.refresh();
-			
-			if (this.actionButtonsBox != null)
-			{
-				this.actionButtonsBox.getChildren().forEach(node -> {
+                }
+                else
+                {
+                        this.rootItem.getChildren().clear();
+                        this.tree.refresh();
+                        this.tree.setPlaceholder(new Label("No company open."));
+
+                        if (this.actionButtonsBox != null)
+                        {
+                                this.actionButtonsBox.getChildren().forEach(node -> {
 					
 					if (node instanceof Button)
 					{
 						((Button) node).setDisable(true);
 					}
 					
-				});
-			}
-			
-		}
-		
-	}
+                                        });
+                        }
+
+                }
+
+        }
 	
 	/**
 	 * CoaEditorPanelCompanyListener

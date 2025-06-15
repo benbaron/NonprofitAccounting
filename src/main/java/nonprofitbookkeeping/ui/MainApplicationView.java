@@ -6,11 +6,14 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
 
-import nonprofitbookkeeping.ui.panels.skeletons.SkeletonCoaPanel;
+import nonprofitbookkeeping.ui.panels.CoaEditorPanelFX;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonDashboardPanel;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonJournalPanel;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonReportsPanel;
 import nonprofitbookkeeping.ui.panels.AccountTransactionDetailsPanelFX; // Added import
+import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.ChartOfAccounts;
+import nonprofitbookkeeping.model.CurrentCompany;
 
 /**
  * Represents the main application view, structured as a {@link BorderPane}.
@@ -51,10 +54,12 @@ public class MainApplicationView extends BorderPane
 	private Tab journalTab;
 	/** Tab for displaying the Chart of Accounts. */
 	private Tab coaTab;
-	/** Tab for displaying Reports. */
-	private Tab reportsTab;
-	/** Tab for displaying Account Transaction Details. */
-	private Tab accountDetailsTab;
+        /** Tab for displaying Reports. */
+        private Tab reportsTab;
+        /** Tab for displaying Account Transaction Details. */
+        private Tab accountDetailsTab;
+       /** Embedded Chart of Accounts editor panel. */
+       private CoaEditorPanelFX coaEditorPanel;
 	
 //	/** Tab for selecting or creating a company when none is open. */
 //	private Tab companySelectTab;
@@ -73,11 +78,20 @@ public class MainApplicationView extends BorderPane
 		
 		this.tabPane = new TabPane();
 		
-		// Create Tab instances
-		this.dashboardTab = new Tab("Dashboard", new SkeletonDashboardPanel());
-		this.journalTab = new Tab("Journal", new SkeletonJournalPanel());
-		this.coaTab = new Tab("Chart of Accounts", new SkeletonCoaPanel());
-		this.reportsTab = new Tab("Reports", new SkeletonReportsPanel());
+               // Create Tab instances
+               this.dashboardTab = new Tab("Dashboard", new SkeletonDashboardPanel());
+               this.journalTab = new Tab("Journal", new SkeletonJournalPanel());
+
+               Company company = CurrentCompany.getCompany();
+               ChartOfAccounts coa = company != null ? company.getChartOfAccounts() : new ChartOfAccounts();
+               this.coaEditorPanel = new CoaEditorPanelFX(coa, c -> {
+                       if (company != null) {
+                               company.setChartOfAccounts(c);
+                       }
+               }, () -> {});
+               this.coaTab = new Tab("Chart of Accounts", this.coaEditorPanel);
+
+               this.reportsTab = new Tab("Reports", new SkeletonReportsPanel());
 		
 		// Set tabs to be non-closable
 		this.dashboardTab.setClosable(false);
@@ -178,13 +192,43 @@ public class MainApplicationView extends BorderPane
 	 *
 	 * @param companyOpen {@code true} if a company is currently open.
 	 */
-	public void updateCompanyOpenState(boolean companyOpen)
-	{
-		this.dashboardTab.setDisable(!companyOpen);
-		this.journalTab.setDisable(!companyOpen);
-		this.coaTab.setDisable(!companyOpen);
-		this.reportsTab.setDisable(!companyOpen);
-		this.accountDetailsTab.setDisable(!companyOpen);
+        public void updateCompanyOpenState(boolean companyOpen)
+        {
+                this.dashboardTab.setDisable(!companyOpen);
+                this.journalTab.setDisable(!companyOpen);
+                this.coaTab.setDisable(!companyOpen);
+                this.reportsTab.setDisable(!companyOpen);
+                this.accountDetailsTab.setDisable(!companyOpen);
+
+               if (companyOpen)
+               {
+                       Company company = CurrentCompany.getCompany();
+                       ChartOfAccounts coa = company != null ? company.getChartOfAccounts() : new ChartOfAccounts();
+
+                       if (this.coaEditorPanel == null)
+                       {
+                               this.coaEditorPanel = new CoaEditorPanelFX(coa, c -> {
+                                       if (company != null)
+                                       {
+                                               company.setChartOfAccounts(c);
+                                       }
+                               }, () -> {});
+                               this.coaTab.setContent(this.coaEditorPanel);
+                       }
+                       else
+                       {
+                               this.coaEditorPanel.setChartOfAccounts(coa);
+                       }
+
+                       this.coaEditorPanel.getTreeTable().setPlaceholder(new javafx.scene.control.Label("No accounts available."));
+               }
+               else
+               {
+                       if (this.coaEditorPanel != null)
+                       {
+                               this.coaEditorPanel.getTreeTable().setPlaceholder(new javafx.scene.control.Label("No company open."));
+                       }
+               }
 		
 //		if (companyOpen)
 //		{
