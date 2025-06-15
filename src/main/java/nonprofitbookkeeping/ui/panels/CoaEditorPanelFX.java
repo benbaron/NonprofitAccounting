@@ -147,7 +147,15 @@ public class CoaEditorPanelFX extends BorderPane
          */
         public void setChartOfAccounts(ChartOfAccounts chart)
         {
-                this.svc.replaceChart(Objects.requireNonNull(chart, "ChartOfAccounts cannot be null."));
+                Objects.requireNonNull(chart, "ChartOfAccounts cannot be null.");
+
+                if (chart == this.svc.asChart())
+                {
+                        refresh();
+                        return;
+                }
+
+                this.svc.replaceChart(chart);
                 refresh();
         }
 	
