@@ -25,6 +25,9 @@ import nonprofitbookkeeping.model.*;
 import nonprofitbookkeeping.service.ChartOfAccountsIOService;
 import nonprofitbookkeeping.service.ChartOfAccountsService;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
+import nonprofitbookkeeping.exception.ActionCancelledException;
+import nonprofitbookkeeping.exception.NoFileCreatedException;
+import nonprofitbookkeeping.model.CurrentCompany;
 
 /**
  * Interactive ladder view for editing a company's Chart of Accounts.
@@ -163,7 +166,7 @@ public class CoaEditorPanelFX extends BorderPane
                         return;
                 }
 
-                this.svc.replaceChart(chart);
+                this.svc.setChart(chart);
                 refresh();
         }
 	
@@ -304,17 +307,29 @@ public class CoaEditorPanelFX extends BorderPane
 	/**
 	 * saveButtonAction
 	 */
-	void saveButtonAction()
-	{
-		
-		if (this.onSave != null)
-		{
-			// On save, do this.
-			this.onSave.accept(this.svc.asChart());
-		}
-		
-		closePanel();
-	}
+       void saveButtonAction()
+       {
+
+               if (this.onSave != null)
+               {
+                       // On save, do this.
+                       this.onSave.accept(this.svc.asChart());
+               }
+
+               try
+               {
+                       if (CurrentCompany.getCurrentFile() != null)
+                       {
+                               CurrentCompany.persist();
+                       }
+               }
+               catch (IOException | ActionCancelledException | NoFileCreatedException ex)
+               {
+                       AlertBox.showError(null, "Failed to save company: " + ex.getMessage());
+               }
+
+               closePanel();
+       }
 	
 	/**
 	 * Displays a dialog for adding a new account or editing an existing one.

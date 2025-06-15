@@ -33,7 +33,6 @@ public final class Account implements Serializable
 	@JsonProperty private String accountCode;
 	@JsonProperty private AccountType accountType;
 	@JsonProperty private Account parentAccount;
-	@JsonProperty private Account childAccount;
 	@JsonProperty private String currency;
 	@JsonProperty private BigDecimal openingBalance = BigDecimal.ZERO;
 	
@@ -257,11 +256,10 @@ public final class Account implements Serializable
 	 */
 	public void setParentAccount(Account parentAccount)
 	{
-		if (parentAccount != null)
-		{
-			this.parentAccount = parentAccount;
-			parentAccount.childAccount = this;
-		}
+                if (parentAccount != null)
+                {
+                        this.parentAccount = parentAccount;
+                }
 		
 	}
 
@@ -301,28 +299,7 @@ public final class Account implements Serializable
 		this.openingBalance = openingBalance;
 	}
 
-	/**
-	 * @param child
-	 */
-	public void addChild(Account child)
-	{	
-		this.childAccount = child;
-		child.parentAccount = this;
-	}
-	/**
-	 * @return the childAccount
-	 */
-	public Account getChildAccount()
-	{
-		return this.childAccount;
-	}
-
-	/**
-	 * @param childAccount the childAccount to set
-	 */
-	public void setChildAccount(Account child)
-	{
-		this.childAccount = child;
-		child.parentAccount = this;
-	}
+        // The following child account helpers were removed. The application
+        // manages parent/child relationships solely via {@link #parentAccount}
+        // and the {@code ChartOfAccounts} container.
 }
