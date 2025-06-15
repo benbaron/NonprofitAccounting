@@ -97,6 +97,7 @@ public class SkeletonCoaPanel extends BorderPane
 	{
 		this.coaTreeTable.getColumns().clear();
 		
+		// account number
 		TreeTableColumn<Account, String> numberCol = new TreeTableColumn<>("Account Number");
 		numberCol.setCellValueFactory(cellData -> {
 			Account acc = cellData.getValue().getValue();
@@ -104,6 +105,7 @@ public class SkeletonCoaPanel extends BorderPane
 		});
 		numberCol.setPrefWidth(150);
 		
+		// account name
 		TreeTableColumn<Account, String> nameCol = new TreeTableColumn<>("Account Name");
 		nameCol.setCellValueFactory(cellData -> {
 			Account acc = cellData.getValue().getValue();
@@ -111,6 +113,7 @@ public class SkeletonCoaPanel extends BorderPane
 		});
 		nameCol.setPrefWidth(280); // Increased width for longer names
 		
+		// account type
 		TreeTableColumn<Account, String> typeCol = new TreeTableColumn<>("Type");
 		typeCol.setCellValueFactory(cellData -> {
 			Account acc = cellData.getValue().getValue();
@@ -118,26 +121,11 @@ public class SkeletonCoaPanel extends BorderPane
 			return new SimpleStringProperty(accType != null ? accType.toString() : "");
 		});
 		typeCol.setPrefWidth(150);
-		
-		// Example for a balance column (requires data in Account object or external
-		// fetching)
-		//
-		// TreeTableColumn<Account, String> balanceCol = new
-		// TreeTableColumn<>("Balance");
-		// balanceCol.setCellValueFactory(cellData -> {
-		// Account acc = cellData.getValue().getValue();
-		//
-		// // Assuming Account has a getBalance() method returning BigDecimal or similar
-		//
-		// return new SimpleStringProperty(acc != null && acc.getBalance() != null ?
-		// acc.getBalance().toPlainString() : "0.00");
-		// });
-		// balanceCol.setPrefWidth(120);
-		// balanceCol.setStyle("-fx-alignment: CENTER-RIGHT;");
-		
-		this.coaTreeTable.getColumns().addAll(numberCol,
-			nameCol,
-			typeCol); // Add balanceCol if // implemented
+				
+		this.coaTreeTable.getColumns()
+			.addAll(numberCol,
+				nameCol,
+				typeCol); // Add balanceCol if // implemented
 	}
 	
 	/**
@@ -174,10 +162,8 @@ public class SkeletonCoaPanel extends BorderPane
 				
 			}
 			
-		}
-		
-		// coaTreeTable.refresh(); // Not always needed if root's children list
-		// modification triggers update
+		}		
+
 	}
 	
 	/**
@@ -229,14 +215,14 @@ public class SkeletonCoaPanel extends BorderPane
 		};
 		CurrentCompany.CompanyListener.addCompanyListener(this.companyChangeListener);
 		
-		this.addAccountButton.setOnAction(e -> openEditor());		
-		this.editAccountButton.setOnAction(e -> onEditAction());		
+		this.addAccountButton.setOnAction(e -> openEditor());
+		this.editAccountButton.setOnAction(e -> onEditAction());
 		this.deleteAccountButton.setOnAction(e -> onDeleteAction());
 		
 		loadCoaData(); // Initial data load
 	}
-
-
+	
+	
 	/**
 	 * On Edit button
 	 */
@@ -247,7 +233,6 @@ public class SkeletonCoaPanel extends BorderPane
 		
 		if (selectedItem != null && selectedItem.getValue() != null)
 		{
-			Account selectedAccount = selectedItem.getValue();
 			openEditor();
 		}
 		else
@@ -257,9 +242,10 @@ public class SkeletonCoaPanel extends BorderPane
 			error.setHeaderText("Selection Missing");
 			error.showAndWait();
 		}
+		
 	}
-
-
+	
+	
 	/**
 	 * On Delete Button
 	 */
@@ -281,6 +267,7 @@ public class SkeletonCoaPanel extends BorderPane
 						") and all its sub-accounts (if any)? " +
 						"This action cannot be undone and may affect existing transactions if not handled carefully by the backend.",
 					ButtonType.YES, ButtonType.NO);
+				
 				confirmation.setHeaderText("Confirm Deletion");
 				confirmation.setTitle("Delete Account");
 				
@@ -291,21 +278,25 @@ public class SkeletonCoaPanel extends BorderPane
 		}
 		else
 		{
-			Alert error = new Alert(Alert.AlertType.WARNING, 
+			Alert error = new Alert(Alert.AlertType.WARNING,
 				"No account selected for deletion.");
 			error.setHeaderText("Selection Missing");
 			error.showAndWait();
 		}
+		
 	}
-
-
+	
+	
 	/**
+	 * onConfirm
+	 * 
 	 * @param selectedAccount
 	 * @param company
 	 * @param response
 	 */
 	void onConfirm(Account selectedAccount, Company company, ButtonType response)
-	{		
+	{
+		
 		if (response == ButtonType.YES)
 		{
 			boolean deleted = company.getChartOfAccounts()
@@ -345,38 +336,26 @@ public class SkeletonCoaPanel extends BorderPane
 		// Launch Editor Panel
 		CoaEditorPanelFX editor = new CoaEditorPanelFX(
 			company.getChartOfAccounts(),
-			coa ->chartOfAccountsCallback(company, coa),
+			coa -> onSaveAction(company, coa),
 			null); // on close
-			
+		
 		Stage s = new Stage();
 		s.setTitle("Chart of Accounts Editor");
 		s.initOwner(getScene().getWindow());
 		s.setScene(new Scene(editor, 800, 600));
 		s.showAndWait();
 	}
-
-
+	
+	
 	/**
 	 * Chart of accounts callback
 	 * 
 	 * @param company
 	 * @param coa
 	 */
-	void chartOfAccountsCallback(Company company, ChartOfAccounts coa)
+	static void onSaveAction(Company company, ChartOfAccounts coa)
 	{
 		company.setChartOfAccounts(coa);
-		
-		try
-		{
-			CurrentCompany.persist();
-		}
-		catch (Exception ex)
-		{
-			ex.printStackTrace();
-		}
-		
-                CurrentCompany.markCompanyOpen();
-		loadCoaData();
 	}
 	
 }

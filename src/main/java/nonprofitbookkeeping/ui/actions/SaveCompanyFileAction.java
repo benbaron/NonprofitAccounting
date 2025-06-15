@@ -1,8 +1,8 @@
 /**
- * nonprofit-scaledger-ribbon.zip_expanded
- * StoreCompanyFileAction.java
+ * nonprofit-scaledger-ribbon.zip_expanded StoreCompanyFileAction.java
  * StoreCompanyFileAction
  */
+
 package nonprofitbookkeeping.ui.actions;
 
 import java.io.IOException;
@@ -22,7 +22,7 @@ import nonprofitbookkeeping.model.CurrentCompany;
  */
 public class SaveCompanyFileAction
 {
-
+	
 	/**
 	 * Constructs and executes the action to save the current company's data.
 	 * This constructor immediately attempts to persist the data associated with
@@ -39,27 +39,28 @@ public class SaveCompanyFileAction
 	 *                     is accepted, potentially for future use in displaying UI feedback
 	 *                     (e.g., success/error dialogs related to the save operation).
 	 */
-        public SaveCompanyFileAction(Stage primaryStage)
-        {
-                Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-                        "Save current company file?");
-                confirm.initOwner(primaryStage);
-                Optional<ButtonType> res = confirm.showAndWait();
-
-                if (res.isEmpty() || res.get() != ButtonType.OK)
-                {
-                        return; // user chose not to save
-                }
-
-                try
-                {
-                        CurrentCompany.persist();
-                }
-                catch (IOException | ActionCancelledException | NoFileCreatedException e)
-                {
-                        e.printStackTrace();
-                }
-        }
-
+	public SaveCompanyFileAction(Stage primaryStage)
+	{
+		Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+			"Save current company file?");
+		confirm.initOwner(primaryStage);
+		Optional<ButtonType> res = confirm.showAndWait();
+		
+		if (res.isEmpty() || res.get() != ButtonType.OK)
+		{
+			return; // user chose not to save
+		}
+		
+		try
+		{
+			CurrentCompany.persist();
+		}
+		catch (IOException | ActionCancelledException | NoFileCreatedException e)
+		{
+			e.printStackTrace();
+		}
+		
+	}
+	
 	
 }

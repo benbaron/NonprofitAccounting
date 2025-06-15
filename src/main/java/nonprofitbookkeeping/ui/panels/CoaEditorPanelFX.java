@@ -161,10 +161,10 @@ public class CoaEditorPanelFX extends BorderPane
 	private HBox buildButtonsInternal()
 	{
 		Button addRoot = new Button("Add Root");
-		Button addSub = new Button("Add Sub-account"); 
+		Button addSub = new Button("Add Sub-account");
 		Button edit = new Button("Edit");
 		Button del = new Button("Delete");
-		Button saveBtn = new Button("Save");		
+		Button saveBtn = new Button("Save");
 		Button importBtn = new Button("Import XLSX");
 		Button exportBtn = new Button("Export XLSX");
 		Button cancel = new Button("Cancel");
@@ -179,12 +179,12 @@ public class CoaEditorPanelFX extends BorderPane
 		saveBtn.setOnAction(e -> saveButtonAction());
 		cancel.setOnAction(e -> closePanel());
 		
-		HBox hbox = new HBox(8, addRoot, addSub, edit, del, 
+		HBox hbox = new HBox(8, addRoot, addSub, edit, del,
 			importBtn, exportBtn, saveBtn, cancel);
 		hbox.setPadding(new Insets(6));
 		return hbox;
 	}
-
+	
 	/**
 	 * onSubAccountAction
 	 */
@@ -196,8 +196,9 @@ public class CoaEditorPanelFX extends BorderPane
 		{
 			showDialog(parent, null);
 		}
+		
 	}
-
+	
 	/**
 	 * onEditAction
 	 */
@@ -209,19 +210,22 @@ public class CoaEditorPanelFX extends BorderPane
 		{
 			showDialog(sel.getParentAccount(), sel);
 		}
+		
 	}
-
+	
 	/**
 	 * saveButtonAction
 	 */
 	void saveButtonAction()
-	{		
+	{
+		
 		if (this.onSave != null)
 		{
 			// On save, do this.
 			this.onSave.accept(this.svc.asChart());
-		}		
-		closePanel();		
+		}
+		
+		closePanel();
 	}
 	
 	/**
@@ -252,7 +256,7 @@ public class CoaEditorPanelFX extends BorderPane
 		// Check if company is open before showing dialog that modifies COA
 		if (!CurrentCompany.isOpen())
 		{
-			AlertBox.showError(null, 
+			AlertBox.showError(null,
 				"No Company Open",
 				"Cannot perform this action as no company is currently open.");
 			return;
@@ -265,17 +269,18 @@ public class CoaEditorPanelFX extends BorderPane
 		dlg.setTitle(
 			isEdit ?
 				"Edit Account" :
-					(parent == null ? 
-						"Add Root Account" : "Add Sub-account to " + parent.getName())); 
+				(parent == null ?
+					"Add Root Account" : "Add Sub-account to " + parent.getName()));
 		dlg.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 		
 		// Initialize dialog fields
-		this.numF = new TextField(isEdit && editing.getAccountNumber() != null ? editing.getAccountNumber() : "");
+		this.numF = new TextField(
+			isEdit && editing.getAccountNumber() != null ? editing.getAccountNumber() : "");
 		this.nameF = new TextField(isEdit && editing.getName() != null ? editing.getName() : "");
 		this.typeBox = new ComboBox<>(FXCollections.observableArrayList(AccountType.values()));
-		AccountType initialType = isEdit && 
+		AccountType initialType = isEdit &&
 			editing.getAccountType() != null ?
-			editing.getAccountType() : AccountType.ASSET;
+				editing.getAccountType() : AccountType.ASSET;
 		this.typeBox.getSelectionModel().select(initialType);
 		this.balF = new TextField(isEdit && editing.getOpeningBalance() != null ?
 			editing.getOpeningBalance().toPlainString() : "0.00");
@@ -289,10 +294,12 @@ public class CoaEditorPanelFX extends BorderPane
 		gp.addRow(3, new Label("Opening Balance"), this.balF);
 		
 		dlg.getDialogPane().setContent(gp);
-		dlg.setResultConverter(btn -> { return resultConverterCallback(editing, btn); });
+		dlg.setResultConverter(btn -> {
+			return resultConverterCallback(editing, btn);
+		});
 		dlg.showAndWait().ifPresent(det -> showAndWaitCallback(parent, editing, isEdit, det));
 	}
-
+	
 	/**
 	 * showAndWaitCallback
 	 * @param parent
@@ -327,7 +334,7 @@ public class CoaEditorPanelFX extends BorderPane
 		}
 		
 	}
-
+	
 	/**
 	 * resultConverterCallback
 	 * @param editing
@@ -393,7 +400,8 @@ public class CoaEditorPanelFX extends BorderPane
 		TreeItem<Account> selectedTreeItem = this.tree.getSelectionModel().getSelectedItem();
 		
 		if (selectedTreeItem != null)
-		{		
+		{
+			
 			// Remove from tree:
 			// If it's a root item's child:
 			if (selectedTreeItem.getParent() == this.rootItem)
@@ -421,6 +429,7 @@ public class CoaEditorPanelFX extends BorderPane
 	 */
 	private void importXlsx()
 	{
+		
 		if (!CurrentCompany.isOpen())
 		{ // Check added
 			AlertBox.showError(null, "No Company Open",
@@ -433,8 +442,8 @@ public class CoaEditorPanelFX extends BorderPane
 		fc.setTitle("Import Chart of Accounts from XLSX");
 		fc.getExtensionFilters()
 			.add(new FileChooser.ExtensionFilter("Excel files (*.xlsx)", "*.xlsx"));
-		File f = fc.showOpenDialog(getScene() != null ? getScene().getWindow() : null); 
-			
+		File f = fc.showOpenDialog(getScene() != null ? getScene().getWindow() : null);
+		
 		if (f == null)
 		{
 			return; // User cancelled
@@ -445,7 +454,7 @@ public class CoaEditorPanelFX extends BorderPane
 			ChartOfAccounts imported = this.ioSvc.importFromXlsx(f.toPath());
 			this.svc.replaceChart(imported); // Replace current COA with imported one
 			refresh(); // Refresh the tree view
-			AlertBox.showInfo(null, "Chart of Accounts imported successfully from " + 
+			AlertBox.showInfo(null, "Chart of Accounts imported successfully from " +
 				f.getName());
 		}
 		catch (IOException | NullPointerException ex) // Catch more specific exceptions
@@ -505,31 +514,32 @@ public class CoaEditorPanelFX extends BorderPane
 	 * it is executed. Otherwise, if this panel is hosted in its own {@link Stage} (e.g., as part of a dialog),
 	 * that stage is closed.
 	 */
-        private void closePanel()
-        {
-                if (this.onClose != null)
-                {
-                        this.onClose.run(); // Execute the provided callback
-                        // (e.g., caller restores previous
-                        // view)
-                }
-                else
-                {
-                        // Fallback if no specific close handler: try to close the window this panel is
-                        // in.
-                        Window window = getScene() != null ? getScene().getWindow() : null;
-
-                        if (window instanceof Stage)
-                        {
-                                ((Stage) window).close();
-                        }
-
-                }
-
-                // Notify other panels that the chart of accounts may have changed
-                CurrentCompany.markCompanyOpen();
-
-        }
+	private void closePanel()
+	{
+		
+		if (this.onClose != null)
+		{
+			this.onClose.run(); // Execute the provided callback
+			// (e.g., caller restores previous
+			// view)
+		}
+		else
+		{
+			// Fallback if no specific close handler: try to close the window this panel is
+			// in.
+			Window window = getScene() != null ? getScene().getWindow() : null;
+			
+			if (window instanceof Stage)
+			{
+				((Stage) window).close();
+			}
+			
+		}
+		
+		// Notify other panels that the chart of accounts may have changed
+		CurrentCompany.markCompanyOpen();
+		
+	}
 	
 	/**
 	 * Refreshes the {@link TreeTableView} display.

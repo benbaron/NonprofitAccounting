@@ -482,7 +482,6 @@ public class NonprofitBookkeepingFX extends Application
 	 */
 	@SuppressWarnings("unused") private void doOpenCompany()
 	{
-		
 		try
 		{
 			OpenCompanyFileActionFX openCompanyFileActionFX =
@@ -506,7 +505,6 @@ public class NonprofitBookkeepingFX extends Application
 	 */
 	@SuppressWarnings("unused") private void doCloseCompany()
 	{
-		
 		try
 		{
 			CloseCompanyFileAction closeCompanyFileAction =

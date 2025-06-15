@@ -2,7 +2,6 @@
 package nonprofitbookkeeping.ui.panels;
 
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -26,13 +25,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.matcher.control.TableViewMatchers.hasNumRows;
-import static org.testfx.matcher.control.LabeledMatchers.hasText; // For buttons/labels
 
 
 public class AccountsActivityPanelFXTest extends JavaFXTestBase
@@ -60,7 +56,7 @@ public class AccountsActivityPanelFXTest extends JavaFXTestBase
 	
 	@Start
 	@Override
-	@SuppressWarnings("unchecked") public
+	public
 		void start(Stage stage) throws Exception
 	{
 		MockitoAnnotations.openMocks(this);
@@ -72,50 +68,50 @@ public class AccountsActivityPanelFXTest extends JavaFXTestBase
 			new Account("4010", INCOME_ACCOUNT_NAME, AccountType.INCOME, BigDecimal.ZERO);
 		Account expenseAccount =
 			new Account("6010", EXPENSE_ACCOUNT_NAME, AccountType.EXPENSE, BigDecimal.ZERO);
-		when(mockCoa.getAccounts())
+		when(this.mockCoa.getAccounts())
 			.thenReturn(Arrays.asList(bankAccount, incomeAccount, expenseAccount));
 		
 		// Setup Company and CurrentCompany
-		testCompany = new Company();
+		this.testCompany = new Company();
 		CompanyProfileModel profile = new CompanyProfileModel();
 		profile.setCompanyName("Activity Test Co");
-		testCompany.setCompanyProfile(profile);
-		testCompany.setChartOfAccounts(mockCoa);
-		CurrentCompany.forceCompanyLoad(testCompany); // Make sure COA is available for
+		this.testCompany.setCompanyProfile(profile);
+		this.testCompany.setChartOfAccounts(this.mockCoa);
+		CurrentCompany.forceCompanyLoad(this.testCompany); // Make sure COA is available for
 														// accountSelector
 		
 		// Setup Ledger and Transactions
-		allTransactions = new ArrayList<>();
+		this.allTransactions = new ArrayList<>();
 		// Bank Transactions
-		allTransactions.add(
+		this.allTransactions.add(
 			createTx("2024-01-05", "Deposit", BANK_ACCOUNT_NAME, "1000.00", "Initial Deposit"));
-		allTransactions.add(
+		this.allTransactions.add(
 			createTx("2024-01-10", "Check #101", BANK_ACCOUNT_NAME, "-50.00", "Supplies Purchase"));
 		// Income Transactions
-		allTransactions.add(createTx("2024-01-15", "Donation Received", INCOME_ACCOUNT_NAME,
+		this.allTransactions.add(createTx("2024-01-15", "Donation Received", INCOME_ACCOUNT_NAME,
 			"200.00", "Gala Event"));
 		// Expense Transactions
-		allTransactions.add(createTx("2024-01-10", "Office Supplies", EXPENSE_ACCOUNT_NAME, "50.00",
+		this.allTransactions.add(createTx("2024-01-10", "Office Supplies", EXPENSE_ACCOUNT_NAME, "50.00",
 			"Supplies Purchase Memo"));
-		allTransactions.add(
+		this.allTransactions.add(
 			createTx("2024-01-20", "Rent Payment", EXPENSE_ACCOUNT_NAME, "300.00", "Monthly Rent"));
 		
-		when(mockLedger.getTransactions()).thenReturn(allTransactions);
+		when(this.mockLedger.getTransactions()).thenReturn(this.allTransactions);
 		
-		panel = new AccountsActivityPanelFX(mockLedger);
-		Scene scene = new Scene(panel, 1024, 768); // Wider for more columns
+		this.panel = new AccountsActivityPanelFX(this.mockLedger);
+		Scene scene = new Scene(this.panel, 1024, 768); // Wider for more columns
 		stage.setScene(scene);
 		stage.show();
 		
 		// Assign UI elements (assuming fx:id or robust lookup)
 		// For this panel, direct field access is not possible, so we use lookups.
 		// It's better if panel sets fx:id for these.
-		accountSelector = lookup("#accountSelector").queryComboBox();
-		filterDateField = lookup("#filterDateField").queryAs(TextField.class);
-		filterMemoField = lookup("#filterMemoField").queryAs(TextField.class);
-		filterAmountField = lookup("#filterAmountField").queryAs(TextField.class);
-		applyFiltersButton = lookup("Apply Filters").queryButton(); // by text
-		table = lookup(".table-view").queryTableView();
+		this.accountSelector = lookup("#accountSelector").queryComboBox();
+		this.filterDateField = lookup("#filterDateField").queryAs(TextField.class);
+		this.filterMemoField = lookup("#filterMemoField").queryAs(TextField.class);
+		this.filterAmountField = lookup("#filterAmountField").queryAs(TextField.class);
+		this.applyFiltersButton = lookup("Apply Filters").queryButton(); // by text
+		this.table = lookup(".table-view").queryTableView();
 	}
 	
 	private AccountingTransaction createTx(	String date, String desc, String accName, String amount,
@@ -138,13 +134,13 @@ public class AccountsActivityPanelFXTest extends JavaFXTestBase
 		// Helper to assign fx:id to nodes for easier lookup if not set in source
 		// This is a workaround for testing. Ideally, panel code sets fx:id.
 		Platform.runLater(() -> {
-			if (panel == null || panel.getTop() == null)
+			if (this.panel == null || this.panel.getTop() == null)
 				return;
 				
 			// AccountSelector is in a HBox, first ComboBox in that HBox
 			// The panel structure is VBox -> HBox (for selector) -> HBox (for filters) ->
 			// TableView
-			VBox topVBox = (VBox) panel.getTop();
+			VBox topVBox = (VBox) this.panel.getTop();
 			HBox selectorPane = (HBox) topVBox.getChildren().get(0);
 			
 			if (selectorPane != null && selectorPane.getChildren().size() > 1 &&
@@ -179,108 +175,108 @@ public class AccountsActivityPanelFXTest extends JavaFXTestBase
 	
 	@Test public void testInitialState_AccountSelectorPopulated_TableShowsFirstAccountActivity()
 	{
-		assertNotNull(accountSelector);
-		assertNotNull(filterDateField);
-		assertNotNull(filterMemoField);
-		assertNotNull(filterAmountField);
-		assertNotNull(applyFiltersButton);
-		assertNotNull(table);
+		assertNotNull(this.accountSelector);
+		assertNotNull(this.filterDateField);
+		assertNotNull(this.filterMemoField);
+		assertNotNull(this.filterAmountField);
+		assertNotNull(this.applyFiltersButton);
+		assertNotNull(this.table);
 		
 		// Account selector should be populated from mockCoa
-		assertEquals(3, accountSelector.getItems().size());
-		assertTrue(accountSelector.getItems().contains(BANK_ACCOUNT_NAME));
-		assertEquals(BANK_ACCOUNT_NAME, accountSelector.getValue(),
+		assertEquals(3, this.accountSelector.getItems().size());
+		assertTrue(this.accountSelector.getItems().contains(BANK_ACCOUNT_NAME));
+		assertEquals(BANK_ACCOUNT_NAME, this.accountSelector.getValue(),
 			"First account should be selected by default.");
 		
 		// Table should show transactions for the initially selected account (Bank
 		// Checking)
 		// The panel calls applyFilters() in constructor -> which calls
 		// filterAndDisplayTransactions
-		verifyThat(table, hasNumRows(2)); // 2 bank transactions
+		verifyThat(this.table, hasNumRows(2)); // 2 bank transactions
 	}
 	
 	@Test public void testAccountSelection_UpdatesTable()
 	{
-		Platform.runLater(() -> accountSelector.setValue(EXPENSE_ACCOUNT_NAME));
+		Platform.runLater(() -> this.accountSelector.setValue(EXPENSE_ACCOUNT_NAME));
 		WaitForAsyncUtils.waitForFxEvents(); // applyFilters is called on accountSelector action
 		
-		verifyThat(table, hasNumRows(2)); // 2 expense transactions
+		verifyThat(this.table, hasNumRows(2)); // 2 expense transactions
 		// Verify content if necessary, e.g., check one row's description
-		assertTrue(table.getItems().stream()
+		assertTrue(this.table.getItems().stream()
 			.anyMatch(r -> "Office Supplies".equals(r.descriptionProperty().get())));
 	}
 	
 	@Test public void testFilterByDate()
 	{
-		Platform.runLater(() -> accountSelector.setValue(BANK_ACCOUNT_NAME)); // 2 bank tx initially
+		Platform.runLater(() -> this.accountSelector.setValue(BANK_ACCOUNT_NAME)); // 2 bank tx initially
 		WaitForAsyncUtils.waitForFxEvents();
 		
-		filterDateField.setText("2024-01-10");
-		clickOn(applyFiltersButton);
+		this.filterDateField.setText("2024-01-10");
+		clickOn(this.applyFiltersButton);
 		WaitForAsyncUtils.waitForFxEvents();
 		
-		verifyThat(table, hasNumRows(1)); // Only "Check #101"
-		assertEquals("Check #101", table.getItems().get(0).descriptionProperty().get());
+		verifyThat(this.table, hasNumRows(1)); // Only "Check #101"
+		assertEquals("Check #101", this.table.getItems().get(0).descriptionProperty().get());
 	}
 	
 	@Test public void testFilterByMemo()
 	{
-		Platform.runLater(() -> accountSelector.setValue(BANK_ACCOUNT_NAME));
+		Platform.runLater(() -> this.accountSelector.setValue(BANK_ACCOUNT_NAME));
 		WaitForAsyncUtils.waitForFxEvents();
 		
-		filterMemoField.setText("Initial"); // Case insensitive partial match
-		clickOn(applyFiltersButton);
+		this.filterMemoField.setText("Initial"); // Case insensitive partial match
+		clickOn(this.applyFiltersButton);
 		WaitForAsyncUtils.waitForFxEvents();
 		
-		verifyThat(table, hasNumRows(1));
-		assertEquals("Initial Deposit", table.getItems().get(0).memoProperty().get());
+		verifyThat(this.table, hasNumRows(1));
+		assertEquals("Initial Deposit", this.table.getItems().get(0).memoProperty().get());
 	}
 	
 	@Test public void testFilterByAmount_ExactMatch()
 	{
-		Platform.runLater(() -> accountSelector.setValue(EXPENSE_ACCOUNT_NAME)); // Rent is 300.00
+		Platform.runLater(() -> this.accountSelector.setValue(EXPENSE_ACCOUNT_NAME)); // Rent is 300.00
 		WaitForAsyncUtils.waitForFxEvents();
 		
-		filterAmountField.setText("300.00");
-		clickOn(applyFiltersButton);
+		this.filterAmountField.setText("300.00");
+		clickOn(this.applyFiltersButton);
 		WaitForAsyncUtils.waitForFxEvents();
 		
-		verifyThat(table, hasNumRows(1));
-		assertEquals("Rent Payment", table.getItems().get(0).descriptionProperty().get());
+		verifyThat(this.table, hasNumRows(1));
+		assertEquals("Rent Payment", this.table.getItems().get(0).descriptionProperty().get());
 	}
 	
 	@Test public void testFilterByAmount_InvalidFormat_ShowsAllForAccount()
 	{
-		Platform.runLater(() -> accountSelector.setValue(BANK_ACCOUNT_NAME));
+		Platform.runLater(() -> this.accountSelector.setValue(BANK_ACCOUNT_NAME));
 		WaitForAsyncUtils.waitForFxEvents();
-		int initialRows = table.getItems().size(); // Should be 2 for Bank
+		int initialRows = this.table.getItems().size(); // Should be 2 for Bank
 		
-		filterAmountField.setText("abc"); // Invalid amount
-		clickOn(applyFiltersButton);
+		this.filterAmountField.setText("abc"); // Invalid amount
+		clickOn(this.applyFiltersButton);
 		WaitForAsyncUtils.waitForFxEvents();
 		
 		// Panel logs error, amountFilter internal field becomes null, so no amount
 		// filtering applied
-		verifyThat(table, hasNumRows(initialRows));
+		verifyThat(this.table, hasNumRows(initialRows));
 	}
 	
 	@Test public void testCombinedFilters()
 	{
-		Platform.runLater(() -> accountSelector.setValue(BANK_ACCOUNT_NAME));
+		Platform.runLater(() -> this.accountSelector.setValue(BANK_ACCOUNT_NAME));
 		WaitForAsyncUtils.waitForFxEvents();
 		
-		filterDateField.setText("2024-01-10");
-		filterMemoField.setText("Supplies");
+		this.filterDateField.setText("2024-01-10");
+		this.filterMemoField.setText("Supplies");
 		// filterAmountField.setText("-50.00"); // TotalAmount is used, which might be
 		// positive for expense in some conventions
 		// Let's use the amount from createTx for "Check #101" which is -50.00
-		filterAmountField.setText("-50.00");
+		this.filterAmountField.setText("-50.00");
 		
-		clickOn(applyFiltersButton);
+		clickOn(this.applyFiltersButton);
 		WaitForAsyncUtils.waitForFxEvents();
 		
-		verifyThat(table, hasNumRows(1));
-		TransactionRow row = table.getItems().get(0);
+		verifyThat(this.table, hasNumRows(1));
+		TransactionRow row = this.table.getItems().get(0);
 		assertEquals("Check #101", row.descriptionProperty().get());
 		assertEquals("2024-01-10", row.dateProperty().get());
 		assertEquals("Supplies Purchase", row.memoProperty().get());

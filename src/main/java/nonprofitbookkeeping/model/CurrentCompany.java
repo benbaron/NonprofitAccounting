@@ -1,8 +1,7 @@
 /**
- * nonprofit-scaledger-ribbon.zip_expanded
- * CurrentCompany.java
- * CurrentCompany
+ * nonprofit-scaledger-ribbon.zip_expanded CurrentCompany.java CurrentCompany
  */
+
 package nonprofitbookkeeping.model;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -74,8 +73,8 @@ public class CurrentCompany
 	{
 		return CurrentCompany.currentFile;
 	}
-
-
+	
+	
 	/**
 	 * Returns a string representation of the CurrentCompany's state,
 	 * including the current file and whether a company is open.
@@ -101,11 +100,13 @@ public class CurrentCompany
 	 * @throws NoFileCreatedException if the file cannot be created or written to.
 	 * @throws NullPointerException if the current file has not been set.
 	 */
-	public static void persist() throws IOException, ActionCancelledException, NoFileCreatedException
+	public static void persist()	throws IOException, ActionCancelledException,
+									NoFileCreatedException
 	{
 		CurrentCompany.dataStorer.saveData(
 			company,
-			checkNotNull(CurrentCompany.currentFile, "Current file cannot be null for persist operation."));
+			checkNotNull(CurrentCompany.currentFile,
+				"Current file cannot be null for persist operation."));
 		
 	}
 	
@@ -118,13 +119,14 @@ public class CurrentCompany
 	 * @throws NoFileCreatedException if the file specified does not lead to a valid company data structure.
 	 * @throws NullPointerException if file is null.
 	 */
-	public static void loadFromPersistent(File file) throws IOException, ActionCancelledException, NoFileCreatedException
+	public static void loadFromPersistent(File file)	throws IOException, ActionCancelledException,
+														NoFileCreatedException
 	{
 		company = CurrentCompany.dataStorer.loadData(
-			Company.class, 
+			Company.class,
 			checkNotNull(file, "File cannot be null for load operation."));
-                setCurrentFile(file);
-                // Consider calling markCompanyOpen() here if loading implies opening
+		setCurrentFile(file);
+		// Consider calling markCompanyOpen() here if loading implies opening
 	}
 	
 	/**
@@ -135,7 +137,7 @@ public class CurrentCompany
 	public static void close()
 	{
 		CurrentCompany.companyIsOpen = false;
-		CompanyListener.fireChanged(false);
+//		CompanyListener.fireChanged(false);
 	}
 	
 	/**
@@ -147,20 +149,20 @@ public class CurrentCompany
 		return CurrentCompany.companyIsOpen;
 	}
 	
-        /**
-         * Marks the current company as open and notifies listeners.
-         * <p>
-         * This method does <strong>not</strong> load any company data. It merely
-         * updates the "company is open" flag and fires a change event so that
-         * UI panels can refresh themselves. It is typically called after the
-         * company has been loaded from disk.
-         * </p>
-         */
-        public static void markCompanyOpen()
-        {
-                CurrentCompany.companyIsOpen = true;
-                CompanyListener.fireChanged(true);
-        }
+	/**
+	 * Marks the current company as open and notifies listeners.
+	 * <p>
+	 * This method does <strong>not</strong> load any company data. It merely
+	 * updates the "company is open" flag and fires a change event so that
+	 * UI panels can refresh themselves. It is typically called after the
+	 * company has been loaded from disk.
+	 * </p>
+	 */
+	public static void markCompanyOpen()
+	{
+		CurrentCompany.companyIsOpen = true;
+//		CompanyListener.fireChanged(true);
+	}
 	
 	/**
 	 * Listener interface for receiving notifications about company state changes (e.g., opened or closed).
@@ -172,6 +174,7 @@ public class CurrentCompany
 		 * @param isOpen {@code true} if the company is now open, {@code false} if it is now closed.
 		 */
 		void companyChange(boolean isOpen);
+		
 	}
 	
 	/**
@@ -213,56 +216,56 @@ public class CurrentCompany
 			}
 			
 		}
-
-               /**
-                * Returns the list of currently registered {@link CompanyChangeListener}s.
-                *
-                * <p>This method exposes the listeners primarily for testing
-                * purposes so that UI tests can manually trigger company change
-                * events. The returned list is a snapshot &ndash; modifications
-                * to it will <strong>not</strong> affect the internal listener
-                * registry.</p>
-                *
-                * @return an immutable {@link List} of registered listeners, or
-                *         an empty list if none are registered
-                */
-               public static List<CompanyChangeListener> getListeners()
-               {
-                       CompanyChangeListener[] arr =
-                               CompanyListener.listeners.getListeners(CompanyChangeListener.class);
-                       return List.of(arr);
-               }
+		
+		/**
+		 * Returns the list of currently registered {@link CompanyChangeListener}s.
+		 *
+		 * <p>This method exposes the listeners primarily for testing
+		 * purposes so that UI tests can manually trigger company change
+		 * events. The returned list is a snapshot &ndash; modifications
+		 * to it will <strong>not</strong> affect the internal listener
+		 * registry.</p>
+		 *
+		 * @return an immutable {@link List} of registered listeners, or
+		 *         an empty list if none are registered
+		 */
+		public static List<CompanyChangeListener> getListeners()
+		{
+			CompanyChangeListener[] arr =
+				CompanyListener.listeners.getListeners(CompanyChangeListener.class);
+			return List.of(arr);
+		}
 		
 	}
-
-       /**
-        * For test environments or specialized workflows where the caller needs
-        * to directly set the current {@link Company} and immediately notify all
-        * {@link CompanyChangeListener}s, this helper provides that ability.
-        *
-        * <p>If {@code company2} is {@code null} the current company reference is
-        * cleared and listeners are notified as if the company was closed.
-        * Otherwise the provided company becomes the active company and listeners
-        * are notified that a company is open.</p>
-        *
-        * @param company2 the company to set as the current one, or {@code null}
-        *                 to simulate closing the current company
-        */
-       public static void forceCompanyLoad(Company company2)
-       {
-               CurrentCompany.company = company2;
-
-               if (company2 != null)
-               {
-                       CurrentCompany.companyIsOpen = true;
-                       CompanyListener.fireChanged(true);
-               }
-               else
-               {
-                       CurrentCompany.companyIsOpen = false;
-                       CompanyListener.fireChanged(false);
-               }
-
-       }
-
+	
+	/**
+	 * For test environments or specialized workflows where the caller needs
+	 * to directly set the current {@link Company} and immediately notify all
+	 * {@link CompanyChangeListener}s, this helper provides that ability.
+	 *
+	 * <p>If {@code company2} is {@code null} the current company reference is
+	 * cleared and listeners are notified as if the company was closed.
+	 * Otherwise the provided company becomes the active company and listeners
+	 * are notified that a company is open.</p>
+	 *
+	 * @param company2 the company to set as the current one, or {@code null}
+	 *                 to simulate closing the current company
+	 */
+	public static void forceCompanyLoad(Company company2)
+	{
+		CurrentCompany.company = company2;
+		
+		if (company2 != null)
+		{
+			CurrentCompany.companyIsOpen = true;
+	//		CompanyListener.fireChanged(true);
+		}
+		else
+		{
+			CurrentCompany.companyIsOpen = false;
+	//		CompanyListener.fireChanged(false);
+		}
+		
+	}
+	
 }
