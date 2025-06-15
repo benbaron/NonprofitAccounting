@@ -9,11 +9,15 @@ import java.util.Collections;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Represents an account with entries and a many-to-many relationship with
  * {@link Fund}s.
  */
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+                  property = "accountNumber")
 public final class Account implements Serializable
 {
 	
@@ -151,10 +155,11 @@ public final class Account implements Serializable
 	 * Gets the account number.
 	 * @return The account number.
 	 */
-	public String getAccountNumber()
-	{
-		return this.accountNumber;
-	}
+        public String getAccountNumber()
+        {
+                return checkNotNull(this.accountNumber,
+                        "accountNumber cannot be null when serializing");
+        }
 
 	/**
 	 * Sets the account number.
