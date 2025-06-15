@@ -50,16 +50,29 @@ public class CoaEditorPanelFX extends BorderPane
 	private static final Logger LOGGER = LoggerFactory.getLogger(CoaEditorPanelFX.class);
 	
 	/** Service layer for Chart of Accounts operations. */
-	private final ChartOfAccountsService svc;
+        private final ChartOfAccountsService svc;
 	/** Callback to be executed when the "Save" button is clicked and changes are applied. Can be null. */
 	private final Consumer<ChartOfAccounts> onSave;
 	/** Callback to be executed when the panel is closed (e.g., via "Save" or "Cancel"). Can be null. */
 	private final Runnable onClose;
 	
-	/** The TreeTableView used to display and interact with the chart of accounts. */
-	private final TreeTableView<Account> tree = new TreeTableView<>();
-	/** The root item for the {@link #tree}; it is hidden in the UI. */
-	private final TreeItem<Account> rootItem = new TreeItem<>();
+        /** The TreeTableView used to display and interact with the chart of accounts. */
+        private final TreeTableView<Account> tree = new TreeTableView<>();
+        /** The root item for the {@link #tree}; it is hidden in the UI. */
+        private final TreeItem<Account> rootItem = new TreeItem<>();
+
+        /**
+         * Returns the {@link TreeTableView} displaying the chart of accounts.
+         * <p>
+         * This is primarily exposed so embedding containers can adjust
+         * properties such as the placeholder node when no company is open.
+         *
+         * @return the underlying {@code TreeTableView} component
+         */
+        public TreeTableView<Account> getTreeTable()
+        {
+                return this.tree;
+        }
 	
 	/** Service for importing and exporting Chart of Accounts data to/from XLSX. */
 	private final ChartOfAccountsIOService ioSvc = new ChartOfAccountsIOService();
@@ -76,7 +89,15 @@ public class CoaEditorPanelFX extends BorderPane
 	private ComboBox<AccountType> typeBox;
 	
 	private CoaEditorPanelCompanyListener companyListener;
-	private HBox actionButtonsBox;
+       private HBox actionButtonsBox;
+       private Button addRootBtn;
+       private Button addSubBtn;
+       private Button editBtn;
+       private Button deleteBtn;
+       private Button saveBtn;
+       private Button importBtn;
+       private Button exportBtn;
+       private Button cancelBtn;
 	
 	/** 
 	 * Convenience constructor for {@code CoaEditorPanelFX} when no specific save or close callbacks are needed.
@@ -101,12 +122,12 @@ public class CoaEditorPanelFX extends BorderPane
 	 *                either by saving or cancelling. Can be null if no close callback is needed.
 	 * @throws NullPointerException if {@code chart} is null.
 	 */
-	public CoaEditorPanelFX(ChartOfAccounts chart,
-		Consumer<ChartOfAccounts> onSave,
-		Runnable onClose)
-	{
-		this.svc = new ChartOfAccountsService(
-			Objects.requireNonNull(chart, "ChartOfAccounts cannot be null."));
+        public CoaEditorPanelFX(ChartOfAccounts chart,
+                Consumer<ChartOfAccounts> onSave,
+                Runnable onClose)
+        {
+                this.svc = new ChartOfAccountsService(
+                        Objects.requireNonNull(chart, "ChartOfAccounts cannot be null."));
 		this.onSave = onSave;
 		this.onClose = onClose;
 		
@@ -123,8 +144,28 @@ public class CoaEditorPanelFX extends BorderPane
 		this.companyListener = new CoaEditorPanelCompanyListener(this);
 		CurrentCompany.CompanyListener.addCompanyListener(this.companyListener);
 		
-		handleCompanyChange(CurrentCompany.isOpen());
-	}
+                handleCompanyChange(CurrentCompany.isOpen());
+        }
+
+        /**
+         * Replaces the currently displayed chart of accounts with the provided one
+         * and refreshes the view.
+         *
+         * @param chart the new {@link ChartOfAccounts} to display
+         */
+        public void setChartOfAccounts(ChartOfAccounts chart)
+        {
+                Objects.requireNonNull(chart, "ChartOfAccounts cannot be null.");
+
+                if (chart == this.svc.asChart())
+                {
+                        refresh();
+                        return;
+                }
+
+                this.svc.replaceChart(chart);
+                refresh();
+        }
 	
 	
 	/**
@@ -134,12 +175,15 @@ public class CoaEditorPanelFX extends BorderPane
 	 * Column cell value factories are set up using the {@link #makeCol} helper method.
 	 */
 	@SuppressWarnings("unchecked") // For varargs in getColumns().addAll()
-	private void buildTree()
-	{
-		this.tree.setShowRoot(false);
-		// The actual root item is a dummy, its children are the
-		// top-level accounts
-		this.tree.setRoot(this.rootItem);
+        private void buildTree()
+        {
+                this.tree.setShowRoot(false);
+                // The actual root item is a dummy, its children are the
+                // top-level accounts
+                this.tree.setRoot(this.rootItem);
+
+               this.tree.setPlaceholder(
+                       new Label("No accounts. Use 'Add Root' to create one."));
 		
 		this.tree.getColumns().addAll(
 			makeCol("Number", Account::getAccountNumber),
@@ -158,60 +202,104 @@ public class CoaEditorPanelFX extends BorderPane
 	 *
 	 * @return An {@link HBox} populated with control buttons.
 	 */
-	private HBox buildButtonsInternal()
-	{
-		Button addRoot = new Button("Add Root");
-		Button addSub = new Button("Add Sub-account");
-		Button edit = new Button("Edit");
-		Button del = new Button("Delete");
-		Button saveBtn = new Button("Save");
-		Button importBtn = new Button("Import XLSX");
-		Button exportBtn = new Button("Export XLSX");
-		Button cancel = new Button("Cancel");
-		
-		// button actions
-		addRoot.setOnAction(e -> showDialog(null, null));
-		addSub.setOnAction(e -> onSubAccountAction());
-		edit.setOnAction(e -> onEditAction());
-		del.setOnAction(e -> deleteSelected());
-		importBtn.setOnAction(e -> importXlsx());
-		exportBtn.setOnAction(e -> exportXlsx());
-		saveBtn.setOnAction(e -> saveButtonAction());
-		cancel.setOnAction(e -> closePanel());
-		
-		HBox hbox = new HBox(8, addRoot, addSub, edit, del,
-			importBtn, exportBtn, saveBtn, cancel);
-		hbox.setPadding(new Insets(6));
-		return hbox;
-	}
+       private HBox buildButtonsInternal()
+       {
+               this.addRootBtn = new Button("Add Root");
+               this.addSubBtn = new Button("Add Sub-account");
+               this.editBtn = new Button("Edit");
+               this.deleteBtn = new Button("Delete");
+               this.saveBtn = new Button("Save");
+               this.importBtn = new Button("Import XLSX");
+               this.exportBtn = new Button("Export XLSX");
+               this.cancelBtn = new Button("Cancel");
+
+               // button actions
+               this.addRootBtn.setOnAction(e -> showDialog(null, null));
+               this.addSubBtn.setOnAction(e -> onSubAccountAction());
+               this.editBtn.setOnAction(e -> onEditAction());
+               this.deleteBtn.setOnAction(e -> deleteSelected());
+               this.importBtn.setOnAction(e -> importXlsx());
+               this.exportBtn.setOnAction(e -> exportXlsx());
+               this.saveBtn.setOnAction(e -> saveButtonAction());
+               this.cancelBtn.setOnAction(e -> closePanel());
+
+               HBox hbox = new HBox(8, this.addRootBtn, this.addSubBtn, this.editBtn, this.deleteBtn,
+                       this.importBtn, this.exportBtn, this.saveBtn, this.cancelBtn);
+               hbox.setPadding(new Insets(6));
+               this.tree.getSelectionModel().selectedItemProperty().addListener((obs, o, n) -> updateButtonsForSelection());
+               updateButtonsForSelection();
+               return hbox;
+       }
+
+       /**
+        * Updates enablement of action buttons based on whether a company is
+        * open. Buttons remain enabled even if no account is selected so users
+        * can see the available actions when a company is loaded.
+        */
+       private void updateButtonsForSelection()
+       {
+               boolean companyOpen = CurrentCompany.isOpen();
+
+               if (this.addSubBtn != null)
+                       this.addSubBtn.setDisable(!companyOpen);
+
+               if (this.editBtn != null)
+                       this.editBtn.setDisable(!companyOpen);
+
+               if (this.deleteBtn != null)
+                       this.deleteBtn.setDisable(!companyOpen);
+
+               if (this.addRootBtn != null)
+                       this.addRootBtn.setDisable(!companyOpen);
+
+               if (this.saveBtn != null)
+                       this.saveBtn.setDisable(!companyOpen);
+
+               if (this.importBtn != null)
+                       this.importBtn.setDisable(!companyOpen);
+
+               if (this.exportBtn != null)
+                       this.exportBtn.setDisable(!companyOpen);
+
+               if (this.cancelBtn != null)
+                       this.cancelBtn.setDisable(!companyOpen);
+       }
 	
 	/**
 	 * onSubAccountAction
 	 */
-	void onSubAccountAction()
-	{
-		Account parent = selected();
-		
-		if (parent != null)
-		{
-			showDialog(parent, null);
-		}
-		
-	}
+       void onSubAccountAction()
+       {
+               Account parent = selected();
+
+               if (parent != null)
+               {
+                       showDialog(parent, null);
+               }
+               else
+               {
+                       AlertBox.showWarning(null, "No account selected for sub-account.");
+               }
+
+       }
 	
 	/**
 	 * onEditAction
 	 */
-	void onEditAction()
-	{
-		Account sel = selected();
-		
-		if (sel != null)
-		{
-			showDialog(sel.getParentAccount(), sel);
-		}
-		
-	}
+       void onEditAction()
+       {
+               Account sel = selected();
+
+               if (sel != null)
+               {
+                       showDialog(sel.getParentAccount(), sel);
+               }
+               else
+               {
+                       AlertBox.showWarning(null, "No account selected for editing.");
+               }
+
+       }
 	
 	/**
 	 * saveButtonAction
@@ -547,17 +635,27 @@ public class CoaEditorPanelFX extends BorderPane
 	 * by fetching root accounts from the {@link ChartOfAccountsService} and recursively
 	 * adding their children using {@link #makeNode(Account)}.
 	 */
-	private void refresh()
-	{
-		this.rootItem.getChildren().clear();
-		
-		if (CurrentCompany.isOpen())
-		{ // Only populate if a company is open
-			this.svc.roots().forEach(r -> this.rootItem.getChildren().add(makeNode(r)));
-		}
-		
-		this.tree.refresh();
-	}
+       private void refresh()
+       {
+               this.rootItem.getChildren().clear();
+
+               if (CurrentCompany.isOpen())
+               { // Only populate if a company is open
+                       this.svc.roots().forEach(r -> this.rootItem.getChildren().add(makeNode(r)));
+               }
+
+               if (!CurrentCompany.isOpen())
+               {
+                       this.tree.setPlaceholder(new Label("No company open."));
+               }
+               else if (this.rootItem.getChildren().isEmpty())
+               {
+                       this.tree.setPlaceholder(new Label("No accounts. Use 'Add Root' to create one."));
+               }
+
+               updateButtonsForSelection();
+               this.tree.refresh();
+       }
 	
 	/**
 	 * Gets the {@link Account} object currently selected in the {@link TreeTableView}.
@@ -710,50 +808,44 @@ public class CoaEditorPanelFX extends BorderPane
 	 * handleCompanyChange
 	 * @param isOpen
 	 */
-	private void handleCompanyChange(boolean isOpen)
-	{
-		
-		if (isOpen)
-		{
-			// If a company is opened, this panel should reflect the ChartOfAccounts
-			// it was initially constructed with, assuming it's relevant to the
-			// CurrentCompany.
-			// The 'svc' (ChartOfAccountsService) holds the chart it was given.
-			refresh();
-			
-			if (this.actionButtonsBox != null)
-			{
-				this.actionButtonsBox.getChildren().forEach(node -> {
-					
-					if (node instanceof Button)
-					{
-						((Button) node).setDisable(false);
-					}
-					
-				});
-			}
-			
-		}
-		else
-		{
-			this.rootItem.getChildren().clear();
-			this.tree.refresh();
-			
-			if (this.actionButtonsBox != null)
-			{
-				this.actionButtonsBox.getChildren().forEach(node -> {
-					
-					if (node instanceof Button)
-					{
-						((Button) node).setDisable(true);
-					}
-					
-				});
-			}
-			
-		}
-		
-	}
+        private void handleCompanyChange(boolean isOpen)
+        {
+
+               if (isOpen)
+               {
+                       refresh();
+
+                       if (this.actionButtonsBox != null)
+                       {
+                               this.actionButtonsBox.getChildren().forEach(node -> {
+                                       if (node instanceof Button)
+                                       {
+                                               ((Button) node).setDisable(false);
+                                       }
+                               });
+                               updateButtonsForSelection();
+                       }
+
+               }
+               else
+               {
+                       this.rootItem.getChildren().clear();
+                       this.tree.refresh();
+                       this.tree.setPlaceholder(new Label("No company open."));
+
+                       if (this.actionButtonsBox != null)
+                       {
+                               this.actionButtonsBox.getChildren().forEach(node -> {
+                                       if (node instanceof Button)
+                                       {
+                                               ((Button) node).setDisable(true);
+                                       }
+                               });
+                       }
+
+               }
+
+        }
 	
 	/**
 	 * CoaEditorPanelCompanyListener
