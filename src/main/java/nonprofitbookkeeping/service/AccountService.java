@@ -11,6 +11,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors; // Added for cleaner list transformation
 
+import nonprofitbookkeeping.model.Ledger;
+
 import nonprofitbookkeeping.model.Account;
 
 /**
@@ -45,27 +47,28 @@ public class AccountService
 	public static record AccountBalance(String accountId, String accountName, BigDecimal balance) {}
 
 	/**
-	 * Retrieves the balance for all accounts currently managed by this service.
-	 * This method iterates through all stored accounts, computes their individual balances
-	 * using {@link Account#totalAccountBalance()}, and returns a list of {@link AccountBalance} records.
+         * Retrieves the balance for all accounts currently managed by this service.
+         * This method iterates through all stored accounts, computes their individual balances
+         * using {@link Account#totalAccountBalance(Ledger)}, and returns a list of
+         * {@link AccountBalance} records.
 	 *
 	 * @return A {@code List<AccountBalance>} containing the ID, name, and balance
 	 *         for each account. Returns an empty list if no accounts are stored or available.
 	 */
-	public static List<AccountBalance> getBalanceResults()
-	{
-		List<Account> allAccounts = getAllAccounts();
-		if (allAccounts.isEmpty()) {
-			return Collections.emptyList();
-		}
+        public static List<AccountBalance> getBalanceResults(Ledger ledger)
+        {
+                List<Account> allAccounts = getAllAccounts();
+                if (allAccounts.isEmpty()) {
+                        return Collections.emptyList();
+                }
 
-		return allAccounts.stream()
-				.map(account -> new AccountBalance(
-						account.getAccountNumber(),
-						account.getName(),
-						account.totalAccountBalance()))
-				.collect(Collectors.toList());
-	}
+                return allAccounts.stream()
+                                .map(account -> new AccountBalance(
+                                                account.getAccountNumber(),
+                                                account.getName(),
+                                                account.totalAccountBalance(ledger)))
+                                .collect(Collectors.toList());
+        }
 
 	/**
 	 * Retrieves all accounts currently managed by this service.

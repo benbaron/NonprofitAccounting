@@ -2,6 +2,7 @@
 package nonprofitbookkeeping.model;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -45,9 +46,56 @@ final public class Ledger implements Serializable
 	 * The journal contains all the accounting transactions.
 	 * @return The {@link Journal} instance.
 	 */
-	public Journal getJournal()
-	{
-		return this.journal;
-	}
+public Journal getJournal()
+        {
+                return this.journal;
+        }
+
+       /**
+        * Retrieves all {@link AccountingEntry} objects for a given account
+        * number. This method walks through every {@link AccountingTransaction}
+        * in the journal and collects entries whose {@code accountNumber}
+        * matches the supplied argument.
+        *
+        * @param accountNumber the account number whose entries should be
+        *        returned
+        * @return a list of matching {@link AccountingEntry} instances. The list
+        *         will be empty if no entries are found or if the ledger has no
+        *         transactions.
+        */
+       public List<AccountingEntry> getEntriesForAccount(String accountNumber)
+       {
+               List<AccountingEntry> result = new ArrayList<>();
+
+               if (accountNumber == null || accountNumber.isBlank())
+               {
+                       return result;
+               }
+
+               List<AccountingTransaction> transactions = getTransactions();
+               if (transactions == null)
+               {
+                       return result;
+               }
+
+               for (AccountingTransaction transaction : transactions)
+               {
+                       if (transaction == null || transaction.getEntries() == null)
+                               continue;
+
+                       for (AccountingEntry entry : transaction.getEntries())
+                       {
+                               if (entry == null)
+                                       continue;
+
+                               if (accountNumber.equals(entry.getAccountNumber()))
+                               {
+                                       result.add(entry);
+                               }
+                       }
+               }
+
+               return result;
+       }
 	
 }

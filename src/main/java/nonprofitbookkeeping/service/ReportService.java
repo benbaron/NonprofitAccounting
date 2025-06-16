@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -442,11 +443,75 @@ public class ReportService
 																			// Income was
 																			// calculated
 		jxlsContext.put("reportDate", LocalDate.now().toString());
-		jxlsContext.put("assetsEqualsLiabilitiesPlusEquity",
-			totalAssets.compareTo(totalLiabilitiesAndEquity) == 0);
-		
-		return jxlsContext;
-	}
+        jxlsContext.put("assetsEqualsLiabilitiesPlusEquity",
+                        totalAssets.compareTo(totalLiabilitiesAndEquity) == 0);
+
+        return jxlsContext;
+    }
+
+    /**
+     * Calculates the balance of the provided account using the supplied
+     * collection of accounting entries. The account's opening balance is used
+     * as the starting value and each entry is applied according to the account's
+     * {@link AccountSide increase side}.
+     *
+     * @param account the {@link Account} whose balance should be calculated
+     * @param entries the accounting entries affecting the account. Entries for
+     *                other accounts are ignored
+     * @return the resulting balance as a {@link BigDecimal}
+     */
+    static BigDecimal calculateBalanceForAccount(Account account,
+            Collection<AccountingEntry> entries)
+    {
+        if (account == null)
+        {
+            throw new NullPointerException("Account cannot be null for balance calculation.");
+        }
+
+        BigDecimal balance = account.getOpeningBalance() == null ? BigDecimal.ZERO
+                : account.getOpeningBalance();
+
+        if (entries == null)
+        {
+            return balance;
+        }
+
+        AccountSide increaseSide = account.getIncreaseSide();
+        if (increaseSide == null)
+        {
+            LOGGER.warning(
+                    "Account " + account.getAccountNumber() + " has no defined increase side.");
+            return balance;
+        }
+
+        for (AccountingEntry entry : entries)
+        {
+            if (entry == null || entry.getAmount() == null)
+                continue;
+
+            if (!account.getAccountNumber().equals(entry.getAccountNumber()))
+            {
+                continue;
+            }
+
+            if (increaseSide == AccountSide.DEBIT)
+            {
+                if (entry.getAccountSide() == AccountSide.DEBIT)
+                    balance = balance.add(entry.getAmount());
+                else
+                    balance = balance.subtract(entry.getAmount());
+            }
+            else
+            {
+                if (entry.getAccountSide() == AccountSide.CREDIT)
+                    balance = balance.add(entry.getAmount());
+                else
+                    balance = balance.subtract(entry.getAmount());
+            }
+        }
+
+        return balance;
+    }
 	
 	/**
 	 * Calculates the balance of a specific account as of a given date.
@@ -464,122 +529,64 @@ public class ReportService
 	 * @return The calculated balance of the account as a {@link BigDecimal}.
 	 * @throws NullPointerException if {@code account}, {@code date}, or {@code ledger} is null.
 	 */
-	static BigDecimal getAccountBalanceAsOfDate(Account account, LocalDate date,
-												Ledger ledger,
-												ChartOfAccounts chartOfAccounts,
-												List<String> selectedFundNames,
-												boolean applyFundFilter)
-	{
-		if (account == null)
-			throw new NullPointerException(
-				"Account cannot be null for balance calculation.");
-		if (date == null)
-			throw new NullPointerException("Date cannot be null for balance calculation.");
-		if (ledger == null)
-			throw new NullPointerException(
-				"Ledger cannot be null for balance calculation.");
-		
-		BigDecimal balance = BigDecimal.ZERO;
-		
-		// Determine if opening balance should be included based on fund filter
-		if (applyFundFilter &&
-			!doesAccountMatchFunds(account, selectedFundNames, chartOfAccounts))
-		{
-			// If account doesn't match fund filter, its opening balance is not considered
-			// for this filtered view. Transactions for this account will also be
-			// effectively skipped below.
-		}
-		else
-		{
-			balance =
-				account.getOpeningBalance() == null ? BigDecimal.ZERO :
-					account.getOpeningBalance();
-		}
-		
-		long endDateMillisInclusive = // Inclusive of the 'date'
-			date.atTime(23, 59, 59, 999999999).atZone(ZoneOffset.UTC).toInstant()
-				.toEpochMilli();
-		
-		List<AccountingTransaction> transactions = ledger.getTransactions();
-		
-		if (transactions == null)
-		{
-			transactions = new ArrayList<AccountingTransaction>(); // Ensure non-null
-		}
-		
-		for (AccountingTransaction transaction : transactions)
-		{
-			
-			if (transaction == null ||
-				transaction.getBookingDateTimestamp() > endDateMillisInclusive) // Changed
-																				// to > to
-																				// be
-																				// inclusive
-																				// of the
-																				// date
-			{
-				continue;
-			}
-			
-			Set<AccountingEntry> entries = transaction.getEntries();
-			if (entries == null)
-				continue;
-			
-			for (AccountingEntry entry : entries)
-			{
-				if (entry == null || entry.getAmount() == null)
-					continue;
-				
-				if (!account.getAccountNumber().equals(entry.getAccountNumber()))
-				{
-					continue; // Entry is not for the account we are calculating the balance
-								// for
-				}
-				
-				// Fund filtering for transactions affecting this account:
-				// If fund filtering is active, and this specific account (being calculated)
-				// is part of the filter,
-				// then all its transactions are relevant. If this account is NOT part of
-				// the fund filter
-				// (already handled by the opening balance check), then no transactions for
-				// it are relevant here.
-				// The `doesAccountMatchFunds` check at the beginning for opening balance
-				// effectively gates this.
-				// No additional per-transaction fund check is needed here if the account
-				// itself is already filtered.
-				
-				AccountSide increaseSide = account.getIncreaseSide(); // Use the account's
-																		// defined increase
-																		// side
-				
-				if (increaseSide == null)
-				{ // Should not happen for a valid account
-					LOGGER.warning("Account " + account.getAccountNumber() +
-						" has no defined increase side.");
-					continue;
-				}
-				
-				if (increaseSide == AccountSide.DEBIT)
-				{
-					if (entry.getAccountSide() == AccountSide.DEBIT)
-						balance = balance.add(entry.getAmount());
-					else // CREDIT
-						balance = balance.subtract(entry.getAmount());
-				}
-				else // increaseSide is CREDIT
-				{
-					if (entry.getAccountSide() == AccountSide.CREDIT)
-						balance = balance.add(entry.getAmount());
-					else // DEBIT
-						balance = balance.subtract(entry.getAmount());
-				}
-				
-			}
-			
-		}
-		
-		return balance;
-	}
+        static BigDecimal getAccountBalanceAsOfDate(Account account, LocalDate date,
+                                                                               Ledger ledger,
+                                                                               ChartOfAccounts chartOfAccounts,
+                                                                               List<String> selectedFundNames,
+                                                                               boolean applyFundFilter)
+        {
+                if (account == null)
+                        throw new NullPointerException(
+                                "Account cannot be null for balance calculation.");
+                if (date == null)
+                        throw new NullPointerException("Date cannot be null for balance calculation.");
+                if (ledger == null)
+                        throw new NullPointerException(
+                                "Ledger cannot be null for balance calculation.");
+
+                if (applyFundFilter &&
+                        !doesAccountMatchFunds(account, selectedFundNames, chartOfAccounts))
+                {
+                        return BigDecimal.ZERO;
+                }
+
+                long endDateMillisInclusive = // Inclusive of the 'date'
+                        date.atTime(23, 59, 59, 999999999).atZone(ZoneOffset.UTC).toInstant()
+                                .toEpochMilli();
+
+                List<AccountingEntry> relevantEntries = new ArrayList<>();
+                List<AccountingTransaction> transactions = ledger.getTransactions();
+                if (transactions != null)
+                {
+                        for (AccountingTransaction transaction : transactions)
+                        {
+                                if (transaction == null ||
+                                        transaction.getBookingDateTimestamp() > endDateMillisInclusive)
+                                {
+                                        continue;
+                                }
+
+                                Set<AccountingEntry> entries = transaction.getEntries();
+                                if (entries == null)
+                                        continue;
+
+                                for (AccountingEntry entry : entries)
+                                {
+                                        if (entry == null || entry.getAmount() == null)
+                                                continue;
+
+                                        if (!account.getAccountNumber().equals(entry.getAccountNumber()))
+                                        {
+                                                continue;
+                                        }
+
+                                        relevantEntries.add(entry);
+                                }
+                        }
+                }
+
+                return calculateBalanceForAccount(account, relevantEntries);
+        }
 	
 	/**
 	 * Prepares the context map with data needed for generating a Trial Balance report using JXLS.

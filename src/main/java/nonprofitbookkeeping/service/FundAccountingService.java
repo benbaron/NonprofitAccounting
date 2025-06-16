@@ -127,10 +127,10 @@ public class FundAccountingService
 		{
 			// Create a copy for iteration to avoid ConcurrentModificationException
             List<Fund> associatedFunds = new ArrayList<>(account.getAssociatedFunds());
-			for (Fund fund : associatedFunds)
-			{
-				fund.removeAccount(account); // This should also trigger account.removeFund(this)
-			}
+                        for (Fund fund : associatedFunds)
+                        {
+                                fund.removeAccount(account);
+                        }
 			
 			this.accountMap.remove(accountName);
 			return true;

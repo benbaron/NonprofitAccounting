@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Collections; // For Collections.emptyList()
 
 import nonprofitbookkeeping.service.AccountService;
+import nonprofitbookkeeping.model.Ledger;
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.model.Company;
@@ -39,14 +40,14 @@ public class BalanceResultReportGenerator extends AbstractReportGenerator
 	 * Constructs a {@code BalanceResultReportGenerator}.
 	 *
 	 * @param accountService The account service, which is currently not directly used by this generator's
-	 *                       methods as {@link #getReportData()} makes a static call to
-	 *                       {@code AccountService.getBalanceResults()}. This parameter might be used
+         *                       methods as {@link #getReportData()} makes a static call to
+         *                       {@code AccountService.getBalanceResults(Ledger)}. This parameter might be used
 	 *                       if {@code AccountService} were refactored to be an instance service.
 	 */
 	public BalanceResultReportGenerator(AccountService accountService)
 	{
-		// accountService parameter is not currently used by this generator's methods
-		// as getReportData() calls AccountService.getBalanceResults() statically.
+                // accountService parameter is not currently used by this generator's methods
+                // as getReportData() calls AccountService.getBalanceResults(Ledger) statically.
 		// If AccountService were to become an instance service, this would need to
 		// change.
 	}
@@ -128,24 +129,31 @@ public class BalanceResultReportGenerator extends AbstractReportGenerator
 	/**
 	 * {@inheritDoc}
 	 * <p>Fetches data for the Balance Result Report by calling the static method
-	 * {@code AccountService.getBalanceResults()}. The returned list should contain
+         * {@code AccountService.getBalanceResults(Ledger)}. The returned list should contain
 	 * {@link AccountService.AccountBalance} objects or a compatible JavaBean structure
 	 * that matches the fields defined in the {@code BalanceResultReport.jrxml} template
 	 * (e.g., name, number, type, balance_currency_string).
 	 * </p>
 	 * @return A list of {@link AccountService.AccountBalance} objects, or an empty list if no data is available.
 	 */
-	@Override protected List<?> getReportData()
-	{
-		// This method fetches data using a static call.
-		// The data structure returned by AccountService.getBalanceResults()
-		// must be a List of JavaBeans compatible with the fields defined in
-		// BalanceResultReport.jrxml.
-		// Fields in BalanceResultReport.jrxml: name, number, type,
-		// balance_currency_string
-		List<AccountService.AccountBalance> balanceResults = AccountService.getBalanceResults();
-		return balanceResults != null ? balanceResults : Collections.emptyList();
-	}
+        @Override protected List<?> getReportData()
+        {
+                // Fetch the ledger from the currently loaded company if available.
+                Ledger ledger = null;
+                Company currentCompany = CurrentCompany.getCompany();
+                if (currentCompany != null)
+                {
+                        ledger = currentCompany.getLedger();
+                }
+
+                // The data structure returned by AccountService.getBalanceResults(ledger)
+                // must be a List of JavaBeans compatible with the fields defined in
+                // BalanceResultReport.jrxml (name, number, type, balance_currency_string).
+                List<AccountService.AccountBalance> balanceResults =
+                        AccountService.getBalanceResults(ledger);
+
+                return balanceResults != null ? balanceResults : Collections.emptyList();
+        }
 	
 	/**
 	 * {@inheritDoc}

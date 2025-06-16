@@ -4,6 +4,7 @@ package nonprofitbookkeeping.service;
 import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.service.AccountService.AccountBalance;
+import nonprofitbookkeeping.model.Ledger;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -138,7 +139,7 @@ class AccountServiceTest
 	@DisplayName("getBalanceResults: When no accounts, should return empty list")
 		void testGetBalanceResults_whenNoAccounts_shouldReturnEmptyList()
 	{
-		assertTrue(AccountService.getBalanceResults().isEmpty());
+                assertTrue(AccountService.getBalanceResults(new Ledger()).isEmpty());
 	}
 	
 	@Test
@@ -160,7 +161,7 @@ class AccountServiceTest
 		AccountService.addAccount(acc3);
 		AccountService.addAccount(acc4);
 		
-		List<AccountBalance> balances = AccountService.getBalanceResults();
+                List<AccountBalance> balances = AccountService.getBalanceResults(new Ledger());
 		assertEquals(4, balances.size());
 		
 		assertTrue(balances
@@ -240,8 +241,8 @@ class AccountServiceTest
 		
 		assertTrue(AccountService.getAllAccounts().isEmpty(),
 			"getAllAccounts should be empty after clearAccounts.");
-		assertTrue(AccountService.getBalanceResults().isEmpty(),
-			"getBalanceResults should be empty after clearAccounts.");
+                assertTrue(AccountService.getBalanceResults(new Ledger()).isEmpty(),
+                        "getBalanceResults should be empty after clearAccounts.");
 	}
 	
 }
