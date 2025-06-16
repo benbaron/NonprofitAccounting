@@ -44,85 +44,85 @@ public class GenerateReportPanelFXTest extends JavaFXTestBase {
     public void start(Stage stage) throws Exception {
         MockitoAnnotations.openMocks(this);
 
-        panel = new GenerateReportPanelFX(mockReportService);
-        Scene scene = new Scene(panel, 700, 500); // Increased size slightly
+        this.panel = new GenerateReportPanelFX(this.mockReportService);
+        Scene scene = new Scene(this.panel, 700, 500); // Increased size slightly
         stage.setScene(scene);
         stage.show();
 
         // Assign nodes for easier access in tests
-        reportSelector = lookup(".combo-box").queryComboBox();
-        generateButton = lookup("Generate Report").queryButton(); // Lookup by text
-        outputArea = lookup(".text-area").queryAs(TextArea.class);
+        this.reportSelector = lookup(".combo-box").queryComboBox();
+        this.generateButton = lookup("Generate Report").queryButton(); // Lookup by text
+        this.outputArea = lookup(".text-area").queryAs(TextArea.class);
     }
 
     @Test
     public void testInitialState_ComponentsArePresent_SelectorHasItems() {
-        assertNotNull(reportSelector);
-        assertNotNull(generateButton);
-        assertNotNull(outputArea);
+        assertNotNull(this.reportSelector);
+        assertNotNull(this.generateButton);
+        assertNotNull(this.outputArea);
 
         // Check number of items. If this changes often, could make test brittle.
         // Or check for specific key items.
-        verifyThat(reportSelector, hasItems(6));
-        assertTrue(reportSelector.getItems().contains("Income Statement"));
-        assertTrue(reportSelector.getItems().contains("Trial Balance (Jasper)"));
+        verifyThat(this.reportSelector, hasItems(6));
+        assertTrue(this.reportSelector.getItems().contains("Income Statement"));
+        assertTrue(this.reportSelector.getItems().contains("Trial Balance (Jasper)"));
 
-        assertEquals("Income Statement", reportSelector.getSelectionModel().getSelectedItem());
-        assertEquals("", outputArea.getText()); // Should be initially empty
+        assertEquals("Income Statement", this.reportSelector.getSelectionModel().getSelectedItem());
+        assertEquals("", this.outputArea.getText()); // Should be initially empty
     }
 
     @Test
     public void testGenerateJasperReport_TrialBalance_Success() throws Exception {
         File mockFile = new File("mock_trial_balance.pdf");
-        when(mockReportService.generateJasperReport(any(ReportContext.class), eq("pdf")))
+        when(this.mockReportService.generateJasperReport(any(ReportContext.class), eq("pdf")))
             .thenReturn(mockFile);
 
-        Platform.runLater(() -> reportSelector.setValue("Trial Balance (Jasper)"));
+        Platform.runLater(() -> this.reportSelector.setValue("Trial Balance (Jasper)"));
         WaitForAsyncUtils.waitForFxEvents();
 
-        clickOn(generateButton);
+        clickOn(this.generateButton);
         WaitForAsyncUtils.waitForFxEvents();
 
         ArgumentCaptor<ReportContext> contextCaptor = ArgumentCaptor.forClass(ReportContext.class);
-        verify(mockReportService).generateJasperReport(contextCaptor.capture(), eq("pdf"));
+        verify(this.mockReportService).generateJasperReport(contextCaptor.capture(), eq("pdf"));
         assertEquals("trial_balance_jasper", contextCaptor.getValue().getReportType());
         // Dates are LocalDate.now() based, so exact match is hard. Check they are not null.
         assertNotNull(contextCaptor.getValue().getStartDate());
         assertNotNull(contextCaptor.getValue().getEndDate());
 
-        String outputText = outputArea.getText();
+        String outputText = this.outputArea.getText();
         assertTrue(outputText.contains("Generating Trial Balance (Jasper) report..."));
         assertTrue(outputText.contains("Report generated successfully: " + mockFile.getAbsolutePath()));
     }
 
     @Test
     public void testGenerateJasperReport_TrialBalance_ServiceReturnsNull() throws Exception {
-        when(mockReportService.generateJasperReport(any(ReportContext.class), eq("pdf")))
+        when(this.mockReportService.generateJasperReport(any(ReportContext.class), eq("pdf")))
             .thenReturn(null);
 
-        Platform.runLater(() -> reportSelector.setValue("Trial Balance (Jasper)"));
+        Platform.runLater(() -> this.reportSelector.setValue("Trial Balance (Jasper)"));
         WaitForAsyncUtils.waitForFxEvents();
 
-        clickOn(generateButton);
+        clickOn(this.generateButton);
         WaitForAsyncUtils.waitForFxEvents();
 
-        verify(mockReportService).generateJasperReport(any(ReportContext.class), eq("pdf"));
-        assertTrue(outputArea.getText().contains("Report generation failed to produce a file."));
+        verify(this.mockReportService).generateJasperReport(any(ReportContext.class), eq("pdf"));
+        assertTrue(this.outputArea.getText().contains("Report generation failed to produce a file."));
     }
 
     @Test
     public void testGenerateJasperReport_TrialBalance_ServiceThrowsException() throws Exception {
-        when(mockReportService.generateJasperReport(any(ReportContext.class), eq("pdf")))
+        when(this.mockReportService.generateJasperReport(any(ReportContext.class), eq("pdf")))
             .thenThrow(new IOException("Test Jasper Exception"));
 
-        Platform.runLater(() -> reportSelector.setValue("Trial Balance (Jasper)"));
+        Platform.runLater(() -> this.reportSelector.setValue("Trial Balance (Jasper)"));
         WaitForAsyncUtils.waitForFxEvents();
 
-        clickOn(generateButton);
+        clickOn(this.generateButton);
         WaitForAsyncUtils.waitForFxEvents();
 
-        verify(mockReportService).generateJasperReport(any(ReportContext.class), eq("pdf"));
-        assertTrue(outputArea.getText().contains("Error generating report: Test Jasper Exception"));
+        verify(this.mockReportService).generateJasperReport(any(ReportContext.class), eq("pdf"));
+        assertTrue(this.outputArea.getText().contains("Error generating report: Test Jasper Exception"));
     }
 
     @Test
@@ -131,16 +131,16 @@ public class GenerateReportPanelFXTest extends JavaFXTestBase {
         // We can't easily mock `new GenerateReportsAction(...)` without PowerMock or refactoring panel.
         // So, we'll verify the UI output which is currently placeholder text.
 
-        Platform.runLater(() -> reportSelector.setValue("Income Statement"));
+        Platform.runLater(() -> this.reportSelector.setValue("Income Statement"));
         WaitForAsyncUtils.waitForFxEvents();
 
-        clickOn(generateButton);
+        clickOn(this.generateButton);
         WaitForAsyncUtils.waitForFxEvents();
 
         // Verify no call to generateJasperReport for this type
         try
 		{
-			verify(mockReportService, never()).generateJasperReport(any(ReportContext.class), anyString());
+			verify(this.mockReportService, never()).generateJasperReport(any(ReportContext.class), anyString());
 		}
 		catch (Exception e)
 		{
@@ -148,7 +148,7 @@ public class GenerateReportPanelFXTest extends JavaFXTestBase {
 			e.printStackTrace();
 		}
 
-        String outputText = outputArea.getText();
+        String outputText = this.outputArea.getText();
         assertTrue(outputText.contains("Generating report: Income Statement..."));
         assertTrue(outputText.contains("Done. (This is a placeholder for the actual report)"));
     }

@@ -61,21 +61,21 @@ public class ReportsPanelFXTest extends JavaFXTestBase {
         MockitoAnnotations.openMocks(this); // Initialize mocks for Desktop
 
         // Mock static Desktop.getDesktop() to return our mock instance
-        mockedDesktop = Mockito.mockStatic(Desktop.class);
-        mockedDesktop.when(Desktop::getDesktop).thenReturn(mockDesktopInstance);
-        when(mockDesktopInstance.isSupported(Desktop.Action.OPEN)).thenReturn(true);
+        this.mockedDesktop = Mockito.mockStatic(Desktop.class);
+        this.mockedDesktop.when(Desktop::getDesktop).thenReturn(this.mockDesktopInstance);
+        when(this.mockDesktopInstance.isSupported(Desktop.Action.OPEN)).thenReturn(true);
 
 
-        panel = new ReportsPanelFX();
-        Scene scene = new Scene(panel, 800, 600);
+        this.panel = new ReportsPanelFX();
+        Scene scene = new Scene(this.panel, 800, 600);
         stage.setScene(scene);
         stage.show();
     }
 
     @AfterEach
     public void tearDownStaticMock() {
-        if (mockedDesktop != null) {
-            mockedDesktop.close(); // Release static mock
+        if (this.mockedDesktop != null) {
+            this.mockedDesktop.close(); // Release static mock
         }
     }
 
@@ -186,7 +186,7 @@ public class ReportsPanelFXTest extends JavaFXTestBase {
         WaitForAsyncUtils.waitForFxEvents();
 
         // Verify Desktop.getDesktop().open() was called with the correct file
-        mockedDesktop.verify(() -> Desktop.getDesktop().open(eq(new File(testRow.getPath()))));
+        this.mockedDesktop.verify(() -> Desktop.getDesktop().open(eq(new File(testRow.getPath()))));
 
         if (testFile.exists()) testFile.delete(); // Clean up dummy file
     }
@@ -212,7 +212,7 @@ public class ReportsPanelFXTest extends JavaFXTestBase {
         assertNotNull(openButton, "Open button not found for error test");
 
         // Make Desktop.open() throw an IOException for this specific file
-        doThrow(new IOException("Test IO Exception")).when(mockDesktopInstance).open(eq(new File(nonExistentFilePath)));
+        doThrow(new IOException("Test IO Exception")).when(this.mockDesktopInstance).open(eq(new File(nonExistentFilePath)));
 
         clickOn(openButton);
         WaitForAsyncUtils.waitForFxEvents();

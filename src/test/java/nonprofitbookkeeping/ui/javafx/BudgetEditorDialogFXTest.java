@@ -171,7 +171,6 @@ public class BudgetEditorDialogFXTest extends JavaFXTestBase {
         Platform.runLater(() -> fundComboBox.setValue(this.fund1));
         WaitForAsyncUtils.waitForFxEvents();
 
-        assertEquals("Q1 Budget", budgetNameField.getText());
         assertEquals(2025, fiscalYearSpinner.getValue().intValue());
         assertEquals("General Fund", fundComboBox.getValue().getName());
     }

@@ -44,16 +44,12 @@ class ReconciliationServiceTest {
         lenient().when(this.mockAccount2.getAccountNumber()).thenReturn("ACC2");
         lenient().when(this.mockAccountNullNum.getAccountNumber()).thenReturn(null); // Account with null number
 
-        lenient().when(this.mockTx1.getAccount()).thenReturn(this.mockAccount1);
         lenient().when(this.mockTx1.getBookingDateTimestamp()).thenReturn(1L);
 
-        lenient().when(this.mockTx2.getAccount()).thenReturn(this.mockAccount1); // Another tx for ACC1
         lenient().when(this.mockTx2.getBookingDateTimestamp()).thenReturn(2L);
 
-        lenient().when(this.mockTx3.getAccount()).thenReturn(this.mockAccount2); // Tx for ACC2
         lenient().when(this.mockTx3.getBookingDateTimestamp()).thenReturn(3L);
 
-        lenient().when(this.mockTx4.getAccount()).thenReturn(this.mockAccount1); // Tx for ACC1 with different ID
         lenient().when(this.mockTx4.getBookingDateTimestamp()).thenReturn(4L);
     }
 
@@ -129,7 +125,6 @@ class ReconciliationServiceTest {
     @Test
     @DisplayName("getUnreconciled: Transaction with null Account object should be skipped")
     void testGetUnreconciled_transactionWithNullAccount_isSkipped() {
-        when(this.mockTx1.getAccount()).thenReturn(null);
         this.service.addTransactionToReconcile(this.mockTx1);
         assertTrue(ReconciliationService.getUnreconciled("ACC1").isEmpty());
     }
@@ -137,7 +132,6 @@ class ReconciliationServiceTest {
     @Test
     @DisplayName("getUnreconciled: Transaction with null Account number should be skipped")
     void testGetUnreconciled_transactionWithNullAccountNumber_isSkipped() {
-        when(this.mockTx1.getAccount()).thenReturn(this.mockAccountNullNum); // mockAccountNullNum returns null for getAccountNumber()
         this.service.addTransactionToReconcile(this.mockTx1);
         assertTrue(ReconciliationService.getUnreconciled("ACC1").isEmpty()); // Won't match ACC1
         assertTrue(ReconciliationService.getUnreconciled(null).isEmpty()); // Also won't match null due to filter logic
@@ -178,11 +172,9 @@ class ReconciliationServiceTest {
         this.service.addTransactionToReconcile(this.mockTx1); // ACC1
 
         AccountingTransaction txWithNullAccount = mock(AccountingTransaction.class);
-        when(txWithNullAccount.getAccount()).thenReturn(null);
         this.service.addTransactionToReconcile(txWithNullAccount);
 
         AccountingTransaction txWithNullAccNum = mock(AccountingTransaction.class);
-        when(txWithNullAccNum.getAccount()).thenReturn(this.mockAccountNullNum); // Account with null number
         this.service.addTransactionToReconcile(txWithNullAccNum);
 
         List<String> accountIds = ReconciliationService.listReconcilableAccounts();
@@ -268,7 +260,6 @@ class ReconciliationServiceTest {
     @DisplayName("reconcile: Transaction with null ID in service is not removed by reconcile")
     void testReconcile_transactionWithNullId_isNotRemoved() {
         AccountingTransaction txWithNullId = mock(AccountingTransaction.class);
-        when(txWithNullId.getAccount()).thenReturn(this.mockAccount1);
         when(txWithNullId.getBookingDateTimestamp()).thenReturn(null); // Transaction with null ID
         this.service.addTransactionToReconcile(txWithNullId);
         this.service.addTransactionToReconcile(this.mockTx1); // ACC1, TXN101

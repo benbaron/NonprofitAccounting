@@ -54,7 +54,7 @@ public abstract class JavaFXTestBase extends ApplicationTest
 	{
 		Platform.runLater(() -> {
 			Scene scene = new Scene(rootNode);
-			stage.setScene(scene);
+			this.stage.setScene(scene);
 		});
 		// Wait for the UI thread to process the change
 		waitForRunLater();
@@ -62,7 +62,7 @@ public abstract class JavaFXTestBase extends ApplicationTest
 	
 	protected Stage getStage()
 	{
-		return stage;
+		return this.stage;
 	}
 	
 	/**
@@ -90,9 +90,9 @@ public abstract class JavaFXTestBase extends ApplicationTest
 	{
 		
 		// Hide the stage after each test
-		if (stage != null)
+		if (this.stage != null)
 		{
-			Platform.runLater(() -> stage.hide());
+			Platform.runLater(() -> this.stage.hide());
 			waitForRunLater(); // Ensure hide operation completes
 		}
 		

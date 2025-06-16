@@ -432,13 +432,13 @@ public class NewTransactionPanelFX extends BorderPane
 		tx.setDate(this.datePicker.getValue().toString());
 		tx.setDescription(this.memoArea.getText());
 		
-		if (!this.lines.isEmpty())
-		{
-			tx.setAccountName(this.lines.get(0).account.get());
-		}
-		
-		tx.setDebit(debitTotal);
-		tx.setCredit(creditTotal);
+//		if (!this.lines.isEmpty())
+//		{
+//			tx.setAccountName(this.lines.get(0).account.get());
+//		}
+//		
+//		tx.setDebit(debitTotal);
+//		tx.setCredit(creditTotal);
 		
 		this.onSave.accept(tx);
 	}

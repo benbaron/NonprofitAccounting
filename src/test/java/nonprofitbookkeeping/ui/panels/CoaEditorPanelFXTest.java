@@ -48,7 +48,6 @@ public class CoaEditorPanelFXTest extends JavaFXTestBase
 		this.testCoa = new ChartOfAccounts();
 		// Add some initial accounts for testing
 		Account rootAsset = new Account("1000", "Assets", AccountType.ASSET, BigDecimal.ZERO);
-		Account bank = new Account("1010", "Bank", AccountType.ASSET, new BigDecimal("1000.00"));
 		this.testCoa.addAccount(rootAsset);
 		
 		Account rootEquity = new Account("3000", "Equity", AccountType.EQUITY, BigDecimal.ZERO);
@@ -218,7 +217,7 @@ public class CoaEditorPanelFXTest extends JavaFXTestBase
 		
 		if (type != null)
 		{
-			@SuppressWarnings("unchecked") ComboBox<AccountType> typeCombo =
+			ComboBox<AccountType> typeCombo =
 				from(dialogPane).lookup(".combo-box").queryComboBox();
 			Platform.runLater(() -> typeCombo.setValue(type));
 			WaitForAsyncUtils.waitForFxEvents();

@@ -38,7 +38,7 @@ public class ExportCoaXlsxActionFX implements EventHandler<ActionEvent> {
             alert.setTitle("Export Warning");
             alert.setHeaderText(null);
             alert.setContentText("No company is currently open. Please open a company to export its Chart of Accounts.");
-            alert.initOwner(ownerStage);
+            alert.initOwner(this.ownerStage);
             alert.showAndWait();
             logger.log(Level.WARNING, "Export COA action triggered but no company is open.");
             return;
@@ -50,7 +50,7 @@ public class ExportCoaXlsxActionFX implements EventHandler<ActionEvent> {
             alert.setTitle("Export Warning");
             alert.setHeaderText(null);
             alert.setContentText("The current company does not have a Chart of Accounts to export.");
-            alert.initOwner(ownerStage);
+            alert.initOwner(this.ownerStage);
             alert.showAndWait();
             logger.log(Level.WARNING, "Export COA action triggered but company '" + currentCompany.getCompanyProfile() + "' has no COA.");
             return;
@@ -68,7 +68,7 @@ public class ExportCoaXlsxActionFX implements EventHandler<ActionEvent> {
         }
         fileChooser.setInitialFileName(suggestedName);
 
-        File selectedFile = fileChooser.showSaveDialog(ownerStage);
+        File selectedFile = fileChooser.showSaveDialog(this.ownerStage);
 
         if (selectedFile != null) {
             ChartOfAccountsIOService coaService = new ChartOfAccountsIOService();
@@ -78,7 +78,7 @@ public class ExportCoaXlsxActionFX implements EventHandler<ActionEvent> {
                 alert.setTitle("Export Successful");
                 alert.setHeaderText(null);
                 alert.setContentText("Chart of Accounts exported successfully to " + selectedFile.getAbsolutePath());
-                alert.initOwner(ownerStage);
+                alert.initOwner(this.ownerStage);
                 alert.showAndWait();
                 logger.log(Level.INFO, "Chart of Accounts exported successfully to " + selectedFile.getAbsolutePath());
 
@@ -87,7 +87,7 @@ public class ExportCoaXlsxActionFX implements EventHandler<ActionEvent> {
                 alert.setTitle("Export Error");
                 alert.setHeaderText("Error Exporting Chart of Accounts");
                 alert.setContentText("An error occurred while exporting the Chart of Accounts: " + e.getMessage());
-                alert.initOwner(ownerStage);
+                alert.initOwner(this.ownerStage);
                 alert.showAndWait();
                 logger.log(Level.SEVERE, "Error exporting Chart of Accounts to " + selectedFile.getAbsolutePath(), e);
             }

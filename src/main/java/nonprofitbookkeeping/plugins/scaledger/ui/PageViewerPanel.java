@@ -117,7 +117,7 @@ public class PageViewerPanel extends JPanel
 		}
 		
 		JDialog dialog = new JDialog(ownerFrame, title, false); // false for modeless
-		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE); // Dispose on close to free
+		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE); // Dispose on close to free
 																	// resources
 		dialog.setContentPane(this); // Add this panel to the dialog
 		dialog.pack(); // Size the dialog to fit its contents
@@ -159,7 +159,7 @@ public class PageViewerPanel extends JPanel
 			
 			// Display the panel in a JFrame for testing
 			JFrame frame = new JFrame("Page Viewer Panel Test");
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 			frame.setContentPane(panel); // Add panel directly or use displayInWindow
 			// panel.displayInWindow(null, "Page Viewer Panel Test"); // Alternative using
 			// the method

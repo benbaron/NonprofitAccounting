@@ -56,7 +56,7 @@ public class ReconcilePanelFX extends BorderPane
 	public ReconcilePanelFX(ReconciliationService svc)
 	{
 		this.service = svc;
-		this.accountBox.getItems().addAll(svc.listReconcilableAccounts());
+		this.accountBox.getItems().addAll(ReconciliationService.listReconcilableAccounts());
 		this.accountBox.getSelectionModel().selectFirst();
 		setPadding(new Insets(10));
 		buildTop();
@@ -161,7 +161,7 @@ public class ReconcilePanelFX extends BorderPane
 			updateDifference(); // Ensure difference is updated even if list is empty
 			return;
 		}
-		List<AccountingTransaction> list = this.service.getUnreconciled(selectedAccount);
+		List<AccountingTransaction> list = ReconciliationService.getUnreconciled(selectedAccount);
 
 		if (list != null) { // Check if the list itself is null
 			list.forEach(t -> {

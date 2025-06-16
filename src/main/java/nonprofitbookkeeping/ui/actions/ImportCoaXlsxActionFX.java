@@ -37,7 +37,7 @@ public class ImportCoaXlsxActionFX implements EventHandler<ActionEvent> {
         fileChooser.getExtensionFilters().add(xlsxFilter);
         fileChooser.setSelectedExtensionFilter(xlsxFilter);
 
-        File selectedFile = fileChooser.showOpenDialog(ownerStage);
+        File selectedFile = fileChooser.showOpenDialog(this.ownerStage);
 
         if (selectedFile != null) {
             ChartOfAccountsIOService coaService = new ChartOfAccountsIOService();
@@ -52,7 +52,7 @@ public class ImportCoaXlsxActionFX implements EventHandler<ActionEvent> {
                     alert.setTitle("Import Successful");
                     alert.setHeaderText(null);
                     alert.setContentText("Chart of Accounts imported successfully.");
-                    alert.initOwner(ownerStage);
+                    alert.initOwner(this.ownerStage);
                     alert.showAndWait();
                     logger.log(Level.INFO, "Chart of Accounts imported successfully from " + selectedFile.getName());
                 } else {
@@ -60,7 +60,7 @@ public class ImportCoaXlsxActionFX implements EventHandler<ActionEvent> {
                     alert.setTitle("Import Warning");
                     alert.setHeaderText(null);
                     alert.setContentText("No company is currently open. The imported Chart of Accounts has not been assigned.");
-                    alert.initOwner(ownerStage);
+                    alert.initOwner(this.ownerStage);
                     alert.showAndWait();
                     logger.log(Level.WARNING, "Chart of Accounts imported but no company was open.");
                 }
@@ -70,7 +70,7 @@ public class ImportCoaXlsxActionFX implements EventHandler<ActionEvent> {
                 alert.setTitle("Import Error");
                 alert.setHeaderText("Error Importing Chart of Accounts");
                 alert.setContentText("An error occurred while importing the Chart of Accounts: " + e.getMessage());
-                alert.initOwner(ownerStage);
+                alert.initOwner(this.ownerStage);
                 alert.showAndWait();
                 logger.log(Level.SEVERE, "Error importing Chart of Accounts from " + selectedFile.getName(), e);
             } catch (Exception e) {
@@ -78,7 +78,7 @@ public class ImportCoaXlsxActionFX implements EventHandler<ActionEvent> {
                 alert.setTitle("Import Error");
                 alert.setHeaderText("Unexpected Error Importing Chart of Accounts");
                 alert.setContentText("An unexpected error occurred: " + e.getMessage());
-                alert.initOwner(ownerStage);
+                alert.initOwner(this.ownerStage);
                 alert.showAndWait();
                 logger.log(Level.SEVERE, "Unexpected error importing Chart of Accounts from " + selectedFile.getName(), e);
             }

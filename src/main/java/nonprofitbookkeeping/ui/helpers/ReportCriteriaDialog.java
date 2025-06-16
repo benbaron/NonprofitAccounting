@@ -62,15 +62,6 @@ public class ReportCriteriaDialog
 		}
 		
 		/**
-         * Gets the underlying {@link Fund} object.
-         * @return The fund.
-         */
-		public Fund getFund()
-		{
-			return this.fund;
-		}
-		
-		/**
          * Gets the ID of the underlying fund.
          * @return The fund ID from {@link Fund#getFundId()}.
          */
@@ -133,15 +124,6 @@ public class ReportCriteriaDialog
 		public AccountItem(Account account)
 		{
 			this.account = Objects.requireNonNull(account, "Account cannot be null in AccountItem");
-		}
-		
-		/**
-         * Gets the underlying {@link Account} object.
-         * @return The account.
-         */
-		public Account getAccount()
-		{
-			return this.account;
 		}
 		
 		/**

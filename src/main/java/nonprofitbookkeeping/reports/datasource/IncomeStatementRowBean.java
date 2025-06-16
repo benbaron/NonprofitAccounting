@@ -33,7 +33,7 @@ public class IncomeStatementRowBean {
      * @return The account category string.
      */
     public String getAccountCategory() {
-        return accountCategory;
+        return this.accountCategory;
     }
 
     /**
@@ -41,7 +41,7 @@ public class IncomeStatementRowBean {
      * @return The account name string.
      */
     public String getAccountName() {
-        return accountName;
+        return this.accountName;
     }
 
     /**
@@ -49,7 +49,7 @@ public class IncomeStatementRowBean {
      * @return The amount as a {@link BigDecimal}.
      */
     public BigDecimal getAmount() {
-        return amount;
+        return this.amount;
     }
 
     /**

@@ -1,7 +1,5 @@
 package nonprofitbookkeeping.model;
 
-import nonprofitbookkeeping.exception.ActionCancelledException;
-import nonprofitbookkeeping.exception.NoFileCreatedException;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;

@@ -68,33 +68,33 @@ public class BudgetPanelFX extends VBox {
     }
 
     private void initializeComponents() {
-        txtBudgetName = new TextField();
-        txtBudgetName.setPromptText("Enter budget name");
-        spnFiscalYear = new Spinner<>();
-        spnFiscalYear.setEditable(true);
-        txtDescription = new TextField();
-        txtDescription.setPromptText("Enter description");
+        this.txtBudgetName = new TextField();
+        this.txtBudgetName.setPromptText("Enter budget name");
+        this.spnFiscalYear = new Spinner<>();
+        this.spnFiscalYear.setEditable(true);
+        this.txtDescription = new TextField();
+        this.txtDescription.setPromptText("Enter description");
 
-        cmbApplicableFund = new ComboBox<>(); // Now ComboBox<Fund>
+        this.cmbApplicableFund = new ComboBox<>(); // Now ComboBox<Fund>
         setupFundComboBox(); // Setup converter and cell factory
 
-        txtCurrency = new TextField();
-        txtCurrency.setPromptText("USD");
-        txtCurrency.setEditable(false);
+        this.txtCurrency = new TextField();
+        this.txtCurrency.setPromptText("USD");
+        this.txtCurrency.setEditable(false);
 
-        tblBudgetLines = new TableView<>();
+        this.tblBudgetLines = new TableView<>();
         setupTableColumns();
-        tblBudgetLines.setPlaceholder(new Label("No budget lines added."));
+        this.tblBudgetLines.setPlaceholder(new Label("No budget lines added."));
 
-        btnAddLine = new Button("Add Line");
-        btnEditLine = new Button("Edit Line");
-        btnRemoveLine = new Button("Remove Line");
-        btnSaveBudget = new Button("Save Budget");
-        btnClose = new Button("Close");
+        this.btnAddLine = new Button("Add Line");
+        this.btnEditLine = new Button("Edit Line");
+        this.btnRemoveLine = new Button("Remove Line");
+        this.btnSaveBudget = new Button("Save Budget");
+        this.btnClose = new Button("Close");
     }
 
     private void setupFundComboBox() {
-        cmbApplicableFund.setConverter(new StringConverter<Fund>() {
+        this.cmbApplicableFund.setConverter(new StringConverter<Fund>() {
             @Override
             public String toString(Fund fund) {
                 if (fund == null || fund == ALL_FUNDS_SENTINEL) {
@@ -110,7 +110,7 @@ public class BudgetPanelFX extends VBox {
             }
         });
 
-        cmbApplicableFund.setCellFactory(listView -> new ListCell<Fund>() {
+        this.cmbApplicableFund.setCellFactory(listView -> new ListCell<Fund>() {
             @Override
             protected void updateItem(Fund fund, boolean empty) {
                 super.updateItem(fund, empty);
@@ -138,13 +138,13 @@ public class BudgetPanelFX extends VBox {
         amountCol.setCellValueFactory(new PropertyValueFactory<>("totalBudgetedAmount"));
         TableColumn<BudgetLine, String> notesCol = new TableColumn<>("Notes");
         notesCol.setCellValueFactory(new PropertyValueFactory<>("notes"));
-        tblBudgetLines.getColumns().addAll(accountCol, periodicityCol, fundCol, amountCol, notesCol);
+        this.tblBudgetLines.getColumns().addAll(accountCol, periodicityCol, fundCol, amountCol, notesCol);
 
-        accountCol.prefWidthProperty().bind(tblBudgetLines.widthProperty().multiply(0.25));
-        periodicityCol.prefWidthProperty().bind(tblBudgetLines.widthProperty().multiply(0.15));
-        fundCol.prefWidthProperty().bind(tblBudgetLines.widthProperty().multiply(0.15));
-        amountCol.prefWidthProperty().bind(tblBudgetLines.widthProperty().multiply(0.15));
-        notesCol.prefWidthProperty().bind(tblBudgetLines.widthProperty().multiply(0.25));
+        accountCol.prefWidthProperty().bind(this.tblBudgetLines.widthProperty().multiply(0.25));
+        periodicityCol.prefWidthProperty().bind(this.tblBudgetLines.widthProperty().multiply(0.15));
+        fundCol.prefWidthProperty().bind(this.tblBudgetLines.widthProperty().multiply(0.15));
+        amountCol.prefWidthProperty().bind(this.tblBudgetLines.widthProperty().multiply(0.15));
+        notesCol.prefWidthProperty().bind(this.tblBudgetLines.widthProperty().multiply(0.25));
     }
 
     private void layoutComponents() {
@@ -155,29 +155,29 @@ public class BudgetPanelFX extends VBox {
         pnlProperties.setHgap(10);
         pnlProperties.setVgap(8);
         pnlProperties.add(new Label("Budget Name:"), 0, 0);
-        pnlProperties.add(txtBudgetName, 1, 0);
-        GridPane.setHgrow(txtBudgetName, Priority.ALWAYS);
+        pnlProperties.add(this.txtBudgetName, 1, 0);
+        GridPane.setHgrow(this.txtBudgetName, Priority.ALWAYS);
         pnlProperties.add(new Label("Fiscal Year:"), 0, 1);
-        pnlProperties.add(spnFiscalYear, 1, 1);
-        spnFiscalYear.setPrefWidth(100);
+        pnlProperties.add(this.spnFiscalYear, 1, 1);
+        this.spnFiscalYear.setPrefWidth(100);
         pnlProperties.add(new Label("Description:"), 0, 2);
-        pnlProperties.add(txtDescription, 1, 2);
-        GridPane.setHgrow(txtDescription, Priority.ALWAYS);
+        pnlProperties.add(this.txtDescription, 1, 2);
+        GridPane.setHgrow(this.txtDescription, Priority.ALWAYS);
         pnlProperties.add(new Label("Applicable Fund:"), 0, 3);
-        pnlProperties.add(cmbApplicableFund, 1, 3);
-        GridPane.setHgrow(cmbApplicableFund, Priority.ALWAYS);
+        pnlProperties.add(this.cmbApplicableFund, 1, 3);
+        GridPane.setHgrow(this.cmbApplicableFund, Priority.ALWAYS);
         pnlProperties.add(new Label("Currency:"), 0, 4);
-        pnlProperties.add(txtCurrency, 1, 4);
-        txtCurrency.setMaxWidth(100);
+        pnlProperties.add(this.txtCurrency, 1, 4);
+        this.txtCurrency.setMaxWidth(100);
 
-        HBox pnlTableButtons = new HBox(5, btnAddLine, btnEditLine, btnRemoveLine);
+        HBox pnlTableButtons = new HBox(5, this.btnAddLine, this.btnEditLine, this.btnRemoveLine);
         pnlTableButtons.setAlignment(Pos.CENTER_LEFT);
         pnlTableButtons.setPadding(new Insets(5,0,5,0));
 
-        VBox tableSection = new VBox(5, tblBudgetLines, pnlTableButtons);
-        VBox.setVgrow(tblBudgetLines, Priority.ALWAYS);
+        VBox tableSection = new VBox(5, this.tblBudgetLines, pnlTableButtons);
+        VBox.setVgrow(this.tblBudgetLines, Priority.ALWAYS);
 
-        HBox pnlActions = new HBox(10, btnSaveBudget, btnClose);
+        HBox pnlActions = new HBox(10, this.btnSaveBudget, this.btnClose);
         pnlActions.setAlignment(Pos.CENTER_RIGHT);
         pnlActions.setPadding(new Insets(5,0,0,0));
 
@@ -203,15 +203,15 @@ public class BudgetPanelFX extends VBox {
     }
 
     private void populateUIFromCurrentBudget() {
-        if (currentBudget == null) return;
+        if (this.currentBudget == null) return;
 
-        txtBudgetName.setText(currentBudget.getBudgetName());
+        this.txtBudgetName.setText(this.currentBudget.getBudgetName());
         SpinnerValueFactory<Integer> yearFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(
-            2000, 2100, currentBudget.getFiscalYear()
+            2000, 2100, this.currentBudget.getFiscalYear()
         );
-        spnFiscalYear.setValueFactory(yearFactory);
-        txtDescription.setText(currentBudget.getDescription() != null ? currentBudget.getDescription() : "");
-        txtCurrency.setText(currentBudget.getCurrency());
+        this.spnFiscalYear.setValueFactory(yearFactory);
+        this.txtDescription.setText(this.currentBudget.getDescription() != null ? this.currentBudget.getDescription() : "");
+        this.txtCurrency.setText(this.currentBudget.getCurrency());
 
         // Populate Applicable Fund ComboBox
         List<Fund> fundComboItems = new ArrayList<>();
@@ -219,97 +219,97 @@ public class BudgetPanelFX extends VBox {
         if (this.availableFunds != null) {
             fundComboItems.addAll(this.availableFunds.stream().filter(Objects::nonNull).collect(Collectors.toList()));
         }
-        cmbApplicableFund.setItems(FXCollections.observableArrayList(fundComboItems));
+        this.cmbApplicableFund.setItems(FXCollections.observableArrayList(fundComboItems));
 
-        if (currentBudget.getApplicableFundId() == null) {
-            cmbApplicableFund.setValue(ALL_FUNDS_SENTINEL);
+        if (this.currentBudget.getApplicableFundId() == null) {
+            this.cmbApplicableFund.setValue(ALL_FUNDS_SENTINEL);
         } else {
             this.availableFunds.stream() // Search in original availableFunds
-                .filter(f -> currentBudget.getApplicableFundId().equals(f.getFundId()))
+                .filter(f -> this.currentBudget.getApplicableFundId().equals(f.getFundId()))
                 .findFirst()
                 .ifPresentOrElse(
-                    cmbApplicableFund::setValue,
-                    () -> cmbApplicableFund.setValue(ALL_FUNDS_SENTINEL) // Fallback
+                    this.cmbApplicableFund::setValue,
+                    () -> this.cmbApplicableFund.setValue(ALL_FUNDS_SENTINEL) // Fallback
                 );
         }
         refreshTableLines();
     }
 
     private void refreshTableLines() {
-        if (currentBudget != null && currentBudget.getBudgetLines() != null) {
-            tblBudgetLines.setItems(FXCollections.observableArrayList(currentBudget.getBudgetLines()));
+        if (this.currentBudget != null && this.currentBudget.getBudgetLines() != null) {
+            this.tblBudgetLines.setItems(FXCollections.observableArrayList(this.currentBudget.getBudgetLines()));
         } else {
-            tblBudgetLines.setItems(FXCollections.observableArrayList());
+            this.tblBudgetLines.setItems(FXCollections.observableArrayList());
         }
-        tblBudgetLines.refresh();
+        this.tblBudgetLines.refresh();
     }
 
     private void attachListeners() {
-        txtBudgetName.textProperty().addListener((obs, oldVal, newVal) -> {
-            if (currentBudget != null) currentBudget.setBudgetName(newVal);
+        this.txtBudgetName.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (this.currentBudget != null) this.currentBudget.setBudgetName(newVal);
         });
-        txtDescription.textProperty().addListener((obs, oldVal, newVal) -> {
-            if (currentBudget != null) currentBudget.setDescription(newVal);
+        this.txtDescription.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (this.currentBudget != null) this.currentBudget.setDescription(newVal);
         });
-        spnFiscalYear.valueProperty().addListener((obs, oldVal, newVal) -> {
-            if (currentBudget != null && newVal != null) currentBudget.setFiscalYear(newVal);
+        this.spnFiscalYear.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (this.currentBudget != null && newVal != null) this.currentBudget.setFiscalYear(newVal);
         });
 
-        cmbApplicableFund.valueProperty().addListener((obs, oldVal, newVal) -> {
-            if (currentBudget != null) {
+        this.cmbApplicableFund.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (this.currentBudget != null) {
                 if (newVal == null || newVal == ALL_FUNDS_SENTINEL) {
-                    currentBudget.setApplicableFundId(null);
+                    this.currentBudget.setApplicableFundId(null);
                 } else {
-                    currentBudget.setApplicableFundId(newVal.getFundId());
+                    this.currentBudget.setApplicableFundId(newVal.getFundId());
                 }
             }
         });
 
-        btnSaveBudget.setOnAction(e -> {
+        this.btnSaveBudget.setOnAction(e -> {
             System.out.println("Save Budget clicked.");
-            if (currentBudget != null) {
-                System.out.println("Budget Name: " + currentBudget.getBudgetName());
-                System.out.println("Fiscal Year: " + currentBudget.getFiscalYear());
-                System.out.println("Applicable Fund ID: " + currentBudget.getApplicableFundId());
+            if (this.currentBudget != null) {
+                System.out.println("Budget Name: " + this.currentBudget.getBudgetName());
+                System.out.println("Fiscal Year: " + this.currentBudget.getFiscalYear());
+                System.out.println("Applicable Fund ID: " + this.currentBudget.getApplicableFundId());
             }
         });
-        btnClose.setOnAction(e -> System.out.println("Close clicked."));
+        this.btnClose.setOnAction(e -> System.out.println("Close clicked."));
 
-        btnAddLine.setOnAction(e -> actionAddLine());
-        btnEditLine.setOnAction(e -> actionEditLine());
-        btnRemoveLine.setOnAction(e -> actionRemoveLine());
+        this.btnAddLine.setOnAction(e -> actionAddLine());
+        this.btnEditLine.setOnAction(e -> actionEditLine());
+        this.btnRemoveLine.setOnAction(e -> actionRemoveLine());
     }
 
     private void actionAddLine() {
-        if (currentBudget == null || chartOfAccounts == null || availableFunds == null) {
+        if (this.currentBudget == null || this.chartOfAccounts == null || this.availableFunds == null) {
             Alert errorAlert = new Alert(Alert.AlertType.ERROR, "Budget data not fully loaded. Cannot add line.");
             errorAlert.setHeaderText(null);
             errorAlert.showAndWait();
             return;
         }
 
-        BudgetLineDialogFX dialog = new BudgetLineDialogFX("Add Budget Line", null, chartOfAccounts, availableFunds);
+        BudgetLineDialogFX dialog = new BudgetLineDialogFX("Add Budget Line", null, this.chartOfAccounts, this.availableFunds);
         Optional<BudgetLine> result = dialog.showAndWait();
 
         result.ifPresent(newLine -> {
-            if (currentBudget.getBudgetLines() == null) {
-                currentBudget.setBudgetLines(new ArrayList<>());
+            if (this.currentBudget.getBudgetLines() == null) {
+                this.currentBudget.setBudgetLines(new ArrayList<>());
             }
-            currentBudget.getBudgetLines().add(newLine);
+            this.currentBudget.getBudgetLines().add(newLine);
             refreshTableLines();
         });
     }
 
     private void actionEditLine() {
-        BudgetLine selectedLine = tblBudgetLines.getSelectionModel().getSelectedItem();
+        BudgetLine selectedLine = this.tblBudgetLines.getSelectionModel().getSelectedItem();
         if (selectedLine != null) {
-            if (chartOfAccounts == null || availableFunds == null) {
+            if (this.chartOfAccounts == null || this.availableFunds == null) {
                  Alert errorAlert = new Alert(Alert.AlertType.ERROR, "Chart of Accounts or Funds not available for editing.");
                  errorAlert.setHeaderText(null);
                  errorAlert.showAndWait();
                  return;
             }
-            BudgetLineDialogFX dialog = new BudgetLineDialogFX("Edit Budget Line", selectedLine, chartOfAccounts, availableFunds);
+            BudgetLineDialogFX dialog = new BudgetLineDialogFX("Edit Budget Line", selectedLine, this.chartOfAccounts, this.availableFunds);
             Optional<BudgetLine> result = dialog.showAndWait();
             result.ifPresent(editedLine -> {
                 refreshTableLines();
@@ -322,7 +322,7 @@ public class BudgetPanelFX extends VBox {
     }
 
     private void actionRemoveLine() {
-        BudgetLine selectedLine = tblBudgetLines.getSelectionModel().getSelectedItem();
+        BudgetLine selectedLine = this.tblBudgetLines.getSelectionModel().getSelectedItem();
         if (selectedLine != null) {
             Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION,
                 "Are you sure you want to remove the selected budget line?",
@@ -331,8 +331,8 @@ public class BudgetPanelFX extends VBox {
             Optional<ButtonType> result = confirmAlert.showAndWait();
 
             if (result.isPresent() && result.get() == ButtonType.YES) {
-                if (currentBudget != null && currentBudget.getBudgetLines() != null) {
-                    currentBudget.getBudgetLines().remove(selectedLine);
+                if (this.currentBudget != null && this.currentBudget.getBudgetLines() != null) {
+                    this.currentBudget.getBudgetLines().remove(selectedLine);
                     refreshTableLines();
                 }
             }
