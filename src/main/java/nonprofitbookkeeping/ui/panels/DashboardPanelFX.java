@@ -253,25 +253,25 @@ public class DashboardPanelFX extends BorderPane
 				this.accountSelector.setPlaceholder(new Label("COA not available"));
 			}
 			
-			this.allTxns = (cdf.getLedger() != null && cdf.getLedger().getTransactions() != null) ?
+			this.allTxns = (cdf.getLedger() != null && 
+				cdf.getLedger().getTransactions() != null) ?
 				cdf.getLedger().getTransactions() : List.of();
 			
-			this.reloadBtn.setOnAction(e -> loadCompany(CurrentCompany.getCompany())); // Ensure
-																						// reload
-																						// action is
-																						// set
+			this.reloadBtn.setOnAction(e -> loadCompany(CurrentCompany.getCompany())); 
 			refresh(); // Refresh table content
 		}
 		
 	}
 	
 	/**
-	 * Refreshes the transaction table ({@link #table}) based on the current filter settings
+	 * Refreshes the transaction table ({@link #table}) based 
+	 * on the current filter settings
 	 * (selected account, date, memo, and amount).
 	 * It first retrieves the selected account and checks if transactions are loaded.
 	 * Then, it parses the filter criteria from the text fields.
 	 * A predicate is constructed to filter {@link #allTxns}.
-	 * The filtered transactions are converted into {@link Row} objects, a running balance is calculated,
+	 * The filtered transactions are converted into {@link Row} 
+	 * objects, a running balance is calculated,
 	 * and the table is updated with these rows.
 	 * If no account is selected or no transactions are available, the table is cleared.
 	 */
@@ -297,7 +297,8 @@ public class DashboardPanelFX extends BorderPane
 		
 		String acct = this.accountSelector.getValue();
 		
-		if (acct == null && CurrentCompany.isOpen() && !this.accountSelector.getItems().isEmpty())
+		if (acct == null && CurrentCompany.isOpen() &&
+			!this.accountSelector.getItems().isEmpty())
 		{
 			this.rows.clear();
 			return;
@@ -327,13 +328,13 @@ public class DashboardPanelFX extends BorderPane
 			
 		}
 		
-		Predicate<AccountingTransaction> p = t -> t != null && 
-			Objects.equals(t.getAccountName(), acct) && 
-			(dateFText.isEmpty() || (t.getDate() != null && t.getDate().contains(dateFText))) &&
-			(memoFText.isEmpty() ||
-				(t.getMemo() != null && t.getMemo().toLowerCase().contains(memoFText))) &&
-			(this.amtF == null ||
-				(t.getTotalAmount() != null && t.getTotalAmount().compareTo(this.amtF) == 0)); 
+		Predicate<AccountingTransaction> p =
+			t -> t != null &&
+				Objects.equals(t.getAccountName(), acct) &&
+				(dateFText.isEmpty() || (t.getDate() != null && t.getDate().contains(dateFText))) &&
+				(memoFText.isEmpty() ||	(t.getMemo() != null && t.getMemo().toLowerCase().contains(memoFText))) &&
+				(this.amtF == null || 
+				(t.getTotalAmount() != null && t.getTotalAmount().compareTo(this.amtF) == 0));
 		
 		List<AccountingTransaction> list = this.allTxns.stream()
 			.filter(p)
