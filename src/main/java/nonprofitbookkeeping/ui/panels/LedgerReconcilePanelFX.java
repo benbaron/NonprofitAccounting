@@ -364,7 +364,6 @@ public class LedgerReconcilePanelFX extends BorderPane
 				at.setDate(tx.getDatePosted().toString());
 				at.setDescription(
 					tx.getName() != null ? tx.getName() : tx.getMemo());
-				at.setTotalAmount(BigDecimal.valueOf(tx.getAmount()));
 				out.add(at);
 			}
 			
@@ -425,7 +424,6 @@ public class LedgerReconcilePanelFX extends BorderPane
 			
 			t.setDate(dateP.getValue().toString());
 			t.setDescription(descF.getText());
-			t.setTotalAmount(new BigDecimal(amtF.getText()));
 			
 			return;
 		}
