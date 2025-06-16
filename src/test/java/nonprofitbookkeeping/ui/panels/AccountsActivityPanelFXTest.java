@@ -120,9 +120,6 @@ public class AccountsActivityPanelFXTest extends JavaFXTestBase
 		AccountingTransaction tx = new AccountingTransaction();
 		tx.setDate(date);
 		tx.setDescription(desc);
-		tx.setAccountName(accName); // This is important for filtering by account
-		tx.setTotalAmount(new BigDecimal(amount)); // Assuming positive for income/asset increase,
-													// negative for decrease
 		tx.setMemo(memo);
 		// For simplicity, TransactionRow uses these fields.
 		// If TransactionRow used entries, we'd need to add AccountingEntry objects.

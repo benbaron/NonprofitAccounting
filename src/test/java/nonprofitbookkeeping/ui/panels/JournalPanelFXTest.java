@@ -62,9 +62,6 @@ public class JournalPanelFXTest extends JavaFXTestBase
 		AccountingTransaction tx1 = new AccountingTransaction();
 		tx1.setId(1);
 		tx1.setDate("2024-01-15");
-		tx1.setAccountName("Income");
-		tx1.setDebit(BigDecimal.ZERO);
-		tx1.setCredit(new BigDecimal("100.00"));
 		tx1.setMemo("Donation A");
 		tx1.setBookingDateTimestamp(Timestamp.from(Instant.now().minusSeconds(3600)));
 		
@@ -72,9 +69,6 @@ public class JournalPanelFXTest extends JavaFXTestBase
 		AccountingTransaction tx2 = new AccountingTransaction();
 		tx2.setId(2);
 		tx2.setDate("2024-01-20");
-		tx2.setAccountName("Expenses");
-		tx2.setDebit(new BigDecimal("25.00"));
-		tx2.setCredit(BigDecimal.ZERO);
 		tx2.setMemo("Supplies B");
 		tx2.setBookingDateTimestamp(Timestamp.from(Instant.now()));
 		
@@ -164,9 +158,6 @@ public class JournalPanelFXTest extends JavaFXTestBase
 		AccountingTransaction newTx = new AccountingTransaction();
 		newTx.setId(3); // New ID
 		newTx.setDate("2024-01-25");
-		newTx.setAccountName("Income");
-		newTx.setCredit(new BigDecimal("200.00"));
-		newTx.setDebit(BigDecimal.ZERO);
 		newTx.setMemo("New Donation C");
 		newTx.setBookingDateTimestamp(Timestamp.from(Instant.now().plusSeconds(3600)));
 		
@@ -234,9 +225,6 @@ public class JournalPanelFXTest extends JavaFXTestBase
 																				// timestamp for
 																				// update
 		editedTx.setDate(selectedTx.getDate());
-		editedTx.setAccountName(selectedTx.getAccountName());
-		editedTx.setCredit(selectedTx.getCredit());
-		editedTx.setDebit(selectedTx.getDebit());
 		editedTx.setMemo("Updated Donation A Memo"); // Changed memo
 		
 		Platform.runLater(() -> {

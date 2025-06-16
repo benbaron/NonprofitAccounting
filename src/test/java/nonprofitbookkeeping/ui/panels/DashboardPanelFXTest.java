@@ -60,30 +60,23 @@ public class DashboardPanelFXTest extends JavaFXTestBase {
         AccountingTransaction tx1 = new AccountingTransaction();
         tx1.setDate("2024-01-15");
         tx1.setDescription("Donation Received");
-        tx1.setAccountName("Income");
-        tx1.setTotalAmount(new BigDecimal("100.00"));
+
         tx1.setMemo("Annual Gala");
 
         AccountingTransaction tx2 = new AccountingTransaction();
         tx2.setDate("2024-01-20");
         tx2.setDescription("Office Supplies");
-        tx2.setAccountName("Expenses");
-        tx2.setTotalAmount(new BigDecimal("-25.00"));
+
         tx2.setMemo("Pens and Paper");
 
         AccountingTransaction tx3 = new AccountingTransaction();
         tx3.setDate("2024-01-15"); // Same date as tx1 for date filter test
         tx3.setDescription("Grant Payment");
-        tx3.setAccountName("Income");
-        tx3.setTotalAmount(new BigDecimal("500.00"));
+
         tx3.setMemo("Govt Grant");
 
 
         when(this.mockLedger.getTransactions()).thenReturn(Arrays.asList(tx1, tx2, tx3));
-        // when(mockLedger.getUniqueAccountNames()).thenReturn(FXCollections.observableArrayList("Income", "Expenses"));
-        // The panel itself doesn't use getUniqueAccountNames to populate the selector.
-        // It's a manual process or not implemented in the provided DashboardPanelFX code for accountSelector population.
-        // So, we will manually populate the selector for testing purposes.
 
         this.panel = new DashboardPanelFX(); // Panel initializes and registers its listener
 

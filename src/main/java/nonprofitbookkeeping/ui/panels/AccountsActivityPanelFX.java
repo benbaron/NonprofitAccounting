@@ -318,21 +318,33 @@ public class AccountsActivityPanelFX extends BorderPane
 	{
 		
 		if (t == null)
+		{
 			return false;
+		}
 		if (acct == null)
+		{
 			return false;
+		}
 		
 		String accountName = t.getAccountName();
 		if (!Objects.equals(accountName, acct))
+		{
 			return false;
+		}
+		
 		String transactionDate = t.getDate();
 		if (!dateFilterStr.isEmpty() &&
 			(transactionDate == null || !transactionDate.contains(dateFilterStr)))
+		{
 			return false;
+		}
+		
 		String transactionMemo = t.getMemo();
 		if (!memoFilterStr.isEmpty() &&
 			(transactionMemo == null || !transactionMemo.toLowerCase().contains(memoFilterStr)))
+		{
 			return false;
+		}
 			
 		if (this.amountFilter != null)
 		{
@@ -369,18 +381,7 @@ public class AccountsActivityPanelFX extends BorderPane
 		if (isOpen)
 		{
 			populateAccountSelector();
-			// If the ledger (and thus this.transactions) itself should change with the
-			// company, this.transactions would need to be updated here from
-			
-			// CurrentCompany.getCompany().getLedger().
-			// For now, it uses the ledger provided at construction.
-			// If CurrentCompany's ledger is the one to use, then:
-			// Company current = CurrentCompany.getCompany();
-			// if (current != null && current.getLedger() != null) {
-			// this.transactions = current.getLedger().getTransactions();
-			// } else {
-			// this.transactions = FXCollections.emptyObservableList();
-			// }
+
 			applyFilters(); 
 			// This will refresh the table with potentially new accounts list and
 			// existing transactions
@@ -439,12 +440,15 @@ public class AccountsActivityPanelFX extends BorderPane
 			}
 			
 			this.description = new SimpleStringProperty(Objects.toString(desc, ""));
-			BigDecimal totalAmount = t.getTotalAmount();
+
+			BigDecimal totalAmount = t.getTotalAmount();			
 			this.amount =
 				new SimpleObjectProperty<>(totalAmount != null ? totalAmount : BigDecimal.ZERO);
-			BigDecimal accountBalance = t.countAccountBalance();
+			
+			BigDecimal accountBalance = t.countAccountBalance();			
 			this.balance = new SimpleObjectProperty<>(
 				accountBalance != null ? accountBalance : BigDecimal.ZERO);
+			
 			this.memo = new SimpleStringProperty(Objects.toString(t.getMemo(), ""));
 		}
 		

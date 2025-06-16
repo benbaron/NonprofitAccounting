@@ -12,17 +12,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Represents an account with entries and a many-to-many relationship with
  * {@link Fund}s.
  */
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
-                  property = "accountNumber")
-public final class Account implements Serializable
+@JsonIdentityInfo(	generator = ObjectIdGenerators.PropertyGenerator.class,
+					property = "accountNumber") public final class Account implements Serializable
 {
 	
-
-
+	
 	private static final long serialVersionUID = -1149966185433260549L;
 	
 	/* ───────────────── fields ──────────── */
@@ -42,7 +41,7 @@ public final class Account implements Serializable
 	 */
 	public Account()
 	{
-		/* default ctor for Jackson / JPA */ 
+		/* default ctor for Jackson / JPA */
 	}
 	
 	/**
@@ -59,8 +58,7 @@ public final class Account implements Serializable
 		this.increaseSide = increaseSide;
 	}
 	
-
-
+	
 	/**  
 	 * Constructor Account
 	 * @param string
@@ -68,12 +66,12 @@ public final class Account implements Serializable
 	 * @param asset
 	 * @param zero
 	 */
-	public Account(String string, String bankAccountName, 
-	               AccountType asset, BigDecimal zero)
+	public Account(String string, String bankAccountName,
+		AccountType asset, BigDecimal zero)
 	{
 		// TODO Auto-generated constructor stub
 	}
-
+	
 	/* ================= fund helpers =================================== */
 	
 	/**
@@ -120,7 +118,7 @@ public final class Account implements Serializable
 	{
 		return this.parentAccount != null;
 	}
-
+	
 	/**
 	 * Returns a one-element collection containing this account.  The method is
 	 * here mainly for compatibility with map-like code that expects a
@@ -131,7 +129,7 @@ public final class Account implements Serializable
 	{
 		return Collections.singleton(this);
 	}
-
+	
 	/**
 	 * Gets the list of funds associated with this account.
 	 * @return The list of associated funds.
@@ -140,7 +138,7 @@ public final class Account implements Serializable
 	{
 		return this.associatedFunds;
 	}
-
+	
 	/**
 	 * Sets the list of funds associated with this account.
 	 * @param associatedFunds The list of funds to associate.
@@ -149,17 +147,17 @@ public final class Account implements Serializable
 	{
 		this.associatedFunds = associatedFunds;
 	}
-
+	
 	/**
 	 * Gets the account number.
 	 * @return The account number.
 	 */
-        public String getAccountNumber()
-        {
-                return checkNotNull(this.accountNumber,
-                        "accountNumber cannot be null when serializing");
-        }
-
+	public String getAccountNumber()
+	{
+		return checkNotNull(this.accountNumber,
+			"accountNumber cannot be null when serializing");
+	}
+	
 	/**
 	 * Sets the account number.
 	 * @param accountNumber The account number to set.
@@ -168,7 +166,7 @@ public final class Account implements Serializable
 	{
 		this.accountNumber = accountNumber;
 	}
-
+	
 	/**
 	 * Gets the side (Debit or Credit) where the account balance increases.
 	 * @return The increase side of the account.
@@ -177,7 +175,7 @@ public final class Account implements Serializable
 	{
 		return this.increaseSide;
 	}
-
+	
 	/**
 	 * Sets the side (Debit or Credit) where the account balance increases.
 	 * @param increaseSide The increase side to set.
@@ -186,7 +184,7 @@ public final class Account implements Serializable
 	{
 		this.increaseSide = increaseSide;
 	}
-
+	
 	/**
 	 * Gets the name of the account.
 	 * @return The name of the account.
@@ -195,7 +193,7 @@ public final class Account implements Serializable
 	{
 		return this.name;
 	}
-
+	
 	/**
 	 * Sets the name of the account.
 	 * @param name The name to set.
@@ -204,7 +202,7 @@ public final class Account implements Serializable
 	{
 		this.name = name;
 	}
-
+	
 	/**
 	 * Gets the account code.
 	 * @return The account code.
@@ -213,7 +211,7 @@ public final class Account implements Serializable
 	{
 		return this.accountCode;
 	}
-
+	
 	/**
 	 * Sets the account code.
 	 * @param accountCode The account code to set.
@@ -222,7 +220,7 @@ public final class Account implements Serializable
 	{
 		this.accountCode = accountCode;
 	}
-
+	
 	/**
 	 * Gets the type of the account.
 	 * @return The account type.
@@ -231,7 +229,7 @@ public final class Account implements Serializable
 	{
 		return this.accountType;
 	}
-
+	
 	/**
 	 * Sets the type of the account.
 	 * @param accountType The account type to set.
@@ -240,7 +238,7 @@ public final class Account implements Serializable
 	{
 		this.accountType = accountType;
 	}
-
+	
 	/**
 	 * Gets the parent account of this account, if any.
 	 * @return The parent account, or null if this is a top-level account.
@@ -249,20 +247,21 @@ public final class Account implements Serializable
 	{
 		return this.parentAccount;
 	}
-
+	
 	/**
 	 * Sets the parent account of this account.
 	 * @param parentAccount The parent account to set.
 	 */
 	public void setParentAccount(Account parentAccount)
 	{
-                if (parentAccount != null)
-                {
-                        this.parentAccount = parentAccount;
-                }
+		
+		if (parentAccount != null)
+		{
+			this.parentAccount = parentAccount;
+		}
 		
 	}
-
+	
 	/**
 	 * Gets the currency of the account.
 	 * @return The currency code (e.g., "USD").
@@ -271,7 +270,7 @@ public final class Account implements Serializable
 	{
 		return this.currency;
 	}
-
+	
 	/**
 	 * Sets the currency of the account.
 	 * @param currency The currency code to set (e.g., "USD").
@@ -280,7 +279,7 @@ public final class Account implements Serializable
 	{
 		this.currency = currency;
 	}
-
+	
 	/**
 	 * Gets the opening balance of the account.
 	 * @return The opening balance.
@@ -289,7 +288,7 @@ public final class Account implements Serializable
 	{
 		return this.openingBalance;
 	}
-
+	
 	/**
 	 * Sets the opening balance of the account.
 	 * @param openingBalance The opening balance to set.
@@ -298,8 +297,8 @@ public final class Account implements Serializable
 	{
 		this.openingBalance = openingBalance;
 	}
-
-        // The following child account helpers were removed. The application
-        // manages parent/child relationships solely via {@link #parentAccount}
-        // and the {@code ChartOfAccounts} container.
+	
+	// The following child account helpers were removed. The application
+	// manages parent/child relationships solely via {@link #parentAccount}
+	// and the {@code ChartOfAccounts} container.
 }
