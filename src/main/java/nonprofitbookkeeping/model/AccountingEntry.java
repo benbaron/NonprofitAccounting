@@ -23,9 +23,16 @@ public final class AccountingEntry implements Serializable
 	 */
 	private static final long serialVersionUID = 5837792781542533633L;
 	
-	@JsonProperty final private BigDecimal amount;
-	@JsonProperty final private AccountSide accountSide;
-	@JsonProperty final private String accountNumber;
+        @JsonProperty final private BigDecimal amount;
+        @JsonProperty final private AccountSide accountSide;
+        @JsonProperty final private String accountNumber;
+        /**
+         * Optional display name for the account. This mirrors the account's
+         * {@code name} field at the time the entry was created.  It is stored
+         * on the entry rather than the transaction so that each entry can
+         * reference its own account directly.
+         */
+        @JsonProperty private String accountName;
 
 	// Future versions can include this.
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -39,12 +46,13 @@ public final class AccountingEntry implements Serializable
 	 * Default constructor for Jackson deserialization.
 	 * Initializes amount, accountSide to null and accountNumber to an empty string.
 	 */
-	AccountingEntry()
-	{
-		this.amount = null;
-		this.accountSide = null;
-		this.accountNumber = "";
-	}
+        AccountingEntry()
+        {
+                this.amount = null;
+                this.accountSide = null;
+                this.accountNumber = "";
+                this.accountName = null;
+        }
 	
 	/**
 	 * Constructs an AccountingEntry with the specified amount, account number, and account side.
@@ -53,14 +61,31 @@ public final class AccountingEntry implements Serializable
 	 * @param accountSide The side of the account (Debit or Credit) this entry affects. Must not be null.
 	 * @throws NullPointerException if any of the parameters are null.
 	 */
-	public AccountingEntry(BigDecimal amount,
-		String accountNumber,
-		AccountSide accountSide)
-	{
-		this.amount = checkNotNull(amount);
-		this.accountNumber = checkNotNull(accountNumber);
-		this.accountSide = checkNotNull(accountSide);
-	}
+        public AccountingEntry(BigDecimal amount,
+                String accountNumber,
+                AccountSide accountSide)
+        {
+                this(amount, accountNumber, accountSide, null);
+        }
+
+        /**
+         * Constructs an AccountingEntry with an explicit account name.
+         *
+         * @param amount the monetary amount of the entry
+         * @param accountNumber the account number this entry affects
+         * @param accountSide the side of the account the amount applies to
+         * @param accountName optional account name to store with the entry
+         */
+        public AccountingEntry(BigDecimal amount,
+                String accountNumber,
+                AccountSide accountSide,
+                String accountName)
+        {
+                this.amount = checkNotNull(amount);
+                this.accountNumber = checkNotNull(accountNumber);
+                this.accountSide = checkNotNull(accountSide);
+                this.accountName = accountName;
+        }
 	
 	/**
 	 * Gets the associated transaction.
@@ -88,11 +113,12 @@ public final class AccountingEntry implements Serializable
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public String toString()
-	{
-		return MoreObjects.toStringHelper(this)
-			.add("amount", this.amount.toString())
-			.addValue(this.accountSide)
+        @Override public String toString()
+        {
+                return MoreObjects.toStringHelper(this)
+                        .add("amount", this.amount.toString())
+                        .addValue(this.accountSide)
+                        .add("account", this.accountNumber)
 			.toString();
 	}
 	
@@ -137,10 +163,30 @@ public final class AccountingEntry implements Serializable
 	 * Gets the account number associated with this entry.
 	 * @return The account number.
 	 */
-	public String getAccountNumber()
-	{
-		return this.accountNumber;
-	}
+        public String getAccountNumber()
+        {
+                return this.accountNumber;
+        }
+
+        /**
+         * Gets the stored account name for this entry, if any.
+         *
+         * @return the account name, or {@code null} if not set
+         */
+        public String getAccountName()
+        {
+                return this.accountName;
+        }
+
+        /**
+         * Sets the account name for this entry.
+         *
+         * @param accountName the name to associate with the entry
+         */
+        public void setAccountName(String accountName)
+        {
+                this.accountName = accountName;
+        }
 	
 	/**
 	 * Retrieves the {@link Account} object associated with this entry's account number

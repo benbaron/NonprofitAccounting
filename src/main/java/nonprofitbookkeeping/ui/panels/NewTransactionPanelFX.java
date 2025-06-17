@@ -406,8 +406,9 @@ public class NewTransactionPanelFX extends BorderPane
 			Account account = this.coa.getAccountByName(name);
 			String acctNum = account != null ? account.getAccountNumber() : name;
 			
-			entries.add(new AccountingEntry(
-				l.amount.get(), acctNum, l.side.get()));
+                        String acctName = account != null ? account.getName() : name;
+                        entries.add(new AccountingEntry(
+                                l.amount.get(), acctNum, l.side.get(), acctName));
 			
 			BigDecimal amt = l.amount.get() != null ? l.amount.get() : BigDecimal.ZERO;
 			

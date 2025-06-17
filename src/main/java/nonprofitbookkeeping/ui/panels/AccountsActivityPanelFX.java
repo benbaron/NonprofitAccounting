@@ -326,11 +326,12 @@ public class AccountsActivityPanelFX extends BorderPane
 			return false;
 		}
 		
-		String accountName = t.getAccountName();
-		if (!Objects.equals(accountName, acct))
-		{
-			return false;
-		}
+                boolean matchesAccount = t.getEntries() != null && t.getEntries().stream()
+                        .anyMatch(e -> Objects.equals(e.getAccountName(), acct));
+                if (!matchesAccount)
+                {
+                        return false;
+                }
 		
 		String transactionDate = t.getDate();
 		if (!dateFilterStr.isEmpty() &&
