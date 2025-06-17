@@ -165,11 +165,11 @@ public class Fund
                 }
         }
 	
-	/**
-	 * Updates (recalculates) the balance of this fund by summing the balances
-	 * (obtained via {@link Account#totalAccountBalance()}) of all accounts currently
-	 * associated with this fund.
-	 */
+        /**
+         * Updates (recalculates) the balance of this fund by summing the balances
+         * (obtained via {@link Account#totalAccountBalance(Ledger)}) of all accounts currently
+         * associated with this fund.
+         */
         public void updateBalance(Ledger ledger)
         {
                 BigDecimal totalBalance = BigDecimal.ZERO;
