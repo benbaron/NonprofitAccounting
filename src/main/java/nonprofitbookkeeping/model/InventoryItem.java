@@ -137,12 +137,12 @@ public class InventoryItem
 	/**
 	 * Sets the accumulated depreciation for this item and recalculates its net book value.
 	 * This method provides a fluent interface.
-	 * @param accDep The accumulated depreciation amount to set.
+	 * @param accDep1 The accumulated depreciation amount to set.
 	 * @return This InventoryItem instance for chaining.
 	 */
-	public InventoryItem withAccumDep(BigDecimal accDep)
+	public InventoryItem withAccumDep(BigDecimal accDep1)
 	{
-		this.accDep = accDep;
+		this.accDep = accDep1;
 		if (this.cost == null) {
 			this.netValue = null;
 		} else if (this.accDep == null) {

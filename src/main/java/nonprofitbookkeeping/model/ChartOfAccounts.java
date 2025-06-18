@@ -14,8 +14,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * supports parent/child relationships.
 */
 
-@Data
-public class ChartOfAccounts implements Serializable
+@Data public class ChartOfAccounts implements Serializable
 {
 	
 	private static final long serialVersionUID = 6545569795380871696L;
@@ -112,26 +111,9 @@ public class ChartOfAccounts implements Serializable
 		return this.chartOfAccounts.stream()
 			.map(Account::getName)
 			.collect(Collectors.joining(", "));
+		
 	}
-       public Map<String, Account> getAccountNumberToAccountDetails()
-               return this.chartOfAccounts.stream()
-                       .collect(Collectors.toUnmodifiableMap(Account::getAccountNumber,
-                               a -> a,
-                               (a, b) -> a)); // keep first
-                        if (account == null)
-                        {
-                                continue;
-                        }
-
-                        if (account.getAccountNumber() == null ||
-                                account.getAccountNumber().isBlank())
-                        {
-                                account.setAccountNumber(entry.getKey());
-                        }
-
-                        this.chartOfAccounts.add(account);
-                }
-        }
+	
 	
 	/**
 	 * Retrieves an account by its display name.
@@ -170,7 +152,8 @@ public class ChartOfAccounts implements Serializable
 	 * @param accountNumber The account number of the account to retrieve.
 	 *                      If null or blank, this method will return null.
 	 * @return The {@link Account} object if found, or {@code null} if no account
-	 *         matches the given account number, or if the input accountNumber is invalid.
+	 *         matches the given account number, or if the input 
+	 *         accountNumber is invalid.
 	 */
 	public Account getAccount(String accountNumber)
 	{
@@ -182,6 +165,17 @@ public class ChartOfAccounts implements Serializable
 		
 		Map<String, Account> accountMap = this.getAccountNumberToAccountDetails();
 		return accountMap.get(accountNumber);
+	}
+	
+	/**
+	 * @return
+	 */
+	public Map<String, Account> getAccountNumberToAccountDetails()
+	{
+		return this.chartOfAccounts.stream()
+			.collect(Collectors.toUnmodifiableMap(Account::getAccountNumber,
+				a -> a,
+				(a, b) -> a)); // keep first
 	}
 	
 	/**
