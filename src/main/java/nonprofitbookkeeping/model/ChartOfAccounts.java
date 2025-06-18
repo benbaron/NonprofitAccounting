@@ -123,34 +123,50 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 	 *
 	 * @return An unmodifiable {@code Map<String, Account>}.
 	 */
-	
-	public Map<String, Account> getAccountNumberToAccountDetails()
-	{
-		return this.chartOfAccounts.stream()
-			.collect(Collectors.toUnmodifiableMap(Account::getAccountNumber,
-				a -> a,
-				(a, b) -> a)); // keep first
-	}
-	
-	/**
-	 * Compatibility setter for older JSON that stored accounts in a map
-	 * keyed by account number. When such data is deserialized, this setter
-	 * populates the internal {@link #chartOfAccounts} list so that the rest
-	 * of the application can operate normally.
-	 *
-	 * @param map a map of account numbers to {@link Account} objects
-	 */
-	@JsonSetter("accountNumberToAccountDetails") public
-		void setAccountNumberToAccountDetails(Map<String, Account> map)
-	{
-		this.chartOfAccounts.clear();
-		
-		if (map != null)
-		{
-			this.chartOfAccounts.addAll(map.values());
-		}
-		
-	}
+
+        public Map<String, Account> getAccountNumberToAccountDetails()
+        {
+                return this.chartOfAccounts.stream()
+                        .collect(Collectors.toUnmodifiableMap(Account::getAccountNumber,
+                                a -> a,
+                                (a, b) -> a)); // keep first
+        }
+
+        /**
+         * Compatibility setter for older JSON that stored accounts in a map
+         * keyed by account number. When such data is deserialized, this setter
+         * populates the internal {@link #chartOfAccounts} list so that the rest
+         * of the application can operate normally.
+         *
+         * @param map a map of account numbers to {@link Account} objects
+         */
+        @JsonSetter("accountNumberToAccountDetails")
+        public void setAccountNumberToAccountDetails(Map<String, Account> map)
+        {
+                this.chartOfAccounts.clear();
+
+                if (map == null)
+                {
+                        return;
+                }
+
+                for (Map.Entry<String, Account> entry : map.entrySet())
+                {
+                        Account account = entry.getValue();
+                        if (account == null)
+                        {
+                                continue;
+                        }
+
+                        if (account.getAccountNumber() == null ||
+                                account.getAccountNumber().isBlank())
+                        {
+                                account.setAccountNumber(entry.getKey());
+                        }
+
+                        this.chartOfAccounts.add(account);
+                }
+        }
 	
 	/**
 	 * Retrieves an account by its display name.
