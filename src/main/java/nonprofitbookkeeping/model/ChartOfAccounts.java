@@ -113,6 +113,48 @@ public class ChartOfAccounts implements Serializable
 			.map(Account::getName)
 			.collect(Collectors.joining(", "));
 	}
+       /**
+        * Compatibility setter used when reading older JSON files that stored
+        * accounts in a map called {@code accountNumberToAccountDetails}.  The
+        * map's keys are account numbers and the values may be full {@link Account}
+        * objects or simply references to the account number.  This method
+        * converts each entry into a proper {@link Account} and adds it to the
+        * current chart.
+        *
+        * @param map legacy map of account numbers to {@link Account} details
+        */
+       @com.fasterxml.jackson.annotation.JsonSetter("accountNumberToAccountDetails")
+       public void setAccountNumberToAccountDetails(Map<String, Object> map)
+       {
+               if (map == null)
+               {
+                       return;
+               }
+
+               for (Map.Entry<String, Object> entry : map.entrySet())
+               {
+                       String number = entry.getKey();
+                       Object value = entry.getValue();
+
+                       Account account;
+                       if (value instanceof Account)
+                       {
+                               account = (Account) value;
+                       }
+                       else
+                       {
+                               account = new Account();
+                       }
+
+                       if (account.getAccountNumber() == null || account.getAccountNumber().isBlank())
+                       {
+                               account.setAccountNumber(number);
+                       }
+
+                       this.chartOfAccounts.add(account);
+               }
+       }
+
                 {
                         return;
                 }

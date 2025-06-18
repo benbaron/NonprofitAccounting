@@ -143,4 +143,34 @@ class ChartOfAccountsTest {
         // Also ensure list1 and list2 are different instances
         assertNotSame(accountsList1, accountsList2, "getAccounts() should return a new list instance each time.");
     }
+
+    @Test
+    @DisplayName("Legacy map setter populates accounts and fills account numbers")
+    void testSetAccountNumberToAccountDetails_compatibility() {
+        ChartOfAccounts legacyChart = new ChartOfAccounts();
+
+        Map<String, Object> map = new LinkedHashMap<>();
+        Account a1 = new Account();
+        a1.setName("Legacy A1");
+        // account number intentionally missing
+        map.put("1000", a1);
+
+        Account a2 = new Account();
+        a2.setName("Legacy A2");
+        map.put("2000", a2);
+
+        legacyChart.setAccountNumberToAccountDetails(map);
+
+        assertEquals(2, legacyChart.getAccounts().size());
+        Account fetched1 = legacyChart.getAccount("1000");
+        Account fetched2 = legacyChart.getAccount("2000");
+
+        assertNotNull(fetched1);
+        assertEquals("1000", fetched1.getAccountNumber());
+        assertEquals("Legacy A1", fetched1.getName());
+
+        assertNotNull(fetched2);
+        assertEquals("2000", fetched2.getAccountNumber());
+        assertEquals("Legacy A2", fetched2.getName());
+    }
 }
