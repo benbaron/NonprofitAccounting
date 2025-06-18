@@ -2,10 +2,8 @@
 package nonprofitbookkeeping.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSetter;
 import com.google.common.base.MoreObjects;
 
-import java.util.Map;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -90,48 +88,6 @@ public final class AccountingEntry implements Serializable
                 this.accountName = accountName;
         }
 
-        /**
-         * Compatibility setter for older JSON that stored an "account" object
-         * (or ID reference) in each entry. This method extracts the account
-         * number and optional name so that the entry can be deserialized with
-         * the new format that only stores these fields.
-         */
-        @JsonSetter("account")
-        private void setLegacyAccount(Object value)
-        {
-                if (value == null)
-                {
-                        return;
-                }
-
-                if (value instanceof Account acc)
-                {
-                        this.accountNumber = acc.getAccountNumber();
-                        if (this.accountName == null)
-                        {
-                                this.accountName = acc.getName();
-                        }
-                }
-                else if (value instanceof String str)
-                {
-                        this.accountNumber = str;
-                }
-                else if (value instanceof Map)
-                {
-                        @SuppressWarnings("unchecked")
-                        Map<String, Object> map = (Map<String, Object>) value;
-                        Object num = map.get("accountNumber");
-                        if (num instanceof String)
-                        {
-                                this.accountNumber = (String) num;
-                        }
-                        Object name = map.get("name");
-                        if (name instanceof String && this.accountName == null)
-                        {
-                                this.accountName = (String) name;
-                        }
-                }
-        }
 	
 	/**
 	 * Gets the associated transaction.

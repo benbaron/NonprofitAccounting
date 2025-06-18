@@ -7,7 +7,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSetter;
 
 
 /**
@@ -112,40 +111,6 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 			.map(Account::getName)
 			.collect(Collectors.joining(", "));
 	}
-	
-	/* ------------------------------------------------------------------ */
-	/**
-	 * Builds and returns an unmodifiable Map where keys are account numbers
-	 * and values are the corresponding {@link Account} objects.
-	 * This map is useful for quick lookups of accounts by their number.
-	 * If duplicate account numbers exist (which should ideally be prevented),
-	 * the account that appears first in the internal list will be kept.
-	 *
-	 * @return An unmodifiable {@code Map<String, Account>}.
-	 */
-
-        public Map<String, Account> getAccountNumberToAccountDetails()
-        {
-                return this.chartOfAccounts.stream()
-                        .collect(Collectors.toUnmodifiableMap(Account::getAccountNumber,
-                                a -> a,
-                                (a, b) -> a)); // keep first
-        }
-
-        /**
-         * Compatibility setter for older JSON that stored accounts in a map
-         * keyed by account number. When such data is deserialized, this setter
-         * populates the internal {@link #chartOfAccounts} list so that the rest
-         * of the application can operate normally.
-         *
-         * @param map a map of account numbers to {@link Account} objects
-         */
-        @JsonSetter("accountNumberToAccountDetails")
-        public void setAccountNumberToAccountDetails(Map<String, Account> map)
-        {
-                this.chartOfAccounts.clear();
-
-                if (map == null)
                 {
                         return;
                 }
