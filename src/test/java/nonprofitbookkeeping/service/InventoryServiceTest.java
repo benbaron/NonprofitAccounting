@@ -19,7 +19,7 @@ class InventoryServiceTest
 	@BeforeEach
 		void setUp()
 	{
-		service.clearInventory(); // Clear the static map
+		this.service.clearInventory(); // Clear the static map
 		this.service = new InventoryService(); // Re-initialize service, which ensures map is ready
 	}
 	

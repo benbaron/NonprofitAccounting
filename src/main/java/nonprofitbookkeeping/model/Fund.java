@@ -30,7 +30,7 @@ public class Fund
 	/**
 	 * The calculated balance of the fund.
 	 * This balance is derived from the sum of balances of all accounts associated with this fund.
-	 * It is updated via the {@link #updateBalance()} method.
+         * It is updated via the {@link #updateBalance(Ledger)} method.
 	 */
 	@JsonProperty private BigDecimal balance;
 	
@@ -66,7 +66,7 @@ public class Fund
 	
 	/**
      * Gets the current calculated balance of the fund.
-     * The balance is updated by calling {@link #updateBalance()}.
+     * The balance is updated by calling {@link #updateBalance(Ledger)}.
      * @return The current balance of the fund as a {@link BigDecimal}.
      */
 	public BigDecimal getBalance()
@@ -92,60 +92,93 @@ public class Fund
 	 * Adds an account to this fund if it's not already present.
      * This method establishes a bi-directional relationship by also adding this fund
      * to the specified account's list of associated funds. After adding the account,
-     * the fund's balance is recalculated by calling {@link #updateBalance()}.
+     * the fund's balance is recalculated by calling {@link #updateBalance(Ledger)}.
      *
      * @param account The {@link Account} to associate with this fund. If null, the method does nothing.
 	 */
-	public void addAccount(Account account)
-	{
-		if (account == null) return; // Guard against null account
-		
-		if (!this.accounts.contains(account))
-		{
-			this.accounts.add(account);
-			account.addFund(this); // Add this fund to the account
-			updateBalance(); // Recalculate the fund's balance
-		}
-		
-	}
-	
-	/**
-	 * Removes an account from this fund.
-     * This method breaks the bi-directional relationship by also removing this fund
-     * from the specified account's list of associated funds. After removing the account,
-     * the fund's balance is recalculated by calling {@link #updateBalance()}.
+    /**
+     * Adds an account to this fund. This overload does not immediately
+     * recalculate the balance using a ledger and therefore behaves like the
+     * original single-argument method.
      *
-     * @param account The {@link Account} to disassociate from this fund. If null, or if the account
-     *                is not associated with this fund, the method does nothing.
-	 */
-	public void removeAccount(Account account)
-	{
-		if (account == null) return; // Guard against null account
+     * @param account the {@link Account} to associate with this fund
+     */
+    public void addAccount(Account account)
+    {
+        addAccount(account, null);
+    }
 
-		boolean removed = this.accounts.remove(account);
-		if (removed) { // Only proceed if the account was actually part of this fund
-			account.removeFund(this); // Remove this fund from the account
-			updateBalance(); // Recalculate the fund's balance
-		}
-	}
+    /**
+     * Adds an account to this fund if it's not already present and updates the
+     * balance using the provided ledger.
+     *
+     * @param account The {@link Account} to associate with this fund. If null,
+     *                the method does nothing.
+     * @param ledger  The {@link Ledger} used to calculate balances. May be null
+     *                to skip ledger-based updates.
+     */
+    public void addAccount(Account account, Ledger ledger)
+        {
+                if (account == null) return; // Guard against null account
+
+                if (!this.accounts.contains(account))
+                {
+                        this.accounts.add(account);
+                        account.addFund(this); // Add this fund to the account
+                        updateBalance(ledger); // Recalculate the fund's balance
+                }
+
+        }
 	
-	/**
-	 * Updates (recalculates) the balance of this fund by summing the balances
-	 * (obtained via {@link Account#totalAccountBalance()}) of all accounts currently
-	 * associated with this fund.
-	 */
-	public void updateBalance()
-	{
-		BigDecimal totalBalance = BigDecimal.ZERO; // Start with a BigDecimal.ZERO balance
-		
-		for (Account account : this.accounts)
-		{
-			totalBalance = totalBalance.add(account.totalAccountBalance()); // Sum up the balance of each
-																	// associated account
-		}
-		
-		this.balance = totalBalance; // Update the fund's balance
-	}
+        /**
+         * Removes an account from this fund.
+         * This overload mirrors the original method and does not require a
+         * ledger for balance recalculation.
+         *
+         * @param account the {@link Account} to disassociate from this fund
+         */
+        public void removeAccount(Account account)
+        {
+                removeAccount(account, null);
+        }
+
+        /**
+         * Removes an account from this fund and optionally recalculates the
+         * balance using the provided ledger.
+         *
+         * @param account the {@link Account} to disassociate from this fund. If
+         *                null, or if the account is not associated with this fund,
+         *                the method does nothing.
+         * @param ledger  the ledger used to recalculate balances. May be null.
+         */
+        public void removeAccount(Account account, Ledger ledger)
+        {
+                if (account == null) return; // Guard against null account
+
+                boolean removed = this.accounts.remove(account);
+                if (removed)
+                {
+                        account.removeFund(this); // Remove this fund from the account
+                        updateBalance(ledger); // Recalculate the fund's balance
+                }
+        }
+	
+        /**
+         * Updates (recalculates) the balance of this fund by summing the balances
+         * (obtained via {@link Account#totalAccountBalance(Ledger)}) of all accounts currently
+         * associated with this fund.
+         */
+        public void updateBalance(Ledger ledger)
+        {
+                BigDecimal totalBalance = BigDecimal.ZERO;
+
+                for (Account account : this.accounts)
+                {
+                        totalBalance = totalBalance.add(account.totalAccountBalance(ledger));
+                }
+
+                this.balance = totalBalance;
+        }
 	
 
 	/**
@@ -153,7 +186,7 @@ public class Fund
 	 * Note: This method bypasses the automatic balance calculation based on associated accounts.
 	 * It should be used with caution, primarily for scenarios like initial data loading from
 	 * a source where balances are pre-calculated, or for testing purposes.
-	 * Consider using {@link #updateBalance()} for standard balance recalculation.
+     * Consider using {@link #updateBalance(Ledger)} for standard balance recalculation.
 	 *
 	 * @param newBalance The new balance to set for the fund.
 	 */

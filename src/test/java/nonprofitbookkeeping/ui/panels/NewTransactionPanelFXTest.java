@@ -8,7 +8,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountSide;
@@ -59,7 +58,6 @@ public class NewTransactionPanelFXTest extends JavaFXTestBase {
 
     @Start
     @Override
-    @SuppressWarnings("unchecked")
     public void start(Stage stage) throws Exception {
         MockitoAnnotations.openMocks(this);
 
@@ -264,38 +262,6 @@ public class NewTransactionPanelFXTest extends JavaFXTestBase {
         verifyThat("#saveBtn", isEnabled()); // Should be balanced
     }
 
-
-    // --- Helper methods for cell editing ---
-    @SuppressWarnings("unchecked")
-    private void editCell(int rowIndex, int colIndex, Object value) {
-        Platform.runLater(() -> {
-            this.table.edit(rowIndex, this.table.getColumns().get(colIndex));
-        });
-        WaitForAsyncUtils.waitForFxEvents();
-
-        Node cellEditor = lookup(".table-cell .text-field").nth(0).query(); // For TextField based cells
-        if (value instanceof String) {
-            ((TextField) cellEditor).setText((String) value);
-            // Simulate Enter press to commit
-            press(javafx.scene.input.KeyCode.ENTER).release(javafx.scene.input.KeyCode.ENTER);
-        } else if (value instanceof AccountSide) {
-            // For ChoiceBoxTableCell or ComboBoxTableCell, the editor might be different
-            // This is a simplified interaction. Actual editor node needs to be found.
-            // For ComboBoxTableCell as used for Account, it's more complex.
-            // For ChoiceBoxTableCell as used for Side:
-            Node actualEditorNode = lookup( (Node n) -> n instanceof ComboBox && n.getScene() != null ).nth(0).query();
-            if (actualEditorNode instanceof ComboBox) {
-                 ((ComboBox<AccountSide>)actualEditorNode).setValue((AccountSide)value);
-                 // ComboBoxTableCell typically commits on focus loss or Enter.
-                 // For simplicity, we assume value change + focus loss/enter commits.
-                 press(javafx.scene.input.KeyCode.ENTER).release(javafx.scene.input.KeyCode.ENTER);
-            }
-        }
-        WaitForAsyncUtils.waitForFxEvents();
-         // Commit the edit (e.g. by clicking another cell or pressing Enter)
-        clickOn(lookup(".table-view").queryTableView()); // Click outside to try to commit
-        WaitForAsyncUtils.waitForFxEvents();
-    }
 
     // More robust editCell, particularly for ComboBoxTableCell used for "Account"
     private void editCell(int rowIndex, int colIndex, String textValueForComboBox) {

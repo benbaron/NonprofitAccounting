@@ -12,7 +12,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Mutable container that holds every {@link Account} in the company and
  * supports parent/child relationships.
- */
+*/
+
 @Data public class ChartOfAccounts implements Serializable
 {
 	
@@ -110,25 +111,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		return this.chartOfAccounts.stream()
 			.map(Account::getName)
 			.collect(Collectors.joining(", "));
+		
 	}
-
-	/* ------------------------------------------------------------------ */
-	/**
-	 * Builds and returns an unmodifiable Map where keys are account numbers
-	 * and values are the corresponding {@link Account} objects.
-	 * This map is useful for quick lookups of accounts by their number.
-	 * If duplicate account numbers exist (which should ideally be prevented),
-	 * the account that appears first in the internal list will be kept.
-	 *
-	 * @return An unmodifiable {@code Map<String, Account>}.
-	 */
-	public Map<String, Account> getAccountNumberToAccountDetails()
-	{
-		return this.chartOfAccounts.stream()
-			.collect(Collectors.toUnmodifiableMap(Account::getAccountNumber,
-				a -> a,
-				(a, b) -> a)); // keep first
-	}
+	
 	
 	/**
 	 * Retrieves an account by its display name.
@@ -167,10 +152,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	 * @param accountNumber The account number of the account to retrieve.
 	 *                      If null or blank, this method will return null.
 	 * @return The {@link Account} object if found, or {@code null} if no account
-	 *         matches the given account number, or if the input accountNumber is invalid.
+	 *         matches the given account number, or if the input 
+	 *         accountNumber is invalid.
 	 */
 	public Account getAccount(String accountNumber)
-	{		
+	{
+		
 		if (accountNumber == null || accountNumber.trim().isEmpty())
 		{
 			return null;
@@ -178,6 +165,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		
 		Map<String, Account> accountMap = this.getAccountNumberToAccountDetails();
 		return accountMap.get(accountNumber);
+	}
+	
+	/**
+	 * @return
+	 */
+	public Map<String, Account> getAccountNumberToAccountDetails()
+	{
+		return this.chartOfAccounts.stream()
+			.collect(Collectors.toUnmodifiableMap(Account::getAccountNumber,
+				a -> a,
+				(a, b) -> a)); // keep first
 	}
 	
 	/**
@@ -220,7 +218,5 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		return false; // Account not found
 	}
 	
-
 	
-
 }

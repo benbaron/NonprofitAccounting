@@ -2,7 +2,6 @@
 package nonprofitbookkeeping.ui.panels;
 
 import javafx.geometry.Insets;
-import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;

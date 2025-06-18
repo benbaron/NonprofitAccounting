@@ -32,13 +32,6 @@ import java.util.Optional; // Added
  * User input is gathered through a series of {@link ChoiceDialog} and {@link TextInputDialog} instances.
  */
 public class GenerateReportsAction implements EventHandler<ActionEvent> {
-    // private static final long serialVersionUID = 3474943577654997739L; // Not applicable for JavaFX EventHandler
-    /**
-     * The {@link ReportService} instance used for report generation.
-     * Stored for potential use if {@code ReportService.generate} were non-static or if other service methods were needed.
-     */
-    private final ReportService reportService;
-
     /**
      * Constructs a new {@code GenerateReportsAction}.
      *
@@ -47,8 +40,6 @@ public class GenerateReportsAction implements EventHandler<ActionEvent> {
      *                this instance is stored for potential future refactoring or extended use.
      */
     public GenerateReportsAction(ReportService service) {
-        // super("Generate All Ledger Reports"); // Constructor for AbstractAction, not used here
-        this.reportService = service;
     }
 
     /**

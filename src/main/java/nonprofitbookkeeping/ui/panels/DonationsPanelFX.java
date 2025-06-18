@@ -13,7 +13,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import nonprofitbookkeeping.ui.panels.DonationsPanelFX.Donation;
 
 /**
  * JavaFX replacement for the Swing {@code DonationsPanel}. Keeps an in‑memory

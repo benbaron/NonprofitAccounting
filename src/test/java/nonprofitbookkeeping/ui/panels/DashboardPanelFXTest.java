@@ -21,7 +21,6 @@ import org.testfx.framework.junit5.Start;
 import org.testfx.service.query.NodeQuery;
 import org.testfx.util.WaitForAsyncUtils;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;

@@ -20,6 +20,7 @@ import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CompanySummary;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.AccountingTransaction;
+import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.Ledger;
 
 
@@ -109,9 +110,17 @@ public class SkeletonDashboardPanel extends BorderPane
 		dateCol.setPrefWidth(100);
 		
 		TableColumn<AccountingTransaction, String> accountCol = new TableColumn<>("Account");
-		accountCol.setCellValueFactory(
-			cellData -> new SimpleStringProperty(cellData.getValue().getAccountName()));
-		accountCol.setPrefWidth(150);
+                accountCol.setCellValueFactory(cellData -> {
+                        AccountingTransaction tx = cellData.getValue();
+                        String name = "";
+                        if (tx != null && tx.getEntries() != null && !tx.getEntries().isEmpty())
+                        {
+                                AccountingEntry first = tx.getEntries().iterator().next();
+                                name = first.getAccountName();
+                        }
+                        return new SimpleStringProperty(name);
+                });
+                accountCol.setPrefWidth(150);
 		
 		TableColumn<AccountingTransaction, String> descriptionCol =
 			new TableColumn<>("Description");

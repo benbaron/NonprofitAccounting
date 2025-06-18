@@ -143,4 +143,5 @@ class ChartOfAccountsTest {
         // Also ensure list1 and list2 are different instances
         assertNotSame(accountsList1, accountsList2, "getAccounts() should return a new list instance each time.");
     }
+
 }

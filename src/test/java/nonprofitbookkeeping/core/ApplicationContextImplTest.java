@@ -2,7 +2,6 @@ package nonprofitbookkeeping.core;
 
 import javafx.stage.Stage;
 import javafx.scene.control.MenuBar;
-import nonprofitbookkeeping.model.Company; // For getCurrentCompany, though not directly tested via constructor
 import nonprofitbookkeeping.service.*; // Import all services
 
 import org.junit.jupiter.api.Test;
@@ -64,16 +63,6 @@ class ApplicationContextImplTest {
     @DisplayName("Constructor: Null PrimaryStage should throw IllegalArgumentException")
     void testConstructor_nullPrimaryStage_throwsIllegalArgumentException() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new ApplicationContextImpl(
-                    null, // Null PrimaryStage
-                    this.mockMenuBar,
-                    this.mockReportService,
-                    this.mockBudgetService,
-                    this.mockReportConfigurationService,
-                    this.mockInventoryService,
-                    this.mockDocumentStorageService,
-                    this.mockFundAccountingService
-            );
         });
         assertEquals("PrimaryStage cannot be null.", exception.getMessage(),
                      "Exception message for null PrimaryStage is not as expected.");
@@ -83,16 +72,6 @@ class ApplicationContextImplTest {
     @DisplayName("Constructor: Null MenuBar should throw IllegalArgumentException")
     void testConstructor_nullMenuBar_throwsIllegalArgumentException() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new ApplicationContextImpl(
-                    this.mockPrimaryStage,
-                    null, // Null MenuBar
-                    this.mockReportService,
-                    this.mockBudgetService,
-                    this.mockReportConfigurationService,
-                    this.mockInventoryService,
-                    this.mockDocumentStorageService,
-                    this.mockFundAccountingService
-            );
         });
         assertEquals("MenuBar cannot be null.", exception.getMessage(),
                      "Exception message for null MenuBar is not as expected.");

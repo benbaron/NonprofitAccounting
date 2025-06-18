@@ -11,6 +11,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import nonprofitbookkeeping.service.ReportService;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -105,12 +106,25 @@ import static com.google.common.base.Preconditions.checkNotNull;
 	
 	/* =================== IMPLEMENTED METHODS ========================== */
 	
-	/** Calculates the account’s balance. */
-	public BigDecimal totalAccountBalance()
+	/**
+	 * Calculates the account’s balance by summing its opening balance and
+	 * all {@link AccountingEntry} records for this account in the provided
+	 * {@link Ledger}.
+	 *
+	 * @param ledger the ledger containing transactions and entries. If
+	 *                {@code null}, only the opening balance is returned
+	 * @return the calculated balance as a {@link BigDecimal}
+	 */
+	public BigDecimal totalAccountBalance(Ledger ledger)
 	{
-		// In the current model we only know the opening balance. If you later
-		// attach transactions or sub-accounts, extend this method to include them.
-		return this.openingBalance == null ? BigDecimal.ZERO : this.openingBalance;
+		
+		if (ledger == null)
+		{
+			return this.openingBalance == null ? BigDecimal.ZERO : this.openingBalance;
+		}
+		
+		List<AccountingEntry> entries = ledger.getEntriesForAccount(this.accountNumber);
+		return ReportService.calculateBalanceForAccount(this, entries);
 	}
 	
 	/** @return {@code true} if this account is a child of another. */

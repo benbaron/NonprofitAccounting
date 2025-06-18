@@ -46,8 +46,9 @@ public class CompanySelectionPanelFXTest extends JavaFXTestBase {
         Path tempDirPath = Files.createTempDirectory(TEST_COMPANIES_DIR_NAME);
         testCompaniesDir = tempDirPath.toFile();
 
-        // Override default company directory for tests
-        PreferencesService.getInstance().setDefaultCompanyDir(testCompaniesDir.getAbsolutePath());
+        PreferencesService.getInstance();
+		// Override default company directory for tests
+        PreferencesService.setDefaultCompanyDir(testCompaniesDir.getAbsolutePath());
 
         // Create a dummy company file for testing selection and preview
         try {

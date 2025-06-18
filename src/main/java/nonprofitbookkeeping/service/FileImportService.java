@@ -553,10 +553,11 @@ public class FileImportService
 				
 			}
 			
-			entries.add(new AccountingEntry(entryAmount, targetAccount.getAccountNumber(),
-				targetAccountSide));
-			entries.add(new AccountingEntry(entryAmount,
-				needsCategorizationAccount.getAccountNumber(), needsCatAccountSide));
+                        entries.add(new AccountingEntry(entryAmount, targetAccount.getAccountNumber(),
+                                targetAccountSide, targetAccount.getName()));
+                        entries.add(new AccountingEntry(entryAmount,
+                                needsCategorizationAccount.getAccountNumber(), needsCatAccountSide,
+                                needsCategorizationAccount.getName()));
 			
 			AccountingTransaction newAt = new AccountingTransaction(
 				targetAccount,

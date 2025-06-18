@@ -49,12 +49,6 @@ public class GenerateTrialBalanceAction extends AbstractAction implements EventH
     /** The specific report type identifier for the Trial Balance report. */
     private final String reportType = "trial_balance";
     /**
-     * The {@link ReportService} instance used for report generation.
-     * Stored for potential use if {@code ReportService.generate} were non-static or if other service methods were needed.
-     */
-    private final ReportService reportService;
-
-    /**
      * Constructs a new {@code GenerateTrialBalanceAction}.
      *
      * @param reportService The {@link ReportService} to be used for report generation.
@@ -62,8 +56,6 @@ public class GenerateTrialBalanceAction extends AbstractAction implements EventH
      *                      this instance is stored for potential future refactoring or extended use.
      */
     public GenerateTrialBalanceAction(ReportService reportService) {
-        // super("Generate Trial Balance"); // Constructor for AbstractAction, not used for JavaFX
-        this.reportService = reportService;
     }
 
     /**

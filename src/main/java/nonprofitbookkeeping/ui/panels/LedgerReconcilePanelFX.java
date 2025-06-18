@@ -188,7 +188,7 @@ public class LedgerReconcilePanelFX extends BorderPane
 	 */
 	private void refreshAccountList()
 	{
-		this.accountBox.getItems().setAll(this.ledgerSvc.listReconcilableAccounts());
+		this.accountBox.getItems().setAll(ReconciliationService.listReconcilableAccounts());
 		if (!this.accountBox.getItems().isEmpty())
 			this.accountBox.getSelectionModel().selectFirst();
 		reloadRows();
@@ -206,7 +206,7 @@ public class LedgerReconcilePanelFX extends BorderPane
 		String acct = this.accountBox.getValue();
 		if (acct == null)
 			return;
-		List<AccountingTransaction> ledger = this.ledgerSvc.getUnreconciled(acct);
+		List<AccountingTransaction> ledger = ReconciliationService.getUnreconciled(acct);
 		List<AccountingTransaction> bank = this.bankTxns.getOrDefault(acct, List.of());
 		this.rows.setAll(Matcher.merge(ledger, bank));
 		updateTotals();

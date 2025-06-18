@@ -105,9 +105,9 @@ public class CashFlowStatementJasperGenerator extends AbstractReportGenerator {
         params.put("P_COMPANY_NAME", companyName);
 
         String reportPeriod = "N/A";
-        if (reportContext.getStartDate() != null && reportContext.getEndDate() != null) {
+        if (this.reportContext.getStartDate() != null && this.reportContext.getEndDate() != null) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
-            reportPeriod = reportContext.getStartDate().format(formatter) + " - " + reportContext.getEndDate().format(formatter);
+            reportPeriod = this.reportContext.getStartDate().format(formatter) + " - " + this.reportContext.getEndDate().format(formatter);
         }
         params.put("P_REPORT_PERIOD", reportPeriod);
         params.put("P_GENERATION_DATE", LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM d, yyyy")));

@@ -301,8 +301,7 @@ public class AccountingTransaction implements Serializable
 	public void setMemo(String memo)
 	{
 		this.memo = memo;
-	}
-	
+	}	
 	
 	/**
 	 * @return
@@ -386,6 +385,15 @@ public class AccountingTransaction implements Serializable
 		}
 		
 		return debit == null ? BigDecimal.ZERO : debit;
+	}
+
+	/**
+	 * @return
+	 */
+	public BigDecimal countAccountBalance()
+	{
+		
+		return BigDecimal.ZERO;
 	}
 
 	

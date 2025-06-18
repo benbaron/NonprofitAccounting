@@ -261,6 +261,8 @@ public class BudgetLineTableModel extends AbstractTableModel
 					
 				}
 				break;
+			default:
+				break;
 		}
 		
 		fireTableCellUpdated(rowIndex, columnIndex); // Notify listeners of cell update

@@ -40,24 +40,8 @@ public class BudgetEditorDialogFX extends Dialog<Budget>
 	
 	/** The {@link Budget} object being created or edited. */
 	private Budget currentBudget;
-	/**
-	 * The {@link ChartOfAccounts} for the current company.
-	 * Currently unused in this dialog's direct logic but kept for potential future context.
-	 */
-	private ChartOfAccounts chartOfAccounts;
 	/** List of available {@link Fund}s to populate the fund selector ComboBox. */
 	private List<Fund> availableFunds;
-	/**
-	 * The {@link BudgetService} for budget-related operations.
-	 * Currently unused in this dialog's direct logic but kept for potential future context.
-	 */
-	private BudgetService budgetService;
-	/**
-	 * The company directory, potentially used for saving/loading budget-related files.
-	 * Currently unused in this dialog's direct logic but kept for potential future context.
-	 */
-	private File companyDirectory;
-	
 	// UI Fields for Budget Properties
 	/** TextField for entering or displaying the budget name. */
 	private TextField budgetNameField;
@@ -107,11 +91,7 @@ public class BudgetEditorDialogFX extends Dialog<Budget>
 		initOwner(owner);
 		setTitle(budgetToEdit == null ? "Create New Budget" : "Edit Budget");
 		
-		this.chartOfAccounts = chartOfAccounts;
 		this.availableFunds = (funds != null) ? funds : new ArrayList<>();
-		this.budgetService = budgetService;
-		this.companyDirectory = companyDirectory;
-		
 		if (budgetToEdit != null)
 		{
 			// For now, work directly on the passed object. Consider cloning if edits should

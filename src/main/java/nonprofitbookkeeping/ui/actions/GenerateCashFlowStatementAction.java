@@ -53,12 +53,6 @@ public class GenerateCashFlowStatementAction extends AbstractAction
 	/** The specific report type identifier for the Cash Flow Statement. */
 	private final String reportType = "cash_flow_statement";
 	/**
-	 * The {@link ReportService} instance used for report generation.
-	 * Stored for potential use if {@code ReportService.generate} were non-static or if other service methods were needed.
-	 */
-	private final ReportService reportService;
-	
-	/**
 	 * Constructs a new {@code GenerateCashFlowStatementAction}.
 	 *
 	 * @param reportService The {@link ReportService} to be used for report generation.
@@ -67,9 +61,6 @@ public class GenerateCashFlowStatementAction extends AbstractAction
 	 */
 	public GenerateCashFlowStatementAction(ReportService reportService)
 	{
-		// super("Generate Cash Flow Statement"); // Constructor for AbstractAction, not
-		// used for JavaFX
-		this.reportService = reportService;
 	}
 	
 	/**

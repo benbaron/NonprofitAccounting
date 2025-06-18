@@ -328,9 +328,10 @@ public class DashboardPanelFX extends BorderPane
 			
 		}
 		
-		Predicate<AccountingTransaction> p =
-			t -> t != null &&
-				Objects.equals(t.getAccountName(), acct) &&
+                Predicate<AccountingTransaction> p =
+                        t -> t != null &&
+                                t.getEntries().stream()
+                                        .anyMatch(e -> Objects.equals(e.getAccountName(), acct)) &&
 				(dateFText.isEmpty() || (t.getDate() != null && t.getDate().contains(dateFText))) &&
 				(memoFText.isEmpty() ||	(t.getMemo() != null && t.getMemo().toLowerCase().contains(memoFText))) &&
 				(this.amtF == null || 

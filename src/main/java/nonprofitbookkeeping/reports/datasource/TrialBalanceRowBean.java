@@ -38,7 +38,7 @@ public class TrialBalanceRowBean {
      * @return The account number string.
      */
     public String getAccountNumber() {
-        return accountNumber;
+        return this.accountNumber;
     }
 
     /**
@@ -46,7 +46,7 @@ public class TrialBalanceRowBean {
      * @return The account name string.
      */
     public String getAccountName() {
-        return accountName;
+        return this.accountName;
     }
 
     /**
@@ -54,7 +54,7 @@ public class TrialBalanceRowBean {
      * @return The debit amount as a {@link BigDecimal}. Will not be null.
      */
     public BigDecimal getDebit() {
-        return debit;
+        return this.debit;
     }
 
     /**
@@ -62,7 +62,7 @@ public class TrialBalanceRowBean {
      * @return The credit amount as a {@link BigDecimal}. Will not be null.
      */
     public BigDecimal getCredit() {
-        return credit;
+        return this.credit;
     }
 
     /**

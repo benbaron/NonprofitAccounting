@@ -1,8 +1,6 @@
 package nonprofitbookkeeping.ui.actions;
 
 import javafx.stage.Stage;
-import javafx.event.ActionEvent; // Though we pass null for ActionEvent
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +26,6 @@ class ImportFileActionFXTest {
     @DisplayName("Constructor: Null Stage should throw IllegalArgumentException")
     void testConstructor_nullStage_throwsIllegalArgumentException() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new ImportFileActionFX(null);
         });
         assertEquals("Owner stage cannot be null.", exception.getMessage(),
                      "Exception message for null stage is not as expected.");

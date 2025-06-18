@@ -43,13 +43,6 @@ public class GenerateAccountActivityReportAction implements EventHandler<ActionE
 	private final String reportType = "account_activity_detail";
 	
 	/**
-	 * The {@link ReportService} instance used to generate the report and prepare data.
-	 * This field is not strictly needed if only static methods of ReportService are used,
-	 * but it's kept for consistency or potential future use with instance methods.
-	 */
-	private final ReportService reportService;
-	
-	/**
 	 * Constructs a new {@code GenerateAccountActivityReportAction}.
 	 *
 	 * @param reportService The {@link ReportService} to be used for report generation.
@@ -59,8 +52,6 @@ public class GenerateAccountActivityReportAction implements EventHandler<ActionE
 	 */
 	public GenerateAccountActivityReportAction(ReportService reportService)
 	{
-		// super("Generate Account Activity Detail"); // Not needed for EventHandler
-		this.reportService = reportService; // Stored if needed by non-static methods later
 	}
 	
 	/**

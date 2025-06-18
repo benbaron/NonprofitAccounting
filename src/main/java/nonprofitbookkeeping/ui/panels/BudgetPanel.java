@@ -1,7 +1,6 @@
 
 package nonprofitbookkeeping.ui.panels;
 
-import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Fund;
@@ -74,93 +73,6 @@ public class BudgetPanel extends JDialog
 	private JButton btnClose;
 	
 	/**
-	 * Wrapper class for displaying {@link Account} objects in a JComboBox.
-	 * This is identical to the one in {@link BudgetLineDialog}.
-	 * Overrides {@code toString} to show account name and number. Equality is based on account number.
-	 */
-	private static class AccountItem
-	{
-		/** The wrapped Account object. */
-		Account account;
-		
-		/** 
-		 * Returns a string representation for display. 
-		 * @return Formatted string: "Account Name (AccountNumber)". 
-		 */
-		@Override public String toString()
-		{
-			return this.account.getName() + " (" + this.account.getAccountNumber() + ")";
-		}
-		
-		/** Compares this AccountItem to another object for equality based on account number. @param o The object to compare with. @return True if equal. */
-		@Override public boolean equals(Object o)
-		{
-			if (this == o)
-				return true;
-			if (o == null || getClass() != o.getClass())
-				return false;
-			AccountItem that = (AccountItem) o;
-			return Objects.equals(this.account.getAccountNumber(), that.account.getAccountNumber());
-		}
-		
-		/** Generates a hash code based on the account number. @return The hash code. */
-		@Override public int hashCode()
-		{
-			return Objects.hash(this.account.getAccountNumber());
-		}
-		
-	}
-	
-	/**
-	 * Wrapper class for displaying {@link Fund} objects in a JComboBox.
-	 * This is identical to the one in {@link BudgetLineDialog}.
-	 * Includes a special constructor for a "None" option. Equality is based on fund ID or display name.
-	 */
-	private static class FundItem
-	{
-		/** The wrapped Fund object; null for the "None" item. */
-		Fund fund;
-		/** The display name, used for "None" or derived from fund name. */
-		String displayName;
-		
-		/** Returns the display name of this item. @return The display name. */
-		@Override public String toString()
-		{
-			return this.displayName;
-		}
-		
-		/** Compares this FundItem for equality. @param o The object to compare. @return True if equal. */
-		@Override public boolean equals(Object o)
-		{
-			if (this == o)
-			{
-				return true;
-			}
-			if (o == null || getClass() != o.getClass())
-			{
-				return false;
-			}
-			FundItem that = (FundItem) o;
-			if (this.fund != null && that.fund != null)
-			{
-				return Objects.equals(this.fund.getFundId(), that.fund.getFundId());
-			}
-			return Objects.equals(this.displayName, that.displayName);
-		}
-		
-		/** Generates a hash code. @return The hash code. */
-		@Override public int hashCode()
-		{
-			if (this.fund != null)
-			{
-				return Objects.hash(this.fund.getFundId());
-			}
-			return Objects.hash(this.displayName);
-		}
-		
-	}
-	
-	/**
 	 * Constructs a new {@code BudgetPanel} dialog.
 	 *
 	 * @param owner The parent {@link Frame} that owns this dialog.
@@ -212,7 +124,7 @@ public class BudgetPanel extends JDialog
 		layoutComponents();
 		attachListeners();
 		
-		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setSize(800, 600);
 		setLocationRelativeTo(owner);
 	}
