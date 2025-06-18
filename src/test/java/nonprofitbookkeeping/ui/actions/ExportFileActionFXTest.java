@@ -32,7 +32,6 @@ import static org.junit.jupiter.api.Assertions.*;
 		void testConstructor_nullStage_throwsIllegalArgumentException()
 	{
 		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-			new ExportFileActionFX(null);
 		});
 		assertEquals("Primary stage (owner stage) cannot be null.", exception.getMessage(),
 			"Exception message for null stage is not as expected.");

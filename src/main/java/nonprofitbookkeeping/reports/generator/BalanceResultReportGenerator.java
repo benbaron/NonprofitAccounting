@@ -4,7 +4,6 @@ package nonprofitbookkeeping.reports.generator;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.IOException; // For exportToHTML
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;

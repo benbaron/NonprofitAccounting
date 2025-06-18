@@ -204,20 +204,6 @@ public class CurrentCompany
 		}
 		
 		/**
-		 * Notifies all registered {@link CompanyChangeListener}s that the company state has changed.
-		 * @param isOpen {@code true} if the company has been opened, {@code false} if it has been closed.
-		 */
-		private static void fireChanged(boolean isOpen)
-		{
-			
-			for (CompanyChangeListener l : listeners.getListeners(CompanyChangeListener.class))
-			{
-				l.companyChange(isOpen);
-			}
-			
-		}
-		
-		/**
 		 * Returns the list of currently registered {@link CompanyChangeListener}s.
 		 *
 		 * <p>This method exposes the listeners primarily for testing

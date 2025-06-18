@@ -34,21 +34,21 @@ public class SettingsPanelFXTest extends JavaFXTestBase
 	{
 		// The Stage parameter in SettingsPanelFX constructor is unused, so can pass
 		// null or the current stage.
-		panel = new SettingsPanelFX(stage);
-		Scene scene = new Scene(panel, 800, 600);
+		this.panel = new SettingsPanelFX(stage);
+		Scene scene = new Scene(this.panel, 800, 600);
 		stage.setScene(scene);
 		stage.show();
 		
-		tabPane = lookup(".tab-pane").queryAs(TabPane.class);
+		this.tabPane = lookup(".tab-pane").queryAs(TabPane.class);
 	}
 	
 	private void selectTab(String tabName)
 	{
-		Optional<Tab> tabOptional = tabPane.getTabs().stream()
+		Optional<Tab> tabOptional = this.tabPane.getTabs().stream()
 			.filter(t -> tabName.equals(t.getText()))
 			.findFirst();
 		assertTrue(tabOptional.isPresent(), "Tab '" + tabName + "' not found.");
-		Platform.runLater(() -> tabPane.getSelectionModel().select(tabOptional.get()));
+		Platform.runLater(() -> this.tabPane.getSelectionModel().select(tabOptional.get()));
 		WaitForAsyncUtils.waitForFxEvents();
 	}
 	
@@ -91,8 +91,7 @@ public class SettingsPanelFXTest extends JavaFXTestBase
 	}
 	
 	@Test
-	@SuppressWarnings("unchecked") public
-		void testUsersTab_TableDisplaysDemoData()
+	public	void testUsersTab_TableDisplaysDemoData()
 	{
 		selectTab("Users");
 		

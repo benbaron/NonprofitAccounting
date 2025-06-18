@@ -55,12 +55,6 @@ public class GenerateIncomeStatementAction extends AbstractAction
 	/** The specific report type identifier for the Income Statement. */
 	private final String reportType = "income_statement";
 	/**
-	 * The {@link ReportService} instance used for report generation.
-	 * Stored for potential use if {@code ReportService.generate} were non-static or if other service methods were needed.
-	 */
-	private final ReportService reportService;
-	
-	/**
 	 * Constructs a new {@code GenerateIncomeStatementAction}.
 	 *
 	 * @param reportService The {@link ReportService} to be used for report generation.
@@ -69,9 +63,6 @@ public class GenerateIncomeStatementAction extends AbstractAction
 	 */
 	public GenerateIncomeStatementAction(ReportService reportService)
 	{
-		// super("Generate Income Statement"); // Constructor for AbstractAction, not
-		// used for JavaFX
-		this.reportService = reportService;
 	}
 	
 	/**

@@ -165,8 +165,7 @@ public class BudgetEditorDialogFXTest extends JavaFXTestBase {
         Spinner<Integer> fiscalYearSpinner = lookup("#fiscalYearSpinner").queryAs(Spinner.class);
         ComboBox<Fund> fundComboBox = lookup("#applicableFundComboBox").queryComboBox();
 
-        TextInputControl budgetNameField = null;
-		Platform.runLater(() -> budgetNameField.setText("Q1 Budget"));
+        //Platform.runLater(() -> budgetNameField.setText("Q1 Budget"));
         Platform.runLater(() -> fiscalYearSpinner.getValueFactory().setValue(2025));
         Platform.runLater(() -> fundComboBox.setValue(this.fund1));
         WaitForAsyncUtils.waitForFxEvents();

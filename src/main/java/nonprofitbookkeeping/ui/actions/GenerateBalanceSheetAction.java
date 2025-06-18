@@ -49,12 +49,6 @@ public class GenerateBalanceSheetAction extends AbstractAction implements EventH
 	/** The specific report type identifier for the Balance Sheet report. */
 	private final String reportType = "balance_sheet";
 	/**
-	 * The {@link ReportService} instance used to generate the report.
-	 * Stored for potential use if {@code ReportService.generate} were non-static.
-	 */
-	private final ReportService reportService;
-	
-	/**
 	 * Constructs a new {@code GenerateBalanceSheetAction}.
 	 *
 	 * @param reportService The {@link ReportService} to be used for report generation.
@@ -63,9 +57,6 @@ public class GenerateBalanceSheetAction extends AbstractAction implements EventH
 	 */
 	public GenerateBalanceSheetAction(ReportService reportService)
 	{
-		// super("Generate Balance Sheet"); // Constructor for AbstractAction, not used
-		// for JavaFX EventHandler
-		this.reportService = reportService;
 	}
 	
 	/**

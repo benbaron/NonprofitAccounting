@@ -73,7 +73,7 @@ public class ManageReportConfigurationsDialog extends JDialog
 		
 		loadAndDisplayConfigurations();
 		
-		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setSize(600, 400);
 		setLocationRelativeTo(owner);
 	}

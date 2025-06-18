@@ -540,11 +540,11 @@ public class TableSorter extends TableMap
 	 * After sorting, it fires a {@link TableModelEvent} to notify the JTable to refresh.
 	 *
 	 * @param  column     The index of the column to sort by.
-	 * @param  ascending  True for ascending order, false for descending order.
+	 * @param  ascending1  True for ascending order, false for descending order.
 	 */
-	public void sortByColumn(int column, boolean ascending)
+	public void sortByColumn(int column, boolean ascending1)
 	{
-		this.ascending = ascending;
+		this.ascending = ascending1;
 		this.sortingColumns.removeAllElements();
 		this.sortingColumns.addElement(column);
 		sort(this); // 'this' is passed as sender

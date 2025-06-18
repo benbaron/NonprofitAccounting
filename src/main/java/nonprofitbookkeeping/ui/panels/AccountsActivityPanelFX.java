@@ -413,7 +413,7 @@ public class AccountsActivityPanelFX extends BorderPane
 		
 		@Override public void companyChange(boolean isOpen)
 		{
-			panel.handleCompanyChange(isOpen);
+			this.panel.handleCompanyChange(isOpen);
 		}
 		
 	}
@@ -455,27 +455,27 @@ public class AccountsActivityPanelFX extends BorderPane
 		
 		public SimpleStringProperty dateProperty()
 		{
-			return date;
+			return this.date;
 		}
 		
 		public SimpleStringProperty descriptionProperty()
 		{
-			return description;
+			return this.description;
 		}
 		
 		public SimpleObjectProperty<BigDecimal> amountProperty()
 		{
-			return amount;
+			return this.amount;
 		}
 		
 		public SimpleObjectProperty<BigDecimal> balanceProperty()
 		{
-			return balance;
+			return this.balance;
 		}
 		
 		public SimpleStringProperty memoProperty()
 		{
-			return memo;
+			return this.memo;
 		}
 		
 	}

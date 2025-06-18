@@ -112,7 +112,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 			.map(Account::getName)
 			.collect(Collectors.joining(", "));
 	}
-
+	
 	/* ------------------------------------------------------------------ */
 	/**
 	 * Builds and returns an unmodifiable Map where keys are account numbers
@@ -123,43 +123,34 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 	 *
 	 * @return An unmodifiable {@code Map<String, Account>}.
 	 */
-<<<<<<< HEAD
+	
 	public Map<String, Account> getAccountNumberToAccountDetails()
 	{
 		return this.chartOfAccounts.stream()
-			.collect(Collectors.toUnmodifiableMap(
-				Account::getAccountNumber, 	// keymapper
-				a -> a,						// valuemapper
-				(a, b) -> a)); 				// keep first
+			.collect(Collectors.toUnmodifiableMap(Account::getAccountNumber,
+				a -> a,
+				(a, b) -> a)); // keep first
 	}
-=======
-        public Map<String, Account> getAccountNumberToAccountDetails()
-        {
-                return this.chartOfAccounts.stream()
-                        .collect(Collectors.toUnmodifiableMap(Account::getAccountNumber,
-                                a -> a,
-                                (a, b) -> a)); // keep first
-        }
-
-        /**
-         * Compatibility setter for older JSON that stored accounts in a map
-         * keyed by account number. When such data is deserialized, this setter
-         * populates the internal {@link #chartOfAccounts} list so that the rest
-         * of the application can operate normally.
-         *
-         * @param map a map of account numbers to {@link Account} objects
-         */
-        @JsonSetter("accountNumberToAccountDetails")
-        public void setAccountNumberToAccountDetails(Map<String, Account> map)
-        {
-                this.chartOfAccounts.clear();
-
-                if (map != null)
-                {
-                        this.chartOfAccounts.addAll(map.values());
-                }
-        }
->>>>>>> branch 'codex/refactor-account-balance-calculation' of https://github.com/benbaron/NonprofitAccounting.git
+	
+	/**
+	 * Compatibility setter for older JSON that stored accounts in a map
+	 * keyed by account number. When such data is deserialized, this setter
+	 * populates the internal {@link #chartOfAccounts} list so that the rest
+	 * of the application can operate normally.
+	 *
+	 * @param map a map of account numbers to {@link Account} objects
+	 */
+	@JsonSetter("accountNumberToAccountDetails") public
+		void setAccountNumberToAccountDetails(Map<String, Account> map)
+	{
+		this.chartOfAccounts.clear();
+		
+		if (map != null)
+		{
+			this.chartOfAccounts.addAll(map.values());
+		}
+		
+	}
 	
 	/**
 	 * Retrieves an account by its display name.
@@ -201,7 +192,8 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 	 *         matches the given account number, or if the input accountNumber is invalid.
 	 */
 	public Account getAccount(String accountNumber)
-	{		
+	{
+		
 		if (accountNumber == null || accountNumber.trim().isEmpty())
 		{
 			return null;
@@ -251,7 +243,5 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 		return false; // Account not found
 	}
 	
-
 	
-
 }

@@ -49,7 +49,6 @@ public class AccountsPanelFXTest extends JavaFXTestBase {
 
     @Start
     @Override
-    @SuppressWarnings("unchecked")
     public void start(Stage stage) throws Exception {
         MockitoAnnotations.openMocks(this);
 

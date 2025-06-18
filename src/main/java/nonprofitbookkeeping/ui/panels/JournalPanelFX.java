@@ -225,7 +225,7 @@ public class JournalPanelFX extends BorderPane {
 
         @Override
         public void companyChange(boolean isOpen) {
-            panel.handleCompanyChange(isOpen);
+            this.panel.handleCompanyChange(isOpen);
         }
     }
 }

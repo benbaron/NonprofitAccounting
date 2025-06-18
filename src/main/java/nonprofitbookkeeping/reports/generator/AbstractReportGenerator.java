@@ -1,7 +1,6 @@
 package nonprofitbookkeeping.reports.generator;
 
 import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource; // Though not used directly in this abstract class after change
 import net.sf.jasperreports.engine.export.HtmlExporter;
 import net.sf.jasperreports.export.*;
 import nonprofitbookkeeping.exception.ActionCancelledException;
