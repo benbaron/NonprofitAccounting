@@ -144,9 +144,26 @@ import com.fasterxml.jackson.annotation.JsonSetter;
         {
                 this.chartOfAccounts.clear();
 
-                if (map != null)
+                if (map == null)
                 {
-                        this.chartOfAccounts.addAll(map.values());
+                        return;
+                }
+
+                for (Map.Entry<String, Account> entry : map.entrySet())
+                {
+                        Account account = entry.getValue();
+                        if (account == null)
+                        {
+                                continue;
+                        }
+
+                        if (account.getAccountNumber() == null ||
+                                account.getAccountNumber().isBlank())
+                        {
+                                account.setAccountNumber(entry.getKey());
+                        }
+
+                        this.chartOfAccounts.add(account);
                 }
         }
 	
