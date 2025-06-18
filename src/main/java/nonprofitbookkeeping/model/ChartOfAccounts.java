@@ -12,8 +12,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Mutable container that holds every {@link Account} in the company and
  * supports parent/child relationships.
- */
-@Data public class ChartOfAccounts implements Serializable
+*/
+
+@Data
+public class ChartOfAccounts implements Serializable
 {
 	
 	private static final long serialVersionUID = 6545569795380871696L;
