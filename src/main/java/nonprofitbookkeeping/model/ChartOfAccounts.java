@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 
 /**
@@ -122,6 +123,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	 *
 	 * @return An unmodifiable {@code Map<String, Account>}.
 	 */
+<<<<<<< HEAD
 	public Map<String, Account> getAccountNumberToAccountDetails()
 	{
 		return this.chartOfAccounts.stream()
@@ -130,6 +132,34 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 				a -> a,						// valuemapper
 				(a, b) -> a)); 				// keep first
 	}
+=======
+        public Map<String, Account> getAccountNumberToAccountDetails()
+        {
+                return this.chartOfAccounts.stream()
+                        .collect(Collectors.toUnmodifiableMap(Account::getAccountNumber,
+                                a -> a,
+                                (a, b) -> a)); // keep first
+        }
+
+        /**
+         * Compatibility setter for older JSON that stored accounts in a map
+         * keyed by account number. When such data is deserialized, this setter
+         * populates the internal {@link #chartOfAccounts} list so that the rest
+         * of the application can operate normally.
+         *
+         * @param map a map of account numbers to {@link Account} objects
+         */
+        @JsonSetter("accountNumberToAccountDetails")
+        public void setAccountNumberToAccountDetails(Map<String, Account> map)
+        {
+                this.chartOfAccounts.clear();
+
+                if (map != null)
+                {
+                        this.chartOfAccounts.addAll(map.values());
+                }
+        }
+>>>>>>> branch 'codex/refactor-account-balance-calculation' of https://github.com/benbaron/NonprofitAccounting.git
 	
 	/**
 	 * Retrieves an account by its display name.
