@@ -106,25 +106,26 @@ import static com.google.common.base.Preconditions.checkNotNull;
 	
 	/* =================== IMPLEMENTED METHODS ========================== */
 	
-        /**
-         * Calculates the account’s balance by summing its opening balance and
-         * all {@link AccountingEntry} records for this account in the provided
-         * {@link Ledger}.
-         *
-         * @param ledger the ledger containing transactions and entries. If
-         *                {@code null}, only the opening balance is returned
-         * @return the calculated balance as a {@link BigDecimal}
-         */
-        public BigDecimal totalAccountBalance(Ledger ledger)
-        {
-                if (ledger == null)
-                {
-                        return this.openingBalance == null ? BigDecimal.ZERO : this.openingBalance;
-                }
-
-                List<AccountingEntry> entries = ledger.getEntriesForAccount(this.accountNumber);
-                return ReportService.calculateBalanceForAccount(this, entries);
-        }
+	/**
+	 * Calculates the account’s balance by summing its opening balance and
+	 * all {@link AccountingEntry} records for this account in the provided
+	 * {@link Ledger}.
+	 *
+	 * @param ledger the ledger containing transactions and entries. If
+	 *                {@code null}, only the opening balance is returned
+	 * @return the calculated balance as a {@link BigDecimal}
+	 */
+	public BigDecimal totalAccountBalance(Ledger ledger)
+	{
+		
+		if (ledger == null)
+		{
+			return this.openingBalance == null ? BigDecimal.ZERO : this.openingBalance;
+		}
+		
+		List<AccountingEntry> entries = ledger.getEntriesForAccount(this.accountNumber);
+		return ReportService.calculateBalanceForAccount(this, entries);
+	}
 	
 	/** @return {@code true} if this account is a child of another. */
 	public boolean hasParent()

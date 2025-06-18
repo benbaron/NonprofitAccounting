@@ -125,9 +125,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public Map<String, Account> getAccountNumberToAccountDetails()
 	{
 		return this.chartOfAccounts.stream()
-			.collect(Collectors.toUnmodifiableMap(Account::getAccountNumber,
-				a -> a,
-				(a, b) -> a)); // keep first
+			.collect(Collectors.toUnmodifiableMap(
+				Account::getAccountNumber, 	// keymapper
+				a -> a,						// valuemapper
+				(a, b) -> a)); 				// keep first
 	}
 	
 	/**

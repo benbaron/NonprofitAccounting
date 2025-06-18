@@ -7,8 +7,6 @@ import nonprofitbookkeeping.model.budget.BudgetLine;
 import nonprofitbookkeeping.model.budget.Periodicity;
 import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.reports.ReportMetadata;
-import nonprofitbookkeeping.reports.writer.LedgerReportWriter;
-
 import org.jxls.common.Context;
 import org.jxls.util.JxlsHelper;
 
@@ -460,7 +458,7 @@ public class ReportService
      *                other accounts are ignored
      * @return the resulting balance as a {@link BigDecimal}
      */
-    static BigDecimal calculateBalanceForAccount(Account account,
+    public static BigDecimal calculateBalanceForAccount(Account account,
             Collection<AccountingEntry> entries)
     {
         if (account == null)
