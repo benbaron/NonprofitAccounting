@@ -122,7 +122,7 @@ Tracks individual donations from donors.
 
 
 ## Diagram
-The file `uml/ER_DIAGRAM.puml` contains a PlantUML entity relationship diagram for these tables.
+The diagram is available in Draw.io format at `uml/ER_DIAGRAM.drawio`. It mirrors the table structure described above and can be opened with diagrams.net.
 
 ## Notes
 - All monetary values use `DECIMAL(15,2)` for simplicity.  Adjust precision as needed.
