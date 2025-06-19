@@ -12,18 +12,26 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Service class for managing fund accounting operations.
  * This includes managing funds and accounts, their relationships,
  * retrieving fund balances, and performing fund transfers.
- * Funds and accounts are stored in in-memory maps.
+ * Data is stored in a SQL database via {@link DatabaseManager}.
  */
 public class FundAccountingService
 {
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	
 	/** In-memory map storing funds, keyed by fund name. */
 	@JsonProperty private final Map<String, Fund> fundMap;
@@ -45,6 +53,12 @@ public class FundAccountingService
 		this.fundMap = new HashMap<>();
 		this.accountMap = new HashMap<>();
 	}
+=======
+        /** Constructs a new {@code FundAccountingService}. */
+        public FundAccountingService()
+        {
+        }
+>>>>>>> b1f07f2 Extend SQL support
 	
 	/**
 	 * Adds a new fund to the service.
@@ -53,6 +67,7 @@ public class FundAccountingService
 	 * @param fund The {@link Fund} to add. Must not be null.
 	 * @throws IllegalArgumentException if a fund with the same name already exists, or if {@code fund} or its name is null.
 	 */
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	public void addFund(Fund fund)
 	{
 		
@@ -69,6 +84,25 @@ public class FundAccountingService
 		
 		this.fundMap.put(fund.getName(), fund);
 	}
+=======
+        public void addFund(Fund fund)
+        {
+                if (fund == null || fund.getName() == null) {
+                        throw new IllegalArgumentException("Fund and fund name must not be null.");
+                }
+                try (Connection conn = DatabaseManager.getConnection();
+                     PreparedStatement ps = conn.prepareStatement(
+                             "MERGE INTO fund(fund_id,name,balance) KEY(fund_id) VALUES(?,?,?)"))
+                {
+                        ps.setString(1, fund.getName());
+                        ps.setString(2, fund.getName());
+                        ps.setBigDecimal(3, fund.getBalance());
+                        ps.executeUpdate();
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error adding fund", e);
+                }
+        }
+>>>>>>> b1f07f2 Extend SQL support
 	
 	/**
 	 * Removes a fund from the service by its name.
@@ -78,6 +112,7 @@ public class FundAccountingService
 	 * @param fundName The name of the fund to remove.
 	 * @return {@code true} if the fund was found and removed, {@code false} otherwise.
 	 */
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	public boolean removeFund(String fundName)
 	{
 		
@@ -112,6 +147,22 @@ public class FundAccountingService
 		
 		return false;
 	}
+=======
+        public boolean removeFund(String fundName)
+        {
+                if (fundName == null) {
+                        return false;
+                }
+                try (Connection conn = DatabaseManager.getConnection();
+                     PreparedStatement ps = conn.prepareStatement("DELETE FROM fund WHERE fund_id=?"))
+                {
+                        ps.setString(1, fundName);
+                        return ps.executeUpdate() > 0;
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error removing fund", e);
+                }
+        }
+>>>>>>> b1f07f2 Extend SQL support
 	
 	/**
 	 * Adds a new account to the service.
@@ -120,6 +171,7 @@ public class FundAccountingService
 	 * @param account The {@link Account} to add. Must not be null.
 	 * @throws IllegalArgumentException if an account with the same name already exists, or if {@code account} or its name is null.
 	 */
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	public void addAccount(Account account)
 	{
 		
@@ -136,6 +188,12 @@ public class FundAccountingService
 		
 		this.accountMap.put(account.getName(), account);
 	}
+=======
+        public void addAccount(Account account)
+        {
+                AccountService.addAccount(account);
+        }
+>>>>>>> b1f07f2 Extend SQL support
 	
 	/**
 	 * Removes an account from the service by its name.
@@ -145,6 +203,7 @@ public class FundAccountingService
 	 * @param accountName The name of the account to remove.
 	 * @return {@code true} if the account was found and removed, {@code false} otherwise.
 	 */
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	public boolean removeAccount(String accountName)
 	{
 		
@@ -178,6 +237,12 @@ public class FundAccountingService
 		
 		return false;
 	}
+=======
+        public boolean removeAccount(String accountName)
+        {
+                return AccountService.removeAccount(accountName);
+        }
+>>>>>>> b1f07f2 Extend SQL support
 	
 	/**
 	 * Retrieves a list of all funds currently managed by this service.
@@ -185,10 +250,23 @@ public class FundAccountingService
 	 * @return A new {@link ArrayList} containing all {@link Fund} objects.
 	 *         This is a copy, so modifications to the returned list will not affect internal storage.
 	 */
-	public List<Fund> listFunds()
-	{
-		return new ArrayList<>(this.fundMap.values());
-	}
+        public List<Fund> listFunds()
+        {
+                List<Fund> list = new ArrayList<>();
+                try (Connection conn = DatabaseManager.getConnection();
+                     PreparedStatement ps = conn.prepareStatement("SELECT fund_id,balance FROM fund"))
+                {
+                        ResultSet rs = ps.executeQuery();
+                        while (rs.next()) {
+                                Fund f = new Fund(rs.getString(1));
+                                f.setBalance(rs.getBigDecimal(2));
+                                list.add(f);
+                        }
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error listing funds", e);
+                }
+                return list;
+        }
 	
 	/**
 	 * Saves all funds to a JSON file located in the given company directory.
@@ -277,10 +355,10 @@ public class FundAccountingService
 	 * @return A new {@link ArrayList} containing all {@link Account} objects.
 	 *         This is a copy, so modifications to the returned list will not affect internal storage.
 	 */
-	public List<Account> listAccounts()
-	{
-		return new ArrayList<>(this.accountMap.values());
-	}
+        public List<Account> listAccounts()
+        {
+                return AccountService.getAllAccounts();
+        }
 	
 	/**
 	 * Gets the current balances for all funds.
@@ -289,17 +367,21 @@ public class FundAccountingService
 	 * @return A {@link Map} where keys are fund names (String) and values are their
 	 *         corresponding balances ({@link BigDecimal}).
 	 */
-	public Map<String, BigDecimal> getFundBalances()
-	{
-		Map<String, BigDecimal> balances = new HashMap<>();
-		
-		for (Fund fund : this.fundMap.values())
-		{
-			balances.put(fund.getName(), fund.getBalance());
-		}
-		
-		return balances;
-	}
+        public Map<String, BigDecimal> getFundBalances()
+        {
+                Map<String, BigDecimal> balances = new HashMap<>();
+                try (Connection conn = DatabaseManager.getConnection();
+                     PreparedStatement ps = conn.prepareStatement("SELECT fund_id,balance FROM fund"))
+                {
+                        ResultSet rs = ps.executeQuery();
+                        while (rs.next()) {
+                                balances.put(rs.getString(1), rs.getBigDecimal(2));
+                        }
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error retrieving fund balances", e);
+                }
+                return balances;
+        }
 	
 	/**
 	 * Transfers a specified amount between two funds.
@@ -312,6 +394,7 @@ public class FundAccountingService
 	 * @throws IllegalArgumentException if {@code amount} is not greater than zero,
 	 *                                  or if either {@code fromFund} or {@code toFund} does not exist.
 	 */
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	public void transferFunds(String fromFund, String toFund, BigDecimal amount)
 	{
 		
@@ -332,5 +415,43 @@ public class FundAccountingService
 		from.setBalance(from.getBalance().subtract(amount));
 		to.setBalance(to.getBalance().add(amount));
 	}
+=======
+        public void transferFunds(String fromFund, String toFund, BigDecimal amount)
+        {
+                if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+                        throw new IllegalArgumentException("Amount must be greater than zero.");
+                }
+                try (Connection conn = DatabaseManager.getConnection()) {
+                        conn.setAutoCommit(false);
+                        try (PreparedStatement getStmt = conn.prepareStatement("SELECT balance FROM fund WHERE fund_id=?");
+                             PreparedStatement updateStmt = conn.prepareStatement("UPDATE fund SET balance=? WHERE fund_id=?")) {
+                                getStmt.setString(1, fromFund);
+                                ResultSet rsFrom = getStmt.executeQuery();
+                                if (!rsFrom.next()) throw new IllegalArgumentException("Source fund not found");
+                                BigDecimal fromBal = rsFrom.getBigDecimal(1);
+
+                                getStmt.setString(1, toFund);
+                                ResultSet rsTo = getStmt.executeQuery();
+                                if (!rsTo.next()) throw new IllegalArgumentException("Destination fund not found");
+                                BigDecimal toBal = rsTo.getBigDecimal(1);
+
+                                updateStmt.setBigDecimal(1, fromBal.subtract(amount));
+                                updateStmt.setString(2, fromFund);
+                                updateStmt.executeUpdate();
+
+                                updateStmt.setBigDecimal(1, toBal.add(amount));
+                                updateStmt.setString(2, toFund);
+                                updateStmt.executeUpdate();
+
+                                conn.commit();
+                        } catch (SQLException e) {
+                                conn.rollback();
+                                throw e;
+                        }
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error transferring funds", e);
+                }
+        }
+>>>>>>> b1f07f2 Extend SQL support
 	
 }

@@ -6,8 +6,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 import java.sql.SQLException;
 =======
+=======
+>>>>>>> b1f07f2 Extend SQL support
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -103,11 +106,18 @@ public class DocumentStorageService
 	 * @param transactionId The ID of the transaction to which the document should be attached.
 	 *                      This is used in generating the stored filename. Must not be null or empty.
 	 * @param file The source {@link File} to be attached. Must not be null and must exist.
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
          * @return the generated database ID for the attachment record
          * @throws IOException if an error occurs during file copying (e.g., permission issues, disk full).
          * @throws IllegalArgumentException if {@code file} is null or does not exist, or if {@code transactionId} is null or empty.
          */
         public long attachDocumentToTransaction(String transactionId, File file) throws IOException
+=======
+	 * @throws IOException if an error occurs during file copying (e.g., permission issues, disk full).
+	 * @throws IllegalArgumentException if {@code file} is null or does not exist, or if {@code transactionId} is null or empty.
+	 */
+        public void attachDocumentToTransaction(String transactionId, File file) throws IOException
+>>>>>>> b1f07f2 Extend SQL support
         {
 		if (transactionId == null || transactionId.trim().isEmpty()) {
             throw new IllegalArgumentException("Transaction ID must not be null or empty.");
@@ -131,6 +141,7 @@ public class DocumentStorageService
 		String newFileName = transactionId + "_" + System.currentTimeMillis() + extension;
 		File targetFile = new File(DOCUMENT_BASE_DIR, newFileName);
 		
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
                 try
                 {
@@ -167,6 +178,29 @@ public class DocumentStorageService
                         targetFile.getAbsolutePath());
 >>>>>>> 627421c Add attachment persistence
 	}
+=======
+                // Copy the source file to the target location, replacing any existing file.
+                Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                String docId = newFileName;
+                try (Connection conn = DatabaseManager.getConnection();
+                     PreparedStatement ps = conn.prepareStatement(
+                             "MERGE INTO document_attachment(document_id,transaction_id,file_path,original_name,upload_time) " +
+                                     "KEY(document_id) VALUES(?,?,?,?,?)")) {
+                    ps.setString(1, docId);
+                    ps.setString(2, transactionId);
+                    ps.setString(3, targetFile.getAbsolutePath());
+                    ps.setString(4, originalName);
+                    ps.setLong(5, System.currentTimeMillis());
+                    ps.executeUpdate();
+                } catch (SQLException e) {
+                    throw new RuntimeException("Error recording document metadata", e);
+                }
+
+                System.out.println("Document attached for transaction " + transactionId + ": " +
+                        targetFile.getAbsolutePath());
+        }
+>>>>>>> b1f07f2 Extend SQL support
 	
 	/**
 	 * Retrieves a document from the storage directory based on its document ID.
@@ -181,6 +215,7 @@ public class DocumentStorageService
 	 */
         public File retrieveDocument(String documentId) throws IOException
         {
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 		
 		if (documentId == null || documentId.trim().isEmpty())
 		{
@@ -240,6 +275,37 @@ public class DocumentStorageService
 
                 throw new IOException("Attachment not found: " + attachmentId);
 >>>>>>> 627421c Add attachment persistence
+=======
+
+                if (documentId == null || documentId.trim().isEmpty())
+                {
+                        throw new IllegalArgumentException("Document ID must not be empty.");
+                }
+
+                String path = null;
+                try (Connection conn = DatabaseManager.getConnection();
+                     PreparedStatement ps = conn.prepareStatement(
+                             "SELECT file_path FROM document_attachment WHERE document_id=?")) {
+                    ps.setString(1, documentId);
+                    ResultSet rs = ps.executeQuery();
+                    if (rs.next()) {
+                        path = rs.getString(1);
+                    }
+                } catch (SQLException e) {
+                        throw new RuntimeException("Error retrieving document metadata", e);
+                }
+
+                if (path == null) {
+                        throw new IOException("Document metadata not found for ID: " + documentId);
+                }
+
+                File targetFile = new File(path);
+                if (!targetFile.exists()) {
+                        throw new IOException("Document file missing: " + path);
+                }
+
+                return targetFile;
+>>>>>>> b1f07f2 Extend SQL support
         }
 	
 }

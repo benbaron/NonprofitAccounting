@@ -2,13 +2,27 @@
 package nonprofitbookkeeping.service;
 
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 import nonprofitbookkeeping.dao.BudgetDao;
 import java.sql.SQLException;
 
 =======
 >>>>>>> 61e85fc Implement JPA persistence for budgets
+=======
+>>>>>>> b1f07f2 Extend SQL support
 import nonprofitbookkeeping.model.budget.Budget;
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 import nonprofitbookkeeping.db.DatabaseManager;
+=======
+import nonprofitbookkeeping.model.budget.BudgetLine;
+import nonprofitbookkeeping.model.budget.Periodicity;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Date;
+>>>>>>> b1f07f2 Extend SQL support
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -22,12 +36,18 @@ import java.util.logging.Logger;
 /**
  * Service class for managing {@link Budget} data.
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
  * This class provides functionalities to persist budgets using a database
  * located inside the company's directory.
 =======
  * This class persists {@link Budget} instances using JPA via {@link DatabaseManager}.
  * Legacy references to JSON files remain for backward compatibility but are no longer used.
 >>>>>>> 61e85fc Implement JPA persistence for budgets
+=======
+ * This class provides functionalities to persist budgets using an embedded SQL
+ * database via {@link DatabaseManager}. Previous JSON-based persistence has
+ * been replaced with SQL operations.
+>>>>>>> b1f07f2 Extend SQL support
  */
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 public class BudgetService
@@ -165,14 +185,19 @@ public class BudgetService {
     /** Logger for this class. */
     private static final Logger LOGGER = Logger.getLogger(BudgetService.class.getName());
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
     /** Data access object used for persistence. */
     private final BudgetDao budgetDao = new BudgetDao();
 =======
     /** No-op filename constant retained for backward compatibility. */
     private static final String BUDGETS_FILENAME = "budgets.json";
 >>>>>>> 61e85fc Implement JPA persistence for budgets
+=======
+    // No longer used: budgets were previously stored in a JSON file
+>>>>>>> b1f07f2 Extend SQL support
 
     /**
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
      * Saves a list of {@link Budget} objects to the database located in the
      * provided company directory. Existing budgets are replaced.
@@ -180,7 +205,12 @@ public class BudgetService {
      * Persists the provided budgets using JPA. Existing records are updated and new
      * ones are inserted.
 >>>>>>> 61e85fc Implement JPA persistence for budgets
+=======
+     * Persists a list of budgets to the database. Existing rows with the same
+     * budget ID are replaced.
+>>>>>>> b1f07f2 Extend SQL support
      *
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
      * @param budgets The list of {@link Budget} objects to save. Can be null or empty.
      * @param companyDirectory The {@link File} object representing the directory where the
@@ -190,17 +220,25 @@ public class BudgetService {
 =======
      * @param budgets budgets to persist, ignored if {@code null}
 >>>>>>> 61e85fc Implement JPA persistence for budgets
+=======
+     * @param budgets The list of budgets to save.
+     * @param companyDirectory Unused but kept for API compatibility.
+>>>>>>> b1f07f2 Extend SQL support
      */
     public void saveBudgets(List<Budget> budgets) {
         if (budgets == null) {
             LOGGER.warning("Budget list provided is null. Nothing to save.");
             return;
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
         }
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
         if (companyDirectory == null || !companyDirectory.isDirectory()) {
             throw new IOException("Company directory is invalid or not provided.");
+=======
+>>>>>>> b1f07f2 Extend SQL support
         }
 
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 =======
         EntityManager em = DatabaseManager.getEntityManager();
 >>>>>>> 61e85fc Implement JPA persistence for budgets
@@ -228,10 +266,48 @@ public class BudgetService {
         } finally {
             em.close();
 >>>>>>> 61e85fc Implement JPA persistence for budgets
+=======
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement upsert = conn.prepareStatement(
+                     "MERGE INTO budget(budget_id,budget_name,fiscal_year,description,currency,applicable_fund_id) KEY(budget_id) VALUES(?,?,?,?,?,?)");
+             PreparedStatement deleteLines = conn.prepareStatement("DELETE FROM budget_line WHERE budget_id=?");
+             PreparedStatement insertLine = conn.prepareStatement(
+                     "INSERT INTO budget_line(budget_id,account_id,account_name,total_amount,periodicity,fund_id) VALUES(?,?,?,?,?,?)")) {
+            conn.setAutoCommit(false);
+            for (Budget b : budgets) {
+                upsert.setString(1, b.getBudgetId());
+                upsert.setString(2, b.getBudgetName());
+                upsert.setInt(3, b.getFiscalYear());
+                upsert.setString(4, b.getDescription());
+                upsert.setString(5, b.getCurrency());
+                upsert.setString(6, b.getApplicableFundId());
+                upsert.executeUpdate();
+
+                deleteLines.setString(1, b.getBudgetId());
+                deleteLines.executeUpdate();
+
+                if (b.getBudgetLines() != null) {
+                    for (BudgetLine bl : b.getBudgetLines()) {
+                        insertLine.setString(1, b.getBudgetId());
+                        insertLine.setString(2, bl.getAccountId());
+                        insertLine.setString(3, bl.getAccountName());
+                        insertLine.setBigDecimal(4, bl.getTotalAmount());
+                        insertLine.setString(5, bl.getPeriodicity() == null ? null : bl.getPeriodicity().name());
+                        insertLine.setString(6, bl.getFundId());
+                        insertLine.addBatch();
+                    }
+                    insertLine.executeBatch();
+                }
+            }
+            conn.commit();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error saving budgets", e);
+>>>>>>> b1f07f2 Extend SQL support
         }
     }
 
     /**
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
      * Loads all {@link Budget} objects from the database located in the
      * specified company directory. If the directory is invalid or no database
@@ -239,7 +315,11 @@ public class BudgetService {
 =======
      * Retrieves all budgets from the database.
 >>>>>>> 61e85fc Implement JPA persistence for budgets
+=======
+     * Loads all budgets from the database.
+>>>>>>> b1f07f2 Extend SQL support
      *
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
      * @param companyDirectory The {@link File} object representing the directory where the
      *                         company's database is located. Must not be null and
@@ -250,13 +330,55 @@ public class BudgetService {
 =======
      * @return list of persisted budgets
 >>>>>>> 61e85fc Implement JPA persistence for budgets
+=======
+     * @param companyDirectory Unused but kept for API compatibility.
+     * @return list of budgets from the database.
+>>>>>>> b1f07f2 Extend SQL support
      */
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
     public List<Budget> loadBudgets(File companyDirectory) throws IOException {
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
         if (companyDirectory == null || !companyDirectory.isDirectory()) {
             LOGGER.warning("Company directory is invalid or not provided for loading budgets.");
             return new ArrayList<>();
+=======
+        List<Budget> list = new ArrayList<>();
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(
+                     "SELECT budget_id,budget_name,fiscal_year,description,currency,applicable_fund_id FROM budget");
+             PreparedStatement psLine = conn.prepareStatement(
+                     "SELECT account_id,account_name,total_amount,periodicity,fund_id FROM budget_line WHERE budget_id=?")) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Budget b = new Budget();
+                b.setBudgetId(rs.getString(1));
+                b.setBudgetName(rs.getString(2));
+                b.setFiscalYear(rs.getInt(3));
+                b.setDescription(rs.getString(4));
+                b.setCurrency(rs.getString(5));
+                b.setApplicableFundId(rs.getString(6));
+
+                psLine.setString(1, b.getBudgetId());
+                ResultSet rsLine = psLine.executeQuery();
+                List<BudgetLine> lines = new ArrayList<>();
+                while (rsLine.next()) {
+                    BudgetLine bl = new BudgetLine();
+                    bl.setAccountId(rsLine.getString(1));
+                    bl.setAccountName(rsLine.getString(2));
+                    bl.setTotalAmount(rsLine.getBigDecimal(3));
+                    String per = rsLine.getString(4);
+                    if (per != null) bl.setPeriodicity(Periodicity.valueOf(per));
+                    bl.setFundId(rsLine.getString(5));
+                    lines.add(bl);
+                }
+                b.setBudgetLines(lines);
+                list.add(b);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error loading budgets", e);
+>>>>>>> b1f07f2 Extend SQL support
         }
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 
 =======
     public List<Budget> loadBudgets() {
@@ -275,6 +397,9 @@ public class BudgetService {
             em.close();
 >>>>>>> 61e85fc Implement JPA persistence for budgets
         }
+=======
+        return list;
+>>>>>>> b1f07f2 Extend SQL support
     }
 >>>>>>> 734695e Add database persistence for budgets
 }
