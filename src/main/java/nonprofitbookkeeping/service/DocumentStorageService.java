@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 import java.sql.SQLException;
 =======
 =======
@@ -15,6 +16,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+=======
+>>>>>>> 6159d55 Revert service changes
 
 import nonprofitbookkeeping.model.DocumentAttachment;
 import nonprofitbookkeeping.service.DatabaseManager;
@@ -116,9 +119,14 @@ public class DocumentStorageService
 	 * @throws IOException if an error occurs during file copying (e.g., permission issues, disk full).
 	 * @throws IllegalArgumentException if {@code file} is null or does not exist, or if {@code transactionId} is null or empty.
 	 */
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
         public void attachDocumentToTransaction(String transactionId, File file) throws IOException
 >>>>>>> b1f07f2 Extend SQL support
         {
+=======
+	public void attachDocumentToTransaction(String transactionId, File file) throws IOException
+	{
+>>>>>>> 6159d55 Revert service changes
 		if (transactionId == null || transactionId.trim().isEmpty()) {
             throw new IllegalArgumentException("Transaction ID must not be null or empty.");
         }
@@ -141,6 +149,7 @@ public class DocumentStorageService
 		String newFileName = transactionId + "_" + System.currentTimeMillis() + extension;
 		File targetFile = new File(DOCUMENT_BASE_DIR, newFileName);
 		
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
                 try
@@ -201,6 +210,15 @@ public class DocumentStorageService
                         targetFile.getAbsolutePath());
         }
 >>>>>>> b1f07f2 Extend SQL support
+=======
+		// Copy the source file to the target location, replacing any existing file.
+		Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		
+		// Optionally, log the operation.
+		System.out.println("Document attached for transaction " + transactionId + ": " +
+			targetFile.getAbsolutePath());
+	}
+>>>>>>> 6159d55 Revert service changes
 	
 	/**
 	 * Retrieves a document from the storage directory based on its document ID.
@@ -213,6 +231,7 @@ public class DocumentStorageService
 	 *                     or if there's an issue accessing it.
 	 * @throws IllegalArgumentException if {@code documentId} is null or empty.
 	 */
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
         public File retrieveDocument(String documentId) throws IOException
         {
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
@@ -307,5 +326,24 @@ public class DocumentStorageService
                 return targetFile;
 >>>>>>> b1f07f2 Extend SQL support
         }
+=======
+	public File retrieveDocument(String documentId) throws IOException
+	{
+		
+		if (documentId == null || documentId.trim().isEmpty())
+		{
+			throw new IllegalArgumentException("Document ID must not be empty.");
+		}
+		
+		File targetFile = new File(DOCUMENT_BASE_DIR, documentId);
+		
+		if (!targetFile.exists())
+		{
+			throw new IOException("Document not found: " + documentId);
+		}
+		
+		return targetFile;
+	}
+>>>>>>> 6159d55 Revert service changes
 	
 }

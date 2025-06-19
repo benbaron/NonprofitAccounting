@@ -3,6 +3,7 @@ package nonprofitbookkeeping.service;
 
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 import nonprofitbookkeeping.dao.BudgetDao;
 import java.sql.SQLException;
 
@@ -16,13 +17,23 @@ import nonprofitbookkeeping.db.DatabaseManager;
 =======
 import nonprofitbookkeeping.model.budget.BudgetLine;
 import nonprofitbookkeeping.model.budget.Periodicity;
+=======
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.type.CollectionType;
+import com.fasterxml.jackson.core.util.*;
+>>>>>>> 6159d55 Revert service changes
 
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Date;
 >>>>>>> b1f07f2 Extend SQL support
+=======
+import nonprofitbookkeeping.model.budget.Budget;
+>>>>>>> 6159d55 Revert service changes
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -37,6 +48,7 @@ import java.util.logging.Logger;
  * Service class for managing {@link Budget} data.
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
  * This class provides functionalities to persist budgets using a database
  * located inside the company's directory.
 =======
@@ -48,6 +60,11 @@ import java.util.logging.Logger;
  * database via {@link DatabaseManager}. Previous JSON-based persistence has
  * been replaced with SQL operations.
 >>>>>>> b1f07f2 Extend SQL support
+=======
+ * This class provides functionalities to save a list of budgets to a JSON file
+ * and load them back. It uses Jackson for JSON serialization and deserialization.
+ * Budgets are stored in a file named "budgets.json" within a specified company directory.
+>>>>>>> 6159d55 Revert service changes
  */
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 public class BudgetService
@@ -186,6 +203,7 @@ public class BudgetService {
     private static final Logger LOGGER = Logger.getLogger(BudgetService.class.getName());
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
     /** Data access object used for persistence. */
     private final BudgetDao budgetDao = new BudgetDao();
 =======
@@ -195,8 +213,13 @@ public class BudgetService {
 =======
     // No longer used: budgets were previously stored in a JSON file
 >>>>>>> b1f07f2 Extend SQL support
+=======
+    /** The standard filename used for storing budget data in JSON format. */
+    private static final String BUDGETS_FILENAME = "budgets.json";
+>>>>>>> 6159d55 Revert service changes
 
     /**
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
      * Saves a list of {@link Budget} objects to the database located in the
@@ -209,7 +232,15 @@ public class BudgetService {
      * Persists a list of budgets to the database. Existing rows with the same
      * budget ID are replaced.
 >>>>>>> b1f07f2 Extend SQL support
+=======
+     * Saves a list of {@link Budget} objects to a JSON file named "budgets.json"
+     * within the specified company directory.
+     * If the provided list of budgets is null, no file will be written.
+     * If the list is empty, an empty JSON array will be saved.
+     * The JSON output is pretty-printed for readability.
+>>>>>>> 6159d55 Revert service changes
      *
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
      * @param budgets The list of {@link Budget} objects to save. Can be null or empty.
@@ -224,10 +255,19 @@ public class BudgetService {
      * @param budgets The list of budgets to save.
      * @param companyDirectory Unused but kept for API compatibility.
 >>>>>>> b1f07f2 Extend SQL support
+=======
+     * @param budgets The list of {@link Budget} objects to save. Can be null or empty.
+     * @param companyDirectory The {@link File} object representing the directory where the
+     *                         company's data (including the budgets file) should be stored.
+     *                         Must not be null and must be a valid directory.
+     * @throws IOException If the {@code companyDirectory} is invalid, or if an error occurs
+     *                     during file writing or JSON serialization.
+>>>>>>> 6159d55 Revert service changes
      */
     public void saveBudgets(List<Budget> budgets) {
         if (budgets == null) {
             LOGGER.warning("Budget list provided is null. Nothing to save.");
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
             return;
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
         }
@@ -236,8 +276,18 @@ public class BudgetService {
             throw new IOException("Company directory is invalid or not provided.");
 =======
 >>>>>>> b1f07f2 Extend SQL support
+=======
+            // Optionally, save an empty list or throw IllegalArgumentException
+            // For now, let's just not write the file if the list is null.
+            // If an empty list is provided, an empty JSON array will be saved.
+            return; 
+        }
+        if (companyDirectory == null || !companyDirectory.isDirectory()) {
+            throw new IOException("Company directory is invalid or not provided.");
+>>>>>>> 6159d55 Revert service changes
         }
 
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 =======
         EntityManager em = DatabaseManager.getEntityManager();
@@ -282,10 +332,15 @@ public class BudgetService {
                 upsert.setString(5, b.getCurrency());
                 upsert.setString(6, b.getApplicableFundId());
                 upsert.executeUpdate();
+=======
+        File budgetsFile = new File(companyDirectory, BUDGETS_FILENAME);
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT); // For pretty printing
+        objectMapper.setDefaultPrettyPrinter(new DefaultPrettyPrinter());
+>>>>>>> 6159d55 Revert service changes
 
-                deleteLines.setString(1, b.getBudgetId());
-                deleteLines.executeUpdate();
 
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
                 if (b.getBudgetLines() != null) {
                     for (BudgetLine bl : b.getBudgetLines()) {
                         insertLine.setString(1, b.getBudgetId());
@@ -303,10 +358,21 @@ public class BudgetService {
         } catch (SQLException e) {
             throw new RuntimeException("Error saving budgets", e);
 >>>>>>> b1f07f2 Extend SQL support
+=======
+        try {
+            // Ensure parent directory exists (though companyDirectory should already exist)
+            // Files.createDirectories(budgetsFile.getParentFile().toPath());
+            objectMapper.writeValue(budgetsFile, budgets);
+            LOGGER.info("Budgets saved successfully to: " + budgetsFile.getAbsolutePath());
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Failed to save budgets to " + budgetsFile.getAbsolutePath(), e);
+            throw e; // Re-throw to allow caller to handle
+>>>>>>> 6159d55 Revert service changes
         }
     }
 
     /**
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
      * Loads all {@link Budget} objects from the database located in the
@@ -318,7 +384,17 @@ public class BudgetService {
 =======
      * Loads all budgets from the database.
 >>>>>>> b1f07f2 Extend SQL support
+=======
+     * Loads a list of {@link Budget} objects from a JSON file named "budgets.json"
+     * located within the specified company directory.
+     * <p>
+     * If the {@code companyDirectory} is invalid, or if the "budgets.json" file does not exist,
+     * is not a file, or is empty, an empty list is returned and appropriate messages are logged.
+     * If an error occurs during JSON deserialization, an error is logged, and an empty list is returned.
+     * </p>
+>>>>>>> 6159d55 Revert service changes
      *
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
      * @param companyDirectory The {@link File} object representing the directory where the
@@ -334,9 +410,22 @@ public class BudgetService {
      * @param companyDirectory Unused but kept for API compatibility.
      * @return list of budgets from the database.
 >>>>>>> b1f07f2 Extend SQL support
+=======
+     * @param companyDirectory The {@link File} object representing the directory where the
+     *                         company's "budgets.json" file is located. Must not be null and
+     *                         must be a valid directory.
+     * @return A {@code List<Budget>} objects. Returns an empty list if the file doesn't exist,
+     *         is empty, or if there's an error during deserialization (after logging the error).
+     * @throws IOException If a critical I/O error occurs that prevents determining the file status
+     *                     (other than file not found or parse error, which result in an empty list).
+     *                     Note: The current implementation catches most IOExceptions from Jackson and returns
+     *                     an empty list, so this specific throws declaration might only cover edge cases
+     *                     related to {@code companyDirectory} validation if it were to throw IOException directly.
+>>>>>>> 6159d55 Revert service changes
      */
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
     public List<Budget> loadBudgets(File companyDirectory) throws IOException {
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
         if (companyDirectory == null || !companyDirectory.isDirectory()) {
             LOGGER.warning("Company directory is invalid or not provided for loading budgets.");
@@ -377,7 +466,13 @@ public class BudgetService {
         } catch (SQLException e) {
             throw new RuntimeException("Error loading budgets", e);
 >>>>>>> b1f07f2 Extend SQL support
+=======
+        if (companyDirectory == null || !companyDirectory.isDirectory()) {
+            LOGGER.warning("Company directory is invalid or not provided for loading budgets.");
+            return new ArrayList<>(); // Or throw new IOException("Company directory is invalid.");
+>>>>>>> 6159d55 Revert service changes
         }
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 
 =======
@@ -400,6 +495,33 @@ public class BudgetService {
 =======
         return list;
 >>>>>>> b1f07f2 Extend SQL support
+=======
+
+        File budgetsFile = new File(companyDirectory, BUDGETS_FILENAME);
+
+        if (!budgetsFile.exists() || !budgetsFile.isFile()) {
+            LOGGER.info("Budgets file not found at: " + budgetsFile.getAbsolutePath() + ". Returning empty list.");
+            return new ArrayList<>();
+        }
+
+        if (budgetsFile.length() == 0) {
+            LOGGER.info("Budgets file is empty at: " + budgetsFile.getAbsolutePath() + ". Returning empty list.");
+            return new ArrayList<>();
+        }
+        
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            CollectionType listType = objectMapper.getTypeFactory().constructCollectionType(List.class, Budget.class);
+            List<Budget> loadedBudgets = objectMapper.readValue(budgetsFile, listType);
+            LOGGER.info("Budgets loaded successfully from: " + budgetsFile.getAbsolutePath());
+            // The getBudgetId() method in Budget model ensures ID is generated if null after deserialization.
+            return loadedBudgets != null ? loadedBudgets : new ArrayList<>();
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Failed to load or parse budgets from " + budgetsFile.getAbsolutePath() + ". Returning empty list.", e);
+            // Depending on policy, might re-throw for certain IOExceptions vs returning empty for parse errors
+            return new ArrayList<>(); 
+        }
+>>>>>>> 6159d55 Revert service changes
     }
 >>>>>>> 734695e Add database persistence for budgets
 }

@@ -7,12 +7,15 @@ import nonprofitbookkeeping.persistence.DonorRepository;
 import nonprofitbookkeeping.persistence.DatabaseManager;
 
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 =======
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Date;
+=======
+>>>>>>> 6159d55 Revert service changes
 import java.util.ArrayList;
 >>>>>>> b1f07f2 Extend SQL support
 import java.util.List;
@@ -23,8 +26,12 @@ import java.util.List;
 =======
  * Service class for managing {@link Donor} information.
  * This class provides functionalities to add, edit, remove, and retrieve donor data.
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
  * Donor information is persisted using SQL via {@link DatabaseManager}.
 >>>>>>> b1f07f2 Extend SQL support
+=======
+ * Donor information is stored in an in-memory list.
+>>>>>>> 6159d55 Revert service changes
  */
 public class DonorService
 {
@@ -39,9 +46,20 @@ public class DonorService
                 }
 
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 =======
     /** Constructs a new {@code DonorService}. */
+=======
+    /** In-memory list to store {@link Donor} objects. */
+    private List<Donor> donors;
+
+    /**
+     * Constructs a new {@code DonorService}.
+     * Initializes an empty list to store donors.
+     */
+>>>>>>> 6159d55 Revert service changes
     public DonorService() {
+        this.donors = new ArrayList<>();
     }
 
     /**
@@ -51,21 +69,7 @@ public class DonorService
      * @throws NullPointerException if {@code donor} is null (due to ArrayList behavior).
      */
     public void addDonor(Donor donor) {
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(
-                     "MERGE INTO donor(donor_id,name,total_donations,last_donation_date,donation_amount,donation_type,donation_date) KEY(donor_id) VALUES(?,?,?,?,?,?,?)"))
-        {
-            ps.setString(1, donor.getDonorId());
-            ps.setString(2, donor.getName());
-            ps.setBigDecimal(3, donor.getTotalDonations());
-            ps.setDate(4, donor.getLastDonationDate() == null ? null : new Date(donor.getLastDonationDate().getTime()));
-            ps.setBigDecimal(5, donor.getDonationAmount());
-            ps.setString(6, donor.getDonationType());
-            ps.setDate(7, donor.getDonationDate() == null ? null : new Date(donor.getDonationDate().getTime()));
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException("Error adding donor", e);
-        }
+        this.donors.add(donor);
     }
 
     /**
@@ -80,6 +84,7 @@ public class DonorService
      * @return {@code true} if a donor with the given name was found and updated, {@code false} otherwise.
      */
     public boolean editDonor(String donorName, Donor updatedDonor) {
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(
                      "UPDATE donor SET donation_amount=?, donation_type=?, donation_date=? WHERE name=?"))
@@ -92,8 +97,28 @@ public class DonorService
         } catch (SQLException e) {
             throw new RuntimeException("Error editing donor", e);
 >>>>>>> b1f07f2 Extend SQL support
+=======
+        Optional<Donor> donorToEdit = this.donors.stream()
+                .filter(donor -> donor.getName().equals(donorName))
+                .findFirst();
+
+        if (donorToEdit.isPresent()) {
+            Donor donor = donorToEdit.get();
+            // Assuming updatedDonor contains the new values for these specific fields
+            donor.setDonationAmount(updatedDonor.getDonationAmount());
+            donor.setDonationType(updatedDonor.getDonationType());
+            donor.setDonationDate(updatedDonor.getDonationDate());
+            // Note: Other fields like donorId, name, totalDonations, lastDonationDate are not updated by this method.
+            return true;
+>>>>>>> 6159d55 Revert service changes
         }
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
+=======
+
+        return false; // Donor not found
+    }
+>>>>>>> 6159d55 Revert service changes
 
         /**
          * Edit an existing donor.
@@ -132,14 +157,7 @@ public class DonorService
      * @return {@code true} if a donor with the given name was found and removed, {@code false} otherwise.
      */
     public boolean removeDonor(String donorName) {
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement("DELETE FROM donor WHERE name = ?"))
-        {
-            ps.setString(1, donorName);
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            throw new RuntimeException("Error removing donor", e);
-        }
+        return this.donors.removeIf(donor -> donor.getName().equals(donorName));
     }
 >>>>>>> b1f07f2 Extend SQL support
 
@@ -189,28 +207,7 @@ public class DonorService
      *         Returns an empty list if no donors are present.
      */
     public List<Donor> getAllDonors() {
-        List<Donor> list = new ArrayList<>();
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement("SELECT donor_id,name,total_donations,last_donation_date,donation_amount,donation_type,donation_date FROM donor"))
-        {
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Donor d = new Donor();
-                d.setDonorId(rs.getString(1));
-                d.setName(rs.getString(2));
-                d.setTotalDonations(rs.getBigDecimal(3));
-                Date ld = rs.getDate(4);
-                if (ld != null) d.setLastDonationDate(new java.util.Date(ld.getTime()));
-                d.setDonationAmount(rs.getBigDecimal(5));
-                d.setDonationType(rs.getString(6));
-                Date dd = rs.getDate(7);
-                if (dd != null) d.setDonationDate(new java.util.Date(dd.getTime()));
-                list.add(d);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Error loading donors", e);
-        }
-        return list;
+        return new ArrayList<>(this.donors); // Return a copy
     }
 >>>>>>> b1f07f2 Extend SQL support
 }

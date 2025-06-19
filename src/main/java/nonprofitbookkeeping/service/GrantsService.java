@@ -5,6 +5,7 @@
 package nonprofitbookkeeping.service;
 
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 import java.io.File;
 import java.io.IOException;
 =======
@@ -14,6 +15,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 >>>>>>> b1f07f2 Extend SQL support
+=======
+>>>>>>> 6159d55 Revert service changes
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -27,11 +30,13 @@ import nonprofitbookkeeping.model.Grant;
 
 /**
  * Service class for managing {@link Grant} objects.
- * Grants are persisted using SQL via {@link DatabaseManager}. The service
- * provides methods for grant retrieval, addition, and removal.
+ * This service provides an in-memory storage solution for grants
+ * and includes methods for grant retrieval, addition, and removal.
+ * Each instance of this service manages its own list of grants.
  */
 public class GrantsService
 {
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	/** Shared list storing grants across service instances. */
 	private static final List<Grant> SHARED_GRANTS = new ArrayList<>();
@@ -57,6 +62,19 @@ public class GrantsService
         /** Constructs a new GrantsService. */
         public GrantsService() {
         }
+=======
+	/**
+	 * In-memory list to store Grant objects for this instance.
+	 */
+	private List<Grant> grants;
+
+	/**
+	 * Constructs a new GrantsService, initializing an empty list for storing grants.
+	 */
+	public GrantsService() {
+		this.grants = new ArrayList<>();
+	}
+>>>>>>> 6159d55 Revert service changes
 
 >>>>>>> b1f07f2 Extend SQL support
 	/**
@@ -66,6 +84,7 @@ public class GrantsService
 	 *         Returns an empty list if no grants are present. This is a copy,
 	 *         so modifications to the returned list do not affect internal storage.
 	 */
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	public List<Grant> getAllGrants()
 	{
@@ -104,6 +123,16 @@ public class GrantsService
                 }
                 return list;
         }
+=======
+	public List<Grant> getAllGrants()
+	{
+		// Return a copy to prevent external modification
+		if (this.grants == null) { // Should be initialized by constructor, but defensive
+		    this.grants = new ArrayList<>();
+		}
+		return new ArrayList<>(this.grants);
+	}
+>>>>>>> 6159d55 Revert service changes
 
 >>>>>>> b1f07f2 Extend SQL support
 	/**
@@ -115,6 +144,7 @@ public class GrantsService
 	 * @param grant The {@link Grant} object to be added. Must not be null
 	 *              and must have a valid, non-blank ID.
 	 */
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	public void addGrant(Grant grant)
 	{
@@ -157,6 +187,18 @@ public class GrantsService
                         throw new RuntimeException("Error adding grant", e);
                 }
         }
+=======
+	public void addGrant(Grant grant) {
+		if (grant == null || grant.getGrantId() == null || grant.getGrantId().trim().isEmpty()) {
+			// Optionally, log a warning here
+			return;
+		}
+		if (this.grants == null) { // Defensive, should be initialized by constructor
+			this.grants = new ArrayList<>();
+		}
+		this.grants.add(grant);
+	}
+>>>>>>> 6159d55 Revert service changes
 
 >>>>>>> b1f07f2 Extend SQL support
 	/**
@@ -168,6 +210,7 @@ public class GrantsService
 	 *         {@code false} otherwise (including if the grantId is invalid or
 	 *         no such grant was found).
 	 */
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	public boolean removeGrant(String grantId)
 	{
@@ -194,6 +237,14 @@ public class GrantsService
                         throw new RuntimeException("Error removing grant", e);
                 }
         }
+=======
+	public boolean removeGrant(String grantId) {
+		if (grantId == null || grantId.trim().isEmpty() || this.grants == null) {
+			return false;
+		}
+		return this.grants.removeIf(grant -> grantId.equals(grant.getGrantId()));
+	}
+>>>>>>> 6159d55 Revert service changes
 
 >>>>>>> b1f07f2 Extend SQL support
 	/**
@@ -201,6 +252,7 @@ public class GrantsService
 	 * This method is primarily intended for testing purposes to ensure a clean state
 	 * for a specific service instance.
 	 */
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	public void clearGrants()
 	{
@@ -425,5 +477,15 @@ public class GrantsService
                 }
         }
 >>>>>>> b1f07f2 Extend SQL support
+=======
+	public void clearGrants() {
+		if (this.grants != null) {
+			this.grants.clear();
+		} else {
+			// Should not happen if initialized by constructor, but defensive
+			this.grants = new ArrayList<>();
+		}
+	}
+>>>>>>> 6159d55 Revert service changes
 	
 }

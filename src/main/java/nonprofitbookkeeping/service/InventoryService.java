@@ -11,12 +11,15 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 =======
 import nonprofitbookkeeping.model.InventoryItem; // Correct import
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 >>>>>>> b1f07f2 Extend SQL support
+=======
+>>>>>>> 6159d55 Revert service changes
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,13 +28,20 @@ import java.util.List;
  * Service layer for {@link InventoryItem} entities using JPA for persistence.
 =======
  * InventoryService manages inventory items for the nonprofit bookkeeping system.
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
  * Items are persisted using SQL via {@link DatabaseManager}. Methods provide
  * basic CRUD operations and a placeholder for applying depreciation.
 >>>>>>> b1f07f2 Extend SQL support
+=======
+ * It maintains an in-memory map of inventory items, keyed by their unique ID,
+ * and provides methods to list, add, update, delete, and manage these items,
+ * including a placeholder for applying depreciation.
+>>>>>>> 6159d55 Revert service changes
  */
 public class InventoryService
 {
 
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
         /** List all inventory items. */
         public List<InventoryItem> listItems()
@@ -44,7 +54,20 @@ public class InventoryService
 
 =======
     /** Constructs an {@code InventoryService}. */
+=======
+    /** In-memory map to store {@link InventoryItem} objects, keyed by their unique ID. */
+    private final Map<String, InventoryItem> items;
+
+    /**
+     * Constructs an {@code InventoryService} and initializes an empty inventory map.
+     * Optionally, sample data can be pre-populated here during development or testing.
+     */
+>>>>>>> 6159d55 Revert service changes
     public InventoryService() {
+        this.items = new HashMap<>();
+        // Optionally pre-populate with sample data:
+        // addItem(new InventoryItem("I001", "Item A", new BigDecimal("100"), "2023-01-01", 5)); // Example with BigDecimal
+        // addItem(new InventoryItem("I002", "Item B", new BigDecimal("50"), "2023-02-01", 3));
     }
 
     /**
@@ -55,30 +78,7 @@ public class InventoryService
      *         Returns an empty list if no items are present.
      */
     public List<InventoryItem> listItems() {
-        List<InventoryItem> list = new ArrayList<>();
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(
-                     "SELECT item_id,name,acquired,cost,accum_depreciation,net_value,life_years,depreciation_rate,depreciation_method FROM inventory_item"))
-        {
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                InventoryItem i = new InventoryItem();
-                i.setId(rs.getString(1));
-                i.setName(rs.getString(2));
-                Date acq = rs.getDate(3);
-                if (acq != null) i.setAcquired(acq.toString());
-                i.setCost(rs.getBigDecimal(4));
-                i.setAccDep(rs.getBigDecimal(5));
-                i.setNetValue(rs.getBigDecimal(6));
-                i.setLifeYears(rs.getInt(7));
-                i.setDepreciationRate(rs.getBigDecimal(8));
-                i.setDepreciationMethod(rs.getString(9));
-                list.add(i);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Error loading inventory", e);
-        }
-        return list;
+        return new ArrayList<>(this.items.values());
     }
 
     /**
@@ -90,6 +90,7 @@ public class InventoryService
      */
     public void addItem(InventoryItem item) {
         if (item != null && item.getId() != null) {
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
             try (Connection conn = DatabaseManager.getConnection();
                  PreparedStatement ps = conn.prepareStatement(
                          "MERGE INTO inventory_item(item_id,name,acquired,cost,accum_depreciation,net_value,life_years,depreciation_rate,depreciation_method) KEY(item_id) VALUES(?,?,?,?,?,?,?,?,?)"))
@@ -112,6 +113,9 @@ public class InventoryService
                 throw new RuntimeException("Error adding inventory item", e);
             }
 >>>>>>> b1f07f2 Extend SQL support
+=======
+            this.items.put(item.getId(), item);
+>>>>>>> 6159d55 Revert service changes
         }
 
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
@@ -135,24 +139,15 @@ public class InventoryService
      */
     public void updateItem(InventoryItem item) {
         if (item != null && item.getId() != null) {
-            try (Connection conn = DatabaseManager.getConnection();
-                 PreparedStatement ps = conn.prepareStatement(
-                         "UPDATE inventory_item SET name=?, acquired=?, cost=?, accum_depreciation=?, net_value=?, life_years=?, depreciation_rate=?, depreciation_method=? WHERE item_id=?"))
-            {
-                ps.setString(1, item.getName());
-                ps.setDate(2, item.getAcquired() == null ? null : Date.valueOf(item.getAcquired()));
-                ps.setBigDecimal(3, item.getCost());
-                ps.setBigDecimal(4, item.getAccDep());
-                ps.setBigDecimal(5, item.getNetValue());
-                ps.setInt(6, item.getLifeYears());
-                ps.setBigDecimal(7, item.getDepreciationRate());
-                ps.setString(8, item.getDepreciationMethod());
-                ps.setString(9, item.getId());
-                ps.executeUpdate();
-            } catch (SQLException e) {
-                throw new RuntimeException("Error updating inventory item", e);
+            if (this.items.containsKey(item.getId())) {
+                this.items.put(item.getId(), item);
             }
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 >>>>>>> b1f07f2 Extend SQL support
+=======
+            // Else: Consider logging or throwing an exception if item to update is not found,
+            // depending on desired behavior.
+>>>>>>> 6159d55 Revert service changes
         }
 
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
@@ -174,6 +169,7 @@ public class InventoryService
      */
     public void deleteItem(String id) {
         if (id != null) {
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
             try (Connection conn = DatabaseManager.getConnection();
                  PreparedStatement ps = conn.prepareStatement("DELETE FROM inventory_item WHERE item_id=?"))
             {
@@ -183,6 +179,9 @@ public class InventoryService
                 throw new RuntimeException("Error deleting inventory item", e);
             }
 >>>>>>> b1f07f2 Extend SQL support
+=======
+            this.items.remove(id);
+>>>>>>> 6159d55 Revert service changes
         }
 
         /** Delete an item by id. */
@@ -202,13 +201,7 @@ public class InventoryService
      * After this operation, the inventory will be empty.
      */
     public void clearInventory() {
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement("DELETE FROM inventory_item"))
-        {
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException("Error clearing inventory", e);
-        }
+        this.items.clear();
         System.out.println("Inventory cleared."); // Consider using a logger
     }
 >>>>>>> b1f07f2 Extend SQL support

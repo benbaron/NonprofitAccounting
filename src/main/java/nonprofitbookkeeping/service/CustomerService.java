@@ -6,6 +6,7 @@
 package nonprofitbookkeeping.service;
 
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 =======
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,16 +14,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 >>>>>>> b1f07f2 Extend SQL support
 import java.util.ArrayList;
+=======
+>>>>>>> 6159d55 Revert service changes
 import java.util.List;
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 =======
+=======
+import java.util.function.BooleanSupplier;
+>>>>>>> 6159d55 Revert service changes
 
 >>>>>>> b1f07f2 Extend SQL support
 import nonprofitbookkeeping.model.Customer;
-import nonprofitbookkeeping.service.DatabaseManager;
 
 /**
  * Service class for managing customer and project-related data.
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
  * <p>
  * This in-memory implementation allows tests and simple UIs to store and
@@ -34,12 +41,17 @@ import nonprofitbookkeeping.service.DatabaseManager;
 =======
  * Data is persisted using the SQL database via {@link DatabaseManager}.
 >>>>>>> b1f07f2 Extend SQL support
+=======
+ * This class provides static methods to retrieve, add, clear, and remove customer information.
+ * Note: All methods in this class are currently stub implementations and need to be fully implemented.
+>>>>>>> 6159d55 Revert service changes
  */
 public class CustomerService
 {
        /** Internal list storing all known customers. */
        private static final List<Customer> customers = new ArrayList<>();
 
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
        /**
         * Retrieves the currently known customer project data.
@@ -72,7 +84,25 @@ public class CustomerService
                 return list;
         }
 >>>>>>> b1f07f2 Extend SQL support
+=======
+	/**
+	 * Retrieves data related to customer projects.
+	 * Note: This is a stub implementation and currently returns null.
+	 * It should be implemented to fetch and return a list of {@link Customer} objects
+	 * or a custom data structure representing customer project information.
+	 *
+	 * @return A list of customer project data (e.g., {@code List<Customer>}),
+	 *         or null if the implementation is not complete.
+	 */
+	public static List<Customer> getCustomerProjectData()
+	{
+		// TODO Auto-generated method stub
+		// Implementation should fetch relevant customer and project data.
+		return null;
+	}
+>>>>>>> 6159d55 Revert service changes
 
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
        /**
         * Adds a new customer to the system.
@@ -107,7 +137,23 @@ public class CustomerService
                         throw new RuntimeException("Error adding customer", e);
                 }
 >>>>>>> b1f07f2 Extend SQL support
+=======
+	/**
+	 * Adds a new customer to the system.
+	 * Note: This is a stub implementation and currently does nothing.
+	 * It should be implemented to persist the provided {@link Customer} object.
+	 *
+	 * @param customer The {@link Customer} object to add.
+	 */
+	public static void addCustomer(Customer customer)
+	{
+		// TODO Auto-generated method stub
+		// Implementation should add the customer to a data store.
+		
+	}
+>>>>>>> 6159d55 Revert service changes
 
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
        /**
         * Clears all customer data from the system.
@@ -119,7 +165,21 @@ public class CustomerService
 =======
         }
 >>>>>>> b1f07f2 Extend SQL support
+=======
+	/**
+	 * Clears all customer data from the system.
+	 * Note: This is a stub implementation and currently does nothing.
+	 * It should be implemented to remove all customer records from the data store.
+	 */
+	public static void clearCustomers()
+	{
+		// TODO Auto-generated method stub
+		// Implementation should clear all customers from the data store.
+		
+	}
+>>>>>>> 6159d55 Revert service changes
 
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
        /**
         * Removes a customer from the system based on a given identifier.
@@ -173,6 +233,26 @@ public class CustomerService
                 }
         }
 >>>>>>> b1f07f2 Extend SQL support
+=======
+	/**
+	 * Removes a customer from the system based on a given identifier.
+	 * Note: This is a stub implementation and currently returns null.
+	 * The return type {@link BooleanSupplier} is unusual for a remove operation;
+	 * typically, it might return a boolean indicating success/failure or the removed object.
+	 * This method should be implemented to find and remove the customer.
+	 *
+	 * @param identifier The string identifier (e.g., customer ID or name) of the customer to remove.
+	 * @return A {@link BooleanSupplier} (currently null due to stub implementation).
+	 *         The intended behavior of this supplier needs clarification.
+	 */
+	public static BooleanSupplier removeCustomer(String identifier)
+	{
+		// TODO Auto-generated method stub
+		// Implementation should find and remove the customer based on the identifier.
+		// The return type BooleanSupplier is atypical; consider returning boolean or void.
+		return null;
+	}
+>>>>>>> 6159d55 Revert service changes
 
 
 	
