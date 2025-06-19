@@ -6,10 +6,6 @@
 package nonprofitbookkeeping.service;
 
 import java.math.BigDecimal; // Added for AccountBalance and method return type
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,23 +14,27 @@ import java.util.stream.Collectors; // Added for cleaner list transformation
 import nonprofitbookkeeping.model.Ledger;
 
 import nonprofitbookkeeping.model.Account;
-import nonprofitbookkeeping.model.AccountType;
-import nonprofitbookkeeping.model.AccountSide;
 
 /**
  * Service class for managing {@link Account} objects.
- * Provides methods for retrieving and manipulating accounts using a
- * SQL database for persistence.
+ * Provides methods for retrieving and manipulating accounts.
+ * Accounts are stored in an in-memory list.
  */
 /**
  * Service class providing static methods for managing {@link Account} objects.
  * This includes operations such as retrieving all accounts, calculating account balances,
  * adding new accounts, removing accounts, and clearing the account list.
- * Data is stored in a database managed by {@link DatabaseManager}. The methods
- * open their own connections and perform simple SQL operations.
+ * Accounts are stored in a static in-memory list, making this service suitable for
+ * scenarios where a shared, application-wide account list is appropriate.
+ * For more complex applications, consider instance-based services and proper dependency injection.
  */
 public class AccountService
 {
+	/**
+	 * In-memory list to store {@link Account} objects.
+	 * This static list serves as the central storage for accounts managed by this service.
+	 */
+	private static List<Account> accounts = new ArrayList<>();
 
 	/**
 	 * Represents the balance of a specific account, including its ID, name, and balance amount.
@@ -80,50 +80,25 @@ public class AccountService
 	 *         service's internal storage. However, modifications to the {@link Account}
 	 *         objects within the list will affect the original objects.
 	 */
-        public static List<Account> getAllAccounts()
-        {
-                List<Account> result = new ArrayList<>();
-                try (Connection conn = DatabaseManager.getConnection();
-                     PreparedStatement ps = conn.prepareStatement(
-                             "SELECT account_number,name,account_code,account_type,increase_side,currency,opening_balance FROM account"))
-                {
-                        ResultSet rs = ps.executeQuery();
-                        while (rs.next()) {
-                                Account a = new Account();
-                                a.setAccountNumber(rs.getString(1));
-                                a.setName(rs.getString(2));
-                                a.setAccountCode(rs.getString(3));
-                                String type = rs.getString(4);
-                                if (type != null) {
-                                        a.setAccountType(AccountType.valueOf(type));
-                                }
-                                String side = rs.getString(5);
-                                if (side != null) {
-                                        a.setIncreaseSide(AccountSide.valueOf(side));
-                                }
-                                a.setCurrency(rs.getString(6));
-                                a.setOpeningBalance(rs.getBigDecimal(7));
-                                result.add(a);
-                        }
-                } catch (SQLException e) {
-                        throw new RuntimeException("Error loading accounts", e);
-                }
-                return result;
-        }
+	public static List<Account> getAllAccounts()
+	{
+		// Return a copy to prevent external modification of the internal list structure
+		return new ArrayList<>(accounts);
+	}
 
-        /**
-         * Deletes all accounts from the database. Useful for resetting state
-         * during testing or when loading a new set of company data.
-         */
-        public static void clearAccounts() {
-                try (Connection conn = DatabaseManager.getConnection();
-                     PreparedStatement ps = conn.prepareStatement("DELETE FROM account"))
-                {
-                        ps.executeUpdate();
-                } catch (SQLException e) {
-                        throw new RuntimeException("Error clearing accounts", e);
-                }
-        }
+	/**
+	 * Clears all accounts from the internal in-memory storage.
+	 * This method is useful for resetting the state, for example, during testing
+	 * or when loading a new set of company data.
+	 */
+	public static void clearAccounts() {
+		if (accounts != null) {
+			accounts.clear();
+		} else {
+			// This case should ideally not be reached if 'accounts' is always initialized.
+			accounts = new ArrayList<>();
+		}
+	}
 
 	/**
 	 * Adds a new {@link Account} to the in-memory storage.
@@ -133,47 +108,31 @@ public class AccountService
 	 *
 	 * @param account The {@link Account} object to be added.
 	 */
-        public static void addAccount(Account account) {
-                if (account == null || account.getAccountNumber() == null || account.getAccountNumber().trim().isEmpty()) {
-                        return;
-                }
-                try (Connection conn = DatabaseManager.getConnection();
-                     PreparedStatement ps = conn.prepareStatement(
-                             "MERGE INTO account(account_number,name,account_code,account_type,increase_side,currency,opening_balance) KEY(account_number) VALUES(?,?,?,?,?,?,?)"))
-                {
-                        ps.setString(1, account.getAccountNumber());
-                        ps.setString(2, account.getName());
-                        ps.setString(3, account.getAccountCode());
-                        ps.setString(4, account.getAccountType() == null ? null : account.getAccountType().name());
-                        ps.setString(5, account.getIncreaseSide() == null ? null : account.getIncreaseSide().name());
-                        ps.setString(6, account.getCurrency());
-                        ps.setBigDecimal(7, account.getOpeningBalance());
-                        ps.executeUpdate();
-                } catch (SQLException e) {
-                        throw new RuntimeException("Error adding account", e);
-                }
-        }
+	public static void addAccount(Account account) {
+		if (account == null || account.getAccountNumber() == null || account.getAccountNumber().trim().isEmpty()) {
+			// Optionally, log a warning or throw an IllegalArgumentException here
+			return;
+		}
+		if (accounts == null) { // Defensive check, though 'accounts' is initialized at declaration
+			accounts = new ArrayList<>();
+		}
+		accounts.add(account);
+	}
 
-        /**
-         * Removes an account from the database based on its account number.
-         * No action is taken if the provided {@code accountId} is null or blank.
+	/**
+	 * Removes an account from the in-memory storage based on its account ID (account number).
+	 * No action is taken if the provided {@code accountId} is null or blank, or if the internal
+	 * accounts list is not initialized.
 	 *
 	 * @param accountId The unique identifier (account number) of the {@link Account} to be removed.
 	 * @return {@code true} if an account with the specified ID was found and removed;
 	 *         {@code false} otherwise (e.g., if {@code accountId} is invalid, or no such account exists).
 	 */
-        public static boolean removeAccount(String accountId) {
-                if (accountId == null || accountId.trim().isEmpty()) {
-                        return false;
-                }
-                try (Connection conn = DatabaseManager.getConnection();
-                     PreparedStatement ps = conn.prepareStatement("DELETE FROM account WHERE account_number = ?"))
-                {
-                        ps.setString(1, accountId);
-                        return ps.executeUpdate() > 0;
-                } catch (SQLException e) {
-                        throw new RuntimeException("Error removing account", e);
-                }
-        }
+	public static boolean removeAccount(String accountId) {
+		if (accountId == null || accountId.trim().isEmpty() || accounts == null) {
+			return false;
+		}
+		return accounts.removeIf(account -> accountId.equals(account.getAccountNumber()));
+	}
 	
 }
