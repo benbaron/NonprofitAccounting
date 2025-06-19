@@ -204,11 +204,18 @@
 		</dependency>
 
     <!-- I/O layer: OFXParser, AggregateUnmarshaller, etc. -->
-		<dependency>
-			<groupId>com.webcohesion.ofx4j</groupId>
-			<artifactId>ofx4j</artifactId>
-			<version>1.38</version>
-		</dependency>
+                <dependency>
+                        <groupId>com.webcohesion.ofx4j</groupId>
+                        <artifactId>ofx4j</artifactId>
+                        <version>1.38</version>
+                </dependency>
+
+                <!-- Embedded H2 database for local storage -->
+                <dependency>
+                        <groupId>com.h2database</groupId>
+                        <artifactId>h2</artifactId>
+                        <version>2.2.224</version>
+                </dependency>
 		
 		<dependency>
             <groupId>org.junit.jupiter</groupId>

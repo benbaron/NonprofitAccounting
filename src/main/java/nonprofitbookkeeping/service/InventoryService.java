@@ -1,6 +1,11 @@
 package nonprofitbookkeeping.service;
 
 import nonprofitbookkeeping.model.InventoryItem; // Correct import
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,24 +13,13 @@ import java.util.Map;
 
 /**
  * InventoryService manages inventory items for the nonprofit bookkeeping system.
- * It maintains an in-memory map of inventory items, keyed by their unique ID,
- * and provides methods to list, add, update, delete, and manage these items,
- * including a placeholder for applying depreciation.
+ * Items are persisted using SQL via {@link DatabaseManager}. Methods provide
+ * basic CRUD operations and a placeholder for applying depreciation.
  */
 public class InventoryService {
 
-    /** In-memory map to store {@link InventoryItem} objects, keyed by their unique ID. */
-    private final Map<String, InventoryItem> items;
-
-    /**
-     * Constructs an {@code InventoryService} and initializes an empty inventory map.
-     * Optionally, sample data can be pre-populated here during development or testing.
-     */
+    /** Constructs an {@code InventoryService}. */
     public InventoryService() {
-        this.items = new HashMap<>();
-        // Optionally pre-populate with sample data:
-        // addItem(new InventoryItem("I001", "Item A", new BigDecimal("100"), "2023-01-01", 5)); // Example with BigDecimal
-        // addItem(new InventoryItem("I002", "Item B", new BigDecimal("50"), "2023-02-01", 3));
     }
 
     /**
@@ -36,7 +30,30 @@ public class InventoryService {
      *         Returns an empty list if no items are present.
      */
     public List<InventoryItem> listItems() {
-        return new ArrayList<>(this.items.values());
+        List<InventoryItem> list = new ArrayList<>();
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(
+                     "SELECT item_id,name,acquired,cost,accum_depreciation,net_value,life_years,depreciation_rate,depreciation_method FROM inventory_item"))
+        {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                InventoryItem i = new InventoryItem();
+                i.setId(rs.getString(1));
+                i.setName(rs.getString(2));
+                Date acq = rs.getDate(3);
+                if (acq != null) i.setAcquired(acq.toString());
+                i.setCost(rs.getBigDecimal(4));
+                i.setAccDep(rs.getBigDecimal(5));
+                i.setNetValue(rs.getBigDecimal(6));
+                i.setLifeYears(rs.getInt(7));
+                i.setDepreciationRate(rs.getBigDecimal(8));
+                i.setDepreciationMethod(rs.getString(9));
+                list.add(i);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error loading inventory", e);
+        }
+        return list;
     }
 
     /**
@@ -48,7 +65,27 @@ public class InventoryService {
      */
     public void addItem(InventoryItem item) {
         if (item != null && item.getId() != null) {
-            this.items.put(item.getId(), item);
+            try (Connection conn = DatabaseManager.getConnection();
+                 PreparedStatement ps = conn.prepareStatement(
+                         "MERGE INTO inventory_item(item_id,name,acquired,cost,accum_depreciation,net_value,life_years,depreciation_rate,depreciation_method) KEY(item_id) VALUES(?,?,?,?,?,?,?,?,?)"))
+            {
+                ps.setString(1, item.getId());
+                ps.setString(2, item.getName());
+                if (item.getAcquired() != null) {
+                    ps.setDate(3, Date.valueOf(item.getAcquired()));
+                } else {
+                    ps.setDate(3, null);
+                }
+                ps.setBigDecimal(4, item.getCost());
+                ps.setBigDecimal(5, item.getAccDep());
+                ps.setBigDecimal(6, item.getNetValue());
+                ps.setInt(7, item.getLifeYears());
+                ps.setBigDecimal(8, item.getDepreciationRate());
+                ps.setString(9, item.getDepreciationMethod());
+                ps.executeUpdate();
+            } catch (SQLException e) {
+                throw new RuntimeException("Error adding inventory item", e);
+            }
         }
     }
 
@@ -62,11 +99,23 @@ public class InventoryService {
      */
     public void updateItem(InventoryItem item) {
         if (item != null && item.getId() != null) {
-            if (this.items.containsKey(item.getId())) {
-                this.items.put(item.getId(), item);
+            try (Connection conn = DatabaseManager.getConnection();
+                 PreparedStatement ps = conn.prepareStatement(
+                         "UPDATE inventory_item SET name=?, acquired=?, cost=?, accum_depreciation=?, net_value=?, life_years=?, depreciation_rate=?, depreciation_method=? WHERE item_id=?"))
+            {
+                ps.setString(1, item.getName());
+                ps.setDate(2, item.getAcquired() == null ? null : Date.valueOf(item.getAcquired()));
+                ps.setBigDecimal(3, item.getCost());
+                ps.setBigDecimal(4, item.getAccDep());
+                ps.setBigDecimal(5, item.getNetValue());
+                ps.setInt(6, item.getLifeYears());
+                ps.setBigDecimal(7, item.getDepreciationRate());
+                ps.setString(8, item.getDepreciationMethod());
+                ps.setString(9, item.getId());
+                ps.executeUpdate();
+            } catch (SQLException e) {
+                throw new RuntimeException("Error updating inventory item", e);
             }
-            // Else: Consider logging or throwing an exception if item to update is not found,
-            // depending on desired behavior.
         }
     }
 
@@ -78,7 +127,14 @@ public class InventoryService {
      */
     public void deleteItem(String id) {
         if (id != null) {
-            this.items.remove(id);
+            try (Connection conn = DatabaseManager.getConnection();
+                 PreparedStatement ps = conn.prepareStatement("DELETE FROM inventory_item WHERE item_id=?"))
+            {
+                ps.setString(1, id);
+                ps.executeUpdate();
+            } catch (SQLException e) {
+                throw new RuntimeException("Error deleting inventory item", e);
+            }
         }
     }
 
@@ -102,7 +158,13 @@ public class InventoryService {
      * After this operation, the inventory will be empty.
      */
     public void clearInventory() {
-        this.items.clear();
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement("DELETE FROM inventory_item"))
+        {
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error clearing inventory", e);
+        }
         System.out.println("Inventory cleared."); // Consider using a logger
     }
 
