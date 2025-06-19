@@ -1,0 +1,156 @@
+@startuml
+' Entity Relationship Diagram for Nonprofit Bookkeeping database
+
+entity company {
+    * company_id : INTEGER
+    --
+    name : VARCHAR(255)
+    legal_structure : VARCHAR(64)
+    tax_id : VARCHAR(64)
+    address : VARCHAR(255)
+    phone : VARCHAR(64)
+    email : VARCHAR(128)
+    fiscal_year_start : VARCHAR(16)
+    base_currency : VARCHAR(8)
+    starting_balance_date : VARCHAR(16)
+    chart_of_accounts_type : VARCHAR(64)
+    admin_username : VARCHAR(64)
+    admin_password : VARCHAR(64)
+    default_bank_account : VARCHAR(64)
+    enable_fund_accounting : BOOLEAN
+    enable_inventory : BOOLEAN
+    enable_multi_currency : BOOLEAN
+}
+
+entity account {
+    * account_id : VARCHAR(64)
+    --
+    company_id : INTEGER
+    account_code : VARCHAR(64)
+    name : VARCHAR(255)
+    type : VARCHAR(32)
+    increase_side : VARCHAR(8)
+    parent_account_id : VARCHAR(64)
+    currency : VARCHAR(8)
+    opening_balance : DECIMAL(15,2)
+}
+
+entity fund {
+    * fund_id : VARCHAR(64)
+    --
+    company_id : INTEGER
+    name : VARCHAR(255)
+    balance : DECIMAL(15,2)
+}
+
+entity account_fund {
+    * account_id : VARCHAR(64)
+    * fund_id : VARCHAR(64)
+}
+
+entity transaction {
+    * transaction_id : INTEGER
+    --
+    company_id : INTEGER
+    booking_timestamp : BIGINT
+    date : VARCHAR(16)
+    memo : VARCHAR(255)
+}
+
+entity entry {
+    * entry_id : INTEGER
+    --
+    transaction_id : INTEGER
+    account_id : VARCHAR(64)
+    amount : DECIMAL(15,2)
+    account_side : VARCHAR(8)
+    account_name : VARCHAR(255)
+}
+
+entity budget {
+    * budget_id : VARCHAR(64)
+    --
+    company_id : INTEGER
+    budget_name : VARCHAR(255)
+    fiscal_year : INTEGER
+    description : VARCHAR(512)
+    currency : VARCHAR(8)
+    applicable_fund_id : VARCHAR(64)
+}
+
+entity budget_line {
+    * line_id : INTEGER
+    --
+    budget_id : VARCHAR(64)
+    account_id : VARCHAR(64)
+    account_name : VARCHAR(255)
+    total_amount : DECIMAL(15,2)
+    periodicity : VARCHAR(16)
+    fund_id : VARCHAR(64)
+}
+
+entity budget_line_period_amount {
+    * line_id : INTEGER
+    * period_index : INTEGER
+    --
+    amount : DECIMAL(15,2)
+}
+
+entity donor {
+    * donor_id : VARCHAR(64)
+    --
+    company_id : INTEGER
+    name : VARCHAR(255)
+    total_donations : DECIMAL(15,2)
+    last_donation_date : DATE
+}
+
+entity donation {
+    * donation_id : INTEGER
+    --
+    donor_id : VARCHAR(64)
+    amount : DECIMAL(15,2)
+    donation_type : VARCHAR(64)
+    donation_date : DATE
+}
+
+entity inventory_item {
+    * item_id : VARCHAR(64)
+    --
+    company_id : INTEGER
+    name : VARCHAR(255)
+    acquired : DATE
+    cost : DECIMAL(15,2)
+    accum_depreciation : DECIMAL(15,2)
+    net_value : DECIMAL(15,2)
+    life_years : INTEGER
+    depreciation_rate : DECIMAL(8,4)
+    depreciation_method : VARCHAR(64)
+}
+
+entity document_attachment {
+    * document_id : VARCHAR(64)
+    --
+    transaction_id : VARCHAR(64)
+    file_path : VARCHAR(255)
+    original_name : VARCHAR(255)
+    upload_time : BIGINT
+}
+
+' Relationships
+company ||--o{ account : owns
+company ||--o{ fund : manages
+account ||..o{ entry : posts
+transaction ||--o{ entry : contains
+company ||--o{ transaction : logs
+account ||..o{ account_fund : mapped
+fund ||..o{ account_fund : mapped
+company ||--o{ donor : supports
+company ||--o{ inventory_item : tracks
+company ||--o{ budget : plans
+budget ||--o{ budget_line : aggregates
+budget_line ||--o{ budget_line_period_amount : splits
+company ||--o{ document_attachment : files
+transaction ||--o{ document_attachment : attaches
+donor ||--o{ donation : gives
+@enduml

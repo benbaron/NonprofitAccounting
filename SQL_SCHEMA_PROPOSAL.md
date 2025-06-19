@@ -120,6 +120,10 @@ Tracks individual donations from donors.
 - `original_name` VARCHAR(255)
 - `upload_time` BIGINT
 
+
+## Diagram
+The file `uml/ER_DIAGRAM.puml` contains a PlantUML entity relationship diagram for these tables.
+
 ## Notes
 - All monetary values use `DECIMAL(15,2)` for simplicity.  Adjust precision as needed.
 - Enum fields (such as account type, side, and periodicity) are stored as strings for readability.
