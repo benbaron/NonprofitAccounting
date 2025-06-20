@@ -204,11 +204,18 @@
  			<version>${javafx.version}</version>        		
  		</dependency>
  		
-		<dependency>
-		    <groupId>org.apache.pdfbox</groupId>
-		    <artifactId>pdfbox</artifactId>
-		    <version>2.0.31</version>   <!-- latest stable as of May 2025 -->
-		</dependency>
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.31</version>   <!-- latest stable as of May 2025 -->
+        </dependency>
+
+        <!-- SQLite JDBC driver for database persistence -->
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.45.2.0</version>
+        </dependency>
 
     <!-- I/O layer: OFXParser, AggregateUnmarshaller, etc. -->
 		<dependency>
