@@ -1,0 +1,66 @@
+package nonprofitbookkeeping.db;
+
+import java.io.File;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+/**
+ * Simple database manager providing connections to a SQLite database
+ * located in a company's directory. Tables for budgets and budget lines
+ * are created automatically when a connection is requested.
+ */
+public class DatabaseManager {
+    /** File name of the SQLite database within a company directory. */
+    private static final String DB_FILENAME = "company.db";
+
+    /**
+     * Obtains a connection to the SQLite database for the given company
+     * directory. The database file will be created if it does not exist
+     * and required tables are initialized.
+     *
+     * @param companyDirectory directory of the company
+     * @return a {@link Connection} to the SQLite database
+     * @throws SQLException if a database error occurs
+     */
+    public static Connection getConnection(File companyDirectory) throws SQLException {
+        if (companyDirectory == null || !companyDirectory.isDirectory()) {
+            throw new SQLException("Invalid company directory");
+        }
+        File dbFile = new File(companyDirectory, DB_FILENAME);
+        String url = "jdbc:sqlite:" + dbFile.getAbsolutePath();
+        Connection conn = DriverManager.getConnection(url);
+        initializeDatabase(conn);
+        return conn;
+    }
+
+    /**
+     * Ensures that the budgets and budget_lines tables exist.
+     */
+    private static void initializeDatabase(Connection conn) throws SQLException {
+        try (Statement stmt = conn.createStatement()) {
+            stmt.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS budgets (" +
+                "budget_id TEXT PRIMARY KEY, " +
+                "budget_name TEXT, " +
+                "fiscal_year INTEGER, " +
+                "description TEXT, " +
+                "currency TEXT, " +
+                "applicable_fund_id TEXT" +
+                ")");
+            stmt.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS budget_lines (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "budget_id TEXT, " +
+                "account_id TEXT, " +
+                "account_name TEXT, " +
+                "total_budgeted_amount TEXT, " +
+                "periodicity TEXT, " +
+                "periodic_amounts TEXT, " +
+                "fund_id TEXT, " +
+                "FOREIGN KEY (budget_id) REFERENCES budgets(budget_id)" +
+                ")");
+        }
+    }
+}

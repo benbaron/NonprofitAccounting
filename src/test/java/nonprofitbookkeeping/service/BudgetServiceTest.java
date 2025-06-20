@@ -11,7 +11,6 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +40,8 @@ class BudgetServiceTest
 		List<Budget> emptyList = new ArrayList<>();
 		BudgetService.saveBudgets(emptyList, this.companyDirectory);
 		
-		File budgetsFile = new File(this.companyDirectory, "budgets.json");
-		assertTrue(budgetsFile.exists(), "budgets.json file should be created.");
+                File dbFile = new File(this.companyDirectory, "company.db");
+                assertTrue(dbFile.exists(), "Database file should be created.");
 		
 		List<Budget> loadedBudgets = this.budgetService.loadBudgets(this.companyDirectory);
 		assertNotNull(loadedBudgets, "Loaded budgets should not be null.");
@@ -146,34 +145,34 @@ class BudgetServiceTest
 	@Test
 		void testLoadBudgets_FileNotFound() throws IOException
 	{
-		// Ensure budgets.json does not exist (it shouldn't in a fresh tempDir)
+                // Ensure database does not exist (it shouldn't in a fresh tempDir)
 		List<Budget> loadedBudgets = this.budgetService.loadBudgets(this.companyDirectory);
 		assertNotNull(loadedBudgets);
-		assertTrue(loadedBudgets.isEmpty(), "Should return an empty list if file not found.");
+                assertTrue(loadedBudgets.isEmpty(), "Should return an empty list if database file not found.");
 	}
 	
-	@Test
-		void testLoadBudgets_CorruptJsonFile() throws IOException
+        @Test
+                void testLoadBudgets_CorruptDatabaseFile() throws IOException
 	{
-		File budgetsFile = new File(this.companyDirectory, "budgets.json");
-		Files.writeString(budgetsFile.toPath(), "{invalid json content,,}");
+                File dbFile = new File(this.companyDirectory, "company.db");
+                java.nio.file.Files.writeString(dbFile.toPath(), "corrupt");
 		
 		List<Budget> loadedBudgets = this.budgetService.loadBudgets(this.companyDirectory);
 		assertNotNull(loadedBudgets);
-		assertTrue(loadedBudgets.isEmpty(), "Should return an empty list for corrupt JSON.");
+                assertTrue(loadedBudgets.isEmpty(), "Should return an empty list for corrupt database file.");
 		// Verification of logging would require a log capture mechanism,
 		// but the requirement is to ensure it returns empty and doesn't crash.
 	}
 	
-	@Test
-		void testLoadBudgets_EmptyJsonFile() throws IOException
+        @Test
+                void testLoadBudgets_EmptyDatabaseFile() throws IOException
 	{
-		File budgetsFile = new File(this.companyDirectory, "budgets.json");
-		Files.writeString(budgetsFile.toPath(), ""); // Empty file
+                File dbFile = new File(this.companyDirectory, "company.db");
+                java.nio.file.Files.writeString(dbFile.toPath(), ""); // Empty file
 		
 		List<Budget> loadedBudgets = this.budgetService.loadBudgets(this.companyDirectory);
 		assertNotNull(loadedBudgets);
-		assertTrue(loadedBudgets.isEmpty(), "Should return an empty list for an empty JSON file.");
+                assertTrue(loadedBudgets.isEmpty(), "Should return an empty list for an empty database file.");
 	}
 	
 	
@@ -207,9 +206,15 @@ class BudgetServiceTest
 	{
 		// As per BudgetService implementation, this logs a warning and does not create
 		// the file.
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 		BudgetService.saveBudgets(null, this.companyDirectory);
 		File budgetsFile = new File(this.companyDirectory, "budgets.json");
 		assertFalse(budgetsFile.exists(), "budgets.json should not be created for null list.");
+=======
+                this.budgetService.saveBudgets(null, this.companyDirectory);
+                File dbFileNull = new File(this.companyDirectory, "company.db");
+                assertFalse(dbFileNull.exists(), "Database should not be created for null list.");
+>>>>>>> 734695e Add database persistence for budgets
 	}
 	
 	
