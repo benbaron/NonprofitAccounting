@@ -1,5 +1,6 @@
 package nonprofitbookkeeping.db;
 
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -62,5 +63,27 @@ public class DatabaseManager {
                 "FOREIGN KEY (budget_id) REFERENCES budgets(budget_id)" +
                 ")");
         }
+=======
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+
+/**
+ * Simple helper for managing the JPA {@link EntityManagerFactory}.
+ */
+public final class DatabaseManager {
+    private static final EntityManagerFactory emf =
+            Persistence.createEntityManagerFactory("nonprofitPU");
+
+    private DatabaseManager() { }
+
+    /**
+     * Obtain a new {@link EntityManager}.
+     *
+     * @return EntityManager for the persistence unit
+     */
+    public static EntityManager getEntityManager() {
+        return emf.createEntityManager();
+>>>>>>> 61e85fc Implement JPA persistence for budgets
     }
 }

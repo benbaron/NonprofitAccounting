@@ -1,12 +1,18 @@
 
 package nonprofitbookkeeping.service;
 
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 import nonprofitbookkeeping.dao.BudgetDao;
 import java.sql.SQLException;
 
+=======
+>>>>>>> 61e85fc Implement JPA persistence for budgets
 import nonprofitbookkeeping.model.budget.Budget;
+import nonprofitbookkeeping.db.DatabaseManager;
 
-import java.io.File;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +21,13 @@ import java.util.logging.Logger;
 
 /**
  * Service class for managing {@link Budget} data.
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
  * This class provides functionalities to persist budgets using a database
  * located inside the company's directory.
+=======
+ * This class persists {@link Budget} instances using JPA via {@link DatabaseManager}.
+ * Legacy references to JSON files remain for backward compatibility but are no longer used.
+>>>>>>> 61e85fc Implement JPA persistence for budgets
  */
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 public class BudgetService
@@ -153,29 +164,48 @@ public class BudgetService {
 
     /** Logger for this class. */
     private static final Logger LOGGER = Logger.getLogger(BudgetService.class.getName());
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
     /** Data access object used for persistence. */
     private final BudgetDao budgetDao = new BudgetDao();
+=======
+    /** No-op filename constant retained for backward compatibility. */
+    private static final String BUDGETS_FILENAME = "budgets.json";
+>>>>>>> 61e85fc Implement JPA persistence for budgets
 
     /**
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
      * Saves a list of {@link Budget} objects to the database located in the
      * provided company directory. Existing budgets are replaced.
+=======
+     * Persists the provided budgets using JPA. Existing records are updated and new
+     * ones are inserted.
+>>>>>>> 61e85fc Implement JPA persistence for budgets
      *
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
      * @param budgets The list of {@link Budget} objects to save. Can be null or empty.
      * @param companyDirectory The {@link File} object representing the directory where the
      *                         company's database is stored.
      *                         Must not be null and must be a valid directory.
      * @throws IOException If persistence fails or the directory is invalid.
+=======
+     * @param budgets budgets to persist, ignored if {@code null}
+>>>>>>> 61e85fc Implement JPA persistence for budgets
      */
-    public void saveBudgets(List<Budget> budgets, File companyDirectory) throws IOException {
+    public void saveBudgets(List<Budget> budgets) {
         if (budgets == null) {
             LOGGER.warning("Budget list provided is null. Nothing to save.");
             return;
         }
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
         if (companyDirectory == null || !companyDirectory.isDirectory()) {
             throw new IOException("Company directory is invalid or not provided.");
         }
 
+=======
+        EntityManager em = DatabaseManager.getEntityManager();
+>>>>>>> 61e85fc Implement JPA persistence for budgets
         try {
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
             this.budgetDao.clearBudgets(companyDirectory);
             for (Budget budget : budgets) {
                 this.budgetDao.saveBudget(budget, companyDirectory);
@@ -184,32 +214,66 @@ public class BudgetService {
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Failed to save budgets to database", e);
             throw new IOException("Database error while saving budgets", e);
+=======
+            em.getTransaction().begin();
+            for (Budget b : budgets) {
+                em.merge(b);
+            }
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Failed to persist budgets", e);
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+        } finally {
+            em.close();
+>>>>>>> 61e85fc Implement JPA persistence for budgets
         }
     }
 
     /**
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
      * Loads all {@link Budget} objects from the database located in the
      * specified company directory. If the directory is invalid or no database
      * exists, an empty list is returned.
+=======
+     * Retrieves all budgets from the database.
+>>>>>>> 61e85fc Implement JPA persistence for budgets
      *
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
      * @param companyDirectory The {@link File} object representing the directory where the
      *                         company's database is located. Must not be null and
      *                         must be a valid directory.
      * @return A {@code List<Budget>} loaded from the database. Returns an empty
      *         list on error or if none exist.
      * @throws IOException If a database error occurs.
+=======
+     * @return list of persisted budgets
+>>>>>>> 61e85fc Implement JPA persistence for budgets
      */
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
     public List<Budget> loadBudgets(File companyDirectory) throws IOException {
         if (companyDirectory == null || !companyDirectory.isDirectory()) {
             LOGGER.warning("Company directory is invalid or not provided for loading budgets.");
             return new ArrayList<>();
         }
 
+=======
+    public List<Budget> loadBudgets() {
+        EntityManager em = DatabaseManager.getEntityManager();
+>>>>>>> 61e85fc Implement JPA persistence for budgets
         try {
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
             return this.budgetDao.getAllBudgets(companyDirectory);
         } catch (SQLException | IOException e) {
             LOGGER.log(Level.SEVERE, "Failed to load budgets from database", e);
             return new ArrayList<>();
+=======
+            TypedQuery<Budget> q = em.createQuery("SELECT b FROM Budget b", Budget.class);
+            return q.getResultList();
+        } finally {
+            em.close();
+>>>>>>> 61e85fc Implement JPA persistence for budgets
         }
     }
 >>>>>>> 734695e Add database persistence for budgets

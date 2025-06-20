@@ -402,7 +402,10 @@
 			<version>1.38</version>
 		</dependency>
 		
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 >>>>>>> 14d9085 Add document attachment database support
+=======
+>>>>>>> 61e85fc Implement JPA persistence for budgets
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
@@ -410,7 +413,30 @@
             <scope>test</scope>
         </dependency>
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 =======
+=======
+
+        <!-- JPA and in-memory database for persistence -->
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>6.4.4.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.2.224</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+>>>>>>> 61e85fc Implement JPA persistence for budgets
 
         <!-- SQLite JDBC driver for attachment database -->
         <dependency>
