@@ -17,6 +17,8 @@ local.properties
 .loadpath
 .recommenders
 *.docx
+*.drawio
+
 # External tool builders
 .externalToolBuilders/
 
