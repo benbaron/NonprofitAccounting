@@ -44,5 +44,6 @@ public final class DatabaseManager {
                 // Swallow exception to avoid failing before JDBC handles it
             }
         }
+
     }
 }
