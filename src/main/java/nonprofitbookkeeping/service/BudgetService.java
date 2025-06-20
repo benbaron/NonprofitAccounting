@@ -1,11 +1,15 @@
 package nonprofitbookkeeping.service;
 
+
 import nonprofitbookkeeping.dao.BudgetDao;
 import java.sql.SQLException;
 
 import nonprofitbookkeeping.model.budget.Budget;
+import nonprofitbookkeeping.db.DatabaseManager;
 
-import java.io.File;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,13 +18,16 @@ import java.util.logging.Logger;
 
 /**
  * Service class for managing {@link Budget} data.
+
  * This class provides functionalities to persist budgets using a database
  * located inside the company's directory.
+
  */
 public class BudgetService {
 
     /** Logger for this class. */
     private static final Logger LOGGER = Logger.getLogger(BudgetService.class.getName());
+
     /** Data access object used for persistence. */
     private final BudgetDao budgetDao = new BudgetDao();
 
@@ -33,11 +40,13 @@ public class BudgetService {
      *                         company's database is stored.
      *                         Must not be null and must be a valid directory.
      * @throws IOException If persistence fails or the directory is invalid.
+
      */
-    public void saveBudgets(List<Budget> budgets, File companyDirectory) throws IOException {
+    public void saveBudgets(List<Budget> budgets) {
         if (budgets == null) {
             LOGGER.warning("Budget list provided is null. Nothing to save.");
             return;
+
         }
         if (companyDirectory == null || !companyDirectory.isDirectory()) {
             throw new IOException("Company directory is invalid or not provided.");
@@ -78,6 +87,7 @@ public class BudgetService {
         } catch (SQLException | IOException e) {
             LOGGER.log(Level.SEVERE, "Failed to load budgets from database", e);
             return new ArrayList<>();
+
         }
     }
 }
