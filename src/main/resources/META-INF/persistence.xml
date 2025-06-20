@@ -10,6 +10,7 @@
             <property name="jakarta.persistence.jdbc.driver" value="org.h2.Driver"/>
             <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+
         </properties>
     </persistence-unit>
 </persistence>

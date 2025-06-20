@@ -1,24 +1,49 @@
 package nonprofitbookkeeping.db;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 /**
- * Simple helper for managing the JPA {@link EntityManagerFactory}.
+ * Utility class for obtaining JDBC connections to the application's
+ * local SQLite database. Ensures the parent directory exists before
+ * attempting to establish a connection.
  */
 public final class DatabaseManager {
-    private static final EntityManagerFactory emf =
-            Persistence.createEntityManagerFactory("nonprofitPU");
 
-    private DatabaseManager() { }
+    /** Location of the database file used across the application. */
+    public static final String JDBC_URL = "jdbc:sqlite:" + System.getProperty("user.home")
+            + "/.m2/nonprofitbookkeeping/nonprofitdb";
+
+    private DatabaseManager() {
+        // Utility class
+    }
 
     /**
-     * Obtain a new {@link EntityManager}.
+     * Obtains a connection to the application database. The parent directory
+     * is created if it does not already exist.
      *
-     * @return EntityManager for the persistence unit
+     * @return an open {@link Connection}
+     * @throws SQLException if the connection cannot be established
      */
-    public static EntityManager getEntityManager() {
-        return emf.createEntityManager();
+    public static Connection getConnection() throws SQLException {
+        ensureDirectoryExists();
+        return DriverManager.getConnection(JDBC_URL);
+    }
+
+    private static void ensureDirectoryExists() {
+        String pathString = JDBC_URL.replaceFirst("jdbc:sqlite:", "");
+        Path dbPath = Path.of(pathString).getParent();
+        if (dbPath != null && !Files.exists(dbPath)) {
+            try {
+                Files.createDirectories(dbPath);
+            } catch (Exception e) {
+                // Swallow exception to avoid failing before JDBC handles it
+            }
+        }
+
     }
 }
