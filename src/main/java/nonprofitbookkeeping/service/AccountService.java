@@ -66,11 +66,15 @@ public class AccountService
 	 *         This is a copy of the internal list, so modifications to the
 	 *         returned list will not affect the internal storage.
 	 */
-	public static List<Account> getAllAccounts()
-	{
-		// Return a copy to prevent external modification of the internal list
-		return new ArrayList<>(accounts);
-	}
+        public static List<Account> getAllAccounts()
+        {
+                // Return an unmodifiable copy to prevent callers from mutating
+                // the internal list or assuming the returned list is mutable.
+                // Using Collections.unmodifiableList ensures attempts to modify
+                // the returned list throw an UnsupportedOperationException,
+                // matching the expectations of the unit tests.
+                return Collections.unmodifiableList(new ArrayList<>(accounts));
+        }
 
 	/**
 	 * Clears all accounts from the in-memory storage.
