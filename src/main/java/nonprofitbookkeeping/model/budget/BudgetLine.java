@@ -4,6 +4,17 @@ package nonprofitbookkeeping.model.budget;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.ArrayList;
+import nonprofitbookkeeping.model.budget.BudgetLinePeriodAmount;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 
 /**
  * Represents a single line item within a budget.
@@ -11,24 +22,36 @@ import java.util.ArrayList;
  * the total budgeted amount, the periodicity of the budget (e.g., annual, monthly),
  * and optionally, amounts broken down by period and an associated fund ID.
  */
+@Entity
+@Table(name = "budget_line")
 public class BudgetLine
 {
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        @Column(name = "line_id")
+        private Long lineId;
 
-	/** The unique identifier of the account associated with this budget line. */
-	private String accountId; // Assumes Account.getId() is the unique identifier
-	/** The name of the account, for display or reference purposes. */
-	private String accountName; // For display/reference
-	/** The total budgeted amount for this account line for the entire budget period. */
-	private BigDecimal totalBudgetedAmount;
-	/** The periodicity of how the budget is broken down (e.g., ANNUAL, MONTHLY, QUARTERLY). Defaults to ANNUAL. */
-	private Periodicity periodicity = Periodicity.ANNUAL; // Default to ANNUAL
+        /** The unique identifier of the account associated with this budget line. */
+        @Column(name = "account_id")
+        private String accountId; // Assumes Account.getId() is the unique identifier
+        /** The name of the account, for display or reference purposes. */
+        @Column(name = "account_name")
+        private String accountName; // For display/reference
+        /** The total budgeted amount for this account line for the entire budget period. */
+        @Column(name = "total_amount")
+        private BigDecimal totalBudgetedAmount;
+        /** The periodicity of how the budget is broken down (e.g., ANNUAL, MONTHLY, QUARTERLY). Defaults to ANNUAL. */
+        @Enumerated(EnumType.STRING)
+        private Periodicity periodicity = Periodicity.ANNUAL; // Default to ANNUAL
 	/**
 	 * A list of amounts budgeted for each sub-period (e.g., monthly amounts if periodicity is MONTHLY).
 	 * Initialized to an empty ArrayList.
 	 */
-	private List<BigDecimal> periodicAmounts = new ArrayList<>(); // Initialize to avoid null
-	/** The identifier of a specific fund to which this budget line applies, if any. Optional. */
-	private String fundId; // Optional
+        @OneToMany(mappedBy = "budgetLine", cascade = CascadeType.ALL, orphanRemoval = true)
+        private List<BudgetLinePeriodAmount> periodicAmounts = new ArrayList<>();
+        /** The identifier of a specific fund to which this budget line applies, if any. Optional. */
+        @Column(name = "fund_id")
+        private String fundId; // Optional
 	
 	/**
 	 * Default constructor.
@@ -50,8 +73,8 @@ public class BudgetLine
 	 * @param periodicAmounts A list of amounts for each sub-period, if applicable.
 	 * @param fundId The ID of the fund this budget line is associated with (optional).
 	 */
-	public BudgetLine(String accountId, String accountName, BigDecimal totalBudgetedAmount,
-		Periodicity periodicity, List<BigDecimal> periodicAmounts, String fundId)
+        public BudgetLine(String accountId, String accountName, BigDecimal totalBudgetedAmount,
+                Periodicity periodicity, List<BudgetLinePeriodAmount> periodicAmounts, String fundId)
 	{
 		this.accountId = accountId;
 		this.accountName = accountName;
@@ -80,9 +103,9 @@ public class BudgetLine
 	 * Sets the list of amounts budgeted for each sub-period.
 	 * Future enhancements could include validating the size of this list against the current {@code periodicity}.
 	 * For example, if periodicity is MONTHLY, this list might be expected to have 12 entries.
-	 * @param periodicAmounts A list of {@link BigDecimal} representing amounts for each sub-period.
+         * @param periodicAmounts A list of {@link BudgetLinePeriodAmount} representing amounts for each sub-period.
 	 */
-	public void setPeriodicAmounts(List<BigDecimal> periodicAmounts)
+        public void setPeriodicAmounts(List<BudgetLinePeriodAmount> periodicAmounts)
 	{
 		// Future enhancement: validate size against this.periodicity
 		// Example validation (can be more sophisticated):
@@ -185,7 +208,7 @@ public class BudgetLine
 	 * The interpretation of this list depends on the {@link #getPeriodicity()}.
 	 * @return A list of periodic amounts.
 	 */
-	public List<BigDecimal> getPeriodicAmounts()
+        public List<BudgetLinePeriodAmount> getPeriodicAmounts()
 	{
 		return this.periodicAmounts;
 	}

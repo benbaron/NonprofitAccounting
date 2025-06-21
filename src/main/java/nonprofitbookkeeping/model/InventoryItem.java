@@ -12,6 +12,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
 
 /**
  * Represents an inventory item, typically a fixed asset, subject to depreciation.
@@ -23,26 +27,44 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "inventory_item")
 public class InventoryItem
 {
-	/** The unique identifier for the inventory item. */
-	@JsonProperty private String id;
+        /** The unique identifier for the inventory item. */
+        @Id
+        @Column(name = "item_id")
+        @JsonProperty
+        private String id;
 	/** The name or description of the inventory item. */
-	@JsonProperty private String name;
+        @JsonProperty
+        private String name;
 	/** The date when the inventory item was acquired, typically in "YYYY-MM-DD" format. */
-	@JsonProperty private String acquired;
+        @JsonProperty
+        private String acquired;
 	/** The original cost of the inventory item. */
-	@JsonProperty private BigDecimal cost;
+        @JsonProperty
+        private BigDecimal cost;
 	/** The accumulated depreciation amount for the item. */
-	@JsonProperty private BigDecimal accDep;
+        @JsonProperty
+        @Column(name = "accum_depreciation")
+        private BigDecimal accDep;
 	/** The net book value of the item (Cost - Accumulated Depreciation). */
-	@JsonProperty private BigDecimal netValue;
+        @JsonProperty
+        @Column(name = "net_value")
+        private BigDecimal netValue;
 	/** The estimated useful life of the item in years. */
-	@JsonProperty private int lifeYears;
+        @JsonProperty
+        @Column(name = "life_years")
+        private int lifeYears;
 	/** The annual depreciation rate (e.g., 0.10 for 10%). Can be null if not applicable or calculated differently. */
-	@JsonProperty private BigDecimal depreciationRate;
+        @JsonProperty
+        @Column(name = "depreciation_rate")
+        private BigDecimal depreciationRate;
 	/** The depreciation method used (e.g., "Straight-Line"). */
-	@JsonProperty private String depreciationMethod;
+        @JsonProperty
+        @Column(name = "depreciation_method")
+        private String depreciationMethod;
 
 	/**  
 	 * Constructs an InventoryItem with essential details.

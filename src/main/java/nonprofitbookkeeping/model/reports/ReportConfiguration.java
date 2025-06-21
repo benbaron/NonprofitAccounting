@@ -6,6 +6,12 @@ import java.util.List;
 import java.util.UUID;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 import nonprofitbookkeeping.ui.helpers.DateSelectionMode; // Import the top-level enum
 
 /**
@@ -15,38 +21,53 @@ import nonprofitbookkeeping.ui.helpers.DateSelectionMode; // Import the top-leve
  * Lombok's {@code @Data} and {@code @NoArgsConstructor} are used for boilerplate code generation.
  */
 @Data
-@NoArgsConstructor public class ReportConfiguration
+@NoArgsConstructor
+@Entity
+@Table(name = "report_configuration")
+public class ReportConfiguration
 {
 	
-	/** A unique identifier for this report configuration, typically a UUID. */
-	private String configurationId;
+        /** A unique identifier for this report configuration, typically a UUID. */
+        @Id
+        @Column(name = "configuration_id")
+        private String configurationId;
 	/** A user-friendly name for this saved report configuration (e.g., "Q1 Income Statement - Operations Fund"). */
-	private String userGivenName;
+        @Column(name = "user_given_name")
+        private String userGivenName;
 	/** The type of report to generate (e.g., "income_statement", "balance_sheet"). */
-	private String reportType;
+        @Column(name = "report_type")
+        private String reportType;
 	
 	// Date related fields
 	/** The mode used for date selection (e.g., SINGLE_DATE, DATE_RANGE_MANDATORY_START). See {@link DateSelectionMode}. */
-	private DateSelectionMode dateSelectionMode;
+        @Enumerated(EnumType.STRING)
+        @Column(name = "date_selection_mode")
+        private DateSelectionMode dateSelectionMode;
 	/**
 	 * An optional string representing a relative date range (e.g., "LAST_MONTH", "YEAR_TO_DATE").
 	 * Can be null, especially if specific start/end dates are used.
 	 */
-	private String relativeDateRange;
+        @Column(name = "relative_date_range")
+        private String relativeDateRange;
 	/** The specific start date for the report period. Nullable if not applicable for the selected {@code dateSelectionMode}. */
-	private LocalDate specificStartDate;
+        @Column(name = "specific_start_date")
+        private LocalDate specificStartDate;
 	/** The specific end date for the report period. Nullable, but usually present if specific dates are used or implied by the mode. */
-	private LocalDate specificEndDate;
+        @Column(name = "specific_end_date")
+        private LocalDate specificEndDate;
 	
 	// Filter related fields
 	/** A list of fund IDs (typically fund names) to filter the report by. Can be null or empty for no fund filtering. */
-	private List<String> fundIds;
+        @Column(name = "fund_ids")
+        private List<String> fundIds;
 	
 	/** The desired output format for the report (e.g., "xlsx", "pdf"). Defaults to "xlsx". */
-	private String outputFormat = "xlsx";
+        @Column(name = "output_format")
+        private String outputFormat = "xlsx";
 	
 	/** A list of account IDs to filter a detail report by. Can be null or empty. */
-	private List<String> accountIdsForDetailReport;
+        @Column(name = "account_ids")
+        private List<String> accountIdsForDetailReport;
 	
 	/**
 	 * Constructs a new ReportConfiguration with essential details.
