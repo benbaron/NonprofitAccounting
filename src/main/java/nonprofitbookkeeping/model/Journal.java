@@ -40,6 +40,7 @@ public class Journal implements Serializable
 	 * The unique identifier for this serializable class.
 	 */
 	private static final long serialVersionUID = -8125095337696271045L;
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
         /** Primary key for the journal. */
@@ -61,12 +62,20 @@ public class Journal implements Serializable
          * does not keep an in-memory collection of them.
          */
 >>>>>>> a0d4b45 Remove binary document and zip files
+=======
+	
+	/**
+	 * Transactions are persisted using {@link TransactionService}; the journal
+	 * does not keep an in-memory collection of them.
+	 */
+>>>>>>> 3d1271c Merge branch 'feature/m2database' of https://github.com/benbaron/NonprofitAccounting.git into feature/m2database
 	
 	/**
 	 * Adds a new accounting transaction to the journal.
 	 * @param transaction The {@link AccountingTransaction} to add. Must not be null, and its booking date timestamp (used as an ID here) must not be null.
 	 * @throws NullPointerException if the transaction or its booking date timestamp is null.
 	 */
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
         public void addTransaction(AccountingTransaction transaction)
         {
                 checkNotNull(transaction, "Transaction cannot be null");
@@ -85,6 +94,24 @@ public class Journal implements Serializable
                 }
 >>>>>>> a0d4b45 Remove binary document and zip files
         }
+=======
+	public void addTransaction(AccountingTransaction transaction)
+	{
+		checkNotNull(transaction, "Transaction cannot be null");
+		checkNotNull(transaction.getBookingDateTimestamp(),
+			"Transaction ID cannot be null for add operation");
+		
+		try
+		{
+			TransactionService.addTransaction(transaction);
+		}
+		catch (Exception ex)
+		{
+			throw new RuntimeException("Failed to add transaction", ex);
+		}
+		
+	}
+>>>>>>> 3d1271c Merge branch 'feature/m2database' of https://github.com/benbaron/NonprofitAccounting.git into feature/m2database
 	
 	/**
 	 * Retrieves a defensive copy of the list of all journal transactions.
@@ -93,17 +120,19 @@ public class Journal implements Serializable
 	 * {@link #updateTransaction(AccountingTransaction)}, or {@link #deleteTransaction(long)}.
 	 * @return A new {@code List<AccountingTransaction>} containing all transactions in the journal.
 	 */
-        public List<AccountingTransaction> getJournalTransactions()
-        {
-                try
-                {
-                        return TransactionService.getAllTransactions();
-                }
-                catch (Exception ex)
-                {
-                        throw new RuntimeException("Failed to load transactions", ex);
-                }
-        }
+	public List<AccountingTransaction> getJournalTransactions()
+	{
+		
+		try
+		{
+			return TransactionService.getAllTransactions();
+		}
+		catch (Exception ex)
+		{
+			throw new RuntimeException("Failed to load transactions", ex);
+		}
+		
+	}
 	
 	/**
 	 * Updates an existing transaction in the journal.
@@ -114,6 +143,7 @@ public class Journal implements Serializable
 	 * @return {@code true} if a transaction with a matching booking date timestamp was found and updated, {@code false} otherwise.
 	 * @throws NullPointerException if the input transaction or its booking date timestamp is null.
 	 */
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	public boolean updateTransaction(AccountingTransaction transaction)
 	{
@@ -152,6 +182,24 @@ public class Journal implements Serializable
                 }
         }
 >>>>>>> a0d4b45 Remove binary document and zip files
+=======
+	public boolean updateTransaction(AccountingTransaction transaction)
+	{
+		checkNotNull(transaction, "Input transaction cannot be null for update");
+		checkNotNull(transaction.getId(), "Transaction ID cannot be null for update operation");
+		
+		try
+		{
+			TransactionService.updateTransaction(transaction);
+			return true;
+		}
+		catch (Exception ex)
+		{
+			throw new RuntimeException("Failed to update transaction", ex);
+		}
+		
+	}
+>>>>>>> 3d1271c Merge branch 'feature/m2database' of https://github.com/benbaron/NonprofitAccounting.git into feature/m2database
 	
 	/**
 	 * Deletes a transaction from the journal based on its booking date timestamp.
@@ -159,38 +207,44 @@ public class Journal implements Serializable
 	 * @param bookingDateTimestamp The booking date timestamp of the transaction to delete.
 	 * @return {@code true} if a transaction with the given timestamp was found and removed, {@code false} otherwise.
 	 */
-        public boolean deleteTransaction(long bookingDateTimestamp)
-        {
-                try
-                {
-                        // First fetch all transactions to find the matching id
-                        for (AccountingTransaction tx : TransactionService.getAllTransactions())
-                        {
-                                if (tx.getBookingDateTimestamp() == bookingDateTimestamp)
-                                {
-                                        TransactionService.deleteTransaction(tx.getId());
-                                        return true;
-                                }
-                        }
-                        return false;
-                }
-                catch (Exception ex)
-                {
-                        throw new RuntimeException("Failed to delete transaction", ex);
-                }
-        }
+	public boolean deleteTransaction(long bookingDateTimestamp)
+	{
+		
+		try
+		{
+			
+			// First fetch all transactions to find the matching id
+			for (AccountingTransaction tx : TransactionService.getAllTransactions())
+			{
+				
+				if (tx.getBookingDateTimestamp() == bookingDateTimestamp)
+				{
+					TransactionService.deleteTransaction(tx.getId());
+					return true;
+				}
+				
+			}
+			
+			return false;
+		}
+		catch (Exception ex)
+		{
+			throw new RuntimeException("Failed to delete transaction", ex);
+		}
+		
+	}
 	
 	/**
 	 * Returns a string representation of the journal, including its transactions.
 	 * @return A string summary of the journal.
 	 */
-        @Override public String toString()
-        {
-                return MoreObjects.toStringHelper(this)
-                        .add("transactions", "stored in database")
-                        .toString();
-        }
-
+	@Override public String toString()
+	{
+		return MoreObjects.toStringHelper(this)
+			.add("transactions", "stored in database")
+			.toString();
+	}
+	
 	/**
 	 * @param any
 	 */
