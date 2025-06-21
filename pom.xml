@@ -147,11 +147,17 @@
                         <scope>provided</scope>
                 </dependency>
 
+
                 <!-- SQLite JDBC driver for simple local persistence -->
                 <dependency>
                         <groupId>org.xerial</groupId>
                         <artifactId>sqlite-jdbc</artifactId>
-                        <version>3.45.1.0</version>
+
+                <!-- Embedded database for persistent storage -->
+                <dependency>
+                        <groupId>com.h2database</groupId>
+                        <artifactId>h2</artifactId>
+                        <version>2.2.224</version>
                 </dependency>
 
 		<!-- Mockito Core for creating mocks -->
@@ -204,11 +210,18 @@
  			<version>${javafx.version}</version>        		
  		</dependency>
  		
-		<dependency>
-		    <groupId>org.apache.pdfbox</groupId>
-		    <artifactId>pdfbox</artifactId>
-		    <version>2.0.31</version>   <!-- latest stable as of May 2025 -->
-		</dependency>
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.31</version>   <!-- latest stable as of May 2025 -->
+        </dependency>
+
+        <!-- SQLite JDBC driver for database persistence -->
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.45.2.0</version>
+        </dependency>
 
     <!-- I/O layer: OFXParser, AggregateUnmarshaller, etc. -->
 		<dependency>
@@ -217,13 +230,31 @@
 			<version>1.38</version>
 		</dependency>
 		
-		<dependency>
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.9.3</version>
             <scope>test</scope>
         </dependency>
-		
-	</dependencies>
+
+        <!-- JPA and in-memory database for persistence -->
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>6.4.4.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.2.224</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
 
 </project>
