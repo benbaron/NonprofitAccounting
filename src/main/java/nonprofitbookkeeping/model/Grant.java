@@ -6,26 +6,45 @@
 package nonprofitbookkeeping.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.Column;
 
 /**
  * Represents a grant received by the nonprofit organization.
  * This class stores details about the grant such as its ID, the grantor,
  * amount, date awarded, purpose, and current status.
  */
+@Entity
+@Table(name = "grant_record")
 public class Grant
 {
-	/** The unique identifier for the grant. */
-	@JsonProperty String grantId = "";
-	/** The name of the organization or individual who awarded the grant. */
-	@JsonProperty String grantor = "";
-	/** The monetary amount of the grant. */
-	@JsonProperty BigDecimal amount = new BigDecimal(0);
-	/** The date when the grant was awarded, typically in a string format (e.g., "YYYY-MM-DD"). */
-	@JsonProperty String dateAwarded= "";
-	/** The specific purpose or project for which the grant was awarded. */
-	@JsonProperty String purpose= "";
-	/** The current status of the grant (e.g., "Awarded", "Pending", "Completed", "Closed"). */
-	@JsonProperty String status= "";
+        /** The unique identifier for the grant. */
+        @Id
+        @Column(name = "grant_id")
+        @JsonProperty
+        String grantId = "";
+        /** The name of the organization or individual who awarded the grant. */
+        @JsonProperty
+        @Column(name = "grantor")
+        String grantor = "";
+        /** The monetary amount of the grant. */
+        @JsonProperty
+        @Column(name = "amount")
+        BigDecimal amount = new BigDecimal(0);
+        /** The date when the grant was awarded, typically in a string format (e.g., "YYYY-MM-DD"). */
+        @JsonProperty
+        @Column(name = "date_awarded")
+        String dateAwarded= "";
+        /** The specific purpose or project for which the grant was awarded. */
+        @JsonProperty
+        @Column(name = "purpose")
+        String purpose= "";
+        /** The current status of the grant (e.g., "Awarded", "Pending", "Completed", "Closed"). */
+        @JsonProperty
+        @Column(name = "status")
+        String status= "";
 	
 	
 	/**  

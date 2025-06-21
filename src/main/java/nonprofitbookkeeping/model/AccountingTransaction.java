@@ -9,6 +9,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.AllArgsConstructor; // Ensure this is present
 import lombok.NoArgsConstructor; // Added
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -29,7 +37,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Data
 @NoArgsConstructor(force = true) // Changed to force = true
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE) // For builder and potentially other
-															// internal uses
+                                                                               // internal uses
+@Entity
+@Table(name = "transaction")
 public class AccountingTransaction implements Serializable
 {
 	/**
@@ -37,18 +47,30 @@ public class AccountingTransaction implements Serializable
 	 */
 	private static final long serialVersionUID = -8821254116304310L;
 	
-	/** Unique identifier for the transaction. */
-	@JsonProperty private int id;
-	/** The set of accounting entries that make up this transaction. Must not be null or empty. */
-	@JsonProperty private Set<AccountingEntry> entries;
+        /** Unique identifier for the transaction. */
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        @Column(name = "transaction_id")
+        @JsonProperty
+        private int id;
+        /** The set of accounting entries that make up this transaction. Must not be null or empty. */
+        @JsonProperty
+        @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL)
+        private Set<AccountingEntry> entries;
 	/** Additional information or metadata about the transaction, stored as key-value pairs. */
 	@JsonProperty private Map<String, String> info;
 	/** The timestamp when the transaction was booked/recorded, in milliseconds since epoch. */
-	@JsonProperty private long bookingDateTimestamp;
+        @JsonProperty
+        @Column(name = "booking_timestamp")
+        private long bookingDateTimestamp;
 	/** The date of the transaction, typically in a string format like "YYYY-MM-DD". */
-	@JsonProperty private String date; // Non-final
+        @JsonProperty
+        @Column(name = "date")
+        private String date; // Non-final
 	/** A descriptive memo or note for the transaction. */
-	@JsonProperty private String memo; // Non-final
+        @JsonProperty
+        @Column(name = "memo")
+        private String memo; // Non-final
 	
 	/**
 	 * Default constructor.

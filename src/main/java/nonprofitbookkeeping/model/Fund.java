@@ -9,6 +9,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.ManyToMany;
 
 /**
  * Represents a fund within the nonprofit bookkeeping system.
@@ -20,19 +24,27 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "fund")
 public class Fund
 {
 	
-	/** The name of the fund, serving as its primary identifier. */
-	@JsonProperty private String name;
-	/** List of accounts associated with this fund, forming a many-to-many relationship. */
-	@JsonProperty private List<Account> accounts;
+        /** The name of the fund, serving as its primary identifier. */
+        @Id
+        @JsonProperty
+        private String name;
+
+        /** List of accounts associated with this fund, forming a many-to-many relationship. */
+        @JsonProperty
+        @ManyToMany(mappedBy = "associatedFunds")
+        private List<Account> accounts;
 	/**
 	 * The calculated balance of the fund.
 	 * This balance is derived from the sum of balances of all accounts associated with this fund.
          * It is updated via the {@link #updateBalance(Ledger)} method.
 	 */
-	@JsonProperty private BigDecimal balance;
+        @JsonProperty
+        private BigDecimal balance;
 	
 	/**
      * Constructs a new Fund with the specified name.

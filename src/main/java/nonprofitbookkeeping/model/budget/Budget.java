@@ -2,6 +2,12 @@ package nonprofitbookkeeping.model.budget;
 
 import lombok.Data;
 import lombok.NoArgsConstructor; // For Jackson
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
 // No @AllArgsConstructor to allow custom constructor logic for budgetId
 
 import jakarta.persistence.Entity;
@@ -26,23 +32,32 @@ import java.util.UUID;
 @Table(name = "budget")
 @Data
 @NoArgsConstructor // Keep for Jackson, but ensure budgetId is handled if object created this way
+@Entity
+@Table(name = "budget")
 public class Budget {
     /** The unique identifier for the budget. Typically a UUID. */
     @Id
+    @Column(name = "budget_id")
+
     private String budgetId;
     /** The name of the budget (e.g., "Annual Operational Budget"). */
+    @Column(name = "budget_name")
     private String budgetName;
     /** The fiscal year to which this budget applies (e.g., 2024). */
+    @Column(name = "fiscal_year")
     private int fiscalYear;
     /** An optional description for the budget. */
+    @Column(name = "description")
     private String description; // Optional
     /** A list of {@link BudgetLine} items that make up this budget. Initialized to an empty ArrayList. */
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "budget_id")
+    @OneToMany(cascade = CascadeType.ALL)
+
     private List<BudgetLine> budgetLines = new ArrayList<>();
     /** The currency code for the amounts in this budget (e.g., "USD"). Should ideally match the company's base currency. */
+    @Column(name = "currency")
     private String currency; // Should match company currency
     /** The identifier of a specific fund to which this budget applies, if any. Optional. */
+    @Column(name = "applicable_fund_id")
     private String applicableFundId; // Optional
 
     /**
