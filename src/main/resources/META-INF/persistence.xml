@@ -10,6 +10,7 @@
             <property name="jakarta.persistence.jdbc.user" value="sa"/>
             <property name="jakarta.persistence.jdbc.password" value=""/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
+
         </properties>
     </persistence-unit>
 </persistence>

@@ -16,6 +16,20 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
 
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+
 /**
  * Represents a single line item within a budget.
  * Each budget line is associated with a specific account and includes details such as
@@ -41,6 +55,7 @@ public class BudgetLine
         @Column(name = "total_amount")
         private BigDecimal totalBudgetedAmount;
         /** The periodicity of how the budget is broken down (e.g., ANNUAL, MONTHLY, QUARTERLY). Defaults to ANNUAL. */
+
         @Enumerated(EnumType.STRING)
         private Periodicity periodicity = Periodicity.ANNUAL; // Default to ANNUAL
 	/**
@@ -52,6 +67,17 @@ public class BudgetLine
         /** The identifier of a specific fund to which this budget line applies, if any. Optional. */
         @Column(name = "fund_id")
         private String fundId; // Optional
+        @ElementCollection
+        @CollectionTable(name = "budget_line_amount", joinColumns = @JoinColumn(name = "budget_line_id"))
+        @Column(name = "amount")
+        private List<BigDecimal> periodicAmounts = new ArrayList<>(); // Initialize to avoid null
+	/** The identifier of a specific fund to which this budget line applies, if any. Optional. */
+        private String fundId; // Optional
+
+        /** Budget owning this line. */
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "budget_id")
+        private Budget budget;
 	
 	/**
 	 * Default constructor.
@@ -218,9 +244,41 @@ public class BudgetLine
 	 * This determines how the {@code periodicAmounts} are interpreted (e.g., monthly, quarterly).
 	 * @return The {@link Periodicity} enum value.
 	 */
-	public Periodicity getPeriodicity()
-	{
-		return this.periodicity;
-	}
+        public Periodicity getPeriodicity()
+        {
+                return this.periodicity;
+        }
+
+        /**
+         * Gets the generated identifier for this line.
+         * @return the line id
+         */
+        public Long getId() {
+                return this.id;
+        }
+
+        /**
+         * Sets the generated identifier for this line.
+         * @param id the id to set
+         */
+        public void setId(Long id) {
+                this.id = id;
+        }
+
+        /**
+         * Gets the owning budget.
+         * @return parent budget or null
+         */
+        public Budget getBudget() {
+                return this.budget;
+        }
+
+        /**
+         * Sets the owning budget.
+         * @param budget parent budget
+         */
+        public void setBudget(Budget budget) {
+                this.budget = budget;
+        }
 	
 }

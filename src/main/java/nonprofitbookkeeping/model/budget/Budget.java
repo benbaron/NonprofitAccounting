@@ -10,6 +10,14 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
 // No @AllArgsConstructor to allow custom constructor logic for budgetId
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Table;
+import jakarta.persistence.JoinColumn;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -20,6 +28,8 @@ import java.util.UUID;
  * currency, and an optional associated fund ID.
  * Lombok's {@code @Data} and {@code @NoArgsConstructor} are used for boilerplate code generation.
  */
+@Entity
+@Table(name = "budget")
 @Data
 @NoArgsConstructor // Keep for Jackson, but ensure budgetId is handled if object created this way
 @Entity
@@ -28,6 +38,7 @@ public class Budget {
     /** The unique identifier for the budget. Typically a UUID. */
     @Id
     @Column(name = "budget_id")
+
     private String budgetId;
     /** The name of the budget (e.g., "Annual Operational Budget"). */
     @Column(name = "budget_name")
@@ -40,6 +51,7 @@ public class Budget {
     private String description; // Optional
     /** A list of {@link BudgetLine} items that make up this budget. Initialized to an empty ArrayList. */
     @OneToMany(cascade = CascadeType.ALL)
+
     private List<BudgetLine> budgetLines = new ArrayList<>();
     /** The currency code for the amounts in this budget (e.g., "USD"). Should ideally match the company's base currency. */
     @Column(name = "currency")
