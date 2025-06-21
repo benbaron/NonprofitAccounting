@@ -5,13 +5,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import nonprofitbookkeeping.model.DocumentAttachment;
-import nonprofitbookkeeping.service.DatabaseManager;
+import nonprofitbookkeeping.model.attachment.DocumentAttachment;
+
 
 /**
  * DocumentStorageService manages attachment and retrieval of document files
@@ -24,28 +21,50 @@ import nonprofitbookkeeping.service.DatabaseManager;
  */
 public class DocumentStorageService
 {
+	
+	/** Base directory located in the user's home directory under "NonprofitDocuments" for storing all attached documents. */
+    private static final File DOCUMENT_BASE_DIR =
+            new File(System.getProperty("user.home"), "NonprofitDocuments");
 
-        /** Base directory located in the user's home directory under "NonprofitDocuments" for storing all attached documents. */
-        private static final File DOCUMENT_BASE_DIR =
-                new File(System.getProperty("user.home"), "NonprofitDocuments");
-
-        /** Database manager used for persisting attachment metadata. */
-        private final DatabaseManager dbManager = new DatabaseManager();
+    /** Manager handling persistence of {@link DocumentAttachment} metadata. */
+    private final DatabaseManager databaseManager;
 	
 	/**
 	 * Static initializer block to ensure that the base directory for document storage
 	 * ({@link #DOCUMENT_BASE_DIR}) exists when the class is loaded.
 	 * If the directory does not exist, it will be created.
 	 */
-	static
-	{
-		
-		if (!DOCUMENT_BASE_DIR.exists())
-		{
-			DOCUMENT_BASE_DIR.mkdirs();
-		}
-		
-	}
+        static
+        {
+
+                if (!DOCUMENT_BASE_DIR.exists())
+                {
+                        DOCUMENT_BASE_DIR.mkdirs();
+                }
+
+        }
+
+    /**
+     * Creates a DocumentStorageService using a database file located inside the
+     * document base directory.
+     */
+    public DocumentStorageService() {
+        try {
+            File dbFile = new File(DOCUMENT_BASE_DIR, "attachments.db");
+            this.databaseManager = new DatabaseManager(dbFile);
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to initialize DatabaseManager", e);
+        }
+    }
+
+    /**
+     * Creates a DocumentStorageService with the given {@link DatabaseManager}.
+     *
+     * @param manager database manager to use
+     */
+    public DocumentStorageService(DatabaseManager manager) {
+        this.databaseManager = manager;
+    }
 	
 	/**
 	 * Attaches a specified document file to a transaction.
@@ -58,11 +77,12 @@ public class DocumentStorageService
 	 * @param transactionId The ID of the transaction to which the document should be attached.
 	 *                      This is used in generating the stored filename. Must not be null or empty.
 	 * @param file The source {@link File} to be attached. Must not be null and must exist.
-	 * @throws IOException if an error occurs during file copying (e.g., permission issues, disk full).
-	 * @throws IllegalArgumentException if {@code file} is null or does not exist, or if {@code transactionId} is null or empty.
-	 */
-	public void attachDocumentToTransaction(String transactionId, File file) throws IOException
-	{
+         * @return the generated database ID for the attachment record
+         * @throws IOException if an error occurs during file copying (e.g., permission issues, disk full).
+         * @throws IllegalArgumentException if {@code file} is null or does not exist, or if {@code transactionId} is null or empty.
+         */
+        public long attachDocumentToTransaction(String transactionId, File file) throws IOException
+        {
 		if (transactionId == null || transactionId.trim().isEmpty()) {
             throw new IllegalArgumentException("Transaction ID must not be null or empty.");
         }
@@ -85,25 +105,25 @@ public class DocumentStorageService
 		String newFileName = transactionId + "_" + System.currentTimeMillis() + extension;
 		File targetFile = new File(DOCUMENT_BASE_DIR, newFileName);
 		
-                // Copy the source file to the target location, replacing any existing file.
+
+		// Copy the source file to the target location, replacing any existing file.
                 Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
-                // Persist attachment record
-                try (Connection c = DatabaseManager.getConnection();
-                        PreparedStatement ps = c.prepareStatement(
-                                "INSERT INTO document_attachment (transaction_id, stored_file, original_file) VALUES (?, ?, ?)");) {
-                        ps.setString(1, transactionId);
-                        ps.setString(2, newFileName);
-                        ps.setString(3, originalName);
-                        ps.executeUpdate();
-                } catch (SQLException ex) {
-                        throw new IOException("Failed to record attachment", ex);
+                long id = -1L;
+                try {
+                        id = this.databaseManager.insertAttachment(transactionId, originalName, newFileName);
+                } catch (SQLException e) {
+                        throw new IOException("Failed to record attachment", e);
+
                 }
 
                 // Optionally, log the operation.
                 System.out.println("Document attached for transaction " + transactionId + ": " +
                         targetFile.getAbsolutePath());
-	}
+
+                return id;
+        }
+
 	
 	/**
 	 * Retrieves a document from the storage directory based on its document ID.
@@ -135,29 +155,23 @@ public class DocumentStorageService
         }
 
         /**
-         * Retrieve an attachment using its database identifier.
+         * Looks up a {@link DocumentAttachment} by ID and returns the attached file.
          *
-         * @param attachmentId the primary key of the attachment record
-         * @return the stored document file
-         * @throws IOException if the record does not exist or the file is missing
+         * @param attachmentId database ID of the attachment
+         * @return the file associated with the attachment
+         * @throws IOException if the file cannot be located
+         * @throws SQLException if the database lookup fails
          */
-        public File retrieveAttachment(int attachmentId) throws IOException
+        public File retrieveDocument(long attachmentId) throws IOException, SQLException
         {
-                try (Connection c = DatabaseManager.getConnection();
-                        PreparedStatement ps = c.prepareStatement(
-                                "SELECT stored_file FROM document_attachment WHERE id=?");) {
-                        ps.setInt(1, attachmentId);
-                        try (ResultSet rs = ps.executeQuery()) {
-                                if (rs.next()) {
-                                        String stored = rs.getString(1);
-                                        return retrieveDocument(stored);
-                                }
-                        }
-                } catch (SQLException ex) {
-                        throw new IOException("Failed to read attachment", ex);
+                DocumentAttachment attachment = this.databaseManager.getAttachment(attachmentId);
+                if (attachment == null)
+                {
+                        throw new IOException("Attachment not found: " + attachmentId);
                 }
 
-                throw new IOException("Attachment not found: " + attachmentId);
+                return retrieveDocument(attachment.getStoredName());
+
         }
 	
 }
