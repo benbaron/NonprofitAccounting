@@ -9,6 +9,7 @@ import java.sql.SQLException;
 
 import nonprofitbookkeeping.model.attachment.DocumentAttachment;
 
+
 /**
  * DocumentStorageService manages attachment and retrieval of document files
  * associated with transactions.
@@ -104,6 +105,7 @@ public class DocumentStorageService
 		String newFileName = transactionId + "_" + System.currentTimeMillis() + extension;
 		File targetFile = new File(DOCUMENT_BASE_DIR, newFileName);
 		
+
 		// Copy the source file to the target location, replacing any existing file.
                 Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
@@ -112,13 +114,16 @@ public class DocumentStorageService
                         id = this.databaseManager.insertAttachment(transactionId, originalName, newFileName);
                 } catch (SQLException e) {
                         throw new IOException("Failed to record attachment", e);
+
                 }
 
                 // Optionally, log the operation.
                 System.out.println("Document attached for transaction " + transactionId + ": " +
                         targetFile.getAbsolutePath());
+
                 return id;
         }
+
 	
 	/**
 	 * Retrieves a document from the storage directory based on its document ID.
@@ -166,6 +171,7 @@ public class DocumentStorageService
                 }
 
                 return retrieveDocument(attachment.getStoredName());
+
         }
 	
 }
