@@ -110,11 +110,19 @@
 		</dependency>
 		
 		<!-- Binding: SLF4J calls → Log4j 2 -->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j2-impl</artifactId>
-			<version>2.23.1</version>   <!-- match your Log4j 2 core version -->
-		</dependency>
+                <dependency>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j2-impl</artifactId>
+                        <version>2.23.1</version>   <!-- match your Log4j 2 core version -->
+                </dependency>
+
+                <!-- Simple SLF4J binding for basic logging -->
+                <dependency>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-simple</artifactId>
+                        <version>2.0.17</version>
+                        <scope>test</scope>
+                </dependency>
 		
 		<!-- One concrete logger implementation, e.g. Logback -->
 		<dependency>
@@ -152,6 +160,8 @@
                 <dependency>
                         <groupId>org.xerial</groupId>
                         <artifactId>sqlite-jdbc</artifactId>
+                        <version>3.45.2.0</version>
+                </dependency>
 
                 <!-- Embedded database for persistent storage -->
                 <dependency>
@@ -194,21 +204,31 @@
 		    <artifactId>javafx-controls</artifactId>
 		    <version>${javafx.version}</version>
 		</dependency>
-	    <dependency>
-	        <groupId>org.openjfx</groupId>
-	        <artifactId>javafx-fxml</artifactId>
-	        <version>${javafx.version}</version> 
-	    </dependency>
-		<dependency>
-		    <groupId>org.openjfx</groupId>
-		    <artifactId>javafx-web</artifactId>
-		    <version>${javafx.version}</version>         
-		</dependency>
-		<dependency>
-		  	<groupId>org.openjfx</groupId>
-		  	<artifactId>javafx-swing</artifactId>
- 			<version>${javafx.version}</version>        		
- 		</dependency>
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-fxml</artifactId>
+                <version>${javafx.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-base</artifactId>
+                <version>${javafx.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-graphics</artifactId>
+                <version>${javafx.version}</version>
+            </dependency>
+                <dependency>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-web</artifactId>
+                    <version>${javafx.version}</version>
+                </dependency>
+                <dependency>
+                        <groupId>org.openjfx</groupId>
+                        <artifactId>javafx-swing</artifactId>
+                        <version>${javafx.version}</version>
+                </dependency>
  		
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
@@ -243,6 +263,7 @@
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.45.2.0</version>
+        </dependency>
 
         <!-- JPA and in-memory database for persistence -->
         <dependency>
