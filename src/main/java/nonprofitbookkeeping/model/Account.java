@@ -8,10 +8,23 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+=======
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
+>>>>>>> a0d4b45 Remove binary document and zip files
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import nonprofitbookkeeping.service.ReportService;
@@ -21,8 +34,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Represents an account with entries and a many-to-many relationship with
  * {@link Fund}s.
  */
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 @Entity
 @Table(name = "accounts")
+=======
+@JsonIdentityInfo(	generator = ObjectIdGenerators.PropertyGenerator.class,
+                                        property = "accountNumber")
+@Entity
+@Table(name = "account")
+>>>>>>> a0d4b45 Remove binary document and zip files
 public final class Account implements Serializable
 {
 	
@@ -30,6 +50,7 @@ public final class Account implements Serializable
 	private static final long serialVersionUID = -1149966185433260549L;
 	
 	/* ───────────────── fields ──────────── */
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
         // Store fund references by ID to avoid circular serialization
         @ElementCollection
         private List<String> associatedFundIds = new ArrayList<>();
@@ -42,6 +63,47 @@ public final class Account implements Serializable
 	@JsonProperty private String parentAccountId;
 	@JsonProperty private String currency;
 	@JsonProperty private BigDecimal openingBalance = BigDecimal.ZERO;
+=======
+        @JsonProperty
+        @ManyToMany
+        @JoinTable(name = "account_fund",
+                joinColumns = @JoinColumn(name = "account_id"),
+                inverseJoinColumns = @JoinColumn(name = "fund_id"))
+        private List<Fund> associatedFunds = new ArrayList<>();
+
+        @Id
+        @Column(name = "account_number")
+        @JsonProperty
+        private String accountNumber;
+        @JsonProperty
+        @Enumerated(EnumType.STRING)
+        @Column(name = "increase_side")
+        private AccountSide increaseSide;
+
+        @JsonProperty
+        private String name;
+
+        @JsonProperty
+        @Column(name = "account_code")
+        private String accountCode;
+
+        @JsonProperty
+        @Enumerated(EnumType.STRING)
+        @Column(name = "account_type")
+        private AccountType accountType;
+
+        @JsonProperty
+        @ManyToOne
+        @JoinColumn(name = "parent_account_id")
+        private Account parentAccount;
+
+        @JsonProperty
+        private String currency;
+
+        @JsonProperty
+        @Column(name = "opening_balance")
+        private BigDecimal openingBalance = BigDecimal.ZERO;
+>>>>>>> a0d4b45 Remove binary document and zip files
 	
 	/* ------------------------------------------------------------------ */
 	/**

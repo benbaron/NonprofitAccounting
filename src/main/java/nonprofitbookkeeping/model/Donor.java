@@ -15,6 +15,15 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
+import nonprofitbookkeeping.model.Donation;
+import java.util.List;
+import java.util.ArrayList;
 
 
 /**
@@ -26,12 +35,15 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "donor")
 public class Donor implements Serializable
 {
 	/**
 	 * The unique identifier for this serializable class.
 	 */
 	private static final long serialVersionUID = 4930419801310521918L;
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	/** The unique identifier for the donor. */
 	@Id private String donorId;
 	/** The name of the donor. */
@@ -47,6 +59,29 @@ public class Donor implements Serializable
 	/** The date of a specific donation, corresponding to the {@code donationAmount}. */
 	private Date donationDate;
 	
+=======
+        /** The unique identifier for the donor. */
+        @Id
+        @Column(name = "donor_id")
+        private String donorId;
+
+        /** The name of the donor. */
+        @Column(name = "name")
+        private String name;
+
+        /** The total cumulative amount donated by this donor. */
+        @Column(name = "total_donations")
+        private BigDecimal totalDonations;
+
+        /** The date of the last donation made by this donor. */
+        @Column(name = "last_donation_date")
+        private Date lastDonationDate;
+
+        /** List of individual donations associated with this donor. */
+        @OneToMany(mappedBy = "donor", cascade = CascadeType.ALL, orphanRemoval = true)
+        private List<Donation> donations = new ArrayList<>();
+
+>>>>>>> a0d4b45 Remove binary document and zip files
 	// Note: Lombok @Data generates getters and setters.
 	// The explicit getters and setters below are redundant but Javadoc is
 	// provided as they exist.
@@ -143,6 +178,7 @@ public class Donor implements Serializable
 		this.lastDonationDate = lastDonationDate;
 		
 	}
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	
 	/**
 	 * Gets the amount of a specific donation.
@@ -257,4 +293,28 @@ public class Donor implements Serializable
 	}
 	
 	
+=======
+
+        /**
+         * Gets the list of donations linked to this donor.
+         *
+         * @return list of {@link Donation} entities
+         */
+        public List<Donation> getDonations()
+        {
+                return this.donations;
+        }
+
+        /**
+         * Replaces the donation list for this donor.
+         *
+         * @param donations list of donations to associate
+         */
+        public void setDonations(List<Donation> donations)
+        {
+                this.donations = donations;
+        }
+
+
+>>>>>>> a0d4b45 Remove binary document and zip files
 }

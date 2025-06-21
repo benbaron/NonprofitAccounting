@@ -4,6 +4,13 @@ package nonprofitbookkeeping.model;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Transient;
 
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -22,8 +29,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * This class serves as the top-level container for a company's bookkeeping data.
  */
 @Entity
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 @Table(name = "companies")
 
+=======
+@Table(name = "company")
+>>>>>>> a0d4b45 Remove binary document and zip files
 public class Company implements Serializable
 {
 	/**
@@ -31,6 +42,7 @@ public class Company implements Serializable
 	 */
 	private static final long serialVersionUID = 6728014646115467637L;
 	
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
         /** Primary key. */
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,7 +57,24 @@ public class Company implements Serializable
         @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
         private ChartOfAccounts chartOfAccounts = new ChartOfAccounts();
 
+=======
+        /** Unique database identifier for this company. */
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long companyId;
+
+        /** The profile information for the company (e.g., name, address). Initialized by default. */
+        @Embedded
+        @JsonProperty private CompanyProfileModel companyProfileModel = new CompanyProfileModel();
+	/** The ledger containing all financial transactions for the company. Initialized by default. */
+        @Transient
+        @JsonProperty private Ledger ledger = new Ledger();
+	/** The chart of accounts defining the structure of accounts for the company. Initialized by default. */
+        @Transient
+        @JsonProperty private ChartOfAccounts chartOfAccounts = new ChartOfAccounts();
+>>>>>>> a0d4b45 Remove binary document and zip files
 	
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
         /**
          * Identifier used to reference this company in the database.
          * This replaces the old file based linkage and may be {@code null}
@@ -53,12 +82,22 @@ public class Company implements Serializable
          */
         @JsonProperty private String companyId;
 
+=======
+	/**
+	 * The file system path to the company's data file.
+	 * This may be null if the company data is not associated with a file
+	 * (e.g., new company not yet saved, or data loaded from a different source).
+	 */
+        @Transient
+        private File companyFile = null;
+>>>>>>> a0d4b45 Remove binary document and zip files
 
 	/**
 	 * Constructs a new Company object.
 	 * Initializes the company profile, ledger, and chart of accounts with default instances.
 	 * The company file is initially null.
 	 */
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
         public Company() 
         {
                 this.companyProfileModel = new CompanyProfileModel();
@@ -72,6 +111,31 @@ public class Company implements Serializable
 
         public void setId(Long id) {
                 this.id = id;
+=======
+        public Company()
+        {
+                this.companyProfileModel = new CompanyProfileModel();
+                this.ledger = new Ledger();
+                this.chartOfAccounts = new ChartOfAccounts();
+        }
+
+        /**
+         * Gets the database identifier for this company.
+         * @return the company ID
+         */
+        public Long getCompanyId()
+        {
+                return this.companyId;
+        }
+
+        /**
+         * Sets the database identifier for this company.
+         * @param companyId the id to set
+         */
+        public void setCompanyId(Long companyId)
+        {
+                this.companyId = companyId;
+>>>>>>> a0d4b45 Remove binary document and zip files
         }
 	
 	/**

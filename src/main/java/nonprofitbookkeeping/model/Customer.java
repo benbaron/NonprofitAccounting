@@ -8,6 +8,10 @@ package nonprofitbookkeeping.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
 
 /**
  * Represents a customer in the nonprofit bookkeeping system.
@@ -17,17 +21,22 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "customer")
 public class Customer
 {
 	/**
 	 * The unique identifier for the customer.
 	 */
-	private String id;
+        @Id
+        @Column(name = "id")
+        private String id;
 
 	/**
 	 * The name of the customer.
 	 */
-	private String name;
+        @Column(name = "name")
+        private String name;
 	
 
 

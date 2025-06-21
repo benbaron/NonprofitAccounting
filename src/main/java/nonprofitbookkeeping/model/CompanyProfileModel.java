@@ -12,6 +12,7 @@ import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import jakarta.persistence.Embeddable;
 
 /**
  * Represents the profile information for a company.

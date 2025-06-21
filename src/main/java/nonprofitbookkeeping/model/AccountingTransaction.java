@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
@@ -21,6 +22,20 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+=======
+import lombok.Builder;
+import lombok.Data;
+import lombok.AllArgsConstructor; // Ensure this is present
+import lombok.NoArgsConstructor; // Added
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+>>>>>>> a0d4b45 Remove binary document and zip files
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -31,8 +46,23 @@ import java.io.Serializable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 @Entity
 @Table(name = "accounting_transactions")
+=======
+/**
+ * Represents a financial transaction, which is a collection of related {@link AccountingEntry} instances.
+ * A transaction must be balanced, meaning the sum of its debit entries equals the sum of its credit entries.
+ * This class uses Lombok for boilerplate code generation like getters, setters, constructors, etc.
+ */
+@Builder
+@Data
+@NoArgsConstructor(force = true) // Changed to force = true
+@AllArgsConstructor(access = lombok.AccessLevel.PRIVATE) // For builder and potentially other
+                                                                               // internal uses
+@Entity
+@Table(name = "transaction")
+>>>>>>> a0d4b45 Remove binary document and zip files
 public class AccountingTransaction implements Serializable
 {
 	/**
@@ -43,6 +73,7 @@ public class AccountingTransaction implements Serializable
         /** Unique identifier for the transaction. */
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
         @JsonProperty private int id;
 
         /** The set of accounting entries that make up this transaction. Must not be null or empty. */
@@ -69,14 +100,51 @@ public class AccountingTransaction implements Serializable
         /** Key used within {@link #info} to store the record type. */
         public static final String RECORD_TYPE_KEY = "recordType";
 
+=======
+        @Column(name = "transaction_id")
+        @JsonProperty
+        private int id;
+        /** The set of accounting entries that make up this transaction. Must not be null or empty. */
+        @JsonProperty
+        @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL)
+        private Set<AccountingEntry> entries;
+	/** Additional information or metadata about the transaction, stored as key-value pairs. */
+	@JsonProperty private Map<String, String> info;
+>>>>>>> a0d4b45 Remove binary document and zip files
 	/** The timestamp when the transaction was booked/recorded, in milliseconds since epoch. */
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	@JsonProperty private long bookingDateTimestamp;
 
+=======
+        @JsonProperty
+        @Column(name = "booking_timestamp")
+        private long bookingDateTimestamp;
+>>>>>>> a0d4b45 Remove binary document and zip files
 	/** The date of the transaction, typically in a string format like "YYYY-MM-DD". */
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	@JsonProperty private String date; // Non-final
 
+=======
+        @JsonProperty
+        @Column(name = "date")
+        private String date; // Non-final
+>>>>>>> a0d4b45 Remove binary document and zip files
 	/** A descriptive memo or note for the transaction. */
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	@JsonProperty private String memo; // Non-final
+=======
+        @JsonProperty
+        @Column(name = "memo")
+        private String memo; // Non-final
+	
+	/**
+	 * Default constructor.
+	 * Used by Lombok and Jackson for instantiation.
+	 * Initializes fields to default values (e.g., null for objects, 0 for primitives).
+	 */
+	public AccountingTransaction()
+	{
+>>>>>>> a0d4b45 Remove binary document and zip files
 
 	@JsonProperty private String toFrom; // Non-final
 	@JsonProperty private String checkNumber; // Non-final

@@ -20,6 +20,16 @@ import jakarta.persistence.EnumType;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 
 import static com.google.common.base.Preconditions.*;
 
@@ -30,10 +40,18 @@ import static com.google.common.base.Preconditions.*;
  * Once the transaction is set, it can't be changed.
  */
 @Entity
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 @Table(name = "accounting_entries")
 
+=======
+@Table(name = "entry")
+>>>>>>> a0d4b45 Remove binary document and zip files
 public final class AccountingEntry implements Serializable
 {
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        @Column(name = "entry_id")
+        private Long entryId;
 	
 	
 	/**
@@ -41,6 +59,7 @@ public final class AccountingEntry implements Serializable
 	 */
 	private static final long serialVersionUID = 5837792781542533633L;
 	
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	
@@ -83,12 +102,43 @@ public final class AccountingEntry implements Serializable
 	@JsonProperty private String supplementalRecordId;
 	
 	
+=======
+        @JsonProperty
+        @Column(name = "amount")
+        final private BigDecimal amount;
+
+        @JsonProperty
+        @Enumerated(EnumType.STRING)
+        @Column(name = "account_side")
+        final private AccountSide accountSide;
+
+        @JsonProperty
+        @Column(name = "account_id")
+        private String accountNumber;
+        /**
+         * Optional display name for the account. This mirrors the account's
+         * {@code name} field at the time the entry was created.  It is stored
+         * on the entry rather than the transaction so that each entry can
+         * reference its own account directly.
+         */
+        @JsonProperty
+        @Column(name = "account_name")
+        private String accountName;
+
+>>>>>>> a0d4b45 Remove binary document and zip files
 	// Future versions can include this.
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "transaction_id")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	
 	private AccountingTransaction transaction;
+=======
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+        @ManyToOne
+        @JoinColumn(name = "transaction_id")
+        private AccountingTransaction transaction;
+>>>>>>> a0d4b45 Remove binary document and zip files
 	
 	// Indicates if the transaction was set
 	@JsonProperty private boolean freeze = false;

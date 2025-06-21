@@ -10,6 +10,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.ManyToMany;
 
 /**
  * Represents a fund within the nonprofit bookkeeping system.
@@ -18,19 +22,41 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * accounts, and a calculated balance derived from these accounts.
  * This class uses Lombok for boilerplate code like getters, setters, and constructors.
  */
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 @Data @AllArgsConstructor @NoArgsConstructor public class Fund
+=======
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "fund")
+public class Fund
+>>>>>>> a0d4b45 Remove binary document and zip files
 {
 	
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	/** The name of the fund, serving as its primary identifier. */
 	@JsonProperty private String name;
 	/** List of account numbers associated with this fund. */
 	@JsonProperty private List<String> accountIds;
+=======
+        /** The name of the fund, serving as its primary identifier. */
+        @Id
+        @JsonProperty
+        private String name;
+
+        /** List of accounts associated with this fund, forming a many-to-many relationship. */
+        @JsonProperty
+        @ManyToMany(mappedBy = "associatedFunds")
+        private List<Account> accounts;
+>>>>>>> a0d4b45 Remove binary document and zip files
 	/**
 	 * The calculated balance of the fund.
 	 * This balance is derived from the sum of balances of all accounts associated with this fund.
 	     * It is updated via the {@link #updateBalance(Ledger)} method.
 	 */
-	@JsonProperty private BigDecimal balance;
+        @JsonProperty
+        private BigDecimal balance;
 	
 	/**
 	 * Constructs a new Fund with the specified name.

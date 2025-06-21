@@ -87,6 +87,7 @@ public class ReconciliationService
 	 * @return A list of {@link AccountingTransaction} objects that are unreconciled and match the criteria,
 	 *         or null if the implementation is not complete.
 	 */
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
       public static List<AccountingTransaction> getUnreconciled(String value)
       {
               if (value == null || value.isBlank())
@@ -100,6 +101,19 @@ public class ReconciliationService
 
               return new ArrayList<>(list);
       }
+=======
+        public static List<AccountingTransaction> getUnreconciled(String value)
+        {
+                try
+                {
+                        return TransactionService.getAllTransactions();
+                }
+                catch (Exception ex)
+                {
+                        throw new RuntimeException("Failed to retrieve transactions", ex);
+                }
+        }
+>>>>>>> a0d4b45 Remove binary document and zip files
 
 	/**
 	 * Lists accounts that are eligible for reconciliation.
