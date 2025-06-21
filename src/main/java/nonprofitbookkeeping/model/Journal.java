@@ -30,30 +30,33 @@ public class Journal implements Serializable
 	 * The unique identifier for this serializable class.
 	 */
 	private static final long serialVersionUID = -8125095337696271045L;
-
-        /**
-         * Transactions are persisted using {@link TransactionService}; the journal
-         * does not keep an in-memory collection of them.
-         */
+	
+	/**
+	 * Transactions are persisted using {@link TransactionService}; the journal
+	 * does not keep an in-memory collection of them.
+	 */
 	
 	/**
 	 * Adds a new accounting transaction to the journal.
 	 * @param transaction The {@link AccountingTransaction} to add. Must not be null, and its booking date timestamp (used as an ID here) must not be null.
 	 * @throws NullPointerException if the transaction or its booking date timestamp is null.
 	 */
-        public void addTransaction(AccountingTransaction transaction)
-        {
-                checkNotNull(transaction, "Transaction cannot be null");
-                checkNotNull(transaction.getBookingDateTimestamp(), "Transaction ID cannot be null for add operation");
-                try
-                {
-                        TransactionService.addTransaction(transaction);
-                }
-                catch (Exception ex)
-                {
-                        throw new RuntimeException("Failed to add transaction", ex);
-                }
-        }
+	public void addTransaction(AccountingTransaction transaction)
+	{
+		checkNotNull(transaction, "Transaction cannot be null");
+		checkNotNull(transaction.getBookingDateTimestamp(),
+			"Transaction ID cannot be null for add operation");
+		
+		try
+		{
+			TransactionService.addTransaction(transaction);
+		}
+		catch (Exception ex)
+		{
+			throw new RuntimeException("Failed to add transaction", ex);
+		}
+		
+	}
 	
 	/**
 	 * Retrieves a defensive copy of the list of all journal transactions.
@@ -62,17 +65,19 @@ public class Journal implements Serializable
 	 * {@link #updateTransaction(AccountingTransaction)}, or {@link #deleteTransaction(long)}.
 	 * @return A new {@code List<AccountingTransaction>} containing all transactions in the journal.
 	 */
-        public List<AccountingTransaction> getJournalTransactions()
-        {
-                try
-                {
-                        return TransactionService.getAllTransactions();
-                }
-                catch (Exception ex)
-                {
-                        throw new RuntimeException("Failed to load transactions", ex);
-                }
-        }
+	public List<AccountingTransaction> getJournalTransactions()
+	{
+		
+		try
+		{
+			return TransactionService.getAllTransactions();
+		}
+		catch (Exception ex)
+		{
+			throw new RuntimeException("Failed to load transactions", ex);
+		}
+		
+	}
 	
 	/**
 	 * Updates an existing transaction in the journal.
@@ -83,20 +88,22 @@ public class Journal implements Serializable
 	 * @return {@code true} if a transaction with a matching booking date timestamp was found and updated, {@code false} otherwise.
 	 * @throws NullPointerException if the input transaction or its booking date timestamp is null.
 	 */
-        public boolean updateTransaction(AccountingTransaction transaction)
-        {
-                checkNotNull(transaction, "Input transaction cannot be null for update");
-                checkNotNull(transaction.getId(), "Transaction ID cannot be null for update operation");
-                try
-                {
-                        TransactionService.updateTransaction(transaction);
-                        return true;
-                }
-                catch (Exception ex)
-                {
-                        throw new RuntimeException("Failed to update transaction", ex);
-                }
-        }
+	public boolean updateTransaction(AccountingTransaction transaction)
+	{
+		checkNotNull(transaction, "Input transaction cannot be null for update");
+		checkNotNull(transaction.getId(), "Transaction ID cannot be null for update operation");
+		
+		try
+		{
+			TransactionService.updateTransaction(transaction);
+			return true;
+		}
+		catch (Exception ex)
+		{
+			throw new RuntimeException("Failed to update transaction", ex);
+		}
+		
+	}
 	
 	/**
 	 * Deletes a transaction from the journal based on its booking date timestamp.
@@ -104,38 +111,44 @@ public class Journal implements Serializable
 	 * @param bookingDateTimestamp The booking date timestamp of the transaction to delete.
 	 * @return {@code true} if a transaction with the given timestamp was found and removed, {@code false} otherwise.
 	 */
-        public boolean deleteTransaction(long bookingDateTimestamp)
-        {
-                try
-                {
-                        // First fetch all transactions to find the matching id
-                        for (AccountingTransaction tx : TransactionService.getAllTransactions())
-                        {
-                                if (tx.getBookingDateTimestamp() == bookingDateTimestamp)
-                                {
-                                        TransactionService.deleteTransaction(tx.getId());
-                                        return true;
-                                }
-                        }
-                        return false;
-                }
-                catch (Exception ex)
-                {
-                        throw new RuntimeException("Failed to delete transaction", ex);
-                }
-        }
+	public boolean deleteTransaction(long bookingDateTimestamp)
+	{
+		
+		try
+		{
+			
+			// First fetch all transactions to find the matching id
+			for (AccountingTransaction tx : TransactionService.getAllTransactions())
+			{
+				
+				if (tx.getBookingDateTimestamp() == bookingDateTimestamp)
+				{
+					TransactionService.deleteTransaction(tx.getId());
+					return true;
+				}
+				
+			}
+			
+			return false;
+		}
+		catch (Exception ex)
+		{
+			throw new RuntimeException("Failed to delete transaction", ex);
+		}
+		
+	}
 	
 	/**
 	 * Returns a string representation of the journal, including its transactions.
 	 * @return A string summary of the journal.
 	 */
-        @Override public String toString()
-        {
-                return MoreObjects.toStringHelper(this)
-                        .add("transactions", "stored in database")
-                        .toString();
-        }
-
+	@Override public String toString()
+	{
+		return MoreObjects.toStringHelper(this)
+			.add("transactions", "stored in database")
+			.toString();
+	}
+	
 	/**
 	 * @param any
 	 */
