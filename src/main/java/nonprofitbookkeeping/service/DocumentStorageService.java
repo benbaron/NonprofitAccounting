@@ -5,6 +5,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import nonprofitbookkeeping.model.DocumentAttachment;
+import nonprofitbookkeeping.service.DatabaseManager;
 
 /**
  * DocumentStorageService manages attachment and retrieval of document files
@@ -17,10 +24,13 @@ import java.nio.file.StandardCopyOption;
  */
 public class DocumentStorageService
 {
-	
-	/** Base directory located in the user's home directory under "NonprofitDocuments" for storing all attached documents. */
-	private static final File DOCUMENT_BASE_DIR =
-		new File(System.getProperty("user.home"), "NonprofitDocuments");
+
+        /** Base directory located in the user's home directory under "NonprofitDocuments" for storing all attached documents. */
+        private static final File DOCUMENT_BASE_DIR =
+                new File(System.getProperty("user.home"), "NonprofitDocuments");
+
+        /** Database manager used for persisting attachment metadata. */
+        private final DatabaseManager dbManager = new DatabaseManager();
 	
 	/**
 	 * Static initializer block to ensure that the base directory for document storage
@@ -75,12 +85,24 @@ public class DocumentStorageService
 		String newFileName = transactionId + "_" + System.currentTimeMillis() + extension;
 		File targetFile = new File(DOCUMENT_BASE_DIR, newFileName);
 		
-		// Copy the source file to the target location, replacing any existing file.
-		Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-		
-		// Optionally, log the operation.
-		System.out.println("Document attached for transaction " + transactionId + ": " +
-			targetFile.getAbsolutePath());
+                // Copy the source file to the target location, replacing any existing file.
+                Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                // Persist attachment record
+                try (Connection c = DatabaseManager.getConnection();
+                        PreparedStatement ps = c.prepareStatement(
+                                "INSERT INTO document_attachment (transaction_id, stored_file, original_file) VALUES (?, ?, ?)");) {
+                        ps.setString(1, transactionId);
+                        ps.setString(2, newFileName);
+                        ps.setString(3, originalName);
+                        ps.executeUpdate();
+                } catch (SQLException ex) {
+                        throw new IOException("Failed to record attachment", ex);
+                }
+
+                // Optionally, log the operation.
+                System.out.println("Document attached for transaction " + transactionId + ": " +
+                        targetFile.getAbsolutePath());
 	}
 	
 	/**
@@ -94,8 +116,8 @@ public class DocumentStorageService
 	 *                     or if there's an issue accessing it.
 	 * @throws IllegalArgumentException if {@code documentId} is null or empty.
 	 */
-	public File retrieveDocument(String documentId) throws IOException
-	{
+        public File retrieveDocument(String documentId) throws IOException
+        {
 		
 		if (documentId == null || documentId.trim().isEmpty())
 		{
@@ -109,7 +131,33 @@ public class DocumentStorageService
 			throw new IOException("Document not found: " + documentId);
 		}
 		
-		return targetFile;
-	}
+                return targetFile;
+        }
+
+        /**
+         * Retrieve an attachment using its database identifier.
+         *
+         * @param attachmentId the primary key of the attachment record
+         * @return the stored document file
+         * @throws IOException if the record does not exist or the file is missing
+         */
+        public File retrieveAttachment(int attachmentId) throws IOException
+        {
+                try (Connection c = DatabaseManager.getConnection();
+                        PreparedStatement ps = c.prepareStatement(
+                                "SELECT stored_file FROM document_attachment WHERE id=?");) {
+                        ps.setInt(1, attachmentId);
+                        try (ResultSet rs = ps.executeQuery()) {
+                                if (rs.next()) {
+                                        String stored = rs.getString(1);
+                                        return retrieveDocument(stored);
+                                }
+                        }
+                } catch (SQLException ex) {
+                        throw new IOException("Failed to read attachment", ex);
+                }
+
+                throw new IOException("Attachment not found: " + attachmentId);
+        }
 	
 }
