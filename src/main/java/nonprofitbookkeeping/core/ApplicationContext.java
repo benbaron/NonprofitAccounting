@@ -2,6 +2,7 @@
 package nonprofitbookkeeping.core;
 
 import javafx.scene.control.MenuBar; // Added for plugins to add menus
+import javafx.stage.Stage;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.service.BudgetService;

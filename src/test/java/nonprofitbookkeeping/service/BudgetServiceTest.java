@@ -5,7 +5,10 @@ import nonprofitbookkeeping.model.budget.BudgetLine;
 import nonprofitbookkeeping.model.budget.Periodicity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 import java.nio.file.Path;
@@ -243,6 +246,7 @@ class BudgetServiceTest
 		testFileAsDirectory.delete(); // Clean up
 	}
 	
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 =======
 class BudgetServiceTest {
     private BudgetService budgetService;
@@ -295,3 +299,6 @@ class BudgetServiceTest {
     }
 >>>>>>> 61e85fc Implement JPA persistence for budgets
 }
+=======
+}
+>>>>>>> a875d69 Merge branch 'feature/m2database' of https://github.com/benbaron/NonprofitAccounting.git into feature/m2database

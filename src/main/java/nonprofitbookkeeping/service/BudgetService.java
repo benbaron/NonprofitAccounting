@@ -38,6 +38,7 @@ import nonprofitbookkeeping.model.budget.Budget;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -244,6 +245,7 @@ public class BudgetService {
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
      * @param budgets The list of {@link Budget} objects to save. Can be null or empty.
+     * @param companyDirectory 
      * @param companyDirectory The {@link File} object representing the directory where the
      *                         company's database is stored.
      *                         Must not be null and must be a valid directory.
@@ -264,7 +266,7 @@ public class BudgetService {
      *                     during file writing or JSON serialization.
 >>>>>>> 6159d55 Revert service changes
      */
-    public void saveBudgets(List<Budget> budgets) {
+    public void saveBudgets(List<Budget> budgets, File companyDirectory) throws IOException {
         if (budgets == null) {
             LOGGER.warning("Budget list provided is null. Nothing to save.");
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
