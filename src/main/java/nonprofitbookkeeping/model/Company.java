@@ -4,6 +4,13 @@ package nonprofitbookkeeping.model;
 import java.io.File;
 import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Transient;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -12,6 +19,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * profile information, ledger, chart of accounts, and the associated data file.
  * This class serves as the top-level container for a company's bookkeeping data.
  */
+@Entity
+@Table(name = "company")
 public class Company implements Serializable
 {
 	/**
@@ -19,31 +28,58 @@ public class Company implements Serializable
 	 */
 	private static final long serialVersionUID = 6728014646115467637L;
 	
-	/** The profile information for the company (e.g., name, address). Initialized by default. */
-	@JsonProperty private CompanyProfileModel companyProfileModel = new CompanyProfileModel();
+        /** Unique database identifier for this company. */
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long companyId;
+
+        /** The profile information for the company (e.g., name, address). Initialized by default. */
+        @Embedded
+        @JsonProperty private CompanyProfileModel companyProfileModel = new CompanyProfileModel();
 	/** The ledger containing all financial transactions for the company. Initialized by default. */
-	@JsonProperty private Ledger ledger = new Ledger();
+        @Transient
+        @JsonProperty private Ledger ledger = new Ledger();
 	/** The chart of accounts defining the structure of accounts for the company. Initialized by default. */
-	@JsonProperty private ChartOfAccounts chartOfAccounts = new ChartOfAccounts();
+        @Transient
+        @JsonProperty private ChartOfAccounts chartOfAccounts = new ChartOfAccounts();
 	
 	/**
 	 * The file system path to the company's data file.
 	 * This may be null if the company data is not associated with a file
 	 * (e.g., new company not yet saved, or data loaded from a different source).
 	 */
-	private File companyFile = null;
+        @Transient
+        private File companyFile = null;
 
 	/**
 	 * Constructs a new Company object.
 	 * Initializes the company profile, ledger, and chart of accounts with default instances.
 	 * The company file is initially null.
 	 */
-	public Company()
-	{			
-		this.companyProfileModel = new CompanyProfileModel();
-		this.ledger = new Ledger();
-		this.chartOfAccounts = new ChartOfAccounts();
-	}
+        public Company()
+        {
+                this.companyProfileModel = new CompanyProfileModel();
+                this.ledger = new Ledger();
+                this.chartOfAccounts = new ChartOfAccounts();
+        }
+
+        /**
+         * Gets the database identifier for this company.
+         * @return the company ID
+         */
+        public Long getCompanyId()
+        {
+                return this.companyId;
+        }
+
+        /**
+         * Sets the database identifier for this company.
+         * @param companyId the id to set
+         */
+        public void setCompanyId(Long companyId)
+        {
+                this.companyId = companyId;
+        }
 	
 	/**
 	 * Gets the company's profile information.

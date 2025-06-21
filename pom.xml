@@ -156,19 +156,26 @@
                 </dependency>
 
 
-                <!-- SQLite JDBC driver for simple local persistence -->
-                <dependency>
-                        <groupId>org.xerial</groupId>
-                        <artifactId>sqlite-jdbc</artifactId>
-                        <version>3.45.2.0</version>
-                </dependency>
-
                 <!-- Embedded database for persistent storage -->
                 <dependency>
                         <groupId>com.h2database</groupId>
                         <artifactId>h2</artifactId>
                         <version>2.2.224</version>
                 </dependency>
+
+
+                <!-- JPA API and Hibernate ORM -->
+                <dependency>
+                        <groupId>jakarta.persistence</groupId>
+                        <artifactId>jakarta.persistence-api</artifactId>
+                        <version>3.1.0</version>
+                </dependency>
+                <dependency>
+                        <groupId>org.hibernate.orm</groupId>
+                        <artifactId>hibernate-core</artifactId>
+                        <version>6.4.4.Final</version>
+                </dependency>
+
 
 		<!-- Mockito Core for creating mocks -->
 		<dependency>

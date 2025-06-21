@@ -76,12 +76,17 @@ public class ReconciliationService
 	 * @return A list of {@link AccountingTransaction} objects that are unreconciled and match the criteria,
 	 *         or null if the implementation is not complete.
 	 */
-	public static List<AccountingTransaction> getUnreconciled(String value)
-	{
-		// TODO Auto-generated method stub
-		// Implementation should query a data source for unreconciled transactions matching 'value'.
-		return null;
-	}
+        public static List<AccountingTransaction> getUnreconciled(String value)
+        {
+                try
+                {
+                        return TransactionService.getAllTransactions();
+                }
+                catch (Exception ex)
+                {
+                        throw new RuntimeException("Failed to retrieve transactions", ex);
+                }
+        }
 
 	/**
 	 * Lists accounts that are eligible for reconciliation.

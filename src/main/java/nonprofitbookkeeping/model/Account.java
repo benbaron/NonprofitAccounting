@@ -8,6 +8,17 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -19,22 +30,55 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * {@link Fund}s.
  */
 @JsonIdentityInfo(	generator = ObjectIdGenerators.PropertyGenerator.class,
-					property = "accountNumber") public final class Account implements Serializable
+                                        property = "accountNumber")
+@Entity
+@Table(name = "account")
+public final class Account implements Serializable
 {
 	
 	
 	private static final long serialVersionUID = -1149966185433260549L;
 	
 	/* ───────────────── fields ──────────── */
-	@JsonProperty private List<Fund> associatedFunds = new ArrayList<>();
-	@JsonProperty private String accountNumber;
-	@JsonProperty private AccountSide increaseSide;
-	@JsonProperty private String name;
-	@JsonProperty private String accountCode;
-	@JsonProperty private AccountType accountType;
-	@JsonProperty private Account parentAccount;
-	@JsonProperty private String currency;
-	@JsonProperty private BigDecimal openingBalance = BigDecimal.ZERO;
+        @JsonProperty
+        @ManyToMany
+        @JoinTable(name = "account_fund",
+                joinColumns = @JoinColumn(name = "account_id"),
+                inverseJoinColumns = @JoinColumn(name = "fund_id"))
+        private List<Fund> associatedFunds = new ArrayList<>();
+
+        @Id
+        @Column(name = "account_number")
+        @JsonProperty
+        private String accountNumber;
+        @JsonProperty
+        @Enumerated(EnumType.STRING)
+        @Column(name = "increase_side")
+        private AccountSide increaseSide;
+
+        @JsonProperty
+        private String name;
+
+        @JsonProperty
+        @Column(name = "account_code")
+        private String accountCode;
+
+        @JsonProperty
+        @Enumerated(EnumType.STRING)
+        @Column(name = "account_type")
+        private AccountType accountType;
+
+        @JsonProperty
+        @ManyToOne
+        @JoinColumn(name = "parent_account_id")
+        private Account parentAccount;
+
+        @JsonProperty
+        private String currency;
+
+        @JsonProperty
+        @Column(name = "opening_balance")
+        private BigDecimal openingBalance = BigDecimal.ZERO;
 	
 	/* ------------------------------------------------------------------ */
 	/**
