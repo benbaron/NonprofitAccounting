@@ -189,6 +189,7 @@
             <version>1.5.3</version>
         </dependency>
 
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -278,12 +279,33 @@
             <version>1.38</version>
         </dependency>
 
+=======
+    <!-- I/O layer: OFXParser, AggregateUnmarshaller, etc. -->
+		<dependency>
+			<groupId>com.webcohesion.ofx4j</groupId>
+			<artifactId>ofx4j</artifactId>
+			<version>1.38</version>
+		</dependency>
+		
+>>>>>>> 14d9085 Add document attachment database support
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.9.3</version>
             <scope>test</scope>
         </dependency>
+<<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
+=======
+
+        <!-- SQLite JDBC driver for attachment database -->
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.45.2.0</version>
+        </dependency>
+
+    </dependencies>
+>>>>>>> 14d9085 Add document attachment database support
 
         <dependency>
             <groupId>org.junit.platform</groupId>
