@@ -10,6 +10,7 @@ import nonprofitbookkeeping.db.DatabaseManager;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,13 +37,14 @@ public class BudgetService {
      * provided company directory. Existing budgets are replaced.
      *
      * @param budgets The list of {@link Budget} objects to save. Can be null or empty.
+     * @param companyDirectory 
      * @param companyDirectory The {@link File} object representing the directory where the
      *                         company's database is stored.
      *                         Must not be null and must be a valid directory.
      * @throws IOException If persistence fails or the directory is invalid.
 
      */
-    public void saveBudgets(List<Budget> budgets) {
+    public void saveBudgets(List<Budget> budgets, File companyDirectory) throws IOException {
         if (budgets == null) {
             LOGGER.warning("Budget list provided is null. Nothing to save.");
             return;

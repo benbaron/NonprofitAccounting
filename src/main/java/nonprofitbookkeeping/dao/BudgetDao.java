@@ -116,7 +116,7 @@ public class BudgetDao {
     }
 
     private Budget loadBudget(Connection conn, String budgetId, ResultSet rs) throws SQLException, IOException {
-        Budget budget = new Budget();
+        Budget budget = new Budget(budgetId, 0);
         budget.setBudgetId(budgetId);
         budget.setBudgetName(rs.getString("budget_name"));
         budget.setFiscalYear(rs.getInt("fiscal_year"));
