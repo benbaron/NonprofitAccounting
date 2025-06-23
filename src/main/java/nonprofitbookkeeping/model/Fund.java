@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 
 /**
  * Represents a fund within the nonprofit bookkeeping system.
@@ -26,7 +27,9 @@ public class Fund
 	/** The name of the fund, serving as its primary identifier. */
 	@JsonProperty private String name;
 	/** List of accounts associated with this fund, forming a many-to-many relationship. */
-	@JsonProperty private List<Account> accounts;
+        @JsonProperty
+        @JsonIdentityReference(alwaysAsId = true)
+        private List<Account> accounts;
 	/**
 	 * The calculated balance of the fund.
 	 * This balance is derived from the sum of balances of all accounts associated with this fund.

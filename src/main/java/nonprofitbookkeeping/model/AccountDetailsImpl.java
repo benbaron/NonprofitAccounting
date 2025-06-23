@@ -4,6 +4,7 @@ package nonprofitbookkeeping.model;
 import com.google.common.base.MoreObjects;
 
 import nonprofitbookkeeping.api.AccountDetails;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -29,7 +30,8 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 
 	private String accountType;
 
-	private Account parentAccount;
+        @JsonIdentityReference(alwaysAsId = true)
+        private Account parentAccount;
 
 	private String currency;
 

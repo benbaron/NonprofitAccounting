@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import nonprofitbookkeeping.service.ReportService;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -18,8 +19,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Represents an account with entries and a many-to-many relationship with
  * {@link Fund}s.
  */
-@JsonIdentityInfo(	generator = ObjectIdGenerators.PropertyGenerator.class,
-					property = "accountNumber") public final class Account implements Serializable
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.UUIDGenerator.class,
+        property = "@id")
+public final class Account implements Serializable
 {
 	
 	
@@ -32,7 +35,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 	@JsonProperty private String name;
 	@JsonProperty private String accountCode;
 	@JsonProperty private AccountType accountType;
-	@JsonProperty private Account parentAccount;
+        @JsonProperty
+        @JsonIdentityReference(alwaysAsId = true)
+        private Account parentAccount;
 	@JsonProperty private String currency;
 	@JsonProperty private BigDecimal openingBalance = BigDecimal.ZERO;
 	
