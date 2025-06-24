@@ -29,7 +29,7 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 
 	private String accountType;
 
-	private Account parentAccount;
+        private String parentAccountId;
 
 	private String currency;
 
@@ -92,10 +92,10 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public Account getParentAccount()
-	{
-		return this.parentAccount;
-	}
+        @Override public String getParentAccount()
+        {
+                return this.parentAccountId;
+        }
 
 
 	/**
@@ -133,14 +133,14 @@ public final class AccountDetailsImpl implements AccountDetails, Serializable
 		this.accountType = accountType;
 	}
 
-	/**
-	 * Sets the parent account.
-	 * @param parentAccount the parentAccount to set
-	 */
-	public void setParentAccount(Account parentAccount)
-	{
-		this.parentAccount = parentAccount;
-	}
+        /**
+         * Sets the parent account identifier.
+         * @param parentAccountId the parent account number to set
+         */
+        public void setParentAccount(String parentAccountId)
+        {
+                this.parentAccountId = parentAccountId;
+        }
 
 	/**
 	 * Sets the currency of the account.

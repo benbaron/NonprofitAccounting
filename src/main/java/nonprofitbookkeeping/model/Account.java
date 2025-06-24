@@ -26,13 +26,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
 	private static final long serialVersionUID = -1149966185433260549L;
 	
 	/* ───────────────── fields ──────────── */
-	@JsonProperty private List<Fund> associatedFunds = new ArrayList<>();
+        // Store fund references by ID to avoid circular serialization
+        @JsonProperty private List<String> associatedFundIds = new ArrayList<>();
 	@JsonProperty private String accountNumber;
 	@JsonProperty private AccountSide increaseSide;
 	@JsonProperty private String name;
 	@JsonProperty private String accountCode;
 	@JsonProperty private AccountType accountType;
-	@JsonProperty private Account parentAccount;
+        // Parent account referenced by account number
+        @JsonProperty private String parentAccountId;
 	@JsonProperty private String currency;
 	@JsonProperty private BigDecimal openingBalance = BigDecimal.ZERO;
 	
@@ -81,16 +83,17 @@ import static com.google.common.base.Preconditions.checkNotNull;
 	 * of associated funds and adds this account to the fund's list of associated accounts.
 	 * @param fund The fund to associate with this account.
 	 */
-	public void addFund(Fund fund)
-	{
-		
-		if (!this.associatedFunds.contains(fund))
-		{
-			this.associatedFunds.add(fund);
-			fund.addAccount(this);
-		}
-		
-	}
+        public void addFund(String fundId)
+        {
+                if (fundId == null)
+                        return;
+
+                if (!this.associatedFundIds.contains(fundId))
+                {
+                        this.associatedFundIds.add(fundId);
+                }
+
+        }
 	
 	/**
 	 * Disassociates a fund from this account.
@@ -98,11 +101,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 	 * removes this account from the fund's list of associated accounts.
 	 * @param fund The fund to disassociate from this account.
 	 */
-	public void removeFund(Fund fund)
-	{
-		this.associatedFunds.remove(fund);
-		fund.removeAccount(this);
-	}
+        public void removeFund(String fundId)
+        {
+                if (fundId == null)
+                        return;
+                this.associatedFundIds.remove(fundId);
+        }
 	
 	/* =================== IMPLEMENTED METHODS ========================== */
 	
@@ -128,10 +132,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 	}
 	
 	/** @return {@code true} if this account is a child of another. */
-	public boolean hasParent()
-	{
-		return this.parentAccount != null;
-	}
+        public boolean hasParent()
+        {
+                return this.parentAccountId != null && !this.parentAccountId.isBlank();
+        }
 	
 	/**
 	 * Returns a one-element collection containing this account.  The method is
@@ -148,19 +152,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
 	 * Gets the list of funds associated with this account.
 	 * @return The list of associated funds.
 	 */
-	public List<Fund> getAssociatedFunds()
-	{
-		return this.associatedFunds;
-	}
+        public List<String> getAssociatedFundIds()
+        {
+                return this.associatedFundIds;
+        }
 	
-	/**
-	 * Sets the list of funds associated with this account.
-	 * @param associatedFunds The list of funds to associate.
-	 */
-	public void setAssociatedFunds(List<Fund> associatedFunds)
-	{
-		this.associatedFunds = associatedFunds;
-	}
+        /**
+         * Sets the list of fund identifiers associated with this account.
+         * @param associatedFundIds The list of fund IDs to associate.
+         */
+        public void setAssociatedFundIds(List<String> associatedFundIds)
+        {
+                this.associatedFundIds = associatedFundIds;
+        }
 	
 	/**
 	 * Gets the account number.
@@ -257,24 +261,23 @@ import static com.google.common.base.Preconditions.checkNotNull;
 	 * Gets the parent account of this account, if any.
 	 * @return The parent account, or null if this is a top-level account.
 	 */
-	public Account getParentAccount()
-	{
-		return this.parentAccount;
-	}
+        public String getParentAccountId()
+        {
+                return this.parentAccountId;
+        }
 	
-	/**
-	 * Sets the parent account of this account.
-	 * @param parentAccount The parent account to set.
-	 */
-	public void setParentAccount(Account parentAccount)
-	{
-		
-		if (parentAccount != null)
-		{
-			this.parentAccount = parentAccount;
-		}
-		
-	}
+        /**
+         * Sets the parent account of this account using its account number.
+         * @param parentAccountId The parent account number to set.
+         */
+        public void setParentAccountId(String parentAccountId)
+        {
+                if (parentAccountId != null)
+                {
+                        this.parentAccountId = parentAccountId;
+                }
+
+        }
 	
 	/**
 	 * Gets the currency of the account.
@@ -312,7 +315,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 		this.openingBalance = openingBalance;
 	}
 	
-	// The following child account helpers were removed. The application
-	// manages parent/child relationships solely via {@link #parentAccount}
-	// and the {@code ChartOfAccounts} container.
+        // The following child account helpers were removed. The application
+        // manages parent/child relationships solely via {@link #parentAccountId}
+        // and the {@code ChartOfAccounts} container.
 }

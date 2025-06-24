@@ -150,7 +150,7 @@ public final class ChartOfAccountsIOService
                 row.createCell(0).setCellValue(acc.getAccountNumber());
                 row.createCell(1).setCellValue(acc.getName());
                 row.createCell(2).setCellValue(acc.getAccountType() != null ? acc.getAccountType().name() : "");
-                row.createCell(3).setCellValue(acc.getParentAccount() != null ? acc.getParentAccount().getAccountNumber() : "");
+                row.createCell(3).setCellValue(acc.getParentAccountId() != null ? acc.getParentAccountId() : "");
                 row.createCell(4).setCellValue(acc.getIncreaseSide() != null ? acc.getIncreaseSide().name() : "");
                 if (acc.getOpeningBalance() != null) {
                     row.createCell(5).setCellValue(acc.getOpeningBalance().doubleValue());

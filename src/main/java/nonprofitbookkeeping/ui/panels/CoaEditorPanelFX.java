@@ -295,7 +295,12 @@ public class CoaEditorPanelFX extends BorderPane
 
                if (sel != null)
                {
-                       showDialog(sel.getParentAccount(), sel);
+                       Account parent = null;
+                       if (sel.getParentAccountId() != null)
+                       {
+                               parent = CurrentCompany.getCompany().getChartOfAccounts().getAccount(sel.getParentAccountId());
+                       }
+                       showDialog(parent, sel);
                }
                else
                {

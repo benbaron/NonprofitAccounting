@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,8 +26,8 @@ public class Fund
 	
 	/** The name of the fund, serving as its primary identifier. */
 	@JsonProperty private String name;
-	/** List of accounts associated with this fund, forming a many-to-many relationship. */
-	@JsonProperty private List<Account> accounts;
+        /** List of account numbers associated with this fund. */
+        @JsonProperty private List<String> accountIds;
 	/**
 	 * The calculated balance of the fund.
 	 * This balance is derived from the sum of balances of all accounts associated with this fund.
@@ -40,12 +41,12 @@ public class Fund
      *
      * @param name The name of the fund. This name also serves as the fund's identifier via {@link #getFundId()}.
      */
-	public Fund(String name)
-	{
-		this.name = name;
-		this.accounts = new ArrayList<>();
-		this.balance = BigDecimal.ZERO;
-	}
+        public Fund(String name)
+        {
+                this.name = name;
+                this.accountIds = new ArrayList<>();
+                this.balance = BigDecimal.ZERO;
+        }
 	
 	/**  
 	 * Constructor Fund
@@ -83,10 +84,10 @@ public class Fund
      *
      * @return A list of {@link Account} objects associated with this fund.
      */
-	public List<Account> getAccounts()
-	{
-		return this.accounts;
-	}
+        public List<String> getAccountIds()
+        {
+                return this.accountIds;
+        }
 	
 	/**
 	 * Adds an account to this fund if it's not already present.
@@ -103,9 +104,9 @@ public class Fund
      *
      * @param account the {@link Account} to associate with this fund
      */
-    public void addAccount(Account account)
+    public void addAccount(String accountId)
     {
-        addAccount(account, null);
+        addAccount(accountId, null);
     }
 
     /**
@@ -117,14 +118,13 @@ public class Fund
      * @param ledger  The {@link Ledger} used to calculate balances. May be null
      *                to skip ledger-based updates.
      */
-    public void addAccount(Account account, Ledger ledger)
+    public void addAccount(String accountId, Ledger ledger)
         {
-                if (account == null) return; // Guard against null account
+                if (accountId == null) return; // Guard against null
 
-                if (!this.accounts.contains(account))
+                if (!this.accountIds.contains(accountId))
                 {
-                        this.accounts.add(account);
-                        account.addFund(this); // Add this fund to the account
+                        this.accountIds.add(accountId);
                         updateBalance(ledger); // Recalculate the fund's balance
                 }
 
@@ -137,9 +137,9 @@ public class Fund
          *
          * @param account the {@link Account} to disassociate from this fund
          */
-        public void removeAccount(Account account)
+        public void removeAccount(String accountId)
         {
-                removeAccount(account, null);
+                removeAccount(accountId, null);
         }
 
         /**
@@ -151,14 +151,13 @@ public class Fund
          *                the method does nothing.
          * @param ledger  the ledger used to recalculate balances. May be null.
          */
-        public void removeAccount(Account account, Ledger ledger)
+        public void removeAccount(String accountId, Ledger ledger)
         {
-                if (account == null) return; // Guard against null account
+                if (accountId == null) return; // Guard against null account
 
-                boolean removed = this.accounts.remove(account);
+                boolean removed = this.accountIds.remove(accountId);
                 if (removed)
                 {
-                        account.removeFund(this); // Remove this fund from the account
                         updateBalance(ledger); // Recalculate the fund's balance
                 }
         }
@@ -172,9 +171,15 @@ public class Fund
         {
                 BigDecimal totalBalance = BigDecimal.ZERO;
 
-                for (Account account : this.accounts)
+                ChartOfAccounts coa = CurrentCompany.getCompany().getChartOfAccounts();
+
+                for (String accountId : this.accountIds)
                 {
-                        totalBalance = totalBalance.add(account.totalAccountBalance(ledger));
+                        Account account = coa.getAccount(accountId);
+                        if (account != null)
+                        {
+                                totalBalance = totalBalance.add(account.totalAccountBalance(ledger));
+                        }
                 }
 
                 this.balance = totalBalance;

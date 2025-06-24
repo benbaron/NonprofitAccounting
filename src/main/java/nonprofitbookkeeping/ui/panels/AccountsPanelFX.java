@@ -292,7 +292,7 @@ public class AccountsPanelFX extends BorderPane
 		 * Direct {@link Account} reference might be complex for direct TableView editing
 		 * unless appropriate converters/cell factories are used.
 		 */
-		private Account parent;
+                private String parentId;
 		/** The opening balance of the account. Defaults to {@link BigDecimal#ZERO}. */
 		private BigDecimal opening = BigDecimal.ZERO;
 		/** The type of the account (e.g., Asset, Liability). This can be {@code null}. */
@@ -317,8 +317,8 @@ public class AccountsPanelFX extends BorderPane
 			Objects.requireNonNull(a, "Account cannot be null for AccountRow construction.");
 			this.code = a.getAccountCode();
 			this.name = a.getName();
-			this.type = a.getAccountType();
-			this.parent = a.getParentAccount();
+                        this.type = a.getAccountType();
+                        this.parentId = a.getParentAccountId();
 			this.currency = a.getCurrency();
 			this.opening = a.getOpeningBalance();
 		}
@@ -353,15 +353,15 @@ public class AccountsPanelFX extends BorderPane
 			this.type = s;
 		}
 		
-		public Account getParent()
-		{
-			return this.parent;
-		}
-		
-		public void setParent(Account s)
-		{
-			this.parent = s;
-		}
+                public String getParentId()
+                {
+                        return this.parentId;
+                }
+
+                public void setParentId(String s)
+                {
+                        this.parentId = s;
+                }
 		
 		public String getCurrency()
 		{

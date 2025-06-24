@@ -47,13 +47,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	 *         Returns an empty list if the parent has no children or the parent is not in the chart.
 	 * @throws NullPointerException if parent is null.
 	 */
-	public List<Account> getChildren(Account parent)
-	{
-		Objects.requireNonNull(parent, "parent cannot be null");
-		return this.chartOfAccounts.stream()
-			.filter(a -> parent.equals(a.getParentAccount()))
-			.collect(Collectors.toCollection(ArrayList::new));
-	}
+        public List<Account> getChildren(Account parent)
+        {
+                Objects.requireNonNull(parent, "parent cannot be null");
+                return this.chartOfAccounts.stream()
+                        .filter(a -> parent.getAccountNumber().equals(a.getParentAccountId()))
+                        .collect(Collectors.toCollection(ArrayList::new));
+        }
 	
 	/* ------------------------------------------------------------------ */
 	/**
@@ -62,12 +62,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	 * @param root The {@link Account} to add as a root account.
 	 * @throws NullPointerException if root is null.
 	 */
-	public void addAccount(Account root)
-	{
-		Objects.requireNonNull(root, "account");
-		root.setParentAccount(null);
-		this.chartOfAccounts.add(root);
-	}
+        public void addAccount(Account root)
+        {
+                Objects.requireNonNull(root, "account");
+                root.setParentAccountId(null);
+                this.chartOfAccounts.add(root);
+        }
 	
 	/* ------------------------------------------------------------------ */
 	/**
@@ -76,13 +76,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	 * @param child The {@link Account} to add as a child.
 	 * @throws NullPointerException if parent or child is null.
 	 */
-	public void addSubAccount(Account parent, Account child)
-	{
-		Objects.requireNonNull(parent, "parent");
-		Objects.requireNonNull(child, "child");
-		child.setParentAccount(parent);
-		this.chartOfAccounts.add(child);
-	}
+        public void addSubAccount(Account parent, Account child)
+        {
+                Objects.requireNonNull(parent, "parent");
+                Objects.requireNonNull(child, "child");
+                child.setParentAccountId(parent.getAccountNumber());
+                this.chartOfAccounts.add(child);
+        }
 	
 	/* ------------------------------------------------------------------ */
 	/**

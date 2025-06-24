@@ -35,6 +35,6 @@ class CompanyPersistenceTest {
 
         assertNotNull(loadedChild);
         assertNotNull(loadedParent);
-        assertSame(loadedParent, loadedChild.getParentAccount());
+        assertEquals(loadedParent.getAccountNumber(), loadedChild.getParentAccountId());
     }
 }

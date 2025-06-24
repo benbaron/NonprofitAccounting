@@ -169,7 +169,7 @@ import static org.mockito.Mockito.when;
 		lenient().when(mock.getIncreaseSide()).thenReturn(increaseSide);
 		lenient().when(mock.getOpeningBalance()).thenReturn(openingBalance);
 		lenient().when(this.mockChartOfAccounts.getAccount(number)).thenReturn(mock);
-		lenient().when(mock.getAssociatedFunds()).thenReturn(new ArrayList<>()); // Default empty
+                lenient().when(mock.getAssociatedFundIds()).thenReturn(new ArrayList<>()); // Default empty
 	}
 	
 	private static AccountingTransaction 
@@ -471,7 +471,7 @@ import static org.mockito.Mockito.when;
 	@Test
 		void testAA_WithFundFilterActive_AccountSkipped()
 	{
-		when(this.mockAssetAccount.getAssociatedFunds()).thenReturn(List.of(this.mockFundB)); // Does not
+                when(this.mockAssetAccount.getAssociatedFundIds()).thenReturn(List.of("FundB")); // Does not
 																					// match FundA
 		this.aaReportContext.setAccountIdsForDetailReport(List.of("ASSET100"));
 		this.aaReportContext.setFundIds(List.of("Operations")); // Filter by FundA
@@ -487,7 +487,7 @@ import static org.mockito.Mockito.when;
 	@Test
 		void testAA_WithFundFilterActive_AccountIncluded_OBFundAware()
 	{
-		when(this.mockAssetAccount.getAssociatedFunds()).thenReturn(List.of(this.mockFundA));
+                when(this.mockAssetAccount.getAssociatedFundIds()).thenReturn(List.of("FundA"));
 		this.aaReportContext.setAccountIdsForDetailReport(List.of("ASSET100"));
 		this.aaReportContext.setFundIds(List.of("Operations")); // FundA
 		

@@ -3,7 +3,6 @@ package nonprofitbookkeeping.api;
 
 import java.math.BigDecimal;
 
-import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountSide;
 
 /**
@@ -67,11 +66,11 @@ public interface AccountDetails
 	 */
 	String getAccountType();
 
-	/**
-	 * Gets the parent account.
-	 * @return The parent account.
-	 */
-	Account getParentAccount();
+        /**
+         * Gets the parent account identifier.
+         * @return The parent account number or ID.
+         */
+        String getParentAccount();
 
 	/**
 	 * Gets the currency of the account.
