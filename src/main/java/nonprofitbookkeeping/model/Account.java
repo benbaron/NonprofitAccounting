@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import nonprofitbookkeeping.model.AccountIdResolver;
 import nonprofitbookkeeping.service.ReportService;
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -22,7 +23,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "accountNumber")
+        property = "accountNumber",
+        resolver = AccountIdResolver.class)
 @JsonPropertyOrder({
         "accountNumber",
         "increaseSide",
