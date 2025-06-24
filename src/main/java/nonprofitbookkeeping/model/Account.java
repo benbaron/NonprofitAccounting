@@ -11,6 +11,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import nonprofitbookkeeping.service.ReportService;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -22,14 +23,27 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "accountNumber")
+@JsonPropertyOrder({
+        "accountNumber",
+        "increaseSide",
+        "name",
+        "accountCode",
+        "accountType",
+        "parentAccount",
+        "currency",
+        "openingBalance",
+        "associatedFunds"
+})
 public final class Account implements Serializable
 {
 	
 	
 	private static final long serialVersionUID = -1149966185433260549L;
 	
-	/* ───────────────── fields ──────────── */
-	@JsonProperty private List<Fund> associatedFunds = new ArrayList<>();
+        /* ───────────────── fields ──────────── */
+        @JsonProperty
+        @JsonIdentityReference(alwaysAsId = true)
+        private List<Fund> associatedFunds = new ArrayList<>();
 	@JsonProperty private String accountNumber;
 	@JsonProperty private AccountSide increaseSide;
 	@JsonProperty private String name;
