@@ -129,9 +129,9 @@ public class ChartOfAccountsService
 		if (num == null) {
             return Optional.empty();
         }
-		return this.coa.getAccountNumberToAccountDetails().values().stream()
-			.filter(a -> num.equals(a.getAccountNumber())) // Ensure num.equals to avoid NPE if account number can be null
-			.findFirst();
+                return this.coa.createAccountNumberMap().asMap().values().stream()
+                        .filter(a -> num.equals(a.getAccountNumber())) // Ensure num.equals to avoid NPE if account number can be null
+                        .findFirst();
 	}
 	
 	

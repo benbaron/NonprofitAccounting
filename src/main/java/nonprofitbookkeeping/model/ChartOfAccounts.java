@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
@@ -155,28 +156,27 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	 *         matches the given account number, or if the input 
 	 *         accountNumber is invalid.
 	 */
-	public Account getAccount(String accountNumber)
-	{
-		
-		if (accountNumber == null || accountNumber.trim().isEmpty())
-		{
-			return null;
-		}
-		
-		Map<String, Account> accountMap = this.getAccountNumberToAccountDetails();
-		return accountMap.get(accountNumber);
-	}
+        public Account getAccount(String accountNumber)
+        {
+
+                if (accountNumber == null || accountNumber.trim().isEmpty())
+                {
+                        return null;
+                }
+
+                AccountNumberMap accountMap = new AccountNumberMap(this.chartOfAccounts);
+                return accountMap.get(accountNumber);
+        }
 	
-	/**
-	 * @return
-	 */
-	public Map<String, Account> getAccountNumberToAccountDetails()
-	{
-		return this.chartOfAccounts.stream()
-			.collect(Collectors.toUnmodifiableMap(Account::getAccountNumber,
-				a -> a,
-				(a, b) -> a)); // keep first
-	}
+        /**
+         * Builds a lookup table of account number to {@link Account}.
+         *
+         * @return a new {@link AccountNumberMap} for the current accounts
+         */
+        public AccountNumberMap createAccountNumberMap()
+        {
+                return new AccountNumberMap(this.chartOfAccounts);
+        }
 	
 	/**
 	 * Returns a list of all accounts contained in this chart of accounts.

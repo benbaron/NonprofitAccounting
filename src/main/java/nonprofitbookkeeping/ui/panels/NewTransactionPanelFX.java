@@ -310,21 +310,23 @@ public class NewTransactionPanelFX extends BorderPane
 	private TableColumn<Line, String> accountCol()
 	{
 		
-		ObservableList<String> choices =
-			FXCollections.observableArrayList(
-				this.coa.getAccountNumberToAccountDetails()
-					.values()
-					.stream()
-					.map(Account::getName)
-					.sorted()
-					.toList());
-		
-		Map<String, Account> byName =
-			this.coa.getAccountNumberToAccountDetails()
-				.values()
-				.stream()
-				.collect(Collectors.toMap(
-					Account::getName, // key = name
+                ObservableList<String> choices =
+                        FXCollections.observableArrayList(
+                                this.coa.createAccountNumberMap()
+                                        .asMap()
+                                        .values()
+                                        .stream()
+                                        .map(Account::getName)
+                                        .sorted()
+                                        .toList());
+
+                Map<String, Account> byName =
+                        this.coa.createAccountNumberMap()
+                                .asMap()
+                                .values()
+                                .stream()
+                                .collect(Collectors.toMap(
+                                        Account::getName, // key = name
 					a -> a, // value = Account
 					(a, b) -> a, // merge: keep the first duplicate
 					LinkedHashMap::new // (optional) keep insertion order
