@@ -67,18 +67,22 @@ public class FundAccountingService
 		if (fundName == null) {
             return false;
         }
-		Fund fund = this.fundMap.get(fundName);
+                Fund fund = this.fundMap.get(fundName);
 		
 		if (fund != null)
 		{
 			
-			// Create a copy of the accounts list to iterate over, to avoid ConcurrentModificationException
-            // if account.removeFund(fund) modifies the fund's account list indirectly.
-            List<Account> associatedAccounts = new ArrayList<>(fund.getAccounts());
-			for (Account account : associatedAccounts)
-			{
-				account.removeFund(fund); // This should also trigger fund.removeAccount(this)
-			}
+                        // Disassociate this fund from all related accounts
+            List<String> associatedAccounts = new ArrayList<>(fund.getAccountIds());
+                        for (String accountId : associatedAccounts)
+                        {
+                                Account account = this.accountMap.get(accountId);
+                                if (account != null)
+                                {
+                                        account.removeFund(fundName);
+                                }
+                                fund.removeAccount(accountId);
+                        }
 			
 			this.fundMap.remove(fundName);
 			return true;
@@ -121,15 +125,20 @@ public class FundAccountingService
 		if (accountName == null) {
             return false;
         }
-		Account account = this.accountMap.get(accountName);
+                Account account = this.accountMap.get(accountName);
 		
 		if (account != null)
 		{
-			// Create a copy for iteration to avoid ConcurrentModificationException
-            List<Fund> associatedFunds = new ArrayList<>(account.getAssociatedFunds());
-                        for (Fund fund : associatedFunds)
+                        // Disassociate account from all related funds
+            List<String> associatedFunds = new ArrayList<>(account.getAssociatedFundIds());
+                        for (String fundId : associatedFunds)
                         {
-                                fund.removeAccount(account);
+                                Fund fund = this.fundMap.get(fundId);
+                                if (fund != null)
+                                {
+                                        fund.removeAccount(accountName);
+                                }
+                                account.removeFund(fundId);
                         }
 			
 			this.accountMap.remove(accountName);

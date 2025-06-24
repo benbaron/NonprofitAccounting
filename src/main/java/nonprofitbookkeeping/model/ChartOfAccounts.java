@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
@@ -51,7 +52,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	{
 		Objects.requireNonNull(parent, "parent cannot be null");
 		return this.chartOfAccounts.stream()
-			.filter(a -> parent.equals(a.getParentAccount()))
+			.filter(a -> parent.getAccountNumber().equals(a.getParentAccountId()))
 			.collect(Collectors.toCollection(ArrayList::new));
 	}
 	
@@ -65,7 +66,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void addAccount(Account root)
 	{
 		Objects.requireNonNull(root, "account");
-		root.setParentAccount(null);
+		root.setParentAccountId(null);
 		this.chartOfAccounts.add(root);
 	}
 	
@@ -80,7 +81,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	{
 		Objects.requireNonNull(parent, "parent");
 		Objects.requireNonNull(child, "child");
-		child.setParentAccount(parent);
+		child.setParentAccountId(parent.getAccountNumber());
 		this.chartOfAccounts.add(child);
 	}
 	
@@ -93,7 +94,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void removeAccount(Account target)
 	{
 		if (target == null)
+		{
 			return;
+		}
 		/* remove children first (depth-first) */
 		getChildren(target).forEach(this::removeAccount);
 		this.chartOfAccounts.remove(target);
@@ -163,19 +166,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 			return null;
 		}
 		
-		Map<String, Account> accountMap = this.getAccountNumberToAccountDetails();
+		AccountNumberMap accountMap = new AccountNumberMap(this.chartOfAccounts);
 		return accountMap.get(accountNumber);
 	}
 	
 	/**
-	 * @return
+	 * Builds a lookup table of account number to {@link Account}.
+	 *
+	 * @return a new {@link AccountNumberMap} for the current accounts
 	 */
-	public Map<String, Account> getAccountNumberToAccountDetails()
+	public AccountNumberMap createAccountNumberMap()
 	{
-		return this.chartOfAccounts.stream()
-			.collect(Collectors.toUnmodifiableMap(Account::getAccountNumber,
-				a -> a,
-				(a, b) -> a)); // keep first
+		return new AccountNumberMap(this.chartOfAccounts);
 	}
 	
 	/**

@@ -253,23 +253,22 @@ public class ReportService
 			return false; // Null account cannot match.
 		}
 		
-		List<Fund> associatedFunds = account.getAssociatedFunds();
-		
-		if (associatedFunds == null || associatedFunds.isEmpty())
-		{
-			return false; // Account has no associated funds, so cannot match specific fund
+                List<String> associatedFunds = account.getAssociatedFundIds();
+
+                if (associatedFunds == null || associatedFunds.isEmpty())
+                {
+                        return false; // Account has no associated funds, so cannot match specific fund
 							// selection.
 		}
 		
-		for (Fund fund : associatedFunds)
-		{
-			
-			if (fund != null && fund.getName() != null &&
-				selectedFundNames.contains(fund.getName()))
-			{
-				return true; // Account is associated with at least one of the selected
-								// funds.
-			}
+                for (String fundId : associatedFunds)
+                {
+
+                        if (fundId != null && selectedFundNames.contains(fundId))
+                        {
+                                return true; // Account is associated with at least one of the selected
+                                                                // funds.
+                        }
 			
 		}
 		
