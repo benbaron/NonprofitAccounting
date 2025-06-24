@@ -84,7 +84,6 @@ public class AccountingTransaction implements Serializable
 		@Nullable Map<String, String> info,
 		long bookingDateTimestamp)
 	{
-// this.account = checkNotNull(account, "account cannot be null");
 		
 		// Ensure immutability for collections passed in
 		this.entries = Collections
@@ -103,8 +102,6 @@ public class AccountingTransaction implements Serializable
 			"Transaction must have at least one entry (ideally 2+ for balance)");
 		checkArgument(this.entries.size() >= 2,
 			"A transaction consists of at least two entries");		
-		// The isBalanced check might also need to be deferred or handled carefully if
-		// entries are not fully set up.
 		checkArgument(isBalanced(), "Transaction unbalanced");
 	}
 	
@@ -392,7 +389,6 @@ public class AccountingTransaction implements Serializable
 	 */
 	public BigDecimal countAccountBalance()
 	{
-		
 		return BigDecimal.ZERO;
 	}
 

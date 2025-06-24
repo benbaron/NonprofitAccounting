@@ -48,13 +48,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	 *         Returns an empty list if the parent has no children or the parent is not in the chart.
 	 * @throws NullPointerException if parent is null.
 	 */
-        public List<Account> getChildren(Account parent)
-        {
-                Objects.requireNonNull(parent, "parent cannot be null");
-                return this.chartOfAccounts.stream()
-                        .filter(a -> parent.getAccountNumber().equals(a.getParentAccountId()))
-                        .collect(Collectors.toCollection(ArrayList::new));
-        }
+	public List<Account> getChildren(Account parent)
+	{
+		Objects.requireNonNull(parent, "parent cannot be null");
+		return this.chartOfAccounts.stream()
+			.filter(a -> parent.getAccountNumber().equals(a.getParentAccountId()))
+			.collect(Collectors.toCollection(ArrayList::new));
+	}
 	
 	/* ------------------------------------------------------------------ */
 	/**
@@ -63,12 +63,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	 * @param root The {@link Account} to add as a root account.
 	 * @throws NullPointerException if root is null.
 	 */
-        public void addAccount(Account root)
-        {
-                Objects.requireNonNull(root, "account");
-                root.setParentAccountId(null);
-                this.chartOfAccounts.add(root);
-        }
+	public void addAccount(Account root)
+	{
+		Objects.requireNonNull(root, "account");
+		root.setParentAccountId(null);
+		this.chartOfAccounts.add(root);
+	}
 	
 	/* ------------------------------------------------------------------ */
 	/**
@@ -77,13 +77,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	 * @param child The {@link Account} to add as a child.
 	 * @throws NullPointerException if parent or child is null.
 	 */
-        public void addSubAccount(Account parent, Account child)
-        {
-                Objects.requireNonNull(parent, "parent");
-                Objects.requireNonNull(child, "child");
-                child.setParentAccountId(parent.getAccountNumber());
-                this.chartOfAccounts.add(child);
-        }
+	public void addSubAccount(Account parent, Account child)
+	{
+		Objects.requireNonNull(parent, "parent");
+		Objects.requireNonNull(child, "child");
+		child.setParentAccountId(parent.getAccountNumber());
+		this.chartOfAccounts.add(child);
+	}
 	
 	/* ------------------------------------------------------------------ */
 	/**
@@ -94,7 +94,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void removeAccount(Account target)
 	{
 		if (target == null)
+		{
 			return;
+		}
 		/* remove children first (depth-first) */
 		getChildren(target).forEach(this::removeAccount);
 		this.chartOfAccounts.remove(target);
@@ -156,27 +158,27 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	 *         matches the given account number, or if the input 
 	 *         accountNumber is invalid.
 	 */
-        public Account getAccount(String accountNumber)
-        {
-
-                if (accountNumber == null || accountNumber.trim().isEmpty())
-                {
-                        return null;
-                }
-
-                AccountNumberMap accountMap = new AccountNumberMap(this.chartOfAccounts);
-                return accountMap.get(accountNumber);
-        }
+	public Account getAccount(String accountNumber)
+	{
+		
+		if (accountNumber == null || accountNumber.trim().isEmpty())
+		{
+			return null;
+		}
+		
+		AccountNumberMap accountMap = new AccountNumberMap(this.chartOfAccounts);
+		return accountMap.get(accountNumber);
+	}
 	
-        /**
-         * Builds a lookup table of account number to {@link Account}.
-         *
-         * @return a new {@link AccountNumberMap} for the current accounts
-         */
-        public AccountNumberMap createAccountNumberMap()
-        {
-                return new AccountNumberMap(this.chartOfAccounts);
-        }
+	/**
+	 * Builds a lookup table of account number to {@link Account}.
+	 *
+	 * @return a new {@link AccountNumberMap} for the current accounts
+	 */
+	public AccountNumberMap createAccountNumberMap()
+	{
+		return new AccountNumberMap(this.chartOfAccounts);
+	}
 	
 	/**
 	 * Returns a list of all accounts contained in this chart of accounts.
