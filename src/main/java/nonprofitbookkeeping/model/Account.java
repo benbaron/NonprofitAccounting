@@ -20,8 +20,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * {@link Fund}s.
  */
 @JsonIdentityInfo(
-        generator = ObjectIdGenerators.UUIDGenerator.class,
-        property = "@id")
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "accountNumber")
 public final class Account implements Serializable
 {
 	
