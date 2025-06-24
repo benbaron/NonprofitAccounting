@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
@@ -93,7 +94,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void removeAccount(Account target)
 	{
 		if (target == null)
+		{
 			return;
+		}
 		/* remove children first (depth-first) */
 		getChildren(target).forEach(this::removeAccount);
 		this.chartOfAccounts.remove(target);
@@ -163,6 +166,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 			return null;
 		}
 		
+		
 		Map<String, Account> accountMap = this.getAccountNumberToAccountDetails();
 		return accountMap.get(accountNumber);
 	}
@@ -170,6 +174,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	/**
 	 * @return
 	 */
+	@JsonIgnore
 	public Map<String, Account> getAccountNumberToAccountDetails()
 	{
 		return this.chartOfAccounts.stream()
