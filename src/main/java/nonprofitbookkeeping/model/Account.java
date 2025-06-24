@@ -13,6 +13,9 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+// Custom resolver ensures numeric and string IDs resolve properly
+import nonprofitbookkeeping.model.AccountIdResolver;
 import nonprofitbookkeeping.service.ReportService;
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -21,7 +24,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * {@link Fund}s.
  */
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "accountNumber")
+        property = "accountNumber",
+        resolver = AccountIdResolver.class)
 @JsonPropertyOrder({"accountNumber"})
 public final class Account implements Serializable
 {
