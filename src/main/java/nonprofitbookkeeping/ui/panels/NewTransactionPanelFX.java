@@ -10,6 +10,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javafx.beans.property.*;
+import javafx.beans.binding.Bindings;
 import javafx.collections.*;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -185,19 +186,27 @@ public class NewTransactionPanelFX extends BorderPane
 		
 		this.table.setEditable(true); // enable inline edits
 		
-		this.table.setRowFactory(tv -> { // double-click edit row
-			TableRow<Line> row = new TableRow<>();
-			row.setOnMouseClicked(ev -> {
-				
-				if (ev.getClickCount() == 1 && !row.isEmpty())
-				{
-					this.table.edit(row.getIndex(),
-						this.table.getColumns().get(0)); // start edit
-				}
-				
-			});
-			return row;
-		});
+                this.table.setRowFactory(tv -> { // click row to edit
+                        TableRow<Line> row = new TableRow<>();
+                        row.setOnMouseClicked(ev -> {
+
+                                if (ev.getClickCount() == 1 && !row.isEmpty())
+                                {
+                                        this.table.edit(row.getIndex(),
+                                                this.table.getColumns().get(0)); // start edit
+                                }
+
+                        });
+
+                        // keep row selection from highlighting background
+                        row.styleProperty().bind(
+                                Bindings.when(row.selectedProperty())
+                                        .then("-fx-background-color: transparent;")
+                                        .otherwise("")
+                        );
+
+                        return row;
+                });
 		
 		Button add = new Button("+ Entry");
 		add.setOnAction(e -> {
