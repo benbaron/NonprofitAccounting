@@ -24,8 +24,9 @@ import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.model.*;
 
 /**
- * Form that collects multiple accounting-entry lines until the transaction is
- * balanced; Save stays disabled until debits = credits and > 0.
+ * Form that collects multiple accounting-entry lines. All fields can be edited
+ * with a single click. The balance is verified only when the user chooses to
+ * save the transaction.
  */
 public class NewTransactionPanelFX extends BorderPane
 {
@@ -134,8 +135,8 @@ public class NewTransactionPanelFX extends BorderPane
 	 *
 	 * @param existing The {@link AccountingTransaction} whose data is to be loaded into the UI.
 	 */
-	private void buildUI(AccountingTransaction existing)
-	{
+        private void buildUI(AccountingTransaction existing)
+        {
                 buildUI();
 		
 		/* 1. header fields */
@@ -151,11 +152,12 @@ public class NewTransactionPanelFX extends BorderPane
 			Account acc = this.coa.getAccount(e.getAccountNumber());
 			Account stub = new Account();
 			stub.setName(acc != null ? acc.getName() : e.getAccountNumber());
-			Line line = new Line(stub, e.getAccountSide(), e.getAmount());
+                        Line line = new Line(stub, e.getAccountSide(), e.getAmount());
                         this.lines.add(line);
-		}
-		
-	}
+                        watch(line);
+                }
+
+        }
 	
 	/**
 	 * Builds the main user interface for the transaction panel.
@@ -178,11 +180,14 @@ public class NewTransactionPanelFX extends BorderPane
 		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 		
                 this.table.setEditable(true); // enable inline edits
+                this.lines.addListener((ListChangeListener<Line>) c -> recalcTotals());
+                recalcTotals();
 		
                 Button add = new Button("+ Entry");
                 add.setOnAction(e -> {
                         Line line = new Line();
                         this.lines.add(line);
+                        watch(line);
                 });
 		
 		
@@ -396,8 +401,8 @@ public class NewTransactionPanelFX extends BorderPane
 	 * The {@link #onSave} consumer (provided during panel construction) is then invoked with the
 	 * newly created {@code AccountingTransaction}.
 	 */
-	private void persist()
-	{
+        private void persist()
+        {
                 Set<AccountingEntry> entries = new LinkedHashSet<>();
                 BigDecimal debitTotal = BigDecimal.ZERO;
                 BigDecimal creditTotal = BigDecimal.ZERO;
@@ -450,7 +455,20 @@ public class NewTransactionPanelFX extends BorderPane
 //		tx.setDebit(debitTotal);
 //		tx.setCredit(creditTotal);
 		
-		this.onSave.accept(tx);
-	}
-	
+                this.onSave.accept(tx);
+        }
+
+        /**
+         * Attaches listeners to a transaction {@link Line} so totals are
+         * recalculated when its values change.
+         *
+         * @param l the {@link Line} to watch
+         */
+        private void watch(Line l)
+        {
+                l.amount.addListener((obs, o, n) -> recalcTotals());
+                l.side.addListener((obs, o, n) -> recalcTotals());
+                l.account.addListener((obs, o, n) -> recalcTotals());
+        }
+
 }
