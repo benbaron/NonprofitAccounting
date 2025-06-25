@@ -20,12 +20,14 @@ import javafx.scene.layout.GridPane;
 import javafx.util.converter.BigDecimalStringConverter;
 import javafx.util.converter.DefaultStringConverter; // Added import
 import nonprofitbookkeeping.ui.helpers.FocusCommitTextFieldTableCell; // Added import
+import nonprofitbookkeeping.ui.helpers.AlertBox;
 
 import nonprofitbookkeeping.model.*;
 
 /**
- * Form that collects multiple accounting-entry lines until the transaction is
- * balanced; Save stays disabled until debits = credits and > 0.
+ * Form that collects multiple accounting-entry lines. All fields can be edited
+ * with a single click. The balance is verified only when the user chooses to
+ * save the transaction.
  */
 public class NewTransactionPanelFX extends BorderPane
 {
@@ -103,10 +105,7 @@ public class NewTransactionPanelFX extends BorderPane
 		this.coa = CurrentCompany.getCompany().getChartOfAccounts();
 		this.onSave = onSave;
 		setPadding(new Insets(10));
-		buildUI();
-		this.lines.addListener((ListChangeListener<Line>) c -> recalcTotals());
-		
-		recalcTotals();
+                buildUI();
 	}
 	
 	/**  
@@ -124,9 +123,7 @@ public class NewTransactionPanelFX extends BorderPane
 		this.coa = CurrentCompany.getCompany().getChartOfAccounts();
 		this.onSave = onSave;
 		setPadding(new Insets(10));
-		buildUI(existing);
-		
-		recalcTotals();
+                buildUI(existing);
 	}
 	
 	/**
@@ -139,10 +136,9 @@ public class NewTransactionPanelFX extends BorderPane
 	 *
 	 * @param existing The {@link AccountingTransaction} whose data is to be loaded into the UI.
 	 */
-	private void buildUI(AccountingTransaction existing)
-	{
-		buildUI();
-		this.lines.forEach(this::watch);
+        private void buildUI(AccountingTransaction existing)
+        {
+                buildUI();
 		
 		/* 1. header fields */
 		this.datePicker.setValue(LocalDate.parse(existing.getDate()));
@@ -157,12 +153,12 @@ public class NewTransactionPanelFX extends BorderPane
 			Account acc = this.coa.getAccount(e.getAccountNumber());
 			Account stub = new Account();
 			stub.setName(acc != null ? acc.getName() : e.getAccountNumber());
-			Line line = new Line(stub, e.getAccountSide(), e.getAmount());
-			this.lines.add(line);
-			watch(line);
-		}
-		
-	}
+                        Line line = new Line(stub, e.getAccountSide(), e.getAmount());
+                        this.lines.add(line);
+                        watch(line);
+                }
+
+        }
 	
 	/**
 	 * Builds the main user interface for the transaction panel.
@@ -184,7 +180,9 @@ public class NewTransactionPanelFX extends BorderPane
 		
 		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 		
-		this.table.setEditable(true); // enable inline edits
+                this.table.setEditable(true); // enable inline edits
+                this.lines.addListener((ListChangeListener<Line>) c -> recalcTotals());
+                recalcTotals();
 		
                 this.table.setRowFactory(tv -> { // click row to edit
                         TableRow<Line> row = new TableRow<>();
@@ -214,6 +212,7 @@ public class NewTransactionPanelFX extends BorderPane
 			this.lines.add(line);
 			watch(line);
 		});
+
 		
 		
 		Button del = new Button("Remove");
@@ -227,9 +226,9 @@ public class NewTransactionPanelFX extends BorderPane
 			
 		});
 		
-		this.saveBtn = new Button("Save");
-		this.saveBtn.setDisable(true); // enabled only when balanced
-		this.saveBtn.setOnAction(e -> persist());
+                this.saveBtn = new Button("Save");
+                this.saveBtn.setDisable(false); // balance checked on save
+                this.saveBtn.setOnAction(e -> persist());
 		
 		GridPane top = new GridPane();
 		top.setHgap(10);
@@ -278,11 +277,19 @@ public class NewTransactionPanelFX extends BorderPane
 	 */
 	private static TableColumn<Line, AccountSide> sideCol()
 	{
-		TableColumn<Line, AccountSide> c = new TableColumn<>("Side");
-		c.setCellValueFactory(cell -> cell.getValue().side);
-		c.setCellFactory(ChoiceBoxTableCell.forTableColumn(AccountSide.values()));
-		return c;
-	}
+                TableColumn<Line, AccountSide> c = new TableColumn<>("Side");
+                c.setCellValueFactory(cell -> cell.getValue().side);
+                c.setCellFactory(param -> {
+                        ChoiceBoxTableCell<Line, AccountSide> cell =
+                                new ChoiceBoxTableCell<>(AccountSide.values());
+                        cell.setOnMouseClicked(ev -> {
+                                if (!cell.isEmpty() && !cell.isEditing())
+                                        cell.startEdit();
+                        });
+                        return cell;
+                });
+                return c;
+        }
 	
 	/**
 	 * Creates and configures a {@link TableColumn} for displaying and editing the monetary amount
@@ -298,12 +305,18 @@ public class NewTransactionPanelFX extends BorderPane
 	private static TableColumn<Line, BigDecimal> amtCol(String t,
 														Function<Line, Property<BigDecimal>> fx)
 	{
-		TableColumn<Line, BigDecimal> c = new TableColumn<>(t);
-		c.setCellValueFactory(cell -> fx.apply(cell.getValue()));
-		// Use FocusCommitTextFieldTableCell with BigDecimalStringConverter
-		c.setCellFactory(
-			param -> new FocusCommitTextFieldTableCell<>(new BigDecimalStringConverter()));
-		return c;
+                TableColumn<Line, BigDecimal> c = new TableColumn<>(t);
+                c.setCellValueFactory(cell -> fx.apply(cell.getValue()));
+                c.setCellFactory(param -> {
+                        FocusCommitTextFieldTableCell<Line, BigDecimal> cell =
+                                new FocusCommitTextFieldTableCell<>(new BigDecimalStringConverter());
+                        cell.setOnMouseClicked(ev -> {
+                                if (!cell.isEmpty() && !cell.isEditing())
+                                        cell.startEdit();
+                        });
+                        return cell;
+                });
+                return c;
 	}
 	
 	/**
@@ -344,10 +357,17 @@ public class NewTransactionPanelFX extends BorderPane
 		TableColumn<Line, String> col = new TableColumn<>("Account");
 		col.setCellValueFactory(cd -> cd.getValue().account);
 		
-		/* editable ComboBox cells */
-		col.setCellFactory(
-			ComboBoxTableCell.forTableColumn(new DefaultStringConverter(), choices));
-		col.setEditable(true);
+                /* editable ComboBox cells */
+                col.setCellFactory(param -> {
+                        ComboBoxTableCell<Line, String> cell =
+                                new ComboBoxTableCell<>(new DefaultStringConverter(), choices);
+                        cell.setOnMouseClicked(ev -> {
+                                if (!cell.isEmpty() && !cell.isEditing())
+                                        cell.startEdit();
+                        });
+                        return cell;
+                });
+                col.setEditable(true);
 		
 		/* commit handler on the COLUMN, not the cell */
 		col.setOnEditCommit(ev -> {
@@ -375,27 +395,27 @@ public class NewTransactionPanelFX extends BorderPane
 	 * The save button is enabled only if the total debits are greater than zero and
 	 * total debits equal total credits (i.e., the transaction is balanced).
 	 */
-	private void recalcTotals()
-	{
-		BigDecimal debit = BigDecimal.ZERO, credit = BigDecimal.ZERO;
-		
-		for (Line l : this.lines)
-		{
-			BigDecimal amt = l.amount.get() != null ? l.amount.get() : BigDecimal.ZERO;
-			
-			if (l.side.get() == AccountSide.DEBIT)
-			{
-				debit = debit.add(amt);
-			}
-			else
-			{
-				credit = credit.add(amt);
-			}
-			
-		}
-		
-		this.saveBtn.setDisable(debit.signum() == 0 || debit.compareTo(credit) != 0);
-	}
+        private void recalcTotals()
+        {
+                // previously enforced balance checking on every edit.
+                // retained for potential future use but no longer disables the save button.
+                BigDecimal debit = BigDecimal.ZERO, credit = BigDecimal.ZERO;
+
+                for (Line l : this.lines)
+                {
+                        BigDecimal amt = l.amount.get() != null ? l.amount.get() : BigDecimal.ZERO;
+
+                        if (l.side.get() == AccountSide.DEBIT)
+                        {
+                                debit = debit.add(amt);
+                        }
+                        else
+                        {
+                                credit = credit.add(amt);
+                        }
+
+                }
+        }
 	
 	/**
 	 * Persists the current transaction.
@@ -405,11 +425,11 @@ public class NewTransactionPanelFX extends BorderPane
 	 * The {@link #onSave} consumer (provided during panel construction) is then invoked with the
 	 * newly created {@code AccountingTransaction}.
 	 */
-	private void persist()
-	{
-		Set<AccountingEntry> entries = new LinkedHashSet<>();
-		BigDecimal debitTotal = BigDecimal.ZERO;
-		BigDecimal creditTotal = BigDecimal.ZERO;
+        private void persist()
+        {
+                Set<AccountingEntry> entries = new LinkedHashSet<>();
+                BigDecimal debitTotal = BigDecimal.ZERO;
+                BigDecimal creditTotal = BigDecimal.ZERO;
 		
 		for (Line l : this.lines)
 		{
@@ -432,9 +452,16 @@ public class NewTransactionPanelFX extends BorderPane
 				creditTotal = creditTotal.add(amt);
 			}
 			
-		}
-		
-		// Save the timestamp as transaction id
+                }
+
+                if (debitTotal.signum() == 0 || debitTotal.compareTo(creditTotal) != 0)
+                {
+                        AlertBox.showError(getScene().getWindow(),
+                                "Transaction is not balanced");
+                        return;
+                }
+
+                // Save the timestamp as transaction id
 		AccountingTransaction tx = new AccountingTransaction(
 			new Account(),
 			entries,
@@ -452,27 +479,20 @@ public class NewTransactionPanelFX extends BorderPane
 //		tx.setDebit(debitTotal);
 //		tx.setCredit(creditTotal);
 		
-		this.onSave.accept(tx);
-	}
-	
-	/**
-	 * Attaches change listeners to the properties of a given transaction {@link Line}.
-	 * Specifically, it listens for changes to the line's {@code amount} and {@code side} properties.
-	 * When these properties change, {@link #recalcTotals()} is called to update the transaction totals
-	 * and the enabled state of the save button.
-	 * It also includes a listener for the {@code account} property, though its body is currently empty,
-	 * implying that account text changes do not directly affect totals but might be used for UI freshness.
-	 * 
-	 * @param l The {@link Line} object whose properties are to be observed for changes.
-	 */
-	private void watch(Line l)
-	{
-		l.amount.addListener((obs, o, n) -> recalcTotals());
-		l.side.addListener((obs, o, n) -> recalcTotals());
-		l.account.addListener((obs, o, n) -> {
-			/* account text change doesn’t affect totals but keeps UI fresh */
-		});
-	}
-	
-	
+                this.onSave.accept(tx);
+        }
+
+        /**
+         * Attaches listeners to a transaction {@link Line} so totals are
+         * recalculated when its values change.
+         *
+         * @param l the {@link Line} to watch
+         */
+        private void watch(Line l)
+        {
+                l.amount.addListener((obs, o, n) -> recalcTotals());
+                l.side.addListener((obs, o, n) -> recalcTotals());
+                l.account.addListener((obs, o, n) -> recalcTotals());
+        }
+
 }
