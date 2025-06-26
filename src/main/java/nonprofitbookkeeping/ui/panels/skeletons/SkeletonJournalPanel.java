@@ -19,6 +19,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
+import nonprofitbookkeeping.ui.panels.GeneralJournalEntryPanelFX;
 import nonprofitbookkeeping.ui.panels.NewTransactionPanelFX;
 
 import nonprofitbookkeeping.model.Company;
@@ -373,40 +374,43 @@ public class SkeletonJournalPanel extends BorderPane
 		
 		Journal journal = company.getLedger().getJournal();
 		
-		NewTransactionPanelFX pane =
-			(existing == null) ?
-				new NewTransactionPanelFX(tx ->
-				{
-					// On Save
-					journal.addTransaction(tx);
-					
-					try
-					{
-						CurrentCompany.persist();
-					}
-					catch (Exception ex)
-					{
-						ex.printStackTrace();
-					}
-					
-					loadData();
-				}) :
-				new NewTransactionPanelFX(existing, tx ->
-				{
-					// On Save
-					journal.updateTransaction(tx);
-					
-					try
-					{
-						CurrentCompany.persist();
-					}
-					catch (Exception ex)
-					{
-						ex.printStackTrace();
-					}
-					
-					loadData();
-				});
+                BorderPane pane;
+                if (existing == null)
+                {
+                        pane = new GeneralJournalEntryPanelFX(tx ->
+                        {
+                                journal.addTransaction(tx);
+
+                                try
+                                {
+                                        CurrentCompany.persist();
+                                }
+                                catch (Exception ex)
+                                {
+                                        ex.printStackTrace();
+                                }
+
+                                loadData();
+                        });
+                }
+                else
+                {
+                        pane = new NewTransactionPanelFX(existing, tx ->
+                        {
+                                journal.updateTransaction(tx);
+
+                                try
+                                {
+                                        CurrentCompany.persist();
+                                }
+                                catch (Exception ex)
+                                {
+                                        ex.printStackTrace();
+                                }
+
+                                loadData();
+                        });
+                }
 				
 		Stage s = new Stage();
 		s.setTitle(existing == null ? "New Transaction" : "Edit Transaction");
