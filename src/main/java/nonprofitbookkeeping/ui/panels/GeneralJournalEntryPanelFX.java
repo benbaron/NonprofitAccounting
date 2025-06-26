@@ -28,6 +28,7 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToolBar;
+import javafx.scene.control.Separator;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -40,15 +41,15 @@ import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.helpers.FocusCommitTextFieldTableCell;
 
 /**
  * JavaFX panel for creating a new general journal transaction.
  * <p>
  * Each row represents an account entry with columns for the account,
- * debit amount and credit amount. The save button remains disabled
- * until the total debits equal the total credits and are greater than
- * zero.
+ * debit amount and credit amount. Debit and credit totals are shown at
+ * the bottom and must balance when saving.
  */
 public class GeneralJournalEntryPanelFX extends BorderPane {
 
@@ -66,6 +67,8 @@ public class GeneralJournalEntryPanelFX extends BorderPane {
     private final DatePicker datePicker = new DatePicker(LocalDate.now());
     private final TextArea memoArea = new TextArea();
     private final Button saveBtn = new Button("Save");
+    private final Label debitTotalLbl = new Label();
+    private final Label creditTotalLbl = new Label();
     private final ChartOfAccounts coa =
             CurrentCompany.getCompany().getChartOfAccounts();
     private final Consumer<AccountingTransaction> onSave;
@@ -121,7 +124,6 @@ public class GeneralJournalEntryPanelFX extends BorderPane {
             }
         });
 
-        saveBtn.setDisable(true);
         saveBtn.setOnAction(e -> persist());
 
         GridPane top = new GridPane();
@@ -132,7 +134,10 @@ public class GeneralJournalEntryPanelFX extends BorderPane {
 
         setTop(top);
         setCenter(table);
-        setBottom(new ToolBar(add, del, new Label(" "), saveBtn));
+        ToolBar bottom = new ToolBar(add, del, new Separator(), saveBtn,
+                new Separator(), new Label("Debit:"), debitTotalLbl,
+                new Label("Credit:"), creditTotalLbl);
+        setBottom(bottom);
     }
 
     private TableColumn<Line, String> accountCol() {
@@ -191,10 +196,13 @@ public class GeneralJournalEntryPanelFX extends BorderPane {
                 credit = credit.add(l.credit.get());
             }
         }
-        saveBtn.setDisable(debit.signum() == 0 || debit.compareTo(credit) != 0);
+        debitTotalLbl.setText(debit.toPlainString());
+        creditTotalLbl.setText(credit.toPlainString());
     }
 
     private void persist() {
+        BigDecimal debit = BigDecimal.ZERO;
+        BigDecimal credit = BigDecimal.ZERO;
         Set<AccountingEntry> entries = new LinkedHashSet<>();
         for (Line l : lines) {
             String name = l.account.get();
@@ -204,11 +212,18 @@ public class GeneralJournalEntryPanelFX extends BorderPane {
             if (l.debit.get().signum() > 0) {
                 entries.add(new AccountingEntry(l.debit.get(), acctNum,
                         AccountSide.DEBIT, acctName));
+                debit = debit.add(l.debit.get());
             }
             if (l.credit.get().signum() > 0) {
                 entries.add(new AccountingEntry(l.credit.get(), acctNum,
                         AccountSide.CREDIT, acctName));
+                credit = credit.add(l.credit.get());
             }
+        }
+        if (debit.signum() == 0 || debit.compareTo(credit) != 0) {
+            AlertBox.showError(getScene() == null ? null : getScene().getWindow(),
+                    "Transaction is not balanced");
+            return;
         }
         AccountingTransaction tx = new AccountingTransaction(new Account(), entries,
                 Map.of(), Instant.now().toEpochMilli());
@@ -219,7 +234,32 @@ public class GeneralJournalEntryPanelFX extends BorderPane {
     }
 
     private void watch(Line l) {
-        l.debit.addListener((obs, o, n) -> recalcTotals());
-        l.credit.addListener((obs, o, n) -> recalcTotals());
+        l.debit.addListener((obs, o, n) -> {
+            adjustForAccountSide(l);
+            recalcTotals();
+        });
+        l.credit.addListener((obs, o, n) -> {
+            adjustForAccountSide(l);
+            recalcTotals();
+        });
+        l.account.addListener((obs, o, n) -> {
+            adjustForAccountSide(l);
+        });
+    }
+
+    private void adjustForAccountSide(Line l) {
+        Account acc = coa.getAccountByName(l.account.get());
+        if (acc == null) {
+            return;
+        }
+        if (acc.getIncreaseSide() == AccountSide.DEBIT &&
+                l.credit.get().signum() > 0 && l.debit.get().signum() == 0) {
+            l.debit.set(l.credit.get());
+            l.credit.set(BigDecimal.ZERO);
+        } else if (acc.getIncreaseSide() == AccountSide.CREDIT &&
+                l.debit.get().signum() > 0 && l.credit.get().signum() == 0) {
+            l.credit.set(l.debit.get());
+            l.debit.set(BigDecimal.ZERO);
+        }
     }
 }
