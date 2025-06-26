@@ -10,6 +10,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 
+import nonprofitbookkeeping.ui.panels.GeneralJournalEntryPanelFX;
+
 import nonprofitbookkeeping.model.*;
 import nonprofitbookkeeping.model.CurrentCompany; // Explicit import for inner class usage
 import javafx.scene.control.Button; // For casting items in toolbar
@@ -156,16 +158,19 @@ public class JournalPanelFX extends BorderPane {
             return;
         }
 
-        NewTransactionPanelFX pane =
-            (existing == null) ? new NewTransactionPanelFX(
-                (AccountingTransaction tx) -> {
-                    mainJournal.addTransaction(tx);
+        BorderPane pane;
+        if (existing == null) {
+            pane = new GeneralJournalEntryPanelFX(tx -> {
+                mainJournal.addTransaction(tx);
+                refresh();
+            });
+        } else {
+            pane = new NewTransactionPanelFX(existing,
+                (Consumer<AccountingTransaction>) tx -> {
+                    mainJournal.updateTransaction(tx);
                     refresh();
-                }) : new NewTransactionPanelFX(existing,
-                    (Consumer<AccountingTransaction>) tx -> {
-                        mainJournal.updateTransaction(tx);
-                        refresh();
-                    });
+                });
+        }
 
         Dialog<Void> d = new Dialog<>();
         d.setTitle(existing == null ? "New Transaction" : "Edit Transaction");
