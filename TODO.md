@@ -47,3 +47,7 @@ This document lists potential code issues, areas for improvement, or bugs that w
     *   **Issue:** UI tests relied on `CurrentCompany.forceCompanyLoad()` but several "Skeleton" panels did not clear data when the company closed.
     *   **Resolution:** `SkeletonDashboardPanel`, `SkeletonJournalPanel`, `SkeletonCoaPanel`, and `SkeletonReportsPanel` now check `CurrentCompany.isOpen()` in their refresh methods and display placeholder text when no company is active.
     *   **Note:** Maven plugin resolution issues currently prevent test execution.
+
+10. **`src/main/java/nonprofitbookkeeping/ui/panels/GeneralJournalEntryPanelFX.java`**
+    *   **Status:** New panel added for creating general journal entries with running totals and natural-side handling.
+    *   **Next Steps:** Hook the panel into editing workflows, tighten validation when accounts are missing, and ensure integration tests run once the Maven configuration issues are resolved.
