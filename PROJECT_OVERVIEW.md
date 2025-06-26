@@ -115,4 +115,24 @@ The primary focus is to **standardize and expand the application's reporting cap
 *   Subsequent work (AbstractReportGenerator refactor, IS/CFS/TB backends) was intended for `new-reporting-branch`.
     *   *User Note: There was significant confusion regarding the actual branch the last commit landed on. The user observed it on `skeleton-ui-workflow-demo` according to their UI, but the agent's `submit()` call specified `new-reporting-branch`. This needs to be rectified/verified by the user in their Git environment.*
 
+## Recent Work: General Journal Entry Panel
+
+The latest code introduces a new JavaFX component named
+`GeneralJournalEntryPanelFX`. It provides a table-based interface for entering
+multi-line journal transactions. Each line includes an account selector along
+with debit and credit fields. Running totals for the debit and credit columns
+appear in the bottom toolbar. The panel allows saving regardless of balance, but
+an error dialog appears if the totals do not match when Save is pressed. It is
+used for creating new transactions in `JournalPanelFX` and
+`SkeletonJournalPanel` but is not yet wired up for editing existing entries.
+
+### Next Steps
+
+* Improve validation and error handling when accounts are missing or amounts are
+  invalid.
+* Integrate the new panel fully into the edit workflow so existing journal
+  transactions can be modified with the same interface.
+* Resolve the Maven plugin resolution failure to enable unit test execution and
+  verify functionality automatically.
+
 ---
