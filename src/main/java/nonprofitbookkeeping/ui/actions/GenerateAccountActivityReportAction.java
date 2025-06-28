@@ -241,13 +241,10 @@ public class GenerateAccountActivityReportAction implements EventHandler<ActionE
 	 * @param actionEvent The event object (parameter name changed from 'object' for clarity, though type is Object).
 	 * @return Currently returns null as it's a stub. The intended return type and behavior are undefined.
 	 */
-	public Object actionPerformed(Object actionEvent)
-	{
-		// TODO Auto-generated method stub
-		// This method signature resembles ActionListener.actionPerformed(ActionEvent),
-		// but with a generic Object parameter. It's not used in the JavaFX event
-		// handling flow.
-		return null;
-	}
+        public Object actionPerformed(Object actionEvent)
+        {
+                handle(new ActionEvent());
+                return null;
+        }
 	
 }

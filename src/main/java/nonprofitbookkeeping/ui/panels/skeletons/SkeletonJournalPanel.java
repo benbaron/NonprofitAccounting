@@ -19,6 +19,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
+import nonprofitbookkeeping.ui.panels.GeneralJournalEntryPanelFX;
 import nonprofitbookkeeping.ui.panels.NewTransactionPanelFX;
 
 import nonprofitbookkeeping.model.Company;
@@ -279,19 +280,39 @@ public class SkeletonJournalPanel extends BorderPane
 	/**
 	 * On Filter Button
 	 */
-	void onFilterButtonAction()
-	{
-		// TODO: Implement actual filtering logic based on searchFilterField and
-		// dateFilterField
-		
-		// For now, just reload all data as a placeholder for filter action
-		System.out.println("Filter button clicked. Search: " +
-			this.searchFilterField.getText() +
-			", Date: " +
-			this.dateFilterField.getText());
-		
-		loadData();
-	}
+        void onFilterButtonAction()
+        {
+                String search = this.searchFilterField.getText().toLowerCase();
+                String date = this.dateFilterField.getText();
+
+                loadData();
+
+                if ((search == null || search.isBlank()) && (date == null || date.isBlank()))
+                {
+                        return; // nothing to filter
+                }
+
+                ObservableList<JournalDisplayEntry> filtered = FXCollections.observableArrayList();
+                for (JournalDisplayEntry entry : this.journalDataList)
+                {
+                        boolean match = true;
+                        if (search != null && !search.isBlank())
+                        {
+                                match &= entry.descriptionProperty().get().toLowerCase().contains(search)
+                                        || entry.accountNameProperty().get().toLowerCase().contains(search);
+                        }
+                        if (date != null && !date.isBlank())
+                        {
+                                match &= entry.dateProperty().get().equals(date);
+                        }
+                        if (match)
+                        {
+                                filtered.add(entry);
+                        }
+                }
+
+                this.journalDisplayTable.setItems(filtered);
+        }
 	
 	/**
 	 * On Edit Button
@@ -373,40 +394,43 @@ public class SkeletonJournalPanel extends BorderPane
 		
 		Journal journal = company.getLedger().getJournal();
 		
-		NewTransactionPanelFX pane =
-			(existing == null) ?
-				new NewTransactionPanelFX(tx ->
-				{
-					// On Save
-					journal.addTransaction(tx);
-					
-					try
-					{
-						CurrentCompany.persist();
-					}
-					catch (Exception ex)
-					{
-						ex.printStackTrace();
-					}
-					
-					loadData();
-				}) :
-				new NewTransactionPanelFX(existing, tx ->
-				{
-					// On Save
-					journal.updateTransaction(tx);
-					
-					try
-					{
-						CurrentCompany.persist();
-					}
-					catch (Exception ex)
-					{
-						ex.printStackTrace();
-					}
-					
-					loadData();
-				});
+                BorderPane pane;
+                if (existing == null)
+                {
+                        pane = new GeneralJournalEntryPanelFX(tx ->
+                        {
+                                journal.addTransaction(tx);
+
+                                try
+                                {
+                                        CurrentCompany.persist();
+                                }
+                                catch (Exception ex)
+                                {
+                                        ex.printStackTrace();
+                                }
+
+                                loadData();
+                        });
+                }
+                else
+                {
+                        pane = new NewTransactionPanelFX(existing, tx ->
+                        {
+                                journal.updateTransaction(tx);
+
+                                try
+                                {
+                                        CurrentCompany.persist();
+                                }
+                                catch (Exception ex)
+                                {
+                                        ex.printStackTrace();
+                                }
+
+                                loadData();
+                        });
+                }
 				
 		Stage s = new Stage();
 		s.setTitle(existing == null ? "New Transaction" : "Edit Transaction");

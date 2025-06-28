@@ -35,14 +35,6 @@ public class UndoEditAction extends AbstractAction
 	@Override
     public void actionPerformed(ActionEvent e)
     {
-      // TODO: Implement undo logic here.
-      // This would typically involve:
-      // 1. Identifying the component that has focus or is associated with this action.
-      // 2. Checking if that component supports an undo operation.
-      // 3. If so, invoking its undo method (e.g., an UndoManager's undo()).
-      // Example (conceptual):
-      //   if (targetComponentWithUndoSupport != null && targetComponentWithUndoSupport.canUndo()) {
-      //       targetComponentWithUndoSupport.undoLastEdit();
-      //   }
+      JOptionPane.showMessageDialog(null, "Undo not implemented", "Info", JOptionPane.INFORMATION_MESSAGE);
     }
 }

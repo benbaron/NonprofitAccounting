@@ -87,5 +87,13 @@ public class AccountingTransactionBuilder
 			this.info, 
 			Instant.now().toEpochMilli());
 	}
+
+	/**
+	 * @return A new AccountingTransaction instance.
+	 */
+	public static AccountingTransactionBuilder create()
+	{
+		return new AccountingTransactionBuilder(null, null);
+	}
 	
 }

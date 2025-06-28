@@ -4,22 +4,25 @@ package nonprofitbookkeeping.ui.actions;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.budget.Budget;
+import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.service.BudgetService;
 import nonprofitbookkeeping.service.ReportService;
-import nonprofitbookkeeping.ui.helpers.AlertBox; // Added
-// import nonprofitbookkeeping.ui.helpers.DatePickerDialog; // Commented out for
-// now
+import nonprofitbookkeeping.ui.helpers.AlertBox;
+import nonprofitbookkeeping.ui.helpers.DateRangePickerDialog;
 
 import javafx.event.ActionEvent; // Added
 import javafx.event.EventHandler; // Added
-import javafx.scene.control.ChoiceDialog; // Added
-import javafx.stage.Window; // Added
+import javafx.scene.control.ChoiceDialog;
+import javafx.stage.Window;
 // import javax.swing.*; // Removed
 // import java.awt.event.ActionEvent; // Removed
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import nonprofitbookkeeping.model.Ledger;
+import nonprofitbookkeeping.model.ChartOfAccounts;
 import java.util.stream.Collectors;
 
 import javax.swing.AbstractAction;
@@ -64,12 +67,10 @@ public class GenerateBudgetVsActualsReportAction extends AbstractAction
 	 *   <li>Checks if a company is open and company file information is available; shows errors and returns if not.</li>
 	 *   <li>Loads available budgets using {@link BudgetService#loadBudgets(File)}. If none, informs user and returns.</li>
 	 *   <li>Prompts the user to select a budget using a {@link ChoiceDialog}. If cancelled, returns.</li>
-	 *   <li><strong>Note:</strong> The section for selecting a date range (originally using a Swing-based {@code DatePickerDialog})
-	 *       is currently commented out with a TODO to refactor for JavaFX. Consequently, the report generation
-	 *       logic that depends on this date range is also bypassed, and an informational alert is shown.</li>
-	 *   <li>(Intended logic after date selection) Sets up a {@link ReportContext} with the chosen budget and dates.</li>
-	 *   <li>(Intended logic) Calls {@link ReportService#generate(ReportContext, Ledger, ChartOfAccounts)} to produce the report.</li>
-	 *   <li>(Intended logic) Shows success or error alerts.</li>
+         *   <li>Prompts the user for a date range using a JavaFX dialog with {@link javafx.scene.control.DatePicker}s.</li>
+         *   <li>Sets up a {@link ReportContext} with the chosen budget and dates.</li>
+         *   <li>Calls {@link ReportService#generate(ReportContext, Ledger, ChartOfAccounts)} to produce the report.</li>
+         *   <li>Shows success or error alerts.</li>
 	 * </ol>
 	 * Catches {@link IOException} from loading budgets and general {@link Exception} during the process.
 	 * </p>
@@ -153,33 +154,59 @@ public class GenerateBudgetVsActualsReportAction extends AbstractAction
 				return;
 			}
 			
-			// 3. Select Date Range
-			// TODO: Refactor DatePickerDialog.showDateRangeDialog to JavaFX or use an
-			// alternative JavaFX date range picker
-			// For now, commenting out this section and subsequent logic.
-			AlertBox.showInfo(parentWindow,
-				"Date range selection is temporarily unavailable. Report generation aborted.");
-			return;
-			/* Optional<LocalDate[]> datesOpt = DatePickerDialog.showDateRangeDialog(
-			 * parentWindow, // Pass Window object "Select Report Period for Actuals",
-			 * "Start Date:", "End Date:" ); if (!datesOpt.isPresent()) { return; // User
-			 * cancelled } LocalDate[] dates = datesOpt.get(); LocalDate startDate =
-			 * dates[0]; LocalDate endDate = dates[1]; if (startDate == null) {
-			 * AlertBox.showError(parentWindow, "Start Date is required."); return; } if
-			 * (endDate == null) { AlertBox.showError(parentWindow,
-			 * "End Date is required."); return; } if (endDate.isBefore(startDate)) {
-			 * AlertBox.showError(parentWindow, "End Date cannot be before Start Date.");
-			 * return; } // 4. Setup ReportContext ReportContext ctx = new ReportContext();
-			 * ctx.setReportType("budget_vs_actuals"); ctx.setStartDate(startDate);
-			 * ctx.setEndDate(endDate); ctx.setSelectedBudget(chosenBudget); // Set the
-			 * chosen budget ctx.setOutputFormat("xlsx"); // 5. Retrieve Company Data &
-			 * Generate Report Ledger ledger = currentCompany.getLedger(); ChartOfAccounts
-			 * chartOfAccounts = currentCompany.getChartOfAccounts(); if (ledger == null ||
-			 * chartOfAccounts == null) { AlertBox.showError(parentWindow,
-			 * "Ledger or Chart of Accounts not available."); return; } File f =
-			 * ReportService.generate(ctx, ledger, chartOfAccounts); // 6. Show Success
-			 * Message AlertBox.showInfo(parentWindow,
-			 * "Budget vs. Actuals report saved to: " + f.getAbsolutePath()); */
+                        // 3. Select Date Range using JavaFX DatePickers
+                        Optional<LocalDate[]> rangeOpt = DateRangePickerDialog.show(parentWindow,
+                                "Select Report Period for Actuals", "Start Date:", "End Date:");
+
+                        if (!rangeOpt.isPresent())
+                        {
+                                return; // User cancelled
+                        }
+
+                        LocalDate[] range = rangeOpt.get();
+                        LocalDate startDate = range[0];
+                        LocalDate endDate = range[1];
+
+                        if (startDate == null)
+                        {
+                                AlertBox.showError(parentWindow, "Start Date is required.");
+                                return;
+                        }
+
+                        if (endDate == null)
+                        {
+                                AlertBox.showError(parentWindow, "End Date is required.");
+                                return;
+                        }
+
+                        if (endDate.isBefore(startDate))
+                        {
+                                AlertBox.showError(parentWindow, "End Date cannot be before Start Date.");
+                                return;
+                        }
+
+                        // 4. Setup ReportContext
+                        ReportContext ctx = new ReportContext();
+                        ctx.setReportType("budget_vs_actuals");
+                        ctx.setStartDate(startDate);
+                        ctx.setEndDate(endDate);
+                        ctx.setSelectedBudget(chosenBudget);
+                        ctx.setOutputFormat("xlsx");
+
+                        // 5. Retrieve Company Data & Generate Report
+                        Ledger ledger = currentCompany.getLedger();
+                        ChartOfAccounts chartOfAccounts = currentCompany.getChartOfAccounts();
+
+                        if (ledger == null || chartOfAccounts == null)
+                        {
+                                AlertBox.showError(parentWindow, "Ledger or Chart of Accounts not available.");
+                                return;
+                        }
+
+                        File f = ReportService.generate(ctx, ledger, chartOfAccounts);
+                        // 6. Show Success Message
+                        AlertBox.showInfo(parentWindow,
+                                "Budget vs. Actuals report saved to: " + f.getAbsolutePath());
 			
 		}
 		catch (IOException ioe)
@@ -208,11 +235,9 @@ public class GenerateBudgetVsActualsReportAction extends AbstractAction
 	 * </p>
 	 * @param e The {@link java.awt.event.ActionEvent} that occurred.
 	 */
-	@Override public void actionPerformed(java.awt.event.ActionEvent e)
-	{
-		// TODO Auto-generated method stub
-		// This method would be called if this action were triggered by a Swing
-		// component.
-	}
+        @Override public void actionPerformed(java.awt.event.ActionEvent e)
+        {
+                handle(new ActionEvent());
+        }
 	
 }

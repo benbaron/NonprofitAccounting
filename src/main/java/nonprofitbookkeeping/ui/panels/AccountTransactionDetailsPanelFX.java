@@ -452,22 +452,23 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		
 	}
 	
-	/**
-	 * Initializes and sets up the listener for company changes.
-	 * This listener ({@link #companyChangeListener}) is responsible for resetting the panel's state
-	 * (clearing transaction data, account lists, and summary labels) when the current company changes.
-	 * It then attempts to repopulate the account selector if a new company is opened.
-	 *
-	 * Note: The provided code snippet shows this method calling itself recursively at the end
-	 * ({@code setupCompanyChangeListener(); // Register the listener}), which will lead to a
-	 * {@link StackOverflowError}. This is likely an error and the call should typically be to
-	 * {@code CurrentCompany.addCompanyChangeListener(companyChangeListener);} or a similar mechanism
-	 * to register the listener. This Javadoc assumes the intent is to set up the listener instance.
-	 */
-	private void setupCompanyChangeListener()
-	{
-		this.companyChangeListener = new CompanyChangeListener()
-		{
+       /**
+        * Initializes the {@link #companyChangeListener} and registers it with
+        * {@link CurrentCompany.CompanyListener}. The listener clears any loaded
+        * data and refreshes the account selector whenever the active company
+        * changes. If a new company is opened, the list of selectable accounts is
+        * repopulated from its chart of accounts.
+        */
+        private void setupCompanyChangeListener()
+        {
+                if (this.companyChangeListener != null)
+                {
+                        // Prevent duplicate registration if this panel is reconstructed
+                        CurrentCompany.CompanyListener.removeCompanyListener(this.companyChangeListener);
+                }
+
+                this.companyChangeListener = new CompanyChangeListener()
+                {
 			@Override public void companyChange(boolean companyNowOpen)
 			{
 				AccountTransactionDetailsPanelFX.this.transactionDataList.clear();

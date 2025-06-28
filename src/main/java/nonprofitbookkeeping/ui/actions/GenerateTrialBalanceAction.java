@@ -200,9 +200,8 @@ public class GenerateTrialBalanceAction extends AbstractAction implements EventH
 	 * </p>
 	 * @param e The {@link java.awt.event.ActionEvent} that occurred.
 	 */
-	@Override public void actionPerformed(java.awt.event.ActionEvent e)
-	{
-		// TODO Auto-generated method stub
-		// This method would be called if this action were triggered by a Swing component.
-	}
+        @Override public void actionPerformed(java.awt.event.ActionEvent e)
+        {
+                handle(new ActionEvent());
+        }
 }

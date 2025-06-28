@@ -231,12 +231,10 @@ public class GenerateIncomeStatementAction extends AbstractAction
 	 *
 	 * @throws ActionException if an error occurs during action execution (specific to JasperReports web actions).
 	 */
-	public void performAction() throws ActionException
-	{
-		// TODO Auto-generated method stub
-		// This method would contain logic if this action were used in a
-		// Swing/JasperReports web context.
-	}
+        public void performAction() throws ActionException
+        {
+                handle(new ActionEvent());
+        }
 	
 	/**
 	 * {@inheritDoc}
@@ -248,11 +246,9 @@ public class GenerateIncomeStatementAction extends AbstractAction
 	 * </p>
 	 * @param e The {@link java.awt.event.ActionEvent} that occurred.
 	 */
-	@Override public void actionPerformed(java.awt.event.ActionEvent e)
-	{
-		// TODO Auto-generated method stub
-		// This method would be called if this action were triggered by a Swing
-		// component.
-	}
+        @Override public void actionPerformed(java.awt.event.ActionEvent e)
+        {
+                handle(new ActionEvent());
+        }
 	
 }
