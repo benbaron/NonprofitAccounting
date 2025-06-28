@@ -163,10 +163,20 @@ public class Company implements Serializable
 	/**
 	 * @return
 	 */
-	public String getName()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+        /**
+         * Gets the name of the company.
+         * <p>
+         * This is a convenience method that returns the {@code companyName}
+         * from the embedded {@link CompanyProfileModel}. If the profile model
+         * has not been initialised, {@code null} will be returned.
+         * </p>
+         *
+         * @return the company's name or {@code null} if it has not been set.
+         */
+        public String getName()
+        {
+                return this.companyProfileModel != null ?
+                        this.companyProfileModel.getCompanyName() : null;
+        }
 	
 }

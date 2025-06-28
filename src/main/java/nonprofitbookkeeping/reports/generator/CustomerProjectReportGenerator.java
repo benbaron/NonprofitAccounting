@@ -20,6 +20,8 @@ import java.util.Map;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -30,6 +32,9 @@ import java.util.HashMap;
  */
 public class CustomerProjectReportGenerator extends ReportGenerator
 {
+       /** Logger for reporting generation issues. */
+       private static final Logger LOGGER =
+               Logger.getLogger(CustomerProjectReportGenerator.class.getName());
 	/**
 	 * Constructs a {@code CustomerProjectReportGenerator}.
 	 *
@@ -71,11 +76,11 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 				
 				JasperReport jasperReport = JasperCompileManager.compileReport(in);
 			}
-			catch (IOException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+                        catch (IOException e)
+                        {
+                                LOGGER.log(Level.SEVERE,
+                                    "Failed to compile CustomerReport.jrxml", e);
+                        }
 			
 		}
 		catch (JRException e)
@@ -109,9 +114,11 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 			}
 			
 		}
-		catch (Exception e)
-		{
-		}
+                catch (Exception e)
+                {
+                        LOGGER.log(Level.SEVERE,
+                            "Error generating Customer/Project report", e);
+                }
 		
 	}
 	

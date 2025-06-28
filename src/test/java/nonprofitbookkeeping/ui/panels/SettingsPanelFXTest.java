@@ -11,6 +11,8 @@ import nonprofitbookkeeping.ui.JavaFXTestBase;
 import nonprofitbookkeeping.ui.panels.SettingsPanelFX.UserRow; // Ensure UserRow is accessible
 
 import org.hamcrest.Matcher;
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.Start;
 import org.testfx.util.WaitForAsyncUtils;
@@ -74,21 +76,48 @@ public class SettingsPanelFXTest extends JavaFXTestBase
 	 * @param string
 	 * @return
 	 */
-	private Matcher hasValue(String string)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+        private Matcher<ComboBox<?>> hasValue(String string)
+        {
+                return new TypeSafeMatcher<ComboBox<?>>()
+                {
+                        @Override
+                        protected boolean matchesSafely(ComboBox<?> comboBox)
+                        {
+                                Object value = comboBox.getValue();
+                                return string.equals(value);
+                        }
+
+                        @Override
+                        public void describeTo(Description description)
+                        {
+                                description.appendText("ComboBox value is ")
+                                        .appendValue(string);
+                        }
+                };
+        }
 	
 	/**
 	 * @param string
 	 * @return
 	 */
-	private Matcher hasTextInField(String string)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+        private Matcher<TextInputControl> hasTextInField(String string)
+        {
+                return new TypeSafeMatcher<TextInputControl>()
+                {
+                        @Override
+                        protected boolean matchesSafely(TextInputControl control)
+                        {
+                                return string.equals(control.getText());
+                        }
+
+                        @Override
+                        public void describeTo(Description description)
+                        {
+                                description.appendText("TextInputControl text is ")
+                                        .appendValue(string);
+                        }
+                };
+        }
 	
 	@Test
 	public	void testUsersTab_TableDisplaysDemoData()

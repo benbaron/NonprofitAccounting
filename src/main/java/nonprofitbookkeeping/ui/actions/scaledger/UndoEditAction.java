@@ -1,6 +1,8 @@
 package nonprofitbookkeeping.ui.actions.scaledger;
 
 import javax.swing.*;
+import javax.swing.undo.UndoManager;
+import java.awt.Toolkit;
 
 import java.awt.event.ActionEvent;
 
@@ -17,9 +19,24 @@ import java.awt.event.ActionEvent;
 public class UndoEditAction extends AbstractAction
 {
     /**
-	 * The unique identifier for this serializable class.
-	 */
-	private static final long serialVersionUID = -3286001686985951299L;
+         * The unique identifier for this serializable class.
+         */
+        private static final long serialVersionUID = -3286001686985951299L;
+
+    /** Manager responsible for tracking undoable edits. */
+    private final UndoManager undoManager;
+
+    /**
+     * Creates an {@code UndoEditAction} with the provided {@link UndoManager}.
+     *
+     * @param undoManager the manager that will perform undo operations when
+     *                    this action is triggered. May be {@code null}.
+     */
+    public UndoEditAction(UndoManager undoManager)
+    {
+        super("Undo");
+        this.undoManager = undoManager;
+    }
 
 	/**
      * {@inheritDoc}
@@ -32,9 +49,16 @@ public class UndoEditAction extends AbstractAction
      * </p>
      * @param e The {@link ActionEvent} that occurred.
      */
-	@Override
+    @Override
     public void actionPerformed(ActionEvent e)
     {
-      JOptionPane.showMessageDialog(null, "Undo not implemented", "Info", JOptionPane.INFORMATION_MESSAGE);
+        if (this.undoManager != null && this.undoManager.canUndo())
+        {
+            this.undoManager.undo();
+        }
+        else
+        {
+            Toolkit.getDefaultToolkit().beep();
+        }
     }
 }
