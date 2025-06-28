@@ -23,6 +23,9 @@ import java.io.IOException;
  */
 public class ReportGenerator
 {
+
+        /** Service used to retrieve customer information for reports. */
+        protected final CustomerService customerService;
 	
 	
 	/**  
@@ -32,13 +35,10 @@ public class ReportGenerator
 	 *
 	 * @param customerService A {@link CustomerService} instance. Currently unused.
 	 */
-	public ReportGenerator(CustomerService customerService)
-	{
-		// TODO Auto-generated constructor stub
-		// This constructor currently does nothing with customerService.
-		// It might be intended for subclasses or future use where customerService is needed
-		// to fetch data for the generateReport() method.
-	}
+        public ReportGenerator(CustomerService customerService)
+        {
+                this.customerService = customerService;
+        }
 	
 	
 	/**
@@ -88,24 +88,45 @@ public class ReportGenerator
 		
 	}
 	
-	/**
-	 * Generates the {@link JasperPrint} object for the report.
-	 * Note: This is a stub implementation and currently returns null.
-	 * Subclasses or a concrete implementation should override this to compile a JRXML template,
-	 * fill it with data and parameters, and return the resulting {@link JasperPrint} object.
-	 *
-	 * @return A {@link JasperPrint} object, or null if the report generation is not implemented.
-	 */
-	private static JasperPrint generateReport()
-	{
-		// TODO Auto-generated method stub
-		// This method needs to be implemented to:
-		// 1. Load and compile a JRXML report template.
-		// 2. Prepare a data source (e.g., JRBeanCollectionDataSource).
-		// 3. Prepare report parameters (Map<String, Object>).
-		// 4. Fill the report using JasperFillManager.fillReport().
-		return null;
-	}
+        /**
+         * Generates the {@link JasperPrint} for a simple report using the
+         * {@code AccountSummaryReport.jrxml} template bundled with the
+         * application. The method compiles the template from the classpath,
+         * fills it using an empty data source, and returns the resulting
+         * {@link JasperPrint} instance. If any step fails, {@code null} is
+         * returned and the exception is printed to the console.
+         *
+         * <p>
+         * This implementation is intentionally generic so subclasses can either
+         * reuse it or provide their own more elaborate logic.
+         * </p>
+         *
+         * @return the filled {@link JasperPrint}, or {@code null} on error.
+         */
+        private static JasperPrint generateReport()
+        {
+                try
+                {
+                        try (var in = ReportGenerator.class
+                                        .getResourceAsStream("/AccountSummaryReport.jrxml"))
+                        {
+                                if (in == null)
+                                {
+                                        System.err.println("Report template not found");
+                                        return null;
+                                }
+
+                                JasperReport jasperReport = JasperCompileManager.compileReport(in);
+                                JRDataSource dataSource = new JREmptyDataSource();
+                                return JasperFillManager.fillReport(jasperReport, Map.of(), dataSource);
+                        }
+                }
+                catch (JRException | IOException e)
+                {
+                        e.printStackTrace();
+                        return null;
+                }
+        }
 	
 	/**
 	 * Exports the given {@link JasperPrint} object to a PDF file.

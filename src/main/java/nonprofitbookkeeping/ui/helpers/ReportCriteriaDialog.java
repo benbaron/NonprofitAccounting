@@ -539,10 +539,11 @@ public class ReportCriteriaDialog
 	/**
      * Overloaded version of {@code showDialog}, potentially intended for use with a
      * {@link ManageReportConfigurationsDialog} as a parent or context.
-     * Note: This method is currently a stub and returns null. It needs to be implemented
-     * or removed if redundant. The parameter {@code manageReportConfigurationsDialog} is not a standard
-     * JavaFX parent type like {@link Window}. If it's a custom dialog/component, its role as a parent
-     * needs to be handled appropriately for modality and positioning if this method is implemented.
+    * Convenience overload that attempts to obtain a JavaFX {@link Window} from the
+    * provided {@code ManageReportConfigurationsDialog} and then delegates to the
+    * primary {@link #showDialog(Window, String, List, Fund, DateSelectionMode, boolean, boolean, ReportConfiguration)}
+    * method. If the window cannot be determined, the dialog is shown without an
+    * explicit parent.
      *
      * @param manageReportConfigurationsDialog A custom dialog/component, its role as parent is unclear.
      * @param title The title of the dialog window.
@@ -550,20 +551,19 @@ public class ReportCriteriaDialog
      * @param dateSelectionMode The {@link DateSelectionMode} to configure the date pickers.
      * @param showFundSelector If true, the fund selection UI will be displayed.
      * @param selectedConfig A {@link ReportConfiguration} to pre-populate dialog fields.
-     * @return Currently returns null (stub). Should return an {@link Optional<ReportCriteria>}.
+     * @return The resulting {@link ReportCriteria} selected by the user, or an
+     *         empty {@link Optional} if the dialog was cancelled.
      */
-	public static
-			Optional<ReportCriteria>
-			showDialog(	ManageReportConfigurationsDialog manageReportConfigurationsDialog, // This is not a standard JavaFX parent
-						String title, List<Fund> availableFunds,
-						DateSelectionMode dateSelectionMode, boolean showFundSelector,
-						ReportConfiguration selectedConfig)
-	{
-		// TODO Auto-generated method stub: Implement dialog logic or remove if this overload is not needed.
-		// If this is to be used, `manageReportConfigurationsDialog` would likely need to provide a Window instance
-		// to act as the parent for the new Dialog<ReportCriteria>.
-		// Example: showDialog(manageReportConfigurationsDialog.getScene().getWindow(), title, ... , selectedConfig);
-		return null;
-	}
+	public static Optional<ReportCriteria> showDialog(ManageReportConfigurationsDialog manageReportConfigurationsDialog, String title, List<Fund> availableFunds, DateSelectionMode dateSelectionMode, boolean showFundSelector, ReportConfiguration selectedConfig){
+        javafx.stage.Window parent = null;
+        try{
+            if (manageReportConfigurationsDialog instanceof javafx.embed.swing.JFXPanel jfx){
+                parent = jfx.getScene().getWindow();
+            }
+        }catch(Exception ignore){
+            parent = null;
+        }
+        return showDialog(parent, title, availableFunds, null, dateSelectionMode, showFundSelector, false, selectedConfig);
+}
 	
 }

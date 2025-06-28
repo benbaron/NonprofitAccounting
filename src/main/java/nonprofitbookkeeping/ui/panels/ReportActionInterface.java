@@ -14,26 +14,20 @@ import javax.swing.AbstractAction;
  * subclasses to define the specific reporting logic.
  * </p>
  */
-public class ReportActionInterface extends AbstractAction
+public abstract class ReportActionInterface extends AbstractAction
 {
 
-	/**
-	 * {@inheritDoc}
-	 * <p>
-	 * This is a stub implementation and is intended to be overridden by subclasses.
-	 * Subclasses should implement this method to perform the actions required to
-	 * generate and display or save a specific report.
-	 * </p>
-	 * Current implementation contains a "TODO Auto-generated method stub".
-	 *
-	 * @param e The {@link ActionEvent} that triggered this action. Subclasses may use this
-	 *          event to get context or parameters for report generation if needed.
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override public void actionPerformed(ActionEvent e)
-	{
-		// TODO Auto-generated method stub
-		// Subclasses should override this method to implement specific report generation logic.
-	}
+       /**
+        * {@inheritDoc}
+        *
+        * <p>
+        * Classes extending this base are expected to implement their own
+        * reporting logic. Making this method abstract enforces that contract at
+        * compile time and removes the previous no-op stub implementation.
+        * </p>
+        *
+        * @param e the triggering event
+        */
+       @Override public abstract void actionPerformed(ActionEvent e);
 	
 }

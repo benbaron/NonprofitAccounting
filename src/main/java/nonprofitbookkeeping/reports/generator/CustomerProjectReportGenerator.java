@@ -51,11 +51,18 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 	@Override public void generateAndExportReport(String format)
 	{
 
-		try
-		{
-			// Compile JRXML into JasperReport
-			String reportPath = "path/to/CustomerProjectReport.jrxml"; // TODO: Replace with the actual classpath or file system path
-			JasperReport jasperReport = JasperCompileManager.compileReport(reportPath);
+                try
+                {
+                        // Compile JRXML into JasperReport from the classpath
+                        try (var in = CustomerProjectReportGenerator.class.getResourceAsStream("/CustomerReport.jrxml"))
+                        {
+                                if (in == null)
+                                {
+                                        System.err.println("CustomerReport.jrxml not found in resources");
+                                        return;
+                                }
+
+                                JasperReport jasperReport = JasperCompileManager.compileReport(in);
 
 			// Fetch data for the report
 			List<Customer> customerData = CustomerService.getCustomerProjectData();

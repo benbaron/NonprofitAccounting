@@ -217,11 +217,10 @@ public class GenerateBalanceSheetAction extends AbstractAction implements EventH
 	 * Note: This is a stub implementation and currently does nothing.
 	 * For JavaFX, the {@link #handle(ActionEvent)} method is used.
 	 */
-	public void performAction()
-	{
-		// TODO Auto-generated method stub
-		// This method would contain logic if this action were used in a Swing context.
-	}
+        public void performAction()
+        {
+                handle(new ActionEvent());
+        }
 	
 	/**
 	 * {@inheritDoc}
@@ -233,11 +232,9 @@ public class GenerateBalanceSheetAction extends AbstractAction implements EventH
 	 * </p>
 	 * @param e The {@link java.awt.event.ActionEvent} that occurred.
 	 */
-	@Override public void actionPerformed(java.awt.event.ActionEvent e)
-	{
-		// TODO Auto-generated method stub
-		// This method would be called if this action were triggered by a Swing
-		// component.
-	}
+        @Override public void actionPerformed(java.awt.event.ActionEvent e)
+        {
+                handle(new ActionEvent());
+        }
 	
 }

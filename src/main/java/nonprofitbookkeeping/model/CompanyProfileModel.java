@@ -54,7 +54,11 @@ public class CompanyProfileModel implements Serializable
 	/** The password for the administrator account. Note: Storing passwords in plain text is insecure. */
 	@JsonProperty private String adminPassword;
 	/** The default bank account number used for various operations. */
-	@JsonProperty private String defaultBankAccount;
+        @JsonProperty private String defaultBankAccount;
+        /** Directory where the company file is stored. */
+        @JsonProperty private String companyFileDir;
+        /** Name of the company file including extension. */
+        @JsonProperty private String companyFileName;
 	
 	/** Flag to indicate if fund accounting features are enabled. */
 	@JsonProperty private boolean enableFundAccounting;
@@ -418,29 +422,33 @@ public class CompanyProfileModel implements Serializable
 	/**
 	 * @param absolutePath
 	 */
-	public void setCompanyFileDir(String absolutePath)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+        public void setCompanyFileDir(String absolutePath)
+        {
+                this.companyFileDir = absolutePath;
+
+        }
 
 	/**
 	 * @param string
 	 */
-	public void setCompanyFileName(String string)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+        public void setCompanyFileName(String string)
+        {
+                this.companyFileName = string;
+
+        }
 
 	/**
 	 * @return
 	 */
-	public String getCompanyFileName()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+        public String getCompanyFileName()
+        {
+                return this.companyFileName;
+        }
+
+        public String getCompanyFileDir()
+        {
+                return this.companyFileDir;
+        }
 
 
 }

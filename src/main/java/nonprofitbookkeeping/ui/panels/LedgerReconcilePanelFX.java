@@ -414,39 +414,63 @@ public class LedgerReconcilePanelFX extends BorderPane
 			gp.addRow(2, new Label("Amount"), amtF);
 			dlg.getDialogPane().setContent(gp);
 			
-			dlg.setResultConverter(btn -> btn == ButtonType.OK ? build() : null);
-			dlg.showAndWait().ifPresent(tx -> {
-				LedgerReconcilePanelFX.this.bankTxns.computeIfAbsent(LedgerReconcilePanelFX.this.accountBox.getValue(), k -> new ArrayList<>()).add(tx);
-				reloadRows();
-			});
-			
-			AccountingTransaction t = new AccountingTransaction();
-			
-			t.setDate(dateP.getValue().toString());
-			t.setDescription(descF.getText());
-			
-			return;
-		}
+                        dlg.setResultConverter(btn -> btn == ButtonType.OK ?
+                                build(dateP, descF, amtF) : null);
+                        dlg.showAndWait().ifPresent(tx -> {
+                                LedgerReconcilePanelFX.this.bankTxns
+                                        .computeIfAbsent(
+                                                LedgerReconcilePanelFX.this.accountBox.getValue(),
+                                                k -> new ArrayList<>())
+                                        .add(tx);
+                                reloadRows();
+                        });
+                }
 			
 		/**
 		 * Builds an {@link AccountingTransaction} from the dialog's input fields.
-		 * <p><b>Note:</b> This method currently contains a "TODO Auto-generated method stub" and returns {@code null}.
-		 * It needs to be implemented to correctly parse and use the dialog's input fields
-		 * (which are local to the {@code handle} method: {@code dateP}, {@code descF}, {@code amtF})
-		 * to construct and return a valid {@link AccountingTransaction}. The current structure
-		 * would require refactoring for this {@code build} method to access those fields,
-		 * or for the data to be passed into this method.</p>
-		 *
-		 * @return A new {@link AccountingTransaction} based on dialog inputs; currently returns {@code null} due to stub implementation.
-		 */
-		public AccountingTransaction build()
-		{
-			// TODO Auto-generated method stub
-			// Implementation should correctly access and parse data from dateP, descF, amtF
-			// which are currently local to the handle() method. This structure needs refactoring
-			// for build() to access those fields, or for data to be passed to build().
-			return null;
-		}
+                * <p>
+                * Parses the provided date, description, and amount fields to build an
+                * {@link AccountingTransaction} using the selected account number. If any
+                * field is invalid or missing, this method returns {@code null}.
+                * </p>
+                *
+                * @return A new {@link AccountingTransaction} based on dialog inputs or
+                *         {@code null} if validation fails.
+                */
+                private AccountingTransaction build(DatePicker dateP,
+                        TextField descF,
+                        TextField amtF)
+                {
+                        if (dateP.getValue() == null)
+                        {
+                                return null;
+                        }
+
+                        BigDecimal amt;
+                        try
+                        {
+                                amt = new BigDecimal(amtF.getText());
+                        }
+                        catch (NumberFormatException ex)
+                        {
+                                return null; // Invalid amount
+                        }
+
+                        String accountNum = LedgerReconcilePanelFX.this.accountBox.getValue();
+                        if (accountNum == null || accountNum.isBlank())
+                        {
+                                return null;
+                        }
+
+                        AccountingTransactionBuilder builder = AccountingTransactionBuilder.create();
+                        builder.debit(amt, accountNum);
+                        // Use a generic clearing account for the credit side
+                        builder.credit(amt, "CLEARING");
+                        AccountingTransaction tx = builder.build();
+                        tx.setDate(dateP.getValue().toString());
+                        tx.setDescription(descF.getText());
+                        return tx;
+                }
 		
 	}
 	

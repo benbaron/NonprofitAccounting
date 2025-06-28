@@ -8,11 +8,13 @@ This document lists potential code issues, areas for improvement, or bugs that w
     *   **Issue:** Potential `StackOverflowError` in the `setupCompanyChangeListener` method.
     *   **Observation:** The method appeared to be calling itself recursively without a proper base case or change in arguments, leading to a `StackOverflowError` during subtask analysis. The subtask agent commented out the direct recursive call and replaced it with an assumed correct call to `CurrentCompany.addCompanyChangeListener(this.companyChangeListener);` to proceed with Javadoc.
     *   **Recommendation:** Review the logic of `setupCompanyChangeListener` to ensure correct listener registration and avoid infinite recursion.
+    *   **Status:** Resolved &ndash; the listener is now registered once and any previous listener is removed before registration to prevent accidental recursion or duplicates.
 
 2.  **`src/main/java/nonprofitbookkeeping/ui/panels/BudgetPanel.java`**
     *   **Issue:** Significant block of duplicated code.
     *   **Observation:** A large section of code was identified as being duplicated within this file. The subtask agent removed the duplicated block to proceed.
     *   **Recommendation:** Confirm the duplicated code removal was correct and refactor if necessary to maintain functionality without redundancy.
+    *   **Status:** Resolved &ndash; duplicate wrapper classes were removed and the panel now relies on the implementations in `BudgetLineDialog`.
 
 3.  **`src/main/java/nonprofitbookkeeping/ui/panels/CoaEditorPanelFX.java`**
     *   **Issue:** Undefined `LOGGER` instance in the `insertIntoTree` method.

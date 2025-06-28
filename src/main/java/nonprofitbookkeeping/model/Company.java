@@ -154,10 +154,10 @@ public class Company implements Serializable
 	/**
 	 * @param profile
 	 */
-	public void setCompanyProfile(CompanyProfileModel profile)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+        public void setCompanyProfile(CompanyProfileModel profile)
+        {
+                setCompanyProfileModel(checkNotNull(profile));
+
+        }
 	
 }

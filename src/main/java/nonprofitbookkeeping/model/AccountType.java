@@ -82,17 +82,15 @@ public enum AccountType
 		
 	}
 
-	/**
-	 * Returns the uppercase string representation of the enum constant.
-	 * Note: This method currently returns null and contains a TODO comment.
-	 * It should be implemented to return {@code this.name().toUpperCase()}.
-	 * @return The uppercase string representation of the enum constant, or null if not implemented.
-	 */
-	public String toUpperCase()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+        /**
+         * Returns the uppercase string representation of this account type.
+         *
+         * @return the enum name in uppercase form.
+         */
+        public String toUpperCase()
+        {
+                return name().toUpperCase();
+        }
 	
 	
 }
