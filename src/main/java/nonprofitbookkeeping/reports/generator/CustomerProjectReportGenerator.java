@@ -71,11 +71,12 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 				
 				JasperReport jasperReport = JasperCompileManager.compileReport(in);
 			}
-			catch (IOException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+                        catch (IOException e)
+                        {
+                                System.err.println("Failed to read CustomerReport.jrxml: " + e.getMessage());
+                                e.printStackTrace();
+                                return; // Abort generation if template cannot be read
+                        }
 			
 		}
 		catch (JRException e)
