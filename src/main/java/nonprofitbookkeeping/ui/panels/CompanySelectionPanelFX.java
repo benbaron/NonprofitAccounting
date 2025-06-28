@@ -54,9 +54,7 @@ public class CompanySelectionPanelFX extends BorderPane
 		 */
 		public void onCompanyOpened(Company company)
 		{
-			// TODO Auto-generated method stub: Implement callback logic to notify the
-			// application that a company has been opened or processed. This might involve updating the
-			// main UI, enabling/disabling features, etc.
+			System.out.println("Opened company: " + (company != null ? company.getCompanyProfileModel().getCompanyName() : "null"));
 		}
 		
 	}
@@ -208,7 +206,7 @@ public class CompanySelectionPanelFX extends BorderPane
 			// without altering CurrentCompany state until "Open Selected" is clicked.
 			CurrentCompany.loadFromPersistent(f); // This can throw various exceptions.
 			CurrentCompany.markCompanyOpen(); // Sets the company as globally open.
-
+			
 			// The previewArea is not explicitly updated here with company details from
 			// CurrentCompany.
 			// It might be intended to show details from CurrentCompany after it's loaded.
@@ -243,9 +241,8 @@ public class CompanySelectionPanelFX extends BorderPane
 	 * If a file is selected, it displays an informational {@link Alert}.
 	 * Note: The actual loading and setting of the {@link CurrentCompany} is performed by
 	 * the {@link #showPreview(File)} method when a list item is selected. This method's primary
-	 * role seems to be user confirmation or triggering subsequent application-level actions.
-	 * A TODO comment indicates that it should notify an application controller, which is currently
-	 * not implemented here.
+	     * role is primarily to confirm with the user that the selected company should be opened
+	     * and then notify the optional {@link OnCompanyOpenedHandler} if provided.
 	 * </p>
 	 */
 	void openSelected() // Package-private

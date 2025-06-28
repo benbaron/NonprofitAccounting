@@ -110,27 +110,34 @@ public class PreferencesService
 	 * Saves the current state of the {@link #props} object to the preferences file defined by {@link #configPath}.
 	 * If an {@link IOException} occurs during saving, it is printed to the error stream.
 	 */
-	private static void save()
-	{		
-		try (OutputStream out = Files.newOutputStream(configPath))
-		{
-			props.store(out, "Nonprofit Bookkeeping Preferences");
-		}
-		catch (IOException e)
-		{
-			// Consider logging this more formally or handling it based on application requirements
-			e.printStackTrace();
-		}
-		
-	}
+        private static void save()
+        {
+                try (OutputStream out = Files.newOutputStream(configPath))
+                {
+                        props.store(out, "Nonprofit Bookkeeping Preferences");
+                }
+                catch (IOException e)
+                {
+                        // Consider logging this more formally or handling it based on application requirements
+                        e.printStackTrace();
+                }
 
-	/**
-	 * @return
-	 */
-	public static PreferencesService getInstance()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
+        }
+
+        /** Singleton instance of the service. */
+        private static final PreferencesService INSTANCE = new PreferencesService();
+
+        /** Private constructor to prevent external instantiation. */
+        private PreferencesService()
+        {
+        }
+
+        /**
+         * @return
+         */
+        public static PreferencesService getInstance()
+        {
+                return INSTANCE;
+        }
+
 }

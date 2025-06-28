@@ -51,10 +51,12 @@ public class Fund
 	/**  
 	 * Constructor Fund
 	 */
-	public Fund()
-	{
-		// TODO Auto-generated constructor stub
-	}
+        public Fund()
+        {
+                this.name = "";
+                this.accountIds = new ArrayList<>();
+                this.balance = BigDecimal.ZERO;
+        }
 	
 	/**
 	 * Gets the name of the fund.
@@ -229,20 +231,18 @@ public class Fund
 	/**
 	 * @param string
 	 */
-	public void setName(String string)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+        public void setName(String string)
+        {
+                this.name = string;
+        }
 	
 	/**
 	 * @param string
 	 */
-	public void setFundId(String string)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+        public void setFundId(String string)
+        {
+                this.name = string;
+        }
 	
 	
 }

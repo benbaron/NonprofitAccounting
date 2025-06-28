@@ -159,23 +159,20 @@ public class InventoryItem
 	 * Consider using {@link #withAccumDep(BigDecimal)} for recalculating net value.
 	 * @param valueOf The accumulated depreciation amount to set.
 	 */
-	public void setAccumulatedDepreciation(BigDecimal valueOf)
-	{
-		// TODO Auto-generated method stub
-		// Lombok @Data should generate: this.accDep = valueOf;
-		// Also, consider if netValue should be updated here.
-	}
+        public void setAccumulatedDepreciation(BigDecimal valueOf)
+        {
+                withAccumDep(valueOf);
+        }
 
 	/**
 	 * Sets the depreciation rate for the item.
 	 * Note: This is a stub method. The {@code @Data} annotation from Lombok should provide this setter.
 	 * @param valueOf The depreciation rate to set (e.g., 0.10 for 10%).
 	 */
-	public void setDepreciationRate(BigDecimal valueOf)
-	{
-		// TODO Auto-generated method stub
-		// Lombok @Data should generate: this.depreciationRate = valueOf;
-	}
+        public void setDepreciationRate(BigDecimal valueOf)
+        {
+                this.depreciationRate = valueOf;
+        }
 
 	/**
 	 * Gets the depreciation rate of the item.
@@ -183,23 +180,20 @@ public class InventoryItem
 	 * The {@code @Data} annotation from Lombok should provide this getter.
 	 * @return The depreciation rate, or null if not set or if stub is not replaced.
 	 */
-	public BigDecimal getDepreciationRate()
-	{
-		// TODO Auto-generated method stub
-		// Lombok @Data should generate: return this.depreciationRate;
-		return null;
-	}
+        public BigDecimal getDepreciationRate()
+        {
+                return this.depreciationRate;
+        }
 
 	/**
 	 * Sets the depreciation method for the item.
 	 * Note: This is a stub method. The {@code @Data} annotation from Lombok should provide this setter.
 	 * @param method The depreciation method to set (e.g., "Straight-Line").
 	 */
-	public void setDepreciationMethod(Object method) // Parameter type should likely be String
-	{
-		// TODO Auto-generated method stub
-		// Lombok @Data should generate: this.depreciationMethod = (String) method;
-	}
+        public void setDepreciationMethod(Object method) // Parameter type should likely be String
+        {
+                this.depreciationMethod = method == null ? null : method.toString();
+        }
 
 	/**
 	 * Gets the net book value of the item.
@@ -208,12 +202,9 @@ public class InventoryItem
 	 * The actual calculation is typically Cost - Accumulated Depreciation.
 	 * @return The net book value, or null if not calculated or if stub is not replaced.
 	 */
-	public BigDecimal getNetValue()
-	{
-		// TODO Auto-generated method stub
-		// Lombok @Data should generate: return this.netValue;
-		// This should ideally return the calculated netValue field.
-		return null;
-	}
+        public BigDecimal getNetValue()
+        {
+                return this.netValue;
+        }
 	
 }

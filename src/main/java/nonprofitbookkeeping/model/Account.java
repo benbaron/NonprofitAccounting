@@ -65,11 +65,14 @@ public final class Account implements Serializable
 	 * @param asset
 	 * @param zero
 	 */
-	public Account(String string, String bankAccountName,
-		AccountType asset, BigDecimal zero)
-	{
-		// TODO Auto-generated constructor stub
-	}
+        public Account(String string, String bankAccountName,
+                AccountType asset, BigDecimal zero)
+        {
+                this.accountNumber = checkNotNull(string);
+                this.name = bankAccountName;
+                this.accountType = asset;
+                this.openingBalance = zero;
+        }
 	
 	/* ================= fund helpers =================================== */
 	

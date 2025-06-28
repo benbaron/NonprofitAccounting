@@ -40,6 +40,8 @@ import nonprofitbookkeeping.reports.generator.AbstractReportGenerator;
 import nonprofitbookkeeping.reports.generator.IncomeStatementJasperGenerator;
 import nonprofitbookkeeping.reports.generator.CashFlowStatementJasperGenerator;
 import nonprofitbookkeeping.reports.generator.TrialBalanceJasperGenerator;
+import nonprofitbookkeeping.reports.generator.BalanceResultReportGenerator;
+import nonprofitbookkeeping.service.LedgerReportWriter;
 
 
 /**
@@ -53,7 +55,10 @@ public class ReportService
 	/** Logger for this class. */
 	private static final Logger LOGGER = Logger.getLogger(ReportService.class.getName());
 	/** Standard date formatter (ISO Local Date, e.g., "YYYY-MM-DD") used in some report outputs. */
-	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
+
+    /** Map of registered report writers keyed by report type. */
+    private final Map<String, LedgerReportWriter> writerMap = new HashMap<>();
 	
 	
 
@@ -1996,23 +2001,63 @@ public class ReportService
 	 * @param reportType The type of report the writer is for.
 	 * @param writer The {@link LedgerReportWriter} instance.
 	 */
-	public void registerWriter(String reportType, LedgerReportWriter writer)
-	{
-		/* TODO: Implement registration logic, e.g., storing writers in a map. */
-	}
+        public void registerWriter(String reportType, LedgerReportWriter writer)
+        {
+                if (reportType == null || writer == null)
+                {
+                        return;
+                }
+                this.writerMap.put(reportType, writer);
+        }
 	
-	/**
-	 * Lists metadata of previously generated reports.
-	 * Note: This is a stub implementation and currently returns an empty list.
-	 * A full implementation would typically retrieve this information from a persistent store
-	 * or a directory where reports are saved.
-	 *
-	 * @return An empty {@link List} of {@link ReportMetadata}.
-	 */
-	public List<ReportMetadata> listGeneratedReports()
-	{
-		return new ArrayList<>(); // Placeholder
-	}
+        /**
+         * Lists metadata of previously generated reports.
+         * <p>
+         * This implementation scans the user's {@code NonprofitBookkeepingReports}
+         * directory (under the home folder) and returns basic information about
+         * any files it finds there. Each file's name, last-modified timestamp, and
+         * absolute path are captured in a {@link ReportMetadata} object.
+         * </p>
+         *
+         * @return A list of {@link ReportMetadata} describing files in the reports
+         *         output directory. If the directory does not exist or contains no
+         *         files, an empty list is returned.
+         */
+    public List<ReportMetadata> listGeneratedReports()
+    {
+            List<ReportMetadata> results = new ArrayList<>();
+
+            File dir = new File(System.getProperty("user.home"),
+                    "NonprofitBookkeepingReports");
+
+            if (dir.exists() && dir.isDirectory())
+            {
+                    File[] files = dir.listFiles();
+
+                    if (files != null)
+                    {
+                            for (File f : files)
+                            {
+                                    if (!f.isFile())
+                                    {
+                                            continue;
+                                    }
+
+                                    String created = java.time.Instant
+                                                    .ofEpochMilli(f.lastModified())
+                                                    .toString();
+                                    results.add(new ReportMetadata(f.getName(),
+                                                    created,
+                                                    f.getAbsolutePath()));
+                            }
+
+                            results.sort((a, b) -> b.getCreated()
+                                            .compareTo(a.getCreated()));
+                    }
+            }
+
+            return results;
+    }
 	
 	/**
 	 * Generates a report based on the provided {@link ReportContext}.
@@ -2024,14 +2069,18 @@ public class ReportService
 	 * @param ctx The {@link ReportContext} defining the report to be generated.
 	 * @return A {@link File} object representing the generated report, or null if generation fails or is not implemented.
 	 */
-	public static File generate(ReportContext ctx)
-	{
-		// TODO Auto-generated method stub
-		// This method would likely delegate to either the JXLS `generate` method
-		// or the `generateJasperReport` method based on the ctx.getReportType()
-		// or other criteria. It needs a full implementation.
-		return null;
-	}
+        public static File generate(ReportContext ctx)
+        {
+                try
+                {
+                        return new ReportService().generateJasperReport(ctx, ctx.getOutputFormat());
+                }
+                catch (Exception e)
+                {
+                        e.printStackTrace();
+                        return null;
+                }
+        }
 	
 	/**
 	 * Prepares a list of {@link IncomeStatementRowBean} objects for use as a JasperReports data source.
@@ -2468,12 +2517,16 @@ public class ReportService
 					new CashFlowStatementJasperGenerator(context, this);
 				break;
 			
-			case "trial_balance_jasper":
-				reportGeneratorInstance = new TrialBalanceJasperGenerator(context, this);
-				break;
-			
-			// TODO: Add cases for other Jasper reports
-			default:
+                        case "trial_balance_jasper":
+                                reportGeneratorInstance = new TrialBalanceJasperGenerator(context, this);
+                                break;
+
+                        case "balance_sheet_jasper":
+                                reportGeneratorInstance = new BalanceResultReportGenerator(null);
+                                break;
+
+                        // Additional Jasper-based reports can be added here
+                        default:
 				System.err
 					.println("Unsupported or unknown Jasper report type: " + reportType); // Consider
 																							// logger
@@ -2527,11 +2580,10 @@ public class ReportService
 	public
 			List<CashFlowStatementRowBean>
 			prepareCashFlowStatementJasperData(	ReportContext reportContext, Ledger ledger,
-												ChartOfAccounts coa)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+ChartOfAccounts coa)
+{
+return new ArrayList<>();
+}
 	
 	
 

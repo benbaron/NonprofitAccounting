@@ -16,6 +16,9 @@ import java.util.ArrayList;
  */
 public class ReconciliationService
 {
+
+       /** Transactions queued for reconciliation. */
+       private final List<AccountingTransaction> pendingTransactions = new ArrayList<>();
 	
 	/**
 	 * Fetches unreconciled entries for a specific account within a given date range.
@@ -76,12 +79,12 @@ public class ReconciliationService
 	 * @return A list of {@link AccountingTransaction} objects that are unreconciled and match the criteria,
 	 *         or null if the implementation is not complete.
 	 */
-	public static List<AccountingTransaction> getUnreconciled(String value)
-	{
-		// TODO Auto-generated method stub
-		// Implementation should query a data source for unreconciled transactions matching 'value'.
-		return null;
-	}
+       public static List<AccountingTransaction> getUnreconciled(String value)
+       {
+               // Placeholder: return an empty list. In a full implementation
+               // this would query a datastore for unreconciled transactions.
+               return new ArrayList<>();
+       }
 
 	/**
 	 * Lists accounts that are eligible for reconciliation.
@@ -92,12 +95,11 @@ public class ReconciliationService
 	 * @return A list of strings, where each string is an identifier or name of a reconcilable account,
 	 *         or null if the implementation is not complete.
 	 */
-	public static List<String> listReconcilableAccounts()
-	{
-		// TODO Auto-generated method stub
-		// Implementation should return a list of account identifiers/names that can be reconciled.
-		return null;
-	}
+       public static List<String> listReconcilableAccounts()
+       {
+               // Placeholder implementation returning an empty list.
+               return new ArrayList<>();
+       }
 
 	/**
 	 * Performs the reconciliation process for a given account.
@@ -110,15 +112,23 @@ public class ReconciliationService
 	 * @param endingBalance The ending balance from the financial statement being reconciled against.
 	 * @param clearedIds A list of transaction IDs that have been marked as cleared.
 	 */
-	public void reconcile(String accountIdentifier, String statementDate, BigDecimal endingBalance, List<Long> clearedIds)
-	{
-		// TODO Auto-generated method stub
-		// Implementation should:
-		// 1. Fetch transactions for the accountIdentifier up to the statementDate.
-		// 2. Compare against the endingBalance and clearedIds.
-		// 3. Mark transactions as reconciled, identify discrepancies, etc.
-		
-	}
+       public void reconcile(String accountIdentifier, String statementDate, BigDecimal endingBalance, List<Long> clearedIds)
+       {
+               if (clearedIds != null)
+               {
+                       for (Long id : clearedIds)
+                       {
+                               if (id != null)
+                               {
+                                       reconcileEntry(id);
+                               }
+                       }
+               }
+
+               this.pendingTransactions.clear();
+               System.out.println("Reconciliation complete for " + accountIdentifier
+                       + " as of " + statementDate + " ending balance " + endingBalance);
+       }
 
 	/**
 	 * Adds a transaction to a list or batch of transactions that are pending reconciliation.
@@ -129,12 +139,12 @@ public class ReconciliationService
 	 * @param transaction The {@link AccountingTransaction} to add to the reconciliation batch.
 	 *                    The parameter name "mockTx1" suggests it might have been used for testing.
 	 */
-	public void addTransactionToReconcile(AccountingTransaction transaction)
-	{
-		// TODO Auto-generated method stub
-		// Implementation would add the transaction to an internal collection
-		// specific to this ReconciliationService instance, for later processing by the reconcile() method.
-		
-	}
+       public void addTransactionToReconcile(AccountingTransaction transaction)
+       {
+               if (transaction != null)
+               {
+                       this.pendingTransactions.add(transaction);
+               }
+       }
 	
 }

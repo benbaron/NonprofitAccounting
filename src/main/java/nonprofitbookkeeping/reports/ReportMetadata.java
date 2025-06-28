@@ -36,10 +36,10 @@ public class ReportMetadata
 	 * @param nonExistentFilePath
 	 * @param string2
 	 */
-	public ReportMetadata(String string, String format, String nonExistentFilePath, String string2)
-	{
-		// TODO Auto-generated constructor stub
-	}
+        public ReportMetadata(String string, String format, String nonExistentFilePath, String string2)
+        {
+                this(string, format, nonExistentFilePath);
+        }
 
 	/**
 	 * Gets the name of the report.
