@@ -53,7 +53,6 @@ This document lists potential code issues, areas for improvement, or bugs that w
 10. **`src/main/java/nonprofitbookkeeping/ui/panels/GeneralJournalEntryPanelFX.java`**
     *   **Status:** New panel added for creating general journal entries with running totals and natural-side handling.
     *   **Next Steps:** Hook the panel into editing workflows, tighten validation when accounts are missing, and ensure integration tests run once the Maven configuration issues are resolved.
-<<<<<<< HEAD
 
 ## Feature Implementation Plan
 
@@ -98,5 +97,17 @@ This document lists potential code issues, areas for improvement, or bugs that w
 - Integrate the panel into transaction edit workflows.
 - Add validation for missing accounts and mismatched totals.
 - Enable automated tests once Maven issues are resolved.
-=======
->>>>>>> branch 'main' of https://github.com/benbaron/NonprofitAccounting.git
+
+### 11. Implement Placeholder Functions
+- Implement real file export logic in `ExportFileActionFX.handle` instead of writing placeholder text.
+- Implement actual import processing in `ImportFileActionFX.handle`.
+- Replace the alert in `AccountsActivityPanelFX` with functional statement import code.
+- Add dynamic UI listeners in `BudgetLineDialog.attachListeners` for validation and field updates.
+- Provide working backup and restore features in `SettingsPanelFX.backupTab`.
+- Generate real output in `GenerateReportPanelFX` rather than placeholder text.
+- Extend `PageViewer.getTableModel` to load data from the ledger or relevant source.
+- Make `CompanySelectionPanelFX.OnCompanyOpenedHandler` a proper callback interface and invoke it when a company is opened.
+- Implement data-driven logic in `ReconciliationService` methods such as `getUnreconciled`, `listReconcilableAccounts`, `reconcile`, and `addTransactionToReconcile`.
+- Calculate totals in `InvestmentTransaction.getTotal(Account)` using the account's transaction history.
+- Expand `OfxV2Writer.writeInvestmentSection` to output investment positions and transactions.
+- Review Swing stub methods like `performAction()` in report actions and implement or remove them if unused.
