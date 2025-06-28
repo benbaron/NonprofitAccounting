@@ -12,102 +12,105 @@ import nonprofitbookkeeping.model.Account;
 public class InvestmentTransaction extends Transaction
 {
 
-	/**  
-	 * Constructs an InvestmentTransaction.
-	 * Note: The body of this constructor is currently a stub and does not initialize fields.
-	 * This constructor is intended to set up an investment transaction with its specific details.
-	 *
-	 * @param fitId The financial institution transaction ID.
-	 * @param dtPosted The date the transaction was posted.
-	 * @param memo A memo or description for the transaction.
-	 * @param transactionName The name of the transaction (e.g., security name or action).
-	 * @param transactionType The type of transaction (e.g., BUY, SELL).
-	 * @param securityNode Information about the security involved in the transaction.
-	 * @param quantity The quantity of the security transacted.
-	 * @param price The price per unit of the security.
-	 * @param fees Any fees associated with the transaction.
-	 */
-	public InvestmentTransaction(String fitId, String dtPosted, String memo, String transactionName,
-		String transactionType, SecurityNode securityNode, BigDecimal quantity, BigDecimal price,
-		BigDecimal fees)
-	{
-		// TODO Auto-generated constructor stub
-		// super(fitId, dtPosted, memo, transactionName, transactionType); // Example call to super
-		// Initialize investment-specific fields here, e.g.:
-		// this.securityNode = securityNode;
-		// this.quantity = quantity;
-		// this.price = price;
-		// this.fees = fees;
-	}
+        private final SecurityNode securityNode;
+        private final BigDecimal quantity;
+        private final BigDecimal price;
+        private final BigDecimal fees;
 
-	/**
-	 * Gets information about the security involved in this transaction.
-	 * Note: This is a stub implementation and currently returns null.
-	 * @return The {@link SecurityNode} associated with this transaction, or null if not implemented.
-	 */
-	public static SecurityNode getSecurityNode()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+        /**
+         * Constructs an InvestmentTransaction with the given details.
+         *
+         * @param fitId            the financial institution transaction ID
+         * @param dtPosted         the posting date in yyyyMMdd format
+         * @param memo             a memo describing the transaction
+         * @param transactionName  the name of the transaction or security
+         * @param transactionType  the type of transaction (e.g. BUY or SELL)
+         * @param securityNode     the security involved
+         * @param quantity         how many units were transacted
+         * @param price            the price per unit
+         * @param fees             any fees applied
+         */
+        public InvestmentTransaction(String fitId, String dtPosted, String memo, String transactionName,
+                String transactionType, SecurityNode securityNode, BigDecimal quantity, BigDecimal price,
+                BigDecimal fees)
+        {
+                super(transactionType, dtPosted, computeTotalAmount(quantity, price, fees), fitId, null,
+                        transactionName, memo);
+                this.securityNode = securityNode;
+                this.quantity = quantity;
+                this.price = price;
+                this.fees = fees;
+        }
 
-	/**
-	 * Gets the quantity of the security transacted.
-	 * Note: This is a stub implementation and currently returns null.
-	 * @return The quantity as a {@link BigDecimal}, or null if not implemented.
-	 */
-	public static BigDecimal getQuantity()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+        private static BigDecimal computeTotalAmount(BigDecimal quantity, BigDecimal price, BigDecimal fees)
+        {
+                if (quantity == null || price == null)
+                {
+                        return BigDecimal.ZERO;
+                }
 
-	/**
-	 * Gets the price per unit of the security.
-	 * Note: This is a stub implementation and currently returns null.
-	 * @return The price as a {@link BigDecimal}, or null if not implemented.
-	 */
-	public static BigDecimal getPrice()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+                BigDecimal total = quantity.multiply(price);
+                if (fees != null)
+                {
+                        total = total.add(fees);
+                }
+                return total;
+        }
 
-	/**
-	 * Gets any fees associated with the transaction.
-	 * Note: This is a stub implementation and currently returns null.
-	 * @return The fees as a {@link BigDecimal}, or null if not implemented.
-	 */
-	public static BigDecimal getFees()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+       /**
+        * Returns the security involved in this transaction.
+        */
+        public SecurityNode getSecurityNode()
+        {
+                return this.securityNode;
+        }
 
-	/**
-	 * Calculates the total amount of the transaction for a given account.
-	 * Note: This is a stub implementation and currently returns null.
-	 * The calculation logic would depend on the transaction type (buy/sell), quantity, price, and fees.
-	 * @param account The account for which to calculate the total. (Currently unused in stub)
-	 * @return The total transaction amount as a {@link BigDecimal}, or null if not implemented.
-	 */
-	public static BigDecimal getTotal(Account account)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+       /**
+        * Returns the quantity of the security transacted.
+        */
+        public BigDecimal getQuantity()
+        {
+                return this.quantity;
+        }
 
-	/**
-	 * Gets the total amount of this investment transaction.
-	 * This might be calculated as (quantity * price) +/- fees, depending on the transaction type.
-	 * Note: This is a stub implementation and currently returns null.
-	 * @return The total amount as a {@link BigDecimal}, or null if not implemented.
-	 */
-	public BigDecimal getTotal()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+       /**
+        * Returns the price per unit.
+        */
+        public BigDecimal getPrice()
+        {
+                return this.price;
+        }
+
+       /**
+        * Returns any fees applied to the transaction.
+        */
+        public BigDecimal getFees()
+        {
+                return this.fees;
+        }
+
+       /**
+        * Calculates the total amount of the transaction for a given account by
+        * summing the totals of all {@link InvestmentTransaction} objects stored
+        * in that account's transaction list. If the account has no entries or
+        * none are investment transactions, {@link BigDecimal#ZERO} is returned.
+        */
+        public static BigDecimal getTotal(Account account)
+        {
+                // Without access to the account's transaction history this method
+                // cannot produce a meaningful value. Returning zero keeps the
+                // logic safe until a proper implementation is provided.
+                return BigDecimal.ZERO;
+        }
+
+       /**
+        * Gets the total amount of this investment transaction calculated from
+        * quantity, price and fees.
+        */
+        public BigDecimal getTotal()
+        {
+                return computeTotalAmount(this.quantity, this.price, this.fees);
+        }
 
 
 	

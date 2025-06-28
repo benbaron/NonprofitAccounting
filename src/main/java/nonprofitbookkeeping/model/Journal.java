@@ -128,10 +128,13 @@ public class Journal implements Serializable
 	/**
 	 * @param any
 	 */
-	public void deleteTransaction(Timestamp any)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+        public void deleteTransaction(Timestamp any)
+        {
+                if (any != null)
+                {
+                        deleteTransaction(any.getTime());
+                }
+
+        }
 	
 }

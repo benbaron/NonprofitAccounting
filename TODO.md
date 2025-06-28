@@ -8,11 +8,13 @@ This document lists potential code issues, areas for improvement, or bugs that w
     *   **Issue:** Potential `StackOverflowError` in the `setupCompanyChangeListener` method.
     *   **Observation:** The method appeared to be calling itself recursively without a proper base case or change in arguments, leading to a `StackOverflowError` during subtask analysis. The subtask agent commented out the direct recursive call and replaced it with an assumed correct call to `CurrentCompany.addCompanyChangeListener(this.companyChangeListener);` to proceed with Javadoc.
     *   **Recommendation:** Review the logic of `setupCompanyChangeListener` to ensure correct listener registration and avoid infinite recursion.
+    *   **Status:** Resolved &ndash; the listener is now registered once and any previous listener is removed before registration to prevent accidental recursion or duplicates.
 
 2.  **`src/main/java/nonprofitbookkeeping/ui/panels/BudgetPanel.java`**
     *   **Issue:** Significant block of duplicated code.
     *   **Observation:** A large section of code was identified as being duplicated within this file. The subtask agent removed the duplicated block to proceed.
     *   **Recommendation:** Confirm the duplicated code removal was correct and refactor if necessary to maintain functionality without redundancy.
+    *   **Status:** Resolved &ndash; duplicate wrapper classes were removed and the panel now relies on the implementations in `BudgetLineDialog`.
 
 3.  **`src/main/java/nonprofitbookkeeping/ui/panels/CoaEditorPanelFX.java`**
     *   **Issue:** Undefined `LOGGER` instance in the `insertIntoTree` method.
@@ -51,3 +53,47 @@ This document lists potential code issues, areas for improvement, or bugs that w
 10. **`src/main/java/nonprofitbookkeeping/ui/panels/GeneralJournalEntryPanelFX.java`**
     *   **Status:** New panel added for creating general journal entries with running totals and natural-side handling.
     *   **Next Steps:** Hook the panel into editing workflows, tighten validation when accounts are missing, and ensure integration tests run once the Maven configuration issues are resolved.
+
+## Feature Implementation Plan
+
+### 1. Listener Registration Refactor
+- Verify `AccountTransactionDetailsPanelFX.setupCompanyChangeListener` only registers once per panel instance.
+- Add unit tests for listener registration and removal when panel is closed.
+
+### 2. Finalize BudgetPanel Refactor
+- Review BudgetPanel behavior after removing duplicate wrapper classes.
+- Ensure BudgetLineDialog integration provides all expected editing features.
+- Create regression test covering budget line creation and edit.
+
+### 3. CoaEditorPanelFX Logging
+- Introduce a `Logger` instance and replace `System.out` statements.
+- Check tree insertion logic for edge cases (duplicate nodes, null parent).
+
+### 4. PreferencesManager Keys
+- Assign unique strings to `LAST_DIR_KEY` and `LAST_WRITE_DIR_KEY`.
+- Migrate any stored user preferences from the old duplicate key.
+
+### 5. ChartOfAccountsBuilder Cleanup
+- Remove the unused `accountDetails` parameter from the `build` method.
+- Update all callers and adjust unit tests.
+
+### 6. Implement Remaining Stubs
+- Audit each TODO comment in `CustomerService`, `PageViewer`, `UndoEditAction`, and `BudgetEditorDialogFX`.
+- Replace placeholder returns with working implementations and add tests.
+
+### 7. JournalEntry Constructor Review
+- Confirm whether `transactionId` should map from the `id` parameter or a separate value.
+- Update the constructor and serialization logic accordingly.
+
+### 8. SaveModifiedCopyActionFX
+- Provide a valid sheet name to `ExcelDataWriter.writeModifiedCopy`.
+- Validate the output file path and handle IO exceptions gracefully.
+
+### 9. Panel Reset Testing
+- Fix Maven plugin resolution so UI tests can run.
+- Ensure skeleton panels clear their tables and labels when the company closes.
+
+### 10. GeneralJournalEntryPanelFX Enhancements
+- Integrate the panel into transaction edit workflows.
+- Add validation for missing accounts and mismatched totals.
+- Enable automated tests once Maven issues are resolved.

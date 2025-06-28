@@ -1,6 +1,8 @@
 package nonprofitbookkeeping.service;
 
 import nonprofitbookkeeping.model.InventoryItem; // Correct import
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +16,9 @@ import java.util.Map;
  */
 public class InventoryService {
 
+    /** Shared in-memory map to store {@link InventoryItem} objects across service instances. */
+    private static final Map<String, InventoryItem> SHARED_ITEMS = new HashMap<>();
+
     /** In-memory map to store {@link InventoryItem} objects, keyed by their unique ID. */
     private final Map<String, InventoryItem> items;
 
@@ -22,7 +27,7 @@ public class InventoryService {
      * Optionally, sample data can be pre-populated here during development or testing.
      */
     public InventoryService() {
-        this.items = new HashMap<>();
+        this.items = SHARED_ITEMS;
         // Optionally pre-populate with sample data:
         // addItem(new InventoryItem("I001", "Item A", new BigDecimal("100"), "2023-01-01", 5)); // Example with BigDecimal
         // addItem(new InventoryItem("I002", "Item B", new BigDecimal("50"), "2023-02-01", 3));
@@ -91,10 +96,28 @@ public class InventoryService {
      * </p>
      */
     public void applyYearlyDepreciation() {
-        // TODO: Implement depreciation logic for items that are depreciable.
-        // This might involve iterating through items, checking their depreciation rate,
-        // and updating their current value or accumulated depreciation.
-        System.out.println("applyYearlyDepreciation() called - Placeholder");
+        for (InventoryItem item : this.items.values()) {
+            if (item.getCost() == null || item.getLifeYears() <= 0) {
+                continue; // insufficient data
+            }
+
+            BigDecimal rate = item.getDepreciationRate();
+            BigDecimal yearly;
+
+            if (rate != null) {
+                yearly = item.getCost().multiply(rate);
+            } else {
+                yearly = item.getCost().divide(BigDecimal.valueOf(item.getLifeYears()), 2,
+                        RoundingMode.HALF_UP);
+            }
+
+            BigDecimal current = item.getAccumulatedDepreciation();
+            if (current == null) {
+                current = BigDecimal.ZERO;
+            }
+
+            item.withAccumDep(current.add(yearly));
+        }
     }
 
     /**
@@ -115,14 +138,17 @@ public class InventoryService {
 	 * @return A list of string arrays, where each array represents an inventory item's data,
 	 *         or null if the implementation is not complete.
 	 */
-	public static List<String[]> getInventoryItems()
-	{
-		// TODO Auto-generated method stub
-		// This method should be implemented to fetch inventory items
-		// (perhaps from the 'items' map if this method were non-static, or another source)
-		// and format them as List<String[]>.
-		return null;
-	}
+    public static List<String[]> getInventoryItems()
+    {
+        List<String[]> rows = new ArrayList<>();
+        for (InventoryItem item : SHARED_ITEMS.values())
+        {
+            String cost = item.getCost() == null ? "0.00"
+                    : item.getCost().setScale(2, RoundingMode.HALF_UP).toString();
+            rows.add(new String[] { item.getId(), item.getName(), cost });
+        }
+        return rows;
+    }
 
     // Removed private static inner class InventoryItem
     // Removed old getInventoryItems()

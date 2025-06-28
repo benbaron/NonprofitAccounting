@@ -355,13 +355,13 @@ public class SkeletonReportsPanel extends BorderPane
 					return;
 			}
 			
-			ReportContext ctx = new ReportContext();
-			ctx.setReportType(reportTypeKey);
-			ctx.setStartDate(startDate);
-			ctx.setEndDate(endDate);
-			// TODO: ctx.setFundIds(...);
-			// TODO: ctx.setSelectedBudget(...);
-			// TODO: ctx.setAccountIdsForDetailReport(...);
+                        ReportContext ctx = new ReportContext();
+                        ctx.setReportType(reportTypeKey);
+                        ctx.setStartDate(startDate);
+                        ctx.setEndDate(endDate);
+                        ctx.setFundIds(java.util.Collections.emptyList());
+                        ctx.setSelectedBudget(null);
+                        ctx.setAccountIdsForDetailReport(java.util.Collections.emptyList());
 			
 			String outputFormat = "pdf";
 			

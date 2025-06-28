@@ -280,19 +280,39 @@ public class SkeletonJournalPanel extends BorderPane
 	/**
 	 * On Filter Button
 	 */
-	void onFilterButtonAction()
-	{
-		// TODO: Implement actual filtering logic based on searchFilterField and
-		// dateFilterField
-		
-		// For now, just reload all data as a placeholder for filter action
-		System.out.println("Filter button clicked. Search: " +
-			this.searchFilterField.getText() +
-			", Date: " +
-			this.dateFilterField.getText());
-		
-		loadData();
-	}
+        void onFilterButtonAction()
+        {
+                String search = this.searchFilterField.getText().toLowerCase();
+                String date = this.dateFilterField.getText();
+
+                loadData();
+
+                if ((search == null || search.isBlank()) && (date == null || date.isBlank()))
+                {
+                        return; // nothing to filter
+                }
+
+                ObservableList<JournalDisplayEntry> filtered = FXCollections.observableArrayList();
+                for (JournalDisplayEntry entry : this.journalDataList)
+                {
+                        boolean match = true;
+                        if (search != null && !search.isBlank())
+                        {
+                                match &= entry.descriptionProperty().get().toLowerCase().contains(search)
+                                        || entry.accountNameProperty().get().toLowerCase().contains(search);
+                        }
+                        if (date != null && !date.isBlank())
+                        {
+                                match &= entry.dateProperty().get().equals(date);
+                        }
+                        if (match)
+                        {
+                                filtered.add(entry);
+                        }
+                }
+
+                this.journalDisplayTable.setItems(filtered);
+        }
 	
 	/**
 	 * On Edit Button

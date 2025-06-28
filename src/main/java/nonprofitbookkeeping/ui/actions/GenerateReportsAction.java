@@ -4,17 +4,16 @@ package nonprofitbookkeeping.ui.actions;
 import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.ui.helpers.AlertBox; // Added
+import nonprofitbookkeeping.ui.helpers.DateRangePickerDialog; // Added
 
 import javafx.event.ActionEvent; // Added
 import javafx.event.EventHandler; // Added
 import javafx.scene.control.ChoiceDialog; // Added
-import javafx.scene.control.TextInputDialog; // Added
 import javafx.stage.Window; // Added
 // import javax.swing.*; // Removed
 // import java.awt.event.ActionEvent; // Removed
 import java.io.File;
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException; // Added
 import java.util.Arrays; // Added
 import java.util.List; // Added
 import java.util.Optional; // Added
@@ -50,17 +49,15 @@ public class GenerateReportsAction implements EventHandler<ActionEvent> {
      *   <li>Prompts the user to select a report type from a predefined list
      *       (ledger, income_statement, balance_sheet, trial_balance, cash_flow, general_ledger)
      *       using a {@link ChoiceDialog}.</li>
-     *   <li>Prompts for start and end dates using {@link TextInputDialog}s.
-     *       (TODO: Replace with JavaFX DatePicker controls for better UX).
-     *       Validates that dates are provided and in "yyyy-MM-dd" format, and that end date is not before start date.</li>
+     *   <li>Prompts for start and end dates using a custom dialog with {@link javafx.scene.control.DatePicker}s.</li>
+     *   <li>Validates that both dates are provided and that the end date is not before the start date.</li>
      *   <li>Prompts for the output format (xlsx, csv, pdf) using a {@link ChoiceDialog}.</li>
      *   <li>If any dialog is cancelled by the user, the action terminates.</li>
      *   <li>Constructs a {@link ReportContext} with the selected criteria.</li>
      *   <li>Calls the static {@link ReportService#generate(ReportContext)} method to produce the report file.</li>
      *   <li>Shows an information alert with the path to the generated report, or an error alert if generation fails.</li>
      * </ol>
-     * Catches and displays {@link DateTimeParseException} for invalid date inputs and general {@link Exception}
-     * for other errors during the process.
+     * Displays general {@link Exception} messages if errors occur during report generation.
      * </p>
      * @param event The {@link ActionEvent} that triggered this handler (e.g., a menu item click).
      */
@@ -92,44 +89,26 @@ public class GenerateReportsAction implements EventHandler<ActionEvent> {
             }
             String reportType = reportTypeOpt.get();
 
-            // Prompt for start and end dates (ISO format yyyy-MM-dd).
-            // TODO: For a better user experience, replace with DatePicker controls in a custom dialog.
-            TextInputDialog startDateDialog = new TextInputDialog();
-            startDateDialog.initOwner(parentWindow);
-            startDateDialog.setTitle("Start Date");
-            startDateDialog.setHeaderText("Enter start date (yyyy-MM-dd):");
-            startDateDialog.setContentText("Start Date:");
-            Optional<String> startInputOpt = startDateDialog.showAndWait();
+            // Prompt for start and end dates using a JavaFX DatePicker dialog.
+            Optional<LocalDate[]> rangeOpt = DateRangePickerDialog.show(parentWindow,
+                    "Select Report Period", "Start Date:", "End Date:");
 
-            if (!startInputOpt.isPresent() || startInputOpt.get().trim().isEmpty()) {
+            if (!rangeOpt.isPresent()) {
+                return; // User cancelled
+            }
+
+            LocalDate[] range = rangeOpt.get();
+            LocalDate startDate = range[0];
+            LocalDate endDate = range[1];
+
+            if (startDate == null) {
                 AlertBox.showError(parentWindow, "Start date is required.");
                 return;
             }
-            String startInput = startInputOpt.get();
-
-            TextInputDialog endDateDialog = new TextInputDialog();
-            endDateDialog.initOwner(parentWindow);
-            endDateDialog.setTitle("End Date");
-            endDateDialog.setHeaderText("Enter end date (yyyy-MM-dd):");
-            endDateDialog.setContentText("End Date:");
-            Optional<String> endInputOpt = endDateDialog.showAndWait();
-
-            if (!endInputOpt.isPresent() || endInputOpt.get().trim().isEmpty()) {
+            if (endDate == null) {
                 AlertBox.showError(parentWindow, "End date is required.");
                 return;
             }
-            String endInput = endInputOpt.get();
-
-            LocalDate startDate;
-            LocalDate endDate;
-            try {
-                startDate = LocalDate.parse(startInput);
-                endDate = LocalDate.parse(endInput);
-            } catch (DateTimeParseException ex) {
-                AlertBox.showError(parentWindow, "Invalid date format. Please use yyyy-MM-dd.");
-                return;
-            }
-            
             if (endDate.isBefore(startDate)) {
                 AlertBox.showError(parentWindow, "End Date cannot be before Start Date.");
                 return;
@@ -172,10 +151,8 @@ public class GenerateReportsAction implements EventHandler<ActionEvent> {
 	 *
 	 * @param object The event object (type is generic Object, specific context unknown).
 	 */
-	public void actionPerformed(Object object)
-	{
-		// TODO Auto-generated method stub
-		// This method's purpose is unclear in the current JavaFX context.
-		// If it were from java.awt.event.ActionListener, the parameter would be java.awt.event.ActionEvent.
-	}
+        public void actionPerformed(Object object)
+        {
+                handle(new ActionEvent());
+        }
 }

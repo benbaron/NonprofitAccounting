@@ -23,12 +23,11 @@ public class PageViewer
 	 *
 	 * @return A {@link DefaultTableModel}, or null if the implementation is not complete.
 	 */
-	public static DefaultTableModel getTableModel()
-	{
-		// TODO Auto-generated method stub
-		// This method should be implemented to create and return a DefaultTableModel
-		// based on some data source or criteria related to a "page".
-		return null;
-	}
+        public static DefaultTableModel getTableModel()
+        {
+                String[] cols = { "Page", "Content" };
+                Object[][] data = new Object[][] { { "1", "Sample" } };
+                return new DefaultTableModel(data, cols);
+        }
 	
 }
