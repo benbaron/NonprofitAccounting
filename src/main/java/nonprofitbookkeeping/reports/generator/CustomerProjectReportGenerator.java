@@ -71,11 +71,11 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 				
 				JasperReport jasperReport = JasperCompileManager.compileReport(in);
 			}
-			catch (IOException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+                        catch (IOException e)
+                        {
+                                System.err.println("Error reading CustomerReport.jrxml: " + e.getMessage());
+                                e.printStackTrace();
+                        }
 			
 		}
 		catch (JRException e)
@@ -109,9 +109,11 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 			}
 			
 		}
-		catch (Exception e)
-		{
-		}
+                catch (Exception e)
+                {
+                        System.err.println("Error generating Customer/Project report: " + e.getMessage());
+                        e.printStackTrace();
+                }
 		
 	}
 	

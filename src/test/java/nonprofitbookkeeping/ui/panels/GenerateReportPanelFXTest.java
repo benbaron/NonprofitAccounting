@@ -138,15 +138,7 @@ public class GenerateReportPanelFXTest extends JavaFXTestBase {
         WaitForAsyncUtils.waitForFxEvents();
 
         // Verify no call to generateJasperReport for this type
-        try
-		{
-			verify(this.mockReportService, never()).generateJasperReport(any(ReportContext.class), anyString());
-		}
-		catch (Exception e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        verify(this.mockReportService, never()).generateJasperReport(any(ReportContext.class), anyString());
 
         String outputText = this.outputArea.getText();
         assertTrue(outputText.contains("Generating report: Income Statement..."));
