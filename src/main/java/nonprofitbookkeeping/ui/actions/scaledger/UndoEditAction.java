@@ -1,6 +1,7 @@
 package nonprofitbookkeeping.ui.actions.scaledger;
 
 import javax.swing.*;
+import javax.swing.undo.UndoManager;
 
 import java.awt.event.ActionEvent;
 
@@ -35,6 +36,49 @@ public class UndoEditAction extends AbstractAction
 	@Override
     public void actionPerformed(ActionEvent e)
     {
-      JOptionPane.showMessageDialog(null, "Undo not implemented", "Info", JOptionPane.INFORMATION_MESSAGE);
+      if (this.undoManager.canUndo())
+      {
+        this.undoManager.undo();
+      }
+      else
+      {
+        JOptionPane.showMessageDialog(null, "Nothing to undo", "Undo", JOptionPane.INFORMATION_MESSAGE);
+      }
+    }
+
+    /** The {@link UndoManager} responsible for tracking edits to undo. */
+    private final UndoManager undoManager;
+
+    /**
+     * Creates a new {@code UndoEditAction} with its own {@link UndoManager}.
+     * Components performing undoable edits can obtain this manager via
+     * {@link #getUndoManager()} and add their edits to it.
+     */
+    public UndoEditAction()
+    {
+      super("Undo Last Edit");
+      this.undoManager = new UndoManager();
+    }
+
+    /**
+     * Creates a new action using the provided {@link UndoManager}.
+     *
+     * @param manager The manager to use for undo operations. Must not be null.
+     */
+    public UndoEditAction(UndoManager manager)
+    {
+      super("Undo Last Edit");
+      this.undoManager = manager;
+    }
+
+    /**
+     * Returns the underlying {@link UndoManager} so that callers can register
+     * their {@link javax.swing.undo.UndoableEdit} instances.
+     *
+     * @return the {@link UndoManager} used by this action
+     */
+    public UndoManager getUndoManager()
+    {
+      return this.undoManager;
     }
 }

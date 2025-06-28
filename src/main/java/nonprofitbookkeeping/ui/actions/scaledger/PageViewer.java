@@ -15,18 +15,20 @@ import javax.swing.table.DefaultTableModel;
 public class PageViewer
 {
 
-	/**
-	 * Gets a table model, presumably for displaying page data.
-	 * Note: This is a stub implementation and currently returns null.
-	 * A full implementation would construct and return a {@link DefaultTableModel}
-	 * populated with data relevant to a specific page or view.
-	 *
-	 * @return A {@link DefaultTableModel}, or null if the implementation is not complete.
-	 */
+        /**
+         * Creates a simple {@link DefaultTableModel} containing page data.
+         * <p>
+         * In lieu of a backing data store, this method generates a small table
+         * model with example content. Callers can replace the model data with
+         * actual values via {@link nonprofitbookkeeping.plugins.scaledger.ui.PageViewerPanel#loadData(DefaultTableModel)}.
+         * </p>
+         *
+         * @return A {@link DefaultTableModel} with two columns: "Page" and "Content".
+         */
         public static DefaultTableModel getTableModel()
         {
                 String[] cols = { "Page", "Content" };
-                Object[][] data = new Object[][] { { "1", "Sample" } };
+                Object[][] data = { { "1", "Sample" } };
                 return new DefaultTableModel(data, cols);
         }
 	
