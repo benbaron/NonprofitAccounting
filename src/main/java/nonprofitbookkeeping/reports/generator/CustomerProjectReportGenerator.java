@@ -10,11 +10,15 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.HtmlExporter;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
+import nonprofitbookkeeping.exception.ActionCancelledException;
+import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.model.Customer;
 import nonprofitbookkeeping.service.CustomerService;
 
 import java.util.List;
 import java.util.Map;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 
 
@@ -36,7 +40,7 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 	{
 		super(customerService);
 	}
-
+	
 	/**
 	 * Generates and exports the Customer/Project report to the specified format.
 	 * This method compiles the "CustomerProjectReport.jrxml" template (path needs to be correctly configured),
@@ -50,30 +54,50 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 	 */
 	@Override public void generateAndExportReport(String format)
 	{
-
-                try
-                {
-                        // Compile JRXML into JasperReport from the classpath
-                        try (var in = CustomerProjectReportGenerator.class.getResourceAsStream("/CustomerReport.jrxml"))
-                        {
-                                if (in == null)
-                                {
-                                        System.err.println("CustomerReport.jrxml not found in resources");
-                                        return;
-                                }
-
-                                JasperReport jasperReport = JasperCompileManager.compileReport(in);
-
-			// Fetch data for the report
-			List<Customer> customerData = CustomerService.getCustomerProjectData();
-
-			// Fill the report with the data
-			JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(customerData);
-			Map<String, Object> parameters = getReportParameters();
-
+		
+		try
+		{
+			
+			// Compile JRXML into JasperReport from the classpath
+			try (var in =
+				CustomerProjectReportGenerator.class.getResourceAsStream("/CustomerReport.jrxml"))
+			{
+				
+				if (in == null)
+				{
+					System.err.println("CustomerReport.jrxml not found in resources");
+					return;
+				}
+				
+				JasperReport jasperReport = JasperCompileManager.compileReport(in);
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		catch (JRException e)
+		{
+			e.printStackTrace(); // Consider more robust error handling/logging
+		}
+		
+		// Fetch data for the report
+		List<Customer> customerData = CustomerService.getCustomerProjectData();
+		
+		// Fill the report with the data
+		JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(customerData);
+		Map<String, Object> parameters = getReportParameters();
+		
+		try (InputStream reportStream =
+			getClass().getClassLoader().getResourceAsStream(getReportPath()))
+		{
+			JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
+			
 			JasperPrint jasperPrint =
 				JasperFillManager.fillReport(jasperReport, parameters, dataSource);
-
+			
 			// Export report to the desired format (PDF, HTML)
 			if ("pdf".equalsIgnoreCase(format))
 			{
@@ -83,15 +107,26 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 			{
 				exportToHTML(jasperPrint, "CustomerProjectReport.html");
 			}
-
+			
 		}
-		catch (JRException e)
+		catch (Exception e)
 		{
-			e.printStackTrace(); // Consider more robust error handling/logging
 		}
-
+		
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 * @return The classpath resource path "reports/TrialBalanceReport.jrxml" for the Trial Balance template.
+	 * @throws ActionCancelledException Not directly thrown by this implementation, but declared due to the interface.
+	 * @throws NoFileCreatedException Not directly thrown by this implementation, but declared due to the interface.
+	 */
+	protected static String getReportPath()	throws ActionCancelledException,
+												NoFileCreatedException
+	{
+		return "reports/CustomerProjectReport.jrxml";
+	}
+	
 	/**
 	 * Retrieves the parameters required for the Customer/Project report.
 	 * This includes a report title, a static date, and placeholder company information.
@@ -102,12 +137,13 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 	{
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("reporttitle", "Customer/Project Report");
-		parameters.put("dateToday", "2023-04-15"); // Example static date, replace as needed or make dynamic
+		parameters.put("dateToday", "2023-04-15"); // Example static date, replace as needed or make
+													// dynamic
 		parameters.put("company", "Your Company Name"); // Placeholder, should be dynamic
 		parameters.put("companytext", "Company Details"); // Placeholder, should be dynamic
 		return parameters;
 	}
-
+	
 	/**
 	 * Exports the provided {@link JasperPrint} object to a PDF file.
 	 * The output file path is specified, and a success message or stack trace is printed to standard output/error.
@@ -117,7 +153,7 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 	 */
 	public static void exportToPDF(JasperPrint jasperPrint, String outputFilePath)
 	{
-
+		
 		try
 		{
 			JasperExportManager.exportReportToPdfFile(jasperPrint, outputFilePath);
@@ -127,9 +163,9 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 		{
 			e.printStackTrace(); // Consider more robust error handling/logging
 		}
-
+		
 	}
-
+	
 	/**
 	 * Exports the provided {@link JasperPrint} object to an HTML file.
 	 * The output file path is specified, and a success message or stack trace is printed to standard output/error.
@@ -139,7 +175,7 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 	 */
 	public static void exportToHTML(JasperPrint jasperPrint, String outputFilePath)
 	{
-
+		
 		try
 		{
 			HtmlExporter exporter = new HtmlExporter();
@@ -152,9 +188,9 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 		{
 			e.printStackTrace(); // Consider more robust error handling/logging
 		}
-
+		
 	}
-
+	
 	/**
 	 * Main method for demonstrating or testing the generation of the Customer/Project report.
 	 * It instantiates a {@link CustomerService} and {@link ReportGenerator} (which seems to be the base class here,
@@ -167,9 +203,9 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 	{
 		CustomerService customerService = new CustomerService();
 		ReportGenerator reportGenerator = new ReportGenerator(customerService);
-
+		
 		// Generate and export the report to HTML or PDF
 		reportGenerator.generateAndExportReport("html"); // Use "pdf" for PDF export
 	}
-
+	
 }

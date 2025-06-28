@@ -52,10 +52,10 @@ public class CompanySelectionPanelFX extends BorderPane
 		 *
 		 * @param company The {@link Company} object that was opened or processed.
 		 */
-                public void onCompanyOpened(Company company)
-                {
-                        System.out.println("Opened company: " + (company != null ? company.getName() : "null"));
-                }
+		public void onCompanyOpened(Company company)
+		{
+			System.out.println("Opened company: " + (company != null ? company.getCompanyProfileModel().getCompanyName() : "null"));
+		}
 		
 	}
 	
@@ -206,7 +206,7 @@ public class CompanySelectionPanelFX extends BorderPane
 			// without altering CurrentCompany state until "Open Selected" is clicked.
 			CurrentCompany.loadFromPersistent(f); // This can throw various exceptions.
 			CurrentCompany.markCompanyOpen(); // Sets the company as globally open.
-
+			
 			// The previewArea is not explicitly updated here with company details from
 			// CurrentCompany.
 			// It might be intended to show details from CurrentCompany after it's loaded.
@@ -241,8 +241,8 @@ public class CompanySelectionPanelFX extends BorderPane
 	 * If a file is selected, it displays an informational {@link Alert}.
 	 * Note: The actual loading and setting of the {@link CurrentCompany} is performed by
 	 * the {@link #showPreview(File)} method when a list item is selected. This method's primary
-         * role is primarily to confirm with the user that the selected company should be opened
-         * and then notify the optional {@link OnCompanyOpenedHandler} if provided.
+	     * role is primarily to confirm with the user that the selected company should be opened
+	     * and then notify the optional {@link OnCompanyOpenedHandler} if provided.
 	 * </p>
 	 */
 	void openSelected() // Package-private

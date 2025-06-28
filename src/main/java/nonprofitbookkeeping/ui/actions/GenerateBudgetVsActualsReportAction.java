@@ -4,6 +4,7 @@ package nonprofitbookkeeping.ui.actions;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.budget.Budget;
+import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.service.BudgetService;
 import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.ui.helpers.AlertBox;

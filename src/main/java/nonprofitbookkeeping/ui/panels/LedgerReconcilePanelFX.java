@@ -26,6 +26,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
+import nonprofitbookkeeping.core.AccountingTransactionBuilder;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.service.ReconciliationService;
 
@@ -121,7 +122,8 @@ public class LedgerReconcilePanelFX extends BorderPane
 	 * with {@code TableColumn} and {@code PropertyValueFactory} or similar mechanisms if used internally
 	 * by helper methods, especially with older JavaFX patterns.
 	 */
-	@SuppressWarnings({ "unchecked", "deprecation" }) private void buildTable()
+	@SuppressWarnings(
+	{ "unchecked", "deprecation" }) private void buildTable()
 	{
 		TableColumn<Row, Boolean> clrCol = new TableColumn<>("Cleared");
 		clrCol.setCellValueFactory(r -> r.getValue().cleared);
@@ -303,7 +305,8 @@ public class LedgerReconcilePanelFX extends BorderPane
 			try
 			{
 				List<AccountingTransaction> bank = readOfx(f.toPath());
-				LedgerReconcilePanelFX.this.bankTxns.put(LedgerReconcilePanelFX.this.accountBox.getValue(), bank);
+				LedgerReconcilePanelFX.this.bankTxns
+					.put(LedgerReconcilePanelFX.this.accountBox.getValue(), bank);
 				reloadRows();
 				new Alert(Alert.AlertType.INFORMATION,
 					"Imported " + bank.size() + " transactions.")
@@ -414,63 +417,67 @@ public class LedgerReconcilePanelFX extends BorderPane
 			gp.addRow(2, new Label("Amount"), amtF);
 			dlg.getDialogPane().setContent(gp);
 			
-                        dlg.setResultConverter(btn -> btn == ButtonType.OK ?
-                                build(dateP, descF, amtF) : null);
-                        dlg.showAndWait().ifPresent(tx -> {
-                                LedgerReconcilePanelFX.this.bankTxns
-                                        .computeIfAbsent(
-                                                LedgerReconcilePanelFX.this.accountBox.getValue(),
-                                                k -> new ArrayList<>())
-                                        .add(tx);
-                                reloadRows();
-                        });
-                }
-			
+			dlg.setResultConverter(btn -> btn == ButtonType.OK ?
+				build(dateP, descF, amtF) : null);
+			dlg.showAndWait().ifPresent(tx -> {
+				LedgerReconcilePanelFX.this.bankTxns
+					.computeIfAbsent(
+						LedgerReconcilePanelFX.this.accountBox.getValue(),
+						k -> new ArrayList<>())
+					.add(tx);
+				reloadRows();
+			});
+		}
+		
 		/**
 		 * Builds an {@link AccountingTransaction} from the dialog's input fields.
-                * <p>
-                * Parses the provided date, description, and amount fields to build an
-                * {@link AccountingTransaction} using the selected account number. If any
-                * field is invalid or missing, this method returns {@code null}.
-                * </p>
-                *
-                * @return A new {@link AccountingTransaction} based on dialog inputs or
-                *         {@code null} if validation fails.
-                */
-                private AccountingTransaction build(DatePicker dateP,
-                        TextField descF,
-                        TextField amtF)
-                {
-                        if (dateP.getValue() == null)
-                        {
-                                return null;
-                        }
-
-                        BigDecimal amt;
-                        try
-                        {
-                                amt = new BigDecimal(amtF.getText());
-                        }
-                        catch (NumberFormatException ex)
-                        {
-                                return null; // Invalid amount
-                        }
-
-                        String accountNum = LedgerReconcilePanelFX.this.accountBox.getValue();
-                        if (accountNum == null || accountNum.isBlank())
-                        {
-                                return null;
-                        }
-
-                        AccountingTransactionBuilder builder = AccountingTransactionBuilder.create();
-                        builder.debit(amt, accountNum);
-                        // Use a generic clearing account for the credit side
-                        builder.credit(amt, "CLEARING");
-                        AccountingTransaction tx = builder.build();
-                        tx.setDate(dateP.getValue().toString());
-                        tx.setDescription(descF.getText());
-                        return tx;
-                }
+		        * <p>
+		        * Parses the provided date, description, and amount fields to build an
+		        * {@link AccountingTransaction} using the selected account number. If any
+		        * field is invalid or missing, this method returns {@code null}.
+		        * </p>
+		        *
+		        * @return A new {@link AccountingTransaction} based on dialog inputs or
+		        *         {@code null} if validation fails.
+		        */
+		private AccountingTransaction build(DatePicker dateP,
+											TextField descF,
+											TextField amtF)
+		{
+			
+			if (dateP.getValue() == null)
+			{
+				return null;
+			}
+			
+			BigDecimal amt;
+			
+			try
+			{
+				amt = new BigDecimal(amtF.getText());
+			}
+			catch (NumberFormatException ex)
+			{
+				return null; // Invalid amount
+			}
+			
+			String accountNum = LedgerReconcilePanelFX.this.accountBox.getValue();
+			
+			if (accountNum == null || accountNum.isBlank())
+			{
+				return null;
+			}
+			
+			AccountingTransactionBuilder builder = AccountingTransactionBuilder.create();
+			builder.debit(amt, accountNum);
+			
+			// Use a generic clearing account for the credit side
+			builder.credit(amt, "CLEARING");
+			AccountingTransaction tx = builder.build();
+			tx.setDate(dateP.getValue().toString());
+			tx.setDescription(descF.getText());
+			return tx;
+		}
 		
 	}
 	
