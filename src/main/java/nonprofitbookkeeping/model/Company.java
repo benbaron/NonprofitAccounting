@@ -162,11 +162,12 @@ public class Company implements Serializable
 
 	/**
 	 * @return
-	 */
-	public String getName()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+        */
+        public String getName()
+        {
+                return this.companyProfileModel != null
+                        ? this.companyProfileModel.getCompanyName()
+                        : null;
+        }
 	
 }

@@ -139,14 +139,13 @@ public class GenerateReportPanelFXTest extends JavaFXTestBase {
 
         // Verify no call to generateJasperReport for this type
         try
-		{
-			verify(this.mockReportService, never()).generateJasperReport(any(ReportContext.class), anyString());
-		}
-		catch (Exception e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        {
+                verify(this.mockReportService, never()).generateJasperReport(any(ReportContext.class), anyString());
+        }
+        catch (Exception e)
+        {
+                fail("Unexpected exception verifying method call: " + e.getMessage());
+        }
 
         String outputText = this.outputArea.getText();
         assertTrue(outputText.contains("Generating report: Income Statement..."));

@@ -74,21 +74,46 @@ public class SettingsPanelFXTest extends JavaFXTestBase
 	 * @param string
 	 * @return
 	 */
-	private Matcher hasValue(String string)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+        private Matcher hasValue(String string)
+        {
+                return new org.hamcrest.TypeSafeMatcher<ComboBox<?>>()
+                {
+                        @Override
+                        public void describeTo(org.hamcrest.Description description)
+                        {
+                                description.appendText("ComboBox value to be " + string);
+                        }
+
+                        @Override
+                        protected boolean matchesSafely(ComboBox<?> item)
+                        {
+                                Object value = item.getValue();
+                                return value != null ? value.toString().equals(string) : string == null;
+                        }
+                };
+        }
 	
 	/**
 	 * @param string
 	 * @return
 	 */
-	private Matcher hasTextInField(String string)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+        private Matcher hasTextInField(String string)
+        {
+                return new org.hamcrest.TypeSafeMatcher<TextField>()
+                {
+                        @Override
+                        public void describeTo(org.hamcrest.Description description)
+                        {
+                                description.appendText("TextField text to be " + string);
+                        }
+
+                        @Override
+                        protected boolean matchesSafely(TextField item)
+                        {
+                                return item.getText() != null ? item.getText().equals(string) : string == null;
+                        }
+                };
+        }
 	
 	@Test
 	public	void testUsersTab_TableDisplaysDemoData()

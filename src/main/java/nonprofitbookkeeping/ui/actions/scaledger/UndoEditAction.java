@@ -3,6 +3,7 @@ package nonprofitbookkeeping.ui.actions.scaledger;
 import javax.swing.*;
 
 import java.awt.event.ActionEvent;
+import nonprofitbookkeeping.ui.util.UndoManager;
 
 /**
  * Represents a Swing Action intended to trigger an "undo" operation for the last edit
@@ -35,6 +36,11 @@ public class UndoEditAction extends AbstractAction
 	@Override
     public void actionPerformed(ActionEvent e)
     {
-      JOptionPane.showMessageDialog(null, "Undo not implemented", "Info", JOptionPane.INFORMATION_MESSAGE);
+        boolean undone = UndoManager.undoLast();
+        if (!undone)
+        {
+            JOptionPane.showMessageDialog(null,
+                    "Nothing to undo", "Info", JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 }
