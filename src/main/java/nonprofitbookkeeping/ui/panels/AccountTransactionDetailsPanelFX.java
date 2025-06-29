@@ -521,13 +521,29 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 			}
 			
 		};
-		CurrentCompany.CompanyListener.addCompanyListener(this.companyChangeListener);
-	}
-	
-	/**
-	 * Represents a single row of data to be displayed in the transaction details table.
-	 * This class uses JavaFX properties to enable data binding with TableView columns.
-	 */
+                CurrentCompany.CompanyListener.addCompanyListener(this.companyChangeListener);
+        }
+
+        /**
+         * Unregisters this panel's company change listener from
+         * {@link CurrentCompany.CompanyListener}. This should be called when
+         * the panel is no longer needed to avoid memory leaks from dangling
+         * listeners.
+         */
+        public void dispose()
+        {
+                if (this.companyChangeListener != null)
+                {
+                        CurrentCompany.CompanyListener.removeCompanyListener(this.companyChangeListener);
+                        this.companyChangeListener = null;
+                }
+
+        }
+
+        /**
+         * Represents a single row of data to be displayed in the transaction details table.
+         * This class uses JavaFX properties to enable data binding with TableView columns.
+         */
 	public static class TransactionDisplayRow
 	{
 		/** The date of the transaction. */

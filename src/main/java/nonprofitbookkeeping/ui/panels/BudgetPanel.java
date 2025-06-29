@@ -323,17 +323,32 @@ public class BudgetPanel extends JDialog
 	 * Attaches action listeners to the dialog's buttons and change listeners to input fields
 	 * to update the {@link #currentBudget} object dynamically as the user interacts with the UI.
 	 */
-	private void updateCurrentBudgetApplicableFund() {
-		String selectedFundName = (String) this.cmbApplicableFund.getSelectedItem();
-		if ("All Funds".equals(selectedFundName) || selectedFundName == null) {
-			this.currentBudget.setApplicableFundId(null);
-		} else {
-			this.availableFunds.stream()
-				.filter(f -> f != null && selectedFundName.equals(f.getName())) // Add null check for fund
-				.findFirst()
-				.ifPresent(fund -> this.currentBudget.setApplicableFundId(fund.getFundId()));
-		}
-	}
+        private void updateCurrentBudgetApplicableFund() {
+                String selectedFundName = (String) this.cmbApplicableFund.getSelectedItem();
+                if ("All Funds".equals(selectedFundName) || selectedFundName == null) {
+                        this.currentBudget.setApplicableFundId(null);
+                } else {
+                        this.availableFunds.stream()
+                                .filter(f -> f != null && selectedFundName.equals(f.getName())) // Add null check for fund
+                                .findFirst()
+                                .ifPresent(fund -> this.currentBudget.setApplicableFundId(fund.getFundId()));
+                }
+        }
+
+       /**
+        * Factory method for creating {@link BudgetLineDialog} instances. This allows
+        * tests to override dialog creation and provide stub implementations without
+        * displaying a Swing UI.
+        *
+        * @param title       the title to use for the dialog
+        * @param existingLine an existing {@link BudgetLine} to edit, or {@code null}
+        *                     when creating a new line
+        * @return a new {@link BudgetLineDialog}
+        */
+       protected BudgetLineDialog createBudgetLineDialog(String title, BudgetLine existingLine)
+       {
+               return new BudgetLineDialog(this, title, this.chartOfAccounts, this.availableFunds, existingLine);
+       }
 
 	private void attachListeners()
 	{
@@ -377,12 +392,10 @@ public class BudgetPanel extends JDialog
 	 *
 	 * @param e The {@link ActionEvent} that triggered this action.
 	 */
-	private void actionAddLine(ActionEvent e)
-	{
-		BudgetLineDialog dialog =
-			new BudgetLineDialog(this, "Add Budget Line", this.chartOfAccounts, this.availableFunds,
-				null);
-		dialog.setVisible(true);
+       private void actionAddLine(ActionEvent e)
+       {
+               BudgetLineDialog dialog = createBudgetLineDialog("Add Budget Line", null);
+               dialog.setVisible(true);
 		
 		if (dialog.isSaved())
 		{
@@ -422,8 +435,7 @@ public class BudgetPanel extends JDialog
 				return;
 			}
 			
-			BudgetLineDialog dialog = new BudgetLineDialog(this, "Edit Budget Line",
-				this.chartOfAccounts, this.availableFunds, lineToEdit);
+                       BudgetLineDialog dialog = createBudgetLineDialog("Edit Budget Line", lineToEdit);
 			dialog.setVisible(true);
 			
 			if (dialog.isSaved())

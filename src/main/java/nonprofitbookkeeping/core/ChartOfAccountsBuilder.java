@@ -8,6 +8,7 @@ import nonprofitbookkeeping.model.*;
  */
 public class ChartOfAccountsBuilder
 {
+private final ChartOfAccounts chart = new ChartOfAccounts();
 	
 	/**
 	 * Constructs a ChartOfAccountsBuilder.
@@ -32,14 +33,19 @@ public class ChartOfAccountsBuilder
 	 * @param increaseSide The side where the account increases (Debit or Credit).
 	 * @return This ChartOfAccountsBuilder instance for chaining.
 	 */
-	public ChartOfAccountsBuilder addAccount(	String accountNumber, 
-	                                         	String name,
-												AccountSide increaseSide)
+	public ChartOfAccountsBuilder addAccount(
+		String accountNumber,
+		String name,
+		AccountSide increaseSide)
 	{
-		// The accountDetails field has been removed as it was not used by the build() method.
-		// Consequently, the logic to add account details here has also been removed.
+		Account acc = new Account();
+		acc.setAccountNumber(accountNumber);
+		acc.setName(name);
+		acc.setIncreaseSide(increaseSide);
+		this.chart.addAccount(acc);
 		return this;
 	}
+
 	
 	/**
 	 * Builds the ChartOfAccounts.
@@ -49,7 +55,8 @@ public class ChartOfAccountsBuilder
 	 */
 	public ChartOfAccounts build()
 	{
-		return new ChartOfAccounts();
+		return this.chart;
 	}
+
 	
 }

@@ -21,7 +21,7 @@ import javafx.scene.control.ToolBar; // For the actionToolBar field
  * JavaFX panel for displaying and managing journal transactions.
  * It provides a table view of {@link AccountingTransaction} objects and
  * allows users to add, edit, or delete these transactions via a toolbar
- * and a dialog ({@link NewTransactionPanelFX}).
+ * and a dialog ({@link GeneralJournalEntryPanelFX}).
  * Data is typically sourced from the {@link Journal} of the {@link CurrentCompany}.
  */
 public class JournalPanelFX extends BorderPane {
@@ -134,7 +134,7 @@ public class JournalPanelFX extends BorderPane {
 	
 	/* -------- CRUD -------- */
 	/**
-	 * Opens a dialog (using {@link NewTransactionPanelFX}) for creating a new journal transaction
+     * Opens a dialog (using {@link GeneralJournalEntryPanelFX}) for creating a new journal transaction
 	 * or editing an existing one.
 	 * If {@code existing} is null, the dialog is configured for adding a new transaction.
 	 * Otherwise, it's configured for editing the provided {@code existing} transaction.
@@ -158,19 +158,14 @@ public class JournalPanelFX extends BorderPane {
             return;
         }
 
-        BorderPane pane;
-        if (existing == null) {
-            pane = new GeneralJournalEntryPanelFX(tx -> {
+        BorderPane pane = new GeneralJournalEntryPanelFX(existing, tx -> {
+            if (existing == null) {
                 mainJournal.addTransaction(tx);
-                refresh();
-            });
-        } else {
-            pane = new NewTransactionPanelFX(existing,
-                (Consumer<AccountingTransaction>) tx -> {
-                    mainJournal.updateTransaction(tx);
-                    refresh();
-                });
-        }
+            } else {
+                mainJournal.updateTransaction(tx);
+            }
+            refresh();
+        });
 
         Dialog<Void> d = new Dialog<>();
         d.setTitle(existing == null ? "New Transaction" : "Edit Transaction");

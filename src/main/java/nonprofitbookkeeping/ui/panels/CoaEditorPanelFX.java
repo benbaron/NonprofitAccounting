@@ -565,11 +565,11 @@ public class CoaEditorPanelFX extends BorderPane
 			AlertBox.showInfo(null, "Chart of Accounts imported successfully from " +
 				f.getName());
 		}
-		catch (IOException | NullPointerException ex) // Catch more specific exceptions
-		{
-			ex.printStackTrace(); // Log full stack trace for debugging
-			AlertBox.showError(null, "Import failed: " + ex.getMessage());
-		}
+                catch (IOException | NullPointerException ex) // Catch more specific exceptions
+                {
+                        LOGGER.error("Import failed", ex);
+                        AlertBox.showError(null, "Import failed: " + ex.getMessage());
+                }
 		
 	}
 	
@@ -609,11 +609,11 @@ public class CoaEditorPanelFX extends BorderPane
 			AlertBox.showInfo(null,
 				"Chart of Accounts exported successfully to " + f.getAbsolutePath());
 		}
-		catch (IOException | NullPointerException ex) // Catch more specific exceptions
-		{
-			ex.printStackTrace(); // Log full stack trace
-			AlertBox.showError(null, "Export failed: " + ex.getMessage());
-		}
+                catch (IOException | NullPointerException ex) // Catch more specific exceptions
+                {
+                        LOGGER.error("Export failed", ex);
+                        AlertBox.showError(null, "Export failed: " + ex.getMessage());
+                }
 		
 	}
 	
@@ -764,15 +764,27 @@ public class CoaEditorPanelFX extends BorderPane
 	 * @param parent The parent {@link Account} under which to insert the new item.
 	 *               If null, {@code det} is added as a root-level account in the tree.
 	 */
-	private void insertIntoTree(Account det, Account parent)
-	{
-		
-		if (parent == null)
-		{
-			this.rootItem.getChildren().add(makeNode(det)); // Add as a child of the (hidden) root
-		}
-		else
-		{
+    private void insertIntoTree(Account det, Account parent)
+    {
+                if (det == null)
+                {
+                        LOGGER.warn("Attempted to insert null account into tree");
+                        return;
+                }
+
+                // Avoid duplicate nodes if account already exists in tree
+                if (find(this.rootItem, det) != null)
+                {
+                        LOGGER.debug("Account {} already present in tree", det.getName());
+                        return;
+                }
+
+                if (parent == null)
+                {
+                        this.rootItem.getChildren().add(makeNode(det)); // Add as a child of the (hidden) root
+                }
+                else
+                {
 			TreeItem<Account> parentItem = find(this.rootItem, parent); // Find the parent TreeItem
 			
 			if (parentItem != null)

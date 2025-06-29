@@ -141,8 +141,8 @@ public class JournalPanelFXTest extends JavaFXTestBase
 		clickOn("New");
 		WaitForAsyncUtils.waitForFxEvents();
 		
-		DialogPane dialogPane = getTopModalDialogPane();
-		assertNotNull(dialogPane, "NewTransactionPanelFX dialog not found");
+                DialogPane dialogPane = getTopModalDialogPane();
+                assertNotNull(dialogPane, "GeneralJournalEntryPanelFX dialog not found");
 		// assertEquals("New Transaction",
 		// dialogPane.getScene().getWindow().getTitle());
 		
@@ -212,8 +212,8 @@ public class JournalPanelFXTest extends JavaFXTestBase
 		clickOn("Edit");
 		WaitForAsyncUtils.waitForFxEvents();
 		
-		DialogPane dialogPane = getTopModalDialogPane();
-		assertNotNull(dialogPane, "NewTransactionPanelFX dialog for edit not found");
+                DialogPane dialogPane = getTopModalDialogPane();
+                assertNotNull(dialogPane, "GeneralJournalEntryPanelFX dialog for edit not found");
 		// assertEquals("Edit Transaction",
 		// (dialogPane.getScene().getWindow()).getTitle());
 		
