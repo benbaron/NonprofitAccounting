@@ -1,6 +1,7 @@
 package nonprofitbookkeeping.ui.actions.scaledger;
 
 import java.io.File;
+import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
@@ -61,8 +62,7 @@ public class SaveModifiedCopyActionFX implements EventHandler<ActionEvent>
      *           Shows an error if the panel or model is unavailable.</li>
      *       <li>Calls {@link ExcelDataWriter#writeModifiedCopy(File, File, String, javax.swing.table.DefaultTableModel)}
      *           to write the data from the table model to the selected output file, using the original input file as a template.
-     *           (Note: The {@code sheetName} parameter is currently passed as {@code null} to {@code writeModifiedCopy},
-     *           which might be an issue depending on the writer's implementation).</li>
+     *           The sheet name "Sheet1" is used by default.</li>
      *       <li>Shows an information alert upon successful save, or an error alert if an exception occurs.</li>
      *       <li>Updates the last used directory preference.</li>
      *     </ul>
@@ -101,11 +101,24 @@ public class SaveModifiedCopyActionFX implements EventHandler<ActionEvent>
 				chooser.setInitialDirectory(dir);
 		}
 		
-		File output = chooser.showSaveDialog(this.owner);
-		if (output == null)
-		{
-			return; // cancelled
-		}
+                File output = chooser.showSaveDialog(this.owner);
+                if (output == null)
+                {
+                        return; // cancelled
+                }
+
+                if (output.isDirectory())
+                {
+                        new Alert(Alert.AlertType.ERROR, "Please specify a file name, not a directory.").showAndWait();
+                        return;
+                }
+
+                File parent = output.getParentFile();
+                if (parent != null && (!parent.exists() || !parent.canWrite()))
+                {
+                        new Alert(Alert.AlertType.ERROR, "Cannot write to the selected location.").showAndWait();
+                        return;
+                }
 			
 		try
 		{
@@ -120,18 +133,26 @@ public class SaveModifiedCopyActionFX implements EventHandler<ActionEvent>
                  return;
             }
 
-			ExcelDataWriter.writeModifiedCopy(
-				input,
-				output,
-				"Sheet1", // sheetName - Using "Sheet1" as a default
-				modelToSave);
-			new Alert(Alert.AlertType.INFORMATION, "Workbook saved successfully.").showAndWait();
-			PreferencesManager.setLastDirectory(output.getParent());
-		}
-		catch (Exception ex)
-		{
-			ex.printStackTrace();
-			new Alert(Alert.AlertType.ERROR, "Failed to save workbook.\n" + ex.getMessage()).showAndWait();
-		}
+                        ExcelDataWriter.writeModifiedCopy(
+                                input,
+                                output,
+                                "Sheet1", // sheetName - Using "Sheet1" as a default
+                                modelToSave);
+                        new Alert(Alert.AlertType.INFORMATION, "Workbook saved successfully.").showAndWait();
+                        PreferencesManager.setLastDirectory(output.getParent());
+                }
+                catch (IOException io)
+                {
+                        new Alert(Alert.AlertType.ERROR, "I/O error saving workbook:\n" + io.getMessage()).showAndWait();
+                }
+                catch (IllegalArgumentException iae)
+                {
+                        new Alert(Alert.AlertType.ERROR, iae.getMessage()).showAndWait();
+                }
+                catch (Exception ex)
+                {
+                        ex.printStackTrace();
+                        new Alert(Alert.AlertType.ERROR, "Failed to save workbook.\n" + ex.getMessage()).showAndWait();
+                }
 	}
 }

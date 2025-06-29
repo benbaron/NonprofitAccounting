@@ -72,6 +72,7 @@ public class GeneralJournalEntryPanelFX extends BorderPane {
     private final ChartOfAccounts coa =
             CurrentCompany.getCompany().getChartOfAccounts();
     private final Consumer<AccountingTransaction> onSave;
+    private AccountingTransaction original;
 
     /**
      * Creates a new panel with a save callback.
@@ -85,6 +86,22 @@ public class GeneralJournalEntryPanelFX extends BorderPane {
         buildUI();
         lines.addListener((ListChangeListener<Line>) c -> recalcTotals());
         recalcTotals();
+    }
+
+    /**
+     * Constructs a panel for editing an existing transaction.
+     *
+     * @param existing the transaction to edit; may be {@code null} for a new
+     *                  transaction
+     * @param onSave   callback invoked with the updated transaction when saved
+     */
+    public GeneralJournalEntryPanelFX(AccountingTransaction existing,
+            Consumer<AccountingTransaction> onSave) {
+        this(onSave);
+        this.original = existing;
+        if (existing != null) {
+            loadFromTransaction(existing);
+        }
     }
 
     /** Convenience constructor printing the transaction to stdout. */
@@ -200,15 +217,47 @@ public class GeneralJournalEntryPanelFX extends BorderPane {
         creditTotalLbl.setText(credit.toPlainString());
     }
 
+    /**
+     * Loads an existing transaction into the UI for editing.
+     */
+    private void loadFromTransaction(AccountingTransaction tx) {
+        datePicker.setValue(LocalDate.parse(tx.getDate()));
+        memoArea.setText(tx.getDescription() != null ? tx.getDescription() : tx.getMemo());
+        lines.clear();
+        for (AccountingEntry e : tx.getEntries()) {
+            Line l = new Line();
+            Account a = coa.getAccount(e.getAccountNumber());
+            l.account.set(a != null ? a.getName() : e.getAccountNumber());
+            if (e.getAccountSide() == AccountSide.DEBIT) {
+                l.debit.set(e.getAmount());
+            } else {
+                l.credit.set(e.getAmount());
+            }
+            lines.add(l);
+            watch(l);
+        }
+        recalcTotals();
+    }
+
     private void persist() {
         BigDecimal debit = BigDecimal.ZERO;
         BigDecimal credit = BigDecimal.ZERO;
         Set<AccountingEntry> entries = new LinkedHashSet<>();
         for (Line l : lines) {
             String name = l.account.get();
+            if (name == null || name.isBlank()) {
+                AlertBox.showError(getScene() == null ? null : getScene().getWindow(),
+                        "Account name required");
+                return;
+            }
             Account account = coa.getAccountByName(name);
-            String acctNum = account != null ? account.getAccountNumber() : name;
-            String acctName = account != null ? account.getName() : name;
+            if (account == null) {
+                AlertBox.showError(getScene() == null ? null : getScene().getWindow(),
+                        "Account not found: " + name);
+                return;
+            }
+            String acctNum = account.getAccountNumber();
+            String acctName = account.getName();
             if (l.debit.get().signum() > 0) {
                 entries.add(new AccountingEntry(l.debit.get(), acctNum,
                         AccountSide.DEBIT, acctName));
@@ -226,7 +275,10 @@ public class GeneralJournalEntryPanelFX extends BorderPane {
             return;
         }
         AccountingTransaction tx = new AccountingTransaction(new Account(), entries,
-                Map.of(), Instant.now().toEpochMilli());
+                Map.of(), original != null ? original.getBookingDateTimestamp() : Instant.now().toEpochMilli());
+        if (original != null) {
+            tx.setId(original.getId());
+        }
         tx.setDate(datePicker.getValue().toString());
         tx.setDescription(memoArea.getText());
 

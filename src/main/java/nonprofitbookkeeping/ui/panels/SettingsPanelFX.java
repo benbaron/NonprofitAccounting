@@ -6,6 +6,12 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.stage.FileChooser;
+import java.io.File;
+import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.exception.ActionCancelledException;
+import nonprofitbookkeeping.exception.NoFileCreatedException;
+import java.io.IOException;
 
 /**
  * JavaFX port of the original Swing {@code SettingsPanel}.
@@ -127,19 +133,58 @@ public class SettingsPanelFX extends BorderPane
 	 * 
 	 * @return A {@link Tab} configured with backup and restore options.
 	 */
-	private static Tab backupTab()
-	{
-		HBox box = new HBox(10);
-		Button backupBtn = new Button("Create Backup");
-		Button restoreBtn = new Button("Restore Backup");
-		backupBtn.setOnAction(e -> alert("Backup process would run here."));
-		restoreBtn.setOnAction(e -> alert("Restore process would run here."));
-		box.getChildren().addAll(backupBtn, restoreBtn);
-		box.setPadding(new Insets(10));
-		
-		TitledPane wrapper = titled("Backup & Restore", box);
-		return new Tab("Backup", wrapper);
-	}
+    private static Tab backupTab()
+    {
+            HBox box = new HBox(10);
+            Button backupBtn = new Button("Create Backup");
+            Button restoreBtn = new Button("Restore Backup");
+
+            backupBtn.setOnAction(e -> {
+                    FileChooser fc = new FileChooser();
+                    fc.setTitle("Save Backup");
+                    fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("NPBK files", "*.npbk"));
+                    File out = fc.showSaveDialog(null);
+                    if (out != null)
+                    {
+                            try
+                            {
+                                    CurrentCompany.setCurrentFile(out);
+                                    CurrentCompany.persist();
+                                    alert("Backup saved to " + out.getAbsolutePath());
+                            }
+                            catch (IOException | ActionCancelledException | NoFileCreatedException ex)
+                            {
+                                    alert("Backup failed: " + ex.getMessage());
+                            }
+                    }
+            });
+
+            restoreBtn.setOnAction(e -> {
+                    FileChooser fc = new FileChooser();
+                    fc.setTitle("Open Backup");
+                    fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("NPBK files", "*.npbk"));
+                    File f = fc.showOpenDialog(null);
+                    if (f != null)
+                    {
+                            try
+                            {
+                                    CurrentCompany.loadFromPersistent(f);
+                                    CurrentCompany.markCompanyOpen();
+                                    alert("Backup restored from " + f.getName());
+                            }
+                            catch (IOException | ActionCancelledException | NoFileCreatedException ex)
+                            {
+                                    alert("Restore failed: " + ex.getMessage());
+                            }
+                    }
+            });
+
+            box.getChildren().addAll(backupBtn, restoreBtn);
+            box.setPadding(new Insets(10));
+
+            TitledPane wrapper = titled("Backup & Restore", box);
+            return new Tab("Backup", wrapper);
+    }
 	
 	/**
 	 * Builds and returns the "UI Preferences" tab for the settings panel.

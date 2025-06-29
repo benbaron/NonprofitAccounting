@@ -43,21 +43,22 @@ public class CompanySelectionPanelFX extends BorderPane
 	 * {@code @FunctionalInterface}.
 	 * @see nonprofitbookkeeping.ui.CompanySelectionPanelFX.OnCompanyOpenedHandler for an example of a functional interface.
 	 */
-	public class OnCompanyOpenedHandler
-	{
-		
-		/**
-		 * Intended to be called when a company's data has been successfully loaded or processed.
-		 * Note: This is a stub implementation and currently does nothing.
-		 *
-		 * @param company The {@link Company} object that was opened or processed.
-		 */
-		public void onCompanyOpened(Company company)
-		{
-			System.out.println("Opened company: " + (company != null ? company.getCompanyProfileModel().getCompanyName() : "null"));
-		}
-		
-	}
+        /**
+         * Callback interface invoked when a company is opened from this panel.
+         * Implementations can update UI state or trigger additional logic after
+         * the company has been loaded into {@link CurrentCompany}.
+         */
+        @FunctionalInterface
+        public interface OnCompanyOpenedHandler
+        {
+                /**
+                 * Called when a company has been opened.
+                 *
+                 * @param company the company that was opened; may be {@code null}
+                 *                 if loading failed
+                 */
+                void onCompanyOpened(Company company);
+        }
 	
 	/** ListView component to display the list of discoverable ".npbk" company files. */
 	private final ListView<File> companyList = new ListView<>();

@@ -25,11 +25,13 @@ This document lists potential code issues, areas for improvement, or bugs that w
     *   **Issue:** Duplicated preference keys.
     *   **Observation:** The preference keys `LAST_DIR_KEY` ("last_directory") and `LAST_WRITE_DIR_KEY` ("last_write_directory") were noted to have the same string value "last_directory" in a subtask report (turn 26). This would cause `getLastDirectory()`/`setLastDirectory()` and `getLastWriteDirectory()`/`setLastWriteDirectory()` to operate on the same underlying preference value, which is likely not intended.
     *   **Recommendation:** Assign unique string values to `LAST_DIR_KEY` and `LAST_WRITE_DIR_KEY` if they are intended to manage distinct preference settings.
+    *   **Status:** Resolved – the keys now store independent values and a migration step preserves any directory saved under the old key.
 
 5.  **`src/main/java/nonprofitbookkeeping/core/ChartOfAccountsBuilder.java`**
     *   **Issue:** Unused parameter `accountDetails` in the `build()` method.
     *   **Observation:** The `build(File file, AccountDetails accountDetails)` method does not appear to use the `accountDetails` parameter.
     *   **Recommendation:** If `accountDetails` is truly not needed, remove it from the method signature. If it is needed, ensure it is utilized correctly.
+    *   **Status:** Resolved – the parameter was removed and the builder now collects accounts before returning the chart.
 
 6.  **Various Files with TODOs / Stub Implementations:**
     *   **Observation:** Many files contain `// TODO Auto-generated method stub` comments or methods that are placeholders (e.g., return `null` or do nothing). These were noted in Javadoc where encountered (e.g. `CustomerService.java`, `PageViewer.java` in `ui.actions.scaledger`, `UndoEditAction.java`, `BudgetEditorDialogFX.java`).
@@ -39,11 +41,13 @@ This document lists potential code issues, areas for improvement, or bugs that w
     *   **Issue:** Potential discrepancy in constructor parameter usage.
     *   **Observation:** Subtask for turn 12 noted: "Added Javadoc for class, fields, constructor, and explicit getters, noting a discrepancy in the constructor's parameter usage for `transactionId` (uses `id` parameter instead)."
     *   **Recommendation:** Review the constructor of `JournalEntry.java` to ensure parameters are used as intended, specifically concerning `id` and `transactionId`.
+    *   **Status:** Resolved – the entry now stores a separate `transactionId` field and constructors map parameters correctly.
 
 8.  **`src/main/java/nonprofitbookkeeping/ui/actions/scaledger/SaveModifiedCopyActionFX.java`**
     *   **Issue:** `sheetName` parameter passed as null.
     *   **Observation:** Subtask for turn 58 noted: "noting the `sheetName` parameter being passed as null to the writer."
     *   **Recommendation:** Investigate if passing `sheetName` as null to `ExcelDataWriter.writeModifiedCopy` is intentional and handled correctly, or if a valid sheet name should be provided.
+    *   **Status:** Resolved – the action now uses "Sheet1" as a default sheet name and validates the selected output path before saving.
 
 9.  **Panel Reset Tests**
     *   **Issue:** UI tests relied on `CurrentCompany.forceCompanyLoad()` but several "Skeleton" panels did not clear data when the company closed.
@@ -78,8 +82,9 @@ This document lists potential code issues, areas for improvement, or bugs that w
 - Update all callers and adjust unit tests.
 
 ### 6. Implement Remaining Stubs
-- Audit each TODO comment in `CustomerService`, `PageViewer`, `UndoEditAction`, and `BudgetEditorDialogFX`.
-- Replace placeholder returns with working implementations and add tests.
+- Customer and page viewer utilities now offer working in-memory implementations.
+- `UndoEditAction` performs an actual undo using its `UndoManager` and shows a dialog when nothing is available.
+- `BudgetEditorDialogFX` exercises its fields via tests.  Additional placeholder methods were removed.
 
 ### 7. JournalEntry Constructor Review
 - Confirm whether `transactionId` should map from the `id` parameter or a separate value.
@@ -87,26 +92,26 @@ This document lists potential code issues, areas for improvement, or bugs that w
 
 ### 8. SaveModifiedCopyActionFX
 - Provide a valid sheet name to `ExcelDataWriter.writeModifiedCopy`.
-- Validate the output file path and handle IO exceptions gracefully.
+- Validate the output file path and handle IO exceptions gracefully. *(complete)*
 
 ### 9. Panel Reset Testing
 - Fix Maven plugin resolution so UI tests can run.
 - Ensure skeleton panels clear their tables and labels when the company closes.
 
 ### 10. GeneralJournalEntryPanelFX Enhancements
-- Integrate the panel into transaction edit workflows.
-- Add validation for missing accounts and mismatched totals.
-- Enable automated tests once Maven issues are resolved.
+- The entry panel now supports editing existing transactions and preserves the original booking timestamp.
+- Saving validates that all accounts exist and totals balance before invoking the callback.
+- Journal and skeleton panels were updated to use this panel for edits.
 
 ### 11. Implement Placeholder Functions
 - Implement real file export logic in `ExportFileActionFX.handle` instead of writing placeholder text.
 - Implement actual import processing in `ImportFileActionFX.handle`.
 - Replace the alert in `AccountsActivityPanelFX` with functional statement import code.
 - Add dynamic UI listeners in `BudgetLineDialog.attachListeners` for validation and field updates.
-- Provide working backup and restore features in `SettingsPanelFX.backupTab`.
+- Provide working backup and restore features in `SettingsPanelFX.backupTab`. *(complete)*
 - Generate real output in `GenerateReportPanelFX` rather than placeholder text.
 - Extend `PageViewer.getTableModel` to load data from the ledger or relevant source.
-- Make `CompanySelectionPanelFX.OnCompanyOpenedHandler` a proper callback interface and invoke it when a company is opened.
+- Make `CompanySelectionPanelFX.OnCompanyOpenedHandler` a proper callback interface and invoke it when a company is opened. *(complete)*
 - Implement data-driven logic in `ReconciliationService` methods such as `getUnreconciled`, `listReconcilableAccounts`, `reconcile`, and `addTransactionToReconcile`.
 - Calculate totals in `InvestmentTransaction.getTotal(Account)` using the account's transaction history.
 - Expand `OfxV2Writer.writeInvestmentSection` to output investment positions and transactions.

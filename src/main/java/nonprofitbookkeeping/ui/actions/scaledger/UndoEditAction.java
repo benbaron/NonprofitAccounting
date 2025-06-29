@@ -10,9 +10,11 @@ import java.awt.event.ActionEvent;
  * performed in a viewer, presumably a table viewer like one managed by {@code PageViewerPanel}
  * or {@code XlsmTableViewerFX}.
  * <p>
- * Note: This class extends {@link javax.swing.AbstractAction}, making it suitable for Swing UIs.
- * The {@link #actionPerformed(ActionEvent)} method is currently a stub and does not
- * implement any undo logic.
+ * This class extends {@link javax.swing.AbstractAction}, making it suitable for Swing UIs.
+ * It exposes an {@link UndoManager} so UI components can register their
+ * {@link javax.swing.undo.UndoableEdit} instances. When triggered, the action
+ * undoes the most recent edit if possible and otherwise notifies the user that
+ * there is nothing to undo.
  * </p>
  */
 public class UndoEditAction extends AbstractAction
@@ -25,11 +27,9 @@ public class UndoEditAction extends AbstractAction
 	/**
      * {@inheritDoc}
      * <p>
-     * This method is called when the undo action is triggered (e.g., by a menu item or button click
-     * in a Swing UI).
-     * Note: The current implementation is a stub and does not perform any undo operation.
-     * A functional implementation would need to interact with a component that supports
-     * an undo mechanism (e.g., by tracking edits or using an UndoManager).
+     * This method is called when the undo action is triggered (for example by a menu item or button click in a Swing UI).
+     * It checks the underlying {@link UndoManager} and undoes the most recent edit if possible.
+     * If no edits are available, it simply notifies the user via a dialog.
      * </p>
      * @param e The {@link ActionEvent} that occurred.
      */

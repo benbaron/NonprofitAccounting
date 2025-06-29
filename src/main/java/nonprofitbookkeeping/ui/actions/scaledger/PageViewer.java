@@ -8,9 +8,10 @@ package nonprofitbookkeeping.ui.actions.scaledger;
 import javax.swing.table.DefaultTableModel;
 
 /**
- * Placeholder class related to page viewing, potentially intended to manage or provide
- * data models for a UI component like {@link nonprofitbookkeeping.plugins.scaledger.ui.PageViewerPanel}.
- * Currently, it only contains a stub method.
+ * Utility class for constructing simple page data tables used by
+ * {@link nonprofitbookkeeping.plugins.scaledger.ui.PageViewerPanel}.  In lieu of
+ * a backing data store this class generates a small {@link DefaultTableModel}
+ * that callers can display directly or replace with real data.
  */
 public class PageViewer
 {
