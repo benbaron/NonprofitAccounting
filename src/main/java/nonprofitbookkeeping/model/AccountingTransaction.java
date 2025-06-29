@@ -303,7 +303,7 @@ public class AccountingTransaction implements Serializable
 	/**
 	 * @return
 	 */
-	public Object getId()
+	public int getId()
 	{
 		return this.id;
 	}
