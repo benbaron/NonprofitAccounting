@@ -212,30 +212,37 @@ public class AccountsPanelFX extends BorderPane
 	 * 
 	 * @param companyIsOpen
 	 */
-	private void handleCompanyChange(boolean companyIsOpen)
-	{
-		if (companyIsOpen)
-		{
-			refresh(); // Load data
-			
-			if (this.actionButtonsBox != null)
-			{				
-				this.actionButtonsBox.getChildren()
-				.forEach(node ->
-				{
-					// to prevent key bounce on select
-					if (node instanceof Button)
-					{
-						((Button) node).setDisable(false);
-					}
-					
-				});
-				this.rows.clear(); // Clear data
-			
-			}
-			
-		}
-	}
+       private void handleCompanyChange(boolean companyIsOpen)
+       {
+               if (companyIsOpen)
+               {
+                       refresh();
+                       if (this.actionButtonsBox != null)
+                       {
+                               this.actionButtonsBox.getChildren().forEach(node ->
+                               {
+                                       if (node instanceof Button)
+                                       {
+                                               ((Button) node).setDisable(false);
+                                       }
+                               });
+                       }
+               }
+               else
+               {
+                       this.rows.clear();
+                       if (this.actionButtonsBox != null)
+                       {
+                               this.actionButtonsBox.getChildren().forEach(node ->
+                               {
+                                       if (node instanceof Button)
+                                       {
+                                               ((Button) node).setDisable(true);
+                                       }
+                               });
+                       }
+               }
+       }
 	
 	/**
 	 * Should be called when this panel is no longer needed. It unregisters

@@ -2,11 +2,19 @@
 package nonprofitbookkeeping.service;
 
 import java.util.List;
-
-import nonprofitbookkeeping.model.AccountingTransaction;
-
-import java.math.BigDecimal;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.math.BigDecimal;
+import java.util.logging.Logger;
+
+import nonprofitbookkeeping.model.Account;
+import nonprofitbookkeeping.model.AccountType;
+import nonprofitbookkeeping.model.AccountingEntry;
+import nonprofitbookkeeping.model.AccountingTransaction;
+import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CurrentCompany;
 
 /**
  * Service class providing functionalities for account reconciliation.
@@ -16,9 +24,17 @@ import java.util.ArrayList;
  */
 public class ReconciliationService
 {
+       private static final Logger LOGGER = Logger.getLogger(ReconciliationService.class.getName());
 
        /** Transactions queued for reconciliation. */
        private final List<AccountingTransaction> pendingTransactions = new ArrayList<>();
+
+       /**
+        * In-memory store of unreconciled transactions keyed by account number.
+        * This is populated lazily from the current company's ledger or via
+        * {@link #addTransactionToReconcile(AccountingTransaction)}.
+        */
+       private static final Map<String, List<AccountingTransaction>> UNRECONCILED = new HashMap<>();
 	
 	/**
 	 * Fetches unreconciled entries for a specific account within a given date range.
@@ -35,19 +51,11 @@ public class ReconciliationService
 	 * @return A {@link List} of {@code String[]} where each array represents an unreconciled entry's details.
 	 *         Returns sample data in the current placeholder implementation.
 	 */
-	public static List<String[]> getUnreconciledEntries(String account, String from, String to)
-	{
-		// In a real implementation, this would fetch data from a database or API
-		List<String[]> entries = new ArrayList<>();
-		
-		// Simulating unreconciled entries (normally fetched from database)
-		entries.add(new String[]
-		{ "TXN001", "100.00", "Payment for services", "Unreconciled" });
-		entries.add(new String[]
-		{ "TXN002", "50.00", "Refund", "Unreconciled" });
-		
-		return entries;
-	}
+    public static List<String[]> getUnreconciledEntries(String account, String from, String to)
+    {
+            // Placeholder for future database queries - not used by the FX panel.
+            return List.of();
+    }
 	
 	/**
 	 * Marks a specific financial entry (transaction) as reconciled using its transaction ID.
@@ -65,7 +73,7 @@ public class ReconciliationService
 	{
 		// In a real implementation, the transaction ID
 		// would be marked as reconciled in a database
-		System.out.println("Reconciled transaction ID: " + txnId);
+		LOGGER.fine("Reconciled transaction ID: " + txnId);
 		return true;
 	}
 
@@ -79,12 +87,19 @@ public class ReconciliationService
 	 * @return A list of {@link AccountingTransaction} objects that are unreconciled and match the criteria,
 	 *         or null if the implementation is not complete.
 	 */
-       public static List<AccountingTransaction> getUnreconciled(String value)
-       {
-               // Placeholder: return an empty list. In a full implementation
-               // this would query a datastore for unreconciled transactions.
-               return new ArrayList<>();
-       }
+      public static List<AccountingTransaction> getUnreconciled(String value)
+      {
+              if (value == null || value.isBlank())
+                      return List.of();
+
+              ensureLoaded();
+
+              List<AccountingTransaction> list = UNRECONCILED.get(value);
+              if (list == null)
+                      return List.of();
+
+              return new ArrayList<>(list);
+      }
 
 	/**
 	 * Lists accounts that are eligible for reconciliation.
@@ -95,11 +110,13 @@ public class ReconciliationService
 	 * @return A list of strings, where each string is an identifier or name of a reconcilable account,
 	 *         or null if the implementation is not complete.
 	 */
-       public static List<String> listReconcilableAccounts()
-       {
-               // Placeholder implementation returning an empty list.
-               return new ArrayList<>();
-       }
+      public static List<String> listReconcilableAccounts()
+      {
+              ensureLoaded();
+              return UNRECONCILED.keySet().stream()
+                      .sorted()
+                      .collect(Collectors.toCollection(ArrayList::new));
+      }
 
 	/**
 	 * Performs the reconciliation process for a given account.
@@ -114,20 +131,18 @@ public class ReconciliationService
 	 */
        public void reconcile(String accountIdentifier, String statementDate, BigDecimal endingBalance, List<Long> clearedIds)
        {
-               if (clearedIds != null)
-               {
-                       for (Long id : clearedIds)
-                       {
-                               if (id != null)
-                               {
-                                       reconcileEntry(id);
-                               }
-                       }
-               }
+               if (accountIdentifier == null || accountIdentifier.isBlank())
+                       return;
 
+               if (clearedIds == null)
+                       return;
+
+               List<AccountingTransaction> list = UNRECONCILED.get(accountIdentifier);
+               if (list == null)
+                       return;
+
+               list.removeIf(tx -> tx != null && tx.getBookingDateTimestamp() != null && clearedIds.contains(tx.getBookingDateTimestamp()));
                this.pendingTransactions.clear();
-               System.out.println("Reconciliation complete for " + accountIdentifier
-                       + " as of " + statementDate + " ending balance " + endingBalance);
        }
 
 	/**
@@ -141,9 +156,59 @@ public class ReconciliationService
 	 */
        public void addTransactionToReconcile(AccountingTransaction transaction)
        {
-               if (transaction != null)
+               if (transaction == null)
+                       return;
+
+               Account acc = null;
+               if (transaction.getEntries() != null)
                {
-                       this.pendingTransactions.add(transaction);
+                       for (AccountingEntry e : transaction.getEntries())
+                       {
+                               Account a = CurrentCompany.getCompany().getChartOfAccounts().getAccount(e.getAccountNumber());
+                               if (a != null && (a.getAccountType() == AccountType.CASH || a.getAccountType() == AccountType.BANK || a.getAccountType() == AccountType.CHECKING))
+                               {
+                                       acc = a;
+                                       break;
+                               }
+                       }
+               }
+
+               if (acc == null || acc.getAccountNumber() == null)
+                       return;
+
+               UNRECONCILED.computeIfAbsent(acc.getAccountNumber(), k -> new ArrayList<>()).add(transaction);
+               this.pendingTransactions.add(transaction);
+       }
+
+       /**
+        * Ensures the unreconciled map is loaded from the current company's ledger.
+        */
+       private static void ensureLoaded()
+       {
+               if (!UNRECONCILED.isEmpty())
+                       return;
+
+               Company company = CurrentCompany.getCompany();
+               if (company == null || company.getLedger() == null)
+                       return;
+
+               var ledgerTxns = company.getLedger().getTransactions();
+               if (ledgerTxns == null)
+                       return;
+
+               for (AccountingTransaction tx : ledgerTxns)
+               {
+                       if (tx == null || tx.getEntries() == null)
+                               continue;
+
+                       for (AccountingEntry e : tx.getEntries())
+                       {
+                               Account acc = company.getChartOfAccounts().getAccount(e.getAccountNumber());
+                               if (acc != null && (acc.getAccountType() == AccountType.CASH || acc.getAccountType() == AccountType.BANK || acc.getAccountType() == AccountType.CHECKING))
+                               {
+                                       UNRECONCILED.computeIfAbsent(acc.getAccountNumber(), k -> new ArrayList<>()).add(tx);
+                               }
+                       }
                }
        }
 	
