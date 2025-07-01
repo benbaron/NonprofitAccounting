@@ -20,8 +20,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Data
 @AllArgsConstructor
-@NoArgsConstructor 
-public class Fund
+@NoArgsConstructor public class Fund
 {
 	
 	/** The name of the fund, serving as its primary identifier. */
@@ -48,15 +47,15 @@ public class Fund
 		this.balance = BigDecimal.ZERO;
 	}
 	
-	/**  
-	 * Constructor Fund
-	 */
-        public Fund()
-        {
-                this.name = "";
-                this.accountIds = new ArrayList<>();
-                this.balance = BigDecimal.ZERO;
-        }
+//	/**  
+//	 * Constructor Fund
+//	 */
+//	public Fund()
+//	{
+//		this.name = "";
+//		this.accountIds = new ArrayList<>();
+//		this.balance = BigDecimal.ZERO;
+//	}
 	
 	/**
 	 * Gets the name of the fund.
@@ -231,18 +230,18 @@ public class Fund
 	/**
 	 * @param string
 	 */
-        public void setName(String string)
-        {
-                this.name = string;
-        }
+	public void setName(String string)
+	{
+		this.name = string;
+	}
 	
 	/**
 	 * @param string
 	 */
-        public void setFundId(String string)
-        {
-                this.name = string;
-        }
+	public void setFundId(String string)
+	{
+		this.name = string;
+	}
 	
 	
 }

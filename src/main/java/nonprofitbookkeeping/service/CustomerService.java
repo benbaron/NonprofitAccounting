@@ -7,8 +7,6 @@ package nonprofitbookkeeping.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BooleanSupplier;
-
 import nonprofitbookkeeping.model.Customer;
 
 /**

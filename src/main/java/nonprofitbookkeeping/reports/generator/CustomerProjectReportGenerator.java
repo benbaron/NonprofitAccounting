@@ -71,12 +71,12 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 				
 				JasperReport jasperReport = JasperCompileManager.compileReport(in);
 			}
-                        catch (IOException e)
-                        {
-                                System.err.println("Failed to read CustomerReport.jrxml: " + e.getMessage());
-                                e.printStackTrace();
-                                return; // Abort generation if template cannot be read
-                        }
+			catch (IOException e)
+			{
+				System.err.println("Failed to read CustomerReport.jrxml: " + e.getMessage());
+				e.printStackTrace();
+				return; // Abort generation if template cannot be read
+			}
 			
 		}
 		catch (JRException e)
@@ -122,8 +122,8 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 	 * @throws ActionCancelledException Not directly thrown by this implementation, but declared due to the interface.
 	 * @throws NoFileCreatedException Not directly thrown by this implementation, but declared due to the interface.
 	 */
-	protected static String getReportPath()	throws ActionCancelledException,
-												NoFileCreatedException
+	protected static String getReportPath() throws ActionCancelledException,
+											NoFileCreatedException
 	{
 		return "reports/CustomerProjectReport.jrxml";
 	}

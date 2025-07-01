@@ -64,7 +64,7 @@ public class OpenCompanyFileActionFX
 			
 			// Load file from the file system
 			CurrentCompany.loadFromPersistent(file); // This can throw various exceptions
-			CurrentCompany.markCompanyOpen(); // Mark company as open in the application context
+			CurrentCompany.markCompanyOpen(); 		 // Mark company as open in the application context
 			
 			// If all above operations were successful, run the callback
 			if (this.onSuccessCallback != null)

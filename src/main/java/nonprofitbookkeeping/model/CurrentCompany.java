@@ -60,19 +60,20 @@ public class CurrentCompany
 	 * @param currentFile The file to associate. Must not be null.
 	 * @throws NullPointerException if currentFile is null.
 	 */
-       public static void setCurrentFile(File currentFile)
-       {
-               CurrentCompany.currentFile = checkNotNull(currentFile);
-
-               // Keep the Company object's file reference in sync with the
-               // static currentFile value. This ensures callers querying
-               // {@link Company#getCompanyFile()} receive the correct
-               // location after load/save operations.
-               if (company != null)
-               {
-                       company.setCompanyFile(CurrentCompany.currentFile);
-               }
-       }
+	public static void setCurrentFile(File currentFile)
+	{
+		CurrentCompany.currentFile = checkNotNull(currentFile);
+		
+		// Keep the Company object's file reference in sync with the
+		// static currentFile value. This ensures callers querying
+		// {@link Company#getCompanyFile()} receive the correct
+		// location after load/save operations.
+		if (company != null)
+		{
+			company.setCompanyFile(CurrentCompany.currentFile);
+		}
+		
+	}
 	
 	/**
 	 * Gets the file associated with the current company.
@@ -134,15 +135,16 @@ public class CurrentCompany
 		company = CurrentCompany.dataStorer.loadData(
 			Company.class,
 			checkNotNull(file, "File cannot be null for load operation."));
-               setCurrentFile(file);
-
-               // Ensure the loaded company object stores its file reference.
-               if (company != null)
-               {
-                       company.setCompanyFile(file);
-                       markCompanyOpen();
-               }
-       }
+		setCurrentFile(file);
+		
+		// Ensure the loaded company object stores its file reference.
+		if (company != null)
+		{
+			company.setCompanyFile(file);
+			markCompanyOpen();
+		}
+		
+	}
 	
 	/**
 	 * Closes the currently open company.
@@ -152,7 +154,7 @@ public class CurrentCompany
 	public static void close()
 	{
 		CurrentCompany.companyIsOpen = false;
-                CompanyListener.fireChanged(false);
+		CompanyListener.fireChanged(false);
 	}
 	
 	/**
@@ -176,7 +178,7 @@ public class CurrentCompany
 	public static void markCompanyOpen()
 	{
 		CurrentCompany.companyIsOpen = true;
-                CompanyListener.fireChanged(true);
+		CompanyListener.fireChanged(true);
 	}
 	
 	/**
@@ -195,8 +197,8 @@ public class CurrentCompany
 	/**
 	 * Manages a list of {@link CompanyChangeListener}s and fires events to them.
 	 */
-        public static class CompanyListener
-        {
+	public static class CompanyListener
+	{
 		/** List of registered listeners. */
 		private final static EventListenerList listeners = new EventListenerList();
 		
@@ -230,26 +232,28 @@ public class CurrentCompany
 		 * @return an immutable {@link List} of registered listeners, or
 		 *         an empty list if none are registered
 		 */
-                public static List<CompanyChangeListener> getListeners()
-                {
-                        CompanyChangeListener[] arr =
-                                CompanyListener.listeners.getListeners(CompanyChangeListener.class);
-                        return List.of(arr);
-                }
-
-                /**
-                 * Notifies all registered {@link CompanyChangeListener}s that the company open state changed.
-                 * @param isOpen {@code true} if the company is now open, {@code false} otherwise.
-                 */
-                public static void fireChanged(boolean isOpen)
-                {
-                        for (CompanyChangeListener l : CompanyListener.getListeners())
-                        {
-                                l.companyChange(isOpen);
-                        }
-                }
-
-        }
+		public static List<CompanyChangeListener> getListeners()
+		{
+			CompanyChangeListener[] arr =
+				CompanyListener.listeners.getListeners(CompanyChangeListener.class);
+			return List.of(arr);
+		}
+		
+		/**
+		 * Notifies all registered {@link CompanyChangeListener}s that the company open state changed.
+		 * @param isOpen {@code true} if the company is now open, {@code false} otherwise.
+		 */
+		public static void fireChanged(boolean isOpen)
+		{
+			
+			for (CompanyChangeListener l : CompanyListener.getListeners())
+			{
+				l.companyChange(isOpen);
+			}
+			
+		}
+		
+	}
 	
 	/**
 	 * For test environments or specialized workflows where the caller needs
@@ -271,12 +275,12 @@ public class CurrentCompany
 		if (company2 != null)
 		{
 			CurrentCompany.companyIsOpen = true;
-                        CompanyListener.fireChanged(true);
+			CompanyListener.fireChanged(true);
 		}
 		else
 		{
 			CurrentCompany.companyIsOpen = false;
-                        CompanyListener.fireChanged(false);
+			CompanyListener.fireChanged(false);
 		}
 		
 	}
