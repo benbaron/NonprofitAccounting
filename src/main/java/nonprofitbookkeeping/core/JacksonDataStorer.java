@@ -1,4 +1,3 @@
-
 package nonprofitbookkeeping.core;
 
 import nonprofitbookkeeping.api.DataStorer;
@@ -23,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 
 public class JacksonDataStorer implements DataStorer
 {
+
 	private ObjectMapper mapper;
 	public static JacksonDataStorer dataStorer = new JacksonDataStorer();
 	private static final String JSON_ENTRY_NAME = "company_data.json";
@@ -40,6 +41,7 @@ public class JacksonDataStorer implements DataStorer
 	 */
 	public JacksonDataStorer()
 	{
+
                 this.mapper = new ObjectMapper()
                         .registerModule(new JavaTimeModule())
                         .enable(SerializationFeature.INDENT_OUTPUT)
@@ -48,6 +50,7 @@ public class JacksonDataStorer implements DataStorer
                         .enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE);
                 this.mapper.configOverride(List.class)
                         .setSetterInfo(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY));
+
                 this.mapper.getFactory().disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
         }
 	
@@ -180,4 +183,5 @@ public class JacksonDataStorer implements DataStorer
 		return JacksonDataStorer.dataStorer;
 	}
 	
+
 }
