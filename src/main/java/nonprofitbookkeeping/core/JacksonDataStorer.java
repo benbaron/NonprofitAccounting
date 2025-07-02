@@ -7,6 +7,7 @@ import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
@@ -50,6 +51,7 @@ public class JacksonDataStorer implements DataStorer
 			.enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE);
 		this.mapper.configOverride(List.class)
 			.setSetterInfo(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY));
+		this.mapper.getFactory().disable(JsonParser.Feature.AUTO_CLOSE_SOURCE);
 	}
 	
 	/**
