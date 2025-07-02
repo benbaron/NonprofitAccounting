@@ -36,7 +36,7 @@ public class GrantsService
        private static final String GRANTS_FILENAME = "grants.json";
 
        /** In-memory list to store {@link Grant} objects. */
-       private final List<Grant> grants;
+       private List<Grant> grants;
 
 	/**
 	 * Constructs a new GrantsService, initializing an empty list for storing grants.

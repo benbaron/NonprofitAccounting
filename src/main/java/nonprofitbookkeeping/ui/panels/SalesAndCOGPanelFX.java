@@ -5,8 +5,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 import java.io.File;
-import java.util.List;
-
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;

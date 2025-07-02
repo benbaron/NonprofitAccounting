@@ -2,15 +2,11 @@
 package nonprofitbookkeeping.ui.panels;
 
 import java.math.BigDecimal;
-import java.util.function.Consumer;
-
 import javafx.collections.*;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
-
-import nonprofitbookkeeping.ui.panels.GeneralJournalEntryPanelFX;
 
 import nonprofitbookkeeping.model.*;
 import nonprofitbookkeeping.model.CurrentCompany; // Explicit import for inner class usage

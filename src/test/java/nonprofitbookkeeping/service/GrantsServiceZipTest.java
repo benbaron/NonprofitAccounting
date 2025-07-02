@@ -4,6 +4,8 @@ import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CompanyProfileModel;
 import nonprofitbookkeeping.model.Grant;
 import nonprofitbookkeeping.core.JacksonDataStorer;
+import nonprofitbookkeeping.exception.ActionCancelledException;
+import nonprofitbookkeeping.exception.NoFileCreatedException;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -24,14 +26,22 @@ public class GrantsServiceZipTest {
 
     @Test
     void saveAndLoadInZip() throws IOException {
-        File npbk = tempDir.resolve("test.npbk").toFile();
+        File npbk = this.tempDir.resolve("test.npbk").toFile();
 
         // create minimal company file so zip exists
         Company c = new Company();
         CompanyProfileModel p = new CompanyProfileModel();
         p.setCompanyName("ZipCo");
         c.setCompanyProfileModel(p);
-        new JacksonDataStorer().saveData(c, npbk);
+        try
+		{
+			new JacksonDataStorer().saveData(c, npbk);
+		}
+		catch (IOException | ActionCancelledException | NoFileCreatedException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
         GrantsService service = new GrantsService();
         service.addGrant(new Grant("G1", "Grantor", BigDecimal.ONE, "2024", "Purpose", "Open"));

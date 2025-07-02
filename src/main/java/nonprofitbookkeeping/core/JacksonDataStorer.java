@@ -1,3 +1,4 @@
+
 package nonprofitbookkeeping.core;
 
 import nonprofitbookkeeping.api.DataStorer;
@@ -31,9 +32,11 @@ import java.util.stream.Collectors;
 public class JacksonDataStorer implements DataStorer
 {
 
+
 	private ObjectMapper mapper;
 	public static JacksonDataStorer dataStorer = new JacksonDataStorer();
 	private static final String JSON_ENTRY_NAME = "company_data.json";
+
 	
 	/**
 	 * Constructs a JacksonDataStorer and initializes the Jackson ObjectMapper
@@ -57,12 +60,14 @@ public class JacksonDataStorer implements DataStorer
 	/**
 	 * {@inheritDoc}
 	 * This implementation reads data from a ZIP file, expecting a JSON entry named "company_data.json".
+
 	 */
 	@Override public <T> T loadData(Class<T> type, File file)	throws IOException,
 																ActionCancelledException,
 																NoFileCreatedException
 	{
 		System.out.println("DEBUG: Entering loadData"); // Minimal logging
+
 		T value = null;
 		
 		try (FileInputStream fis = new FileInputStream(file);
@@ -87,6 +92,7 @@ public class JacksonDataStorer implements DataStorer
 			if (!entryFound)
 			{
 				// System.out.println("loadData: ERROR - company_data.json not found in zip");
+
 				throw new IOException("Entry '" + JSON_ENTRY_NAME + "' not found in the zip file.");
 			}
 			
@@ -108,6 +114,7 @@ public class JacksonDataStorer implements DataStorer
 		}
 		
 		System.out.println("DEBUG: Exiting loadData"); // Minimal logging
+
 		return value;
 	}
 	
@@ -120,6 +127,7 @@ public class JacksonDataStorer implements DataStorer
 															NoFileCreatedException
 	{
 		System.out.println("DEBUG: Entering saveData"); // Minimal logging
+
 		
 		if (file == null)
 		{
@@ -127,11 +135,11 @@ public class JacksonDataStorer implements DataStorer
 			return;
 		}
 		
+
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			FileOutputStream fos = new FileOutputStream(file);
 			ZipOutputStream zos = new ZipOutputStream(fos))
-		{
-			
+		{			
 			this.mapper.writeValue(baos, obj);
 			
 			ZipEntry zipEntry = new ZipEntry(JSON_ENTRY_NAME);
@@ -183,5 +191,4 @@ public class JacksonDataStorer implements DataStorer
 		return JacksonDataStorer.dataStorer;
 	}
 	
-
 }

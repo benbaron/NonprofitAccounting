@@ -50,21 +50,21 @@ public class AccountingTransaction implements Serializable
 	/** A descriptive memo or note for the transaction. */
 	@JsonProperty private String memo; // Non-final
 	
-	/**
-	 * Default constructor.
-	 * Used by Lombok and Jackson for instantiation.
-	 * Initializes fields to default values (e.g., null for objects, 0 for primitives).
-	 */
-	public AccountingTransaction()
-	{
-
-		this.entries = null;
-		this.info = null;
-		this.bookingDateTimestamp = 0L;
-		this.date = null;
-		this.memo = null;
-	}
-	
+//	/**
+//	 * Default constructor.
+//	 * Used by Lombok and Jackson for instantiation.
+//	 * Initializes fields to default values (e.g., null for objects, 0 for primitives).
+//	 */
+//	public AccountingTransaction()
+//	{
+//
+//		this.entries = null;
+//		this.info = null;
+//		this.bookingDateTimestamp = 0L;
+//		this.date = null;
+//		this.memo = null;
+//	}
+//	
 	/**
 	 * Constructs an AccountingTransaction with specified details.
 	 * Ensures that entries are not null and the transaction is balanced.

@@ -27,7 +27,6 @@ import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Ledger;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 import nonprofitbookkeeping.service.ReconciliationService;
-import nonprofitbookkeeping.ui.panels.LedgerReconcilePanelFX;
 
 /**
  * A JavaFX panel that displays account activity (transactions) from a given {@link Ledger}.

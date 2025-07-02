@@ -41,7 +41,6 @@ import nonprofitbookkeeping.reports.generator.IncomeStatementJasperGenerator;
 import nonprofitbookkeeping.reports.generator.CashFlowStatementJasperGenerator;
 import nonprofitbookkeeping.reports.generator.TrialBalanceJasperGenerator;
 import nonprofitbookkeeping.reports.generator.BalanceResultReportGenerator;
-import nonprofitbookkeeping.service.LedgerReportWriter;
 
 
 /**
