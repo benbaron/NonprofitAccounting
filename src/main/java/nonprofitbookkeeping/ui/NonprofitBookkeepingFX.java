@@ -401,6 +401,7 @@ public class NonprofitBookkeepingFX extends Application
 				.actionPerformed(null));
 		bar.getMenus().add(this.reports);
 		
+		
 		/* PANELS */
 		this.panels = new Menu("Panels");
 		add(this.panels, "Donors", e -> {

@@ -1,8 +1,7 @@
 /**
- * nonprofit-scaledger-ribbon.zip_expanded
- * CustomerService.java
- * CustomerService
+ * nonprofit-scaledger-ribbon.zip_expanded CustomerService.java CustomerService
  */
+
 package nonprofitbookkeeping.service;
 
 import java.util.ArrayList;
@@ -21,55 +20,55 @@ import nonprofitbookkeeping.model.Customer;
  */
 public class CustomerService
 {
-       /** Internal list storing all known customers. */
-       private static final List<Customer> customers = new ArrayList<>();
-
-       /**
-        * Retrieves the currently known customer project data.
-        *
-        * @return a new {@link List} containing all stored customers
-        */
-       public static List<Customer> getCustomerProjectData()
-       {
-               return new ArrayList<>(customers);
-       }
-
-       /**
-        * Adds a new customer to the system.
-        *
-        * @param customer The {@link Customer} object to add. Null values are ignored.
-        */
-       public static void addCustomer(Customer customer)
-       {
-               if (customer != null)
-               {
-                       customers.add(customer);
-               }
-       }
-
-       /**
-        * Clears all customer data from the system.
-        */
-       public static void clearCustomers()
-       {
-               customers.clear();
-       }
-
-       /**
-        * Removes a customer from the system based on a given identifier.
-        *
-        * @param identifier The string identifier (e.g., customer ID or name) of the customer to remove.
-        * @return {@code true} if a matching customer was removed; {@code false} otherwise
-        */
-       public static boolean removeCustomer(String identifier)
-       {
-               boolean removed = customers.removeIf(c ->
-                       c != null && identifier != null &&
-                               (identifier.equals(c.getId()) || identifier.equals(c.getName())));
-
-               return removed;
-       }
-
-
+	/** Internal list storing all known customers. */
+	private static final List<Customer> customers = new ArrayList<>();
+	
+	/**
+	 * Retrieves the currently known customer project data.
+	 *
+	 * @return a new {@link List} containing all stored customers
+	 */
+	public static List<Customer> getCustomerProjectData()
+	{
+		return new ArrayList<>(customers);
+	}
+	
+	/**
+	 * Adds a new customer to the system.
+	 *
+	 * @param customer The {@link Customer} object to add. Null values are ignored.
+	 */
+	public static void addCustomer(Customer customer)
+	{
+		
+		if (customer != null)
+		{
+			customers.add(customer);
+		}
+		
+	}
+	
+	/**
+	 * Clears all customer data from the system.
+	 */
+	public static void clearCustomers()
+	{
+		customers.clear();
+	}
+	
+	/**
+	 * Removes a customer from the system based on a given identifier.
+	 *
+	 * @param identifier The string identifier (e.g., customer ID or name) of the customer to remove.
+	 * @return {@code true} if a matching customer was removed; {@code false} otherwise
+	 */
+	public static boolean removeCustomer(String identifier)
+	{
+		boolean removed = customers.removeIf(c -> c != null && identifier != null &&
+			(identifier.equals(c.getId()) || identifier.equals(c.getName())));
+		
+		return removed;
+	}
+	
 	
 }

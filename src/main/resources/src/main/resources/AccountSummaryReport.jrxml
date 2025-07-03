@@ -1,0 +1,130 @@
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="AccountSummaryReport" language="java" pageWidth="595" pageHeight="842" columnWidth="540" leftMargin="70" rightMargin="70" topMargin="70" bottomMargin="70" uuid="d841881d-82fd-43e6-a348-7beffcedf021">
+	<field name="iconheader" class="java.awt.Image"/>
+	<field name="reportdate" class="java.lang.String"/>
+	<field name="dateToday" class="java.lang.String"/>
+	<field name="companytext" class="java.lang.String"/>
+	<field name="company" class="java.lang.String"/>
+	<field name="startdatetext" class="java.lang.String"/>
+	<field name="dateFrom" class="java.lang.String"/>
+	<field name="stopdatetext" class="java.lang.String"/>
+	<field name="dateTo" class="java.lang.String"/>
+	<field name="accnum" class="java.lang.String"/>
+	<field name="selectedaccount" class="java.lang.String"/>
+	<field name="customer" class="java.lang.String"/>
+	<field name="selectedcustomer" class="java.lang.String"/>
+	<field name="LastTransactionNumberText" class="java.lang.String"/>
+	<field name="LastTransactionNumber" class="java.lang.String"/>
+	<field name="ACCOUNTNUM" class="java.lang.String"/>
+	<field name="ACCOUNTNAME" class="java.lang.String"/>
+	<field name="act_id" class="java.lang.String"/>
+	<field name="invdate" class="java.lang.String"/>
+	<field name="comment" class="java.lang.String"/>
+	<field name="debit" class="java.lang.Double"/>
+	<field name="credit" class="java.lang.Double"/>
+	<field name="balance" class="java.lang.Double"/>
+	<field name="Total" class="java.lang.String"/>
+	<field name="incomming" class="java.lang.String"/>
+	<field name="amount" class="java.lang.String"/>
+	<field name="outgoing" class="java.lang.String"/>
+	<field name="INCOMMINGAMOUNT" class="java.lang.String"/>
+	<field name="OUTGOINGAMOUNT" class="java.lang.String"/>
+	<field name="ACT_ID" class="java.lang.String"/>
+	<field name="INVDATE" class="java.lang.String"/>
+	<field name="COMMENTALL" class="java.lang.String"/>
+	<field name="COMMENT" class="java.lang.String"/>
+	<field name="CUSTOMER" class="java.lang.String"/>
+	<field name="DEBITFORMAT" class="java.lang.String"/>
+	<field name="CREDITFORMAT" class="java.lang.String"/>
+	<variable name="DebitSum" resetType="Group" calculation="Sum" resetGroup="AccountGroup" class="java.lang.Double">
+		<expression><![CDATA[$F{debit}]]></expression>
+	</variable>
+	<variable name="CreditSum" resetType="Group" calculation="Sum" resetGroup="AccountGroup" class="java.lang.Double">
+		<expression><![CDATA[$F{credit}]]></expression>
+	</variable>
+	<variable name="BalanceSum" resetType="Group" calculation="Sum" resetGroup="AccountGroup" class="java.lang.Double">
+		<expression><![CDATA[$F{balance}]]></expression>
+	</variable>
+	<variable name="pageXofY" class="java.lang.String">
+		<expression><![CDATA["Page " + $V{PAGE_NUMBER} + " of " + $V{PAGE_COUNT}]]></expression>
+	</variable>
+	<group name="AccountGroup">
+		<expression><![CDATA[$F{ACCOUNTNUM}]]></expression>
+		<groupHeader>
+			<band height="32">
+				<element kind="textField" uuid="8bcc48db-cb46-4bdb-b2bd-268c2da9fe20" x="0" y="0" width="39" height="10">
+					<expression><![CDATA[$F{ACCOUNTNUM}]]></expression>
+				</element>
+				<element kind="textField" uuid="217527e0-5e32-446d-9c42-1371c98c7edf" x="40" y="0" width="100" height="10">
+					<expression><![CDATA[$F{ACCOUNTNAME}]]></expression>
+				</element>
+				<element kind="textField" uuid="20f3cc2a-2093-40a0-b360-8cd260c5ec89" x="0" y="19" width="39" height="7">
+					<expression><![CDATA[$F{act_id}]]></expression>
+				</element>
+				<element kind="textField" uuid="7ff4bd87-b07b-46be-9836-991b3a88721a" x="40" y="19" width="44" height="7">
+					<expression><![CDATA[$F{invdate}]]></expression>
+				</element>
+				<element kind="textField" uuid="2549fa63-1a9c-4afa-8275-5b172a6b547d" x="85" y="19" width="104" height="7">
+					<expression><![CDATA[$F{comment}]]></expression>
+				</element>
+				<element kind="textField" uuid="347006f3-c79c-410e-bc73-9e3442480085" x="190" y="19" width="69" height="7">
+					<expression><![CDATA[$F{comment}]]></expression>
+				</element>
+				<element kind="textField" uuid="b979fed8-2d65-42ff-b5a9-357355300ecc" x="260" y="19" width="39" height="7">
+					<expression><![CDATA[$F{customer}]]></expression>
+				</element>
+				<element kind="textField" uuid="d61170ae-d2a8-4324-841a-c92bd2908959" x="300" y="19" width="76" height="7">
+					<expression><![CDATA[$F{debit}]]></expression>
+				</element>
+				<element kind="textField" uuid="5f68ba32-d008-448e-b734-1e13f0e339b3" x="400" y="19" width="76" height="7">
+					<expression><![CDATA[$F{credit}]]></expression>
+				</element>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="45">
+				<element kind="line" uuid="29876912-99b7-4270-91f9-85cc88e11519" x="300" y="0" width="175" height="1" forecolor="#000000"/>
+				<element kind="textField" uuid="b3673f4c-3483-454d-bdfb-cdb822b9815e" x="200" y="3" width="76" height="10">
+					<expression><![CDATA[$F{Total}]]></expression>
+				</element>
+				<element kind="textField" uuid="8d2b0a97-e485-40d3-803c-772b1c7f0536" x="300" y="3" width="76" height="10">
+					<expression><![CDATA[$V{DebitSum}]]></expression>
+				</element>
+				<element kind="textField" uuid="c8e11e65-8b11-4536-9e56-a332bcd77a25" x="400" y="3" width="76" height="10">
+					<expression><![CDATA[$V{CreditSum}]]></expression>
+				</element>
+				<element kind="textField" uuid="db3ff9e7-77b9-47e5-9ab7-56a46da0608b" x="200" y="15" width="76" height="7">
+					<expression><![CDATA[$F{incomming}]]></expression>
+				</element>
+				<element kind="textField" uuid="635fe90c-d41d-47d7-9517-a7e68bc29f3e" x="300" y="15" width="76" height="7">
+					<expression><![CDATA[$F{amount}]]></expression>
+				</element>
+				<element kind="textField" uuid="eaf3dfd6-e419-4d03-bbbc-df40b7fd24b9" x="400" y="15" width="76" height="7">
+					<expression><![CDATA[$F{outgoing}]]></expression>
+				</element>
+				<element kind="line" uuid="80ad00fb-582d-4554-9feb-44341a33c43e" x="200" y="23" width="275" height="1" forecolor="#000000"/>
+				<element kind="textField" uuid="ccab46fb-bef7-4963-bb58-bcf271907a2f" x="200" y="26" width="76" height="10">
+					<expression><![CDATA[$F{INCOMMINGAMOUNT}]]></expression>
+				</element>
+				<element kind="textField" uuid="277c99f2-47be-4528-a81e-9a9725b3941b" x="300" y="26" width="76" height="10">
+					<expression><![CDATA[$V{BalanceSum}]]></expression>
+				</element>
+				<element kind="textField" uuid="d4ba1109-8287-436a-9f82-30158589d284" x="400" y="26" width="76" height="10">
+					<expression><![CDATA[$F{OUTGOINGAMOUNT}]]></expression>
+				</element>
+			</band>
+		</groupFooter>
+	</group>
+	<title height="110"/>
+	<detail>
+		<band height="10"/>
+	</detail>
+	<pageFooter height="18">
+		<element kind="textField" uuid="3cc87374-53cf-4bad-8083-1b006274775c" x="50" y="4" width="100" height="18">
+			<expression><![CDATA[$V{pageXofY}]]></expression>
+		</element>
+		<element kind="textField" uuid="06a1d8f9-7712-48f2-b126-b54a89e2dc82" x="0" y="4" width="100" height="18">
+			<expression><![CDATA[$F{dateToday}]]></expression>
+		</element>
+	</pageFooter>
+</jasperReport>

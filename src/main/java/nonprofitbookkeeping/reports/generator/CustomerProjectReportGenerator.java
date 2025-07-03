@@ -52,7 +52,7 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 	 * @param format A string indicating the desired output format. Accepts "pdf" or "html" (case-insensitive).
 	 *               If another format is provided, no export will occur.
 	 */
-	@Override public void generateAndExportReport(String format)
+	public void generateAndExportReport(String format)
 	{
 		
 		try
