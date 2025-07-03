@@ -8,7 +8,10 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.stage.Stage;
+
+import java.io.File;
+import nonprofitbookkeeping.service.DonorService;
+import nonprofitbookkeeping.model.DonorContact;
 
 import java.util.UUID;
 
@@ -18,27 +21,52 @@ import java.util.UUID;
 public class DonorsPanelFX extends BorderPane
 {
 	
-	/** ObservableList to hold {@link Donor} objects for display in the table. */
-	private final ObservableList<Donor> donors = FXCollections.observableArrayList();
+	/** Service for donor management operations. */
+	private final DonorService service;
+	/** Directory where donor data should be persisted, may be null. */
+	private final File companyDirectory;
+	/** ObservableList to hold {@link DonorContact} objects for display in the table. */
+	private final ObservableList<DonorContact> donors = FXCollections.observableArrayList();
 	/** TableView to display the list of donors. */
-	private final TableView<Donor> table = new TableView<>();
+	private final TableView<DonorContact> table = new TableView<>();
 	
 	/**
 	 * Constructs a new {@code DonorsPanelFX}.
-	 * Initializes the panel with a table to display donor information and buttons
-	 * for adding, editing, and deleting donors. Demo data is added for illustrative purposes.
+	 * Loads donors from disk if a company directory is provided and builds the UI.
 	 *
-	 * @param primaryStage The primary stage of the application. This parameter is currently not used within the constructor.
+	 * @param service          the {@link DonorService} to use for donor operations
+	 * @param companyDirectory directory where donor data is persisted, may be null
 	 */
-	public DonorsPanelFX(Stage primaryStage)
+	public DonorsPanelFX(DonorService service, File companyDirectory)
 	{
+		this.service = service;
+		this.companyDirectory = companyDirectory;
+		
+		if (this.companyDirectory != null)
+		{
+			
+			try
+			{
+				this.service.loadDonors(this.companyDirectory);
+			}
+			catch (Exception ex)
+			{
+				ex.printStackTrace();
+			}
+			
+		}
+		
 		setPadding(new Insets(10));
 		buildTable();
 		setCenter(this.table);
 		setBottom(buttonBar());
-		// demo data
-		this.donors.add(new Donor("Alice", "alice@example.com", "555‑1234"));
-		this.donors.add(new Donor("Bob", "bob@example.com", "555‑5678"));
+		refresh();
+	}
+	
+	/** Convenience constructor when no directory is available. */
+	public DonorsPanelFX(DonorService service)
+	{
+		this(service, null);
 	}
 	
 	/**
@@ -51,15 +79,16 @@ public class DonorsPanelFX extends BorderPane
 	 * Java bean conventions or if raw types are inferred. "deprecation" might relate to older patterns
 	 * of using PropertyValueFactory.
 	 */
-	@SuppressWarnings({ "unchecked", "deprecation" }) private void buildTable()
+	@SuppressWarnings(
+	{ "unchecked", "deprecation" }) private void buildTable()
 	{
-		TableColumn<Donor, String> idCol = new TableColumn<>("ID");
+		TableColumn<DonorContact, String> idCol = new TableColumn<>("ID");
 		idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
-		TableColumn<Donor, String> nameCol = new TableColumn<>("Name");
+		TableColumn<DonorContact, String> nameCol = new TableColumn<>("Name");
 		nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-		TableColumn<Donor, String> emailCol = new TableColumn<>("Email");
+		TableColumn<DonorContact, String> emailCol = new TableColumn<>("Email");
 		emailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
-		TableColumn<Donor, String> phoneCol = new TableColumn<>("Phone");
+		TableColumn<DonorContact, String> phoneCol = new TableColumn<>("Phone");
 		phoneCol.setCellValueFactory(new PropertyValueFactory<>("phone"));
 		this.table.getColumns().addAll(idCol, nameCol, emailCol, phoneCol);
 		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -69,7 +98,7 @@ public class DonorsPanelFX extends BorderPane
 	/**
 	 * Builds and returns an {@link HBox} containing "Add Donor", "Edit", and "Delete" buttons.
 	 * These buttons provide functionality to manage donor records in the table.
-	 * "Add Donor" and "Edit" open the {@link #donorDialog(Donor)}.
+	    * "Add Donor" and "Edit" open the {@link #donorDialog(DonorContact)}.
 	 * "Delete" removes the selected donor from the table.
 	 *
 	 * @return A configured {@link HBox} with action buttons for donor management.
@@ -82,14 +111,20 @@ public class DonorsPanelFX extends BorderPane
 		
 		add.setOnAction(e -> donorDialog(null));
 		edit.setOnAction(e -> {
-			Donor sel = this.table.getSelectionModel().getSelectedItem();
+			DonorContact sel = this.table.getSelectionModel().getSelectedItem();
 			if (sel != null)
 				donorDialog(sel);
 		});
 		del.setOnAction(e -> {
-			Donor sel = this.table.getSelectionModel().getSelectedItem();
+			DonorContact sel = this.table.getSelectionModel().getSelectedItem();
+			
 			if (sel != null)
-				this.donors.remove(sel);
+			{
+				this.service.removeDonor(sel.getName());
+				refresh();
+				save();
+			}
+			
 		});
 		HBox box = new HBox(10, add, edit, del);
 		box.setPadding(new Insets(8));
@@ -101,14 +136,14 @@ public class DonorsPanelFX extends BorderPane
 	 * If {@code existing} is null, the dialog is configured for adding a new donor.
 	 * Otherwise, the dialog fields are pre-populated with the data from the {@code existing} donor.
 	 * The dialog includes fields for Name, Email, and Phone.
-	 * Upon confirmation (OK button), a new {@link Donor} object is created (or the existing one updated)
-	 * and added to/refreshed in the {@link #donors} list and table.
+	     * Upon confirmation (OK button), a new {@link DonorContact} object is created (or the existing one updated)
+	     * and added to/refreshed in the {@link #donors} list and table.
 	 *
-	 * @param existing The {@link Donor} object to edit. If null, the dialog will create a new donor.
-	 */
-	private void donorDialog(Donor existing)
+	     * @param existing The {@link DonorContact} object to edit. If null, the dialog will create a new donor.
+	     */
+	private void donorDialog(DonorContact existing)
 	{
-		Dialog<Donor> dlg = new Dialog<>();
+		Dialog<DonorContact> dlg = new Dialog<>();
 		dlg.setTitle(existing == null ? "Add Donor" : "Edit Donor");
 		ButtonType okType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
 		dlg.getDialogPane().getButtonTypes().addAll(okType, ButtonType.CANCEL);
@@ -119,9 +154,9 @@ public class DonorsPanelFX extends BorderPane
 		
 		if (existing != null)
 		{
-			nameF.setText(existing.name);
-			emailF.setText(existing.email);
-			phoneF.setText(existing.phone);
+			nameF.setText(existing.getName());
+			emailF.setText(existing.getEmail());
+			phoneF.setText(existing.getPhone());
 		}
 		
 		dlg.getDialogPane().setContent(new HBox(10,
@@ -129,104 +164,54 @@ public class DonorsPanelFX extends BorderPane
 			new Label("Email:"), emailF,
 			new Label("Phone:"), phoneF));
 		dlg.setResultConverter(
-			btn -> btn == okType ? new Donor(existing == null ? 
-				null : 
-					existing.id, nameF.getText(),
+			btn -> btn == okType ? new DonorContact(existing == null ?
+				UUID.randomUUID().toString() :
+				existing.getId(), nameF.getText(),
 				emailF.getText(), phoneF.getText()) : null);
 		dlg.showAndWait().ifPresent(d -> {
 			
 			if (existing == null)
-				this.donors.add(d);
+			{
+				this.service.addDonor(d);
+			}
 			else
 			{
-				existing.name = d.name;
-				existing.email = d.email;
-				existing.phone = d.phone;
-				this.table.refresh();
+				String oldName = existing.getName();
+				existing.setName(d.getName());
+				existing.setEmail(d.getEmail());
+				existing.setPhone(d.getPhone());
+				this.service.editDonor(oldName, existing);
 			}
+			
+			refresh();
+			save();
 			
 		});
 	}
 	
-	/**
-	 * Represents a single donor record.
-	 * This class holds information about a donor, including their ID, name, email, and phone number.
-	 * Note: Fields are directly accessible for modification by the {@code donorDialog} in this panel,
-	 * which is a simpler approach for this UI context but less encapsulated.
-	 */
-	public static class Donor
+	/** Refreshes the table from the service layer. */
+	private void refresh()
 	{
-		/** The unique identifier for the donor. */
-		private String id;
-		/** The name of the donor. */
-		private String name;
-		/** The email address of the donor. */
-		private String email;
-		/** The phone number of the donor. */
-		private String phone;
+		this.donors.setAll(this.service.getAllDonors());
+		this.table.refresh();
+	}
+	
+	/** Saves donors to disk if a company directory is set. */
+	private void save()
+	{
 		
-		/**
-		 * Constructs a new {@code Donor} with a randomly generated ID.
-		 *
-		 * @param name The name of the donor.
-		 * @param email The email address of the donor.
-		 * @param phone The phone number of the donor.
-		 */
-		public Donor(String name, String email, String phone)
+		if (this.companyDirectory != null)
 		{
-			this(UUID.randomUUID().toString(), name, email, phone);
-		}
-		
-		/**
-		 * Constructs a new {@code Donor} with a specified ID.
-		 *
-		 * @param id The unique identifier for the donor.
-		 * @param n The name of the donor.
-		 * @param e The email address of the donor.
-		 * @param p The phone number of the donor.
-		 */
-		public Donor(String id, String n, String e, String p)
-		{
-			this.id = id;
-			this.name = n;
-			this.email = e;
-			this.phone = p;
-		}
-		
-		/**
-		 * Gets the unique ID of this donor.
-		 * @return The unique ID string.
-		 */
-		public String getId()
-		{
-			return this.id;
-		}
-		
-		/**
-		 * Gets the name of the donor.
-		 * @return The donor's name.
-		 */
-		public String getName()
-		{
-			return this.name;
-		}
-		
-		/**
-		 * Gets the email address of the donor.
-		 * @return The donor's email address.
-		 */
-		public String getEmail()
-		{
-			return this.email;
-		}
-		
-		/**
-		 * Gets the phone number of the donor.
-		 * @return The donor's phone number.
-		 */
-		public String getPhone()
-		{
-			return this.phone;
+			
+			try
+			{
+				this.service.saveDonors(this.companyDirectory);
+			}
+			catch (Exception ex)
+			{
+				ex.printStackTrace();
+			}
+			
 		}
 		
 	}

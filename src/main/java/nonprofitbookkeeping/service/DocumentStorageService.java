@@ -51,7 +51,7 @@ public class DocumentStorageService
 	 * @throws IOException if an error occurs during file copying (e.g., permission issues, disk full).
 	 * @throws IllegalArgumentException if {@code file} is null or does not exist, or if {@code transactionId} is null or empty.
 	 */
-	public void attachDocumentToTransaction(String transactionId, File file) throws IOException
+	public static void attachDocumentToTransaction(String transactionId, File file) throws IOException
 	{
 		if (transactionId == null || transactionId.trim().isEmpty()) {
             throw new IllegalArgumentException("Transaction ID must not be null or empty.");
@@ -94,7 +94,7 @@ public class DocumentStorageService
 	 *                     or if there's an issue accessing it.
 	 * @throws IllegalArgumentException if {@code documentId} is null or empty.
 	 */
-	public File retrieveDocument(String documentId) throws IOException
+	public static File retrieveDocument(String documentId) throws IOException
 	{
 		
 		if (documentId == null || documentId.trim().isEmpty())

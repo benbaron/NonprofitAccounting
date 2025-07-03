@@ -23,18 +23,17 @@ import static org.testfx.matcher.control.TableViewMatchers.hasNumRows;
 
 
 public class SettingsPanelFXTest extends JavaFXTestBase
-{
-	
+{	
 	private SettingsPanelFX panel;
 	private TabPane tabPane;
 	
 	@Start
 	@Override public
-		void start(Stage stage) throws Exception
+	void start(Stage stage) throws Exception
 	{
 		// The Stage parameter in SettingsPanelFX constructor is unused, so can pass
 		// null or the current stage.
-		this.panel = new SettingsPanelFX(stage);
+		this.panel = new SettingsPanelFX(stage, null, null);
 		Scene scene = new Scene(this.panel, 800, 600);
 		stage.setScene(scene);
 		stage.show();
@@ -74,7 +73,7 @@ public class SettingsPanelFXTest extends JavaFXTestBase
 	 * @param string
 	 * @return
 	 */
-	private Matcher hasValue(String string)
+	private Matcher<ComboBox> hasValue(String string)
 	{
 		// TODO Auto-generated method stub
 		return null;
@@ -84,14 +83,13 @@ public class SettingsPanelFXTest extends JavaFXTestBase
 	 * @param string
 	 * @return
 	 */
-	private Matcher hasTextInField(String string)
+	private Matcher<TextField> hasTextInField(String string)
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
-	@Test
-	public	void testUsersTab_TableDisplaysDemoData()
+	@Test public void testUsersTab_TableDisplaysDemoData()
 	{
 		selectTab("Users");
 		

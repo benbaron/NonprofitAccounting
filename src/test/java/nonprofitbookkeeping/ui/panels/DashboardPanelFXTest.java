@@ -276,7 +276,7 @@ public class DashboardPanelFXTest extends JavaFXTestBase {
 
             // Filters
             if(this.panel.lookup("#accountSelector") == null) {
-                ComboBox accSel = ((NodeQuery) this.panel.lookup(".combo-box")).queryComboBox();
+                ComboBox<?> accSel = ((NodeQuery) this.panel.lookup(".combo-box")).queryComboBox();
                 if(accSel != null) accSel.setId("accountSelector");
             }
 

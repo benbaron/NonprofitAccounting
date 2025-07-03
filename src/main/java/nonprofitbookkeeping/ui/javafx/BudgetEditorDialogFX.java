@@ -43,14 +43,12 @@ import java.util.Optional;
  */
 public class BudgetEditorDialogFX extends Dialog<Budget>
 {
-
-        /** The {@link Budget} object being created or edited. */
-        private Budget currentBudget;
-        /** List of available {@link Fund}s to populate the fund selector ComboBox. */
-        private List<Fund> availableFunds;
-        private ChartOfAccounts chartOfAccounts;
-        private BudgetService budgetService;
-        private File companyDirectory;
+	
+	/** The {@link Budget} object being created or edited. */
+	private Budget currentBudget;
+	/** List of available {@link Fund}s to populate the fund selector ComboBox. */
+	private List<Fund> availableFunds;
+	private ChartOfAccounts chartOfAccounts;
 	// UI Fields for Budget Properties
 	/** TextField for entering or displaying the budget name. */
 	private TextField budgetNameField;
@@ -63,43 +61,42 @@ public class BudgetEditorDialogFX extends Dialog<Budget>
 	/** TextField for displaying the budget's currency (typically non-editable, derived from company settings). */
 	private TextField currencyField;
 	
-        // UI Fields for Budget Lines
-        private TableView<BudgetLine> budgetLinesTable;
-        private Button addLineButton;
-        private Button editLineButton;
-        private Button removeLineButton;
+	// UI Fields for Budget Lines
+	private TableView<BudgetLine> budgetLinesTable;
+	private Button addLineButton;
+	private Button editLineButton;
+	private Button removeLineButton;
 	
 	/**
-     * Constructs a new {@code BudgetEditorDialogFX}.
-     * Initializes the UI components for editing budget properties and managing budget lines.
-     * If {@code budgetToEdit} is provided, the dialog populates its fields with the data from this budget
-     * (edit mode). Otherwise, it initializes fields for creating a new budget (create mode),
-     * defaulting the fiscal year to the current year and currency from {@link CurrentCompany} if available.
-     * <p>
-     * Note: The parameters {@code chartOfAccounts}, {@code budgetService}, and {@code companyDirectory}
-     * are stored but not actively used in the current UI logic of this dialog, suggesting they
-     * are for future enhancements or were part of a previous design.
-     * Budget lines can be added, edited, and removed within this dialog and the result converter
-     * returns the updated {@link Budget} when the user confirms.
-     * </p>
-     *
-     * @param owner The parent {@link Window} for this dialog, used for proper modality.
-     * @param chartOfAccounts The {@link ChartOfAccounts} of the current company (currently unused).
-     * @param funds A list of available {@link Fund}s to populate the fund selector. Can be null or empty.
-     * @param budgetService The {@link BudgetService} (currently unused).
-     * @param companyDirectory The company's data directory (currently unused).
-     * @param budgetToEdit The {@link Budget} to edit. If null, the dialog enters "create new budget" mode.
-     */
-        public BudgetEditorDialogFX(Window owner, ChartOfAccounts chartOfAccounts, List<Fund> funds,
-                BudgetService budgetService, File companyDirectory, Budget budgetToEdit)
-        {
-                initOwner(owner);
-                setTitle(budgetToEdit == null ? "Create New Budget" : "Edit Budget");
-
-                this.chartOfAccounts = chartOfAccounts;
-                this.budgetService = budgetService;
-                this.companyDirectory = companyDirectory;
-                this.availableFunds = (funds != null) ? funds : new ArrayList<>();
+	 * Constructs a new {@code BudgetEditorDialogFX}.
+	 * Initializes the UI components for editing budget properties and managing budget lines.
+	 * If {@code budgetToEdit} is provided, the dialog populates its fields with the data from this budget
+	 * (edit mode). Otherwise, it initializes fields for creating a new budget (create mode),
+	 * defaulting the fiscal year to the current year and currency from {@link CurrentCompany} if available.
+	 * <p>
+	 * Note: The parameters {@code chartOfAccounts}, {@code budgetService}, and {@code companyDirectory}
+	 * are stored but not actively used in the current UI logic of this dialog, suggesting they
+	 * are for future enhancements or were part of a previous design.
+	 * Budget lines can be added, edited, and removed within this dialog and the result converter
+	 * returns the updated {@link Budget} when the user confirms.
+	 * </p>
+	 *
+	 * @param owner The parent {@link Window} for this dialog, used for proper modality.
+	 * @param chartOfAccounts The {@link ChartOfAccounts} of the current company (currently unused).
+	 * @param funds A list of available {@link Fund}s to populate the fund selector. Can be null or empty.
+	 * @param budgetService The {@link BudgetService} (currently unused).
+	 * @param companyDirectory The company's data directory (currently unused).
+	 * @param budgetToEdit The {@link Budget} to edit. If null, the dialog enters "create new budget" mode.
+	 */
+	public BudgetEditorDialogFX(Window owner, ChartOfAccounts chartOfAccounts, List<Fund> funds,
+		BudgetService budgetService, File companyDirectory, Budget budgetToEdit)
+	{
+		initOwner(owner);
+		setTitle(budgetToEdit == null ? "Create New Budget" : "Edit Budget");
+		
+		this.chartOfAccounts = chartOfAccounts;
+		this.availableFunds = (funds != null) ? funds : new ArrayList<>();
+		
 		if (budgetToEdit != null)
 		{
 			// For now, work directly on the passed object. Consider cloning if edits should
@@ -165,9 +162,9 @@ public class BudgetEditorDialogFX extends Dialog<Budget>
 		
 		VBox budgetLinesSection = new VBox(10);
 		budgetLinesSection.setPadding(new Insets(10, 0, 10, 0));
-                this.budgetLinesTable = new TableView<>();
-                setupTableColumns();
-                this.budgetLinesTable.setPlaceholder(new Label("No budget lines added yet."));
+		this.budgetLinesTable = new TableView<>();
+		setupTableColumns();
+		this.budgetLinesTable.setPlaceholder(new Label("No budget lines added yet."));
 		
 		HBox linesButtonsBox = new HBox(10);
 		this.addLineButton = new Button("Add Line");
@@ -185,86 +182,94 @@ public class BudgetEditorDialogFX extends Dialog<Budget>
 		ButtonType saveButtonType = new ButtonType("Save Budget", ButtonBar.ButtonData.OK_DONE);
 		dialogPane.getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
 		
-                populateFieldsFromBudget();
-
-                setResultConverter(button ->
-                {
-                        if (button == saveButtonType)
-                        {
-                                collectFieldsToBudget();
-                                return this.currentBudget;
-                        }
-                        return null;
-                });
-
-                this.addLineButton.setOnAction(e ->
-                {
-                        BudgetLineDialogFX dlg = new BudgetLineDialogFX("Add Budget Line", null,
-                                        this.chartOfAccounts, this.availableFunds);
-                        dlg.showAndWait().ifPresent(line ->
-                        {
-                                this.currentBudget.addBudgetLine(line);
-                                refreshBudgetLinesTable();
-                        });
-                });
-
-                this.editLineButton.setOnAction(e ->
-                {
-                        BudgetLine selected = this.budgetLinesTable.getSelectionModel().getSelectedItem();
-                        if (selected == null)
-                        {
-                                Alert alert = new Alert(Alert.AlertType.INFORMATION, "No budget line selected to edit.");
-                                alert.initOwner(getOwner());
-                                alert.showAndWait();
-                                return;
-                        }
-                        BudgetLineDialogFX dlg = new BudgetLineDialogFX("Edit Budget Line", selected,
-                                        this.chartOfAccounts, this.availableFunds);
-                        dlg.showAndWait().ifPresent(r -> refreshBudgetLinesTable());
-                });
-
-                this.removeLineButton.setOnAction(e ->
-                {
-                        BudgetLine selected = this.budgetLinesTable.getSelectionModel().getSelectedItem();
-                        if (selected == null)
-                        {
-                                Alert alert = new Alert(Alert.AlertType.INFORMATION, "No budget line selected to remove.");
-                                alert.initOwner(getOwner());
-                                alert.showAndWait();
-                                return;
-                        }
-                        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-                                        "Remove selected budget line?", ButtonType.YES, ButtonType.NO);
-                        confirm.initOwner(getOwner());
-                        Optional<ButtonType> res = confirm.showAndWait();
-                        if (res.isPresent() && res.get() == ButtonType.YES)
-                        {
-                                this.currentBudget.removeBudgetLine(selected);
-                                refreshBudgetLinesTable();
-                        }
-                });
-
-        }
+		populateFieldsFromBudget();
+		
+		setResultConverter(button -> {
+			
+			if (button == saveButtonType)
+			{
+				collectFieldsToBudget();
+				return this.currentBudget;
+			}
+			
+			return null;
+		});
+		
+		this.addLineButton.setOnAction(e -> {
+			BudgetLineDialogFX dlg = new BudgetLineDialogFX("Add Budget Line", null,
+				this.chartOfAccounts, this.availableFunds);
+			dlg.showAndWait().ifPresent(line -> {
+				this.currentBudget.addBudgetLine(line);
+				refreshBudgetLinesTable();
+			});
+		});
+		
+		this.editLineButton.setOnAction(e -> {
+			BudgetLine selected = this.budgetLinesTable.getSelectionModel().getSelectedItem();
+			
+			if (selected == null)
+			{
+				Alert alert =
+					new Alert(Alert.AlertType.INFORMATION, "No budget line selected to edit.");
+				alert.initOwner(getOwner());
+				alert.showAndWait();
+				return;
+			}
+			
+			BudgetLineDialogFX dlg = new BudgetLineDialogFX("Edit Budget Line", selected,
+				this.chartOfAccounts, this.availableFunds);
+			dlg.showAndWait().ifPresent(r -> refreshBudgetLinesTable());
+		});
+		
+		this.removeLineButton.setOnAction(e -> {
+			BudgetLine selected = this.budgetLinesTable.getSelectionModel().getSelectedItem();
+			
+			if (selected == null)
+			{
+				Alert alert =
+					new Alert(Alert.AlertType.INFORMATION, "No budget line selected to remove.");
+				alert.initOwner(getOwner());
+				alert.showAndWait();
+				return;
+			}
+			
+			Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+				"Remove selected budget line?", ButtonType.YES, ButtonType.NO);
+			confirm.initOwner(getOwner());
+			Optional<ButtonType> res = confirm.showAndWait();
+			
+			if (res.isPresent() && res.get() == ButtonType.YES)
+			{
+				this.currentBudget.removeBudgetLine(selected);
+				refreshBudgetLinesTable();
+			}
+			
+		});
+		
+	}
 	
 	/**
-     * Populates the dialog's UI fields with data from the {@link #currentBudget} object.
-     * This method is called during dialog initialization to display an existing budget's
-     * details or to set defaults for a new budget.
-     * It handles setting the budget name, fiscal year, description, currency,
-     * and the selected fund in the ComboBox.
-     */
+	 * Populates the dialog's UI fields with data from the {@link #currentBudget} object.
+	 * This method is called during dialog initialization to display an existing budget's
+	 * details or to set defaults for a new budget.
+	 * It handles setting the budget name, fiscal year, description, currency,
+	 * and the selected fund in the ComboBox.
+	 */
 	private void populateFieldsFromBudget()
 	{
-		if (this.currentBudget == null) {
+		
+		if (this.currentBudget == null)
+		{
 			// Should not happen if constructor logic for new budget is correct
 			this.budgetNameField.setText("");
-            this.fiscalYearSpinner.getValueFactory().setValue(LocalDate.now().getYear());
-            this.descriptionField.setText("");
-            this.currencyField.setText("USD"); // Default fallback
-            this.applicableFundComboBox.getSelectionModel().clearSelection();
-            this.applicableFundComboBox.setPromptText("Select Fund");
+			this.fiscalYearSpinner.getValueFactory().setValue(LocalDate.now().getYear());
+			this.descriptionField.setText("");
+			this.currencyField.setText("USD"); // Default fallback
+			this.applicableFundComboBox.getSelectionModel().clearSelection();
+			this.applicableFundComboBox.setPromptText("Select Fund");
 			return;
-        }
+		}
+		
 		this.budgetNameField.setText(this.currentBudget.getBudgetName());
 		
 		// fiscalYearSpinner value is set during initialization
@@ -317,53 +322,57 @@ public class BudgetEditorDialogFX extends Dialog<Budget>
 			}
 			
 		}
-                else
-                {
-                        this.applicableFundComboBox.setPlaceholder(new Label("No funds available"));
-                }
-
-                refreshBudgetLinesTable();
-
-        }
+		else
+		{
+			this.applicableFundComboBox.setPlaceholder(new Label("No funds available"));
+		}
+		
+		refreshBudgetLinesTable();
+		
+	}
 	
-        /**
-         * Copies the values from the dialog fields back into {@link #currentBudget}.
-         */
-        private void collectFieldsToBudget()
-        {
-                if (this.currentBudget == null)
-                {
-                        return;
-                }
-
-                this.currentBudget.setBudgetName(this.budgetNameField.getText());
-                this.currentBudget.setFiscalYear(this.fiscalYearSpinner.getValue());
-                this.currentBudget.setDescription(this.descriptionField.getText());
-
-                Fund selected = this.applicableFundComboBox.getValue();
-                this.currentBudget.setApplicableFundId(selected == null ? null : selected.getFundId());
-                this.currentBudget.setCurrency(this.currencyField.getText());
-        }
-
-        private void refreshBudgetLinesTable()
-        {
-                if (this.currentBudget != null && this.currentBudget.getBudgetLines() != null)
-                {
-                        this.budgetLinesTable.setItems(FXCollections.observableArrayList(this.currentBudget.getBudgetLines()));
-                }
-        }
-
-        @SuppressWarnings("unchecked")
-        private void setupTableColumns()
-        {
-                TableColumn<BudgetLine, String> accountCol = new TableColumn<>("Account");
-                accountCol.setCellValueFactory(new PropertyValueFactory<>("accountName"));
-                TableColumn<BudgetLine, Periodicity> periodCol = new TableColumn<>("Periodicity");
-                periodCol.setCellValueFactory(new PropertyValueFactory<>("periodicity"));
-                TableColumn<BudgetLine, String> fundCol = new TableColumn<>("Line Fund");
-                fundCol.setCellValueFactory(new PropertyValueFactory<>("fundId"));
-                TableColumn<BudgetLine, java.math.BigDecimal> amountCol = new TableColumn<>("Amount");
-                amountCol.setCellValueFactory(new PropertyValueFactory<>("totalBudgetedAmount"));
-                this.budgetLinesTable.getColumns().addAll(accountCol, periodCol, fundCol, amountCol);
-        }
+	/**
+	 * Copies the values from the dialog fields back into {@link #currentBudget}.
+	 */
+	private void collectFieldsToBudget()
+	{
+		
+		if (this.currentBudget == null)
+		{
+			return;
+		}
+		
+		this.currentBudget.setBudgetName(this.budgetNameField.getText());
+		this.currentBudget.setFiscalYear(this.fiscalYearSpinner.getValue());
+		this.currentBudget.setDescription(this.descriptionField.getText());
+		
+		Fund selected = this.applicableFundComboBox.getValue();
+		this.currentBudget.setApplicableFundId(selected == null ? null : selected.getFundId());
+		this.currentBudget.setCurrency(this.currencyField.getText());
+	}
+	
+	private void refreshBudgetLinesTable()
+	{
+		
+		if (this.currentBudget != null && this.currentBudget.getBudgetLines() != null)
+		{
+			this.budgetLinesTable
+				.setItems(FXCollections.observableArrayList(this.currentBudget.getBudgetLines()));
+		}
+		
+	}
+	
+	@SuppressWarnings("unchecked") private void setupTableColumns()
+	{
+		TableColumn<BudgetLine, String> accountCol = new TableColumn<>("Account");
+		accountCol.setCellValueFactory(new PropertyValueFactory<>("accountName"));
+		TableColumn<BudgetLine, Periodicity> periodCol = new TableColumn<>("Periodicity");
+		periodCol.setCellValueFactory(new PropertyValueFactory<>("periodicity"));
+		TableColumn<BudgetLine, String> fundCol = new TableColumn<>("Line Fund");
+		fundCol.setCellValueFactory(new PropertyValueFactory<>("fundId"));
+		TableColumn<BudgetLine, java.math.BigDecimal> amountCol = new TableColumn<>("Amount");
+		amountCol.setCellValueFactory(new PropertyValueFactory<>("totalBudgetedAmount"));
+		this.budgetLinesTable.getColumns().addAll(accountCol, periodCol, fundCol, amountCol);
+	}
+	
 }

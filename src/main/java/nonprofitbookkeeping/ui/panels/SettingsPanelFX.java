@@ -8,26 +8,67 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import java.io.File;
+import java.io.IOException;
 import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
-import java.io.IOException;
+import nonprofitbookkeeping.service.SettingsService;
+import nonprofitbookkeeping.model.SettingsModel;
+import nonprofitbookkeeping.ui.ThemeManager;
 
 /**
  * JavaFX port of the original Swing {@code SettingsPanel}.
  */
 public class SettingsPanelFX extends BorderPane
 {
+	private final SettingsService service;
+	private final File companyDir;
+	private final Stage primaryStage;
+	
+	private TextField orgNameField;
+	private TextField fiscalStartField;
+	private ComboBox<String> currencyBox;
+	private TableView<UserRow> userTable;
+	private ComboBox<String> incomeAccountBox;
+	private ComboBox<String> expenseAccountBox;
+	private ComboBox<String> themeCombo;
+	private ComboBox<String> languageCombo;
+	
 	/**
 	 * Constructs a new {@code SettingsPanelFX}.
-	 * Initializes the panel with a {@link TabPane} containing various settings categories:
-	 * Company Info, Users, Accounting, Backup, and UI Preferences.
-	 * 
-	 * @param primaryStage The primary stage of the application. This parameter is currently not
-	 *                     used within this constructor or its helper methods.
+	 *
+	* @param primaryStage reference to the main stage so theme changes can be applied
+	 * @param service      settings service for persistence
+	 * @param companyDir   directory of the current company
 	 */
-	public SettingsPanelFX(Stage primaryStage)
+	public SettingsPanelFX(Stage primaryStage, SettingsService service, File companyDir)
 	{
+		this.primaryStage = primaryStage;
+		this.service = service;
+		this.companyDir = companyDir;
+		
+		if (this.service != null && this.companyDir != null)
+		{
+			
+			try
+			{
+				this.service.loadSettings(this.companyDir);
+				
+				if (this.primaryStage != null && this.primaryStage.getScene() != null)
+				{
+					ThemeManager.applyTheme(this.primaryStage.getScene(),
+						this.service.getSettings().getTheme());
+				}
+				
+			}
+			catch (IOException ex)
+			{
+				ex.printStackTrace();
+			}
+			
+		}
+		
 		setPadding(new Insets(10));
 		TabPane tabs = new TabPane();
 		
@@ -39,9 +80,40 @@ public class SettingsPanelFX extends BorderPane
 			uiPrefsTab());
 		
 		setCenter(tabs);
+		
+		Button saveBtn = new Button("Save Settings");
+		saveBtn.setOnAction(e -> {
+			
+			if (this.service != null && this.companyDir != null)
+			{
+				collectFieldValues();
+				
+				try
+				{
+					this.service.saveSettings(this.companyDir);
+					
+					if (this.primaryStage != null && this.primaryStage.getScene() != null)
+					{
+						ThemeManager.applyTheme(this.primaryStage.getScene(),
+							this.service.getSettings().getTheme());
+					}
+					
+					alert("Settings saved");
+				}
+				catch (IOException ex)
+				{
+					alert("Failed to save settings: " + ex.getMessage());
+				}
+				
+			}
+			
+		});
+		setBottom(saveBtn);
+		BorderPane.setMargin(saveBtn, new Insets(10));
 	}
 	
 	/* ───────────────────────── Tab builders ───────────────────────── */
+	
 	
 	/**
 	 * Builds and returns the "Company Info" tab for the settings panel.
@@ -50,22 +122,37 @@ public class SettingsPanelFX extends BorderPane
 	 *
 	 * @return A {@link Tab} configured with company information settings.
 	 */
-	private static Tab companyInfoTab()
+	private Tab companyInfoTab()
 	{
 		GridPane grid = grid(3, 2);
-		grid.add(new Label("Organization Name:"), 0, 0);
-		grid.add(new TextField("My Nonprofit"), 1, 0);
-		grid.add(new Label("Fiscal Year Start:"), 0, 1);
-		grid.add(new TextField("2025-01-01"), 1, 1);
-		grid.add(new Label("Default Currency:"), 0, 2);
-		grid.add(new ComboBox<String>()
+		this.orgNameField = new TextField();
+		this.fiscalStartField = new TextField();
+		this.currencyBox = new ComboBox<>();
+		this.currencyBox.getItems().addAll("USD", "EUR", "GBP");
+		
+		if (this.service != null)
 		{
-			{
-				getItems().addAll("USD", "EUR", "GBP");
-				setValue("USD");
-			}
-			
-		}, 1, 2);
+			SettingsModel m = this.service.getSettings();
+			if (m.getOrganizationName() != null)
+				this.orgNameField.setText(m.getOrganizationName());
+			if (m.getFiscalYearStart() != null)
+				this.fiscalStartField.setText(m.getFiscalYearStart());
+			if (m.getDefaultCurrency() != null)
+				this.currencyBox.setValue(m.getDefaultCurrency());
+			else
+				this.currencyBox.setValue("USD");
+		}
+		else
+		{
+			this.currencyBox.setValue("USD");
+		}
+		
+		grid.add(new Label("Organization Name:"), 0, 0);
+		grid.add(this.orgNameField, 1, 0);
+		grid.add(new Label("Fiscal Year Start:"), 0, 1);
+		grid.add(this.fiscalStartField, 1, 1);
+		grid.add(new Label("Default Currency:"), 0, 2);
+		grid.add(this.currencyBox, 1, 2);
 		
 		TitledPane wrapper = titled("Company Information", grid);
 		return new Tab("Company Info", wrapper);
@@ -82,20 +169,27 @@ public class SettingsPanelFX extends BorderPane
 	 * @return A {@link Tab} configured with user management settings.
 	 */
 	@SuppressWarnings(
-	{ "unchecked", "deprecation" }) private static Tab usersTab()
+	{ "unchecked", "deprecation" }) private Tab usersTab()
 	{
-		TableView<UserRow> table = new TableView<>();
+		this.userTable = new TableView<>();
 		TableColumn<UserRow, String> userCol = new TableColumn<>("Username");
 		userCol.setCellValueFactory(new PropertyValueFactory<>("username"));
 		TableColumn<UserRow, String> roleCol = new TableColumn<>("Role");
 		roleCol.setCellValueFactory(new PropertyValueFactory<>("role"));
-		table.getColumns().addAll(userCol, roleCol);
-		table.getItems().addAll(
-			new UserRow("admin", "Administrator"),
-			new UserRow("user1", "Viewer"));
-		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		this.userTable.getColumns().addAll(userCol, roleCol);
+		this.userTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		
-		TitledPane wrapper = titled("User Management", table);
+		if (this.service != null)
+		{
+			
+			for (SettingsModel.User u : this.service.getSettings().getUsers())
+			{
+				this.userTable.getItems().add(new UserRow(u.getUsername(), u.getRole()));
+			}
+			
+		}
+		
+		TitledPane wrapper = titled("User Management", this.userTable);
 		return new Tab("Users", wrapper);
 	}
 	
@@ -106,21 +200,40 @@ public class SettingsPanelFX extends BorderPane
 	 * 
 	 * @return A {@link Tab} configured with accounting-related settings.
 	 */
-	private static Tab accountingTab()
+	private Tab accountingTab()
 	{
-		GridPane grid = grid(3, 2);
-		grid.add(new Label("Default Income Account:"), 0, 0);
-		grid.add(new TextField("Donations"), 1, 0);
-		grid.add(new Label("Default Expense Account:"), 0, 1);
-		grid.add(new TextField("Office Supplies"), 1, 1);
-		grid.add(new Label("Auto-Number Vouchers:"), 0, 2);
-		grid.add(new CheckBox("Enabled")
+		GridPane grid = grid(2, 2);
+		this.incomeAccountBox = new ComboBox<>();
+		this.expenseAccountBox = new ComboBox<>();
+		
+		ChartOfAccounts coa = CurrentCompany.getCompany() != null ?
+			CurrentCompany.getCompany().getChartOfAccounts() : null;
+		
+		if (coa != null)
 		{
+			
+			for (nonprofitbookkeeping.model.Account a : coa.getAccounts())
 			{
-				setSelected(true);
+				String name = a.getName();
+				this.incomeAccountBox.getItems().add(name);
+				this.expenseAccountBox.getItems().add(name);
 			}
 			
-		}, 1, 2);
+		}
+		
+		if (this.service != null)
+		{
+			SettingsModel m = this.service.getSettings();
+			if (m.getDefaultIncomeAccount() != null)
+				this.incomeAccountBox.setValue(m.getDefaultIncomeAccount());
+			if (m.getDefaultExpenseAccount() != null)
+				this.expenseAccountBox.setValue(m.getDefaultExpenseAccount());
+		}
+		
+		grid.add(new Label("Default Income Account:"), 0, 0);
+		grid.add(this.incomeAccountBox, 1, 0);
+		grid.add(new Label("Default Expense Account:"), 0, 1);
+		grid.add(this.expenseAccountBox, 1, 1);
 		
 		TitledPane wrapper = titled("Accounting Settings", grid);
 		return new Tab("Accounting", wrapper);
@@ -133,58 +246,66 @@ public class SettingsPanelFX extends BorderPane
 	 * 
 	 * @return A {@link Tab} configured with backup and restore options.
 	 */
-    private static Tab backupTab()
-    {
-            HBox box = new HBox(10);
-            Button backupBtn = new Button("Create Backup");
-            Button restoreBtn = new Button("Restore Backup");
-
-            backupBtn.setOnAction(e -> {
-                    FileChooser fc = new FileChooser();
-                    fc.setTitle("Save Backup");
-                    fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("NPBK files", "*.npbk"));
-                    File out = fc.showSaveDialog(null);
-                    if (out != null)
-                    {
-                            try
-                            {
-                                    CurrentCompany.setCurrentFile(out);
-                                    CurrentCompany.persist();
-                                    alert("Backup saved to " + out.getAbsolutePath());
-                            }
-                            catch (IOException | ActionCancelledException | NoFileCreatedException ex)
-                            {
-                                    alert("Backup failed: " + ex.getMessage());
-                            }
-                    }
-            });
-
-            restoreBtn.setOnAction(e -> {
-                    FileChooser fc = new FileChooser();
-                    fc.setTitle("Open Backup");
-                    fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("NPBK files", "*.npbk"));
-                    File f = fc.showOpenDialog(null);
-                    if (f != null)
-                    {
-                            try
-                            {
-                                    CurrentCompany.loadFromPersistent(f);
-                                    CurrentCompany.markCompanyOpen();
-                                    alert("Backup restored from " + f.getName());
-                            }
-                            catch (IOException | ActionCancelledException | NoFileCreatedException ex)
-                            {
-                                    alert("Restore failed: " + ex.getMessage());
-                            }
-                    }
-            });
-
-            box.getChildren().addAll(backupBtn, restoreBtn);
-            box.setPadding(new Insets(10));
-
-            TitledPane wrapper = titled("Backup & Restore", box);
-            return new Tab("Backup", wrapper);
-    }
+	private static Tab backupTab()
+	{
+		HBox box = new HBox(10);
+		Button backupBtn = new Button("Create Backup");
+		Button restoreBtn = new Button("Restore Backup");
+		
+		backupBtn.setOnAction(e -> {
+			FileChooser fc = new FileChooser();
+			fc.setTitle("Save Backup");
+			fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("NPBK files", "*.npbk"));
+			File out = fc.showSaveDialog(null);
+			
+			if (out != null)
+			{
+				
+				try
+				{
+					CurrentCompany.setCurrentFile(out);
+					CurrentCompany.persist();
+					alert("Backup saved to " + out.getAbsolutePath());
+				}
+				catch (IOException | ActionCancelledException | NoFileCreatedException ex)
+				{
+					alert("Backup failed: " + ex.getMessage());
+				}
+				
+			}
+			
+		});
+		
+		restoreBtn.setOnAction(e -> {
+			FileChooser fc = new FileChooser();
+			fc.setTitle("Open Backup");
+			fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("NPBK files", "*.npbk"));
+			File f = fc.showOpenDialog(null);
+			
+			if (f != null)
+			{
+				
+				try
+				{
+					CurrentCompany.loadFromPersistent(f);
+					CurrentCompany.markCompanyOpen();
+					alert("Backup restored from " + f.getName());
+				}
+				catch (IOException | ActionCancelledException | NoFileCreatedException ex)
+				{
+					alert("Restore failed: " + ex.getMessage());
+				}
+				
+			}
+			
+		});
+		
+		box.getChildren().addAll(backupBtn, restoreBtn);
+		box.setPadding(new Insets(10));
+		
+		TitledPane wrapper = titled("Backup & Restore", box);
+		return new Tab("Backup", wrapper);
+	}
 	
 	/**
 	 * Builds and returns the "UI Preferences" tab for the settings panel.
@@ -192,27 +313,37 @@ public class SettingsPanelFX extends BorderPane
 	 * 
 	 * @return A {@link Tab} configured with UI preference settings.
 	 */
-	private static Tab uiPrefsTab()
+	private Tab uiPrefsTab()
 	{
 		GridPane grid = grid(2, 2);
+		
 		grid.add(new Label("Theme:"), 0, 0);
-		grid.add(new ComboBox<String>()
+		this.themeCombo = new ComboBox<>();
+		this.themeCombo.getItems().addAll("Light", "Dark", "System");
+		this.themeCombo.setValue("System");
+		
+		if (this.service != null)
 		{
-			{
-				getItems().addAll("Light", "Dark", "System");
-				setValue("System");
-			}
-			
-		}, 1, 0);
+			String theme = this.service.getSettings().getTheme();
+			if (theme != null)
+				this.themeCombo.setValue(theme);
+		}
+		
+		grid.add(this.themeCombo, 1, 0);
+		
 		grid.add(new Label("Language:"), 0, 1);
-		grid.add(new ComboBox<String>()
+		this.languageCombo = new ComboBox<>();
+		this.languageCombo.getItems().addAll("English", "Spanish", "French");
+		this.languageCombo.setValue("English");
+		
+		if (this.service != null)
 		{
-			{
-				getItems().addAll("English", "Spanish", "French");
-				setValue("English");
-			}
-			
-		}, 1, 1);
+			String lang = this.service.getSettings().getLanguage();
+			if (lang != null)
+				this.languageCombo.setValue(lang);
+		}
+		
+		grid.add(this.languageCombo, 1, 1);
 		
 		TitledPane wrapper = titled("UI Preferences", grid);
 		return new Tab("UI Preferences", wrapper);
@@ -266,6 +397,49 @@ public class SettingsPanelFX extends BorderPane
 	private static void alert(String msg)
 	{
 		new Alert(Alert.AlertType.INFORMATION, msg, ButtonType.OK).showAndWait();
+	}
+	
+	/**
+	 * Collects values from the UI controls into the {@link SettingsModel} held by the service.
+	 */
+	private void collectFieldValues()
+	{
+		
+		if (this.service == null)
+		{
+			return;
+		}
+		
+		SettingsModel m = this.service.getSettings();
+		if (this.orgNameField != null)
+			m.setOrganizationName(this.orgNameField.getText());
+		if (this.fiscalStartField != null)
+			m.setFiscalYearStart(this.fiscalStartField.getText());
+		if (this.currencyBox != null && this.currencyBox.getValue() != null)
+			m.setDefaultCurrency(this.currencyBox.getValue());
+		if (this.incomeAccountBox != null && this.incomeAccountBox.getValue() != null)
+			m.setDefaultIncomeAccount(this.incomeAccountBox.getValue());
+		if (this.expenseAccountBox != null && this.expenseAccountBox.getValue() != null)
+			m.setDefaultExpenseAccount(this.expenseAccountBox.getValue());
+		
+		if (this.themeCombo != null && this.themeCombo.getValue() != null)
+			m.setTheme(this.themeCombo.getValue());
+		if (this.languageCombo != null && this.languageCombo.getValue() != null)
+			m.setLanguage(this.languageCombo.getValue());
+		
+		// update user list from table
+		if (this.userTable != null)
+		{
+			java.util.List<SettingsModel.User> list = new java.util.ArrayList<>();
+			
+			for (UserRow row : this.userTable.getItems())
+			{
+				list.add(new SettingsModel.User(row.getUsername(), row.getRole()));
+			}
+			
+			m.setUsers(list);
+		}
+		
 	}
 	
 	/* ───────────────────────── Table model ───────────────────────── */
