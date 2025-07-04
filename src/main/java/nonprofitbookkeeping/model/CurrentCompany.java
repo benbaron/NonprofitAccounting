@@ -63,16 +63,6 @@ public class CurrentCompany
 	public static void setCurrentFile(File currentFile)
 	{
 		CurrentCompany.currentFile = checkNotNull(currentFile);
-		
-		// Keep the Company object's file reference in sync with the
-		// static currentFile value. This ensures callers querying
-		// {@link Company#getCompanyFile()} receive the correct
-		// location after load/save operations.
-		if (company != null)
-		{
-			company.setCompanyFile(CurrentCompany.currentFile);
-		}
-		
 	}
 	
 	/**
@@ -136,14 +126,7 @@ public class CurrentCompany
 			Company.class,
 			checkNotNull(file, "File cannot be null for load operation."));
 		setCurrentFile(file);
-		
-		// Ensure the loaded company object stores its file reference.
-		if (company != null)
-		{
-			company.setCompanyFile(file);
-			markCompanyOpen();
-		}
-		
+		// Consider calling markCompanyOpen() here if loading implies opening
 	}
 	
 	/**
@@ -154,7 +137,7 @@ public class CurrentCompany
 	public static void close()
 	{
 		CurrentCompany.companyIsOpen = false;
-		CompanyListener.fireChanged(false);
+//		CompanyListener.fireChanged(false);
 	}
 	
 	/**
@@ -178,7 +161,7 @@ public class CurrentCompany
 	public static void markCompanyOpen()
 	{
 		CurrentCompany.companyIsOpen = true;
-		CompanyListener.fireChanged(true);
+//		CompanyListener.fireChanged(true);
 	}
 	
 	/**
@@ -239,20 +222,6 @@ public class CurrentCompany
 			return List.of(arr);
 		}
 		
-		/**
-		 * Notifies all registered {@link CompanyChangeListener}s that the company open state changed.
-		 * @param isOpen {@code true} if the company is now open, {@code false} otherwise.
-		 */
-		public static void fireChanged(boolean isOpen)
-		{
-			
-			for (CompanyChangeListener l : CompanyListener.getListeners())
-			{
-				l.companyChange(isOpen);
-			}
-			
-		}
-		
 	}
 	
 	/**
@@ -275,12 +244,12 @@ public class CurrentCompany
 		if (company2 != null)
 		{
 			CurrentCompany.companyIsOpen = true;
-			CompanyListener.fireChanged(true);
+	//		CompanyListener.fireChanged(true);
 		}
 		else
 		{
 			CurrentCompany.companyIsOpen = false;
-			CompanyListener.fireChanged(false);
+	//		CompanyListener.fireChanged(false);
 		}
 		
 	}

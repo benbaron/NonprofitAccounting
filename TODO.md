@@ -116,4 +116,3 @@ This document lists potential code issues, areas for improvement, or bugs that w
 - Calculate totals in `InvestmentTransaction.getTotal(Account)` using the account's transaction history.
 - Expand `OfxV2Writer.writeInvestmentSection` to output investment positions and transactions.
 - Review Swing stub methods like `performAction()` in report actions and implement or remove them if unused.
-- Move remaining company subsections into separate JSON files inside the `.npbk` archive for modular storage.

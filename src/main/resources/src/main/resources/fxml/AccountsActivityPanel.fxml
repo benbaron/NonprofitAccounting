@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="nonprofitbookkeeping.ui.panels.AccountsActivityController">
+    <top>
+        <VBox spacing="10" padding="10">
+            <HBox spacing="10">
+                <ComboBox fx:id="accountSelector" />
+                <Button text="Apply" onAction="#applyFilters" />
+            </HBox>
+            <HBox spacing="10">
+                <TextField fx:id="filterDateField" promptText="Date"/>
+                <TextField fx:id="filterMemoField" promptText="Memo"/>
+                <TextField fx:id="filterAmountField" promptText="Amount"/>
+            </HBox>
+        </VBox>
+    </top>
+    <center>
+        <TableView fx:id="transactionTable">
+            <columns>
+                <TableColumn text="Date" />
+                <TableColumn text="Description" />
+                <TableColumn text="Amount" />
+                <TableColumn text="Balance" />
+                <TableColumn text="Memo" />
+            </columns>
+        </TableView>
+    </center>
+    <bottom>
+        <HBox spacing="10" padding="10">
+            <Button text="Reconcile" onAction="#reconcile" />
+            <Button text="Import Statement" onAction="#importStatement" />
+        </HBox>
+    </bottom>
+</BorderPane>
