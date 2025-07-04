@@ -82,35 +82,16 @@ public class LedgerReconcilePanelFX extends BorderPane
 	 *
 	 * @param svc The {@link ReconciliationService} to be used for accessing ledger data and account information. Must not be null.
 	 */
-        public LedgerReconcilePanelFX(ReconciliationService svc)
-        {
-                this.ledgerSvc = svc;
-                setPadding(new Insets(10));
-                buildTop();
-                buildTable();
-                setCenter(this.table);
-                setBottom(buildButtons());
-                refreshAccountList();
-        }
-
-        /**
-         * Selects the given account in the account combo box if present and
-         * refreshes the table. This is useful when another panel wants to
-         * preselect an account before showing the reconciliation UI.
-         *
-         * @param account account name to select
-         */
-        public void selectAccount(String account)
-        {
-                if (account == null)
-                        return;
-
-                if (!this.accountBox.getItems().contains(account))
-                        return;
-
-                this.accountBox.getSelectionModel().select(account);
-                reloadRows();
-        }
+	public LedgerReconcilePanelFX(ReconciliationService svc)
+	{
+		this.ledgerSvc = svc;
+		setPadding(new Insets(10));
+		buildTop();
+		buildTable();
+		setCenter(this.table);
+		setBottom(buildButtons());
+		refreshAccountList();
+	}
 	
 	/* ----------------------- UI builders ----------------------- */
 	/**

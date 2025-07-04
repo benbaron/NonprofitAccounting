@@ -163,13 +163,17 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 		String reportBaseName = "Income_Statement_" +
 			(this.reportContext.getEndDate() != null ? this.reportContext.getEndDate().toString() :
 				LocalDate.now().toString());
-				
+		
+		
 		try (InputStream reportStream =
 			getClass().getClassLoader().getResourceAsStream(getReportPath()))
-		{			
+		{
+			
 			if (reportStream == null)
 			{
-				System.err.println("Cannot find report template: " + getReportPath()); 
+				System.err.println("Cannot find report template: " + getReportPath()); // Consider
+																						// using a
+																						// logger
 				throw new java.io.FileNotFoundException(
 					"Report template not found: " + getReportPath());
 			}

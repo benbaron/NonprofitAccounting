@@ -1,0 +1,13 @@
+Report: Trial Balance
+Report Date: ${reportDate}
+Period: ${reportStartDate} to ${reportEndDate}
+
+| Account Number | Account Name | Debit | Credit |
+|----------------|--------------|-------|--------|
+<jx:forEach items="${trialBalanceItems}" var="item">
+| ${item.accountNumber} | ${item.accountName} | ${item.debit} | ${item.credit} |
+</jx:forEach>
+|----------------|--------------|-------|--------|
+| Totals         |              | ${totalDebits} | ${totalCredits} |
+
+Totals Match: ${totalsMatch}

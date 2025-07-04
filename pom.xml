@@ -44,13 +44,6 @@
 	</build>
 	
 	<repositories>
-		<repository>
-		<id>project-local-repo</id>
-		<name>Project Local Repository</name>
-		<url>file://${project.basedir}/repo</url>
-		<layout>default</layout>
-		</repository>
-
 	  	<repository>
 	    <id>jitpack.io</id>
 	    <url>https://jitpack.io</url>

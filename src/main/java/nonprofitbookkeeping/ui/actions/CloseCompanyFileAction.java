@@ -23,35 +23,31 @@ import nonprofitbookkeeping.model.CurrentCompany;
  */
 public class CloseCompanyFileAction
 {
-        /** Flag indicating whether the close operation was completed. */
-        private boolean closed;
-
-        /**
-         * Constructs and executes the action to close the current company file.
-         * The dialog presented offers the user three choices:
-         * <ul>
-         *   <li><strong>Yes</strong> &ndash; save the company and close it.</li>
-         *   <li><strong>No</strong> &ndash; close without saving.</li>
-         *   <li><strong>Cancel</strong> &ndash; abort the close operation entirely.</li>
-         * </ul>
-         *
-         * @param primaryStage The owner stage for the confirmation dialog.
-         */
+	/**
+	 * Constructs and executes the action to close the current company file.
+	 * The action involves two main steps:
+	 * <ol>
+	 *   <li>Attempting to persist the current company data using {@link CurrentCompany#persist()}.
+	 *       Any exceptions during persistence ({@link IOException}, {@link ActionCancelledException},
+	 *       {@link NoFileCreatedException}) are caught and their stack traces are printed to standard error.
+	 *       The process continues regardless of persistence failure to ensure the company is closed.</li>
+	 *   <li>Closing the company using {@link CurrentCompany#close()}, which typically updates
+	 *       the application's state to reflect that no company is open.</li>
+	 * </ol>
+	 * 
+	 * @param primaryStage The primary {@link Stage} of the JavaFX application. This parameter is
+	 *                     currently not directly used in the constructor's logic but might be
+	 *                     intended for displaying dialogs or interacting with the UI in a
+	 *                     more complete implementation (e.g., confirming save on close).
+	 */
         public CloseCompanyFileAction(Stage primaryStage)
         {
                 Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-                        "Save company before closing?",
-                        ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
+                        "Save company before closing?");
                 confirm.initOwner(primaryStage);
                 Optional<ButtonType> res = confirm.showAndWait();
 
-                if (res.isEmpty() || res.get() == ButtonType.CANCEL)
-                {
-                        this.closed = false;
-                        return; // user cancelled the action
-                }
-
-                if (res.get() == ButtonType.YES)
+                if (res.isPresent() && res.get() == ButtonType.OK)
                 {
                         try
                         {
@@ -64,15 +60,6 @@ public class CloseCompanyFileAction
                 }
 
                 CurrentCompany.close();
-                this.closed = true;
-        }
-
-        /**
-         * @return {@code true} if the company was closed as a result of this action
-         */
-        public boolean isClosed()
-        {
-                return this.closed;
         }
 
 	

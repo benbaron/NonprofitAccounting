@@ -1,0 +1,26 @@
+Company: ${companyName}
+Balance Sheet as of: ${reportEndDate}
+Report Generated: ${reportDate}
+
+Assets:
+<jx:forEach items="${assetItems}" var="item" >
+${item.name} ${item.amount}
+</jx:forEach>
+Total Assets: ${totalAssets}
+
+Liabilities:
+<jx:forEach items="${liabilityItems}" var="item" >
+${item.name} ${item.amount}
+</jx:forEach>
+Total Liabilities: ${totalLiabilities}
+
+Equity:
+<jx:forEach items="${equityItems}" var="item" >
+${item.name} ${item.amount}
+</jx:forEach>
+Current Period Net Income: ${currentPeriodNetIncome}
+Total Equity: ${totalEquity} (Note: Includes Current Period Net Income)
+
+Total Liabilities and Equity: ${totalLiabilitiesAndEquity}
+
+Verification: Assets == L+E ? ${assetsEqualsLiabilitiesPlusEquity}
