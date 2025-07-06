@@ -109,19 +109,45 @@ public class NonprofitBookkeepingFX extends Application
 	private static final class ServiceContainer
 	{
 		/** Singleton instance of {@link InventoryService}. */
-		private static final InventoryService iss = new InventoryService();
+		private static InventoryService iss = null;
 		/** Singleton instance of {@link ReportService}. */
-		private static final ReportService reportService = new ReportService();
+		private static ReportService reportService = null;
 		/** Singleton instance of {@link BudgetService}. */
-		private static final BudgetService budgetService = new BudgetService();
+		private static BudgetService budgetService = null;
 		/** Singleton instance of {@link ReportConfigurationService}. */
-		private static final ReportConfigurationService reportConfigurationService =
-			new ReportConfigurationService();
-		private static final DocumentStorageService dss = new DocumentStorageService();
-		private static final FundAccountingService fas = new FundAccountingService();
-		private static final DonorService donorService = new DonorService();
-		private static final GrantsService grantsService = new GrantsService();
-		private static final SalesService salesService = new SalesService();
+		private static ReportConfigurationService reportConfigurationService =
+			null;
+		private static DocumentStorageService dss = null;
+		private static FundAccountingService fas = null;
+		private static DonorService donorService = null;
+		private static GrantsService grantsService = null;
+		private static SalesService salesService = null;
+		
+		
+		static
+		{
+			try
+			{
+				iss = new InventoryService();
+				/** Singleton instance of {@link ReportService}. */
+				reportService = new ReportService();
+				/** Singleton instance of {@link BudgetService}. */
+				budgetService = new BudgetService();
+				/** Singleton instance of {@link ReportConfigurationService}. */
+				reportConfigurationService =
+					new ReportConfigurationService();
+				dss = new DocumentStorageService();
+				fas = new FundAccountingService();
+				donorService = new DonorService();
+				grantsService = new GrantsService();
+				salesService = new SalesService();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+			
+		}
 		
 	}
 	
