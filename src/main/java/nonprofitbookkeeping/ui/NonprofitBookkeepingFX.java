@@ -107,17 +107,36 @@ public class NonprofitBookkeepingFX extends Application
 	 */
 	private static final class ServiceContainer
 	{
-		/** Singleton instance of {@link InventoryService}. */
-		private static final InventoryService iss = new InventoryService();
+		static InventoryService iss = null;
 		/** Singleton instance of {@link ReportService}. */
-		private static final ReportService reportService = new ReportService();
+		static ReportService reportService = null;
 		/** Singleton instance of {@link BudgetService}. */
-		private static final BudgetService budgetService = new BudgetService();
+		static BudgetService budgetService = null;
 		/** Singleton instance of {@link ReportConfigurationService}. */
-		private static final ReportConfigurationService reportConfigurationService =
-			new ReportConfigurationService();
-		private static final DocumentStorageService dss = new DocumentStorageService();
-		private static final FundAccountingService fas = new FundAccountingService();
+		static ReportConfigurationService reportConfigurationService = null;
+		static DocumentStorageService dss  = null;
+		static FundAccountingService fas = null;
+		static
+		{						
+			try
+			{
+				/** Singleton instance of {@link InventoryService}. */
+				iss = new InventoryService();
+				/** Singleton instance of {@link ReportService}. */
+				reportService = new ReportService();
+				/** Singleton instance of {@link BudgetService}. */
+				budgetService = new BudgetService();
+				/** Singleton instance of {@link ReportConfigurationService}. */
+				reportConfigurationService =
+					new ReportConfigurationService();
+				dss = new DocumentStorageService();
+				fas = new FundAccountingService();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}						
+		}
 		
 	}
 	
@@ -306,7 +325,7 @@ public class NonprofitBookkeepingFX extends Application
 		add(this.reports, "Show Reports", e -> ((MainApplicationView) this.root)
 			.showPanel(MainApplicationView.PanelType.REPORTS));
 		add(this.reports, "Show Accounts",
-			e -> showPanel(new AccountsPanelFX(new AccountService()), "Chart of Accounts")); 
+			e -> showPanel(new AccountsPanelFX(new AccountService()), "Chart of Accounts"));
 		add(this.reports, "Show Account Activity", e -> {
 			Company currentCompany = CurrentCompany.getCompany();
 			
@@ -382,9 +401,11 @@ public class NonprofitBookkeepingFX extends Application
 			(this.loadedPlugins != null ? this.loadedPlugins.size() : 0));
 		
 		if (this.loadedPlugins != null)
-		{		
+		{
+			
 			for (Plugin plugin : this.loadedPlugins)
-			{				
+			{
+				
 				try
 				{
 					LOGGER.info("Adding menu items for plugin: " + plugin.getName());
@@ -456,7 +477,7 @@ public class NonprofitBookkeepingFX extends Application
 		this.miOpen.setDisable(companyOpen || creatingCompany);
 		this.miClose.setDisable(noCompany || creatingCompany);
 		this.miSave.setDisable(noCompany || creatingCompany);
-		this.miEditCompany.setDisable(creatingCompany); 
+		this.miEditCompany.setDisable(creatingCompany);
 		this.miEditCoa.setDisable(noCompany || creatingCompany);
 		this.miEditJournal.setDisable(noCompany || creatingCompany);
 		this.miImportCoaXlsx.setDisable(noCompany || creatingCompany);
@@ -482,13 +503,14 @@ public class NonprofitBookkeepingFX extends Application
 	 */
 	@SuppressWarnings("unused") private void doOpenCompany()
 	{
+		
 		try
 		{
 			OpenCompanyFileActionFX openCompanyFileActionFX =
 				new OpenCompanyFileActionFX(this.primaryStage,
 					() -> setState(AppState.COMPANY_OPEN));
 		}
-		catch (Exception e) 
+		catch (Exception e)
 		{
 			AlertBox.showError(this.primaryStage, "Failed to open company: " + e.getMessage());
 		}
@@ -505,6 +527,7 @@ public class NonprofitBookkeepingFX extends Application
 	 */
 	@SuppressWarnings("unused") private void doCloseCompany()
 	{
+		
 		try
 		{
 			CloseCompanyFileAction closeCompanyFileAction =
