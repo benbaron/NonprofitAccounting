@@ -60,7 +60,7 @@ public class CustomerProjectReportGenerator extends ReportGenerator
 			
 			// Compile JRXML into JasperReport from the classpath
 			try (var in =
-				CustomerProjectReportGenerator.class.getResourceAsStream("/CustomerReport.jrxml"))
+				CustomerProjectReportGenerator.class.getResourceAsStream("CustomerReport.jrxml"))
 			{
 				
 				if (in == null)

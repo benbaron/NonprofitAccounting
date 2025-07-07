@@ -47,15 +47,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.balance = BigDecimal.ZERO;
 	}
 	
-//	/**  
-//	 * Constructor Fund
-//	 */
-//	public Fund()
-//	{
-//		this.name = "";
-//		this.accountIds = new ArrayList<>();
-//		this.balance = BigDecimal.ZERO;
-//	}
 	
 	/**
 	 * Gets the name of the fund.
