@@ -1,139 +1,88 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
-                                  http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-              name="CustomerProjectReport"
-              language="java"
-              pageWidth="595"
-              pageHeight="842"
-              leftMargin="70"
-              rightMargin="70"
-              topMargin="70"
-              bottomMargin="70"
-              columnWidth="540">
 
-    <!-- Title Section (Report Header) -->
-    <title>
-        <band height="110">
-            <textField>
-                <reportElement x="55%" y="1" width="45%" height="16" alignment="right"/>
-                <textFieldExpression><![CDATA["Customer/Project Report"]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement x="1" y="1" width="50%" height="16" alignment="left"/>
-                <textFieldExpression><![CDATA["Report Title"]]></textFieldExpression>
-            </textField>
-            <line>
-                <reportElement x="0" y="18" width="540" height="2" forecolor="#000000"/>
-            </line>
-            <image>
-                <reportElement x="250" y="21" width="100%" height="67"/>
-                <imageExpression><![CDATA[$F{iconheader}]]></imageExpression>
-            </image>
-            <textField>
-                <reportElement x="1" y="19" width="118" height="10" alignment="left"/>
-                <textFieldExpression><![CDATA[$F{reportdate}]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement x="120" y="19" width="128" height="10" alignment="left"/>
-                <textFieldExpression><![CDATA[$F{dateToday}]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement x="1" y="29" width="118" height="10" alignment="left"/>
-                <textFieldExpression><![CDATA[$F{companytext}]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement x="120" y="29" width="128" height="10" alignment="left"/>
-                <textFieldExpression><![CDATA[$F{company}]]></textFieldExpression>
-            </textField>
-        </band>
-    </title>
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="CustomerProjectReport" language="java" pageWidth="595" pageHeight="842" columnWidth="540" leftMargin="70" rightMargin="70" topMargin="70" bottomMargin="70" uuid="2a5ec04f-29ff-412e-b5af-e96c833cc266">
+	<field name="iconheader" class="java.awt.Image"/>
+	<field name="reportdate" class="java.lang.String"/>
+	<field name="dateToday" class="java.lang.String"/>
+	<field name="companytext" class="java.lang.String"/>
+	<field name="company" class="java.lang.String"/>
+	<field name="custid" class="java.lang.String"/>
+	<field name="custname" class="java.lang.String"/>
+	<field name="custdesc" class="java.lang.String"/>
+	<field name="defaultacc" class="java.lang.String"/>
+	<field name="CUSTNUM" class="java.lang.String"/>
+	<field name="CUSTNAME" class="java.lang.String"/>
+	<field name="CUSTDESC" class="java.lang.String"/>
+	<field name="DEFAULTAPP" class="java.lang.String"/>
+	<variable name="pageXofY" class="java.lang.String">
+		<expression><![CDATA["Page " + $V{PAGE_NUMBER} + " of " + $V{PAGE_COUNT}]]></expression>
+	</variable>
+	<group name="CustomerProjectGroup">
+		<expression><![CDATA[$F{custid}]]></expression>
+		<groupHeader>
+			<band height="14">
+				<element kind="textField" uuid="9f8d06fb-4cca-4064-8dda-26858efe37c0" x="1" y="1" width="79" height="7">
+					<expression><![CDATA[$F{custid}]]></expression>
+				</element>
+				<element kind="textField" uuid="31a03439-0963-4f6d-b00d-7053e28df509" x="80" y="1" width="149" height="7">
+					<expression><![CDATA[$F{custname}]]></expression>
+				</element>
+				<element kind="textField" uuid="a3168fa3-6374-4b7d-baef-82aeb3f8d3a3" x="230" y="1" width="149" height="7">
+					<expression><![CDATA[$F{custdesc}]]></expression>
+				</element>
+				<element kind="textField" uuid="7064a041-a47c-41c5-8f73-5d74f2e9d87d" x="380" y="1" width="100" height="7">
+					<expression><![CDATA[$F{defaultacc}]]></expression>
+				</element>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="25"/>
+		</groupFooter>
+	</group>
+	<title height="110">
+		<element kind="textField" uuid="4c55ad87-6c3e-4996-b47a-17435a143dd9" x="55" y="1" width="45" height="16">
+			<expression><![CDATA["Customer/Project Report"]]></expression>
+		</element>
+		<element kind="textField" uuid="50908cee-c771-4d18-861a-50e70495b83e" x="1" y="1" width="50" height="16">
+			<expression><![CDATA["Report Title"]]></expression>
+		</element>
+		<element kind="line" uuid="9c31b305-de92-470f-b8d0-5fcfd4f867c1" x="0" y="18" width="540" height="2" forecolor="#000000"/>
+		<element kind="textField" uuid="3986b2be-ce49-4053-a44e-9a2f267312e1" x="1" y="19" width="118" height="10">
+			<expression><![CDATA[$F{reportdate}]]></expression>
+		</element>
+		<element kind="textField" uuid="6591960a-50af-4a6e-9421-557d29b5d33b" x="120" y="19" width="128" height="10">
+			<expression><![CDATA[$F{dateToday}]]></expression>
+		</element>
+		<element kind="textField" uuid="81840f71-d366-423b-9d02-b035d016f0ce" x="1" y="29" width="118" height="10">
+			<expression><![CDATA[$F{companytext}]]></expression>
+		</element>
+		<element kind="textField" uuid="c374f547-225f-450d-956e-354fddc9eebd" x="120" y="29" width="128" height="10">
+			<expression><![CDATA[$F{company}]]></expression>
+		</element>
+	</title>
+	<detail>
+		<band height="10">
+			<element kind="textField" uuid="c5e3076f-6c27-4c6c-bc8f-8db7955a4f1e" x="0" y="0" width="39" height="8">
+				<expression><![CDATA[$F{CUSTNUM}]]></expression>
+			</element>
+			<element kind="textField" uuid="71d1d1c7-27f2-4175-b6ec-a44af085cd9b" x="80" y="0" width="149" height="8">
+				<expression><![CDATA[$F{CUSTNAME}]]></expression>
+			</element>
+			<element kind="textField" uuid="08ca4d59-2f5a-42c9-ba64-03ab36e9f386" x="230" y="0" width="149" height="8">
+				<expression><![CDATA[$F{CUSTDESC}]]></expression>
+			</element>
+			<element kind="textField" uuid="a79963ff-c3a3-405a-bed3-4b291da12a19" x="380" y="0" width="100" height="8">
+				<expression><![CDATA[$F{DEFAULTAPP}]]></expression>
+			</element>
+		</band>
+	</detail>
+	<pageFooter height="18">
+		<element kind="textField" uuid="c0577881-a876-43c7-a130-529fd81dcc46" x="50" y="4" width="100" height="18">
+			<expression><![CDATA[$V{pageXofY}]]></expression>
+		</element>
+		<element kind="textField" uuid="6409cc40-b154-446d-82af-53ee48708ac7" x="0" y="4" width="100" height="18">
+			<expression><![CDATA[$F{dateToday}]]></expression>
+		</element>
+	</pageFooter>
 
-    <!-- Page Footer (Including page number and date) -->
-    <pageFooter>
-        <band height="18">
-            <textField>
-                <reportElement x="50%" y="4" width="100%" height="18" alignment="right"/>
-                <textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of " + $V{PAGE_COUNT}]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement x="0" y="4" width="100" height="18" alignment="left"/>
-                <textFieldExpression><![CDATA[$F{dateToday}]]></textFieldExpression>
-            </textField>
-        </band>
-    </pageFooter>
-
-    <!-- Customer/Project Group -->
-    <group name="JUST_A_HEADER_Group">
-        <groupHeader>
-            <band height="14">
-                <textField>
-                    <reportElement x="1" y="1" width="79" height="7" alignment="left"/>
-                    <textFieldExpression><![CDATA[$F{custid}]]></textFieldExpression>
-                </textField>
-                <textField>
-                    <reportElement x="80" y="1" width="149" height="7" alignment="left"/>
-                    <textFieldExpression><![CDATA[$F{custname}]]></textFieldExpression>
-                </textField>
-                <textField>
-                    <reportElement x="230" y="1" width="149" height="7" alignment="left"/>
-                    <textFieldExpression><![CDATA[$F{custdesc}]]></textFieldExpression>
-                </textField>
-                <textField>
-                    <reportElement x="380" y="1" width="100%" height="7" alignment="left"/>
-                    <textFieldExpression><![CDATA[$F{defaultacc}]]></textFieldExpression>
-                </textField>
-            </band>
-        </groupHeader>
-        <groupFooter>
-            <band height="25"/>
-        </groupFooter>
-    </group>
-
-    <!-- Customer/Project Data Rows -->
-    <detail>
-        <band height="10">
-            <textField>
-                <reportElement x="0" y="0" width="39" height="8" alignment="left"/>
-                <textFieldExpression><![CDATA[$F{CUSTNUM}]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement x="80" y="0" width="149" height="8" alignment="left"/>
-                <textFieldExpression><![CDATA[$F{CUSTNAME}]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement x="230" y="0" width="149" height="8" alignment="left"/>
-                <textFieldExpression><![CDATA[$F{CUSTDESC}]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement x="380" y="0" width="100%" height="8" alignment="left"/>
-                <textFieldExpression><![CDATA[$F{DEFAULTAPP}]]></textFieldExpression>
-            </textField>
-        </band>
-    </detail>
-
-    <!-- Functions (Page Number) -->
-    <functions>
-        <function name="PageNumber" class="org.jfree.report.function.PageFunction"/>
-        <function name="PageTotal" class="org.jfree.report.function.PageTotalFunction"/>
-        <expression name="pageXofY" class="org.jfree.report.function.TextFormatExpression">
-            <properties>
-                <property name="pattern">Page {0} ({1})</property>
-                <property name="0">PageNumber</property>
-                <property name="1">PageTotal</property>
-            </properties>
-        </expression>
-        <property-ref name="dateToday"/>
-        <property-ref name="reporttitle"/>
-        <property-ref name="customerreport"/>
-        <property-ref name="custid"/>
-        <property-ref name="custname"/>
-        <property-ref name="defaultacc"/>
-        <property-ref name="company"/>
-        <property-ref name="companytext"/>
-        <property-ref name="custdesc"/>
-        <property-ref name="iconheader"/>
-        <property-ref name="reportdate"/>
-    </functions>
 </jasperReport>
