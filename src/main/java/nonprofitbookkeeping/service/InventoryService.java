@@ -1,19 +1,12 @@
 package nonprofitbookkeeping.service;
 
 import nonprofitbookkeeping.model.InventoryItem; // Correct import
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.type.CollectionType;
-import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * InventoryService manages inventory items for the nonprofit bookkeeping system.
@@ -25,12 +18,6 @@ public class InventoryService {
 
     /** Shared in-memory map to store {@link InventoryItem} objects across service instances. */
     private static final Map<String, InventoryItem> SHARED_ITEMS = new HashMap<>();
-
-    /** Logger instance for this service. */
-    private static final Logger LOGGER = Logger.getLogger(InventoryService.class.getName());
-
-    /** Standard filename for storing inventory data. */
-    private static final String INVENTORY_FILENAME = "inventory.json";
 
     /** In-memory map to store {@link InventoryItem} objects, keyed by their unique ID. */
     private final Map<String, InventoryItem> items;
@@ -139,64 +126,7 @@ public class InventoryService {
      */
     public void clearInventory() {
         this.items.clear();
-        LOGGER.info("Inventory cleared.");
-    }
-
-    /**
-     * Saves all inventory items to a JSON file located in the given company directory.
-     * If the directory is invalid, an {@link IOException} is thrown.
-     *
-     * @param companyDirectory directory where the inventory file should be written
-     * @throws IOException if writing fails or the directory is invalid
-     */
-    public void saveItems(File companyDirectory) throws IOException {
-        if (companyDirectory == null || !companyDirectory.isDirectory()) {
-            throw new IOException("Company directory is invalid or not provided.");
-        }
-
-        File target = new File(companyDirectory, INVENTORY_FILENAME);
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(SerializationFeature.INDENT_OUTPUT);
-        try {
-            mapper.writeValue(target, listItems());
-        } catch (IOException ex) {
-            LOGGER.log(Level.SEVERE, "Failed to save inventory to " + target.getAbsolutePath(), ex);
-            throw ex;
-        }
-    }
-
-    /**
-     * Loads inventory items from a JSON file located in the given company directory.
-     * Existing in-memory items are cleared before loading new ones.
-     * If the file does not exist, this method simply returns with an empty inventory.
-     *
-     * @param companyDirectory directory where the inventory file is located
-     * @throws IOException if reading fails or the directory is invalid
-     */
-    public void loadItems(File companyDirectory) throws IOException {
-        this.items.clear();
-        if (companyDirectory == null || !companyDirectory.isDirectory()) {
-            throw new IOException("Company directory is invalid or not provided.");
-        }
-
-        File target = new File(companyDirectory, INVENTORY_FILENAME);
-        if (!target.exists() || target.length() == 0) {
-            return; // nothing to load
-        }
-
-        ObjectMapper mapper = new ObjectMapper();
-        CollectionType listType = mapper.getTypeFactory().constructCollectionType(List.class, InventoryItem.class);
-        try {
-            List<InventoryItem> loaded = mapper.readValue(target, listType);
-            for (InventoryItem item : loaded) {
-                if (item.getId() != null) {
-                    this.items.put(item.getId(), item);
-                }
-            }
-        } catch (IOException ex) {
-            LOGGER.log(Level.SEVERE, "Failed to load inventory from " + target.getAbsolutePath(), ex);
-            throw ex;
-        }
+        System.out.println("Inventory cleared."); // Consider using a logger
     }
 
 	/**

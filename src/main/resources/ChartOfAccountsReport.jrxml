@@ -1,3 +1,4 @@
+
 <!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
 <jasperReport name="ChartOfAccountsReport" language="java" pageWidth="595" pageHeight="842" columnWidth="540" leftMargin="70" rightMargin="70" topMargin="70" bottomMargin="70" uuid="fd45950f-556a-4fa6-a886-c3afc042d3fb">
 	<property name="fontmod" value="nu.lazy8.util.help.FontChangeFunction"/>
@@ -70,4 +71,5 @@
 			<expression><![CDATA[$F{dateToday}]]></expression>
 		</element>
 	</pageFooter>
+
 </jasperReport>

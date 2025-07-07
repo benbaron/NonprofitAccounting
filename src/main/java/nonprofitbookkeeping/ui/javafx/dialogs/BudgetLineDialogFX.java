@@ -181,18 +181,16 @@ public class BudgetLineDialogFX extends Dialog<BudgetLine>
 	private void populateFields()
 	{
 		
-                if (this.budgetLine.getAccountId() != null && this.chartOfAccounts.getAccounts() != null)
-                {
-                        Account existing = this.chartOfAccounts.getAccount(this.budgetLine.getAccountId());
-                        if (existing != null)
-                        {
-                                this.cmbAccount.getSelectionModel().select(existing);
-                        }
-                }
-                else
-                {
-                        this.cmbAccount.getSelectionModel().clearSelection();
-                }
+		if (this.budgetLine.getAccountId() != null && this.chartOfAccounts.getAccounts() != null)
+		{
+			// FIXME
+	//		chartOfAccounts.getAccount(budgetLine.getAccountId())
+	//			.ifPresent(cmbAccount::setValue);
+		}
+		else
+		{
+			this.cmbAccount.getSelectionModel().clearSelection();
+		}
 		
 		this.txtTotalAmount.setText(this.budgetLine.getTotalBudgetedAmount() != null ?
 			this.budgetLine.getTotalBudgetedAmount().toPlainString() : "");

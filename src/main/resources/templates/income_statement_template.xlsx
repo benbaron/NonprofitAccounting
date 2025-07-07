@@ -1,0 +1,16 @@
+Report Generated: ${reportDate}
+For the period: ${reportStartDate} to ${reportEndDate}
+
+Income:
+<jx:forEach items="${incomeItems}" var="item" >
+${item.name} ${item.amount}
+</jx:forEach>
+Total Income: ${totalIncome}
+
+Expenses:
+<jx:forEach items="${expenseItems}" var="item" >
+${item.name} ${item.amount}
+</jx:forEach>
+Total Expenses: ${totalExpenses}
+
+Net Income: ${netIncome}

@@ -17,9 +17,6 @@ import nonprofitbookkeeping.model.budget.Budget;
 import nonprofitbookkeeping.model.budget.BudgetLine;
 import nonprofitbookkeeping.model.budget.Periodicity;
 import nonprofitbookkeeping.ui.javafx.dialogs.BudgetLineDialogFX;
-import nonprofitbookkeeping.service.BudgetService;
-
-import java.io.File;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -39,8 +36,6 @@ public class BudgetPanelFX extends VBox {
     private Budget currentBudget;
     private ChartOfAccounts chartOfAccounts;
     private List<Fund> availableFunds;
-    private BudgetService budgetService;
-    private File companyDirectory;
 
     // UI Components for Budget Properties
     private TextField txtBudgetName;
@@ -70,14 +65,6 @@ public class BudgetPanelFX extends VBox {
         initializeComponents();
         layoutComponents();
         attachListeners();
-    }
-
-    public BudgetPanelFX(BudgetService budgetService, File companyDirectory,
-                         ChartOfAccounts coa, List<Fund> funds, Budget budgetToEdit) {
-        this();
-        this.budgetService = Objects.requireNonNull(budgetService, "BudgetService cannot be null");
-        this.companyDirectory = Objects.requireNonNull(companyDirectory, "Company directory cannot be null");
-        loadBudget(budgetToEdit, coa, funds);
     }
 
     private void initializeComponents() {
@@ -278,54 +265,19 @@ public class BudgetPanelFX extends VBox {
             }
         });
 
-        this.btnSaveBudget.setOnAction(e -> actionSaveBudget());
+        this.btnSaveBudget.setOnAction(e -> {
+            System.out.println("Save Budget clicked.");
+            if (this.currentBudget != null) {
+                System.out.println("Budget Name: " + this.currentBudget.getBudgetName());
+                System.out.println("Fiscal Year: " + this.currentBudget.getFiscalYear());
+                System.out.println("Applicable Fund ID: " + this.currentBudget.getApplicableFundId());
+            }
+        });
         this.btnClose.setOnAction(e -> System.out.println("Close clicked."));
 
         this.btnAddLine.setOnAction(e -> actionAddLine());
         this.btnEditLine.setOnAction(e -> actionEditLine());
         this.btnRemoveLine.setOnAction(e -> actionRemoveLine());
-    }
-
-    private void actionSaveBudget() {
-        if (this.currentBudget == null || this.budgetService == null || this.companyDirectory == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Budget data not fully loaded. Cannot save.");
-            alert.setHeaderText(null);
-            alert.showAndWait();
-            return;
-        }
-
-        try {
-            List<Budget> allBudgets = this.budgetService.loadBudgets(this.companyDirectory);
-            if (allBudgets == null) {
-                allBudgets = new ArrayList<>();
-            }
-
-            String currentId = this.currentBudget.getBudgetId();
-            boolean replaced = false;
-            if (currentId != null) {
-                for (int i = 0; i < allBudgets.size(); i++) {
-                    Budget b = allBudgets.get(i);
-                    if (b != null && currentId.equals(b.getBudgetId())) {
-                        allBudgets.set(i, this.currentBudget);
-                        replaced = true;
-                        break;
-                    }
-                }
-            }
-            if (!replaced) {
-                allBudgets.add(this.currentBudget);
-            }
-
-            this.budgetService.saveBudgets(allBudgets, this.companyDirectory);
-
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Budget saved successfully.");
-            alert.setHeaderText(null);
-            alert.showAndWait();
-        } catch (Exception ex) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Error saving budget: " + ex.getMessage());
-            alert.setHeaderText("Save Error");
-            alert.showAndWait();
-        }
     }
 
     private void actionAddLine() {

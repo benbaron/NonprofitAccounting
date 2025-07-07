@@ -173,6 +173,7 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 			if (reportStream == null)
 			{
 				System.err.println("Cannot find report template: " + "income_statement.jrxml"); 
+
 				throw new java.io.FileNotFoundException(
 					"Report template not found: " + getReportPath());
 			}
