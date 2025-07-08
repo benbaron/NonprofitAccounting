@@ -48,16 +48,7 @@ public class Fund
 		this.balance = BigDecimal.ZERO;
 	}
 	
-	/**  
-	 * Constructor Fund
-	 */
-        public Fund()
-        {
-                this.name = "";
-                this.accountIds = new ArrayList<>();
-                this.balance = BigDecimal.ZERO;
-        }
-	
+
 	/**
 	 * Gets the name of the fund.
 	 * @return The name of the fund.
