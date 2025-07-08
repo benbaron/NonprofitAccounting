@@ -56,11 +56,11 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 	 * {@inheritDoc}
 	 * @return The classpath resource path "jrxml/income_statement.jrxml" for the Income Statement template.
 	 */
-        @Override protected String getReportPath()
-        {
-                // Path relative to the resources directory
-                return "jrxml/income_statement.jrxml";
-        }
+	@Override protected String getReportPath()
+	{
+		// Path relative to the resources directory
+		return "jrxml/income_statement.jrxml";
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -79,10 +79,7 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 		if (company == null || company.getLedger() == null || company.getChartOfAccounts() == null)
 		{
 			System.err.println(
-				"IncomeStatementJasperGenerator: Company, Ledger, or COA is null. Cannot generate data."); // Consider
-																											// using
-																											// a
-																											// logger
+				"IncomeStatementJasperGenerator: Company, Ledger, or COA is null. Cannot generate data."); 
 			return Collections.emptyList();
 		}
 		
@@ -161,17 +158,18 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 		String reportBaseName = "Income_Statement_" +
 			(this.reportContext.getEndDate() != null ? this.reportContext.getEndDate().toString() :
 				LocalDate.now().toString());
-				
-		try {
-			Class<? extends AbstractReportGenerator> clazz = 
+		
+		try
+		{
+			Class<? extends AbstractReportGenerator> clazz =
 				getClass();
 			ClassLoader clazzloader = clazz.getClassLoader();
 			InputStream reportStream = clazzloader.getResourceAsStream("income_statement.jrxml");
-					
+			
 			if (reportStream == null)
 			{
-				System.err.println("Cannot find report template: " + "income_statement.jrxml"); 
-
+				System.err.println("Cannot find report template: " + "income_statement.jrxml");
+				
 				throw new java.io.FileNotFoundException(
 					"Report template not found: " + getReportPath());
 			}
@@ -219,7 +217,8 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 			}
 			else
 			{
-				System.err.println("Report generation failed or file not found for: " + reportBaseName);
+				System.err
+					.println("Report generation failed or file not found for: " + reportBaseName);
 				// If generatedFile is null from export methods (if they can return null on
 				// failure) or if the file doesn't exist after export call.
 				throw new Exception(
@@ -235,5 +234,5 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 		
 		return generatedFile;
 	}
-
+	
 }

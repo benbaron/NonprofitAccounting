@@ -1,3 +1,4 @@
+
 package nonprofitbookkeeping.reports.generator;
 
 import net.sf.jasperreports.engine.*;
@@ -20,45 +21,60 @@ import java.util.Map;
  * to compile and export the {@code AccountSummary.jrxml} template.
  * </p>
  */
-public class AccountSummaryJasperGenerator extends AbstractReportGenerator {
-
-    @Override
-    protected List<AccountSummaryRowBean> getReportData() {
-        // TODO: populate with real data
-        return Collections.emptyList();
-    }
-
-    @Override
-    protected Map<String, Object> getReportParameters() {
-        return Collections.emptyMap();
-    }
-
-    @Override
-    protected String getReportPath() {
-        return "jrxml/AccountSummary.jrxml";
-    }
-
-    @Override
-    public File generateAndExportReport(String format) throws Exception {
-        String jrxml = getReportPath();
-        try (InputStream in = getClass().getClassLoader().getResourceAsStream(jrxml)) {
-            if (in == null) {
-                throw new FileNotFoundException("Report template not found: " + jrxml);
-            }
-            JasperReport report = JasperCompileManager.compileReport(in);
-            JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(getReportData());
-            JasperPrint print = JasperFillManager.fillReport(report, getReportParameters(), ds);
-
-            File outDir = new File(getOutputDirectory());
-            if (!outDir.exists()) {
-                outDir.mkdirs();
-            }
-            String base = "Account_Summary_" + LocalDate.now();
-            File out = new File(outDir, base + ("html".equalsIgnoreCase(format) ? ".html" : ".pdf"));
-            if ("html".equalsIgnoreCase(format)) {
-                return exportToHTML(print, out.getAbsolutePath());
-            }
-            return exportToPDF(print, out.getAbsolutePath());
-        }
-    }
+public class AccountSummaryJasperGenerator extends AbstractReportGenerator
+{
+	
+	@Override protected List<AccountSummaryRowBean> getReportData()
+	{
+		// TODO: populate with real data
+		return Collections.emptyList();
+	}
+	
+	@Override protected Map<String, Object> getReportParameters()
+	{
+		return Collections.emptyMap();
+	}
+	
+	@Override protected String getReportPath()
+	{
+		return "jrxml/AccountSummary.jrxml";
+	}
+	
+	@Override public File generateAndExportReport(String format) throws Exception
+	{
+		String jrxml = getReportPath();
+		
+		try (InputStream in = getClass().getClassLoader().getResourceAsStream(jrxml))
+		{
+			
+			if (in == null)
+			{
+				throw new FileNotFoundException("Report template not found: " + jrxml);
+			}
+			
+			JasperReport report = JasperCompileManager.compileReport(in);
+			JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(getReportData());
+			JasperPrint print = JasperFillManager.fillReport(report, getReportParameters(), ds);
+			
+			File outDir = new File(getOutputDirectory());
+			
+			if (!outDir.exists())
+			{
+				outDir.mkdirs();
+			}
+			
+			String base = "Account_Summary_" + LocalDate.now();
+			File out =
+				new File(outDir, base + ("html".equalsIgnoreCase(format) ? ".html" : ".pdf"));
+			
+			if ("html".equalsIgnoreCase(format))
+			{
+				return exportToHTML(print, out.getAbsolutePath());
+			}
+			
+			return exportToPDF(print, out.getAbsolutePath());
+		}
+		
+	}
+	
 }

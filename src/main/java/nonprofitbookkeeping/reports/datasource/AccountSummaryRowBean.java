@@ -1,3 +1,4 @@
+
 package nonprofitbookkeeping.reports.datasource;
 
 /**
@@ -6,36 +7,108 @@ package nonprofitbookkeeping.reports.datasource;
  * the application can be mapped to the fields defined in
  * {@code AccountSummary.jrxml}.
  */
-public class AccountSummaryRowBean {
-    private String actId;
-    private String invDate;
-    private String commentAll;
-    private String comment;
-    private String customer;
-    private String debitFormat;
-    private String creditFormat;
-    private String accountNum;
-    private String accountName;
-
-    // Standard getters
-    public String getActId() { return actId; }
-    public String getInvDate() { return invDate; }
-    public String getCommentAll() { return commentAll; }
-    public String getComment() { return comment; }
-    public String getCustomer() { return customer; }
-    public String getDebitFormat() { return debitFormat; }
-    public String getCreditFormat() { return creditFormat; }
-    public String getAccountNum() { return accountNum; }
-    public String getAccountName() { return accountName; }
-
-    // Convenience getters matching JRXML field names
-    public String getACT_ID() { return actId; }
-    public String getINVDATE() { return invDate; }
-    public String getCOMMENTALL() { return commentAll; }
-    public String getCOMMENT() { return comment; }
-    public String getCUSTOMER() { return customer; }
-    public String getDEBITFORMAT() { return debitFormat; }
-    public String getCREDITFORMAT() { return creditFormat; }
-    public String getACCOUNTNUM() { return accountNum; }
-    public String getACCOUNTNAME() { return accountName; }
+public class AccountSummaryRowBean
+{
+	private String actId;
+	private String invDate;
+	private String commentAll;
+	private String comment;
+	private String customer;
+	private String debitFormat;
+	private String creditFormat;
+	private String accountNum;
+	private String accountName;
+	
+	// Standard getters
+	public String getActId()
+	{
+		return this.actId;
+	}
+	
+	public String getInvDate()
+	{
+		return this.invDate;
+	}
+	
+	public String getCommentAll()
+	{
+		return this.commentAll;
+	}
+	
+	public String getComment()
+	{
+		return this.comment;
+	}
+	
+	public String getCustomer()
+	{
+		return this.customer;
+	}
+	
+	public String getDebitFormat()
+	{
+		return this.debitFormat;
+	}
+	
+	public String getCreditFormat()
+	{
+		return this.creditFormat;
+	}
+	
+	public String getAccountNum()
+	{
+		return this.accountNum;
+	}
+	
+	public String getAccountName()
+	{
+		return this.accountName;
+	}
+	
+	// Convenience getters matching JRXML field names
+	public String getACT_ID()
+	{
+		return this.actId;
+	}
+	
+	public String getINVDATE()
+	{
+		return this.invDate;
+	}
+	
+	public String getCOMMENTALL()
+	{
+		return this.commentAll;
+	}
+	
+	public String getCOMMENT()
+	{
+		return this.comment;
+	}
+	
+	public String getCUSTOMER()
+	{
+		return this.customer;
+	}
+	
+	public String getDEBITFORMAT()
+	{
+		return this.debitFormat;
+	}
+	
+	public String getCREDITFORMAT()
+	{
+		return this.creditFormat;
+	}
+	
+	public String getACCOUNTNUM()
+	{
+		return this.accountNum;
+	}
+	
+	public String getACCOUNTNAME()
+	{
+		return this.accountName;
+	}
+	
 }
