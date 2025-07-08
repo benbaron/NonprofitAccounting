@@ -19,8 +19,8 @@ import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 // Assuming AccountService.AccountBalance or similar class that
 // getBalanceResults returns
-// import nonprofitbookkeeping.model.Account; // If
-// AccountService.AccountBalance is actually Account
+// import nonprofitbookkeeping.model.Account; 
+// If AccountService.AccountBalance is actually Account
 
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -120,14 +120,15 @@ public class BalanceResultReportGenerator extends AbstractReportGenerator
 	@Override protected String getReportPath()	throws ActionCancelledException,
 												NoFileCreatedException
 	{
-		// Path relative to the root of the classpath (e.g., src/main/resources)
-		return "BalanceResultReport.jrxml";
+		// Path relative to the resources directory
+		// Updated to match the current location of the JRXML template.
+		return "jrxml/balanceReport.jrxml";
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * <p>Fetches data for the Balance Result Report by calling the static method
-	     * {@code AccountService.getBalanceResults(Ledger)}. The returned list should contain
+	 * {@code AccountService.getBalanceResults(Ledger)}. The returned list should contain
 	 * {@link AccountService.AccountBalance} objects or a compatible JavaBean structure
 	 * that matches the fields defined in the {@code BalanceResultReport.jrxml} template
 	 * (e.g., name, number, type, balance_currency_string).

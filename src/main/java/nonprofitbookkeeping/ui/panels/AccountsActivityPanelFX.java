@@ -14,13 +14,20 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import nonprofitbookkeeping.model.Account; 
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.stage.FileChooser;
+import java.io.File;
+import nonprofitbookkeeping.service.FileImportService;
+import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.ChartOfAccounts; 
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Ledger;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
+import nonprofitbookkeeping.service.ReconciliationService;
+import nonprofitbookkeeping.ui.panels.LedgerReconcilePanelFX;
 
 /**
  * A JavaFX panel that displays account activity (transactions) from a given {@link Ledger}.
@@ -177,28 +184,116 @@ public class AccountsActivityPanelFX extends BorderPane
 		return box;
 	}
 	
-	/**
-	 * Creates and configures the HBox pane for action buttons at the bottom of the panel.
-	 * Currently includes "Reconcile" and "Import Statement" buttons with placeholder actions.
-	 *
-	 * @return The configured {@link HBox} containing action buttons.
-	 */
-	private static HBox buttonBar()
-	{
-		HBox box = new HBox(10);
-		box.setPadding(new Insets(10));
-		Button reconcile = new Button("Reconcile");
-		reconcile.setOnAction(
-			e -> new Alert(Alert.AlertType.INFORMATION, 
-				"Reconciliation process would start here.")
-				.showAndWait());
-		Button importBtn = new Button("Import Statement (CSV/QIF/OFX)");
-		importBtn.setOnAction(
-			e -> new Alert(Alert.AlertType.INFORMATION, "Import dialog not implemented.")
-				.showAndWait());
-		box.getChildren().addAll(reconcile, importBtn);
-		return box;
-	}
+        /**
+         * Creates and configures the HBox pane for action buttons at the bottom of the panel.
+         * Includes a "Reconcile" button that launches {@link LedgerReconcilePanelFX}
+         * for the selected account and an "Import Statement" button (still a stub).
+         *
+         * @return The configured {@link HBox} containing action buttons.
+         */
+        private HBox buttonBar()
+        {
+                HBox box = new HBox(10);
+                box.setPadding(new Insets(10));
+                Button reconcile = new Button("Reconcile");
+                reconcile.setOnAction(e -> openReconcileDialog());
+                Button importBtn = new Button("Import Statement (CSV/QIF/OFX)");
+                importBtn.setOnAction(e -> importStatement());
+                box.getChildren().addAll(reconcile, importBtn);
+                return box;
+        }
+
+        /**
+         * Opens the {@link LedgerReconcilePanelFX} dialog for the currently
+         * selected account. The reconciliation panel operates on the
+         * {@link ReconciliationService} and allows the user to mark ledger
+         * transactions as cleared.
+         */
+        private void openReconcileDialog()
+        {
+                Stage stage = new Stage();
+                stage.setTitle("Reconcile");
+                LedgerReconcilePanelFX panel = new LedgerReconcilePanelFX(new ReconciliationService());
+                String acct = this.accountSelector.getValue();
+                if (acct != null)
+                        panel.selectAccount(acct);
+                stage.setScene(new Scene(panel, 900, 600));
+                stage.initOwner(getScene().getWindow());
+                stage.showAndWait();
+        }
+
+        /**
+         * Opens a file chooser to import a bank statement (OFX/QIF) for the
+         * selected account. Parsed transactions are added to the current
+         * company's ledger and persisted.
+         */
+        private void importStatement()
+        {
+                FileChooser chooser = new FileChooser();
+                chooser.setTitle("Import Statement");
+                chooser.getExtensionFilters().addAll(
+                        new FileChooser.ExtensionFilter("OFX/QFX", "*.ofx", "*.qfx"),
+                        new FileChooser.ExtensionFilter("QIF", "*.qif"),
+                        new FileChooser.ExtensionFilter("All files", "*.*"));
+
+                File file = chooser.showOpenDialog(getScene().getWindow());
+
+                if (file == null)
+                        return;
+
+                Company company = CurrentCompany.getCompany();
+
+                if (company == null || company.getLedger() == null || company.getChartOfAccounts() == null)
+                {
+                        new Alert(Alert.AlertType.ERROR, "No company open to import into.").showAndWait();
+                        return;
+                }
+
+                String acctName = this.accountSelector.getValue();
+                if (acctName == null)
+                {
+                        new Alert(Alert.AlertType.WARNING, "No account selected.").showAndWait();
+                        return;
+                }
+
+                Account account = company.getChartOfAccounts().getAccountByName(acctName);
+                if (account == null)
+                {
+                        new Alert(Alert.AlertType.ERROR, "Account not found: " + acctName).showAndWait();
+                        return;
+                }
+
+                List<AccountingTransaction> imported = FileImportService.importFile(
+                        file, account, company.getChartOfAccounts(), company.getLedger());
+
+                if (imported.isEmpty())
+                {
+                        new Alert(Alert.AlertType.INFORMATION,
+                                "No transactions imported from " + file.getName()).showAndWait();
+                        return;
+                }
+
+                for (AccountingTransaction at : imported)
+                {
+                        company.getLedger().getJournal().addTransaction(at);
+                        new ReconciliationService().addTransactionToReconcile(at);
+                }
+
+                this.transactions = company.getLedger().getTransactions();
+                applyFilters();
+
+                try
+                {
+                        CurrentCompany.persist();
+                }
+                catch (Exception ex)
+                {
+                        ex.printStackTrace();
+                }
+
+                new Alert(Alert.AlertType.INFORMATION,
+                        "Imported " + imported.size() + " transactions from " + file.getName()).showAndWait();
+        }
 	
 	/**
 	 * Configures the columns for the transactions {@link TableView}.

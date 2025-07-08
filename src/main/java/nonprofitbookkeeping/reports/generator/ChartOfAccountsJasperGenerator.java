@@ -1,7 +1,10 @@
+
 package nonprofitbookkeeping.reports.generator;
 
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import nonprofitbookkeeping.reports.datasource.ChartOfAccountsRowBean;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,6 +13,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.HashMap;
+
 import java.util.List;
 import java.util.Map;
 
@@ -55,4 +59,5 @@ public class ChartOfAccountsJasperGenerator extends AbstractReportGenerator {
             return exportToPDF(print, outFile.getAbsolutePath());
         }
     }
+
 }
