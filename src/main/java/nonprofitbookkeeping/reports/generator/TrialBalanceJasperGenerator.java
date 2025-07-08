@@ -66,7 +66,7 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 												NoFileCreatedException
 	{
 		// This JRXML already exists in src/main/resources/reports/
-		return "reports/TrialBalanceReport.jrxml";
+		return "TrialBalanceReport.jrxml";
 	}
 	
 	/**

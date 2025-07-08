@@ -107,6 +107,7 @@ public class NonprofitBookkeepingFX extends Application
 	 */
 	private static final class ServiceContainer
 	{
+
 		static InventoryService iss = null;
 		/** Singleton instance of {@link ReportService}. */
 		static ReportService reportService = null;
@@ -116,11 +117,15 @@ public class NonprofitBookkeepingFX extends Application
 		static ReportConfigurationService reportConfigurationService = null;
 		static DocumentStorageService dss  = null;
 		static FundAccountingService fas = null;
+		static DonorService donorService = null;
+		static GrantsService grantsService = null;
+		
 		static
 		{						
 			try
 			{
 				/** Singleton instance of {@link InventoryService}. */
+
 				iss = new InventoryService();
 				/** Singleton instance of {@link ReportService}. */
 				reportService = new ReportService();
@@ -131,11 +136,16 @@ public class NonprofitBookkeepingFX extends Application
 					new ReportConfigurationService();
 				dss = new DocumentStorageService();
 				fas = new FundAccountingService();
+				donorService = new DonorService();
+				grantsService = new GrantsService();
+
 			}
 			catch (Exception e)
 			{
 				e.printStackTrace();
-			}						
+			}
+			
+
 		}
 		
 	}
