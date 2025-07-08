@@ -65,8 +65,8 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 	@Override protected String getReportPath()	throws ActionCancelledException,
 												NoFileCreatedException
 	{
-		// This JRXML already exists in src/main/resources/reports/
-		return "TrialBalanceReport.jrxml";
+		// Path within the resources directory
+		return "jrxml/TrialBalance.jrxml";
 	}
 	
 	/**
@@ -145,8 +145,13 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 		// It seems the JRXML uses lowercase for these specific ones. Let's ensure they
 		// are provided.
 		params.put("reporttitle", "Trial Balance"); // Specific for JRXML
-		params.put("dateToday", LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)); // YYYY-MM-DD format, specific for JRXML
-		params.put("companyname", companyName); // Specific for JRXML, might be redundant with P_COMPANY_NAME if JRXML is standardized
+		params.put("dateToday", LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)); // YYYY-MM-DD
+																							// format,
+																							// specific
+																							// for
+																							// JRXML
+		params.put("companyname", companyName); // Specific for JRXML, might be redundant with
+												// P_COMPANY_NAME if JRXML is standardized
 		
 		return params;
 	}

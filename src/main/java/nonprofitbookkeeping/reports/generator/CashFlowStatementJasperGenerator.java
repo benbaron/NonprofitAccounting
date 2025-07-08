@@ -29,10 +29,10 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 // AbstractReportGenerator
 
 /**
- * Generates a Cash Flow Statement report using JasperReports.
- * This class extends {@link AbstractReportGenerator} and is responsible for
- * providing the specific data, parameters, and JRXML template path for the
- * Cash Flow Statement. It utilizes a {@link ReportService} to prepare the data.
+ * Generates a Cash Flow Statement report using JasperReports. This class
+ * extends {@link AbstractReportGenerator} and is responsible for providing the
+ * specific data, parameters, and JRXML template path for the Cash Flow
+ * Statement. It utilizes a {@link ReportService} to prepare the data.
  */
 public class CashFlowStatementJasperGenerator extends AbstractReportGenerator
 {
@@ -59,7 +59,7 @@ public class CashFlowStatementJasperGenerator extends AbstractReportGenerator
 	 */
 	@Override protected String getReportPath()
 	{
-		return "cash_flow_statement.jrxml";
+		return "jrxml/cash_flow_statement.jrxml";
 	}
 	
 	/**
@@ -79,10 +79,7 @@ public class CashFlowStatementJasperGenerator extends AbstractReportGenerator
 		if (company == null || company.getLedger() == null || company.getChartOfAccounts() == null)
 		{
 			System.err.println(
-				"CashFlowStatementJasperGenerator: Company, Ledger, or COA is null. Cannot generate data."); // Consider
-																												// using
-																												// a
-																												// logger
+				"CashFlowStatementJasperGenerator: Company, Ledger, or COA is null. Cannot generate data."); 
 			return Collections.emptyList();
 		}
 		
