@@ -85,52 +85,10 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		controlsGrid.setVgap(8);
 		controlsGrid.setPadding(new Insets(5));
 		
-		this.accountSelectorComboBox = new ComboBox<>();
-		this.accountSelectorComboBox.setPromptText("Select Account");
-		
-		Company company = CurrentCompany.getCompany();
-		
-		if (company != null && company.getChartOfAccounts() != null)
-		{
-			ChartOfAccounts coa = company.getChartOfAccounts();
-			
-			if (coa.getAccounts() != null)
-			{
-				List<Account> sortedAccounts = coa.getAccounts().stream()
-					.filter(Objects::nonNull)
-					.sorted(Comparator.comparing(Account::getName,
-						String.CASE_INSENSITIVE_ORDER))
-					.collect(Collectors.toList());
-				
-				this.accountSelectorComboBox.setItems(FXCollections
-					.observableArrayList(sortedAccounts));
-				
-				Callback<ListView<Account>, ListCell<Account>> cellFactory =
-					lv -> new ListCell<Account>()
-					{
-						@Override protected void updateItem(Account item, boolean empty)
-						{
-							super.updateItem(item, empty);
-							setText(empty ? null :
-								item.getName() + " (" + item.getAccountNumber() + ")");
-						}
-						
-					};
-				
-				this.accountSelectorComboBox.setCellFactory(cellFactory);
-				this.accountSelectorComboBox.setButtonCell(cellFactory.call(null));
-			}
-			
-		}
-		
-		if (this.accountSelectorComboBox.getItems().isEmpty())
-		{
-			this.accountSelectorComboBox.setPromptText("No accounts in COA");
-		}
-		else
-		{
-			this.accountSelectorComboBox.setPromptText("Select Account");
-		}
+                this.accountSelectorComboBox = new ComboBox<>();
+                this.accountSelectorComboBox.setPromptText("Select Account");
+
+                refreshAccountSelector();
 		
 		this.accountSelectorComboBox.setOnAction(e -> {
 			this.transactionDataList.clear();
@@ -189,9 +147,9 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 	 * and binds them to the properties of the {@link TransactionDisplayRow} class.
 	 * Sets preferred widths and cell alignments for some columns.
 	 */
-	private void setupTableColumns()
-	{
-		this.transactionsTable.getColumns().clear();
+        private void setupTableColumns()
+        {
+                this.transactionsTable.getColumns().clear();
 		
 		TableColumn<TransactionDisplayRow, String> dateCol = new TableColumn<>("Date");
 		dateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
@@ -221,11 +179,66 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		balanceCol.setPrefWidth(120);
 		balanceCol.setStyle("-fx-alignment: CENTER-RIGHT;");
 		
-		this.transactionsTable.getColumns()
-			.addAll(dateCol, idCol,
-				descCol, debitCol, creditCol,
-				balanceCol);
-	}
+                this.transactionsTable.getColumns()
+                        .addAll(dateCol, idCol,
+                                descCol, debitCol, creditCol,
+                                balanceCol);
+        }
+
+        /**
+         * Refreshes the account selector with accounts from the currently open company.
+         * If no company is open or the chart of accounts is empty, the selector
+         * prompt will indicate that no accounts are available.
+         */
+        private void refreshAccountSelector()
+        {
+                this.accountSelectorComboBox.getItems().clear();
+                this.accountSelectorComboBox.setValue(null);
+
+                Company company = CurrentCompany.getCompany();
+
+                if (company != null && company.getChartOfAccounts() != null)
+                {
+                        ChartOfAccounts coa = company.getChartOfAccounts();
+
+                        if (coa.getAccounts() != null)
+                        {
+                                List<Account> sortedAccounts = coa.getAccounts().stream()
+                                        .filter(Objects::nonNull)
+                                        .sorted(Comparator.comparing(Account::getName,
+                                                String.CASE_INSENSITIVE_ORDER))
+                                        .collect(Collectors.toList());
+
+                                this.accountSelectorComboBox.setItems(FXCollections
+                                        .observableArrayList(sortedAccounts));
+
+                                Callback<ListView<Account>, ListCell<Account>> cellFactory =
+                                        lv -> new ListCell<Account>()
+                                        {
+                                                @Override protected void updateItem(Account item, boolean empty)
+                                                {
+                                                        super.updateItem(item, empty);
+                                                        setText(empty ? null :
+                                                                item.getName() + " (" + item.getAccountNumber() + ")");
+                                                }
+
+                                        };
+
+                                this.accountSelectorComboBox.setCellFactory(cellFactory);
+                                this.accountSelectorComboBox.setButtonCell(cellFactory.call(null));
+                        }
+
+                }
+
+                if (this.accountSelectorComboBox.getItems().isEmpty())
+                {
+                        this.accountSelectorComboBox.setPromptText("No accounts in COA");
+                }
+                else
+                {
+                        this.accountSelectorComboBox.setPromptText("Select Account");
+                }
+        }
 	
 	/**
 	 * Loads transaction data into the {@link #transactionsTable} based on the
@@ -480,43 +493,7 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 					.setText("Total Credits: 0.00");
 				AccountTransactionDetailsPanelFX.this.netChangeLabel.setText("Net Change: 0.00");
 				
-				AccountTransactionDetailsPanelFX.this.accountSelectorComboBox.getItems().clear();
-				AccountTransactionDetailsPanelFX.this.accountSelectorComboBox.setValue(null);
-				
-				if (companyNowOpen)
-				{
-					Company company = CurrentCompany.getCompany();
-					
-					if (company != null && company.getChartOfAccounts() != null)
-					{
-						ChartOfAccounts coa = company.getChartOfAccounts();
-						
-						if (coa.getAccounts() != null)
-						{
-							List<Account> sortedAccounts = coa.getAccounts().stream()
-								.filter(Objects::nonNull)
-								.sorted(Comparator.comparing(Account::getName,
-									String.CASE_INSENSITIVE_ORDER))
-								.collect(Collectors.toList());
-							AccountTransactionDetailsPanelFX.this.accountSelectorComboBox
-								.setItems(FXCollections.observableArrayList(sortedAccounts));
-						}
-						
-					}
-					
-				}
-				
-				if (AccountTransactionDetailsPanelFX.this.accountSelectorComboBox.getItems()
-					.isEmpty())
-				{
-					AccountTransactionDetailsPanelFX.this.accountSelectorComboBox
-						.setPromptText("No accounts in COA");
-				}
-				else
-				{
-					AccountTransactionDetailsPanelFX.this.accountSelectorComboBox
-						.setPromptText("Select Account");
-				}
+                                refreshAccountSelector();
 				
 			}
 			

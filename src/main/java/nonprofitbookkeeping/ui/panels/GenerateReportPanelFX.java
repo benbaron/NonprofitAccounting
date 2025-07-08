@@ -50,47 +50,41 @@ public class GenerateReportPanelFX extends BorderPane
 		output.setEditable(false);
 		output.setPrefRowCount(10);
 		
-		generate.setOnAction(e -> {
-			String selectedReport = selector.getValue();
+                generate.setOnAction(e -> {
+                        String selectedReport = selector.getValue();
+                        output.clear();
+                        output.appendText("Generating " + selectedReport + "...\n");
 
-			if ("Trial Balance (Jasper)".equals(selectedReport)) {
-				output.clear();
-				output.appendText("Generating Trial Balance (Jasper) report...\n");
+                        ReportContext context = new ReportContext();
+                        context.setStartDate(LocalDate.now().withDayOfYear(1));
+                        context.setEndDate(LocalDate.now());
+                        context.setOutputFormat("pdf");
 
-				ReportContext context = new ReportContext();
-				context.setReportType("trial_balance_jasper");
-				// Placeholder dates as panel doesn't have its own date pickers
-				context.setStartDate(LocalDate.now().withDayOfYear(1));
-				context.setEndDate(LocalDate.now());
+                        switch (selectedReport) {
+                                case "Income Statement" -> context.setReportType("income_statement_jasper");
+                                case "Balance Sheet" -> {
+                                        context.setReportType("balance_sheet_jasper");
+                                        // Balance sheet typically only needs an end date
+                                }
+                                case "Cash Flow" -> context.setReportType("cash_flow_statement_jasper");
+                                case "Trial Balance (Jasper)" -> context.setReportType("trial_balance_jasper");
+                                default -> {
+                                        output.appendText("Report type not implemented.\n");
+                                        return;
+                                }
+                        }
 
-				try {
-					File generatedFile = reportService.generateJasperReport(context, "pdf");
-					if (generatedFile != null && generatedFile.exists()) {
-						output.appendText("\nReport generated successfully: " + generatedFile.getAbsolutePath());
-						// Optional: try to open the file
-						// try {
-						//     java.awt.Desktop.getDesktop().open(generatedFile);
-						// } catch (java.io.IOException exDesk) {
-						//     output.appendText("\nCould not open file: " + exDesk.getMessage());
-						// } catch (UnsupportedOperationException exUnsup) {
-                        //     output.appendText("\nDesktop operations not supported on this platform.");
-                        // }
-					} else {
-						output.appendText("\nReport generation failed to produce a file.");
-					}
-				} catch (Exception ex) {
-					output.appendText("\nError generating report: " + ex.getMessage());
-					// For debugging, consider: ex.printStackTrace(new java.io.PrintWriter(new javafx.scene.control.TextAreaOutputStream(output)));
-                    // Or simply: ex.printStackTrace(); to console
-				}
-
-			} else {
-				// Keep existing logic for other report types
-				output.setText("Generating report: " + selectedReport + "...\n");
-				new GenerateReportsAction(reportService).actionPerformed(null); // Assuming this is for JXLS or other reports
-				output.appendText("Done. (This is a placeholder for the actual report)");
-			}
-		});
+                        try {
+                                File generatedFile = reportService.generateJasperReport(context, "pdf");
+                                if (generatedFile != null && generatedFile.exists()) {
+                                        output.appendText("\nReport generated successfully: " + generatedFile.getAbsolutePath());
+                                } else {
+                                        output.appendText("\nReport generation failed to produce a file.");
+                                }
+                        } catch (Exception ex) {
+                                output.appendText("\nError generating report: " + ex.getMessage());
+                        }
+                });
 		
 		pane.getChildren().addAll(new Label("Report:"), selector, generate);
 		setTop(new TitledPane("Report Selection", pane)
