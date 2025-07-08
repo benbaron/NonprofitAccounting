@@ -65,6 +65,60 @@ public class TrialBalanceRowBean {
         return this.credit;
     }
 
+    // ---------------------------------------------------------------------
+    // Convenience getters matching field names used in TrialBalance.jrxml
+    // ---------------------------------------------------------------------
+
+    /**
+     * Alias for {@link #getAccountNumber()} to match the JRXML field
+     * name {@code accnum}.
+     *
+     * @return the account number
+     */
+    public String getAccnum() {
+        return getAccountNumber();
+    }
+
+    /**
+     * Alias for {@link #getAccountName()} to match the JRXML field
+     * name {@code accname}.
+     *
+     * @return the account name
+     */
+    public String getAccname() {
+        return getAccountName();
+    }
+
+    /**
+     * Alias for {@link #getDebit()} to match the JRXML field
+     * name {@code incomming}.
+     *
+     * @return the debit amount
+     */
+    public BigDecimal getIncomming() {
+        return getDebit();
+    }
+
+    /**
+     * Returns the balance amount used for the JRXML field {@code amount}.
+     * Here it simply represents the net difference between debit and credit.
+     *
+     * @return debit minus credit
+     */
+    public BigDecimal getAmount() {
+        return this.debit.subtract(this.credit);
+    }
+
+    /**
+     * Alias for {@link #getCredit()} to match the JRXML field
+     * name {@code outgoing}.
+     *
+     * @return the credit amount
+     */
+    public BigDecimal getOutgoing() {
+        return getCredit();
+    }
+
     /**
      * Sets the account number for this row.
      * @param accountNumber The account number string to set.

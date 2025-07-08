@@ -65,8 +65,8 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 	@Override protected String getReportPath()	throws ActionCancelledException,
 												NoFileCreatedException
 	{
-		// This JRXML already exists in src/main/resources/reports/
-		return "TrialBalanceReport.jrxml";
+                // Path within the resources directory
+                return "jrxml/TrialBalance.jrxml";
 	}
 	
 	/**

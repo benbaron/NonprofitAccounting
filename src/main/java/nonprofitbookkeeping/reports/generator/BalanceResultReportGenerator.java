@@ -120,8 +120,9 @@ public class BalanceResultReportGenerator extends AbstractReportGenerator
 	@Override protected String getReportPath()	throws ActionCancelledException,
 												NoFileCreatedException
 	{
-		// Path relative to the root of the classpath (e.g., src/main/resources)
-		return "BalanceResultReport.jrxml";
+                // Path relative to the resources directory
+                // Updated to match the current location of the JRXML template.
+                return "jrxml/balanceReport.jrxml";
 	}
 	
 	/**

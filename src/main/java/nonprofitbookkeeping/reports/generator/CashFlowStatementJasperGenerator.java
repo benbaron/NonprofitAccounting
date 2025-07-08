@@ -57,10 +57,10 @@ public class CashFlowStatementJasperGenerator extends AbstractReportGenerator
 	 * {@inheritDoc}
 	 * @return The classpath resource path "jrxml/cash_flow_statement.jrxml" for the Cash Flow Statement template.
 	 */
-	@Override protected String getReportPath()
-	{
-		return "cash_flow_statement.jrxml";
-	}
+        @Override protected String getReportPath()
+        {
+                return "jrxml/cash_flow_statement.jrxml";
+        }
 	
 	/**
 	 * {@inheritDoc}

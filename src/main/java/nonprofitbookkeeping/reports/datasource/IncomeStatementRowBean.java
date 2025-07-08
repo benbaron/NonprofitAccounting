@@ -52,6 +52,30 @@ public class IncomeStatementRowBean {
         return this.amount;
     }
 
+    // ------------------------------------------------------------------
+    // Convenience getters matching field names in income_statement.jrxml
+    // ------------------------------------------------------------------
+
+    /**
+     * Alias for {@link #getAccountCategory()} to match JRXML field
+     * name {@code account_category}.
+     *
+     * @return the account category
+     */
+    public String getAccount_category() {
+        return getAccountCategory();
+    }
+
+    /**
+     * Alias for {@link #getAccountName()} to match JRXML field name
+     * {@code account_name}.
+     *
+     * @return the account name
+     */
+    public String getAccount_name() {
+        return getAccountName();
+    }
+
     /**
      * Sets the account category for this row.
      * @param accountCategory The account category string to set.

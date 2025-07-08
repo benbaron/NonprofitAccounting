@@ -112,8 +112,8 @@ public class ReportGenerator
 		try
 		{
 			
-			try (var in = ReportGenerator.class
-				.getResourceAsStream("/AccountSummaryReport.jrxml"))
+                        try (var in = ReportGenerator.class
+                                .getResourceAsStream("/jrxml/AccountSummary.jrxml"))
 			{
 				
 				if (in == null)

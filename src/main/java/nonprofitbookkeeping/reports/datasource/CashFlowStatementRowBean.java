@@ -74,6 +74,40 @@ public class CashFlowStatementRowBean {
         return this.itemAmount;
     }
 
+    // ------------------------------------------------------------------
+    // Convenience getters matching field names in cash_flow_statement.jrxml
+    // ------------------------------------------------------------------
+
+    /**
+     * Alias for {@link #getSectionName()} to match JRXML field name
+     * {@code section_name}.
+     *
+     * @return the section name
+     */
+    public String getSection_name() {
+        return getSectionName();
+    }
+
+    /**
+     * Alias for {@link #getItemDescription()} to match JRXML field name
+     * {@code item_description}.
+     *
+     * @return the item description
+     */
+    public String getItem_description() {
+        return getItemDescription();
+    }
+
+    /**
+     * Alias for {@link #getItemAmount()} to match JRXML field name
+     * {@code item_amount}.
+     *
+     * @return the item amount
+     */
+    public BigDecimal getItem_amount() {
+        return getItemAmount();
+    }
+
     /**
      * Checks if this row represents a subtotal.
      * This getter follows a less common naming convention (getIsType).
