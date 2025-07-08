@@ -42,11 +42,11 @@ public class SettingsModel
 	/** Flag indicating whether vouchers/invoices should be auto-numbered. */
 	@JsonProperty private boolean autoNumberVouchers;
 	
-	// UI Preferences
-	/** The name of the UI theme (e.g., "Dark", "Light"). Not marked with @JsonProperty, so might not be persisted via Jackson by default. */
-	private String theme;
-	/** The language code for UI localization (e.g., "en_US", "fr_FR"). Not marked with @JsonProperty. */
-	private String language;
+        // UI Preferences
+        /** The name of the UI theme (e.g., "Dark", "Light"). */
+        @JsonProperty private String theme;
+        /** The language code for UI localization (e.g., "en_US", "fr_FR"). */
+        @JsonProperty private String language;
 	
 	/**
 	 * Represents a user account within the settings model.
