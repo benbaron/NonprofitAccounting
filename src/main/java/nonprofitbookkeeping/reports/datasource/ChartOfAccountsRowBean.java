@@ -2,43 +2,26 @@
 package nonprofitbookkeeping.reports.datasource;
 
 /**
- * Bean representing a row in the Chart of Accounts report.
+ * Bean used for the Chart of Accounts report.
  */
-public class ChartOfAccountsRowBean
-{
-	private String accountNum;
-	private String accountName;
-	private String accountType;
-	
-	public String getAccountNum()
-	{
-		return this.accountNum;
-	}
-	
-	public String getAccountName()
-	{
-		return this.accountName;
-	}
-	
-	public String getAccountType()
-	{
-		return this.accountType;
-	}
-	
-	// JRXML field convenience getters
-	public String getACCOUNTNUM()
-	{
-		return this.accountNum;
-	}
-	
-	public String getACCOUNTNAME()
-	{
-		return this.accountName;
-	}
-	
-	public String getACCOUNTTYPE()
-	{
-		return this.accountType;
-	}
-	
+public class ChartOfAccountsRowBean {
+    private String accountNumber;
+    private String accountName;
+    private String type;
+
+    public ChartOfAccountsRowBean(String accountNumber, String accountName, String type) {
+        this.accountNumber = accountNumber;
+        this.accountName = accountName;
+        this.type = type;
+    }
+
+    public String getAccountNumber() { return accountNumber; }
+    public void setAccountNumber(String accountNumber) { this.accountNumber = accountNumber; }
+
+    public String getAccountName() { return accountName; }
+    public void setAccountName(String accountName) { this.accountName = accountName; }
+
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
+
 }

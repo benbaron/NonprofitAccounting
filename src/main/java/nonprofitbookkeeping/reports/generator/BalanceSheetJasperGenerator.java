@@ -1,10 +1,7 @@
-
 package nonprofitbookkeeping.reports.generator;
 
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import nonprofitbookkeeping.reports.datasource.ChartOfAccountsRowBean;
-
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,14 +10,13 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.HashMap;
-
 import java.util.List;
 import java.util.Map;
 
 /**
- * Generator for the Chart of Accounts report.
+ * Generates a simple Balance Sheet report using JasperReports.
  */
-public class ChartOfAccountsJasperGenerator extends AbstractReportGenerator {
+public class BalanceSheetJasperGenerator extends AbstractReportGenerator {
 
     @Override
     protected List<?> getReportData() {
@@ -30,19 +26,19 @@ public class ChartOfAccountsJasperGenerator extends AbstractReportGenerator {
     @Override
     protected Map<String, Object> getReportParameters() {
         Map<String, Object> params = new HashMap<>();
-        params.put("P_REPORT_TITLE", "Chart of Accounts");
+        params.put("P_REPORT_TITLE", "Balance Sheet");
         params.put("P_GENERATION_DATE", LocalDate.now().format(DateTimeFormatter.ISO_DATE));
         return params;
     }
 
     @Override
     protected String getReportPath() {
-        return "jrxml/ChartOfAccountsAlt.jrxml";
+        return "jrxml/BalanceSheet.jrxml";
     }
 
     @Override
     public File generateAndExportReport(String format) throws Exception {
-        String baseName = "Chart_of_Accounts_" + LocalDate.now();
+        String baseName = "Balance_Sheet_" + LocalDate.now();
         try (InputStream in = getClass().getClassLoader().getResourceAsStream(getReportPath())) {
             if (in == null) {
                 throw new FileNotFoundException("JRXML not found: " + getReportPath());
@@ -59,5 +55,4 @@ public class ChartOfAccountsJasperGenerator extends AbstractReportGenerator {
             return exportToPDF(print, outFile.getAbsolutePath());
         }
     }
-
 }
