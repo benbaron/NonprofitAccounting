@@ -1,4 +1,3 @@
-
 package nonprofitbookkeeping.core;
 
 import nonprofitbookkeeping.api.DataStorer;
@@ -23,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -40,6 +40,7 @@ public class JacksonDataStorer implements DataStorer
 	 */
 	public JacksonDataStorer()
 	{
+
                 this.mapper = new ObjectMapper()
                         .registerModule(new JavaTimeModule())
                         .enable(SerializationFeature.INDENT_OUTPUT)
@@ -181,4 +182,5 @@ public class JacksonDataStorer implements DataStorer
 		return JacksonDataStorer.dataStorer;
 	}
 	
+
 }

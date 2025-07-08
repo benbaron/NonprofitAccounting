@@ -27,10 +27,9 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 // JasperExportManager and HtmlExporter are used in inherited methods
 
 /**
- * Report generator for creating a "Balance Result Report".
- * This report typically shows account balances.
- * It extends {@link AbstractReportGenerator} to leverage common report generation
- * and export functionalities.
+ * Report generator for creating a "Balance Result Report". This report
+ * typically shows account balances. It extends {@link AbstractReportGenerator}
+ * to leverage common report generation and export functionalities.
  */
 public class BalanceResultReportGenerator extends AbstractReportGenerator
 {
@@ -39,14 +38,14 @@ public class BalanceResultReportGenerator extends AbstractReportGenerator
 	 * Constructs a {@code BalanceResultReportGenerator}.
 	 *
 	 * @param accountService The account service, which is currently not directly used by this generator's
-         *                       methods as {@link #getReportData()} makes a static call to
-         *                       {@code AccountService.getBalanceResults(Ledger)}. This parameter might be used
+	 *                       methods as {@link #getReportData()} makes a static call to
+	 *                       {@code AccountService.getBalanceResults(Ledger)}. This parameter might be used
 	 *                       if {@code AccountService} were refactored to be an instance service.
 	 */
 	public BalanceResultReportGenerator(AccountService accountService)
 	{
-                // accountService parameter is not currently used by this generator's methods
-                // as getReportData() calls AccountService.getBalanceResults(Ledger) statically.
+		// accountService parameter is not currently used by this generator's methods
+		// as getReportData() calls AccountService.getBalanceResults(Ledger) statically.
 		// If AccountService were to become an instance service, this would need to
 		// change.
 	}
@@ -122,37 +121,38 @@ public class BalanceResultReportGenerator extends AbstractReportGenerator
 												NoFileCreatedException
 	{
 		// Path relative to the root of the classpath (e.g., src/main/resources)
-		return "reports/BalanceResultReport.jrxml";
+		return "BalanceResultReport.jrxml";
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * <p>Fetches data for the Balance Result Report by calling the static method
-         * {@code AccountService.getBalanceResults(Ledger)}. The returned list should contain
+	     * {@code AccountService.getBalanceResults(Ledger)}. The returned list should contain
 	 * {@link AccountService.AccountBalance} objects or a compatible JavaBean structure
 	 * that matches the fields defined in the {@code BalanceResultReport.jrxml} template
 	 * (e.g., name, number, type, balance_currency_string).
 	 * </p>
 	 * @return A list of {@link AccountService.AccountBalance} objects, or an empty list if no data is available.
 	 */
-        @Override protected List<?> getReportData()
-        {
-                // Fetch the ledger from the currently loaded company if available.
-                Ledger ledger = null;
-                Company currentCompany = CurrentCompany.getCompany();
-                if (currentCompany != null)
-                {
-                        ledger = currentCompany.getLedger();
-                }
-
-                // The data structure returned by AccountService.getBalanceResults(ledger)
-                // must be a List of JavaBeans compatible with the fields defined in
-                // BalanceResultReport.jrxml (name, number, type, balance_currency_string).
-                List<AccountService.AccountBalance> balanceResults =
-                        AccountService.getBalanceResults(ledger);
-
-                return balanceResults != null ? balanceResults : Collections.emptyList();
-        }
+	@Override protected List<?> getReportData()
+	{
+		// Fetch the ledger from the currently loaded company if available.
+		Ledger ledger = null;
+		Company currentCompany = CurrentCompany.getCompany();
+		
+		if (currentCompany != null)
+		{
+			ledger = currentCompany.getLedger();
+		}
+		
+		// The data structure returned by AccountService.getBalanceResults(ledger)
+		// must be a List of JavaBeans compatible with the fields defined in
+		// BalanceResultReport.jrxml (name, number, type, balance_currency_string).
+		List<AccountService.AccountBalance> balanceResults =
+			AccountService.getBalanceResults(ledger);
+		
+		return balanceResults != null ? balanceResults : Collections.emptyList();
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -252,5 +252,5 @@ public class BalanceResultReportGenerator extends AbstractReportGenerator
 		return generatedFile;
 	}
 	
-
+	
 }

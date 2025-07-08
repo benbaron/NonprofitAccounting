@@ -13,6 +13,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -30,6 +31,8 @@ import nonprofitbookkeeping.model.Journal;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 import java.math.BigDecimal;
 import java.util.List;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * A JavaFX panel that displays journal entries from the current company's ledger.
@@ -52,10 +55,12 @@ public class SkeletonJournalPanel extends BorderPane
 	
 	/** TextField for entering search terms to filter journal entries by description or account. */
 	private TextField searchFilterField;
-	/** TextField for entering a date (YYYY-MM-DD) to filter journal entries. */
-	private TextField dateFilterField;
-	/** Button to apply the filters entered in {@link #searchFilterField} and {@link #dateFilterField}. (Currently placeholder) */
-	private Button applyFilterButton;
+        /** Start date picker for filtering journal entries. */
+        private DatePicker startDatePicker;
+        /** End date picker for filtering journal entries. */
+        private DatePicker endDatePicker;
+        /** Button to apply the filters entered in {@link #searchFilterField} and the date range. */
+        private Button applyFilterButton;
 	/** Button to initiate creating a new journal entry. (Currently placeholder) */
 	private Button newEntryButton;
 	/** Button to initiate editing the selected journal entry. (Currently placeholder) */
@@ -98,17 +103,19 @@ public class SkeletonJournalPanel extends BorderPane
 		this.searchFilterField = new TextField();
 		this.searchFilterField.setPromptText("Search description/account...");
 		this.searchFilterField.setPrefWidth(200);
-		// date
-		this.dateFilterField = new TextField();
-		this.dateFilterField.setPromptText("Date (YYYY-MM-DD)");
-		this.dateFilterField.setPrefWidth(150);
-		// apply
-		this.applyFilterButton = new Button("Apply Filter");
-		this.filterControlsBox.getChildren()
-			.addAll(filterLabel,
-				this.searchFilterField,
-				this.dateFilterField,
-				this.applyFilterButton);
+                // date range
+                this.startDatePicker = new DatePicker();
+                this.startDatePicker.setPromptText("Start Date");
+                this.endDatePicker = new DatePicker();
+                this.endDatePicker.setPromptText("End Date");
+                // apply
+                this.applyFilterButton = new Button("Apply Filter");
+                this.filterControlsBox.getChildren()
+                        .addAll(filterLabel,
+                                this.searchFilterField,
+                                this.startDatePicker,
+                                this.endDatePicker,
+                                this.applyFilterButton);
 		
 		// scroll pane
 		this.filterScrollPane = new ScrollPane(this.filterControlsBox);
@@ -193,9 +200,8 @@ public class SkeletonJournalPanel extends BorderPane
 	 * If no company is open or no entries are found, a placeholder message is shown in the table.
 	 */
 	
-	// FIXME: >>>>>>>>> On Journal Change
-	private void loadData()
-	{
+        private void loadData()
+        {
 		this.journalDataList.clear();
 		
 		if (!CurrentCompany.isOpen() || CurrentCompany.getCompany() == null)
@@ -282,15 +288,17 @@ public class SkeletonJournalPanel extends BorderPane
         void onFilterButtonAction()
         {
                 String search = this.searchFilterField.getText().toLowerCase();
-                String date = this.dateFilterField.getText();
+                LocalDate start = this.startDatePicker.getValue();
+                LocalDate end = this.endDatePicker.getValue();
 
                 loadData();
 
-                if ((search == null || search.isBlank()) && (date == null || date.isBlank()))
+                if ((search == null || search.isBlank()) && start == null && end == null)
                 {
                         return; // nothing to filter
                 }
 
+                DateTimeFormatter fmt = DateTimeFormatter.ISO_LOCAL_DATE;
                 ObservableList<JournalDisplayEntry> filtered = FXCollections.observableArrayList();
                 for (JournalDisplayEntry entry : this.journalDataList)
                 {
@@ -300,9 +308,17 @@ public class SkeletonJournalPanel extends BorderPane
                                 match &= entry.descriptionProperty().get().toLowerCase().contains(search)
                                         || entry.accountNameProperty().get().toLowerCase().contains(search);
                         }
-                        if (date != null && !date.isBlank())
+                        if (start != null || end != null)
                         {
-                                match &= entry.dateProperty().get().equals(date);
+                                LocalDate entryDate = LocalDate.parse(entry.dateProperty().get(), fmt);
+                                if (start != null)
+                                {
+                                        match &= !entryDate.isBefore(start);
+                                }
+                                if (end != null)
+                                {
+                                        match &= !entryDate.isAfter(end);
+                                }
                         }
                         if (match)
                         {

@@ -29,16 +29,7 @@ public class Customer
 	 */
 	private String name;
 	
-	/**  
-	 * Constructor Customer
-	 * @param id
-	 * @param name
-	 */
-	public Customer(String id, String name)
-	{
-		this.id = id;
-		this.name = name;
-	}
+
 
 	/**
 	 * @return the id
