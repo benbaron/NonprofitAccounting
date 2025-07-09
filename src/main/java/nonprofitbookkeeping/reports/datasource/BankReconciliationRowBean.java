@@ -21,18 +21,18 @@ public class BankReconciliationRowBean {
         this.balance = balance;
     }
 
-    public String getDate() { return date; }
+    public String getDate() { return this.date; }
     public void setDate(String date) { this.date = date; }
 
-    public String getDescription() { return description; }
+    public String getDescription() { return this.description; }
     public void setDescription(String description) { this.description = description; }
 
-    public BigDecimal getDeposit() { return deposit; }
+    public BigDecimal getDeposit() { return this.deposit; }
     public void setDeposit(BigDecimal deposit) { this.deposit = deposit; }
 
-    public BigDecimal getWithdrawal() { return withdrawal; }
+    public BigDecimal getWithdrawal() { return this.withdrawal; }
     public void setWithdrawal(BigDecimal withdrawal) { this.withdrawal = withdrawal; }
 
-    public BigDecimal getBalance() { return balance; }
+    public BigDecimal getBalance() { return this.balance; }
     public void setBalance(BigDecimal balance) { this.balance = balance; }
 }

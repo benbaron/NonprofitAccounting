@@ -25,6 +25,10 @@ import java.util.stream.Collectors;
  */
 public class BudgetLineDialog extends JDialog
 {
+	/**
+	 * serialVersionUID : long
+	 */
+	private static final long serialVersionUID = 1L;
 	/** The {@link BudgetLine} object being created or edited by this dialog. */
 	private BudgetLine budgetLine;
 	/** Flag indicating whether the user saved the changes (clicked OK) or cancelled the dialog. */

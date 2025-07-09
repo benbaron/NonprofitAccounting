@@ -14,9 +14,9 @@ public class IncomeStatementAltRowBean {
         this.amount = amount;
     }
 
-    public String getAccount() { return account; }
+    public String getAccount() { return this.account; }
     public void setAccount(String account) { this.account = account; }
 
-    public BigDecimal getAmount() { return amount; }
+    public BigDecimal getAmount() { return this.amount; }
     public void setAmount(BigDecimal amount) { this.amount = amount; }
 }

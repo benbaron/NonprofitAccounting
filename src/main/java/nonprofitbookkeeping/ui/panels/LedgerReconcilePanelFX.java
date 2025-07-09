@@ -50,10 +50,6 @@ import com.webcohesion.ofx4j.domain.data.banking.BankStatementResponseTransactio
 public class LedgerReconcilePanelFX extends BorderPane
 {
 	
-	/* ----------------------------------------------------------- */
-	/** Service layer for reconciliation operations, providing access to ledger data. */
-	private final ReconciliationService ledgerSvc;
-	
 	/** ComboBox for selecting the account to reconcile. */
 	private final ComboBox<String> accountBox = new ComboBox<>();
 	/** Label to display the current ledger balance for the selected account. */
@@ -84,7 +80,6 @@ public class LedgerReconcilePanelFX extends BorderPane
 	 */
         public LedgerReconcilePanelFX(ReconciliationService svc)
         {
-                this.ledgerSvc = svc;
                 setPadding(new Insets(10));
                 buildTop();
                 buildTable();

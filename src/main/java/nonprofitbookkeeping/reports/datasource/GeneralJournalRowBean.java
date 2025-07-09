@@ -21,18 +21,18 @@ public class GeneralJournalRowBean {
         this.credit = credit;
     }
 
-    public String getDate() { return date; }
+    public String getDate() { return this.date; }
     public void setDate(String date) { this.date = date; }
 
-    public String getAccount() { return account; }
+    public String getAccount() { return this.account; }
     public void setAccount(String account) { this.account = account; }
 
-    public String getDescription() { return description; }
+    public String getDescription() { return this.description; }
     public void setDescription(String description) { this.description = description; }
 
-    public BigDecimal getDebit() { return debit; }
+    public BigDecimal getDebit() { return this.debit; }
     public void setDebit(BigDecimal debit) { this.debit = debit; }
 
-    public BigDecimal getCredit() { return credit; }
+    public BigDecimal getCredit() { return this.credit; }
     public void setCredit(BigDecimal credit) { this.credit = credit; }
 }

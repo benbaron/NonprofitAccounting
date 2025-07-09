@@ -49,9 +49,7 @@ public class BudgetEditorDialogFX extends Dialog<Budget>
         /** List of available {@link Fund}s to populate the fund selector ComboBox. */
         private List<Fund> availableFunds;
         private ChartOfAccounts chartOfAccounts;
-        private BudgetService budgetService;
-        private File companyDirectory;
-	// UI Fields for Budget Properties
+        // UI Fields for Budget Properties
 	/** TextField for entering or displaying the budget name. */
 	private TextField budgetNameField;
 	/** Spinner for selecting or displaying the fiscal year of the budget. */
@@ -97,8 +95,6 @@ public class BudgetEditorDialogFX extends Dialog<Budget>
                 setTitle(budgetToEdit == null ? "Create New Budget" : "Edit Budget");
 
                 this.chartOfAccounts = chartOfAccounts;
-                this.budgetService = budgetService;
-                this.companyDirectory = companyDirectory;
                 this.availableFunds = (funds != null) ? funds : new ArrayList<>();
 		if (budgetToEdit != null)
 		{

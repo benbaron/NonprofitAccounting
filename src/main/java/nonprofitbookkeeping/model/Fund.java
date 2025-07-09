@@ -49,6 +49,15 @@ public class Fund
 	}
 	
 
+	/**  
+	 * Constructor Fund
+	 */
+	public Fund()
+	{
+		// TODO Auto-generated constructor stub
+	}
+
+
 	/**
 	 * Gets the name of the fund.
 	 * @return The name of the fund.

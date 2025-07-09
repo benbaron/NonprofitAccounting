@@ -116,7 +116,7 @@ public class DonorsPanelFX extends BorderPane
                         DonorContact sel = this.table.getSelectionModel().getSelectedItem();
                         if (sel != null)
                                 {
-                                        this.service.removeDonor(sel.name);
+                                        this.service.removeDonor(sel.getName());
                                         refresh();
                                         save();
                                 }

@@ -18,7 +18,7 @@ public class SalesServiceTest {
 
     @Test
     void saveAndLoad() throws IOException {
-        File dir = tempDir.toFile();
+        File dir = this.tempDir.toFile();
         SalesService service = new SalesService();
         service.addSale(new SaleRecord("1", "2024-01-01", "Item", 2, BigDecimal.TEN, BigDecimal.ONE));
         service.saveSales(dir);

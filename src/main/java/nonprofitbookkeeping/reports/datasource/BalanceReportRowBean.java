@@ -14,53 +14,53 @@ public class BalanceReportRowBean
 	
 	public String getAccountNum()
 	{
-		return accountNum;
+		return this.accountNum;
 	}
 	
 	public String getAccountDesc()
 	{
-		return accountDesc;
+		return this.accountDesc;
 	}
 	
 	public String getFormattedIncomingAmount()
 	{
-		return formattedIncomingAmount;
+		return this.formattedIncomingAmount;
 	}
 	
 	public String getFormattedAmount()
 	{
-		return formattedAmount;
+		return this.formattedAmount;
 	}
 	
 	public String getFormattedOutgoingAmount()
 	{
-		return formattedOutgoingAmount;
+		return this.formattedOutgoingAmount;
 	}
 	
 	// JRXML field convenience getters
 	public String getACCOUNTNUM()
 	{
-		return accountNum;
+		return this.accountNum;
 	}
 	
 	public String getACCOUNTDESC()
 	{
-		return accountDesc;
+		return this.accountDesc;
 	}
 	
 	public String getFORMATED_INCOMMINGAMOUNT()
 	{
-		return formattedIncomingAmount;
+		return this.formattedIncomingAmount;
 	}
 	
 	public String getFORMATED_AMOUNT()
 	{
-		return formattedAmount;
+		return this.formattedAmount;
 	}
 	
 	public String getFORMATED_OUTGOINGAMOUNT()
 	{
-		return formattedOutgoingAmount;
+		return this.formattedOutgoingAmount;
 	}
 	
 }

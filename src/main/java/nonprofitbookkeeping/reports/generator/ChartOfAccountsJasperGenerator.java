@@ -3,9 +3,6 @@ package nonprofitbookkeeping.reports.generator;
 
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import nonprofitbookkeeping.reports.datasource.ChartOfAccountsRowBean;
-
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;

@@ -102,6 +102,18 @@ public class SettingsPanelFX extends BorderPane
 	
 	/* ───────────────────────── Tab builders ───────────────────────── */
 	
+	/**  
+		 * Constructor SettingsPanelFX
+		 * @param stage
+		 */
+		public SettingsPanelFX(Stage stage)
+		{
+			this.service = new SettingsService();
+			this.companyDir = null;
+			// TODO Auto-generated constructor stub
+			this.primaryStage = new Stage();
+		}
+
 	/**
 	 * Builds and returns the "Company Info" tab for the settings panel.
 	 * This tab contains fields for editing basic organization information such as

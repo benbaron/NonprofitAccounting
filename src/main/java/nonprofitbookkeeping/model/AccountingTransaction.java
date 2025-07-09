@@ -91,6 +91,14 @@ public class AccountingTransaction implements Serializable
 		checkArgument(isBalanced(), "Transaction unbalanced");
 	}
 	
+	/**  
+	 * Constructor AccountingTransaction
+	 */
+	public AccountingTransaction()
+	{
+		// TODO Auto-generated constructor stub
+	}
+
 	/**
 	 * Gets the set of accounting entries that make up this transaction.
 	 * @return An unmodifiable set of accounting entries.

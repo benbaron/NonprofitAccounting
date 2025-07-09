@@ -1,5 +1,7 @@
 package nonprofitbookkeeping.core;
 
+import nonprofitbookkeeping.exception.ActionCancelledException;
+import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.model.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -56,7 +58,17 @@ public class JacksonDataStorerMultipleEntriesTest {
         }
 
         JacksonDataStorer dataStorer = new JacksonDataStorer();
-        Company loaded = dataStorer.loadData(Company.class, zipFile);
+        Company loaded = null;
+		
+		try
+		{
+			loaded = dataStorer.loadData(Company.class, zipFile);
+		}
+		catch (IOException | ActionCancelledException | NoFileCreatedException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
         assertNotNull(loaded, "Loaded company should not be null");
         assertEquals("MultiEntry Co", loaded.getCompanyProfileModel().getCompanyName());

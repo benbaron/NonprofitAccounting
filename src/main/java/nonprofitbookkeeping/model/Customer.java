@@ -31,6 +31,16 @@ public class Customer
 	
 
 
+	/**  
+	 * Constructor Customer
+	 * @param object
+	 * @param string
+	 */
+	public Customer(Object object, String string)
+	{
+		// TODO Auto-generated constructor stub
+	}
+
 	/**
 	 * @return the id
 	 */

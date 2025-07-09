@@ -22,7 +22,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import nonprofitbookkeeping.ui.ThemeManager;
 import nonprofitbookkeeping.core.ApplicationContext;
 import nonprofitbookkeeping.core.ApplicationContextImpl;
 import nonprofitbookkeeping.model.Company;
@@ -122,6 +121,7 @@ public class NonprofitBookkeepingFX extends Application
 		static FundAccountingService fas = null;
 		static DonorService donorService = null;
 		static GrantsService grantsService = null;
+		public static SalesService salesService;
 		
 		static
 		{						
@@ -438,8 +438,8 @@ public class NonprofitBookkeepingFX extends Application
 		add(this.panels, "Donations",
 			e -> showPanel(new DonationsPanelFX(this.primaryStage), "Donations"));
                 add(this.panels, "Grants", e -> {
-                        File file = CurrentCompany.getCurrentFile();
-                        showPanel(new GrantsPanelFX(ServiceContainer.grantsService, file), "Grants");
+                        File cfile = CurrentCompany.getCurrentFile();
+                        showPanel(new GrantsPanelFX(ServiceContainer.grantsService, cfile), "Grants");
                 });
                 add(this.panels, "Sales & COG", e -> {
                         File dir = null;

@@ -74,7 +74,7 @@ public class SettingsPanelFXTest extends JavaFXTestBase
 	 * @param string
 	 * @return
 	 */
-	private Matcher hasValue(String string)
+	private Matcher<ComboBox> hasValue(String string)
 	{
 		// TODO Auto-generated method stub
 		return null;
@@ -84,7 +84,7 @@ public class SettingsPanelFXTest extends JavaFXTestBase
 	 * @param string
 	 * @return
 	 */
-	private Matcher hasTextInField(String string)
+	private Matcher<TextField> hasTextInField(String string)
 	{
 		// TODO Auto-generated method stub
 		return null;

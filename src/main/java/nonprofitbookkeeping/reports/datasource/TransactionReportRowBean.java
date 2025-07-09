@@ -20,133 +20,133 @@ public class TransactionReportRowBean
 	
 	public String getActId()
 	{
-		return actId;
+		return this.actId;
 	}
 	
 	public String getInvDate()
 	{
-		return invDate;
+		return this.invDate;
 	}
 	
 	public String getCommentAll()
 	{
-		return commentAll;
+		return this.commentAll;
 	}
 	
 	public String getComment()
 	{
-		return comment;
+		return this.comment;
 	}
 	
 	public String getFileInfo()
 	{
-		return fileInfo;
+		return this.fileInfo;
 	}
 	
 	public String getRegDate()
 	{
-		return regDate;
+		return this.regDate;
 	}
 	
 	public String getAccountNum()
 	{
-		return accountNum;
+		return this.accountNum;
 	}
 	
 	public String getAccountName()
 	{
-		return accountName;
+		return this.accountName;
 	}
 	
 	public String getCustomer()
 	{
-		return customer;
+		return this.customer;
 	}
 	
 	public String getDebitFormat()
 	{
-		return debitFormat;
+		return this.debitFormat;
 	}
 	
 	public String getCreditFormat()
 	{
-		return creditFormat;
+		return this.creditFormat;
 	}
 	
 	// Convenience getters matching JRXML field names
 	public String getact_id()
 	{
-		return actId;
+		return this.actId;
 	}
 	
 	public String getACT_ID()
 	{
-		return actId;
+		return this.actId;
 	}
 	
 	public String getinvdate()
 	{
-		return invDate;
+		return this.invDate;
 	}
 	
 	public String getINVDATE()
 	{
-		return invDate;
+		return this.invDate;
 	}
 	
 	public String getCOMMENTALL()
 	{
-		return commentAll;
+		return this.commentAll;
 	}
 	
 	public String getCOMMENT()
 	{
-		return comment;
+		return this.comment;
 	}
 	
 	public String getfileinfo()
 	{
-		return fileInfo;
+		return this.fileInfo;
 	}
 	
 	public String getFILEINFO()
 	{
-		return fileInfo;
+		return this.fileInfo;
 	}
 	
 	public String getregdate()
 	{
-		return regDate;
+		return this.regDate;
 	}
 	
 	public String getREGDATE()
 	{
-		return regDate;
+		return this.regDate;
 	}
 	
 	public String getACCOUNTNUM()
 	{
-		return accountNum;
+		return this.accountNum;
 	}
 	
 	public String getACCOUNTNAME()
 	{
-		return accountName;
+		return this.accountName;
 	}
 	
 	public String getCUSTOMER()
 	{
-		return customer;
+		return this.customer;
 	}
 	
 	public String getDEBITFORMAT()
 	{
-		return debitFormat;
+		return this.debitFormat;
 	}
 	
 	public String getCREDITFORMAT()
 	{
-		return creditFormat;
+		return this.creditFormat;
 	}
 	
 }
