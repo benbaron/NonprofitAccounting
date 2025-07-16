@@ -40,9 +40,19 @@
 	        </argLine>
 	      </configuration>
 	    </plugin>
-	  </plugins>
-	</build>
-	
+
+        <plugin>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-maven-plugin</artifactId>
+            <version>0.0.8</version>
+            <configuration>
+                <!-- fully‑qualified main class; module name optional -->
+                <mainClass>nonprofitbookkeeping.ui.NonprofitBookkeepingFX</mainClass>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+
 	<repositories>
 	  	<repository>
 	    <id>jitpack.io</id>
@@ -178,6 +188,11 @@
 		<!-- openjfx -->
 		<dependency>
 		    <groupId>org.openjfx</groupId>
+		    <artifactId>javafx-base</artifactId>
+		    <version>${javafx.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.openjfx</groupId>
 		    <artifactId>javafx-controls</artifactId>
 		    <version>${javafx.version}</version>
 		</dependency>
@@ -218,5 +233,5 @@
         </dependency>
 		
 	</dependencies>
-
+	
 </project>
