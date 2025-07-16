@@ -7,6 +7,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.reports.ReportContext; // Added import
+import nonprofitbookkeeping.reports.ReportTemplateScanner;
 import nonprofitbookkeeping.ui.actions.GenerateReportsAction;
 
 import java.io.File; // Added import
@@ -34,16 +35,12 @@ public class GenerateReportPanelFX extends BorderPane
 		pane.setPadding(new Insets(10));
 		pane.setPrefWrapLength(600);
 		
-		ComboBox<String> selector = new ComboBox<>();
-		selector.getItems().addAll(
-        "Income Statement",
-        "Balance Sheet",
-        "Cash Flow",
-        "Trial Balance (Jasper)", // New entry
-        "Donor Summary",
-        "Fund Activity Report"
-    );
-		selector.getSelectionModel().selectFirst();
+                java.util.Map<String, String> templates = ReportTemplateScanner.discoverTemplates();
+                ComboBox<String> selector = new ComboBox<>(
+                                javafx.collections.FXCollections.observableArrayList(templates.keySet()));
+                if (!selector.getItems().isEmpty()) {
+                        selector.getSelectionModel().selectFirst();
+                }
 		
 		Button generate = new Button("Generate Report");
 		TextArea output = new TextArea();
@@ -60,19 +57,12 @@ public class GenerateReportPanelFX extends BorderPane
                         context.setEndDate(LocalDate.now());
                         context.setOutputFormat("pdf");
 
-                        switch (selectedReport) {
-                                case "Income Statement" -> context.setReportType("income_statement_jasper");
-                                case "Balance Sheet" -> {
-                                        context.setReportType("balance_sheet_jasper");
-                                        // Balance sheet typically only needs an end date
-                                }
-                                case "Cash Flow" -> context.setReportType("cash_flow_statement_jasper");
-                                case "Trial Balance (Jasper)" -> context.setReportType("trial_balance_jasper");
-                                default -> {
-                                        output.appendText("Report type not implemented.\n");
-                                        return;
-                                }
+                        String key = templates.get(selectedReport);
+                        if (key == null) {
+                                output.appendText("Report type not implemented.\n");
+                                return;
                         }
+                        context.setReportType(key);
 
                         try {
                                 File generatedFile = reportService.generateJasperReport(context, "pdf");
