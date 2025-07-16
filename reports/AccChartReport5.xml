@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE report PUBLIC "-//JFreeReport//DTD report definition//EN//simple"
+                        "http://jfreereport.sourceforge.net/report.dtd">
+
+<!-- Changing this file will change the Chart of Accounts report layout.
+If you ruin this file beyond all hope, just delete the file and 
+the next time you create the report in Lazy8Ledger, then the file will 
+automatically be recreated in its original form in the reports directory again
+-->
+
+<report name="Chart of Accounts report" orientation="portrait" topmargin="70" leftmargin="70" bottommargin="70" rightmargin="70">
+    <reportheader height="110" fontname="SansSerif" fontstyle="bold" fontsize="9">
+       <string-field  x="55%" y="1" width="45%" height="16" alignment="right" fieldname="chartaccountreport" fontsize="16"/>
+       <string-field  x="1" y="1" width="50%" height="16" alignment="left" fieldname="reporttitle" fontsize="16"/>
+       <line  x1="0" y1="18" x2="0" y2="18" weight="2.0"/>
+       <image-field   x="250" y="21" width="100%" height="67" fieldname="iconheader" dynamic="false" keepAspectRatio="true" />
+       <string-field  x="1"  y="19" width="118" height="10" alignment="left" fieldname="reportdate"/>
+       <string-field  x="120" y="19" width="128" height="10" alignment="left" fieldname="dateToday"/>
+       <string-field  x="1"  y="29" width="118" height="10" alignment="left" fieldname="companytext"/>
+       <string-field  x="120" y="29" width="128" height="10" alignment="left" fieldname="company"/>
+       <label  x="120" y="39" width="238" height="10" alignment="left"> </label>
+       <line name="linerepheadbottom" x1="0" y1="90" x2="0" y2="90" weight="3.0"/>
+    </reportheader>
+
+    <reportfooter height="48" fontname="SansSerif" fontstyle="bold" fontsize="16">
+    </reportfooter>
+
+    <pageheader height="30" fontname="SansSerif" fontstyle="bold" fontsize="9">
+    </pageheader>
+
+    <pagefooter height="18">
+      <string-field fieldname="pageXofY" x="50%" y="4" width="100%" height="18" alignment="right"/>
+      <string-field fieldname="dateToday" x="0" y="4" width="100" height="18" alignment="left"/>
+    </pagefooter>
+
+    <groups>
+        <group name="JUST A HEADER Group">
+            <groupheader height="14" fontname="SansSerif" fontstyle="plain" fontsize="9" pagebreak="false">
+              <string-field  x="1" y="1" width="39" height="7" alignment="left" fieldname="accnum" fontstyle="bold" fontsize="6"/>
+              <string-field  x="40" y="1" width="309" height="7" alignment="left" fieldname="accname" fontstyle="bold" fontsize="6"/>
+              <string-field  x="350" y="1" width="100%" height="7" alignment="left" fieldname="isdebit" fontstyle="bold" fontsize="6"/>
+              <line name="line1" x1="0" y1="9" x2="0" y2="9" weight="0.5"/>
+            </groupheader>
+            <groupfooter height="25" fontname="SansSerif" fontstyle="plain" fontsize="8">
+            </groupfooter>
+            <fields>
+            </fields>
+        </group>
+    </groups>
+
+    <items height="10" fontname="SansSerif" fontstyle="plain" fontsize="8">
+        <string-field x="0" y="0" width="39" height="8" alignment="left" fieldname="ACCOUNTNUM" />
+        <string-field x="40" y="0" width="109" height="8" alignment="left" fieldname="ACCOUNTNAME" />
+        <string-field x="350" y="0" width="100%" height="8" alignment="left" fieldname="ACCOUNTTYPE" />
+    </items>
+
+    <functions>
+    <!-- WARNING!!!! FontChangeFunction will change all the font names in this report!!!!!!!!  
+    Remove this function if you want to customize the font names-->
+    <function name="fontmod" class="nu.lazy8.util.help.FontChangeFunction" />
+    
+    <function name="PageNumber" class="org.jfree.report.function.PageFunction"/>
+    <function name="PageTotal" class="org.jfree.report.function.PageTotalFunction"/>
+      <expression name="pageXofY" class="org.jfree.report.function.TextFormatExpression">
+        <properties>
+          <property name="pattern">Page {0} ({1})</property>
+          <property name="0">PageNumber</property>
+          <property name="1">PageTotal</property>
+        </properties>
+      </expression>
+      <property-ref name="dateToday"/>
+      <property-ref name="reporttitle"/>
+      <property-ref name="chartaccountreport"/>
+      <property-ref name="accnum"/>
+      <property-ref name="accname"/>
+      <property-ref name="company"/>
+      <property-ref name="companytext"/>
+      <property-ref name="isdebit"/>
+      <property-ref name="iconheader"/>
+      <property-ref name="reportdate"/>
+    </functions>
+</report>
