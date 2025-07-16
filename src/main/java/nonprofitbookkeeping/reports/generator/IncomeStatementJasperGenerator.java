@@ -161,14 +161,14 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 		
 		try
 		{
-			Class<? extends AbstractReportGenerator> clazz =
-				getClass();
-			ClassLoader clazzloader = clazz.getClassLoader();
-			InputStream reportStream = clazzloader.getResourceAsStream("income_statement.jrxml");
+                        Class<? extends AbstractReportGenerator> clazz =
+                                getClass();
+                        ClassLoader clazzloader = clazz.getClassLoader();
+                        InputStream reportStream = clazzloader.getResourceAsStream(getReportPath());
 			
 			if (reportStream == null)
 			{
-				System.err.println("Cannot find report template: " + "income_statement.jrxml");
+                                System.err.println("Cannot find report template: " + getReportPath());
 				
 				throw new java.io.FileNotFoundException(
 					"Report template not found: " + getReportPath());
