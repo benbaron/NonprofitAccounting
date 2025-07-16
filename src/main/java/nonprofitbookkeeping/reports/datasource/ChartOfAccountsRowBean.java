@@ -25,7 +25,7 @@ public class ChartOfAccountsRowBean {
     public void setType(String type) { this.type = type; }
 
     // ------------------------------------------------------------------
-    // Convenience getters matching field names in ChartOfAccountsAlt.jrxml
+    // Convenience getters matching field names in ChartOfAccounts*.jrxml
     // ------------------------------------------------------------------
 
     /**
@@ -43,5 +43,29 @@ public class ChartOfAccountsRowBean {
      * @return the account name
      */
     public String getAccount_name() { return getAccountName(); }
+
+    /**
+     * Alias for {@link #getAccountNumber()} matching the uppercase JRXML field
+     * name {@code ACCOUNTNUM} used by older templates.
+     *
+     * @return the account number
+     */
+    public String getACCOUNTNUM() { return getAccountNumber(); }
+
+    /**
+     * Alias for {@link #getAccountName()} matching the uppercase JRXML field
+     * name {@code ACCOUNTNAME} used by older templates.
+     *
+     * @return the account name
+     */
+    public String getACCOUNTNAME() { return getAccountName(); }
+
+    /**
+     * Alias for {@link #getType()} matching the uppercase JRXML field
+     * name {@code ACCOUNTTYPE} used by older templates.
+     *
+     * @return the account type
+     */
+    public String getACCOUNTTYPE() { return getType(); }
 
 }
