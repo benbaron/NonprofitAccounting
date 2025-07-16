@@ -55,14 +55,10 @@ public class ReportService
 	/** Logger for this class. */
 	private static final Logger LOGGER = Logger.getLogger(ReportService.class.getName());
 	/** Standard date formatter (ISO Local Date, e.g., "YYYY-MM-DD") used in some report outputs. */
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
-
-    /** Map of registered report writers keyed by report type. */
-    private final Map<String, LedgerReportWriter> writerMap = new HashMap<>();
+	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
 	
-	
-
-	
+	/** Map of registered report writers keyed by report type. */
+	private final Map<String, LedgerReportWriter> writerMap = new HashMap<>();
 	
 	
 	/**
@@ -77,10 +73,8 @@ public class ReportService
 	 *         totals, net income, and report date information.
 	 * @throws IllegalArgumentException if start date or end date is not provided in the {@code context}.
 	 */
-	static
-			Map<String, Object>
-			prepareIncomeStatementContext(	ReportContext context, Ledger ledger,
-											ChartOfAccounts chartOfAccounts)
+	static Map<String, Object> prepareIncomeStatementContext(	ReportContext context, Ledger ledger,
+																ChartOfAccounts chartOfAccounts)
 	{
 		Map<String, BigDecimal> incomeTotals = new HashMap<>();
 		Map<String, BigDecimal> expenseTotals = new HashMap<>();
@@ -92,8 +86,7 @@ public class ReportService
 		}
 		
 		List<String> selectedFundNames = context.getFundIds();
-		boolean applyFundFilter =
-			(selectedFundNames != null && !selectedFundNames.isEmpty());
+		boolean applyFundFilter = (selectedFundNames != null && !selectedFundNames.isEmpty());
 		
 		long startDateMillis =
 			context.getStartDate().atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
@@ -121,14 +114,13 @@ public class ReportService
 				
 				if (entries == null)
 				{
-					LOGGER.fine(
-						"Transaction with ID " + transaction.getBookingDateTimestamp() + // Consider
-																							// Level.FINE
-																							// for
-																							// less
-																							// critical
-																							// logs
-							" has no entries.");
+					LOGGER.fine("Transaction with ID " + transaction.getBookingDateTimestamp() + // Consider
+																									// Level.FINE
+																									// for
+																									// less
+																									// critical
+																									// logs
+						" has no entries.");
 					entries = new java.util.HashSet<>(); // Ensure non-null for iteration
 				}
 				
@@ -142,16 +134,14 @@ public class ReportService
 					if (account == null)
 					{
 						LOGGER.warning(
-							"IS: Account not found for number: " +
-								entry.getAccountNumber());
+							"IS: Account not found for number: " + entry.getAccountNumber());
 						continue;
 					}
 					
 					if (applyFundFilter)
 					{
 						
-						if (!doesAccountMatchFunds(account, selectedFundNames,
-							chartOfAccounts))
+						if (!doesAccountMatchFunds(account, selectedFundNames, chartOfAccounts))
 						{
 							continue;
 						}
@@ -164,8 +154,7 @@ public class ReportService
 					if (accountType == null)
 					{
 						LOGGER.warning("IS: Account type is null for account: " +
-							account.getName() + " (ID: " + account.getAccountNumber() +
-							")");
+							account.getName() + " (ID: " + account.getAccountNumber() + ")");
 						continue;
 					}
 					
@@ -214,11 +203,9 @@ public class ReportService
 		BigDecimal netIncome = totalIncome.subtract(totalExpenses);
 		
 		List<Map<String, Object>> incomeItems = new ArrayList<>();
-		incomeTotals
-			.forEach((name, bal) -> incomeItems.add(Map.of("name", name, "amount", bal)));
+		incomeTotals.forEach((name, bal) -> incomeItems.add(Map.of("name", name, "amount", bal)));
 		List<Map<String, Object>> expenseItems = new ArrayList<>();
-		expenseTotals
-			.forEach((name, bal) -> expenseItems.add(Map.of("name", name, "amount", bal)));
+		expenseTotals.forEach((name, bal) -> expenseItems.add(Map.of("name", name, "amount", bal)));
 		
 		Map<String, Object> jxlsContext = new HashMap<>();
 		jxlsContext.put("incomeItems", incomeItems);
@@ -243,8 +230,7 @@ public class ReportService
 	 *         or if the {@code account} is not null, has associated funds, and at least one of its
 	 *         associated funds is in the {@code selectedFundNames} list. Returns {@code false} otherwise.
 	 */
-	private static boolean doesAccountMatchFunds(	Account account,
-													List<String> selectedFundNames,
+	private static boolean doesAccountMatchFunds(	Account account, List<String> selectedFundNames,
 													ChartOfAccounts chartOfAccounts)
 	{
 		
@@ -258,22 +244,22 @@ public class ReportService
 			return false; // Null account cannot match.
 		}
 		
-                List<String> associatedFunds = account.getAssociatedFundIds();
-
-                if (associatedFunds == null || associatedFunds.isEmpty())
-                {
-                        return false; // Account has no associated funds, so cannot match specific fund
-							// selection.
+		List<String> associatedFunds = account.getAssociatedFundIds();
+		
+		if (associatedFunds == null || associatedFunds.isEmpty())
+		{
+			return false; // Account has no associated funds, so cannot match specific fund
+			// selection.
 		}
 		
-                for (String fundId : associatedFunds)
-                {
-
-                        if (fundId != null && selectedFundNames.contains(fundId))
-                        {
-                                return true; // Account is associated with at least one of the selected
-                                                                // funds.
-                        }
+		for (String fundId : associatedFunds)
+		{
+			
+			if (fundId != null && selectedFundNames.contains(fundId))
+			{
+				return true; // Account is associated with at least one of the selected
+								// funds.
+			}
 			
 		}
 		
@@ -292,8 +278,7 @@ public class ReportService
 	 *         totals, net income, and report date information.
 	 * @throws IllegalArgumentException if end date is not provided in the {@code context}.
 	 */
-	static Map<String, Object> prepareBalanceSheetContext(	ReportContext context,
-															Ledger ledger,
+	static Map<String, Object> prepareBalanceSheetContext(	ReportContext context, Ledger ledger,
 															ChartOfAccounts chartOfAccounts)
 	{
 		Map<String, BigDecimal> assetTotals = new HashMap<>();
@@ -302,20 +287,19 @@ public class ReportService
 		
 		if (context.getEndDate() == null)
 		{
-			throw new IllegalArgumentException(
-				"End date must be provided for balance sheet.");
+			throw new IllegalArgumentException("End date must be provided for balance sheet.");
 		}
 		
 		LocalDate reportEndDate = context.getEndDate();
 		
 		List<String> selectedFundNames = context.getFundIds();
-		boolean applyFundFilter =
-			(selectedFundNames != null && !selectedFundNames.isEmpty());
+		boolean applyFundFilter = (selectedFundNames != null && !selectedFundNames.isEmpty());
 		
 		for (Account account : chartOfAccounts.getAccounts())
 		{
-			if (account == null || account.getAccountType() == null ||
-				account.getName() == null) // Use direct enum
+			if (account == null || account.getAccountType() == null || account.getName() == null) // Use
+																									// direct
+																									// enum
 				continue;
 			
 			if (applyFundFilter &&
@@ -324,16 +308,14 @@ public class ReportService
 				continue;
 			}
 			
-			BigDecimal finalBalance =
-				getAccountBalanceAsOfDate(account, reportEndDate, ledger,
-					chartOfAccounts, selectedFundNames, applyFundFilter);
+			BigDecimal finalBalance = getAccountBalanceAsOfDate(account, reportEndDate, ledger,
+				chartOfAccounts, selectedFundNames, applyFundFilter);
 			
 			AccountType accountType = account.getAccountType(); // Use direct enum
 			
 			if (accountType == null)
 			{
-				LOGGER
-					.warning("BS: Account type is null for account: " + account.getName());
+				LOGGER.warning("BS: Account type is null for account: " + account.getName());
 				continue;
 			}
 			
@@ -365,10 +347,9 @@ public class ReportService
 		}
 		
 		ReportContext netIncomeCalcContext = new ReportContext();
-		LocalDate netIncomeStartDate =
-			(context.getStartDate() != null) ? context.getStartDate() :
-				reportEndDate.withDayOfYear(1); // Default to start of the year of
-												// reportEndDate
+		LocalDate netIncomeStartDate = (context.getStartDate() != null) ? context.getStartDate() :
+			reportEndDate.withDayOfYear(1); // Default to start of the year of
+											// reportEndDate
 		
 		if (netIncomeStartDate.isAfter(reportEndDate))
 		{
@@ -404,19 +385,17 @@ public class ReportService
 		
 		if (totalAssets.compareTo(totalLiabilitiesAndEquity) != 0)
 		{
-			LOGGER.warning("Balance Sheet (fund-filtered: " + applyFundFilter +
-				") out of balance! Assets: " + totalAssets +
-				", Liabilities + Equity: " + totalLiabilitiesAndEquity +
-				". Difference: " + totalAssets.subtract(totalLiabilitiesAndEquity));
+			LOGGER.warning(
+				"Balance Sheet (fund-filtered: " + applyFundFilter + ") out of balance! Assets: " +
+					totalAssets + ", Liabilities + Equity: " + totalLiabilitiesAndEquity +
+					". Difference: " + totalAssets.subtract(totalLiabilitiesAndEquity));
 		}
 		
 		List<Map<String, Object>> assetItems = new ArrayList<>();
-		assetTotals
-			.forEach((name, bal) -> assetItems.add(Map.of("name", name, "amount", bal)));
+		assetTotals.forEach((name, bal) -> assetItems.add(Map.of("name", name, "amount", bal)));
 		List<Map<String, Object>> liabilityItems = new ArrayList<>();
 		liabilityTotals
-			.forEach(
-				(name, bal) -> liabilityItems.add(Map.of("name", name, "amount", bal)));
+			.forEach((name, bal) -> liabilityItems.add(Map.of("name", name, "amount", bal)));
 		List<Map<String, Object>> equityItems = new ArrayList<>();
 		equityTotals.entrySet().stream()
 			// .filter(entry -> !entry.getKey().equals("Current Period Net Income")) // No
@@ -443,75 +422,78 @@ public class ReportService
 																			// Income was
 																			// calculated
 		jxlsContext.put("reportDate", LocalDate.now().toString());
-        jxlsContext.put("assetsEqualsLiabilitiesPlusEquity",
-                        totalAssets.compareTo(totalLiabilitiesAndEquity) == 0);
-
-        return jxlsContext;
-    }
-
-    /**
-     * Calculates the balance of the provided account using the supplied
-     * collection of accounting entries. The account's opening balance is used
-     * as the starting value and each entry is applied according to the account's
-     * {@link AccountSide increase side}.
-     *
-     * @param account the {@link Account} whose balance should be calculated
-     * @param entries the accounting entries affecting the account. Entries for
-     *                other accounts are ignored
-     * @return the resulting balance as a {@link BigDecimal}
-     */
-    public static BigDecimal calculateBalanceForAccount(Account account,
-            Collection<AccountingEntry> entries)
-    {
-        if (account == null)
-        {
-            throw new NullPointerException("Account cannot be null for balance calculation.");
-        }
-
-        BigDecimal balance = account.getOpeningBalance() == null ? BigDecimal.ZERO
-                : account.getOpeningBalance();
-
-        if (entries == null)
-        {
-            return balance;
-        }
-
-        AccountSide increaseSide = account.getIncreaseSide();
-        if (increaseSide == null)
-        {
-            LOGGER.warning(
-                    "Account " + account.getAccountNumber() + " has no defined increase side.");
-            return balance;
-        }
-
-        for (AccountingEntry entry : entries)
-        {
-            if (entry == null || entry.getAmount() == null)
-                continue;
-
-            if (!account.getAccountNumber().equals(entry.getAccountNumber()))
-            {
-                continue;
-            }
-
-            if (increaseSide == AccountSide.DEBIT)
-            {
-                if (entry.getAccountSide() == AccountSide.DEBIT)
-                    balance = balance.add(entry.getAmount());
-                else
-                    balance = balance.subtract(entry.getAmount());
-            }
-            else
-            {
-                if (entry.getAccountSide() == AccountSide.CREDIT)
-                    balance = balance.add(entry.getAmount());
-                else
-                    balance = balance.subtract(entry.getAmount());
-            }
-        }
-
-        return balance;
-    }
+		jxlsContext.put("assetsEqualsLiabilitiesPlusEquity",
+			totalAssets.compareTo(totalLiabilitiesAndEquity) == 0);
+		
+		return jxlsContext;
+	}
+	
+	/**
+	 * Calculates the balance of the provided account using the supplied
+	 * collection of accounting entries. The account's opening balance is used
+	 * as the starting value and each entry is applied according to the account's
+	 * {@link AccountSide increase side}.
+	 *
+	 * @param account the {@link Account} whose balance should be calculated
+	 * @param entries the accounting entries affecting the account. Entries for
+	 *                other accounts are ignored
+	 * @return the resulting balance as a {@link BigDecimal}
+	 */
+	public static BigDecimal calculateBalanceForAccount(Account account,
+														Collection<AccountingEntry> entries)
+	{
+		
+		if (account == null)
+		{
+			throw new NullPointerException("Account cannot be null for balance calculation.");
+		}
+		
+		BigDecimal balance =
+			account.getOpeningBalance() == null ? BigDecimal.ZERO : account.getOpeningBalance();
+		
+		if (entries == null)
+		{
+			return balance;
+		}
+		
+		AccountSide increaseSide = account.getIncreaseSide();
+		
+		if (increaseSide == null)
+		{
+			LOGGER.warning(
+				"Account " + account.getAccountNumber() + " has no defined increase side.");
+			return balance;
+		}
+		
+		for (AccountingEntry entry : entries)
+		{
+			if (entry == null || entry.getAmount() == null)
+				continue;
+			
+			if (!account.getAccountNumber().equals(entry.getAccountNumber()))
+			{
+				continue;
+			}
+			
+			if (increaseSide == AccountSide.DEBIT)
+			{
+				if (entry.getAccountSide() == AccountSide.DEBIT)
+					balance = balance.add(entry.getAmount());
+				else
+					balance = balance.subtract(entry.getAmount());
+			}
+			else
+			{
+				if (entry.getAccountSide() == AccountSide.CREDIT)
+					balance = balance.add(entry.getAmount());
+				else
+					balance = balance.subtract(entry.getAmount());
+			}
+			
+		}
+		
+		return balance;
+	}
 	
 	/**
 	 * Calculates the balance of a specific account as of a given date.
@@ -529,64 +511,64 @@ public class ReportService
 	 * @return The calculated balance of the account as a {@link BigDecimal}.
 	 * @throws NullPointerException if {@code account}, {@code date}, or {@code ledger} is null.
 	 */
-        static BigDecimal getAccountBalanceAsOfDate(Account account, LocalDate date,
-                                                                               Ledger ledger,
-                                                                               ChartOfAccounts chartOfAccounts,
-                                                                               List<String> selectedFundNames,
-                                                                               boolean applyFundFilter)
-        {
-                if (account == null)
-                        throw new NullPointerException(
-                                "Account cannot be null for balance calculation.");
-                if (date == null)
-                        throw new NullPointerException("Date cannot be null for balance calculation.");
-                if (ledger == null)
-                        throw new NullPointerException(
-                                "Ledger cannot be null for balance calculation.");
-
-                if (applyFundFilter &&
-                        !doesAccountMatchFunds(account, selectedFundNames, chartOfAccounts))
-                {
-                        return BigDecimal.ZERO;
-                }
-
-                long endDateMillisInclusive = // Inclusive of the 'date'
-                        date.atTime(23, 59, 59, 999999999).atZone(ZoneOffset.UTC).toInstant()
-                                .toEpochMilli();
-
-                List<AccountingEntry> relevantEntries = new ArrayList<>();
-                List<AccountingTransaction> transactions = ledger.getTransactions();
-                if (transactions != null)
-                {
-                        for (AccountingTransaction transaction : transactions)
-                        {
-                                if (transaction == null ||
-                                        transaction.getBookingDateTimestamp() > endDateMillisInclusive)
-                                {
-                                        continue;
-                                }
-
-                                Set<AccountingEntry> entries = transaction.getEntries();
-                                if (entries == null)
-                                        continue;
-
-                                for (AccountingEntry entry : entries)
-                                {
-                                        if (entry == null || entry.getAmount() == null)
-                                                continue;
-
-                                        if (!account.getAccountNumber().equals(entry.getAccountNumber()))
-                                        {
-                                                continue;
-                                        }
-
-                                        relevantEntries.add(entry);
-                                }
-                        }
-                }
-
-                return calculateBalanceForAccount(account, relevantEntries);
-        }
+	static BigDecimal getAccountBalanceAsOfDate(Account account, LocalDate date, Ledger ledger,
+												ChartOfAccounts chartOfAccounts,
+												List<String> selectedFundNames,
+												boolean applyFundFilter)
+	{
+		if (account == null)
+			throw new NullPointerException("Account cannot be null for balance calculation.");
+		if (date == null)
+			throw new NullPointerException("Date cannot be null for balance calculation.");
+		if (ledger == null)
+			throw new NullPointerException("Ledger cannot be null for balance calculation.");
+		
+		if (applyFundFilter && !doesAccountMatchFunds(account, selectedFundNames, chartOfAccounts))
+		{
+			return BigDecimal.ZERO;
+		}
+		
+		long endDateMillisInclusive = // Inclusive of the 'date'
+			date.atTime(23, 59, 59, 999999999).atZone(ZoneOffset.UTC).toInstant().toEpochMilli();
+		
+		List<AccountingEntry> relevantEntries = new ArrayList<>();
+		List<AccountingTransaction> transactions = ledger.getTransactions();
+		
+		if (transactions != null)
+		{
+			
+			for (AccountingTransaction transaction : transactions)
+			{
+				
+				if (transaction == null ||
+					transaction.getBookingDateTimestamp() > endDateMillisInclusive)
+				{
+					continue;
+				}
+				
+				Set<AccountingEntry> entries = transaction.getEntries();
+				if (entries == null)
+					continue;
+				
+				for (AccountingEntry entry : entries)
+				{
+					if (entry == null || entry.getAmount() == null)
+						continue;
+					
+					if (!account.getAccountNumber().equals(entry.getAccountNumber()))
+					{
+						continue;
+					}
+					
+					relevantEntries.add(entry);
+				}
+				
+			}
+			
+		}
+		
+		return calculateBalanceForAccount(account, relevantEntries);
+	}
 	
 	/**
 	 * Prepares the context map with data needed for generating a Trial Balance report using JXLS.
@@ -600,8 +582,7 @@ public class ReportService
 	 *         total debits, total credits, report date information, and a flag indicating if totals match.
 	 * @throws IllegalArgumentException if end date is not provided in the {@code context}.
 	 */
-	static Map<String, Object> prepareTrialBalanceContext(	ReportContext context,
-															Ledger ledger,
+	static Map<String, Object> prepareTrialBalanceContext(	ReportContext context, Ledger ledger,
 															ChartOfAccounts chartOfAccounts)
 	{
 		List<Map<String, Object>> trialBalanceItems = new ArrayList<>();
@@ -610,27 +591,23 @@ public class ReportService
 		
 		if (context.getEndDate() == null)
 		{
-			throw new IllegalArgumentException(
-				"End date must be provided for Trial Balance.");
+			throw new IllegalArgumentException("End date must be provided for Trial Balance.");
 		}
 		
 		LocalDate reportEndDate = context.getEndDate();
 		long reportEndDateMillisExclusive = // Transactions strictly before the start of the
 											// next day
-			reportEndDate.plusDays(1).atStartOfDay(ZoneOffset.UTC).toInstant()
-				.toEpochMilli();
+			reportEndDate.plusDays(1).atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
 		
 		List<String> selectedFundNames = context.getFundIds();
-		boolean applyFundFilter =
-			(selectedFundNames != null && !selectedFundNames.isEmpty());
+		boolean applyFundFilter = (selectedFundNames != null && !selectedFundNames.isEmpty());
 		
 		long reportStartDateMillis = 0; // Default to beginning of time if no start date
 		
 		if (context.getStartDate() != null)
 		{
 			reportStartDateMillis =
-				context.getStartDate().atStartOfDay(ZoneOffset.UTC).toInstant()
-					.toEpochMilli();
+				context.getStartDate().atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
 		}
 		
 		List<AccountingTransaction> transactions = ledger.getTransactions();
@@ -667,8 +644,7 @@ public class ReportService
 			
 			// Calculate balance for this account considering the period
 			BigDecimal accountBalance =
-				account.getOpeningBalance() == null ? BigDecimal.ZERO :
-					account.getOpeningBalance();
+				account.getOpeningBalance() == null ? BigDecimal.ZERO : account.getOpeningBalance();
 			
 			for (AccountingTransaction transaction : transactions)
 			{
@@ -787,8 +763,7 @@ public class ReportService
 		if (totalDebits.compareTo(totalCredits) != 0)
 		{
 			LOGGER.warning("Trial Balance (fund-filtered: " + applyFundFilter +
-				") totals do not match! Debits: " + totalDebits + ", Credits: " +
-				totalCredits +
+				") totals do not match! Debits: " + totalDebits + ", Credits: " + totalCredits +
 				". Difference: " + totalDebits.subtract(totalCredits));
 		}
 		
@@ -818,10 +793,8 @@ public class ReportService
 	 *         subtotals, net changes in cash, and beginning/ending cash balances.
 	 * @throws IllegalArgumentException if start date or end date is not provided in {@code context}.
 	 */
-	static
-			Map<String, Object>
-			prepareCashFlowStatementContext(ReportContext context, Ledger ledger,
-											ChartOfAccounts chartOfAccounts)
+	static Map<String, Object> prepareCashFlowStatementContext(	ReportContext context, Ledger ledger,
+																ChartOfAccounts chartOfAccounts)
 	{
 		
 		if (context.getStartDate() == null || context.getEndDate() == null)
@@ -838,8 +811,7 @@ public class ReportService
 		LocalDate reportStartDate = context.getStartDate();
 		LocalDate reportEndDate = context.getEndDate();
 		List<String> selectedFundNames = context.getFundIds();
-		boolean applyFundFilter =
-			(selectedFundNames != null && !selectedFundNames.isEmpty());
+		boolean applyFundFilter = (selectedFundNames != null && !selectedFundNames.isEmpty());
 		
 		jxlsContext.put("reportStartDate", reportStartDate.toString());
 		jxlsContext.put("reportEndDate", reportEndDate.toString());
@@ -850,8 +822,7 @@ public class ReportService
 		incomeStatementPeriodContext.setEndDate(reportEndDate);
 		incomeStatementPeriodContext.setFundIds(selectedFundNames);
 		Map<String, Object> incomeStatementContext =
-			prepareIncomeStatementContext(incomeStatementPeriodContext, ledger,
-				chartOfAccounts);
+			prepareIncomeStatementContext(incomeStatementPeriodContext, ledger, chartOfAccounts);
 		BigDecimal netIncome =
 			(BigDecimal) incomeStatementContext.getOrDefault("netIncome", BigDecimal.ZERO);
 		jxlsContext.put("netIncome", netIncome);
@@ -867,8 +838,7 @@ public class ReportService
 			if (accType != null)
 			{
 				
-				if (accType == AccountType.BANK ||
-					accType == AccountType.CASH ||
+				if (accType == AccountType.BANK || accType == AccountType.CASH ||
 					accType == AccountType.CHECKING) // Assuming CHECKING is cash equivalent
 				{
 					
@@ -895,11 +865,10 @@ public class ReportService
 		
 		for (Account acc : cashEquivalentAccounts)
 		{
-			cashAtEndOfPeriod =
-				cashAtEndOfPeriod.add(getAccountBalanceAsOfDate(acc, reportEndDate,
-					ledger, chartOfAccounts, selectedFundNames, true)); // applyFundFilter
-																		// is true here for
-																		// consistency
+			cashAtEndOfPeriod = cashAtEndOfPeriod.add(getAccountBalanceAsOfDate(acc, reportEndDate,
+				ledger, chartOfAccounts, selectedFundNames, true)); // applyFundFilter
+																	// is true here for
+																	// consistency
 		}
 		
 		jxlsContext.put("cashAtEndOfPeriod", cashAtEndOfPeriod);
@@ -909,35 +878,32 @@ public class ReportService
 		
 		for (Account acc : cashEquivalentAccounts)
 		{
-			cashAtBeginningOfPeriod =
-				cashAtBeginningOfPeriod.add(getAccountBalanceAsOfDate(acc,
-					beginningDate, ledger, chartOfAccounts, selectedFundNames, true)); // applyFundFilter
-																						// is
-																						// true
-																						// here
+			cashAtBeginningOfPeriod = cashAtBeginningOfPeriod.add(getAccountBalanceAsOfDate(acc,
+				beginningDate, ledger, chartOfAccounts, selectedFundNames, true)); // applyFundFilter
+																					// is
+																					// true
+																					// here
 		}
 		
 		jxlsContext.put("cashAtBeginningOfPeriod", cashAtBeginningOfPeriod);
 		
-		BigDecimal netChangeInCashActual =
-			cashAtEndOfPeriod.subtract(cashAtBeginningOfPeriod);
+		BigDecimal netChangeInCashActual = cashAtEndOfPeriod.subtract(cashAtBeginningOfPeriod);
 		jxlsContext.put("netChangeInCashActual", netChangeInCashActual);
 		
 		BigDecimal totalOperatingAdjustments = BigDecimal.ZERO;
 		BigDecimal totalDepreciationAmortization = BigDecimal.ZERO;
-		Set<String> deprAmortAccountNames = Set.of("Depreciation Expense",
-			"Amortization Expense", "Depreciation", "Amortization"); // Common names
+		Set<String> deprAmortAccountNames =
+			Set.of("Depreciation Expense", "Amortization Expense", "Depreciation", "Amortization"); // Common
+																									// names
 		long periodStartDateMillis =
 			reportStartDate.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
 		long periodEndDateMillisExclusive =
-			reportEndDate.plusDays(1).atStartOfDay(ZoneOffset.UTC).toInstant()
-				.toEpochMilli();
+			reportEndDate.plusDays(1).atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
 		
 		for (Account account : chartOfAccounts.getAccounts())
 		{
 			
-			if (account.getName() != null &&
-				deprAmortAccountNames.contains(account.getName()))
+			if (account.getName() != null && deprAmortAccountNames.contains(account.getName()))
 			{
 				
 				if (applyFundFilter &&
@@ -951,15 +917,13 @@ public class ReportService
 				{
 					
 					if (transaction.getBookingDateTimestamp() >= periodStartDateMillis &&
-						transaction.getBookingDateTimestamp() <
-							periodEndDateMillisExclusive)
+						transaction.getBookingDateTimestamp() < periodEndDateMillisExclusive)
 					{
 						
 						for (AccountingEntry entry : transaction.getEntries())
 						{
 							
-							if (entry.getAccountNumber()
-								.equals(account.getAccountNumber()) &&
+							if (entry.getAccountNumber().equals(account.getAccountNumber()) &&
 								entry.getAccountSide() == AccountSide.DEBIT) // Depreciation/Amortization
 																				// is an
 																				// expense
@@ -980,26 +944,22 @@ public class ReportService
 		
 		if (totalDepreciationAmortization.compareTo(BigDecimal.ZERO) != 0)
 		{
-			operatingActivitiesItems
-				.add(Map.of("name", "Depreciation & Amortization", "amount",
-					totalDepreciationAmortization));
+			operatingActivitiesItems.add(Map.of("name", "Depreciation & Amortization", "amount",
+				totalDepreciationAmortization));
 			totalOperatingAdjustments =
 				totalOperatingAdjustments.add(totalDepreciationAmortization);
 		}
 		
 		// Define standard working capital accounts
-		Map<String, String> workingCapitalConfig = new HashMap<>(Map.of(
-			"Accounts Receivable", "asset", "Inventory", "asset", "Prepaid Expenses",
-			"asset",
-			"Accounts Payable", "liability", "Accrued Expenses", "liability",
-			"Deferred Revenue",
-			"liability"));
+		Map<String,
+			String> workingCapitalConfig = new HashMap<>(Map.of("Accounts Receivable", "asset",
+				"Inventory", "asset", "Prepaid Expenses", "asset", "Accounts Payable", "liability",
+				"Accrued Expenses", "liability", "Deferred Revenue", "liability"));
 		
 		for (Account account : chartOfAccounts.getAccounts())
 		{
 			
-			if (account.getName() != null &&
-				workingCapitalConfig.containsKey(account.getName()))
+			if (account.getName() != null && workingCapitalConfig.containsKey(account.getName()))
 			{
 				
 				if (applyFundFilter &&
@@ -1009,15 +969,16 @@ public class ReportService
 				}
 				
 				String category = workingCapitalConfig.get(account.getName());
-				BigDecimal endBalance =
-					getAccountBalanceAsOfDate(account, reportEndDate, ledger,
-						chartOfAccounts, selectedFundNames, true); // applyFundFilter true
-				BigDecimal beginningBalance =
-					getAccountBalanceAsOfDate(account, beginningDate, // Use same
-																		// beginningDate as
-																		// cash balances
-						ledger, chartOfAccounts, selectedFundNames, true); // applyFundFilter
-																			// true
+				BigDecimal endBalance = getAccountBalanceAsOfDate(account, reportEndDate, ledger,
+					chartOfAccounts, selectedFundNames, true); // applyFundFilter true
+				BigDecimal beginningBalance = getAccountBalanceAsOfDate(account, beginningDate, // Use
+																								// same
+																								// beginningDate
+																								// as
+																								// cash
+																								// balances
+					ledger, chartOfAccounts, selectedFundNames, true); // applyFundFilter
+																		// true
 				BigDecimal change = endBalance.subtract(beginningBalance);
 				
 				if (change.compareTo(BigDecimal.ZERO) == 0)
@@ -1028,15 +989,13 @@ public class ReportService
 				// Decrease in asset = cash inflow (positive adjustment)
 				// Increase in liability = cash inflow (positive adjustment)
 				// Decrease in liability = cash outflow (negative adjustment)
-				BigDecimal adjustmentAmount =
-					"asset".equals(category) ? change.negate() : change;
+				BigDecimal adjustmentAmount = "asset".equals(category) ? change.negate() : change;
 				String itemName = (change.compareTo(BigDecimal.ZERO) > 0 ?
 					("asset".equals(category) ? "Increase in " : "Increase in ") :
 					("asset".equals(category) ? "Decrease in " : "Decrease in ")) +
 					account.getName();
 				
-				operatingActivitiesItems
-					.add(Map.of("name", itemName, "amount", adjustmentAmount));
+				operatingActivitiesItems.add(Map.of("name", itemName, "amount", adjustmentAmount));
 				totalOperatingAdjustments = totalOperatingAdjustments.add(adjustmentAmount);
 			}
 			
@@ -1052,9 +1011,10 @@ public class ReportService
 		{
 			AccountType accType = account.getAccountType();
 			
-			if (accType != null &&
-				accType == AccountType.FIXED_ASSET && // Assuming FIXED_ASSET represents
-														// investing activities like PPE
+			if (accType != null && accType == AccountType.FIXED_ASSET && // Assuming FIXED_ASSET
+																			// represents
+																			// investing activities
+																			// like PPE
 				!cashEquivalentAccountNames.contains(account.getName()) && // Exclude cash
 																			// accounts
 																			// themselves
@@ -1069,12 +1029,10 @@ public class ReportService
 					continue;
 				}
 				
-				BigDecimal endBalance =
-					getAccountBalanceAsOfDate(account, reportEndDate, ledger,
-						chartOfAccounts, selectedFundNames, true);
-				BigDecimal beginningBalance =
-					getAccountBalanceAsOfDate(account, beginningDate,
-						ledger, chartOfAccounts, selectedFundNames, true);
+				BigDecimal endBalance = getAccountBalanceAsOfDate(account, reportEndDate, ledger,
+					chartOfAccounts, selectedFundNames, true);
+				BigDecimal beginningBalance = getAccountBalanceAsOfDate(account, beginningDate,
+					ledger, chartOfAccounts, selectedFundNames, true);
 				BigDecimal change = endBalance.subtract(beginningBalance); // Increase in
 																			// fixed asset
 				
@@ -1083,10 +1041,8 @@ public class ReportService
 					BigDecimal cashFlowImpact = change.negate(); // Increase in asset = cash
 																	// outflow
 					investingActivitiesItems.add(
-						Map.of("name", "Change in " + account.getName(), "amount",
-							cashFlowImpact));
-					totalInvestingAdjustments =
-						totalInvestingAdjustments.add(cashFlowImpact);
+						Map.of("name", "Change in " + account.getName(), "amount", cashFlowImpact));
+					totalInvestingAdjustments = totalInvestingAdjustments.add(cashFlowImpact);
 				}
 				
 			}
@@ -1103,8 +1059,7 @@ public class ReportService
 			AccountType accType = account.getAccountType();
 			
 			if (accType != null &&
-				(accType == AccountType.LONG_TERM_LIABILITY ||
-					accType == AccountType.EQUITY))
+				(accType == AccountType.LONG_TERM_LIABILITY || accType == AccountType.EQUITY))
 			{
 				
 				// Exclude conceptual "Current Period Net Income" if it were an actual
@@ -1125,20 +1080,18 @@ public class ReportService
 					continue;
 				}
 				
-				BigDecimal endBalance =
-					getAccountBalanceAsOfDate(account, reportEndDate, ledger,
-						chartOfAccounts, selectedFundNames, true);
-				BigDecimal beginningBalance =
-					getAccountBalanceAsOfDate(account, beginningDate,
-						ledger, chartOfAccounts, selectedFundNames, true);
+				BigDecimal endBalance = getAccountBalanceAsOfDate(account, reportEndDate, ledger,
+					chartOfAccounts, selectedFundNames, true);
+				BigDecimal beginningBalance = getAccountBalanceAsOfDate(account, beginningDate,
+					ledger, chartOfAccounts, selectedFundNames, true);
 				BigDecimal change = endBalance.subtract(beginningBalance); // Increase in
 																			// L/E = cash
 																			// inflow
 				
 				if (change.compareTo(BigDecimal.ZERO) != 0)
 				{
-					financingActivitiesItems.add(
-						Map.of("name", "Change in " + account.getName(), "amount", change));
+					financingActivitiesItems
+						.add(Map.of("name", "Change in " + account.getName(), "amount", change));
 					totalFinancingAdjustments = totalFinancingAdjustments.add(change);
 				}
 				
@@ -1150,8 +1103,7 @@ public class ReportService
 		jxlsContext.put("cashFromFinancing", totalFinancingAdjustments);
 		
 		BigDecimal netChangeInCashCalculated =
-			cashFromOperations.add(totalInvestingAdjustments)
-				.add(totalFinancingAdjustments);
+			cashFromOperations.add(totalInvestingAdjustments).add(totalFinancingAdjustments);
 		jxlsContext.put("netChangeInCash", netChangeInCashCalculated); // For summary
 																		// display
 		jxlsContext.put("netChangeInCashCalculated", netChangeInCashCalculated); // For
@@ -1168,11 +1120,11 @@ public class ReportService
 																		// rounding
 																		// differences
 		{
-			LOGGER.warning("Cash Flow Statement (fund-filtered: " + applyFundFilter +
-				") discrepancy: " + discrepancy +
-				". Calculated Net Change: " + netChangeInCashCalculated +
-				", Actual Net Change (from balance sheet of cash accounts): " +
-				netChangeInCashActual);
+			LOGGER.warning(
+				"Cash Flow Statement (fund-filtered: " + applyFundFilter + ") discrepancy: " +
+					discrepancy + ". Calculated Net Change: " + netChangeInCashCalculated +
+					", Actual Net Change (from balance sheet of cash accounts): " +
+					netChangeInCashActual);
 		}
 		
 		return jxlsContext;
@@ -1192,15 +1144,12 @@ public class ReportService
 	 *         totals for income/expenses/net, and report metadata.
 	 * @throws IllegalArgumentException if required context (dates, budget) or models (ledger, COA) are null.
 	 */
-	static
-			Map<String, Object>
-			prepareBudgetVsActualsContext(	ReportContext context, Ledger ledger,
-											ChartOfAccounts chartOfAccounts,
-											Budget budget)
+	static Map<String, Object> prepareBudgetVsActualsContext(	ReportContext context, Ledger ledger,
+																ChartOfAccounts chartOfAccounts,
+																Budget budget)
 	{
 		
-		if (context.getStartDate() == null || context.getEndDate() == null ||
-			budget == null ||
+		if (context.getStartDate() == null || context.getEndDate() == null || budget == null ||
 			ledger == null || chartOfAccounts == null)
 		{
 			throw new IllegalArgumentException(
@@ -1213,8 +1162,7 @@ public class ReportService
 		LocalDate reportStartDate = context.getStartDate();
 		LocalDate reportEndDate = context.getEndDate();
 		List<String> selectedFundNames = context.getFundIds();
-		boolean applyFundFilter =
-			(selectedFundNames != null && !selectedFundNames.isEmpty());
+		boolean applyFundFilter = (selectedFundNames != null && !selectedFundNames.isEmpty());
 		
 		jxlsContext.put("budgetName", budget.getBudgetName());
 		jxlsContext.put("fiscalYear", budget.getFiscalYear());
@@ -1229,8 +1177,7 @@ public class ReportService
 		long periodStartDateMillis =
 			reportStartDate.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
 		long periodEndDateMillisExclusive =
-			reportEndDate.plusDays(1).atStartOfDay(ZoneOffset.UTC).toInstant()
-				.toEpochMilli();
+			reportEndDate.plusDays(1).atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
 		
 		if (ledger != null && ledger.getTransactions() != null)
 		{
@@ -1244,16 +1191,14 @@ public class ReportService
 					
 					for (AccountingEntry entry : transaction.getEntries())
 					{
-						Account account =
-							chartOfAccounts.getAccount(entry.getAccountNumber());
+						Account account = chartOfAccounts.getAccount(entry.getAccountNumber());
 						if (account == null || account.getAccountType() == null) // Use
 																					// direct
 																					// enum
 							continue;
 						
 						if (applyFundFilter &&
-							!doesAccountMatchFunds(account, selectedFundNames,
-								chartOfAccounts))
+							!doesAccountMatchFunds(account, selectedFundNames, chartOfAccounts))
 						{
 							continue;
 						}
@@ -1261,8 +1206,7 @@ public class ReportService
 						AccountType accountType = account.getAccountType(); // Use direct
 																			// enum
 						BigDecimal currentActual =
-							actualAmounts.getOrDefault(account.getAccountNumber(),
-								BigDecimal.ZERO);
+							actualAmounts.getOrDefault(account.getAccountNumber(), BigDecimal.ZERO);
 						BigDecimal amount = entry.getAmount();
 						
 						if (accountType == AccountType.INCOME)
@@ -1334,11 +1278,11 @@ public class ReportService
 														// simplicity
 		// More robust logic would align budget periods (e.g. specific months from
 		// budget) with report period.
-		long daysInFiscalYear =
-			LocalDate.of(budgetFiscalYear, 1, 1).isLeapYear() ? 366 : 365;
-		long daysInReportPeriod =
-			ChronoUnit.DAYS.between(reportStartDate, reportEndDate) + 1; // Inclusive of end
-																			// date
+		long daysInFiscalYear = LocalDate.of(budgetFiscalYear, 1, 1).isLeapYear() ? 366 : 365;
+		long daysInReportPeriod = ChronoUnit.DAYS.between(reportStartDate, reportEndDate) + 1; // Inclusive
+																								// of
+																								// end
+																								// date
 		
 		for (BudgetLine line : budget.getBudgetLines())
 		{
@@ -1414,13 +1358,11 @@ public class ReportService
 							LocalDate.of(budget.getFiscalYear(), i + 1, 1);
 						
 						// Check if this month falls within the report's date range
-						if (!monthInFiscalYear
-							.isBefore(reportStartDate.withDayOfMonth(1)) &&
+						if (!monthInFiscalYear.isBefore(reportStartDate.withDayOfMonth(1)) &&
 							!monthInFiscalYear.isAfter(reportEndDate.withDayOfMonth(1)))
 						{
 							budgetedAmountForPeriod =
-								budgetedAmountForPeriod
-									.add(line.getPeriodicAmounts().get(i));
+								budgetedAmountForPeriod.add(line.getPeriodicAmounts().get(i));
 						}
 						
 					}
@@ -1436,16 +1378,14 @@ public class ReportService
 					{
 						LocalDate quarterStartDate =
 							LocalDate.of(budget.getFiscalYear(), (i * 3) + 1, 1);
-						LocalDate quarterEndDate =
-							quarterStartDate.plusMonths(3).minusDays(1);
+						LocalDate quarterEndDate = quarterStartDate.plusMonths(3).minusDays(1);
 						
 						// Check if the quarter overlaps with the report period
 						if (!(quarterEndDate.isBefore(reportStartDate) ||
 							quarterStartDate.isAfter(reportEndDate)))
 						{
 							budgetedAmountForPeriod =
-								budgetedAmountForPeriod
-									.add(line.getPeriodicAmounts().get(i));
+								budgetedAmountForPeriod.add(line.getPeriodicAmounts().get(i));
 						}
 						
 					}
@@ -1474,9 +1414,9 @@ public class ReportService
 				
 				if (daysInFiscalYear > 0)
 				{ // Avoid division by zero
-					budgetedAmountForPeriod = line.getTotalBudgetedAmount()
-						.multiply(new BigDecimal(daysInReportPeriod))
-						.divide(new BigDecimal(daysInFiscalYear), 2, RoundingMode.HALF_UP);
+					budgetedAmountForPeriod =
+						line.getTotalBudgetedAmount().multiply(new BigDecimal(daysInReportPeriod))
+							.divide(new BigDecimal(daysInFiscalYear), 2, RoundingMode.HALF_UP);
 				}
 				else
 				{
@@ -1535,8 +1475,7 @@ public class ReportService
 		jxlsContext.put("reportItems", reportItems);
 		jxlsContext.put("totalBudgetedIncome", totalBudgetedIncome);
 		jxlsContext.put("totalActualIncome", totalActualIncome);
-		jxlsContext.put("totalIncomeVariance",
-			totalActualIncome.subtract(totalBudgetedIncome));
+		jxlsContext.put("totalIncomeVariance", totalActualIncome.subtract(totalBudgetedIncome));
 		jxlsContext.put("totalBudgetedExpenses", totalBudgetedExpenses);
 		jxlsContext.put("totalActualExpenses", totalActualExpenses);
 		jxlsContext.put("totalExpenseVariance",
@@ -1563,15 +1502,13 @@ public class ReportService
 	 *         is a map itself, holding details for one account (name, number, opening/closing balance, and a list of its entries).
 	 * @throws IllegalArgumentException if account IDs, start date, or end date are missing in {@code context}.
 	 */
-	static
-			Map<String, Object>
-			prepareAccountActivityContext(	ReportContext context, Ledger ledger,
-											ChartOfAccounts chartOfAccounts)
+	static Map<String, Object> prepareAccountActivityContext(	ReportContext context, Ledger ledger,
+																ChartOfAccounts chartOfAccounts)
 	{
 		
 		if (context.getAccountIdsForDetailReport() == null ||
-			context.getAccountIdsForDetailReport().isEmpty() ||
-			context.getStartDate() == null || context.getEndDate() == null)
+			context.getAccountIdsForDetailReport().isEmpty() || context.getStartDate() == null ||
+			context.getEndDate() == null)
 		{
 			LOGGER.warning( // Consider throwing exception if this state is truly invalid
 							// for proceeding
@@ -1589,8 +1526,7 @@ public class ReportService
 		
 		List<String> selectedAccountIds = context.getAccountIdsForDetailReport();
 		List<String> selectedFundNames = context.getFundIds();
-		boolean applyFundFilter =
-			(selectedFundNames != null && !selectedFundNames.isEmpty());
+		boolean applyFundFilter = (selectedFundNames != null && !selectedFundNames.isEmpty());
 		
 		
 		for (String accountId : selectedAccountIds)
@@ -1599,8 +1535,7 @@ public class ReportService
 			
 			if (account == null)
 			{
-				LOGGER.warning(
-					"Account Activity Detail: Account not found for ID: " + accountId);
+				LOGGER.warning("Account Activity Detail: Account not found for ID: " + accountId);
 				continue;
 			}
 			
@@ -1613,8 +1548,7 @@ public class ReportService
 			}
 			
 			BigDecimal openingBalance =
-				getAccountBalanceAsOfDate(account, context.getStartDate().minusDays(1),
-					ledger,
+				getAccountBalanceAsOfDate(account, context.getStartDate().minusDays(1), ledger,
 					chartOfAccounts, selectedFundNames, applyFundFilter); // Pass
 																			// applyFundFilter
 			
@@ -1676,8 +1610,7 @@ public class ReportService
 			
 			// Sort transactions by date, then perhaps by an internal order if available
 			accountTransactions
-				.sort(Comparator
-					.comparingLong(AccountingTransaction::getBookingDateTimestamp));
+				.sort(Comparator.comparingLong(AccountingTransaction::getBookingDateTimestamp));
 			
 			for (AccountingTransaction transaction : accountTransactions)
 			{
@@ -1694,10 +1627,13 @@ public class ReportService
 					{
 						Map<String, Object> entryData = new HashMap<>();
 						entryData.put("date", transactionDate.format(DATE_FORMATTER));
-						entryData.put("transactionId",
-							transaction.getBookingDateTimestamp()); // Or a more
-																	// user-friendly ID if
-																	// available
+						entryData.put("transactionId", transaction.getBookingDateTimestamp()); // Or
+																								// a
+																								// more
+																								// user-friendly
+																								// ID
+																								// if
+																								// available
 						
 						// Attempt to find the "other side" of the transaction for a more
 						// meaningful description
@@ -1712,15 +1648,14 @@ public class ReportService
 								
 								if (!otherEntry.getAccountNumber().equals(accountId))
 								{
-									Account otherAccount = chartOfAccounts
-										.getAccount(otherEntry.getAccountNumber());
+									Account otherAccount =
+										chartOfAccounts.getAccount(otherEntry.getAccountNumber());
 									
-									if (otherAccount != null &&
-										otherAccount.getName() != null)
+									if (otherAccount != null && otherAccount.getName() != null)
 									{
-										description = description.isEmpty() ?
-											otherAccount.getName() :
-											description + " / " + otherAccount.getName();
+										description =
+											description.isEmpty() ? otherAccount.getName() :
+												description + " / " + otherAccount.getName();
 										// Take the first "other" account name for
 										// simplicity
 										break;
@@ -1736,12 +1671,10 @@ public class ReportService
 							description = "Journal Entry";
 						entryData.put("description", description);
 						
-						BigDecimal debitAmount =
-							(entry.getAccountSide() == AccountSide.DEBIT) ?
-								entry.getAmount() : BigDecimal.ZERO;
-						BigDecimal creditAmount =
-							(entry.getAccountSide() == AccountSide.CREDIT) ?
-								entry.getAmount() : BigDecimal.ZERO;
+						BigDecimal debitAmount = (entry.getAccountSide() == AccountSide.DEBIT) ?
+							entry.getAmount() : BigDecimal.ZERO;
+						BigDecimal creditAmount = (entry.getAccountSide() == AccountSide.CREDIT) ?
+							entry.getAmount() : BigDecimal.ZERO;
 						entryData.put("debit", debitAmount);
 						entryData.put("credit", creditAmount);
 						
@@ -1751,13 +1684,11 @@ public class ReportService
 						
 						if (increaseSide == AccountSide.DEBIT)
 						{
-							runningBalance =
-								runningBalance.add(debitAmount).subtract(creditAmount);
+							runningBalance = runningBalance.add(debitAmount).subtract(creditAmount);
 						}
 						else // CREDIT
 						{
-							runningBalance =
-								runningBalance.subtract(debitAmount).add(creditAmount);
+							runningBalance = runningBalance.subtract(debitAmount).add(creditAmount);
 						}
 						
 						entryData.put("runningBalance", runningBalance);
@@ -1808,8 +1739,7 @@ public class ReportService
 		
 		if (context == null || context.getReportType() == null)
 		{
-			throw new IllegalArgumentException(
-				"ReportContext and reportType cannot be null.");
+			throw new IllegalArgumentException("ReportContext and reportType cannot be null.");
 		}
 		
 		String reportType = context.getReportType();
@@ -1821,18 +1751,15 @@ public class ReportService
 		String reportDateSuffix = (context.getEndDate() != null) ?
 			context.getEndDate().format(DateTimeFormatter.ISO_LOCAL_DATE) :
 			LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
-		String reportPeriodSuffix =
-			(context.getStartDate() != null ?
-				context.getStartDate().format(DateTimeFormatter.ISO_LOCAL_DATE) + "_to_" :
-				"") +
-				reportDateSuffix;
+		String reportPeriodSuffix = (context.getStartDate() != null ?
+			context.getStartDate().format(DateTimeFormatter.ISO_LOCAL_DATE) + "_to_" : "") +
+			reportDateSuffix;
 		
 		
 		if ("income_statement".equals(reportType))
 		{
 			
-			if (ledger == null || chartOfAccounts == null ||
-				context.getStartDate() == null ||
+			if (ledger == null || chartOfAccounts == null || context.getStartDate() == null ||
 				context.getEndDate() == null)
 			{
 				throw new IllegalArgumentException(
@@ -1872,8 +1799,7 @@ public class ReportService
 		else if ("cash_flow_statement".equals(reportType))
 		{
 			
-			if (ledger == null || chartOfAccounts == null ||
-				context.getStartDate() == null ||
+			if (ledger == null || chartOfAccounts == null || context.getStartDate() == null ||
 				context.getEndDate() == null)
 			{
 				throw new IllegalArgumentException(
@@ -1887,8 +1813,7 @@ public class ReportService
 		else if ("budget_vs_actuals".equals(reportType))
 		{
 			
-			if (ledger == null || chartOfAccounts == null ||
-				context.getStartDate() == null ||
+			if (ledger == null || chartOfAccounts == null || context.getStartDate() == null ||
 				context.getEndDate() == null || context.getSelectedBudget() == null)
 			{
 				throw new IllegalArgumentException(
@@ -1897,8 +1822,7 @@ public class ReportService
 			
 			Budget selectedBudget = context.getSelectedBudget();
 			jxlsContext =
-				prepareBudgetVsActualsContext(context, ledger, chartOfAccounts,
-					selectedBudget);
+				prepareBudgetVsActualsContext(context, ledger, chartOfAccounts, selectedBudget);
 			templateName = "budget_vs_actuals_template.xlsx";
 			outputFileNamePrefix = "budget_vs_actuals_" +
 				(selectedBudget.getBudgetName() != null ?
@@ -1908,10 +1832,8 @@ public class ReportService
 		else if ("account_activity_detail".equals(reportType))
 		{
 			
-			if (ledger == null || chartOfAccounts == null ||
-				context.getStartDate() == null ||
-				context.getEndDate() == null ||
-				context.getAccountIdsForDetailReport() == null ||
+			if (ledger == null || chartOfAccounts == null || context.getStartDate() == null ||
+				context.getEndDate() == null || context.getAccountIdsForDetailReport() == null ||
 				context.getAccountIdsForDetailReport().isEmpty())
 			{
 				throw new IllegalArgumentException(
@@ -1925,18 +1847,16 @@ public class ReportService
 			String accountPart = context.getAccountIdsForDetailReport().size() == 1 ?
 				context.getAccountIdsForDetailReport().get(0).replace(" ", "_") :
 				"multiple_accounts"; // Sanitize accountId for filename
-			outputFileNamePrefix =
-				"account_activity_" + accountPart + "_" + reportPeriodSuffix;
+			outputFileNamePrefix = "account_activity_" + accountPart + "_" + reportPeriodSuffix;
 		}
 		else
 		{
 			LOGGER
-				.warning("Generating generic report (stub) for unknown report type: " +
-					reportType);
+				.warning("Generating generic report (stub) for unknown report type: " + reportType);
 			// Create a temporary file for the stub report
 			File tempDir = new File(System.getProperty("java.io.tmpdir"));
-			File outputFile = new File(tempDir, "generated_report_" + reportType + "_" +
-				System.currentTimeMillis() + ".txt");
+			File outputFile = new File(tempDir,
+				"generated_report_" + reportType + "_" + System.currentTimeMillis() + ".txt");
 			
 			try (java.io.PrintWriter writer =
 				new java.io.PrintWriter(new FileOutputStream(outputFile)))
@@ -1973,11 +1893,9 @@ public class ReportService
 			
 			if (is == null)
 			{
-				LOGGER.log(Level.SEVERE,
-					reportType + " template not found at " + templatePath);
-				throw new IOException(
-					reportType + " template not found at " + templatePath +
-						". Ensure it is in the classpath under the 'templates' directory.");
+				LOGGER.log(Level.SEVERE, reportType + " template not found at " + templatePath);
+				throw new IOException(reportType + " template not found at " + templatePath +
+					". Ensure it is in the classpath under the 'templates' directory.");
 			}
 			
 			try (OutputStream os = new FileOutputStream(outputFile))
@@ -1985,8 +1903,7 @@ public class ReportService
 				Context jxlsInnerContext = new Context(jxlsContext);
 				JxlsHelper.getInstance().processTemplate(is, os, jxlsInnerContext);
 				LOGGER.info(
-					reportType + " generated successfully at: " +
-						outputFile.getAbsolutePath());
+					reportType + " generated successfully at: " + outputFile.getAbsolutePath());
 			}
 			
 		}
@@ -2001,63 +1918,62 @@ public class ReportService
 	 * @param reportType The type of report the writer is for.
 	 * @param writer The {@link LedgerReportWriter} instance.
 	 */
-        public void registerWriter(String reportType, LedgerReportWriter writer)
-        {
-                if (reportType == null || writer == null)
-                {
-                        return;
-                }
-                this.writerMap.put(reportType, writer);
-        }
+	public void registerWriter(String reportType, LedgerReportWriter writer)
+	{
+		
+		if (reportType == null || writer == null)
+		{
+			return;
+		}
+		
+		this.writerMap.put(reportType, writer);
+	}
 	
-        /**
-         * Lists metadata of previously generated reports.
-         * <p>
-         * This implementation scans the user's {@code NonprofitBookkeepingReports}
-         * directory (under the home folder) and returns basic information about
-         * any files it finds there. Each file's name, last-modified timestamp, and
-         * absolute path are captured in a {@link ReportMetadata} object.
-         * </p>
-         *
-         * @return A list of {@link ReportMetadata} describing files in the reports
-         *         output directory. If the directory does not exist or contains no
-         *         files, an empty list is returned.
-         */
-    public List<ReportMetadata> listGeneratedReports()
-    {
-            List<ReportMetadata> results = new ArrayList<>();
-
-            File dir = new File(System.getProperty("user.home"),
-                    "NonprofitBookkeepingReports");
-
-            if (dir.exists() && dir.isDirectory())
-            {
-                    File[] files = dir.listFiles();
-
-                    if (files != null)
-                    {
-                            for (File f : files)
-                            {
-                                    if (!f.isFile())
-                                    {
-                                            continue;
-                                    }
-
-                                    String created = java.time.Instant
-                                                    .ofEpochMilli(f.lastModified())
-                                                    .toString();
-                                    results.add(new ReportMetadata(f.getName(),
-                                                    created,
-                                                    f.getAbsolutePath()));
-                            }
-
-                            results.sort((a, b) -> b.getCreated()
-                                            .compareTo(a.getCreated()));
-                    }
-            }
-
-            return results;
-    }
+	/**
+	 * Lists metadata of previously generated reports.
+	 * <p>
+	 * This implementation scans the user's {@code NonprofitBookkeepingReports}
+	 * directory (under the home folder) and returns basic information about
+	 * any files it finds there. Each file's name, last-modified timestamp, and
+	 * absolute path are captured in a {@link ReportMetadata} object.
+	 * </p>
+	 *
+	 * @return A list of {@link ReportMetadata} describing files in the reports
+	 *         output directory. If the directory does not exist or contains no
+	 *         files, an empty list is returned.
+	 */
+	public List<ReportMetadata> listGeneratedReports()
+	{
+		List<ReportMetadata> results = new ArrayList<>();
+		
+		File dir = new File(System.getProperty("user.home"), "NonprofitBookkeepingReports");
+		
+		if (dir.exists() && dir.isDirectory())
+		{
+			File[] files = dir.listFiles();
+			
+			if (files != null)
+			{
+				
+				for (File f : files)
+				{
+					
+					if (!f.isFile())
+					{
+						continue;
+					}
+					
+					String created = java.time.Instant.ofEpochMilli(f.lastModified()).toString();
+					results.add(new ReportMetadata(f.getName(), created, f.getAbsolutePath()));
+				}
+				
+				results.sort((a, b) -> b.getCreated().compareTo(a.getCreated()));
+			}
+			
+		}
+		
+		return results;
+	}
 	
 	/**
 	 * Generates a report based on the provided {@link ReportContext}.
@@ -2069,18 +1985,20 @@ public class ReportService
 	 * @param ctx The {@link ReportContext} defining the report to be generated.
 	 * @return A {@link File} object representing the generated report, or null if generation fails or is not implemented.
 	 */
-        public static File generate(ReportContext ctx)
-        {
-                try
-                {
-                        return new ReportService().generateJasperReport(ctx, ctx.getOutputFormat());
-                }
-                catch (Exception e)
-                {
-                        e.printStackTrace();
-                        return null;
-                }
-        }
+	public static File generate(ReportContext ctx)
+	{
+		
+		try
+		{
+			return new ReportService().generateJasperReport(ctx, ctx.getOutputFormat());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
 	
 	/**
 	 * Prepares a list of {@link IncomeStatementRowBean} objects for use as a JasperReports data source.
@@ -2093,10 +2011,10 @@ public class ReportService
 	 * @return A list of {@link IncomeStatementRowBean}s for the report. Returns an empty list if
 	 *         required data (dates, ledger, COA) is missing or no relevant transactions are found.
 	 */
-	public List<IncomeStatementRowBean> prepareIncomeStatementJasperData(
-																			ReportContext context,
-																			Ledger ledger,
-																			ChartOfAccounts chartOfAccounts)
+	public
+			List<IncomeStatementRowBean>
+			prepareIncomeStatementJasperData(	ReportContext context, Ledger ledger,
+												ChartOfAccounts chartOfAccounts)
 	{
 		
 		List<IncomeStatementRowBean> reportData = new ArrayList<>();
@@ -2110,8 +2028,7 @@ public class ReportService
 		
 		if (ledger == null || chartOfAccounts == null)
 		{
-			LOGGER.warning(
-				"Ledger or Chart of Accounts not available for income statement data.");
+			LOGGER.warning("Ledger or Chart of Accounts not available for income statement data.");
 			return reportData;
 		}
 		
@@ -2123,8 +2040,8 @@ public class ReportService
 		
 		long startDateMillis =
 			context.getStartDate().atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
-		long endDateMillisExclusive = context.getEndDate().plusDays(1)
-			.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
+		long endDateMillisExclusive = context.getEndDate().plusDays(1).atStartOfDay(ZoneOffset.UTC)
+			.toInstant().toEpochMilli();
 		
 		List<AccountingTransaction> transactions = ledger.getTransactions();
 		
@@ -2166,8 +2083,7 @@ public class ReportService
 					if (applyFundFilter)
 					{
 						
-						if (!doesAccountMatchFunds(account, selectedFundIds,
-							chartOfAccounts))
+						if (!doesAccountMatchFunds(account, selectedFundIds, chartOfAccounts))
 						{
 							continue;
 						}
@@ -2181,35 +2097,31 @@ public class ReportService
 					
 					if (accountType == AccountType.INCOME)
 					{
-						BigDecimal currentTotal = incomeAccountBalances
-							.getOrDefault(accountName, BigDecimal.ZERO);
+						BigDecimal currentTotal =
+							incomeAccountBalances.getOrDefault(accountName, BigDecimal.ZERO);
 						
 						if (side == AccountSide.CREDIT)
 						{ // Income increases on credit
-							incomeAccountBalances.put(accountName,
-								currentTotal.add(amount));
+							incomeAccountBalances.put(accountName, currentTotal.add(amount));
 						}
 						else if (side == AccountSide.DEBIT)
 						{
-							incomeAccountBalances.put(accountName,
-								currentTotal.subtract(amount));
+							incomeAccountBalances.put(accountName, currentTotal.subtract(amount));
 						}
 						
 					}
 					else if (accountType == AccountType.EXPENSE)
 					{
-						BigDecimal currentTotal = expenseAccountBalances
-							.getOrDefault(accountName, BigDecimal.ZERO);
+						BigDecimal currentTotal =
+							expenseAccountBalances.getOrDefault(accountName, BigDecimal.ZERO);
 						
 						if (side == AccountSide.DEBIT)
 						{ // Expense increases on debit
-							expenseAccountBalances.put(accountName,
-								currentTotal.add(amount));
+							expenseAccountBalances.put(accountName, currentTotal.add(amount));
 						}
 						else if (side == AccountSide.CREDIT)
 						{
-							expenseAccountBalances.put(accountName,
-								currentTotal.subtract(amount));
+							expenseAccountBalances.put(accountName, currentTotal.subtract(amount));
 						}
 						
 					}
@@ -2226,8 +2138,8 @@ public class ReportService
 			
 			if (entry.getValue().compareTo(BigDecimal.ZERO) != 0)
 			{ // Only include accounts with non-zero balance for the period
-				reportData.add(
-					new IncomeStatementRowBean("Income", entry.getKey(), entry.getValue()));
+				reportData
+					.add(new IncomeStatementRowBean("Income", entry.getKey(), entry.getValue()));
 			}
 			
 		}
@@ -2238,8 +2150,8 @@ public class ReportService
 			
 			if (entry.getValue().compareTo(BigDecimal.ZERO) != 0)
 			{ // Only include accounts with non-zero balance for the period
-				reportData.add(new IncomeStatementRowBean("Expenses", entry.getKey(),
-					entry.getValue()));
+				reportData
+					.add(new IncomeStatementRowBean("Expenses", entry.getKey(), entry.getValue()));
 			}
 			
 		}
@@ -2252,7 +2164,6 @@ public class ReportService
 		return reportData;
 	}
 	
-
 	
 	/**
 	 * Prepares a list of {@link TrialBalanceRowBean} objects for use as a JasperReports data source.
@@ -2266,8 +2177,7 @@ public class ReportService
 	 * @return A list of {@link TrialBalanceRowBean}s for the report. Returns an empty list if
 	 *         required data (end date, ledger, COA) is missing.
 	 */
-	public List<TrialBalanceRowBean> prepareTrialBalanceJasperData(
-																	ReportContext context,
+	public List<TrialBalanceRowBean> prepareTrialBalanceJasperData(	ReportContext context,
 																	Ledger ledger,
 																	ChartOfAccounts chartOfAccounts)
 	{
@@ -2276,22 +2186,22 @@ public class ReportService
 		
 		if (context.getEndDate() == null || ledger == null || chartOfAccounts == null)
 		{
-			LOGGER.warning(
-				"End date, ledger, or COA missing for Trial Balance data preparation.");
+			LOGGER.warning("End date, ledger, or COA missing for Trial Balance data preparation.");
 			return reportData; // Return empty list
 		}
 		
 		LocalDate reportEndDate = context.getEndDate();
-		long reportEndDateMillisInclusive = reportEndDate.plusDays(1)
-			.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli(); // Exclusive end
+		long reportEndDateMillisInclusive =
+			reportEndDate.plusDays(1).atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli(); // Exclusive
+																								// end
 		
 		long reportStartDateMillis = 0; // Default to include all transactions up to end
 										// date if start date is null
 		
 		if (context.getStartDate() != null)
 		{
-			reportStartDateMillis = context.getStartDate().atStartOfDay(ZoneOffset.UTC)
-				.toInstant().toEpochMilli();
+			reportStartDateMillis =
+				context.getStartDate().atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
 		}
 		
 		List<String> selectedFundIds = context.getFundIds();
@@ -2315,10 +2225,8 @@ public class ReportService
 			if (account == null || account.getAccountNumber() == null ||
 				account.getName() == null || account.getAccountType() == null)
 			{
-				LOGGER.warning(
-					"TB Data: Skipping account with missing critical information: " +
-						(account != null ? account.getAccountNumber() :
-							"null account object"));
+				LOGGER.warning("TB Data: Skipping account with missing critical information: " +
+					(account != null ? account.getAccountNumber() : "null account object"));
 				continue;
 			}
 			
@@ -2328,8 +2236,8 @@ public class ReportService
 				continue; // Skip account if it doesn't match fund filter
 			}
 			
-			BigDecimal accountBalance = account.getOpeningBalance() != null ?
-				account.getOpeningBalance() : BigDecimal.ZERO;
+			BigDecimal accountBalance =
+				account.getOpeningBalance() != null ? account.getOpeningBalance() : BigDecimal.ZERO;
 			
 			List<AccountingTransaction> transactions = ledger.getTransactions();
 			
@@ -2339,8 +2247,8 @@ public class ReportService
 				for (AccountingTransaction transaction : transactions)
 				{
 					
-					if (transaction == null || transaction.getBookingDateTimestamp() >=
-						reportEndDateMillisInclusive)
+					if (transaction == null ||
+						transaction.getBookingDateTimestamp() >= reportEndDateMillisInclusive)
 					{ // Strictly before end of end date + 1 day
 						continue;
 					}
@@ -2375,9 +2283,8 @@ public class ReportService
 						
 						if (type == null || increaseSide == null)
 						{
-							LOGGER
-								.warning("TB Data: Account " + account.getAccountNumber() +
-									" missing type or increase side.");
+							LOGGER.warning("TB Data: Account " + account.getAccountNumber() +
+								" missing type or increase side.");
 							continue;
 						}
 						
@@ -2484,8 +2391,7 @@ public class ReportService
 	 *                   including {@link java.io.FileNotFoundException} if a required JRXML template is not found
 	 *                   or if the generator fails to produce an output file.
 	 */
-	public File generateJasperReport(	ReportContext context,
-										String outputFormat) throws Exception
+	public File generateJasperReport(ReportContext context, String outputFormat) throws Exception
 	{
 		Company currentCompany = CurrentCompany.getCompany();
 		
@@ -2502,8 +2408,7 @@ public class ReportService
 		
 		if (reportType == null || reportType.trim().isEmpty())
 		{
-			throw new IllegalArgumentException(
-				"Report type must be specified in ReportContext.");
+			throw new IllegalArgumentException("Report type must be specified in ReportContext.");
 		}
 		
 		switch(reportType)
@@ -2513,25 +2418,22 @@ public class ReportService
 				break;
 			
 			case "cash_flow_statement_jasper":
-				reportGeneratorInstance =
-					new CashFlowStatementJasperGenerator(context, this);
+				reportGeneratorInstance = new CashFlowStatementJasperGenerator(context, this);
 				break;
 			
-                        case "trial_balance_jasper":
-                                reportGeneratorInstance = new TrialBalanceJasperGenerator(context, this);
-                                break;
-
-                        case "balance_sheet_jasper":
-                                reportGeneratorInstance = new BalanceResultReportGenerator(null);
-                                break;
-
-                        // Additional Jasper-based reports can be added here
-                        default:
-				System.err
-					.println("Unsupported or unknown Jasper report type: " + reportType); // Consider
-																							// logger
-				throw new IllegalArgumentException(
-					"Unsupported Jasper report type: " + reportType);
+			case "trial_balance_jasper":
+				reportGeneratorInstance = new TrialBalanceJasperGenerator(context, this);
+				break;
+			
+			case "balance_sheet_jasper":
+				reportGeneratorInstance = new BalanceResultReportGenerator(null);
+				break;
+			
+			// Additional Jasper-based reports can be added here
+			default:
+				System.err.println("Unsupported or unknown Jasper report type: " + reportType); // Consider
+																								// logger
+				throw new IllegalArgumentException("Unsupported Jasper report type: " + reportType);
 		}
 		
 		// The 'reportGeneratorInstance' will not be null here due to the default case
@@ -2542,7 +2444,7 @@ public class ReportService
 		// type: " + reportType);
 		// }
 		
-                File generatedFile = reportGeneratorInstance.generateAndExportReport(outputFormat);
+		File generatedFile = reportGeneratorInstance.generateAndExportReport(outputFormat);
 		
 		if (generatedFile != null && generatedFile.exists())
 		{
@@ -2565,50 +2467,53 @@ public class ReportService
 				"ReportService: Report generator failed to return a valid file object for report type: " +
 					reportType + "."); // Consider logger
 			throw new Exception(
-				"Report generation failed to produce a file for report type: " +
-					reportType + ".");
-                }
-
-        }
-
-        /**
-         * Prepares a list of {@link ChartOfAccountsRowBean} objects for the
-         * Chart of Accounts Jasper report.
-         *
-         * @param chartOfAccounts The company's {@link ChartOfAccounts}.
-         * @return List of beans representing each account. Returns an empty list if
-         *         the chart is null or contains no accounts.
-         */
-        public List<ChartOfAccountsRowBean> prepareChartOfAccountsJasperData(ChartOfAccounts chartOfAccounts)
-        {
-                List<ChartOfAccountsRowBean> data = new ArrayList<>();
-
-                if (chartOfAccounts == null)
-                {
-                        LOGGER.warning("ChartOfAccounts is null - cannot prepare COA report data.");
-                        return data;
-                }
-
-                List<Account> accounts = chartOfAccounts.getAccounts();
-                if (accounts == null)
-                {
-                        return data;
-                }
-
-                accounts.sort(Comparator.comparing(Account::getAccountNumber, Comparator.nullsLast(String::compareTo)));
-
-                for (Account acct : accounts)
-                {
-                        if (acct == null)
-                                continue;
-
-                        String type = (acct.getAccountType() != null) ? acct.getAccountType().name() : "";
-                        data.add(new ChartOfAccountsRowBean(acct.getAccountNumber(), acct.getName(), type));
-                }
-
-                return data;
-        }
-
+				"Report generation failed to produce a file for report type: " + reportType + ".");
+		}
+		
+	}
+	
+	/**
+	 * Prepares a list of {@link ChartOfAccountsRowBean} objects for the
+	 * Chart of Accounts Jasper report.
+	 *
+	 * @param chartOfAccounts The company's {@link ChartOfAccounts}.
+	 * @return List of beans representing each account. Returns an empty list if
+	 *         the chart is null or contains no accounts.
+	 */
+	public
+			List<ChartOfAccountsRowBean>
+			prepareChartOfAccountsJasperData(ChartOfAccounts chartOfAccounts)
+	{
+		List<ChartOfAccountsRowBean> data = new ArrayList<>();
+		
+		if (chartOfAccounts == null)
+		{
+			LOGGER.warning("ChartOfAccounts is null - cannot prepare COA report data.");
+			return data;
+		}
+		
+		List<Account> accounts = chartOfAccounts.getAccounts();
+		
+		if (accounts == null)
+		{
+			return data;
+		}
+		
+		accounts.sort(Comparator.comparing(Account::getAccountNumber,
+			Comparator.nullsLast(String::compareTo)));
+		
+		for (Account acct : accounts)
+		{
+			if (acct == null)
+				continue;
+			
+			String type = (acct.getAccountType() != null) ? acct.getAccountType().name() : "";
+			data.add(new ChartOfAccountsRowBean(acct.getAccountNumber(), acct.getName(), type));
+		}
+		
+		return data;
+	}
+	
 	/**
 	 * @param reportContext
 	 * @param ledger
@@ -2618,13 +2523,11 @@ public class ReportService
 	public
 			List<CashFlowStatementRowBean>
 			prepareCashFlowStatementJasperData(	ReportContext reportContext, Ledger ledger,
-ChartOfAccounts coa)
-{
-return new ArrayList<>();
-}
+												ChartOfAccounts coa)
+	{
+		return new ArrayList<>();
+	}
 	
-	
-
 	
 }
 

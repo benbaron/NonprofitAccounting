@@ -53,12 +53,12 @@ public class SkeletonReportsPanel extends BorderPane
 	/** Button to trigger the generation of the selected report. */
 	private Button generateReportButton;
 	/** TableView to display metadata of previously generated reports. */
-        private TableView<ReportMetadata> generatedReportsTable;
-        /** ObservableList that backs the {@link #generatedReportsTable}, containing {@link ReportMetadata} objects. */
-        private ObservableList<ReportMetadata> generatedReportsDataList;
-
-        /** Mapping of report display names to their report type keys. */
-        private java.util.Map<String, String> availableTemplates;
+	private TableView<ReportMetadata> generatedReportsTable;
+	/** ObservableList that backs the {@link #generatedReportsTable}, containing {@link ReportMetadata} objects. */
+	private ObservableList<ReportMetadata> generatedReportsDataList;
+	
+	/** Mapping of report display names to their report type keys. */
+	private java.util.Map<String, String> availableTemplates;
 	
 	/** Service layer for report generation and listing operations. */
 	private ReportService reportService;
@@ -92,13 +92,13 @@ public class SkeletonReportsPanel extends BorderPane
 		this.controlsGrid.setHgap(10);
 		this.controlsGrid.setVgap(10);
 		
-
-                this.controlsGrid.add(new Label("Report Type:"), 0, 0);
-                this.availableTemplates = ReportTemplateScanner.discoverTemplates();
-                this.reportTypeComboBox = new ComboBox<>(
-                        FXCollections.observableArrayList(this.availableTemplates.keySet()));
-                this.reportTypeComboBox.setPromptText("Select Report");
-                this.controlsGrid.add(this.reportTypeComboBox, 1, 0);
+		
+		this.controlsGrid.add(new Label("Report Type:"), 0, 0);
+		this.availableTemplates = ReportTemplateScanner.discoverTemplates();
+		this.reportTypeComboBox =
+			new ComboBox<>(FXCollections.observableArrayList(this.availableTemplates.keySet()));
+		this.reportTypeComboBox.setPromptText("Select Report");
+		this.controlsGrid.add(this.reportTypeComboBox, 1, 0);
 		
 		this.controlsGrid.add(new Label("Start Date:"), 0, 1);
 		this.startDatePicker = new DatePicker();
@@ -230,11 +230,7 @@ public class SkeletonReportsPanel extends BorderPane
 		});
 		actionsCol.setPrefWidth(100);
 		
-		this.generatedReportsTable.getColumns()
-			.addAll(nameCol,
-				dateGenCol,
-				formatCol,
-				actionsCol);
+		this.generatedReportsTable.getColumns().addAll(nameCol, dateGenCol, formatCol, actionsCol);
 	}
 	
 	/**
@@ -251,8 +247,7 @@ public class SkeletonReportsPanel extends BorderPane
 		
 		if (!CurrentCompany.isOpen() || CurrentCompany.getCompany() == null)
 		{
-			this.generatedReportsTable
-				.setPlaceholder(new Label("No company open."));
+			this.generatedReportsTable.setPlaceholder(new Label("No company open."));
 			return;
 		}
 		
@@ -328,110 +323,105 @@ public class SkeletonReportsPanel extends BorderPane
 			LocalDate startDate = this.startDatePicker.getValue();
 			LocalDate endDate = this.endDatePicker.getValue();
 			
-                        String reportTypeKey = this.availableTemplates.get(reportTypeDisplay);
-
-                        if (reportTypeKey == null)
-                        {
-                                AlertBox.showError(ownerWindow,
-                                        "Report type '" + reportTypeDisplay + "' generation not configured for Jasper system.");
-                                return;
-                        }
+			String reportTypeKey = this.availableTemplates.get(reportTypeDisplay);
 			
-                        ReportContext ctx = new ReportContext();
-                        ctx.setReportType(reportTypeKey);
-                        ctx.setStartDate(startDate);
-                        ctx.setEndDate(endDate);
-                        ctx.setFundIds(java.util.Collections.emptyList());
-                        ctx.setSelectedBudget(null);
-                        ctx.setAccountIdsForDetailReport(java.util.Collections.emptyList());
+			if (reportTypeKey == null)
+			{
+				AlertBox.showError(ownerWindow, "Report type '" + reportTypeDisplay +
+					"' generation not configured for Jasper system.");
+				return;
+			}
 			
-                        String outputFormat = "pdf";
-
-                        if (("income_statement_jasper".equals(reportTypeKey) ||
-                                "cash_flow_statement_jasper".equals(reportTypeKey)) &&
-                                (startDate == null || endDate == null))
-                        {
-                                AlertBox.showError(ownerWindow,
-                                        "Please select both a Start Date and End Date for this report.");
-                                return;
-                        }
-
-                        if (("balance_sheet_jasper".equals(reportTypeKey) ||
-                                "trial_balance_jasper".equals(reportTypeKey)) && endDate == null)
-                        {
-                                AlertBox.showError(ownerWindow,
-                                        "Please select an End Date (As-Of Date) for this report.");
-                                return;
-                        }
-
-                        if (startDate != null && endDate != null && endDate.isBefore(startDate))
-                        {
-                                AlertBox.showError(ownerWindow,
-                                        "End Date cannot be before Start Date.");
-                                return;
-                        }
-
-                        try
-                        {
-                                File generatedFile = this.reportService.generateJasperReport(ctx, outputFormat);
+			ReportContext ctx = new ReportContext();
+			ctx.setReportType(reportTypeKey);
+			ctx.setStartDate(startDate);
+			ctx.setEndDate(endDate);
+			ctx.setFundIds(java.util.Collections.emptyList());
+			ctx.setSelectedBudget(null);
+			ctx.setAccountIdsForDetailReport(java.util.Collections.emptyList());
+			
+			String outputFormat = "pdf";
+			
+			if (("income_statement_jasper".equals(reportTypeKey) ||
+				"cash_flow_statement_jasper".equals(reportTypeKey)) &&
+				(startDate == null || endDate == null))
+			{
+				AlertBox.showError(ownerWindow,
+					"Please select both a Start Date and End Date for this report.");
+				return;
+			}
+			
+			if (("balance_sheet_jasper".equals(reportTypeKey) ||
+				"trial_balance_jasper".equals(reportTypeKey)) && endDate == null)
+			{
+				AlertBox.showError(ownerWindow,
+					"Please select an End Date (As-Of Date) for this report.");
+				return;
+			}
+			
+			if (startDate != null && endDate != null && endDate.isBefore(startDate))
+			{
+				AlertBox.showError(ownerWindow, "End Date cannot be before Start Date.");
+				return;
+			}
+			
+			try
+			{
+				File generatedFile = this.reportService.generateJasperReport(ctx, outputFormat);
+				
+				if (generatedFile != null && generatedFile.exists())
+				{
+					AlertBox.showInfo(ownerWindow,
+						reportTypeDisplay + " generated: " + generatedFile.getAbsolutePath());
 					
-					if (generatedFile != null && generatedFile.exists())
+					try
 					{
-						AlertBox.showInfo(ownerWindow,
-							reportTypeDisplay + " generated: " +
-								generatedFile.getAbsolutePath());
 						
-						try
+						if (Desktop.isDesktopSupported())
 						{
-							
-							if (Desktop.isDesktopSupported())
-							{ 
-								// Check if Desktop API is supported
-								Desktop.getDesktop().open(generatedFile);
-							}
-							else
-							{
-								AlertBox.showWarning(ownerWindow,
-									"Cannot automatically open file. Desktop operations not supported on this platform. File saved at: " +
-										generatedFile.getAbsolutePath());
-							}
-							
+							// Check if Desktop API is supported
+							Desktop.getDesktop().open(generatedFile);
 						}
-						catch (IOException | UnsupportedOperationException ex)
+						else
 						{
-							ex.printStackTrace();
-							AlertBox.showError(ownerWindow,
-								"Could not open report file: " + 
-							ex.getMessage() +
-							(ex instanceof UnsupportedOperationException ?
-								"\nDesktop operations not supported on this platform." :
-								""));
+							AlertBox.showWarning(ownerWindow,
+								"Cannot automatically open file. Desktop operations not supported on this platform. File saved at: " +
+									generatedFile.getAbsolutePath());
 						}
 						
 					}
-					else
+					catch (IOException | UnsupportedOperationException ex)
 					{
-						AlertBox.showError(ownerWindow, reportTypeDisplay +
-							" could not be generated or found. Check console/logs.");
+						ex.printStackTrace();
+						AlertBox.showError(ownerWindow,
+							"Could not open report file: " + ex.getMessage() +
+								(ex instanceof UnsupportedOperationException ?
+									"\nDesktop operations not supported on this platform." : ""));
 					}
 					
 				}
-				catch (Exception ex)
+				else
 				{
-					ex.printStackTrace();
-					AlertBox.showError(ownerWindow,
-						"Error generating " + reportTypeDisplay + ": " + ex.getMessage());
-				}
-				finally
-				{
-					loadGeneratedReports();
+					AlertBox.showError(ownerWindow, reportTypeDisplay +
+						" could not be generated or found. Check console/logs.");
 				}
 				
-                        }
+			}
+			catch (Exception ex)
+			{
+				ex.printStackTrace();
+				AlertBox.showError(ownerWindow,
+					"Error generating " + reportTypeDisplay + ": " + ex.getMessage());
+			}
+			finally
+			{
+				loadGeneratedReports();
+			}
 			
 		});
 		
 		loadGeneratedReports();
+		
 	}
 	
 }
