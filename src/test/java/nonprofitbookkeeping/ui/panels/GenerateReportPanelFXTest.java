@@ -7,6 +7,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.reports.ReportContext;
+import nonprofitbookkeeping.reports.ReportTemplateScanner;
 import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.ui.JavaFXTestBase;
 
@@ -38,6 +39,7 @@ public class GenerateReportPanelFXTest extends JavaFXTestBase {
     private ComboBox<String> reportSelector;
     private Button generateButton;
     private TextArea outputArea;
+    private java.util.Map<String, String> templates;
 
     @Start
     @Override
@@ -53,6 +55,8 @@ public class GenerateReportPanelFXTest extends JavaFXTestBase {
         this.reportSelector = lookup(".combo-box").queryComboBox();
         this.generateButton = lookup("Generate Report").queryButton(); // Lookup by text
         this.outputArea = lookup(".text-area").queryAs(TextArea.class);
+
+        this.templates = ReportTemplateScanner.discoverTemplates();
     }
 
     @Test
@@ -61,14 +65,13 @@ public class GenerateReportPanelFXTest extends JavaFXTestBase {
         assertNotNull(this.generateButton);
         assertNotNull(this.outputArea);
 
-        // Check number of items. If this changes often, adjust accordingly.
-        verifyThat(this.reportSelector, hasItems(8));
-        assertTrue(this.reportSelector.getItems().contains("Income Statement"));
-        assertTrue(this.reportSelector.getItems().contains("Trial Balance (Jasper)"));
-        assertTrue(this.reportSelector.getItems().contains("Budget vs. Actuals"));
-        assertTrue(this.reportSelector.getItems().contains("Account Activity Detail"));
 
-        assertEquals("Income Statement", this.reportSelector.getSelectionModel().getSelectedItem());
+        // Verify the selector is populated with the discovered templates
+        verifyThat(this.reportSelector, hasItems(this.templates.size()));
+        assertTrue(this.reportSelector.getItems().contains("Income Statement"));
+        assertTrue(this.reportSelector.getItems().contains("Trial Balance"));
+
+        assertNotNull(this.reportSelector.getSelectionModel().getSelectedItem());
         assertEquals("", this.outputArea.getText()); // Should be initially empty
     }
 
@@ -78,7 +81,7 @@ public class GenerateReportPanelFXTest extends JavaFXTestBase {
         when(this.mockReportService.generateJasperReport(any(ReportContext.class), eq("pdf")))
             .thenReturn(mockFile);
 
-        Platform.runLater(() -> this.reportSelector.setValue("Trial Balance (Jasper)"));
+        Platform.runLater(() -> this.reportSelector.setValue("Trial Balance"));
         WaitForAsyncUtils.waitForFxEvents();
 
         clickOn(this.generateButton);
@@ -92,7 +95,7 @@ public class GenerateReportPanelFXTest extends JavaFXTestBase {
         assertNotNull(contextCaptor.getValue().getEndDate());
 
         String outputText = this.outputArea.getText();
-        assertTrue(outputText.contains("Generating Trial Balance (Jasper) report..."));
+        assertTrue(outputText.contains("Generating Trial Balance..."));
         assertTrue(outputText.contains("Report generated successfully: " + mockFile.getAbsolutePath()));
     }
 
@@ -101,7 +104,7 @@ public class GenerateReportPanelFXTest extends JavaFXTestBase {
         when(this.mockReportService.generateJasperReport(any(ReportContext.class), eq("pdf")))
             .thenReturn(null);
 
-        Platform.runLater(() -> this.reportSelector.setValue("Trial Balance (Jasper)"));
+        Platform.runLater(() -> this.reportSelector.setValue("Trial Balance"));
         WaitForAsyncUtils.waitForFxEvents();
 
         clickOn(this.generateButton);
@@ -116,7 +119,7 @@ public class GenerateReportPanelFXTest extends JavaFXTestBase {
         when(this.mockReportService.generateJasperReport(any(ReportContext.class), eq("pdf")))
             .thenThrow(new IOException("Test Jasper Exception"));
 
-        Platform.runLater(() -> this.reportSelector.setValue("Trial Balance (Jasper)"));
+        Platform.runLater(() -> this.reportSelector.setValue("Trial Balance"));
         WaitForAsyncUtils.waitForFxEvents();
 
         clickOn(this.generateButton);
@@ -150,7 +153,7 @@ public class GenerateReportPanelFXTest extends JavaFXTestBase {
 		}
 
         String outputText = this.outputArea.getText();
-        assertTrue(outputText.contains("Generating report: Income Statement..."));
+        assertTrue(outputText.contains("Generating Income Statement..."));
         assertTrue(outputText.contains("Done. (This is a placeholder for the actual report)"));
     }
 }

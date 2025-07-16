@@ -23,6 +23,7 @@ import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 import nonprofitbookkeeping.reports.ReportContext; // Added import
 import nonprofitbookkeeping.reports.ReportMetadata;
+import nonprofitbookkeeping.reports.ReportTemplateScanner;
 import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 
@@ -52,9 +53,12 @@ public class SkeletonReportsPanel extends BorderPane
 	/** Button to trigger the generation of the selected report. */
 	private Button generateReportButton;
 	/** TableView to display metadata of previously generated reports. */
-	private TableView<ReportMetadata> generatedReportsTable;
-	/** ObservableList that backs the {@link #generatedReportsTable}, containing {@link ReportMetadata} objects. */
-	private ObservableList<ReportMetadata> generatedReportsDataList;
+        private TableView<ReportMetadata> generatedReportsTable;
+        /** ObservableList that backs the {@link #generatedReportsTable}, containing {@link ReportMetadata} objects. */
+        private ObservableList<ReportMetadata> generatedReportsDataList;
+
+        /** Mapping of report display names to their report type keys. */
+        private java.util.Map<String, String> availableTemplates;
 	
 	/** Service layer for report generation and listing operations. */
 	private ReportService reportService;
@@ -88,19 +92,13 @@ public class SkeletonReportsPanel extends BorderPane
 		this.controlsGrid.setHgap(10);
 		this.controlsGrid.setVgap(10);
 		
-		this.controlsGrid.add(new Label("Report Type:"), 0, 0);
-		this.reportTypeComboBox = new ComboBox<>();
-                this.reportTypeComboBox.setItems(FXCollections.observableArrayList(
-                        "Income Statement",
-                        "Balance Sheet",
-                        "Trial Balance",
-                        "Cash Flow Statement",
-                        "Budget vs. Actuals",
-                        "Account Activity Detail",
-                        "Donor Summary",
-                        "Fund Activity Report"));
-		this.reportTypeComboBox.setPromptText("Select Report");
-		this.controlsGrid.add(this.reportTypeComboBox, 1, 0);
+
+                this.controlsGrid.add(new Label("Report Type:"), 0, 0);
+                this.availableTemplates = ReportTemplateScanner.discoverTemplates();
+                this.reportTypeComboBox = new ComboBox<>(
+                        FXCollections.observableArrayList(this.availableTemplates.keySet()));
+                this.reportTypeComboBox.setPromptText("Select Report");
+                this.controlsGrid.add(this.reportTypeComboBox, 1, 0);
 		
 		this.controlsGrid.add(new Label("Start Date:"), 0, 1);
 		this.startDatePicker = new DatePicker();
@@ -330,37 +328,14 @@ public class SkeletonReportsPanel extends BorderPane
 			LocalDate startDate = this.startDatePicker.getValue();
 			LocalDate endDate = this.endDatePicker.getValue();
 			
-			String reportTypeKey;
-			boolean isJasperReport = true;
-			
-			switch(reportTypeDisplay)
-			{
-				case "Income Statement":
-					reportTypeKey = "income_statement_jasper";
-					break;
-				
-				case "Balance Sheet":
-					reportTypeKey = "balance_sheet_jasper";
-					AlertBox.showInfo(ownerWindow,
-						"Balance Sheet via Jasper is chosen, but ensure its generator is fully implemented in ReportService.");
-					break;
-				
-				case "Trial Balance":
-					reportTypeKey = "trial_balance_jasper";
-					AlertBox.showInfo(ownerWindow,
-						"Trial Balance via Jasper is chosen, but ensure its generator is fully implemented in ReportService.");
-					break;
-				
-				case "Cash Flow Statement":
-					reportTypeKey = "cash_flow_statement_jasper";
-					break;
-				
-				default:
-					AlertBox.showError(ownerWindow, "Report type '" +
-						reportTypeDisplay +
-						"' generation not configured for Jasper system.");
-					return;
-			}
+                        String reportTypeKey = this.availableTemplates.get(reportTypeDisplay);
+
+                        if (reportTypeKey == null)
+                        {
+                                AlertBox.showError(ownerWindow,
+                                        "Report type '" + reportTypeDisplay + "' generation not configured for Jasper system.");
+                                return;
+                        }
 			
                         ReportContext ctx = new ReportContext();
                         ctx.setReportType(reportTypeKey);
@@ -370,38 +345,35 @@ public class SkeletonReportsPanel extends BorderPane
                         ctx.setSelectedBudget(null);
                         ctx.setAccountIdsForDetailReport(java.util.Collections.emptyList());
 			
-			String outputFormat = "pdf";
-			
-			if (isJasperReport)
-			{
-				
-				if (("income_statement_jasper".equals(reportTypeKey) ||
-					"cash_flow_statement_jasper".equals(reportTypeKey)) &&
-					(startDate == null || endDate == null))
-				{
-					AlertBox.showError(ownerWindow,
-						"Please select both a Start Date and End Date for this report.");
-					return;
-				}
-				
-				if (("balance_sheet_jasper".equals(reportTypeKey) ||
-					"trial_balance_jasper".equals(reportTypeKey)) && endDate == null)
-				{
-					AlertBox.showError(ownerWindow,
-						"Please select an End Date (As-Of Date) for this report.");
-					return;
-				}
-				
-				if (startDate != null && endDate != null && endDate.isBefore(startDate))
-				{
-					AlertBox.showError(ownerWindow,
-						"End Date cannot be before Start Date.");
-					return;
-				}
-				
-				try
-				{
-					File generatedFile = this.reportService.generateJasperReport(ctx, outputFormat);
+                        String outputFormat = "pdf";
+
+                        if (("income_statement_jasper".equals(reportTypeKey) ||
+                                "cash_flow_statement_jasper".equals(reportTypeKey)) &&
+                                (startDate == null || endDate == null))
+                        {
+                                AlertBox.showError(ownerWindow,
+                                        "Please select both a Start Date and End Date for this report.");
+                                return;
+                        }
+
+                        if (("balance_sheet_jasper".equals(reportTypeKey) ||
+                                "trial_balance_jasper".equals(reportTypeKey)) && endDate == null)
+                        {
+                                AlertBox.showError(ownerWindow,
+                                        "Please select an End Date (As-Of Date) for this report.");
+                                return;
+                        }
+
+                        if (startDate != null && endDate != null && endDate.isBefore(startDate))
+                        {
+                                AlertBox.showError(ownerWindow,
+                                        "End Date cannot be before Start Date.");
+                                return;
+                        }
+
+                        try
+                        {
+                                File generatedFile = this.reportService.generateJasperReport(ctx, outputFormat);
 					
 					if (generatedFile != null && generatedFile.exists())
 					{
@@ -455,15 +427,7 @@ public class SkeletonReportsPanel extends BorderPane
 					loadGeneratedReports();
 				}
 				
-			}
-			else
-			{
-				// This block would handle non-Jasper reports if any were configured
-				AlertBox.showInfo(ownerWindow, 
-					"Generation for non-Jasper report type '" +
-					reportTypeDisplay + 
-					"' is not handled by this path.");
-			}
+                        }
 			
 		});
 		
