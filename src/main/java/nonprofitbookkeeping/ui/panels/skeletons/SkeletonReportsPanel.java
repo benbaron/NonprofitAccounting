@@ -90,8 +90,15 @@ public class SkeletonReportsPanel extends BorderPane
 		
 		this.controlsGrid.add(new Label("Report Type:"), 0, 0);
 		this.reportTypeComboBox = new ComboBox<>();
-		this.reportTypeComboBox.setItems(FXCollections.observableArrayList(
-			"Income Statement", "Balance Sheet", "Trial Balance", "Cash Flow Statement"));
+                this.reportTypeComboBox.setItems(FXCollections.observableArrayList(
+                        "Income Statement",
+                        "Balance Sheet",
+                        "Trial Balance",
+                        "Cash Flow Statement",
+                        "Budget vs. Actuals",
+                        "Account Activity Detail",
+                        "Donor Summary",
+                        "Fund Activity Report"));
 		this.reportTypeComboBox.setPromptText("Select Report");
 		this.controlsGrid.add(this.reportTypeComboBox, 1, 0);
 		

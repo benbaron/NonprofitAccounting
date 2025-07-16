@@ -61,11 +61,12 @@ public class GenerateReportPanelFXTest extends JavaFXTestBase {
         assertNotNull(this.generateButton);
         assertNotNull(this.outputArea);
 
-        // Check number of items. If this changes often, could make test brittle.
-        // Or check for specific key items.
-        verifyThat(this.reportSelector, hasItems(6));
+        // Check number of items. If this changes often, adjust accordingly.
+        verifyThat(this.reportSelector, hasItems(8));
         assertTrue(this.reportSelector.getItems().contains("Income Statement"));
         assertTrue(this.reportSelector.getItems().contains("Trial Balance (Jasper)"));
+        assertTrue(this.reportSelector.getItems().contains("Budget vs. Actuals"));
+        assertTrue(this.reportSelector.getItems().contains("Account Activity Detail"));
 
         assertEquals("Income Statement", this.reportSelector.getSelectionModel().getSelectedItem());
         assertEquals("", this.outputArea.getText()); // Should be initially empty

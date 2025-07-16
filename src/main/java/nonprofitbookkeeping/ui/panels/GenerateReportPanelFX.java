@@ -35,14 +35,15 @@ public class GenerateReportPanelFX extends BorderPane
 		pane.setPrefWrapLength(600);
 		
 		ComboBox<String> selector = new ComboBox<>();
-		selector.getItems().addAll(
-        "Income Statement",
-        "Balance Sheet",
-        "Cash Flow",
-        "Trial Balance (Jasper)", // New entry
-        "Donor Summary",
-        "Fund Activity Report"
-    );
+                selector.getItems().addAll(
+                        "Income Statement",
+                        "Balance Sheet",
+                        "Trial Balance (Jasper)",
+                        "Cash Flow",
+                        "Budget vs. Actuals",
+                        "Account Activity Detail",
+                        "Donor Summary",
+                        "Fund Activity Report");
 		selector.getSelectionModel().selectFirst();
 		
 		Button generate = new Button("Generate Report");
