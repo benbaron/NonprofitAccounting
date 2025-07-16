@@ -40,6 +40,7 @@ public class GenerateReportPanelFX extends BorderPane
         "Balance Sheet",
         "Cash Flow",
         "Trial Balance (Jasper)", // New entry
+        "Chart of Accounts",
         "Donor Summary",
         "Fund Activity Report"
     );
@@ -68,6 +69,7 @@ public class GenerateReportPanelFX extends BorderPane
                                 }
                                 case "Cash Flow" -> context.setReportType("cash_flow_statement_jasper");
                                 case "Trial Balance (Jasper)" -> context.setReportType("trial_balance_jasper");
+                                case "Chart of Accounts" -> context.setReportType("chart_of_accounts_jasper");
                                 default -> {
                                         output.appendText("Report type not implemented.\n");
                                         return;

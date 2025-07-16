@@ -36,11 +36,13 @@ import java.util.logging.Logger;
 import nonprofitbookkeeping.reports.datasource.IncomeStatementRowBean;
 import nonprofitbookkeeping.reports.datasource.CashFlowStatementRowBean;
 import nonprofitbookkeeping.reports.datasource.TrialBalanceRowBean; // Added import
+import nonprofitbookkeeping.reports.datasource.ChartOfAccountsRowBean;
 import nonprofitbookkeeping.reports.generator.AbstractReportGenerator;
 import nonprofitbookkeeping.reports.generator.IncomeStatementJasperGenerator;
 import nonprofitbookkeeping.reports.generator.CashFlowStatementJasperGenerator;
 import nonprofitbookkeeping.reports.generator.TrialBalanceJasperGenerator;
 import nonprofitbookkeeping.reports.generator.BalanceResultReportGenerator;
+import nonprofitbookkeeping.reports.generator.ChartOfAccountsJasperGenerator;
 
 
 /**
@@ -2265,7 +2267,7 @@ public class ReportService
 	 * @return A list of {@link TrialBalanceRowBean}s for the report. Returns an empty list if
 	 *         required data (end date, ledger, COA) is missing.
 	 */
-	public List<TrialBalanceRowBean> prepareTrialBalanceJasperData(
+        public List<TrialBalanceRowBean> prepareTrialBalanceJasperData(
 																	ReportContext context,
 																	Ledger ledger,
 																	ChartOfAccounts chartOfAccounts)
@@ -2464,8 +2466,38 @@ public class ReportService
 			
 		}
 		
-		return reportData;
-	}
+                return reportData;
+        }
+
+       /**
+        * Builds data rows for the Chart of Accounts Jasper report.
+        *
+        * @param chartOfAccounts The {@link ChartOfAccounts} to pull accounts from.
+        * @return A sorted list of {@link ChartOfAccountsRowBean} objects.
+        */
+       public List<ChartOfAccountsRowBean> prepareChartOfAccountsJasperData(ChartOfAccounts chartOfAccounts)
+       {
+               List<ChartOfAccountsRowBean> rows = new ArrayList<>();
+
+               if (chartOfAccounts == null || chartOfAccounts.getAccounts() == null)
+               {
+                       return rows;
+               }
+
+               List<Account> accounts = new ArrayList<>(chartOfAccounts.getAccounts());
+               accounts.sort(Comparator.comparing(Account::getAccountNumber,
+                               Comparator.nullsLast(String::compareTo)));
+
+               for (Account account : accounts)
+               {
+                       if (account == null)
+                               continue;
+                       String type = account.getAccountType() != null ? account.getAccountType().name() : "";
+                       rows.add(new ChartOfAccountsRowBean(account.getAccountNumber(), account.getName(), type));
+               }
+
+               return rows;
+       }
 	
 	/**
 	 * Generates and exports a report using JasperReports based on the specified {@link ReportContext} and output format.
@@ -2518,6 +2550,10 @@ public class ReportService
 			
                         case "trial_balance_jasper":
                                 reportGeneratorInstance = new TrialBalanceJasperGenerator(context, this);
+                                break;
+
+                        case "chart_of_accounts_jasper":
+                                reportGeneratorInstance = new ChartOfAccountsJasperGenerator(context, this);
                                 break;
 
                         case "balance_sheet_jasper":

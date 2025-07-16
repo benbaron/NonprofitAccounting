@@ -1,6 +1,13 @@
 
 package nonprofitbookkeeping.reports.generator;
 
+import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.ChartOfAccounts;
+import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.reports.ReportContext;
+import nonprofitbookkeeping.reports.datasource.ChartOfAccountsRowBean;
+import nonprofitbookkeeping.service.ReportService;
+
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import java.io.File;
@@ -19,9 +26,23 @@ import java.util.Map;
  */
 public class ChartOfAccountsJasperGenerator extends AbstractReportGenerator {
 
+    private ReportContext reportContext;
+    private ReportService reportService;
+
+    public ChartOfAccountsJasperGenerator(ReportContext context, ReportService service) {
+        this.reportContext = context;
+        this.reportService = service;
+    }
+
     @Override
-    protected List<?> getReportData() {
-        return Collections.emptyList();
+    protected List<ChartOfAccountsRowBean> getReportData() {
+        Company company = CurrentCompany.getCompany();
+        if (company == null || company.getChartOfAccounts() == null) {
+            System.err.println("ChartOfAccountsJasperGenerator: Company or COA is null.");
+            return Collections.emptyList();
+        }
+        ChartOfAccounts coa = company.getChartOfAccounts();
+        return this.reportService.prepareChartOfAccountsJasperData(coa);
     }
 
     @Override
