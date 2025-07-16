@@ -36,6 +36,7 @@ import java.util.logging.Logger;
 import nonprofitbookkeeping.reports.datasource.IncomeStatementRowBean;
 import nonprofitbookkeeping.reports.datasource.CashFlowStatementRowBean;
 import nonprofitbookkeeping.reports.datasource.TrialBalanceRowBean; // Added import
+import nonprofitbookkeeping.reports.datasource.ChartOfAccountsRowBean;
 import nonprofitbookkeeping.reports.generator.AbstractReportGenerator;
 import nonprofitbookkeeping.reports.generator.IncomeStatementJasperGenerator;
 import nonprofitbookkeeping.reports.generator.CashFlowStatementJasperGenerator;
@@ -2541,7 +2542,7 @@ public class ReportService
 		// type: " + reportType);
 		// }
 		
-		File generatedFile = reportGeneratorInstance.generateAndExportReport(outputFormat);
+                File generatedFile = reportGeneratorInstance.generateAndExportReport(outputFormat);
 		
 		if (generatedFile != null && generatedFile.exists())
 		{
@@ -2566,9 +2567,47 @@ public class ReportService
 			throw new Exception(
 				"Report generation failed to produce a file for report type: " +
 					reportType + ".");
-		}
-		
-	}
+                }
+
+        }
+
+        /**
+         * Prepares a list of {@link ChartOfAccountsRowBean} objects for the
+         * Chart of Accounts Jasper report.
+         *
+         * @param chartOfAccounts The company's {@link ChartOfAccounts}.
+         * @return List of beans representing each account. Returns an empty list if
+         *         the chart is null or contains no accounts.
+         */
+        public List<ChartOfAccountsRowBean> prepareChartOfAccountsJasperData(ChartOfAccounts chartOfAccounts)
+        {
+                List<ChartOfAccountsRowBean> data = new ArrayList<>();
+
+                if (chartOfAccounts == null)
+                {
+                        LOGGER.warning("ChartOfAccounts is null - cannot prepare COA report data.");
+                        return data;
+                }
+
+                List<Account> accounts = chartOfAccounts.getAccounts();
+                if (accounts == null)
+                {
+                        return data;
+                }
+
+                accounts.sort(Comparator.comparing(Account::getAccountNumber, Comparator.nullsLast(String::compareTo)));
+
+                for (Account acct : accounts)
+                {
+                        if (acct == null)
+                                continue;
+
+                        String type = (acct.getAccountType() != null) ? acct.getAccountType().name() : "";
+                        data.add(new ChartOfAccountsRowBean(acct.getAccountNumber(), acct.getName(), type));
+                }
+
+                return data;
+        }
 
 	/**
 	 * @param reportContext

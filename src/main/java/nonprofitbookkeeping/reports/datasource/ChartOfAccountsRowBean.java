@@ -24,4 +24,24 @@ public class ChartOfAccountsRowBean {
     public String getType() { return this.type; }
     public void setType(String type) { this.type = type; }
 
+    // ------------------------------------------------------------------
+    // Convenience getters matching field names in ChartOfAccountsAlt.jrxml
+    // ------------------------------------------------------------------
+
+    /**
+     * Alias for {@link #getAccountNumber()} matching the JRXML field
+     * name {@code account_number}.
+     *
+     * @return the account number
+     */
+    public String getAccount_number() { return getAccountNumber(); }
+
+    /**
+     * Alias for {@link #getAccountName()} matching the JRXML field
+     * name {@code account_name}.
+     *
+     * @return the account name
+     */
+    public String getAccount_name() { return getAccountName(); }
+
 }
