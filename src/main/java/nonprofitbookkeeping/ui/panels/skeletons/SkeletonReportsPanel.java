@@ -92,6 +92,7 @@ public class SkeletonReportsPanel extends BorderPane
 		this.controlsGrid.setHgap(10);
 		this.controlsGrid.setVgap(10);
 		
+
                 this.controlsGrid.add(new Label("Report Type:"), 0, 0);
                 this.availableTemplates = ReportTemplateScanner.discoverTemplates();
                 this.reportTypeComboBox = new ComboBox<>(

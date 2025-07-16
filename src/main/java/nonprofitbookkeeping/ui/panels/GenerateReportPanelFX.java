@@ -41,6 +41,7 @@ public class GenerateReportPanelFX extends BorderPane
                 if (!selector.getItems().isEmpty()) {
                         selector.getSelectionModel().selectFirst();
                 }
+
 		
 		Button generate = new Button("Generate Report");
 		TextArea output = new TextArea();

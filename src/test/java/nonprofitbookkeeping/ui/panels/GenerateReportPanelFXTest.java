@@ -65,6 +65,7 @@ public class GenerateReportPanelFXTest extends JavaFXTestBase {
         assertNotNull(this.generateButton);
         assertNotNull(this.outputArea);
 
+
         // Verify the selector is populated with the discovered templates
         verifyThat(this.reportSelector, hasItems(this.templates.size()));
         assertTrue(this.reportSelector.getItems().contains("Income Statement"));
