@@ -1612,7 +1612,6 @@ public class ReportService
 						
 						entryData.put("runningBalance", runningBalance);
 						entryItems.add(entryData);
-
 						break;
 					}
 					
