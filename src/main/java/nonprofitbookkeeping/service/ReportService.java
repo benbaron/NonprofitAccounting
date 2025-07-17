@@ -41,18 +41,18 @@ import nonprofitbookkeeping.reports.datasource.ChartOfAccountsRowBean;
 import nonprofitbookkeeping.reports.generator.AbstractReportGenerator;
 import nonprofitbookkeeping.reports.generator.AccountLedgerJasperGenerator;
 import nonprofitbookkeeping.reports.generator.AccountSummaryJasperGenerator;
-import nonprofitbookkeeping.reports.generator.IncomeStatementJasperGenerator;
-import nonprofitbookkeeping.reports.generator.TransactionReportJasperGenerator;
+import nonprofitbookkeeping.reports.generator.BalanceResultReportGenerator;
+import nonprofitbookkeeping.reports.generator.BalanceSheetJasperGenerator;
+import nonprofitbookkeeping.reports.generator.BankReconciliationJasperGenerator;
 import nonprofitbookkeeping.reports.generator.CashFlowStatementJasperGenerator;
 import nonprofitbookkeeping.reports.generator.ChartOfAccountsJasperGenerator;
 import nonprofitbookkeeping.reports.generator.FundLedgerJasperGenerator;
 import nonprofitbookkeeping.reports.generator.GeneralJournalJasperGenerator;
 import nonprofitbookkeeping.reports.generator.GeneralLedgerJasperGenerator;
 import nonprofitbookkeeping.reports.generator.IncomeStatementAltJasperGenerator;
+import nonprofitbookkeeping.reports.generator.IncomeStatementJasperGenerator;
 import nonprofitbookkeeping.reports.generator.TrialBalanceJasperGenerator;
-import nonprofitbookkeeping.reports.generator.BalanceResultReportGenerator;
-import nonprofitbookkeeping.reports.generator.BalanceSheetJasperGenerator;
-import nonprofitbookkeeping.reports.generator.BankReconciliationJasperGenerator;
+import nonprofitbookkeeping.reports.generator.TransactionReportJasperGenerator;
 
 
 /**
@@ -69,7 +69,42 @@ public class ReportService
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
 	
 	/** Map of registered report writers keyed by report type. */
-	private final Map<String, LedgerReportWriter> writerMap = new HashMap<>();
+    private final Map<String, LedgerReportWriter> writerMap = new HashMap<>();
+
+    /** Mapping of Jasper report types to their generator constructors. */
+    private static final Map<String,
+            java.util.function.BiFunction<ReportContext, ReportService, AbstractReportGenerator>> generatorRegistry =
+            new HashMap<>();
+
+    static
+    {
+        generatorRegistry.put("income_statement_jasper",
+                (ctx, svc) -> new IncomeStatementJasperGenerator(ctx, svc));
+        generatorRegistry.put("cash_flow_statement_jasper",
+                (ctx, svc) -> new CashFlowStatementJasperGenerator(ctx, svc));
+        generatorRegistry.put("trial_balance_jasper",
+                (ctx, svc) -> new TrialBalanceJasperGenerator(ctx, svc));
+        generatorRegistry.put("balance_sheet_jasper",
+                (ctx, svc) -> new BalanceResultReportGenerator(null));
+        generatorRegistry.put("account_ledger_jasper",
+                (ctx, svc) -> new AccountLedgerJasperGenerator());
+        generatorRegistry.put("account_summary_jasper",
+                (ctx, svc) -> new AccountSummaryJasperGenerator());
+        generatorRegistry.put("bank_reconciliation_jasper",
+                (ctx, svc) -> new BankReconciliationJasperGenerator());
+        generatorRegistry.put("chart_of_accounts_jasper",
+                (ctx, svc) -> new ChartOfAccountsJasperGenerator(svc));
+        generatorRegistry.put("fund_ledger_jasper",
+                (ctx, svc) -> new FundLedgerJasperGenerator());
+        generatorRegistry.put("general_journal_jasper",
+                (ctx, svc) -> new GeneralJournalJasperGenerator());
+        generatorRegistry.put("general_ledger_jasper",
+                (ctx, svc) -> new GeneralLedgerJasperGenerator());
+        generatorRegistry.put("income_statement_alt_jasper",
+                (ctx, svc) -> new IncomeStatementAltJasperGenerator());
+        generatorRegistry.put("transaction_report_jasper",
+                (ctx, svc) -> new TransactionReportJasperGenerator());
+    }
 	
 	
 	/**
@@ -2312,55 +2347,24 @@ public class ReportService
 				"No company is currently open. Cannot generate report.");
 		}
 		
-		AbstractReportGenerator reportGeneratorInstance = null;
-		String reportType = context.getReportType();
+                AbstractReportGenerator reportGeneratorInstance = null;
+                String reportType = context.getReportType();
 		
 		if (reportType == null || reportType.trim().isEmpty())
 		{
 			throw new IllegalArgumentException("Report type must be specified in ReportContext.");
 		}
 		
-		switch(reportType)
-		{
-			case "income_statement_jasper":
-				reportGeneratorInstance = new IncomeStatementJasperGenerator(context, this);
-				break;
-			
-			case "cash_flow_statement_jasper":
-				reportGeneratorInstance = new CashFlowStatementJasperGenerator(context, this);
-				break;
-			
-			case "trial_balance_jasper":
-				reportGeneratorInstance = new TrialBalanceJasperGenerator(context, this);
-				break;
-			
-			case "balance_sheet_jasper":
-				reportGeneratorInstance = new BalanceResultReportGenerator(null);
-				break;
-			
-			case "":
-				reportGeneratorInstance = new AccountLedgerJasperGenerator();
-				reportGeneratorInstance = new AccountSummaryJasperGenerator();
-				//reportGeneratorInstance = new BalanceResultReportGenerator(null);
-				reportGeneratorInstance = new BalanceSheetJasperGenerator();
-				reportGeneratorInstance = new BankReconciliationJasperGenerator();
-				//reportGeneratorInstance = new CashFlowStatementJasperGenerator(null, null);
-				reportGeneratorInstance = new ChartOfAccountsJasperGenerator(null);
-				reportGeneratorInstance = new FundLedgerJasperGenerator();
-				reportGeneratorInstance = new GeneralJournalJasperGenerator();
-				reportGeneratorInstance = new GeneralLedgerJasperGenerator();
-				reportGeneratorInstance = new IncomeStatementAltJasperGenerator();
-				//reportGeneratorInstance = new IncomeStatementJasperGenerator(null, null);
-				reportGeneratorInstance = new TransactionReportJasperGenerator();
-				//reportGeneratorInstance = new TrialBalanceJasperGenerator(null, null);
-				break;
-				
-			// Additional Jasper-based reports can be added here
-			default:
-				System.err.println("Unsupported or unknown Jasper report type: " + reportType); // Consider
-																								// logger
-				throw new IllegalArgumentException("Unsupported Jasper report type: " + reportType);
-		}
+                java.util.function.BiFunction<ReportContext, ReportService, AbstractReportGenerator> factory =
+                        generatorRegistry.get(reportType);
+
+                if (factory == null)
+                {
+                        System.err.println("Unsupported or unknown Jasper report type: " + reportType); // Consider logger
+                        throw new IllegalArgumentException("Unsupported Jasper report type: " + reportType);
+                }
+
+                reportGeneratorInstance = factory.apply(context, this);
 		
 		File generatedFile = reportGeneratorInstance.generateAndExportReport(outputFormat);
 		
