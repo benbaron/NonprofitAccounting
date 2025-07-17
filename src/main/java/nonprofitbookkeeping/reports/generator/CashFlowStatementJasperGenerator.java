@@ -38,8 +38,6 @@ public class CashFlowStatementJasperGenerator extends AbstractReportGenerator
 {
 	
 	private ReportContext reportContext;
-	private ReportService reportService;
-	
 	/**
 	 * Constructs a {@code CashFlowStatementJasperGenerator}.
 	 *
@@ -50,7 +48,6 @@ public class CashFlowStatementJasperGenerator extends AbstractReportGenerator
 		ReportService reportService2)
 	{
 		this.reportContext = reportContext;
-		this.reportService = reportService2;
 	}
 	
 	/**
@@ -86,7 +83,7 @@ public class CashFlowStatementJasperGenerator extends AbstractReportGenerator
 		Ledger ledger = company.getLedger();
 		ChartOfAccounts coa = company.getChartOfAccounts();
 		
-		return this.reportService.prepareCashFlowStatementJasperData(this.reportContext, ledger,
+		return ReportService.prepareCashFlowStatementJasperData(this.reportContext, ledger,
 			coa);
 	}
 	

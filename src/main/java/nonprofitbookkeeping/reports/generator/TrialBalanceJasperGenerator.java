@@ -172,9 +172,8 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 	{
 		File generatedFile = null;
 		String currentDateStr = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
-		String reportBaseName = "Trial_Balance_Report_" +
-			(this.reportContext.getEndDate() != null ? this.reportContext.getEndDate().toString() :
-				currentDateStr);
+		String reportBaseName = "Trial_Balance_Report_" + (this.reportContext.getEndDate() != null ?
+			this.reportContext.getEndDate().toString() : currentDateStr);
 		
 		String jrxmlPath = getReportPath();
 		

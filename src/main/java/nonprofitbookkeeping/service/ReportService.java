@@ -33,15 +33,26 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import nonprofitbookkeeping.reports.datasource.IncomeStatementRowBean;
 import nonprofitbookkeeping.reports.datasource.CashFlowStatementRowBean;
-import nonprofitbookkeeping.reports.datasource.TrialBalanceRowBean; // Added import
+import nonprofitbookkeeping.reports.datasource.TrialBalanceRowBean; 
 import nonprofitbookkeeping.reports.datasource.ChartOfAccountsRowBean;
 import nonprofitbookkeeping.reports.generator.AbstractReportGenerator;
+import nonprofitbookkeeping.reports.generator.AccountLedgerJasperGenerator;
+import nonprofitbookkeeping.reports.generator.AccountSummaryJasperGenerator;
 import nonprofitbookkeeping.reports.generator.IncomeStatementJasperGenerator;
+import nonprofitbookkeeping.reports.generator.TransactionReportJasperGenerator;
 import nonprofitbookkeeping.reports.generator.CashFlowStatementJasperGenerator;
+import nonprofitbookkeeping.reports.generator.ChartOfAccountsJasperGenerator;
+import nonprofitbookkeeping.reports.generator.FundLedgerJasperGenerator;
+import nonprofitbookkeeping.reports.generator.GeneralJournalJasperGenerator;
+import nonprofitbookkeeping.reports.generator.GeneralLedgerJasperGenerator;
+import nonprofitbookkeeping.reports.generator.IncomeStatementAltJasperGenerator;
 import nonprofitbookkeeping.reports.generator.TrialBalanceJasperGenerator;
 import nonprofitbookkeeping.reports.generator.BalanceResultReportGenerator;
+import nonprofitbookkeeping.reports.generator.BalanceSheetJasperGenerator;
+import nonprofitbookkeeping.reports.generator.BankReconciliationJasperGenerator;
 
 
 /**
@@ -98,8 +109,7 @@ public class ReportService
 		if (transactions == null)
 		{
 			LOGGER.info("No transactions found in the ledger.");
-			transactions = new ArrayList<AccountingTransaction>(); // Ensure non-null for
-																	// iteration
+			transactions = new ArrayList<AccountingTransaction>();
 		}
 		
 		for (AccountingTransaction transaction : transactions)
@@ -114,12 +124,7 @@ public class ReportService
 				
 				if (entries == null)
 				{
-					LOGGER.fine("Transaction with ID " + transaction.getBookingDateTimestamp() + // Consider
-																									// Level.FINE
-																									// for
-																									// less
-																									// critical
-																									// logs
+					LOGGER.fine("Transaction with ID " + transaction.getBookingDateTimestamp() + 
 						" has no entries.");
 					entries = new java.util.HashSet<>(); // Ensure non-null for iteration
 				}
@@ -219,6 +224,7 @@ public class ReportService
 		return jxlsContext;
 	}
 	
+	
 	/**
 	 * Checks if a given account is associated with any of the selected funds.
 	 * This is a helper method used for filtering report data based on fund selections.
@@ -278,7 +284,8 @@ public class ReportService
 	 *         totals, net income, and report date information.
 	 * @throws IllegalArgumentException if end date is not provided in the {@code context}.
 	 */
-	static Map<String, Object> prepareBalanceSheetContext(	ReportContext context, Ledger ledger,
+	static Map<String, Object> prepareBalanceSheetContext(	ReportContext context, 
+	                                                      	Ledger ledger,
 															ChartOfAccounts chartOfAccounts)
 	{
 		Map<String, BigDecimal> assetTotals = new HashMap<>();
@@ -293,13 +300,13 @@ public class ReportService
 		LocalDate reportEndDate = context.getEndDate();
 		
 		List<String> selectedFundNames = context.getFundIds();
-		boolean applyFundFilter = (selectedFundNames != null && !selectedFundNames.isEmpty());
+		boolean applyFundFilter = (selectedFundNames != null && 
+			!selectedFundNames.isEmpty());
 		
 		for (Account account : chartOfAccounts.getAccounts())
 		{
-			if (account == null || account.getAccountType() == null || account.getName() == null) // Use
-																									// direct
-																									// enum
+			if (account == null || account.getAccountType() == null || account.getName() == null) 
+
 				continue;
 			
 			if (applyFundFilter &&
@@ -367,10 +374,7 @@ public class ReportService
 		BigDecimal currentPeriodNetIncome =
 			(BigDecimal) incomeStatementData.getOrDefault("netIncome", BigDecimal.ZERO);
 		
-		// Add Net Income to Equity section, but ensure it's distinct if "Retained
-		// Earnings" exists
-		// This logic assumes "Current Period Net Income" is a conceptual line, not a
-		// formal account named this way.
+
 		equityTotals.put("Current Period Net Income", currentPeriodNetIncome);
 		
 		
@@ -412,15 +416,11 @@ public class ReportService
 		jxlsContext.put("totalLiabilities", totalLiabilities);
 		jxlsContext.put("totalEquity", totalEquity); // This total now reflects equity
 														// including current net income
-		// jxlsContext.put("currentPeriodNetIncome", currentPeriodNetIncome); // Already
-		// part of equityItems and totalEquity
+		// jxlsContext.put("currentPeriodNetIncome", currentPeriodNetIncome); 
+		// Already part of equityItems and totalEquity
 		jxlsContext.put("totalLiabilitiesAndEquity", totalLiabilitiesAndEquity);
 		jxlsContext.put("reportEndDate", reportEndDate.toString());
-		jxlsContext.put("reportStartDate", netIncomeStartDate.toString()); // Start date of
-																			// the period
-																			// for which Net
-																			// Income was
-																			// calculated
+		jxlsContext.put("reportStartDate", netIncomeStartDate.toString()); 
 		jxlsContext.put("reportDate", LocalDate.now().toString());
 		jxlsContext.put("assetsEqualsLiabilitiesPlusEquity",
 			totalAssets.compareTo(totalLiabilitiesAndEquity) == 0);
@@ -626,10 +626,8 @@ public class ReportService
 		{
 			
 			if (account == null || account.getAccountNumber() == null ||
-				account.getName() == null || account.getIncreaseSide() == null || // Use
-																					// direct
-																					// enum
-				account.getAccountType() == null) // Use direct enum
+				account.getName() == null || account.getIncreaseSide() == null ||
+				account.getAccountType() == null) 
 			{
 				LOGGER.warning("TB: Skipping account with missing critical information: " +
 					(account != null ? account.getAccountNumber() : "null account object"));
@@ -650,16 +648,8 @@ public class ReportService
 			{
 				
 				if (transaction == null ||
-					transaction.getBookingDateTimestamp() >= reportEndDateMillisExclusive || // Exclude
-																								// transactions
-																								// on/after
-																								// end+1
-																								// day
-					transaction.getBookingDateTimestamp() < reportStartDateMillis) // Exclude
-																					// transactions
-																					// before
-																					// start
-																					// date
+					transaction.getBookingDateTimestamp() >= reportEndDateMillisExclusive || 
+					transaction.getBookingDateTimestamp() < reportStartDateMillis) 
 				{
 					continue;
 				}
@@ -678,15 +668,6 @@ public class ReportService
 						continue;
 					}
 					
-					// Fund filtering for transactions:
-					// If applyFundFilter is true, and the account itself passed the filter,
-					// then all transactions for this account are relevant for its balance
-					// calculation
-					// within the filtered context.
-					// This means we don't need to re-check doesAccountMatchFunds for each
-					// transaction/entry here
-					// if the account itself is already confirmed to be relevant to the
-					// selected funds.
 					
 					AccountSide increaseSide = account.getIncreaseSide(); // Use direct enum
 					if (increaseSide == null)
@@ -737,8 +718,6 @@ public class ReportService
 																// shown as debit
 			}
 			
-			// Only add accounts with non-zero balances or if they had activity (more
-			// complex to check here, KISS for now)
 			if (finalDebitAmount.compareTo(BigDecimal.ZERO) != 0 ||
 				finalCreditAmount.compareTo(BigDecimal.ZERO) != 0 ||
 				account.getOpeningBalance().compareTo(BigDecimal.ZERO) != 0)
@@ -866,9 +845,7 @@ public class ReportService
 		for (Account acc : cashEquivalentAccounts)
 		{
 			cashAtEndOfPeriod = cashAtEndOfPeriod.add(getAccountBalanceAsOfDate(acc, reportEndDate,
-				ledger, chartOfAccounts, selectedFundNames, true)); // applyFundFilter
-																	// is true here for
-																	// consistency
+				ledger, chartOfAccounts, selectedFundNames, true)); 
 		}
 		
 		jxlsContext.put("cashAtEndOfPeriod", cashAtEndOfPeriod);
@@ -879,10 +856,7 @@ public class ReportService
 		for (Account acc : cashEquivalentAccounts)
 		{
 			cashAtBeginningOfPeriod = cashAtBeginningOfPeriod.add(getAccountBalanceAsOfDate(acc,
-				beginningDate, ledger, chartOfAccounts, selectedFundNames, true)); // applyFundFilter
-																					// is
-																					// true
-																					// here
+				beginningDate, ledger, chartOfAccounts, selectedFundNames, true));
 		}
 		
 		jxlsContext.put("cashAtBeginningOfPeriod", cashAtBeginningOfPeriod);
@@ -893,8 +867,7 @@ public class ReportService
 		BigDecimal totalOperatingAdjustments = BigDecimal.ZERO;
 		BigDecimal totalDepreciationAmortization = BigDecimal.ZERO;
 		Set<String> deprAmortAccountNames =
-			Set.of("Depreciation Expense", "Amortization Expense", "Depreciation", "Amortization"); // Common
-																									// names
+			Set.of("Depreciation Expense", "Amortization Expense", "Depreciation", "Amortization"); 
 		long periodStartDateMillis =
 			reportStartDate.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
 		long periodEndDateMillisExclusive =
@@ -1011,16 +984,9 @@ public class ReportService
 		{
 			AccountType accType = account.getAccountType();
 			
-			if (accType != null && accType == AccountType.FIXED_ASSET && // Assuming FIXED_ASSET
-																			// represents
-																			// investing activities
-																			// like PPE
-				!cashEquivalentAccountNames.contains(account.getName()) && // Exclude cash
-																			// accounts
-																			// themselves
-				!workingCapitalConfig.containsKey(account.getName())) // Exclude working
-																		// capital already
-																		// handled
+			if (accType != null && accType == AccountType.FIXED_ASSET &&
+				!cashEquivalentAccountNames.contains(account.getName()) && 
+				!workingCapitalConfig.containsKey(account.getName())) 
 			{
 				
 				if (applyFundFilter &&
@@ -1062,17 +1028,11 @@ public class ReportService
 				(accType == AccountType.LONG_TERM_LIABILITY || accType == AccountType.EQUITY))
 			{
 				
-				// Exclude conceptual "Current Period Net Income" if it were an actual
-				// account,
-				// as its effect is already the starting point (Net Income).
-				// Retained Earnings changes (other than current NI) could be financing.
+
 				if ("Current Period Net Income".equalsIgnoreCase(account.getName()))
 				{
 					continue;
 				}
-				// if ("Retained Earnings".equalsIgnoreCase(account.getName())) {
-				// Consider how to treat Retained Earnings changes if they are not just NI.
-				// }
 				
 				if (applyFundFilter &&
 					!doesAccountMatchFunds(account, selectedFundNames, chartOfAccounts))
@@ -1104,21 +1064,14 @@ public class ReportService
 		
 		BigDecimal netChangeInCashCalculated =
 			cashFromOperations.add(totalInvestingAdjustments).add(totalFinancingAdjustments);
-		jxlsContext.put("netChangeInCash", netChangeInCashCalculated); // For summary
-																		// display
-		jxlsContext.put("netChangeInCashCalculated", netChangeInCashCalculated); // For
-																					// verification
-																					// line
-																					// if
-																					// needed
+		jxlsContext.put("netChangeInCash", netChangeInCashCalculated); 
+		jxlsContext.put("netChangeInCashCalculated", netChangeInCashCalculated); 
 		
 		// Add discrepancy check line
 		BigDecimal discrepancy = netChangeInCashCalculated.subtract(netChangeInCashActual);
 		jxlsContext.put("discrepancy", discrepancy);
 		
-		if (discrepancy.abs().compareTo(new BigDecimal("0.01")) > 0) // Allow for minor
-																		// rounding
-																		// differences
+		if (discrepancy.abs().compareTo(new BigDecimal("0.01")) > 0) 
 		{
 			LOGGER.warning(
 				"Cash Flow Statement (fund-filtered: " + applyFundFilter + ") discrepancy: " +
@@ -1192,9 +1145,7 @@ public class ReportService
 					for (AccountingEntry entry : transaction.getEntries())
 					{
 						Account account = chartOfAccounts.getAccount(entry.getAccountNumber());
-						if (account == null || account.getAccountType() == null) // Use
-																					// direct
-																					// enum
+						if (account == null || account.getAccountType() == null) 
 							continue;
 						
 						if (applyFundFilter &&
@@ -1203,17 +1154,14 @@ public class ReportService
 							continue;
 						}
 						
-						AccountType accountType = account.getAccountType(); // Use direct
-																			// enum
+						AccountType accountType = account.getAccountType(); 
 						BigDecimal currentActual =
 							actualAmounts.getOrDefault(account.getAccountNumber(), BigDecimal.ZERO);
 						BigDecimal amount = entry.getAmount();
 						
 						if (accountType == AccountType.INCOME)
 						{
-							if (entry.getAccountSide() == AccountSide.CREDIT) // Income
-																				// increases
-																				// on credit
+							if (entry.getAccountSide() == AccountSide.CREDIT) 
 								currentActual = currentActual.add(amount);
 							else // DEBIT
 								currentActual = currentActual.subtract(amount);
@@ -1246,16 +1194,6 @@ public class ReportService
 			if (account != null && account.getAccountType() != null) // Use direct enum
 			{
 				
-				// This secondary fund filter check might be redundant if actualAmounts only
-				// contains
-				// already-filtered account data. However, if actualAmounts could contain
-				// data for accounts
-				// not matching the fund filter (e.g. if the primary transaction loop didn't
-				// filter strictly enough
-				// at the account level for *this specific aggregation*), then it's a
-				// safeguard.
-				// For BvA, we are interested in the actuals of accounts that *have budget
-				// lines* and match fund criteria.
 				if (applyFundFilter &&
 					!doesAccountMatchFunds(account, selectedFundNames, chartOfAccounts))
 				{
@@ -1273,11 +1211,7 @@ public class ReportService
 		
 		BigDecimal totalBudgetedIncome = BigDecimal.ZERO;
 		BigDecimal totalBudgetedExpenses = BigDecimal.ZERO;
-		int budgetFiscalYear = budget.getFiscalYear(); // Assuming budget.fiscalYear matches
-														// report period's year for
-														// simplicity
-		// More robust logic would align budget periods (e.g. specific months from
-		// budget) with report period.
+		int budgetFiscalYear = budget.getFiscalYear(); 
 		long daysInFiscalYear = LocalDate.of(budgetFiscalYear, 1, 1).isLeapYear() ? 366 : 365;
 		long daysInReportPeriod = ChronoUnit.DAYS.between(reportStartDate, reportEndDate) + 1; // Inclusive
 																								// of
@@ -1510,8 +1444,7 @@ public class ReportService
 			context.getAccountIdsForDetailReport().isEmpty() || context.getStartDate() == null ||
 			context.getEndDate() == null)
 		{
-			LOGGER.warning( // Consider throwing exception if this state is truly invalid
-							// for proceeding
+			LOGGER.warning( 
 				"Account Activity Detail: Missing required criteria (account IDs, start date, or end date).");
 			throw new IllegalArgumentException(
 				"Account IDs, Start Date, and End Date are required for Account Activity Detail report.");
@@ -1549,8 +1482,7 @@ public class ReportService
 			
 			BigDecimal openingBalance =
 				getAccountBalanceAsOfDate(account, context.getStartDate().minusDays(1), ledger,
-					chartOfAccounts, selectedFundNames, applyFundFilter); // Pass
-																			// applyFundFilter
+					chartOfAccounts, selectedFundNames, applyFundFilter); 
 			
 			List<Map<String, Object>> entryItems = new ArrayList<>();
 			BigDecimal runningBalance = openingBalance;
@@ -1586,19 +1518,6 @@ public class ReportService
 						
 						if (relevantToThisAccount)
 						{
-							// If fund filtering is active, ensure the transaction as a
-							// whole,
-							// or at least the part relevant to this account, matches the
-							// fund criteria.
-							// This is complex if a single transaction can span multiple
-							// funds.
-							// For simplicity here, we assume the `doesAccountMatchFunds` on
-							// the primary `account`
-							// is the main gate. If more granular per-transaction-leg fund
-							// filtering is needed,
-							// that logic would go here.
-							// Currently, if the account itself is relevant to the selected
-							// funds, all its transactions are included.
 							accountTransactions.add(tx);
 						}
 						
@@ -1693,11 +1612,7 @@ public class ReportService
 						
 						entryData.put("runningBalance", runningBalance);
 						entryItems.add(entryData);
-						// Assuming one entry per transaction for this account, break after
-						// finding it.
-						// If multiple entries for the same account within one transaction
-						// are possible (e.g. complex journal),
-						// this break should be removed and logic adjusted.
+
 						break;
 					}
 					
@@ -1942,7 +1857,7 @@ public class ReportService
 	 *         output directory. If the directory does not exist or contains no
 	 *         files, an empty list is returned.
 	 */
-	public List<ReportMetadata> listGeneratedReports()
+	public static List<ReportMetadata> listGeneratedReports()
 	{
 		List<ReportMetadata> results = new ArrayList<>();
 		
@@ -2011,7 +1926,7 @@ public class ReportService
 	 * @return A list of {@link IncomeStatementRowBean}s for the report. Returns an empty list if
 	 *         required data (dates, ledger, COA) is missing or no relevant transactions are found.
 	 */
-	public
+	public static
 			List<IncomeStatementRowBean>
 			prepareIncomeStatementJasperData(	ReportContext context, Ledger ledger,
 												ChartOfAccounts chartOfAccounts)
@@ -2154,12 +2069,7 @@ public class ReportService
 					.add(new IncomeStatementRowBean("Expenses", entry.getKey(), entry.getValue()));
 			}
 			
-		}
-		
-		// Optional: Sort data if JRXML doesn't handle it or specific order is needed
-		// before grouping
-		// reportData.sort(Comparator.comparing(IncomeStatementRowBean::getAccountCategory)
-		// .thenComparing(IncomeStatementRowBean::getAccountName));
+		}		
 		
 		return reportData;
 	}
@@ -2177,7 +2087,7 @@ public class ReportService
 	 * @return A list of {@link TrialBalanceRowBean}s for the report. Returns an empty list if
 	 *         required data (end date, ledger, COA) is missing.
 	 */
-	public List<TrialBalanceRowBean> prepareTrialBalanceJasperData(	ReportContext context,
+	public static List<TrialBalanceRowBean> prepareTrialBalanceJasperData(	ReportContext context,
 																	Ledger ledger,
 																	ChartOfAccounts chartOfAccounts)
 	{
@@ -2429,20 +2339,29 @@ public class ReportService
 				reportGeneratorInstance = new BalanceResultReportGenerator(null);
 				break;
 			
+			case "":
+				reportGeneratorInstance = new AccountLedgerJasperGenerator();
+				reportGeneratorInstance = new AccountSummaryJasperGenerator();
+				//reportGeneratorInstance = new BalanceResultReportGenerator(null);
+				reportGeneratorInstance = new BalanceSheetJasperGenerator();
+				reportGeneratorInstance = new BankReconciliationJasperGenerator();
+				//reportGeneratorInstance = new CashFlowStatementJasperGenerator(null, null);
+				reportGeneratorInstance = new ChartOfAccountsJasperGenerator(null);
+				reportGeneratorInstance = new FundLedgerJasperGenerator();
+				reportGeneratorInstance = new GeneralJournalJasperGenerator();
+				reportGeneratorInstance = new GeneralLedgerJasperGenerator();
+				reportGeneratorInstance = new IncomeStatementAltJasperGenerator();
+				//reportGeneratorInstance = new IncomeStatementJasperGenerator(null, null);
+				reportGeneratorInstance = new TransactionReportJasperGenerator();
+				//reportGeneratorInstance = new TrialBalanceJasperGenerator(null, null);
+				break;
+				
 			// Additional Jasper-based reports can be added here
 			default:
 				System.err.println("Unsupported or unknown Jasper report type: " + reportType); // Consider
 																								// logger
 				throw new IllegalArgumentException("Unsupported Jasper report type: " + reportType);
 		}
-		
-		// The 'reportGeneratorInstance' will not be null here due to the default case
-		// throwing an exception.
-		// However, to be absolutely safe or if the default case behavior changes:
-		// if (reportGeneratorInstance == null) {
-		// throw new IllegalArgumentException("No report generator configured for report
-		// type: " + reportType);
-		// }
 		
 		File generatedFile = reportGeneratorInstance.generateAndExportReport(outputFormat);
 		
@@ -2520,7 +2439,7 @@ public class ReportService
 	 * @param coa
 	 * @return
 	 */
-	public
+	public static
 			List<CashFlowStatementRowBean>
 			prepareCashFlowStatementJasperData(	ReportContext reportContext, Ledger ledger,
 												ChartOfAccounts coa)
