@@ -1934,20 +1934,64 @@ public class ReportService
 	 * @param ctx The {@link ReportContext} defining the report to be generated.
 	 * @return A {@link File} object representing the generated report, or null if generation fails or is not implemented.
 	 */
-	public static File generate(ReportContext ctx)
-	{
-		
-		try
-		{
-			return new ReportService().generateJasperReport(ctx, ctx.getOutputFormat());
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			return null;
-		}
-		
-	}
+        public static File generate(ReportContext ctx)
+        {
+
+                try
+                {
+                        return new ReportService().generateJasperReport(ctx, ctx.getOutputFormat());
+                }
+                catch (Exception e)
+                {
+                        e.printStackTrace();
+                        return null;
+                }
+
+        }
+
+        /**
+         * Generates a very basic plain text report summarizing the provided
+         * {@link ReportContext}. This is used as a fallback when the user
+         * requests a "text" output format.
+         *
+         * @param ctx The context describing the report that was requested.
+         * @return The created text {@link File}.
+         * @throws IOException If the file cannot be written.
+         */
+        public File generatePlainTextReport(ReportContext ctx) throws IOException
+        {
+                File outputDirectory = new File(System.getProperty("user.home"), "NonprofitBookkeepingReports");
+
+                if (!outputDirectory.exists())
+                {
+                        outputDirectory.mkdirs();
+                }
+
+                String baseName = (ctx.getReportType() != null ? ctx.getReportType() : "report")
+                        + "_" + System.currentTimeMillis() + ".txt";
+
+                File outFile = new File(outputDirectory, baseName);
+
+                try (java.io.PrintWriter pw = new java.io.PrintWriter(outFile))
+                {
+                        pw.println("Report Type: " + ctx.getReportType());
+
+                        if (ctx.getStartDate() != null)
+                        {
+                                pw.println("Start Date: " + ctx.getStartDate());
+                        }
+
+                        if (ctx.getEndDate() != null)
+                        {
+                                pw.println("End Date: " + ctx.getEndDate());
+                        }
+
+                        pw.println("Generated on: " + java.time.LocalDate.now());
+                        pw.println("(Text output not formatted. Use PDF or HTML for full detail.)");
+                }
+
+                return outFile;
+        }
 	
 	/**
 	 * Prepares a list of {@link IncomeStatementRowBean} objects for use as a JasperReports data source.
