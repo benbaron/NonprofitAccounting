@@ -21,121 +21,145 @@ public class ReportContext
 	/** The desired output format for the report (e.g., "xlsx", "pdf"). */
 	private String outputFormat;
 	/** The selected {@link Budget} to be used for budget vs. actual comparisons in the report. Can be null. */
-    private Budget selectedBudget; 
-    /** A list of fund IDs (typically fund names) to filter the report data. Can be null or empty. */
-    private List<String> fundIds; 
-    /** A list of account IDs used for generating detail-specific sections or filtering in some reports. Can be null or empty. */
-    private List<String> accountIdsForDetailReport; // Added new field
-
+	private Budget selectedBudget;
+	/** A list of fund IDs (typically fund names) to filter the report data. Can be null or empty. */
+	private List<String> fundIds;
+	/** A list of account IDs used for generating detail-specific sections or filtering in some reports. Can be null or empty. */
+	private List<String> accountIdsForDetailReport; // Added new field
+	
 	/**
 	 * Default constructor for ReportContext.
 	 * Initializes all fields to their default values (null for objects).
 	 */
-    public ReportContext() {}
-
-    /**
-     * Gets the type of the report.
-     * @return The report type string.
-     */
-	public String getReportType() {
+	public ReportContext()
+	{
+	}
+	
+	/**
+	 * Gets the type of the report.
+	 * @return The report type string.
+	 */
+	public String getReportType()
+	{
 		return this.reportType;
 	}
+	
 	/**
 	 * Sets the type of the report.
 	 * @param reportType The report type string (e.g., "income_statement").
 	 */
-	public void setReportType(String reportType) {
+	public void setReportType(String reportType)
+	{
 		this.reportType = reportType;
 	}
-
+	
 	/**
 	 * Gets the start date for the report period.
 	 * @return The start {@link LocalDate}, or null if not set.
 	 */
-	public LocalDate getStartDate() {
+	public LocalDate getStartDate()
+	{
 		return this.startDate;
 	}
+	
 	/**
 	 * Sets the start date for the report period.
 	 * @param startDate The start {@link LocalDate} to set.
 	 */
-	public void setStartDate(LocalDate startDate) {
+	public void setStartDate(LocalDate startDate)
+	{
 		this.startDate = startDate;
 	}
-
+	
 	/**
 	 * Gets the end date for the report period.
 	 * @return The end {@link LocalDate}, or null if not set.
 	 */
-	public LocalDate getEndDate() {
+	public LocalDate getEndDate()
+	{
 		return this.endDate;
 	}
+	
 	/**
 	 * Sets the end date for the report period.
 	 * @param endDate The end {@link LocalDate} to set.
 	 */
-	public void setEndDate(LocalDate endDate) {
+	public void setEndDate(LocalDate endDate)
+	{
 		this.endDate = endDate;
 	}
-
+	
 	/**
 	 * Gets the desired output format for the report.
 	 * @return The output format string (e.g., "xlsx").
 	 */
-	public String getOutputFormat() {
+	public String getOutputFormat()
+	{
 		return this.outputFormat;
 	}
+	
 	/**
 	 * Sets the desired output format for the report.
 	 * @param outputFormat The output format string to set (e.g., "xlsx", "pdf").
 	 */
-	public void setOutputFormat(String outputFormat) {
+	public void setOutputFormat(String outputFormat)
+	{
 		this.outputFormat = outputFormat;
 	}
-
-    /**
-     * Gets the selected budget for the report.
-     * This budget may be used for comparisons like budget vs. actual.
-     * @return The selected {@link Budget}, or null if no budget is selected.
-     */
-    public Budget getSelectedBudget() {
-        return this.selectedBudget;
-    }
-    /**
-     * Sets the selected budget for the report.
-     * @param selectedBudget The {@link Budget} to set.
-     */
-    public void setSelectedBudget(Budget selectedBudget) {
-        this.selectedBudget = selectedBudget;
-    }
-
-    /**
-     * Gets the list of fund IDs to be used for filtering the report.
-     * @return A list of fund ID strings. Can be null or empty.
-     */
-    public List<String> getFundIds() {
-        return this.fundIds;
-    }
-    /**
-     * Sets the list of fund IDs to be used for filtering the report.
-     * @param fundIds A list of fund ID strings to set.
-     */
-    public void setFundIds(List<String> fundIds) {
-        this.fundIds = fundIds;
-    }
-
-    /**
-     * Gets the list of account IDs to be used for detail sections or filtering in some reports.
-     * @return A list of account ID strings. Can be null or empty.
-     */
-    public List<String> getAccountIdsForDetailReport() {
-        return this.accountIdsForDetailReport;
-    }
-    /**
-     * Sets the list of account IDs to be used for detail sections or filtering in some reports.
-     * @param accountIdsForDetailReport A list of account ID strings to set.
-     */
-    public void setAccountIdsForDetailReport(List<String> accountIdsForDetailReport) {
-        this.accountIdsForDetailReport = accountIdsForDetailReport;
-    }
+	
+	/**
+	 * Gets the selected budget for the report.
+	 * This budget may be used for comparisons like budget vs. actual.
+	 * @return The selected {@link Budget}, or null if no budget is selected.
+	 */
+	public Budget getSelectedBudget()
+	{
+		return this.selectedBudget;
+	}
+	
+	/**
+	 * Sets the selected budget for the report.
+	 * @param selectedBudget The {@link Budget} to set.
+	 */
+	public void setSelectedBudget(Budget selectedBudget)
+	{
+		this.selectedBudget = selectedBudget;
+	}
+	
+	/**
+	 * Gets the list of fund IDs to be used for filtering the report.
+	 * @return A list of fund ID strings. Can be null or empty.
+	 */
+	public List<String> getFundIds()
+	{
+		return this.fundIds;
+	}
+	
+	/**
+	 * Sets the list of fund IDs to be used for filtering the report.
+	 * @param fundIds A list of fund ID strings to set.
+	 */
+	public void setFundIds(List<String> fundIds)
+	{
+		this.fundIds = fundIds;
+	}
+	
+	/**
+	 * Gets the list of account IDs to be used for detail sections or filtering in some reports.
+	 * @return A list of account ID strings. Can be null or empty.
+	 */
+	public List<String> getAccountIdsForDetailReport()
+	{
+		return this.accountIdsForDetailReport;
+	}
+	
+	/**
+	 * Sets the list of account IDs to be used for detail sections or filtering in some reports.
+	 * @param accountIdsForDetailReport A list of account ID strings to set.
+	 */
+	public void setAccountIdsForDetailReport(List<String> accountIdsForDetailReport)
+	{
+		this.accountIdsForDetailReport = accountIdsForDetailReport;
+	}
+	
 }

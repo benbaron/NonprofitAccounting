@@ -1,8 +1,7 @@
 /**
- * nonprofit-scaledger-ribbon.zip_expanded
- * ReportMetadata.java
- * ReportMetadata
+ * nonprofit-scaledger-ribbon.zip_expanded ReportMetadata.java ReportMetadata
  */
+
 package nonprofitbookkeeping.reports;
 
 /**
@@ -15,7 +14,7 @@ public class ReportMetadata
 	private String reportName;
 	private String created; // e.g., ISO date/time string
 	private String filePath;
-
+	
 	/**
 	 * Constructs a new ReportMetadata object.
 	 *
@@ -23,12 +22,13 @@ public class ReportMetadata
 	 * @param created The creation timestamp of the report (e.g., as an ISO date/time string).
 	 * @param filePath The file path where the report is stored.
 	 */
-	public ReportMetadata(String reportName, String created, String filePath) {
+	public ReportMetadata(String reportName, String created, String filePath)
+	{
 		this.reportName = reportName;
 		this.created = created;
 		this.filePath = filePath;
 	}
-
+	
 	/**  
 	 * Constructor ReportMetadata
 	 * @param string
@@ -36,11 +36,11 @@ public class ReportMetadata
 	 * @param nonExistentFilePath
 	 * @param string2
 	 */
-        public ReportMetadata(String string, String format, String nonExistentFilePath, String string2)
-        {
-                this(string, format, nonExistentFilePath);
-        }
-
+	public ReportMetadata(String string, String format, String nonExistentFilePath, String string2)
+	{
+		this(string, format, nonExistentFilePath);
+	}
+	
 	/**
 	 * Gets the name of the report.
 	 *
@@ -50,7 +50,7 @@ public class ReportMetadata
 	{
 		return this.reportName;
 	}
-
+	
 	/**
 	 * Gets the creation timestamp of the report.
 	 *
@@ -60,7 +60,7 @@ public class ReportMetadata
 	{
 		return this.created;
 	}
-
+	
 	/**
 	 * Gets the file path where the report is stored.
 	 *

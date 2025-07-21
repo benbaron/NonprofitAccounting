@@ -19,7 +19,7 @@ import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 // Assuming AccountService.AccountBalance or similar class that
 // getBalanceResults returns
-// import nonprofitbookkeeping.model.Account; 
+// import nonprofitbookkeeping.model.Account;
 // If AccountService.AccountBalance is actually Account
 
 import net.sf.jasperreports.engine.*;
@@ -90,8 +90,8 @@ public class BalanceResultReportGenerator extends AbstractReportGenerator
 		// The JRXML for BalanceResultReport might not have P_COMPANY_DETAILS or
 		// P_REPORT_PERIOD.
 		// Adjust parameters based on actual JRXML. For now, providing common ones.
-		// parameters.put("P_COMPANY_DETAILS", companyDetailsText); // If JRXML uses
-		// this
+		// parameters.put("P_COMPANY_DETAILS", companyDetailsText); 
+		// If JRXML uses this
 		parameters.put("P_REPORT_PERIOD",
 			"As of " + LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM d, yyyy")));
 		

@@ -10,12 +10,11 @@ import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.helpers.DateRangePickerDialog;
 
-import javafx.event.ActionEvent; // Added
-import javafx.event.EventHandler; // Added
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.ChoiceDialog;
 import javafx.stage.Window;
-// import javax.swing.*; // Removed
-// import java.awt.event.ActionEvent; // Removed
+
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -32,12 +31,9 @@ public class GenerateBudgetVsActualsReportAction extends AbstractAction
 	implements EventHandler<ActionEvent>
 {
 	
-	// private static final long serialVersionUID = 1L; // Not needed as this is
-		// primarily a JavaFX EventHandler
 	/** The {@link BudgetService} used to load available budgets. */
 	private final BudgetService budgetService;
-	// private final ReportService reportService; // Field is present but not used
-	// in current constructor/handle logic
+	
 	
 	/**
 	 * Constructs a new {@code GenerateBudgetVsActualsReportAction}.
@@ -47,15 +43,9 @@ public class GenerateBudgetVsActualsReportAction extends AbstractAction
 	 * @param budgetService The {@link BudgetService} used to load available budgets for selection.
 	 *                      This service is stored and used by the action.
 	 */
-	public GenerateBudgetVsActualsReportAction(ReportService reportService, // Parameter currently
-																			// not assigned to a
-																			// field
+	public GenerateBudgetVsActualsReportAction(ReportService reportService,
 		BudgetService budgetService)
 	{
-		// super("Generate Budget vs. Actuals Report"); // Constructor for
-		// AbstractAction, not directly used for JavaFX
-		// this.reportService = reportService; // This line was commented out in the
-		// original code
 		this.budgetService = budgetService;
 	}
 	
@@ -67,10 +57,10 @@ public class GenerateBudgetVsActualsReportAction extends AbstractAction
 	 *   <li>Checks if a company is open and company file information is available; shows errors and returns if not.</li>
 	 *   <li>Loads available budgets using {@link BudgetService#loadBudgets(File)}. If none, informs user and returns.</li>
 	 *   <li>Prompts the user to select a budget using a {@link ChoiceDialog}. If cancelled, returns.</li>
-         *   <li>Prompts the user for a date range using a JavaFX dialog with {@link javafx.scene.control.DatePicker}s.</li>
-         *   <li>Sets up a {@link ReportContext} with the chosen budget and dates.</li>
-         *   <li>Calls {@link ReportService#generate(ReportContext, Ledger, ChartOfAccounts)} to produce the report.</li>
-         *   <li>Shows success or error alerts.</li>
+	     *   <li>Prompts the user for a date range using a JavaFX dialog with {@link javafx.scene.control.DatePicker}s.</li>
+	     *   <li>Sets up a {@link ReportContext} with the chosen budget and dates.</li>
+	     *   <li>Calls {@link ReportService#generate(ReportContext, Ledger, ChartOfAccounts)} to produce the report.</li>
+	     *   <li>Shows success or error alerts.</li>
 	 * </ol>
 	 * Catches {@link IOException} from loading budgets and general {@link Exception} during the process.
 	 * </p>
@@ -123,9 +113,8 @@ public class GenerateBudgetVsActualsReportAction extends AbstractAction
 			}
 			
 			// 2. Select Budget
-			List<String> budgetNamesList = availableBudgets.stream()
-				.map(Budget::getBudgetName)
-				.collect(Collectors.toList());
+			List<String> budgetNamesList =
+				availableBudgets.stream().map(Budget::getBudgetName).collect(Collectors.toList());
 			
 			ChoiceDialog<String> budgetDialog =
 				new ChoiceDialog<>(budgetNamesList.get(0), budgetNamesList);
@@ -144,9 +133,7 @@ public class GenerateBudgetVsActualsReportAction extends AbstractAction
 			String selectedBudgetName = selectedBudgetNameOpt.get();
 			
 			Budget chosenBudget = availableBudgets.stream()
-				.filter(b -> selectedBudgetName.equals(b.getBudgetName()))
-				.findFirst()
-				.orElse(null);
+				.filter(b -> selectedBudgetName.equals(b.getBudgetName())).findFirst().orElse(null);
 			
 			if (chosenBudget == null)
 			{
@@ -154,59 +141,59 @@ public class GenerateBudgetVsActualsReportAction extends AbstractAction
 				return;
 			}
 			
-                        // 3. Select Date Range using JavaFX DatePickers
-                        Optional<LocalDate[]> rangeOpt = DateRangePickerDialog.show(parentWindow,
-                                "Select Report Period for Actuals", "Start Date:", "End Date:");
-
-                        if (!rangeOpt.isPresent())
-                        {
-                                return; // User cancelled
-                        }
-
-                        LocalDate[] range = rangeOpt.get();
-                        LocalDate startDate = range[0];
-                        LocalDate endDate = range[1];
-
-                        if (startDate == null)
-                        {
-                                AlertBox.showError(parentWindow, "Start Date is required.");
-                                return;
-                        }
-
-                        if (endDate == null)
-                        {
-                                AlertBox.showError(parentWindow, "End Date is required.");
-                                return;
-                        }
-
-                        if (endDate.isBefore(startDate))
-                        {
-                                AlertBox.showError(parentWindow, "End Date cannot be before Start Date.");
-                                return;
-                        }
-
-                        // 4. Setup ReportContext
-                        ReportContext ctx = new ReportContext();
-                        ctx.setReportType("budget_vs_actuals");
-                        ctx.setStartDate(startDate);
-                        ctx.setEndDate(endDate);
-                        ctx.setSelectedBudget(chosenBudget);
-                        ctx.setOutputFormat("xlsx");
-
-                        // 5. Retrieve Company Data & Generate Report
-                        Ledger ledger = currentCompany.getLedger();
-                        ChartOfAccounts chartOfAccounts = currentCompany.getChartOfAccounts();
-
-                        if (ledger == null || chartOfAccounts == null)
-                        {
-                                AlertBox.showError(parentWindow, "Ledger or Chart of Accounts not available.");
-                                return;
-                        }
-
-                        File f = ReportService.generate(ctx, ledger, chartOfAccounts);
-                        // 6. Show Success Message
-                        AlertBox.showInfo(parentWindow,
-                                "Budget vs. Actuals report saved to: " + f.getAbsolutePath());
+			// 3. Select Date Range using JavaFX DatePickers
+			Optional<LocalDate[]> rangeOpt = DateRangePickerDialog.show(parentWindow,
+				"Select Report Period for Actuals", "Start Date:", "End Date:");
+			
+			if (!rangeOpt.isPresent())
+			{
+				return; // User cancelled
+			}
+			
+			LocalDate[] range = rangeOpt.get();
+			LocalDate startDate = range[0];
+			LocalDate endDate = range[1];
+			
+			if (startDate == null)
+			{
+				AlertBox.showError(parentWindow, "Start Date is required.");
+				return;
+			}
+			
+			if (endDate == null)
+			{
+				AlertBox.showError(parentWindow, "End Date is required.");
+				return;
+			}
+			
+			if (endDate.isBefore(startDate))
+			{
+				AlertBox.showError(parentWindow, "End Date cannot be before Start Date.");
+				return;
+			}
+			
+			// 4. Setup ReportContext
+			ReportContext ctx = new ReportContext();
+			ctx.setReportType("budget_vs_actuals");
+			ctx.setStartDate(startDate);
+			ctx.setEndDate(endDate);
+			ctx.setSelectedBudget(chosenBudget);
+			ctx.setOutputFormat("xlsx");
+			
+			// 5. Retrieve Company Data & Generate Report
+			Ledger ledger = currentCompany.getLedger();
+			ChartOfAccounts chartOfAccounts = currentCompany.getChartOfAccounts();
+			
+			if (ledger == null || chartOfAccounts == null)
+			{
+				AlertBox.showError(parentWindow, "Ledger or Chart of Accounts not available.");
+				return;
+			}
+			
+			File f = ReportService.generate(ctx, ledger, chartOfAccounts);
+			// 6. Show Success Message
+			AlertBox.showInfo(parentWindow,
+				"Budget vs. Actuals report saved to: " + f.getAbsolutePath());
 			
 		}
 		catch (IOException ioe)
@@ -235,9 +222,9 @@ public class GenerateBudgetVsActualsReportAction extends AbstractAction
 	 * </p>
 	 * @param e The {@link java.awt.event.ActionEvent} that occurred.
 	 */
-        @Override public void actionPerformed(java.awt.event.ActionEvent e)
-        {
-                handle(new ActionEvent());
-        }
+	@Override public void actionPerformed(java.awt.event.ActionEvent e)
+	{
+		handle(new ActionEvent());
+	}
 	
 }

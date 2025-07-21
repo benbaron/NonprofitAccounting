@@ -70,7 +70,7 @@ public abstract class AbstractReportGenerator
 	 *
 	 * @return A string representing the absolute path to the output directory.
 	 */
-	protected String getOutputDirectory()
+	protected static String getOutputDirectory()
 	{
 		// Could be configurable via a properties file or system property
 		String userHome = System.getProperty("user.home");
@@ -94,7 +94,7 @@ public abstract class AbstractReportGenerator
 	 * @return The {@link File} object representing the exported PDF report.
 	 * @throws JRException If an error occurs during the PDF export process.
 	 */
-	protected File exportToPDF(JasperPrint jasperPrint, String outputFilePath) throws JRException
+	protected static File exportToPDF(JasperPrint jasperPrint, String outputFilePath) throws JRException
 	{
 		File outputFile = new File(outputFilePath);
 		// Ensure parent directory exists
@@ -122,8 +122,8 @@ public abstract class AbstractReportGenerator
 	 * @throws JRException If an error occurs during the HTML export process setup.
 	 * @throws IOException If an error occurs during file writing.
 	 */
-	protected File exportToHTML(JasperPrint jasperPrint, String outputFilePath) throws JRException,
-																				IOException
+	protected static File exportToHTML(JasperPrint jasperPrint, String outputFilePath) throws JRException,
+	IOException
 	{
 		File outputFile = new File(outputFilePath);
 		// Ensure parent directory exists
@@ -137,10 +137,9 @@ public abstract class AbstractReportGenerator
 		HtmlExporter exporter = new HtmlExporter();
 		exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
 		exporter.setExporterOutput(new SimpleHtmlExporterOutput(new FileOutputStream(outputFile)));
-		// exporter.setConfiguration(new SimpleHtmlExporterConfiguration()); // Optional
-		// config
+
 		exporter.exportReport();
-		System.out.println("Report exported to HTML: " + outputFile.getAbsolutePath()); 
+		System.out.println("Report exported to HTML: " + outputFile.getAbsolutePath());
 		return outputFile;
 	}
 	

@@ -6,25 +6,25 @@ import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Ledger;
 import nonprofitbookkeeping.model.Fund;
-import nonprofitbookkeeping.model.reports.ReportConfiguration; // Added
+import nonprofitbookkeeping.model.reports.ReportConfiguration; 
 import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.reports.ReportCriteria;
-import nonprofitbookkeeping.service.ReportConfigurationService; // Added
+import nonprofitbookkeeping.service.ReportConfigurationService; 
 import nonprofitbookkeeping.service.ReportService;
-import nonprofitbookkeeping.ui.helpers.AlertBox; // Added
+import nonprofitbookkeeping.ui.helpers.AlertBox; 
 import nonprofitbookkeeping.ui.helpers.DateSelectionMode;
 import nonprofitbookkeeping.ui.helpers.ReportCriteriaDialog;
 
-import javafx.event.ActionEvent; // Added
-import javafx.event.EventHandler; // Added
-import javafx.stage.Window; // Added
+import javafx.event.ActionEvent; 
+import javafx.event.EventHandler; 
+import javafx.stage.Window; 
 
 
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList; // Added
-import java.util.List; // Added
+import java.util.ArrayList; 
+import java.util.List; 
 import java.util.Optional;
 
 import javax.swing.AbstractAction;
@@ -48,6 +48,7 @@ public class GenerateBalanceSheetAction extends AbstractAction implements EventH
 	private static final long serialVersionUID = -5351611721074763080L;
 	/** The specific report type identifier for the Balance Sheet report. */
 	private final String reportType = "balance_sheet";
+	
 	/**
 	 * Constructs a new {@code GenerateBalanceSheetAction}.
 	 *
@@ -101,13 +102,9 @@ public class GenerateBalanceSheetAction extends AbstractAction implements EventH
 			List<Fund> availableFunds = new ArrayList<>(); // Placeholder, as actual fund list isn't
 															// directly passed to dialog here
 			
-			Optional<ReportCriteria> criteriaOpt = ReportCriteriaDialog.showDialog(
-				parentWindow,
-				"Balance Sheet Criteria",
-				availableFunds, // This list of funds isn't directly used by the dialog in this
-								// configuration
-				null, // chartOfAccounts not needed for this specific dialog call variant for
-						// Balance Sheet
+			Optional<ReportCriteria> criteriaOpt = ReportCriteriaDialog.showDialog(parentWindow,
+				"Balance Sheet Criteria", availableFunds, 
+				null, 
 				DateSelectionMode.SINGLE_DATE, // Balance sheet is as of a single date
 				true, // Show fund selector
 				false, // Do not show account selector for balance sheet
@@ -120,8 +117,7 @@ public class GenerateBalanceSheetAction extends AbstractAction implements EventH
 			}
 			
 			ReportCriteria criteria = criteriaOpt.get();
-			LocalDate endDate = criteria.getEndDate(); // Dialog ensures this is not null for
-														// SINGLE_DATE mode
+			LocalDate endDate = criteria.getEndDate();
 			List<String> selectedFundIds = criteria.getSelectedFundIds();
 			String configNameToSave = criteria.getNameForSaving();
 			
@@ -137,14 +133,9 @@ public class GenerateBalanceSheetAction extends AbstractAction implements EventH
 				
 				if (companyDir != null)
 				{
-					ReportConfiguration newConfig = new ReportConfiguration(
-						configNameToSave,
-						this.reportType,
-						criteria.getDateSelectionMode(),
-						criteria.getStartDate(), // Will be null for SINGLE_DATE mode from dialog
-													// typically
-						endDate,
-						selectedFundIds);
+					ReportConfiguration newConfig = new ReportConfiguration(configNameToSave,
+						this.reportType, criteria.getDateSelectionMode(), criteria.getStartDate(),
+						endDate, selectedFundIds);
 					newConfig.setOutputFormat("xlsx"); // Default output format
 					
 					try
@@ -195,14 +186,16 @@ public class GenerateBalanceSheetAction extends AbstractAction implements EventH
 			
 		}
 		catch (IOException ex)
-		{ // Specifically for config saving/loading issues
+		{
+			// Specifically for config saving/loading issues
 			System.err.println("IO Error related to report configuration: " + ex.getMessage());
 			ex.printStackTrace(); // Consider more robust logging/user feedback
 			AlertBox.showError(parentWindow,
 				"IO Error with report configuration: " + ex.getMessage());
 		}
 		catch (Exception ex)
-		{ // General catch for other errors during report generation
+		{
+			// General catch for other errors during report generation
 			System.err.println("Error during Balance Sheet generation: " + ex.getMessage());
 			ex.printStackTrace(); // Consider more robust logging/user feedback
 			AlertBox.showError(parentWindow,
@@ -217,24 +210,24 @@ public class GenerateBalanceSheetAction extends AbstractAction implements EventH
 	 * Note: This is a stub implementation and currently does nothing.
 	 * For JavaFX, the {@link #handle(ActionEvent)} method is used.
 	 */
-        public void performAction()
-        {
-                handle(new ActionEvent());
-        }
+	public void performAction()
+	{
+		handle(new ActionEvent());
+	}
 	
 	/**
-	 * {@inheritDoc}
-	 * <p>
-	 * Invoked when a Swing action occurs. This method is part of the {@link java.awt.event.ActionListener} interface,
-	 * implemented via {@link javax.swing.AbstractAction}.
-	 * Note: This is a stub implementation and currently does nothing.
-	 * For JavaFX, the {@link #handle(ActionEvent)} method is the primary event handler.
-	 * </p>
-	 * @param e The {@link java.awt.event.ActionEvent} that occurred.
-	 */
-        @Override public void actionPerformed(java.awt.event.ActionEvent e)
-        {
-                handle(new ActionEvent());
-        }
+	* {@inheritDoc}
+	* <p>
+	* Invoked when a Swing action occurs. This method is part of the {@link java.awt.event.ActionListener} interface,
+	* implemented via {@link javax.swing.AbstractAction}.
+	* Note: This is a stub implementation and currently does nothing.
+	* For JavaFX, the {@link #handle(ActionEvent)} method is the primary event handler.
+	* </p>
+	* @param e The {@link java.awt.event.ActionEvent} that occurred.
+	*/
+	@Override public void actionPerformed(java.awt.event.ActionEvent e)
+	{
+		handle(new ActionEvent());
+	}
 	
 }
