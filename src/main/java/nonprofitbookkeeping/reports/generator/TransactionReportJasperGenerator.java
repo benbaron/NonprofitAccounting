@@ -21,7 +21,7 @@ public class TransactionReportJasperGenerator extends AbstractReportGenerator
 	
 	@Override protected List<TransactionReportRowBean> getReportData()
 	{
-		return Collections.emptyList();
+		return Collections.emptyList(); // FIXME
 	}
 	
 	@Override protected Map<String, Object> getReportParameters()

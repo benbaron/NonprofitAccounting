@@ -28,6 +28,7 @@ public class AccountSummaryJasperGenerator extends AbstractReportGenerator
 	{
 		// TODO: populate with real data
 		return Collections.emptyList();
+		// FIXME
 	}
 	
 	@Override protected Map<String, Object> getReportParameters()

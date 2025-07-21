@@ -13,7 +13,7 @@ import nonprofitbookkeeping.exception.NoFileCreatedException;
 
 
 import java.io.File;
-import java.io.FileNotFoundException; // For specific exception
+import java.io.FileNotFoundException; 
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -85,7 +85,7 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 		
 		if (company == null || company.getLedger() == null || company.getChartOfAccounts() == null)
 		{
-			System.err.println( // Consider using a logger
+			System.err.println(
 				"TrialBalanceJasperGenerator: Company, Ledger, or COA is null. Cannot generate data.");
 			return Collections.emptyList();
 		}
@@ -145,13 +145,8 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 		// It seems the JRXML uses lowercase for these specific ones. Let's ensure they
 		// are provided.
 		params.put("reporttitle", "Trial Balance"); // Specific for JRXML
-		params.put("dateToday", LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)); // YYYY-MM-DD
-																							// format,
-																							// specific
-																							// for
-																							// JRXML
-		params.put("companyname", companyName); // Specific for JRXML, might be redundant with
-												// P_COMPANY_NAME if JRXML is standardized
+		params.put("dateToday", LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)); 
+		params.put("companyname", companyName); 
 		
 		return params;
 	}
