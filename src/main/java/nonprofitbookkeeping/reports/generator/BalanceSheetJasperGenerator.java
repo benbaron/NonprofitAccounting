@@ -29,7 +29,6 @@ public class BalanceSheetJasperGenerator extends AbstractReportGenerator
 	{
 		Map<String, Object> params = new HashMap<>();
 		params.put("P_REPORT_TITLE", "Balance Sheet");
-
 		
 		String companyName = "N/A";
 		

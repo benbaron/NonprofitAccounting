@@ -22,7 +22,7 @@ public class IncomeStatementAltJasperGenerator extends AbstractReportGenerator
 	
 	@Override protected List<?> getReportData()
 	{
-		return Collections.emptyList();
+		return Collections.emptyList(); // FIXME
 	}
 	
 	@Override protected Map<String, Object> getReportParameters()

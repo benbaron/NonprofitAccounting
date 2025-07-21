@@ -22,7 +22,7 @@ public class AccountLedgerJasperGenerator extends AbstractReportGenerator
 	
 	@Override protected List<?> getReportData()
 	{
-		return Collections.emptyList();
+		return Collections.emptyList(); // FIXME
 
 	}
 	
