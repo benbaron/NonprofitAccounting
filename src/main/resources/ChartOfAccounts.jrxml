@@ -1,5 +1,5 @@
 <!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
-<jasperReport name="ChartOfAccountsReport" language="java" pageWidth="595" pageHeight="842" columnWidth="455" leftMargin="70" rightMargin="70" topMargin="70" bottomMargin="70" uuid="ae547773-62f7-4007-84d1-bee64f033c2d">
+<jasperReport whenNoDataType="AllSectionsNoDetail" name="ChartOfAccountsReport" language="java" pageWidth="595" pageHeight="842" columnWidth="455" leftMargin="70" rightMargin="70" topMargin="70" bottomMargin="70">
 	<field name="chartaccountreport" class="java.lang.String"/>
 	<field name="reporttitle" class="java.lang.String"/>
 	<field name="iconheader" class="java.lang.Object"/>
@@ -17,16 +17,16 @@
 		<expression><![CDATA[$F{accnum}]]></expression>
 		<groupHeader>
 			<band height="14">
-				<element kind="textField" uuid="bac0a740-c8a9-46ca-97d1-e6fbd51dafc7" x="1" y="1" width="39" height="7" fontSize="6.0" bold="true">
+				<element kind="textField" x="1" y="1" width="39" height="7" fontSize="6.0" bold="true">
 					<expression><![CDATA[$F{accnum}]]></expression>
 				</element>
-				<element kind="textField" uuid="1640747c-25b0-49b2-b53e-65664a7577ea" x="40" y="1" width="309" height="7" fontSize="6.0" bold="true">
+				<element kind="textField" x="40" y="1" width="309" height="7" fontSize="6.0" bold="true">
 					<expression><![CDATA[$F{accname}]]></expression>
 				</element>
-				<element kind="textField" uuid="b7f4e1fa-1883-4453-9dc5-8cc1debeb6ef" x="350" y="1" width="105" height="7" fontSize="6.0" bold="true">
+				<element kind="textField" x="350" y="1" width="105" height="7" fontSize="6.0" bold="true">
 					<expression><![CDATA[$F{isdebit}]]></expression>
 				</element>
-				<element kind="line" uuid="4ce6ccf2-15ca-4fb5-ab45-ef9f2933b7be" x="0" y="9" width="455" height="1"/>
+				<element kind="line" x="0" y="9" width="455" height="1"/>
 			</band>
 		</groupHeader>
 		<groupFooter>
@@ -34,55 +34,55 @@
 		</groupFooter>
 	</group>
 	<title height="110">
-		<element kind="textField" uuid="e7655b1c-5783-4a08-aafd-86bda0dba782" x="250" y="1" width="205" height="16" fontSize="16.0" bold="true" hTextAlign="Right">
+		<element kind="textField" x="250" y="1" width="205" height="16" fontSize="16.0" bold="true" hTextAlign="Right">
 			<expression><![CDATA[$F{chartaccountreport}]]></expression>
 		</element>
-		<element kind="textField" uuid="069dd55d-facc-4b8e-85d2-26ca36e2477b" x="1" y="1" width="205" height="16" fontSize="16.0" bold="true">
+		<element kind="textField" x="1" y="1" width="205" height="16" fontSize="16.0" bold="true">
 			<expression><![CDATA[$F{reporttitle}]]></expression>
 		</element>
-		<element kind="line" uuid="fc9495ee-bd09-4dcc-91eb-3277c5cbd7e2" x="0" y="18" width="455" height="2"/>
-		<element kind="image" uuid="6280a9d0-5f1e-4782-bcaa-1f63aafa2428" x="250" y="21" width="100" height="67">
+		<element kind="line" x="0" y="18" width="455" height="2"/>
+		<element kind="image" x="250" y="21" width="100" height="67">
 			<expression><![CDATA[$F{iconheader}]]></expression>
 		</element>
-		<element kind="textField" uuid="9d1c1ea4-8e64-4b54-8e26-d4ad1d7575e5" x="1" y="19" width="118" height="10">
+		<element kind="textField" x="1" y="19" width="118" height="10">
 			<expression><![CDATA[$F{reportdate}]]></expression>
 		</element>
-		<element kind="textField" uuid="ba0f539e-e58b-4781-9197-96a8cd6a5196" x="120" y="19" width="128" height="10">
+		<element kind="textField" x="120" y="19" width="128" height="10">
 			<expression><![CDATA[$F{dateToday}]]></expression>
 		</element>
-		<element kind="textField" uuid="f2f80084-ce29-4076-9db6-64a2cbdb36d6" x="1" y="29" width="118" height="10">
+		<element kind="textField" x="1" y="29" width="118" height="10">
 			<expression><![CDATA[$F{companytext}]]></expression>
 		</element>
-		<element kind="textField" uuid="ff41d9d1-8577-4f5f-80e3-b364419d89b4" x="120" y="29" width="128" height="10">
+		<element kind="textField" x="120" y="29" width="128" height="10">
 			<expression><![CDATA[$F{company}]]></expression>
 		</element>
-		<element kind="line" uuid="46d25907-594d-4d39-a31b-6723f2fefc8b" x="0" y="90" width="455" height="3"/>
+		<element kind="line" x="0" y="90" width="455" height="3"/>
 	</title>
 	<columnHeader height="30"/>
 	<detail>
 		<band height="10">
-			<element kind="textField" uuid="103f1394-e17f-4c3c-a85d-9074a89b6a93" x="0" y="0" width="39" height="8">
+			<element kind="textField" x="0" y="0" width="39" height="8">
 				<expression><![CDATA[$F{ACCOUNTNUM}]]></expression>
 			</element>
-			<element kind="textField" uuid="d0688dea-4e91-49e4-8357-bafdce86d46e" x="40" y="0" width="109" height="8">
+			<element kind="textField" x="40" y="0" width="109" height="8">
 				<expression><![CDATA[$F{ACCOUNTNAME}]]></expression>
 			</element>
-			<element kind="textField" uuid="88f54cd9-4cb6-49fb-b338-f7a4d0b624f2" x="350" y="0" width="105" height="8">
+			<element kind="textField" x="350" y="0" width="105" height="8">
 				<expression><![CDATA[$F{ACCOUNTTYPE}]]></expression>
 			</element>
 		</band>
 	</detail>
 	<pageFooter height="18">
-		<element kind="textField" uuid="e59e2c9d-427e-4645-aed9-3d9ae855d551" x="50" y="4" width="405" height="18">
+		<element kind="textField" x="50" y="4" width="405" height="18">
 			<expression><![CDATA["Page " + $V{PAGE_NUMBER} + " of " + $V{PAGE_COUNT}]]></expression>
 		</element>
-		<element kind="textField" uuid="b38364b9-eba2-455b-b40f-eb2aaa69d124" x="0" y="4" width="45" height="18">
+		<element kind="textField" x="0" y="4" width="45" height="18">
 			<expression><![CDATA[$F{dateToday}]]></expression>
 		</element>
 	</pageFooter>
 	<summary height="48"/>
 	<noData height="30">
-		<element kind="staticText" uuid="85782901-d9b9-492f-b6d7-39dfce4fc1aa" x="0" y="0" width="455" height="30">
+		<element kind="staticText" x="0" y="0" width="455" height="30">
 			<text><![CDATA[No data to display]]></text>
 		</element>
 	</noData>

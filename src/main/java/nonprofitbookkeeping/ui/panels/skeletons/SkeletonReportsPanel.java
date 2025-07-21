@@ -23,6 +23,7 @@ import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 import nonprofitbookkeeping.reports.ReportContext; // Added import
 import nonprofitbookkeeping.reports.ReportMetadata;
+import nonprofitbookkeeping.reports.ReportTemplateScanner;
 import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 
@@ -48,13 +49,18 @@ public class SkeletonReportsPanel extends BorderPane
 	/** DatePicker for selecting the start date for report generation. */
 	private DatePicker startDatePicker;
 	/** DatePicker for selecting the end date for report generation. */
-	private DatePicker endDatePicker;
+        private DatePicker endDatePicker;
+        /** ComboBox for selecting the output format. */
+        private ComboBox<String> outputFormatComboBox;
 	/** Button to trigger the generation of the selected report. */
 	private Button generateReportButton;
 	/** TableView to display metadata of previously generated reports. */
 	private TableView<ReportMetadata> generatedReportsTable;
 	/** ObservableList that backs the {@link #generatedReportsTable}, containing {@link ReportMetadata} objects. */
 	private ObservableList<ReportMetadata> generatedReportsDataList;
+	
+	/** Mapping of report display names to their report type keys. */
+	private java.util.Map<String, String> availableTemplates;
 	
 	/** Service layer for report generation and listing operations. */
 	private ReportService reportService;
@@ -88,10 +94,11 @@ public class SkeletonReportsPanel extends BorderPane
 		this.controlsGrid.setHgap(10);
 		this.controlsGrid.setVgap(10);
 		
+		
 		this.controlsGrid.add(new Label("Report Type:"), 0, 0);
-		this.reportTypeComboBox = new ComboBox<>();
-		this.reportTypeComboBox.setItems(FXCollections.observableArrayList(
-			"Income Statement", "Balance Sheet", "Trial Balance", "Cash Flow Statement"));
+		this.availableTemplates = ReportTemplateScanner.discoverTemplates();
+		this.reportTypeComboBox =
+			new ComboBox<>(FXCollections.observableArrayList(this.availableTemplates.keySet()));
 		this.reportTypeComboBox.setPromptText("Select Report");
 		this.controlsGrid.add(this.reportTypeComboBox, 1, 0);
 		
@@ -99,14 +106,20 @@ public class SkeletonReportsPanel extends BorderPane
 		this.startDatePicker = new DatePicker();
 		this.controlsGrid.add(this.startDatePicker, 1, 1);
 		
-		this.controlsGrid.add(new Label("End Date:"), 0, 2);
-		this.endDatePicker = new DatePicker();
-		this.controlsGrid.add(this.endDatePicker, 1, 2);
-		
-		this.generateReportButton = new Button("Generate Report");
-		this.generateReportButton.setDefaultButton(true);
-		HBox buttonBox = new HBox(this.generateReportButton);
-		this.controlsGrid.add(buttonBox, 1, 3);
+                this.controlsGrid.add(new Label("End Date:"), 0, 2);
+                this.endDatePicker = new DatePicker();
+                this.controlsGrid.add(this.endDatePicker, 1, 2);
+
+                this.controlsGrid.add(new Label("Format:"), 0, 3);
+                this.outputFormatComboBox = new ComboBox<>(FXCollections.observableArrayList(
+                        "pdf", "html", "xlsx", "text"));
+                this.outputFormatComboBox.getSelectionModel().selectFirst();
+                this.controlsGrid.add(this.outputFormatComboBox, 1, 3);
+
+                this.generateReportButton = new Button("Generate Report");
+                this.generateReportButton.setDefaultButton(true);
+                HBox buttonBox = new HBox(this.generateReportButton);
+                this.controlsGrid.add(buttonBox, 1, 4);
 		
 		this.controlsScrollPane = new ScrollPane(this.controlsGrid);
 		this.controlsScrollPane.setFitToWidth(true);
@@ -157,79 +170,110 @@ public class SkeletonReportsPanel extends BorderPane
 		});
 		formatCol.setPrefWidth(80);
 		
-		TableColumn<ReportMetadata, Void> actionsCol = new TableColumn<>("Actions");
-		actionsCol.setCellFactory(param -> new TableCell<>()
-		{
-			private final Button openButton = new Button("Open");
-			{
-				this.openButton.setOnAction(event -> {
-					ReportMetadata reportMeta = getTableView().getItems().get(getIndex());
-					
-					if (reportMeta != null && reportMeta.getFilePath() != null)
-					{
-						
-						try
-						{
-							File reportFile = new File(reportMeta.getFilePath());
-							
-							if (reportFile.exists())
-							{
-								
-								if (Desktop.isDesktopSupported())
-								{
-									Desktop.getDesktop().open(reportFile);
-								}
-								else
-								{
-									AlertBox.showError(getScene().getWindow(),
-										"Desktop operations not supported to open file.");
-								}
-								
-							}
-							else
-							{
-								AlertBox.showError(getScene().getWindow(),
-									"Report file not found: " + reportMeta.getFilePath());
-							}
-							
-						}
-						catch (IOException e)
-						{
-							e.printStackTrace();
-							AlertBox.showError(getScene().getWindow(),
-								"Could not open report file: " + e.getMessage());
-						}
-						catch (UnsupportedOperationException e)
-						{
-							e.printStackTrace();
-							AlertBox.showError(getScene().getWindow(),
-								"Desktop operations not supported on this platform (e.g. headless server).");
-						}
-						
-					}
-					else
-					{
-						AlertBox.showWarning(getScene().getWindow(),
-							"Report path is not available.");
-					}
-					
-				});
-			}
-			
-			@Override protected void updateItem(Void item, boolean empty)
-			{
-				super.updateItem(item, empty);
-				setGraphic(empty ? null : this.openButton);
-			}
-			
-		});
-		actionsCol.setPrefWidth(100);
+                TableColumn<ReportMetadata, Void> actionsCol = new TableColumn<>("Actions");
+                actionsCol.setCellFactory(param -> new TableCell<>()
+                {
+                        private final Button openButton = new Button("Open");
+                        private final Button dirButton = new Button("Dir");
+                        private final Button deleteButton = new Button("Delete");
+                        private final HBox box = new HBox(5, this.openButton, this.dirButton, this.deleteButton);
+
+                        {
+                                this.openButton.setOnAction(event -> openReport());
+                                this.dirButton.setOnAction(event -> openDirectory());
+                                this.deleteButton.setOnAction(event -> deleteReport());
+                        }
+
+                        private void openReport()
+                        {
+                                ReportMetadata reportMeta = getTableView().getItems().get(getIndex());
+                                if (reportMeta == null || reportMeta.getFilePath() == null)
+                                {
+                                        AlertBox.showWarning(getScene().getWindow(), "Report path is not available.");
+                                        return;
+                                }
+
+                                File reportFile = new File(reportMeta.getFilePath());
+                                if (!reportFile.exists())
+                                {
+                                        AlertBox.showError(getScene().getWindow(), "Report file not found: " + reportMeta.getFilePath());
+                                        return;
+                                }
+
+                                try
+                                {
+                                        if (Desktop.isDesktopSupported())
+                                        {
+                                                Desktop.getDesktop().open(reportFile);
+                                        }
+                                        else
+                                        {
+                                                AlertBox.showError(getScene().getWindow(), "Desktop operations not supported to open file.");
+                                        }
+                                }
+                                catch (IOException | UnsupportedOperationException ex)
+                                {
+                                        ex.printStackTrace();
+                                        AlertBox.showError(getScene().getWindow(), "Could not open report file: " + ex.getMessage());
+                                }
+                        }
+
+                        private void openDirectory()
+                        {
+                                ReportMetadata reportMeta = getTableView().getItems().get(getIndex());
+                                if (reportMeta == null || reportMeta.getFilePath() == null)
+                                        return;
+
+                                File reportFile = new File(reportMeta.getFilePath());
+                                File parent = reportFile.getParentFile();
+
+                                if (parent != null && parent.exists())
+                                {
+                                        try
+                                        {
+                                                if (Desktop.isDesktopSupported())
+                                                {
+                                                        Desktop.getDesktop().open(parent);
+                                                }
+                                        }
+                                        catch (IOException | UnsupportedOperationException ex)
+                                        {
+                                                ex.printStackTrace();
+                                                AlertBox.showError(getScene().getWindow(), "Could not open directory: " + ex.getMessage());
+                                        }
+                                }
+                        }
+
+                        private void deleteReport()
+                        {
+                                ReportMetadata reportMeta = getTableView().getItems().get(getIndex());
+                                if (reportMeta == null || reportMeta.getFilePath() == null)
+                                        return;
+
+                                File reportFile = new File(reportMeta.getFilePath());
+                                if (reportFile.exists())
+                                {
+                                        if (reportFile.delete())
+                                        {
+                                                getTableView().getItems().remove(getIndex());
+                                        }
+                                        else
+                                        {
+                                                AlertBox.showError(getScene().getWindow(), "Could not delete file: " + reportMeta.getFilePath());
+                                        }
+                                }
+                        }
+
+                        @Override protected void updateItem(Void item, boolean empty)
+                        {
+                                super.updateItem(item, empty);
+                                setGraphic(empty ? null : this.box);
+                        }
+
+                });
+                actionsCol.setPrefWidth(180);
 		
-		this.generatedReportsTable.getColumns()
-			.addAll(nameCol,
-				dateGenCol,
-				formatCol,
-				actionsCol);
+		this.generatedReportsTable.getColumns().addAll(nameCol, dateGenCol, formatCol, actionsCol);
 	}
 	
 	/**
@@ -246,8 +290,7 @@ public class SkeletonReportsPanel extends BorderPane
 		
 		if (!CurrentCompany.isOpen() || CurrentCompany.getCompany() == null)
 		{
-			this.generatedReportsTable
-				.setPlaceholder(new Label("No company open."));
+			this.generatedReportsTable.setPlaceholder(new Label("No company open."));
 			return;
 		}
 		
@@ -323,144 +366,121 @@ public class SkeletonReportsPanel extends BorderPane
 			LocalDate startDate = this.startDatePicker.getValue();
 			LocalDate endDate = this.endDatePicker.getValue();
 			
-			String reportTypeKey;
-			boolean isJasperReport = true;
+			String reportTypeKey = this.availableTemplates.get(reportTypeDisplay);
 			
-			switch(reportTypeDisplay)
+			if (reportTypeKey == null)
 			{
-				case "Income Statement":
-					reportTypeKey = "income_statement_jasper";
-					break;
-				
-				case "Balance Sheet":
-					reportTypeKey = "balance_sheet_jasper";
-					AlertBox.showInfo(ownerWindow,
-						"Balance Sheet via Jasper is chosen, but ensure its generator is fully implemented in ReportService.");
-					break;
-				
-				case "Trial Balance":
-					reportTypeKey = "trial_balance_jasper";
-					AlertBox.showInfo(ownerWindow,
-						"Trial Balance via Jasper is chosen, but ensure its generator is fully implemented in ReportService.");
-					break;
-				
-				case "Cash Flow Statement":
-					reportTypeKey = "cash_flow_statement_jasper";
-					break;
-				
-				default:
-					AlertBox.showError(ownerWindow, "Report type '" +
-						reportTypeDisplay +
-						"' generation not configured for Jasper system.");
-					return;
+				AlertBox.showError(ownerWindow, "Report type '" + reportTypeDisplay +
+					"' generation not configured for Jasper system.");
+				return;
 			}
 			
-                        ReportContext ctx = new ReportContext();
-                        ctx.setReportType(reportTypeKey);
-                        ctx.setStartDate(startDate);
-                        ctx.setEndDate(endDate);
-                        ctx.setFundIds(java.util.Collections.emptyList());
-                        ctx.setSelectedBudget(null);
-                        ctx.setAccountIdsForDetailReport(java.util.Collections.emptyList());
+			ReportContext ctx = new ReportContext();
+			ctx.setReportType(reportTypeKey);
+			ctx.setStartDate(startDate);
+			ctx.setEndDate(endDate);
+			ctx.setFundIds(java.util.Collections.emptyList());
+			ctx.setSelectedBudget(null);
+			ctx.setAccountIdsForDetailReport(java.util.Collections.emptyList());
 			
-			String outputFormat = "pdf";
+                        String outputFormat = this.outputFormatComboBox.getValue();
+                        if (outputFormat == null || outputFormat.isEmpty()) {
+                                outputFormat = "pdf";
+                        }
 			
-			if (isJasperReport)
+			if (("income_statement_jasper".equals(reportTypeKey) ||
+				"cash_flow_statement_jasper".equals(reportTypeKey)) &&
+				(startDate == null || endDate == null))
 			{
+				AlertBox.showError(ownerWindow,
+					"Please select both a Start Date and End Date for this report.");
+				return;
+			}
+			
+			if (("balance_sheet_jasper".equals(reportTypeKey) ||
+				"trial_balance_jasper".equals(reportTypeKey)) && endDate == null)
+			{
+				AlertBox.showError(ownerWindow,
+					"Please select an End Date (As-Of Date) for this report.");
+				return;
+			}
+			
+			if (startDate != null && endDate != null && endDate.isBefore(startDate))
+			{
+				AlertBox.showError(ownerWindow, "End Date cannot be before Start Date.");
+				return;
+			}
+			
+                        try
+                        {
+                                File generatedFile;
+                                if ("xlsx".equalsIgnoreCase(outputFormat))
+                                {
+                                        Company c = CurrentCompany.getCompany();
+                                        generatedFile = this.reportService.generate(ctx, c.getLedger(), c.getChartOfAccounts());
+                                }
+                                else if ("text".equalsIgnoreCase(outputFormat))
+                                {
+                                        generatedFile = this.reportService.generatePlainTextReport(ctx);
+                                }
+                                else
+                                {
+                                        generatedFile = this.reportService.generateJasperReport(ctx, outputFormat);
+                                }
 				
-				if (("income_statement_jasper".equals(reportTypeKey) ||
-					"cash_flow_statement_jasper".equals(reportTypeKey)) &&
-					(startDate == null || endDate == null))
+				if (generatedFile != null && generatedFile.exists())
 				{
-					AlertBox.showError(ownerWindow,
-						"Please select both a Start Date and End Date for this report.");
-					return;
-				}
-				
-				if (("balance_sheet_jasper".equals(reportTypeKey) ||
-					"trial_balance_jasper".equals(reportTypeKey)) && endDate == null)
-				{
-					AlertBox.showError(ownerWindow,
-						"Please select an End Date (As-Of Date) for this report.");
-					return;
-				}
-				
-				if (startDate != null && endDate != null && endDate.isBefore(startDate))
-				{
-					AlertBox.showError(ownerWindow,
-						"End Date cannot be before Start Date.");
-					return;
-				}
-				
-				try
-				{
-					File generatedFile = this.reportService.generateJasperReport(ctx, outputFormat);
+					AlertBox.showInfo(ownerWindow,
+						reportTypeDisplay + " generated: " + generatedFile.getAbsolutePath());
 					
-					if (generatedFile != null && generatedFile.exists())
+					try
 					{
-						AlertBox.showInfo(ownerWindow,
-							reportTypeDisplay + " generated: " +
-								generatedFile.getAbsolutePath());
 						
-						try
+						if (Desktop.isDesktopSupported())
 						{
-							
-							if (Desktop.isDesktopSupported())
-							{ 
-								// Check if Desktop API is supported
-								Desktop.getDesktop().open(generatedFile);
-							}
-							else
-							{
-								AlertBox.showWarning(ownerWindow,
-									"Cannot automatically open file. Desktop operations not supported on this platform. File saved at: " +
-										generatedFile.getAbsolutePath());
-							}
-							
+							// Check if Desktop API is supported
+							Desktop.getDesktop().open(generatedFile);
 						}
-						catch (IOException | UnsupportedOperationException ex)
+						else
 						{
-							ex.printStackTrace();
-							AlertBox.showError(ownerWindow,
-								"Could not open report file: " + 
-							ex.getMessage() +
-							(ex instanceof UnsupportedOperationException ?
-								"\nDesktop operations not supported on this platform." :
-								""));
+							AlertBox.showWarning(ownerWindow,
+								"Cannot automatically open file. Desktop operations not supported on this platform. File saved at: " +
+									generatedFile.getAbsolutePath());
 						}
 						
 					}
-					else
+					catch (IOException | UnsupportedOperationException ex)
 					{
-						AlertBox.showError(ownerWindow, reportTypeDisplay +
-							" could not be generated or found. Check console/logs.");
+						ex.printStackTrace();
+						AlertBox.showError(ownerWindow,
+							"Could not open report file: " + ex.getMessage() +
+								(ex instanceof UnsupportedOperationException ?
+									"\nDesktop operations not supported on this platform." : ""));
 					}
 					
 				}
-				catch (Exception ex)
+				else
 				{
-					ex.printStackTrace();
-					AlertBox.showError(ownerWindow,
-						"Error generating " + reportTypeDisplay + ": " + ex.getMessage());
-				}
-				finally
-				{
-					loadGeneratedReports();
+					AlertBox.showError(ownerWindow, reportTypeDisplay +
+						" could not be generated or found. Check console/logs.");
 				}
 				
 			}
-			else
+			catch (Exception ex)
 			{
-				// This block would handle non-Jasper reports if any were configured
-				AlertBox.showInfo(ownerWindow, 
-					"Generation for non-Jasper report type '" +
-					reportTypeDisplay + 
-					"' is not handled by this path.");
+				ex.printStackTrace();
+				AlertBox.showError(ownerWindow,
+					"Error generating " + reportTypeDisplay + ": " + ex.getMessage());
+			}
+			finally
+			{
+				loadGeneratedReports();
 			}
 			
 		});
 		
 		loadGeneratedReports();
+		
 	}
 	
 }

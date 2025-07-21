@@ -47,9 +47,7 @@ public class ReportConfigurationService
 		this.objectMapper = new ObjectMapper();
 		this.objectMapper.registerModule(new JavaTimeModule()); // Essential for LocalDate
 		this.objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-		this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); // Or configure
-																					// date format
-																					// if needed
+		this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 	}
 	
 	/**

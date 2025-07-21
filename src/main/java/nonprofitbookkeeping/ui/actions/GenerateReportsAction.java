@@ -76,6 +76,8 @@ public class GenerateReportsAction implements EventHandler<ActionEvent> {
                     "balance_sheet",
                     "trial_balance",
                     "cash_flow",
+                    "budget_vs_actuals",
+                    "account_activity_detail",
                     "general_ledger");
             ChoiceDialog<String> reportTypeDialog = new ChoiceDialog<>(reportOptions.get(0), reportOptions);
             reportTypeDialog.initOwner(parentWindow);

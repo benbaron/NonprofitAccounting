@@ -6,18 +6,18 @@ import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Ledger;
 import nonprofitbookkeeping.model.Fund;
-import nonprofitbookkeeping.model.reports.ReportConfiguration; // Added
+import nonprofitbookkeeping.model.reports.ReportConfiguration; 
 import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.reports.ReportCriteria;
-import nonprofitbookkeeping.service.ReportConfigurationService; // Added
+import nonprofitbookkeeping.service.ReportConfigurationService; 
 import nonprofitbookkeeping.service.ReportService;
-import nonprofitbookkeeping.ui.helpers.AlertBox; // Added
+import nonprofitbookkeeping.ui.helpers.AlertBox; 
 import nonprofitbookkeeping.ui.helpers.DateSelectionMode;
 import nonprofitbookkeeping.ui.helpers.ReportCriteriaDialog;
 
-import javafx.event.ActionEvent; // Added
-import javafx.event.EventHandler; // Added
-import javafx.stage.Window; // Added
+import javafx.event.ActionEvent; 
+import javafx.event.EventHandler; 
+import javafx.stage.Window; 
 
 
 // import javax.swing.*; // Removed
@@ -25,8 +25,8 @@ import javafx.stage.Window; // Added
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList; // Added
-import java.util.List; // Added
+import java.util.ArrayList; 
+import java.util.List; 
 import java.util.Optional;
 
 import javax.swing.AbstractAction;
@@ -48,8 +48,6 @@ public class GenerateCashFlowStatementAction extends AbstractAction
 	implements EventHandler<ActionEvent>
 {
 	
-	// private static final long serialVersionUID = 1L; // Not needed for JavaFX
-		// EventHandler
 	/** The specific report type identifier for the Cash Flow Statement. */
 	private final String reportType = "cash_flow_statement";
 	/**

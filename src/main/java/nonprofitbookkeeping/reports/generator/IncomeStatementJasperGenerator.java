@@ -79,7 +79,7 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 		if (company == null || company.getLedger() == null || company.getChartOfAccounts() == null)
 		{
 			System.err.println(
-				"IncomeStatementJasperGenerator: Company, Ledger, or COA is null. Cannot generate data."); 
+				"IncomeStatementJasperGenerator: Company, Ledger, or COA is null. Cannot generate data.");
 			return Collections.emptyList();
 		}
 		
@@ -155,20 +155,18 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 	@Override public File generateAndExportReport(String format) throws Exception
 	{
 		File generatedFile = null;
-		String reportBaseName = "Income_Statement_" +
-			(this.reportContext.getEndDate() != null ? this.reportContext.getEndDate().toString() :
-				LocalDate.now().toString());
+		String reportBaseName = "Income_Statement_" + (this.reportContext.getEndDate() != null ?
+			this.reportContext.getEndDate().toString() : LocalDate.now().toString());
 		
 		try
 		{
-			Class<? extends AbstractReportGenerator> clazz =
-				getClass();
+			Class<? extends AbstractReportGenerator> clazz = getClass();
 			ClassLoader clazzloader = clazz.getClassLoader();
-			InputStream reportStream = clazzloader.getResourceAsStream("income_statement.jrxml");
+			InputStream reportStream = clazzloader.getResourceAsStream(getReportPath());
 			
 			if (reportStream == null)
 			{
-				System.err.println("Cannot find report template: " + "income_statement.jrxml");
+				System.err.println("Cannot find report template: " + getReportPath());
 				
 				throw new java.io.FileNotFoundException(
 					"Report template not found: " + getReportPath());

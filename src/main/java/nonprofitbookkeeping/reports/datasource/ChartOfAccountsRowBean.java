@@ -47,4 +47,64 @@ public class ChartOfAccountsRowBean
 		this.type = type;
 	}
 	
+
+	// ------------------------------------------------------------------
+	// Convenience getters matching field names in ChartOfAccounts*.jrxml
+	// ------------------------------------------------------------------
+	
+	/**
+	 * Alias for {@link #getAccountNumber()} matching the JRXML field
+	 * name {@code account_number}.
+	 *
+	 * @return the account number
+	 */
+	public String getAccount_number()
+	{
+		return getAccountNumber();
+	}
+	
+	/**
+	 * Alias for {@link #getAccountName()} matching the JRXML field
+	 * name {@code account_name}.
+	 *
+	 * @return the account name
+	 */
+	public String getAccount_name()
+	{
+		return getAccountName();
+	}
+	
+	/**
+	 * Alias for {@link #getAccountNumber()} matching the uppercase JRXML field
+	 * name {@code ACCOUNTNUM} used by older templates.
+	 *
+	 * @return the account number
+	 */
+	public String getACCOUNTNUM()
+	{
+		return getAccountNumber();
+	}
+	
+	/**
+	 * Alias for {@link #getAccountName()} matching the uppercase JRXML field
+	 * name {@code ACCOUNTNAME} used by older templates.
+	 *
+	 * @return the account name
+	 */
+	public String getACCOUNTNAME()
+	{
+		return getAccountName();
+	}
+	
+	/**
+	 * Alias for {@link #getType()} matching the uppercase JRXML field
+	 * name {@code ACCOUNTTYPE} used by older templates.
+	 *
+	 * @return the account type
+	 */
+	public String getACCOUNTTYPE()
+	{
+		return getType();
+	}
+	
 }
