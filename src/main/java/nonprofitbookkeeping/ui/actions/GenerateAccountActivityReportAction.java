@@ -66,7 +66,7 @@ public class GenerateAccountActivityReportAction implements EventHandler<ActionE
 	 *   <li>If a name for saving the configuration was provided and a company directory is available,
 	 *       it creates a {@link ReportConfiguration}, saves it using {@link ReportConfigurationService}.</li>
 	 *   <li>Constructs a {@link ReportContext} from the gathered criteria.</li>
-	 *   <li>Calls the static {@link ReportService#generate(ReportContext, Ledger, ChartOfAccounts)}
+	 *   <li>Calls the static {@link ReportService#generateFromJXLS(ReportContext, Ledger, ChartOfAccounts)}
 	 *       method to produce the report file (typically an XLSX).</li>
 	 *   <li>Shows an information alert with the path to the generated report, or an error alert if generation fails.</li>
 	 * </ol>
@@ -210,7 +210,7 @@ public class GenerateAccountActivityReportAction implements EventHandler<ActionE
 				return;
 			}
 			
-			File f = ReportService.generate(ctx, ledger, coa); // Assuming ReportService is static
+			File f = ReportService.generateFromJXLS(ctx, ledger, coa); // Assuming ReportService is static
 																// or instance is available
 			AlertBox.showInfo(parentWindow,
 				"Account Activity Detail report saved to: " + f.getAbsolutePath());

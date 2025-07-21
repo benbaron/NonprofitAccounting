@@ -71,7 +71,7 @@ public class GenerateTrialBalanceAction extends AbstractAction implements EventH
      *       (report type, dates, funds, default output format "xlsx") are saved
      *       using {@link ReportConfigurationService}.</li>
      *   <li>A {@link ReportContext} is created based on the user's criteria.</li>
-     *   <li>The static {@link ReportService#generate(ReportContext, Ledger, ChartOfAccounts)} method
+     *   <li>The static {@link ReportService#generateFromJXLS(ReportContext, Ledger, ChartOfAccounts)} method
      *       is invoked to produce the report file.</li>
      *   <li>A confirmation message with the report file path is shown, or an error message if any step fails.</li>
      * </ol>
@@ -172,7 +172,7 @@ public class GenerateTrialBalanceAction extends AbstractAction implements EventH
                 return;
             }
 
-            File f = ReportService.generate(ctx, ledger, chartOfAccounts);
+            File f = ReportService.generateFromJXLS(ctx, ledger, chartOfAccounts);
             AlertBox.showInfo(parentWindow, "Trial Balance saved to: " + f.getAbsolutePath());
 
         } catch (IOException ex) { // Specifically for config saving/loading issues

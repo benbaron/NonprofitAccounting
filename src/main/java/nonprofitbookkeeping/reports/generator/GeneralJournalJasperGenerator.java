@@ -23,62 +23,60 @@ import java.util.Map;
 public class GeneralJournalJasperGenerator extends AbstractReportGenerator
 {
 	
-       @Override protected List<GeneralJournalRowBean> getReportData()
-       {
-               nonprofitbookkeeping.model.Company company =
-                               nonprofitbookkeeping.model.CurrentCompany.getCompany();
-
-               if (company == null || company.getLedger() == null)
-               {
-                       return Collections.emptyList();
-               }
-
-               java.util.List<GeneralJournalRowBean> rows = new java.util.ArrayList<>();
-
-               java.util.List<nonprofitbookkeeping.model.AccountingTransaction> txns = company.getLedger().getTransactions();
-
-               if (txns == null)
-               {
-                       return rows;
-               }
-
-               txns.sort(java.util.Comparator.comparingLong(
-                               nonprofitbookkeeping.model.AccountingTransaction::getBookingDateTimestamp));
-
-               for (nonprofitbookkeeping.model.AccountingTransaction tx : txns)
-               {
-                       if (tx == null || tx.getEntries() == null)
-                               continue;
-
-                       for (nonprofitbookkeeping.model.AccountingEntry entry : tx.getEntries())
-                       {
-                               if (entry == null || entry.getAmount() == null)
-                                       continue;
-
-                               java.math.BigDecimal debit = java.math.BigDecimal.ZERO;
-                               java.math.BigDecimal credit = java.math.BigDecimal.ZERO;
-
-                               if (entry.getAccountSide() == nonprofitbookkeeping.model.AccountSide.DEBIT)
-                               {
-                                       debit = entry.getAmount();
-                               }
-                               else
-                               {
-                                       credit = entry.getAmount();
-                               }
-
-                               rows.add(new GeneralJournalRowBean(
-                                               tx.getDate(),
-                                               entry.getAccountNumber(),
-                                               tx.getMemo() != null ? tx.getMemo() : "",
-                                               debit,
-                                               credit));
-                       }
-               }
-
-               return rows;
-
-       }
+	@Override protected List<GeneralJournalRowBean> getReportData()
+	{
+		nonprofitbookkeeping.model.Company company =
+			nonprofitbookkeeping.model.CurrentCompany.getCompany();
+		
+		if (company == null || company.getLedger() == null)
+		{
+			return Collections.emptyList();
+		}
+		
+		java.util.List<GeneralJournalRowBean> rows = new java.util.ArrayList<>();
+		
+		java.util.List<nonprofitbookkeeping.model.AccountingTransaction> txns =
+			company.getLedger().getTransactions();
+		
+		if (txns == null)
+		{
+			return rows;
+		}
+		
+		txns.sort(java.util.Comparator.comparingLong(
+			nonprofitbookkeeping.model.AccountingTransaction::getBookingDateTimestamp));
+		
+		for (nonprofitbookkeeping.model.AccountingTransaction tx : txns)
+		{
+			if (tx == null || tx.getEntries() == null)
+				continue;
+			
+			for (nonprofitbookkeeping.model.AccountingEntry entry : tx.getEntries())
+			{
+				if (entry == null || entry.getAmount() == null)
+					continue;
+				
+				java.math.BigDecimal debit = java.math.BigDecimal.ZERO;
+				java.math.BigDecimal credit = java.math.BigDecimal.ZERO;
+				
+				if (entry.getAccountSide() == nonprofitbookkeeping.model.AccountSide.DEBIT)
+				{
+					debit = entry.getAmount();
+				}
+				else
+				{
+					credit = entry.getAmount();
+				}
+				
+				rows.add(new GeneralJournalRowBean(tx.getDate(), entry.getAccountNumber(),
+					tx.getMemo() != null ? tx.getMemo() : "", debit, credit));
+			}
+			
+		}
+		
+		return rows;
+		
+	}
 	
 	@Override protected Map<String, Object> getReportParameters()
 	{

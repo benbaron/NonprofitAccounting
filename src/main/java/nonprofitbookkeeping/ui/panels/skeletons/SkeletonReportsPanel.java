@@ -417,7 +417,7 @@ public class SkeletonReportsPanel extends BorderPane
                                 if ("xlsx".equalsIgnoreCase(outputFormat))
                                 {
                                         Company c = CurrentCompany.getCompany();
-                                        generatedFile = this.reportService.generate(ctx, c.getLedger(), c.getChartOfAccounts());
+                                        generatedFile = this.reportService.generateFromJXLS(ctx, c.getLedger(), c.getChartOfAccounts());
                                 }
                                 else if ("text".equalsIgnoreCase(outputFormat))
                                 {

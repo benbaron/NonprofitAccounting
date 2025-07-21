@@ -71,7 +71,7 @@ public class GenerateBalanceSheetAction extends AbstractAction implements EventH
 	 *   <li>If a name for saving the configuration was provided and a company directory is available,
 	 *       it creates a {@link ReportConfiguration} and saves it using {@link ReportConfigurationService}.</li>
 	 *   <li>Constructs a {@link ReportContext} from the gathered criteria.</li>
-	 *   <li>Calls the static {@link ReportService#generate(ReportContext, Ledger, ChartOfAccounts)}
+	 *   <li>Calls the static {@link ReportService#generateFromJXLS(ReportContext, Ledger, ChartOfAccounts)}
 	 *       method to produce the report file (typically an XLSX).</li>
 	 *   <li>Shows an information alert with the path to the generated report, or an error alert if generation fails.</li>
 	 * </ol>
@@ -181,7 +181,7 @@ public class GenerateBalanceSheetAction extends AbstractAction implements EventH
 				return;
 			}
 			
-			File f = ReportService.generate(ctx, ledger, chartOfAccounts);
+			File f = ReportService.generateFromJXLS(ctx, ledger, chartOfAccounts);
 			AlertBox.showInfo(parentWindow, "Balance Sheet saved to: " + f.getAbsolutePath());
 			
 		}

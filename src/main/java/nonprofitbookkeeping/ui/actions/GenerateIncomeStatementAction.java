@@ -19,8 +19,6 @@ import javafx.event.ActionEvent; // Added
 import javafx.event.EventHandler; // Added
 import javafx.stage.Window; // Added
 
-import net.sf.jasperreports.web.actions.ActionException;
-
 // import javax.swing.*; // Removed
 // import java.awt.event.ActionEvent; // Removed
 import java.io.File;
@@ -31,6 +29,8 @@ import java.util.List; // Added
 import java.util.Optional;
 
 import javax.swing.AbstractAction;
+
+import ch.qos.logback.core.joran.spi.ActionException;
 
 
 /**
@@ -50,10 +50,14 @@ public class GenerateIncomeStatementAction extends AbstractAction
 	implements EventHandler<ActionEvent>
 {
 	
-	// private static final long serialVersionUID = -6004544138078222664L; // Not
-		// applicable for JavaFX EventHandler
+	/**
+	 * serialVersionUID : long
+	 */
+	private static final long serialVersionUID = 7597585449796590034L;
+
 	/** The specific report type identifier for the Income Statement. */
 	private final String reportType = "income_statement";
+	
 	/**
 	 * Constructs a new {@code GenerateIncomeStatementAction}.
 	 *
@@ -78,7 +82,7 @@ public class GenerateIncomeStatementAction extends AbstractAction
 	 *       (report type, dates, funds, default output format "xlsx") are saved
 	 *       using {@link ReportConfigurationService}.</li>
 	 *   <li>A {@link ReportContext} is created based on the user's criteria.</li>
-	 *   <li>The static {@link ReportService#generate(ReportContext, Ledger, ChartOfAccounts)} method
+	 *   <li>The static {@link ReportService#generateFromJXLS(ReportContext, Ledger, ChartOfAccounts)} method
 	 *       is invoked to produce the report file.</li>
 	 *   <li>A confirmation message with the report file path is shown, or an error message if any step fails.</li>
 	 * </ol>
@@ -109,13 +113,9 @@ public class GenerateIncomeStatementAction extends AbstractAction
 			// ChartOfAccounts is not passed to this ReportCriteriaDialog variant.
 			// Account selector is not shown.
 			
-			Optional<ReportCriteria> criteriaOpt = ReportCriteriaDialog.showDialog(
-				parentWindow,
-				"Income Statement Criteria",
-				availableFunds,
-				null, // chartOfAccounts
-				DateSelectionMode.DATE_RANGE_MANDATORY_START,
-				true, // showFundSelector
+			Optional<ReportCriteria> criteriaOpt = ReportCriteriaDialog.showDialog(parentWindow,
+				"Income Statement Criteria", availableFunds, null, // chartOfAccounts
+				DateSelectionMode.DATE_RANGE_MANDATORY_START, true, // showFundSelector
 				false, // showAccountSelector
 				null // initialConfig
 			);
@@ -143,13 +143,9 @@ public class GenerateIncomeStatementAction extends AbstractAction
 				
 				if (companyDir != null)
 				{
-					ReportConfiguration newConfig = new ReportConfiguration(
-						configNameToSave,
-						this.reportType,
-						criteria.getDateSelectionMode(),
-						startDate,
-						endDate,
-						selectedFundIds);
+					ReportConfiguration newConfig =
+						new ReportConfiguration(configNameToSave, this.reportType,
+							criteria.getDateSelectionMode(), startDate, endDate, selectedFundIds);
 					newConfig.setOutputFormat("xlsx");
 					
 					try
@@ -198,9 +194,10 @@ public class GenerateIncomeStatementAction extends AbstractAction
 				return;
 			}
 			
-			File f = ReportService.generate(ctx, ledger, chartOfAccounts); // Assuming ReportService
-																			// is static or instance
-																			// available
+			File f = ReportService.generateFromJXLS(ctx, ledger, chartOfAccounts); // Assuming
+																					// ReportService
+			// is static or instance
+			// available
 			AlertBox.showInfo(parentWindow, "Income Statement saved to: " + f.getAbsolutePath());
 			
 		}
@@ -231,10 +228,10 @@ public class GenerateIncomeStatementAction extends AbstractAction
 	 *
 	 * @throws ActionException if an error occurs during action execution (specific to JasperReports web actions).
 	 */
-        public void performAction() throws ActionException
-        {
-                handle(new ActionEvent());
-        }
+	public void performAction() throws ActionException
+	{
+		handle(new ActionEvent());
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -246,9 +243,9 @@ public class GenerateIncomeStatementAction extends AbstractAction
 	 * </p>
 	 * @param e The {@link java.awt.event.ActionEvent} that occurred.
 	 */
-        @Override public void actionPerformed(java.awt.event.ActionEvent e)
-        {
-                handle(new ActionEvent());
-        }
+	@Override public void actionPerformed(java.awt.event.ActionEvent e)
+	{
+		handle(new ActionEvent());
+	}
 	
 }

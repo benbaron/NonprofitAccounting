@@ -22,76 +22,83 @@ import java.util.Map;
  */
 public class BankReconciliationJasperGenerator extends AbstractReportGenerator
 {
-	
-       @Override protected List<BankReconciliationRowBean> getReportData()
-       {
-               nonprofitbookkeeping.model.Company company =
-                               nonprofitbookkeeping.model.CurrentCompany.getCompany();
-
-               if (company == null || company.getLedger() == null || company.getChartOfAccounts() == null)
-               {
-                       return Collections.emptyList();
-               }
-
-               java.util.List<BankReconciliationRowBean> rows = new java.util.ArrayList<>();
-               java.math.BigDecimal running = java.math.BigDecimal.ZERO;
-
-               for (nonprofitbookkeeping.model.AccountingTransaction tx : company.getLedger().getTransactions())
-               {
-                       if (tx == null || tx.getEntries() == null)
-                               continue;
-
-                       for (nonprofitbookkeeping.model.AccountingEntry entry : tx.getEntries())
-                       {
-                               if (entry == null || entry.getAmount() == null)
-                                       continue;
-
-                               nonprofitbookkeeping.model.Account acct =
-                                               company.getChartOfAccounts().getAccount(entry.getAccountNumber());
-
-                               if (acct == null)
-                                       continue;
-
-                               nonprofitbookkeeping.model.AccountType type = acct.getAccountType();
-
-                               if (type != nonprofitbookkeeping.model.AccountType.CASH &&
-                                               type != nonprofitbookkeeping.model.AccountType.BANK &&
-                                               type != nonprofitbookkeeping.model.AccountType.CHECKING)
-                               {
-                                       continue;
-                               }
-
-                               java.math.BigDecimal deposit = java.math.BigDecimal.ZERO;
-                               java.math.BigDecimal withdrawal = java.math.BigDecimal.ZERO;
-
-                               if (entry.getAccountSide() == nonprofitbookkeeping.model.AccountSide.DEBIT)
-                               {
-                                       deposit = entry.getAmount();
-                                       running = running.add(deposit);
-                               }
-                               else
-                               {
-                                       withdrawal = entry.getAmount();
-                                       running = running.subtract(withdrawal);
-                               }
-
-                               rows.add(new BankReconciliationRowBean(
-                                               tx.getDate(),
-                                               tx.getMemo() != null ? tx.getMemo() : "",
-                                               deposit,
-                                               withdrawal,
-                                               running));
-                       }
-               }
-
-               return rows;
-       }
+	/**
+	 * 
+	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData()
+	 */
+	@Override protected List<BankReconciliationRowBean> getReportData()
+	{
+		nonprofitbookkeeping.model.Company company =
+			nonprofitbookkeeping.model.CurrentCompany.getCompany();
+		
+		if (company == null || company.getLedger() == null || company.getChartOfAccounts() == null)
+		{
+			return Collections.emptyList();
+		}
+		
+		java.util.List<BankReconciliationRowBean> rows = new java.util.ArrayList<>();
+		java.math.BigDecimal running = java.math.BigDecimal.ZERO;
+		
+		for (nonprofitbookkeeping.model.AccountingTransaction tx : company.getLedger()
+			.getTransactions())
+		{
+			if (tx == null || tx.getEntries() == null)
+			{
+				continue;
+			}
+			
+			for (nonprofitbookkeeping.model.AccountingEntry entry : tx.getEntries())
+			{
+				if (entry == null || entry.getAmount() == null)
+				{
+					continue;
+				}
+				
+				nonprofitbookkeeping.model.Account acct =
+					company.getChartOfAccounts().getAccount(entry.getAccountNumber());
+				
+				if (acct == null)
+				{
+					continue;
+				}
+				
+				nonprofitbookkeeping.model.AccountType type = acct.getAccountType();
+				
+				if (type != nonprofitbookkeeping.model.AccountType.CASH &&
+					type != nonprofitbookkeeping.model.AccountType.BANK &&
+					type != nonprofitbookkeeping.model.AccountType.CHECKING)
+				{
+					continue;
+				}
+				
+				java.math.BigDecimal deposit = java.math.BigDecimal.ZERO;
+				java.math.BigDecimal withdrawal = java.math.BigDecimal.ZERO;
+				
+				if (entry.getAccountSide() == nonprofitbookkeeping.model.AccountSide.DEBIT)
+				{
+					deposit = entry.getAmount();
+					running = running.add(deposit);
+				}
+				else
+				{
+					withdrawal = entry.getAmount();
+					running = running.subtract(withdrawal);
+				}
+				
+				rows.add(new BankReconciliationRowBean(tx.getDate(),
+					tx.getMemo() != null ? tx.getMemo() : "", deposit, withdrawal, running));
+			}
+			
+		}
+		
+		return rows;
+	}
 	
 	@Override protected Map<String, Object> getReportParameters()
 	{
 		Map<String, Object> params = new HashMap<>();
 		params.put("P_REPORT_TITLE", "Bank Reconciliation");
-
+		
 		
 		String companyName = "N/A";
 		

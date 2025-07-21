@@ -23,54 +23,56 @@ import java.util.Map;
 public class FundLedgerJasperGenerator extends AbstractReportGenerator
 {
 	
-       @Override protected List<FundLedgerRowBean> getReportData()
-       {
-               nonprofitbookkeeping.model.Company company =
-                               nonprofitbookkeeping.model.CurrentCompany.getCompany();
-
-               if (company == null || company.getLedger() == null || company.getChartOfAccounts() == null)
-               {
-                       return Collections.emptyList();
-               }
-
-               java.util.List<FundLedgerRowBean> rows = new java.util.ArrayList<>();
-               java.math.BigDecimal running = java.math.BigDecimal.ZERO;
-
-               for (nonprofitbookkeeping.model.AccountingTransaction tx : company.getLedger().getTransactions())
-               {
-                       if (tx == null || tx.getEntries() == null)
-                               continue;
-
-                       for (nonprofitbookkeeping.model.AccountingEntry entry : tx.getEntries())
-                       {
-                               if (entry == null || entry.getAmount() == null)
-                                       continue;
-
-                               java.math.BigDecimal debit = java.math.BigDecimal.ZERO;
-                               java.math.BigDecimal credit = java.math.BigDecimal.ZERO;
-
-                               if (entry.getAccountSide() == nonprofitbookkeeping.model.AccountSide.DEBIT)
-                               {
-                                       debit = entry.getAmount();
-                                       running = running.add(debit);
-                               }
-                               else
-                               {
-                                       credit = entry.getAmount();
-                                       running = running.subtract(credit);
-                               }
-
-                               rows.add(new FundLedgerRowBean(
-                                               tx.getDate(),
-                                               tx.getMemo() != null ? tx.getMemo() : "",
-                                               debit,
-                                               credit,
-                                               running));
-                       }
-               }
-
-               return rows;
-       }
+	@Override protected List<FundLedgerRowBean> getReportData()
+	{
+		nonprofitbookkeeping.model.Company company =
+			nonprofitbookkeeping.model.CurrentCompany.getCompany();
+		
+		if (company == null || company.getLedger() == null || company.getChartOfAccounts() == null)
+		{
+			return Collections.emptyList();
+		}
+		
+		java.util.List<FundLedgerRowBean> rows = new java.util.ArrayList<>();
+		java.math.BigDecimal running = java.math.BigDecimal.ZERO;
+		
+		for (nonprofitbookkeeping.model.AccountingTransaction tx : company.getLedger()
+			.getTransactions())
+		{
+			if (tx == null || tx.getEntries() == null)
+			{
+				continue;
+			}
+			
+			for (nonprofitbookkeeping.model.AccountingEntry entry : tx.getEntries())
+			{
+				if (entry == null || entry.getAmount() == null)
+				{
+					continue;
+				}
+				
+				java.math.BigDecimal debit = java.math.BigDecimal.ZERO;
+				java.math.BigDecimal credit = java.math.BigDecimal.ZERO;
+				
+				if (entry.getAccountSide() == nonprofitbookkeeping.model.AccountSide.DEBIT)
+				{
+					debit = entry.getAmount();
+					running = running.add(debit);
+				}
+				else
+				{
+					credit = entry.getAmount();
+					running = running.subtract(credit);
+				}
+				
+				rows.add(new FundLedgerRowBean(tx.getDate(),
+					tx.getMemo() != null ? tx.getMemo() : "", debit, credit, running));
+			}
+			
+		}
+		
+		return rows;
+	}
 	
 	@Override protected Map<String, Object> getReportParameters()
 	{

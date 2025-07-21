@@ -59,7 +59,7 @@ public class GenerateBudgetVsActualsReportAction extends AbstractAction
 	 *   <li>Prompts the user to select a budget using a {@link ChoiceDialog}. If cancelled, returns.</li>
 	     *   <li>Prompts the user for a date range using a JavaFX dialog with {@link javafx.scene.control.DatePicker}s.</li>
 	     *   <li>Sets up a {@link ReportContext} with the chosen budget and dates.</li>
-	     *   <li>Calls {@link ReportService#generate(ReportContext, Ledger, ChartOfAccounts)} to produce the report.</li>
+	     *   <li>Calls {@link ReportService#generateFromJXLS(ReportContext, Ledger, ChartOfAccounts)} to produce the report.</li>
 	     *   <li>Shows success or error alerts.</li>
 	 * </ol>
 	 * Catches {@link IOException} from loading budgets and general {@link Exception} during the process.
@@ -190,7 +190,7 @@ public class GenerateBudgetVsActualsReportAction extends AbstractAction
 				return;
 			}
 			
-			File f = ReportService.generate(ctx, ledger, chartOfAccounts);
+			File f = ReportService.generateFromJXLS(ctx, ledger, chartOfAccounts);
 			// 6. Show Success Message
 			AlertBox.showInfo(parentWindow,
 				"Budget vs. Actuals report saved to: " + f.getAbsolutePath());
