@@ -3,6 +3,9 @@ package nonprofitbookkeeping.reports.generator;
 
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import nonprofitbookkeeping.reports.datasource.GeneralLedgerRowBean;
+
+import java.math.BigDecimal;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,11 +23,71 @@ import java.util.Map;
 public class GeneralLedgerJasperGenerator extends AbstractReportGenerator
 {
 	
-	@Override protected List<?> getReportData()
-	{
+       @Override protected List<GeneralLedgerRowBean> getReportData()
+       {
+               nonprofitbookkeeping.model.Company company =
+                               nonprofitbookkeeping.model.CurrentCompany.getCompany();
 
-		return Collections.emptyList();  // FIXME
-	}
+               if (company == null || company.getLedger() == null)
+               {
+                       return Collections.emptyList();
+               }
+
+               java.util.List<GeneralLedgerRowBean> rows = new java.util.ArrayList<>();
+
+               java.util.Map<String, java.math.BigDecimal> balances = new java.util.HashMap<>();
+
+               java.util.List<nonprofitbookkeeping.model.AccountingTransaction> txns = company.getLedger().getTransactions();
+
+               if (txns == null)
+               {
+                       return rows;
+               }
+
+               txns.sort(java.util.Comparator.comparingLong(
+                               nonprofitbookkeeping.model.AccountingTransaction::getBookingDateTimestamp));
+
+               for (nonprofitbookkeeping.model.AccountingTransaction tx : txns)
+               {
+                       if (tx == null || tx.getEntries() == null)
+                               continue;
+
+                       for (nonprofitbookkeeping.model.AccountingEntry entry : tx.getEntries())
+                       {
+                               if (entry == null || entry.getAmount() == null)
+                                       continue;
+
+                               String acct = entry.getAccountNumber();
+                               java.math.BigDecimal bal = balances.getOrDefault(acct, java.math.BigDecimal.ZERO);
+
+                               java.math.BigDecimal debit = java.math.BigDecimal.ZERO;
+                               java.math.BigDecimal credit = java.math.BigDecimal.ZERO;
+
+                               if (entry.getAccountSide() == nonprofitbookkeeping.model.AccountSide.DEBIT)
+                               {
+                                       debit = entry.getAmount();
+                                       bal = bal.add(debit);
+                               }
+                               else
+                               {
+                                       credit = entry.getAmount();
+                                       bal = bal.subtract(credit);
+                               }
+
+                               balances.put(acct, bal);
+
+                               rows.add(new GeneralLedgerRowBean(
+                                               tx.getDate(),
+                                               acct,
+                                               tx.getMemo() != null ? tx.getMemo() : "",
+                                               debit,
+                                               credit,
+                                               bal));
+                       }
+               }
+
+               return rows;
+       }
 	
 	@Override protected Map<String, Object> getReportParameters()
 	{

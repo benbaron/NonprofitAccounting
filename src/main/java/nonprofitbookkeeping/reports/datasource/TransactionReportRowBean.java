@@ -6,17 +6,51 @@ package nonprofitbookkeeping.reports.datasource;
  */
 public class TransactionReportRowBean
 {
-	private String actId;
-	private String invDate;
-	private String commentAll;
-	private String comment;
-	private String fileInfo;
-	private String regDate;
-	private String accountNum;
-	private String accountName;
-	private String customer;
-	private String debitFormat;
-	private String creditFormat;
+        private String actId;
+        private String invDate;
+        private String commentAll;
+        private String comment;
+        private String fileInfo;
+        private String regDate;
+        private String accountNum;
+        private String accountName;
+        private String customer;
+        private String debitFormat;
+        private String creditFormat;
+
+        /**
+         * Creates a bean populated with all fields. This constructor exists
+         * mainly so the Jasper report generators can easily fabricate example
+         * data.
+         *
+         * @param actId        transaction identifier
+         * @param invDate      invoice date
+         * @param commentAll   combined comment text
+         * @param comment      comment
+         * @param fileInfo     attached file information
+         * @param regDate      registration date
+         * @param accountNum   account number
+         * @param accountName  account name
+         * @param customer     customer name
+         * @param debitFormat  formatted debit amount
+         * @param creditFormat formatted credit amount
+         */
+        public TransactionReportRowBean(String actId, String invDate, String commentAll,
+                String comment, String fileInfo, String regDate, String accountNum,
+                String accountName, String customer, String debitFormat, String creditFormat)
+        {
+                this.actId = actId;
+                this.invDate = invDate;
+                this.commentAll = commentAll;
+                this.comment = comment;
+                this.fileInfo = fileInfo;
+                this.regDate = regDate;
+                this.accountNum = accountNum;
+                this.accountName = accountName;
+                this.customer = customer;
+                this.debitFormat = debitFormat;
+                this.creditFormat = creditFormat;
+        }
 	
 	public String getActId()
 	{

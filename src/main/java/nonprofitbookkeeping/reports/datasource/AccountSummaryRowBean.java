@@ -9,6 +9,35 @@ package nonprofitbookkeeping.reports.datasource;
  */
 public class AccountSummaryRowBean
 {
+        /**
+         * Convenience constructor allowing quick creation of a bean with all
+         * fields populated. This is primarily used by the sample Jasper report
+         * generators which fabricate simple data sets.
+         *
+         * @param actId         the transaction id
+         * @param invDate       invoice date as a string
+         * @param commentAll    combined comment text
+         * @param comment       individual comment text
+         * @param customer      the customer name
+         * @param debitFormat   formatted debit string
+         * @param creditFormat  formatted credit string
+         * @param accountNum    account number
+         * @param accountName   account name
+         */
+        public AccountSummaryRowBean(String actId, String invDate, String commentAll,
+                String comment, String customer, String debitFormat,
+                String creditFormat, String accountNum, String accountName)
+        {
+                this.actId = actId;
+                this.invDate = invDate;
+                this.commentAll = commentAll;
+                this.comment = comment;
+                this.customer = customer;
+                this.debitFormat = debitFormat;
+                this.creditFormat = creditFormat;
+                this.accountNum = accountNum;
+                this.accountName = accountName;
+        }
 	private String actId;
 	private String invDate;
 	private String commentAll;
