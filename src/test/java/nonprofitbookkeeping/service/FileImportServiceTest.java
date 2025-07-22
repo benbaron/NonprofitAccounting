@@ -123,7 +123,7 @@ import static org.mockito.Mockito.when;
 	{
 		URL resourceUrl = getClass().getClassLoader().getResource("sample_files/malformed.ofx");
 		File malformedFile = new File(resourceUrl.toURI());
-		List<AccountingTransaction> result = FileImportService.importFile(malformedFile,
+		List<AccountingTransaction> result = FileImportService.importOFXorQIFFile(malformedFile,
 			this.mockTargetAccount, this.mockChartOfAccounts, this.mockLedger);
 		assertTrue(result.isEmpty());
 	}
@@ -360,7 +360,7 @@ import static org.mockito.Mockito.when;
 		URL resourceUrl = getClass().getClassLoader().getResource("sample_files/sample_bank.ofx");
 		File file = new File(resourceUrl.toURI());
 		List<AccountingTransaction> result =
-			FileImportService.importFile(file, this.mockTargetAccount, this.mockChartOfAccounts, this.mockLedger);
+			FileImportService.importOFXorQIFFile(file, this.mockTargetAccount, this.mockChartOfAccounts, this.mockLedger);
 		assertEquals(2, result.size());
 	}
 	
@@ -370,7 +370,7 @@ import static org.mockito.Mockito.when;
 		URL resourceUrl = getClass().getClassLoader().getResource("sample_files/sample_bank.qif");
 		File file = new File(resourceUrl.toURI());
 		List<AccountingTransaction> result =
-			FileImportService.importFile(file, this.mockTargetAccount, this.mockChartOfAccounts, this.mockLedger);
+			FileImportService.importOFXorQIFFile(file, this.mockTargetAccount, this.mockChartOfAccounts, this.mockLedger);
 		assertEquals(4, result.size()); // From sample_bank.qif
 	}
 	
@@ -378,7 +378,7 @@ import static org.mockito.Mockito.when;
 		void testImportFile_FileNotFound()
 	{
 		File nonExistentFile = new File("non_existent_file.ofx");
-		List<AccountingTransaction> result = FileImportService.importFile(nonExistentFile,
+		List<AccountingTransaction> result = FileImportService.importOFXorQIFFile(nonExistentFile,
 			this.mockTargetAccount, this.mockChartOfAccounts, this.mockLedger);
 		assertTrue(result.isEmpty());
 	}
@@ -388,7 +388,7 @@ import static org.mockito.Mockito.when;
 	{
 		File unsupportedFile = File.createTempFile("unsupported", ".txt");
 		unsupportedFile.deleteOnExit(); // Ensure cleanup
-		List<AccountingTransaction> result = FileImportService.importFile(unsupportedFile,
+		List<AccountingTransaction> result = FileImportService.importOFXorQIFFile(unsupportedFile,
 			this.mockTargetAccount, this.mockChartOfAccounts, this.mockLedger);
 		assertTrue(result.isEmpty());
 	}
