@@ -20,6 +20,7 @@ import nonprofitbookkeeping.model.impex.ExcelLedgerRow;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.ChartOfAccounts;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
@@ -326,4 +327,110 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
                 return results;
         }
 
+=======
+	@Override public void handle(ActionEvent event)
+	{
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Import File");
+		
+		ExtensionFilter ofxFilter = new ExtensionFilter("OFX files (*.ofx)", "*.ofx");
+		ExtensionFilter qfxFilter = new ExtensionFilter("QFX files (*.qfx)", "*.qfx");
+		ExtensionFilter qifFilter = new ExtensionFilter("QIF files (*.qif)", "*.qif");
+		ExtensionFilter allFilter = new ExtensionFilter("All files (*.*)", "*.*");
+		
+		fileChooser.getExtensionFilters().addAll(ofxFilter, qfxFilter, qifFilter, allFilter);
+		fileChooser.setSelectedExtensionFilter(ofxFilter);
+		
+		File selectedFile = fileChooser.showOpenDialog(this.ownerStage);
+		
+		if (selectedFile == null)
+		{
+			return; // User cancelled
+		}
+		
+		Company company = CurrentCompany.getCompany();
+		
+		if (company == null || company.getLedger() == null || company.getChartOfAccounts() == null)
+		{
+			Alert alert = new Alert(AlertType.ERROR, "No company open to import into.");
+			alert.initOwner(this.ownerStage);
+			alert.showAndWait();
+			return;
+		}
+		
+		if (company.getChartOfAccounts().getAccounts().isEmpty())
+		{
+			Alert alert =
+				new Alert(AlertType.ERROR, "Chart of Accounts is empty. Cannot import file.");
+			alert.initOwner(this.ownerStage);
+			alert.showAndWait();
+			return;
+		}
+		
+		java.util.List<String> accountNames = new java.util.ArrayList<>();
+		
+		for (Account a : company.getChartOfAccounts().getAccounts())
+		{
+			accountNames.add(a.getName());
+		}
+		
+		ChoiceDialog<String> acctDialog = new ChoiceDialog<>(accountNames.get(0), accountNames);
+		acctDialog.initOwner(this.ownerStage);
+		acctDialog.setTitle("Choose Account");
+		acctDialog.setHeaderText("Select account for imported transactions:");
+		java.util.Optional<String> acctNameOpt = acctDialog.showAndWait();
+		
+		if (acctNameOpt.isEmpty())
+		{
+			return; // user cancelled
+		}
+		
+		String acctName = acctNameOpt.get();
+		Account account = company.getChartOfAccounts().getAccountByName(acctName);
+		
+		if (account == null)
+		{
+			Alert alert = new Alert(AlertType.ERROR, "Account not found: " + acctName);
+			alert.initOwner(this.ownerStage);
+			alert.showAndWait();
+			return;
+		}
+		
+		// Import file (qfx, ofx)
+		java.util.List<AccountingTransaction> imported = 
+			FileImportService.importOFXorQIFFile(selectedFile,
+				account, 
+				company.getChartOfAccounts(), 
+				company.getLedger());
+		
+		if (imported.isEmpty())
+		{
+			Alert alert = new Alert(AlertType.INFORMATION,
+				"No transactions imported from " + selectedFile.getName());
+			alert.initOwner(this.ownerStage);
+			alert.showAndWait();
+			return;
+		}
+		
+		for (AccountingTransaction at : imported)
+		{
+			company.getLedger().getJournal().addTransaction(at);
+			new ReconciliationService().addTransactionToReconcile(at);
+		}
+		
+		try
+		{
+			CurrentCompany.persist();
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		
+		Alert alert = new Alert(AlertType.INFORMATION,
+			"Imported " + imported.size() + " transactions from " + selectedFile.getName());
+		alert.initOwner(this.ownerStage);
+		alert.showAndWait();
+	}
+	
 }

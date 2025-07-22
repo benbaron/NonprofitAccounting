@@ -262,7 +262,7 @@ public class AccountsActivityPanelFX extends BorderPane
                         return;
                 }
 
-                List<AccountingTransaction> imported = FileImportService.importFile(
+                List<AccountingTransaction> imported = FileImportService.importOFXorQIFFile(
                         file, account, company.getChartOfAccounts(), company.getLedger());
 
                 if (imported.isEmpty())
