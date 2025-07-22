@@ -8,16 +8,25 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ChoiceDialog;
+import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.Account;
+import nonprofitbookkeeping.model.AccountingTransaction;
+import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.service.FileImportService;
+import nonprofitbookkeeping.service.ReconciliationService;
 import java.io.File;
 
 /**
- * Handles the action of importing a file in a JavaFX application.
- * This class implements {@link EventHandler} for {@link ActionEvent} to trigger
- * the file import process. It opens a file dialog for the user to select a file
- * and currently acts as a placeholder, showing an alert with the selected file's details.
- * It requires an owner {@link Stage} to properly manage dialogs such as the {@link FileChooser}.
- * The current implementation identifies the selected file and its likely format but
- * does not perform the actual data import; that logic is noted as pending.
+ * Handles the action of importing a financial statement file in a JavaFX
+ * application.  The action prompts the user to choose a file (OFX, QFX or QIF),
+ * asks which account the transactions should be posted to, and then delegates to
+ * {@link FileImportService} to parse the file.  Imported transactions are added
+ * to the current company's ledger and queued for reconciliation.
+ *
+ * <p>This class implements {@link EventHandler} for {@link ActionEvent} and
+ * requires an owner {@link Stage} to properly manage dialogs such as the
+ * {@link FileChooser}.</p>
  */
 public class ImportFileActionFX implements EventHandler<ActionEvent>
 {
@@ -65,73 +74,103 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 	 * </p>
 	 * @param event The {@link ActionEvent} that triggered this handler (e.g., a menu item click).
 	 */
-	@Override public void handle(ActionEvent event)
-	{
-		FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Import File");
-		
-		ExtensionFilter ofxFilter = new ExtensionFilter("OFX files (*.ofx)", "*.ofx");
-		ExtensionFilter qfxFilter = new ExtensionFilter("QFX files (*.qfx)", "*.qfx");
-		ExtensionFilter qifFilter = new ExtensionFilter("QIF files (*.qif)", "*.qif");
-		ExtensionFilter allFilter = new ExtensionFilter("All files (*.*)", "*.*");
-		
-		fileChooser.getExtensionFilters().addAll(ofxFilter, qfxFilter, qifFilter, allFilter);
-		fileChooser.setSelectedExtensionFilter(ofxFilter); // Default to OFX
-		
-		File selectedFile = fileChooser.showOpenDialog(this.ownerStage);
-		
-		if (selectedFile != null)
-		{
-			ExtensionFilter selectedFilter = fileChooser.getSelectedExtensionFilter();
-			String chosenFormatString = "Unknown format";
-			String fileName = selectedFile.getName().toLowerCase();
-			
-			if (selectedFilter == ofxFilter || fileName.endsWith(".ofx"))
-			{
-				chosenFormatString = "OFX";
-			}
-			else if (selectedFilter == qfxFilter || fileName.endsWith(".qfx"))
-			{
-				chosenFormatString = "QFX";
-			}
-			else if (selectedFilter == qifFilter || fileName.endsWith(".qif"))
-			{
-				chosenFormatString = "QIF";
-			}
-			else if (selectedFilter == allFilter)
-			{
-				// Try to infer from extension if "All files" was chosen
-				if (fileName.endsWith(".ofx"))
-				{
-					chosenFormatString = "OFX";
-				}
-				else if (fileName.endsWith(".qfx"))
-				{
-					chosenFormatString = "QFX";
-				}
-				else if (fileName.endsWith(".qif"))
-				{
-					chosenFormatString = "QIF";
-				}
-				else
-				{
-					chosenFormatString = "selected file type"; // Generic if extension not matched
-				}
-			}
-			
-			Alert alert = new Alert(AlertType.INFORMATION);
-			alert.setTitle("Import File");
-			alert.setHeaderText("File Selected for Import");
-			alert.setContentText("File '" + selectedFile.getName() + "' selected for import as " +
-				chosenFormatString + ". Actual import logic is pending implementation.");
-			alert.initOwner(this.ownerStage);
-			alert.showAndWait();
-		}
-		else
-		{
-			// User cancelled the dialog, do nothing.
-		}
-		
-	}
+        @Override public void handle(ActionEvent event)
+        {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Import File");
+
+                ExtensionFilter ofxFilter = new ExtensionFilter("OFX files (*.ofx)", "*.ofx");
+                ExtensionFilter qfxFilter = new ExtensionFilter("QFX files (*.qfx)", "*.qfx");
+                ExtensionFilter qifFilter = new ExtensionFilter("QIF files (*.qif)", "*.qif");
+                ExtensionFilter allFilter = new ExtensionFilter("All files (*.*)", "*.*");
+
+                fileChooser.getExtensionFilters().addAll(ofxFilter, qfxFilter, qifFilter, allFilter);
+                fileChooser.setSelectedExtensionFilter(ofxFilter);
+
+                File selectedFile = fileChooser.showOpenDialog(this.ownerStage);
+
+                if (selectedFile == null)
+                {
+                        return; // User cancelled
+                }
+
+                Company company = CurrentCompany.getCompany();
+
+                if (company == null || company.getLedger() == null || company.getChartOfAccounts() == null)
+                {
+                        Alert alert = new Alert(AlertType.ERROR, "No company open to import into.");
+                        alert.initOwner(this.ownerStage);
+                        alert.showAndWait();
+                        return;
+                }
+
+                if (company.getChartOfAccounts().getAccounts().isEmpty())
+                {
+                        Alert alert = new Alert(AlertType.ERROR, "Chart of Accounts is empty. Cannot import file.");
+                        alert.initOwner(this.ownerStage);
+                        alert.showAndWait();
+                        return;
+                }
+
+                java.util.List<String> accountNames = new java.util.ArrayList<>();
+                for (Account a : company.getChartOfAccounts().getAccounts())
+                {
+                        accountNames.add(a.getName());
+                }
+
+                ChoiceDialog<String> acctDialog = new ChoiceDialog<>(accountNames.get(0), accountNames);
+                acctDialog.initOwner(this.ownerStage);
+                acctDialog.setTitle("Choose Account");
+                acctDialog.setHeaderText("Select account for imported transactions:");
+                java.util.Optional<String> acctNameOpt = acctDialog.showAndWait();
+
+                if (acctNameOpt.isEmpty())
+                {
+                        return; // user cancelled
+                }
+
+                String acctName = acctNameOpt.get();
+                Account account = company.getChartOfAccounts().getAccountByName(acctName);
+
+                if (account == null)
+                {
+                        Alert alert = new Alert(AlertType.ERROR, "Account not found: " + acctName);
+                        alert.initOwner(this.ownerStage);
+                        alert.showAndWait();
+                        return;
+                }
+
+                java.util.List<AccountingTransaction> imported = FileImportService.importFile(
+                                selectedFile, account, company.getChartOfAccounts(), company.getLedger());
+
+                if (imported.isEmpty())
+                {
+                        Alert alert = new Alert(AlertType.INFORMATION,
+                                "No transactions imported from " + selectedFile.getName());
+                        alert.initOwner(this.ownerStage);
+                        alert.showAndWait();
+                        return;
+                }
+
+                for (AccountingTransaction at : imported)
+                {
+                        company.getLedger().getJournal().addTransaction(at);
+                        new ReconciliationService().addTransactionToReconcile(at);
+                }
+
+                try
+                {
+                        CurrentCompany.persist();
+                }
+                catch (Exception ex)
+                {
+                        ex.printStackTrace();
+                }
+
+                Alert alert = new Alert(AlertType.INFORMATION,
+                        "Imported " + imported.size() + " transactions from " + selectedFile.getName());
+                alert.initOwner(this.ownerStage);
+                alert.showAndWait();
+        }
 	
 }
