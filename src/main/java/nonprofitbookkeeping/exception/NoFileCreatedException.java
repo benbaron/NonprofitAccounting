@@ -1,8 +1,8 @@
 /**
- * nonprofit-scaledger-ribbon.zip_expanded
- * NoFileCreatedException.java
+ * nonprofit-scaledger-ribbon.zip_expanded NoFileCreatedException.java
  * NoFileCreatedException
  */
+
 package nonprofitbookkeeping.exception;
 
 /**
@@ -23,7 +23,7 @@ public class NoFileCreatedException extends Exception
 		super(message); // Pass the message to the superclass constructor
 		this.reason = message;
 	}
-
+	
 	/**
 	 * The unique identifier for this serializable class.
 	 */

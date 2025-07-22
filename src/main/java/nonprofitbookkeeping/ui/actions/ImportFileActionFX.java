@@ -258,7 +258,8 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 	 */
 	private
 			List<AccountingTransaction>
-			convertExcelRows(	List<ExcelLedgerRow> rows, Account targetAccount,
+			convertExcelRows(	List<ExcelLedgerRow> rows, 
+			                 	Account targetAccount,
 								ChartOfAccounts chartOfAccounts) throws ActionCancelledException
 	{
 		List<AccountingTransaction> results = new ArrayList<>();

@@ -49,47 +49,47 @@ public class BudgetLineDialog extends JDialog
 	private List<Fund> availableFunds;
 	
 	/**
-     * Wrapper class for displaying {@link Account} objects in a JComboBox.
-     * Overrides {@code toString} to show account name and number.
-     * Equality is based on account number.
-     */
+	 * Wrapper class for displaying {@link Account} objects in a JComboBox.
+	 * Overrides {@code toString} to show account name and number.
+	 * Equality is based on account number.
+	 */
 	private static class AccountItem
 	{
 		/** The wrapped Account object. */
 		Account account;
 		
 		/**
-         * Constructs an AccountItem.
-         * @param account The {@link Account} to wrap.
-         */
+		 * Constructs an AccountItem.
+		 * @param account The {@link Account} to wrap.
+		 */
 		public AccountItem(Account account)
 		{
 			this.account = account;
 		}
 		
 		/**
-         * Gets the wrapped {@link Account}.
-         * @return The account.
-         */
+		 * Gets the wrapped {@link Account}.
+		 * @return The account.
+		 */
 		public Account getAccount()
 		{
 			return this.account;
 		}
 		
 		/**
-         * Returns a string representation for display in the JComboBox.
-         * @return Formatted string: "Account Name (AccountNumber)".
-         */
+		 * Returns a string representation for display in the JComboBox.
+		 * @return Formatted string: "Account Name (AccountNumber)".
+		 */
 		@Override public String toString()
 		{
 			return this.account.getName() + " (" + this.account.getAccountNumber() + ")";
 		}
 		
 		/**
-         * Compares this AccountItem to another object for equality based on account number.
-         * @param o The object to compare with.
-         * @return True if equal, false otherwise.
-         */
+		 * Compares this AccountItem to another object for equality based on account number.
+		 * @param o The object to compare with.
+		 * @return True if equal, false otherwise.
+		 */
 		@Override public boolean equals(Object o)
 		{
 			if (this == o)
@@ -101,9 +101,9 @@ public class BudgetLineDialog extends JDialog
 		}
 		
 		/**
-         * Generates a hash code based on the account number.
-         * @return The hash code.
-         */
+		 * Generates a hash code based on the account number.
+		 * @return The hash code.
+		 */
 		@Override public int hashCode()
 		{
 			return Objects.hash(this.account.getAccountNumber());
@@ -112,10 +112,10 @@ public class BudgetLineDialog extends JDialog
 	}
 	
 	/**
-     * Wrapper class for displaying {@link Fund} objects in a JComboBox.
-     * Includes a special constructor for a "None" option.
-     * Overrides {@code toString} for display. Equality is based on fund ID or display name for "None".
-     */
+	 * Wrapper class for displaying {@link Fund} objects in a JComboBox.
+	 * Includes a special constructor for a "None" option.
+	 * Overrides {@code toString} for display. Equality is based on fund ID or display name for "None".
+	 */
 	private static class FundItem
 	{
 		/** The wrapped Fund object; null for the "None" item. */
@@ -124,9 +124,9 @@ public class BudgetLineDialog extends JDialog
 		String displayName;
 		
 		/**
-         * Constructs a FundItem wrapping a {@link Fund}.
-         * @param fund The {@link Fund} to wrap.
-         */
+		 * Constructs a FundItem wrapping a {@link Fund}.
+		 * @param fund The {@link Fund} to wrap.
+		 */
 		public FundItem(Fund fund)
 		{
 			this.fund = fund;
@@ -134,10 +134,10 @@ public class BudgetLineDialog extends JDialog
 		}
 		
 		/**
-         * Constructs a FundItem for a special display name (e.g., "None").
-         * The underlying fund will be null.
-         * @param displayName The string to display (e.g., "None").
-         */
+		 * Constructs a FundItem for a special display name (e.g., "None").
+		 * The underlying fund will be null.
+		 * @param displayName The string to display (e.g., "None").
+		 */
 		public FundItem(String displayName)
 		{
 			this.displayName = displayName;
@@ -145,39 +145,39 @@ public class BudgetLineDialog extends JDialog
 		}
 		
 		/**
-         * Gets the wrapped {@link Fund}.
-         * @return The fund, or null if this item represents an option like "None".
-         */
+		 * Gets the wrapped {@link Fund}.
+		 * @return The fund, or null if this item represents an option like "None".
+		 */
 		public Fund getFund()
 		{
 			return this.fund;
 		}
 		
 		/**
-         * Gets the ID of the wrapped fund.
-         * @return The fund ID, or null if there is no underlying fund.
-         */
+		 * Gets the ID of the wrapped fund.
+		 * @return The fund ID, or null if there is no underlying fund.
+		 */
 		public String getFundId()
 		{
 			return this.fund != null ? this.fund.getFundId() : null;
 		}
 		
 		/**
-         * Returns the display name of this item.
-         * @return The display name.
-         */
+		 * Returns the display name of this item.
+		 * @return The display name.
+		 */
 		@Override public String toString()
 		{
 			return this.displayName;
 		}
 		
 		/**
-         * Compares this FundItem to another object for equality.
-         * If both items wrap actual funds, comparison is by fund ID.
-         * Otherwise, comparison is by display name (to handle "None" item correctly).
-         * @param o The object to compare with.
-         * @return True if equal, false otherwise.
-         */
+		 * Compares this FundItem to another object for equality.
+		 * If both items wrap actual funds, comparison is by fund ID.
+		 * Otherwise, comparison is by display name (to handle "None" item correctly).
+		 * @param o The object to compare with.
+		 * @return True if equal, false otherwise.
+		 */
 		@Override public boolean equals(Object o)
 		{
 			if (this == o)
@@ -190,14 +190,16 @@ public class BudgetLineDialog extends JDialog
 			{
 				return Objects.equals(this.fund.getFundId(), that.fund.getFundId());
 			}
-			// Compare by displayName if one or both funds are null (e.g., "None" item vs. another "None" or a real fund)
+			
+			// Compare by displayName if one or both funds are null (e.g., "None" item vs.
+			// another "None" or a real fund)
 			return Objects.equals(this.displayName, that.displayName);
 		}
 		
 		/**
-         * Generates a hash code based on the fund ID if available, otherwise on the display name.
-         * @return The hash code.
-         */
+		 * Generates a hash code based on the fund ID if available, otherwise on the display name.
+		 * @return The hash code.
+		 */
 		@Override public int hashCode()
 		{
 			if (this.fund != null)
@@ -208,21 +210,22 @@ public class BudgetLineDialog extends JDialog
 	}
 	
 	/**
-     * Constructs a {@code BudgetLineDialog}.
-     *
-     * @param owner The parent {@link Dialog} that owns this dialog.
-     * @param title The title of the dialog window.
-     * @param coa The {@link ChartOfAccounts} used to populate the account selection ComboBox.
-     * @param funds A list of available {@link Fund}s to populate the fund selection ComboBox. Can be null or empty.
-     * @param existingLine The {@link BudgetLine} to edit. If null, the dialog is configured for creating a new budget line.
-     */
+	 * Constructs a {@code BudgetLineDialog}.
+	 *
+	 * @param owner The parent {@link Dialog} that owns this dialog.
+	 * @param title The title of the dialog window.
+	 * @param coa The {@link ChartOfAccounts} used to populate the account selection ComboBox.
+	 * @param funds A list of available {@link Fund}s to populate the fund selection ComboBox. Can be null or empty.
+	 * @param existingLine The {@link BudgetLine} to edit. If null, the dialog is configured for creating a new budget line.
+	 */
 	public BudgetLineDialog(Dialog owner, String title, ChartOfAccounts coa, List<Fund> funds,
 		BudgetLine existingLine)
 	{
 		super(owner, title, true); // Modal dialog
 		this.chartOfAccounts = Objects.requireNonNull(coa, "ChartOfAccounts cannot be null.");
 		this.availableFunds = funds != null ? funds : List.of(); // Ensure non-null list
-		this.budgetLine = (existingLine != null) ? existingLine : new BudgetLine(); // Use existing or create new
+		this.budgetLine = (existingLine != null) ? existingLine : new BudgetLine(); // Use existing
+																					// or create new
 		
 		// Ensure a new budget line has a default periodicity if not set
 		if (this.budgetLine.getPeriodicity() == null)
@@ -241,37 +244,39 @@ public class BudgetLineDialog extends JDialog
 	}
 	
 	/**
-     * Initializes the UI components of the dialog, such as JComboBoxes and JTextFields.
-     * Populates account and fund selectors.
-     */
+	 * Initializes the UI components of the dialog, such as JComboBoxes and JTextFields.
+	 * Populates account and fund selectors.
+	 */
 	private void initComponents()
 	{
 		// Populate Account ComboBox
-		Vector<AccountItem> accountItems = this.chartOfAccounts.getAccounts().stream()
-			.filter(Objects::nonNull) // Filter out null accounts
-			.sorted(Comparator.comparing(Account::getName, String.CASE_INSENSITIVE_ORDER)) // Sort by name
-			.map(AccountItem::new)
-			.collect(Collectors.toCollection(Vector::new));
+		Vector<AccountItem> accountItems =
+			this.chartOfAccounts.getAccounts().stream().filter(Objects::nonNull) // Filter out null
+																					// accounts
+				.sorted(Comparator.comparing(Account::getName, String.CASE_INSENSITIVE_ORDER)) // Sort
+																								// by
+																								// name
+				.map(AccountItem::new).collect(Collectors.toCollection(Vector::new));
 		this.cmbAccount = new JComboBox<>(accountItems);
 		
 		this.txtTotalAmount = new JTextField(15);
-		this.cmbPeriodicity = new JComboBox<>(Periodicity.values()); // Populate with all enum values
+		this.cmbPeriodicity = new JComboBox<>(Periodicity.values()); // Populate with all enum
+																		// values
 		
 		// Populate Fund ComboBox
 		Vector<FundItem> fundItems = new Vector<>();
 		fundItems.add(new FundItem("None")); // Add "None" option for no specific fund
-		this.availableFunds.stream()
-			.filter(Objects::nonNull) // Filter out null funds
-			.sorted(Comparator.comparing(Fund::getName, String.CASE_INSENSITIVE_ORDER)) // Sort by name
-			.map(FundItem::new)
-			.forEach(fundItems::add);
+		this.availableFunds.stream().filter(Objects::nonNull) // Filter out null funds
+			.sorted(Comparator.comparing(Fund::getName, String.CASE_INSENSITIVE_ORDER)) // Sort by
+																						// name
+			.map(FundItem::new).forEach(fundItems::add);
 		this.cmbFund = new JComboBox<>(fundItems);
 	}
 	
 	/**
-     * Arranges the UI components on the dialog panel using {@link GridBagLayout}.
-     * This includes labels, input fields (JComboBoxes, JTextField), and action buttons (OK, Cancel).
-     */
+	 * Arranges the UI components on the dialog panel using {@link GridBagLayout}.
+	 * This includes labels, input fields (JComboBoxes, JTextField), and action buttons (OK, Cancel).
+	 */
 	private void layoutComponents()
 	{
 		setLayout(new GridBagLayout());
@@ -341,9 +346,9 @@ public class BudgetLineDialog extends JDialog
 	}
 	
 	/**
-     * Populates the dialog's input fields with data from the current {@link #budgetLine} object.
-     * This is used when editing an existing budget line or to set initial default values.
-     */
+	 * Populates the dialog's input fields with data from the current {@link #budgetLine} object.
+	 * This is used when editing an existing budget line or to set initial default values.
+	 */
 	private void populateFields()
 	{
 		
@@ -351,31 +356,38 @@ public class BudgetLineDialog extends JDialog
 		{
 			// Find the Account object corresponding to the accountId and select it
 			Account acc = this.chartOfAccounts.getAccount(this.budgetLine.getAccountId());
+			
 			if (acc != null)
 			{
 				// AccountItem's equals/hashCode must be correctly implemented for this to work
 				this.cmbAccount.setSelectedItem(new AccountItem(acc));
-			} else {
-                 this.cmbAccount.setSelectedIndex(-1); // No account selected or account not found
-            }
-		} else {
-            this.cmbAccount.setSelectedIndex(-1); // No account pre-selected
-        }
+			}
+			else
+			{
+				this.cmbAccount.setSelectedIndex(-1); // No account selected or account not found
+			}
+			
+		}
+		else
+		{
+			this.cmbAccount.setSelectedIndex(-1); // No account pre-selected
+		}
 		
 		this.txtTotalAmount.setText(this.budgetLine.getTotalBudgetedAmount() != null ?
 			this.budgetLine.getTotalBudgetedAmount().toPlainString() : ""); // Handle null amount
-		this.cmbPeriodicity.setSelectedItem(this.budgetLine.getPeriodicity()); // Handles null by selecting first if not found
+		this.cmbPeriodicity.setSelectedItem(this.budgetLine.getPeriodicity()); // Handles null by
+																				// selecting first
+																				// if not found
 		
 		// Select the fund in ComboBox
 		if (this.budgetLine.getFundId() != null)
 		{
 			this.availableFunds.stream()
-				.filter(f -> this.budgetLine.getFundId().equals(f.getFundId()))
-				.findFirst()
-				.ifPresentOrElse(
-                    fund -> this.cmbFund.setSelectedItem(new FundItem(fund)),
-                    () -> this.cmbFund.setSelectedItem(new FundItem("None")) // Fallback if fund ID not in list
-                );
+				.filter(f -> this.budgetLine.getFundId().equals(f.getFundId())).findFirst()
+				.ifPresentOrElse(fund -> this.cmbFund.setSelectedItem(new FundItem(fund)),
+					() -> this.cmbFund.setSelectedItem(new FundItem("None")) // Fallback if fund ID
+																				// not in list
+				);
 		}
 		else
 		{
@@ -385,23 +397,24 @@ public class BudgetLineDialog extends JDialog
 	}
 	
 	/**
-     * Attaches listeners to UI components.
-     * Currently, this method is a placeholder and does not attach any listeners.
-     * It could be used for dynamic interactions, such as enabling/disabling fields
-     * based on selections in other fields, before the "OK" button is pressed.
-     */
+	 * Attaches listeners to UI components.
+	 * Currently, this method is a placeholder and does not attach any listeners.
+	 * It could be used for dynamic interactions, such as enabling/disabling fields
+	 * based on selections in other fields, before the "OK" button is pressed.
+	 */
 	private void attachListeners()
 	{
 		// Listeners can be added if dynamic interactions are needed before OK is
-		// pressed (e.g., validating input on the fly, changing available options based on selections).
+		// pressed (e.g., validating input on the fly, changing available options based
+		// on selections).
 	}
 	
 	/**
-     * Validates the input fields, saves the data from the dialog fields into the
-     * {@link #budgetLine} object, sets the {@code saved} flag to true, and closes the dialog.
-     * Displays error messages using {@link JOptionPane} if validation fails for account selection
-     * or total amount (empty, non-numeric, or negative).
-     */
+	 * Validates the input fields, saves the data from the dialog fields into the
+	 * {@link #budgetLine} object, sets the {@code saved} flag to true, and closes the dialog.
+	 * Displays error messages using {@link JOptionPane} if validation fails for account selection
+	 * or total amount (empty, non-numeric, or negative).
+	 */
 	private void saveAndClose()
 	{
 		AccountItem selectedAccountItem = (AccountItem) this.cmbAccount.getSelectedItem();
@@ -445,8 +458,9 @@ public class BudgetLineDialog extends JDialog
 			return;
 		}
 		
-		this.budgetLine.setAccountId(selectedAccount.getAccountNumber()); // Assuming getAccountNumber()
-																		// is the ID
+		this.budgetLine.setAccountId(selectedAccount.getAccountNumber()); // Assuming
+																			// getAccountNumber()
+																			// is the ID
 		this.budgetLine.setAccountName(selectedAccount.getName()); // Store name for convenience
 		this.budgetLine.setTotalBudgetedAmount(totalAmount);
 		this.budgetLine.setPeriodicity((Periodicity) this.cmbPeriodicity.getSelectedItem());
@@ -470,21 +484,21 @@ public class BudgetLineDialog extends JDialog
 	}
 	
 	/**
-     * Checks if the dialog was saved (i.e., the "OK" button was clicked and data was successfully saved).
-     *
-     * @return {@code true} if the dialog data was saved, {@code false} otherwise (e.g., if cancelled).
-     */
+	 * Checks if the dialog was saved (i.e., the "OK" button was clicked and data was successfully saved).
+	 *
+	 * @return {@code true} if the dialog data was saved, {@code false} otherwise (e.g., if cancelled).
+	 */
 	public boolean isSaved()
 	{
 		return this.saved;
 	}
 	
 	/**
-     * Gets the {@link BudgetLine} object that was created or edited by this dialog.
-     * This object contains the data entered by the user if the dialog was saved.
-     *
-     * @return The {@link BudgetLine} instance.
-     */
+	 * Gets the {@link BudgetLine} object that was created or edited by this dialog.
+	 * This object contains the data entered by the user if the dialog was saved.
+	 *
+	 * @return The {@link BudgetLine} instance.
+	 */
 	public BudgetLine getBudgetLine()
 	{
 		return this.budgetLine;

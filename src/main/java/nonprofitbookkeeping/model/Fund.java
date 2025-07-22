@@ -18,10 +18,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * accounts, and a calculated balance derived from these accounts.
  * This class uses Lombok for boilerplate code like getters, setters, and constructors.
  */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor 
-public class Fund
+@Data @AllArgsConstructor @NoArgsConstructor public class Fund
 {
 	
 	/** The name of the fund, serving as its primary identifier. */
@@ -48,7 +45,7 @@ public class Fund
 		this.balance = BigDecimal.ZERO;
 	}
 	
-
+	
 	/**  
 	 * Constructor Fund
 	 */
@@ -56,8 +53,8 @@ public class Fund
 	{
 		// TODO Auto-generated constructor stub
 	}
-
-
+	
+	
 	/**
 	 * Gets the name of the fund.
 	 * @return The name of the fund.
@@ -211,10 +208,7 @@ public class Fund
 	
 	@Override public String toString()
 	{
-		return "Fund{" +
-			"name='" + this.name + '\'' +
-			", balance=" + this.balance +
-			'}';
+		return "Fund{" + "name='" + this.name + '\'' + ", balance=" + this.balance + '}';
 	}
 	
 	/**
@@ -231,18 +225,18 @@ public class Fund
 	/**
 	 * @param string
 	 */
-        public void setName(String string)
-        {
-                this.name = string;
-        }
+	public void setName(String string)
+	{
+		this.name = string;
+	}
 	
 	/**
 	 * @param string
 	 */
-        public void setFundId(String string)
-        {
-                this.name = string;
-        }
+	public void setFundId(String string)
+	{
+		this.name = string;
+	}
 	
 	
 }
