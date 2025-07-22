@@ -177,6 +177,7 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 		
 		List<AccountingTransaction> imported = new ArrayList<>();
 		
+		// Use the excel file importer
 		if ("Excel (.xlsx)".equals(chosenFormat))
 		{
 			
