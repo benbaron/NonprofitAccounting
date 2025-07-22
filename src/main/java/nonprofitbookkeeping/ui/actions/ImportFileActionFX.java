@@ -14,8 +14,23 @@ import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.service.FileImportService;
+import nonprofitbookkeeping.service.ExcelLedgerImportService;
 import nonprofitbookkeeping.service.ReconciliationService;
+import nonprofitbookkeeping.model.impex.ExcelLedgerRow;
+import nonprofitbookkeeping.model.AccountSide;
+import nonprofitbookkeeping.model.AccountingEntry;
+import nonprofitbookkeeping.model.ChartOfAccounts;
+
 import java.io.File;
+import java.io.IOException;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Handles the action of importing a financial statement file in a JavaFX
@@ -74,6 +89,245 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 	 * </p>
 	 * @param event The {@link ActionEvent} that triggered this handler (e.g., a menu item click).
 	 */
+        @Override public void handle(ActionEvent event)
+        {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Import File");
+
+                ExtensionFilter ofxFilter = new ExtensionFilter("OFX/QFX files", "*.ofx", "*.qfx");
+                ExtensionFilter qifFilter = new ExtensionFilter("QIF files", "*.qif");
+                ExtensionFilter xlsxFilter = new ExtensionFilter("Excel files", "*.xlsx");
+                ExtensionFilter allFilter = new ExtensionFilter("All files", "*.*");
+
+                fileChooser.getExtensionFilters().addAll(ofxFilter, qifFilter, xlsxFilter, allFilter);
+                fileChooser.setSelectedExtensionFilter(ofxFilter);
+
+                File selectedFile = fileChooser.showOpenDialog(this.ownerStage);
+
+                if (selectedFile == null)
+                {
+                        return; // User cancelled
+                }
+
+                List<String> formatOptions = new ArrayList<>();
+                formatOptions.add("OFX/QFX");
+                formatOptions.add("QIF");
+                formatOptions.add("Excel (.xlsx)");
+
+                ChoiceDialog<String> formatDialog = new ChoiceDialog<>(formatOptions.get(0), formatOptions);
+                formatDialog.initOwner(this.ownerStage);
+                formatDialog.setTitle("Import Format");
+                formatDialog.setHeaderText("Select the file format to import as:");
+                Optional<String> formatOpt = formatDialog.showAndWait();
+
+                if (formatOpt.isEmpty())
+                {
+                        return; // user cancelled
+                }
+                String chosenFormat = formatOpt.get();
+
+                Company company = CurrentCompany.getCompany();
+
+                if (company == null || company.getLedger() == null || company.getChartOfAccounts() == null)
+                {
+                        Alert alert = new Alert(AlertType.ERROR, "No company open to import into.");
+                        alert.initOwner(this.ownerStage);
+                        alert.showAndWait();
+                        return;
+                }
+
+                if (company.getChartOfAccounts().getAccounts().isEmpty())
+                {
+                        Alert alert = new Alert(AlertType.ERROR, "Chart of Accounts is empty. Cannot import file.");
+                        alert.initOwner(this.ownerStage);
+                        alert.showAndWait();
+                        return;
+                }
+
+                List<String> accountNames = new ArrayList<>();
+                for (Account a : company.getChartOfAccounts().getAccounts())
+                {
+                        accountNames.add(a.getName());
+                }
+
+                ChoiceDialog<String> acctDialog = new ChoiceDialog<>(accountNames.get(0), accountNames);
+                acctDialog.initOwner(this.ownerStage);
+                acctDialog.setTitle("Choose Account");
+                acctDialog.setHeaderText("Select account for imported transactions:");
+                Optional<String> acctNameOpt = acctDialog.showAndWait();
+
+                if (acctNameOpt.isEmpty())
+                {
+                        return; // user cancelled
+                }
+
+                String acctName = acctNameOpt.get();
+                Account account = company.getChartOfAccounts().getAccountByName(acctName);
+
+                if (account == null)
+                {
+                        Alert alert = new Alert(AlertType.ERROR, "Account not found: " + acctName);
+                        alert.initOwner(this.ownerStage);
+                        alert.showAndWait();
+                        return;
+                }
+
+                List<AccountingTransaction> imported = new ArrayList<>();
+
+                if ("Excel (.xlsx)".equals(chosenFormat))
+                {
+                        try
+                        {
+                                List<ExcelLedgerRow> rows = ExcelLedgerImportService.importSpreadsheet(selectedFile);
+                                imported.addAll(convertExcelRows(rows, account, company.getChartOfAccounts()));
+                        }
+                        catch (IOException e)
+                        {
+                                Alert alert = new Alert(AlertType.ERROR,
+                                                "Error reading Excel file: " + e.getMessage());
+                                alert.initOwner(this.ownerStage);
+                                alert.showAndWait();
+                                return;
+                        }
+                }
+                else
+                {
+                        imported = FileImportService.importFile(
+                                        selectedFile, account,
+                                        company.getChartOfAccounts(), company.getLedger());
+                }
+
+                if (imported.isEmpty())
+                {
+                        Alert alert = new Alert(AlertType.INFORMATION,
+                                "No transactions imported from " + selectedFile.getName());
+                        alert.initOwner(this.ownerStage);
+                        alert.showAndWait();
+                        return;
+                }
+
+                for (AccountingTransaction at : imported)
+                {
+                        company.getLedger().getJournal().addTransaction(at);
+                        new ReconciliationService().addTransactionToReconcile(at);
+                }
+
+                try
+                {
+                        CurrentCompany.persist();
+                }
+                catch (Exception ex)
+                {
+                        ex.printStackTrace();
+                }
+
+        Alert alert = new Alert(AlertType.INFORMATION,
+                        "Imported " + imported.size() + " transactions from " + selectedFile.getName());
+                alert.initOwner(this.ownerStage);
+                alert.showAndWait();
+        }
+
+        /**
+         * Converts rows read from {@link ExcelLedgerImportService} into simple
+         * {@link AccountingTransaction} instances posted to the chosen account
+         * and the "needs categorization" suspense account.
+         */
+        private static List<AccountingTransaction> convertExcelRows(
+                        List<ExcelLedgerRow> rows,
+                        Account targetAccount,
+                        ChartOfAccounts chartOfAccounts)
+        {
+                List<AccountingTransaction> results = new ArrayList<>();
+                if (rows == null || rows.isEmpty())
+                {
+                        return results;
+                }
+
+                Account suspense = chartOfAccounts.getAccount(
+                                FileImportService.NEEDS_CATEGORIZATION_ACCOUNT_NUMBER);
+
+                if (suspense == null)
+                {
+                        throw new IllegalArgumentException(
+                                        "'Needs Categorization' account not found");
+                }
+
+                for (ExcelLedgerRow row : rows)
+                {
+                        if (row == null || row.getAllocations() == null)
+                        {
+                                continue;
+                        }
+
+                        String memo = row.getMemoNotes();
+                        if (memo == null || memo.isBlank())
+                        {
+                                memo = row.getToFrom();
+                        }
+
+                        for (ExcelLedgerRow.Allocation alloc : row.getAllocations())
+                        {
+                                if (alloc.getAmount() == null)
+                                {
+                                        continue;
+                                }
+
+                                Set<AccountingEntry> entries = new HashSet<>();
+                                AccountSide targetSide;
+                                AccountSide suspenseSide;
+                                if (targetAccount.getIncreaseSide() == AccountSide.DEBIT)
+                                {
+                                        if (alloc.getAmount().compareTo(java.math.BigDecimal.ZERO) >= 0)
+                                        {
+                                                targetSide = AccountSide.DEBIT;
+                                                suspenseSide = AccountSide.CREDIT;
+                                        }
+                                        else
+                                        {
+                                                targetSide = AccountSide.CREDIT;
+                                                suspenseSide = AccountSide.DEBIT;
+                                        }
+                                }
+                                else
+                                {
+                                        if (alloc.getAmount().compareTo(java.math.BigDecimal.ZERO) >= 0)
+                                        {
+                                                targetSide = AccountSide.CREDIT;
+                                                suspenseSide = AccountSide.DEBIT;
+                                        }
+                                        else
+                                        {
+                                                targetSide = AccountSide.DEBIT;
+                                                suspenseSide = AccountSide.CREDIT;
+                                        }
+                                }
+
+                                java.math.BigDecimal amt = alloc.getAmount().abs();
+                                entries.add(new AccountingEntry(amt,
+                                                targetAccount.getAccountNumber(), targetSide,
+                                                targetAccount.getName()));
+                                entries.add(new AccountingEntry(amt,
+                                                suspense.getAccountNumber(), suspenseSide,
+                                                suspense.getName()));
+
+                                AccountingTransaction tx = new AccountingTransaction(
+                                                targetAccount,
+                                                entries,
+                                                new HashMap<>(),
+                                                Instant.now().toEpochMilli());
+                                if (row.getDate() != null)
+                                {
+                                        tx.setDate(row.getDate().toString());
+                                }
+                                tx.setMemo(memo);
+                                results.add(tx);
+                        }
+                }
+
+                return results;
+        }
+
+=======
 	@Override public void handle(ActionEvent event)
 	{
 		FileChooser fileChooser = new FileChooser();
