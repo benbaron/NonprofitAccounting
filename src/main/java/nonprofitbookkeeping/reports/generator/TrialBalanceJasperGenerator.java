@@ -4,6 +4,11 @@ package nonprofitbookkeeping.reports.generator;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Ledger;
+import nonprofitbookkeeping.model.Account;
+import nonprofitbookkeeping.model.AccountSide;
+import nonprofitbookkeeping.model.AccountType;
+import nonprofitbookkeeping.model.AccountingEntry;
+import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.reports.datasource.TrialBalanceRowBean;
@@ -13,14 +18,18 @@ import nonprofitbookkeeping.exception.NoFileCreatedException;
 
 
 import java.io.File;
-import java.io.FileNotFoundException; 
+import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -93,7 +102,7 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 		Ledger ledger = company.getLedger();
 		ChartOfAccounts coa = company.getChartOfAccounts();
 		
-		return this.reportService.prepareTrialBalanceJasperData(this.reportContext, ledger, coa);
+		return TrialBalanceJasperGenerator.prepareTrialBalanceJasperData(this.reportContext, ledger, coa);
 	}
 	
 	/**
@@ -145,8 +154,8 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 		// It seems the JRXML uses lowercase for these specific ones. Let's ensure they
 		// are provided.
 		params.put("reporttitle", "Trial Balance"); // Specific for JRXML
-		params.put("dateToday", LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)); 
-		params.put("companyname", companyName); 
+		params.put("dateToday", LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE));
+		params.put("companyname", companyName);
 		
 		return params;
 	}
@@ -240,6 +249,217 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 		}
 		
 		return generatedFile;
+	}
+
+	/**
+	 * Prepares a list of {@link TrialBalanceRowBean} objects for use as a JasperReports data source.
+	 * This method calculates the debit and credit balances for each account in the
+	 * {@link ChartOfAccounts} as of the end date specified in the {@link ReportContext}.
+	 * It considers transactions within the optional start and end date range and can filter by fund IDs.
+	 *
+	 * @param context The {@link ReportContext} containing report criteria (end date, optional start date, fund IDs).
+	 * @param ledger The {@link Ledger} containing all accounting transactions.
+	 * @param chartOfAccounts The {@link ChartOfAccounts} providing the list of accounts.
+	 * @return A list of {@link TrialBalanceRowBean}s for the report. Returns an empty list if
+	 *         required data (end date, ledger, COA) is missing.
+	 */
+	public static
+			List<TrialBalanceRowBean> prepareTrialBalanceJasperData(ReportContext context,
+																	nonprofitbookkeeping.model.Ledger ledger,
+																	nonprofitbookkeeping.model.ChartOfAccounts chartOfAccounts)
+	{
+		
+		List<TrialBalanceRowBean> reportData = new ArrayList<>();
+		
+		if (context.getEndDate() == null || ledger == null || chartOfAccounts == null)
+		{
+			ReportService.LOGGER.warning("End date, ledger, or COA missing for Trial Balance data preparation.");
+			return reportData; // Return empty list
+		}
+		
+		LocalDate reportEndDate = context.getEndDate();
+		long reportEndDateMillisInclusive =
+			reportEndDate.plusDays(1).atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli(); // Exclusive
+																								// end
+		
+		long reportStartDateMillis = 0; // Default to include all transactions up to end
+										// date if start date is null
+		
+		if (context.getStartDate() != null)
+		{
+			reportStartDateMillis =
+				context.getStartDate().atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
+		}
+		
+		List<String> selectedFundIds = context.getFundIds();
+		boolean applyFundFilter = (selectedFundIds != null && !selectedFundIds.isEmpty());
+		
+		List<Account> accountsToList = chartOfAccounts.getAccounts();
+		
+		if (accountsToList == null)
+		{
+			accountsToList = new ArrayList<>(); // Ensure non-null
+		}
+		
+		// Sort accounts by account number for consistent report output
+		accountsToList.sort(Comparator.comparing(Account::getAccountNumber,
+			Comparator.nullsLast(String::compareTo)));
+		
+		
+		for (Account account : accountsToList)
+		{
+			
+			if (account == null || account.getAccountNumber() == null ||
+				account.getName() == null || account.getAccountType() == null)
+			{
+				ReportService.LOGGER.warning("TB Data: Skipping account with missing critical information: " +
+					(account != null ? account.getAccountNumber() : "null account object"));
+				continue;
+			}
+			
+			if (applyFundFilter &&
+				!ReportService.doesAccountMatchFunds(account, selectedFundIds, chartOfAccounts))
+			{
+				continue; // Skip account if it doesn't match fund filter
+			}
+			
+			BigDecimal accountBalance =
+				account.getOpeningBalance() != null ? account.getOpeningBalance() : BigDecimal.ZERO;
+			
+			List<AccountingTransaction> transactions = ledger.getTransactions();
+			
+			if (transactions != null)
+			{
+				
+				for (AccountingTransaction transaction : transactions)
+				{
+					
+					if (transaction == null ||
+						transaction.getBookingDateTimestamp() >= reportEndDateMillisInclusive)
+					{ // Strictly before end of end date + 1 day
+						continue;
+					}
+					
+					// Apply start date filter for transactions if start date is specified
+					if (reportStartDateMillis > 0 &&
+						transaction.getBookingDateTimestamp() < reportStartDateMillis)
+					{
+						continue;
+					}
+					
+					if (transaction.getEntries() == null)
+						continue;
+					
+					for (AccountingEntry entry : transaction.getEntries())
+					{
+						
+						if (entry == null ||
+							!account.getAccountNumber().equals(entry.getAccountNumber()) ||
+							entry.getAmount() == null)
+						{
+							continue;
+						}
+						
+						// Fund filtering for transactions: Already handled by filtering the
+						// account itself.
+						// If the account is relevant to the selected funds, all its
+						// transactions contribute to its balance for this filtered view.
+						
+						AccountType type = account.getAccountType();
+						AccountSide increaseSide = account.getIncreaseSide();
+						
+						if (type == null || increaseSide == null)
+						{
+							ReportService.LOGGER.warning("TB Data: Account " + account.getAccountNumber() +
+								" missing type or increase side.");
+							continue;
+						}
+						
+						if (increaseSide == AccountSide.DEBIT)
+						{ // For ASSET and EXPENSE typically
+							
+							if (entry.getAccountSide() == AccountSide.DEBIT)
+							{
+								accountBalance = accountBalance.add(entry.getAmount());
+							}
+							else
+							{ // CREDIT
+								accountBalance = accountBalance.subtract(entry.getAmount());
+							}
+							
+						}
+						else
+						{ // increaseSide is CREDIT (for LIABILITY, EQUITY, INCOME
+							// typically)
+							
+							if (entry.getAccountSide() == AccountSide.CREDIT)
+							{
+								accountBalance = accountBalance.add(entry.getAmount());
+							}
+							else
+							{ // DEBIT
+								accountBalance = accountBalance.subtract(entry.getAmount());
+							}
+							
+						}
+						
+					}
+					
+				}
+				
+			}
+			
+			BigDecimal debitAmount = BigDecimal.ZERO;
+			BigDecimal creditAmount = BigDecimal.ZERO;
+			
+			AccountType type = account.getAccountType();
+			AccountSide increaseSide = account.getIncreaseSide();
+			if (type == null || increaseSide == null)
+				continue; // Already logged above
+				
+			if (increaseSide == AccountSide.DEBIT)
+			{ // ASSET, EXPENSE
+				
+				if (accountBalance.compareTo(BigDecimal.ZERO) >= 0)
+				{
+					debitAmount = accountBalance;
+				}
+				else
+				{ // Negative balance for a debit-normal account implies a credit nature in
+					// TB
+					creditAmount = accountBalance.abs();
+				}
+				
+			}
+			else
+			{ // Credit-normal accounts: LIABILITY, EQUITY, INCOME
+				
+				if (accountBalance.compareTo(BigDecimal.ZERO) >= 0)
+				{
+					creditAmount = accountBalance;
+				}
+				else
+				{ // Negative balance for a credit-normal account implies a debit nature in
+					// TB
+					debitAmount = accountBalance.abs();
+				}
+				
+			}
+			
+			// Only include accounts with non-zero balances or if they had an opening
+			// balance (even if ending is zero)
+			if (debitAmount.compareTo(BigDecimal.ZERO) != 0 ||
+				creditAmount.compareTo(BigDecimal.ZERO) != 0 ||
+				(account.getOpeningBalance() != null &&
+					account.getOpeningBalance().compareTo(BigDecimal.ZERO) != 0))
+			{
+				reportData.add(new TrialBalanceRowBean(account.getAccountNumber(),
+					account.getName(), debitAmount, creditAmount));
+			}
+			
+		}
+		
+		return reportData;
 	}
 	
 }

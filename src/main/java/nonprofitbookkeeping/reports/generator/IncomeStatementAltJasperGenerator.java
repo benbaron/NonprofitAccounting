@@ -3,6 +3,7 @@ package nonprofitbookkeeping.reports.generator;
 
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import nonprofitbookkeeping.reports.datasource.IncomeStatementAltRowBean;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,10 +20,72 @@ import java.util.Map;
  */
 public class IncomeStatementAltJasperGenerator extends AbstractReportGenerator
 {
-	
-	@Override protected List<?> getReportData()
+	/**
+	 * 
+	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData()
+	 */
+	@Override protected List<IncomeStatementAltRowBean> getReportData()
 	{
-		return Collections.emptyList(); // FIXME
+		nonprofitbookkeeping.model.Company company =
+			nonprofitbookkeeping.model.CurrentCompany.getCompany();
+		
+		if (company == null || company.getLedger() == null || company.getChartOfAccounts() == null)
+		{
+			return Collections.emptyList();
+		}
+		
+		java.util.Map<String, java.math.BigDecimal> totals = new java.util.HashMap<>();
+		
+		for (nonprofitbookkeeping.model.AccountingTransaction tx : company.getLedger()
+			.getTransactions())
+		{
+			if (tx == null || tx.getEntries() == null)
+				continue;
+			
+			for (nonprofitbookkeeping.model.AccountingEntry entry : tx.getEntries())
+			{
+				if (entry == null || entry.getAmount() == null)
+					continue;
+				
+				nonprofitbookkeeping.model.Account acct =
+					company.getChartOfAccounts().getAccount(entry.getAccountNumber());
+				
+				if (acct == null || acct.getAccountType() == null)
+					continue;
+				
+				if (acct.getAccountType() == nonprofitbookkeeping.model.AccountType.INCOME ||
+					acct.getAccountType() == nonprofitbookkeeping.model.AccountType.EXPENSE)
+				{
+					java.math.BigDecimal amt =
+						totals.getOrDefault(acct.getName(), java.math.BigDecimal.ZERO);
+					
+					if ((acct.getAccountType() == nonprofitbookkeeping.model.AccountType.INCOME &&
+						entry.getAccountSide() == nonprofitbookkeeping.model.AccountSide.CREDIT) ||
+						(acct.getAccountType() == nonprofitbookkeeping.model.AccountType.EXPENSE &&
+							entry.getAccountSide() == nonprofitbookkeeping.model.AccountSide.DEBIT))
+					{
+						amt = amt.add(entry.getAmount());
+					}
+					else
+					{
+						amt = amt.subtract(entry.getAmount());
+					}
+					
+					totals.put(acct.getName(), amt);
+				}
+				
+			}
+			
+		}
+		
+		java.util.List<IncomeStatementAltRowBean> rows = new java.util.ArrayList<>();
+		
+		for (java.util.Map.Entry<String, java.math.BigDecimal> e : totals.entrySet())
+		{
+			rows.add(new IncomeStatementAltRowBean(e.getKey(), e.getValue()));
+		}
+		
+		return rows;
 	}
 	
 	@Override protected Map<String, Object> getReportParameters()

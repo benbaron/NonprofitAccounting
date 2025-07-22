@@ -17,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 import java.util.Collections;
 
 import net.sf.jasperreports.engine.JRDataSource;
@@ -83,7 +84,7 @@ public class CashFlowStatementJasperGenerator extends AbstractReportGenerator
 		Ledger ledger = company.getLedger();
 		ChartOfAccounts coa = company.getChartOfAccounts();
 		
-		return ReportService.prepareCashFlowStatementJasperData(this.reportContext, ledger,
+		return CashFlowStatementJasperGenerator.prepareCashFlowStatementJasperData(this.reportContext, ledger,
 			coa);
 	}
 	
@@ -219,6 +220,20 @@ public class CashFlowStatementJasperGenerator extends AbstractReportGenerator
 		}
 		
 		return generatedFile;
+	}
+
+	/**
+	 * @param reportContext
+	 * @param ledger
+	 * @param coa
+	 * @return
+	 */
+	public static
+			List<CashFlowStatementRowBean>
+			prepareCashFlowStatementJasperData(	ReportContext reportContext, nonprofitbookkeeping.model.Ledger ledger,
+												nonprofitbookkeeping.model.ChartOfAccounts coa)
+	{
+		return new ArrayList<>();
 	}
 	
 }

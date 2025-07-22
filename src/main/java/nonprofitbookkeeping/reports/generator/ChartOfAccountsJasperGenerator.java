@@ -8,14 +8,18 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.reports.datasource.ChartOfAccountsRowBean;
 import nonprofitbookkeeping.service.ReportService;
@@ -26,8 +30,8 @@ import nonprofitbookkeeping.service.ReportService;
 public class ChartOfAccountsJasperGenerator extends AbstractReportGenerator
 {
 	
-	private final ReportService reportService;
-	
+	public static final Logger LOGGER = Logger.getLogger(ReportService.class.getName());
+
 	/**
 	 * Constructs the generator with the required {@link ReportService}.
 	 *
@@ -35,9 +39,13 @@ public class ChartOfAccountsJasperGenerator extends AbstractReportGenerator
 	 */
 	public ChartOfAccountsJasperGenerator(ReportService reportService)
 	{
-		this.reportService = reportService;
+		
 	}
 	
+	/**
+	 * 
+	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData()
+	 */
 	@Override protected List<ChartOfAccountsRowBean> getReportData()
 	{
 		Company company = CurrentCompany.getCompany();
@@ -50,7 +58,7 @@ public class ChartOfAccountsJasperGenerator extends AbstractReportGenerator
 		}
 		
 		ChartOfAccounts coa = company.getChartOfAccounts();
-		return this.reportService.prepareChartOfAccountsJasperData(coa);
+		return prepareChartOfAccountsJasperData(coa);
 	}
 	
 	@Override protected Map<String, Object> getReportParameters()
@@ -110,6 +118,48 @@ public class ChartOfAccountsJasperGenerator extends AbstractReportGenerator
 			return exportToPDF(print, outFile.getAbsolutePath());
 		}
 		
+	}
+	
+	/**
+	 * Prepares a list of {@link ChartOfAccountsRowBean} objects for the
+	 * Chart of Accounts Jasper report.
+	 *
+	 * @param chartOfAccounts The company's {@link ChartOfAccounts}.
+	 * @return List of beans representing each account. Returns an empty list if
+	 *         the chart is null or contains no accounts.
+	 */
+	public
+			List<ChartOfAccountsRowBean>
+			prepareChartOfAccountsJasperData(ChartOfAccounts chartOfAccounts)
+	{
+		List<ChartOfAccountsRowBean> data = new ArrayList<>();
+		
+		if (chartOfAccounts == null)
+		{
+			LOGGER.warning("ChartOfAccounts is null - cannot prepare COA report data.");
+			return data;
+		}
+		
+		List<Account> accounts = chartOfAccounts.getAccounts();
+		
+		if (accounts == null)
+		{
+			return data;
+		}
+		
+		accounts.sort(Comparator.comparing(Account::getAccountNumber,
+			Comparator.nullsLast(String::compareTo)));
+		
+		for (Account acct : accounts)
+		{
+			if (acct == null)
+				continue;
+			
+			String type = (acct.getAccountType() != null) ? acct.getAccountType().name() : "";
+			data.add(new ChartOfAccountsRowBean(acct.getAccountNumber(), acct.getName(), type));
+		}
+		
+		return data;
 	}
 	
 }
