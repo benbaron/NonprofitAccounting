@@ -257,95 +257,22 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
          * user to add or ignore them.
          */
         private List<AccountingTransaction> convertExcelRows(List<ExcelLedgerRow> rows,
-                                                                               Account targetAccount,
-                                                                               ChartOfAccounts chartOfAccounts) throws ActionCancelledException
+                                                             Account targetAccount,
+                                                             ChartOfAccounts chartOfAccounts) throws ActionCancelledException
         {
-		List<AccountingTransaction> results = new ArrayList<>();
-		
-		if (rows == null || rows.isEmpty())
-		{
-                return results;
-        }
+                List<AccountingTransaction> results = new ArrayList<>();
 
-        /**
-         * Resolves an account name against the provided chart of accounts. If
-         * the account does not exist, the user is prompted to add it, ignore it
-         * (skipping future occurrences), or abort the import.
-         *
-         * @param name  The account name to resolve.
-         * @param chart The chart of accounts.
-         * @return The matching {@link Account} or {@code null} if ignored.
-         * @throws ActionCancelledException if the user chooses to abort.
-         */
-        private Account resolveAccountUI(String name, ChartOfAccounts chart) throws ActionCancelledException
-        {
-                if (name == null || name.isBlank() || chart == null)
+                if (rows == null || rows.isEmpty())
                 {
-                        return null;
+                        return results;
                 }
 
-                if (this.ignoredAccountNames.contains(name))
+                for (ExcelLedgerRow row : rows)
                 {
-                        return null;
-                }
 
-                Account found = FileImportService.findAccountIgnoreCase(chart, name);
-
-                if (found != null)
-                {
-                        return found;
-                }
-
-                Alert alert = new Alert(AlertType.CONFIRMATION);
-                alert.initOwner(this.ownerStage);
-                alert.setHeaderText("Account '" + name + "' not found. What would you like to do?");
-                ButtonType addBtn = new ButtonType("Add Account");
-                ButtonType ignoreBtn = new ButtonType("Ignore");
-                ButtonType abortBtn = new ButtonType("Abort", ButtonBar.ButtonData.CANCEL_CLOSE);
-                alert.getButtonTypes().setAll(addBtn, ignoreBtn, abortBtn);
-
-                Optional<ButtonType> choice = alert.showAndWait();
-
-                if (choice.isEmpty() || choice.get() == abortBtn)
-                {
-                        throw new ActionCancelledException("User aborted import");
-                }
-
-                if (choice.get() == ignoreBtn)
-                {
-                        this.ignoredAccountNames.add(name);
-                        return null;
-                }
-
-                // Add account option - show chart of accounts editor
-                Stage stage = new Stage();
-                stage.initOwner(this.ownerStage);
-                stage.initModality(Modality.WINDOW_MODAL);
-                stage.setTitle("Chart of Accounts");
-                CoaEditorPanelFX panel = new CoaEditorPanelFX(chart);
-                Scene scene = new Scene(panel, 600, 400);
-                stage.setScene(scene);
-                stage.showAndWait();
-
-                // Try resolving again after editor closes
-                found = FileImportService.findAccountIgnoreCase(chart, name);
-
-                if (found == null)
-                {
-                        // If still not found, treat as ignored
-                        this.ignoredAccountNames.add(name);
-                }
-
-                return found;
-        }
-		
-		
-		for (ExcelLedgerRow row : rows)
-		{
-			
-			if (row == null || row.getAllocations() == null)
-			{
-				continue;
+                        if (row == null || row.getAllocations() == null)
+                        {
+                                continue;
 			}
 			
 			String memo = row.getMemoNotes();
@@ -427,13 +354,85 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 				}
 				
 				tx.setMemo(memo);
-				results.add(tx);
-			}
-			
-		}
-		
-		return results;
-	}
+                                results.add(tx);
+                        }
+
+                }
+
+                return results;
+        }
+
+        /**
+         * Resolves an account name against the provided chart of accounts. If
+         * the account does not exist, the user is prompted to add it, ignore it
+         * (skipping future occurrences), or abort the import.
+         *
+         * @param name  The account name to resolve.
+         * @param chart The chart of accounts.
+         * @return The matching {@link Account} or {@code null} if ignored.
+         * @throws ActionCancelledException if the user chooses to abort.
+         */
+        private Account resolveAccountUI(String name, ChartOfAccounts chart) throws ActionCancelledException
+        {
+                if (name == null || name.isBlank() || chart == null)
+                {
+                        return null;
+                }
+
+                if (this.ignoredAccountNames.contains(name))
+                {
+                        return null;
+                }
+
+                Account found = FileImportService.findAccountIgnoreCase(chart, name);
+
+                if (found != null)
+                {
+                        return found;
+                }
+
+                Alert alert = new Alert(AlertType.CONFIRMATION);
+                alert.initOwner(this.ownerStage);
+                alert.setHeaderText("Account '" + name + "' not found. What would you like to do?");
+                ButtonType addBtn = new ButtonType("Add Account");
+                ButtonType ignoreBtn = new ButtonType("Ignore");
+                ButtonType abortBtn = new ButtonType("Abort", ButtonBar.ButtonData.CANCEL_CLOSE);
+                alert.getButtonTypes().setAll(addBtn, ignoreBtn, abortBtn);
+
+                Optional<ButtonType> choice = alert.showAndWait();
+
+                if (choice.isEmpty() || choice.get() == abortBtn)
+                {
+                        throw new ActionCancelledException("User aborted import");
+                }
+
+                if (choice.get() == ignoreBtn)
+                {
+                        this.ignoredAccountNames.add(name);
+                        return null;
+                }
+
+                // Add account option - show chart of accounts editor
+                Stage stage = new Stage();
+                stage.initOwner(this.ownerStage);
+                stage.initModality(Modality.WINDOW_MODAL);
+                stage.setTitle("Chart of Accounts");
+                CoaEditorPanelFX panel = new CoaEditorPanelFX(chart);
+                Scene scene = new Scene(panel, 600, 400);
+                stage.setScene(scene);
+                stage.showAndWait();
+
+                // Try resolving again after editor closes
+                found = FileImportService.findAccountIgnoreCase(chart, name);
+
+                if (found == null)
+                {
+                        // If still not found, treat as ignored
+                        this.ignoredAccountNames.add(name);
+                }
+
+                return found;
+        }
 	
 	
 }
