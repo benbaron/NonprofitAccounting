@@ -65,9 +65,36 @@ public class FileImportService
 	 * The account number designated for transactions that need further categorization after import.
 	 * This is a suspense account.
 	 */
-	public static final String NEEDS_CATEGORIZATION_ACCOUNT_NUMBER = "SUSPENSE-UNCATEGORIZED";
-	/** Key used in transaction info map to store the original Financial Institution Transaction ID (FITID). */
-	private static final String FITID_KEY = "IMPORT_ID";
+    public static final String NEEDS_CATEGORIZATION_ACCOUNT_NUMBER = "SUSPENSE-UNCATEGORIZED";
+    /** Key used in transaction info map to store the original Financial Institution Transaction ID (FITID). */
+    private static final String FITID_KEY = "IMPORT_ID";
+
+    /**
+     * Searches the provided {@link ChartOfAccounts} for an account matching
+     * the given name, ignoring case. Returns {@code null} if no matching
+     * account is found or if inputs are invalid.
+     *
+     * @param chart The chart of accounts to search.
+     * @param name  The account name to look up.
+     * @return The matching {@link Account} or {@code null} if none found.
+     */
+    public static Account findAccountIgnoreCase(ChartOfAccounts chart, String name)
+    {
+        if (chart == null || name == null)
+        {
+            return null;
+        }
+
+        for (Account a : chart.getAccounts())
+        {
+            if (name.equalsIgnoreCase(a.getName()))
+            {
+                return a;
+            }
+        }
+
+        return null;
+    }
 	
 	/**
 	 * Parses an OFX (Open Financial Exchange) file from an input stream and converts its transactions

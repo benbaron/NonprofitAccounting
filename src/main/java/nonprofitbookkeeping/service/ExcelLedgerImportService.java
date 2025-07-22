@@ -378,8 +378,8 @@ public class ExcelLedgerImportService
 	 * @param cell
 	 * @return
 	 */
-	private static LocalDate readDate(Cell cell)
-	{
+        private static LocalDate readDate(Cell cell)
+        {
 		
 		if (cell == null)
 		{
@@ -405,8 +405,45 @@ public class ExcelLedgerImportService
 		catch (Exception e)
 		{
 			return null;
-		}
-		
-	}
-	
+                }
+
+        }
+
+        /**
+         * Determines the account name associated with an allocation. The
+         * allocation may specify an asset/liability account, an income
+         * category, or an expense category. The first non-blank value is
+         * returned.
+         *
+         * @param alloc The {@link Allocation} to inspect.
+         * @return The account or category name, or {@code null} if none is set.
+         */
+        public static String determineAccountName(Allocation alloc)
+        {
+                if (alloc == null)
+                {
+                        return null;
+                }
+
+                if (alloc.getAssetLiabilityAccount() != null &&
+                        !alloc.getAssetLiabilityAccount().isBlank())
+                {
+                        return alloc.getAssetLiabilityAccount();
+                }
+
+                if (alloc.getIncomeCategory() != null &&
+                        !alloc.getIncomeCategory().isBlank())
+                {
+                        return alloc.getIncomeCategory();
+                }
+
+                if (alloc.getExpenseCategory() != null &&
+                        !alloc.getExpenseCategory().isBlank())
+                {
+                        return alloc.getExpenseCategory();
+                }
+
+                return null;
+        }
+
 }
