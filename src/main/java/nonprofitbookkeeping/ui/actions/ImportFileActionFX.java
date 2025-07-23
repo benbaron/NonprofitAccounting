@@ -189,13 +189,14 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 		
 		// Use the excel file importer
 		if ("Excel (.xlsx)".equals(chosenFormat))
-		{
-			
+		{			
 			try
 			{
 				List<ExcelLedgerRow> rows =
 					ExcelLedgerImportService.importSpreadsheet(selectedFile);
-				imported.addAll(this.convertExcelRows(rows, account, company.getChartOfAccounts()));
+				imported.addAll(this.convertExcelRows(rows, 
+					account, 
+					company.getChartOfAccounts()));
 			}
 			catch (ActionCancelledException ace)
 			{
@@ -256,11 +257,10 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 	 * matched against the chart of accounts and missing accounts prompt the
 	 * user to add or ignore them.
 	 */
-	private
-			List<AccountingTransaction>
-			convertExcelRows(	List<ExcelLedgerRow> rows, 
-			                 	Account targetAccount,
-								ChartOfAccounts chartOfAccounts) throws ActionCancelledException
+	private	List<AccountingTransaction>	convertExcelRows
+		(List<ExcelLedgerRow> rows, 
+		 Account targetAccount,
+		 ChartOfAccounts chartOfAccounts) throws ActionCancelledException
 	{
 		List<AccountingTransaction> results = new ArrayList<>();
 		
@@ -269,6 +269,7 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 			return results;
 		}
 		
+		// For each row
 		for (ExcelLedgerRow row : rows)
 		{
 			
@@ -292,9 +293,11 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 					continue;
 				}
 				
+				// Get the account name string
 				String allocName = ExcelLedgerImportService.determineAccountName(alloc);
 				Account otherAccount = null;
 				
+				// Look up the name from the chart of accounts
 				if (allocName != null && !allocName.isBlank())
 				{
 					otherAccount = resolveAccountUI(allocName, chartOfAccounts);
@@ -374,8 +377,8 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 	 * @return The matching {@link Account} or {@code null} if ignored.
 	 * @throws ActionCancelledException if the user chooses to abort.
 	 */
-	private Account resolveAccountUI(	String name,
-										ChartOfAccounts chart) throws ActionCancelledException
+	private Account resolveAccountUI(String name,
+	                                 ChartOfAccounts chart) throws ActionCancelledException
 	{
 		
 		if (name == null || name.isBlank() || chart == null)

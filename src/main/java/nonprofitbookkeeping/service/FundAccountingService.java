@@ -24,17 +24,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class FundAccountingService
 {
-
-        /** In-memory map storing funds, keyed by fund name. */
-        @JsonProperty private final Map<String, Fund> fundMap;
-        /** In-memory map storing accounts, keyed by account name. */
-        @JsonProperty private final Map<String, Account> accountMap;
-
-        /** Logger for this service. */
-        private static final Logger LOGGER = Logger.getLogger(FundAccountingService.class.getName());
-
-        /** Filename used to persist funds to disk. */
-        private static final String FUNDS_FILENAME = "funds.json";
+	
+	/** In-memory map storing funds, keyed by fund name. */
+	@JsonProperty private final Map<String, Fund> fundMap;
+	/** In-memory map storing accounts, keyed by account name. */
+	@JsonProperty private final Map<String, Account> accountMap;
+	
+	/** Logger for this service. */
+	private static final Logger LOGGER = Logger.getLogger(FundAccountingService.class.getName());
+	
+	/** Filename used to persist funds to disk. */
+	private static final String FUNDS_FILENAME = "funds.json";
 	
 	/**
 	 * Constructs a new {@code FundAccountingService}.
@@ -55,9 +55,12 @@ public class FundAccountingService
 	 */
 	public void addFund(Fund fund)
 	{
-		if (fund == null || fund.getName() == null) {
-            throw new IllegalArgumentException("Fund and fund name must not be null.");
-        }
+		
+		if (fund == null || fund.getName() == null)
+		{
+			throw new IllegalArgumentException("Fund and fund name must not be null.");
+		}
+		
 		if (this.fundMap.containsKey(fund.getName()))
 		{
 			throw new IllegalArgumentException(
@@ -77,25 +80,31 @@ public class FundAccountingService
 	 */
 	public boolean removeFund(String fundName)
 	{
-		if (fundName == null) {
-            return false;
-        }
-                Fund fund = this.fundMap.get(fundName);
+		
+		if (fundName == null)
+		{
+			return false;
+		}
+		
+		Fund fund = this.fundMap.get(fundName);
 		
 		if (fund != null)
 		{
 			
-                        // Disassociate this fund from all related accounts
-            List<String> associatedAccounts = new ArrayList<>(fund.getAccountIds());
-                        for (String accountId : associatedAccounts)
-                        {
-                                Account account = this.accountMap.get(accountId);
-                                if (account != null)
-                                {
-                                        account.removeFund(fundName);
-                                }
-                                fund.removeAccount(accountId);
-                        }
+			// Disassociate this fund from all related accounts
+			List<String> associatedAccounts = new ArrayList<>(fund.getAccountIds());
+			
+			for (String accountId : associatedAccounts)
+			{
+				Account account = this.accountMap.get(accountId);
+				
+				if (account != null)
+				{
+					account.removeFund(fundName);
+				}
+				
+				fund.removeAccount(accountId);
+			}
 			
 			this.fundMap.remove(fundName);
 			return true;
@@ -113,9 +122,12 @@ public class FundAccountingService
 	 */
 	public void addAccount(Account account)
 	{
-		if (account == null || account.getName() == null) {
-            throw new IllegalArgumentException("Account and account name must not be null.");
-        }
+		
+		if (account == null || account.getName() == null)
+		{
+			throw new IllegalArgumentException("Account and account name must not be null.");
+		}
+		
 		if (this.accountMap.containsKey(account.getName()))
 		{
 			throw new IllegalArgumentException(
@@ -135,24 +147,30 @@ public class FundAccountingService
 	 */
 	public boolean removeAccount(String accountName)
 	{
-		if (accountName == null) {
-            return false;
-        }
-                Account account = this.accountMap.get(accountName);
+		
+		if (accountName == null)
+		{
+			return false;
+		}
+		
+		Account account = this.accountMap.get(accountName);
 		
 		if (account != null)
 		{
-                        // Disassociate account from all related funds
-            List<String> associatedFunds = new ArrayList<>(account.getAssociatedFundIds());
-                        for (String fundId : associatedFunds)
-                        {
-                                Fund fund = this.fundMap.get(fundId);
-                                if (fund != null)
-                                {
-                                        fund.removeAccount(accountName);
-                                }
-                                account.removeFund(fundId);
-                        }
+			// Disassociate account from all related funds
+			List<String> associatedFunds = new ArrayList<>(account.getAssociatedFundIds());
+			
+			for (String fundId : associatedFunds)
+			{
+				Fund fund = this.fundMap.get(fundId);
+				
+				if (fund != null)
+				{
+					fund.removeAccount(accountName);
+				}
+				
+				account.removeFund(fundId);
+			}
 			
 			this.accountMap.remove(accountName);
 			return true;
@@ -167,79 +185,91 @@ public class FundAccountingService
 	 * @return A new {@link ArrayList} containing all {@link Fund} objects.
 	 *         This is a copy, so modifications to the returned list will not affect internal storage.
 	 */
-        public List<Fund> listFunds()
-        {
-                return new ArrayList<>(this.fundMap.values());
-        }
-
-        /**
-         * Saves all funds to a JSON file located in the given company directory.
-         *
-         * @param companyDirectory directory where the funds file should be written
-         * @throws IOException if writing fails or the directory is invalid
-         */
-        public void saveFunds(File companyDirectory) throws IOException
-        {
-                if (companyDirectory == null || !companyDirectory.isDirectory())
-                {
-                        throw new IOException("Company directory is invalid or not provided.");
-                }
-
-                File target = new File(companyDirectory, FUNDS_FILENAME);
-                ObjectMapper mapper = new ObjectMapper();
-                mapper.enable(SerializationFeature.INDENT_OUTPUT);
-                try
-                {
-                        mapper.writeValue(target, listFunds());
-                }
-                catch (IOException ex)
-                {
-                        LOGGER.log(Level.SEVERE, "Failed to save funds to " + target.getAbsolutePath(), ex);
-                        throw ex;
-                }
-        }
-
-        /**
-         * Loads funds from a JSON file located in the given company directory.
-         * Existing in-memory funds are cleared before loading new ones. If the
-         * file does not exist, this method returns without modifying the current state.
-         *
-         * @param companyDirectory directory where the funds file is located
-         * @throws IOException if reading fails or the directory is invalid
-         */
-        public void loadFunds(File companyDirectory) throws IOException
-        {
-                this.fundMap.clear();
-                if (companyDirectory == null || !companyDirectory.isDirectory())
-                {
-                        throw new IOException("Company directory is invalid or not provided.");
-                }
-
-                File target = new File(companyDirectory, FUNDS_FILENAME);
-                if (!target.exists() || target.length() == 0)
-                {
-                        return; // nothing to load
-                }
-
-                ObjectMapper mapper = new ObjectMapper();
-                CollectionType listType = mapper.getTypeFactory().constructCollectionType(List.class, Fund.class);
-                try
-                {
-                        List<Fund> loaded = mapper.readValue(target, listType);
-                        for (Fund f : loaded)
-                        {
-                                if (f.getName() != null)
-                                {
-                                        this.fundMap.put(f.getName(), f);
-                                }
-                        }
-                }
-                catch (IOException ex)
-                {
-                        LOGGER.log(Level.SEVERE, "Failed to load funds from " + target.getAbsolutePath(), ex);
-                        throw ex;
-                }
-        }
+	public List<Fund> listFunds()
+	{
+		return new ArrayList<>(this.fundMap.values());
+	}
+	
+	/**
+	 * Saves all funds to a JSON file located in the given company directory.
+	 *
+	 * @param companyDirectory directory where the funds file should be written
+	 * @throws IOException if writing fails or the directory is invalid
+	 */
+	public void saveFunds(File companyDirectory) throws IOException
+	{
+		
+		if (companyDirectory == null || !companyDirectory.isDirectory())
+		{
+			throw new IOException("Company directory is invalid or not provided.");
+		}
+		
+		File target = new File(companyDirectory, FUNDS_FILENAME);
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.enable(SerializationFeature.INDENT_OUTPUT);
+		
+		try
+		{
+			mapper.writeValue(target, listFunds());
+		}
+		catch (IOException ex)
+		{
+			LOGGER.log(Level.SEVERE, "Failed to save funds to " + target.getAbsolutePath(), ex);
+			throw ex;
+		}
+		
+	}
+	
+	/**
+	 * Loads funds from a JSON file located in the given company directory.
+	 * Existing in-memory funds are cleared before loading new ones. If the
+	 * file does not exist, this method returns without modifying the current state.
+	 *
+	 * @param companyDirectory directory where the funds file is located
+	 * @throws IOException if reading fails or the directory is invalid
+	 */
+	public void loadFunds(File companyDirectory) throws IOException
+	{
+		this.fundMap.clear();
+		
+		if (companyDirectory == null || !companyDirectory.isDirectory())
+		{
+			throw new IOException("Company directory is invalid or not provided.");
+		}
+		
+		File target = new File(companyDirectory, FUNDS_FILENAME);
+		
+		if (!target.exists() || target.length() == 0)
+		{
+			return; // nothing to load
+		}
+		
+		ObjectMapper mapper = new ObjectMapper();
+		CollectionType listType =
+			mapper.getTypeFactory().constructCollectionType(List.class, Fund.class);
+		
+		try
+		{
+			List<Fund> loaded = mapper.readValue(target, listType);
+			
+			for (Fund f : loaded)
+			{
+				
+				if (f.getName() != null)
+				{
+					this.fundMap.put(f.getName(), f);
+				}
+				
+			}
+			
+		}
+		catch (IOException ex)
+		{
+			LOGGER.log(Level.SEVERE, "Failed to load funds from " + target.getAbsolutePath(), ex);
+			throw ex;
+		}
+		
+	}
 	
 	/**
 	 * Retrieves a list of all accounts currently managed by this service.
@@ -284,6 +314,7 @@ public class FundAccountingService
 	 */
 	public void transferFunds(String fromFund, String toFund, BigDecimal amount)
 	{
+		
 		if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0)
 		{
 			throw new IllegalArgumentException("Amount must be greater than zero.");

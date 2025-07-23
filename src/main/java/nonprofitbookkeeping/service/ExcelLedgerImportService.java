@@ -51,7 +51,11 @@ public class ExcelLedgerImportService
 				return Collections.emptyList();
 			}
 			
+			// Build the header mapping (column assignments) (assuming it lies in column
+			// one)
 			HeaderMapping mapping = buildHeaderMapping(sheet.getRow(sheet.getFirstRowNum()));
+			
+			// Ingest the body rows
 			List<ExcelLedgerRow> results = new ArrayList<>();
 			int firstRow = sheet.getFirstRowNum() + 1;
 			int lastRow = sheet.getLastRowNum();
@@ -65,6 +69,7 @@ public class ExcelLedgerImportService
 					continue;
 				}
 				
+				// Parse a body row
 				ExcelLedgerRow record = parseRow(row, mapping);
 				
 				// Skip completely blank rows
@@ -117,9 +122,10 @@ public class ExcelLedgerImportService
 	}
 	
 	/**
+	 * Builds the header mapping by parsing keywords.
+	 * @param header row structure
 	 * 
-	 * @param header
-	 * @return
+	 * @return Header map structure
 	 */
 	private static HeaderMapping buildHeaderMapping(Row header)
 	{
@@ -132,6 +138,7 @@ public class ExcelLedgerImportService
 		
 		DataFormatter fmt = new DataFormatter();
 		
+		// Search for keywords
 		for (Cell cell : header)
 		{
 			String text = fmt.formatCellValue(cell).toLowerCase();
@@ -188,10 +195,10 @@ public class ExcelLedgerImportService
 	}
 	
 	/**
-	 * 
-	 * @param groups
+	 * Extracts the group index from the header. Not sure why.
+	 * @param groups array
 	 * @param headerText
-	 * @return
+	 * @return Group Columns structure
 	 */
 	private static GroupColumns group(GroupColumns[] groups, String headerText)
 	{
@@ -206,9 +213,11 @@ public class ExcelLedgerImportService
 	}
 	
 	/**
+	 * Finds the first available group to fill
 	 * 
-	 * @param groups
-	 * @return
+	 * @param groups 
+	 * 
+	 * @return group index found
 	 */
 	private static int firstAvailableGroup(GroupColumns[] groups)
 	{
@@ -231,7 +240,7 @@ public class ExcelLedgerImportService
 	}
 	
 	/**
-	 * 
+	 * Extracts the group index - not sure why
 	 * @param text
 	 * @return
 	 */
@@ -258,6 +267,8 @@ public class ExcelLedgerImportService
 	}
 	
 	/**
+	 * Parses a ledger row using the mapping into the internal 
+	 * structure.
 	 * 
 	 * @param row
 	 * @param map
@@ -298,6 +309,7 @@ public class ExcelLedgerImportService
 			out.setBudgetTracking(fmt.formatCellValue(row.getCell(map.budget)).trim());
 		}
 		
+		// Parse the group columns
 		for (GroupColumns g : map.groups)
 		{
 			Allocation alloc = readAllocation(row, g, fmt);
@@ -313,13 +325,16 @@ public class ExcelLedgerImportService
 	}
 	
 	/**
-	 * 
+	 * Reads the group columns into the allocation internal data structure
+	 *  
 	 * @param row
 	 * @param g
 	 * @param fmt
+	 * 
 	 * @return
 	 */
-	private static Allocation readAllocation(Row row, GroupColumns g, DataFormatter fmt)
+	private static Allocation readAllocation(Row row, GroupColumns g, 
+	                                         DataFormatter fmt)
 	{
 		
 		if (g.amount < 0 && g.asset < 0 && g.income < 0 && g.expense < 0 && g.fund < 0)
@@ -374,21 +389,26 @@ public class ExcelLedgerImportService
 	}
 	
 	/**
+	 * Parses the date field into a LocalDate
 	 * 
 	 * @param cell
-	 * @return
+	 * @return the date
 	 */
-        private static LocalDate readDate(Cell cell)
-        {
+	private static LocalDate readDate(Cell cell)
+	{
 		
 		if (cell == null)
 		{
 			return null;
 		}
 		
-		if (cell.getCellType() == CellType.NUMERIC && DateUtil.isCellDateFormatted(cell))
+		if (cell.getCellType() == CellType.NUMERIC && 
+			DateUtil.isCellDateFormatted(cell))
 		{
-			return cell.getDateCellValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			return cell.getDateCellValue()
+				.toInstant()
+				.atZone(ZoneId.systemDefault())
+				.toLocalDate();
 		}
 		
 		String txt = new DataFormatter().formatCellValue(cell).trim();
@@ -405,45 +425,46 @@ public class ExcelLedgerImportService
 		catch (Exception e)
 		{
 			return null;
-                }
-
-        }
-
-        /**
-         * Determines the account name associated with an allocation. The
-         * allocation may specify an asset/liability account, an income
-         * category, or an expense category. The first non-blank value is
-         * returned.
-         *
-         * @param alloc The {@link Allocation} to inspect.
-         * @return The account or category name, or {@code null} if none is set.
-         */
-        public static String determineAccountName(Allocation alloc)
-        {
-                if (alloc == null)
-                {
-                        return null;
-                }
-
-                if (alloc.getAssetLiabilityAccount() != null &&
-                        !alloc.getAssetLiabilityAccount().isBlank())
-                {
-                        return alloc.getAssetLiabilityAccount();
-                }
-
-                if (alloc.getIncomeCategory() != null &&
-                        !alloc.getIncomeCategory().isBlank())
-                {
-                        return alloc.getIncomeCategory();
-                }
-
-                if (alloc.getExpenseCategory() != null &&
-                        !alloc.getExpenseCategory().isBlank())
-                {
-                        return alloc.getExpenseCategory();
-                }
-
-                return null;
-        }
-
+		}
+		
+	}
+	
+	/**
+	 * Determines the account name associated with an allocation. The
+	 * allocation may specify an asset/liability account, an income
+	 * category, or an expense category. The first non-blank value is
+	 * returned.
+	 *
+	 * @param alloc The {@link Allocation} to inspect.
+	 * @return The account or category name, or {@code null} if none is set.
+	 */
+	public static String determineAccountName(Allocation alloc)
+	{
+		
+		if (alloc == null)
+		{
+			return null;
+		}
+		
+		if (alloc.getAssetLiabilityAccount() != null && 
+			!alloc.getAssetLiabilityAccount().isBlank())
+		{
+			return alloc.getAssetLiabilityAccount();
+		}
+		
+		if (alloc.getIncomeCategory() != null && 
+			!alloc.getIncomeCategory().isBlank())
+		{
+			return alloc.getIncomeCategory();
+		}
+		
+		if (alloc.getExpenseCategory() != null && 
+			!alloc.getExpenseCategory().isBlank())
+		{
+			return alloc.getExpenseCategory();
+		}
+		
+		return null;
+	}
+	
 }
