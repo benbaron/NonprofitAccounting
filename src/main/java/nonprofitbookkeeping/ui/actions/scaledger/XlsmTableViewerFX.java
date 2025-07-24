@@ -57,26 +57,34 @@ public class XlsmTableViewerFX
 	public static DefaultTableModel readXlsmToTableModel(File file, int sheetIndex) throws Exception
 	{
 		
-		try (FileInputStream fis = new FileInputStream(file); Workbook wb = new XSSFWorkbook(fis)) // XSSFWorkbook for .xlsx/.xlsm
+		try (FileInputStream fis = new FileInputStream(file); Workbook wb = new XSSFWorkbook(fis)) // XSSFWorkbook
+																									// for
+																									// .xlsx/.xlsm
 		{
-			if (sheetIndex < 0 || sheetIndex >= wb.getNumberOfSheets()) {
-                wb.close(); // Ensure workbook is closed on error path
-                fis.close(); // Ensure fis is closed
-                throw new IllegalArgumentException("Sheet index " + sheetIndex + " is out of bounds for workbook with " + wb.getNumberOfSheets() + " sheets.");
-            }
+			
+			if (sheetIndex < 0 || sheetIndex >= wb.getNumberOfSheets())
+			{
+				wb.close(); // Ensure workbook is closed on error path
+				fis.close(); // Ensure fis is closed
+				throw new IllegalArgumentException("Sheet index " + sheetIndex +
+					" is out of bounds for workbook with " + wb.getNumberOfSheets() + " sheets.");
+			}
+			
 			Sheet sheet = wb.getSheetAt(sheetIndex);
 			DefaultTableModel model = new DefaultTableModel();
 			
 			// Header row → column identifiers
 			Row header = sheet.getRow(sheet.getFirstRowNum());
 			
-			Vector<String> columnNames = new Vector<>(); // Initialize outside if block to ensure it's always available for model
+			Vector<String> columnNames = new Vector<>(); // Initialize outside if block to ensure
+															// it's always available for model
+			
 			if (header != null)
 			{
 				// Vector<String> cols = new Vector<>(); // Renamed to columnNames
 				short firstCol = header.getFirstCellNum();
 				// Ensure lastCol is not negative, which can happen for empty rows
-                short lastCol = (firstCol >= 0) ? header.getLastCellNum() : 0;
+				short lastCol = (firstCol >= 0) ? header.getLastCellNum() : 0;
 				
 				for (int c = firstCol; c < lastCol; c++)
 				{

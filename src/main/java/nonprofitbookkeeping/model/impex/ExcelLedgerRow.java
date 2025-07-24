@@ -54,7 +54,7 @@ import java.util.List;
 		 */
 		public BigDecimal getAmount()
 		{
-			return amount;
+			return this.amount;
 		}
 		/**
 		 * @param amount the amount to set
@@ -68,7 +68,7 @@ import java.util.List;
 		 */
 		public String getAssetLiabilityAccount()
 		{
-			return assetLiabilityAccount;
+			return this.assetLiabilityAccount;
 		}
 		/**
 		 * @param assetLiabilityAccount the assetLiabilityAccount to set
@@ -82,7 +82,7 @@ import java.util.List;
 		 */
 		public String getIncomeCategory()
 		{
-			return incomeCategory;
+			return this.incomeCategory;
 		}
 		/**
 		 * @param incomeCategory the incomeCategory to set
@@ -96,7 +96,7 @@ import java.util.List;
 		 */
 		public String getExpenseCategory()
 		{
-			return expenseCategory;
+			return this.expenseCategory;
 		}
 		/**
 		 * @param expenseCategory the expenseCategory to set
@@ -110,7 +110,7 @@ import java.util.List;
 		 */
 		public String getFund()
 		{
-			return fund;
+			return this.fund;
 		}
 		/**
 		 * @param fund the fund to set
@@ -129,7 +129,7 @@ import java.util.List;
 	 */
 	public LocalDate getDate()
 	{
-		return date;
+		return this.date;
 	}
 	
 	/**
@@ -145,7 +145,7 @@ import java.util.List;
 	 */
 	public String getCheckNumber()
 	{
-		return checkNumber;
+		return this.checkNumber;
 	}
 	
 	/**
@@ -161,7 +161,7 @@ import java.util.List;
 	 */
 	public String getClearBank()
 	{
-		return clearBank;
+		return this.clearBank;
 	}
 	
 	/**
@@ -177,7 +177,7 @@ import java.util.List;
 	 */
 	public String getToFrom()
 	{
-		return toFrom;
+		return this.toFrom;
 	}
 	
 	/**
@@ -193,7 +193,7 @@ import java.util.List;
 	 */
 	public String getMemoNotes()
 	{
-		return memoNotes;
+		return this.memoNotes;
 	}
 	
 	/**
@@ -209,7 +209,7 @@ import java.util.List;
 	 */
 	public String getBudgetTracking()
 	{
-		return budgetTracking;
+		return this.budgetTracking;
 	}
 	
 	/**
@@ -225,7 +225,7 @@ import java.util.List;
 	 */
 	public List<Allocation> getAllocations()
 	{
-		return allocations;
+		return this.allocations;
 	}
 	
 	/**

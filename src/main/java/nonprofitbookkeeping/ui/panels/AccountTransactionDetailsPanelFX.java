@@ -85,20 +85,20 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		controlsGrid.setVgap(8);
 		controlsGrid.setPadding(new Insets(5));
 		
-                this.accountSelectorComboBox = new ComboBox<>();
-                this.accountSelectorComboBox.setPromptText("Select Account");
-
-                refreshAccountSelector();
+		this.accountSelectorComboBox = new ComboBox<>();
+		this.accountSelectorComboBox.setPromptText("Select Account");
+		
+		refreshAccountSelector();
 		
 		this.accountSelectorComboBox.setOnAction(e -> {
 			this.transactionDataList.clear();
-			this.transactionsTable.setPlaceholder(
-				new Label("Account selection changed. Click 'Load Transactions'."));
+			this.transactionsTable
+				.setPlaceholder(new Label("Account selection changed. Click 'Load Transactions'."));
 			this.totalDebitsLabel.setText("Total Debits: 0.00");
 			this.totalCreditsLabel.setText("Total Credits: 0.00");
 			this.netChangeLabel.setText("Net Change: 0.00");
 		});
-				
+		
 		this.startDatePicker = new DatePicker();
 		this.endDatePicker = new DatePicker();
 		this.loadTransactionsButton = new Button("Load Transactions");
@@ -120,10 +120,12 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		
 		this.transactionDataList = FXCollections.observableArrayList();
 		this.transactionsTable = new TableView<>(this.transactionDataList);
-		this.transactionsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
-		this.transactionsTable.setPlaceholder(new Label("Select account and date range, then click 'Load Transactions'."));
+		this.transactionsTable
+			.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+		this.transactionsTable.setPlaceholder(
+			new Label("Select account and date range, then click 'Load Transactions'."));
 		setCenter(this.transactionsTable);
-	
+		
 		// Set up column data
 		setupTableColumns();
 		
@@ -132,9 +134,7 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		this.totalDebitsLabel = new Label("Total Debits: 0.00");
 		this.totalCreditsLabel = new Label("Total Credits: 0.00");
 		this.netChangeLabel = new Label("Net Change: 0.00");
-		totalsBox.getChildren().addAll(
-			this.totalDebitsLabel, 
-			this.totalCreditsLabel,
+		totalsBox.getChildren().addAll(this.totalDebitsLabel, this.totalCreditsLabel,
 			this.netChangeLabel);
 		setBottom(totalsBox);
 		
@@ -147,9 +147,9 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 	 * and binds them to the properties of the {@link TransactionDisplayRow} class.
 	 * Sets preferred widths and cell alignments for some columns.
 	 */
-        private void setupTableColumns()
-        {
-                this.transactionsTable.getColumns().clear();
+	private void setupTableColumns()
+	{
+		this.transactionsTable.getColumns().clear();
 		
 		TableColumn<TransactionDisplayRow, String> dateCol = new TableColumn<>("Date");
 		dateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
@@ -179,66 +179,63 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		balanceCol.setPrefWidth(120);
 		balanceCol.setStyle("-fx-alignment: CENTER-RIGHT;");
 		
-                this.transactionsTable.getColumns()
-                        .addAll(dateCol, idCol,
-                                descCol, debitCol, creditCol,
-                                balanceCol);
-        }
-
-        /**
-         * Refreshes the account selector with accounts from the currently open company.
-         * If no company is open or the chart of accounts is empty, the selector
-         * prompt will indicate that no accounts are available.
-         */
-        private void refreshAccountSelector()
-        {
-                this.accountSelectorComboBox.getItems().clear();
-                this.accountSelectorComboBox.setValue(null);
-
-                Company company = CurrentCompany.getCompany();
-
-                if (company != null && company.getChartOfAccounts() != null)
-                {
-                        ChartOfAccounts coa = company.getChartOfAccounts();
-
-                        if (coa.getAccounts() != null)
-                        {
-                                List<Account> sortedAccounts = coa.getAccounts().stream()
-                                        .filter(Objects::nonNull)
-                                        .sorted(Comparator.comparing(Account::getName,
-                                                String.CASE_INSENSITIVE_ORDER))
-                                        .collect(Collectors.toList());
-
-                                this.accountSelectorComboBox.setItems(FXCollections
-                                        .observableArrayList(sortedAccounts));
-
-                                Callback<ListView<Account>, ListCell<Account>> cellFactory =
-                                        lv -> new ListCell<Account>()
-                                        {
-                                                @Override protected void updateItem(Account item, boolean empty)
-                                                {
-                                                        super.updateItem(item, empty);
-                                                        setText(empty ? null :
-                                                                item.getName() + " (" + item.getAccountNumber() + ")");
-                                                }
-
-                                        };
-
-                                this.accountSelectorComboBox.setCellFactory(cellFactory);
-                                this.accountSelectorComboBox.setButtonCell(cellFactory.call(null));
-                        }
-
-                }
-
-                if (this.accountSelectorComboBox.getItems().isEmpty())
-                {
-                        this.accountSelectorComboBox.setPromptText("No accounts in COA");
-                }
-                else
-                {
-                        this.accountSelectorComboBox.setPromptText("Select Account");
-                }
-        }
+		this.transactionsTable.getColumns().addAll(dateCol, idCol, descCol, debitCol, creditCol,
+			balanceCol);
+	}
+	
+	/**
+	 * Refreshes the account selector with accounts from the currently open company.
+	 * If no company is open or the chart of accounts is empty, the selector
+	 * prompt will indicate that no accounts are available.
+	 */
+	private void refreshAccountSelector()
+	{
+		this.accountSelectorComboBox.getItems().clear();
+		this.accountSelectorComboBox.setValue(null);
+		
+		Company company = CurrentCompany.getCompany();
+		
+		if (company != null && company.getChartOfAccounts() != null)
+		{
+			ChartOfAccounts coa = company.getChartOfAccounts();
+			
+			if (coa.getAccounts() != null)
+			{
+				List<Account> sortedAccounts = coa.getAccounts().stream().filter(Objects::nonNull)
+					.sorted(Comparator.comparing(Account::getName, String.CASE_INSENSITIVE_ORDER))
+					.collect(Collectors.toList());
+				
+				this.accountSelectorComboBox
+					.setItems(FXCollections.observableArrayList(sortedAccounts));
+				
+				Callback<ListView<Account>, ListCell<Account>> cellFactory =
+					lv -> new ListCell<Account>()
+					{
+						@Override protected void updateItem(Account item, boolean empty)
+						{
+							super.updateItem(item, empty);
+							setText(empty ? null :
+								item.getName() + " (" + item.getAccountNumber() + ")");
+						}
+						
+					};
+				
+				this.accountSelectorComboBox.setCellFactory(cellFactory);
+				this.accountSelectorComboBox.setButtonCell(cellFactory.call(null));
+			}
+			
+		}
+		
+		if (this.accountSelectorComboBox.getItems().isEmpty())
+		{
+			this.accountSelectorComboBox.setPromptText("No accounts in COA");
+		}
+		else
+		{
+			this.accountSelectorComboBox.setPromptText("Select Account");
+		}
+		
+	}
 	
 	/**
 	 * Loads transaction data into the {@link #transactionsTable} based on the
@@ -307,23 +304,25 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		{
 			// Sort all transactions once by date for calculating opening balance correctly
 			List<AccountingTransaction> allTransactionsSorted =
-				ledger.getTransactions().stream()
-				.filter(Objects::nonNull)
-				.filter(tx -> tx.getDate() != null && !tx.getDate().trim().isEmpty())
-				.sorted(Comparator.comparing(AccountingTransaction::getDate)
-					.thenComparingLong(AccountingTransaction::getBookingDateTimestamp))
-				.collect(Collectors.toList());
+				ledger.getTransactions().stream().filter(Objects::nonNull)
+					.filter(tx -> tx.getDate() != null && !tx.getDate().trim().isEmpty())
+					.sorted(Comparator.comparing(AccountingTransaction::getDate)
+						.thenComparingLong(AccountingTransaction::getBookingDateTimestamp))
+					.collect(Collectors.toList());
 			
 			for (AccountingTransaction tx : allTransactionsSorted)
-			{				
+			{
+				
 				try
 				{
 					LocalDate txDate = LocalDate.parse(tx.getDate());
 					
 					if (txDate.isBefore(startDate))
-					{						
+					{
+						
 						for (AccountingEntry entry : tx.getEntries())
-						{							
+						{
+							
 							if (entry.getAccount() != null && entry.getAccount().getAccountNumber()
 								.equals(selectedAccount.getAccountNumber()))
 							{
@@ -430,12 +429,9 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 							periodCreditTotal = periodCreditTotal.add(creditAmount);
 						}
 						
-						displayRows.add(new TransactionDisplayRow(
-							tx.getDate(),
+						displayRows.add(new TransactionDisplayRow(tx.getDate(),
 							String.valueOf(tx.getBookingDateTimestamp()),
-							tx.getMemo() != null ? tx.getMemo() : "",
-							debitAmount,
-							creditAmount,
+							tx.getMemo() != null ? tx.getMemo() : "", debitAmount, creditAmount,
 							new BigDecimal(runningBalance.toString())));
 					}
 					
@@ -465,23 +461,24 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		
 	}
 	
-       /**
-        * Initializes the {@link #companyChangeListener} and registers it with
-        * {@link CurrentCompany.CompanyListener}. The listener clears any loaded
-        * data and refreshes the account selector whenever the active company
-        * changes. If a new company is opened, the list of selectable accounts is
-        * repopulated from its chart of accounts.
-        */
-        private void setupCompanyChangeListener()
-        {
-                if (this.companyChangeListener != null)
-                {
-                        // Prevent duplicate registration if this panel is reconstructed
-                        CurrentCompany.CompanyListener.removeCompanyListener(this.companyChangeListener);
-                }
-
-                this.companyChangeListener = new CompanyChangeListener()
-                {
+	/**
+	 * Initializes the {@link #companyChangeListener} and registers it with
+	 * {@link CurrentCompany.CompanyListener}. The listener clears any loaded
+	 * data and refreshes the account selector whenever the active company
+	 * changes. If a new company is opened, the list of selectable accounts is
+	 * repopulated from its chart of accounts.
+	 */
+	private void setupCompanyChangeListener()
+	{
+		
+		if (this.companyChangeListener != null)
+		{
+			// Prevent duplicate registration if this panel is reconstructed
+			CurrentCompany.CompanyListener.removeCompanyListener(this.companyChangeListener);
+		}
+		
+		this.companyChangeListener = new CompanyChangeListener()
+		{
 			@Override public void companyChange(boolean companyNowOpen)
 			{
 				AccountTransactionDetailsPanelFX.this.transactionDataList.clear();
@@ -493,34 +490,35 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 					.setText("Total Credits: 0.00");
 				AccountTransactionDetailsPanelFX.this.netChangeLabel.setText("Net Change: 0.00");
 				
-                                refreshAccountSelector();
+				refreshAccountSelector();
 				
 			}
 			
 		};
-                CurrentCompany.CompanyListener.addCompanyListener(this.companyChangeListener);
-        }
-
-        /**
-         * Unregisters this panel's company change listener from
-         * {@link CurrentCompany.CompanyListener}. This should be called when
-         * the panel is no longer needed to avoid memory leaks from dangling
-         * listeners.
-         */
-        public void dispose()
-        {
-                if (this.companyChangeListener != null)
-                {
-                        CurrentCompany.CompanyListener.removeCompanyListener(this.companyChangeListener);
-                        this.companyChangeListener = null;
-                }
-
-        }
-
-        /**
-         * Represents a single row of data to be displayed in the transaction details table.
-         * This class uses JavaFX properties to enable data binding with TableView columns.
-         */
+		CurrentCompany.CompanyListener.addCompanyListener(this.companyChangeListener);
+	}
+	
+	/**
+	 * Unregisters this panel's company change listener from
+	 * {@link CurrentCompany.CompanyListener}. This should be called when
+	 * the panel is no longer needed to avoid memory leaks from dangling
+	 * listeners.
+	 */
+	public void dispose()
+	{
+		
+		if (this.companyChangeListener != null)
+		{
+			CurrentCompany.CompanyListener.removeCompanyListener(this.companyChangeListener);
+			this.companyChangeListener = null;
+		}
+		
+	}
+	
+	/**
+	 * Represents a single row of data to be displayed in the transaction details table.
+	 * This class uses JavaFX properties to enable data binding with TableView columns.
+	 */
 	public static class TransactionDisplayRow
 	{
 		/** The date of the transaction. */

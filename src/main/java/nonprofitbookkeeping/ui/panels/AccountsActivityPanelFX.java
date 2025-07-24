@@ -61,8 +61,6 @@ public class AccountsActivityPanelFX extends BorderPane
 	 *  It is updated by {@link #applyFilters()} and used in the filtering predicate.
 	 *  Will be {@code null} if the amount filter field is empty or contains an invalid number format. */
 	private BigDecimal amountFilter = null; 
-	// Renamed from the local variable in applyFilters to be
-	// a field
 	
 	private AccountsActivityPanelCompanyListener companyListener;
 

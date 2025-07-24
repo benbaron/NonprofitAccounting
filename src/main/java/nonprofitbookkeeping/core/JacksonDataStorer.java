@@ -1,3 +1,4 @@
+
 package nonprofitbookkeeping.core;
 
 import nonprofitbookkeeping.api.DataStorer;
@@ -39,18 +40,16 @@ public class JacksonDataStorer implements DataStorer
 	 */
 	public JacksonDataStorer()
 	{
-
-                this.mapper = new ObjectMapper()
-                        .registerModule(new JavaTimeModule())
-                        .enable(SerializationFeature.INDENT_OUTPUT)
-                        .disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES)
-                        .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-                        .enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE);
-                this.mapper.configOverride(List.class)
-                        .setSetterInfo(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY));
-                this.mapper.getFactory().configure(
-                        JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
-        }
+		
+		this.mapper = new ObjectMapper().registerModule(new JavaTimeModule())
+			.enable(SerializationFeature.INDENT_OUTPUT)
+			.disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES)
+			.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+			.enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE);
+		this.mapper.configOverride(List.class)
+			.setSetterInfo(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY));
+		this.mapper.getFactory().configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -181,5 +180,5 @@ public class JacksonDataStorer implements DataStorer
 		return JacksonDataStorer.dataStorer;
 	}
 	
-
+	
 }

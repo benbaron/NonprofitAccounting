@@ -26,13 +26,13 @@ public class InventoryPanelFX extends BorderPane
 {
 	
 	/** Service layer for inventory management operations. */
-        private final InventoryService service;
-        /** Directory of the current company, may be null if none. */
-        private final File companyDirectory;
-        /** ObservableList to hold {@link InventoryRow} objects for display in the table. */
-        private final ObservableList<InventoryRow> rows = FXCollections.observableArrayList();
-        /** TableView to display the list of inventory items. */
-        private final TableView<InventoryRow> table = new TableView<>();
+	private final InventoryService service;
+	/** Directory of the current company, may be null if none. */
+	private final File companyDirectory;
+	/** ObservableList to hold {@link InventoryRow} objects for display in the table. */
+	private final ObservableList<InventoryRow> rows = FXCollections.observableArrayList();
+	/** TableView to display the list of inventory items. */
+	private final TableView<InventoryRow> table = new TableView<>();
 	
 	/**
 	 * Constructs a new {@code InventoryPanelFX}.
@@ -41,32 +41,37 @@ public class InventoryPanelFX extends BorderPane
 	 *
 	 * @param service The {@link InventoryService} to be used for all inventory-related operations. Must not be null.
 	 */
-        public InventoryPanelFX(InventoryService service, File companyDirectory)
-        {
-                this.service = service;
-                this.companyDirectory = companyDirectory;
-
-                if (this.companyDirectory != null)
-                {
-                        try {
-                                this.service.loadItems(this.companyDirectory);
-                        } catch (Exception ex) {
-                                ex.printStackTrace();
-                        }
-                }
-
-                setPadding(new Insets(10));
-                buildTable();
-                setCenter(this.table);
-                setBottom(buildButtons());
-                refresh();
-        }
-
-        /** Convenience constructor when no directory is available. */
-        public InventoryPanelFX(InventoryService service)
-        {
-                this(service, null);
-        }
+	public InventoryPanelFX(InventoryService service, File companyDirectory)
+	{
+		this.service = service;
+		this.companyDirectory = companyDirectory;
+		
+		if (this.companyDirectory != null)
+		{
+			
+			try
+			{
+				this.service.loadItems(this.companyDirectory);
+			}
+			catch (Exception ex)
+			{
+				ex.printStackTrace();
+			}
+			
+		}
+		
+		setPadding(new Insets(10));
+		buildTable();
+		setCenter(this.table);
+		setBottom(buildButtons());
+		refresh();
+	}
+	
+	/** Convenience constructor when no directory is available. */
+	public InventoryPanelFX(InventoryService service)
+	{
+		this(service, null);
+	}
 	
 	/* ------------------------------------------------------------------ */
 	/**
@@ -78,7 +83,8 @@ public class InventoryPanelFX extends BorderPane
 	 * The {@code @SuppressWarnings({ "unchecked", "deprecation" })} is used because {@link PropertyValueFactory}
 	 * uses reflection and can lead to type safety warnings. "deprecation" might relate to older patterns.
 	 */
-	@SuppressWarnings({ "unchecked", "deprecation" }) private void buildTable()
+	@SuppressWarnings(
+	{ "unchecked", "deprecation" }) private void buildTable()
 	{
 		TableColumn<InventoryRow, String> idCol = col("ID", "id");
 		TableColumn<InventoryRow, String> nameCol = col("Item", "name");
@@ -130,24 +136,24 @@ public class InventoryPanelFX extends BorderPane
 			if (sel != null)
 				itemDialog(sel);
 		});
-                del.setOnAction(e -> {
-                        InventoryRow sel = this.table.getSelectionModel().getSelectedItem();
-
-                        if (sel != null)
-                        {
-                                this.service.deleteItem(sel.id);
-                                refresh();
-                                save();
-                        }
-
-                });
-                depr.setOnAction(e -> {
-                        this.service.applyYearlyDepreciation();
-                        refresh();
-                        save();
-                });
-                return new ToolBar(add, edit, del, new Separator(), depr);
-        }
+		del.setOnAction(e -> {
+			InventoryRow sel = this.table.getSelectionModel().getSelectedItem();
+			
+			if (sel != null)
+			{
+				this.service.deleteItem(sel.id);
+				refresh();
+				save();
+			}
+			
+		});
+		depr.setOnAction(e -> {
+			this.service.applyYearlyDepreciation();
+			refresh();
+			save();
+		});
+		return new ToolBar(add, edit, del, new Separator(), depr);
+	}
 	
 	/**
 	 * Displays a dialog for adding a new inventory item or editing an existing one.
@@ -210,15 +216,15 @@ public class InventoryPanelFX extends BorderPane
 			
 			return null;
 		});
-                dlg.showAndWait().ifPresent(row -> {
-                        if (existing == null)
-                                this.service.addItem(row.toItem());
-                        else
-                                this.service.updateItem(row.toItem());
-                        refresh();
-                        save();
-                });
-        }
+		dlg.showAndWait().ifPresent(row -> {
+			if (existing == null)
+				this.service.addItem(row.toItem());
+			else
+				this.service.updateItem(row.toItem());
+			refresh();
+			save();
+		});
+	}
 	
 	/**
 	 * Refreshes the data displayed in the inventory {@link #table}.
@@ -226,25 +232,32 @@ public class InventoryPanelFX extends BorderPane
 	 * converts each {@link InventoryItem} into an {@link InventoryRow}, and adds them to the
 	 * {@link #rows} observable list, which updates the table view.
 	 */
-        private void refresh()
-        {
-                this.rows.clear();
-                List<InventoryItem> list = this.service.listItems();
-                list.forEach(i -> this.rows.add(new InventoryRow(i)));
-        }
-
-        /** Saves current inventory items to disk if a company directory is set. */
-        private void save()
-        {
-                if (this.companyDirectory != null)
-                {
-                        try {
-                                this.service.saveItems(this.companyDirectory);
-                        } catch (Exception ex) {
-                                ex.printStackTrace();
-                        }
-                }
-        }
+	private void refresh()
+	{
+		this.rows.clear();
+		List<InventoryItem> list = this.service.listItems();
+		list.forEach(i -> this.rows.add(new InventoryRow(i)));
+	}
+	
+	/** Saves current inventory items to disk if a company directory is set. */
+	private void save()
+	{
+		
+		if (this.companyDirectory != null)
+		{
+			
+			try
+			{
+				this.service.saveItems(this.companyDirectory);
+			}
+			catch (Exception ex)
+			{
+				ex.printStackTrace();
+			}
+			
+		}
+		
+	}
 	
 	/**
 	 * A data class (POJO) representing a row in the inventory {@link TableView}.
@@ -341,7 +354,7 @@ public class InventoryPanelFX extends BorderPane
 		}
 		
 		// lifeYears is not exposed via a getter, but used in toItem()
-
+		
 		/**
 		 * Converts this {@code InventoryRow} back into an {@link InventoryItem} object.
 		 * This is useful for passing data back to the service layer after editing in the UI.
@@ -351,11 +364,8 @@ public class InventoryPanelFX extends BorderPane
 		 */
 		InventoryItem toItem()
 		{
-			return new InventoryItem(this.id, 
-				this.name, 
-				this.cost, 
-				this.acquired, 
-				this.lifeYears).withAccumDep(this.accDep);
+			return new InventoryItem(this.id, this.name, this.cost, this.acquired, this.lifeYears)
+				.withAccumDep(this.accDep);
 		}
 		
 	}
