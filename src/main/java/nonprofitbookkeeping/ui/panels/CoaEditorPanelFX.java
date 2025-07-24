@@ -380,9 +380,12 @@ public class CoaEditorPanelFX extends BorderPane
 		
 		// Initialize dialog fields
 		this.numF = new TextField(
-			isEdit && editing.getAccountNumber() != null ? editing.getAccountNumber() : "");
+			isEdit && 
+			editing.getAccountNumber() != null ? 
+				editing.getAccountNumber() : "");
 		this.nameF = new TextField(isEdit && editing.getName() != null ? editing.getName() : "");
 		this.typeBox = new ComboBox<>(FXCollections.observableArrayList(AccountType.values()));
+		
 		AccountType initialType = isEdit && editing.getAccountType() != null ?
 			editing.getAccountType() : AccountType.ASSET;
 		this.typeBox.getSelectionModel().select(initialType);
@@ -447,7 +450,9 @@ public class CoaEditorPanelFX extends BorderPane
 	{
 		
 		if (btn != ButtonType.OK)
+		{
 			return null;
+		}
 		
 		/* 1) validate account number */
 		String number = this.numF.getText().trim();
@@ -538,7 +543,6 @@ public class CoaEditorPanelFX extends BorderPane
 			return;
 		}
 		
-		// ... rest of the method
 		FileChooser fc = new FileChooser();
 		fc.setTitle("Import Chart of Accounts from XLSX");
 		fc.getExtensionFilters()

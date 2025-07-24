@@ -15,6 +15,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -59,12 +61,11 @@ public final class ChartOfAccountsIOService
 	 */
 	public ChartOfAccountsIOService()
 	{
-		this.mapper = new ObjectMapper().registerModule(new JavaTimeModule()) 
+		this.mapper = new ObjectMapper().registerModule(new JavaTimeModule())
 			.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS) // Use ISO-8601 strings
 			.enable(SerializationFeature.INDENT_OUTPUT); // Pretty print
 	}
 	
-	/* ------------------------------------------------------------------ */
 	/**
 	 * Writes the given {@link ChartOfAccounts} object to a JSON file at the specified {@link Path}.
 	 * If the parent directories for the path do not exist, they will be created.
@@ -94,7 +95,6 @@ public final class ChartOfAccountsIOService
 		this.mapper.writeValue(path.toFile(), coa);
 	}
 	
-	/* ------------------------------------------------------------------ */
 	/**
 	 * Reads a {@link ChartOfAccounts} object from the JSON file at the specified {@link Path}.
 	 * The JSON file is expected to be in the format previously produced by
@@ -117,7 +117,6 @@ public final class ChartOfAccountsIOService
 		return this.mapper.readValue(path.toFile(), ChartOfAccounts.class);
 	}
 	
-	/* ------------------------------------------------------------------ */
 	/**
 	 * Writes the given {@link ChartOfAccounts} object to an Excel workbook at the
 	 * specified {@link Path}. The workbook will contain a single sheet named
@@ -186,7 +185,9 @@ public final class ChartOfAccountsIOService
 		
 	}
 	
-	/* ------------------------------------------------------------------ */
+
+	
+	
 	/**
 	 * Reads a {@link ChartOfAccounts} from an Excel workbook at the given path.
 	 * The expected sheet layout matches that produced by {@link #exportToXlsx}.
@@ -209,6 +210,7 @@ public final class ChartOfAccountsIOService
 		
 		try (InputStream in = Files.newInputStream(path); Workbook wb = WorkbookFactory.create(in))
 		{
+			FormulaEvaluator eval = wb.getCreationHelper().createFormulaEvaluator();
 			Sheet sheet = wb.getSheetAt(0);
 			boolean header = true;
 			
@@ -221,26 +223,21 @@ public final class ChartOfAccountsIOService
 					continue;
 				}
 				
-				Cell numCell = row.getCell(0);
+				// Col 0 = account number (must be integer)
+				Integer numberInt = getInt(row.getCell(0), eval);
 				
-				if (numCell == null)
+				if (numberInt == null)
 				{
-					continue;
+					continue; // skip blank/invalid
 				}
 				
-				String number = numCell.toString().trim();
+				String number = numberInt.toString(); // rest of your model uses String keys
 				
-				if (number.isEmpty())
-				{
-					continue;
-				}
+				// Col 1 = name
+				String name = getString(row.getCell(1), eval);
 				
-				String name = row.getCell(1) != null ? row.getCell(1).toString() : null;
-				String typeStr = row.getCell(2) != null ? row.getCell(2).toString() : null;
-				String parentNum = row.getCell(3) != null ? row.getCell(3).toString() : null;
-				String incSideStr = row.getCell(4) != null ? row.getCell(4).toString() : null;
-				String balStr = row.getCell(5) != null ? row.getCell(5).toString() : null;
-				
+				// Col 2 = type (enum)
+				String typeStr = getString(row.getCell(2), eval);
 				AccountType type = null;
 				
 				if (typeStr != null && !typeStr.isBlank())
@@ -256,6 +253,12 @@ public final class ChartOfAccountsIOService
 					
 				}
 				
+				// Col 3 = parent account number (int -> string)
+				Integer parentInt = getInt(row.getCell(3), eval);
+				String parentNum = parentInt != null ? parentInt.toString() : null;
+				
+				// Col 4 = normal balance side (enum)
+				String incSideStr = getString(row.getCell(4), eval);
 				AccountSide side = null;
 				
 				if (incSideStr != null && !incSideStr.isBlank())
@@ -271,24 +274,13 @@ public final class ChartOfAccountsIOService
 					
 				}
 				
-				BigDecimal bal = BigDecimal.ZERO;
-				
-				if (balStr != null && !balStr.isBlank())
-				{
-					
-					try
-					{
-						bal = new BigDecimal(balStr.trim());
-					}
-					catch (NumberFormatException ignore)
-					{
-					}
-					
-				}
+				// Col 5 = opening balance (BigDecimal)
+				BigDecimal bal = getBigDecimal(row.getCell(5), eval, BigDecimal.ZERO);
 				
 				Account acc = new Account(number, name, side);
 				acc.setAccountType(type);
 				acc.setOpeningBalance(bal);
+				
 				accountMap.put(number, acc);
 				parentNumbers.put(number, parentNum);
 			}
@@ -324,6 +316,162 @@ public final class ChartOfAccountsIOService
 		}
 		
 		return coa;
+	}
+	
+	/**
+	 * Get a string from the cell
+	 * @param cell
+	 * @param eval
+	 * 
+	 * @return String Value
+	 */
+	private static String getString(Cell cell, FormulaEvaluator eval)
+	{
+		if (cell == null)
+			return null;
+		
+		CellType type = cell.getCellType();
+		
+		if (type == CellType.FORMULA)
+		{
+			type = eval.evaluateFormulaCell(cell);
+		}
+		
+		switch(type)
+		{
+			case STRING:
+				return cell.getStringCellValue().trim();
+				
+			case NUMERIC:
+				// If you want pure numeric rejected, 
+				// return null here instead
+				return BigDecimal.valueOf(cell.getNumericCellValue()).toPlainString();
+				
+			case BLANK:
+				return null;
+				
+			default:
+				return cell.toString().trim(); // last resort
+		}
+		
+	}
+	
+	/**
+	 * Get a Big Decimal from the cell
+	 * @param cell
+	 * @param eval
+	 * @param defaultVal
+	 * 
+	 * @return Big Decimal value
+	 */
+	private static BigDecimal getBigDecimal(Cell cell, FormulaEvaluator eval, BigDecimal defaultVal)
+	{
+		
+		if (cell == null)
+		{
+			return defaultVal;
+		}
+		
+		CellType type = cell.getCellType();
+		
+		if (type == CellType.FORMULA)
+		{
+			type = eval.evaluateFormulaCell(cell);
+		}
+		
+		switch(type)
+		{
+			case NUMERIC:
+				return BigDecimal.valueOf(cell.getNumericCellValue());
+				
+			case STRING:
+				String s = cell.getStringCellValue().trim();
+				if (s.isEmpty())
+					return defaultVal;
+				try
+				{
+					return new BigDecimal(s.replace(",", ""));
+				}
+				catch (NumberFormatException ex)
+				{
+					return defaultVal;
+				}
+			case BLANK:
+				return defaultVal;
+				
+			default:
+				return defaultVal;
+		}
+		
+	}
+	
+	/**
+	 * Read an integer
+	 * @param cell
+	 * @param eval
+	 * 
+	 * @return Integer Value
+	 */
+	private static Integer getInt(Cell cell, FormulaEvaluator eval)
+	{
+		
+		if (cell == null)
+		{
+			return null; // or throw
+		}
+		
+		CellType type = cell.getCellType();
+		
+		if (type == CellType.FORMULA)
+		{
+			type = eval.evaluateFormulaCell(cell);
+		}
+		
+		switch(type)
+		{
+			case NUMERIC:
+			{
+				double d = cell.getNumericCellValue();
+				
+				if (Double.isNaN(d) || Double.isInfinite(d))
+				{
+					throw new IllegalArgumentException("Numeric cell is NaN/Inf");
+				}
+				
+				if (Math.rint(d) != d)
+				{
+					throw new IllegalArgumentException("Value is not an integer: " + d);
+				}
+				
+				if (d < Integer.MIN_VALUE || d > Integer.MAX_VALUE)
+				{
+					throw new IllegalArgumentException("Out of int range: " + d);
+				}
+				
+				return (int) d;
+			}
+			
+			case STRING:
+			{
+				String s = cell.getStringCellValue().trim();
+				
+				if (s.isEmpty())
+				{
+					return null; // or throw
+				}
+				
+				// strip commas/spaces if your sheet has them
+				s = s.replace(",", "");
+				return Integer.valueOf(s);
+			}
+			
+			case BLANK:
+				return null; // or throw
+				
+			default:
+				throw new IllegalArgumentException("Unsupported cell type: " + type);
+		}
+		
 	}
 	
 }
