@@ -137,71 +137,69 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 			return;
 		}
 		
-		if (company.getChartOfAccounts().getAccounts().isEmpty())
-		{
-			Alert alert =
-				new Alert(AlertType.ERROR, "Chart of Accounts is empty. Cannot import file.");
-			alert.initOwner(this.ownerStage);
-			alert.showAndWait();
-			return;
-		}
-		
-		List<String> accountNames = new ArrayList<>();
-		
-		for (Account a : company.getChartOfAccounts().getAccounts())
-		{
-			accountNames.add(a.getName());
-		}
-		
-		ChoiceDialog<String> acctDialog = new ChoiceDialog<>(accountNames.get(0), accountNames);
-		acctDialog.initOwner(this.ownerStage);
-		acctDialog.setTitle("Choose Account");
-		acctDialog.setHeaderText("Select account for imported transactions:");
-		Optional<String> acctNameOpt = acctDialog.showAndWait();
-		
-		if (acctNameOpt.isEmpty())
-		{
-			return; // user cancelled
-		}
-		
-		String acctName = acctNameOpt.get();
-		Account account = company.getChartOfAccounts().getAccountByName(acctName);
-		
-		if (account == null)
-		{
-			Alert alert = new Alert(AlertType.ERROR, "Account not found: " + acctName);
-			alert.initOwner(this.ownerStage);
-			alert.showAndWait();
-			return;
-		}
-		
-		List<AccountingTransaction> imported = new ArrayList<>();
-		
-		// Use the excel file importer
-		if ("Excel (.xlsx)".equals(chosenFormat))
-		{
-			
-			try
-			{
-				List<ExcelLedgerRow> rows =
-					ExcelLedgerImportService.importSpreadsheet(selectedFile);
-				imported.addAll(convertExcelRows(rows, account, company.getChartOfAccounts()));
-			}
-			catch (IOException e)
-			{
-				Alert alert =
-					new Alert(AlertType.ERROR, "Error reading Excel file: " + e.getMessage());
-				alert.initOwner(this.ownerStage);
-				alert.showAndWait();
-				return;
-			}
-			
-		}
-		else
-		{
-			imported = FileImportService.importOFXorQIFFile(selectedFile, account,
-				company.getChartOfAccounts(), company.getLedger());
-		}
+                if (company.getChartOfAccounts().getAccounts().isEmpty())
+                {
+                        Alert alert =
+                                new Alert(AlertType.ERROR, "Chart of Accounts is empty. Cannot import file.");
+                        alert.initOwner(this.ownerStage);
+                        alert.showAndWait();
+                        return;
+                }
+
+                List<AccountingTransaction> imported = new ArrayList<>();
+
+                if ("Excel (.xlsx)".equals(chosenFormat))
+                {
+                        try
+                        {
+                                List<ExcelLedgerRow> rows =
+                                        ExcelLedgerImportService.importSpreadsheet(selectedFile);
+                                imported.addAll(convertExcelRows(rows, company.getChartOfAccounts()));
+                        }
+                        catch (IOException e)
+                        {
+                                Alert alert =
+                                        new Alert(AlertType.ERROR, "Error reading Excel file: " + e.getMessage());
+                                alert.initOwner(this.ownerStage);
+                                alert.showAndWait();
+                                return;
+                        }
+
+                }
+                else
+                {
+                        List<String> accountNames = new ArrayList<>();
+
+                        for (Account a : company.getChartOfAccounts().getAccounts())
+                        {
+                                accountNames.add(a.getName());
+                        }
+
+                        ChoiceDialog<String> acctDialog = new ChoiceDialog<>(accountNames.get(0), accountNames);
+                        acctDialog.initOwner(this.ownerStage);
+                        acctDialog.setTitle("Choose Account");
+                        acctDialog.setHeaderText("Select account for imported transactions:");
+                        Optional<String> acctNameOpt = acctDialog.showAndWait();
+
+                        if (acctNameOpt.isEmpty())
+                        {
+                                return; // user cancelled
+                        }
+
+                        String acctName = acctNameOpt.get();
+                        Account account = company.getChartOfAccounts().getAccountByName(acctName);
+
+                        if (account == null)
+                        {
+                                Alert alert = new Alert(AlertType.ERROR, "Account not found: " + acctName);
+                                alert.initOwner(this.ownerStage);
+                                alert.showAndWait();
+                                return;
+                        }
+
+                        imported = FileImportService.importOFXorQIFFile(selectedFile, account,
+                                company.getChartOfAccounts(), company.getLedger());
+                }
 		
 		if (imported.isEmpty())
 		{
@@ -233,110 +231,125 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 		alert.showAndWait();
 	}
 	
-	/**
-	 * Converts rows read from {@link ExcelLedgerImportService} into simple
-	 * {@link AccountingTransaction} instances posted to the chosen account
-	 * and the "needs categorization" suspense account.
-	 */
-	private static List<AccountingTransaction> convertExcelRows(List<ExcelLedgerRow> rows,
-																Account targetAccount,
-																ChartOfAccounts chartOfAccounts)
-	{
-		List<AccountingTransaction> results = new ArrayList<>();
-		
-		if (rows == null || rows.isEmpty())
-		{
-			return results;
-		}
-		
-		Account suspense =
-			chartOfAccounts.getAccount(FileImportService.NEEDS_CATEGORIZATION_ACCOUNT_NUMBER);
-		
-		if (suspense == null)
-		{
-			throw new IllegalArgumentException("'Needs Categorization' account not found");
-		}
-		
-		for (ExcelLedgerRow row : rows)
-		{
-			
-			if (row == null || row.getAllocations() == null)
-			{
-				continue;
-			}
-			
-			String memo = row.getMemoNotes();
-			
-			if (memo == null || memo.isBlank())
-			{
-				memo = row.getToFrom();
-			}
-			
-			for (ExcelLedgerRow.Allocation alloc : row.getAllocations())
-			{
-				
-				if (alloc.getAmount() == null)
-				{
-					continue;
-				}
-				
-				Set<AccountingEntry> entries = new HashSet<>();
-				AccountSide targetSide;
-				AccountSide suspenseSide;
-				
-				if (targetAccount.getIncreaseSide() == AccountSide.DEBIT)
-				{
-					
-					if (alloc.getAmount().compareTo(java.math.BigDecimal.ZERO) >= 0)
-					{
-						targetSide = AccountSide.DEBIT;
-						suspenseSide = AccountSide.CREDIT;
-					}
-					else
-					{
-						targetSide = AccountSide.CREDIT;
-						suspenseSide = AccountSide.DEBIT;
-					}
-					
-				}
-				else
-				{
-					
-					if (alloc.getAmount().compareTo(java.math.BigDecimal.ZERO) >= 0)
-					{
-						targetSide = AccountSide.CREDIT;
-						suspenseSide = AccountSide.DEBIT;
-					}
-					else
-					{
-						targetSide = AccountSide.DEBIT;
-						suspenseSide = AccountSide.CREDIT;
-					}
-					
-				}
-				
-				java.math.BigDecimal amt = alloc.getAmount().abs();
-				entries.add(new AccountingEntry(amt, targetAccount.getAccountNumber(), targetSide,
-					targetAccount.getName()));
-				entries.add(new AccountingEntry(amt, suspense.getAccountNumber(), suspenseSide,
-					suspense.getName()));
-				
-				AccountingTransaction tx = new AccountingTransaction(targetAccount, entries,
-					new HashMap<>(), Instant.now().toEpochMilli());
-				
-				if (row.getDate() != null)
-				{
-					tx.setDate(row.getDate().toString());
-				}
-				
-				tx.setMemo(memo);
-				results.add(tx);
-			}
-			
-		}
-		
-		return results;
-	}
+        /**
+         * Converts rows read from {@link ExcelLedgerImportService} into
+         * {@link AccountingTransaction} objects. Each allocation group within a
+         * row specifies two account names that form a balanced entry. Up to four
+         * allocation groups are supported per transaction.
+         */
+        private static List<AccountingTransaction> convertExcelRows(List<ExcelLedgerRow> rows,
+                                                                               ChartOfAccounts chartOfAccounts)
+        {
+                List<AccountingTransaction> results = new ArrayList<>();
+
+                if (rows == null || rows.isEmpty())
+                {
+                        return results;
+                }
+
+                for (ExcelLedgerRow row : rows)
+                {
+                        if (row == null || row.getAllocations() == null)
+                        {
+                                continue;
+                        }
+
+                        String memo = row.getMemoNotes();
+
+                        if (memo == null || memo.isBlank())
+                        {
+                                memo = row.getToFrom();
+                        }
+
+                        for (ExcelLedgerRow.Allocation alloc : row.getAllocations())
+                        {
+                                if (alloc.getAmount() == null)
+                                {
+                                        continue;
+                                }
+
+                                List<Account> accounts = new ArrayList<>();
+
+                                if (alloc.getAssetLiabilityAccount() != null && !alloc.getAssetLiabilityAccount().isBlank())
+                                {
+                                        Account a = chartOfAccounts.getAccountByName(alloc.getAssetLiabilityAccount());
+                                        if (a != null)
+                                                accounts.add(a);
+                                }
+
+                                if (alloc.getIncomeCategory() != null && !alloc.getIncomeCategory().isBlank())
+                                {
+                                        Account a = chartOfAccounts.getAccountByName(alloc.getIncomeCategory());
+                                        if (a != null)
+                                                accounts.add(a);
+                                }
+
+                                if (alloc.getExpenseCategory() != null && !alloc.getExpenseCategory().isBlank())
+                                {
+                                        Account a = chartOfAccounts.getAccountByName(alloc.getExpenseCategory());
+                                        if (a != null)
+                                                accounts.add(a);
+                                }
+
+                                if (accounts.size() != 2)
+                                {
+                                        // Require exactly two accounts to form a balanced entry
+                                        continue;
+                                }
+
+                                Account acc1 = accounts.get(0);
+                                Account acc2 = accounts.get(1);
+
+                                AccountSide side1;
+                                AccountSide side2;
+
+                                if (acc1.getIncreaseSide() == AccountSide.DEBIT)
+                                {
+                                        if (alloc.getAmount().compareTo(java.math.BigDecimal.ZERO) >= 0)
+                                        {
+                                                side1 = AccountSide.DEBIT;
+                                                side2 = AccountSide.CREDIT;
+                                        }
+                                        else
+                                        {
+                                                side1 = AccountSide.CREDIT;
+                                                side2 = AccountSide.DEBIT;
+                                        }
+                                }
+                                else
+                                {
+                                        if (alloc.getAmount().compareTo(java.math.BigDecimal.ZERO) >= 0)
+                                        {
+                                                side1 = AccountSide.CREDIT;
+                                                side2 = AccountSide.DEBIT;
+                                        }
+                                        else
+                                        {
+                                                side1 = AccountSide.DEBIT;
+                                                side2 = AccountSide.CREDIT;
+                                        }
+                                }
+
+                                java.math.BigDecimal amt = alloc.getAmount().abs();
+                                Set<AccountingEntry> entries = new HashSet<>();
+                                entries.add(new AccountingEntry(amt, acc1.getAccountNumber(), side1, acc1.getName()));
+                                entries.add(new AccountingEntry(amt, acc2.getAccountNumber(), side2, acc2.getName()));
+
+                                AccountingTransaction tx = new AccountingTransaction(acc1, entries,
+                                        new HashMap<>(), Instant.now().toEpochMilli());
+
+                                if (row.getDate() != null)
+                                {
+                                        tx.setDate(row.getDate().toString());
+                                }
+
+                                tx.setMemo(memo);
+                                results.add(tx);
+                        }
+                }
+
+                return results;
+        }
 	
 	
 }
