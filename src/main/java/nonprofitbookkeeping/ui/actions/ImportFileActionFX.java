@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -76,6 +75,7 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 		}
 		
 		this.ownerStage = ownerStage;
+		
 	}
 	
 	/**
@@ -150,7 +150,7 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 		if (company.getChartOfAccounts().getAccounts().isEmpty())
 		{
 			Alert alert =
-				new Alert(AlertType.ERROR, "Chart of Accounts is empty. Cannot import file.");
+					new Alert(AlertType.ERROR, "Chart of Accounts is empty. Cannot import file.");
 			alert.initOwner(this.ownerStage);
 			alert.showAndWait();
 			return;
@@ -174,10 +174,11 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 			return; // user cancelled
 		}
 		
-                String acctName = acctNameOpt.get();
-                // Search entire chart of accounts case-insensitively
-                Account account = FileImportService
-                        .findAccountIgnoreCase(company.getChartOfAccounts(), acctName);
+		String acctName = acctNameOpt.get();
+		
+		// Search entire chart of accounts case-insensitively
+		Account account =
+				FileImportService.findAccountIgnoreCase(company.getChartOfAccounts(), acctName);
 		
 		if (account == null)
 		{
@@ -191,14 +192,14 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 		
 		// Use the excel file importer
 		if ("Excel (.xlsx)".equals(chosenFormat))
-		{			
+		{
+			
 			try
 			{
 				List<ExcelLedgerRow> rows =
-					ExcelLedgerImportService.importSpreadsheet(selectedFile);
-				imported.addAll(this.convertExcelRows(rows, 
-					account, 
-					company.getChartOfAccounts()));
+						ExcelLedgerImportService.importSpreadsheet(selectedFile);
+				
+				imported.addAll(this.convertExcelRows(rows, account, company.getChartOfAccounts()));
 			}
 			catch (ActionCancelledException ace)
 			{
@@ -210,7 +211,7 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 			catch (IOException e)
 			{
 				Alert alert =
-					new Alert(AlertType.ERROR, "Error reading Excel file: " + e.getMessage());
+						new Alert(AlertType.ERROR, "Error reading Excel file: " + e.getMessage());
 				alert.initOwner(this.ownerStage);
 				alert.showAndWait();
 				return;
@@ -220,13 +221,13 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 		else
 		{
 			imported = FileImportService.importOFXorQIFFile(selectedFile, account,
-				company.getChartOfAccounts(), company.getLedger());
+					company.getChartOfAccounts(), company.getLedger());
 		}
 		
 		if (imported.isEmpty())
 		{
 			Alert alert = new Alert(AlertType.INFORMATION,
-				"No transactions imported from " + selectedFile.getName());
+									"No transactions imported from " + selectedFile.getName());
 			alert.initOwner(this.ownerStage);
 			alert.showAndWait();
 			return;
@@ -248,9 +249,11 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 		}
 		
 		Alert alert = new Alert(AlertType.INFORMATION,
-			"Imported " + imported.size() + " transactions from " + selectedFile.getName());
+								"Imported " + imported.size() + " transactions from " +
+										selectedFile.getName());
 		alert.initOwner(this.ownerStage);
 		alert.showAndWait();
+		
 	}
 	
 	/**
@@ -259,10 +262,10 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 	 * matched against the chart of accounts and missing accounts prompt the
 	 * user to add or ignore them.
 	 */
-	private	List<AccountingTransaction>	convertExcelRows
-		(List<ExcelLedgerRow> rows, 
-		 Account targetAccount,
-		 ChartOfAccounts chartOfAccounts) throws ActionCancelledException
+	private List<AccountingTransaction> 
+		convertExcelRows(	List<ExcelLedgerRow> rows,
+		                 	Account targetAccount,
+		                 	ChartOfAccounts chartOfAccounts) throws ActionCancelledException
 	{
 		List<AccountingTransaction> results = new ArrayList<>();
 		
@@ -287,16 +290,20 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 				memo = row.getToFrom();
 			}
 			
-			for (ExcelLedgerRow.Allocation alloc : row.getAllocations())
+			System.out.println("\nrow:" + row);	
+			
+			// Get the alloc portion of the row
+			for (ExcelLedgerRow.Allocation allocRow : row.getAllocations())
 			{
+				System.out.println("-- allocRow:" + allocRow);	
 				
-				if (alloc.getAmount() == null)
+				if (allocRow.getAmount() == null)
 				{
 					continue;
 				}
 				
 				// Get the account name string
-				String allocName = ExcelLedgerImportService.determineAccountName(alloc);
+				String allocName = ExcelLedgerImportService.determineAccountName(allocRow);
 				Account otherAccount = null;
 				
 				// Look up the name from the chart of accounts
@@ -307,6 +314,8 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 				
 				if (otherAccount == null)
 				{
+					System.out.println("\nother account not found");
+
 					// User chose to ignore this account or account not found
 					continue;
 				}
@@ -318,7 +327,7 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 				if (targetAccount.getIncreaseSide() == AccountSide.DEBIT)
 				{
 					
-					if (alloc.getAmount().compareTo(java.math.BigDecimal.ZERO) >= 0)
+					if (allocRow.getAmount().compareTo(java.math.BigDecimal.ZERO) >= 0)
 					{
 						targetSide = AccountSide.DEBIT;
 						otherSide = AccountSide.CREDIT;
@@ -333,7 +342,7 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 				else
 				{
 					
-					if (alloc.getAmount().compareTo(java.math.BigDecimal.ZERO) >= 0)
+					if (allocRow.getAmount().compareTo(java.math.BigDecimal.ZERO) >= 0)
 					{
 						targetSide = AccountSide.CREDIT;
 						otherSide = AccountSide.DEBIT;
@@ -346,14 +355,16 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 					
 				}
 				
-				java.math.BigDecimal amt = alloc.getAmount().abs();
+				java.math.BigDecimal amt = allocRow.getAmount().abs();
 				entries.add(new AccountingEntry(amt, targetAccount.getAccountNumber(), targetSide,
-					targetAccount.getName()));
+												targetAccount.getName()));
 				entries.add(new AccountingEntry(amt, otherAccount.getAccountNumber(), otherSide,
-					otherAccount.getName()));
+												otherAccount.getName()));
 				
-				AccountingTransaction tx = new AccountingTransaction(targetAccount, entries,
-					new HashMap<>(), Instant.now().toEpochMilli());
+				AccountingTransaction tx = new AccountingTransaction(	targetAccount, entries,
+																		new HashMap<>(),
+																		Instant.now()
+																				.toEpochMilli());
 				
 				if (row.getDate() != null)
 				{
@@ -362,11 +373,14 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 				
 				tx.setMemo(memo);
 				results.add(tx);
+				System.out.println("\ntransaction:" + tx);	
+				
 			}
 			
 		}
-		
+		System.out.println("\nresults:" + results);	
 		return results;
+		
 	}
 	
 	/**
@@ -379,8 +393,8 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 	 * @return The matching {@link Account} or {@code null} if ignored.
 	 * @throws ActionCancelledException if the user chooses to abort.
 	 */
-	private Account resolveAccountUI(String name,
-	                                 ChartOfAccounts chart) throws ActionCancelledException
+	private Account resolveAccountUI(	String name,
+										ChartOfAccounts chart) throws ActionCancelledException
 	{
 		
 		if (name == null || name.isBlank() || chart == null)
@@ -441,6 +455,7 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 		}
 		
 		return found;
+		
 	}
 	
 	

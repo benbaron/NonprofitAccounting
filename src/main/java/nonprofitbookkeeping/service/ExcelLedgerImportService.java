@@ -8,6 +8,7 @@ import org.apache.poi.ss.usermodel.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -60,14 +61,19 @@ public class ExcelLedgerImportService
 			int firstRow = sheet.getFirstRowNum() + 1;
 			int lastRow = sheet.getLastRowNum();
 			
+			DataFormatter formatter = new DataFormatter();
+			FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
+			
 			for (int r = firstRow; r <= lastRow; r++)
 			{
+				System.out.println("\n\n---------------- Row number "+ r + " ------------ ");
 				Row row = sheet.getRow(r);
 				
 				if (row == null)
 				{
 					continue;
 				}
+				printRow(row, formatter, evaluator, System.out);
 				
 				// Parse a body row
 				ExcelLedgerRow record = parseRow(row, mapping);
@@ -85,6 +91,33 @@ public class ExcelLedgerImportService
 		
 	}
 	
+	public static void printRow(Row row,
+	                            DataFormatter formatter,
+	                            FormulaEvaluator evaluator,
+	                            Appendable out)
+	{
+	    if (row == null)
+	    {
+	        return;
+	    }
+
+	    try
+	    {
+	        for (int i = row.getFirstCellNum(); i < row.getLastCellNum(); i++)
+	        {
+	            Cell cell = row.getCell(i, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
+	            String value = (cell == null) ? "" : formatter.formatCellValue(cell, evaluator);
+
+	            out.append(value).append('\t');
+	        }
+	        out.append('\n');
+	    }
+	    catch (IOException e)
+	    {
+	        throw new UncheckedIOException(e);
+	    }
+	}
+
 	/* ------------------------------------------------------------- */
 	private static class HeaderMapping
 	{
@@ -105,6 +138,30 @@ public class ExcelLedgerImportService
 			}
 			
 		}
+
+		/**
+		 * Override @see java.lang.Object#toString() 
+		 */
+		@Override public String toString()
+		{
+			StringBuilder builder = new StringBuilder();
+			builder.append("HeaderMapping [date=");
+			builder.append(date);
+			builder.append(", check=");
+			builder.append(check);
+			builder.append(", clearBank=");
+			builder.append(clearBank);
+			builder.append(", toFrom=");
+			builder.append(toFrom);
+			builder.append(", memo=");
+			builder.append(memo);
+			builder.append(", budget=");
+			builder.append(budget);
+			builder.append(", groups=");
+			builder.append(groups);
+			builder.append("]");
+			return builder.toString();
+		}
 		
 	}
 	
@@ -118,6 +175,25 @@ public class ExcelLedgerImportService
 		int income = -1;
 		int expense = -1;
 		int fund = -1;
+		/**
+		 * Override @see java.lang.Object#toString() 
+		 */
+		@Override public String toString()
+		{
+			StringBuilder builder = new StringBuilder();
+			builder.append("GroupColumns [amount=");
+			builder.append(amount);
+			builder.append(", asset=");
+			builder.append(asset);
+			builder.append(", income=");
+			builder.append(income);
+			builder.append(", expense=");
+			builder.append(expense);
+			builder.append(", fund=");
+			builder.append(fund);
+			builder.append("]");
+			return builder.toString();
+		}
 		
 	}
 	
@@ -168,6 +244,8 @@ public class ExcelLedgerImportService
 			{
 				map.budget = idx;
 			}
+			
+			
 			else if (text.contains("amount"))
 			{
 				group(map.groups, text).amount = idx;
@@ -190,18 +268,22 @@ public class ExcelLedgerImportService
 			}
 			
 		}
-		
+		System.out.println("map: "+ map);
 		return map;
 	}
 	
 	/**
-	 * Extracts the group index from the header. Not sure why.
+	 * Determines the group to use
+	 * 
 	 * @param groups array
 	 * @param headerText
 	 * @return Group Columns structure
 	 */
 	private static GroupColumns group(GroupColumns[] groups, String headerText)
 	{
+		// look for the group index in the column def i.e.
+		// Amount 1
+		// otherwise, take the first available group
 		int index = extractGroupIndex(headerText);
 		
 		if (index < 0 || index >= groups.length)
@@ -276,53 +358,67 @@ public class ExcelLedgerImportService
 	 */
 	private static ExcelLedgerRow parseRow(Row row, HeaderMapping map)
 	{
-		DataFormatter fmt = new DataFormatter();
-		ExcelLedgerRow out = new ExcelLedgerRow();
-		
-		if (map.date >= 0)
-		{
-			out.setDate(readDate(row.getCell(map.date)));
-		}
-		
-		if (map.check >= 0)
-		{
-			out.setCheckNumber(fmt.formatCellValue(row.getCell(map.check)).trim());
-		}
-		
-		if (map.clearBank >= 0)
-		{
-			out.setClearBank(fmt.formatCellValue(row.getCell(map.clearBank)).trim());
-		}
-		
-		if (map.toFrom >= 0)
-		{
-			out.setToFrom(fmt.formatCellValue(row.getCell(map.toFrom)).trim());
-		}
-		
-		if (map.memo >= 0)
-		{
-			out.setMemoNotes(fmt.formatCellValue(row.getCell(map.memo)).trim());
-		}
-		
-		if (map.budget >= 0)
-		{
-			out.setBudgetTracking(fmt.formatCellValue(row.getCell(map.budget)).trim());
-		}
-		
-		// Parse the group columns
-		for (GroupColumns g : map.groups)
-		{
-			Allocation alloc = readAllocation(row, g, fmt);
-			
-			if (alloc != null)
-			{
-				out.getAllocations().add(alloc);
-			}
-			
-		}
-		
-		return out;
+	    DataFormatter fmt = new DataFormatter();
+	    ExcelLedgerRow out = new ExcelLedgerRow();
+
+	    if (map.date >= 0)
+	    {
+	        LocalDate date = readDate(row.getCell(map.date));
+	        System.out.println("\n\ndate = " + date);
+	        out.setDate(date);
+	    }
+
+	    if (map.check >= 0)
+	    {
+	        String checkNumber = fmt.formatCellValue(row.getCell(map.check)).trim();
+	        System.out.println("checkNumber = " + checkNumber);
+	        out.setCheckNumber(checkNumber);
+	    }
+
+	    if (map.clearBank >= 0)
+	    {
+	        String clearBank = fmt.formatCellValue(row.getCell(map.clearBank)).trim();
+	        System.out.println("clearBank = " + clearBank);
+	        out.setClearBank(clearBank);
+	    }
+
+	    if (map.toFrom >= 0)
+	    {
+	        String toFrom = fmt.formatCellValue(row.getCell(map.toFrom)).trim();
+	        System.out.println("toFrom = " + toFrom);
+	        out.setToFrom(toFrom);
+	    }
+
+	    if (map.memo >= 0)
+	    {
+	        String memoNotes = fmt.formatCellValue(row.getCell(map.memo)).trim();
+	        System.out.println("memoNotes = " + memoNotes);
+	        out.setMemoNotes(memoNotes);
+	    }
+
+	    if (map.budget >= 0)
+	    {
+	        String budgetTracking = fmt.formatCellValue(row.getCell(map.budget)).trim();
+	        System.out.println("budgetTracking = " + budgetTracking);
+	        out.setBudgetTracking(budgetTracking);
+	    }
+
+	    // Parse the group columns
+	    for (GroupColumns g : map.groups)
+	    {
+	        Allocation alloc = readAllocation(row, g, fmt);
+
+	        if (alloc != null)
+	        {
+	            // Uncomment if you also want to print allocations:
+	            System.out.println("allocation = " + alloc);
+	            out.getAllocations().add(alloc);
+	        }
+	    }
+
+	    return out;
 	}
+
 	
 	/**
 	 * Reads the group columns into the allocation internal data structure
@@ -333,60 +429,72 @@ public class ExcelLedgerImportService
 	 * 
 	 * @return
 	 */
-	private static Allocation readAllocation(Row row, GroupColumns g, 
+	private static Allocation readAllocation(Row row,
+	                                         GroupColumns g,
 	                                         DataFormatter fmt)
 	{
-		
-		if (g.amount < 0 && g.asset < 0 && g.income < 0 && g.expense < 0 && g.fund < 0)
-		{
-			return null;
-		}
-		
-		Allocation a = new Allocation();
-		
-		if (g.amount >= 0)
-		{
-			String val = fmt.formatCellValue(row.getCell(g.amount)).trim();
-			
-			if (val.isBlank())
-			{
-				return null; // no amount means skip this allocation
-			}
-			
-			try
-			{
-				a.setAmount(new BigDecimal(val.replace(",", "")));
-			}
-			catch (NumberFormatException e)
-			{
-				// treat as zero if not parseable
-				a.setAmount(BigDecimal.ZERO);
-			}
-			
-		}
-		
-		if (g.asset >= 0)
-		{
-			a.setAssetLiabilityAccount(fmt.formatCellValue(row.getCell(g.asset)).trim());
-		}
-		
-		if (g.income >= 0)
-		{
-			a.setIncomeCategory(fmt.formatCellValue(row.getCell(g.income)).trim());
-		}
-		
-		if (g.expense >= 0)
-		{
-			a.setExpenseCategory(fmt.formatCellValue(row.getCell(g.expense)).trim());
-		}
-		
-		if (g.fund >= 0)
-		{
-			a.setFund(fmt.formatCellValue(row.getCell(g.fund)).trim());
-		}
-		
-		return a;
+	    if (g.amount < 0 && g.asset < 0 && g.income < 0 && g.expense < 0 && g.fund < 0)
+	    {
+	        return null;
+	    }
+
+	    Allocation a = new Allocation();
+
+	    if (g.amount >= 0)
+	    {
+	        String amountRaw = fmt.formatCellValue(row.getCell(g.amount)).trim();
+	        System.out.println("amount(raw) = " + amountRaw);
+
+	        if (amountRaw.isBlank())
+	        {
+	            System.out.println("amount(raw) is blank → skipping allocation");
+	            return null; // no amount means skip this allocation
+	        }
+
+	        try
+	        {
+	            BigDecimal amount = new BigDecimal(amountRaw.replace(",", ""));
+	            System.out.println("amount(parsed) = " + amount);
+	            a.setAmount(amount);
+	        }
+	        catch (NumberFormatException e)
+	        {
+	            System.out.println("amount(parse error) → treating as 0");
+	            a.setAmount(BigDecimal.ZERO);
+	        }
+	    }
+
+	    if (g.asset >= 0)
+	    {
+	        String asset = fmt.formatCellValue(row.getCell(g.asset)).trim();
+	        System.out.println("assetLiabilityAccount = " + asset);
+	        a.setAssetLiabilityAccount(asset);
+	    }
+
+	    if (g.income >= 0)
+	    {
+	        String income = fmt.formatCellValue(row.getCell(g.income)).trim();
+	        System.out.println("incomeCategory = " + income);
+	        a.setIncomeCategory(income);
+	    }
+
+	    if (g.expense >= 0)
+	    {
+	        String expense = fmt.formatCellValue(row.getCell(g.expense)).trim();
+	        System.out.println("expenseCategory = " + expense);
+	        a.setExpenseCategory(expense);
+	    }
+
+	    if (g.fund >= 0)
+	    {
+	        String fund = fmt.formatCellValue(row.getCell(g.fund)).trim();
+	        System.out.println("fund = " + fund);
+	        a.setFund(fund);
+	    }
+
+	    return a;
 	}
+
 	
 	/**
 	 * Parses the date field into a LocalDate

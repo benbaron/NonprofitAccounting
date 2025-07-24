@@ -13,7 +13,8 @@ import java.util.List;
  * The row contains general transaction info and up to four
  * allocation groups consisting of amount and account details.
  */
-@Data @NoArgsConstructor public class ExcelLedgerRow
+@Data @NoArgsConstructor 
+public class ExcelLedgerRow
 {
 	/** Transaction date from the spreadsheet. */
 	private LocalDate date;
@@ -118,6 +119,26 @@ import java.util.List;
 		public void setFund(String fund)
 		{
 			this.fund = fund;
+		}
+		
+		/**
+		 * Override @see java.lang.Object#toString() 
+		 */
+		@Override public String toString()
+		{
+			StringBuilder builder = new StringBuilder();
+			builder.append("Allocation [amount=");
+			builder.append(amount);
+			builder.append(", assetLiabilityAccount=");
+			builder.append(assetLiabilityAccount);
+			builder.append(", incomeCategory=");
+			builder.append(incomeCategory);
+			builder.append(", expenseCategory=");
+			builder.append(expenseCategory);
+			builder.append(", fund=");
+			builder.append(fund);
+			builder.append("]");
+			return builder.toString();
 		}
 		
 		
@@ -234,6 +255,30 @@ import java.util.List;
 	public void setAllocations(List<Allocation> allocations)
 	{
 		this.allocations = allocations;
+	}
+
+	/**
+	 * Override @see java.lang.Object#toString() 
+	 */
+	@Override public String toString()
+	{
+		StringBuilder builder = new StringBuilder();
+		builder.append("ExcelLedgerRow [date=");
+		builder.append(date);
+		builder.append(", checkNumber=");
+		builder.append(checkNumber);
+		builder.append(", clearBank=");
+		builder.append(clearBank);
+		builder.append(", toFrom=");
+		builder.append(toFrom);
+		builder.append(", memoNotes=");
+		builder.append(memoNotes);
+		builder.append(", budgetTracking=");
+		builder.append(budgetTracking);
+		builder.append(", allocations=");
+		builder.append(allocations);
+		builder.append("]");
+		return builder.toString();
 	}
 
 
