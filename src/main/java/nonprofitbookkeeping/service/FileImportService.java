@@ -70,9 +70,9 @@ public class FileImportService
     private static final String FITID_KEY = "IMPORT_ID";
 
     /**
-     * Searches the provided {@link ChartOfAccounts} for an account matching
-     * the given name, ignoring case. Returns {@code null} if no matching
-     * account is found or if inputs are invalid.
+     * Searches the entire {@link ChartOfAccounts} for an account whose name
+     * matches the provided value, ignoring case and trimming whitespace. Returns
+     * {@code null} if no matching account is found or if inputs are invalid.
      *
      * @param chart The chart of accounts to search.
      * @param name  The account name to look up.
@@ -85,9 +85,11 @@ public class FileImportService
             return null;
         }
 
+        String target = name.trim();
+
         for (Account a : chart.getAccounts())
         {
-            if (name.equalsIgnoreCase(a.getName()))
+            if (target.equalsIgnoreCase(a.getName().trim()))
             {
                 return a;
             }

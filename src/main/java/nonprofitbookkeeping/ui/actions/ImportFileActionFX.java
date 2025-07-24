@@ -174,8 +174,10 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 			return; // user cancelled
 		}
 		
-		String acctName = acctNameOpt.get();
-		Account account = company.getChartOfAccounts().getAccountByName(acctName);
+                String acctName = acctNameOpt.get();
+                // Search entire chart of accounts case-insensitively
+                Account account = FileImportService
+                        .findAccountIgnoreCase(company.getChartOfAccounts(), acctName);
 		
 		if (account == null)
 		{
