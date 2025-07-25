@@ -77,29 +77,6 @@
 			<version>2.1.0</version>
 		</dependency>	
 	
-		<dependency>
-			<groupId>net.sf.jasperreports</groupId>
-			<artifactId>jasperreports</artifactId>
-			<version>7.0.3</version>				
-
-<!--
-			<exclusions>
-				<exclusion>
-					<groupId>com.fasterxml.jackson.core</groupId>
-					<artifactId>jackson-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.fasterxml.jackson.core</groupId>
-					<artifactId>jackson-annotations</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-				</exclusion>
-			</exclusions>			
-				-->
-				
-		</dependency>
 	
 		<!-- JUL → SLF4J bridge (current 2.x line) -->
 		<dependency>
