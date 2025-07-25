@@ -64,19 +64,22 @@ public class ExcelLedgerImportService
 			DataFormatter formatter = new DataFormatter();
 			FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
 			
-			for (int r = firstRow; r <= lastRow; r++)
-			{
-				System.out.println("\n\n---------------- Row number "+ r + " ------------ ");
-				Row row = sheet.getRow(r);
-				
-				if (row == null)
-				{
-					continue;
-				}
-				printRow(row, formatter, evaluator, System.out);
-				
-				// Parse a body row
-				ExcelLedgerRow record = parseRow(row, mapping);
+                        for (int r = firstRow; r <= lastRow; r++)
+                        {
+                                System.out.println("\n\n---------------- Row number " + r + " ------------ ");
+                                Row row = sheet.getRow(r);
+
+                                if (row == null)
+                                {
+                                        continue;
+                                }
+                                RowReader reader = new RowReader(row, r, formatter, evaluator);
+                                java.io.StringWriter sw = new java.io.StringWriter();
+                                printRow(row, formatter, evaluator, sw);
+                                System.out.println(sw.toString());
+
+                                // Parse a body row
+                                ExcelLedgerRow record = parseRow(reader, mapping);
 				
 				// Skip completely blank rows
 				if (!record.getAllocations().isEmpty() || record.getDate() != null)
@@ -168,13 +171,13 @@ public class ExcelLedgerImportService
 	/**
 	 * 
 	 */
-	private static class GroupColumns
-	{
-		int amount = -1;
-		int asset = -1;
-		int income = -1;
-		int expense = -1;
-		int fund = -1;
+    private static class GroupColumns
+    {
+        int amount = -1;
+        int asset = -1;
+        int income = -1;
+        int expense = -1;
+        int fund = -1;
 		/**
 		 * Override @see java.lang.Object#toString() 
 		 */
@@ -193,9 +196,55 @@ public class ExcelLedgerImportService
 			builder.append(fund);
 			builder.append("]");
 			return builder.toString();
-		}
-		
-	}
+        }
+
+    }
+
+    /**
+     * Helper wrapper that provides easy access to cell values from a row.
+     * All values returned are trimmed strings and each access is printed
+     * with the row/column information for debugging purposes.
+     */
+    private static class RowReader
+    {
+        final Row row;
+        final int index;
+        final DataFormatter fmt;
+        final FormulaEvaluator evaluator;
+
+        RowReader(Row row, int index, DataFormatter fmt, FormulaEvaluator evaluator)
+        {
+            this.row = row;
+            this.index = index;
+            this.fmt = fmt;
+            this.evaluator = evaluator;
+        }
+
+        String text(int column)
+        {
+            if (column < 0)
+            {
+                return "";
+            }
+
+            Cell cell = row.getCell(column, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
+            String val = (cell == null) ? "" : fmt.formatCellValue(cell, evaluator);
+            final String trimmed = val.trim();
+            System.out.printf("R%dC%d='%s'%n", index, column, trimmed);
+            return trimmed;
+        }
+
+        LocalDate date(int column)
+        {
+            if (column < 0)
+            {
+                return null;
+            }
+            LocalDate d = readDate(row.getCell(column));
+            System.out.printf("R%dC%d[date]=%s%n", index, column, d);
+            return d;
+        }
+    }
 	
 	/**
 	 * Builds the header mapping by parsing keywords.
@@ -268,9 +317,9 @@ public class ExcelLedgerImportService
 			}
 			
 		}
-		System.out.println("map: "+ map);
-		return map;
-	}
+                System.out.println("map: " + map);
+                return map;
+        }
 	
 	/**
 	 * Determines the group to use
@@ -356,63 +405,62 @@ public class ExcelLedgerImportService
 	 * @param map
 	 * @return
 	 */
-	private static ExcelLedgerRow parseRow(Row row, HeaderMapping map)
-	{
-	    DataFormatter fmt = new DataFormatter();
-	    ExcelLedgerRow out = new ExcelLedgerRow();
+        private static ExcelLedgerRow parseRow(RowReader reader, HeaderMapping map)
+        {
+            ExcelLedgerRow out = new ExcelLedgerRow();
 
-	    if (map.date >= 0)
-	    {
-	        LocalDate date = readDate(row.getCell(map.date));
-	        System.out.println("\n\ndate = " + date);
-	        out.setDate(date);
-	    }
+            if (map.date >= 0)
+            {
+                LocalDate date = reader.date(map.date);
+                System.out.println("date = " + date);
+                out.setDate(date);
+            }
 
-	    if (map.check >= 0)
-	    {
-	        String checkNumber = fmt.formatCellValue(row.getCell(map.check)).trim();
-	        System.out.println("checkNumber = " + checkNumber);
-	        out.setCheckNumber(checkNumber);
-	    }
+            if (map.check >= 0)
+            {
+                String checkNumber = reader.text(map.check);
+                System.out.println("checkNumber = " + checkNumber);
+                out.setCheckNumber(checkNumber);
+            }
 
-	    if (map.clearBank >= 0)
-	    {
-	        String clearBank = fmt.formatCellValue(row.getCell(map.clearBank)).trim();
-	        System.out.println("clearBank = " + clearBank);
-	        out.setClearBank(clearBank);
-	    }
+            if (map.clearBank >= 0)
+            {
+                String clearBank = reader.text(map.clearBank);
+                System.out.println("clearBank = " + clearBank);
+                out.setClearBank(clearBank);
+            }
 
-	    if (map.toFrom >= 0)
-	    {
-	        String toFrom = fmt.formatCellValue(row.getCell(map.toFrom)).trim();
-	        System.out.println("toFrom = " + toFrom);
-	        out.setToFrom(toFrom);
-	    }
+            if (map.toFrom >= 0)
+            {
+                String toFrom = reader.text(map.toFrom);
+                System.out.println("toFrom = " + toFrom);
+                out.setToFrom(toFrom);
+            }
 
-	    if (map.memo >= 0)
-	    {
-	        String memoNotes = fmt.formatCellValue(row.getCell(map.memo)).trim();
-	        System.out.println("memoNotes = " + memoNotes);
-	        out.setMemoNotes(memoNotes);
-	    }
+            if (map.memo >= 0)
+            {
+                String memoNotes = reader.text(map.memo);
+                System.out.println("memoNotes = " + memoNotes);
+                out.setMemoNotes(memoNotes);
+            }
 
-	    if (map.budget >= 0)
-	    {
-	        String budgetTracking = fmt.formatCellValue(row.getCell(map.budget)).trim();
-	        System.out.println("budgetTracking = " + budgetTracking);
-	        out.setBudgetTracking(budgetTracking);
-	    }
+            if (map.budget >= 0)
+            {
+                String budgetTracking = reader.text(map.budget);
+                System.out.println("budgetTracking = " + budgetTracking);
+                out.setBudgetTracking(budgetTracking);
+            }
 
-	    // Parse the group columns
-	    for (GroupColumns g : map.groups)
-	    {
-	        Allocation alloc = readAllocation(row, g, fmt);
+            // Parse the group columns
+            for (GroupColumns g : map.groups)
+            {
+                Allocation alloc = readAllocation(reader, g);
 
-	        if (alloc != null)
-	        {
-	            // Uncomment if you also want to print allocations:
-	            System.out.println("allocation = " + alloc);
-	            out.getAllocations().add(alloc);
+                if (alloc != null)
+                {
+                    // Uncomment if you also want to print allocations:
+                    System.out.println("allocation = " + alloc);
+                    out.getAllocations().add(alloc);
 	        }
 	    }
 
@@ -429,68 +477,67 @@ public class ExcelLedgerImportService
 	 * 
 	 * @return
 	 */
-	private static Allocation readAllocation(Row row,
-	                                         GroupColumns g,
-	                                         DataFormatter fmt)
-	{
-	    if (g.amount < 0 && g.asset < 0 && g.income < 0 && g.expense < 0 && g.fund < 0)
-	    {
-	        return null;
-	    }
+        private static Allocation readAllocation(RowReader reader,
+                                                 GroupColumns g)
+        {
+            if (g.amount < 0 && g.asset < 0 && g.income < 0 && g.expense < 0 && g.fund < 0)
+            {
+                return null;
+            }
 
-	    Allocation a = new Allocation();
+            Allocation a = new Allocation();
 
-	    if (g.amount >= 0)
-	    {
-	        String amountRaw = fmt.formatCellValue(row.getCell(g.amount)).trim();
-	        System.out.println("amount(raw) = " + amountRaw);
+            if (g.amount >= 0)
+            {
+                String amountRaw = reader.text(g.amount);
+                System.out.println("amount(raw) = " + amountRaw);
 
 	        if (amountRaw.isBlank())
 	        {
-	            System.out.println("amount(raw) is blank → skipping allocation");
+                    System.out.println("amount(raw) is blank → skipping allocation");
 	            return null; // no amount means skip this allocation
 	        }
 
 	        try
 	        {
-	            BigDecimal amount = new BigDecimal(amountRaw.replace(",", ""));
-	            System.out.println("amount(parsed) = " + amount);
+                    BigDecimal amount = new BigDecimal(amountRaw.replace(",", ""));
+                    System.out.println("amount(parsed) = " + amount);
 	            a.setAmount(amount);
 	        }
 	        catch (NumberFormatException e)
 	        {
-	            System.out.println("amount(parse error) → treating as 0");
+                    System.out.println("amount(parse error) → treating as 0");
 	            a.setAmount(BigDecimal.ZERO);
 	        }
 	    }
 
-	    if (g.asset >= 0)
-	    {
-	        String asset = fmt.formatCellValue(row.getCell(g.asset)).trim();
-	        System.out.println("assetLiabilityAccount = " + asset);
-	        a.setAssetLiabilityAccount(asset);
-	    }
+            if (g.asset >= 0)
+            {
+                String asset = reader.text(g.asset);
+                System.out.println("assetLiabilityAccount = " + asset);
+                a.setAssetLiabilityAccount(asset);
+            }
 
-	    if (g.income >= 0)
-	    {
-	        String income = fmt.formatCellValue(row.getCell(g.income)).trim();
-	        System.out.println("incomeCategory = " + income);
-	        a.setIncomeCategory(income);
-	    }
+            if (g.income >= 0)
+            {
+                String income = reader.text(g.income);
+                System.out.println("incomeCategory = " + income);
+                a.setIncomeCategory(income);
+            }
 
-	    if (g.expense >= 0)
-	    {
-	        String expense = fmt.formatCellValue(row.getCell(g.expense)).trim();
-	        System.out.println("expenseCategory = " + expense);
-	        a.setExpenseCategory(expense);
-	    }
+            if (g.expense >= 0)
+            {
+                String expense = reader.text(g.expense);
+                System.out.println("expenseCategory = " + expense);
+                a.setExpenseCategory(expense);
+            }
 
-	    if (g.fund >= 0)
-	    {
-	        String fund = fmt.formatCellValue(row.getCell(g.fund)).trim();
-	        System.out.println("fund = " + fund);
-	        a.setFund(fund);
-	    }
+            if (g.fund >= 0)
+            {
+                String fund = reader.text(g.fund);
+                System.out.println("fund = " + fund);
+                a.setFund(fund);
+            }
 
 	    return a;
 	}
