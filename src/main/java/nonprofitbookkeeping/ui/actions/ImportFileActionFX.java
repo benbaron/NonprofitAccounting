@@ -11,6 +11,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ChoiceDialog;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.Account;
+import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.service.FileImportService;
@@ -18,21 +19,14 @@ import nonprofitbookkeeping.service.ExcelLedgerImportService;
 import nonprofitbookkeeping.service.ReconciliationService;
 import nonprofitbookkeeping.model.impex.ExcelLedgerRow;
 import nonprofitbookkeeping.model.ChartOfAccounts;
-import nonprofitbookkeeping.ui.panels.CoaEditorPanelFX;
-import nonprofitbookkeeping.exception.ActionCancelledException;
-
-import javafx.scene.Scene;
-import javafx.stage.Modality;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ButtonBar;
+import nonprofitbookkeeping.core.AccountingTransactionBuilder;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * Handles the action of importing a financial statement file in a JavaFX
@@ -50,9 +44,6 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 	
 	/** The owner Stage for any dialogs created by this action. */
 	private final Stage ownerStage;
-	
-	/** Tracks accounts the user chose to ignore during this import. */
-	private final Set<String> ignoredAccountNames = new HashSet<>();
 	
 	/**
 	 * Constructs a new {@code ImportFileActionFX}.
@@ -188,12 +179,14 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 		
 		// Use the excel file importer
 		if ("Excel (.xlsx)".equals(chosenFormat))
-		{			
+		{
+			
 			try
 			{
+				// Map spreadsheet to rows
 				List<ExcelLedgerRow> rows =
 						ExcelLedgerImportService.importSpreadsheet(selectedFile);
-				
+				// Convert the rows
 				imported.addAll(ImportFileActionFX.convertExcelRows(rows, account));
 			}
 			catch (IOException e)
@@ -251,207 +244,140 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 	 * user to add or ignore them.
 	 */
 	
-        private static List<AccountingTransaction>
-                convertExcelRows(       List<ExcelLedgerRow> rows,
-                                        Account targetAccount)
-        {
-                List<AccountingTransaction> results = new ArrayList<>();
-
-                if (rows == null || targetAccount == null)
-                {
-                        return results;
-                }
-
-                Company company = CurrentCompany.getCompany();
-                ChartOfAccounts chart =
-                                (company != null) ? company.getChartOfAccounts() : null;
-
-                for (ExcelLedgerRow row : rows)
-                {
-                        if (row == null || row.getAllocations() == null || row.getAllocations().isEmpty())
-                        {
-                                continue;
-                        }
-
-                        AccountingTransactionBuilder builder = AccountingTransactionBuilder.create();
-                        BigDecimal total = BigDecimal.ZERO;
-                        int entryCount = 0;
-
-                        for (ExcelLedgerRow.Allocation alloc : row.getAllocations())
-                        {
-                                if (alloc == null || alloc.getAmount() == null)
-                                {
-                                        continue;
-                                }
-
-                                String name = null;
-
-                                if (alloc.getAssetLiabilityAccount() != null && !alloc.getAssetLiabilityAccount().isBlank())
-                                {
-                                        name = alloc.getAssetLiabilityAccount();
-                                }
-                                else if (alloc.getIncomeCategory() != null && !alloc.getIncomeCategory().isBlank())
-                                {
-                                        name = alloc.getIncomeCategory();
-                                }
-                                else if (alloc.getExpenseCategory() != null && !alloc.getExpenseCategory().isBlank())
-                                {
-                                        name = alloc.getExpenseCategory();
-                                }
-
-                                Account other = FileImportService.findAccountIgnoreCase(chart, name);
-
-                                if (other == null)
-                                {
-                                        continue; // Skip unknown accounts
-                                }
-
-                                BigDecimal amt = alloc.getAmount();
-                                BigDecimal absAmt = amt.abs();
-                                AccountSide side = (amt.signum() >= 0)
-                                                ? other.getIncreaseSide()
-                                                : (other.getIncreaseSide() == AccountSide.DEBIT ? AccountSide.CREDIT : AccountSide.DEBIT);
-
-                                if (side == AccountSide.DEBIT)
-                                {
-                                        builder.debit(absAmt, other.getAccountNumber());
-                                }
-                                else
-                                {
-                                        builder.credit(absAmt, other.getAccountNumber());
-                                }
-
-                                total = total.add(amt);
-                                entryCount++;
-                        }
-
-                        if (entryCount == 0)
-                        {
-                                continue;
-                        }
-
-                        BigDecimal bankAmt = total.negate();
-
-                        if (bankAmt.compareTo(BigDecimal.ZERO) != 0)
-                        {
-                                BigDecimal absAmt = bankAmt.abs();
-                                AccountSide side = (bankAmt.signum() >= 0)
-                                                ? targetAccount.getIncreaseSide()
-                                                : (targetAccount.getIncreaseSide() == AccountSide.DEBIT ? AccountSide.CREDIT : AccountSide.DEBIT);
-
-                                if (side == AccountSide.DEBIT)
-                                {
-                                        builder.debit(absAmt, targetAccount.getAccountNumber());
-                                }
-                                else
-                                {
-                                        builder.credit(absAmt, targetAccount.getAccountNumber());
-                                }
-
-                                entryCount++;
-                        }
-
-                        if (entryCount < 2)
-                        {
-                                continue; // Not balanced
-                        }
-
-                        AccountingTransaction tx = builder.build();
-
-                        if (row.getDate() != null)
-                        {
-                                tx.setDate(row.getDate().toString());
-                        }
-
-                        String memo = (row.getMemoNotes() != null && !row.getMemoNotes().isBlank())
-                                        ? row.getMemoNotes()
-                                        : row.getToFrom();
-
-                        if (memo != null)
-                        {
-                                tx.setMemo(memo);
-                        }
-
-                        results.add(tx);
-                }
-
-                return results;
-
-        }
-	/**
-	 * Resolves an account name against the provided chart of accounts. If
-	 * the account does not exist, the user is prompted to add it, ignore it
-	 * (skipping future occurrences), or abort the import.
-	 *
-	 * @param name  The account name to resolve.
-	 * @param chart The chart of accounts.
-	 * @return The matching {@link Account} or {@code null} if ignored.
-	 * @throws ActionCancelledException if the user chooses to abort.
-	 */
-	private Account resolveAccountUI(	String name,
-										ChartOfAccounts chart) throws ActionCancelledException
+	private static	List<AccountingTransaction>
+			convertExcelRows(	List<ExcelLedgerRow> rows,
+								Account targetAccount)
 	{
+		List<AccountingTransaction> results = new ArrayList<>();
 		
-		if (name == null || name.isBlank() || chart == null)
+		if (rows == null || targetAccount == null)
 		{
-			return null;
+			return results;
 		}
 		
-		if (this.ignoredAccountNames.contains(name))
+		Company company = CurrentCompany.getCompany();
+		ChartOfAccounts chart =
+				(company != null) ? company.getChartOfAccounts() : null;
+		
+		for (ExcelLedgerRow row : rows)
 		{
-			return null;
+			// read the row bean
+			if (row == null || 
+					row.getAllocations() == null || 
+					row.getAllocations().isEmpty())
+			{
+				continue;
+			}
+			
+			AccountingTransactionBuilder builder = AccountingTransactionBuilder.create();
+			BigDecimal total = BigDecimal.ZERO;
+			int entryCount = 0;
+			
+			// read the allocation sections
+			for (ExcelLedgerRow.Allocation alloc : row.getAllocations())
+			{
+				
+				if (alloc == null || alloc.getAmount() == null)
+				{
+					continue;
+				}
+				
+				String name = null;
+				
+				if (alloc.getAssetLiabilityAccount() != null &&
+						!alloc.getAssetLiabilityAccount().isBlank())
+				{
+					name = alloc.getAssetLiabilityAccount();
+				}
+				else if (alloc.getIncomeCategory() != null && 
+						!alloc.getIncomeCategory().isBlank())
+				{
+					name = alloc.getIncomeCategory();
+				}
+				else if (alloc.getExpenseCategory() != null &&
+						!alloc.getExpenseCategory().isBlank())
+				{
+					name = alloc.getExpenseCategory();
+				}
+				
+				Account other = FileImportService.findAccountIgnoreCase(chart, name);
+				
+				if (other == null)
+				{
+					continue; // Skip unknown accounts
+				}
+				
+				BigDecimal amt = alloc.getAmount();
+				BigDecimal absAmt = amt.abs();
+				AccountSide side = (amt.signum() >= 0) ? other.getIncreaseSide() :
+						(other.getIncreaseSide() == AccountSide.DEBIT ? AccountSide.CREDIT :
+								AccountSide.DEBIT);
+				
+				if (side == AccountSide.DEBIT)
+				{
+					builder.debit(absAmt, other.getAccountNumber());
+				}
+				else
+				{
+					builder.credit(absAmt, other.getAccountNumber());
+				}
+				
+				total = total.add(amt);
+				entryCount++;
+			}
+			
+			if (entryCount == 0)
+			{
+				continue;
+			}
+			
+			BigDecimal bankAmt = total.negate();
+			
+			if (bankAmt.compareTo(BigDecimal.ZERO) != 0)
+			{
+				BigDecimal absAmt = bankAmt.abs();
+				AccountSide side = (bankAmt.signum() >= 0) ? targetAccount.getIncreaseSide() :
+						(targetAccount.getIncreaseSide() == AccountSide.DEBIT ? AccountSide.CREDIT :
+								AccountSide.DEBIT);
+				
+				if (side == AccountSide.DEBIT)
+				{
+					builder.debit(absAmt, targetAccount.getAccountNumber());
+				}
+				else
+				{
+					builder.credit(absAmt, targetAccount.getAccountNumber());
+				}
+				
+				entryCount++;
+			}
+			
+			if (entryCount < 2)
+			{
+				continue; // Not balanced
+			}
+			
+			AccountingTransaction tx = builder.build();
+			
+			if (row.getDate() != null)
+			{
+				tx.setDate(row.getDate().toString());
+			}
+			
+			String memo = (row.getMemoNotes() != null && 
+					!row.getMemoNotes().isBlank()) ?
+					row.getMemoNotes() : row.getToFrom();
+			
+			if (memo != null)
+			{
+				tx.setMemo(memo);
+			}
+			
+			results.add(tx);
 		}
 		
-		Account found = FileImportService.findAccountIgnoreCase(chart, name);
-		
-		if (found != null)
-		{
-			return found;
-		}
-		
-		Alert alert = new Alert(AlertType.CONFIRMATION);
-		alert.initOwner(this.ownerStage);
-		alert.setHeaderText("Account '" + name + "' not found. What would you like to do?");
-		ButtonType addBtn = new ButtonType("Add Account");
-		ButtonType ignoreBtn = new ButtonType("Ignore");
-		ButtonType abortBtn = new ButtonType("Abort", ButtonBar.ButtonData.CANCEL_CLOSE);
-		alert.getButtonTypes().setAll(addBtn, ignoreBtn, abortBtn);
-		
-		Optional<ButtonType> choice = alert.showAndWait();
-		
-		if (choice.isEmpty() || choice.get() == abortBtn)
-		{
-			throw new ActionCancelledException("User aborted import");
-		}
-		
-		if (choice.get() == ignoreBtn)
-		{
-			this.ignoredAccountNames.add(name);
-			return null;
-		}
-		
-		// Add account option - show chart of accounts editor
-		Stage stage = new Stage();
-		stage.initOwner(this.ownerStage);
-		stage.initModality(Modality.WINDOW_MODAL);
-		stage.setTitle("Chart of Accounts");
-		CoaEditorPanelFX panel = new CoaEditorPanelFX(chart);
-		Scene scene = new Scene(panel, 600, 400);
-		stage.setScene(scene);
-		stage.showAndWait();
-		
-		// Try resolving again after editor closes
-		found = FileImportService.findAccountIgnoreCase(chart, name);
-		
-		if (found == null)
-		{
-			// If still not found, treat as ignored
-			this.ignoredAccountNames.add(name);
-		}
-		
-		return found;
+		return results;
 		
 	}
-	
 	
 }

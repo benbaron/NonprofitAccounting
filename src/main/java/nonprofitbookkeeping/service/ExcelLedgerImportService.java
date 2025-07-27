@@ -71,9 +71,9 @@ public class ExcelLedgerImportService
 				
 				// debug
 				java.io.StringWriter sw = new java.io.StringWriter();
-				printRow(row, formatter, evaluator, sw);				
+				printRow(row, formatter, evaluator, sw);
 				System.out.println(sw.toString());
-			
+				
 			}
 			
 			return results;
@@ -83,6 +83,7 @@ public class ExcelLedgerImportService
 	
 	/**
 	 * printRow
+	 * 
 	 * @param row
 	 * @param formatter
 	 * @param evaluator
@@ -106,9 +107,9 @@ public class ExcelLedgerImportService
 			{
 				Cell cell = row.getCell(i, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
 				String value = (cell == null) ? "" :
-					" " +
-					"[" + i + "]=" +
-					formatter.formatCellValue(cell, evaluator);
+						" " +
+								"[" + i + "]=" +
+								formatter.formatCellValue(cell, evaluator);
 				out.append(value);
 			}
 			
@@ -154,7 +155,6 @@ public class ExcelLedgerImportService
 			
 		}
 		
-		
 		/**
 		 * readLedgerRow
 		 * @param row
@@ -184,9 +184,11 @@ public class ExcelLedgerImportService
 			bean.setDate(readLocalDate(this.row.getCell(c++), this.fmt, this.eval));
 			bean.setCheckNumber(readString(this.row.getCell(c++), this.fmt, this.eval));
 			bean.setClearBank(readString(this.row.getCell(c++), this.fmt, this.eval));
-			bean.setToFrom(readString(this.row.getCell(c++), this.fmt, this.eval));			
+			bean.setToFrom(readString(this.row.getCell(c++), this.fmt, this.eval));
 			bean.setMemoNotes(readString(this.row.getCell(c++), this.fmt, this.eval));
 			bean.setBudgetTracking(readString(this.row.getCell(c++), this.fmt, this.eval));
+			
+			c++; // skip number column
 			bean.setNetTotal(readBigDecimal(this.row.getCell(c++), this.fmt, this.eval));
 			
 			// ---- Allocation groups (5 columns each) ----
@@ -195,30 +197,36 @@ public class ExcelLedgerImportService
 			
 			while (c < last)
 			{
-				// Pull raw strings first
-				String amt = readString(this.row.getCell(c), this.fmt, this.eval);
-				String acct = readString(this.row.getCell(c + 1), this.fmt, this.eval);
-				String income = readString(this.row.getCell(c + 2), this.fmt, this.eval);
-				String exp = readString(this.row.getCell(c + 3), this.fmt, this.eval);
-				String fund = readString(this.row.getCell(c + 4), this.fmt, this.eval);
 				
-				boolean allBlank = (isBlank(amt) && isBlank(acct) && isBlank(income) &&
-						isBlank(exp) && isBlank(fund));
-				
-				if (!allBlank)
+				for (int i = 0; i < 2; i++)
 				{
-					ExcelLedgerRow.Allocation a = new ExcelLedgerRow.Allocation();
-					a.setAmount(readBigDecimal(this.row.getCell(c), 
-								this.fmt, 
+					// Pull raw strings first
+					String amt = readString(this.row.getCell(c), this.fmt, this.eval);
+					String acct = readString(this.row.getCell(c + 1), this.fmt, this.eval);
+					String income = readString(this.row.getCell(c + 2), this.fmt, this.eval);
+					String exp = readString(this.row.getCell(c + 3), this.fmt, this.eval);
+					String fund = readString(this.row.getCell(c + 4), this.fmt, this.eval);
+					
+					boolean allBlank = (isBlank(amt) && isBlank(acct) && isBlank(income) &&
+							isBlank(exp) && isBlank(fund));
+					
+					if (!allBlank)
+					{
+						ExcelLedgerRow.Allocation a = new ExcelLedgerRow.Allocation();
+						a.setAmount(readBigDecimal(this.row.getCell(c),
+								this.fmt,
 								this.eval)); // use numeric parse foramt
-					a.setAssetLiabilityAccount(acct);
-					a.setIncomeCategory(income);
-					a.setExpenseCategory(exp);
-					a.setFund(fund);
-					bean.getAllocations().add(a);
+						a.setAssetLiabilityAccount(acct);
+						a.setIncomeCategory(income);
+						a.setExpenseCategory(exp);
+						a.setFund(fund);
+						bean.getAllocations().add(a);
+					}
+					
+					c += GROUP_SIZE; // advance regardless; tolerate gaps
 				}
 				
-				c += GROUP_SIZE; // advance regardless; tolerate gaps
+				c++; // skip the number column
 			}
 			
 			return bean;
