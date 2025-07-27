@@ -64,9 +64,6 @@ public class ReportService
 	/** Standard date formatter (ISO Local Date, e.g., "YYYY-MM-DD") used in some report outputs. */
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
 	
-	/** Map of registered report writers keyed by report type. */
-	private final Map<String, LedgerReportWriter> writerMap = new HashMap<>();
-	
 	/** Mapping of Jasper report types to their generator constructors. */
 	private static final Map<String, java.util.function.BiFunction<ReportContext, ReportService,
 		AbstractReportGenerator>> generatorRegistry = new HashMap<>();

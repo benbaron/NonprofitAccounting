@@ -394,7 +394,7 @@ public class BudgetPanelFX extends VBox
 				allBudgets.add(this.currentBudget);
 			}
 			
-			this.budgetService.saveBudgets(allBudgets, this.companyDirectory);
+			BudgetService.saveBudgets(allBudgets, this.companyDirectory);
 			
 			Alert alert = new Alert(Alert.AlertType.INFORMATION, "Budget saved successfully.");
 			alert.setHeaderText(null);

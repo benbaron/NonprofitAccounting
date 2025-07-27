@@ -316,7 +316,7 @@ public class SkeletonReportsPanel extends BorderPane
 		
 		try
 		{
-			List<ReportMetadata> reports = this.reportService.listGeneratedReports();
+			List<ReportMetadata> reports = ReportService.listGeneratedReports();
 			
 			if (reports != null)
 			{
@@ -440,12 +440,12 @@ public class SkeletonReportsPanel extends BorderPane
 				if ("xlsx".equalsIgnoreCase(outputFormat))
 				{
 					Company c = CurrentCompany.getCompany();
-					generatedFile = this.reportService.generateFromJXLS(ctx, c.getLedger(),
+					generatedFile = ReportService.generateFromJXLS(ctx, c.getLedger(),
 						c.getChartOfAccounts());
 				}
 				else if ("text".equalsIgnoreCase(outputFormat))
 				{
-					generatedFile = this.reportService.generatePlainTextReport(ctx);
+					generatedFile = ReportService.generatePlainTextReport(ctx);
 				}
 				else
 				{

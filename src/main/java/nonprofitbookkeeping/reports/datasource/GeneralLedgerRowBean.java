@@ -28,7 +28,7 @@ public class GeneralLedgerRowBean
 	
 	public String getDate()
 	{
-		return date;
+		return this.date;
 	}
 	
 	public void setDate(String date)
@@ -38,7 +38,7 @@ public class GeneralLedgerRowBean
 	
 	public String getAccount()
 	{
-		return account;
+		return this.account;
 	}
 	
 	public void setAccount(String account)
@@ -48,7 +48,7 @@ public class GeneralLedgerRowBean
 	
 	public String getDescription()
 	{
-		return description;
+		return this.description;
 	}
 	
 	public void setDescription(String description)
@@ -58,7 +58,7 @@ public class GeneralLedgerRowBean
 	
 	public BigDecimal getDebit()
 	{
-		return debit;
+		return this.debit;
 	}
 	
 	public void setDebit(BigDecimal debit)
@@ -68,7 +68,7 @@ public class GeneralLedgerRowBean
 	
 	public BigDecimal getCredit()
 	{
-		return credit;
+		return this.credit;
 	}
 	
 	public void setCredit(BigDecimal credit)
@@ -78,7 +78,7 @@ public class GeneralLedgerRowBean
 	
 	public BigDecimal getBalance()
 	{
-		return balance;
+		return this.balance;
 	}
 	
 	public void setBalance(BigDecimal balance)

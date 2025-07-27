@@ -18,10 +18,8 @@ import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,8 +48,6 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 {
 	
 	private ReportContext reportContext;
-	private ReportService reportService;
-	
 	/**
 	 * Constructs an {@code IncomeStatementJasperGenerator}.
 	 *
@@ -61,7 +57,6 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 	public IncomeStatementJasperGenerator(ReportContext reportContext, ReportService reportService)
 	{
 		this.reportContext = reportContext;
-		this.reportService = reportService;
 	}
 	
 	/**

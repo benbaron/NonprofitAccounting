@@ -85,11 +85,9 @@ public class ExportCoaXlsxActionFX implements EventHandler<ActionEvent>
 		
 		if (selectedFile != null)
 		{
-			ChartOfAccountsIOService coaService = new ChartOfAccountsIOService();
-			
 			try
 			{
-				coaService.exportToXlsx(coa, selectedFile.toPath());
+				ChartOfAccountsIOService.exportToXlsx(coa, selectedFile.toPath());
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Export Successful");
 				alert.setHeaderText(null);

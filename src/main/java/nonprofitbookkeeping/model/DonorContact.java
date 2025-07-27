@@ -1,3 +1,4 @@
+
 package nonprofitbookkeeping.model;
 
 import java.io.Serializable;
@@ -8,13 +9,11 @@ import lombok.NoArgsConstructor;
 /** Simple contact information for a donor. */
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
-public class DonorContact implements Serializable {
-    private static final long serialVersionUID = 1L;
-    private String id;
-    private String name;
-    private String email;
-    private String phone;
+@NoArgsConstructor public class DonorContact implements Serializable
+{
+	private static final long serialVersionUID = 1L;
+	private String name;
+	
 	/**  
 	 * Constructor DonorContact
 	 * @param object
@@ -24,8 +23,10 @@ public class DonorContact implements Serializable {
 	 */
 	public DonorContact(Object object, String text, String text2, String text3)
 	{
+		
 		// TODO Auto-generated constructor stub
 	}
+	
 	/**
 	 * @return the name
 	 */
@@ -35,6 +36,7 @@ public class DonorContact implements Serializable {
 		return this.name;
 		
 	}
+	
 	/**
 	 * @param name the name to set
 	 */
@@ -44,6 +46,7 @@ public class DonorContact implements Serializable {
 		this.name = name;
 		
 	}
+	
 	/**
 	 * @return
 	 */
@@ -51,7 +54,9 @@ public class DonorContact implements Serializable {
 	{
 		// TODO Auto-generated method stub
 		return null;
+		
 	}
+	
 	/**
 	 * @return
 	 */
@@ -59,7 +64,9 @@ public class DonorContact implements Serializable {
 	{
 		// TODO Auto-generated method stub
 		return null;
+		
 	}
+	
 	/**
 	 * @return
 	 */
@@ -67,7 +74,9 @@ public class DonorContact implements Serializable {
 	{
 		// TODO Auto-generated method stub
 		return null;
+		
 	}
+	
 	/**
 	 * @param email2
 	 */
@@ -76,6 +85,7 @@ public class DonorContact implements Serializable {
 		// TODO Auto-generated method stub
 		
 	}
+	
 	/**
 	 * @param phone2
 	 */
@@ -84,4 +94,5 @@ public class DonorContact implements Serializable {
 		// TODO Auto-generated method stub
 		
 	}
+	
 }

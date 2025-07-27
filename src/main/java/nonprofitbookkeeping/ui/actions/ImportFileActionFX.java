@@ -17,8 +17,6 @@ import nonprofitbookkeeping.service.FileImportService;
 import nonprofitbookkeeping.service.ExcelLedgerImportService;
 import nonprofitbookkeeping.service.ReconciliationService;
 import nonprofitbookkeeping.model.impex.ExcelLedgerRow;
-import nonprofitbookkeeping.model.AccountSide;
-import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.ui.panels.CoaEditorPanelFX;
 import nonprofitbookkeeping.exception.ActionCancelledException;
@@ -30,9 +28,7 @@ import javafx.scene.control.ButtonBar;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -192,21 +188,13 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 		
 		// Use the excel file importer
 		if ("Excel (.xlsx)".equals(chosenFormat))
-		{
-			
+		{			
 			try
 			{
 				List<ExcelLedgerRow> rows =
 						ExcelLedgerImportService.importSpreadsheet(selectedFile);
 				
-				imported.addAll(this.convertExcelRows(rows, account, company.getChartOfAccounts()));
-			}
-			catch (ActionCancelledException ace)
-			{
-				Alert alert = new Alert(AlertType.INFORMATION, "Import aborted.");
-				alert.initOwner(this.ownerStage);
-				alert.showAndWait();
-				return;
+				imported.addAll(ImportFileActionFX.convertExcelRows(rows, account));
 			}
 			catch (IOException e)
 			{
@@ -262,124 +250,11 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 	 * matched against the chart of accounts and missing accounts prompt the
 	 * user to add or ignore them.
 	 */
-	private List<AccountingTransaction> 
+	private static List<AccountingTransaction> 
 		convertExcelRows(	List<ExcelLedgerRow> rows,
-		                 	Account targetAccount,
-		                 	ChartOfAccounts chartOfAccounts) throws ActionCancelledException
+		                 	Account targetAccount)
 	{
-		List<AccountingTransaction> results = new ArrayList<>();
-		
-		if (rows == null || rows.isEmpty())
-		{
-			return results;
-		}
-		
-		// For each row
-		for (ExcelLedgerRow row : rows)
-		{
-			
-			if (row == null || row.getAllocations() == null)
-			{
-				continue;
-			}
-			
-			String memo = row.getMemoNotes();
-			
-			if (memo == null || memo.isBlank())
-			{
-				memo = row.getToFrom();
-			}
-			
-			System.out.println("\nrow:" + row);	
-			
-			// Get the alloc portion of the row
-			for (ExcelLedgerRow.Allocation allocRow : row.getAllocations())
-			{
-				System.out.println("-- allocRow:" + allocRow);	
-				
-				if (allocRow.getAmount() == null)
-				{
-					continue;
-				}
-				
-				// Get the account name string
-				String allocName = ExcelLedgerImportService.determineAccountName(allocRow);
-				Account otherAccount = null;
-				
-				// Look up the name from the chart of accounts
-				if (allocName != null && !allocName.isBlank())
-				{
-					otherAccount = resolveAccountUI(allocName, chartOfAccounts);
-				}
-				
-				if (otherAccount == null)
-				{
-					System.out.println("\nother account not found");
-
-					// User chose to ignore this account or account not found
-					continue;
-				}
-				
-				Set<AccountingEntry> entries = new HashSet<>();
-				AccountSide targetSide;
-				AccountSide otherSide;
-				
-				if (targetAccount.getIncreaseSide() == AccountSide.DEBIT)
-				{
-					
-					if (allocRow.getAmount().compareTo(java.math.BigDecimal.ZERO) >= 0)
-					{
-						targetSide = AccountSide.DEBIT;
-						otherSide = AccountSide.CREDIT;
-					}
-					else
-					{
-						targetSide = AccountSide.CREDIT;
-						otherSide = AccountSide.DEBIT;
-					}
-					
-				}
-				else
-				{
-					
-					if (allocRow.getAmount().compareTo(java.math.BigDecimal.ZERO) >= 0)
-					{
-						targetSide = AccountSide.CREDIT;
-						otherSide = AccountSide.DEBIT;
-					}
-					else
-					{
-						targetSide = AccountSide.DEBIT;
-						otherSide = AccountSide.CREDIT;
-					}
-					
-				}
-				
-				java.math.BigDecimal amt = allocRow.getAmount().abs();
-				entries.add(new AccountingEntry(amt, targetAccount.getAccountNumber(), targetSide,
-												targetAccount.getName()));
-				entries.add(new AccountingEntry(amt, otherAccount.getAccountNumber(), otherSide,
-												otherAccount.getName()));
-				
-				AccountingTransaction tx = new AccountingTransaction(	targetAccount, entries,
-																		new HashMap<>(),
-																		Instant.now()
-																				.toEpochMilli());
-				
-				if (row.getDate() != null)
-				{
-					tx.setDate(row.getDate().toString());
-				}
-				
-				tx.setMemo(memo);
-				results.add(tx);
-				System.out.println("\ntransaction:" + tx);	
-				
-			}
-			
-		}
-		System.out.println("\nresults:" + results);	
-		return results;
+		return null;
 		
 	}
 	

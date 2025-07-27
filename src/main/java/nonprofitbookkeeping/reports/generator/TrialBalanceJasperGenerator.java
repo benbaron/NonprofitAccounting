@@ -49,8 +49,6 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 {
 	
 	private ReportContext reportContext;
-	private ReportService reportService;
-	
 	/**
 	 * Constructs a {@code TrialBalanceJasperGenerator}.
 	 *
@@ -62,7 +60,6 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 	public TrialBalanceJasperGenerator(ReportContext reportContext, ReportService reportService)
 	{
 		this.reportContext = reportContext;
-		this.reportService = reportService;
 	}
 	
 	/**

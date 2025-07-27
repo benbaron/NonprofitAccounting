@@ -5,8 +5,6 @@ import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import nonprofitbookkeeping.reports.datasource.GeneralLedgerRowBean;
 
-import java.math.BigDecimal;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;

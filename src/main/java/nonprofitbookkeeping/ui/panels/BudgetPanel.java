@@ -552,7 +552,7 @@ public class BudgetPanel extends JDialog
 				allBudgets.add(this.currentBudget); // Add as new if not found or if ID was new
 			}
 			
-			this.budgetService.saveBudgets(allBudgets, this.companyDirectory);
+			BudgetService.saveBudgets(allBudgets, this.companyDirectory);
 			JOptionPane.showMessageDialog(this, "Budget saved successfully!", "Success",
 				JOptionPane.INFORMATION_MESSAGE);
 			// Optionally, dispose or indicate saved state

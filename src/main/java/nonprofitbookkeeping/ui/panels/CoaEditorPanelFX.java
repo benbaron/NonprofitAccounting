@@ -77,9 +77,6 @@ public class CoaEditorPanelFX extends BorderPane
 		return this.tree;
 	}
 	
-	/** Service for importing and exporting Chart of Accounts data to/from XLSX. */
-	private final ChartOfAccountsIOService ioSvc = new ChartOfAccountsIOService();
-	
 	// Dialog fields - these are instance members because they are accessed by the
 	// dialog's result converter lambda.
 	/** TextField for account number input in the add/edit dialog. */

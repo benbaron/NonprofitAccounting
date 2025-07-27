@@ -13,9 +13,9 @@ import java.util.List;
  * The row contains general transaction info and up to four
  * allocation groups consisting of amount and account details.
  */
-@Data @NoArgsConstructor 
-public class ExcelLedgerRow
+@Data @NoArgsConstructor public class ExcelLedgerRow
 {
+	private BigDecimal balance;
 	/** Transaction date from the spreadsheet. */
 	private LocalDate date;
 	/** Optional check number. */
@@ -28,97 +28,119 @@ public class ExcelLedgerRow
 	private String memoNotes;
 	/** Optional budget tracking value. */
 	private String budgetTracking;
-	
+	/** Optional subtotal - should be the sum of the allocation amounts */
+	private BigDecimal netTotal;
 	/** List of up to four allocation groups. */
 	private List<Allocation> allocations = new ArrayList<>();
+	
 	/**  
 	 * Constructor ExcelLedgerRow
 	 */
 	public ExcelLedgerRow()
 	{
+		
 		// TODO Auto-generated constructor stub
 	}
-
+	
 	/**
 	 * Represents one amount allocation within a row.
 	 */
-	@Data @NoArgsConstructor 
-	public static class Allocation
+	@Data @NoArgsConstructor public static class Allocation
 	{
 		private BigDecimal amount;
 		private String assetLiabilityAccount;
 		private String incomeCategory;
 		private String expenseCategory;
 		private String fund;
+		
 		/**
 		 * @return the amount
 		 */
 		public BigDecimal getAmount()
 		{
 			return this.amount;
+			
 		}
+		
 		/**
 		 * @param amount the amount to set
 		 */
 		public void setAmount(BigDecimal amount)
 		{
 			this.amount = amount;
+			
 		}
+		
 		/**
 		 * @return the assetLiabilityAccount
 		 */
 		public String getAssetLiabilityAccount()
 		{
 			return this.assetLiabilityAccount;
+			
 		}
+		
 		/**
 		 * @param assetLiabilityAccount the assetLiabilityAccount to set
 		 */
 		public void setAssetLiabilityAccount(String assetLiabilityAccount)
 		{
 			this.assetLiabilityAccount = assetLiabilityAccount;
+			
 		}
+		
 		/**
 		 * @return the incomeCategory
 		 */
 		public String getIncomeCategory()
 		{
 			return this.incomeCategory;
+			
 		}
+		
 		/**
 		 * @param incomeCategory the incomeCategory to set
 		 */
 		public void setIncomeCategory(String incomeCategory)
 		{
 			this.incomeCategory = incomeCategory;
+			
 		}
+		
 		/**
 		 * @return the expenseCategory
 		 */
 		public String getExpenseCategory()
 		{
 			return this.expenseCategory;
+			
 		}
+		
 		/**
 		 * @param expenseCategory the expenseCategory to set
 		 */
 		public void setExpenseCategory(String expenseCategory)
 		{
 			this.expenseCategory = expenseCategory;
+			
 		}
+		
 		/**
 		 * @return the fund
 		 */
 		public String getFund()
 		{
 			return this.fund;
+			
 		}
+		
 		/**
 		 * @param fund the fund to set
 		 */
 		public void setFund(String fund)
 		{
 			this.fund = fund;
+			
 		}
 		
 		/**
@@ -128,22 +150,40 @@ public class ExcelLedgerRow
 		{
 			StringBuilder builder = new StringBuilder();
 			builder.append("Allocation [amount=");
-			builder.append(amount);
+			builder.append(this.amount);
 			builder.append(", assetLiabilityAccount=");
-			builder.append(assetLiabilityAccount);
+			builder.append(this.assetLiabilityAccount);
 			builder.append(", incomeCategory=");
-			builder.append(incomeCategory);
+			builder.append(this.incomeCategory);
 			builder.append(", expenseCategory=");
-			builder.append(expenseCategory);
+			builder.append(this.expenseCategory);
 			builder.append(", fund=");
-			builder.append(fund);
+			builder.append(this.fund);
 			builder.append("]");
 			return builder.toString();
+			
 		}
 		
 		
 	}
-
+	
+	/**
+	 * @return the balance
+	 */
+	public BigDecimal getBalance()
+	{
+		return this.balance;
+		
+	}
+	
+	/**
+	 * @param balance the balance to set
+	 */
+	public void setBalance(BigDecimal balance)
+	{
+		this.balance = balance;
+		
+	}
 	
 	/**
 	 * @return the date
@@ -151,6 +191,7 @@ public class ExcelLedgerRow
 	public LocalDate getDate()
 	{
 		return this.date;
+		
 	}
 	
 	/**
@@ -159,6 +200,7 @@ public class ExcelLedgerRow
 	public void setDate(LocalDate date)
 	{
 		this.date = date;
+		
 	}
 	
 	/**
@@ -167,6 +209,7 @@ public class ExcelLedgerRow
 	public String getCheckNumber()
 	{
 		return this.checkNumber;
+		
 	}
 	
 	/**
@@ -175,6 +218,7 @@ public class ExcelLedgerRow
 	public void setCheckNumber(String checkNumber)
 	{
 		this.checkNumber = checkNumber;
+		
 	}
 	
 	/**
@@ -183,6 +227,7 @@ public class ExcelLedgerRow
 	public String getClearBank()
 	{
 		return this.clearBank;
+		
 	}
 	
 	/**
@@ -191,6 +236,7 @@ public class ExcelLedgerRow
 	public void setClearBank(String clearBank)
 	{
 		this.clearBank = clearBank;
+		
 	}
 	
 	/**
@@ -199,6 +245,7 @@ public class ExcelLedgerRow
 	public String getToFrom()
 	{
 		return this.toFrom;
+		
 	}
 	
 	/**
@@ -207,6 +254,7 @@ public class ExcelLedgerRow
 	public void setToFrom(String toFrom)
 	{
 		this.toFrom = toFrom;
+		
 	}
 	
 	/**
@@ -215,6 +263,7 @@ public class ExcelLedgerRow
 	public String getMemoNotes()
 	{
 		return this.memoNotes;
+		
 	}
 	
 	/**
@@ -223,6 +272,7 @@ public class ExcelLedgerRow
 	public void setMemoNotes(String memoNotes)
 	{
 		this.memoNotes = memoNotes;
+		
 	}
 	
 	/**
@@ -231,6 +281,7 @@ public class ExcelLedgerRow
 	public String getBudgetTracking()
 	{
 		return this.budgetTracking;
+		
 	}
 	
 	/**
@@ -239,6 +290,25 @@ public class ExcelLedgerRow
 	public void setBudgetTracking(String budgetTracking)
 	{
 		this.budgetTracking = budgetTracking;
+		
+	}
+	
+	/**
+	 * @return the netTotal
+	 */
+	public BigDecimal getNetTotal()
+	{
+		return this.netTotal;
+		
+	}
+	
+	/**
+	 * @param netTotal the netTotal to set
+	 */
+	public void setNetTotal(BigDecimal netTotal)
+	{
+		this.netTotal = netTotal;
+		
 	}
 	
 	/**
@@ -247,6 +317,7 @@ public class ExcelLedgerRow
 	public List<Allocation> getAllocations()
 	{
 		return this.allocations;
+		
 	}
 	
 	/**
@@ -255,33 +326,36 @@ public class ExcelLedgerRow
 	public void setAllocations(List<Allocation> allocations)
 	{
 		this.allocations = allocations;
+		
 	}
-
+	
 	/**
 	 * Override @see java.lang.Object#toString() 
 	 */
 	@Override public String toString()
 	{
 		StringBuilder builder = new StringBuilder();
-		builder.append("ExcelLedgerRow [date=");
-		builder.append(date);
-		builder.append(", checkNumber=");
-		builder.append(checkNumber);
-		builder.append(", clearBank=");
-		builder.append(clearBank);
-		builder.append(", toFrom=");
-		builder.append(toFrom);
-		builder.append(", memoNotes=");
-		builder.append(memoNotes);
-		builder.append(", budgetTracking=");
-		builder.append(budgetTracking);
-		builder.append(", allocations=");
-		builder.append(allocations);
-		builder.append("]");
+		builder.append("ExcelLedgerRow [balance=")
+				.append(this.balance)
+				.append(", date=")
+				.append(this.date)
+				.append(", checkNumber=")
+				.append(this.checkNumber)
+				.append(", clearBank=")
+				.append(this.clearBank)
+				.append(", toFrom=")
+				.append(this.toFrom)
+				.append(", memoNotes=")
+				.append(this.memoNotes)
+				.append(", budgetTracking=")
+				.append(this.budgetTracking)
+				.append(", netTotal=")
+				.append(this.netTotal)
+				.append(", allocations=")
+				.append(this.allocations)
+				.append("]");
 		return builder.toString();
+		
 	}
-
-
-	
 	
 }
