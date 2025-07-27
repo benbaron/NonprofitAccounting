@@ -49,6 +49,9 @@ public class NonprofitBookkeepingFX extends Application
 	private BorderPane root; // Should be MainApplicationView
 	/** Reference to the dashboard panel, used as a fallback or initial view. */
 	private DashboardPanelFX dashboard; // Potentially part of MainApplicationView's default tabs
+	/** Instance managing the currently loaded company data. Suppressed unused warning as it's initialized. */
+	private CurrentCompany c;
+	
 	/**
 	 * Enum representing the different operational states of the application,
 	 * primarily concerning whether a company file is open, being created, or not open.
@@ -183,6 +186,7 @@ public class NonprofitBookkeepingFX extends Application
 		
 		stage.getIcons().addAll(new Image(getClass().getResourceAsStream("../../cg-128px.png")));
 		this.primaryStage = stage;
+		this.c = new CurrentCompany();
 		this.dashboard = new DashboardPanelFX();
 		MainApplicationView mainView = new MainApplicationView();
 		this.root = mainView; // Assign MainApplicationView to root
@@ -562,6 +566,8 @@ public class NonprofitBookkeepingFX extends Application
 		
 		try
 		{
+			OpenCompanyFileActionFX openCompanyFileActionFX = new OpenCompanyFileActionFX(
+				this.primaryStage, () -> setState(AppState.COMPANY_OPEN));
 		}
 		catch (Exception e)
 		{
@@ -627,6 +633,8 @@ public class NonprofitBookkeepingFX extends Application
 		
 		try
 		{
+			SaveCompanyFileAction saveCompanyFileAction =
+				new SaveCompanyFileAction(this.primaryStage);
 			AlertBox.showInfo(this.primaryStage, "Company saved.");
 		}
 		catch (Exception ex)
@@ -651,6 +659,9 @@ public class NonprofitBookkeepingFX extends Application
 		
 		try
 		{
+			CreateOrEditCompanyActionFX createOrEditCompanyActionFX =
+				new CreateOrEditCompanyActionFX(this.primaryStage);
+			
 			// If wizard completes and company is set in CurrentCompany:
 			if (CurrentCompany.getCompany() != null)
 			{ // Basic check
