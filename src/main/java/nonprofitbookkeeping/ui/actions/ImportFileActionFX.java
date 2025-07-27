@@ -250,14 +250,134 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 	 * matched against the chart of accounts and missing accounts prompt the
 	 * user to add or ignore them.
 	 */
-	private static List<AccountingTransaction> 
-		convertExcelRows(	List<ExcelLedgerRow> rows,
-		                 	Account targetAccount)
-	{
-		return null;
-		
-	}
 	
+        private static List<AccountingTransaction>
+                convertExcelRows(       List<ExcelLedgerRow> rows,
+                                        Account targetAccount)
+        {
+                List<AccountingTransaction> results = new ArrayList<>();
+
+                if (rows == null || targetAccount == null)
+                {
+                        return results;
+                }
+
+                Company company = CurrentCompany.getCompany();
+                ChartOfAccounts chart =
+                                (company != null) ? company.getChartOfAccounts() : null;
+
+                for (ExcelLedgerRow row : rows)
+                {
+                        if (row == null || row.getAllocations() == null || row.getAllocations().isEmpty())
+                        {
+                                continue;
+                        }
+
+                        AccountingTransactionBuilder builder = AccountingTransactionBuilder.create();
+                        BigDecimal total = BigDecimal.ZERO;
+                        int entryCount = 0;
+
+                        for (ExcelLedgerRow.Allocation alloc : row.getAllocations())
+                        {
+                                if (alloc == null || alloc.getAmount() == null)
+                                {
+                                        continue;
+                                }
+
+                                String name = null;
+
+                                if (alloc.getAssetLiabilityAccount() != null && !alloc.getAssetLiabilityAccount().isBlank())
+                                {
+                                        name = alloc.getAssetLiabilityAccount();
+                                }
+                                else if (alloc.getIncomeCategory() != null && !alloc.getIncomeCategory().isBlank())
+                                {
+                                        name = alloc.getIncomeCategory();
+                                }
+                                else if (alloc.getExpenseCategory() != null && !alloc.getExpenseCategory().isBlank())
+                                {
+                                        name = alloc.getExpenseCategory();
+                                }
+
+                                Account other = FileImportService.findAccountIgnoreCase(chart, name);
+
+                                if (other == null)
+                                {
+                                        continue; // Skip unknown accounts
+                                }
+
+                                BigDecimal amt = alloc.getAmount();
+                                BigDecimal absAmt = amt.abs();
+                                AccountSide side = (amt.signum() >= 0)
+                                                ? other.getIncreaseSide()
+                                                : (other.getIncreaseSide() == AccountSide.DEBIT ? AccountSide.CREDIT : AccountSide.DEBIT);
+
+                                if (side == AccountSide.DEBIT)
+                                {
+                                        builder.debit(absAmt, other.getAccountNumber());
+                                }
+                                else
+                                {
+                                        builder.credit(absAmt, other.getAccountNumber());
+                                }
+
+                                total = total.add(amt);
+                                entryCount++;
+                        }
+
+                        if (entryCount == 0)
+                        {
+                                continue;
+                        }
+
+                        BigDecimal bankAmt = total.negate();
+
+                        if (bankAmt.compareTo(BigDecimal.ZERO) != 0)
+                        {
+                                BigDecimal absAmt = bankAmt.abs();
+                                AccountSide side = (bankAmt.signum() >= 0)
+                                                ? targetAccount.getIncreaseSide()
+                                                : (targetAccount.getIncreaseSide() == AccountSide.DEBIT ? AccountSide.CREDIT : AccountSide.DEBIT);
+
+                                if (side == AccountSide.DEBIT)
+                                {
+                                        builder.debit(absAmt, targetAccount.getAccountNumber());
+                                }
+                                else
+                                {
+                                        builder.credit(absAmt, targetAccount.getAccountNumber());
+                                }
+
+                                entryCount++;
+                        }
+
+                        if (entryCount < 2)
+                        {
+                                continue; // Not balanced
+                        }
+
+                        AccountingTransaction tx = builder.build();
+
+                        if (row.getDate() != null)
+                        {
+                                tx.setDate(row.getDate().toString());
+                        }
+
+                        String memo = (row.getMemoNotes() != null && !row.getMemoNotes().isBlank())
+                                        ? row.getMemoNotes()
+                                        : row.getToFrom();
+
+                        if (memo != null)
+                        {
+                                tx.setMemo(memo);
+                        }
+
+                        results.add(tx);
+                }
+
+                return results;
+
+        }
 	/**
 	 * Resolves an account name against the provided chart of accounts. If
 	 * the account does not exist, the user is prompted to add it, ignore it
