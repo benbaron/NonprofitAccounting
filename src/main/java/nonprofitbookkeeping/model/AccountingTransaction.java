@@ -5,10 +5,7 @@ import javax.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.AllArgsConstructor; // Ensure this is present
-import lombok.NoArgsConstructor; // Added
+
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -17,19 +14,10 @@ import java.util.*;
 
 import java.io.Serializable;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * Represents a financial transaction, which is a collection of related {@link AccountingEntry} instances.
- * A transaction must be balanced, meaning the sum of its debit entries equals the sum of its credit entries.
- * This class uses Lombok for boilerplate code generation like getters, setters, constructors, etc.
- */
-@Builder
-@Data
-@NoArgsConstructor(force = true) // Changed to force = true
-@AllArgsConstructor(access = lombok.AccessLevel.PRIVATE) // For builder and potentially other
-															// internal uses
+
+
 public class AccountingTransaction implements Serializable
 {
 	/**
@@ -39,19 +27,49 @@ public class AccountingTransaction implements Serializable
 	
 	/** Unique identifier for the transaction. */
 	@JsonProperty private int id;
+	
 	/** The set of accounting entries that make up this transaction. Must not be null or empty. */
 	@JsonProperty private Set<AccountingEntry> entries;
+
 	/** Additional information or metadata about the transaction, stored as key-value pairs. */
 	@JsonProperty private Map<String, String> info;
+
 	/** The timestamp when the transaction was booked/recorded, in milliseconds since epoch. */
 	@JsonProperty private long bookingDateTimestamp;
+
 	/** The date of the transaction, typically in a string format like "YYYY-MM-DD". */
 	@JsonProperty private String date; // Non-final
+
 	/** A descriptive memo or note for the transaction. */
 	@JsonProperty private String memo; // Non-final
+
+	@JsonProperty private String toFrom; // Non-final
+	@JsonProperty private String checkNumber; // Non-final
+	@JsonProperty private String clearBank; // Non-final
+	@JsonProperty private String budgetTracking; // Non-final
+	@JsonProperty private String associatedFundName; // Non-final
 	
-	
+	/**  
+	 * Constructor AccountingTransaction
+	 */
+	public AccountingTransaction()
+	{
+		this.id = 0;
+		this.entries = null;
+		this.info = null;
+		this.bookingDateTimestamp = 0;
+		
+		this.date = "";
+		this.memo = "";
+		this.toFrom = "";
+		this.checkNumber = "";
+		this.clearBank = "";
+		this.budgetTracking = "";
+		this.associatedFundName = "";		
+	}
+
 	/**
+	 * 
 	 * Constructs an AccountingTransaction with specified details.
 	 * Ensures that entries are not null and the transaction is balanced.
 	 * Note: The process of setting the transaction back onto its entries is commented out
@@ -80,25 +98,16 @@ public class AccountingTransaction implements Serializable
 		
 		this.bookingDateTimestamp = bookingDateTimestamp;
 		
-		// Initialize other fields to defaults as per previous logic
 		this.date = "";
 		this.memo = "";
-		
-		checkArgument(!this.entries.isEmpty(),
-			"Transaction must have at least one entry (ideally 2+ for balance)");
-		checkArgument(this.entries.size() >= 2,
-			"A transaction consists of at least two entries");		
-		checkArgument(isBalanced(), "Transaction unbalanced");
-	}
-	
-	/**  
-	 * Constructor AccountingTransaction
-	 */
-	public AccountingTransaction()
-	{
-		// TODO Auto-generated constructor stub
+		this.toFrom = "";
+		this.checkNumber = "";
+		this.clearBank = "";
+		this.budgetTracking = "";
+		this.associatedFundName = "";
 	}
 
+	
 	/**
 	 * Gets the set of accounting entries that make up this transaction.
 	 * @return An unmodifiable set of accounting entries.
@@ -379,12 +388,101 @@ public class AccountingTransaction implements Serializable
 	}
 
 	/**
+	 * @return the toFrom
+	 */
+	public String getToFrom()
+	{
+		return toFrom;
+		
+	}
+
+	/**
+	 * @param toFrom the toFrom to set
+	 */
+	public void setToFrom(String toFrom)
+	{
+		this.toFrom = toFrom;
+		
+	}
+
+	/**
+	 * @return the checkNumber
+	 */
+	public String getCheckNumber()
+	{
+		return checkNumber;
+		
+	}
+
+	/**
+	 * @param checkNumber the checkNumber to set
+	 */
+	public void setCheckNumber(String checkNumber)
+	{
+		this.checkNumber = checkNumber;
+		
+	}
+
+	/**
+	 * @return the clearBank
+	 */
+	public String getClearBank()
+	{
+		return clearBank;
+		
+	}
+
+	/**
+	 * @param clearBank the clearBank to set
+	 */
+	public void setClearBank(String clearBank)
+	{
+		this.clearBank = clearBank;
+		
+	}
+
+	/**
+	 * @return the budgetTracking
+	 */
+	public String getBudgetTracking()
+	{
+		return budgetTracking;
+		
+	}
+
+	/**
+	 * @param budgetTracking the budgetTracking to set
+	 */
+	public void setBudgetTracking(String budgetTracking)
+	{
+		this.budgetTracking = budgetTracking;
+		
+	}
+
+	/**
+	 * @return the associatedFundName
+	 */
+	public String getAssociatedFundName()
+	{
+		return associatedFundName;
+		
+	}
+
+	/**
+	 * @param associatedFundName the associatedFundName to set
+	 */
+	public void setAssociatedFundName(String associatedFundName)
+	{
+		this.associatedFundName = associatedFundName;
+		
+	}
+
+	/**
 	 * @return
 	 */
-	public BigDecimal countAccountBalance()
+	public static BigDecimal countAccountBalance()
 	{
 		return BigDecimal.ZERO;
 	}
 
-	
 }

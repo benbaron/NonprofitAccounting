@@ -70,9 +70,11 @@ public class AccountingTransactionBuilder
 	 * @param accountNumber The account number to credit.
 	 * @return This AccountingTransactionBuilder instance for chaining.
 	 */
-	public AccountingTransactionBuilder credit(BigDecimal amount, String accountNumber)
+	public AccountingTransactionBuilder credit(BigDecimal amount, 
+	                                           String accountNumber)
 	{
-		this.entries.add(new AccountingEntry(amount, accountNumber, AccountSide.CREDIT));
+		this.entries.add(new AccountingEntry(amount, accountNumber, 
+				AccountSide.CREDIT));
 		return this;
 	}
 	

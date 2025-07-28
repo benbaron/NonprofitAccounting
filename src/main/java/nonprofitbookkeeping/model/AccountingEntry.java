@@ -27,6 +27,25 @@ public final class AccountingEntry implements Serializable
 	@JsonProperty final private BigDecimal amount;
 	@JsonProperty final private AccountSide accountSide;
 	@JsonProperty private String accountNumber;
+	@JsonProperty private String fundNumber;
+	/**
+	 * @return the fundNumber
+	 */
+	public String getFundNumber()
+	{
+		return fundNumber;
+		
+	}
+
+	/**
+	 * @param fundNumber the fundNumber to set
+	 */
+	public void setFundNumber(String fundNumber)
+	{
+		this.fundNumber = fundNumber;
+		
+	}
+
 	/**
 	 * Optional display name for the account. This mirrors the account's
 	 * {@code name} field at the time the entry was created.  It is stored
@@ -52,6 +71,7 @@ public final class AccountingEntry implements Serializable
 		this.accountSide = null;
 		this.accountNumber = "";
 		this.accountName = null;
+		this.fundNumber = null;
 	}
 	
 	/**
@@ -85,6 +105,7 @@ public final class AccountingEntry implements Serializable
 		this.accountNumber = checkNotNull(accountNumber);
 		this.accountSide = checkNotNull(accountSide);
 		this.accountName = accountName;
+		this.fundNumber = null;
 	}
 	
 	
@@ -111,18 +132,7 @@ public final class AccountingEntry implements Serializable
 		this.freeze = true;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public String toString()
-	{
-		return MoreObjects.toStringHelper(this)
-			.add("amount", this.amount.toString())
-			.addValue(this.accountSide)
-			.add("account", this.accountNumber)
-			.toString();
-	}
-	
+
 	/**
 	 * Gets the side of the account (Debit or Credit) this entry affects.
 	 * @return The account side.
@@ -203,5 +213,16 @@ public final class AccountingEntry implements Serializable
 			.getAccount(this.accountNumber);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override public String toString()
+	{
+		return MoreObjects.toStringHelper(this)
+			.add("amount", this.amount.toString())
+			.addValue(this.accountSide)
+			.add("account", this.accountNumber)
+			.toString();
+	}
 	
 }

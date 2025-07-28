@@ -179,30 +179,15 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 		
 		// Use the excel file importer
 		if ("Excel (.xlsx)".equals(chosenFormat))
-		{
-			
-			try
-			{
-				// Map spreadsheet to rows
-				List<ExcelLedgerRow> rows =
-						ExcelLedgerImportService.importSpreadsheet(selectedFile);
-				// Convert the rows
-				imported.addAll(ImportFileActionFX.convertExcelRows(rows, account));
-			}
-			catch (IOException e)
-			{
-				Alert alert =
-						new Alert(AlertType.ERROR, "Error reading Excel file: " + e.getMessage());
-				alert.initOwner(this.ownerStage);
-				alert.showAndWait();
-				return;
-			}
-			
+		{			
+			importXlsx(selectedFile, account, imported);			
 		}
 		else
 		{
-			imported = FileImportService.importOFXorQIFFile(selectedFile, account,
-					company.getChartOfAccounts(), company.getLedger());
+			imported = FileImportService.importOFXorQIFFile(selectedFile, 
+					account,
+					company.getChartOfAccounts(), 
+					company.getLedger());
 		}
 		
 		if (imported.isEmpty())
@@ -236,6 +221,35 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 		alert.showAndWait();
 		
 	}
+
+	/**
+	 * Import XLSX for transactions
+	 * 
+	 * @param selectedFile
+	 * @param account
+	 * @param imported
+	 */
+	void importXlsx(File selectedFile, Account account, List<AccountingTransaction> imported)
+	{
+		
+		try
+		{
+			// Map spreadsheet to rows
+			List<ExcelLedgerRow> rows =
+					ExcelLedgerImportService.importSpreadsheet(selectedFile);
+
+			// Convert the rows
+			imported.addAll(ImportFileActionFX.convertExcelRows(rows, account));
+		}
+		catch (IOException e)
+		{
+			Alert alert =
+					new Alert(AlertType.ERROR, "Error reading Excel file: " + e.getMessage());
+			alert.initOwner(this.ownerStage);
+			alert.showAndWait();
+		}
+		
+	}
 	
 	/**
 	 * Converts rows read from {@link ExcelLedgerImportService} into
@@ -245,8 +259,8 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 	 */
 	
 	private static	List<AccountingTransaction>
-			convertExcelRows(	List<ExcelLedgerRow> rows,
-								Account targetAccount)
+			convertExcelRows(List<ExcelLedgerRow> rows,
+			                 Account targetAccount)
 	{
 		List<AccountingTransaction> results = new ArrayList<>();
 		
@@ -263,13 +277,15 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 		{
 			// read the row bean
 			if (row == null || 
-					row.getAllocations() == null || 
-					row.getAllocations().isEmpty())
+				row.getAllocations() == null || 
+				row.getAllocations().isEmpty())
 			{
 				continue;
 			}
 			
+			// create new builder
 			AccountingTransactionBuilder builder = AccountingTransactionBuilder.create();
+			
 			BigDecimal total = BigDecimal.ZERO;
 			int entryCount = 0;
 			
@@ -357,21 +373,31 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 				continue; // Not balanced
 			}
 			
+			// build
 			AccountingTransaction tx = builder.build();
 			
+			
+			// Set the date
 			if (row.getDate() != null)
 			{
 				tx.setDate(row.getDate().toString());
 			}
 			
-			String memo = (row.getMemoNotes() != null && 
-					!row.getMemoNotes().isBlank()) ?
-					row.getMemoNotes() : row.getToFrom();
+			// Set the memo
+			String memo = (row.getMemoNotes() != null && !row.getMemoNotes().isBlank()) ? 
+					row.getMemoNotes() : 						
+						row.getToFrom();
 			
 			if (memo != null)
 			{
 				tx.setMemo(memo);
 			}
+						
+			tx.setToFrom (row.getToFrom());
+			tx.setCheckNumber ( row.getCheckNumber());
+			tx.setClearBank ( row.getClearBank());
+			tx.setBudgetTracking  ( row.getBudgetTracking());
+			
 			
 			results.add(tx);
 		}

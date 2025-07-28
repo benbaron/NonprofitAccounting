@@ -183,6 +183,7 @@ public class ExcelLedgerImportService
 			bean.setBalance(readBigDecimal(this.row.getCell(c++), this.fmt, this.eval));
 			bean.setDate(readLocalDate(this.row.getCell(c++), this.fmt, this.eval));
 			bean.setCheckNumber(readString(this.row.getCell(c++), this.fmt, this.eval));
+			c++; // skip amount
 			bean.setClearBank(readString(this.row.getCell(c++), this.fmt, this.eval));
 			bean.setToFrom(readString(this.row.getCell(c++), this.fmt, this.eval));
 			bean.setMemoNotes(readString(this.row.getCell(c++), this.fmt, this.eval));
@@ -229,6 +230,7 @@ public class ExcelLedgerImportService
 				c++; // skip the number column
 			}
 			
+			System.out.println("\nBean:" + bean +"\n");
 			return bean;
 			
 		}
@@ -262,9 +264,9 @@ public class ExcelLedgerImportService
 		 * @param eval
 		 * @return
 		 */
-		private static BigDecimal readBigDecimal(	Cell cell,
-													DataFormatter fmt,
-													FormulaEvaluator eval)
+		private static BigDecimal readBigDecimal(Cell cell,
+		                                         DataFormatter fmt,
+		                                         FormulaEvaluator eval)
 		{
 			
 			if (cell == null)
