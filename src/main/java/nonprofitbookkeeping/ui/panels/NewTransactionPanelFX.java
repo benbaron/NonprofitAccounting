@@ -79,9 +79,19 @@ public class NewTransactionPanelFX extends BorderPane
 	private final TableView<Line> table = new TableView<>(this.lines);
 	
 	/** DatePicker for selecting the transaction date. Defaults to the current date. */
-	private final DatePicker datePicker = new DatePicker(LocalDate.now());
-	/** TextArea for entering a memo or description for the transaction. */
-	private final TextArea memoArea = new TextArea();
+        private final DatePicker datePicker = new DatePicker(LocalDate.now());
+        /** TextArea for entering a memo or description for the transaction. */
+        private final TextArea memoArea = new TextArea();
+        /** Text field for specifying the payee or counterparty for the transaction. */
+        private final TextField toFromField = new TextField();
+        /** Text field for entering a check number if applicable. */
+        private final TextField checkNumberField = new TextField();
+        /** Text field for clearing bank information. */
+        private final TextField clearBankField = new TextField();
+        /** Text field for any budget tracking notes. */
+        private final TextField budgetTrackingField = new TextField();
+        /** Text field for the associated fund name. */
+        private final TextField associatedFundNameField = new TextField();
 	/** Button to save the transaction. Enabled only when the transaction is balanced. */
 	private Button saveBtn;
 	/** Callback {@link Consumer} to be invoked when the transaction is saved. It receives the created {@link AccountingTransaction}. */
@@ -144,8 +154,13 @@ public class NewTransactionPanelFX extends BorderPane
 		this.lines.forEach(this::watch);
 		
 		/* 1. header fields */
-		this.datePicker.setValue(LocalDate.parse(existing.getDate()));
-		this.memoArea.setText(existing.getMemo());
+                this.datePicker.setValue(LocalDate.parse(existing.getDate()));
+                this.memoArea.setText(existing.getMemo());
+                this.toFromField.setText(existing.getToFrom());
+                this.checkNumberField.setText(existing.getCheckNumber());
+                this.clearBankField.setText(existing.getClearBank());
+                this.budgetTrackingField.setText(existing.getBudgetTracking());
+                this.associatedFundNameField.setText(existing.getAssociatedFundName());
 		
 		/* 2. entry lines */
 		this.lines.clear();
@@ -222,11 +237,16 @@ public class NewTransactionPanelFX extends BorderPane
 		this.saveBtn.setDisable(true); // enabled only when balanced
 		this.saveBtn.setOnAction(e -> persist());
 		
-		GridPane top = new GridPane();
-		top.setHgap(10);
-		top.setVgap(8);
-		top.addRow(0, new Label("Date:"), this.datePicker);
-		top.addRow(1, new Label("Memo:"), this.memoArea);
+                GridPane top = new GridPane();
+                top.setHgap(10);
+                top.setVgap(8);
+                top.addRow(0, new Label("Date:"), this.datePicker);
+                top.addRow(1, new Label("Memo:"), this.memoArea);
+                top.addRow(2, new Label("To/From:"), this.toFromField);
+                top.addRow(3, new Label("Check #:"), this.checkNumberField);
+                top.addRow(4, new Label("Clear Bank:"), this.clearBankField);
+                top.addRow(5, new Label("Budget Tracking:"), this.budgetTrackingField);
+                top.addRow(6, new Label("Fund Name:"), this.associatedFundNameField);
 		
 		setTop(top);
 		setCenter(this.table);
@@ -432,8 +452,13 @@ public class NewTransactionPanelFX extends BorderPane
 			Map.of(),
 			Instant.now().toEpochMilli());
 		
-		tx.setDate(this.datePicker.getValue().toString());
-		tx.setDescription(this.memoArea.getText());
+                tx.setDate(this.datePicker.getValue().toString());
+                tx.setDescription(this.memoArea.getText());
+                tx.setToFrom(this.toFromField.getText());
+                tx.setCheckNumber(this.checkNumberField.getText());
+                tx.setClearBank(this.clearBankField.getText());
+                tx.setBudgetTracking(this.budgetTrackingField.getText());
+                tx.setAssociatedFundName(this.associatedFundNameField.getText());
 		
 //		if (!this.lines.isEmpty())
 //		{

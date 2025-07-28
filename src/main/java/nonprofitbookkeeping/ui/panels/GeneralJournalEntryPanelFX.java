@@ -28,6 +28,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Separator;
 import javafx.scene.control.cell.ComboBoxTableCell;
@@ -68,8 +69,13 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 	
 	private final ObservableList<Line> lines = FXCollections.observableArrayList();
 	private final TableView<Line> table = new TableView<>(this.lines);
-	private final DatePicker datePicker = new DatePicker(LocalDate.now());
-	private final TextArea memoArea = new TextArea();
+        private final DatePicker datePicker = new DatePicker(LocalDate.now());
+        private final TextArea memoArea = new TextArea();
+        private final TextField toFromField = new TextField();
+        private final TextField checkNumberField = new TextField();
+        private final TextField clearBankField = new TextField();
+        private final TextField budgetTrackingField = new TextField();
+        private final TextField associatedFundNameField = new TextField();
 	private final Button saveBtn = new Button("Save");
 	private final Label debitTotalLbl = new Label();
 	private final Label creditTotalLbl = new Label();
@@ -159,11 +165,16 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 		
 		this.saveBtn.setOnAction(e -> persist());
 		
-		GridPane top = new GridPane();
-		top.setHgap(10);
-		top.setVgap(8);
-		top.addRow(0, new Label("Date:"), this.datePicker);
-		top.addRow(1, new Label("Memo:"), this.memoArea);
+                GridPane top = new GridPane();
+                top.setHgap(10);
+                top.setVgap(8);
+                top.addRow(0, new Label("Date:"), this.datePicker);
+                top.addRow(1, new Label("Memo:"), this.memoArea);
+                top.addRow(2, new Label("To/From:"), this.toFromField);
+                top.addRow(3, new Label("Check #:"), this.checkNumberField);
+                top.addRow(4, new Label("Clear Bank:"), this.clearBankField);
+                top.addRow(5, new Label("Budget Tracking:"), this.budgetTrackingField);
+                top.addRow(6, new Label("Fund Name:"), this.associatedFundNameField);
 		
 		setTop(top);
 		setCenter(this.table);
@@ -258,8 +269,13 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 	 */
 	private void loadFromTransaction(AccountingTransaction tx)
 	{
-		this.datePicker.setValue(LocalDate.parse(tx.getDate()));
-		this.memoArea.setText(tx.getDescription() != null ? tx.getDescription() : tx.getMemo());
+                this.datePicker.setValue(LocalDate.parse(tx.getDate()));
+                this.memoArea.setText(tx.getDescription() != null ? tx.getDescription() : tx.getMemo());
+                this.toFromField.setText(tx.getToFrom());
+                this.checkNumberField.setText(tx.getCheckNumber());
+                this.clearBankField.setText(tx.getClearBank());
+                this.budgetTrackingField.setText(tx.getBudgetTracking());
+                this.associatedFundNameField.setText(tx.getAssociatedFundName());
 		this.lines.clear();
 		
 		for (AccountingEntry e : tx.getEntries())
@@ -345,8 +361,13 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 			tx.setId(this.original.getId());
 		}
 		
-		tx.setDate(this.datePicker.getValue().toString());
-		tx.setDescription(this.memoArea.getText());
+                tx.setDate(this.datePicker.getValue().toString());
+                tx.setDescription(this.memoArea.getText());
+                tx.setToFrom(this.toFromField.getText());
+                tx.setCheckNumber(this.checkNumberField.getText());
+                tx.setClearBank(this.clearBankField.getText());
+                tx.setBudgetTracking(this.budgetTrackingField.getText());
+                tx.setAssociatedFundName(this.associatedFundNameField.getText());
 		
 		this.onSave.accept(tx);
 	}
