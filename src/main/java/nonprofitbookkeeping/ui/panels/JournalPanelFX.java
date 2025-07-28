@@ -51,13 +51,18 @@ public class JournalPanelFX extends BorderPane {
 	private void buildTable()
 	{
 		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
-		this.table.getColumns().addAll(
-			col("ID", "id"),
-			col("Date", "date"),
-			col("Account", "accountName"),
-			num("Debit", "debit"),
-			num("Credit", "credit"),
-			col("Memo", "memo"));
+                this.table.getColumns().addAll(
+                        col("ID", "id"),
+                        col("Date", "date"),
+                        col("Account", "accountName"),
+                        num("Debit", "debit"),
+                        num("Credit", "credit"),
+                        col("Memo", "memo"),
+                        col("To/From", "toFrom"),
+                        col("Check #", "checkNumber"),
+                        col("Clear Bank", "clearBank"),
+                        col("Budget Tracking", "budgetTracking"),
+                        col("Fund Name", "associatedFundName"));
 	}
 	
 	/**
@@ -93,18 +98,20 @@ public class JournalPanelFX extends BorderPane {
 	}
 	
 	/* -------- Toolbar -------- */
-	/**
-	 * Builds and returns a {@link ToolBar} containing "New", "Edit", and "Delete" buttons
-	 * for managing journal transactions.
-	 * These buttons trigger actions to open an editor dialog ({@link #openEditor(AccountingTransaction)})
-	 * for new or existing transactions, or to delete the selected transaction from the journal.
-	 *
-	 * @return A {@link ToolBar} node populated with action buttons.
-	 */
+        /**
+         * Builds and returns a {@link ToolBar} containing action buttons for
+         * managing journal transactions. The toolbar includes "New", "Edit",
+         * "Delete", and "Refresh" buttons. The first three open the journal
+         * entry editor or remove the selected entry. The refresh button reloads
+         * the table from the underlying journal.
+         *
+         * @return A {@link ToolBar} node populated with action buttons.
+         */
     private void buildToolBar() {
         Button add = new Button("New");
         Button edit = new Button("Edit");
         Button del = new Button("Delete");
+        Button refreshBtn = new Button("Refresh");
 
         add.setOnAction(e -> openEditor(null));
         edit.setOnAction(e -> {
@@ -125,7 +132,10 @@ public class JournalPanelFX extends BorderPane {
                 }
             }
         });
-        this.actionToolBar = new ToolBar(add, edit, del);
+
+        refreshBtn.setOnAction(e -> refresh());
+
+        this.actionToolBar = new ToolBar(add, edit, del, refreshBtn);
     }
 	
 	/* -------- CRUD -------- */
