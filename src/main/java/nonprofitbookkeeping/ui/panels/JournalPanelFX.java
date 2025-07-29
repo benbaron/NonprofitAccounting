@@ -2,6 +2,8 @@
 package nonprofitbookkeeping.ui.panels;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+
 import javafx.collections.*;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -51,24 +53,24 @@ public class JournalPanelFX extends BorderPane
 	 * Sets a column resize policy and defines columns for ID, Date, Account, Debit, Credit, and Memo
 	 * using the helper methods {@link #col(String, String)} and {@link #num(String, String)}.
 	 */
-        private void buildTable()
-        {
-                this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
-                this.table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-                this.table.getColumns().addAll(
-                                col("ID", "id"),
-                                col("Date", "date"),
-                                col("Account", "accountName"),
-                                num("Debit", "debit"),
-                                num("Credit", "credit"),
-                                col("Memo", "memo"),
-                                col("To/From", "toFrom"),
-                                col("Check #", "checkNumber"),
-                                col("Clear Bank", "clearBank"),
-                                col("Budget Tracking", "budgetTracking"),
-                                col("Fund Name", "associatedFundName"));
-
-        }
+	private void buildTable()
+	{
+		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+		this.table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		this.table.getColumns().addAll(
+				col("ID", "id"),
+				col("Date", "date"),
+				col("Account", "accountName"),
+				num("Debit", "debit"),
+				num("Credit", "credit"),
+				col("Memo", "memo"),
+				col("To/From", "toFrom"),
+				col("Check #", "checkNumber"),
+				col("Clear Bank", "clearBank"),
+				col("Budget Tracking", "budgetTracking"),
+				col("Fund Name", "associatedFundName"));
+		
+	}
 	
 	/**
 	 * Utility method to create a {@link TableColumn} for displaying String properties
@@ -131,34 +133,35 @@ public class JournalPanelFX extends BorderPane
 			}
 			
 		});
-                del.setOnAction(e -> {
-                        ObservableList<AccountingTransaction> selected =
-                                        this.table.getSelectionModel().getSelectedItems();
-
-                        if (selected != null && !selected.isEmpty())
-                        {
-                                if (CurrentCompany.isOpen() && CurrentCompany.getCompany() != null &&
-                                                CurrentCompany.getCompany().getLedger() != null)
-                                {
-                                        Journal journal = CurrentCompany.getCompany().getLedger().getJournal();
-
-                                        if (journal != null)
-                                        {
-                                                List<AccountingTransaction> toDelete = new ArrayList<>(selected);
-
-                                                for (AccountingTransaction tx : toDelete)
-                                                {
-                                                        journal.deleteTransaction(tx.getBookingDateTimestamp());
-                                                }
-
-                                                refresh();
-                                        }
-
-                                }
-
-                        }
-
-                });
+		del.setOnAction(e -> {
+			ObservableList<AccountingTransaction> selected =
+					this.table.getSelectionModel().getSelectedItems();
+			
+			if (selected != null && !selected.isEmpty())
+			{
+				
+				if (CurrentCompany.isOpen() && CurrentCompany.getCompany() != null &&
+						CurrentCompany.getCompany().getLedger() != null)
+				{
+					Journal journal = CurrentCompany.getCompany().getLedger().getJournal();
+					
+					if (journal != null)
+					{
+						ArrayList<AccountingTransaction> toDelete = new ArrayList<>(selected);
+						
+						for (AccountingTransaction tx : toDelete)
+						{
+							journal.deleteTransaction(tx.getBookingDateTimestamp());
+						}
+						
+						refresh();
+					}
+					
+				}
+				
+			}
+			
+		});
 		
 		refreshBtn.setOnAction(e -> refresh());
 		

@@ -10,6 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -30,6 +31,7 @@ import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.Journal;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -88,11 +90,11 @@ public class SkeletonJournalPanel extends BorderPane
 		setPadding(new Insets(15)); // Overall padding
 		
 		// Initialize collections
-                this.journalDataList = FXCollections.observableArrayList();
-                this.journalDisplayTable = new TableView<>(this.journalDataList);
-                this.journalDisplayTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-                this.journalDisplayTable
-                                .setPlaceholder(new Label("No journal entries to display or company not open."));
+		this.journalDataList = FXCollections.observableArrayList();
+		this.journalDisplayTable = new TableView<>(this.journalDataList);
+		this.journalDisplayTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		this.journalDisplayTable
+				.setPlaceholder(new Label("No journal entries to display or company not open."));
 		
 		// Filter Controls (Top)
 		this.filterControlsBox = new HBox();
@@ -153,8 +155,7 @@ public class SkeletonJournalPanel extends BorderPane
 	 * Cell value factories are configured using {@link PropertyValueFactory} to bind to
 	 * properties of the {@link JournalDisplayEntry} class.
 	 */
-	@SuppressWarnings("unchecked") 
-	private void setupTableColumns()
+	@SuppressWarnings("unchecked") private void setupTableColumns()
 	{
 		this.journalDisplayTable.getColumns().clear();
 		
@@ -400,49 +401,53 @@ public class SkeletonJournalPanel extends BorderPane
 	/**
 	 * On delete button
 	 */
-        void onDeleteAction()
-        {
-                ObservableList<JournalDisplayEntry> selected =
-                                this.journalDisplayTable.getSelectionModel().getSelectedItems();
-
-                if (selected == null || selected.isEmpty())
-                {
-                        System.out.println("No journal entry selected for deletion.");
-                        AlertBox.showError(getScene().getWindow(), "No entry selected for deletion.");
-                        return;
-                }
-
-                Company company = CurrentCompany.getCompany();
-
-                if (company != null && company.getLedger() != null &&
-                                company.getLedger().getJournal() != null)
-                {
-                        Journal journal = company.getLedger().getJournal();
-                        boolean anyDeleted = false;
-
-                        List<JournalDisplayEntry> toDelete = new ArrayList<>(selected);
-
-                        for (JournalDisplayEntry entry : toDelete)
-                        {
-                                AccountingTransaction originalTx = entry.getOriginalTransaction();
-                                anyDeleted |= journal.deleteTransaction(originalTx.getBookingDateTimestamp());
-                        }
-
-                        if (anyDeleted)
-                        {
-                                loadData();
-                                System.out.println("Deleted selected entries.");
-                        }
-                        else
-                        {
-                                System.out.println("Failed to delete selected entries.");
-                                AlertBox.showError(getScene().getWindow(), "Deletion failed.");
-                        }
-                }
-
-        }
+	void onDeleteAction()
+	{
+		ObservableList<JournalDisplayEntry> selected =
+				this.journalDisplayTable.getSelectionModel().getSelectedItems();
+		
+		if (selected == null || selected.isEmpty())
+		{
+			System.out.println("No journal entry selected for deletion.");
+			AlertBox.showError(getScene().getWindow(), "No entry selected for deletion.");
+			return;
+		}
+		
+		Company company = CurrentCompany.getCompany();
+		
+		if (company != null && company.getLedger() != null &&
+				company.getLedger().getJournal() != null)
+		{
+			Journal journal = company.getLedger().getJournal();
+			boolean anyDeleted = false;
+			
+			List<JournalDisplayEntry> toDelete = new ArrayList<>(selected);
+			
+			for (JournalDisplayEntry entry : toDelete)
+			{
+				AccountingTransaction originalTx = entry.getOriginalTransaction();
+				anyDeleted |= journal.deleteTransaction(originalTx.getBookingDateTimestamp());
+			}
+			
+			if (anyDeleted)
+			{
+				loadData();
+				System.out.println("Deleted selected entries.");
+			}
+			else
+			{
+				System.out.println("Failed to delete selected entries.");
+				AlertBox.showError(getScene().getWindow(), "Deletion failed.");
+			}
+			
+		}
+		
+	}
 	
-	/** Opens the GeneralJournalEntryPanelFX for creating or editing a transaction. */
+	/** 
+	 * Opens the GeneralJournalEntryPanelFX for creating or 
+	 * editing a transaction. 
+	 * */
 	private void openEditor(AccountingTransaction existing)
 	{
 		Company company = CurrentCompany.getCompany();
