@@ -255,10 +255,8 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 	 * {@link AccountingTransaction} instances. Allocation account names are
 	 * matched against the chart of accounts and missing accounts prompt the
 	 * user to add or ignore them.
-	 */
-	
-	
-}
+         */
+
         private static List<AccountingTransaction> convertExcelRows(List<ExcelLedgerRow> rows)
         {
                 List<AccountingTransaction> results = new ArrayList<>();

@@ -256,24 +256,24 @@ public class JournalPanelFXTest extends JavaFXTestBase
 			"Updated Donation A Memo".equals(tx.getMemo())));
 	}
 	
-	@Test public void testDeleteButton_RemovesTransaction()
-	{
-		TableView<AccountingTransaction> table = lookup(".table-view").queryTableView();
-		Platform.runLater(() -> table.getSelectionModel().select(0)); // Select first transaction
-																		// (tx1)
-		WaitForAsyncUtils.waitForFxEvents();
-		
-		AccountingTransaction txToDelete = table.getSelectionModel().getSelectedItem();
-		assertNotNull(txToDelete);
-		
-		clickOn("Delete");
-		WaitForAsyncUtils.waitForFxEvents();
-		
-		verify(this.mockJournal, times(1))
-			.deleteTransaction(eq(txToDelete.getBookingDateTimestamp()));
-		verifyThat(table, hasNumRows(1)); // One transaction should remain
-		assertFalse(table.getItems().contains(txToDelete));
-	}
+        @Test public void testDeleteButton_RemovesTransaction()
+        {
+                TableView<AccountingTransaction> table = lookup(".table-view").queryTableView();
+                Platform.runLater(() -> table.getSelectionModel().selectIndices(0, 1));
+                WaitForAsyncUtils.waitForFxEvents();
+
+                AccountingTransaction first = table.getItems().get(0);
+                AccountingTransaction second = table.getItems().get(1);
+
+                clickOn("Delete");
+                WaitForAsyncUtils.waitForFxEvents();
+
+                verify(this.mockJournal, times(1))
+                        .deleteTransaction(eq(first.getBookingDateTimestamp()));
+                verify(this.mockJournal, times(1))
+                        .deleteTransaction(eq(second.getBookingDateTimestamp()));
+                verifyThat(table, hasNumRows(0));
+        }
 	
 	private DialogPane getTopModalDialogPane()
 	{
