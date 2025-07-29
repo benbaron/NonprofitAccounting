@@ -59,10 +59,10 @@ public class SkeletonJournalPanel extends BorderPane
 	private DatePicker startDatePicker;
 	/** End date picker for filtering journal entries. */
 	private DatePicker endDatePicker;
-        /** Button to apply the filters entered in {@link #searchFilterField} and the date range. */
-        private Button applyFilterButton;
-        /** Button to refresh the table without changing filters. */
-        private Button refreshButton;
+	/** Button to apply the filters entered in {@link #searchFilterField} and the date range. */
+	private Button applyFilterButton;
+	/** Button to refresh the table without changing filters. */
+	private Button refreshButton;
 	/** Button to initiate creating a new journal entry. (Currently placeholder) */
 	private Button newEntryButton;
 	/** Button to initiate editing the selected journal entry. (Currently placeholder) */
@@ -91,7 +91,7 @@ public class SkeletonJournalPanel extends BorderPane
 		this.journalDataList = FXCollections.observableArrayList();
 		this.journalDisplayTable = new TableView<>(this.journalDataList);
 		this.journalDisplayTable
-			.setPlaceholder(new Label("No journal entries to display or company not open."));
+				.setPlaceholder(new Label("No journal entries to display or company not open."));
 		
 		// Filter Controls (Top)
 		this.filterControlsBox = new HBox();
@@ -111,11 +111,11 @@ public class SkeletonJournalPanel extends BorderPane
 		this.endDatePicker = new DatePicker();
 		this.endDatePicker.setPromptText("End Date");
 		// apply
-                this.applyFilterButton = new Button("Apply Filter");
-                this.refreshButton = new Button("Refresh");
-                this.filterControlsBox.getChildren().addAll(filterLabel, this.searchFilterField,
-                        this.startDatePicker, this.endDatePicker, this.applyFilterButton,
-                        this.refreshButton);
+		this.applyFilterButton = new Button("Apply Filter");
+		this.refreshButton = new Button("Refresh");
+		this.filterControlsBox.getChildren().addAll(filterLabel, this.searchFilterField,
+				this.startDatePicker, this.endDatePicker, this.applyFilterButton,
+				this.refreshButton);
 		
 		// scroll pane
 		this.filterScrollPane = new ScrollPane(this.filterControlsBox);
@@ -135,7 +135,7 @@ public class SkeletonJournalPanel extends BorderPane
 		this.editEntryButton = new Button("Edit Entry");
 		this.deleteEntryButton = new Button("Delete Entry");
 		this.crudButtonsHBox.getChildren().addAll(this.newEntryButton, this.editEntryButton,
-			this.deleteEntryButton);
+				this.deleteEntryButton);
 		this.setBottom(this.crudButtonsHBox);
 		
 		// Setup and initial load
@@ -143,6 +143,7 @@ public class SkeletonJournalPanel extends BorderPane
 		setCenter(this.journalDisplayTable); // Place table in center
 		
 		setupEventListenersAndRefresh();
+		
 	}
 	
 	/**
@@ -151,7 +152,8 @@ public class SkeletonJournalPanel extends BorderPane
 	 * Cell value factories are configured using {@link PropertyValueFactory} to bind to
 	 * properties of the {@link JournalDisplayEntry} class.
 	 */
-	@SuppressWarnings("unchecked") private void setupTableColumns()
+	@SuppressWarnings("unchecked") 
+	private void setupTableColumns()
 	{
 		this.journalDisplayTable.getColumns().clear();
 		
@@ -167,33 +169,33 @@ public class SkeletonJournalPanel extends BorderPane
 		accountCol.setCellValueFactory(new PropertyValueFactory<>("accountName"));
 		accountCol.setPrefWidth(150);
 		
-                TableColumn<JournalDisplayEntry, String> descCol = new TableColumn<>("Description");
-                descCol.setCellValueFactory(new PropertyValueFactory<>("description"));
-                descCol.setPrefWidth(220);
-
-                TableColumn<JournalDisplayEntry, String> toFromCol = new TableColumn<>("To/From");
-                toFromCol.setCellValueFactory(new PropertyValueFactory<>("toFrom"));
-                toFromCol.setPrefWidth(120);
-
-                TableColumn<JournalDisplayEntry, String> checkCol = new TableColumn<>("Check #");
-                checkCol.setCellValueFactory(new PropertyValueFactory<>("checkNumber"));
-                checkCol.setPrefWidth(80);
-
-                TableColumn<JournalDisplayEntry, String> clearBankCol = new TableColumn<>("Clear Bank");
-                clearBankCol.setCellValueFactory(new PropertyValueFactory<>("clearBank"));
-                clearBankCol.setPrefWidth(100);
-
-                TableColumn<JournalDisplayEntry, String> budgetCol = new TableColumn<>("Budget Tracking");
-                budgetCol.setCellValueFactory(new PropertyValueFactory<>("budgetTracking"));
-                budgetCol.setPrefWidth(120);
-
-                TableColumn<JournalDisplayEntry, String> fundNameCol = new TableColumn<>("Fund Name");
-                fundNameCol.setCellValueFactory(new PropertyValueFactory<>("fundName"));
-                fundNameCol.setPrefWidth(120);
-
-                TableColumn<JournalDisplayEntry, String> fundNumCol = new TableColumn<>("Fund #");
-                fundNumCol.setCellValueFactory(new PropertyValueFactory<>("fundNumber"));
-                fundNumCol.setPrefWidth(80);
+		TableColumn<JournalDisplayEntry, String> descCol = new TableColumn<>("Description");
+		descCol.setCellValueFactory(new PropertyValueFactory<>("description"));
+		descCol.setPrefWidth(220);
+		
+		TableColumn<JournalDisplayEntry, String> toFromCol = new TableColumn<>("To/From");
+		toFromCol.setCellValueFactory(new PropertyValueFactory<>("toFrom"));
+		toFromCol.setPrefWidth(120);
+		
+		TableColumn<JournalDisplayEntry, String> checkCol = new TableColumn<>("Check #");
+		checkCol.setCellValueFactory(new PropertyValueFactory<>("checkNumber"));
+		checkCol.setPrefWidth(80);
+		
+		TableColumn<JournalDisplayEntry, String> clearBankCol = new TableColumn<>("Clear Bank");
+		clearBankCol.setCellValueFactory(new PropertyValueFactory<>("clearBank"));
+		clearBankCol.setPrefWidth(100);
+		
+		TableColumn<JournalDisplayEntry, String> budgetCol = new TableColumn<>("Budget Tracking");
+		budgetCol.setCellValueFactory(new PropertyValueFactory<>("budgetTracking"));
+		budgetCol.setPrefWidth(120);
+		
+		TableColumn<JournalDisplayEntry, String> fundNameCol = new TableColumn<>("Fund Name");
+		fundNameCol.setCellValueFactory(new PropertyValueFactory<>("fundName"));
+		fundNameCol.setPrefWidth(120);
+		
+		TableColumn<JournalDisplayEntry, String> fundNumCol = new TableColumn<>("Fund #");
+		fundNumCol.setCellValueFactory(new PropertyValueFactory<>("fundNumber"));
+		fundNumCol.setPrefWidth(80);
 		
 		TableColumn<JournalDisplayEntry, String> debitCol = new TableColumn<>("Debit");
 		debitCol.setCellValueFactory(new PropertyValueFactory<>("debit"));
@@ -205,10 +207,11 @@ public class SkeletonJournalPanel extends BorderPane
 		creditCol.setStyle("-fx-alignment: CENTER-RIGHT;");
 		creditCol.setPrefWidth(90);
 		
-                this.journalDisplayTable.getColumns().addAll(dateCol, transIdCol, accountCol, descCol,
-                        toFromCol, checkCol, clearBankCol, budgetCol, fundNameCol, fundNumCol,
-                        debitCol, creditCol);
-        }
+		this.journalDisplayTable.getColumns().addAll(dateCol, transIdCol, accountCol, descCol,
+				toFromCol, checkCol, clearBankCol, budgetCol, fundNameCol, fundNumCol,
+				debitCol, creditCol);
+		
+	}
 	
 	/**
 	 * Loads journal entry data for the {@link CurrentCompany} and populates the {@link #journalDisplayTable}.
@@ -227,14 +230,14 @@ public class SkeletonJournalPanel extends BorderPane
 		if (!CurrentCompany.isOpen() || CurrentCompany.getCompany() == null)
 		{
 			this.journalDisplayTable
-				.setPlaceholder(new Label("No journal entries found or company not open."));
+					.setPlaceholder(new Label("No journal entries found or company not open."));
 			return;
 		}
 		
 		Company company = CurrentCompany.getCompany();
 		
 		if (company != null && company.getLedger() != null &&
-			company.getLedger().getJournal() != null)
+				company.getLedger().getJournal() != null)
 		{
 			Journal journal = company.getLedger().getJournal();
 			// Iterate in reverse to show newest transactions first at the top of the list
@@ -261,7 +264,7 @@ public class SkeletonJournalPanel extends BorderPane
 		if (this.journalDataList.isEmpty())
 		{
 			this.journalDisplayTable
-				.setPlaceholder(new Label("No journal entries found or company not open."));
+					.setPlaceholder(new Label("No journal entries found or company not open."));
 		}
 		
 		// No need for an 'else' to set placeholder to null, TableView handles it.
@@ -285,29 +288,31 @@ public class SkeletonJournalPanel extends BorderPane
 			@Override public void companyChange(boolean companyNowOpen)
 			{
 				loadData();
+				
 			}
 			
 		};
 		CurrentCompany.CompanyListener.addCompanyListener(this.companyChangeListener);
 		
 		// On filter
-                this.applyFilterButton.setOnAction(e -> onFilterButtonAction());
-                this.refreshButton.setOnAction(e -> refresh());
-                // on New Entry
-                this.newEntryButton.setOnAction(e -> openEditor(null));
+		this.applyFilterButton.setOnAction(e -> onFilterButtonAction());
+		this.refreshButton.setOnAction(e -> refresh());
+		// on New Entry
+		this.newEntryButton.setOnAction(e -> openEditor(null));
 		// on Edit Entry
 		this.editEntryButton.setOnAction(e -> onEditAction());
 		// on Delete
 		this.deleteEntryButton.setOnAction(e -> onDeleteAction());
 		
 		loadData(); // Initial data load
+		
 	}
 	
 	/**
 	 * On Filter Button
 	 */
-        void onFilterButtonAction()
-        {
+	void onFilterButtonAction()
+	{
 		String search = this.searchFilterField.getText().toLowerCase();
 		LocalDate start = this.startDatePicker.getValue();
 		LocalDate end = this.endDatePicker.getValue();
@@ -329,7 +334,7 @@ public class SkeletonJournalPanel extends BorderPane
 			if (search != null && !search.isBlank())
 			{
 				match &= entry.descriptionProperty().get().toLowerCase().contains(search) ||
-					entry.accountNameProperty().get().toLowerCase().contains(search);
+						entry.accountNameProperty().get().toLowerCase().contains(search);
 			}
 			
 			if (start != null || end != null)
@@ -355,18 +360,20 @@ public class SkeletonJournalPanel extends BorderPane
 			
 		}
 		
-                this.journalDisplayTable.setItems(filtered);
-        }
-
-        /**
-         * Reloads journal data using the current filter settings. This is used
-         * by the Refresh button to show newly added or edited entries without
-         * clearing the user's search or date filters.
-         */
-        void refresh()
-        {
-                onFilterButtonAction();
-        }
+		this.journalDisplayTable.setItems(filtered);
+		
+	}
+	
+	/**
+	 * Reloads journal data using the current filter settings. This is used
+	 * by the Refresh button to show newly added or edited entries without
+	 * clearing the user's search or date filters.
+	 */
+	void refresh()
+	{
+		onFilterButtonAction();
+		
+	}
 	
 	/**
 	 * On Edit Button
@@ -374,7 +381,7 @@ public class SkeletonJournalPanel extends BorderPane
 	void onEditAction()
 	{
 		JournalDisplayEntry selected =
-			this.journalDisplayTable.getSelectionModel().getSelectedItem();
+				this.journalDisplayTable.getSelectionModel().getSelectedItem();
 		
 		if (selected != null)
 		{
@@ -395,7 +402,7 @@ public class SkeletonJournalPanel extends BorderPane
 	void onDeleteAction()
 	{
 		JournalDisplayEntry selected =
-			this.journalDisplayTable.getSelectionModel().getSelectedItem();
+				this.journalDisplayTable.getSelectionModel().getSelectedItem();
 		
 		if (selected != null)
 		{
@@ -403,21 +410,22 @@ public class SkeletonJournalPanel extends BorderPane
 			Company company = CurrentCompany.getCompany();
 			
 			if (company != null && company.getLedger() != null &&
-				company.getLedger().getJournal() != null)
+					company.getLedger().getJournal() != null)
 			{
 				boolean deleted = company.getLedger().getJournal()
-					.deleteTransaction(originalTx.getBookingDateTimestamp());
+						.deleteTransaction(originalTx.getBookingDateTimestamp());
 				
 				if (deleted)
 				{
 					loadData(); // Refresh table
 					System.out.println(
-						"Successfully deleted TX ID: " + originalTx.getBookingDateTimestamp());
+							"Successfully deleted TX ID: " + originalTx.getBookingDateTimestamp());
 				}
 				else
 				{
 					System.out
-						.println("Failed to delete TX ID: " + originalTx.getBookingDateTimestamp());
+							.println("Failed to delete TX ID: " +
+									originalTx.getBookingDateTimestamp());
 					AlertBox.showError(getScene().getWindow(), "Deletion failed.");
 				}
 				
@@ -438,7 +446,7 @@ public class SkeletonJournalPanel extends BorderPane
 		Company company = CurrentCompany.getCompany();
 		
 		if (company == null || company.getLedger() == null ||
-			company.getLedger().getJournal() == null)
+				company.getLedger().getJournal() == null)
 		{
 			AlertBox.showError(getScene().getWindow(), "No company open.");
 			return;
@@ -474,6 +482,7 @@ public class SkeletonJournalPanel extends BorderPane
 		s.initOwner(getScene().getWindow());
 		s.setScene(new Scene(pane, 800, 600));
 		s.showAndWait();
+		
 	}
 	
 	/**
@@ -493,22 +502,22 @@ public class SkeletonJournalPanel extends BorderPane
 		private final SimpleStringProperty accountName;
 		/** The overall description or memo of the transaction. */
 		private final SimpleStringProperty description;
-                /** Payee or counterparty for this transaction. */
-                private final SimpleStringProperty toFrom;
-                /** Check number associated with the transaction. */
-                private final SimpleStringProperty checkNumber;
-                /** Clearing bank information. */
-                private final SimpleStringProperty clearBank;
-                /** Budget tracking notes. */
-                private final SimpleStringProperty budgetTracking;
-                /** Associated fund name for the transaction. */
-                private final SimpleStringProperty fundName;
-                /** Fund number for this entry line. */
-                private final SimpleStringProperty fundNumber;
-                /** The debit amount for this entry line, as a string. Empty if it's a credit. */
-                private final SimpleStringProperty debit;
-                /** The credit amount for this entry line, as a string. Empty if it's a debit. */
-                private final SimpleStringProperty credit;
+		/** Payee or counterparty for this transaction. */
+		private final SimpleStringProperty toFrom;
+		/** Check number associated with the transaction. */
+		private final SimpleStringProperty checkNumber;
+		/** Clearing bank information. */
+		private final SimpleStringProperty clearBank;
+		/** Budget tracking notes. */
+		private final SimpleStringProperty budgetTracking;
+		/** Associated fund name for the transaction. */
+		private final SimpleStringProperty fundName;
+		/** Fund number for this entry line. */
+		private final SimpleStringProperty fundNumber;
+		/** The debit amount for this entry line, as a string. Empty if it's a credit. */
+		private final SimpleStringProperty debit;
+		/** The credit amount for this entry line, as a string. Empty if it's a debit. */
+		private final SimpleStringProperty credit;
 		/** A reference to the original {@link AccountingTransaction} this display entry belongs to. */
 		private final AccountingTransaction originalTransaction;
 		
@@ -519,26 +528,32 @@ public class SkeletonJournalPanel extends BorderPane
 		 * @param entry The specific {@link AccountingEntry} within the transaction to display. Must not be null.
 		 *              The entry's account and amount details are used to populate debit/credit columns.
 		 */
-                public JournalDisplayEntry(AccountingTransaction tx, AccountingEntry entry)
-                {
-                        this.originalTransaction = tx;
-                        this.date = new SimpleStringProperty(tx.getDate());
-                        this.transactionId =
-                                new SimpleStringProperty(String.valueOf(tx.getBookingDateTimestamp()));
-                        this.description = new SimpleStringProperty(tx.getDescription() != null ?
-                                tx.getDescription() : (tx.getMemo() != null ? tx.getMemo() : ""));
-                        this.toFrom = new SimpleStringProperty(
-                                tx.getToFrom() != null ? tx.getToFrom() : "");
-                        this.checkNumber = new SimpleStringProperty(
-                                tx.getCheckNumber() != null ? tx.getCheckNumber() : "");
-                        this.clearBank = new SimpleStringProperty(
-                                tx.getClearBank() != null ? tx.getClearBank() : "");
-                        this.budgetTracking = new SimpleStringProperty(
-                                tx.getBudgetTracking() != null ? tx.getBudgetTracking() : "");
-                        this.fundName = new SimpleStringProperty(
-                                tx.getAssociatedFundName() != null ? tx.getAssociatedFundName() : "");
-                        this.fundNumber = new SimpleStringProperty(
-                                entry != null && entry.getFundNumber() != null ? entry.getFundNumber() : "");
+		public JournalDisplayEntry(AccountingTransaction tx, AccountingEntry entry)
+		{
+			this.originalTransaction = tx;
+			this.date = new SimpleStringProperty(tx.getDate());
+			this.transactionId =
+					new SimpleStringProperty(String.valueOf(tx.getBookingDateTimestamp()));
+			this.description = new SimpleStringProperty(tx.getDescription() != null ?
+					tx.getDescription() : (tx.getMemo() != null ? tx.getMemo() : ""));
+			this.toFrom = new SimpleStringProperty(
+													tx.getToFrom() != null ? tx.getToFrom() : "");
+			this.checkNumber = new SimpleStringProperty(
+														tx.getCheckNumber() != null ?
+																tx.getCheckNumber() : "");
+			this.clearBank = new SimpleStringProperty(
+														tx.getClearBank() != null ?
+																tx.getClearBank() : "");
+			this.budgetTracking = new SimpleStringProperty(
+															tx.getBudgetTracking() != null ?
+																	tx.getBudgetTracking() : "");
+			this.fundName = new SimpleStringProperty(
+														tx.getAssociatedFundName() != null ?
+																tx.getAssociatedFundName() : "");
+			this.fundNumber = new SimpleStringProperty(
+														entry != null &&
+																entry.getFundNumber() != null ?
+																		entry.getFundNumber() : "");
 			
 			if (entry != null && entry.getAccount() != null)
 			{
@@ -574,6 +589,7 @@ public class SkeletonJournalPanel extends BorderPane
 		public StringProperty dateProperty()
 		{
 			return this.date;
+			
 		}
 		
 		/**
@@ -583,6 +599,7 @@ public class SkeletonJournalPanel extends BorderPane
 		public StringProperty transactionIdProperty()
 		{
 			return this.transactionId;
+			
 		}
 		
 		/**
@@ -592,52 +609,60 @@ public class SkeletonJournalPanel extends BorderPane
 		public StringProperty accountNameProperty()
 		{
 			return this.accountName;
+			
 		}
 		
 		/**
 		 * Gets the JavaFX property for the transaction description/memo.
 		 * @return The description property.
 		 */
-                public StringProperty descriptionProperty()
-                {
-                        return this.description;
-                }
-
-                /** Returns the to/from property. */
-                public StringProperty toFromProperty()
-                {
-                        return this.toFrom;
-                }
-
-                /** Returns the check number property. */
-                public StringProperty checkNumberProperty()
-                {
-                        return this.checkNumber;
-                }
-
-                /** Returns the clear bank property. */
-                public StringProperty clearBankProperty()
-                {
-                        return this.clearBank;
-                }
-
-                /** Returns the budget tracking property. */
-                public StringProperty budgetTrackingProperty()
-                {
-                        return this.budgetTracking;
-                }
-
-                /** Returns the fund name property. */
-                public StringProperty fundNameProperty()
-                {
-                        return this.fundName;
-                }
-
-                /** Returns the fund number property. */
-                public StringProperty fundNumberProperty()
-                {
-                        return this.fundNumber;
-                }
+		public StringProperty descriptionProperty()
+		{
+			return this.description;
+			
+		}
+		
+		/** Returns the to/from property. */
+		public StringProperty toFromProperty()
+		{
+			return this.toFrom;
+			
+		}
+		
+		/** Returns the check number property. */
+		public StringProperty checkNumberProperty()
+		{
+			return this.checkNumber;
+			
+		}
+		
+		/** Returns the clear bank property. */
+		public StringProperty clearBankProperty()
+		{
+			return this.clearBank;
+			
+		}
+		
+		/** Returns the budget tracking property. */
+		public StringProperty budgetTrackingProperty()
+		{
+			return this.budgetTracking;
+			
+		}
+		
+		/** Returns the fund name property. */
+		public StringProperty fundNameProperty()
+		{
+			return this.fundName;
+			
+		}
+		
+		/** Returns the fund number property. */
+		public StringProperty fundNumberProperty()
+		{
+			return this.fundNumber;
+			
+		}
 		
 		/**
 		 * Gets the JavaFX property for the debit amount string.
@@ -646,6 +671,7 @@ public class SkeletonJournalPanel extends BorderPane
 		public StringProperty debitProperty()
 		{
 			return this.debit;
+			
 		}
 		
 		/**
@@ -655,6 +681,7 @@ public class SkeletonJournalPanel extends BorderPane
 		public StringProperty creditProperty()
 		{
 			return this.credit;
+			
 		}
 		
 		/**
@@ -665,6 +692,7 @@ public class SkeletonJournalPanel extends BorderPane
 		public AccountingTransaction getOriginalTransaction()
 		{
 			return this.originalTransaction;
+			
 		}
 		
 		/** 
@@ -673,6 +701,7 @@ public class SkeletonJournalPanel extends BorderPane
 		public String getDate()
 		{
 			return this.date.get();
+			
 		}
 		
 		/** 
@@ -681,6 +710,7 @@ public class SkeletonJournalPanel extends BorderPane
 		public String getTransactionId()
 		{
 			return this.transactionId.get();
+			
 		}
 		
 		/** 
@@ -689,51 +719,59 @@ public class SkeletonJournalPanel extends BorderPane
 		public String getAccountName()
 		{
 			return this.accountName.get();
+			
 		}
 		
 		/** 
 		 * Gets the transaction description/memo string. @return The description. 
 		 * */
-                public String getDescription()
-                {
-                        return this.description.get();
-                }
-
-                /** Returns the to/from value. */
-                public String getToFrom()
-                {
-                        return this.toFrom.get();
-                }
-
-                /** Returns the check number. */
-                public String getCheckNumber()
-                {
-                        return this.checkNumber.get();
-                }
-
-                /** Returns the clearing bank string. */
-                public String getClearBank()
-                {
-                        return this.clearBank.get();
-                }
-
-                /** Returns the budget tracking notes. */
-                public String getBudgetTracking()
-                {
-                        return this.budgetTracking.get();
-                }
-
-                /** Returns the fund name. */
-                public String getFundName()
-                {
-                        return this.fundName.get();
-                }
-
-                /** Returns the fund number. */
-                public String getFundNumber()
-                {
-                        return this.fundNumber.get();
-                }
+		public String getDescription()
+		{
+			return this.description.get();
+			
+		}
+		
+		/** Returns the to/from value. */
+		public String getToFrom()
+		{
+			return this.toFrom.get();
+			
+		}
+		
+		/** Returns the check number. */
+		public String getCheckNumber()
+		{
+			return this.checkNumber.get();
+			
+		}
+		
+		/** Returns the clearing bank string. */
+		public String getClearBank()
+		{
+			return this.clearBank.get();
+			
+		}
+		
+		/** Returns the budget tracking notes. */
+		public String getBudgetTracking()
+		{
+			return this.budgetTracking.get();
+			
+		}
+		
+		/** Returns the fund name. */
+		public String getFundName()
+		{
+			return this.fundName.get();
+			
+		}
+		
+		/** Returns the fund number. */
+		public String getFundNumber()
+		{
+			return this.fundNumber.get();
+			
+		}
 		
 		/** 
 		 * Gets the debit amount string for this entry line. 
@@ -742,6 +780,7 @@ public class SkeletonJournalPanel extends BorderPane
 		public String getDebit()
 		{
 			return this.debit.get();
+			
 		}
 		
 		/** 
@@ -751,6 +790,7 @@ public class SkeletonJournalPanel extends BorderPane
 		public String getCredit()
 		{
 			return this.credit.get();
+			
 		}
 		
 	}
