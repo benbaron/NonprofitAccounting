@@ -27,6 +27,7 @@ import nonprofitbookkeeping.model.Ledger;
 import java.util.List;
 import java.util.ArrayList;
 import java.math.BigDecimal;
+import nonprofitbookkeeping.util.FormatUtils;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 
 /**
@@ -130,11 +131,11 @@ public class SkeletonDashboardPanel extends BorderPane
 		descriptionCol.setPrefWidth(300);
 		
 		TableColumn<AccountingTransaction, String> amountCol = new TableColumn<>("Amount");
-		amountCol.setCellValueFactory(cellData -> {
-			BigDecimal totalAmount = cellData.getValue().getTotalAmount();
-			return new SimpleStringProperty(
-				totalAmount != null ? totalAmount.toPlainString() : "0.00");
-		});
+               amountCol.setCellValueFactory(cellData -> {
+                       BigDecimal totalAmount = cellData.getValue().getTotalAmount();
+                       return new SimpleStringProperty(
+                               FormatUtils.formatCurrency(totalAmount != null ? totalAmount : BigDecimal.ZERO));
+               });
 		amountCol.setPrefWidth(100);
 		amountCol.setStyle("-fx-alignment: CENTER-RIGHT;");
 		
@@ -187,10 +188,10 @@ public class SkeletonDashboardPanel extends BorderPane
 		if (!CurrentCompany.isOpen() || CurrentCompany.getCompany() == null)
 		{
 			this.companyNameLabel.setText("No company loaded");
-			this.totalAssetsValueLabel.setText("$0.00");
-			this.totalLiabilitiesValueLabel.setText("$0.00");
-			this.equityValueLabel.setText("$0.00");
-			this.ytdIncomeValueLabel.setText("YTD Net Income: $0.00");
+                       this.totalAssetsValueLabel.setText(FormatUtils.formatCurrency(BigDecimal.ZERO));
+                       this.totalLiabilitiesValueLabel.setText(FormatUtils.formatCurrency(BigDecimal.ZERO));
+                       this.equityValueLabel.setText(FormatUtils.formatCurrency(BigDecimal.ZERO));
+                       this.ytdIncomeValueLabel.setText("YTD Net Income: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
 			this.recentTransactionsTable
 				.setPlaceholder(new Label("No company open."));
 			return;
@@ -226,10 +227,10 @@ public class SkeletonDashboardPanel extends BorderPane
 		BigDecimal totalEquity = new BigDecimal(CompanySummary.getTotalEquity());
 		BigDecimal ytdIncome = new BigDecimal(CompanySummary.getYtdIncomeValue());
 		
-		this.totalAssetsValueLabel.setText("$" + totalAssets.toPlainString());
-		this.totalLiabilitiesValueLabel.setText("$" + totalLiabilities.toPlainString());
-		this.equityValueLabel.setText("$" + totalEquity.toPlainString());
-		this.ytdIncomeValueLabel.setText("YTD Net Income: $" + ytdIncome.toPlainString());
+               this.totalAssetsValueLabel.setText(FormatUtils.formatCurrency(totalAssets));
+               this.totalLiabilitiesValueLabel.setText(FormatUtils.formatCurrency(totalLiabilities));
+               this.equityValueLabel.setText(FormatUtils.formatCurrency(totalEquity));
+               this.ytdIncomeValueLabel.setText("YTD Net Income: " + FormatUtils.formatCurrency(ytdIncome));
 		
 		if (this.transactionDataList.isEmpty())
 		{
