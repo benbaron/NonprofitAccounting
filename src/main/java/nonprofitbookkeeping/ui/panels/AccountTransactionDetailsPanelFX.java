@@ -49,8 +49,10 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 	private DatePicker startDatePicker;
 	/** DatePicker for selecting the end date of the transaction period. */
 	private DatePicker endDatePicker;
-	/** Button to trigger loading of transactions based on selected criteria. */
-	private Button loadTransactionsButton;
+        /** Button to trigger loading of transactions based on selected criteria. */
+        private Button loadTransactionsButton;
+        /** Button to refresh the table using the currently selected criteria. */
+        private Button refreshButton;
 	/** TableView to display the transaction details. */
 	private TableView<TransactionDisplayRow> transactionsTable;
 	/** ObservableList holding the {@link TransactionDisplayRow} objects for the table. */
@@ -99,18 +101,21 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 			this.netChangeLabel.setText("Net Change: 0.00");
 		});
 		
-		this.startDatePicker = new DatePicker();
-		this.endDatePicker = new DatePicker();
-		this.loadTransactionsButton = new Button("Load Transactions");
-		this.loadTransactionsButton.setOnAction(e -> loadTransactionData());
+                this.startDatePicker = new DatePicker();
+                this.endDatePicker = new DatePicker();
+                this.loadTransactionsButton = new Button("Load Transactions");
+                this.loadTransactionsButton.setOnAction(e -> loadTransactionData());
+                this.refreshButton = new Button("Refresh");
+                this.refreshButton.setOnAction(e -> refresh());
 		
 		controlsGrid.add(new Label("Account:"), 0, 0);
 		controlsGrid.add(this.accountSelectorComboBox, 1, 0, 2, 1);
 		controlsGrid.add(new Label("Start Date:"), 0, 1);
 		controlsGrid.add(this.startDatePicker, 1, 1);
 		controlsGrid.add(new Label("End Date:"), 0, 2);
-		controlsGrid.add(this.endDatePicker, 1, 2);
-		controlsGrid.add(this.loadTransactionsButton, 2, 2);
+                controlsGrid.add(this.endDatePicker, 1, 2);
+                controlsGrid.add(this.loadTransactionsButton, 2, 2);
+                controlsGrid.add(this.refreshButton, 3, 2);
 		
 		ScrollPane controlsScrollPane = new ScrollPane(controlsGrid);
 		controlsScrollPane.setFitToWidth(true);
@@ -159,9 +164,33 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		idCol.setCellValueFactory(new PropertyValueFactory<>("transactionId"));
 		idCol.setPrefWidth(120);
 		
-		TableColumn<TransactionDisplayRow, String> descCol = new TableColumn<>("Description");
-		descCol.setCellValueFactory(new PropertyValueFactory<>("description"));
-		descCol.setPrefWidth(250);
+                TableColumn<TransactionDisplayRow, String> descCol = new TableColumn<>("Description");
+                descCol.setCellValueFactory(new PropertyValueFactory<>("description"));
+                descCol.setPrefWidth(250);
+
+                TableColumn<TransactionDisplayRow, String> toFromCol = new TableColumn<>("To/From");
+                toFromCol.setCellValueFactory(new PropertyValueFactory<>("toFrom"));
+                toFromCol.setPrefWidth(120);
+
+                TableColumn<TransactionDisplayRow, String> checkCol = new TableColumn<>("Check #");
+                checkCol.setCellValueFactory(new PropertyValueFactory<>("checkNumber"));
+                checkCol.setPrefWidth(80);
+
+                TableColumn<TransactionDisplayRow, String> clearBankCol = new TableColumn<>("Clear Bank");
+                clearBankCol.setCellValueFactory(new PropertyValueFactory<>("clearBank"));
+                clearBankCol.setPrefWidth(100);
+
+                TableColumn<TransactionDisplayRow, String> budgetCol = new TableColumn<>("Budget Tracking");
+                budgetCol.setCellValueFactory(new PropertyValueFactory<>("budgetTracking"));
+                budgetCol.setPrefWidth(120);
+
+                TableColumn<TransactionDisplayRow, String> fundNameCol = new TableColumn<>("Fund Name");
+                fundNameCol.setCellValueFactory(new PropertyValueFactory<>("fundName"));
+                fundNameCol.setPrefWidth(120);
+
+                TableColumn<TransactionDisplayRow, String> fundNumCol = new TableColumn<>("Fund #");
+                fundNumCol.setCellValueFactory(new PropertyValueFactory<>("fundNumber"));
+                fundNumCol.setPrefWidth(80);
 		
 		TableColumn<TransactionDisplayRow, BigDecimal> debitCol = new TableColumn<>("Debit");
 		debitCol.setCellValueFactory(new PropertyValueFactory<>("debit"));
@@ -179,9 +208,10 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		balanceCol.setPrefWidth(120);
 		balanceCol.setStyle("-fx-alignment: CENTER-RIGHT;");
 		
-		this.transactionsTable.getColumns().addAll(dateCol, idCol, descCol, debitCol, creditCol,
-			balanceCol);
-	}
+                this.transactionsTable.getColumns().addAll(dateCol, idCol, descCol,
+                        toFromCol, checkCol, clearBankCol, budgetCol, fundNameCol,
+                        fundNumCol, debitCol, creditCol, balanceCol);
+        }
 	
 	/**
 	 * Refreshes the account selector with accounts from the currently open company.
@@ -429,10 +459,17 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 							periodCreditTotal = periodCreditTotal.add(creditAmount);
 						}
 						
-						displayRows.add(new TransactionDisplayRow(tx.getDate(),
-							String.valueOf(tx.getBookingDateTimestamp()),
-							tx.getMemo() != null ? tx.getMemo() : "", debitAmount, creditAmount,
-							new BigDecimal(runningBalance.toString())));
+                                                displayRows.add(new TransactionDisplayRow(tx.getDate(),
+                                                        String.valueOf(tx.getBookingDateTimestamp()),
+                                                        tx.getMemo() != null ? tx.getMemo() : "",
+                                                        tx.getToFrom() != null ? tx.getToFrom() : "",
+                                                        tx.getCheckNumber() != null ? tx.getCheckNumber() : "",
+                                                        tx.getClearBank() != null ? tx.getClearBank() : "",
+                                                        tx.getBudgetTracking() != null ? tx.getBudgetTracking() : "",
+                                                        tx.getAssociatedFundName() != null ? tx.getAssociatedFundName() : "",
+                                                        entry.getFundNumber() != null ? entry.getFundNumber() : "",
+                                                        debitAmount, creditAmount,
+                                                        new BigDecimal(runningBalance.toString())));
 					}
 					
 				}
@@ -454,12 +491,22 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 			this.transactionsTable.setPlaceholder(
 				new Label("No transactions found for the selected account and date range."));
 		}
-		else
-		{
-			this.transactionsTable.setPlaceholder(null);
-		}
-		
-	}
+                else
+                {
+                        this.transactionsTable.setPlaceholder(null);
+                }
+
+        }
+
+        /**
+         * Refreshes the table based on the currently selected account and date
+         * range. This simply re-invokes {@link #loadTransactionData()} so any
+         * newly added or edited transactions are shown.
+         */
+        public void refresh()
+        {
+                loadTransactionData();
+        }
 	
 	/**
 	 * Initializes the {@link #companyChangeListener} and registers it with
@@ -525,10 +572,22 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		private final StringProperty date;
 		/** The unique identifier of the transaction (e.g., booking timestamp). */
 		private final StringProperty transactionId;
-		/** A description or memo for the transaction. */
-		private final StringProperty description;
-		/** The debit amount affecting the selected account in this transaction. */
-		private final ObjectProperty<BigDecimal> debit;
+                /** A description or memo for the transaction. */
+                private final StringProperty description;
+                /** Payee or counterparty information. */
+                private final StringProperty toFrom;
+                /** Check number associated with the transaction. */
+                private final StringProperty checkNumber;
+                /** Clearing bank information. */
+                private final StringProperty clearBank;
+                /** Budget tracking notes. */
+                private final StringProperty budgetTracking;
+                /** Associated fund name for this transaction. */
+                private final StringProperty fundName;
+                /** Fund number for the entry. */
+                private final StringProperty fundNumber;
+                /** The debit amount affecting the selected account in this transaction. */
+                private final ObjectProperty<BigDecimal> debit;
 		/** The credit amount affecting the selected account in this transaction. */
 		private final ObjectProperty<BigDecimal> credit;
 		/** The running balance of the selected account after this transaction. */
@@ -544,16 +603,24 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		 * @param credit The credit amount for this row.
 		 * @param runningBalance The running balance after this transaction.
 		 */
-		public TransactionDisplayRow(String date, String transactionId, String description,
-			BigDecimal debit, BigDecimal credit, BigDecimal runningBalance)
-		{
-			this.date = new SimpleStringProperty(date);
-			this.transactionId = new SimpleStringProperty(transactionId);
-			this.description = new SimpleStringProperty(description);
-			this.debit = new SimpleObjectProperty<>(debit);
-			this.credit = new SimpleObjectProperty<>(credit);
-			this.runningBalance = new SimpleObjectProperty<>(runningBalance);
-		}
+                public TransactionDisplayRow(String date, String transactionId, String description,
+                        String toFrom, String checkNumber, String clearBank,
+                        String budgetTracking, String fundName, String fundNumber,
+                        BigDecimal debit, BigDecimal credit, BigDecimal runningBalance)
+                {
+                        this.date = new SimpleStringProperty(date);
+                        this.transactionId = new SimpleStringProperty(transactionId);
+                        this.description = new SimpleStringProperty(description);
+                        this.toFrom = new SimpleStringProperty(toFrom);
+                        this.checkNumber = new SimpleStringProperty(checkNumber);
+                        this.clearBank = new SimpleStringProperty(clearBank);
+                        this.budgetTracking = new SimpleStringProperty(budgetTracking);
+                        this.fundName = new SimpleStringProperty(fundName);
+                        this.fundNumber = new SimpleStringProperty(fundNumber);
+                        this.debit = new SimpleObjectProperty<>(debit);
+                        this.credit = new SimpleObjectProperty<>(credit);
+                        this.runningBalance = new SimpleObjectProperty<>(runningBalance);
+                }
 		
 		/**
 		 * Gets the JavaFX property for the transaction date.
@@ -604,10 +671,113 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		 * Gets the transaction description string.
 		 * @return The description as a {@link String}.
 		 */
-		public String getDescription()
-		{
-			return this.description.get();
-		}
+                public String getDescription()
+                {
+                        return this.description.get();
+                }
+
+                /**
+                 * Gets the JavaFX property for the payee or counterparty field.
+                 * @return the {@link StringProperty} representing the to/from value.
+                 */
+                public StringProperty toFromProperty()
+                {
+                        return this.toFrom;
+                }
+
+                /**
+                 * Gets the to/from string.
+                 * @return the to/from value
+                 */
+                public String getToFrom()
+                {
+                        return this.toFrom.get();
+                }
+
+                /**
+                 * Gets the JavaFX property for the check number.
+                 * @return the property for check number
+                 */
+                public StringProperty checkNumberProperty()
+                {
+                        return this.checkNumber;
+                }
+
+                /**
+                 * @return check number string
+                 */
+                public String getCheckNumber()
+                {
+                        return this.checkNumber.get();
+                }
+
+                /**
+                 * Gets the JavaFX property for the clearing bank field.
+                 * @return the property for clearing bank
+                 */
+                public StringProperty clearBankProperty()
+                {
+                        return this.clearBank;
+                }
+
+                /**
+                 * @return clearing bank string
+                 */
+                public String getClearBank()
+                {
+                        return this.clearBank.get();
+                }
+
+                /**
+                 * JavaFX property for budget tracking notes.
+                 * @return property for budget tracking
+                 */
+                public StringProperty budgetTrackingProperty()
+                {
+                        return this.budgetTracking;
+                }
+
+                /**
+                 * @return budget tracking notes
+                 */
+                public String getBudgetTracking()
+                {
+                        return this.budgetTracking.get();
+                }
+
+                /**
+                 * Property for associated fund name.
+                 * @return fund name property
+                 */
+                public StringProperty fundNameProperty()
+                {
+                        return this.fundName;
+                }
+
+                /**
+                 * @return fund name string
+                 */
+                public String getFundName()
+                {
+                        return this.fundName.get();
+                }
+
+                /**
+                 * Property for fund number.
+                 * @return fund number property
+                 */
+                public StringProperty fundNumberProperty()
+                {
+                        return this.fundNumber;
+                }
+
+                /**
+                 * @return fund number string
+                 */
+                public String getFundNumber()
+                {
+                        return this.fundNumber.get();
+                }
 		
 		/**
 		 * Gets the JavaFX property for the debit amount.
