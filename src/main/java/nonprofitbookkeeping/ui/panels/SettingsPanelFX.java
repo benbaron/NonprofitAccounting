@@ -16,6 +16,7 @@ import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.service.SettingsService;
 import nonprofitbookkeeping.model.SettingsModel;
 import nonprofitbookkeeping.ui.ThemeManager;
+import nonprofitbookkeeping.util.FormatUtils;
 
 /**
  * JavaFX port of the original Swing {@code SettingsPanel}.
@@ -32,8 +33,10 @@ public class SettingsPanelFX extends BorderPane
 	private TableView<UserRow> userTable;
 	private ComboBox<String> incomeAccountBox;
 	private ComboBox<String> expenseAccountBox;
-	private ComboBox<String> themeCombo;
-	private ComboBox<String> languageCombo;
+       private ComboBox<String> themeCombo;
+       private ComboBox<String> languageCombo;
+       /** Text field for customizing the currency format pattern. */
+       private TextField currencyFormatField;
 	
 	/**
 	 * Constructs a new {@code SettingsPanelFX}.
@@ -55,11 +58,12 @@ public class SettingsPanelFX extends BorderPane
 			{
 				this.service.loadSettings(this.companyDir);
 				
-				if (this.primaryStage != null && this.primaryStage.getScene() != null)
-				{
-					ThemeManager.applyTheme(this.primaryStage.getScene(),
-						this.service.getSettings().getTheme());
-				}
+                               if (this.primaryStage != null && this.primaryStage.getScene() != null)
+                               {
+                                       ThemeManager.applyTheme(this.primaryStage.getScene(),
+                                               this.service.getSettings().getTheme());
+                                       FormatUtils.setCurrencyFormat(this.service.getSettings().getCurrencyFormat());
+                               }
 				
 			}
 			catch (IOException ex)
@@ -88,11 +92,12 @@ public class SettingsPanelFX extends BorderPane
 				{
 					this.service.saveSettings(this.companyDir);
 					
-					if (this.primaryStage != null && this.primaryStage.getScene() != null)
-					{
-						ThemeManager.applyTheme(this.primaryStage.getScene(),
-							this.service.getSettings().getTheme());
-					}
+                                       if (this.primaryStage != null && this.primaryStage.getScene() != null)
+                                       {
+                                               ThemeManager.applyTheme(this.primaryStage.getScene(),
+                                                       this.service.getSettings().getTheme());
+                                               FormatUtils.setCurrencyFormat(this.service.getSettings().getCurrencyFormat());
+                                       }
 					
 					alert("Settings saved");
 				}
@@ -350,7 +355,25 @@ public class SettingsPanelFX extends BorderPane
 				this.languageCombo.setValue(lang);
 		}
 		
-		grid.add(this.languageCombo, 1, 1);
+               grid.add(this.languageCombo, 1, 1);
+
+               grid.add(new Label("Currency Format:"), 0, 2);
+               this.currencyFormatField = new TextField();
+
+               if (this.service != null)
+               {
+                       String fmt = this.service.getSettings().getCurrencyFormat();
+                       if (fmt != null)
+                               this.currencyFormatField.setText(fmt);
+                       else
+                               this.currencyFormatField.setText(FormatUtils.getCurrencyFormat());
+               }
+               else
+               {
+                       this.currencyFormatField.setText(FormatUtils.getCurrencyFormat());
+               }
+
+               grid.add(this.currencyFormatField, 1, 2);
 		
 		TitledPane wrapper = titled("UI Preferences", grid);
 		return new Tab("UI Preferences", wrapper);
@@ -431,8 +454,10 @@ public class SettingsPanelFX extends BorderPane
 		
 		if (this.themeCombo != null && this.themeCombo.getValue() != null)
 			m.setTheme(this.themeCombo.getValue());
-		if (this.languageCombo != null && this.languageCombo.getValue() != null)
-			m.setLanguage(this.languageCombo.getValue());
+                if (this.languageCombo != null && this.languageCombo.getValue() != null)
+                        m.setLanguage(this.languageCombo.getValue());
+               if (this.currencyFormatField != null && !this.currencyFormatField.getText().isEmpty())
+                       m.setCurrencyFormat(this.currencyFormatField.getText());
 		
 		// update user list from table
 		if (this.userTable != null)

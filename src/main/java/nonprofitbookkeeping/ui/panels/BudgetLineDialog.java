@@ -6,6 +6,7 @@ import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Fund;
 import nonprofitbookkeeping.model.budget.BudgetLine;
 import nonprofitbookkeeping.model.budget.Periodicity;
+import nonprofitbookkeeping.util.FormatUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -373,8 +374,8 @@ public class BudgetLineDialog extends JDialog
 			this.cmbAccount.setSelectedIndex(-1); // No account pre-selected
 		}
 		
-		this.txtTotalAmount.setText(this.budgetLine.getTotalBudgetedAmount() != null ?
-			this.budgetLine.getTotalBudgetedAmount().toPlainString() : ""); // Handle null amount
+               this.txtTotalAmount.setText(this.budgetLine.getTotalBudgetedAmount() != null ?
+                        FormatUtils.formatCurrency(this.budgetLine.getTotalBudgetedAmount()) : ""); // Handle null amount
 		this.cmbPeriodicity.setSelectedItem(this.budgetLine.getPeriodicity()); // Handles null by
 																				// selecting first
 																				// if not found

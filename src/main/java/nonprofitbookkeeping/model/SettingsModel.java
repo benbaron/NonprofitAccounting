@@ -40,10 +40,12 @@ import lombok.NoArgsConstructor;
 	@JsonProperty private boolean autoNumberVouchers;
 	
 	// UI Preferences
-	/** The name of the UI theme (e.g., "Dark", "Light"). */
-	@JsonProperty private String theme;
-	/** The language code for UI localization (e.g., "en_US", "fr_FR"). */
-	@JsonProperty private String language;
+        /** The name of the UI theme (e.g., "Dark", "Light"). */
+        @JsonProperty private String theme;
+        /** The language code for UI localization (e.g., "en_US", "fr_FR"). */
+        @JsonProperty private String language;
+       /** Pattern used for formatting currency values (e.g., "$#,##0.00"). */
+       @JsonProperty private String currencyFormat = "$#,##0.00";
 	
 	/**
 	 * Represents a user account within the settings model.
@@ -265,9 +267,29 @@ import lombok.NoArgsConstructor;
 	 * Sets the UI language code.
 	 * @param language The language code to set (e.g., "en_US").
 	 */
-	public void setLanguage(String language)
-	{
-		this.language = language;
-	}
+        public void setLanguage(String language)
+        {
+                this.language = language;
+        }
+
+       /**
+        * Gets the currency format pattern.
+        *
+        * @return pattern used to format currency values
+        */
+       public String getCurrencyFormat()
+       {
+               return this.currencyFormat;
+       }
+
+       /**
+        * Sets the currency format pattern.
+        *
+        * @param currencyFormat format pattern to set
+        */
+       public void setCurrencyFormat(String currencyFormat)
+       {
+               this.currencyFormat = currencyFormat;
+       }
 	
 }

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Comparator;
 import java.util.stream.Collectors;
+import nonprofitbookkeeping.util.FormatUtils;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -97,9 +98,9 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 			this.transactionsTable
 					.setPlaceholder(
 							new Label("Account selection changed. Click 'Load Transactions'."));
-			this.totalDebitsLabel.setText("Total Debits: 0.00");
-			this.totalCreditsLabel.setText("Total Credits: 0.00");
-			this.netChangeLabel.setText("Net Change: 0.00");
+                       this.totalDebitsLabel.setText("Total Debits: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
+                       this.totalCreditsLabel.setText("Total Credits: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
+                       this.netChangeLabel.setText("Net Change: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
 		});
 		
 		this.startDatePicker = new DatePicker();
@@ -137,9 +138,9 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		
 		HBox totalsBox = new HBox(20);
 		totalsBox.setPadding(new Insets(10, 0, 0, 0));
-		this.totalDebitsLabel = new Label("Total Debits: 0.00");
-		this.totalCreditsLabel = new Label("Total Credits: 0.00");
-		this.netChangeLabel = new Label("Net Change: 0.00");
+               this.totalDebitsLabel = new Label("Total Debits: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
+               this.totalCreditsLabel = new Label("Total Credits: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
+               this.netChangeLabel = new Label("Net Change: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
 		totalsBox.getChildren().addAll(this.totalDebitsLabel, this.totalCreditsLabel,
 				this.netChangeLabel);
 		setBottom(totalsBox);
@@ -194,21 +195,45 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		fundNumCol.setCellValueFactory(new PropertyValueFactory<>("fundNumber"));
 		fundNumCol.setPrefWidth(80);
 		
-		TableColumn<TransactionDisplayRow, BigDecimal> debitCol = new TableColumn<>("Debit");
-		debitCol.setCellValueFactory(new PropertyValueFactory<>("debit"));
-		debitCol.setPrefWidth(100);
-		debitCol.setStyle("-fx-alignment: CENTER-RIGHT;");
-		
-		TableColumn<TransactionDisplayRow, BigDecimal> creditCol = new TableColumn<>("Credit");
-		creditCol.setCellValueFactory(new PropertyValueFactory<>("credit"));
-		creditCol.setPrefWidth(100);
-		creditCol.setStyle("-fx-alignment: CENTER-RIGHT;");
-		
-		TableColumn<TransactionDisplayRow, BigDecimal> balanceCol =
-				new TableColumn<>("Running Balance");
-		balanceCol.setCellValueFactory(new PropertyValueFactory<>("runningBalance"));
-		balanceCol.setPrefWidth(120);
-		balanceCol.setStyle("-fx-alignment: CENTER-RIGHT;");
+               TableColumn<TransactionDisplayRow, BigDecimal> debitCol = new TableColumn<>("Debit");
+               debitCol.setCellValueFactory(new PropertyValueFactory<>("debit"));
+               debitCol.setPrefWidth(100);
+               debitCol.setStyle("-fx-alignment: CENTER-RIGHT;");
+               debitCol.setCellFactory(col -> new TableCell<>()
+               {
+                       @Override protected void updateItem(BigDecimal item, boolean empty)
+                       {
+                               super.updateItem(item, empty);
+                               setText(empty ? "" : FormatUtils.formatCurrency(item));
+                       }
+               });
+
+               TableColumn<TransactionDisplayRow, BigDecimal> creditCol = new TableColumn<>("Credit");
+               creditCol.setCellValueFactory(new PropertyValueFactory<>("credit"));
+               creditCol.setPrefWidth(100);
+               creditCol.setStyle("-fx-alignment: CENTER-RIGHT;");
+               creditCol.setCellFactory(col -> new TableCell<>()
+               {
+                       @Override protected void updateItem(BigDecimal item, boolean empty)
+                       {
+                               super.updateItem(item, empty);
+                               setText(empty ? "" : FormatUtils.formatCurrency(item));
+                       }
+               });
+
+               TableColumn<TransactionDisplayRow, BigDecimal> balanceCol =
+                               new TableColumn<>("Running Balance");
+               balanceCol.setCellValueFactory(new PropertyValueFactory<>("runningBalance"));
+               balanceCol.setPrefWidth(120);
+               balanceCol.setStyle("-fx-alignment: CENTER-RIGHT;");
+               balanceCol.setCellFactory(col -> new TableCell<>()
+               {
+                       @Override protected void updateItem(BigDecimal item, boolean empty)
+                       {
+                               super.updateItem(item, empty);
+                               setText(empty ? "" : FormatUtils.formatCurrency(item));
+                       }
+               });
 		
 		this.transactionsTable.getColumns().addAll(dateCol, idCol, descCol,
 				toFromCol, checkCol, clearBankCol, budgetCol, fundNameCol,
@@ -497,11 +522,11 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		
 		this.transactionDataList.addAll(displayRows);
 		
-		this.totalDebitsLabel.setText("Total Debits (Period): " + periodDebitTotal.toPlainString());
-		this.totalCreditsLabel
-				.setText("Total Credits (Period): " + periodCreditTotal.toPlainString());
-		BigDecimal netChange = periodDebitTotal.subtract(periodCreditTotal);
-		this.netChangeLabel.setText("Net Change (Period): " + netChange.toPlainString());
+               this.totalDebitsLabel.setText("Total Debits (Period): " + FormatUtils.formatCurrency(periodDebitTotal));
+               this.totalCreditsLabel
+                               .setText("Total Credits (Period): " + FormatUtils.formatCurrency(periodCreditTotal));
+               BigDecimal netChange = periodDebitTotal.subtract(periodCreditTotal);
+               this.netChangeLabel.setText("Net Change (Period): " + FormatUtils.formatCurrency(netChange));
 		
 		if (this.transactionDataList.isEmpty())
 		{
@@ -549,11 +574,12 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 				AccountTransactionDetailsPanelFX.this.transactionDataList.clear();
 				AccountTransactionDetailsPanelFX.this.transactionsTable.setPlaceholder(new Label(
 																									"Company changed. Select account and date range, then click 'Load Transactions'."));
-				AccountTransactionDetailsPanelFX.this.totalDebitsLabel
-						.setText("Total Debits: 0.00");
-				AccountTransactionDetailsPanelFX.this.totalCreditsLabel
-						.setText("Total Credits: 0.00");
-				AccountTransactionDetailsPanelFX.this.netChangeLabel.setText("Net Change: 0.00");
+                               AccountTransactionDetailsPanelFX.this.totalDebitsLabel
+                                               .setText("Total Debits: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
+                               AccountTransactionDetailsPanelFX.this.totalCreditsLabel
+                                               .setText("Total Credits: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
+                               AccountTransactionDetailsPanelFX.this.netChangeLabel
+                                               .setText("Net Change: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
 				
 				refreshAccountSelector();
 				

@@ -18,6 +18,7 @@ import javafx.scene.layout.HBox;
 
 import nonprofitbookkeeping.model.SaleRecord;
 import nonprofitbookkeeping.service.SalesService;
+import nonprofitbookkeeping.util.FormatUtils;
 
 /**
  * JavaFX port of {@code SalesAndCOGPanel}. Maintains an in‑memory table of sale
@@ -32,7 +33,7 @@ public class SalesAndCOGPanelFX extends BorderPane
 	/** TableView to display the list of sale transactions. */
 	private final TableView<SaleRow> table = new TableView<>();
 	/** Label to display the calculated total gross profit from all sales. */
-	private final Label totalLbl = new Label("Gross Profit: 0.00");
+       private final Label totalLbl = new Label("Gross Profit: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
 	/** Service for persisting sales. */
 	private final SalesService service;
 	/** Directory used for persistence, may be null. */
@@ -177,13 +178,15 @@ public class SalesAndCOGPanelFX extends BorderPane
 																									// →
 																									// String
 		
-		TextField priceF =
-			new TextField(existing == null ? "0.00" : existing.getPrice().toPlainString()); // BigDecimal
+               TextField priceF =
+                       new TextField(existing == null ? FormatUtils.formatCurrency(BigDecimal.ZERO) :
+                                       FormatUtils.formatCurrency(existing.getPrice()));
 																							// →
 																							// String
 		
-		TextField costF =
-			new TextField(existing == null ? "0.00" : existing.getCost().toPlainString()); // BigDecimal
+               TextField costF =
+                       new TextField(existing == null ? FormatUtils.formatCurrency(BigDecimal.ZERO) :
+                                       FormatUtils.formatCurrency(existing.getCost()));
 																							// →
 																							// String
 		GridPane g = new GridPane();
