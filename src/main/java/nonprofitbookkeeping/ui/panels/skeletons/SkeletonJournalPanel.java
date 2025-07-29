@@ -147,7 +147,7 @@ public class SkeletonJournalPanel extends BorderPane
 	 * Cell value factories are configured using {@link PropertyValueFactory} to bind to
 	 * properties of the {@link JournalDisplayEntry} class.
 	 */
-	private void setupTableColumns()
+	@SuppressWarnings("unchecked") private void setupTableColumns()
 	{
 		this.journalDisplayTable.getColumns().clear();
 		

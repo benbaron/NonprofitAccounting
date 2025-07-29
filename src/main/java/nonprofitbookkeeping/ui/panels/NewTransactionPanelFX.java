@@ -56,6 +56,7 @@ public class NewTransactionPanelFX extends BorderPane
 			this.account = new SimpleStringProperty(acc.getName());
 			this.side = new SimpleObjectProperty<>(accountSide);
 			this.amount = new SimpleObjectProperty<>(amount);
+			
 		}
 		
 		/**  
@@ -68,6 +69,7 @@ public class NewTransactionPanelFX extends BorderPane
 			this.account = new SimpleStringProperty("");
 			this.side = new SimpleObjectProperty<>(AccountSide.DEBIT);
 			this.amount = new SimpleObjectProperty<>(BigDecimal.ZERO);
+			
 		}
 		
 	}
@@ -79,19 +81,19 @@ public class NewTransactionPanelFX extends BorderPane
 	private final TableView<Line> table = new TableView<>(this.lines);
 	
 	/** DatePicker for selecting the transaction date. Defaults to the current date. */
-        private final DatePicker datePicker = new DatePicker(LocalDate.now());
-        /** TextArea for entering a memo or description for the transaction. */
-        private final TextArea memoArea = new TextArea();
-        /** Text field for specifying the payee or counterparty for the transaction. */
-        private final TextField toFromField = new TextField();
-        /** Text field for entering a check number if applicable. */
-        private final TextField checkNumberField = new TextField();
-        /** Text field for clearing bank information. */
-        private final TextField clearBankField = new TextField();
-        /** Text field for any budget tracking notes. */
-        private final TextField budgetTrackingField = new TextField();
-        /** Text field for the associated fund name. */
-        private final TextField associatedFundNameField = new TextField();
+	private final DatePicker datePicker = new DatePicker(LocalDate.now());
+	/** TextArea for entering a memo or description for the transaction. */
+	private final TextArea memoArea = new TextArea();
+	/** Text field for specifying the payee or counterparty for the transaction. */
+	private final TextField toFromField = new TextField();
+	/** Text field for entering a check number if applicable. */
+	private final TextField checkNumberField = new TextField();
+	/** Text field for clearing bank information. */
+	private final TextField clearBankField = new TextField();
+	/** Text field for any budget tracking notes. */
+	private final TextField budgetTrackingField = new TextField();
+	/** Text field for the associated fund name. */
+	private final TextField associatedFundNameField = new TextField();
 	/** Button to save the transaction. Enabled only when the transaction is balanced. */
 	private Button saveBtn;
 	/** Callback {@link Consumer} to be invoked when the transaction is saved. It receives the created {@link AccountingTransaction}. */
@@ -116,6 +118,7 @@ public class NewTransactionPanelFX extends BorderPane
 		this.lines.addListener((ListChangeListener<Line>) c -> recalcTotals());
 		
 		recalcTotals();
+		
 	}
 	
 	/**  
@@ -128,7 +131,7 @@ public class NewTransactionPanelFX extends BorderPane
 	 *               {@link AccountingTransaction} when the user saves. Must not be null.
 	 */
 	public NewTransactionPanelFX(AccountingTransaction existing,
-		Consumer<AccountingTransaction> onSave)
+			Consumer<AccountingTransaction> onSave)
 	{
 		this.coa = CurrentCompany.getCompany().getChartOfAccounts();
 		this.onSave = onSave;
@@ -136,6 +139,7 @@ public class NewTransactionPanelFX extends BorderPane
 		buildUI(existing);
 		
 		recalcTotals();
+		
 	}
 	
 	/**
@@ -154,13 +158,13 @@ public class NewTransactionPanelFX extends BorderPane
 		this.lines.forEach(this::watch);
 		
 		/* 1. header fields */
-                this.datePicker.setValue(LocalDate.parse(existing.getDate()));
-                this.memoArea.setText(existing.getMemo());
-                this.toFromField.setText(existing.getToFrom());
-                this.checkNumberField.setText(existing.getCheckNumber());
-                this.clearBankField.setText(existing.getClearBank());
-                this.budgetTrackingField.setText(existing.getBudgetTracking());
-                this.associatedFundNameField.setText(existing.getAssociatedFundName());
+		this.datePicker.setValue(LocalDate.parse(existing.getDate()));
+		this.memoArea.setText(existing.getMemo());
+		this.toFromField.setText(existing.getToFrom());
+		this.checkNumberField.setText(existing.getCheckNumber());
+		this.clearBankField.setText(existing.getClearBank());
+		this.budgetTrackingField.setText(existing.getBudgetTracking());
+		this.associatedFundNameField.setText(existing.getAssociatedFundName());
 		
 		/* 2. entry lines */
 		this.lines.clear();
@@ -188,13 +192,12 @@ public class NewTransactionPanelFX extends BorderPane
 	 * The {@code @SuppressWarnings("unchecked")} is used because {@code table.getColumns().addAll()}
 	 * is a varargs method and can cause warnings with generic TableColumn types.
 	 */
-	@SuppressWarnings("unchecked") 
-	private void buildUI()
+	@SuppressWarnings("unchecked") private void buildUI()
 	{
 		this.table.getColumns().addAll(
-			accountCol(), // new combo column
-			sideCol(),
-			amtCol("Amount", l -> l.amount));
+				accountCol(), // new combo column
+				sideCol(),
+				amtCol("Amount", l -> l.amount));
 		
 		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 		
@@ -207,7 +210,7 @@ public class NewTransactionPanelFX extends BorderPane
 				if (ev.getClickCount() == 1 && !row.isEmpty())
 				{
 					this.table.edit(row.getIndex(),
-						this.table.getColumns().get(0)); // start edit
+							this.table.getColumns().get(0)); // start edit
 				}
 				
 			});
@@ -237,20 +240,21 @@ public class NewTransactionPanelFX extends BorderPane
 		this.saveBtn.setDisable(true); // enabled only when balanced
 		this.saveBtn.setOnAction(e -> persist());
 		
-                GridPane top = new GridPane();
-                top.setHgap(10);
-                top.setVgap(8);
-                top.addRow(0, new Label("Date:"), this.datePicker);
-                top.addRow(1, new Label("Memo:"), this.memoArea);
-                top.addRow(2, new Label("To/From:"), this.toFromField);
-                top.addRow(3, new Label("Check #:"), this.checkNumberField);
-                top.addRow(4, new Label("Clear Bank:"), this.clearBankField);
-                top.addRow(5, new Label("Budget Tracking:"), this.budgetTrackingField);
-                top.addRow(6, new Label("Fund Name:"), this.associatedFundNameField);
+		GridPane top = new GridPane();
+		top.setHgap(10);
+		top.setVgap(8);
+		top.addRow(0, new Label("Date:"), this.datePicker);
+		top.addRow(1, new Label("Memo:"), this.memoArea);
+		top.addRow(2, new Label("To/From:"), this.toFromField);
+		top.addRow(3, new Label("Check #:"), this.checkNumberField);
+		top.addRow(4, new Label("Clear Bank:"), this.clearBankField);
+		top.addRow(5, new Label("Budget Tracking:"), this.budgetTrackingField);
+		top.addRow(6, new Label("Fund Name:"), this.associatedFundNameField);
 		
 		setTop(top);
 		setCenter(this.table);
 		setBottom(new ToolBar(add, del, new Separator(), this.saveBtn));
+		
 	}
 	
 	
@@ -266,17 +270,19 @@ public class NewTransactionPanelFX extends BorderPane
 	 *           (specifically a {@code StringProperty}) to be bound to this column's cells.
 	 * @return A configured {@link TableColumn} for displaying and editing String data.
 	 */
-	@SuppressWarnings("unused") 
-	private static TableColumn<Line, String> strCol(String t,
-	                                                Function<Line,Property<String>> fx)
+	@SuppressWarnings("unused") private static TableColumn<Line, String> strCol(String t,
+																				Function<Line,
+																						Property<
+																								String>> fx)
 	{
 		TableColumn<Line, String> c = new TableColumn<>(t);
 		c.setCellValueFactory(cell -> fx.apply(cell.getValue()));
 		
 		// Use FocusCommitTextFieldTableCell with DefaultStringConverter
 		c.setCellFactory(
-			param -> new FocusCommitTextFieldTableCell<>(new DefaultStringConverter()));
+				param -> new FocusCommitTextFieldTableCell<>(new DefaultStringConverter()));
 		return c;
+		
 	}
 	
 	/**
@@ -293,6 +299,7 @@ public class NewTransactionPanelFX extends BorderPane
 		c.setCellValueFactory(cell -> cell.getValue().side);
 		c.setCellFactory(ChoiceBoxTableCell.forTableColumn(AccountSide.values()));
 		return c;
+		
 	}
 	
 	/**
@@ -313,8 +320,9 @@ public class NewTransactionPanelFX extends BorderPane
 		c.setCellValueFactory(cell -> fx.apply(cell.getValue()));
 		// Use FocusCommitTextFieldTableCell with BigDecimalStringConverter
 		c.setCellFactory(
-			param -> new FocusCommitTextFieldTableCell<>(new BigDecimalStringConverter()));
+				param -> new FocusCommitTextFieldTableCell<>(new BigDecimalStringConverter()));
 		return c;
+		
 	}
 	
 	/**
@@ -330,34 +338,34 @@ public class NewTransactionPanelFX extends BorderPane
 	private TableColumn<Line, String> accountCol()
 	{
 		
-                ObservableList<String> choices =
-                        FXCollections.observableArrayList(
-                                this.coa.createAccountNumberMap()
-                                        .asMap()
-                                        .values()
-                                        .stream()
-                                        .map(Account::getName)
-                                        .sorted()
-                                        .toList());
-
-                Map<String, Account> byName =
-                        this.coa.createAccountNumberMap()
-                                .asMap()
-                                .values()
-                                .stream()
-                                .collect(Collectors.toMap(
-                                        Account::getName, // key = name
-					a -> a, // value = Account
-					(a, b) -> a, // merge: keep the first duplicate
-					LinkedHashMap::new // (optional) keep insertion order
-				));
-				
+		ObservableList<String> choices =
+				FXCollections.observableArrayList(
+						this.coa.createAccountNumberMap()
+								.asMap()
+								.values()
+								.stream()
+								.map(Account::getName)
+								.sorted()
+								.toList());
+		
+		Map<String, Account> byName =
+				this.coa.createAccountNumberMap()
+						.asMap()
+						.values()
+						.stream()
+						.collect(Collectors.toMap(
+								Account::getName, // key = name
+								a -> a, // value = Account
+								(a, b) -> a, // merge: keep the first duplicate
+								LinkedHashMap::new // (optional) keep insertion order
+						));
+						
 		TableColumn<Line, String> col = new TableColumn<>("Account");
 		col.setCellValueFactory(cd -> cd.getValue().account);
 		
 		/* editable ComboBox cells */
 		col.setCellFactory(
-			ComboBoxTableCell.forTableColumn(new DefaultStringConverter(), choices));
+				ComboBoxTableCell.forTableColumn(new DefaultStringConverter(), choices));
 		col.setEditable(true);
 		
 		/* commit handler on the COLUMN, not the cell */
@@ -376,6 +384,7 @@ public class NewTransactionPanelFX extends BorderPane
 		});
 		
 		return col;
+		
 	}
 	
 	
@@ -406,6 +415,7 @@ public class NewTransactionPanelFX extends BorderPane
 		}
 		
 		this.saveBtn.setDisable(debit.signum() == 0 || debit.compareTo(credit) != 0);
+		
 	}
 	
 	/**
@@ -428,9 +438,9 @@ public class NewTransactionPanelFX extends BorderPane
 			Account account = this.coa.getAccountByName(name);
 			String acctNum = account != null ? account.getAccountNumber() : name;
 			
-                        String acctName = account != null ? account.getName() : name;
-                        entries.add(new AccountingEntry(
-                                l.amount.get(), acctNum, l.side.get(), acctName));
+			String acctName = account != null ? account.getName() : name;
+			entries.add(new AccountingEntry(
+											l.amount.get(), acctNum, l.side.get(), acctName));
 			
 			BigDecimal amt = l.amount.get() != null ? l.amount.get() : BigDecimal.ZERO;
 			
@@ -447,28 +457,29 @@ public class NewTransactionPanelFX extends BorderPane
 		
 		// Save the timestamp as transaction id
 		AccountingTransaction tx = new AccountingTransaction(
-			new Account(),
-			entries,
-			Map.of(),
-			Instant.now().toEpochMilli());
+																new Account(),
+																entries,
+																Map.of(),
+																Instant.now().toEpochMilli());
 		
-                tx.setDate(this.datePicker.getValue().toString());
-                tx.setDescription(this.memoArea.getText());
-                tx.setToFrom(this.toFromField.getText());
-                tx.setCheckNumber(this.checkNumberField.getText());
-                tx.setClearBank(this.clearBankField.getText());
-                tx.setBudgetTracking(this.budgetTrackingField.getText());
-                tx.setAssociatedFundName(this.associatedFundNameField.getText());
+		tx.setDate(this.datePicker.getValue().toString());
+		tx.setDescription(this.memoArea.getText());
+		tx.setToFrom(this.toFromField.getText());
+		tx.setCheckNumber(this.checkNumberField.getText());
+		tx.setClearBank(this.clearBankField.getText());
+		tx.setBudgetTracking(this.budgetTrackingField.getText());
+		tx.setAssociatedFundName(this.associatedFundNameField.getText());
 		
-//		if (!this.lines.isEmpty())
-//		{
-//			tx.setAccountName(this.lines.get(0).account.get());
-//		}
-//		
-//		tx.setDebit(debitTotal);
-//		tx.setCredit(creditTotal);
+// if (!this.lines.isEmpty())
+// {
+// tx.setAccountName(this.lines.get(0).account.get());
+// }
+//
+// tx.setDebit(debitTotal);
+// tx.setCredit(creditTotal);
 		
 		this.onSave.accept(tx);
+		
 	}
 	
 	/**
@@ -488,6 +499,7 @@ public class NewTransactionPanelFX extends BorderPane
 		l.account.addListener((obs, o, n) -> {
 			/* account text change doesn’t affect totals but keeps UI fresh */
 		});
+		
 	}
 	
 	
