@@ -178,10 +178,10 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 		List<AccountingTransaction> imported = new ArrayList<>();
 		
 		// Use the excel file importer
-		if ("Excel (.xlsx)".equals(chosenFormat))
-		{			
-			importXlsx(selectedFile, account, imported);			
-		}
+                if ("Excel (.xlsx)".equals(chosenFormat))
+                {
+                        importXlsx(selectedFile, imported);
+                }
 		else
 		{
 			imported = FileImportService.importOFXorQIFFile(selectedFile, 
@@ -222,15 +222,14 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 		
 	}
 
-	/**
-	 * Import XLSX for transactions
-	 * 
-	 * @param selectedFile
-	 * @param account
-	 * @param imported
-	 */
-	void importXlsx(File selectedFile, Account account, List<AccountingTransaction> imported)
-	{
+        /**
+         * Import XLSX for transactions
+         *
+         * @param selectedFile the Excel file to import
+         * @param imported list where transactions will be added
+         */
+        void importXlsx(File selectedFile, List<AccountingTransaction> imported)
+        {
 		
 		try
 		{
@@ -238,8 +237,8 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 			List<ExcelLedgerRow> rows =
 					ExcelLedgerImportService.importSpreadsheet(selectedFile);
 
-			// Convert the rows
-			imported.addAll(ImportFileActionFX.convertExcelRows(rows, account));
+                        // Convert the rows
+                        imported.addAll(ImportFileActionFX.convertExcelRows(rows));
 		}
 		catch (IOException e)
 		{
@@ -258,152 +257,124 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 	 * user to add or ignore them.
 	 */
 	
-	private static	List<AccountingTransaction>
-			convertExcelRows(List<ExcelLedgerRow> rows,
-			                 Account targetAccount)
-	{
-		List<AccountingTransaction> results = new ArrayList<>();
-		
-		if (rows == null || targetAccount == null)
-		{
-			return results;
-		}
-		
-		Company company = CurrentCompany.getCompany();
-		ChartOfAccounts chart =
-				(company != null) ? company.getChartOfAccounts() : null;
-		
-		for (ExcelLedgerRow row : rows)
-		{
-			// read the row bean
-			if (row == null || 
-				row.getAllocations() == null || 
-				row.getAllocations().isEmpty())
-			{
-				continue;
-			}
-			
-			// create new builder
-			AccountingTransactionBuilder builder = AccountingTransactionBuilder.create();
-			
-			BigDecimal total = BigDecimal.ZERO;
-			int entryCount = 0;
-			
-			// read the allocation sections
-			for (ExcelLedgerRow.Allocation alloc : row.getAllocations())
-			{
-				
-				if (alloc == null || alloc.getAmount() == null)
-				{
-					continue;
-				}
-				
-				String name = null;
-				
-				if (alloc.getAssetLiabilityAccount() != null &&
-						!alloc.getAssetLiabilityAccount().isBlank())
-				{
-					name = alloc.getAssetLiabilityAccount();
-				}
-				else if (alloc.getIncomeCategory() != null && 
-						!alloc.getIncomeCategory().isBlank())
-				{
-					name = alloc.getIncomeCategory();
-				}
-				else if (alloc.getExpenseCategory() != null &&
-						!alloc.getExpenseCategory().isBlank())
-				{
-					name = alloc.getExpenseCategory();
-				}
-				
-				Account other = FileImportService.findAccountIgnoreCase(chart, name);
-				
-				if (other == null)
-				{
-					continue; // Skip unknown accounts
-				}
-				
-				BigDecimal amt = alloc.getAmount();
-				BigDecimal absAmt = amt.abs();
-				AccountSide side = (amt.signum() >= 0) ? other.getIncreaseSide() :
-						(other.getIncreaseSide() == AccountSide.DEBIT ? AccountSide.CREDIT :
-								AccountSide.DEBIT);
-				
-				if (side == AccountSide.DEBIT)
-				{
-					builder.debit(absAmt, other.getAccountNumber());
-				}
-				else
-				{
-					builder.credit(absAmt, other.getAccountNumber());
-				}
-				
-				total = total.add(amt);
-				entryCount++;
-			}
-			
-			if (entryCount == 0)
-			{
-				continue;
-			}
-			
-			BigDecimal bankAmt = total.negate();
-			
-			if (bankAmt.compareTo(BigDecimal.ZERO) != 0)
-			{
-				BigDecimal absAmt = bankAmt.abs();
-				AccountSide side = (bankAmt.signum() >= 0) ? targetAccount.getIncreaseSide() :
-						(targetAccount.getIncreaseSide() == AccountSide.DEBIT ? AccountSide.CREDIT :
-								AccountSide.DEBIT);
-				
-				if (side == AccountSide.DEBIT)
-				{
-					builder.debit(absAmt, targetAccount.getAccountNumber());
-				}
-				else
-				{
-					builder.credit(absAmt, targetAccount.getAccountNumber());
-				}
-				
-				entryCount++;
-			}
-			
-			if (entryCount < 2)
-			{
-				continue; // Not balanced
-			}
-			
-			// build
-			AccountingTransaction tx = builder.build();
-			
-			
-			// Set the date
-			if (row.getDate() != null)
-			{
-				tx.setDate(row.getDate().toString());
-			}
-			
-			// Set the memo
-			String memo = (row.getMemoNotes() != null && !row.getMemoNotes().isBlank()) ? 
-					row.getMemoNotes() : 						
-						row.getToFrom();
-			
-			if (memo != null)
-			{
-				tx.setMemo(memo);
-			}
-						
-			tx.setToFrom (row.getToFrom());
-			tx.setCheckNumber ( row.getCheckNumber());
-			tx.setClearBank ( row.getClearBank());
-			tx.setBudgetTracking  ( row.getBudgetTracking());
-			
-			
-			results.add(tx);
-		}
-		
-		return results;
-		
-	}
 	
+}
+        private static List<AccountingTransaction> convertExcelRows(List<ExcelLedgerRow> rows)
+        {
+                List<AccountingTransaction> results = new ArrayList<>();
+
+                if (rows == null)
+                {
+                        return results;
+                }
+
+                Company company = CurrentCompany.getCompany();
+                ChartOfAccounts chart = (company != null) ? company.getChartOfAccounts() : null;
+
+                for (ExcelLedgerRow row : rows)
+                {
+                        if (row == null || row.getAllocations() == null || row.getAllocations().isEmpty())
+                        {
+                                continue;
+                        }
+
+                        AccountingTransactionBuilder builder = AccountingTransactionBuilder.create();
+                        int entryCount = 0;
+
+                        for (ExcelLedgerRow.Allocation alloc : row.getAllocations())
+                        {
+                                if (alloc == null || alloc.getAmount() == null || alloc.getAmount().compareTo(BigDecimal.ZERO) == 0)
+                                {
+                                        continue;
+                                }
+
+                                List<String> names = new ArrayList<>();
+
+                                if (alloc.getAssetLiabilityAccount() != null && !alloc.getAssetLiabilityAccount().isBlank())
+                                {
+                                        names.add(alloc.getAssetLiabilityAccount());
+                                }
+
+                                if (alloc.getIncomeCategory() != null && !alloc.getIncomeCategory().isBlank())
+                                {
+                                        names.add(alloc.getIncomeCategory());
+                                }
+
+                                if (alloc.getExpenseCategory() != null && !alloc.getExpenseCategory().isBlank())
+                                {
+                                        names.add(alloc.getExpenseCategory());
+                                }
+
+                                if (names.size() != 2)
+                                {
+                                        continue;
+                                }
+
+                                Account acct1 = FileImportService.findAccountIgnoreCase(chart, names.get(0));
+                                Account acct2 = FileImportService.findAccountIgnoreCase(chart, names.get(1));
+
+                                if (acct1 == null || acct2 == null)
+                                {
+                                        continue;
+                                }
+
+                                BigDecimal amt = alloc.getAmount();
+                                BigDecimal absAmt = amt.abs();
+
+                                AccountSide side1 = (amt.signum() >= 0) ? acct1.getIncreaseSide() :
+                                                (acct1.getIncreaseSide() == AccountSide.DEBIT ? AccountSide.CREDIT : AccountSide.DEBIT);
+                                AccountSide side2 = (side1 == AccountSide.DEBIT) ? AccountSide.CREDIT : AccountSide.DEBIT;
+
+                                if (side1 == AccountSide.DEBIT)
+                                {
+                                        builder.debit(absAmt, acct1.getAccountNumber());
+                                }
+                                else
+                                {
+                                        builder.credit(absAmt, acct1.getAccountNumber());
+                                }
+
+                                if (side2 == AccountSide.DEBIT)
+                                {
+                                        builder.debit(absAmt, acct2.getAccountNumber());
+                                }
+                                else
+                                {
+                                        builder.credit(absAmt, acct2.getAccountNumber());
+                                }
+
+                                entryCount += 2;
+                        }
+
+                        if (entryCount < 2)
+                        {
+                                continue;
+                        }
+
+                        AccountingTransaction tx = builder.build();
+
+                        if (row.getDate() != null)
+                        {
+                                tx.setDate(row.getDate().toString());
+                        }
+
+                        String memo = (row.getMemoNotes() != null && !row.getMemoNotes().isBlank()) ?
+                                        row.getMemoNotes() : row.getToFrom();
+
+                        if (memo != null)
+                        {
+                                tx.setMemo(memo);
+                        }
+
+                        tx.setToFrom(row.getToFrom());
+                        tx.setCheckNumber(row.getCheckNumber());
+                        tx.setClearBank(row.getClearBank());
+                        tx.setBudgetTracking(row.getBudgetTracking());
+
+                        results.add(tx);
+                }
+
+                return results;
+
+        }
 }
