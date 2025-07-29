@@ -9,6 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import nonprofitbookkeeping.util.FormatUtils;
 
 import java.util.function.Consumer;
 
@@ -268,8 +269,8 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 			
 		}
 		
-		this.debitTotalLbl.setText(debit.toPlainString());
-		this.creditTotalLbl.setText(credit.toPlainString());
+               this.debitTotalLbl.setText(FormatUtils.formatCurrency(debit));
+               this.creditTotalLbl.setText(FormatUtils.formatCurrency(credit));
 		
 	}
 	

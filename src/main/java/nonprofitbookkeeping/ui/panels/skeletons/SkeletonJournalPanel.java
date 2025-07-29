@@ -18,6 +18,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import nonprofitbookkeeping.util.FormatUtils;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
@@ -567,16 +568,16 @@ public class SkeletonJournalPanel extends BorderPane
 				this.accountName = new SimpleStringProperty(entry.getAccount().getName());
 				BigDecimal amount = entry.getAmount() != null ? entry.getAmount() : BigDecimal.ZERO;
 				
-				if (entry.getAccountSide() == AccountSide.DEBIT)
-				{
-					this.debit = new SimpleStringProperty(amount.toPlainString());
-					this.credit = new SimpleStringProperty("");
-				}
-				else
-				{
-					this.debit = new SimpleStringProperty("");
-					this.credit = new SimpleStringProperty(amount.toPlainString());
-				}
+                               if (entry.getAccountSide() == AccountSide.DEBIT)
+                               {
+                                       this.debit = new SimpleStringProperty(FormatUtils.formatCurrency(amount));
+                                       this.credit = new SimpleStringProperty("");
+                               }
+                               else
+                               {
+                                       this.debit = new SimpleStringProperty("");
+                                       this.credit = new SimpleStringProperty(FormatUtils.formatCurrency(amount));
+                               }
 				
 			}
 			else

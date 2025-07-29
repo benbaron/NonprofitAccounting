@@ -3,6 +3,7 @@ package nonprofitbookkeeping.ui.panels;
 
 import java.io.File;
 import java.math.BigDecimal;
+import nonprofitbookkeeping.util.FormatUtils;
 import java.util.List;
 import java.util.UUID;
 
@@ -167,8 +168,8 @@ public class GrantsPanelFX extends BorderPane
 		if (existing != null)
 		{
 			grantorF.setText(existing.getGrantor());
-			amountF
-				.setText(existing.getAmount() != null ? existing.getAmount().toPlainString() : "");
+                       amountF
+                               .setText(existing.getAmount() != null ? FormatUtils.formatCurrency(existing.getAmount()) : "");
 			dateF.setText(existing.getDateAwarded());
 			purposeF.setText(existing.getPurpose());
 			statusF.setText(existing.getStatus());
@@ -263,12 +264,12 @@ public class GrantsPanelFX extends BorderPane
 		 */
 		GrantRow(Grant g)
 		{
-			this.grantId = g.getGrantId();
-			this.grantor = g.getGrantor();
-			this.amount = String.format("$%.2f", g.getAmount());
-			this.dateAwarded = g.getDateAwarded();
-			this.purpose = g.getPurpose();
-			this.status = g.getStatus();
+                       this.grantId = g.getGrantId();
+                       this.grantor = g.getGrantor();
+                       this.amount = FormatUtils.formatCurrency(g.getAmount());
+                       this.dateAwarded = g.getDateAwarded();
+                       this.purpose = g.getPurpose();
+                       this.status = g.getStatus();
 		}
 		
 		/**

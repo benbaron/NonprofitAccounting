@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import nonprofitbookkeeping.util.FormatUtils;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -386,8 +387,8 @@ public class CoaEditorPanelFX extends BorderPane
 		AccountType initialType = isEdit && editing.getAccountType() != null ?
 			editing.getAccountType() : AccountType.ASSET;
 		this.typeBox.getSelectionModel().select(initialType);
-		this.balF = new TextField(isEdit && editing.getOpeningBalance() != null ?
-			editing.getOpeningBalance().toPlainString() : "0.00");
+               this.balF = new TextField(isEdit && editing.getOpeningBalance() != null ?
+                       FormatUtils.formatCurrency(editing.getOpeningBalance()) : FormatUtils.formatCurrency(BigDecimal.ZERO));
 		
 		GridPane gp = new GridPane();
 		gp.setHgap(10);

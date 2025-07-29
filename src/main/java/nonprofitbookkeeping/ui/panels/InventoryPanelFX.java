@@ -16,6 +16,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import nonprofitbookkeeping.model.InventoryItem;
 import nonprofitbookkeeping.service.InventoryService;
+import nonprofitbookkeeping.util.FormatUtils;
 
 /**
  * JavaFX port of {@code InventoryPanel}. Shows capital assets / inventory with
@@ -179,7 +180,7 @@ public class InventoryPanelFX extends BorderPane
 		if (existing != null)
 		{
 			nameF.setText(existing.name);
-			costF.setText(existing.cost.toPlainString());
+                       costF.setText(FormatUtils.formatCurrency(existing.cost));
 			dateP.setValue(LocalDate.parse(existing.acquired));
 			lifeF.setText(existing.lifeYears + "");
 		}

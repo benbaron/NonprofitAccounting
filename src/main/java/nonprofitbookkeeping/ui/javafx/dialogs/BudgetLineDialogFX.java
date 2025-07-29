@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import nonprofitbookkeeping.util.FormatUtils;
 import java.util.stream.Collectors;
 
 public class BudgetLineDialogFX extends Dialog<BudgetLine>
@@ -194,8 +195,8 @@ public class BudgetLineDialogFX extends Dialog<BudgetLine>
                         this.cmbAccount.getSelectionModel().clearSelection();
                 }
 		
-		this.txtTotalAmount.setText(this.budgetLine.getTotalBudgetedAmount() != null ?
-			this.budgetLine.getTotalBudgetedAmount().toPlainString() : "");
+               this.txtTotalAmount.setText(this.budgetLine.getTotalBudgetedAmount() != null ?
+                        FormatUtils.formatCurrency(this.budgetLine.getTotalBudgetedAmount()) : "");
 		this.cmbPeriodicity.setValue(this.budgetLine.getPeriodicity());
 		
 		if (this.budgetLine.getFundId() != null && this.availableFunds != null)

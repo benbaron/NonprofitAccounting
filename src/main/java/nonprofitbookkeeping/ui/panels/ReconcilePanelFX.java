@@ -13,6 +13,7 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import nonprofitbookkeeping.util.FormatUtils;
 import javafx.scene.layout.HBox;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.service.ReconciliationService;
@@ -43,7 +44,7 @@ public class ReconcilePanelFX extends BorderPane
 	/** ObservableList that backs the {@link #table}, containing {@link TxnRow} objects. */
 	private final ObservableList<TxnRow> rows = FXCollections.observableArrayList();
 	/** Label to display the calculated difference between statement ending balance and sum of cleared transactions. */
-	private final Label diffLabel = new Label("Difference: 0.00");
+       private final Label diffLabel = new Label("Difference: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
 	
 	/**
 	 * Constructs a new {@code ReconcilePanelFX}.
@@ -202,7 +203,7 @@ public class ReconcilePanelFX extends BorderPane
 			.reduce(BigDecimal.ZERO, BigDecimal::add);
 		
 		BigDecimal diff = ending.subtract(clearedSum);
-		this.diffLabel.setText("Difference: " + diff);
+               this.diffLabel.setText("Difference: " + FormatUtils.formatCurrency(diff));
 		
 		
 	}
