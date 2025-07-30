@@ -184,6 +184,11 @@ public class NonprofitBookkeepingFX extends Application
 		SLF4JBridgeHandler.removeHandlersForRootLogger();
 		SLF4JBridgeHandler.install();
 		
+		System.setProperty("net.sf.jasperreports.debug", "true");
+		System.setProperty("net.sf.jasperreports.compile.class.debug", "true");
+		System.setProperty("net.sf.jasperreports.compile.keep.java.file", "true");
+
+		
 		stage.getIcons().addAll(new Image(getClass().getResourceAsStream("../../cg-128px.png")));
 		this.primaryStage = stage;
 		this.c = new CurrentCompany();
@@ -343,78 +348,78 @@ public class NonprofitBookkeepingFX extends Application
 				"Reconciliation"));
 		bar.getMenus().add(this.run);
 		
-		/* REPORTS */
+//		/* REPORTS */
 		this.reports = new Menu("Reports");
-		add(this.reports, "Show Reports", e -> ((MainApplicationView) this.root)
-			.showPanel(MainApplicationView.PanelType.REPORTS));
-		add(this.reports, "Show Accounts",
-			
-			e -> showPanel(new AccountsPanelFX(new AccountService()), "Chart of Accounts"));
-		add(this.reports, "Show Account Activity", e -> {
-			Company currentCompany = CurrentCompany.getCompany();
-			
-			
-			if (currentCompany != null && currentCompany.getLedger() != null)
-			{
-				showPanel(new AccountsActivityPanelFX(currentCompany.getLedger()),
-					"Account Activity");
-			}
-			else
-			{
-				AlertBox.showError(this.primaryStage, "No company or ledger open.");
-			}
-			
-		});
-		add(this.reports, "Generate Reports...",
-			e -> new GenerateReportsAction(ServiceContainer.reportService).handle(e));
-		add(this.reports, "Generate Income Statement",
-			e -> new GenerateIncomeStatementAction(ServiceContainer.reportService)
-				.actionPerformed(null));
-		add(this.reports, "Generate Balance Sheet",
-			e -> new GenerateBalanceSheetAction(ServiceContainer.reportService)
-				.actionPerformed(null));
-		add(this.reports, "Generate Trial Balance",
-			e -> new GenerateTrialBalanceAction(ServiceContainer.reportService)
-				.actionPerformed(null));
-		add(this.reports, "Generate Cash Flow Statement",
-			e -> new GenerateCashFlowStatementAction(ServiceContainer.reportService)
-				.actionPerformed(null));
-		add(this.reports, "Generate Budget vs. Actuals Report",
-			e -> new GenerateBudgetVsActualsReportAction(ServiceContainer.reportService,
-				ServiceContainer.budgetService).actionPerformed(null));
-		add(this.reports, "Manage Saved Reports", e -> {
-			
-			if (!CurrentCompany.isOpen())
-			{
-				AlertBox.showError(this.primaryStage,
-					"No company open. Load or create a company first.");
-				return;
-			}
-			
-			File companyFile = CurrentCompany.getCurrentFile();
-			
-			if (companyFile == null)
-			{
-				Company currentCompany = CurrentCompany.getCompany();
-				companyFile = currentCompany != null ? currentCompany.getCompanyFile() : null;
-			}
-			
-			File companyDir = (companyFile != null) ? companyFile.getParentFile() : null;
-			
-			if (companyDir == null)
-			{
-				AlertBox.showError(this.primaryStage,
-					"Company directory not available. Save the company before managing reports.");
-				return;
-			}
-			
-			new ManageReportConfigurationsDialog(null, ServiceContainer.reportConfigurationService,
-				companyDir, new ArrayList<Fund>(), ServiceContainer.reportService).setVisible(true);
-		});
-		add(this.reports, "Generate Account Activity Detail",
-			e -> new GenerateAccountActivityReportAction(ServiceContainer.reportService)
-				.actionPerformed(null));
-		bar.getMenus().add(this.reports);
+//		add(this.reports, "Show Reports", e -> ((MainApplicationView) this.root)
+//			.showPanel(MainApplicationView.PanelType.REPORTS));
+//		add(this.reports, "Show Accounts",
+//			
+//			e -> showPanel(new AccountsPanelFX(new AccountService()), "Chart of Accounts"));
+//		add(this.reports, "Show Account Activity", e -> {
+//			Company currentCompany = CurrentCompany.getCompany();
+//			
+//			
+//			if (currentCompany != null && currentCompany.getLedger() != null)
+//			{
+//				showPanel(new AccountsActivityPanelFX(currentCompany.getLedger()),
+//					"Account Activity");
+//			}
+//			else
+//			{
+//				AlertBox.showError(this.primaryStage, "No company or ledger open.");
+//			}
+//			
+//		});
+//		add(this.reports, "Generate Reports...",
+//			e -> new GenerateReportsAction(ServiceContainer.reportService).handle(e));
+//		add(this.reports, "Generate Income Statement",
+//			e -> new GenerateIncomeStatementAction(ServiceContainer.reportService)
+//				.actionPerformed(null));
+//		add(this.reports, "Generate Balance Sheet",
+//			e -> new GenerateBalanceSheetAction(ServiceContainer.reportService)
+//				.actionPerformed(null));
+//		add(this.reports, "Generate Trial Balance",
+//			e -> new GenerateTrialBalanceAction(ServiceContainer.reportService)
+//				.actionPerformed(null));
+//		add(this.reports, "Generate Cash Flow Statement",
+//			e -> new GenerateCashFlowStatementAction(ServiceContainer.reportService)
+//				.actionPerformed(null));
+//		add(this.reports, "Generate Budget vs. Actuals Report",
+//			e -> new GenerateBudgetVsActualsReportAction(ServiceContainer.reportService,
+//				ServiceContainer.budgetService).actionPerformed(null));
+//		add(this.reports, "Manage Saved Reports", e -> {
+//			
+//			if (!CurrentCompany.isOpen())
+//			{
+//				AlertBox.showError(this.primaryStage,
+//					"No company open. Load or create a company first.");
+//				return;
+//			}
+//			
+//			File companyFile = CurrentCompany.getCurrentFile();
+//			
+//			if (companyFile == null)
+//			{
+//				Company currentCompany = CurrentCompany.getCompany();
+//				companyFile = currentCompany != null ? currentCompany.getCompanyFile() : null;
+//			}
+//			
+//			File companyDir = (companyFile != null) ? companyFile.getParentFile() : null;
+//			
+//			if (companyDir == null)
+//			{
+//				AlertBox.showError(this.primaryStage,
+//					"Company directory not available. Save the company before managing reports.");
+//				return;
+//			}
+//			
+//			new ManageReportConfigurationsDialog(null, ServiceContainer.reportConfigurationService,
+//				companyDir, new ArrayList<Fund>(), ServiceContainer.reportService).setVisible(true);
+//		});
+//		add(this.reports, "Generate Account Activity Detail",
+//			e -> new GenerateAccountActivityReportAction(ServiceContainer.reportService)
+//				.actionPerformed(null));
+//		bar.getMenus().add(this.reports);
 		
 		/* PANELS */
 		this.panels = new Menu("Panels");

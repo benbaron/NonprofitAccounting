@@ -49,7 +49,9 @@ public class BudgetEditorDialogFX extends Dialog<Budget>
 	/** List of available {@link Fund}s to populate the fund selector ComboBox. */
 	private List<Fund> availableFunds;
 	private ChartOfAccounts chartOfAccounts;
+	
 	// UI Fields for Budget Properties
+	
 	/** TextField for entering or displaying the budget name. */
 	private TextField budgetNameField;
 	/** Spinner for selecting or displaying the fiscal year of the budget. */
@@ -62,6 +64,7 @@ public class BudgetEditorDialogFX extends Dialog<Budget>
 	private TextField currencyField;
 	
 	// UI Fields for Budget Lines
+	
 	private TableView<BudgetLine> budgetLinesTable;
 	private Button addLineButton;
 	private Button editLineButton;

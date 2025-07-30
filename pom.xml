@@ -2,302 +2,350 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>nonprofitbookkeeping</groupId>
-	<artifactId>nonprofitbookkeeping</artifactId>
-	<version>1.0-SNAPSHOT</version>
-	<packaging>jar</packaging>
-	
-	<!-- JavaFX dependencies -->
-	<properties>
-		<javafx.version>21.0.6</javafx.version>
-    	<jasperreports.version>7.0.3</jasperreports.version>
-	</properties>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>nonprofitbookkeeping</groupId>
+    <artifactId>nonprofitbookkeeping</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
+    <properties>
+        <javafx.version>21.0.6</javafx.version>
+        <jasperreports.version>7.0.3</jasperreports.version>
+    </properties>
 
-	<build>
-          <plugins>
-            <!-- Use the default JDK available in the environment. The
-                 toolchains plugin requires downloading additional
-                 artifacts which fails in this offline environment. -->
-            <!-- compiler still needs the release flag -->
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>local-repo</id>
+            <url>file://${user.home}/.m2/repository</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>local-plugins</id>
+            <url>file://${user.home}/.m2/repository</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <build>
+        <plugins>
             <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-compiler-plugin</artifactId>
-              <version>3.11.0</version>
-	      <configuration>
-	        <release>17</release>
-	        <fork>true</fork>
-	        <argLine>
-	            --add-opens jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED
-	            --add-opens jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED
-	            --add-opens jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED
-	            --add-opens jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED
-	            --add-opens jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED
-	            --add-opens jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED
-	            --add-opens jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED
-	            --add-opens jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED
-	            --add-opens jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED
-	            --add-opens jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
-	        </argLine>
-	      </configuration>
-	    </plugin>
-	  </plugins>
-	</build>
-	
-	<repositories>
-	  	<repository>
-	    <id>jitpack.io</id>
-	    <url>https://jitpack.io</url>
-	  	</repository>
-	</repositories>	
-						
-	<dependencies>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <release>17</release>
+                    <fork>true</fork>
+                    <argLine>
+                        --add-opens jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED
+                        --add-opens jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED
+                        --add-opens jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED
+                        --add-opens jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED
+                        --add-opens jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED
+                        --add-opens jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED
+                        --add-opens jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED
+                        --add-opens jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED
+                        --add-opens jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED
+                        --add-opens jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
+                    </argLine>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.1.2</version>
+                <configuration>
+                    <useModulePath>false</useModulePath>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>run-console-launcher</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>org.junit.platform.console.ConsoleLauncher</mainClass>
+                            <classpathScope>test</classpathScope>
+                            <arguments>
+                                <argument>--scan-class-path</argument>
+                                <argument>target/test-classes</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>4.0.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jxls</groupId>
+            <artifactId>jxls-poi</artifactId>
+            <version>2.12.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jxls</groupId>
+            <artifactId>jxls-reader</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>2.0.17</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.17</version>
+        </dependency>
 		<dependency>
-			<groupId>org.glassfish.jaxb</groupId>
-			<artifactId>jaxb-runtime</artifactId>
-			<version>4.0.2</version>
-		</dependency>	
-		
-		<dependency>
-			<groupId>org.jxls</groupId>
-			<artifactId>jxls-poi</artifactId>
-			<version>2.12.0</version>
-				<exclusions>
-					<exclusion>
-					<groupId>ch.qos.logback</groupId>
-					<artifactId>logback-core</artifactId>
-					</exclusion>
-				</exclusions>			
-		</dependency>	
-		
-		<dependency>
-			<groupId>org.jxls</groupId>
-			<artifactId>jxls-reader</artifactId>
-			<version>2.1.0</version>
-		</dependency>	
-	
-	
-		<!-- JUL → SLF4J bridge (current 2.x line) -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jul-to-slf4j</artifactId>
-			<version>2.0.17</version>   <!-- match your slf4j-api version -->
-		</dependency>
-		
-		<!-- SLF4J API (pick the line that matches the bridge) -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>2.0.17</version>
-		</dependency>
-		
-		<!-- Binding: SLF4J calls → Log4j 2 -->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j2-impl</artifactId>
-			<version>2.23.1</version>   <!-- match your Log4j 2 core version -->
-		</dependency>
-		
-		<!-- One concrete logger implementation, e.g. Logback -->
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>1.5.3</version>  <!-- or the version your stack requires -->
-		</dependency>
-			
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.18.2</version>
-		</dependency>		
-	    <dependency>
-	      <groupId>com.fasterxml.jackson.datatype</groupId>
-	      <artifactId>jackson-datatype-jsr310</artifactId>
-	      <version>2.18.2</version>
-	    </dependency>
-	    
-		<dependency>
-    		<groupId>com.google.guava</groupId>
-    		<artifactId>guava</artifactId>
-   			<version>30.1-jre</version> <!-- Use the latest version -->
+    		<groupId>org.apache.logging.log4j</groupId>
+    		<artifactId>log4j-slf4j-impl</artifactId>
+    		<version>2.23.1</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.32</version> <!-- Updated Lombok version -->
-			<scope>provided</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j2-impl</artifactId>
+            <version>2.23.1</version>
+        </dependency>
 
-		<!-- Mockito Core for creating mocks -->
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<version>5.4.0</version>
-			<scope>test</scope>
-		</dependency>
-		
-		<!-- Mockito JUnit Jupiter integration for using Mockito with JUnit 5 -->
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-junit-jupiter</artifactId>
-			<version>5.4.0</version>
-			<scope>test</scope>
-		</dependency>				
-		<dependency>
-			<groupId>org.testfx</groupId>
-			<artifactId>testfx-core</artifactId>
-			<version>4.0.18</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.testfx</groupId>
-			<artifactId>testfx-junit5</artifactId>
-			<version>4.0.18</version>
-			<scope>test</scope>
-		</dependency>
-		
-		<!-- openjfx -->
-		<dependency>
-		    <groupId>org.openjfx</groupId>
-		    <artifactId>javafx-controls</artifactId>
-		    <version>${javafx.version}</version>
-		</dependency>
-	    <dependency>
-	        <groupId>org.openjfx</groupId>
-	        <artifactId>javafx-fxml</artifactId>
-	        <version>${javafx.version}</version> 
-	    </dependency>
-		<dependency>
-		    <groupId>org.openjfx</groupId>
-		    <artifactId>javafx-web</artifactId>
-		    <version>${javafx.version}</version>         
-		</dependency>
-		<dependency>
-		  	<groupId>org.openjfx</groupId>
-		  	<artifactId>javafx-swing</artifactId>
- 			<version>${javafx.version}</version>        		
- 		</dependency>
- 		
-		<dependency>
-		    <groupId>org.apache.pdfbox</groupId>
-		    <artifactId>pdfbox</artifactId>
-		    <version>2.0.31</version>   <!-- latest stable as of May 2025 -->
-		</dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.5.3</version>
+        </dependency>
 
-    <!-- I/O layer: OFXParser, AggregateUnmarshaller, etc. -->
-		<dependency>
-			<groupId>com.webcohesion.ofx4j</groupId>
-			<artifactId>ofx4j</artifactId>
-			<version>1.38</version>
-		</dependency>
-		
-		<dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.18.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.18.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>30.1-jre</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.32</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.4.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>5.4.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>testfx-core</artifactId>
+            <version>4.0.18</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>testfx-junit5</artifactId>
+            <version>4.0.18</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.31</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.webcohesion.ofx4j</groupId>
+            <artifactId>ofx4j</artifactId>
+            <version>1.38</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.9.3</version>
             <scope>test</scope>
         </dependency>
-		
-	
 
-    <!-- ========= core engine ========= -->
-    <dependency>
-        <groupId>net.sf.jasperreports</groupId>
-        <artifactId>jasperreports</artifactId>
-        <version>${jasperreports.version}</version>
-    </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-console</artifactId>
+            <version>1.10.0</version>
+            <scope>test</scope>
+        </dependency>
 
-    <!-- ========= exporters ========= -->
-    <dependency> <!-- PDF/embedded fonts -->
-        <groupId>net.sf.jasperreports</groupId>
-        <artifactId>jasperreports-pdf</artifactId>
-        <version>${jasperreports.version}</version>
-    </dependency>
-    <dependency> <!-- XLS/XLSX via Apache‑POI -->
-        <groupId>net.sf.jasperreports</groupId>
-        <artifactId>jasperreports-excel-poi</artifactId>
-        <version>${jasperreports.version}</version>
-    </dependency>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
+            <version>${jasperreports.version}</version>
+        </dependency>
 
-    <!-- ========= data‑source helpers ========= -->
-    <dependency> <!-- JSON data source -->
-        <groupId>net.sf.jasperreports</groupId>
-        <artifactId>jasperreports-json</artifactId>
-        <version>${jasperreports.version}</version>
-    </dependency>
-    <dependency> <!-- Generic data‑adapter plug‑ins -->
-        <groupId>net.sf.jasperreports</groupId>
-        <artifactId>jasperreports-data-adapters</artifactId>
-        <version>${jasperreports.version}</version>
-    </dependency>
-    <dependency> <!-- Hibernate session wrapper -->
-        <groupId>net.sf.jasperreports</groupId>
-        <artifactId>jasperreports-hibernate</artifactId>
-        <version>${jasperreports.version}</version>
-    </dependency>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-pdf</artifactId>
+            <version>${jasperreports.version}</version>
+        </dependency>
 
-    <!-- ========= charting & visual extras ========= -->
-    <dependency> <!-- built‑in chart component set -->
-        <groupId>net.sf.jasperreports</groupId>
-        <artifactId>jasperreports-charts</artifactId>
-        <version>${jasperreports.version}</version>
-    </dependency>
-    <dependency> <!-- reusable chart palette themes -->
-        <groupId>net.sf.jasperreports</groupId>
-        <artifactId>jasperreports-chart-themes</artifactId>
-        <version>${jasperreports.version}</version>
-    </dependency>
-    <dependency> <!-- community chart customizers -->
-        <groupId>net.sf.jasperreports</groupId>
-        <artifactId>jasperreports-chart-customizers</artifactId>
-        <version>${jasperreports.version}</version>
-    </dependency>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-excel-poi</artifactId>
+            <version>${jasperreports.version}</version>
+        </dependency>
 
-    <!-- ========= barcodes & fonts ========= -->
-    <dependency> <!-- Barbecue 1‑D barcodes -->
-        <groupId>net.sf.jasperreports</groupId>
-        <artifactId>jasperreports-barbecue</artifactId>
-        <version>${jasperreports.version}</version>
-    </dependency>
-    <dependency> <!-- Barcode4J 1‑D/2‑D set -->
-        <groupId>net.sf.jasperreports</groupId>
-        <artifactId>jasperreports-barcode4j</artifactId>
-        <version>${jasperreports.version}</version>
-    </dependency>
-    <dependency> <!-- TrueType/OTF font packs -->
-        <groupId>net.sf.jasperreports</groupId>
-        <artifactId>jasperreports-fonts</artifactId>
-        <version>${jasperreports.version}</version>
-    </dependency>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-json</artifactId>
+            <version>${jasperreports.version}</version>
+        </dependency>
 
-    <!-- ========= scripting / advanced ========= -->
-    <dependency> <!-- Groovy expressions instead of Java -->
-        <groupId>net.sf.jasperreports</groupId>
-        <artifactId>jasperreports-groovy</artifactId>
-        <version>${jasperreports.version}</version>
-    </dependency>
-    <dependency> <!-- Javaflow continuations (async filling) -->
-        <groupId>net.sf.jasperreports</groupId>
-        <artifactId>jasperreports-javaflow</artifactId>
-        <version>${jasperreports.version}</version>
-    </dependency>
-    <dependency> <!-- JDT compiler backend (faster than reflection) -->
-        <groupId>net.sf.jasperreports</groupId>
-        <artifactId>jasperreports-jdt</artifactId>
-        <version>${jasperreports.version}</version>
-    </dependency>
-    <dependency> <!-- Ready‑made date/number string functions -->
-        <groupId>net.sf.jasperreports</groupId>
-        <artifactId>jasperreports-functions</artifactId>
-        <version>${jasperreports.version}</version>
-    </dependency>
-    <dependency> <!-- Metadata descriptors (needed for some exporters) -->
-        <groupId>net.sf.jasperreports</groupId>
-        <artifactId>jasperreports-metadata</artifactId>
-        <version>${jasperreports.version}</version>
-    </dependency>
-</dependencies>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-data-adapters</artifactId>
+            <version>${jasperreports.version}</version>
+        </dependency>
 
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-hibernate</artifactId>
+            <version>${jasperreports.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-charts</artifactId>
+            <version>${jasperreports.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-chart-themes</artifactId>
+            <version>${jasperreports.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-chart-customizers</artifactId>
+            <version>${jasperreports.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-barbecue</artifactId>
+            <version>${jasperreports.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-barcode4j</artifactId>
+            <version>${jasperreports.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-fonts</artifactId>
+            <version>${jasperreports.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-groovy</artifactId>
+            <version>${jasperreports.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-javaflow</artifactId>
+            <version>${jasperreports.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-jdt</artifactId>
+            <version>${jasperreports.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-functions</artifactId>
+            <version>${jasperreports.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-metadata</artifactId>
+            <version>${jasperreports.version}</version>
+        </dependency>
+    </dependencies>
 </project>

@@ -32,7 +32,28 @@
 	        <AppenderRef ref="STDOUT"/>
 	    </Logger>
 	        -->
-    </Loggers>
+
+    <!-- JasperReports engine core logging -->
+    <Logger name="net.sf.jasperreports.engine" level="debug" additivity="false">
+        <AppenderRef ref="Console"/>
+    </Logger>
+
+    <!-- Optional: Fill process -->
+    <Logger name="net.sf.jasperreports.engine.fill" level="debug" additivity="false">
+        <AppenderRef ref="Console"/>
+    </Logger>
+
+    <!-- Optional: Compilation process -->
+    <Logger name="net.sf.jasperreports.engine.compile" level="debug" additivity="false">
+        <AppenderRef ref="Console"/>
+    </Logger>
+
+    <!-- Optional: All JasperReports logs -->
+    <Logger name="net.sf.jasperreports" level="debug" additivity="false">
+        <AppenderRef ref="Console"/>
+    </Logger>
+
+</Loggers>
     
     
     

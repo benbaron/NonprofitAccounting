@@ -27,7 +27,7 @@ public class AccountLedgerJasperGenerator extends AbstractReportGenerator
 	@Override protected List<AccountLedgerRowBean> getReportData()
 	{
 		nonprofitbookkeeping.model.Company company =
-			nonprofitbookkeeping.model.CurrentCompany.getCompany();
+				nonprofitbookkeeping.model.CurrentCompany.getCompany();
 		
 		if (company == null || company.getLedger() == null)
 		{
@@ -38,7 +38,7 @@ public class AccountLedgerJasperGenerator extends AbstractReportGenerator
 		java.math.BigDecimal running = java.math.BigDecimal.ZERO;
 		
 		java.util.List<nonprofitbookkeeping.model.AccountingTransaction> txns =
-			company.getLedger().getTransactions();
+				company.getLedger().getTransactions();
 		
 		if (txns == null)
 		{
@@ -46,7 +46,7 @@ public class AccountLedgerJasperGenerator extends AbstractReportGenerator
 		}
 		
 		txns.sort(java.util.Comparator.comparingLong(
-			nonprofitbookkeeping.model.AccountingTransaction::getBookingDateTimestamp));
+				nonprofitbookkeeping.model.AccountingTransaction::getBookingDateTimestamp));
 		
 		for (nonprofitbookkeeping.model.AccountingTransaction tx : txns)
 		{
@@ -74,8 +74,9 @@ public class AccountLedgerJasperGenerator extends AbstractReportGenerator
 			
 			running = running.add(debit).subtract(credit);
 			
-			rows.add(new AccountLedgerRowBean(tx.getDate(),
-				tx.getMemo() != null ? tx.getMemo() : "", debit, credit, running));
+			rows.add(new AccountLedgerRowBean(	tx.getDate(),
+												tx.getMemo() != null ? tx.getMemo() : "", debit,
+												credit, running));
 		}
 		
 		return rows;
@@ -90,12 +91,13 @@ public class AccountLedgerJasperGenerator extends AbstractReportGenerator
 		String companyName = "N/A";
 		
 		if (nonprofitbookkeeping.model.CurrentCompany.getCompany() != null &&
-			nonprofitbookkeeping.model.CurrentCompany.getCompany().getCompanyProfile() != null &&
-			nonprofitbookkeeping.model.CurrentCompany.getCompany().getCompanyProfile()
-				.getCompanyName() != null)
+				nonprofitbookkeeping.model.CurrentCompany.getCompany().getCompanyProfile() !=
+						null &&
+				nonprofitbookkeeping.model.CurrentCompany.getCompany().getCompanyProfile()
+						.getCompanyName() != null)
 		{
 			companyName = nonprofitbookkeeping.model.CurrentCompany.getCompany().getCompanyProfile()
-				.getCompanyName();
+					.getCompanyName();
 		}
 		
 		params.put("P_COMPANY_NAME", companyName);
@@ -103,29 +105,43 @@ public class AccountLedgerJasperGenerator extends AbstractReportGenerator
 		params.put("P_REPORT_PERIOD", LocalDate.now().format(DateTimeFormatter.ISO_DATE));
 		params.put("P_GENERATION_DATE", LocalDate.now().format(DateTimeFormatter.ISO_DATE));
 		return params;
+		
 	}
 	
 	@Override protected String getReportPath()
 	{
 		return "jrxml/AccountLedger.jrxml";
+		
 	}
 	
 	@Override public File generateAndExportReport(String format) throws Exception
 	{
 		String baseName = "Account_Ledger_" + LocalDate.now();
-		
-		try (InputStream in = getClass().getClassLoader().getResourceAsStream(getReportPath()))
+		JasperReport jasperReport = null;
+		System.out.println("Working dir: " + new File(".").getAbsolutePath());
+		try (InputStream jrxml = getClass().getResourceAsStream(getReportPath()))
 		{
 			
-			if (in == null)
+			if (jrxml == null)
 			{
-				throw new FileNotFoundException("JRXML not found: " + getReportPath());
+				throw new RuntimeException("Report not found: " + getReportPath());
 			}
 			
-			JasperReport jasperReport = JasperCompileManager.compileReport(in);
-			JRDataSource dataSource = new JRBeanCollectionDataSource(getReportData());
-			JasperPrint print =
-				JasperFillManager.fillReport(jasperReport, getReportParameters(), dataSource);
+			jasperReport = JasperCompileManager.compileReport(jrxml);
+			
+			JasperPrint print = null;
+			
+			try
+			{
+				JRDataSource dataSource = new JRBeanCollectionDataSource(getReportData());
+				print = JasperFillManager.fillReport(jasperReport, getReportParameters(),
+						dataSource);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+			
 			File outDir = new File(getOutputDirectory());
 			
 			if (!outDir.exists())
@@ -134,7 +150,8 @@ public class AccountLedgerJasperGenerator extends AbstractReportGenerator
 			}
 			
 			File outFile =
-				new File(outDir, baseName + ("html".equalsIgnoreCase(format) ? ".html" : ".pdf"));
+					new File(	outDir,
+								baseName + ("html".equalsIgnoreCase(format) ? ".html" : ".pdf"));
 			
 			if ("html".equalsIgnoreCase(format))
 			{
@@ -143,6 +160,20 @@ public class AccountLedgerJasperGenerator extends AbstractReportGenerator
 			
 			return exportToPDF(print, outFile.getAbsolutePath());
 		}
+		catch (JRException e)
+		{
+			e.printStackTrace();
+			Throwable cause = e.getCause();
+			
+			while (cause != null)
+			{
+				System.err.println("Caused by: " + cause.getMessage());
+				cause = cause.getCause();
+			}
+			
+		}
+		
+		return null;
 		
 	}
 	

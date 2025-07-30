@@ -71,7 +71,7 @@ public class CreateOrEditCompanyActionFX
 			// instance to be edited or filled.
 		}
 		
-		// 1. Existing profile if you’re in “edit” mode, or a new one if creating.
+		// 1. Existing profile if you’re in "edit" mode, or a new one if creating.
 		existingCompany = CurrentCompany.getCompany();
 		// It's assumed CurrentCompany.getCompany() provides an appropriate instance
 		// (new or existing).

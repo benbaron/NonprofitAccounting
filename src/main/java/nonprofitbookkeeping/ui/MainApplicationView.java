@@ -54,15 +54,15 @@ public class MainApplicationView extends BorderPane
 	private Tab journalTab;
 	/** Tab for displaying the Chart of Accounts. */
 	private Tab coaTab;
-        /** Tab for displaying Reports. */
-        private Tab reportsTab;
-        /** Tab for displaying Account Transaction Details. */
-        private Tab accountDetailsTab;
-       /** Embedded Chart of Accounts editor panel. */
-       private CoaEditorPanelFX coaEditorPanel;
+	/** Tab for displaying Reports. */
+	private Tab reportsTab;
+	/** Tab for displaying Account Transaction Details. */
+	private Tab accountDetailsTab;
+	/** Embedded Chart of Accounts editor panel. */
+	private CoaEditorPanelFX coaEditorPanel;
 	
-//	/** Tab for selecting or creating a company when none is open. */
-//	private Tab companySelectTab;
+// /** Tab for selecting or creating a company when none is open. */
+// private Tab companySelectTab;
 	
 	/**
 	 * Constructs a new {@code MainApplicationView}.
@@ -78,20 +78,25 @@ public class MainApplicationView extends BorderPane
 		
 		this.tabPane = new TabPane();
 		
-               // Create Tab instances
-               this.dashboardTab = new Tab("Dashboard", new SkeletonDashboardPanel());
-               this.journalTab = new Tab("Journal", new SkeletonJournalPanel());
-
-               Company company = CurrentCompany.getCompany();
-               ChartOfAccounts coa = company != null ? company.getChartOfAccounts() : new ChartOfAccounts();
-               this.coaEditorPanel = new CoaEditorPanelFX(coa, c -> {
-                       if (company != null) {
-                               company.setChartOfAccounts(c);
-                       }
-               }, () -> {});
-               this.coaTab = new Tab("Chart of Accounts", this.coaEditorPanel);
-
-               this.reportsTab = new Tab("Reports", new SkeletonReportsPanel());
+		// Create Tab instances
+		this.dashboardTab = new Tab("Dashboard", new SkeletonDashboardPanel());
+		this.journalTab = new Tab("Journal", new SkeletonJournalPanel());
+		
+		Company company = CurrentCompany.getCompany();
+		ChartOfAccounts coa =
+				company != null ? company.getChartOfAccounts() : new ChartOfAccounts();
+		this.coaEditorPanel = new CoaEditorPanelFX(coa, c -> {
+			
+			if (company != null)
+			{
+				company.setChartOfAccounts(c);
+			}
+			
+		}, () -> {
+		});
+		this.coaTab = new Tab("Chart of Accounts", this.coaEditorPanel);
+		
+		this.reportsTab = new Tab("Reports", new SkeletonReportsPanel());
 		
 		// Set tabs to be non-closable
 		this.dashboardTab.setClosable(false);
@@ -106,30 +111,33 @@ public class MainApplicationView extends BorderPane
 		// Tab shown when no company is open
 		// Commented out. The previewer opens the file to look at it
 		// which is misleading and complicated.
-//		CompanySelectionPanelFX selectPanel = new CompanySelectionPanelFX();
-//		selectPanel.setOnCompanyOpenedHandler(selectPanel.new OnCompanyOpenedHandler()
-//		{
-//			@Override public void onCompanyOpened(nonprofitbookkeeping.model.Company company)
-//			{
-//				updateCompanyOpenState(true);
-//			}
-//			
-//		});
-//		this.companySelectTab = new Tab("Select Company", selectPanel);
-//		this.companySelectTab.setClosable(false);
+// CompanySelectionPanelFX selectPanel = new CompanySelectionPanelFX();
+// selectPanel.setOnCompanyOpenedHandler(selectPanel.new
+// OnCompanyOpenedHandler()
+// {
+// @Override public void onCompanyOpened(nonprofitbookkeeping.model.Company
+// company)
+// {
+// updateCompanyOpenState(true);
+// }
+//
+// });
+// this.companySelectTab = new Tab("Select Company", selectPanel);
+// this.companySelectTab.setClosable(false);
 		
 		// Add tabs to the tabPane
 		this.tabPane.getTabs()
-		.addAll(this.dashboardTab, 
-			this.journalTab, 
-			this.coaTab,
-			this.reportsTab, 
-			this.accountDetailsTab
-			//this.companySelectTab
-			);
-		
+				.addAll(this.dashboardTab,
+						this.journalTab,
+						this.coaTab,
+						this.reportsTab,
+						this.accountDetailsTab
+				// this.companySelectTab
+				);
+				
 		// Set the TabPane as the center of the BorderPane
 		setCenter(this.tabPane);
+		
 	}
 	
 	/**
@@ -142,6 +150,7 @@ public class MainApplicationView extends BorderPane
 	{
 		this.menuBar = menuBar;
 		setTop(this.menuBar); // Directly set the MenuBar to the top
+		
 	}
 	
 	/**
@@ -160,23 +169,23 @@ public class MainApplicationView extends BorderPane
 			case DASHBOARD:
 				this.tabPane.getSelectionModel().select(this.dashboardTab);
 				break;
-				
+			
 			case JOURNAL:
 				this.tabPane.getSelectionModel().select(this.journalTab);
 				break;
-				
+			
 			case COA:
 				this.tabPane.getSelectionModel().select(this.coaTab);
 				break;
-				
+			
 			case REPORTS:
 				this.tabPane.getSelectionModel().select(this.reportsTab);
 				break;
-				
+			
 			case ACCOUNT_DETAILS:
 				this.tabPane.getSelectionModel().select(this.accountDetailsTab);
 				break;
-				
+			
 			default:
 				// Optionally, log an error or select a default tab
 				System.err.println("Unknown panel type: " + panelType); // Consider using a logger
@@ -192,50 +201,55 @@ public class MainApplicationView extends BorderPane
 	 *
 	 * @param companyOpen {@code true} if a company is currently open.
 	 */
-        public void updateCompanyOpenState(boolean companyOpen)
-        {
-                this.dashboardTab.setDisable(!companyOpen);
-                this.journalTab.setDisable(!companyOpen);
-                this.coaTab.setDisable(!companyOpen);
-                this.reportsTab.setDisable(!companyOpen);
-                this.accountDetailsTab.setDisable(!companyOpen);
-
-               if (companyOpen)
-               {
-                       Company company = CurrentCompany.getCompany();
-                       ChartOfAccounts coa = company != null ? company.getChartOfAccounts() : new ChartOfAccounts();
-
-                       if (this.coaEditorPanel == null)
-                       {
-                               this.coaEditorPanel = new CoaEditorPanelFX(coa, c -> {
-                                       if (company != null)
-                                       {
-                                               company.setChartOfAccounts(c);
-                                       }
-                               }, () -> {});
-                               this.coaTab.setContent(this.coaEditorPanel);
-                       }
-                       else
-                       {
-                               this.coaEditorPanel.setChartOfAccounts(coa);
-                       }
-               }
+	public void updateCompanyOpenState(boolean companyOpen)
+	{
+		this.dashboardTab.setDisable(!companyOpen);
+		this.journalTab.setDisable(!companyOpen);
+		this.coaTab.setDisable(!companyOpen);
+		this.reportsTab.setDisable(!companyOpen);
+		this.accountDetailsTab.setDisable(!companyOpen);
 		
-//		if (companyOpen)
-//		{
-//			this.tabPane.getTabs().remove(this.companySelectTab);
-//			this.tabPane.getSelectionModel().select(this.dashboardTab);
-//		}
-//		else
-//		{
-//			
-//			if (!this.tabPane.getTabs().contains(this.companySelectTab))
-//			{
-//				this.tabPane.getTabs().add(0, this.companySelectTab);
-//			}
-//			
-//			this.tabPane.getSelectionModel().select(this.companySelectTab);
-//		}
+		if (companyOpen)
+		{
+			Company company = CurrentCompany.getCompany();
+			ChartOfAccounts coa =
+					company != null ? company.getChartOfAccounts() : new ChartOfAccounts();
+			
+			if (this.coaEditorPanel == null)
+			{
+				this.coaEditorPanel = new CoaEditorPanelFX(coa, c -> {
+					
+					if (company != null)
+					{
+						company.setChartOfAccounts(c);
+					}
+					
+				}, () -> {
+				});
+				this.coaTab.setContent(this.coaEditorPanel);
+			}
+			else
+			{
+				this.coaEditorPanel.setChartOfAccounts(coa);
+			}
+			
+		}
+		
+// if (companyOpen)
+// {
+// this.tabPane.getTabs().remove(this.companySelectTab);
+// this.tabPane.getSelectionModel().select(this.dashboardTab);
+// }
+// else
+// {
+//
+// if (!this.tabPane.getTabs().contains(this.companySelectTab))
+// {
+// this.tabPane.getTabs().add(0, this.companySelectTab);
+// }
+//
+// this.tabPane.getSelectionModel().select(this.companySelectTab);
+// }
 		
 	}
 	

@@ -44,7 +44,7 @@ import com.webcohesion.ofx4j.domain.data.banking.BankStatementResponseTransactio
  *  • pick an account
  *  • import bank transactions from an OFX file (via ofx4j 1.38)
  *  • add bank transactions manually
- *  • toggle “cleared” on any row
+ *  • toggle "cleared" on any row
  *  • export uncleared items to CSV
  */
 public class LedgerReconcilePanelFX extends BorderPane
