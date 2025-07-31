@@ -61,8 +61,6 @@ public class MainApplicationView extends BorderPane
 	/** Embedded Chart of Accounts editor panel. */
 	private CoaEditorPanelFX coaEditorPanel;
 	
-// /** Tab for selecting or creating a company when none is open. */
-// private Tab companySelectTab;
 	
 	/**
 	 * Constructs a new {@code MainApplicationView}.
@@ -107,23 +105,7 @@ public class MainApplicationView extends BorderPane
 		// Add new tab for Account Details
 		this.accountDetailsTab = new Tab("Account Details", new AccountTransactionDetailsPanelFX());
 		this.accountDetailsTab.setClosable(false);
-		
-		// Tab shown when no company is open
-		// Commented out. The previewer opens the file to look at it
-		// which is misleading and complicated.
-// CompanySelectionPanelFX selectPanel = new CompanySelectionPanelFX();
-// selectPanel.setOnCompanyOpenedHandler(selectPanel.new
-// OnCompanyOpenedHandler()
-// {
-// @Override public void onCompanyOpened(nonprofitbookkeeping.model.Company
-// company)
-// {
-// updateCompanyOpenState(true);
-// }
-//
-// });
-// this.companySelectTab = new Tab("Select Company", selectPanel);
-// this.companySelectTab.setClosable(false);
+	
 		
 		// Add tabs to the tabPane
 		this.tabPane.getTabs()
@@ -189,7 +171,6 @@ public class MainApplicationView extends BorderPane
 			default:
 				// Optionally, log an error or select a default tab
 				System.err.println("Unknown panel type: " + panelType); // Consider using a logger
-				// tabPane.getSelectionModel().select(dashboardTab); // Fallback to dashboard
 				break;
 		}
 		
@@ -234,23 +215,7 @@ public class MainApplicationView extends BorderPane
 			}
 			
 		}
-		
-// if (companyOpen)
-// {
-// this.tabPane.getTabs().remove(this.companySelectTab);
-// this.tabPane.getSelectionModel().select(this.dashboardTab);
-// }
-// else
-// {
-//
-// if (!this.tabPane.getTabs().contains(this.companySelectTab))
-// {
-// this.tabPane.getTabs().add(0, this.companySelectTab);
-// }
-//
-// this.tabPane.getSelectionModel().select(this.companySelectTab);
-// }
-		
+				
 	}
 	
 }

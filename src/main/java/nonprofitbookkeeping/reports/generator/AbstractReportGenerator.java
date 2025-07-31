@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -118,6 +119,17 @@ public abstract class AbstractReportGenerator
 	}
 	
 	/**
+	 * 
+	 * @param original
+	 * @return
+	 */
+	public static Map<String, Object> ensureMutableParameters(Map<String, Object> original)
+	{
+		return (original instanceof HashMap) ? original : new HashMap<>(original);
+		
+	}
+	
+	/**
 	 * @param jrxmlFile
 	 * @return
 	 * @throws IOException
@@ -125,7 +137,8 @@ public abstract class AbstractReportGenerator
 	 * @throws JRException 
 	 */
 	JasperPrint compileJasperInput(File jrxmlFile)	throws IOException,
-													FileNotFoundException, JRException
+													FileNotFoundException,
+													JRException
 	{
 		JasperReport jasperReport = null;
 		JasperPrint print = null;
@@ -138,12 +151,13 @@ public abstract class AbstractReportGenerator
 		{
 			e.printStackTrace();
 			System.out.println(e.getMessage());
-
+			
 			Throwable cause = e.getCause();
 			
 			while (cause != null)
 			{
-				System.err.println("JasperCompileManager.compileReport fail. Caused by: " + cause.getMessage());
+				System.err.println("JasperCompileManager.compileReport fail. Caused by: " +
+						cause.getMessage());
 				cause = cause.getCause();
 			}
 			
@@ -152,10 +166,10 @@ public abstract class AbstractReportGenerator
 		
 		try
 		{
-			JRDataSource dataSource =
-					new JRBeanCollectionDataSource(getReportData());
+			Map<String, Object> params = ensureMutableParameters(getReportParameters());
+			JRDataSource dataSource = new JRBeanCollectionDataSource(getReportData());
 			print = JasperFillManager.fillReport(jasperReport,
-					getReportParameters(),
+					params,
 					dataSource);
 		}
 		catch (Exception e)
@@ -164,9 +178,11 @@ public abstract class AbstractReportGenerator
 			
 			while (cause != null)
 			{
-				System.err.println("JasperFillManager.fillReport fail. Caused by: " + cause.getMessage());
+				System.err.println(
+						"JasperFillManager.fillReport fail. Caused by: " + cause.getMessage());
 				cause = cause.getCause();
 			}
+			
 			throw e;
 			
 		}

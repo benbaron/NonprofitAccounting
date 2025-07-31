@@ -187,7 +187,7 @@ public class NonprofitBookkeepingFX extends Application
 		System.setProperty("net.sf.jasperreports.debug", "true");
 		System.setProperty("net.sf.jasperreports.compile.class.debug", "true");
 		System.setProperty("net.sf.jasperreports.compile.keep.java.file", "true");
-
+		System.setProperty("net.sf.jasperreports.compiler.temp.dir", "C:/Users/benba/eclipse-workspace");
 		
 		stage.getIcons().addAll(new Image(getClass().getResourceAsStream("../../cg-128px.png")));
 		this.primaryStage = stage;
