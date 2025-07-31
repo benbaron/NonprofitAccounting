@@ -2,8 +2,6 @@
 package nonprofitbookkeeping.reports;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,44 +29,46 @@ public final class ReportTemplateScanner
 	 */
 	public static Map<String, String> discoverTemplates()
 	{
-		Map<String, String> templates = new LinkedHashMap<>();
-		ClassLoader cl = ReportTemplateScanner.class.getClassLoader();
-		URL url = cl.getResource(JRXML_DIR);
-		
-		if (url == null)
-		{
-			return templates;
-		}
-		
-		try
-		{
-			Path dir = Paths.get(url.toURI());
-			
-			try (Stream<Path> stream = Files.list(dir))
-			{
-				stream.filter(p -> p.getFileName().toString().endsWith(".jrxml")).forEach(p -> {
-					String fileName = p.getFileName().toString();
-					String base = fileName.substring(0, fileName.length() - ".jrxml".length());
-					
-					if (base.endsWith("Alt"))
-					{
-						base = base.substring(0, base.length() - 3);
-					}
-					
-					String display = toDisplayName(base);
-					String key = toKey(base);
-					templates.putIfAbsent(display, key);
-				});
-			}
-			
-		}
-		catch (IOException | URISyntaxException e)
-		{
-			e.printStackTrace();
-		}
-		
-		return templates;
+	    Map<String, String> templates = new LinkedHashMap<>();
+
+	    // Define your base directory - could also be injected, read from a config, etc.
+	    Path baseDir = Paths.get(System.getProperty("user.dir")); // runtime working dir
+
+//	    Path baseDir = Paths.get(System.getProperty("app.base.dir", "."));  // Fallback to current dir
+	    Path reportsDir = baseDir.resolve("jrxml");
+
+	    if (!Files.isDirectory(reportsDir))
+	    {
+	        System.err.println("Reports directory not found: " + reportsDir.toAbsolutePath());
+	        return templates;
+	    }
+
+	    try (Stream<Path> stream = Files.list(reportsDir))
+	    {
+	        stream
+	            .filter(p -> p.getFileName().toString().endsWith(".jrxml"))
+	            .forEach(p -> {
+	                String fileName = p.getFileName().toString();
+	                String base = fileName.substring(0, fileName.length() - ".jrxml".length());
+
+	                if (base.endsWith("Alt"))
+	                {
+	                    base = base.substring(0, base.length() - 3);
+	                }
+
+	                String display = toDisplayName(base);
+	                String key = toKey(base);
+	                templates.putIfAbsent(display, key);
+	            });
+	    }
+	    catch (IOException e)
+	    {
+	        e.printStackTrace();
+	    }
+
+	    return templates;
 	}
+
 	
 	private static String toDisplayName(String base)
 	{

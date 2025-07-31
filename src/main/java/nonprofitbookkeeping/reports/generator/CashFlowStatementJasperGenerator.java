@@ -9,9 +9,6 @@ import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.reports.datasource.CashFlowStatementRowBean;
 import nonprofitbookkeeping.service.ReportService;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -19,15 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.Collections;
-
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-// Export related imports are not needed if using inherited methods from
-// AbstractReportGenerator
 
 /**
  * Generates a Cash Flow Statement report using JasperReports. This class
@@ -132,95 +120,7 @@ public class CashFlowStatementJasperGenerator extends AbstractReportGenerator
 		return params;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * <p>This implementation generates the "Cash Flow Statement". It compiles the JRXML template,
-	 * fills it with data and parameters, and exports to the specified format (PDF or HTML)
-	 * using helper methods from {@link AbstractReportGenerator}.
-	 * If an unsupported format is requested, it defaults to PDF.
-	 * The output file is named "Cash_Flow_Statement_Report_[current_date].[format]".
-	 * </p>
-	 * @param format The desired output format ("pdf" or "html"). Defaults to "pdf" if unsupported.
-	 * @return The generated {@link File}.
-	 * @throws Exception If any error occurs during report generation, including {@link FileNotFoundException} if the JRXML template is not found.
-	 */
-	@Override public File generateAndExportReport(String format) throws Exception
-	{
-		File generatedFile = null;
-		String currentDateStr = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE); // YYYY-MM-DD
-		String reportBaseName = "Cash_Flow_Statement_Report_" + currentDateStr;
-		
-		
-		try (InputStream reportStream =
-			getClass().getClassLoader().getResourceAsStream(getReportPath()))
-		{
-			
-			if (reportStream == null)
-			{
-				System.err.println("Cannot find report template: " + getReportPath());
-				throw new FileNotFoundException("Report template not found: " + getReportPath());
-			}
-			
-			JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
-			
-			List<?> reportDataList = getReportData();
-			JRDataSource dataSource = new JRBeanCollectionDataSource(reportDataList);
-			
-			Map<String, Object> parameters = getReportParameters();
-			
-			JasperPrint jasperPrint =
-				JasperFillManager.fillReport(jasperReport, parameters, dataSource);
-			
-			File outputDir = new File(getOutputDirectory());
-			
-			if (!outputDir.exists())
-			{
-				outputDir.mkdirs();
-			}
-			
-			String outputFileName = reportBaseName + "." + format.toLowerCase();
-			File outputFile = new File(outputDir, outputFileName);
-			
-			if ("pdf".equalsIgnoreCase(format))
-			{
-				generatedFile = exportToPDF(jasperPrint, outputFile.getAbsolutePath());
-			}
-			else if ("html".equalsIgnoreCase(format))
-			{
-				generatedFile = exportToHTML(jasperPrint, outputFile.getAbsolutePath());
-			}
-			else
-			{
-				System.out.println("Unsupported format for Cash Flow Statement: " + format +
-					". Defaulting to PDF.");
-				File defaultOutputFile = new File(outputDir, reportBaseName + ".pdf");
-				generatedFile = exportToPDF(jasperPrint, defaultOutputFile.getAbsolutePath());
-			}
-			
-			if (generatedFile != null && generatedFile.exists())
-			{
-				System.out.println(reportBaseName + " generated successfully at: " +
-					generatedFile.getAbsolutePath());
-			}
-			else
-			{
-				String attemptedPath = (generatedFile != null) ? generatedFile.getAbsolutePath() :
-					outputFile.getAbsolutePath();
-				System.err.println("Report file " + attemptedPath +
-					" was not created or found after export attempt.");
-				throw new FileNotFoundException(
-					"Generated report file could not be confirmed after export: " + attemptedPath);
-			}
-			
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			throw e;
-		}
-		
-		return generatedFile;
-	}
+
 
 	/**
 	 * @param reportContext
@@ -234,6 +134,17 @@ public class CashFlowStatementJasperGenerator extends AbstractReportGenerator
 												nonprofitbookkeeping.model.ChartOfAccounts coa)
 	{
 		return new ArrayList<>();
+	}
+
+	/**
+	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getBaseName() 
+	 */
+	@Override protected String getBaseName()
+	{
+		String currentDateStr = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE); // YYYY-MM-DD
+
+		return "Cash_Flow_Statement_Report_" + currentDateStr;
+		
 	}
 	
 }

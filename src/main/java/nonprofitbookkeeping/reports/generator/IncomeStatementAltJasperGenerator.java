@@ -1,13 +1,8 @@
 
 package nonprofitbookkeeping.reports.generator;
 
-import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import nonprofitbookkeeping.reports.datasource.IncomeStatementAltRowBean;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -101,39 +96,13 @@ public class IncomeStatementAltJasperGenerator extends AbstractReportGenerator
 		return "jrxml/IncomeStatementAlt.jrxml";
 	}
 	
-	@Override public File generateAndExportReport(String format) throws Exception
+
+	/**
+	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getBaseName() 
+	 */
+	@Override protected String getBaseName()
 	{
-		String baseName = "Income_Statement_" + LocalDate.now();
-		
-		try (InputStream in = getClass().getClassLoader().getResourceAsStream(getReportPath()))
-		{
-			
-			if (in == null)
-			{
-				throw new FileNotFoundException("JRXML not found: " + getReportPath());
-			}
-			
-			JasperReport jasperReport = JasperCompileManager.compileReport(in);
-			JRDataSource dataSource = new JRBeanCollectionDataSource(getReportData());
-			JasperPrint print =
-				JasperFillManager.fillReport(jasperReport, getReportParameters(), dataSource);
-			File outDir = new File(getOutputDirectory());
-			
-			if (!outDir.exists())
-			{
-				outDir.mkdirs();
-			}
-			
-			File outFile =
-				new File(outDir, baseName + ("html".equalsIgnoreCase(format) ? ".html" : ".pdf"));
-			
-			if ("html".equalsIgnoreCase(format))
-			{
-				return exportToHTML(print, outFile.getAbsolutePath());
-			}
-			
-			return exportToPDF(print, outFile.getAbsolutePath());
-		}
+		return "Income_Statement_" + LocalDate.now();
 		
 	}
 	

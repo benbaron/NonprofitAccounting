@@ -1,13 +1,8 @@
 
 package nonprofitbookkeeping.reports.generator;
 
-import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import nonprofitbookkeeping.reports.datasource.AccountLedgerRowBean;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -114,67 +109,13 @@ public class AccountLedgerJasperGenerator extends AbstractReportGenerator
 		
 	}
 	
-	@Override public File generateAndExportReport(String format) throws Exception
+	// write output
+	@Override protected String getBaseName()
 	{
-		String baseName = "Account_Ledger_" + LocalDate.now();
-		JasperReport jasperReport = null;
-		System.out.println("Working dir: " + new File(".").getAbsolutePath());
-		try (InputStream jrxml = getClass().getResourceAsStream(getReportPath()))
-		{
-			
-			if (jrxml == null)
-			{
-				throw new RuntimeException("Report not found: " + getReportPath());
-			}
-			
-			jasperReport = JasperCompileManager.compileReport(jrxml);
-			
-			JasperPrint print = null;
-			
-			try
-			{
-				JRDataSource dataSource = new JRBeanCollectionDataSource(getReportData());
-				print = JasperFillManager.fillReport(jasperReport, getReportParameters(),
-						dataSource);
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
-			
-			File outDir = new File(getOutputDirectory());
-			
-			if (!outDir.exists())
-			{
-				outDir.mkdirs();
-			}
-			
-			File outFile =
-					new File(	outDir,
-								baseName + ("html".equalsIgnoreCase(format) ? ".html" : ".pdf"));
-			
-			if ("html".equalsIgnoreCase(format))
-			{
-				return exportToHTML(print, outFile.getAbsolutePath());
-			}
-			
-			return exportToPDF(print, outFile.getAbsolutePath());
-		}
-		catch (JRException e)
-		{
-			e.printStackTrace();
-			Throwable cause = e.getCause();
-			
-			while (cause != null)
-			{
-				System.err.println("Caused by: " + cause.getMessage());
-				cause = cause.getCause();
-			}
-			
-		}
-		
-		return null;
-		
+		return "Account_Ledger_" + LocalDate.now();	
 	}
+	
+
+
 	
 }

@@ -392,7 +392,7 @@ public class AccountingTransaction implements Serializable
 	 */
 	public String getToFrom()
 	{
-		return toFrom;
+		return this.toFrom;
 		
 	}
 
@@ -410,7 +410,7 @@ public class AccountingTransaction implements Serializable
 	 */
 	public String getCheckNumber()
 	{
-		return checkNumber;
+		return this.checkNumber;
 		
 	}
 
@@ -428,7 +428,7 @@ public class AccountingTransaction implements Serializable
 	 */
 	public String getClearBank()
 	{
-		return clearBank;
+		return this.clearBank;
 		
 	}
 
@@ -446,7 +446,7 @@ public class AccountingTransaction implements Serializable
 	 */
 	public String getBudgetTracking()
 	{
-		return budgetTracking;
+		return this.budgetTracking;
 		
 	}
 
@@ -464,7 +464,7 @@ public class AccountingTransaction implements Serializable
 	 */
 	public String getAssociatedFundName()
 	{
-		return associatedFundName;
+		return this.associatedFundName;
 		
 	}
 

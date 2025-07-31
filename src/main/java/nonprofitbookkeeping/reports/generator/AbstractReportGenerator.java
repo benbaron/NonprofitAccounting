@@ -2,14 +2,20 @@
 package nonprofitbookkeeping.reports.generator;
 
 import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.HtmlExporter;
 import net.sf.jasperreports.export.*;
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -60,7 +66,135 @@ public abstract class AbstractReportGenerator
 	 * @return The generated {@link File} object representing the exported report.
 	 * @throws Exception If any error occurs during report compilation, filling, or exporting.
 	 */
-	public abstract File generateAndExportReport(String format) throws Exception;
+	public File generateAndExportReport(String format) throws Exception
+	{		
+		
+		// get the input
+		File jrxmlFile = getJasperFilePath();
+		
+		// compile the input
+		JasperPrint print = compileJasperInput(jrxmlFile);
+			
+		return writeJasperOutput(format, print, getBaseName());
+		
+	}
+	
+
+	/**
+	 * Gets the output file base name
+	 *  
+	 * @return base name
+	 */
+	protected abstract String getBaseName();
+	
+
+	/**
+	 * @return
+	 * @throws RuntimeException
+	 */
+	File getJasperFilePath() throws RuntimeException
+	{
+		System.out.println("Working dir: " + new File(".").getAbsolutePath());
+		Path baseDir = Paths.get(System.getProperty("user.dir")); // runtime working dir
+		System.out.println("base dir:" + baseDir);
+		File jrxmlFile = null;
+		
+		try
+		{
+			jrxmlFile = new File(getReportPath());
+		}
+		catch (ActionCancelledException | NoFileCreatedException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if (!jrxmlFile.exists())
+		{
+			throw new RuntimeException("JRXML file not found: " + jrxmlFile.getAbsolutePath());
+		}
+		return jrxmlFile;
+		
+	}
+
+	/**
+	 * @param jrxmlFile
+	 * @return
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 */
+	JasperPrint compileJasperInput(File jrxmlFile)	throws IOException,
+																		FileNotFoundException
+	{
+		JasperReport jasperReport;
+		JasperPrint print = null;
+		
+		try (InputStream input = new FileInputStream(jrxmlFile))
+		{
+			jasperReport = JasperCompileManager.compileReport(input);
+						
+			try
+			{
+				JRDataSource dataSource =
+						new JRBeanCollectionDataSource(getReportData());
+				print = JasperFillManager.fillReport(jasperReport,
+						getReportParameters(),
+						dataSource);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+			
+		}
+		catch (JRException e)
+		{
+			e.printStackTrace();
+			Throwable cause = e.getCause();
+			
+			while (cause != null)
+			{
+				System.err.println("Caused by: " + cause.getMessage());
+				cause = cause.getCause();
+			}
+			
+		}
+		
+		return print;
+		
+	}
+
+	/**
+	 * @param format
+	 * @param print
+	 * @param baseName
+	 * @return
+	 * @throws JRException
+	 * @throws IOException
+	 */
+	@SuppressWarnings("static-method") 
+	File writeJasperOutput(String format, JasperPrint print, String baseName)	throws JRException,
+																				IOException
+	{
+		File outDir = new File(getOutputDirectory());
+		
+		if (!outDir.exists())
+		{
+			outDir.mkdirs();
+		}
+		
+		File outFile =
+				new File(	outDir,
+							baseName + ("html".equalsIgnoreCase(format) ? ".html" : ".pdf"));
+		
+		if ("html".equalsIgnoreCase(format))
+		{
+			return exportToHTML(print, outFile.getAbsolutePath());
+		}
+		
+		return exportToPDF(print, outFile.getAbsolutePath());
+		
+	}
 	
 	/**
 	 * Gets the base directory where generated reports should be saved.

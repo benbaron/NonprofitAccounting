@@ -17,9 +17,6 @@ import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
 
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -30,13 +27,6 @@ import java.util.Map;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 /**
  * Generates a Trial Balance report using JasperReports.
@@ -149,7 +139,7 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 		// <parameter name="dateToday" class="java.lang.String"/>
 		// <parameter name="companyname" class="java.lang.String"/>
 		// It seems the JRXML uses lowercase for these specific ones. Let's ensure they
-		// are provided.
+		// are provided.		
 		params.put("reporttitle", "Trial Balance"); // Specific for JRXML
 		params.put("dateToday", LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE));
 		params.put("companyname", companyName);
@@ -157,97 +147,6 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 		return params;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * <p>This implementation generates the "Trial Balance Report". It compiles the JRXML template,
-	 * fills it with data and parameters, and exports to the specified format (PDF or HTML)
-	 * using helper methods from {@link AbstractReportGenerator}.
-	 * If an unsupported format is requested, it defaults to PDF.
-	 * The output file is named "Trial_Balance_Report_[report_end_date_or_current_date].[format]".
-	 * </p>
-	 * @param format The desired output format ("pdf" or "html"). Defaults to "pdf" if unsupported.
-	 * @return The generated {@link File}.
-	 * @throws Exception If any error occurs during report generation, including {@link FileNotFoundException} if the JRXML template is not found.
-	 */
-	@Override public File generateAndExportReport(String format) throws Exception
-	{
-		File generatedFile = null;
-		String currentDateStr = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
-		String reportBaseName = "Trial_Balance_Report_" + (this.reportContext.getEndDate() != null ?
-			this.reportContext.getEndDate().toString() : currentDateStr);
-		
-		String jrxmlPath = getReportPath();
-		
-		try (InputStream reportStream = getClass().getClassLoader().getResourceAsStream(jrxmlPath))
-		{
-			
-			if (reportStream == null)
-			{
-				System.err.println("Cannot find report template: " + jrxmlPath);
-				throw new FileNotFoundException("Report template not found: " + jrxmlPath);
-			}
-			
-			JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
-			
-			List<?> reportDataList = getReportData();
-			JRDataSource dataSource = new JRBeanCollectionDataSource(reportDataList);
-			
-			Map<String, Object> parameters = getReportParameters();
-			
-			JasperPrint jasperPrint =
-				JasperFillManager.fillReport(jasperReport, parameters, dataSource);
-			
-			File outputDir = new File(getOutputDirectory());
-			
-			if (!outputDir.exists())
-			{
-				outputDir.mkdirs();
-			}
-			
-			String outputFileName = reportBaseName + "." + format.toLowerCase();
-			File outputFile = new File(outputDir, outputFileName);
-			
-			if ("pdf".equalsIgnoreCase(format))
-			{
-				generatedFile = exportToPDF(jasperPrint, outputFile.getAbsolutePath());
-			}
-			else if ("html".equalsIgnoreCase(format))
-			{
-				generatedFile = exportToHTML(jasperPrint, outputFile.getAbsolutePath());
-			}
-			else
-			{
-				System.out.println(
-					"Unsupported format for Trial Balance: " + format + ". Defaulting to PDF.");
-				File defaultOutputFile = new File(outputDir, reportBaseName + ".pdf");
-				generatedFile = exportToPDF(jasperPrint, defaultOutputFile.getAbsolutePath());
-			}
-			
-			if (generatedFile != null && generatedFile.exists())
-			{
-				System.out.println(reportBaseName + " generated successfully at: " +
-					generatedFile.getAbsolutePath());
-			}
-			else
-			{
-				String attemptedPath = (generatedFile != null) ? generatedFile.getAbsolutePath() :
-					outputFile.getAbsolutePath();
-				System.err.println("Report file " + attemptedPath +
-					" was not created or found after export attempt.");
-				throw new FileNotFoundException(
-					"Generated report file could not be confirmed after export: " + attemptedPath);
-			}
-			
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			throw e;
-		}
-		
-		return generatedFile;
-	}
-
 	/**
 	 * Prepares a list of {@link TrialBalanceRowBean} objects for use as a JasperReports data source.
 	 * This method calculates the debit and credit balances for each account in the
@@ -333,7 +232,8 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 					
 					if (transaction == null ||
 						transaction.getBookingDateTimestamp() >= reportEndDateMillisInclusive)
-					{ // Strictly before end of end date + 1 day
+					{ 
+						// Strictly before end of end date + 1 day
 						continue;
 					}
 					
@@ -373,20 +273,23 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 						}
 						
 						if (increaseSide == AccountSide.DEBIT)
-						{ // For ASSET and EXPENSE typically
+						{ 
+							// For ASSET and EXPENSE typically
 							
 							if (entry.getAccountSide() == AccountSide.DEBIT)
 							{
 								accountBalance = accountBalance.add(entry.getAmount());
 							}
 							else
-							{ // CREDIT
+							{ 
+								// CREDIT
 								accountBalance = accountBalance.subtract(entry.getAmount());
 							}
 							
 						}
 						else
-						{ // increaseSide is CREDIT (for LIABILITY, EQUITY, INCOME
+						{ 
+							// increaseSide is CREDIT (for LIABILITY, EQUITY, INCOME
 							// typically)
 							
 							if (entry.getAccountSide() == AccountSide.CREDIT)
@@ -394,7 +297,8 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 								accountBalance = accountBalance.add(entry.getAmount());
 							}
 							else
-							{ // DEBIT
+							{ 
+								// DEBIT
 								accountBalance = accountBalance.subtract(entry.getAmount());
 							}
 							
@@ -412,31 +316,36 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 			AccountType type = account.getAccountType();
 			AccountSide increaseSide = account.getIncreaseSide();
 			if (type == null || increaseSide == null)
+			{
 				continue; // Already logged above
+			}
 				
 			if (increaseSide == AccountSide.DEBIT)
-			{ // ASSET, EXPENSE
+			{ 
+				// ASSET, EXPENSE
 				
 				if (accountBalance.compareTo(BigDecimal.ZERO) >= 0)
 				{
 					debitAmount = accountBalance;
 				}
 				else
-				{ // Negative balance for a debit-normal account implies a credit nature in
+				{ 
+					// Negative balance for a debit-normal account implies a credit nature in
 					// TB
 					creditAmount = accountBalance.abs();
 				}
 				
 			}
 			else
-			{ // Credit-normal accounts: LIABILITY, EQUITY, INCOME
-				
+			{ 
+				// Credit-normal accounts: LIABILITY, EQUITY, INCOME				
 				if (accountBalance.compareTo(BigDecimal.ZERO) >= 0)
 				{
 					creditAmount = accountBalance;
 				}
 				else
-				{ // Negative balance for a credit-normal account implies a debit nature in
+				{ 
+					// Negative balance for a credit-normal account implies a debit nature in
 					// TB
 					debitAmount = accountBalance.abs();
 				}
@@ -457,6 +366,18 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 		}
 		
 		return reportData;
+	}
+
+	/**
+	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getBaseName() 
+	 */
+	@Override protected String getBaseName()
+	{
+		String currentDateStr = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
+		String reportBaseName = "Trial_Balance_Report_" + (this.reportContext.getEndDate() != null ?
+			this.reportContext.getEndDate().toString() : currentDateStr);
+		return reportBaseName;
+		
 	}
 	
 }

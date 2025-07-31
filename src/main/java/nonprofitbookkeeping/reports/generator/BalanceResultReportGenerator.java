@@ -1,9 +1,6 @@
 
 package nonprofitbookkeeping.reports.generator;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -17,9 +14,6 @@ import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
-
-import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 /**
  * Report generator for creating a "Balance Result Report". This report
@@ -151,103 +145,16 @@ public class BalanceResultReportGenerator extends AbstractReportGenerator
 		
 		return balanceResults != null ? balanceResults : Collections.emptyList();
 	}
-	
+
 	/**
-	 * {@inheritDoc}
-	 * <p>This implementation generates the "Balance Result Report". It compiles the JRXML template specified by
-	 * {@link #getReportPath()}, fills it with data from {@link #getReportData()} and parameters from
-	 * {@link #getReportParameters()}, and then exports the report to the specified format (PDF or HTML).
-	 * If an unsupported format is requested, it defaults to PDF.
-	 * The output file is named "Balance_Result_Report_[current_date].[format]" and saved in the directory
-	 * provided by {@link #getOutputDirectory()}.
-	 * </p>
-	 * @param format The desired output format ("pdf" or "html"). Defaults to "pdf" if unsupported.
-	 * @return The generated {@link File}.
-	 * @throws Exception If any error occurs during report generation, compilation, filling, or export,
-	 *                   including {@link FileNotFoundException} if the JRXML template is not found.
+	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getBaseName() 
 	 */
-	@Override public File generateAndExportReport(String format) throws Exception
+	@Override protected String getBaseName()
 	{
-		File generatedFile = null;
 		String currentDateStr = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
 		String reportBaseName = "Balance_Result_Report_" + currentDateStr;
+		return reportBaseName;
 		
-		String jrxmlPath = getReportPath();
-		
-		if (jrxmlPath == null || jrxmlPath.trim().isEmpty())
-		{
-			throw new NoFileCreatedException(
-				"JRXML path not specified in BalanceResultReportGenerator.");
-		}
-		
-		try (InputStream reportStream = getClass().getClassLoader().getResourceAsStream(jrxmlPath))
-		{
-			
-			if (reportStream == null)
-			{
-				System.err.println("Cannot find report template: " + jrxmlPath);
-				throw new FileNotFoundException("Report template not found: " + jrxmlPath);
-			}
-			
-			JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
-			
-			List<?> reportDataList = getReportData();
-			JRDataSource dataSource = new JRBeanCollectionDataSource(reportDataList);
-			
-			Map<String, Object> parameters = getReportParameters();
-			
-			JasperPrint jasperPrint =
-				JasperFillManager.fillReport(jasperReport, parameters, dataSource);
-			
-			File outputDir = new File(getOutputDirectory());
-			
-			if (!outputDir.exists())
-			{
-				outputDir.mkdirs();
-			}
-			
-			String outputFileName = reportBaseName + "." + format.toLowerCase();
-			File outputFile = new File(outputDir, outputFileName);
-			
-			if ("pdf".equalsIgnoreCase(format))
-			{
-				generatedFile = exportToPDF(jasperPrint, outputFile.getAbsolutePath());
-			}
-			else if ("html".equalsIgnoreCase(format))
-			{
-				generatedFile = exportToHTML(jasperPrint, outputFile.getAbsolutePath());
-			}
-			else
-			{
-				System.out.println("Unsupported format for Balance Result Report: " + format +
-					". Defaulting to PDF.");
-				File defaultOutputFile = new File(outputDir, reportBaseName + ".pdf");
-				generatedFile = exportToPDF(jasperPrint, defaultOutputFile.getAbsolutePath());
-			}
-			
-			if (generatedFile != null && generatedFile.exists())
-			{
-				System.out.println(reportBaseName + " generated successfully at: " +
-					generatedFile.getAbsolutePath());
-			}
-			else
-			{
-				String attemptedPath = (generatedFile != null) ? generatedFile.getAbsolutePath() :
-					outputFile.getAbsolutePath();
-				System.err.println("Report file " + attemptedPath +
-					" was not created or found after export attempt.");
-				throw new FileNotFoundException(
-					"Generated report file could not be confirmed after export: " + attemptedPath);
-			}
-			
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			throw e;
-		}
-		
-		return generatedFile;
 	}
 	
 	

@@ -23,19 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.io.File; // Added import
-import java.io.InputStream;
 import java.math.BigDecimal;
-
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-// JasperExportManager and HtmlExporter related imports are not needed here
-// if exportToPDF and exportToHTML are properly inherited from
-// AbstractReportGenerator.
 
 /**
  * Generates an Income Statement (Profit & Loss) report using JasperReports.
@@ -149,99 +137,6 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 		return params;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * <p>This implementation generates the "Income Statement". It compiles the JRXML template,
-	 * fills it with data and parameters, and exports to the specified format (PDF or HTML)
-	 * using helper methods from {@link AbstractReportGenerator}.
-	 * If an unsupported format is requested, it defaults to PDF.
-	 * The output file is named "Income_Statement_[report_end_date_or_current_date].[format]".
-	 * </p>
-	 * @param format The desired output format ("pdf" or "html"). Defaults to "pdf" if unsupported.
-	 * @return The generated {@link File}.
-	 * @throws Exception If any error occurs during report generation, including {@link java.io.FileNotFoundException} if the JRXML template is not found.
-	 */
-	@Override public File generateAndExportReport(String format) throws Exception
-	{
-		File generatedFile = null;
-		String reportBaseName = "Income_Statement_" + (this.reportContext.getEndDate() != null ?
-			this.reportContext.getEndDate().toString() : LocalDate.now().toString());
-		
-		try
-		{
-			Class<? extends AbstractReportGenerator> clazz = getClass();
-			ClassLoader clazzloader = clazz.getClassLoader();
-			InputStream reportStream = clazzloader.getResourceAsStream(getReportPath());
-			
-			if (reportStream == null)
-			{
-				System.err.println("Cannot find report template: " + getReportPath());
-				
-				throw new java.io.FileNotFoundException(
-					"Report template not found: " + getReportPath());
-			}
-			
-			JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
-			
-			List<?> reportDataList = getReportData();
-			JRDataSource dataSource = new JRBeanCollectionDataSource(reportDataList);
-			
-			Map<String, Object> parameters = getReportParameters();
-			
-			JasperPrint jasperPrint =
-				JasperFillManager.fillReport(jasperReport, parameters, dataSource);
-			
-			File outputDir = new File(getOutputDirectory()); // Method from AbstractReportGenerator
-			
-			if (!outputDir.exists())
-			{
-				outputDir.mkdirs();
-			}
-			
-			String outputFileName = reportBaseName + "." + format.toLowerCase();
-			File outputFile = new File(outputDir, outputFileName);
-			
-			if ("pdf".equalsIgnoreCase(format))
-			{
-				generatedFile = exportToPDF(jasperPrint, outputFile.getAbsolutePath());
-			}
-			else if ("html".equalsIgnoreCase(format))
-			{
-				generatedFile = exportToHTML(jasperPrint, outputFile.getAbsolutePath());
-			}
-			else
-			{
-				System.out.println(
-					"Unsupported format for Income Statement: " + format + ". Defaulting to PDF.");
-				File defaultOutputFile = new File(outputDir, reportBaseName + ".pdf");
-				generatedFile = exportToPDF(jasperPrint, defaultOutputFile.getAbsolutePath());
-			}
-			
-			if (generatedFile != null && generatedFile.exists())
-			{ // Check existence after export
-				System.out.println(reportBaseName + " generated successfully at: " +
-					generatedFile.getAbsolutePath());
-			}
-			else
-			{
-				System.err
-					.println("Report generation failed or file not found for: " + reportBaseName);
-				// If generatedFile is null from export methods (if they can return null on
-				// failure) or if the file doesn't exist after export call.
-				throw new Exception(
-					"Report file was not created or found: " + outputFile.getAbsolutePath());
-			}
-			
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			throw e;
-		}
-		
-		return generatedFile;
-	}
-
 	/**
 	 * Prepares the context map with data needed for generating an Income Statement using JXLS.
 	 * Calculates income and expense totals based on transactions within the report period
@@ -551,6 +446,17 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 		}		
 		
 		return reportData;
+	}
+
+	/**
+	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getBaseName() 
+	 */
+	@Override protected String getBaseName()
+	{
+		// TODO Auto-generated method stub
+		return "Income_Statement_" + (this.reportContext.getEndDate() != null ?
+				this.reportContext.getEndDate().toString() : LocalDate.now().toString());
+		
 	}
 	
 }
