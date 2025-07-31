@@ -1695,9 +1695,21 @@ public class ReportService
 		}
 		
 		reportGeneratorInstance = factory.apply(context, this);
+
+		// Generate and export report
+		File generatedFile = null;
+		try
+		{
+			generatedFile = reportGeneratorInstance.generateAndExportReport(outputFormat);
+		}
+		catch (Exception e)
+		{
+			System.out.println(e.getMessage());
+
+			throw e;  // rethrow
+		}
 		
-		File generatedFile = reportGeneratorInstance.generateAndExportReport(outputFormat);
-		
+		// else
 		if (generatedFile != null && generatedFile.exists())
 		{
 			System.out.println("ReportService: Successfully received generated file: " +

@@ -67,19 +67,19 @@ public abstract class AbstractReportGenerator
 	 * @throws Exception If any error occurs during report compilation, filling, or exporting.
 	 */
 	public File generateAndExportReport(String format) throws Exception
-	{		
+	{
 		
 		// get the input
 		File jrxmlFile = getJasperFilePath();
 		
 		// compile the input
 		JasperPrint print = compileJasperInput(jrxmlFile);
-			
+		
 		return writeJasperOutput(format, print, getBaseName());
 		
 	}
 	
-
+	
 	/**
 	 * Gets the output file base name
 	 *  
@@ -87,7 +87,7 @@ public abstract class AbstractReportGenerator
 	 */
 	protected abstract String getBaseName();
 	
-
+	
 	/**
 	 * @return
 	 * @throws RuntimeException
@@ -105,7 +105,6 @@ public abstract class AbstractReportGenerator
 		}
 		catch (ActionCancelledException | NoFileCreatedException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -113,57 +112,69 @@ public abstract class AbstractReportGenerator
 		{
 			throw new RuntimeException("JRXML file not found: " + jrxmlFile.getAbsolutePath());
 		}
+		
 		return jrxmlFile;
 		
 	}
-
+	
 	/**
 	 * @param jrxmlFile
 	 * @return
 	 * @throws IOException
 	 * @throws FileNotFoundException
+	 * @throws JRException 
 	 */
 	JasperPrint compileJasperInput(File jrxmlFile)	throws IOException,
-																		FileNotFoundException
+													FileNotFoundException, JRException
 	{
-		JasperReport jasperReport;
+		JasperReport jasperReport = null;
 		JasperPrint print = null;
 		
 		try (InputStream input = new FileInputStream(jrxmlFile))
 		{
 			jasperReport = JasperCompileManager.compileReport(input);
-						
-			try
-			{
-				JRDataSource dataSource =
-						new JRBeanCollectionDataSource(getReportData());
-				print = JasperFillManager.fillReport(jasperReport,
-						getReportParameters(),
-						dataSource);
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
-			
 		}
 		catch (JRException e)
 		{
 			e.printStackTrace();
+			System.out.println(e.getMessage());
+
 			Throwable cause = e.getCause();
 			
 			while (cause != null)
 			{
-				System.err.println("Caused by: " + cause.getMessage());
+				System.err.println("JasperCompileManager.compileReport fail. Caused by: " + cause.getMessage());
 				cause = cause.getCause();
 			}
+			
+			throw e;
+		}
+		
+		try
+		{
+			JRDataSource dataSource =
+					new JRBeanCollectionDataSource(getReportData());
+			print = JasperFillManager.fillReport(jasperReport,
+					getReportParameters(),
+					dataSource);
+		}
+		catch (Exception e)
+		{
+			Throwable cause = e.getCause();
+			
+			while (cause != null)
+			{
+				System.err.println("JasperFillManager.fillReport fail. Caused by: " + cause.getMessage());
+				cause = cause.getCause();
+			}
+			throw e;
 			
 		}
 		
 		return print;
 		
 	}
-
+	
 	/**
 	 * @param format
 	 * @param print
@@ -172,8 +183,9 @@ public abstract class AbstractReportGenerator
 	 * @throws JRException
 	 * @throws IOException
 	 */
-	@SuppressWarnings("static-method") 
-	File writeJasperOutput(String format, JasperPrint print, String baseName)	throws JRException,
+	@SuppressWarnings("static-method")
+		File
+		writeJasperOutput(String format, JasperPrint print, String baseName)	throws JRException,
 																				IOException
 	{
 		File outDir = new File(getOutputDirectory());
@@ -216,6 +228,7 @@ public abstract class AbstractReportGenerator
 		}
 		
 		return outputDir.getAbsolutePath();
+		
 	}
 	
 	
@@ -228,7 +241,8 @@ public abstract class AbstractReportGenerator
 	 * @return The {@link File} object representing the exported PDF report.
 	 * @throws JRException If an error occurs during the PDF export process.
 	 */
-	protected static File exportToPDF(JasperPrint jasperPrint, String outputFilePath) throws JRException
+	protected static File exportToPDF(	JasperPrint jasperPrint,
+										String outputFilePath) throws JRException
 	{
 		File outputFile = new File(outputFilePath);
 		// Ensure parent directory exists
@@ -244,6 +258,7 @@ public abstract class AbstractReportGenerator
 																						// using a
 																						// logger
 		return outputFile;
+		
 	}
 	
 	/**
@@ -256,8 +271,9 @@ public abstract class AbstractReportGenerator
 	 * @throws JRException If an error occurs during the HTML export process setup.
 	 * @throws IOException If an error occurs during file writing.
 	 */
-	protected static File exportToHTML(JasperPrint jasperPrint, String outputFilePath) throws JRException,
-	IOException
+	protected static File exportToHTML(	JasperPrint jasperPrint,
+										String outputFilePath)	throws JRException,
+																IOException
 	{
 		File outputFile = new File(outputFilePath);
 		// Ensure parent directory exists
@@ -271,10 +287,11 @@ public abstract class AbstractReportGenerator
 		HtmlExporter exporter = new HtmlExporter();
 		exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
 		exporter.setExporterOutput(new SimpleHtmlExporterOutput(new FileOutputStream(outputFile)));
-
+		
 		exporter.exportReport();
 		System.out.println("Report exported to HTML: " + outputFile.getAbsolutePath());
 		return outputFile;
+		
 	}
 	
 }

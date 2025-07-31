@@ -447,7 +447,7 @@ public class SkeletonReportsPanel extends BorderPane
 				{
 					generatedFile = ReportService.generatePlainTextReport(ctx);
 				}
-				else
+				else // pdf
 				{
 					generatedFile = this.reportService.generateJasperReport(ctx, outputFormat);
 				}
@@ -493,6 +493,7 @@ public class SkeletonReportsPanel extends BorderPane
 			catch (Exception ex)
 			{
 				ex.printStackTrace();
+				System.out.println("Error generating " + reportTypeDisplay + ": " + ex.getMessage());
 				AlertBox.showError(ownerWindow,
 					"Error generating " + reportTypeDisplay + ": " + ex.getMessage());
 			}
