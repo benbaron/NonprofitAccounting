@@ -1,4 +1,4 @@
-package nonprofitbookkeeping.reports.datasource; 
+package nonprofitbookkeeping.reports.datasource.scareports; 
 
 import java.math.BigDecimal;
 
@@ -6,23 +6,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Auto-generated bean for Transfer Out 10 report.
+ * Auto-generated bean for Transfer In 9 report.
  * Generated on 2025-08-01.
  */
 @Getter
 @Setter
-public class TransferOut10Bean {
+public class TransferIn9Bean {
     private BigDecimal _1_contact_info;
-    private BigDecimal a_the_corporate_office_or_officer_office_and_reason;
-    private BigDecimal a_the_corporate_office_or_officer_office_and_reason_10;
-    private BigDecimal a_the_corporate_office_or_officer_office_and_reason_2;
-    private BigDecimal a_the_corporate_office_or_officer_office_and_reason_3;
-    private BigDecimal a_the_corporate_office_or_officer_office_and_reason_4;
-    private BigDecimal a_the_corporate_office_or_officer_office_and_reason_5;
-    private BigDecimal a_the_corporate_office_or_officer_office_and_reason_6;
-    private BigDecimal a_the_corporate_office_or_officer_office_and_reason_7;
-    private BigDecimal a_the_corporate_office_or_officer_office_and_reason_8;
-    private BigDecimal a_the_corporate_office_or_officer_office_and_reason_9;
     private BigDecimal amount;
     private BigDecimal amount_10;
     private BigDecimal amount_11;
@@ -51,22 +41,18 @@ public class TransferOut10Bean {
     private BigDecimal amount_32;
     private BigDecimal amount_33;
     private BigDecimal amount_34;
+    private BigDecimal amount_35;
+    private BigDecimal amount_36;
+    private BigDecimal amount_37;
+    private BigDecimal amount_38;
+    private BigDecimal amount_39;
     private BigDecimal amount_4;
+    private BigDecimal amount_40;
     private BigDecimal amount_5;
     private BigDecimal amount_6;
     private BigDecimal amount_7;
     private BigDecimal amount_8;
     private BigDecimal amount_9;
-    private BigDecimal b_outside_the_kingdom_same_country_kingdom_and_branch_or_account;
-    private BigDecimal b_outside_the_kingdom_same_country_kingdom_and_branch_or_account_10;
-    private BigDecimal b_outside_the_kingdom_same_country_kingdom_and_branch_or_account_2;
-    private BigDecimal b_outside_the_kingdom_same_country_kingdom_and_branch_or_account_3;
-    private BigDecimal b_outside_the_kingdom_same_country_kingdom_and_branch_or_account_4;
-    private BigDecimal b_outside_the_kingdom_same_country_kingdom_and_branch_or_account_5;
-    private BigDecimal b_outside_the_kingdom_same_country_kingdom_and_branch_or_account_6;
-    private BigDecimal b_outside_the_kingdom_same_country_kingdom_and_branch_or_account_7;
-    private BigDecimal b_outside_the_kingdom_same_country_kingdom_and_branch_or_account_8;
-    private BigDecimal b_outside_the_kingdom_same_country_kingdom_and_branch_or_account_9;
     private BigDecimal check;
     private BigDecimal check_10;
     private BigDecimal check_11;
@@ -95,7 +81,13 @@ public class TransferOut10Bean {
     private BigDecimal check_32;
     private BigDecimal check_33;
     private BigDecimal check_34;
+    private BigDecimal check_35;
+    private BigDecimal check_36;
+    private BigDecimal check_37;
+    private BigDecimal check_38;
+    private BigDecimal check_39;
     private BigDecimal check_4;
+    private BigDecimal check_40;
     private BigDecimal check_5;
     private BigDecimal check_6;
     private BigDecimal check_7;
@@ -129,7 +121,13 @@ public class TransferOut10Bean {
     private BigDecimal check_date_32;
     private BigDecimal check_date_33;
     private BigDecimal check_date_34;
+    private BigDecimal check_date_35;
+    private BigDecimal check_date_36;
+    private BigDecimal check_date_37;
+    private BigDecimal check_date_38;
+    private BigDecimal check_date_39;
     private BigDecimal check_date_4;
+    private BigDecimal check_date_40;
     private BigDecimal check_date_5;
     private BigDecimal check_date_6;
     private BigDecimal check_date_7;
@@ -138,17 +136,42 @@ public class TransferOut10Bean {
     private BigDecimal contents_b59;
     private BigDecimal contents_e_3;
     private BigDecimal contents_e_4;
-    private BigDecimal show_total_on_pg_4_line_30a;
-    private BigDecimal total_a;
-    private BigDecimal total_b;
-    private BigDecimal total_transfers_to_outside_the_kingdom_a_b;
+    private BigDecimal outside_the_kingdom_kingdom_and_branch_or_account;
+    private BigDecimal outside_the_kingdom_kingdom_and_branch_or_account_10;
+    private BigDecimal outside_the_kingdom_kingdom_and_branch_or_account_11;
+    private BigDecimal outside_the_kingdom_kingdom_and_branch_or_account_12;
+    private BigDecimal outside_the_kingdom_kingdom_and_branch_or_account_13;
+    private BigDecimal outside_the_kingdom_kingdom_and_branch_or_account_14;
+    private BigDecimal outside_the_kingdom_kingdom_and_branch_or_account_15;
+    private BigDecimal outside_the_kingdom_kingdom_and_branch_or_account_16;
+    private BigDecimal outside_the_kingdom_kingdom_and_branch_or_account_2;
+    private BigDecimal outside_the_kingdom_kingdom_and_branch_or_account_3;
+    private BigDecimal outside_the_kingdom_kingdom_and_branch_or_account_4;
+    private BigDecimal outside_the_kingdom_kingdom_and_branch_or_account_5;
+    private BigDecimal outside_the_kingdom_kingdom_and_branch_or_account_6;
+    private BigDecimal outside_the_kingdom_kingdom_and_branch_or_account_7;
+    private BigDecimal outside_the_kingdom_kingdom_and_branch_or_account_8;
+    private BigDecimal outside_the_kingdom_kingdom_and_branch_or_account_9;
+    private BigDecimal sca_funds_transferred_detail_in;
+    private BigDecimal show_total_on_pg_4_line_4a;
+    private BigDecimal show_total_on_pg_4_line_4b;
     private BigDecimal within_the_kingdom;
     private BigDecimal within_the_kingdom_10;
     private BigDecimal within_the_kingdom_11;
     private BigDecimal within_the_kingdom_12;
     private BigDecimal within_the_kingdom_13;
     private BigDecimal within_the_kingdom_14;
+    private BigDecimal within_the_kingdom_15;
+    private BigDecimal within_the_kingdom_16;
+    private BigDecimal within_the_kingdom_17;
+    private BigDecimal within_the_kingdom_18;
+    private BigDecimal within_the_kingdom_19;
     private BigDecimal within_the_kingdom_2;
+    private BigDecimal within_the_kingdom_20;
+    private BigDecimal within_the_kingdom_21;
+    private BigDecimal within_the_kingdom_22;
+    private BigDecimal within_the_kingdom_23;
+    private BigDecimal within_the_kingdom_24;
     private BigDecimal within_the_kingdom_3;
     private BigDecimal within_the_kingdom_4;
     private BigDecimal within_the_kingdom_5;

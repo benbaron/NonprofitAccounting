@@ -2,7 +2,7 @@
  * NonprofitAccounting SecondaryAccountBean.java SecondaryAccountBean
  */
 
-package nonprofitbookkeeping.reports.datasource;
+package nonprofitbookkeeping.reports.datasource.scareports;
 
 public class SecondaryAccountBean
 {

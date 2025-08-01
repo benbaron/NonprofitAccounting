@@ -538,7 +538,7 @@ public class AccountsActivityPanelFX extends BorderPane
 			this.amount =
 				new SimpleObjectProperty<>(totalAmount != null ? totalAmount : BigDecimal.ZERO);
 			
-			BigDecimal accountBalance = t.countAccountBalance();			
+			BigDecimal accountBalance = AccountingTransaction.countAccountBalance();			
 			this.balance = new SimpleObjectProperty<>(
 				accountBalance != null ? accountBalance : BigDecimal.ZERO);
 			

@@ -2,7 +2,7 @@
  * NonprofitAccounting PrimaryAccountBean.java PrimaryAccountBean
  */
 
-package nonprofitbookkeeping.reports.datasource;
+package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
