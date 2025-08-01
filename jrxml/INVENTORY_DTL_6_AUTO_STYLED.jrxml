@@ -1,0 +1,1830 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+                                  http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="INVENTORY_DTL_6_AUTO_STYLED" language="java"
+              pageWidth="1651" pageHeight="972"
+              columnWidth="1651" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+
+    <!-- Parameters -->
+    <parameter name="P_ORG_NAME" class="java.lang.String"/>
+    <parameter name="P_REPORT_TITLE" class="java.lang.String"/>
+
+    <!-- Fields -->
+    <field name="1_contact_info" class="java.math.BigDecimal"/>
+    <field name="actual_gross_income_from_inventory_sales" class="java.math.BigDecimal"/>
+    <field name="actual_gross_income_from_inventory_sales_2" class="java.math.BigDecimal"/>
+    <field name="actual_gross_income_from_inventory_sales_3" class="java.math.BigDecimal"/>
+    <field name="actual_gross_income_from_inventory_sales_4" class="java.math.BigDecimal"/>
+    <field name="actual_gross_income_from_inventory_sales_5" class="java.math.BigDecimal"/>
+    <field name="actual_gross_income_from_inventory_sales_6" class="java.math.BigDecimal"/>
+    <field name="actual_gross_income_from_inventory_sales_7" class="java.math.BigDecimal"/>
+    <field name="actual_gross_income_from_inventory_sales_8" class="java.math.BigDecimal"/>
+    <field name="actual_gross_income_from_inventory_sales_9" class="java.math.BigDecimal"/>
+    <field name="contents_b59" class="java.math.BigDecimal"/>
+    <field name="contents_e_3" class="java.math.BigDecimal"/>
+    <field name="contents_e_4" class="java.math.BigDecimal"/>
+    <field name="cost_of_goods_b1_b2_g" class="java.math.BigDecimal"/>
+    <field name="cost_of_goods_b1_b2_g_2" class="java.math.BigDecimal"/>
+    <field name="cost_of_goods_b1_b2_g_3" class="java.math.BigDecimal"/>
+    <field name="cost_of_goods_b1_b2_g_4" class="java.math.BigDecimal"/>
+    <field name="cost_of_goods_b1_b2_g_5" class="java.math.BigDecimal"/>
+    <field name="cost_of_goods_b1_b2_g_6" class="java.math.BigDecimal"/>
+    <field name="cost_of_goods_b1_b2_g_7" class="java.math.BigDecimal"/>
+    <field name="cost_of_goods_b1_b2_g_8" class="java.math.BigDecimal"/>
+    <field name="cost_of_goods_b1_b2_g_9" class="java.math.BigDecimal"/>
+    <field name="ending_extended_cost_f_x_c" class="java.math.BigDecimal"/>
+    <field name="ending_extended_cost_f_x_c_2" class="java.math.BigDecimal"/>
+    <field name="ending_extended_cost_f_x_c_3" class="java.math.BigDecimal"/>
+    <field name="ending_extended_cost_f_x_c_4" class="java.math.BigDecimal"/>
+    <field name="ending_extended_cost_f_x_c_5" class="java.math.BigDecimal"/>
+    <field name="ending_extended_cost_f_x_c_6" class="java.math.BigDecimal"/>
+    <field name="ending_extended_cost_f_x_c_7" class="java.math.BigDecimal"/>
+    <field name="ending_extended_cost_f_x_c_8" class="java.math.BigDecimal"/>
+    <field name="ending_extended_cost_f_x_c_9" class="java.math.BigDecimal"/>
+    <field name="ending_quantity_b1or_b2_d_e" class="java.math.BigDecimal"/>
+    <field name="ending_quantity_b1or_b2_d_e_2" class="java.math.BigDecimal"/>
+    <field name="ending_quantity_b1or_b2_d_e_3" class="java.math.BigDecimal"/>
+    <field name="ending_quantity_b1or_b2_d_e_4" class="java.math.BigDecimal"/>
+    <field name="ending_quantity_b1or_b2_d_e_5" class="java.math.BigDecimal"/>
+    <field name="ending_quantity_b1or_b2_d_e_6" class="java.math.BigDecimal"/>
+    <field name="ending_quantity_b1or_b2_d_e_7" class="java.math.BigDecimal"/>
+    <field name="ending_quantity_b1or_b2_d_e_8" class="java.math.BigDecimal"/>
+    <field name="existing_lot_extended_cost" class="java.math.BigDecimal"/>
+    <field name="existing_lot_extended_cost_2" class="java.math.BigDecimal"/>
+    <field name="existing_lot_extended_cost_3" class="java.math.BigDecimal"/>
+    <field name="existing_lot_extended_cost_4" class="java.math.BigDecimal"/>
+    <field name="existing_lot_extended_cost_5" class="java.math.BigDecimal"/>
+    <field name="existing_lot_extended_cost_6" class="java.math.BigDecimal"/>
+    <field name="existing_lot_extended_cost_7" class="java.math.BigDecimal"/>
+    <field name="existing_lot_extended_cost_8" class="java.math.BigDecimal"/>
+    <field name="existing_lot_extended_cost_9" class="java.math.BigDecimal"/>
+    <field name="existing_lot_quantity" class="java.math.BigDecimal"/>
+    <field name="existing_lot_quantity_2" class="java.math.BigDecimal"/>
+    <field name="existing_lot_quantity_3" class="java.math.BigDecimal"/>
+    <field name="existing_lot_quantity_4" class="java.math.BigDecimal"/>
+    <field name="existing_lot_quantity_5" class="java.math.BigDecimal"/>
+    <field name="existing_lot_quantity_6" class="java.math.BigDecimal"/>
+    <field name="existing_lot_quantity_7" class="java.math.BigDecimal"/>
+    <field name="existing_lot_quantity_8" class="java.math.BigDecimal"/>
+    <field name="lot_item_description_and_year_purchased" class="java.math.BigDecimal"/>
+    <field name="lot_item_description_and_year_purchased_2" class="java.math.BigDecimal"/>
+    <field name="lot_item_description_and_year_purchased_3" class="java.math.BigDecimal"/>
+    <field name="lot_item_description_and_year_purchased_4" class="java.math.BigDecimal"/>
+    <field name="lot_item_description_and_year_purchased_5" class="java.math.BigDecimal"/>
+    <field name="lot_item_description_and_year_purchased_6" class="java.math.BigDecimal"/>
+    <field name="lot_item_description_and_year_purchased_7" class="java.math.BigDecimal"/>
+    <field name="lot_item_description_and_year_purchased_8" class="java.math.BigDecimal"/>
+    <field name="net_inventory_sales_income_i_h" class="java.math.BigDecimal"/>
+    <field name="net_inventory_sales_income_i_h_2" class="java.math.BigDecimal"/>
+    <field name="net_inventory_sales_income_i_h_3" class="java.math.BigDecimal"/>
+    <field name="net_inventory_sales_income_i_h_4" class="java.math.BigDecimal"/>
+    <field name="net_inventory_sales_income_i_h_5" class="java.math.BigDecimal"/>
+    <field name="net_inventory_sales_income_i_h_6" class="java.math.BigDecimal"/>
+    <field name="net_inventory_sales_income_i_h_7" class="java.math.BigDecimal"/>
+    <field name="net_inventory_sales_income_i_h_8" class="java.math.BigDecimal"/>
+    <field name="new_lot_purchase_cost" class="java.math.BigDecimal"/>
+    <field name="new_lot_purchase_cost_2" class="java.math.BigDecimal"/>
+    <field name="new_lot_purchase_cost_3" class="java.math.BigDecimal"/>
+    <field name="new_lot_purchase_cost_4" class="java.math.BigDecimal"/>
+    <field name="new_lot_purchase_cost_5" class="java.math.BigDecimal"/>
+    <field name="new_lot_purchase_cost_6" class="java.math.BigDecimal"/>
+    <field name="new_lot_purchase_cost_7" class="java.math.BigDecimal"/>
+    <field name="new_lot_purchase_cost_8" class="java.math.BigDecimal"/>
+    <field name="new_lot_purchase_quantity" class="java.math.BigDecimal"/>
+    <field name="new_lot_purchase_quantity_2" class="java.math.BigDecimal"/>
+    <field name="new_lot_purchase_quantity_3" class="java.math.BigDecimal"/>
+    <field name="new_lot_purchase_quantity_4" class="java.math.BigDecimal"/>
+    <field name="new_lot_purchase_quantity_5" class="java.math.BigDecimal"/>
+    <field name="new_lot_purchase_quantity_6" class="java.math.BigDecimal"/>
+    <field name="new_lot_purchase_quantity_7" class="java.math.BigDecimal"/>
+    <field name="new_lot_purchase_quantity_8" class="java.math.BigDecimal"/>
+    <field name="per_unit_cost_b1_a1_or_b2_a2" class="java.math.BigDecimal"/>
+    <field name="per_unit_cost_b1_a1_or_b2_a2_2" class="java.math.BigDecimal"/>
+    <field name="per_unit_cost_b1_a1_or_b2_a2_3" class="java.math.BigDecimal"/>
+    <field name="per_unit_cost_b1_a1_or_b2_a2_4" class="java.math.BigDecimal"/>
+    <field name="per_unit_cost_b1_a1_or_b2_a2_5" class="java.math.BigDecimal"/>
+    <field name="per_unit_cost_b1_a1_or_b2_a2_6" class="java.math.BigDecimal"/>
+    <field name="per_unit_cost_b1_a1_or_b2_a2_7" class="java.math.BigDecimal"/>
+    <field name="per_unit_cost_b1_a1_or_b2_a2_8" class="java.math.BigDecimal"/>
+    <field name="quantity_removed_or_discarded" class="java.math.BigDecimal"/>
+    <field name="quantity_removed_or_discarded_2" class="java.math.BigDecimal"/>
+    <field name="quantity_removed_or_discarded_3" class="java.math.BigDecimal"/>
+    <field name="quantity_removed_or_discarded_4" class="java.math.BigDecimal"/>
+    <field name="quantity_removed_or_discarded_5" class="java.math.BigDecimal"/>
+    <field name="quantity_removed_or_discarded_6" class="java.math.BigDecimal"/>
+    <field name="quantity_removed_or_discarded_7" class="java.math.BigDecimal"/>
+    <field name="quantity_removed_or_discarded_8" class="java.math.BigDecimal"/>
+    <field name="quantity_sold_at_any_price" class="java.math.BigDecimal"/>
+    <field name="quantity_sold_at_any_price_2" class="java.math.BigDecimal"/>
+    <field name="quantity_sold_at_any_price_3" class="java.math.BigDecimal"/>
+    <field name="quantity_sold_at_any_price_4" class="java.math.BigDecimal"/>
+    <field name="quantity_sold_at_any_price_5" class="java.math.BigDecimal"/>
+    <field name="quantity_sold_at_any_price_6" class="java.math.BigDecimal"/>
+    <field name="quantity_sold_at_any_price_7" class="java.math.BigDecimal"/>
+    <field name="quantity_sold_at_any_price_8" class="java.math.BigDecimal"/>
+    <field name="suggested_selling_price" class="java.math.BigDecimal"/>
+    <field name="suggested_selling_price_2" class="java.math.BigDecimal"/>
+    <field name="suggested_selling_price_3" class="java.math.BigDecimal"/>
+    <field name="suggested_selling_price_4" class="java.math.BigDecimal"/>
+    <field name="suggested_selling_price_5" class="java.math.BigDecimal"/>
+    <field name="suggested_selling_price_6" class="java.math.BigDecimal"/>
+    <field name="suggested_selling_price_7" class="java.math.BigDecimal"/>
+    <field name="suggested_selling_price_8" class="java.math.BigDecimal"/>
+
+    <background>
+        <band height="972">
+            <staticText>
+                <reportElement x="84" y="105" width="59" height="18"/>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="14" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[INVENTORY DETAIL]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="138" width="59" height="15"/>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[NOTE: Use this form for major inventory (purchased for lot price of $250 +). If a new lot originally cost less than US$250 (minor inventory), use Page 7 to report income from sales of those items.]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="153" width="59" height="18"/>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="true" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Report each purchase lot separately. Report sales from oldest lots of the same item first. Report discarded items on line E.]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="172" width="59" height="19"/>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Each Lot will either have A1 and B1 populated from a prior report, or A2 and B2 if the lot is new for this report.]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="192" width="59" height="99"/>
+        <box>
+        <topPen lineWidth="1.5" lineStyle="Solid"/>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Lot Item Description and Year Purchased]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="879" y="192" width="95" height="99"/>
+        <box>
+        <topPen lineWidth="1.5" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[TOTAL ACROSS and where to report on prior pages]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="291" width="59" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[SP]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="143" y="291" width="214" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Suggested Selling Price]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="307" width="59" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[STARTING BALANCE (for items reported on a prior report)]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="323" width="59" height="26"/>
+        <box>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[A1]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="143" y="323" width="214" height="26"/>
+        <box>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Existing Lot Quantity]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="879" y="323" width="95" height="26"/>
+        <box>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="true" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Pg. 3, I.d (Start)]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="349" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[B1]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="143" y="349" width="214" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Existing Lot Extended Cost]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="375" width="59" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[PURCHASES THIS PERIOD (for items NOT reported on a prior report)]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="391" width="59" height="26"/>
+        <box>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[A2]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="143" y="391" width="214" height="26"/>
+        <box>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[New Lot Purchase Quantity]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="417" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[B2]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="143" y="417" width="214" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[New Lot Purchase Cost]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="444" width="59" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[PER-UNIT COST]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="459" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[C]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="143" y="459" width="214" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Per Unit Cost
+(B1/A1 or B2/A2)]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="486" width="59" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[ENDING BALANCE]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="501" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[D]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="143" y="501" width="214" height="26"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Quantity Sold at any price]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="528" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[E]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="143" y="528" width="214" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Quantity Removed or Discarded]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="554" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[F]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="143" y="554" width="214" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Ending Quantity 
+((B1or B2)-D-E)]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="879" y="554" width="95" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="true" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Pg. 3 I.d (End)]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="580" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[G]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="143" y="580" width="214" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Ending Extended 
+Cost (F x C)]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="606" width="59" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[NET INCOME]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="622" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[H]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="143" y="622" width="214" height="26"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Cost of Goods 
+((B1 + B2) - G)]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="648" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[I]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="143" y="648" width="214" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Actual Gross Income from Inventory Sales ]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="675" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[J]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="143" y="675" width="214" height="26"/>
+        <box>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Net Inventory Sales Income (I - H)]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="879" y="675" width="95" height="26"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="true" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Pg. 4, Ln 6]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="701" width="59" height="15"/>
+        <box>
+        <topPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="true" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Use additional sheets if necessary]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="717" width="59" height="15"/>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[-6-]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true">
+                <reportElement x="84" y="15" width="59" height="15"/>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="5" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{1_contact_info}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="84" y="30" width="59" height="15"/>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="9" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{contents_b59}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="84" y="45" width="59" height="15"/>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="9" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{contents_e_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="84" y="75" width="59" height="15"/>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{contents_e_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="879" y="349" width="95" height="26"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{existing_lot_extended_cost_9}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="358" y="459" width="106" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{per_unit_cost_b1_a1_or_b2_a2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="465" y="459" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{per_unit_cost_b1_a1_or_b2_a2_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="524" y="459" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{per_unit_cost_b1_a1_or_b2_a2_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="583" y="459" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{per_unit_cost_b1_a1_or_b2_a2_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="642" y="459" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{per_unit_cost_b1_a1_or_b2_a2_5}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="702" y="459" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{per_unit_cost_b1_a1_or_b2_a2_6}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="761" y="459" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{per_unit_cost_b1_a1_or_b2_a2_7}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="820" y="459" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{per_unit_cost_b1_a1_or_b2_a2_8}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="358" y="554" width="106" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{ending_quantity_b1or_b2_d_e}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="465" y="554" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{ending_quantity_b1or_b2_d_e_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="524" y="554" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{ending_quantity_b1or_b2_d_e_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="583" y="554" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{ending_quantity_b1or_b2_d_e_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="642" y="554" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{ending_quantity_b1or_b2_d_e_5}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="702" y="554" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{ending_quantity_b1or_b2_d_e_6}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="761" y="554" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{ending_quantity_b1or_b2_d_e_7}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="820" y="554" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{ending_quantity_b1or_b2_d_e_8}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="358" y="580" width="106" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{ending_extended_cost_f_x_c}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="465" y="580" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{ending_extended_cost_f_x_c_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="524" y="580" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{ending_extended_cost_f_x_c_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="583" y="580" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{ending_extended_cost_f_x_c_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="642" y="580" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{ending_extended_cost_f_x_c_5}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="702" y="580" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{ending_extended_cost_f_x_c_6}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="761" y="580" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{ending_extended_cost_f_x_c_7}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="820" y="580" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{ending_extended_cost_f_x_c_8}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="879" y="580" width="95" height="26"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{ending_extended_cost_f_x_c_9}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="358" y="622" width="106" height="26"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{cost_of_goods_b1_b2_g}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="465" y="622" width="59" height="26"/>
+        <box>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{cost_of_goods_b1_b2_g_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="524" y="622" width="59" height="26"/>
+        <box>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{cost_of_goods_b1_b2_g_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="583" y="622" width="59" height="26"/>
+        <box>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{cost_of_goods_b1_b2_g_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="642" y="622" width="59" height="26"/>
+        <box>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{cost_of_goods_b1_b2_g_5}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="702" y="622" width="59" height="26"/>
+        <box>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{cost_of_goods_b1_b2_g_6}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="761" y="622" width="59" height="26"/>
+        <box>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{cost_of_goods_b1_b2_g_7}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="820" y="622" width="59" height="26"/>
+        <box>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{cost_of_goods_b1_b2_g_8}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="879" y="622" width="95" height="26"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{cost_of_goods_b1_b2_g_9}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="879" y="648" width="95" height="26"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{actual_gross_income_from_inventory_sales_9}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="358" y="675" width="106" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{net_inventory_sales_income_i_h}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="465" y="675" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{net_inventory_sales_income_i_h_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="524" y="675" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{net_inventory_sales_income_i_h_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="583" y="675" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{net_inventory_sales_income_i_h_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="642" y="675" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{net_inventory_sales_income_i_h_5}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="702" y="675" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{net_inventory_sales_income_i_h_6}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="761" y="675" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{net_inventory_sales_income_i_h_7}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="820" y="675" width="59" height="26"/>
+        <box>
+        <topPen lineWidth="0.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{net_inventory_sales_income_i_h_8}]]></textFieldExpression>
+            </textField>
+        </band>
+    </background>
+
+    <summary>
+        <band height="1">
+            <textField isBlankWhenNull="true">
+                <reportElement x="0" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{1_contact_info}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="1" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{actual_gross_income_from_inventory_sales}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="2" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{actual_gross_income_from_inventory_sales_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="3" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{actual_gross_income_from_inventory_sales_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="4" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{actual_gross_income_from_inventory_sales_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="5" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{actual_gross_income_from_inventory_sales_5}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="6" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{actual_gross_income_from_inventory_sales_6}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="7" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{actual_gross_income_from_inventory_sales_7}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="8" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{actual_gross_income_from_inventory_sales_8}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="9" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{actual_gross_income_from_inventory_sales_9}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="10" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{contents_b59}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="11" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{contents_e_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="12" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{contents_e_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="13" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{cost_of_goods_b1_b2_g}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="14" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{cost_of_goods_b1_b2_g_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="15" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{cost_of_goods_b1_b2_g_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="16" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{cost_of_goods_b1_b2_g_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="17" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{cost_of_goods_b1_b2_g_5}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="18" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{cost_of_goods_b1_b2_g_6}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="19" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{cost_of_goods_b1_b2_g_7}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="20" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{cost_of_goods_b1_b2_g_8}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="21" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{cost_of_goods_b1_b2_g_9}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="22" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{ending_extended_cost_f_x_c}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="23" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{ending_extended_cost_f_x_c_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="24" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{ending_extended_cost_f_x_c_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="25" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{ending_extended_cost_f_x_c_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="26" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{ending_extended_cost_f_x_c_5}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="27" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{ending_extended_cost_f_x_c_6}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="28" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{ending_extended_cost_f_x_c_7}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="29" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{ending_extended_cost_f_x_c_8}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="30" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{ending_extended_cost_f_x_c_9}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="31" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{ending_quantity_b1or_b2_d_e}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="32" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{ending_quantity_b1or_b2_d_e_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="33" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{ending_quantity_b1or_b2_d_e_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="34" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{ending_quantity_b1or_b2_d_e_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="35" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{ending_quantity_b1or_b2_d_e_5}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="36" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{ending_quantity_b1or_b2_d_e_6}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="37" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{ending_quantity_b1or_b2_d_e_7}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="38" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{ending_quantity_b1or_b2_d_e_8}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="39" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{existing_lot_extended_cost}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="40" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{existing_lot_extended_cost_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="41" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{existing_lot_extended_cost_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="42" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{existing_lot_extended_cost_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="43" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{existing_lot_extended_cost_5}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="44" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{existing_lot_extended_cost_6}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="45" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{existing_lot_extended_cost_7}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="46" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{existing_lot_extended_cost_8}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="47" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{existing_lot_extended_cost_9}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="48" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{existing_lot_quantity}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="49" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{existing_lot_quantity_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="50" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{existing_lot_quantity_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="51" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{existing_lot_quantity_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="52" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{existing_lot_quantity_5}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="53" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{existing_lot_quantity_6}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="54" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{existing_lot_quantity_7}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="55" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{existing_lot_quantity_8}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="56" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{lot_item_description_and_year_purchased}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="57" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{lot_item_description_and_year_purchased_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="58" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{lot_item_description_and_year_purchased_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="59" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{lot_item_description_and_year_purchased_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="60" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{lot_item_description_and_year_purchased_5}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="61" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{lot_item_description_and_year_purchased_6}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="62" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{lot_item_description_and_year_purchased_7}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="63" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{lot_item_description_and_year_purchased_8}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="64" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{net_inventory_sales_income_i_h}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="65" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{net_inventory_sales_income_i_h_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="66" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{net_inventory_sales_income_i_h_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="67" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{net_inventory_sales_income_i_h_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="68" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{net_inventory_sales_income_i_h_5}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="69" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{net_inventory_sales_income_i_h_6}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="70" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{net_inventory_sales_income_i_h_7}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="71" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{net_inventory_sales_income_i_h_8}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="72" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{new_lot_purchase_cost}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="73" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{new_lot_purchase_cost_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="74" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{new_lot_purchase_cost_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="75" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{new_lot_purchase_cost_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="76" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{new_lot_purchase_cost_5}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="77" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{new_lot_purchase_cost_6}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="78" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{new_lot_purchase_cost_7}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="79" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{new_lot_purchase_cost_8}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="80" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{new_lot_purchase_quantity}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="81" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{new_lot_purchase_quantity_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="82" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{new_lot_purchase_quantity_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="83" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{new_lot_purchase_quantity_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="84" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{new_lot_purchase_quantity_5}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="85" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{new_lot_purchase_quantity_6}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="86" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{new_lot_purchase_quantity_7}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="87" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{new_lot_purchase_quantity_8}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="88" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{per_unit_cost_b1_a1_or_b2_a2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="89" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{per_unit_cost_b1_a1_or_b2_a2_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="90" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{per_unit_cost_b1_a1_or_b2_a2_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="91" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{per_unit_cost_b1_a1_or_b2_a2_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="92" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{per_unit_cost_b1_a1_or_b2_a2_5}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="93" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{per_unit_cost_b1_a1_or_b2_a2_6}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="94" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{per_unit_cost_b1_a1_or_b2_a2_7}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="95" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{per_unit_cost_b1_a1_or_b2_a2_8}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="96" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{quantity_removed_or_discarded}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="97" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{quantity_removed_or_discarded_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="98" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{quantity_removed_or_discarded_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="99" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{quantity_removed_or_discarded_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="100" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{quantity_removed_or_discarded_5}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="101" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{quantity_removed_or_discarded_6}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="102" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{quantity_removed_or_discarded_7}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="103" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{quantity_removed_or_discarded_8}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="104" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{quantity_sold_at_any_price}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="105" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{quantity_sold_at_any_price_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="106" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{quantity_sold_at_any_price_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="107" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{quantity_sold_at_any_price_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="108" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{quantity_sold_at_any_price_5}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="109" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{quantity_sold_at_any_price_6}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="110" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{quantity_sold_at_any_price_7}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="111" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{quantity_sold_at_any_price_8}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="112" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{suggested_selling_price}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="113" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{suggested_selling_price_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="114" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{suggested_selling_price_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="115" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{suggested_selling_price_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="116" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{suggested_selling_price_5}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="117" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{suggested_selling_price_6}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="118" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{suggested_selling_price_7}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="119" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{suggested_selling_price_8}]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+
+</jasperReport>

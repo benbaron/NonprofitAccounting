@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+                                  http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="INCOME_4_AUTO" language="java"
+              pageWidth="595" pageHeight="842"
+              columnWidth="555" leftMargin="20" rightMargin="20"
+              topMargin="20" bottomMargin="20">
+
+    <!-- Parameters -->
+    <parameter name="P_ORG_NAME" class="java.lang.String"/>
+    <parameter name="P_REPORT_TITLE" class="java.lang.String"/>
+
+    <!-- Fields (auto‑generated) -->
+    <field name="1_contact_info" class="java.math.BigDecimal"/>
+    <field name="2_a_primary_account" class="java.math.BigDecimal"/>
+    <field name="2_b_secondary_accounts" class="java.math.BigDecimal"/>
+    <field name="4_income" class="java.math.BigDecimal"/>
+    <field name="6_inventory_dtl" class="java.math.BigDecimal"/>
+    <field name="internal" class="java.math.BigDecimal"/>
+    <field name="external" class="java.math.BigDecimal"/>
+    <field name="direct_contributions_donations_no_activity" class="java.math.BigDecimal"/>
+    <field name="income_from_demos_and_activity_fees" class="java.math.BigDecimal"/>
+    <field name="adjusted_gross_event_income" class="java.math.BigDecimal"/>
+    <field name="within_kingdom" class="java.math.BigDecimal"/>
+    <field name="outside_kingdom" class="java.math.BigDecimal"/>
+    <field name="interest_earned" class="java.math.BigDecimal"/>
+    <field name="gross_cost_net" class="java.math.BigDecimal"/>
+    <field name="inventory_dtl_6_m30_inventory_dtl_6b_m30" class="java.math.BigDecimal"/>
+    <field name="inventory_dtl_6_m29_inventory_dtl_6b_m29" class="java.math.BigDecimal"/>
+    <field name="other_sales_income" class="java.math.BigDecimal"/>
+    <field name="adjusted_gross_newsletter_income" class="java.math.BigDecimal"/>
+    <field name="gross_cost_net_2" class="java.math.BigDecimal"/>
+    <field name="income_dtl_11b_e43" class="java.math.BigDecimal"/>
+    <field name="income_dtl_11b_f43" class="java.math.BigDecimal"/>
+    <field name="other_income" class="java.math.BigDecimal"/>
+    <field name="sum_of_lines_1_through_9" class="java.math.BigDecimal"/>
+    <field name="advertising_non_sca" class="java.math.BigDecimal"/>
+    <field name="sumif_expense_dtl_12a_c12_c22_ar_expense_dtl_12a_f12_f22" class="java.math.BigDecimal"/>
+    <field name="bad_debts" class="java.math.BigDecimal"/>
+    <field name="sumif_expense_dtl_12a_c27_c38_oa_expense_dtl_12a_f27_f38" class="java.math.BigDecimal"/>
+    <field name="sumif_expense_dtl_12a_c27_c38_ar_expense_dtl_12a_f27_f38" class="java.math.BigDecimal"/>
+    <field name="sumif_expense_dtl_12a_c27_c38_fr_expense_dtl_12a_f27_f38" class="java.math.BigDecimal"/>
+    <field name="bank_service_charges" class="java.math.BigDecimal"/>
+    <field name="bank_service_charges_2" class="java.math.BigDecimal"/>
+    <field name="bank_service_charges_3" class="java.math.BigDecimal"/>
+    <field name="bank_service_charges_4" class="java.math.BigDecimal"/>
+    <field name="depreciation" class="java.math.BigDecimal"/>
+    <field name="sumif_depr_dtl_8_d14_d23_oa_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_oa_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_oa_depr_dtl_8b_l14_l53" class="java.math.BigDecimal"/>
+    <field name="sumif_depr_dtl_8_d14_d23_ar_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_ar_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_ar_depr_dtl_8b_l14_l53_sumif_depr_dtl_8c_d14_d53_ar_depr_dtl_8c_l14_l53" class="java.math.BigDecimal"/>
+    <field name="sumif_depr_dtl_8_d14_d23_fr_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_fr_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_fr_depr_dtl_8b_l14_l53" class="java.math.BigDecimal"/>
+    <field name="equipment_rental_and_maintenance" class="java.math.BigDecimal"/>
+    <field name="equipment_rental_and_maintenance_2" class="java.math.BigDecimal"/>
+    <field name="equipment_rental_and_maintenance_3" class="java.math.BigDecimal"/>
+    <field name="equipment_rental_and_maintenance_4" class="java.math.BigDecimal"/>
+    <field name="fees_and_honoraria" class="java.math.BigDecimal"/>
+    <field name="sumif_expense_dtl_12a_c43_c54_oa_expense_dtl_12a_f43_f54" class="java.math.BigDecimal"/>
+    <field name="sumif_expense_dtl_12a_c43_c54_ar_expense_dtl_12a_f43_f54" class="java.math.BigDecimal"/>
+    <field name="sumif_expense_dtl_12a_c43_c54_fr_expense_dtl_12a_f43_f54" class="java.math.BigDecimal"/>
+    <field name="food" class="java.math.BigDecimal"/>
+    <field name="food_2" class="java.math.BigDecimal"/>
+    <field name="food_3" class="java.math.BigDecimal"/>
+    <field name="food_4" class="java.math.BigDecimal"/>
+    <field name="general_supplies" class="java.math.BigDecimal"/>
+    <field name="general_supplies_2" class="java.math.BigDecimal"/>
+    <field name="general_supplies_3" class="java.math.BigDecimal"/>
+    <field name="general_supplies_4" class="java.math.BigDecimal"/>
+    <field name="insurance_non_sca" class="java.math.BigDecimal"/>
+    <field name="expense_dtl_12b_i16" class="java.math.BigDecimal"/>
+    <field name="occupancy_and_site_charges" class="java.math.BigDecimal"/>
+    <field name="occupancy_and_site_charges_2" class="java.math.BigDecimal"/>
+    <field name="occupancy_and_site_charges_3" class="java.math.BigDecimal"/>
+    <field name="occupancy_and_site_charges_4" class="java.math.BigDecimal"/>
+    <field name="postage_and_shipping_po_box_rental" class="java.math.BigDecimal"/>
+    <field name="postage_and_shipping_po_box_rental_2" class="java.math.BigDecimal"/>
+    <field name="postage_and_shipping_po_box_rental_3" class="java.math.BigDecimal"/>
+    <field name="postage_and_shipping_po_box_rental_4" class="java.math.BigDecimal"/>
+    <field name="printing_and_publications" class="java.math.BigDecimal"/>
+    <field name="printing_and_publications_2" class="java.math.BigDecimal"/>
+    <field name="printing_and_publications_3" class="java.math.BigDecimal"/>
+    <field name="printing_and_publications_4" class="java.math.BigDecimal"/>
+    <field name="released_equipment_assets" class="java.math.BigDecimal"/>
+    <field name="regalia_sales_dtl_7_h52_regalia_sales_dtl_7b_h52" class="java.math.BigDecimal"/>
+    <field name="telephone" class="java.math.BigDecimal"/>
+    <field name="telephone_2" class="java.math.BigDecimal"/>
+    <field name="telephone_3" class="java.math.BigDecimal"/>
+    <field name="telephone_4" class="java.math.BigDecimal"/>
+    <field name="travel_gas_tolls_airfare" class="java.math.BigDecimal"/>
+    <field name="travel_gas_tolls_airfare_2" class="java.math.BigDecimal"/>
+    <field name="travel_gas_tolls_airfare_3" class="java.math.BigDecimal"/>
+    <field name="travel_gas_tolls_airfare_4" class="java.math.BigDecimal"/>
+    <field name="sub_total_lines_12_26" class="java.math.BigDecimal"/>
+    <field name="sub_total_lines_12_26_2" class="java.math.BigDecimal"/>
+    <field name="sub_total_lines_12_26_3" class="java.math.BigDecimal"/>
+    <field name="sub_total_lines_12_26_4" class="java.math.BigDecimal"/>
+    <field name="other_expenses" class="java.math.BigDecimal"/>
+    <field name="donations_to_other_501_c_3_nonprofit_organizations" class="java.math.BigDecimal"/>
+    <field name="within_kingdom_2" class="java.math.BigDecimal"/>
+    <field name="outside_kingdom_2" class="java.math.BigDecimal"/>
+    <field name="line_27_total_lines_28_to_30b" class="java.math.BigDecimal"/>
+    <field name="line_11_minus_line_31" class="java.math.BigDecimal"/>
+    <field name="exchequer" class="java.math.BigDecimal"/>
+    <field name="seneschal" class="java.math.BigDecimal"/>
+
+    <!-- Hidden 1‑pixel “parking” band ensures all fields are referenced -->
+    <summary>
+        <band height="1" splitType="Stretch">
+            <textField isBlankWhenNull="true">
+                <reportElement x="0" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{1_contact_info}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="1" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{2_a_primary_account}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="2" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{2_b_secondary_accounts}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="3" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{4_income}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="4" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{6_inventory_dtl}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="5" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{internal}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="6" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{external}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="7" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{direct_contributions_donations_no_activity}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="8" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{income_from_demos_and_activity_fees}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="9" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{adjusted_gross_event_income}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="10" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{within_kingdom}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="11" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{outside_kingdom}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="12" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{interest_earned}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="13" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{gross_cost_net}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="14" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{inventory_dtl_6_m30_inventory_dtl_6b_m30}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="15" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{inventory_dtl_6_m29_inventory_dtl_6b_m29}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="16" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{other_sales_income}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="17" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{adjusted_gross_newsletter_income}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="18" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{gross_cost_net_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="19" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{income_dtl_11b_e43}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="20" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{income_dtl_11b_f43}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="21" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{other_income}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="22" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{sum_of_lines_1_through_9}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="23" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{advertising_non_sca}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="24" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{sumif_expense_dtl_12a_c12_c22_ar_expense_dtl_12a_f12_f22}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="25" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{bad_debts}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="26" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{sumif_expense_dtl_12a_c27_c38_oa_expense_dtl_12a_f27_f38}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="27" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{sumif_expense_dtl_12a_c27_c38_ar_expense_dtl_12a_f27_f38}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="28" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{sumif_expense_dtl_12a_c27_c38_fr_expense_dtl_12a_f27_f38}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="29" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{bank_service_charges}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="30" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{bank_service_charges_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="31" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{bank_service_charges_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="32" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{bank_service_charges_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="33" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{depreciation}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="34" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{sumif_depr_dtl_8_d14_d23_oa_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_oa_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_oa_depr_dtl_8b_l14_l53}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="35" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{sumif_depr_dtl_8_d14_d23_ar_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_ar_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_ar_depr_dtl_8b_l14_l53_sumif_depr_dtl_8c_d14_d53_ar_depr_dtl_8c_l14_l53}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="36" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{sumif_depr_dtl_8_d14_d23_fr_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_fr_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_fr_depr_dtl_8b_l14_l53}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="37" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{equipment_rental_and_maintenance}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="38" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{equipment_rental_and_maintenance_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="39" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{equipment_rental_and_maintenance_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="40" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{equipment_rental_and_maintenance_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="41" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{fees_and_honoraria}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="42" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{sumif_expense_dtl_12a_c43_c54_oa_expense_dtl_12a_f43_f54}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="43" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{sumif_expense_dtl_12a_c43_c54_ar_expense_dtl_12a_f43_f54}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="44" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{sumif_expense_dtl_12a_c43_c54_fr_expense_dtl_12a_f43_f54}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="45" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{food}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="46" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{food_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="47" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{food_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="48" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{food_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="49" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{general_supplies}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="50" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{general_supplies_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="51" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{general_supplies_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="52" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{general_supplies_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="53" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{insurance_non_sca}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="54" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{expense_dtl_12b_i16}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="55" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{occupancy_and_site_charges}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="56" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{occupancy_and_site_charges_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="57" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{occupancy_and_site_charges_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="58" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{occupancy_and_site_charges_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="59" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{postage_and_shipping_po_box_rental}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="60" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{postage_and_shipping_po_box_rental_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="61" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{postage_and_shipping_po_box_rental_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="62" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{postage_and_shipping_po_box_rental_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="63" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{printing_and_publications}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="64" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{printing_and_publications_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="65" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{printing_and_publications_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="66" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{printing_and_publications_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="67" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{released_equipment_assets}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="68" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{regalia_sales_dtl_7_h52_regalia_sales_dtl_7b_h52}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="69" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{telephone}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="70" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{telephone_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="71" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{telephone_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="72" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{telephone_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="73" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{travel_gas_tolls_airfare}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="74" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{travel_gas_tolls_airfare_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="75" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{travel_gas_tolls_airfare_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="76" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{travel_gas_tolls_airfare_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="77" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{sub_total_lines_12_26}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="78" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{sub_total_lines_12_26_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="79" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{sub_total_lines_12_26_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="80" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{sub_total_lines_12_26_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="81" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{other_expenses}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="82" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{donations_to_other_501_c_3_nonprofit_organizations}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="83" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{within_kingdom_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="84" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{outside_kingdom_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="85" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{line_27_total_lines_28_to_30b}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="86" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{line_11_minus_line_31}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="87" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{exchequer}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="88" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{seneschal}]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+
+</jasperReport>

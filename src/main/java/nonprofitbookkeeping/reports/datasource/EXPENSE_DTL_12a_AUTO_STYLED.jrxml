@@ -1,0 +1,1085 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+                                  http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="EXPENSE_DTL_12a_AUTO_STYLED" language="java"
+              pageWidth="1947" pageHeight="1067"
+              columnWidth="1947" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+
+    <parameter name="P_ORG_NAME" class="java.lang.String"/>
+    <parameter name="P_REPORT_TITLE" class="java.lang.String"/>
+
+    <!-- Fields -->
+    <field name="1_contact_info" class="java.math.BigDecimal"/>
+    <field name="amount" class="java.math.BigDecimal"/>
+    <field name="amount_10" class="java.math.BigDecimal"/>
+    <field name="amount_11" class="java.math.BigDecimal"/>
+    <field name="amount_12" class="java.math.BigDecimal"/>
+    <field name="amount_13" class="java.math.BigDecimal"/>
+    <field name="amount_14" class="java.math.BigDecimal"/>
+    <field name="amount_15" class="java.math.BigDecimal"/>
+    <field name="amount_16" class="java.math.BigDecimal"/>
+    <field name="amount_17" class="java.math.BigDecimal"/>
+    <field name="amount_18" class="java.math.BigDecimal"/>
+    <field name="amount_19" class="java.math.BigDecimal"/>
+    <field name="amount_2" class="java.math.BigDecimal"/>
+    <field name="amount_20" class="java.math.BigDecimal"/>
+    <field name="amount_21" class="java.math.BigDecimal"/>
+    <field name="amount_22" class="java.math.BigDecimal"/>
+    <field name="amount_23" class="java.math.BigDecimal"/>
+    <field name="amount_24" class="java.math.BigDecimal"/>
+    <field name="amount_25" class="java.math.BigDecimal"/>
+    <field name="amount_26" class="java.math.BigDecimal"/>
+    <field name="amount_27" class="java.math.BigDecimal"/>
+    <field name="amount_28" class="java.math.BigDecimal"/>
+    <field name="amount_29" class="java.math.BigDecimal"/>
+    <field name="amount_3" class="java.math.BigDecimal"/>
+    <field name="amount_30" class="java.math.BigDecimal"/>
+    <field name="amount_31" class="java.math.BigDecimal"/>
+    <field name="amount_32" class="java.math.BigDecimal"/>
+    <field name="amount_33" class="java.math.BigDecimal"/>
+    <field name="amount_34" class="java.math.BigDecimal"/>
+    <field name="amount_35" class="java.math.BigDecimal"/>
+    <field name="amount_4" class="java.math.BigDecimal"/>
+    <field name="amount_5" class="java.math.BigDecimal"/>
+    <field name="amount_6" class="java.math.BigDecimal"/>
+    <field name="amount_7" class="java.math.BigDecimal"/>
+    <field name="amount_8" class="java.math.BigDecimal"/>
+    <field name="amount_9" class="java.math.BigDecimal"/>
+    <field name="contents_b59" class="java.math.BigDecimal"/>
+    <field name="contents_e_3" class="java.math.BigDecimal"/>
+    <field name="contents_e_4" class="java.math.BigDecimal"/>
+    <field name="oa_ar_or_fr" class="java.math.BigDecimal"/>
+    <field name="oa_ar_or_fr_10" class="java.math.BigDecimal"/>
+    <field name="oa_ar_or_fr_11" class="java.math.BigDecimal"/>
+    <field name="oa_ar_or_fr_12" class="java.math.BigDecimal"/>
+    <field name="oa_ar_or_fr_13" class="java.math.BigDecimal"/>
+    <field name="oa_ar_or_fr_14" class="java.math.BigDecimal"/>
+    <field name="oa_ar_or_fr_15" class="java.math.BigDecimal"/>
+    <field name="oa_ar_or_fr_16" class="java.math.BigDecimal"/>
+    <field name="oa_ar_or_fr_17" class="java.math.BigDecimal"/>
+    <field name="oa_ar_or_fr_18" class="java.math.BigDecimal"/>
+    <field name="oa_ar_or_fr_19" class="java.math.BigDecimal"/>
+    <field name="oa_ar_or_fr_2" class="java.math.BigDecimal"/>
+    <field name="oa_ar_or_fr_20" class="java.math.BigDecimal"/>
+    <field name="oa_ar_or_fr_21" class="java.math.BigDecimal"/>
+    <field name="oa_ar_or_fr_22" class="java.math.BigDecimal"/>
+    <field name="oa_ar_or_fr_23" class="java.math.BigDecimal"/>
+    <field name="oa_ar_or_fr_24" class="java.math.BigDecimal"/>
+    <field name="oa_ar_or_fr_3" class="java.math.BigDecimal"/>
+    <field name="oa_ar_or_fr_4" class="java.math.BigDecimal"/>
+    <field name="oa_ar_or_fr_5" class="java.math.BigDecimal"/>
+    <field name="oa_ar_or_fr_6" class="java.math.BigDecimal"/>
+    <field name="oa_ar_or_fr_7" class="java.math.BigDecimal"/>
+    <field name="oa_ar_or_fr_8" class="java.math.BigDecimal"/>
+    <field name="oa_ar_or_fr_9" class="java.math.BigDecimal"/>
+    <field name="organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published" class="java.math.BigDecimal"/>
+    <field name="organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_10" class="java.math.BigDecimal"/>
+    <field name="organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_11" class="java.math.BigDecimal"/>
+    <field name="organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_2" class="java.math.BigDecimal"/>
+    <field name="organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_3" class="java.math.BigDecimal"/>
+    <field name="organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_4" class="java.math.BigDecimal"/>
+    <field name="organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_5" class="java.math.BigDecimal"/>
+    <field name="organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_6" class="java.math.BigDecimal"/>
+    <field name="organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_7" class="java.math.BigDecimal"/>
+    <field name="organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_8" class="java.math.BigDecimal"/>
+    <field name="organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_9" class="java.math.BigDecimal"/>
+    <field name="organization_or_person" class="java.math.BigDecimal"/>
+    <field name="organization_or_person_10" class="java.math.BigDecimal"/>
+    <field name="organization_or_person_11" class="java.math.BigDecimal"/>
+    <field name="organization_or_person_12" class="java.math.BigDecimal"/>
+    <field name="organization_or_person_13" class="java.math.BigDecimal"/>
+    <field name="organization_or_person_14" class="java.math.BigDecimal"/>
+    <field name="organization_or_person_15" class="java.math.BigDecimal"/>
+    <field name="organization_or_person_16" class="java.math.BigDecimal"/>
+    <field name="organization_or_person_17" class="java.math.BigDecimal"/>
+    <field name="organization_or_person_18" class="java.math.BigDecimal"/>
+    <field name="organization_or_person_19" class="java.math.BigDecimal"/>
+    <field name="organization_or_person_2" class="java.math.BigDecimal"/>
+    <field name="organization_or_person_20" class="java.math.BigDecimal"/>
+    <field name="organization_or_person_21" class="java.math.BigDecimal"/>
+    <field name="organization_or_person_22" class="java.math.BigDecimal"/>
+    <field name="organization_or_person_23" class="java.math.BigDecimal"/>
+    <field name="organization_or_person_24" class="java.math.BigDecimal"/>
+    <field name="organization_or_person_3" class="java.math.BigDecimal"/>
+    <field name="organization_or_person_4" class="java.math.BigDecimal"/>
+    <field name="organization_or_person_5" class="java.math.BigDecimal"/>
+    <field name="organization_or_person_6" class="java.math.BigDecimal"/>
+    <field name="organization_or_person_7" class="java.math.BigDecimal"/>
+    <field name="organization_or_person_8" class="java.math.BigDecimal"/>
+    <field name="organization_or_person_9" class="java.math.BigDecimal"/>
+    <field name="reason" class="java.math.BigDecimal"/>
+    <field name="reason_10" class="java.math.BigDecimal"/>
+    <field name="reason_11" class="java.math.BigDecimal"/>
+    <field name="reason_12" class="java.math.BigDecimal"/>
+    <field name="reason_2" class="java.math.BigDecimal"/>
+    <field name="reason_3" class="java.math.BigDecimal"/>
+    <field name="reason_4" class="java.math.BigDecimal"/>
+    <field name="reason_5" class="java.math.BigDecimal"/>
+    <field name="reason_6" class="java.math.BigDecimal"/>
+    <field name="reason_7" class="java.math.BigDecimal"/>
+    <field name="reason_8" class="java.math.BigDecimal"/>
+    <field name="reason_9" class="java.math.BigDecimal"/>
+    <field name="service_provided" class="java.math.BigDecimal"/>
+    <field name="service_provided_10" class="java.math.BigDecimal"/>
+    <field name="service_provided_11" class="java.math.BigDecimal"/>
+    <field name="service_provided_12" class="java.math.BigDecimal"/>
+    <field name="service_provided_2" class="java.math.BigDecimal"/>
+    <field name="service_provided_3" class="java.math.BigDecimal"/>
+    <field name="service_provided_4" class="java.math.BigDecimal"/>
+    <field name="service_provided_5" class="java.math.BigDecimal"/>
+    <field name="service_provided_6" class="java.math.BigDecimal"/>
+    <field name="service_provided_7" class="java.math.BigDecimal"/>
+    <field name="service_provided_8" class="java.math.BigDecimal"/>
+    <field name="service_provided_9" class="java.math.BigDecimal"/>
+    <field name="show_total_on_pg_4_line_12" class="java.math.BigDecimal"/>
+    <field name="show_total_on_pg_4_line_13" class="java.math.BigDecimal"/>
+    <field name="show_total_on_pg_4_line_17" class="java.math.BigDecimal"/>
+
+    <background>
+        <band height="1067">
+            <staticText>
+                <reportElement x="84" y="105" width="59" height="18"/>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="14" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[EXPENSE DETAIL PART 1]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="123" width="59" height="15"/>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="8" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Remember to select the category in the far left column.]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="139" width="59" height="15"/>
+        <box>
+        <topPen lineWidth="1.5" lineStyle="Solid"/>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="6" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[OA, AR or FR]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="143" y="139" width="319" height="15"/>
+        <box>
+        <topPen lineWidth="1.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[12. ADVERTISING (NON-SCA)]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="748" y="139" width="109" height="15"/>
+        <box>
+        <topPen lineWidth="1.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Amount]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="143" y="155" width="319" height="15"/>
+        <box>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Organization or Periodical (Not a kingdom newsletter) and date ad was published]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="463" y="336" width="284" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Show TOTAL on Pg. 4 Line 12]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="369" width="59" height="15"/>
+        <box>
+        <topPen lineWidth="1.5" lineStyle="Solid"/>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="6" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[OA, 
+AR or 
+FR]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="143" y="369" width="319" height="15"/>
+        <box>
+        <topPen lineWidth="1.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[13. BAD DEBTS]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="463" y="369" width="284" height="15"/>
+        <box>
+        <topPen lineWidth="1.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Reason]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="748" y="369" width="109" height="15"/>
+        <box>
+        <topPen lineWidth="1.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Amount]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="143" y="384" width="319" height="15"/>
+        <box>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Organization or Person]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="463" y="581" width="284" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Show TOTAL on Pg. 4 Line 13]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="613" width="59" height="15"/>
+        <box>
+        <topPen lineWidth="1.5" lineStyle="Solid"/>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="6" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[OA, 
+AR or 
+FR]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="143" y="613" width="319" height="15"/>
+        <box>
+        <topPen lineWidth="1.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[17. FEES &amp; HONORARIA]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="463" y="613" width="284" height="15"/>
+        <box>
+        <topPen lineWidth="1.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Service Provided]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="748" y="613" width="109" height="15"/>
+        <box>
+        <topPen lineWidth="1.5" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Amount]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="143" y="629" width="319" height="15"/>
+        <box>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Organization or Person]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="463" y="825" width="284" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Show TOTAL on Pg. 4 Line 17]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="841" width="59" height="15"/>
+        <box>
+        <topPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="8" isBold="false" isItalic="true" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Use additional sheets if necessary]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="857" width="59" height="15"/>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[-12a-]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true">
+                <reportElement x="84" y="15" width="59" height="15"/>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="5" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{1_contact_info}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="84" y="30" width="59" height="15"/>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="9" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{contents_b59}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="84" y="45" width="59" height="15"/>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="9" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{contents_e_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="84" y="75" width="59" height="15"/>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{contents_e_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="748" y="336" width="109" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{show_total_on_pg_4_line_12}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="748" y="581" width="109" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{show_total_on_pg_4_line_13}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="748" y="825" width="109" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{show_total_on_pg_4_line_17}]]></textFieldExpression>
+            </textField>
+        </band>
+    </background>
+
+    <summary>
+        <band height="1">
+            <textField isBlankWhenNull="true">
+                <reportElement x="0" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{1_contact_info}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="1" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="2" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_10}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="3" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_11}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="4" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_12}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="5" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_13}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="6" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_14}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="7" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_15}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="8" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_16}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="9" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_17}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="10" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_18}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="11" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_19}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="12" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="13" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_20}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="14" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_21}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="15" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_22}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="16" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_23}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="17" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_24}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="18" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_25}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="19" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_26}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="20" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_27}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="21" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_28}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="22" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_29}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="23" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="24" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_30}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="25" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_31}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="26" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_32}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="27" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_33}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="28" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_34}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="29" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_35}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="30" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="31" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_5}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="32" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_6}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="33" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_7}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="34" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_8}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="35" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{amount_9}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="36" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{contents_b59}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="37" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{contents_e_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="38" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{contents_e_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="39" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{oa_ar_or_fr}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="40" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{oa_ar_or_fr_10}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="41" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{oa_ar_or_fr_11}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="42" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{oa_ar_or_fr_12}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="43" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{oa_ar_or_fr_13}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="44" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{oa_ar_or_fr_14}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="45" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{oa_ar_or_fr_15}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="46" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{oa_ar_or_fr_16}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="47" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{oa_ar_or_fr_17}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="48" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{oa_ar_or_fr_18}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="49" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{oa_ar_or_fr_19}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="50" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{oa_ar_or_fr_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="51" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{oa_ar_or_fr_20}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="52" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{oa_ar_or_fr_21}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="53" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{oa_ar_or_fr_22}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="54" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{oa_ar_or_fr_23}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="55" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{oa_ar_or_fr_24}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="56" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{oa_ar_or_fr_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="57" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{oa_ar_or_fr_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="58" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{oa_ar_or_fr_5}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="59" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{oa_ar_or_fr_6}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="60" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{oa_ar_or_fr_7}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="61" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{oa_ar_or_fr_8}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="62" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{oa_ar_or_fr_9}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="63" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="64" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_10}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="65" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_11}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="66" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="67" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="68" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="69" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_5}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="70" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_6}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="71" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_7}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="72" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_8}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="73" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_9}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="74" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_person}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="75" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_person_10}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="76" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_person_11}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="77" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_person_12}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="78" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_person_13}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="79" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_person_14}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="80" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_person_15}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="81" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_person_16}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="82" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_person_17}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="83" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_person_18}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="84" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_person_19}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="85" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_person_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="86" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_person_20}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="87" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_person_21}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="88" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_person_22}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="89" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_person_23}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="90" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_person_24}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="91" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_person_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="92" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_person_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="93" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_person_5}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="94" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_person_6}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="95" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_person_7}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="96" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_person_8}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="97" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{organization_or_person_9}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="98" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{reason}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="99" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{reason_10}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="100" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{reason_11}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="101" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{reason_12}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="102" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{reason_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="103" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{reason_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="104" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{reason_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="105" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{reason_5}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="106" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{reason_6}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="107" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{reason_7}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="108" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{reason_8}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="109" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{reason_9}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="110" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{service_provided}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="111" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{service_provided_10}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="112" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{service_provided_11}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="113" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{service_provided_12}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="114" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{service_provided_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="115" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{service_provided_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="116" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{service_provided_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="117" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{service_provided_5}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="118" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{service_provided_6}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="119" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{service_provided_7}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="120" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{service_provided_8}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="121" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{service_provided_9}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="122" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{show_total_on_pg_4_line_12}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="123" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{show_total_on_pg_4_line_13}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="124" y="0" width="1" height="1" isPrintRepeatedValues="false"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{show_total_on_pg_4_line_17}]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+
+</jasperReport>

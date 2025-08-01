@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+                                  http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="ContactInfoReport" pageWidth="595" pageHeight="842"
+              columnWidth="555" leftMargin="20" rightMargin="20"
+              topMargin="20" bottomMargin="20">
+
+    <!-- Parameters -->
+    <parameter name="P_ORG_NAME" class="java.lang.String"/>
+    <parameter name="P_REPORT_TITLE" class="java.lang.String"/>
+
+    <!-- Fields -->
+    <field name="branch" class="java.lang.String"/>
+    <field name="warrantEndDate" class="java.lang.String"/>
+    <field name="legalName" class="java.lang.String"/>
+    <field name="streetAddress" class="java.lang.String"/>
+    <field name="city" class="java.lang.String"/>
+    <field name="stateProvince" class="java.lang.String"/>
+    <field name="zipPostal" class="java.lang.String"/>
+    <field name="homePhone" class="java.lang.String"/>
+    <field name="altPhone" class="java.lang.String"/>
+    <field name="email" class="java.lang.String"/>
+    <field name="membershipNumber" class="java.lang.String"/>
+    <field name="scaName" class="java.lang.String"/>
+    <field name="membershipExpDate" class="java.lang.String"/>
+
+    <!-- Title -->
+    <title>
+        <band height="60">
+            <textField>
+                <reportElement x="0" y="0" width="555" height="20"/>
+                <textElement textAlignment="Center">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{P_ORG_NAME}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="20" width="555" height="20"/>
+                <textElement textAlignment="Center">
+                    <font size="14" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{P_REPORT_TITLE}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="40" width="555" height="15"/>
+                <textElement textAlignment="Left">
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Branch: " + $F{branch}]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+
+    <!-- Detail Section -->
+    <detail>
+        <band height="180">
+            <!-- Labels and values in two-column format -->
+            <!-- Row 1 -->
+            <staticText>
+                <reportElement x="0" y="0" width="150" height="15"/>
+                <text><![CDATA[Warrant End Date]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="160" y="0" width="395" height="15"/>
+                <textFieldExpression><![CDATA[$F{warrantEndDate}]]></textFieldExpression>
+            </textField>
+
+            <!-- Row 2 -->
+            <staticText>
+                <reportElement x="0" y="20" width="150" height="15"/>
+                <text><![CDATA[Legal Name]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="160" y="20" width="395" height="15"/>
+                <textFieldExpression><![CDATA[$F{legalName}]]></textFieldExpression>
+            </textField>
+
+            <!-- Row 3 -->
+            <staticText>
+                <reportElement x="0" y="40" width="150" height="15"/>
+                <text><![CDATA[Street Address]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="160" y="40" width="395" height="15"/>
+                <textFieldExpression><![CDATA[$F{streetAddress}]]></textFieldExpression>
+            </textField>
+
+            <!-- Row 4 -->
+            <staticText>
+                <reportElement x="0" y="60" width="150" height="15"/>
+                <text><![CDATA[City]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="160" y="60" width="395" height="15"/>
+                <textFieldExpression><![CDATA[$F{city}]]></textFieldExpression>
+            </textField>
+
+            <!-- Row 5 -->
+            <staticText>
+                <reportElement x="0" y="80" width="150" height="15"/>
+                <text><![CDATA[State or Province]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="160" y="80" width="395" height="15"/>
+                <textFieldExpression><![CDATA[$F{stateProvince}]]></textFieldExpression>
+            </textField>
+
+            <!-- Row 6 -->
+            <staticText>
+                <reportElement x="0" y="100" width="150" height="15"/>
+                <text><![CDATA[Zip or Postal Code]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="160" y="100" width="395" height="15"/>
+                <textFieldExpression><![CDATA[$F{zipPostal}]]></textFieldExpression>
+            </textField>
+
+            <!-- Row 7 -->
+            <staticText>
+                <reportElement x="0" y="120" width="150" height="15"/>
+                <text><![CDATA[Home Telephone]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="160" y="120" width="395" height="15"/>
+                <textFieldExpression><![CDATA[$F{homePhone}]]></textFieldExpression>
+            </textField>
+
+            <!-- Row 8 -->
+            <staticText>
+                <reportElement x="0" y="140" width="150" height="15"/>
+                <text><![CDATA[Alternate Phone]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="160" y="140" width="395" height="15"/>
+                <textFieldExpression><![CDATA[$F{altPhone}]]></textFieldExpression>
+            </textField>
+
+            <!-- Row 9 -->
+            <staticText>
+                <reportElement x="0" y="160" width="150" height="15"/>
+                <text><![CDATA[Email]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="160" y="160" width="395" height="15"/>
+                <textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+    <!-- Footer -->
+    <pageFooter>
+        <band height="30">
+            <staticText>
+                <reportElement x="0" y="10" width="555" height="15"/>
+                <textElement textAlignment="Center"/>
+                <text><![CDATA[End of Contact Information]]></text>
+            </staticText>
+        </band>
+    </pageFooter>
+</jasperReport>
