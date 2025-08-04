@@ -1,0 +1,776 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+                                  http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="ASSET_DTL_5a_AUTO_STYLED" language="java"
+              pageWidth="1710" pageHeight="969"
+              columnWidth="1710" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+    <style name="vLabel" fontName="Garamond" fontSize="10" isBold="true"/>
+    <style name="vValue" fontName="Garamond" fontSize="10"/>
+
+
+    <!-- Parameters -->
+    <parameter name="P_ORG_NAME" class="java.lang.String"/>
+    <parameter name="P_REPORT_TITLE" class="java.lang.String"/>
+
+    <!-- Fields -->
+    <field name="_1_contact_info" class="java.math.BigDecimal"/>
+    <field name="add_total_to_pg_3_i_a_end" class="java.math.BigDecimal"/>
+    <field name="amount" class="java.math.BigDecimal"/>
+    <field name="amount_2" class="java.math.BigDecimal"/>
+    <field name="amount_3" class="java.math.BigDecimal"/>
+    <field name="amount_4" class="java.math.BigDecimal"/>
+    <field name="amount_5" class="java.math.BigDecimal"/>
+    <field name="amount_6" class="java.math.BigDecimal"/>
+    <field name="amount_7" class="java.math.BigDecimal"/>
+    <field name="amount_8" class="java.math.BigDecimal"/>
+    <field name="contents_b59" class="java.math.BigDecimal"/>
+    <field name="contents_e_3" class="java.math.BigDecimal"/>
+    <field name="contents_e_4" class="java.math.BigDecimal"/>
+    <field name="current_amount" class="java.math.BigDecimal"/>
+    <field name="current_amount_10" class="java.math.BigDecimal"/>
+    <field name="current_amount_11" class="java.math.BigDecimal"/>
+    <field name="current_amount_12" class="java.math.BigDecimal"/>
+    <field name="current_amount_13" class="java.math.BigDecimal"/>
+    <field name="current_amount_14" class="java.math.BigDecimal"/>
+    <field name="current_amount_15" class="java.math.BigDecimal"/>
+    <field name="current_amount_16" class="java.math.BigDecimal"/>
+    <field name="current_amount_17" class="java.math.BigDecimal"/>
+    <field name="current_amount_18" class="java.math.BigDecimal"/>
+    <field name="current_amount_19" class="java.math.BigDecimal"/>
+    <field name="current_amount_2" class="java.math.BigDecimal"/>
+    <field name="current_amount_20" class="java.math.BigDecimal"/>
+    <field name="current_amount_21" class="java.math.BigDecimal"/>
+    <field name="current_amount_22" class="java.math.BigDecimal"/>
+    <field name="current_amount_23" class="java.math.BigDecimal"/>
+    <field name="current_amount_24" class="java.math.BigDecimal"/>
+    <field name="current_amount_25" class="java.math.BigDecimal"/>
+    <field name="current_amount_26" class="java.math.BigDecimal"/>
+    <field name="current_amount_3" class="java.math.BigDecimal"/>
+    <field name="current_amount_4" class="java.math.BigDecimal"/>
+    <field name="current_amount_5" class="java.math.BigDecimal"/>
+    <field name="current_amount_6" class="java.math.BigDecimal"/>
+    <field name="current_amount_7" class="java.math.BigDecimal"/>
+    <field name="current_amount_8" class="java.math.BigDecimal"/>
+    <field name="current_amount_9" class="java.math.BigDecimal"/>
+    <field name="other_assets_description" class="java.math.BigDecimal"/>
+    <field name="other_assets_description_2" class="java.math.BigDecimal"/>
+    <field name="other_assets_description_3" class="java.math.BigDecimal"/>
+    <field name="other_assets_description_4" class="java.math.BigDecimal"/>
+    <field name="other_assets_description_5" class="java.math.BigDecimal"/>
+    <field name="other_assets_description_6" class="java.math.BigDecimal"/>
+    <field name="other_assets_description_7" class="java.math.BigDecimal"/>
+    <field name="other_assets_description_8" class="java.math.BigDecimal"/>
+    <field name="prepaid_expenses_description" class="java.math.BigDecimal"/>
+    <field name="prepaid_expenses_description_2" class="java.math.BigDecimal"/>
+    <field name="prepaid_expenses_description_3" class="java.math.BigDecimal"/>
+    <field name="prepaid_expenses_description_4" class="java.math.BigDecimal"/>
+    <field name="prepaid_expenses_description_5" class="java.math.BigDecimal"/>
+    <field name="prior_amount" class="java.math.BigDecimal"/>
+    <field name="prior_amount_10" class="java.math.BigDecimal"/>
+    <field name="prior_amount_11" class="java.math.BigDecimal"/>
+    <field name="prior_amount_12" class="java.math.BigDecimal"/>
+    <field name="prior_amount_13" class="java.math.BigDecimal"/>
+    <field name="prior_amount_14" class="java.math.BigDecimal"/>
+    <field name="prior_amount_15" class="java.math.BigDecimal"/>
+    <field name="prior_amount_16" class="java.math.BigDecimal"/>
+    <field name="prior_amount_17" class="java.math.BigDecimal"/>
+    <field name="prior_amount_18" class="java.math.BigDecimal"/>
+    <field name="prior_amount_19" class="java.math.BigDecimal"/>
+    <field name="prior_amount_2" class="java.math.BigDecimal"/>
+    <field name="prior_amount_20" class="java.math.BigDecimal"/>
+    <field name="prior_amount_21" class="java.math.BigDecimal"/>
+    <field name="prior_amount_22" class="java.math.BigDecimal"/>
+    <field name="prior_amount_23" class="java.math.BigDecimal"/>
+    <field name="prior_amount_24" class="java.math.BigDecimal"/>
+    <field name="prior_amount_25" class="java.math.BigDecimal"/>
+    <field name="prior_amount_26" class="java.math.BigDecimal"/>
+    <field name="prior_amount_3" class="java.math.BigDecimal"/>
+    <field name="prior_amount_4" class="java.math.BigDecimal"/>
+    <field name="prior_amount_5" class="java.math.BigDecimal"/>
+    <field name="prior_amount_6" class="java.math.BigDecimal"/>
+    <field name="prior_amount_7" class="java.math.BigDecimal"/>
+    <field name="prior_amount_8" class="java.math.BigDecimal"/>
+    <field name="prior_amount_9" class="java.math.BigDecimal"/>
+    <field name="reason" class="java.math.BigDecimal"/>
+    <field name="reason_10" class="java.math.BigDecimal"/>
+    <field name="reason_11" class="java.math.BigDecimal"/>
+    <field name="reason_2" class="java.math.BigDecimal"/>
+    <field name="reason_3" class="java.math.BigDecimal"/>
+    <field name="reason_4" class="java.math.BigDecimal"/>
+    <field name="reason_5" class="java.math.BigDecimal"/>
+    <field name="reason_6" class="java.math.BigDecimal"/>
+    <field name="reason_7" class="java.math.BigDecimal"/>
+    <field name="reason_8" class="java.math.BigDecimal"/>
+    <field name="reason_9" class="java.math.BigDecimal"/>
+    <field name="receivables_owed_from" class="java.math.BigDecimal"/>
+    <field name="receivables_owed_from_10" class="java.math.BigDecimal"/>
+    <field name="receivables_owed_from_11" class="java.math.BigDecimal"/>
+    <field name="receivables_owed_from_2" class="java.math.BigDecimal"/>
+    <field name="receivables_owed_from_3" class="java.math.BigDecimal"/>
+    <field name="receivables_owed_from_4" class="java.math.BigDecimal"/>
+    <field name="receivables_owed_from_5" class="java.math.BigDecimal"/>
+    <field name="receivables_owed_from_6" class="java.math.BigDecimal"/>
+    <field name="receivables_owed_from_7" class="java.math.BigDecimal"/>
+    <field name="receivables_owed_from_8" class="java.math.BigDecimal"/>
+    <field name="receivables_owed_from_9" class="java.math.BigDecimal"/>
+    <field name="sending_branch_or_reason" class="java.math.BigDecimal"/>
+    <field name="sending_branch_or_reason_2" class="java.math.BigDecimal"/>
+    <field name="sending_branch_or_reason_3" class="java.math.BigDecimal"/>
+    <field name="sending_branch_or_reason_4" class="java.math.BigDecimal"/>
+    <field name="sending_branch_or_reason_5" class="java.math.BigDecimal"/>
+    <field name="sending_branch_or_reason_6" class="java.math.BigDecimal"/>
+    <field name="sending_branch_or_reason_7" class="java.math.BigDecimal"/>
+    <field name="sending_branch_or_reason_8" class="java.math.BigDecimal"/>
+    <field name="total" class="java.math.BigDecimal"/>
+    <field name="total_2" class="java.math.BigDecimal"/>
+
+    <background>
+        <band height="969">
+            <staticText>
+                <reportElement x="84" y="105" width="228" height="18"/>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="14" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[ASSET DETAIL WORKSHEET]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="139" width="228" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Undeposited funds are cash or checks not yet deposited into an account, and the amount of any temporary cash funds that may exist.]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="154" width="228" height="15"/>
+        <box>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Enter the total amount below with the reason it is not in a bank.]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="169" width="228" height="15"/>
+        <box>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[4th quarter only: Also enter any undeposited transfer checks written in prior year.]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="185" width="228" height="15"/>
+        <box>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[UNDEPOSITED FUNDS AND LATE-ARRIVING TRANSFER CHECKS]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="201" width="228" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Sending Branch or Reason ]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="313" y="201" width="130" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Amount]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="444" y="201" width="109" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Sending Branch or Reason ]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="685" y="201" width="59" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Amount]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="277" width="228" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Add TOTAL to Pg. 3 I.a (End)]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="309" width="228" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Receivables are funds that are due to the SCA, Inc. from third parties through already established obligations. Examples include:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="324" width="228" height="15"/>
+        <box>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Unresolved cash advances, returned checks and bank fees, etc.]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="340" width="228" height="15"/>
+        <box>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[RECEIVABLES:  Owed From]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="313" y="340" width="130" height="15"/>
+        <box>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Reason]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="554" y="340" width="130" height="15"/>
+        <box>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Prior Amount]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="685" y="340" width="59" height="15"/>
+        <box>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Current Amount]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="444" y="522" width="109" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[TOTAL  ]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="444" y="537" width="109" height="15"/>
+        <box>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Show on  ]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="554" y="537" width="130" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="true" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Pg. 3 I.c (Start)]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="685" y="537" width="59" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="true" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Pg. 3 I.c (End)]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="570" width="228" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Prepaid expenses are any expenses that we have paid for in advance, such as site deposits or down payments, that will be used ]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="585" width="228" height="15"/>
+        <box>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[toward the final payment. We are still owed the product or service for which that payment is related, or a refund.]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="600" width="228" height="15"/>
+        <box>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[PREPAID EXPENSES: Description]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="554" y="600" width="130" height="15"/>
+        <box>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Prior Amount]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="685" y="600" width="59" height="15"/>
+        <box>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Current Amount]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="444" y="708" width="109" height="15"/>
+        <box>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Show on  ]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="554" y="708" width="130" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="true" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Pg. 3 I.h (Start)]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="685" y="708" width="59" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="true" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Pg. 3 I.h (End)]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="740" width="228" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Other assets are any assets that do not fall into any other category. An example is a site security deposit which will be returned ]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="755" width="228" height="15"/>
+        <box>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[after the event has occurred and the site is inspected.]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="771" width="228" height="15"/>
+        <box>
+        <leftPen lineWidth="1.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="0.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[OTHER ASSETS: Description]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="554" y="771" width="130" height="15"/>
+        <box>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Prior Amount]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="685" y="771" width="59" height="15"/>
+        <box>
+        <leftPen lineWidth="0.5" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Current Amount]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="444" y="923" width="109" height="15"/>
+        <box>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Show on  ]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="554" y="923" width="130" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="true" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Pg. 3 I.i (Start)]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="685" y="923" width="59" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="true" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Pg. 3 I.i (End)]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="939" width="228" height="15"/>
+        <box>
+        <topPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="true" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[Use additional sheets if necessary]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="84" y="954" width="228" height="15"/>
+                <textElement verticalAlignment="Middle" textAlignment="Left">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <text><![CDATA[-5a-]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true">
+                <reportElement x="84" y="15" width="228" height="15"/>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="5" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{_1_contact_info}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="84" y="30" width="228" height="15"/>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="9" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{contents_b59}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="84" y="45" width="228" height="15"/>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="9" isBold="true" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{contents_e_3}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="84" y="75" width="228" height="15"/>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="true" isItalic="false" isUnderline="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{contents_e_4}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="685" y="277" width="59" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1.5" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{add_total_to_pg_3_i_a_end}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="554" y="522" width="130" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="685" y="522" width="59" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{total_2}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="554" y="692" width="130" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{prior_amount_17}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="685" y="692" width="59" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{current_amount_17}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="554" y="907" width="130" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{prior_amount_26}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="685" y="907" width="59" height="15"/>
+        <box>
+        <topPen lineWidth="1" lineStyle="Solid"/>
+        <leftPen lineWidth="1" lineStyle="Solid"/>
+        <bottomPen lineWidth="1" lineStyle="Solid"/>
+        <rightPen lineWidth="1.5" lineStyle="Solid"/>
+        </box>
+                <textElement verticalAlignment="Middle" textAlignment="Right">
+                <font fontName="Garamond" size="10" isBold="false" isItalic="false" isUnderline="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{current_amount_26}]]></textFieldExpression>
+            </textField>
+        </band>
+    </background>
+
+    <!-- Hidden parking band -->
+    <summary>
+        <band height="120">
+            <!-- Top-level context / off-page links -->
+            <staticText>
+                <reportElement style="vLabel" x="0" y="0" width="170" height="15"/>
+                <textElement><font fontName="Garamond" size="10" isBold="true"/></textElement>
+                <text><![CDATA[Contact Info]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true">
+                <reportElement style="vValue" x="175" y="0" width="228" height="15"/>
+                <textElement textAlignment="Left" verticalAlignment="Middle">
+                    <font fontName="Garamond" size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{_1_contact_info}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement style="vLabel" x="0" y="18" width="170" height="15"/>
+                <textElement><font fontName="Garamond" size="10" isBold="true"/></textElement>
+                <text><![CDATA[Contents B59]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true">
+                <reportElement style="vValue" x="175" y="18" width="228" height="15"/>
+                <textElement><font fontName="Garamond" size="10"/></textElement>
+                <textFieldExpression><![CDATA[$F{contents_b59}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement style="vLabel" x="0" y="36" width="170" height="15"/>
+                <textElement><font fontName="Garamond" size="10" isBold="true"/></textElement>
+                <text><![CDATA[Section Title]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true">
+                <reportElement style="vValue" x="175" y="36" width="228" height="15"/>
+                <textElement><font fontName="Garamond" size="10"/></textElement>
+                <textFieldExpression><![CDATA[$F{contents_e_3}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement style="vLabel" x="0" y="54" width="170" height="15"/>
+                <textElement><font fontName="Garamond" size="10" isBold="true"/></textElement>
+                <text><![CDATA[Section Subtitle]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true">
+                <reportElement style="vValue" x="175" y="54" width="228" height="15"/>
+                <textElement><font fontName="Garamond" size="10"/></textElement>
+                <textFieldExpression><![CDATA[$F{contents_e_4}]]></textFieldExpression>
+            </textField>
+
+            <!-- Totals -->
+            <staticText>
+                <reportElement style="vLabel" x="430" y="0" width="160" height="15"/>
+                <textElement><font fontName="Garamond" size="10" isBold="true"/></textElement>
+                <text><![CDATA[Total]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true">
+                <reportElement style="vValue" x="595" y="0" width="130" height="15"/>
+                <textElement textAlignment="Right"><font fontName="Garamond" size="10"/></textElement>
+                <textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement style="vLabel" x="430" y="18" width="160" height="15"/>
+                <textElement><font fontName="Garamond" size="10" isBold="true"/></textElement>
+                <text><![CDATA[Total (Alt.)]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true">
+                <reportElement style="vValue" x="595" y="18" width="130" height="15"/>
+                <textElement textAlignment="Right"><font fontName="Garamond" size="10"/></textElement>
+                <textFieldExpression><![CDATA[$F{total_2}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement style="vLabel" x="430" y="36" width="220" height="15"/>
+                <textElement><font fontName="Garamond" size="10" isBold="true"/></textElement>
+                <text><![CDATA[Add to Pg. 3 I.a (End)]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true">
+                <reportElement style="vValue" x="655" y="36" width="130" height="15"/>
+                <textElement textAlignment="Right"><font fontName="Garamond" size="10"/></textElement>
+                <textFieldExpression><![CDATA[$F{add_total_to_pg_3_i_a_end}]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+
+</jasperReport>
