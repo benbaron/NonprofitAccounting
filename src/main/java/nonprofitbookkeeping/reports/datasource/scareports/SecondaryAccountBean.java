@@ -14,5 +14,4 @@ public class SecondaryAccountBean
 	private java.math.BigDecimal unclearedChecks;
 	private java.math.BigDecimal adjustedBalance;
 	
-	// + getters / setters
 }

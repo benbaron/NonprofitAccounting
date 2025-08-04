@@ -6,6 +6,8 @@
               name="PrimaryAccountReconciliationFlatStyled" pageWidth="595" pageHeight="842"
               columnWidth="555" leftMargin="20" rightMargin="20"
               topMargin="20" bottomMargin="20">
+    <style name="PairedLabel" fontName="Garamond" fontSize="10" isBold="true" />
+    <style name="PairedValue" fontName="Garamond" fontSize="10" />
 
     <!-- Fields (flattened as before) -->
     <field name="bankName" class="java.lang.String"/>

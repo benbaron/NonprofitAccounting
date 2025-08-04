@@ -2,15 +2,13 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
 
-import lombok.Getter;
-import lombok.Setter;
+
 
 /**
  * Auto-generated bean for ASSET_DTL_5a report.
  * Generated on 2025-08-01.
  */
-@Getter
-@Setter
+
 public class AssetDtl5aBean {
     private BigDecimal _1_contact_info;
     private BigDecimal add_total_to_pg_3_i_a_end;

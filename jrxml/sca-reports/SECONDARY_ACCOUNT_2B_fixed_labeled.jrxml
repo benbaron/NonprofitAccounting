@@ -1,0 +1,67 @@
+<jasperReport name="SecondaryAccounts2b" language="java"
+              pageWidth="595" pageHeight="842" columnWidth="555"
+              whenNoDataType="AllSectionsNoDetail" leftMargin="20" rightMargin="20"
+              topMargin="20" bottomMargin="20" uuid="d942e58d-13e1-4237-b06d-c7928a54de1d"
+              xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+                                  http://jasperreports.sourceforge.net/xsd/jasperreport.xsd">
+    <style name="PairedLabel" fontName="Garamond" fontSize="10" isBold="true" />
+    <style name="PairedValue" fontName="Garamond" fontSize="10" />
+
+    <!-- Header parameters (reuse) -->
+    <parameter name="P_ORG_NAME"   class="java.lang.String"/>
+    <parameter name="P_REPORT_TITLE" class="java.lang.String"/>
+
+    <!-- Bean fields -->
+    <field name="bankName"          class="java.lang.String"/>
+    <field name="accountNumber"     class="java.lang.String"/>
+    <field name="statementBalance"  class="java.math.BigDecimal"/>
+    <field name="unclearedDeposits" class="java.math.BigDecimal"/>
+    <field name="unclearedChecks"   class="java.math.BigDecimal"/>
+    <field name="adjustedBalance"   class="java.math.BigDecimal"/>
+
+    <!-- Title band -->
+    <title>
+      <band height="40">
+        <textField>
+          <reportElement x="0" y="0" width="555" height="18"/>
+          <textElement textAlignment="Center" verticalAlignment="Middle">
+            <font size="14" isBold="true"/>
+          </textElement>
+          <textFieldExpression><![CDATA[$P{P_ORG_NAME}]]></textFieldExpression>
+        </textField>
+        <textField>
+          <reportElement x="0" y="18" width="555" height="18"/>
+          <textElement textAlignment="Center">
+            <font size="12"/>
+          </textElement>
+          <textFieldExpression><![CDATA[$P{P_REPORT_TITLE}]]></textFieldExpression>
+        </textField>
+      </band>
+    </title>
+
+    <!-- Column headers row -->
+    <pageHeader>
+      <band height="18">
+        <staticText><reportElement x="0"   y="0" width="110" height="18"/><text><![CDATA[Bank Name]]></text></staticText>
+        <staticText><reportElement x="110" y="0" width="110" height="18"/><text><![CDATA[Account #]]></text></staticText>
+        <staticText><reportElement x="220" y="0" width="70"  height="18"/><text><![CDATA[Stmt Bal]]></text></staticText>
+        <staticText><reportElement x="290" y="0" width="70"  height="18"/><text><![CDATA[Deposits]]></text></staticText>
+        <staticText><reportElement x="360" y="0" width="70"  height="18"/><text><![CDATA[Checks]]></text></staticText>
+        <staticText><reportElement x="430" y="0" width="70"  height="18"/><text><![CDATA[Adjusted]]></text></staticText>
+      </band>
+    </pageHeader>
+
+    <!-- Detail band (one row per bean) -->
+    <detail>
+      <band height="18">
+        <textField><reportElement x="0"   y="0" width="110" height="18"/><textFieldExpression><![CDATA[$F{bankName}]]></textFieldExpression></textField>
+        <textField><reportElement x="110" y="0" width="110" height="18"/><textFieldExpression><![CDATA[$F{accountNumber}]]></textFieldExpression></textField>
+        <textField pattern="#,##0.00"><reportElement x="220" y="0" width="70" height="18"/><textElement textAlignment="Right"/><textFieldExpression><![CDATA[$F{statementBalance}]]></textFieldExpression></textField>
+        <textField pattern="#,##0.00"><reportElement x="290" y="0" width="70" height="18"/><textElement textAlignment="Right"/><textFieldExpression><![CDATA[$F{unclearedDeposits}]]></textFieldExpression></textField>
+        <textField pattern="#,##0.00"><reportElement x="360" y="0" width="70" height="18"/><textElement textAlignment="Right"/><textFieldExpression><![CDATA[$F{unclearedChecks}]]></textFieldExpression></textField>
+        <textField pattern="#,##0.00"><reportElement x="430" y="0" width="70" height="18"/><textElement textAlignment="Right"/><textFieldExpression><![CDATA[$F{adjustedBalance}]]></textFieldExpression></textField>
+      </band>
+    </detail>
+</jasperReport>

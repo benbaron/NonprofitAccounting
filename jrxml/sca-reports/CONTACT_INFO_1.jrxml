@@ -1,225 +1,322 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="ContactInfoReport" language="java" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a31f92a0-d451-11ee-9dce-bb20fae62e66" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd">
-  <parameter name="P_REPORT_TITLE" class_="java.lang.String"/>
-  <parameter name="P_ORG_NAME" class_="java.lang.String"/>
-  <field name="branch" class_="java.lang.String"/>
-  <field name="warrantEndDate" class_="java.lang.String"/>
-  <field name="legalName" class_="java.lang.String"/>
-  <field name="streetAddress" class_="java.lang.String"/>
-  <field name="city" class_="java.lang.String"/>
-  <field name="stateProvince" class_="java.lang.String"/>
-  <field name="zipPostal" class_="java.lang.String"/>
-  <field name="homePhone" class_="java.lang.String"/>
-  <field name="altPhone" class_="java.lang.String"/>
-  <field name="email" class_="java.lang.String"/>
-  <field name="membershipNumber" class_="java.lang.String"/>
-  <field name="scaName" class_="java.lang.String"/>
-  <field name="membershipExpDate" class_="java.lang.String"/>
-  <title>
-    <band height="60">
-      <textField>
-        <reportElement x="0" y="0" width="555" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="14"/>
-        </textElement>
-        <textFieldExpression class="java.lang.String"><![CDATA[$F{P_REPORT_TITLE}]]></textFieldExpression>
-      </textField>
-      <textField>
-        <reportElement x="0" y="25" width="555" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="12"/>
-        </textElement>
-        <textFieldExpression class="java.lang.String"><![CDATA[$F{P_ORG_NAME}]]></textFieldExpression>
-      </textField>
-    </band>
-  </title>
-  <detail>
-    <band height="400"/>
-  </detail>
-  <detail>
-    <band height="400">
-      <staticText>
-        <reportElement x="0" y="0" width="160" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="11"/>
-        </textElement>
-        <text><![CDATA[Branch:]]></text>
-      </staticText>
-      <textField>
-        <reportElement x="170" y="0" width="360" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="11"/>
-        </textElement>
-        <textFieldExpression class="java.lang.String"><![CDATA[$F{branch}]]></textFieldExpression>
-      </textField>
-      <staticText>
-        <reportElement x="0" y="25" width="160" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="11"/>
-        </textElement>
-        <text><![CDATA[SCA Name:]]></text>
-      </staticText>
-      <textField>
-        <reportElement x="170" y="25" width="360" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="11"/>
-        </textElement>
-        <textFieldExpression class="java.lang.String"><![CDATA[$F{scaName}]]></textFieldExpression>
-      </textField>
-      <staticText>
-        <reportElement x="0" y="50" width="160" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="11"/>
-        </textElement>
-        <text><![CDATA[Legal Name:]]></text>
-      </staticText>
-      <textField>
-        <reportElement x="170" y="50" width="360" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="11"/>
-        </textElement>
-        <textFieldExpression class="java.lang.String"><![CDATA[$F{legalName}]]></textFieldExpression>
-      </textField>
-      <staticText>
-        <reportElement x="0" y="75" width="160" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="11"/>
-        </textElement>
-        <text><![CDATA[Street Address:]]></text>
-      </staticText>
-      <textField>
-        <reportElement x="170" y="75" width="360" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="11"/>
-        </textElement>
-        <textFieldExpression class="java.lang.String"><![CDATA[$F{streetAddress}]]></textFieldExpression>
-      </textField>
-      <staticText>
-        <reportElement x="0" y="100" width="160" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="11"/>
-        </textElement>
-        <text><![CDATA[City:]]></text>
-      </staticText>
-      <textField>
-        <reportElement x="170" y="100" width="360" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="11"/>
-        </textElement>
-        <textFieldExpression class="java.lang.String"><![CDATA[$F{city}]]></textFieldExpression>
-      </textField>
-      <staticText>
-        <reportElement x="0" y="125" width="160" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="11"/>
-        </textElement>
-        <text><![CDATA[State/Province:]]></text>
-      </staticText>
-      <textField>
-        <reportElement x="170" y="125" width="360" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="11"/>
-        </textElement>
-        <textFieldExpression class="java.lang.String"><![CDATA[$F{stateProvince}]]></textFieldExpression>
-      </textField>
-      <staticText>
-        <reportElement x="0" y="150" width="160" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="11"/>
-        </textElement>
-        <text><![CDATA[Zip/Postal:]]></text>
-      </staticText>
-      <textField>
-        <reportElement x="170" y="150" width="360" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="11"/>
-        </textElement>
-        <textFieldExpression class="java.lang.String"><![CDATA[$F{zipPostal}]]></textFieldExpression>
-      </textField>
-      <staticText>
-        <reportElement x="0" y="175" width="160" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="11"/>
-        </textElement>
-        <text><![CDATA[Home Phone:]]></text>
-      </staticText>
-      <textField>
-        <reportElement x="170" y="175" width="360" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="11"/>
-        </textElement>
-        <textFieldExpression class="java.lang.String"><![CDATA[$F{homePhone}]]></textFieldExpression>
-      </textField>
-      <staticText>
-        <reportElement x="0" y="200" width="160" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="11"/>
-        </textElement>
-        <text><![CDATA[Alternate Phone:]]></text>
-      </staticText>
-      <textField>
-        <reportElement x="170" y="200" width="360" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="11"/>
-        </textElement>
-        <textFieldExpression class="java.lang.String"><![CDATA[$F{altPhone}]]></textFieldExpression>
-      </textField>
-      <staticText>
-        <reportElement x="0" y="225" width="160" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="11"/>
-        </textElement>
-        <text><![CDATA[Email:]]></text>
-      </staticText>
-      <textField>
-        <reportElement x="170" y="225" width="360" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="11"/>
-        </textElement>
-        <textFieldExpression class="java.lang.String"><![CDATA[$F{email}]]></textFieldExpression>
-      </textField>
-      <staticText>
-        <reportElement x="0" y="250" width="160" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="11"/>
-        </textElement>
-        <text><![CDATA[Membership #:]]></text>
-      </staticText>
-      <textField>
-        <reportElement x="170" y="250" width="360" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="11"/>
-        </textElement>
-        <textFieldExpression class="java.lang.String"><![CDATA[$F{membershipNumber}]]></textFieldExpression>
-      </textField>
-      <staticText>
-        <reportElement x="0" y="275" width="160" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="11"/>
-        </textElement>
-        <text><![CDATA[Membership Expiration:]]></text>
-      </staticText>
-      <textField>
-        <reportElement x="170" y="275" width="360" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="11"/>
-        </textElement>
-        <textFieldExpression class="java.lang.String"><![CDATA[$F{membershipExpDate}]]></textFieldExpression>
-      </textField>
-      <staticText>
-        <reportElement x="0" y="300" width="160" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="11"/>
-        </textElement>
-        <text><![CDATA[Warrant End Date:]]></text>
-      </staticText>
-      <textField>
-        <reportElement x="170" y="300" width="360" height="20"/>
-        <textElement textAlignment="Left">
-          <font size="11"/>
-        </textElement>
-        <textFieldExpression class="java.lang.String"><![CDATA[$F{warrantEndDate}]]></textFieldExpression>
-      </textField>
-    </band>
-  </detail>
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+                                  http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="ContactInfoFull" pageWidth="595" pageHeight="842"
+              columnWidth="555" leftMargin="20" rightMargin="20"
+              topMargin="20" bottomMargin="20">
+
+    <!-- Optional parameters (e.g., title/organization if you want) -->
+    <parameter name="P_REPORT_TITLE" class="java.lang.String"/>
+    <parameter name="P_ORGANIZATION_NAME" class="java.lang.String"/>
+
+    <!-- Fields matching the bean -->
+    <field name="warrantEndDate" class="java.util.Date"/>
+    <field name="primaryLegalName" class="java.lang.String"/>
+    <field name="primaryStreetAddress" class="java.lang.String"/>
+    <field name="primaryCity" class="java.lang.String"/>
+    <field name="primaryStateOrProvince" class="java.lang.String"/>
+    <field name="primaryPostalCode" class="java.lang.String"/>
+    <field name="primaryHomeTelephone" class="java.lang.String"/>
+    <field name="primaryAlternatePhone" class="java.lang.String"/>
+    <field name="primaryInternetEmail" class="java.lang.String"/>
+    <field name="primaryScaName" class="java.lang.String"/>
+    <field name="primaryMembershipNumber" class="java.lang.String"/>
+    <field name="primaryExpirationDate" class="java.util.Date"/>
+    <field name="primaryMailingAddress" class="java.lang.String"/>
+    <field name="primaryMailingCity" class="java.lang.String"/>
+    <field name="primaryMailingStateOrProvince" class="java.lang.String"/>
+    <field name="primaryMailingPostalCode" class="java.lang.String"/>
+    <field name="deputyLegalName" class="java.lang.String"/>
+    <field name="deputyStreetAddress" class="java.lang.String"/>
+    <field name="deputyCity" class="java.lang.String"/>
+    <field name="deputyStateOrProvince" class="java.lang.String"/>
+    <field name="deputyHomeTelephone" class="java.lang.String"/>
+    <field name="deputyAlternatePhone" class="java.lang.String"/>
+    <field name="deputyInternetEmail" class="java.lang.String"/>
+    <field name="deputyScaName" class="java.lang.String"/>
+
+    <!-- Styles (match Excel: Garamond for body, bolder for labels) -->
+    <style name="Label" fontName="Garamond" fontSize="10" isBold="true"/>
+    <style name="Value" fontName="Garamond" fontSize="10"/>
+
+    <!-- Title -->
+    <title>
+        <band height="60">
+            <staticText>
+                <reportElement x="0" y="0" width="555" height="20"/>
+                <textElement textAlignment="Center">
+                    <font size="14" isBold="true" fontName="Garamond"/>
+                </textElement>
+                <text><![CDATA[CHANCELLOR OF THE EXCHEQUER CONTACT INFORMATION]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="0" y="25" width="270" height="15"/>
+                <textElement>
+                    <font size="11" fontName="Garamond"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{P_REPORT_TITLE}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="285" y="25" width="270" height="15"/>
+                <textElement>
+                    <font size="11" fontName="Garamond"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{P_ORGANIZATION_NAME}]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+
+    <!-- Detail: Primary contact -->
+    <detail>
+        <band height="360">
+            <!-- Warrant End Date -->
+            <staticText>
+                <reportElement x="0" y="0" width="130" height="14"/>
+                <textElement>
+                    <font isBold="true" fontName="Garamond" size="10"/>
+                </textElement>
+                <text><![CDATA[Warrant End Date:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="135" y="0" width="150" height="14"/>
+                <textFieldExpression><![CDATA[$F{warrantEndDate}]]></textFieldExpression>
+            </textField>
+
+            <!-- Primary Legal Name -->
+            <staticText>
+                <reportElement x="0" y="18" width="130" height="14"/>
+                <textElement>
+                    <font isBold="true" fontName="Garamond" size="10"/>
+                </textElement>
+                <text><![CDATA[Legal Name:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="135" y="18" width="300" height="14"/>
+                <textFieldExpression><![CDATA[$F{primaryLegalName}]]></textFieldExpression>
+            </textField>
+
+            <!-- Address block -->
+            <staticText>
+                <reportElement x="0" y="36" width="130" height="14"/>
+                <text><![CDATA[Street Address:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="135" y="36" width="300" height="14"/>
+                <textFieldExpression><![CDATA[$F{primaryStreetAddress}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="0" y="54" width="130" height="14"/>
+                <text><![CDATA[City:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="135" y="54" width="120" height="14"/>
+                <textFieldExpression><![CDATA[$F{primaryCity}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="265" y="54" width="140" height="14"/>
+                <text><![CDATA[State or Province:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="410" y="54" width="120" height="14"/>
+                <textFieldExpression><![CDATA[$F{primaryStateOrProvince}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="0" y="72" width="130" height="14"/>
+                <text><![CDATA[Zip/Postal Code:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="135" y="72" width="120" height="14"/>
+                <textFieldExpression><![CDATA[$F{primaryPostalCode}]]></textFieldExpression>
+            </textField>
+
+            <!-- Phones / Email -->
+            <staticText>
+                <reportElement x="0" y="90" width="130" height="14"/>
+                <text><![CDATA[Home Telephone:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="135" y="90" width="150" height="14"/>
+                <textFieldExpression><![CDATA[$F{primaryHomeTelephone}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="300" y="90" width="140" height="14"/>
+                <text><![CDATA[Alternate Phone:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="445" y="90" width="150" height="14"/>
+                <textFieldExpression><![CDATA[$F{primaryAlternatePhone}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="0" y="108" width="130" height="14"/>
+                <text><![CDATA[Internet / E-mail:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="135" y="108" width="300" height="14"/>
+                <textFieldExpression><![CDATA[$F{primaryInternetEmail}]]></textFieldExpression>
+            </textField>
+
+            <!-- SCA Name -->
+            <staticText>
+                <reportElement x="0" y="126" width="130" height="14"/>
+                <text><![CDATA[SCA Name:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="135" y="126" width="300" height="14"/>
+                <textFieldExpression><![CDATA[$F{primaryScaName}]]></textFieldExpression>
+            </textField>
+
+            <!-- Membership & Expiration -->
+            <staticText>
+                <reportElement x="0" y="144" width="130" height="14"/>
+                <text><![CDATA[Membership #:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="135" y="144" width="150" height="14"/>
+                <textFieldExpression><![CDATA[$F{primaryMembershipNumber}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="300" y="144" width="120" height="14"/>
+                <text><![CDATA[Exp. Date:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="425" y="144" width="120" height="14"/>
+                <textFieldExpression><![CDATA[$F{primaryExpirationDate}]]></textFieldExpression>
+            </textField>
+
+            <!-- Mailing address if different -->
+            <staticText>
+                <reportElement x="0" y="170" width="555" height="16"/>
+                <textElement>
+                    <font isBold="true" fontName="Garamond" size="11"/>
+                </textElement>
+                <text><![CDATA[Mailing Address (IF NOT THE SAME AS ABOVE):]]></text>
+            </staticText>
+
+            <staticText>
+                <reportElement x="0" y="190" width="130" height="14"/>
+                <text><![CDATA[PO Box / Address:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="135" y="190" width="300" height="14"/>
+                <textFieldExpression><![CDATA[$F{primaryMailingAddress}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="0" y="208" width="130" height="14"/>
+                <text><![CDATA[City:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="135" y="208" width="120" height="14"/>
+                <textFieldExpression><![CDATA[$F{primaryMailingCity}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="265" y="208" width="140" height="14"/>
+                <text><![CDATA[State or Province:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="410" y="208" width="120" height="14"/>
+                <textFieldExpression><![CDATA[$F{primaryMailingStateOrProvince}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="0" y="226" width="130" height="14"/>
+                <text><![CDATA[Zip/Postal Code:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="135" y="226" width="120" height="14"/>
+                <textFieldExpression><![CDATA[$F{primaryMailingPostalCode}]]></textFieldExpression>
+            </textField>
+
+            <!-- Deputy contact header -->
+            <staticText>
+                <reportElement x="0" y="250" width="555" height="16"/>
+                <textElement>
+                    <font isBold="true" fontName="Garamond" size="11"/>
+                </textElement>
+                <text><![CDATA[Deputy for:]]></text>
+            </staticText>
+
+            <!-- Deputy fields (similar layout) -->
+            <staticText>
+                <reportElement x="0" y="270" width="130" height="14"/>
+                <text><![CDATA[Legal Name:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="135" y="270" width="300" height="14"/>
+                <textFieldExpression><![CDATA[$F{deputyLegalName}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="0" y="288" width="130" height="14"/>
+                <text><![CDATA[Street Address:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="135" y="288" width="300" height="14"/>
+                <textFieldExpression><![CDATA[$F{deputyStreetAddress}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="0" y="306" width="130" height="14"/>
+                <text><![CDATA[City:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="135" y="306" width="120" height="14"/>
+                <textFieldExpression><![CDATA[$F{deputyCity}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="265" y="306" width="140" height="14"/>
+                <text><![CDATA[State or Province:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="410" y="306" width="120" height="14"/>
+                <textFieldExpression><![CDATA[$F{deputyStateOrProvince}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="0" y="324" width="130" height="14"/>
+                <text><![CDATA[Home Telephone:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="135" y="324" width="150" height="14"/>
+                <textFieldExpression><![CDATA[$F{deputyHomeTelephone}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="300" y="324" width="140" height="14"/>
+                <text><![CDATA[Alternate Phone:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="445" y="324" width="150" height="14"/>
+                <textFieldExpression><![CDATA[$F{deputyAlternatePhone}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="0" y="342" width="130" height="14"/>
+                <text><![CDATA[Internet / E-mail:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="135" y="342" width="300" height="14"/>
+                <textFieldExpression><![CDATA[$F{deputyInternetEmail}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="0" y="360" width="130" height="14"/>
+                <text><![CDATA[SCA Name:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="135" y="360" width="300" height="14"/>
+                <textFieldExpression><![CDATA[$F{deputyScaName}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
 </jasperReport>
