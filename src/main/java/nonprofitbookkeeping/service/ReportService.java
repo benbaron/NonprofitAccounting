@@ -44,6 +44,29 @@ import nonprofitbookkeeping.reports.generator.IncomeStatementAltJasperGenerator;
 import nonprofitbookkeeping.reports.generator.IncomeStatementJasperGenerator;
 import nonprofitbookkeeping.reports.generator.TrialBalanceJasperGenerator;
 import nonprofitbookkeeping.reports.generator.TransactionReportJasperGenerator;
+import nonprofitbookkeeping.reports.generator.AssetDtl5aJasperGenerator;
+import nonprofitbookkeeping.reports.generator.Balance3JasperGenerator;
+import nonprofitbookkeeping.reports.generator.Balance3v2JasperGenerator;
+import nonprofitbookkeeping.reports.generator.ContactInfoJasperGenerator;
+import nonprofitbookkeeping.reports.generator.DeprDtl8JasperGenerator;
+import nonprofitbookkeeping.reports.generator.ExpenseDtl12aJasperGenerator;
+import nonprofitbookkeeping.reports.generator.ExpenseDtl12bJasperGenerator;
+import nonprofitbookkeeping.reports.generator.FinanceComm13JasperGenerator;
+import nonprofitbookkeeping.reports.generator.Funds14JasperGenerator;
+import nonprofitbookkeeping.reports.generator.Income4JasperGenerator;
+import nonprofitbookkeeping.reports.generator.IncomeDtl11aJasperGenerator;
+import nonprofitbookkeeping.reports.generator.IncomeDtl11bJasperGenerator;
+import nonprofitbookkeeping.reports.generator.IncomeDtl11cJasperGenerator;
+import nonprofitbookkeeping.reports.generator.InventoryDtl6JasperGenerator;
+import nonprofitbookkeeping.reports.generator.LedgerQ1JasperGenerator;
+import nonprofitbookkeeping.reports.generator.LiabilityDtl5bJasperGenerator;
+import nonprofitbookkeeping.reports.generator.Newsletter15JasperGenerator;
+import nonprofitbookkeeping.reports.generator.PrimaryAccountJasperGenerator;
+import nonprofitbookkeeping.reports.generator.PrimaryAccountReconciliationJasperGenerator;
+import nonprofitbookkeeping.reports.generator.RegaliaSalesDtl7JasperGenerator;
+import nonprofitbookkeeping.reports.generator.SecondaryAccountJasperGenerator;
+import nonprofitbookkeeping.reports.generator.TransferIn9JasperGenerator;
+import nonprofitbookkeeping.reports.generator.TransferOut10JasperGenerator;
 
 
 /**
@@ -78,9 +101,32 @@ public class ReportService
 		CHART_OF_ACCOUNTS_JASPER("chart_of_accounts_jasper"),
 		FUND_LEDGER_JASPER("fund_ledger_jasper"),
 		GENERAL_JOURNAL_JASPER("general_journal_jasper"),
-		GENERAL_LEDGER_JASPER("general_ledger_jasper"),
-		INCOME_STATEMENT_ALT_JASPER("income_statement_alt_jasper"),
-		TRANSACTION_REPORT_JASPER("transaction_report_jasper");
+                GENERAL_LEDGER_JASPER("general_ledger_jasper"),
+                INCOME_STATEMENT_ALT_JASPER("income_statement_alt_jasper"),
+                TRANSACTION_REPORT_JASPER("transaction_report_jasper"),
+                SCA_ASSET_DTL_5A_JASPER("sca_asset_dtl_5a_jasper"),
+                SCA_BALANCE_3_JASPER("sca_balance_3_jasper"),
+                SCA_BALANCE_3_V2_JASPER("sca_balance_3_v2_jasper"),
+                SCA_CONTACT_INFO_JASPER("sca_contact_info_jasper"),
+                SCA_DEPR_DTL_8_JASPER("sca_depr_dtl_8_jasper"),
+                SCA_EXPENSE_DTL_12A_JASPER("sca_expense_dtl_12a_jasper"),
+                SCA_EXPENSE_DTL_12B_JASPER("sca_expense_dtl_12b_jasper"),
+                SCA_FINANCE_COMM_13_JASPER("sca_finance_comm_13_jasper"),
+                SCA_FUNDS_14_JASPER("sca_funds_14_jasper"),
+                SCA_INCOME_4_JASPER("sca_income_4_jasper"),
+                SCA_INCOME_DTL_11A_JASPER("sca_income_dtl_11a_jasper"),
+                SCA_INCOME_DTL_11B_JASPER("sca_income_dtl_11b_jasper"),
+                SCA_INCOME_DTL_11C_JASPER("sca_income_dtl_11c_jasper"),
+                SCA_INVENTORY_DTL_6_JASPER("sca_inventory_dtl_6_jasper"),
+                SCA_LEDGER_Q1_JASPER("sca_ledger_q1_jasper"),
+                SCA_LIABILITY_DTL_5B_JASPER("sca_liability_dtl_5b_jasper"),
+                SCA_NEWSLETTER_15_JASPER("sca_newsletter_15_jasper"),
+                SCA_PRIMARY_ACCOUNT_JASPER("sca_primary_account_jasper"),
+                SCA_PRIMARY_ACCOUNT_RECONCILIATION_JASPER("sca_primary_account_reconciliation_jasper"),
+                SCA_REGALIA_SALES_DTL_7_JASPER("sca_regalia_sales_dtl_7_jasper"),
+                SCA_SECONDARY_ACCOUNT_JASPER("sca_secondary_account_jasper"),
+                SCA_TRANSFER_IN_9_JASPER("sca_transfer_in_9_jasper"),
+                SCA_TRANSFER_OUT_10_JASPER("sca_transfer_out_10_jasper");
 		
 		private final String id;
 		
@@ -164,11 +210,57 @@ public class ReportService
 				(ctx, svc) -> new GeneralJournalJasperGenerator());
 		map.put(ReportType.GENERAL_LEDGER_JASPER,
 				(ctx, svc) -> new GeneralLedgerJasperGenerator());
-		map.put(ReportType.INCOME_STATEMENT_ALT_JASPER,
-				(ctx, svc) -> new IncomeStatementAltJasperGenerator());
-		map.put(ReportType.TRANSACTION_REPORT_JASPER,
-				(ctx, svc) -> new TransactionReportJasperGenerator());
-		return map;
+                map.put(ReportType.INCOME_STATEMENT_ALT_JASPER,
+                                (ctx, svc) -> new IncomeStatementAltJasperGenerator());
+                map.put(ReportType.TRANSACTION_REPORT_JASPER,
+                                (ctx, svc) -> new TransactionReportJasperGenerator());
+                map.put(ReportType.SCA_ASSET_DTL_5A_JASPER,
+                                (ctx, svc) -> new AssetDtl5aJasperGenerator(ctx, svc));
+                map.put(ReportType.SCA_BALANCE_3_JASPER,
+                                (ctx, svc) -> new Balance3JasperGenerator(ctx, svc));
+                map.put(ReportType.SCA_BALANCE_3_V2_JASPER,
+                                (ctx, svc) -> new Balance3v2JasperGenerator(ctx, svc));
+                map.put(ReportType.SCA_CONTACT_INFO_JASPER,
+                                (ctx, svc) -> new ContactInfoJasperGenerator(ctx, svc));
+                map.put(ReportType.SCA_DEPR_DTL_8_JASPER,
+                                (ctx, svc) -> new DeprDtl8JasperGenerator(ctx, svc));
+                map.put(ReportType.SCA_EXPENSE_DTL_12A_JASPER,
+                                (ctx, svc) -> new ExpenseDtl12aJasperGenerator(ctx, svc));
+                map.put(ReportType.SCA_EXPENSE_DTL_12B_JASPER,
+                                (ctx, svc) -> new ExpenseDtl12bJasperGenerator(ctx, svc));
+                map.put(ReportType.SCA_FINANCE_COMM_13_JASPER,
+                                (ctx, svc) -> new FinanceComm13JasperGenerator(ctx, svc));
+                map.put(ReportType.SCA_FUNDS_14_JASPER,
+                                (ctx, svc) -> new Funds14JasperGenerator(ctx, svc));
+                map.put(ReportType.SCA_INCOME_4_JASPER,
+                                (ctx, svc) -> new Income4JasperGenerator(ctx, svc));
+                map.put(ReportType.SCA_INCOME_DTL_11A_JASPER,
+                                (ctx, svc) -> new IncomeDtl11aJasperGenerator(ctx, svc));
+                map.put(ReportType.SCA_INCOME_DTL_11B_JASPER,
+                                (ctx, svc) -> new IncomeDtl11bJasperGenerator(ctx, svc));
+                map.put(ReportType.SCA_INCOME_DTL_11C_JASPER,
+                                (ctx, svc) -> new IncomeDtl11cJasperGenerator(ctx, svc));
+                map.put(ReportType.SCA_INVENTORY_DTL_6_JASPER,
+                                (ctx, svc) -> new InventoryDtl6JasperGenerator(ctx, svc));
+                map.put(ReportType.SCA_LEDGER_Q1_JASPER,
+                                (ctx, svc) -> new LedgerQ1JasperGenerator(ctx, svc));
+                map.put(ReportType.SCA_LIABILITY_DTL_5B_JASPER,
+                                (ctx, svc) -> new LiabilityDtl5bJasperGenerator(ctx, svc));
+                map.put(ReportType.SCA_NEWSLETTER_15_JASPER,
+                                (ctx, svc) -> new Newsletter15JasperGenerator(ctx, svc));
+                map.put(ReportType.SCA_PRIMARY_ACCOUNT_JASPER,
+                                (ctx, svc) -> new PrimaryAccountJasperGenerator(ctx, svc));
+                map.put(ReportType.SCA_PRIMARY_ACCOUNT_RECONCILIATION_JASPER,
+                                (ctx, svc) -> new PrimaryAccountReconciliationJasperGenerator(ctx, svc));
+                map.put(ReportType.SCA_REGALIA_SALES_DTL_7_JASPER,
+                                (ctx, svc) -> new RegaliaSalesDtl7JasperGenerator(ctx, svc));
+                map.put(ReportType.SCA_SECONDARY_ACCOUNT_JASPER,
+                                (ctx, svc) -> new SecondaryAccountJasperGenerator(ctx, svc));
+                map.put(ReportType.SCA_TRANSFER_IN_9_JASPER,
+                                (ctx, svc) -> new TransferIn9JasperGenerator(ctx, svc));
+                map.put(ReportType.SCA_TRANSFER_OUT_10_JASPER,
+                                (ctx, svc) -> new TransferOut10JasperGenerator(ctx, svc));
+                return map;
 		
 	}
 	
