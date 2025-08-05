@@ -4,6 +4,7 @@ package nonprofitbookkeeping.reports.generator;
 import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountType;
 import nonprofitbookkeeping.model.ChartOfAccounts;
+import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Ledger;
 import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.service.ReportService;
@@ -38,12 +39,12 @@ public class BalanceSheetJasperGenerator extends AbstractReportGenerator
 		
 		String companyName = "N/A";
 		
-		if (nonprofitbookkeeping.model.CurrentCompany.getCompany() != null &&
-			nonprofitbookkeeping.model.CurrentCompany.getCompany().getCompanyProfile() != null &&
-			nonprofitbookkeeping.model.CurrentCompany.getCompany().getCompanyProfile()
+		if (CurrentCompany.getCompany() != null &&
+			CurrentCompany.getCompany().getCompanyProfile() != null &&
+			CurrentCompany.getCompany().getCompanyProfile()
 				.getCompanyName() != null)
 		{
-			companyName = nonprofitbookkeeping.model.CurrentCompany.getCompany().getCompanyProfile()
+			companyName = CurrentCompany.getCompany().getCompanyProfile()
 				.getCompanyName();
 		}
 		

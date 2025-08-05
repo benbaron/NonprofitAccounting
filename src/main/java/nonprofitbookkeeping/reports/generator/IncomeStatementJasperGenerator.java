@@ -42,7 +42,8 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 	 * @param reportContext The {@link ReportContext} containing criteria and settings for the report.
 	 * @param reportService The {@link ReportService} used to prepare the data for the report.
 	 */
-	public IncomeStatementJasperGenerator(ReportContext reportContext, ReportService reportService)
+	public IncomeStatementJasperGenerator(ReportContext reportContext, 
+	                                      ReportService reportService)
 	{
 		this.reportContext = reportContext;
 	}

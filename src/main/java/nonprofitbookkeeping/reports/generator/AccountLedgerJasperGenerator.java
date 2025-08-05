@@ -1,11 +1,15 @@
 
 package nonprofitbookkeeping.reports.generator;
 
+import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.reports.datasource.AccountLedgerRowBean;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,10 +33,10 @@ public class AccountLedgerJasperGenerator extends AbstractReportGenerator
 			return Collections.emptyList();
 		}
 		
-		java.util.List<AccountLedgerRowBean> rows = new java.util.ArrayList<>();
-		java.math.BigDecimal running = java.math.BigDecimal.ZERO;
+		List<AccountLedgerRowBean> rows = new ArrayList<>();
+		BigDecimal running = BigDecimal.ZERO;
 		
-		java.util.List<nonprofitbookkeeping.model.AccountingTransaction> txns =
+		List<nonprofitbookkeeping.model.AccountingTransaction> txns =
 				company.getLedger().getTransactions();
 		
 		if (txns == null)
@@ -40,7 +44,7 @@ public class AccountLedgerJasperGenerator extends AbstractReportGenerator
 			return rows;
 		}
 		
-		txns.sort(java.util.Comparator.comparingLong(
+		txns.sort(Comparator.comparingLong(
 				nonprofitbookkeeping.model.AccountingTransaction::getBookingDateTimestamp));
 		
 		for (nonprofitbookkeeping.model.AccountingTransaction tx : txns)
@@ -48,10 +52,10 @@ public class AccountLedgerJasperGenerator extends AbstractReportGenerator
 			if (tx == null || tx.getEntries() == null)
 				continue;
 			
-			java.math.BigDecimal debit = java.math.BigDecimal.ZERO;
-			java.math.BigDecimal credit = java.math.BigDecimal.ZERO;
+			BigDecimal debit = BigDecimal.ZERO;
+			BigDecimal credit = BigDecimal.ZERO;
 			
-			for (nonprofitbookkeeping.model.AccountingEntry entry : tx.getEntries())
+			for (AccountingEntry entry : tx.getEntries())
 			{
 				if (entry == null || entry.getAmount() == null)
 					continue;

@@ -1,9 +1,13 @@
 
 package nonprofitbookkeeping.reports.generator;
 
+import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.reports.datasource.AccountSummaryRowBean;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -24,23 +28,23 @@ public class AccountSummaryJasperGenerator extends AbstractReportGenerator
 	 */
 	@Override protected List<AccountSummaryRowBean> getReportData()
 	{
-		nonprofitbookkeeping.model.Company company =
-			nonprofitbookkeeping.model.CurrentCompany.getCompany();
+		Company company =
+			CurrentCompany.getCompany();
 		
 		if (company == null || company.getLedger() == null || company.getChartOfAccounts() == null)
 		{
 			return Collections.emptyList();
 		}
 		
-		java.util.List<AccountSummaryRowBean> rows = new java.util.ArrayList<>();
+		List<AccountSummaryRowBean> rows = new ArrayList<>();
 		
 		for (nonprofitbookkeeping.model.Account acct : company.getChartOfAccounts().getAccounts())
 		{
 			if (acct == null)
 				continue;
 			
-			java.math.BigDecimal bal = acct.totalAccountBalance(company.getLedger());
-			String debit = bal.compareTo(java.math.BigDecimal.ZERO) >= 0 ? bal.toPlainString() : "";
+			BigDecimal bal = acct.totalAccountBalance(company.getLedger());
+			String debit = bal.compareTo(BigDecimal.ZERO) >= 0 ? bal.toPlainString() : "";
 			String credit =
 				bal.compareTo(java.math.BigDecimal.ZERO) < 0 ? bal.abs().toPlainString() : "";
 			

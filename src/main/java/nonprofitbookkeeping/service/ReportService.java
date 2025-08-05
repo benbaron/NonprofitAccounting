@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.logging.Logger;
 
@@ -47,7 +48,7 @@ import nonprofitbookkeeping.reports.generator.TransactionReportJasperGenerator;
 
 /**
  * Service class responsible for preparing data contexts for various financial reports
- * and orchestrating the generation of reports using templating engines like JXLS or JasperReports.
+ * and orchestrating the generation of reports using templating engines like JasperReports.
  * It interacts with other services and models (e.g., {@link Ledger}, {@link ChartOfAccounts}, {@link Budget})
  * to gather and process data according to the criteria specified in a {@link ReportContext}.
  */
@@ -60,8 +61,9 @@ public class ReportService
 	
 	
 	/** Mapping of Jasper report types to their generator constructors. */
-	private final java.util.Map<ReportType, java.util.function.BiFunction<ReportContext,
-			ReportService, AbstractReportGenerator>> generatorRegistry;
+	private final Map<ReportType, 
+		BiFunction<ReportContext, ReportService, AbstractReportGenerator>> 
+		generatorRegistry;
 	
 	/** Enum-safe keys for the Jasper report generator registry. */
 	public enum ReportType
@@ -90,7 +92,7 @@ public class ReportService
 		
 		public String id()
 		{
-			return id;
+			return this.id;
 			
 		}
 		
@@ -120,25 +122,25 @@ public class ReportService
 	}
 	
 	/** DI-friendly constructor that accepts a registry. The registry remains mutable for runtime changes. */
-	public ReportService(java.util.Map<ReportType, java.util.function.BiFunction<ReportContext,
-			ReportService, AbstractReportGenerator>> registry)
+	public ReportService(Map<ReportType, 
+	                     BiFunction<ReportContext, 
+	                     ReportService, 
+	                     AbstractReportGenerator>> registry)
 	{
-		this.generatorRegistry = new java.util.concurrent.ConcurrentHashMap<>(registry);
+		this.generatorRegistry = new ConcurrentHashMap<>(registry);
 		
 	}
 	
 	/** Factory for the built-in generator registry. */
-	private static
-			Map<ReportType,
-					BiFunction<ReportContext, ReportService,
-							AbstractReportGenerator>>
-			createDefaultRegistry()
+	private static Map<ReportType,	
+					BiFunction<ReportContext, 
+					ReportService, 
+					AbstractReportGenerator>> createDefaultRegistry()
 	{
 		Map<ReportType,
-				BiFunction<ReportContext,
-						ReportService,
-						AbstractReportGenerator>> map =
-								new EnumMap<>(ReportType.class);
+				BiFunction<ReportContext, ReportService, 
+				AbstractReportGenerator>> map =
+				new EnumMap<>(ReportType.class);
 		
 		map.put(ReportType.INCOME_STATEMENT_JASPER,
 				(ctx, svc) -> new IncomeStatementJasperGenerator(ctx, svc));
@@ -172,8 +174,9 @@ public class ReportService
 	
 	/** Allow runtime registration / replacement of a generator (mutable registry). */
 	public void registerGenerator(	ReportType type,
-									BiFunction<ReportContext, ReportService,
-											AbstractReportGenerator> factory)
+									BiFunction<ReportContext, 
+										ReportService,
+										AbstractReportGenerator> factory)
 	{
 		
 		if (type == null || factory == null)
@@ -186,8 +189,8 @@ public class ReportService
 	}
 	
 	/** Remove an existing generator mapping, returning the previous factory if any. */
-	public	BiFunction<ReportContext, ReportService, AbstractReportGenerator>
-			unregisterGenerator(ReportType type)
+	public BiFunction<ReportContext, ReportService, AbstractReportGenerator>
+		unregisterGenerator(ReportType type)
 	{
 		return this.generatorRegistry.remove(type);
 		

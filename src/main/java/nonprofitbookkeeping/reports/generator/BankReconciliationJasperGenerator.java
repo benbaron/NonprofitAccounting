@@ -1,8 +1,13 @@
 
 package nonprofitbookkeeping.reports.generator;
 
+import nonprofitbookkeeping.model.Account;
+import nonprofitbookkeeping.model.AccountType;
+import nonprofitbookkeeping.model.AccountingEntry;
+import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.reports.datasource.BankReconciliationRowBean;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -29,10 +34,10 @@ public class BankReconciliationJasperGenerator extends AbstractReportGenerator
 			return Collections.emptyList();
 		}
 		
-		java.util.List<BankReconciliationRowBean> rows = new java.util.ArrayList<>();
-		java.math.BigDecimal running = java.math.BigDecimal.ZERO;
+		List<BankReconciliationRowBean> rows = new java.util.ArrayList<>();
+		BigDecimal running = BigDecimal.ZERO;
 		
-		for (nonprofitbookkeeping.model.AccountingTransaction tx : company.getLedger()
+		for (AccountingTransaction tx : company.getLedger()
 			.getTransactions())
 		{
 			if (tx == null || tx.getEntries() == null)
@@ -40,14 +45,14 @@ public class BankReconciliationJasperGenerator extends AbstractReportGenerator
 				continue;
 			}
 			
-			for (nonprofitbookkeeping.model.AccountingEntry entry : tx.getEntries())
+			for (AccountingEntry entry : tx.getEntries())
 			{
 				if (entry == null || entry.getAmount() == null)
 				{
 					continue;
 				}
 				
-				nonprofitbookkeeping.model.Account acct =
+				Account acct =
 					company.getChartOfAccounts().getAccount(entry.getAccountNumber());
 				
 				if (acct == null)
@@ -55,17 +60,17 @@ public class BankReconciliationJasperGenerator extends AbstractReportGenerator
 					continue;
 				}
 				
-				nonprofitbookkeeping.model.AccountType type = acct.getAccountType();
+				AccountType type = acct.getAccountType();
 				
-				if (type != nonprofitbookkeeping.model.AccountType.CASH &&
-					type != nonprofitbookkeeping.model.AccountType.BANK &&
-					type != nonprofitbookkeeping.model.AccountType.CHECKING)
+				if (type != AccountType.CASH &&
+					type != AccountType.BANK &&
+					type != AccountType.CHECKING)
 				{
 					continue;
 				}
 				
-				java.math.BigDecimal deposit = java.math.BigDecimal.ZERO;
-				java.math.BigDecimal withdrawal = java.math.BigDecimal.ZERO;
+				BigDecimal deposit = BigDecimal.ZERO;
+				BigDecimal withdrawal = BigDecimal.ZERO;
 				
 				if (entry.getAccountSide() == nonprofitbookkeeping.model.AccountSide.DEBIT)
 				{
