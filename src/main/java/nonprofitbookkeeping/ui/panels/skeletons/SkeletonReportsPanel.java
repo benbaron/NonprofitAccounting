@@ -185,6 +185,9 @@ public class SkeletonReportsPanel extends BorderPane
 				this.deleteButton.setOnAction(event -> deleteReport());
 			}
 			
+			/**
+			 * 
+			 */
 			private void openReport()
 			{
 				ReportMetadata reportMeta = getTableView().getItems().get(getIndex());
@@ -205,8 +208,7 @@ public class SkeletonReportsPanel extends BorderPane
 				}
 				
 				try
-				{
-					
+				{					
 					if (Desktop.isDesktopSupported())
 					{
 						Desktop.getDesktop().open(reportFile);
@@ -227,6 +229,9 @@ public class SkeletonReportsPanel extends BorderPane
 				
 			}
 			
+			/**
+			 * 
+			 */
 			private void openDirectory()
 			{
 				ReportMetadata reportMeta = getTableView().getItems().get(getIndex());
@@ -259,6 +264,9 @@ public class SkeletonReportsPanel extends BorderPane
 				
 			}
 			
+			/**
+			 * 
+			 */
 			private void deleteReport()
 			{
 				ReportMetadata reportMeta = getTableView().getItems().get(getIndex());
@@ -284,6 +292,11 @@ public class SkeletonReportsPanel extends BorderPane
 				
 			}
 			
+			/**
+			 * 
+			 * @param item
+			 * @param empty
+			 */
 			@Override protected void updateItem(Void item, boolean empty)
 			{
 				super.updateItem(item, empty);
@@ -435,13 +448,11 @@ public class SkeletonReportsPanel extends BorderPane
 			
 			try
 			{
-				File generatedFile;
+				File generatedFile = null;
 				
 				if ("xlsx".equalsIgnoreCase(outputFormat))
 				{
-					Company c = CurrentCompany.getCompany();
-					generatedFile = ReportService.generateFromJXLS(ctx, c.getLedger(),
-						c.getChartOfAccounts());
+					// FIXME
 				}
 				else if ("text".equalsIgnoreCase(outputFormat))
 				{

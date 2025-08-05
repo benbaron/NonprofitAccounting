@@ -31,21 +31,42 @@ public final class ReportTemplateScanner
 	 */
 	public static Map<String, String> discoverTemplates()
 	{
+		// create the map of templates
 	    Map<String, String> templates = new LinkedHashMap<>();
 
 	    // Define your base directory - could also be injected, read from a config, etc.
 	    Path baseDir = Paths.get(System.getProperty("user.dir")); // runtime working dir
 
 //	    Path baseDir = Paths.get(System.getProperty("app.base.dir", "."));  // Fallback to current dir
-	    Path reportsDir = baseDir.resolve("jrxml");
 
+	    // look in directory jrxml
+	    Path reportsDir = baseDir.resolve("jrxml");
 	    if (!Files.isDirectory(reportsDir))
 	    {
 	        System.err.println("Reports directory not found: " + reportsDir.toAbsolutePath());
 	        return templates;
 	    }
+	    scanDirectoryForTemplates(templates, reportsDir);
+	    
+	    // look in subdir jrxml/sca-reports
+	    reportsDir = baseDir.resolve("jrxml/sca-reports");
+	    if (!Files.isDirectory(reportsDir))
+	    {
+	        System.err.println("Reports directory not found: " + reportsDir.toAbsolutePath());
+	        return templates;
+	    }
+	    scanDirectoryForTemplates(templates, reportsDir);
 
-	    // convert a stream of names to 
+	    return templates;
+	}
+
+	/**
+	 * @param templates
+	 * @param reportsDir
+	 */
+	static void scanDirectoryForTemplates(Map<String, String> templates, Path reportsDir)
+	{
+		// convert a stream of names to contexts
 	    try (Stream<Path> stream = Files.list(reportsDir))
 	    {
 	        stream
@@ -62,14 +83,15 @@ public final class ReportTemplateScanner
 	                String display = toDisplayName(base);
 	                String key = toKey(base);
 	                templates.putIfAbsent(display, key);
+	                
+	                System.out.println("Found template: " + display);
 	            });
 	    }
 	    catch (IOException e)
 	    {
 	        e.printStackTrace();
 	    }
-
-	    return templates;
+		
 	}
 
 	/**
