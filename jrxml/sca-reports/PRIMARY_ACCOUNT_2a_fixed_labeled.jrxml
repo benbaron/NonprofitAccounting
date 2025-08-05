@@ -1,363 +1,168 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
-                                  http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-              name="PrimaryAccountReconciliationFlatStyled" pageWidth="595" pageHeight="842"
-              columnWidth="555" leftMargin="20" rightMargin="20"
-              topMargin="20" bottomMargin="20">
-    <style name="PairedLabel" fontName="Garamond" fontSize="10" isBold="true" />
-    <style name="PairedValue" fontName="Garamond" fontSize="10" />
-
-    <!-- Fields (flattened as before) -->
-    <field name="bankName" class="java.lang.String"/>
-    <field name="bankAccountTitle" class="java.lang.String"/>
-    <field name="bankAccountType" class="java.lang.String"/>
-    <field name="bankAccountNumber" class="java.lang.String"/>
-    <field name="bankBranchPhoneAndName" class="java.lang.String"/>
-
-    <field name="balanceFromBankStatement" class="java.math.BigDecimal"/>
-
-    <!-- Deposits (6 slots) -->
-    <field name="deposit1Date" class="java.lang.String"/>
-    <field name="deposit1Amount" class="java.math.BigDecimal"/>
-    <field name="deposit2Date" class="java.lang.String"/>
-    <field name="deposit2Amount" class="java.math.BigDecimal"/>
-    <field name="deposit3Date" class="java.lang.String"/>
-    <field name="deposit3Amount" class="java.math.BigDecimal"/>
-    <field name="deposit4Date" class="java.lang.String"/>
-    <field name="deposit4Amount" class="java.math.BigDecimal"/>
-    <field name="deposit5Date" class="java.lang.String"/>
-    <field name="deposit5Amount" class="java.math.BigDecimal"/>
-    <field name="deposit6Date" class="java.lang.String"/>
-    <field name="deposit6Amount" class="java.math.BigDecimal"/>
-
-    <!-- Checks (showing first two for pattern; replicate through check16) -->
-    <field name="check1Number" class="java.lang.String"/>
-    <field name="check1Date" class="java.lang.String"/>
-    <field name="check1Amount" class="java.math.BigDecimal"/>
-
-    <field name="check2Number" class="java.lang.String"/>
-    <field name="check2Date" class="java.lang.String"/>
-    <field name="check2Amount" class="java.math.BigDecimal"/>
-    <!-- ... repeat up through check16Number / Date / Amount -->
-
-    <field name="endingLedgerOrRegisterBalance" class="java.math.BigDecimal"/>
-    <field name="accountEarnsInterest" class="java.lang.String"/>
-
-    <!-- Totals / computed values (precomputed by filler) -->
-    <field name="depositsNotClearedTotal" class="java.math.BigDecimal"/>
-    <field name="checksNotClearedTotal" class="java.math.BigDecimal"/>
-    <field name="adjustedAccountBalance" class="java.math.BigDecimal"/>
-    <field name="reconciliationDifference" class="java.math.BigDecimal"/>
-
-    <!-- Styles extracted from sheet -->
-    <style name="TitleStyle">
-        <font fontName="Garamond" size="14" isBold="true"/>
-    </style>
-    <style name="SectionHeader">
-        <font fontName="Garamond" size="10" isBold="true"/>
-    </style>
-    <style name="LabelBold">
-        <font fontName="Garamond" size="10" isBold="true"/>
-    </style>
-    <style name="Value">
-        <font fontName="Garamond" size="10"/>
-    </style>
-    <style name="FormulaValue">
-        <font fontName="Calibri" size="11"/>
-    </style>
-
-    <!-- Title / Header -->
-    <title>
-        <band height="70">
-            <staticText>
-                <reportElement x="0" y="0" width="555" height="20"/>
-                <textElement textAlignment="Center">
-                    <font fontName="Garamond" size="14" isBold="true"/>
-                </textElement>
-                <text><![CDATA[PRIMARY ACCOUNT RECONCILIATION]]></text>
-            </staticText>
-
-            <!-- Bank info block -->
-            <staticText>
-                <reportElement x="0" y="25" width="120" height="12"/>
-                <textElement>
-                    <font fontName="Garamond" size="10" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Bank Name:]]></text>
-            </staticText>
-            <textField>
-                <reportElement x="125" y="25" width="200" height="12"/>
-                <textElement>
-                    <font fontName="Garamond" size="10"/>
-                </textElement>
-                <textFieldExpression><![CDATA[$F{bankName}]]></textFieldExpression>
-            </textField>
-
-            <staticText>
-                <reportElement x="0" y="40" width="120" height="12"/>
-                <textElement>
-                    <font fontName="Garamond" size="10" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Account Title:]]></text>
-            </staticText>
-            <textField>
-                <reportElement x="125" y="40" width="200" height="12"/>
-                <textFieldExpression><![CDATA[$F{bankAccountTitle}]]></textFieldExpression>
-            </textField>
-
-            <staticText>
-                <reportElement x="0" y="55" width="120" height="12"/>
-                <textElement>
-                    <font fontName="Garamond" size="10" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Account Type:]]></text>
-            </staticText>
-            <textField>
-                <reportElement x="125" y="55" width="150" height="12"/>
-                <textFieldExpression><![CDATA[$F{bankAccountType}]]></textFieldExpression>
-            </textField>
-
-            <staticText>
-                <reportElement x="300" y="25" width="120" height="12"/>
-                <textElement>
-                    <font fontName="Garamond" size="10" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Account Number:]]></text>
-            </staticText>
-            <textField>
-                <reportElement x="425" y="25" width="120" height="12"/>
-                <textFieldExpression><![CDATA[$F{bankAccountNumber}]]></textFieldExpression>
-            </textField>
-
-            <staticText>
-                <reportElement x="300" y="40" width="120" height="12"/>
-                <textElement>
-                    <font fontName="Garamond" size="10" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Branch / Phone:]]></text>
-            </staticText>
-            <textField>
-                <reportElement x="425" y="40" width="120" height="12"/>
-                <textFieldExpression><![CDATA[$F{bankBranchPhoneAndName}]]></textFieldExpression>
-            </textField>
-        </band>
-    </title>
-
-    <!-- Detail band -->
-    <detail>
-        <band height="450">
-            <!-- Line 1 -->
-            <staticText>
-                <reportElement x="0" y="0" width="300" height="14"/>
-                <textElement>
-                    <font fontName="Garamond" size="10"/>
-                </textElement>
-                <text><![CDATA[1. Balance from bank statement at end of period:]]></text>
-            </staticText>
-            <textField pattern="###,##0.00">
-                <reportElement x="310" y="0" width="120" height="14"/>
-                <textElement>
-                    <font fontName="Calibri" size="11"/>
-                </textElement>
-                <textFieldExpression><![CDATA[$F{balanceFromBankStatement}]]></textFieldExpression>
-            </textField>
-
-            <!-- Deposits section header with simulated double underline -->
-            <staticText>
-                <reportElement x="0" y="20" width="400" height="14"/>
-                <textElement>
-                    <font fontName="Garamond" size="10" isBold="true"/>
-                </textElement>
-                <text><![CDATA[2. Deposits not cleared on statement        ]]></text>
-            </staticText>
-            <!-- First underline -->
-            <line>
-                <reportElement x="0" y="35" width="400" height="1"/>
-            </line>
-            <!-- Second underline slightly below to mimic double -->
-            <line>
-                <reportElement x="0" y="37" width="400" height="1"/>
-            </line>
-
-            <!-- Deposit 1 -->
-            <staticText>
-                <reportElement x="0" y="50" width="100" height="12"/>
-                <textElement>
-                    <font fontName="Garamond" size="10" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Deposit 1 Date:]]></text>
-            </staticText>
-            <textField>
-                <reportElement x="105" y="50" width="100" height="12"/>
-                <textFieldExpression><![CDATA[$F{deposit1Date}]]></textFieldExpression>
-            </textField>
-            <staticText>
-                <reportElement x="220" y="50" width="120" height="12"/>
-                <textElement>
-                    <font fontName="Garamond" size="10" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Amount of Deposit 1:]]></text>
-            </staticText>
-            <textField pattern="###,##0.00">
-                <reportElement x="345" y="50" width="100" height="12"/>
-                <textFieldExpression><![CDATA[$F{deposit1Amount}]]></textFieldExpression>
-            </textField>
-
-            <!-- Deposit 2 -->
-            <staticText>
-                <reportElement x="0" y="66" width="100" height="12"/>
-                <textElement>
-                    <font fontName="Garamond" size="10" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Deposit 2 Date:]]></text>
-            </staticText>
-            <textField>
-                <reportElement x="105" y="66" width="100" height="12"/>
-                <textFieldExpression><![CDATA[$F{deposit2Date}]]></textFieldExpression>
-            </textField>
-            <staticText>
-                <reportElement x="220" y="66" width="120" height="12"/>
-                <textElement>
-                    <font fontName="Garamond" size="10" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Amount of Deposit 2:]]></text>
-            </staticText>
-            <textField pattern="###,##0.00">
-                <reportElement x="345" y="66" width="100" height="12"/>
-                <textFieldExpression><![CDATA[$F{deposit2Amount}]]></textFieldExpression>
-            </textField>
-
-            <!-- (Repeat for deposit3..deposit6 similarly) -->
-
-            <!-- Total Deposits Not Cleared -->
-            <staticText>
-                <reportElement x="0" y="140" width="220" height="14"/>
-                <textElement>
-                    <font fontName="Garamond" size="10" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Total Deposits Not Cleared:]]></text>
-            </staticText>
-            <textField pattern="###,##0.00">
-                <reportElement x="225" y="140" width="120" height="14"/>
-                <textFieldExpression><![CDATA[$F{depositsNotClearedTotal}]]></textFieldExpression>
-            </textField>
-
-            <!-- Checks section header with double underline -->
-            <staticText>
-                <reportElement x="0" y="160" width="400" height="14"/>
-                <textElement>
-                    <font fontName="Garamond" size="10" isBold="true"/>
-                </textElement>
-                <text><![CDATA[3. Checks not cleared on statement]]></text>
-            </staticText>
-            <line>
-                <reportElement x="0" y="175" width="400" height="1"/>
-            </line>
-            <line>
-                <reportElement x="0" y="177" width="400" height="1"/>
-            </line>
-
-            <!-- Check 1 -->
-            <staticText>
-                <reportElement x="0" y="190" width="80" height="12"/>
-                <textElement>
-                    <font fontName="Garamond" size="10" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Check 1 #:]]></text>
-            </staticText>
-            <textField>
-                <reportElement x="85" y="190" width="80" height="12"/>
-                <textFieldExpression><![CDATA[$F{check1Number}]]></textFieldExpression>
-            </textField>
-            <staticText>
-                <reportElement x="170" y="190" width="50" height="12"/>
-                <textElement>
-                    <font fontName="Garamond" size="10" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Date:]]></text>
-            </staticText>
-            <textField>
-                <reportElement x="225" y="190" width="80" height="12"/>
-                <textFieldExpression><![CDATA[$F{check1Date}]]></textFieldExpression>
-            </textField>
-            <staticText>
-                <reportElement x="310" y="190" width="80" height="12"/>
-                <textElement>
-                    <font fontName="Garamond" size="10" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Amount:]]></text>
-            </staticText>
-            <textField pattern="###,##0.00">
-                <reportElement x="395" y="190" width="100" height="12"/>
-                <textFieldExpression><![CDATA[$F{check1Amount}]]></textFieldExpression>
-            </textField>
-
-            <!-- (Repeat for check2..check16 with proper y-offsets) -->
-
-            <!-- Total Checks Not Cleared -->
-            <staticText>
-                <reportElement x="0" y="340" width="220" height="14"/>
-                <textElement>
-                    <font fontName="Garamond" size="10" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Total Checks Not Cleared:]]></text>
-            </staticText>
-            <textField pattern="###,##0.00">
-                <reportElement x="225" y="340" width="120" height="14"/>
-                <textFieldExpression><![CDATA[$F{checksNotClearedTotal}]]></textFieldExpression>
-            </textField>
-
-            <!-- Adjusted balance / ledger / difference -->
-            <staticText>
-                <reportElement x="0" y="360" width="300" height="14"/>
-                <textElement>
-                    <font fontName="Garamond" size="10"/>
-                </textElement>
-                <text><![CDATA[4. Adjusted ACCOUNT Balance (Line 1 + Line 2  - Line 3)]]></text>
-            </staticText>
-            <textField pattern="###,##0.00">
-                <reportElement x="310" y="360" width="120" height="14"/>
-                <textFieldExpression><![CDATA[$F{adjustedAccountBalance}]]></textFieldExpression>
-            </textField>
-
-            <staticText>
-                <reportElement x="0" y="378" width="300" height="14"/>
-                <textElement>
-                    <font fontName="Garamond" size="10"/>
-                </textElement>
-                <text><![CDATA[5. Ending LEDGER or REGISTER Balance]]></text>
-            </staticText>
-            <textField pattern="###,##0.00">
-                <reportElement x="310" y="378" width="120" height="14"/>
-                <textFieldExpression><![CDATA[$F{endingLedgerOrRegisterBalance}]]></textFieldExpression>
-            </textField>
-
-            <staticText>
-                <reportElement x="0" y="396" width="300" height="14"/>
-                <textElement>
-                    <font fontName="Garamond" size="10"/>
-                </textElement>
-                <text><![CDATA[Reconciliation Difference:]]></text>
-            </staticText>
-            <textField pattern="###,##0.00">
-                <reportElement x="310" y="396" width="120" height="14"/>
-                <textFieldExpression><![CDATA[$F{reconciliationDifference}]]></textFieldExpression>
-            </textField>
-
-            <!-- Interest question -->
-            <staticText>
-                <reportElement x="0" y="414" width="400" height="14"/>
-                <textElement>
-                    <font fontName="Garamond" size="10"/>
-                </textElement>
-                <text><![CDATA[6. Does this account earn interest? (YES or NO)]]></text>
-            </staticText>
-            <textField>
-                <reportElement x="410" y="414" width="80" height="14"/>
-                <textFieldExpression><![CDATA[$F{accountEarnsInterest}]]></textFieldExpression>
-            </textField>
-        </band>
-    </detail>
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="PrimaryAccountReconciliationFlatStyled" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="749e58e5-293a-46db-9342-913e93f15a12">
+	<style name="PairedLabel" fontName="Garamond" fontSize="10.0" bold="true"/>
+	<style name="PairedValue" fontName="Garamond" fontSize="10.0"/>
+	<field name="bankName" class="java.lang.String"/>
+	<field name="bankAccountTitle" class="java.lang.String"/>
+	<field name="bankAccountType" class="java.lang.String"/>
+	<field name="bankAccountNumber" class="java.lang.String"/>
+	<field name="bankBranchPhoneAndName" class="java.lang.String"/>
+	<field name="balanceFromBankStatement" class="java.math.BigDecimal"/>
+	<field name="deposit1Date" class="java.lang.String"/>
+	<field name="deposit1Amount" class="java.math.BigDecimal"/>
+	<field name="deposit2Date" class="java.lang.String"/>
+	<field name="deposit2Amount" class="java.math.BigDecimal"/>
+	<field name="deposit3Date" class="java.lang.String"/>
+	<field name="deposit3Amount" class="java.math.BigDecimal"/>
+	<field name="deposit4Date" class="java.lang.String"/>
+	<field name="deposit4Amount" class="java.math.BigDecimal"/>
+	<field name="deposit5Date" class="java.lang.String"/>
+	<field name="deposit5Amount" class="java.math.BigDecimal"/>
+	<field name="deposit6Date" class="java.lang.String"/>
+	<field name="deposit6Amount" class="java.math.BigDecimal"/>
+	<field name="check1Number" class="java.lang.String"/>
+	<field name="check1Date" class="java.lang.String"/>
+	<field name="check1Amount" class="java.math.BigDecimal"/>
+	<field name="check2Number" class="java.lang.String"/>
+	<field name="check2Date" class="java.lang.String"/>
+	<field name="check2Amount" class="java.math.BigDecimal"/>
+	<field name="endingLedgerOrRegisterBalance" class="java.math.BigDecimal"/>
+	<field name="accountEarnsInterest" class="java.lang.String"/>
+	<field name="depositsNotClearedTotal" class="java.math.BigDecimal"/>
+	<field name="checksNotClearedTotal" class="java.math.BigDecimal"/>
+	<field name="adjustedAccountBalance" class="java.math.BigDecimal"/>
+	<field name="reconciliationDifference" class="java.math.BigDecimal"/>
+	<title height="70">
+		<element kind="staticText" uuid="e4d20dd5-3cfc-4691-ac46-5292099b9485" x="0" y="0" width="555" height="20" fontName="Garamond" fontSize="14.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[PRIMARY ACCOUNT RECONCILIATION]]></text>
+		</element>
+		<element kind="staticText" uuid="3bdf570e-8161-4d64-804f-0adc604075ab" x="0" y="25" width="120" height="12" fontName="Garamond" fontSize="10.0" bold="true">
+			<text><![CDATA[Bank Name:]]></text>
+		</element>
+		<element kind="textField" uuid="689dea84-343a-4060-ba3b-f2f68e86ffd7" x="125" y="25" width="200" height="12" fontName="Garamond" fontSize="10.0" italic="false" bold="true">
+			<expression><![CDATA[$F{bankName}]]></expression>
+		</element>
+		<element kind="staticText" uuid="7101a98e-65c5-4871-9e5d-2c75b4c3ff6e" x="0" y="40" width="120" height="12" fontName="Garamond" fontSize="10.0" bold="true">
+			<text><![CDATA[Account Title:]]></text>
+		</element>
+		<element kind="textField" uuid="ed488e50-61bb-4d94-8cbf-10deba147b95" x="125" y="40" width="200" height="12">
+			<expression><![CDATA[$F{bankAccountTitle}]]></expression>
+		</element>
+		<element kind="staticText" uuid="24cdd45a-9944-469d-8aff-0f7744f7eeba" x="0" y="55" width="120" height="12" fontName="Garamond" fontSize="10.0" bold="true">
+			<text><![CDATA[Account Type:]]></text>
+		</element>
+		<element kind="textField" uuid="5209447e-014d-4a89-9b34-b51e3f64077d" x="125" y="55" width="150" height="12">
+			<expression><![CDATA[$F{bankAccountType}]]></expression>
+		</element>
+		<element kind="staticText" uuid="c603f96f-2eb8-4e87-b74c-93712dc742d5" x="300" y="25" width="120" height="12" fontName="Garamond" fontSize="10.0" bold="true">
+			<text><![CDATA[Account Number:]]></text>
+		</element>
+		<element kind="textField" uuid="8c7ca790-db16-4c02-a96c-3896fe902af5" x="425" y="25" width="120" height="12">
+			<expression><![CDATA[$F{bankAccountNumber}]]></expression>
+		</element>
+		<element kind="staticText" uuid="a70401e4-4006-4a05-99d9-2a4a34708aea" x="300" y="40" width="120" height="12" fontName="Garamond" fontSize="10.0" bold="true">
+			<text><![CDATA[Branch / Phone:]]></text>
+		</element>
+		<element kind="textField" uuid="2e614ff2-2e1f-4a92-aa7d-a32a4e090ead" x="425" y="40" width="120" height="12">
+			<expression><![CDATA[$F{bankBranchPhoneAndName}]]></expression>
+		</element>
+	</title>
+	<detail>
+		<band height="466">
+			<element kind="staticText" uuid="b75e5d6e-73d7-42c8-b6a9-f115b99fa355" x="0" y="0" width="300" height="14" fontName="Garamond" fontSize="10.0" bold="true">
+				<text><![CDATA[1. Balance from bank statement at end of period:]]></text>
+			</element>
+			<element kind="textField" uuid="5db2d07f-f848-446e-8317-26ed0528f692" x="310" y="0" width="120" height="14" fontName="Calibri" fontSize="11.0" pattern="###,##0.00">
+				<expression><![CDATA[$F{balanceFromBankStatement}]]></expression>
+			</element>
+			<element kind="staticText" uuid="c653659c-b22c-4c64-8d06-2fef4d9d46be" x="0" y="20" width="400" height="14" fontName="Garamond" fontSize="10.0" bold="true">
+				<text><![CDATA[2. Deposits not cleared on statement        ]]></text>
+			</element>
+			<element kind="line" uuid="0635cb01-4142-46ed-9bb0-e6f9a2901564" x="0" y="35" width="400" height="1"/>
+			<element kind="line" uuid="eb36cd07-ba71-4807-b7e9-a13126bcd659" x="0" y="37" width="400" height="1"/>
+			<element kind="staticText" uuid="fac2aecf-d652-43af-8676-3e12e65a62dc" x="0" y="50" width="100" height="12" fontName="Garamond" fontSize="10.0" bold="true">
+				<text><![CDATA[Deposit 1 Date:]]></text>
+			</element>
+			<element kind="textField" uuid="e41aea60-93bf-4374-8bbc-2628fcc0f0f2" x="105" y="50" width="100" height="12">
+				<expression><![CDATA[$F{deposit1Date}]]></expression>
+			</element>
+			<element kind="staticText" uuid="6c2dd48f-4ef6-4fbe-9e2f-7662790c5c0e" x="220" y="50" width="120" height="12" fontName="Garamond" fontSize="10.0" bold="true">
+				<text><![CDATA[Amount of Deposit 1:]]></text>
+			</element>
+			<element kind="textField" uuid="5063a1c0-6513-4ac0-bc84-32b37ded7b21" x="345" y="50" width="100" height="12" pattern="###,##0.00">
+				<expression><![CDATA[$F{deposit1Amount}]]></expression>
+			</element>
+			<element kind="staticText" uuid="4a2bfce1-3940-46f2-a6c8-84a0d71bd188" x="0" y="66" width="100" height="12" fontName="Garamond" fontSize="10.0" bold="true">
+				<text><![CDATA[Deposit 2 Date:]]></text>
+			</element>
+			<element kind="textField" uuid="092a888d-8039-435f-956f-3d59a82824ba" x="105" y="66" width="100" height="12">
+				<expression><![CDATA[$F{deposit2Date}]]></expression>
+			</element>
+			<element kind="staticText" uuid="5d508fa4-2b13-41ab-8564-64ba767b9c6a" x="220" y="66" width="120" height="12" fontName="Garamond" fontSize="10.0" bold="true">
+				<text><![CDATA[Amount of Deposit 2:]]></text>
+			</element>
+			<element kind="textField" uuid="8ba20789-5cc8-43bc-984d-52daac88c45a" x="345" y="66" width="100" height="12" pattern="###,##0.00">
+				<expression><![CDATA[$F{deposit2Amount}]]></expression>
+			</element>
+			<element kind="staticText" uuid="197166ed-85d2-4f26-96b5-2e59f158b04e" x="0" y="140" width="220" height="14" fontName="Garamond" fontSize="10.0" bold="true">
+				<text><![CDATA[Total Deposits Not Cleared:]]></text>
+			</element>
+			<element kind="textField" uuid="7d9e1ac9-4629-4c97-ba6f-4cac7345a94d" x="225" y="140" width="120" height="14" pattern="###,##0.00">
+				<expression><![CDATA[$F{depositsNotClearedTotal}]]></expression>
+			</element>
+			<element kind="staticText" uuid="4504f128-947e-4c68-83a0-fe39015410ca" x="0" y="160" width="400" height="14" fontName="Garamond" fontSize="10.0" bold="true">
+				<text><![CDATA[3. Checks not cleared on statement]]></text>
+			</element>
+			<element kind="line" uuid="49c46847-8a7a-4097-a689-eeb6b3ba5b05" x="0" y="175" width="400" height="1"/>
+			<element kind="line" uuid="823caec4-87bc-4f82-a559-3b9a9d96c352" x="0" y="177" width="400" height="1"/>
+			<element kind="staticText" uuid="983f5046-7ca9-4e55-8f88-83ad6ba7e1db" x="0" y="190" width="80" height="12" fontName="Garamond" fontSize="10.0" bold="true">
+				<text><![CDATA[Check 1 #:]]></text>
+			</element>
+			<element kind="textField" uuid="3071fb3c-fc53-40e0-9476-823125b45136" x="85" y="190" width="80" height="12">
+				<expression><![CDATA[$F{check1Number}]]></expression>
+			</element>
+			<element kind="staticText" uuid="09dea147-87be-460e-8ea9-9fc98f7b17ef" x="170" y="190" width="50" height="12" fontName="Garamond" fontSize="10.0" bold="true">
+				<text><![CDATA[Date:]]></text>
+			</element>
+			<element kind="textField" uuid="f17b1c42-6b2b-4020-a4a7-84fc3e9e53d8" x="225" y="190" width="80" height="12">
+				<expression><![CDATA[$F{check1Date}]]></expression>
+			</element>
+			<element kind="staticText" uuid="5d62a586-cfbe-45e6-9734-eb9ff272eb01" x="310" y="190" width="80" height="12" fontName="Garamond" fontSize="10.0" bold="true">
+				<text><![CDATA[Amount:]]></text>
+			</element>
+			<element kind="textField" uuid="9cba78c7-75fb-4e67-8d56-a3f7d9cad404" x="395" y="190" width="100" height="12" pattern="###,##0.00">
+				<expression><![CDATA[$F{check1Amount}]]></expression>
+			</element>
+			<element kind="staticText" uuid="05726369-8305-4f79-9984-fb0a03584d75" x="0" y="340" width="220" height="14" fontName="Garamond" fontSize="10.0" bold="true">
+				<text><![CDATA[Total Checks Not Cleared:]]></text>
+			</element>
+			<element kind="textField" uuid="6000b261-d0d4-4253-9472-ca16eeeb1ba3" x="225" y="340" width="120" height="14" pattern="###,##0.00">
+				<expression><![CDATA[$F{checksNotClearedTotal}]]></expression>
+			</element>
+			<element kind="staticText" uuid="6f5560ba-e977-4110-9a15-e2922a37ad35" x="0" y="360" width="300" height="14" fontName="Garamond" fontSize="10.0" bold="true">
+				<text><![CDATA[4. Adjusted ACCOUNT Balance (Line 1 + Line 2  - Line 3)]]></text>
+			</element>
+			<element kind="textField" uuid="75eb4034-1763-45eb-964e-727c1dcc55f7" x="310" y="360" width="120" height="14" pattern="###,##0.00">
+				<expression><![CDATA[$F{adjustedAccountBalance}]]></expression>
+			</element>
+			<element kind="staticText" uuid="e4b9e996-4d33-42b5-a881-ef9f03a4fe65" x="0" y="378" width="300" height="14" fontName="Garamond" fontSize="10.0" bold="true">
+				<text><![CDATA[5. Ending LEDGER or REGISTER Balance]]></text>
+			</element>
+			<element kind="textField" uuid="f03fca43-8c2b-4c3f-a27f-2dd2a3a5e3a8" x="310" y="378" width="120" height="14" pattern="###,##0.00">
+				<expression><![CDATA[$F{endingLedgerOrRegisterBalance}]]></expression>
+			</element>
+			<element kind="staticText" uuid="7051bc1d-4a08-4c8c-b2f8-bf862cdac4c9" x="0" y="396" width="300" height="14" fontName="Garamond" fontSize="10.0" bold="true">
+				<text><![CDATA[Reconciliation Difference:]]></text>
+			</element>
+			<element kind="textField" uuid="a9d5fdfe-4c3e-4705-a0be-dee07e1c0be0" x="310" y="396" width="120" height="14" pattern="###,##0.00">
+				<expression><![CDATA[$F{reconciliationDifference}]]></expression>
+			</element>
+			<element kind="staticText" uuid="ea5c5cc3-c05b-4802-bde3-dc7e8f74ba70" x="0" y="414" width="400" height="14" fontName="Garamond" fontSize="10.0" bold="true">
+				<text><![CDATA[6. Does this account earn interest? (YES or NO)]]></text>
+			</element>
+			<element kind="textField" uuid="c53edc42-9dcc-4bfa-8f4b-034bf1aec273" x="410" y="414" width="80" height="14">
+				<expression><![CDATA[$F{accountEarnsInterest}]]></expression>
+			</element>
+		</band>
+	</detail>
 </jasperReport>
