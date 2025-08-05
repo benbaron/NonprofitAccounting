@@ -1580,7 +1580,7 @@ public class ReportService
 	
 	/**
 	 * Generates a report based on the provided {@link ReportContext}.
-	 * Note: This is a stub implementation and currently returns null.
+	 * 
 	 * The actual report generation logic, potentially involving selection of different
 	 * report engines (JXLS, JasperReports) or data preparation, needs to be implemented.
 	 * This method might be intended as a primary entry point for report generation.

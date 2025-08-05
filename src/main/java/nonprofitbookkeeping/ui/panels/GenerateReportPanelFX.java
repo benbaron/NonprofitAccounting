@@ -35,47 +35,70 @@ public class GenerateReportPanelFX extends BorderPane
 		pane.setPadding(new Insets(10));
 		pane.setPrefWrapLength(600);
 		
-                java.util.Map<String, String> templates = ReportTemplateScanner.discoverTemplates();
-                ComboBox<String> selector = new ComboBox<>(
-                                javafx.collections.FXCollections.observableArrayList(templates.keySet()));
-                if (!selector.getItems().isEmpty()) {
-                        selector.getSelectionModel().selectFirst();
-                }
-
+		// Scan and return the templates available
+		java.util.Map<String, String> templates = ReportTemplateScanner.discoverTemplates();
+		
+		// Display these for the user to select
+		ComboBox<String> selector = new ComboBox<>(
+													javafx.collections.FXCollections
+															.observableArrayList(
+																	templates.keySet()));
+		
+		if (!selector.getItems().isEmpty())
+		{
+			selector.getSelectionModel().selectFirst();
+		}
 		
 		Button generate = new Button("Generate Report");
 		TextArea output = new TextArea();
 		output.setEditable(false);
 		output.setPrefRowCount(10);
 		
-                generate.setOnAction(e -> {
-                        String selectedReport = selector.getValue();
-                        output.clear();
-                        output.appendText("Generating " + selectedReport + "...\n");
-
-                        ReportContext context = new ReportContext();
-                        context.setStartDate(LocalDate.now().withDayOfYear(1));
-                        context.setEndDate(LocalDate.now());
-                        context.setOutputFormat("pdf");
-
-                        String key = templates.get(selectedReport);
-                        if (key == null) {
-                                output.appendText("Report type not implemented.\n");
-                                return;
-                        }
-                        context.setReportType(key);
-
-                        try {
-                                File generatedFile = reportService.generateJasperReport(context, "pdf");
-                                if (generatedFile != null && generatedFile.exists()) {
-                                        output.appendText("\nReport generated successfully: " + generatedFile.getAbsolutePath());
-                                } else {
-                                        output.appendText("\nReport generation failed to produce a file.");
-                                }
-                        } catch (Exception ex) {
-                                output.appendText("\nError generating report: " + ex.getMessage());
-                        }
-                });
+		generate.setOnAction(e -> {
+			String selectedReport = selector.getValue();
+			output.clear();
+			output.appendText("Generating " + selectedReport + "...\n");
+			
+			// Create report context
+			ReportContext context = new ReportContext();
+			context.setStartDate(LocalDate.now().withDayOfYear(1));
+			context.setEndDate(LocalDate.now());
+			context.setOutputFormat("pdf");
+			
+			String key = templates.get(selectedReport);
+			
+			if (key == null)
+			{
+				output.appendText("Report type not implemented.\n");
+				return;
+			}
+			
+			// Set the report type
+			context.setReportType(key);
+			
+			try
+			{
+				// Generate the report
+				File generatedFile = reportService.generateJasperReport(context, "pdf");
+				
+				if (generatedFile != null && generatedFile.exists())
+				{
+					output.appendText(
+							"\nReport generated successfully: " + 
+									generatedFile.getAbsolutePath());
+				}
+				else
+				{
+					output.appendText("\nReport generation failed to produce a file.");
+				}
+				
+			}
+			catch (Exception ex)
+			{
+				output.appendText("\nError generating report: " + ex.getMessage());
+			}
+			
+		});
 		
 		pane.getChildren().addAll(new Label("Report:"), selector, generate);
 		setTop(new TitledPane("Report Selection", pane)
@@ -92,6 +115,7 @@ public class GenerateReportPanelFX extends BorderPane
 			}
 			
 		});
+		
 	}
 	
 }

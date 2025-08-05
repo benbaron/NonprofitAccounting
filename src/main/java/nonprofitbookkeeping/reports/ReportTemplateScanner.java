@@ -14,8 +14,10 @@ import java.util.stream.Stream;
  */
 public final class ReportTemplateScanner
 {
-	private static final String JRXML_DIR = "jrxml";
-	
+	/**
+	 * 
+	 * Constructor ReportTemplateScanner
+	 */
 	private ReportTemplateScanner()
 	{
 	}
@@ -43,6 +45,7 @@ public final class ReportTemplateScanner
 	        return templates;
 	    }
 
+	    // convert a stream of names to 
 	    try (Stream<Path> stream = Files.list(reportsDir))
 	    {
 	        stream
@@ -69,7 +72,12 @@ public final class ReportTemplateScanner
 	    return templates;
 	}
 
-	
+	/**
+	 * Convert base string to display name
+	 * 
+	 * @param base : name stem
+	 * @return displayable string
+	 */
 	private static String toDisplayName(String base)
 	{
 		String withSpaces = base.replace('_', ' ');
@@ -88,6 +96,12 @@ public final class ReportTemplateScanner
 		return sb.toString().trim();
 	}
 	
+	/**
+	 * Converts a string to a jasper report name
+	 * 
+	 * @param base
+	 * @return
+	 */
 	private static String toKey(String base)
 	{
 		String snake = base.replaceAll("([a-z])([A-Z])", "$1_$2").replace('-', '_')

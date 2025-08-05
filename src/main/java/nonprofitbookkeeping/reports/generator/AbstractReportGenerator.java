@@ -56,6 +56,14 @@ public abstract class AbstractReportGenerator
 	 */
 	protected abstract String getReportPath()	throws ActionCancelledException,
 												NoFileCreatedException;
+		
+	
+	/**
+	 * Gets the output file base name
+	 *  
+	 * @return base name
+	 */
+	protected abstract String getBaseName();
 	
 	/**
 	 * Generates the report by compiling the JRXML template, filling it with data and parameters,
@@ -80,17 +88,10 @@ public abstract class AbstractReportGenerator
 		
 	}
 	
-	
 	/**
-	 * Gets the output file base name
-	 *  
-	 * @return base name
-	 */
-	protected abstract String getBaseName();
-	
-	
-	/**
-	 * @return
+	 * Gets the file path to a jasper report
+	 * 
+	 * @return : the path
 	 * @throws RuntimeException
 	 */
 	File getJasperFilePath() throws RuntimeException
@@ -119,19 +120,26 @@ public abstract class AbstractReportGenerator
 	}
 	
 	/**
+	 * Wraps an immutable map so it is suitable for jasper (which needs a 
+	 * writeable one to operate)
 	 * 
-	 * @param original
-	 * @return
+	 * @param original : report
+	 * @return mutable reports
 	 */
-	public static Map<String, Object> ensureMutableParameters(Map<String, Object> original)
+	public static Map<String, Object> 
+	ensureMutableParameters(Map<String, Object> original)
 	{
-		return (original instanceof HashMap) ? original : new HashMap<>(original);
+		return (original instanceof HashMap) ? 
+				original : new HashMap<>(original);
 		
 	}
 	
 	/**
-	 * @param jrxmlFile
-	 * @return
+	 * Compiles a report from the given jrxml file template
+	 * 
+	 * @param jrxmlFile : template
+	 * @return printed report
+	 * 
 	 * @throws IOException
 	 * @throws FileNotFoundException
 	 * @throws JRException 
@@ -145,6 +153,7 @@ public abstract class AbstractReportGenerator
 		
 		try (InputStream input = new FileInputStream(jrxmlFile))
 		{
+			// With the opened report, compile it 
 			jasperReport = JasperCompileManager.compileReport(input);
 		}
 		catch (JRException e)
@@ -166,6 +175,7 @@ public abstract class AbstractReportGenerator
 		
 		try
 		{
+			// Then map the report data onto the template and return the result
 			Map<String, Object> params = ensureMutableParameters(getReportParameters());
 			JRDataSource dataSource = new JRBeanCollectionDataSource(getReportData());
 			print = JasperFillManager.fillReport(jasperReport,
@@ -192,10 +202,13 @@ public abstract class AbstractReportGenerator
 	}
 	
 	/**
-	 * @param format
-	 * @param print
-	 * @param baseName
-	 * @return
+	 * Writes the output report to the requested directory
+	 * 
+	 * @param format 	  - report format
+	 * @param print       - printed output
+	 * @param baseName    - base name of the report
+	 * 
+	 * @return output file
 	 * @throws JRException
 	 * @throws IOException
 	 */
