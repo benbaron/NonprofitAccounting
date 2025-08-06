@@ -1,0 +1,113 @@
+    <?xml version="1.0" encoding="UTF-8"?>
+    <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+                  name="INCOME_DTL_11a_AUTO_STYLED_fixed_-_Copy_rowbased" language="java"
+                  pageWidth="1714" pageHeight="906"
+                  columnWidth="1714" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+        <parameter name="P_ORG_NAME" class="java.lang.String"/>
+        <parameter name="P_REPORT_TITLE" class="java.lang.String"/>
+        <field name="category" class="java.lang.String"/>
+    <field name="fromOrPlace" class="java.lang.String"/>
+    <field name="activity" class="java.lang.String"/>
+    <field name="amount" class="java.math.BigDecimal"/>
+
+        <title>
+            <band height="70">
+                <staticText>
+                    <reportElement x="20" y="10" width="1674" height="20"/>
+                    <textElement textAlignment="Left" verticalAlignment="Middle">
+                        <font fontName="Garamond" size="16" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[INCOME DETAIL 11a]]></text>
+                </staticText>
+                <textField isBlankWhenNull="true">
+                    <reportElement x="20" y="35" width="1674" height="16"/>
+                    <textElement textAlignment="Left" verticalAlignment="Middle">
+                        <font fontName="Garamond" size="10"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{P_ORG_NAME} + " — " + $P{P_REPORT_TITLE}]]></textFieldExpression>
+                </textField>
+            </band>
+        </title>
+
+        <columnHeader>
+            <band height="20">
+    <staticText>
+    <reportElement x="20" y="0" width="414" height="18" uuid="INCOME_DTL_11a_AUTO_STYLED_fixed_-_Copy-hdr-category"/>
+    <textElement textAlignment="Left" verticalAlignment="Middle">
+        <font fontName="Garamond" size="10" isBold="true"/>
+    </textElement>
+    <text><![CDATA[Category]]></text>
+</staticText>
+<staticText>
+    <reportElement x="438" y="0" width="414" height="18" uuid="INCOME_DTL_11a_AUTO_STYLED_fixed_-_Copy-hdr-fromOrPlace"/>
+    <textElement textAlignment="Left" verticalAlignment="Middle">
+        <font fontName="Garamond" size="10" isBold="true"/>
+    </textElement>
+    <text><![CDATA[From / Place]]></text>
+</staticText>
+<staticText>
+    <reportElement x="856" y="0" width="414" height="18" uuid="INCOME_DTL_11a_AUTO_STYLED_fixed_-_Copy-hdr-activity"/>
+    <textElement textAlignment="Left" verticalAlignment="Middle">
+        <font fontName="Garamond" size="10" isBold="true"/>
+    </textElement>
+    <text><![CDATA[Activity / Description]]></text>
+</staticText>
+<staticText>
+    <reportElement x="1274" y="0" width="414" height="18" uuid="INCOME_DTL_11a_AUTO_STYLED_fixed_-_Copy-hdr-amount"/>
+    <textElement textAlignment="Left" verticalAlignment="Middle">
+        <font fontName="Garamond" size="10" isBold="true"/>
+    </textElement>
+    <text><![CDATA[Amount]]></text>
+</staticText>
+
+            </band>
+        </columnHeader>
+
+        <detail>
+            <band height="18" splitType="Prevent">
+    <textField isBlankWhenNull="true">
+    <reportElement x="20" y="0" width="414" height="16" uuid="INCOME_DTL_11a_AUTO_STYLED_fixed_-_Copy-col-category"/>
+    <textElement textAlignment="Left" verticalAlignment="Middle">
+        <font fontName="Garamond" size="10"/>
+    </textElement>
+    <textFieldExpression><![CDATA[$F{category}]]></textFieldExpression>
+</textField>
+<textField isBlankWhenNull="true">
+    <reportElement x="438" y="0" width="414" height="16" uuid="INCOME_DTL_11a_AUTO_STYLED_fixed_-_Copy-col-fromOrPlace"/>
+    <textElement textAlignment="Left" verticalAlignment="Middle">
+        <font fontName="Garamond" size="10"/>
+    </textElement>
+    <textFieldExpression><![CDATA[$F{fromOrPlace}]]></textFieldExpression>
+</textField>
+<textField isBlankWhenNull="true">
+    <reportElement x="856" y="0" width="414" height="16" uuid="INCOME_DTL_11a_AUTO_STYLED_fixed_-_Copy-col-activity"/>
+    <textElement textAlignment="Left" verticalAlignment="Middle">
+        <font fontName="Garamond" size="10"/>
+    </textElement>
+    <textFieldExpression><![CDATA[$F{activity}]]></textFieldExpression>
+</textField>
+<textField isBlankWhenNull="true">
+    <reportElement x="1274" y="0" width="414" height="16" uuid="INCOME_DTL_11a_AUTO_STYLED_fixed_-_Copy-col-amount"/>
+    <textElement textAlignment="Right" verticalAlignment="Middle">
+        <font fontName="Garamond" size="10"/>
+    </textElement>
+    <textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+</textField>
+
+            </band>
+        </detail>
+
+        <summary>
+            <band height="24">
+                <staticText>
+                    <reportElement x="20" y="4" width="1674" height="18"/>
+                    <textElement textAlignment="Left" verticalAlignment="Middle">
+                        <font fontName="Garamond" size="10" isItalic="true"/>
+                    </textElement>
+                    <text><![CDATA[End of report]]></text>
+                </staticText>
+            </band>
+        </summary>
+    </jasperReport>

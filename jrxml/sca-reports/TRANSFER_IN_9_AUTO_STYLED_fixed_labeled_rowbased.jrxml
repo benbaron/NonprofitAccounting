@@ -1,0 +1,143 @@
+    <?xml version="1.0" encoding="UTF-8"?>
+    <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+                  name="TRANSFER_IN_9_AUTO_STYLED_fixed_labeled_rowbased" language="java"
+                  pageWidth="1714" pageHeight="906"
+                  columnWidth="1714" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+        <parameter name="P_ORG_NAME" class="java.lang.String"/>
+        <parameter name="P_REPORT_TITLE" class="java.lang.String"/>
+        <field name="fromAccountOrDonor" class="java.lang.String"/>
+    <field name="description" class="java.lang.String"/>
+    <field name="withinKingdom" class="java.lang.String"/>
+    <field name="amount" class="java.math.BigDecimal"/>
+    <field name="checkNo" class="java.lang.String"/>
+    <field name="checkDate" class="java.lang.String"/>
+
+        <title>
+            <band height="70">
+                <staticText>
+                    <reportElement x="20" y="10" width="1674" height="20"/>
+                    <textElement textAlignment="Left" verticalAlignment="Middle">
+                        <font fontName="Garamond" size="16" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[TRANSFER IN 9]]></text>
+                </staticText>
+                <textField isBlankWhenNull="true">
+                    <reportElement x="20" y="35" width="1674" height="16"/>
+                    <textElement textAlignment="Left" verticalAlignment="Middle">
+                        <font fontName="Garamond" size="10"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{P_ORG_NAME} + " — " + $P{P_REPORT_TITLE}]]></textFieldExpression>
+                </textField>
+            </band>
+        </title>
+
+        <columnHeader>
+            <band height="20">
+    <staticText>
+    <reportElement x="20" y="0" width="275" height="18" uuid="TRANSFER_IN_9_AUTO_STYLED_fixed_labeled-hdr-fromAccountOrDonor"/>
+    <textElement textAlignment="Left" verticalAlignment="Middle">
+        <font fontName="Garamond" size="10" isBold="true"/>
+    </textElement>
+    <text><![CDATA[From (Account / Donor)]]></text>
+</staticText>
+<staticText>
+    <reportElement x="299" y="0" width="275" height="18" uuid="TRANSFER_IN_9_AUTO_STYLED_fixed_labeled-hdr-description"/>
+    <textElement textAlignment="Left" verticalAlignment="Middle">
+        <font fontName="Garamond" size="10" isBold="true"/>
+    </textElement>
+    <text><![CDATA[Description]]></text>
+</staticText>
+<staticText>
+    <reportElement x="578" y="0" width="275" height="18" uuid="TRANSFER_IN_9_AUTO_STYLED_fixed_labeled-hdr-withinKingdom"/>
+    <textElement textAlignment="Left" verticalAlignment="Middle">
+        <font fontName="Garamond" size="10" isBold="true"/>
+    </textElement>
+    <text><![CDATA[Within the Kingdom?]]></text>
+</staticText>
+<staticText>
+    <reportElement x="857" y="0" width="275" height="18" uuid="TRANSFER_IN_9_AUTO_STYLED_fixed_labeled-hdr-amount"/>
+    <textElement textAlignment="Left" verticalAlignment="Middle">
+        <font fontName="Garamond" size="10" isBold="true"/>
+    </textElement>
+    <text><![CDATA[Amount]]></text>
+</staticText>
+<staticText>
+    <reportElement x="1136" y="0" width="275" height="18" uuid="TRANSFER_IN_9_AUTO_STYLED_fixed_labeled-hdr-checkNo"/>
+    <textElement textAlignment="Left" verticalAlignment="Middle">
+        <font fontName="Garamond" size="10" isBold="true"/>
+    </textElement>
+    <text><![CDATA[Check #]]></text>
+</staticText>
+<staticText>
+    <reportElement x="1415" y="0" width="275" height="18" uuid="TRANSFER_IN_9_AUTO_STYLED_fixed_labeled-hdr-checkDate"/>
+    <textElement textAlignment="Left" verticalAlignment="Middle">
+        <font fontName="Garamond" size="10" isBold="true"/>
+    </textElement>
+    <text><![CDATA[Check Date]]></text>
+</staticText>
+
+            </band>
+        </columnHeader>
+
+        <detail>
+            <band height="18" splitType="Prevent">
+    <textField isBlankWhenNull="true">
+    <reportElement x="20" y="0" width="275" height="16" uuid="TRANSFER_IN_9_AUTO_STYLED_fixed_labeled-col-fromAccountOrDonor"/>
+    <textElement textAlignment="Left" verticalAlignment="Middle">
+        <font fontName="Garamond" size="10"/>
+    </textElement>
+    <textFieldExpression><![CDATA[$F{fromAccountOrDonor}]]></textFieldExpression>
+</textField>
+<textField isBlankWhenNull="true">
+    <reportElement x="299" y="0" width="275" height="16" uuid="TRANSFER_IN_9_AUTO_STYLED_fixed_labeled-col-description"/>
+    <textElement textAlignment="Left" verticalAlignment="Middle">
+        <font fontName="Garamond" size="10"/>
+    </textElement>
+    <textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
+</textField>
+<textField isBlankWhenNull="true">
+    <reportElement x="578" y="0" width="275" height="16" uuid="TRANSFER_IN_9_AUTO_STYLED_fixed_labeled-col-withinKingdom"/>
+    <textElement textAlignment="Left" verticalAlignment="Middle">
+        <font fontName="Garamond" size="10"/>
+    </textElement>
+    <textFieldExpression><![CDATA[$F{withinKingdom}]]></textFieldExpression>
+</textField>
+<textField isBlankWhenNull="true">
+    <reportElement x="857" y="0" width="275" height="16" uuid="TRANSFER_IN_9_AUTO_STYLED_fixed_labeled-col-amount"/>
+    <textElement textAlignment="Right" verticalAlignment="Middle">
+        <font fontName="Garamond" size="10"/>
+    </textElement>
+    <textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+</textField>
+<textField isBlankWhenNull="true">
+    <reportElement x="1136" y="0" width="275" height="16" uuid="TRANSFER_IN_9_AUTO_STYLED_fixed_labeled-col-checkNo"/>
+    <textElement textAlignment="Left" verticalAlignment="Middle">
+        <font fontName="Garamond" size="10"/>
+    </textElement>
+    <textFieldExpression><![CDATA[$F{checkNo}]]></textFieldExpression>
+</textField>
+<textField isBlankWhenNull="true">
+    <reportElement x="1415" y="0" width="275" height="16" uuid="TRANSFER_IN_9_AUTO_STYLED_fixed_labeled-col-checkDate"/>
+    <textElement textAlignment="Left" verticalAlignment="Middle">
+        <font fontName="Garamond" size="10"/>
+    </textElement>
+    <textFieldExpression><![CDATA[$F{checkDate}]]></textFieldExpression>
+</textField>
+
+            </band>
+        </detail>
+
+        <summary>
+            <band height="24">
+                <staticText>
+                    <reportElement x="20" y="4" width="1674" height="18"/>
+                    <textElement textAlignment="Left" verticalAlignment="Middle">
+                        <font fontName="Garamond" size="10" isItalic="true"/>
+                    </textElement>
+                    <text><![CDATA[End of report]]></text>
+                </staticText>
+            </band>
+        </summary>
+    </jasperReport>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+    name="REGALIA_SALES_DTL_7_ROWS" language="java"
+    pageWidth="842" pageHeight="595" whenNoDataType="AllSectionsNoDetail"
+    columnWidth="782" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20">
+
+    <!-- ===== Styles ===== -->
+    <style name="Title" fontName="Garamond" fontSize="16" isBold="true"/>
+    <style name="Header" fontName="Garamond" fontSize="11" isBold="true"/>
+    <style name="Cell" fontName="Garamond" fontSize="10"/>
+    <style name="CellRight" style="Cell" hAlign="Right"/>
+    <style name="ThinBox">
+        <box>
+            <topPen lineWidth="0.5"/>
+            <leftPen lineWidth="0.5"/>
+            <bottomPen lineWidth="0.5"/>
+            <rightPen lineWidth="0.5"/>
+        </box>
+    </style>
+
+    <!-- ===== Parameters (header meta) ===== -->
+    <parameter name="P_ORG_NAME" class="java.lang.String"/>
+    <parameter name="P_REPORT_TITLE" class="java.lang.String"/>
+    <parameter name="P_CONTACT_INFO" class="java.lang.String"/>
+
+    <!-- ===== Fields (row-based dataset) ===== -->
+    <field name="section" class="java.lang.String"/>
+    <field name="entryDate" class="java.lang.String"/>
+    <field name="itemDescription" class="java.lang.String"/>
+    <field name="quantity" class="java.lang.String"/>
+    <field name="unitCost" class="java.math.BigDecimal"/>
+    <field name="unitPrice" class="java.math.BigDecimal"/>
+    <field name="amount" class="java.math.BigDecimal"/>
+    <field name="counterparty" class="java.lang.String"/>
+    <field name="notes" class="java.lang.String"/>
+
+    <!-- ===== Variables for subtotals ===== -->
+    <variable name="V_PURCHASE_TOTAL" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+        <variableExpression><![CDATA[ $F{section} != null && $F{section}.equals("PURCHASE")
+            ? ($F{amount} == null ? java.math.BigDecimal.ZERO : $F{amount})
+            : java.math.BigDecimal.ZERO ]]></variableExpression>
+        <initialValueExpression><![CDATA[java.math.BigDecimal.ZERO]]></initialValueExpression>
+    </variable>
+    <variable name="V_SALE_TOTAL" class="java.math.BigDecimal" resetType="Report" calculation="Sum">
+        <variableExpression><![CDATA[ $F{section} != null && $F{section}.equals("SALE")
+            ? ($F{amount} == null ? java.math.BigDecimal.ZERO : $F{amount})
+            : java.math.BigDecimal.ZERO ]]></variableExpression>
+        <initialValueExpression><![CDATA[java.math.BigDecimal.ZERO]]></initialValueExpression>
+    </variable>
+
+    <!-- ===== Title Band ===== -->
+    <title>
+        <band height="60">
+            <textField>
+                <reportElement x="0" y="0" width="782" height="20"/>
+                <textElement textAlignment="Left" verticalAlignment="Middle">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{P_ORG_NAME}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="22" width="782" height="22"/>
+                <textElement textAlignment="Left" verticalAlignment="Middle" style="Title"/>
+                <textFieldExpression><![CDATA[$P{P_REPORT_TITLE} != null ? $P{P_REPORT_TITLE} : "Regalia Sales Detail"]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="44" width="782" height="16"/>
+                <textElement textAlignment="Left" verticalAlignment="Middle" style="Cell"/>
+                <textFieldExpression><![CDATA[$P{P_CONTACT_INFO}]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+
+    <!-- ===== Group by section to create multiple row bands ===== -->
+    <group name="SectionGroup">
+        <groupExpression><![CDATA[$F{section}]]></groupExpression>
+        <groupHeader>
+            <band height="36">
+                <textField>
+                    <reportElement x="0" y="0" width="782" height="16"/>
+                    <textElement style="Header"/>
+                    <textFieldExpression><![CDATA[
+                        $F{section} != null && $F{section}.equals("PURCHASE") ? "Regalia Purchased"
+                        : ($F{section} != null && $F{section}.equals("SALE") ? "Regalia Sold" : $F{section})
+                    ]]></textFieldExpression>
+                </textField>
+                <!-- Column headers -->
+                <frame>
+                    <reportElement x="0" y="18" width="782" height="18" style="ThinBox"/>
+                    <staticText><reportElement x="0" y="0" width="100" height="18"/><textElement style="Header"/><text>Date</text></staticText>
+                    <staticText><reportElement x="100" y="0" width="260" height="18"/><textElement style="Header"/><text>Description</text></staticText>
+                    <staticText><reportElement x="360" y="0" width="60" height="18"/><textElement style="Header"/><text>Qty</text></staticText>
+                    <staticText><reportElement x="420" y="0" width="90" height="18"/><textElement style="Header"/><text>Unit Cost</text></staticText>
+                    <staticText><reportElement x="510" y="0" width="90" height="18"/><textElement style="Header"/><text>Unit Price</text></staticText>
+                    <staticText><reportElement x="600" y="0" width="100" height="18"/><textElement style="Header" textAlignment="Right"/><text>Amount</text></staticText>
+                    <staticText><reportElement x="700" y="0" width="82" height="18"/><textElement style="Header"/><text>Party</text></staticText>
+                </frame>
+            </band>
+        </groupHeader>
+    </group>
+
+    <!-- ===== Detail row (single logical row) ===== -->
+    <detail>
+        <band height="20">
+            <frame>
+                <reportElement x="0" y="0" width="782" height="20" style="ThinBox"/>
+                <textField>
+                    <reportElement x="0" y="0" width="100" height="20"/>
+                    <textElement style="Cell"/>
+                    <textFieldExpression><![CDATA[$F{entryDate}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="100" y="0" width="260" height="20"/>
+                    <textElement style="Cell"/>
+                    <textFieldExpression><![CDATA[$F{itemDescription}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="360" y="0" width="60" height="20"/>
+                    <textElement style="CellRight"/>
+                    <textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
+                </textField>
+                <!-- Show Unit Cost only for PURCHASE -->
+                <textField>
+                    <reportElement x="420" y="0" width="90" height="20"/>
+                    <textElement style="CellRight"/>
+                    <printWhenExpression><![CDATA[$F{section} != null && $F{section}.equals("PURCHASE")]]></printWhenExpression>
+                    <textFieldExpression><![CDATA[$F{unitCost}]]></textFieldExpression>
+                </textField>
+                <!-- Show Unit Price only for SALE -->
+                <textField>
+                    <reportElement x="510" y="0" width="90" height="20"/>
+                    <textElement style="CellRight"/>
+                    <printWhenExpression><![CDATA[$F{section} != null && $F{section}.equals("SALE")]]></printWhenExpression>
+                    <textFieldExpression><![CDATA[$F{unitPrice}]]></textFieldExpression>
+                </textField>
+                <textField pattern="#,##0.00">
+                    <reportElement x="600" y="0" width="100" height="20"/>
+                    <textElement style="CellRight"/>
+                    <textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="700" y="0" width="82" height="20"/>
+                    <textElement style="Cell"/>
+                    <textFieldExpression><![CDATA[$F{counterparty}]]></textFieldExpression>
+                </textField>
+            </frame>
+        </band>
+    </detail>
+
+    <!-- ===== Summary with subtotals ===== -->
+    <summary>
+        <band height="60">
+            <frame>
+                <reportElement x="420" y="0" width="262" height="24"/>
+                <staticText><reportElement x="0" y="0" width="162" height="24"/><textElement style="Header" textAlignment="Right"/><text>Purchases Total:</text></staticText>
+                <textField pattern="#,##0.00">
+                    <reportElement x="162" y="0" width="100" height="24"/>
+                    <textElement style="CellRight"/>
+                    <textFieldExpression><![CDATA[$V{V_PURCHASE_TOTAL}]]></textFieldExpression>
+                </textField>
+            </frame>
+            <frame>
+                <reportElement x="420" y="28" width="262" height="24"/>
+                <staticText><reportElement x="0" y="0" width="162" height="24"/><textElement style="Header" textAlignment="Right"/><text>Sales Total:</text></staticText>
+                <textField pattern="#,##0.00">
+                    <reportElement x="162" y="0" width="100" height="24"/>
+                    <textElement style="CellRight"/>
+                    <textFieldExpression><![CDATA[$V{V_SALE_TOTAL}]]></textFieldExpression>
+                </textField>
+            </frame>
+        </band>
+    </summary>
+</jasperReport>
