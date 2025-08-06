@@ -1,6 +1,7 @@
 /**
  * NonprofitAccounting ExpenseDetailBinder.java ExpenseDetailBinder
  */
+
 package nonprofitbookkeeping.reports.datasource.scareports;
 
 import net.sf.jasperreports.engine.*;
@@ -14,7 +15,8 @@ public class ExpenseDetailBinder
 {
 	
 	// ---------- Helpers ----------
-	private static <T> BigDecimal sum(Collection<T> rows, Function<T, BigDecimal> getter)
+	private static <T> BigDecimal sum(Collection<T> rows,
+		Function<T, BigDecimal> getter)
 	{
 		BigDecimal total = BigDecimal.ZERO;
 		
@@ -36,19 +38,23 @@ public class ExpenseDetailBinder
 	
 	private static JRBeanCollectionDataSource ds(Collection<?> rows)
 	{
-		// second arg 'false' so an empty collection renders zero rows (no "fake" row)
-		return new JRBeanCollectionDataSource(rows == null ? Collections.emptyList() : rows, false);
+		// second arg 'false' so an empty collection renders zero rows (no
+		// "fake" row)
+		return new JRBeanCollectionDataSource(
+			rows == null ? Collections.emptyList() : rows, false);
 		
 	}
 	
-	// ---------- 
+	// ----------
 	// Example data builders (replace with your real data wiring)
 	// ----------
 	private static List<AdvertisingExpenseRow> buildAdvertisingRows()
 	{
 		List<AdvertisingExpenseRow> list = new ArrayList<>();
-		list.add(new AdvertisingExpenseRow("SCA Times", "2025-01-10", new BigDecimal("125.00")));
-		list.add(new AdvertisingExpenseRow("Local Herald", "2025-01-22", new BigDecimal("60.00")));
+		list.add(new AdvertisingExpenseRow("SCA Times", "2025-01-10",
+			new BigDecimal("125.00")));
+		list.add(new AdvertisingExpenseRow("Local Herald", "2025-01-22",
+			new BigDecimal("60.00")));
 		return list;
 		
 	}
@@ -60,7 +66,8 @@ public class ExpenseDetailBinder
 	private static List<BadDebtRow> buildBadDebtRows()
 	{
 		return Arrays.asList(
-				new BadDebtRow("John Smith", "Uncollectible site fee", new BigDecimal("25.00")));
+			new BadDebtRow("John Smith", "Uncollectible site fee",
+				new BigDecimal("25.00")));
 		
 	}
 	
@@ -71,7 +78,8 @@ public class ExpenseDetailBinder
 	private static List<FeeHonorariumRow> buildFeeRows()
 	{
 		return Arrays.asList(
-				new FeeHonorariumRow("Jane Doe", "Musician for court", new BigDecimal("150.00")));
+			new FeeHonorariumRow("Jane Doe", "Musician for court",
+				new BigDecimal("150.00")));
 		
 	}
 	
@@ -82,8 +90,8 @@ public class ExpenseDetailBinder
 	private static List<InsuranceExpenseRow> buildInsuranceRows()
 	{
 		return Arrays.asList(
-				new InsuranceExpenseRow("COI – Park Rental", "2025-02-01",
-										new BigDecimal("225.00")));
+			new InsuranceExpenseRow("COI – Park Rental", "2025-02-01",
+				new BigDecimal("225.00")));
 		
 	}
 	
@@ -94,7 +102,8 @@ public class ExpenseDetailBinder
 	private static List<OtherExpenseRow> buildOtherRows()
 	{
 		return Arrays.asList(
-				new OtherExpenseRow("Storage Unit", "February rent", new BigDecimal("89.99")));
+			new OtherExpenseRow("Storage Unit", "February rent",
+				new BigDecimal("89.99")));
 		
 	}
 	
@@ -105,19 +114,20 @@ public class ExpenseDetailBinder
 	private static List<DonationRow> buildDonationRows()
 	{
 		return Arrays.asList(
-				new DonationRow("501(c)(3) Partner", "Event proceeds donation",
-								new BigDecimal("200.00")));
+			new DonationRow("501(c)(3) Partner", "Event proceeds donation",
+				new BigDecimal("200.00")));
 		
 	}
 	
 	// ---------- Fill & export: 12a ----------
-	public static JasperPrint fillExpense12a(	String jrxmlOnClasspath,
-												String orgName,
-												String reportTitle,
-												Collection<AdvertisingExpenseRow> advertisingRows,
-												Collection<BadDebtRow> badDebtRows,
-												Collection<
-														FeeHonorariumRow> feeRows) throws Exception
+	public static JasperPrint fillExpense12a(String jrxmlOnClasspath,
+		String orgName,
+		String reportTitle,
+		Collection<AdvertisingExpenseRow> advertisingRows,
+		Collection<BadDebtRow> badDebtRows,
+		Collection<
+			FeeHonorariumRow> feeRows)
+		throws Exception
 	{
 		
 		Map<String, Object> params = new HashMap<>();
@@ -130,27 +140,31 @@ public class ExpenseDetailBinder
 		params.put("P_EXP17_FEES_ROWS", ds(feeRows));
 		
 		// Totals (assuming each bean has getAmount())
-		params.put("P_TOTAL_12", sum(advertisingRows, AdvertisingExpenseRow::getAmount));
+		params.put("P_TOTAL_12",
+			sum(advertisingRows, AdvertisingExpenseRow::getAmount));
 		params.put("P_TOTAL_13", sum(badDebtRows, BadDebtRow::getAmount));
 		params.put("P_TOTAL_17", sum(feeRows, FeeHonorariumRow::getAmount));
 		
-		try (InputStream in = ExpenseDetailBinder.class.getResourceAsStream(jrxmlOnClasspath))
+		try (InputStream in =
+			ExpenseDetailBinder.class.getResourceAsStream(jrxmlOnClasspath))
 		{
 			JasperReport report = JasperCompileManager.compileReport(in);
 			// Top-level has no detail rows; use an empty data source of size 1
-			return JasperFillManager.fillReport(report, params, new JREmptyDataSource(1));
+			return JasperFillManager.fillReport(report, params,
+				new JREmptyDataSource(1));
 		}
 		
 	}
 	
 	// ---------- Fill & export: 12b ----------
-	public static JasperPrint fillExpense12b(	String jrxmlOnClasspath,
-												String orgName,
-												String reportTitle,
-												Collection<InsuranceExpenseRow> insuranceRows,
-												Collection<OtherExpenseRow> otherRows,
-												Collection<
-														DonationRow> donationRows) throws Exception
+	public static JasperPrint fillExpense12b(String jrxmlOnClasspath,
+		String orgName,
+		String reportTitle,
+		Collection<InsuranceExpenseRow> insuranceRows,
+		Collection<OtherExpenseRow> otherRows,
+		Collection<
+			DonationRow> donationRows)
+		throws Exception
 	{
 		
 		Map<String, Object> params = new HashMap<>();
@@ -163,14 +177,17 @@ public class ExpenseDetailBinder
 		params.put("P_EXP29_DONATION_ROWS", ds(donationRows));
 		
 		// Totals
-		params.put("P_TOTAL_20", sum(insuranceRows, InsuranceExpenseRow::getAmount));
+		params.put("P_TOTAL_20",
+			sum(insuranceRows, InsuranceExpenseRow::getAmount));
 		params.put("P_TOTAL_28", sum(otherRows, OtherExpenseRow::getAmount));
 		params.put("P_TOTAL_29", sum(donationRows, DonationRow::getAmount));
 		
-		try (InputStream in = ExpenseDetailBinder.class.getResourceAsStream(jrxmlOnClasspath))
+		try (InputStream in =
+			ExpenseDetailBinder.class.getResourceAsStream(jrxmlOnClasspath))
 		{
 			JasperReport report = JasperCompileManager.compileReport(in);
-			return JasperFillManager.fillReport(report, params, new JREmptyDataSource(1));
+			return JasperFillManager.fillReport(report, params,
+				new JREmptyDataSource(1));
 		}
 		
 	}
@@ -192,18 +209,20 @@ public class ExpenseDetailBinder
 		List<DonationRow> donations = buildDonationRows();
 		
 		JasperPrint print12a = fillExpense12a(
-				jrxml12a, "Your Group, Inc.", "Expense Detail (Part 1)",
-				advertising, badDebts, fees);
+			jrxml12a, "Your Group, Inc.", "Expense Detail (Part 1)",
+			advertising, badDebts, fees);
 		JasperPrint print12b = fillExpense12b(
-				jrxml12b, "Your Group, Inc.", "Expense Detail (Part 2)",
-				insurance, others, donations);
+			jrxml12b, "Your Group, Inc.", "Expense Detail (Part 2)",
+			insurance, others, donations);
 		
 		// Export to PDF
-		JasperExportManager.exportReportToPdfFile(print12a, "EXPENSE_DTL_12a_ROW_BASED.pdf");
-		JasperExportManager.exportReportToPdfFile(print12b, "EXPENSE_DTL_12b_ROW_BASED.pdf");
+		JasperExportManager.exportReportToPdfFile(print12a,
+			"EXPENSE_DTL_12a_ROW_BASED.pdf");
+		JasperExportManager.exportReportToPdfFile(print12b,
+			"EXPENSE_DTL_12b_ROW_BASED.pdf");
 		
 		System.out.println(
-				"Generated PDFs: EXPENSE_DTL_12a_ROW_BASED.pdf, EXPENSE_DTL_12b_ROW_BASED.pdf");
+			"Generated PDFs: EXPENSE_DTL_12a_ROW_BASED.pdf, EXPENSE_DTL_12b_ROW_BASED.pdf");
 		
 	}
 	

@@ -5,8 +5,12 @@ import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.HtmlExporter;
 import net.sf.jasperreports.export.*;
+
+
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
+import nonprofitbookkeeping.reports.datasource.scareports.RowReportBinder;
+import nonprofitbookkeeping.reports.datasource.scareports.RowReportBinder.TableSpec;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -56,7 +60,7 @@ public abstract class AbstractReportGenerator
 	 */
 	protected abstract String getReportPath()	throws ActionCancelledException,
 												NoFileCreatedException;
-		
+	
 	
 	/**
 	 * Gets the output file base name
@@ -77,12 +81,11 @@ public abstract class AbstractReportGenerator
 	 */
 	public File generateAndExportReport(String format) throws Exception
 	{
-		
 		// get the input
 		File jrxmlFile = getJasperFilePath();
 		
 		// compile the input
-		JasperPrint print = compileJasperInput(jrxmlFile);
+		JasperPrint print = compileJasperInput(jrxmlFile, null, null, null, null);
 		
 		return writeJasperOutput(format, print, getBaseName());
 		
@@ -126,10 +129,10 @@ public abstract class AbstractReportGenerator
 	 * @param original : report
 	 * @return mutable reports
 	 */
-	public static Map<String, Object> 
-	ensureMutableParameters(Map<String, Object> original)
+	public static	Map<String, Object>
+			ensureMutableParameters(Map<String, Object> original)
 	{
-		return (original instanceof HashMap) ? 
+		return (original instanceof HashMap) ?
 				original : new HashMap<>(original);
 		
 	}
@@ -144,63 +147,22 @@ public abstract class AbstractReportGenerator
 	 * @throws FileNotFoundException
 	 * @throws JRException 
 	 */
-	JasperPrint compileJasperInput(File jrxmlFile)	throws IOException,
-													FileNotFoundException,
-													JRException
-	{
-		JasperReport jasperReport = null;
-		JasperPrint print = null;
-		
-		try (InputStream input = new FileInputStream(jrxmlFile))
-		{
-			// With the opened report, compile it 
-			jasperReport = JasperCompileManager.compileReport(input);
-		}
-		catch (JRException e)
-		{
-			e.printStackTrace();
-			System.out.println(e.getMessage());
-			
-			Throwable cause = e.getCause();
-			
-			while (cause != null)
-			{
-				System.err.println("JasperCompileManager.compileReport fail. Caused by: " +
-						cause.getMessage());
-				cause = cause.getCause();
-			}
-			
-			throw e;
-		}
-		
-		try
-		{
-			// Then map the report data onto the template and return the result
-			Map<String, Object> params = ensureMutableParameters(getReportParameters());
-			JRDataSource dataSource = new JRBeanCollectionDataSource(getReportData());
-			print = JasperFillManager.fillReport(jasperReport,
-						params,
-						dataSource);
-		}
-		catch (Exception e)
-		{
-			Throwable cause = e.getCause();
-			
-			while (cause != null)
-			{
-				System.err.println(
-						"JasperFillManager.fillReport fail. Caused by: " + cause.getMessage());
-				cause = cause.getCause();
-			}
-			
-			throw e;
-			
-		}
-		
-		return print;
-		
-	}
 	
+	
+	JasperPrint compileJasperInput(File jrxmlFile,
+	                               String orgName,
+	                               String reportTitle,
+	                               List<TableSpec<?>> tableSpecs,
+	                               Map<String,Object> extraParams)
+	        throws IOException, JRException {
+
+	    /* RowReportBinder does everything:
+	       – compiles the template
+	       – builds the parameter map (rows, totals, org, title, extras)
+	       – fills with a 1-row empty data-source                                  */
+	    return RowReportBinder.fill(jrxmlFile, orgName, reportTitle, tableSpecs, extraParams);
+	}
+
 	/**
 	 * Writes the output report to the requested directory
 	 * 
