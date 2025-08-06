@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+                                  http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="ASSET_DTL_5a_ROWS" language="java"
+              pageWidth="1767" pageHeight="1004"
+              columnWidth="1767" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+
+    <!-- ===== Styles (shared) ===== -->
+    <style name="base" fontName="Garamond" fontSize="11" isBold="false" isItalic="false" isUnderline="false"/>
+    <style name="label" style="base" fontSize="12"/>
+    <style name="labelBold" style="label" isBold="true"/>
+    <style name="value" style="base" hAlign="Right"/>
+    <style name="header" style="base" fontSize="14" isBold="true"/>
+    <style name="headerSmall" style="base" fontSize="10"/>
+
+    <!-- ===== Header / off-page context (purpose-named) ===== -->
+    <parameter name="P_ORG_NAME" class="java.lang.String"/>
+    <parameter name="P_REPORT_TITLE" class="java.lang.String"/>
+    <parameter name="P_REPORT_SUBTITLE" class="java.lang.String"/>
+    <parameter name="P_CONTACT_INFO" class="java.lang.String"/>
+    <parameter name="P_FROM_PAGE_PRIMARY" class="java.lang.String"/>
+    <parameter name="P_FROM_PAGE_SECONDARY" class="java.lang.String"/>
+
+    <!-- ===== Row fields (bean collection) ===== -->
+    <!-- All purpose-based; no sheet-location names -->
+    <field name="label" class="java.lang.String"/>
+    <field name="fromPage" class="java.lang.String"/>
+    <field name="start" class="java.math.BigDecimal"/>
+    <field name="end" class="java.math.BigDecimal"/>
+    <field name="diff" class="java.math.BigDecimal"/>
+
+    <!-- ===== Title ===== -->
+    <title>
+        <band height="80">
+            <textField>
+                <reportElement x="84" y="10" width="800" height="22" style="header"/>
+                <textFieldExpression><![CDATA[$P{P_REPORT_TITLE}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="84" y="34" width="800" height="16" style="headerSmall"/>
+                <textFieldExpression><![CDATA[$P{P_REPORT_SUBTITLE}]]></textFieldExpression>
+            </textField>
+
+            <!-- off-page / dynamic text -->
+            <textField>
+                <reportElement x="84"  y="54" width="350" height="16" style="label"/>
+                <textFieldExpression><![CDATA[$P{P_CONTACT_INFO}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="450" y="54" width="300" height="16" style="label"/>
+                <textFieldExpression><![CDATA[$P{P_FROM_PAGE_PRIMARY}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="760" y="54" width="300" height="16" style="label"/>
+                <textFieldExpression><![CDATA[$P{P_FROM_PAGE_SECONDARY}]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+
+    <!-- ===== Column headers ===== -->
+    <columnHeader>
+        <band height="26">
+            <staticText>
+                <reportElement x="84"  y="4" width="380" height="20" style="labelBold"/>
+                <text><![CDATA[Asset Line Item]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="470" y="4" width="140" height="20" style="labelBold"/>
+                <text><![CDATA[(from page)]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="615" y="4" width="160" height="20" style="labelBold"/>
+                <text><![CDATA[Start]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="780" y="4" width="160" height="20" style="labelBold"/>
+                <text><![CDATA[End]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="945" y="4" width="160" height="20" style="labelBold"/>
+                <text><![CDATA[Diff]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+
+    <!-- ===== Detail: one row per item (paired label + values) ===== -->
+    <detail>
+        <band height="22">
+            <textField isBlankWhenNull="true">
+                <reportElement x="84" y="2" width="380" height="18" style="label"/>
+                <textFieldExpression><![CDATA[$F{label}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="470" y="2" width="140" height="18" style="label"/>
+                <textFieldExpression><![CDATA[$F{fromPage}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="615" y="2" width="160" height="18" style="value"/>
+                <textFieldExpression><![CDATA[$F{start}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="780" y="2" width="160" height="18" style="value"/>
+                <textFieldExpression><![CDATA[$F{end}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="945" y="2" width="160" height="18" style="value"/>
+                <textFieldExpression><![CDATA[$F{diff}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+    <!-- ===== Optional totals ===== -->
+    <variable name="SUM_start" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{start}]]></variableExpression>
+        <initialValueExpression><![CDATA[new java.math.BigDecimal("0")]]></initialValueExpression>
+    </variable>
+    <variable name="SUM_end" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{end}]]></variableExpression>
+        <initialValueExpression><![CDATA[new java.math.BigDecimal("0")]]></initialValueExpression>
+    </variable>
+    <variable name="SUM_diff" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{diff}]]></variableExpression>
+        <initialValueExpression><![CDATA[new java.math.BigDecimal("0")]]></initialValueExpression>
+    </variable>
+
+    <summary>
+        <band height="26">
+            <staticText>
+                <reportElement x="84" y="2" width="380" height="20" style="labelBold"/>
+                <text><![CDATA[TOTAL]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true">
+                <reportElement x="615" y="2" width="160" height="20" style="value"/>
+                <textFieldExpression><![CDATA[$V{SUM_start}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="780" y="2" width="160" height="20" style="value"/>
+                <textFieldExpression><![CDATA[$V{SUM_end}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="945" y="2" width="160" height="20" style="value"/>
+                <textFieldExpression><![CDATA[$V{SUM_diff}]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+
+    <queryString><![CDATA[]]></queryString>
+</jasperReport>

@@ -4,7 +4,7 @@
 	<style name="vValue" fontName="Garamond" fontSize="10.0"/>
 	<parameter name="P_ORG_NAME" class="java.lang.String"/>
 	<parameter name="P_REPORT_TITLE" class="java.lang.String"/>
-	<field name="_1_contact_info" class="java.math.BigDecimal"/>
+	<field name="contact_info" class="java.lang.String"/>
 	<field name="add_total_to_pg_3_i_a_end" class="java.math.BigDecimal"/>
 	<field name="amount" class="java.math.BigDecimal"/>
 	<field name="amount_2" class="java.math.BigDecimal"/>
@@ -14,9 +14,9 @@
 	<field name="amount_6" class="java.math.BigDecimal"/>
 	<field name="amount_7" class="java.math.BigDecimal"/>
 	<field name="amount_8" class="java.math.BigDecimal"/>
-	<field name="contents_b59" class="java.math.BigDecimal"/>
-	<field name="contents_e_3" class="java.math.BigDecimal"/>
-	<field name="contents_e_4" class="java.math.BigDecimal"/>
+	<field name="header_version_info" class="java.lang.String"/>
+	<field name="organization_name_corporate" class="java.lang.String"/>
+	<field name="report_title_text" class="java.lang.String"/>
 	<field name="current_amount" class="java.math.BigDecimal"/>
 	<field name="current_amount_10" class="java.math.BigDecimal"/>
 	<field name="current_amount_11" class="java.math.BigDecimal"/>
@@ -126,25 +126,25 @@
 				<text><![CDATA[Contact Info]]></text>
 			</element>
 			<element kind="textField" uuid="c4f01b81-43f1-417d-b3cf-6041caeb92f9" x="180" y="5" width="228" height="15" fontName="Garamond" fontSize="10.0" blankWhenNull="true" hTextAlign="Left" vTextAlign="Middle" style="vValue">
-				<expression><![CDATA[$F{_1_contact_info}]]></expression>
+				<expression><![CDATA[$F{contact_info}]]></expression>
 			</element>
 			<element kind="staticText" uuid="19213a5c-3739-49c6-9d62-daf0f4175ac2" x="5" y="23" width="170" height="15" fontName="Garamond" fontSize="10.0" bold="true" style="vLabel">
 				<text><![CDATA[Contents B59]]></text>
 			</element>
 			<element kind="textField" uuid="2907177d-7ff0-4ecd-bd29-71279e1f89ad" x="180" y="23" width="228" height="15" fontName="Garamond" fontSize="10.0" blankWhenNull="true" style="vValue">
-				<expression><![CDATA[$F{contents_b59}]]></expression>
+				<expression><![CDATA[$F{header_version_info}]]></expression>
 			</element>
 			<element kind="staticText" uuid="185444ac-5519-4ef4-977d-15e5f3ca5123" x="5" y="41" width="170" height="15" fontName="Garamond" fontSize="10.0" bold="true" style="vLabel">
 				<text><![CDATA[Section Title]]></text>
 			</element>
 			<element kind="textField" uuid="0fafb905-82f5-4054-a082-bc88813c0013" x="180" y="41" width="228" height="15" fontName="Garamond" fontSize="10.0" blankWhenNull="true" style="vValue">
-				<expression><![CDATA[$F{contents_e_3}]]></expression>
+				<expression><![CDATA[$F{organization_name_corporate}]]></expression>
 			</element>
 			<element kind="staticText" uuid="60d6e0bc-b07c-47f8-97a8-1b4a7c0ddeb3" x="5" y="59" width="170" height="15" fontName="Garamond" fontSize="10.0" bold="true" style="vLabel">
 				<text><![CDATA[Section Subtitle]]></text>
 			</element>
 			<element kind="textField" uuid="2f2cd5fc-454a-433a-a801-5a0b0ff98892" x="180" y="59" width="228" height="15" fontName="Garamond" fontSize="10.0" blankWhenNull="true" style="vValue">
-				<expression><![CDATA[$F{contents_e_4}]]></expression>
+				<expression><![CDATA[$F{report_title_text}]]></expression>
 			</element>
 			<element kind="staticText" uuid="561600e6-6061-4f84-bc1b-0c0833f47b88" x="435" y="5" width="160" height="15" fontName="Garamond" fontSize="10.0" bold="true" style="vLabel">
 				<text><![CDATA[Total]]></text>
@@ -447,16 +447,16 @@
 				<text><![CDATA[-5a-]]></text>
 			</element>
 			<element kind="textField" uuid="ff91e59e-d751-4afe-90d1-0a0bc7284eb2" x="89" y="20" width="228" height="15" fontName="Garamond" fontSize="5.0" blankWhenNull="true" bold="false" italic="false" underline="false" hTextAlign="Right" vTextAlign="Middle">
-				<expression><![CDATA[$F{_1_contact_info}]]></expression>
+				<expression><![CDATA[$F{contact_info}]]></expression>
 			</element>
 			<element kind="textField" uuid="66c0252c-59f6-4521-8d8c-f1c16cfabdb3" x="89" y="35" width="228" height="15" fontName="Garamond" fontSize="9.0" blankWhenNull="true" bold="true" italic="false" underline="false" hTextAlign="Right" vTextAlign="Middle">
-				<expression><![CDATA[$F{contents_b59}]]></expression>
+				<expression><![CDATA[$F{header_version_info}]]></expression>
 			</element>
 			<element kind="textField" uuid="62a6200c-55f6-49b1-943f-dda67ec14655" x="89" y="50" width="228" height="15" fontName="Garamond" fontSize="9.0" blankWhenNull="true" bold="true" italic="false" underline="false" hTextAlign="Right" vTextAlign="Middle">
-				<expression><![CDATA[$F{contents_e_3}]]></expression>
+				<expression><![CDATA[$F{organization_name_corporate}]]></expression>
 			</element>
 			<element kind="textField" uuid="f901d861-451a-409b-afb2-e6b81c8eb346" x="89" y="80" width="228" height="15" fontName="Garamond" fontSize="10.0" blankWhenNull="true" bold="true" italic="false" underline="true" hTextAlign="Right" vTextAlign="Middle">
-				<expression><![CDATA[$F{contents_e_4}]]></expression>
+				<expression><![CDATA[$F{report_title_text}]]></expression>
 			</element>
 			<element kind="textField" uuid="dbb74e86-4699-4258-91c8-41a7a0fd1813" x="690" y="282" width="59" height="15" fontName="Garamond" fontSize="10.0" blankWhenNull="true" bold="false" italic="false" underline="false" hTextAlign="Right" vTextAlign="Middle">
 				<expression><![CDATA[$F{add_total_to_pg_3_i_a_end}]]></expression>
