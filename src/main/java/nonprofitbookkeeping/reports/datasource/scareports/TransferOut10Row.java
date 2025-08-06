@@ -1,33 +1,90 @@
-package reports.beans;
 
-import java.math.BigDecimal;
+package nonprofitbookkeeping.reports.datasource.scareports;
 
-public class TransferOut10Row {
-    private java.lang.String toAccountOrPayee;
-private java.lang.String reason;
-private java.lang.String withinKingdom;
-private java.math.BigDecimal amount;
-private java.lang.String checkNo;
-private java.lang.String checkDate;
-
-    public TransferOut10Row() {}
-
-    public java.lang.String getToAccountOrPayee() { return toAccountOrPayee; }
-public void setToAccountOrPayee(java.lang.String v) { this.toAccountOrPayee = v; }
-
-public java.lang.String getReason() { return reason; }
-public void setReason(java.lang.String v) { this.reason = v; }
-
-public java.lang.String getWithinKingdom() { return withinKingdom; }
-public void setWithinKingdom(java.lang.String v) { this.withinKingdom = v; }
-
-public java.math.BigDecimal getAmount() { return amount; }
-public void setAmount(java.math.BigDecimal v) { this.amount = v; }
-
-public java.lang.String getCheckNo() { return checkNo; }
-public void setCheckNo(java.lang.String v) { this.checkNo = v; }
-
-public java.lang.String getCheckDate() { return checkDate; }
-public void setCheckDate(java.lang.String v) { this.checkDate = v; }
-
+public class TransferOut10Row
+{
+	private String toAccountOrPayee;
+	private String reason;
+	private String withinKingdom;
+	private java.math.BigDecimal amount;
+	private String checkNo;
+	private String checkDate;
+	
+	public TransferOut10Row()
+	{
+	
+	}
+	
+	public String getToAccountOrPayee()
+	{
+		return toAccountOrPayee;
+		
+	}
+	
+	public void setToAccountOrPayee(String v)
+	{
+		this.toAccountOrPayee = v;
+		
+	}
+	
+	public String getReason()
+	{
+		return reason;
+		
+	}
+	
+	public void setReason(String v)
+	{
+		this.reason = v;
+		
+	}
+	
+	public String getWithinKingdom()
+	{
+		return withinKingdom;
+		
+	}
+	
+	public void setWithinKingdom(String v)
+	{
+		this.withinKingdom = v;
+		
+	}
+	
+	public java.math.BigDecimal getAmount()
+	{
+		return amount;
+		
+	}
+	
+	public void setAmount(java.math.BigDecimal v)
+	{
+		this.amount = v;
+		
+	}
+	
+	public String getCheckNo()
+	{
+		return checkNo;
+		
+	}
+	
+	public void setCheckNo(String v)
+	{
+		this.checkNo = v;
+		
+	}
+	
+	public String getCheckDate()
+	{
+		return checkDate;
+		
+	}
+	
+	public void setCheckDate(String v)
+	{
+		this.checkDate = v;
+		
+	}
+	
 }

@@ -179,8 +179,8 @@ public abstract class AbstractReportGenerator
 			Map<String, Object> params = ensureMutableParameters(getReportParameters());
 			JRDataSource dataSource = new JRBeanCollectionDataSource(getReportData());
 			print = JasperFillManager.fillReport(jasperReport,
-					params,
-					dataSource);
+						params,
+						dataSource);
 		}
 		catch (Exception e)
 		{

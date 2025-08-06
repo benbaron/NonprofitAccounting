@@ -3,7 +3,6 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
 
-
 /**
  * Auto-generated bean for ASSET_DTL_5a report.
  * Generated on 2025-08-01.

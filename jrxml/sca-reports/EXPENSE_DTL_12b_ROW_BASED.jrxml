@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:c="http://jasperreports.sourceforge.net/jasperreports/components"
+  xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd
+                      http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd"
+  name="EXPENSE_DTL_12b_ROW_BASED" language="java" pageWidth="2080" pageHeight="1048"
+  columnWidth="2080" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" whenNoDataType="AllSectionsNoDetail">
+
+  <!-- Styles -->
+  <style name="SectionHeader" fontName="Garamond" fontSize="12" isBold="true"/>
+  <style name="ColumnHeader" fontName="Garamond" fontSize="10" isBold="true"/>
+  <style name="Cell" fontName="Garamond" fontSize="10"/>
+  <style name="TotalLabel" fontName="Garamond" fontSize="10" isBold="true" isItalic="true"/>
+  <style name="TotalValue" fontName="Garamond" fontSize="10"/>
+
+  <!-- Parameters -->
+  <parameter name="P_ORG_NAME" class="java.lang.String"/>
+  <parameter name="P_REPORT_TITLE" class="java.lang.String"/>
+  <parameter name="P_EXP20_INSURANCE_ROWS" class="java.util.Collection"/>
+  <parameter name="P_EXP28_OTHER_ROWS" class="java.util.Collection"/>
+  <parameter name="P_EXP29_DONATION_ROWS" class="java.util.Collection"/>
+  <parameter name="P_TOTAL_20" class="java.math.BigDecimal"/>
+  <parameter name="P_TOTAL_28" class="java.math.BigDecimal"/>
+  <parameter name="P_TOTAL_29" class="java.math.BigDecimal"/>
+
+  <!-- SubDatasets -->
+  <subDataset name="InsuranceRows">
+    <field name="organizationOrPerson" class="java.lang.String"/>
+    <field name="checkNumber" class="java.lang.String"/>
+    <field name="checkDate" class="java.lang.String"/>
+    <field name="amount" class="java.math.BigDecimal"/>
+  </subDataset>
+
+  <subDataset name="OtherExpenseRows">
+    <field name="paidTo" class="java.lang.String"/>
+    <field name="reason" class="java.lang.String"/>
+    <field name="amount" class="java.math.BigDecimal"/>
+  </subDataset>
+
+  <subDataset name="DonationRows">
+    <field name="organizationName" class="java.lang.String"/>
+    <field name="fedIdNumber" class="java.lang.String"/>
+    <field name="reason" class="java.lang.String"/>
+    <field name="checkNumber" class="java.lang.String"/>
+    <field name="checkDate" class="java.lang.String"/>
+    <field name="amount" class="java.math.BigDecimal"/>
+  </subDataset>
+
+  <title>
+    <band height="80">
+      <staticText>
+        <reportElement x="84" y="10" width="600" height="20"/>
+        <textElement>
+          <font fontName="Garamond" size="14" isBold="true"/>
+        </textElement>
+        <text><![CDATA[EXPENSE DETAIL PART 2]]></text>
+      </staticText>
+      <textField>
+        <reportElement x="84" y="35" width="600" height="18"/>
+        <textElement>
+          <font fontName="Garamond" size="10" isBold="true"/>
+        </textElement>
+        <textFieldExpression><![CDATA[$P{P_ORG_NAME} + " — " + $P{P_REPORT_TITLE}]]></textFieldExpression>
+      </textField>
+    </band>
+  </title>
+
+  <detail>
+    <band height="800">
+      <!-- Section 20: Insurance (Non-SCA) -->
+      <staticText><reportElement x="84" y="0" width="400" height="18" style="SectionHeader"/><text><![CDATA[20. INSURANCE (NON-SCA)]]></text></staticText>
+      <staticText><reportElement x="84" y="22" width="320" height="16" style="ColumnHeader"/><text><![CDATA[Organization or Person]]></text></staticText>
+      <staticText><reportElement x="412" y="22" width="120" height="16" style="ColumnHeader"/><text><![CDATA[Check #]]></text></staticText>
+      <staticText><reportElement x="536" y="22" width="140" height="16" style="ColumnHeader"/><text><![CDATA[Check Date]]></text></staticText>
+      <staticText><reportElement x="1880" y="22" width="160" height="16" style="ColumnHeader"/><text><![CDATA[Amount]]></text></staticText>
+
+      <componentElement>
+        <reportElement x="84" y="40" width="1912" height="160"/>
+        <c:list>
+          <datasetRun subDataset="InsuranceRows">
+            <dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{P_EXP20_INSURANCE_ROWS})]]></dataSourceExpression>
+          </datasetRun>
+          <c:listContents height="20">
+            <textField isStretchWithOverflow="true"><reportElement x="0" y="0" width="320" height="18" style="Cell"/><textFieldExpression><![CDATA[$F{organizationOrPerson}]]></textFieldExpression></textField>
+            <textField><reportElement x="328" y="0" width="120" height="18" style="Cell"/><textFieldExpression><![CDATA[$F{checkNumber}]]></textFieldExpression></textField>
+            <textField><reportElement x="452" y="0" width="200" height="18" style="Cell"/><textFieldExpression><![CDATA[$F{checkDate}]]></textFieldExpression></textField>
+            <textField><reportElement x="1796" y="0" width="160" height="18" style="Cell"/><textElement textAlignment="Right"/><textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression></textField>
+          </c:listContents>
+        </c:list>
+      </componentElement>
+      <staticText><reportElement x="84" y="205" width="300" height="16" style="TotalLabel"/><text><![CDATA[Show TOTAL on Pg. 4 Line 20]]></text></staticText>
+      <textField><reportElement x="1880" y="205" width="160" height="16" style="TotalValue"/><textElement textAlignment="Right"/><textFieldExpression><![CDATA[$P{P_TOTAL_20}]]></textFieldExpression></textField>
+
+      <!-- Section 28: Other Expenses -->
+      <staticText><reportElement x="84" y="240" width="400" height="18" style="SectionHeader"/><text><![CDATA[28. OTHER EXPENSES]]></text></staticText>
+      <staticText><reportElement x="84" y="262" width="320" height="16" style="ColumnHeader"/><text><![CDATA[Paid To]]></text></staticText>
+      <staticText><reportElement x="412" y="262" width="1448" height="16" style="ColumnHeader"/><text><![CDATA[Reason]]></text></staticText>
+      <staticText><reportElement x="1880" y="262" width="160" height="16" style="ColumnHeader"/><text><![CDATA[Amount]]></text></staticText>
+
+      <componentElement>
+        <reportElement x="84" y="280" width="1912" height="160"/>
+        <c:list>
+          <datasetRun subDataset="OtherExpenseRows">
+            <dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{P_EXP28_OTHER_ROWS})]]></dataSourceExpression>
+          </datasetRun>
+          <c:listContents height="20">
+            <textField isStretchWithOverflow="true"><reportElement x="0" y="0" width="320" height="18" style="Cell"/><textFieldExpression><![CDATA[$F{paidTo}]]></textFieldExpression></textField>
+            <textField isStretchWithOverflow="true"><reportElement x="328" y="0" width="1532" height="18" style="Cell"/><textFieldExpression><![CDATA[$F{reason}]]></textFieldExpression></textField>
+            <textField><reportElement x="1796" y="0" width="160" height="18" style="Cell"/><textElement textAlignment="Right"/><textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression></textField>
+          </c:listContents>
+        </c:list>
+      </componentElement>
+      <staticText><reportElement x="84" y="445" width="300" height="16" style="TotalLabel"/><text><![CDATA[Show TOTAL on Pg. 4 Line 28]]></text></staticText>
+      <textField><reportElement x="1880" y="445" width="160" height="16" style="TotalValue"/><textElement textAlignment="Right"/><textFieldExpression><![CDATA[$P{P_TOTAL_28}]]></textFieldExpression></textField>
+
+      <!-- Section 29: Donations (501(c)(3)) -->
+      <staticText><reportElement x="84" y="480" width="700" height="18" style="SectionHeader"/><text><![CDATA[29. DONATIONS TO SCA, Inc. SUBSIDIARIES AND OTHER 501(c)(3) ORGANIZATIONS]]></text></staticText>
+      <staticText><reportElement x="84" y="502" width="300" height="16" style="ColumnHeader"/><text><![CDATA[Organization Name]]></text></staticText>
+      <staticText><reportElement x="388" y="502" width="180" height="16" style="ColumnHeader"/><text><![CDATA[FED ID Number]]></text></staticText>
+      <staticText><reportElement x="572" y="502" width="1288" height="16" style="ColumnHeader"/><text><![CDATA[Reason / Notes]]></text></staticText>
+      <staticText><reportElement x="1880" y="502" width="160" height="16" style="ColumnHeader"/><text><![CDATA[Amount]]></text></staticText>
+
+      <componentElement>
+        <reportElement x="84" y="520" width="1912" height="160"/>
+        <c:list>
+          <datasetRun subDataset="DonationRows">
+            <dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{P_EXP29_DONATION_ROWS})]]></dataSourceExpression>
+          </datasetRun>
+          <c:listContents height="20">
+            <textField isStretchWithOverflow="true"><reportElement x="0" y="0" width="300" height="18" style="Cell"/><textFieldExpression><![CDATA[$F{organizationName}]]></textFieldExpression></textField>
+            <textField><reportElement x="304" y="0" width="180" height="18" style="Cell"/><textFieldExpression><![CDATA[$F{fedIdNumber}]]></textFieldExpression></textField>
+            <textField isStretchWithOverflow="true"><reportElement x="488" y="0" width="1372" height="18" style="Cell"/><textFieldExpression><![CDATA[$F{reason}]]></textFieldExpression></textField>
+            <textField><reportElement x="1796" y="0" width="160" height="18" style="Cell"/><textElement textAlignment="Right"/><textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression></textField>
+          </c:listContents>
+        </c:list>
+      </componentElement>
+
+      <staticText><reportElement x="84" y="685" width="400" height="16" style="TotalLabel"/><text><![CDATA[Show TOTAL on Pg. 4 Line 29]]></text></staticText>
+      <textField><reportElement x="1880" y="685" width="160" height="16" style="TotalValue"/><textElement textAlignment="Right"/><textFieldExpression><![CDATA[$P{P_TOTAL_29}]]></textFieldExpression></textField>
+    </band>
+  </detail>
+
+</jasperReport>
