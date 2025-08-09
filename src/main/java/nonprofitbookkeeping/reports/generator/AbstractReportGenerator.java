@@ -8,11 +8,7 @@ import net.sf.jasperreports.export.*;
 
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
-import nonprofitbookkeeping.reports.datasource.scareports.RowReportBinder;
-import nonprofitbookkeeping.reports.datasource.scareports.TableSpec;
-
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -66,27 +62,7 @@ public abstract class AbstractReportGenerator
 	 */
 	protected abstract String getBaseName();
 	
-	/**
-	 * Generates the report by compiling the JRXML template, filling it with data and parameters,
-	 * and then exports it to the specified output format.
-	 * Subclasses must implement this method to define the complete report generation workflow.
-	 *
-	 * @param format The desired output format for the report (e.g., "pdf", "html").
-	 *               Supported formats depend on the export helper methods used.
-	 * @return The generated {@link File} object representing the exported report.
-	 * @throws Exception If any error occurs during report compilation, filling, or exporting.
-	 */
-	public File generateAndExportReport(String format) throws Exception
-	{
-		// get the input
-		File jrxmlFile = getJasperFilePath();
-		
-		// compile the input
-		JasperPrint print = compileJasperInput(jrxmlFile, null, null, null, null);
-		
-		return writeJasperOutput(format, print, getBaseName());
-		
-	}
+
 	
 	/**
 	 * Gets the file path to a jasper report
@@ -134,29 +110,6 @@ public abstract class AbstractReportGenerator
 		
 	}
 	
-	/**
-	 * Compiles a report from the given jrxml file template
-	 * 
-	 * @param jrxmlFile : template
-	 * @return printed report
-	 * 
-	 * @throws IOException
-	 * @throws FileNotFoundException
-	 * @throws JRException 
-	 */
-	JasperPrint compileJasperInput(File jrxmlFile,
-	                               String orgName,
-	                               String reportTitle,
-	                               List<TableSpec<?>> tableSpecs,
-	                               Map<String,Object> extraParams)
-	        throws IOException, JRException {
-
-	    /* RowReportBinder does everything:
-	       – compiles the template
-	       – builds the parameter map (rows, totals, org, title, extras)
-	       – fills with a 1-row empty data-source                                  */
-	    return RowReportBinder.compileReportAndFill(jrxmlFile, orgName, reportTitle, tableSpecs, extraParams);
-	}
 
 	/**
 	 * Writes the output report to the requested directory
@@ -170,8 +123,7 @@ public abstract class AbstractReportGenerator
 	 * @throws IOException
 	 */
 	@SuppressWarnings("static-method")
-		File
-		writeJasperOutput(String format, JasperPrint print, String baseName)	throws JRException,
+		File writeJasperOutput(String format, JasperPrint print, String baseName)	throws JRException,
 																				IOException
 	{
 		File outDir = new File(getOutputDirectory());
