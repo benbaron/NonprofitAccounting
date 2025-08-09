@@ -32,19 +32,18 @@ import java.util.Optional;
  */
 public class GenerateReportsAction implements EventHandler<ActionEvent>
 {
-	/** Backing service used to dispatch report generation. */
-	private final ReportService service;
-	
+
+        /** Backing service used to dispatch report generation. */
+        private final ReportService service;
 	/**
 	 * Constructs a new {@code GenerateReportsAction}.
 	 *
-	 * @param service The {@link ReportService} to be used for generating reports.
-	 */
-	public GenerateReportsAction(ReportService service)
-	{
-		this.service = service;
-		
-	}
+         * @param service The {@link ReportService} to be used for generating reports.
+         */
+        public GenerateReportsAction(ReportService service)
+        {
+                this.service = service;
+        }
 	
 	/**
 	 * {@inheritDoc}
@@ -58,8 +57,9 @@ public class GenerateReportsAction implements EventHandler<ActionEvent>
 	 *   <li>Validates that both dates are provided and that the end date is not before the start date.</li>
 	 *   <li>Prompts for the output format (xlsx, csv, pdf) using a {@link ChoiceDialog}.</li>
 	 *   <li>If any dialog is cancelled by the user, the action terminates.</li>
-	     *   <li>Constructs a {@link ReportContext} with the selected criteria.</li>
-	     *   <li>Calls the injected {@link ReportService} to produce the report file.</li>
+
+         *   <li>Constructs a {@link ReportContext} with the selected criteria.</li>
+         *   <li>Calls the injected {@link ReportService} to produce the report file.</li>
 	 *   <li>Shows an information alert with the path to the generated report, or an error alert if generation fails.</li>
 	 * </ol>
 	 * Displays general {@link Exception} messages if errors occur during report generation.
@@ -161,10 +161,10 @@ public class GenerateReportsAction implements EventHandler<ActionEvent>
 			ctx.setEndDate(endDate);
 			ctx.setOutputFormat(outputFormat);
 			
-			// Generate the report using the injected service instance.
-			File output = this.service.generateJasperReport(ctx, outputFormat);
-			AlertBox.showInfo(parentWindow,
-				"Report generated at: " + output.getAbsolutePath());
+
+      // Generate the report using the injected service instance.
+      File output = this.service.generateJasperReport(ctx, outputFormat);
+      AlertBox.showInfo(parentWindow, "Report generated at: " + output.getAbsolutePath());
 			
 		}
 		catch (Exception ex)

@@ -1,32 +1,15 @@
 
 package nonprofitbookkeeping.reports.generator;
 
-import nonprofitbookkeeping.reports.datasource.scareports.PrimaryAccountReconciliationBean;
-import nonprofitbookkeeping.reports.ReportContext;
-import nonprofitbookkeeping.service.ReportService;
 import java.util.*;
 
 public class PrimaryAccountReconciliationJasperGenerator
 	extends AbstractReportGenerator
 {
 	
-	public PrimaryAccountReconciliationJasperGenerator(ReportContext ctx,
-		ReportService svc)
-	{
-	
-	}
-	
-	@Override
-	protected List<PrimaryAccountReconciliationBean> getReportData()
-	{
-		return Collections
-			.singletonList(new PrimaryAccountReconciliationBean());
-		
-	}
-	
-	@Override
-	protected Map<String, Object> getReportParameters()
-	{
+        @Override
+        protected Map<String, Object> getReportParameters()
+        {
 		return Collections.emptyMap();
 		
 	}
