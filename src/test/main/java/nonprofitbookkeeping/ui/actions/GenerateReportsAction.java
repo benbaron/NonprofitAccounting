@@ -135,12 +135,8 @@ public class GenerateReportsAction implements EventHandler<ActionEvent>
 			
 			// Prompt for output format.
 			List<String> formatOptions = Arrays.asList("xlsx", "csv", "pdf");
-			
 			ChoiceDialog<String> formatDialog =
-				new ChoiceDialog<>(
-					formatOptions.get(0), 
-					formatOptions);
-			
+				new ChoiceDialog<>(formatOptions.get(0), formatOptions);
 			formatDialog.initOwner(parentWindow);
 			formatDialog.setTitle("Output Format");
 			formatDialog.setHeaderText("Select output format:");

@@ -186,8 +186,9 @@ public class ReportService
 				"Unknown reportType: " + ctx.getReportType());
 		}
 		
-		BiFunction<ReportContext, ReportService, AbstractReportGenerator> 
-			factory = this.generatorRegistry.get(type);
+		BiFunction<ReportContext, ReportService,
+			AbstractReportGenerator> factory =
+				this.generatorRegistry.get(type);
 		
 		if (factory == null)
 		{
@@ -203,8 +204,12 @@ public class ReportService
 				"Generator factory returned null for " + type.id());
 		}
 		
-		// Ask the generator to build the JasperPrint (compile,
-		// fill, write to JasperPrint form)
+		if (ctx.getBeans() != null)
+		{
+			generator.setReportData(ctx.getBeans());
+		}
+		
+		// Ask the generator to build the JasperPrint
 		JasperPrint print = generator.generatePrint();
 		
 		// Normalize format; default to PDF
