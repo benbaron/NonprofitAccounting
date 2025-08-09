@@ -51,8 +51,8 @@ public abstract class AbstractReportGenerator
 	 * @throws ActionCancelledException If determining the report path involves an action that is cancelled.
 	 * @throws NoFileCreatedException If the report template file cannot be found or accessed.
 	 */
-	protected abstract String getReportPath()	throws ActionCancelledException,
-												NoFileCreatedException;
+	protected abstract String getReportPath() throws ActionCancelledException,
+		NoFileCreatedException;
 	
 	
 	/**
@@ -60,9 +60,8 @@ public abstract class AbstractReportGenerator
 	 *  
 	 * @return base name
 	 */
-	protected abstract String getBaseName();
+	public abstract String getBaseName();
 	
-
 	
 	/**
 	 * Wraps an immutable map so it is suitable for jasper (which needs a 
@@ -71,41 +70,45 @@ public abstract class AbstractReportGenerator
 	 * @param original : report
 	 * @return mutable reports
 	 */
-        public static Map<String, Object>
-                        ensureMutableParameters(Map<String, Object> original)
-        {
-                return (original instanceof HashMap) ?
-                                original : new HashMap<>(original);
-
-        }
-
-        /**
-         * Compiles the JRXML template, fills it with data and parameters, and returns
-         * a populated {@link JasperPrint} ready for export.
-         *
-         * @return filled {@link JasperPrint}
-         * @throws JRException if compilation or filling fails
-         */
-        public JasperPrint generatePrint() throws JRException
-        {
-                String jrxmlPath;
-                try
-                {
-                        jrxmlPath = getReportPath();
-                }
-                catch (ActionCancelledException | NoFileCreatedException e)
-                {
-                        throw new JRException("Unable to resolve report path", e);
-                }
-
-                JasperReport report = JasperCompileManager.compileReport(jrxmlPath);
-                JRBeanCollectionDataSource dataSource =
-                                new JRBeanCollectionDataSource(getReportData());
-                Map<String, Object> params = ensureMutableParameters(getReportParameters());
-                return JasperFillManager.fillReport(report, params, dataSource);
-        }
+	public static
+		Map<String, Object>
+		ensureMutableParameters(Map<String, Object> original)
+	{
+		return (original instanceof HashMap) ?
+			original : new HashMap<>(original);
+		
+	}
 	
-
+	/**
+	 * Compiles the JRXML template, fills it with data and parameters, and returns
+	 * a populated {@link JasperPrint} ready for export.
+	 *
+	 * @return filled {@link JasperPrint}
+	 * @throws JRException if compilation or filling fails
+	 */
+	public JasperPrint generatePrint() throws JRException
+	{
+		String jrxmlPath;
+		
+		try
+		{
+			jrxmlPath = getReportPath();
+		}
+		catch (ActionCancelledException | NoFileCreatedException e)
+		{
+			throw new JRException("Unable to resolve report path", e);
+		}
+		
+		JasperReport report = JasperCompileManager.compileReport(jrxmlPath);
+		JRBeanCollectionDataSource dataSource =
+			new JRBeanCollectionDataSource(getReportData());
+		Map<String, Object> params =
+			ensureMutableParameters(getReportParameters());
+		return JasperFillManager.fillReport(report, params, dataSource);
+		
+	}
+	
+	
 	/**
 	 * Writes the output report to the requested directory
 	 * 
@@ -120,38 +123,40 @@ public abstract class AbstractReportGenerator
 	
 	@SuppressWarnings("static-method")
 	public File writeJasperOutput(String format,
-	                              JasperPrint print,
-	                              String baseName) throws JRException, IOException
+		JasperPrint print,
+		String baseName) throws JRException, IOException
 	{
 		File outDir = new File(getOutputDirectory());
-
+		
 		if (!outDir.exists())
 		{
 			outDir.mkdirs();
 		}
-
-                File outFile =
-                                new File(outDir,
-                                        baseName + ("html".equalsIgnoreCase(format) ? ".html"
-                                                       : "xlsx".equalsIgnoreCase(format) ? ".xlsx" : ".pdf"));
-
-                if ("html".equalsIgnoreCase(format))
-                {
-                        return exportToHTML(print, outFile.getAbsolutePath());
-                }
-
-                if ("xlsx".equalsIgnoreCase(format))
-                {
-                        JRXlsxExporter xlsx = new JRXlsxExporter();
-                        xlsx.setExporterInput(new SimpleExporterInput(print));
-                        xlsx.setExporterOutput(new SimpleOutputStreamExporterOutput(outFile));
-                        xlsx.exportReport();
-                        return outFile;
-                }
-
-                return exportToPDF(print, outFile.getAbsolutePath());
-
+		
+		File outFile =
+			new File(outDir,
+				baseName + ("html".equalsIgnoreCase(format) ? ".html" :
+					"xlsx".equalsIgnoreCase(format) ? ".xlsx" : ".pdf"));
+		
+		if ("html".equalsIgnoreCase(format))
+		{
+			return exportToHTML(print, outFile.getAbsolutePath());
+		}
+		
+		if ("xlsx".equalsIgnoreCase(format))
+		{
+			JRXlsxExporter xlsx = new JRXlsxExporter();
+			xlsx.setExporterInput(new SimpleExporterInput(print));
+			xlsx.setExporterOutput(
+				new SimpleOutputStreamExporterOutput(outFile));
+			xlsx.exportReport();
+			return outFile;
+		}
+		
+		return exportToPDF(print, outFile.getAbsolutePath());
+		
 	}
+	
 	/**
 	 * Gets the base directory where generated reports should be saved.
 	 * This implementation defaults to a "NonprofitBookkeepingReports" subdirectory within the user's home directory.
@@ -185,8 +190,8 @@ public abstract class AbstractReportGenerator
 	 * @return The {@link File} object representing the exported PDF report.
 	 * @throws JRException If an error occurs during the PDF export process.
 	 */
-	protected static File exportToPDF(	JasperPrint jasperPrint,
-										String outputFilePath) throws JRException
+	protected static File exportToPDF(JasperPrint jasperPrint,
+		String outputFilePath) throws JRException
 	{
 		File outputFile = new File(outputFilePath);
 		// Ensure parent directory exists
@@ -197,10 +202,13 @@ public abstract class AbstractReportGenerator
 			parentDir.mkdirs();
 		}
 		
-		JasperExportManager.exportReportToPdfFile(jasperPrint, outputFile.getAbsolutePath());
-		System.out.println("Report exported to PDF: " + outputFile.getAbsolutePath()); // Consider
-																						// using a
-																						// logger
+		JasperExportManager.exportReportToPdfFile(jasperPrint,
+			outputFile.getAbsolutePath());
+		System.out
+			.println("Report exported to PDF: " + outputFile.getAbsolutePath()); // Consider
+																					// using
+																					// a
+																					// logger
 		return outputFile;
 		
 	}
@@ -215,11 +223,12 @@ public abstract class AbstractReportGenerator
 	 * @throws JRException If an error occurs during the HTML export process setup.
 	 * @throws IOException If an error occurs during file writing.
 	 */
-	protected static File exportToHTML(	JasperPrint jasperPrint,
-										String outputFilePath)	throws JRException,
-																IOException
+	protected static File exportToHTML(JasperPrint jasperPrint,
+		String outputFilePath) throws JRException,
+		IOException
 	{
 		File outputFile = new File(outputFilePath);
+		
 		// Ensure parent directory exists
 		File parentDir = outputFile.getParentFile();
 		
@@ -230,10 +239,12 @@ public abstract class AbstractReportGenerator
 		
 		HtmlExporter exporter = new HtmlExporter();
 		exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-		exporter.setExporterOutput(new SimpleHtmlExporterOutput(new FileOutputStream(outputFile)));
+		exporter.setExporterOutput(
+			new SimpleHtmlExporterOutput(new FileOutputStream(outputFile)));
 		
 		exporter.exportReport();
-		System.out.println("Report exported to HTML: " + outputFile.getAbsolutePath());
+		System.out.println(
+			"Report exported to HTML: " + outputFile.getAbsolutePath());
 		return outputFile;
 		
 	}

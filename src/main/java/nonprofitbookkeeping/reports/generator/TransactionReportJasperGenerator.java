@@ -98,7 +98,7 @@ public class TransactionReportJasperGenerator extends AbstractReportGenerator
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getBaseName() 
 	 */
-	@Override protected String getBaseName()
+	@Override public String getBaseName()
 	{
 		return "Transaction_Report_" + LocalDate.now();
 		

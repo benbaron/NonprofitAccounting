@@ -117,7 +117,7 @@ public class GeneralLedgerJasperGenerator extends AbstractReportGenerator
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getBaseName() 
 	 */
-	@Override protected String getBaseName()
+	@Override public String getBaseName()
 	{
 		return "General_Ledger_" + LocalDate.now();
 		

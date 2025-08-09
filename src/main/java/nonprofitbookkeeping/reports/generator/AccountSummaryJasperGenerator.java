@@ -68,7 +68,7 @@ public class AccountSummaryJasperGenerator extends AbstractReportGenerator
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getBaseName() 
 	 */
-	@Override protected String getBaseName()
+	@Override public String getBaseName()
 	{
 		return "Account_Summary_" + LocalDate.now();
 		

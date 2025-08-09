@@ -36,7 +36,7 @@ public class SecondaryAccountJasperGenerator extends AbstractReportGenerator
 	}
 	
 	@Override
-	protected String getBaseName()
+	public String getBaseName()
 	{
 		return "SecondaryAccount";
 		

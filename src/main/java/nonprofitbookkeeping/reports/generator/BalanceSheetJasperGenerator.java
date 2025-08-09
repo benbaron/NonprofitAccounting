@@ -218,7 +218,7 @@ public class BalanceSheetJasperGenerator extends AbstractReportGenerator
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getBaseName() 
 	 */
-	@Override protected String getBaseName()
+	@Override public String getBaseName()
 	{
 		return "Balance_Sheet_" + LocalDate.now();
 		

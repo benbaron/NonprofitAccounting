@@ -100,7 +100,7 @@ public class IncomeStatementAltJasperGenerator extends AbstractReportGenerator
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getBaseName() 
 	 */
-	@Override protected String getBaseName()
+	@Override public String getBaseName()
 	{
 		return "Income_Statement_" + LocalDate.now();
 		

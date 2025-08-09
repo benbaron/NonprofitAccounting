@@ -149,7 +149,7 @@ public class BalanceResultReportGenerator extends AbstractReportGenerator
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getBaseName() 
 	 */
-	@Override protected String getBaseName()
+	@Override public String getBaseName()
 	{
 		String currentDateStr = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
 		String reportBaseName = "Balance_Result_Report_" + currentDateStr;

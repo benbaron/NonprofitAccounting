@@ -36,7 +36,7 @@ public class LedgerQ1JasperGenerator extends AbstractReportGenerator
 	}
 	
 	@Override
-	protected String getBaseName()
+	public String getBaseName()
 	{
 		return "LedgerQ1";
 		

@@ -22,7 +22,7 @@ public class IncomeDtl11cJasperGenerator extends AbstractReportGenerator {
                 return "jrxml/sca-reports/INCOME_DTL_11c_AUTO_STYLED.jrxml";
         }
 
-        @Override protected String getBaseName() {
+        @Override public String getBaseName() {
                 return "IncomeDtl11c";
         }
 }

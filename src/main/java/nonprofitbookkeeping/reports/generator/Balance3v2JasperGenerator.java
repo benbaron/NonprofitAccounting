@@ -38,7 +38,7 @@ public class Balance3v2JasperGenerator extends AbstractReportGenerator
 		
 	}
 	
-	@Override protected String getBaseName()
+	@Override public String getBaseName()
 	{
 		return "Balance3v2";
 		

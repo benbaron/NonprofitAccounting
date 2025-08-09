@@ -36,7 +36,7 @@ public class TransferOut10JasperGenerator extends AbstractReportGenerator
 	}
 	
 	@Override
-	protected String getBaseName()
+	public String getBaseName()
 	{
 		return "TransferOut10";
 		

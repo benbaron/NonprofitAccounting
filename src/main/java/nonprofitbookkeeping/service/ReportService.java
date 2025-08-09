@@ -186,8 +186,8 @@ public class ReportService
 				"Unknown reportType: " + ctx.getReportType());
 		}
 		
-		BiFunction<ReportContext, ReportService, AbstractReportGenerator> 
-			factory =
+		BiFunction<ReportContext, ReportService,
+			AbstractReportGenerator> factory =
 				this.generatorRegistry.get(type);
 		
 		if (factory == null)
@@ -204,16 +204,17 @@ public class ReportService
 				"Generator factory returned null for " + type.id());
 		}
 		
-                // Ask the generator to build the JasperPrint
-                JasperPrint print = generator.generatePrint();
+		// Ask the generator to build the JasperPrint
+		JasperPrint print = generator.generatePrint();
 		
-                // Normalize format; default to PDF
-                String fmt =
-                        (outputFormat == null ? "pdf" : outputFormat).trim().toLowerCase();
-
-                File out = generator.writeJasperOutput(fmt, print, generator.getBaseName());
-                LOGGER.info("Report generated: " + out.getAbsolutePath());
-                return out;
+		// Normalize format; default to PDF
+		String fmt =
+			(outputFormat == null ? "pdf" : outputFormat).trim().toLowerCase();
+		
+		File out =
+			generator.writeJasperOutput(fmt, print, generator.getBaseName());
+		LOGGER.info("Report generated: " + out.getAbsolutePath());
+		return out;
 		
 	}
 	
@@ -382,7 +383,6 @@ public class ReportService
 		return map;
 		
 	}
-	
 	
 	
 	/** Allow runtime registration / replacement of a generator (mutable registry). */
@@ -1977,8 +1977,6 @@ public class ReportService
 		return results;
 		
 	}
-	
-	
 	
 	
 }

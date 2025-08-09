@@ -99,7 +99,7 @@ public class FundLedgerJasperGenerator extends AbstractReportGenerator
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getBaseName() 
 	 */
-	@Override protected String getBaseName()
+	@Override public String getBaseName()
 	{
 		return "Fund_Ledger_" + LocalDate.now();
 		

@@ -39,7 +39,7 @@ public class PrimaryAccountReconciliationJasperGenerator
 	}
 	
 	@Override
-	protected String getBaseName()
+	public String getBaseName()
 	{
 		return "PrimaryAccountReconciliation";
 		

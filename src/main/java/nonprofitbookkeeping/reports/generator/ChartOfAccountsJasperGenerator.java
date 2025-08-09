@@ -124,7 +124,7 @@ public class ChartOfAccountsJasperGenerator extends AbstractReportGenerator
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getBaseName() 
 	 */
-	@Override protected String getBaseName()
+	@Override public String getBaseName()
 	{
 		return "Chart_of_Accounts_" + LocalDate.now();
 	}

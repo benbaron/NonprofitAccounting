@@ -36,7 +36,7 @@ public class LiabilityDtl5bJasperGenerator extends AbstractReportGenerator
 	}
 	
 	@Override
-	protected String getBaseName()
+	public String getBaseName()
 	{
 		return "LiabilityDtl5b";
 		

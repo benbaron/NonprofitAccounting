@@ -36,7 +36,7 @@ public class Newsletter15JasperGenerator extends AbstractReportGenerator
 	}
 	
 	@Override
-	protected String getBaseName()
+	public String getBaseName()
 	{
 		return "Newsletter15";
 		

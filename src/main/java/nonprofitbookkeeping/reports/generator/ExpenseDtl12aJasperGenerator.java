@@ -36,7 +36,7 @@ public class ExpenseDtl12aJasperGenerator extends AbstractReportGenerator
 	}
 	
 	@Override
-	protected String getBaseName()
+	public String getBaseName()
 	{
 		return "ExpenseDtl12a";
 		

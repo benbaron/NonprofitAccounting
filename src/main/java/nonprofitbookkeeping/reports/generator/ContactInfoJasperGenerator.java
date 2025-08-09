@@ -22,7 +22,7 @@ public class ContactInfoJasperGenerator extends AbstractReportGenerator {
                 return "jrxml/sca-reports/CONTACT_INFO_1.jrxml";
         }
 
-        @Override protected String getBaseName() {
+        @Override public String getBaseName() {
                 return "ContactInfo";
         }
 }
