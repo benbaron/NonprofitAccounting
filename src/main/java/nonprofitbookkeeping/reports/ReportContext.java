@@ -24,8 +24,10 @@ public class ReportContext
 	private Budget selectedBudget;
 	/** A list of fund IDs (typically fund names) to filter the report data. Can be null or empty. */
 	private List<String> fundIds;
-	/** A list of account IDs used for generating detail-specific sections or filtering in some reports. Can be null or empty. */
-	private List<String> accountIdsForDetailReport; // Added new field
+        /** A list of account IDs used for generating detail-specific sections or filtering in some reports. Can be null or empty. */
+        private List<String> accountIdsForDetailReport; // Added new field
+        /** Optional pre-built beans to drive Jasper reports that expect their data to be provided externally. */
+        private List<?> beans;
 	
 	/**
 	 * Default constructor for ReportContext.
@@ -157,9 +159,29 @@ public class ReportContext
 	 * Sets the list of account IDs to be used for detail sections or filtering in some reports.
 	 * @param accountIdsForDetailReport A list of account ID strings to set.
 	 */
-	public void setAccountIdsForDetailReport(List<String> accountIdsForDetailReport)
-	{
-		this.accountIdsForDetailReport = accountIdsForDetailReport;
-	}
+        public void setAccountIdsForDetailReport(List<String> accountIdsForDetailReport)
+        {
+                this.accountIdsForDetailReport = accountIdsForDetailReport;
+        }
+
+        /**
+         * Gets the list of beans prepared for Jasper report generation.
+         *
+         * @return List of beans or {@code null} if none were supplied.
+         */
+        public List<?> getBeans()
+        {
+                return this.beans;
+        }
+
+        /**
+         * Sets the list of beans to be used directly by a {@link nonprofitbookkeeping.reports.generator.AbstractReportGenerator}.
+         *
+         * @param beans data beans for the report
+         */
+        public void setBeans(List<?> beans)
+        {
+                this.beans = beans;
+        }
 	
 }
