@@ -1,7 +1,6 @@
 
 package nonprofitbookkeeping.reports.generator;
 
-import nonprofitbookkeeping.reports.datasource.scareports.RegaliaSalesDtl7Bean;
 import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.service.ReportService;
 import java.util.*;
@@ -13,17 +12,9 @@ public class RegaliaSalesDtl7JasperGenerator extends AbstractReportGenerator
 	{
 	
 	}
-	
-	@Override
-	protected List<RegaliaSalesDtl7Bean> getReportData()
-	{
-		return Collections.singletonList(new RegaliaSalesDtl7Bean());
-		
-	}
-	
-	@Override
-	protected Map<String, Object> getReportParameters()
-	{
+        @Override
+        protected Map<String, Object> getReportParameters()
+        {
 		return Collections.emptyMap();
 		
 	}

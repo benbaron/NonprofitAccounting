@@ -1,6 +1,5 @@
 package nonprofitbookkeeping.reports.generator;
 
-import nonprofitbookkeeping.reports.datasource.scareports.Income4Bean;
 import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.service.ReportService;
 import java.util.*;
@@ -8,10 +7,6 @@ import java.util.*;
 public class Income4JasperGenerator extends AbstractReportGenerator {
 
         public Income4JasperGenerator(ReportContext ctx, ReportService svc) {
-        }
-
-        @Override protected List<Income4Bean> getReportData() {
-                return Collections.singletonList(new Income4Bean());
         }
 
         @Override protected Map<String, Object> getReportParameters() {

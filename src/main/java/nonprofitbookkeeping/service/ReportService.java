@@ -196,14 +196,19 @@ public class ReportService
 				"No generator registered for reportType: " + type.id());
 		}
 		
-		AbstractReportGenerator generator = factory.apply(ctx, this);
-		
-		if (generator == null)
-		{
-			throw new IllegalStateException(
-				"Generator factory returned null for " + type.id());
-		}
-		
+                AbstractReportGenerator generator = factory.apply(ctx, this);
+
+                if (generator == null)
+                {
+                        throw new IllegalStateException(
+                                "Generator factory returned null for " + type.id());
+                }
+
+                if (ctx.getBeans() != null)
+                {
+                        generator.setReportData(ctx.getBeans());
+                }
+
                 // Ask the generator to build the JasperPrint
                 JasperPrint print = generator.generatePrint();
 		

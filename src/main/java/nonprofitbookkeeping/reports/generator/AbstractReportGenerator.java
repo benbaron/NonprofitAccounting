@@ -13,6 +13,7 @@ import nonprofitbookkeeping.exception.NoFileCreatedException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,15 +26,38 @@ import java.util.Map;
  */
 public abstract class AbstractReportGenerator
 {
-	
-	/**
-	 * Retrieves the collection of data beans that will populate the report.
-	 * Subclasses must implement this to provide the specific dataset for their report.
-	 *
-	 * @return A {@link List} of objects (JavaBeans) to be used as the report's data source.
-	 *         The exact type of objects in the list depends on the specific report.
-	 */
-	protected abstract List<?> getReportData();
+        /**
+         * Data beans supplied to populate the report. Subclasses may override
+         * {@link #getReportData()} to compute data dynamically, but in cases where
+         * the data is prepared externally it can be injected here via
+         * {@link #setReportData(List)}.
+         */
+        private List<?> reportData = Collections.emptyList();
+
+        /**
+         * Retrieves the collection of data beans that will populate the report.
+         * The default implementation returns the list provided through
+         * {@link #setReportData(List)}. Subclasses may override to compute the
+         * dataset on demand.
+         *
+         * @return A {@link List} of objects (JavaBeans) to be used as the report's
+         *         data source. The exact type depends on the specific report.
+         */
+        protected List<?> getReportData()
+        {
+                return this.reportData;
+        }
+
+        /**
+         * Allows external callers (typically the {@link ReportService}) to supply
+         * the data beans that will back the report.
+         *
+         * @param data list of beans specific to the report type
+         */
+        public void setReportData(List<?> data)
+        {
+                this.reportData = (data == null) ? Collections.emptyList() : data;
+        }
 	
 	/**
 	 * Retrieves the parameters to be passed to the report during filling.

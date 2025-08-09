@@ -1,7 +1,6 @@
 
 package nonprofitbookkeeping.reports.generator;
 
-import nonprofitbookkeeping.reports.datasource.scareports.AssetDtl5aBean;
 import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.service.ReportService;
 import java.util.*;
@@ -13,17 +12,9 @@ public class AssetDtl5aJasperGenerator extends AbstractReportGenerator
 	{
 		
 	}
-	
-	@Override
-	protected List<AssetDtl5aBean> getReportData()
-	{
-		return Collections.singletonList(new AssetDtl5aBean());
-		
-	}
-	
-	@Override
-	protected Map<String, Object> getReportParameters()
-	{
+        @Override
+        protected Map<String, Object> getReportParameters()
+        {
 		return Collections.emptyMap();
 		
 	}
