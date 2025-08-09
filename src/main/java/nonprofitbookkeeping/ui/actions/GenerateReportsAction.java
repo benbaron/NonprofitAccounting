@@ -151,7 +151,7 @@ public class GenerateReportsAction implements EventHandler<ActionEvent>
 			ctx.setOutputFormat(outputFormat);
 			
 			// Generate the report.
-			File output = ReportService.generateJasper(ctx); // Assuming this static call is correct
+			File output = ReportService.generateJasper(ctx); 
 			AlertBox.showInfo(parentWindow, "Report generated at: " + output.getAbsolutePath());
 			
 		}
