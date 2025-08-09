@@ -12,7 +12,7 @@ public class TransferOut10Row
 	
 	public TransferOut10Row()
 	{
-	
+		
 	}
 	
 	public String getToAccountOrPayee()

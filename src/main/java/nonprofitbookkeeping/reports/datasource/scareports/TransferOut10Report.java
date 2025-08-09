@@ -11,10 +11,11 @@ public class TransferOut10Report
 	
 	public TransferOut10Report()
 	{
-	
+		
 	}
 	
-	public TransferOut10Report(String orgName, String reportTitle, List<TransferOut10Row> rows)
+	public TransferOut10Report(String orgName, String reportTitle,
+		List<TransferOut10Row> rows)
 	{
 		this.orgName = orgName;
 		this.reportTitle = reportTitle;

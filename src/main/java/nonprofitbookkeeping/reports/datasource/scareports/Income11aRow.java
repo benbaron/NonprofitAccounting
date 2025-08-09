@@ -1,16 +1,18 @@
 
 package nonprofitbookkeeping.reports.datasource.scareports;
 
+import java.math.BigDecimal;
+
 public class Income11aRow
 {
 	private java.lang.String category;
 	private java.lang.String fromOrPlace;
 	private java.lang.String activity;
-	private java.math.BigDecimal amount;
+	private BigDecimal amount;
 	
 	public Income11aRow()
 	{
-	
+		
 	}
 	
 	public java.lang.String getCategory()
@@ -49,13 +51,13 @@ public class Income11aRow
 		
 	}
 	
-	public java.math.BigDecimal getAmount()
+	public BigDecimal getAmount()
 	{
 		return amount;
 		
 	}
 	
-	public void setAmount(java.math.BigDecimal v)
+	public void setAmount(BigDecimal v)
 	{
 		this.amount = v;
 		

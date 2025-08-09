@@ -1,4 +1,6 @@
+
 package nonprofitbookkeeping.reports.datasource.scareports;
+
 import java.math.BigDecimal;
 
 import lombok.Getter;
@@ -9,7 +11,8 @@ import lombok.Setter;
  * Generated on 2025-08-01.
  */
 @Getter
-@Setter public class Income4Bean
+@Setter
+public class Income4Bean
 {
 	private BigDecimal _1_contact_info;
 	private BigDecimal _2_a_primary_account;

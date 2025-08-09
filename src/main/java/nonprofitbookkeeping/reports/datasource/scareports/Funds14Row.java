@@ -5,98 +5,98 @@ import java.math.BigDecimal;
 
 public class Funds14Row
 {
-	private java.lang.String fundName;
-	private java.math.BigDecimal beginBalance;
-	private java.math.BigDecimal receipts;
-	private java.math.BigDecimal disbursements;
-	private java.math.BigDecimal transfersIn;
-	private java.math.BigDecimal transfersOut;
-	private java.math.BigDecimal endBalance;
+	private String fundName;
+	private BigDecimal beginBalance;
+	private BigDecimal receipts;
+	private BigDecimal disbursements;
+	private BigDecimal transfersIn;
+	private BigDecimal transfersOut;
+	private BigDecimal endBalance;
 	
 	public Funds14Row()
 	{
-	
+		
 	}
 	
-	public java.lang.String getFundName()
+	public String getFundName()
 	{
 		return fundName;
 		
 	}
 	
-	public void setFundName(java.lang.String v)
+	public void setFundName(String v)
 	{
 		this.fundName = v;
 		
 	}
 	
-	public java.math.BigDecimal getBeginBalance()
+	public BigDecimal getBeginBalance()
 	{
 		return beginBalance;
 		
 	}
 	
-	public void setBeginBalance(java.math.BigDecimal v)
+	public void setBeginBalance(BigDecimal v)
 	{
 		this.beginBalance = v;
 		
 	}
 	
-	public java.math.BigDecimal getReceipts()
+	public BigDecimal getReceipts()
 	{
 		return receipts;
 		
 	}
 	
-	public void setReceipts(java.math.BigDecimal v)
+	public void setReceipts(BigDecimal v)
 	{
 		this.receipts = v;
 		
 	}
 	
-	public java.math.BigDecimal getDisbursements()
+	public BigDecimal getDisbursements()
 	{
 		return disbursements;
 		
 	}
 	
-	public void setDisbursements(java.math.BigDecimal v)
+	public void setDisbursements(BigDecimal v)
 	{
 		this.disbursements = v;
 		
 	}
 	
-	public java.math.BigDecimal getTransfersIn()
+	public BigDecimal getTransfersIn()
 	{
 		return transfersIn;
 		
 	}
 	
-	public void setTransfersIn(java.math.BigDecimal v)
+	public void setTransfersIn(BigDecimal v)
 	{
 		this.transfersIn = v;
 		
 	}
 	
-	public java.math.BigDecimal getTransfersOut()
+	public BigDecimal getTransfersOut()
 	{
 		return transfersOut;
 		
 	}
 	
-	public void setTransfersOut(java.math.BigDecimal v)
+	public void setTransfersOut(BigDecimal v)
 	{
 		this.transfersOut = v;
 		
 	}
 	
-	public java.math.BigDecimal getEndBalance()
+	public BigDecimal getEndBalance()
 	{
 		return endBalance;
 		
 	}
 	
-	public void setEndBalance(java.math.BigDecimal v)
+	public void setEndBalance(BigDecimal v)
 	{
 		this.endBalance = v;
 		

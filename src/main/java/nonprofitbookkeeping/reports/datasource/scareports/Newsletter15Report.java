@@ -11,10 +11,11 @@ public class Newsletter15Report
 	
 	public Newsletter15Report()
 	{
-	
+		
 	}
 	
-	public Newsletter15Report(String orgName, String reportTitle, List<Newsletter15Row> rows)
+	public Newsletter15Report(String orgName, String reportTitle,
+		List<Newsletter15Row> rows)
 	{
 		this.orgName = orgName;
 		this.reportTitle = reportTitle;

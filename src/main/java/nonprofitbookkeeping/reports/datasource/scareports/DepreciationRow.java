@@ -155,4 +155,10 @@ public class DepreciationRow
 		
 	}
 	
+	public BigDecimal getRemainingValue()
+	{
+		return BigDecimal.ZERO;
+		
+	}
+	
 }

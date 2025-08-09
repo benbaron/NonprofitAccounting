@@ -11,10 +11,11 @@ public class Income11aReport
 	
 	public Income11aReport()
 	{
-	
+		
 	}
 	
-	public Income11aReport(String orgName, String reportTitle, List<Income11aRow> rows)
+	public Income11aReport(String orgName, String reportTitle,
+		List<Income11aRow> rows)
 	{
 		this.orgName = orgName;
 		this.reportTitle = reportTitle;

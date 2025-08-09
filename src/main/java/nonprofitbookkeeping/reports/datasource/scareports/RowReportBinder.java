@@ -18,64 +18,10 @@ import java.util.function.Function;
 public class RowReportBinder
 {
 	
-	/** One table (row list) within a report. */
-	public static class TableSpec<T>
-	{
-		private final String rowsParamName; // e.g., "P_EXP12_ADVERTISING_ROWS"
-		private final Collection<T> rows; // your beans for that section
-		private final String totalParamNameOrNull; // e.g., "P_TOTAL_12"
-													// (optional)
-		private final Function<T, BigDecimal> amountGetter; // how to sum
-															// (optional if
-															// totalParamNameOrNull
-															// is null)
-		
-		/**
-		 * 
-		 * Constructor TableSpec
-		 * @param rowsParamName
-		 * @param rows
-		 * @param totalParamNameOrNull
-		 * @param amountGetter
-		 */
-		private TableSpec(String rowsParamName,
-			Collection<T> rows,
-			String totalParamNameOrNull,
-			Function<T, BigDecimal> amountGetter)
-		{
-			this.rowsParamName = Objects.requireNonNull(rowsParamName);
-			this.rows = rows == null ? Collections.emptyList() : rows;
-			this.totalParamNameOrNull = totalParamNameOrNull;
-			this.amountGetter = amountGetter;
-			
-		}
-		
-		/** Rows only (no auto total). */
-		public static <T> TableSpec<T> rowsOnly(String rowsParamName,
-			Collection<T> rows)
-		{
-			return new TableSpec<>(rowsParamName, rows, null, null);
-			
-		}
-		
-		/** Rows + single total (sum of amountGetter). */
-		public static <T> TableSpec<T> withTotal(String rowsParamName,
-			Collection<T> rows,
-			String totalParamName,
-			Function<T, BigDecimal> amountGetter)
-		{
-			return new TableSpec<>(rowsParamName, rows,
-				Objects.requireNonNull(totalParamName),
-				Objects.requireNonNull(amountGetter));
-			
-		}
-		
-	}
-	
 	/**
-	 * fill
+	 * fill already compiled report
 	 * 
-	 * @param report
+	 * @param string
 	 * @param orgName
 	 * @param reportTitle
 	 * @param tables
@@ -85,8 +31,8 @@ public class RowReportBinder
 	 * @throws JRException
 	 */
 	/* 1. you already compiled the report ----------------------------------- */
-	public static JasperPrint fill(
-		JasperReport report,
+	public static JasperPrint fillPrecompiledReport(
+		String string,
 		String orgName,
 		String reportTitle,
 		List<TableSpec<?>> tables,
@@ -97,13 +43,13 @@ public class RowReportBinder
 		Map<String, Object> params =
 			buildParams(orgName, reportTitle, tables, extraParams);
 		
-		return JasperFillManager.fillReport(report, params,
+		return JasperFillManager.fillReport(string, params,
 			new JREmptyDataSource(1));
 		
 	}
 	
 	/**
-	 * fill (overload)
+	 * fill (overload) after compiling jrxml file
 	 * 
 	 * @param jrxmlFile
 	 * @param orgName
@@ -118,14 +64,14 @@ public class RowReportBinder
 	 */
 	
 	/* 2. you only have a java.io.File -------------------------------------- */
-	public static JasperPrint fill(
+	public static JasperPrint compileReportAndFill(
 		File jrxmlFile,
 		String orgName,
 		String reportTitle,
 		List<TableSpec<?>> tables,
 		Map<String, Object> extraParams) throws JRException, IOException
 	{
-		
+		// compile the report then fill it
 		try (InputStream in = new FileInputStream(jrxmlFile))
 		{
 			JasperReport report = JasperCompileManager.compileReport(in);
@@ -135,6 +81,25 @@ public class RowReportBinder
 	}
 	
 	
+	/**
+	 * Overload 2 = fill compiled report.
+	 * @param report
+	 * @param orgName
+	 * @param reportTitle
+	 * @param tables
+	 * @param extraParams
+	 * @return
+	 */
+	private static JasperPrint fill(JasperReport report, 
+		String orgName,
+		String reportTitle, 
+		List<TableSpec<?>> tables,
+		Map<String, Object> extraParams)
+	{
+		// TODO Auto-generated method stub
+		return null;		
+	}
+
 	/**
 	 * buildParams
 	 * 

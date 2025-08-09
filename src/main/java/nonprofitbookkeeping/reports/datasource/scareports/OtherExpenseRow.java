@@ -11,7 +11,7 @@ public class OtherExpenseRow
 	
 	public OtherExpenseRow()
 	{
-	
+		
 	}
 	
 	public OtherExpenseRow(String paidTo, String reason, BigDecimal amount)

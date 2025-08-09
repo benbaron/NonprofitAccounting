@@ -5,59 +5,59 @@ import java.math.BigDecimal;
 
 public class Income11cRow
 {
-	private java.lang.String donorOrSource;
-	private java.lang.String description;
-	private java.lang.String inKindOrNotes;
-	private java.math.BigDecimal amount;
+	private String donorOrSource;
+	private String description;
+	private String inKindOrNotes;
+	private BigDecimal amount;
 	
 	public Income11cRow()
 	{
-	
+		
 	}
 	
-	public java.lang.String getDonorOrSource()
+	public String getDonorOrSource()
 	{
 		return donorOrSource;
 		
 	}
 	
-	public void setDonorOrSource(java.lang.String v)
+	public void setDonorOrSource(String v)
 	{
 		this.donorOrSource = v;
 		
 	}
 	
-	public java.lang.String getDescription()
+	public String getDescription()
 	{
 		return description;
 		
 	}
 	
-	public void setDescription(java.lang.String v)
+	public void setDescription(String v)
 	{
 		this.description = v;
 		
 	}
 	
-	public java.lang.String getInKindOrNotes()
+	public String getInKindOrNotes()
 	{
 		return inKindOrNotes;
 		
 	}
 	
-	public void setInKindOrNotes(java.lang.String v)
+	public void setInKindOrNotes(String v)
 	{
 		this.inKindOrNotes = v;
 		
 	}
 	
-	public java.math.BigDecimal getAmount()
+	public BigDecimal getAmount()
 	{
 		return amount;
 		
 	}
 	
-	public void setAmount(java.math.BigDecimal v)
+	public void setAmount(BigDecimal v)
 	{
 		this.amount = v;
 		

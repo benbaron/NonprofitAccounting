@@ -13,11 +13,12 @@ public class RegaliaSalesReportBean
 	
 	public RegaliaSalesReportBean()
 	{
-	
+		
 	}
 	
-	public RegaliaSalesReportBean(String orgName, String reportTitle, String contactInfo,
-			List<RegaliaSalesRow> rows)
+	public RegaliaSalesReportBean(String orgName, String reportTitle,
+		String contactInfo,
+		List<RegaliaSalesRow> rows)
 	{
 		this.orgName = orgName;
 		this.reportTitle = reportTitle;

@@ -14,7 +14,7 @@ public class TransferIn9Row
 	
 	public TransferIn9Row()
 	{
-	
+		
 	}
 	
 	public java.lang.String getFromAccountOrDonor()

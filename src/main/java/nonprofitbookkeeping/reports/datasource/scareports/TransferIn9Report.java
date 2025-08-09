@@ -11,10 +11,11 @@ public class TransferIn9Report
 	
 	public TransferIn9Report()
 	{
-	
+		
 	}
 	
-	public TransferIn9Report(String orgName, String reportTitle, List<TransferIn9Row> rows)
+	public TransferIn9Report(String orgName, String reportTitle,
+		List<TransferIn9Row> rows)
 	{
 		this.orgName = orgName;
 		this.reportTitle = reportTitle;

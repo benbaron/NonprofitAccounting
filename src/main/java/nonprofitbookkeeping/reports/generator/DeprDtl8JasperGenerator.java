@@ -2,6 +2,7 @@
 package nonprofitbookkeeping.reports.generator;
 
 import nonprofitbookkeeping.reports.ReportContext;
+import nonprofitbookkeeping.reports.datasource.scareports.DeprDtl8Bean;
 import nonprofitbookkeeping.service.ReportService;
 import java.util.*;
 

@@ -45,7 +45,6 @@ import nonprofitbookkeeping.reports.generator.IncomeStatementJasperGenerator;
 import nonprofitbookkeeping.reports.generator.TrialBalanceJasperGenerator;
 import nonprofitbookkeeping.reports.generator.TransactionReportJasperGenerator;
 import nonprofitbookkeeping.reports.generator.AssetDtl5aJasperGenerator;
-import nonprofitbookkeeping.reports.generator.Balance3JasperGenerator;
 import nonprofitbookkeeping.reports.generator.Balance3v2JasperGenerator;
 import nonprofitbookkeeping.reports.generator.ContactInfoJasperGenerator;
 import nonprofitbookkeeping.reports.generator.DeprDtl8JasperGenerator;
@@ -215,9 +214,7 @@ public class ReportService
                 map.put(ReportType.TRANSACTION_REPORT_JASPER,
                                 (ctx, svc) -> new TransactionReportJasperGenerator());
                 map.put(ReportType.SCA_ASSET_DTL_5A_JASPER,
-                                (ctx, svc) -> new AssetDtl5aJasperGenerator(ctx, svc));
-                map.put(ReportType.SCA_BALANCE_3_JASPER,
-                                (ctx, svc) -> new Balance3JasperGenerator(ctx, svc));
+                                (ctx, svc) -> new AssetDtl5aJasperGenerator(ctx, svc));              
                 map.put(ReportType.SCA_BALANCE_3_V2_JASPER,
                                 (ctx, svc) -> new Balance3v2JasperGenerator(ctx, svc));
                 map.put(ReportType.SCA_CONTACT_INFO_JASPER,

@@ -12,7 +12,7 @@ public class Newsletter15Row
 	
 	public Newsletter15Row()
 	{
-	
+		
 	}
 	
 	public java.lang.String getAdvertiserName()

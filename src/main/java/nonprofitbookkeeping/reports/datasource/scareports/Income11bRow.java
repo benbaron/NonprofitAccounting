@@ -1,61 +1,63 @@
 
 package nonprofitbookkeeping.reports.datasource.scareports;
 
+import java.math.BigDecimal;
+
 public class Income11bRow
 {
-	private java.lang.String category;
-	private java.lang.String description;
-	private java.lang.String itemsOrCount;
-	private java.math.BigDecimal amount;
+	private String category;
+	private String description;
+	private String itemsOrCount;
+	private BigDecimal amount;
 	
 	public Income11bRow()
 	{
-	
+		
 	}
 	
-	public java.lang.String getCategory()
+	public String getCategory()
 	{
 		return category;
 		
 	}
 	
-	public void setCategory(java.lang.String v)
+	public void setCategory(String v)
 	{
 		this.category = v;
 		
 	}
 	
-	public java.lang.String getDescription()
+	public String getDescription()
 	{
 		return description;
 		
 	}
 	
-	public void setDescription(java.lang.String v)
+	public void setDescription(String v)
 	{
 		this.description = v;
 		
 	}
 	
-	public java.lang.String getItemsOrCount()
+	public String getItemsOrCount()
 	{
 		return itemsOrCount;
 		
 	}
 	
-	public void setItemsOrCount(java.lang.String v)
+	public void setItemsOrCount(String v)
 	{
 		this.itemsOrCount = v;
 		
 	}
 	
-	public java.math.BigDecimal getAmount()
+	public BigDecimal getAmount()
 	{
 		return amount;
 		
 	}
 	
-	public void setAmount(java.math.BigDecimal v)
+	public void setAmount(BigDecimal v)
 	{
 		this.amount = v;
 		

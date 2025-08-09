@@ -20,5 +20,5 @@ public class PrimaryAccountBean implements Serializable
 	/* formula output from C2 (sheetRef1) */
 	private String sheetRef1;
 	
-
+	
 }

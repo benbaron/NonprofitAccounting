@@ -3,7 +3,7 @@
  * DeprDtl8Bean.java
  * DeprDtl8Bean
  */
-package nonprofitbookkeeping.reports.generator;
+package nonprofitbookkeeping.reports.datasource.scareports;
 
 /**
  * 

@@ -14,6 +14,13 @@ public class Funds14Report
 	
 	}
 	
+	/**
+	 * 
+	 * Constructor Funds14Report
+	 * @param orgName
+	 * @param reportTitle
+	 * @param rows
+	 */
 	public Funds14Report(String orgName, String reportTitle, List<Funds14Row> rows)
 	{
 		this.orgName = orgName;

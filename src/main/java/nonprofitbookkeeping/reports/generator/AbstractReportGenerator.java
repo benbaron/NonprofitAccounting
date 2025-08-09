@@ -2,7 +2,6 @@
 package nonprofitbookkeeping.reports.generator;
 
 import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.HtmlExporter;
 import net.sf.jasperreports.export.*;
 
@@ -10,14 +9,12 @@ import net.sf.jasperreports.export.*;
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.reports.datasource.scareports.RowReportBinder;
-import nonprofitbookkeeping.reports.datasource.scareports.RowReportBinder.TableSpec;
+import nonprofitbookkeeping.reports.datasource.scareports.TableSpec;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -129,7 +126,7 @@ public abstract class AbstractReportGenerator
 	 * @param original : report
 	 * @return mutable reports
 	 */
-	public static	Map<String, Object>
+	public static Map<String, Object>
 			ensureMutableParameters(Map<String, Object> original)
 	{
 		return (original instanceof HashMap) ?
@@ -147,8 +144,6 @@ public abstract class AbstractReportGenerator
 	 * @throws FileNotFoundException
 	 * @throws JRException 
 	 */
-	
-	
 	JasperPrint compileJasperInput(File jrxmlFile,
 	                               String orgName,
 	                               String reportTitle,
@@ -160,7 +155,7 @@ public abstract class AbstractReportGenerator
 	       – compiles the template
 	       – builds the parameter map (rows, totals, org, title, extras)
 	       – fills with a 1-row empty data-source                                  */
-	    return RowReportBinder.fill(jrxmlFile, orgName, reportTitle, tableSpecs, extraParams);
+	    return RowReportBinder.compileReportAndFill(jrxmlFile, orgName, reportTitle, tableSpecs, extraParams);
 	}
 
 	/**
