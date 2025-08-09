@@ -13,6 +13,7 @@ import nonprofitbookkeeping.exception.NoFileCreatedException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -75,8 +76,8 @@ public abstract class AbstractReportGenerator
 	 * @throws ActionCancelledException If determining the report path involves an action that is cancelled.
 	 * @throws NoFileCreatedException If the report template file cannot be found or accessed.
 	 */
-	protected abstract String getReportPath()	throws ActionCancelledException,
-												NoFileCreatedException;
+	protected abstract String getReportPath() throws ActionCancelledException,
+		NoFileCreatedException;
 	
 	
 	/**
@@ -84,9 +85,8 @@ public abstract class AbstractReportGenerator
 	 *  
 	 * @return base name
 	 */
-	protected abstract String getBaseName();
+	public abstract String getBaseName();
 	
-
 	
 	/**
 	 * Wraps an immutable map so it is suitable for jasper (which needs a 
@@ -95,6 +95,7 @@ public abstract class AbstractReportGenerator
 	 * @param original : report
 	 * @return mutable reports
 	 */
+
         public static Map<String, Object>
                         ensureMutableParameters(Map<String, Object> original)
         {
@@ -129,7 +130,7 @@ public abstract class AbstractReportGenerator
                 return JasperFillManager.fillReport(report, params, dataSource);
         }
 	
-
+	
 	/**
 	 * Writes the output report to the requested directory
 	 * 
@@ -153,6 +154,7 @@ public abstract class AbstractReportGenerator
 		{
 			outDir.mkdirs();
 		}
+
 
                 File outFile =
                                 new File(outDir,
@@ -209,8 +211,8 @@ public abstract class AbstractReportGenerator
 	 * @return The {@link File} object representing the exported PDF report.
 	 * @throws JRException If an error occurs during the PDF export process.
 	 */
-	protected static File exportToPDF(	JasperPrint jasperPrint,
-										String outputFilePath) throws JRException
+	protected static File exportToPDF(JasperPrint jasperPrint,
+		String outputFilePath) throws JRException
 	{
 		File outputFile = new File(outputFilePath);
 		// Ensure parent directory exists
@@ -221,10 +223,13 @@ public abstract class AbstractReportGenerator
 			parentDir.mkdirs();
 		}
 		
-		JasperExportManager.exportReportToPdfFile(jasperPrint, outputFile.getAbsolutePath());
-		System.out.println("Report exported to PDF: " + outputFile.getAbsolutePath()); // Consider
-																						// using a
-																						// logger
+		JasperExportManager.exportReportToPdfFile(jasperPrint,
+			outputFile.getAbsolutePath());
+		System.out
+			.println("Report exported to PDF: " + outputFile.getAbsolutePath()); // Consider
+																					// using
+																					// a
+																					// logger
 		return outputFile;
 		
 	}
@@ -239,11 +244,12 @@ public abstract class AbstractReportGenerator
 	 * @throws JRException If an error occurs during the HTML export process setup.
 	 * @throws IOException If an error occurs during file writing.
 	 */
-	protected static File exportToHTML(	JasperPrint jasperPrint,
-										String outputFilePath)	throws JRException,
-																IOException
+	protected static File exportToHTML(JasperPrint jasperPrint,
+		String outputFilePath) throws JRException,
+		IOException
 	{
 		File outputFile = new File(outputFilePath);
+		
 		// Ensure parent directory exists
 		File parentDir = outputFile.getParentFile();
 		
@@ -254,10 +260,12 @@ public abstract class AbstractReportGenerator
 		
 		HtmlExporter exporter = new HtmlExporter();
 		exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-		exporter.setExporterOutput(new SimpleHtmlExporterOutput(new FileOutputStream(outputFile)));
+		exporter.setExporterOutput(
+			new SimpleHtmlExporterOutput(new FileOutputStream(outputFile)));
 		
 		exporter.exportReport();
-		System.out.println("Report exported to HTML: " + outputFile.getAbsolutePath());
+		System.out.println(
+			"Report exported to HTML: " + outputFile.getAbsolutePath());
 		return outputFile;
 		
 	}

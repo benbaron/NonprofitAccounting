@@ -19,7 +19,7 @@ public class DeprDtl8JasperGenerator extends AbstractReportGenerator
 		
 	}
 	
-	@Override protected String getBaseName()
+	@Override public String getBaseName()
 	{
 		return "DeprDtl8";
 		

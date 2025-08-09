@@ -12,7 +12,7 @@ public class ExpenseDtl12bJasperGenerator extends AbstractReportGenerator {
                 return "jrxml/sca-reports/EXPENSE_DTL_12b_AUTO_STYLED.jrxml";
         }
 
-        @Override protected String getBaseName() {
+        @Override public String getBaseName() {
                 return "ExpenseDtl12b";
         }
 }

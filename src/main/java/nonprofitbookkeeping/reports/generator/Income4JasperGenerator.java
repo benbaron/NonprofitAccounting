@@ -12,7 +12,7 @@ public class Income4JasperGenerator extends AbstractReportGenerator {
                 return "jrxml/sca-reports/INCOME_4_AUTO_STYLED.jrxml";
         }
 
-        @Override protected String getBaseName() {
+        @Override public String getBaseName() {
                 return "Income4";
         }
 }

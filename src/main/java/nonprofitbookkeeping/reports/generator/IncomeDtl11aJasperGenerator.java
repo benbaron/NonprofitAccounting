@@ -1,6 +1,8 @@
+
 package nonprofitbookkeeping.reports.generator;
 
 import java.util.*;
+
 
 public class IncomeDtl11aJasperGenerator extends AbstractReportGenerator {
 

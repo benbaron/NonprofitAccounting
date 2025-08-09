@@ -187,8 +187,7 @@ public class ReportService
 		}
 		
 		BiFunction<ReportContext, ReportService, AbstractReportGenerator> 
-			factory =
-				this.generatorRegistry.get(type);
+			factory = this.generatorRegistry.get(type);
 		
 		if (factory == null)
 		{
@@ -196,6 +195,7 @@ public class ReportService
 				"No generator registered for reportType: " + type.id());
 		}
 		
+
                 AbstractReportGenerator generator = factory.apply(ctx, this);
 
                 if (generator == null)
@@ -386,7 +386,6 @@ public class ReportService
 		return map;
 		
 	}
-	
 	
 	
 	/** Allow runtime registration / replacement of a generator (mutable registry). */
@@ -1981,8 +1980,6 @@ public class ReportService
 		return results;
 		
 	}
-	
-	
 	
 	
 }

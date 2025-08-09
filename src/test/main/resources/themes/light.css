@@ -1,0 +1,8 @@
+.root {
+    -fx-base: #ffffff;
+    -fx-background: #ffffff;
+    -fx-control-inner-background: #ffffff;
+    -fx-accent: #0066cc;
+    -fx-focus-color: #66afe9;
+    -fx-faint-focus-color: rgba(102,175,233,0.1);
+}

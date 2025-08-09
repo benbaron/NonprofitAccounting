@@ -21,7 +21,7 @@ public class TransferIn9JasperGenerator extends AbstractReportGenerator
 	}
 	
 	@Override
-	protected String getBaseName()
+	public String getBaseName()
 	{
 		return "TransferIn9";
 		

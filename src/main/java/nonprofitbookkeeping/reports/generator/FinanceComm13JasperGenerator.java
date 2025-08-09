@@ -12,7 +12,7 @@ public class FinanceComm13JasperGenerator extends AbstractReportGenerator {
                 return "jrxml/sca-reports/FINANCE_COMM_13_AUTO_STYLED.jrxml";
         }
 
-        @Override protected String getBaseName() {
+        @Override public String getBaseName() {
                 return "FinanceComm13";
         }
 }

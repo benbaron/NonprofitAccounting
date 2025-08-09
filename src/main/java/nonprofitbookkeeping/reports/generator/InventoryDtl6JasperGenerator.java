@@ -21,7 +21,7 @@ public class InventoryDtl6JasperGenerator extends AbstractReportGenerator
 	}
 	
 	@Override
-	protected String getBaseName()
+	public String getBaseName()
 	{
 		return "InventoryDtl6";
 		

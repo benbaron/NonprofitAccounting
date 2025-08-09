@@ -21,7 +21,7 @@ public class AssetDtl5aJasperGenerator extends AbstractReportGenerator
 	}
 	
 	@Override
-	protected String getBaseName()
+	public String getBaseName()
 	{
 		return "AssetDtl5a";
 		

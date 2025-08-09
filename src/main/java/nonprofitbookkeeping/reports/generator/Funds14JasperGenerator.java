@@ -12,7 +12,7 @@ public class Funds14JasperGenerator extends AbstractReportGenerator {
                 return "jrxml/sca-reports/FUNDS_14_AUTO_STYLED.jrxml";
         }
 
-        @Override protected String getBaseName() {
+        @Override public String getBaseName() {
                 return "Funds14";
         }
 }
