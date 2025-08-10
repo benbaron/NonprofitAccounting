@@ -87,9 +87,8 @@ public class ChartOfAccountsJasperGenerator extends AbstractReportGenerator
 	 * @return List of beans representing each account. Returns an empty list if
 	 *         the chart is null or contains no accounts.
 	 */
-	public
-			List<ChartOfAccountsRowBean>
-			prepareChartOfAccountsJasperData(ChartOfAccounts chartOfAccounts)
+	public List<ChartOfAccountsRowBean>
+	prepareChartOfAccountsJasperData(ChartOfAccounts chartOfAccounts)
 	{
 		List<ChartOfAccountsRowBean> data = new ArrayList<>();
 		
@@ -127,6 +126,17 @@ public class ChartOfAccountsJasperGenerator extends AbstractReportGenerator
 	@Override public String getBaseName()
 	{
 		return "Chart_of_Accounts_" + LocalDate.now();
+	}
+
+	/**
+	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#setReportData(java.util.List) 
+	 */
+	@Override
+	public void setReportData(List<?> data)
+	{
+		// TODO Auto-generated method stub
+		
+		
 	}
 	
 }

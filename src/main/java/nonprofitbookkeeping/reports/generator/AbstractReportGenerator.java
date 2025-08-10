@@ -27,38 +27,30 @@ import java.util.Map;
  */
 public abstract class AbstractReportGenerator
 {
-        /**
-         * Data beans supplied to populate the report. Subclasses may override
-         * {@link #getReportData()} to compute data dynamically, but in cases where
-         * the data is prepared externally it can be injected here via
-         * {@link #setReportData(List)}.
-         */
-        private List<?> reportData = Collections.emptyList();
+	/**
+	 * Data beans supplied to populate the report. Subclasses may override
+	 * {@link #getReportData()} to compute data dynamically, but in cases where
+	 * the data is prepared externally it can be injected here via
+	 * {@link #setReportData(List)}.
+	 */
+	private List<?> reportData = Collections.emptyList();
+	
+	/**
+	 * Retrieves the collection of data beans that will populate the report.
+	 * 
+	 * @return A {@link List} of objects (JavaBeans) to be used as the report's
+	 *         data source. The exact type depends on the specific report.
+	 */
+	protected abstract List<?> getReportData();
+	
+	/**
+	 * Allows external callers (typically the {@link ReportService}) to supply
+	 * the data beans that will back the report.
+	 *
+	 * @param data list of beans specific to the report type
+	 */
+	public abstract void setReportData(List<?> data);
 
-        /**
-         * Retrieves the collection of data beans that will populate the report.
-         * The default implementation returns the list provided through
-         * {@link #setReportData(List)}. Subclasses may override to compute the
-         * dataset on demand.
-         *
-         * @return A {@link List} of objects (JavaBeans) to be used as the report's
-         *         data source. The exact type depends on the specific report.
-         */
-        protected List<?> getReportData()
-        {
-                return this.reportData;
-        }
-
-        /**
-         * Allows external callers (typically the {@link ReportService}) to supply
-         * the data beans that will back the report.
-         *
-         * @param data list of beans specific to the report type
-         */
-        public void setReportData(List<?> data)
-        {
-                this.reportData = (data == null) ? Collections.emptyList() : data;
-        }
 	
 	/**
 	 * Retrieves the parameters to be passed to the report during filling.
@@ -95,40 +87,43 @@ public abstract class AbstractReportGenerator
 	 * @param original : report
 	 * @return mutable reports
 	 */
-
-        public static Map<String, Object>
-                        ensureMutableParameters(Map<String, Object> original)
-        {
-                return (original instanceof HashMap) ?
-                                original : new HashMap<>(original);
-
-        }
-
-        /**
-         * Compiles the JRXML template, fills it with data and parameters, and returns
-         * a populated {@link JasperPrint} ready for export.
-         *
-         * @return filled {@link JasperPrint}
-         * @throws JRException if compilation or filling fails
-         */
-        public JasperPrint generatePrint() throws JRException
-        {
-                String jrxmlPath;
-                try
-                {
-                        jrxmlPath = getReportPath();
-                }
-                catch (ActionCancelledException | NoFileCreatedException e)
-                {
-                        throw new JRException("Unable to resolve report path", e);
-                }
-
-                JasperReport report = JasperCompileManager.compileReport(jrxmlPath);
-                JRBeanCollectionDataSource dataSource =
-                                new JRBeanCollectionDataSource(getReportData());
-                Map<String, Object> params = ensureMutableParameters(getReportParameters());
-                return JasperFillManager.fillReport(report, params, dataSource);
-        }
+	
+	public static Map<String, Object>
+		ensureMutableParameters(Map<String, Object> original)
+	{
+		return (original instanceof HashMap) ?
+			original : new HashMap<>(original);
+		
+	}
+	
+	/**
+	 * Compiles the JRXML template, fills it with data and parameters, and returns
+	 * a populated {@link JasperPrint} ready for export.
+	 *
+	 * @return filled {@link JasperPrint}
+	 * @throws JRException if compilation or filling fails
+	 */
+	public JasperPrint generatePrint() throws JRException
+	{
+		String jrxmlPath;
+		
+		try
+		{
+			jrxmlPath = getReportPath();
+		}
+		catch (ActionCancelledException | NoFileCreatedException e)
+		{
+			throw new JRException("Unable to resolve report path", e);
+		}
+		
+		JasperReport report = JasperCompileManager.compileReport(jrxmlPath);
+		JRBeanCollectionDataSource dataSource =
+			new JRBeanCollectionDataSource(getReportData());
+		Map<String, Object> params =
+			ensureMutableParameters(getReportParameters());
+		return JasperFillManager.fillReport(report, params, dataSource);
+		
+	}
 	
 	
 	/**
@@ -145,39 +140,40 @@ public abstract class AbstractReportGenerator
 	
 	@SuppressWarnings("static-method")
 	public File writeJasperOutput(String format,
-	                              JasperPrint print,
-	                              String baseName) throws JRException, IOException
+		JasperPrint print,
+		String baseName) throws JRException, IOException
 	{
 		File outDir = new File(getOutputDirectory());
-
+		
 		if (!outDir.exists())
 		{
 			outDir.mkdirs();
 		}
-
-
-                File outFile =
-                                new File(outDir,
-                                        baseName + ("html".equalsIgnoreCase(format) ? ".html"
-                                                       : "xlsx".equalsIgnoreCase(format) ? ".xlsx" : ".pdf"));
-
-                if ("html".equalsIgnoreCase(format))
-                {
-                        return exportToHTML(print, outFile.getAbsolutePath());
-                }
-
-                if ("xlsx".equalsIgnoreCase(format))
-                {
-                        JRXlsxExporter xlsx = new JRXlsxExporter();
-                        xlsx.setExporterInput(new SimpleExporterInput(print));
-                        xlsx.setExporterOutput(new SimpleOutputStreamExporterOutput(outFile));
-                        xlsx.exportReport();
-                        return outFile;
-                }
-
-                return exportToPDF(print, outFile.getAbsolutePath());
-
+		
+		File outFile =
+			new File(outDir,
+				baseName + ("html".equalsIgnoreCase(format) ? ".html" :
+					"xlsx".equalsIgnoreCase(format) ? ".xlsx" : ".pdf"));
+		
+		if ("html".equalsIgnoreCase(format))
+		{
+			return exportToHTML(print, outFile.getAbsolutePath());
+		}
+		
+		if ("xlsx".equalsIgnoreCase(format))
+		{
+			JRXlsxExporter xlsx = new JRXlsxExporter();
+			xlsx.setExporterInput(new SimpleExporterInput(print));
+			xlsx.setExporterOutput(
+				new SimpleOutputStreamExporterOutput(outFile));
+			xlsx.exportReport();
+			return outFile;
+		}
+		
+		return exportToPDF(print, outFile.getAbsolutePath());
+		
 	}
+	
 	/**
 	 * Gets the base directory where generated reports should be saved.
 	 * This implementation defaults to a "NonprofitBookkeepingReports" subdirectory within the user's home directory.

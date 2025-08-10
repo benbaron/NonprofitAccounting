@@ -107,5 +107,16 @@ public class GeneralJournalJasperGenerator extends AbstractReportGenerator
 		return "General_Journal_" + LocalDate.now();
 		
 	}
+
+	/**
+	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#setReportData(java.util.List) 
+	 */
+	@Override
+	public void setReportData(List<?> data)
+	{
+		// TODO Auto-generated method stub
+		
+		
+	}
 	
 }

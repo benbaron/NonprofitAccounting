@@ -459,5 +459,16 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 				this.reportContext.getEndDate().toString() : LocalDate.now().toString());
 		
 	}
+
+	/**
+	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#setReportData(java.util.List) 
+	 */
+	@Override
+	public void setReportData(List<?> data)
+	{
+		// TODO Auto-generated method stub
+		
+		
+	}
 	
 }

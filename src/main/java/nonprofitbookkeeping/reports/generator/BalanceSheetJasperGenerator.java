@@ -29,7 +29,8 @@ public class BalanceSheetJasperGenerator extends AbstractReportGenerator
 	 */
 	@Override protected List<?> getReportData()
 	{
-		return Collections.emptyList();
+		return null;
+		
 	}
 	
 	@Override protected Map<String, Object> getReportParameters()
@@ -71,9 +72,10 @@ public class BalanceSheetJasperGenerator extends AbstractReportGenerator
 	 *         totals, net income, and report date information.
 	 * @throws IllegalArgumentException if end date is not provided in the {@code context}.
 	 */
-	public static Map<String, Object> prepareBalanceSheetContext(	ReportContext context, 
-	                                                      	Ledger ledger,
-															ChartOfAccounts chartOfAccounts)
+	public static Map<String, Object> prepareBalanceSheetContext(
+		ReportContext context, 
+		Ledger ledger,
+		ChartOfAccounts chartOfAccounts)
 	{
 		Map<String, BigDecimal> assetTotals = new HashMap<>();
 		Map<String, BigDecimal> liabilityTotals = new HashMap<>();
@@ -161,16 +163,14 @@ public class BalanceSheetJasperGenerator extends AbstractReportGenerator
 		BigDecimal currentPeriodNetIncome =
 			(BigDecimal) incomeStatementData.getOrDefault("netIncome", BigDecimal.ZERO);
 		
-	
 		equityTotals.put("Current Period Net Income", currentPeriodNetIncome);
-		
 		
 		BigDecimal totalAssets =
 			assetTotals.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
 		BigDecimal totalLiabilities =
 			liabilityTotals.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
 		BigDecimal totalEquity = // This now includes the conceptual "Current Period Net
-									// Income"
+								 // Income"
 			equityTotals.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
 		BigDecimal totalLiabilitiesAndEquity = totalLiabilities.add(totalEquity);
 		
@@ -192,13 +192,13 @@ public class BalanceSheetJasperGenerator extends AbstractReportGenerator
 			// .filter(entry -> !entry.getKey().equals("Current Period Net Income")) // No
 			// longer filter here if it's part of totalEquity
 			.forEach(entry -> equityItems
-				.add(Map.of("name", entry.getKey(), "amount", entry.getValue())));
+			.add(Map.of("name", entry.getKey(), "amount", entry.getValue())));
 		
 		Map<String, Object> jxlsContext = new HashMap<>();
 		jxlsContext.put("assetItems", assetItems);
 		jxlsContext.put("liabilityItems", liabilityItems);
 		jxlsContext.put("equityItems", equityItems); // Will include "Current Period Net
-														// Income" line
+													 // Income" line
 		jxlsContext.put("totalAssets", totalAssets);
 		jxlsContext.put("totalLiabilities", totalLiabilities);
 		jxlsContext.put("totalEquity", totalEquity); // This total now reflects equity
@@ -221,6 +221,17 @@ public class BalanceSheetJasperGenerator extends AbstractReportGenerator
 	@Override public String getBaseName()
 	{
 		return "Balance_Sheet_" + LocalDate.now();
+		
+	}
+
+	/**
+	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#setReportData(java.util.List) 
+	 */
+	@Override
+	public void setReportData(List<?> data)
+	{
+		// TODO Auto-generated method stub
+		
 		
 	}
 	
