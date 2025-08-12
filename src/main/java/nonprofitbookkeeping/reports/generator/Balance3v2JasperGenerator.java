@@ -2,6 +2,7 @@
 package nonprofitbookkeeping.reports.generator;
 
 import java.util.*;
+import nonprofitbookkeeping.reports.datasource.Balance3Beanv2;
 
 public class Balance3v2JasperGenerator extends AbstractReportGenerator
 {
@@ -35,13 +36,13 @@ public class Balance3v2JasperGenerator extends AbstractReportGenerator
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
 	 */
-	@Override
-	protected List<?> getReportData()
-	{
-		// TODO Auto-generated method stub
-		return null;
-		
-	}
+        @Override
+        protected List<Balance3Beanv2> getReportData()
+        {
+                Balance3Beanv2 bean = new Balance3Beanv2();
+                return java.util.Collections.singletonList(bean);
+
+        }
 
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#setReportData(java.util.List) 

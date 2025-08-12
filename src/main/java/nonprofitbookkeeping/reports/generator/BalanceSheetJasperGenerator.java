@@ -8,6 +8,7 @@ import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Ledger;
 import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.service.ReportService;
+import nonprofitbookkeeping.reports.datasource.BalanceSheetRowBean;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -27,11 +28,15 @@ public class BalanceSheetJasperGenerator extends AbstractReportGenerator
 	 * 
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData()
 	 */
-	@Override protected List<?> getReportData()
-	{
-		return null;
-		
-	}
+        @Override protected List<BalanceSheetRowBean> getReportData()
+        {
+                BalanceSheetRowBean bean = new BalanceSheetRowBean("Assets", "Cash", BigDecimal.TEN);
+                bean.setCategory("Assets");
+                bean.setAccount("Cash");
+                bean.setAmount(BigDecimal.TEN);
+                return java.util.Collections.singletonList(bean);
+
+        }
 	
 	@Override protected Map<String, Object> getReportParameters()
 	{

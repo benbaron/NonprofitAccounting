@@ -1,7 +1,9 @@
 
 package nonprofitbookkeeping.reports.generator;
 
+import java.math.BigDecimal;
 import java.util.*;
+import nonprofitbookkeeping.reports.datasource.scareports.IncomeDtl11cBean;
 
 public class IncomeDtl11cJasperGenerator extends AbstractReportGenerator
 {
@@ -30,13 +32,16 @@ public class IncomeDtl11cJasperGenerator extends AbstractReportGenerator
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
 	 */
-	@Override
-	protected List<?> getReportData()
-	{
-		// TODO Auto-generated method stub
-		return null;
-		
-	}
+        @Override
+        protected List<IncomeDtl11cBean> getReportData()
+        {
+                IncomeDtl11cBean bean = new IncomeDtl11cBean();
+                bean.set_11_b_income_dtl(BigDecimal.ZERO);
+                bean.set_11_c_income_dtl(BigDecimal.ZERO);
+                bean.set_1_contact_info(BigDecimal.ZERO);
+                return java.util.Collections.singletonList(bean);
+
+        }
 
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#setReportData(java.util.List) 
