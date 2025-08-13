@@ -160,11 +160,11 @@ public class GenerateReportsAction implements EventHandler<ActionEvent>
 			ctx.setStartDate(startDate);
 			ctx.setEndDate(endDate);
 			ctx.setOutputFormat(outputFormat);
-			
 
       // Generate the report using the injected service instance.
       File output = this.service.generateJasperReport(ctx, outputFormat);
       AlertBox.showInfo(parentWindow, "Report generated at: " + output.getAbsolutePath());
+
 			
 		}
 		catch (Exception ex)
