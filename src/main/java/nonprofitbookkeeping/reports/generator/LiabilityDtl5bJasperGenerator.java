@@ -1,25 +1,12 @@
 
 package nonprofitbookkeeping.reports.generator;
 
-import nonprofitbookkeeping.reports.datasource.scareports.LiabilityDtl5bBean;
-import nonprofitbookkeeping.reports.ReportContext;
-import nonprofitbookkeeping.service.ReportService;
+import java.math.BigDecimal;
 import java.util.*;
+import nonprofitbookkeeping.reports.datasource.scareports.LiabilityDtl5bBean;
 
 public class LiabilityDtl5bJasperGenerator extends AbstractReportGenerator
 {
-	
-	public LiabilityDtl5bJasperGenerator(ReportContext ctx, ReportService svc)
-	{
-	
-	}
-	
-	@Override
-	protected List<LiabilityDtl5bBean> getReportData()
-	{
-		return Collections.singletonList(new LiabilityDtl5bBean());
-		
-	}
 	
 	@Override
 	protected Map<String, Object> getReportParameters()
@@ -36,10 +23,23 @@ public class LiabilityDtl5bJasperGenerator extends AbstractReportGenerator
 	}
 	
 	@Override
-	protected String getBaseName()
+	public String getBaseName()
 	{
 		return "LiabilityDtl5b";
 		
 	}
+	
+	/**
+	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
+	 */
+	@Override
+	protected List<LiabilityDtl5bBean> getReportData()
+	{
+		LiabilityDtl5bBean bean = new LiabilityDtl5bBean();
+		bean.setCurrent_amount(BigDecimal.ONE);
+		return java.util.Collections.singletonList(bean);
+		
+	}
+	
 	
 }

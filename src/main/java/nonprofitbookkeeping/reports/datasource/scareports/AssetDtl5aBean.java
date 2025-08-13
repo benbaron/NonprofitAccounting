@@ -2,6 +2,7 @@
 package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 /**
  * Auto-generated bean for ASSET_DTL_5a report.
@@ -10,6 +11,8 @@ import java.math.BigDecimal;
 
 public class AssetDtl5aBean
 {
+	private ArrayList<AssetDtl5aRow> rows;
+	
 	private BigDecimal _1_contact_info;
 	private BigDecimal add_total_to_pg_3_i_a_end;
 	private BigDecimal amount;

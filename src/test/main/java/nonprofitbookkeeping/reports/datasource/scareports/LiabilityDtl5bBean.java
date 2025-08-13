@@ -1,0 +1,129 @@
+
+package nonprofitbookkeeping.reports.datasource.scareports;
+
+import java.math.BigDecimal;
+
+import lombok.Getter;
+import lombok.Setter;
+
+/**
+ * Auto-generated bean for Liability DTL 5b report.
+ * Generated on 2025-08-01.
+ */
+@Getter
+@Setter
+public class LiabilityDtl5bBean
+{
+	private BigDecimal _1_contact_info;
+	private BigDecimal contents_b59;
+	private BigDecimal contents_e_3;
+	private BigDecimal contents_e_4;
+	private BigDecimal current_amount;
+	private BigDecimal current_amount_10;
+	private BigDecimal current_amount_11;
+	private BigDecimal current_amount_12;
+	private BigDecimal current_amount_13;
+	private BigDecimal current_amount_14;
+	private BigDecimal current_amount_15;
+	private BigDecimal current_amount_16;
+	private BigDecimal current_amount_17;
+	private BigDecimal current_amount_18;
+	private BigDecimal current_amount_19;
+	private BigDecimal current_amount_2;
+	private BigDecimal current_amount_20;
+	private BigDecimal current_amount_21;
+	private BigDecimal current_amount_22;
+	private BigDecimal current_amount_23;
+	private BigDecimal current_amount_24;
+	private BigDecimal current_amount_25;
+	private BigDecimal current_amount_26;
+	private BigDecimal current_amount_27;
+	private BigDecimal current_amount_28;
+	private BigDecimal current_amount_29;
+	private BigDecimal current_amount_3;
+	private BigDecimal current_amount_4;
+	private BigDecimal current_amount_5;
+	private BigDecimal current_amount_6;
+	private BigDecimal current_amount_7;
+	private BigDecimal current_amount_8;
+	private BigDecimal current_amount_9;
+	private BigDecimal deferred_revenue_event;
+	private BigDecimal deferred_revenue_event_10;
+	private BigDecimal deferred_revenue_event_11;
+	private BigDecimal deferred_revenue_event_12;
+	private BigDecimal deferred_revenue_event_13;
+	private BigDecimal deferred_revenue_event_14;
+	private BigDecimal deferred_revenue_event_15;
+	private BigDecimal deferred_revenue_event_2;
+	private BigDecimal deferred_revenue_event_3;
+	private BigDecimal deferred_revenue_event_4;
+	private BigDecimal deferred_revenue_event_5;
+	private BigDecimal deferred_revenue_event_6;
+	private BigDecimal deferred_revenue_event_7;
+	private BigDecimal deferred_revenue_event_8;
+	private BigDecimal deferred_revenue_event_9;
+	private BigDecimal other_liabilities_owed_to;
+	private BigDecimal other_liabilities_owed_to_2;
+	private BigDecimal other_liabilities_owed_to_3;
+	private BigDecimal other_liabilities_owed_to_4;
+	private BigDecimal other_liabilities_owed_to_5;
+	private BigDecimal other_liabilities_owed_to_6;
+	private BigDecimal other_liabilities_owed_to_7;
+	private BigDecimal payables_owed_to;
+	private BigDecimal payables_owed_to_2;
+	private BigDecimal payables_owed_to_3;
+	private BigDecimal payables_owed_to_4;
+	private BigDecimal payables_owed_to_5;
+	private BigDecimal payables_owed_to_6;
+	private BigDecimal payables_owed_to_7;
+	private BigDecimal prior_amount;
+	private BigDecimal prior_amount_10;
+	private BigDecimal prior_amount_11;
+	private BigDecimal prior_amount_12;
+	private BigDecimal prior_amount_13;
+	private BigDecimal prior_amount_14;
+	private BigDecimal prior_amount_15;
+	private BigDecimal prior_amount_16;
+	private BigDecimal prior_amount_17;
+	private BigDecimal prior_amount_18;
+	private BigDecimal prior_amount_19;
+	private BigDecimal prior_amount_2;
+	private BigDecimal prior_amount_20;
+	private BigDecimal prior_amount_21;
+	private BigDecimal prior_amount_22;
+	private BigDecimal prior_amount_23;
+	private BigDecimal prior_amount_24;
+	private BigDecimal prior_amount_25;
+	private BigDecimal prior_amount_26;
+	private BigDecimal prior_amount_27;
+	private BigDecimal prior_amount_28;
+	private BigDecimal prior_amount_29;
+	private BigDecimal prior_amount_3;
+	private BigDecimal prior_amount_4;
+	private BigDecimal prior_amount_5;
+	private BigDecimal prior_amount_6;
+	private BigDecimal prior_amount_7;
+	private BigDecimal prior_amount_8;
+	private BigDecimal prior_amount_9;
+	private BigDecimal reason;
+	private BigDecimal reason_10;
+	private BigDecimal reason_11;
+	private BigDecimal reason_12;
+	private BigDecimal reason_13;
+	private BigDecimal reason_14;
+	private BigDecimal reason_2;
+	private BigDecimal reason_3;
+	private BigDecimal reason_4;
+	private BigDecimal reason_5;
+	private BigDecimal reason_6;
+	private BigDecimal reason_7;
+	private BigDecimal reason_8;
+	private BigDecimal reason_9;
+	private BigDecimal total;
+	private BigDecimal total_2;
+	private BigDecimal total_3;
+	private BigDecimal total_4;
+	private BigDecimal total_5;
+	private BigDecimal total_6;
+	
+}

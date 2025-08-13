@@ -46,14 +46,9 @@ import nonprofitbookkeeping.reports.generator.TransferOut10JasperGenerator;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.export.SimpleExporterInput;
-import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
-import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
@@ -110,118 +105,6 @@ public class ReportService
 		
 	}
 	
-	/**
-	 * Generates a report based on the provided {@link ReportContext}.
-	 * 
-	 * The actual report generation logic, potentially involving selection of different
-	 * report engines (JXLS, JasperReports) or data preparation, needs to be implemented.
-	 * This method might be intended as a primary entry point for report generation.
-	 *
-	 * @param ctx The {@link ReportContext} defining the report to be generated.
-	 * @return A {@link File} object representing the generated report, or null if generation fails or is not implemented.
-	 */
-	public static File generateJasper(ReportContext ctx)
-	{
-		
-		try
-		{
-			String outputFormat = ctx.getOutputFormat();
-			ReportService r = new ReportService();
-			if (ctx == null || ctx.getReportType() == null)
-			{
-				throw new IllegalArgumentException(
-					"ReportContext and reportType are required.");
-			}
-			
-			// Resolve report type and generator
-			ReportType type = ReportType.fromId(ctx.getReportType());
-			
-			if (type == null)
-			{
-				throw new IllegalArgumentException(
-					"Unknown reportType: " + ctx.getReportType());
-			}
-			
-			BiFunction<ReportContext, ReportService, AbstractReportGenerator> 
-				factory = r.generatorRegistry.get(type);
-			
-			if (factory == null)
-			{
-				throw new IllegalArgumentException(
-					"No generator registered for reportType: " + type.id());
-			}
-			
-			AbstractReportGenerator generator = factory.apply(ctx, r);
-			
-			if (generator == null)
-			{
-				throw new IllegalStateException(
-					"Generator factory returned null for " + type.id());
-			}
-			
-			// Ask the generator for a JasperPrint
-			JasperPrint print = ReportService.obtainJasperPrint(generator);
-			
-			// Decide output folder + filename
-			File outputDirectory = new File(System.getProperty("user.home"),
-				"NonprofitBookkeepingReports");
-			
-			if (!outputDirectory.exists() && !outputDirectory.mkdirs())
-			{
-				throw new IOException("Unable to create output directory: " +
-					outputDirectory.getAbsolutePath());
-			}
-			
-			String safeType = type.id().replaceAll("[^a-z0-9_\\-\\.]", "_");
-			String baseName = safeType + "_" + System.currentTimeMillis();
-			
-			// Normalize format; default to PDF
-			String fmt =
-				(outputFormat == null ? "pdf" : outputFormat).trim().toLowerCase();
-			
-			File out;
-			
-			switch(fmt)
-			{
-				case "html":
-				{
-					out = new File(outputDirectory, baseName + ".html");
-					JasperExportManager.exportReportToHtmlFile(print,
-						out.getAbsolutePath());
-					break;
-				}
-				
-				case "xlsx":
-				{
-					out = new File(outputDirectory, baseName + ".xlsx");
-					JRXlsxExporter xlsx = new JRXlsxExporter();
-					xlsx.setExporterInput(new SimpleExporterInput(print));
-					xlsx.setExporterOutput(
-						new SimpleOutputStreamExporterOutput(out));
-					xlsx.exportReport();
-					break;
-				}
-				
-				case "pdf":
-				default:
-				{
-					out = new File(outputDirectory, baseName + ".pdf");
-					JasperExportManager.exportReportToPdfFile(print,
-						out.getAbsolutePath());
-					break;
-				}
-			}
-			
-			ReportService.LOGGER.info("Report generated: " + out.getAbsolutePath());
-			return out;
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			return null;
-		}
-		
-	}
 	
 	/**
 	 * Generates a very basic plain text report summarizing the provided
@@ -303,9 +186,8 @@ public class ReportService
 				"Unknown reportType: " + ctx.getReportType());
 		}
 		
-		BiFunction<ReportContext, ReportService, AbstractReportGenerator> 
-			factory =
-				this.generatorRegistry.get(type);
+		BiFunction<ReportContext, ReportService,
+			AbstractReportGenerator> factory = this.generatorRegistry.get(type);
 		
 		if (factory == null)
 		{
@@ -321,136 +203,22 @@ public class ReportService
 				"Generator factory returned null for " + type.id());
 		}
 		
-		// Ask the generator for a JasperPrint
-		JasperPrint print = obtainJasperPrint(generator);
-		
-		// Decide output folder + filename
-		File outputDirectory = new File(System.getProperty("user.home"),
-			"NonprofitBookkeepingReports");
-		
-		if (!outputDirectory.exists() && !outputDirectory.mkdirs())
+		if (ctx.getBeans() != null)
 		{
-			throw new IOException("Unable to create output directory: " +
-				outputDirectory.getAbsolutePath());
+			generator.setReportData(ctx.getBeans());
 		}
 		
-		String safeType = type.id().replaceAll("[^a-z0-9_\\-\\.]", "_");
-		String baseName = safeType + "_" + System.currentTimeMillis();
+		// Ask the generator to build the JasperPrint
+		JasperPrint print = generator.generatePrint();
 		
 		// Normalize format; default to PDF
 		String fmt =
 			(outputFormat == null ? "pdf" : outputFormat).trim().toLowerCase();
 		
-		File out;
-		
-		switch(fmt)
-		{
-			case "html":
-			{
-				out = new File(outputDirectory, baseName + ".html");
-				JasperExportManager.exportReportToHtmlFile(print,
-					out.getAbsolutePath());
-				break;
-			}
-			
-			case "xlsx":
-			{
-				out = new File(outputDirectory, baseName + ".xlsx");
-				JRXlsxExporter xlsx = new JRXlsxExporter();
-				xlsx.setExporterInput(new SimpleExporterInput(print));
-				xlsx.setExporterOutput(
-					new SimpleOutputStreamExporterOutput(out));
-				xlsx.exportReport();
-				break;
-			}
-			
-			case "pdf":
-			default:
-			{
-				out = new File(outputDirectory, baseName + ".pdf");
-				JasperExportManager.exportReportToPdfFile(print,
-					out.getAbsolutePath());
-				break;
-			}
-		}
-		
+		File out =
+			generator.writeJasperOutput(fmt, print, generator.getBaseName());
 		LOGGER.info("Report generated: " + out.getAbsolutePath());
 		return out;
-		
-	}
-	
-	/**
-	 * Tries common zero-arg method names on the generator to obtain a JasperPrint.
-	 * Expected methods (any one): generate(), build(), createJasperPrint(), getJasperPrint()
-	 */
-	private static
-		JasperPrint obtainJasperPrint(AbstractReportGenerator generator)
-	{
-		
-		// Try strongly-typed call first if your AbstractReportGenerator has a
-		// known API
-		try
-		{
-			// If your base class defines a known method like "generate()",
-			// prefer that:
-			Method m =
-				generator.getClass().getMethod("generate");
-			
-			if (JasperPrint.class.isAssignableFrom(m.getReturnType()))
-			{
-				return (JasperPrint) m.invoke(generator);
-			}
-			
-		}
-		catch (NoSuchMethodException ignored)
-		{
-			// fall through to name sweep
-		}
-		catch (Exception e)
-		{
-			throw new RuntimeException("Generator.generate() failed", e);
-		}
-		
-		// Sweep a few common method names
-		String[] candidates = new String[]
-		{
-			"build", 
-			"createJasperPrint", 
-			"getJasperPrint", 
-			"render",
-			"createPrint"
-		};
-		
-		for (String name : candidates)
-		{
-			
-			try
-			{
-				java.lang.reflect.Method m =
-					generator.getClass().getMethod(name);
-				
-				if (JasperPrint.class.isAssignableFrom(m.getReturnType()))
-				{
-					return (JasperPrint) m.invoke(generator);
-				}
-				
-			}
-			catch (NoSuchMethodException ignored)
-			{
-				// try next
-			}
-			catch (Exception e)
-			{
-				throw new RuntimeException("Generator." + name + "() failed",
-					e);
-			}
-			
-		}
-		
-		throw new IllegalStateException(
-			"Could not obtain JasperPrint from generator " +
-				generator.getClass().getName() +
-				". Expected a zero-arg method returning JasperPrint (e.g., generate(), build()).");
 		
 	}
 	
@@ -572,54 +340,52 @@ public class ReportService
 		map.put(ReportType.TRANSACTION_REPORT_JASPER,
 			(ctx, svc) -> new TransactionReportJasperGenerator());
 		map.put(ReportType.SCA_ASSET_DTL_5A_JASPER,
-			(ctx, svc) -> new AssetDtl5aJasperGenerator(ctx, svc));
+			(ctx, svc) -> new AssetDtl5aJasperGenerator());
 		map.put(ReportType.SCA_BALANCE_3_V2_JASPER,
-			(ctx, svc) -> new Balance3v2JasperGenerator(ctx, svc));
+			(ctx, svc) -> new Balance3v2JasperGenerator());
 		map.put(ReportType.SCA_CONTACT_INFO_JASPER,
-			(ctx, svc) -> new ContactInfoJasperGenerator(ctx, svc));
+			(ctx, svc) -> new ContactInfoJasperGenerator());
 		map.put(ReportType.SCA_DEPR_DTL_8_JASPER,
-			(ctx, svc) -> new DeprDtl8JasperGenerator(ctx, svc));
+			(ctx, svc) -> new DeprDtl8JasperGenerator());
 		map.put(ReportType.SCA_EXPENSE_DTL_12A_JASPER,
-			(ctx, svc) -> new ExpenseDtl12aJasperGenerator(ctx, svc));
+			(ctx, svc) -> new ExpenseDtl12aJasperGenerator());
 		map.put(ReportType.SCA_EXPENSE_DTL_12B_JASPER,
-			(ctx, svc) -> new ExpenseDtl12bJasperGenerator(ctx, svc));
+			(ctx, svc) -> new ExpenseDtl12bJasperGenerator());
 		map.put(ReportType.SCA_FINANCE_COMM_13_JASPER,
-			(ctx, svc) -> new FinanceComm13JasperGenerator(ctx, svc));
+			(ctx, svc) -> new FinanceComm13JasperGenerator());
 		map.put(ReportType.SCA_FUNDS_14_JASPER,
-			(ctx, svc) -> new Funds14JasperGenerator(ctx, svc));
+			(ctx, svc) -> new Funds14JasperGenerator());
 		map.put(ReportType.SCA_INCOME_4_JASPER,
-			(ctx, svc) -> new Income4JasperGenerator(ctx, svc));
+			(ctx, svc) -> new Income4JasperGenerator());
 		map.put(ReportType.SCA_INCOME_DTL_11A_JASPER,
-			(ctx, svc) -> new IncomeDtl11aJasperGenerator(ctx, svc));
+			(ctx, svc) -> new IncomeDtl11aJasperGenerator());
 		map.put(ReportType.SCA_INCOME_DTL_11B_JASPER,
-			(ctx, svc) -> new IncomeDtl11bJasperGenerator(ctx, svc));
+			(ctx, svc) -> new IncomeDtl11bJasperGenerator());
 		map.put(ReportType.SCA_INCOME_DTL_11C_JASPER,
-			(ctx, svc) -> new IncomeDtl11cJasperGenerator(ctx, svc));
+			(ctx, svc) -> new IncomeDtl11cJasperGenerator());
 		map.put(ReportType.SCA_INVENTORY_DTL_6_JASPER,
-			(ctx, svc) -> new InventoryDtl6JasperGenerator(ctx, svc));
+			(ctx, svc) -> new InventoryDtl6JasperGenerator());
 		map.put(ReportType.SCA_LEDGER_Q1_JASPER,
-			(ctx, svc) -> new LedgerQ1JasperGenerator(ctx, svc));
+			(ctx, svc) -> new LedgerQ1JasperGenerator());
 		map.put(ReportType.SCA_LIABILITY_DTL_5B_JASPER,
-			(ctx, svc) -> new LiabilityDtl5bJasperGenerator(ctx, svc));
+			(ctx, svc) -> new LiabilityDtl5bJasperGenerator());
 		map.put(ReportType.SCA_NEWSLETTER_15_JASPER,
-			(ctx, svc) -> new Newsletter15JasperGenerator(ctx, svc));
+			(ctx, svc) -> new Newsletter15JasperGenerator());
 		map.put(ReportType.SCA_PRIMARY_ACCOUNT_JASPER,
-			(ctx, svc) -> new PrimaryAccountJasperGenerator(ctx, svc));
+			(ctx, svc) -> new PrimaryAccountJasperGenerator());
 		map.put(ReportType.SCA_PRIMARY_ACCOUNT_RECONCILIATION_JASPER,
-			(ctx, svc) -> new PrimaryAccountReconciliationJasperGenerator(ctx,
-				svc));
+			(ctx, svc) -> new PrimaryAccountReconciliationJasperGenerator());
 		map.put(ReportType.SCA_REGALIA_SALES_DTL_7_JASPER,
-			(ctx, svc) -> new RegaliaSalesDtl7JasperGenerator(ctx, svc));
+			(ctx, svc) -> new RegaliaSalesDtl7JasperGenerator());
 		map.put(ReportType.SCA_SECONDARY_ACCOUNT_JASPER,
-			(ctx, svc) -> new SecondaryAccountJasperGenerator(ctx, svc));
+			(ctx, svc) -> new SecondaryAccountJasperGenerator());
 		map.put(ReportType.SCA_TRANSFER_IN_9_JASPER,
-			(ctx, svc) -> new TransferIn9JasperGenerator(ctx, svc));
+			(ctx, svc) -> new TransferIn9JasperGenerator());
 		map.put(ReportType.SCA_TRANSFER_OUT_10_JASPER,
-			(ctx, svc) -> new TransferOut10JasperGenerator(ctx, svc));
+			(ctx, svc) -> new TransferOut10JasperGenerator());
 		return map;
 		
 	}
-	
 	
 	
 	/** Allow runtime registration / replacement of a generator (mutable registry). */
@@ -2214,8 +1980,6 @@ public class ReportService
 		return results;
 		
 	}
-	
-	
 	
 	
 }

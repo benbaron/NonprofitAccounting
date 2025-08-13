@@ -1,25 +1,12 @@
 
 package nonprofitbookkeeping.reports.generator;
 
-import nonprofitbookkeeping.reports.datasource.scareports.ExpenseDtl12aBean;
-import nonprofitbookkeeping.reports.ReportContext;
-import nonprofitbookkeeping.service.ReportService;
+import java.math.BigDecimal;
 import java.util.*;
+import nonprofitbookkeeping.reports.datasource.scareports.ExpenseDtl12aBean;
 
 public class ExpenseDtl12aJasperGenerator extends AbstractReportGenerator
 {
-	
-	public ExpenseDtl12aJasperGenerator(ReportContext ctx, ReportService svc)
-	{
-	
-	}
-	
-	@Override
-	protected List<ExpenseDtl12aBean> getReportData()
-	{
-		return Collections.singletonList(new ExpenseDtl12aBean());
-		
-	}
 	
 	@Override
 	protected Map<String, Object> getReportParameters()
@@ -36,10 +23,23 @@ public class ExpenseDtl12aJasperGenerator extends AbstractReportGenerator
 	}
 	
 	@Override
-	protected String getBaseName()
+	public String getBaseName()
 	{
 		return "ExpenseDtl12a";
 		
 	}
+	
+	/**
+	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
+	 */
+	@Override
+	protected List<ExpenseDtl12aBean> getReportData()
+	{
+		ExpenseDtl12aBean bean = new ExpenseDtl12aBean();
+		bean.setAmount(BigDecimal.ONE);
+		return java.util.Collections.singletonList(bean);
+		
+	}
+	
 	
 }

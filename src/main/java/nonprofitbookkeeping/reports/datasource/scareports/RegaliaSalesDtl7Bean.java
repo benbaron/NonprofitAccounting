@@ -2,6 +2,7 @@
 package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +15,8 @@ import lombok.Setter;
 @Setter
 public class RegaliaSalesDtl7Bean
 {
+	ArrayList<RegaliaSalesRow> rows;
+	
 	private BigDecimal _10_b_transfer_out;
 	private BigDecimal _10_c_transfer_out;
 	private BigDecimal _10_d_transfer_out;
@@ -231,5 +234,14 @@ public class RegaliaSalesDtl7Bean
 	private BigDecimal year_acquired_7;
 	private BigDecimal year_acquired_8;
 	private BigDecimal year_acquired_9;
+	/**
+	 * @param one
+	 */
+	public void setA_b_value_lost(BigDecimal one)
+	{
+		// TODO Auto-generated method stub
+		
+		
+	}
 	
 }

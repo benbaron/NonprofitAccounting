@@ -1,28 +1,45 @@
+
 package nonprofitbookkeeping.reports.generator;
 
-import nonprofitbookkeeping.reports.datasource.scareports.Funds14Bean;
-import nonprofitbookkeeping.reports.ReportContext;
-import nonprofitbookkeeping.service.ReportService;
+import java.math.BigDecimal;
 import java.util.*;
+import nonprofitbookkeeping.reports.datasource.scareports.Funds14Bean;
 
-public class Funds14JasperGenerator extends AbstractReportGenerator {
-
-        public Funds14JasperGenerator(ReportContext ctx, ReportService svc) {
-        }
-
-        @Override protected List<Funds14Bean> getReportData() {
-                return Collections.singletonList(new Funds14Bean());
-        }
-
-        @Override protected Map<String, Object> getReportParameters() {
-                return Collections.emptyMap();
-        }
-
-        @Override protected String getReportPath() {
-                return "jrxml/sca-reports/FUNDS_14_AUTO_STYLED.jrxml";
-        }
-
-        @Override protected String getBaseName() {
-                return "Funds14";
-        }
+public class Funds14JasperGenerator extends AbstractReportGenerator
+{
+	
+	@Override
+	protected Map<String, Object> getReportParameters()
+	{
+		return Collections.emptyMap();
+		
+	}
+	
+	@Override
+	protected String getReportPath()
+	{
+		return "jrxml/sca-reports/FUNDS_14_AUTO_STYLED.jrxml";
+		
+	}
+	
+	@Override
+	public String getBaseName()
+	{
+		return "Funds14";
+		
+	}
+	
+	/**
+	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
+	 */
+	@Override
+	protected List<Funds14Bean> getReportData()
+	{
+		Funds14Bean bean = new Funds14Bean();
+		bean.setAll_non_dedicated_funds(BigDecimal.ONE);
+		return java.util.Collections.singletonList(bean);
+		
+	}
+	
+	
 }

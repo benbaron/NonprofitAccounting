@@ -2,6 +2,7 @@
 package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +15,8 @@ import lombok.Setter;
 @Setter
 public class Newsletter15Bean
 {
+	ArrayList<Newsletter15Row> rows;
+	
 	private BigDecimal _1_contact_info;
 	private BigDecimal adj_gross_income_a_b_c;
 	private BigDecimal calculate_separately;
@@ -284,5 +287,14 @@ public class Newsletter15Bean
 	private BigDecimal subscription_due_8;
 	private BigDecimal subscription_due_9;
 	private BigDecimal total;
+	/**
+	 * @param one
+	 */
+	public void setAdj_gross_income_a_b_c(BigDecimal one)
+	{
+		// TODO Auto-generated method stub
+		
+		
+	}
 	
 }

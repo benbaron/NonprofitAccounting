@@ -1,11 +1,9 @@
 
 package nonprofitbookkeeping.reports.generator;
 
-import nonprofitbookkeeping.reports.ReportContext;
-import nonprofitbookkeeping.reports.datasource.Balance3Beanv2;
-import nonprofitbookkeeping.service.ReportService;
-
 import java.util.*;
+
+import nonprofitbookkeeping.reports.datasource.scareports.Balance3Beanv2;
 
 public class Balance3v2JasperGenerator extends AbstractReportGenerator
 {
@@ -15,33 +13,38 @@ public class Balance3v2JasperGenerator extends AbstractReportGenerator
 	 * @param ctx
 	 * @param svc
 	 */
-	public Balance3v2JasperGenerator(ReportContext ctx, ReportService svc)
-	{
-	
-	}
-	
-	@Override protected List<Balance3Beanv2> getReportData()
-	{
-		return Collections.singletonList(new Balance3Beanv2());
-		
-	}
-	
-	@Override protected Map<String, Object> getReportParameters()
+	@Override
+	protected Map<String, Object> getReportParameters()
 	{
 		return Collections.emptyMap();
 		
 	}
 	
-	@Override protected String getReportPath()
+	@Override
+	protected String getReportPath()
 	{
 		return "jrxml/sca-reports/BALANCE_3_AUTO_STYLED_fixed_labeled.jrxml";
 		
 	}
 	
-	@Override protected String getBaseName()
+	@Override
+	public String getBaseName()
 	{
 		return "Balance3v2";
 		
 	}
+
+	/**
+	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
+	 */
+        @Override
+        protected List<Balance3Beanv2> getReportData()
+        {
+                Balance3Beanv2 bean = new Balance3Beanv2();
+                return java.util.Collections.singletonList(bean);
+
+        }
+
+
 	
 }

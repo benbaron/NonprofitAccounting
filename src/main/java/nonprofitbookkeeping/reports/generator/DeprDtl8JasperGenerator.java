@@ -1,41 +1,45 @@
 
 package nonprofitbookkeeping.reports.generator;
 
-import nonprofitbookkeeping.reports.ReportContext;
-import nonprofitbookkeeping.reports.datasource.scareports.DeprDtl8Bean;
-import nonprofitbookkeeping.service.ReportService;
 import java.util.*;
+import nonprofitbookkeeping.reports.datasource.scareports.DeprDtl8Bean;
 
 public class DeprDtl8JasperGenerator extends AbstractReportGenerator
 {
 	
-	public DeprDtl8JasperGenerator(ReportContext ctx, ReportService svc)
-	{
 	
-	}
-	
-	@Override protected List<DeprDtl8Bean> getReportData()
-	{
-		return Collections.singletonList(new DeprDtl8Bean());
-		
-	}
-	
-	@Override protected Map<String, Object> getReportParameters()
+	@Override
+	protected Map<String, Object> getReportParameters()
 	{
 		return Collections.emptyMap();
 		
 	}
 	
-	@Override protected String getReportPath()
+	@Override
+	protected String getReportPath()
 	{
 		return "jrxml/sca-reports/DEPR_DTL_8_AUTO_STYLED_labeled.jrxml";
 		
 	}
 	
-	@Override protected String getBaseName()
+	@Override
+	public String getBaseName()
 	{
 		return "DeprDtl8";
 		
 	}
+
+	/**
+	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
+	 */
+        @Override
+        protected List<DeprDtl8Bean> getReportData()
+        {
+                DeprDtl8Bean bean = new DeprDtl8Bean();
+                return java.util.Collections.singletonList(bean);
+
+        }
+
+	
 	
 }

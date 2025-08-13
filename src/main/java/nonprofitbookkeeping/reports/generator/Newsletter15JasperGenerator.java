@@ -1,25 +1,12 @@
 
 package nonprofitbookkeeping.reports.generator;
 
-import nonprofitbookkeeping.reports.datasource.scareports.Newsletter15Bean;
-import nonprofitbookkeeping.reports.ReportContext;
-import nonprofitbookkeeping.service.ReportService;
+import java.math.BigDecimal;
 import java.util.*;
+import nonprofitbookkeeping.reports.datasource.scareports.Newsletter15Bean;
 
 public class Newsletter15JasperGenerator extends AbstractReportGenerator
 {
-	
-	public Newsletter15JasperGenerator(ReportContext ctx, ReportService svc)
-	{
-	
-	}
-	
-	@Override
-	protected List<Newsletter15Bean> getReportData()
-	{
-		return Collections.singletonList(new Newsletter15Bean());
-		
-	}
 	
 	@Override
 	protected Map<String, Object> getReportParameters()
@@ -36,10 +23,23 @@ public class Newsletter15JasperGenerator extends AbstractReportGenerator
 	}
 	
 	@Override
-	protected String getBaseName()
+	public String getBaseName()
 	{
 		return "Newsletter15";
 		
 	}
+	
+	/**
+	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
+	 */
+	@Override
+	protected List<Newsletter15Bean> getReportData()
+	{
+		Newsletter15Bean bean = new Newsletter15Bean();
+		bean.setAdj_gross_income_a_b_c(BigDecimal.ONE);
+		return java.util.Collections.singletonList(bean);
+		
+	}
+	
 	
 }

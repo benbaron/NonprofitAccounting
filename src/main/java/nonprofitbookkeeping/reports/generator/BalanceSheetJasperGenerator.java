@@ -8,6 +8,7 @@ import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Ledger;
 import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.service.ReportService;
+import nonprofitbookkeeping.reports.datasource.BalanceSheetRowBean;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -27,10 +28,15 @@ public class BalanceSheetJasperGenerator extends AbstractReportGenerator
 	 * 
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData()
 	 */
-	@Override protected List<?> getReportData()
-	{
-		return Collections.emptyList();
-	}
+        @Override protected List<BalanceSheetRowBean> getReportData()
+        {
+                BalanceSheetRowBean bean = new BalanceSheetRowBean("Assets", "Cash", BigDecimal.TEN);
+                bean.setCategory("Assets");
+                bean.setAccount("Cash");
+                bean.setAmount(BigDecimal.TEN);
+                return java.util.Collections.singletonList(bean);
+
+        }
 	
 	@Override protected Map<String, Object> getReportParameters()
 	{
@@ -71,9 +77,10 @@ public class BalanceSheetJasperGenerator extends AbstractReportGenerator
 	 *         totals, net income, and report date information.
 	 * @throws IllegalArgumentException if end date is not provided in the {@code context}.
 	 */
-	public static Map<String, Object> prepareBalanceSheetContext(	ReportContext context, 
-	                                                      	Ledger ledger,
-															ChartOfAccounts chartOfAccounts)
+	public static Map<String, Object> prepareBalanceSheetContext(
+		ReportContext context, 
+		Ledger ledger,
+		ChartOfAccounts chartOfAccounts)
 	{
 		Map<String, BigDecimal> assetTotals = new HashMap<>();
 		Map<String, BigDecimal> liabilityTotals = new HashMap<>();
@@ -161,16 +168,14 @@ public class BalanceSheetJasperGenerator extends AbstractReportGenerator
 		BigDecimal currentPeriodNetIncome =
 			(BigDecimal) incomeStatementData.getOrDefault("netIncome", BigDecimal.ZERO);
 		
-	
 		equityTotals.put("Current Period Net Income", currentPeriodNetIncome);
-		
 		
 		BigDecimal totalAssets =
 			assetTotals.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
 		BigDecimal totalLiabilities =
 			liabilityTotals.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
 		BigDecimal totalEquity = // This now includes the conceptual "Current Period Net
-									// Income"
+								 // Income"
 			equityTotals.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
 		BigDecimal totalLiabilitiesAndEquity = totalLiabilities.add(totalEquity);
 		
@@ -192,13 +197,13 @@ public class BalanceSheetJasperGenerator extends AbstractReportGenerator
 			// .filter(entry -> !entry.getKey().equals("Current Period Net Income")) // No
 			// longer filter here if it's part of totalEquity
 			.forEach(entry -> equityItems
-				.add(Map.of("name", entry.getKey(), "amount", entry.getValue())));
+			.add(Map.of("name", entry.getKey(), "amount", entry.getValue())));
 		
 		Map<String, Object> jxlsContext = new HashMap<>();
 		jxlsContext.put("assetItems", assetItems);
 		jxlsContext.put("liabilityItems", liabilityItems);
 		jxlsContext.put("equityItems", equityItems); // Will include "Current Period Net
-														// Income" line
+													 // Income" line
 		jxlsContext.put("totalAssets", totalAssets);
 		jxlsContext.put("totalLiabilities", totalLiabilities);
 		jxlsContext.put("totalEquity", totalEquity); // This total now reflects equity
@@ -218,10 +223,12 @@ public class BalanceSheetJasperGenerator extends AbstractReportGenerator
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getBaseName() 
 	 */
-	@Override protected String getBaseName()
+	@Override public String getBaseName()
 	{
 		return "Balance_Sheet_" + LocalDate.now();
 		
 	}
+
+
 	
 }

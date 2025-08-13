@@ -1,25 +1,11 @@
 
 package nonprofitbookkeeping.reports.generator;
 
-import nonprofitbookkeeping.reports.datasource.scareports.PrimaryAccountBean;
-import nonprofitbookkeeping.reports.ReportContext;
-import nonprofitbookkeeping.service.ReportService;
 import java.util.*;
+import nonprofitbookkeeping.reports.datasource.scareports.PrimaryAccount2aBean;
 
 public class PrimaryAccountJasperGenerator extends AbstractReportGenerator
 {
-	
-	public PrimaryAccountJasperGenerator(ReportContext ctx, ReportService svc)
-	{
-	
-	}
-	
-	@Override
-	protected List<PrimaryAccountBean> getReportData()
-	{
-		return Collections.singletonList(new PrimaryAccountBean());
-		
-	}
 	
 	@Override
 	protected Map<String, Object> getReportParameters()
@@ -36,10 +22,22 @@ public class PrimaryAccountJasperGenerator extends AbstractReportGenerator
 	}
 	
 	@Override
-	protected String getBaseName()
+	public String getBaseName()
 	{
 		return "PrimaryAccount";
 		
 	}
+	
+	/**
+	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
+	 */
+	@Override
+	protected List<PrimaryAccount2aBean> getReportData()
+	{
+		PrimaryAccount2aBean bean = new PrimaryAccount2aBean();
+		return java.util.Collections.singletonList(bean);
+		
+	}
+	
 	
 }

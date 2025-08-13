@@ -1,25 +1,12 @@
 
 package nonprofitbookkeeping.reports.generator;
 
-import nonprofitbookkeeping.reports.datasource.scareports.InventoryDtl6Bean;
-import nonprofitbookkeeping.reports.ReportContext;
-import nonprofitbookkeeping.service.ReportService;
+import java.math.BigDecimal;
 import java.util.*;
+import nonprofitbookkeeping.reports.datasource.scareports.InventoryDtl6Bean;
 
 public class InventoryDtl6JasperGenerator extends AbstractReportGenerator
 {
-	
-	public InventoryDtl6JasperGenerator(ReportContext ctx, ReportService svc)
-	{
-	
-	}
-	
-	@Override
-	protected List<InventoryDtl6Bean> getReportData()
-	{
-		return Collections.singletonList(new InventoryDtl6Bean());
-		
-	}
 	
 	@Override
 	protected Map<String, Object> getReportParameters()
@@ -36,10 +23,23 @@ public class InventoryDtl6JasperGenerator extends AbstractReportGenerator
 	}
 	
 	@Override
-	protected String getBaseName()
+	public String getBaseName()
 	{
 		return "InventoryDtl6";
 		
 	}
+	
+	/**
+	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
+	 */
+	@Override
+	protected List<InventoryDtl6Bean> getReportData()
+	{
+		InventoryDtl6Bean bean = new InventoryDtl6Bean();
+		bean.setActual_gross_income_from_inventory_sales(BigDecimal.ONE);
+		return java.util.Collections.singletonList(bean);
+		
+	}
+	
 	
 }

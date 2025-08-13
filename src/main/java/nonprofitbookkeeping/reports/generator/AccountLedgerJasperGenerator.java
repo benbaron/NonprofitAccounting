@@ -20,7 +20,6 @@ import java.util.Map;
 public class AccountLedgerJasperGenerator extends AbstractReportGenerator
 {
 	/**
-	 * 
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData()
 	 */
 	@Override protected List<AccountLedgerRowBean> getReportData()
@@ -50,7 +49,9 @@ public class AccountLedgerJasperGenerator extends AbstractReportGenerator
 		for (nonprofitbookkeeping.model.AccountingTransaction tx : txns)
 		{
 			if (tx == null || tx.getEntries() == null)
+			{
 				continue;
+			}
 			
 			BigDecimal debit = BigDecimal.ZERO;
 			BigDecimal credit = BigDecimal.ZERO;
@@ -74,8 +75,11 @@ public class AccountLedgerJasperGenerator extends AbstractReportGenerator
 			running = running.add(debit).subtract(credit);
 			
 			rows.add(new AccountLedgerRowBean(	tx.getDate(),
-												tx.getMemo() != null ? tx.getMemo() : "", debit,
-												credit, running));
+												tx.getMemo() != null ? 
+													tx.getMemo() : "", 
+													debit,
+													credit, 
+													running));
 		}
 		
 		return rows;
@@ -114,12 +118,10 @@ public class AccountLedgerJasperGenerator extends AbstractReportGenerator
 	}
 	
 	// write output
-	@Override protected String getBaseName()
+	@Override public String getBaseName()
 	{
 		return "Account_Ledger_" + LocalDate.now();	
 	}
 	
-
-
 	
 }

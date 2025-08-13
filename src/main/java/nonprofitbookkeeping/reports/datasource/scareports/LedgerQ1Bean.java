@@ -76,5 +76,14 @@ public class LedgerQ1Bean
 	private String fnord_12;
 	private String col_66;
 	private String col_67;
+	/**
+	 * @param string
+	 */
+	public void setCol_0(String string)
+	{
+		// TODO Auto-generated method stub
+		
+		
+	}
 	
 }

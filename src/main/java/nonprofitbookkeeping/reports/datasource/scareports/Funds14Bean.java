@@ -2,6 +2,7 @@
 package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +15,9 @@ import lombok.Setter;
 @Setter
 public class Funds14Bean
 {
+	
+	ArrayList<Funds14Row> rows;
+	
 	private BigDecimal _1_contact_info;
 	private BigDecimal _4_income;
 	private BigDecimal all_non_dedicated_funds;
@@ -144,5 +148,14 @@ public class Funds14Bean
 	private BigDecimal general_fund_9;
 	private BigDecimal total;
 	private BigDecimal total_of_lines_i_a_end_and_i_b_end_on_the_comparative_balance_sheet_cash;
+	/**
+	 * @param one
+	 */
+	public void setAll_non_dedicated_funds(BigDecimal one)
+	{
+		// TODO Auto-generated method stub
+		
+		
+	}
 	
 }

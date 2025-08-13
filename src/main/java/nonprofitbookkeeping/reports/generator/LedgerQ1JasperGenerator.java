@@ -1,25 +1,11 @@
 
 package nonprofitbookkeeping.reports.generator;
 
-import nonprofitbookkeeping.reports.datasource.scareports.LedgerQ1Bean;
-import nonprofitbookkeeping.reports.ReportContext;
-import nonprofitbookkeeping.service.ReportService;
 import java.util.*;
+import nonprofitbookkeeping.reports.datasource.scareports.LedgerQ1Bean;
 
 public class LedgerQ1JasperGenerator extends AbstractReportGenerator
 {
-	
-	public LedgerQ1JasperGenerator(ReportContext ctx, ReportService svc)
-	{
-	
-	}
-	
-	@Override
-	protected List<LedgerQ1Bean> getReportData()
-	{
-		return Collections.singletonList(new LedgerQ1Bean());
-		
-	}
 	
 	@Override
 	protected Map<String, Object> getReportParameters()
@@ -36,10 +22,23 @@ public class LedgerQ1JasperGenerator extends AbstractReportGenerator
 	}
 	
 	@Override
-	protected String getBaseName()
+	public String getBaseName()
 	{
 		return "LedgerQ1";
 		
 	}
+	
+	/**
+	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
+	 */
+	@Override
+	protected List<LedgerQ1Bean> getReportData()
+	{
+		LedgerQ1Bean bean = new LedgerQ1Bean();
+		bean.setCol_0("Sample");
+		return java.util.Collections.singletonList(bean);
+		
+	}
+	
 	
 }

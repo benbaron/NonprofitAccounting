@@ -1,28 +1,45 @@
+
 package nonprofitbookkeeping.reports.generator;
 
-import nonprofitbookkeeping.reports.datasource.scareports.Income4Bean;
-import nonprofitbookkeeping.reports.ReportContext;
-import nonprofitbookkeeping.service.ReportService;
+import java.math.BigDecimal;
 import java.util.*;
+import nonprofitbookkeeping.reports.datasource.scareports.Income4Bean;
 
-public class Income4JasperGenerator extends AbstractReportGenerator {
-
-        public Income4JasperGenerator(ReportContext ctx, ReportService svc) {
-        }
-
-        @Override protected List<Income4Bean> getReportData() {
-                return Collections.singletonList(new Income4Bean());
-        }
-
-        @Override protected Map<String, Object> getReportParameters() {
-                return Collections.emptyMap();
-        }
-
-        @Override protected String getReportPath() {
-                return "jrxml/sca-reports/INCOME_4_AUTO_STYLED.jrxml";
-        }
-
-        @Override protected String getBaseName() {
-                return "Income4";
-        }
+public class Income4JasperGenerator extends AbstractReportGenerator
+{
+	
+	@Override
+	protected Map<String, Object> getReportParameters()
+	{
+		return null;
+		
+	}
+	
+	@Override
+	protected String getReportPath()
+	{
+		return "jrxml/sca-reports/INCOME_4_AUTO_STYLED.jrxml";
+		
+	}
+	
+	@Override
+	public String getBaseName()
+	{
+		return "Income4";
+		
+	}
+	
+	/**
+	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
+	 */
+	@Override
+	protected List<Income4Bean> getReportData()
+	{
+		Income4Bean bean = new Income4Bean();
+		bean.setExchequer(BigDecimal.ONE);
+		return java.util.Collections.singletonList(bean);
+		
+	}
+	
+	
 }

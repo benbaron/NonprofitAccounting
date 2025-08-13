@@ -3,20 +3,18 @@ package nonprofitbookkeeping.ui.actions;
 
 import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.service.ReportService;
-import nonprofitbookkeeping.ui.helpers.AlertBox; // Added
-import nonprofitbookkeeping.ui.helpers.DateRangePickerDialog; // Added
+import nonprofitbookkeeping.ui.helpers.AlertBox; 
+import nonprofitbookkeeping.ui.helpers.DateRangePickerDialog; 
 
-import javafx.event.ActionEvent; // Added
-import javafx.event.EventHandler; // Added
-import javafx.scene.control.ChoiceDialog; // Added
-import javafx.stage.Window; // Added
-// import javax.swing.*; // Removed
-// import java.awt.event.ActionEvent; // Removed
+import javafx.event.ActionEvent; 
+import javafx.event.EventHandler; 
+import javafx.scene.control.ChoiceDialog; 
+import javafx.stage.Window; 
 import java.io.File;
 import java.time.LocalDate;
-import java.util.Arrays; // Added
-import java.util.List; // Added
-import java.util.Optional; // Added
+import java.util.Arrays; 
+import java.util.List; 
+import java.util.Optional; 
 
 
 /**
@@ -34,16 +32,18 @@ import java.util.Optional; // Added
  */
 public class GenerateReportsAction implements EventHandler<ActionEvent>
 {
+
+        /** Backing service used to dispatch report generation. */
+        private final ReportService service;
 	/**
 	 * Constructs a new {@code GenerateReportsAction}.
 	 *
-	 * @param service The {@link ReportService} to be used for generating reports.
-	 *                While the current implementation calls a static {@code ReportService.generate} method,
-	 *                this instance is stored for potential future refactoring or extended use.
-	 */
-	public GenerateReportsAction(ReportService service)
-	{
-	}
+         * @param service The {@link ReportService} to be used for generating reports.
+         */
+        public GenerateReportsAction(ReportService service)
+        {
+                this.service = service;
+        }
 	
 	/**
 	 * {@inheritDoc}
@@ -57,29 +57,34 @@ public class GenerateReportsAction implements EventHandler<ActionEvent>
 	 *   <li>Validates that both dates are provided and that the end date is not before the start date.</li>
 	 *   <li>Prompts for the output format (xlsx, csv, pdf) using a {@link ChoiceDialog}.</li>
 	 *   <li>If any dialog is cancelled by the user, the action terminates.</li>
-	 *   <li>Constructs a {@link ReportContext} with the selected criteria.</li>
-	 *   <li>Calls the static {@link ReportService#generateJasper(ReportContext)} method to produce the report file.</li>
+
+         *   <li>Constructs a {@link ReportContext} with the selected criteria.</li>
+         *   <li>Calls the injected {@link ReportService} to produce the report file.</li>
 	 *   <li>Shows an information alert with the path to the generated report, or an error alert if generation fails.</li>
 	 * </ol>
 	 * Displays general {@link Exception} messages if errors occur during report generation.
 	 * </p>
 	 * @param event The {@link ActionEvent} that triggered this handler (e.g., a menu item click).
 	 */
-	@Override public void handle(ActionEvent event)
+	@Override
+	public void handle(ActionEvent event)
 	{
 		Window parentWindow = null;
 		
 		if (event.getSource() instanceof javafx.scene.Node)
 		{
-			parentWindow = ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+			parentWindow =
+				((javafx.scene.Node) event.getSource()).getScene().getWindow();
 		}
 		
 		try
 		{
 			// Prompt for report type.
 			List<String> reportOptions =
-				Arrays.asList("ledger", "income_statement", "balance_sheet", "trial_balance",
-					"cash_flow", "budget_vs_actuals", "account_activity_detail", "general_ledger");
+				Arrays.asList("ledger", "income_statement", "balance_sheet",
+					"trial_balance",
+					"cash_flow", "budget_vs_actuals", "account_activity_detail",
+					"general_ledger");
 			ChoiceDialog<String> reportTypeDialog =
 				new ChoiceDialog<>(reportOptions.get(0), reportOptions);
 			reportTypeDialog.initOwner(parentWindow);
@@ -96,8 +101,9 @@ public class GenerateReportsAction implements EventHandler<ActionEvent>
 			String reportType = reportTypeOpt.get();
 			
 			// Prompt for start and end dates using a JavaFX DatePicker dialog.
-			Optional<LocalDate[]> rangeOpt = DateRangePickerDialog.show(parentWindow,
-				"Select Report Period", "Start Date:", "End Date:");
+			Optional<LocalDate[]> rangeOpt =
+				DateRangePickerDialog.show(parentWindow,
+					"Select Report Period", "Start Date:", "End Date:");
 			
 			if (!rangeOpt.isPresent())
 			{
@@ -122,14 +128,19 @@ public class GenerateReportsAction implements EventHandler<ActionEvent>
 			
 			if (endDate.isBefore(startDate))
 			{
-				AlertBox.showError(parentWindow, "End Date cannot be before Start Date.");
+				AlertBox.showError(parentWindow,
+					"End Date cannot be before Start Date.");
 				return;
 			}
 			
 			// Prompt for output format.
 			List<String> formatOptions = Arrays.asList("xlsx", "csv", "pdf");
+			
 			ChoiceDialog<String> formatDialog =
-				new ChoiceDialog<>(formatOptions.get(0), formatOptions);
+				new ChoiceDialog<>(
+					formatOptions.get(0), 
+					formatOptions);
+			
 			formatDialog.initOwner(parentWindow);
 			formatDialog.setTitle("Output Format");
 			formatDialog.setHeaderText("Select output format:");
@@ -149,16 +160,18 @@ public class GenerateReportsAction implements EventHandler<ActionEvent>
 			ctx.setStartDate(startDate);
 			ctx.setEndDate(endDate);
 			ctx.setOutputFormat(outputFormat);
-			
-			// Generate the report.
-			File output = ReportService.generateJasper(ctx); 
-			AlertBox.showInfo(parentWindow, "Report generated at: " + output.getAbsolutePath());
+
+      // Generate the report using the injected service instance.
+      File output = this.service.generateJasperReport(ctx, outputFormat);
+      AlertBox.showInfo(parentWindow, "Report generated at: " + output.getAbsolutePath());
+
 			
 		}
 		catch (Exception ex)
 		{
 			ex.printStackTrace();
-			AlertBox.showError(parentWindow, "Error generating report: " + ex.getMessage());
+			AlertBox.showError(parentWindow,
+				"Error generating report: " + ex.getMessage());
 		}
 		
 	}
@@ -172,6 +185,7 @@ public class GenerateReportsAction implements EventHandler<ActionEvent>
 	public void actionPerformed(Object object)
 	{
 		handle(new ActionEvent());
+		
 	}
 	
 }

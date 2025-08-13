@@ -2,8 +2,10 @@
 package nonprofitbookkeeping.reports.generator;
 
 import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.HtmlExporter;
 import net.sf.jasperreports.export.*;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 
 
 import nonprofitbookkeeping.exception.ActionCancelledException;
@@ -11,8 +13,8 @@ import nonprofitbookkeeping.exception.NoFileCreatedException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,15 +27,22 @@ import java.util.Map;
  */
 public abstract class AbstractReportGenerator
 {
+	/**
+	 * Data beans supplied to populate the report. Subclasses may override
+	 * {@link #getReportData()} to compute data dynamically, but in cases where
+	 * the data is prepared externally it can be injected here via
+	 * {@link #setReportData(List)}.
+	 */
+	private List<?> reportData = Collections.emptyList();
 	
 	/**
 	 * Retrieves the collection of data beans that will populate the report.
-	 * Subclasses must implement this to provide the specific dataset for their report.
-	 *
-	 * @return A {@link List} of objects (JavaBeans) to be used as the report's data source.
-	 *         The exact type of objects in the list depends on the specific report.
+	 * 
+	 * @return A {@link List} of objects (JavaBeans) to be used as the report's
+	 *         data source. The exact type depends on the specific report.
 	 */
 	protected abstract List<?> getReportData();
+	
 	
 	/**
 	 * Retrieves the parameters to be passed to the report during filling.
@@ -51,8 +60,8 @@ public abstract class AbstractReportGenerator
 	 * @throws ActionCancelledException If determining the report path involves an action that is cancelled.
 	 * @throws NoFileCreatedException If the report template file cannot be found or accessed.
 	 */
-	protected abstract String getReportPath()	throws ActionCancelledException,
-												NoFileCreatedException;
+	protected abstract String getReportPath() throws ActionCancelledException,
+		NoFileCreatedException;
 	
 	
 	/**
@@ -60,40 +69,8 @@ public abstract class AbstractReportGenerator
 	 *  
 	 * @return base name
 	 */
-	protected abstract String getBaseName();
+	public abstract String getBaseName();
 	
-
-	
-	/**
-	 * Gets the file path to a jasper report
-	 * 
-	 * @return : the path
-	 * @throws RuntimeException
-	 */
-	File getJasperFilePath() throws RuntimeException
-	{
-		System.out.println("Working dir: " + new File(".").getAbsolutePath());
-		Path baseDir = Paths.get(System.getProperty("user.dir")); // runtime working dir
-		System.out.println("base dir:" + baseDir);
-		File jrxmlFile = null;
-		
-		try
-		{
-			jrxmlFile = new File(getReportPath());
-		}
-		catch (ActionCancelledException | NoFileCreatedException e)
-		{
-			e.printStackTrace();
-		}
-		
-		if (!jrxmlFile.exists())
-		{
-			throw new RuntimeException("JRXML file not found: " + jrxmlFile.getAbsolutePath());
-		}
-		
-		return jrxmlFile;
-		
-	}
 	
 	/**
 	 * Wraps an immutable map so it is suitable for jasper (which needs a 
@@ -102,15 +79,45 @@ public abstract class AbstractReportGenerator
 	 * @param original : report
 	 * @return mutable reports
 	 */
+	
 	public static Map<String, Object>
-			ensureMutableParameters(Map<String, Object> original)
+		ensureMutableParameters(Map<String, Object> original)
 	{
 		return (original instanceof HashMap) ?
-				original : new HashMap<>(original);
+			original : new HashMap<>(original);
 		
 	}
 	
-
+	/**
+	 * Compiles the JRXML template, fills it with data and parameters, and returns
+	 * a populated {@link JasperPrint} ready for export.
+	 *
+	 * @return filled {@link JasperPrint}
+	 * @throws JRException if compilation or filling fails
+	 */
+	public JasperPrint generatePrint() throws JRException
+	{
+		String jrxmlPath;
+		
+		try
+		{
+			jrxmlPath = getReportPath();
+		}
+		catch (ActionCancelledException | NoFileCreatedException e)
+		{
+			throw new JRException("Unable to resolve report path", e);
+		}
+		
+		JasperReport report = JasperCompileManager.compileReport(jrxmlPath);
+		JRBeanCollectionDataSource dataSource =
+			new JRBeanCollectionDataSource(getReportData());
+		Map<String, Object> params =
+			ensureMutableParameters(getReportParameters());
+		return JasperFillManager.fillReport(report, params, dataSource);
+		
+	}
+	
+	
 	/**
 	 * Writes the output report to the requested directory
 	 * 
@@ -122,9 +129,11 @@ public abstract class AbstractReportGenerator
 	 * @throws JRException
 	 * @throws IOException
 	 */
+	
 	@SuppressWarnings("static-method")
-		File writeJasperOutput(String format, JasperPrint print, String baseName)	throws JRException,
-																				IOException
+	public File writeJasperOutput(String format,
+		JasperPrint print,
+		String baseName) throws JRException, IOException
 	{
 		File outDir = new File(getOutputDirectory());
 		
@@ -134,12 +143,23 @@ public abstract class AbstractReportGenerator
 		}
 		
 		File outFile =
-				new File(	outDir,
-							baseName + ("html".equalsIgnoreCase(format) ? ".html" : ".pdf"));
+			new File(outDir,
+				baseName + ("html".equalsIgnoreCase(format) ? ".html" :
+					"xlsx".equalsIgnoreCase(format) ? ".xlsx" : ".pdf"));
 		
 		if ("html".equalsIgnoreCase(format))
 		{
 			return exportToHTML(print, outFile.getAbsolutePath());
+		}
+		
+		if ("xlsx".equalsIgnoreCase(format))
+		{
+			JRXlsxExporter xlsx = new JRXlsxExporter();
+			xlsx.setExporterInput(new SimpleExporterInput(print));
+			xlsx.setExporterOutput(
+				new SimpleOutputStreamExporterOutput(outFile));
+			xlsx.exportReport();
+			return outFile;
 		}
 		
 		return exportToPDF(print, outFile.getAbsolutePath());
@@ -179,8 +199,8 @@ public abstract class AbstractReportGenerator
 	 * @return The {@link File} object representing the exported PDF report.
 	 * @throws JRException If an error occurs during the PDF export process.
 	 */
-	protected static File exportToPDF(	JasperPrint jasperPrint,
-										String outputFilePath) throws JRException
+	protected static File exportToPDF(JasperPrint jasperPrint,
+		String outputFilePath) throws JRException
 	{
 		File outputFile = new File(outputFilePath);
 		// Ensure parent directory exists
@@ -191,10 +211,13 @@ public abstract class AbstractReportGenerator
 			parentDir.mkdirs();
 		}
 		
-		JasperExportManager.exportReportToPdfFile(jasperPrint, outputFile.getAbsolutePath());
-		System.out.println("Report exported to PDF: " + outputFile.getAbsolutePath()); // Consider
-																						// using a
-																						// logger
+		JasperExportManager.exportReportToPdfFile(jasperPrint,
+			outputFile.getAbsolutePath());
+		System.out
+			.println("Report exported to PDF: " + outputFile.getAbsolutePath()); // Consider
+																					// using
+																					// a
+																					// logger
 		return outputFile;
 		
 	}
@@ -209,11 +232,12 @@ public abstract class AbstractReportGenerator
 	 * @throws JRException If an error occurs during the HTML export process setup.
 	 * @throws IOException If an error occurs during file writing.
 	 */
-	protected static File exportToHTML(	JasperPrint jasperPrint,
-										String outputFilePath)	throws JRException,
-																IOException
+	protected static File exportToHTML(JasperPrint jasperPrint,
+		String outputFilePath) throws JRException,
+		IOException
 	{
 		File outputFile = new File(outputFilePath);
+		
 		// Ensure parent directory exists
 		File parentDir = outputFile.getParentFile();
 		
@@ -224,12 +248,23 @@ public abstract class AbstractReportGenerator
 		
 		HtmlExporter exporter = new HtmlExporter();
 		exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-		exporter.setExporterOutput(new SimpleHtmlExporterOutput(new FileOutputStream(outputFile)));
+		exporter.setExporterOutput(
+			new SimpleHtmlExporterOutput(new FileOutputStream(outputFile)));
 		
 		exporter.exportReport();
-		System.out.println("Report exported to HTML: " + outputFile.getAbsolutePath());
+		System.out.println(
+			"Report exported to HTML: " + outputFile.getAbsolutePath());
 		return outputFile;
 		
+	}
+
+
+	/**
+	 * @param beans
+	 */
+	public void setReportData(List<?> beans)
+	{
+		// TODO Auto-generated method stub
 	}
 	
 }
