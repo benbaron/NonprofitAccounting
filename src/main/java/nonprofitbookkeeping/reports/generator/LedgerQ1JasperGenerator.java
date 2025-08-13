@@ -2,6 +2,7 @@
 package nonprofitbookkeeping.reports.generator;
 
 import java.util.*;
+import nonprofitbookkeeping.reports.datasource.scareports.LedgerQ1Bean;
 
 public class LedgerQ1JasperGenerator extends AbstractReportGenerator
 {
@@ -30,13 +31,14 @@ public class LedgerQ1JasperGenerator extends AbstractReportGenerator
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
 	 */
-	@Override
-	protected List<?> getReportData()
-	{
-		// TODO Auto-generated method stub
-		return null;
-		
-	}
+        @Override
+        protected List<LedgerQ1Bean> getReportData()
+        {
+                LedgerQ1Bean bean = new LedgerQ1Bean();
+                bean.setCol_0("Sample");
+                return java.util.Collections.singletonList(bean);
+
+        }
 
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#setReportData(java.util.List) 

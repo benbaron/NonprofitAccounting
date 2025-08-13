@@ -2,6 +2,7 @@
 package nonprofitbookkeeping.reports.generator;
 
 import java.util.*;
+import nonprofitbookkeeping.reports.datasource.scareports.ContactInfoBean;
 
 public class ContactInfoJasperGenerator extends AbstractReportGenerator
 {
@@ -30,13 +31,19 @@ public class ContactInfoJasperGenerator extends AbstractReportGenerator
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
 	 */
-	@Override
-	protected List<?> getReportData()
-	{
-		// TODO Auto-generated method stub
-		return null;
-		
-	}
+        @Override
+        protected List<ContactInfoBean> getReportData()
+        {
+                ContactInfoBean bean = new ContactInfoBean();
+                bean.setPrimaryLegalName("John Doe");
+                bean.setPrimaryStreetAddress("123 Main St");
+                bean.setPrimaryCity("Anytown");
+                bean.setPrimaryStateOrProvince("CA");
+                bean.setPrimaryPostalCode("12345");
+                bean.setPrimaryHomeTelephone("555-1111");
+                return java.util.Collections.singletonList(bean);
+
+        }
 	
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#setReportData(java.util.List) 

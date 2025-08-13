@@ -2,6 +2,7 @@
 package nonprofitbookkeeping.reports.generator;
 
 import java.util.*;
+import nonprofitbookkeeping.reports.datasource.scareports.SecondaryAccountBean;
 
 public class SecondaryAccountJasperGenerator extends AbstractReportGenerator
 {
@@ -30,13 +31,13 @@ public class SecondaryAccountJasperGenerator extends AbstractReportGenerator
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
 	 */
-	@Override
-	protected List<?> getReportData()
-	{
-		// TODO Auto-generated method stub
-		return null;
-		
-	}
+        @Override
+        protected List<SecondaryAccountBean> getReportData()
+        {
+                SecondaryAccountBean bean = new SecondaryAccountBean();
+                return java.util.Collections.singletonList(bean);
+
+        }
 
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#setReportData(java.util.List) 

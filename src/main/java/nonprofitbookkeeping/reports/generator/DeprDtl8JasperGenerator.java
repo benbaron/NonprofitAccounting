@@ -2,6 +2,7 @@
 package nonprofitbookkeeping.reports.generator;
 
 import java.util.*;
+import nonprofitbookkeeping.reports.datasource.scareports.DeprDtl8Bean;
 
 public class DeprDtl8JasperGenerator extends AbstractReportGenerator
 {
@@ -31,13 +32,13 @@ public class DeprDtl8JasperGenerator extends AbstractReportGenerator
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
 	 */
-	@Override
-	protected List<?> getReportData()
-	{
-		// TODO Auto-generated method stub
-		return null;
-		
-	}
+        @Override
+        protected List<DeprDtl8Bean> getReportData()
+        {
+                DeprDtl8Bean bean = new DeprDtl8Bean();
+                return java.util.Collections.singletonList(bean);
+
+        }
 
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#setReportData(java.util.List) 

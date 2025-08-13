@@ -122,16 +122,5 @@ public class GeneralLedgerJasperGenerator extends AbstractReportGenerator
 		return "General_Ledger_" + LocalDate.now();
 		
 	}
-
-	/**
-	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#setReportData(java.util.List) 
-	 */
-	@Override
-	public void setReportData(List<?> data)
-	{
-		// TODO Auto-generated method stub
-		
-		
-	}
 	
 }

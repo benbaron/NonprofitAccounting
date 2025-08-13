@@ -146,16 +146,5 @@ public class CashFlowStatementJasperGenerator extends AbstractReportGenerator
 		return "Cash_Flow_Statement_Report_" + currentDateStr;
 		
 	}
-
-	/**
-	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#setReportData(java.util.List) 
-	 */
-	@Override
-	public void setReportData(List<?> data)
-	{
-		// TODO Auto-generated method stub
-		
-		
-	}
 	
 }

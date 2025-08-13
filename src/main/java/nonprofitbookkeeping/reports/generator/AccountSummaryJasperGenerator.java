@@ -41,9 +41,7 @@ public class AccountSummaryJasperGenerator extends AbstractReportGenerator
 		for (nonprofitbookkeeping.model.Account acct : company.getChartOfAccounts().getAccounts())
 		{
 			if (acct == null)
-			{
 				continue;
-			}
 			
 			BigDecimal bal = acct.totalAccountBalance(company.getLedger());
 			String debit = bal.compareTo(BigDecimal.ZERO) >= 0 ? bal.toPlainString() : "";
@@ -73,17 +71,6 @@ public class AccountSummaryJasperGenerator extends AbstractReportGenerator
 	@Override public String getBaseName()
 	{
 		return "Account_Summary_" + LocalDate.now();
-		
-	}
-
-	/**
-	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#setReportData(java.util.List) 
-	 */
-	@Override
-	public void setReportData(List<?> data)
-	{
-		// TODO Auto-generated method stub
-		
 		
 	}
 	
