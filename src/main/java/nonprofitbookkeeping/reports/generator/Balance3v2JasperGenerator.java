@@ -2,7 +2,8 @@
 package nonprofitbookkeeping.reports.generator;
 
 import java.util.*;
-import nonprofitbookkeeping.reports.datasource.Balance3Beanv2;
+
+import nonprofitbookkeeping.reports.datasource.scareports.Balance3Beanv2;
 
 public class Balance3v2JasperGenerator extends AbstractReportGenerator
 {

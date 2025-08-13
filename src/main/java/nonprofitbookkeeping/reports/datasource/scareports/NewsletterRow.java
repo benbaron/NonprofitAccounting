@@ -3,10 +3,12 @@
  * NewsletterRow.java
  * NewsletterRow
  */
-package nonprofitbookkeeping.reports.datasource;
+package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
+import nonprofitbookkeeping.reports.datasource.IncomeRowBase;
 
 /** One issue / subscription entry in the newsletter worksheet. */
 public final class NewsletterRow extends IncomeRowBase

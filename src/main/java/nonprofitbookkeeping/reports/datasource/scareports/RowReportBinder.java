@@ -4,13 +4,8 @@
 
 package nonprofitbookkeeping.reports.datasource.scareports;
 
-import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;

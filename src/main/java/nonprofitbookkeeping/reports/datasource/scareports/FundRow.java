@@ -2,7 +2,7 @@
  * NonprofitAccounting FundRow.java FundRow
  */
 
-package nonprofitbookkeeping.reports.datasource;
+package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
 

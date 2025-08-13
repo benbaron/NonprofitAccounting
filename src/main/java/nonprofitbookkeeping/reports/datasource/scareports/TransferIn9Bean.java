@@ -2,6 +2,7 @@
 package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +15,8 @@ import lombok.Setter;
 @Setter
 public class TransferIn9Bean
 {
+	ArrayList<TransferIn9Row> rows;
+	
 	private BigDecimal _1_contact_info;
 	private BigDecimal amount;
 	private BigDecimal amount_10;

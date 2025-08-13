@@ -3,10 +3,12 @@
  * EventIncomeRow.java
  * EventIncomeRow
  */
-package nonprofitbookkeeping.reports.datasource;
+package nonprofitbookkeeping.reports.datasource.scareports;
 
 
 import java.math.BigDecimal;
+
+import nonprofitbookkeeping.reports.datasource.IncomeRowBase;
 
 /** Row representing one event’s income (gross & net). */
 public final class EventIncomeRow extends IncomeRowBase

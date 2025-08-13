@@ -2,9 +2,11 @@
  * NonprofitAccounting MerchIncomeRow.java MerchIncomeRow
  */
 
-package nonprofitbookkeeping.reports.datasource;
+package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
+
+import nonprofitbookkeeping.reports.datasource.IncomeRowBase;
 
 /** Merchandise sales (qty & total). */
 public final class MerchIncomeRow extends IncomeRowBase

@@ -2,6 +2,7 @@
 package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +15,8 @@ import lombok.Setter;
 @Setter
 public class LiabilityDtl5bBean
 {
+	ArrayList<InventoryDtl6Row> rows;
+	
 	private BigDecimal _1_contact_info;
 	private BigDecimal contents_b59;
 	private BigDecimal contents_e_3;

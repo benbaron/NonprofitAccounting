@@ -1,14 +1,14 @@
 
 package nonprofitbookkeeping.reports.generator;
 
-import nonprofitbookkeeping.reports.datasource.FundLedgerRowBean;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import nonprofitbookkeeping.reports.datasource.scareports.FundLedgerRowBean;
 
 /**
  * Generator for the Fund Ledger report.

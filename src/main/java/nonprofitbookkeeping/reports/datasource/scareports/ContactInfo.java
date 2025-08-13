@@ -3,7 +3,7 @@
  * ContactInfo.java
  * ContactInfo
  */
-package nonprofitbookkeeping.reports.datasource;
+package nonprofitbookkeeping.reports.datasource.scareports;
 
 /**
  * 

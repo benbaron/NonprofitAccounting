@@ -3,9 +3,11 @@
  * TransferRow.java
  * TransferRow
  */
-package nonprofitbookkeeping.reports.datasource;
+package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
+
+import nonprofitbookkeeping.reports.datasource.IncomeRowBase;
 
 /** For Transfer In / Transfer Out worksheets. */
 public final class TransferRow extends IncomeRowBase
