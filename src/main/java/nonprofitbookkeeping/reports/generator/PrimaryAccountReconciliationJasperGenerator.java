@@ -3,7 +3,7 @@ package nonprofitbookkeeping.reports.generator;
 
 import java.math.BigDecimal;
 import java.util.*;
-import nonprofitbookkeeping.reports.datasource.scareports.PrimaryAccountReconciliationBean;
+import nonprofitbookkeeping.reports.datasource.scareports.PrimaryAccountReconciliation2aBean;
 
 public class PrimaryAccountReconciliationJasperGenerator
 	extends AbstractReportGenerator
@@ -34,10 +34,10 @@ public class PrimaryAccountReconciliationJasperGenerator
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
 	 */
 	@Override
-	protected List<PrimaryAccountReconciliationBean> getReportData()
+	protected List<PrimaryAccountReconciliation2aBean> getReportData()
 	{
-		PrimaryAccountReconciliationBean bean =
-			new PrimaryAccountReconciliationBean();
+		PrimaryAccountReconciliation2aBean bean =
+			new PrimaryAccountReconciliation2aBean();
 		bean.setBankName("Sample Bank");
 		bean.setBankAccountTitle("Checking");
 		bean.setBankAccountType("Checking");

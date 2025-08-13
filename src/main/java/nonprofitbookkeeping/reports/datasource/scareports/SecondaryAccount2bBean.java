@@ -1,10 +1,10 @@
 /**
- * NonprofitAccounting SecondaryAccountBean.java SecondaryAccountBean
+ * NonprofitAccounting SecondaryAccount2bBean.java SecondaryAccount2bBean
  */
 
 package nonprofitbookkeeping.reports.datasource.scareports;
 
-public class SecondaryAccountBean
+public class SecondaryAccount2bBean
 {
 	
 	private String bankName;

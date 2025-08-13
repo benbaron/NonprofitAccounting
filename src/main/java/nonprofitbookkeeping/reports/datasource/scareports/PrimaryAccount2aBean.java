@@ -1,12 +1,12 @@
 /**
- * NonprofitAccounting PrimaryAccountBean.java PrimaryAccountBean
+ * NonprofitAccounting PrimaryAccount2aBean.java PrimaryAccount2aBean
  */
 
 package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.io.Serializable;
 
-public class PrimaryAccountBean implements Serializable
+public class PrimaryAccount2aBean implements Serializable
 {
 	
 	/* aqua-fill “Deposit Date” rows */

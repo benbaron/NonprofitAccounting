@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 public class LiabilityDtl5bBean
 {
-	ArrayList<InventoryDtl6Row> rows;
+	ArrayList<LiabilityDtl5bRow> rows;
 	
 	private BigDecimal _1_contact_info;
 	private BigDecimal contents_b59;

@@ -1,13 +1,13 @@
 /**
- * NonprofitAccounting PrimaryAccountReconciliationBean.java
- * PrimaryAccountReconciliationBean
+ * NonprofitAccounting PrimaryAccountReconciliation2aBean.java
+ * PrimaryAccountReconciliation2aBean
  */
 
 package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
 
-public class PrimaryAccountReconciliationBean
+public class PrimaryAccountReconciliation2aBean
 {
 	// Header info
 	private String bankName;

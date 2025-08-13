@@ -3,7 +3,7 @@
  * IncomeRowBase.java
  * IncomeRowBase
  */
-package nonprofitbookkeeping.reports.datasource;
+package nonprofitbookkeeping.reports.datasource.scareports;
 
 
 import java.math.BigDecimal;
@@ -17,9 +17,7 @@ public abstract class IncomeRowBase
 	private BigDecimal amount;
 	
 	protected IncomeRowBase()
-	{
-		
-		/* for Jasper / Jackson */ 
+	{			
 	}
 		
 	protected IncomeRowBase(String description, BigDecimal amount)
