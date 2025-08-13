@@ -115,5 +115,14 @@ public class FinanceComm13Bean
 	private BigDecimal mark_only_one_3;
 	private BigDecimal seneschal;
 	private BigDecimal use_additional_sheets_if_necessary;
+	/**
+	 * @param one
+	 */
+	public void setExchequer(BigDecimal one)
+	{
+		// TODO Auto-generated method stub
+		
+		
+	}
 	
 }

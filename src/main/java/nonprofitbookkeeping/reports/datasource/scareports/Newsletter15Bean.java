@@ -284,5 +284,14 @@ public class Newsletter15Bean
 	private BigDecimal subscription_due_8;
 	private BigDecimal subscription_due_9;
 	private BigDecimal total;
+	/**
+	 * @param one
+	 */
+	public void setAdj_gross_income_a_b_c(BigDecimal one)
+	{
+		// TODO Auto-generated method stub
+		
+		
+	}
 	
 }

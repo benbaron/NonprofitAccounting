@@ -212,4 +212,14 @@ public class ExpenseDtl12bBean {
     private BigDecimal show_total_on_pg_4_line_20;
     private BigDecimal show_total_on_pg_4_line_28;
     private BigDecimal show_total_on_pg_4_line_29;
+	/**
+	 * @param one
+	 */
+	public void setAmount(BigDecimal one)
+	{
+		// TODO Auto-generated method stub
+		
+		
+	}
+	
 }

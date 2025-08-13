@@ -152,4 +152,14 @@ public class IncomeDtl11bBean
 	private BigDecimal transaction_fees_6;
 	private BigDecimal transaction_fees_7;
 	
+	/**
+	 * @param one
+	 */
+	public void setAmount(BigDecimal one)
+	{
+		// TODO Auto-generated method stub
+		
+		
+	}
+	
 }

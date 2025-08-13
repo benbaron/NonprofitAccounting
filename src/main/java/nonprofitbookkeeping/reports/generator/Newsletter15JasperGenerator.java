@@ -28,28 +28,18 @@ public class Newsletter15JasperGenerator extends AbstractReportGenerator
 		return "Newsletter15";
 		
 	}
-
+	
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
 	 */
-        @Override
-        protected List<Newsletter15Bean> getReportData()
-        {
-                Newsletter15Bean bean = new Newsletter15Bean();
-                bean.setAdj_gross_income_a_b_c(BigDecimal.ONE);
-                return java.util.Collections.singletonList(bean);
-
-        }
-
-	/**
-	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#setReportData(java.util.List) 
-	 */
 	@Override
-	public void setReportData(List<?> data)
+	protected List<Newsletter15Bean> getReportData()
 	{
-		// TODO Auto-generated method stub
-		
+		Newsletter15Bean bean = new Newsletter15Bean();
+		bean.setAdj_gross_income_a_b_c(BigDecimal.ONE);
+		return java.util.Collections.singletonList(bean);
 		
 	}
+	
 	
 }

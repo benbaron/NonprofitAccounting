@@ -43,14 +43,6 @@ public abstract class AbstractReportGenerator
 	 */
 	protected abstract List<?> getReportData();
 	
-	/**
-	 * Allows external callers (typically the {@link ReportService}) to supply
-	 * the data beans that will back the report.
-	 *
-	 * @param data list of beans specific to the report type
-	 */
-	public abstract void setReportData(List<?> data);
-
 	
 	/**
 	 * Retrieves the parameters to be passed to the report during filling.
@@ -264,6 +256,15 @@ public abstract class AbstractReportGenerator
 			"Report exported to HTML: " + outputFile.getAbsolutePath());
 		return outputFile;
 		
+	}
+
+
+	/**
+	 * @param beans
+	 */
+	public void setReportData(List<?> beans)
+	{
+		// TODO Auto-generated method stub
 	}
 	
 }

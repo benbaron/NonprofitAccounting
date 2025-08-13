@@ -28,28 +28,18 @@ public class TransferIn9JasperGenerator extends AbstractReportGenerator
 		return "TransferIn9";
 		
 	}
-
+	
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
 	 */
-        @Override
-        protected List<TransferIn9Bean> getReportData()
-        {
-                TransferIn9Bean bean = new TransferIn9Bean();
-                bean.setAmount(BigDecimal.ONE);
-                return java.util.Collections.singletonList(bean);
-
-        }
-
-	/**
-	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#setReportData(java.util.List) 
-	 */
 	@Override
-	public void setReportData(List<?> data)
+	protected List<TransferIn9Bean> getReportData()
 	{
-		// TODO Auto-generated method stub
-		
+		TransferIn9Bean bean = new TransferIn9Bean();
+		bean.setAmount(BigDecimal.ONE);
+		return java.util.Collections.singletonList(bean);
 		
 	}
+	
 	
 }

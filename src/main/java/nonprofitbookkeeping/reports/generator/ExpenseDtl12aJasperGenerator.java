@@ -28,28 +28,18 @@ public class ExpenseDtl12aJasperGenerator extends AbstractReportGenerator
 		return "ExpenseDtl12a";
 		
 	}
-
+	
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
 	 */
-        @Override
-        protected List<ExpenseDtl12aBean> getReportData()
-        {
-                ExpenseDtl12aBean bean = new ExpenseDtl12aBean();
-                bean.setAmount(BigDecimal.ONE);
-                return java.util.Collections.singletonList(bean);
-
-        }
-
-	/**
-	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#setReportData(java.util.List) 
-	 */
 	@Override
-	public void setReportData(List<?> data)
+	protected List<ExpenseDtl12aBean> getReportData()
 	{
-		// TODO Auto-generated method stub
-		
+		ExpenseDtl12aBean bean = new ExpenseDtl12aBean();
+		bean.setAmount(BigDecimal.ONE);
+		return java.util.Collections.singletonList(bean);
 		
 	}
+	
 	
 }

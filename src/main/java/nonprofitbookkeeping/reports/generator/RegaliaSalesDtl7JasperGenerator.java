@@ -28,28 +28,18 @@ public class RegaliaSalesDtl7JasperGenerator extends AbstractReportGenerator
 		return "RegaliaSalesDtl7";
 		
 	}
-
+	
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
 	 */
-        @Override
-        protected List<RegaliaSalesDtl7Bean> getReportData()
-        {
-                RegaliaSalesDtl7Bean bean = new RegaliaSalesDtl7Bean();
-                bean.setA_b_value_lost(BigDecimal.ONE);
-                return java.util.Collections.singletonList(bean);
-
-        }
-
-	/**
-	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#setReportData(java.util.List) 
-	 */
 	@Override
-	public void setReportData(List<?> data)
+	protected List<RegaliaSalesDtl7Bean> getReportData()
 	{
-		// TODO Auto-generated method stub
-		
+		RegaliaSalesDtl7Bean bean = new RegaliaSalesDtl7Bean();
+		bean.setA_b_value_lost(BigDecimal.ONE);
+		return java.util.Collections.singletonList(bean);
 		
 	}
+	
 	
 }

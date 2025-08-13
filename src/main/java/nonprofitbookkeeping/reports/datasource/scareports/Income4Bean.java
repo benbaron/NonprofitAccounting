@@ -104,5 +104,14 @@ public class Income4Bean
 	private BigDecimal line_11_minus_line_31;
 	private BigDecimal exchequer;
 	private BigDecimal seneschal;
+	/**
+	 * @param one
+	 */
+	public void setExchequer(BigDecimal one)
+	{
+		// TODO Auto-generated method stub
+		
+		
+	}
 	
 }

@@ -31,23 +31,13 @@ public class PrimaryAccountJasperGenerator extends AbstractReportGenerator
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
 	 */
-        @Override
-        protected List<PrimaryAccountBean> getReportData()
-        {
-                PrimaryAccountBean bean = new PrimaryAccountBean();
-                return java.util.Collections.singletonList(bean);
-
-        }
-	
-	/**
-	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#setReportData(java.util.List) 
-	 */
 	@Override
-	public void setReportData(List<?> data)
+	protected List<PrimaryAccountBean> getReportData()
 	{
-		// TODO Auto-generated method stub
-		
+		PrimaryAccountBean bean = new PrimaryAccountBean();
+		return java.util.Collections.singletonList(bean);
 		
 	}
+	
 	
 }

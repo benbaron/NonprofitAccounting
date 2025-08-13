@@ -32,24 +32,14 @@ public class Income4JasperGenerator extends AbstractReportGenerator
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
 	 */
-        @Override
-        protected List<Income4Bean> getReportData()
-        {
-                Income4Bean bean = new Income4Bean();
-                bean.setExchequer(BigDecimal.ONE);
-                return java.util.Collections.singletonList(bean);
-
-        }
-	
-	/**
-	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#setReportData(java.util.List) 
-	 */
 	@Override
-	public void setReportData(List<?> data)
+	protected List<Income4Bean> getReportData()
 	{
-		// TODO Auto-generated method stub
-		
+		Income4Bean bean = new Income4Bean();
+		bean.setExchequer(BigDecimal.ONE);
+		return java.util.Collections.singletonList(bean);
 		
 	}
+	
 	
 }

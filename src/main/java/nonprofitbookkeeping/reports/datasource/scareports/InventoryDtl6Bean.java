@@ -134,5 +134,14 @@ public class InventoryDtl6Bean
 	private BigDecimal suggested_selling_price_6;
 	private BigDecimal suggested_selling_price_7;
 	private BigDecimal suggested_selling_price_8;
+	/**
+	 * @param one
+	 */
+	public void setActual_gross_income_from_inventory_sales(BigDecimal one)
+	{
+		// TODO Auto-generated method stub
+		
+		
+	}
 	
 }

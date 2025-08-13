@@ -28,28 +28,18 @@ public class InventoryDtl6JasperGenerator extends AbstractReportGenerator
 		return "InventoryDtl6";
 		
 	}
-
+	
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
 	 */
-        @Override
-        protected List<InventoryDtl6Bean> getReportData()
-        {
-                InventoryDtl6Bean bean = new InventoryDtl6Bean();
-                bean.setActual_gross_income_from_inventory_sales(BigDecimal.ONE);
-                return java.util.Collections.singletonList(bean);
-
-        }
-
-	/**
-	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#setReportData(java.util.List) 
-	 */
 	@Override
-	public void setReportData(List<?> data)
+	protected List<InventoryDtl6Bean> getReportData()
 	{
-		// TODO Auto-generated method stub
-		
+		InventoryDtl6Bean bean = new InventoryDtl6Bean();
+		bean.setActual_gross_income_from_inventory_sales(BigDecimal.ONE);
+		return java.util.Collections.singletonList(bean);
 		
 	}
+	
 	
 }

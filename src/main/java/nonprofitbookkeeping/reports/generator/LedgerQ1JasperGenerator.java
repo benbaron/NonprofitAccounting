@@ -27,28 +27,18 @@ public class LedgerQ1JasperGenerator extends AbstractReportGenerator
 		return "LedgerQ1";
 		
 	}
-
+	
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
 	 */
-        @Override
-        protected List<LedgerQ1Bean> getReportData()
-        {
-                LedgerQ1Bean bean = new LedgerQ1Bean();
-                bean.setCol_0("Sample");
-                return java.util.Collections.singletonList(bean);
-
-        }
-
-	/**
-	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#setReportData(java.util.List) 
-	 */
 	@Override
-	public void setReportData(List<?> data)
+	protected List<LedgerQ1Bean> getReportData()
 	{
-		// TODO Auto-generated method stub
-		
+		LedgerQ1Bean bean = new LedgerQ1Bean();
+		bean.setCol_0("Sample");
+		return java.util.Collections.singletonList(bean);
 		
 	}
+	
 	
 }

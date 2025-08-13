@@ -29,28 +29,18 @@ public class IncomeDtl11aJasperGenerator extends AbstractReportGenerator
 		return "IncomeDtl11a";
 		
 	}
-
+	
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
 	 */
-        @Override
-        protected List<IncomeDtl11aBean> getReportData()
-        {
-                IncomeDtl11aBean bean = new IncomeDtl11aBean();
-                bean.setAmount(BigDecimal.ONE);
-                return java.util.Collections.singletonList(bean);
-
-        }
-
-	/**
-	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#setReportData(java.util.List) 
-	 */
 	@Override
-	public void setReportData(List<?> data)
+	protected List<IncomeDtl11aBean> getReportData()
 	{
-		// TODO Auto-generated method stub
-		
+		IncomeDtl11aBean bean = new IncomeDtl11aBean();
+		bean.setAmount(BigDecimal.ONE);
+		return java.util.Collections.singletonList(bean);
 		
 	}
+	
 	
 }

@@ -20,7 +20,6 @@ import java.util.Map;
 public class AccountLedgerJasperGenerator extends AbstractReportGenerator
 {
 	/**
-	 * 
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData()
 	 */
 	@Override protected List<AccountLedgerRowBean> getReportData()
@@ -124,7 +123,5 @@ public class AccountLedgerJasperGenerator extends AbstractReportGenerator
 		return "Account_Ledger_" + LocalDate.now();	
 	}
 	
-
-
 	
 }

@@ -244,6 +244,36 @@ public class PrimaryAccountReconciliationBean
 		this.reconciliationDifference = reconciliationDifference;
 		
 	}
+
+	/**
+	 * @param string
+	 */
+	public void setBankAccountType(String string)
+	{
+		// TODO Auto-generated method stub
+		
+		
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setBankAccountNumber(String string)
+	{
+		// TODO Auto-generated method stub
+		
+		
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setBankBranchPhoneAndName(String string)
+	{
+		// TODO Auto-generated method stub
+		
+		
+	}
 	
 	// (Add remaining getters/setters for all checkN* fields)
 }

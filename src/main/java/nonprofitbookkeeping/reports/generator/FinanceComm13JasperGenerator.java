@@ -32,24 +32,14 @@ public class FinanceComm13JasperGenerator extends AbstractReportGenerator
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
 	 */
-        @Override
-        protected List<FinanceComm13Bean> getReportData()
-        {
-                FinanceComm13Bean bean = new FinanceComm13Bean();
-                bean.setExchequer(BigDecimal.ONE);
-                return java.util.Collections.singletonList(bean);
-
-        }
-	
-	/**
-	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#setReportData(java.util.List) 
-	 */
 	@Override
-	public void setReportData(List<?> data)
+	protected List<FinanceComm13Bean> getReportData()
 	{
-		// TODO Auto-generated method stub
-		
+		FinanceComm13Bean bean = new FinanceComm13Bean();
+		bean.setExchequer(BigDecimal.ONE);
+		return java.util.Collections.singletonList(bean);
 		
 	}
+	
 	
 }

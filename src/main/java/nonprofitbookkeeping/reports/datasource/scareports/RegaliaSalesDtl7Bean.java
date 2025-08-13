@@ -231,5 +231,14 @@ public class RegaliaSalesDtl7Bean
 	private BigDecimal year_acquired_7;
 	private BigDecimal year_acquired_8;
 	private BigDecimal year_acquired_9;
+	/**
+	 * @param one
+	 */
+	public void setA_b_value_lost(BigDecimal one)
+	{
+		// TODO Auto-generated method stub
+		
+		
+	}
 	
 }

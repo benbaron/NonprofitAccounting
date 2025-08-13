@@ -186,8 +186,8 @@ public class ReportService
 				"Unknown reportType: " + ctx.getReportType());
 		}
 		
-		BiFunction<ReportContext, ReportService, AbstractReportGenerator> 
-			factory = this.generatorRegistry.get(type);
+		BiFunction<ReportContext, ReportService,
+			AbstractReportGenerator> factory = this.generatorRegistry.get(type);
 		
 		if (factory == null)
 		{
@@ -195,30 +195,30 @@ public class ReportService
 				"No generator registered for reportType: " + type.id());
 		}
 		
-
-                AbstractReportGenerator generator = factory.apply(ctx, this);
-
-                if (generator == null)
-                {
-                        throw new IllegalStateException(
-                                "Generator factory returned null for " + type.id());
-                }
-
-                if (ctx.getBeans() != null)
-                {
-                        generator.setReportData(ctx.getBeans());
-                }
-
-                // Ask the generator to build the JasperPrint
-                JasperPrint print = generator.generatePrint();
+		AbstractReportGenerator generator = factory.apply(ctx, this);
 		
-                // Normalize format; default to PDF
-                String fmt =
-                        (outputFormat == null ? "pdf" : outputFormat).trim().toLowerCase();
-
-                File out = generator.writeJasperOutput(fmt, print, generator.getBaseName());
-                LOGGER.info("Report generated: " + out.getAbsolutePath());
-                return out;
+		if (generator == null)
+		{
+			throw new IllegalStateException(
+				"Generator factory returned null for " + type.id());
+		}
+		
+		if (ctx.getBeans() != null)
+		{
+			generator.setReportData(ctx.getBeans());
+		}
+		
+		// Ask the generator to build the JasperPrint
+		JasperPrint print = generator.generatePrint();
+		
+		// Normalize format; default to PDF
+		String fmt =
+			(outputFormat == null ? "pdf" : outputFormat).trim().toLowerCase();
+		
+		File out =
+			generator.writeJasperOutput(fmt, print, generator.getBaseName());
+		LOGGER.info("Report generated: " + out.getAbsolutePath());
+		return out;
 		
 	}
 	
@@ -339,50 +339,50 @@ public class ReportService
 			(ctx, svc) -> new IncomeStatementAltJasperGenerator());
 		map.put(ReportType.TRANSACTION_REPORT_JASPER,
 			(ctx, svc) -> new TransactionReportJasperGenerator());
-                map.put(ReportType.SCA_ASSET_DTL_5A_JASPER,
-                        (ctx, svc) -> new AssetDtl5aJasperGenerator());
-                map.put(ReportType.SCA_BALANCE_3_V2_JASPER,
-                        (ctx, svc) -> new Balance3v2JasperGenerator());
-                map.put(ReportType.SCA_CONTACT_INFO_JASPER,
-                        (ctx, svc) -> new ContactInfoJasperGenerator());
-                map.put(ReportType.SCA_DEPR_DTL_8_JASPER,
-                        (ctx, svc) -> new DeprDtl8JasperGenerator());
-                map.put(ReportType.SCA_EXPENSE_DTL_12A_JASPER,
-                        (ctx, svc) -> new ExpenseDtl12aJasperGenerator());
-                map.put(ReportType.SCA_EXPENSE_DTL_12B_JASPER,
-                        (ctx, svc) -> new ExpenseDtl12bJasperGenerator());
-                map.put(ReportType.SCA_FINANCE_COMM_13_JASPER,
-                        (ctx, svc) -> new FinanceComm13JasperGenerator());
-                map.put(ReportType.SCA_FUNDS_14_JASPER,
-                        (ctx, svc) -> new Funds14JasperGenerator());
-                map.put(ReportType.SCA_INCOME_4_JASPER,
-                        (ctx, svc) -> new Income4JasperGenerator());
-                map.put(ReportType.SCA_INCOME_DTL_11A_JASPER,
-                        (ctx, svc) -> new IncomeDtl11aJasperGenerator());
-                map.put(ReportType.SCA_INCOME_DTL_11B_JASPER,
-                        (ctx, svc) -> new IncomeDtl11bJasperGenerator());
-                map.put(ReportType.SCA_INCOME_DTL_11C_JASPER,
-                        (ctx, svc) -> new IncomeDtl11cJasperGenerator());
-                map.put(ReportType.SCA_INVENTORY_DTL_6_JASPER,
-                        (ctx, svc) -> new InventoryDtl6JasperGenerator());
-                map.put(ReportType.SCA_LEDGER_Q1_JASPER,
-                        (ctx, svc) -> new LedgerQ1JasperGenerator());
-                map.put(ReportType.SCA_LIABILITY_DTL_5B_JASPER,
-                        (ctx, svc) -> new LiabilityDtl5bJasperGenerator());
-                map.put(ReportType.SCA_NEWSLETTER_15_JASPER,
-                        (ctx, svc) -> new Newsletter15JasperGenerator());
-                map.put(ReportType.SCA_PRIMARY_ACCOUNT_JASPER,
-                        (ctx, svc) -> new PrimaryAccountJasperGenerator());
-                map.put(ReportType.SCA_PRIMARY_ACCOUNT_RECONCILIATION_JASPER,
-                        (ctx, svc) -> new PrimaryAccountReconciliationJasperGenerator());
-                map.put(ReportType.SCA_REGALIA_SALES_DTL_7_JASPER,
-                        (ctx, svc) -> new RegaliaSalesDtl7JasperGenerator());
-                map.put(ReportType.SCA_SECONDARY_ACCOUNT_JASPER,
-                        (ctx, svc) -> new SecondaryAccountJasperGenerator());
-                map.put(ReportType.SCA_TRANSFER_IN_9_JASPER,
-                        (ctx, svc) -> new TransferIn9JasperGenerator());
-                map.put(ReportType.SCA_TRANSFER_OUT_10_JASPER,
-                        (ctx, svc) -> new TransferOut10JasperGenerator());
+		map.put(ReportType.SCA_ASSET_DTL_5A_JASPER,
+			(ctx, svc) -> new AssetDtl5aJasperGenerator());
+		map.put(ReportType.SCA_BALANCE_3_V2_JASPER,
+			(ctx, svc) -> new Balance3v2JasperGenerator());
+		map.put(ReportType.SCA_CONTACT_INFO_JASPER,
+			(ctx, svc) -> new ContactInfoJasperGenerator());
+		map.put(ReportType.SCA_DEPR_DTL_8_JASPER,
+			(ctx, svc) -> new DeprDtl8JasperGenerator());
+		map.put(ReportType.SCA_EXPENSE_DTL_12A_JASPER,
+			(ctx, svc) -> new ExpenseDtl12aJasperGenerator());
+		map.put(ReportType.SCA_EXPENSE_DTL_12B_JASPER,
+			(ctx, svc) -> new ExpenseDtl12bJasperGenerator());
+		map.put(ReportType.SCA_FINANCE_COMM_13_JASPER,
+			(ctx, svc) -> new FinanceComm13JasperGenerator());
+		map.put(ReportType.SCA_FUNDS_14_JASPER,
+			(ctx, svc) -> new Funds14JasperGenerator());
+		map.put(ReportType.SCA_INCOME_4_JASPER,
+			(ctx, svc) -> new Income4JasperGenerator());
+		map.put(ReportType.SCA_INCOME_DTL_11A_JASPER,
+			(ctx, svc) -> new IncomeDtl11aJasperGenerator());
+		map.put(ReportType.SCA_INCOME_DTL_11B_JASPER,
+			(ctx, svc) -> new IncomeDtl11bJasperGenerator());
+		map.put(ReportType.SCA_INCOME_DTL_11C_JASPER,
+			(ctx, svc) -> new IncomeDtl11cJasperGenerator());
+		map.put(ReportType.SCA_INVENTORY_DTL_6_JASPER,
+			(ctx, svc) -> new InventoryDtl6JasperGenerator());
+		map.put(ReportType.SCA_LEDGER_Q1_JASPER,
+			(ctx, svc) -> new LedgerQ1JasperGenerator());
+		map.put(ReportType.SCA_LIABILITY_DTL_5B_JASPER,
+			(ctx, svc) -> new LiabilityDtl5bJasperGenerator());
+		map.put(ReportType.SCA_NEWSLETTER_15_JASPER,
+			(ctx, svc) -> new Newsletter15JasperGenerator());
+		map.put(ReportType.SCA_PRIMARY_ACCOUNT_JASPER,
+			(ctx, svc) -> new PrimaryAccountJasperGenerator());
+		map.put(ReportType.SCA_PRIMARY_ACCOUNT_RECONCILIATION_JASPER,
+			(ctx, svc) -> new PrimaryAccountReconciliationJasperGenerator());
+		map.put(ReportType.SCA_REGALIA_SALES_DTL_7_JASPER,
+			(ctx, svc) -> new RegaliaSalesDtl7JasperGenerator());
+		map.put(ReportType.SCA_SECONDARY_ACCOUNT_JASPER,
+			(ctx, svc) -> new SecondaryAccountJasperGenerator());
+		map.put(ReportType.SCA_TRANSFER_IN_9_JASPER,
+			(ctx, svc) -> new TransferIn9JasperGenerator());
+		map.put(ReportType.SCA_TRANSFER_OUT_10_JASPER,
+			(ctx, svc) -> new TransferOut10JasperGenerator());
 		return map;
 		
 	}

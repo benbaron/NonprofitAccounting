@@ -1,7 +1,10 @@
 
 package nonprofitbookkeeping.reports.generator;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import nonprofitbookkeeping.reports.datasource.scareports.AssetDtl5aBean;
 
 public class AssetDtl5aJasperGenerator extends AbstractReportGenerator
@@ -27,27 +30,17 @@ public class AssetDtl5aJasperGenerator extends AbstractReportGenerator
 		return "AssetDtl5a";
 		
 	}
-
+	
 	/**
-	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
-	 */
-        @Override
-        protected List<AssetDtl5aBean> getReportData()
-        {
-                AssetDtl5aBean bean = new AssetDtl5aBean();
-                return java.util.Collections.singletonList(bean);
-
-        }
-
-	/**
-	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#setReportData(java.util.List) 
+	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData()
 	 */
 	@Override
-	public void setReportData(List<?> data)
+	protected List<AssetDtl5aBean> getReportData()
 	{
-		// TODO Auto-generated method stub
-		
+		AssetDtl5aBean bean = new AssetDtl5aBean();
+		return java.util.Collections.singletonList(bean);
 		
 	}
+	
 	
 }

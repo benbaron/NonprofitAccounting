@@ -32,24 +32,14 @@ public class Funds14JasperGenerator extends AbstractReportGenerator
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
 	 */
-        @Override
-        protected List<Funds14Bean> getReportData()
-        {
-                Funds14Bean bean = new Funds14Bean();
-                bean.setAll_non_dedicated_funds(BigDecimal.ONE);
-                return java.util.Collections.singletonList(bean);
-
-        }
-	
-	/**
-	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#setReportData(java.util.List) 
-	 */
 	@Override
-	public void setReportData(List<?> data)
+	protected List<Funds14Bean> getReportData()
 	{
-		// TODO Auto-generated method stub
-		
+		Funds14Bean bean = new Funds14Bean();
+		bean.setAll_non_dedicated_funds(BigDecimal.ONE);
+		return java.util.Collections.singletonList(bean);
 		
 	}
+	
 	
 }
