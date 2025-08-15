@@ -3,40 +3,47 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 import java.math.BigDecimal;
 
 /**
- * Generic row used by the TRANSFER_IN_9 report. The {@code section} field
- * distinguishes between transfers from within the kingdom and those from
- * outside the kingdom.
+ * Row representing a transfer made to the SCA corporate office.
  */
-public class TransferIn9Row
+public class TransferOutScaOfficeRow
 {
-        private String section;
-        private String account;
+        private String office;
+        private String reason;
         private String checkNumber;
         private String checkDate;
         private BigDecimal amount;
 
-        public TransferIn9Row()
+        public TransferOutScaOfficeRow()
         {
         }
 
-        public String getSection()
+        public TransferOutScaOfficeRow(String office, String reason, String checkNumber, String checkDate, BigDecimal amount)
         {
-                return section;
+                this.office = office;
+                this.reason = reason;
+                this.checkNumber = checkNumber;
+                this.checkDate = checkDate;
+                this.amount = amount;
         }
 
-        public void setSection(String section)
+        public String getOffice()
         {
-                this.section = section;
+                return office;
         }
 
-        public String getAccount()
+        public void setOffice(String office)
         {
-                return account;
+                this.office = office;
         }
 
-        public void setAccount(String account)
+        public String getReason()
         {
-                this.account = account;
+                return reason;
+        }
+
+        public void setReason(String reason)
+        {
+                this.reason = reason;
         }
 
         public String getCheckNumber()
@@ -69,4 +76,3 @@ public class TransferIn9Row
                 this.amount = amount;
         }
 }
-

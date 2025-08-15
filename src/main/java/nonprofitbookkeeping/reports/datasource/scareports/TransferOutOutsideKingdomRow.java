@@ -3,41 +3,37 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 import java.math.BigDecimal;
 
 /**
- * Generic row used by the TRANSFER_OUT_10 report. The {@code section} field
- * distinguishes transfers within the kingdom, outside the kingdom, or to the
- * SCA corporate office.
+ * Row representing a transfer to an SCA account outside the kingdom.
  */
-public class TransferOut10Row
+public class TransferOutOutsideKingdomRow
 {
-        private String section;
-        private String toAccountOrPayee;
+        private String kingdomAndBranch;
         private String reason;
         private String checkNumber;
         private String checkDate;
         private BigDecimal amount;
 
-        public TransferOut10Row()
+        public TransferOutOutsideKingdomRow()
         {
         }
 
-        public String getSection()
+        public TransferOutOutsideKingdomRow(String kingdomAndBranch, String reason, String checkNumber, String checkDate, BigDecimal amount)
         {
-                return section;
+                this.kingdomAndBranch = kingdomAndBranch;
+                this.reason = reason;
+                this.checkNumber = checkNumber;
+                this.checkDate = checkDate;
+                this.amount = amount;
         }
 
-        public void setSection(String section)
+        public String getKingdomAndBranch()
         {
-                this.section = section;
+                return kingdomAndBranch;
         }
 
-        public String getToAccountOrPayee()
+        public void setKingdomAndBranch(String kingdomAndBranch)
         {
-                return toAccountOrPayee;
-        }
-
-        public void setToAccountOrPayee(String toAccountOrPayee)
-        {
-                this.toAccountOrPayee = toAccountOrPayee;
+                this.kingdomAndBranch = kingdomAndBranch;
         }
 
         public String getReason()
