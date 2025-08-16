@@ -1,9 +1,8 @@
 
 package nonprofitbookkeeping.reports.generator;
 
-import java.math.BigDecimal;
-import java.util.*;
-import nonprofitbookkeeping.reports.datasource.scareports.RegaliaSalesDtl7Bean;
+import java.util.Collections;
+import java.util.Map;
 
 public class RegaliaSalesDtl7JasperGenerator extends AbstractReportGenerator
 {
@@ -28,18 +27,5 @@ public class RegaliaSalesDtl7JasperGenerator extends AbstractReportGenerator
 		return "RegaliaSalesDtl7";
 		
 	}
-	
-	/**
-	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
-	 */
-	@Override
-	protected List<RegaliaSalesDtl7Bean> getReportData()
-	{
-		RegaliaSalesDtl7Bean bean = new RegaliaSalesDtl7Bean();
-		bean.setA_b_value_lost(BigDecimal.ONE);
-		return java.util.Collections.singletonList(bean);
-		
-	}
-	
 	
 }
