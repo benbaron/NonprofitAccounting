@@ -45,6 +45,9 @@ public class AccountingTransaction implements Serializable
         @Transient
         @JsonProperty private Map<String, String> info;
 
+        /** Key used within {@link #info} to store the record type. */
+        public static final String RECORD_TYPE_KEY = "recordType";
+
 	/** The timestamp when the transaction was booked/recorded, in milliseconds since epoch. */
 	@JsonProperty private long bookingDateTimestamp;
 
@@ -151,10 +154,43 @@ public class AccountingTransaction implements Serializable
 	 * Sets the additional information for this transaction.
 	 * @param info A map of key-value pairs representing additional information.
 	 */
-	public void setInfo(Map<String, String> info)
-	{
-		this.info = info;
-	}
+        public void setInfo(Map<String, String> info)
+        {
+                this.info = info;
+        }
+
+        /**
+         * Retrieves the optional record type from the {@link #info} map.
+         *
+         * @return the record type string or {@code null} if not set.
+         */
+        public String getRecordType()
+        {
+                return this.info != null ? this.info.get(RECORD_TYPE_KEY) : null;
+        }
+
+        /**
+         * Sets the record type inside the {@link #info} map. If {@code recordType}
+         * is {@code null}, the key is removed from the map.
+         *
+         * @param recordType the record type to associate with this transaction
+         */
+        public void setRecordType(String recordType)
+        {
+                if (this.info == null)
+                {
+                        this.info = new HashMap<>();
+                }
+
+                if (recordType == null)
+                {
+                        this.info.remove(RECORD_TYPE_KEY);
+                }
+                else
+                {
+                        this.info.put(RECORD_TYPE_KEY, recordType);
+                }
+        }
 	
 	/**
 	 * Gets the booking date timestamp of the transaction.
