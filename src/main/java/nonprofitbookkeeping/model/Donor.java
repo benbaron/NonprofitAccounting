@@ -9,6 +9,10 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +22,8 @@ import lombok.NoArgsConstructor;
  * Donor represents a donor with an ID, name, total donation amount, and last donation date.
  * For JSON mapping, this class must have appropriate getters and setters.
  */
+@Entity
+@Table(name = "donors")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,8 +33,9 @@ public class Donor implements Serializable
 	 * The unique identifier for this serializable class.
 	 */
 	private static final long serialVersionUID = 4930419801310521918L;
-	/** The unique identifier for the donor. */
-	private String donorId;
+        /** The unique identifier for the donor. */
+        @Id
+        private String donorId;
 	/** The name of the donor. */
 	private String name;
 	/** The total cumulative amount donated by this donor. */

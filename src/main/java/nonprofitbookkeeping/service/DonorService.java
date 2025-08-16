@@ -1,151 +1,72 @@
 package nonprofitbookkeeping.service;
 
-import nonprofitbookkeeping.model.DonorContact;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+import nonprofitbookkeeping.model.Donor;
+import nonprofitbookkeeping.repository.DonorRepository;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.type.CollectionType;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
- * Service class for managing {@link DonorContact} information.
- * This class provides functionalities to add, edit, remove, and retrieve donor data.
- * Donor information is stored in an in-memory list.
+ * Service layer for {@link Donor} entities using JPA for persistence.
  */
 public class DonorService {
 
-    /** Shared list storing donors across service instances. */
-    private static final List<DonorContact> SHARED_DONORS = new ArrayList<>();
-
-    /** Logger for this service. */
-    private static final Logger LOGGER = Logger.getLogger(DonorService.class.getName());
-
-    /** Filename used to persist donors to disk. */
-    private static final String DONORS_FILENAME = "donors.json";
-
-    /** In-memory list to store {@link DonorContact} objects. */
-    private final List<DonorContact> donors;
+    private final DonorRepository repository;
 
     /**
-     * Constructs a new {@code DonorService}.
-     * Initializes an empty list to store donors.
+     * Constructs the service and prepares the underlying repository.
      */
     public DonorService() {
-        this.donors = SHARED_DONORS;
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("nonprofitPU");
+        EntityManager em = emf.createEntityManager();
+        this.repository = new DonorRepository(em);
+    }
+
+    /** Add a donor to the database. */
+    public void addDonor(Donor donor) {
+        repository.save(donor);
     }
 
     /**
-     * Adds a new donor to the service.
+     * Edit an existing donor.
      *
-     * @param donor The {@link DonorContact} object to add. Must not be null.
-     * @throws NullPointerException if {@code donor} is null (due to ArrayList behavior).
+     * @param donorId id of donor
+     * @param updated updated donor data
+     * @return true if donor existed and was updated
      */
-    public void addDonor(DonorContact donor) {
-        this.donors.add(donor);
-    }
-
-    /**
-     * Edits an existing donor's information identified by name.
-     * Only the basic contact fields are currently updated from {@code updatedDonor}.
-     *
-     * @param donorName The name of the donor to edit.
-     * @param updatedDonor A {@link DonorContact} object containing the updated information.
-     * @return {@code true} if a donor with the given name was found and updated, {@code false} otherwise.
-     */
-    public boolean editDonor(String donorName, DonorContact updatedDonor) {
-        Optional<DonorContact> donorToEdit = this.donors.stream()
-                .filter(donor -> donor.getName().equals(donorName))
-                .findFirst();
-
-        if (donorToEdit.isPresent()) {
-            DonorContact donor = donorToEdit.get();
-            donor.setEmail(updatedDonor.getEmail());
-            donor.setPhone(updatedDonor.getPhone());
-            donor.setName(updatedDonor.getName());
+    public boolean editDonor(String donorId, Donor updated) {
+        return repository.findById(donorId).map(existing -> {
+            existing.setName(updated.getName());
+            existing.setDonationAmount(updated.getDonationAmount());
+            existing.setDonationDate(updated.getDonationDate());
+            existing.setDonationType(updated.getDonationType());
+            existing.setTotalDonations(updated.getTotalDonations());
+            existing.setLastDonationDate(updated.getLastDonationDate());
+            repository.save(existing);
             return true;
-        }
-
-        return false; // Donor not found
+        }).orElse(false);
     }
 
-    /**
-     * Removes a donor from the service by their name.
-     *
-     * @param donorName The name of the donor to remove.
-     * @return {@code true} if a donor with the given name was found and removed, {@code false} otherwise.
-     */
-    public boolean removeDonor(String donorName) {
-        return this.donors.removeIf(donor -> donor.getName().equals(donorName));
+    /** Remove a donor by id. */
+    public boolean removeDonor(String donorId) {
+        return repository.delete(donorId);
     }
 
-    /**
-     * Retrieves a list of all donors currently managed by this service.
-     *
-     * @return A new {@link ArrayList} containing all {@link DonorContact} objects.
-     *         This is a copy, so modifications to the returned list will not affect the internal storage.
-     *         Returns an empty list if no donors are present.
-     */
-    public List<DonorContact> getAllDonors() {
-        return new ArrayList<>(this.donors); // Return a copy
+    /** Retrieve all donors. */
+    public List<Donor> getAllDonors() {
+        return repository.findAll();
     }
 
-    /**
-     * Saves all donors to a JSON file located in the given company directory.
-     *
-     * @param companyDirectory directory where the donors file should be written
-     * @throws IOException if writing fails or the directory is invalid
-     */
-    public void saveDonors(File companyDirectory) throws IOException {
-        if (companyDirectory == null || !companyDirectory.isDirectory()) {
-            throw new IOException("Company directory is invalid or not provided.");
-        }
-
-        File target = new File(companyDirectory, DONORS_FILENAME);
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(SerializationFeature.INDENT_OUTPUT);
-        try {
-            mapper.writeValue(target, getAllDonors());
-        } catch (IOException ex) {
-            LOGGER.log(Level.SEVERE, "Failed to save donors to " + target.getAbsolutePath(), ex);
-            throw ex;
-        }
+    /** Compatibility stub: data is stored in DB so explicit save is unnecessary. */
+    public void saveDonors(java.io.File companyDirectory) {
+        // no-op
     }
 
-    /**
-     * Loads donors from a JSON file located in the given company directory.
-     * Existing in-memory donors are cleared before loading new ones. If the
-     * file does not exist, this method simply returns with an empty list.
-     *
-     * @param companyDirectory directory where the donors file is located
-     * @throws IOException if reading fails or the directory is invalid
-     */
-    public void loadDonors(File companyDirectory) throws IOException {
-        this.donors.clear();
-        if (companyDirectory == null || !companyDirectory.isDirectory()) {
-            throw new IOException("Company directory is invalid or not provided.");
-        }
-
-        File target = new File(companyDirectory, DONORS_FILENAME);
-        if (!target.exists() || target.length() == 0) {
-            return; // nothing to load
-        }
-
-        ObjectMapper mapper = new ObjectMapper();
-        CollectionType listType = mapper.getTypeFactory().constructCollectionType(List.class, DonorContact.class);
-        try {
-            List<DonorContact> loaded = mapper.readValue(target, listType);
-            this.donors.addAll(loaded);
-        } catch (IOException ex) {
-            LOGGER.log(Level.SEVERE, "Failed to load donors from " + target.getAbsolutePath(), ex);
-            throw ex;
-        }
+    /** Compatibility stub: data is loaded on demand from the DB. */
+    public void loadDonors(java.io.File companyDirectory) {
+        // no-op
     }
 }
 

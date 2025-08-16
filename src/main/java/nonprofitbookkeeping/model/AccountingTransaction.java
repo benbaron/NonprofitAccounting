@@ -5,7 +5,12 @@ import javax.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -18,6 +23,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 
 
+@Entity
+@Table(name = "accounting_transactions")
 public class AccountingTransaction implements Serializable
 {
 	/**
@@ -25,14 +32,18 @@ public class AccountingTransaction implements Serializable
 	 */
 	private static final long serialVersionUID = -8821254116304310L;
 	
-	/** Unique identifier for the transaction. */
-	@JsonProperty private int id;
-	
-	/** The set of accounting entries that make up this transaction. Must not be null or empty. */
-	@JsonProperty private Set<AccountingEntry> entries;
+        /** Unique identifier for the transaction. */
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        @JsonProperty private int id;
 
-	/** Additional information or metadata about the transaction, stored as key-value pairs. */
-	@JsonProperty private Map<String, String> info;
+        /** The set of accounting entries that make up this transaction. Must not be null or empty. */
+        @Transient
+        @JsonProperty private Set<AccountingEntry> entries;
+
+        /** Additional information or metadata about the transaction, stored as key-value pairs. */
+        @Transient
+        @JsonProperty private Map<String, String> info;
 
 	/** The timestamp when the transaction was booked/recorded, in milliseconds since epoch. */
 	@JsonProperty private long bookingDateTimestamp;
