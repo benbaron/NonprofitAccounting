@@ -1,3 +1,4 @@
+
 package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
@@ -9,36 +10,43 @@ import java.math.BigDecimal;
  */
 public class UndepositedFundsRow
 {
-        private String sendingBranchOrReason;
-        private BigDecimal amount;
-
-        public UndepositedFundsRow()
-        {
-        }
-
-        public UndepositedFundsRow(String sendingBranchOrReason, BigDecimal amount)
-        {
-                this.sendingBranchOrReason = sendingBranchOrReason;
-                this.amount = amount;
-        }
-
-        public String getSendingBranchOrReason()
-        {
-                return sendingBranchOrReason;
-        }
-
-        public void setSendingBranchOrReason(String sendingBranchOrReason)
-        {
-                this.sendingBranchOrReason = sendingBranchOrReason;
-        }
-
-        public BigDecimal getAmount()
-        {
-                return amount;
-        }
-
-        public void setAmount(BigDecimal amount)
-        {
-                this.amount = amount;
-        }
+	private String sendingBranchOrReason;
+	private BigDecimal amount;
+	
+	public UndepositedFundsRow()
+	{
+	
+	}
+	
+	public UndepositedFundsRow(String sendingBranchOrReason, BigDecimal amount)
+	{
+		this.sendingBranchOrReason = sendingBranchOrReason;
+		this.amount = amount;
+		
+	}
+	
+	public String getSendingBranchOrReason()
+	{
+		return sendingBranchOrReason;
+		
+	}
+	
+	public void setSendingBranchOrReason(String sendingBranchOrReason)
+	{
+		this.sendingBranchOrReason = sendingBranchOrReason;
+		
+	}
+	
+	public BigDecimal getAmount()
+	{
+		return amount;
+		
+	}
+	
+	public void setAmount(BigDecimal amount)
+	{
+		this.amount = amount;
+		
+	}
+	
 }

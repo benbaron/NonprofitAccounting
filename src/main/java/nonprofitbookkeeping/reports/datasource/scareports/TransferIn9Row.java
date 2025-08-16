@@ -1,3 +1,4 @@
+
 package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
@@ -9,64 +10,76 @@ import java.math.BigDecimal;
  */
 public class TransferIn9Row
 {
-        private String section;
-        private String account;
-        private String checkNumber;
-        private String checkDate;
-        private BigDecimal amount;
-
-        public TransferIn9Row()
-        {
-        }
-
-        public String getSection()
-        {
-                return section;
-        }
-
-        public void setSection(String section)
-        {
-                this.section = section;
-        }
-
-        public String getAccount()
-        {
-                return account;
-        }
-
-        public void setAccount(String account)
-        {
-                this.account = account;
-        }
-
-        public String getCheckNumber()
-        {
-                return checkNumber;
-        }
-
-        public void setCheckNumber(String checkNumber)
-        {
-                this.checkNumber = checkNumber;
-        }
-
-        public String getCheckDate()
-        {
-                return checkDate;
-        }
-
-        public void setCheckDate(String checkDate)
-        {
-                this.checkDate = checkDate;
-        }
-
-        public BigDecimal getAmount()
-        {
-                return amount;
-        }
-
-        public void setAmount(BigDecimal amount)
-        {
-                this.amount = amount;
-        }
+	private String section;
+	private String account;
+	private String checkNumber;
+	private String checkDate;
+	private BigDecimal amount;
+	
+	public TransferIn9Row()
+	{
+	
+	}
+	
+	public String getSection()
+	{
+		return section;
+		
+	}
+	
+	public void setSection(String section)
+	{
+		this.section = section;
+		
+	}
+	
+	public String getAccount()
+	{
+		return account;
+		
+	}
+	
+	public void setAccount(String account)
+	{
+		this.account = account;
+		
+	}
+	
+	public String getCheckNumber()
+	{
+		return checkNumber;
+		
+	}
+	
+	public void setCheckNumber(String checkNumber)
+	{
+		this.checkNumber = checkNumber;
+		
+	}
+	
+	public String getCheckDate()
+	{
+		return checkDate;
+		
+	}
+	
+	public void setCheckDate(String checkDate)
+	{
+		this.checkDate = checkDate;
+		
+	}
+	
+	public BigDecimal getAmount()
+	{
+		return amount;
+		
+	}
+	
+	public void setAmount(BigDecimal amount)
+	{
+		this.amount = amount;
+		
+	}
+	
 }
 

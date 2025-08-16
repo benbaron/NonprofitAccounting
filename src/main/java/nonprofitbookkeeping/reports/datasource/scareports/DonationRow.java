@@ -14,11 +14,12 @@ public class DonationRow
 	
 	public DonationRow()
 	{
-	
+		
 	}
 	
-	public DonationRow(String organizationName, String fedIdNumber, String reason,
-			String checkNumber, String checkDate, BigDecimal amount)
+	public DonationRow(String organizationName, String fedIdNumber,
+		String reason,
+		String checkNumber, String checkDate, BigDecimal amount)
 	{
 		this.organizationName = organizationName;
 		this.fedIdNumber = fedIdNumber;
@@ -40,7 +41,7 @@ public class DonationRow
 		// TODO Auto-generated constructor stub
 		
 	}
-
+	
 	public String getOrganizationName()
 	{
 		return organizationName;

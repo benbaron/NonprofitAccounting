@@ -1,3 +1,4 @@
+
 package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
@@ -9,36 +10,43 @@ import java.math.BigDecimal;
  */
 public class PrimaryAccountDepositRow
 {
-        private String depositDate;
-        private BigDecimal amount;
-
-        public PrimaryAccountDepositRow()
-        {
-        }
-
-        public PrimaryAccountDepositRow(String depositDate, BigDecimal amount)
-        {
-                this.depositDate = depositDate;
-                this.amount = amount;
-        }
-
-        public String getDepositDate()
-        {
-                return depositDate;
-        }
-
-        public void setDepositDate(String depositDate)
-        {
-                this.depositDate = depositDate;
-        }
-
-        public BigDecimal getAmount()
-        {
-                return amount;
-        }
-
-        public void setAmount(BigDecimal amount)
-        {
-                this.amount = amount;
-        }
+	private String depositDate;
+	private BigDecimal amount;
+	
+	public PrimaryAccountDepositRow()
+	{
+	
+	}
+	
+	public PrimaryAccountDepositRow(String depositDate, BigDecimal amount)
+	{
+		this.depositDate = depositDate;
+		this.amount = amount;
+		
+	}
+	
+	public String getDepositDate()
+	{
+		return depositDate;
+		
+	}
+	
+	public void setDepositDate(String depositDate)
+	{
+		this.depositDate = depositDate;
+		
+	}
+	
+	public BigDecimal getAmount()
+	{
+		return amount;
+		
+	}
+	
+	public void setAmount(BigDecimal amount)
+	{
+		this.amount = amount;
+		
+	}
+	
 }

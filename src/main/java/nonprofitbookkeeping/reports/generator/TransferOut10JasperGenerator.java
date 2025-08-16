@@ -3,6 +3,7 @@ package nonprofitbookkeeping.reports.generator;
 
 import java.math.BigDecimal;
 import java.util.*;
+
 import nonprofitbookkeeping.reports.datasource.scareports.TransferOut10Bean;
 
 public class TransferOut10JasperGenerator extends AbstractReportGenerator

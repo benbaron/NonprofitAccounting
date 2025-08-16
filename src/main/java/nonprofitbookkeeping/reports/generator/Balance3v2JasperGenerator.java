@@ -33,18 +33,17 @@ public class Balance3v2JasperGenerator extends AbstractReportGenerator
 		return "Balance3v2";
 		
 	}
-
+	
 	/**
 	 * Override @see nonprofitbookkeeping.reports.generator.AbstractReportGenerator#getReportData() 
 	 */
-        @Override
-        protected List<Balance3Beanv2> getReportData()
-        {
-                Balance3Beanv2 bean = new Balance3Beanv2();
-                return java.util.Collections.singletonList(bean);
-
-        }
-
-
+	@Override
+	protected List<Balance3Beanv2> getReportData()
+	{
+		Balance3Beanv2 bean = new Balance3Beanv2();
+		return java.util.Collections.singletonList(bean);
+		
+	}
+	
 	
 }

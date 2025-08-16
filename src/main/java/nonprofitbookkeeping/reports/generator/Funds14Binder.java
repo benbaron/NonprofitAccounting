@@ -1,7 +1,8 @@
-package nonprofitbookkeeping.reports.datasource.scareports;
+package nonprofitbookkeeping.reports.generator;
 
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import nonprofitbookkeeping.reports.datasource.scareports.Funds14Row;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
