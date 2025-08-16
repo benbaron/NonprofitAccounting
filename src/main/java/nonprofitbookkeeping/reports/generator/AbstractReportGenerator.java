@@ -35,13 +35,20 @@ public abstract class AbstractReportGenerator
 	 */
 	private List<?> reportData = Collections.emptyList();
 	
-	/**
-	 * Retrieves the collection of data beans that will populate the report.
-	 * 
-	 * @return A {@link List} of objects (JavaBeans) to be used as the report's
-	 *         data source. The exact type depends on the specific report.
-	 */
-	protected abstract List<?> getReportData();
+        /**
+         * Retrieves the collection of data beans that will populate the report.
+         * The default implementation returns the list supplied via
+         * {@link #setReportData(List)}. Subclasses may override this method to
+         * compute data dynamically.
+         *
+         * @return A {@link List} of objects (JavaBeans) to be used as the report's
+         *         data source. The exact type depends on the specific report.
+         */
+        protected List<?> getReportData()
+        {
+                return this.reportData;
+
+        }
 	
 	
 	/**
@@ -259,12 +266,16 @@ public abstract class AbstractReportGenerator
 	}
 
 
-	/**
-	 * @param beans
-	 */
-	public void setReportData(List<?> beans)
-	{
-		// TODO Auto-generated method stub
-	}
+        /**
+         * Allows external callers (typically the {@link nonprofitbookkeeping.service.ReportService})
+         * to supply the data beans that will back the report.
+         *
+         * @param beans list of beans specific to the report type
+         */
+        public void setReportData(List<?> beans)
+        {
+                this.reportData =
+                        (beans == null) ? Collections.emptyList() : beans;
+        }
 	
 }
