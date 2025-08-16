@@ -9,6 +9,10 @@ import java.math.BigDecimal;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,13 +24,16 @@ import lombok.NoArgsConstructor;
  * Lombok's {@code @Data}, {@code @AllArgsConstructor}, and {@code @NoArgsConstructor}
  * are used for boilerplate code generation.
  */
+@Entity
+@Table(name = "inventory_items")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class InventoryItem
 {
 	/** The unique identifier for the inventory item. */
-	@JsonProperty private String id;
+        @Id
+        @JsonProperty private String id;
 	/** The name or description of the inventory item. */
 	@JsonProperty private String name;
 	/** The date when the inventory item was acquired, typically in "YYYY-MM-DD" format. */
