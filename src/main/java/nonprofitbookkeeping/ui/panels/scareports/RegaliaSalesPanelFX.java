@@ -64,6 +64,7 @@ public class RegaliaSalesPanelFX extends VBox
                 Button remove = new Button("Remove Selected");
                 HBox buttons = new HBox(5, add, remove);
                 form.add(buttons, 1, row);
+
                 add.setOnAction(e -> {
                         table.getItems().add(buildRow());
                         clearForm();
@@ -76,6 +77,7 @@ public class RegaliaSalesPanelFX extends VBox
                                 table.getItems().remove(selected);
                         }
                 });
+
 
                 setupTable();
                 getChildren().addAll(form, table);
