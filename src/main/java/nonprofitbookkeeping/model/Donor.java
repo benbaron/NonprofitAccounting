@@ -1,8 +1,7 @@
 /**
- * nonprofit-scaledger-ribbon.zip_expanded
- * Donor.java
- * Donor
+ * nonprofit-scaledger-ribbon.zip_expanded Donor.java Donor
  */
+
 package nonprofitbookkeeping.model;
 
 import java.io.Serializable;
@@ -33,9 +32,8 @@ public class Donor implements Serializable
 	 * The unique identifier for this serializable class.
 	 */
 	private static final long serialVersionUID = 4930419801310521918L;
-        /** The unique identifier for the donor. */
-        @Id
-        private String donorId;
+	/** The unique identifier for the donor. */
+	@Id private String donorId;
 	/** The name of the donor. */
 	private String name;
 	/** The total cumulative amount donated by this donor. */
@@ -48,9 +46,23 @@ public class Donor implements Serializable
 	private String donationType;
 	/** The date of a specific donation, corresponding to the {@code donationAmount}. */
 	private Date donationDate;
-
+	
 	// Note: Lombok @Data generates getters and setters.
-	// The explicit getters and setters below are redundant but Javadoc is provided as they exist.
+	// The explicit getters and setters below are redundant but Javadoc is
+	// provided as they exist.
+	
+	/**  
+	 * Constructor Donor
+	 * @param object
+	 * @param text
+	 * @param text2
+	 * @param text3
+	 */
+	public Donor(Object object, String text, String text2, String text3)
+	{
+		// TODO Auto-generated constructor stub
+		
+	}
 
 	/**
 	 * Gets the donor's unique identifier.
@@ -59,7 +71,9 @@ public class Donor implements Serializable
 	public String getDonorId()
 	{
 		return this.donorId;
+		
 	}
+	
 	/**
 	 * Sets the donor's unique identifier.
 	 * @param donorId The donor ID to set.
@@ -67,7 +81,9 @@ public class Donor implements Serializable
 	public void setDonorId(String donorId)
 	{
 		this.donorId = donorId;
+		
 	}
+	
 	/**
 	 * Gets the name of the donor.
 	 * @return The donor's name.
@@ -75,7 +91,9 @@ public class Donor implements Serializable
 	public String getName()
 	{
 		return this.name;
+		
 	}
+	
 	/**
 	 * Sets the name of the donor.
 	 * @param name The donor's name to set.
@@ -83,7 +101,9 @@ public class Donor implements Serializable
 	public void setName(String name)
 	{
 		this.name = name;
+		
 	}
+	
 	/**
 	 * Gets the total cumulative donations from this donor.
 	 * @return The total donations amount.
@@ -91,7 +111,9 @@ public class Donor implements Serializable
 	public BigDecimal getTotalDonations()
 	{
 		return this.totalDonations;
+		
 	}
+	
 	/**
 	 * Sets the total cumulative donations for this donor.
 	 * @param totalDonations The total donations amount to set.
@@ -99,7 +121,9 @@ public class Donor implements Serializable
 	public void setTotalDonations(BigDecimal totalDonations)
 	{
 		this.totalDonations = totalDonations;
+		
 	}
+	
 	/**
 	 * Gets the date of the last donation made by this donor.
 	 * @return The last donation date.
@@ -107,7 +131,9 @@ public class Donor implements Serializable
 	public Date getLastDonationDate()
 	{
 		return this.lastDonationDate;
+		
 	}
+	
 	/**
 	 * Sets the date of the last donation made by this donor.
 	 * @param lastDonationDate The last donation date to set.
@@ -115,7 +141,9 @@ public class Donor implements Serializable
 	public void setLastDonationDate(Date lastDonationDate)
 	{
 		this.lastDonationDate = lastDonationDate;
+		
 	}
+	
 	/**
 	 * Gets the amount of a specific donation.
 	 * This might represent the most recent donation or a donation being processed.
@@ -124,7 +152,9 @@ public class Donor implements Serializable
 	public BigDecimal getDonationAmount()
 	{
 		return this.donationAmount;
+		
 	}
+	
 	/**
 	 * Sets the amount of a specific donation.
 	 * @param donationAmount The specific donation amount to set.
@@ -132,7 +162,9 @@ public class Donor implements Serializable
 	public void setDonationAmount(BigDecimal donationAmount)
 	{
 		this.donationAmount = donationAmount;
+		
 	}
+	
 	/**
 	 * Gets the type or category of the donation.
 	 * @return The donation type (e.g., "Monetary", "In-Kind").
@@ -140,7 +172,9 @@ public class Donor implements Serializable
 	public String getDonationType()
 	{
 		return this.donationType;
+		
 	}
+	
 	/**
 	 * Sets the type or category of the donation.
 	 * @param donationType The donation type to set.
@@ -148,7 +182,9 @@ public class Donor implements Serializable
 	public void setDonationType(String donationType)
 	{
 		this.donationType = donationType;
+		
 	}
+	
 	/**
 	 * Gets the date of a specific donation.
 	 * This corresponds to the {@code donationAmount}.
@@ -157,7 +193,9 @@ public class Donor implements Serializable
 	public Date getDonationDate()
 	{
 		return this.donationDate;
+		
 	}
+	
 	/**
 	 * Sets the date of a specific donation.
 	 * @param donationDate The date of the specific donation to set.
@@ -165,7 +203,58 @@ public class Donor implements Serializable
 	public void setDonationDate(Date donationDate)
 	{
 		this.donationDate = donationDate;
+		
 	}
-
-
+	
+	/**
+	 * @return
+	 */
+	public String getEmail()
+	{
+		// TODO Auto-generated method stub
+		return null;
+		
+	}
+	
+	/**
+	 * @return
+	 */
+	public String getPhone()
+	{
+		// TODO Auto-generated method stub
+		return null;
+		
+	}
+	
+	/**
+	 * @return
+	 */
+	public Object getId()
+	{
+		// TODO Auto-generated method stub
+		return null;
+		
+	}
+	
+	/**
+	 * @param email
+	 */
+	public void setEmail(String email)
+	{
+		// TODO Auto-generated method stub
+		
+		
+	}
+	
+	/**
+	 * @param phone
+	 */
+	public void setPhone(String phone)
+	{
+		// TODO Auto-generated method stub
+		
+		
+	}
+	
+	
 }
