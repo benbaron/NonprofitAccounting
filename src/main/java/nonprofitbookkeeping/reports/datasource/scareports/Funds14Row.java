@@ -7,8 +7,7 @@ import java.math.BigDecimal;
  * Row representing a single dedicated fund entry on the FUNDS_14 report.
  * Captures the fund's name, purpose and the financial activity for the period.
  */
-public class Funds14Row
-{
+public class Funds14Row extends ScaRowBase {
 	private String fundName;
 	private String purpose;
 	private BigDecimal beginBalance;

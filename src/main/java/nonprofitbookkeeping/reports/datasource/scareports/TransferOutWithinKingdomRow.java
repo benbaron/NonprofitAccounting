@@ -7,8 +7,7 @@ import java.math.BigDecimal;
  * Row representing a transfer made to another SCA account within the same
  * kingdom.
  */
-public class TransferOutWithinKingdomRow
-{
+public class TransferOutWithinKingdomRow extends ScaRowBase {
 	private String accountOrPayee;
 	private String reason;
 	private String checkNumber;

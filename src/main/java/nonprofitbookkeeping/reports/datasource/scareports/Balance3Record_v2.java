@@ -6,8 +6,7 @@ import java.math.BigDecimal;
  * Data bean for BALANCE_3 (purpose-based names).
  * String fields are used for headers and signer names. Numerics are BigDecimal.
  */
-public class Balance3Record_v2
-{
+public class Balance3Record_v2 extends ScaRowBase {
 	// --- Header / context (Strings) ---
 	public String header_version_info; // e.g., "Form v6.0"
 	public String organization_name_corporate; // org/corporate name

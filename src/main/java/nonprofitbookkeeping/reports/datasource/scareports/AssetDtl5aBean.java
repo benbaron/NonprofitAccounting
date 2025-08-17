@@ -9,8 +9,7 @@ import java.util.ArrayList;
  * Generated on 2025-08-01.
  */
 
-public class AssetDtl5aBean
-{
+public class AssetDtl5aBean extends ScaRowBase {
 	private ArrayList<AssetDtl5aRow> rows;
 	
 	private BigDecimal _1_contact_info;
