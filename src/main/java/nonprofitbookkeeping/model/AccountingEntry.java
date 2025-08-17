@@ -1,9 +1,11 @@
 
 package nonprofitbookkeeping.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 
+import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -16,6 +18,8 @@ import static com.google.common.base.Preconditions.*;
  * AccountingEntry is passed to the transaction constructor.
  * Once the transaction is set, it can't be changed.
  */
+@Entity
+@Table(name = "accounting_entries")
 public final class AccountingEntry implements Serializable
 {
 	
@@ -24,10 +28,17 @@ public final class AccountingEntry implements Serializable
 	 */
 	private static final long serialVersionUID = 5837792781542533633L;
 	
-	@JsonProperty final private BigDecimal amount;
-	@JsonProperty final private AccountSide accountSide;
-	@JsonProperty private String accountNumber;
-	@JsonProperty private String fundNumber;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+        private int id;
+
+        @JsonProperty private BigDecimal amount;
+
+        @Enumerated(EnumType.STRING)
+        @JsonProperty private AccountSide accountSide;
+        @JsonProperty private String accountNumber;
+        @JsonProperty private String fundNumber;
 	/**
 	 * @return the fundNumber
 	 */
@@ -52,27 +63,30 @@ public final class AccountingEntry implements Serializable
 	 * on the entry rather than the transaction so that each entry can
 	 * reference its own account directly.
 	 */
-	@JsonProperty private String accountName;
+        @JsonProperty private String accountName;
 	
 	// Future versions can include this.
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY) private AccountingTransaction transaction;
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "transaction_id")
+        @JsonIgnore
+        private AccountingTransaction transaction;
 	
 	// Indicates if the transaction was set
-	@JsonProperty private boolean freeze = false;
+        @JsonProperty private boolean freeze = false;
 	
 	
 	/**
 	 * Default constructor for Jackson deserialization.
 	 * Initializes amount, accountSide to null and accountNumber to an empty string.
 	 */
-	AccountingEntry()
-	{
-		this.amount = null;
-		this.accountSide = null;
-		this.accountNumber = "";
-		this.accountName = null;
-		this.fundNumber = null;
-	}
+        public AccountingEntry()
+        {
+                this.amount = null;
+                this.accountSide = null;
+                this.accountNumber = "";
+                this.accountName = null;
+                this.fundNumber = null;
+        }
 	
 	/**
 	 * Constructs an AccountingEntry with the specified amount, account number, and account side.
@@ -126,7 +140,7 @@ public final class AccountingEntry implements Serializable
 	 * @param transaction The transaction belonging to this entry. Must not be null.
 	 * @throws NullPointerException if the transaction is null.
 	 */
-	public void setTransaction(AccountingTransaction transaction)
+        public void setTransaction(AccountingTransaction transaction)
 	{
 		this.transaction = checkNotNull(transaction);
 		this.freeze = true;
@@ -205,7 +219,7 @@ public final class AccountingEntry implements Serializable
 	 * 
 	 * @return Account object
 	 */
-	public Account getAccount()
+        public Account getAccount()
 	{
 		return CurrentCompany
 			.getCompany()
@@ -216,13 +230,23 @@ public final class AccountingEntry implements Serializable
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public String toString()
+        @Override public String toString()
 	{
 		return MoreObjects.toStringHelper(this)
 			.add("amount", this.amount.toString())
 			.addValue(this.accountSide)
 			.add("account", this.accountNumber)
 			.toString();
-	}
+        }
+
+        /**
+         * Gets the database identifier for this entry.
+         *
+         * @return primary key value
+         */
+        public int getId()
+        {
+                return this.id;
+        }
 	
 }
