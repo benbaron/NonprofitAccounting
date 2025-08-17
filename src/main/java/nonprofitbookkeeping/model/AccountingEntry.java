@@ -1,8 +1,10 @@
 
 package nonprofitbookkeeping.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
+
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -26,7 +29,10 @@ import static com.google.common.base.Preconditions.*;
  */
 @Entity
 @Table(name = "accounting_entries")
-public class AccountingEntry implements Serializable {
+
+public final class AccountingEntry implements Serializable
+{
+
 	
 	/**
 	 * serialVersionUID : long
@@ -35,9 +41,14 @@ public class AccountingEntry implements Serializable {
 	
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
+
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+        private int id;
 
         @JsonProperty private BigDecimal amount;
+
+        @Enumerated(EnumType.STRING)
+
         @JsonProperty private AccountSide accountSide;
         @JsonProperty private String accountNumber;
         @JsonProperty private String fundNumber;
@@ -65,16 +76,17 @@ public class AccountingEntry implements Serializable {
 	 * on the entry rather than the transaction so that each entry can
 	 * reference its own account directly.
 	 */
-	@JsonProperty private String accountName;
+        @JsonProperty private String accountName;
 	
 	// Future versions can include this.
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "transaction_id")
         @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+
         private AccountingTransaction transaction;
 	
 	// Indicates if the transaction was set
-	@JsonProperty private boolean freeze = false;
+        @JsonProperty private boolean freeze = false;
 	
 	
 	/**
@@ -89,6 +101,7 @@ public class AccountingEntry implements Serializable {
 		this.accountName = null;
 		this.fundNumber = null;
 	}
+
 	
 	/**
 	 * Constructs an AccountingEntry with the specified amount, account number, and account side.
@@ -142,7 +155,7 @@ public class AccountingEntry implements Serializable {
 	 * @param transaction The transaction belonging to this entry. Must not be null.
 	 * @throws NullPointerException if the transaction is null.
 	 */
-	public void setTransaction(AccountingTransaction transaction)
+        public void setTransaction(AccountingTransaction transaction)
 	{
 		this.transaction = checkNotNull(transaction);
 		this.freeze = true;
@@ -221,7 +234,7 @@ public class AccountingEntry implements Serializable {
 	 * 
 	 * @return Account object
 	 */
-	public Account getAccount()
+        public Account getAccount()
 	{
 		return CurrentCompany
 			.getCompany()
@@ -232,13 +245,23 @@ public class AccountingEntry implements Serializable {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public String toString()
+        @Override public String toString()
 	{
 		return MoreObjects.toStringHelper(this)
 			.add("amount", this.amount.toString())
 			.addValue(this.accountSide)
 			.add("account", this.accountNumber)
 			.toString();
-	}
+        }
+
+        /**
+         * Gets the database identifier for this entry.
+         *
+         * @return primary key value
+         */
+        public int getId()
+        {
+                return this.id;
+        }
 	
 }
