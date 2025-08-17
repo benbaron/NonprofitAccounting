@@ -130,7 +130,7 @@ public class ReportsPanelFXTest extends JavaFXTestBase {
         assertEquals("Generating Report", generateDialog.getTitle(), "Dialog title mismatch.");
 
         // Verify that the dialog contains the GenerateReportPanelFX (e.g. by looking for a known element)
-        assertNotNull(from(generateDialog.getScene().getRoot()).lookup("Generate Specific Report").queryLabeled(),
+        assertNotNull(from(generateDialog.getScene().getRoot()).lookup("Report Selection").queryLabeled(),
                       "Dialog should contain elements from GenerateReportPanelFX");
 
         // Close the dialog to simulate completion

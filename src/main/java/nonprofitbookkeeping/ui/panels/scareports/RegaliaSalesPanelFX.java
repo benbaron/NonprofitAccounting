@@ -14,9 +14,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import nonprofitbookkeeping.reports.datasource.scareports.RegaliaSalesDtl7Bean;
 import nonprofitbookkeeping.reports.datasource.scareports.RegaliaSalesRow;
+import nonprofitbookkeeping.ui.panels.ReportRowPanel;
 
-public class RegaliaSalesPanelFX extends VBox
+public class RegaliaSalesPanelFX extends VBox implements ReportRowPanel
 {
         private final ComboBox<String> sectionField = new ComboBox<>(
                 FXCollections.observableArrayList("PURCHASE", "SALE", "ADJUSTMENT"));
@@ -161,6 +163,14 @@ public class RegaliaSalesPanelFX extends VBox
         public List<RegaliaSalesRow> getRows()
         {
                 return new ArrayList<>(table.getItems());
+        }
+
+        @Override
+        public Object buildBean()
+        {
+                RegaliaSalesDtl7Bean bean = new RegaliaSalesDtl7Bean();
+                bean.setRows(new ArrayList<>(getRows()));
+                return bean;
         }
 }
 

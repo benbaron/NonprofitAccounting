@@ -4,6 +4,7 @@ package nonprofitbookkeeping.ui.panels;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,6 +15,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.reports.ReportMetadata;
+import nonprofitbookkeeping.reports.ReportTemplateScanner;
 import nonprofitbookkeeping.service.ReportService;
 // Added for listener
 import nonprofitbookkeeping.model.CurrentCompany;
@@ -71,38 +73,37 @@ public class ReportsPanelFX extends BorderPane
 	 *
 	 * @return A configured {@link ToolBar} for report generation controls.
 	 */
-	// Renamed to avoid potential API conflicts if buildGeneratorBar was considered
-	// public/protected
-	private ToolBar buildGeneratorBarInternal()
-	{
-		ComboBox<String> typeBox = new ComboBox<>();
-		typeBox.getItems().addAll("Income Statement", "Balance Sheet", "Cash Flow", "Donor Summary",
-				"Fund Activity Report");
-		// typeBox.getSelectionModel().selectFirst(); // Selection can be set in
-		// handleCompanyChange or when enabled
-		DatePicker from = new DatePicker(LocalDate.now().withDayOfYear(1));
-		DatePicker to = new DatePicker(LocalDate.now());
-		Button gen = new Button("Generate");
-		gen.setOnAction(e -> {
-			// This action itself should ideally be disabled if no company is open.
-			// The GenerateReportPanelFX might also need its own company checks.
-			Stage dlg = new Stage();
-			dlg.setTitle("Generating Report");
-			// Ensure GenerateReportPanelFX handles cases where no company is open if it's
-			// possible to reach here.
-			dlg.setScene(new Scene(new GenerateReportPanelFX(this.reportService), 600, 400));
-			dlg.showAndWait();
-			
-			if (CurrentCompany.isOpen())
-			{ // Only refresh if a company is still open
-				refresh();
-			}
-			
-		});
-		return new ToolBar(	new Label("Type:"), typeBox, new Label("From:"), from, new Label("To:"),
-							to, gen);
-		
-	}
+	        // Renamed to avoid potential API conflicts if buildGeneratorBar was considered
+        // public/protected
+        private ToolBar buildGeneratorBarInternal()
+        {
+                Map<String, String> templates = ReportTemplateScanner.discoverTemplates();
+                ComboBox<String> typeBox = new ComboBox<>(
+                                FXCollections.observableArrayList(templates.keySet()));
+                if (!typeBox.getItems().isEmpty())
+                {
+                        typeBox.getSelectionModel().selectFirst();
+                }
+                DatePicker from = new DatePicker(LocalDate.now().withDayOfYear(1));
+                DatePicker to = new DatePicker(LocalDate.now());
+                Button gen = new Button("Generate");
+                gen.setOnAction(e -> {
+                        Stage dlg = new Stage();
+                        dlg.setTitle("Generating Report");
+                        String key = templates.get(typeBox.getValue());
+                        dlg.setScene(new Scene(new GenerateReportPanelFX(this.reportService, key), 600, 400));
+                        dlg.showAndWait();
+
+                        if (CurrentCompany.isOpen())
+                        {
+                                refresh();
+                        }
+
+                });
+                return new ToolBar(new Label("Type:"), typeBox, new Label("From:"), from,
+                                new Label("To:"), to, gen);
+
+        }
 	
 	/**
 	 * Builds and configures the {@link TableView} ({@link #table}) for displaying metadata of generated reports.
