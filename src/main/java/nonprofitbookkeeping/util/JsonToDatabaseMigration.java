@@ -1,12 +1,16 @@
 package nonprofitbookkeeping.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import jakarta.persistence.EntityManager;
+
 import nonprofitbookkeeping.core.JacksonDataStorer;
 import nonprofitbookkeeping.model.AccountingTransaction;
+import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.Donor;
 import nonprofitbookkeeping.model.InventoryItem;
 import nonprofitbookkeeping.model.SaleRecord;
+
 import nonprofitbookkeeping.model.SupplementalRecord;
 import nonprofitbookkeeping.persistence.DatabaseManager;
 import nonprofitbookkeeping.repository.AccountingTransactionRepository;
@@ -14,6 +18,7 @@ import nonprofitbookkeeping.repository.DonorRepository;
 import nonprofitbookkeeping.repository.InventoryRepository;
 import nonprofitbookkeeping.repository.SaleRecordRepository;
 import nonprofitbookkeeping.repository.SupplementalRecordRepository;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -34,13 +39,22 @@ public class JsonToDatabaseMigration {
     private final AccountingTransactionRepository transactionRepository;
     private final SupplementalRecordRepository supplementalRecordRepository;
 
+    public JsonToDatabaseMigration(DatabaseService db) {
+        this.donorRepository = db.getDonorRepository();
+        this.inventoryRepository = db.getInventoryRepository();
+        this.saleRepository = db.getSaleRecordRepository();
+        this.transactionRepository = db.getTransactionRepository();
+    }
+
     public JsonToDatabaseMigration() {
+
         EntityManager em = DatabaseManager.getEntityManager();
         this.donorRepository = new DonorRepository(em);
         this.inventoryRepository = new InventoryRepository(em);
         this.saleRepository = new SaleRecordRepository(em);
         this.transactionRepository = new AccountingTransactionRepository(em);
         this.supplementalRecordRepository = new SupplementalRecordRepository(em);
+
     }
 
     /** Migrate donors from a JSON file. */
@@ -71,6 +85,7 @@ public class JsonToDatabaseMigration {
         txs.forEach(transactionRepository::save);
     }
 
+
     /** Migrate supplemental records from a JSON file. */
     public void migrateSupplementalRecords(File recordsJson) throws IOException {
         List<SupplementalRecord> records = mapper.readValue(recordsJson,
@@ -79,3 +94,15 @@ public class JsonToDatabaseMigration {
     }
 }
 
+
+    /**
+     * Convenience method that reads an entire company data archive (the format
+     * produced by {@link JacksonDataStorer}) and persists its contents to the
+     * database using the configured repositories.
+     */
+    public void migrateCompanyArchive(File companyZip) throws IOException {
+        Company company = dataStorer.loadData(Company.class, companyZip);
+        DatabaseService db = new DatabaseService();
+        db.saveCompany(company);
+    }
+}

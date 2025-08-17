@@ -1,4 +1,4 @@
-package nonprofitbookkeeping.repository;
+package nonprofitbookkeeping.persistence;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
@@ -27,7 +27,8 @@ public class InventoryRepository {
     }
 
     public List<InventoryItem> findAll() {
-        return entityManager.createQuery("SELECT i FROM InventoryItem i", InventoryItem.class).getResultList();
+        return entityManager.createQuery("SELECT i FROM InventoryItem i", InventoryItem.class)
+                .getResultList();
     }
 
     public Optional<InventoryItem> findById(String id) {
@@ -47,4 +48,3 @@ public class InventoryRepository {
         return false;
     }
 }
-

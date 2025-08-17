@@ -5,7 +5,18 @@ import javax.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import jakarta.persistence.*;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapKeyColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -15,8 +26,6 @@ import java.util.*;
 import java.io.Serializable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-
-
 
 @Entity
 @Table(name = "accounting_transactions")
@@ -33,6 +42,7 @@ public class AccountingTransaction implements Serializable
         @JsonProperty private int id;
 
         /** The set of accounting entries that make up this transaction. Must not be null or empty. */
+
         @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
         @JsonProperty private Set<AccountingEntry> entries = new HashSet<>();
 
@@ -41,7 +51,9 @@ public class AccountingTransaction implements Serializable
         private Set<SupplementalRecord> supplementalRecords = new HashSet<>();
 
         /** Additional information or metadata about the transaction, stored as key-value pairs. */
-        @Transient
+        @ElementCollection
+        @JoinColumn(name = "transaction_id")
+        @MapKeyColumn(name = "info_key")
         @JsonProperty private Map<String, String> info;
 
         /** Key used within {@link #info} to store the record type. */

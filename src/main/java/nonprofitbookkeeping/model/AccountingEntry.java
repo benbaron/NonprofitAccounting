@@ -5,7 +5,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 
-import jakarta.persistence.*;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -14,14 +23,16 @@ import static com.google.common.base.Preconditions.*;
 
 /**
  * Represents an Accounting Entry.
- * The transaction reference is set automatically when an 
+ * The transaction reference is set automatically when an
  * AccountingEntry is passed to the transaction constructor.
  * Once the transaction is set, it can't be changed.
  */
 @Entity
 @Table(name = "accounting_entries")
+
 public final class AccountingEntry implements Serializable
 {
+
 	
 	/**
 	 * serialVersionUID : long
@@ -30,12 +41,14 @@ public final class AccountingEntry implements Serializable
 	
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
+
         @JsonProperty(access = JsonProperty.Access.READ_ONLY)
         private int id;
 
         @JsonProperty private BigDecimal amount;
 
         @Enumerated(EnumType.STRING)
+
         @JsonProperty private AccountSide accountSide;
         @JsonProperty private String accountNumber;
         @JsonProperty private String fundNumber;
@@ -68,7 +81,8 @@ public final class AccountingEntry implements Serializable
 	// Future versions can include this.
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "transaction_id")
-        @JsonIgnore
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+
         private AccountingTransaction transaction;
 	
 	// Indicates if the transaction was set
@@ -81,12 +95,13 @@ public final class AccountingEntry implements Serializable
 	 */
         public AccountingEntry()
         {
-                this.amount = null;
-                this.accountSide = null;
-                this.accountNumber = "";
-                this.accountName = null;
-                this.fundNumber = null;
-        }
+		this.amount = null;
+		this.accountSide = null;
+		this.accountNumber = "";
+		this.accountName = null;
+		this.fundNumber = null;
+	}
+
 	
 	/**
 	 * Constructs an AccountingEntry with the specified amount, account number, and account side.

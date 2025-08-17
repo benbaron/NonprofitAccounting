@@ -2,10 +2,9 @@
 package nonprofitbookkeeping.service;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import nonprofitbookkeeping.model.Donor;
-import nonprofitbookkeeping.repository.DonorRepository;
+import nonprofitbookkeeping.persistence.DonorRepository;
+import nonprofitbookkeeping.persistence.EntityManagerProvider;
 
 import java.util.List;
 
@@ -20,14 +19,12 @@ public class DonorService
 	/**
 	 * Constructs the service and prepares the underlying repository.
 	 */
-	public DonorService()
-	{
-		EntityManagerFactory emf =
-			Persistence.createEntityManagerFactory("nonprofitPU");
-		EntityManager em = emf.createEntityManager();
-		this.repository = new DonorRepository(em);
-		
-	}
+        public DonorService()
+        {
+                EntityManager em = EntityManagerProvider.getEntityManager();
+                this.repository = new DonorRepository(em);
+
+        }
 	
 	/** Add a donor to the database. */
 	public void addDonor(Donor d)
