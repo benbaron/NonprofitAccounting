@@ -5,12 +5,7 @@ import javax.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -23,8 +18,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 
 
-@Entity
-@Table(name = "accounting_transactions")
 public class AccountingTransaction implements Serializable
 {
 	/**
@@ -32,21 +25,14 @@ public class AccountingTransaction implements Serializable
 	 */
 	private static final long serialVersionUID = -8821254116304310L;
 	
-        /** Unique identifier for the transaction. */
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @JsonProperty private int id;
+	/** Unique identifier for the transaction. */
+	@JsonProperty private int id;
+	
+	/** The set of accounting entries that make up this transaction. Must not be null or empty. */
+	@JsonProperty private Set<AccountingEntry> entries;
 
-        /** The set of accounting entries that make up this transaction. Must not be null or empty. */
-        @Transient
-        @JsonProperty private Set<AccountingEntry> entries;
-
-        /** Additional information or metadata about the transaction, stored as key-value pairs. */
-        @Transient
-        @JsonProperty private Map<String, String> info;
-
-        /** Key used within {@link #info} to store the record type. */
-        public static final String RECORD_TYPE_KEY = "recordType";
+	/** Additional information or metadata about the transaction, stored as key-value pairs. */
+	@JsonProperty private Map<String, String> info;
 
 	/** The timestamp when the transaction was booked/recorded, in milliseconds since epoch. */
 	@JsonProperty private long bookingDateTimestamp;
@@ -154,43 +140,10 @@ public class AccountingTransaction implements Serializable
 	 * Sets the additional information for this transaction.
 	 * @param info A map of key-value pairs representing additional information.
 	 */
-        public void setInfo(Map<String, String> info)
-        {
-                this.info = info;
-        }
-
-        /**
-         * Retrieves the optional record type from the {@link #info} map.
-         *
-         * @return the record type string or {@code null} if not set.
-         */
-        public String getRecordType()
-        {
-                return this.info != null ? this.info.get(RECORD_TYPE_KEY) : null;
-        }
-
-        /**
-         * Sets the record type inside the {@link #info} map. If {@code recordType}
-         * is {@code null}, the key is removed from the map.
-         *
-         * @param recordType the record type to associate with this transaction
-         */
-        public void setRecordType(String recordType)
-        {
-                if (this.info == null)
-                {
-                        this.info = new HashMap<>();
-                }
-
-                if (recordType == null)
-                {
-                        this.info.remove(RECORD_TYPE_KEY);
-                }
-                else
-                {
-                        this.info.put(RECORD_TYPE_KEY, recordType);
-                }
-        }
+	public void setInfo(Map<String, String> info)
+	{
+		this.info = info;
+	}
 	
 	/**
 	 * Gets the booking date timestamp of the transaction.

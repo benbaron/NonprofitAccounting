@@ -4,20 +4,13 @@ package nonprofitbookkeeping.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
 /**
  * Represents a single sale transaction for the Sales & COG panel.
  */
-@Entity
-@Table(name = "sale_records")
 public class SaleRecord
 {
 	/** Unique identifier for this sale. */
-        @Id
-        @JsonProperty private String id;
+	@JsonProperty private String id;
 	/** Date of the sale in ISO format (YYYY-MM-DD). */
 	@JsonProperty private String date;
 	/** Item sold. */

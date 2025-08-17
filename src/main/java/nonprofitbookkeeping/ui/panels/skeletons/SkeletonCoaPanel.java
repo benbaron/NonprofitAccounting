@@ -26,6 +26,9 @@ import nonprofitbookkeeping.model.AccountType;
 import java.util.List;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A JavaFX panel that displays a company's Chart of Accounts (COA) in a {@link TreeTableView}.
  * It provides basic CRUD (Create, Read, Update, Delete) functionalities for managing accounts,
@@ -34,6 +37,7 @@ import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
  */
 public class SkeletonCoaPanel extends BorderPane
 {
+        private static final Logger LOGGER = LoggerFactory.getLogger(SkeletonCoaPanel.class);
 	
 	/** The TreeTableView used to display the hierarchical chart of accounts. */
 	private TreeTableView<Account> coaTreeTable;
@@ -304,8 +308,8 @@ public class SkeletonCoaPanel extends BorderPane
 			
 			if (deleted)
 			{
-				loadCoaData();
-				System.out.println("Deleted account: " + selectedAccount.getName());
+                                loadCoaData();
+                                LOGGER.info("Deleted account: {}", selectedAccount.getName());
 			}
 			else
 			{

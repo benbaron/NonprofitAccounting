@@ -12,7 +12,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import nonprofitbookkeeping.reports.datasource.scareports.RegaliaSalesRow;
 
@@ -38,7 +37,6 @@ public class RegaliaSalesPanelFX extends VBox
                 GridPane form = new GridPane();
                 form.setHgap(5);
                 form.setVgap(5);
-                sectionField.getSelectionModel().selectFirst();
 
                 int row = 0;
                 form.add(new Label("Section:"), 0, row);
@@ -61,23 +59,11 @@ public class RegaliaSalesPanelFX extends VBox
                 form.add(notesField, 1, row++);
 
                 Button add = new Button("Add");
-                Button remove = new Button("Remove Selected");
-                HBox buttons = new HBox(5, add, remove);
-                form.add(buttons, 1, row);
-
+                form.add(add, 1, row);
                 add.setOnAction(e -> {
                         table.getItems().add(buildRow());
                         clearForm();
                 });
-                remove.setOnAction(e -> {
-                        RegaliaSalesRow selected =
-                                table.getSelectionModel().getSelectedItem();
-                        if (selected != null)
-                        {
-                                table.getItems().remove(selected);
-                        }
-                });
-
 
                 setupTable();
                 getChildren().addAll(form, table);
