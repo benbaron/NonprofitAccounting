@@ -1,10 +1,9 @@
 package nonprofitbookkeeping.service;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import nonprofitbookkeeping.model.SaleRecord;
-import nonprofitbookkeeping.repository.SaleRecordRepository;
+import nonprofitbookkeeping.persistence.EntityManagerProvider;
+import nonprofitbookkeeping.persistence.SaleRecordRepository;
 
 import java.util.List;
 
@@ -16,8 +15,7 @@ public class SalesService {
     private final SaleRecordRepository repository;
 
     public SalesService() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("nonprofitPU");
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = EntityManagerProvider.getEntityManager();
         this.repository = new SaleRecordRepository(em);
     }
 

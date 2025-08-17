@@ -6,8 +6,7 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
 
-public class AssetDtl5aRow
-{
+public class AssetDtl5aRow extends ScaRowBase {
 	private String label; // e.g., "a) Undeposited and Non-Interest Bearing Cash"
 	private String fromPage; // e.g., "(2, 5a)" or descriptive source text
 	private BigDecimal start;

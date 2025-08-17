@@ -8,8 +8,7 @@ import java.util.List;
  * Simple container bean for the FUNDS_14 report. Holds the collection of
  * {@link Funds14Row} entries representing each dedicated fund.
  */
-public class Funds14Bean
-{
+public class Funds14Bean extends ScaRowBase {
 	private List<Funds14Row> rows = new ArrayList<>();
 	
 	public List<Funds14Row> getRows()

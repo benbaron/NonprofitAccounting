@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 /** Common base for any row that has a description + single monetary amount. */
-public abstract class IncomeRowBase
+public abstract class IncomeRowBase extends ScaRowBase
 {
 	
 	private String description;

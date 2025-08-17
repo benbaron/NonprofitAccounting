@@ -8,8 +8,7 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 /**
  * 
  */
-public class ContactInfo
-{
+public class ContactInfo extends ScaRowBase {
     private String branch;
     private String warrantEndDate;
     private String legalName;

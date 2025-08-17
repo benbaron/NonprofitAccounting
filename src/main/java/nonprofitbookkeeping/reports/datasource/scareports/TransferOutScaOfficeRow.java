@@ -6,8 +6,7 @@ import java.math.BigDecimal;
 /**
  * Row representing a transfer made to the SCA corporate office.
  */
-public class TransferOutScaOfficeRow
-{
+public class TransferOutScaOfficeRow extends ScaRowBase {
 	private String office;
 	private String reason;
 	private String checkNumber;

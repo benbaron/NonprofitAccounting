@@ -13,9 +13,10 @@ import java.util.List;
 
 import javax.swing.event.EventListenerList;
 
-import nonprofitbookkeeping.core.JacksonDataStorer;
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
+import nonprofitbookkeeping.persistence.DatabaseService;
+import nonprofitbookkeeping.util.JsonToDatabaseMigration;
 
 /**
  * Manages the currently active {@link Company} instance in the application.
@@ -31,8 +32,8 @@ public class CurrentCompany
 	private static File currentFile = null;
 	/** Flag indicating whether a company is currently considered open. */
 	private static boolean companyIsOpen = false;
-	/** DataStorer instance used for loading and saving company data. */
-	private static JacksonDataStorer dataStorer = new JacksonDataStorer();
+        /** Database service used for loading and saving company data. */
+        private static final DatabaseService DATABASE_SERVICE = new DatabaseService();
 	
 	/**  
 	 * Constructs a CurrentCompany manager.
@@ -112,10 +113,7 @@ public class CurrentCompany
 	public static void persist()	throws IOException, ActionCancelledException,
 									NoFileCreatedException
 	{
-		CurrentCompany.dataStorer.saveData(
-			company,
-			checkNotNull(CurrentCompany.currentFile,
-				"Current file cannot be null for persist operation."));
+                DATABASE_SERVICE.saveCompany(company);
 		
 	}
 	
@@ -128,21 +126,22 @@ public class CurrentCompany
 	 * @throws NoFileCreatedException if the file specified does not lead to a valid company data structure.
 	 * @throws NullPointerException if file is null.
 	 */
-	public static void loadFromPersistent(File file)	throws IOException, ActionCancelledException,
-														NoFileCreatedException
-	{
-		company = CurrentCompany.dataStorer.loadData(
-			Company.class,
-			checkNotNull(file, "File cannot be null for load operation."));
+        public static void loadFromPersistent(File file)        throws IOException, ActionCancelledException,
+                                                                                                                NoFileCreatedException
+        {
+                checkNotNull(file, "File cannot be null for load operation.");
+                JsonToDatabaseMigration migration = new JsonToDatabaseMigration();
+                migration.migrateCompanyArchive(file);
+                company = DATABASE_SERVICE.loadCompany();
                setCurrentFile(file);
 
-               // Ensure the loaded company object stores its file reference.
                if (company != null)
                {
                        company.setCompanyFile(file);
                        markCompanyOpen();
                }
-       }
+        }
+
 	
 	/**
 	 * Closes the currently open company.

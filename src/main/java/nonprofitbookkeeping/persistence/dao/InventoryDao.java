@@ -1,4 +1,4 @@
-package nonprofitbookkeeping.repository;
+package nonprofitbookkeeping.persistence.dao;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
@@ -7,11 +7,13 @@ import nonprofitbookkeeping.model.InventoryItem;
 import java.util.List;
 import java.util.Optional;
 
-/** Repository for {@link InventoryItem} entities. */
-public class InventoryRepository {
+/**
+ * DAO for {@link InventoryItem} entities.
+ */
+public class InventoryDao {
     private final EntityManager entityManager;
 
-    public InventoryRepository(EntityManager entityManager) {
+    public InventoryDao(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
@@ -27,7 +29,8 @@ public class InventoryRepository {
     }
 
     public List<InventoryItem> findAll() {
-        return entityManager.createQuery("SELECT i FROM InventoryItem i", InventoryItem.class).getResultList();
+        return entityManager.createQuery("SELECT i FROM InventoryItem i", InventoryItem.class)
+                .getResultList();
     }
 
     public Optional<InventoryItem> findById(String id) {
@@ -47,4 +50,3 @@ public class InventoryRepository {
         return false;
     }
 }
-

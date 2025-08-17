@@ -7,8 +7,7 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 import java.math.BigDecimal;
 
 /** Row for FUND 14 – balance of a single restricted / designated fund. */
-public final class FundRow
-{
+public final class FundRow extends ScaRowBase {
 	
 	private String fundName;
 	private BigDecimal startingBalance;

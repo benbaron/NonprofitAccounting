@@ -1,4 +1,4 @@
-package nonprofitbookkeeping.repository;
+package nonprofitbookkeeping.persistence;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
@@ -49,4 +49,3 @@ public class AccountingTransactionRepository {
         return false;
     }
 }
-

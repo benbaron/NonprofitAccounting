@@ -4,8 +4,7 @@
 
 package nonprofitbookkeeping.reports.datasource.scareports;
 
-public class SecondaryAccount2bBean
-{
+public class SecondaryAccount2bBean extends ScaRowBase {
 	
 	private String bankName;
 	private String accountNumber;
