@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 /**
  * Row representing a direct contribution from an individual or group.
  */
-public class DirectContributionRow
+public class DirectContributionRow implements SupplementalRecord
 {
 	private String from;
 	private String description;

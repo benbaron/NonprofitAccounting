@@ -12,7 +12,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class TransferOut10Bean
+public class TransferOut10Bean implements SupplementalRecord
 {
 	private BigDecimal _1_contact_info;
 	private BigDecimal a_the_corporate_office_or_officer_office_and_reason;

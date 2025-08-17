@@ -7,7 +7,7 @@ import java.math.BigDecimal;
  * Row representing an asset that does not fall into another category. It
  * stores a simple description alongside prior and current amounts.
  */
-public class OtherAssetRow
+public class OtherAssetRow implements SupplementalRecord
 {
 	private String description;
 	private BigDecimal priorAmount;

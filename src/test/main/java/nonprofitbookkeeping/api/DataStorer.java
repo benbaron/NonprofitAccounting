@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
 
@@ -53,6 +55,15 @@ public interface DataStorer
 	 * @param extension   the file extension filter (e.g. ".npbk" or "json")
 	 * @return a List of matching File instances; empty if none found or directory invalid
 	 */
-	List<File> listFiles(File directory, String extension);
+        List<File> listFiles(File directory, String extension);
+
+        /**
+         * Exposes the underlying {@link ObjectMapper} used for serialization. Implementations
+         * should configure the mapper to preserve type information for {@code SupplementalRecord}
+         * instances so they can be reconstructed during deserialization.
+         *
+         * @return the configured ObjectMapper
+         */
+        ObjectMapper getObjectMapper();
 	
 }

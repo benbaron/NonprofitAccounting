@@ -3,7 +3,7 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
 
-public class DonationRow
+public class DonationRow implements SupplementalRecord
 {
 	private String organizationName;
 	private String fedIdNumber;

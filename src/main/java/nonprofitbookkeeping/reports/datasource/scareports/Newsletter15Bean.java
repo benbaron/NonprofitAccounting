@@ -10,7 +10,7 @@ import java.util.List;
  * rows as well as numerous singleton fields describing subscription metrics
  * and income figures for the newsletter.
  */
-public class Newsletter15Bean
+public class Newsletter15Bean implements SupplementalRecord
 {
 	private List<Newsletter15Row> rows = new ArrayList<>();
 	

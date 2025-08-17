@@ -8,7 +8,7 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 /**
  * 
  */
-public class Balance3Beanv2
+public class Balance3Beanv2 implements SupplementalRecord
 {
 	
 }

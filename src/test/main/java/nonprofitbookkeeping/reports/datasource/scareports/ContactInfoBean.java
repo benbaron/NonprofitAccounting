@@ -6,7 +6,7 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.util.Date;
 
-public class ContactInfoBean
+public class ContactInfoBean implements SupplementalRecord
 {
 	// Top-level
 	private Date warrantEndDate;

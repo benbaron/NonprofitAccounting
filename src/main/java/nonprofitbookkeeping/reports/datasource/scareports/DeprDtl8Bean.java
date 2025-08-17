@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /**
  * 
  */
-public class DeprDtl8Bean
+public class DeprDtl8Bean implements SupplementalRecord
 {
 	ArrayList<DepreciationRow> rows;
 	

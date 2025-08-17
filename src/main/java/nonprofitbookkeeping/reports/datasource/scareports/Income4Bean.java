@@ -12,7 +12,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class Income4Bean
+public class Income4Bean implements SupplementalRecord
 {
 	private BigDecimal _1_contact_info;
 	private BigDecimal _2_a_primary_account;

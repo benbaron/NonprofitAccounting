@@ -12,7 +12,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class LiabilityDtl5bBean
+public class LiabilityDtl5bBean implements SupplementalRecord
 {
 	private BigDecimal _1_contact_info;
 	private BigDecimal contents_b59;

@@ -7,7 +7,7 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
 
-public class PrimaryAccountReconciliation2aBean
+public class PrimaryAccountReconciliation2aBean implements SupplementalRecord
 {
 	// Header info
 	private String bankName;

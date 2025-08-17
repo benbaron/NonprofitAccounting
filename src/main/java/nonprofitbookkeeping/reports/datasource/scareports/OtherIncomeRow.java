@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 /** Catch-all income row for ‘other’ revenue lines. */
 public final class OtherIncomeRow extends IncomeRowBase
-{
+ implements SupplementalRecord {
 	
 	public OtherIncomeRow()
 	{

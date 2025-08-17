@@ -13,7 +13,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class RegaliaSalesDtl7Bean
+public class RegaliaSalesDtl7Bean implements SupplementalRecord
 {
 	ArrayList<RegaliaSalesRow> rows;
 	

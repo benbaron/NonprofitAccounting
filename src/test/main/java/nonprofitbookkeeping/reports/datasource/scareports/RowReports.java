@@ -18,7 +18,7 @@ import java.util.function.Function;
  * - Computes (optional) totals
  * - Provides one-call builders per report
  */
-public final class RowReports
+public final class RowReports implements SupplementalRecord
 {
 	
 	private RowReports()

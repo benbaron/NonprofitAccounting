@@ -4,7 +4,7 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
 
-public class DepreciationRow
+public class DepreciationRow implements SupplementalRecord
 {
 	// Section identifier: "FIVE_YEAR" or "SEVEN_YEAR"
 	private String schedule;

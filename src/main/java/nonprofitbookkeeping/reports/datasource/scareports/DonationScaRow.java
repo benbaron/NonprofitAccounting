@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 /**
  * Row representing a donation received from an SCA group.
  */
-public class DonationScaRow
+public class DonationScaRow implements SupplementalRecord
 {
 	private String donorGroup;
 	private String description;

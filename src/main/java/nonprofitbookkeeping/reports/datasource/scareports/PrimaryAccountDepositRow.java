@@ -8,7 +8,7 @@ import java.math.BigDecimal;
  * statement. Each row contains the date of the deposit and the amount
  * of the deposit.
  */
-public class PrimaryAccountDepositRow
+public class PrimaryAccountDepositRow implements SupplementalRecord
 {
 	private String depositDate;
 	private BigDecimal amount;

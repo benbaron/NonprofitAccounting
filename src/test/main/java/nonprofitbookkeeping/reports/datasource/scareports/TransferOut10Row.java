@@ -1,7 +1,7 @@
 
 package nonprofitbookkeeping.reports.datasource.scareports;
 
-public class TransferOut10Row
+public class TransferOut10Row implements SupplementalRecord
 {
 	private String toAccountOrPayee;
 	private String reason;

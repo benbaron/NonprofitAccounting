@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 /**
  * 
  */
-public class TransferIn9Bean
+public class TransferIn9Bean implements SupplementalRecord
 {
 
 	/**

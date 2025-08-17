@@ -8,7 +8,7 @@ import java.math.BigDecimal;
  * the funds, the reason for the receivable, and the prior and current
  * amounts owed.
  */
-public class ReceivableRow
+public class ReceivableRow implements SupplementalRecord
 {
 	private String owedFrom;
 	private String reason;

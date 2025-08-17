@@ -7,7 +7,7 @@ import java.math.BigDecimal;
  * Row representing a transfer received from another SCA account within
  * the same kingdom. Tracks the branch/account name, check details and amount.
  */
-public class TransferInWithinKingdomRow
+public class TransferInWithinKingdomRow implements SupplementalRecord
 {
 	private String branchOrAccount;
 	private String checkNumber;

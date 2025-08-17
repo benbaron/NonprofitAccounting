@@ -8,7 +8,7 @@ import java.math.BigDecimal;
  * distinguishes between transfers from within the kingdom and those from
  * outside the kingdom.
  */
-public class TransferIn9Row
+public class TransferIn9Row implements SupplementalRecord
 {
 	private String section;
 	private String account;

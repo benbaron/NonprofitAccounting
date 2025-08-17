@@ -8,7 +8,7 @@ import java.math.BigDecimal;
  * deferred revenue or standard payables. Similar structure to a payable,
  * tracking who is owed, the reason, and the prior/current amounts.
  */
-public class OtherLiabilityRow
+public class OtherLiabilityRow implements SupplementalRecord
 {
 	private String owedTo;
 	private String reason;

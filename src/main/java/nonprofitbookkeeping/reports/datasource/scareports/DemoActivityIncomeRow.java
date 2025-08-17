@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 /**
  * Row representing income from demonstrations and activity fees.
  */
-public class DemoActivityIncomeRow
+public class DemoActivityIncomeRow implements SupplementalRecord
 {
 	private String from;
 	private String activity;

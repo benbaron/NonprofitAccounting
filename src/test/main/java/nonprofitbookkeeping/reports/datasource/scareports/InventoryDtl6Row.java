@@ -3,7 +3,7 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
 
-public class InventoryDtl6Row
+public class InventoryDtl6Row implements SupplementalRecord
 {
 	private String category;
 	private String itemDescription;

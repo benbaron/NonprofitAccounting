@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 /**
  * Row representing adjusted gross income for a single event.
  */
-public class AdjustedGrossEventIncomeRow
+public class AdjustedGrossEventIncomeRow implements SupplementalRecord
 {
 	private String eventName;
 	private String itemsOrCount;

@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 /**
  * Row representing a transfer to an SCA account outside the kingdom.
  */
-public class TransferOutOutsideKingdomRow
+public class TransferOutOutsideKingdomRow implements SupplementalRecord
 {
 	private String kingdomAndBranch;
 	private String reason;

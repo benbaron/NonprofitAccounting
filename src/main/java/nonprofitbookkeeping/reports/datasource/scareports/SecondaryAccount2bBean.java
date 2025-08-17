@@ -4,7 +4,7 @@
 
 package nonprofitbookkeeping.reports.datasource.scareports;
 
-public class SecondaryAccount2bBean
+public class SecondaryAccount2bBean implements SupplementalRecord
 {
 	
 	private String bankName;

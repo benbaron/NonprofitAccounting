@@ -8,7 +8,7 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 /**
  * 
  */
-public class ContactInfo
+public class ContactInfo implements SupplementalRecord
 {
     private String branch;
     private String warrantEndDate;

@@ -13,7 +13,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class InventoryDtl6Bean
+public class InventoryDtl6Bean implements SupplementalRecord
 {
 	ArrayList<InventoryDtl6Row> rows;
 	private BigDecimal _1_contact_info;
