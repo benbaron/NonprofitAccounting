@@ -13,8 +13,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class RegaliaSalesDtl7Bean
-{
+public class RegaliaSalesDtl7Bean extends ScaRowBase {
 	ArrayList<RegaliaSalesRow> rows;
 	
 	private BigDecimal _10_b_transfer_out;

@@ -12,8 +12,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class IncomeDtl11aBean
-{
+public class IncomeDtl11aBean extends ScaRowBase {
 	private BigDecimal _1_contact_info;
 	private BigDecimal _1a_fundraising_income_internal_event;
 	private BigDecimal _1a_fundraising_income_internal_event_2;

@@ -10,8 +10,7 @@ import java.math.BigDecimal;
 /**
  * 
  */
-public class TransferIn9Bean
-{
+public class TransferIn9Bean extends ScaRowBase {
 
 	/**
 	 * @param one

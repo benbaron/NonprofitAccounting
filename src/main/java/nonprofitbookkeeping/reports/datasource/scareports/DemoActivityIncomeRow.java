@@ -6,8 +6,7 @@ import java.math.BigDecimal;
 /**
  * Row representing income from demonstrations and activity fees.
  */
-public class DemoActivityIncomeRow
-{
+public class DemoActivityIncomeRow extends ScaRowBase {
 	private String from;
 	private String activity;
 	private BigDecimal amount;

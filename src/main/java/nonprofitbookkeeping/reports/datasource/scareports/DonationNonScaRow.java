@@ -6,8 +6,7 @@ import java.math.BigDecimal;
 /**
  * Row representing a donation received from a non-SCA individual or organization.
  */
-public class DonationNonScaRow
-{
+public class DonationNonScaRow extends ScaRowBase {
 	private String donorName;
 	private String description;
 	private String notes;

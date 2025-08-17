@@ -9,8 +9,7 @@ import java.util.ArrayList;
 /**
  * 
  */
-public class DeprDtl8Bean
-{
+public class DeprDtl8Bean extends ScaRowBase {
 	ArrayList<DepreciationRow> rows;
 	
 }
