@@ -3,8 +3,7 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
 
-public class InsuranceExpenseRow
-{
+public class InsuranceExpenseRow extends ScaRowBase {
 	private String organizationOrPerson;
 	private String checkNumber;
 	private String checkDate;

@@ -6,8 +6,7 @@ import java.math.BigDecimal;
 /**
  * Row representing adjusted gross income for a single event.
  */
-public class AdjustedGrossEventIncomeRow
-{
+public class AdjustedGrossEventIncomeRow extends ScaRowBase {
 	private String eventName;
 	private String itemsOrCount;
 	private BigDecimal amount;

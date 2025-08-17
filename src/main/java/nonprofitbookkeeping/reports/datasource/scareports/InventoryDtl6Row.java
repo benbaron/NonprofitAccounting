@@ -3,8 +3,7 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
 
-public class InventoryDtl6Row
-{
+public class InventoryDtl6Row extends ScaRowBase {
 	private String category;
 	private String itemDescription;
 	private String skuOrId;

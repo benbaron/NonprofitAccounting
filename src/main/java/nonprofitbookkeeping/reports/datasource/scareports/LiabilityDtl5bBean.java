@@ -13,8 +13,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class LiabilityDtl5bBean
-{
+public class LiabilityDtl5bBean extends ScaRowBase {
 	ArrayList<LiabilityDtl5bRow> rows;
 	
 	private BigDecimal _1_contact_info;

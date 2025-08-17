@@ -1,14 +1,16 @@
 package nonprofitbookkeeping.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
+
 import nonprofitbookkeeping.core.JacksonDataStorer;
 import nonprofitbookkeeping.model.AccountingTransaction;
+import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.Donor;
 import nonprofitbookkeeping.model.InventoryItem;
 import nonprofitbookkeeping.model.SaleRecord;
+
 import nonprofitbookkeeping.model.reports.ReportConfiguration;
 import nonprofitbookkeeping.model.scaledger.LedgerContainer;
 import nonprofitbookkeeping.model.scaledger.LedgerEntry;
@@ -16,10 +18,13 @@ import nonprofitbookkeeping.persistence.dao.LedgerEntryDao;
 import nonprofitbookkeeping.persistence.dao.ReportConfigurationDao;
 import nonprofitbookkeeping.persistence.entity.LedgerEntryEntity;
 import nonprofitbookkeeping.persistence.entity.SupplementalRecordEntity;
+
 import nonprofitbookkeeping.repository.AccountingTransactionRepository;
 import nonprofitbookkeeping.repository.DonorRepository;
 import nonprofitbookkeeping.repository.InventoryRepository;
 import nonprofitbookkeeping.repository.SaleRecordRepository;
+import nonprofitbookkeeping.repository.SupplementalRecordRepository;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -41,15 +46,29 @@ public class JsonToDatabaseMigration {
     private final LedgerEntryDao ledgerEntryDao;
     private final ReportConfigurationDao reportConfigDao;
 
+    private final SupplementalRecordRepository supplementalRecordRepository;
+
+    public JsonToDatabaseMigration(DatabaseService db) {
+        this.donorRepository = db.getDonorRepository();
+        this.inventoryRepository = db.getInventoryRepository();
+        this.saleRepository = db.getSaleRecordRepository();
+        this.transactionRepository = db.getTransactionRepository();
+    }
+
+
     public JsonToDatabaseMigration() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("nonprofitPU");
-        EntityManager em = emf.createEntityManager();
+
+        EntityManager em = DatabaseManager.getEntityManager();
         this.donorRepository = new DonorRepository(em);
         this.inventoryRepository = new InventoryRepository(em);
         this.saleRepository = new SaleRecordRepository(em);
         this.transactionRepository = new AccountingTransactionRepository(em);
         this.ledgerEntryDao = new LedgerEntryDao(em);
         this.reportConfigDao = new ReportConfigurationDao(em);
+
+        this.supplementalRecordRepository = new SupplementalRecordRepository(em);
+
+
     }
 
     /** Migrate donors from a JSON file. */
@@ -130,6 +149,19 @@ public class JsonToDatabaseMigration {
         List<ReportConfiguration> configs = mapper.readValue(configJson,
                 mapper.getTypeFactory().constructCollectionType(List.class, ReportConfiguration.class));
         configs.forEach(reportConfigDao::save);
+
     }
 }
 
+
+    /**
+     * Convenience method that reads an entire company data archive (the format
+     * produced by {@link JacksonDataStorer}) and persists its contents to the
+     * database using the configured repositories.
+     */
+    public void migrateCompanyArchive(File companyZip) throws IOException {
+        Company company = dataStorer.loadData(Company.class, companyZip);
+        DatabaseService db = new DatabaseService();
+        db.saveCompany(company);
+    }
+}

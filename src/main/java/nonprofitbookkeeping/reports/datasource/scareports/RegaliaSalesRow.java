@@ -3,8 +3,7 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 // RegaliaSalesRow.java
 import java.math.BigDecimal;
 
-public class RegaliaSalesRow
-{
+public class RegaliaSalesRow extends ScaRowBase {
 	// Section values: "PURCHASE", "SALE", "ADJUSTMENT"
 	private String section;
 	private String entryDate; // keep as String to allow free-form dates

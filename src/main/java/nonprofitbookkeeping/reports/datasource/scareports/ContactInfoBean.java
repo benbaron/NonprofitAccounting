@@ -6,8 +6,7 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.util.Date;
 
-public class ContactInfoBean
-{
+public class ContactInfoBean extends ScaRowBase {
 	// Top-level
 	private Date warrantEndDate;
 	
