@@ -77,6 +77,9 @@ public final class AccountingEntry implements Serializable
 	 * reference its own account directly.
 	 */
         @JsonProperty private String accountName;
+        /** Identifier of an optional supplemental record linked to this entry. */
+        @JsonProperty private String supplementalRecordId;
+
 	
 	// Future versions can include this.
         @ManyToOne(fetch = FetchType.LAZY)
@@ -98,8 +101,9 @@ public final class AccountingEntry implements Serializable
 		this.amount = null;
 		this.accountSide = null;
 		this.accountNumber = "";
-		this.accountName = null;
-		this.fundNumber = null;
+                this.accountName = null;
+                this.fundNumber = null;
+                this.supplementalRecordId = null;
 	}
 
 	
@@ -133,8 +137,9 @@ public final class AccountingEntry implements Serializable
 		this.amount = checkNotNull(amount);
 		this.accountNumber = checkNotNull(accountNumber);
 		this.accountSide = checkNotNull(accountSide);
-		this.accountName = accountName;
-		this.fundNumber = null;
+                this.accountName = accountName;
+                this.fundNumber = null;
+                this.supplementalRecordId = null;
 	}
 	
 	
@@ -223,10 +228,30 @@ public final class AccountingEntry implements Serializable
 	 *
 	 * @param accountName the name to associate with the entry
 	 */
-	public void setAccountName(String accountName)
-	{
-		this.accountName = accountName;
-	}
+        public void setAccountName(String accountName)
+        {
+                this.accountName = accountName;
+        }
+
+        /**
+         * Gets the identifier of the supplemental record linked to this entry, if any.
+         *
+         * @return supplemental record id or {@code null}
+         */
+        public String getSupplementalRecordId()
+        {
+                return this.supplementalRecordId;
+        }
+
+        /**
+         * Associates this entry with a supplemental record identifier.
+         *
+         * @param supplementalRecordId identifier of the supplemental record
+         */
+        public void setSupplementalRecordId(String supplementalRecordId)
+        {
+                this.supplementalRecordId = supplementalRecordId;
+        }
 	
 	/**
 	 * Retrieves the {@link Account} object associated with this entry's account number
