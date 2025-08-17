@@ -47,6 +47,9 @@ import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.helpers.FocusCommitTextFieldTableCell;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * JavaFX panel for creating a new general journal transaction.
  * <p>
@@ -56,6 +59,7 @@ import nonprofitbookkeeping.ui.helpers.FocusCommitTextFieldTableCell;
  */
 public class GeneralJournalEntryPanelFX extends BorderPane
 {
+        private static final Logger LOGGER = LoggerFactory.getLogger(GeneralJournalEntryPanelFX.class);
 	
 	/** Model for a single entry row. */
 	public static final class Line
@@ -121,12 +125,12 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 		
 	}
 	
-	/** Convenience constructor printing the transaction to stdout. */
-	public GeneralJournalEntryPanelFX()
-	{
-		this(tx -> System.out.println(tx));
-		
-	}
+        /** Convenience constructor logging the transaction. */
+        public GeneralJournalEntryPanelFX()
+        {
+                this(tx -> LOGGER.debug("{}", tx));
+
+        }
 	
 	/**
 	 * buildUI
