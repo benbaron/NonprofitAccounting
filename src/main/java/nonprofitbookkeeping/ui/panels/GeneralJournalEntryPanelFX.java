@@ -32,6 +32,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Separator;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -46,6 +47,7 @@ import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.helpers.FocusCommitTextFieldTableCell;
+import nonprofitbookkeeping.service.SupplementalRecordService;
 
 /**
  * JavaFX panel for creating a new general journal transaction.
@@ -58,15 +60,19 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 {
 	
 	/** Model for a single entry row. */
-	public static final class Line
-	{
-		public StringProperty account = new SimpleStringProperty("");
-		public ObjectProperty<BigDecimal> debit =
-				new SimpleObjectProperty<>(BigDecimal.ZERO);
-		public ObjectProperty<BigDecimal> credit =
-				new SimpleObjectProperty<>(BigDecimal.ZERO);
-		
-	}
+        public static final class Line
+        {
+                public StringProperty account = new SimpleStringProperty("");
+                public ObjectProperty<BigDecimal> debit =
+                                new SimpleObjectProperty<>(BigDecimal.ZERO);
+                public ObjectProperty<BigDecimal> credit =
+                                new SimpleObjectProperty<>(BigDecimal.ZERO);
+                /** Optional supplemental record identifier. */
+                public StringProperty supplementalRecordId = new SimpleStringProperty("");
+                /** Unique key used for persistence of supplemental links. */
+                public final String entryKey = java.util.UUID.randomUUID().toString();
+
+        }
 	
 	private final ObservableList<Line> lines = FXCollections.observableArrayList();
 	private final TableView<Line> table = new TableView<>(this.lines);
@@ -77,7 +83,8 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 	private final TextField clearBankField = new TextField();
 	private final TextField budgetTrackingField = new TextField();
 	private final TextField associatedFundNameField = new TextField();
-	private final Button saveBtn = new Button("Save");
+        private final Button saveBtn = new Button("Save");
+        private final SupplementalRecordService supplementalService = new SupplementalRecordService();
 	private final Label debitTotalLbl = new Label();
 	private final Label creditTotalLbl = new Label();
 	private final ChartOfAccounts coa =
@@ -133,9 +140,10 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 	 */
 	@SuppressWarnings("unchecked") private void buildUI()
 	{
-		this.table.getColumns().addAll(accountCol(),
-				amtCol("Debit", l -> l.debit),
-				amtCol("Credit", l -> l.credit));
+                this.table.getColumns().addAll(accountCol(),
+                                amtCol("Debit", l -> l.debit),
+                                amtCol("Credit", l -> l.credit),
+                                supplementalCol());
 		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 		this.table.setEditable(true);
 		this.table.setRowFactory(tv -> {
@@ -169,6 +177,24 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 			
 		});
 		
+                Button attach = new Button("Attach Record");
+                attach.setOnAction(e -> {
+                        Line sel = this.table.getSelectionModel().getSelectedItem();
+
+                        if (sel != null)
+                        {
+                                TextInputDialog dialog = new TextInputDialog(sel.supplementalRecordId.get());
+                                dialog.setTitle("Supplemental Record");
+                                dialog.setHeaderText("Link supplemental record to entry");
+                                dialog.setContentText("Record ID:");
+                                dialog.showAndWait().ifPresent(id -> {
+                                        sel.supplementalRecordId.set(id);
+                                        this.supplementalService.linkEntry(sel.entryKey, id);
+                                });
+                        }
+
+                });
+
 		this.saveBtn.setOnAction(e -> persist());
 		
 		GridPane top = new GridPane();
@@ -184,9 +210,9 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 		
 		setTop(top);
 		setCenter(this.table);
-		ToolBar bottom = new ToolBar(	add, del, new Separator(), this.saveBtn,
-										new Separator(), new Label("Debit:"), this.debitTotalLbl,
-										new Label("Credit:"), this.creditTotalLbl);
+                ToolBar bottom = new ToolBar(   add, del, attach, new Separator(), this.saveBtn,
+                                                                                new Separator(), new Label("Debit:"), this.debitTotalLbl,
+                                                                                new Label("Credit:"), this.creditTotalLbl);
 		setBottom(bottom);
 		
 	}
@@ -342,15 +368,23 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 			
 			if (l.debit.get().signum() > 0)
 			{
-				entries.add(new AccountingEntry(l.debit.get(), acctNum,
-												AccountSide.DEBIT, acctName));
+				{
+                                AccountingEntry ae = new AccountingEntry(l.debit.get(), acctNum,
+                                                                                                AccountSide.DEBIT, acctName);
+                                ae.setSupplementalRecordId(l.supplementalRecordId.get());
+                                entries.add(ae);
+                                }
 				debit = debit.add(l.debit.get());
 			}
 			
 			if (l.credit.get().signum() > 0)
 			{
-				entries.add(new AccountingEntry(l.credit.get(), acctNum,
-												AccountSide.CREDIT, acctName));
+				{
+                                AccountingEntry ae = new AccountingEntry(l.credit.get(), acctNum,
+                                                                                                AccountSide.CREDIT, acctName);
+                                ae.setSupplementalRecordId(l.supplementalRecordId.get());
+                                entries.add(ae);
+                                }
 				credit = credit.add(l.credit.get());
 			}
 			
@@ -428,4 +462,11 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 		
 	}
 	
+
+        private TableColumn<Line, String> supplementalCol()
+        {
+                TableColumn<Line, String> col = new TableColumn<>("Supplement");
+                col.setCellValueFactory(cd -> cd.getValue().supplementalRecordId);
+                return col;
+        }
 }
