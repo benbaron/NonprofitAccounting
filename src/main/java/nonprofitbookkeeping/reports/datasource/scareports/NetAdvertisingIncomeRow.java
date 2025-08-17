@@ -6,8 +6,7 @@ import java.math.BigDecimal;
 /**
  * Row representing net income from advertising.
  */
-public class NetAdvertisingIncomeRow
-{
+public class NetAdvertisingIncomeRow extends ScaRowBase {
 	private String description;
 	private String itemsOrCount;
 	private BigDecimal amount;

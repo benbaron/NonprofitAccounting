@@ -2,13 +2,15 @@
 package nonprofitbookkeeping.service;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import nonprofitbookkeeping.model.InventoryItem;
-import nonprofitbookkeeping.repository.InventoryRepository;
+
+import nonprofitbookkeeping.persistence.PersistenceManager;
+import nonprofitbookkeeping.persistence.dao.InventoryDao;
+
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,16 +19,15 @@ import java.util.List;
 public class InventoryService
 {
 	
-	private final InventoryRepository repository;
+        private final InventoryDao repository;
 	
 	public InventoryService()
 	{
-		EntityManagerFactory emf =
-			Persistence.createEntityManagerFactory("nonprofitPU");
-		EntityManager em = emf.createEntityManager();
-		this.repository = new InventoryRepository(em);
+                EntityManager em = PersistenceManager.getEntityManager();
+                this.repository = new InventoryDao(em);
 		
 	}
+
 	
 	/** List all inventory items. */
 	public List<InventoryItem> listItems()
@@ -121,15 +122,29 @@ public class InventoryService
 		// no-op
 	}
 	
-	/**
-	 * @return
-	 */
-	public static List<String[]> getInventoryItems()
-	{
-		// TODO Auto-generated method stub
-		return null;
-		
-	}
+        /**
+         * Returns all inventory items formatted as string arrays for legacy callers.
+         * Each array contains the item's id, name, and cost formatted with two
+         * decimal places. A null cost is represented as {@code 0.00}.
+         *
+         * @return list of inventory items in string array format
+         */
+        public static List<String[]> getInventoryItems()
+        {
+                InventoryService service = new InventoryService();
+                List<String[]> rows = new ArrayList<>();
+
+                for (InventoryItem item : service.listItems())
+                {
+                        String cost = (item.getCost() != null)
+                                ? item.getCost().setScale(2, RoundingMode.HALF_UP).toString()
+                                : "0.00";
+                        rows.add(new String[] { item.getId(), item.getName(), cost });
+                }
+
+                return rows;
+
+        }
 	
 }
 

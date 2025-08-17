@@ -6,8 +6,7 @@ import java.math.BigDecimal;
 /**
  * Row representing a direct contribution from an individual or group.
  */
-public class DirectContributionRow
-{
+public class DirectContributionRow extends ScaRowBase {
 	private String from;
 	private String description;
 	private BigDecimal amount;

@@ -12,8 +12,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class Income4Bean
-{
+public class Income4Bean extends ScaRowBase {
 	private BigDecimal _1_contact_info;
 	private BigDecimal _2_a_primary_account;
 	private BigDecimal _2_b_secondary_accounts;

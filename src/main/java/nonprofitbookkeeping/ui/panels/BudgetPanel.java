@@ -22,6 +22,9 @@ import java.util.Objects;
 import java.util.Vector;
 import java.util.function.BiConsumer; // Added for refactoring focus listeners
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A Swing {@link JDialog} that provides a user interface for creating and editing {@link Budget} objects.
  * It allows users to define overall budget properties (name, fiscal year, description, associated fund, currency)
@@ -34,7 +37,9 @@ import java.util.function.BiConsumer; // Added for refactoring focus listeners
  */
 public class BudgetPanel extends JDialog
 {
-	/** The current {@link Budget} object being created or edited in this dialog. */
+        private static final Logger LOGGER = LoggerFactory.getLogger(BudgetPanel.class);
+
+        /** The current {@link Budget} object being created or edited in this dialog. */
 	private Budget currentBudget;
 	/** The {@link ChartOfAccounts} instance used to provide account information for budget lines. */
 	private ChartOfAccounts chartOfAccounts;
@@ -604,8 +609,8 @@ public class BudgetPanel extends JDialog
 		// mockCompanyDir, budgetToEdit);
 		// panel.setVisible(true);
 		// });
-		System.out.println(
-			"BudgetPanel main method needs adaptation for new constructor dependencies (BudgetService, companyDirectory).");
-	}
+                LOGGER.info(
+                        "BudgetPanel main method needs adaptation for new constructor dependencies (BudgetService, companyDirectory).");
+        }
 	
 }

@@ -4,6 +4,9 @@ package nonprofitbookkeeping.model.reports;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nonprofitbookkeeping.ui.helpers.DateSelectionMode; // Import the top-level enum
@@ -15,11 +18,14 @@ import nonprofitbookkeeping.ui.helpers.DateSelectionMode; // Import the top-leve
  * Lombok's {@code @Data} and {@code @NoArgsConstructor} are used for boilerplate code generation.
  */
 @Data
-@NoArgsConstructor public class ReportConfiguration
-{
+@NoArgsConstructor
+@Entity
+@Table(name = "report_configurations")
+public class ReportConfiguration {
 	
-	/** A unique identifier for this report configuration, typically a UUID. */
-	private String configurationId;
+        /** A unique identifier for this report configuration, typically a UUID. */
+        @Id
+        private String configurationId;
 	/** A user-friendly name for this saved report configuration (e.g., "Q1 Income Statement - Operations Fund"). */
 	private String userGivenName;
 	/** The type of report to generate (e.g., "income_statement", "balance_sheet"). */

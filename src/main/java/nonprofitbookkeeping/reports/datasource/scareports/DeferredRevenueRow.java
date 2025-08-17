@@ -7,8 +7,7 @@ import java.math.BigDecimal;
  * Row representing a single deferred revenue item. Each entry corresponds to
  * an event for which revenue has been received but not yet earned.
  */
-public class DeferredRevenueRow
-{
+public class DeferredRevenueRow extends ScaRowBase {
 	private String eventName;
 	private BigDecimal priorAmount;
 	private BigDecimal currentAmount;

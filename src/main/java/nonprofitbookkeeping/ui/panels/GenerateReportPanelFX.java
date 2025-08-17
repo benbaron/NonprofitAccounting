@@ -15,6 +15,7 @@ import nonprofitbookkeeping.reports.ReportRowRegistry.RowDefinition;
 import nonprofitbookkeeping.ui.actions.GenerateReportsAction;
 import nonprofitbookkeeping.ui.panels.ReportRowPanel;
 
+
 import java.io.File;
 import java.time.LocalDate;
 import java.util.Map;
@@ -176,5 +177,6 @@ public class GenerateReportPanelFX extends BorderPane
                 });
 
         }
+
 
 }

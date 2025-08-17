@@ -16,6 +16,10 @@ import javafx.stage.Stage;
 import nonprofitbookkeeping.model.BeanShell;
 import nonprofitbookkeeping.preferences.PreferencesManager;
 import nonprofitbookkeeping.ui.actions.scaledger.SCALedgerDataLoader;
+import nonprofitbookkeeping.ui.helpers.AlertBox;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * JavaFX replacement for the Swing {@code InputFileAction}. Opens a native file
@@ -27,9 +31,11 @@ import nonprofitbookkeeping.ui.actions.scaledger.SCALedgerDataLoader;
  */
 public class InputFileActionFX implements EventHandler<ActionEvent>
 {
-	
-	/** The owner Stage for the FileChooser dialog, ensuring proper modality. */
-	private final Stage owner;
+
+        /** The owner Stage for the FileChooser dialog, ensuring proper modality. */
+        private final Stage owner;
+
+        private static final Logger LOGGER = LoggerFactory.getLogger(InputFileActionFX.class);
 	
 	/**
      * Constructs a new {@code InputFileActionFX}.
@@ -105,10 +111,11 @@ public class InputFileActionFX implements EventHandler<ActionEvent>
 			Map<String, Object> beans = SCALedgerDataLoader.loadData(mappingFile, selected);
 			BeanShell.setBeans(beans);
 		}
-		catch (Exception ex)
-		{
-			ex.printStackTrace();
-		}
+                catch (Exception ex)
+                {
+                        LOGGER.error("Failed to load data from {}", selected, ex);
+                        AlertBox.showError(this.owner, "Failed to load data: " + ex.getMessage());
+                }
 		
 	}
 	
@@ -116,9 +123,11 @@ public class InputFileActionFX implements EventHandler<ActionEvent>
      * Prints the current working directory (obtained from {@code System.getProperty("user.dir")})
      * to standard output. This method is static and can be called without an instance.
      */
-	private static void printCurrentWorkingDirectory()
-	{
-		System.out.println("Current working directory: " + System.getProperty("user.dir"));
-	}
+        private static void printCurrentWorkingDirectory()
+        {
+                LoggerFactory.getLogger(InputFileActionFX.class)
+                                .debug("Current working directory: {}",
+                                                System.getProperty("user.dir"));
+        }
 	
 }
