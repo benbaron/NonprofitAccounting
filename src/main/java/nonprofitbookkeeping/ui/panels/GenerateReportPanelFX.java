@@ -12,8 +12,10 @@ import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.reports.ReportTemplateScanner;
 import nonprofitbookkeeping.reports.datasource.scareports.RegaliaSalesDtl7Bean;
 import nonprofitbookkeeping.reports.datasource.scareports.RegaliaSalesRow;
+import nonprofitbookkeeping.reports.datasource.scareports.FeeHonorariumRow;
 import nonprofitbookkeeping.ui.actions.GenerateReportsAction;
 import nonprofitbookkeeping.ui.panels.scareports.RegaliaSalesPanelFX;
+import nonprofitbookkeeping.ui.panels.scareports.FeeHonorariumRowPanelFX;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -80,21 +82,30 @@ public class GenerateReportPanelFX extends BorderPane
 		VBox centerBox = new VBox(10, outputPane);
 		setCenter(centerBox);
 		
-		final RegaliaSalesPanelFX[] regaliaPanel = new RegaliaSalesPanelFX[1];
+                final RegaliaSalesPanelFX[] regaliaPanel = new RegaliaSalesPanelFX[1];
+                final FeeHonorariumRowPanelFX[] feePanel = new FeeHonorariumRowPanelFX[1];
 		
 		selector.setOnAction(e -> {
 			String key = templates.get(selector.getValue());
 			
-			if (key != null && key.contains("regalia_sales_dtl_7"))
-			{
-				regaliaPanel[0] = new RegaliaSalesPanelFX();
-				customPanelContainer.getChildren().setAll(regaliaPanel[0]);
-			}
-			else
-			{
-				regaliaPanel[0] = null;
-				customPanelContainer.getChildren().clear();
-			}
+                        if (key != null && key.contains("regalia_sales_dtl_7"))
+                        {
+                                regaliaPanel[0] = new RegaliaSalesPanelFX();
+                                feePanel[0] = null;
+                                customPanelContainer.getChildren().setAll(regaliaPanel[0]);
+                        }
+                        else if (key != null && key.contains("expense_dtl_12a"))
+                        {
+                                feePanel[0] = new FeeHonorariumRowPanelFX();
+                                regaliaPanel[0] = null;
+                                customPanelContainer.getChildren().setAll(feePanel[0]);
+                        }
+                        else
+                        {
+                                regaliaPanel[0] = null;
+                                feePanel[0] = null;
+                                customPanelContainer.getChildren().clear();
+                        }
 			
 		});
 		
@@ -124,15 +135,20 @@ public class GenerateReportPanelFX extends BorderPane
 			
 			context.setReportType(key);
 			
-			if (regaliaPanel[0] != null &&
-				key.contains("regalia_sales_dtl_7"))
-			{
-				List<RegaliaSalesRow> rows = regaliaPanel[0].getRows();
-				RegaliaSalesDtl7Bean bean = new RegaliaSalesDtl7Bean();
-				bean.setRows(new ArrayList<>(rows));
-				context.setBeans(java.util.Collections
-					.singletonList(bean));
-			}
+                        if (regaliaPanel[0] != null &&
+                                key.contains("regalia_sales_dtl_7"))
+                        {
+                                List<RegaliaSalesRow> rows = regaliaPanel[0].getRows();
+                                RegaliaSalesDtl7Bean bean = new RegaliaSalesDtl7Bean();
+                                bean.setRows(new ArrayList<>(rows));
+                                context.setBeans(java.util.Collections
+                                        .singletonList(bean));
+                        }
+                        else if (feePanel[0] != null && key.contains("expense_dtl_12a"))
+                        {
+                                List<FeeHonorariumRow> rows = feePanel[0].getRows();
+                                context.setBeans(new ArrayList<>(rows));
+                        }
 			
 			try
 			{
