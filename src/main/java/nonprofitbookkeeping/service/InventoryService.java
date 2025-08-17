@@ -3,8 +3,10 @@ package nonprofitbookkeeping.service;
 
 import jakarta.persistence.EntityManager;
 import nonprofitbookkeeping.model.InventoryItem;
-import nonprofitbookkeeping.persistence.EntityManagerProvider;
-import nonprofitbookkeeping.persistence.InventoryRepository;
+
+import nonprofitbookkeeping.persistence.PersistenceManager;
+import nonprofitbookkeeping.persistence.dao.InventoryDao;
+
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -16,14 +18,15 @@ import java.util.List;
 public class InventoryService
 {
 	
-	private final InventoryRepository repository;
+        private final InventoryDao repository;
 	
-        public InventoryService()
-        {
-                EntityManager em = EntityManagerProvider.getEntityManager();
-                this.repository = new InventoryRepository(em);
+	public InventoryService()
+	{
+                EntityManager em = PersistenceManager.getEntityManager();
+                this.repository = new InventoryDao(em);
+		
+	}
 
-        }
 	
 	/** List all inventory items. */
 	public List<InventoryItem> listItems()
