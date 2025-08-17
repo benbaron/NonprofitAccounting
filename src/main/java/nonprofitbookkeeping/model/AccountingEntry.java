@@ -4,6 +4,14 @@ package nonprofitbookkeeping.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -12,22 +20,27 @@ import static com.google.common.base.Preconditions.*;
 
 /**
  * Represents an Accounting Entry.
- * The transaction reference is set automatically when an 
+ * The transaction reference is set automatically when an
  * AccountingEntry is passed to the transaction constructor.
  * Once the transaction is set, it can't be changed.
  */
-public final class AccountingEntry implements Serializable
-{
+@Entity
+@Table(name = "accounting_entries")
+public class AccountingEntry implements Serializable {
 	
 	/**
 	 * serialVersionUID : long
 	 */
 	private static final long serialVersionUID = 5837792781542533633L;
 	
-	@JsonProperty final private BigDecimal amount;
-	@JsonProperty final private AccountSide accountSide;
-	@JsonProperty private String accountNumber;
-	@JsonProperty private String fundNumber;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
+
+        @JsonProperty private BigDecimal amount;
+        @JsonProperty private AccountSide accountSide;
+        @JsonProperty private String accountNumber;
+        @JsonProperty private String fundNumber;
 	/**
 	 * @return the fundNumber
 	 */
@@ -55,7 +68,10 @@ public final class AccountingEntry implements Serializable
 	@JsonProperty private String accountName;
 	
 	// Future versions can include this.
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY) private AccountingTransaction transaction;
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "transaction_id")
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+        private AccountingTransaction transaction;
 	
 	// Indicates if the transaction was set
 	@JsonProperty private boolean freeze = false;
@@ -65,8 +81,8 @@ public final class AccountingEntry implements Serializable
 	 * Default constructor for Jackson deserialization.
 	 * Initializes amount, accountSide to null and accountNumber to an empty string.
 	 */
-	AccountingEntry()
-	{
+        public AccountingEntry()
+        {
 		this.amount = null;
 		this.accountSide = null;
 		this.accountNumber = "";

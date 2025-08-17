@@ -5,12 +5,16 @@ import javax.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapKeyColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -38,11 +42,13 @@ public class AccountingTransaction implements Serializable
         @JsonProperty private int id;
 
         /** The set of accounting entries that make up this transaction. Must not be null or empty. */
-        @Transient
+        @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL, orphanRemoval = true)
         @JsonProperty private Set<AccountingEntry> entries;
 
         /** Additional information or metadata about the transaction, stored as key-value pairs. */
-        @Transient
+        @ElementCollection
+        @JoinColumn(name = "transaction_id")
+        @MapKeyColumn(name = "info_key")
         @JsonProperty private Map<String, String> info;
 
         /** Key used within {@link #info} to store the record type. */
