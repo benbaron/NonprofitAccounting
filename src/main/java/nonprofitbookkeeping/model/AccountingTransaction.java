@@ -5,12 +5,7 @@ import javax.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -38,8 +33,12 @@ public class AccountingTransaction implements Serializable
         @JsonProperty private int id;
 
         /** The set of accounting entries that make up this transaction. Must not be null or empty. */
-        @Transient
-        @JsonProperty private Set<AccountingEntry> entries;
+        @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+        @JsonProperty private Set<AccountingEntry> entries = new HashSet<>();
+
+        /** Supplemental key/value records tied to this transaction. */
+        @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+        private Set<SupplementalRecord> supplementalRecords = new HashSet<>();
 
         /** Additional information or metadata about the transaction, stored as key-value pairs. */
         @Transient
@@ -66,12 +65,13 @@ public class AccountingTransaction implements Serializable
 	/**  
 	 * Constructor AccountingTransaction
 	 */
-	public AccountingTransaction()
-	{
-		this.id = 0;
-		this.entries = null;
-		this.info = null;
-		this.bookingDateTimestamp = 0;
+        public AccountingTransaction()
+        {
+                this.id = 0;
+                this.entries = new HashSet<>();
+                this.supplementalRecords = new HashSet<>();
+                this.info = null;
+                this.bookingDateTimestamp = 0;
 		
 		this.date = "";
 		this.memo = "";
@@ -104,11 +104,12 @@ public class AccountingTransaction implements Serializable
 	{
 		
 		// Ensure immutability for collections passed in
-		this.entries = Collections
-			.unmodifiableSet(new HashSet<>(checkNotNull(entries,
-				"entries cannot be null")));
-		this.info = (info == null) ? Collections.emptyMap() :
-			Collections.unmodifiableMap(new HashMap<>(info));
+                this.entries = new HashSet<>(checkNotNull(entries,
+                                "entries cannot be null"));
+                this.entries.forEach(e -> e.setTransaction(this));
+                this.supplementalRecords = new HashSet<>();
+                this.info = (info == null) ? new HashMap<>() :
+                        new HashMap<>(info);
 		
 		this.bookingDateTimestamp = bookingDateTimestamp;
 		
@@ -126,20 +127,48 @@ public class AccountingTransaction implements Serializable
 	 * Gets the set of accounting entries that make up this transaction.
 	 * @return An unmodifiable set of accounting entries.
 	 */
-	public Set<AccountingEntry> getEntries()
-	{
-		return this.entries;
-	}
+        public Set<AccountingEntry> getEntries()
+        {
+                return this.entries;
+        }
 	
 	/**
 	 * Sets the accounting entries for this transaction.
 	 * Note: If immutability is desired after construction, this method might be restricted or handled by a builder.
 	 * @param entries The set of accounting entries to set.
 	 */
-	public void setEntries(Set<AccountingEntry> entries)
-	{
-		this.entries = entries;
-	}
+        public void setEntries(Set<AccountingEntry> entries)
+        {
+                this.entries = entries;
+                if (this.entries != null)
+                {
+                        this.entries.forEach(e -> e.setTransaction(this));
+                }
+        }
+
+        /**
+         * Gets the supplemental records tied to this transaction.
+         *
+         * @return set of supplemental records, possibly empty
+         */
+        public Set<SupplementalRecord> getSupplementalRecords()
+        {
+                return this.supplementalRecords;
+        }
+
+        /**
+         * Replaces the supplemental records associated with this transaction.
+         *
+         * @param records new set of records
+         */
+        public void setSupplementalRecords(Set<SupplementalRecord> records)
+        {
+                this.supplementalRecords = records;
+                if (this.supplementalRecords != null)
+                {
+                        this.supplementalRecords.forEach(r -> r.setTransaction(this));
+                }
+        }
 	
 	/**
 	 * Gets the additional information or metadata associated with this transaction.
