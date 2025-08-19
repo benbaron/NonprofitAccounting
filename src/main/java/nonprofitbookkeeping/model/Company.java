@@ -3,6 +3,8 @@ package nonprofitbookkeeping.model;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

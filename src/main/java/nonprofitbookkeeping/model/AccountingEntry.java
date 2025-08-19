@@ -14,6 +14,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 
 
 import java.io.Serializable;
@@ -32,26 +34,26 @@ import static com.google.common.base.Preconditions.*;
 
 public final class AccountingEntry implements Serializable
 {
-
+	
 	
 	/**
 	 * serialVersionUID : long
 	 */
 	private static final long serialVersionUID = 5837792781542533633L;
 	
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-
-        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-        private int id;
-
-        @JsonProperty private BigDecimal amount;
-
-        @Enumerated(EnumType.STRING)
-
-        @JsonProperty private AccountSide accountSide;
-        @JsonProperty private String accountNumber;
-        @JsonProperty private String fundNumber;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY) private int id;
+	
+	@JsonProperty private BigDecimal amount;
+	
+	@Enumerated(EnumType.STRING)
+	
+	@JsonProperty private AccountSide accountSide;
+	@JsonProperty private String accountNumber;
+	@JsonProperty private String fundNumber;
+	
 	/**
 	 * @return the fundNumber
 	 */
@@ -60,7 +62,7 @@ public final class AccountingEntry implements Serializable
 		return this.fundNumber;
 		
 	}
-
+	
 	/**
 	 * @param fundNumber the fundNumber to set
 	 */
@@ -69,43 +71,44 @@ public final class AccountingEntry implements Serializable
 		this.fundNumber = fundNumber;
 		
 	}
-
+	
 	/**
 	 * Optional display name for the account. This mirrors the account's
 	 * {@code name} field at the time the entry was created.  It is stored
 	 * on the entry rather than the transaction so that each entry can
 	 * reference its own account directly.
 	 */
-        @JsonProperty private String accountName;
-        /** Identifier of an optional supplemental record linked to this entry. */
-        @JsonProperty private String supplementalRecordId;
-
+	@JsonProperty private String accountName;
+	/** Identifier of an optional supplemental record linked to this entry. */
+	@JsonProperty private String supplementalRecordId;
+	
 	
 	// Future versions can include this.
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "transaction_id")
-        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-
-        private AccountingTransaction transaction;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "transaction_id")
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	
+	private AccountingTransaction transaction;
 	
 	// Indicates if the transaction was set
-        @JsonProperty private boolean freeze = false;
+	@JsonProperty private boolean freeze = false;
 	
 	
 	/**
 	 * Default constructor for Jackson deserialization.
 	 * Initializes amount, accountSide to null and accountNumber to an empty string.
 	 */
-        public AccountingEntry()
-        {
+	public AccountingEntry()
+	{
 		this.amount = null;
 		this.accountSide = null;
 		this.accountNumber = "";
-                this.accountName = null;
-                this.fundNumber = null;
-                this.supplementalRecordId = null;
+		this.accountName = null;
+		this.fundNumber = null;
+		this.supplementalRecordId = null;
+		
 	}
-
+	
 	
 	/**
 	 * Constructs an AccountingEntry with the specified amount, account number, and account side.
@@ -119,6 +122,7 @@ public final class AccountingEntry implements Serializable
 		AccountSide accountSide)
 	{
 		this(amount, accountNumber, accountSide, null);
+		
 	}
 	
 	/**
@@ -137,9 +141,10 @@ public final class AccountingEntry implements Serializable
 		this.amount = checkNotNull(amount);
 		this.accountNumber = checkNotNull(accountNumber);
 		this.accountSide = checkNotNull(accountSide);
-                this.accountName = accountName;
-                this.fundNumber = null;
-                this.supplementalRecordId = null;
+		this.accountName = accountName;
+		this.fundNumber = null;
+		this.supplementalRecordId = null;
+		
 	}
 	
 	
@@ -147,10 +152,12 @@ public final class AccountingEntry implements Serializable
 	 * Gets the associated transaction.
 	 * @return Associated transaction, or null if no transaction is associated.
 	 */
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY) public
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	public
 		AccountingTransaction getTransaction()
 	{
 		return this.transaction;
+		
 	}
 	
 	/**
@@ -160,13 +167,14 @@ public final class AccountingEntry implements Serializable
 	 * @param transaction The transaction belonging to this entry. Must not be null.
 	 * @throws NullPointerException if the transaction is null.
 	 */
-        public void setTransaction(AccountingTransaction transaction)
+	public void setTransaction(AccountingTransaction transaction)
 	{
 		this.transaction = checkNotNull(transaction);
 		this.freeze = true;
+		
 	}
 	
-
+	
 	/**
 	 * Gets the side of the account (Debit or Credit) this entry affects.
 	 * @return The account side.
@@ -174,6 +182,7 @@ public final class AccountingEntry implements Serializable
 	public AccountSide getAccountSide()
 	{
 		return this.accountSide;
+		
 	}
 	
 	/**
@@ -183,6 +192,7 @@ public final class AccountingEntry implements Serializable
 	public boolean isFreeze()
 	{
 		return this.freeze;
+		
 	}
 	
 	/**
@@ -193,6 +203,7 @@ public final class AccountingEntry implements Serializable
 	public void setFreeze(boolean freeze)
 	{
 		this.freeze = freeze;
+		
 	}
 	
 	/**
@@ -202,6 +213,7 @@ public final class AccountingEntry implements Serializable
 	public BigDecimal getAmount()
 	{
 		return this.amount;
+		
 	}
 	
 	/**
@@ -211,6 +223,7 @@ public final class AccountingEntry implements Serializable
 	public String getAccountNumber()
 	{
 		return this.accountNumber;
+		
 	}
 	
 	/**
@@ -221,6 +234,7 @@ public final class AccountingEntry implements Serializable
 	public String getAccountName()
 	{
 		return this.accountName;
+		
 	}
 	
 	/**
@@ -228,30 +242,33 @@ public final class AccountingEntry implements Serializable
 	 *
 	 * @param accountName the name to associate with the entry
 	 */
-        public void setAccountName(String accountName)
-        {
-                this.accountName = accountName;
-        }
-
-        /**
-         * Gets the identifier of the supplemental record linked to this entry, if any.
-         *
-         * @return supplemental record id or {@code null}
-         */
-        public String getSupplementalRecordId()
-        {
-                return this.supplementalRecordId;
-        }
-
-        /**
-         * Associates this entry with a supplemental record identifier.
-         *
-         * @param supplementalRecordId identifier of the supplemental record
-         */
-        public void setSupplementalRecordId(String supplementalRecordId)
-        {
-                this.supplementalRecordId = supplementalRecordId;
-        }
+	public void setAccountName(String accountName)
+	{
+		this.accountName = accountName;
+		
+	}
+	
+	/**
+	 * Gets the identifier of the supplemental record linked to this entry, if any.
+	 *
+	 * @return supplemental record id or {@code null}
+	 */
+	public String getSupplementalRecordId()
+	{
+		return this.supplementalRecordId;
+		
+	}
+	
+	/**
+	 * Associates this entry with a supplemental record identifier.
+	 *
+	 * @param supplementalRecordId identifier of the supplemental record
+	 */
+	public void setSupplementalRecordId(String supplementalRecordId)
+	{
+		this.supplementalRecordId = supplementalRecordId;
+		
+	}
 	
 	/**
 	 * Retrieves the {@link Account} object associated with this entry's account number
@@ -259,34 +276,38 @@ public final class AccountingEntry implements Serializable
 	 * 
 	 * @return Account object
 	 */
-        public Account getAccount()
+	public Account getAccount()
 	{
 		return CurrentCompany
 			.getCompany()
 			.getChartOfAccounts()
 			.getAccount(this.accountNumber);
+		
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
-        @Override public String toString()
+	@Override
+	public String toString()
 	{
 		return MoreObjects.toStringHelper(this)
 			.add("amount", this.amount.toString())
 			.addValue(this.accountSide)
 			.add("account", this.accountNumber)
 			.toString();
-        }
-
-        /**
-         * Gets the database identifier for this entry.
-         *
-         * @return primary key value
-         */
-        public int getId()
-        {
-                return this.id;
-        }
+		
+	}
+	
+	/**
+	 * Gets the database identifier for this entry.
+	 *
+	 * @return primary key value
+	 */
+	public int getId()
+	{
+		return this.id;
+		
+	}
 	
 }

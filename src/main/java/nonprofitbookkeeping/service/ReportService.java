@@ -89,9 +89,9 @@ public class ReportService
 	/** Standard date formatter (ISO Local Date, e.g., "YYYY-MM-DD") used in some report outputs. */
 	private static final DateTimeFormatter DATE_FORMATTER =
 		DateTimeFormatter.ISO_LOCAL_DATE;
-
-        /** Service for managing supplemental record links. */
-        private final SupplementalRecordService supplementalRecordService;
+	
+	/** Service for managing supplemental record links. */
+	private final SupplementalRecordService supplementalRecordService;
 	
 	/** Default constructor uses the built-in registry. */
 	public ReportService()
@@ -109,7 +109,7 @@ public class ReportService
 			AbstractReportGenerator>> registry)
 	{
 		this.generatorRegistry = new ConcurrentHashMap<>(registry);
-                this.supplementalRecordService = new SupplementalRecordService();
+		this.supplementalRecordService = new SupplementalRecordService();
 		
 	}
 	
@@ -1991,39 +1991,52 @@ public class ReportService
 	
 	
 }
-
-        /** Accessor for the supplemental record service. */
-        public SupplementalRecordService getSupplementalRecordService()
-        {
-                return this.supplementalRecordService;
-        }
-
-
-
-    /**
-     * Merge supplemental record data into the provided transactions.
-     */
-    public void mergeSupplementalData(java.util.Collection<AccountingTransaction> txs)
-    {
-        if (txs == null)
-            return;
-        for (AccountingTransaction tx : txs)
-        {
-            if (tx.getEntries() == null)
-                continue;
-            for (AccountingEntry e : tx.getEntries())
-            {
-                String id = e.getSupplementalRecordId();
-                if (id != null && !id.isBlank())
-                {
-                    Map<String,String> data = this.supplementalRecordService.getSupplementalData(id);
-                    if (data != null && !data.isEmpty())
-                    {
-                        Map<String,String> info = tx.getInfo() == null ? new HashMap<>() : new HashMap<>(tx.getInfo());
-                        info.putAll(data);
-                        tx.setInfo(info);
-                    }
-                }
-            }
-        }
-    }
+	
+	/** Accessor for the supplemental record service. */
+	public SupplementalRecordService getSupplementalRecordService()
+	{
+		return this.supplementalRecordService;
+		
+	}
+	
+	
+	/**
+	 * Merge supplemental record data into the provided transactions.
+	 */
+	public void mergeSupplementalData(
+		java.util.Collection<AccountingTransaction> txs)
+	{
+		if (txs == null)
+			return;
+		
+		for (AccountingTransaction tx : txs)
+		{
+			if (tx.getEntries() == null)
+				continue;
+			
+			for (AccountingEntry e : tx.getEntries())
+			{
+				String id = e.getSupplementalRecordId();
+				
+				if (id != null && !id.isBlank())
+				{
+					Map<String, String> data =
+						this.supplementalRecordService.getSupplementalData(id);
+					
+					if (data != null && !data.isEmpty())
+					{
+						Map<String, String> info = tx.getInfo() == null ?
+							new HashMap<>() : new HashMap<>(tx.getInfo());
+						info.putAll(data);
+						tx.setInfo(info);
+					}
+					
+				}
+				
+			}
+			
+		}
+		
+	}
+	
+}

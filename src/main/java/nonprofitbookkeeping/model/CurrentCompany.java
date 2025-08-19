@@ -36,8 +36,8 @@ public class CurrentCompany
 	private static File currentFile = null;
 	/** Flag indicating whether a company is currently considered open. */
 	private static boolean companyIsOpen = false;
-        /** Database service used for loading and saving company data. */
-        private static DatabaseService DATABASE_SERVICE = new DatabaseService();
+	/** Database service used for loading and saving company data. */
+	private static DatabaseService DATABASE_SERVICE = new DatabaseService();
 	
 	/**  
 	 * Constructs a CurrentCompany manager.
@@ -49,6 +49,7 @@ public class CurrentCompany
 	{
 		company = new Company();
 		companyIsOpen = false;
+		
 	}
 	
 	/**
@@ -58,6 +59,7 @@ public class CurrentCompany
 	public static Company getCompany()
 	{
 		return company;
+		
 	}
 	
 	/**
@@ -65,11 +67,12 @@ public class CurrentCompany
 	 * @param currentFile The file to associate. Must not be null.
 	 * @throws NullPointerException if currentFile is null.
 	 */
-       public static void setCurrentFile(File currentFile)
-       {
-               CurrentCompany.currentFile = checkNotNull(currentFile);
-               // The Company model no longer tracks its backing file directly.
-       }
+	public static void setCurrentFile(File currentFile)
+	{
+		CurrentCompany.currentFile = checkNotNull(currentFile);
+		
+		// The Company model no longer tracks its backing file directly.
+	}
 	
 	/**
 	 * Gets the file associated with the current company.
@@ -78,6 +81,7 @@ public class CurrentCompany
 	public static File getCurrentFile()
 	{
 		return CurrentCompany.currentFile;
+		
 	}
 	
 	
@@ -86,7 +90,8 @@ public class CurrentCompany
 	 * including the current file and whether a company is open.
 	 * @return A string describing the current company state.
 	 */
-	@Override public String toString()
+	@Override
+	public String toString()
 	{
 		StringBuilder builder = new StringBuilder();
 		builder.append("CurrentCompany [currentFile=");
@@ -95,6 +100,7 @@ public class CurrentCompany
 		builder.append(CurrentCompany.companyIsOpen);
 		builder.append("]");
 		return builder.toString();
+		
 	}
 	
 	/**
@@ -106,33 +112,34 @@ public class CurrentCompany
 	 * @throws NoFileCreatedException if the file cannot be created or written to.
 	 * @throws NullPointerException if the current file has not been set.
 	 */
-
-        public static void persist()    throws IOException, ActionCancelledException,
-                                                                        NoFileCreatedException
-        {
-                DATABASE_SERVICE.saveCompany(company);
-
-                if (currentFile == null)
-                {
-                        throw new NoFileCreatedException("No backup file specified");
-                }
-
-                String path = currentFile.getAbsolutePath().replace("\\", "/" );
-                String sql = "SCRIPT TO '" + path + "'";
-                try (Connection conn = DriverManager.getConnection("jdbc:h2:mem:nonprofit", "sa", "");
-                        Statement stmt = conn.createStatement())
-                {
-                        stmt.execute(sql);
-                }
-                catch (SQLException e)
-                {
-                        throw new IOException("Error writing backup: " + e.getMessage(), e);
-                }
-
-        }
-
-        /**
-
+	public static void persist() throws IOException, ActionCancelledException,
+		NoFileCreatedException
+	{
+		DATABASE_SERVICE.saveCompany(company);
+		
+		if (currentFile == null)
+		{
+			throw new NoFileCreatedException("No backup file specified");
+		}
+		
+		String path = currentFile.getAbsolutePath().replace("\\", "/");
+		String sql = "SCRIPT TO '" + path + "'";
+		
+		try (
+			Connection conn =
+				DriverManager.getConnection("jdbc:h2:mem:nonprofit", "sa", "");
+			Statement stmt = conn.createStatement())
+		{
+			stmt.execute(sql);
+		}
+		catch (SQLException e)
+		{
+			throw new IOException("Error writing backup: " + e.getMessage(), e);
+		}
+		
+	}
+	
+	/**
 	 * Loads company data from the specified file.
 	 * The loaded company becomes the current active company, and the specified file becomes the current file.
 	 * @param file The file from which to load company data. Must not be null.
@@ -141,53 +148,61 @@ public class CurrentCompany
 	 * @throws NoFileCreatedException if the file specified does not lead to a valid company data structure.
 	 * @throws NullPointerException if file is null.
 	 */
-
-        public static void loadFromPersistent(File file)        throws IOException, ActionCancelledException,
-                                                                                                                NoFileCreatedException
-        {
-                checkNotNull(file, "File cannot be null for load operation.");
-
-                String path = file.getAbsolutePath().replace("\\", "/");
-                String sql = "RUNSCRIPT FROM '" + path + "'";
-                try (Connection conn = DriverManager.getConnection("jdbc:h2:mem:nonprofit", "sa", "");
-                        Statement stmt = conn.createStatement())
-                {
-                        stmt.execute(sql);
-                }
-                catch (SQLException e)
-                {
-                        throw new IOException("Error restoring backup: " + e.getMessage(), e);
-                }
-
-                DatabaseManager.shutdown();
-                DatabaseManager.initialize();
-                DATABASE_SERVICE = new DatabaseService();
-
-
-                company = DATABASE_SERVICE.loadCompany();
-
-               setCurrentFile(file);
-
-               if (company != null)
-               {
-                       markCompanyOpen();
-               }
-
-        /**
-         * Reload the company data directly from the database.
-         * This bypasses any file-based migration and simply loads the
-         * first stored {@link Company} from the database into the
-         * current context.
-         */
-        public static void loadFromDatabase()
-        {
-                company = DATABASE_SERVICE.loadCompany();
-                if (company != null)
-                {
-                        markCompanyOpen();
-                }
-        }
-
+	
+	public static void loadFromPersistent(File file)
+		throws IOException, ActionCancelledException,
+		NoFileCreatedException
+	{
+		checkNotNull(file, "File cannot be null for load operation.");
+		
+		String path = file.getAbsolutePath().replace("\\", "/");
+		String sql = "RUNSCRIPT FROM '" + path + "'";
+		
+		try (
+			Connection conn =
+				DriverManager.getConnection("jdbc:h2:mem:nonprofit", "sa", "");
+			Statement stmt = conn.createStatement())
+		{
+			stmt.execute(sql);
+		}
+		catch (SQLException e)
+		{
+			throw new IOException("Error restoring backup: " + e.getMessage(),
+				e);
+		}
+		
+		DatabaseManager.shutdown();
+		DatabaseManager.initialize();
+		DATABASE_SERVICE = new DatabaseService();
+		
+		company = DATABASE_SERVICE.loadCompany();
+		
+		setCurrentFile(file);
+		
+		if (company != null)
+		{
+			markCompanyOpen();
+		}
+		
+	}
+	
+	/**
+	 * Reload the company data directly from the database.
+	 * This bypasses any file-based migration and simply loads the
+	 * first stored {@link Company} from the database into the
+	 * current context.
+	 */
+	public static void loadFromDatabase()
+	{
+		company = DATABASE_SERVICE.loadCompany();
+		
+		if (company != null)
+		{
+			markCompanyOpen();
+		}
+		
+	}
+	
 	
 	/**
 	 * Closes the currently open company.
@@ -197,7 +212,8 @@ public class CurrentCompany
 	public static void close()
 	{
 		CurrentCompany.companyIsOpen = false;
-                CompanyListener.fireChanged(false);
+		CompanyListener.fireChanged(false);
+		
 	}
 	
 	/**
@@ -207,6 +223,7 @@ public class CurrentCompany
 	public static boolean isOpen()
 	{
 		return CurrentCompany.companyIsOpen;
+		
 	}
 	
 	/**
@@ -221,7 +238,8 @@ public class CurrentCompany
 	public static void markCompanyOpen()
 	{
 		CurrentCompany.companyIsOpen = true;
-                CompanyListener.fireChanged(true);
+		CompanyListener.fireChanged(true);
+		
 	}
 	
 	/**
@@ -240,10 +258,11 @@ public class CurrentCompany
 	/**
 	 * Manages a list of {@link CompanyChangeListener}s and fires events to them.
 	 */
-        public static class CompanyListener
-        {
+	public static class CompanyListener
+	{
 		/** List of registered listeners. */
-		private final static EventListenerList listeners = new EventListenerList();
+		private final static EventListenerList listeners =
+			new EventListenerList();
 		
 		/**
 		 * Adds a {@link CompanyChangeListener} to the listener list.
@@ -252,6 +271,7 @@ public class CurrentCompany
 		public static void addCompanyListener(CompanyChangeListener l)
 		{
 			CompanyListener.listeners.add(CompanyChangeListener.class, l);
+			
 		}
 		
 		/**
@@ -261,6 +281,7 @@ public class CurrentCompany
 		public static void removeCompanyListener(CompanyChangeListener l)
 		{
 			CompanyListener.listeners.remove(CompanyChangeListener.class, l);
+			
 		}
 		
 		/**
@@ -275,26 +296,30 @@ public class CurrentCompany
 		 * @return an immutable {@link List} of registered listeners, or
 		 *         an empty list if none are registered
 		 */
-                public static List<CompanyChangeListener> getListeners()
-                {
-                        CompanyChangeListener[] arr =
-                                CompanyListener.listeners.getListeners(CompanyChangeListener.class);
-                        return List.of(arr);
-                }
-
-                /**
-                 * Notifies all registered {@link CompanyChangeListener}s that the company open state changed.
-                 * @param isOpen {@code true} if the company is now open, {@code false} otherwise.
-                 */
-                public static void fireChanged(boolean isOpen)
-                {
-                        for (CompanyChangeListener l : CompanyListener.getListeners())
-                        {
-                                l.companyChange(isOpen);
-                        }
-                }
-
-        }
+		public static List<CompanyChangeListener> getListeners()
+		{
+			CompanyChangeListener[] arr =
+				CompanyListener.listeners
+					.getListeners(CompanyChangeListener.class);
+			return List.of(arr);
+			
+		}
+		
+		/**
+		 * Notifies all registered {@link CompanyChangeListener}s that the company open state changed.
+		 * @param isOpen {@code true} if the company is now open, {@code false} otherwise.
+		 */
+		public static void fireChanged(boolean isOpen)
+		{
+			
+			for (CompanyChangeListener l : CompanyListener.getListeners())
+			{
+				l.companyChange(isOpen);
+			}
+			
+		}
+		
+	}
 	
 	/**
 	 * For test environments or specialized workflows where the caller needs
@@ -316,12 +341,12 @@ public class CurrentCompany
 		if (company2 != null)
 		{
 			CurrentCompany.companyIsOpen = true;
-                        CompanyListener.fireChanged(true);
+			CompanyListener.fireChanged(true);
 		}
 		else
 		{
 			CurrentCompany.companyIsOpen = false;
-                        CompanyListener.fireChanged(false);
+			CompanyListener.fireChanged(false);
 		}
 		
 	}
