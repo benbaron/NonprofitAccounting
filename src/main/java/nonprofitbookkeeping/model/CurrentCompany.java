@@ -113,9 +113,9 @@ public class CurrentCompany
 	public static void persist()	throws IOException, ActionCancelledException,
 									NoFileCreatedException
 	{
-                DATABASE_SERVICE.saveCompany(company);
-		
-	}
+                DATABASE_SERVICE.create(company);
+
+        }
 	
 	/**
 	 * Loads company data from the specified file.
@@ -131,8 +131,8 @@ public class CurrentCompany
         {
                 checkNotNull(file, "File cannot be null for load operation.");
                 JsonToDatabaseMigration migration = new JsonToDatabaseMigration();
-                migration.migrateCompanyArchive(file);
-                company = DATABASE_SERVICE.loadCompany();
+                long companyId = migration.migrateCompanyArchive(file);
+                company = DATABASE_SERVICE.loadCompany(companyId).orElse(null);
                setCurrentFile(file);
 
                if (company != null)
@@ -140,6 +140,21 @@ public class CurrentCompany
                        company.setCompanyFile(file);
                        markCompanyOpen();
                }
+        }
+
+        /**
+         * Reload the company data directly from the database.
+         * This bypasses any file-based migration and simply loads the
+         * first stored {@link Company} from the database into the
+         * current context.
+         */
+        public static void loadFromDatabase()
+        {
+                company = DATABASE_SERVICE.loadCompany();
+                if (company != null)
+                {
+                        markCompanyOpen();
+                }
         }
 
 	

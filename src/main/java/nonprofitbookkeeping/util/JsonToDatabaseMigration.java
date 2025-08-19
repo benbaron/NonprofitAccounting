@@ -14,16 +14,18 @@ import nonprofitbookkeeping.model.SaleRecord;
 import nonprofitbookkeeping.model.reports.ReportConfiguration;
 import nonprofitbookkeeping.model.scaledger.LedgerContainer;
 import nonprofitbookkeeping.model.scaledger.LedgerEntry;
+import nonprofitbookkeeping.persistence.DatabaseManager;
+import nonprofitbookkeeping.persistence.DatabaseService;
+import nonprofitbookkeeping.persistence.AccountingTransactionRepository;
+import nonprofitbookkeeping.persistence.DonorRepository;
+import nonprofitbookkeeping.persistence.InventoryRepository;
+import nonprofitbookkeeping.persistence.SaleRecordRepository;
+import nonprofitbookkeeping.persistence.SupplementalRecordRepository;
 import nonprofitbookkeeping.persistence.dao.LedgerEntryDao;
 import nonprofitbookkeeping.persistence.dao.ReportConfigurationDao;
 import nonprofitbookkeeping.persistence.entity.LedgerEntryEntity;
 import nonprofitbookkeeping.persistence.entity.SupplementalRecordEntity;
-
-import nonprofitbookkeeping.repository.AccountingTransactionRepository;
-import nonprofitbookkeeping.repository.DonorRepository;
-import nonprofitbookkeeping.repository.InventoryRepository;
-import nonprofitbookkeeping.repository.SaleRecordRepository;
-import nonprofitbookkeeping.repository.SupplementalRecordRepository;
+import nonprofitbookkeeping.persistence.DatabaseService;
 
 
 import java.io.File;
@@ -39,76 +41,66 @@ public class JsonToDatabaseMigration {
 
     private final JacksonDataStorer dataStorer = new JacksonDataStorer();
     private final ObjectMapper mapper = new ObjectMapper();
-    private final DonorRepository donorRepository;
-    private final InventoryRepository inventoryRepository;
-    private final SaleRecordRepository saleRepository;
-    private final AccountingTransactionRepository transactionRepository;
-    private final LedgerEntryDao ledgerEntryDao;
-    private final ReportConfigurationDao reportConfigDao;
-
-    private final SupplementalRecordRepository supplementalRecordRepository;
-
-    public JsonToDatabaseMigration(DatabaseService db) {
-        this.donorRepository = db.getDonorRepository();
-        this.inventoryRepository = db.getInventoryRepository();
-        this.saleRepository = db.getSaleRecordRepository();
-        this.transactionRepository = db.getTransactionRepository();
-    }
-
 
     public JsonToDatabaseMigration() {
-
-        EntityManager em = DatabaseManager.getEntityManager();
-        this.donorRepository = new DonorRepository(em);
-        this.inventoryRepository = new InventoryRepository(em);
-        this.saleRepository = new SaleRecordRepository(em);
-        this.transactionRepository = new AccountingTransactionRepository(em);
-        this.ledgerEntryDao = new LedgerEntryDao(em);
-        this.reportConfigDao = new ReportConfigurationDao(em);
-
-        this.supplementalRecordRepository = new SupplementalRecordRepository(em);
-
-
     }
 
     /** Migrate donors from a JSON file. */
     public void migrateDonors(File donorsJson) throws IOException {
         List<Donor> donors = mapper.readValue(donorsJson,
                 mapper.getTypeFactory().constructCollectionType(List.class, Donor.class));
-        donors.forEach(donorRepository::save);
+        try (EntityManager em = DatabaseManager.getEntityManager()) {
+            DonorRepository repo = new DonorRepository(em);
+            donors.forEach(repo::save);
+        }
     }
 
     /** Migrate inventory items from a JSON file. */
     public void migrateInventory(File inventoryJson) throws IOException {
         List<InventoryItem> items = mapper.readValue(inventoryJson,
                 mapper.getTypeFactory().constructCollectionType(List.class, InventoryItem.class));
-        items.forEach(inventoryRepository::save);
+        try (EntityManager em = DatabaseManager.getEntityManager()) {
+            InventoryRepository repo = new InventoryRepository(em);
+            items.forEach(repo::save);
+        }
     }
 
     /** Migrate sale records from a JSON file. */
     public void migrateSales(File salesJson) throws IOException {
         List<SaleRecord> sales = mapper.readValue(salesJson,
                 mapper.getTypeFactory().constructCollectionType(List.class, SaleRecord.class));
-        sales.forEach(saleRepository::save);
+        try (EntityManager em = DatabaseManager.getEntityManager()) {
+            SaleRecordRepository repo = new SaleRecordRepository(em);
+            sales.forEach(repo::save);
+        }
     }
 
     /** Migrate accounting transactions from a JSON file. */
     public void migrateTransactions(File transactionsJson) throws IOException {
         List<AccountingTransaction> txs = mapper.readValue(transactionsJson,
                 mapper.getTypeFactory().constructCollectionType(List.class, AccountingTransaction.class));
-        txs.forEach(transactionRepository::save);
+        try (EntityManager em = DatabaseManager.getEntityManager()) {
+            AccountingTransactionRepository repo = new AccountingTransactionRepository(em);
+            txs.forEach(repo::save);
+        }
     }
 
     /** Migrate ledger entries from a JSON file representing a {@link LedgerContainer}. */
     public void migrateLedger(File ledgerJson) throws IOException {
         LedgerContainer container = mapper.readValue(ledgerJson, LedgerContainer.class);
-        saveLedgerEntries(container.getLedgerQ1());
-        saveLedgerEntries(container.getLedgerQ2());
-        saveLedgerEntries(container.getLedgerQ3());
-        saveLedgerEntries(container.getLedgerQ4());
+        try (EntityManager em = DatabaseManager.getEntityManager()) {
+            LedgerEntryDao ledgerEntryDao = new LedgerEntryDao(em);
+            SupplementalRecordRepository supplementalRecordRepository = new SupplementalRecordRepository(em);
+            saveLedgerEntries(ledgerEntryDao, supplementalRecordRepository, container.getLedgerQ1());
+            saveLedgerEntries(ledgerEntryDao, supplementalRecordRepository, container.getLedgerQ2());
+            saveLedgerEntries(ledgerEntryDao, supplementalRecordRepository, container.getLedgerQ3());
+            saveLedgerEntries(ledgerEntryDao, supplementalRecordRepository, container.getLedgerQ4());
+        }
     }
 
-    private void saveLedgerEntries(List<LedgerEntry> entries) {
+    private void saveLedgerEntries(LedgerEntryDao ledgerEntryDao,
+                                   SupplementalRecordRepository supplementalRecordRepository,
+                                   List<LedgerEntry> entries) {
         for (LedgerEntry le : entries) {
             LedgerEntryEntity entity = new LedgerEntryEntity();
             entity.setEntryDate(le.getEntryDate());
@@ -118,19 +110,20 @@ public class JsonToDatabaseMigration {
             entity.setMemoString(le.getMemoString());
             entity.setBudgetTracking(le.getBudgetTracking());
             addSupplemental(entity, le.getAmount(), le.getAssetAccount(), le.getIncomeAccount(),
-                    le.getExpenseAccount(), le.getFundName(), 1);
+                    le.getExpenseAccount(), le.getFundName(), 1, supplementalRecordRepository);
             addSupplemental(entity, le.amount2, le.assetAccount2, le.incomeAccount2,
-                    le.expenseAccount2, le.fundName2, 2);
+                    le.expenseAccount2, le.fundName2, 2, supplementalRecordRepository);
             addSupplemental(entity, le.amount3, le.assetAccount3, le.incomeAccount3,
-                    le.expenseAccount3, le.fundName3, 3);
+                    le.expenseAccount3, le.fundName3, 3, supplementalRecordRepository);
             addSupplemental(entity, le.amount4, le.assetAccount4, le.incomeAccount4,
-                    le.expenseAccount4, le.fundName4, 4);
+                    le.expenseAccount4, le.fundName4, 4, supplementalRecordRepository);
             ledgerEntryDao.save(entity);
         }
     }
 
     private void addSupplemental(LedgerEntryEntity entity, double amt, String asset,
-                                 String income, String expense, String fund, int seq) {
+                                 String income, String expense, String fund, int seq,
+                                 SupplementalRecordRepository supplementalRecordRepository) {
         if (asset != null || income != null || expense != null || fund != null || amt != 0) {
             SupplementalRecordEntity sr = new SupplementalRecordEntity();
             sr.setAmount(amt);
@@ -141,6 +134,7 @@ public class JsonToDatabaseMigration {
             sr.setSequenceNumber(seq);
             sr.setLedgerEntry(entity);
             entity.getSupplementalRecords().add(sr);
+            supplementalRecordRepository.save(sr);
         }
     }
 
@@ -148,7 +142,10 @@ public class JsonToDatabaseMigration {
     public void migrateReportConfigurations(File configJson) throws IOException {
         List<ReportConfiguration> configs = mapper.readValue(configJson,
                 mapper.getTypeFactory().constructCollectionType(List.class, ReportConfiguration.class));
-        configs.forEach(reportConfigDao::save);
+        try (EntityManager em = DatabaseManager.getEntityManager()) {
+            ReportConfigurationDao reportConfigDao = new ReportConfigurationDao(em);
+            configs.forEach(reportConfigDao::save);
+        }
 
     }
 }
@@ -159,9 +156,9 @@ public class JsonToDatabaseMigration {
      * produced by {@link JacksonDataStorer}) and persists its contents to the
      * database using the configured repositories.
      */
-    public void migrateCompanyArchive(File companyZip) throws IOException {
+    public long migrateCompanyArchive(File companyZip) throws IOException {
         Company company = dataStorer.loadData(Company.class, companyZip);
         DatabaseService db = new DatabaseService();
-        db.saveCompany(company);
+        return db.create(company);
     }
 }

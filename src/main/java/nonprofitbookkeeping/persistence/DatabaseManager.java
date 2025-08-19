@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import org.flywaydb.core.Flyway;
 
+
 /**
  * Centralizes creation of {@link EntityManager} instances backed by the
  * embedded H2 database.  The persistence unit configuration is located in
@@ -21,6 +22,7 @@ public final class DatabaseManager {
                 .load()
                 .migrate();
         emf = Persistence.createEntityManagerFactory("nonprofitPU");
+
     }
 
     private DatabaseManager() {
@@ -34,6 +36,34 @@ public final class DatabaseManager {
      */
     public static EntityManager getEntityManager() {
         return emf.createEntityManager();
+    }
+
+    public static Connection getConnection() throws SQLException {
+        return connectionPool.getConnection();
+    }
+
+    public static synchronized void startServer() {
+        if (server == null) {
+            try {
+                server = Server.createTcpServer("-tcpAllowOthers").start();
+            } catch (SQLException e) {
+                throw new IllegalStateException("Failed to start H2 server", e);
+            }
+        }
+    }
+
+    public static synchronized void shutdown() {
+        if (emf.isOpen()) {
+            emf.close();
+        }
+        if (connectionPool != null) {
+            connectionPool.dispose();
+            connectionPool = null;
+        }
+        if (server != null) {
+            server.stop();
+            server = null;
+        }
     }
 }
 
