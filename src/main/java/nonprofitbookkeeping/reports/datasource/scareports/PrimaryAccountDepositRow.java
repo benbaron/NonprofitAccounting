@@ -8,12 +8,8 @@ import java.math.BigDecimal;
  * statement. Each row contains the date of the deposit and the amount
  * of the deposit.
  */
-<<<<<<< HEAD
-public class PrimaryAccountDepositRow extends ScaRowBase {
-=======
 public class PrimaryAccountDepositRow implements SupplementalRecord
 {
->>>>>>> refs/remotes/origin/codex/add-interface-and-extend-ledgerentry
 	private String depositDate;
 	private BigDecimal amount;
 	
