@@ -8,6 +8,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.EventListener;
 import java.util.List;
 
@@ -15,8 +19,8 @@ import javax.swing.event.EventListenerList;
 
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
+import nonprofitbookkeeping.persistence.DatabaseManager;
 import nonprofitbookkeeping.persistence.DatabaseService;
-import nonprofitbookkeeping.util.JsonToDatabaseMigration;
 
 /**
  * Manages the currently active {@link Company} instance in the application.
@@ -33,7 +37,7 @@ public class CurrentCompany
 	/** Flag indicating whether a company is currently considered open. */
 	private static boolean companyIsOpen = false;
         /** Database service used for loading and saving company data. */
-        private static final DatabaseService DATABASE_SERVICE = new DatabaseService();
+        private static DatabaseService DATABASE_SERVICE = new DatabaseService();
 	
 	/**  
 	 * Constructs a CurrentCompany manager.
@@ -102,14 +106,33 @@ public class CurrentCompany
 	 * @throws NoFileCreatedException if the file cannot be created or written to.
 	 * @throws NullPointerException if the current file has not been set.
 	 */
-	public static void persist()	throws IOException, ActionCancelledException,
-									NoFileCreatedException
-	{
-                DATABASE_SERVICE.create(company);
+
+        public static void persist()    throws IOException, ActionCancelledException,
+                                                                        NoFileCreatedException
+        {
+                DATABASE_SERVICE.saveCompany(company);
+
+                if (currentFile == null)
+                {
+                        throw new NoFileCreatedException("No backup file specified");
+                }
+
+                String path = currentFile.getAbsolutePath().replace("\\", "/" );
+                String sql = "SCRIPT TO '" + path + "'";
+                try (Connection conn = DriverManager.getConnection("jdbc:h2:mem:nonprofit", "sa", "");
+                        Statement stmt = conn.createStatement())
+                {
+                        stmt.execute(sql);
+                }
+                catch (SQLException e)
+                {
+                        throw new IOException("Error writing backup: " + e.getMessage(), e);
+                }
 
         }
-	
-	/**
+
+        /**
+
 	 * Loads company data from the specified file.
 	 * The loaded company becomes the current active company, and the specified file becomes the current file.
 	 * @param file The file from which to load company data. Must not be null.
@@ -118,12 +141,29 @@ public class CurrentCompany
 	 * @throws NoFileCreatedException if the file specified does not lead to a valid company data structure.
 	 * @throws NullPointerException if file is null.
 	 */
+
         public static void loadFromPersistent(File file)        throws IOException, ActionCancelledException,
                                                                                                                 NoFileCreatedException
         {
                 checkNotNull(file, "File cannot be null for load operation.");
-               JsonToDatabaseMigration migration = new JsonToDatabaseMigration();
-               migration.migrateCompanyArchive(file.toPath());
+
+                String path = file.getAbsolutePath().replace("\\", "/");
+                String sql = "RUNSCRIPT FROM '" + path + "'";
+                try (Connection conn = DriverManager.getConnection("jdbc:h2:mem:nonprofit", "sa", "");
+                        Statement stmt = conn.createStatement())
+                {
+                        stmt.execute(sql);
+                }
+                catch (SQLException e)
+                {
+                        throw new IOException("Error restoring backup: " + e.getMessage(), e);
+                }
+
+                DatabaseManager.shutdown();
+                DatabaseManager.initialize();
+                DATABASE_SERVICE = new DatabaseService();
+
+
                 company = DATABASE_SERVICE.loadCompany();
 
                setCurrentFile(file);
@@ -132,7 +172,6 @@ public class CurrentCompany
                {
                        markCompanyOpen();
                }
-        }
 
         /**
          * Reload the company data directly from the database.
