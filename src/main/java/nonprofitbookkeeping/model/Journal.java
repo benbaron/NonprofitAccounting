@@ -8,6 +8,14 @@ import java.util.List;
 import java.util.Objects; // Import for Objects.equals
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,6 +32,8 @@ import java.sql.Timestamp;
  * This class provides functionalities to add, retrieve, update, and delete transactions.
  * It uses Lombok for generating getters, setters, and a no-argument constructor.
  */
+@Entity
+@Table(name = "journals")
 public class Journal implements Serializable
 {
 	/**
@@ -31,28 +41,32 @@ public class Journal implements Serializable
 	 */
 	private static final long serialVersionUID = -8125095337696271045L;
 
-	/**
-	 * The list of accounting transactions recorded in this journal.
-	 * This field is final and initialized to an empty ArrayList.
+        /** Primary key for the journal. */
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
 
-	 * It is marked with {@code @JsonProperty} for serialization/deserialization purposes.
-	 * Direct modification of this list from outside the class is discouraged;
-	 * use {@link #addTransaction(AccountingTransaction)}, {@link #updateTransaction(AccountingTransaction)},
-	 * and {@link #deleteTransaction(long)}.
-	 */
-	@JsonProperty final private List<AccountingTransaction> journalTransactions = new ArrayList<>();
+        /**
+         * The list of accounting transactions recorded in this journal.
+         * Direct modification of this list from outside the class is discouraged;
+         * use {@link #addTransaction(AccountingTransaction)}, {@link #updateTransaction(AccountingTransaction)},
+         * and {@link #deleteTransaction(long)}.
+         */
+        @OneToMany(mappedBy = "journal", cascade = CascadeType.ALL, orphanRemoval = true)
+        private List<AccountingTransaction> journalTransactions = new ArrayList<>();
 	
 	/**
 	 * Adds a new accounting transaction to the journal.
 	 * @param transaction The {@link AccountingTransaction} to add. Must not be null, and its booking date timestamp (used as an ID here) must not be null.
 	 * @throws NullPointerException if the transaction or its booking date timestamp is null.
 	 */
-	public void addTransaction(AccountingTransaction transaction)
-	{
-		checkNotNull(transaction, "Transaction cannot be null");
-		checkNotNull(transaction.getBookingDateTimestamp(), "Transaction ID cannot be null for add operation"); // Assuming bookingDateTimestamp is used as a unique ID for some operations
-		this.journalTransactions.add(transaction);
-	}
+        public void addTransaction(AccountingTransaction transaction)
+        {
+                checkNotNull(transaction, "Transaction cannot be null");
+                checkNotNull(transaction.getBookingDateTimestamp(), "Transaction ID cannot be null for add operation");
+                transaction.setJournal(this);
+                this.journalTransactions.add(transaction);
+        }
 	
 	/**
 	 * Retrieves a defensive copy of the list of all journal transactions.
@@ -91,7 +105,8 @@ public class Journal implements Serializable
 			
 			if (Objects.equals(existingTx.getBookingDateTimestamp(), transaction.getBookingDateTimestamp()))
 			{
-				this.journalTransactions.set(i, transaction); // Replace the old transaction
+                                transaction.setJournal(this);
+                                this.journalTransactions.set(i, transaction); // Replace the old transaction
 				return true;
 			}
 			

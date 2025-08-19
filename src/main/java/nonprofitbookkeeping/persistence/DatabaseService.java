@@ -1,12 +1,8 @@
 package nonprofitbookkeeping.persistence;
 
 import jakarta.persistence.EntityManager;
-import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.Company;
-import nonprofitbookkeeping.model.Journal;
 import nonprofitbookkeeping.model.Ledger;
-
-import java.util.List;
 
 /**
  * High level facade for database persistence.
@@ -19,6 +15,7 @@ import java.util.List;
 public class DatabaseService {
 
     private final EntityManager entityManager;
+    private final LedgerRepository ledgerRepository;
     private final AccountingTransactionRepository transactionRepository;
     private final DonorRepository donorRepository;
     private final InventoryRepository inventoryRepository;
@@ -27,6 +24,7 @@ public class DatabaseService {
 
     public DatabaseService() {
         this.entityManager = EntityManagerProvider.getEntityManager();
+        this.ledgerRepository = new LedgerRepository(entityManager);
         this.transactionRepository = new AccountingTransactionRepository(entityManager);
         this.donorRepository = new DonorRepository(entityManager);
         this.inventoryRepository = new InventoryRepository(entityManager);
@@ -41,10 +39,7 @@ public class DatabaseService {
         }
         Ledger ledger = company.getLedger();
         if (ledger != null) {
-            List<AccountingTransaction> txs = ledger.getTransactions();
-            if (txs != null) {
-                txs.forEach(transactionRepository::save);
-            }
+            ledgerRepository.save(ledger);
         }
         // additional components like donors, inventory or sales could be saved
         // here when available from the Company model.
@@ -57,18 +52,19 @@ public class DatabaseService {
      */
     public Company loadCompany() {
         Company company = new Company();
-        Journal journal = company.getLedger().getJournal();
-        List<AccountingTransaction> txs = transactionRepository.findAll();
-        if (txs != null) {
-            for (AccountingTransaction tx : txs) {
-                journal.addTransaction(tx);
-            }
+        Ledger ledger = ledgerRepository.findFirst();
+        if (ledger != null) {
+            company.setLedger(ledger);
         }
         return company;
     }
 
     public AccountingTransactionRepository getTransactionRepository() {
         return transactionRepository;
+    }
+
+    public LedgerRepository getLedgerRepository() {
+        return ledgerRepository;
     }
 
     public DonorRepository getDonorRepository() {
