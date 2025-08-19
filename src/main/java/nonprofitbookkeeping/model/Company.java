@@ -22,6 +22,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 @Entity
 @Table(name = "companies")
+
 public class Company implements Serializable
 {
 	/**
@@ -42,25 +43,35 @@ public class Company implements Serializable
         /** The chart of accounts defining the structure of accounts for the company. Initialized by default. */
         @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
         private ChartOfAccounts chartOfAccounts = new ChartOfAccounts();
+
 	
 	/**
 	 * The file system path to the company's data file.
 	 * This may be null if the company data is not associated with a file
 	 * (e.g., new company not yet saved, or data loaded from a different source).
 	 */
-	private File companyFile = null;
+        @Transient
+        private File companyFile = null;
 
 	/**
 	 * Constructs a new Company object.
 	 * Initializes the company profile, ledger, and chart of accounts with default instances.
 	 * The company file is initially null.
 	 */
-	public Company()
-	{			
-		this.companyProfileModel = new CompanyProfileModel();
-		this.ledger = new Ledger();
-		this.chartOfAccounts = new ChartOfAccounts();
-	}
+        public Company() 
+        {
+                this.companyProfileModel = new CompanyProfileModel();
+                this.ledger = new Ledger();
+                this.chartOfAccounts = new ChartOfAccounts();
+        }
+
+        public Long getId() {
+                return this.id;
+        }
+
+        public void setId(Long id) {
+                this.id = id;
+        }
 	
 	/**
 	 * Gets the company's profile information.

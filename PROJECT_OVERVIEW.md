@@ -9,7 +9,7 @@ The project is a desktop application designed for nonprofit bookkeeping. It aims
 *   **Reporting:**
     *   Historically used JXLS (with `.xlsx` templates) for some reports, driven by `ReportService.java`.
     *   Current initiative: Migrate to and expand reporting using JasperReports (with `.jrxml` templates), managed via an `AbstractReportGenerator` framework.
-*   **Build Tool:** Apache Maven (`pom.xml`).
+*   **Build Tool:** Apache Maven (`pom.xml`), with required plugins vendored into `maven-repo` for offline builds.
 *   **Key Libraries:** Apache POI, Jackson, Lombok, SLF4J (with Logback/Log4j2), OpenJFX, JasperReports, Guava, OFX4J.
 
 ## 3. Key Functionalities & Modules

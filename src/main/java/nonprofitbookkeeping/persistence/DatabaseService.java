@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.Ledger;
 
+
 /**
  * High level facade for database persistence.
  * <p>
@@ -30,6 +31,7 @@ public class DatabaseService {
         this.inventoryRepository = new InventoryRepository(entityManager);
         this.saleRecordRepository = new SaleRecordRepository(entityManager);
         this.scaRecordRepository = new ScaRecordRepository(entityManager);
+
     }
 
     /** Persist core parts of the company to the database. */
@@ -43,6 +45,7 @@ public class DatabaseService {
         }
         // additional components like donors, inventory or sales could be saved
         // here when available from the Company model.
+
     }
 
     /**
@@ -73,13 +76,26 @@ public class DatabaseService {
 
     public InventoryRepository getInventoryRepository() {
         return inventoryRepository;
+
     }
 
-    public SaleRecordRepository getSaleRecordRepository() {
-        return saleRecordRepository;
+    /**
+     * Create a SQL backup of the database at the specified path.
+     *
+     * @param filePath destination for the SQL script
+     * @throws SQLException if the backup fails
+     */
+    public void backupDatabase(String filePath) throws SQLException {
+        backupService.backupTo(filePath);
     }
 
-    public ScaRecordRepository getScaRecordRepository() {
-        return scaRecordRepository;
+    /**
+     * Restore the database from a previously created SQL backup.
+     *
+     * @param filePath source of the SQL script
+     * @throws SQLException if the restore fails
+     */
+    public void restoreDatabase(String filePath) throws SQLException {
+        backupService.restoreFrom(filePath);
     }
 }

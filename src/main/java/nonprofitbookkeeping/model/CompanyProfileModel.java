@@ -20,6 +20,8 @@ import lombok.NoArgsConstructor;
  * Lombok's {@code @Data}, {@code @AllArgsConstructor}, and {@code @NoArgsConstructor}
  * are used for boilerplate code generation.
  */
+import jakarta.persistence.Embeddable;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
