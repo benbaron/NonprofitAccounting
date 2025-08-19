@@ -14,6 +14,7 @@ import nonprofitbookkeeping.model.*;
 import nonprofitbookkeeping.model.CurrentCompany; // Explicit import for inner class usage
 import javafx.scene.control.Button; // For casting items in toolbar
 import javafx.scene.control.ToolBar; // For the actionToolBar field
+import nonprofitbookkeeping.persistence.DatabaseService;
 
 /**
  * JavaFX panel for displaying and managing journal transactions.
@@ -29,7 +30,8 @@ public class JournalPanelFX extends BorderPane
 	private final TableView<AccountingTransaction> table = new TableView<>(this.rows);
 	
 	private JournalPanelCompanyListener companyListener;
-	private ToolBar actionToolBar; // Field to store the toolbar
+        private ToolBar actionToolBar; // Field to store the toolbar
+        private final DatabaseService databaseService = new DatabaseService();
 	
 	public JournalPanelFX()
 	{
@@ -149,13 +151,14 @@ public class JournalPanelFX extends BorderPane
 					{
 						ArrayList<AccountingTransaction> toDelete = new ArrayList<>(selected);
 						
-						for (AccountingTransaction tx : toDelete)
-						{
-							journal.deleteTransaction(tx.getBookingDateTimestamp());
-						}
-						
-						refresh();
-					}
+                                                for (AccountingTransaction tx : toDelete)
+                                                {
+                                                        journal.deleteTransaction(tx.getBookingDateTimestamp());
+                                                        this.databaseService.getTransactionRepository().delete(tx.getId());
+                                                }
+
+                                                refresh();
+                                        }
 					
 				}
 				
@@ -204,14 +207,16 @@ public class JournalPanelFX extends BorderPane
 		
 		BorderPane pane = new GeneralJournalEntryPanelFX(existing, tx -> {
 			
-			if (existing == null)
-			{
-				mainJournal.addTransaction(tx);
-			}
-			else
-			{
-				mainJournal.updateTransaction(tx);
-			}
+                        if (existing == null)
+                        {
+                                mainJournal.addTransaction(tx);
+                                this.databaseService.getTransactionRepository().save(tx);
+                        }
+                        else
+                        {
+                                mainJournal.updateTransaction(tx);
+                                this.databaseService.getTransactionRepository().save(tx);
+                        }
 			
 			refresh();
 		});
@@ -234,25 +239,7 @@ public class JournalPanelFX extends BorderPane
 	void refresh()
 	{
 		
-		if (CurrentCompany.isOpen() && CurrentCompany.getCompany() != null &&
-				CurrentCompany.getCompany().getLedger() != null)
-		{
-			Journal journal = CurrentCompany.getCompany().getLedger().getJournal();
-			
-			if (journal != null)
-			{
-				this.rows.setAll(journal.getJournalTransactions());
-			}
-			else
-			{
-				this.rows.clear();
-			}
-			
-		}
-		else
-		{
-			this.rows.clear();
-		}
+                this.rows.setAll(this.databaseService.getTransactionRepository().findAll());
 		
 	}
 	

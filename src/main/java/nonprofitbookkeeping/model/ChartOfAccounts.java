@@ -7,6 +7,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
@@ -15,16 +24,26 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * supports parent/child relationships.
 */
 
-@Data public class ChartOfAccounts implements Serializable
+@Data
+@Entity
+@Table(name = "chart_of_accounts")
+public class ChartOfAccounts implements Serializable
 {
 	
 	private static final long serialVersionUID = 6545569795380871696L;
 	
-	/**
-	 * Flat list of <em>all</em> accounts, root and child alike.
-	 * This list is managed internally and holds all accounts in the chart.
-	 */
-	@JsonProperty private final List<Account> chartOfAccounts = new ArrayList<>();
+        /** Primary key. */
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
+
+        /**
+         * Flat list of <em>all</em> accounts, root and child alike.
+         * This list is managed internally and holds all accounts in the chart.
+         */
+        @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+        @JoinColumn(name = "chart_id")
+        private final List<Account> chartOfAccounts = new ArrayList<>();
 	
 	/* ------------------------------------------------------------------ */
 	/**

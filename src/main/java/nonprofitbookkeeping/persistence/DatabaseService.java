@@ -1,8 +1,9 @@
 package nonprofitbookkeeping.persistence;
 
+import jakarta.persistence.EntityManager;
 import nonprofitbookkeeping.model.Company;
-import java.sql.SQLException;
-import java.util.List;
+import nonprofitbookkeeping.model.Ledger;
+
 
 /**
  * High level facade for database persistence.
@@ -14,10 +15,23 @@ import java.util.List;
  */
 public class DatabaseService {
 
-    private final CompanyRepository companyRepository = new CompanyRepository();
-    private final DatabaseBackupService backupService = new DatabaseBackupService();
+    private final EntityManager entityManager;
+    private final LedgerRepository ledgerRepository;
+    private final AccountingTransactionRepository transactionRepository;
+    private final DonorRepository donorRepository;
+    private final InventoryRepository inventoryRepository;
+    private final SaleRecordRepository saleRecordRepository;
+    private final ScaRecordRepository scaRecordRepository;
 
     public DatabaseService() {
+        this.entityManager = EntityManagerProvider.getEntityManager();
+        this.ledgerRepository = new LedgerRepository(entityManager);
+        this.transactionRepository = new AccountingTransactionRepository(entityManager);
+        this.donorRepository = new DonorRepository(entityManager);
+        this.inventoryRepository = new InventoryRepository(entityManager);
+        this.saleRecordRepository = new SaleRecordRepository(entityManager);
+        this.scaRecordRepository = new ScaRecordRepository(entityManager);
+
     }
 
     /** Persist core parts of the company to the database. */
@@ -25,12 +39,13 @@ public class DatabaseService {
         if (company == null) {
             return;
         }
-        companyRepository.save(company);
-    }
+        Ledger ledger = company.getLedger();
+        if (ledger != null) {
+            ledgerRepository.save(ledger);
+        }
+        // additional components like donors, inventory or sales could be saved
+        // here when available from the Company model.
 
-    /** Retrieve all companies from the database. */
-    public List<Company> listCompanies() {
-        return companyRepository.findAll();
     }
 
     /**
@@ -39,11 +54,29 @@ public class DatabaseService {
      * transactions populated from the database.
      */
     public Company loadCompany() {
-        List<Company> companies = companyRepository.findAll();
-        if (companies.isEmpty()) {
-            return new Company();
+        Company company = new Company();
+        Ledger ledger = ledgerRepository.findFirst();
+        if (ledger != null) {
+            company.setLedger(ledger);
         }
-        return companies.get(0);
+        return company;
+    }
+
+    public AccountingTransactionRepository getTransactionRepository() {
+        return transactionRepository;
+    }
+
+    public LedgerRepository getLedgerRepository() {
+        return ledgerRepository;
+    }
+
+    public DonorRepository getDonorRepository() {
+        return donorRepository;
+    }
+
+    public InventoryRepository getInventoryRepository() {
+        return inventoryRepository;
+
     }
 
     /**

@@ -8,6 +8,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import nonprofitbookkeeping.service.ReportService;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -16,6 +21,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Represents an account with entries and a many-to-many relationship with
  * {@link Fund}s.
  */
+@Entity
+@Table(name = "accounts")
 public final class Account implements Serializable
 {
 	
@@ -23,9 +30,11 @@ public final class Account implements Serializable
 	private static final long serialVersionUID = -1149966185433260549L;
 	
 	/* ───────────────── fields ──────────── */
-	// Store fund references by ID to avoid circular serialization
-	@JsonProperty private List<String> associatedFundIds = new ArrayList<>();
-	@JsonProperty private String accountNumber;
+        // Store fund references by ID to avoid circular serialization
+        @ElementCollection
+        private List<String> associatedFundIds = new ArrayList<>();
+        @Id
+        @JsonProperty private String accountNumber;
 	@JsonProperty private AccountSide increaseSide;
 	@JsonProperty private String name;
 	@JsonProperty private String accountCode;
