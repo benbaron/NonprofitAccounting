@@ -3,10 +3,8 @@ package nonprofitbookkeeping.persistence;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
-import java.sql.Connection;
-import java.sql.SQLException;
-import org.h2.jdbcx.JdbcConnectionPool;
-import org.h2.tools.Server;
+import org.flywaydb.core.Flyway;
+
 
 /**
  * Centralizes creation of {@link EntityManager} instances backed by the
@@ -16,16 +14,15 @@ import org.h2.tools.Server;
  * {@link EntityManagerFactory} instances.
  */
 public final class DatabaseManager {
-    private static final String JDBC_URL = "jdbc:h2:file:./data/nonprofit;AUTO_SERVER=TRUE";
-    private static Server server;
     private static final EntityManagerFactory emf;
-    private static JdbcConnectionPool connectionPool;
 
     static {
-        startServer();
+        Flyway.configure()
+                .dataSource("jdbc:h2:mem:nonprofit;DB_CLOSE_DELAY=-1", "sa", "")
+                .load()
+                .migrate();
         emf = Persistence.createEntityManagerFactory("nonprofitPU");
-        connectionPool = JdbcConnectionPool.create(JDBC_URL, "sa", "");
-        Runtime.getRuntime().addShutdownHook(new Thread(DatabaseManager::shutdown));
+
     }
 
     private DatabaseManager() {
