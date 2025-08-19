@@ -264,53 +264,67 @@ public class SettingsPanelFX extends BorderPane
 		Button backupBtn = new Button("Create Backup");
 		Button restoreBtn = new Button("Restore Backup");
 		
-		backupBtn.setOnAction(e -> {
-			FileChooser fc = new FileChooser();
-			fc.setTitle("Save Backup");
-			fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("NPBK files", "*.npbk"));
-			File out = fc.showSaveDialog(null);
-			
-			if (out != null)
-			{
-				
-				try
-				{
-					CurrentCompany.setCurrentFile(out);
-					CurrentCompany.persist();
-					alert("Backup saved to " + out.getAbsolutePath());
-				}
-				catch (IOException | ActionCancelledException | NoFileCreatedException ex)
-				{
-					alert("Backup failed: " + ex.getMessage());
-				}
-				
-			}
-			
-		});
+                backupBtn.setOnAction(e -> {
+                        FileChooser fc = new FileChooser();
+                        fc.setTitle("Save Backup");
+                        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("NPBK files", "*.npbk"));
+                        File out = fc.showSaveDialog(null);
+
+                        if (out != null)
+                        {
+                                if (out.exists())
+                                {
+                                        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                                                        "Overwrite existing file?", ButtonType.OK, ButtonType.CANCEL);
+                                        confirm.showAndWait();
+                                        if (confirm.getResult() != ButtonType.OK)
+                                        {
+                                                return;
+                                        }
+                                }
+
+                                try
+                                {
+                                        CurrentCompany.setCurrentFile(out);
+                                        CurrentCompany.persist();
+                                        alert("Backup saved to " + out.getAbsolutePath());
+                                }
+                                catch (IOException | ActionCancelledException | NoFileCreatedException ex)
+                                {
+                                        alert("Backup failed: " + ex.getMessage());
+                                }
+
+                        }
+
+                });
 		
-		restoreBtn.setOnAction(e -> {
-			FileChooser fc = new FileChooser();
-			fc.setTitle("Open Backup");
-			fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("NPBK files", "*.npbk"));
-			File f = fc.showOpenDialog(null);
-			
-			if (f != null)
-			{
-				
-				try
-				{
-					CurrentCompany.loadFromPersistent(f);
-					CurrentCompany.markCompanyOpen();
-					alert("Backup restored from " + f.getName());
-				}
-				catch (IOException | ActionCancelledException | NoFileCreatedException ex)
-				{
-					alert("Restore failed: " + ex.getMessage());
-				}
-				
-			}
-			
-		});
+                restoreBtn.setOnAction(e -> {
+                        FileChooser fc = new FileChooser();
+                        fc.setTitle("Open Backup");
+                        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("NPBK files", "*.npbk"));
+                        File f = fc.showOpenDialog(null);
+
+                        if (f != null)
+                        {
+                                Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                                                "Restoring will overwrite current data. Continue?", ButtonType.OK, ButtonType.CANCEL);
+                                confirm.showAndWait();
+                                if (confirm.getResult() == ButtonType.OK)
+                                {
+                                        try
+                                        {
+                                                CurrentCompany.loadFromPersistent(f);
+                                                CurrentCompany.markCompanyOpen();
+                                                alert("Backup restored from " + f.getName());
+                                        }
+                                        catch (IOException | ActionCancelledException | NoFileCreatedException ex)
+                                        {
+                                                alert("Restore failed: " + ex.getMessage());
+                                        }
+                                }
+                        }
+
+                });
 		
 		box.getChildren().addAll(backupBtn, restoreBtn);
 		box.setPadding(new Insets(10));

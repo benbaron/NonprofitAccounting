@@ -12,11 +12,33 @@ import jakarta.persistence.Persistence;
  * {@link EntityManagerFactory} instances.
  */
 public final class DatabaseManager {
-    private static final EntityManagerFactory emf =
-            Persistence.createEntityManagerFactory("nonprofitPU");
+    private static EntityManagerFactory emf;
+
+    static {
+        initialize();
+    }
 
     private DatabaseManager() {
         // Utility class
+    }
+
+    /**
+     * Initialize the underlying {@link EntityManagerFactory} if needed.
+     */
+    public static synchronized void initialize() {
+        if (emf == null || !emf.isOpen()) {
+            emf = Persistence.createEntityManagerFactory("nonprofitPU");
+        }
+    }
+
+    /**
+     * Shut down the {@link EntityManagerFactory} and release resources.
+     */
+    public static synchronized void shutdown() {
+        if (emf != null && emf.isOpen()) {
+            emf.close();
+        }
+        emf = null;
     }
 
     /**
@@ -24,7 +46,10 @@ public final class DatabaseManager {
      *
      * @return fresh {@link EntityManager}
      */
-    public static EntityManager getEntityManager() {
+    public static synchronized EntityManager getEntityManager() {
+        if (emf == null || !emf.isOpen()) {
+            initialize();
+        }
         return emf.createEntityManager();
     }
 }
