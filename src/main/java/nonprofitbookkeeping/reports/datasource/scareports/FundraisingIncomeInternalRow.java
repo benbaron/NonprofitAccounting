@@ -6,7 +6,9 @@ import java.math.BigDecimal;
 /**
  * Row representing fundraising income generated from an internal SCA event.
  */
-public class FundraisingIncomeInternalRow extends ScaRowBase {
+
+public class FundraisingIncomeInternalRow implements SupplementalRecord
+{
 	private String event;
 	private String activity;
 	private BigDecimal amount;

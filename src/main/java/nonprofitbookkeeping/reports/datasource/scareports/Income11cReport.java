@@ -3,7 +3,9 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.util.List;
 
-public class Income11cReport extends ScaRowBase {
+
+public class Income11cReport implements SupplementalRecord
+{
 	private String orgName;
 	private String reportTitle;
 	private List<Income11cRow> rows;

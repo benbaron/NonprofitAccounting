@@ -1,5 +1,11 @@
 package nonprofitbookkeeping.model.scaledger;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import nonprofitbookkeeping.reports.datasource.scareports.SupplementalRecord;
+
 /**
  * Represents a single entry in a ledger, potentially supporting splits across multiple accounts or funds.
  * This class holds details such as date, check number, payee/payer, memo, budget tracking information,
@@ -9,6 +15,12 @@ package nonprofitbookkeeping.model.scaledger;
  */
 public class LedgerEntry
 {
+    /** Unique identifier for this transaction. */
+    public String transactionId = UUID.randomUUID().toString();
+
+    /** Supplemental report records keyed by a descriptive name. */
+    public Map<String, SupplementalRecord> supplementalRecords = new HashMap<>();
+
     /** The date of the ledger entry (e.g., "YYYY-MM-DD"). */
     public String entryDate;
     /** The check number associated with the entry, if applicable. */
@@ -76,7 +88,25 @@ public class LedgerEntry
      */
     public LedgerEntry()
     {
-    	
+
+    }
+
+    /**
+     * Gets the unique transaction identifier for this entry.
+     * @return the transaction id string
+     */
+    public String getTransactionId()
+    {
+        return this.transactionId;
+    }
+
+    /**
+     * Gets supplemental records associated with this entry.
+     * @return a map of record names to supplemental records
+     */
+    public Map<String, SupplementalRecord> getSupplementalRecords()
+    {
+        return this.supplementalRecords;
     }
     
     /**

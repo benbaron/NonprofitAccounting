@@ -6,7 +6,12 @@ import java.math.BigDecimal;
 /**
  * Row representing net income from advertising.
  */
+<<<<<<< HEAD
 public class NetAdvertisingIncomeRow extends ScaRowBase {
+=======
+public class NetAdvertisingIncomeRow implements SupplementalRecord
+{
+>>>>>>> refs/remotes/origin/codex/add-interface-and-extend-ledgerentry
 	private String description;
 	private String itemsOrCount;
 	private BigDecimal amount;

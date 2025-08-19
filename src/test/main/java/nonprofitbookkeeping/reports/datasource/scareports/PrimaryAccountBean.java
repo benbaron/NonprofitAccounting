@@ -6,7 +6,7 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.io.Serializable;
 
-public class PrimaryAccountBean implements Serializable
+public class PrimaryAccountBean implements Serializable, SupplementalRecord
 {
 	
 	/* aqua-fill “Deposit Date” rows */

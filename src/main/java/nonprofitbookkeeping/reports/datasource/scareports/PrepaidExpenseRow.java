@@ -7,7 +7,12 @@ import java.math.BigDecimal;
  * Row representing a prepaid expense. Prepaid expenses list a description
  * along with the prior and current amounts that have been paid in advance.
  */
+<<<<<<< HEAD
 public class PrepaidExpenseRow extends ScaRowBase {
+=======
+public class PrepaidExpenseRow implements SupplementalRecord
+{
+>>>>>>> refs/remotes/origin/codex/add-interface-and-extend-ledgerentry
 	private String description;
 	private BigDecimal priorAmount;
 	private BigDecimal currentAmount;

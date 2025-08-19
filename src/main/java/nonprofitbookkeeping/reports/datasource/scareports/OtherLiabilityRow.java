@@ -8,7 +8,12 @@ import java.math.BigDecimal;
  * deferred revenue or standard payables. Similar structure to a payable,
  * tracking who is owed, the reason, and the prior/current amounts.
  */
+<<<<<<< HEAD
 public class OtherLiabilityRow extends ScaRowBase {
+=======
+public class OtherLiabilityRow implements SupplementalRecord
+{
+>>>>>>> refs/remotes/origin/codex/add-interface-and-extend-ledgerentry
 	private String owedTo;
 	private String reason;
 	private BigDecimal priorAmount;

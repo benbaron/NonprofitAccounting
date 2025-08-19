@@ -8,7 +8,7 @@ import java.math.BigDecimal;
  * Auto-generated bean matching ASSET_DTL_5a_FIXED_SEMANTIC_STRINGS.jrxml fields.
  * Keep this class in sync with the JRXML field names and types.
  */
-public class AssetDtl5aRecord
+public class AssetDtl5aRecord implements SupplementalRecord
 {
 	private String contact_info;
 	private BigDecimal add_total_to_pg_3_i_a_end;

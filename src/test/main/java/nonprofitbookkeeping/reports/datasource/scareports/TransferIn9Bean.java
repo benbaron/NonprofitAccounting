@@ -12,7 +12,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class TransferIn9Bean
+public class TransferIn9Bean implements SupplementalRecord
 {
 	private BigDecimal _1_contact_info;
 	private BigDecimal amount;

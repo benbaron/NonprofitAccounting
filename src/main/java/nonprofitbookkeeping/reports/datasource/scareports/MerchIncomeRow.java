@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 /** Merchandise sales (qty & total). */
 public final class MerchIncomeRow extends IncomeRowBase
-{
+ implements SupplementalRecord {
 	
 	private int quantity;
 	

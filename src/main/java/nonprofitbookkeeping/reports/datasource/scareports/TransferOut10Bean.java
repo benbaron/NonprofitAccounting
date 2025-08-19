@@ -10,7 +10,9 @@ import java.math.BigDecimal;
 /**
  * 
  */
-public class TransferOut10Bean extends ScaRowBase {
+
+public class TransferOut10Bean implements SupplementalRecord
+{
 
 	/**
 	 * @param one

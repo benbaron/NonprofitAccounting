@@ -9,7 +9,9 @@ import java.util.ArrayList;
 /**
  * 
  */
-public class DeprDtl8Bean extends ScaRowBase {
+
+public class DeprDtl8Bean implements SupplementalRecord
+{
 	ArrayList<DepreciationRow> rows;
 	
 }

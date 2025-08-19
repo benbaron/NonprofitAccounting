@@ -12,7 +12,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class FinanceComm13Bean extends ScaRowBase {
+
+public class FinanceComm13Bean implements SupplementalRecord
+{
 	private BigDecimal _1_contact_info;
 	private BigDecimal contents_b59;
 	private BigDecimal contents_e_3;

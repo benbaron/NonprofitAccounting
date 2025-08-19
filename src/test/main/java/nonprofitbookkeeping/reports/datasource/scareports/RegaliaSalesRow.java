@@ -3,7 +3,7 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 // RegaliaSalesRow.java
 import java.math.BigDecimal;
 
-public class RegaliaSalesRow
+public class RegaliaSalesRow implements SupplementalRecord
 {
 	// Section values: "PURCHASE", "SALE", "ADJUSTMENT"
 	private String section;

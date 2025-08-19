@@ -6,7 +6,9 @@ import java.math.BigDecimal;
 /**
  * Row representing fundraising income generated from an activity outside the kingdom.
  */
-public class FundraisingIncomeExternalRow extends ScaRowBase {
+
+public class FundraisingIncomeExternalRow implements SupplementalRecord
+{
 	private String place;
 	private String activity;
 	private BigDecimal amount;

@@ -10,7 +10,12 @@ import java.util.List;
  * rows as well as numerous singleton fields describing subscription metrics
  * and income figures for the newsletter.
  */
+<<<<<<< HEAD
 public class Newsletter15Bean extends ScaRowBase {
+=======
+public class Newsletter15Bean implements SupplementalRecord
+{
+>>>>>>> refs/remotes/origin/codex/add-interface-and-extend-ledgerentry
 	private List<Newsletter15Row> rows = new ArrayList<>();
 	
 	private String newsletterName;

@@ -12,7 +12,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class ExpenseDtl12bBean extends ScaRowBase {
+
+public class ExpenseDtl12bBean implements SupplementalRecord
+{
 	private BigDecimal _10_transfer_out;
 	private BigDecimal _10_transfer_out_2;
 	private BigDecimal _11_a_income_dtl;

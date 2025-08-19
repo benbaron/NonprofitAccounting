@@ -8,7 +8,7 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 /**
  * 
  */
-public class DeprDtl8Bean
+public class DeprDtl8Bean implements SupplementalRecord
 {
 	
 }

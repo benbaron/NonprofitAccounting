@@ -3,7 +3,7 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
 
-public class Income4ReportBean
+public class Income4ReportBean implements SupplementalRecord
 {
 	private String contact_info;
 	private String from_page_primary_account;

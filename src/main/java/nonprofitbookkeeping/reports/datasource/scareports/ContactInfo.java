@@ -8,7 +8,9 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 /**
  * 
  */
-public class ContactInfo extends ScaRowBase {
+
+public class ContactInfo implements SupplementalRecord
+{
     private String branch;
     private String warrantEndDate;
     private String legalName;

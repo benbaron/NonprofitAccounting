@@ -6,7 +6,9 @@ import java.math.BigDecimal;
 /**
  * Bean representing a row in the Fund Ledger report.
  */
-public class FundLedgerRowBean extends ScaRowBase {
+
+public class FundLedgerRowBean implements SupplementalRecord
+{
 	private String date;
 	private String description;
 	private BigDecimal debit;

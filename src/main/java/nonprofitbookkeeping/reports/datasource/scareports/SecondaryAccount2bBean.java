@@ -4,7 +4,12 @@
 
 package nonprofitbookkeeping.reports.datasource.scareports;
 
+<<<<<<< HEAD
 public class SecondaryAccount2bBean extends ScaRowBase {
+=======
+public class SecondaryAccount2bBean implements SupplementalRecord
+{
+>>>>>>> refs/remotes/origin/codex/add-interface-and-extend-ledgerentry
 	
 	private String bankName;
 	private String accountNumber;

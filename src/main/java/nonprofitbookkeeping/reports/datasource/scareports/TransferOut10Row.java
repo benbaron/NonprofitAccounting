@@ -8,7 +8,9 @@ import java.math.BigDecimal;
  * distinguishes transfers within the kingdom, outside the kingdom, or to the
  * SCA corporate office.
  */
-public class TransferOut10Row extends ScaRowBase {
+
+public class TransferOut10Row implements SupplementalRecord
+{
 	private String section;
 	private String toAccountOrPayee;
 	private String reason;

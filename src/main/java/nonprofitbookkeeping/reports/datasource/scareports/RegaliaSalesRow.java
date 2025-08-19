@@ -3,7 +3,12 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 // RegaliaSalesRow.java
 import java.math.BigDecimal;
 
+<<<<<<< HEAD
 public class RegaliaSalesRow extends ScaRowBase {
+=======
+public class RegaliaSalesRow implements SupplementalRecord
+{
+>>>>>>> refs/remotes/origin/codex/add-interface-and-extend-ledgerentry
 	// Section values: "PURCHASE", "SALE", "ADJUSTMENT"
 	private String section;
 	private String entryDate; // keep as String to allow free-form dates

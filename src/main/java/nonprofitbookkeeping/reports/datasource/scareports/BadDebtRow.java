@@ -3,7 +3,9 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
 
-public class BadDebtRow extends ScaRowBase {
+
+public class BadDebtRow implements SupplementalRecord
+{
 	private String code;
 	private String organizationOrPerson;
 	private String reason;

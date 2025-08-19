@@ -3,7 +3,7 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
 
-public class Income11cRow
+public class Income11cRow implements SupplementalRecord
 {
 	private String donorOrSource;
 	private String description;

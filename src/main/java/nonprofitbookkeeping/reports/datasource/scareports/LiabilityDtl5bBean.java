@@ -13,7 +13,12 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+<<<<<<< HEAD
 public class LiabilityDtl5bBean extends ScaRowBase {
+=======
+public class LiabilityDtl5bBean implements SupplementalRecord
+{
+>>>>>>> refs/remotes/origin/codex/add-interface-and-extend-ledgerentry
 	ArrayList<LiabilityDtl5bRow> rows;
 	
 	private BigDecimal _1_contact_info;

@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 
 /** Row representing one event’s income (gross & net). */
 public final class EventIncomeRow extends IncomeRowBase
-{
+ implements SupplementalRecord {
 	
 	private BigDecimal net; // after expenses
 	

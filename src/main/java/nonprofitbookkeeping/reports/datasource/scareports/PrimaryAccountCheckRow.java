@@ -8,7 +8,12 @@ import java.math.BigDecimal;
  * statement. Each row contains the check number, the date the check was
  * written, and the amount of the check.
  */
+<<<<<<< HEAD
 public class PrimaryAccountCheckRow extends ScaRowBase {
+=======
+public class PrimaryAccountCheckRow implements SupplementalRecord
+{
+>>>>>>> refs/remotes/origin/codex/add-interface-and-extend-ledgerentry
 	private String checkNumber;
 	private String checkDate;
 	private BigDecimal amount;

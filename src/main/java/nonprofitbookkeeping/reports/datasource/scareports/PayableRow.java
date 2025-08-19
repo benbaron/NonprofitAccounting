@@ -7,7 +7,12 @@ import java.math.BigDecimal;
  * Row representing a single payable. Payables capture amounts owed to a party
  * along with a reason for the obligation.
  */
+<<<<<<< HEAD
 public class PayableRow extends ScaRowBase {
+=======
+public class PayableRow implements SupplementalRecord
+{
+>>>>>>> refs/remotes/origin/codex/add-interface-and-extend-ledgerentry
 	private String owedTo;
 	private String reason;
 	private BigDecimal priorAmount;

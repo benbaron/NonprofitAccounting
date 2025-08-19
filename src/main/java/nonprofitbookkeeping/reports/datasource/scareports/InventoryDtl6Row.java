@@ -3,7 +3,12 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
 
+<<<<<<< HEAD
 public class InventoryDtl6Row extends ScaRowBase {
+=======
+public class InventoryDtl6Row implements SupplementalRecord
+{
+>>>>>>> refs/remotes/origin/codex/add-interface-and-extend-ledgerentry
 	private String category;
 	private String itemDescription;
 	private String skuOrId;

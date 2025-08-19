@@ -7,7 +7,12 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 import java.math.BigDecimal;
 
 /** INVENTORY 6 worksheet – one inventory item. */
+<<<<<<< HEAD
 public final class InventoryRow extends ScaRowBase {
+=======
+public final class InventoryRow implements SupplementalRecord
+{
+>>>>>>> refs/remotes/origin/codex/add-interface-and-extend-ledgerentry
 	
 	private String item;
 	private int quantity;

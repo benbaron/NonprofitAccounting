@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.ByteArrayOutputStream;
@@ -38,18 +39,23 @@ public class JacksonDataStorer implements DataStorer
 	 * Constructs a JacksonDataStorer and initializes the Jackson ObjectMapper
 	 * with specific configurations for serialization and deserialization.
 	 */
-	public JacksonDataStorer()
-	{
-		
-		this.mapper = new ObjectMapper().registerModule(new JavaTimeModule())
-			.enable(SerializationFeature.INDENT_OUTPUT)
-			.disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES)
-			.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-			.enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE);
-		this.mapper.configOverride(List.class)
-			.setSetterInfo(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY));
-		this.mapper.getFactory().configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
-	}
+        public JacksonDataStorer()
+        {
+
+                this.mapper = new ObjectMapper().registerModule(new JavaTimeModule())
+                        .enable(SerializationFeature.INDENT_OUTPUT)
+                        .disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES)
+                        .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                        .enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE);
+                this.mapper.configOverride(List.class)
+                        .setSetterInfo(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY));
+                this.mapper.getFactory().configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
+
+                BasicPolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder()
+                        .allowIfSubType("nonprofitbookkeeping.reports.datasource.scareports")
+                        .build();
+                this.mapper.activateDefaultTypingAsProperty(ptv, ObjectMapper.DefaultTyping.NON_FINAL, "@class");
+        }
 	
 	/**
 	 * {@inheritDoc}
@@ -175,10 +181,16 @@ public class JacksonDataStorer implements DataStorer
 	 * Gets the static dataStorer instance.
 	 * @return The static JacksonDataStorer instance.
 	 */
-	public static JacksonDataStorer getDataStorer()
-	{
-		return JacksonDataStorer.dataStorer;
-	}
+        public static JacksonDataStorer getDataStorer()
+        {
+                return JacksonDataStorer.dataStorer;
+        }
+
+        @Override
+        public ObjectMapper getObjectMapper()
+        {
+                return this.mapper;
+        }
 	
 	
 }

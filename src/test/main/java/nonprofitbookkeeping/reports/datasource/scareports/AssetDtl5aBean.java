@@ -8,7 +8,7 @@ import java.math.BigDecimal;
  * Generated on 2025-08-01.
  */
 
-public class AssetDtl5aBean
+public class AssetDtl5aBean implements SupplementalRecord
 {
 	private BigDecimal _1_contact_info;
 	private BigDecimal add_total_to_pg_3_i_a_end;

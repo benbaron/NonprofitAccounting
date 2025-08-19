@@ -3,7 +3,7 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.util.List;
 
-public class TransferIn9Report
+public class TransferIn9Report implements SupplementalRecord
 {
 	private String orgName;
 	private String reportTitle;

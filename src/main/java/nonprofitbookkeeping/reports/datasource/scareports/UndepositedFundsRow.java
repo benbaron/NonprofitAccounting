@@ -8,7 +8,9 @@ import java.math.BigDecimal;
  * the sending branch or reason for the cash being held and the amount
  * associated with it.
  */
-public class UndepositedFundsRow extends ScaRowBase {
+
+public class UndepositedFundsRow implements SupplementalRecord
+{
 	private String sendingBranchOrReason;
 	private BigDecimal amount;
 	
