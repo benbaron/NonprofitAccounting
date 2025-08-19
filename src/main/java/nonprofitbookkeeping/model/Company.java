@@ -2,7 +2,15 @@
 package nonprofitbookkeeping.model;
 
 import java.io.Serializable;
-import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Table;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -11,6 +19,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * profile information, ledger, chart of accounts, and the associated data file.
  * This class serves as the top-level container for a company's bookkeeping data.
  */
+@Entity
+@Table(name = "companies")
+
 public class Company implements Serializable
 {
 	/**
@@ -18,12 +29,20 @@ public class Company implements Serializable
 	 */
 	private static final long serialVersionUID = 6728014646115467637L;
 	
-	/** The profile information for the company (e.g., name, address). Initialized by default. */
-	@JsonProperty private CompanyProfileModel companyProfileModel = new CompanyProfileModel();
-	/** The ledger containing all financial transactions for the company. Initialized by default. */
-	@JsonProperty private Ledger ledger = new Ledger();
-	/** The chart of accounts defining the structure of accounts for the company. Initialized by default. */
-	@JsonProperty private ChartOfAccounts chartOfAccounts = new ChartOfAccounts();
+        /** Primary key. */
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
+
+        /** The profile information for the company (e.g., name, address). Initialized by default. */
+        @Embedded private CompanyProfileModel companyProfileModel = new CompanyProfileModel();
+        /** The ledger containing all financial transactions for the company. Initialized by default. */
+        @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+        private Ledger ledger = new Ledger();
+        /** The chart of accounts defining the structure of accounts for the company. Initialized by default. */
+        @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+        private ChartOfAccounts chartOfAccounts = new ChartOfAccounts();
+
 	
         /**
          * Identifier used to reference this company in the database.
@@ -32,17 +51,26 @@ public class Company implements Serializable
          */
         @JsonProperty private String companyId;
 
+
 	/**
 	 * Constructs a new Company object.
 	 * Initializes the company profile, ledger, and chart of accounts with default instances.
 	 * The company file is initially null.
 	 */
-	public Company()
-	{			
-		this.companyProfileModel = new CompanyProfileModel();
-		this.ledger = new Ledger();
-		this.chartOfAccounts = new ChartOfAccounts();
-	}
+        public Company() 
+        {
+                this.companyProfileModel = new CompanyProfileModel();
+                this.ledger = new Ledger();
+                this.chartOfAccounts = new ChartOfAccounts();
+        }
+
+        public Long getId() {
+                return this.id;
+        }
+
+        public void setId(Long id) {
+                this.id = id;
+        }
 	
 	/**
 	 * Gets the company's profile information.

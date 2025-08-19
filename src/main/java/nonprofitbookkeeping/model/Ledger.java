@@ -4,7 +4,15 @@ package nonprofitbookkeeping.model;
 import java.util.List;
 import java.util.ArrayList;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
 import lombok.Data;
 import java.io.Serializable;
@@ -15,19 +23,27 @@ import java.io.Serializable;
  * Lombok's {@code @Data} annotation is used for generating boilerplate code like
  * getters, setters (if applicable), {@code toString()}, {@code equals()}, and {@code hashCode()}.
  */
-@Data final public class Ledger implements Serializable
+@Data
+@Entity
+@Table(name = "ledgers")
+public class Ledger implements Serializable
 {
-	/**
-	 * The unique identifier for this serializable class.
-	 */
-	private static final long serialVersionUID = 8752049840895321935L;
-	
-	/**
-	 * The journal containing all accounting transactions for this ledger.
-	 * This field is final and initialized to a new Journal instance.
-	 * It is marked with {@code @JsonProperty} for serialization/deserialization.
-	 */
-	@JsonProperty final private Journal journal = new Journal();
+        /**
+         * The unique identifier for this serializable class.
+         */
+        private static final long serialVersionUID = 8752049840895321935L;
+
+        /** Primary key for the ledger. */
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
+
+        /**
+         * The journal containing all accounting transactions for this ledger.
+         */
+        @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+        @JoinColumn(name = "journal_id")
+        private Journal journal = new Journal();
 	
 	/**
 	 * Retrieves all transactions recorded in this ledger's journal.

@@ -8,11 +8,10 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import java.io.File;
-import java.io.IOException;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.ChartOfAccounts;
-import nonprofitbookkeeping.exception.ActionCancelledException;
-import nonprofitbookkeeping.exception.NoFileCreatedException;
+import nonprofitbookkeeping.persistence.DatabaseService;
+import java.sql.SQLException;
 import nonprofitbookkeeping.service.SettingsService;
 import nonprofitbookkeeping.model.SettingsModel;
 import nonprofitbookkeeping.ui.ThemeManager;
@@ -251,73 +250,70 @@ public class SettingsPanelFX extends BorderPane
 		return new Tab("Accounting", wrapper);
 	}
 	
-	/**
-	 * Builds and returns the "Backup" tab for the settings panel.
-	 * This tab provides buttons for creating and restoring backups.
-	 * Current actions are placeholders that show alert messages.
-	 * 
-	 * @return A {@link Tab} configured with backup and restore options.
-	 */
-	private static Tab backupTab()
-	{
-		HBox box = new HBox(10);
-		Button backupBtn = new Button("Create Backup");
-		Button restoreBtn = new Button("Restore Backup");
-		
-		backupBtn.setOnAction(e -> {
-			FileChooser fc = new FileChooser();
-			fc.setTitle("Save Backup");
-			fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("NPBK files", "*.npbk"));
-			File out = fc.showSaveDialog(null);
-			
-			if (out != null)
-			{
-				
-				try
-				{
-					CurrentCompany.setCurrentFile(out);
-					CurrentCompany.persist();
-					alert("Backup saved to " + out.getAbsolutePath());
-				}
-				catch (IOException | ActionCancelledException | NoFileCreatedException ex)
-				{
-					alert("Backup failed: " + ex.getMessage());
-				}
-				
-			}
-			
-		});
-		
-		restoreBtn.setOnAction(e -> {
-			FileChooser fc = new FileChooser();
-			fc.setTitle("Open Backup");
-			fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("NPBK files", "*.npbk"));
-			File f = fc.showOpenDialog(null);
-			
-			if (f != null)
-			{
-				
-				try
-				{
-					CurrentCompany.loadFromPersistent(f);
-					CurrentCompany.markCompanyOpen();
-					alert("Backup restored from " + f.getName());
-				}
-				catch (IOException | ActionCancelledException | NoFileCreatedException ex)
-				{
-					alert("Restore failed: " + ex.getMessage());
-				}
-				
-			}
-			
-		});
-		
-		box.getChildren().addAll(backupBtn, restoreBtn);
-		box.setPadding(new Insets(10));
-		
-		TitledPane wrapper = titled("Backup & Restore", box);
-		return new Tab("Backup", wrapper);
-	}
+        /**
+         * Builds and returns the "Backup" tab for the settings panel.
+         * This tab provides buttons for creating and restoring backups
+         * of the underlying H2 database.
+         *
+         * @return A {@link Tab} configured with backup and restore options.
+         */
+        private static Tab backupTab()
+        {
+                HBox box = new HBox(10);
+                Button backupBtn = new Button("Create Backup");
+                Button restoreBtn = new Button("Restore Backup");
+
+                backupBtn.setOnAction(e -> {
+                        FileChooser fc = new FileChooser();
+                        fc.setTitle("Save Backup");
+                        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("SQL files", "*.sql"));
+                        File out = fc.showSaveDialog(null);
+
+                        if (out != null)
+                        {
+                                DatabaseService db = new DatabaseService();
+                                try
+                                {
+                                        db.backupDatabase(out.getAbsolutePath());
+                                        alert("Backup saved to " + out.getAbsolutePath());
+                                }
+                                catch (SQLException ex)
+                                {
+                                        alert("Backup failed: " + ex.getMessage());
+                                }
+                        }
+
+                });
+
+                restoreBtn.setOnAction(e -> {
+                        FileChooser fc = new FileChooser();
+                        fc.setTitle("Open Backup");
+                        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("SQL files", "*.sql"));
+                        File f = fc.showOpenDialog(null);
+
+                        if (f != null)
+                        {
+                                DatabaseService db = new DatabaseService();
+                                try
+                                {
+                                        db.restoreDatabase(f.getAbsolutePath());
+                                        CurrentCompany.loadFromDatabase();
+                                        alert("Backup restored from " + f.getName());
+                                }
+                                catch (SQLException ex)
+                                {
+                                        alert("Restore failed: " + ex.getMessage());
+                                }
+                        }
+
+                });
+
+                box.getChildren().addAll(backupBtn, restoreBtn);
+                box.setPadding(new Insets(10));
+
+                TitledPane wrapper = titled("Backup & Restore", box);
+                return new Tab("Backup", wrapper);
+        }
 	
 	/**
 	 * Builds and returns the "UI Preferences" tab for the settings panel.

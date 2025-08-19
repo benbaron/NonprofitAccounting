@@ -9,11 +9,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapKeyColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -55,6 +57,11 @@ public class AccountingTransaction implements Serializable
         @JoinColumn(name = "transaction_id")
         @MapKeyColumn(name = "info_key")
         @JsonProperty private Map<String, String> info;
+
+        /** Owning journal for this transaction. */
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "journal_id")
+        private Journal journal;
 
         /** Key used within {@link #info} to store the record type. */
         public static final String RECORD_TYPE_KEY = "recordType";
@@ -559,11 +566,31 @@ public class AccountingTransaction implements Serializable
 	/**
 	 * @param associatedFundName the associatedFundName to set
 	 */
-	public void setAssociatedFundName(String associatedFundName)
-	{
-		this.associatedFundName = associatedFundName;
-		
-	}
+        public void setAssociatedFundName(String associatedFundName)
+        {
+                this.associatedFundName = associatedFundName;
+
+        }
+
+        /**
+         * Owning journal accessor.
+         *
+         * @return the journal containing this transaction
+         */
+        public Journal getJournal()
+        {
+                return this.journal;
+        }
+
+        /**
+         * Sets the owning journal. Primarily used when adding a transaction to a journal.
+         *
+         * @param journal the journal to set
+         */
+        public void setJournal(Journal journal)
+        {
+                this.journal = journal;
+        }
 
 	/**
 	 * @return
