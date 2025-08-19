@@ -1,11 +1,7 @@
 package nonprofitbookkeeping.persistence;
 
-import jakarta.persistence.EntityManager;
-import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.Company;
-import nonprofitbookkeeping.model.Journal;
-import nonprofitbookkeeping.model.Ledger;
-
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -18,20 +14,10 @@ import java.util.List;
  */
 public class DatabaseService {
 
-    private final EntityManager entityManager;
-    private final AccountingTransactionRepository transactionRepository;
-    private final DonorRepository donorRepository;
-    private final InventoryRepository inventoryRepository;
-    private final SaleRecordRepository saleRecordRepository;
-    private final ScaRecordRepository scaRecordRepository;
+    private final CompanyRepository companyRepository = new CompanyRepository();
+    private final DatabaseBackupService backupService = new DatabaseBackupService();
 
     public DatabaseService() {
-        this.entityManager = EntityManagerProvider.getEntityManager();
-        this.transactionRepository = new AccountingTransactionRepository(entityManager);
-        this.donorRepository = new DonorRepository(entityManager);
-        this.inventoryRepository = new InventoryRepository(entityManager);
-        this.saleRecordRepository = new SaleRecordRepository(entityManager);
-        this.scaRecordRepository = new ScaRecordRepository(entityManager);
     }
 
     /** Persist core parts of the company to the database. */
@@ -39,15 +25,12 @@ public class DatabaseService {
         if (company == null) {
             return;
         }
-        Ledger ledger = company.getLedger();
-        if (ledger != null) {
-            List<AccountingTransaction> txs = ledger.getTransactions();
-            if (txs != null) {
-                txs.forEach(transactionRepository::save);
-            }
-        }
-        // additional components like donors, inventory or sales could be saved
-        // here when available from the Company model.
+        companyRepository.save(company);
+    }
+
+    /** Retrieve all companies from the database. */
+    public List<Company> listCompanies() {
+        return companyRepository.findAll();
     }
 
     /**
@@ -56,34 +39,30 @@ public class DatabaseService {
      * transactions populated from the database.
      */
     public Company loadCompany() {
-        Company company = new Company();
-        Journal journal = company.getLedger().getJournal();
-        List<AccountingTransaction> txs = transactionRepository.findAll();
-        if (txs != null) {
-            for (AccountingTransaction tx : txs) {
-                journal.addTransaction(tx);
-            }
+        List<Company> companies = companyRepository.findAll();
+        if (companies.isEmpty()) {
+            return new Company();
         }
-        return company;
+        return companies.get(0);
     }
 
-    public AccountingTransactionRepository getTransactionRepository() {
-        return transactionRepository;
+    /**
+     * Create a SQL backup of the database at the specified path.
+     *
+     * @param filePath destination for the SQL script
+     * @throws SQLException if the backup fails
+     */
+    public void backupDatabase(String filePath) throws SQLException {
+        backupService.backupTo(filePath);
     }
 
-    public DonorRepository getDonorRepository() {
-        return donorRepository;
-    }
-
-    public InventoryRepository getInventoryRepository() {
-        return inventoryRepository;
-    }
-
-    public SaleRecordRepository getSaleRecordRepository() {
-        return saleRecordRepository;
-    }
-
-    public ScaRecordRepository getScaRecordRepository() {
-        return scaRecordRepository;
+    /**
+     * Restore the database from a previously created SQL backup.
+     *
+     * @param filePath source of the SQL script
+     * @throws SQLException if the restore fails
+     */
+    public void restoreDatabase(String filePath) throws SQLException {
+        backupService.restoreFrom(filePath);
     }
 }

@@ -29,6 +29,7 @@ import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Fund;
 import nonprofitbookkeeping.plugin.Plugin;
 import nonprofitbookkeeping.service.*;
+import nonprofitbookkeeping.persistence.DatabaseManager;
 import nonprofitbookkeeping.ui.actions.*;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.panels.*;
@@ -157,10 +158,11 @@ public class NonprofitBookkeepingFX extends Application
 	 * Launches the JavaFX runtime and application.
 	 * @param args Command line arguments passed to the application.
 	 */
-	public static void main(String[] args)
-	{
-		launch(args);
-	}
+    public static void main(String[] args)
+    {
+            DatabaseManager.startServer();
+            launch(args);
+    }
 	
 	/**
 	 * The main entry point for this JavaFX application, called after the {@code init} method.
@@ -705,8 +707,8 @@ public class NonprofitBookkeepingFX extends Application
 	 * Errors during plugin shutdown are logged.
 	 * @throws Exception if an error occurs during the superclass's stop method or saving company data.
 	 */
-	@Override public void stop() throws Exception
-	{
+    @Override public void stop() throws Exception
+    {
 		LOGGER.info("Application stopping. Shutting down plugins.");
 		
 		if (this.loadedPlugins != null)
@@ -731,8 +733,9 @@ public class NonprofitBookkeepingFX extends Application
 			
 		}
 		
-		doSaveCompany();
-		super.stop();
-	}
+                doSaveCompany();
+                DatabaseManager.shutdown();
+                super.stop();
+    }
 	
 }

@@ -142,6 +142,21 @@ public class CurrentCompany
                }
         }
 
+        /**
+         * Reload the company data directly from the database.
+         * This bypasses any file-based migration and simply loads the
+         * first stored {@link Company} from the database into the
+         * current context.
+         */
+        public static void loadFromDatabase()
+        {
+                company = DATABASE_SERVICE.loadCompany();
+                if (company != null)
+                {
+                        markCompanyOpen();
+                }
+        }
+
 	
 	/**
 	 * Closes the currently open company.

@@ -2,7 +2,7 @@ package nonprofitbookkeeping.service;
 
 import jakarta.persistence.EntityManager;
 import nonprofitbookkeeping.model.reports.ReportConfiguration;
-import nonprofitbookkeeping.persistence.PersistenceManager;
+import nonprofitbookkeeping.persistence.DatabaseManager;
 import nonprofitbookkeeping.persistence.dao.ReportConfigurationDao;
 
 import java.io.File;
@@ -26,11 +26,7 @@ public class ReportConfigurationService {
     private static final Logger LOGGER =
             Logger.getLogger(ReportConfigurationService.class.getName());
 
-    private final ReportConfigurationDao dao;
-
     public ReportConfigurationService() {
-        EntityManager em = PersistenceManager.getEntityManager();
-        this.dao = new ReportConfigurationDao(em);
     }
 
     /**
@@ -43,7 +39,10 @@ public class ReportConfigurationService {
             LOGGER.warning("Attempted to save a null list of report configurations. Aborting.");
             return;
         }
-        dao.saveAll(configs);
+        try (EntityManager em = DatabaseManager.getEntityManager()) {
+            ReportConfigurationDao dao = new ReportConfigurationDao(em);
+            dao.saveAll(configs);
+        }
     }
 
     /**
@@ -52,7 +51,8 @@ public class ReportConfigurationService {
      * compatibility.
      */
     public List<ReportConfiguration> loadConfigurations(File companyDirectory) {
-        try {
+        try (EntityManager em = DatabaseManager.getEntityManager()) {
+            ReportConfigurationDao dao = new ReportConfigurationDao(em);
             return dao.findAll();
         } catch (Exception e) {
             LOGGER.warning("Error loading report configurations: " + e.getMessage());
