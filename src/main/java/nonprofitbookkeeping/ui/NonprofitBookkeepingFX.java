@@ -289,21 +289,25 @@ public class NonprofitBookkeepingFX extends Application
 				return;
 			}
 			
-			File companyFile = currentCompany.getCompanyFile();
-			
-			if (companyFile == null)
-			{
-				companyFile = CurrentCompany.getCurrentFile();
-			}
-			
-			if (companyFile == null)
-			{
-				AlertBox.showError(this.primaryStage,
-					"The current company has not been saved to a file yet. Please save your company before managing budgets.");
-				return;
-			}
-			
-			File companyDir = companyFile.getParentFile();
+                        String companyId = currentCompany.getCompanyId();
+
+                        if (companyId == null || companyId.isBlank())
+                        {
+                                AlertBox.showError(this.primaryStage,
+                                        "The current company does not have a database identifier yet. Please save your company before managing budgets.");
+                                return;
+                        }
+
+                        File companyFile = CurrentCompany.getCurrentFile();
+
+                        if (companyFile == null)
+                        {
+                                AlertBox.showError(this.primaryStage,
+                                        "The current company has not been saved to a file yet. Please save your company before managing budgets.");
+                                return;
+                        }
+
+                        File companyDir = companyFile.getParentFile();
 			
 			if (companyDir == null)
 			{
@@ -431,10 +435,15 @@ public class NonprofitBookkeepingFX extends Application
 		});
 		add(this.panels, "Donations",
 			e -> showPanel(new DonationsPanelFX(this.primaryStage), "Donations"));
-		add(this.panels, "Grants", e -> {
-			File cfile = CurrentCompany.getCurrentFile();
-			showPanel(new GrantsPanelFX(ServiceContainer.grantsService, cfile), "Grants");
-		});
+                add(this.panels, "Grants", e -> {
+                        String companyId = null;
+                        Company cc = CurrentCompany.getCompany();
+                        if (cc != null)
+                        {
+                                companyId = cc.getCompanyId();
+                        }
+                        showPanel(new GrantsPanelFX(ServiceContainer.grantsService, companyId), "Grants");
+                });
 		add(this.panels, "Sales & COG", e -> {
 			File dir = null;
 			if (CurrentCompany.getCurrentFile() != null)

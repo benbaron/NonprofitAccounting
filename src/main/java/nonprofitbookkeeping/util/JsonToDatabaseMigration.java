@@ -28,6 +28,7 @@ import nonprofitbookkeeping.repository.SupplementalRecordRepository;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -144,24 +145,22 @@ public class JsonToDatabaseMigration {
         }
     }
 
-    /** Migrate report configurations from a JSON file. */
-    public void migrateReportConfigurations(File configJson) throws IOException {
-        List<ReportConfiguration> configs = mapper.readValue(configJson,
-                mapper.getTypeFactory().constructCollectionType(List.class, ReportConfiguration.class));
-        configs.forEach(reportConfigDao::save);
+      /** Migrate report configurations from a JSON file. */
+      public void migrateReportConfigurations(File configJson) throws IOException {
+          List<ReportConfiguration> configs = mapper.readValue(configJson,
+                  mapper.getTypeFactory().constructCollectionType(List.class, ReportConfiguration.class));
+          configs.forEach(reportConfigDao::save);
 
-    }
-}
+      }
 
-
-    /**
-     * Convenience method that reads an entire company data archive (the format
-     * produced by {@link JacksonDataStorer}) and persists its contents to the
-     * database using the configured repositories.
-     */
-    public void migrateCompanyArchive(File companyZip) throws IOException {
-        Company company = dataStorer.loadData(Company.class, companyZip);
-        DatabaseService db = new DatabaseService();
-        db.saveCompany(company);
-    }
-}
+      /**
+       * Convenience method that reads an entire company data archive (the format
+       * produced by {@link JacksonDataStorer}) and persists its contents to the
+       * database using the configured repositories.
+       */
+      public void migrateCompanyArchive(java.nio.file.Path companyZip) throws IOException {
+          Company company = dataStorer.loadData(Company.class, companyZip.toFile());
+          DatabaseService db = new DatabaseService();
+          db.saveCompany(company);
+      }
+  }

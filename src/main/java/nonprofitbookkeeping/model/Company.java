@@ -1,7 +1,6 @@
 
 package nonprofitbookkeeping.model;
 
-import java.io.File;
 import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -26,12 +25,12 @@ public class Company implements Serializable
 	/** The chart of accounts defining the structure of accounts for the company. Initialized by default. */
 	@JsonProperty private ChartOfAccounts chartOfAccounts = new ChartOfAccounts();
 	
-	/**
-	 * The file system path to the company's data file.
-	 * This may be null if the company data is not associated with a file
-	 * (e.g., new company not yet saved, or data loaded from a different source).
-	 */
-	private File companyFile = null;
+        /**
+         * Identifier used to reference this company in the database.
+         * This replaces the old file based linkage and may be {@code null}
+         * for transient company instances that have not yet been persisted.
+         */
+        @JsonProperty private String companyId;
 
 	/**
 	 * Constructs a new Company object.
@@ -113,43 +112,25 @@ public class Company implements Serializable
 		return this.companyProfileModel;
 	}
 
-	/**
-	 * Gets the file associated with this company's data.
-	 * This is typically the file from which the company data was loaded or to which it will be saved.
-	 *
-	 * @return The {@link File} object representing the company data file,
-	 *         or {@code null} if no file has been associated with this company object.
-	 */
-	public File getCompanyFile()
-	{
-		return this.companyFile;
-	}
-
-	/**
-	 * Sets the file associated with this company's data.
-	 * This is typically the file from which the company data was loaded or to which it will be saved.
-	 *
-	 * @param companyFile The company data file. Can be null if no file is associated.
-	 */
-	public void setCompanyFile(File companyFile) {
-		this.companyFile = companyFile;
-	}
-
-	/**
-	 * Gets the parent directory of the company's data file.
-	 * If the company file is not set, or if the company file does not have a parent
-	 * (e.g., it's a root directory, though unlikely for a file), this method returns {@code null}.
-	 *
-	 * @return A {@link File} object representing the parent directory of the company file,
-	 *         or {@code null} if the company file is not set or has no parent.
-	 */
-	public File getParentFile()
-	{
-		if (this.companyFile == null) {
-            return null;
+        /**
+         * Returns the identifier for this company in the database.
+         *
+         * @return company identifier or {@code null} if not yet persisted
+         */
+        public String getCompanyId()
+        {
+                return this.companyId;
         }
-        return this.companyFile.getParentFile();
-	}
+
+        /**
+         * Sets the identifier used to reference this company in the database.
+         *
+         * @param companyId database identifier for the company
+         */
+        public void setCompanyId(String companyId)
+        {
+                this.companyId = companyId;
+        }
 
 	/**
 	 * @param profile

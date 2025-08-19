@@ -1,7 +1,6 @@
 
 package nonprofitbookkeeping.ui.panels;
 
-import java.io.File;
 import java.math.BigDecimal;
 import nonprofitbookkeeping.util.FormatUtils;
 import java.util.List;
@@ -21,15 +20,16 @@ import nonprofitbookkeeping.service.GrantsService;
 
 /**
  * JavaFX port of {@code GrantsPanel}. Displays grant records in a table with a
- * Refresh button. Uses the same FileBasedGrantsService for data.
+ * Refresh button. Grants are now persisted via database services rather than
+ * directly manipulating company files.
  */
 public class GrantsPanelFX extends BorderPane
 {
 	
 	/** Service layer for grant data operations. */
 	private final GrantsService grantsService;
-	/** Company file where grants are persisted. */
-	private File companyFile;
+        /** Identifier for the company whose grants are being managed. */
+        private String companyId;
 	/** ObservableList to hold {@link GrantRow} objects for display in the table. */
 	private final ObservableList<GrantRow> rows = FXCollections.observableArrayList();
 	/** TableView to display the list of grants. */
@@ -40,10 +40,10 @@ public class GrantsPanelFX extends BorderPane
 	 * Initializes the panel with a {@link GrantsService} instance, a table to display grant information,
 	 * and a "Refresh" button to reload grant data.
 	    */
-	public GrantsPanelFX(GrantsService service, File companyFile)
-	{
-		this.grantsService = service != null ? service : new GrantsService();
-		this.companyFile = companyFile;
+        public GrantsPanelFX(GrantsService service, String companyId)
+        {
+                this.grantsService = service != null ? service : new GrantsService();
+                this.companyId = companyId;
 		
 		setPadding(new Insets(10));
 		buildTable();
@@ -80,19 +80,19 @@ public class GrantsPanelFX extends BorderPane
 		
 		setBottom(new ToolBar(refresh, new Separator(), new HBox(5, add, edit, del)));
 		
-		if (this.companyFile != null)
-		{
-			
-			try
-			{
-				this.grantsService.loadGrantsFromZip(this.companyFile);
-			}
-			catch (Exception ex)
-			{
-				ex.printStackTrace();
-			}
-			
-		}
+                if (this.companyId != null)
+                {
+
+                        try
+                        {
+                                this.grantsService.loadGrantsFromDatabase(this.companyId);
+                        }
+                        catch (Exception ex)
+                        {
+                                ex.printStackTrace();
+                        }
+
+                }
 		
 		loadGrantData();
 	}
@@ -214,19 +214,19 @@ public class GrantsPanelFX extends BorderPane
 	private void save()
 	{
 		
-		if (this.companyFile != null)
-		{
-			
-			try
-			{
-				this.grantsService.saveGrantsToZip(this.companyFile);
-			}
-			catch (Exception ex)
-			{
-				ex.printStackTrace();
-			}
-			
-		}
+                if (this.companyId != null)
+                {
+
+                        try
+                        {
+                                this.grantsService.saveGrantsToDatabase(this.companyId);
+                        }
+                        catch (Exception ex)
+                        {
+                                ex.printStackTrace();
+                        }
+
+                }
 		
 	}
 	

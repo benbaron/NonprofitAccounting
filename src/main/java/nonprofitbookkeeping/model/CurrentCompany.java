@@ -64,15 +64,7 @@ public class CurrentCompany
        public static void setCurrentFile(File currentFile)
        {
                CurrentCompany.currentFile = checkNotNull(currentFile);
-
-               // Keep the Company object's file reference in sync with the
-               // static currentFile value. This ensures callers querying
-               // {@link Company#getCompanyFile()} receive the correct
-               // location after load/save operations.
-               if (company != null)
-               {
-                       company.setCompanyFile(CurrentCompany.currentFile);
-               }
+               // The Company model no longer tracks its backing file directly.
        }
 	
 	/**
@@ -130,14 +122,13 @@ public class CurrentCompany
                                                                                                                 NoFileCreatedException
         {
                 checkNotNull(file, "File cannot be null for load operation.");
-                JsonToDatabaseMigration migration = new JsonToDatabaseMigration();
-                migration.migrateCompanyArchive(file);
+               JsonToDatabaseMigration migration = new JsonToDatabaseMigration();
+               migration.migrateCompanyArchive(file.toPath());
                 company = DATABASE_SERVICE.loadCompany();
                setCurrentFile(file);
 
                if (company != null)
                {
-                       company.setCompanyFile(file);
                        markCompanyOpen();
                }
         }
