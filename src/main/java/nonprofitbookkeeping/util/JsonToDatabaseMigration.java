@@ -18,6 +18,7 @@ import nonprofitbookkeeping.persistence.dao.LedgerEntryDao;
 import nonprofitbookkeeping.persistence.dao.ReportConfigurationDao;
 import nonprofitbookkeeping.persistence.entity.LedgerEntryEntity;
 import nonprofitbookkeeping.persistence.entity.SupplementalRecordEntity;
+import nonprofitbookkeeping.persistence.DatabaseService;
 
 import nonprofitbookkeeping.repository.AccountingTransactionRepository;
 import nonprofitbookkeeping.repository.DonorRepository;
@@ -159,9 +160,9 @@ public class JsonToDatabaseMigration {
      * produced by {@link JacksonDataStorer}) and persists its contents to the
      * database using the configured repositories.
      */
-    public void migrateCompanyArchive(File companyZip) throws IOException {
+    public long migrateCompanyArchive(File companyZip) throws IOException {
         Company company = dataStorer.loadData(Company.class, companyZip);
         DatabaseService db = new DatabaseService();
-        db.saveCompany(company);
+        return db.create(company);
     }
 }

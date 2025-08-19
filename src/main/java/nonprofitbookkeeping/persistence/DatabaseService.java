@@ -7,6 +7,7 @@ import nonprofitbookkeeping.model.Journal;
 import nonprofitbookkeeping.model.Ledger;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * High level facade for database persistence.
@@ -24,6 +25,7 @@ public class DatabaseService {
     private final InventoryRepository inventoryRepository;
     private final SaleRecordRepository saleRecordRepository;
     private final ScaRecordRepository scaRecordRepository;
+    private final CompanyRepository companyRepository;
 
     public DatabaseService() {
         this.entityManager = EntityManagerProvider.getEntityManager();
@@ -32,6 +34,7 @@ public class DatabaseService {
         this.inventoryRepository = new InventoryRepository(entityManager);
         this.saleRecordRepository = new SaleRecordRepository(entityManager);
         this.scaRecordRepository = new ScaRecordRepository(entityManager);
+        this.companyRepository = new CompanyRepository(entityManager);
     }
 
     /** Persist core parts of the company to the database. */
@@ -55,16 +58,33 @@ public class DatabaseService {
      * Currently this reconstructs a {@link Company} with its {@link Ledger}
      * transactions populated from the database.
      */
-    public Company loadCompany() {
-        Company company = new Company();
-        Journal journal = company.getLedger().getJournal();
-        List<AccountingTransaction> txs = transactionRepository.findAll();
-        if (txs != null) {
-            for (AccountingTransaction tx : txs) {
-                journal.addTransaction(tx);
+    public Optional<Company> loadCompany(long companyId) {
+        Optional<Company> companyOpt = companyRepository.findById(companyId);
+        companyOpt.ifPresent(company -> {
+            Journal journal = company.getLedger().getJournal();
+            List<AccountingTransaction> txs = transactionRepository.findAll();
+            if (txs != null) {
+                txs.forEach(journal::addTransaction);
             }
-        }
-        return company;
+        });
+        return companyOpt;
+    }
+
+    /** Create a new company and return its id. */
+    public long create(Company company) {
+        long id = companyRepository.create(company);
+        saveCompany(company);
+        return id;
+    }
+
+    /** Find a company by id. */
+    public Optional<Company> findById(long companyId) {
+        return companyRepository.findById(companyId);
+    }
+
+    /** Delete a company by id. */
+    public boolean delete(long companyId) {
+        return companyRepository.delete(companyId);
     }
 
     public AccountingTransactionRepository getTransactionRepository() {
