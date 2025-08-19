@@ -68,15 +68,7 @@ public class CurrentCompany
        public static void setCurrentFile(File currentFile)
        {
                CurrentCompany.currentFile = checkNotNull(currentFile);
-
-               // Keep the Company object's file reference in sync with the
-               // static currentFile value. This ensures callers querying
-               // {@link Company#getCompanyFile()} receive the correct
-               // location after load/save operations.
-               if (company != null)
-               {
-                       company.setCompanyFile(CurrentCompany.currentFile);
-               }
+               // The Company model no longer tracks its backing file directly.
        }
 	
 	/**
@@ -140,6 +132,7 @@ public class CurrentCompany
         }
 
         /**
+
 	 * Loads company data from the specified file.
 	 * The loaded company becomes the current active company, and the specified file becomes the current file.
 	 * @param file The file from which to load company data. Must not be null.
@@ -170,14 +163,30 @@ public class CurrentCompany
                 DatabaseManager.initialize();
                 DATABASE_SERVICE = new DatabaseService();
 
+
                 company = DATABASE_SERVICE.loadCompany();
+
                setCurrentFile(file);
 
                if (company != null)
                {
-                       company.setCompanyFile(file);
                        markCompanyOpen();
                }
+
+        /**
+         * Reload the company data directly from the database.
+         * This bypasses any file-based migration and simply loads the
+         * first stored {@link Company} from the database into the
+         * current context.
+         */
+        public static void loadFromDatabase()
+        {
+                company = DATABASE_SERVICE.loadCompany();
+                if (company != null)
+                {
+                        markCompanyOpen();
+                }
+        }
 
 	
 	/**

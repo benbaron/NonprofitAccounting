@@ -8,11 +8,10 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import java.io.File;
-import java.io.IOException;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.ChartOfAccounts;
-import nonprofitbookkeeping.exception.ActionCancelledException;
-import nonprofitbookkeeping.exception.NoFileCreatedException;
+import nonprofitbookkeeping.persistence.DatabaseService;
+import java.sql.SQLException;
 import nonprofitbookkeeping.service.SettingsService;
 import nonprofitbookkeeping.model.SettingsModel;
 import nonprofitbookkeeping.ui.ThemeManager;
@@ -268,6 +267,7 @@ public class SettingsPanelFX extends BorderPane
                         FileChooser fc = new FileChooser();
                         fc.setTitle("Save Backup");
                         fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("NPBK files", "*.npbk"));
+
                         File out = fc.showSaveDialog(null);
 
                         if (out != null)
@@ -302,6 +302,7 @@ public class SettingsPanelFX extends BorderPane
                         FileChooser fc = new FileChooser();
                         fc.setTitle("Open Backup");
                         fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("NPBK files", "*.npbk"));
+
                         File f = fc.showOpenDialog(null);
 
                         if (f != null)
@@ -332,6 +333,7 @@ public class SettingsPanelFX extends BorderPane
 		TitledPane wrapper = titled("Backup & Restore", box);
 		return new Tab("Backup", wrapper);
 	}
+
 	
 	/**
 	 * Builds and returns the "UI Preferences" tab for the settings panel.

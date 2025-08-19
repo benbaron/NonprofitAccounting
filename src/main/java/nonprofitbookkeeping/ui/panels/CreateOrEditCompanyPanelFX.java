@@ -79,29 +79,29 @@ public class CreateOrEditCompanyPanelFX extends BorderPane
 	 * If an {@code existing} company is provided, its data is used to pre-fill the wizard fields.
 	 * The {@code cb} callback is invoked upon successful completion and saving of the company profile.
 	 * 
-	 * @param existing The {@link Company} object to edit. If a new company is being created,
-	 *                 this should be a new {@code Company} instance (or null, though current code uses `checkNotNull`).
-	 *                 Its profile data will be used to pre-populate the fields. Must not be null.
-	 * @param cb The {@link CompanyCreatedCallback} to be invoked when the company profile is saved.
-	 *           This callback receives the newly created or updated {@link CompanyProfileModel}. Must not be null.
-	 * @throws NullPointerException if {@code existing} or {@code cb} is null.
-	 */
-	public CreateOrEditCompanyPanelFX(Company existing, CompanyCreatedCallback cb)
-	{
-		checkNotNull(existing);
-		checkNotNull(cb);
-		
-		this.callback = cb; // save the callback
-		
-		setPadding(new Insets(10));
-		
-		// run the wizard
-		buildSteps(existing);
-		
-		setCenter(this.steps[0]);
-		setBottom(buildButtons());
-		updateStep();
-	}
+        * @param existing The {@link Company} object to edit. If {@code null}, a new
+        *                 {@link Company} instance will be created for the wizard.
+        *                 Its profile data will be used to pre-populate the fields.
+        * @param cb The {@link CompanyCreatedCallback} to be invoked when the
+        *           company profile is saved. Must not be {@code null}.
+        * @throws NullPointerException if {@code cb} is null.
+        */
+        public CreateOrEditCompanyPanelFX(Company existing, CompanyCreatedCallback cb)
+        {
+                checkNotNull(cb);
+
+                this.callback = cb; // save the callback
+
+                setPadding(new Insets(10));
+
+                // run the wizard
+                Company company = existing != null ? existing : new Company();
+                buildSteps(company);
+
+                setCenter(this.steps[0]);
+                setBottom(buildButtons());
+                updateStep();
+        }
 	
 	
 	/**

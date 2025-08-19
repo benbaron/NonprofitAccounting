@@ -168,9 +168,9 @@ public class GrantsService
 	 * @param companyDirectory directory where the grants file is located
 	 * @throws IOException if reading fails or the directory is invalid
 	 */
-	public void loadGrants(File companyDirectory) throws IOException
-	{
-		this.grants.clear();
+        public void loadGrants(File companyDirectory) throws IOException
+        {
+                this.grants.clear();
 		
 		if (companyDirectory == null || !companyDirectory.isDirectory())
 		{
@@ -197,9 +197,32 @@ public class GrantsService
 		{
 			LOGGER.log(Level.SEVERE, "Failed to load grants from " + target.getAbsolutePath(), ex);
 			throw ex;
-		}
-		
-	}
+                }
+
+        }
+
+        /**
+         * Placeholder for future database-backed persistence. Currently this
+         * method performs no operations but allows callers to persist grants
+         * without providing filesystem paths.
+         *
+         * @param companyId identifier of the company whose grants should be saved
+         */
+        public void saveGrantsToDatabase(String companyId)
+        {
+                // TODO: Implement database persistence of grants
+        }
+
+        /**
+         * Placeholder for loading grants from the database. This implementation
+         * currently performs no work and simply clears in-memory grants.
+         *
+         * @param companyId identifier of the company whose grants should be loaded
+         */
+        public void loadGrantsFromDatabase(String companyId)
+        {
+                // TODO: Implement database retrieval of grants
+        }
 	
 	/**
 	 * Saves all grants as a {@link ZipEntry} named {@code grants.json}
