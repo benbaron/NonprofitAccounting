@@ -2,7 +2,7 @@ package nonprofitbookkeeping.service;
 
 import jakarta.persistence.EntityManager;
 import nonprofitbookkeeping.model.SaleRecord;
-import nonprofitbookkeeping.persistence.EntityManagerProvider;
+import nonprofitbookkeeping.persistence.DatabaseManager;
 import nonprofitbookkeeping.persistence.SaleRecordRepository;
 
 import java.util.List;
@@ -12,34 +12,39 @@ import java.util.List;
  */
 public class SalesService {
 
-    private final SaleRecordRepository repository;
-
-    public SalesService() {
-        EntityManager em = EntityManagerProvider.getEntityManager();
-        this.repository = new SaleRecordRepository(em);
-    }
-
     /** Return all sales. */
     public List<SaleRecord> listSales() {
-        return repository.findAll();
+        try (EntityManager em = DatabaseManager.getEntityManager()) {
+            SaleRecordRepository repository = new SaleRecordRepository(em);
+            return repository.findAll();
+        }
     }
 
     /** Add a sale record. */
     public void addSale(SaleRecord sale) {
         if (sale != null) {
-            repository.save(sale);
+            try (EntityManager em = DatabaseManager.getEntityManager()) {
+                SaleRecordRepository repository = new SaleRecordRepository(em);
+                repository.save(sale);
+            }
         }
     }
 
     /** Remove a sale by id. */
     public boolean removeSale(String id) {
-        return repository.delete(id);
+        try (EntityManager em = DatabaseManager.getEntityManager()) {
+            SaleRecordRepository repository = new SaleRecordRepository(em);
+            return repository.delete(id);
+        }
     }
 
     /** Delete all sale records. */
     public void clear() {
-        for (SaleRecord s : repository.findAll()) {
-            repository.delete(s.getId());
+        try (EntityManager em = DatabaseManager.getEntityManager()) {
+            SaleRecordRepository repository = new SaleRecordRepository(em);
+            for (SaleRecord s : repository.findAll()) {
+                repository.delete(s.getId());
+            }
         }
     }
 
