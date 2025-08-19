@@ -7,12 +7,8 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 
 import java.math.BigDecimal;
 
-<<<<<<< HEAD
-public class PrimaryAccountReconciliation2aBean extends ScaRowBase {
-=======
 public class PrimaryAccountReconciliation2aBean implements SupplementalRecord
 {
->>>>>>> refs/remotes/origin/codex/add-interface-and-extend-ledgerentry
 	// Header info
 	private String bankName;
 	private String bankAccountTitle;

@@ -6,12 +6,8 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
 
-<<<<<<< HEAD
-public class LedgerQ1Bean extends ScaRowBase {
-=======
 public class LedgerQ1Bean implements SupplementalRecord
 {
->>>>>>> refs/remotes/origin/codex/add-interface-and-extend-ledgerentry
 	private String col_0;
 	private String col_1;
 	private String balance;

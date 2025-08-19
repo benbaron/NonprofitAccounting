@@ -13,12 +13,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-<<<<<<< HEAD
-public class InventoryDtl6Bean extends ScaRowBase {
-=======
 public class InventoryDtl6Bean implements SupplementalRecord
 {
->>>>>>> refs/remotes/origin/codex/add-interface-and-extend-ledgerentry
 	ArrayList<InventoryDtl6Row> rows;
 	private BigDecimal _1_contact_info;
 	private BigDecimal actual_gross_income_from_inventory_sales;
