@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.ByteArrayOutputStream;
@@ -56,11 +55,20 @@ public class JacksonDataStorer implements DataStorer
                         .setSetterInfo(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY));
                 this.mapper.getFactory().configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
 
-                // Ensure type metadata is included for SupplementalRecord implementations
-                BasicPolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder()
-                        .allowIfSubType("nonprofitbookkeeping.reports.datasource.scareports")
-                        .build();
-                this.mapper.activateDefaultTypingAsProperty(ptv, ObjectMapper.DefaultTyping.NON_FINAL, "@class");
+                /*
+                 * Prior versions globally enabled default typing so that Jackson would
+                 * include an "@class" property for every non‑final type.  This caused
+                 * deserialization to fail when older `.npbk` files, which lack that
+                 * property, were loaded (Jackson expected the property on the root
+                 * `Company` object).
+                 *
+                 * The only polymorphic data we persist implements the
+                 * {@code SupplementalRecord} interface, which already carries a
+                 * {@link com.fasterxml.jackson.annotation.JsonTypeInfo} annotation to
+                 * preserve concrete type information.  Therefore we no longer need to
+                 * enable default typing globally, allowing the ObjectMapper to read both
+                 * new and legacy files without requiring an "@class" attribute.
+                 */
         }
 	
 	/**
