@@ -34,6 +34,7 @@ public class Fund
 >>>>>>> a0d4b45 Remove binary document and zip files
 {
 	
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	/** The name of the fund, serving as its primary identifier. */
 	@JsonProperty private String name;
@@ -50,6 +51,17 @@ public class Fund
         @ManyToMany(mappedBy = "associatedFunds")
         private List<Account> accounts;
 >>>>>>> a0d4b45 Remove binary document and zip files
+=======
+        /** The name of the fund, serving as its primary identifier. */
+        @Id
+        @JsonProperty
+        private String name;
+
+        /** List of accounts associated with this fund, forming a many-to-many relationship. */
+        @JsonProperty
+        @ManyToMany(mappedBy = "associatedFunds")
+        private List<Account> accounts;
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 	/**
 	 * The calculated balance of the fund.
 	 * This balance is derived from the sum of balances of all accounts associated with this fund.

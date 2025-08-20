@@ -43,6 +43,7 @@ public class Donor implements Serializable
 	 * The unique identifier for this serializable class.
 	 */
 	private static final long serialVersionUID = 4930419801310521918L;
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	/** The unique identifier for the donor. */
 	@Id private String donorId;
@@ -64,6 +65,28 @@ public class Donor implements Serializable
         @Id
         @Column(name = "donor_id")
         private String donorId;
+=======
+        /** The unique identifier for the donor. */
+        @Id
+        @Column(name = "donor_id")
+        private String donorId;
+
+        /** The name of the donor. */
+        @Column(name = "name")
+        private String name;
+
+        /** The total cumulative amount donated by this donor. */
+        @Column(name = "total_donations")
+        private BigDecimal totalDonations;
+
+        /** The date of the last donation made by this donor. */
+        @Column(name = "last_donation_date")
+        private Date lastDonationDate;
+
+        /** List of individual donations associated with this donor. */
+        @OneToMany(mappedBy = "donor", cascade = CascadeType.ALL, orphanRemoval = true)
+        private List<Donation> donations = new ArrayList<>();
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 
         /** The name of the donor. */
         @Column(name = "name")
@@ -178,6 +201,7 @@ public class Donor implements Serializable
 		this.lastDonationDate = lastDonationDate;
 		
 	}
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	
 	/**
@@ -294,6 +318,8 @@ public class Donor implements Serializable
 	
 	
 =======
+=======
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 
         /**
          * Gets the list of donations linked to this donor.
@@ -316,5 +342,8 @@ public class Donor implements Serializable
         }
 
 
+<<<<<<< HEAD
 >>>>>>> a0d4b45 Remove binary document and zip files
+=======
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 }

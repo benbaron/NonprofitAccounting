@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
@@ -18,6 +19,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 =======
 >>>>>>> 6159d55 Revert service changes
+=======
+import java.sql.SQLException;
+
+import nonprofitbookkeeping.model.attachment.DocumentAttachment;
+
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 
 import nonprofitbookkeeping.model.DocumentAttachment;
 import nonprofitbookkeeping.service.DatabaseManager;
@@ -51,6 +58,7 @@ public class DocumentStorageService
 
     /** Manager handling persistence of {@link DocumentAttachment} metadata. */
     private final DatabaseManager databaseManager;
+<<<<<<< HEAD
 =======
 
         /** Base directory located in the user's home directory under "NonprofitDocuments" for storing all attached documents. */
@@ -60,6 +68,8 @@ public class DocumentStorageService
         /** Database manager used for persisting attachment metadata. */
         private final DatabaseManager dbManager = new DatabaseManager();
 >>>>>>> 627421c Add attachment persistence
+=======
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 	
 	/**
 	 * Static initializer block to ensure that the base directory for document storage
@@ -109,6 +119,7 @@ public class DocumentStorageService
 	 * @param transactionId The ID of the transaction to which the document should be attached.
 	 *                      This is used in generating the stored filename. Must not be null or empty.
 	 * @param file The source {@link File} to be attached. Must not be null and must exist.
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
          * @return the generated database ID for the attachment record
          * @throws IOException if an error occurs during file copying (e.g., permission issues, disk full).
@@ -127,6 +138,14 @@ public class DocumentStorageService
 	public void attachDocumentToTransaction(String transactionId, File file) throws IOException
 	{
 >>>>>>> 6159d55 Revert service changes
+=======
+         * @return the generated database ID for the attachment record
+         * @throws IOException if an error occurs during file copying (e.g., permission issues, disk full).
+         * @throws IllegalArgumentException if {@code file} is null or does not exist, or if {@code transactionId} is null or empty.
+         */
+        public long attachDocumentToTransaction(String transactionId, File file) throws IOException
+        {
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 		if (transactionId == null || transactionId.trim().isEmpty()) {
             throw new IllegalArgumentException("Transaction ID must not be null or empty.");
         }
@@ -149,6 +168,7 @@ public class DocumentStorageService
 		String newFileName = transactionId + "_" + System.currentTimeMillis() + extension;
 		File targetFile = new File(DOCUMENT_BASE_DIR, newFileName);
 		
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
@@ -211,7 +231,11 @@ public class DocumentStorageService
         }
 >>>>>>> b1f07f2 Extend SQL support
 =======
+=======
+
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 		// Copy the source file to the target location, replacing any existing file.
+<<<<<<< HEAD
 		Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 		
 		// Optionally, log the operation.
@@ -219,6 +243,25 @@ public class DocumentStorageService
 			targetFile.getAbsolutePath());
 	}
 >>>>>>> 6159d55 Revert service changes
+=======
+                Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                long id = -1L;
+                try {
+                        id = this.databaseManager.insertAttachment(transactionId, originalName, newFileName);
+                } catch (SQLException e) {
+                        throw new IOException("Failed to record attachment", e);
+
+                }
+
+                // Optionally, log the operation.
+                System.out.println("Document attached for transaction " + transactionId + ": " +
+                        targetFile.getAbsolutePath());
+
+                return id;
+        }
+
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 	
 	/**
 	 * Retrieves a document from the storage directory based on its document ID.
@@ -231,6 +274,7 @@ public class DocumentStorageService
 	 *                     or if there's an issue accessing it.
 	 * @throws IllegalArgumentException if {@code documentId} is null or empty.
 	 */
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
         public File retrieveDocument(String documentId) throws IOException
         {
@@ -329,6 +373,10 @@ public class DocumentStorageService
 =======
 	public File retrieveDocument(String documentId) throws IOException
 	{
+=======
+        public File retrieveDocument(String documentId) throws IOException
+        {
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 		
 		if (documentId == null || documentId.trim().isEmpty())
 		{
@@ -342,8 +390,33 @@ public class DocumentStorageService
 			throw new IOException("Document not found: " + documentId);
 		}
 		
+<<<<<<< HEAD
 		return targetFile;
 	}
 >>>>>>> 6159d55 Revert service changes
+=======
+                return targetFile;
+        }
+
+        /**
+         * Looks up a {@link DocumentAttachment} by ID and returns the attached file.
+         *
+         * @param attachmentId database ID of the attachment
+         * @return the file associated with the attachment
+         * @throws IOException if the file cannot be located
+         * @throws SQLException if the database lookup fails
+         */
+        public File retrieveDocument(long attachmentId) throws IOException, SQLException
+        {
+                DocumentAttachment attachment = this.databaseManager.getAttachment(attachmentId);
+                if (attachment == null)
+                {
+                        throw new IOException("Attachment not found: " + attachmentId);
+                }
+
+                return retrieveDocument(attachment.getStoredName());
+
+        }
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 	
 }

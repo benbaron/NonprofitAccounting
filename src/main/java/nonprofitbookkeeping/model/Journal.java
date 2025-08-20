@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects; // Import for Objects.equals
 import static com.google.common.base.Preconditions.checkNotNull;
 import nonprofitbookkeeping.service.TransactionService;
+<<<<<<< HEAD
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -15,6 +16,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+=======
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 
 import lombok.Getter;
 import lombok.Setter;
@@ -40,6 +43,7 @@ public class Journal implements Serializable
 	 * The unique identifier for this serializable class.
 	 */
 	private static final long serialVersionUID = -8125095337696271045L;
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
@@ -63,12 +67,17 @@ public class Journal implements Serializable
          */
 >>>>>>> a0d4b45 Remove binary document and zip files
 =======
+=======
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 	
 	/**
 	 * Transactions are persisted using {@link TransactionService}; the journal
 	 * does not keep an in-memory collection of them.
 	 */
+<<<<<<< HEAD
 >>>>>>> 3d1271c Merge branch 'feature/m2database' of https://github.com/benbaron/NonprofitAccounting.git into feature/m2database
+=======
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 	
 	/**
 	 * Adds a new accounting transaction to the journal.
@@ -148,11 +157,11 @@ public class Journal implements Serializable
 	public boolean updateTransaction(AccountingTransaction transaction)
 	{
 		checkNotNull(transaction, "Input transaction cannot be null for update");
-		checkNotNull(transaction.getBookingDateTimestamp(),
-			"Transaction ID cannot be null for update operation");
+		checkNotNull(transaction.getId(), "Transaction ID cannot be null for update operation");
 		
-		for (int i = 0; i < this.journalTransactions.size(); i++)
+		try
 		{
+<<<<<<< HEAD
 			AccountingTransaction existingTx = this.journalTransactions.get(i);
 			
 			if (Objects.equals(existingTx.getBookingDateTimestamp(), transaction.getBookingDateTimestamp()))
@@ -162,9 +171,16 @@ public class Journal implements Serializable
 				return true;
 			}
 			
+=======
+			TransactionService.updateTransaction(transaction);
+			return true;
+		}
+		catch (Exception ex)
+		{
+			throw new RuntimeException("Failed to update transaction", ex);
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 		}
 		
-		return false; // Transaction with the given ID not found
 	}
 =======
         public boolean updateTransaction(AccountingTransaction transaction)

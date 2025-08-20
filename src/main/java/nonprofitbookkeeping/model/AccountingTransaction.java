@@ -35,7 +35,10 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+<<<<<<< HEAD
 >>>>>>> a0d4b45 Remove binary document and zip files
+=======
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -62,7 +65,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
                                                                                // internal uses
 @Entity
 @Table(name = "transaction")
+<<<<<<< HEAD
 >>>>>>> a0d4b45 Remove binary document and zip files
+=======
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 public class AccountingTransaction implements Serializable
 {
 	/**
@@ -73,6 +79,7 @@ public class AccountingTransaction implements Serializable
         /** Unique identifier for the transaction. */
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
         @JsonProperty private int id;
 
@@ -101,6 +108,8 @@ public class AccountingTransaction implements Serializable
         public static final String RECORD_TYPE_KEY = "recordType";
 
 =======
+=======
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
         @Column(name = "transaction_id")
         @JsonProperty
         private int id;
@@ -112,6 +121,7 @@ public class AccountingTransaction implements Serializable
 	@JsonProperty private Map<String, String> info;
 >>>>>>> a0d4b45 Remove binary document and zip files
 	/** The timestamp when the transaction was booked/recorded, in milliseconds since epoch. */
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	@JsonProperty private long bookingDateTimestamp;
 
@@ -120,7 +130,13 @@ public class AccountingTransaction implements Serializable
         @Column(name = "booking_timestamp")
         private long bookingDateTimestamp;
 >>>>>>> a0d4b45 Remove binary document and zip files
+=======
+        @JsonProperty
+        @Column(name = "booking_timestamp")
+        private long bookingDateTimestamp;
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 	/** The date of the transaction, typically in a string format like "YYYY-MM-DD". */
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	@JsonProperty private String date; // Non-final
 
@@ -129,10 +145,18 @@ public class AccountingTransaction implements Serializable
         @Column(name = "date")
         private String date; // Non-final
 >>>>>>> a0d4b45 Remove binary document and zip files
+=======
+        @JsonProperty
+        @Column(name = "date")
+        private String date; // Non-final
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 	/** A descriptive memo or note for the transaction. */
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	@JsonProperty private String memo; // Non-final
 =======
+=======
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
         @JsonProperty
         @Column(name = "memo")
         private String memo; // Non-final

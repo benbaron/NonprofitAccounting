@@ -1,6 +1,7 @@
 
 package nonprofitbookkeeping.service;
 
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
@@ -23,6 +24,11 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.core.util.*;
 >>>>>>> 6159d55 Revert service changes
+=======
+
+import nonprofitbookkeeping.dao.BudgetDao;
+import java.sql.SQLException;
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 import java.sql.Connection;
@@ -33,7 +39,11 @@ import java.sql.Date;
 >>>>>>> b1f07f2 Extend SQL support
 =======
 import nonprofitbookkeeping.model.budget.Budget;
+<<<<<<< HEAD
 >>>>>>> 6159d55 Revert service changes
+=======
+import nonprofitbookkeeping.db.DatabaseManager;
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -47,6 +57,7 @@ import java.util.logging.Logger;
 
 /**
  * Service class for managing {@link Budget} data.
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
@@ -66,6 +77,12 @@ import java.util.logging.Logger;
  * and load them back. It uses Jackson for JSON serialization and deserialization.
  * Budgets are stored in a file named "budgets.json" within a specified company directory.
 >>>>>>> 6159d55 Revert service changes
+=======
+
+ * This class provides functionalities to persist budgets using a database
+ * located inside the company's directory.
+
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
  */
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 public class BudgetService
@@ -202,6 +219,7 @@ public class BudgetService {
 
     /** Logger for this class. */
     private static final Logger LOGGER = Logger.getLogger(BudgetService.class.getName());
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
@@ -218,8 +236,14 @@ public class BudgetService {
     /** The standard filename used for storing budget data in JSON format. */
     private static final String BUDGETS_FILENAME = "budgets.json";
 >>>>>>> 6159d55 Revert service changes
+=======
+
+    /** Data access object used for persistence. */
+    private final BudgetDao budgetDao = new BudgetDao();
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 
     /**
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
@@ -240,6 +264,10 @@ public class BudgetService {
      * If the list is empty, an empty JSON array will be saved.
      * The JSON output is pretty-printed for readability.
 >>>>>>> 6159d55 Revert service changes
+=======
+     * Saves a list of {@link Budget} objects to the database located in the
+     * provided company directory. Existing budgets are replaced.
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
      *
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
@@ -259,16 +287,23 @@ public class BudgetService {
 >>>>>>> b1f07f2 Extend SQL support
 =======
      * @param budgets The list of {@link Budget} objects to save. Can be null or empty.
+     * @param companyDirectory 
      * @param companyDirectory The {@link File} object representing the directory where the
-     *                         company's data (including the budgets file) should be stored.
+     *                         company's database is stored.
      *                         Must not be null and must be a valid directory.
+<<<<<<< HEAD
      * @throws IOException If the {@code companyDirectory} is invalid, or if an error occurs
      *                     during file writing or JSON serialization.
 >>>>>>> 6159d55 Revert service changes
+=======
+     * @throws IOException If persistence fails or the directory is invalid.
+
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
      */
     public void saveBudgets(List<Budget> budgets, File companyDirectory) throws IOException {
         if (budgets == null) {
             LOGGER.warning("Budget list provided is null. Nothing to save.");
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
             return;
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
@@ -283,12 +318,17 @@ public class BudgetService {
             // For now, let's just not write the file if the list is null.
             // If an empty list is provided, an empty JSON array will be saved.
             return; 
+=======
+            return;
+
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
         }
         if (companyDirectory == null || !companyDirectory.isDirectory()) {
             throw new IOException("Company directory is invalid or not provided.");
 >>>>>>> 6159d55 Revert service changes
         }
 
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 =======
@@ -361,7 +401,10 @@ public class BudgetService {
             throw new RuntimeException("Error saving budgets", e);
 >>>>>>> b1f07f2 Extend SQL support
 =======
+=======
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
         try {
+<<<<<<< HEAD
             // Ensure parent directory exists (though companyDirectory should already exist)
             // Files.createDirectories(budgetsFile.getParentFile().toPath());
             objectMapper.writeValue(budgetsFile, budgets);
@@ -370,10 +413,21 @@ public class BudgetService {
             LOGGER.log(Level.SEVERE, "Failed to save budgets to " + budgetsFile.getAbsolutePath(), e);
             throw e; // Re-throw to allow caller to handle
 >>>>>>> 6159d55 Revert service changes
+=======
+            this.budgetDao.clearBudgets(companyDirectory);
+            for (Budget budget : budgets) {
+                this.budgetDao.saveBudget(budget, companyDirectory);
+            }
+            LOGGER.info("Budgets saved successfully to database in " + companyDirectory.getAbsolutePath());
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Failed to save budgets to database", e);
+            throw new IOException("Database error while saving budgets", e);
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
         }
     }
 
     /**
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
@@ -395,6 +449,11 @@ public class BudgetService {
      * If an error occurs during JSON deserialization, an error is logged, and an empty list is returned.
      * </p>
 >>>>>>> 6159d55 Revert service changes
+=======
+     * Loads all {@link Budget} objects from the database located in the
+     * specified company directory. If the directory is invalid or no database
+     * exists, an empty list is returned.
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
      *
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
@@ -414,8 +473,9 @@ public class BudgetService {
 >>>>>>> b1f07f2 Extend SQL support
 =======
      * @param companyDirectory The {@link File} object representing the directory where the
-     *                         company's "budgets.json" file is located. Must not be null and
+     *                         company's database is located. Must not be null and
      *                         must be a valid directory.
+<<<<<<< HEAD
      * @return A {@code List<Budget>} objects. Returns an empty list if the file doesn't exist,
      *         is empty, or if there's an error during deserialization (after logging the error).
      * @throws IOException If a critical I/O error occurs that prevents determining the file status
@@ -424,6 +484,11 @@ public class BudgetService {
      *                     an empty list, so this specific throws declaration might only cover edge cases
      *                     related to {@code companyDirectory} validation if it were to throw IOException directly.
 >>>>>>> 6159d55 Revert service changes
+=======
+     * @return A {@code List<Budget>} loaded from the database. Returns an empty
+     *         list on error or if none exist.
+     * @throws IOException If a database error occurs.
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
      */
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
     public List<Budget> loadBudgets(File companyDirectory) throws IOException {
@@ -471,6 +536,7 @@ public class BudgetService {
 =======
         if (companyDirectory == null || !companyDirectory.isDirectory()) {
             LOGGER.warning("Company directory is invalid or not provided for loading budgets.");
+<<<<<<< HEAD
             return new ArrayList<>(); // Or throw new IOException("Company directory is invalid.");
 >>>>>>> 6159d55 Revert service changes
         }
@@ -503,25 +569,17 @@ public class BudgetService {
 
         if (!budgetsFile.exists() || !budgetsFile.isFile()) {
             LOGGER.info("Budgets file not found at: " + budgetsFile.getAbsolutePath() + ". Returning empty list.");
+=======
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
             return new ArrayList<>();
         }
 
-        if (budgetsFile.length() == 0) {
-            LOGGER.info("Budgets file is empty at: " + budgetsFile.getAbsolutePath() + ". Returning empty list.");
-            return new ArrayList<>();
-        }
-        
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            CollectionType listType = objectMapper.getTypeFactory().constructCollectionType(List.class, Budget.class);
-            List<Budget> loadedBudgets = objectMapper.readValue(budgetsFile, listType);
-            LOGGER.info("Budgets loaded successfully from: " + budgetsFile.getAbsolutePath());
-            // The getBudgetId() method in Budget model ensures ID is generated if null after deserialization.
-            return loadedBudgets != null ? loadedBudgets : new ArrayList<>();
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Failed to load or parse budgets from " + budgetsFile.getAbsolutePath() + ". Returning empty list.", e);
-            // Depending on policy, might re-throw for certain IOExceptions vs returning empty for parse errors
-            return new ArrayList<>(); 
+            return this.budgetDao.getAllBudgets(companyDirectory);
+        } catch (SQLException | IOException e) {
+            LOGGER.log(Level.SEVERE, "Failed to load budgets from database", e);
+            return new ArrayList<>();
+
         }
 >>>>>>> 6159d55 Revert service changes
     }

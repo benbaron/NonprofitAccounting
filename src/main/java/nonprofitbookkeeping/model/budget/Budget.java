@@ -37,10 +37,15 @@ import java.util.UUID;
 public class Budget {
     /** The unique identifier for the budget. Typically a UUID. */
     @Id
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 =======
     @Column(name = "budget_id")
 >>>>>>> a0d4b45 Remove binary document and zip files
+=======
+    @Column(name = "budget_id")
+
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
     private String budgetId;
     /** The name of the budget (e.g., "Annual Operational Budget"). */
     @Column(name = "budget_name")
@@ -52,12 +57,17 @@ public class Budget {
     @Column(name = "description")
     private String description; // Optional
     /** A list of {@link BudgetLine} items that make up this budget. Initialized to an empty ArrayList. */
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "budget_id")
 =======
     @OneToMany(cascade = CascadeType.ALL)
 >>>>>>> a0d4b45 Remove binary document and zip files
+=======
+    @OneToMany(cascade = CascadeType.ALL)
+
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
     private List<BudgetLine> budgetLines = new ArrayList<>();
     /** The currency code for the amounts in this budget (e.g., "USD"). Should ideally match the company's base currency. */
     @Column(name = "currency")

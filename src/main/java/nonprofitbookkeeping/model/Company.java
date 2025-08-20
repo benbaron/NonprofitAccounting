@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Transient;
+<<<<<<< HEAD
 
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -20,6 +21,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Table;
+=======
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -29,12 +32,16 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * This class serves as the top-level container for a company's bookkeeping data.
  */
 @Entity
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 @Table(name = "companies")
 
 =======
 @Table(name = "company")
 >>>>>>> a0d4b45 Remove binary document and zip files
+=======
+@Table(name = "company")
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 public class Company implements Serializable
 {
 	/**
@@ -42,6 +49,7 @@ public class Company implements Serializable
 	 */
 	private static final long serialVersionUID = 6728014646115467637L;
 	
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
         /** Primary key. */
         @Id
@@ -58,6 +66,8 @@ public class Company implements Serializable
         private ChartOfAccounts chartOfAccounts = new ChartOfAccounts();
 
 =======
+=======
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
         /** Unique database identifier for this company. */
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -72,7 +82,10 @@ public class Company implements Serializable
 	/** The chart of accounts defining the structure of accounts for the company. Initialized by default. */
         @Transient
         @JsonProperty private ChartOfAccounts chartOfAccounts = new ChartOfAccounts();
+<<<<<<< HEAD
 >>>>>>> a0d4b45 Remove binary document and zip files
+=======
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 	
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
         /**
@@ -90,13 +103,17 @@ public class Company implements Serializable
 	 */
         @Transient
         private File companyFile = null;
+<<<<<<< HEAD
 >>>>>>> a0d4b45 Remove binary document and zip files
+=======
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 
 	/**
 	 * Constructs a new Company object.
 	 * Initializes the company profile, ledger, and chart of accounts with default instances.
 	 * The company file is initially null.
 	 */
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
         public Company() 
         {
@@ -136,6 +153,31 @@ public class Company implements Serializable
         {
                 this.companyId = companyId;
 >>>>>>> a0d4b45 Remove binary document and zip files
+=======
+        public Company()
+        {
+                this.companyProfileModel = new CompanyProfileModel();
+                this.ledger = new Ledger();
+                this.chartOfAccounts = new ChartOfAccounts();
+        }
+
+        /**
+         * Gets the database identifier for this company.
+         * @return the company ID
+         */
+        public Long getCompanyId()
+        {
+                return this.companyId;
+        }
+
+        /**
+         * Sets the database identifier for this company.
+         * @param companyId the id to set
+         */
+        public void setCompanyId(Long companyId)
+        {
+                this.companyId = companyId;
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
         }
 	
 	/**

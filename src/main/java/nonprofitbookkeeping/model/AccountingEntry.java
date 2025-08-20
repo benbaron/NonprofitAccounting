@@ -40,25 +40,33 @@ import static com.google.common.base.Preconditions.*;
  * Once the transaction is set, it can't be changed.
  */
 @Entity
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 @Table(name = "accounting_entries")
 
 =======
 @Table(name = "entry")
 >>>>>>> a0d4b45 Remove binary document and zip files
+=======
+@Table(name = "entry")
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 public final class AccountingEntry implements Serializable
 {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name = "entry_id")
         private Long entryId;
+<<<<<<< HEAD
 	
+=======
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 	
 	/**
 	 * serialVersionUID : long
 	 */
 	private static final long serialVersionUID = 5837792781542533633L;
 	
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -103,6 +111,8 @@ public final class AccountingEntry implements Serializable
 	
 	
 =======
+=======
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
         @JsonProperty
         @Column(name = "amount")
         final private BigDecimal amount;
@@ -127,6 +137,7 @@ public final class AccountingEntry implements Serializable
 
 >>>>>>> a0d4b45 Remove binary document and zip files
 	// Future versions can include this.
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "transaction_id")
@@ -139,6 +150,12 @@ public final class AccountingEntry implements Serializable
         @JoinColumn(name = "transaction_id")
         private AccountingTransaction transaction;
 >>>>>>> a0d4b45 Remove binary document and zip files
+=======
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+        @ManyToOne
+        @JoinColumn(name = "transaction_id")
+        private AccountingTransaction transaction;
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 	
 	// Indicates if the transaction was set
 	@JsonProperty private boolean freeze = false;

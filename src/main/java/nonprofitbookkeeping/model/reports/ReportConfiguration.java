@@ -26,10 +26,13 @@ import nonprofitbookkeeping.ui.helpers.DateSelectionMode; // Import the top-leve
 @Data
 @NoArgsConstructor
 @Entity
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 @Table(name = "report_configurations")
 public class ReportConfiguration {
 =======
+=======
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 @Table(name = "report_configuration")
 public class ReportConfiguration
 {
@@ -37,10 +40,14 @@ public class ReportConfiguration
 	
         /** A unique identifier for this report configuration, typically a UUID. */
         @Id
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 =======
         @Column(name = "configuration_id")
 >>>>>>> a0d4b45 Remove binary document and zip files
+=======
+        @Column(name = "configuration_id")
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
         private String configurationId;
 	/** A user-friendly name for this saved report configuration (e.g., "Q1 Income Statement - Operations Fund"). */
         @Column(name = "user_given_name")

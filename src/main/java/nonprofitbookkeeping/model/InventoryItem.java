@@ -37,6 +37,7 @@ import jakarta.persistence.Column;
 @Table(name = "inventory_item")
 public class InventoryItem
 {
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	/** The unique identifier for the inventory item. */
         @Id
@@ -48,6 +49,13 @@ public class InventoryItem
         @JsonProperty
         private String id;
 >>>>>>> a0d4b45 Remove binary document and zip files
+=======
+        /** The unique identifier for the inventory item. */
+        @Id
+        @Column(name = "item_id")
+        @JsonProperty
+        private String id;
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 	/** The name or description of the inventory item. */
         @JsonProperty
         private String name;

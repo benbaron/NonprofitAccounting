@@ -42,13 +42,19 @@ public class BudgetLine
 {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
         private Long id;
 =======
         @Column(name = "line_id")
         private Long lineId;
 >>>>>>> a0d4b45 Remove binary document and zip files
+=======
+        @Column(name = "line_id")
+        private Long lineId;
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 	/** The unique identifier of the account associated with this budget line. */
         private String accountId; // Assumes Account.getId() is the unique identifier
@@ -69,13 +75,34 @@ public class BudgetLine
         private BigDecimal totalBudgetedAmount;
         /** The periodicity of how the budget is broken down (e.g., ANNUAL, MONTHLY, QUARTERLY). Defaults to ANNUAL. */
 >>>>>>> a0d4b45 Remove binary document and zip files
+=======
+        /** The unique identifier of the account associated with this budget line. */
+        @Column(name = "account_id")
+        private String accountId; // Assumes Account.getId() is the unique identifier
+        /** The name of the account, for display or reference purposes. */
+        @Column(name = "account_name")
+        private String accountName; // For display/reference
+        /** The total budgeted amount for this account line for the entire budget period. */
+        @Column(name = "total_amount")
+        private BigDecimal totalBudgetedAmount;
+        /** The periodicity of how the budget is broken down (e.g., ANNUAL, MONTHLY, QUARTERLY). Defaults to ANNUAL. */
+
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
         @Enumerated(EnumType.STRING)
         private Periodicity periodicity = Periodicity.ANNUAL; // Default to ANNUAL
 	/**
 	 * A list of amounts budgeted for each sub-period (e.g., monthly amounts if periodicity is MONTHLY).
 	 * Initialized to an empty ArrayList.
 	 */
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
+=======
+        @OneToMany(mappedBy = "budgetLine", cascade = CascadeType.ALL, orphanRemoval = true)
+        private List<BudgetLinePeriodAmount> periodicAmounts = new ArrayList<>();
+        /** The identifier of a specific fund to which this budget line applies, if any. Optional. */
+        @Column(name = "fund_id")
+        private String fundId; // Optional
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
         @ElementCollection
         @CollectionTable(name = "budget_line_amount", joinColumns = @JoinColumn(name = "budget_line_id"))
         @Column(name = "amount")
@@ -87,6 +114,7 @@ public class BudgetLine
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "budget_id")
         private Budget budget;
+<<<<<<< HEAD
 =======
         @OneToMany(mappedBy = "budgetLine", cascade = CascadeType.ALL, orphanRemoval = true)
         private List<BudgetLinePeriodAmount> periodicAmounts = new ArrayList<>();
@@ -94,6 +122,8 @@ public class BudgetLine
         @Column(name = "fund_id")
         private String fundId; // Optional
 >>>>>>> a0d4b45 Remove binary document and zip files
+=======
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 	
 	/**
 	 * Default constructor.

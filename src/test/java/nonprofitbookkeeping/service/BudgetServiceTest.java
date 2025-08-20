@@ -10,17 +10,28 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
+=======
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 import java.nio.file.Path;
+<<<<<<< HEAD
 =======
 >>>>>>> 61e85fc Implement JPA persistence for budgets
+=======
+
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
+=======
+
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 class BudgetServiceTest
 {
 	
@@ -209,6 +220,7 @@ class BudgetServiceTest
 	{
 		// As per BudgetService implementation, this logs a warning and does not create
 		// the file.
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 		BudgetService.saveBudgets(null, this.companyDirectory);
 		File budgetsFile = new File(this.companyDirectory, "budgets.json");
@@ -218,6 +230,11 @@ class BudgetServiceTest
                 File dbFileNull = new File(this.companyDirectory, "company.db");
                 assertFalse(dbFileNull.exists(), "Database should not be created for null list.");
 >>>>>>> 734695e Add database persistence for budgets
+=======
+                this.budgetService.saveBudgets(null, this.companyDirectory);
+                File dbFileNull = new File(this.companyDirectory, "company.db");
+                assertFalse(dbFileNull.exists(), "Database should not be created for null list.");
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 	}
 	
 	
@@ -246,6 +263,7 @@ class BudgetServiceTest
 		testFileAsDirectory.delete(); // Clean up
 	}
 	
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
 =======
 class BudgetServiceTest {
@@ -302,3 +320,6 @@ class BudgetServiceTest {
 =======
 }
 >>>>>>> a875d69 Merge branch 'feature/m2database' of https://github.com/benbaron/NonprofitAccounting.git into feature/m2database
+=======
+}
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git

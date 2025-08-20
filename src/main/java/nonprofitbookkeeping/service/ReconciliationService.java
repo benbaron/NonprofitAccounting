@@ -87,6 +87,7 @@ public class ReconciliationService
 	 * @return A list of {@link AccountingTransaction} objects that are unreconciled and match the criteria,
 	 *         or null if the implementation is not complete.
 	 */
+<<<<<<< HEAD
 <<<<<<< Upstream, based on origin/codex/read-provided-xlsx-file
       public static List<AccountingTransaction> getUnreconciled(String value)
       {
@@ -114,6 +115,19 @@ public class ReconciliationService
                 }
         }
 >>>>>>> a0d4b45 Remove binary document and zip files
+=======
+        public static List<AccountingTransaction> getUnreconciled(String value)
+        {
+                try
+                {
+                        return TransactionService.getAllTransactions();
+                }
+                catch (Exception ex)
+                {
+                        throw new RuntimeException("Failed to retrieve transactions", ex);
+                }
+        }
+>>>>>>> branch 'feature/m2database' of git@github.com:benbaron/NonprofitAccounting.git
 
 	/**
 	 * Lists accounts that are eligible for reconciliation.
