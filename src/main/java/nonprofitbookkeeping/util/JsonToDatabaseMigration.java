@@ -25,10 +25,8 @@ import nonprofitbookkeeping.persistence.dao.LedgerEntryDao;
 import nonprofitbookkeeping.persistence.dao.ReportConfigurationDao;
 import nonprofitbookkeeping.persistence.entity.LedgerEntryEntity;
 import nonprofitbookkeeping.persistence.entity.SupplementalRecordEntity;
-import nonprofitbookkeeping.repository.SupplementalRecordRepository;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -114,26 +112,19 @@ public class JsonToDatabaseMigration
 		LedgerContainer container =
 			mapper.readValue(ledgerJson, LedgerContainer.class);
 		
-		try (EntityManager em = DatabaseManager.getEntityManager())
-		{
-			LedgerEntryDao ledgerEntryDao = new LedgerEntryDao(em);
-			SupplementalRecordRepository supplementalRecordRepository =
-				new SupplementalRecordRepository(em);
-			saveLedgerEntries(ledgerEntryDao, supplementalRecordRepository,
-				container.getLedgerQ1());
-			saveLedgerEntries(ledgerEntryDao, supplementalRecordRepository,
-				container.getLedgerQ2());
-			saveLedgerEntries(ledgerEntryDao, supplementalRecordRepository,
-				container.getLedgerQ3());
-			saveLedgerEntries(ledgerEntryDao, supplementalRecordRepository,
-				container.getLedgerQ4());
-		}
+                try (EntityManager em = DatabaseManager.getEntityManager())
+                {
+                        LedgerEntryDao ledgerEntryDao = new LedgerEntryDao(em);
+                        saveLedgerEntries(ledgerEntryDao, container.getLedgerQ1());
+                        saveLedgerEntries(ledgerEntryDao, container.getLedgerQ2());
+                        saveLedgerEntries(ledgerEntryDao, container.getLedgerQ3());
+                        saveLedgerEntries(ledgerEntryDao, container.getLedgerQ4());
+                }
 		
 	}
 	
-	private void saveLedgerEntries(LedgerEntryDao ledgerEntryDao,
-		SupplementalRecordRepository supplementalRecordRepository,
-		List<LedgerEntry> entries)
+        private void saveLedgerEntries(LedgerEntryDao ledgerEntryDao,
+                List<LedgerEntry> entries)
 	{
 		
 		for (LedgerEntry le : entries)
@@ -145,31 +136,26 @@ public class JsonToDatabaseMigration
 			entity.setToFrom(le.getToFrom());
 			entity.setMemoString(le.getMemoString());
 			entity.setBudgetTracking(le.getBudgetTracking());
-			addSupplemental(entity, le.getAmount(), le.getAssetAccount(),
-				le.getIncomeAccount(),
-				le.getExpenseAccount(), le.getFundName(), 1,
-				supplementalRecordRepository);
-			addSupplemental(entity, le.amount2, le.assetAccount2,
-				le.incomeAccount2,
-				le.expenseAccount2, le.fundName2, 2,
-				supplementalRecordRepository);
-			addSupplemental(entity, le.amount3, le.assetAccount3,
-				le.incomeAccount3,
-				le.expenseAccount3, le.fundName3, 3,
-				supplementalRecordRepository);
-			addSupplemental(entity, le.amount4, le.assetAccount4,
-				le.incomeAccount4,
-				le.expenseAccount4, le.fundName4, 4,
-				supplementalRecordRepository);
+                        addSupplemental(entity, le.getAmount(), le.getAssetAccount(),
+                                le.getIncomeAccount(),
+                                le.getExpenseAccount(), le.getFundName(), 1);
+                        addSupplemental(entity, le.amount2, le.assetAccount2,
+                                le.incomeAccount2,
+                                le.expenseAccount2, le.fundName2, 2);
+                        addSupplemental(entity, le.amount3, le.assetAccount3,
+                                le.incomeAccount3,
+                                le.expenseAccount3, le.fundName3, 3);
+                        addSupplemental(entity, le.amount4, le.assetAccount4,
+                                le.incomeAccount4,
+                                le.expenseAccount4, le.fundName4, 4);
 			ledgerEntryDao.save(entity);
 		}
 		
 	}
 	
-	private void addSupplemental(LedgerEntryEntity entity, double amt,
-		String asset,
-		String income, String expense, String fund, int seq,
-		SupplementalRecordRepository supplementalRecordRepository)
+        private void addSupplemental(LedgerEntryEntity entity, double amt,
+                String asset,
+                String income, String expense, String fund, int seq)
 	{
 		
 		if (asset != null || income != null || expense != null ||
@@ -182,9 +168,8 @@ public class JsonToDatabaseMigration
 			sr.setExpenseAccount(expense);
 			sr.setFundName(fund);
 			sr.setSequenceNumber(seq);
-			sr.setLedgerEntry(entity);
-			entity.getSupplementalRecords().add(sr);
-			supplementalRecordRepository.save(sr);
+                        sr.setLedgerEntry(entity);
+                        entity.getSupplementalRecords().add(sr);
 		}
 		
 	}
