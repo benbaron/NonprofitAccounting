@@ -49,7 +49,8 @@ public class NonprofitBookkeepingFX extends Application
 	/** The root layout pane (a {@link MainApplicationView} instance) for the main scene. */
 	private BorderPane root; // Should be MainApplicationView
 	/** Reference to the dashboard panel, used as a fallback or initial view. */
-	private DashboardPanelFX dashboard; // Potentially part of MainApplicationView's default tabs
+	private DashboardPanelFX dashboard; // Potentially part of
+										// MainApplicationView's default tabs
 	/** Instance managing the currently loaded company data. Suppressed unused warning as it's initialized. */
 	private CurrentCompany c;
 	
@@ -97,7 +98,8 @@ public class NonprofitBookkeepingFX extends Application
 	private Menu panels;
 	
 	/** Logger for this class. */
-	private static final Logger LOGGER = Logger.getLogger(NonprofitBookkeepingFX.class.getName());
+	private static final Logger LOGGER =
+		Logger.getLogger(NonprofitBookkeepingFX.class.getName());
 	/** List to hold all successfully loaded plugins. */
 	private List<Plugin> loadedPlugins = new ArrayList<>();
 	/** The application context passed to plugins and potentially other components. */
@@ -158,11 +160,12 @@ public class NonprofitBookkeepingFX extends Application
 	 * Launches the JavaFX runtime and application.
 	 * @param args Command line arguments passed to the application.
 	 */
-    public static void main(String[] args)
-    {
-            DatabaseManager.startServer();
-            launch(args);
-    }
+	public static void main(String[] args)
+	{
+		DatabaseManager.startServer();
+		launch(args);
+		
+	}
 	
 	/**
 	 * The main entry point for this JavaFX application, called after the {@code init} method.
@@ -174,7 +177,8 @@ public class NonprofitBookkeepingFX extends Application
 	 * @param stage The primary {@link Stage} for this application, onto which
 	 *              the application scene can be set.
 	 */
-	@Override public void start(Stage stage)
+	@Override
+	public void start(Stage stage)
 	{
 		// Add a shutdown hook to save company data when the application exits.
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -188,10 +192,13 @@ public class NonprofitBookkeepingFX extends Application
 		
 		System.setProperty("net.sf.jasperreports.debug", "true");
 		System.setProperty("net.sf.jasperreports.compile.class.debug", "true");
-		System.setProperty("net.sf.jasperreports.compile.keep.java.file", "true");
-		System.setProperty("net.sf.jasperreports.compiler.temp.dir", "C:/Users/benba/eclipse-workspace");
+		System.setProperty("net.sf.jasperreports.compile.keep.java.file",
+			"true");
+		System.setProperty("net.sf.jasperreports.compiler.temp.dir",
+			"C:/Users/benba/eclipse-workspace");
 		
-		stage.getIcons().addAll(new Image(getClass().getResourceAsStream("../../cg-128px.png")));
+		stage.getIcons().addAll(
+			new Image(getClass().getResourceAsStream("../../cg-128px.png")));
 		this.primaryStage = stage;
 		this.c = new CurrentCompany();
 		this.dashboard = new DashboardPanelFX();
@@ -217,10 +224,12 @@ public class NonprofitBookkeepingFX extends Application
 			try
 			{
 				LOGGER.info(
-					"Initializing plugin: " + plugin.getName() + " - " + plugin.getDescription());
+					"Initializing plugin: " + plugin.getName() + " - " +
+						plugin.getDescription());
 				plugin.initialize(this.applicationContext);
 				this.loadedPlugins.add(plugin);
-				LOGGER.info("Plugin initialized successfully: " + plugin.getName());
+				LOGGER.info(
+					"Plugin initialized successfully: " + plugin.getName());
 			}
 			catch (Exception e)
 			{
@@ -231,20 +240,23 @@ public class NonprofitBookkeepingFX extends Application
 			
 		}
 		
-		LOGGER.info("Plugin discovery complete. Loaded " + this.loadedPlugins.size() + " plugins.");
+		LOGGER.info("Plugin discovery complete. Loaded " +
+			this.loadedPlugins.size() + " plugins.");
 		
 		// MenuBar must be built *after* plugins are loaded so
 		// they can add their items.
 		MenuBar menuBar = buildMenuBar();
 		mainView.setMenuBar(menuBar);
 		
-		Scene scene = new Scene(mainView, 1000, 700); // Use mainView for the scene
+		Scene scene = new Scene(mainView, 1000, 700); // Use mainView for the
+														// scene
 		ThemeManager.applyTheme(scene);
 		this.primaryStage.setScene(scene);
 		this.primaryStage.setTitle("Nonprofit Bookkeeping");
 		
 		setState(AppState.NO_COMPANY); // Set initial UI state
 		this.primaryStage.show();
+		
 	}
 	
 	/**
@@ -269,17 +281,22 @@ public class NonprofitBookkeepingFX extends Application
 		this.miExportCoaXlsx = add(file, "Export COA (XLSX)",
 			e -> new ExportCoaXlsxActionFX(this.primaryStage).handle(e));
 		
-		add(file, "Import File", e -> new ImportFileActionFX(this.primaryStage).handle(e));
-		add(file, "Export File", e -> new ExportFileActionFX(this.primaryStage).handle(e));
+		add(file, "Import File",
+			e -> new ImportFileActionFX(this.primaryStage).handle(e));
+		add(file, "Export File",
+			e -> new ExportFileActionFX(this.primaryStage).handle(e));
 		bar.getMenus().add(file);
 		
 		/* EDIT */
 		Menu edit = new Menu("Edit");
-		this.miEditCompany = add(edit, "Create or Edit Company", e -> startCreateWizard());
+		this.miEditCompany =
+			add(edit, "Create or Edit Company", e -> startCreateWizard());
 		this.miEditCoa = add(edit, "Edit Chart of Accounts",
-			e -> ((MainApplicationView) this.root).showPanel(MainApplicationView.PanelType.COA));
-		this.miEditJournal = add(edit, "Edit Journal", e -> ((MainApplicationView) this.root)
-			.showPanel(MainApplicationView.PanelType.JOURNAL));
+			e -> ((MainApplicationView) this.root)
+				.showPanel(MainApplicationView.PanelType.COA));
+		this.miEditJournal =
+			add(edit, "Edit Journal", e -> ((MainApplicationView) this.root)
+				.showPanel(MainApplicationView.PanelType.JOURNAL));
 		
 		add(edit, "Open Budget Editor", e -> {
 			Company currentCompany = CurrentCompany.getCompany();
@@ -291,25 +308,25 @@ public class NonprofitBookkeepingFX extends Application
 				return;
 			}
 			
-                        String companyId = currentCompany.getCompanyId();
-
-                        if (companyId == null || companyId.isBlank())
-                        {
-                                AlertBox.showError(this.primaryStage,
-                                        "The current company does not have a database identifier yet. Please save your company before managing budgets.");
-                                return;
-                        }
-
-                        File companyFile = CurrentCompany.getCurrentFile();
-
-                        if (companyFile == null)
-                        {
-                                AlertBox.showError(this.primaryStage,
-                                        "The current company has not been saved to a file yet. Please save your company before managing budgets.");
-                                return;
-                        }
-
-                        File companyDir = companyFile.getParentFile();
+			String companyId = currentCompany.getCompanyId();
+			
+			if (companyId == null || companyId.isBlank())
+			{
+				AlertBox.showError(this.primaryStage,
+					"The current company does not have a database identifier yet. Please save your company before managing budgets.");
+				return;
+			}
+			
+			File companyFile = CurrentCompany.getCurrentFile();
+			
+			if (companyFile == null)
+			{
+				AlertBox.showError(this.primaryStage,
+					"The current company has not been saved to a file yet. Please save your company before managing budgets.");
+				return;
+			}
+			
+			File companyDir = companyFile.getParentFile();
 			
 			if (companyDir == null)
 			{
@@ -327,8 +344,10 @@ public class NonprofitBookkeepingFX extends Application
 			}
 			
 			// If all checks pass, open the JavaFX BudgetPanelFX
-			BudgetPanelFX panel = new BudgetPanelFX(ServiceContainer.budgetService, companyDir,
-				currentCompany.getChartOfAccounts(), new ArrayList<Fund>(), null);
+			BudgetPanelFX panel =
+				new BudgetPanelFX(ServiceContainer.budgetService, companyDir,
+					currentCompany.getChartOfAccounts(), new ArrayList<Fund>(),
+					null);
 			showPanel(panel, "Budget Editor");
 		});
 		bar.getMenus().add(edit);
@@ -336,12 +355,14 @@ public class NonprofitBookkeepingFX extends Application
 		/* RUN */
 		this.run = new Menu("Run");
 		add(this.run, "Documents & Attachments",
-			e -> showPanel(new DocumentsPanelFX(ServiceContainer.dss), "Documents"));
+			e -> showPanel(new DocumentsPanelFX(ServiceContainer.dss),
+				"Documents"));
 		add(this.run, "Inventory & Depreciation", e -> {
 			File dir = null;
 			if (CurrentCompany.getCurrentFile() != null)
 				dir = CurrentCompany.getCurrentFile().getParentFile();
-			showPanel(new InventoryPanelFX(ServiceContainer.iss, dir), "Inventory");
+			showPanel(new InventoryPanelFX(ServiceContainer.iss, dir),
+				"Inventory");
 		});
 		add(this.run, "Funds & Fund Accounting", e -> {
 			File dir = null;
@@ -350,82 +371,88 @@ public class NonprofitBookkeepingFX extends Application
 			showPanel(new FundsPanelFX(ServiceContainer.fas, dir), "Funds");
 		});
 		add(this.run, "Reconcile",
-			e -> showPanel(new LedgerReconcilePanelFX(new ReconciliationService()),
+			e -> showPanel(
+				new LedgerReconcilePanelFX(new ReconciliationService()),
 				"Reconciliation"));
 		bar.getMenus().add(this.run);
 		
-//		/* REPORTS */
+// /* REPORTS */
 		this.reports = new Menu("Reports");
-//		add(this.reports, "Show Reports", e -> ((MainApplicationView) this.root)
-//			.showPanel(MainApplicationView.PanelType.REPORTS));
-//		add(this.reports, "Show Accounts",
-//			
-//			e -> showPanel(new AccountsPanelFX(new AccountService()), "Chart of Accounts"));
-//		add(this.reports, "Show Account Activity", e -> {
-//			Company currentCompany = CurrentCompany.getCompany();
-//			
-//			
-//			if (currentCompany != null && currentCompany.getLedger() != null)
-//			{
-//				showPanel(new AccountsActivityPanelFX(currentCompany.getLedger()),
-//					"Account Activity");
-//			}
-//			else
-//			{
-//				AlertBox.showError(this.primaryStage, "No company or ledger open.");
-//			}
-//			
-//		});
-//		add(this.reports, "Generate Reports...",
-//			e -> new GenerateReportsAction(ServiceContainer.reportService).handle(e));
-//		add(this.reports, "Generate Income Statement",
-//			e -> new GenerateIncomeStatementAction(ServiceContainer.reportService)
-//				.actionPerformed(null));
-//		add(this.reports, "Generate Balance Sheet",
-//			e -> new GenerateBalanceSheetAction(ServiceContainer.reportService)
-//				.actionPerformed(null));
-//		add(this.reports, "Generate Trial Balance",
-//			e -> new GenerateTrialBalanceAction(ServiceContainer.reportService)
-//				.actionPerformed(null));
-//		add(this.reports, "Generate Cash Flow Statement",
-//			e -> new GenerateCashFlowStatementAction(ServiceContainer.reportService)
-//				.actionPerformed(null));
-//		add(this.reports, "Generate Budget vs. Actuals Report",
-//			e -> new GenerateBudgetVsActualsReportAction(ServiceContainer.reportService,
-//				ServiceContainer.budgetService).actionPerformed(null));
-//		add(this.reports, "Manage Saved Reports", e -> {
-//			
-//			if (!CurrentCompany.isOpen())
-//			{
-//				AlertBox.showError(this.primaryStage,
-//					"No company open. Load or create a company first.");
-//				return;
-//			}
-//			
-//			File companyFile = CurrentCompany.getCurrentFile();
-//			
-//			if (companyFile == null)
-//			{
-//				Company currentCompany = CurrentCompany.getCompany();
-//				companyFile = currentCompany != null ? currentCompany.getCompanyFile() : null;
-//			}
-//			
-//			File companyDir = (companyFile != null) ? companyFile.getParentFile() : null;
-//			
-//			if (companyDir == null)
-//			{
-//				AlertBox.showError(this.primaryStage,
-//					"Company directory not available. Save the company before managing reports.");
-//				return;
-//			}
-//			
-//			new ManageReportConfigurationsDialog(null, ServiceContainer.reportConfigurationService,
-//				companyDir, new ArrayList<Fund>(), ServiceContainer.reportService).setVisible(true);
-//		});
-//		add(this.reports, "Generate Account Activity Detail",
-//			e -> new GenerateAccountActivityReportAction(ServiceContainer.reportService)
-//				.actionPerformed(null));
-//		bar.getMenus().add(this.reports);
+// add(this.reports, "Show Reports", e -> ((MainApplicationView) this.root)
+// .showPanel(MainApplicationView.PanelType.REPORTS));
+// add(this.reports, "Show Accounts",
+//
+// e -> showPanel(new AccountsPanelFX(new AccountService()), "Chart of
+// Accounts"));
+// add(this.reports, "Show Account Activity", e -> {
+// Company currentCompany = CurrentCompany.getCompany();
+//
+//
+// if (currentCompany != null && currentCompany.getLedger() != null)
+// {
+// showPanel(new AccountsActivityPanelFX(currentCompany.getLedger()),
+// "Account Activity");
+// }
+// else
+// {
+// AlertBox.showError(this.primaryStage, "No company or ledger open.");
+// }
+//
+// });
+// add(this.reports, "Generate Reports...",
+// e -> new GenerateReportsAction(ServiceContainer.reportService).handle(e));
+// add(this.reports, "Generate Income Statement",
+// e -> new GenerateIncomeStatementAction(ServiceContainer.reportService)
+// .actionPerformed(null));
+// add(this.reports, "Generate Balance Sheet",
+// e -> new GenerateBalanceSheetAction(ServiceContainer.reportService)
+// .actionPerformed(null));
+// add(this.reports, "Generate Trial Balance",
+// e -> new GenerateTrialBalanceAction(ServiceContainer.reportService)
+// .actionPerformed(null));
+// add(this.reports, "Generate Cash Flow Statement",
+// e -> new GenerateCashFlowStatementAction(ServiceContainer.reportService)
+// .actionPerformed(null));
+// add(this.reports, "Generate Budget vs. Actuals Report",
+// e -> new GenerateBudgetVsActualsReportAction(ServiceContainer.reportService,
+// ServiceContainer.budgetService).actionPerformed(null));
+// add(this.reports, "Manage Saved Reports", e -> {
+//
+// if (!CurrentCompany.isOpen())
+// {
+// AlertBox.showError(this.primaryStage,
+// "No company open. Load or create a company first.");
+// return;
+// }
+//
+// File companyFile = CurrentCompany.getCurrentFile();
+//
+// if (companyFile == null)
+// {
+// Company currentCompany = CurrentCompany.getCompany();
+// companyFile = currentCompany != null ? currentCompany.getCompanyFile() :
+// null;
+// }
+//
+// File companyDir = (companyFile != null) ? companyFile.getParentFile() : null;
+//
+// if (companyDir == null)
+// {
+// AlertBox.showError(this.primaryStage,
+// "Company directory not available. Save the company before managing
+// reports.");
+// return;
+// }
+//
+// new ManageReportConfigurationsDialog(null,
+// ServiceContainer.reportConfigurationService,
+// companyDir, new ArrayList<Fund>(),
+// ServiceContainer.reportService).setVisible(true);
+// });
+// add(this.reports, "Generate Account Activity Detail",
+// e -> new GenerateAccountActivityReportAction(ServiceContainer.reportService)
+// .actionPerformed(null));
+// bar.getMenus().add(this.reports);
 		
 		/* PANELS */
 		this.panels = new Menu("Panels");
@@ -433,24 +460,32 @@ public class NonprofitBookkeepingFX extends Application
 			File dir = null;
 			if (CurrentCompany.getCurrentFile() != null)
 				dir = CurrentCompany.getCurrentFile().getParentFile();
-			showPanel(new DonorsPanelFX(ServiceContainer.donorService, dir), "Donors");
+			showPanel(new DonorsPanelFX(ServiceContainer.donorService, dir),
+				"Donors");
 		});
 		add(this.panels, "Donations",
-			e -> showPanel(new DonationsPanelFX(this.primaryStage), "Donations"));
-                add(this.panels, "Grants", e -> {
-                        String companyId = null;
-                        Company cc = CurrentCompany.getCompany();
-                        if (cc != null)
-                        {
-                                companyId = cc.getCompanyId();
-                        }
-                        showPanel(new GrantsPanelFX(ServiceContainer.grantsService, companyId), "Grants");
-                });
+			e -> showPanel(new DonationsPanelFX(this.primaryStage),
+				"Donations"));
+		add(this.panels, "Grants", e -> {
+			String companyId = null;
+			Company cc = CurrentCompany.getCompany();
+			
+			if (cc != null)
+			{
+				companyId = cc.getCompanyId();
+			}
+			
+			showPanel(
+				new GrantsPanelFX(ServiceContainer.grantsService, companyId),
+				"Grants");
+		});
 		add(this.panels, "Sales & COG", e -> {
 			File dir = null;
 			if (CurrentCompany.getCurrentFile() != null)
 				dir = CurrentCompany.getCurrentFile().getParentFile();
-			showPanel(new SalesAndCOGPanelFX(ServiceContainer.salesService, dir), "Sales & COG");
+			showPanel(
+				new SalesAndCOGPanelFX(ServiceContainer.salesService, dir),
+				"Sales & COG");
 		});
 		bar.getMenus().add(this.panels);
 		
@@ -460,14 +495,17 @@ public class NonprofitBookkeepingFX extends Application
 			File dir = null;
 			if (CurrentCompany.getCurrentFile() != null)
 				dir = CurrentCompany.getCurrentFile().getParentFile();
-			showPanel(new SettingsPanelFX(this.primaryStage, new SettingsService(), dir),
+			showPanel(
+				new SettingsPanelFX(this.primaryStage, new SettingsService(),
+					dir),
 				"Settings");
 		});
 		bar.getMenus().add(settings);
 		
 		/* HELP */
 		Menu help = new Menu("Help");
-		add(help, "Help", e -> showPanel(new HelpPanelFX(this.primaryStage), "Help"));
+		add(help, "Help",
+			e -> showPanel(new HelpPanelFX(this.primaryStage), "Help"));
 		bar.getMenus().add(help);
 		
 		// Add plugin menu items
@@ -482,13 +520,15 @@ public class NonprofitBookkeepingFX extends Application
 				
 				try
 				{
-					LOGGER.info("Adding menu items for plugin: " + plugin.getName());
+					LOGGER.info(
+						"Adding menu items for plugin: " + plugin.getName());
 					plugin.addMenuItems(bar); // 'bar' is the MenuBar instance
 				}
 				catch (Exception ex)
 				{
 					LOGGER.log(Level.WARNING, "Plugin " + plugin.getName() +
-						" failed to add its menu items: " + ex.getMessage(), ex);
+						" failed to add its menu items: " + ex.getMessage(),
+						ex);
 				}
 				
 			}
@@ -496,6 +536,7 @@ public class NonprofitBookkeepingFX extends Application
 		}
 		
 		return bar;
+		
 	}
 	
 	/**
@@ -507,12 +548,14 @@ public class NonprofitBookkeepingFX extends Application
 	 * @param handler The {@link EventHandler} to be called when the menu item is actioned.
 	 * @return The created {@link MenuItem}.
 	 */
-	private static MenuItem add(Menu menu, String label, EventHandler<ActionEvent> handler)
+	private static MenuItem add(Menu menu, String label,
+		EventHandler<ActionEvent> handler)
 	{
 		MenuItem item = new MenuItem(label);
 		item.setOnAction(handler);
 		menu.getItems().add(item);
 		return item;
+		
 	}
 	
 	/**
@@ -534,6 +577,7 @@ public class NonprofitBookkeepingFX extends Application
 		sub.setScene(scene);
 		sub.initOwner(this.primaryStage);
 		sub.show();
+		
 	}
 	
 	
@@ -565,7 +609,8 @@ public class NonprofitBookkeepingFX extends Application
 		
 		if (this.root instanceof MainApplicationView)
 		{
-			((MainApplicationView) this.root).updateCompanyOpenState(companyOpen);
+			((MainApplicationView) this.root)
+				.updateCompanyOpenState(companyOpen);
 		}
 		
 	}
@@ -582,12 +627,14 @@ public class NonprofitBookkeepingFX extends Application
 		
 		try
 		{
-			OpenCompanyFileActionFX openCompanyFileActionFX = new OpenCompanyFileActionFX(
-				this.primaryStage, () -> setState(AppState.COMPANY_OPEN));
+			OpenCompanyFileActionFX openCompanyFileActionFX =
+				new OpenCompanyFileActionFX(
+					this.primaryStage, () -> setState(AppState.COMPANY_OPEN));
 		}
 		catch (Exception e)
 		{
-			AlertBox.showError(this.primaryStage, "Failed to open company: " + e.getMessage());
+			AlertBox.showError(this.primaryStage,
+				"Failed to open company: " + e.getMessage());
 		}
 		
 	}
@@ -622,13 +669,15 @@ public class NonprofitBookkeepingFX extends Application
 		
 		catch (Exception e) // Catch broad exceptions from action
 		{
-			AlertBox.showError(this.primaryStage, "Failed to close company: " + e.getMessage());
+			AlertBox.showError(this.primaryStage,
+				"Failed to close company: " + e.getMessage());
 		}
 		
 		// Switch view back to dashboard
 		if (this.root instanceof MainApplicationView)
 		{
-			((MainApplicationView) this.root).showPanel(MainApplicationView.PanelType.DASHBOARD);
+			((MainApplicationView) this.root)
+				.showPanel(MainApplicationView.PanelType.DASHBOARD);
 		}
 		else
 		{
@@ -655,7 +704,8 @@ public class NonprofitBookkeepingFX extends Application
 		}
 		catch (Exception ex)
 		{
-			AlertBox.showError(this.primaryStage, "Failed to save company: " + ex.getMessage());
+			AlertBox.showError(this.primaryStage,
+				"Failed to save company: " + ex.getMessage());
 		}
 		
 	}
@@ -694,7 +744,8 @@ public class NonprofitBookkeepingFX extends Application
 		{
 			setState(saved); // Revert to previous state on error
 			e.printStackTrace(); // Consider more specific logging
-			AlertBox.showError(this.primaryStage, "Error during company setup: " + e.getMessage());
+			AlertBox.showError(this.primaryStage,
+				"Error during company setup: " + e.getMessage());
 		}
 		
 	}
@@ -706,6 +757,7 @@ public class NonprofitBookkeepingFX extends Application
 	private AppState getState()
 	{
 		return this.state;
+		
 	}
 	
 	/**
@@ -716,8 +768,9 @@ public class NonprofitBookkeepingFX extends Application
 	 * Errors during plugin shutdown are logged.
 	 * @throws Exception if an error occurs during the superclass's stop method or saving company data.
 	 */
-    @Override public void stop() throws Exception
-    {
+	@Override
+	public void stop() throws Exception
+	{
 		LOGGER.info("Application stopping. Shutting down plugins.");
 		
 		if (this.loadedPlugins != null)
@@ -734,7 +787,8 @@ public class NonprofitBookkeepingFX extends Application
 				catch (Exception e)
 				{
 					LOGGER.log(Level.WARNING,
-						"Error shutting down plugin: " + plugin.getName() + " - " + e.getMessage(),
+						"Error shutting down plugin: " + plugin.getName() +
+							" - " + e.getMessage(),
 						e);
 				}
 				
@@ -742,9 +796,10 @@ public class NonprofitBookkeepingFX extends Application
 			
 		}
 		
-                doSaveCompany();
-                DatabaseManager.shutdown();
-                super.stop();
-    }
+		doSaveCompany();
+		DatabaseManager.shutdown();
+		super.stop();
+		
+	}
 	
 }

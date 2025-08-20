@@ -44,7 +44,7 @@ public class JsonToDatabaseMigration
 	
 	public JsonToDatabaseMigration()
 	{
-	
+		
 	}
 	
 	/** Migrate donors from a JSON file. */
@@ -114,19 +114,19 @@ public class JsonToDatabaseMigration
 		LedgerContainer container =
 			mapper.readValue(ledgerJson, LedgerContainer.class);
 		
-                try (EntityManager em = DatabaseManager.getEntityManager())
-                {
-                        LedgerEntryDao ledgerEntryDao = new LedgerEntryDao(em);
-                        saveLedgerEntries(ledgerEntryDao, container.getLedgerQ1());
-                        saveLedgerEntries(ledgerEntryDao, container.getLedgerQ2());
-                        saveLedgerEntries(ledgerEntryDao, container.getLedgerQ3());
-                        saveLedgerEntries(ledgerEntryDao, container.getLedgerQ4());
-                }
+		try (EntityManager em = DatabaseManager.getEntityManager())
+		{
+			LedgerEntryDao ledgerEntryDao = new LedgerEntryDao(em);
+			saveLedgerEntries(ledgerEntryDao, container.getLedgerQ1());
+			saveLedgerEntries(ledgerEntryDao, container.getLedgerQ2());
+			saveLedgerEntries(ledgerEntryDao, container.getLedgerQ3());
+			saveLedgerEntries(ledgerEntryDao, container.getLedgerQ4());
+		}
 		
 	}
 	
-        private void saveLedgerEntries(LedgerEntryDao ledgerEntryDao,
-                List<LedgerEntry> entries)
+	private void saveLedgerEntries(LedgerEntryDao ledgerEntryDao,
+		List<LedgerEntry> entries)
 	{
 		
 		for (LedgerEntry le : entries)
@@ -138,26 +138,26 @@ public class JsonToDatabaseMigration
 			entity.setToFrom(le.getToFrom());
 			entity.setMemoString(le.getMemoString());
 			entity.setBudgetTracking(le.getBudgetTracking());
-                        addSupplemental(entity, le.getAmount(), le.getAssetAccount(),
-                                le.getIncomeAccount(),
-                                le.getExpenseAccount(), le.getFundName(), 1);
-                        addSupplemental(entity, le.amount2, le.assetAccount2,
-                                le.incomeAccount2,
-                                le.expenseAccount2, le.fundName2, 2);
-                        addSupplemental(entity, le.amount3, le.assetAccount3,
-                                le.incomeAccount3,
-                                le.expenseAccount3, le.fundName3, 3);
-                        addSupplemental(entity, le.amount4, le.assetAccount4,
-                                le.incomeAccount4,
-                                le.expenseAccount4, le.fundName4, 4);
+			addSupplemental(entity, le.getAmount(), le.getAssetAccount(),
+				le.getIncomeAccount(),
+				le.getExpenseAccount(), le.getFundName(), 1);
+			addSupplemental(entity, le.amount2, le.assetAccount2,
+				le.incomeAccount2,
+				le.expenseAccount2, le.fundName2, 2);
+			addSupplemental(entity, le.amount3, le.assetAccount3,
+				le.incomeAccount3,
+				le.expenseAccount3, le.fundName3, 3);
+			addSupplemental(entity, le.amount4, le.assetAccount4,
+				le.incomeAccount4,
+				le.expenseAccount4, le.fundName4, 4);
 			ledgerEntryDao.save(entity);
 		}
 		
 	}
 	
-        private void addSupplemental(LedgerEntryEntity entity, double amt,
-                String asset,
-                String income, String expense, String fund, int seq)
+	private void addSupplemental(LedgerEntryEntity entity, double amt,
+		String asset,
+		String income, String expense, String fund, int seq)
 	{
 		
 		if (asset != null || income != null || expense != null ||
@@ -170,27 +170,27 @@ public class JsonToDatabaseMigration
 			sr.setExpenseAccount(expense);
 			sr.setFundName(fund);
 			sr.setSequenceNumber(seq);
-                        sr.setLedgerEntry(entity);
-                        entity.getSupplementalRecords().add(sr);
+			sr.setLedgerEntry(entity);
+			entity.getSupplementalRecords().add(sr);
 		}
 		
 	}
 	
 	/** Migrate report configurations from a JSON file. */
-        public void migrateReportConfigurations(File configJson) throws IOException
-        {
-                List<ReportConfiguration> configs = mapper.readValue(configJson,
-                        mapper.getTypeFactory().constructCollectionType(List.class,
-                                ReportConfiguration.class));
-
-                try (EntityManager em = DatabaseManager.getEntityManager())
-                {
-                        ReportConfigurationDao reportConfigDao =
-                                new ReportConfigurationDao(em);
-                        configs.forEach(reportConfigDao::save);
-                }
-
-        }
+	public void migrateReportConfigurations(File configJson) throws IOException
+	{
+		List<ReportConfiguration> configs = mapper.readValue(configJson,
+			mapper.getTypeFactory().constructCollectionType(List.class,
+				ReportConfiguration.class));
+		
+		try (EntityManager em = DatabaseManager.getEntityManager())
+		{
+			ReportConfigurationDao reportConfigDao =
+				new ReportConfigurationDao(em);
+			configs.forEach(reportConfigDao::save);
+		}
+		
+	}
 	
 	/**
 	 * Convenience method that reads an entire company data archive (the format
@@ -209,9 +209,9 @@ public class JsonToDatabaseMigration
 		catch (IOException | ActionCancelledException |
 			NoFileCreatedException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		DatabaseService db = new DatabaseService();
 		db.saveCompany(company);
 		
