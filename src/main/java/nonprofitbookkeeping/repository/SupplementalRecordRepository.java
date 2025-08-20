@@ -2,12 +2,12 @@ package nonprofitbookkeeping.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
-import nonprofitbookkeeping.model.SupplementalRecord;
+import nonprofitbookkeeping.persistence.entity.SupplementalRecordEntity;
 
 import java.util.List;
 import java.util.Optional;
 
-/** Repository for {@link SupplementalRecord} entities. */
+/** Repository for {@link SupplementalRecordEntity} entities. */
 public class SupplementalRecordRepository {
     private final EntityManager entityManager;
 
@@ -15,10 +15,10 @@ public class SupplementalRecordRepository {
         this.entityManager = entityManager;
     }
 
-    public SupplementalRecord save(SupplementalRecord record) {
+    public SupplementalRecordEntity save(SupplementalRecordEntity record) {
         EntityTransaction tx = entityManager.getTransaction();
         tx.begin();
-        if (record.getId() == 0) {
+        if (record.getId() == null) {
             entityManager.persist(record);
         } else {
             record = entityManager.merge(record);
@@ -27,19 +27,19 @@ public class SupplementalRecordRepository {
         return record;
     }
 
-    public List<SupplementalRecord> findAll() {
-        return entityManager.createQuery("SELECT s FROM SupplementalRecord s", SupplementalRecord.class)
+    public List<SupplementalRecordEntity> findAll() {
+        return entityManager.createQuery("SELECT s FROM SupplementalRecordEntity s", SupplementalRecordEntity.class)
                 .getResultList();
     }
 
-    public Optional<SupplementalRecord> findById(int id) {
-        return Optional.ofNullable(entityManager.find(SupplementalRecord.class, id));
+    public Optional<SupplementalRecordEntity> findById(Long id) {
+        return Optional.ofNullable(entityManager.find(SupplementalRecordEntity.class, id));
     }
 
-    public boolean delete(int id) {
+    public boolean delete(Long id) {
         EntityTransaction tx = entityManager.getTransaction();
         tx.begin();
-        SupplementalRecord record = entityManager.find(SupplementalRecord.class, id);
+        SupplementalRecordEntity record = entityManager.find(SupplementalRecordEntity.class, id);
         if (record != null) {
             entityManager.remove(record);
             tx.commit();
