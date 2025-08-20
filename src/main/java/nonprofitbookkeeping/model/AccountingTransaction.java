@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -54,8 +56,9 @@ public class AccountingTransaction implements Serializable
 
         /** Additional information or metadata about the transaction, stored as key-value pairs. */
         @ElementCollection
-        @JoinColumn(name = "transaction_id")
+        @CollectionTable(name = "transaction_info", joinColumns = @JoinColumn(name = "transaction_id"))
         @MapKeyColumn(name = "info_key")
+        @Column(name = "info_value")
         @JsonProperty private Map<String, String> info;
 
         /** Owning journal for this transaction. */
