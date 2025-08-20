@@ -7,7 +7,6 @@ import java.math.BigDecimal;
  * Row representing a single payable. Payables capture amounts owed to a party
  * along with a reason for the obligation.
  */
-
 public class PayableRow implements SupplementalRecord
 {
 	private String owedTo;

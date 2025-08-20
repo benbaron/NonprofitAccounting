@@ -13,7 +13,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-
 public class LiabilityDtl5bBean implements SupplementalRecord
 {
 	ArrayList<LiabilityDtl5bRow> rows;

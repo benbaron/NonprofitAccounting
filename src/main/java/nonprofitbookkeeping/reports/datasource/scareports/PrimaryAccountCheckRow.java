@@ -8,7 +8,6 @@ import java.math.BigDecimal;
  * statement. Each row contains the check number, the date the check was
  * written, and the amount of the check.
  */
-
 public class PrimaryAccountCheckRow implements SupplementalRecord
 {
 	private String checkNumber;

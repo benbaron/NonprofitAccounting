@@ -4,7 +4,7 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 import java.math.BigDecimal;
 
 /** Row for Liability Detail (5b). */
-
+>>>>>>> branch 'codex/read-provided-xlsx-file' of git@github.com:benbaron/NonprofitAccounting.git
 public class LiabilityDtl5bRow implements SupplementalRecord
 {
 	

@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 /**
  * Row representing net income from advertising.
  */
-
 public class NetAdvertisingIncomeRow implements SupplementalRecord
 {
 	private String description;

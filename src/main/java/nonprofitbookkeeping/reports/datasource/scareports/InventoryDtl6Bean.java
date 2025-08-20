@@ -13,7 +13,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-
 public class InventoryDtl6Bean implements SupplementalRecord
 {
 	ArrayList<InventoryDtl6Row> rows;

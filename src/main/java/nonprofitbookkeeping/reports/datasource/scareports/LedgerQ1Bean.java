@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
 
-
 public class LedgerQ1Bean implements SupplementalRecord
 {
 	private String col_0;
