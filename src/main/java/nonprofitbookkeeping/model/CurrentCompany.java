@@ -7,6 +7,7 @@ package nonprofitbookkeeping.model;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -21,6 +22,7 @@ import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.persistence.DatabaseManager;
 import nonprofitbookkeeping.persistence.DatabaseService;
+import nonprofitbookkeeping.core.JacksonDataStorer;
 
 /**
  * Manages the currently active {@link Company} instance in the application.
@@ -115,27 +117,36 @@ public class CurrentCompany
 	public static void persist() throws IOException, ActionCancelledException,
 		NoFileCreatedException
 	{
-		DATABASE_SERVICE.saveCompany(company);
-		
-		if (currentFile == null)
-		{
-			throw new NoFileCreatedException("No backup file specified");
-		}
-		
-		String path = currentFile.getAbsolutePath().replace("\\", "/");
-		String sql = "SCRIPT TO '" + path + "'";
-		
-		try (
-			Connection conn =
-				DriverManager.getConnection("jdbc:h2:mem:nonprofit", "sa", "");
-			Statement stmt = conn.createStatement())
-		{
-			stmt.execute(sql);
-		}
-		catch (SQLException e)
-		{
-			throw new IOException("Error writing backup: " + e.getMessage(), e);
-		}
+        DATABASE_SERVICE.saveCompany(company);
+
+        if (currentFile == null)
+        {
+                throw new NoFileCreatedException("No backup file specified");
+        }
+
+        String name = currentFile.getName().toLowerCase();
+
+        if (name.endsWith(".npbk"))
+        {
+                JacksonDataStorer storer = JacksonDataStorer.getDataStorer();
+                storer.saveData(company, currentFile);
+                return;
+        }
+
+        String path = currentFile.getAbsolutePath().replace("\\", "/");
+        String sql = "SCRIPT TO '" + path + "'";
+
+        try (
+                Connection conn =
+                                DriverManager.getConnection("jdbc:h2:mem:nonprofit", "sa", "");
+                Statement stmt = conn.createStatement())
+        {
+                stmt.execute(sql);
+        }
+        catch (SQLException e)
+        {
+                throw new IOException("Error writing backup: " + e.getMessage(), e);
+        }
 		
 	}
 	
@@ -149,42 +160,88 @@ public class CurrentCompany
 	 * @throws NullPointerException if file is null.
 	 */
 	
-	public static void loadFromPersistent(File file)
-		throws IOException, ActionCancelledException,
-		NoFileCreatedException
-	{
-		checkNotNull(file, "File cannot be null for load operation.");
-		
-		String path = file.getAbsolutePath().replace("\\", "/");
-		String sql = "RUNSCRIPT FROM '" + path + "'";
-		
-		try (
-			Connection conn =
-				DriverManager.getConnection("jdbc:h2:mem:nonprofit", "sa", "");
-			Statement stmt = conn.createStatement())
-		{
-			stmt.execute(sql);
-		}
-		catch (SQLException e)
-		{
-			throw new IOException("Error restoring backup: " + e.getMessage(),
-				e);
-		}
-		
-		DatabaseManager.shutdown();
-		DatabaseManager.initialize();
-		DATABASE_SERVICE = new DatabaseService();
-		
-		company = DATABASE_SERVICE.loadCompany();
-		
-		setCurrentFile(file);
-		
-		if (company != null)
-		{
-			markCompanyOpen();
-		}
-		
-	}
+        public static void loadFromPersistent(File file)
+                throws IOException, ActionCancelledException,
+                NoFileCreatedException
+        {
+        checkNotNull(file, "File cannot be null for load operation.");
+
+        String name = file.getName().toLowerCase();
+
+        if (name.endsWith(".npbk") || isZipArchive(file))
+        {
+                JacksonDataStorer storer = JacksonDataStorer.getDataStorer();
+                Company loaded = storer.loadData(Company.class, file);
+
+                DatabaseManager.shutdown();
+                DatabaseManager.initialize();
+                DATABASE_SERVICE = new DatabaseService();
+                DATABASE_SERVICE.saveCompany(loaded);
+
+                company = loaded;
+                setCurrentFile(file);
+
+                if (company != null)
+                {
+                        markCompanyOpen();
+                }
+
+                return;
+        }
+
+        String path = file.getAbsolutePath().replace("\\", "/");
+        String sql = "RUNSCRIPT FROM '" + path + "'";
+
+        try (
+                Connection conn =
+                                DriverManager.getConnection("jdbc:h2:mem:nonprofit", "sa", "");
+                Statement stmt = conn.createStatement())
+        {
+                stmt.execute(sql);
+        }
+        catch (SQLException e)
+        {
+                throw new IOException("Error restoring backup: " + e.getMessage(),
+                                e);
+        }
+
+        DatabaseManager.shutdown();
+        DatabaseManager.initialize();
+        DATABASE_SERVICE = new DatabaseService();
+
+        company = DATABASE_SERVICE.loadCompany();
+
+        setCurrentFile(file);
+
+        if (company != null)
+        {
+                markCompanyOpen();
+        }
+
+        }
+
+        /**
+         * Determines if the given file is a ZIP archive by checking its magic header.
+         *
+         * @param file the file to inspect
+         * @return {@code true} if the file appears to be a ZIP archive, {@code false} otherwise
+         */
+        private static boolean isZipArchive(File file)
+        {
+                try (FileInputStream fis = new FileInputStream(file))
+                {
+                        byte[] header = new byte[4];
+                        if (fis.read(header) < 4)
+                        {
+                                return false;
+                        }
+                        return header[0] == 'P' && header[1] == 'K';
+                }
+                catch (IOException ex)
+                {
+                        return false;
+                }
+        }
 	
 	/**
 	 * Reload the company data directly from the database.
