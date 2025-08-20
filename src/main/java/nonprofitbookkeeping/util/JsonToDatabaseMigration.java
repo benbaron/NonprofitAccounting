@@ -25,6 +25,7 @@ import nonprofitbookkeeping.persistence.dao.LedgerEntryDao;
 import nonprofitbookkeeping.persistence.dao.ReportConfigurationDao;
 import nonprofitbookkeeping.persistence.entity.LedgerEntryEntity;
 import nonprofitbookkeeping.persistence.entity.SupplementalRecordEntity;
+import nonprofitbookkeeping.repository.SupplementalRecordRepository;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -189,14 +190,20 @@ public class JsonToDatabaseMigration
 	}
 	
 	/** Migrate report configurations from a JSON file. */
-	public void migrateReportConfigurations(File configJson) throws IOException
-	{
-		List<ReportConfiguration> configs = mapper.readValue(configJson,
-			mapper.getTypeFactory().constructCollectionType(List.class,
-				ReportConfiguration.class));
-		configs.forEach(reportConfigDao::save);
-		
-	}
+        public void migrateReportConfigurations(File configJson) throws IOException
+        {
+                List<ReportConfiguration> configs = mapper.readValue(configJson,
+                        mapper.getTypeFactory().constructCollectionType(List.class,
+                                ReportConfiguration.class));
+
+                try (EntityManager em = DatabaseManager.getEntityManager())
+                {
+                        ReportConfigurationDao reportConfigDao =
+                                new ReportConfigurationDao(em);
+                        configs.forEach(reportConfigDao::save);
+                }
+
+        }
 	
 	/**
 	 * Convenience method that reads an entire company data archive (the format
