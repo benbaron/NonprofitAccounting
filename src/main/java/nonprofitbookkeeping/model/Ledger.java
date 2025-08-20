@@ -28,22 +28,21 @@ import java.io.Serializable;
 @Table(name = "ledgers")
 public class Ledger implements Serializable
 {
-        /**
-         * The unique identifier for this serializable class.
-         */
-        private static final long serialVersionUID = 8752049840895321935L;
-
-        /** Primary key for the ledger. */
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
-
-        /**
-         * The journal containing all accounting transactions for this ledger.
-         */
-        @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-        @JoinColumn(name = "journal_id")
-        private Journal journal = new Journal();
+	/**
+	 * The unique identifier for this serializable class.
+	 */
+	private static final long serialVersionUID = 8752049840895321935L;
+	
+	/** Primary key for the ledger. */
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
+	
+	/**
+	 * The journal containing all accounting transactions for this ledger.
+	 */
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+		orphanRemoval = true)
+	@JoinColumn(name = "journal_id") private Journal journal = new Journal();
 	
 	/**
 	 * Retrieves all transactions recorded in this ledger's journal.
@@ -53,6 +52,7 @@ public class Ledger implements Serializable
 	public List<AccountingTransaction> getTransactions()
 	{
 		return this.journal.getJournalTransactions();
+		
 	}
 	
 	
@@ -64,6 +64,7 @@ public class Ledger implements Serializable
 	public Journal getJournal()
 	{
 		return this.journal;
+		
 	}
 	
 	/**
@@ -114,6 +115,18 @@ public class Ledger implements Serializable
 		}
 		
 		return result;
+		
+	}
+	
+	
+	/**
+	 * @return
+	 */
+	public Object getId()
+	{
+		// TODO Auto-generated method stub
+		return null;
+		
 	}
 	
 }

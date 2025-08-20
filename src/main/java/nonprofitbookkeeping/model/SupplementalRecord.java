@@ -1,3 +1,4 @@
+
 package nonprofitbookkeeping.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -13,59 +14,76 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "supplemental_records")
-public class SupplementalRecord implements Serializable {
-    private static final long serialVersionUID = 1L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private int id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "transaction_id")
-    @JsonIgnore
-    private AccountingTransaction transaction;
-
-    @JsonProperty
-    private String recordKey;
-
-    @JsonProperty
-    private String recordValue;
-
-    public SupplementalRecord() {
-    }
-
-    public SupplementalRecord(AccountingTransaction transaction, String recordKey, String recordValue) {
-        this.transaction = transaction;
-        this.recordKey = recordKey;
-        this.recordValue = recordValue;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public AccountingTransaction getTransaction() {
-        return transaction;
-    }
-
-    public void setTransaction(AccountingTransaction transaction) {
-        this.transaction = transaction;
-    }
-
-    public String getRecordKey() {
-        return recordKey;
-    }
-
-    public void setRecordKey(String recordKey) {
-        this.recordKey = recordKey;
-    }
-
-    public String getRecordValue() {
-        return recordValue;
-    }
-
-    public void setRecordValue(String recordValue) {
-        this.recordValue = recordValue;
-    }
+public class SupplementalRecord implements Serializable
+{
+	private static final long serialVersionUID = 1L;
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY) private int id;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "transaction_id")
+	@JsonIgnore private AccountingTransaction transaction;
+	
+	@JsonProperty private String recordKey;
+	
+	@JsonProperty private String recordValue;
+	
+	public SupplementalRecord()
+	{
+	
+	}
+	
+	public SupplementalRecord(AccountingTransaction transaction,
+		String recordKey, String recordValue)
+	{
+		this.transaction = transaction;
+		this.recordKey = recordKey;
+		this.recordValue = recordValue;
+		
+	}
+	
+	public int getId()
+	{
+		return id;
+		
+	}
+	
+	public AccountingTransaction getTransaction()
+	{
+		return transaction;
+		
+	}
+	
+	public void setTransaction(AccountingTransaction transaction)
+	{
+		this.transaction = transaction;
+		
+	}
+	
+	public String getRecordKey()
+	{
+		return recordKey;
+		
+	}
+	
+	public void setRecordKey(String recordKey)
+	{
+		this.recordKey = recordKey;
+		
+	}
+	
+	public String getRecordValue()
+	{
+		return recordValue;
+		
+	}
+	
+	public void setRecordValue(String recordValue)
+	{
+		this.recordValue = recordValue;
+		
+	}
+	
 }

@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 
 import nonprofitbookkeeping.core.JacksonDataStorer;
+import nonprofitbookkeeping.exception.ActionCancelledException;
+import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.Donor;
@@ -213,8 +215,18 @@ public class JsonToDatabaseMigration
 	public void migrateCompanyArchive(java.nio.file.Path companyZip)
 		throws IOException
 	{
-		Company company =
-			dataStorer.loadData(Company.class, companyZip.toFile());
+		Company company = null;
+		
+		try
+		{
+			company = dataStorer.loadData(Company.class, companyZip.toFile());
+		}
+		catch (IOException | ActionCancelledException |
+			NoFileCreatedException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		DatabaseService db = new DatabaseService();
 		db.saveCompany(company);
 		
