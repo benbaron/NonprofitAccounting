@@ -21,14 +21,10 @@ import nonprofitbookkeeping.persistence.AccountingTransactionRepository;
 import nonprofitbookkeeping.persistence.DonorRepository;
 import nonprofitbookkeeping.persistence.InventoryRepository;
 import nonprofitbookkeeping.persistence.SaleRecordRepository;
-import nonprofitbookkeeping.persistence.SupplementalRecordRepository;
 import nonprofitbookkeeping.persistence.dao.LedgerEntryDao;
 import nonprofitbookkeeping.persistence.dao.ReportConfigurationDao;
 import nonprofitbookkeeping.persistence.entity.LedgerEntryEntity;
 import nonprofitbookkeeping.persistence.entity.SupplementalRecordEntity;
-import nonprofitbookkeeping.persistence.DatabaseService;
-
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;

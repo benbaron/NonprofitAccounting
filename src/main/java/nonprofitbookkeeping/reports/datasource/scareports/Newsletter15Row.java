@@ -7,12 +7,9 @@ import java.math.BigDecimal;
  * Advertising row for the NEWSLETTER_15 report capturing a single
  * advertisement sold in the publication.
  */
-<<<<<<< HEAD
-public class Newsletter15Row extends ScaRowBase {
-=======
+
 public class Newsletter15Row implements SupplementalRecord
 {
->>>>>>> refs/remotes/origin/codex/add-interface-and-extend-ledgerentry
 	private String advertiserName;
 	private String adSize;
 	private String issuesOrVolume;

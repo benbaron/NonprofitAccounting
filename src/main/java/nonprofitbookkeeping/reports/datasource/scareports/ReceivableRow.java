@@ -8,12 +8,11 @@ import java.math.BigDecimal;
  * the funds, the reason for the receivable, and the prior and current
  * amounts owed.
  */
-<<<<<<< HEAD
-public class ReceivableRow extends ScaRowBase {
-=======
+
+
+
 public class ReceivableRow implements SupplementalRecord
 {
->>>>>>> refs/remotes/origin/codex/add-interface-and-extend-ledgerentry
 	private String owedFrom;
 	private String reason;
 	private BigDecimal priorAmount;

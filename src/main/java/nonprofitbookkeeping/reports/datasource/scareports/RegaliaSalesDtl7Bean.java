@@ -13,12 +13,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-<<<<<<< HEAD
-public class RegaliaSalesDtl7Bean extends ScaRowBase {
-=======
+
 public class RegaliaSalesDtl7Bean implements SupplementalRecord
 {
->>>>>>> refs/remotes/origin/codex/add-interface-and-extend-ledgerentry
 	ArrayList<RegaliaSalesRow> rows;
 	
 	private BigDecimal _10_b_transfer_out;

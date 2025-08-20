@@ -1990,8 +1990,6 @@ public class ReportService
 	}
 	
 	
-}
-	
 	/** Accessor for the supplemental record service. */
 	public SupplementalRecordService getSupplementalRecordService()
 	{

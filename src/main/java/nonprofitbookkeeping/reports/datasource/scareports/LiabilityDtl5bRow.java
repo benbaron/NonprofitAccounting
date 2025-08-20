@@ -4,12 +4,9 @@ package nonprofitbookkeeping.reports.datasource.scareports;
 import java.math.BigDecimal;
 
 /** Row for Liability Detail (5b). */
-<<<<<<< HEAD
-public class LiabilityDtl5bRow extends ScaRowBase {
-=======
+
 public class LiabilityDtl5bRow implements SupplementalRecord
 {
->>>>>>> refs/remotes/origin/codex/add-interface-and-extend-ledgerentry
 	
 	/** Section: "DEFERRED_REVENUE", "PAYABLES", or "OTHER_LIABILITIES". */
 	private String section;
