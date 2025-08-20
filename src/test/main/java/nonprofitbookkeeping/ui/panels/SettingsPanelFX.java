@@ -266,18 +266,21 @@ public class SettingsPanelFX extends BorderPane
                 backupBtn.setOnAction(e -> {
                         FileChooser fc = new FileChooser();
                         fc.setTitle("Save Backup");
-                        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("SQL files", "*.sql"));
+                        fc.getExtensionFilters().addAll(
+                                new FileChooser.ExtensionFilter("Company Files", "*.npbk"),
+                                new FileChooser.ExtensionFilter("SQL Backup files", "*.sql"));
                         File out = fc.showSaveDialog(null);
 
                         if (out != null)
                         {
-                                DatabaseService db = new DatabaseService();
                                 try
                                 {
-                                        db.backupDatabase(out.getAbsolutePath());
+                                        CurrentCompany.setCurrentFile(out);
+                                        CurrentCompany.persist();
                                         alert("Backup saved to " + out.getAbsolutePath());
                                 }
-                                catch (SQLException ex)
+                                catch (IOException | ActionCancelledException |
+                                        NoFileCreatedException ex)
                                 {
                                         alert("Backup failed: " + ex.getMessage());
                                 }
@@ -288,19 +291,21 @@ public class SettingsPanelFX extends BorderPane
                 restoreBtn.setOnAction(e -> {
                         FileChooser fc = new FileChooser();
                         fc.setTitle("Open Backup");
-                        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("SQL files", "*.sql"));
+                        fc.getExtensionFilters().addAll(
+                                new FileChooser.ExtensionFilter("Company Files", "*.npbk"),
+                                new FileChooser.ExtensionFilter("SQL Backup files", "*.sql"));
                         File f = fc.showOpenDialog(null);
 
                         if (f != null)
                         {
-                                DatabaseService db = new DatabaseService();
                                 try
                                 {
-                                        db.restoreDatabase(f.getAbsolutePath());
-                                        CurrentCompany.loadFromDatabase();
+                                        CurrentCompany.loadFromPersistent(f);
+                                        CurrentCompany.markCompanyOpen();
                                         alert("Backup restored from " + f.getName());
                                 }
-                                catch (SQLException ex)
+                                catch (IOException | ActionCancelledException |
+                                        NoFileCreatedException ex)
                                 {
                                         alert("Restore failed: " + ex.getMessage());
                                 }

@@ -283,9 +283,10 @@ public class SettingsPanelFX extends BorderPane
 		
 		backupBtn.setOnAction(e -> {
 			FileChooser fc = new FileChooser();
-			fc.setTitle("Save Backup");
-			fc.getExtensionFilters()
-				.add(new FileChooser.ExtensionFilter("NPBK files", "*.npbk"));
+                        fc.setTitle("Save Backup");
+                        fc.getExtensionFilters().addAll(
+                                new FileChooser.ExtensionFilter("Company Files", "*.npbk"),
+                                new FileChooser.ExtensionFilter("SQL Backup files", "*.sql"));
 			
 			File out = fc.showSaveDialog(null);
 			
@@ -324,9 +325,10 @@ public class SettingsPanelFX extends BorderPane
 		
 		restoreBtn.setOnAction(e -> {
 			FileChooser fc = new FileChooser();
-			fc.setTitle("Open Backup");
-			fc.getExtensionFilters()
-				.add(new FileChooser.ExtensionFilter("NPBK files", "*.npbk"));
+                        fc.setTitle("Open Backup");
+                        fc.getExtensionFilters().addAll(
+                                new FileChooser.ExtensionFilter("Company Files", "*.npbk"),
+                                new FileChooser.ExtensionFilter("SQL Backup files", "*.sql"));
 			
 			File f = fc.showOpenDialog(null);
 			
