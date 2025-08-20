@@ -18,6 +18,8 @@ import nonprofitbookkeeping.service.SettingsService;
 import nonprofitbookkeeping.model.SettingsModel;
 import nonprofitbookkeeping.ui.ThemeManager;
 import nonprofitbookkeeping.util.FormatUtils;
+import nonprofitbookkeeping.exception.ActionCancelledException;
+import nonprofitbookkeeping.exception.NoFileCreatedException;
 
 /**
  * JavaFX port of the original Swing {@code SettingsPanel}.

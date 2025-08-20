@@ -2,9 +2,14 @@
 package nonprofitbookkeeping.persistence;
 
 import jakarta.persistence.EntityManager;
+import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.Journal;
 import nonprofitbookkeeping.model.Ledger;
+import nonprofitbookkeeping.persistence.DatabaseBackupService;
+import nonprofitbookkeeping.persistence.DatabaseManager;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,26 +25,28 @@ import java.util.Optional;
 public class DatabaseService
 {
 	
-	private final EntityManager entityManager;
-	private final LedgerRepository ledgerRepository;
-	private final AccountingTransactionRepository transactionRepository;
-	private final DonorRepository donorRepository;
-	private final InventoryRepository inventoryRepository;
-	private final SaleRecordRepository saleRecordRepository;
-	private final ScaRecordRepository scaRecordRepository;
-	private final CompanyRepository companyRepository;
+        private final EntityManager entityManager;
+        private final LedgerRepository ledgerRepository;
+        private final AccountingTransactionRepository transactionRepository;
+        private final DonorRepository donorRepository;
+        private final InventoryRepository inventoryRepository;
+        private final SaleRecordRepository saleRecordRepository;
+        private final ScaRecordRepository scaRecordRepository;
+        private final CompanyRepository companyRepository;
+        private final DatabaseBackupService backupService;
 	
 	public DatabaseService()
 	{
-		this.entityManager = EntityManagerProvider.getEntityManager();
-		this.ledgerRepository = new LedgerRepository(entityManager);
-		this.transactionRepository =
-			new AccountingTransactionRepository(entityManager);
-		this.donorRepository = new DonorRepository(entityManager);
-		this.inventoryRepository = new InventoryRepository(entityManager);
-		this.saleRecordRepository = new SaleRecordRepository(entityManager);
-		this.scaRecordRepository = new ScaRecordRepository(entityManager);
-		this.companyRepository = new CompanyRepository(entityManager);
+                this.entityManager = DatabaseManager.getEntityManager();
+                this.ledgerRepository = new LedgerRepository(entityManager);
+                this.transactionRepository =
+                        new AccountingTransactionRepository(entityManager);
+                this.donorRepository = new DonorRepository(entityManager);
+                this.inventoryRepository = new InventoryRepository(entityManager);
+                this.saleRecordRepository = new SaleRecordRepository(entityManager);
+                this.scaRecordRepository = new ScaRecordRepository(entityManager);
+                this.companyRepository = new CompanyRepository(entityManager);
+                this.backupService = new DatabaseBackupService();
 		
 	}
 	
@@ -68,22 +75,34 @@ public class DatabaseService
 	 * Currently this reconstructs a {@link Company} with its {@link Ledger}
 	 * transactions populated from the database.
 	 */
-	public Optional<Company> loadCompany(long companyId)
-	{
-		Optional<Company> companyOpt = companyRepository.findById(companyId);
-		companyOpt.ifPresent(company -> {
-			Journal journal = company.getLedger().getJournal();
-			List<AccountingTransaction> txs = transactionRepository.findAll();
-			
-			if (txs != null)
-			{
-				txs.forEach(journal::addTransaction);
-			}
-			
-		});
-		return companyOpt;
-		
-	}
+        public Optional<Company> loadCompany(long companyId)
+        {
+                Optional<Company> companyOpt = companyRepository.findById(companyId);
+                companyOpt.ifPresent(company -> {
+                        Journal journal = company.getLedger().getJournal();
+                        List<AccountingTransaction> txs = transactionRepository.findAll();
+
+                        if (txs != null)
+                        {
+                                txs.forEach(journal::addTransaction);
+                        }
+
+                });
+                return companyOpt;
+
+        }
+
+        /**
+         * Convenience method to load the first company in the database. This is
+         * used by legacy parts of the application that assume a single company
+         * instance.
+         *
+         * @return the loaded {@link Company} or {@code null} if none exist
+         */
+        public Company loadCompany()
+        {
+                return loadCompany(1).orElse(null);
+        }
 	
 	/** Create a new company and return its id. */
 	public long create(Company company)

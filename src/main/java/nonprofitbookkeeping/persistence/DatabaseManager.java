@@ -8,7 +8,8 @@ import jakarta.persistence.Persistence;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import org.flywaydb.core.Flyway;
+import org.h2.jdbcx.JdbcConnectionPool;
+import org.h2.tools.Server;
 
 
 /**
@@ -20,111 +21,123 @@ import org.flywaydb.core.Flyway;
  */
 public final class DatabaseManager
 {
-	private static EntityManagerFactory emf;
-	
-	static
-	{
-		initialize();
-		
-	}
-	
-	private DatabaseManager()
-	{
-		
-		// Utility class
-	}
-	
-	/**
-	 * Initialize the underlying {@link EntityManagerFactory} if needed.
-	 */
-	public static synchronized void initialize()
-	{
-		
-		if (emf == null || !emf.isOpen())
-		{
-			emf = Persistence.createEntityManagerFactory("nonprofitPU");
-		}
-		
-	}
-	
-	/**
-	 * Shut down the {@link EntityManagerFactory} and release resources.
-	 */
-	public static synchronized void shutdown()
-	{
-		
-		if (emf != null && emf.isOpen())
-		{
-			emf.close();
-		}
-		
-		emf = null;
-		
-	}
-	
-	/**
-	 * Obtain a new {@link EntityManager} connected to the embedded database.
-	 *
-	 * @return fresh {@link EntityManager}
-	 */
-	public static synchronized EntityManager getEntityManager()
-	{
-		
-		if (emf == null || !emf.isOpen())
-		{
-			initialize();
-		}
-		
-		return emf.createEntityManager();
-		
-	}
-	
-	public static Connection getConnection() throws SQLException
-	{
-		return connectionPool.getConnection();
-		
-	}
-	
-	public static synchronized void startServer()
-	{
-		
-		if (server == null)
-		{
-			
-			try
-			{
-				server = Server.createTcpServer("-tcpAllowOthers").start();
-			}
-			catch (SQLException e)
-			{
-				throw new IllegalStateException("Failed to start H2 server", e);
-			}
-			
-		}
-		
-	}
-	
-	public static synchronized void shutdown()
-	{
-		
-		if (emf.isOpen())
-		{
-			emf.close();
-		}
-		
-		if (connectionPool != null)
-		{
-			connectionPool.dispose();
-			connectionPool = null;
-		}
-		
-		if (server != null)
-		{
-			server.stop();
-			server = null;
-		}
-		
-	}
-	
+        private static EntityManagerFactory emf;
+        private static JdbcConnectionPool connectionPool;
+        private static Server server;
+
+        static
+        {
+                initialize();
+
+        }
+
+        private DatabaseManager()
+        {
+
+                // Utility class
+        }
+
+        /**
+         * Initialize the underlying {@link EntityManagerFactory} and connection
+         * pool if needed.
+         */
+        public static synchronized void initialize()
+        {
+
+                if (emf == null || !emf.isOpen())
+                {
+                        emf = Persistence.createEntityManagerFactory("nonprofitPU");
+                }
+
+                if (connectionPool == null)
+                {
+                        connectionPool = JdbcConnectionPool.create(
+                                "jdbc:h2:file:./data/nonprofit;AUTO_SERVER=TRUE", "sa",
+                                "");
+                }
+
+        }
+
+        /**
+         * Obtain a new {@link EntityManager} connected to the embedded database.
+         *
+         * @return fresh {@link EntityManager}
+         */
+        public static synchronized EntityManager getEntityManager()
+        {
+
+                if (emf == null || !emf.isOpen())
+                {
+                        initialize();
+                }
+
+                return emf.createEntityManager();
+
+        }
+
+        /**
+         * Retrieve a raw JDBC {@link Connection} from the underlying connection
+         * pool.
+         */
+        public static Connection getConnection() throws SQLException
+        {
+                if (connectionPool == null)
+                {
+                        initialize();
+                }
+                return connectionPool.getConnection();
+
+        }
+
+        /**
+         * Start an H2 TCP server to allow external database connections during
+         * development or debugging.
+         */
+        public static synchronized void startServer()
+        {
+
+                if (server == null)
+                {
+
+                        try
+                        {
+                                server = Server.createTcpServer("-tcpAllowOthers").start();
+                        }
+                        catch (SQLException e)
+                        {
+                                throw new IllegalStateException("Failed to start H2 server", e);
+                        }
+
+                }
+
+        }
+
+        /**
+         * Shut down the {@link EntityManagerFactory}, connection pool and H2
+         * server, releasing all resources.
+         */
+        public static synchronized void shutdown()
+        {
+
+                if (emf != null && emf.isOpen())
+                {
+                        emf.close();
+                }
+                emf = null;
+
+                if (connectionPool != null)
+                {
+                        connectionPool.dispose();
+                        connectionPool = null;
+                }
+
+                if (server != null)
+                {
+                        server.stop();
+                        server = null;
+                }
+
+        }
+
 }
 
