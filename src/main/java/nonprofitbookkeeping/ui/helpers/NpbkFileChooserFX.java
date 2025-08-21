@@ -2,8 +2,6 @@
 package nonprofitbookkeeping.ui.helpers;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Optional;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -15,171 +13,131 @@ import nonprofitbookkeeping.exception.NoFileException;
 import nonprofitbookkeeping.preferences.PreferencesManager;
 
 /**
- * Unified Java FX file-chooser helper.
- *
- * <ul>
- *   <li>{@link #chooseExisting} replicates the original npbkFileChooser behaviour:
- *       pick an existing file or throw {@link NoFileException} on cancel.</li>
- *   <li>{@link #chooseAndCreate} adds extension enforcement, remembers the last
- *       directory, and (optionally) creates the file if it does not exist.</li>
- * </ul>
- * This class is final and cannot be instantiated.
+ * Centralized JavaFX FileChooser helpers for company files.
+ * Ensures .npbk (zip) and .sql (H2 script) are both offered everywhere.
  */
 public final class NpbkFileChooserFX
 {
 	
-	/**
-     * Displays a JavaFX {@link FileChooser} configured to select an existing file.
-     * The dialog uses the provided title, description, and file pattern for its filter.
-     * It sets the initial directory based on {@link PreferencesManager#getLastDirectory()}.
-     * If a file is selected, its parent directory is saved back to preferences.
-     *
-     * @param title The title for the file chooser dialog window.
-     * @param description The description for the file extension filter (e.g., "Company file").
-     * @param filePattern The file extension pattern (e.g., "*.npbk").
-     * @param owner The owner {@link Stage} for the dialog. This helps with proper modality.
-     * @return The selected {@link File}.
-     * @throws NoFileException if the user cancels the dialog or no file is selected.
-     */
-	public static File chooseExisting(	String title,
-										String description,
-										String filePattern,
-										Stage owner) throws NoFileException
+	private static final FileChooser.ExtensionFilter NPBK_FILTER =
+		new FileChooser.ExtensionFilter("Nonprofit company (*.npbk)", "*.npbk");
+	private static final FileChooser.ExtensionFilter SQL_FILTER =
+		new FileChooser.ExtensionFilter("H2 SQL script (*.sql)", "*.sql");
+	private static final FileChooser.ExtensionFilter ALL_FILTER =
+		new FileChooser.ExtensionFilter("All files", "*.*");
+	
+	/** Configure standard filters and default selection (.npbk). */
+	private static void configureCompanyFilters(FileChooser ch)
 	{
+		ch.getExtensionFilters().setAll(NPBK_FILTER, SQL_FILTER, ALL_FILTER);
+		ch.setSelectedExtensionFilter(NPBK_FILTER);
 		
+	}
+	
+	/** If saving and user omitted the extension, append the one from the selected filter. */
+	private static File ensureSelectedExtension(File chosen, FileChooser ch)
+	{
+		if (chosen == null)
+			return null;
+		final FileChooser.ExtensionFilter sel = ch.getSelectedExtensionFilter();
+		if (sel == null)
+			return chosen;
+		final String name = chosen.getName().toLowerCase();
+		
+		if (sel == NPBK_FILTER)
+		{
+			return name.endsWith(".npbk") ? chosen :
+				new File(chosen.getParentFile(), chosen.getName() + ".npbk");
+		}
+		else if (sel == SQL_FILTER)
+		{
+			return name.endsWith(".sql") ? chosen :
+				new File(chosen.getParentFile(), chosen.getName() + ".sql");
+		}
+		
+		return chosen;
+		
+	}
+	
+	/** Open: allow .npbk and .sql */
+	public static File showOpenCompanyDialog(Stage owner)
+		throws NoFileException, ActionCancelledException
+	{
 		FileChooser ch = new FileChooser();
-		ch.setTitle(title);
-		ch.getExtensionFilters()
-			.add(new FileChooser.ExtensionFilter(description, filePattern));
+		configureCompanyFilters(ch);
+		restoreInitialDirectory(ch);
+		File f = ch.showOpenDialog(owner);
 		
-		setInitialDir(ch);
-		File f = ch.showOpenDialog(owner); // Shows an "Open" dialog
 		if (f == null)
 		{
-			throw new NoFileException("User cancelled file selection.");
+			throw new ActionCancelledException("Open cancelled");
 		}
+		
 		PreferencesManager.setLastDirectory(f.getParent());
 		return f;
+		
 	}
 	
-	/**
-     * Displays a JavaFX {@link FileChooser} that allows the user to select an existing file
-     * or specify a new filename. It can enforce a specific file {@code extension} and
-     * optionally prompt to create the file if it doesn't exist.
-     * <p>
-     * The dialog's initial directory is set from {@link PreferencesManager#getLastDirectory()}.
-     * If a file is chosen (either existing or a new name):
-     * <ul>
-     *   <li>The parent directory is saved to preferences.</li>
-     *   <li>If an {@code extension} is provided and the selected filename doesn't have it,
-     *       the extension is appended.</li>
-     *   <li>If the (potentially extension-modified) file does not exist, the user is prompted
-     *       with a confirmation dialog to create it. If declined, {@link NoFileCreatedException} is thrown.
-     *       If creation fails due to an {@link IOException}, {@link NoFileCreatedException} is also thrown,
-     *       wrapping the original IO error.</li>
-     * </ul>
-     * </p>
-     *
-     * @param owner The owner {@link Stage} for the dialogs.
-     * @param title The title for the file chooser dialog window.
-     * @param extension The desired file extension (e.g., ".npbk" or "npbk"). If null, no specific
-     *                  extension is enforced or added, though a generic filter might still be applied.
-     * @return The selected or created {@link File}.
-     * @throws ActionCancelledException if the user cancels the initial file chooser dialog.
-     * @throws NoFileCreatedException if the user declines to create a new file when prompted,
-     *                                or if file creation fails.
-     */
-	public static File chooseAndCreate(	Stage owner,
-										String title,
-										String extension)
-															throws ActionCancelledException,
-															NoFileCreatedException
+	/** Save As: allow .npbk and .sql, append extension automatically. */
+	public static File showSaveCompanyDialog(Stage owner, String suggestedName)
+		throws NoFileCreatedException, ActionCancelledException
 	{
-		
 		FileChooser ch = new FileChooser();
-		ch.setTitle(title);
+		configureCompanyFilters(ch);
 		
-		if (extension != null)
+		if (suggestedName != null && !suggestedName.isBlank())
 		{
-			String patt = "*" + (extension.startsWith(".") ? extension : "." + extension);
-			ch.getExtensionFilters()
-				.add(new FileChooser.ExtensionFilter("Files (" + patt + ")", patt));
+			ch.setInitialFileName(suggestedName);
 		}
 		
-		setInitialDir(ch);
+		restoreInitialDirectory(ch);
+		File chosen = ch.showSaveDialog(owner);
 		
-		File selected = ch.showOpenDialog(owner);
-		if (selected == null)
+		if (chosen == null)
 		{
-			throw new ActionCancelledException("Chooser cancelled.");
+			throw new ActionCancelledException("Save cancelled");
 		}
 		
-		PreferencesManager.setLastDirectory(selected.getParent());
+		chosen = ensureSelectedExtension(chosen, ch);
 		
-		if (extension != null && !selected.getName().endsWith(extension))
+		try
 		{
-			selected = new File(selected.getAbsolutePath() + extension);
+			File parent = chosen.getParentFile();
+			if (parent != null && !parent.exists())
+				parent.mkdirs();
+			PreferencesManager.setLastDirectory(parent.getAbsolutePath());
+			return chosen;
+		}
+		catch (Exception e)
+		{
+			throw new NoFileCreatedException(
+				"Cannot use selected file: " + e.getMessage(), e);
 		}
 		
-		if (!selected.exists())
-		{
-			Optional<ButtonType> res = new Alert(Alert.AlertType.CONFIRMATION,
-				"File does not exist.\nCreate it now?")
-				.showAndWait();
-			if (res.isEmpty() || res.get() != ButtonType.OK)
-			{
-				throw new NoFileCreatedException("User declined to create file.");
-			}
-				
-			try
-			{
-				if (!selected.createNewFile())
-					throw new NoFileCreatedException("Could not create file.");
-			}
-			catch (IOException io)
-			{
-				throw new NoFileCreatedException("IO error: " + io.getMessage());
-			}
-			
-		}
-		
-		return selected;
 	}
 	
-	/**
-     * Sets the initial directory for the given {@link FileChooser} based on the
-     * last used directory stored in {@link PreferencesManager}.
-     * If no last directory is found in preferences, it defaults to the user's home directory.
-     * The chooser's initial directory is only set if the determined path exists.
-     *
-     * @param ch The {@link FileChooser} whose initial directory is to be set.
-     */
-	private static void setInitialDir(FileChooser ch)
+	/** Restore last-used folder or fall back to user.home. */
+	private static void restoreInitialDirectory(FileChooser ch)
 	{
 		String lastDir = PreferencesManager.getLastDirectory();
-		if (lastDir == null || lastDir.trim().isEmpty()) // Check for empty string too
+		
+		if (lastDir == null || lastDir.trim().isEmpty())
 		{
 			lastDir = System.getProperty("user.home");
 		}
+		
 		File dir = new File(lastDir);
-		if (dir.exists() && dir.isDirectory()) // Ensure it's a directory
+		
+		if (dir.exists() && dir.isDirectory())
 		{
 			ch.setInitialDirectory(dir);
-		} else {
-            // Fallback if preferred directory doesn't exist or isn't a directory
-            File homeDir = new File(System.getProperty("user.home"));
-            if (homeDir.exists() && homeDir.isDirectory()) {
-                ch.setInitialDirectory(homeDir);
-            }
-            // If home also fails, FileChooser will use its own default.
-        }
+		}
+		
 	}
 	
-	/**
-     * Private constructor to prevent instantiation of this utility class.
-     */
 	private NpbkFileChooserFX()
 	{
-	} // utility class
+	
+	}
 	
 }

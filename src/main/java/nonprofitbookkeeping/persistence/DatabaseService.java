@@ -6,9 +6,6 @@ import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.Journal;
 import nonprofitbookkeeping.model.Ledger;
-import nonprofitbookkeeping.persistence.DatabaseBackupService;
-import nonprofitbookkeeping.persistence.DatabaseManager;
-
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -25,28 +22,28 @@ import java.util.Optional;
 public class DatabaseService
 {
 	
-        private final EntityManager entityManager;
-        private final LedgerRepository ledgerRepository;
-        private final AccountingTransactionRepository transactionRepository;
-        private final DonorRepository donorRepository;
-        private final InventoryRepository inventoryRepository;
-        private final SaleRecordRepository saleRecordRepository;
-        private final ScaRecordRepository scaRecordRepository;
-        private final CompanyRepository companyRepository;
-        private final DatabaseBackupService backupService;
+	private final EntityManager entityManager;
+	private final LedgerRepository ledgerRepository;
+	private final AccountingTransactionRepository transactionRepository;
+	private final DonorRepository donorRepository;
+	private final InventoryRepository inventoryRepository;
+	private final SaleRecordRepository saleRecordRepository;
+	private final ScaRecordRepository scaRecordRepository;
+	private final CompanyRepository companyRepository;
+	private final DatabaseBackupService backupService;
 	
 	public DatabaseService()
 	{
-                this.entityManager = DatabaseManager.getEntityManager();
-                this.ledgerRepository = new LedgerRepository(entityManager);
-                this.transactionRepository =
-                        new AccountingTransactionRepository(entityManager);
-                this.donorRepository = new DonorRepository(entityManager);
-                this.inventoryRepository = new InventoryRepository(entityManager);
-                this.saleRecordRepository = new SaleRecordRepository(entityManager);
-                this.scaRecordRepository = new ScaRecordRepository(entityManager);
-                this.companyRepository = new CompanyRepository(entityManager);
-                this.backupService = new DatabaseBackupService();
+		this.entityManager = DatabaseManager.getEntityManager();
+		this.ledgerRepository = new LedgerRepository(this.entityManager);
+		this.transactionRepository =
+			new AccountingTransactionRepository(this.entityManager);
+		this.donorRepository = new DonorRepository(this.entityManager);
+		this.inventoryRepository = new InventoryRepository(this.entityManager);
+		this.saleRecordRepository = new SaleRecordRepository(this.entityManager);
+		this.scaRecordRepository = new ScaRecordRepository(this.entityManager);
+		this.companyRepository = new CompanyRepository(this.entityManager);
+		this.backupService = new DatabaseBackupService();
 		
 	}
 	
@@ -63,7 +60,7 @@ public class DatabaseService
 		
 		if (ledger != null)
 		{
-			ledgerRepository.save(ledger);
+			this.ledgerRepository.save(ledger);
 		}
 		// additional components like donors, inventory or sales could be saved
 		// here when available from the Company model.
@@ -75,39 +72,40 @@ public class DatabaseService
 	 * Currently this reconstructs a {@link Company} with its {@link Ledger}
 	 * transactions populated from the database.
 	 */
-        public Optional<Company> loadCompany(long companyId)
-        {
-                Optional<Company> companyOpt = companyRepository.findById(companyId);
-                companyOpt.ifPresent(company -> {
-                        Journal journal = company.getLedger().getJournal();
-                        List<AccountingTransaction> txs = transactionRepository.findAll();
-
-                        if (txs != null)
-                        {
-                                txs.forEach(journal::addTransaction);
-                        }
-
-                });
-                return companyOpt;
-
-        }
-
-        /**
-         * Convenience method to load the first company in the database. This is
-         * used by legacy parts of the application that assume a single company
-         * instance.
-         *
-         * @return the loaded {@link Company} or {@code null} if none exist
-         */
-        public Company loadCompany()
-        {
-                return loadCompany(1).orElse(null);
-        }
+	public Optional<Company> loadCompany(long companyId)
+	{
+		Optional<Company> companyOpt = this.companyRepository.findById(companyId);
+		companyOpt.ifPresent(company -> {
+			Journal journal = company.getLedger().getJournal();
+			List<AccountingTransaction> txs = this.transactionRepository.findAll();
+			
+			if (txs != null)
+			{
+				txs.forEach(journal::addTransaction);
+			}
+			
+		});
+		return companyOpt;
+		
+	}
+	
+	/**
+	 * Convenience method to load the first company in the database. This is
+	 * used by legacy parts of the application that assume a single company
+	 * instance.
+	 *
+	 * @return the loaded {@link Company} or {@code null} if none exist
+	 */
+	public Company loadCompany()
+	{
+		return loadCompany(1).orElse(null);
+		
+	}
 	
 	/** Create a new company and return its id. */
 	public long create(Company company)
 	{
-		long id = companyRepository.create(company);
+		long id = this.companyRepository.create(company);
 		saveCompany(company);
 		return id;
 		
@@ -116,38 +114,38 @@ public class DatabaseService
 	/** Find a company by id. */
 	public Optional<Company> findById(long companyId)
 	{
-		return companyRepository.findById(companyId);
+		return this.companyRepository.findById(companyId);
 		
 	}
 	
 	/** Delete a company by id. */
 	public boolean delete(long companyId)
 	{
-		return companyRepository.delete(companyId);
+		return this.companyRepository.delete(companyId);
 		
 	}
 	
 	public AccountingTransactionRepository getTransactionRepository()
 	{
-		return transactionRepository;
+		return this.transactionRepository;
 		
 	}
 	
 	public LedgerRepository getLedgerRepository()
 	{
-		return ledgerRepository;
+		return this.ledgerRepository;
 		
 	}
 	
 	public DonorRepository getDonorRepository()
 	{
-		return donorRepository;
+		return this.donorRepository;
 		
 	}
 	
 	public InventoryRepository getInventoryRepository()
 	{
-		return inventoryRepository;
+		return this.inventoryRepository;
 		
 	}
 	
@@ -159,7 +157,7 @@ public class DatabaseService
 	 */
 	public void backupDatabase(String filePath) throws SQLException
 	{
-		backupService.backupTo(filePath);
+		this.backupService.backupTo(filePath);
 		
 	}
 	
@@ -171,7 +169,7 @@ public class DatabaseService
 	 */
 	public void restoreDatabase(String filePath) throws SQLException
 	{
-		backupService.restoreFrom(filePath);
+		this.backupService.restoreFrom(filePath);
 		
 	}
 	
