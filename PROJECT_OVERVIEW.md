@@ -13,7 +13,17 @@ The project is a desktop application designed for nonprofit bookkeeping. It aims
 *   **Key Libraries:** Apache POI, Jackson, Lombok, SLF4J (with Logback/Log4j2), OpenJFX, JasperReports, Guava, OFX4J.
 
 ## 3. Key Functionalities & Modules
-*   **Company Management:** Creating, opening, saving company files. `CurrentCompany` provides access to active company data.
+*   **Company Management:** Creating, opening, saving company files. Company
+    data is stored in a `.npbk` file &mdash; a ZIP archive with a single
+    `company_data.json` entry.  Use `CurrentCompany.persist()` (or the "Save"
+    menu action) to write the current company to this file before opening
+    another.  `CurrentCompany.loadFromPersistent` reloads the database from the
+    chosen `.npbk` and discards the previously active company, thereby switching
+    contexts. For advanced scenarios, backups may also be exported as plain
+    `.sql` files containing raw SQL statements that recreate the database. To
+    restore such a backup, select the `.sql` in the "Open Company" dialog; the
+    application issues H2's `RUNSCRIPT` command to rebuild the in-memory
+    database before continuing.
 *   **Chart of Accounts (COA):** Hierarchical account management.
 *   **Journal Entries & Ledger:** Recording and storing financial transactions.
 *   **Dashboard:** Summary view (key figures, recent transactions).

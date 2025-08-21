@@ -105,18 +105,28 @@ public class CurrentCompany
 		
 	}
 	
-	/**
-	 * Persists the current company data to its associated file.
-	 * Uses the configured {@link JacksonDataStorer} to save the data.
-	 * 
-	 * @throws IOException if an I/O error occurs during saving.
-	 * @throws ActionCancelledException if the save action is cancelled (e.g., by user in a file dialog).
-	 * @throws NoFileCreatedException if the file cannot be created or written to.
-	 * @throws NullPointerException if the current file has not been set.
-	 */
-	public static void persist() throws IOException, ActionCancelledException,
-		NoFileCreatedException
-	{
+        /**
+         * Persists the current company data to its associated file.  In normal
+        * operation the application works with <code>.npbk</code> files which are
+        * ZIP archives containing a single {@code company_data.json} entry. This
+        * method serializes the {@link Company} into that ZIP structure via
+        * {@link JacksonDataStorer}. For advanced scenarios a user may instead
+        * select a target file ending in <code>.sql</code>; in that case the
+        * method issues the H2 {@code SCRIPT TO} command to produce a plain-text
+        * dump of the in-memory database.
+        * <p>
+        * Call this before opening another company file if you want to retain the
+        * changes made to the currently active company.
+        * </p>
+         *
+         * @throws IOException if an I/O error occurs during saving.
+         * @throws ActionCancelledException if the save action is cancelled (e.g., by user in a file dialog).
+         * @throws NoFileCreatedException if the file cannot be created or written to.
+         * @throws NullPointerException if the current file has not been set.
+         */
+        public static void persist() throws IOException, ActionCancelledException,
+                NoFileCreatedException
+        {
         DATABASE_SERVICE.saveCompany(company);
 
         if (currentFile == null)
@@ -150,16 +160,30 @@ public class CurrentCompany
 		
 	}
 	
-	/**
-	 * Loads company data from the specified file.
-	 * The loaded company becomes the current active company, and the specified file becomes the current file.
-	 * @param file The file from which to load company data. Must not be null.
-	 * @throws IOException if an I/O error occurs during loading.
-	 * @throws ActionCancelledException if the load action is cancelled.
-	 * @throws NoFileCreatedException if the file specified does not lead to a valid company data structure.
-	 * @throws NullPointerException if file is null.
-	 */
-	
+        /**
+        * Loads company data from the specified file and makes it the active
+        * company.
+        * <p>
+        * A company is typically stored in a <code>.npbk</code> file created by
+        * {@link #persist()}. The file is a ZIP archive containing the
+        * {@code company_data.json} entry. When this method is invoked the
+        * in-memory database is completely reinitialized and the newly loaded
+        * company replaces any previously open company. This mechanism is how the
+        * application "switches" between companies when different files are opened.
+        * Alternatively, if the supplied file ends with <code>.sql</code>, the
+        * method executes H2's {@code RUNSCRIPT FROM} command to rebuild the
+        * database from the plain-text dump before reinitializing the application
+        * state.
+        * </p>
+         *
+         * @param file The file from which to load company data. Must not be null.
+         * @throws IOException if an I/O error occurs during loading.
+         * @throws ActionCancelledException if the load action is cancelled.
+         * @throws NoFileCreatedException if the file specified does not lead to a
+         *         valid company data structure.
+         * @throws NullPointerException if file is null.
+         */
+
         public static void loadFromPersistent(File file)
                 throws IOException, ActionCancelledException,
                 NoFileCreatedException
