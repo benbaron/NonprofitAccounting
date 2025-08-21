@@ -1,3 +1,5 @@
+-- Initial schema for the application database.
+-- Executed by Flyway on first run to create all core tables.
 CREATE TABLE donors (
     donorId VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255),

@@ -204,6 +204,9 @@ public class JacksonDataStorer implements DataStorer
                 return JacksonDataStorer.dataStorer;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public ObjectMapper getObjectMapper()
         {

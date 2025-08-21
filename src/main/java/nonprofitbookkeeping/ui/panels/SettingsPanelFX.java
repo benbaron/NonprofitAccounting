@@ -269,16 +269,18 @@ public class SettingsPanelFX extends BorderPane
 	}
 	
 	/**
-	 * Builds and returns the "Backup" tab for the settings panel.
-	 * This tab provides buttons for creating and restoring backups.
-	 * Current actions are placeholders that show alert messages.
-	 * 
-	 * @return A {@link Tab} configured with backup and restore options.
-	 */
-	private static Tab backupTab()
-	{
-		HBox box = new HBox(10);
-		Button backupBtn = new Button("Create Backup");
+         * Builds and returns the "Backup" tab for the settings panel.
+         * This tab provides buttons for creating and restoring backups.
+         * Users may save either the standard {@code .npbk} company archive or a
+         * {@code .sql} file, which is a plain-text dump of the underlying H2
+         * database for advanced/manual restoration.
+         *
+         * @return A {@link Tab} configured with backup and restore options.
+         */
+        private static Tab backupTab()
+        {
+                HBox box = new HBox(10);
+                Button backupBtn = new Button("Create Backup");
 		Button restoreBtn = new Button("Restore Backup");
 		
 		backupBtn.setOnAction(e -> {
@@ -286,7 +288,8 @@ public class SettingsPanelFX extends BorderPane
                         fc.setTitle("Save Backup");
                         fc.getExtensionFilters().addAll(
                                 new FileChooser.ExtensionFilter("Company Files", "*.npbk"),
-                                new FileChooser.ExtensionFilter("SQL Backup files", "*.sql"));
+                                new FileChooser.ExtensionFilter(
+                                        "SQL Backup (raw database) files", "*.sql"));
 			
 			File out = fc.showSaveDialog(null);
 			
@@ -328,7 +331,8 @@ public class SettingsPanelFX extends BorderPane
                         fc.setTitle("Open Backup");
                         fc.getExtensionFilters().addAll(
                                 new FileChooser.ExtensionFilter("Company Files", "*.npbk"),
-                                new FileChooser.ExtensionFilter("SQL Backup files", "*.sql"));
+                                new FileChooser.ExtensionFilter(
+                                        "SQL Backup (raw database) files", "*.sql"));
 			
 			File f = fc.showOpenDialog(null);
 			

@@ -252,8 +252,9 @@ public class SettingsPanelFX extends BorderPane
 	
         /**
          * Builds and returns the "Backup" tab for the settings panel.
-         * This tab provides buttons for creating and restoring backups
-         * of the underlying H2 database.
+         * This tab provides buttons for creating and restoring backups.
+         * Users may save the regular {@code .npbk} archive or a {@code .sql} file
+         * containing raw SQL to recreate the H2 database.
          *
          * @return A {@link Tab} configured with backup and restore options.
          */
@@ -268,7 +269,8 @@ public class SettingsPanelFX extends BorderPane
                         fc.setTitle("Save Backup");
                         fc.getExtensionFilters().addAll(
                                 new FileChooser.ExtensionFilter("Company Files", "*.npbk"),
-                                new FileChooser.ExtensionFilter("SQL Backup files", "*.sql"));
+                                new FileChooser.ExtensionFilter(
+                                        "SQL Backup (raw database) files", "*.sql"));
                         File out = fc.showSaveDialog(null);
 
                         if (out != null)
@@ -293,7 +295,8 @@ public class SettingsPanelFX extends BorderPane
                         fc.setTitle("Open Backup");
                         fc.getExtensionFilters().addAll(
                                 new FileChooser.ExtensionFilter("Company Files", "*.npbk"),
-                                new FileChooser.ExtensionFilter("SQL Backup files", "*.sql"));
+                                new FileChooser.ExtensionFilter(
+                                        "SQL Backup (raw database) files", "*.sql"));
                         File f = fc.showOpenDialog(null);
 
                         if (f != null)
