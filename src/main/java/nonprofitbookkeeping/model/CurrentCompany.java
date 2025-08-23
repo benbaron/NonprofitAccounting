@@ -146,12 +146,12 @@ public class CurrentCompany
 	 * @throws IOException if an I/O error occurs during saving.
 	 * @throws ActionCancelledException if the save action is cancelled (e.g., by user in a file dialog).
 	 * @throws NoFileCreatedException if the file cannot be created or written to.
-	 * @throws NullPointerException if the current file has not been set.
-	 */
-	public static void persist() throws IOException, ActionCancelledException,
-		NoFileCreatedException
-	{
-		DATABASE_SERVICE.saveCompany(company);
+        * @throws NullPointerException if the current file has not been set.
+        */
+        public static void persist() throws IOException, ActionCancelledException,
+                NoFileCreatedException
+        {
+                DATABASE_SERVICE.saveCompany(company);
 		
 		if (currentFile == null)
 		{
@@ -167,11 +167,11 @@ public class CurrentCompany
 			return;
 		}
 		
-		// Export to .sql by scripting the persistent database.
+               // Export to .sql by scripting the persistent database.
 		String path = currentFile.getAbsolutePath().replace("\\", "/");
 		String sql = "SCRIPT TO '" + path + "'";
 		
-		ensureDataDir();
+                ensureDataDir();
 		
 		try (
 			Connection conn =
@@ -183,9 +183,21 @@ public class CurrentCompany
 		catch (SQLException e)
 		{
 			throw new IOException("Error writing backup: " + e.getMessage(), e);
-		}
-		
-	}
+                }
+
+        }
+
+        /**
+         * Writes the current {@link Company} state to the embedded database only.
+         * This performs a lightweight persistence step without creating or updating
+         * any backup files. It is intended for scenarios such as closing a company
+         * where changes should be flushed to the local database but no external
+         * export is desired.
+         */
+        public static void flushToDatabase()
+        {
+                DATABASE_SERVICE.saveCompany(company);
+        }
 	
 	/**
 	 * Loads company data from the specified file and makes it the active

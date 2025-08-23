@@ -14,7 +14,6 @@ import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 
 /**
@@ -25,7 +24,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "donors")
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class Donor implements Serializable
 {
 	/**
@@ -45,11 +43,17 @@ public class Donor implements Serializable
 	/** The type or category of the donation (e.g., "Monetary", "In-Kind"). */
 	private String donationType;
 	/** The date of a specific donation, corresponding to the {@code donationAmount}. */
-	private Date donationDate;
-	
-	// Note: Lombok @Data generates getters and setters.
-	// The explicit getters and setters below are redundant but Javadoc is
-	// provided as they exist.
+        private Date donationDate;
+
+        /**
+         * Public no-arg constructor required by JPA.
+         */
+        public Donor() {
+        }
+
+        // Note: Lombok @Data generates getters and setters.
+        // The explicit getters and setters below are redundant but Javadoc is
+        // provided as they exist.
 	
 	/**  
 	 * Constructor Donor

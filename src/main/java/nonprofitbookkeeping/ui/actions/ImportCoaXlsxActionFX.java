@@ -50,11 +50,12 @@ public class ImportCoaXlsxActionFX implements EventHandler<ActionEvent>
 				ChartOfAccounts importedCOA = ChartOfAccountsIOService.importFromXlsx(selectedFile.toPath());
 				Company currentCompany = CurrentCompany.getCompany();
 				
-				if (currentCompany != null)
-				{
-					currentCompany.setChartOfAccounts(importedCOA);
-					CurrentCompany.markCompanyOpen();
-					Alert alert = new Alert(AlertType.INFORMATION);
+                                if (currentCompany != null)
+                                {
+                                        currentCompany.setChartOfAccounts(importedCOA);
+                                        CurrentCompany.flushToDatabase();
+                                        CurrentCompany.markCompanyOpen();
+                                        Alert alert = new Alert(AlertType.INFORMATION);
 					alert.setTitle("Import Successful");
 					alert.setHeaderText(null);
 					alert.setContentText("Chart of Accounts imported successfully.");

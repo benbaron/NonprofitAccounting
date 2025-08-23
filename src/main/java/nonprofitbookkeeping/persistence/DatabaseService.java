@@ -47,25 +47,29 @@ public class DatabaseService
 		
 	}
 	
-	/** Persist core parts of the company to the database. */
-	public void saveCompany(Company company)
-	{
-		
-		if (company == null)
-		{
-			return;
-		}
-		
-		Ledger ledger = company.getLedger();
-		
-		if (ledger != null)
-		{
-			this.ledgerRepository.save(ledger);
-		}
-		// additional components like donors, inventory or sales could be saved
-		// here when available from the Company model.
-		
-	}
+        /** Persist the company and its core components to the database. */
+        public void saveCompany(Company company)
+        {
+
+                if (company == null)
+                {
+                        return;
+                }
+
+                // Store the serialized company so the chart of accounts and other
+                // top level data are available when reloading.
+                this.companyRepository.saveOrUpdate(company);
+
+                Ledger ledger = company.getLedger();
+
+                if (ledger != null)
+                {
+                        this.ledgerRepository.save(ledger);
+                }
+                // additional components like donors, inventory or sales could be saved
+                // here when available from the Company model.
+
+        }
 	
 	/**
 	 * Loads a company instance from the database.
@@ -102,14 +106,13 @@ public class DatabaseService
 		
 	}
 	
-	/** Create a new company and return its id. */
-	public long create(Company company)
-	{
-		long id = this.companyRepository.create(company);
-		saveCompany(company);
-		return id;
-		
-	}
+        /** Create or update a company and return its id. */
+        public long create(Company company)
+        {
+                saveCompany(company);
+                return company.getId();
+
+        }
 	
 	/** Find a company by id. */
 	public Optional<Company> findById(long companyId)

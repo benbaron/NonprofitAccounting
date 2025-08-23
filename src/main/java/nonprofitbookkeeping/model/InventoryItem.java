@@ -15,20 +15,18 @@ import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * Represents an inventory item, typically a fixed asset, subject to depreciation.
  * This class stores details about the item's cost, acquisition date, useful life,
  * and depreciation information.
- * Lombok's {@code @Data}, {@code @AllArgsConstructor}, and {@code @NoArgsConstructor}
+ * Lombok's {@code @Data} and {@code @AllArgsConstructor}
  * are used for boilerplate code generation.
  */
 @Entity
 @Table(name = "inventory_items")
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class InventoryItem
 {
 	/** The unique identifier for the inventory item. */
@@ -43,13 +41,19 @@ public class InventoryItem
 	/** The accumulated depreciation amount for the item. */
 	@JsonProperty private BigDecimal accDep;
 	/** The net book value of the item (Cost - Accumulated Depreciation). */
-	@JsonProperty private BigDecimal netValue;
+        @JsonProperty private BigDecimal netValue;
 	/** The estimated useful life of the item in years. */
 	@JsonProperty private int lifeYears;
 	/** The annual depreciation rate (e.g., 0.10 for 10%). Can be null if not applicable or calculated differently. */
 	@JsonProperty private BigDecimal depreciationRate;
-	/** The depreciation method used (e.g., "Straight-Line"). */
-	@JsonProperty private String depreciationMethod;
+        /** The depreciation method used (e.g., "Straight-Line"). */
+        @JsonProperty private String depreciationMethod;
+
+        /**
+         * Public no-arg constructor required by JPA.
+         */
+        public InventoryItem() {
+        }
 
 	/**  
 	 * Constructs an InventoryItem with essential details.
