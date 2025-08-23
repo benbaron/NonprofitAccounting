@@ -8,17 +8,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import nonprofitbookkeeping.ui.helpers.DateSelectionMode; // Import the top-level enum
 
 /**
  * Represents the configuration for generating a specific report.
  * This includes details about the report type, date ranges, filters (like fund IDs),
  * and output format. It is used to save and recall user-defined report settings.
- * Lombok's {@code @Data} and {@code @NoArgsConstructor} are used for boilerplate code generation.
+ * Lombok's {@code @Data} is used for boilerplate code generation.
  */
 @Data
-@NoArgsConstructor
 @Entity
 @Table(name = "report_configurations")
 public class ReportConfiguration {
@@ -51,8 +49,14 @@ public class ReportConfiguration {
 	/** The desired output format for the report (e.g., "xlsx", "pdf"). Defaults to "xlsx". */
 	private String outputFormat = "xlsx";
 	
-	/** A list of account IDs to filter a detail report by. Can be null or empty. */
-	private List<String> accountIdsForDetailReport;
+    /** A list of account IDs to filter a detail report by. Can be null or empty. */
+    private List<String> accountIdsForDetailReport;
+
+    /**
+     * Public no-arg constructor required by JPA.
+     */
+    public ReportConfiguration() {
+    }
 	
 	/**
 	 * Constructs a new ReportConfiguration with essential details.
