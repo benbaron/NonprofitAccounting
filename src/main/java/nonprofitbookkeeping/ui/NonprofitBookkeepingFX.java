@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -19,6 +20,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -180,15 +182,9 @@ public class NonprofitBookkeepingFX extends Application
 	@Override
 	public void start(Stage stage)
 	{
-		// Add a shutdown hook to save company data when the application exits.
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-			// Save data
-			doSaveCompany(); // Attempt to save company data
-		}));
-		
-		// Configure SLF4J logging bridge
-		SLF4JBridgeHandler.removeHandlersForRootLogger();
-		SLF4JBridgeHandler.install();
+                // Configure SLF4J logging bridge
+                SLF4JBridgeHandler.removeHandlersForRootLogger();
+                SLF4JBridgeHandler.install();
 		
 		System.setProperty("net.sf.jasperreports.debug", "true");
 		System.setProperty("net.sf.jasperreports.compile.class.debug", "true");
@@ -199,11 +195,12 @@ public class NonprofitBookkeepingFX extends Application
 		
 		stage.getIcons().addAll(
 			new Image(getClass().getResourceAsStream("../../cg-128px.png")));
-		this.primaryStage = stage;
-		this.c = new CurrentCompany();
-		this.dashboard = new DashboardPanelFX();
-		MainApplicationView mainView = new MainApplicationView();
-		this.root = mainView; // Assign MainApplicationView to root
+                this.primaryStage = stage;
+                this.c = new CurrentCompany();
+                CurrentCompany.loadFromDatabase();
+                this.dashboard = new DashboardPanelFX();
+                MainApplicationView mainView = new MainApplicationView();
+                this.root = mainView; // Assign MainApplicationView to root
 		
 		// Instantiate ApplicationContextImpl
 		// Services are passed from the static ServiceContainer
@@ -248,14 +245,21 @@ public class NonprofitBookkeepingFX extends Application
 		MenuBar menuBar = buildMenuBar();
 		mainView.setMenuBar(menuBar);
 		
-		Scene scene = new Scene(mainView, 1000, 700); // Use mainView for the
-														// scene
-		ThemeManager.applyTheme(scene);
-		this.primaryStage.setScene(scene);
-		this.primaryStage.setTitle("Nonprofit Bookkeeping");
-		
-		setState(AppState.NO_COMPANY); // Set initial UI state
-		this.primaryStage.show();
+                Scene scene = new Scene(mainView, 1000, 700); // Use mainView for the scene
+                ThemeManager.applyTheme(scene);
+                this.primaryStage.setScene(scene);
+                this.primaryStage.setTitle("Nonprofit Bookkeeping");
+
+                if (CurrentCompany.isOpen())
+                {
+                        setState(AppState.COMPANY_OPEN);
+                }
+                else
+                {
+                        setState(AppState.NO_COMPANY);
+                }
+
+                this.primaryStage.show();
 		
 	}
 	
@@ -271,21 +275,27 @@ public class NonprofitBookkeepingFX extends Application
 	{
 		MenuBar bar = new MenuBar();
 		
-		/* FILE */
-		Menu file = new Menu("File");
-		this.miOpen = add(file, "Open Company File", e -> doOpenCompany());
-		this.miClose = add(file, "Close Company File", e -> doCloseCompany());
-		this.miSave = add(file, "Save Company File", e -> doSaveCompany());
-		this.miImportCoaXlsx = add(file, "Import COA (XLSX)",
-			e -> new ImportCoaXlsxActionFX(this.primaryStage).handle(e));
-		this.miExportCoaXlsx = add(file, "Export COA (XLSX)",
-			e -> new ExportCoaXlsxActionFX(this.primaryStage).handle(e));
-		
-		add(file, "Import File",
-			e -> new ImportFileActionFX(this.primaryStage).handle(e));
-		add(file, "Export File",
-			e -> new ExportFileActionFX(this.primaryStage).handle(e));
-		bar.getMenus().add(file);
+                /* FILE */
+                Menu file = new Menu("File");
+                this.miOpen = add(file, "Open Company File", e -> doOpenCompany());
+                this.miClose = add(file, "Close Company File", e -> doCloseCompany());
+                this.miSave = add(file, "Save Company File", e -> doSaveCompany());
+
+                Menu importMenu = new Menu("Import");
+                this.miImportCoaXlsx = add(importMenu, "Chart of Accounts (XLSX)",
+                        e -> new ImportCoaXlsxActionFX(this.primaryStage).handle(e));
+                add(importMenu, "Company (.npbk)", e -> doOpenCompany());
+                add(importMenu, "File", e -> new ImportFileActionFX(this.primaryStage).handle(e));
+
+                Menu exportMenu = new Menu("Export");
+                this.miExportCoaXlsx = add(exportMenu, "Chart of Accounts (XLSX)",
+                        e -> new ExportCoaXlsxActionFX(this.primaryStage).handle(e));
+                add(exportMenu, "Company (.npbk)", e -> doSaveCompany());
+                add(exportMenu, "File", e -> new ExportFileActionFX(this.primaryStage).handle(e));
+
+                file.getItems().addAll(importMenu, exportMenu, new SeparatorMenuItem());
+                add(file, "Exit", e -> Platform.exit());
+                bar.getMenus().add(file);
 		
 		/* EDIT */
 		Menu edit = new Menu("Edit");
