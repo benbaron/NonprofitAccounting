@@ -42,6 +42,40 @@ public class CompanyRepository {
     }
 
     /**
+     * Persist the given company, updating an existing row if the ID already
+     * exists. The generated or existing identifier is returned and also stored
+     * back on the {@link Company} instance.
+     *
+     * @param company the company to persist
+     * @return the database identifier for the company
+     */
+    public long saveOrUpdate(Company company) {
+        EntityTransaction tx = entityManager.getTransaction();
+        tx.begin();
+        CompanyEntity entity;
+        if (company.getId() != null) {
+            entity = entityManager.find(CompanyEntity.class, company.getId());
+            if (entity == null) {
+                entity = new CompanyEntity();
+                entity.setId(company.getId());
+            }
+        } else {
+            entity = new CompanyEntity();
+        }
+        entity.setName(company.getName());
+        try {
+            entity.setJsonData(mapper.writeValueAsString(company));
+        } catch (JsonProcessingException e) {
+            tx.rollback();
+            throw new RuntimeException("Failed to serialize company", e);
+        }
+        CompanyEntity merged = entityManager.merge(entity);
+        tx.commit();
+        company.setId(merged.getId());
+        return merged.getId();
+    }
+
+    /**
      * Retrieve a company by its ID.
      */
     public Optional<Company> findById(long id) {
