@@ -83,12 +83,10 @@ public final class AccountingEntry implements Serializable
 	@JsonProperty private String supplementalRecordId;
 	
 	
-	// Future versions can include this.
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "transaction_id")
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	
-	private AccountingTransaction transaction;
+        // Future versions can include this.
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "transaction_id")
+        @JsonIgnore private AccountingTransaction transaction;
 	
 	// Indicates if the transaction was set
 	@JsonProperty private boolean freeze = false;
