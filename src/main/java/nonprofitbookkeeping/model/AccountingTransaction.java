@@ -3,6 +3,7 @@ package nonprofitbookkeeping.model;
 
 import javax.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
@@ -64,7 +65,7 @@ public class AccountingTransaction implements Serializable
         /** Owning journal for this transaction. */
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "journal_id")
-        private Journal journal;
+        @JsonIgnore private Journal journal;
 
         /** Key used within {@link #info} to store the record type. */
         public static final String RECORD_TYPE_KEY = "recordType";
