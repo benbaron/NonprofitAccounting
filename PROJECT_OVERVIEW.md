@@ -20,10 +20,12 @@ The project is a desktop application designed for nonprofit bookkeeping. It aims
     another.  `CurrentCompany.loadFromPersistent` reloads the database from the
     chosen `.npbk` and discards the previously active company, thereby switching
     contexts. For advanced scenarios, backups may also be exported as plain
-    `.sql` files containing raw SQL statements that recreate the database. To
-    restore such a backup, select the `.sql` in the "Open Company" dialog; the
-    application issues H2's `RUNSCRIPT` command to rebuild the in-memory
-    database before continuing.
+    `.sql` files containing raw SQL statements that recreate the database.
+    The Settings panel's "Backup" tab works exclusively with `.npbk` archives;
+    `.sql` dumps must be produced or restored manually and are not exposed in the
+    current UI. The standard "Open Company" and "Save" dialogs handle `.npbk`
+    archives only.
+
 *   **Chart of Accounts (COA):** Hierarchical account management.
 *   **Journal Entries & Ledger:** Recording and storing financial transactions.
 *   **Dashboard:** Summary view (key figures, recent transactions).

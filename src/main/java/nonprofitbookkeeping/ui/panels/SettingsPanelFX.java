@@ -13,7 +13,6 @@ import java.io.IOException;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.persistence.DatabaseService;
-import java.sql.SQLException;
 import nonprofitbookkeeping.service.SettingsService;
 import nonprofitbookkeeping.model.SettingsModel;
 import nonprofitbookkeeping.ui.ThemeManager;
@@ -268,12 +267,11 @@ public class SettingsPanelFX extends BorderPane
 		
 	}
 	
-	/**
+        /**
          * Builds and returns the "Backup" tab for the settings panel.
-         * This tab provides buttons for creating and restoring backups.
-         * Users may save either the standard {@code .npbk} company archive or a
-         * {@code .sql} file, which is a plain-text dump of the underlying H2
-         * database for advanced/manual restoration.
+         * This tab provides buttons for creating and restoring backups using the
+         * standard {@code .npbk} company archive format.
+
          *
          * @return A {@link Tab} configured with backup and restore options.
          */
@@ -283,15 +281,14 @@ public class SettingsPanelFX extends BorderPane
                 Button backupBtn = new Button("Create Backup");
 		Button restoreBtn = new Button("Restore Backup");
 		
-		backupBtn.setOnAction(e -> {
-			FileChooser fc = new FileChooser();
+                backupBtn.setOnAction(e -> {
+                        FileChooser fc = new FileChooser();
                         fc.setTitle("Save Backup");
                         fc.getExtensionFilters().addAll(
-                                new FileChooser.ExtensionFilter("Company Files", "*.npbk"),
-                                new FileChooser.ExtensionFilter(
-                                        "SQL Backup (raw database) files", "*.sql"));
-			
-			File out = fc.showSaveDialog(null);
+                                new FileChooser.ExtensionFilter("Company Files", "*.npbk"));
+
+                        File out = fc.showSaveDialog(null);
+
 			
 			if (out != null)
 			{
@@ -326,15 +323,14 @@ public class SettingsPanelFX extends BorderPane
 			
 		});
 		
-		restoreBtn.setOnAction(e -> {
-			FileChooser fc = new FileChooser();
+                restoreBtn.setOnAction(e -> {
+                        FileChooser fc = new FileChooser();
                         fc.setTitle("Open Backup");
                         fc.getExtensionFilters().addAll(
-                                new FileChooser.ExtensionFilter("Company Files", "*.npbk"),
-                                new FileChooser.ExtensionFilter(
-                                        "SQL Backup (raw database) files", "*.sql"));
-			
-			File f = fc.showOpenDialog(null);
+                                new FileChooser.ExtensionFilter("Company Files", "*.npbk"));
+
+                        File f = fc.showOpenDialog(null);
+
 			
 			if (f != null)
 			{

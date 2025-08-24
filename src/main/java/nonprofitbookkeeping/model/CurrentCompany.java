@@ -129,27 +129,32 @@ public class CurrentCompany
 		
 	}
 	
-	/**
-	 * Persists the current company data to its associated file.  In normal
-	 * operation the application works with <code>.npbk</code> files which are
-	 * ZIP archives containing a single {@code company_data.json} entry. This
-	 * method serializes the {@link Company} into that ZIP structure via
-	 * {@link JacksonDataStorer}. For advanced scenarios a user may instead
-	 * select a target file ending in <code>.sql</code>; in that case the
-	 * method issues the H2 {@code SCRIPT TO} command to produce a plain-text
-	 * dump of the persistent on-disk database (file mode).
-	 * <p>
-	 * Call this before opening another company file if you want to retain the
-	 * changes made to the currently active company.
-	 * </p>
-	 *
-	 * @throws IOException if an I/O error occurs during saving.
-	 * @throws ActionCancelledException if the save action is cancelled (e.g., by user in a file dialog).
-	 * @throws NoFileCreatedException if the file cannot be created or written to.
-        * @throws NullPointerException if the current file has not been set.
-        */
+        /**
+         * Persists the current company data to its associated file.  In normal
+        * operation the application works with <code>.npbk</code> files which are
+        * ZIP archives containing a single {@code company_data.json} entry. This
+        * method serializes the {@link Company} into that ZIP structure via
+        * {@link JacksonDataStorer}. For advanced scenarios a user may instead
+        * select a target file ending in <code>.sql</code>; in that case the
+        * method issues the H2 {@code SCRIPT TO} command to produce a plain-text
+        * dump of the in-memory database.
+        * <p>
+        * Call this before opening another company file if you want to retain the
+        * changes made to the currently active company.
+        * </p>
+         *
+         * @throws IOException if an I/O error occurs during saving.
+         * @throws ActionCancelledException if the save action is cancelled (e.g., by user in a file dialog).
+         * @throws NoFileCreatedException if the file cannot be created or written to.
+         * @throws NullPointerException if the current file has not been set.
+         */
         public static void persist() throws IOException, ActionCancelledException,
                 NoFileCreatedException
+        {
+        DATABASE_SERVICE.saveCompany(company);
+
+        if (currentFile == null)
+
         {
                 DATABASE_SERVICE.saveCompany(company);
 		
@@ -199,117 +204,113 @@ public class CurrentCompany
                 DATABASE_SERVICE.saveCompany(company);
         }
 	
-	/**
-	 * Loads company data from the specified file and makes it the active
-	 * company.
-	 * <p>
-	 * A company is typically stored in a <code>.npbk</code> file created by
-	 * {@link #persist()}. The file is a ZIP archive containing the
-	 * {@code company_data.json} entry. When this method is invoked the
-	 * database is reinitialized and the newly loaded company replaces any
-	 * previously open company. Alternatively, if the supplied file ends with
-	 * <code>.sql</code>, the method executes H2's {@code RUNSCRIPT FROM}
-	 * command to rebuild the persistent, file-backed database before
-	 * reinitializing the application state.
-	 * </p>
-	 *
-	 * @param file The file from which to load company data. Must not be null.
-	 * @throws IOException if an I/O error occurs during loading.
-	 * @throws ActionCancelledException if the load action is cancelled.
-	 * @throws NoFileCreatedException if the file specified does not lead to a
-	 *         valid company data structure.
-	 * @throws NullPointerException if file is null.
-	 */
-	
-	public static void loadFromPersistent(File file)
-		throws IOException, ActionCancelledException,
-		NoFileCreatedException
-	{
-		checkNotNull(file, "File cannot be null for load operation.");
-		
-		String name = file.getName().toLowerCase();
-		
-		if (name.endsWith(".npbk") || isZipArchive(file))
-		{
-			JacksonDataStorer storer = JacksonDataStorer.getDataStorer();
-			Company loaded = storer.loadData(Company.class, file);
-			
-			DatabaseManager.shutdown();
-			DatabaseManager.initialize();
-			DATABASE_SERVICE = new DatabaseService();
-			DATABASE_SERVICE.saveCompany(loaded);
-			
-			company = loaded;
-			setCurrentFile(file);
-			
-			if (company != null)
-			{
-				markCompanyOpen();
-			}
-			
-			return;
-		}
-		
-		// Restore from .sql dump into the persistent file-based DB.
-		String path = file.getAbsolutePath().replace("\\", "/");
-		String sql = "RUNSCRIPT FROM '" + path + "'";
-		
-		ensureDataDir();
-		
-		try (
-			Connection conn =
-				DriverManager.getConnection(H2_JDBC_URL, "sa", "");
-			Statement stmt = conn.createStatement())
-		{
-			stmt.execute(sql);
-		}
-		catch (SQLException e)
-		{
-			throw new IOException("Error restoring backup: " + e.getMessage(),
-				e);
-		}
-		
-		DatabaseManager.shutdown();
-		DatabaseManager.initialize();
-		DATABASE_SERVICE = new DatabaseService();
-		
-		company = DATABASE_SERVICE.loadCompany();
-		
-		setCurrentFile(file);
-		
-		if (company != null)
-		{
-			markCompanyOpen();
-		}
-		
-	}
-	
-	/**
-	 * Determines if the given file is a ZIP archive by checking its magic header.
-	 *
-	 * @param file the file to inspect
-	 * @return {@code true} if the file appears to be a ZIP archive, {@code false} otherwise
-	 */
-	private static boolean isZipArchive(File file)
-	{
-		
-		try (FileInputStream fis = new FileInputStream(file))
-		{
-			byte[] header = new byte[4];
-			
-			if (fis.read(header) < 4)
-			{
-				return false;
-			}
-			
-			return header[0] == 'P' && header[1] == 'K';
-		}
-		catch (IOException ex)
-		{
-			return false;
-		}
-		
-	}
+        /**
+        * Loads company data from the specified file and makes it the active
+        * company.
+        * <p>
+        * A company is typically stored in a <code>.npbk</code> file created by
+        * {@link #persist()}. The file is a ZIP archive containing the
+        * {@code company_data.json} entry. When this method is invoked the
+        * in-memory database is completely reinitialized and the newly loaded
+        * company replaces any previously open company. This mechanism is how the
+        * application "switches" between companies when different files are opened.
+        * Alternatively, if the supplied file ends with <code>.sql</code>, the
+        * method executes H2's {@code RUNSCRIPT FROM} command to rebuild the
+        * database from the plain-text dump before reinitializing the application
+        * state.
+        * </p>
+         *
+         * @param file The file from which to load company data. Must not be null.
+         * @throws IOException if an I/O error occurs during loading.
+         * @throws ActionCancelledException if the load action is cancelled.
+         * @throws NoFileCreatedException if the file specified does not lead to a
+         *         valid company data structure.
+         * @throws NullPointerException if file is null.
+         */
+
+        public static void loadFromPersistent(File file)
+                throws IOException, ActionCancelledException,
+                NoFileCreatedException
+        {
+        checkNotNull(file, "File cannot be null for load operation.");
+
+        String name = file.getName().toLowerCase();
+
+        if (name.endsWith(".npbk") || isZipArchive(file))
+        {
+                JacksonDataStorer storer = JacksonDataStorer.getDataStorer();
+                Company loaded = storer.loadData(Company.class, file);
+
+                DatabaseManager.shutdown();
+                DatabaseManager.initialize();
+                DATABASE_SERVICE = new DatabaseService();
+                DATABASE_SERVICE.saveCompany(loaded);
+
+                company = loaded;
+                setCurrentFile(file);
+
+                if (company != null)
+                {
+                        markCompanyOpen();
+                }
+
+                return;
+        }
+
+        String path = file.getAbsolutePath().replace("\\", "/");
+        String sql = "RUNSCRIPT FROM '" + path + "'";
+
+        try (
+                Connection conn =
+                                DriverManager.getConnection("jdbc:h2:mem:nonprofit", "sa", "");
+                Statement stmt = conn.createStatement())
+        {
+                stmt.execute(sql);
+        }
+        catch (SQLException e)
+        {
+                throw new IOException("Error restoring backup: " + e.getMessage(),
+                                e);
+        }
+
+        DatabaseManager.shutdown();
+        DatabaseManager.initialize();
+        DATABASE_SERVICE = new DatabaseService();
+
+        company = DATABASE_SERVICE.loadCompany();
+
+        setCurrentFile(file);
+
+        if (company != null)
+        {
+                markCompanyOpen();
+        }
+
+        }
+
+        /**
+         * Determines if the given file is a ZIP archive by checking its magic header.
+         *
+         * @param file the file to inspect
+         * @return {@code true} if the file appears to be a ZIP archive, {@code false} otherwise
+         */
+        private static boolean isZipArchive(File file)
+        {
+                try (FileInputStream fis = new FileInputStream(file))
+                {
+                        byte[] header = new byte[4];
+                        if (fis.read(header) < 4)
+                        {
+                                return false;
+                        }
+                        return header[0] == 'P' && header[1] == 'K';
+                }
+                catch (IOException ex)
+                {
+                        return false;
+                }
+        }
+
 	
 	/**
 	 * Reload the company data directly from the database.
