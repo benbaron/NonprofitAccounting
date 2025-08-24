@@ -9,6 +9,8 @@ import nonprofitbookkeeping.model.Ledger;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -21,6 +23,8 @@ import java.util.Optional;
  */
 public class DatabaseService
 {
+        private static final Logger LOG =
+                LoggerFactory.getLogger(DatabaseService.class);
 	
 	private final EntityManager entityManager;
 	private final LedgerRepository ledgerRepository;
@@ -53,9 +57,11 @@ public class DatabaseService
 
                 if (company == null)
                 {
+                        LOG.warn("saveCompany called with null company");
                         return;
                 }
-
+                LOG.debug("Persisting company '{}' (id: {})",
+                        company.getName(), company.getId());
                 // Store the serialized company so the chart of accounts and other
                 // top level data are available when reloading.
                 this.companyRepository.saveOrUpdate(company);
@@ -76,20 +82,24 @@ public class DatabaseService
 	 * Currently this reconstructs a {@link Company} with its {@link Ledger}
 	 * transactions populated from the database.
 	 */
-	public Optional<Company> loadCompany(long companyId)
-	{
-		Optional<Company> companyOpt = this.companyRepository.findById(companyId);
-		companyOpt.ifPresent(company -> {
-			Journal journal = company.getLedger().getJournal();
-			List<AccountingTransaction> txs = this.transactionRepository.findAll();
-			
-			if (txs != null)
-			{
-				txs.forEach(journal::addTransaction);
-			}
-			
-		});
-		return companyOpt;
+        public Optional<Company> loadCompany(long companyId)
+        {
+                LOG.debug("Loading company with id {}", companyId);
+                Optional<Company> companyOpt = this.companyRepository.findById(companyId);
+                companyOpt.ifPresent(company -> {
+                        Journal journal = company.getLedger().getJournal();
+                        List<AccountingTransaction> txs =
+                                this.transactionRepository.findAll();
+
+                        if (txs != null)
+                        {
+                                txs.forEach(journal::addTransaction);
+                        }
+
+                        LOG.debug("Loaded company '{}' with {} transactions", company.getName(),
+                                journal.getJournalTransactions().size());
+                });
+                return companyOpt;
 		
 	}
 	
@@ -100,11 +110,11 @@ public class DatabaseService
 	 *
 	 * @return the loaded {@link Company} or {@code null} if none exist
 	 */
-	public Company loadCompany()
-	{
-		return loadCompany(1).orElse(null);
-		
-	}
+        public Company loadCompany()
+        {
+                return loadCompany(1).orElse(null);
+
+        }
 	
         /** Create or update a company and return its id. */
         public long create(Company company)

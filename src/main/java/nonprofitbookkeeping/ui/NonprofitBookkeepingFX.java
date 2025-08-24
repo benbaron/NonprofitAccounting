@@ -201,6 +201,11 @@ public class NonprofitBookkeepingFX extends Application
                 this.dashboard = new DashboardPanelFX();
                 MainApplicationView mainView = new MainApplicationView();
                 this.root = mainView; // Assign MainApplicationView to root
+
+                if (CurrentCompany.isOpen())
+                {
+                        CurrentCompany.markCompanyOpen();
+                }
 		
 		// Instantiate ApplicationContextImpl
 		// Services are passed from the static ServiceContainer
@@ -284,17 +289,26 @@ public class NonprofitBookkeepingFX extends Application
                 Menu importMenu = new Menu("Import");
                 this.miImportCoaXlsx = add(importMenu, "Chart of Accounts (XLSX)",
                         e -> new ImportCoaXlsxActionFX(this.primaryStage).handle(e));
-                add(importMenu, "Company (.npbk)", e -> doOpenCompany());
+                add(importMenu, "Company (.npbk)", e -> {
+                        LOGGER.info("Importing company from .npbk");
+                        doOpenCompany();
+                });
                 add(importMenu, "File", e -> new ImportFileActionFX(this.primaryStage).handle(e));
 
                 Menu exportMenu = new Menu("Export");
                 this.miExportCoaXlsx = add(exportMenu, "Chart of Accounts (XLSX)",
                         e -> new ExportCoaXlsxActionFX(this.primaryStage).handle(e));
-                add(exportMenu, "Company (.npbk)", e -> doSaveCompany());
+                add(exportMenu, "Company (.npbk)", e -> {
+                        LOGGER.info("Exporting company to .npbk");
+                        doSaveCompany();
+                });
                 add(exportMenu, "File", e -> new ExportFileActionFX(this.primaryStage).handle(e));
 
                 file.getItems().addAll(importMenu, exportMenu, new SeparatorMenuItem());
-                add(file, "Exit", e -> Platform.exit());
+                add(file, "Exit", e -> {
+                        LOGGER.info("Exit menu selected");
+                        Platform.exit();
+                });
                 bar.getMenus().add(file);
 		
 		/* EDIT */
@@ -632,28 +646,30 @@ public class NonprofitBookkeepingFX extends Application
 	 * Errors are displayed using an {@link AlertBox}.
 	 * The {@code @SuppressWarnings("unused")} is present because this method is called via JavaFX action event.
 	 */
-	private void doOpenCompany()
-	{
-		
-		try
-		{
-			OpenCompanyFileActionFX action =
-				new OpenCompanyFileActionFX(this.primaryStage);
-			action.run();
-			
-			if (CurrentCompany.isOpen())
-			{
-				setState(AppState.COMPANY_OPEN);
-			}
-			
-		}
-		catch (Exception e)
-		{
-			AlertBox.showError(this.primaryStage,
-				"Failed to open company: " + e.getMessage());
-		}
-		
-	}
+        private void doOpenCompany()
+        {
+                LOGGER.info("Opening company file");
+                try
+                {
+                        OpenCompanyFileActionFX action =
+                                new OpenCompanyFileActionFX(this.primaryStage);
+                        action.run();
+
+                        if (CurrentCompany.isOpen())
+                        {
+                                LOGGER.info("Company opened: "
+                                        + CurrentCompany.getCompany().getName());
+                                setState(AppState.COMPANY_OPEN);
+                        }
+                }
+                catch (Exception e)
+                {
+                        LOGGER.log(Level.SEVERE, "Failed to open company", e);
+                        AlertBox.showError(this.primaryStage,
+                                "Failed to open company: " + e.getMessage());
+                }
+
+        }
 	
 	/**
 	 * Handles the action to close the currently open company file.
@@ -709,22 +725,23 @@ public class NonprofitBookkeepingFX extends Application
 	 * Shows an info message on success or an error message on failure.
 	 * The {@code @SuppressWarnings("unused")} is present because this method is called via JavaFX action event.
 	 */
-	private void doSaveCompany()
-	{
-		
-		try
-		{
-			SaveCompanyFileAction saveCompanyFileAction =
-				new SaveCompanyFileAction(this.primaryStage);
-			AlertBox.showInfo(this.primaryStage, "Company saved.");
-		}
-		catch (Exception ex)
-		{
-			AlertBox.showError(this.primaryStage,
-				"Failed to save company: " + ex.getMessage());
-		}
-		
-	}
+        private void doSaveCompany()
+        {
+                LOGGER.info("Saving company file");
+                try
+                {
+                        SaveCompanyFileAction saveCompanyFileAction =
+                                new SaveCompanyFileAction(this.primaryStage);
+                        AlertBox.showInfo(this.primaryStage, "Company saved.");
+                }
+                catch (Exception ex)
+                {
+                        LOGGER.log(Level.SEVERE, "Failed to save company", ex);
+                        AlertBox.showError(this.primaryStage,
+                                "Failed to save company: " + ex.getMessage());
+                }
+
+        }
 	
 	/**
 	 * Handles the action to start the company creation/editing wizard.
