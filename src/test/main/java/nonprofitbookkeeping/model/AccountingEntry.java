@@ -1,6 +1,7 @@
 
 package nonprofitbookkeeping.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 
@@ -55,7 +56,7 @@ public final class AccountingEntry implements Serializable
 	@JsonProperty private String accountName;
 	
 	// Future versions can include this.
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY) private AccountingTransaction transaction;
+        @JsonIgnore private AccountingTransaction transaction;
 	
 	// Indicates if the transaction was set
 	@JsonProperty private boolean freeze = false;
@@ -109,15 +110,27 @@ public final class AccountingEntry implements Serializable
 	}
 	
 	
-	/**
-	 * Gets the associated transaction.
-	 * @return Associated transaction, or null if no transaction is associated.
-	 */
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY) public
-		AccountingTransaction getTransaction()
-	{
-		return this.transaction;
-	}
+        /**
+         * Gets the associated transaction.
+         * This is ignored during JSON serialization to avoid circular references.
+         *
+         * @return Associated transaction, or null if no transaction is associated.
+         */
+        @JsonIgnore public AccountingTransaction getTransaction()
+        {
+                return this.transaction;
+        }
+
+        /**
+         * Convenience accessor exposing only the identifier of the linked transaction.
+         *
+         * @return id of the linked transaction or {@code null} if none
+         */
+        @JsonProperty("transactionId")
+        public Integer getTransactionId()
+        {
+                return (this.transaction != null) ? this.transaction.getId() : null;
+        }
 	
 	/**
 	 * Sets the transaction this entry belongs to.

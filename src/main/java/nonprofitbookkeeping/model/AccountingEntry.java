@@ -4,6 +4,8 @@ package nonprofitbookkeeping.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import jakarta.persistence.Entity;
@@ -39,7 +41,9 @@ public final class AccountingEntry implements Serializable
 	/**
 	 * serialVersionUID : long
 	 */
-	private static final long serialVersionUID = 5837792781542533633L;
+        private static final long serialVersionUID = 5837792781542533633L;
+
+        private static final Logger LOG = LoggerFactory.getLogger(AccountingEntry.class);
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -146,17 +150,30 @@ public final class AccountingEntry implements Serializable
 	}
 	
 	
-	/**
-	 * Gets the associated transaction.
-	 * @return Associated transaction, or null if no transaction is associated.
-	 */
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	public
-		AccountingTransaction getTransaction()
-	{
-		return this.transaction;
-		
-	}
+        /**
+         * Gets the associated transaction.
+         * This is ignored during JSON serialization to prevent cycles.
+         *
+         * @return Associated transaction, or null if no transaction is associated.
+         */
+        @JsonIgnore
+        public AccountingTransaction getTransaction()
+        {
+                return this.transaction;
+
+        }
+
+        /**
+         * Convenience accessor that exposes only the identifier of the
+         * associated transaction for serialization purposes.
+         *
+         * @return id of the linked transaction or {@code null} if none
+         */
+        @JsonProperty("transactionId")
+        public Integer getTransactionId()
+        {
+                return (this.transaction != null) ? this.transaction.getId() : null;
+        }
 	
 	/**
 	 * Sets the transaction this entry belongs to.
@@ -274,14 +291,27 @@ public final class AccountingEntry implements Serializable
 	 * 
 	 * @return Account object
 	 */
-	public Account getAccount()
-	{
-		return CurrentCompany
-			.getCompany()
-			.getChartOfAccounts()
-			.getAccount(this.accountNumber);
-		
-	}
+        public Account getAccount()
+        {
+                Company company = CurrentCompany.getCompany();
+                if (company == null)
+                {
+                        LOG.debug("No current company; cannot resolve account {}", this.accountNumber);
+                        return null;
+                }
+
+                if (company.getChartOfAccounts() == null)
+                {
+                        LOG.debug(
+                                "Company '{}' has no chart of accounts; cannot resolve account {}",
+                                company.getCompanyProfile().getCompanyName(),
+                                this.accountNumber);
+                        return null;
+                }
+
+                return company.getChartOfAccounts().getAccount(this.accountNumber);
+
+        }
 	
 	/**
 	 * {@inheritDoc}
@@ -302,10 +332,10 @@ public final class AccountingEntry implements Serializable
 	 *
 	 * @return primary key value
 	 */
-	public int getId()
-	{
-		return this.id;
-		
-	}
+        public int getId()
+        {
+                return this.id;
+
+        }
 	
 }

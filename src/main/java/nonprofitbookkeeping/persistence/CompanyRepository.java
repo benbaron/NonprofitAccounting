@@ -10,11 +10,16 @@ import nonprofitbookkeeping.persistence.entity.CompanyEntity;
 import java.io.IOException;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Repository for storing and retrieving {@link Company} instances. The full
  * company object is serialized to JSON and stored in the {@link CompanyEntity}.
  */
 public class CompanyRepository {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CompanyRepository.class);
+
     private final EntityManager entityManager;
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -33,6 +38,7 @@ public class CompanyRepository {
         try {
             entity.setJsonData(mapper.writeValueAsString(company));
         } catch (JsonProcessingException e) {
+            LOGGER.error("Failed to serialize company '{}' (id: {}).", company.getName(), company.getId(), e);
             tx.rollback();
             throw new RuntimeException("Failed to serialize company", e);
         }
@@ -66,6 +72,7 @@ public class CompanyRepository {
         try {
             entity.setJsonData(mapper.writeValueAsString(company));
         } catch (JsonProcessingException e) {
+            LOGGER.error("Failed to serialize company '{}' (id: {}).", company.getName(), company.getId(), e);
             tx.rollback();
             throw new RuntimeException("Failed to serialize company", e);
         }
