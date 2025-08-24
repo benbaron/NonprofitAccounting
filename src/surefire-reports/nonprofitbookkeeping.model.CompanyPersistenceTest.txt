@@ -1,0 +1,42 @@
+-------------------------------------------------------------------------------
+Test set: nonprofitbookkeeping.model.CompanyPersistenceTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 5.498 s <<< FAILURE! -- in nonprofitbookkeeping.model.CompanyPersistenceTest
+nonprofitbookkeeping.model.CompanyPersistenceTest.accountsPersistAndReloadWithParentLinks -- Time elapsed: 5.496 s <<< ERROR!
+jakarta.persistence.EntityExistsException: detached entity passed to persist: nonprofitbookkeeping.model.Journal
+	at org.hibernate.internal.ExceptionConverterImpl.convert(ExceptionConverterImpl.java:126)
+	at org.hibernate.internal.ExceptionConverterImpl.convert(ExceptionConverterImpl.java:167)
+	at org.hibernate.internal.ExceptionConverterImpl.convert(ExceptionConverterImpl.java:173)
+	at org.hibernate.internal.SessionImpl.firePersist(SessionImpl.java:802)
+	at org.hibernate.internal.SessionImpl.persist(SessionImpl.java:744)
+	at org.hibernate.engine.spi.CascadingActions$7.cascade(CascadingActions.java:290)
+	at org.hibernate.engine.spi.CascadingActions$7.cascade(CascadingActions.java:280)
+	at org.hibernate.engine.internal.Cascade.cascadeToOne(Cascade.java:517)
+	at org.hibernate.engine.internal.Cascade.cascadeAssociation(Cascade.java:439)
+	at org.hibernate.engine.internal.Cascade.cascadeProperty(Cascade.java:224)
+	at org.hibernate.engine.internal.Cascade.cascade(Cascade.java:157)
+	at org.hibernate.event.internal.AbstractSaveEventListener.cascadeBeforeSave(AbstractSaveEventListener.java:482)
+	at org.hibernate.event.internal.AbstractSaveEventListener.performSaveOrReplicate(AbstractSaveEventListener.java:298)
+	at org.hibernate.event.internal.AbstractSaveEventListener.performSave(AbstractSaveEventListener.java:219)
+	at org.hibernate.event.internal.AbstractSaveEventListener.saveWithGeneratedId(AbstractSaveEventListener.java:134)
+	at org.hibernate.event.internal.DefaultPersistEventListener.entityIsTransient(DefaultPersistEventListener.java:175)
+	at org.hibernate.event.internal.DefaultPersistEventListener.persist(DefaultPersistEventListener.java:93)
+	at org.hibernate.event.internal.DefaultPersistEventListener.onPersist(DefaultPersistEventListener.java:77)
+	at org.hibernate.event.internal.DefaultPersistEventListener.onPersist(DefaultPersistEventListener.java:54)
+	at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:127)
+	at org.hibernate.internal.SessionImpl.firePersist(SessionImpl.java:754)
+	at org.hibernate.internal.SessionImpl.persist(SessionImpl.java:738)
+	at nonprofitbookkeeping.persistence.LedgerRepository.save(LedgerRepository.java:29)
+	at nonprofitbookkeeping.persistence.DatabaseService.saveCompany(DatabaseService.java:67)
+	at nonprofitbookkeeping.model.CurrentCompany.loadFromPersistent(CurrentCompany.java:240)
+	at nonprofitbookkeeping.model.CompanyPersistenceTest.accountsPersistAndReloadWithParentLinks(CompanyPersistenceTest.java:30)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+Caused by: org.hibernate.PersistentObjectException: detached entity passed to persist: nonprofitbookkeeping.model.Journal
+	at org.hibernate.event.internal.DefaultPersistEventListener.persist(DefaultPersistEventListener.java:88)
+	at org.hibernate.event.internal.DefaultPersistEventListener.onPersist(DefaultPersistEventListener.java:77)
+	at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:138)
+	at org.hibernate.internal.SessionImpl.firePersist(SessionImpl.java:796)
+	... 25 more
+

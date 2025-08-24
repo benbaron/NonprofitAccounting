@@ -1,0 +1,69 @@
+-------------------------------------------------------------------------------
+Test set: nonprofitbookkeeping.ui.actions.ImportFileActionFXTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 5, Skipped: 0, Time elapsed: 0.005 s <<< FAILURE! -- in nonprofitbookkeeping.ui.actions.ImportFileActionFXTest
+nonprofitbookkeeping.ui.actions.ImportFileActionFXTest.testConstructor_nullStage_throwsIllegalArgumentException -- Time elapsed: 0.001 s <<< ERROR!
+org.mockito.exceptions.misusing.UnfinishedMockingSessionException: 
+
+Unfinished mocking session detected.
+Previous MockitoSession was not concluded with 'finishMocking()'.
+For examples of correct usage see javadoc for MockitoSession class.
+	at org.mockito.junit.jupiter.MockitoExtension.beforeEach(MockitoExtension.java:153)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	Suppressed: java.lang.NullPointerException: Cannot invoke "java.util.Set.forEach(java.util.function.Consumer)" because the return value of "org.junit.jupiter.api.extension.ExtensionContext$Store.remove(Object, java.lang.Class)" is null
+		at org.mockito.junit.jupiter.MockitoExtension.afterEach(MockitoExtension.java:184)
+		... 2 more
+
+nonprofitbookkeeping.ui.actions.ImportFileActionFXTest.testConstructor_validStage_succeeds -- Time elapsed: 0 s <<< ERROR!
+org.mockito.exceptions.misusing.UnfinishedMockingSessionException: 
+
+Unfinished mocking session detected.
+Previous MockitoSession was not concluded with 'finishMocking()'.
+For examples of correct usage see javadoc for MockitoSession class.
+	at org.mockito.junit.jupiter.MockitoExtension.beforeEach(MockitoExtension.java:153)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	Suppressed: java.lang.NullPointerException: Cannot invoke "java.util.Set.forEach(java.util.function.Consumer)" because the return value of "org.junit.jupiter.api.extension.ExtensionContext$Store.remove(Object, java.lang.Class)" is null
+		at org.mockito.junit.jupiter.MockitoExtension.afterEach(MockitoExtension.java:184)
+		... 2 more
+
+nonprofitbookkeeping.ui.actions.ImportFileActionFXTest.testConvertExcelRows_invalidAllocationIgnored -- Time elapsed: 0 s <<< ERROR!
+org.mockito.exceptions.misusing.UnfinishedMockingSessionException: 
+
+Unfinished mocking session detected.
+Previous MockitoSession was not concluded with 'finishMocking()'.
+For examples of correct usage see javadoc for MockitoSession class.
+	at org.mockito.junit.jupiter.MockitoExtension.beforeEach(MockitoExtension.java:153)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	Suppressed: java.lang.NullPointerException: Cannot invoke "java.util.Set.forEach(java.util.function.Consumer)" because the return value of "org.junit.jupiter.api.extension.ExtensionContext$Store.remove(Object, java.lang.Class)" is null
+		at org.mockito.junit.jupiter.MockitoExtension.afterEach(MockitoExtension.java:184)
+		... 2 more
+
+nonprofitbookkeeping.ui.actions.ImportFileActionFXTest.testConvertExcelRows_validAllocations -- Time elapsed: 0.001 s <<< ERROR!
+org.mockito.exceptions.misusing.UnfinishedMockingSessionException: 
+
+Unfinished mocking session detected.
+Previous MockitoSession was not concluded with 'finishMocking()'.
+For examples of correct usage see javadoc for MockitoSession class.
+	at org.mockito.junit.jupiter.MockitoExtension.beforeEach(MockitoExtension.java:153)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	Suppressed: java.lang.NullPointerException: Cannot invoke "java.util.Set.forEach(java.util.function.Consumer)" because the return value of "org.junit.jupiter.api.extension.ExtensionContext$Store.remove(Object, java.lang.Class)" is null
+		at org.mockito.junit.jupiter.MockitoExtension.afterEach(MockitoExtension.java:184)
+		... 2 more
+
+nonprofitbookkeeping.ui.actions.ImportFileActionFXTest.testHandle_basicCall_noUnexpectedExceptions -- Time elapsed: 0.001 s <<< ERROR!
+org.mockito.exceptions.misusing.UnfinishedMockingSessionException: 
+
+Unfinished mocking session detected.
+Previous MockitoSession was not concluded with 'finishMocking()'.
+For examples of correct usage see javadoc for MockitoSession class.
+	at org.mockito.junit.jupiter.MockitoExtension.beforeEach(MockitoExtension.java:153)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	Suppressed: java.lang.NullPointerException: Cannot invoke "java.util.Set.forEach(java.util.function.Consumer)" because the return value of "org.junit.jupiter.api.extension.ExtensionContext$Store.remove(Object, java.lang.Class)" is null
+		at org.mockito.junit.jupiter.MockitoExtension.afterEach(MockitoExtension.java:184)
+		... 2 more
+

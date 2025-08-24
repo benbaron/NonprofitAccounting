@@ -25,6 +25,7 @@ The project is a desktop application designed for nonprofit bookkeeping. It aims
     `.sql` dumps must be produced or restored manually and are not exposed in the
     current UI. The standard "Open Company" and "Save" dialogs handle `.npbk`
     archives only.
+
 *   **Chart of Accounts (COA):** Hierarchical account management.
 *   **Journal Entries & Ledger:** Recording and storing financial transactions.
 *   **Dashboard:** Summary view (key figures, recent transactions).

@@ -1,0 +1,136 @@
+-------------------------------------------------------------------------------
+Test set: nonprofitbookkeeping.service.ReportConfigurationServiceTest
+-------------------------------------------------------------------------------
+Tests run: 12, Failures: 11, Errors: 0, Skipped: 0, Time elapsed: 0.474 s <<< FAILURE! -- in nonprofitbookkeeping.service.ReportConfigurationServiceTest
+nonprofitbookkeeping.service.ReportConfigurationServiceTest.testLoadConfiguration_WithNullIdInJson -- Time elapsed: 0.392 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <1> but was: <5>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:150)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:145)
+	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:531)
+	at nonprofitbookkeeping.service.ReportConfigurationServiceTest.testLoadConfiguration_WithNullIdInJson(ReportConfigurationServiceTest.java:210)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.ReportConfigurationServiceTest.testLoadConfigurations_NullCompanyDirectory -- Time elapsed: 0.006 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:31)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:183)
+	at nonprofitbookkeeping.service.ReportConfigurationServiceTest.testLoadConfigurations_NullCompanyDirectory(ReportConfigurationServiceTest.java:185)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.ReportConfigurationServiceTest.testSaveConfigurations_InvalidCompanyDirectory -- Time elapsed: 0.012 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Expected java.io.IOException to be thrown, but nothing was thrown.
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:73)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3128)
+	at nonprofitbookkeeping.service.ReportConfigurationServiceTest.testSaveConfigurations_InvalidCompanyDirectory(ReportConfigurationServiceTest.java:164)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.ReportConfigurationServiceTest.testSaveAndLoad_EmptyList -- Time elapsed: 0.003 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: report_configurations.json file should be created. ==> expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:214)
+	at nonprofitbookkeeping.service.ReportConfigurationServiceTest.testSaveAndLoad_EmptyList(ReportConfigurationServiceTest.java:67)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.ReportConfigurationServiceTest.testLoadConfigurations_InvalidCompanyDirectoryNotADirectory -- Time elapsed: 0.008 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Should return an empty list if company directory is not a directory. ==> expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:214)
+	at nonprofitbookkeeping.service.ReportConfigurationServiceTest.testLoadConfigurations_InvalidCompanyDirectoryNotADirectory(ReportConfigurationServiceTest.java:195)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.ReportConfigurationServiceTest.testLoadConfigurations_CorruptJsonFile -- Time elapsed: 0.007 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Should return an empty list for corrupt JSON. ==> expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:214)
+	at nonprofitbookkeeping.service.ReportConfigurationServiceTest.testLoadConfigurations_CorruptJsonFile(ReportConfigurationServiceTest.java:132)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.ReportConfigurationServiceTest.testSaveConfigurations_NullCompanyDirectory -- Time elapsed: 0.008 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Expected java.io.IOException to be thrown, but nothing was thrown.
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:73)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3128)
+	at nonprofitbookkeeping.service.ReportConfigurationServiceTest.testSaveConfigurations_NullCompanyDirectory(ReportConfigurationServiceTest.java:151)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.ReportConfigurationServiceTest.testLoadConfigurations_EmptyJsonFile -- Time elapsed: 0.008 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Should return an empty list for an empty JSON file. ==> expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:214)
+	at nonprofitbookkeeping.service.ReportConfigurationServiceTest.testLoadConfigurations_EmptyJsonFile(ReportConfigurationServiceTest.java:143)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.ReportConfigurationServiceTest.testLoadConfigurations_FileNotFound -- Time elapsed: 0.005 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Should return an empty list if file not found. ==> expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:214)
+	at nonprofitbookkeeping.service.ReportConfigurationServiceTest.testLoadConfigurations_FileNotFound(ReportConfigurationServiceTest.java:122)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.ReportConfigurationServiceTest.testSaveAndLoad_SingleConfiguration -- Time elapsed: 0.008 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Should load one configuration. ==> expected: <1> but was: <8>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:150)
+	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:563)
+	at nonprofitbookkeeping.service.ReportConfigurationServiceTest.testSaveAndLoad_SingleConfiguration(ReportConfigurationServiceTest.java:87)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.ReportConfigurationServiceTest.testSaveAndLoad_MultipleConfigurations -- Time elapsed: 0.009 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Should load two configurations. ==> expected: <2> but was: <10>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:150)
+	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:563)
+	at nonprofitbookkeeping.service.ReportConfigurationServiceTest.testSaveAndLoad_MultipleConfigurations(ReportConfigurationServiceTest.java:106)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+

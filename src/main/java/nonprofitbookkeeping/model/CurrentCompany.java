@@ -41,7 +41,31 @@ public class CurrentCompany
 	/** Database service used for loading and saving company data. */
 	private static DatabaseService DATABASE_SERVICE = new DatabaseService();
 	
-	/**  
+	/**
+	 * Directory where the persistent H2 database files live.
+	 * The final database will be ./data/nonprofit.mv.db
+	 */
+	private static final File H2_DATA_DIR = new File("./data");
+	
+	/**
+	 * JDBC URL for the persistent H2 database.
+	 * This matches DatabaseManager and persistence.xml.
+	 */
+	private static final String H2_JDBC_URL =
+		"jdbc:h2:file:./data/nonprofit;AUTO_SERVER=TRUE";
+	
+	/** Ensures the H2 data directory exists before any connection is opened. */
+	private static void ensureDataDir()
+	{
+		
+		if (!H2_DATA_DIR.exists())
+		{
+			H2_DATA_DIR.mkdirs();
+		}
+		
+	}
+	
+	/**
 	 * Constructs a CurrentCompany manager.
 	 * Initializes a new, empty {@link Company} object and sets the company as not open.
 	 * Note: While this constructor exists, the class primarily uses static members.
@@ -130,35 +154,55 @@ public class CurrentCompany
         DATABASE_SERVICE.saveCompany(company);
 
         if (currentFile == null)
-        {
-                throw new NoFileCreatedException("No backup file specified");
-        }
 
-        String name = currentFile.getName().toLowerCase();
-
-        if (name.endsWith(".npbk"))
         {
-                JacksonDataStorer storer = JacksonDataStorer.getDataStorer();
-                storer.saveData(company, currentFile);
-                return;
-        }
-
-        String path = currentFile.getAbsolutePath().replace("\\", "/");
-        String sql = "SCRIPT TO '" + path + "'";
-
-        try (
-                Connection conn =
-                                DriverManager.getConnection("jdbc:h2:mem:nonprofit", "sa", "");
-                Statement stmt = conn.createStatement())
-        {
-                stmt.execute(sql);
-        }
-        catch (SQLException e)
-        {
-                throw new IOException("Error writing backup: " + e.getMessage(), e);
-        }
+                DATABASE_SERVICE.saveCompany(company);
 		
-	}
+		if (currentFile == null)
+		{
+			throw new NoFileCreatedException("No backup file specified");
+		}
+		
+		String name = currentFile.getName().toLowerCase();
+		
+		if (name.endsWith(".npbk"))
+		{
+			JacksonDataStorer storer = JacksonDataStorer.getDataStorer();
+			storer.saveData(company, currentFile);
+			return;
+		}
+		
+               // Export to .sql by scripting the persistent database.
+		String path = currentFile.getAbsolutePath().replace("\\", "/");
+		String sql = "SCRIPT TO '" + path + "'";
+		
+                ensureDataDir();
+		
+		try (
+			Connection conn =
+				DriverManager.getConnection(H2_JDBC_URL, "sa", "");
+			Statement stmt = conn.createStatement())
+		{
+			stmt.execute(sql);
+		}
+		catch (SQLException e)
+		{
+			throw new IOException("Error writing backup: " + e.getMessage(), e);
+                }
+
+        }
+
+        /**
+         * Writes the current {@link Company} state to the embedded database only.
+         * This performs a lightweight persistence step without creating or updating
+         * any backup files. It is intended for scenarios such as closing a company
+         * where changes should be flushed to the local database but no external
+         * export is desired.
+         */
+        public static void flushToDatabase()
+        {
+                DATABASE_SERVICE.saveCompany(company);
+        }
 	
         /**
         * Loads company data from the specified file and makes it the active
@@ -266,6 +310,7 @@ public class CurrentCompany
                         return false;
                 }
         }
+
 	
 	/**
 	 * Reload the company data directly from the database.

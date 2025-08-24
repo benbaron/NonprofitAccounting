@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class PrimaryAccount2aBean implements Serializable, SupplementalRecord
 {
 	
-	/* aqua-fill “Deposit Date” rows */
+	/* aqua-fill Deposit Date rows */
 	private String depositDate1;
 	private String depositDate2;
 	private String depositDate3;

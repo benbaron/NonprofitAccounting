@@ -1,0 +1,118 @@
+-------------------------------------------------------------------------------
+Test set: nonprofitbookkeeping.ui.javafx.BudgetEditorDialogFXTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 5, Skipped: 0, Time elapsed: 9299 s <<< FAILURE! -- in nonprofitbookkeeping.ui.javafx.BudgetEditorDialogFXTest
+nonprofitbookkeeping.ui.javafx.BudgetEditorDialogFXTest.testCancelButton_ClosesDialog -- Time elapsed: 12.11 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.ui.javafx.BudgetEditorDialogFX.getDialogPane()" because "this.dialog" is null
+	at nonprofitbookkeeping.ui.javafx.BudgetEditorDialogFXTest.testCancelButton_ClosesDialog(BudgetEditorDialogFXTest.java:223)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	Suppressed: java.lang.RuntimeException: java.lang.NoClassDefFoundError: Could not initialize class javafx.scene.control.Control
+		at org.testfx.util.WaitForAsyncUtils.---- Delayed Exception: (See Trace Below) ----(WaitForAsyncUtils.java:0)
+	Caused by: java.lang.NoClassDefFoundError: Could not initialize class javafx.scene.control.Control
+		at javafx.scene.control.DialogPane.createContentLabel(DialogPane.java:168)
+		at javafx.scene.control.DialogPane.<init>(DialogPane.java:220)
+		at javafx.scene.control.Dialog.<init>(Dialog.java:512)
+		at nonprofitbookkeeping.ui.javafx.BudgetEditorDialogFX.<init>(BudgetEditorDialogFX.java:96)
+		at nonprofitbookkeeping.ui.javafx.BudgetEditorDialogFXTest.lambda$showDialog$0(BudgetEditorDialogFXTest.java:77)
+		at com.sun.javafx.application.PlatformImpl.lambda$runLater$10(PlatformImpl.java:456)
+		at java.base/java.security.AccessController.doPrivileged(AccessController.java:399)
+		at com.sun.javafx.application.PlatformImpl.lambda$runLater$11(PlatformImpl.java:455)
+		at com.sun.glass.ui.InvokeLaterDispatcher$Future.run(InvokeLaterDispatcher.java:95)
+		at com.sun.glass.ui.win.WinApplication._runLoop(Native Method)
+		at com.sun.glass.ui.win.WinApplication.lambda$runLoop$3(WinApplication.java:185)
+		at java.base/java.lang.Thread.run(Thread.java:833)
+
+nonprofitbookkeeping.ui.javafx.BudgetEditorDialogFXTest.testFieldInteractions_ValuesChange -- Time elapsed: 9251 s <<< ERROR!
+org.testfx.service.query.EmptyNodeQueryException: 
+there is no node in the scene-graph matching the query: NodeQuery: from nodes: [],
+lookup by function: "org.testfx.util.NodeQueryUtils$$Lambda$1312/0x0000000801648a88@70d577e9",
+lookup by selector: "#fiscalYearSpinner"
+	at org.testfx.service.query.impl.NodeQueryImpl.queryAs(NodeQueryImpl.java:141)
+	at nonprofitbookkeeping.ui.javafx.BudgetEditorDialogFXTest.testFieldInteractions_ValuesChange(BudgetEditorDialogFXTest.java:194)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	Suppressed: java.lang.RuntimeException: java.lang.NoClassDefFoundError: Could not initialize class javafx.scene.control.Label
+		at org.testfx.util.WaitForAsyncUtils.---- Delayed Exception: (See Trace Below) ----(WaitForAsyncUtils.java:0)
+	Caused by: java.lang.NoClassDefFoundError: Could not initialize class javafx.scene.control.Label
+		at javafx.scene.control.DialogPane.createContentLabel(DialogPane.java:168)
+		at javafx.scene.control.DialogPane.<init>(DialogPane.java:220)
+		at javafx.scene.control.Dialog.<init>(Dialog.java:512)
+		at nonprofitbookkeeping.ui.javafx.BudgetEditorDialogFX.<init>(BudgetEditorDialogFX.java:96)
+		at nonprofitbookkeeping.ui.javafx.BudgetEditorDialogFXTest.lambda$showDialog$0(BudgetEditorDialogFXTest.java:77)
+		at com.sun.javafx.application.PlatformImpl.lambda$runLater$10(PlatformImpl.java:456)
+		at java.base/java.security.AccessController.doPrivileged(AccessController.java:399)
+		at com.sun.javafx.application.PlatformImpl.lambda$runLater$11(PlatformImpl.java:455)
+		at com.sun.glass.ui.InvokeLaterDispatcher$Future.run(InvokeLaterDispatcher.java:95)
+		at com.sun.glass.ui.win.WinApplication._runLoop(Native Method)
+		at com.sun.glass.ui.win.WinApplication.lambda$runLoop$3(WinApplication.java:185)
+		at java.base/java.lang.Thread.run(Thread.java:833)
+
+nonprofitbookkeeping.ui.javafx.BudgetEditorDialogFXTest.testSaveButton_ClosesDialog -- Time elapsed: 12.21 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.ui.javafx.BudgetEditorDialogFX.getDialogPane()" because "this.dialog" is null
+	at nonprofitbookkeeping.ui.javafx.BudgetEditorDialogFXTest.testSaveButton_ClosesDialog(BudgetEditorDialogFXTest.java:210)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	Suppressed: java.lang.RuntimeException: java.lang.NoClassDefFoundError: Could not initialize class javafx.scene.control.Label
+		at org.testfx.util.WaitForAsyncUtils.---- Delayed Exception: (See Trace Below) ----(WaitForAsyncUtils.java:0)
+	Caused by: java.lang.NoClassDefFoundError: Could not initialize class javafx.scene.control.Label
+		at javafx.scene.control.DialogPane.createContentLabel(DialogPane.java:168)
+		at javafx.scene.control.DialogPane.<init>(DialogPane.java:220)
+		at javafx.scene.control.Dialog.<init>(Dialog.java:512)
+		at nonprofitbookkeeping.ui.javafx.BudgetEditorDialogFX.<init>(BudgetEditorDialogFX.java:96)
+		at nonprofitbookkeeping.ui.javafx.BudgetEditorDialogFXTest.lambda$showDialog$0(BudgetEditorDialogFXTest.java:77)
+		at com.sun.javafx.application.PlatformImpl.lambda$runLater$10(PlatformImpl.java:456)
+		at java.base/java.security.AccessController.doPrivileged(AccessController.java:399)
+		at com.sun.javafx.application.PlatformImpl.lambda$runLater$11(PlatformImpl.java:455)
+		at com.sun.glass.ui.InvokeLaterDispatcher$Future.run(InvokeLaterDispatcher.java:95)
+		at com.sun.glass.ui.win.WinApplication._runLoop(Native Method)
+		at com.sun.glass.ui.win.WinApplication.lambda$runLoop$3(WinApplication.java:185)
+		at java.base/java.lang.Thread.run(Thread.java:833)
+
+nonprofitbookkeeping.ui.javafx.BudgetEditorDialogFXTest.testEditMode_PopulatesFieldsFromExistingBudget -- Time elapsed: 11.71 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.ui.javafx.BudgetEditorDialogFX.getTitle()" because "this.dialog" is null
+	at nonprofitbookkeeping.ui.javafx.BudgetEditorDialogFXTest.testEditMode_PopulatesFieldsFromExistingBudget(BudgetEditorDialogFXTest.java:178)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	Suppressed: java.lang.RuntimeException: java.lang.NoClassDefFoundError: Could not initialize class javafx.scene.control.Label
+		at org.testfx.util.WaitForAsyncUtils.---- Delayed Exception: (See Trace Below) ----(WaitForAsyncUtils.java:0)
+	Caused by: java.lang.NoClassDefFoundError: Could not initialize class javafx.scene.control.Label
+		at javafx.scene.control.DialogPane.createContentLabel(DialogPane.java:168)
+		at javafx.scene.control.DialogPane.<init>(DialogPane.java:220)
+		at javafx.scene.control.Dialog.<init>(Dialog.java:512)
+		at nonprofitbookkeeping.ui.javafx.BudgetEditorDialogFX.<init>(BudgetEditorDialogFX.java:96)
+		at nonprofitbookkeeping.ui.javafx.BudgetEditorDialogFXTest.lambda$showDialog$0(BudgetEditorDialogFXTest.java:77)
+		at com.sun.javafx.application.PlatformImpl.lambda$runLater$10(PlatformImpl.java:456)
+		at java.base/java.security.AccessController.doPrivileged(AccessController.java:399)
+		at com.sun.javafx.application.PlatformImpl.lambda$runLater$11(PlatformImpl.java:455)
+		at com.sun.glass.ui.InvokeLaterDispatcher$Future.run(InvokeLaterDispatcher.java:95)
+		at com.sun.glass.ui.win.WinApplication._runLoop(Native Method)
+		at com.sun.glass.ui.win.WinApplication.lambda$runLoop$3(WinApplication.java:185)
+		at java.base/java.lang.Thread.run(Thread.java:833)
+
+nonprofitbookkeeping.ui.javafx.BudgetEditorDialogFXTest.testCreateMode_InitialStateAndFields -- Time elapsed: 11.55 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.ui.javafx.BudgetEditorDialogFX.getTitle()" because "this.dialog" is null
+	at nonprofitbookkeeping.ui.javafx.BudgetEditorDialogFXTest.testCreateMode_InitialStateAndFields(BudgetEditorDialogFXTest.java:146)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	Suppressed: java.lang.RuntimeException: java.lang.NoClassDefFoundError: Could not initialize class javafx.scene.control.Label
+		at org.testfx.util.WaitForAsyncUtils.---- Delayed Exception: (See Trace Below) ----(WaitForAsyncUtils.java:0)
+	Caused by: java.lang.NoClassDefFoundError: Could not initialize class javafx.scene.control.Label
+		at javafx.scene.control.DialogPane.createContentLabel(DialogPane.java:168)
+		at javafx.scene.control.DialogPane.<init>(DialogPane.java:220)
+		at javafx.scene.control.Dialog.<init>(Dialog.java:512)
+		at nonprofitbookkeeping.ui.javafx.BudgetEditorDialogFX.<init>(BudgetEditorDialogFX.java:96)
+		at nonprofitbookkeeping.ui.javafx.BudgetEditorDialogFXTest.lambda$showDialog$0(BudgetEditorDialogFXTest.java:77)
+		at com.sun.javafx.application.PlatformImpl.lambda$runLater$10(PlatformImpl.java:456)
+		at java.base/java.security.AccessController.doPrivileged(AccessController.java:399)
+		at com.sun.javafx.application.PlatformImpl.lambda$runLater$11(PlatformImpl.java:455)
+		at com.sun.glass.ui.InvokeLaterDispatcher$Future.run(InvokeLaterDispatcher.java:95)
+		at com.sun.glass.ui.win.WinApplication._runLoop(Native Method)
+		at com.sun.glass.ui.win.WinApplication.lambda$runLoop$3(WinApplication.java:185)
+		at java.base/java.lang.Thread.run(Thread.java:833)
+

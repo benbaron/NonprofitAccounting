@@ -24,6 +24,18 @@ public class NoFileCreatedException extends Exception
 		this.reason = message;
 	}
 	
+	/**  
+	 * Constructor NoFileCreatedException
+	 * @param string
+	 * @param e
+	 */
+	public NoFileCreatedException(String message, Exception e)
+	{
+		super(message); // Pass the message to the superclass constructor
+		this.reason = message;
+		
+	}
+
 	/**
 	 * The unique identifier for this serializable class.
 	 */

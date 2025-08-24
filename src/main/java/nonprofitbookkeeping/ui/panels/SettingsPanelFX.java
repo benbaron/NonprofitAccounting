@@ -271,6 +271,7 @@ public class SettingsPanelFX extends BorderPane
          * Builds and returns the "Backup" tab for the settings panel.
          * This tab provides buttons for creating and restoring backups using the
          * standard {@code .npbk} company archive format.
+
          *
          * @return A {@link Tab} configured with backup and restore options.
          */
@@ -287,6 +288,7 @@ public class SettingsPanelFX extends BorderPane
                                 new FileChooser.ExtensionFilter("Company Files", "*.npbk"));
 
                         File out = fc.showSaveDialog(null);
+
 			
 			if (out != null)
 			{
@@ -328,6 +330,7 @@ public class SettingsPanelFX extends BorderPane
                                 new FileChooser.ExtensionFilter("Company Files", "*.npbk"));
 
                         File f = fc.showOpenDialog(null);
+
 			
 			if (f != null)
 			{
