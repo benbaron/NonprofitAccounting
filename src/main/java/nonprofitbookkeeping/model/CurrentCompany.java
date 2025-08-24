@@ -23,6 +23,8 @@ import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.persistence.DatabaseManager;
 import nonprofitbookkeeping.persistence.DatabaseService;
 import nonprofitbookkeeping.core.JacksonDataStorer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Manages the currently active {@link Company} instance in the application.
@@ -39,7 +41,10 @@ public class CurrentCompany
 	/** Flag indicating whether a company is currently considered open. */
 	private static boolean companyIsOpen = false;
 	/** Database service used for loading and saving company data. */
-	private static DatabaseService DATABASE_SERVICE = new DatabaseService();
+        private static DatabaseService DATABASE_SERVICE = new DatabaseService();
+
+        /** Logger for this class. */
+        private static final Logger LOG = LoggerFactory.getLogger(CurrentCompany.class);
 	
 	/**
 	 * Directory where the persistent H2 database files live.
@@ -194,10 +199,17 @@ public class CurrentCompany
 	 * where changes should be flushed to the local database but no external
 	 * export is desired.
 	 */
-	public static void flushToDatabase()
-	{
-		DATABASE_SERVICE.saveCompany(company);		
-	}
+        public static void flushToDatabase()
+        {
+                if (company == null)
+                {
+                        LOG.warn("flushToDatabase called but no company is loaded");
+                        return;
+                }
+                LOG.debug("Flushing company '{}' (id: {}) to database", company.getName(),
+                        company.getId());
+                DATABASE_SERVICE.saveCompany(company);
+        }
 	
 	/**
 	* Loads company data from the specified file and makes it the active
@@ -316,16 +328,28 @@ public class CurrentCompany
 	 * first stored {@link Company} from the database into the
 	 * current context.
 	 */
-	public static void loadFromDatabase()
-	{
-		company = DATABASE_SERVICE.loadCompany();
-		
-		if (company != null)
-		{
-			markCompanyOpen();
-		}
-		
-	}
+        public static void loadFromDatabase()
+        {
+                try
+                {
+                        company = DATABASE_SERVICE.loadCompany();
+
+                        if (company != null)
+                        {
+                                LOG.info("Loaded company '{}' (id: {}) from database",
+                                        company.getName(), company.getId());
+                                markCompanyOpen();
+                        }
+                        else
+                        {
+                                LOG.info("No company found in database");
+                        }
+                }
+                catch (Exception e)
+                {
+                        LOG.error("Failed to load company from database", e);
+                }
+        }
 	
 	
 	/**
