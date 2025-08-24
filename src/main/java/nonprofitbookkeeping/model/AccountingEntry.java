@@ -146,17 +146,30 @@ public final class AccountingEntry implements Serializable
 	}
 	
 	
-	/**
-	 * Gets the associated transaction.
-	 * @return Associated transaction, or null if no transaction is associated.
-	 */
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	public
-		AccountingTransaction getTransaction()
-	{
-		return this.transaction;
-		
-	}
+        /**
+         * Gets the associated transaction.
+         * This is ignored during JSON serialization to prevent cycles.
+         *
+         * @return Associated transaction, or null if no transaction is associated.
+         */
+        @JsonIgnore
+        public AccountingTransaction getTransaction()
+        {
+                return this.transaction;
+
+        }
+
+        /**
+         * Convenience accessor that exposes only the identifier of the
+         * associated transaction for serialization purposes.
+         *
+         * @return id of the linked transaction or {@code null} if none
+         */
+        @JsonProperty("transactionId")
+        public Integer getTransactionId()
+        {
+                return (this.transaction != null) ? this.transaction.getId() : null;
+        }
 	
 	/**
 	 * Sets the transaction this entry belongs to.
