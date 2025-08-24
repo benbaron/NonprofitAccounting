@@ -11,7 +11,6 @@ import java.io.File;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.persistence.DatabaseService;
-import java.sql.SQLException;
 import nonprofitbookkeeping.service.SettingsService;
 import nonprofitbookkeeping.model.SettingsModel;
 import nonprofitbookkeeping.ui.ThemeManager;
@@ -252,8 +251,8 @@ public class SettingsPanelFX extends BorderPane
 	
         /**
          * Builds and returns the "Backup" tab for the settings panel.
-         * This tab provides buttons for creating and restoring backups
-         * of the underlying H2 database.
+         * This tab provides buttons for creating and restoring backups using the
+         * standard {@code .npbk} archive format.
          *
          * @return A {@link Tab} configured with backup and restore options.
          */
@@ -267,8 +266,7 @@ public class SettingsPanelFX extends BorderPane
                         FileChooser fc = new FileChooser();
                         fc.setTitle("Save Backup");
                         fc.getExtensionFilters().addAll(
-                                new FileChooser.ExtensionFilter("Company Files", "*.npbk"),
-                                new FileChooser.ExtensionFilter("SQL Backup files", "*.sql"));
+                                new FileChooser.ExtensionFilter("Company Files", "*.npbk"));
                         File out = fc.showSaveDialog(null);
 
                         if (out != null)
@@ -292,8 +290,7 @@ public class SettingsPanelFX extends BorderPane
                         FileChooser fc = new FileChooser();
                         fc.setTitle("Open Backup");
                         fc.getExtensionFilters().addAll(
-                                new FileChooser.ExtensionFilter("Company Files", "*.npbk"),
-                                new FileChooser.ExtensionFilter("SQL Backup files", "*.sql"));
+                                new FileChooser.ExtensionFilter("Company Files", "*.npbk"));
                         File f = fc.showOpenDialog(null);
 
                         if (f != null)

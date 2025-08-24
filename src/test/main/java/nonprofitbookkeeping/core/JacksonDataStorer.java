@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.ByteArrayOutputStream;
@@ -51,10 +50,17 @@ public class JacksonDataStorer implements DataStorer
                         .setSetterInfo(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY));
                 this.mapper.getFactory().configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
 
-                BasicPolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder()
-                        .allowIfSubType("nonprofitbookkeeping.reports.datasource.scareports")
-                        .build();
-                this.mapper.activateDefaultTypingAsProperty(ptv, ObjectMapper.DefaultTyping.NON_FINAL, "@class");
+                /*
+                 * Previous versions globally enabled default typing to insert
+                 * "@class" metadata for every non-final type.  When loading legacy
+                 * `.npbk` files that lacked this attribute on the root Company
+                 * object, Jackson threw an {@code InvalidTypeIdException}.  The
+                 * {@link nonprofitbookkeeping.reports.datasource.scareports.SupplementalRecord}
+                 * interface already embeds type information via
+                 * {@code @JsonTypeInfo}, so we can rely on that annotation and drop
+                 * global default typing.  This allows both old and new files to be
+                 * deserialized successfully without requiring an "@class" property.
+                 */
         }
 	
 	/**
@@ -186,6 +192,9 @@ public class JacksonDataStorer implements DataStorer
                 return JacksonDataStorer.dataStorer;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public ObjectMapper getObjectMapper()
         {
