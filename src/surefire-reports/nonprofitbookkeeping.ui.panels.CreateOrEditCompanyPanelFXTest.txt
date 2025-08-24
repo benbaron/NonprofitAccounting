@@ -1,0 +1,106 @@
+-------------------------------------------------------------------------------
+Test set: nonprofitbookkeeping.ui.panels.CreateOrEditCompanyPanelFXTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 3, Skipped: 0, Time elapsed: 0.562 s <<< FAILURE! -- in nonprofitbookkeeping.ui.panels.CreateOrEditCompanyPanelFXTest
+nonprofitbookkeeping.ui.panels.CreateOrEditCompanyPanelFXTest.testFillAndSaveForm_VerifyCallbackData -- Time elapsed: 0.221 s <<< ERROR!
+java.lang.RuntimeException: java.util.concurrent.ExecutionException: java.lang.NoClassDefFoundError: Could not initialize class javafx.scene.control.Labeled
+	at org.testfx.util.WaitForAsyncUtils.waitFor(WaitForAsyncUtils.java:301)
+	at org.testfx.api.FxToolkit.waitForSetup(FxToolkit.java:277)
+	at org.testfx.api.FxToolkit.setupApplication(FxToolkit.java:164)
+	at org.testfx.framework.junit5.ApplicationTest.internalBefore(ApplicationTest.java:40)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+Caused by: java.util.concurrent.ExecutionException: java.lang.NoClassDefFoundError: Could not initialize class javafx.scene.control.Labeled
+	at java.base/java.util.concurrent.FutureTask.report(FutureTask.java:122)
+	at java.base/java.util.concurrent.FutureTask.get(FutureTask.java:191)
+	at org.testfx.util.WaitForAsyncUtils$ASyncFXCallable.get(WaitForAsyncUtils.java:698)
+	at org.testfx.toolkit.impl.ToolkitServiceImpl.lambda$setupApplication$6(ToolkitServiceImpl.java:131)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+Caused by: java.lang.NoClassDefFoundError: Could not initialize class javafx.scene.control.Labeled
+	at nonprofitbookkeeping.ui.panels.CreateOrEditCompanyPanelFX.<init>(CreateOrEditCompanyPanelFX.java:29)
+	at nonprofitbookkeeping.ui.panels.CreateOrEditCompanyPanelFXTest.start(CreateOrEditCompanyPanelFXTest.java:58)
+	at org.testfx.framework.junit5.ApplicationAdapter.start(ApplicationAdapter.java:37)
+	at org.testfx.toolkit.impl.ApplicationServiceImpl.lambda$start$0(ApplicationServiceImpl.java:49)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at com.sun.javafx.application.PlatformImpl.lambda$runLater$10(PlatformImpl.java:456)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at com.sun.javafx.application.PlatformImpl.lambda$runLater$11(PlatformImpl.java:455)
+	at com.sun.glass.ui.InvokeLaterDispatcher$Future.run(InvokeLaterDispatcher.java:95)
+	at com.sun.glass.ui.win.WinApplication._runLoop(Native Method)
+	at com.sun.glass.ui.win.WinApplication.lambda$runLoop$3(WinApplication.java:185)
+	... 1 more
+
+nonprofitbookkeeping.ui.panels.CreateOrEditCompanyPanelFXTest.testInitialState_Step1Visible_NavigationButtonsCorrect -- Time elapsed: 0.168 s <<< ERROR!
+java.lang.RuntimeException: java.util.concurrent.ExecutionException: java.lang.NoClassDefFoundError: Could not initialize class javafx.scene.control.Button
+	at org.testfx.util.WaitForAsyncUtils.waitFor(WaitForAsyncUtils.java:301)
+	at org.testfx.api.FxToolkit.waitForSetup(FxToolkit.java:277)
+	at org.testfx.api.FxToolkit.setupApplication(FxToolkit.java:164)
+	at org.testfx.framework.junit5.ApplicationTest.internalBefore(ApplicationTest.java:40)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+Caused by: java.util.concurrent.ExecutionException: java.lang.NoClassDefFoundError: Could not initialize class javafx.scene.control.Button
+	at java.base/java.util.concurrent.FutureTask.report(FutureTask.java:122)
+	at java.base/java.util.concurrent.FutureTask.get(FutureTask.java:191)
+	at org.testfx.util.WaitForAsyncUtils$ASyncFXCallable.get(WaitForAsyncUtils.java:698)
+	at org.testfx.toolkit.impl.ToolkitServiceImpl.lambda$setupApplication$6(ToolkitServiceImpl.java:131)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+Caused by: java.lang.NoClassDefFoundError: Could not initialize class javafx.scene.control.Button
+	at nonprofitbookkeeping.ui.panels.CreateOrEditCompanyPanelFX.<init>(CreateOrEditCompanyPanelFX.java:29)
+	at nonprofitbookkeeping.ui.panels.CreateOrEditCompanyPanelFXTest.start(CreateOrEditCompanyPanelFXTest.java:58)
+	at org.testfx.framework.junit5.ApplicationAdapter.start(ApplicationAdapter.java:37)
+	at org.testfx.toolkit.impl.ApplicationServiceImpl.lambda$start$0(ApplicationServiceImpl.java:49)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at com.sun.javafx.application.PlatformImpl.lambda$runLater$10(PlatformImpl.java:456)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at com.sun.javafx.application.PlatformImpl.lambda$runLater$11(PlatformImpl.java:455)
+	at com.sun.glass.ui.InvokeLaterDispatcher$Future.run(InvokeLaterDispatcher.java:95)
+	at com.sun.glass.ui.win.WinApplication._runLoop(Native Method)
+	at com.sun.glass.ui.win.WinApplication.lambda$runLoop$3(WinApplication.java:185)
+	... 1 more
+
+nonprofitbookkeeping.ui.panels.CreateOrEditCompanyPanelFXTest.testNavigation_NextAndBackButtons -- Time elapsed: 0.169 s <<< ERROR!
+java.lang.RuntimeException: java.util.concurrent.ExecutionException: java.lang.NoClassDefFoundError: Could not initialize class javafx.scene.control.Button
+	at org.testfx.util.WaitForAsyncUtils.waitFor(WaitForAsyncUtils.java:301)
+	at org.testfx.api.FxToolkit.waitForSetup(FxToolkit.java:277)
+	at org.testfx.api.FxToolkit.setupApplication(FxToolkit.java:164)
+	at org.testfx.framework.junit5.ApplicationTest.internalBefore(ApplicationTest.java:40)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+Caused by: java.util.concurrent.ExecutionException: java.lang.NoClassDefFoundError: Could not initialize class javafx.scene.control.Button
+	at java.base/java.util.concurrent.FutureTask.report(FutureTask.java:122)
+	at java.base/java.util.concurrent.FutureTask.get(FutureTask.java:191)
+	at org.testfx.util.WaitForAsyncUtils$ASyncFXCallable.get(WaitForAsyncUtils.java:698)
+	at org.testfx.toolkit.impl.ToolkitServiceImpl.lambda$setupApplication$6(ToolkitServiceImpl.java:131)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+Caused by: java.lang.NoClassDefFoundError: Could not initialize class javafx.scene.control.Button
+	at nonprofitbookkeeping.ui.panels.CreateOrEditCompanyPanelFX.<init>(CreateOrEditCompanyPanelFX.java:29)
+	at nonprofitbookkeeping.ui.panels.CreateOrEditCompanyPanelFXTest.start(CreateOrEditCompanyPanelFXTest.java:58)
+	at org.testfx.framework.junit5.ApplicationAdapter.start(ApplicationAdapter.java:37)
+	at org.testfx.toolkit.impl.ApplicationServiceImpl.lambda$start$0(ApplicationServiceImpl.java:49)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at com.sun.javafx.application.PlatformImpl.lambda$runLater$10(PlatformImpl.java:456)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at com.sun.javafx.application.PlatformImpl.lambda$runLater$11(PlatformImpl.java:455)
+	at com.sun.glass.ui.InvokeLaterDispatcher$Future.run(InvokeLaterDispatcher.java:95)
+	at com.sun.glass.ui.win.WinApplication._runLoop(Native Method)
+	at com.sun.glass.ui.win.WinApplication.lambda$runLoop$3(WinApplication.java:185)
+	... 1 more
+

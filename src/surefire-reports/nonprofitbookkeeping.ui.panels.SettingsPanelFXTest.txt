@@ -1,0 +1,168 @@
+-------------------------------------------------------------------------------
+Test set: nonprofitbookkeeping.ui.panels.SettingsPanelFXTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 4, Skipped: 1, Time elapsed: 1.197 s <<< FAILURE! -- in nonprofitbookkeeping.ui.panels.SettingsPanelFXTest
+nonprofitbookkeeping.ui.panels.SettingsPanelFXTest.testCompanyInfoTab_InitialValuesAndInteraction -- Time elapsed: 0.454 s <<< ERROR!
+java.lang.RuntimeException: 
+java.util.concurrent.ExecutionException: org.testfx.service.query.EmptyNodeQueryException: there is no node in the scene-graph matching the query: NodeQuery: from nodes: [SettingsPanelFX@1933ff1b[styleClass=root]],
+lookup by function: "org.testfx.util.NodeQueryUtils$$Lambda$1312/0x0000000801648a88@43ef4709",
+lookup by selector: ".tab-pane"
+	at org.testfx.util.WaitForAsyncUtils.waitFor(WaitForAsyncUtils.java:301)
+	at org.testfx.api.FxToolkit.waitForSetup(FxToolkit.java:277)
+	at org.testfx.api.FxToolkit.setupApplication(FxToolkit.java:164)
+	at org.testfx.framework.junit5.ApplicationTest.internalBefore(ApplicationTest.java:40)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+Caused by: java.util.concurrent.ExecutionException: org.testfx.service.query.EmptyNodeQueryException: there is no node in the scene-graph matching the query: NodeQuery: from nodes: [SettingsPanelFX@1933ff1b[styleClass=root]],
+lookup by function: "org.testfx.util.NodeQueryUtils$$Lambda$1312/0x0000000801648a88@43ef4709",
+lookup by selector: ".tab-pane"
+	at java.base/java.util.concurrent.FutureTask.report(FutureTask.java:122)
+	at java.base/java.util.concurrent.FutureTask.get(FutureTask.java:191)
+	at org.testfx.util.WaitForAsyncUtils$ASyncFXCallable.get(WaitForAsyncUtils.java:698)
+	at org.testfx.toolkit.impl.ToolkitServiceImpl.lambda$setupApplication$6(ToolkitServiceImpl.java:131)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+Caused by: org.testfx.service.query.EmptyNodeQueryException: there is no node in the scene-graph matching the query: NodeQuery: from nodes: [SettingsPanelFX@1933ff1b[styleClass=root]],
+lookup by function: "org.testfx.util.NodeQueryUtils$$Lambda$1312/0x0000000801648a88@43ef4709",
+lookup by selector: ".tab-pane"
+	at org.testfx.service.query.impl.NodeQueryImpl.queryAs(NodeQueryImpl.java:141)
+	at nonprofitbookkeeping.ui.panels.SettingsPanelFXTest.start(SettingsPanelFXTest.java:43)
+	at org.testfx.framework.junit5.ApplicationAdapter.start(ApplicationAdapter.java:37)
+	at org.testfx.toolkit.impl.ApplicationServiceImpl.lambda$start$0(ApplicationServiceImpl.java:49)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at com.sun.javafx.application.PlatformImpl.lambda$runLater$10(PlatformImpl.java:456)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at com.sun.javafx.application.PlatformImpl.lambda$runLater$11(PlatformImpl.java:455)
+	at com.sun.glass.ui.InvokeLaterDispatcher$Future.run(InvokeLaterDispatcher.java:95)
+	at com.sun.glass.ui.win.WinApplication._runLoop(Native Method)
+	at com.sun.glass.ui.win.WinApplication.lambda$runLoop$3(WinApplication.java:185)
+	... 1 more
+
+nonprofitbookkeeping.ui.panels.SettingsPanelFXTest.testUiPreferencesTab_InitialValuesAndInteraction -- Time elapsed: 0.255 s <<< ERROR!
+java.lang.RuntimeException: 
+java.util.concurrent.ExecutionException: org.testfx.service.query.EmptyNodeQueryException: there is no node in the scene-graph matching the query: NodeQuery: from nodes: [SettingsPanelFX@144c91cb[styleClass=root]],
+lookup by function: "org.testfx.util.NodeQueryUtils$$Lambda$1312/0x0000000801648a88@22e22008",
+lookup by selector: ".tab-pane"
+	at org.testfx.util.WaitForAsyncUtils.waitFor(WaitForAsyncUtils.java:301)
+	at org.testfx.api.FxToolkit.waitForSetup(FxToolkit.java:277)
+	at org.testfx.api.FxToolkit.setupApplication(FxToolkit.java:164)
+	at org.testfx.framework.junit5.ApplicationTest.internalBefore(ApplicationTest.java:40)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+Caused by: java.util.concurrent.ExecutionException: org.testfx.service.query.EmptyNodeQueryException: there is no node in the scene-graph matching the query: NodeQuery: from nodes: [SettingsPanelFX@144c91cb[styleClass=root]],
+lookup by function: "org.testfx.util.NodeQueryUtils$$Lambda$1312/0x0000000801648a88@22e22008",
+lookup by selector: ".tab-pane"
+	at java.base/java.util.concurrent.FutureTask.report(FutureTask.java:122)
+	at java.base/java.util.concurrent.FutureTask.get(FutureTask.java:191)
+	at org.testfx.util.WaitForAsyncUtils$ASyncFXCallable.get(WaitForAsyncUtils.java:698)
+	at org.testfx.toolkit.impl.ToolkitServiceImpl.lambda$setupApplication$6(ToolkitServiceImpl.java:131)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+Caused by: org.testfx.service.query.EmptyNodeQueryException: there is no node in the scene-graph matching the query: NodeQuery: from nodes: [SettingsPanelFX@144c91cb[styleClass=root]],
+lookup by function: "org.testfx.util.NodeQueryUtils$$Lambda$1312/0x0000000801648a88@22e22008",
+lookup by selector: ".tab-pane"
+	at org.testfx.service.query.impl.NodeQueryImpl.queryAs(NodeQueryImpl.java:141)
+	at nonprofitbookkeeping.ui.panels.SettingsPanelFXTest.start(SettingsPanelFXTest.java:43)
+	at org.testfx.framework.junit5.ApplicationAdapter.start(ApplicationAdapter.java:37)
+	at org.testfx.toolkit.impl.ApplicationServiceImpl.lambda$start$0(ApplicationServiceImpl.java:49)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at com.sun.javafx.application.PlatformImpl.lambda$runLater$10(PlatformImpl.java:456)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at com.sun.javafx.application.PlatformImpl.lambda$runLater$11(PlatformImpl.java:455)
+	at com.sun.glass.ui.InvokeLaterDispatcher$Future.run(InvokeLaterDispatcher.java:95)
+	at com.sun.glass.ui.win.WinApplication._runLoop(Native Method)
+	at com.sun.glass.ui.win.WinApplication.lambda$runLoop$3(WinApplication.java:185)
+	... 1 more
+
+nonprofitbookkeeping.ui.panels.SettingsPanelFXTest.testAccountingTab_InitialValuesAndInteraction -- Time elapsed: 0.247 s <<< ERROR!
+java.lang.RuntimeException: 
+java.util.concurrent.ExecutionException: org.testfx.service.query.EmptyNodeQueryException: there is no node in the scene-graph matching the query: NodeQuery: from nodes: [SettingsPanelFX@6d06ce28[styleClass=root]],
+lookup by function: "org.testfx.util.NodeQueryUtils$$Lambda$1312/0x0000000801648a88@2f82bd95",
+lookup by selector: ".tab-pane"
+	at org.testfx.util.WaitForAsyncUtils.waitFor(WaitForAsyncUtils.java:301)
+	at org.testfx.api.FxToolkit.waitForSetup(FxToolkit.java:277)
+	at org.testfx.api.FxToolkit.setupApplication(FxToolkit.java:164)
+	at org.testfx.framework.junit5.ApplicationTest.internalBefore(ApplicationTest.java:40)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+Caused by: java.util.concurrent.ExecutionException: org.testfx.service.query.EmptyNodeQueryException: there is no node in the scene-graph matching the query: NodeQuery: from nodes: [SettingsPanelFX@6d06ce28[styleClass=root]],
+lookup by function: "org.testfx.util.NodeQueryUtils$$Lambda$1312/0x0000000801648a88@2f82bd95",
+lookup by selector: ".tab-pane"
+	at java.base/java.util.concurrent.FutureTask.report(FutureTask.java:122)
+	at java.base/java.util.concurrent.FutureTask.get(FutureTask.java:191)
+	at org.testfx.util.WaitForAsyncUtils$ASyncFXCallable.get(WaitForAsyncUtils.java:698)
+	at org.testfx.toolkit.impl.ToolkitServiceImpl.lambda$setupApplication$6(ToolkitServiceImpl.java:131)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+Caused by: org.testfx.service.query.EmptyNodeQueryException: there is no node in the scene-graph matching the query: NodeQuery: from nodes: [SettingsPanelFX@6d06ce28[styleClass=root]],
+lookup by function: "org.testfx.util.NodeQueryUtils$$Lambda$1312/0x0000000801648a88@2f82bd95",
+lookup by selector: ".tab-pane"
+	at org.testfx.service.query.impl.NodeQueryImpl.queryAs(NodeQueryImpl.java:141)
+	at nonprofitbookkeeping.ui.panels.SettingsPanelFXTest.start(SettingsPanelFXTest.java:43)
+	at org.testfx.framework.junit5.ApplicationAdapter.start(ApplicationAdapter.java:37)
+	at org.testfx.toolkit.impl.ApplicationServiceImpl.lambda$start$0(ApplicationServiceImpl.java:49)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at com.sun.javafx.application.PlatformImpl.lambda$runLater$10(PlatformImpl.java:456)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at com.sun.javafx.application.PlatformImpl.lambda$runLater$11(PlatformImpl.java:455)
+	at com.sun.glass.ui.InvokeLaterDispatcher$Future.run(InvokeLaterDispatcher.java:95)
+	at com.sun.glass.ui.win.WinApplication._runLoop(Native Method)
+	at com.sun.glass.ui.win.WinApplication.lambda$runLoop$3(WinApplication.java:185)
+	... 1 more
+
+nonprofitbookkeeping.ui.panels.SettingsPanelFXTest.testUsersTab_TableDisplaysDemoData -- Time elapsed: 0.235 s <<< ERROR!
+java.lang.RuntimeException: 
+java.util.concurrent.ExecutionException: org.testfx.service.query.EmptyNodeQueryException: there is no node in the scene-graph matching the query: NodeQuery: from nodes: [SettingsPanelFX@4a174e2d[styleClass=root]],
+lookup by function: "org.testfx.util.NodeQueryUtils$$Lambda$1312/0x0000000801648a88@51295af1",
+lookup by selector: ".tab-pane"
+	at org.testfx.util.WaitForAsyncUtils.waitFor(WaitForAsyncUtils.java:301)
+	at org.testfx.api.FxToolkit.waitForSetup(FxToolkit.java:277)
+	at org.testfx.api.FxToolkit.setupApplication(FxToolkit.java:164)
+	at org.testfx.framework.junit5.ApplicationTest.internalBefore(ApplicationTest.java:40)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+Caused by: java.util.concurrent.ExecutionException: org.testfx.service.query.EmptyNodeQueryException: there is no node in the scene-graph matching the query: NodeQuery: from nodes: [SettingsPanelFX@4a174e2d[styleClass=root]],
+lookup by function: "org.testfx.util.NodeQueryUtils$$Lambda$1312/0x0000000801648a88@51295af1",
+lookup by selector: ".tab-pane"
+	at java.base/java.util.concurrent.FutureTask.report(FutureTask.java:122)
+	at java.base/java.util.concurrent.FutureTask.get(FutureTask.java:191)
+	at org.testfx.util.WaitForAsyncUtils$ASyncFXCallable.get(WaitForAsyncUtils.java:698)
+	at org.testfx.toolkit.impl.ToolkitServiceImpl.lambda$setupApplication$6(ToolkitServiceImpl.java:131)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+Caused by: org.testfx.service.query.EmptyNodeQueryException: there is no node in the scene-graph matching the query: NodeQuery: from nodes: [SettingsPanelFX@4a174e2d[styleClass=root]],
+lookup by function: "org.testfx.util.NodeQueryUtils$$Lambda$1312/0x0000000801648a88@51295af1",
+lookup by selector: ".tab-pane"
+	at org.testfx.service.query.impl.NodeQueryImpl.queryAs(NodeQueryImpl.java:141)
+	at nonprofitbookkeeping.ui.panels.SettingsPanelFXTest.start(SettingsPanelFXTest.java:43)
+	at org.testfx.framework.junit5.ApplicationAdapter.start(ApplicationAdapter.java:37)
+	at org.testfx.toolkit.impl.ApplicationServiceImpl.lambda$start$0(ApplicationServiceImpl.java:49)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at com.sun.javafx.application.PlatformImpl.lambda$runLater$10(PlatformImpl.java:456)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at com.sun.javafx.application.PlatformImpl.lambda$runLater$11(PlatformImpl.java:455)
+	at com.sun.glass.ui.InvokeLaterDispatcher$Future.run(InvokeLaterDispatcher.java:95)
+	at com.sun.glass.ui.win.WinApplication._runLoop(Native Method)
+	at com.sun.glass.ui.win.WinApplication.lambda$runLoop$3(WinApplication.java:185)
+	... 1 more
+

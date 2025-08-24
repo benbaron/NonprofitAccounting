@@ -1,0 +1,27 @@
+-------------------------------------------------------------------------------
+Test set: nonprofitbookkeeping.service.DonationRowServiceTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.032 s <<< FAILURE! -- in nonprofitbookkeeping.service.DonationRowServiceTest
+nonprofitbookkeeping.service.DonationRowServiceTest.testSaveAndLoad -- Time elapsed: 0.029 s <<< ERROR!
+com.fasterxml.jackson.databind.exc.InvalidTypeIdException: 
+Could not resolve subtype of [simple type, class nonprofitbookkeeping.reports.datasource.scareports.DonationRow]: missing type id property '@class'
+ at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 8, column: 1] (through reference chain: java.util.ArrayList[0])
+	at com.fasterxml.jackson.databind.exc.InvalidTypeIdException.from(InvalidTypeIdException.java:43)
+	at com.fasterxml.jackson.databind.DeserializationContext.missingTypeIdException(DeserializationContext.java:2051)
+	at com.fasterxml.jackson.databind.DeserializationContext.handleMissingTypeId(DeserializationContext.java:1622)
+	at com.fasterxml.jackson.databind.jsontype.impl.TypeDeserializerBase._handleMissingTypeId(TypeDeserializerBase.java:309)
+	at com.fasterxml.jackson.databind.jsontype.impl.AsPropertyTypeDeserializer._deserializeTypedUsingDefaultImpl(AsPropertyTypeDeserializer.java:211)
+	at com.fasterxml.jackson.databind.jsontype.impl.AsPropertyTypeDeserializer.deserializeTypedFromObject(AsPropertyTypeDeserializer.java:145)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.deserializeWithType(BeanDeserializerBase.java:1382)
+	at com.fasterxml.jackson.databind.deser.std.CollectionDeserializer._deserializeFromArray(CollectionDeserializer.java:363)
+	at com.fasterxml.jackson.databind.deser.std.CollectionDeserializer.deserialize(CollectionDeserializer.java:246)
+	at com.fasterxml.jackson.databind.deser.std.CollectionDeserializer.deserialize(CollectionDeserializer.java:30)
+	at com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:342)
+	at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:4917)
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3765)
+	at nonprofitbookkeeping.service.DonationRowService.loadRows(DonationRowService.java:79)
+	at nonprofitbookkeeping.service.DonationRowServiceTest.testSaveAndLoad(DonationRowServiceTest.java:42)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+

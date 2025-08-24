@@ -1,0 +1,179 @@
+-------------------------------------------------------------------------------
+Test set: nonprofitbookkeeping.service.InventoryServiceTest
+-------------------------------------------------------------------------------
+Tests run: 25, Failures: 0, Errors: 25, Skipped: 0, Time elapsed: 0.026 s <<< FAILURE! -- in nonprofitbookkeeping.service.InventoryServiceTest
+nonprofitbookkeeping.service.InventoryServiceTest.testDepreciationNoRateMethod -- Time elapsed: 0.001 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.service.InventoryService.clearInventory()" because "this.service" is null
+	at nonprofitbookkeeping.service.InventoryServiceTest.setUp(InventoryServiceTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.InventoryServiceTest.testMultipleDepreciationApplications -- Time elapsed: 0.001 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.service.InventoryService.clearInventory()" because "this.service" is null
+	at nonprofitbookkeeping.service.InventoryServiceTest.setUp(InventoryServiceTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.InventoryServiceTest.testDepreciationNullInitialAccDep -- Time elapsed: 0.001 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.service.InventoryService.clearInventory()" because "this.service" is null
+	at nonprofitbookkeeping.service.InventoryServiceTest.setUp(InventoryServiceTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.InventoryServiceTest.testGetInventoryItemsEmpty -- Time elapsed: 0.001 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.service.InventoryService.clearInventory()" because "this.service" is null
+	at nonprofitbookkeeping.service.InventoryServiceTest.setUp(InventoryServiceTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.InventoryServiceTest.testAddNewItem -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.service.InventoryService.clearInventory()" because "this.service" is null
+	at nonprofitbookkeeping.service.InventoryServiceTest.setUp(InventoryServiceTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.InventoryServiceTest.testDepreciationNullOriginalCost -- Time elapsed: 0.001 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.service.InventoryService.clearInventory()" because "this.service" is null
+	at nonprofitbookkeeping.service.InventoryServiceTest.setUp(InventoryServiceTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.InventoryServiceTest.testDeleteItemNullId -- Time elapsed: 0.001 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.service.InventoryService.clearInventory()" because "this.service" is null
+	at nonprofitbookkeeping.service.InventoryServiceTest.setUp(InventoryServiceTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.InventoryServiceTest.testDepreciationNegativeRate -- Time elapsed: 0.001 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.service.InventoryService.clearInventory()" because "this.service" is null
+	at nonprofitbookkeeping.service.InventoryServiceTest.setUp(InventoryServiceTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.InventoryServiceTest.testAddItemNullId -- Time elapsed: 0.001 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.service.InventoryService.clearInventory()" because "this.service" is null
+	at nonprofitbookkeeping.service.InventoryServiceTest.setUp(InventoryServiceTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.InventoryServiceTest.testListItemsEmpty -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.service.InventoryService.clearInventory()" because "this.service" is null
+	at nonprofitbookkeeping.service.InventoryServiceTest.setUp(InventoryServiceTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.InventoryServiceTest.testUpdateItemNullId -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.service.InventoryService.clearInventory()" because "this.service" is null
+	at nonprofitbookkeeping.service.InventoryServiceTest.setUp(InventoryServiceTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.InventoryServiceTest.testDepreciationStraightLineValidRateWithExistingAccDep -- Time elapsed: 0.001 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.service.InventoryService.clearInventory()" because "this.service" is null
+	at nonprofitbookkeeping.service.InventoryServiceTest.setUp(InventoryServiceTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.InventoryServiceTest.testGetInventoryItemsWithData -- Time elapsed: 0.001 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.service.InventoryService.clearInventory()" because "this.service" is null
+	at nonprofitbookkeeping.service.InventoryServiceTest.setUp(InventoryServiceTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.InventoryServiceTest.testDeleteItemExisting -- Time elapsed: 0.001 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.service.InventoryService.clearInventory()" because "this.service" is null
+	at nonprofitbookkeeping.service.InventoryServiceTest.setUp(InventoryServiceTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.InventoryServiceTest.testListItemsWithItems -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.service.InventoryService.clearInventory()" because "this.service" is null
+	at nonprofitbookkeeping.service.InventoryServiceTest.setUp(InventoryServiceTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.InventoryServiceTest.testUpdateItemExisting -- Time elapsed: 0.001 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.service.InventoryService.clearInventory()" because "this.service" is null
+	at nonprofitbookkeeping.service.InventoryServiceTest.setUp(InventoryServiceTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.InventoryServiceTest.testDeleteItemNonExistent -- Time elapsed: 0.001 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.service.InventoryService.clearInventory()" because "this.service" is null
+	at nonprofitbookkeeping.service.InventoryServiceTest.setUp(InventoryServiceTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.InventoryServiceTest.testUpdateItemBlankId -- Time elapsed: 0.001 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.service.InventoryService.clearInventory()" because "this.service" is null
+	at nonprofitbookkeeping.service.InventoryServiceTest.setUp(InventoryServiceTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.InventoryServiceTest.testAddItemOverwrite -- Time elapsed: 0.002 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.service.InventoryService.clearInventory()" because "this.service" is null
+	at nonprofitbookkeeping.service.InventoryServiceTest.setUp(InventoryServiceTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.InventoryServiceTest.testDepreciationNonStraightLineMethod -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.service.InventoryService.clearInventory()" because "this.service" is null
+	at nonprofitbookkeeping.service.InventoryServiceTest.setUp(InventoryServiceTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.InventoryServiceTest.testAddNullItem -- Time elapsed: 0.001 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.service.InventoryService.clearInventory()" because "this.service" is null
+	at nonprofitbookkeeping.service.InventoryServiceTest.setUp(InventoryServiceTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.InventoryServiceTest.testUpdateItemNull -- Time elapsed: 0.001 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.service.InventoryService.clearInventory()" because "this.service" is null
+	at nonprofitbookkeeping.service.InventoryServiceTest.setUp(InventoryServiceTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.InventoryServiceTest.testDepreciationZeroRate -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.service.InventoryService.clearInventory()" because "this.service" is null
+	at nonprofitbookkeeping.service.InventoryServiceTest.setUp(InventoryServiceTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.InventoryServiceTest.testUpdateItemNonExistent -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.service.InventoryService.clearInventory()" because "this.service" is null
+	at nonprofitbookkeeping.service.InventoryServiceTest.setUp(InventoryServiceTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+nonprofitbookkeeping.service.InventoryServiceTest.testDepreciationStraightLineValidRate -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "nonprofitbookkeeping.service.InventoryService.clearInventory()" because "this.service" is null
+	at nonprofitbookkeeping.service.InventoryServiceTest.setUp(InventoryServiceTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
