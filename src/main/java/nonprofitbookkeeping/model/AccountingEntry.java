@@ -4,6 +4,8 @@ package nonprofitbookkeeping.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import jakarta.persistence.Entity;
@@ -39,7 +41,9 @@ public final class AccountingEntry implements Serializable
 	/**
 	 * serialVersionUID : long
 	 */
-	private static final long serialVersionUID = 5837792781542533633L;
+        private static final long serialVersionUID = 5837792781542533633L;
+
+        private static final Logger LOG = LoggerFactory.getLogger(AccountingEntry.class);
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -287,14 +291,27 @@ public final class AccountingEntry implements Serializable
 	 * 
 	 * @return Account object
 	 */
-	public Account getAccount()
-	{
-		return CurrentCompany
-			.getCompany()
-			.getChartOfAccounts()
-			.getAccount(this.accountNumber);
-		
-	}
+        public Account getAccount()
+        {
+                Company company = CurrentCompany.getCompany();
+                if (company == null)
+                {
+                        LOG.debug("No current company; cannot resolve account {}", this.accountNumber);
+                        return null;
+                }
+
+                if (company.getChartOfAccounts() == null)
+                {
+                        LOG.debug(
+                                "Company '{}' has no chart of accounts; cannot resolve account {}",
+                                company.getCompanyProfile().getCompanyName(),
+                                this.accountNumber);
+                        return null;
+                }
+
+                return company.getChartOfAccounts().getAccount(this.accountNumber);
+
+        }
 	
 	/**
 	 * {@inheritDoc}
@@ -315,10 +332,10 @@ public final class AccountingEntry implements Serializable
 	 *
 	 * @return primary key value
 	 */
-	public int getId()
-	{
-		return this.id;
-		
-	}
+        public int getId()
+        {
+                return this.id;
+
+        }
 	
 }
