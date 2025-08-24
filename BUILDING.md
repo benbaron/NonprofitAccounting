@@ -79,6 +79,8 @@ mvn dependency:copy@copy-maven-plugins
 - Use vendored repo:
 
 ```
+mvn -q clean test
+mvn -Dmaven.repo.local=./maven-repo -Pvendor -DskipTests validate
 mvn -Dmaven.repo.local=./maven-repo --offline test
 ```
 

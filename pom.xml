@@ -1,419 +1,576 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>nonprofitbookkeeping</groupId>
-    <artifactId>nonprofitbookkeeping</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>nonprofitbookkeeping</groupId>
+  <artifactId>nonprofitbookkeeping</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
 
-    <properties>
-        <javafx.version>21.0.6</javafx.version>
-        <jasperreports.version>7.0.3</jasperreports.version>
-    </properties>
+  <properties>
+    <javafx.version>21.0.6</javafx.version>
+    <jasperreports.version>7.0.3</jasperreports.version>
 
-    <repositories>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-        <repository>
-            <id>local-repo</id>
-            <url>file://${user.home}/.m2/repository</url>
-        </repository>
-    </repositories>
+    <maven.compiler.release>17</maven.compiler.release>
+    <surefire.version>3.5.3</surefire.version>
+    <compiler.version>3.13.0</compiler.version>
+    <dep.plugin.version>3.7.1</dep.plugin.version>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>local-plugins</id>
-            <url>file://${user.home}/.m2/repository</url>
-        </pluginRepository>
-    </pluginRepositories>
+    <!-- JUnit versions (BOM + vendor profile) -->
+    <junit.jupiter.version>5.11.3</junit.jupiter.version>
+    <junit.platform.version>1.11.3</junit.platform.version>
+  </properties>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
-                <configuration>
-                    <release>17</release>
-                    <fork>true</fork>
-                    <argLine>
-                        --add-opens jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED
-                        --add-opens jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED
-                        --add-opens jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED
-                        --add-opens jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED
-                        --add-opens jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED
-                        --add-opens jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED
-                        --add-opens jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED
-                        --add-opens jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED
-                        --add-opens jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED
-                        --add-opens jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
-                    </argLine>
-                </configuration>
-            </plugin>
+  <!-- Use Maven Central explicitly (offline vendoring will seed your local repo) -->
+  <repositories>
+    <repository>
+      <id>central</id>
+      <url>https://repo1.maven.org/maven2/</url>
+    </repository>
+  </repositories>
 
-        <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.1.2</version>
-                <configuration>
-                    <useModulePath>false</useModulePath>
-                </configuration>
-            </plugin>
+  <build>
+  
 
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <id>run-console-launcher</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                        <configuration>
-                            <mainClass>org.junit.platform.console.ConsoleLauncher</mainClass>
-                            <classpathScope>test</classpathScope>
-                            <arguments>
-                                <argument>--scan-class-path</argument>
-                                <argument>target/test-classes</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+  <pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.3.1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.5.3</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.13.0</version>
+      </plugin>
+    </plugins>
+  </pluginManagement>
 
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <version>3.6.0</version>
-            <executions>
-                <execution>
-                    <id>copy-maven-plugins</id>
-                    <goals>
-                        <goal>copy</goal>
-                    </goals>
-                    <configuration>
-                        <artifactItems>
-                            <artifactItem>
-                                <groupId>org.apache.maven.plugins</groupId>
-                                <artifactId>maven-resources-plugin</artifactId>
-                                <version>3.3.1</version>
-                                <type>maven-plugin</type>
-                            </artifactItem>
-                            <artifactItem>
-                                <groupId>org.apache.maven.plugins</groupId>
-                                <artifactId>maven-compiler-plugin</artifactId>
-                                <version>3.11.0</version>
-                                <type>maven-plugin</type>
-                            </artifactItem>
-                            <artifactItem>
-                                <groupId>org.apache.maven.plugins</groupId>
-                                <artifactId>maven-surefire-plugin</artifactId>
-                                <version>3.1.2</version>
-                                <type>maven-plugin</type>
-                            </artifactItem>
-                            <artifactItem>
-                                <groupId>org.codehaus.mojo</groupId>
-                                <artifactId>exec-maven-plugin</artifactId>
-                                <version>3.1.0</version>
-                                <type>maven-plugin</type>
-                            </artifactItem>
-                        </artifactItems>
-                        <outputDirectory>${project.basedir}/maven-repo</outputDirectory>
-                        <useRepositoryLayout>true</useRepositoryLayout>
-                        <includeTransitive>true</includeTransitive>
-                    </configuration>
-                </execution>
-            </executions>
-        </plugin>
 
-        </plugins>
-    </build>
 
+    <plugins>
+      <!-- Compiler -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${compiler.version}</version>
+        <configuration>
+          <release>${maven.compiler.release}</release>
+          <fork>true</fork>
+          <!-- keep your add-opens if you truly need them; moved to compilerArgs -->
+          <compilerArgs>
+            <arg>--add-opens</arg><arg>jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
+            <arg>--add-opens</arg><arg>jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
+            <arg>--add-opens</arg><arg>jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
+            <arg>--add-opens</arg><arg>jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
+            <arg>--add-opens</arg><arg>jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
+            <arg>--add-opens</arg><arg>jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>
+            <arg>--add-opens</arg><arg>jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>
+            <arg>--add-opens</arg><arg>jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
+            <arg>--add-opens</arg><arg>jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
+            <arg>--add-opens</arg><arg>jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
+          </compilerArgs>
+        </configuration>
+      </plugin>
+
+      <!-- Surefire (JUnit 5) -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${surefire.version}</version>
+        <configuration>
+          <useModulePath>false</useModulePath>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <!-- JUnit BOM: aligns JUnit artifacts without per-dependency versions -->
+  <dependencyManagement>
     <dependencies>
-        <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-runtime</artifactId>
-            <version>4.0.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jxls</groupId>
-            <artifactId>jxls-poi</artifactId>
-            <version>2.12.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-core</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jxls</groupId>
-            <artifactId>jxls-reader</artifactId>
-            <version>2.1.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jul-to-slf4j</artifactId>
-            <version>2.0.17</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>2.0.17</version>
-        </dependency>
-		<dependency>
-    		<groupId>org.apache.logging.log4j</groupId>
-    		<artifactId>log4j-slf4j-impl</artifactId>
-    		<version>2.23.1</version>
-		</dependency>
-
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j2-impl</artifactId>
-            <version>2.23.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.5.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.18.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>2.18.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>30.1-jre</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.32</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>5.4.0</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-junit-jupiter</artifactId>
-            <version>5.4.0</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.testfx</groupId>
-            <artifactId>testfx-core</artifactId>
-            <version>4.0.18</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.testfx</groupId>
-            <artifactId>testfx-junit5</artifactId>
-            <version>4.0.18</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
-            <version>${javafx.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-fxml</artifactId>
-            <version>${javafx.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-web</artifactId>
-            <version>${javafx.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-swing</artifactId>
-            <version>${javafx.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>pdfbox</artifactId>
-            <version>2.0.31</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.webcohesion.ofx4j</groupId>
-            <artifactId>ofx4j</artifactId>
-            <version>1.38</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.9.3</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-console</artifactId>
-            <version>1.10.0</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports</artifactId>
-            <version>${jasperreports.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports-pdf</artifactId>
-            <version>${jasperreports.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports-excel-poi</artifactId>
-            <version>${jasperreports.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports-json</artifactId>
-            <version>${jasperreports.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports-data-adapters</artifactId>
-            <version>${jasperreports.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports-hibernate</artifactId>
-            <version>${jasperreports.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports-charts</artifactId>
-            <version>${jasperreports.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports-chart-themes</artifactId>
-            <version>${jasperreports.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports-chart-customizers</artifactId>
-            <version>${jasperreports.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports-barbecue</artifactId>
-            <version>${jasperreports.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports-barcode4j</artifactId>
-            <version>${jasperreports.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports-fonts</artifactId>
-            <version>${jasperreports.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports-groovy</artifactId>
-            <version>${jasperreports.version}</version>
-        </dependency>
-
-      <!--  <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports-javaflow</artifactId>
-            <version>${jasperreports.version}</version>
-        </dependency> -->
-
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports-jdt</artifactId>
-            <version>${jasperreports.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports-functions</artifactId>
-            <version>${jasperreports.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports-metadata</artifactId>
-            <version>${jasperreports.version}</version>
-        </dependency>
-
-        <!-- Database and JPA support -->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>2.2.224</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate.orm</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>6.4.4.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.persistence</groupId>
-            <artifactId>jakarta.persistence-api</artifactId>
-            <version>3.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
-            <version>9.22.3</version>
-        </dependency>
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${junit.jupiter.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
     </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <!-- ===== Your original dependencies (kept) ===== -->
+
+    <!-- JAXB -->
+    <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+      <version>4.0.2</version>
+    </dependency>
+
+    <!-- JXLS -->
+    <dependency>
+      <groupId>org.jxls</groupId>
+      <artifactId>jxls-poi</artifactId>
+      <version>2.12.0</version>
+      <exclusions>
+        <exclusion>
+          <groupId>ch.qos.logback</groupId>
+          <artifactId>logback-core</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.jxls</groupId>
+      <artifactId>jxls-reader</artifactId>
+      <version>2.1.0</version>
+    </dependency>
+
+    <!-- SLF4J API + JUL bridge (backend provided by profiles) -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>2.0.17</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jul-to-slf4j</artifactId>
+      <version>2.0.17</version>
+    </dependency>
+
+    <!-- Jackson -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.18.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+      <version>2.18.2</version>
+    </dependency>
+
+    <!-- Guava -->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>30.1-jre</version>
+    </dependency>
+
+    <!-- Lombok -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.32</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Testing (JUnit via BOM) -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-launcher</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Mockito -->
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>5.4.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <version>5.4.0</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- TestFX -->
+    <dependency>
+      <groupId>org.testfx</groupId>
+      <artifactId>testfx-core</artifactId>
+      <version>4.0.18</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testfx</groupId>
+      <artifactId>testfx-junit5</artifactId>
+      <version>4.0.18</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- JavaFX -->
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-controls</artifactId>
+      <version>${javafx.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-fxml</artifactId>
+      <version>${javafx.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-web</artifactId>
+      <version>${javafx.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-swing</artifactId>
+      <version>${javafx.version}</version>
+    </dependency>
+
+    <!-- PDFBox -->
+    <dependency>
+      <groupId>org.apache.pdfbox</groupId>
+      <artifactId>pdfbox</artifactId>
+      <version>2.0.31</version>
+    </dependency>
+
+    <!-- OFX -->
+    <dependency>
+      <groupId>com.webcohesion.ofx4j</groupId>
+      <artifactId>ofx4j</artifactId>
+      <version>1.38</version>
+    </dependency>
+
+    <!-- JasperReports -->
+    <dependency>
+      <groupId>net.sf.jasperreports</groupId>
+      <artifactId>jasperreports</artifactId>
+      <version>${jasperreports.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.jasperreports</groupId>
+      <artifactId>jasperreports-pdf</artifactId>
+      <version>${jasperreports.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.jasperreports</groupId>
+      <artifactId>jasperreports-excel-poi</artifactId>
+      <version>${jasperreports.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.jasperreports</groupId>
+      <artifactId>jasperreports-json</artifactId>
+      <version>${jasperreports.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.jasperreports</groupId>
+      <artifactId>jasperreports-data-adapters</artifactId>
+      <version>${jasperreports.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.jasperreports</groupId>
+      <artifactId>jasperreports-hibernate</artifactId>
+      <version>${jasperreports.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.jasperreports</groupId>
+      <artifactId>jasperreports-charts</artifactId>
+      <version>${jasperreports.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.jasperreports</groupId>
+      <artifactId>jasperreports-chart-themes</artifactId>
+      <version>${jasperreports.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.jasperreports</groupId>
+      <artifactId>jasperreports-chart-customizers</artifactId>
+      <version>${jasperreports.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.jasperreports</groupId>
+      <artifactId>jasperreports-barbecue</artifactId>
+      <version>${jasperreports.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.jasperreports</groupId>
+      <artifactId>jasperreports-barcode4j</artifactId>
+      <version>${jasperreports.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.jasperreports</groupId>
+      <artifactId>jasperreports-fonts</artifactId>
+      <version>${jasperreports.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.jasperreports</groupId>
+      <artifactId>jasperreports-groovy</artifactId>
+      <version>${jasperreports.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.jasperreports</groupId>
+      <artifactId>jasperreports-jdt</artifactId>
+      <version>${jasperreports.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.jasperreports</groupId>
+      <artifactId>jasperreports-functions</artifactId>
+      <version>${jasperreports.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.jasperreports</groupId>
+      <artifactId>jasperreports-metadata</artifactId>
+      <version>${jasperreports.version}</version>
+    </dependency>
+
+    <!-- DB / JPA -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>2.2.224</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.orm</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>6.4.4.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.persistence</groupId>
+      <artifactId>jakarta.persistence-api</artifactId>
+      <version>3.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+      <version>9.22.3</version>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <!-- Default logging: Log4j 2 -->
+    <profile>
+      <id>log4j2</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-api</artifactId>
+          <version>2.23.1</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-core</artifactId>
+          <version>2.23.1</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-slf4j2-impl</artifactId>
+          <version>2.23.1</version>
+        </dependency>
+        <!-- Route java.util.logging to Log4j2 -->
+        <dependency>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-jul</artifactId>
+          <version>2.23.1</version>
+          <scope>runtime</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+
+<profile>
+  <id>vendor</id>
+  <build>
+    <plugins>
+      <!-- This plugin seeds your vendored local repo -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>${dep.plugin.version}</version>
+        <executions>
+
+          <!-- JUnit BOM (so dependencyManagement resolves) -->
+          <execution>
+            <id>get-junit-bom</id>
+            <phase>validate</phase>
+            <goals><goal>get</goal></goals>
+            <configuration>
+              <!-- groupId:artifactId:version:packaging -->
+              <artifact>org.junit:junit-bom:${junit.jupiter.version}:pom</artifact>
+            </configuration>
+          </execution>
+
+          <!-- JUnit Platform Launcher -->
+          <execution>
+            <id>get-junit-platform-launcher</id>
+            <phase>validate</phase>
+            <goals><goal>get</goal></goals>
+            <configuration>
+              <artifact>org.junit.platform:junit-platform-launcher:${junit.platform.version}</artifact>
+            </configuration>
+          </execution>
+
+          <!-- Jupiter jars (explicit so tests are definitely offline-ready) -->
+          <execution>
+            <id>get-junit-jupiter-api</id>
+            <phase>validate</phase>
+            <goals><goal>get</goal></goals>
+            <configuration>
+              <artifact>org.junit.jupiter:junit-jupiter-api:${junit.jupiter.version}</artifact>
+            </configuration>
+          </execution>
+          <execution>
+            <id>get-junit-jupiter-engine</id>
+            <phase>validate</phase>
+            <goals><goal>get</goal></goals>
+            <configuration>
+              <artifact>org.junit.jupiter:junit-jupiter-engine:${junit.jupiter.version}</artifact>
+            </configuration>
+          </execution>
+          <execution>
+            <id>get-junit-jupiter-params</id>
+            <phase>validate</phase>
+            <goals><goal>get</goal></goals>
+            <configuration>
+              <artifact>org.junit.jupiter:junit-jupiter-params:${junit.jupiter.version}</artifact>
+            </configuration>
+          </execution>
+
+          <!-- Build plugins as artifacts (ensures plugin resolution offline) -->
+          <execution>
+            <id>get-surefire-plugin</id>
+            <phase>validate</phase>
+            <goals><goal>get</goal></goals>
+            <configuration>
+              <!-- version third, packaging fourth -->
+              <artifact>org.apache.maven.plugins:maven-surefire-plugin:${surefire.version}:maven-plugin</artifact>
+            </configuration>
+          </execution>
+          <execution>
+            <id>get-compiler-plugin</id>
+            <phase>validate</phase>
+            <goals><goal>get</goal></goals>
+            <configuration>
+              <artifact>org.apache.maven.plugins:maven-compiler-plugin:${compiler.version}:maven-plugin</artifact>
+            </configuration>
+          </execution>
+          <execution>
+            <id>get-resources-plugin</id>
+            <phase>validate</phase>
+            <goals><goal>get</goal></goals>
+            <configuration>
+              <artifact>org.apache.maven.plugins:maven-resources-plugin:3.3.1:maven-plugin</artifact>
+            </configuration>
+          </execution>
+
+
+<!-- Belt-and-suspenders: vendor both the ancient and modern plexus-utils.
+     If anything still asks for 1.1, it will be available offline. -->
+<execution>
+  <id>get-plexus-utils-1-1</id>
+  <phase>validate</phase>
+  <goals><goal>get</goal></goals>
+  <configuration>
+    <artifact>org.codehaus.plexus:plexus-utils:1.1</artifact>
+  </configuration>
+</execution>
+<execution>
+  <id>get-plexus-utils-3-5-1</id>
+  <phase>validate</phase>
+  <goals><goal>get</goal></goals>
+  <configuration>
+    <artifact>org.codehaus.plexus:plexus-utils:3.5.1</artifact>
+  </configuration>
+</execution>
+<!-- Surefire provider + internals for JUnit Platform -->
+<execution>
+  <id>get-surefire-junit-platform</id>
+  <phase>validate</phase>
+  <goals><goal>get</goal></goals>
+  <configuration>
+    <artifact>org.apache.maven.surefire:surefire-junit-platform:3.5.3</artifact>
+  </configuration>
+</execution>
+<execution>
+  <id>get-surefire-api</id>
+  <phase>validate</phase>
+  <goals><goal>get</goal></goals>
+  <configuration>
+    <artifact>org.apache.maven.surefire:surefire-api:3.5.3</artifact>
+  </configuration>
+</execution>
+<execution>
+  <id>get-surefire-booter</id>
+  <phase>validate</phase>
+  <goals><goal>get</goal></goals>
+  <configuration>
+    <artifact>org.apache.maven.surefire:surefire-booter:3.5.3</artifact>
+  </configuration>
+</execution>
+<execution>
+  <id>get-surefire-logger-api</id>
+  <phase>validate</phase>
+  <goals><goal>get</goal></goals>
+  <configuration>
+    <artifact>org.apache.maven.surefire:surefire-logger-api:3.5.3</artifact>
+  </configuration>
+</execution>
+
+          <!-- Log4j 2 backend (default profile needs these) -->
+          <execution>
+            <id>get-log4j-api</id>
+            <phase>validate</phase>
+            <goals><goal>get</goal></goals>
+            <configuration>
+              <artifact>org.apache.logging.log4j:log4j-api:2.23.1</artifact>
+            </configuration>
+          </execution>
+          <execution>
+            <id>get-log4j-core</id>
+            <phase>validate</phase>
+            <goals><goal>get</goal></goals>
+            <configuration>
+              <artifact>org.apache.logging.log4j:log4j-core:2.23.1</artifact>
+            </configuration>
+          </execution>
+          <execution>
+            <id>get-log4j-slf4j2-impl</id>
+            <phase>validate</phase>
+            <goals><goal>get</goal></goals>
+            <configuration>
+              <artifact>org.apache.logging.log4j:log4j-slf4j2-impl:2.23.1</artifact>
+            </configuration>
+          </execution>
+          <execution>
+            <id>get-log4j-jul</id>
+            <phase>validate</phase>
+            <goals><goal>get</goal></goals>
+            <configuration>
+              <artifact>org.apache.logging.log4j:log4j-jul:2.23.1</artifact>
+            </configuration>
+          </execution>
+
+          <!-- Pull the rest of the dependency+plugin graph into the local repo -->
+          <execution>
+            <id>go-offline-everything</id>
+            <phase>validate</phase>
+            <goals><goal>go-offline</goal></goals>
+          </execution>
+
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</profile>
+
+
+
+  </profiles>
 </project>

@@ -38,11 +38,7 @@ import java.util.List;
 	/**  
 	 * Constructor ExcelLedgerRow
 	 */
-	public ExcelLedgerRow()
-	{		
-		// TODO Auto-generated constructor stub
-	}
-	
+
 
 	/**
 	 * @return the balance
