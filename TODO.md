@@ -6,7 +6,7 @@ This list reflects the outstanding work discussed with the maintainer.
    - Imported chart of accounts does not link to transactions, causing "Error: No account" in the Journal pane.
    - Investigate import order and ensure accounts are persisted and applied before transactions load.
 
-2. **Chart‑of‑accounts conflict handling**
+2. **Chart of accounts conflict handling**
    - When importing a new chart into a company that already has accounts, prompt the user to **overwrite**, **merge**, or **cancel**.
 
 3. **Row bean data model**
