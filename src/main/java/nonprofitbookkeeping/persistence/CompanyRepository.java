@@ -83,6 +83,23 @@ public class CompanyRepository {
     }
 
     /**
+     * Retrieve the identifier of the first company stored in the
+     * database.
+     *
+     * <p>This is used by legacy workflows that assume a single
+     * company instance and simply need <em>any</em> company to be
+     * loaded.</p>
+     */
+    public Optional<Long> findFirstId() {
+        return entityManager.createQuery(
+                        "SELECT c.id FROM CompanyEntity c ORDER BY c.id ASC",
+                        Long.class)
+                .setMaxResults(1)
+                .getResultStream()
+                .findFirst();
+    }
+
+    /**
      * Retrieve a company by its ID.
      */
     public Optional<Company> findById(long id) {
@@ -96,6 +113,14 @@ public class CompanyRepository {
         } catch (IOException e) {
             return Optional.empty();
         }
+    }
+
+    /**
+     * @return total number of company records present
+     */
+    public long count() {
+        return entityManager.createQuery("SELECT COUNT(c) FROM CompanyEntity c", Long.class)
+                .getSingleResult();
     }
 
     /**
