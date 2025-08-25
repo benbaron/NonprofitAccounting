@@ -116,6 +116,14 @@ public class CompanyRepository {
     }
 
     /**
+     * @return total number of company records present
+     */
+    public long count() {
+        return entityManager.createQuery("SELECT COUNT(c) FROM CompanyEntity c", Long.class)
+                .getSingleResult();
+    }
+
+    /**
      * Delete a company by ID.
      */
     public boolean delete(long id) {

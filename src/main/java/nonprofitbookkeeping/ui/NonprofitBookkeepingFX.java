@@ -648,6 +648,7 @@ public class NonprofitBookkeepingFX extends Application
          */
         private void doOpenCompany()
         {
+
                 LOGGER.info("Opening company from database");
 
                 CurrentCompany.loadFromDatabase();
@@ -692,12 +693,41 @@ public class NonprofitBookkeepingFX extends Application
                                 setState(AppState.COMPANY_OPEN);
                         }
                 }
+                catch (jakarta.persistence.EntityExistsException e)
+                {
+                        LOGGER.log(Level.SEVERE,
+                                "Import failed: company already exists in database", e);
+                        AlertBox.showError(this.primaryStage,
+                                "Import failed: company already exists in database.");
+                }
                 catch (Exception e)
                 {
                         LOGGER.log(Level.SEVERE, "Failed to import company", e);
                         AlertBox.showError(this.primaryStage,
                                 "Failed to import company: " + e.getMessage());
                 }
+
+        }
+
+        private void logDatabaseState()
+        {
+                java.nio.file.Path dbFile = java.nio.file.Paths.get("./data/nonprofit.mv.db");
+                try
+                {
+                        boolean exists = java.nio.file.Files.exists(dbFile);
+                        long size = exists ? java.nio.file.Files.size(dbFile) : 0L;
+                        long count = new nonprofitbookkeeping.persistence.DatabaseService()
+                                .countCompanies();
+                        LOGGER.info(
+                                "Database file {} exists: {}, size: {} bytes, stored companies: {}",
+                                dbFile.toAbsolutePath(), exists, size, count);
+                }
+                catch (Exception e)
+                {
+                        LOGGER.log(Level.WARNING,
+                                "Unable to determine database file state", e);
+                }
+
         }
 
 	
