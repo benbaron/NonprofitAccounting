@@ -112,7 +112,9 @@ public class DatabaseService
 	 */
         public Company loadCompany()
         {
-                return loadCompany(1).orElse(null);
+                return this.companyRepository.findFirstId()
+                        .flatMap(this::loadCompany)
+                        .orElse(null);
 
         }
 	
@@ -132,11 +134,20 @@ public class DatabaseService
 	}
 	
 	/** Delete a company by id. */
-	public boolean delete(long companyId)
-	{
-		return this.companyRepository.delete(companyId);
-		
-	}
+        public boolean delete(long companyId)
+        {
+                return this.companyRepository.delete(companyId);
+
+        }
+
+        /**
+         * Count stored companies.
+         */
+        public long countCompanies()
+        {
+                return this.companyRepository.count();
+
+        }
 	
 	public AccountingTransactionRepository getTransactionRepository()
 	{
