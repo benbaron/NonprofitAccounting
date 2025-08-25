@@ -681,6 +681,10 @@ public class NonprofitBookkeepingFX extends Application
                         {
                                 LOGGER.info("Company imported: "
                                         + CurrentCompany.getCompany().getName());
+                                // Persist the imported company into the embedded H2 database
+                                // and ensure the database contents are flushed to the on-disk
+                                // *.db file so it can be reopened via the "Open" menu.
+                                CurrentCompany.flushToDatabase();
                                 setState(AppState.COMPANY_OPEN);
                         }
                 }
