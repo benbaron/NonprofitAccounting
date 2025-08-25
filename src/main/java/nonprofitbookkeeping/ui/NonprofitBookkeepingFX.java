@@ -286,13 +286,16 @@ public class NonprofitBookkeepingFX extends Application
                 this.miClose = add(file, "Close Company", e -> doCloseCompany());
                 this.miSave = add(file, "Save Company File", e -> doSaveCompany());
 
+
                 Menu importMenu = new Menu("Import");
                 this.miImportCoaXlsx = add(importMenu, "Chart of Accounts (XLSX)",
                         e -> new ImportCoaXlsxActionFX(this.primaryStage).handle(e));
+
                 add(importMenu, "Company (.npbk)", e -> {
                         LOGGER.info("Importing company from .npbk");
                         doImportCompany();
                 });
+
                 add(importMenu, "File", e -> new ImportFileActionFX(this.primaryStage).handle(e));
 
                 Menu exportMenu = new Menu("Export");
@@ -307,6 +310,7 @@ public class NonprofitBookkeepingFX extends Application
                 file.getItems().addAll(importMenu, exportMenu, new SeparatorMenuItem());
                 add(file, "Exit", e -> doExit());
                 bar.getMenus().add(file);
+
 		
 		/* EDIT */
 		Menu edit = new Menu("Edit");
@@ -644,7 +648,7 @@ public class NonprofitBookkeepingFX extends Application
          */
         private void doOpenCompany()
         {
-                logDatabaseState();
+
                 LOGGER.info("Opening company from database");
 
                 CurrentCompany.loadFromDatabase();
@@ -702,6 +706,7 @@ public class NonprofitBookkeepingFX extends Application
                         AlertBox.showError(this.primaryStage,
                                 "Failed to import company: " + e.getMessage());
                 }
+
         }
 
         private void logDatabaseState()
@@ -722,7 +727,9 @@ public class NonprofitBookkeepingFX extends Application
                         LOGGER.log(Level.WARNING,
                                 "Unable to determine database file state", e);
                 }
+
         }
+
 	
 	/**
 	 * Handles the action to close the currently open company file.
