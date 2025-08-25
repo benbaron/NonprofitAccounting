@@ -257,11 +257,15 @@ public class NonprofitBookkeepingFX extends Application
 	{
 		MenuBar bar = new MenuBar();
 		
+
 		/* FILE */
                 Menu file = new Menu("File");
                 this.miOpen = add(file, "Open Company", e -> doOpenCompany());
                 this.miClose = add(file, "Close Company", e -> doCloseCompany());
                 this.miSave = add(file, "Save Company File", e -> doSaveCompany());
+
+
+
 		this.miImportCoaXlsx = add(file, "Import COA (XLSX)",
 			e -> new ImportCoaXlsxActionFX(this.primaryStage).handle(e));
 		this.miExportCoaXlsx = add(file, "Export COA (XLSX)",
@@ -581,6 +585,7 @@ public class NonprofitBookkeepingFX extends Application
                 }
 
         }
+
 	
 	/**
 	 * Handles the action to close the currently open company file.
