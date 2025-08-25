@@ -112,7 +112,9 @@ public class DatabaseService
 	 */
         public Company loadCompany()
         {
-                return loadCompany(1).orElse(null);
+                return this.companyRepository.findFirstId()
+                        .flatMap(this::loadCompany)
+                        .orElse(null);
 
         }
 	
@@ -132,11 +134,20 @@ public class DatabaseService
 	}
 	
 	/** Delete a company by id. */
-	public boolean delete(long companyId)
-	{
-		return this.companyRepository.delete(companyId);
-		
-	}
+        public boolean delete(long companyId)
+        {
+                return this.companyRepository.delete(companyId);
+
+        }
+
+        /**
+         * Count stored companies.
+         */
+        public long countCompanies()
+        {
+                return this.companyRepository.count();
+
+        }
 	
 	public AccountingTransactionRepository getTransactionRepository()
 	{
@@ -186,14 +197,13 @@ public class DatabaseService
 		
 	}
 	
-	/**
-	 * @return
-	 */
-	public Company listCompanies()
-	{
-		// TODO Auto-generated method stub
-		return null;
-		
-	}
+        /**
+         * List all company rows present in the database.
+         */
+        public java.util.List<nonprofitbookkeeping.persistence.entity.CompanyEntity> listCompanies()
+        {
+                return this.companyRepository.findAll();
+
+        }
 	
 }

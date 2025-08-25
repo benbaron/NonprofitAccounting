@@ -209,6 +209,19 @@ public class CurrentCompany
                 LOG.debug("Flushing company '{}' (id: {}) to database", company.getName(),
                         company.getId());
                 DATABASE_SERVICE.saveCompany(company);
+
+                // Force H2 to sync the in-memory state with the on-disk *.db file so
+                // that subsequent application launches or "Open" actions can restore
+                // the newly imported company directly from disk.
+                try (Connection conn = DatabaseManager.getConnection();
+                        Statement stmt = conn.createStatement())
+                {
+                        stmt.execute("CHECKPOINT SYNC");
+                }
+                catch (SQLException e)
+                {
+                        LOG.error("Failed to flush database to disk", e);
+                }
         }
 	
 	/**

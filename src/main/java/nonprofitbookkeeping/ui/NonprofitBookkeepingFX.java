@@ -282,8 +282,8 @@ public class NonprofitBookkeepingFX extends Application
 		
                 /* FILE */
                 Menu file = new Menu("File");
-                this.miOpen = add(file, "Open Company File", e -> doOpenCompany());
-                this.miClose = add(file, "Close Company File", e -> doCloseCompany());
+                this.miOpen = add(file, "Open Company", e -> doOpenCompany());
+                this.miClose = add(file, "Close Company", e -> doCloseCompany());
                 this.miSave = add(file, "Save Company File", e -> doSaveCompany());
 
                 Menu importMenu = new Menu("Import");
@@ -291,7 +291,7 @@ public class NonprofitBookkeepingFX extends Application
                         e -> new ImportCoaXlsxActionFX(this.primaryStage).handle(e));
                 add(importMenu, "Company (.npbk)", e -> {
                         LOGGER.info("Importing company from .npbk");
-                        doOpenCompany();
+                        doImportCompany();
                 });
                 add(importMenu, "File", e -> new ImportFileActionFX(this.primaryStage).handle(e));
 
@@ -305,10 +305,7 @@ public class NonprofitBookkeepingFX extends Application
                 add(exportMenu, "File", e -> new ExportFileActionFX(this.primaryStage).handle(e));
 
                 file.getItems().addAll(importMenu, exportMenu, new SeparatorMenuItem());
-                add(file, "Exit", e -> {
-                        LOGGER.info("Exit menu selected");
-                        Platform.exit();
-                });
+                add(file, "Exit", e -> doExit());
                 bar.getMenus().add(file);
 		
 		/* EDIT */
@@ -639,16 +636,81 @@ public class NonprofitBookkeepingFX extends Application
 		
 	}
 	
-	/**
-	 * Handles the action to open a company file.
-	 * It instantiates and triggers {@link OpenCompanyFileActionFX}.
-	 * If successful, the application state is set to {@link AppState#COMPANY_OPEN}.
-	 * Errors are displayed using an {@link AlertBox}.
-	 * The {@code @SuppressWarnings("unused")} is present because this method is called via JavaFX action event.
-	 */
+        /**
+         * Handles the action to open the company stored in the database.
+         * If a company exists, it is marked open and menu options are enabled via
+         * {@link #setState(AppState)}.  If no company is present, a warning alert
+         * is shown prompting the user to import or create one.
+         */
         private void doOpenCompany()
         {
-                LOGGER.info("Opening company file");
+                logDatabaseState();
+                LOGGER.info("Opening company from database");
+
+                nonprofitbookkeeping.persistence.DatabaseService db =
+                        new nonprofitbookkeeping.persistence.DatabaseService();
+                java.util.List<nonprofitbookkeeping.persistence.entity.CompanyEntity> entities =
+                        db.listCompanies();
+
+                if (entities.isEmpty())
+                {
+                        AlertBox.showWarning(this.primaryStage,
+                                "No company found. Please import or create a company first.");
+                        return;
+                }
+
+                if (entities.size() == 1)
+                {
+                        long id = entities.get(0).getId();
+                        java.util.Optional<nonprofitbookkeeping.model.Company> loaded =
+                                db.loadCompany(id);
+                        if (loaded.isPresent())
+                        {
+                                CurrentCompany.forceCompanyLoad(loaded.get());
+                                setState(AppState.COMPANY_OPEN);
+                                return;
+                        }
+                }
+
+                AlertBox.showWarning(this.primaryStage,
+                        "Database contains multiple or invalid company records.");
+                nonprofitbookkeeping.ui.panels.FixDatabaseWizardFX.Result result =
+                        nonprofitbookkeeping.ui.panels.FixDatabaseWizardFX.show(this.primaryStage, entities);
+                if (result.cancelled)
+                {
+                        return;
+                }
+                for (Long id : result.deleteIds)
+                {
+                        db.delete(id);
+                }
+                if (result.openId != null)
+                {
+                        java.util.Optional<nonprofitbookkeeping.model.Company> loaded =
+                                db.loadCompany(result.openId);
+                        if (loaded.isPresent())
+                        {
+                                CurrentCompany.forceCompanyLoad(loaded.get());
+                                setState(AppState.COMPANY_OPEN);
+                        }
+                        else
+                        {
+                                AlertBox.showWarning(this.primaryStage,
+                                        "Selected company could not be loaded.");
+                        }
+                }
+
+        }
+
+        /**
+         * Imports a company from a <code>.npbk</code> file.  This retains the
+         * previous behaviour of {@link #doOpenCompany()} prior to database-backed
+         * companies and is used by the Import menu option.
+         */
+        private void doImportCompany()
+        {
+                LOGGER.info("Importing company file");
+
                 try
                 {
                         OpenCompanyFileActionFX action =
@@ -657,18 +719,48 @@ public class NonprofitBookkeepingFX extends Application
 
                         if (CurrentCompany.isOpen())
                         {
-                                LOGGER.info("Company opened: "
+                                LOGGER.info("Company imported: "
                                         + CurrentCompany.getCompany().getName());
+                                // Persist the imported company into the embedded H2 database
+                                // and ensure the database contents are flushed to the on-disk
+                                // *.db file so it can be reopened via the "Open" menu.
+                                CurrentCompany.flushToDatabase();
                                 setState(AppState.COMPANY_OPEN);
                         }
                 }
+                catch (jakarta.persistence.EntityExistsException e)
+                {
+                        LOGGER.log(Level.SEVERE,
+                                "Import failed: company already exists in database", e);
+                        AlertBox.showError(this.primaryStage,
+                                "Import failed: company already exists in database.");
+                }
                 catch (Exception e)
                 {
-                        LOGGER.log(Level.SEVERE, "Failed to open company", e);
+                        LOGGER.log(Level.SEVERE, "Failed to import company", e);
                         AlertBox.showError(this.primaryStage,
-                                "Failed to open company: " + e.getMessage());
+                                "Failed to import company: " + e.getMessage());
                 }
+        }
 
+        private void logDatabaseState()
+        {
+                java.nio.file.Path dbFile = java.nio.file.Paths.get("./data/nonprofit.mv.db");
+                try
+                {
+                        boolean exists = java.nio.file.Files.exists(dbFile);
+                        long size = exists ? java.nio.file.Files.size(dbFile) : 0L;
+                        long count = new nonprofitbookkeeping.persistence.DatabaseService()
+                                .countCompanies();
+                        LOGGER.info(
+                                "Database file {} exists: {}, size: {} bytes, stored companies: {}",
+                                dbFile.toAbsolutePath(), exists, size, count);
+                }
+                catch (Exception e)
+                {
+                        LOGGER.log(Level.WARNING,
+                                "Unable to determine database file state", e);
+                }
         }
 	
 	/**
@@ -741,6 +833,40 @@ public class NonprofitBookkeepingFX extends Application
                                 "Failed to save company: " + ex.getMessage());
                 }
 
+        }
+
+        /**
+         * Handles application exit.  The currently open company is flushed to the
+         * database and, if a backup file has been specified, persisted to that
+         * file before being marked closed.  Finally the JavaFX platform is
+         * exited.
+         */
+        private void doExit()
+        {
+                LOGGER.info("Exit menu selected");
+
+                try
+                {
+                        if (CurrentCompany.getCurrentFile() != null)
+                        {
+                                CurrentCompany.persist();
+                        }
+                        else
+                        {
+                                CurrentCompany.flushToDatabase();
+                        }
+                }
+                catch (Exception e)
+                {
+                        LOGGER.log(Level.SEVERE, "Failed to save company on exit", e);
+                        AlertBox.showError(this.primaryStage,
+                                "Failed to save company: " + e.getMessage());
+                }
+                finally
+                {
+                        CurrentCompany.close();
+                        Platform.exit();
+                }
         }
 	
 	/**
