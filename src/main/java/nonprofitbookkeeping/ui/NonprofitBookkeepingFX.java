@@ -280,19 +280,19 @@ public class NonprofitBookkeepingFX extends Application
 	{
 		MenuBar bar = new MenuBar();
 		
-                /* FILE */
-                Menu file = new Menu("File");
-                this.miOpen = add(file, "Open Company File", e -> doOpenCompany());
-                this.miClose = add(file, "Close Company File", e -> doCloseCompany());
-                this.miSave = add(file, "Save Company File", e -> doSaveCompany());
+               /* FILE */
+               Menu file = new Menu("File");
+               this.miOpen = add(file, "Open Company", e -> doOpenCompany());
+               this.miClose = add(file, "Close Company File", e -> doCloseCompany());
+               this.miSave = add(file, "Save Company File", e -> doSaveCompany());
 
                 Menu importMenu = new Menu("Import");
                 this.miImportCoaXlsx = add(importMenu, "Chart of Accounts (XLSX)",
                         e -> new ImportCoaXlsxActionFX(this.primaryStage).handle(e));
-                add(importMenu, "Company (.npbk)", e -> {
-                        LOGGER.info("Importing company from .npbk");
-                        doOpenCompany();
-                });
+               add(importMenu, "Company (.npbk)", e -> {
+                       LOGGER.info("Importing company from .npbk");
+                       doImportCompany();
+               });
                 add(importMenu, "File", e -> new ImportFileActionFX(this.primaryStage).handle(e));
 
                 Menu exportMenu = new Menu("Export");
@@ -304,12 +304,17 @@ public class NonprofitBookkeepingFX extends Application
                 });
                 add(exportMenu, "File", e -> new ExportFileActionFX(this.primaryStage).handle(e));
 
-                file.getItems().addAll(importMenu, exportMenu, new SeparatorMenuItem());
-                add(file, "Exit", e -> {
-                        LOGGER.info("Exit menu selected");
-                        Platform.exit();
-                });
-                bar.getMenus().add(file);
+               file.getItems().addAll(importMenu, exportMenu, new SeparatorMenuItem());
+               add(file, "Exit", e -> {
+                       LOGGER.info("Exit menu selected");
+                       try {
+                               CurrentCompany.flushToDatabase();
+                               CurrentCompany.close();
+                       } finally {
+                               Platform.exit();
+                       }
+               });
+               bar.getMenus().add(file);
 		
 		/* EDIT */
 		Menu edit = new Menu("Edit");
@@ -639,37 +644,57 @@ public class NonprofitBookkeepingFX extends Application
 		
 	}
 	
-	/**
-	 * Handles the action to open a company file.
-	 * It instantiates and triggers {@link OpenCompanyFileActionFX}.
-	 * If successful, the application state is set to {@link AppState#COMPANY_OPEN}.
-	 * Errors are displayed using an {@link AlertBox}.
-	 * The {@code @SuppressWarnings("unused")} is present because this method is called via JavaFX action event.
-	 */
-        private void doOpenCompany()
-        {
-                LOGGER.info("Opening company file");
-                try
-                {
-                        OpenCompanyFileActionFX action =
-                                new OpenCompanyFileActionFX(this.primaryStage);
-                        action.run();
+       /**
+        * Handles importing a company from an .npbk file.
+        * This retains the previous behaviour of {@code doOpenCompany} and is
+        * invoked by the Import menu. If successful, the application state is
+        * set to {@link AppState#COMPANY_OPEN}.
+        */
+       private void doImportCompany()
+       {
+               LOGGER.info("Opening company file");
+               try
+               {
+                       OpenCompanyFileActionFX action =
+                               new OpenCompanyFileActionFX(this.primaryStage);
+                       action.run();
 
-                        if (CurrentCompany.isOpen())
-                        {
-                                LOGGER.info("Company opened: "
-                                        + CurrentCompany.getCompany().getName());
-                                setState(AppState.COMPANY_OPEN);
-                        }
-                }
-                catch (Exception e)
-                {
-                        LOGGER.log(Level.SEVERE, "Failed to open company", e);
-                        AlertBox.showError(this.primaryStage,
-                                "Failed to open company: " + e.getMessage());
-                }
+                       if (CurrentCompany.isOpen())
+                       {
+                               LOGGER.info("Company opened: "
+                                       + CurrentCompany.getCompany().getName());
+                               setState(AppState.COMPANY_OPEN);
+                       }
+               }
+               catch (Exception e)
+               {
+                       LOGGER.log(Level.SEVERE, "Failed to open company", e);
+                       AlertBox.showError(this.primaryStage,
+                               "Failed to open company: " + e.getMessage());
+               }
 
-        }
+       }
+
+       /**
+        * Marks the existing company in the embedded database as open. If no
+        * company data exists, a warning is shown to the user.
+        */
+       private void doOpenCompany()
+       {
+               LOGGER.info("Opening company from database");
+               CurrentCompany.loadFromDatabase();
+
+               if (CurrentCompany.isOpen())
+               {
+                       LOGGER.info("Company opened: " + CurrentCompany.getCompany().getName());
+                       setState(AppState.COMPANY_OPEN);
+               }
+               else
+               {
+                       AlertBox.showWarning(this.primaryStage,
+                               "No company found. Please import or create a company first.");
+               }
+       }
 	
 	/**
 	 * Handles the action to close the currently open company file.
