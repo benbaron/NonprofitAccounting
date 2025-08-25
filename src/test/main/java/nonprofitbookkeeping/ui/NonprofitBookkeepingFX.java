@@ -257,11 +257,13 @@ public class NonprofitBookkeepingFX extends Application
 	{
 		MenuBar bar = new MenuBar();
 		
-               /* FILE */
-               Menu file = new Menu("File");
-               this.miOpen = add(file, "Open Company", e -> doOpenCompany());
-               this.miClose = add(file, "Close Company File", e -> doCloseCompany());
-               this.miSave = add(file, "Save Company File", e -> doSaveCompany());
+
+		/* FILE */
+                Menu file = new Menu("File");
+                this.miOpen = add(file, "Open Company", e -> doOpenCompany());
+                this.miClose = add(file, "Close Company", e -> doCloseCompany());
+                this.miSave = add(file, "Save Company File", e -> doSaveCompany());
+
 		this.miImportCoaXlsx = add(file, "Import COA (XLSX)",
 			e -> new ImportCoaXlsxActionFX(this.primaryStage).handle(e));
 		this.miExportCoaXlsx = add(file, "Export COA (XLSX)",
@@ -559,44 +561,29 @@ public class NonprofitBookkeepingFX extends Application
 		
 	}
 	
-       /**
-        * Handles importing a company from an .npbk file. This mirrors the legacy
-        * behaviour and is retained for tests that rely on file-based imports.
-        */
-       private void doImportCompany()
-       {
+	/**
+	 * Handles the action to open a company file.
+	 * It instantiates and triggers {@link OpenCompanyFileActionFX}.
+	 * If successful, the application state is set to {@link AppState#COMPANY_OPEN}.
+	 * Errors are displayed using an {@link AlertBox}.
+	 * The {@code @SuppressWarnings("unused")} is present because this method is called via JavaFX action event.
+	 */
+        private void doOpenCompany()
+        {
+                CurrentCompany.loadFromDatabase();
 
-               try
-               {
-                       new OpenCompanyFileActionFX(this.primaryStage,
-                               () -> setState(AppState.COMPANY_OPEN));
-               }
-               catch (Exception e)
-               {
-                       AlertBox.showError(this.primaryStage, "Failed to open company: " + e.getMessage());
-               }
+                if (CurrentCompany.isOpen())
+                {
+                        setState(AppState.COMPANY_OPEN);
+                }
+                else
+                {
+                        AlertBox.showWarning(this.primaryStage,
+                                "No company found. Please import or create a company first.");
+                }
 
-       }
+        }
 
-       /**
-        * Marks any existing company in the database as open. If none exists, a
-        * warning is displayed to the user.
-        */
-       private void doOpenCompany()
-       {
-               CurrentCompany.loadFromDatabase();
-
-               if (CurrentCompany.isOpen())
-               {
-                       setState(AppState.COMPANY_OPEN);
-               }
-               else
-               {
-                       AlertBox.showWarning(this.primaryStage,
-                               "No company found. Please import or create a company first.");
-               }
-
-       }
 	
 	/**
 	 * Handles the action to close the currently open company file.

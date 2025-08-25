@@ -280,19 +280,22 @@ public class NonprofitBookkeepingFX extends Application
 	{
 		MenuBar bar = new MenuBar();
 		
-               /* FILE */
-               Menu file = new Menu("File");
-               this.miOpen = add(file, "Open Company", e -> doOpenCompany());
-               this.miClose = add(file, "Close Company File", e -> doCloseCompany());
-               this.miSave = add(file, "Save Company File", e -> doSaveCompany());
+                /* FILE */
+                Menu file = new Menu("File");
+                this.miOpen = add(file, "Open Company", e -> doOpenCompany());
+                this.miClose = add(file, "Close Company", e -> doCloseCompany());
+                this.miSave = add(file, "Save Company File", e -> doSaveCompany());
+
 
                 Menu importMenu = new Menu("Import");
                 this.miImportCoaXlsx = add(importMenu, "Chart of Accounts (XLSX)",
                         e -> new ImportCoaXlsxActionFX(this.primaryStage).handle(e));
-               add(importMenu, "Company (.npbk)", e -> {
-                       LOGGER.info("Importing company from .npbk");
-                       doImportCompany();
-               });
+
+                add(importMenu, "Company (.npbk)", e -> {
+                        LOGGER.info("Importing company from .npbk");
+                        doImportCompany();
+                });
+
                 add(importMenu, "File", e -> new ImportFileActionFX(this.primaryStage).handle(e));
 
                 Menu exportMenu = new Menu("Export");
@@ -304,17 +307,10 @@ public class NonprofitBookkeepingFX extends Application
                 });
                 add(exportMenu, "File", e -> new ExportFileActionFX(this.primaryStage).handle(e));
 
-               file.getItems().addAll(importMenu, exportMenu, new SeparatorMenuItem());
-               add(file, "Exit", e -> {
-                       LOGGER.info("Exit menu selected");
-                       try {
-                               CurrentCompany.flushToDatabase();
-                               CurrentCompany.close();
-                       } finally {
-                               Platform.exit();
-                       }
-               });
-               bar.getMenus().add(file);
+                file.getItems().addAll(importMenu, exportMenu, new SeparatorMenuItem());
+                add(file, "Exit", e -> doExit());
+                bar.getMenus().add(file);
+
 		
 		/* EDIT */
 		Menu edit = new Menu("Edit");
@@ -644,57 +640,66 @@ public class NonprofitBookkeepingFX extends Application
 		
 	}
 	
-       /**
-        * Handles importing a company from an .npbk file.
-        * This retains the previous behaviour of {@code doOpenCompany} and is
-        * invoked by the Import menu. If successful, the application state is
-        * set to {@link AppState#COMPANY_OPEN}.
-        */
-       private void doImportCompany()
-       {
-               LOGGER.info("Opening company file");
-               try
-               {
-                       OpenCompanyFileActionFX action =
-                               new OpenCompanyFileActionFX(this.primaryStage);
-                       action.run();
+        /**
+         * Handles the action to open the company stored in the database.
+         * If a company exists, it is marked open and menu options are enabled via
+         * {@link #setState(AppState)}.  If no company is present, a warning alert
+         * is shown prompting the user to import or create one.
+         */
+        private void doOpenCompany()
+        {
+                LOGGER.info("Opening company from database");
 
-                       if (CurrentCompany.isOpen())
-                       {
-                               LOGGER.info("Company opened: "
-                                       + CurrentCompany.getCompany().getName());
-                               setState(AppState.COMPANY_OPEN);
-                       }
-               }
-               catch (Exception e)
-               {
-                       LOGGER.log(Level.SEVERE, "Failed to open company", e);
-                       AlertBox.showError(this.primaryStage,
-                               "Failed to open company: " + e.getMessage());
-               }
+                CurrentCompany.loadFromDatabase();
 
-       }
+                if (CurrentCompany.isOpen())
+                {
+                        LOGGER.info("Company opened: "
+                                + CurrentCompany.getCompany().getName());
+                        setState(AppState.COMPANY_OPEN);
+                }
+                else
+                {
+                        AlertBox.showWarning(this.primaryStage,
+                                "No company found. Please import or create a company first.");
+                }
 
-       /**
-        * Marks the existing company in the embedded database as open. If no
-        * company data exists, a warning is shown to the user.
-        */
-       private void doOpenCompany()
-       {
-               LOGGER.info("Opening company from database");
-               CurrentCompany.loadFromDatabase();
+        }
 
-               if (CurrentCompany.isOpen())
-               {
-                       LOGGER.info("Company opened: " + CurrentCompany.getCompany().getName());
-                       setState(AppState.COMPANY_OPEN);
-               }
-               else
-               {
-                       AlertBox.showWarning(this.primaryStage,
-                               "No company found. Please import or create a company first.");
-               }
-       }
+        /**
+         * Imports a company from a <code>.npbk</code> file.  This retains the
+         * previous behaviour of {@link #doOpenCompany()} prior to database-backed
+         * companies and is used by the Import menu option.
+         */
+        private void doImportCompany()
+        {
+                LOGGER.info("Importing company file");
+
+                try
+                {
+                        OpenCompanyFileActionFX action =
+                                new OpenCompanyFileActionFX(this.primaryStage);
+                        action.run();
+
+                        if (CurrentCompany.isOpen())
+                        {
+                                LOGGER.info("Company imported: "
+                                        + CurrentCompany.getCompany().getName());
+                                // Persist the imported company into the embedded H2 database
+                                // and ensure the database contents are flushed to the on-disk
+                                // *.db file so it can be reopened via the "Open" menu.
+                                CurrentCompany.flushToDatabase();
+                                setState(AppState.COMPANY_OPEN);
+                        }
+                }
+                catch (Exception e)
+                {
+                        LOGGER.log(Level.SEVERE, "Failed to import company", e);
+                        AlertBox.showError(this.primaryStage,
+                                "Failed to import company: " + e.getMessage());
+                }
+        }
+
 	
 	/**
 	 * Handles the action to close the currently open company file.
@@ -766,6 +771,40 @@ public class NonprofitBookkeepingFX extends Application
                                 "Failed to save company: " + ex.getMessage());
                 }
 
+        }
+
+        /**
+         * Handles application exit.  The currently open company is flushed to the
+         * database and, if a backup file has been specified, persisted to that
+         * file before being marked closed.  Finally the JavaFX platform is
+         * exited.
+         */
+        private void doExit()
+        {
+                LOGGER.info("Exit menu selected");
+
+                try
+                {
+                        if (CurrentCompany.getCurrentFile() != null)
+                        {
+                                CurrentCompany.persist();
+                        }
+                        else
+                        {
+                                CurrentCompany.flushToDatabase();
+                        }
+                }
+                catch (Exception e)
+                {
+                        LOGGER.log(Level.SEVERE, "Failed to save company on exit", e);
+                        AlertBox.showError(this.primaryStage,
+                                "Failed to save company: " + e.getMessage());
+                }
+                finally
+                {
+                        CurrentCompany.close();
+                        Platform.exit();
+                }
         }
 	
 	/**
