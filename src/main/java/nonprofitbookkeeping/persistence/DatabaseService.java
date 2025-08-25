@@ -112,7 +112,9 @@ public class DatabaseService
 	 */
         public Company loadCompany()
         {
-                return loadCompany(1).orElse(null);
+                return this.companyRepository.findFirstId()
+                        .flatMap(this::loadCompany)
+                        .orElse(null);
 
         }
 	

@@ -264,6 +264,8 @@ public class NonprofitBookkeepingFX extends Application
                 this.miClose = add(file, "Close Company", e -> doCloseCompany());
                 this.miSave = add(file, "Save Company File", e -> doSaveCompany());
 
+
+
 		this.miImportCoaXlsx = add(file, "Import COA (XLSX)",
 			e -> new ImportCoaXlsxActionFX(this.primaryStage).handle(e));
 		this.miExportCoaXlsx = add(file, "Export COA (XLSX)",
