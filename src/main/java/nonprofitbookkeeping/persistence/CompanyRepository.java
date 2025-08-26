@@ -104,23 +104,7 @@ public class CompanyRepository {
                 .setMaxResults(1)
                 .getResultStream()
                 .findFirst();
-    }
 
-    /**
-     * Retrieve the identifier of the first company stored in the
-     * database.
-     *
-     * <p>This is used by legacy workflows that assume a single
-     * company instance and simply need <em>any</em> company to be
-     * loaded.</p>
-     */
-    public Optional<Long> findFirstId() {
-        return entityManager.createQuery(
-                        "SELECT c.id FROM CompanyEntity c ORDER BY c.id ASC",
-                        Long.class)
-                .setMaxResults(1)
-                .getResultStream()
-                .findFirst();
     }
 
     /**
@@ -131,12 +115,28 @@ public class CompanyRepository {
         if (entity == null) {
             return Optional.empty();
         }
+        if (entity.getJsonData() == null || entity.getJsonData().isBlank()) {
+            Company company = new Company();
+            company.setId(entity.getId());
+            if (entity.getName() != null) {
+                company.getCompanyProfile().setCompanyName(entity.getName());
+            }
+            return Optional.of(company);
+        }
         try {
             Company company = mapper.readValue(entity.getJsonData(), Company.class);
             return Optional.of(company);
         } catch (IOException e) {
             return Optional.empty();
         }
+    }
+
+    /**
+     * Retrieve all company entities.
+     */
+    public java.util.List<CompanyEntity> findAll() {
+        return entityManager.createQuery("SELECT c FROM CompanyEntity c", CompanyEntity.class)
+                .getResultList();
     }
 
     /**

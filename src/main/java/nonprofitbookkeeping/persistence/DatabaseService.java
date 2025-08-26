@@ -197,14 +197,13 @@ public class DatabaseService
 		
 	}
 	
-	/**
-	 * @return
-	 */
-	public Company listCompanies()
-	{
-		// TODO Auto-generated method stub
-		return null;
-		
-	}
+        /**
+         * List all company rows present in the database.
+         */
+        public java.util.List<nonprofitbookkeeping.persistence.entity.CompanyEntity> listCompanies()
+        {
+                return this.companyRepository.findAll();
+
+        }
 	
 }
