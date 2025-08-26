@@ -104,6 +104,7 @@ public class CompanyRepository {
                 .setMaxResults(1)
                 .getResultStream()
                 .findFirst();
+
     }
 
     /**
