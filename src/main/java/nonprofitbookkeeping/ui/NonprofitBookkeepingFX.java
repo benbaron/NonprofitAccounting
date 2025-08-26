@@ -656,18 +656,66 @@ public class NonprofitBookkeepingFX extends Application
 		logDatabaseState();
 		LOGGER.info("Opening company from database");
 		
-		CurrentCompany.loadFromDatabase();
+		nonprofitbookkeeping.persistence.DatabaseService db =
+			new nonprofitbookkeeping.persistence.DatabaseService();
+		java.util.List<
+			nonprofitbookkeeping.persistence.entity.CompanyEntity> entities =
+				db.listCompanies();
 		
-		if (CurrentCompany.isOpen())
-		{
-			LOGGER.info(
-				"Company opened: " + CurrentCompany.getCompany().getName());
-			setState(AppState.COMPANY_OPEN);
-		}
-		else
+		if (entities.isEmpty())
 		{
 			AlertBox.showWarning(this.primaryStage,
 				"No company found. Please import or create a company first.");
+			return;
+		}
+		
+		if (entities.size() == 1)
+		{
+			long id = entities.get(0).getId();
+			java.util.Optional<nonprofitbookkeeping.model.Company> loaded =
+				db.loadCompany(id);
+			
+			if (loaded.isPresent())
+			{
+				CurrentCompany.forceCompanyLoad(loaded.get());
+				setState(AppState.COMPANY_OPEN);
+				return;
+			}
+			
+		}
+		
+		AlertBox.showWarning(this.primaryStage,
+			"Database contains multiple or invalid company records.");
+		nonprofitbookkeeping.ui.panels.FixDatabaseWizardFX.Result result =
+			nonprofitbookkeeping.ui.panels.FixDatabaseWizardFX
+				.show(this.primaryStage, entities);
+		
+		if (result.cancelled)
+		{
+			return;
+		}
+		
+		for (Long id : result.deleteIds)
+		{
+			db.delete(id);
+		}
+		
+		if (result.openId != null)
+		{
+			java.util.Optional<nonprofitbookkeeping.model.Company> loaded =
+				db.loadCompany(result.openId);
+			
+			if (loaded.isPresent())
+			{
+				CurrentCompany.forceCompanyLoad(loaded.get());
+				setState(AppState.COMPANY_OPEN);
+			}
+			else
+			{
+				AlertBox.showWarning(this.primaryStage,
+					"Selected company could not be loaded.");
+			}
+			
 		}
 		
 	}
@@ -806,7 +854,7 @@ public class NonprofitBookkeepingFX extends Application
 		}
 		catch (Exception ex)
 		{
-			LOGGER.error( "Failed to save company", ex);
+			LOGGER.error("Failed to save company", ex);
 			AlertBox.showError(this.primaryStage,
 				"Failed to save company: " + ex.getMessage());
 		}
@@ -838,7 +886,7 @@ public class NonprofitBookkeepingFX extends Application
 		}
 		catch (Exception e)
 		{
-			LOGGER.error( "Failed to save company on exit", e);
+			LOGGER.error("Failed to save company on exit", e);
 			AlertBox.showError(this.primaryStage,
 				"Failed to save company: " + e.getMessage());
 		}

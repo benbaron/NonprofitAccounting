@@ -23,6 +23,7 @@ public class CompanyRepository
 	private static final Logger LOGGER =
 		LoggerFactory.getLogger(CompanyRepository.class);
 	
+	
 	private final EntityManager entityManager;
 	private final ObjectMapper mapper = new ObjectMapper();
 	
@@ -140,7 +141,6 @@ public class CompanyRepository
 			.findFirst();
 		
 	}
-
 	
 	/**
 	 * Retrieve a company by its ID.
@@ -154,6 +154,19 @@ public class CompanyRepository
 			return Optional.empty();
 		}
 		
+		if (entity.getJsonData() == null || entity.getJsonData().isBlank())
+		{
+			Company company = new Company();
+			company.setId(entity.getId());
+			
+			if (entity.getName() != null)
+			{
+				company.getCompanyProfile().setCompanyName(entity.getName());
+			}
+			
+			return Optional.of(company);
+		}
+		
 		try
 		{
 			Company company =
@@ -164,6 +177,17 @@ public class CompanyRepository
 		{
 			return Optional.empty();
 		}
+		
+	}
+	
+	/**
+	 * Retrieve all company entities.
+	 */
+	public java.util.List<CompanyEntity> findAll()
+	{
+		return entityManager
+			.createQuery("SELECT c FROM CompanyEntity c", CompanyEntity.class)
+			.getResultList();
 		
 	}
 	

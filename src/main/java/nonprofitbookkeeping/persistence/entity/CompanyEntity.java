@@ -1,3 +1,4 @@
+
 package nonprofitbookkeeping.persistence.entity;
 
 import jakarta.persistence.*;
@@ -9,38 +10,50 @@ import jakarta.persistence.*;
  */
 @Entity
 @Table(name = "companies")
-public class CompanyEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String name;
-
-    @Lob
-    @Column(name = "json_data")
-    private String jsonData;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getJsonData() {
-        return jsonData;
-    }
-
-    public void setJsonData(String jsonData) {
-        this.jsonData = jsonData;
-    }
+public class CompanyEntity
+{
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
+	
+	private String name;
+	
+	@Lob
+	@Column(name = "json_data") private String jsonData;
+	
+	public Long getId()
+	{
+		return id;
+		
+	}
+	
+	public void setId(Long id)
+	{
+		this.id = id;
+		
+	}
+	
+	public String getName()
+	{
+		return name;
+		
+	}
+	
+	public void setName(String name)
+	{
+		this.name = name;
+		
+	}
+	
+	public String getJsonData()
+	{
+		return jsonData;
+		
+	}
+	
+	public void setJsonData(String jsonData)
+	{
+		this.jsonData = jsonData;
+		
+	}
+	
 }
