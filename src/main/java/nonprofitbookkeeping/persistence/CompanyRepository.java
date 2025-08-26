@@ -1,3 +1,4 @@
+
 package nonprofitbookkeeping.persistence;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -177,4 +178,5 @@ public class CompanyRepository {
         return false;
 
     }
+
 }

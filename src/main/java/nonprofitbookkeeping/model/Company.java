@@ -31,48 +31,56 @@ public class Company implements Serializable
 	 */
 	private static final long serialVersionUID = 6728014646115467637L;
 	
-        /** Primary key. */
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
-
-        /** The profile information for the company (e.g., name, address). Initialized by default. */
-        @Embedded private CompanyProfileModel companyProfileModel = new CompanyProfileModel();
-        /** The ledger containing all financial transactions for the company. Initialized by default. */
-        @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-        private Ledger ledger = new Ledger();
-        /** The chart of accounts defining the structure of accounts for the company. Initialized by default. */
-        @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-        private ChartOfAccounts chartOfAccounts = new ChartOfAccounts();
-
+	/** Primary key. */
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
 	
-        /**
-         * Identifier used to reference this company in the database.
-         * This replaces the old file based linkage and may be {@code null}
-         * for transient company instances that have not yet been persisted.
-         */
-        @JsonProperty private String companyId;
-
-
+	/** The profile information for the company (e.g., name, address). Initialized by default. */
+	@Embedded private CompanyProfileModel companyProfileModel =
+		new CompanyProfileModel();
+	
+	/** The ledger containing all financial transactions for the company. Initialized by default. */
+	@OneToOne(cascade = CascadeType.ALL,
+		orphanRemoval = true) private Ledger ledger = new Ledger();
+	
+	/** The chart of accounts defining the structure of accounts for the company. Initialized by default. */
+	@OneToOne(cascade = CascadeType.ALL,
+		orphanRemoval = true) private ChartOfAccounts chartOfAccounts =
+			new ChartOfAccounts();
+	
+	
+	/**
+	 * Identifier used to reference this company in the database.
+	 * This replaces the old file based linkage and may be {@code null}
+	 * for transient company instances that have not yet been persisted.
+	 */
+	@JsonProperty private String companyId;
+	
+	
 	/**
 	 * Constructs a new Company object.
 	 * Initializes the company profile, ledger, and chart of accounts with default instances.
 	 * The company file is initially null.
 	 */
-        public Company() 
-        {
-                this.companyProfileModel = new CompanyProfileModel();
-                this.ledger = new Ledger();
-                this.chartOfAccounts = new ChartOfAccounts();
-        }
-
-        public Long getId() {
-                return this.id;
-        }
-
-        public void setId(Long id) {
-                this.id = id;
-        }
+	public Company()
+	{
+		this.companyProfileModel = new CompanyProfileModel();
+		this.ledger = new Ledger();
+		this.chartOfAccounts = new ChartOfAccounts();
+		
+	}
+	
+	public Long getId()
+	{
+		return this.id;
+		
+	}
+	
+	public void setId(Long id)
+	{
+		this.id = id;
+		
+	}
 	
 	/**
 	 * Gets the company's profile information.
@@ -81,6 +89,7 @@ public class Company implements Serializable
 	public CompanyProfileModel getCompanyProfile()
 	{
 		return this.companyProfileModel;
+		
 	}
 	
 	
@@ -91,6 +100,7 @@ public class Company implements Serializable
 	public Ledger getLedger()
 	{
 		return this.ledger;
+		
 	}
 	
 	/**
@@ -101,6 +111,7 @@ public class Company implements Serializable
 	public void setLedger(Ledger ledger)
 	{
 		this.ledger = checkNotNull(ledger);
+		
 	}
 	
 	/**
@@ -110,6 +121,7 @@ public class Company implements Serializable
 	public ChartOfAccounts getChartOfAccounts()
 	{
 		return this.chartOfAccounts;
+		
 	}
 	
 	/**
@@ -122,7 +134,7 @@ public class Company implements Serializable
 		this.chartOfAccounts = checkNotNull(chart);
 		
 	}
-
+	
 	/**
 	 * Sets the company's profile model.
 	 * @param created The {@link CompanyProfileModel} to set.
@@ -130,8 +142,9 @@ public class Company implements Serializable
 	public void setCompanyProfileModel(CompanyProfileModel created)
 	{
 		this.companyProfileModel = created;
+		
 	}
-
+	
 	/**
 	 * Gets the company's profile model.
 	 * This is an alias for {@link #getCompanyProfile()}.
@@ -140,47 +153,50 @@ public class Company implements Serializable
 	public CompanyProfileModel getCompanyProfileModel()
 	{
 		return this.companyProfileModel;
+		
 	}
-
-        /**
-         * Returns the identifier for this company in the database.
-         *
-         * @return company identifier or {@code null} if not yet persisted
-         */
-        public String getCompanyId()
-        {
-                return this.companyId;
-        }
-
-        /**
-         * Sets the identifier used to reference this company in the database.
-         *
-         * @param companyId database identifier for the company
-         */
-        public void setCompanyId(String companyId)
-        {
-                this.companyId = companyId;
-        }
-
+	
+	/**
+	 * Returns the identifier for this company in the database.
+	 *
+	 * @return company identifier or {@code null} if not yet persisted
+	 */
+	public String getCompanyId()
+	{
+		return this.companyId;
+		
+	}
+	
+	/**
+	 * Sets the identifier used to reference this company in the database.
+	 *
+	 * @param companyId database identifier for the company
+	 */
+	public void setCompanyId(String companyId)
+	{
+		this.companyId = companyId;
+		
+	}
+	
 	/**
 	 * @param profile
 	 */
-        public void setCompanyProfile(CompanyProfileModel profile)
-        {
-                setCompanyProfileModel(checkNotNull(profile));
-
-        }
-
-        /**
-         * Gets the company's name from the associated {@link CompanyProfileModel}.
-         *
-         * @return The company name, or {@code null} if no profile is set.
-         */
-        public String getName()
-        {
-                return (this.companyProfileModel != null)
-                                ? this.companyProfileModel.getCompanyName()
-                                : null;
-        }
+	public void setCompanyProfile(CompanyProfileModel profile)
+	{
+		setCompanyProfileModel(checkNotNull(profile));
+		
+	}
+	
+	/**
+	 * Gets the company's name from the associated {@link CompanyProfileModel}.
+	 *
+	 * @return The company name, or {@code null} if no profile is set.
+	 */
+	public String getName()
+	{
+		return (this.companyProfileModel != null) ?
+			this.companyProfileModel.getCompanyName() : null;
+		
+	}
 	
 }
