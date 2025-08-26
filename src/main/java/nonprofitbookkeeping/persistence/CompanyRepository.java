@@ -59,14 +59,17 @@ public class CompanyRepository {
         EntityTransaction tx = entityManager.getTransaction();
         tx.begin();
         CompanyEntity entity;
+        boolean isNew = false;
         if (company.getId() != null) {
             entity = entityManager.find(CompanyEntity.class, company.getId());
             if (entity == null) {
                 entity = new CompanyEntity();
                 entity.setId(company.getId());
+                isNew = true;
             }
         } else {
             entity = new CompanyEntity();
+            isNew = true;
         }
         entity.setName(company.getName());
         try {
@@ -76,10 +79,31 @@ public class CompanyRepository {
             tx.rollback();
             throw new RuntimeException("Failed to serialize company", e);
         }
-        CompanyEntity merged = entityManager.merge(entity);
+        if (isNew) {
+            entityManager.persist(entity);
+        } else {
+            entity = entityManager.merge(entity);
+        }
         tx.commit();
-        company.setId(merged.getId());
-        return merged.getId();
+        company.setId(entity.getId());
+        return entity.getId();
+    }
+
+    /**
+     * Retrieve the identifier of the first company stored in the
+     * database.
+     *
+     * <p>This is used by legacy workflows that assume a single
+     * company instance and simply need <em>any</em> company to be
+     * loaded.</p>
+     */
+    public Optional<Long> findFirstId() {
+        return entityManager.createQuery(
+                        "SELECT c.id FROM CompanyEntity c ORDER BY c.id ASC",
+                        Long.class)
+                .setMaxResults(1)
+                .getResultStream()
+                .findFirst();
     }
 
     /**
@@ -87,15 +111,54 @@ public class CompanyRepository {
      */
     public Optional<Company> findById(long id) {
         CompanyEntity entity = entityManager.find(CompanyEntity.class, id);
+        return Optional.ofNullable(toModel(entity));
+    }
+
+    /**
+     * Convert a {@link CompanyEntity} to its domain {@link Company} model. Any
+     * JSON deserialization errors result in a minimal {@code Company} instance
+     * containing only the ID and name so that callers can still interact with
+     * the row for cleanup or inspection.
+     */
+    public Company toModel(CompanyEntity entity) {
         if (entity == null) {
-            return Optional.empty();
+            return null;
+        }
+        if (entity.getJsonData() == null || entity.getJsonData().isBlank()) {
+            Company company = new Company();
+            company.setId(entity.getId());
+            if (entity.getName() != null) {
+                company.getCompanyProfile().setCompanyName(entity.getName());
+            }
+            return company;
         }
         try {
             Company company = mapper.readValue(entity.getJsonData(), Company.class);
-            return Optional.of(company);
+            return company;
         } catch (IOException e) {
-            return Optional.empty();
+            Company company = new Company();
+            company.setId(entity.getId());
+            if (entity.getName() != null) {
+                company.getCompanyProfile().setCompanyName(entity.getName());
+            }
+            return company;
         }
+    }
+
+    /**
+     * Retrieve all company entities.
+     */
+    public java.util.List<CompanyEntity> findAll() {
+        return entityManager.createQuery("SELECT c FROM CompanyEntity c", CompanyEntity.class)
+                .getResultList();
+    }
+
+    /**
+     * @return total number of company records present
+     */
+    public long count() {
+        return entityManager.createQuery("SELECT COUNT(c) FROM CompanyEntity c", Long.class)
+                .getSingleResult();
     }
 
     /**

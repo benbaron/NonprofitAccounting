@@ -9,6 +9,7 @@ import nonprofitbookkeeping.model.Ledger;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,7 +113,9 @@ public class DatabaseService
 	 */
         public Company loadCompany()
         {
-                return loadCompany(1).orElse(null);
+                return this.companyRepository.findFirstId()
+                        .flatMap(this::loadCompany)
+                        .orElse(null);
 
         }
 	
@@ -132,11 +135,20 @@ public class DatabaseService
 	}
 	
 	/** Delete a company by id. */
-	public boolean delete(long companyId)
-	{
-		return this.companyRepository.delete(companyId);
-		
-	}
+        public boolean delete(long companyId)
+        {
+                return this.companyRepository.delete(companyId);
+
+        }
+
+        /**
+         * Count stored companies.
+         */
+        public long countCompanies()
+        {
+                return this.companyRepository.count();
+
+        }
 	
 	public AccountingTransactionRepository getTransactionRepository()
 	{
@@ -186,14 +198,27 @@ public class DatabaseService
 		
 	}
 	
-	/**
-	 * @return
-	 */
-	public Company listCompanies()
-	{
-		// TODO Auto-generated method stub
-		return null;
-		
-	}
+        /**
+         * List all companies present in the database as domain objects.
+         */
+        public java.util.List<Company> listCompanies()
+        {
+                return this.companyRepository.findAll()
+                        .stream()
+                        .map(this.companyRepository::toModel)
+                        .collect(Collectors.toList());
+
+        }
+
+        /**
+         * List raw {@link nonprofitbookkeeping.persistence.entity.CompanyEntity} rows.
+         * Used by maintenance utilities that need direct access to the underlying
+         * persistence representation.
+         */
+        public java.util.List<nonprofitbookkeeping.persistence.entity.CompanyEntity> listCompanyEntities()
+        {
+                return this.companyRepository.findAll();
+
+        }
 	
 }
