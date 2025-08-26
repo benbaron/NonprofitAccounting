@@ -11,6 +11,7 @@ import nonprofitbookkeeping.persistence.entity.CompanyEntity;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,13 +117,14 @@ public class DatabaseService
 	 *
 	 * @return the loaded {@link Company} or {@code null} if none exist
 	 */
-	public Company loadCompany()
-	{
-		return this.companyRepository.findFirstId()
-			.flatMap(this::loadCompany)
-			.orElse(null);
-		
-	}
+        public Company loadCompany()
+        {
+                return this.companyRepository.findFirstId()
+                        .flatMap(this::loadCompany)
+                        .orElse(null);
+
+        }
+
 	
 	/** Create or update a company and return its id. */
 	public long create(Company company)
@@ -140,11 +142,20 @@ public class DatabaseService
 	}
 	
 	/** Delete a company by id. */
-	public boolean delete(long companyId)
-	{
-		return this.companyRepository.delete(companyId);
-		
-	}
+        public boolean delete(long companyId)
+        {
+                return this.companyRepository.delete(companyId);
+
+        }
+
+        /**
+         * Count stored companies.
+         */
+        public long countCompanies()
+        {
+                return this.companyRepository.count();
+
+        }
 	
 	/**
 	 * Count stored companies.
@@ -203,14 +214,28 @@ public class DatabaseService
 		
 	}
 	
-	/**
-	 * List all company rows present in the database.
-	 */
-	public List<CompanyEntity>
-		listCompanies()
-	{
-		return this.companyRepository.findAll();
-		
-	}
+        /**
+         * List all companies present in the database as domain objects.
+         */
+        public java.util.List<Company> listCompanies()
+        {
+                return this.companyRepository.findAll()
+                        .stream()
+                        .map(this.companyRepository::toModel)
+                        .collect(Collectors.toList());
+
+        }
+
+        /**
+         * List raw {@link nonprofitbookkeeping.persistence.entity.CompanyEntity} rows.
+         * Used by maintenance utilities that need direct access to the underlying
+         * persistence representation.
+         */
+        public java.util.List<nonprofitbookkeeping.persistence.entity.CompanyEntity> listCompanyEntities()
+        {
+                return this.companyRepository.findAll();
+
+        }
+
 	
 }
