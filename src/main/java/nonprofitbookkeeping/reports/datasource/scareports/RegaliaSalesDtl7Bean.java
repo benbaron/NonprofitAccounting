@@ -243,5 +243,14 @@ public class RegaliaSalesDtl7Bean
 		
 		
 	}
+	/**
+	 * @param arrayList
+	 */
+	public void setRows(ArrayList arrayList)
+	{
+		// TODO Auto-generated method stub
+		
+		
+	}
 	
 }
