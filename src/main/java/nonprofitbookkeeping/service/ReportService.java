@@ -89,9 +89,9 @@ public class ReportService
 	/** Standard date formatter (ISO Local Date, e.g., "YYYY-MM-DD") used in some report outputs. */
 	private static final DateTimeFormatter DATE_FORMATTER =
 		DateTimeFormatter.ISO_LOCAL_DATE;
-
-        /** Service for managing supplemental record links. */
-        private final SupplementalRecordService supplementalRecordService;
+	
+	/** Service for managing supplemental record links. */
+	private final SupplementalRecordService supplementalRecordService;
 	
 	/** Default constructor uses the built-in registry. */
 	public ReportService()
@@ -109,7 +109,7 @@ public class ReportService
 			AbstractReportGenerator>> registry)
 	{
 		this.generatorRegistry = new ConcurrentHashMap<>(registry);
-                this.supplementalRecordService = new SupplementalRecordService();
+		this.supplementalRecordService = new SupplementalRecordService();
 		
 	}
 	
@@ -1988,19 +1988,16 @@ public class ReportService
 		return results;
 		
 	}
+		
 	
+	/** Accessor for the supplemental record service. */
+	public SupplementalRecordService getSupplementalRecordService()
+	{
+		return this.supplementalRecordService;
+		
+	}	
 	
-}
-
-        /** Accessor for the supplemental record service. */
-        public SupplementalRecordService getSupplementalRecordService()
-        {
-                return this.supplementalRecordService;
-        }
-
-
-
-    /**
+	/**
      * Merge supplemental record data into the provided transactions.
      */
     public void mergeSupplementalData(java.util.Collection<AccountingTransaction> txs)
@@ -2027,3 +2024,4 @@ public class ReportService
             }
         }
     }
+}
