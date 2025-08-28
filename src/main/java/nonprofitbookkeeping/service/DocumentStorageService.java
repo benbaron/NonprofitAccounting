@@ -6,6 +6,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import nonprofitbookkeeping.ui.helpers.AlertBox;
+
 /**
  * DocumentStorageService manages attachment and retrieval of document files
  * associated with transactions.
@@ -17,6 +22,7 @@ import java.nio.file.StandardCopyOption;
  */
 public class DocumentStorageService
 {
+        private static final Logger LOGGER = LoggerFactory.getLogger(DocumentStorageService.class);
 	
 	/** Base directory located in the user's home directory under "NonprofitDocuments" for storing all attached documents. */
 	private static final File DOCUMENT_BASE_DIR =
@@ -75,12 +81,20 @@ public class DocumentStorageService
 		String newFileName = transactionId + "_" + System.currentTimeMillis() + extension;
 		File targetFile = new File(DOCUMENT_BASE_DIR, newFileName);
 		
-		// Copy the source file to the target location, replacing any existing file.
-		Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-		
-		// Optionally, log the operation.
-		System.out.println("Document attached for transaction " + transactionId + ": " +
-			targetFile.getAbsolutePath());
+                try
+                {
+                        // Copy the source file to the target location, replacing any existing file.
+                        Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        LOGGER.info("Document attached for transaction {}: {}", transactionId,
+                                        targetFile.getAbsolutePath());
+                }
+                catch (IOException e)
+                {
+                        LOGGER.error("Failed to attach document for transaction {}", transactionId, e);
+                        AlertBox.showError(null,
+                                        "Failed to attach document: " + e.getMessage());
+                        throw e;
+                }
 	}
 	
 	/**

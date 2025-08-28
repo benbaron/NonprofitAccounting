@@ -18,6 +18,9 @@ import nonprofitbookkeeping.model.budget.Budget;
 import nonprofitbookkeeping.model.budget.BudgetLine;
 import nonprofitbookkeeping.model.budget.Periodicity;
 import nonprofitbookkeeping.ui.javafx.dialogs.BudgetLineDialogFX;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import nonprofitbookkeeping.service.BudgetService;
 
 import java.io.File;
@@ -36,6 +39,7 @@ import java.util.stream.Collectors;
  */
 public class BudgetPanelFX extends VBox
 {
+        private static final Logger LOGGER = LoggerFactory.getLogger(BudgetPanelFX.class);
 	
 	// Data model fields
 	private Budget currentBudget;
@@ -338,8 +342,8 @@ public class BudgetPanelFX extends VBox
 			
 		});
 		
-		this.btnSaveBudget.setOnAction(e -> actionSaveBudget());
-		this.btnClose.setOnAction(e -> System.out.println("Close clicked."));
+                this.btnSaveBudget.setOnAction(e -> actionSaveBudget());
+                this.btnClose.setOnAction(e -> LOGGER.debug("Close clicked."));
 		
 		this.btnAddLine.setOnAction(e -> actionAddLine());
 		this.btnEditLine.setOnAction(e -> actionEditLine());
