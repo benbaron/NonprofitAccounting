@@ -49,8 +49,10 @@ import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.helpers.FocusCommitTextFieldTableCell;
 import nonprofitbookkeeping.service.SupplementalRecordService;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * JavaFX panel for creating a new general journal transaction.
