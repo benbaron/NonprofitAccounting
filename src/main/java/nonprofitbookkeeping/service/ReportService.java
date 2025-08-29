@@ -86,6 +86,13 @@ public class ReportService
 	private static final DateTimeFormatter DATE_FORMATTER =
 		DateTimeFormatter.ISO_LOCAL_DATE;
 	
+	/** 
+	 * Mapping of Jasper report types to their generator constructors. 
+	 */
+	private final Map<ReportType,
+		BiFunction<ReportContext, ReportService,
+			AbstractReportGenerator>> generatorRegistry;
+	
 	/** Default constructor uses the built-in registry. */
 	public ReportService()
 	{
@@ -104,130 +111,6 @@ public class ReportService
 		this.generatorRegistry = new ConcurrentHashMap<>(registry);
 		
 	}
-	
-	
-	/**
-	 * Generates a very basic plain text report summarizing the provided
-	 * {@link ReportContext}. This is used as a fallback when the user
-	 * requests a "text" output format.
-	 *
-	 * @param ctx The context describing the report that was requested.
-	 * @return The created text {@link File}.
-	 * @throws IOException If the file cannot be written.
-	 */
-	public static File generatePlainTextReport(ReportContext ctx)
-		throws IOException
-	{
-		File outputDirectory =
-			new File(System.getProperty("user.home"),
-				"NonprofitBookkeepingReports");
-		
-		if (!outputDirectory.exists())
-		{
-			outputDirectory.mkdirs();
-		}
-		
-		String baseName =
-			(ctx.getReportType() != null ? ctx.getReportType() : "report") +
-				"_" +
-				System.currentTimeMillis() + ".txt";
-		
-		File outFile = new File(outputDirectory, baseName);
-		
-		try (java.io.PrintWriter pw = new java.io.PrintWriter(outFile))
-		{
-			pw.println("Report Type: " + ctx.getReportType());
-			
-			if (ctx.getStartDate() != null)
-			{
-				pw.println("Start Date: " + ctx.getStartDate());
-			}
-			
-			if (ctx.getEndDate() != null)
-			{
-				pw.println("End Date: " + ctx.getEndDate());
-			}
-			
-			pw.println("Generated on: " + java.time.LocalDate.now());
-			pw.println(
-				"(Text output not formatted. Use PDF or HTML for full detail.)");
-		}
-		
-		return outFile;
-		
-	}
-	
-	/**
-	 * Generate a Jasper report using the generator registry and export it to disk.
-	 *
-	 * @param ctx          ReportContext describing what to build (includes reportType, dates, etc.)
-	 * @param outputFormat Preferred output format: "pdf" (default), "html", or "xlsx".
-	 * @return File pointing to the generated artifact on disk
-	 * @throws JRException  if Jasper fails to fill/export
-	 * @throws IOException  if file operations fail
-	 * @throws IllegalArgumentException if the report type is unknown or no generator is registered
-	 */
-	public File generateJasperReport(ReportContext ctx, String outputFormat)
-		throws JRException, IOException
-	{
-		
-		if (ctx == null || ctx.getReportType() == null)
-		{
-			throw new IllegalArgumentException(
-				"ReportContext and reportType are required.");
-		}
-		
-		// Resolve report type and generator
-		ReportType type = ReportType.fromId(ctx.getReportType());
-		
-		if (type == null)
-		{
-			throw new IllegalArgumentException(
-				"Unknown reportType: " + ctx.getReportType());
-		}
-		
-		BiFunction<ReportContext, ReportService,
-			AbstractReportGenerator> factory = this.generatorRegistry.get(type);
-		
-		if (factory == null)
-		{
-			throw new IllegalArgumentException(
-				"No generator registered for reportType: " + type.id());
-		}
-		
-		AbstractReportGenerator generator = factory.apply(ctx, this);
-		
-		if (generator == null)
-		{
-			throw new IllegalStateException(
-				"Generator factory returned null for " + type.id());
-		}
-		
-		if (ctx.getBeans() != null)
-		{
-			generator.setReportData(ctx.getBeans());
-		}
-		
-		// Ask the generator to build the JasperPrint
-		JasperPrint print = generator.generatePrint();
-		
-		// Normalize format; default to PDF
-		String fmt =
-			(outputFormat == null ? "pdf" : outputFormat).trim().toLowerCase();
-		
-		File out =
-			generator.writeJasperOutput(fmt, print, generator.getBaseName());
-		LOGGER.info("Report generated: " + out.getAbsolutePath());
-		return out;
-		
-	}
-	
-	/** 
-	 * Mapping of Jasper report types to their generator constructors. 
-	 */
-	private final Map<ReportType,
-		BiFunction<ReportContext, ReportService,
-			AbstractReportGenerator>> generatorRegistry;
 	
 	/** Enum-safe keys for the Jasper report generator registry. */
 	public enum ReportType
@@ -284,16 +167,28 @@ public class ReportService
 			
 		}
 		
+		/**
+		 * fromId
+		 * @param id
+		 * @return ReportType enum
+		 */
 		public static ReportType fromId(String id)
 		{
 			if (id == null)
+			{
 				return null;
+			}
+			
+			// trim and downcase
 			String norm = id.trim().toLowerCase();
 			
+			// Search all the enumerated values for the normalized string
 			for (ReportType t : values())
 			{
 				if (t.id.equals(norm))
+				{
 					return t;
+				}
 			}
 			
 			return null;
@@ -308,10 +203,10 @@ public class ReportService
 			BiFunction<ReportContext, ReportService, AbstractReportGenerator>>
 		createDefaultRegistry()
 	{
-		Map<ReportType,
-			BiFunction<ReportContext, ReportService,
-				AbstractReportGenerator>> map =
-					new EnumMap<>(ReportType.class);
+		Map<ReportType,	
+			BiFunction<ReportContext, 
+			ReportService,
+			AbstractReportGenerator>> map =	new EnumMap<>(ReportType.class);
 		
 		map.put(ReportType.INCOME_STATEMENT_JASPER,
 			(ctx, svc) -> new IncomeStatementJasperGenerator(ctx, svc));
@@ -413,6 +308,124 @@ public class ReportService
 		
 	}
 	
+	
+	/**
+	 * Generates a very basic plain text report summarizing the provided
+	 * {@link ReportContext}. This is used as a fallback when the user
+	 * requests a "text" output format.
+	 *
+	 * @param ctx The context describing the report that was requested.
+	 * @return The created text {@link File}.
+	 * @throws IOException If the file cannot be written.
+	 */
+	public static File generatePlainTextReport(ReportContext ctx)
+		throws IOException
+	{
+		File outputDirectory =
+			new File(System.getProperty("user.home"),
+				"NonprofitBookkeepingReports");
+		
+		if (!outputDirectory.exists())
+		{
+			outputDirectory.mkdirs();
+		}
+		
+		String baseName =
+			(ctx.getReportType() != null ? ctx.getReportType() : "report") +
+				"_" +
+				System.currentTimeMillis() + ".txt";
+		
+		File outFile = new File(outputDirectory, baseName);
+		
+		try (java.io.PrintWriter pw = new java.io.PrintWriter(outFile))
+		{
+			pw.println("Report Type: " + ctx.getReportType());
+			
+			if (ctx.getStartDate() != null)
+			{
+				pw.println("Start Date: " + ctx.getStartDate());
+			}
+			
+			if (ctx.getEndDate() != null)
+			{
+				pw.println("End Date: " + ctx.getEndDate());
+			}
+			
+			pw.println("Generated on: " + java.time.LocalDate.now());
+			pw.println(
+				"(Text output not formatted. Use PDF or HTML for full detail.)");
+		}
+		
+		return outFile;
+		
+	}
+	
+	/**
+	 * Generate a Jasper report using the generator registry and export it to disk.
+	 *
+	 * @param ctx          ReportContext describing what to build (includes reportType, dates, etc.)
+	 * @param outputFormat Preferred output format: "pdf" (default), "html", or "xlsx".
+	 * @return File pointing to the generated artifact on disk
+	 * @throws JRException  if Jasper fails to fill/export
+	 * @throws IOException  if file operations fail
+	 * @throws IllegalArgumentException if the report type is unknown or no generator is registered
+	 */
+	public File generateJasperReport(ReportContext ctx, String outputFormat)
+		throws JRException, IOException
+	{
+		
+		if (ctx == null || ctx.getReportType() == null)
+		{
+			throw new IllegalArgumentException(
+				"ReportContext and reportType are required.");
+		}
+		
+		// Resolve report type and generator
+		ReportType type = ReportType.fromId(ctx.getReportType());		
+		if (type == null)
+		{
+			throw new IllegalArgumentException(
+				"Unknown reportType: " + ctx.getReportType());
+		}
+		
+		BiFunction<ReportContext, 
+			ReportService,
+			AbstractReportGenerator> factory = this.generatorRegistry.get(type);
+		
+		if (factory == null)
+		{
+			throw new IllegalArgumentException(
+				"No generator registered for reportType: " + type.id());
+		}
+		
+		AbstractReportGenerator generator = factory.apply(ctx, this);
+		
+		if (generator == null)
+		{
+			throw new IllegalStateException(
+				"Generator factory returned null for " + type.id());
+		}
+		
+		if (ctx.getBeans() != null)
+		{
+			generator.setReportData(ctx.getBeans());
+		}
+		
+		// Ask the generator to build the JasperPrint
+		JasperPrint print = generator.generatePrint();
+		
+		// Normalize format; default to PDF
+		String fmt =
+			(outputFormat == null ? "pdf" : outputFormat).trim().toLowerCase();
+		
+		File out =
+			generator.writeJasperOutput(fmt, print, generator.getBaseName());
+		LOGGER.info("Report generated: " + out.getAbsolutePath());
+		return out;
+		
+	}
+	
+
 	
 	/**
 	 * Checks if a given account is associated with any of the selected funds.

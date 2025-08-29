@@ -28,6 +28,7 @@ import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 
 import java.util.List;
+import java.util.Map;
 import java.io.File;
 import java.awt.Desktop;
 import java.io.IOException;
@@ -60,7 +61,7 @@ public class SkeletonReportsPanel extends BorderPane
 	private ObservableList<ReportMetadata> generatedReportsDataList;
 	
 	/** Mapping of report display names to their report type keys. */
-	private java.util.Map<String, String> availableTemplates;
+	private Map<String, String> availableTemplates;
 	
 	/** Service layer for report generation and listing operations. */
 	private ReportService reportService;
@@ -92,8 +93,7 @@ public class SkeletonReportsPanel extends BorderPane
 		this.controlsGrid = new GridPane();
 		this.controlsGrid.setPadding(new Insets(10));
 		this.controlsGrid.setHgap(10);
-		this.controlsGrid.setVgap(10);
-		
+		this.controlsGrid.setVgap(10);		
 		
 		this.controlsGrid.add(new Label("Report Type:"), 0, 0);
 		this.availableTemplates = ReportTemplateScanner.discoverTemplates();
