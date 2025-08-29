@@ -37,6 +37,9 @@ import java.util.List;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A JavaFX panel that displays journal entries from the current company's ledger.
  * It provides a table view ({@link #journalDisplayTable}) for individual debit/credit entries
@@ -48,6 +51,7 @@ import java.time.format.DateTimeFormatter;
  */
 public class SkeletonJournalPanel extends BorderPane
 {
+        private static final Logger LOGGER = LoggerFactory.getLogger(SkeletonJournalPanel.class);
 	
 	/** TableView to display journal entries, using {@link JournalDisplayEntry} as the row model. */
 	private TableView<JournalDisplayEntry> journalDisplayTable;
@@ -393,7 +397,7 @@ public class SkeletonJournalPanel extends BorderPane
 		}
 		else
 		{
-			System.out.println("No journal entry selected for editing.");
+                        LOGGER.warn("No journal entry selected for editing.");
 			AlertBox.showError(getScene().getWindow(), "No entry selected.");
 		}
 		
@@ -409,7 +413,7 @@ public class SkeletonJournalPanel extends BorderPane
 		
 		if (selected == null || selected.isEmpty())
 		{
-			System.out.println("No journal entry selected for deletion.");
+                        LOGGER.warn("No journal entry selected for deletion.");
 			AlertBox.showError(getScene().getWindow(), "No entry selected for deletion.");
 			return;
 		}
@@ -432,14 +436,14 @@ public class SkeletonJournalPanel extends BorderPane
 			
 			if (anyDeleted)
 			{
-				loadData();
-				System.out.println("Deleted selected entries.");
-			}
-			else
-			{
-				System.out.println("Failed to delete selected entries.");
-				AlertBox.showError(getScene().getWindow(), "Deletion failed.");
-			}
+                                loadData();
+                                LOGGER.info("Deleted selected entries.");
+                        }
+                        else
+                        {
+                                LOGGER.error("Failed to delete selected entries.");
+                                AlertBox.showError(getScene().getWindow(), "Deletion failed.");
+                        }
 			
 		}
 		

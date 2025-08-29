@@ -34,6 +34,9 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.time.LocalDate;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A JavaFX panel for generating new reports and viewing a list of previously
  * generated reports. It provides UI controls for selecting report type, start
@@ -44,6 +47,7 @@ import java.time.LocalDate;
  */
 public class SkeletonReportsPanel extends BorderPane
 {
+        private static final Logger LOGGER = LoggerFactory.getLogger(SkeletonReportsPanel.class);
 	
 	/** ComboBox for selecting the type of report to generate. */
 	private ComboBox<String> reportTypeComboBox;
@@ -503,10 +507,9 @@ public class SkeletonReportsPanel extends BorderPane
 			}
 			catch (Exception ex)
 			{
-				ex.printStackTrace();
-				System.out.println("Error generating " + reportTypeDisplay + ": " + ex.getMessage());
-				AlertBox.showError(ownerWindow,
-					"Error generating " + reportTypeDisplay + ": " + ex.getMessage());
+                                LOGGER.error("Error generating {}", reportTypeDisplay, ex);
+                                AlertBox.showError(ownerWindow,
+                                        "Error generating " + reportTypeDisplay + ": " + ex.getMessage());
 			}
 			finally
 			{

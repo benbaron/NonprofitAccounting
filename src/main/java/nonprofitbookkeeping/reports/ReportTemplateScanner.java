@@ -9,11 +9,15 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Utility class for discovering Jasper report templates bundled with the application.
  */
 public final class ReportTemplateScanner
 {
+        private static final Logger LOGGER = LoggerFactory.getLogger(ReportTemplateScanner.class);
 	/**
 	 * 
 	 * Constructor ReportTemplateScanner
@@ -84,7 +88,7 @@ public final class ReportTemplateScanner
 	                String key = toKey(base);
 	                templates.putIfAbsent(display, key);
 	                
-	                System.out.println("Found template: " + display);
+                                    LOGGER.info("Found template: {}", display);
 	            });
 	    }
 	    catch (IOException e)
