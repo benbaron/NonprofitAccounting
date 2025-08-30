@@ -1,3 +1,4 @@
+
 package nonprofitbookkeeping.reports;
 
 import java.util.LinkedHashMap;
@@ -5,6 +6,7 @@ import java.util.Map;
 
 import nonprofitbookkeeping.reports.generator.*;
 import nonprofitbookkeeping.service.ReportService.ReportType;
+
 
 /**
  * Registry of available Jasper report templates.
@@ -20,11 +22,13 @@ public final class ReportTemplates {
                                ReportType reportType) {
         /**
          * Returns the report type identifier used by {@link nonprofitbookkeeping.service.ReportService}.
+
          *
          * @return report type identifier
          */
         public String reportTypeKey() {
             return this.reportType.id();
+
         }
     }
 
@@ -49,6 +53,7 @@ public final class ReportTemplates {
                 ReportType.SCA_CONTACT_INFO_JASPER);
         add(map, "jrxml/GeneralLedger.jrxml", GeneralLedgerJasperGenerator.class,
                 ReportType.GENERAL_LEDGER_JASPER);
+
 
         // Alternate Contact Info template used by SCA reports
         add(map, "Contact Info 1 Fixed Labeled",
@@ -99,6 +104,7 @@ public final class ReportTemplates {
         add(map, "jrxml/sca-reports/FINANCE_COMM_13_AUTO_STYLED_labeled.jrxml", FinanceComm13JasperGenerator.class,
                 ReportType.SCA_FINANCE_COMM_13_JASPER);
 
+
         return Map.copyOf(map);
     }
 
@@ -108,6 +114,7 @@ public final class ReportTemplates {
         String base = binder.getSimpleName().replaceFirst("JasperGenerator$", "");
         String display = toDisplayName(base);
         add(map, display, jrxmlPath, binder, type);
+
     }
 
     private static void add(Map<String, TemplateInfo> map, String displayName,
@@ -115,6 +122,7 @@ public final class ReportTemplates {
                              Class<? extends AbstractReportGenerator> binder,
                              ReportType type) {
         map.put(displayName, new TemplateInfo(displayName, jrxmlPath, binder, type));
+
     }
 
     private static String toDisplayName(String base) {
@@ -140,5 +148,6 @@ public final class ReportTemplates {
     public static Map<String, TemplateInfo> templates() {
         return TEMPLATES;
     }
+
 }
 
