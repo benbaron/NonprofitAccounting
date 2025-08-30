@@ -17,13 +17,16 @@ import org.slf4j.LoggerFactory;
  */
 public final class ReportTemplateScanner
 {
-        private static final Logger LOGGER = LoggerFactory.getLogger(ReportTemplateScanner.class);
+	private static final Logger LOGGER =
+		LoggerFactory.getLogger(ReportTemplateScanner.class);
+	
 	/**
 	 * 
 	 * Constructor ReportTemplateScanner
 	 */
 	private ReportTemplateScanner()
 	{
+	
 	}
 	
 	/**
@@ -36,68 +39,83 @@ public final class ReportTemplateScanner
 	public static Map<String, String> discoverTemplates()
 	{
 		// create the map of templates
-	    Map<String, String> templates = new LinkedHashMap<>();
-
-	    // Define your base directory - could also be injected, read from a config, etc.
-	    Path baseDir = Paths.get(System.getProperty("user.dir")); // runtime working dir
-
-//	    Path baseDir = Paths.get(System.getProperty("app.base.dir", "."));  // Fallback to current dir
-
-	    // look in directory jrxml
-	    Path reportsDir = baseDir.resolve("jrxml");
-	    if (!Files.isDirectory(reportsDir))
-	    {
-	        System.err.println("Reports directory not found: " + reportsDir.toAbsolutePath());
-	        return templates;
-	    }
-	    scanDirectoryForTemplates(templates, reportsDir);
-	    
-	    // look in subdir jrxml/sca-reports
-	    reportsDir = baseDir.resolve("jrxml/sca-reports");
-	    if (!Files.isDirectory(reportsDir))
-	    {
-	        System.err.println("Reports directory not found: " + reportsDir.toAbsolutePath());
-	        return templates;
-	    }
-	    scanDirectoryForTemplates(templates, reportsDir);
-
-	    return templates;
+		Map<String, String> templates = new LinkedHashMap<>();
+		
+		// Define your base directory - could also be injected, read from a
+		// config, etc.
+		Path baseDir = Paths.get(System.getProperty("user.dir")); // runtime
+																	// working
+																	// dir
+		
+// Path baseDir = Paths.get(System.getProperty("app.base.dir", ".")); //
+// Fallback to current dir
+		
+		// look in directory jrxml
+		Path reportsDir = baseDir.resolve("jrxml");
+		
+		if (!Files.isDirectory(reportsDir))
+		{
+			System.err.println(
+				"Reports directory not found: " + reportsDir.toAbsolutePath());
+			return templates;
+		}
+		
+		scanDirectoryForTemplates(templates, reportsDir);
+		
+		// look in subdir jrxml/sca-reports
+		reportsDir = baseDir.resolve("jrxml/sca-reports");
+		
+		if (!Files.isDirectory(reportsDir))
+		{
+			System.err.println(
+				"Reports directory not found: " + reportsDir.toAbsolutePath());
+			return templates;
+		}
+		
+		scanDirectoryForTemplates(templates, reportsDir);
+		
+		return templates;
+		
 	}
-
+	
 	/**
 	 * @param templates
 	 * @param reportsDir
 	 */
-	static void scanDirectoryForTemplates(Map<String, String> templates, Path reportsDir)
+	static void scanDirectoryForTemplates(Map<String, String> templates,
+		Path reportsDir)
 	{
+		
 		// convert a stream of names to contexts
-	    try (Stream<Path> stream = Files.list(reportsDir))
-	    {
-	        stream
-	            .filter(p -> p.getFileName().toString().endsWith(".jrxml"))
-	            .forEach(p -> {
-	                String fileName = p.getFileName().toString();
-	                String base = fileName.substring(0, fileName.length() - ".jrxml".length());
-
-	                if (base.endsWith("Alt"))
-	                {
-	                    base = base.substring(0, base.length() - 3);
-	                }
-
-	                String display = toDisplayName(base);
-	                String key = toKey(base);
-	                templates.putIfAbsent(display, key);
-	                
-                                    LOGGER.info("Found template: {}", display);
-	            });
-	    }
-	    catch (IOException e)
-	    {
-	        e.printStackTrace();
-	    }
+		try (Stream<Path> stream = Files.list(reportsDir))
+		{
+			stream
+				.filter(p -> p.getFileName().toString().endsWith(".jrxml"))
+				.forEach(p ->
+				{
+					String fileName = p.getFileName().toString();
+					String base = fileName.substring(0,
+						fileName.length() - ".jrxml".length());
+					
+					if (base.endsWith("Alt"))
+					{
+						base = base.substring(0, base.length() - 3);
+					}
+					
+					String display = toDisplayName(base);
+					String key = toKey(base);
+					templates.putIfAbsent(display, key);
+					
+					LOGGER.info("Found template: {}", display);
+				});
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 		
 	}
-
+	
 	/**
 	 * Convert base string to display name
 	 * 
@@ -115,11 +133,13 @@ public final class ReportTemplateScanner
 		{
 			if (part.isEmpty())
 				continue;
-			sb.append(Character.toUpperCase(part.charAt(0))).append(part.substring(1).toLowerCase())
+			sb.append(Character.toUpperCase(part.charAt(0)))
+				.append(part.substring(1).toLowerCase())
 				.append(' ');
 		}
 		
 		return sb.toString().trim();
+		
 	}
 	
 	/**
@@ -130,9 +150,11 @@ public final class ReportTemplateScanner
 	 */
 	private static String toKey(String base)
 	{
-		String snake = base.replaceAll("([a-z])([A-Z])", "$1_$2").replace('-', '_')
-			.replace(' ', '_').toLowerCase();
+		String snake =
+			base.replaceAll("([a-z])([A-Z])", "$1_$2").replace('-', '_')
+				.replace(' ', '_').toLowerCase();
 		return snake + "_jasper";
+		
 	}
 	
 }
