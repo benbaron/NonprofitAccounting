@@ -14,7 +14,7 @@ public class ContactInfoJasperGenerator extends AbstractReportGenerator {
         }
 
         @Override protected String getReportPath() {
-                return "jrxml/sca-reports/CONTACT_INFO_1.jrxml";
+                return "jrxml/sca-reports/CONTACT_INFO_1_fixed_labeled.jrxml";
         }
 
         @Override public String getBaseName() {
