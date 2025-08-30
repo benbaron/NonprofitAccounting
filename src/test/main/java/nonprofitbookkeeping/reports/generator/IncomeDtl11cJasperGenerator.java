@@ -14,7 +14,7 @@ public class IncomeDtl11cJasperGenerator extends AbstractReportGenerator {
         }
 
         @Override protected String getReportPath() {
-                return "jrxml/sca-reports/INCOME_DTL_11c_AUTO_STYLED.jrxml";
+                return "jrxml/sca-reports/INCOME_DTL_11c_AUTO_STYLED_fixed_-_Copy_rowbased.jrxml";
         }
 
         @Override public String getBaseName() {

@@ -14,7 +14,7 @@ public class Income4JasperGenerator extends AbstractReportGenerator {
         }
 
         @Override protected String getReportPath() {
-                return "jrxml/sca-reports/INCOME_4_AUTO_STYLED.jrxml";
+                return "jrxml/sca-reports/INCOME_4_AUTO_STYLED_labeled.jrxml";
         }
 
         @Override public String getBaseName() {

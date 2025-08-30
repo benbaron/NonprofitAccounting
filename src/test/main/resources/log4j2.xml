@@ -20,36 +20,36 @@
         </Root>        
         
         <!-- ①  Add one Logger for all Jackson packages -->
-	    <Logger name="com.fasterxml.jackson" level="DEBUG" additivity="false">
-	        <AppenderRef ref="STDOUT"/>
-	    </Logger>
+            <Logger name="com.fasterxml.jackson" level="DEBUG" additivity="false">
+                <AppenderRef ref="Console"/>
+            </Logger>
 	
 	    <!-- (Optional) Finer control per module  
-	    <Logger name="com.fasterxml.jackson.databind" level="DEBUG" additivity="false">
-	        <AppenderRef ref="STDOUT"/>
-	    </Logger>
-	    <Logger name="com.fasterxml.jackson.core" level="INFO" additivity="false">
-	        <AppenderRef ref="STDOUT"/>
-	    </Logger>
+            <Logger name="com.fasterxml.jackson.databind" level="DEBUG" additivity="false">
+                <AppenderRef ref="Console"/>
+            </Logger>
+            <Logger name="com.fasterxml.jackson.core" level="INFO" additivity="false">
+                <AppenderRef ref="Console"/>
+            </Logger>
 	        -->
 
     <!-- JasperReports engine core logging -->
-    <Logger name="net.sf.jasperreports.engine" level="debug" additivity="false">
+    <Logger name="net.sf.jasperreports.engine" level="trace" additivity="false">
         <AppenderRef ref="Console"/>
     </Logger>
 
     <!-- Optional: Fill process -->
-    <Logger name="net.sf.jasperreports.engine.fill" level="debug" additivity="false">
+    <Logger name="net.sf.jasperreports.engine.fill" level="trace" additivity="false">
         <AppenderRef ref="Console"/>
     </Logger>
 
     <!-- Optional: Compilation process -->
-    <Logger name="net.sf.jasperreports.engine.compile" level="debug" additivity="false">
+    <Logger name="net.sf.jasperreports.engine.compile" level="trace" additivity="false">
         <AppenderRef ref="Console"/>
     </Logger>
 
     <!-- Optional: All JasperReports logs -->
-    <Logger name="net.sf.jasperreports" level="debug" additivity="false">
+    <Logger name="net.sf.jasperreports" level="trace" additivity="false">
         <AppenderRef ref="Console"/>
     </Logger>
 

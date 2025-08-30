@@ -22,7 +22,7 @@ public class RegaliaSalesDtl7JasperGenerator extends AbstractReportGenerator
 	@Override
 	protected String getReportPath()
 	{
-		return "jrxml/sca-reports/REGALIA_SALES_DTL_7_AUTO_STYLED.jrxml";
+                return "jrxml/sca-reports/REGALIA_SALES_DTL_7_ROWS_3SECTION.jrxml";
 		
 	}
 	
