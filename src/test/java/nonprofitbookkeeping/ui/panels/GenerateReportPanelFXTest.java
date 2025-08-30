@@ -7,7 +7,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.reports.ReportContext;
-import nonprofitbookkeeping.reports.ReportTemplateScanner;
+import nonprofitbookkeeping.reports.ReportTemplates;
 import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.ui.JavaFXTestBase;
 
@@ -39,7 +39,7 @@ public class GenerateReportPanelFXTest extends JavaFXTestBase {
     private ComboBox<String> reportSelector;
     private Button generateButton;
     private TextArea outputArea;
-    private java.util.Map<String, String> templates;
+    private java.util.Map<String, ReportTemplates.TemplateInfo> templates;
 
     @Start
     @Override
@@ -56,7 +56,7 @@ public class GenerateReportPanelFXTest extends JavaFXTestBase {
         this.generateButton = lookup("Generate Report").queryButton(); // Lookup by text
         this.outputArea = lookup(".text-area").queryAs(TextArea.class);
 
-        this.templates = ReportTemplateScanner.discoverTemplates();
+        this.templates = ReportTemplates.templates();
     }
 
     @Test
@@ -69,19 +69,19 @@ public class GenerateReportPanelFXTest extends JavaFXTestBase {
         // Verify the selector is populated with the discovered templates
         verifyThat(this.reportSelector, hasItems(this.templates.size()));
         assertTrue(this.reportSelector.getItems().contains("Income Statement"));
-        assertTrue(this.reportSelector.getItems().contains("Trial Balance"));
+        assertTrue(this.reportSelector.getItems().contains("Bank Reconciliation"));
 
         assertNotNull(this.reportSelector.getSelectionModel().getSelectedItem());
         assertEquals("", this.outputArea.getText()); // Should be initially empty
     }
 
     @Test
-    public void testGenerateJasperReport_TrialBalance_Success() throws Exception {
-        File mockFile = new File("mock_trial_balance.pdf");
+    public void testGenerateJasperReport_BankReconciliation_Success() throws Exception {
+        File mockFile = new File("mock_bank_reconciliation.pdf");
         when(this.mockReportService.generateJasperReport(any(ReportContext.class), eq("pdf")))
             .thenReturn(mockFile);
 
-        Platform.runLater(() -> this.reportSelector.setValue("Trial Balance"));
+        Platform.runLater(() -> this.reportSelector.setValue("Bank Reconciliation"));
         WaitForAsyncUtils.waitForFxEvents();
 
         clickOn(this.generateButton);
@@ -89,22 +89,21 @@ public class GenerateReportPanelFXTest extends JavaFXTestBase {
 
         ArgumentCaptor<ReportContext> contextCaptor = ArgumentCaptor.forClass(ReportContext.class);
         verify(this.mockReportService).generateJasperReport(contextCaptor.capture(), eq("pdf"));
-        assertEquals("trial_balance_jasper", contextCaptor.getValue().getReportType());
-        // Dates are LocalDate.now() based, so exact match is hard. Check they are not null.
+        assertEquals("bank_reconciliation_jasper", contextCaptor.getValue().getReportType());
         assertNotNull(contextCaptor.getValue().getStartDate());
         assertNotNull(contextCaptor.getValue().getEndDate());
 
         String outputText = this.outputArea.getText();
-        assertTrue(outputText.contains("Generating Trial Balance..."));
+        assertTrue(outputText.contains("Generating Bank Reconciliation..."));
         assertTrue(outputText.contains("Report generated successfully: " + mockFile.getAbsolutePath()));
     }
 
     @Test
-    public void testGenerateJasperReport_TrialBalance_ServiceReturnsNull() throws Exception {
+    public void testGenerateJasperReport_BankReconciliation_ServiceReturnsNull() throws Exception {
         when(this.mockReportService.generateJasperReport(any(ReportContext.class), eq("pdf")))
             .thenReturn(null);
 
-        Platform.runLater(() -> this.reportSelector.setValue("Trial Balance"));
+        Platform.runLater(() -> this.reportSelector.setValue("Bank Reconciliation"));
         WaitForAsyncUtils.waitForFxEvents();
 
         clickOn(this.generateButton);
@@ -115,11 +114,11 @@ public class GenerateReportPanelFXTest extends JavaFXTestBase {
     }
 
     @Test
-    public void testGenerateJasperReport_TrialBalance_ServiceThrowsException() throws Exception {
+    public void testGenerateJasperReport_BankReconciliation_ServiceThrowsException() throws Exception {
         when(this.mockReportService.generateJasperReport(any(ReportContext.class), eq("pdf")))
             .thenThrow(new IOException("Test Jasper Exception"));
 
-        Platform.runLater(() -> this.reportSelector.setValue("Trial Balance"));
+        Platform.runLater(() -> this.reportSelector.setValue("Bank Reconciliation"));
         WaitForAsyncUtils.waitForFxEvents();
 
         clickOn(this.generateButton);
