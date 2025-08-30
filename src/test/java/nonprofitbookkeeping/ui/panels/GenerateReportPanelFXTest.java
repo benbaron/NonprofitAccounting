@@ -7,7 +7,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.reports.ReportContext;
-import nonprofitbookkeeping.reports.ReportTemplateScanner;
+import nonprofitbookkeeping.reports.ReportTemplates;
 import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.ui.JavaFXTestBase;
 
@@ -39,7 +39,7 @@ public class GenerateReportPanelFXTest extends JavaFXTestBase {
     private ComboBox<String> reportSelector;
     private Button generateButton;
     private TextArea outputArea;
-    private java.util.Map<String, String> templates;
+    private java.util.Map<String, ReportTemplates.TemplateInfo> templates;
 
     @Start
     @Override
@@ -56,7 +56,7 @@ public class GenerateReportPanelFXTest extends JavaFXTestBase {
         this.generateButton = lookup("Generate Report").queryButton(); // Lookup by text
         this.outputArea = lookup(".text-area").queryAs(TextArea.class);
 
-        this.templates = ReportTemplateScanner.discoverTemplates();
+        this.templates = ReportTemplates.templates();
     }
 
     @Test

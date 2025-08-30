@@ -23,7 +23,7 @@ import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 import nonprofitbookkeeping.reports.ReportContext; // Added import
 import nonprofitbookkeeping.reports.ReportMetadata;
-import nonprofitbookkeeping.reports.ReportTemplateScanner;
+import nonprofitbookkeeping.reports.ReportTemplates;
 import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 
@@ -59,8 +59,8 @@ public class SkeletonReportsPanel extends BorderPane
 	/** ObservableList that backs the {@link #generatedReportsTable}, containing {@link ReportMetadata} objects. */
 	private ObservableList<ReportMetadata> generatedReportsDataList;
 	
-	/** Mapping of report display names to their report type keys. */
-	private java.util.Map<String, String> availableTemplates;
+        /** Mapping of report display names to their template definitions. */
+        private java.util.Map<String, ReportTemplates.TemplateInfo> availableTemplates;
 	
 	/** Service layer for report generation and listing operations. */
 	private ReportService reportService;
@@ -95,10 +95,10 @@ public class SkeletonReportsPanel extends BorderPane
 		this.controlsGrid.setVgap(10);
 		
 		
-		this.controlsGrid.add(new Label("Report Type:"), 0, 0);
-		this.availableTemplates = ReportTemplateScanner.discoverTemplates();
-		this.reportTypeComboBox =
-			new ComboBox<>(FXCollections.observableArrayList(this.availableTemplates.keySet()));
+                this.controlsGrid.add(new Label("Report Type:"), 0, 0);
+                this.availableTemplates = ReportTemplates.templates();
+                this.reportTypeComboBox =
+                        new ComboBox<>(FXCollections.observableArrayList(this.availableTemplates.keySet()));
 		this.reportTypeComboBox.setPromptText("Select Report");
 		this.controlsGrid.add(this.reportTypeComboBox, 1, 0);
 		
@@ -399,17 +399,19 @@ public class SkeletonReportsPanel extends BorderPane
 			LocalDate startDate = this.startDatePicker.getValue();
 			LocalDate endDate = this.endDatePicker.getValue();
 			
-			String reportTypeKey = this.availableTemplates.get(reportTypeDisplay);
-			
-			if (reportTypeKey == null)
-			{
-				AlertBox.showError(ownerWindow, "Report type '" + reportTypeDisplay +
-					"' generation not configured for Jasper system.");
-				return;
-			}
-			
-			ReportContext ctx = new ReportContext();
-			ctx.setReportType(reportTypeKey);
+                        ReportTemplates.TemplateInfo info = this.availableTemplates.get(reportTypeDisplay);
+
+                        if (info == null)
+                        {
+                                AlertBox.showError(ownerWindow, "Report type '" + reportTypeDisplay +
+                                        "' generation not configured for Jasper system.");
+                                return;
+                        }
+
+                        String reportTypeKey = info.reportTypeKey();
+
+                        ReportContext ctx = new ReportContext();
+                        ctx.setReportType(reportTypeKey);
 			ctx.setStartDate(startDate);
 			ctx.setEndDate(endDate);
 			ctx.setFundIds(java.util.Collections.emptyList());
