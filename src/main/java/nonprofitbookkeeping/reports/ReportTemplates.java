@@ -1,3 +1,4 @@
+
 package nonprofitbookkeeping.reports;
 
 import java.util.LinkedHashMap;
@@ -111,5 +112,6 @@ public final class ReportTemplates {
     public static Map<String, TemplateInfo> templates() {
         return TEMPLATES;
     }
+
 }
 
