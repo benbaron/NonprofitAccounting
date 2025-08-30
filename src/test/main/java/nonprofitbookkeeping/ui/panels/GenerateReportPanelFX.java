@@ -7,7 +7,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.reports.ReportContext; // Added import
-import nonprofitbookkeeping.reports.ReportTemplateScanner;
+import nonprofitbookkeeping.reports.ReportTemplates;
 import nonprofitbookkeeping.ui.actions.GenerateReportsAction;
 
 import java.io.File; // Added import
@@ -35,8 +35,8 @@ public class GenerateReportPanelFX extends BorderPane
 		pane.setPadding(new Insets(10));
 		pane.setPrefWrapLength(600);
 		
-		// Scan and return the templates available
-		java.util.Map<String, String> templates = ReportTemplateScanner.discoverTemplates();
+                // Use the statically defined template registry
+                java.util.Map<String, ReportTemplates.TemplateInfo> templates = ReportTemplates.templates();
 		
 		// Display these for the user to select
 		ComboBox<String> selector = new ComboBox<>(
@@ -55,26 +55,26 @@ public class GenerateReportPanelFX extends BorderPane
 		output.setPrefRowCount(10);
 		
 		generate.setOnAction(e -> {
-			String selectedReport = selector.getValue();
-			output.clear();
-			output.appendText("Generating " + selectedReport + "...\n");
-			
-			// Create report context
-			ReportContext context = new ReportContext();
-			context.setStartDate(LocalDate.now().withDayOfYear(1));
-			context.setEndDate(LocalDate.now());
-			context.setOutputFormat("pdf");
-			
-			String key = templates.get(selectedReport);
-			
-			if (key == null)
-			{
-				output.appendText("Report type not implemented.\n");
-				return;
-			}
-			
-			// Set the report type
-			context.setReportType(key);
+                        String selectedReport = selector.getValue();
+                        output.clear();
+                        output.appendText("Generating " + selectedReport + "...\n");
+
+                        // Create report context
+                        ReportContext context = new ReportContext();
+                        context.setStartDate(LocalDate.now().withDayOfYear(1));
+                        context.setEndDate(LocalDate.now());
+                        context.setOutputFormat("pdf");
+
+                        ReportTemplates.TemplateInfo info = templates.get(selectedReport);
+
+                        if (info == null)
+                        {
+                                output.appendText("Report type not implemented.\n");
+                                return;
+                        }
+
+                        // Set the report type key derived from the binder class
+                        context.setReportType(info.reportTypeKey());
 			
 			try
 			{
