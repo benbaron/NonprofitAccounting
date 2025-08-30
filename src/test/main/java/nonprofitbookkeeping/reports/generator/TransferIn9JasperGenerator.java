@@ -22,7 +22,7 @@ public class TransferIn9JasperGenerator extends AbstractReportGenerator
 	@Override
 	protected String getReportPath()
 	{
-		return "jrxml/sca-reports/TRANSFER_IN_9_AUTO_STYLED.jrxml";
+                return "jrxml/sca-reports/TRANSFER_IN_9_AUTO_STYLED_fixed_labeled_rowbased.jrxml";
 		
 	}
 	

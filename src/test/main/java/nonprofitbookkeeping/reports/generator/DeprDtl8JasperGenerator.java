@@ -21,7 +21,7 @@ public class DeprDtl8JasperGenerator extends AbstractReportGenerator
 	
 	@Override protected String getReportPath()
 	{
-		return "jrxml/sca-reports/DEPR_DTL_8_AUTO_STYLED_labeled.jrxml";
+                return "jrxml/sca-reports/DEPR_DTL_8_ROWS_2SECTIONS.jrxml";
 		
 	}
 	
