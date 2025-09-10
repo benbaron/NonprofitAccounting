@@ -10,7 +10,8 @@
 	<field name="debit" class="java.math.BigDecimal"/>
 	<field name="credit" class="java.math.BigDecimal"/>
 	<field name="balance" class="java.math.BigDecimal"/>
-	<title height="50">
+	<title>
+		<band height="20">
 		<element kind="textField" uuid="47e67bcf-16d2-4fda-a0d4-2f7257db1248" x="0" y="0" width="555" height="20" fontSize="16.0" bold="true" hTextAlign="Center">
 			<expression><![CDATA[$P{P_REPORT_TITLE}]]></expression>
 		</element>
@@ -20,8 +21,10 @@
 		<element kind="textField" uuid="ad06a4ae-5218-43d6-b62f-50ba59060c3c" x="0" y="35" width="555" height="15" hTextAlign="Center">
 			<expression><![CDATA[$P{P_FUND} + " - " + $P{P_REPORT_PERIOD}]]></expression>
 		</element>
+		</band>
 	</title>
-	<pageHeader height="20">
+	<pageHeader>
+		<band height="20">
 		<element kind="staticText" uuid="81d68b99-b21b-4584-ab5d-982b519fe333" x="0" y="0" width="100" height="20">
 			<text><![CDATA[Date]]></text>
 		</element>
@@ -37,6 +40,7 @@
 		<element kind="staticText" uuid="f22638ee-0801-44f8-b3e8-10b4653b6438" x="490" y="0" width="65" height="20" hTextAlign="Right">
 			<text><![CDATA[Balance]]></text>
 		</element>
+		</band>
 	</pageHeader>
 	<detail>
 		<band height="20">
@@ -57,12 +61,14 @@
 			</element>
 		</band>
 	</detail>
-	<pageFooter height="20">
+	<pageFooter>
+		<band height="20">
 		<element kind="textField" uuid="832891d6-e876-46cd-832a-66a06afc059b" x="0" y="0" width="200" height="20">
 			<expression><![CDATA["Generated: " + $P{P_GENERATION_DATE}]]></expression>
 		</element>
 		<element kind="textField" uuid="689ee777-43a8-4d65-b8fa-ca9dafd6eef0" x="455" y="0" width="100" height="20" hTextAlign="Right">
 			<expression><![CDATA["Page " + $V{PAGE_NUMBER}]]></expression>
 		</element>
+		</band>
 	</pageFooter>
 </jasperReport>

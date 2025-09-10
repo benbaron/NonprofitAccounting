@@ -80,7 +80,8 @@ public abstract class AbstractReportGenerator
 	 * @return mutable reports
 	 */
 	
-	public static Map<String, Object>
+	public static
+		Map<String, Object>
 		ensureMutableParameters(Map<String, Object> original)
 	{
 		return (original instanceof HashMap) ?
@@ -108,7 +109,26 @@ public abstract class AbstractReportGenerator
 			throw new JRException("Unable to resolve report path", e);
 		}
 		
-		JasperReport report = JasperCompileManager.compileReport(jrxmlPath);
+		JasperReport report;
+		
+		try
+		{
+			report = JasperCompileManager.compileReport(jrxmlPath);
+		}
+		catch (JRException e)
+		{
+			Throwable t = e;
+			
+			while (t != null)
+			{
+				System.err.println("Cause: " + t.getClass().getName() + " - " +
+					t.getMessage());
+				t = t.getCause();
+			}
+			
+			throw e;
+		}
+		
 		JRBeanCollectionDataSource dataSource =
 			new JRBeanCollectionDataSource(getReportData());
 		Map<String, Object> params =
@@ -257,13 +277,14 @@ public abstract class AbstractReportGenerator
 		return outputFile;
 		
 	}
-
-
+	
+	
 	/**
 	 * @param beans
 	 */
 	public void setReportData(List<?> beans)
 	{
+		
 		// TODO Auto-generated method stub
 	}
 	

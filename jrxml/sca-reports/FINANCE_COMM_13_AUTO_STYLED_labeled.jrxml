@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
-                                  http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-              name="FINANCE_COMM_13_AUTO_STYLED" pageWidth="1898" pageHeight="954"
-              columnWidth="1898" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" language="java">
-    <style name="PairedLabel" fontName="Garamond" fontSize="10" isBold="true" />
+<jasperReport 
+              name="FINANCE_COMM_13_AUTO_STYLED" 
+              pageWidth="1898" 
+              pageHeight="954"
+              columnWidth="1898" 
+              leftMargin="0" 
+              rightMargin="0" 
+              topMargin="0" 
+              bottomMargin="0" 
+              language="java">
+              
+              
+    <style name="PairedLabel" fontName="Garamond" fontSize="10" />
     <style name="PairedValue" fontName="Garamond" fontSize="10" />
 
     <parameter name="P_ORG_NAME" class="java.lang.String"/>

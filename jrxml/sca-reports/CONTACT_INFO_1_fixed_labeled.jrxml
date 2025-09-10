@@ -28,7 +28,8 @@
 	<field name="deputyAlternatePhone" class="java.lang.String"/>
 	<field name="deputyInternetEmail" class="java.lang.String"/>
 	<field name="deputyScaName" class="java.lang.String"/>
-	<title height="60">
+	<title>
+	<band height="60">
 		<element kind="staticText" uuid="4df34c84-a582-4a6f-8c08-2901ad4dd59f" x="0" y="0" width="555" height="20" fontName="Garamond" fontSize="14.0" bold="true" hTextAlign="Center">
 			<text><![CDATA[CHANCELLOR OF THE EXCHEQUER CONTACT INFORMATION]]></text>
 		</element>
@@ -38,6 +39,7 @@
 		<element kind="textField" uuid="667715d1-283d-40fb-b695-91ce3792ec9a" x="285" y="25" width="270" height="15" fontName="Garamond" fontSize="11.0">
 			<expression><![CDATA[$P{P_ORGANIZATION_NAME}]]></expression>
 		</element>
+		</band>
 	</title>
 	<detail>
 		<band height="360">

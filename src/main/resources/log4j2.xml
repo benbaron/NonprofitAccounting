@@ -23,6 +23,15 @@
       <AppenderRef ref="Console"/>
       <AppenderRef ref="File"/>
     </Logger>
+    <Logger name="net.sf.jasperreports.engine.xml" level="debug" additivity="false">
+	  <AppenderRef ref="Console"/>
+	  <AppenderRef ref="File"/>
+	</Logger>
+	<Logger name="net.sf.jasperreports.engine.design" level="debug" additivity="false">
+	  <AppenderRef ref="Console"/>
+	  <AppenderRef ref="File"/>
+	</Logger>
+
     <!-- If you want everything under net.sf.jasperreports -->
     <Logger name="net.sf.jasperreports" level="debug" additivity="false">
       <AppenderRef ref="Console"/>

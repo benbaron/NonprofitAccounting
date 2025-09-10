@@ -148,7 +148,26 @@ public class ExpenseDetailBinder
 		try (InputStream in =
 			ExpenseDetailBinder.class.getResourceAsStream(jrxmlOnClasspath))
 		{
-			JasperReport report = JasperCompileManager.compileReport(in);
+			JasperReport report = null;
+			
+			try
+			{
+				report = JasperCompileManager.compileReport(in);
+			}
+			catch (JRException e)
+			{
+				Throwable t = e;
+				
+				while (t != null)
+				{
+					System.err.println("Cause: " + t.getClass().getName() +
+						" - " + t.getMessage());
+					t = t.getCause();
+				}
+				
+				throw e;
+			}
+			
 			// Top-level has no detail rows; use an empty data source of size 1
 			return JasperFillManager.fillReport(report, params,
 				new JREmptyDataSource(1));
@@ -185,7 +204,26 @@ public class ExpenseDetailBinder
 		try (InputStream in =
 			ExpenseDetailBinder.class.getResourceAsStream(jrxmlOnClasspath))
 		{
-			JasperReport report = JasperCompileManager.compileReport(in);
+			JasperReport report = null;
+			
+			try
+			{
+				report = JasperCompileManager.compileReport(in);
+			}
+			catch (JRException e)
+			{				
+				Throwable t = e;
+				
+				while (t != null)
+				{
+					System.err.println("Cause: " + t.getClass().getName() +
+						" - " + t.getMessage());
+					t = t.getCause();
+				}
+				
+				throw e;
+			}
+			
 			return JasperFillManager.fillReport(report, params,
 				new JREmptyDataSource(1));
 		}
