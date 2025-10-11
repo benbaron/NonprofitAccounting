@@ -27,6 +27,15 @@ import lombok.NoArgsConstructor;
 		// TODO Auto-generated constructor stub
 	}
 	
+	/**  
+	 * Constructor DonorContact
+	 */
+	public DonorContact()
+	{
+		// TODO Auto-generated constructor stub
+		
+	}
+
 	/**
 	 * @return the name
 	 */
