@@ -1,0 +1,1021 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jasperReport bottomMargin="18" columnWidth="576.0" language="java" leftMargin="18" name="CONTACT_INFO_1" pageHeight="792" pageWidth="612" rightMargin="18" topMargin="18" uuid="16c9a227-6964-4822-8c55-ac00a9309bc1">
+  <title>
+    <band height="760">
+      <element>
+        <reportElement height="20" width="200" x="900" y="0"/>
+        <textElement/>
+        <text>CONTENTS</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="960" y="0"/>
+        <textElement/>
+        <text>CONTENTS</text>
+      </element>
+	  
+	  
+      <element>
+        <reportElement height="20" width="200" x="1020" y="0"/>
+        <textElement/>
+        <text>CONTENTS</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="0"/>
+        <textElement/>
+        <text>CONTENTS</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="0"/>
+        <textElement/>
+        <text>CONTENTS</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="20"/>
+        <textElement/>
+        <text>Version: AS L 6 LARGE locked LOCAL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="20"/>
+        <textElement/>
+        <text>1. CONTACT INFO</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="960" y="20"/>
+        <textElement/>
+        <text>1. CONTACT INFO</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1020" y="20"/>
+        <textElement/>
+        <text>1. CONTACT INFO</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="20"/>
+        <textElement/>
+        <text>1. CONTACT INFO</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="20"/>
+        <textElement/>
+        <text>1. CONTACT INFO</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="40"/>
+        <textElement/>
+        <text>THE SOCIETY FOR CREATIVE ANACHRONISM, INC.</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="40"/>
+        <textElement/>
+        <text>2.a PRIMARY ACCOUNT</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="960" y="40"/>
+        <textElement/>
+        <text>2.a PRIMARY ACCOUNT</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1020" y="40"/>
+        <textElement/>
+        <text>2.a PRIMARY ACCOUNT</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="40"/>
+        <textElement/>
+        <text>2.a PRIMARY ACCOUNT</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="40"/>
+        <textElement/>
+        <text>2.a PRIMARY ACCOUNT</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="60"/>
+        <textElement/>
+        <text>FINANCIAL REPORT</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="60"/>
+        <textElement/>
+        <text>2.b SECONDARY ACCOUNTS</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="960" y="60"/>
+        <textElement/>
+        <text>2.b SECONDARY ACCOUNTS</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1020" y="60"/>
+        <textElement/>
+        <text>2.b SECONDARY ACCOUNTS</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="60"/>
+        <textElement/>
+        <text>2.b SECONDARY ACCOUNTS</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="60"/>
+        <textElement/>
+        <text>2.b SECONDARY ACCOUNTS</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="80"/>
+        <textElement/>
+        <text>3. BALANCE</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="960" y="80"/>
+        <textElement/>
+        <text>3. BALANCE</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1020" y="80"/>
+        <textElement/>
+        <text>3. BALANCE</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="80"/>
+        <textElement/>
+        <text>3. BALANCE</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="80"/>
+        <textElement/>
+        <text>3. BALANCE</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="100"/>
+        <textElement/>
+        <text>Branch:                                                                           Period:               to                 .</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="100"/>
+        <textElement/>
+        <text>4. INCOME</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="960" y="100"/>
+        <textElement/>
+        <text>4. INCOME</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1020" y="100"/>
+        <textElement/>
+        <text>4. INCOME</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="100"/>
+        <textElement/>
+        <text>4. INCOME</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="100"/>
+        <textElement/>
+        <text>4. INCOME</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="120"/>
+        <textElement/>
+        <text>5.a ASSET DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="960" y="120"/>
+        <textElement/>
+        <text>5.a ASSET DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1020" y="120"/>
+        <textElement/>
+        <text>5.a ASSET DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="120"/>
+        <textElement/>
+        <text>5.a ASSET DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="120"/>
+        <textElement/>
+        <text>5.a ASSET DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="140"/>
+        <textElement/>
+        <text>CHANCELLOR OF THE EXCHEQUER CONTACT INFORMATION</text>
+      </element>
+	  
+	  
+      <element>
+        <reportElement height="20" width="200" x="900" y="140"/>
+        <textElement/>
+        <text>5.b LIABILITY DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="960" y="140"/>
+        <textElement/>
+        <text>5.b LIABILITY DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1020" y="140"/>
+        <textElement/>
+        <text>5.b LIABILITY DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="140"/>
+        <textElement/>
+        <text>5.b LIABILITY DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="140"/>
+        <textElement/>
+        <text>5.b LIABILITY DTL</text>
+      </element>
+	  
+	  
+      <element>
+        <reportElement height="20" width="200" x="900" y="160"/>
+        <textElement/>
+        <text>6. INVENTORY DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="960" y="160"/>
+        <textElement/>
+        <text>6. INVENTORY DTL</text>
+      </element>
+	  
+	  
+      <element>
+        <reportElement height="20" width="200" x="1020" y="160"/>
+        <textElement/>
+        <text>9. TRANSFER IN</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="160"/>
+        <textElement/>
+        <text>9. TRANSFER IN</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="160"/>
+        <textElement/>
+        <text>6. INVENTORY DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="180"/>
+        <textElement/>
+        <text>Warrant End Date:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="180"/>
+        <textElement/>
+        <text>7. REGALIA SALES DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="960" y="180"/>
+        <textElement/>
+        <text>7. REGALIA SALES DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1020" y="180"/>
+        <textElement/>
+        <text>10. TRANSFER OUT</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="180"/>
+        <textElement/>
+        <text>10. TRANSFER OUT</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="180"/>
+        <textElement/>
+        <text>7. REGALIA SALES DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="200"/>
+        <textElement/>
+        <text>Legal Name:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="200"/>
+        <textElement/>
+        <text>8. DEPRECIATION DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="960" y="200"/>
+        <textElement/>
+        <text>8. DEPRECIATION DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1020" y="200"/>
+        <textElement/>
+        <text>11.a INCOME DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="200"/>
+        <textElement/>
+        <text>11.a INCOME DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="200"/>
+        <textElement/>
+        <text>8. DEPRECIATION DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="220"/>
+        <textElement/>
+        <text>Street Address:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="220"/>
+        <textElement/>
+        <text>9. TRANSFER IN</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="960" y="220"/>
+        <textElement/>
+        <text>9. TRANSFER IN</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1020" y="220"/>
+        <textElement/>
+        <text>11.b INCOME DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="220"/>
+        <textElement/>
+        <text>11.b INCOME DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="220"/>
+        <textElement/>
+        <text>9. TRANSFER IN</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="240"/>
+        <textElement/>
+        <text>City:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="240" y="240"/>
+        <textElement/>
+        <text>State or Province:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="360" y="240"/>
+        <textElement/>
+        <text>Zip or Postal Code:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="240"/>
+        <textElement/>
+        <text>10. TRANSFER OUT</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="960" y="240"/>
+        <textElement/>
+        <text>10. TRANSFER OUT</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1020" y="240"/>
+        <textElement/>
+        <text>11.c INCOME DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="240"/>
+        <textElement/>
+        <text>11.c INCOME DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="240"/>
+        <textElement/>
+        <text>10. TRANSFER OUT</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="260"/>
+        <textElement/>
+        <text>Home Telephone:        </text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="240" y="260"/>
+        <textElement/>
+        <text>Alternate Phone:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="260"/>
+        <textElement/>
+        <text>11.a INCOME DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="960" y="260"/>
+        <textElement/>
+        <text>11.a INCOME DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1020" y="260"/>
+        <textElement/>
+        <text>12.a EXPENSE DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="260"/>
+        <textElement/>
+        <text>12.a EXPENSE DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="260"/>
+        <textElement/>
+        <text>11.a INCOME DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="280"/>
+        <textElement/>
+        <text>Internet or E-mail Address (Required if available): </text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="360" y="280"/>
+        <textElement/>
+        <text>Membership #:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="280"/>
+        <textElement/>
+        <text>11.b INCOME DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="960" y="280"/>
+        <textElement/>
+        <text>11.b INCOME DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1020" y="280"/>
+        <textElement/>
+        <text>12.b EXPENSE DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="280"/>
+        <textElement/>
+        <text>12.b EXPENSE DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="280"/>
+        <textElement/>
+        <text>11.b INCOME DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="300"/>
+        <textElement/>
+        <text>SCA Name:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="360" y="300"/>
+        <textElement/>
+        <text>Exp. Date:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="300"/>
+        <textElement/>
+        <text>11.c INCOME DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="960" y="300"/>
+        <textElement/>
+        <text>11.c INCOME DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1020" y="300"/>
+        <textElement/>
+        <text>13. FINANCE COMM</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="300"/>
+        <textElement/>
+        <text>13. FINANCE COMM</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="300"/>
+        <textElement/>
+        <text>11.c INCOME DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="320"/>
+        <textElement/>
+        <text>Mailing address (IF NOT THE SAME AS ABOVE):</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="320"/>
+        <textElement/>
+        <text>12.a EXPENSE DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="960" y="320"/>
+        <textElement/>
+        <text>12.a EXPENSE DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1020" y="320"/>
+        <textElement/>
+        <text>COMMENTS</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="320"/>
+        <textElement/>
+        <text>14. FUNDS</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="320"/>
+        <textElement/>
+        <text>12.a EXPENSE DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="340"/>
+        <textElement/>
+        <text>PO Box/Address:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="340"/>
+        <textElement/>
+        <text>12.b EXPENSE DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="960" y="340"/>
+        <textElement/>
+        <text>12.b EXPENSE DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1020" y="340"/>
+        <textElement/>
+        <text>FREE FORM</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="340"/>
+        <textElement/>
+        <text>COMMENTS</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="340"/>
+        <textElement/>
+        <text>12.b EXPENSE DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="360"/>
+        <textElement/>
+        <text>City:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="240" y="360"/>
+        <textElement/>
+        <text>State or Province:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="360" y="360"/>
+        <textElement/>
+        <text>Zip or Postal Code:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="360"/>
+        <textElement/>
+        <text>13. FINANCE COMM</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="960" y="360"/>
+        <textElement/>
+        <text>13. FINANCE COMM</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="360"/>
+        <textElement/>
+        <text>5.c ASSET DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="360"/>
+        <textElement/>
+        <text>13. FINANCE COMM</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="380"/>
+        <textElement/>
+        <text>14. FUNDS</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="960" y="380"/>
+        <textElement/>
+        <text>14. FUNDS</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="380"/>
+        <textElement/>
+        <text>5.d LIABILITY DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="380"/>
+        <textElement/>
+        <text>14. FUNDS</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="180" y="400"/>
+        <textElement/>
+        <text>Deputy for:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="400"/>
+        <textElement/>
+        <text>15. NEWSLETTER</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="960" y="400"/>
+        <textElement/>
+        <text>15. NEWSLETTER</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="400"/>
+        <textElement/>
+        <text>5.e LIABILITY DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="400"/>
+        <textElement/>
+        <text>15. NEWSLETTER</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="420"/>
+        <textElement/>
+        <text>Legal Name:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="420"/>
+        <textElement/>
+        <text>COMMENTS</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="960" y="420"/>
+        <textElement/>
+        <text>COMMENTS</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="420"/>
+        <textElement/>
+        <text>5.f LIABILITY DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="420"/>
+        <textElement/>
+        <text>COMMENTS</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="440"/>
+        <textElement/>
+        <text>Street Address:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="440"/>
+        <textElement/>
+        <text>2.c SECONDARY ACCOUNTS</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="960" y="440"/>
+        <textElement/>
+        <text>9.b TRANSFER IN</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="440"/>
+        <textElement/>
+        <text>5.g LIABILITY DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="440"/>
+        <textElement/>
+        <text>2.c SECONDARY ACCOUNTS</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="460"/>
+        <textElement/>
+        <text>City:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="240" y="460"/>
+        <textElement/>
+        <text>State or Province:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="360" y="460"/>
+        <textElement/>
+        <text>Zip or Postal Code:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="460"/>
+        <textElement/>
+        <text>2.d SECONDARY ACCOUNTS</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="960" y="460"/>
+        <textElement/>
+        <text>10.b TRANSFER OUT</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="460"/>
+        <textElement/>
+        <text>5.h LIABILITY DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="460"/>
+        <textElement/>
+        <text>2.d SECONDARY ACCOUNTS</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="480"/>
+        <textElement/>
+        <text>Home Telephone:        </text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="240" y="480"/>
+        <textElement/>
+        <text>Alternate Phone:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="480"/>
+        <textElement/>
+        <text>5.c ASSET DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="960" y="480"/>
+        <textElement/>
+        <text>FREE FORM</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="480"/>
+        <textElement/>
+        <text>5.i LIABILITY DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="480"/>
+        <textElement/>
+        <text>5.c ASSET DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="500"/>
+        <textElement/>
+        <text>Internet or E-mail Address 
+(Required if available): </text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="360" y="500"/>
+        <textElement/>
+        <text>Membership #:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="500"/>
+        <textElement/>
+        <text>5.d LIABILITY DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="500"/>
+        <textElement/>
+        <text>9.b TRANSFER IN</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="500"/>
+        <textElement/>
+        <text>5.d LIABILITY DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="520"/>
+        <textElement/>
+        <text>SCA Name:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="360" y="520"/>
+        <textElement/>
+        <text>Exp. Date:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="520"/>
+        <textElement/>
+        <text>5.e LIABILITY DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="520"/>
+        <textElement/>
+        <text>9.c TRANSFER IN</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="520"/>
+        <textElement/>
+        <text>6.b INVENTORY DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="540"/>
+        <textElement/>
+        <text>5.f LIABILITY DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="540"/>
+        <textElement/>
+        <text>9.d TRANSFER IN</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="540"/>
+        <textElement/>
+        <text>7.b REGALIA SALES DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="180" y="560"/>
+        <textElement/>
+        <text>Deputy for:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="560"/>
+        <textElement/>
+        <text>5.g LIABILITY DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="560"/>
+        <textElement/>
+        <text>10.b TRANSFER OUT</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="560"/>
+        <textElement/>
+        <text>8.b DEPR DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="580"/>
+        <textElement/>
+        <text>Legal Name:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="580"/>
+        <textElement/>
+        <text>5.h LIABILITY DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1080" y="580"/>
+        <textElement/>
+        <text>FREE FORM</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="580"/>
+        <textElement/>
+        <text>8.c DEPR DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="600"/>
+        <textElement/>
+        <text>Street Address:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="600"/>
+        <textElement/>
+        <text>5.i LIABILITY DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="600"/>
+        <textElement/>
+        <text>9.b TRANSFER IN</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="620"/>
+        <textElement/>
+        <text>City:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="240" y="620"/>
+        <textElement/>
+        <text>State or Province:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="360" y="620"/>
+        <textElement/>
+        <text>Zip or Postal Code:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="620"/>
+        <textElement/>
+        <text>6.b INVENTORY DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="620"/>
+        <textElement/>
+        <text>9.c TRANSFER IN</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="640"/>
+        <textElement/>
+        <text>Home Telephone:        </text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="240" y="640"/>
+        <textElement/>
+        <text>Alternate Phone:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="640"/>
+        <textElement/>
+        <text>7.b REGALIA SALES DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="640"/>
+        <textElement/>
+        <text>9.d TRANSFER IN</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="660"/>
+        <textElement/>
+        <text>Internet or E-mail Address (Required if available): </text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="360" y="660"/>
+        <textElement/>
+        <text>Membership #:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="660"/>
+        <textElement/>
+        <text>8.b DEPR DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="660"/>
+        <textElement/>
+        <text>10.b TRANSFER OUT</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="680"/>
+        <textElement/>
+        <text>SCA Name:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="360" y="680"/>
+        <textElement/>
+        <text>Exp. Date:</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="680"/>
+        <textElement/>
+        <text>8.c DEPR DTL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="680"/>
+        <textElement/>
+        <text>10.c TRANSFER OUT</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="700"/>
+        <textElement/>
+        <text>9.b TRANSFER IN</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="700"/>
+        <textElement/>
+        <text>10.d TRANSFER OUT</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="120" y="720"/>
+        <textElement/>
+        <text>-1-</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="720"/>
+        <textElement/>
+        <text>9.c TRANSFER IN</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="720"/>
+        <textElement/>
+        <text>12.c EXPENSE DETAIL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="740"/>
+        <textElement/>
+        <text>9.d TRANSFER IN</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="1140" y="740"/>
+        <textElement/>
+        <text>FREE FORM</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="760"/>
+        <textElement/>
+        <text>10.b TRANSFER OUT</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="780"/>
+        <textElement/>
+        <text>10.c TRANSFER OUT</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="800"/>
+        <textElement/>
+        <text>10.d TRANSFER OUT</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="820"/>
+        <textElement/>
+        <text>12.c EXPENSE DETAIL</text>
+      </element>
+      <element>
+        <reportElement height="20" width="200" x="900" y="840"/>
+        <textElement/>
+        <text>FREE FORM</text>
+      </element>
+    </band>
+  </title>
+</jasperReport>

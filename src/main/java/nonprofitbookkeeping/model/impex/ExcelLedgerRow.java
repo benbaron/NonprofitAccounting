@@ -13,7 +13,7 @@ import java.util.List;
  * The row contains general transaction info and up to four
  * allocation groups consisting of amount and account details.
  */
-@Data @NoArgsConstructor public class ExcelLedgerRow
+@Data public class ExcelLedgerRow
 {
 	private BigDecimal balance;
 	/** Transaction date from the spreadsheet. */

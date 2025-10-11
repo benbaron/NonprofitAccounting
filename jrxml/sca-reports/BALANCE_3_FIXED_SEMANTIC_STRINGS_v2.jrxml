@@ -61,7 +61,8 @@
 	<field name="regalia_non_depreciated_diff" class="java.math.BigDecimal"/>
 	<field name="net_worth_end" class="java.math.BigDecimal"/>
 	<field name="seneschal_name" class="java.lang.String"/>
-	<background height="1004">
+	<background>
+		<band height="70">
 		<element kind="staticText" uuid="22ae09a3-4898-49f8-bf75-3ae98c247f01" x="84" y="123" width="386" height="18" fontName="Garamond" fontSize="14.0" underline="false" italic="false" bold="true" hTextAlign="Left" vTextAlign="Middle">
 			<text><![CDATA[COMPARATIVE BALANCE STATEMENT]]></text>
 		</element>
@@ -915,8 +916,10 @@
 				<rightPen lineWidth="0.5" lineStyle="Solid"/>
 			</box>
 		</element>
+		</band>
 	</background>
-	<summary height="342">
+	<summary>
+		<band height="300">
 		<element kind="staticText" uuid="41939053-f065-4ed0-b9e9-76c50ac62ab7" x="0" y="0" width="190" height="16" style="vLabel">
 			<text><![CDATA[1 Contact Info]]></text>
 		</element>
@@ -1259,5 +1262,6 @@
 		<element kind="textField" uuid="dc45a707-f86e-407a-80ec-4c8f215ece79" x="1080" y="324" width="240" height="16" blankWhenNull="true" style="vValue">
 			<expression><![CDATA[$F{seneschal_name}]]></expression>
 		</element>
+		</band>
 	</summary>
 </jasperReport>

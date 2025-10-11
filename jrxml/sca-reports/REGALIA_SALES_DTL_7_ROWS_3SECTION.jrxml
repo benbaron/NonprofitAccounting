@@ -1,7 +1,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-    name="REGALIA_SALES_DTL_7_ROWS_3SECTION" language="java"
+    name="REGALIA_SALES_DTL_7_ROWS_3SECTION" language="java" uuid="bdfe2a69-9a6b-457e-8be6-c682a88d99cd" 
     pageWidth="792" pageHeight="612" orientation="Landscape"
     columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
     

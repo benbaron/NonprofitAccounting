@@ -2,7 +2,7 @@
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
                   name="FUNDS_14_AUTO_STYLED_labeled_rowbased" language="java"
-                  pageWidth="1714" pageHeight="906"
+                  pageWidth="1714" pageHeight="906" uuid="bdfe2a69-9a6b-457e-8be6-c682a88d99cd"
                   columnWidth="1714" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
         <parameter name="P_ORG_NAME" class="java.lang.String"/>
         <parameter name="P_REPORT_TITLE" class="java.lang.String"/>

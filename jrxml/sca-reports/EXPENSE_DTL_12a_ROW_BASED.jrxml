@@ -4,7 +4,7 @@
   xmlns:c="http://jasperreports.sourceforge.net/jasperreports/components"
   xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd
                       http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd"
-  name="EXPENSE_DTL_12a_ROW_BASED" language="java" pageWidth="1947" pageHeight="1067"
+  name="EXPENSE_DTL_12a_ROW_BASED" language="java" pageWidth="1947" pageHeight="1067" uuid="bdfe2a69-9a6b-457e-8be6-c682a88d99cd" 
   columnWidth="1947" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" whenNoDataType="AllSectionsNoDetail">
 
   <!-- Styles -->
@@ -122,10 +122,10 @@
       <staticText><reportElement x="84" y="485" width="300" height="16" style="TotalLabel"/><text><![CDATA[Show TOTAL on Pg. 4 Line 13]]></text></staticText>
       <textField><reportElement x="1697" y="485" width="166" height="16" style="TotalValue"/><textElement textAlignment="Right"/><textFieldExpression><![CDATA[$P{P_TOTAL_13}]]></textFieldExpression></textField>
 
-      <!-- Section 17: Fees & Honoraria -->
+      <!-- Section 17: Fees Honoraria -->
       <staticText>
         <reportElement x="84" y="520" width="400" height="18" style="SectionHeader"/>
-        <text><![CDATA[17. FEES & HONORARIA]]></text>
+        <text><![CDATA[17. FEES and HONORARIA]]></text>
       </staticText>
       <!-- Column headers -->
       <staticText><reportElement x="84" y="542" width="80" height="16" style="ColumnHeader"/><text><![CDATA[Code]]></text></staticText>
