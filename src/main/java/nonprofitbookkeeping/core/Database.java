@@ -118,6 +118,13 @@ public final class Database {
                   name VARCHAR(255) UNIQUE
                 )
             """);
+
+            st.execute("""
+                CREATE TABLE IF NOT EXISTS document(
+                  name VARCHAR(128) PRIMARY KEY,
+                  content CLOB
+                )
+            """);
         }
     }
 }

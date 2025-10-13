@@ -1,107 +1,20 @@
-
 package nonprofitbookkeeping.model;
 
-import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /** Simple contact information for a donor. */
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
-@NoArgsConstructor public class DonorContact implements Serializable
-{
-	private static final long serialVersionUID = 1L;
-	private String name;
-	
-	/**  
-	 * Constructor DonorContact
-	 * @param object
-	 * @param text
-	 * @param text2
-	 * @param text3
-	 */
-	public DonorContact(Object object, String text, String text2, String text3)
-	{
-		
-		// TODO Auto-generated constructor stub
-	}
-	
-	/**  
-	 * Constructor DonorContact
-	 */
-	public DonorContact()
-	{
-		// TODO Auto-generated constructor stub
-		
-	}
+public class DonorContact implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * @return the name
-	 */
-	public String getName()
-	{
-		
-		return this.name;
-		
-	}
-	
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name)
-	{
-		
-		this.name = name;
-		
-	}
-	
-	/**
-	 * @return
-	 */
-	public String getEmail()
-	{
-		// TODO Auto-generated method stub
-		return null;
-		
-	}
-	
-	/**
-	 * @return
-	 */
-	public String getId()
-	{
-		// TODO Auto-generated method stub
-		return null;
-		
-	}
-	
-	/**
-	 * @return
-	 */
-	public String getPhone()
-	{
-		// TODO Auto-generated method stub
-		return null;
-		
-	}
-	
-	/**
-	 * @param email2
-	 */
-	public void setEmail(Object email2)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-	
-	/**
-	 * @param phone2
-	 */
-	public void setPhone(Object phone2)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-	
+    private String id;
+    private String name;
+    private String email;
+    private String phone;
 }
