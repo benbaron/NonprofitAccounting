@@ -2,6 +2,7 @@
 package nonprofitbookkeeping.ui;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -16,14 +17,17 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.stage.FileChooser;
 import nonprofitbookkeeping.core.ApplicationContext;
 import nonprofitbookkeeping.core.ApplicationContextImpl;
+import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Fund;
@@ -33,6 +37,7 @@ import nonprofitbookkeeping.ui.actions.*;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.panels.*;
 import nonprofitbookkeeping.ui.javafx.BudgetPanelFX;
+import nonprofitbookkeeping.tools.JsonCompanyImporter;
 
 
 /**
@@ -443,10 +448,12 @@ public class NonprofitBookkeepingFX extends Application
 		});
 		bar.getMenus().add(this.panels);
 		
-		/* SETTINGS */
-		Menu settings = new Menu("Settings");
-		add(settings, "Show Settings", e -> {
-			File dir = null;
+                bar.getMenus().add(createDatabaseMenu());
+
+                /* SETTINGS */
+                Menu settings = new Menu("Settings");
+                add(settings, "Show Settings", e -> {
+                        File dir = null;
 			if (CurrentCompany.getCurrentFile() != null)
 				dir = CurrentCompany.getCurrentFile().getParentFile();
 			showPanel(new SettingsPanelFX(this.primaryStage, new SettingsService(), dir),
@@ -496,13 +503,87 @@ public class NonprofitBookkeepingFX extends Application
 	 * @param handler The {@link EventHandler} to be called when the menu item is actioned.
 	 * @return The created {@link MenuItem}.
 	 */
-	private static MenuItem add(Menu menu, String label, EventHandler<ActionEvent> handler)
-	{
-		MenuItem item = new MenuItem(label);
-		item.setOnAction(handler);
-		menu.getItems().add(item);
-		return item;
-	}
+        private static MenuItem add(Menu menu, String label, EventHandler<ActionEvent> handler)
+        {
+                MenuItem item = new MenuItem(label);
+                item.setOnAction(handler);
+                menu.getItems().add(item);
+                return item;
+        }
+
+        private Menu createDatabaseMenu()
+        {
+                Menu db = new Menu("Database");
+                add(db, "Open/Create H2 DB...", e -> handleOpenOrCreateDatabase());
+                add(db, "Import JSON (zip) into DB...", e -> handleImportJsonIntoDatabase());
+                return db;
+        }
+
+        private void handleOpenOrCreateDatabase()
+        {
+                FileChooser fc = new FileChooser();
+                fc.setTitle("Choose H2 DB file (will create if missing)");
+                fc.getExtensionFilters()
+                        .add(new FileChooser.ExtensionFilter("H2 DB (*.mv.db or base name)", "*.*"));
+                File file = fc.showSaveDialog(this.primaryStage);
+
+                if (file == null)
+                        return;
+
+                Path base = file.toPath();
+
+                try
+                {
+                        Database.init(base);
+                        Database.get().ensureSchema();
+                        Alert a = new Alert(Alert.AlertType.INFORMATION,
+                                "Database initialized at: " + base.toAbsolutePath());
+                        a.setHeaderText("H2 Ready");
+                        a.showAndWait();
+                }
+                catch (Exception ex)
+                {
+                        LOGGER.log(Level.SEVERE, "Failed to open DB: " + base, ex);
+                        Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to open DB: " + ex.getMessage());
+                        alert.setHeaderText("Database Error");
+                        alert.showAndWait();
+                }
+        }
+
+        private void handleImportJsonIntoDatabase()
+        {
+                if (!Database.isInitialized())
+                {
+                        Alert alert = new Alert(Alert.AlertType.WARNING,
+                                "Open/Create an H2 DB first.");
+                        alert.setHeaderText("Database Not Ready");
+                        alert.showAndWait();
+                        return;
+                }
+
+                FileChooser fc = new FileChooser();
+                fc.setTitle("Select legacy company JSON zip");
+                fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Zip files", "*.zip"));
+                File file = fc.showOpenDialog(this.primaryStage);
+
+                if (file == null)
+                        return;
+
+                try
+                {
+                        JsonCompanyImporter.importZip(file.toPath());
+                        Alert a = new Alert(Alert.AlertType.INFORMATION, "Imported company into DB.");
+                        a.setHeaderText("Import complete");
+                        a.showAndWait();
+                }
+                catch (Exception ex)
+                {
+                        LOGGER.log(Level.SEVERE, "Import failed for file: " + file, ex);
+                        Alert alert = new Alert(Alert.AlertType.ERROR, "Import failed: " + ex.getMessage());
+                        alert.setHeaderText("Import Error");
+                        alert.showAndWait();
+                }
+        }
 	
 	/**
 	 * Displays a given JavaFX {@link Node} (typically a panel or UI component) in a new,
