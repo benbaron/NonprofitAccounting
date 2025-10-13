@@ -205,20 +205,22 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 			new ReconciliationService().addTransactionToReconcile(at);
 		}
 		
-		try
-		{
-			CurrentCompany.persist();
-		}
-		catch (Exception ex)
-		{
-			ex.printStackTrace();
-		}
-		
-		Alert alert = new Alert(AlertType.INFORMATION,
-								"Imported " + imported.size() + " transactions from " +
-										selectedFile.getName());
-		alert.initOwner(this.ownerStage);
-		alert.showAndWait();
+                try
+                {
+                        CurrentCompany.persist();
+                        Alert alert = new Alert(AlertType.INFORMATION,
+                                "Imported " + imported.size() + " transactions from " +
+                                        selectedFile.getName());
+                        alert.initOwner(this.ownerStage);
+                        alert.showAndWait();
+                }
+                catch (IOException ex)
+                {
+                        Alert alert = new Alert(AlertType.ERROR,
+                                "Failed to save imported transactions: " + ex.getMessage());
+                        alert.initOwner(this.ownerStage);
+                        alert.showAndWait();
+                }
 		
 	}
 	

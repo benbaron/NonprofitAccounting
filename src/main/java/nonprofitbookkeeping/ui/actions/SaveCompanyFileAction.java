@@ -11,8 +11,6 @@ import java.util.Optional;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
-import nonprofitbookkeeping.exception.ActionCancelledException;
-import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.model.CurrentCompany;
 
 /**
@@ -51,14 +49,14 @@ public class SaveCompanyFileAction
 			return; // user chose not to save
 		}
 		
-		try
-		{
-			CurrentCompany.persist();
-		}
-		catch (IOException | ActionCancelledException | NoFileCreatedException e)
-		{
-			e.printStackTrace();
-		}
+                try
+                {
+                        CurrentCompany.persist();
+                }
+                catch (IOException e)
+                {
+                        e.printStackTrace();
+                }
 		
 	}
 	

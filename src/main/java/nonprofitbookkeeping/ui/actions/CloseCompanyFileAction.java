@@ -11,8 +11,6 @@ import java.util.Optional;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
-import nonprofitbookkeeping.exception.ActionCancelledException;
-import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.model.CurrentCompany;
 
 /**
@@ -53,19 +51,19 @@ public class CloseCompanyFileAction
 			return; // user cancelled the action
 		}
 		
-		if (res.get() == ButtonType.YES)
-		{
-			
-			try
-			{
-				CurrentCompany.persist();
-			}
-			catch (IOException | ActionCancelledException | NoFileCreatedException e)
-			{
-				e.printStackTrace();
-			}
-			
-		}
+                if (res.get() == ButtonType.YES)
+                {
+
+                        try
+                        {
+                                CurrentCompany.persist();
+                        }
+                        catch (IOException e)
+                        {
+                                e.printStackTrace();
+                        }
+
+                }
 		
 		CurrentCompany.close();
 		this.closed = true;

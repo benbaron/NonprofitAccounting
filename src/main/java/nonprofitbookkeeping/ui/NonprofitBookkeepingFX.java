@@ -284,70 +284,30 @@ public class NonprofitBookkeepingFX extends Application
 		this.miEditJournal = add(edit, "Edit Journal", e -> ((MainApplicationView) this.root)
 			.showPanel(MainApplicationView.PanelType.JOURNAL));
 		
-		add(edit, "Open Budget Editor", e -> {
-			Company currentCompany = CurrentCompany.getCompany();
-			
-			if (!CurrentCompany.isOpen() || currentCompany == null)
-			{
-				AlertBox.showError(this.primaryStage,
-					"No company is currently open. Please open or create a company first.");
-				return;
-			}
-			
-			File companyFile = currentCompany.getCompanyFile();
-			
-			if (companyFile == null)
-			{
-				companyFile = CurrentCompany.getCurrentFile();
-			}
-			
-			if (companyFile == null)
-			{
-				AlertBox.showError(this.primaryStage,
-					"The current company has not been saved to a file yet. Please save your company before managing budgets.");
-				return;
-			}
-			
-			File companyDir = companyFile.getParentFile();
-			
-			if (companyDir == null)
-			{
-				AlertBox.showError(this.primaryStage,
-					"Could not determine the company's directory from its saved file path. Cannot manage budgets.");
-				return;
-			}
-			
-			if (!companyDir.exists() || !companyDir.isDirectory())
-			{
-				AlertBox.showError(this.primaryStage,
-					"The company directory '" + companyDir.getAbsolutePath() +
-						"' does not exist or is not a directory. Cannot manage budgets.");
-				return;
-			}
-			
-			// If all checks pass, open the JavaFX BudgetPanelFX
-			BudgetPanelFX panel = new BudgetPanelFX(ServiceContainer.budgetService, companyDir,
-				currentCompany.getChartOfAccounts(), new ArrayList<Fund>(), null);
-			showPanel(panel, "Budget Editor");
-		});
+                add(edit, "Open Budget Editor", e -> {
+                        Company currentCompany = CurrentCompany.getCompany();
+
+                        if (!CurrentCompany.isOpen() || currentCompany == null)
+                        {
+                                AlertBox.showError(this.primaryStage,
+                                        "No company is currently open. Please open or create a company first.");
+                                return;
+                        }
+
+                        BudgetPanelFX panel = new BudgetPanelFX(ServiceContainer.budgetService, null,
+                                currentCompany.getChartOfAccounts(), new ArrayList<Fund>(), null);
+                        showPanel(panel, "Budget Editor");
+                });
 		bar.getMenus().add(edit);
 		
 		/* RUN */
 		this.run = new Menu("Run");
 		add(this.run, "Documents & Attachments",
 			e -> showPanel(new DocumentsPanelFX(ServiceContainer.dss), "Documents"));
-		add(this.run, "Inventory & Depreciation", e -> {
-			File dir = null;
-			if (CurrentCompany.getCurrentFile() != null)
-				dir = CurrentCompany.getCurrentFile().getParentFile();
-			showPanel(new InventoryPanelFX(ServiceContainer.iss, dir), "Inventory");
-		});
-		add(this.run, "Funds & Fund Accounting", e -> {
-			File dir = null;
-			if (CurrentCompany.getCurrentFile() != null)
-				dir = CurrentCompany.getCurrentFile().getParentFile();
-			showPanel(new FundsPanelFX(ServiceContainer.fas, dir), "Funds");
-		});
+                add(this.run, "Inventory & Depreciation",
+                        e -> showPanel(new InventoryPanelFX(ServiceContainer.iss, null), "Inventory"));
+                add(this.run, "Funds & Fund Accounting",
+                        e -> showPanel(new FundsPanelFX(ServiceContainer.fas, null), "Funds"));
 		add(this.run, "Reconcile",
 			e -> showPanel(new LedgerReconcilePanelFX(new ReconciliationService()),
 				"Reconciliation"));
@@ -427,38 +387,24 @@ public class NonprofitBookkeepingFX extends Application
 //		bar.getMenus().add(this.reports);
 		
 		/* PANELS */
-		this.panels = new Menu("Panels");
-		add(this.panels, "Donors", e -> {
-			File dir = null;
-			if (CurrentCompany.getCurrentFile() != null)
-				dir = CurrentCompany.getCurrentFile().getParentFile();
-			showPanel(new DonorsPanelFX(ServiceContainer.donorService, dir), "Donors");
-		});
-		add(this.panels, "Donations",
-			e -> showPanel(new DonationsPanelFX(this.primaryStage), "Donations"));
-		add(this.panels, "Grants", e -> {
-			File cfile = CurrentCompany.getCurrentFile();
-			showPanel(new GrantsPanelFX(ServiceContainer.grantsService, cfile), "Grants");
-		});
-		add(this.panels, "Sales & COG", e -> {
-			File dir = null;
-			if (CurrentCompany.getCurrentFile() != null)
-				dir = CurrentCompany.getCurrentFile().getParentFile();
-			showPanel(new SalesAndCOGPanelFX(ServiceContainer.salesService, dir), "Sales & COG");
-		});
+                this.panels = new Menu("Panels");
+                add(this.panels, "Donors",
+                        e -> showPanel(new DonorsPanelFX(ServiceContainer.donorService, null), "Donors"));
+                add(this.panels, "Donations",
+                        e -> showPanel(new DonationsPanelFX(this.primaryStage), "Donations"));
+                add(this.panels, "Grants",
+                        e -> showPanel(new GrantsPanelFX(ServiceContainer.grantsService, null), "Grants"));
+                add(this.panels, "Sales & COG",
+                        e -> showPanel(new SalesAndCOGPanelFX(ServiceContainer.salesService, null), "Sales & COG"));
 		bar.getMenus().add(this.panels);
 		
                 bar.getMenus().add(createDatabaseMenu());
 
                 /* SETTINGS */
                 Menu settings = new Menu("Settings");
-                add(settings, "Show Settings", e -> {
-                        File dir = null;
-			if (CurrentCompany.getCurrentFile() != null)
-				dir = CurrentCompany.getCurrentFile().getParentFile();
-			showPanel(new SettingsPanelFX(this.primaryStage, new SettingsService(), dir),
-				"Settings");
-		});
+                add(settings, "Show Settings",
+                        e -> showPanel(new SettingsPanelFX(this.primaryStage, new SettingsService(), null),
+                                "Settings"));
 		bar.getMenus().add(settings);
 		
 		/* HELP */
