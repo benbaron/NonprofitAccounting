@@ -8,9 +8,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class ReportConfigurationServiceTest {
 
     private ReportConfigurationService configService;
-    private File companyDirectory;
 
     @TempDir
     Path tempDir;
@@ -74,9 +73,9 @@ class ReportConfigurationServiceTest {
         ReportConfiguration config1 = createSampleConfig("Monthly Operations Report");
 
         List<ReportConfiguration> configsToSave = List.of(config1);
-        this.configService.saveConfigurations(configsToSave, this.companyDirectory);
+        this.configService.saveConfigurations(configsToSave, null);
 
-        List<ReportConfiguration> loadedConfigs = this.configService.loadConfigurations(this.companyDirectory);
+        List<ReportConfiguration> loadedConfigs = this.configService.loadConfigurations(null);
         assertNotNull(loadedConfigs);
         assertEquals(1, loadedConfigs.size(), "Should load one configuration.");
 
@@ -93,9 +92,9 @@ class ReportConfigurationServiceTest {
         config2.setFundIds(Collections.emptyList());
 
         List<ReportConfiguration> configsToSave = List.of(config1, config2);
-        this.configService.saveConfigurations(configsToSave, this.companyDirectory);
+        this.configService.saveConfigurations(configsToSave, null);
 
-        List<ReportConfiguration> loadedConfigs = this.configService.loadConfigurations(this.companyDirectory);
+        List<ReportConfiguration> loadedConfigs = this.configService.loadConfigurations(null);
         assertNotNull(loadedConfigs);
         assertEquals(2, loadedConfigs.size(), "Should load two configurations.");
 
@@ -123,7 +122,7 @@ class ReportConfigurationServiceTest {
             throw new IOException(e);
         }
 
-        List<ReportConfiguration> loadedConfigs = this.configService.loadConfigurations(this.companyDirectory);
+        List<ReportConfiguration> loadedConfigs = this.configService.loadConfigurations(null);
         assertNotNull(loadedConfigs);
         assertTrue(loadedConfigs.isEmpty(), "Should return an empty list for corrupt JSON.");
     }
@@ -150,7 +149,7 @@ class ReportConfigurationServiceTest {
     }
 
     @Test
-    void testSaveConfigurations_InvalidCompanyDirectory() throws IOException {
+    void testSaveConfigurations_NullListClearsStorage() throws IOException {
         ReportConfiguration config = createSampleConfig("Test Config");
         List<ReportConfiguration> configs = List.of(config);
         File testFileAsDir = new File(this.companyDirectory, "not_a_directory.txt");
@@ -169,7 +168,6 @@ class ReportConfigurationServiceTest {
     @Test
     void testLoadConfigurations_NullCompanyDirectory() {
         List<ReportConfiguration> loadedConfigs = this.configService.loadConfigurations(null);
-        assertNotNull(loadedConfigs);
         assertTrue(loadedConfigs.isEmpty());
     }
 }

@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.SQLException;
@@ -27,11 +28,8 @@ import nonprofitbookkeeping.persistence.DocumentRepository;
  */
 public class GrantsService
 {
-	/** Shared list storing grants across service instances. */
-	private static final List<Grant> SHARED_GRANTS = new ArrayList<>();
-	
-	/** Logger for this service. */
-	private static final Logger LOGGER = Logger.getLogger(GrantsService.class.getName());
+        /** Logger for this service. */
+        private static final Logger LOGGER = Logger.getLogger(GrantsService.class.getName());
 	
         /** Filename used to persist grants inside the company zip. */
         private static final String GRANTS_FILENAME = "grants.json";
@@ -47,10 +45,10 @@ public class GrantsService
 	/**
 	 * Constructs a new GrantsService, initializing an empty list for storing grants.
 	 */
-	public GrantsService()
-	{
-		this.grants = SHARED_GRANTS;
-	}
+        public GrantsService()
+        {
+                this.grants = new ArrayList<>();
+        }
 	
 	/**
 	 * Retrieves all grants currently stored in this service instance.
@@ -213,10 +211,30 @@ public class GrantsService
 		
 		File temp = File.createTempFile("grants", ".npbk");
 		
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.enable(SerializationFeature.INDENT_OUTPUT);
-		
-		byte[] json = mapper.writeValueAsBytes(getAllGrants());
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+                byte[] json;
+
+                Optional<String> payloadOpt;
+
+                try
+                {
+                        payloadOpt = new JsonStorageRepository().load(STORAGE_KEY);
+                }
+                catch (SQLException sqlEx)
+                {
+                        throw new IOException("Failed to read grants from H2 database for backup", sqlEx);
+                }
+
+                if (payloadOpt.isPresent())
+                {
+                        json = payloadOpt.get().getBytes(java.nio.charset.StandardCharsets.UTF_8);
+                }
+                else
+                {
+                        json = mapper.writeValueAsBytes(getAllGrants());
+                }
 		
 		try (
 			var zis = companyFile.exists() ?
@@ -287,12 +305,22 @@ public class GrantsService
 					ObjectMapper mapper = new ObjectMapper();
 					CollectionType listType =
 						mapper.getTypeFactory().constructCollectionType(List.class, Grant.class);
-					List<Grant> loaded = mapper.readValue(zis, listType);
-					this.grants.addAll(loaded);
-					break;
-				}
-				
-				zis.closeEntry();
+                                        List<Grant> loaded = mapper.readValue(zis, listType);
+                                        this.grants.addAll(loaded);
+                                        try
+                                        {
+                                                String payload = mapper.writeValueAsString(loaded);
+                                                new JsonStorageRepository().save(STORAGE_KEY, payload);
+                                        }
+                                        catch (SQLException sqlEx)
+                                        {
+                                                throw new IOException("Failed to persist grants from backup into H2 database",
+                                                        sqlEx);
+                                        }
+                                        break;
+                                }
+
+                                zis.closeEntry();
 			}
 			
 		}
