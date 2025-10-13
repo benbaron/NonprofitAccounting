@@ -18,7 +18,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
 
 import nonprofitbookkeeping.model.Grant;
-import nonprofitbookkeeping.persistence.DocumentRepository;
+import nonprofitbookkeeping.persistence.JsonStorageRepository;
 
 /**
  * Service class for managing {@link Grant} objects.
@@ -31,16 +31,16 @@ public class GrantsService
         /** Logger for this service. */
         private static final Logger LOGGER = Logger.getLogger(GrantsService.class.getName());
 	
-        /** Filename used to persist grants inside the company zip. */
-        private static final String GRANTS_FILENAME = "grants.json";
-        private static final String DOCUMENT_NAME = "grants";
+        /** Logical storage key used for persisting grants in the shared database. */
+        private static final String STORAGE_KEY = "grants";
         private static final ObjectMapper MAPPER = new ObjectMapper()
                 .enable(SerializationFeature.INDENT_OUTPUT);
         private static final CollectionType LIST_TYPE =
                 MAPPER.getTypeFactory().constructCollectionType(List.class, Grant.class);
-	
-	/** In-memory list to store {@link Grant} objects. */
-	private List<Grant> grants;
+
+        /** In-memory list to store {@link Grant} objects. */
+        private List<Grant> grants;
+        private final JsonStorageRepository jsonRepository = new JsonStorageRepository();
 	
 	/**
 	 * Constructs a new GrantsService, initializing an empty list for storing grants.
@@ -141,14 +141,25 @@ public class GrantsService
          * @param companyDirectory retained for backwards compatibility but ignored by the method
          * @throws IOException if writing to the database fails
          */
-	public void saveGrants(File companyDirectory) throws IOException
-	{
-		
+        public void saveGrants() throws IOException
+        {
+                saveGrants((File) null);
+        }
+
+        /**
+         * Saves all grants to the persistent document store.
+         *
+         * @param companyDirectory retained for backwards compatibility but ignored by the method
+         * @throws IOException if writing to the database fails
+         */
+        public void saveGrants(File companyDirectory) throws IOException
+        {
+
                 try
                 {
                         String payload = MAPPER.writeValueAsString(getAllGrants());
-                        new DocumentRepository().upsert(DOCUMENT_NAME, payload);
-                        LOGGER.info("Grants saved to database document '" + DOCUMENT_NAME + "'.");
+                        this.jsonRepository.save(STORAGE_KEY, payload);
+                        LOGGER.info("Grants saved to database storage key '" + STORAGE_KEY + "'.");
                 }
                 catch (SQLException e)
                 {
@@ -164,19 +175,26 @@ public class GrantsService
          * @param companyDirectory retained for backwards compatibility but ignored by the method
          * @throws IOException if reading from the database fails
          */
-	public void loadGrants(File companyDirectory) throws IOException
-	{
-		this.grants.clear();
-		
+        public void loadGrants() throws IOException
+        {
+                if (this.grants == null)
+                {
+                        this.grants = new ArrayList<>();
+                }
+                else
+                {
+                        this.grants.clear();
+                }
+
                 try
                 {
-                        new DocumentRepository().find(DOCUMENT_NAME)
+                        this.jsonRepository.load(STORAGE_KEY)
                                 .ifPresent(payload -> {
                                         try
                                         {
                                                 List<Grant> loaded = MAPPER.readValue(payload, LIST_TYPE);
                                                 this.grants.addAll(loaded);
-                                                LOGGER.info("Grants loaded from database document '" + DOCUMENT_NAME
+                                                LOGGER.info("Grants loaded from database storage key '" + STORAGE_KEY
                                                         + "'.");
                                         }
                                         catch (IOException ex)
@@ -192,139 +210,45 @@ public class GrantsService
                 }
 
         }
-	
-	/**
-	 * Saves all grants as a {@link ZipEntry} named {@code grants.json}
-	 * inside the provided <code>.npbk</code> company file. Existing entries
-	 * in the zip are preserved.
-	 *
-	 * @param companyFile the <code>.npbk</code> file representing the company
-	 * @throws IOException if the file is invalid or a write error occurs
-	 */
-	public void saveGrantsToZip(File companyFile) throws IOException
-	{
-		
-		if (companyFile == null || companyFile.isDirectory())
-		{
-			throw new IOException("Company file is invalid or not provided.");
-		}
-		
-		File temp = File.createTempFile("grants", ".npbk");
-		
-                ObjectMapper mapper = new ObjectMapper();
-                mapper.enable(SerializationFeature.INDENT_OUTPUT);
 
-                byte[] json;
+        /**
+         * Loads grants from the persistent document store.
+         * Existing in-memory grants are cleared before loading new ones.
+         *
+         * @param companyDirectory retained for backwards compatibility but ignored by the method
+         * @throws IOException if reading from the database fails
+         */
+        public void loadGrants(File companyDirectory) throws IOException
+        {
+                loadGrants();
+        }
 
-                Optional<String> payloadOpt;
+        /**
+         * Legacy API retained for compatibility with callers that previously wrote
+         * grants into a company zip file. The implementation now simply persists the
+         * current in-memory grants to the shared database via {@link JsonStorageRepository}.
+         *
+         * @param companyFile ignored
+         * @throws IOException if persisting grants fails
+         */
+        public void saveGrantsToZip(File companyFile) throws IOException
+        {
 
-                try
-                {
-                        payloadOpt = new JsonStorageRepository().load(STORAGE_KEY);
-                }
-                catch (SQLException sqlEx)
-                {
-                        throw new IOException("Failed to read grants from H2 database for backup", sqlEx);
-                }
+                saveGrants();
 
-                if (payloadOpt.isPresent())
-                {
-                        json = payloadOpt.get().getBytes(java.nio.charset.StandardCharsets.UTF_8);
-                }
-                else
-                {
-                        json = mapper.writeValueAsBytes(getAllGrants());
-                }
-		
-		try (
-			var zis = companyFile.exists() ?
-				new java.util.zip.ZipInputStream(new java.io.FileInputStream(companyFile)) : null;
-			var zos = new java.util.zip.ZipOutputStream(new java.io.FileOutputStream(temp)))
-		{
-			byte[] buf = new byte[4096];
-			
-			if (zis != null)
-			{
-				java.util.zip.ZipEntry e;
-				
-				while ((e = zis.getNextEntry()) != null)
-				{
-					
-					if (!GRANTS_FILENAME.equals(e.getName()))
-					{
-						zos.putNextEntry(new java.util.zip.ZipEntry(e.getName()));
-						int len;
-						
-						while ((len = zis.read(buf)) > 0)
-						{ zos.write(buf, 0, len); }
-						
-						zos.closeEntry();
-					}
-					
-					zis.closeEntry();
-				}
-				
-			}
-			
-			java.util.zip.ZipEntry newEntry = new java.util.zip.ZipEntry(GRANTS_FILENAME);
-			zos.putNextEntry(newEntry);
-			zos.write(json);
-			zos.closeEntry();
-		}
-		
-		java.nio.file.Files.move(temp.toPath(), companyFile.toPath(),
-			java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-	}
-	
-	/**
-	 * Loads grants from the {@code grants.json} entry inside the given
-	 * <code>.npbk</code> company file. If the entry does not exist, the
-	 * current in-memory list is cleared.
-	 *
-	 * @param companyFile the <code>.npbk</code> company file
-	 * @throws IOException if the file is invalid or a read error occurs
-	 */
-	public void loadGrantsFromZip(File companyFile) throws IOException
-	{
-		this.grants.clear();
-		
-		if (companyFile == null || !companyFile.isFile())
-		{
-			throw new IOException("Company file is invalid or not provided.");
-		}
-		
-		try (var zis = new java.util.zip.ZipInputStream(new java.io.FileInputStream(companyFile)))
-		{
-			java.util.zip.ZipEntry e;
-			
-			while ((e = zis.getNextEntry()) != null)
-			{
-				
-				if (GRANTS_FILENAME.equals(e.getName()))
-				{
-					ObjectMapper mapper = new ObjectMapper();
-					CollectionType listType =
-						mapper.getTypeFactory().constructCollectionType(List.class, Grant.class);
-                                        List<Grant> loaded = mapper.readValue(zis, listType);
-                                        this.grants.addAll(loaded);
-                                        try
-                                        {
-                                                String payload = mapper.writeValueAsString(loaded);
-                                                new JsonStorageRepository().save(STORAGE_KEY, payload);
-                                        }
-                                        catch (SQLException sqlEx)
-                                        {
-                                                throw new IOException("Failed to persist grants from backup into H2 database",
-                                                        sqlEx);
-                                        }
-                                        break;
-                                }
+        }
 
-                                zis.closeEntry();
-			}
-			
-		}
-		
-	}
+        /**
+         * Legacy API retained for compatibility with callers that previously read grants
+         * from a company zip file. The implementation now loads the grants directly from
+         * the shared database via {@link JsonStorageRepository}.
+         *
+         * @param companyFile ignored
+         * @throws IOException if loading grants fails
+         */
+        public void loadGrantsFromZip(File companyFile) throws IOException
+        {
+                loadGrants();
+        }
 	
 }
