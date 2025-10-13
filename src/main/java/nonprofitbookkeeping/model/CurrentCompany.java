@@ -6,16 +6,13 @@ package nonprofitbookkeeping.model;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.EventListener;
 import java.util.List;
 
 import javax.swing.event.EventListenerList;
 
-import nonprofitbookkeeping.core.JacksonDataStorer;
-import nonprofitbookkeeping.exception.ActionCancelledException;
-import nonprofitbookkeeping.exception.NoFileCreatedException;
+import nonprofitbookkeeping.persistence.CompanyRepository;
 
 /**
  * Manages the currently active {@link Company} instance in the application.
@@ -27,12 +24,12 @@ public class CurrentCompany
 {
 	/** The currently active company instance. */
 	private static Company company;
-	/** The file associated with the currently open company. Null if no file is open or associated. */
-	private static File currentFile = null;
-	/** Flag indicating whether a company is currently considered open. */
-	private static boolean companyIsOpen = false;
-	/** DataStorer instance used for loading and saving company data. */
-	private static JacksonDataStorer dataStorer = new JacksonDataStorer();
+        /** Flag indicating whether a company is currently considered open. */
+        private static boolean companyIsOpen = false;
+        /** Identifier of the persisted company row. */
+        private static Long currentCompanyId = null;
+        /** Repository used to read/write company aggregates from the database. */
+        private static final CompanyRepository repository = new CompanyRepository();
 	
 	/**  
 	 * Constructs a CurrentCompany manager.
@@ -56,35 +53,6 @@ public class CurrentCompany
 	}
 	
 	/**
-	 * Sets the file associated with the current company.
-	 * @param currentFile The file to associate. Must not be null.
-	 * @throws NullPointerException if currentFile is null.
-	 */
-       public static void setCurrentFile(File currentFile)
-       {
-               CurrentCompany.currentFile = checkNotNull(currentFile);
-
-               // Keep the Company object's file reference in sync with the
-               // static currentFile value. This ensures callers querying
-               // {@link Company#getCompanyFile()} receive the correct
-               // location after load/save operations.
-               if (company != null)
-               {
-                       company.setCompanyFile(CurrentCompany.currentFile);
-               }
-       }
-	
-	/**
-	 * Gets the file associated with the current company.
-	 * @return The current file, or null if no file is set.
-	 */
-	public static File getCurrentFile()
-	{
-		return CurrentCompany.currentFile;
-	}
-	
-	
-	/**
 	 * Returns a string representation of the CurrentCompany's state,
 	 * including the current file and whether a company is open.
 	 * @return A string describing the current company state.
@@ -92,58 +60,67 @@ public class CurrentCompany
 	@Override public String toString()
 	{
 		StringBuilder builder = new StringBuilder();
-		builder.append("CurrentCompany [currentFile=");
-		builder.append(CurrentCompany.currentFile);
-		builder.append(", companyIsOpen=");
+                builder.append("CurrentCompany [companyId=");
+                builder.append(CurrentCompany.currentCompanyId);
+                builder.append(", companyIsOpen=");
 		builder.append(CurrentCompany.companyIsOpen);
 		builder.append("]");
 		return builder.toString();
 	}
 	
 	/**
-	 * Persists the current company data to its associated file.
-	 * Uses the configured {@link JacksonDataStorer} to save the data.
-	 * 
-	 * @throws IOException if an I/O error occurs during saving.
-	 * @throws ActionCancelledException if the save action is cancelled (e.g., by user in a file dialog).
-	 * @throws NoFileCreatedException if the file cannot be created or written to.
-	 * @throws NullPointerException if the current file has not been set.
+	 * Persists the current company data to the database using the {@link CompanyRepository}.
+	 * When the company has not yet been saved a new row is created and its identifier is tracked
+	 * for subsequent saves.
+	 *
+	 * @throws IOException if serialization or the database write fails
 	 */
-	public static void persist()	throws IOException, ActionCancelledException,
-									NoFileCreatedException
+	public static void persist() throws IOException
 	{
-		CurrentCompany.dataStorer.saveData(
-			company,
-			checkNotNull(CurrentCompany.currentFile,
-				"Current file cannot be null for persist operation."));
+		try
+		{
+			long id = repository.save(CurrentCompany.currentCompanyId,
+				checkNotNull(company, "Company must not be null when persisting"));
+			CurrentCompany.currentCompanyId = id;
+		}
+		catch (IOException e)
+		{
+			throw e;
+		}
+		catch (Exception e)
+		{
+			throw new IOException("Failed to persist company", e);
+		}
 		
 	}
 	
 	/**
-	 * Loads company data from the specified file.
-	 * The loaded company becomes the current active company, and the specified file becomes the current file.
-	 * @param file The file from which to load company data. Must not be null.
-	 * @throws IOException if an I/O error occurs during loading.
-	 * @throws ActionCancelledException if the load action is cancelled.
-	 * @throws NoFileCreatedException if the file specified does not lead to a valid company data structure.
-	 * @throws NullPointerException if file is null.
+	 * Loads company data from the database and makes it the current active company.
+	 *
+	 * @param companyId identifier of the stored company
+	 * @throws IOException if the company cannot be retrieved or deserialized
 	 */
-	public static void loadFromPersistent(File file)	throws IOException, ActionCancelledException,
-														NoFileCreatedException
+	public static void loadFromPersistent(long companyId) throws IOException
 	{
-		company = CurrentCompany.dataStorer.loadData(
-			Company.class,
-			checkNotNull(file, "File cannot be null for load operation."));
-               setCurrentFile(file);
+		try
+		{
+			company = repository.load(companyId);
+			CurrentCompany.currentCompanyId = companyId;
+			if (company != null)
+			{
+				markCompanyOpen();
+			}
+		}
+		catch (IOException e)
+		{
+			throw e;
+		}
+		catch (Exception e)
+		{
+			throw new IOException("Failed to load company", e);
+		}
+	}
 
-               // Ensure the loaded company object stores its file reference.
-               if (company != null)
-               {
-                       company.setCompanyFile(file);
-                       markCompanyOpen();
-               }
-       }
-	
 	/**
 	 * Closes the currently open company.
 	 * Sets the company open status to false and notifies listeners.
@@ -152,7 +129,8 @@ public class CurrentCompany
 	public static void close()
 	{
 		CurrentCompany.companyIsOpen = false;
-                CompanyListener.fireChanged(false);
+		CurrentCompany.currentCompanyId = null;
+		CompanyListener.fireChanged(false);
 	}
 	
 	/**
@@ -267,6 +245,7 @@ public class CurrentCompany
 	public static void forceCompanyLoad(Company company2)
 	{
 		CurrentCompany.company = company2;
+		CurrentCompany.currentCompanyId = null;
 		
 		if (company2 != null)
 		{
@@ -281,4 +260,19 @@ public class CurrentCompany
 		
 	}
 	
+	/**
+	 * Convenience helper that sets both the active company identifier and the aggregate.
+	 */
+	public static void forceCompanyLoad(Long companyId, Company company2)
+	{
+		CurrentCompany.currentCompanyId = companyId;
+		forceCompanyLoad(company2);
+	}
+
+	/** Returns the identifier of the currently open company, or {@code null} if unsaved. */
+	public static Long getCurrentCompanyId()
+	{
+		return CurrentCompany.currentCompanyId;
+	}
+
 }

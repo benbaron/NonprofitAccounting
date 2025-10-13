@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Deprecated(forRemoval = true)
 public class JacksonDataStorer implements DataStorer
 {
         private static final Logger LOGGER = LoggerFactory.getLogger(JacksonDataStorer.class);

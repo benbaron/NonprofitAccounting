@@ -9,14 +9,16 @@ import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.sql.SQLException;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.ChartOfAccounts;
-import nonprofitbookkeeping.exception.ActionCancelledException;
-import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.service.SettingsService;
+import nonprofitbookkeeping.service.PreferencesService;
 import nonprofitbookkeeping.model.SettingsModel;
 import nonprofitbookkeeping.ui.ThemeManager;
 import nonprofitbookkeeping.util.FormatUtils;
+import nonprofitbookkeeping.persistence.CompanyRepository;
 
 /**
  * JavaFX port of the original Swing {@code SettingsPanel}.
@@ -25,7 +27,8 @@ public class SettingsPanelFX extends BorderPane
 {
 	private final SettingsService service;
 	private final File companyDir;
-	private final Stage primaryStage;
+        private final Stage primaryStage;
+        private final CompanyRepository companyRepository = new CompanyRepository();
 	
 	private TextField orgNameField;
 	private TextField fiscalStartField;
@@ -258,66 +261,87 @@ public class SettingsPanelFX extends BorderPane
 	 * 
 	 * @return A {@link Tab} configured with backup and restore options.
 	 */
-	private static Tab backupTab()
-	{
-		HBox box = new HBox(10);
-		Button backupBtn = new Button("Create Backup");
-		Button restoreBtn = new Button("Restore Backup");
-		
-		backupBtn.setOnAction(e -> {
-			FileChooser fc = new FileChooser();
-			fc.setTitle("Save Backup");
-			fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("NPBK files", "*.npbk"));
-			File out = fc.showSaveDialog(null);
-			
-			if (out != null)
-			{
-				
-				try
-				{
-					CurrentCompany.setCurrentFile(out);
-					CurrentCompany.persist();
-					alert("Backup saved to " + out.getAbsolutePath());
-				}
-				catch (IOException | ActionCancelledException | NoFileCreatedException ex)
-				{
-					alert("Backup failed: " + ex.getMessage());
-				}
-				
-			}
-			
-		});
-		
-		restoreBtn.setOnAction(e -> {
-			FileChooser fc = new FileChooser();
-			fc.setTitle("Open Backup");
-			fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("NPBK files", "*.npbk"));
-			File f = fc.showOpenDialog(null);
-			
-			if (f != null)
-			{
-				
-				try
-				{
-					CurrentCompany.loadFromPersistent(f);
-					CurrentCompany.markCompanyOpen();
-					alert("Backup restored from " + f.getName());
-				}
-				catch (IOException | ActionCancelledException | NoFileCreatedException ex)
-				{
-					alert("Restore failed: " + ex.getMessage());
-				}
-				
-			}
-			
-		});
-		
-		box.getChildren().addAll(backupBtn, restoreBtn);
-		box.setPadding(new Insets(10));
-		
-		TitledPane wrapper = titled("Backup & Restore", box);
-		return new Tab("Backup", wrapper);
-	}
+        private Tab backupTab()
+        {
+                HBox box = new HBox(10);
+                Button backupBtn = new Button("Create Backup");
+                Button restoreBtn = new Button("Restore Backup");
+
+                backupBtn.setOnAction(e -> createDatabaseBackup());
+                restoreBtn.setOnAction(e -> restoreDatabaseBackup());
+
+                box.getChildren().addAll(backupBtn, restoreBtn);
+                box.setPadding(new Insets(10));
+
+                TitledPane wrapper = titled("Backup & Restore", box);
+                return new Tab("Backup", wrapper);
+        }
+
+        private void createDatabaseBackup()
+        {
+                if (!CurrentCompany.isOpen() || CurrentCompany.getCompany() == null)
+                {
+                        alert("Open a company before creating a backup.");
+                        return;
+                }
+
+                try
+                {
+                        CurrentCompany.persist();
+                        Long companyId = CurrentCompany.getCurrentCompanyId();
+
+                        if (companyId == null)
+                        {
+                                alert("Unable to determine the company identifier for backup.");
+                                return;
+                        }
+
+                        FileChooser fc = new FileChooser();
+                        fc.setTitle("Save Backup");
+                        fc.getExtensionFilters()
+                                .add(new FileChooser.ExtensionFilter("NPBK Backup", "*.npbk"));
+                        File out = fc.showSaveDialog(null);
+
+                        if (out != null)
+                        {
+                                byte[] payload = this.companyRepository.exportCompany(companyId);
+                                Files.write(out.toPath(), payload);
+                                alert("Backup saved to " + out.getAbsolutePath());
+                        }
+                }
+                catch (IOException | SQLException ex)
+                {
+                        alert("Backup failed: " + ex.getMessage());
+                }
+        }
+
+        private void restoreDatabaseBackup()
+        {
+                FileChooser fc = new FileChooser();
+                fc.setTitle("Import Backup");
+                fc.getExtensionFilters()
+                        .add(new FileChooser.ExtensionFilter("NPBK Backup", "*.npbk"));
+                File in = fc.showOpenDialog(null);
+
+                if (in == null)
+                {
+                        return;
+                }
+
+                try
+                {
+                        byte[] payload = Files.readAllBytes(in.toPath());
+                        long importedId = this.companyRepository
+                                .importCompany(stripExtension(in.getName()), payload);
+                        CurrentCompany.loadFromPersistent(importedId);
+                        PreferencesService.setLastUsedCompanyId(importedId);
+                        alert("Backup restored from " + in.getName());
+                }
+                catch (IOException | SQLException ex)
+                {
+                        alert("Restore failed: " + ex.getMessage());
+                }
+        }
 	
 	/**
 	 * Builds and returns the "UI Preferences" tab for the settings panel.
@@ -424,10 +448,21 @@ public class SettingsPanelFX extends BorderPane
 	 * 
 	 * @param msg The message to be displayed in the alert dialog.
 	 */
-	private static void alert(String msg)
-	{
-		new Alert(Alert.AlertType.INFORMATION, msg, ButtonType.OK).showAndWait();
-	}
+        private static void alert(String msg)
+        {
+                new Alert(Alert.AlertType.INFORMATION, msg, ButtonType.OK).showAndWait();
+        }
+
+        private static String stripExtension(String name)
+        {
+                if (name == null)
+                {
+                        return "";
+                }
+
+                int dot = name.lastIndexOf('.');
+                return (dot > 0) ? name.substring(0, dot) : name;
+        }
 	
 	/**
 	 * Collects values from the UI controls into the {@link SettingsModel} held by the service.

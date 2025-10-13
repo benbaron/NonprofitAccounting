@@ -36,7 +36,7 @@ public final class Database {
         try (Connection c = getConnection(); Statement st = c.createStatement()) {
             st.execute("""
                 CREATE TABLE IF NOT EXISTS company_profile(
-                  id INT PRIMARY KEY CHECK(id=1),
+                  id INT PRIMARY KEY,
                   name VARCHAR(255),
                   address VARCHAR(255),
                   phone VARCHAR(64),
@@ -53,7 +53,6 @@ public final class Database {
                   enable_multi_currency BOOLEAN
                 )
             """);
-            st.execute("MERGE INTO company_profile (id) KEY(id) VALUES (1)");
 
             st.execute("""
                 CREATE TABLE IF NOT EXISTS account(
@@ -123,6 +122,20 @@ public final class Database {
                 CREATE TABLE IF NOT EXISTS document(
                   name VARCHAR(128) PRIMARY KEY,
                   content CLOB
+                )
+            """);
+            st.execute("""
+                CREATE TABLE IF NOT EXISTS json_storage(
+                  storage_key VARCHAR(255) PRIMARY KEY,
+                  payload CLOB
+                )
+            """);
+            st.execute("""
+                CREATE TABLE IF NOT EXISTS company_store(
+                  id IDENTITY PRIMARY KEY,
+                  name VARCHAR(255) NOT NULL,
+                  payload BLOB NOT NULL,
+                  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
                 )
             """);
         }
