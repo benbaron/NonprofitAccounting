@@ -6,8 +6,10 @@ import nonprofitbookkeeping.model.Fund;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
+import nonprofitbookkeeping.persistence.JsonStorageRepository;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,8 +35,8 @@ public class FundAccountingService
 	/** Logger for this service. */
 	private static final Logger LOGGER = Logger.getLogger(FundAccountingService.class.getName());
 	
-	/** Filename used to persist funds to disk. */
-	private static final String FUNDS_FILENAME = "funds.json";
+        /** Storage key used for persisting funds into the database. */
+        private static final String STORAGE_KEY = "funds";
 	
 	/**
 	 * Constructs a new {@code FundAccountingService}.
@@ -190,87 +192,75 @@ public class FundAccountingService
 		return new ArrayList<>(this.fundMap.values());
 	}
 	
-	/**
-	 * Saves all funds to a JSON file located in the given company directory.
-	 *
-	 * @param companyDirectory directory where the funds file should be written
-	 * @throws IOException if writing fails or the directory is invalid
-	 */
+        /**
+         * Persists the current funds into the shared H2 database.
+         *
+         * @param companyDirectory legacy parameter retained for compatibility
+         * @throws IOException if serialization fails or the database cannot be updated
+         */
 	public void saveFunds(File companyDirectory) throws IOException
 	{
-		
-		if (companyDirectory == null || !companyDirectory.isDirectory())
-		{
-			throw new IOException("Company directory is invalid or not provided.");
-		}
-		
-		File target = new File(companyDirectory, FUNDS_FILENAME);
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.enable(SerializationFeature.INDENT_OUTPUT);
 		
 		try
 		{
-			mapper.writeValue(target, listFunds());
+			String payload = mapper.writeValueAsString(listFunds());
+			new JsonStorageRepository().save(STORAGE_KEY, payload);
 		}
-		catch (IOException ex)
+		catch (SQLException e)
 		{
-			LOGGER.log(Level.SEVERE, "Failed to save funds to " + target.getAbsolutePath(), ex);
-			throw ex;
+			throw new IOException("Failed to save funds to H2 database", e);
 		}
-		
 	}
-	
-	/**
-	 * Loads funds from a JSON file located in the given company directory.
-	 * Existing in-memory funds are cleared before loading new ones. If the
-	 * file does not exist, this method returns without modifying the current state.
-	 *
-	 * @param companyDirectory directory where the funds file is located
-	 * @throws IOException if reading fails or the directory is invalid
-	 */
+		
+        /**
+         * Loads funds previously stored in the database.
+         * Existing in-memory funds are cleared before loading new ones. If no
+         * payload is present, the current state remains empty.
+         *
+         * @param companyDirectory legacy parameter retained for compatibility
+         * @throws IOException if fetching from the database fails
+         */
 	public void loadFunds(File companyDirectory) throws IOException
 	{
 		this.fundMap.clear();
 		
-		if (companyDirectory == null || !companyDirectory.isDirectory())
-		{
-			throw new IOException("Company directory is invalid or not provided.");
-		}
-		
-		File target = new File(companyDirectory, FUNDS_FILENAME);
-		
-		if (!target.exists() || target.length() == 0)
-		{
-			return; // nothing to load
-		}
-		
 		ObjectMapper mapper = new ObjectMapper();
 		CollectionType listType =
-			mapper.getTypeFactory().constructCollectionType(List.class, Fund.class);
+		        mapper.getTypeFactory().constructCollectionType(List.class, Fund.class);
 		
 		try
 		{
-			List<Fund> loaded = mapper.readValue(target, listType);
-			
-			for (Fund f : loaded)
-			{
+			new JsonStorageRepository().load(STORAGE_KEY)
+			        .filter(payload -> !payload.isBlank())
+			        .ifPresent(payload -> {
+			                try
+			                {
+			                        List<Fund> loaded = mapper.readValue(payload, listType);
 				
-				if (f.getName() != null)
-				{
-					this.fundMap.put(f.getName(), f);
-				}
+			                        for (Fund f : loaded)
+			                        {
 				
-			}
-			
+			                                if (f.getName() != null)
+			                                {
+			                                        this.fundMap.put(f.getName(), f);
+			                                }
+			                        }
+			                }
+			                catch (IOException ex)
+			                {
+			                        LOGGER.log(Level.SEVERE,
+			                                "Failed to parse funds payload from H2 database.", ex);
+			                }
+			        });
 		}
-		catch (IOException ex)
+		catch (SQLException e)
 		{
-			LOGGER.log(Level.SEVERE, "Failed to load funds from " + target.getAbsolutePath(), ex);
-			throw ex;
+			throw new IOException("Failed to load funds from H2 database", e);
 		}
-		
 	}
-	
+		
 	/**
 	 * Retrieves a list of all accounts currently managed by this service.
 	 *

@@ -5,10 +5,12 @@ import nonprofitbookkeeping.model.InventoryItem; // Correct import
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
+import nonprofitbookkeeping.persistence.JsonStorageRepository;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,8 +33,8 @@ public class InventoryService
 	/** Logger instance for this service. */
 	private static final Logger LOGGER = Logger.getLogger(InventoryService.class.getName());
 	
-	/** Standard filename for storing inventory data. */
-	private static final String INVENTORY_FILENAME = "inventory.json";
+        /** Storage key for inventory payload inside the database. */
+        private static final String STORAGE_KEY = "inventory";
 	
 	/** In-memory map to store {@link InventoryItem} objects, keyed by their unique ID. */
 	private final Map<String, InventoryItem> items;
@@ -176,88 +178,79 @@ public class InventoryService
 		LOGGER.info("Inventory cleared.");
 	}
 	
-	/**
-	 * Saves all inventory items to a JSON file located in the given company directory.
-	 * If the directory is invalid, an {@link IOException} is thrown.
-	 *
-	 * @param companyDirectory directory where the inventory file should be written
-	 * @throws IOException if writing fails or the directory is invalid
-	 */
-	public void saveItems(File companyDirectory) throws IOException
-	{
-		
-		if (companyDirectory == null || !companyDirectory.isDirectory())
-		{
-			throw new IOException("Company directory is invalid or not provided.");
-		}
-		
-		File target = new File(companyDirectory, INVENTORY_FILENAME);
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.enable(SerializationFeature.INDENT_OUTPUT);
-		
-		try
-		{
-			mapper.writeValue(target, listItems());
-		}
-		catch (IOException ex)
-		{
-			LOGGER.log(Level.SEVERE, "Failed to save inventory to " + target.getAbsolutePath(), ex);
-			throw ex;
-		}
-		
-	}
+        /**
+         * Persists the current inventory items into the shared H2 database.
+         *
+         * @param companyDirectory legacy parameter retained for compatibility
+         * @throws IOException if serialization fails or the database cannot be updated
+         */
+        public void saveItems(File companyDirectory) throws IOException
+        {
+
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+                try
+                {
+                        String payload = mapper.writeValueAsString(listItems());
+                        new JsonStorageRepository().save(STORAGE_KEY, payload);
+                }
+                catch (SQLException e)
+                {
+                        throw new IOException("Failed to save inventory to H2 database", e);
+                }
+
+        }
 	
-	/**
-	 * Loads inventory items from a JSON file located in the given company directory.
-	 * Existing in-memory items are cleared before loading new ones.
-	 * If the file does not exist, this method simply returns with an empty inventory.
-	 *
-	 * @param companyDirectory directory where the inventory file is located
-	 * @throws IOException if reading fails or the directory is invalid
-	 */
+        /**
+         * Loads inventory items previously stored in the database.
+         * Existing in-memory items are cleared before loading new ones.
+         * If no payload is present, the inventory remains empty.
+         *
+         * @param companyDirectory legacy parameter retained for compatibility
+         * @throws IOException if fetching from the database fails
+         */
 	public void loadItems(File companyDirectory) throws IOException
 	{
 		this.items.clear();
 		
-		if (companyDirectory == null || !companyDirectory.isDirectory())
-		{
-			throw new IOException("Company directory is invalid or not provided.");
-		}
-		
-		File target = new File(companyDirectory, INVENTORY_FILENAME);
-		
-		if (!target.exists() || target.length() == 0)
-		{
-			return; // nothing to load
-		}
-		
-		ObjectMapper mapper = new ObjectMapper();
-		CollectionType listType =
-			mapper.getTypeFactory().constructCollectionType(List.class, InventoryItem.class);
-		
-		try
-		{
-			List<InventoryItem> loaded = mapper.readValue(target, listType);
-			
-			for (InventoryItem item : loaded)
-			{
-				
-				if (item.getId() != null)
-				{
-					this.items.put(item.getId(), item);
-				}
-				
-			}
-			
-		}
-		catch (IOException ex)
-		{
-			LOGGER.log(Level.SEVERE, "Failed to load inventory from " + target.getAbsolutePath(),
-				ex);
-			throw ex;
-		}
-		
-	}
+                ObjectMapper mapper = new ObjectMapper();
+                CollectionType listType =
+                        mapper.getTypeFactory().constructCollectionType(List.class, InventoryItem.class);
+
+                try
+                {
+                        new JsonStorageRepository().load(STORAGE_KEY)
+                                .filter(payload -> !payload.isBlank())
+                                .ifPresent(payload -> {
+                                        try
+                                        {
+                                                List<InventoryItem> loaded = mapper.readValue(payload, listType);
+
+                                                for (InventoryItem item : loaded)
+                                                {
+
+                                                        if (item.getId() != null)
+                                                        {
+                                                                this.items.put(item.getId(), item);
+                                                        }
+
+                                                }
+                                        }
+                                        catch (IOException ex)
+                                        {
+                                                LOGGER.log(Level.SEVERE,
+                                                        "Failed to parse inventory payload from H2 database.", ex);
+                                        }
+                                });
+
+                }
+                catch (SQLException e)
+                {
+                        throw new IOException("Failed to load inventory from H2 database", e);
+                }
+
+        }
 	
 	/**
 	 * Retrieves a list of inventory items, formatted as arrays of strings.

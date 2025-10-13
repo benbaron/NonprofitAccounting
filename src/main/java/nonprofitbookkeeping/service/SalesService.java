@@ -5,9 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import nonprofitbookkeeping.model.SaleRecord;
+import nonprofitbookkeeping.persistence.JsonStorageRepository;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -22,8 +24,8 @@ public class SalesService
 	private static final List<SaleRecord> SHARED_SALES = new ArrayList<>();
 	/** Logger instance for this service. */
 	private static final Logger LOGGER = Logger.getLogger(SalesService.class.getName());
-	/** Standard filename for storing sales data. */
-	private static final String SALES_FILENAME = "sales.json";
+        /** Storage key used for the sales payload inside the database. */
+        private static final String STORAGE_KEY = "sales";
 	
 	/** In-memory list of sales. */
 	private final List<SaleRecord> sales;
@@ -62,64 +64,56 @@ public class SalesService
 		this.sales.clear();
 	}
 	
-	/** Saves sales to JSON in the company directory. */
-	public void saveSales(File companyDirectory) throws IOException
-	{
-		
-		if (companyDirectory == null || !companyDirectory.isDirectory())
-		{
-			throw new IOException("Company directory is invalid or not provided.");
-		}
-		
-		File target = new File(companyDirectory, SALES_FILENAME);
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.enable(SerializationFeature.INDENT_OUTPUT);
-		
-		try
-		{
-			mapper.writeValue(target, listSales());
-		}
-		catch (IOException ex)
-		{
-			LOGGER.log(Level.SEVERE, "Failed to save sales to " + target.getAbsolutePath(), ex);
-			throw ex;
-		}
-		
-	}
+        /** Saves sales to the shared H2 database. */
+        public void saveSales(File companyDirectory) throws IOException
+        {
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+                try
+                {
+                        String payload = mapper.writeValueAsString(listSales());
+                        new JsonStorageRepository().save(STORAGE_KEY, payload);
+                }
+                catch (SQLException e)
+                {
+                        throw new IOException("Failed to save sales to H2 database", e);
+                }
+
+        }
 	
-	/** Loads sales from JSON in the company directory. */
+        /** Loads sales from the shared H2 database. */
 	public void loadSales(File companyDirectory) throws IOException
 	{
 		this.sales.clear();
 		
-		if (companyDirectory == null || !companyDirectory.isDirectory())
-		{
-			throw new IOException("Company directory is invalid or not provided.");
-		}
-		
-		File target = new File(companyDirectory, SALES_FILENAME);
-		
-		if (!target.exists() || target.length() == 0)
-		{
-			return;
-		}
-		
-		ObjectMapper mapper = new ObjectMapper();
-		CollectionType listType =
-			mapper.getTypeFactory().constructCollectionType(List.class, SaleRecord.class);
-		
-		try
-		{
-			List<SaleRecord> loaded = mapper.readValue(target, listType);
-			this.sales.addAll(loaded);
-		}
-		catch (IOException ex)
-		{
-			LOGGER.log(Level.SEVERE, "Failed to load sales from " + target.getAbsolutePath(), ex);
-			throw ex;
-		}
-		
-	}
+                ObjectMapper mapper = new ObjectMapper();
+                CollectionType listType =
+                        mapper.getTypeFactory().constructCollectionType(List.class, SaleRecord.class);
+
+                try
+                {
+                        new JsonStorageRepository().load(STORAGE_KEY)
+                                .filter(payload -> !payload.isBlank())
+                                .ifPresent(payload -> {
+                                        try
+                                        {
+                                                List<SaleRecord> loaded = mapper.readValue(payload, listType);
+                                                this.sales.addAll(loaded);
+                                        }
+                                        catch (IOException ex)
+                                        {
+                                                LOGGER.log(Level.SEVERE,
+                                                        "Failed to parse sales payload from H2 database.", ex);
+                                        }
+                                });
+                }
+                catch (SQLException e)
+                {
+                        throw new IOException("Failed to load sales from H2 database", e);
+                }
+
+        }
 	
 }
 

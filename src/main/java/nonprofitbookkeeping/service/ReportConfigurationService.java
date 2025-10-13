@@ -7,20 +7,22 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule; // For LocalDate serialization
 
 import nonprofitbookkeeping.model.reports.ReportConfiguration;
+import nonprofitbookkeeping.persistence.JsonStorageRepository;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Service class for managing {@link ReportConfiguration} objects.
- * This service handles the persistence of report configurations by saving them to
- * and loading them from a JSON file ("report_configurations.json") within a specified
- * company directory. It utilizes Jackson for JSON serialization/deserialization,
- * including support for Java Time types like {@link java.time.LocalDate}.
+ * Service class for managing {@link ReportConfiguration} objects backed by the shared H2 database.
+ * Configurations are persisted as JSON payloads inside the {@code json_storage} table while
+ * retaining compatibility with the legacy API that accepted a company directory.
+ * Jackson handles serialization/deserialization, including support for Java Time types like
+ * {@link java.time.LocalDate}.
  */
 public class ReportConfigurationService
 {
@@ -28,8 +30,8 @@ public class ReportConfigurationService
 	/** Logger for this class. */
 	private static final Logger LOGGER =
 		Logger.getLogger(ReportConfigurationService.class.getName());
-	/** The standard filename for storing report configurations in JSON format. */
-	private static final String CONFIG_FILE_NAME = "report_configurations.json";
+        /** Storage key used for persisting configurations inside H2. */
+        private static final String STORAGE_KEY = "report_configurations";
 	/** Jackson ObjectMapper instance used for JSON serialization and deserialization. */
 	private final ObjectMapper objectMapper;
 	
@@ -50,124 +52,101 @@ public class ReportConfigurationService
 		this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 	}
 	
-	/**
-	 * Saves a list of {@link ReportConfiguration} objects to a JSON file
-	 * named "report_configurations.json" within the specified company directory.
-	 * If the provided list of configurations is null, the method logs a warning and returns without saving.
-	 * If the list is empty, an empty JSON array will be saved.
-	 *
-	 * @param configs The list of {@link ReportConfiguration} objects to save.
-	 * @param companyDirectory The {@link File} object representing the directory where
-	 *                         the configurations file should be stored. Must not be null and must be a valid directory.
-	 * @throws IOException If the {@code companyDirectory} is invalid, or if an error occurs
-	 *                     during file writing or JSON serialization.
-	 */
-	public void saveConfigurations(	List<ReportConfiguration> configs,
-									File companyDirectory) throws IOException
-	{
-		
-		if (configs == null)
-		{
-			LOGGER.warning("Attempted to save a null list of report configurations. Aborting.");
-			// Optionally, save an empty list instead: configs = new ArrayList<>();
-			return;
-		}
-		
-		if (companyDirectory == null || !companyDirectory.isDirectory())
-		{
-			LOGGER.severe("Invalid company directory provided for saving report configurations: " + // Consider using Level.WARNING for non-fatal issues if not throwing.
-				(companyDirectory != null ? companyDirectory.getAbsolutePath() : "null"));
-			throw new IOException("Invalid company directory for saving report configurations.");
-		}
-		
-		File configFile = new File(companyDirectory, CONFIG_FILE_NAME);
-		
-		try
-		{
-			this.objectMapper.writeValue(configFile, configs);
-			LOGGER.info("Report configurations saved to: " + configFile.getAbsolutePath());
-		}
-		catch (IOException e)
-		{
-			LOGGER.log(Level.SEVERE,
-				"Error saving report configurations to " + configFile.getAbsolutePath(), e);
-			throw e; // Re-throw to allow caller to handle
-		}
-		
-	}
+        /**
+         * Saves a list of {@link ReportConfiguration} objects into the shared H2 database.
+         * If the provided list is {@code null}, the existing payload is removed.
+         *
+         * @param configs the list of {@link ReportConfiguration} objects to save
+         * @param companyDirectory unused legacy parameter retained for API compatibility
+         * @throws IOException if serialization fails or the database cannot be updated
+         */
+        public void saveConfigurations( List<ReportConfiguration> configs,
+                                                                        File companyDirectory) throws IOException
+        {
+
+                if (configs == null)
+                {
+                        LOGGER.warning("Attempted to save a null list of report configurations. Aborting.");
+                        try
+                        {
+                                new JsonStorageRepository().delete(STORAGE_KEY);
+                        }
+                        catch (SQLException e)
+                        {
+                                throw new IOException("Failed to clear report configurations in H2 database", e);
+                        }
+                        return;
+                }
+
+                try
+                {
+                        String payload = this.objectMapper.writeValueAsString(configs);
+                        new JsonStorageRepository().save(STORAGE_KEY, payload);
+                        LOGGER.info("Report configurations saved to H2 database.");
+                }
+                catch (IOException e)
+                {
+                        LOGGER.log(Level.SEVERE,
+                                "Error serializing report configurations for H2 storage", e);
+                        throw e; // Re-throw to allow caller to handle
+                }
+                catch (SQLException e)
+                {
+                        throw new IOException("Failed to save report configurations to H2 database", e);
+                }
+
+        }
 	
-	/**
-	 * Loads a list of {@link ReportConfiguration} objects from the "report_configurations.json"
-	 * file located within the specified company directory.
-	 * <p>
-	 * If the {@code companyDirectory} is invalid, or if the configuration file does not exist,
-	 * is not a file, or is empty, an empty list is returned and appropriate messages are logged.
-	 * If an error occurs during JSON deserialization, an error is logged, and an empty list is returned.
-	 * This method also logs a warning if a loaded configuration has a missing or empty ID.
-	 * </p>
-	 *
-	 * @param companyDirectory The {@link File} object representing the directory where
-	 *                         the "report_configurations.json" file is located.
-	 *                         Must not be null and must be a valid directory.
-	 * @return A {@code List<ReportConfiguration>} objects. Returns an empty list if the file
-	 *         is not found, is empty, or if an error occurs during loading or parsing.
-	 */
-	public List<ReportConfiguration> loadConfigurations(File companyDirectory)
-	{
-		
-		if (companyDirectory == null || !companyDirectory.isDirectory())
-		{
-			LOGGER
-				.warning("Invalid company directory provided for loading report configurations: " +
-					(companyDirectory != null ? companyDirectory.getAbsolutePath() : "null"));
-			return new ArrayList<>();
-		}
-		
-		File configFile = new File(companyDirectory, CONFIG_FILE_NAME);
-		
-		if (!configFile.exists() || !configFile.isFile() || configFile.length() == 0)
-		{
-			LOGGER.info(
-				"Report configurations file not found or is empty. Returning empty list. Path: " +
-					configFile.getAbsolutePath());
-			return new ArrayList<>();
-		}
-		
-		try
-		{
-			List<ReportConfiguration> configs =
-				this.objectMapper.readValue(configFile, new TypeReference<List<ReportConfiguration>>()
-				{
-				});
-			LOGGER.info(
-				"Report configurations loaded successfully from: " + configFile.getAbsolutePath());
-			// Ensure IDs are present (though constructor should handle for new ones)
-			configs.forEach(config -> {
-				
-				if (config.getConfigurationId() == null ||
-					config.getConfigurationId().trim().isEmpty())
-				{
-					// This case should ideally not happen if configs are always saved with IDs.
-					// For robustness, could assign a new one, but log a warning as it implies data
-					// issue.
-					LOGGER.warning(
-						"Loaded a ReportConfiguration with a missing or empty ID. UserGivenName: " +
-							config.getUserGivenName());
-					// Example: if(config.getConfigurationId() == null)
-					// config.setConfigurationId(UUID.randomUUID().toString());
-					// However, modifying loaded data might be unexpected. Logging is safer.
-				}
-				
-			});
-			return configs;
-		}
-		catch (IOException e)
-		{
-			LOGGER.log(Level.SEVERE,
-				"Error loading report configurations from " + configFile.getAbsolutePath(), e);
-			return new ArrayList<>(); // Return empty list on error
-		}
-		
-	}
-	
+        /**
+         * Loads all stored report configurations from the H2 database.
+         * The optional {@code companyDirectory} parameter is ignored but retained for API
+         * compatibility with previous file-based implementations.
+         *
+         * @param companyDirectory historical parameter that is no longer used
+         * @return a list of persisted configurations or an empty list when none exist
+         */
+        public List<ReportConfiguration> loadConfigurations(File companyDirectory)
+        {
+
+                try
+                {
+                        return new JsonStorageRepository().load(STORAGE_KEY)
+                                .filter(payload -> !payload.isBlank())
+                                .map(payload -> {
+                                        try
+                                        {
+                                                List<ReportConfiguration> configs =
+                                                        this.objectMapper.readValue(payload,
+                                                                new TypeReference<List<ReportConfiguration>>()
+                                                                {
+                                                                });
+                                                LOGGER.info("Report configurations loaded successfully from H2 database.");
+                                                configs.forEach(config -> {
+
+                                                        if (config.getConfigurationId() == null ||
+                                                                config.getConfigurationId().trim().isEmpty())
+                                                        {
+                                                                LOGGER.warning(
+                                                                        "Loaded a ReportConfiguration with a missing or empty ID. UserGivenName: " +
+                                                                                config.getUserGivenName());
+                                                        }
+
+                                                });
+                                                return configs;
+                                        }
+                                        catch (IOException e)
+                                        {
+                                                LOGGER.log(Level.SEVERE,
+                                                        "Error parsing report configurations from H2 payload", e);
+                                                return new ArrayList<ReportConfiguration>();
+                                        }
+                                })
+                                .orElseGet(ArrayList::new);
+                }
+                catch (SQLException e)
+                {
+                        throw new RuntimeException("Failed to load report configurations from H2 database", e);
+                }
+
+        }
 }

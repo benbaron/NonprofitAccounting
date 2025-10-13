@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,6 +17,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
 
 import nonprofitbookkeeping.model.Grant;
+import nonprofitbookkeeping.persistence.JsonStorageRepository;
+
+import java.sql.SQLException;
 
 /**
  * Service class for managing {@link Grant} objects.
@@ -25,14 +29,13 @@ import nonprofitbookkeeping.model.Grant;
  */
 public class GrantsService
 {
-	/** Shared list storing grants across service instances. */
-	private static final List<Grant> SHARED_GRANTS = new ArrayList<>();
+        /** Logger for this service. */
+        private static final Logger LOGGER = Logger.getLogger(GrantsService.class.getName());
 	
-	/** Logger for this service. */
-	private static final Logger LOGGER = Logger.getLogger(GrantsService.class.getName());
-	
-	/** Filename used to persist grants inside the company zip. */
-	private static final String GRANTS_FILENAME = "grants.json";
+        /** Filename used to persist grants inside the company zip. */
+        private static final String GRANTS_FILENAME = "grants.json";
+        /** Storage key for grants payload in the database. */
+        private static final String STORAGE_KEY = "grants";
 	
 	/** In-memory list to store {@link Grant} objects. */
 	private List<Grant> grants;
@@ -40,10 +43,10 @@ public class GrantsService
 	/**
 	 * Constructs a new GrantsService, initializing an empty list for storing grants.
 	 */
-	public GrantsService()
-	{
-		this.grants = SHARED_GRANTS;
-	}
+        public GrantsService()
+        {
+                this.grants = new ArrayList<>();
+        }
 	
 	/**
 	 * Retrieves all grants currently stored in this service instance.
@@ -130,76 +133,67 @@ public class GrantsService
 		
 	}
 	
-	/**
-	 * Saves all grants to a JSON file located in the given company directory.
-	 *
-	 * @param companyDirectory directory where the grants file should be written
-	 * @throws IOException if writing fails or the directory is invalid
-	 */
-	public void saveGrants(File companyDirectory) throws IOException
-	{
-		
-		if (companyDirectory == null || !companyDirectory.isDirectory())
-		{
-			throw new IOException("Company directory is invalid or not provided.");
-		}
-		
-		File target = new File(companyDirectory, GRANTS_FILENAME);
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.enable(SerializationFeature.INDENT_OUTPUT);
-		
-		try
-		{
-			mapper.writeValue(target, getAllGrants());
-		}
-		catch (IOException ex)
-		{
-			LOGGER.log(Level.SEVERE, "Failed to save grants to " + target.getAbsolutePath(), ex);
-			throw ex;
-		}
-		
-	}
+        /**
+         * Persists all grants into the shared H2 database.
+         *
+         * @param companyDirectory legacy parameter retained for compatibility
+         * @throws IOException if serialization fails or the database cannot be updated
+         */
+        public void saveGrants(File companyDirectory) throws IOException
+        {
+
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+                try
+                {
+                        String payload = mapper.writeValueAsString(getAllGrants());
+                        new JsonStorageRepository().save(STORAGE_KEY, payload);
+                }
+                catch (SQLException sqlEx)
+                {
+                        throw new IOException("Failed to save grants to H2 database", sqlEx);
+                }
+
+        }
 	
-	/**
-	 * Loads grants from a JSON file located in the given company directory.
-	 * Existing in-memory grants are cleared before loading new ones. If the
-	 * file does not exist, this method simply returns with an empty list.
-	 *
-	 * @param companyDirectory directory where the grants file is located
-	 * @throws IOException if reading fails or the directory is invalid
-	 */
+        /**
+         * Loads grants previously stored in the database.
+         * Existing in-memory grants are cleared before loading new ones. If no
+         * payload is present, the current state remains empty.
+         *
+         * @param companyDirectory legacy parameter retained for compatibility
+         * @throws IOException if fetching from the database fails
+         */
 	public void loadGrants(File companyDirectory) throws IOException
 	{
-		this.grants.clear();
-		
-		if (companyDirectory == null || !companyDirectory.isDirectory())
-		{
-			throw new IOException("Company directory is invalid or not provided.");
-		}
-		
-		File target = new File(companyDirectory, GRANTS_FILENAME);
-		
-		if (!target.exists() || target.length() == 0)
-		{
-			return; // nothing to load
-		}
-		
-		ObjectMapper mapper = new ObjectMapper();
-		CollectionType listType =
-			mapper.getTypeFactory().constructCollectionType(List.class, Grant.class);
-		
-		try
-		{
-			List<Grant> loaded = mapper.readValue(target, listType);
-			this.grants.addAll(loaded);
-		}
-		catch (IOException ex)
-		{
-			LOGGER.log(Level.SEVERE, "Failed to load grants from " + target.getAbsolutePath(), ex);
-			throw ex;
-		}
-		
-	}
+                this.grants.clear();
+
+                ObjectMapper mapper = new ObjectMapper();
+                CollectionType listType =
+                        mapper.getTypeFactory().constructCollectionType(List.class, Grant.class);
+
+                try
+                {
+                        Optional<String> payloadOpt = new JsonStorageRepository().load(STORAGE_KEY);
+                        if (payloadOpt.isEmpty() || payloadOpt.get().isBlank())
+                        {
+                                return;
+                        }
+
+                        List<Grant> loaded = mapper.readValue(payloadOpt.get(), listType);
+                        this.grants.addAll(loaded);
+                }
+                catch (SQLException sqlEx)
+                {
+                        throw new IOException("Failed to load grants from H2 database", sqlEx);
+                }
+                catch (IOException ex)
+                {
+                        LOGGER.log(Level.SEVERE, "Failed to parse grants payload from H2 database", ex);
+                }
+
+        }
 	
 	/**
 	 * Saves all grants as a {@link ZipEntry} named {@code grants.json}
@@ -219,10 +213,30 @@ public class GrantsService
 		
 		File temp = File.createTempFile("grants", ".npbk");
 		
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.enable(SerializationFeature.INDENT_OUTPUT);
-		
-		byte[] json = mapper.writeValueAsBytes(getAllGrants());
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+                byte[] json;
+
+                Optional<String> payloadOpt;
+
+                try
+                {
+                        payloadOpt = new JsonStorageRepository().load(STORAGE_KEY);
+                }
+                catch (SQLException sqlEx)
+                {
+                        throw new IOException("Failed to read grants from H2 database for backup", sqlEx);
+                }
+
+                if (payloadOpt.isPresent())
+                {
+                        json = payloadOpt.get().getBytes(java.nio.charset.StandardCharsets.UTF_8);
+                }
+                else
+                {
+                        json = mapper.writeValueAsBytes(getAllGrants());
+                }
 		
 		try (
 			var zis = companyFile.exists() ?
@@ -293,12 +307,22 @@ public class GrantsService
 					ObjectMapper mapper = new ObjectMapper();
 					CollectionType listType =
 						mapper.getTypeFactory().constructCollectionType(List.class, Grant.class);
-					List<Grant> loaded = mapper.readValue(zis, listType);
-					this.grants.addAll(loaded);
-					break;
-				}
-				
-				zis.closeEntry();
+                                        List<Grant> loaded = mapper.readValue(zis, listType);
+                                        this.grants.addAll(loaded);
+                                        try
+                                        {
+                                                String payload = mapper.writeValueAsString(loaded);
+                                                new JsonStorageRepository().save(STORAGE_KEY, payload);
+                                        }
+                                        catch (SQLException sqlEx)
+                                        {
+                                                throw new IOException("Failed to persist grants from backup into H2 database",
+                                                        sqlEx);
+                                        }
+                                        break;
+                                }
+
+                                zis.closeEntry();
 			}
 			
 		}
