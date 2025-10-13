@@ -393,7 +393,7 @@ public class NonprofitBookkeepingFX extends Application
                 add(this.panels, "Donations",
                         e -> showPanel(new DonationsPanelFX(this.primaryStage), "Donations"));
                 add(this.panels, "Grants",
-                        e -> showPanel(new GrantsPanelFX(ServiceContainer.grantsService, null), "Grants"));
+                        e -> showPanel(new GrantsPanelFX(ServiceContainer.grantsService), "Grants"));
                 add(this.panels, "Sales & COG",
                         e -> showPanel(new SalesAndCOGPanelFX(ServiceContainer.salesService, null), "Sales & COG"));
 		bar.getMenus().add(this.panels);

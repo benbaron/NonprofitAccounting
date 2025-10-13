@@ -1,11 +1,12 @@
 
 package nonprofitbookkeeping.ui.panels;
 
-import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
-import nonprofitbookkeeping.util.FormatUtils;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,18 +19,19 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.Separator;
 import nonprofitbookkeeping.model.Grant;
 import nonprofitbookkeeping.service.GrantsService;
+import nonprofitbookkeeping.util.FormatUtils;
 
 /**
  * JavaFX port of {@code GrantsPanel}. Displays grant records in a table with a
- * Refresh button. Uses the same FileBasedGrantsService for data.
+ * Refresh button backed by the database-centric {@link GrantsService}.
  */
 public class GrantsPanelFX extends BorderPane
 {
-	
-	/** Service layer for grant data operations. */
-	private final GrantsService grantsService;
-	/** Company file where grants are persisted. */
-	private File companyFile;
+
+        private static final Logger LOGGER = Logger.getLogger(GrantsPanelFX.class.getName());
+
+        /** Service layer for grant data operations. */
+        private final GrantsService grantsService;
 	/** ObservableList to hold {@link GrantRow} objects for display in the table. */
 	private final ObservableList<GrantRow> rows = FXCollections.observableArrayList();
 	/** TableView to display the list of grants. */
@@ -40,13 +42,12 @@ public class GrantsPanelFX extends BorderPane
 	 * Initializes the panel with a {@link GrantsService} instance, a table to display grant information,
 	 * and a "Refresh" button to reload grant data.
 	    */
-	public GrantsPanelFX(GrantsService service, File companyFile)
-	{
-		this.grantsService = service != null ? service : new GrantsService();
-		this.companyFile = companyFile;
-		
-		setPadding(new Insets(10));
-		buildTable();
+        public GrantsPanelFX(GrantsService service)
+        {
+                this.grantsService = service != null ? service : new GrantsService();
+
+                setPadding(new Insets(10));
+                buildTable();
 		setCenter(new TitledPane("Grant List", this.table)
 		{
 			{
@@ -80,22 +81,8 @@ public class GrantsPanelFX extends BorderPane
 		
 		setBottom(new ToolBar(refresh, new Separator(), new HBox(5, add, edit, del)));
 		
-		if (this.companyFile != null)
-		{
-			
-			try
-			{
-				this.grantsService.loadGrantsFromZip(this.companyFile);
-			}
-			catch (Exception ex)
-			{
-				ex.printStackTrace();
-			}
-			
-		}
-		
-		loadGrantData();
-	}
+                loadGrantData();
+        }
 	
 	/* ------------------------------------------------------------------ */
 	/**
@@ -143,13 +130,26 @@ public class GrantsPanelFX extends BorderPane
 	 * converts each {@link Grant} object into a {@link GrantRow}, and adds them to the
 	 * {@link #rows} observable list, which updates the table view.
 	 */
-	private void loadGrantData()
-	{
-		this.rows.clear();
-		List<Grant> list = this.grantsService.getAllGrants();
-		for (var g : list)
-			this.rows.add(new GrantRow(g));
-	}
+        private void loadGrantData()
+        {
+                try
+                {
+                        this.grantsService.loadGrants();
+                }
+                catch (IOException ex)
+                {
+                        LOGGER.log(Level.SEVERE, "Failed to load grants from database", ex);
+                        this.rows.clear();
+                        return;
+                }
+
+                this.rows.clear();
+                List<Grant> list = this.grantsService.getAllGrants();
+                for (var g : list)
+                {
+                        this.rows.add(new GrantRow(g));
+                }
+        }
 	
 	/** Displays a dialog for adding or editing a grant. */
 	private void grantDialog(Grant existing)
@@ -211,24 +211,17 @@ public class GrantsPanelFX extends BorderPane
 	}
 	
 	/** Saves grants to the company file if set. */
-	private void save()
-	{
-		
-		if (this.companyFile != null)
-		{
-			
-			try
-			{
-				this.grantsService.saveGrantsToZip(this.companyFile);
-			}
-			catch (Exception ex)
-			{
-				ex.printStackTrace();
-			}
-			
-		}
-		
-	}
+        private void save()
+        {
+                try
+                {
+                        this.grantsService.saveGrants();
+                }
+                catch (IOException ex)
+                {
+                        LOGGER.log(Level.SEVERE, "Failed to save grants to database", ex);
+                }
+        }
 	
 	private Grant toGrant(GrantRow row)
 	{
