@@ -2,17 +2,11 @@ package nonprofitbookkeeping.service;
 
 import nonprofitbookkeeping.model.DonorContact;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.type.CollectionType;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Service class for managing {@link DonorContact} information.
@@ -23,12 +17,6 @@ public class DonorService {
 
     /** Shared list storing donors across service instances. */
     private static final List<DonorContact> SHARED_DONORS = new ArrayList<>();
-
-    /** Logger for this service. */
-    private static final Logger LOGGER = Logger.getLogger(DonorService.class.getName());
-
-    /** Filename used to persist donors to disk. */
-    private static final String DONORS_FILENAME = "donors.json";
 
     /** In-memory list to store {@link DonorContact} objects. */
     private final List<DonorContact> donors;

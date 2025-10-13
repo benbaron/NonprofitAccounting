@@ -10,12 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.sql.SQLException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
 
 import nonprofitbookkeeping.model.Grant;
+import nonprofitbookkeeping.persistence.DocumentRepository;
 
 /**
  * Service class for managing {@link Grant} objects.
@@ -31,8 +33,13 @@ public class GrantsService
 	/** Logger for this service. */
 	private static final Logger LOGGER = Logger.getLogger(GrantsService.class.getName());
 	
-	/** Filename used to persist grants inside the company zip. */
-	private static final String GRANTS_FILENAME = "grants.json";
+        /** Filename used to persist grants inside the company zip. */
+        private static final String GRANTS_FILENAME = "grants.json";
+        private static final String DOCUMENT_NAME = "grants";
+        private static final ObjectMapper MAPPER = new ObjectMapper()
+                .enable(SerializationFeature.INDENT_OUTPUT);
+        private static final CollectionType LIST_TYPE =
+                MAPPER.getTypeFactory().constructCollectionType(List.class, Grant.class);
 	
 	/** In-memory list to store {@link Grant} objects. */
 	private List<Grant> grants;
@@ -130,76 +137,63 @@ public class GrantsService
 		
 	}
 	
-	/**
-	 * Saves all grants to a JSON file located in the given company directory.
-	 *
-	 * @param companyDirectory directory where the grants file should be written
-	 * @throws IOException if writing fails or the directory is invalid
-	 */
+        /**
+         * Saves all grants to the persistent document store.
+         *
+         * @param companyDirectory retained for backwards compatibility but ignored by the method
+         * @throws IOException if writing to the database fails
+         */
 	public void saveGrants(File companyDirectory) throws IOException
 	{
 		
-		if (companyDirectory == null || !companyDirectory.isDirectory())
-		{
-			throw new IOException("Company directory is invalid or not provided.");
-		}
-		
-		File target = new File(companyDirectory, GRANTS_FILENAME);
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.enable(SerializationFeature.INDENT_OUTPUT);
-		
-		try
-		{
-			mapper.writeValue(target, getAllGrants());
-		}
-		catch (IOException ex)
-		{
-			LOGGER.log(Level.SEVERE, "Failed to save grants to " + target.getAbsolutePath(), ex);
-			throw ex;
-		}
-		
-	}
+                try
+                {
+                        String payload = MAPPER.writeValueAsString(getAllGrants());
+                        new DocumentRepository().upsert(DOCUMENT_NAME, payload);
+                        LOGGER.info("Grants saved to database document '" + DOCUMENT_NAME + "'.");
+                }
+                catch (SQLException e)
+                {
+                        throw new IOException("Failed to save grants to database", e);
+                }
+
+        }
 	
-	/**
-	 * Loads grants from a JSON file located in the given company directory.
-	 * Existing in-memory grants are cleared before loading new ones. If the
-	 * file does not exist, this method simply returns with an empty list.
-	 *
-	 * @param companyDirectory directory where the grants file is located
-	 * @throws IOException if reading fails or the directory is invalid
-	 */
+        /**
+         * Loads grants from the persistent document store.
+         * Existing in-memory grants are cleared before loading new ones.
+         *
+         * @param companyDirectory retained for backwards compatibility but ignored by the method
+         * @throws IOException if reading from the database fails
+         */
 	public void loadGrants(File companyDirectory) throws IOException
 	{
 		this.grants.clear();
 		
-		if (companyDirectory == null || !companyDirectory.isDirectory())
-		{
-			throw new IOException("Company directory is invalid or not provided.");
-		}
-		
-		File target = new File(companyDirectory, GRANTS_FILENAME);
-		
-		if (!target.exists() || target.length() == 0)
-		{
-			return; // nothing to load
-		}
-		
-		ObjectMapper mapper = new ObjectMapper();
-		CollectionType listType =
-			mapper.getTypeFactory().constructCollectionType(List.class, Grant.class);
-		
-		try
-		{
-			List<Grant> loaded = mapper.readValue(target, listType);
-			this.grants.addAll(loaded);
-		}
-		catch (IOException ex)
-		{
-			LOGGER.log(Level.SEVERE, "Failed to load grants from " + target.getAbsolutePath(), ex);
-			throw ex;
-		}
-		
-	}
+                try
+                {
+                        new DocumentRepository().find(DOCUMENT_NAME)
+                                .ifPresent(payload -> {
+                                        try
+                                        {
+                                                List<Grant> loaded = MAPPER.readValue(payload, LIST_TYPE);
+                                                this.grants.addAll(loaded);
+                                                LOGGER.info("Grants loaded from database document '" + DOCUMENT_NAME
+                                                        + "'.");
+                                        }
+                                        catch (IOException ex)
+                                        {
+                                                LOGGER.log(Level.SEVERE,
+                                                        "Failed to deserialize grants JSON from database", ex);
+                                        }
+                                });
+                }
+                catch (SQLException e)
+                {
+                        throw new IOException("Failed to load grants from database", e);
+                }
+
+        }
 	
 	/**
 	 * Saves all grants as a {@link ZipEntry} named {@code grants.json}
