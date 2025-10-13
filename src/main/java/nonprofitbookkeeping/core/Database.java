@@ -19,6 +19,11 @@ public final class Database {
         if (dbFile == null) throw new IllegalArgumentException("dbFile required");
         INSTANCE = new Database(dbFile);
     }
+
+    public static synchronized boolean isInitialized() {
+        return INSTANCE != null;
+    }
+
     public static Database get() {
         if (INSTANCE == null) throw new IllegalStateException("Database not initialized");
         return INSTANCE;
