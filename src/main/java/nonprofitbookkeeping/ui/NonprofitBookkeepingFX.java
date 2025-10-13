@@ -37,7 +37,7 @@ import nonprofitbookkeeping.ui.actions.*;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.panels.*;
 import nonprofitbookkeeping.ui.javafx.BudgetPanelFX;
-import nonprofitbookkeeping.tools.JsonCompanyImporter;
+import nonprofitbookkeeping.tools.H2ScriptCompanyImporter;
 
 
 /**
@@ -461,7 +461,7 @@ public class NonprofitBookkeepingFX extends Application
         {
                 Menu db = new Menu("Database");
                 add(db, "Open/Create H2 DB...", e -> handleOpenOrCreateDatabase());
-                add(db, "Import JSON (zip) into DB...", e -> handleImportJsonIntoDatabase());
+                add(db, "Import H2 script into DB...", e -> handleImportScriptIntoDatabase());
                 return db;
         }
 
@@ -496,7 +496,7 @@ public class NonprofitBookkeepingFX extends Application
                 }
         }
 
-        private void handleImportJsonIntoDatabase()
+        private void handleImportScriptIntoDatabase()
         {
                 if (!Database.isInitialized())
                 {
@@ -508,8 +508,8 @@ public class NonprofitBookkeepingFX extends Application
                 }
 
                 FileChooser fc = new FileChooser();
-                fc.setTitle("Select legacy company JSON zip");
-                fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Zip files", "*.zip"));
+                fc.setTitle("Select company H2 SQL script");
+                fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("SQL scripts", "*.sql"));
                 File file = fc.showOpenDialog(this.primaryStage);
 
                 if (file == null)
@@ -517,8 +517,9 @@ public class NonprofitBookkeepingFX extends Application
 
                 try
                 {
-                        JsonCompanyImporter.importZip(file.toPath());
-                        Alert a = new Alert(Alert.AlertType.INFORMATION, "Imported company into DB.");
+                        H2ScriptCompanyImporter.importScript(file.toPath());
+                        Alert a = new Alert(Alert.AlertType.INFORMATION,
+                                "Imported company script into DB.");
                         a.setHeaderText("Import complete");
                         a.showAndWait();
                 }
