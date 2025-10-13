@@ -1,0 +1,1881 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+    name="Contents" pageWidth="612" pageHeight="792" columnWidth="552" leftMargin="30" rightMargin="30" topMargin="24" bottomMargin="24" uuid="00000000-0000-0000-0000-599537393325">
+
+    <!-- Styles first (no parent attribute) -->
+    <style name="base" fontName="SansSerif" fontSize="10"/>
+    <style name="label" isBold="true"/>
+    <style name="value"/>
+
+    <!-- Parameters after styles -->
+    <parameter name="reportTitle" class="java.lang.String"/>
+    <parameter name="organizationName" class="java.lang.String"/>
+    <field name="Contents_E3" class="java.lang.String"/>
+    <field name="Contents_E6" class="java.lang.String"/>
+    <field name="Contents_H7" class="java.lang.String"/>
+    <field name="Contents_F8" class="java.lang.String"/>
+    <field name="Contents_H8" class="java.lang.String"/>
+    <field name="Contents_F9" class="java.lang.String"/>
+    <field name="Contents_H9" class="java.lang.String"/>
+    <field name="Contents_F10" class="java.lang.String"/>
+    <field name="Contents_G10" class="java.lang.String"/>
+    <field name="Contents_H10" class="java.lang.String"/>
+    <field name="Contents_F11" class="java.lang.String"/>
+    <field name="Contents_H11" class="java.lang.String"/>
+    <field name="Contents_H12" class="java.lang.String"/>
+    <field name="Contents_G13" class="java.lang.String"/>
+    <field name="Contents_H13" class="java.lang.String"/>
+    <field name="Contents_G14" class="java.lang.String"/>
+    <field name="Contents_H14" class="java.lang.String"/>
+    <field name="Contents_G15" class="java.lang.String"/>
+    <field name="Contents_H15" class="java.lang.String"/>
+    <field name="Contents_G16" class="java.lang.String"/>
+    <field name="Contents_H16" class="java.lang.String"/>
+    <field name="Contents_G17" class="java.lang.String"/>
+    <field name="Contents_H17" class="java.lang.String"/>
+    <field name="Contents_G18" class="java.lang.String"/>
+    <field name="Contents_H18" class="java.lang.String"/>
+    <field name="Contents_G19" class="java.lang.String"/>
+    <field name="Contents_H19" class="java.lang.String"/>
+    <field name="Contents_G20" class="java.lang.String"/>
+    <field name="Contents_H20" class="java.lang.String"/>
+    <field name="Contents_G21" class="java.lang.String"/>
+    <field name="Contents_H21" class="java.lang.String"/>
+    <field name="Contents_G22" class="java.lang.String"/>
+    <field name="Contents_H22" class="java.lang.String"/>
+    <field name="Contents_G23" class="java.lang.String"/>
+    <field name="Contents_H23" class="java.lang.String"/>
+    <field name="Contents_G24" class="java.lang.String"/>
+    <field name="Contents_H24" class="java.lang.String"/>
+    <field name="Contents_F25" class="java.lang.String"/>
+    <field name="Contents_G25" class="java.lang.String"/>
+    <field name="Contents_H25" class="java.lang.String"/>
+    <field name="Contents_F26" class="java.lang.String"/>
+    <field name="Contents_G26" class="java.lang.String"/>
+    <field name="Contents_H26" class="java.lang.String"/>
+    <field name="Contents_G27" class="java.lang.String"/>
+    <field name="Contents_H27" class="java.lang.String"/>
+    <field name="Contents_G28" class="java.lang.String"/>
+    <field name="Contents_H28" class="java.lang.String"/>
+    <field name="Contents_F30" class="java.lang.String"/>
+    <field name="Contents_G30" class="java.lang.String"/>
+    <field name="Contents_H30" class="java.lang.String"/>
+    <field name="Contents_F31" class="java.lang.String"/>
+    <field name="Contents_G31" class="java.lang.String"/>
+    <field name="Contents_H31" class="java.lang.String"/>
+    <field name="Contents_G32" class="java.lang.String"/>
+    <field name="Contents_H32" class="java.lang.String"/>
+    <field name="Contents_G39" class="java.lang.String"/>
+    <field name="Contents_H39" class="java.lang.String"/>
+    <field name="Contents_G40" class="java.lang.String"/>
+    <field name="Contents_H40" class="java.lang.String"/>
+    <field name="Contents_G41" class="java.lang.String"/>
+    <field name="Contents_H41" class="java.lang.String"/>
+    <field name="Contents_G42" class="java.lang.String"/>
+    <field name="Contents_H42" class="java.lang.String"/>
+    <field name="Contents_G43" class="java.lang.String"/>
+    <field name="Contents_H43" class="java.lang.String"/>
+    <field name="Contents_G44" class="java.lang.String"/>
+    <field name="Contents_H44" class="java.lang.String"/>
+    <field name="Contents_G45" class="java.lang.String"/>
+    <field name="Contents_H45" class="java.lang.String"/>
+    <field name="Contents_G46" class="java.lang.String"/>
+    <field name="Contents_H46" class="java.lang.String"/>
+    <field name="Contents_G47" class="java.lang.String"/>
+    <field name="Contents_H47" class="java.lang.String"/>
+    <field name="Contents_G48" class="java.lang.String"/>
+    <field name="Contents_H48" class="java.lang.String"/>
+    <field name="Contents_E53" class="java.lang.String"/>
+    <field name="Contents_B58" class="java.lang.String"/>
+    <field name="Contents_B59" class="java.lang.String"/>
+    <field name="Contents_C61" class="java.lang.String"/>
+    <field name="Contents_C62" class="java.lang.String"/>
+    <field name="Contents_C63" class="java.lang.String"/>
+    <field name="Contents_C64" class="java.lang.String"/>
+    <field name="Contents_C65" class="java.lang.String"/>
+    <field name="Contents_C66" class="java.lang.String"/>
+    <field name="Contents_C71" class="java.lang.String"/>
+    <field name="Contents_F81" class="java.lang.String"/>
+    <field name="Contents_G81" class="java.lang.String"/>
+    <field name="Contents_H81" class="java.lang.String"/>
+    <field name="Contents_I81" class="java.lang.String"/>
+    <field name="Contents_J81" class="java.lang.String"/>
+    <field name="Contents_F82" class="java.lang.String"/>
+    <field name="Contents_G82" class="java.lang.String"/>
+    <field name="Contents_H82" class="java.lang.String"/>
+    <field name="Contents_I82" class="java.lang.String"/>
+    <field name="Contents_J82" class="java.lang.String"/>
+    <field name="Contents_K82" class="java.lang.String"/>
+    <field name="Contents_L82" class="java.lang.String"/>
+    <field name="Contents_M82" class="java.lang.String"/>
+    <field name="Contents_F83" class="java.lang.String"/>
+    <field name="Contents_G83" class="java.lang.String"/>
+    <field name="Contents_H83" class="java.lang.String"/>
+    <field name="Contents_I83" class="java.lang.String"/>
+    <field name="Contents_J83" class="java.lang.String"/>
+    <field name="Contents_K83" class="java.lang.String"/>
+    <field name="Contents_L83" class="java.lang.String"/>
+    <field name="Contents_M83" class="java.lang.String"/>
+    <field name="Contents_F84" class="java.lang.String"/>
+    <field name="Contents_G84" class="java.lang.String"/>
+    <field name="Contents_H84" class="java.lang.String"/>
+    <field name="Contents_I84" class="java.lang.String"/>
+    <field name="Contents_J84" class="java.lang.String"/>
+    <field name="Contents_K84" class="java.lang.String"/>
+    <field name="Contents_L84" class="java.lang.String"/>
+    <field name="Contents_F85" class="java.lang.String"/>
+    <field name="Contents_G85" class="java.lang.String"/>
+    <field name="Contents_H85" class="java.lang.String"/>
+    <field name="Contents_I85" class="java.lang.String"/>
+    <field name="Contents_J85" class="java.lang.String"/>
+    <field name="Contents_K85" class="java.lang.String"/>
+    <field name="Contents_L85" class="java.lang.String"/>
+    <field name="Contents_M85" class="java.lang.String"/>
+    <field name="Contents_F86" class="java.lang.String"/>
+    <field name="Contents_G86" class="java.lang.String"/>
+    <field name="Contents_H86" class="java.lang.String"/>
+    <field name="Contents_I86" class="java.lang.String"/>
+    <field name="Contents_J86" class="java.lang.String"/>
+    <field name="Contents_K86" class="java.lang.String"/>
+    <field name="Contents_L86" class="java.lang.String"/>
+    <field name="Contents_M86" class="java.lang.String"/>
+
+    <title>
+      <band height="76">
+        <staticText>
+          <reportElement x="0" y="0" width="552" height="24"/>
+          <textElement textAlignment="Center"><font size="10"/></textElement>
+          <text><![CDATA[$P{reportTitle}]]></text>
+        </staticText>
+        <staticText>
+          <reportElement x="0" y="26" width="552" height="22"/>
+          <textElement textAlignment="Center"><font size="9"/></textElement>
+          <text><![CDATA[$P{organizationName}]]></text>
+        </staticText>
+        <staticText>
+          <reportElement x="0" y="50" width="552" height="22"/>
+          <textElement textAlignment="Center"><font size="8"/></textElement>
+          <text><![CDATA[Contents]]></text>
+        </staticText>
+      </band>
+    </title>
+
+    <detail>
+      <band height="744">
+          <staticText>
+            <reportElement x="38" y="29" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[OpenOffice users: Please use OpenOffice 3.1 or later. 
+To enable macros in Open Office: Set the “Executable Code” &amp; "Save original Basic Code" check-boxes under: 
+Tools | Options | Load/Save | VBA Properties.                     
+Help is available at http://antir.sca.org/Offices/Exchequers/OO/index.php]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="216" y="35" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_E3}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="216" y="41" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[FINANCIAL REPORT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="51" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Cells in Blue are editable. All other cells are locked.]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="216" y="51" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_E6}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="38" y="56" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Fill in the data in the box below. Some formulas require this data to calculate properly. ]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="56" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[CONTENTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="56" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Table of Contents]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="380" y="56" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[REQUIRED]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="426" y="56" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H7}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="38" y="62" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Name of Branch]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="62" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[1. CONTACT INFO]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="282" y="62" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_F8}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="380" y="62" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[REQUIRED]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="426" y="62" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H8}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="38" y="67" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Seneschal Name]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="67" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[2.a PRIMARY ACCOUNT]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="282" y="67" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_F9}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="380" y="67" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[REQUIRED]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="426" y="67" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H9}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="38" y="72" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Exchequer Name]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="72" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[2.b SECONDARY ACCOUNTS]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="282" y="72" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_F10}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="380" y="72" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G10}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="72" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H10}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="38" y="77" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Year (yyyy)]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="77" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[3. BALANCE]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="282" y="77" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_F11}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="380" y="77" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[REQUIRED]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="426" y="77" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H11}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="38" y="82" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Quarter (1,2,3,4)]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="106" y="82" width="104" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[1]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="82" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[4. INCOME]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="82" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Income Statement]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="380" y="82" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[REQUIRED]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="426" y="82" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H12}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="38" y="87" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Quarter Type (Cumulative)]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="106" y="87" width="104" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Cumulative]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="87" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[5.a ASSET DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="87" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Asset Detail]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="380" y="87" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G13}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="87" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H13}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="38" y="92" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Currency Type]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="106" y="92" width="104" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[USD $]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="92" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[5.b LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="92" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Liability Detail]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="380" y="92" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G14}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="92" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H14}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="38" y="97" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Corporate or Which State Subsidiary]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="106" y="97" width="104" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Corporate]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="97" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[6. INVENTORY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="97" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Inventory Detail]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="380" y="97" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G15}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="97" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H15}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="38" y="102" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Cumulative always starts from January 1. If this report is for the enire year, enter 4 for the Quarter.]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="102" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[7. REGALIA SALES DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="102" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Regalia &amp; Other Sales Detail]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="380" y="102" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G16}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="102" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H16}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="216" y="107" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[8. DEPRECIATION DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="107" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Depreciation Detail]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="380" y="107" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G17}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="107" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H17}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="216" y="113" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[9. TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="113" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Transfer Income Detail]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="380" y="113" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G18}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="113" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H18}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="38" y="118" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[For Year-end Reports, you must deliver a copy of this report to your superior officer, along with a copy of the ending bank statement and general ledger/check register. The preferred method is electronically via email. ]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="118" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[10. TRANSFER OUT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="118" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Transfer Expense Detail]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="380" y="118" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G19}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="118" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H19}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="216" y="123" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[11.a INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="123" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Income Detail Part 1]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="380" y="123" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G20}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="123" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H20}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="38" y="128" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Some Kingdoms may require additional documents. ]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="128" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[11.b INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="128" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Income Detail Part 2]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="380" y="128" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G21}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="128" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H21}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="38" y="133" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Whether sent by paper or electronically for the first 3 quarter reports:]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="133" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[11.c INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="133" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Income Detail Part 3]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="380" y="133" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G22}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="133" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H22}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="38" y="138" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Pages 1-4 must be completed, printed, signed, and submitted with a copy of the bank statement(s) ]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="138" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[12.a EXPENSE DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="138" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Expense Detail Part 1]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="380" y="138" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G23}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="138" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H23}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="38" y="143" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[and workbook pages according to Kingdom Policy. ]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="143" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[12.b EXPENSE DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="143" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Expense Detail Part 2]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="380" y="143" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G24}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="143" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H24}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="38" y="148" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[All financial reports, bank statements and backup documentation must be kept for 7 years by either]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="148" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[13. FINANCE COMM]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="282" y="148" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_F25}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="380" y="148" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G25}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="148" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H25}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="38" y="153" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[paper copy or stored electronically with a minimum of one backup copy. ]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="153" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[14. FUNDS]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="282" y="153" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_F26}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="380" y="153" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G26}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="153" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H26}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="216" y="158" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[15. NEWSLETTER]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="158" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Newsletter Income Detail]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="380" y="158" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G27}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="158" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H27}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="38" y="163" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Please complete the Financial Committee Information page!]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="163" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[COMMENTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="163" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Comments]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="380" y="163" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G28}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="163" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H28}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="216" y="168" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[ADDITIONAL WORKSHEETS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="426" y="168" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[noprint]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="173" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[2.c SECONDARY ACCOUNTS]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="282" y="173" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_F30}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="380" y="173" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G30}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="173" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H30}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="216" y="180" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[2.d SECONDARY ACCOUNTS]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="282" y="180" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_F31}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="380" y="180" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G31}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="180" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H31}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="216" y="187" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[5.c ASSET DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="187" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Asset Detail]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="380" y="187" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G32}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="187" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H32}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="38" y="194" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Print buttons send individual pages to the default or currently selected printer. ]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="201" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Pages 5+ will not print where no data is entered.]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="211" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Email bugs and comments here!]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="221" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[locked]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="226" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[LARGE]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="226" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[6.b INVENTORY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="226" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Inventory Detail]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="380" y="226" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G39}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="226" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H39}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="38" y="231" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[LOCAL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="231" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[7.b REGALIA SALES DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="231" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Regalia &amp; Other Sales Detail]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="380" y="231" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G40}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="231" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H40}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="216" y="236" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[8.b DEPR DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="236" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Depreciation Detail - 5 year]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="380" y="236" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G41}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="236" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H41}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="216" y="241" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[8.c DEPR DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="241" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Depreciation Detail - 7 year]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="380" y="241" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G42}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="241" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H42}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="216" y="246" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[9.b TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="246" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Transfer Income]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="380" y="246" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G43}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="246" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H43}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="216" y="251" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[9.c TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="251" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Transfer Income]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="380" y="251" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G44}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="251" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H44}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="216" y="256" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[9.d TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="256" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Transfer Income]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="380" y="256" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G45}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="256" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H45}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="216" y="261" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[10.b TRANSFER OUT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="261" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Transfer Expense]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="380" y="261" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G46}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="261" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H46}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="216" y="266" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[10.c TRANSFER OUT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="266" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Transfer Expense]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="380" y="266" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G47}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="266" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H47}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="216" y="271" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[10.d TRANSFER OUT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="271" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Transfer Expense]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="380" y="271" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G48}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="271" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H48}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="216" y="281" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[FREE FORM]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="281" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Unlocked Worksheet for other information (ledgers, etc.)]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="216" y="296" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_E53}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="216" y="301" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Make sure that all pages marked 'REQUIRED' are submitted and filed.]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="311" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Variables]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="38" y="321" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_B58}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="380" y="321" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[USD $]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="38" y="326" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_B59}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="282" y="326" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[AS L 6]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="380" y="326" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[CDN $]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="210" y="331" width="10" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Cumulative]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="331" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[locked]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="380" y="331" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[EURO €]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="336" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Start Month #]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="106" y="336" width="104" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_C61}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="282" y="336" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[unlocked]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="380" y="336" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[U.K. £]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="341" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[End Month #]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="106" y="341" width="104" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_C62}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="282" y="341" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[pdf]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="380" y="341" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[ICELAND kr.]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="346" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Start Month $]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="106" y="346" width="104" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_C63}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="210" y="346" width="10" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[1]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="380" y="346" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[S.African R]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="351" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[End Month $]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="106" y="351" width="104" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_C64}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="210" y="351" width="10" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[2]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="351" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[REQUIRED]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="380" y="351" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Romanian leu]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="356" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Year $]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="106" y="356" width="104" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_C65}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="210" y="356" width="10" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[3]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="380" y="356" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Swiss SFr.]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="361" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[End Day $]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="106" y="361" width="104" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_C66}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="210" y="361" width="10" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[4]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="380" y="361" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Israel ₪]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="366" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Branch $]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="106" y="366" width="104" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Branch: ]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="366" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[LARGE]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="371" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Period $]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="106" y="371" width="104" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[                                                                        Period:  ]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="371" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[MEDIUM]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="376" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[To $]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="106" y="376" width="104" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[             to     ]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="376" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[MASTER]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="376" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[SMALL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="381" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[EOL $]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="106" y="381" width="104" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[            .]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="381" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[LOCAL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="381" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[PAYPAL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="386" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Trimmed Period $]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="106" y="386" width="104" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_C71}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="38" y="396" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[0.2]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="106" y="396" width="104" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[0.52]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="210" y="396" width="10" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[0.712]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="396" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[0.8271999999999999]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="396" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[0.9423999999999999]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="380" y="396" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[0.9999999999999999]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="401" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[2020]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="106" y="401" width="104" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[2019]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="210" y="401" width="10" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[2018]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="401" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[2017]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="401" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[2016]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="380" y="401" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[2015]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="406" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[0.2]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="106" y="406" width="104" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[0.32]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="210" y="406" width="10" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[0.192]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="406" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[0.1152]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="406" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[0.1152]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="380" y="406" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[0.0576]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="416" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[0.1429]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="106" y="416" width="104" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[0.38780000000000003]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="210" y="416" width="10" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[0.5627]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="416" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[0.6876]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="416" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[0.7769]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="380" y="416" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[0.8661000000000001]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="426" y="416" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[0.9554000000000001]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="468" y="416" width="20" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[1.0000000000000002]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="421" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[2020]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="106" y="421" width="104" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[2019]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="210" y="421" width="10" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[2018]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="421" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[2017]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="421" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[2016]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="380" y="421" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[2015]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="426" y="421" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[2014]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="468" y="421" width="20" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[2013]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="426" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[0.1429]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="106" y="426" width="104" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[0.2449]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="210" y="426" width="10" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[0.1749]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="426" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[0.1249]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="282" y="426" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[0.0893]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="380" y="426" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[0.0892]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="426" y="426" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[0.0893]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="468" y="426" width="20" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[0.0446]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="216" y="436" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[CONTACT INFO]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="282" y="436" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_F81}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="380" y="436" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G81}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="436" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H81}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="468" y="436" width="20" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_I81}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="488" y="436" width="20" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_J81}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="216" y="441" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[PRIMARY ACCT]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="282" y="441" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_F82}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="380" y="441" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G82}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="441" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H82}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="468" y="441" width="20" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_I82}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="488" y="441" width="20" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_J82}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="508" y="441" width="18" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_K82}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="526" y="441" width="18" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_L82}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="544" y="441" width="18" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_M82}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="216" y="446" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[SECONDARY ACCT]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="282" y="446" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_F83}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="380" y="446" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G83}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="446" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H83}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="468" y="446" width="20" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_I83}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="488" y="446" width="20" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_J83}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="508" y="446" width="18" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_K83}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="526" y="446" width="18" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_L83}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="544" y="446" width="18" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_M83}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="216" y="451" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[FINANCE COMMITTEE]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="282" y="451" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_F84}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="380" y="451" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G84}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="451" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H84}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="468" y="451" width="20" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_I84}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="488" y="451" width="20" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_J84}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="508" y="451" width="18" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_K84}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="526" y="451" width="18" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_L84}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="216" y="456" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[SECONDARY ACCT 2]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="282" y="456" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_F85}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="380" y="456" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G85}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="456" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H85}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="468" y="456" width="20" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_I85}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="488" y="456" width="20" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_J85}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="508" y="456" width="18" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_K85}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="526" y="456" width="18" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_L85}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="544" y="456" width="18" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_M85}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="216" y="461" width="66" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[SECONDARY ACCT 3]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="282" y="461" width="98" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_F86}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="380" y="461" width="46" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_G86}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="426" y="461" width="42" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_H86}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="468" y="461" width="20" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_I86}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="488" y="461" width="20" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_J86}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="508" y="461" width="18" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_K86}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="526" y="461" width="18" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_L86}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="544" y="461" width="18" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{Contents_M86}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="38" y="486" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Corporate]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="106" y="486" width="104" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[PayPal]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="491" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Non-US]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="106" y="491" width="104" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[SCARS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="496" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Illinois]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="501" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Maine]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="506" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Maryland]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="511" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Massachusetts]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="516" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Michigan]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="521" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Minnesota]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="526" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Mississippi]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="531" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[New Hampshire]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="536" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[New Jersey]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="541" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[New York]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="546" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Pennsic War]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="551" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Pennsylvania]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="556" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Rhode Island]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="561" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Tennessee]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="566" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[West Virginia]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="571" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Wisconsin]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="38" y="576" width="68" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <text><![CDATA[Gulf Wars]]></text>
+          </staticText>
+      </band>
+    </detail>
+</jasperReport>

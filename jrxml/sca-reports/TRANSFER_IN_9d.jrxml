@@ -1,0 +1,884 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+    name="TRANSFER_IN_9d" pageWidth="612" pageHeight="792" columnWidth="552" leftMargin="30" rightMargin="30" topMargin="24" bottomMargin="24" uuid="00000000-0000-0000-0000-766275403496">
+
+    <!-- Styles first (no parent attribute) -->
+    <style name="base" fontName="SansSerif" fontSize="10"/>
+    <style name="label" isBold="true"/>
+    <style name="value"/>
+
+    <!-- Parameters after styles -->
+    <parameter name="reportTitle" class="java.lang.String"/>
+    <parameter name="organizationName" class="java.lang.String"/>
+    <field name="TRANSFER_IN_9d_C2" class="java.lang.String"/>
+    <field name="TRANSFER_IN_9d_C3" class="java.lang.String"/>
+    <field name="TRANSFER_IN_9d_C4" class="java.lang.String"/>
+    <field name="TRANSFER_IN_9d_C6" class="java.lang.String"/>
+    <field name="TRANSFER_IN_9d_F55" class="java.lang.Double"/>
+
+    <title>
+      <band height="76">
+        <staticText>
+          <reportElement x="0" y="0" width="552" height="24"/>
+          <textElement textAlignment="Center"><font size="10"/></textElement>
+          <text><![CDATA[$P{reportTitle}]]></text>
+        </staticText>
+        <staticText>
+          <reportElement x="0" y="26" width="552" height="22"/>
+          <textElement textAlignment="Center"><font size="9"/></textElement>
+          <text><![CDATA[$P{organizationName}]]></text>
+        </staticText>
+        <staticText>
+          <reportElement x="0" y="50" width="552" height="22"/>
+          <textElement textAlignment="Center"><font size="8"/></textElement>
+          <text><![CDATA[TRANSFER_IN_9d]]></text>
+        </staticText>
+      </band>
+    </title>
+
+    <detail>
+      <band height="744">
+          <staticText>
+            <reportElement x="417" y="24" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[CONTENTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="469" y="24" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[CONTENTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="521" y="24" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[CONTENTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="24" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[CONTENTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="24" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[CONTENTS]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="57" y="34" width="128" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{TRANSFER_IN_9d_C2}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="417" y="34" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[1. CONTACT INFO]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="469" y="34" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[1. CONTACT INFO]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="521" y="34" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[1. CONTACT INFO]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="34" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[1. CONTACT INFO]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="34" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[1. CONTACT INFO]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="57" y="44" width="128" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{TRANSFER_IN_9d_C3}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="417" y="44" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[2.a PRIMARY ACCOUNT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="469" y="44" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[2.a PRIMARY ACCOUNT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="521" y="44" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[2.a PRIMARY ACCOUNT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="44" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[2.a PRIMARY ACCOUNT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="44" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[2.a PRIMARY ACCOUNT]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="57" y="54" width="128" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{TRANSFER_IN_9d_C4}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="417" y="54" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[2.b SECONDARY ACCOUNTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="469" y="54" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[2.b SECONDARY ACCOUNTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="521" y="54" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[2.b SECONDARY ACCOUNTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="54" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[2.b SECONDARY ACCOUNTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="54" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[2.b SECONDARY ACCOUNTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="64" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[3. BALANCE]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="469" y="64" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[3. BALANCE]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="521" y="64" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[3. BALANCE]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="64" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[3. BALANCE]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="64" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[3. BALANCE]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="57" y="74" width="128" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <textFieldExpression><![CDATA[$F{TRANSFER_IN_9d_C6}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="417" y="74" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[4. INCOME]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="469" y="74" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[4. INCOME]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="521" y="74" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[4. INCOME]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="74" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[4. INCOME]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="74" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[4. INCOME]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="84" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[5.a ASSET DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="469" y="84" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[5.a ASSET DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="521" y="84" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[5.a ASSET DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="84" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[5.a ASSET DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="84" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[5.a ASSET DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="57" y="94" width="128" height="12"/>
+            <textElement><font size="9"/></textElement>
+            <text><![CDATA[SCA FUNDS TRANSFERRED DETAIL - IN - OVERFLOW]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="94" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[5.b LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="469" y="94" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[5.b LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="521" y="94" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[5.b LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="94" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[5.b LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="94" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[5.b LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="57" y="106" width="128" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[Funds transferred from another SCA account within the Kingdom and in the same country:]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="106" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[6. INVENTORY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="469" y="106" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[6. INVENTORY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="521" y="106" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[9. TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="106" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[9. TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="106" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[6. INVENTORY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="57" y="116" width="128" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[WITHIN THE KINGDOM ]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="185" y="116" width="34" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[Check #]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="219" y="116" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[Check Date]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="238" y="116" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[Amount]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="116" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[7. REGALIA SALES DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="469" y="116" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[7. REGALIA SALES DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="521" y="116" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[10. TRANSFER OUT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="116" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[10. TRANSFER OUT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="116" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[7. REGALIA SALES DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="127" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[8. DEPRECIATION DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="469" y="127" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[8. DEPRECIATION DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="521" y="127" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[11.a INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="127" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[11.a INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="127" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[8. DEPRECIATION DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="137" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[9. TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="469" y="137" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[9. TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="521" y="137" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[11.b INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="137" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[11.b INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="137" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[9. TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="147" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[10. TRANSFER OUT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="469" y="147" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[10. TRANSFER OUT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="521" y="147" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[11.c INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="147" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[11.c INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="147" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[10. TRANSFER OUT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="157" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[11.a INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="469" y="157" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[11.a INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="521" y="157" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[12.a EXPENSE DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="157" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[12.a EXPENSE DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="157" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[11.a INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="167" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[11.b INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="469" y="167" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[11.b INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="521" y="167" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[12.b EXPENSE DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="167" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[12.b EXPENSE DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="167" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[11.b INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="177" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[11.c INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="469" y="177" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[11.c INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="521" y="177" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[13. FINANCE COMM]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="177" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[13. FINANCE COMM]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="177" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[11.c INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="187" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[12.a EXPENSE DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="469" y="187" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[12.a EXPENSE DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="521" y="187" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[COMMENTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="187" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[14. FUNDS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="187" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[12.a EXPENSE DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="197" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[12.b EXPENSE DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="469" y="197" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[12.b EXPENSE DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="521" y="197" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[FREE FORM]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="197" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[COMMENTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="197" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[12.b EXPENSE DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="207" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[13. FINANCE COMM]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="469" y="207" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[13. FINANCE COMM]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="207" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[5.c ASSET DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="207" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[13. FINANCE COMM]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="217" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[14. FUNDS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="469" y="217" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[14. FUNDS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="217" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[5.d LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="217" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[14. FUNDS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="227" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[15. NEWSLETTER]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="469" y="227" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[15. NEWSLETTER]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="227" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[5.e LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="227" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[15. NEWSLETTER]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="237" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[COMMENTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="469" y="237" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[COMMENTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="237" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[5.f LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="237" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[COMMENTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="247" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[2.c SECONDARY ACCOUNTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="469" y="247" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[9.b TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="247" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[5.g LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="247" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[2.c SECONDARY ACCOUNTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="257" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[2.d SECONDARY ACCOUNTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="469" y="257" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[10.b TRANSFER OUT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="257" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[5.h LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="257" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[2.d SECONDARY ACCOUNTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="267" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[5.c ASSET DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="469" y="267" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[FREE FORM]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="267" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[5.i LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="267" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[5.c ASSET DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="277" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[5.d LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="277" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[9.b TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="277" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[5.d LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="287" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[5.e LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="287" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[9.c TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="287" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[6.b INVENTORY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="297" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[5.f LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="297" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[9.d TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="297" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[7.b REGALIA SALES DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="307" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[5.g LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="307" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[10.b TRANSFER OUT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="307" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[8.b DEPR DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="317" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[5.h LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="540" y="317" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[FREE FORM]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="317" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[8.c DEPR DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="327" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[5.i LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="327" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[9.b TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="337" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[6.b INVENTORY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="337" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[9.c TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="347" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[7.b REGALIA SALES DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="347" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[9.d TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="357" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[8.b DEPR DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="357" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[10.b TRANSFER OUT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="367" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[8.c DEPR DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="367" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[10.c TRANSFER OUT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="377" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[9.b TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="377" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[10.d TRANSFER OUT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="387" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[9.c TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="387" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[12.c EXPENSE DETAIL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="397" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[9.d TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="397" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[FREE FORM]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="407" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[10.b TRANSFER OUT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="559" y="407" width="23" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[FreeForm!A1]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="417" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[10.c TRANSFER OUT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="427" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[10.d TRANSFER OUT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="437" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[12.c EXPENSE DETAIL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="417" y="447" width="52" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[FREE FORM]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="219" y="567" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[TOTAL]]></text>
+          </staticText>
+          <textField pattern="#,##0.###">
+            <reportElement x="238" y="567" width="19" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <textFieldExpression><![CDATA[$F{TRANSFER_IN_9d_F55}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="57" y="577" width="128" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <text><![CDATA[-9d-]]></text>
+          </staticText>
+      </band>
+    </detail>
+</jasperReport>
