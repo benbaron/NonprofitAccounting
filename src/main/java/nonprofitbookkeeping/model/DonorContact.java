@@ -1,15 +1,15 @@
 package nonprofitbookkeeping.model;
 
-import java.io.Serializable;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /** Simple contact information for a donor. */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class DonorContact implements Serializable {
     private static final long serialVersionUID = 1L;
 

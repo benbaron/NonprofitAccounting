@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import nonprofitbookkeeping.persistence.DocumentRepository;
 
 /**
  * Service class for managing fund accounting operations.
@@ -35,8 +36,12 @@ public class FundAccountingService
 	/** Logger for this service. */
 	private static final Logger LOGGER = Logger.getLogger(FundAccountingService.class.getName());
 	
-        /** Storage key used for persisting funds into the database. */
-        private static final String STORAGE_KEY = "funds";
+        /** Database document name used to persist funds. */
+        private static final String DOCUMENT_NAME = "funds";
+        private static final ObjectMapper MAPPER = new ObjectMapper()
+                .enable(SerializationFeature.INDENT_OUTPUT);
+        private static final CollectionType LIST_TYPE =
+                MAPPER.getTypeFactory().constructCollectionType(List.class, Fund.class);
 	
 	/**
 	 * Constructs a new {@code FundAccountingService}.
@@ -193,74 +198,72 @@ public class FundAccountingService
 	}
 	
         /**
-         * Persists the current funds into the shared H2 database.
+         * Saves all funds to the persistent document store.
          *
-         * @param companyDirectory legacy parameter retained for compatibility
-         * @throws IOException if serialization fails or the database cannot be updated
+         * @param companyDirectory retained for backwards compatibility but ignored by the method
+         * @throws IOException if writing to the database fails
          */
-	public void saveFunds(File companyDirectory) throws IOException
-	{
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.enable(SerializationFeature.INDENT_OUTPUT);
-		
-		try
-		{
-			String payload = mapper.writeValueAsString(listFunds());
-			new JsonStorageRepository().save(STORAGE_KEY, payload);
-		}
-		catch (SQLException e)
-		{
-			throw new IOException("Failed to save funds to H2 database", e);
-		}
-	}
-		
+        public void saveFunds(File companyDirectory) throws IOException
+        {
+
+                try
+                {
+                        String payload = MAPPER.writeValueAsString(listFunds());
+                        new DocumentRepository().upsert(DOCUMENT_NAME, payload);
+                        LOGGER.info("Funds saved to database document '" + DOCUMENT_NAME + "'.");
+                }
+                catch (SQLException e)
+                {
+                        throw new IOException("Failed to save funds to database", e);
+                }
+
+        }
+	
         /**
-         * Loads funds previously stored in the database.
-         * Existing in-memory funds are cleared before loading new ones. If no
-         * payload is present, the current state remains empty.
+         * Loads funds from the persistent document store.
+         * Existing in-memory funds are cleared before loading new ones.
          *
-         * @param companyDirectory legacy parameter retained for compatibility
-         * @throws IOException if fetching from the database fails
+         * @param companyDirectory retained for backwards compatibility but ignored by the method
+         * @throws IOException if reading from the database fails
          */
 	public void loadFunds(File companyDirectory) throws IOException
 	{
 		this.fundMap.clear();
 		
-		ObjectMapper mapper = new ObjectMapper();
-		CollectionType listType =
-		        mapper.getTypeFactory().constructCollectionType(List.class, Fund.class);
-		
-		try
-		{
-			new JsonStorageRepository().load(STORAGE_KEY)
-			        .filter(payload -> !payload.isBlank())
-			        .ifPresent(payload -> {
-			                try
-			                {
-			                        List<Fund> loaded = mapper.readValue(payload, listType);
-				
-			                        for (Fund f : loaded)
-			                        {
-				
-			                                if (f.getName() != null)
-			                                {
-			                                        this.fundMap.put(f.getName(), f);
-			                                }
-			                        }
-			                }
-			                catch (IOException ex)
-			                {
-			                        LOGGER.log(Level.SEVERE,
-			                                "Failed to parse funds payload from H2 database.", ex);
-			                }
-			        });
-		}
-		catch (SQLException e)
-		{
-			throw new IOException("Failed to load funds from H2 database", e);
-		}
-	}
-		
+                try
+                {
+                        new DocumentRepository().find(DOCUMENT_NAME)
+                                .ifPresent(payload -> {
+                                        try
+                                        {
+                                                List<Fund> loaded = MAPPER.readValue(payload, LIST_TYPE);
+
+                                                for (Fund f : loaded)
+                                                {
+
+                                                        if (f.getName() != null)
+                                                        {
+                                                                this.fundMap.put(f.getName(), f);
+                                                        }
+
+                                                }
+
+                                                LOGGER.info("Funds loaded from database document '" + DOCUMENT_NAME + "'.");
+                                        }
+                                        catch (IOException ex)
+                                        {
+                                                LOGGER.log(Level.SEVERE,
+                                                        "Failed to deserialize funds JSON from database", ex);
+                                        }
+                                });
+                }
+                catch (SQLException e)
+                {
+                        throw new IOException("Failed to load funds from database", e);
+                }
+
+        }
+	
 	/**
 	 * Retrieves a list of all accounts currently managed by this service.
 	 *

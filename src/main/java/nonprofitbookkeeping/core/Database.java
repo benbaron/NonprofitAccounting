@@ -120,9 +120,9 @@ public final class Database {
             """);
 
             st.execute("""
-                CREATE TABLE IF NOT EXISTS json_storage(
-                  storage_key VARCHAR(128) PRIMARY KEY,
-                  payload CLOB
+                CREATE TABLE IF NOT EXISTS document(
+                  name VARCHAR(128) PRIMARY KEY,
+                  content CLOB
                 )
             """);
         }

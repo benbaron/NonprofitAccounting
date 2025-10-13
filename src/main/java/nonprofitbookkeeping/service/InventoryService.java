@@ -5,9 +5,10 @@ import nonprofitbookkeeping.model.InventoryItem; // Correct import
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
-import nonprofitbookkeeping.persistence.JsonStorageRepository;
+import nonprofitbookkeeping.persistence.DocumentRepository;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.SQLException;
@@ -33,8 +34,12 @@ public class InventoryService
 	/** Logger instance for this service. */
 	private static final Logger LOGGER = Logger.getLogger(InventoryService.class.getName());
 	
-        /** Storage key for inventory payload inside the database. */
-        private static final String STORAGE_KEY = "inventory";
+        /** Database document name for storing inventory data. */
+        private static final String DOCUMENT_NAME = "inventory";
+        private static final ObjectMapper MAPPER = new ObjectMapper()
+                .enable(SerializationFeature.INDENT_OUTPUT);
+        private static final CollectionType LIST_TYPE =
+                MAPPER.getTypeFactory().constructCollectionType(List.class, InventoryItem.class);
 	
 	/** In-memory map to store {@link InventoryItem} objects, keyed by their unique ID. */
 	private final Map<String, InventoryItem> items;
@@ -179,53 +184,44 @@ public class InventoryService
 	}
 	
         /**
-         * Persists the current inventory items into the shared H2 database.
+         * Saves all inventory items to the database.
          *
-         * @param companyDirectory legacy parameter retained for compatibility
-         * @throws IOException if serialization fails or the database cannot be updated
+         * @param companyDirectory unused but preserved for backwards compatibility
+         * @throws IOException if the database write fails
          */
         public void saveItems(File companyDirectory) throws IOException
         {
 
-                ObjectMapper mapper = new ObjectMapper();
-                mapper.enable(SerializationFeature.INDENT_OUTPUT);
-
                 try
                 {
-                        String payload = mapper.writeValueAsString(listItems());
-                        new JsonStorageRepository().save(STORAGE_KEY, payload);
+                        String payload = MAPPER.writeValueAsString(listItems());
+                        new DocumentRepository().upsert(DOCUMENT_NAME, payload);
+                        LOGGER.info("Inventory saved to database document '" + DOCUMENT_NAME + "'.");
                 }
                 catch (SQLException e)
                 {
-                        throw new IOException("Failed to save inventory to H2 database", e);
+                        throw new IOException("Failed to save inventory to database", e);
                 }
 
         }
-	
+
         /**
-         * Loads inventory items previously stored in the database.
-         * Existing in-memory items are cleared before loading new ones.
-         * If no payload is present, the inventory remains empty.
+         * Loads inventory items from the database.
          *
-         * @param companyDirectory legacy parameter retained for compatibility
-         * @throws IOException if fetching from the database fails
+         * @param companyDirectory unused but preserved for backwards compatibility
+         * @throws IOException if the database read fails
          */
-	public void loadItems(File companyDirectory) throws IOException
-	{
-		this.items.clear();
-		
-                ObjectMapper mapper = new ObjectMapper();
-                CollectionType listType =
-                        mapper.getTypeFactory().constructCollectionType(List.class, InventoryItem.class);
+        public void loadItems(File companyDirectory) throws IOException
+        {
+                this.items.clear();
 
                 try
                 {
-                        new JsonStorageRepository().load(STORAGE_KEY)
-                                .filter(payload -> !payload.isBlank())
+                        new DocumentRepository().find(DOCUMENT_NAME)
                                 .ifPresent(payload -> {
                                         try
                                         {
-                                                List<InventoryItem> loaded = mapper.readValue(payload, listType);
+                                                List<InventoryItem> loaded = MAPPER.readValue(payload, LIST_TYPE);
 
                                                 for (InventoryItem item : loaded)
                                                 {
@@ -236,18 +232,20 @@ public class InventoryService
                                                         }
 
                                                 }
+
+                                                LOGGER.info("Inventory loaded from database document '" + DOCUMENT_NAME
+                                                        + "'.");
                                         }
                                         catch (IOException ex)
                                         {
                                                 LOGGER.log(Level.SEVERE,
-                                                        "Failed to parse inventory payload from H2 database.", ex);
+                                                        "Failed to deserialize inventory JSON from database", ex);
                                         }
                                 });
-
                 }
                 catch (SQLException e)
                 {
-                        throw new IOException("Failed to load inventory from H2 database", e);
+                        throw new IOException("Failed to load inventory from database", e);
                 }
 
         }

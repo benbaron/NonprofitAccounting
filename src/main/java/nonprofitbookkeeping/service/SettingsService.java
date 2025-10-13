@@ -4,7 +4,7 @@ package nonprofitbookkeeping.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import nonprofitbookkeeping.model.SettingsModel;
-import nonprofitbookkeeping.persistence.JsonStorageRepository;
+import nonprofitbookkeeping.persistence.DocumentRepository;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,8 +18,10 @@ import java.util.logging.Logger;
 public class SettingsService
 {
 	private static final Logger LOGGER = Logger.getLogger(SettingsService.class.getName());
-        /** Storage key used inside the database. */
-        private static final String STORAGE_KEY = "settings";
+        /** Database document name where settings are persisted. */
+        private static final String DOCUMENT_NAME = "settings";
+        private static final ObjectMapper MAPPER = new ObjectMapper()
+                .enable(SerializationFeature.INDENT_OUTPUT);
 	
 	/** Settings cached in memory. */
 	private SettingsModel settings = new SettingsModel();
@@ -31,64 +33,58 @@ public class SettingsService
 	}
 	
         /**
-         * Loads settings from the shared H2 database. The company directory parameter is
-         * retained for compatibility with the legacy file-based implementation.
+         * Loads settings from the persistent document store.
          *
-         * @param companyDir unused legacy parameter
-         * @throws IOException if the database cannot be queried
+         * @param companyDir retained for backwards compatibility but ignored by the method
+         * @throws IOException if reading from the database fails
          */
-        public void loadSettings(File companyDir) throws IOException
-        {
-
-                ObjectMapper mapper = new ObjectMapper();
-
+	public void loadSettings(File companyDir) throws IOException
+	{
+		
                 try
                 {
-                        this.settings = new JsonStorageRepository().load(STORAGE_KEY)
-                                .filter(payload -> !payload.isBlank())
-                                .map(payload -> {
+                        new DocumentRepository().find(DOCUMENT_NAME)
+                                .ifPresent(payload -> {
                                         try
                                         {
-                                                return mapper.readValue(payload, SettingsModel.class);
+                                                this.settings = MAPPER.readValue(payload, SettingsModel.class);
+                                                LOGGER.info("Settings loaded from database document '" + DOCUMENT_NAME
+                                                        + "'.");
                                         }
                                         catch (IOException ex)
                                         {
                                                 LOGGER.log(Level.SEVERE,
-                                                        "Failed to parse settings payload from H2 database.", ex);
-                                                return new SettingsModel();
+                                                        "Failed to deserialize settings JSON from database", ex);
                                         }
-                                })
-                                .orElseGet(SettingsModel::new);
+                                });
                 }
                 catch (SQLException e)
                 {
-                        throw new IOException("Failed to load settings from H2 database", e);
+                        throw new IOException("Failed to load settings from database", e);
                 }
 
         }
 	
         /**
-         * Saves the current settings to the shared H2 database.
+         * Saves current settings to the persistent document store.
          *
-         * @param companyDir unused legacy parameter
-         * @throws IOException if the database cannot be updated
+         * @param companyDir retained for backwards compatibility but ignored by the method
+         * @throws IOException if the database write fails
          */
-        public void saveSettings(File companyDir) throws IOException
-        {
-
-                ObjectMapper mapper = new ObjectMapper();
-                mapper.enable(SerializationFeature.INDENT_OUTPUT);
-
+	public void saveSettings(File companyDir) throws IOException
+	{
+		
                 try
                 {
-                        String payload = mapper.writeValueAsString(this.settings);
-                        new JsonStorageRepository().save(STORAGE_KEY, payload);
+                        String payload = MAPPER.writeValueAsString(this.settings);
+                        new DocumentRepository().upsert(DOCUMENT_NAME, payload);
+                        LOGGER.info("Settings saved to database document '" + DOCUMENT_NAME + "'.");
                 }
                 catch (SQLException e)
                 {
-                        throw new IOException("Failed to save settings to H2 database", e);
+                        throw new IOException("Failed to save settings to database", e);
                 }
 
         }
-	
+
 }

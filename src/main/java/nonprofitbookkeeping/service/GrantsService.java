@@ -11,15 +11,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.sql.SQLException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
 
 import nonprofitbookkeeping.model.Grant;
-import nonprofitbookkeeping.persistence.JsonStorageRepository;
-
-import java.sql.SQLException;
+import nonprofitbookkeeping.persistence.DocumentRepository;
 
 /**
  * Service class for managing {@link Grant} objects.
@@ -34,8 +33,11 @@ public class GrantsService
 	
         /** Filename used to persist grants inside the company zip. */
         private static final String GRANTS_FILENAME = "grants.json";
-        /** Storage key for grants payload in the database. */
-        private static final String STORAGE_KEY = "grants";
+        private static final String DOCUMENT_NAME = "grants";
+        private static final ObjectMapper MAPPER = new ObjectMapper()
+                .enable(SerializationFeature.INDENT_OUTPUT);
+        private static final CollectionType LIST_TYPE =
+                MAPPER.getTypeFactory().constructCollectionType(List.class, Grant.class);
 	
 	/** In-memory list to store {@link Grant} objects. */
 	private List<Grant> grants;
@@ -134,63 +136,59 @@ public class GrantsService
 	}
 	
         /**
-         * Persists all grants into the shared H2 database.
+         * Saves all grants to the persistent document store.
          *
-         * @param companyDirectory legacy parameter retained for compatibility
-         * @throws IOException if serialization fails or the database cannot be updated
+         * @param companyDirectory retained for backwards compatibility but ignored by the method
+         * @throws IOException if writing to the database fails
          */
-        public void saveGrants(File companyDirectory) throws IOException
-        {
-
-                ObjectMapper mapper = new ObjectMapper();
-                mapper.enable(SerializationFeature.INDENT_OUTPUT);
-
+	public void saveGrants(File companyDirectory) throws IOException
+	{
+		
                 try
                 {
-                        String payload = mapper.writeValueAsString(getAllGrants());
-                        new JsonStorageRepository().save(STORAGE_KEY, payload);
+                        String payload = MAPPER.writeValueAsString(getAllGrants());
+                        new DocumentRepository().upsert(DOCUMENT_NAME, payload);
+                        LOGGER.info("Grants saved to database document '" + DOCUMENT_NAME + "'.");
                 }
-                catch (SQLException sqlEx)
+                catch (SQLException e)
                 {
-                        throw new IOException("Failed to save grants to H2 database", sqlEx);
+                        throw new IOException("Failed to save grants to database", e);
                 }
 
         }
 	
         /**
-         * Loads grants previously stored in the database.
-         * Existing in-memory grants are cleared before loading new ones. If no
-         * payload is present, the current state remains empty.
+         * Loads grants from the persistent document store.
+         * Existing in-memory grants are cleared before loading new ones.
          *
-         * @param companyDirectory legacy parameter retained for compatibility
-         * @throws IOException if fetching from the database fails
+         * @param companyDirectory retained for backwards compatibility but ignored by the method
+         * @throws IOException if reading from the database fails
          */
 	public void loadGrants(File companyDirectory) throws IOException
 	{
-                this.grants.clear();
-
-                ObjectMapper mapper = new ObjectMapper();
-                CollectionType listType =
-                        mapper.getTypeFactory().constructCollectionType(List.class, Grant.class);
-
+		this.grants.clear();
+		
                 try
                 {
-                        Optional<String> payloadOpt = new JsonStorageRepository().load(STORAGE_KEY);
-                        if (payloadOpt.isEmpty() || payloadOpt.get().isBlank())
-                        {
-                                return;
-                        }
-
-                        List<Grant> loaded = mapper.readValue(payloadOpt.get(), listType);
-                        this.grants.addAll(loaded);
+                        new DocumentRepository().find(DOCUMENT_NAME)
+                                .ifPresent(payload -> {
+                                        try
+                                        {
+                                                List<Grant> loaded = MAPPER.readValue(payload, LIST_TYPE);
+                                                this.grants.addAll(loaded);
+                                                LOGGER.info("Grants loaded from database document '" + DOCUMENT_NAME
+                                                        + "'.");
+                                        }
+                                        catch (IOException ex)
+                                        {
+                                                LOGGER.log(Level.SEVERE,
+                                                        "Failed to deserialize grants JSON from database", ex);
+                                        }
+                                });
                 }
-                catch (SQLException sqlEx)
+                catch (SQLException e)
                 {
-                        throw new IOException("Failed to load grants from H2 database", sqlEx);
-                }
-                catch (IOException ex)
-                {
-                        LOGGER.log(Level.SEVERE, "Failed to parse grants payload from H2 database", ex);
+                        throw new IOException("Failed to load grants from database", e);
                 }
 
         }
