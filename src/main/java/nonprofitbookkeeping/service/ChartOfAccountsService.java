@@ -66,10 +66,15 @@ public class ChartOfAccountsService
 	 *
 	 * @param det The {@link Account} to add as a root account.
 	 */
-	public void addRoot(Account det)
-	{
-		this.coa.addAccount(det);
-	}
+	public void addRoot(nonprofitbookkeeping.model.Account det)
+{
+    this.coa.addAccount(det);
+    try {
+        new nonprofitbookkeeping.persistence.AccountRepository().upsert(det);
+    } catch (Exception e) {
+        throw new RuntimeException("Failed to persist account", e);
+    }
+}
 	
 	/**
 	 * Adds a child account under a specified parent account in the chart of accounts.
@@ -78,10 +83,15 @@ public class ChartOfAccountsService
 	 * @param p The parent {@link Account}.
 	 * @param det The child {@link Account} to add.
 	 */
-	public void addChild(Account p, Account det)
-	{
-		this.coa.addSubAccount(p, det);
-	}
+	public void addChild(nonprofitbookkeeping.model.Account p, nonprofitbookkeeping.model.Account det)
+{
+    this.coa.addSubAccount(p, det);
+    try {
+        new nonprofitbookkeeping.persistence.AccountRepository().upsert(det);
+    } catch (Exception e) {
+        throw new RuntimeException("Failed to persist account", e);
+    }
+}
 	
 	/**
 	 * Deletes the specified account and all its descendants from the chart of accounts.
@@ -89,10 +99,15 @@ public class ChartOfAccountsService
 	 * 
 	 * @param target The {@link Account} to delete. If null, the underlying method may handle it or throw an error.
 	 */
-	public void delete(Account target)
-	{
-		this.coa.removeAccount(target);
-	}
+	public void delete(nonprofitbookkeeping.model.Account det)
+{
+    this.coa.removeAccount(det);
+    try {
+        new nonprofitbookkeeping.persistence.AccountRepository().delete(det.getAccountNumber());
+    } catch (Exception e) {
+        throw new RuntimeException("Failed to delete account in DB", e);
+    }
+}
 	
 	/**
 	 * Updates the properties of a target {@link Account} object.
@@ -118,7 +133,13 @@ public class ChartOfAccountsService
 		tgt.setName(name);
 		tgt.setAccountType(accountType);
 		tgt.setOpeningBalance(openingBal);
-	}
+	
+    try {
+        new nonprofitbookkeeping.persistence.AccountRepository().upsert(tgt);
+    } catch (Exception e) {
+        throw new RuntimeException("Failed to persist updated account", e);
+    }
+}
 	
 	/* ------------------------------------------------------------------ */
 	/**

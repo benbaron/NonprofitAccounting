@@ -1,29 +1,89 @@
-
 package nonprofitbookkeeping.service;
 
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 
 import nonprofitbookkeeping.model.budget.Budget;
+import nonprofitbookkeeping.persistence.DocumentRepository;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import nonprofitbookkeeping.model.budget.Budget;
+import nonprofitbookkeeping.persistence.JsonStorageRepository;
+
+/** Service class for managing budgets using the shared H2 database. */
+public class BudgetService {
+    private static final Logger LOGGER = Logger.getLogger(BudgetService.class.getName());
+    private static final String STORAGE_KEY = "budgets";
+
+    private final ObjectMapper objectMapper;
+
+    public BudgetService() {
+        this.objectMapper = new ObjectMapper();
+        this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+    }
+
+    /**
+     * Persists the provided list of budgets into the json_storage table.
+     *
+     * @param budgets budgets to store; when {@code null} the existing payload is removed
+     * @param companyDirectory unused legacy parameter retained for compatibility
+     * @throws IOException when serialization fails or the database cannot be updated
+     */
+    public static void saveBudgets(List<Budget> budgets, File companyDirectory) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        JsonStorageRepository repository = new JsonStorageRepository();
+
+        if (budgets == null) {
+            LOGGER.warning("Budget list provided is null. Clearing stored budgets.");
+            try {
+                repository.delete(STORAGE_KEY);
+            } catch (SQLException sqlException) {
+                throw new IOException("Failed to clear budgets from H2 database", sqlException);
+            }
+            return;
+        }
+
+        try {
+            String payload = mapper.writeValueAsString(budgets);
+            repository.save(STORAGE_KEY, payload);
+        } catch (SQLException sqlException) {
+            throw new IOException("Failed to save budgets to H2 database", sqlException);
+        }
+    }
+
+    /**
+     * Loads the previously persisted budgets from the database.
+     *
+     * @param companyDirectory unused legacy parameter retained for compatibility
+     * @return the stored budgets or an empty list when none are available
+     * @throws IOException when the payload cannot be fetched from the database
+     */
+    public List<Budget> loadBudgets(File companyDirectory) throws IOException {
+        CollectionType listType =
+                this.objectMapper.getTypeFactory().constructCollectionType(List.class, Budget.class);
+
+        try {
+            JsonStorageRepository repository = new JsonStorageRepository();
+            String payload = repository.load(STORAGE_KEY).orElse(null);
+
+            if (payload == null || payload.isBlank()) {
+                return new ArrayList<>();
+            }
 
 /**
  * Service class for managing {@link Budget} data.
- * This class provides functionalities to save a list of budgets to a JSON file
- * and load them back. It uses Jackson for JSON serialization and deserialization.
- * Budgets are stored in a file named "budgets.json" within a specified company directory.
+ * Budget collections are persisted as JSON payloads inside the H2 database rather than in
+ * ad-hoc {@code budgets.json} files on disk.
  */
 public class BudgetService
 {
@@ -31,24 +91,20 @@ public class BudgetService
 	/** Logger for this class. */
 	private static final Logger LOGGER = Logger.getLogger(BudgetService.class.getName());
 	/** The standard filename used for storing budget data in JSON format. */
-	private static final String BUDGETS_FILENAME = "budgets.json";
+        private static final String DOCUMENT_NAME = "budgets";
+        private static final ObjectMapper MAPPER = new ObjectMapper()
+                .enable(SerializationFeature.INDENT_OUTPUT)
+                .setDefaultPrettyPrinter(new DefaultPrettyPrinter());
+        private static final CollectionType LIST_TYPE =
+                MAPPER.getTypeFactory().constructCollectionType(List.class, Budget.class);
 	
-        private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
-                        .enable(SerializationFeature.INDENT_OUTPUT);
-
         /**
-         * Saves a list of {@link Budget} objects to a JSON file named "budgets.json"
-         * within the specified company directory.
-         * If the provided list of budgets is null, no file will be written.
-         * If the list is empty, an empty JSON array will be saved.
-         * The JSON output is pretty-printed for readability.
+         * Saves a list of {@link Budget} objects to the persistent document store.
+         * If the provided list of budgets is null, nothing is persisted.
          *
          * @param budgets The list of {@link Budget} objects to save. Can be null or empty.
-         * @param companyDirectory The {@link File} object representing the directory where the
-         *                         company's data (including the budgets file) should be stored.
-         *                         Must not be null and must be a valid directory.
-         * @throws IOException If the {@code companyDirectory} is invalid, or if an error occurs
-         *                     during file writing or JSON serialization.
+         * @param companyDirectory retained for backwards compatibility but ignored by the method.
+         * @throws IOException if the underlying database write fails.
          */
         public static void saveBudgets(List<Budget> budgets, File companyDirectory) throws IOException
         {
@@ -59,158 +115,54 @@ public class BudgetService
                         return;
                 }
 
-                if (companyDirectory == null)
-                {
-                        throw new IOException("Company directory is invalid or not provided.");
-                }
-
-                Path companyPath = companyDirectory.toPath();
                 try
                 {
-                        Files.createDirectories(companyPath);
+                        String payload = MAPPER.writeValueAsString(budgets);
+                        new DocumentRepository().upsert(DOCUMENT_NAME, payload);
+                        LOGGER.info("Budgets saved successfully to database document '" + DOCUMENT_NAME + "'.");
                 }
-                catch (IOException e)
+                catch (SQLException e)
                 {
-                        LOGGER.log(Level.SEVERE,
-                                "Unable to create company directory at: " + companyPath.toAbsolutePath(), e);
-                        throw new IOException("Company directory is invalid or not provided.", e);
+                        throw new IOException("Failed to save budgets to database", e);
                 }
 
-                if (!Files.isDirectory(companyPath))
-                {
-                        throw new IOException("Company directory is invalid or not provided.");
-                }
-
-                Path budgetsPath = companyPath.resolve(BUDGETS_FILENAME);
-                ObjectWriter writer = OBJECT_MAPPER.writer(new DefaultPrettyPrinter());
-
-                try
-                {
-                        Path tempFile = Files.createTempFile(companyPath, BUDGETS_FILENAME, ".tmp");
-                        try
-                        {
-                                writer.writeValue(tempFile.toFile(), budgets);
-                                moveAtomically(tempFile, budgetsPath);
-                                LOGGER.info("Budgets saved successfully to: " + budgetsPath.toAbsolutePath());
-                        }
-                        finally
-                        {
-                                try
-                                {
-                                        Files.deleteIfExists(tempFile);
-                                }
-                                catch (IOException cleanupException)
-                                {
-                                        LOGGER.log(Level.WARNING,
-                                                "Unable to delete temporary budgets file at: "
-                                                        + tempFile.toAbsolutePath(), cleanupException);
-                                }
-                        }
-                }
-                catch (IOException e)
-                {
-                        LOGGER.log(Level.SEVERE, "Failed to save budgets to " + budgetsPath.toAbsolutePath(), e);
-                        throw e; // Re-throw to allow caller to handle
-                }
-
-        }
-
-        private static void moveAtomically(Path source, Path target) throws IOException
-        {
-                try
-                {
-                        Files.move(source, target, StandardCopyOption.REPLACE_EXISTING,
-                                StandardCopyOption.ATOMIC_MOVE);
-                }
-                catch (IOException e)
-                {
-                        if (!(e instanceof java.nio.file.AtomicMoveNotSupportedException))
-                        {
-                                throw e;
-                        }
-                        Files.move(source, target, StandardCopyOption.REPLACE_EXISTING);
-                }
         }
 	
-	/**
-	 * Loads a list of {@link Budget} objects from a JSON file named "budgets.json"
-	 * located within the specified company directory.
-	 * <p>
-	 * If the {@code companyDirectory} is invalid, or if the "budgets.json" file does not exist,
-	 * is not a file, or is empty, an empty list is returned and appropriate messages are logged.
-	 * If an error occurs during JSON deserialization, an error is logged, and an empty list is returned.
-	 * </p>
-	 *
-	 * @param companyDirectory The {@link File} object representing the directory where the
-	 *                         company's "budgets.json" file is located. Must not be null and
-	 *                         must be a valid directory.
-	 * @return A {@code List<Budget>} objects. Returns an empty list if the file doesn't exist,
-	 *         is empty, or if there's an error during deserialization (after logging the error).
-	 * @throws IOException If a critical I/O error occurs that prevents determining the file status
-	 *                     (other than file not found or parse error, which result in an empty list).
-	 *                     Note: The current implementation catches most IOExceptions from Jackson and returns
-	 *                     an empty list, so this specific throws declaration might only cover edge cases
-	 *                     related to {@code companyDirectory} validation if it were to throw IOException directly.
-	 */
-	public List<Budget> loadBudgets(File companyDirectory) throws IOException
-	{
-		
-                if (companyDirectory == null)
-                {
-                        LOGGER.warning("Company directory is invalid or not provided for loading budgets.");
-                        return new ArrayList<>();
-                }
-
-                Path companyPath = companyDirectory.toPath();
-
-                if (!Files.isDirectory(companyPath))
-                {
-                        LOGGER.warning("Company directory is invalid or not provided for loading budgets.");
-                        return new ArrayList<>();
-                }
-
-                Path budgetsPath = companyPath.resolve(BUDGETS_FILENAME);
-
-                if (!Files.exists(budgetsPath) || !Files.isRegularFile(budgetsPath))
-                {
-                        LOGGER.info("Budgets file not found at: " + budgetsPath.toAbsolutePath() +
-                                ". Returning empty list.");
-                        return new ArrayList<>();
-                }
-
-                long size;
-                try
-                {
-                        size = Files.size(budgetsPath);
-                }
-                catch (IOException e)
-                {
-                        LOGGER.log(Level.WARNING,
-                                "Unable to determine size of budgets file at: " + budgetsPath.toAbsolutePath()
-                                        + ". Returning empty list.", e);
-                        return new ArrayList<>();
-                }
-
-                if (size == 0)
-                {
-                        LOGGER.info("Budgets file is empty at: " + budgetsPath.toAbsolutePath() +
-                                ". Returning empty list.");
-                        return new ArrayList<>();
-                }
+        /**
+         * Loads a list of {@link Budget} objects from the persistent document store.
+         *
+         * @param companyDirectory retained for backwards compatibility but ignored by the method.
+         * @return a list of budgets stored in the database; an empty list is returned when no data exists
+         *         or if deserialization fails.
+         * @throws IOException if the underlying database access fails.
+         */
+        public List<Budget> loadBudgets(File companyDirectory) throws IOException
+        {
 
                 try
                 {
-                        CollectionType listType = OBJECT_MAPPER.getTypeFactory()
-                                .constructCollectionType(List.class, Budget.class);
-                        List<Budget> loadedBudgets = OBJECT_MAPPER.readValue(budgetsPath.toFile(), listType);
-                        LOGGER.info("Budgets loaded successfully from: " + budgetsPath.toAbsolutePath());
-                        return loadedBudgets != null ? loadedBudgets : new ArrayList<>();
+                        return new DocumentRepository().find(DOCUMENT_NAME)
+                                .map(payload -> {
+                                        try
+                                        {
+                                                List<Budget> loaded = MAPPER.readValue(payload, LIST_TYPE);
+                                                LOGGER.info("Budgets loaded successfully from database document '"
+                                                        + DOCUMENT_NAME + "'.");
+                                                return loaded;
+                                        }
+                                        catch (IOException ex)
+                                        {
+                                                LOGGER.log(Level.SEVERE,
+                                                        "Failed to deserialize budgets JSON from database. Returning empty list.",
+                                                        ex);
+                                                return new ArrayList<Budget>();
+                                        }
+                                })
+                                .orElseGet(ArrayList::new);
                 }
-                catch (IOException e)
+                catch (SQLException e)
                 {
-                        LOGGER.log(Level.SEVERE, "Failed to load or parse budgets from " +
-                                budgetsPath.toAbsolutePath() + ". Returning empty list.", e);
-                        return new ArrayList<>();
+                        throw new IOException("Failed to load budgets from database", e);
                 }
 
         }

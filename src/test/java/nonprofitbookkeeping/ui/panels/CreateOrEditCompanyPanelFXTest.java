@@ -223,12 +223,14 @@ public class CreateOrEditCompanyPanelFXTest extends JavaFXTestBase
 		WaitForAsyncUtils.waitForFxEvents();
 		
 		// Verify callback
-		ArgumentCaptor<CompanyProfileModel> captor =
-			ArgumentCaptor.forClass(CompanyProfileModel.class);
-		verify(this.mockCallback, times(1)).onCreatedProfileModel(captor.capture());
-		
-		CompanyProfileModel savedModel = captor.getValue();
-		assertEquals(COMPANY_NAME, savedModel.getCompanyName());
+                ArgumentCaptor<CompanyProfileModel> profileCaptor =
+                        ArgumentCaptor.forClass(CompanyProfileModel.class);
+                ArgumentCaptor<Boolean> seedCaptor = ArgumentCaptor.forClass(Boolean.class);
+                verify(this.mockCallback, times(1)).onCreatedProfileModel(profileCaptor.capture(),
+                        seedCaptor.capture());
+
+                CompanyProfileModel savedModel = profileCaptor.getValue();
+                assertEquals(COMPANY_NAME, savedModel.getCompanyName());
 		assertEquals(LEGAL_STRUCTURE, savedModel.getLegalStructure());
 		assertEquals(TAX_ID, savedModel.getTaxId());
 		assertEquals(ADDRESS, savedModel.getAddress());
@@ -247,7 +249,8 @@ public class CreateOrEditCompanyPanelFXTest extends JavaFXTestBase
 		// Checkboxes: depends on initial state and if we clicked them
 		// Assuming they were initially false and we clicked them to true
 		assertTrue(savedModel.isEnableFundAccounting());
-		assertTrue(savedModel.isEnableInventory());
+                assertTrue(savedModel.isEnableInventory());
+                assertTrue(seedCaptor.getValue(), "Demo data seeding should default to enabled");
 		// Assuming multiCurBox was not clicked and defaults to false or its initial
 		// state
 		// boolean expectedMultiCurrency = ((CheckBox) lookup(".check-box").match(cb ->
