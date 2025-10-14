@@ -185,11 +185,11 @@ class BudgetServiceTest
 			BudgetService.saveBudgets(budgets, null);
 		});
 		assertEquals("Company directory is invalid or not provided.", exception.getMessage());
-	}
-	
-	@Test
-		void testSaveBudgets_InvalidCompanyDirectory() throws IOException
-	{
+        }
+
+        @Test
+                void testSaveBudgets_InvalidCompanyDirectory() throws IOException
+        {
 		List<Budget> budgets = List.of(new Budget("Test Budget", 2024));
 		File testFileAsDirectory = new File(this.companyDirectory, "not_a_directory.txt");
 		assertTrue(testFileAsDirectory.createNewFile(), "Failed to create test file.");
@@ -197,16 +197,32 @@ class BudgetServiceTest
 		Exception exception = assertThrows(IOException.class, () -> {
 			BudgetService.saveBudgets(budgets, testFileAsDirectory);
 		});
-		assertEquals("Company directory is invalid or not provided.", exception.getMessage());
-		
-		testFileAsDirectory.delete(); // Clean up
-	}
-	
-	@Test
-		void testSaveBudgets_NullBudgetsList() throws IOException
-	{
-		// As per BudgetService implementation, this logs a warning and does not create
-		// the file.
+                assertEquals("Company directory is invalid or not provided.", exception.getMessage());
+
+                testFileAsDirectory.delete(); // Clean up
+        }
+
+        @Test
+                void testSaveBudgets_CreatesMissingDirectory() throws IOException
+        {
+                File nestedDirectory = new File(this.companyDirectory, "new_company/subdir");
+                assertFalse(nestedDirectory.exists());
+
+                List<Budget> budgets = List.of(new Budget("Nested Budget", 2025));
+                BudgetService.saveBudgets(budgets, nestedDirectory);
+
+                File budgetsFile = new File(nestedDirectory, "budgets.json");
+                assertTrue(budgetsFile.isFile(), "budgets.json should be created in the new directory.");
+
+                List<Budget> loadedBudgets = this.budgetService.loadBudgets(nestedDirectory);
+                assertEquals(1, loadedBudgets.size(), "Should load the saved budget from the new directory.");
+        }
+
+        @Test
+                void testSaveBudgets_NullBudgetsList() throws IOException
+        {
+                // As per BudgetService implementation, this logs a warning and does not create
+                // the file.
 		BudgetService.saveBudgets(null, this.companyDirectory);
 		File budgetsFile = new File(this.companyDirectory, "budgets.json");
 		assertFalse(budgetsFile.exists(), "budgets.json should not be created for null list.");
