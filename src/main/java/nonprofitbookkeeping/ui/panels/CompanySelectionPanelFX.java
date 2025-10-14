@@ -2,6 +2,9 @@ package nonprofitbookkeeping.ui.panels;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javafx.collections.FXCollections;
@@ -12,15 +15,19 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
+import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.persistence.CompanyRepository;
 import nonprofitbookkeeping.persistence.CompanyRepository.CompanyRecord;
 import nonprofitbookkeeping.service.PreferencesService;
+import nonprofitbookkeeping.service.DemoCompanySeeder;
 import nonprofitbookkeeping.ui.actions.CreateOrEditCompanyActionFX;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 
@@ -31,6 +38,8 @@ import nonprofitbookkeeping.ui.helpers.AlertBox;
  */
 public class CompanySelectionPanelFX extends BorderPane
 {
+        private static final DateTimeFormatter UPDATED_FORMATTER =
+                DateTimeFormatter.ofPattern("MMM d, yyyy h:mm a").withZone(ZoneId.systemDefault());
         /** Callback invoked when a company has been successfully opened. */
         @FunctionalInterface public interface OnCompanyOpenedHandler
         {
@@ -41,6 +50,7 @@ public class CompanySelectionPanelFX extends BorderPane
         private final ListView<CompanyRecord> companyList = new ListView<>();
         private final ObservableList<CompanyRecord> companyItems = FXCollections.observableArrayList();
         private final TextArea previewArea = new TextArea();
+        private final DemoCompanySeeder demoCompanySeeder = new DemoCompanySeeder();
 
         private OnCompanyOpenedHandler companyOpenedHandler;
         private Consumer<String> errorHandler = msg -> AlertBox.showError(null, msg);
@@ -88,7 +98,10 @@ public class CompanySelectionPanelFX extends BorderPane
                                 }
                                 else
                                 {
-                                        setText(record.name() + " (ID: " + record.id() + ")");
+                                        String updatedText = record.updatedAt() == null ? "Unknown"
+                                                : UPDATED_FORMATTER.format(record.updatedAt());
+                                        setText(String.format("%s (ID: %d) — Updated %s",
+                                                record.name(), record.id(), updatedText));
                                 }
                         }
                 });
@@ -104,10 +117,14 @@ public class CompanySelectionPanelFX extends BorderPane
 
                 Button openBtn = new Button("Open Selected");
                 Button createBtn = new Button("Create New Company…");
+                Button demoBtn = new Button("Create Demo Company");
+                Button deleteBtn = new Button("Delete Selected");
                 openBtn.setOnAction(e -> openSelected());
                 createBtn.setOnAction(e -> createNew());
+                demoBtn.setOnAction(e -> createDemoCompany());
+                deleteBtn.setOnAction(e -> deleteSelected());
 
-                HBox buttons = new HBox(10, openBtn, createBtn);
+                HBox buttons = new HBox(10, openBtn, createBtn, demoBtn, deleteBtn);
                 buttons.setPadding(new Insets(8));
                 HBox.setHgrow(openBtn, Priority.NEVER);
                 HBox.setHgrow(createBtn, Priority.NEVER);
@@ -117,6 +134,12 @@ public class CompanySelectionPanelFX extends BorderPane
         private void reloadCompanyList()
         {
                 this.companyItems.clear();
+
+                if (!Database.isInitialized())
+                {
+                        this.previewArea.setText("Initialize the H2 database to manage companies.");
+                        return;
+                }
 
                 try
                 {
@@ -129,11 +152,29 @@ public class CompanySelectionPanelFX extends BorderPane
 
                 if (!this.companyItems.isEmpty())
                 {
-                                this.companyList.getSelectionModel().selectFirst();
+                        this.companyList.getSelectionModel().selectFirst();
                 }
                 else
                 {
-                        this.previewArea.clear();
+                        this.previewArea.setText("No companies available.");
+                }
+        }
+
+        /** Public hook allowing the surrounding UI to refresh the listing. */
+        public void refreshCompanyList()
+        {
+                reloadCompanyList();
+        }
+
+        private void selectCompany(long companyId)
+        {
+                for (CompanyRecord record : this.companyItems)
+                {
+                        if (record != null && record.id() == companyId)
+                        {
+                                this.companyList.getSelectionModel().select(record);
+                                return;
+                        }
                 }
         }
 
@@ -185,6 +226,12 @@ public class CompanySelectionPanelFX extends BorderPane
 
         void openSelected()
         {
+                if (!Database.isInitialized())
+                {
+                        this.errorHandler.accept("Initialize the database before opening a company.");
+                        return;
+                }
+
                 CompanyRecord record = this.companyList.getSelectionModel().getSelectedItem();
 
                 if (record == null)
@@ -211,6 +258,12 @@ public class CompanySelectionPanelFX extends BorderPane
 
         private void createNew()
         {
+                if (!Database.isInitialized())
+                {
+                        this.errorHandler.accept("Initialize the database before creating a company.");
+                        return;
+                }
+
                 Stage owner = getScene() != null ? (Stage) getScene().getWindow() : null;
                 new CreateOrEditCompanyActionFX(owner);
                 reloadCompanyList();
@@ -218,6 +271,86 @@ public class CompanySelectionPanelFX extends BorderPane
                 if (this.companyOpenedHandler != null && CurrentCompany.getCompany() != null)
                 {
                         this.companyOpenedHandler.onCompanyOpened(CurrentCompany.getCompany());
+                }
+        }
+
+        private void createDemoCompany()
+        {
+                if (!Database.isInitialized())
+                {
+                        this.errorHandler.accept("Initialize the database before creating a demo company.");
+                        return;
+                }
+
+                Company demo = new Company();
+                this.demoCompanySeeder.seed(demo);
+
+                try
+                {
+                        long id = this.repository.save(null, demo);
+                        CurrentCompany.forceCompanyLoad(id, demo);
+                        PreferencesService.setLastUsedCompanyId(id);
+                        reloadCompanyList();
+                        selectCompany(id);
+
+                        if (this.companyOpenedHandler != null)
+                        {
+                                this.companyOpenedHandler.onCompanyOpened(demo);
+                        }
+                }
+                catch (IOException | SQLException ex)
+                {
+                        this.errorHandler.accept("Failed to create demo company: " + ex.getMessage());
+                }
+        }
+
+        private void deleteSelected()
+        {
+                if (!Database.isInitialized())
+                {
+                        this.errorHandler.accept("Initialize the database before deleting companies.");
+                        return;
+                }
+
+                CompanyRecord record = this.companyList.getSelectionModel().getSelectedItem();
+
+                if (record == null)
+                {
+                        this.errorHandler.accept("Select a company to delete.");
+                        return;
+                }
+
+                Stage owner = getScene() != null ? (Stage) getScene().getWindow() : null;
+                Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                        "Delete '" + record.name() + "'?", ButtonType.OK, ButtonType.CANCEL);
+
+                if (owner != null)
+                {
+                        confirm.initOwner(owner);
+                }
+
+                Optional<ButtonType> result = confirm.showAndWait();
+
+                if (result.isEmpty() || result.get() != ButtonType.OK)
+                {
+                        return;
+                }
+
+                try
+                {
+                        this.repository.delete(record.id());
+
+                        if (CurrentCompany.getCurrentCompanyId() != null
+                                && CurrentCompany.getCurrentCompanyId().equals(record.id()))
+                        {
+                                CurrentCompany.close();
+                        }
+
+                        reloadCompanyList();
+                }
+                catch (SQLException ex)
+                {
+                        this.errorHandler.accept("Failed to delete company: " + ex.getMessage());
                 }
         }
 

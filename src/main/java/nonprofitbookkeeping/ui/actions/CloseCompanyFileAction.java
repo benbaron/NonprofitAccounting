@@ -37,11 +37,11 @@ public class CloseCompanyFileAction
 	 */
 	public CloseCompanyFileAction(Stage primaryStage)
 	{
-		Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, 
-			"Save company before closing?",
-			ButtonType.YES, 
-			ButtonType.NO, 
-			ButtonType.CANCEL);
+                Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                        "Save company changes before closing?",
+                        ButtonType.YES,
+                        ButtonType.NO,
+                        ButtonType.CANCEL);
 		confirm.initOwner(primaryStage);
 		Optional<ButtonType> res = confirm.showAndWait();
 		

@@ -67,8 +67,11 @@ public class CreateOrEditCompanyPanelFX extends BorderPane
 	private final CheckBox fundBox = new CheckBox("Enable Fund Accounting");
 	/** CheckBox to enable or disable inventory tracking features. */
 	private final CheckBox inventoryBox = new CheckBox("Enable Inventory Tracking");
-	/** CheckBox to enable or disable multi-currency support. */
-	private final CheckBox multiCurBox = new CheckBox("Enable Multi-Currency");
+        /** CheckBox to enable or disable multi-currency support. */
+        private final CheckBox multiCurBox = new CheckBox("Enable Multi-Currency");
+        /** Allows the user to seed demo data when creating a new company. */
+        private final CheckBox demoDataBox = new CheckBox(
+                "Populate demo chart of accounts and sample transactions");
 	
 	/** Callback interface invoked when the company profile is created or successfully edited and saved. */
 	private final CompanyCreatedCallback callback;
@@ -86,12 +89,12 @@ public class CreateOrEditCompanyPanelFX extends BorderPane
 	 *           This callback receives the newly created or updated {@link CompanyProfileModel}. Must not be null.
 	 * @throws NullPointerException if {@code existing} or {@code cb} is null.
 	 */
-	public CreateOrEditCompanyPanelFX(Company existing, CompanyCreatedCallback cb)
-	{
-		checkNotNull(existing);
-		checkNotNull(cb);
-		
-		this.callback = cb; // save the callback
+        public CreateOrEditCompanyPanelFX(Company existing, CompanyCreatedCallback cb)
+        {
+                checkNotNull(existing);
+                checkNotNull(cb);
+
+                this.callback = cb; // save the callback
 		
 		setPadding(new Insets(10));
 		
@@ -173,8 +176,10 @@ public class CreateOrEditCompanyPanelFX extends BorderPane
 		g3.addRow(3, this.fundBox, new Label());
 		g3.addRow(4, this.inventoryBox, new Label());
 		g3.addRow(5, this.multiCurBox, new Label());
-		this.steps[2] = titled("Admin & Features", g3);
-	}
+                g3.addRow(6, this.demoDataBox, new Label());
+                this.demoDataBox.setSelected(true);
+                this.steps[2] = titled("Admin & Features", g3);
+        }
 	
 	/**
 	 * Builds a {@link GridPane} with a predefined two-column layout (30%/70% width)
@@ -238,9 +243,9 @@ public class CreateOrEditCompanyPanelFX extends BorderPane
 			updateStep();
 		});
 		
-		this.finish.setOnAction(e -> saveAndExit());
-		return box;
-	}
+                this.finish.setOnAction(e -> saveAndExit());
+                return box;
+        }
 	
 	/**
 	 * Updates the wizard's UI to reflect the current step.
@@ -284,15 +289,27 @@ public class CreateOrEditCompanyPanelFX extends BorderPane
 		model.setEnableInventory(this.inventoryBox.isSelected());
 		model.setEnableMultiCurrency(this.multiCurBox.isSelected());
 		
-		if (this.callback != null)
-		{
-			this.callback.onCreatedProfileModel(model);
-		}
-		else
-		{
-			new Alert(Alert.AlertType.INFORMATION, "Company saved: " + 
-				model.getCompanyName()).showAndWait();
-		}
-	}
-	
+                if (this.callback != null)
+                {
+                        boolean seedDemo = this.demoDataBox.isSelected() && !this.demoDataBox.isDisable();
+                        this.callback.onCreatedProfileModel(model, seedDemo);
+                }
+                else
+                {
+                        new Alert(Alert.AlertType.INFORMATION, "Company saved: " +
+                                model.getCompanyName()).showAndWait();
+                }
+        }
+
+        /** Enables or disables the demo data seeding option. */
+        public void setDemoSeedingAvailable(boolean available)
+        {
+                this.demoDataBox.setDisable(!available);
+
+                if (!available)
+                {
+                        this.demoDataBox.setSelected(false);
+                }
+        }
+
 }
