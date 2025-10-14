@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
-import java.io.File;
+import nonprofitbookkeeping.core.Database;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,8 +28,6 @@ public class InventoryPanelFX extends BorderPane
 	
 	/** Service layer for inventory management operations. */
 	private final InventoryService service;
-	/** Directory of the current company, may be null if none. */
-	private final File companyDirectory;
 	/** ObservableList to hold {@link InventoryRow} objects for display in the table. */
 	private final ObservableList<InventoryRow> rows = FXCollections.observableArrayList();
 	/** TableView to display the list of inventory items. */
@@ -42,24 +40,23 @@ public class InventoryPanelFX extends BorderPane
 	 *
 	 * @param service The {@link InventoryService} to be used for all inventory-related operations. Must not be null.
 	 */
-	public InventoryPanelFX(InventoryService service, File companyDirectory)
-	{
-		this.service = service;
-		this.companyDirectory = companyDirectory;
-		
-		if (this.companyDirectory != null)
-		{
-			
-			try
-			{
-				this.service.loadItems(this.companyDirectory);
-			}
-			catch (Exception ex)
-			{
-				ex.printStackTrace();
-			}
-			
-		}
+        public InventoryPanelFX(InventoryService service)
+        {
+                this.service = service;
+
+                if (Database.isInitialized())
+                {
+
+                        try
+                        {
+                                this.service.loadItems(null);
+                        }
+                        catch (Exception ex)
+                        {
+                                ex.printStackTrace();
+                        }
+
+                }
 		
 		setPadding(new Insets(10));
 		buildTable();
@@ -68,11 +65,6 @@ public class InventoryPanelFX extends BorderPane
 		refresh();
 	}
 	
-	/** Convenience constructor when no directory is available. */
-	public InventoryPanelFX(InventoryService service)
-	{
-		this(service, null);
-	}
 	
 	/* ------------------------------------------------------------------ */
 	/**
@@ -240,19 +232,19 @@ public class InventoryPanelFX extends BorderPane
 		list.forEach(i -> this.rows.add(new InventoryRow(i)));
 	}
 	
-	/** Saves current inventory items to disk if a company directory is set. */
-	private void save()
-	{
-		
-		if (this.companyDirectory != null)
-		{
-			
-			try
-			{
-				this.service.saveItems(this.companyDirectory);
-			}
-			catch (Exception ex)
-			{
+        /** Saves current inventory items to disk when the database is available. */
+        private void save()
+        {
+
+                if (Database.isInitialized())
+                {
+
+                        try
+                        {
+                                this.service.saveItems(null);
+                        }
+                        catch (Exception ex)
+                        {
 				ex.printStackTrace();
 			}
 			

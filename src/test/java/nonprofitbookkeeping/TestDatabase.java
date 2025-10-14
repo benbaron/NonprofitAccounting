@@ -19,6 +19,8 @@ public final class TestDatabase {
         try (Connection connection = Database.get().getConnection();
              Statement statement = connection.createStatement()) {
             statement.execute("TRUNCATE TABLE json_storage");
+            statement.execute("DELETE FROM document");
+            statement.execute("DELETE FROM donor");
         }
     }
 }

@@ -93,6 +93,7 @@ public class DonorService {
     public void saveDonors(java.io.File companyDirectory) throws java.io.IOException {
     try {
         nonprofitbookkeeping.persistence.DonorRepository repo = new nonprofitbookkeeping.persistence.DonorRepository();
+        repo.deleteAll();
         for (nonprofitbookkeeping.model.DonorContact d : getAllDonors()) {
             repo.upsert(d);
         }

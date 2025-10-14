@@ -3,6 +3,7 @@ package nonprofitbookkeeping.service;
 
 import nonprofitbookkeeping.model.InventoryItem; // Correct import
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import nonprofitbookkeeping.persistence.DocumentRepository;
@@ -37,7 +38,8 @@ public class InventoryService
         /** Database document name for storing inventory data. */
         private static final String DOCUMENT_NAME = "inventory";
         private static final ObjectMapper MAPPER = new ObjectMapper()
-                .enable(SerializationFeature.INDENT_OUTPUT);
+                .enable(SerializationFeature.INDENT_OUTPUT)
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         private static final CollectionType LIST_TYPE =
                 MAPPER.getTypeFactory().constructCollectionType(List.class, InventoryItem.class);
 	

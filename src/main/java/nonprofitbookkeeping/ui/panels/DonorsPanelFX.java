@@ -9,7 +9,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
-import java.io.File;
+import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.service.DonorService;
 import nonprofitbookkeeping.model.DonorContact;
 
@@ -23,8 +23,6 @@ public class DonorsPanelFX extends BorderPane
 
         /** Service for donor management operations. */
         private final DonorService service;
-        /** Directory where donor data should be persisted, may be null. */
-        private final File companyDirectory;
         /** ObservableList to hold {@link DonorContact} objects for display in the table. */
         private final ObservableList<DonorContact> donors = FXCollections.observableArrayList();
         /** TableView to display the list of donors. */
@@ -35,18 +33,16 @@ public class DonorsPanelFX extends BorderPane
          * Loads donors from disk if a company directory is provided and builds the UI.
          *
          * @param service          the {@link DonorService} to use for donor operations
-         * @param companyDirectory directory where donor data is persisted, may be null
          */
-        public DonorsPanelFX(DonorService service, File companyDirectory)
+        public DonorsPanelFX(DonorService service)
         {
                 this.service = service;
-                this.companyDirectory = companyDirectory;
 
-                if (this.companyDirectory != null)
+                if (Database.isInitialized())
                 {
                         try
                         {
-                                this.service.loadDonors(this.companyDirectory);
+                                this.service.loadDonors(null);
                         }
                         catch (Exception ex)
                         {
@@ -59,12 +55,6 @@ public class DonorsPanelFX extends BorderPane
                 setCenter(this.table);
                 setBottom(buttonBar());
                 refresh();
-        }
-
-        /** Convenience constructor when no directory is available. */
-        public DonorsPanelFX(DonorService service)
-        {
-                this(service, null);
         }
 	
 	/**
@@ -191,14 +181,14 @@ public class DonorsPanelFX extends BorderPane
                 this.table.refresh();
         }
 
-        /** Saves donors to disk if a company directory is set. */
+        /** Saves donors to disk when the database is available. */
         private void save()
         {
-                if (this.companyDirectory != null)
+                if (Database.isInitialized())
                 {
                         try
                         {
-                                this.service.saveDonors(this.companyDirectory);
+                                this.service.saveDonors(null);
                         }
                         catch (Exception ex)
                         {

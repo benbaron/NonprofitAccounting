@@ -132,7 +132,7 @@ public final class Database {
             """);
             st.execute("""
                 CREATE TABLE IF NOT EXISTS company_store(
-                  id IDENTITY PRIMARY KEY,
+                  id BIGINT AUTO_INCREMENT PRIMARY KEY,
                   name VARCHAR(255) NOT NULL,
                   payload BLOB NOT NULL,
                   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
