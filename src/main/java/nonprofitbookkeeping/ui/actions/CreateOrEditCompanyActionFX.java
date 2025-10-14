@@ -3,6 +3,7 @@ package nonprofitbookkeeping.ui.actions;
 
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.service.DemoCompanySeeder;
 import nonprofitbookkeeping.service.PreferencesService;
 import nonprofitbookkeeping.ui.panels.CreateOrEditCompanyPanelFX;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -18,6 +19,8 @@ import java.io.IOException;
  */
 public class CreateOrEditCompanyActionFX
 {
+        private final DemoCompanySeeder demoCompanySeeder = new DemoCompanySeeder();
+
 	
 	/**  
 	 * Constructs and executes the action to create or edit a company profile.
@@ -61,7 +64,7 @@ public class CreateOrEditCompanyActionFX
                 dialog.setTitle(CurrentCompany.isOpen() ? "Edit Company" : "Create Company");
 
                 CreateOrEditCompanyPanelFX panel = new CreateOrEditCompanyPanelFX(existingCompany,
-                        created ->
+                        (created, seedDemoData) ->
                         {
                                 Company target = CurrentCompany.getCompany();
 
@@ -71,7 +74,14 @@ public class CreateOrEditCompanyActionFX
                                         CurrentCompany.forceCompanyLoad(target);
                                 }
 
+                                boolean isNewCompany = CurrentCompany.getCurrentCompanyId() == null;
+
                                 target.setCompanyProfileModel(checkNotNull(created));
+
+                                if (seedDemoData && isNewCompany)
+                                {
+                                        this.demoCompanySeeder.seed(target);
+                                }
 
                                 try
                                 {
@@ -86,6 +96,8 @@ public class CreateOrEditCompanyActionFX
 
                                 dialog.close();
                         });
+
+                panel.setDemoSeedingAvailable(!CurrentCompany.isOpen());
 
                 dialog.setScene(new Scene(panel, 800, 600));
                 dialog.show();

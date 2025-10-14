@@ -39,10 +39,10 @@ public class SaveCompanyFileAction
 	 */
 	public SaveCompanyFileAction(Stage primaryStage)
 	{
-		Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-			"Save current company file?");
-		confirm.initOwner(primaryStage);
-		Optional<ButtonType> res = confirm.showAndWait();
+                Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                        "Save current company to the database?");
+                confirm.initOwner(primaryStage);
+                Optional<ButtonType> res = confirm.showAndWait();
 		
 		if (res.isEmpty() || res.get() != ButtonType.OK)
 		{

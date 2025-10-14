@@ -50,8 +50,12 @@ public class NonprofitBookkeepingFX extends Application
 {
 	/** The primary stage of the JavaFX application. */
 	private Stage primaryStage;
-	/** The root layout pane (a {@link MainApplicationView} instance) for the main scene. */
-	private BorderPane root; // Should be MainApplicationView
+        /** The root layout pane (a {@link MainApplicationView} instance) for the main scene. */
+        private BorderPane root; // Should be MainApplicationView
+        /** Strongly typed reference to the main workspace view. */
+        private MainApplicationView mainView;
+        /** Shared company selection panel displayed when no company is open. */
+        private CompanySelectionPanelFX companySelectionPanel;
 	/** Reference to the dashboard panel, used as a fallback or initial view. */
 	private DashboardPanelFX dashboard; // Potentially part of MainApplicationView's default tabs
 	/** Instance managing the currently loaded company data. Suppressed unused warning as it's initialized. */
@@ -198,8 +202,11 @@ public class NonprofitBookkeepingFX extends Application
 		this.primaryStage = stage;
 		this.c = new CurrentCompany();
 		this.dashboard = new DashboardPanelFX();
-		MainApplicationView mainView = new MainApplicationView();
-		this.root = mainView; // Assign MainApplicationView to root
+                this.mainView = new MainApplicationView();
+                this.root = this.mainView; // Assign MainApplicationView to root
+                this.companySelectionPanel = this.mainView.getCompanySelectionPanel();
+                this.companySelectionPanel.setOnCompanyOpenedHandler(this::handleCompanyOpened);
+                this.companySelectionPanel.setOnError(message -> AlertBox.showError(this.primaryStage, message));
 		
 		// Instantiate ApplicationContextImpl
 		// Services are passed from the static ServiceContainer
@@ -238,10 +245,10 @@ public class NonprofitBookkeepingFX extends Application
 		
 		// MenuBar must be built *after* plugins are loaded so
 		// they can add their items.
-		MenuBar menuBar = buildMenuBar();
-		mainView.setMenuBar(menuBar);
-		
-		Scene scene = new Scene(mainView, 1000, 700); // Use mainView for the scene
+                MenuBar menuBar = buildMenuBar();
+                this.mainView.setMenuBar(menuBar);
+
+                Scene scene = new Scene(this.mainView, 1000, 700); // Use mainView for the scene
 		ThemeManager.applyTheme(scene);
 		this.primaryStage.setScene(scene);
 		this.primaryStage.setTitle("Nonprofit Bookkeeping");
@@ -263,18 +270,15 @@ public class NonprofitBookkeepingFX extends Application
 		MenuBar bar = new MenuBar();
 		
 		/* FILE */
-		Menu file = new Menu("File");
-		this.miOpen = add(file, "Open Company File", e -> doOpenCompany());
-		this.miClose = add(file, "Close Company File", e -> doCloseCompany());
-		this.miSave = add(file, "Save Company File", e -> doSaveCompany());
-		this.miImportCoaXlsx = add(file, "Import COA (XLSX)",
-			e -> new ImportCoaXlsxActionFX(this.primaryStage).handle(e));
-		this.miExportCoaXlsx = add(file, "Export COA (XLSX)",
-			e -> new ExportCoaXlsxActionFX(this.primaryStage).handle(e));
-		
-		add(file, "Import File", e -> new ImportFileActionFX(this.primaryStage).handle(e));
-		add(file, "Export File", e -> new ExportFileActionFX(this.primaryStage).handle(e));
-		bar.getMenus().add(file);
+                Menu companyMenu = new Menu("Company");
+                this.miOpen = add(companyMenu, "Open Company", e -> doOpenCompany());
+                this.miClose = add(companyMenu, "Close Company", e -> doCloseCompany());
+                this.miSave = add(companyMenu, "Save Company", e -> doSaveCompany());
+                this.miImportCoaXlsx = add(companyMenu, "Import COA (XLSX)",
+                        e -> new ImportCoaXlsxActionFX(this.primaryStage).handle(e));
+                this.miExportCoaXlsx = add(companyMenu, "Export COA (XLSX)",
+                        e -> new ExportCoaXlsxActionFX(this.primaryStage).handle(e));
+                bar.getMenus().add(companyMenu);
 		
 		/* EDIT */
 		Menu edit = new Menu("Edit");
@@ -403,7 +407,7 @@ public class NonprofitBookkeepingFX extends Application
                 /* SETTINGS */
                 Menu settings = new Menu("Settings");
                 add(settings, "Show Settings",
-                        e -> showPanel(new SettingsPanelFX(this.primaryStage, new SettingsService(), null),
+                        e -> showPanel(new SettingsPanelFX(this.primaryStage, new SettingsService()),
                                 "Settings"));
 		bar.getMenus().add(settings);
 		
@@ -486,6 +490,17 @@ public class NonprofitBookkeepingFX extends Application
                                 "Database initialized at: " + base.toAbsolutePath());
                         a.setHeaderText("H2 Ready");
                         a.showAndWait();
+                        setState(AppState.NO_COMPANY);
+
+                        if (this.companySelectionPanel != null)
+                        {
+                                this.companySelectionPanel.refreshCompanyList();
+                        }
+
+                        if (this.mainView != null)
+                        {
+                                this.mainView.showCompanySelection();
+                        }
                 }
                 catch (Exception ex)
                 {
@@ -560,32 +575,53 @@ public class NonprofitBookkeepingFX extends Application
 	 *
 	 * @param newState The new {@link AppState} to set for the application.
 	 */
-	private void setState(AppState newState)
-	{
-		this.state = newState;
-		boolean companyOpen = (newState == AppState.COMPANY_OPEN);
-		boolean noCompany = (newState == AppState.NO_COMPANY);
-		boolean creatingCompany = (newState == AppState.CREATING_COMPANY);
-		
-		this.miOpen.setDisable(companyOpen || creatingCompany);
-		this.miClose.setDisable(noCompany || creatingCompany);
-		this.miSave.setDisable(noCompany || creatingCompany);
-		this.miEditCompany.setDisable(creatingCompany);
-		this.miEditCoa.setDisable(noCompany || creatingCompany);
-		this.miEditJournal.setDisable(noCompany || creatingCompany);
-		this.miImportCoaXlsx.setDisable(noCompany || creatingCompany);
-		this.miExportCoaXlsx.setDisable(noCompany || creatingCompany);
-		
-		this.run.setDisable(noCompany || creatingCompany);
-		this.panels.setDisable(noCompany || creatingCompany);
-		this.reports.setDisable(noCompany || creatingCompany);
-		
-		if (this.root instanceof MainApplicationView)
-		{
-			((MainApplicationView) this.root).updateCompanyOpenState(companyOpen);
-		}
-		
-	}
+        private void setState(AppState newState)
+        {
+                this.state = newState;
+                boolean databaseReady = Database.isInitialized();
+                boolean creatingCompany = (newState == AppState.CREATING_COMPANY);
+                boolean companyOpen = databaseReady && CurrentCompany.isOpen();
+
+                this.miOpen.setDisable(!databaseReady || creatingCompany || companyOpen);
+                this.miClose.setDisable(!companyOpen || creatingCompany);
+                this.miSave.setDisable(!companyOpen || creatingCompany);
+                this.miEditCompany.setDisable(!databaseReady || creatingCompany);
+                this.miEditCoa.setDisable(!companyOpen || creatingCompany);
+                this.miEditJournal.setDisable(!companyOpen || creatingCompany);
+                this.miImportCoaXlsx.setDisable(!companyOpen || creatingCompany);
+                this.miExportCoaXlsx.setDisable(!companyOpen || creatingCompany);
+
+                this.run.setDisable(!companyOpen || creatingCompany);
+                this.panels.setDisable(!companyOpen || creatingCompany);
+                this.reports.setDisable(!companyOpen || creatingCompany);
+
+                if (this.mainView != null)
+                {
+                        this.mainView.updateCompanyOpenState(companyOpen);
+                }
+
+        }
+
+        private void handleCompanyOpened(Company company)
+        {
+                if (company == null)
+                {
+                        return;
+                }
+
+                setState(AppState.COMPANY_OPEN);
+
+                if (this.companySelectionPanel != null)
+                {
+                        this.companySelectionPanel.refreshCompanyList();
+                }
+
+                if (this.mainView != null)
+                {
+                        this.mainView.showWorkspaceTabs();
+                        this.mainView.showPanel(MainApplicationView.PanelType.DASHBOARD);
+                }
+        }
 	
 	/**
 	 * Handles the action to open a company file.
@@ -594,18 +630,28 @@ public class NonprofitBookkeepingFX extends Application
 	 * Errors are displayed using an {@link AlertBox}.
 	 * The {@code @SuppressWarnings("unused")} is present because this method is called via JavaFX action event.
 	 */
-	private void doOpenCompany()
-	{
-		
-		try
-		{
-			OpenCompanyFileActionFX openCompanyFileActionFX = new OpenCompanyFileActionFX(
-				this.primaryStage, () -> setState(AppState.COMPANY_OPEN));
-		}
-		catch (Exception e)
-		{
-			AlertBox.showError(this.primaryStage, "Failed to open company: " + e.getMessage());
-		}
+        private void doOpenCompany()
+        {
+                if (!Database.isInitialized())
+                {
+                        Alert alert = new Alert(Alert.AlertType.WARNING,
+                                "Initialize an H2 database before opening a company.");
+                        alert.initOwner(this.primaryStage);
+                        alert.setHeaderText("Database Not Ready");
+                        alert.showAndWait();
+                        return;
+                }
+
+                try
+                {
+                        OpenCompanyFileActionFX openCompanyFileActionFX = new OpenCompanyFileActionFX(
+                                this.primaryStage,
+                                () -> handleCompanyOpened(CurrentCompany.getCompany()));
+                }
+                catch (Exception e)
+                {
+                        AlertBox.showError(this.primaryStage, "Failed to open company: " + e.getMessage());
+                }
 		
 	}
 	
@@ -625,14 +671,18 @@ public class NonprofitBookkeepingFX extends Application
 			CloseCompanyFileAction closeCompanyFileAction =
 				new CloseCompanyFileAction(this.primaryStage);
 			
-			if (closeCompanyFileAction.isClosed())
-			{
-				// After action, set state.
-				setState(AppState.NO_COMPANY);
-			}
-			else
-			{
-				return; // user cancelled closing
+                        if (closeCompanyFileAction.isClosed())
+                        {
+                                // After action, set state.
+                                setState(AppState.NO_COMPANY);
+                                if (this.companySelectionPanel != null)
+                                {
+                                        this.companySelectionPanel.refreshCompanyList();
+                                }
+                        }
+                        else
+                        {
+                                return; // user cancelled closing
 			}
 			
 		}
@@ -643,15 +693,10 @@ public class NonprofitBookkeepingFX extends Application
 		}
 		
 		// Switch view back to dashboard
-		if (this.root instanceof MainApplicationView)
-		{
-			((MainApplicationView) this.root).showPanel(MainApplicationView.PanelType.DASHBOARD);
-		}
-		else
-		{
-			// Fallback or error if root is not what we expect
-			this.root.setCenter(this.dashboard);
-		}
+                if (this.mainView != null)
+                {
+                        this.mainView.showCompanySelection();
+                }
 		
 	}
 	
@@ -661,13 +706,19 @@ public class NonprofitBookkeepingFX extends Application
 	 * Shows an info message on success or an error message on failure.
 	 * The {@code @SuppressWarnings("unused")} is present because this method is called via JavaFX action event.
 	 */
-	private void doSaveCompany()
-	{
-		
-		try
-		{
-			SaveCompanyFileAction saveCompanyFileAction =
-				new SaveCompanyFileAction(this.primaryStage);
+        private void doSaveCompany()
+        {
+                if (!Database.isInitialized() || !CurrentCompany.isOpen())
+                {
+                        AlertBox.showError(this.primaryStage,
+                                "Open a company connected to the database before saving.");
+                        return;
+                }
+
+                try
+                {
+                        SaveCompanyFileAction saveCompanyFileAction =
+                                new SaveCompanyFileAction(this.primaryStage);
 			AlertBox.showInfo(this.primaryStage, "Company saved.");
 		}
 		catch (Exception ex)
@@ -685,25 +736,39 @@ public class NonprofitBookkeepingFX extends Application
 	 * state reverts to the previous state, and an error alert is shown.
 	 * The {@code @SuppressWarnings("unused")} is present because this method is called via JavaFX action event.
 	 */
-	private void startCreateWizard()
-	{
-		AppState saved = getState();
-		setState(AppState.CREATING_COMPANY);
-		
-		try
-		{
+        private void startCreateWizard()
+        {
+                if (!Database.isInitialized())
+                {
+                        Alert alert = new Alert(Alert.AlertType.WARNING,
+                                "Initialize an H2 database before creating a company.");
+                        alert.initOwner(this.primaryStage);
+                        alert.setHeaderText("Database Not Ready");
+                        alert.showAndWait();
+                        return;
+                }
+
+                AppState saved = getState();
+                setState(AppState.CREATING_COMPANY);
+
+                try
+                {
 			CreateOrEditCompanyActionFX createOrEditCompanyActionFX =
 				new CreateOrEditCompanyActionFX(this.primaryStage);
 			
 			// If wizard completes and company is set in CurrentCompany:
-			if (CurrentCompany.getCompany() != null)
-			{ // Basic check
-				setState(AppState.COMPANY_OPEN);
-			}
-			else
-			{
-				// Wizard was cancelled or failed without setting a company
-				setState(saved); // Revert to previous state
+                        if (CurrentCompany.getCompany() != null)
+                        { // Basic check
+                                setState(AppState.COMPANY_OPEN);
+                                if (this.companySelectionPanel != null)
+                                {
+                                        this.companySelectionPanel.refreshCompanyList();
+                                }
+                        }
+                        else
+                        {
+                                // Wizard was cancelled or failed without setting a company
+                                setState(saved); // Revert to previous state
 			}
 			
 		}

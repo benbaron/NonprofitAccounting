@@ -134,22 +134,17 @@ public class SettingsPanelFXTest extends JavaFXTestBase
 	{
 		selectTab("Backup");
 		
-		clickOn("Create Backup");
-		WaitForAsyncUtils.waitForFxEvents();
-		DialogPane backupAlert = getTopModalDialogPane();
-		assertNotNull(backupAlert, "Create Backup alert not shown.");
-		assertTrue(backupAlert.getContentText().contains("Backup process would run here."));
-		clickOn((Button) backupAlert.lookupButton(ButtonType.OK));
-		WaitForAsyncUtils.waitForFxEvents();
-		
-		clickOn("Restore Backup");
-		WaitForAsyncUtils.waitForFxEvents();
-		DialogPane restoreAlert = getTopModalDialogPane();
-		assertNotNull(restoreAlert, "Restore Backup alert not shown.");
-		assertTrue(restoreAlert.getContentText().contains("Restore process would run here."));
-		clickOn((Button) restoreAlert.lookupButton(ButtonType.OK));
-		WaitForAsyncUtils.waitForFxEvents();
-	}
+                clickOn("Create Backup");
+                WaitForAsyncUtils.waitForFxEvents();
+                DialogPane backupAlert = getTopModalDialogPane();
+                assertNull(backupAlert, "Backup export should rely on a file chooser without showing alerts when cancelled.");
+
+                clickOn("Restore Backup");
+                WaitForAsyncUtils.waitForFxEvents();
+                DialogPane restoreAlert = getTopModalDialogPane();
+                assertNull(restoreAlert,
+                        "Restore import should rely on a file chooser without showing alerts when cancelled.");
+        }
 	
 	@Test public void testUiPreferencesTab_InitialValuesAndInteraction()
 	{
