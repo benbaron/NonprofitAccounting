@@ -298,7 +298,7 @@ public class NonprofitBookkeepingFX extends Application
                                 return;
                         }
 
-                        BudgetPanelFX panel = new BudgetPanelFX(ServiceContainer.budgetService, null,
+                        BudgetPanelFX panel = new BudgetPanelFX(ServiceContainer.budgetService,
                                 currentCompany.getChartOfAccounts(), new ArrayList<Fund>(), null);
                         showPanel(panel, "Budget Editor");
                 });
