@@ -44,22 +44,17 @@ public class InventoryPanelFX extends BorderPane
 	 */
 	public InventoryPanelFX(InventoryService service, File companyDirectory)
 	{
-		this.service = service;
-		this.companyDirectory = companyDirectory;
-		
-		if (this.companyDirectory != null)
-		{
-			
-			try
-			{
-				this.service.loadItems(this.companyDirectory);
-			}
-			catch (Exception ex)
-			{
-				ex.printStackTrace();
-			}
-			
-		}
+                this.service = service;
+                this.companyDirectory = companyDirectory;
+
+                try
+                {
+                        this.service.loadItems(this.companyDirectory);
+                }
+                catch (Exception ex)
+                {
+                        ex.printStackTrace();
+                }
 		
 		setPadding(new Insets(10));
 		buildTable();
@@ -244,21 +239,16 @@ public class InventoryPanelFX extends BorderPane
 	private void save()
 	{
 		
-		if (this.companyDirectory != null)
-		{
-			
-			try
-			{
-				this.service.saveItems(this.companyDirectory);
-			}
-			catch (Exception ex)
-			{
-				ex.printStackTrace();
-			}
-			
-		}
-		
-	}
+                try
+                {
+                        this.service.saveItems(this.companyDirectory);
+                }
+                catch (Exception ex)
+                {
+                        ex.printStackTrace();
+                }
+
+        }
 	
 	/**
 	 * A data class (POJO) representing a row in the inventory {@link TableView}.

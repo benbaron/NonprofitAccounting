@@ -106,13 +106,27 @@ public class Journal implements Serializable
 	 * @param bookingDateTimestamp The booking date timestamp of the transaction to delete.
 	 * @return {@code true} if a transaction with the given timestamp was found and removed, {@code false} otherwise.
 	 */
-	public boolean deleteTransaction(long bookingDateTimestamp)
-	{
-		// checkNotNull is not strictly needed for a primitive long, but if it were an Object Long:
-		// checkNotNull(bookingDateTimestamp, "Transaction ID cannot be null for delete operation");
-		return this.journalTransactions.removeIf(tx -> Objects.equals(tx.getBookingDateTimestamp(),
-			bookingDateTimestamp));
-	}
+        public boolean deleteTransaction(long bookingDateTimestamp)
+        {
+                // checkNotNull is not strictly needed for a primitive long, but if it were an Object Long:
+                // checkNotNull(bookingDateTimestamp, "Transaction ID cannot be null for delete operation");
+                return this.journalTransactions.removeIf(tx -> Objects.equals(tx.getBookingDateTimestamp(),
+                        bookingDateTimestamp));
+        }
+
+        /**
+         * Replaces the journal transactions with the provided collection.
+         * @param transactions transactions to install; when {@code null} the journal becomes empty
+         */
+        public void replaceAllTransactions(List<AccountingTransaction> transactions)
+        {
+                this.journalTransactions.clear();
+
+                if (transactions != null)
+                {
+                        this.journalTransactions.addAll(transactions);
+                }
+        }
 	
 	/**
 	 * Returns a string representation of the journal, including its transactions.
