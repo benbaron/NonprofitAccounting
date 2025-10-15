@@ -50,9 +50,17 @@ public final class Database {
                   default_bank_account VARCHAR(128),
                   enable_fund_accounting BOOLEAN,
                   enable_inventory BOOLEAN,
-                  enable_multi_currency BOOLEAN
+                  enable_multi_currency BOOLEAN,
+                  legal_structure VARCHAR(128),
+                  tax_id VARCHAR(128),
+                  company_file_dir VARCHAR(512),
+                  company_file_name VARCHAR(255)
                 )
             """);
+            st.execute("ALTER TABLE company_profile ADD COLUMN IF NOT EXISTS legal_structure VARCHAR(128);");
+            st.execute("ALTER TABLE company_profile ADD COLUMN IF NOT EXISTS tax_id VARCHAR(128);");
+            st.execute("ALTER TABLE company_profile ADD COLUMN IF NOT EXISTS company_file_dir VARCHAR(512);");
+            st.execute("ALTER TABLE company_profile ADD COLUMN IF NOT EXISTS company_file_name VARCHAR(255);");
 
             st.execute("""
                 CREATE TABLE IF NOT EXISTS account(
@@ -114,9 +122,18 @@ public final class Database {
             st.execute("""
                 CREATE TABLE IF NOT EXISTS donor(
                   id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                  name VARCHAR(255) UNIQUE
+                  external_id VARCHAR(64) UNIQUE,
+                  name VARCHAR(255),
+                  email VARCHAR(255),
+                  phone VARCHAR(64)
                 )
             """);
+            st.execute("ALTER TABLE donor ADD COLUMN IF NOT EXISTS external_id VARCHAR(64);");
+            st.execute("ALTER TABLE donor ADD COLUMN IF NOT EXISTS email VARCHAR(255);");
+            st.execute("ALTER TABLE donor ADD COLUMN IF NOT EXISTS phone VARCHAR(64);");
+            st.execute("ALTER TABLE donor ADD COLUMN IF NOT EXISTS name VARCHAR(255);");
+            st.execute("CREATE UNIQUE INDEX IF NOT EXISTS donor_external_id_idx ON donor(external_id);");
+            st.execute("UPDATE donor SET external_id = name WHERE external_id IS NULL AND name IS NOT NULL;");
 
             st.execute("""
                 CREATE TABLE IF NOT EXISTS document(

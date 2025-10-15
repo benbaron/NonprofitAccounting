@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,11 +27,8 @@ import java.util.logging.Logger;
 public class InventoryService
 {
 	
-	/** Shared in-memory map to store {@link InventoryItem} objects across service instances. */
-	private static final Map<String, InventoryItem> SHARED_ITEMS = new HashMap<>();
-	
-	/** Logger instance for this service. */
-	private static final Logger LOGGER = Logger.getLogger(InventoryService.class.getName());
+        /** Logger instance for this service. */
+        private static final Logger LOGGER = Logger.getLogger(InventoryService.class.getName());
 	
         /** Database document name for storing inventory data. */
         private static final String DOCUMENT_NAME = "inventory";
@@ -48,9 +44,9 @@ public class InventoryService
 	 * Constructs an {@code InventoryService} and initializes an empty inventory map.
 	 * Optionally, sample data can be pre-populated here during development or testing.
 	 */
-	public InventoryService()
-	{
-		this.items = SHARED_ITEMS;
+        public InventoryService()
+        {
+                this.items = new HashMap<>();
 		// Optionally pre-populate with sample data:
 		// addItem(new InventoryItem("I001", "Item A", new BigDecimal("100"),
 		// "2023-01-01", 5)); // Example with BigDecimal
@@ -259,20 +255,31 @@ public class InventoryService
 	 * @return A list of string arrays, where each array represents an inventory item's data,
 	 *         or null if the implementation is not complete.
 	 */
-	public static List<String[]> getInventoryItems()
-	{
-		List<String[]> rows = new ArrayList<>();
-		
-		for (InventoryItem item : SHARED_ITEMS.values())
-		{
-			String cost = item.getCost() == null ? "0.00" :
-				item.getCost().setScale(2, RoundingMode.HALF_UP).toString();
-			rows.add(new String[]
-			{ item.getId(), item.getName(), cost });
-		}
-		
-		return rows;
-	}
+        public static List<String[]> getInventoryItems()
+        {
+                InventoryService service = new InventoryService();
+
+                try
+                {
+                        service.loadItems(null);
+                }
+                catch (IOException ex)
+                {
+                        throw new RuntimeException("Failed to load inventory", ex);
+                }
+
+                List<String[]> rows = new ArrayList<>();
+
+                for (InventoryItem item : service.listItems())
+                {
+                        String cost = item.getCost() == null ? "0.00" :
+                                item.getCost().setScale(2, RoundingMode.HALF_UP).toString();
+                        rows.add(new String[]
+                        { item.getId(), item.getName(), cost });
+                }
+
+                return rows;
+        }
 	
 	// Removed private static inner class InventoryItem
 	// Removed old getInventoryItems()

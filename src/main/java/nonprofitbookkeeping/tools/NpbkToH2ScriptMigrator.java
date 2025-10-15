@@ -9,6 +9,7 @@ import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CompanyProfileModel;
 import nonprofitbookkeeping.persistence.AccountRepository;
+import nonprofitbookkeeping.persistence.CompanyProfileRepository;
 import nonprofitbookkeeping.persistence.JournalRepository;
 
 import java.io.IOException;
@@ -20,7 +21,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -143,45 +143,7 @@ public final class NpbkToH2ScriptMigrator
 
         private static void persistProfile(CompanyProfileModel profile) throws SQLException
         {
-                if (profile == null)
-                {
-                        return;
-                }
-
-                try (Connection connection = Database.get().getConnection())
-                {
-                        connection.setAutoCommit(false);
-
-                        try (PreparedStatement upsert = connection.prepareStatement("""
-                                        MERGE INTO company_profile (id, name, address, phone, email,
-                                                fiscal_year_start, base_currency, starting_balance_date,
-                                                chart_of_accounts_type, admin_username, admin_password,
-                                                default_bank_account, enable_fund_accounting, enable_inventory,
-                                                enable_multi_currency)
-                                        KEY(id)
-                                        VALUES(1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                                        """))
-                        {
-                                int i = 0;
-                                upsert.setString(++i, profile.getCompanyName());
-                                upsert.setString(++i, profile.getAddress());
-                                upsert.setString(++i, profile.getPhone());
-                                upsert.setString(++i, profile.getEmail());
-                                upsert.setString(++i, profile.getFiscalYearStart());
-                                upsert.setString(++i, profile.getBaseCurrency());
-                                upsert.setString(++i, profile.getStartingBalanceDate());
-                                upsert.setString(++i, profile.getChartOfAccountsType());
-                                upsert.setString(++i, profile.getAdminUsername());
-                                upsert.setString(++i, profile.getAdminPassword());
-                                upsert.setString(++i, profile.getDefaultBankAccount());
-                                upsert.setBoolean(++i, profile.isEnableFundAccounting());
-                                upsert.setBoolean(++i, profile.isEnableInventory());
-                                upsert.setBoolean(++i, profile.isEnableMultiCurrency());
-                                upsert.executeUpdate();
-                        }
-
-                        connection.commit();
-                }
+                new CompanyProfileRepository().save(profile);
         }
 
         private static void exportScript(Path target) throws SQLException, IOException
