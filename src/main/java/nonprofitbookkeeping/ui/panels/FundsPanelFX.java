@@ -45,16 +45,13 @@ public class FundsPanelFX extends BorderPane
                 this.service = service;
                 this.companyDirectory = companyDirectory;
 
-                if (this.companyDirectory != null)
+                try
                 {
-                        try
-                        {
-                                this.service.loadFunds(this.companyDirectory);
-                        }
-                        catch (Exception ex)
-                        {
-                                ex.printStackTrace();
-                        }
+                        this.service.loadFunds(this.companyDirectory);
+                }
+                catch (Exception ex)
+                {
+                        ex.printStackTrace();
                 }
 
                 setPadding(new Insets(10));
@@ -243,16 +240,13 @@ public class FundsPanelFX extends BorderPane
         /** Saves current funds to disk if a company directory is set. */
         private void save()
         {
-                if (this.companyDirectory != null)
+                try
                 {
-                        try
-                        {
-                                this.service.saveFunds(this.companyDirectory);
-                        }
-                        catch (Exception ex)
-                        {
-                                ex.printStackTrace();
-                        }
+                        this.service.saveFunds(this.companyDirectory);
+                }
+                catch (Exception ex)
+                {
+                        ex.printStackTrace();
                 }
         }
 	

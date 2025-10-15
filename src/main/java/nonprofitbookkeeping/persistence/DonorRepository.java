@@ -1,48 +1,125 @@
-
 package nonprofitbookkeeping.persistence;
 
 import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.DonorContact;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
-public class DonorRepository
-{
-	public void upsert(DonorContact d) throws SQLException
-	{
-		
-		try (Connection c = Database.get().getConnection();
-			PreparedStatement ps = c.prepareStatement(
-				"MERGE INTO donor(name) KEY(name) VALUES (?)"))
-		{
-			ps.setString(1, d.getName());
-			ps.executeUpdate();
-		}
-		
-	}
-	
-	public List<DonorContact> list() throws SQLException
-	{
-		List<DonorContact> out = new ArrayList<>();
-		
-		try (Connection c = Database.get().getConnection();
-			PreparedStatement ps =
-				c.prepareStatement("SELECT name FROM donor ORDER BY name");
-			ResultSet rs = ps.executeQuery())
-		{
-			
-			while (rs.next())
-			{
-				DonorContact d = new DonorContact();
-				d.setName(rs.getString(1));
-				out.add(d);
-			}
-			
-		}
-		
-		return out;
-		
-	}
-	
+/**
+ * Repository responsible for CRUD operations on the {@code donor} table.
+ * Donors are keyed by their stable {@link DonorContact#getId() external id}
+ * so that UI edits and deletions affect the correct record even when names
+ * change.
+ */
+public class DonorRepository {
+
+    private static final String UPSERT_SQL =
+            "MERGE INTO donor(external_id, name, email, phone) KEY(external_id) VALUES (?,?,?,?)";
+    private static final String LIST_SQL =
+            "SELECT external_id, name, email, phone FROM donor ORDER BY name, external_id";
+    private static final String DELETE_SQL =
+            "DELETE FROM donor WHERE external_id = ?";
+    private static final String FIND_SQL =
+            "SELECT external_id, name, email, phone FROM donor WHERE external_id = ?";
+    private static final String DELETE_ALL_SQL = "DELETE FROM donor";
+
+    /**
+     * Inserts or updates the supplied donor.
+     */
+    public void upsert(DonorContact donor) throws SQLException {
+        try (Connection c = Database.get().getConnection();
+             PreparedStatement ps = c.prepareStatement(UPSERT_SQL)) {
+            ps.setString(1, donor.getId());
+            ps.setString(2, donor.getName());
+            ps.setString(3, donor.getEmail());
+            ps.setString(4, donor.getPhone());
+            ps.executeUpdate();
+        }
+    }
+
+    /**
+     * Deletes the donor identified by {@code externalId}.
+     *
+     * @return {@code true} when a row was removed
+     */
+    public boolean deleteByExternalId(String externalId) throws SQLException {
+        try (Connection c = Database.get().getConnection();
+             PreparedStatement ps = c.prepareStatement(DELETE_SQL)) {
+            ps.setString(1, externalId);
+            return ps.executeUpdate() > 0;
+        }
+    }
+
+    /**
+     * Returns all donors ordered by name.
+     */
+    public List<DonorContact> list() throws SQLException {
+        List<DonorContact> donors = new ArrayList<>();
+        try (Connection c = Database.get().getConnection();
+             PreparedStatement ps = c.prepareStatement(LIST_SQL);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                donors.add(mapRow(rs));
+            }
+        }
+        return donors;
+    }
+
+    /**
+     * Loads a single donor by its external id.
+     */
+    public Optional<DonorContact> findByExternalId(String externalId) throws SQLException {
+        try (Connection c = Database.get().getConnection();
+             PreparedStatement ps = c.prepareStatement(FIND_SQL)) {
+            ps.setString(1, externalId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(mapRow(rs));
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Replaces the stored donors with the supplied collection. Existing rows are removed first.
+     */
+    public void replaceAll(List<DonorContact> donors) throws SQLException {
+        try (Connection c = Database.get().getConnection()) {
+            c.setAutoCommit(false);
+            try (PreparedStatement deleteAll = c.prepareStatement(DELETE_ALL_SQL)) {
+                deleteAll.executeUpdate();
+            }
+
+            if (donors != null && !donors.isEmpty()) {
+                try (PreparedStatement insert = c.prepareStatement(UPSERT_SQL)) {
+                    for (DonorContact donor : donors) {
+                        insert.setString(1, donor.getId());
+                        insert.setString(2, donor.getName());
+                        insert.setString(3, donor.getEmail());
+                        insert.setString(4, donor.getPhone());
+                        insert.addBatch();
+                    }
+                    insert.executeBatch();
+                }
+            }
+
+            c.commit();
+        }
+    }
+
+    private static DonorContact mapRow(ResultSet rs) throws SQLException {
+        DonorContact donor = new DonorContact();
+        donor.setId(rs.getString("external_id"));
+        donor.setName(rs.getString("name"));
+        donor.setEmail(rs.getString("email"));
+        donor.setPhone(rs.getString("phone"));
+        return donor;
+    }
 }

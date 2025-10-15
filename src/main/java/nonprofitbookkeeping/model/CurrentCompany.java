@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.swing.event.EventListenerList;
 
+import nonprofitbookkeeping.persistence.CompanyDataRepository;
 import nonprofitbookkeeping.persistence.CompanyRepository;
 
 /**
@@ -30,6 +31,8 @@ public class CurrentCompany
         private static Long currentCompanyId = null;
         /** Repository used to read/write company aggregates from the database. */
         private static final CompanyRepository repository = new CompanyRepository();
+        /** Repository that synchronizes normalized company data tables. */
+        private static final CompanyDataRepository dataRepository = new CompanyDataRepository();
 	
 	/**  
 	 * Constructs a CurrentCompany manager.
@@ -79,18 +82,20 @@ public class CurrentCompany
 	{
 		try
 		{
-			long id = repository.save(CurrentCompany.currentCompanyId,
-				checkNotNull(company, "Company must not be null when persisting"));
-			CurrentCompany.currentCompanyId = id;
-		}
-		catch (IOException e)
-		{
-			throw e;
-		}
-		catch (Exception e)
-		{
-			throw new IOException("Failed to persist company", e);
-		}
+                        Company companyToPersist = checkNotNull(company,
+                                "Company must not be null when persisting");
+                        dataRepository.persist(companyToPersist);
+                        long id = repository.save(CurrentCompany.currentCompanyId, companyToPersist);
+                        CurrentCompany.currentCompanyId = id;
+                }
+                catch (IOException e)
+                {
+                        throw e;
+                }
+                catch (Exception e)
+                {
+                        throw new IOException("Failed to persist company", e);
+                }
 		
 	}
 	
@@ -104,17 +109,39 @@ public class CurrentCompany
 	{
 		try
 		{
-			company = repository.load(companyId);
-			CurrentCompany.currentCompanyId = companyId;
-			if (company != null)
-			{
-				markCompanyOpen();
-			}
-		}
-		catch (IOException e)
-		{
-			throw e;
-		}
+                        Company normalized = dataRepository.load();
+                        boolean hasNormalizedData = normalized != null
+                                && (!normalized.getChartOfAccounts().getAccounts().isEmpty()
+                                        || !normalized.getLedger().getJournal().getJournalTransactions().isEmpty()
+                                        || normalized.getCompanyProfileModel() != null);
+
+                        if (!hasNormalizedData)
+                        {
+                                company = repository.load(companyId);
+                                dataRepository.persist(company);
+                        }
+                        else
+                        {
+                                Company legacy = repository.load(companyId);
+
+                                if (legacy != null)
+                                {
+                                        normalized.setCompanyFile(legacy.getCompanyFile());
+                                }
+
+                                company = normalized;
+                        }
+
+                        CurrentCompany.currentCompanyId = companyId;
+                        if (company != null)
+                        {
+                                markCompanyOpen();
+                        }
+                }
+                catch (IOException e)
+                {
+                        throw e;
+                }
 		catch (Exception e)
 		{
 			throw new IOException("Failed to load company", e);

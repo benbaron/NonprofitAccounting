@@ -193,11 +193,25 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	 * @return A new {@code List<Account>} containing all accounts in the chart.
 	 *         Returns an empty list if the chart of accounts has no accounts.
 	 */
-	public List<Account> getAccounts()
-	{
-		// this.chartOfAccounts is final and initialized, so it won't be null.
-		return new ArrayList<>(this.chartOfAccounts);
-	}
+        public List<Account> getAccounts()
+        {
+                // this.chartOfAccounts is final and initialized, so it won't be null.
+                return new ArrayList<>(this.chartOfAccounts);
+        }
+
+        /**
+         * Replaces the current accounts with the provided collection. Existing entries are removed first.
+         * @param accounts accounts to install, may be {@code null}
+         */
+        public void replaceAllAccounts(List<Account> accounts)
+        {
+                this.chartOfAccounts.clear();
+
+                if (accounts != null)
+                {
+                        this.chartOfAccounts.addAll(accounts);
+                }
+        }
 	
 	/**
 	 * Removes an account (and its descendants) from the chart of accounts using its account number.

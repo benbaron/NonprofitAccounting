@@ -20,10 +20,8 @@ import java.util.logging.Logger;
  */
 public class SalesService
 {
-	/** Shared list storing sale records across service instances. */
-	private static final List<SaleRecord> SHARED_SALES = new ArrayList<>();
-	/** Logger instance for this service. */
-	private static final Logger LOGGER = Logger.getLogger(SalesService.class.getName());
+        /** Logger instance for this service. */
+        private static final Logger LOGGER = Logger.getLogger(SalesService.class.getName());
         /** Database document name for storing sales data. */
         private static final String DOCUMENT_NAME = "sales";
         private static final ObjectMapper MAPPER = new ObjectMapper()
@@ -34,10 +32,10 @@ public class SalesService
 	/** In-memory list of sales. */
 	private final List<SaleRecord> sales;
 	
-	public SalesService()
-	{
-		this.sales = SHARED_SALES;
-	}
+        public SalesService()
+        {
+                this.sales = new ArrayList<>();
+        }
 	
 	/** Returns a copy of all sales. */
 	public List<SaleRecord> listSales()
