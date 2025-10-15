@@ -91,14 +91,23 @@ public class AccountRepository
 
                         while (rs.next())
                         {
-                                Account a = new Account(
-                                        rs.getString("account_number"),
+                                String accountNumber = rs.getString("account_number");
+                                if (accountNumber == null)
+                                {
+                                        continue;
+                                }
+
+                                AccountSide increaseSide = rs.getString("increase_side") == null ? null :
+                                        AccountSide.valueOf(rs.getString("increase_side"));
+                                Account a = new Account(accountNumber,
                                         rs.getString("name"),
-                                        rs.getString("increase_side") == null ? null :
-                                                AccountSide.valueOf(rs.getString("increase_side")),
-                                        rs.getString("account_type") == null ? null :
-                                                AccountType.valueOf(rs.getString("account_type"))
-                                );
+                                        increaseSide);
+
+                                if (rs.getString("account_type") != null)
+                                {
+                                        a.setAccountType(AccountType.valueOf(rs.getString("account_type")));
+                                }
+
                                 a.setAccountCode(rs.getString("account_code"));
                                 a.setParentAccountId(rs.getString("parent_account_id"));
                                 a.setCurrency(rs.getString("currency"));
