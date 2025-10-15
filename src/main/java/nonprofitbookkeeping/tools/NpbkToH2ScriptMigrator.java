@@ -10,6 +10,7 @@ import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CompanyProfileModel;
 import nonprofitbookkeeping.persistence.AccountRepository;
 import nonprofitbookkeeping.persistence.CompanyProfileRepository;
+import nonprofitbookkeeping.persistence.CompanyRepository;
 import nonprofitbookkeeping.persistence.JournalRepository;
 
 import java.io.IOException;
@@ -116,7 +117,7 @@ public final class NpbkToH2ScriptMigrator
                 throw new IOException("Entry not found in archive: " + ENTRY);
         }
 
-        private static void persistCompany(Company company) throws SQLException
+        private static void persistCompany(Company company) throws SQLException, IOException
         {
                 AccountRepository accounts = new AccountRepository();
                 ChartOfAccounts coa = company.getChartOfAccounts();
@@ -139,6 +140,9 @@ public final class NpbkToH2ScriptMigrator
                 }
 
                 persistProfile(company.getCompanyProfileModel());
+
+                CompanyRepository companyRepository = new CompanyRepository();
+                companyRepository.save(null, company);
         }
 
         private static void persistProfile(CompanyProfileModel profile) throws SQLException
