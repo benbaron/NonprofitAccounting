@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Nonprofit Accounting Help</title>
+    <style>
+        body { font-family: "Segoe UI", Arial, sans-serif; margin: 32px; line-height: 1.6; color: #1b1b1d; }
+        h1, h2, h3 { color: #254670; }
+        h1 { margin-top: 0; }
+        nav { margin-bottom: 24px; }
+        nav a { margin-right: 12px; color: #254670; text-decoration: none; font-weight: 600; }
+        nav a:hover { text-decoration: underline; }
+        code { background: #f2f4f8; padding: 2px 4px; border-radius: 4px; }
+        ul { margin-left: 20px; }
+        section { margin-bottom: 40px; }
+        .tip { border-left: 4px solid #5b8def; padding-left: 12px; background: #f7f9ff; }
+    </style>
+</head>
+<body>
+    <h1>Nonprofit Accounting Help &amp; Reference</h1>
+    <p>
+        This guide highlights the workflows that were recently restored to the application and
+        provides developer notes for building consistent tooltips in the JavaFX UI.
+    </p>
+
+    <nav>
+        <a href="#import-ofx">Importing OFX/QFX bank statements</a>
+        <a href="#export-ofx">Exporting OFX/QFX statements</a>
+        <a href="#legacy-npbk">Importing legacy <code>.npbk</code> JSON data</a>
+        <a href="#sca-excel">Importing SCA Excel ledgers</a>
+        <a href="#tooltip-guide">Tooltip implementation checklist</a>
+    </nav>
+
+    <section id="import-ofx">
+        <h2>Importing OFX/QFX bank statements</h2>
+        <ol>
+            <li>Open the <strong>Account Activity</strong> view (Panels → Account Activity).</li>
+            <li>Select the bank or credit card account whose transactions you need to import.</li>
+            <li>Choose <em>Import Statement (CSV/QIF/OFX)</em> and pick the file.</li>
+            <li>Confirm the format (OFX/QFX, QIF, or Excel) and map the transactions to the desired account.</li>
+            <li>Imported entries are written to the company ledger and queued for reconciliation automatically.</li>
+        </ol>
+        <p class="tip">
+            Duplicate detection honours FITID values from OFX/QFX files and will only insert transactions
+            that do not already exist in the ledger.
+        </p>
+    </section>
+
+    <section id="export-ofx">
+        <h2>Exporting OFX/QFX statements</h2>
+        <ol>
+            <li>Ensure a company is open and the ledger contains the transactions you wish to share.</li>
+            <li>Navigate to <strong>Company → Export Statement (OFX/QFX)</strong>.</li>
+            <li>Select the account to export. Bank and credit-card style accounts are supported.</li>
+            <li>Choose the target format (OFX or QFX) and the destination filename.</li>
+            <li>The application writes an OFX 2.0 compliant file including balances, account metadata, and all dated transactions.</li>
+        </ol>
+        <p class="tip">
+            Charges in credit-card exports are written with negative amounts to match industry expectations,
+            while payments appear as positive credits.
+        </p>
+    </section>
+
+    <section id="legacy-npbk">
+        <h2>Importing legacy <code>.npbk</code> JSON data</h2>
+        <p>
+            Older releases distributed ledger extracts as JSON inside <code>.npbk</code> archives. To review those tables:
+        </p>
+        <ol>
+            <li>Open the <strong>SCA Ledger</strong> menu that ships with the application.</li>
+            <li>Select <em>Import from JSON (SCA)</em>.</li>
+            <li>Pick the JSON export. The viewer loads the rows into the embedded table so you can inspect or resave the data.</li>
+        </ol>
+        <p>
+            The importer keeps the original column order, respects mixed datatypes, and remembers the last directory for convenience.
+        </p>
+    </section>
+
+    <section id="sca-excel">
+        <h2>Importing SCA Excel ledgers</h2>
+        <p>
+            To review the modern Excel version of the SCA ledger template:
+        </p>
+        <ol>
+            <li>Open the <strong>SCA Ledger</strong> menu.</li>
+            <li>Select <em>Import from Excel (SCA)</em>.</li>
+            <li>Choose the <code>.xlsx</code> workbook. The importer scans the sheet, expands allocation columns automatically, and streams the data into the viewer.</li>
+            <li>The table opens in the Page Viewer window so you can sort, filter, or save a copy.</li>
+        </ol>
+        <p class="tip">
+            The importer remembers your last directory and keeps cells read-only so the grid reflects exactly what was stored in the workbook.
+        </p>
+    </section>
+
+    <section id="tooltip-guide">
+        <h2>Developer appendix: JavaFX tooltip checklist</h2>
+        <p>
+            For a consistent and accessible experience, follow these practices when adding hover tooltips:
+        </p>
+        <ul>
+            <li><strong>Centralise creation.</strong> Use a helper method to apply show/hide delays, wrapping, and max width.</li>
+            <li><strong>Attach correctly.</strong> Call <code>control.setTooltip</code> for controls and <code>Tooltip.install</code> for generic nodes.</li>
+            <li><strong>Style globally.</strong> Set common fonts, padding, and drop shadows in <code>application.css</code>.</li>
+            <li><strong>Keep copy concise.</strong> Aim for one or two lines. Provide a secondary help view for lengthy explanations.</li>
+            <li><strong>Support keyboard users.</strong> Show tooltips when the control receives focus, not only on hover.</li>
+            <li><strong>Reuse instances.</strong> In table or list cell factories, create a single tooltip per cell and update its text to avoid churn.</li>
+            <li><strong>Consider validation states.</strong> Pair pseudo-classes (e.g. <code>.text-field:error</code>) with context-sensitive tooltips for feedback.</li>
+            <li><strong>Internationalise.</strong> Load tooltip strings from resource bundles and keep phrasing translation friendly.</li>
+        </ul>
+        <p>
+            The codebase includes helper snippets for dynamic tooltips, rich content (icon + text), and long-press behaviour on touch devices.
+        </p>
+    </section>
+</body>
+</html>

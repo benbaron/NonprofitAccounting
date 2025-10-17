@@ -93,8 +93,10 @@ public class NonprofitBookkeepingFX extends Application
 	private MenuItem miEditJournal;
 	/** Menu item for importing COA from XLSX. */
 	private MenuItem miImportCoaXlsx;
-	/** Menu item for exporting COA to XLSX. */
-	private MenuItem miExportCoaXlsx;
+        /** Menu item for exporting COA to XLSX. */
+        private MenuItem miExportCoaXlsx;
+        /** Menu item for exporting account statements to OFX/QFX. */
+        private MenuItem miExportStatementOfx;
 	
 	// Menus that need their state managed
 	/** Top-level menu for running various tools and plugin features. */
@@ -278,6 +280,8 @@ public class NonprofitBookkeepingFX extends Application
                         e -> new ImportCoaXlsxActionFX(this.primaryStage).handle(e));
                 this.miExportCoaXlsx = add(companyMenu, "Export COA (XLSX)",
                         e -> new ExportCoaXlsxActionFX(this.primaryStage).handle(e));
+                this.miExportStatementOfx = add(companyMenu, "Export Statement (OFX/QFX)",
+                        e -> new ExportFileActionFX(this.primaryStage).handle(e));
                 bar.getMenus().add(companyMenu);
 		
 		/* EDIT */
@@ -590,6 +594,10 @@ public class NonprofitBookkeepingFX extends Application
                 this.miEditJournal.setDisable(!companyOpen || creatingCompany);
                 this.miImportCoaXlsx.setDisable(!companyOpen || creatingCompany);
                 this.miExportCoaXlsx.setDisable(!companyOpen || creatingCompany);
+                if (this.miExportStatementOfx != null)
+                {
+                        this.miExportStatementOfx.setDisable(!companyOpen || creatingCompany);
+                }
 
                 this.run.setDisable(!companyOpen || creatingCompany);
                 this.panels.setDisable(!companyOpen || creatingCompany);
