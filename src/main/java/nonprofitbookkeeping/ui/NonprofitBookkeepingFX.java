@@ -2,9 +2,11 @@
 package nonprofitbookkeeping.ui;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,6 +20,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -108,10 +111,12 @@ public class NonprofitBookkeepingFX extends Application
 	
 	/** Logger for this class. */
 	private static final Logger LOGGER = Logger.getLogger(NonprofitBookkeepingFX.class.getName());
-	/** List to hold all successfully loaded plugins. */
-	private List<Plugin> loadedPlugins = new ArrayList<>();
-	/** The application context passed to plugins and potentially other components. */
-	private ApplicationContext applicationContext;
+        /** List to hold all successfully loaded plugins. */
+        private List<Plugin> loadedPlugins = new ArrayList<>();
+        /** The application context passed to plugins and potentially other components. */
+        private ApplicationContext applicationContext;
+        /** Service that imports legacy .npbk archives into the active database. */
+        private final LegacyNpbkImportService legacyNpbkImportService = new LegacyNpbkImportService();
 	
 	/**
 	 * Static inner class acting as a container for singleton service instances.
@@ -469,25 +474,65 @@ public class NonprofitBookkeepingFX extends Application
         {
                 Menu db = new Menu("Database");
                 add(db, "Open/Create H2 DB...", e -> handleOpenOrCreateDatabase());
+                add(db, "Import Legacy .npbk Archive...", e -> handleImportLegacyArchive());
                 add(db, "Import H2 script into DB...", e -> handleImportScriptIntoDatabase());
                 return db;
         }
 
         private void handleOpenOrCreateDatabase()
         {
-                FileChooser fc = new FileChooser();
-                fc.setTitle("Choose H2 DB file (will create if missing)");
-                fc.getExtensionFilters()
-                        .add(new FileChooser.ExtensionFilter("H2 DB (*.mv.db or base name)", "*.*"));
-                File file = fc.showSaveDialog(this.primaryStage);
+                FileChooser chooser = new FileChooser();
+                chooser.setTitle("Open or Create H2 Database");
+                chooser.getExtensionFilters().setAll(
+                        new FileChooser.ExtensionFilter("H2 Database (*.mv.db)", "*.mv.db"),
+                        new FileChooser.ExtensionFilter("All Files", "*.*"));
+
+                ButtonType openExisting = new ButtonType("Open Existing");
+                ButtonType createNew = new ButtonType("Create New");
+                Alert choiceDialog = new Alert(Alert.AlertType.CONFIRMATION);
+                choiceDialog.setTitle("Select Database Action");
+                choiceDialog.setHeaderText("Would you like to open an existing database or create a new one?");
+                choiceDialog.getButtonTypes().setAll(openExisting, createNew, ButtonType.CANCEL);
+
+                Optional<ButtonType> selection = choiceDialog.showAndWait();
+
+                if (selection.isEmpty() || selection.get() == ButtonType.CANCEL)
+                {
+                        return;
+                }
+
+                boolean creating = selection.get() == createNew;
+                File file = creating ? chooser.showSaveDialog(this.primaryStage)
+                        : chooser.showOpenDialog(this.primaryStage);
 
                 if (file == null)
+                {
                         return;
+                }
 
-                Path base = file.toPath();
+                Path base = normalizeH2Base(file.toPath());
 
                 try
                 {
+                        if (!creating)
+                        {
+                                Path dataFile = resolveH2DataFile(base);
+                                if (Files.notExists(dataFile))
+                                {
+                                        Alert alert = new Alert(Alert.AlertType.ERROR,
+                                                "The selected file does not contain an H2 database: "
+                                                        + dataFile.toAbsolutePath());
+                                        alert.setHeaderText("Database Not Found");
+                                        alert.showAndWait();
+                                        return;
+                                }
+                        }
+
+                        if (base.getParent() != null)
+                        {
+                                Files.createDirectories(base.getParent());
+                        }
+
                         Database.init(base);
                         Database.get().ensureSchema();
                         Alert a = new Alert(Alert.AlertType.INFORMATION,
@@ -511,6 +556,65 @@ public class NonprofitBookkeepingFX extends Application
                         LOGGER.log(Level.SEVERE, "Failed to open DB: " + base, ex);
                         Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to open DB: " + ex.getMessage());
                         alert.setHeaderText("Database Error");
+                        alert.showAndWait();
+                }
+        }
+
+        private void handleImportLegacyArchive()
+        {
+                if (!Database.isInitialized())
+                {
+                        Alert alert = new Alert(Alert.AlertType.WARNING,
+                                "Open/Create an H2 DB first.");
+                        alert.setHeaderText("Database Not Ready");
+                        alert.showAndWait();
+                        return;
+                }
+
+                FileChooser chooser = new FileChooser();
+                chooser.setTitle("Import Legacy .npbk Archive");
+                chooser.getExtensionFilters().setAll(
+                        new FileChooser.ExtensionFilter("Legacy Archives (*.npbk, *.json)", "*.npbk", "*.json"),
+                        new FileChooser.ExtensionFilter("All Files", "*.*"));
+
+                File file = chooser.showOpenDialog(this.primaryStage);
+
+                if (file == null)
+                {
+                        return;
+                }
+
+                try
+                {
+                        long id = this.legacyNpbkImportService.importArchive(file.toPath());
+
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION,
+                                "Imported legacy archive into the database.\nCompany record id: " + id);
+                        alert.setHeaderText("Legacy Import Complete");
+                        alert.showAndWait();
+
+                        if (this.companySelectionPanel != null)
+                        {
+                                this.companySelectionPanel.refreshCompanyList();
+                        }
+
+                        if (this.mainView != null)
+                        {
+                                this.mainView.showCompanySelection();
+                        }
+                }
+                catch (IllegalArgumentException | IllegalStateException ex)
+                {
+                        Alert alert = new Alert(Alert.AlertType.ERROR, ex.getMessage());
+                        alert.setHeaderText("Import Failed");
+                        alert.showAndWait();
+                }
+                catch (Exception ex)
+                {
+                        LOGGER.log(Level.SEVERE, "Failed to import legacy archive", ex);
+                        Alert alert = new Alert(Alert.AlertType.ERROR,
+                                "Failed to import legacy archive: " + ex.getMessage());
+                        alert.setHeaderText("Import Failed");
                         alert.showAndWait();
                 }
         }
@@ -549,6 +653,34 @@ public class NonprofitBookkeepingFX extends Application
                         alert.setHeaderText("Import Error");
                         alert.showAndWait();
                 }
+        }
+
+        private static Path normalizeH2Base(Path chosen)
+        {
+                String fileName = chosen.getFileName() != null ? chosen.getFileName().toString() : chosen.toString();
+
+                if (fileName.endsWith(".mv.db"))
+                {
+                        String trimmed = fileName.substring(0, fileName.length() - ".mv.db".length());
+                        Path parent = chosen.getParent();
+                        return parent == null ? Path.of(trimmed) : parent.resolve(trimmed);
+                }
+
+                return chosen;
+        }
+
+        private static Path resolveH2DataFile(Path base)
+        {
+                String fileName = base.getFileName() != null ? base.getFileName().toString() : base.toString();
+
+                if (fileName.endsWith(".mv.db"))
+                {
+                        return base;
+                }
+
+                Path parent = base.getParent();
+                String candidate = fileName + ".mv.db";
+                return parent == null ? Path.of(candidate) : parent.resolve(candidate);
         }
 	
 	/**
