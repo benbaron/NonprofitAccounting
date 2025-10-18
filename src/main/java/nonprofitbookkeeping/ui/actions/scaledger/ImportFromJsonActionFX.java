@@ -5,6 +5,7 @@ import java.io.File;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.Vector;
 
@@ -47,11 +48,11 @@ public class ImportFromJsonActionFX implements EventHandler<ActionEvent>
      *               where the imported data will be displayed. This provides the context for UI updates.
      * @throws NullPointerException if {@code owner} or {@code plugin} is null (though not explicitly checked currently).
      */
-	public ImportFromJsonActionFX(Stage owner, SCALedgerPlugin plugin)
-	{
-		this.owner = owner;
-		this.plugin = plugin;
-	}
+        public ImportFromJsonActionFX(Stage owner, SCALedgerPlugin plugin)
+        {
+                this.owner = owner;
+                this.plugin = Objects.requireNonNull(plugin, "plugin");
+        }
 	
 	/**
 	 * {@inheritDoc}
