@@ -2,7 +2,6 @@
 package nonprofitbookkeeping.ui;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -11,7 +10,6 @@ import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.sql.SQLException;
 
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
@@ -22,10 +20,10 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -43,7 +41,6 @@ import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.panels.*;
 import nonprofitbookkeeping.ui.javafx.BudgetPanelFX;
 import nonprofitbookkeeping.tools.H2ScriptCompanyImporter;
-import nonprofitbookkeeping.preferences.PreferencesManager;
 
 
 /**
@@ -114,10 +111,12 @@ public class NonprofitBookkeepingFX extends Application
 	
 	/** Logger for this class. */
 	private static final Logger LOGGER = Logger.getLogger(NonprofitBookkeepingFX.class.getName());
-	/** List to hold all successfully loaded plugins. */
-	private List<Plugin> loadedPlugins = new ArrayList<>();
-	/** The application context passed to plugins and potentially other components. */
-	private ApplicationContext applicationContext;
+        /** List to hold all successfully loaded plugins. */
+        private List<Plugin> loadedPlugins = new ArrayList<>();
+        /** The application context passed to plugins and potentially other components. */
+        private ApplicationContext applicationContext;
+        /** Service that imports legacy .npbk archives into the active database. */
+        private final LegacyNpbkImportService legacyNpbkImportService = new LegacyNpbkImportService();
 	
 	/**
 	 * Static inner class acting as a container for singleton service instances.
@@ -482,59 +481,63 @@ public class NonprofitBookkeepingFX extends Application
 
         private void handleOpenOrCreateDatabase()
         {
-                FileChooser fc = new FileChooser();
-                fc.setTitle("Open or Create H2 Database");
-                fc.getExtensionFilters().addAll(
+                FileChooser chooser = new FileChooser();
+                chooser.setTitle("Open or Create H2 Database");
+                chooser.getExtensionFilters().setAll(
                         new FileChooser.ExtensionFilter("H2 Database (*.mv.db)", "*.mv.db"),
                         new FileChooser.ExtensionFilter("All Files", "*.*"));
-                applyInitialDirectory(fc);
 
-                File file = fc.showOpenDialog(this.primaryStage);
+                ButtonType openExisting = new ButtonType("Open Existing");
+                ButtonType createNew = new ButtonType("Create New");
+                Alert choiceDialog = new Alert(Alert.AlertType.CONFIRMATION);
+                choiceDialog.setTitle("Select Database Action");
+                choiceDialog.setHeaderText("Would you like to open an existing database or create a new one?");
+                choiceDialog.getButtonTypes().setAll(openExisting, createNew, ButtonType.CANCEL);
+
+                Optional<ButtonType> selection = choiceDialog.showAndWait();
+
+                if (selection.isEmpty() || selection.get() == ButtonType.CANCEL)
+                {
+                        return;
+                }
+
+                boolean creating = selection.get() == createNew;
+                File file = creating ? chooser.showSaveDialog(this.primaryStage)
+                        : chooser.showOpenDialog(this.primaryStage);
 
                 if (file == null)
-                        return;
-
-                updateLastDirectoryPreference(file);
-
-                Path base = resolveDatabaseBase(file.toPath());
-
-                if (!databaseFilesExist(base))
                 {
-                        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-                                "No H2 database was found at the selected location. Create a new database there?");
-                        confirm.setTitle("Create Database?");
-                        confirm.setHeaderText("Database file not found");
-                        confirm.initOwner(this.primaryStage);
-                        Optional<ButtonType> choice = confirm.showAndWait();
-
-                        if (choice.isEmpty() || choice.get() != ButtonType.OK)
-                        {
-                                return;
-                        }
-
-                        try
-                        {
-                                ensureParentDirectoryExists(base);
-                        }
-                        catch (IOException io)
-                        {
-                                Alert alert = new Alert(Alert.AlertType.ERROR,
-                                        "Failed to prepare directory: " + io.getMessage());
-                                alert.setHeaderText("Database Error");
-                                alert.initOwner(this.primaryStage);
-                                alert.showAndWait();
-                                return;
-                        }
+                        return;
                 }
+
+                Path base = normalizeH2Base(file.toPath());
 
                 try
                 {
+                        if (!creating)
+                        {
+                                Path dataFile = resolveH2DataFile(base);
+                                if (Files.notExists(dataFile))
+                                {
+                                        Alert alert = new Alert(Alert.AlertType.ERROR,
+                                                "The selected file does not contain an H2 database: "
+                                                        + dataFile.toAbsolutePath());
+                                        alert.setHeaderText("Database Not Found");
+                                        alert.showAndWait();
+                                        return;
+                                }
+                        }
+
+                        if (base.getParent() != null)
+                        {
+                                Files.createDirectories(base.getParent());
+                        }
+
                         Database.init(base);
                         Database.get().ensureSchema();
                         Alert a = new Alert(Alert.AlertType.INFORMATION,
-                                "Database ready at: " + describeDatabaseLocation(base));
+                                "Database initialized at: " + base.toAbsolutePath());
                         a.setHeaderText("H2 Ready");
-                        a.initOwner(this.primaryStage);
                         a.showAndWait();
                         setState(AppState.NO_COMPANY);
 
@@ -553,7 +556,6 @@ public class NonprofitBookkeepingFX extends Application
                         LOGGER.log(Level.SEVERE, "Failed to open DB: " + base, ex);
                         Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to open DB: " + ex.getMessage());
                         alert.setHeaderText("Database Error");
-                        alert.initOwner(this.primaryStage);
                         alert.showAndWait();
                 }
         }
@@ -562,149 +564,59 @@ public class NonprofitBookkeepingFX extends Application
         {
                 if (!Database.isInitialized())
                 {
-                        Alert alert = new Alert(Alert.AlertType.ERROR,
-                                "Initialize an H2 database before importing legacy archives.");
+                        Alert alert = new Alert(Alert.AlertType.WARNING,
+                                "Open/Create an H2 DB first.");
                         alert.setHeaderText("Database Not Ready");
-                        alert.initOwner(this.primaryStage);
                         alert.showAndWait();
                         return;
                 }
 
                 FileChooser chooser = new FileChooser();
                 chooser.setTitle("Import Legacy .npbk Archive");
-                chooser.getExtensionFilters().addAll(
-                        new FileChooser.ExtensionFilter("Legacy Archives (*.npbk)", "*.npbk"),
-                        new FileChooser.ExtensionFilter("JSON Archives (*.json)", "*.json"),
+                chooser.getExtensionFilters().setAll(
+                        new FileChooser.ExtensionFilter("Legacy Archives (*.npbk, *.json)", "*.npbk", "*.json"),
                         new FileChooser.ExtensionFilter("All Files", "*.*"));
-                applyInitialDirectory(chooser);
 
-                File selected = chooser.showOpenDialog(this.primaryStage);
-                if (selected == null)
-                {
-                        return;
-                }
+                File file = chooser.showOpenDialog(this.primaryStage);
 
-                updateLastDirectoryPreference(selected);
-
-                LegacyNpbkImportService importService = new LegacyNpbkImportService();
-
-                try
-                {
-                        long companyId = importService.importArchive(selected.toPath());
-                        Alert info = new Alert(Alert.AlertType.INFORMATION,
-                                "Imported data from " + selected.getName() + " as company ID " + companyId + ".");
-                        info.setHeaderText("Legacy Import Complete");
-                        info.initOwner(this.primaryStage);
-                        info.showAndWait();
-
-                        if (this.companySelectionPanel != null)
-                        {
-                                this.companySelectionPanel.refreshCompanyList();
-                        }
-                }
-                catch (IOException | SQLException ex)
-                {
-                        LOGGER.log(Level.WARNING, "Failed to import legacy archive: " + selected, ex);
-                        Alert alert = new Alert(Alert.AlertType.ERROR,
-                                "Import failed: " + ex.getMessage());
-                        alert.setHeaderText("Legacy Import Failed");
-                        alert.initOwner(this.primaryStage);
-                        alert.showAndWait();
-                }
-                catch (IllegalArgumentException | IllegalStateException ex)
-                {
-                        Alert alert = new Alert(Alert.AlertType.ERROR, ex.getMessage());
-                        alert.setHeaderText("Legacy Import Failed");
-                        alert.initOwner(this.primaryStage);
-                        alert.showAndWait();
-                }
-        }
-
-        private static void applyInitialDirectory(FileChooser chooser)
-        {
-                String lastDir = PreferencesManager.getLastDirectory();
-
-                if (lastDir == null || lastDir.isBlank())
-                {
-                        return;
-                }
-
-                File dir = new File(lastDir);
-
-                if (dir.isDirectory())
-                {
-                        chooser.setInitialDirectory(dir);
-                }
-        }
-
-        private static void updateLastDirectoryPreference(File file)
-        {
                 if (file == null)
                 {
                         return;
                 }
 
-                File parent = file.getParentFile();
-
-                if (parent != null && parent.isDirectory())
+                try
                 {
-                        PreferencesManager.setLastDirectory(parent.getAbsolutePath());
-                }
-        }
+                        long id = this.legacyNpbkImportService.importArchive(file.toPath());
 
-        private static Path resolveDatabaseBase(Path selected)
-        {
-                if (selected == null)
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION,
+                                "Imported legacy archive into the database.\nCompany record id: " + id);
+                        alert.setHeaderText("Legacy Import Complete");
+                        alert.showAndWait();
+
+                        if (this.companySelectionPanel != null)
+                        {
+                                this.companySelectionPanel.refreshCompanyList();
+                        }
+
+                        if (this.mainView != null)
+                        {
+                                this.mainView.showCompanySelection();
+                        }
+                }
+                catch (IllegalArgumentException | IllegalStateException ex)
                 {
-                        throw new IllegalArgumentException("Selected path cannot be null");
+                        Alert alert = new Alert(Alert.AlertType.ERROR, ex.getMessage());
+                        alert.setHeaderText("Import Failed");
+                        alert.showAndWait();
                 }
-
-                String name = selected.getFileName().toString();
-
-                if (name.endsWith(".mv.db"))
+                catch (Exception ex)
                 {
-                        return selected.resolveSibling(name.substring(0, name.length() - ".mv.db".length()));
+                        LOGGER.log(Level.SEVERE, "Failed to import legacy archive", ex);
+                        Alert alert = new Alert(Alert.AlertType.ERROR,
+                                "Failed to import legacy archive: " + ex.getMessage());
+                        alert.setHeaderText("Import Failed");
+                        alert.showAndWait();
                 }
-
-                if (name.endsWith(".trace.db"))
-                {
-                        return selected.resolveSibling(name.substring(0, name.length() - ".trace.db".length()));
-                }
-
-                return selected;
-        }
-
-        private static boolean databaseFilesExist(Path base)
-        {
-                return Files.exists(base) || Files.exists(appendMvDb(base));
-        }
-
-        private static Path appendMvDb(Path base)
-        {
-                String name = base.getFileName() == null ? base.toString() : base.getFileName().toString();
-                return base.resolveSibling(name + ".mv.db");
-        }
-
-        private static void ensureParentDirectoryExists(Path base) throws IOException
-        {
-                Path parent = base.getParent();
-
-                if (parent != null && !Files.exists(parent))
-                {
-                        Files.createDirectories(parent);
-                }
-        }
-
-        private static String describeDatabaseLocation(Path base)
-        {
-                Path mvDb = appendMvDb(base);
-
-                if (Files.exists(mvDb))
-                {
-                        return mvDb.toAbsolutePath().toString();
-                }
-
-                return base.toAbsolutePath().toString();
         }
 
         private void handleImportScriptIntoDatabase()
@@ -741,6 +653,34 @@ public class NonprofitBookkeepingFX extends Application
                         alert.setHeaderText("Import Error");
                         alert.showAndWait();
                 }
+        }
+
+        private static Path normalizeH2Base(Path chosen)
+        {
+                String fileName = chosen.getFileName() != null ? chosen.getFileName().toString() : chosen.toString();
+
+                if (fileName.endsWith(".mv.db"))
+                {
+                        String trimmed = fileName.substring(0, fileName.length() - ".mv.db".length());
+                        Path parent = chosen.getParent();
+                        return parent == null ? Path.of(trimmed) : parent.resolve(trimmed);
+                }
+
+                return chosen;
+        }
+
+        private static Path resolveH2DataFile(Path base)
+        {
+                String fileName = base.getFileName() != null ? base.getFileName().toString() : base.toString();
+
+                if (fileName.endsWith(".mv.db"))
+                {
+                        return base;
+                }
+
+                Path parent = base.getParent();
+                String candidate = fileName + ".mv.db";
+                return parent == null ? Path.of(candidate) : parent.resolve(candidate);
         }
 	
 	/**
