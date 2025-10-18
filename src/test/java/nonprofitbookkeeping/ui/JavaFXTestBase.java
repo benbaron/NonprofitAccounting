@@ -14,6 +14,20 @@ import java.util.concurrent.Semaphore;
 
 public abstract class JavaFXTestBase extends ApplicationTest
 {
+        static
+        {
+                System.setProperty("testfx.toolkit", "glass");
+                System.setProperty("testfx.showMode", "SHOW");
+                System.setProperty("testfx.robot", "glass");
+                System.setProperty("testfx.headless", "true");
+                System.setProperty("glass.platform", "Monocle");
+                System.setProperty("monocle.platform", "Headless");
+                System.setProperty("prism.order", "sw");
+                System.setProperty("prism.text", "t2k");
+                System.setProperty("prism.es2", "false");
+                System.setProperty("prism.allowhidpi", "false");
+                System.setProperty("java.awt.headless", "false");
+        }
 	
 	private Stage stage;
 	
@@ -29,18 +43,23 @@ public abstract class JavaFXTestBase extends ApplicationTest
 		stage1.show();
 	}
 	
-	@BeforeEach public void setupToolkit() throws Exception
-	{
-		// Set up the toolkit if not already initialized
-		// Using SHOW mode to make tests visible, which can be helpful for debugging
-		// For headless environments, this might need to be configured differently
-		System.setProperty("testfx.toolkit", "glass");
-		System.setProperty("testfx.showMode", "SHOW");
-		System.setProperty("testfx.robot", "glass");
-		System.setProperty("prism.order", "sw"); // Use software rendering pipeline
-		System.setProperty("prism.text", "t2k"); // Use T2K font rendering
-		System.setProperty("java.awt.headless", "false"); // Ensure AWT is not in headless mode for
-															// JavaFX
+        @BeforeEach public void setupToolkit() throws Exception
+        {
+                // Set up the toolkit if not already initialized
+                // Using SHOW mode to make tests visible, which can be helpful for debugging
+                // For headless environments, this might need to be configured differently
+                System.setProperty("testfx.toolkit", "glass");
+                System.setProperty("testfx.showMode", "SHOW");
+                System.setProperty("testfx.robot", "glass");
+                System.setProperty("testfx.headless", "true");
+                System.setProperty("glass.platform", "Monocle");
+                System.setProperty("monocle.platform", "Headless");
+                System.setProperty("prism.order", "sw"); // Use software rendering pipeline
+                System.setProperty("prism.text", "t2k"); // Use T2K font rendering
+                System.setProperty("prism.es2", "false");
+                System.setProperty("prism.allowhidpi", "false");
+                System.setProperty("java.awt.headless", "false"); // Ensure AWT is not in headless mode for
+                                                                                                                        // JavaFX
 		
 		// This is a workaround for potential issues with toolkit initialization in some
 		// environments
