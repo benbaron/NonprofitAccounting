@@ -104,7 +104,7 @@ This document lists potential code issues, areas for improvement, or bugs that w
 - Journal and skeleton panels were updated to use this panel for edits.
 
 ### 11. Implement Placeholder Functions
-- Implement real file export logic in `ExportFileActionFX.handle` instead of writing placeholder text.
+- Implement real file export logic in `ExportFileActionFX.handle` instead of writing placeholder text. *(complete)*
 - Implement actual import processing in `ImportFileActionFX.handle`.
 - Replace the alert in `AccountsActivityPanelFX` with functional statement import code.
 - Add dynamic UI listeners in `BudgetLineDialog.attachListeners` for validation and field updates.
