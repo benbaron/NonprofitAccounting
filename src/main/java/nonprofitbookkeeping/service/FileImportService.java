@@ -2,6 +2,7 @@
 package nonprofitbookkeeping.service;
 
 import com.webcohesion.ofx4j.domain.data.MessageSetType;
+import com.webcohesion.ofx4j.domain.data.ResponseMessageSet;
 import com.webcohesion.ofx4j.domain.data.ResponseEnvelope;
 import com.webcohesion.ofx4j.domain.data.ResponseMessage;
 import com.webcohesion.ofx4j.domain.data.banking.BankAccountDetails;
@@ -116,75 +117,81 @@ public class FileImportService
 			new AggregateUnmarshaller<>(ResponseEnvelope.class);
 		ResponseEnvelope envelope = unmarshaller.unmarshal(inputStream);
 		
-		List<ResponseMessage> r =
-			envelope.getMessageSet(MessageSetType.banking).getResponseMessages();
-		
-		
-		for (int i = 0; i < r.size(); i++)
-		{
-			BankStatementResponseTransaction bankResponse =
-				(BankStatementResponseTransaction) r.get(i);
-			
-			if (bankResponse != null && bankResponse.getWrappedMessage() != null)
-			{
-				BankStatementResponse statement = bankResponse.getWrappedMessage();
-				BankAccountDetails bankAccount = statement.getAccount();
-				String accountNumber = bankAccount.getAccountNumber();
-				String accountType = bankAccount.getAccountType() != null ?
-					bankAccount.getAccountType().toString() : "BANK";
-				String currencyCode = statement.getCurrencyCode();
-				TransactionList transactionList = statement.getTransactionList();
-				
-				if (transactionList != null)
-				{
-					
-					for (Transaction ofxTransaction : transactionList.getTransactions())
-					{
-						importedTransactions.add(mapToImportedTransaction(ofxTransaction,
-							accountNumber, accountType, currencyCode));
-					}
-					
-				}
-				
-			}
-			
-		}
-		
-		List<ResponseMessage> r2 =
-			envelope.getMessageSet(MessageSetType.creditcard).getResponseMessages();
-		
-		for (int i = 0; i < r2.size(); i++)
-		{
-			CreditCardStatementResponseTransaction ccResponse =
-				(CreditCardStatementResponseTransaction) r2.get(i); // Corrected from r.get(i)
-			
-			
-			// Using getMessage() as suggested by OFX4J patterns for TransactionWrapper
-			if (ccResponse != null && ccResponse.getMessage() != null)
-			{
-				CreditCardStatementResponse statement = ccResponse.getMessage(); // Changed from
-																					// getWrappedMessage()
-				
-				CreditCardAccountDetails ccAccount = statement.getAccount();
-				String accountNumber = ccAccount.getAccountNumber();
-				String accountType = "CREDITCARD";
-				String currencyCode = statement.getCurrencyCode();
-				TransactionList transactionList = statement.getTransactionList();
-				
-				if (transactionList != null)
-				{
-					
-					for (Transaction ofxTransaction : transactionList.getTransactions())
-					{
-						importedTransactions.add(mapToImportedTransaction(ofxTransaction,
-							accountNumber, accountType, currencyCode));
-					}
-					
-				}
-				
-			}
-			
-		}
+                ResponseMessageSet bankMessageSet = envelope.getMessageSet(MessageSetType.banking);
+
+                if (bankMessageSet != null)
+                {
+                        List<ResponseMessage> bankingResponses = bankMessageSet.getResponseMessages();
+
+                        if (bankingResponses != null)
+                        {
+                                for (ResponseMessage responseMessage : bankingResponses)
+                                {
+                                        BankStatementResponseTransaction bankResponse =
+                                                (BankStatementResponseTransaction) responseMessage;
+
+                                        if (bankResponse != null && bankResponse.getWrappedMessage() != null)
+                                        {
+                                                BankStatementResponse statement = bankResponse.getWrappedMessage();
+                                                BankAccountDetails bankAccount = statement.getAccount();
+                                                String accountNumber = bankAccount.getAccountNumber();
+                                                String accountType = bankAccount.getAccountType() != null ?
+                                                        bankAccount.getAccountType().toString() : "BANK";
+                                                String currencyCode = statement.getCurrencyCode();
+                                                TransactionList transactionList = statement.getTransactionList();
+
+                                                if (transactionList != null &&
+                                                        transactionList.getTransactions() != null)
+                                                {
+                                                        for (Transaction ofxTransaction : transactionList.getTransactions())
+                                                        {
+                                                                importedTransactions.add(
+                                                                        mapToImportedTransaction(ofxTransaction,
+                                                                                accountNumber, accountType, currencyCode));
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+
+                ResponseMessageSet creditMessageSet = envelope.getMessageSet(MessageSetType.creditcard);
+
+                if (creditMessageSet != null)
+                {
+                        List<ResponseMessage> creditResponses = creditMessageSet.getResponseMessages();
+
+                        if (creditResponses != null)
+                        {
+                                for (ResponseMessage responseMessage : creditResponses)
+                                {
+                                        CreditCardStatementResponseTransaction ccResponse =
+                                                (CreditCardStatementResponseTransaction) responseMessage;
+
+                                        // Using getMessage() as suggested by OFX4J patterns for TransactionWrapper
+                                        if (ccResponse != null && ccResponse.getMessage() != null)
+                                        {
+                                                CreditCardStatementResponse statement = ccResponse.getMessage();
+                                                CreditCardAccountDetails ccAccount = statement.getAccount();
+                                                String accountNumber = ccAccount.getAccountNumber();
+                                                String accountType = "CREDITCARD";
+                                                String currencyCode = statement.getCurrencyCode();
+                                                TransactionList transactionList = statement.getTransactionList();
+
+                                                if (transactionList != null &&
+                                                        transactionList.getTransactions() != null)
+                                                {
+                                                        for (Transaction ofxTransaction : transactionList.getTransactions())
+                                                        {
+                                                                importedTransactions.add(
+                                                                        mapToImportedTransaction(ofxTransaction,
+                                                                                accountNumber, accountType, currencyCode));
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
 		
 		return importedTransactions;
 	}

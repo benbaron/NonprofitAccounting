@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -68,43 +69,60 @@ public class JacksonDataStorer implements DataStorer
                 LOGGER.debug("Entering loadData");
                 T value = null;
 		
-		try (FileInputStream fis = new FileInputStream(file);
-			ZipInputStream zis = new ZipInputStream(fis))
-		{
-			ZipEntry zipEntry;
-			boolean entryFound = false;
-			
-			while ((zipEntry = zis.getNextEntry()) != null)
-			{
-				
-				if (JSON_ENTRY_NAME.equals(zipEntry.getName()))
-				{
-					value = this.mapper.readValue(zis, type);
-					entryFound = true;
-					break;
-				}
-				
-				zis.closeEntry();
-			}
-			
-			if (!entryFound)
-			{
-                                // LOGGER.warn("loadData: ERROR - company_data.json not found in zip");
-				throw new IOException("Entry '" + JSON_ENTRY_NAME + "' not found in the zip file.");
-			}
-			
-		}
+                try
+                {
+                        if (file == null)
+                        {
+                                throw new IOException("File is null");
+                        }
+
+                        if (isZipArchive(file))
+                        {
+                                try (FileInputStream fis = new FileInputStream(file);
+                                        ZipInputStream zis = new ZipInputStream(fis))
+                                {
+                                        ZipEntry zipEntry;
+                                        boolean entryFound = false;
+
+                                        while ((zipEntry = zis.getNextEntry()) != null)
+                                        {
+
+                                                if (JSON_ENTRY_NAME.equals(zipEntry.getName()))
+                                                {
+                                                        value = this.mapper.readValue(zis, type);
+                                                        entryFound = true;
+                                                        break;
+                                                }
+
+                                                zis.closeEntry();
+                                        }
+
+                                        if (!entryFound)
+                                        {
+                                                throw new IOException(
+                                                        "Entry '" + JSON_ENTRY_NAME + "' not found in the zip file.");
+                                        }
+                                }
+                        }
+                        else
+                        {
+                                try (InputStream is = new FileInputStream(file))
+                                {
+                                        value = this.mapper.readValue(is, type);
+                                }
+                        }
+                }
                 catch (StreamReadException e)
                 {
-                        LOGGER.error("Error reading JSON stream from zip", e);
-                        AlertBox.showError(null, "Error reading JSON stream from zip: " + e.getMessage());
-                        throw new IOException("Error reading JSON stream from zip: " + e.getMessage(), e);
+                        LOGGER.error("Error reading JSON stream", e);
+                        AlertBox.showError(null, "Error reading JSON stream: " + e.getMessage());
+                        throw new IOException("Error reading JSON stream: " + e.getMessage(), e);
                 }
                 catch (DatabindException e)
                 {
-                        LOGGER.error("Error deserializing JSON data from zip", e);
-                        AlertBox.showError(null, "Error deserializing JSON data from zip: " + e.getMessage());
-                        throw new IOException("Error deserializing JSON data from zip: " + e.getMessage(), e);
+                        LOGGER.error("Error deserializing JSON data", e);
+                        AlertBox.showError(null, "Error deserializing JSON data: " + e.getMessage());
+                        throw new IOException("Error deserializing JSON data: " + e.getMessage(), e);
                 }
                 catch (IOException e)
                 {
@@ -185,10 +203,40 @@ public class JacksonDataStorer implements DataStorer
 	 * Gets the static dataStorer instance.
 	 * @return The static JacksonDataStorer instance.
 	 */
-	public static JacksonDataStorer getDataStorer()
-	{
-		return JacksonDataStorer.dataStorer;
-	}
-	
-	
+        public static JacksonDataStorer getDataStorer()
+        {
+                return JacksonDataStorer.dataStorer;
+        }
+
+
+        /**
+         * Determines if the supplied file is a ZIP archive by inspecting its magic number.
+         *
+         * @param file the file to inspect
+         * @return {@code true} if the file appears to be a ZIP archive, {@code false} otherwise
+         * @throws IOException if the file cannot be read
+         */
+        private static boolean isZipArchive(File file) throws IOException
+        {
+                if (file == null || !file.exists())
+                {
+                        return false;
+                }
+
+                try (FileInputStream fis = new FileInputStream(file))
+                {
+                        byte[] signature = new byte[4];
+                        int read = fis.read(signature);
+
+                        if (read < 4)
+                        {
+                                return false;
+                        }
+
+                        return signature[0] == 0x50 && signature[1] == 0x4B &&
+                                (signature[2] == 0x03 || signature[2] == 0x05 || signature[2] == 0x07) &&
+                                (signature[3] == 0x04 || signature[3] == 0x06 || signature[3] == 0x08);
+                }
+        }
+
 }
