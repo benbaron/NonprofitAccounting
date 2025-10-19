@@ -105,17 +105,15 @@ public class CurrentCompany
 	 * @param companyId identifier of the stored company
 	 * @throws IOException if the company cannot be retrieved or deserialized
 	 */
-	public static void loadFromPersistent(long companyId) throws IOException
-	{
-		try
-		{
-                        Company normalized = dataRepository.load();
-                        boolean hasNormalizedData = normalized != null
-                                && (!normalized.getChartOfAccounts().getAccounts().isEmpty()
-                                        || !normalized.getLedger().getJournal().getJournalTransactions().isEmpty()
-                                        || normalized.getCompanyProfileModel() != null);
+        public static void loadFromPersistent(long companyId) throws IOException
+        {
+                try
+                {
+                        boolean sameCompanyRequested = CurrentCompany.currentCompanyId != null
+                                && CurrentCompany.currentCompanyId.equals(companyId);
+                        Company normalized = sameCompanyRequested ? dataRepository.load() : null;
 
-                        if (!hasNormalizedData)
+                        if (!hasMeaningfulNormalizedData(normalized))
                         {
                                 company = repository.load(companyId);
                                 dataRepository.persist(company);
@@ -142,11 +140,27 @@ public class CurrentCompany
                 {
                         throw e;
                 }
-		catch (Exception e)
-		{
-			throw new IOException("Failed to load company", e);
-		}
-	}
+                catch (Exception e)
+                {
+                        throw new IOException("Failed to load company", e);
+                }
+        }
+
+        private static boolean hasMeaningfulNormalizedData(Company normalized)
+        {
+                if (normalized == null)
+                {
+                        return false;
+                }
+
+                boolean hasAccounts = normalized.getChartOfAccounts() != null
+                        && !normalized.getChartOfAccounts().getAccounts().isEmpty();
+                boolean hasTransactions = normalized.getLedger() != null
+                        && normalized.getLedger().getJournal() != null
+                        && !normalized.getLedger().getJournal().getJournalTransactions().isEmpty();
+
+                return hasAccounts || hasTransactions || normalized.getCompanyProfileModel() != null;
+        }
 
 	/**
 	 * Closes the currently open company.
