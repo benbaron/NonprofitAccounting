@@ -92,10 +92,11 @@ public final class Database {
                   to_from VARCHAR(255),
                   check_number VARCHAR(64),
                   clear_bank VARCHAR(64),
-                  budget_tracking VARCHAR(64),
+                  budget_tracking VARCHAR(512),
                   associated_fund_name VARCHAR(128)
                 )
             """);
+            st.execute("ALTER TABLE journal_transaction ALTER COLUMN budget_tracking VARCHAR(512);");
             st.execute("""
                 CREATE TABLE IF NOT EXISTS journal_entry(
                   id BIGINT AUTO_INCREMENT PRIMARY KEY,
