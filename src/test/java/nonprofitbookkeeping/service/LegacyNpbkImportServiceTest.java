@@ -3,8 +3,14 @@ package nonprofitbookkeeping.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.model.Account;
+import nonprofitbookkeeping.model.AccountSide;
+import nonprofitbookkeeping.model.AccountingEntry;
+import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.persistence.CompanyRepository;
+import nonprofitbookkeeping.persistence.AccountRepository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,9 +18,13 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.SQLException;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -80,6 +90,47 @@ class LegacyNpbkImportServiceTest
                 assertTrue(id > 0, "Expected a generated company id");
                 Company stored = new CompanyRepository().load(id);
                 assertEquals("JSON Co", stored.getCompanyProfileModel().getCompanyName());
+        }
+
+        @Test
+        void importArchive_createsMissingAccountsForJournalEntries() throws Exception
+        {
+                Company company = createCompany("Ledger Co");
+
+                AccountingTransaction transaction = new AccountingTransaction();
+                transaction.setId(1);
+                transaction.setBookingDateTimestamp(1L);
+                Set<AccountingEntry> entries = new LinkedHashSet<>();
+                entries.add(new AccountingEntry(new BigDecimal("100.00"),
+                        "1000",
+                        AccountSide.DEBIT,
+                        "Cash"));
+                entries.add(new AccountingEntry(new BigDecimal("100.00"),
+                        "2000",
+                        AccountSide.CREDIT,
+                        "Income"));
+                transaction.setEntries(entries);
+                company.getLedger().getJournal().replaceAllTransactions(List.of(transaction));
+
+                CurrentCompany.forceCompanyLoad(company);
+
+                Path archive = createZipArchive(company,
+                        this.tempDir.resolve("ledger_missing_accounts.npbk"));
+
+                LegacyNpbkImportService service = new LegacyNpbkImportService();
+                long id = service.importArchive(archive);
+
+                assertTrue(id > 0, "Expected a generated company id");
+
+                List<Account> storedAccounts = new AccountRepository().listAll();
+                assertEquals(2, storedAccounts.size(),
+                        "Expected placeholder accounts to be created for ledger entries");
+                assertTrue(storedAccounts.stream()
+                        .anyMatch(a -> "1000".equals(a.getAccountNumber())));
+                assertTrue(storedAccounts.stream()
+                        .anyMatch(a -> "2000".equals(a.getAccountNumber())));
+
+                CurrentCompany.forceCompanyLoad(null);
         }
 
         private static Company createCompany(String name)
