@@ -44,6 +44,68 @@ public class CompanyDataRepository {
         profileRepository.save(profile);
     }
 
+    private List<Account> ensureAccountsForTransactions(List<Account> accounts,
+            List<AccountingTransaction> transactions) {
+        Map<String, Account> byNumber = new LinkedHashMap<>();
+
+        if (accounts != null) {
+            for (Account account : accounts) {
+                if (account == null) {
+                    continue;
+                }
+
+                String number = safeAccountNumber(account);
+                if (number == null || number.isBlank()) {
+                    continue;
+                }
+
+                byNumber.putIfAbsent(number, account);
+            }
+        }
+
+        if (transactions != null) {
+            for (AccountingTransaction transaction : transactions) {
+                if (transaction == null || transaction.getEntries() == null) {
+                    continue;
+                }
+
+                for (AccountingEntry entry : transaction.getEntries()) {
+                    if (entry == null) {
+                        continue;
+                    }
+
+                    String accountNumber = entry.getAccountNumber();
+                    if (accountNumber == null || accountNumber.isBlank()
+                            || byNumber.containsKey(accountNumber)) {
+                        continue;
+                    }
+
+                    Account placeholder = new Account();
+                    placeholder.setAccountNumber(accountNumber);
+                    String accountName = entry.getAccountName();
+                    if (accountName == null || accountName.isBlank()) {
+                        accountName = accountNumber;
+                    }
+                    placeholder.setName(accountName);
+                    if (entry.getAccountSide() != null) {
+                        placeholder.setIncreaseSide(entry.getAccountSide());
+                    }
+                    byNumber.put(accountNumber, placeholder);
+                }
+            }
+        }
+
+        return new ArrayList<>(byNumber.values());
+    }
+
+    private String safeAccountNumber(Account account) {
+        try {
+            return account.getAccountNumber();
+        } catch (NullPointerException ex) {
+            return null;
+        }
+    }
+
     public Company load() throws SQLException {
         Company company = new Company();
         company.getChartOfAccounts().replaceAllAccounts(accountRepository.listAll());
