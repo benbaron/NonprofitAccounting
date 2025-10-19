@@ -6,13 +6,12 @@ import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CompanyProfileModel;
 
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * Persists and loads the core {@link Company} aggregates using normalized tables instead of the legacy blob store.
@@ -114,94 +113,4 @@ public class CompanyDataRepository {
         return company;
     }
 
-    private List<Account> ensureAccountsForTransactions(List<Account> accounts,
-            List<AccountingTransaction> transactions)
-    {
-        List<Account> normalizedAccounts = new ArrayList<>();
-        Set<String> seenAccountNumbers = new LinkedHashSet<>();
-
-        if (accounts != null)
-        {
-            for (Account account : accounts)
-            {
-                if (account == null)
-                {
-                    continue;
-                }
-
-                String accountNumber;
-                try
-                {
-                    accountNumber = account.getAccountNumber();
-                }
-                catch (NullPointerException ex)
-                {
-                    continue;
-                }
-
-                if (accountNumber == null || accountNumber.trim().isEmpty())
-                {
-                    continue;
-                }
-
-                if (seenAccountNumbers.add(accountNumber))
-                {
-                    normalizedAccounts.add(account);
-                }
-            }
-        }
-
-        if (transactions != null)
-        {
-            for (AccountingTransaction transaction : transactions)
-            {
-                if (transaction == null || transaction.getEntries() == null)
-                {
-                    continue;
-                }
-
-                for (AccountingEntry entry : transaction.getEntries())
-                {
-                    if (entry == null)
-                    {
-                        continue;
-                    }
-
-                    String accountNumber = entry.getAccountNumber();
-                    if (accountNumber == null || accountNumber.trim().isEmpty())
-                    {
-                        continue;
-                    }
-
-                    if (seenAccountNumbers.contains(accountNumber))
-                    {
-                        continue;
-                    }
-
-                    Account placeholder = new Account();
-                    placeholder.setAccountNumber(accountNumber);
-
-                    if (entry.getAccountName() != null && !entry.getAccountName().isBlank())
-                    {
-                        placeholder.setName(entry.getAccountName());
-                    }
-                    else
-                    {
-                        placeholder.setName("Imported account " + accountNumber);
-                    }
-
-                    if (entry.getAccountSide() != null)
-                    {
-                        placeholder.setIncreaseSide(entry.getAccountSide());
-                    }
-
-                    placeholder.setOpeningBalance(BigDecimal.ZERO);
-                    normalizedAccounts.add(placeholder);
-                    seenAccountNumbers.add(accountNumber);
-                }
-            }
-        }
-
-        return normalizedAccounts;
-    }
 }
