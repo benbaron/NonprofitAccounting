@@ -49,17 +49,17 @@ class LegacyNpbkImportServiceTest
         }
 
         @Test
-        void importArchive_readsZipArchiveInNestedDirectory() throws Exception
+        void importArchive_supportsNestedZipEntry() throws Exception
         {
-                Company company = createCompany("Nested Zip Co");
-                Path archive = createZipArchive(company, this.tempDir.resolve("nested_legacy.npbk"), "data/");
+                Company company = createCompany("Nested Co");
+                Path archive = createZipArchiveWithNestedEntry(company, this.tempDir.resolve("nested.npbk"));
 
                 LegacyNpbkImportService service = new LegacyNpbkImportService();
                 long id = service.importArchive(archive);
 
                 assertTrue(id > 0, "Expected a generated company id");
                 Company stored = new CompanyRepository().load(id);
-                assertEquals("Nested Zip Co", stored.getCompanyProfileModel().getCompanyName());
+                assertEquals("Nested Co", stored.getCompanyProfileModel().getCompanyName());
         }
 
         @Test
@@ -100,6 +100,19 @@ class LegacyNpbkImportServiceTest
                         ZipOutputStream zip = new ZipOutputStream(out))
                 {
                         zip.putNextEntry(new ZipEntry(prefix + "company_data.json"));
+                        byte[] jsonBytes = MAPPER.writeValueAsBytes(company);
+                        zip.write(jsonBytes);
+                        zip.closeEntry();
+                }
+                return destination;
+        }
+
+        private static Path createZipArchiveWithNestedEntry(Company company, Path destination) throws IOException
+        {
+                try (OutputStream out = Files.newOutputStream(destination);
+                        ZipOutputStream zip = new ZipOutputStream(out))
+                {
+                        zip.putNextEntry(new ZipEntry("legacy/company_data.json"));
                         byte[] jsonBytes = MAPPER.writeValueAsBytes(company);
                         zip.write(jsonBytes);
                         zip.closeEntry();
