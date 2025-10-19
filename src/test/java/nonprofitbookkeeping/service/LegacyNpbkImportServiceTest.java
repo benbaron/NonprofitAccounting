@@ -91,10 +91,15 @@ class LegacyNpbkImportServiceTest
 
         private static Path createZipArchive(Company company, Path destination) throws IOException
         {
+                return createZipArchive(company, destination, "");
+        }
+
+        private static Path createZipArchive(Company company, Path destination, String prefix) throws IOException
+        {
                 try (OutputStream out = Files.newOutputStream(destination);
                         ZipOutputStream zip = new ZipOutputStream(out))
                 {
-                        zip.putNextEntry(new ZipEntry("company_data.json"));
+                        zip.putNextEntry(new ZipEntry(prefix + "company_data.json"));
                         byte[] jsonBytes = MAPPER.writeValueAsBytes(company);
                         zip.write(jsonBytes);
                         zip.closeEntry();
