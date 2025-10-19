@@ -3,8 +3,10 @@ package nonprofitbookkeeping.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.persistence.CompanyRepository;
+import nonprofitbookkeeping.persistence.AccountRepository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -80,6 +83,54 @@ class LegacyNpbkImportServiceTest
                 assertTrue(id > 0, "Expected a generated company id");
                 Company stored = new CompanyRepository().load(id);
                 assertEquals("JSON Co", stored.getCompanyProfileModel().getCompanyName());
+        }
+
+        @Test
+        void importArchive_createsPlaceholderAccountsForJournalEntries() throws Exception
+        {
+                Path thirdDb = this.tempDir.resolve("testdb_missing_accounts");
+                Database.init(thirdDb);
+                Database.get().ensureSchema();
+
+                Path jsonFile = this.tempDir.resolve("missing_accounts.json");
+                String json = """
+                        {
+                          "companyProfileModel": {"companyName": "Placeholder Co"},
+                          "ledger": {
+                            "journal": {
+                              "journalTransactions": [
+                                {
+                                  "id": 1,
+                                  "bookingDateTimestamp": 1,
+                                  "entries": [
+                                    {"amount": 100.00, "accountNumber": "1000", "accountSide": "DEBIT", "accountName": "Cash"},
+                                    {"amount": 100.00, "accountNumber": "2000", "accountSide": "CREDIT", "accountName": "Revenue"}
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          "chartOfAccounts": {"chartOfAccounts": []}
+                        }
+                        """;
+                Files.writeString(jsonFile, json);
+
+                LegacyNpbkImportService service = new LegacyNpbkImportService();
+                long id = service.importArchive(jsonFile);
+
+                assertTrue(id > 0, "Expected a generated company id");
+
+                AccountRepository accountRepository = new AccountRepository();
+                List<Account> storedAccounts = accountRepository.listAll();
+
+                assertTrue(storedAccounts.stream().anyMatch(a -> "1000".equals(a.getAccountNumber())));
+                assertTrue(storedAccounts.stream().anyMatch(a -> "2000".equals(a.getAccountNumber())));
+
+                Account cash = storedAccounts.stream()
+                        .filter(a -> "1000".equals(a.getAccountNumber()))
+                        .findFirst()
+                        .orElseThrow();
+                assertEquals("Cash", cash.getName());
         }
 
         private static Company createCompany(String name)
