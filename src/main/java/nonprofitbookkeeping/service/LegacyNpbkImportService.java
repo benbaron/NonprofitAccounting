@@ -107,7 +107,16 @@ public class LegacyNpbkImportService
                 {
                         for (ZipEntry entry = zin.getNextEntry(); entry != null; entry = zin.getNextEntry())
                         {
-                                if (LEGACY_ENTRY.equals(entry.getName()))
+                                if (entry.isDirectory())
+                                {
+                                        continue;
+                                }
+
+                                String normalizedName = entry.getName().replace('\\', '/');
+                                int lastSlash = normalizedName.lastIndexOf('/');
+                                String fileName = lastSlash >= 0 ? normalizedName.substring(lastSlash + 1) : normalizedName;
+
+                                if (LEGACY_ENTRY.equals(fileName))
                                 {
                                         return this.mapper.readValue(zin, Company.class);
                                 }
