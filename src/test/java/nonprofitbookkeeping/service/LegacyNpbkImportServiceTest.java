@@ -49,6 +49,20 @@ class LegacyNpbkImportServiceTest
         }
 
         @Test
+        void importArchive_readsZipArchiveInNestedDirectory() throws Exception
+        {
+                Company company = createCompany("Nested Zip Co");
+                Path archive = createZipArchive(company, this.tempDir.resolve("nested_legacy.npbk"), "data/");
+
+                LegacyNpbkImportService service = new LegacyNpbkImportService();
+                long id = service.importArchive(archive);
+
+                assertTrue(id > 0, "Expected a generated company id");
+                Company stored = new CompanyRepository().load(id);
+                assertEquals("Nested Zip Co", stored.getCompanyProfileModel().getCompanyName());
+        }
+
+        @Test
         void importArchive_supportsPlainJson() throws Exception
         {
                 // Reinitialize database to ensure a clean state
@@ -77,10 +91,15 @@ class LegacyNpbkImportServiceTest
 
         private static Path createZipArchive(Company company, Path destination) throws IOException
         {
+                return createZipArchive(company, destination, "");
+        }
+
+        private static Path createZipArchive(Company company, Path destination, String prefix) throws IOException
+        {
                 try (OutputStream out = Files.newOutputStream(destination);
                         ZipOutputStream zip = new ZipOutputStream(out))
                 {
-                        zip.putNextEntry(new ZipEntry("company_data.json"));
+                        zip.putNextEntry(new ZipEntry(prefix + "company_data.json"));
                         byte[] jsonBytes = MAPPER.writeValueAsBytes(company);
                         zip.write(jsonBytes);
                         zip.closeEntry();

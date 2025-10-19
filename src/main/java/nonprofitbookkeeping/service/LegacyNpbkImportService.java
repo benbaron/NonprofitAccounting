@@ -107,7 +107,8 @@ public class LegacyNpbkImportService
                 {
                         for (ZipEntry entry = zin.getNextEntry(); entry != null; entry = zin.getNextEntry())
                         {
-                                if (LEGACY_ENTRY.equals(entry.getName()))
+                                if (!entry.isDirectory() && entry.getName() != null
+                                        && entry.getName().endsWith(LEGACY_ENTRY))
                                 {
                                         return this.mapper.readValue(zin, Company.class);
                                 }
