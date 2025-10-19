@@ -4,6 +4,8 @@ package nonprofitbookkeeping.core;
 import nonprofitbookkeeping.api.DataStorer;
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
+import nonprofitbookkeeping.model.ChartOfAccounts;
+import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
@@ -40,6 +42,7 @@ public class JacksonDataStorer implements DataStorer
         private ObjectMapper mapper;
         public static JacksonDataStorer dataStorer = new JacksonDataStorer();
         private static final String JSON_ENTRY_NAME = "company_data.json";
+        private static final String CHART_OF_ACCOUNTS_ENTRY_NAME = "chart_of_accounts.json";
 	
 	/**
 	 * Constructs a JacksonDataStorer and initializes the Jackson ObjectMapper
@@ -58,10 +61,12 @@ public class JacksonDataStorer implements DataStorer
 		this.mapper.getFactory().configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * This implementation reads data from a ZIP file, expecting a JSON entry named "company_data.json".
-	 */
+        /**
+         * {@inheritDoc}
+         * This implementation reads data from a ZIP file, expecting a JSON entry named "company_data.json".
+         * If a companion entry named "chart_of_accounts.json" is present and the requested type is a
+         * {@link Company}, the chart data is loaded from that entry as well.
+         */
 	@Override public <T> T loadData(Class<T> type, File file)	throws IOException,
 																ActionCancelledException,
 																NoFileCreatedException
@@ -83,15 +88,23 @@ public class JacksonDataStorer implements DataStorer
                                 {
                                         ZipEntry zipEntry;
                                         boolean entryFound = false;
+                                        ChartOfAccounts chartOfAccounts = null;
 
                                         while ((zipEntry = zis.getNextEntry()) != null)
                                         {
 
-                                                if (JSON_ENTRY_NAME.equals(zipEntry.getName()))
+                                                String entryName = zipEntry.getName();
+
+                                                if (JSON_ENTRY_NAME.equals(entryName))
                                                 {
                                                         value = this.mapper.readValue(zis, type);
                                                         entryFound = true;
-                                                        break;
+                                                }
+                                                else if (CHART_OF_ACCOUNTS_ENTRY_NAME.equals(entryName) &&
+                                                        Company.class.isAssignableFrom(type))
+                                                {
+                                                        chartOfAccounts = this.mapper.readValue(zis,
+                                                                ChartOfAccounts.class);
                                                 }
 
                                                 zis.closeEntry();
@@ -101,6 +114,11 @@ public class JacksonDataStorer implements DataStorer
                                         {
                                                 throw new IOException(
                                                         "Entry '" + JSON_ENTRY_NAME + "' not found in the zip file.");
+                                        }
+
+                                        if (chartOfAccounts != null && value instanceof Company company)
+                                        {
+                                                company.setChartOfAccounts(chartOfAccounts);
                                         }
                                 }
                         }
@@ -135,10 +153,12 @@ public class JacksonDataStorer implements DataStorer
                 return value;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * This implementation writes data to a ZIP file, storing it as a JSON entry named "company_data.json".
-	 */
+        /**
+         * {@inheritDoc}
+         * This implementation writes data to a ZIP file, storing it as a JSON entry named "company_data.json".
+         * When persisting a {@link Company}, a secondary entry named "chart_of_accounts.json" is also written
+         * to maintain compatibility with legacy `.npbk` archives that exposed the chart separately.
+         */
 	@Override public void saveData(Object obj, File file)	throws IOException,
 															ActionCancelledException,
 															NoFileCreatedException
@@ -162,6 +182,21 @@ public class JacksonDataStorer implements DataStorer
                         zos.putNextEntry(zipEntry);
                         zos.write(baos.toByteArray());
                         zos.closeEntry();
+
+                        if (obj instanceof Company company)
+                        {
+                                ChartOfAccounts chart = company.getChartOfAccounts();
+
+                                if (chart != null)
+                                {
+                                        baos.reset();
+                                        this.mapper.writeValue(baos, chart);
+                                        ZipEntry chartEntry = new ZipEntry(CHART_OF_ACCOUNTS_ENTRY_NAME);
+                                        zos.putNextEntry(chartEntry);
+                                        zos.write(baos.toByteArray());
+                                        zos.closeEntry();
+                                }
+                        }
                         LOGGER.debug("Exiting saveData");
                 }
                 catch (IOException e)
