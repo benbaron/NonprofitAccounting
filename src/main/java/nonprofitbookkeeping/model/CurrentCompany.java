@@ -192,7 +192,43 @@ public class CurrentCompany
                         && normalized.getLedger().getJournal() != null
                         && !normalized.getLedger().getJournal().getJournalTransactions().isEmpty();
 
-                return hasAccounts || hasTransactions || normalized.getCompanyProfileModel() != null;
+                return hasAccounts || hasTransactions
+                        || hasMeaningfulProfile(normalized.getCompanyProfileModel());
+        }
+
+        private static boolean hasMeaningfulProfile(CompanyProfileModel profile)
+        {
+                if (profile == null)
+                {
+                        return false;
+                }
+
+                if (hasText(profile.getCompanyName())
+                        || hasText(profile.getLegalStructure())
+                        || hasText(profile.getTaxId())
+                        || hasText(profile.getAddress())
+                        || hasText(profile.getPhone())
+                        || hasText(profile.getEmail())
+                        || hasText(profile.getFiscalYearStart())
+                        || hasText(profile.getBaseCurrency())
+                        || hasText(profile.getStartingBalanceDate())
+                        || hasText(profile.getChartOfAccountsType())
+                        || hasText(profile.getAdminUsername())
+                        || hasText(profile.getDefaultBankAccount())
+                        || hasText(profile.getCompanyFileDir())
+                        || hasText(profile.getCompanyFileName()))
+                {
+                        return true;
+                }
+
+                return profile.isEnableFundAccounting()
+                        || profile.isEnableInventory()
+                        || profile.isEnableMultiCurrency();
+        }
+
+        private static boolean hasText(String value)
+        {
+                return value != null && !value.isBlank();
         }
 
 	/**
