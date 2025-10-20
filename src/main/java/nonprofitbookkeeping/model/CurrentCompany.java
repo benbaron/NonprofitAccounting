@@ -7,8 +7,11 @@ package nonprofitbookkeeping.model;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.EventListener;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.event.EventListenerList;
 
@@ -23,8 +26,9 @@ import nonprofitbookkeeping.persistence.CompanyRepository;
  */
 public class CurrentCompany
 {
-	/** The currently active company instance. */
-	private static Company company;
+        private static final Logger LOGGER = Logger.getLogger(CurrentCompany.class.getName());
+        /** The currently active company instance. */
+        private static Company company;
         /** Flag indicating whether a company is currently considered open. */
         private static boolean companyIsOpen = false;
         /** Identifier of the persisted company row. */
@@ -111,20 +115,49 @@ public class CurrentCompany
                 {
                         boolean sameCompanyRequested = CurrentCompany.currentCompanyId != null
                                 && CurrentCompany.currentCompanyId.equals(companyId);
-                        Company normalized = sameCompanyRequested ? dataRepository.load() : null;
+                        Company normalized = null;
+
+                        if (sameCompanyRequested)
+                        {
+                                try
+                                {
+                                        normalized = dataRepository.load();
+                                }
+                                catch (SQLException ex)
+                                {
+                                        LOGGER.log(Level.WARNING,
+                                                "Failed to read normalized company data for company " + companyId, ex);
+                                }
+                        }
 
                         if (!hasMeaningfulNormalizedData(normalized))
                         {
                                 company = repository.load(companyId);
-                                dataRepository.persist(company);
+                                try
+                                {
+                                        dataRepository.persist(company);
+                                }
+                                catch (SQLException ex)
+                                {
+                                        LOGGER.log(Level.WARNING,
+                                                "Failed to synchronize normalized data for company " + companyId, ex);
+                                }
                         }
                         else
                         {
-                                Company legacy = repository.load(companyId);
-
-                                if (legacy != null)
+                                try
                                 {
-                                        normalized.setCompanyFile(legacy.getCompanyFile());
+                                        Company legacy = repository.load(companyId);
+
+                                        if (legacy != null)
+                                        {
+                                                normalized.setCompanyFile(legacy.getCompanyFile());
+                                        }
+                                }
+                                catch (Exception ex)
+                                {
+                                        LOGGER.log(Level.FINE,
+                                                "Failed to merge legacy file metadata for company " + companyId, ex);
                                 }
 
                                 company = normalized;
