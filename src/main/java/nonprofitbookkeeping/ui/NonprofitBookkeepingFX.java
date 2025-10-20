@@ -3,6 +3,7 @@ package nonprofitbookkeeping.ui;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,7 @@ import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Fund;
 import nonprofitbookkeeping.plugin.Plugin;
+import nonprofitbookkeeping.preferences.PreferencesManager;
 import nonprofitbookkeeping.service.*;
 import nonprofitbookkeeping.ui.actions.*;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
@@ -487,6 +489,25 @@ public class NonprofitBookkeepingFX extends Application
                         new FileChooser.ExtensionFilter("H2 Database (*.mv.db)", "*.mv.db"),
                         new FileChooser.ExtensionFilter("All Files", "*.*"));
 
+                String lastDatabasePath = PreferencesManager.getLastDatabasePath();
+                if (lastDatabasePath != null && !lastDatabasePath.trim().isEmpty())
+                {
+                        try
+                        {
+                                Path lastPath = Path.of(lastDatabasePath);
+                                Path chooserDir = Files.isDirectory(lastPath) ? lastPath : lastPath.getParent();
+
+                                if (chooserDir != null && Files.isDirectory(chooserDir))
+                                {
+                                        chooser.setInitialDirectory(chooserDir.toFile());
+                                }
+                        }
+                        catch (InvalidPathException ex)
+                        {
+                                LOGGER.log(Level.FINE, "Ignoring invalid DB path preference: " + lastDatabasePath, ex);
+                        }
+                }
+
                 ButtonType openExisting = new ButtonType("Open Existing");
                 ButtonType createNew = new ButtonType("Create New");
                 Alert choiceDialog = new Alert(Alert.AlertType.CONFIRMATION);
@@ -514,9 +535,10 @@ public class NonprofitBookkeepingFX extends Application
 
                 try
                 {
+                        Path dataFile = resolveH2DataFile(base);
+
                         if (!creating)
                         {
-                                Path dataFile = resolveH2DataFile(base);
                                 if (Files.notExists(dataFile))
                                 {
                                         Alert alert = new Alert(Alert.AlertType.ERROR,
@@ -535,6 +557,7 @@ public class NonprofitBookkeepingFX extends Application
 
                         Database.init(base);
                         Database.get().ensureSchema();
+                        PreferencesManager.setLastDatabasePath(dataFile.toAbsolutePath().toString());
                         Alert a = new Alert(Alert.AlertType.INFORMATION,
                                 "Database initialized at: " + base.toAbsolutePath());
                         a.setHeaderText("H2 Ready");
