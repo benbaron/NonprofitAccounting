@@ -107,11 +107,9 @@ public class Income4Bean
 	/**
 	 * @param one
 	 */
-	public void setExchequer(BigDecimal one)
-	{
-		// TODO Auto-generated method stub
-		
-		
-	}
+        public void setExchequer(BigDecimal exchequer)
+        {
+                this.exchequer = exchequer;
+        }
 	
 }
