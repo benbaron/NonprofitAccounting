@@ -5,8 +5,10 @@ import nonprofitbookkeeping.model.InventoryItem; // Correct import
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
+import nonprofitbookkeeping.persistence.DocumentRepository;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -25,14 +27,15 @@ import java.util.logging.Logger;
 public class InventoryService
 {
 	
-	/** Shared in-memory map to store {@link InventoryItem} objects across service instances. */
-	private static final Map<String, InventoryItem> SHARED_ITEMS = new HashMap<>();
+        /** Logger instance for this service. */
+        private static final Logger LOGGER = Logger.getLogger(InventoryService.class.getName());
 	
-	/** Logger instance for this service. */
-	private static final Logger LOGGER = Logger.getLogger(InventoryService.class.getName());
-	
-	/** Standard filename for storing inventory data. */
-	private static final String INVENTORY_FILENAME = "inventory.json";
+        /** Database document name for storing inventory data. */
+        private static final String DOCUMENT_NAME = "inventory";
+        private static final ObjectMapper MAPPER = new ObjectMapper()
+                .enable(SerializationFeature.INDENT_OUTPUT);
+        private static final CollectionType LIST_TYPE =
+                MAPPER.getTypeFactory().constructCollectionType(List.class, InventoryItem.class);
 	
 	/** In-memory map to store {@link InventoryItem} objects, keyed by their unique ID. */
 	private final Map<String, InventoryItem> items;
@@ -41,9 +44,9 @@ public class InventoryService
 	 * Constructs an {@code InventoryService} and initializes an empty inventory map.
 	 * Optionally, sample data can be pre-populated here during development or testing.
 	 */
-	public InventoryService()
-	{
-		this.items = SHARED_ITEMS;
+        public InventoryService()
+        {
+                this.items = new HashMap<>();
 		// Optionally pre-populate with sample data:
 		// addItem(new InventoryItem("I001", "Item A", new BigDecimal("100"),
 		// "2023-01-01", 5)); // Example with BigDecimal
@@ -176,88 +179,72 @@ public class InventoryService
 		LOGGER.info("Inventory cleared.");
 	}
 	
-	/**
-	 * Saves all inventory items to a JSON file located in the given company directory.
-	 * If the directory is invalid, an {@link IOException} is thrown.
-	 *
-	 * @param companyDirectory directory where the inventory file should be written
-	 * @throws IOException if writing fails or the directory is invalid
-	 */
-	public void saveItems(File companyDirectory) throws IOException
-	{
-		
-		if (companyDirectory == null || !companyDirectory.isDirectory())
-		{
-			throw new IOException("Company directory is invalid or not provided.");
-		}
-		
-		File target = new File(companyDirectory, INVENTORY_FILENAME);
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.enable(SerializationFeature.INDENT_OUTPUT);
-		
-		try
-		{
-			mapper.writeValue(target, listItems());
-		}
-		catch (IOException ex)
-		{
-			LOGGER.log(Level.SEVERE, "Failed to save inventory to " + target.getAbsolutePath(), ex);
-			throw ex;
-		}
-		
-	}
-	
-	/**
-	 * Loads inventory items from a JSON file located in the given company directory.
-	 * Existing in-memory items are cleared before loading new ones.
-	 * If the file does not exist, this method simply returns with an empty inventory.
-	 *
-	 * @param companyDirectory directory where the inventory file is located
-	 * @throws IOException if reading fails or the directory is invalid
-	 */
-	public void loadItems(File companyDirectory) throws IOException
-	{
-		this.items.clear();
-		
-		if (companyDirectory == null || !companyDirectory.isDirectory())
-		{
-			throw new IOException("Company directory is invalid or not provided.");
-		}
-		
-		File target = new File(companyDirectory, INVENTORY_FILENAME);
-		
-		if (!target.exists() || target.length() == 0)
-		{
-			return; // nothing to load
-		}
-		
-		ObjectMapper mapper = new ObjectMapper();
-		CollectionType listType =
-			mapper.getTypeFactory().constructCollectionType(List.class, InventoryItem.class);
-		
-		try
-		{
-			List<InventoryItem> loaded = mapper.readValue(target, listType);
-			
-			for (InventoryItem item : loaded)
-			{
-				
-				if (item.getId() != null)
-				{
-					this.items.put(item.getId(), item);
-				}
-				
-			}
-			
-		}
-		catch (IOException ex)
-		{
-			LOGGER.log(Level.SEVERE, "Failed to load inventory from " + target.getAbsolutePath(),
-				ex);
-			throw ex;
-		}
-		
-	}
+        /**
+         * Saves all inventory items to the database.
+         *
+         * @param companyDirectory unused but preserved for backwards compatibility
+         * @throws IOException if the database write fails
+         */
+        public void saveItems(File companyDirectory) throws IOException
+        {
+
+                try
+                {
+                        String payload = MAPPER.writeValueAsString(listItems());
+                        new DocumentRepository().upsert(DOCUMENT_NAME, payload);
+                        LOGGER.info("Inventory saved to database document '" + DOCUMENT_NAME + "'.");
+                }
+                catch (SQLException e)
+                {
+                        throw new IOException("Failed to save inventory to database", e);
+                }
+
+        }
+
+        /**
+         * Loads inventory items from the database.
+         *
+         * @param companyDirectory unused but preserved for backwards compatibility
+         * @throws IOException if the database read fails
+         */
+        public void loadItems(File companyDirectory) throws IOException
+        {
+                this.items.clear();
+
+                try
+                {
+                        new DocumentRepository().find(DOCUMENT_NAME)
+                                .ifPresent(payload -> {
+                                        try
+                                        {
+                                                List<InventoryItem> loaded = MAPPER.readValue(payload, LIST_TYPE);
+
+                                                for (InventoryItem item : loaded)
+                                                {
+
+                                                        if (item.getId() != null)
+                                                        {
+                                                                this.items.put(item.getId(), item);
+                                                        }
+
+                                                }
+
+                                                LOGGER.info("Inventory loaded from database document '" + DOCUMENT_NAME
+                                                        + "'.");
+                                        }
+                                        catch (IOException ex)
+                                        {
+                                                LOGGER.log(Level.SEVERE,
+                                                        "Failed to deserialize inventory JSON from database", ex);
+                                        }
+                                });
+                }
+                catch (SQLException e)
+                {
+                        throw new IOException("Failed to load inventory from database", e);
+                }
+
+        }
 	
 	/**
 	 * Retrieves a list of inventory items, formatted as arrays of strings.
@@ -268,20 +255,31 @@ public class InventoryService
 	 * @return A list of string arrays, where each array represents an inventory item's data,
 	 *         or null if the implementation is not complete.
 	 */
-	public static List<String[]> getInventoryItems()
-	{
-		List<String[]> rows = new ArrayList<>();
-		
-		for (InventoryItem item : SHARED_ITEMS.values())
-		{
-			String cost = item.getCost() == null ? "0.00" :
-				item.getCost().setScale(2, RoundingMode.HALF_UP).toString();
-			rows.add(new String[]
-			{ item.getId(), item.getName(), cost });
-		}
-		
-		return rows;
-	}
+        public static List<String[]> getInventoryItems()
+        {
+                InventoryService service = new InventoryService();
+
+                try
+                {
+                        service.loadItems(null);
+                }
+                catch (IOException ex)
+                {
+                        throw new RuntimeException("Failed to load inventory", ex);
+                }
+
+                List<String[]> rows = new ArrayList<>();
+
+                for (InventoryItem item : service.listItems())
+                {
+                        String cost = item.getCost() == null ? "0.00" :
+                                item.getCost().setScale(2, RoundingMode.HALF_UP).toString();
+                        rows.add(new String[]
+                        { item.getId(), item.getName(), cost });
+                }
+
+                return rows;
+        }
 	
 	// Removed private static inner class InventoryItem
 	// Removed old getInventoryItems()

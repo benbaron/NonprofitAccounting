@@ -2,8 +2,12 @@
 package nonprofitbookkeeping.ui;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,23 +20,29 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.stage.FileChooser;
 import nonprofitbookkeeping.core.ApplicationContext;
 import nonprofitbookkeeping.core.ApplicationContextImpl;
+import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Fund;
 import nonprofitbookkeeping.plugin.Plugin;
+import nonprofitbookkeeping.preferences.PreferencesManager;
 import nonprofitbookkeeping.service.*;
 import nonprofitbookkeeping.ui.actions.*;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.panels.*;
 import nonprofitbookkeeping.ui.javafx.BudgetPanelFX;
+import nonprofitbookkeeping.tools.H2ScriptCompanyImporter;
 
 
 /**
@@ -45,8 +55,12 @@ public class NonprofitBookkeepingFX extends Application
 {
 	/** The primary stage of the JavaFX application. */
 	private Stage primaryStage;
-	/** The root layout pane (a {@link MainApplicationView} instance) for the main scene. */
-	private BorderPane root; // Should be MainApplicationView
+        /** The root layout pane (a {@link MainApplicationView} instance) for the main scene. */
+        private BorderPane root; // Should be MainApplicationView
+        /** Strongly typed reference to the main workspace view. */
+        private MainApplicationView mainView;
+        /** Shared company selection panel displayed when no company is open. */
+        private CompanySelectionPanelFX companySelectionPanel;
 	/** Reference to the dashboard panel, used as a fallback or initial view. */
 	private DashboardPanelFX dashboard; // Potentially part of MainApplicationView's default tabs
 	/** Instance managing the currently loaded company data. Suppressed unused warning as it's initialized. */
@@ -84,8 +98,10 @@ public class NonprofitBookkeepingFX extends Application
 	private MenuItem miEditJournal;
 	/** Menu item for importing COA from XLSX. */
 	private MenuItem miImportCoaXlsx;
-	/** Menu item for exporting COA to XLSX. */
-	private MenuItem miExportCoaXlsx;
+        /** Menu item for exporting COA to XLSX. */
+        private MenuItem miExportCoaXlsx;
+        /** Menu item for exporting account statements to OFX/QFX. */
+        private MenuItem miExportStatementOfx;
 	
 	// Menus that need their state managed
 	/** Top-level menu for running various tools and plugin features. */
@@ -97,10 +113,12 @@ public class NonprofitBookkeepingFX extends Application
 	
 	/** Logger for this class. */
 	private static final Logger LOGGER = Logger.getLogger(NonprofitBookkeepingFX.class.getName());
-	/** List to hold all successfully loaded plugins. */
-	private List<Plugin> loadedPlugins = new ArrayList<>();
-	/** The application context passed to plugins and potentially other components. */
-	private ApplicationContext applicationContext;
+        /** List to hold all successfully loaded plugins. */
+        private List<Plugin> loadedPlugins = new ArrayList<>();
+        /** The application context passed to plugins and potentially other components. */
+        private ApplicationContext applicationContext;
+        /** Service that imports legacy .npbk archives into the active database. */
+        private final LegacyNpbkImportService legacyNpbkImportService = new LegacyNpbkImportService();
 	
 	/**
 	 * Static inner class acting as a container for singleton service instances.
@@ -193,8 +211,11 @@ public class NonprofitBookkeepingFX extends Application
 		this.primaryStage = stage;
 		this.c = new CurrentCompany();
 		this.dashboard = new DashboardPanelFX();
-		MainApplicationView mainView = new MainApplicationView();
-		this.root = mainView; // Assign MainApplicationView to root
+                this.mainView = new MainApplicationView();
+                this.root = this.mainView; // Assign MainApplicationView to root
+                this.companySelectionPanel = this.mainView.getCompanySelectionPanel();
+                this.companySelectionPanel.setOnCompanyOpenedHandler(this::handleCompanyOpened);
+                this.companySelectionPanel.setOnError(message -> AlertBox.showError(this.primaryStage, message));
 		
 		// Instantiate ApplicationContextImpl
 		// Services are passed from the static ServiceContainer
@@ -233,10 +254,10 @@ public class NonprofitBookkeepingFX extends Application
 		
 		// MenuBar must be built *after* plugins are loaded so
 		// they can add their items.
-		MenuBar menuBar = buildMenuBar();
-		mainView.setMenuBar(menuBar);
-		
-		Scene scene = new Scene(mainView, 1000, 700); // Use mainView for the scene
+                MenuBar menuBar = buildMenuBar();
+                this.mainView.setMenuBar(menuBar);
+
+                Scene scene = new Scene(this.mainView, 1000, 700); // Use mainView for the scene
 		ThemeManager.applyTheme(scene);
 		this.primaryStage.setScene(scene);
 		this.primaryStage.setTitle("Nonprofit Bookkeeping");
@@ -258,18 +279,17 @@ public class NonprofitBookkeepingFX extends Application
 		MenuBar bar = new MenuBar();
 		
 		/* FILE */
-		Menu file = new Menu("File");
-		this.miOpen = add(file, "Open Company File", e -> doOpenCompany());
-		this.miClose = add(file, "Close Company File", e -> doCloseCompany());
-		this.miSave = add(file, "Save Company File", e -> doSaveCompany());
-		this.miImportCoaXlsx = add(file, "Import COA (XLSX)",
-			e -> new ImportCoaXlsxActionFX(this.primaryStage).handle(e));
-		this.miExportCoaXlsx = add(file, "Export COA (XLSX)",
-			e -> new ExportCoaXlsxActionFX(this.primaryStage).handle(e));
-		
-		add(file, "Import File", e -> new ImportFileActionFX(this.primaryStage).handle(e));
-		add(file, "Export File", e -> new ExportFileActionFX(this.primaryStage).handle(e));
-		bar.getMenus().add(file);
+                Menu companyMenu = new Menu("Company");
+                this.miOpen = add(companyMenu, "Open Company", e -> doOpenCompany());
+                this.miClose = add(companyMenu, "Close Company", e -> doCloseCompany());
+                this.miSave = add(companyMenu, "Save Company", e -> doSaveCompany());
+                this.miImportCoaXlsx = add(companyMenu, "Import COA (XLSX)",
+                        e -> new ImportCoaXlsxActionFX(this.primaryStage).handle(e));
+                this.miExportCoaXlsx = add(companyMenu, "Export COA (XLSX)",
+                        e -> new ExportCoaXlsxActionFX(this.primaryStage).handle(e));
+                this.miExportStatementOfx = add(companyMenu, "Export Statement (OFX/QFX)",
+                        e -> new ExportFileActionFX(this.primaryStage).handle(e));
+                bar.getMenus().add(companyMenu);
 		
 		/* EDIT */
 		Menu edit = new Menu("Edit");
@@ -279,70 +299,30 @@ public class NonprofitBookkeepingFX extends Application
 		this.miEditJournal = add(edit, "Edit Journal", e -> ((MainApplicationView) this.root)
 			.showPanel(MainApplicationView.PanelType.JOURNAL));
 		
-		add(edit, "Open Budget Editor", e -> {
-			Company currentCompany = CurrentCompany.getCompany();
-			
-			if (!CurrentCompany.isOpen() || currentCompany == null)
-			{
-				AlertBox.showError(this.primaryStage,
-					"No company is currently open. Please open or create a company first.");
-				return;
-			}
-			
-			File companyFile = currentCompany.getCompanyFile();
-			
-			if (companyFile == null)
-			{
-				companyFile = CurrentCompany.getCurrentFile();
-			}
-			
-			if (companyFile == null)
-			{
-				AlertBox.showError(this.primaryStage,
-					"The current company has not been saved to a file yet. Please save your company before managing budgets.");
-				return;
-			}
-			
-			File companyDir = companyFile.getParentFile();
-			
-			if (companyDir == null)
-			{
-				AlertBox.showError(this.primaryStage,
-					"Could not determine the company's directory from its saved file path. Cannot manage budgets.");
-				return;
-			}
-			
-			if (!companyDir.exists() || !companyDir.isDirectory())
-			{
-				AlertBox.showError(this.primaryStage,
-					"The company directory '" + companyDir.getAbsolutePath() +
-						"' does not exist or is not a directory. Cannot manage budgets.");
-				return;
-			}
-			
-			// If all checks pass, open the JavaFX BudgetPanelFX
-			BudgetPanelFX panel = new BudgetPanelFX(ServiceContainer.budgetService, companyDir,
-				currentCompany.getChartOfAccounts(), new ArrayList<Fund>(), null);
-			showPanel(panel, "Budget Editor");
-		});
+                add(edit, "Open Budget Editor", e -> {
+                        Company currentCompany = CurrentCompany.getCompany();
+
+                        if (!CurrentCompany.isOpen() || currentCompany == null)
+                        {
+                                AlertBox.showError(this.primaryStage,
+                                        "No company is currently open. Please open or create a company first.");
+                                return;
+                        }
+
+                        BudgetPanelFX panel = new BudgetPanelFX(ServiceContainer.budgetService,
+                                currentCompany.getChartOfAccounts(), new ArrayList<Fund>(), null);
+                        showPanel(panel, "Budget Editor");
+                });
 		bar.getMenus().add(edit);
 		
 		/* RUN */
 		this.run = new Menu("Run");
 		add(this.run, "Documents & Attachments",
 			e -> showPanel(new DocumentsPanelFX(ServiceContainer.dss), "Documents"));
-		add(this.run, "Inventory & Depreciation", e -> {
-			File dir = null;
-			if (CurrentCompany.getCurrentFile() != null)
-				dir = CurrentCompany.getCurrentFile().getParentFile();
-			showPanel(new InventoryPanelFX(ServiceContainer.iss, dir), "Inventory");
-		});
-		add(this.run, "Funds & Fund Accounting", e -> {
-			File dir = null;
-			if (CurrentCompany.getCurrentFile() != null)
-				dir = CurrentCompany.getCurrentFile().getParentFile();
-			showPanel(new FundsPanelFX(ServiceContainer.fas, dir), "Funds");
-		});
+                add(this.run, "Inventory & Depreciation",
+                        e -> showPanel(new InventoryPanelFX(ServiceContainer.iss, null), "Inventory"));
+                add(this.run, "Funds & Fund Accounting",
+                        e -> showPanel(new FundsPanelFX(ServiceContainer.fas, null), "Funds"));
 		add(this.run, "Reconcile",
 			e -> showPanel(new LedgerReconcilePanelFX(new ReconciliationService()),
 				"Reconciliation"));
@@ -422,36 +402,24 @@ public class NonprofitBookkeepingFX extends Application
 //		bar.getMenus().add(this.reports);
 		
 		/* PANELS */
-		this.panels = new Menu("Panels");
-		add(this.panels, "Donors", e -> {
-			File dir = null;
-			if (CurrentCompany.getCurrentFile() != null)
-				dir = CurrentCompany.getCurrentFile().getParentFile();
-			showPanel(new DonorsPanelFX(ServiceContainer.donorService, dir), "Donors");
-		});
-		add(this.panels, "Donations",
-			e -> showPanel(new DonationsPanelFX(this.primaryStage), "Donations"));
-		add(this.panels, "Grants", e -> {
-			File cfile = CurrentCompany.getCurrentFile();
-			showPanel(new GrantsPanelFX(ServiceContainer.grantsService, cfile), "Grants");
-		});
-		add(this.panels, "Sales & COG", e -> {
-			File dir = null;
-			if (CurrentCompany.getCurrentFile() != null)
-				dir = CurrentCompany.getCurrentFile().getParentFile();
-			showPanel(new SalesAndCOGPanelFX(ServiceContainer.salesService, dir), "Sales & COG");
-		});
+                this.panels = new Menu("Panels");
+                add(this.panels, "Donors",
+                        e -> showPanel(new DonorsPanelFX(ServiceContainer.donorService, null), "Donors"));
+                add(this.panels, "Donations",
+                        e -> showPanel(new DonationsPanelFX(this.primaryStage), "Donations"));
+                add(this.panels, "Grants",
+                        e -> showPanel(new GrantsPanelFX(ServiceContainer.grantsService), "Grants"));
+                add(this.panels, "Sales & COG",
+                        e -> showPanel(new SalesAndCOGPanelFX(ServiceContainer.salesService, null), "Sales & COG"));
 		bar.getMenus().add(this.panels);
 		
-		/* SETTINGS */
-		Menu settings = new Menu("Settings");
-		add(settings, "Show Settings", e -> {
-			File dir = null;
-			if (CurrentCompany.getCurrentFile() != null)
-				dir = CurrentCompany.getCurrentFile().getParentFile();
-			showPanel(new SettingsPanelFX(this.primaryStage, new SettingsService(), dir),
-				"Settings");
-		});
+                bar.getMenus().add(createDatabaseMenu());
+
+                /* SETTINGS */
+                Menu settings = new Menu("Settings");
+                add(settings, "Show Settings",
+                        e -> showPanel(new SettingsPanelFX(this.primaryStage, new SettingsService()),
+                                "Settings"));
 		bar.getMenus().add(settings);
 		
 		/* HELP */
@@ -496,13 +464,247 @@ public class NonprofitBookkeepingFX extends Application
 	 * @param handler The {@link EventHandler} to be called when the menu item is actioned.
 	 * @return The created {@link MenuItem}.
 	 */
-	private static MenuItem add(Menu menu, String label, EventHandler<ActionEvent> handler)
-	{
-		MenuItem item = new MenuItem(label);
-		item.setOnAction(handler);
-		menu.getItems().add(item);
-		return item;
-	}
+        private static MenuItem add(Menu menu, String label, EventHandler<ActionEvent> handler)
+        {
+                MenuItem item = new MenuItem(label);
+                item.setOnAction(handler);
+                menu.getItems().add(item);
+                return item;
+        }
+
+        private Menu createDatabaseMenu()
+        {
+                Menu db = new Menu("Database");
+                add(db, "Open/Create H2 DB...", e -> handleOpenOrCreateDatabase());
+                add(db, "Import Legacy .npbk Archive...", e -> handleImportLegacyArchive());
+                add(db, "Import H2 script into DB...", e -> handleImportScriptIntoDatabase());
+                return db;
+        }
+
+        private void handleOpenOrCreateDatabase()
+        {
+                FileChooser chooser = new FileChooser();
+                chooser.setTitle("Open or Create H2 Database");
+                chooser.getExtensionFilters().setAll(
+                        new FileChooser.ExtensionFilter("H2 Database (*.mv.db)", "*.mv.db"),
+                        new FileChooser.ExtensionFilter("All Files", "*.*"));
+
+                String lastDatabasePath = PreferencesManager.getLastDatabasePath();
+                if (lastDatabasePath != null && !lastDatabasePath.trim().isEmpty())
+                {
+                        try
+                        {
+                                Path lastPath = Path.of(lastDatabasePath);
+                                Path chooserDir = Files.isDirectory(lastPath) ? lastPath : lastPath.getParent();
+
+                                if (chooserDir != null && Files.isDirectory(chooserDir))
+                                {
+                                        chooser.setInitialDirectory(chooserDir.toFile());
+                                }
+                        }
+                        catch (InvalidPathException ex)
+                        {
+                                LOGGER.log(Level.FINE, "Ignoring invalid DB path preference: " + lastDatabasePath, ex);
+                        }
+                }
+
+                ButtonType openExisting = new ButtonType("Open Existing");
+                ButtonType createNew = new ButtonType("Create New");
+                Alert choiceDialog = new Alert(Alert.AlertType.CONFIRMATION);
+                choiceDialog.setTitle("Select Database Action");
+                choiceDialog.setHeaderText("Would you like to open an existing database or create a new one?");
+                choiceDialog.getButtonTypes().setAll(openExisting, createNew, ButtonType.CANCEL);
+
+                Optional<ButtonType> selection = choiceDialog.showAndWait();
+
+                if (selection.isEmpty() || selection.get() == ButtonType.CANCEL)
+                {
+                        return;
+                }
+
+                boolean creating = selection.get() == createNew;
+                File file = creating ? chooser.showSaveDialog(this.primaryStage)
+                        : chooser.showOpenDialog(this.primaryStage);
+
+                if (file == null)
+                {
+                        return;
+                }
+
+                Path base = normalizeH2Base(file.toPath());
+
+                try
+                {
+                        Path dataFile = resolveH2DataFile(base);
+
+                        if (!creating)
+                        {
+                                if (Files.notExists(dataFile))
+                                {
+                                        Alert alert = new Alert(Alert.AlertType.ERROR,
+                                                "The selected file does not contain an H2 database: "
+                                                        + dataFile.toAbsolutePath());
+                                        alert.setHeaderText("Database Not Found");
+                                        alert.showAndWait();
+                                        return;
+                                }
+                        }
+
+                        if (base.getParent() != null)
+                        {
+                                Files.createDirectories(base.getParent());
+                        }
+
+                        Database.init(base);
+                        Database.get().ensureSchema();
+                        PreferencesManager.setLastDatabasePath(dataFile.toAbsolutePath().toString());
+                        Alert a = new Alert(Alert.AlertType.INFORMATION,
+                                "Database initialized at: " + base.toAbsolutePath());
+                        a.setHeaderText("H2 Ready");
+                        a.showAndWait();
+                        setState(AppState.NO_COMPANY);
+
+                        if (this.companySelectionPanel != null)
+                        {
+                                this.companySelectionPanel.refreshCompanyList();
+                        }
+
+                        if (this.mainView != null)
+                        {
+                                this.mainView.showCompanySelection();
+                        }
+                }
+                catch (Exception ex)
+                {
+                        LOGGER.log(Level.SEVERE, "Failed to open DB: " + base, ex);
+                        Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to open DB: " + ex.getMessage());
+                        alert.setHeaderText("Database Error");
+                        alert.showAndWait();
+                }
+        }
+
+        private void handleImportLegacyArchive()
+        {
+                if (!Database.isInitialized())
+                {
+                        Alert alert = new Alert(Alert.AlertType.WARNING,
+                                "Open/Create an H2 DB first.");
+                        alert.setHeaderText("Database Not Ready");
+                        alert.showAndWait();
+                        return;
+                }
+
+                FileChooser chooser = new FileChooser();
+                chooser.setTitle("Import Legacy .npbk Archive");
+                chooser.getExtensionFilters().setAll(
+                        new FileChooser.ExtensionFilter("Legacy Archives (*.npbk, *.json)", "*.npbk", "*.json"),
+                        new FileChooser.ExtensionFilter("All Files", "*.*"));
+
+                File file = chooser.showOpenDialog(this.primaryStage);
+
+                if (file == null)
+                {
+                        return;
+                }
+
+                try
+                {
+                        long id = this.legacyNpbkImportService.importArchive(file.toPath());
+
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION,
+                                "Imported legacy archive into the database.\nCompany record id: " + id);
+                        alert.setHeaderText("Legacy Import Complete");
+                        alert.showAndWait();
+
+                        if (this.companySelectionPanel != null)
+                        {
+                                this.companySelectionPanel.refreshCompanyList();
+                        }
+
+                        if (this.mainView != null)
+                        {
+                                this.mainView.showCompanySelection();
+                        }
+                }
+                catch (IllegalArgumentException | IllegalStateException ex)
+                {
+                        Alert alert = new Alert(Alert.AlertType.ERROR, ex.getMessage());
+                        alert.setHeaderText("Import Failed");
+                        alert.showAndWait();
+                }
+                catch (Exception ex)
+                {
+                        LOGGER.log(Level.SEVERE, "Failed to import legacy archive", ex);
+                        Alert alert = new Alert(Alert.AlertType.ERROR,
+                                "Failed to import legacy archive: " + ex.getMessage());
+                        alert.setHeaderText("Import Failed");
+                        alert.showAndWait();
+                }
+        }
+
+        private void handleImportScriptIntoDatabase()
+        {
+                if (!Database.isInitialized())
+                {
+                        Alert alert = new Alert(Alert.AlertType.WARNING,
+                                "Open/Create an H2 DB first.");
+                        alert.setHeaderText("Database Not Ready");
+                        alert.showAndWait();
+                        return;
+                }
+
+                FileChooser fc = new FileChooser();
+                fc.setTitle("Select company H2 SQL script");
+                fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("SQL scripts", "*.sql"));
+                File file = fc.showOpenDialog(this.primaryStage);
+
+                if (file == null)
+                        return;
+
+                try
+                {
+                        H2ScriptCompanyImporter.importScript(file.toPath());
+                        Alert a = new Alert(Alert.AlertType.INFORMATION,
+                                "Imported company script into DB.");
+                        a.setHeaderText("Import complete");
+                        a.showAndWait();
+                }
+                catch (Exception ex)
+                {
+                        LOGGER.log(Level.SEVERE, "Import failed for file: " + file, ex);
+                        Alert alert = new Alert(Alert.AlertType.ERROR, "Import failed: " + ex.getMessage());
+                        alert.setHeaderText("Import Error");
+                        alert.showAndWait();
+                }
+        }
+
+        private static Path normalizeH2Base(Path chosen)
+        {
+                String fileName = chosen.getFileName() != null ? chosen.getFileName().toString() : chosen.toString();
+
+                if (fileName.endsWith(".mv.db"))
+                {
+                        String trimmed = fileName.substring(0, fileName.length() - ".mv.db".length());
+                        Path parent = chosen.getParent();
+                        return parent == null ? Path.of(trimmed) : parent.resolve(trimmed);
+                }
+
+                return chosen;
+        }
+
+        private static Path resolveH2DataFile(Path base)
+        {
+                String fileName = base.getFileName() != null ? base.getFileName().toString() : base.toString();
+
+                if (fileName.endsWith(".mv.db"))
+                {
+                        return base;
+                }
+
+                Path parent = base.getParent();
+                String candidate = fileName + ".mv.db";
+                return parent == null ? Path.of(candidate) : parent.resolve(candidate);
+        }
 	
 	/**
 	 * Displays a given JavaFX {@link Node} (typically a panel or UI component) in a new,
@@ -532,32 +734,57 @@ public class NonprofitBookkeepingFX extends Application
 	 *
 	 * @param newState The new {@link AppState} to set for the application.
 	 */
-	private void setState(AppState newState)
-	{
-		this.state = newState;
-		boolean companyOpen = (newState == AppState.COMPANY_OPEN);
-		boolean noCompany = (newState == AppState.NO_COMPANY);
-		boolean creatingCompany = (newState == AppState.CREATING_COMPANY);
-		
-		this.miOpen.setDisable(companyOpen || creatingCompany);
-		this.miClose.setDisable(noCompany || creatingCompany);
-		this.miSave.setDisable(noCompany || creatingCompany);
-		this.miEditCompany.setDisable(creatingCompany);
-		this.miEditCoa.setDisable(noCompany || creatingCompany);
-		this.miEditJournal.setDisable(noCompany || creatingCompany);
-		this.miImportCoaXlsx.setDisable(noCompany || creatingCompany);
-		this.miExportCoaXlsx.setDisable(noCompany || creatingCompany);
-		
-		this.run.setDisable(noCompany || creatingCompany);
-		this.panels.setDisable(noCompany || creatingCompany);
-		this.reports.setDisable(noCompany || creatingCompany);
-		
-		if (this.root instanceof MainApplicationView)
-		{
-			((MainApplicationView) this.root).updateCompanyOpenState(companyOpen);
-		}
-		
-	}
+        private void setState(AppState newState)
+        {
+                this.state = newState;
+                boolean databaseReady = Database.isInitialized();
+                boolean creatingCompany = (newState == AppState.CREATING_COMPANY);
+                boolean companyOpen = databaseReady && CurrentCompany.isOpen();
+
+                this.miOpen.setDisable(!databaseReady || creatingCompany || companyOpen);
+                this.miClose.setDisable(!companyOpen || creatingCompany);
+                this.miSave.setDisable(!companyOpen || creatingCompany);
+                this.miEditCompany.setDisable(!databaseReady || creatingCompany);
+                this.miEditCoa.setDisable(!companyOpen || creatingCompany);
+                this.miEditJournal.setDisable(!companyOpen || creatingCompany);
+                this.miImportCoaXlsx.setDisable(!companyOpen || creatingCompany);
+                this.miExportCoaXlsx.setDisable(!companyOpen || creatingCompany);
+                if (this.miExportStatementOfx != null)
+                {
+                        this.miExportStatementOfx.setDisable(!companyOpen || creatingCompany);
+                }
+
+                this.run.setDisable(!companyOpen || creatingCompany);
+                this.panels.setDisable(!companyOpen || creatingCompany);
+                this.reports.setDisable(!companyOpen || creatingCompany);
+
+                if (this.mainView != null)
+                {
+                        this.mainView.updateCompanyOpenState(companyOpen);
+                }
+
+        }
+
+        private void handleCompanyOpened(Company company)
+        {
+                if (company == null)
+                {
+                        return;
+                }
+
+                setState(AppState.COMPANY_OPEN);
+
+                if (this.companySelectionPanel != null)
+                {
+                        this.companySelectionPanel.refreshCompanyList();
+                }
+
+                if (this.mainView != null)
+                {
+                        this.mainView.showWorkspaceTabs();
+                        this.mainView.showPanel(MainApplicationView.PanelType.DASHBOARD);
+                }
+        }
 	
 	/**
 	 * Handles the action to open a company file.
@@ -566,18 +793,28 @@ public class NonprofitBookkeepingFX extends Application
 	 * Errors are displayed using an {@link AlertBox}.
 	 * The {@code @SuppressWarnings("unused")} is present because this method is called via JavaFX action event.
 	 */
-	private void doOpenCompany()
-	{
-		
-		try
-		{
-			OpenCompanyFileActionFX openCompanyFileActionFX = new OpenCompanyFileActionFX(
-				this.primaryStage, () -> setState(AppState.COMPANY_OPEN));
-		}
-		catch (Exception e)
-		{
-			AlertBox.showError(this.primaryStage, "Failed to open company: " + e.getMessage());
-		}
+        private void doOpenCompany()
+        {
+                if (!Database.isInitialized())
+                {
+                        Alert alert = new Alert(Alert.AlertType.WARNING,
+                                "Initialize an H2 database before opening a company.");
+                        alert.initOwner(this.primaryStage);
+                        alert.setHeaderText("Database Not Ready");
+                        alert.showAndWait();
+                        return;
+                }
+
+                try
+                {
+                        OpenCompanyFileActionFX openCompanyFileActionFX = new OpenCompanyFileActionFX(
+                                this.primaryStage,
+                                () -> handleCompanyOpened(CurrentCompany.getCompany()));
+                }
+                catch (Exception e)
+                {
+                        AlertBox.showError(this.primaryStage, "Failed to open company: " + e.getMessage());
+                }
 		
 	}
 	
@@ -597,14 +834,18 @@ public class NonprofitBookkeepingFX extends Application
 			CloseCompanyFileAction closeCompanyFileAction =
 				new CloseCompanyFileAction(this.primaryStage);
 			
-			if (closeCompanyFileAction.isClosed())
-			{
-				// After action, set state.
-				setState(AppState.NO_COMPANY);
-			}
-			else
-			{
-				return; // user cancelled closing
+                        if (closeCompanyFileAction.isClosed())
+                        {
+                                // After action, set state.
+                                setState(AppState.NO_COMPANY);
+                                if (this.companySelectionPanel != null)
+                                {
+                                        this.companySelectionPanel.refreshCompanyList();
+                                }
+                        }
+                        else
+                        {
+                                return; // user cancelled closing
 			}
 			
 		}
@@ -615,15 +856,10 @@ public class NonprofitBookkeepingFX extends Application
 		}
 		
 		// Switch view back to dashboard
-		if (this.root instanceof MainApplicationView)
-		{
-			((MainApplicationView) this.root).showPanel(MainApplicationView.PanelType.DASHBOARD);
-		}
-		else
-		{
-			// Fallback or error if root is not what we expect
-			this.root.setCenter(this.dashboard);
-		}
+                if (this.mainView != null)
+                {
+                        this.mainView.showCompanySelection();
+                }
 		
 	}
 	
@@ -633,13 +869,19 @@ public class NonprofitBookkeepingFX extends Application
 	 * Shows an info message on success or an error message on failure.
 	 * The {@code @SuppressWarnings("unused")} is present because this method is called via JavaFX action event.
 	 */
-	private void doSaveCompany()
-	{
-		
-		try
-		{
-			SaveCompanyFileAction saveCompanyFileAction =
-				new SaveCompanyFileAction(this.primaryStage);
+        private void doSaveCompany()
+        {
+                if (!Database.isInitialized() || !CurrentCompany.isOpen())
+                {
+                        AlertBox.showError(this.primaryStage,
+                                "Open a company connected to the database before saving.");
+                        return;
+                }
+
+                try
+                {
+                        SaveCompanyFileAction saveCompanyFileAction =
+                                new SaveCompanyFileAction(this.primaryStage);
 			AlertBox.showInfo(this.primaryStage, "Company saved.");
 		}
 		catch (Exception ex)
@@ -657,25 +899,39 @@ public class NonprofitBookkeepingFX extends Application
 	 * state reverts to the previous state, and an error alert is shown.
 	 * The {@code @SuppressWarnings("unused")} is present because this method is called via JavaFX action event.
 	 */
-	private void startCreateWizard()
-	{
-		AppState saved = getState();
-		setState(AppState.CREATING_COMPANY);
-		
-		try
-		{
+        private void startCreateWizard()
+        {
+                if (!Database.isInitialized())
+                {
+                        Alert alert = new Alert(Alert.AlertType.WARNING,
+                                "Initialize an H2 database before creating a company.");
+                        alert.initOwner(this.primaryStage);
+                        alert.setHeaderText("Database Not Ready");
+                        alert.showAndWait();
+                        return;
+                }
+
+                AppState saved = getState();
+                setState(AppState.CREATING_COMPANY);
+
+                try
+                {
 			CreateOrEditCompanyActionFX createOrEditCompanyActionFX =
 				new CreateOrEditCompanyActionFX(this.primaryStage);
 			
 			// If wizard completes and company is set in CurrentCompany:
-			if (CurrentCompany.getCompany() != null)
-			{ // Basic check
-				setState(AppState.COMPANY_OPEN);
-			}
-			else
-			{
-				// Wizard was cancelled or failed without setting a company
-				setState(saved); // Revert to previous state
+                        if (CurrentCompany.getCompany() != null)
+                        { // Basic check
+                                setState(AppState.COMPANY_OPEN);
+                                if (this.companySelectionPanel != null)
+                                {
+                                        this.companySelectionPanel.refreshCompanyList();
+                                }
+                        }
+                        else
+                        {
+                                // Wizard was cancelled or failed without setting a company
+                                setState(saved); // Revert to previous state
 			}
 			
 		}

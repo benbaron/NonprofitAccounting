@@ -9,10 +9,12 @@ import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.ChartOfAccounts;
-import nonprofitbookkeeping.exception.ActionCancelledException;
-import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.service.SettingsService;
 import nonprofitbookkeeping.model.SettingsModel;
 import nonprofitbookkeeping.ui.ThemeManager;
@@ -23,9 +25,8 @@ import nonprofitbookkeeping.util.FormatUtils;
  */
 public class SettingsPanelFX extends BorderPane
 {
-	private final SettingsService service;
-	private final File companyDir;
-	private final Stage primaryStage;
+        private final SettingsService service;
+        private final Stage primaryStage;
 	
 	private TextField orgNameField;
 	private TextField fiscalStartField;
@@ -45,19 +46,18 @@ public class SettingsPanelFX extends BorderPane
 	 * @param service      settings service for persistence
 	 * @param companyDir   directory of the current company
 	 */
-	public SettingsPanelFX(Stage primaryStage, SettingsService service, File companyDir)
-	{
-		this.primaryStage = primaryStage;
-		this.service = service;
-		this.companyDir = companyDir;
-		
-		if (this.service != null && this.companyDir != null)
-		{
-			
-			try
-			{
-				this.service.loadSettings(this.companyDir);
-				
+        public SettingsPanelFX(Stage primaryStage, SettingsService service)
+        {
+                this.primaryStage = primaryStage;
+                this.service = service;
+
+                if (this.service != null && Database.isInitialized())
+                {
+
+                        try
+                        {
+                                this.service.loadSettings(null);
+
                                if (this.primaryStage != null && this.primaryStage.getScene() != null)
                                {
                                        ThemeManager.applyTheme(this.primaryStage.getScene(),
@@ -84,14 +84,14 @@ public class SettingsPanelFX extends BorderPane
 		Button saveBtn = new Button("Save Settings");
 		saveBtn.setOnAction(e -> {
 			
-			if (this.service != null && this.companyDir != null)
-			{
-				collectFieldValues();
-				
-				try
-				{
-					this.service.saveSettings(this.companyDir);
-					
+                        if (this.service != null && Database.isInitialized())
+                        {
+                                collectFieldValues();
+
+                                try
+                                {
+                                        this.service.saveSettings(null);
+
                                        if (this.primaryStage != null && this.primaryStage.getScene() != null)
                                        {
                                                ThemeManager.applyTheme(this.primaryStage.getScene(),
@@ -119,13 +119,10 @@ public class SettingsPanelFX extends BorderPane
 		 * Constructor SettingsPanelFX
 		 * @param stage
 		 */
-	public SettingsPanelFX(Stage stage)
-	{
-		this.service = new SettingsService();
-		this.companyDir = null;
-		// TODO Auto-generated constructor stub
-		this.primaryStage = new Stage();
-	}
+        public SettingsPanelFX(Stage stage)
+        {
+                this(stage, new SettingsService());
+        }
 	
 	/**
 	 * Builds and returns the "Company Info" tab for the settings panel.
@@ -258,66 +255,100 @@ public class SettingsPanelFX extends BorderPane
 	 * 
 	 * @return A {@link Tab} configured with backup and restore options.
 	 */
-	private static Tab backupTab()
-	{
-		HBox box = new HBox(10);
-		Button backupBtn = new Button("Create Backup");
-		Button restoreBtn = new Button("Restore Backup");
-		
-		backupBtn.setOnAction(e -> {
-			FileChooser fc = new FileChooser();
-			fc.setTitle("Save Backup");
-			fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("NPBK files", "*.npbk"));
-			File out = fc.showSaveDialog(null);
-			
-			if (out != null)
-			{
-				
-				try
-				{
-					CurrentCompany.setCurrentFile(out);
-					CurrentCompany.persist();
-					alert("Backup saved to " + out.getAbsolutePath());
-				}
-				catch (IOException | ActionCancelledException | NoFileCreatedException ex)
-				{
-					alert("Backup failed: " + ex.getMessage());
-				}
-				
-			}
-			
-		});
-		
-		restoreBtn.setOnAction(e -> {
-			FileChooser fc = new FileChooser();
-			fc.setTitle("Open Backup");
-			fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("NPBK files", "*.npbk"));
-			File f = fc.showOpenDialog(null);
-			
-			if (f != null)
-			{
-				
-				try
-				{
-					CurrentCompany.loadFromPersistent(f);
-					CurrentCompany.markCompanyOpen();
-					alert("Backup restored from " + f.getName());
-				}
-				catch (IOException | ActionCancelledException | NoFileCreatedException ex)
-				{
-					alert("Restore failed: " + ex.getMessage());
-				}
-				
-			}
-			
-		});
-		
-		box.getChildren().addAll(backupBtn, restoreBtn);
-		box.setPadding(new Insets(10));
-		
-		TitledPane wrapper = titled("Backup & Restore", box);
-		return new Tab("Backup", wrapper);
-	}
+        private Tab backupTab()
+        {
+                HBox box = new HBox(10);
+                Button backupBtn = new Button("Create Backup");
+                Button restoreBtn = new Button("Restore Backup");
+
+                backupBtn.setOnAction(e -> createDatabaseBackup());
+                restoreBtn.setOnAction(e -> restoreDatabaseBackup());
+
+                box.getChildren().addAll(backupBtn, restoreBtn);
+                box.setPadding(new Insets(10));
+
+                TitledPane wrapper = titled("Backup & Restore", box);
+                return new Tab("Backup", wrapper);
+        }
+
+        private void createDatabaseBackup()
+        {
+                if (!Database.isInitialized())
+                {
+                        alert("Initialize the H2 database before exporting a backup.");
+                        return;
+                }
+
+                if (CurrentCompany.isOpen())
+                {
+                        try
+                        {
+                                CurrentCompany.persist();
+                        }
+                        catch (IOException e)
+                        {
+                                alert("Failed to save the current company before backup: " + e.getMessage());
+                                return;
+                        }
+                }
+
+                FileChooser fc = new FileChooser();
+                fc.setTitle("Export Database Script");
+                fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("SQL Script", "*.sql"));
+                File out = fc.showSaveDialog(this.primaryStage);
+
+                if (out == null)
+                {
+                        return;
+                }
+
+                String target = out.toPath().toAbsolutePath().toString().replace("'", "''");
+
+                try (Connection connection = Database.get().getConnection();
+                        Statement statement = connection.createStatement())
+                {
+                        statement.execute("SCRIPT TO '" + target + "'");
+                        alert("Database script exported to " + out.getAbsolutePath());
+                }
+                catch (SQLException ex)
+                {
+                        alert("Backup failed: " + ex.getMessage());
+                }
+        }
+
+        private void restoreDatabaseBackup()
+        {
+                if (!Database.isInitialized())
+                {
+                        alert("Initialize the H2 database before importing a backup.");
+                        return;
+                }
+
+                FileChooser fc = new FileChooser();
+                fc.setTitle("Import Database Script");
+                fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("SQL Script", "*.sql"));
+                File in = fc.showOpenDialog(this.primaryStage);
+
+                if (in == null)
+                {
+                        return;
+                }
+
+                String source = in.toPath().toAbsolutePath().toString().replace("'", "''");
+
+                try (Connection connection = Database.get().getConnection();
+                        Statement statement = connection.createStatement())
+                {
+                        statement.execute("RUNSCRIPT FROM '" + source + "'");
+                        CurrentCompany.close();
+                        alert("Database restored from " + in.getName()
+                                + ". Reopen a company to continue working.");
+                }
+                catch (SQLException ex)
+                {
+                        alert("Restore failed: " + ex.getMessage());
+                }
+        }
 	
 	/**
 	 * Builds and returns the "UI Preferences" tab for the settings panel.
@@ -424,14 +455,14 @@ public class SettingsPanelFX extends BorderPane
 	 * 
 	 * @param msg The message to be displayed in the alert dialog.
 	 */
-	private static void alert(String msg)
-	{
-		new Alert(Alert.AlertType.INFORMATION, msg, ButtonType.OK).showAndWait();
-	}
-	
-	/**
-	 * Collects values from the UI controls into the {@link SettingsModel} held by the service.
-	 */
+        private static void alert(String msg)
+        {
+                new Alert(Alert.AlertType.INFORMATION, msg, ButtonType.OK).showAndWait();
+        }
+
+        /**
+         * Collects values from the UI controls into the {@link SettingsModel} held by the service.
+         */
 	private void collectFieldValues()
 	{
 		

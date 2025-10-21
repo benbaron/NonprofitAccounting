@@ -7,7 +7,6 @@ import nonprofitbookkeeping.model.budget.BudgetLine;
 import nonprofitbookkeeping.model.budget.Periodicity;
 import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.reports.ReportMetadata;
-
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 

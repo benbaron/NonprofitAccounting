@@ -76,6 +76,19 @@ public final class Account implements Serializable
 	
 	/* ================= fund helpers =================================== */
 	
+	/**  
+	 * Constructor Account
+	 * @param string
+	 * @param string2
+	 * @param object
+	 * @param object2
+	 */
+	public Account(String string, String string2, Object object, Object object2)
+	{
+		// TODO Auto-generated constructor stub
+		
+	}
+
 	/**
 	 * Associates a fund with this account.
 	 * If the fund is not already associated, it adds the fund to this account's list

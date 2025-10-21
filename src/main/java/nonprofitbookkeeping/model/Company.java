@@ -20,11 +20,13 @@ public class Company implements Serializable
 	private static final long serialVersionUID = 6728014646115467637L;
 	
 	/** The profile information for the company (e.g., name, address). Initialized by default. */
-	@JsonProperty private CompanyProfileModel companyProfileModel = new CompanyProfileModel();
+	@JsonProperty private CompanyProfileModel companyProfileModel =
+		new CompanyProfileModel();
 	/** The ledger containing all financial transactions for the company. Initialized by default. */
 	@JsonProperty private Ledger ledger = new Ledger();
 	/** The chart of accounts defining the structure of accounts for the company. Initialized by default. */
-	@JsonProperty private ChartOfAccounts chartOfAccounts = new ChartOfAccounts();
+	@JsonProperty private ChartOfAccounts chartOfAccounts =
+		new ChartOfAccounts();
 	
 	/**
 	 * The file system path to the company's data file.
@@ -32,17 +34,18 @@ public class Company implements Serializable
 	 * (e.g., new company not yet saved, or data loaded from a different source).
 	 */
 	private File companyFile = null;
-
+	
 	/**
 	 * Constructs a new Company object.
 	 * Initializes the company profile, ledger, and chart of accounts with default instances.
 	 * The company file is initially null.
 	 */
 	public Company()
-	{			
+	{
 		this.companyProfileModel = new CompanyProfileModel();
 		this.ledger = new Ledger();
 		this.chartOfAccounts = new ChartOfAccounts();
+		
 	}
 	
 	/**
@@ -52,6 +55,7 @@ public class Company implements Serializable
 	public CompanyProfileModel getCompanyProfile()
 	{
 		return this.companyProfileModel;
+		
 	}
 	
 	
@@ -62,6 +66,7 @@ public class Company implements Serializable
 	public Ledger getLedger()
 	{
 		return this.ledger;
+		
 	}
 	
 	/**
@@ -72,6 +77,7 @@ public class Company implements Serializable
 	public void setLedger(Ledger ledger)
 	{
 		this.ledger = checkNotNull(ledger);
+		
 	}
 	
 	/**
@@ -81,6 +87,7 @@ public class Company implements Serializable
 	public ChartOfAccounts getChartOfAccounts()
 	{
 		return this.chartOfAccounts;
+		
 	}
 	
 	/**
@@ -93,7 +100,7 @@ public class Company implements Serializable
 		this.chartOfAccounts = checkNotNull(chart);
 		
 	}
-
+	
 	/**
 	 * Sets the company's profile model.
 	 * @param created The {@link CompanyProfileModel} to set.
@@ -101,8 +108,9 @@ public class Company implements Serializable
 	public void setCompanyProfileModel(CompanyProfileModel created)
 	{
 		this.companyProfileModel = created;
+		
 	}
-
+	
 	/**
 	 * Gets the company's profile model.
 	 * This is an alias for {@link #getCompanyProfile()}.
@@ -111,8 +119,9 @@ public class Company implements Serializable
 	public CompanyProfileModel getCompanyProfileModel()
 	{
 		return this.companyProfileModel;
+		
 	}
-
+	
 	/**
 	 * Gets the file associated with this company's data.
 	 * This is typically the file from which the company data was loaded or to which it will be saved.
@@ -123,18 +132,21 @@ public class Company implements Serializable
 	public File getCompanyFile()
 	{
 		return this.companyFile;
+		
 	}
-
+	
 	/**
 	 * Sets the file associated with this company's data.
 	 * This is typically the file from which the company data was loaded or to which it will be saved.
 	 *
 	 * @param companyFile The company data file. Can be null if no file is associated.
 	 */
-	public void setCompanyFile(File companyFile) {
+	public void setCompanyFile(File companyFile)
+	{
 		this.companyFile = companyFile;
+		
 	}
-
+	
 	/**
 	 * Gets the parent directory of the company's data file.
 	 * If the company file is not set, or if the company file does not have a parent
@@ -145,31 +157,35 @@ public class Company implements Serializable
 	 */
 	public File getParentFile()
 	{
-		if (this.companyFile == null) {
-            return null;
-        }
-        return this.companyFile.getParentFile();
+		
+		if (this.companyFile == null)
+		{
+			return null;
+		}
+		
+		return this.companyFile.getParentFile();
+		
 	}
-
+	
 	/**
 	 * @param profile
 	 */
-        public void setCompanyProfile(CompanyProfileModel profile)
-        {
-                setCompanyProfileModel(checkNotNull(profile));
-
-        }
-
-        /**
-         * Gets the company's name from the associated {@link CompanyProfileModel}.
-         *
-         * @return The company name, or {@code null} if no profile is set.
-         */
-        public String getName()
-        {
-                return (this.companyProfileModel != null)
-                                ? this.companyProfileModel.getCompanyName()
-                                : null;
-        }
+	public void setCompanyProfile(CompanyProfileModel profile)
+	{
+		setCompanyProfileModel(checkNotNull(profile));
+		
+	}
+	
+	/**
+	 * Gets the company's name from the associated {@link CompanyProfileModel}.
+	 *
+	 * @return The company name, or {@code null} if no profile is set.
+	 */
+	public String getName()
+	{
+		return (this.companyProfileModel != null) ?
+			this.companyProfileModel.getCompanyName() : null;
+		
+	}
 	
 }
