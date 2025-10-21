@@ -4,7 +4,7 @@ package nonprofitbookkeeping.reports;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import nonprofitbookkeeping.reports.generator.*;
+import nonprofitbookkeeping.reports.jasper.*;
 import nonprofitbookkeeping.service.ReportService.ReportType;
 
 

@@ -192,7 +192,7 @@ public class ReportContext
 	}
 	
 	/**
-	 * Sets the list of beans to be used directly by a {@link nonprofitbookkeeping.reports.generator.AbstractReportGenerator}.
+	 * Sets the list of beans to be used directly by a {@link nonprofitbookkeeping.reports.jasper.AbstractReportGenerator}.
 	 *
 	 * @param beans data beans for the report
 	 */
