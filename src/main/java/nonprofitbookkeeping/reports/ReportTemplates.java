@@ -168,7 +168,7 @@ public final class ReportTemplates
 
         private static String generatorClass(String simpleName)
         {
-                return "nonprofitbookkeeping.reports.generator." + simpleName;
+                return "nonprofitbookkeeping.reports.jasper." + simpleName;
 
         }
 
