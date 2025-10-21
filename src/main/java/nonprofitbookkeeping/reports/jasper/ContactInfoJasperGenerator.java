@@ -3,6 +3,8 @@ package nonprofitbookkeeping.reports.jasper;
 
 import java.util.*;
 
+import nonprofitbookkeeping.reports.datasource.scareports.ContactInfoBean;
+
 public class ContactInfoJasperGenerator extends AbstractReportGenerator
 {
 	

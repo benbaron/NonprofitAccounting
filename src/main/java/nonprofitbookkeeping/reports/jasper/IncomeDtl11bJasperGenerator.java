@@ -1,7 +1,6 @@
 
 package nonprofitbookkeeping.reports.jasper;
 
-import java.math.BigDecimal;
 import java.util.*;
 import nonprofitbookkeeping.reports.datasource.scareports.IncomeDtl11bBean;
 
@@ -36,7 +35,7 @@ public class IncomeDtl11bJasperGenerator extends AbstractReportGenerator
 	protected List<IncomeDtl11bBean> getReportData()
 	{
 		IncomeDtl11bBean bean = new IncomeDtl11bBean();
-		bean.setAmount(BigDecimal.ONE);
+		bean.setINCOME_DTL_11b_G12(Double.valueOf(1.0));
 		return java.util.Collections.singletonList(bean);
 		
 	}

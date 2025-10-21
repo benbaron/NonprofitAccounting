@@ -1,7 +1,6 @@
 
 package nonprofitbookkeeping.reports.jasper;
 
-import java.math.BigDecimal;
 import java.util.*;
 import nonprofitbookkeeping.reports.datasource.scareports.Newsletter15Bean;
 
@@ -36,7 +35,7 @@ public class Newsletter15JasperGenerator extends AbstractReportGenerator
 	protected List<Newsletter15Bean> getReportData()
 	{
 		Newsletter15Bean bean = new Newsletter15Bean();
-		bean.setAdj_gross_income_a_b_c(BigDecimal.ONE);
+		bean.setNEWSLETTER_15_E14(Double.valueOf(1.0));
 		return java.util.Collections.singletonList(bean);
 		
 	}

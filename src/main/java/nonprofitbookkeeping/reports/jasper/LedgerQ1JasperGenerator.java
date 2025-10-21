@@ -3,6 +3,8 @@ package nonprofitbookkeeping.reports.jasper;
 
 import java.util.*;
 
+import nonprofitbookkeeping.reports.datasource.scareports.LedgerQ1Bean;
+
 public class LedgerQ1JasperGenerator extends AbstractReportGenerator
 {
 	
