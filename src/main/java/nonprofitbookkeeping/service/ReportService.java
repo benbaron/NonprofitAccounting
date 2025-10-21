@@ -7,48 +7,14 @@ import nonprofitbookkeeping.model.budget.BudgetLine;
 import nonprofitbookkeeping.model.budget.Periodicity;
 import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.reports.ReportMetadata;
-import nonprofitbookkeeping.reports.generator.AbstractReportGenerator;
-import nonprofitbookkeeping.reports.generator.AccountLedgerJasperGenerator;
-import nonprofitbookkeeping.reports.generator.AccountSummaryJasperGenerator;
-import nonprofitbookkeeping.reports.generator.BalanceResultReportGenerator;
-import nonprofitbookkeeping.reports.generator.BankReconciliationJasperGenerator;
-import nonprofitbookkeeping.reports.generator.CashFlowStatementJasperGenerator;
-import nonprofitbookkeeping.reports.generator.ChartOfAccountsJasperGenerator;
-import nonprofitbookkeeping.reports.generator.FundLedgerJasperGenerator;
-import nonprofitbookkeeping.reports.generator.GeneralJournalJasperGenerator;
-import nonprofitbookkeeping.reports.generator.GeneralLedgerJasperGenerator;
-import nonprofitbookkeeping.reports.generator.IncomeStatementAltJasperGenerator;
-import nonprofitbookkeeping.reports.generator.IncomeStatementJasperGenerator;
-import nonprofitbookkeeping.reports.generator.TrialBalanceJasperGenerator;
-import nonprofitbookkeeping.reports.generator.TransactionReportJasperGenerator;
-import nonprofitbookkeeping.reports.generator.AssetDtl5aJasperGenerator;
-import nonprofitbookkeeping.reports.generator.Balance3v2JasperGenerator;
-import nonprofitbookkeeping.reports.generator.ContactInfoJasperGenerator;
-import nonprofitbookkeeping.reports.generator.DeprDtl8JasperGenerator;
-import nonprofitbookkeeping.reports.generator.ExpenseDtl12aJasperGenerator;
-import nonprofitbookkeeping.reports.generator.ExpenseDtl12bJasperGenerator;
-import nonprofitbookkeeping.reports.generator.FinanceComm13JasperGenerator;
-import nonprofitbookkeeping.reports.generator.Funds14JasperGenerator;
-import nonprofitbookkeeping.reports.generator.Income4JasperGenerator;
-import nonprofitbookkeeping.reports.generator.IncomeDtl11aJasperGenerator;
-import nonprofitbookkeeping.reports.generator.IncomeDtl11bJasperGenerator;
-import nonprofitbookkeeping.reports.generator.IncomeDtl11cJasperGenerator;
-import nonprofitbookkeeping.reports.generator.InventoryDtl6JasperGenerator;
-import nonprofitbookkeeping.reports.generator.LedgerQ1JasperGenerator;
-import nonprofitbookkeeping.reports.generator.LiabilityDtl5bJasperGenerator;
-import nonprofitbookkeeping.reports.generator.Newsletter15JasperGenerator;
-import nonprofitbookkeeping.reports.generator.PrimaryAccountJasperGenerator;
-import nonprofitbookkeeping.reports.generator.PrimaryAccountReconciliationJasperGenerator;
-import nonprofitbookkeeping.reports.generator.RegaliaSalesDtl7JasperGenerator;
-import nonprofitbookkeeping.reports.generator.SecondaryAccountJasperGenerator;
-import nonprofitbookkeeping.reports.generator.TransferIn9JasperGenerator;
-import nonprofitbookkeeping.reports.generator.TransferOut10JasperGenerator;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
@@ -58,16 +24,15 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiFunction;
 import java.util.logging.Logger;
 
 /**
@@ -89,9 +54,7 @@ public class ReportService
 	/** 
 	 * Mapping of Jasper report types to their generator constructors. 
 	 */
-	private final Map<ReportType,
-		BiFunction<ReportContext, ReportService,
-			AbstractReportGenerator>> generatorRegistry;
+        private final Map<ReportType, String> generatorRegistry;
 	
 	/** Default constructor uses the built-in registry. */
 	public ReportService()
@@ -104,13 +67,11 @@ public class ReportService
 	 * DI-friendly constructor that accepts a registry. 
 	 * The registry remains mutable for runtime changes. 
 	 */
-	public ReportService(Map<ReportType,
-		BiFunction<ReportContext, ReportService,
-			AbstractReportGenerator>> registry)
-	{
-		this.generatorRegistry = new ConcurrentHashMap<>(registry);
-		
-	}
+        public ReportService(Map<ReportType, String> registry)
+        {
+                this.generatorRegistry = new ConcurrentHashMap<>(registry);
+
+        }
 	
 	/** Enum-safe keys for the Jasper report generator registry. */
 	public enum ReportType
@@ -199,113 +160,167 @@ public class ReportService
 	
 	/** Factory for the built-in generator registry. */
 	private static
-		Map<ReportType,
-			BiFunction<ReportContext, ReportService, AbstractReportGenerator>>
-		createDefaultRegistry()
+		Map<ReportType, String> createDefaultRegistry()
 	{
-		Map<ReportType,	
-			BiFunction<ReportContext, 
-			ReportService,
-			AbstractReportGenerator>> map =	new EnumMap<>(ReportType.class);
-		
+		Map<ReportType, String> map = new EnumMap<>(ReportType.class);
+
 		map.put(ReportType.INCOME_STATEMENT_JASPER,
-			(ctx, svc) -> new IncomeStatementJasperGenerator(ctx, svc));
+			generatorClass("IncomeStatementJasperGenerator"));
 		map.put(ReportType.CASH_FLOW_STATEMENT_JASPER,
-			(ctx, svc) -> new CashFlowStatementJasperGenerator(ctx, svc));
+			generatorClass("CashFlowStatementJasperGenerator"));
 		map.put(ReportType.TRIAL_BALANCE_JASPER,
-			(ctx, svc) -> new TrialBalanceJasperGenerator(ctx, svc));
+			generatorClass("TrialBalanceJasperGenerator"));
 		map.put(ReportType.BALANCE_SHEET_JASPER,
-			(ctx, svc) -> new BalanceResultReportGenerator(null));
+			generatorClass("BalanceResultReportGenerator"));
 		map.put(ReportType.ACCOUNT_LEDGER_JASPER,
-			(ctx, svc) -> new AccountLedgerJasperGenerator());
+			generatorClass("AccountLedgerJasperGenerator"));
 		map.put(ReportType.ACCOUNT_SUMMARY_JASPER,
-			(ctx, svc) -> new AccountSummaryJasperGenerator());
+			generatorClass("AccountSummaryJasperGenerator"));
 		map.put(ReportType.BANK_RECONCILIATION_JASPER,
-			(ctx, svc) -> new BankReconciliationJasperGenerator());
+			generatorClass("BankReconciliationJasperGenerator"));
 		map.put(ReportType.CHART_OF_ACCOUNTS_JASPER,
-			(ctx, svc) -> new ChartOfAccountsJasperGenerator(svc));
+			generatorClass("ChartOfAccountsJasperGenerator"));
 		map.put(ReportType.FUND_LEDGER_JASPER,
-			(ctx, svc) -> new FundLedgerJasperGenerator());
+			generatorClass("FundLedgerJasperGenerator"));
 		map.put(ReportType.GENERAL_JOURNAL_JASPER,
-			(ctx, svc) -> new GeneralJournalJasperGenerator());
+			generatorClass("GeneralJournalJasperGenerator"));
 		map.put(ReportType.GENERAL_LEDGER_JASPER,
-			(ctx, svc) -> new GeneralLedgerJasperGenerator());
+			generatorClass("GeneralLedgerJasperGenerator"));
 		map.put(ReportType.INCOME_STATEMENT_ALT_JASPER,
-			(ctx, svc) -> new IncomeStatementAltJasperGenerator());
+			generatorClass("IncomeStatementAltJasperGenerator"));
 		map.put(ReportType.TRANSACTION_REPORT_JASPER,
-			(ctx, svc) -> new TransactionReportJasperGenerator());
+			generatorClass("TransactionReportJasperGenerator"));
 		map.put(ReportType.SCA_ASSET_DTL_5A_JASPER,
-			(ctx, svc) -> new AssetDtl5aJasperGenerator());
+			generatorClass("AssetDtl5aJasperGenerator"));
 		map.put(ReportType.SCA_BALANCE_3_V2_JASPER,
-			(ctx, svc) -> new Balance3v2JasperGenerator());
+			generatorClass("Balance3v2JasperGenerator"));
 		map.put(ReportType.SCA_CONTACT_INFO_JASPER,
-			(ctx, svc) -> new ContactInfoJasperGenerator());
+			generatorClass("ContactInfoJasperGenerator"));
 		map.put(ReportType.SCA_DEPR_DTL_8_JASPER,
-			(ctx, svc) -> new DeprDtl8JasperGenerator());
+			generatorClass("DeprDtl8JasperGenerator"));
 		map.put(ReportType.SCA_EXPENSE_DTL_12A_JASPER,
-			(ctx, svc) -> new ExpenseDtl12aJasperGenerator());
+			generatorClass("ExpenseDtl12aJasperGenerator"));
 		map.put(ReportType.SCA_EXPENSE_DTL_12B_JASPER,
-			(ctx, svc) -> new ExpenseDtl12bJasperGenerator());
+			generatorClass("ExpenseDtl12bJasperGenerator"));
 		map.put(ReportType.SCA_FINANCE_COMM_13_JASPER,
-			(ctx, svc) -> new FinanceComm13JasperGenerator());
+			generatorClass("FinanceComm13JasperGenerator"));
 		map.put(ReportType.SCA_FUNDS_14_JASPER,
-			(ctx, svc) -> new Funds14JasperGenerator());
+			generatorClass("Funds14JasperGenerator"));
 		map.put(ReportType.SCA_INCOME_4_JASPER,
-			(ctx, svc) -> new Income4JasperGenerator());
+			generatorClass("Income4JasperGenerator"));
 		map.put(ReportType.SCA_INCOME_DTL_11A_JASPER,
-			(ctx, svc) -> new IncomeDtl11aJasperGenerator());
+			generatorClass("IncomeDtl11aJasperGenerator"));
 		map.put(ReportType.SCA_INCOME_DTL_11B_JASPER,
-			(ctx, svc) -> new IncomeDtl11bJasperGenerator());
+			generatorClass("IncomeDtl11bJasperGenerator"));
 		map.put(ReportType.SCA_INCOME_DTL_11C_JASPER,
-			(ctx, svc) -> new IncomeDtl11cJasperGenerator());
+			generatorClass("IncomeDtl11cJasperGenerator"));
 		map.put(ReportType.SCA_INVENTORY_DTL_6_JASPER,
-			(ctx, svc) -> new InventoryDtl6JasperGenerator());
+			generatorClass("InventoryDtl6JasperGenerator"));
 		map.put(ReportType.SCA_LEDGER_Q1_JASPER,
-			(ctx, svc) -> new LedgerQ1JasperGenerator());
+			generatorClass("LedgerQ1JasperGenerator"));
 		map.put(ReportType.SCA_LIABILITY_DTL_5B_JASPER,
-			(ctx, svc) -> new LiabilityDtl5bJasperGenerator());
+			generatorClass("LiabilityDtl5bJasperGenerator"));
 		map.put(ReportType.SCA_NEWSLETTER_15_JASPER,
-			(ctx, svc) -> new Newsletter15JasperGenerator());
+			generatorClass("Newsletter15JasperGenerator"));
 		map.put(ReportType.SCA_PRIMARY_ACCOUNT_JASPER,
-			(ctx, svc) -> new PrimaryAccountJasperGenerator());
+			generatorClass("PrimaryAccountJasperGenerator"));
 		map.put(ReportType.SCA_PRIMARY_ACCOUNT_RECONCILIATION_JASPER,
-			(ctx, svc) -> new PrimaryAccountReconciliationJasperGenerator());
+			generatorClass("PrimaryAccountReconciliationJasperGenerator"));
 		map.put(ReportType.SCA_REGALIA_SALES_DTL_7_JASPER,
-			(ctx, svc) -> new RegaliaSalesDtl7JasperGenerator());
+			generatorClass("RegaliaSalesDtl7JasperGenerator"));
 		map.put(ReportType.SCA_SECONDARY_ACCOUNT_JASPER,
-			(ctx, svc) -> new SecondaryAccountJasperGenerator());
+			generatorClass("SecondaryAccountJasperGenerator"));
 		map.put(ReportType.SCA_TRANSFER_IN_9_JASPER,
-			(ctx, svc) -> new TransferIn9JasperGenerator());
+			generatorClass("TransferIn9JasperGenerator"));
 		map.put(ReportType.SCA_TRANSFER_OUT_10_JASPER,
-			(ctx, svc) -> new TransferOut10JasperGenerator());
+			generatorClass("TransferOut10JasperGenerator"));
 		return map;
-		
+
 	}
-	
-	
-	/** Allow runtime registration / replacement of a generator (mutable registry). */
-	public void registerGenerator(ReportType type,
-		BiFunction<ReportContext,
-			ReportService,
-			AbstractReportGenerator> factory)
-	{
 		
-		if (type == null || factory == null)
+	
+        private static String generatorClass(String simpleName)
+        {
+                return "nonprofitbookkeeping.reports.generator." + simpleName;
+        }
+
+        @SuppressWarnings("unchecked")
+        private static Map<String, Object> invokeIncomeStatementContext(
+                ReportContext context,
+                Ledger ledger,
+                ChartOfAccounts chartOfAccounts)
+        {
+                String className = generatorClass("IncomeStatementJasperGenerator");
+
+                try
+                {
+                        Class<?> clazz = Class.forName(className);
+                        Method method = clazz.getMethod("prepareIncomeStatementContext",
+                                ReportContext.class, Ledger.class, ChartOfAccounts.class);
+                        Object result = method.invoke(null, context, ledger, chartOfAccounts);
+
+                        if (result instanceof Map<?, ?> map)
+                        {
+                                return (Map<String, Object>) map;
+                        }
+
+                        throw new IllegalStateException(
+                                "prepareIncomeStatementContext returned unexpected type: "
+                                        + (result == null ? "null"
+                                                : result.getClass().getName()));
+                }
+                catch (ClassNotFoundException e)
+                {
+                        throw new IllegalStateException(
+                                "IncomeStatement generator class not found: " + className, e);
+                }
+                catch (NoSuchMethodException e)
+                {
+                        throw new IllegalStateException(
+                                "prepareIncomeStatementContext not available on " + className,
+                                e);
+                }
+                catch (IllegalAccessException e)
+                {
+                        throw new IllegalStateException(
+                                "Unable to access prepareIncomeStatementContext on "
+                                        + className,
+                                e);
+                }
+                catch (InvocationTargetException e)
+                {
+                        Throwable cause = e.getCause();
+
+                        if (cause instanceof RuntimeException runtime)
+                        {
+                                throw runtime;
+                        }
+
+                        throw new IllegalStateException(
+                                "prepareIncomeStatementContext threw an exception", cause);
+                }
+        }
+
+        /** Allow runtime registration / replacement of a generator (mutable registry). */
+        public void registerGenerator(ReportType type, String generatorClassName)
+        {
+
+                if (type == null || generatorClassName == null
+				|| generatorClassName.trim().isEmpty())
 		{
-			throw new IllegalArgumentException("type and factory are required");
+			throw new IllegalArgumentException(
+					"type and generatorClassName are required");
 		}
-		
-		this.generatorRegistry.put(type, factory);
-		
+
+		this.generatorRegistry.put(type, generatorClassName.trim());
+
 	}
-	
+
 	/** Remove an existing generator mapping, returning the previous factory if any. */
-	public
-		BiFunction<ReportContext, ReportService, AbstractReportGenerator>
-		unregisterGenerator(ReportType type)
+	public String unregisterGenerator(ReportType type)
 	{
 		return this.generatorRegistry.remove(type);
-		
+
 	}
 	
 	
@@ -388,38 +403,32 @@ public class ReportService
 				"Unknown reportType: " + ctx.getReportType());
 		}
 		
-		BiFunction<ReportContext, 
-			ReportService,
-			AbstractReportGenerator> factory = this.generatorRegistry.get(type);
-		
-		if (factory == null)
+		String generatorClassName = this.generatorRegistry.get(type);
+
+		if (generatorClassName == null || generatorClassName.isBlank())
 		{
 			throw new IllegalArgumentException(
 				"No generator registered for reportType: " + type.id());
 		}
-		
-		AbstractReportGenerator generator = factory.apply(ctx, this);
-		
-		if (generator == null)
-		{
-			throw new IllegalStateException(
-				"Generator factory returned null for " + type.id());
-		}
-		
+
+		Object generator = ReportGeneratorLoader
+				.instantiate(generatorClassName, ctx, this);
+
 		if (ctx.getBeans() != null)
 		{
-			generator.setReportData(ctx.getBeans());
+			ReportGeneratorLoader.setReportData(generator, ctx.getBeans());
 		}
-		
+
 		// Ask the generator to build the JasperPrint
-		JasperPrint print = generator.generatePrint();
-		
+		JasperPrint print = ReportGeneratorLoader.generatePrint(generator);
+
 		// Normalize format; default to PDF
 		String fmt =
 			(outputFormat == null ? "pdf" : outputFormat).trim().toLowerCase();
-		
-		File out =
-			generator.writeJasperOutput(fmt, print, generator.getBaseName());
+
+		String baseName = ReportGeneratorLoader.getBaseName(generator);
+		File out = ReportGeneratorLoader
+				.writeOutput(generator, fmt, print, baseName);
 		LOGGER.info("Report generated: " + out.getAbsolutePath());
 		return out;
 		
@@ -948,11 +957,11 @@ public class ReportService
 		incomeStatementPeriodContext.setStartDate(reportStartDate);
 		incomeStatementPeriodContext.setEndDate(reportEndDate);
 		incomeStatementPeriodContext.setFundIds(selectedFundNames);
-		Map<String,
-			Object> incomeStatementContext = IncomeStatementJasperGenerator
-				.prepareIncomeStatementContext(incomeStatementPeriodContext,
-					ledger,
-					chartOfAccounts);
+                Map<String,
+                        Object> incomeStatementContext = invokeIncomeStatementContext(
+                                incomeStatementPeriodContext,
+                                ledger,
+                                chartOfAccounts);
 		BigDecimal netIncome =
 			(BigDecimal) incomeStatementContext.getOrDefault("netIncome",
 				BigDecimal.ZERO);
