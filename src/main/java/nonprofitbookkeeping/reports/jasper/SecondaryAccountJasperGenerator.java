@@ -2,7 +2,6 @@
 package nonprofitbookkeeping.reports.jasper;
 
 import java.util.*;
-import nonprofitbookkeeping.reports.datasource.scareports.SecondaryAccount2bBean;
 
 public class SecondaryAccountJasperGenerator extends AbstractReportGenerator
 {

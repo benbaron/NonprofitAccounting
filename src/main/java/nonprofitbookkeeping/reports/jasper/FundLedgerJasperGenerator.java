@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import nonprofitbookkeeping.reports.datasource.scareports.FundLedgerRowBean;
-
 /**
  * Generator for the Fund Ledger report.
  */
