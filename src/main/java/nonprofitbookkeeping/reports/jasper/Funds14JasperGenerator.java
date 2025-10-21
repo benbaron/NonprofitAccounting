@@ -18,7 +18,7 @@ public class Funds14JasperGenerator extends AbstractReportGenerator
 	@Override
 	protected String getReportPath()
 	{
-                return "jrxml/sca-reports/FUNDS_14_AUTO_STYLED_labeled_rowbased.jrxml";
+		return "jrxml/sca-reports/FUNDS_14_AUTO_STYLED_labeled_rowbased.jrxml";
 		
 	}
 	

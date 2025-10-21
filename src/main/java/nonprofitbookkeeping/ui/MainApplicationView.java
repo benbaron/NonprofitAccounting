@@ -7,6 +7,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
 
 import nonprofitbookkeeping.ui.panels.CoaEditorPanelFX;
+import nonprofitbookkeeping.ui.panels.CompanySelectionPanelFX;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonDashboardPanel;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonJournalPanel;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonReportsPanel;
@@ -55,11 +56,13 @@ public class MainApplicationView extends BorderPane
 	/** Tab for displaying the Chart of Accounts. */
 	private Tab coaTab;
 	/** Tab for displaying Reports. */
-	private Tab reportsTab;
-	/** Tab for displaying Account Transaction Details. */
-	private Tab accountDetailsTab;
-	/** Embedded Chart of Accounts editor panel. */
-	private CoaEditorPanelFX coaEditorPanel;
+        private Tab reportsTab;
+        /** Tab for displaying Account Transaction Details. */
+        private Tab accountDetailsTab;
+        /** Embedded Chart of Accounts editor panel. */
+        private CoaEditorPanelFX coaEditorPanel;
+        /** Panel used to select or create companies when none are open. */
+        private final CompanySelectionPanelFX companySelectionPanel;
 	
 	
 	/**
@@ -74,7 +77,8 @@ public class MainApplicationView extends BorderPane
 	{
 		this.menuBar = null; // Initialize menuBar, will be set via setter
 		
-		this.tabPane = new TabPane();
+                this.tabPane = new TabPane();
+                this.companySelectionPanel = new CompanySelectionPanelFX();
 		
 		// Create Tab instances
 		this.dashboardTab = new Tab("Dashboard", new SkeletonDashboardPanel());
@@ -107,20 +111,37 @@ public class MainApplicationView extends BorderPane
 		this.accountDetailsTab.setClosable(false);
 	
 		
-		// Add tabs to the tabPane
-		this.tabPane.getTabs()
-				.addAll(this.dashboardTab,
-						this.journalTab,
-						this.coaTab,
-						this.reportsTab,
-						this.accountDetailsTab
-				// this.companySelectTab
-				);
-				
-		// Set the TabPane as the center of the BorderPane
-		setCenter(this.tabPane);
-		
-	}
+                // Add tabs to the tabPane
+                this.tabPane.getTabs()
+                                .addAll(this.dashboardTab,
+                                                this.journalTab,
+                                                this.coaTab,
+                                                this.reportsTab,
+                                                this.accountDetailsTab
+                                );
+
+                // Default to the company selection view until a company is opened.
+                setCenter(this.companySelectionPanel);
+
+        }
+
+        /** Exposes the company selection panel for additional configuration. */
+        public CompanySelectionPanelFX getCompanySelectionPanel()
+        {
+                return this.companySelectionPanel;
+        }
+
+        /** Displays the company selection panel in the main content area. */
+        public void showCompanySelection()
+        {
+                setCenter(this.companySelectionPanel);
+        }
+
+        /** Restores the workspace tab pane to the main content area. */
+        public void showWorkspaceTabs()
+        {
+                setCenter(this.tabPane);
+        }
 	
 	/**
 	 * Sets the main {@link MenuBar} for the application view.
@@ -143,11 +164,15 @@ public class MainApplicationView extends BorderPane
 	 *
 	 * @param panelType The {@link PanelType} indicating which tab/panel to display.
 	 */
-	public void showPanel(PanelType panelType)
-	{
-		
-		switch(panelType)
-		{
+        public void showPanel(PanelType panelType)
+        {
+                if (getCenter() != this.tabPane)
+                {
+                        showWorkspaceTabs();
+                }
+
+                switch(panelType)
+                {
 			case DASHBOARD:
 				this.tabPane.getSelectionModel().select(this.dashboardTab);
 				break;
@@ -182,21 +207,22 @@ public class MainApplicationView extends BorderPane
 	 *
 	 * @param companyOpen {@code true} if a company is currently open.
 	 */
-	public void updateCompanyOpenState(boolean companyOpen)
-	{
-		this.dashboardTab.setDisable(!companyOpen);
-		this.journalTab.setDisable(!companyOpen);
-		this.coaTab.setDisable(!companyOpen);
-		this.reportsTab.setDisable(!companyOpen);
-		this.accountDetailsTab.setDisable(!companyOpen);
-		
-		if (companyOpen)
-		{
-			Company company = CurrentCompany.getCompany();
-			ChartOfAccounts coa =
-					company != null ? company.getChartOfAccounts() : new ChartOfAccounts();
-			
-			if (this.coaEditorPanel == null)
+        public void updateCompanyOpenState(boolean companyOpen)
+        {
+                this.dashboardTab.setDisable(!companyOpen);
+                this.journalTab.setDisable(!companyOpen);
+                this.coaTab.setDisable(!companyOpen);
+                this.reportsTab.setDisable(!companyOpen);
+                this.accountDetailsTab.setDisable(!companyOpen);
+
+                if (companyOpen)
+                {
+                        showWorkspaceTabs();
+                        Company company = CurrentCompany.getCompany();
+                        ChartOfAccounts coa =
+                                        company != null ? company.getChartOfAccounts() : new ChartOfAccounts();
+
+                        if (this.coaEditorPanel == null)
 			{
 				this.coaEditorPanel = new CoaEditorPanelFX(coa, c -> {
 					
@@ -209,13 +235,16 @@ public class MainApplicationView extends BorderPane
 				});
 				this.coaTab.setContent(this.coaEditorPanel);
 			}
-			else
-			{
-				this.coaEditorPanel.setChartOfAccounts(coa);
-			}
-			
-		}
-				
-	}
-	
+                        else
+                        {
+                                this.coaEditorPanel.setChartOfAccounts(coa);
+                        }
+                }
+                else
+                {
+                        showCompanySelection();
+                }
+
+        }
+
 }

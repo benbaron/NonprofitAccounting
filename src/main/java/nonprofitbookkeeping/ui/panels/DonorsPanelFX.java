@@ -42,16 +42,13 @@ public class DonorsPanelFX extends BorderPane
                 this.service = service;
                 this.companyDirectory = companyDirectory;
 
-                if (this.companyDirectory != null)
+                try
                 {
-                        try
-                        {
-                                this.service.loadDonors(this.companyDirectory);
-                        }
-                        catch (Exception ex)
-                        {
-                                ex.printStackTrace();
-                        }
+                        this.service.loadDonors(this.companyDirectory);
+                }
+                catch (Exception ex)
+                {
+                        ex.printStackTrace();
                 }
 
                 setPadding(new Insets(10));
@@ -116,7 +113,7 @@ public class DonorsPanelFX extends BorderPane
                         DonorContact sel = this.table.getSelectionModel().getSelectedItem();
                         if (sel != null)
                                 {
-                                        this.service.removeDonor(sel.getName());
+                                        this.service.removeDonor(sel.getId());
                                         refresh();
                                         save();
                                 }
@@ -171,11 +168,7 @@ public class DonorsPanelFX extends BorderPane
                         }
                         else
                         {
-                                String oldName = existing.getName();
-                                existing.setName(d.getName());
-                                existing.setEmail(d.getEmail());
-                                existing.setPhone(d.getPhone());
-                                this.service.editDonor(oldName, existing);
+                                this.service.editDonor(existing.getId(), d);
                         }
 
                         refresh();
@@ -194,17 +187,14 @@ public class DonorsPanelFX extends BorderPane
         /** Saves donors to disk if a company directory is set. */
         private void save()
         {
-                if (this.companyDirectory != null)
+                try
                 {
-                        try
-                        {
-                                this.service.saveDonors(this.companyDirectory);
-                        }
-                        catch (Exception ex)
-                        {
-                                ex.printStackTrace();
-                        }
+                        this.service.saveDonors(this.companyDirectory);
+                }
+                catch (Exception ex)
+                {
+                        ex.printStackTrace();
                 }
         }
-	
+
 }

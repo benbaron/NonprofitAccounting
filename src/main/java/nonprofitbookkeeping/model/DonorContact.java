@@ -1,98 +1,87 @@
-
 package nonprofitbookkeeping.model;
 
 import java.io.Serializable;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.util.Objects;
 
 /** Simple contact information for a donor. */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor public class DonorContact implements Serializable
-{
-	private static final long serialVersionUID = 1L;
-	private String name;
-	
-	/**  
-	 * Constructor DonorContact
-	 * @param object
-	 * @param text
-	 * @param text2
-	 * @param text3
-	 */
-	public DonorContact(Object object, String text, String text2, String text3)
-	{
-		
-		// TODO Auto-generated constructor stub
-	}
-	
-	/**
-	 * @return the name
-	 */
-	public String getName()
-	{
-		
-		return this.name;
-		
-	}
-	
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name)
-	{
-		
-		this.name = name;
-		
-	}
-	
-	/**
-	 * @return
-	 */
-	public String getEmail()
-	{
-		// TODO Auto-generated method stub
-		return null;
-		
-	}
-	
-	/**
-	 * @return
-	 */
-	public String getId()
-	{
-		// TODO Auto-generated method stub
-		return null;
-		
-	}
-	
-	/**
-	 * @return
-	 */
-	public String getPhone()
-	{
-		// TODO Auto-generated method stub
-		return null;
-		
-	}
-	
-	/**
-	 * @param email2
-	 */
-	public void setEmail(Object email2)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-	
-	/**
-	 * @param phone2
-	 */
-	public void setPhone(Object phone2)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-	
+public class DonorContact implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private String id;
+    private String name;
+    private String email;
+    private String phone;
+
+    public DonorContact() {
+        // Default constructor required for frameworks and serialization
+    }
+
+    public DonorContact(String id, String name, String email, String phone) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof DonorContact)) {
+            return false;
+        }
+        DonorContact that = (DonorContact) o;
+        return Objects.equals(id, that.id)
+                && Objects.equals(name, that.name)
+                && Objects.equals(email, that.email)
+                && Objects.equals(phone, that.phone);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, email, phone);
+    }
+
+    @Override
+    public String toString() {
+        return "DonorContact{"
+                + "id='" + id + '\''
+                + ", name='" + name + '\''
+                + ", email='" + email + '\''
+                + ", phone='" + phone + '\''
+                + '}';
+    }
 }

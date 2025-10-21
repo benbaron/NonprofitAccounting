@@ -16,12 +16,12 @@ class InventoryServiceTest
 	
 	private InventoryService service;
 	
-	@BeforeEach
-		void setUp()
-	{
-		this.service.clearInventory(); // Clear the static map
-		this.service = new InventoryService(); // Re-initialize service, which ensures map is ready
-	}
+    @BeforeEach
+            void setUp()
+    {
+            this.service = new InventoryService();
+            this.service.clearInventory();
+    }
 	
 	// --- addItem Tests ---
 	@Test

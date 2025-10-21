@@ -2,14 +2,23 @@ package nonprofitbookkeeping.model;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.io.TempDir;
+import nonprofitbookkeeping.core.Database;
 
 class CompanyPersistenceTest {
 
+    @TempDir
+    Path tempDir;
+
     @Test
     void accountsPersistAndReloadWithParentLinks() throws Exception {
+        Path dbPath = tempDir.resolve("company-db");
+        Database.init(dbPath);
+        Database.get().ensureSchema();
+
         Company company = new Company();
         ChartOfAccounts chart = company.getChartOfAccounts();
         Account parent = new Account("100", "Parent", AccountSide.DEBIT);
@@ -17,17 +26,15 @@ class CompanyPersistenceTest {
         chart.addAccount(parent);
         chart.addSubAccount(parent, child);
 
-        File tempFile = File.createTempFile("company", ".npbk");
-        tempFile.deleteOnExit();
-
         CurrentCompany.forceCompanyLoad(company);
-        CurrentCompany.setCurrentFile(tempFile);
         CurrentCompany.persist();
+        Long companyId = CurrentCompany.getCurrentCompanyId();
+        assertNotNull(companyId, "Persisting the company should assign an id");
 
         // Reset loaded company
         CurrentCompany.forceCompanyLoad(null);
 
-        CurrentCompany.loadFromPersistent(tempFile);
+        CurrentCompany.loadFromPersistent(companyId);
         Company loaded = CurrentCompany.getCompany();
 
         Account loadedChild = loaded.getChartOfAccounts().getAccount("101");

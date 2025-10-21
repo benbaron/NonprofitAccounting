@@ -1,147 +1,151 @@
-
 package nonprofitbookkeeping.reports.datasource.scareports;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.util.Date;
 
-import lombok.Getter;
-import lombok.Setter;
-
-/**
- * Auto-generated bean for Inventory DTL 6 report.
- * Generated on 2025-08-01.
- */
-@Getter
-@Setter
-public class InventoryDtl6Bean
-{
-	ArrayList<InventoryDtl6Row> rows;
-	private BigDecimal _1_contact_info;
-	private BigDecimal actual_gross_income_from_inventory_sales;
-	private BigDecimal actual_gross_income_from_inventory_sales_2;
-	private BigDecimal actual_gross_income_from_inventory_sales_3;
-	private BigDecimal actual_gross_income_from_inventory_sales_4;
-	private BigDecimal actual_gross_income_from_inventory_sales_5;
-	private BigDecimal actual_gross_income_from_inventory_sales_6;
-	private BigDecimal actual_gross_income_from_inventory_sales_7;
-	private BigDecimal actual_gross_income_from_inventory_sales_8;
-	private BigDecimal actual_gross_income_from_inventory_sales_9;
-	private BigDecimal contents_b59;
-	private BigDecimal contents_e_3;
-	private BigDecimal contents_e_4;
-	private BigDecimal cost_of_goods_b1_b2_g;
-	private BigDecimal cost_of_goods_b1_b2_g_2;
-	private BigDecimal cost_of_goods_b1_b2_g_3;
-	private BigDecimal cost_of_goods_b1_b2_g_4;
-	private BigDecimal cost_of_goods_b1_b2_g_5;
-	private BigDecimal cost_of_goods_b1_b2_g_6;
-	private BigDecimal cost_of_goods_b1_b2_g_7;
-	private BigDecimal cost_of_goods_b1_b2_g_8;
-	private BigDecimal cost_of_goods_b1_b2_g_9;
-	private BigDecimal ending_extended_cost_f_x_c;
-	private BigDecimal ending_extended_cost_f_x_c_2;
-	private BigDecimal ending_extended_cost_f_x_c_3;
-	private BigDecimal ending_extended_cost_f_x_c_4;
-	private BigDecimal ending_extended_cost_f_x_c_5;
-	private BigDecimal ending_extended_cost_f_x_c_6;
-	private BigDecimal ending_extended_cost_f_x_c_7;
-	private BigDecimal ending_extended_cost_f_x_c_8;
-	private BigDecimal ending_extended_cost_f_x_c_9;
-	private BigDecimal ending_quantity_b1or_b2_d_e;
-	private BigDecimal ending_quantity_b1or_b2_d_e_2;
-	private BigDecimal ending_quantity_b1or_b2_d_e_3;
-	private BigDecimal ending_quantity_b1or_b2_d_e_4;
-	private BigDecimal ending_quantity_b1or_b2_d_e_5;
-	private BigDecimal ending_quantity_b1or_b2_d_e_6;
-	private BigDecimal ending_quantity_b1or_b2_d_e_7;
-	private BigDecimal ending_quantity_b1or_b2_d_e_8;
-	private BigDecimal existing_lot_extended_cost;
-	private BigDecimal existing_lot_extended_cost_2;
-	private BigDecimal existing_lot_extended_cost_3;
-	private BigDecimal existing_lot_extended_cost_4;
-	private BigDecimal existing_lot_extended_cost_5;
-	private BigDecimal existing_lot_extended_cost_6;
-	private BigDecimal existing_lot_extended_cost_7;
-	private BigDecimal existing_lot_extended_cost_8;
-	private BigDecimal existing_lot_extended_cost_9;
-	private BigDecimal existing_lot_quantity;
-	private BigDecimal existing_lot_quantity_2;
-	private BigDecimal existing_lot_quantity_3;
-	private BigDecimal existing_lot_quantity_4;
-	private BigDecimal existing_lot_quantity_5;
-	private BigDecimal existing_lot_quantity_6;
-	private BigDecimal existing_lot_quantity_7;
-	private BigDecimal existing_lot_quantity_8;
-	private BigDecimal lot_item_description_and_year_purchased;
-	private BigDecimal lot_item_description_and_year_purchased_2;
-	private BigDecimal lot_item_description_and_year_purchased_3;
-	private BigDecimal lot_item_description_and_year_purchased_4;
-	private BigDecimal lot_item_description_and_year_purchased_5;
-	private BigDecimal lot_item_description_and_year_purchased_6;
-	private BigDecimal lot_item_description_and_year_purchased_7;
-	private BigDecimal lot_item_description_and_year_purchased_8;
-	private BigDecimal net_inventory_sales_income_i_h;
-	private BigDecimal net_inventory_sales_income_i_h_2;
-	private BigDecimal net_inventory_sales_income_i_h_3;
-	private BigDecimal net_inventory_sales_income_i_h_4;
-	private BigDecimal net_inventory_sales_income_i_h_5;
-	private BigDecimal net_inventory_sales_income_i_h_6;
-	private BigDecimal net_inventory_sales_income_i_h_7;
-	private BigDecimal net_inventory_sales_income_i_h_8;
-	private BigDecimal new_lot_purchase_cost;
-	private BigDecimal new_lot_purchase_cost_2;
-	private BigDecimal new_lot_purchase_cost_3;
-	private BigDecimal new_lot_purchase_cost_4;
-	private BigDecimal new_lot_purchase_cost_5;
-	private BigDecimal new_lot_purchase_cost_6;
-	private BigDecimal new_lot_purchase_cost_7;
-	private BigDecimal new_lot_purchase_cost_8;
-	private BigDecimal new_lot_purchase_quantity;
-	private BigDecimal new_lot_purchase_quantity_2;
-	private BigDecimal new_lot_purchase_quantity_3;
-	private BigDecimal new_lot_purchase_quantity_4;
-	private BigDecimal new_lot_purchase_quantity_5;
-	private BigDecimal new_lot_purchase_quantity_6;
-	private BigDecimal new_lot_purchase_quantity_7;
-	private BigDecimal new_lot_purchase_quantity_8;
-	private BigDecimal per_unit_cost_b1_a1_or_b2_a2;
-	private BigDecimal per_unit_cost_b1_a1_or_b2_a2_2;
-	private BigDecimal per_unit_cost_b1_a1_or_b2_a2_3;
-	private BigDecimal per_unit_cost_b1_a1_or_b2_a2_4;
-	private BigDecimal per_unit_cost_b1_a1_or_b2_a2_5;
-	private BigDecimal per_unit_cost_b1_a1_or_b2_a2_6;
-	private BigDecimal per_unit_cost_b1_a1_or_b2_a2_7;
-	private BigDecimal per_unit_cost_b1_a1_or_b2_a2_8;
-	private BigDecimal quantity_removed_or_discarded;
-	private BigDecimal quantity_removed_or_discarded_2;
-	private BigDecimal quantity_removed_or_discarded_3;
-	private BigDecimal quantity_removed_or_discarded_4;
-	private BigDecimal quantity_removed_or_discarded_5;
-	private BigDecimal quantity_removed_or_discarded_6;
-	private BigDecimal quantity_removed_or_discarded_7;
-	private BigDecimal quantity_removed_or_discarded_8;
-	private BigDecimal quantity_sold_at_any_price;
-	private BigDecimal quantity_sold_at_any_price_2;
-	private BigDecimal quantity_sold_at_any_price_3;
-	private BigDecimal quantity_sold_at_any_price_4;
-	private BigDecimal quantity_sold_at_any_price_5;
-	private BigDecimal quantity_sold_at_any_price_6;
-	private BigDecimal quantity_sold_at_any_price_7;
-	private BigDecimal quantity_sold_at_any_price_8;
-	private BigDecimal suggested_selling_price;
-	private BigDecimal suggested_selling_price_2;
-	private BigDecimal suggested_selling_price_3;
-	private BigDecimal suggested_selling_price_4;
-	private BigDecimal suggested_selling_price_5;
-	private BigDecimal suggested_selling_price_6;
-	private BigDecimal suggested_selling_price_7;
-	private BigDecimal suggested_selling_price_8;
-	/**
-	 * @param one
-	 */
-        public void setActual_gross_income_from_inventory_sales(BigDecimal actualGrossIncome)
-        {
-                this.actual_gross_income_from_inventory_sales = actualGrossIncome;
-        }
-	
+/** Auto-generated bean for sheet 'INVENTORY_DTL_6'. */
+public class InventoryDtl6Bean {
+    private String INVENTORY_DTL_6_C2;
+    private String INVENTORY_DTL_6_C3;
+    private String INVENTORY_DTL_6_C4;
+    private String INVENTORY_DTL_6_C6;
+    private Double INVENTORY_DTL_6_M17;
+    private Double INVENTORY_DTL_6_E22;
+    private Double INVENTORY_DTL_6_F22;
+    private Double INVENTORY_DTL_6_G22;
+    private Double INVENTORY_DTL_6_H22;
+    private Double INVENTORY_DTL_6_I22;
+    private Double INVENTORY_DTL_6_J22;
+    private Double INVENTORY_DTL_6_K22;
+    private Double INVENTORY_DTL_6_L22;
+    private Double INVENTORY_DTL_6_E26;
+    private Double INVENTORY_DTL_6_F26;
+    private Double INVENTORY_DTL_6_G26;
+    private Double INVENTORY_DTL_6_H26;
+    private Double INVENTORY_DTL_6_I26;
+    private Double INVENTORY_DTL_6_J26;
+    private Double INVENTORY_DTL_6_K26;
+    private Double INVENTORY_DTL_6_L26;
+    private Double INVENTORY_DTL_6_E27;
+    private Double INVENTORY_DTL_6_F27;
+    private Double INVENTORY_DTL_6_G27;
+    private Double INVENTORY_DTL_6_H27;
+    private Double INVENTORY_DTL_6_I27;
+    private Double INVENTORY_DTL_6_J27;
+    private Double INVENTORY_DTL_6_K27;
+    private Double INVENTORY_DTL_6_L27;
+    private Double INVENTORY_DTL_6_M27;
+    private Double INVENTORY_DTL_6_E29;
+    private Double INVENTORY_DTL_6_F29;
+    private Double INVENTORY_DTL_6_G29;
+    private Double INVENTORY_DTL_6_H29;
+    private Double INVENTORY_DTL_6_I29;
+    private Double INVENTORY_DTL_6_J29;
+    private Double INVENTORY_DTL_6_K29;
+    private Double INVENTORY_DTL_6_L29;
+    private Double INVENTORY_DTL_6_M29;
+    private Double INVENTORY_DTL_6_M30;
+    private Double INVENTORY_DTL_6_E31;
+    private Double INVENTORY_DTL_6_F31;
+    private Double INVENTORY_DTL_6_G31;
+    private Double INVENTORY_DTL_6_H31;
+    private Double INVENTORY_DTL_6_I31;
+    private Double INVENTORY_DTL_6_J31;
+    private Double INVENTORY_DTL_6_K31;
+    private Double INVENTORY_DTL_6_L31;
+    public String getINVENTORY_DTL_6_C2() { return this.INVENTORY_DTL_6_C2; }
+    public void setINVENTORY_DTL_6_C2(String v) { this.INVENTORY_DTL_6_C2 = v; }
+    public String getINVENTORY_DTL_6_C3() { return this.INVENTORY_DTL_6_C3; }
+    public void setINVENTORY_DTL_6_C3(String v) { this.INVENTORY_DTL_6_C3 = v; }
+    public String getINVENTORY_DTL_6_C4() { return this.INVENTORY_DTL_6_C4; }
+    public void setINVENTORY_DTL_6_C4(String v) { this.INVENTORY_DTL_6_C4 = v; }
+    public String getINVENTORY_DTL_6_C6() { return this.INVENTORY_DTL_6_C6; }
+    public void setINVENTORY_DTL_6_C6(String v) { this.INVENTORY_DTL_6_C6 = v; }
+    public Double getINVENTORY_DTL_6_M17() { return this.INVENTORY_DTL_6_M17; }
+    public void setINVENTORY_DTL_6_M17(Double v) { this.INVENTORY_DTL_6_M17 = v; }
+    public Double getINVENTORY_DTL_6_E22() { return this.INVENTORY_DTL_6_E22; }
+    public void setINVENTORY_DTL_6_E22(Double v) { this.INVENTORY_DTL_6_E22 = v; }
+    public Double getINVENTORY_DTL_6_F22() { return this.INVENTORY_DTL_6_F22; }
+    public void setINVENTORY_DTL_6_F22(Double v) { this.INVENTORY_DTL_6_F22 = v; }
+    public Double getINVENTORY_DTL_6_G22() { return this.INVENTORY_DTL_6_G22; }
+    public void setINVENTORY_DTL_6_G22(Double v) { this.INVENTORY_DTL_6_G22 = v; }
+    public Double getINVENTORY_DTL_6_H22() { return this.INVENTORY_DTL_6_H22; }
+    public void setINVENTORY_DTL_6_H22(Double v) { this.INVENTORY_DTL_6_H22 = v; }
+    public Double getINVENTORY_DTL_6_I22() { return this.INVENTORY_DTL_6_I22; }
+    public void setINVENTORY_DTL_6_I22(Double v) { this.INVENTORY_DTL_6_I22 = v; }
+    public Double getINVENTORY_DTL_6_J22() { return this.INVENTORY_DTL_6_J22; }
+    public void setINVENTORY_DTL_6_J22(Double v) { this.INVENTORY_DTL_6_J22 = v; }
+    public Double getINVENTORY_DTL_6_K22() { return this.INVENTORY_DTL_6_K22; }
+    public void setINVENTORY_DTL_6_K22(Double v) { this.INVENTORY_DTL_6_K22 = v; }
+    public Double getINVENTORY_DTL_6_L22() { return this.INVENTORY_DTL_6_L22; }
+    public void setINVENTORY_DTL_6_L22(Double v) { this.INVENTORY_DTL_6_L22 = v; }
+    public Double getINVENTORY_DTL_6_E26() { return this.INVENTORY_DTL_6_E26; }
+    public void setINVENTORY_DTL_6_E26(Double v) { this.INVENTORY_DTL_6_E26 = v; }
+    public Double getINVENTORY_DTL_6_F26() { return this.INVENTORY_DTL_6_F26; }
+    public void setINVENTORY_DTL_6_F26(Double v) { this.INVENTORY_DTL_6_F26 = v; }
+    public Double getINVENTORY_DTL_6_G26() { return this.INVENTORY_DTL_6_G26; }
+    public void setINVENTORY_DTL_6_G26(Double v) { this.INVENTORY_DTL_6_G26 = v; }
+    public Double getINVENTORY_DTL_6_H26() { return this.INVENTORY_DTL_6_H26; }
+    public void setINVENTORY_DTL_6_H26(Double v) { this.INVENTORY_DTL_6_H26 = v; }
+    public Double getINVENTORY_DTL_6_I26() { return this.INVENTORY_DTL_6_I26; }
+    public void setINVENTORY_DTL_6_I26(Double v) { this.INVENTORY_DTL_6_I26 = v; }
+    public Double getINVENTORY_DTL_6_J26() { return this.INVENTORY_DTL_6_J26; }
+    public void setINVENTORY_DTL_6_J26(Double v) { this.INVENTORY_DTL_6_J26 = v; }
+    public Double getINVENTORY_DTL_6_K26() { return this.INVENTORY_DTL_6_K26; }
+    public void setINVENTORY_DTL_6_K26(Double v) { this.INVENTORY_DTL_6_K26 = v; }
+    public Double getINVENTORY_DTL_6_L26() { return this.INVENTORY_DTL_6_L26; }
+    public void setINVENTORY_DTL_6_L26(Double v) { this.INVENTORY_DTL_6_L26 = v; }
+    public Double getINVENTORY_DTL_6_E27() { return this.INVENTORY_DTL_6_E27; }
+    public void setINVENTORY_DTL_6_E27(Double v) { this.INVENTORY_DTL_6_E27 = v; }
+    public Double getINVENTORY_DTL_6_F27() { return this.INVENTORY_DTL_6_F27; }
+    public void setINVENTORY_DTL_6_F27(Double v) { this.INVENTORY_DTL_6_F27 = v; }
+    public Double getINVENTORY_DTL_6_G27() { return this.INVENTORY_DTL_6_G27; }
+    public void setINVENTORY_DTL_6_G27(Double v) { this.INVENTORY_DTL_6_G27 = v; }
+    public Double getINVENTORY_DTL_6_H27() { return this.INVENTORY_DTL_6_H27; }
+    public void setINVENTORY_DTL_6_H27(Double v) { this.INVENTORY_DTL_6_H27 = v; }
+    public Double getINVENTORY_DTL_6_I27() { return this.INVENTORY_DTL_6_I27; }
+    public void setINVENTORY_DTL_6_I27(Double v) { this.INVENTORY_DTL_6_I27 = v; }
+    public Double getINVENTORY_DTL_6_J27() { return this.INVENTORY_DTL_6_J27; }
+    public void setINVENTORY_DTL_6_J27(Double v) { this.INVENTORY_DTL_6_J27 = v; }
+    public Double getINVENTORY_DTL_6_K27() { return this.INVENTORY_DTL_6_K27; }
+    public void setINVENTORY_DTL_6_K27(Double v) { this.INVENTORY_DTL_6_K27 = v; }
+    public Double getINVENTORY_DTL_6_L27() { return this.INVENTORY_DTL_6_L27; }
+    public void setINVENTORY_DTL_6_L27(Double v) { this.INVENTORY_DTL_6_L27 = v; }
+    public Double getINVENTORY_DTL_6_M27() { return this.INVENTORY_DTL_6_M27; }
+    public void setINVENTORY_DTL_6_M27(Double v) { this.INVENTORY_DTL_6_M27 = v; }
+    public Double getINVENTORY_DTL_6_E29() { return this.INVENTORY_DTL_6_E29; }
+    public void setINVENTORY_DTL_6_E29(Double v) { this.INVENTORY_DTL_6_E29 = v; }
+    public Double getINVENTORY_DTL_6_F29() { return this.INVENTORY_DTL_6_F29; }
+    public void setINVENTORY_DTL_6_F29(Double v) { this.INVENTORY_DTL_6_F29 = v; }
+    public Double getINVENTORY_DTL_6_G29() { return this.INVENTORY_DTL_6_G29; }
+    public void setINVENTORY_DTL_6_G29(Double v) { this.INVENTORY_DTL_6_G29 = v; }
+    public Double getINVENTORY_DTL_6_H29() { return this.INVENTORY_DTL_6_H29; }
+    public void setINVENTORY_DTL_6_H29(Double v) { this.INVENTORY_DTL_6_H29 = v; }
+    public Double getINVENTORY_DTL_6_I29() { return this.INVENTORY_DTL_6_I29; }
+    public void setINVENTORY_DTL_6_I29(Double v) { this.INVENTORY_DTL_6_I29 = v; }
+    public Double getINVENTORY_DTL_6_J29() { return this.INVENTORY_DTL_6_J29; }
+    public void setINVENTORY_DTL_6_J29(Double v) { this.INVENTORY_DTL_6_J29 = v; }
+    public Double getINVENTORY_DTL_6_K29() { return this.INVENTORY_DTL_6_K29; }
+    public void setINVENTORY_DTL_6_K29(Double v) { this.INVENTORY_DTL_6_K29 = v; }
+    public Double getINVENTORY_DTL_6_L29() { return this.INVENTORY_DTL_6_L29; }
+    public void setINVENTORY_DTL_6_L29(Double v) { this.INVENTORY_DTL_6_L29 = v; }
+    public Double getINVENTORY_DTL_6_M29() { return this.INVENTORY_DTL_6_M29; }
+    public void setINVENTORY_DTL_6_M29(Double v) { this.INVENTORY_DTL_6_M29 = v; }
+    public Double getINVENTORY_DTL_6_M30() { return this.INVENTORY_DTL_6_M30; }
+    public void setINVENTORY_DTL_6_M30(Double v) { this.INVENTORY_DTL_6_M30 = v; }
+    public Double getINVENTORY_DTL_6_E31() { return this.INVENTORY_DTL_6_E31; }
+    public void setINVENTORY_DTL_6_E31(Double v) { this.INVENTORY_DTL_6_E31 = v; }
+    public Double getINVENTORY_DTL_6_F31() { return this.INVENTORY_DTL_6_F31; }
+    public void setINVENTORY_DTL_6_F31(Double v) { this.INVENTORY_DTL_6_F31 = v; }
+    public Double getINVENTORY_DTL_6_G31() { return this.INVENTORY_DTL_6_G31; }
+    public void setINVENTORY_DTL_6_G31(Double v) { this.INVENTORY_DTL_6_G31 = v; }
+    public Double getINVENTORY_DTL_6_H31() { return this.INVENTORY_DTL_6_H31; }
+    public void setINVENTORY_DTL_6_H31(Double v) { this.INVENTORY_DTL_6_H31 = v; }
+    public Double getINVENTORY_DTL_6_I31() { return this.INVENTORY_DTL_6_I31; }
+    public void setINVENTORY_DTL_6_I31(Double v) { this.INVENTORY_DTL_6_I31 = v; }
+    public Double getINVENTORY_DTL_6_J31() { return this.INVENTORY_DTL_6_J31; }
+    public void setINVENTORY_DTL_6_J31(Double v) { this.INVENTORY_DTL_6_J31 = v; }
+    public Double getINVENTORY_DTL_6_K31() { return this.INVENTORY_DTL_6_K31; }
+    public void setINVENTORY_DTL_6_K31(Double v) { this.INVENTORY_DTL_6_K31 = v; }
+    public Double getINVENTORY_DTL_6_L31() { return this.INVENTORY_DTL_6_L31; }
+    public void setINVENTORY_DTL_6_L31(Double v) { this.INVENTORY_DTL_6_L31 = v; }
 }

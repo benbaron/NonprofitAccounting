@@ -1,0 +1,226 @@
+
+package nonprofitbookkeeping.persistence;
+
+import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.model.Account;
+import nonprofitbookkeeping.model.AccountSide;
+import nonprofitbookkeeping.model.AccountType;
+
+import java.math.BigDecimal;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+public class AccountRepository
+{
+	
+	public void upsert(Account a) throws SQLException
+	{
+		String sql =
+			"""
+				    MERGE INTO account(account_number, name, account_code, account_type, increase_side,
+				                       parent_account_id, currency, opening_balance)
+				    KEY(account_number)
+				    VALUES(?,?,?,?,?,?,?,?)
+				""";
+		
+		try (Connection c = Database.get().getConnection();
+			PreparedStatement ps = c.prepareStatement(sql))
+		{
+			int i = 0;
+			ps.setString(++i, a.getAccountNumber());
+			ps.setString(++i, a.getName());
+			ps.setString(++i, a.getAccountCode());
+			ps.setString(++i,
+				a.getAccountType() == null ? null : a.getAccountType().name());
+			ps.setString(++i, a.getIncreaseSide() == null ? null :
+				a.getIncreaseSide().name());
+			ps.setString(++i, a.getParentAccountId());
+			ps.setString(++i, a.getCurrency());
+			ps.setBigDecimal(++i, a.getOpeningBalance() == null ?
+				BigDecimal.ZERO : a.getOpeningBalance());
+			ps.executeUpdate();
+		}
+		
+		try (Connection c = Database.get().getConnection())
+		{
+			c.setAutoCommit(false);
+			
+			try (PreparedStatement del = c.prepareStatement(
+				"DELETE FROM account_fund WHERE account_number=?"))
+			{
+				del.setString(1, a.getAccountNumber());
+				del.executeUpdate();
+			}
+			
+			if (a.getAssociatedFundIds() != null)
+			{
+				
+				try (PreparedStatement ins = c.prepareStatement(
+					"INSERT INTO account_fund(account_number, fund_id) VALUES (?,?)"))
+				{
+					
+					for (String f : a.getAssociatedFundIds())
+					{
+						ins.setString(1, a.getAccountNumber());
+						ins.setString(2, f);
+						ins.addBatch();
+					}
+					
+					ins.executeBatch();
+				}
+				
+			}
+			
+			c.commit();
+		}
+		
+	}
+	
+        public List<Account> listAll() throws SQLException
+        {
+                Map<String, Account> byNumber = new LinkedHashMap<>();
+
+                try (Connection c = Database.get().getConnection();
+                        PreparedStatement ps = c.prepareStatement(
+                                "SELECT * FROM account ORDER BY account_number");
+                        ResultSet rs = ps.executeQuery())
+                {
+
+                        while (rs.next())
+                        {
+                                String accountNumber = rs.getString("account_number");
+                                if (accountNumber == null)
+                                {
+                                        continue;
+                                }
+
+                                AccountSide increaseSide = rs.getString("increase_side") == null ? null :
+                                        AccountSide.valueOf(rs.getString("increase_side"));
+                                Account a = new Account(accountNumber,
+                                        rs.getString("name"),
+                                        increaseSide);
+
+                                if (rs.getString("account_type") != null)
+                                {
+                                        a.setAccountType(AccountType.valueOf(rs.getString("account_type")));
+                                }
+
+                                a.setAccountCode(rs.getString("account_code"));
+                                a.setParentAccountId(rs.getString("parent_account_id"));
+                                a.setCurrency(rs.getString("currency"));
+                                a.setOpeningBalance(rs.getBigDecimal("opening_balance"));
+                                byNumber.put(a.getAccountNumber(), a);
+                        }
+
+                }
+
+                if (!byNumber.isEmpty())
+                {
+                        try (Connection c = Database.get().getConnection();
+                                PreparedStatement ps = c.prepareStatement(
+                                        "SELECT account_number, fund_id FROM account_fund ORDER BY account_number, fund_id");
+                                ResultSet rs = ps.executeQuery())
+                        {
+                                while (rs.next())
+                                {
+                                        Account account = byNumber.get(rs.getString("account_number"));
+
+                                        if (account != null)
+                                        {
+                                                account.addFund(rs.getString("fund_id"));
+                                        }
+                                }
+                        }
+                }
+
+                return new ArrayList<>(byNumber.values());
+
+        }
+	
+	
+        public void delete(String accountNumber) throws java.sql.SQLException
+        {
+
+                try (
+                        java.sql.Connection c =
+                                nonprofitbookkeeping.core.Database.get().getConnection();
+                        java.sql.PreparedStatement ps = c
+                                .prepareStatement("DELETE FROM account WHERE account_number=?"))
+                {
+                        ps.setString(1, accountNumber);
+                        ps.executeUpdate();
+                }
+
+        }
+
+        public void replaceAll(List<Account> accounts) throws SQLException
+        {
+                try (Connection c = Database.get().getConnection())
+                {
+                        c.setAutoCommit(false);
+
+                        try (PreparedStatement deleteFunds = c.prepareStatement("DELETE FROM account_fund");
+                                PreparedStatement deleteAccounts = c.prepareStatement("DELETE FROM account"))
+                        {
+                                deleteFunds.executeUpdate();
+                                deleteAccounts.executeUpdate();
+                        }
+
+                        if (accounts != null && !accounts.isEmpty())
+                        {
+                                try (PreparedStatement insertAccount = c.prepareStatement(
+                                        "INSERT INTO account(account_number, name, account_code, account_type, "
+                                                + "increase_side, parent_account_id, currency, opening_balance) "
+                                                + "VALUES (?,?,?,?,?,?,?,?)");
+                                        PreparedStatement insertFund = c.prepareStatement(
+                                                "INSERT INTO account_fund(account_number, fund_id) VALUES (?,?)"))
+                                {
+                                        for (Account account : accounts)
+                                        {
+                                                int i = 0;
+                                                insertAccount.setString(++i, account.getAccountNumber());
+                                                insertAccount.setString(++i, account.getName());
+                                                insertAccount.setString(++i, account.getAccountCode());
+                                                insertAccount.setString(++i,
+                                                        account.getAccountType() == null ? null :
+                                                                account.getAccountType().name());
+                                                insertAccount.setString(++i,
+                                                        account.getIncreaseSide() == null ? null :
+                                                                account.getIncreaseSide().name());
+                                                insertAccount.setString(++i, account.getParentAccountId());
+                                                insertAccount.setString(++i, account.getCurrency());
+                                                BigDecimal openingBalance = account.getOpeningBalance();
+                                                insertAccount.setBigDecimal(++i,
+                                                        openingBalance == null ? BigDecimal.ZERO : openingBalance);
+                                                insertAccount.addBatch();
+
+                                                List<String> funds = account.getAssociatedFundIds();
+
+                                                if (funds != null)
+                                                {
+                                                        for (String fundId : funds)
+                                                        {
+                                                                if (fundId == null || fundId.isBlank())
+                                                                {
+                                                                        continue;
+                                                                }
+                                                                insertFund.setString(1, account.getAccountNumber());
+                                                                insertFund.setString(2, fundId);
+                                                                insertFund.addBatch();
+                                                        }
+                                                }
+                                        }
+
+                                        insertAccount.executeBatch();
+                                        insertFund.executeBatch();
+                                }
+                        }
+
+                        c.commit();
+                }
+        }
+
+}
