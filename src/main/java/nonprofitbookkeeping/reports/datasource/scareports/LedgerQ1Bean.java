@@ -6,6 +6,8 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter
+@Setter
 public class LedgerQ1Bean
 {
 	private String col_0;
@@ -74,16 +76,6 @@ public class LedgerQ1Bean
 	private String fnord_10;
 	private String fnord_11;
 	private String fnord_12;
-	private String col_66;
-	private String col_67;
-	/**
-	 * @param string
-	 */
-	public void setCol_0(String string)
-	{
-		// TODO Auto-generated method stub
-		
-		
-	}
-	
+        private String col_66;
+        private String col_67;
 }

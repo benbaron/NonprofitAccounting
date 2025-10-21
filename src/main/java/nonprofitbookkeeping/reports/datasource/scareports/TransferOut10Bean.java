@@ -164,11 +164,9 @@ public class TransferOut10Bean
 	/**
 	 * @param one
 	 */
-	public void setAmount(BigDecimal one)
-	{
-		// TODO Auto-generated method stub
-		
-		
-	}
+        public void setAmount(BigDecimal one)
+        {
+                this.amount = one;
+        }
 	
 }

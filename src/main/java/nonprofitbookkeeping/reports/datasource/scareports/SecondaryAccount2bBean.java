@@ -4,10 +4,15 @@
 
 package nonprofitbookkeeping.reports.datasource.scareports;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class SecondaryAccount2bBean
 {
-	
-	private String bankName;
+
+        private String bankName;
 	private String accountNumber;
 	private java.math.BigDecimal statementBalance;
 	private java.math.BigDecimal unclearedDeposits;
