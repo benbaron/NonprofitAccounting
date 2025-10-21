@@ -131,11 +131,9 @@ public class LiabilityDtl5bBean
 	/**
 	 * @param one
 	 */
-	public void setCurrent_amount(BigDecimal one)
-	{
-		// TODO Auto-generated method stub
-		
-		
-	}
+        public void setCurrent_amount(BigDecimal one)
+        {
+                this.current_amount = one;
+        }
 	
 }

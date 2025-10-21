@@ -151,11 +151,9 @@ public class Funds14Bean
 	/**
 	 * @param one
 	 */
-	public void setAll_non_dedicated_funds(BigDecimal one)
-	{
-		// TODO Auto-generated method stub
-		
-		
-	}
+        public void setAll_non_dedicated_funds(BigDecimal one)
+        {
+                this.all_non_dedicated_funds = one;
+        }
 	
 }

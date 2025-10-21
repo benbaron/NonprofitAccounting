@@ -1,11 +1,11 @@
 
 package nonprofitbookkeeping.reports.datasource.scareports;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter
+@Setter
 public class LedgerQ1Bean
 {
 	private String col_0;
@@ -79,11 +79,9 @@ public class LedgerQ1Bean
 	/**
 	 * @param string
 	 */
-	public void setCol_0(String string)
-	{
-		// TODO Auto-generated method stub
-		
-		
-	}
+        public void setCol_0(String string)
+        {
+                this.col_0 = string;
+        }
 	
 }
