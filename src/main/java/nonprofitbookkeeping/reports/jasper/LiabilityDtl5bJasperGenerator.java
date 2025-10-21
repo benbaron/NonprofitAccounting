@@ -1,7 +1,6 @@
 
 package nonprofitbookkeeping.reports.jasper;
 
-import java.math.BigDecimal;
 import java.util.*;
 import nonprofitbookkeeping.reports.datasource.scareports.LiabilityDtl5bBean;
 
@@ -36,7 +35,7 @@ public class LiabilityDtl5bJasperGenerator extends AbstractReportGenerator
 	protected List<LiabilityDtl5bBean> getReportData()
 	{
 		LiabilityDtl5bBean bean = new LiabilityDtl5bBean();
-		bean.setCurrent_amount(BigDecimal.ONE);
+		bean.setLIABILITY_DTL_5b_E31(Double.valueOf(1.0));
 		return java.util.Collections.singletonList(bean);
 		
 	}

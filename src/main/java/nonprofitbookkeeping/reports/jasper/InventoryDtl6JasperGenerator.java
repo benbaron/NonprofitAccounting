@@ -1,7 +1,6 @@
 
 package nonprofitbookkeeping.reports.jasper;
 
-import java.math.BigDecimal;
 import java.util.*;
 import nonprofitbookkeeping.reports.datasource.scareports.InventoryDtl6Bean;
 
@@ -36,7 +35,7 @@ public class InventoryDtl6JasperGenerator extends AbstractReportGenerator
 	protected List<InventoryDtl6Bean> getReportData()
 	{
 		InventoryDtl6Bean bean = new InventoryDtl6Bean();
-		bean.setActual_gross_income_from_inventory_sales(BigDecimal.ONE);
+		bean.setINVENTORY_DTL_6_M17(Double.valueOf(1.0));
 		return java.util.Collections.singletonList(bean);
 		
 	}

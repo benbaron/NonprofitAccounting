@@ -1,7 +1,6 @@
 
 package nonprofitbookkeeping.reports.jasper;
 
-import java.math.BigDecimal;
 import java.util.*;
 import nonprofitbookkeeping.reports.datasource.scareports.TransferIn9Bean;
 
@@ -35,11 +34,12 @@ public class TransferIn9JasperGenerator extends AbstractReportGenerator
 	@Override
 	protected List<TransferIn9Bean> getReportData()
 	{
-		TransferIn9Bean bean = new TransferIn9Bean();
-		bean.setAmount(BigDecimal.ONE);
-		return java.util.Collections.singletonList(bean);
-		
-	}
+                TransferIn9Bean bean = new TransferIn9Bean();
+                bean.setTRANSFER_IN_9_F38(Double.valueOf(1));
+                bean.setTRANSFER_IN_9_F58(Double.valueOf(1));
+                return java.util.Collections.singletonList(bean);
+
+        }
 	
 	
 }

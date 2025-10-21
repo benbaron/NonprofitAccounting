@@ -1,7 +1,6 @@
 
 package nonprofitbookkeeping.reports.jasper;
 
-import java.math.BigDecimal;
 import java.util.*;
 import nonprofitbookkeeping.reports.datasource.scareports.Funds14Bean;
 
@@ -36,7 +35,7 @@ public class Funds14JasperGenerator extends AbstractReportGenerator
 	protected List<Funds14Bean> getReportData()
 	{
 		Funds14Bean bean = new Funds14Bean();
-		bean.setAll_non_dedicated_funds(BigDecimal.ONE);
+		bean.setFUNDS_14_F11(Double.valueOf(1.0));
 		return java.util.Collections.singletonList(bean);
 		
 	}

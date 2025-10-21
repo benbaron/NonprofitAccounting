@@ -3,7 +3,7 @@ package nonprofitbookkeeping.reports.jasper;
 
 import java.math.BigDecimal;
 import java.util.*;
-import nonprofitbookkeeping.reports.datasource.scareports.PrimaryAccountReconciliation2aBean;
+import nonprofitbookkeeping.reports.datasource.scareports.PrimaryAccount2aBean;
 
 public class PrimaryAccountReconciliationJasperGenerator
 	extends AbstractReportGenerator
@@ -34,27 +34,27 @@ public class PrimaryAccountReconciliationJasperGenerator
 	 * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getReportData() 
 	 */
 	@Override
-	protected List<PrimaryAccountReconciliation2aBean> getReportData()
-	{
-		PrimaryAccountReconciliation2aBean bean =
-			new PrimaryAccountReconciliation2aBean();
-		bean.setBankName("Sample Bank");
-		bean.setBankAccountTitle("Checking");
-		bean.setBankAccountType("Checking");
-		bean.setBankAccountNumber("123456");
-		bean.setBankBranchPhoneAndName("555-1234 Branch");
-		bean.setBalanceFromBankStatement(BigDecimal.TEN);
-		bean.setDeposit1Date("2023-01-01");
-		bean.setDeposit1Amount(BigDecimal.ONE);
-		bean.setEndingLedgerOrRegisterBalance(BigDecimal.TEN);
-		bean.setAccountEarnsInterest("NO");
-		bean.setDepositsNotClearedTotal(BigDecimal.ZERO);
-		bean.setChecksNotClearedTotal(BigDecimal.ZERO);
-		bean.setAdjustedAccountBalance(BigDecimal.ZERO);
-		bean.setReconciliationDifference(BigDecimal.ZERO);
-		return java.util.Collections.singletonList(bean);
-		
-	}
+        protected List<PrimaryAccount2aBean> getReportData()
+        {
+                PrimaryAccount2aBean bean =
+                        new PrimaryAccount2aBean();
+                bean.setPRIMARY_ACCOUNT_2a_C2("Sample Bank");
+                bean.setPRIMARY_ACCOUNT_2a_C3("Checking");
+                bean.setPRIMARY_ACCOUNT_2a_C4("Checking");
+                bean.setPRIMARY_ACCOUNT_2a_C6("123456");
+                bean.setPRIMARY_ACCOUNT_2a_H18("555-1234 Branch");
+                bean.setPRIMARY_ACCOUNT_2a_H24(BigDecimal.TEN.doubleValue());
+                bean.setPRIMARY_ACCOUNT_2a_E42("2023-01-01");
+                bean.setPRIMARY_ACCOUNT_2a_H42(BigDecimal.ONE.doubleValue());
+                bean.setPRIMARY_ACCOUNT_2a_H35(BigDecimal.TEN.doubleValue());
+                bean.setPRIMARY_ACCOUNT_2a_F43("NO");
+                bean.setPRIMARY_ACCOUNT_2a_G36(BigDecimal.ZERO.doubleValue());
+                bean.setPRIMARY_ACCOUNT_2a_H36(BigDecimal.ZERO.doubleValue());
+                bean.setPRIMARY_ACCOUNT_2a_H43("0.00");
+                bean.setPRIMARY_ACCOUNT_2a_C65("Reconciled");
+                return java.util.Collections.singletonList(bean);
+
+        }
 	
 	
 }

@@ -1,7 +1,6 @@
 
 package nonprofitbookkeeping.reports.jasper;
 
-import java.math.BigDecimal;
 import java.util.*;
 import nonprofitbookkeeping.reports.datasource.scareports.ExpenseDtl12bBean;
 
@@ -36,7 +35,7 @@ public class ExpenseDtl12bJasperGenerator extends AbstractReportGenerator
 	protected List<ExpenseDtl12bBean> getReportData()
 	{
 		ExpenseDtl12bBean bean = new ExpenseDtl12bBean();
-		bean.setAmount(BigDecimal.ONE);
+		bean.setEXPENSE_DTL_12b_I16(Double.valueOf(1.0));
 		return java.util.Collections.singletonList(bean);
 		
 	}

@@ -1,7 +1,6 @@
 
 package nonprofitbookkeeping.reports.jasper;
 
-import java.math.BigDecimal;
 import java.util.*;
 import nonprofitbookkeeping.reports.datasource.scareports.RegaliaSalesDtl7Bean;
 
@@ -35,11 +34,11 @@ public class RegaliaSalesDtl7JasperGenerator extends AbstractReportGenerator
 	@Override
 	protected List<RegaliaSalesDtl7Bean> getReportData()
 	{
-		RegaliaSalesDtl7Bean bean = new RegaliaSalesDtl7Bean();
-		bean.setA_b_value_lost(BigDecimal.ONE);
-		return java.util.Collections.singletonList(bean);
-		
-	}
+                RegaliaSalesDtl7Bean bean = new RegaliaSalesDtl7Bean();
+                bean.setREGALIA_SALES_DTL_7_I20(Double.valueOf(1));
+                return java.util.Collections.singletonList(bean);
+
+        }
 	
 	
 }
