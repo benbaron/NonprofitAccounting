@@ -4,6 +4,8 @@ This document lists potential code issues, areas for improvement, or bugs that w
 
 ## Bugs:
 - Help crashes
+  - Status: Resolved – the help window now falls back to plain-text guidance when the JavaFX WebView
+    component is unavailable or fails to initialize, preventing the crash.
 - Import test7.npbk gets
 2025-10-21 18:28:41 ERROR [JavaFX Application Thread] nonprofitbookkeeping.ui.NonprofitBookkeepingFX - Failed to import legacy archive
 org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException: Referential integrity constraint violation: "CONSTRAINT_E894: PUBLIC.JOURNAL_ENTRY FOREIGN KEY(ACCOUNT_NUMBER) REFERENCES PUBLIC.ACCOUNT(ACCOUNT_NUMBER) ('1000')"; SQL statement:
@@ -67,9 +69,11 @@ DELETE FROM account [23503-224]
 	at javafx.graphics/com.sun.glass.ui.View.handleMouseEvent(View.java:551) ~[javafx-graphics-21.0.6-win.jar:?]
 	at javafx.graphics/com.sun.glass.ui.View.notifyMouse(View.java:937) ~[javafx-graphics-21.0.6-win.jar:?]
 	at javafx.graphics/com.sun.glass.ui.win.WinApplication._runLoop(Native Method) ~[javafx-graphics-21.0.6-win.jar:?]
-	at javafx.graphics/com.sun.glass.ui.win.WinApplication.lambda$runLoop$3(WinApplication.java:185) ~[javafx-graphics-21.0.6-win.jar:?]
-	at java.base/java.lang.Thread.run(Thread.java:833) [?:?]
-	
+        at javafx.graphics/com.sun.glass.ui.win.WinApplication.lambda$runLoop$3(WinApplication.java:185) ~[javafx-graphics-21.0.6-win.jar:?]
+        at java.base/java.lang.Thread.run(Thread.java:833) [?:?]
+  - Status: Resolved – importing a legacy archive now clears journal tables before replacing accounts,
+    avoiding referential integrity violations during account deletion.
+
 ## New features:
 - autosave in background
 - Journal - give an option to clear the filter entirely
