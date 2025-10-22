@@ -35,7 +35,7 @@ public abstract class AbstractReportGenerator
 	 * {@link #setReportData(List)}.
 	 */
         private List<?> reportData = Collections.emptyList();
-        private boolean reportDataInjected;
+        private boolean reportDataProvided;
 	
 	/**
 	 * Retrieves the collection of data beans that will populate the report.
@@ -131,8 +131,9 @@ public abstract class AbstractReportGenerator
 			throw e;
 		}
 		
+                List<?> data = this.reportDataProvided ? this.reportData : getReportData();
                 JRBeanCollectionDataSource dataSource =
-                        new JRBeanCollectionDataSource(resolveReportData());
+                        new JRBeanCollectionDataSource(data);
 		Map<String, Object> params =
 			ensureMutableParameters(getReportParameters());
 		return JasperFillManager.fillReport(report, params, dataSource);
@@ -281,44 +282,20 @@ public abstract class AbstractReportGenerator
 	}
 	
 	
-        /**
-         * Allows callers or tests to supply a precomputed collection of beans for the
-         * report. When provided, {@link #generatePrint()} will bypass the
-         * subclass-provided {@link #getReportData()} implementation and use these
-         * beans directly.
-         *
-         * @param beans The data beans to use when filling the report. Passing
-         *              {@code null} clears any previously injected data and defers to
-         *              {@link #getReportData()}.
-         */
+	/**
+	 * @param beans
+	 */
         public void setReportData(List<?> beans)
         {
                 if (beans == null)
                 {
                         this.reportData = Collections.emptyList();
-                        this.reportDataInjected = false;
+                        this.reportDataProvided = false;
                         return;
                 }
 
                 this.reportData = Collections.unmodifiableList(new ArrayList<>(beans));
-                this.reportDataInjected = true;
+                this.reportDataProvided = true;
         }
-
-        private List<?> resolveReportData()
-        {
-                if (this.reportDataInjected)
-                {
-                        return this.reportData;
-                }
-
-                List<?> computed = getReportData();
-
-                if (computed == null)
-                {
-                        return Collections.emptyList();
-                }
-
-                return computed;
-        }
-
+	
 }
