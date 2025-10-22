@@ -25,21 +25,43 @@ public class JournalRepository {
 
     public void replaceAll(List<AccountingTransaction> transactions) throws SQLException {
         try (Connection c = Database.get().getConnection()) {
+            boolean originalAutoCommit = c.getAutoCommit();
             c.setAutoCommit(false);
 
-            try (Statement st = c.createStatement()) {
-                st.executeUpdate("DELETE FROM transaction_info");
-                st.executeUpdate("DELETE FROM journal_entry");
-                st.executeUpdate("DELETE FROM journal_transaction");
-            }
-
-            if (transactions != null) {
-                for (AccountingTransaction txn : transactions) {
-                    writeTransaction(c, txn);
+            try {
+                replaceAll(c, transactions);
+                c.commit();
+            } catch (SQLException ex) {
+                try {
+                    c.rollback();
+                } catch (SQLException rollbackEx) {
+                    ex.addSuppressed(rollbackEx);
                 }
+                throw ex;
+            } finally {
+                c.setAutoCommit(originalAutoCommit);
             }
+        }
+    }
 
-            c.commit();
+    void replaceAll(Connection c, List<AccountingTransaction> transactions) throws SQLException {
+        if (c == null) {
+            throw new IllegalArgumentException("connection required");
+        }
+
+        try (Statement st = c.createStatement()) {
+            st.executeUpdate("DELETE FROM transaction_info");
+            st.executeUpdate("DELETE FROM journal_entry");
+            st.executeUpdate("DELETE FROM journal_transaction");
+        }
+
+        if (transactions != null) {
+            for (AccountingTransaction txn : transactions) {
+                if (txn == null) {
+                    continue;
+                }
+                writeTransaction(c, txn);
+            }
         }
     }
 

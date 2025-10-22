@@ -605,50 +605,7 @@ public class BudgetLineDialog extends JDialog
 
         private BigDecimal parseAmount(String rawText)
         {
-                if (rawText == null)
-                {
-                        return null;
-                }
-
-                String text = rawText.trim();
-
-                if (text.isEmpty())
-                {
-                        return null;
-                }
-
-                boolean negative = false;
-
-                if (text.startsWith("(") && text.endsWith(")"))
-                {
-                        negative = true;
-                        text = text.substring(1, text.length() - 1);
-                }
-
-                text = text.replaceAll("[^0-9.,-]", "");
-
-                if (text.startsWith("-"))
-                {
-                        negative = true;
-                        text = text.substring(1);
-                }
-
-                text = text.replace(",", "");
-
-                if (text.isEmpty())
-                {
-                        return null;
-                }
-
-                try
-                {
-                        BigDecimal value = new BigDecimal(text);
-                        return negative ? value.negate() : value;
-                }
-                catch (NumberFormatException ex)
-                {
-                        return null;
-                }
+                return FormatUtils.parseCurrency(rawText);
         }
 	
 	/**
