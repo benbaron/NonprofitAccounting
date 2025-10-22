@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import nonprofitbookkeeping.service.ReportService;
@@ -50,12 +51,12 @@ public final class Account implements Serializable
 	 * @param increaseSide The side (Debit or Credit) where the account balance increases.
 	 * @throws NullPointerException if accountNumber is null.
 	 */
-	public Account(String accountNumber, String name, AccountSide increaseSide)
-	{
-		this.accountNumber = checkNotNull(accountNumber);
-		this.name = name;
-		this.increaseSide = increaseSide;
-	}
+        public Account(String accountNumber, String name, AccountSide increaseSide)
+        {
+                this.accountNumber = accountNumber;
+                this.name = name;
+                this.increaseSide = increaseSide;
+        }
 	
 	
 	/**  
@@ -68,7 +69,7 @@ public final class Account implements Serializable
         public Account(String string, String bankAccountName,
                 AccountType asset, BigDecimal zero)
         {
-                this.accountNumber = checkNotNull(string);
+                this.accountNumber = string;
                 this.name = bankAccountName;
                 this.accountType = asset;
                 this.openingBalance = zero;
@@ -83,11 +84,35 @@ public final class Account implements Serializable
 	 * @param object
 	 * @param object2
 	 */
-	public Account(String string, String string2, Object object, Object object2)
-	{
-		// TODO Auto-generated constructor stub
-		
-	}
+        public Account(String string, String string2, Object object, Object object2)
+        {
+                this.accountNumber = string;
+                this.name = string2;
+
+                AccountSide explicitSide = coerceAccountSide(object);
+                AccountType type = coerceAccountType(object);
+
+                if (type != null)
+                {
+                        this.accountType = type;
+                }
+
+                if (explicitSide != null)
+                {
+                        this.increaseSide = explicitSide;
+                }
+                else if (type != null)
+                {
+                        AccountSide derived = defaultIncreaseSide(type);
+
+                        if (derived != null)
+                        {
+                                this.increaseSide = derived;
+                        }
+                }
+
+                this.openingBalance = coerceOpeningBalance(object2);
+        }
 
 	/**
 	 * Associates a fund with this account.
@@ -182,11 +207,10 @@ public final class Account implements Serializable
 	 * Gets the account number.
 	 * @return The account number.
 	 */
-	public String getAccountNumber()
-	{
-		return checkNotNull(this.accountNumber,
-			"accountNumber cannot be null when serializing");
-	}
+        public String getAccountNumber()
+        {
+                return this.accountNumber;
+        }
 	
 	/**
 	 * Sets the account number.
@@ -323,9 +347,113 @@ public final class Account implements Serializable
 	 * Sets the opening balance of the account.
 	 * @param openingBalance The opening balance to set.
 	 */
-	public void setOpeningBalance(BigDecimal openingBalance)
-	{
-		this.openingBalance = openingBalance;
-	}
-	
+        public void setOpeningBalance(BigDecimal openingBalance)
+        {
+                this.openingBalance = openingBalance;
+        }
+
+        private static AccountType coerceAccountType(Object value)
+        {
+                if (value instanceof AccountType type)
+                {
+                        return type;
+                }
+
+                if (value instanceof String text)
+                {
+                        String trimmed = text.trim();
+
+                        if (trimmed.isEmpty())
+                        {
+                                return null;
+                        }
+
+                        AccountType parsed = AccountType.fromString(trimmed.toUpperCase(Locale.ROOT));
+                        return parsed == AccountType.UNKNOWN ? null : parsed;
+                }
+
+                return null;
+        }
+
+        private static AccountSide coerceAccountSide(Object value)
+        {
+                if (value instanceof AccountSide side)
+                {
+                        return side;
+                }
+
+                if (value instanceof String text)
+                {
+                        String trimmed = text.trim();
+
+                        if (trimmed.isEmpty())
+                        {
+                                return null;
+                        }
+
+                        AccountSide parsed = AccountSide.fromString(trimmed.toUpperCase(Locale.ROOT));
+                        return parsed == AccountSide.UNKNOWN ? null : parsed;
+                }
+
+                return null;
+        }
+
+        private static AccountSide defaultIncreaseSide(AccountType type)
+        {
+                if (type == null)
+                {
+                        return null;
+                }
+
+                return switch (type)
+                {
+                        case ASSET, BANK, CASH, CHECKING, EXPENSE, INVEST, SIMPLEINVEST,
+                                MONEYMKRT, MUTUAL, FIXED_ASSET -> AccountSide.DEBIT;
+                        case CREDIT, EQUITY, INCOME, LIABILITY, LONG_TERM_LIABILITY,
+                                CREDITCARD -> AccountSide.CREDIT;
+                        case ROOT, UNKNOWN -> null;
+                };
+        }
+
+        private static BigDecimal coerceOpeningBalance(Object value)
+        {
+                if (value == null)
+                {
+                        return BigDecimal.ZERO;
+                }
+
+                if (value instanceof BigDecimal bd)
+                {
+                        return bd;
+                }
+
+                if (value instanceof Number number)
+                {
+                        return new BigDecimal(number.toString());
+                }
+
+                if (value instanceof String text)
+                {
+                        String trimmed = text.trim();
+
+                        if (trimmed.isEmpty())
+                        {
+                                return BigDecimal.ZERO;
+                        }
+
+                        try
+                        {
+                                return new BigDecimal(trimmed);
+                        }
+                        catch (NumberFormatException ex)
+                        {
+                                throw new IllegalArgumentException(
+                                        "Unable to parse opening balance: " + text, ex);
+                        }
+                }
+
+                throw new IllegalArgumentException(
+                        "Unsupported opening balance type: " + value.getClass().getName());
+        }
+
 }

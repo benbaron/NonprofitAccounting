@@ -44,13 +44,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	}
 	
 	
-	/**  
-	 * Constructor Fund
-	 */
-	public Fund()
-	{
-		// TODO Auto-generated constructor stub
-	}
+        /**
+         * Constructor Fund
+         */
+        public Fund()
+        {
+                this(null);
+        }
 	
 	
 	/**

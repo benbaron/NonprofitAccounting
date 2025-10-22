@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +34,8 @@ public abstract class AbstractReportGenerator
 	 * the data is prepared externally it can be injected here via
 	 * {@link #setReportData(List)}.
 	 */
-	private List<?> reportData = Collections.emptyList();
+        private List<?> reportData = Collections.emptyList();
+        private boolean reportDataProvided;
 	
 	/**
 	 * Retrieves the collection of data beans that will populate the report.
@@ -129,8 +131,9 @@ public abstract class AbstractReportGenerator
 			throw e;
 		}
 		
-		JRBeanCollectionDataSource dataSource =
-			new JRBeanCollectionDataSource(getReportData());
+                List<?> data = this.reportDataProvided ? this.reportData : getReportData();
+                JRBeanCollectionDataSource dataSource =
+                        new JRBeanCollectionDataSource(data);
 		Map<String, Object> params =
 			ensureMutableParameters(getReportParameters());
 		return JasperFillManager.fillReport(report, params, dataSource);
@@ -282,10 +285,17 @@ public abstract class AbstractReportGenerator
 	/**
 	 * @param beans
 	 */
-	public void setReportData(List<?> beans)
-	{
-		
-		// TODO Auto-generated method stub
-	}
+        public void setReportData(List<?> beans)
+        {
+                if (beans == null)
+                {
+                        this.reportData = Collections.emptyList();
+                        this.reportDataProvided = false;
+                        return;
+                }
+
+                this.reportData = Collections.unmodifiableList(new ArrayList<>(beans));
+                this.reportDataProvided = true;
+        }
 	
 }
