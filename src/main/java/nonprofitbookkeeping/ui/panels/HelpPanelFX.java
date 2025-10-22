@@ -17,12 +17,6 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import nonprofitbookkeeping.ui.help.HelpContent;
-
 /**
  * JavaFX version of {@code HelpPanel}. Attempts to load an embedded HTML help
  * page ("/help/index.html"). If unavailable, falls back to displaying a simple

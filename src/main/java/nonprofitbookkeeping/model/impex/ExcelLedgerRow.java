@@ -35,13 +35,15 @@ import java.util.List;
 	/** List of up to four allocation groups. */
 	private List<Allocation> allocations = new ArrayList<>();
 	
-	/**  
-	 * Constructor ExcelLedgerRow
-	 */
-	public ExcelLedgerRow()
-	{		
-		// TODO Auto-generated constructor stub
-	}
+        /**
+         * Constructor ExcelLedgerRow
+         */
+        public ExcelLedgerRow()
+        {
+                this.balance = BigDecimal.ZERO;
+                this.netTotal = BigDecimal.ZERO;
+                this.allocations = new ArrayList<>();
+        }
 	
 
 	/**

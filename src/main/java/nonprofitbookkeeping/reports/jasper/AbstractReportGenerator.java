@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -34,8 +35,7 @@ public abstract class AbstractReportGenerator
 	 * {@link #setReportData(List)}.
 	 */
         private List<?> reportData = Collections.emptyList();
-        /** Flag indicating whether {@link #setReportData(List)} supplied beans. */
-        private boolean reportDataSupplied = false;
+        private boolean reportDataProvided;
 	
 	/**
 	 * Retrieves the collection of data beans that will populate the report.
@@ -131,8 +131,9 @@ public abstract class AbstractReportGenerator
 			throw e;
 		}
 		
+                List<?> data = this.reportDataProvided ? this.reportData : getReportData();
                 JRBeanCollectionDataSource dataSource =
-                        new JRBeanCollectionDataSource(resolveReportData());
+                        new JRBeanCollectionDataSource(data);
 		Map<String, Object> params =
 			ensureMutableParameters(getReportParameters());
 		return JasperFillManager.fillReport(report, params, dataSource);
@@ -286,37 +287,15 @@ public abstract class AbstractReportGenerator
 	 */
         public void setReportData(List<?> beans)
         {
-
                 if (beans == null)
                 {
                         this.reportData = Collections.emptyList();
-                        this.reportDataSupplied = false;
-                }
-                else
-                {
-                        this.reportData = List.copyOf(beans);
-                        this.reportDataSupplied = true;
-                }
-        }
-
-        /**
-         * Determines the collection of beans that should populate the Jasper
-         * report.  When {@link #setReportData(List)} has been invoked the
-         * provided list takes precedence.  Otherwise the generator defers to
-         * {@link #getReportData()} so subclasses can compute their data on the
-         * fly.
-         *
-         * @return a non-null list of beans for the report data source
-         */
-        protected final List<?> resolveReportData()
-        {
-                if (this.reportDataSupplied)
-                {
-                        return this.reportData;
+                        this.reportDataProvided = false;
+                        return;
                 }
 
-                List<?> computed = getReportData();
-                return computed == null ? Collections.emptyList() : computed;
+                this.reportData = Collections.unmodifiableList(new ArrayList<>(beans));
+                this.reportDataProvided = true;
         }
 	
 }
