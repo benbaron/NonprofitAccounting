@@ -2,7 +2,112 @@
 
 This document lists potential code issues, areas for improvement, or bugs that were observed during the Javadoc documentation process.
 
-## Issues:
+## New features:
+- autosave in background
+- Journal - give an option to clear the filter entirely
+- tool tips on hover
+- shortcut keys
+
+- Account Details requires setting start data/end date. Give the ability to default to a period that is set in the settings.
+
+- Edit and new transaction panels need to be entirely scrapped and reimagined
+
+- Add settings for:
+	- autosave timeout
+	- default directory
+	- last used file
+	- fiscal year and day (use as the default for reports)
+	- Option on reports - Year to date
+	- Year
+	- Last Month
+	
+## These features are Non-working:
+
+- Journal->delete entry fails
+- Journal->new entry needs to be redone
+- Journal->edit transaction needs to be redone
+- numbers are not displayed in the money format given in the settings
+- Sales & COG -> Add Sale gets an error: invalid input
+- Grants-> Add Grant does nothing.
+
+- Fix settings. These are dummy values. Implement them:	
+	- Organization Name / Fiscal Year Start / Default Currency : these don't do anything
+	- Default Income and Expense accounts
+	- UI Preferences - language/ currency format
+	- Accounting
+	- Eliminate the users panel
+
+## Bugs:
+- Help crashes
+
+- Import test7.npbk gets
+2025-10-21 18:28:41 ERROR [JavaFX Application Thread] nonprofitbookkeeping.ui.NonprofitBookkeepingFX - Failed to import legacy archive
+org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException: Referential integrity constraint violation: "CONSTRAINT_E894: PUBLIC.JOURNAL_ENTRY FOREIGN KEY(ACCOUNT_NUMBER) REFERENCES PUBLIC.ACCOUNT(ACCOUNT_NUMBER) ('1000')"; SQL statement:
+DELETE FROM account [23503-224]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:520) ~[h2-2.2.224.jar:2.2.224]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489) ~[h2-2.2.224.jar:2.2.224]
+	at org.h2.message.DbException.get(DbException.java:223) ~[h2-2.2.224.jar:2.2.224]
+	at org.h2.message.DbException.get(DbException.java:199) ~[h2-2.2.224.jar:2.2.224]
+	at org.h2.constraint.ConstraintReferential.checkRow(ConstraintReferential.java:365) ~[h2-2.2.224.jar:2.2.224]
+	at org.h2.constraint.ConstraintReferential.checkRowRefTable(ConstraintReferential.java:382) ~[h2-2.2.224.jar:2.2.224]
+	at org.h2.constraint.ConstraintReferential.checkRow(ConstraintReferential.java:256) ~[h2-2.2.224.jar:2.2.224]
+	at org.h2.table.Table.fireConstraints(Table.java:1200) ~[h2-2.2.224.jar:2.2.224]
+	at org.h2.table.Table.fireAfterRow(Table.java:1218) ~[h2-2.2.224.jar:2.2.224]
+	at org.h2.command.dml.Delete.update(Delete.java:92) ~[h2-2.2.224.jar:2.2.224]
+	at org.h2.command.dml.DataChangeStatement.update(DataChangeStatement.java:74) ~[h2-2.2.224.jar:2.2.224]
+	at org.h2.command.CommandContainer.update(CommandContainer.java:169) ~[h2-2.2.224.jar:2.2.224]
+	at org.h2.command.Command.executeUpdate(Command.java:256) ~[h2-2.2.224.jar:2.2.224]
+	at org.h2.jdbc.JdbcPreparedStatement.executeUpdateInternal(JdbcPreparedStatement.java:216) ~[h2-2.2.224.jar:2.2.224]
+	at org.h2.jdbc.JdbcPreparedStatement.executeUpdate(JdbcPreparedStatement.java:174) ~[h2-2.2.224.jar:2.2.224]
+	at nonprofitbookkeeping.persistence.AccountRepository.replaceAll(AccountRepository.java:169) ~[classes/:?]
+	at nonprofitbookkeeping.persistence.CompanyDataRepository.persist(CompanyDataRepository.java:38) ~[classes/:?]
+	at nonprofitbookkeeping.service.LegacyNpbkImportService.importArchive(LegacyNpbkImportService.java:66) ~[classes/:?]
+	at nonprofitbookkeeping.ui.NonprofitBookkeepingFX.handleImportLegacyArchive(NonprofitBookkeepingFX.java:612) ~[classes/:?]
+	at nonprofitbookkeeping.ui.NonprofitBookkeepingFX.lambda$24(NonprofitBookkeepingFX.java:479) ~[classes/:?]
+	at javafx.base/com.sun.javafx.event.CompositeEventHandler.dispatchBubblingEvent(CompositeEventHandler.java:86) ~[javafx-base-21.0.6-win.jar:?]
+	at javafx.base/com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:232) ~[javafx-base-21.0.6-win.jar:?]
+	at javafx.base/com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:189) ~[javafx-base-21.0.6-win.jar:?]
+	at javafx.base/com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:58) ~[javafx-base-21.0.6-win.jar:?]
+	at javafx.base/com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114) ~[javafx-base-21.0.6-win.jar:?]
+	at javafx.base/com.sun.javafx.event.EventUtil.fireEventImpl(EventUtil.java:74) ~[javafx-base-21.0.6-win.jar:?]
+	at javafx.base/com.sun.javafx.event.EventUtil.fireEvent(EventUtil.java:49) ~[javafx-base-21.0.6-win.jar:?]
+	at javafx.base/javafx.event.Event.fireEvent(Event.java:198) ~[javafx-base-21.0.6-win.jar:?]
+	at javafx.controls/javafx.scene.control.MenuItem.fire(MenuItem.java:459) ~[javafx-controls-21.0.6-win.jar:?]
+	at javafx.controls/com.sun.javafx.scene.control.ContextMenuContent$MenuItemContainer.doSelect(ContextMenuContent.java:1415) ~[javafx-controls-21.0.6-win.jar:?]
+	at javafx.controls/com.sun.javafx.scene.control.ContextMenuContent$MenuItemContainer.lambda$createChildren$12(ContextMenuContent.java:1368) ~[javafx-controls-21.0.6-win.jar:?]
+	at javafx.base/com.sun.javafx.event.CompositeEventHandler$NormalEventHandlerRecord.handleBubblingEvent(CompositeEventHandler.java:247) ~[javafx-base-21.0.6-win.jar:?]
+	at javafx.base/com.sun.javafx.event.CompositeEventHandler.dispatchBubblingEvent(CompositeEventHandler.java:80) ~[javafx-base-21.0.6-win.jar:?]
+	at javafx.base/com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:232) ~[javafx-base-21.0.6-win.jar:?]
+	at javafx.base/com.sun.javafx.event.EventHandlerManager.dispatchBubblingEvent(EventHandlerManager.java:189) ~[javafx-base-21.0.6-win.jar:?]
+	at javafx.base/com.sun.javafx.event.CompositeEventDispatcher.dispatchBubblingEvent(CompositeEventDispatcher.java:59) ~[javafx-base-21.0.6-win.jar:?]
+	at javafx.base/com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:58) ~[javafx-base-21.0.6-win.jar:?]
+	at javafx.base/com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114) ~[javafx-base-21.0.6-win.jar:?]
+	at javafx.base/com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56) ~[javafx-base-21.0.6-win.jar:?]
+	at javafx.base/com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114) ~[javafx-base-21.0.6-win.jar:?]
+	at javafx.base/com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56) ~[javafx-base-21.0.6-win.jar:?]
+	at javafx.base/com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114) ~[javafx-base-21.0.6-win.jar:?]
+	at javafx.base/com.sun.javafx.event.BasicEventDispatcher.dispatchEvent(BasicEventDispatcher.java:56) ~[javafx-base-21.0.6-win.jar:?]
+	at javafx.base/com.sun.javafx.event.EventDispatchChainImpl.dispatchEvent(EventDispatchChainImpl.java:114) ~[javafx-base-21.0.6-win.jar:?]
+	at javafx.base/com.sun.javafx.event.EventUtil.fireEventImpl(EventUtil.java:74) ~[javafx-base-21.0.6-win.jar:?]
+	at javafx.base/com.sun.javafx.event.EventUtil.fireEvent(EventUtil.java:54) ~[javafx-base-21.0.6-win.jar:?]
+	at javafx.base/javafx.event.Event.fireEvent(Event.java:198) ~[javafx-base-21.0.6-win.jar:?]
+	at javafx.graphics/javafx.scene.Scene$MouseHandler.process(Scene.java:3984) ~[javafx-graphics-21.0.6-win.jar:?]
+	at javafx.graphics/javafx.scene.Scene.processMouseEvent(Scene.java:1890) ~[javafx-graphics-21.0.6-win.jar:?]
+	at javafx.graphics/javafx.scene.Scene$ScenePeerListener.mouseEvent(Scene.java:2708) ~[javafx-graphics-21.0.6-win.jar:?]
+	at javafx.graphics/com.sun.javafx.tk.quantum.GlassViewEventHandler$MouseEventNotification.run(GlassViewEventHandler.java:411) ~[javafx-graphics-21.0.6-win.jar:?]
+	at javafx.graphics/com.sun.javafx.tk.quantum.GlassViewEventHandler$MouseEventNotification.run(GlassViewEventHandler.java:301) ~[javafx-graphics-21.0.6-win.jar:?]
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:399) ~[?:?]
+	at javafx.graphics/com.sun.javafx.tk.quantum.GlassViewEventHandler.lambda$handleMouseEvent$2(GlassViewEventHandler.java:450) ~[javafx-graphics-21.0.6-win.jar:?]
+	at javafx.graphics/com.sun.javafx.tk.quantum.QuantumToolkit.runWithoutRenderLock(QuantumToolkit.java:424) ~[javafx-graphics-21.0.6-win.jar:?]
+	at javafx.graphics/com.sun.javafx.tk.quantum.GlassViewEventHandler.handleMouseEvent(GlassViewEventHandler.java:449) ~[javafx-graphics-21.0.6-win.jar:?]
+	at javafx.graphics/com.sun.glass.ui.View.handleMouseEvent(View.java:551) ~[javafx-graphics-21.0.6-win.jar:?]
+	at javafx.graphics/com.sun.glass.ui.View.notifyMouse(View.java:937) ~[javafx-graphics-21.0.6-win.jar:?]
+	at javafx.graphics/com.sun.glass.ui.win.WinApplication._runLoop(Native Method) ~[javafx-graphics-21.0.6-win.jar:?]
+	at javafx.graphics/com.sun.glass.ui.win.WinApplication.lambda$runLoop$3(WinApplication.java:185) ~[javafx-graphics-21.0.6-win.jar:?]
+	at java.base/java.lang.Thread.run(Thread.java:833) [?:?]
+	
+
+
 
 1.  **`src/main/java/nonprofitbookkeeping/ui/panels/AccountTransactionDetailsPanelFX.java`**
     *   **Issue:** Potential `StackOverflowError` in the `setupCompanyChangeListener` method.
