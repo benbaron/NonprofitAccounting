@@ -2,9 +2,12 @@ package nonprofitbookkeeping.ui.actions;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
@@ -13,6 +16,8 @@ import java.awt.GraphicsEnvironment;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import nonprofitbookkeeping.ui.help.HelpContent;
 
 /**
  * Handles the action of displaying help content in a JavaFX application.
@@ -85,11 +90,7 @@ public class HelpAction implements EventHandler<ActionEvent>
                         helpStage.setTitle("Help");
                         helpStage.initOwner(this.ownerStage);
 
-                        WebView webView = new WebView();
-                        WebEngine engine = webView.getEngine();
-                        engine.load(helpFileUrl.toExternalForm());
-
-                        Scene scene = new Scene(webView, 800, 600);
+                        Scene scene = buildHelpScene(helpFileUrl);
                         helpStage.setScene(scene);
                         helpStage.show();
                 }
@@ -105,5 +106,37 @@ public class HelpAction implements EventHandler<ActionEvent>
         protected boolean isHeadlessEnvironment()
         {
                 return GraphicsEnvironment.isHeadless();
+        }
+
+        private Scene buildHelpScene(URL helpFileUrl)
+        {
+                try
+                {
+                        WebView webView = createWebView();
+                        WebEngine engine = webView.getEngine();
+                        engine.load(helpFileUrl.toExternalForm());
+                        return new Scene(webView, 800, 600);
+                }
+                catch (Throwable ex)
+                {
+                        LOGGER.log(Level.WARNING,
+                                "Falling back to text help because the WebView could not be created or loaded.", ex);
+                        TextArea fallback = new TextArea(HelpContent.fallbackText());
+                        fallback.setEditable(false);
+                        fallback.setWrapText(true);
+                        fallback.setFocusTraversable(false);
+                        BorderPane container = new BorderPane(fallback);
+                        container.setPadding(new Insets(10));
+                        return new Scene(container, 600, 500);
+                }
+        }
+
+        /**
+         * Factory method used to create {@link WebView} instances. Subclasses may override
+         * this method in tests to simulate WebView failures.
+         */
+        protected WebView createWebView()
+        {
+                return new WebView();
         }
 }
