@@ -44,7 +44,9 @@ public class CompanyDataRepository {
 
         accountRepository.replaceAll(preparedAccounts);
 
-        journalRepository.replaceAll(transactions);
+        if (transactions != null && !transactions.isEmpty()) {
+            journalRepository.replaceAll(transactions);
+        }
 
         CompanyProfileModel profile = company.getCompanyProfileModel();
         profileRepository.save(profile);
