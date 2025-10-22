@@ -33,7 +33,9 @@ public abstract class AbstractReportGenerator
 	 * the data is prepared externally it can be injected here via
 	 * {@link #setReportData(List)}.
 	 */
-	private List<?> reportData = Collections.emptyList();
+        private List<?> reportData = Collections.emptyList();
+        /** Flag indicating whether {@link #setReportData(List)} supplied beans. */
+        private boolean reportDataSupplied = false;
 	
 	/**
 	 * Retrieves the collection of data beans that will populate the report.
@@ -41,7 +43,7 @@ public abstract class AbstractReportGenerator
 	 * @return A {@link List} of objects (JavaBeans) to be used as the report's
 	 *         data source. The exact type depends on the specific report.
 	 */
-	protected abstract List<?> getReportData();
+        protected abstract List<?> getReportData();
 	
 	
 	/**
@@ -129,8 +131,8 @@ public abstract class AbstractReportGenerator
 			throw e;
 		}
 		
-		JRBeanCollectionDataSource dataSource =
-			new JRBeanCollectionDataSource(getReportData());
+                JRBeanCollectionDataSource dataSource =
+                        new JRBeanCollectionDataSource(resolveReportData());
 		Map<String, Object> params =
 			ensureMutableParameters(getReportParameters());
 		return JasperFillManager.fillReport(report, params, dataSource);
@@ -282,10 +284,39 @@ public abstract class AbstractReportGenerator
 	/**
 	 * @param beans
 	 */
-	public void setReportData(List<?> beans)
-	{
-		
-		// TODO Auto-generated method stub
-	}
+        public void setReportData(List<?> beans)
+        {
+
+                if (beans == null)
+                {
+                        this.reportData = Collections.emptyList();
+                        this.reportDataSupplied = false;
+                }
+                else
+                {
+                        this.reportData = List.copyOf(beans);
+                        this.reportDataSupplied = true;
+                }
+        }
+
+        /**
+         * Determines the collection of beans that should populate the Jasper
+         * report.  When {@link #setReportData(List)} has been invoked the
+         * provided list takes precedence.  Otherwise the generator defers to
+         * {@link #getReportData()} so subclasses can compute their data on the
+         * fly.
+         *
+         * @return a non-null list of beans for the report data source
+         */
+        protected final List<?> resolveReportData()
+        {
+                if (this.reportDataSupplied)
+                {
+                        return this.reportData;
+                }
+
+                List<?> computed = getReportData();
+                return computed == null ? Collections.emptyList() : computed;
+        }
 	
 }
