@@ -35,9 +35,13 @@ public class CompanyDataRepository {
         List<Account> accounts = company.getChartOfAccounts() == null
                 ? Collections.emptyList()
                 : company.getChartOfAccounts().getAccounts();
+        journalRepository.replaceAll(Collections.emptyList());
+
         accountRepository.replaceAll(ensureAccountsForTransactions(accounts, transactions));
 
-        journalRepository.replaceAll(transactions);
+        if (transactions != null && !transactions.isEmpty()) {
+            journalRepository.replaceAll(transactions);
+        }
 
         CompanyProfileModel profile = company.getCompanyProfileModel();
         profileRepository.save(profile);
