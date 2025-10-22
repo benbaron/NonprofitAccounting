@@ -2,44 +2,8 @@
 
 This document lists potential code issues, areas for improvement, or bugs that were observed during the Javadoc documentation process.
 
-## New features:
-- autosave in background
-- Journal - give an option to clear the filter entirely
-- tool tips on hover
-- shortcut keys
-
-- Account Details requires setting start data/end date. Give the ability to default to a period that is set in the settings.
-
-- Edit and new transaction panels need to be entirely scrapped and reimagined
-
-- Add settings for:
-	- autosave timeout
-	- default directory
-	- last used file
-	- fiscal year and day (use as the default for reports)
-	- Option on reports - Year to date
-	- Year
-	- Last Month
-	
-## These features are Non-working:
-
-- Journal->delete entry fails
-- Journal->new entry needs to be redone
-- Journal->edit transaction needs to be redone
-- numbers are not displayed in the money format given in the settings
-- Sales & COG -> Add Sale gets an error: invalid input
-- Grants-> Add Grant does nothing.
-
-- Fix settings. These are dummy values. Implement them:	
-	- Organization Name / Fiscal Year Start / Default Currency : these don't do anything
-	- Default Income and Expense accounts
-	- UI Preferences - language/ currency format
-	- Accounting
-	- Eliminate the users panel
-
 ## Bugs:
 - Help crashes
-
 - Import test7.npbk gets
 2025-10-21 18:28:41 ERROR [JavaFX Application Thread] nonprofitbookkeeping.ui.NonprofitBookkeepingFX - Failed to import legacy archive
 org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException: Referential integrity constraint violation: "CONSTRAINT_E894: PUBLIC.JOURNAL_ENTRY FOREIGN KEY(ACCOUNT_NUMBER) REFERENCES PUBLIC.ACCOUNT(ACCOUNT_NUMBER) ('1000')"; SQL statement:
@@ -106,6 +70,42 @@ DELETE FROM account [23503-224]
 	at javafx.graphics/com.sun.glass.ui.win.WinApplication.lambda$runLoop$3(WinApplication.java:185) ~[javafx-graphics-21.0.6-win.jar:?]
 	at java.base/java.lang.Thread.run(Thread.java:833) [?:?]
 	
+## New features:
+- autosave in background
+- Journal - give an option to clear the filter entirely
+- tool tips on hover
+- shortcut keys
+
+- Account Details requires setting start data/end date. Give the ability to default to a period that is set in the settings.
+
+- Edit and new transaction panels need to be entirely scrapped and reimagined
+
+- Add settings for:
+	- autosave timeout
+	- default directory
+	- last used file
+	- fiscal year and day (use as the default for reports)
+	- Option on reports - Year to date
+	- Year
+	- Last Month
+	
+## These features are Non-working:
+
+- Journal->delete entry fails
+- Journal->new entry needs to be redone
+- Journal->edit transaction needs to be redone
+- numbers are not displayed in the money format given in the settings
+- Sales & COG -> Add Sale gets an error: invalid input
+- Grants-> Add Grant does nothing.
+
+- Fix settings. These are dummy values. Implement them:	
+	- Organization Name / Fiscal Year Start / Default Currency : these don't do anything
+	- Default Income and Expense accounts
+	- UI Preferences - language/ currency format
+	- Accounting
+	- Eliminate the users panel
+
+
 
 
 
