@@ -160,66 +160,97 @@ public class AccountRepository
         {
                 try (Connection c = Database.get().getConnection())
                 {
+                        boolean originalAutoCommit = c.getAutoCommit();
                         c.setAutoCommit(false);
 
-                        try (PreparedStatement deleteFunds = c.prepareStatement("DELETE FROM account_fund");
-                                PreparedStatement deleteAccounts = c.prepareStatement("DELETE FROM account"))
+                        try
                         {
-                                deleteFunds.executeUpdate();
-                                deleteAccounts.executeUpdate();
+                                replaceAll(c, accounts);
+                                c.commit();
                         }
-
-                        if (accounts != null && !accounts.isEmpty())
+                        catch (SQLException ex)
                         {
-                                try (PreparedStatement insertAccount = c.prepareStatement(
-                                        "INSERT INTO account(account_number, name, account_code, account_type, "
-                                                + "increase_side, parent_account_id, currency, opening_balance) "
-                                                + "VALUES (?,?,?,?,?,?,?,?)");
-                                        PreparedStatement insertFund = c.prepareStatement(
-                                                "INSERT INTO account_fund(account_number, fund_id) VALUES (?,?)"))
+                                try
                                 {
-                                        for (Account account : accounts)
+                                        c.rollback();
+                                }
+                                catch (SQLException rollbackEx)
+                                {
+                                        ex.addSuppressed(rollbackEx);
+                                }
+                                throw ex;
+                        }
+                        finally
+                        {
+                                c.setAutoCommit(originalAutoCommit);
+                        }
+                }
+        }
+
+        void replaceAll(Connection c, List<Account> accounts) throws SQLException
+        {
+                if (c == null)
+                {
+                        throw new IllegalArgumentException("connection required");
+                }
+
+                try (PreparedStatement deleteFunds = c.prepareStatement("DELETE FROM account_fund");
+                        PreparedStatement deleteAccounts = c.prepareStatement("DELETE FROM account"))
+                {
+                        deleteFunds.executeUpdate();
+                        deleteAccounts.executeUpdate();
+                }
+
+                if (accounts == null || accounts.isEmpty())
+                {
+                        return;
+                }
+
+                try (PreparedStatement insertAccount = c.prepareStatement(
+                                "INSERT INTO account(account_number, name, account_code, account_type, "
+                                        + "increase_side, parent_account_id, currency, opening_balance) "
+                                        + "VALUES (?,?,?,?,?,?,?,?)");
+                        PreparedStatement insertFund = c.prepareStatement(
+                                "INSERT INTO account_fund(account_number, fund_id) VALUES (?,?)"))
+                {
+                        for (Account account : accounts)
+                        {
+                                int i = 0;
+                                insertAccount.setString(++i, account.getAccountNumber());
+                                insertAccount.setString(++i, account.getName());
+                                insertAccount.setString(++i, account.getAccountCode());
+                                insertAccount.setString(++i,
+                                        account.getAccountType() == null ? null :
+                                                account.getAccountType().name());
+                                insertAccount.setString(++i,
+                                        account.getIncreaseSide() == null ? null :
+                                                account.getIncreaseSide().name());
+                                insertAccount.setString(++i, account.getParentAccountId());
+                                insertAccount.setString(++i, account.getCurrency());
+                                BigDecimal openingBalance = account.getOpeningBalance();
+                                insertAccount.setBigDecimal(++i,
+                                        openingBalance == null ? BigDecimal.ZERO : openingBalance);
+                                insertAccount.addBatch();
+
+                                List<String> funds = account.getAssociatedFundIds();
+
+                                if (funds != null)
+                                {
+                                        for (String fundId : funds)
                                         {
-                                                int i = 0;
-                                                insertAccount.setString(++i, account.getAccountNumber());
-                                                insertAccount.setString(++i, account.getName());
-                                                insertAccount.setString(++i, account.getAccountCode());
-                                                insertAccount.setString(++i,
-                                                        account.getAccountType() == null ? null :
-                                                                account.getAccountType().name());
-                                                insertAccount.setString(++i,
-                                                        account.getIncreaseSide() == null ? null :
-                                                                account.getIncreaseSide().name());
-                                                insertAccount.setString(++i, account.getParentAccountId());
-                                                insertAccount.setString(++i, account.getCurrency());
-                                                BigDecimal openingBalance = account.getOpeningBalance();
-                                                insertAccount.setBigDecimal(++i,
-                                                        openingBalance == null ? BigDecimal.ZERO : openingBalance);
-                                                insertAccount.addBatch();
-
-                                                List<String> funds = account.getAssociatedFundIds();
-
-                                                if (funds != null)
+                                                if (fundId == null || fundId.isBlank())
                                                 {
-                                                        for (String fundId : funds)
-                                                        {
-                                                                if (fundId == null || fundId.isBlank())
-                                                                {
-                                                                        continue;
-                                                                }
-                                                                insertFund.setString(1, account.getAccountNumber());
-                                                                insertFund.setString(2, fundId);
-                                                                insertFund.addBatch();
-                                                        }
+                                                        continue;
                                                 }
+                                                insertFund.setString(1, account.getAccountNumber());
+                                                insertFund.setString(2, fundId);
+                                                insertFund.addBatch();
                                         }
-
-                                        insertAccount.executeBatch();
-                                        insertFund.executeBatch();
                                 }
                         }
 
-                        c.commit();
+                        insertAccount.executeBatch();
+                        insertFund.executeBatch();
                 }
         }
 

@@ -1,11 +1,13 @@
 package nonprofitbookkeeping.persistence;
 
+import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CompanyProfileModel;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,14 +40,31 @@ public class CompanyDataRepository {
 
         List<Account> preparedAccounts = ensureAccountsForTransactions(accounts, transactions);
 
-        // Clear existing journal data before replacing accounts so referential integrity
-        // constraints do not block account deletion.
-        journalRepository.replaceAll(Collections.emptyList());
+        // Clear and restore journal data within a single transaction so account and
+        // journal changes are committed atomically.
+        try (Connection connection = Database.get().getConnection()) {
+            boolean originalAutoCommit = connection.getAutoCommit();
+            connection.setAutoCommit(false);
 
-        accountRepository.replaceAll(preparedAccounts);
+            try {
+                journalRepository.replaceAll(connection, Collections.emptyList());
+                accountRepository.replaceAll(connection, preparedAccounts);
 
-        if (transactions != null && !transactions.isEmpty()) {
-            journalRepository.replaceAll(transactions);
+                if (transactions != null && !transactions.isEmpty()) {
+                    journalRepository.replaceAll(connection, transactions);
+                }
+
+                connection.commit();
+            } catch (SQLException ex) {
+                try {
+                    connection.rollback();
+                } catch (SQLException rollbackEx) {
+                    ex.addSuppressed(rollbackEx);
+                }
+                throw ex;
+            } finally {
+                connection.setAutoCommit(originalAutoCommit);
+            }
         }
 
         CompanyProfileModel profile = company.getCompanyProfileModel();
