@@ -453,11 +453,10 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 	 * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getBaseName() 
 	 */
 	@Override public String getBaseName()
-	{
-		// TODO Auto-generated method stub
-		return "Income_Statement_" + (this.reportContext.getEndDate() != null ?
-				this.reportContext.getEndDate().toString() : LocalDate.now().toString());
-		
-	}
+        {
+                return "Income_Statement_" + (this.reportContext.getEndDate() != null ?
+                                this.reportContext.getEndDate().toString() : LocalDate.now().toString());
+
+        }
 	
 }

@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +34,8 @@ public abstract class AbstractReportGenerator
 	 * the data is prepared externally it can be injected here via
 	 * {@link #setReportData(List)}.
 	 */
-	private List<?> reportData = Collections.emptyList();
+        private List<?> reportData = Collections.emptyList();
+        private boolean reportDataInjected;
 	
 	/**
 	 * Retrieves the collection of data beans that will populate the report.
@@ -129,8 +131,8 @@ public abstract class AbstractReportGenerator
 			throw e;
 		}
 		
-		JRBeanCollectionDataSource dataSource =
-			new JRBeanCollectionDataSource(getReportData());
+                JRBeanCollectionDataSource dataSource =
+                        new JRBeanCollectionDataSource(resolveReportData());
 		Map<String, Object> params =
 			ensureMutableParameters(getReportParameters());
 		return JasperFillManager.fillReport(report, params, dataSource);
@@ -279,13 +281,44 @@ public abstract class AbstractReportGenerator
 	}
 	
 	
-	/**
-	 * @param beans
-	 */
-	public void setReportData(List<?> beans)
-	{
-		
-		// TODO Auto-generated method stub
-	}
-	
+        /**
+         * Allows callers or tests to supply a precomputed collection of beans for the
+         * report. When provided, {@link #generatePrint()} will bypass the
+         * subclass-provided {@link #getReportData()} implementation and use these
+         * beans directly.
+         *
+         * @param beans The data beans to use when filling the report. Passing
+         *              {@code null} clears any previously injected data and defers to
+         *              {@link #getReportData()}.
+         */
+        public void setReportData(List<?> beans)
+        {
+                if (beans == null)
+                {
+                        this.reportData = Collections.emptyList();
+                        this.reportDataInjected = false;
+                        return;
+                }
+
+                this.reportData = Collections.unmodifiableList(new ArrayList<>(beans));
+                this.reportDataInjected = true;
+        }
+
+        private List<?> resolveReportData()
+        {
+                if (this.reportDataInjected)
+                {
+                        return this.reportData;
+                }
+
+                List<?> computed = getReportData();
+
+                if (computed == null)
+                {
+                        return Collections.emptyList();
+                }
+
+                return computed;
+        }
+
 }
