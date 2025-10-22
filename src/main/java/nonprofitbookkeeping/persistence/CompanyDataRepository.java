@@ -35,9 +35,14 @@ public class CompanyDataRepository {
         List<Account> accounts = company.getChartOfAccounts() == null
                 ? Collections.emptyList()
                 : company.getChartOfAccounts().getAccounts();
+
+        List<Account> preparedAccounts = ensureAccountsForTransactions(accounts, transactions);
+
+        // Clear existing journal data before replacing accounts so referential integrity
+        // constraints do not block account deletion.
         journalRepository.replaceAll(Collections.emptyList());
 
-        accountRepository.replaceAll(ensureAccountsForTransactions(accounts, transactions));
+        accountRepository.replaceAll(preparedAccounts);
 
         if (transactions != null && !transactions.isEmpty()) {
             journalRepository.replaceAll(transactions);

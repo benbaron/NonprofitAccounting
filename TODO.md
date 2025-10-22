@@ -63,6 +63,7 @@ This document lists potential code issues, areas for improvement, or bugs that w
     *   **Issue:** Undefined `LOGGER` instance in the `insertIntoTree` method.
     *   **Observation:** The code attempts to use a `LOGGER` variable that was not defined within the class or imported, which would lead to a compilation error.
     *   **Recommendation:** Define or import a `Logger` instance (e.g., `private static final Logger LOGGER = Logger.getLogger(CoaEditorPanelFX.class.getName());`).
+    *   **Status:** Resolved – the panel now uses an SLF4J logger, detects duplicates using account numbers, and warns cleanly when a parent node cannot be located.
 
 4.  **`src/main/java/nonprofitbookkeeping/preferences/PreferencesManager.java`**
     *   **Issue:** Duplicated preference keys.
