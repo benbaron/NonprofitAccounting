@@ -8,10 +8,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-import nonprofitbookkeeping.util.FormatUtils;
-
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
@@ -43,9 +41,11 @@ import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.ChartOfAccounts;
+import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.helpers.FocusCommitTextFieldTableCell;
+import nonprofitbookkeeping.util.FormatUtils;
 
 
 import org.slf4j.Logger;
@@ -86,24 +86,24 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 	private final Button saveBtn = new Button("Save");
 	private final Label debitTotalLbl = new Label();
 	private final Label creditTotalLbl = new Label();
-	private final ChartOfAccounts coa =
-			CurrentCompany.getCompany().getChartOfAccounts();
-	private final Consumer<AccountingTransaction> onSave;
-	private AccountingTransaction original;
-	
-	/**
-	 * Creates a new panel with a save callback.
+        private final ChartOfAccounts coa;
+        private final Consumer<AccountingTransaction> onSave;
+        private AccountingTransaction original;
+
+        /**
+         * Creates a new panel with a save callback.
 	 *
 	 * @param onSave consumer invoked with the created transaction when the
 	 *               user clicks save
 	 */
-	public GeneralJournalEntryPanelFX(Consumer<AccountingTransaction> onSave)
-	{
-		this.onSave = onSave;
-		setPadding(new Insets(10));
-		buildUI();
-		this.lines.addListener((ListChangeListener<Line>) c -> recalcTotals());
-		recalcTotals();
+        public GeneralJournalEntryPanelFX(Consumer<AccountingTransaction> onSave)
+        {
+                this.coa = resolveChartOfAccounts();
+                this.onSave = onSave;
+                setPadding(new Insets(10));
+                buildUI();
+                this.lines.addListener((ListChangeListener<Line>) c -> recalcTotals());
+                recalcTotals();
 		
 	}
 	
@@ -117,12 +117,12 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 	public GeneralJournalEntryPanelFX(AccountingTransaction existing,
 			Consumer<AccountingTransaction> onSave)
 	{
-		this(onSave);
-		this.original = existing;
-		
-		if (existing != null)
-		{
-			loadFromTransaction(existing);
+                this(onSave);
+                this.original = existing;
+
+                if (existing != null)
+                {
+                        loadFromTransaction(existing);
 		}
 		
 	}
@@ -199,17 +199,17 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 	
 	private TableColumn<Line, String> accountCol()
 	{
-		ObservableList<String> choices = FXCollections.observableArrayList(
-				this.coa.createAccountNumberMap().asMap().values().stream()
-						.map(Account::getName).sorted().toList());
-		Map<String, Account> byName = this.coa.createAccountNumberMap().asMap().values()
-				.stream().collect(Collectors.toMap(Account::getName, a -> a,
-						(a, b) -> a, LinkedHashMap::new));
-		
-		TableColumn<Line, String> col = new TableColumn<>("Account");
-		col.setCellValueFactory(cd -> cd.getValue().account);
-		col.setCellFactory(ComboBoxTableCell.forTableColumn(new DefaultStringConverter(),
-				choices));
+                ObservableList<String> choices = FXCollections.observableArrayList(
+                                this.coa.createAccountNumberMap().asMap().values().stream()
+                                                .map(Account::getName).sorted().toList());
+                Map<String, Account> byName = this.coa.createAccountNumberMap().asMap().values()
+                                .stream().collect(Collectors.toMap(Account::getName, a -> a,
+                                                (a, b) -> a, LinkedHashMap::new));
+
+                TableColumn<Line, String> col = new TableColumn<>("Account");
+                col.setCellValueFactory(cd -> cd.getValue().account);
+                col.setCellFactory(ComboBoxTableCell.forTableColumn(new DefaultStringConverter(),
+                                choices));
 		col.setEditable(true);
 		col.setOnEditCommit(ev -> {
 			Line row = ev.getRowValue();
@@ -217,68 +217,65 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 			row.account.set(newName);
 			Account acc = byName.get(newName);
 			
-			if (acc != null)
-			{
-				
-				// Auto-set natural side: debit field for debit accounts etc.
-				if (acc.getIncreaseSide() == AccountSide.DEBIT &&
-						row.credit.get().signum() != 0 &&
-						row.debit.get().signum() == 0)
-				{
-					row.debit.set(row.credit.get());
-					row.credit.set(BigDecimal.ZERO);
-				}
-				else if (acc.getIncreaseSide() == AccountSide.CREDIT &&
-						row.debit.get().signum() != 0 &&
-						row.credit.get().signum() == 0)
-				{
-					row.credit.set(row.debit.get());
-					row.debit.set(BigDecimal.ZERO);
-				}
-				
-			}
-			
-		});
-		return col;
-		
-	}
+                        if (acc != null)
+                        {
+
+                                BigDecimal debitAmount = amountOrZero(row.debit.get());
+                                BigDecimal creditAmount = amountOrZero(row.credit.get());
+
+                                // Auto-set natural side: debit field for debit accounts etc.
+                                if (acc.getIncreaseSide() == AccountSide.DEBIT &&
+                                                creditAmount.signum() != 0 &&
+                                                debitAmount.signum() == 0)
+                                {
+                                        row.debit.set(creditAmount);
+                                        row.credit.set(BigDecimal.ZERO);
+                                }
+                                else if (acc.getIncreaseSide() == AccountSide.CREDIT &&
+                                                debitAmount.signum() != 0 &&
+                                                creditAmount.signum() == 0)
+                                {
+                                        row.credit.set(debitAmount);
+                                        row.debit.set(BigDecimal.ZERO);
+                                }
+
+                        }
+
+                });
+                return col;
+
+        }
 	
-	private static TableColumn<Line, BigDecimal> amtCol(String title,
-														javafx.util.Callback<Line,
-																Property<BigDecimal>> prop)
-	{
-		TableColumn<Line, BigDecimal> c = new TableColumn<>(title);
-		c.setCellValueFactory(cell -> prop.call(cell.getValue()));
-		c.setCellFactory(
-				param -> new FocusCommitTextFieldTableCell<>(new BigDecimalStringConverter()));
-		return c;
-		
-	}
-	
-	private void recalcTotals()
-	{
-		BigDecimal debit = BigDecimal.ZERO;
-		BigDecimal credit = BigDecimal.ZERO;
-		
-		for (Line l : this.lines)
-		{
-			
-			if (l.debit.get() != null)
-			{
-				debit = debit.add(l.debit.get());
-			}
-			
-			if (l.credit.get() != null)
-			{
-				credit = credit.add(l.credit.get());
-			}
-			
-		}
-		
+        private static TableColumn<Line, BigDecimal> amtCol(String title,
+                        javafx.util.Callback<Line, Property<BigDecimal>> prop)
+        {
+                TableColumn<Line, BigDecimal> c = new TableColumn<>(title);
+                c.setCellValueFactory(cell -> prop.call(cell.getValue()));
+                c.setCellFactory(
+                                param -> new FocusCommitTextFieldTableCell<>(new BigDecimalStringConverter()));
+                return c;
+
+        }
+
+        private void recalcTotals()
+        {
+                BigDecimal debit = BigDecimal.ZERO;
+                BigDecimal credit = BigDecimal.ZERO;
+
+                for (Line l : this.lines)
+                {
+                        BigDecimal lineDebit = amountOrZero(l.debit.get());
+                        BigDecimal lineCredit = amountOrZero(l.credit.get());
+
+                        debit = debit.add(lineDebit);
+                        credit = credit.add(lineCredit);
+
+                }
+
                this.debitTotalLbl.setText(FormatUtils.formatCurrency(debit));
                this.creditTotalLbl.setText(FormatUtils.formatCurrency(credit));
-		
-	}
+
+        }
 	
 	/**
 	 * Loads an existing transaction into the UI for editing.
@@ -346,21 +343,24 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 			String acctNum = account.getAccountNumber();
 			String acctName = account.getName();
 			
-			if (l.debit.get().signum() > 0)
-			{
-				entries.add(new AccountingEntry(l.debit.get(), acctNum,
-												AccountSide.DEBIT, acctName));
-				debit = debit.add(l.debit.get());
-			}
-			
-			if (l.credit.get().signum() > 0)
-			{
-				entries.add(new AccountingEntry(l.credit.get(), acctNum,
-												AccountSide.CREDIT, acctName));
-				credit = credit.add(l.credit.get());
-			}
-			
-		}
+                        BigDecimal debitAmount = amountOrZero(l.debit.get());
+                        BigDecimal creditAmount = amountOrZero(l.credit.get());
+
+                        if (debitAmount.signum() > 0)
+                        {
+                                entries.add(new AccountingEntry(debitAmount, acctNum,
+                                                                                                AccountSide.DEBIT, acctName));
+                                debit = debit.add(debitAmount);
+                        }
+
+                        if (creditAmount.signum() > 0)
+                        {
+                                entries.add(new AccountingEntry(creditAmount, acctNum,
+                                                                                                AccountSide.CREDIT, acctName));
+                                credit = credit.add(creditAmount);
+                        }
+
+                }
 		
 		if (debit.signum() == 0 || debit.compareTo(credit) != 0)
 		{
@@ -396,18 +396,28 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 	
 	private void watch(Line l)
 	{
-		l.debit.addListener((obs, o, n) -> {
-			adjustForAccountSide(l);
-			recalcTotals();
-		});
-		l.credit.addListener((obs, o, n) -> {
-			adjustForAccountSide(l);
-			recalcTotals();
-		});
-		l.account.addListener((obs, o, n) -> {
-			adjustForAccountSide(l);
-		});
-		
+                l.debit.addListener((obs, o, n) -> {
+                        if (n == null)
+                        {
+                                l.debit.set(BigDecimal.ZERO);
+                                return;
+                        }
+                        adjustForAccountSide(l);
+                        recalcTotals();
+                });
+                l.credit.addListener((obs, o, n) -> {
+                        if (n == null)
+                        {
+                                l.credit.set(BigDecimal.ZERO);
+                                return;
+                        }
+                        adjustForAccountSide(l);
+                        recalcTotals();
+                });
+                l.account.addListener((obs, o, n) -> {
+                        adjustForAccountSide(l);
+                });
+
 	}
 	
 	private void adjustForAccountSide(Line l)
@@ -419,19 +429,48 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 			return;
 		}
 		
-		if (acc.getIncreaseSide() == AccountSide.DEBIT &&
-				l.credit.get().signum() > 0 && l.debit.get().signum() == 0)
-		{
-			l.debit.set(l.credit.get());
-			l.credit.set(BigDecimal.ZERO);
-		}
-		else if (acc.getIncreaseSide() == AccountSide.CREDIT &&
-				l.debit.get().signum() > 0 && l.credit.get().signum() == 0)
-		{
-			l.credit.set(l.debit.get());
-			l.debit.set(BigDecimal.ZERO);
-		}
-		
-	}
-	
+                BigDecimal debitAmount = amountOrZero(l.debit.get());
+                BigDecimal creditAmount = amountOrZero(l.credit.get());
+
+                if (acc.getIncreaseSide() == AccountSide.DEBIT &&
+                                creditAmount.signum() > 0 && debitAmount.signum() == 0)
+                {
+                        l.debit.set(creditAmount);
+                        l.credit.set(BigDecimal.ZERO);
+                }
+                else if (acc.getIncreaseSide() == AccountSide.CREDIT &&
+                                debitAmount.signum() > 0 && creditAmount.signum() == 0)
+                {
+                        l.credit.set(debitAmount);
+                        l.debit.set(BigDecimal.ZERO);
+                }
+
+        }
+
+        private static ChartOfAccounts resolveChartOfAccounts()
+        {
+                Company company = CurrentCompany.getCompany();
+
+                if (company == null)
+                {
+                        throw new IllegalStateException(
+                                        "GeneralJournalEntryPanelFX requires an open company");
+                }
+
+                ChartOfAccounts chart = company.getChartOfAccounts();
+
+                if (chart == null)
+                {
+                        throw new IllegalStateException(
+                                        "Current company does not have a chart of accounts loaded");
+                }
+
+                return chart;
+        }
+
+        private static BigDecimal amountOrZero(BigDecimal value)
+        {
+                return value != null ? value : BigDecimal.ZERO;
+        }
+
 }
