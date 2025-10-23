@@ -1850,10 +1850,31 @@ public class ReportService
 					if (entry.getAccountNumber().equals(accountId))
 					{
 						Map<String, Object> entryData = new HashMap<>();
-						entryData.put("date",
-							transactionDate.format(DATE_FORMATTER));
-						entryData.put("transactionId",
-							transaction.getBookingDateTimestamp());
+                                                entryData.put("date",
+                                                        transactionDate.format(DATE_FORMATTER));
+
+                                                String transactionIdFromInfo = null;
+                                                Map<String, String> transactionInfo = transaction.getInfo();
+
+                                                if (transactionInfo != null)
+                                                {
+                                                        transactionIdFromInfo = transactionInfo.get("transactionId");
+
+                                                        if (transactionIdFromInfo != null)
+                                                        {
+                                                                transactionIdFromInfo = transactionIdFromInfo.trim();
+
+                                                                if (transactionIdFromInfo.isEmpty())
+                                                                {
+                                                                        transactionIdFromInfo = null;
+                                                                }
+                                                        }
+                                                }
+
+                                                Object transactionIdValue = transactionIdFromInfo != null ?
+                                                        transactionIdFromInfo : transaction.getBookingDateTimestamp();
+
+                                                entryData.put("transactionId", transactionIdValue);
 						
 						// Attempt to find the "other side" of the transaction
 						// for a more meaningful description
