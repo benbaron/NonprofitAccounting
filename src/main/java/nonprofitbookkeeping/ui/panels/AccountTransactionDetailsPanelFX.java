@@ -66,10 +66,8 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 	/** Label to display the net change (debits - credits) for the selected period and account. */
 	private Label netChangeLabel;
 	
-	/** Listener for changes in the currently open company, to refresh UI elements. */
-	private CompanyChangeListener companyChangeListener; // Listener for company changes. Declared
-															// but not registered with
-															// CurrentCompany in the provided code.
+        /** Listener for changes in the currently open company, to refresh UI elements. */
+        private CompanyChangeListener companyChangeListener;
 	
 	/**
 	 * Constructs a new {@code AccountTransactionDetailsPanelFX}.
@@ -534,37 +532,36 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 	 * changes. If a new company is opened, the list of selectable accounts is
 	 * repopulated from its chart of accounts.
 	 */
-	private void setupCompanyChangeListener()
-	{
-		
-		if (this.companyChangeListener != null)
-		{
-			// Prevent duplicate registration if this panel is reconstructed
-			CurrentCompany.CompanyListener.removeCompanyListener(this.companyChangeListener);
-		}
-		
-		this.companyChangeListener = new CompanyChangeListener()
-		{
-			@Override public void companyChange(boolean companyNowOpen)
-			{
-				AccountTransactionDetailsPanelFX.this.transactionDataList.clear();
-				AccountTransactionDetailsPanelFX.this.transactionsTable.setPlaceholder(new Label(
-																									"Company changed. Select account and date range, then click 'Load Transactions'."));
+        private void setupCompanyChangeListener()
+        {
+                if (this.companyChangeListener != null)
+                {
+                        // Already registered; avoid duplicate listener instances.
+                        return;
+                }
+
+                this.companyChangeListener = new CompanyChangeListener()
+                {
+                        @Override public void companyChange(boolean companyNowOpen)
+                        {
+                                AccountTransactionDetailsPanelFX.this.transactionDataList.clear();
+                                AccountTransactionDetailsPanelFX.this.transactionsTable.setPlaceholder(new Label(
+                                                                                                                              "Company changed. Select account and date range, then click 'Load Transactions'."));
                                AccountTransactionDetailsPanelFX.this.totalDebitsLabel
                                                .setText("Total Debits: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
                                AccountTransactionDetailsPanelFX.this.totalCreditsLabel
                                                .setText("Total Credits: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
                                AccountTransactionDetailsPanelFX.this.netChangeLabel
                                                .setText("Net Change: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
-				
-				refreshAccountSelector();
-				
-			}
-			
-		};
-		CurrentCompany.CompanyListener.addCompanyListener(this.companyChangeListener);
-		
-	}
+
+                                refreshAccountSelector();
+
+                        }
+
+                };
+                CurrentCompany.CompanyListener.addCompanyListener(this.companyChangeListener);
+
+        }
 	
 	/**
 	 * Unregisters this panel's company change listener from
