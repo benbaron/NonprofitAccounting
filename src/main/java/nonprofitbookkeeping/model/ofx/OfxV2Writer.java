@@ -7,9 +7,12 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Provides utility methods to write OFX (Open Financial Exchange) version 2.0 compliant XML files.
@@ -20,8 +23,10 @@ import java.util.List;
 public class OfxV2Writer
 {
 	
-	private static final DateTimeFormatter OFX_DATE_TIME =
-		DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'.000'"); // Standard OFX DateTime format
+        private static final DateTimeFormatter OFX_DATE_TIME =
+                DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'.000'"); // Standard OFX DateTime format
+        private static final DateTimeFormatter OFX_DATE =
+                DateTimeFormatter.ofPattern("yyyyMMdd");
 	
 	
 	/**
@@ -344,67 +349,314 @@ public class OfxV2Writer
 	 * @param inv The {@link InvestmentData} object containing information for the investment section.
 	 * @throws Exception If an error occurs during XML writing.
 	 */
-	private static void writeInvestmentSection(XMLStreamWriter writer, InvestmentData inv) throws Exception
-	{
-        if (inv == null) {
-            return;
+        private static void writeInvestmentSection(XMLStreamWriter writer, InvestmentData inv) throws Exception
+        {
+                if (inv == null)
+                {
+                        return;
+                }
+
+                writer.writeStartElement("INVSTMTMSGSRSV1");
+                writer.writeStartElement("INVSTMTTRNRS");
+
+                writeTextElement(writer, "TRNUID", inv.trnUid);
+
+                writer.writeStartElement("STATUS");
+                writeTextElement(writer, "CODE", inv.statusCode);
+                writeTextElement(writer, "SEVERITY", inv.severity);
+                writer.writeEndElement();
+
+                writer.writeStartElement("INVSTMTRS");
+                writeTextElement(writer, "DTASOF", inv.dtAsOf);
+                writeTextElement(writer, "CURDEF", inv.currency);
+
+                writer.writeStartElement("INVACCTFROM");
+                writeTextElement(writer, "BROKERID", inv.brokerId);
+                writeTextElement(writer, "ACCTID", inv.accountId);
+                writer.writeEndElement();
+
+                writeInvestmentBalances(writer, inv);
+                writeInvestmentPositions(writer, inv);
+                writeInvestmentTransactions(writer, inv);
+
+                writer.writeEndElement();
+                writer.writeEndElement();
+                writer.writeEndElement();
         }
 
-		writer.writeStartElement("INVSTMTMSGSRSV1");
-		writer.writeStartElement("INVSTMTTRNRS"); // Investment Statement Transaction Response
-		
-		writer.writeStartElement("TRNUID");
-		writer.writeCharacters(inv.trnUid); // Transaction UID
-		writer.writeEndElement();
-		
-		writer.writeStartElement("STATUS");
-		
-		writer.writeStartElement("CODE");
-		writer.writeCharacters(inv.statusCode);
-		writer.writeEndElement();
-		
-		writer.writeStartElement("SEVERITY");
-		writer.writeCharacters(inv.severity);
-		writer.writeEndElement();
-		
-		writer.writeEndElement();
-		
-		writer.writeStartElement("INVSTMTRS");
-		writer.writeStartElement("DTASOF");
-		writer.writeCharacters(inv.dtAsOf);
-		writer.writeEndElement();
-		writer.writeStartElement("CURDEF");
-		writer.writeCharacters(inv.currency);
-		writer.writeEndElement();
-		
-		writer.writeStartElement("INVACCTFROM");
-		writer.writeStartElement("BROKERID");
-		writer.writeCharacters(inv.brokerId);
-		writer.writeEndElement();
-		writer.writeStartElement("ACCTID");
-		writer.writeCharacters(inv.accountId);
-		writer.writeEndElement();
-		writer.writeEndElement();
-		
-		writer.writeStartElement("INVBAL");
-		writer.writeStartElement("AVAILCASH");
-		writer.writeStartElement("BALAMT");
-		writer.writeCharacters(inv.availableCash.toPlainString());
-		writer.writeEndElement();
-		writer.writeStartElement("DTASOF");
-		writer.writeCharacters(inv.dtAsOf);
-		writer.writeEndElement();
-		writer.writeEndElement(); // </AVAILCASH>
-		writer.writeEndElement(); // </INVBAL>
-		
-		writer.writeEndElement(); // </INVSTMTRS>
-		writer.writeEndElement(); // </INVSTMTTRNRS>
-		writer.writeEndElement(); // </INVSTMTMSGSRSV1>
-	}
-	
-	/**
-	 * Inner class to hold data for a single transaction, used by the OFX writer methods.
-	 */
+        private static void writeInvestmentBalances(XMLStreamWriter writer, InvestmentData inv) throws Exception
+        {
+                boolean hasCash = inv.availableCash != null;
+                boolean hasMarketValue = inv.marketValue != null;
+
+                if (!hasCash && !hasMarketValue)
+                {
+                        return;
+                }
+
+                writer.writeStartElement("INVBAL");
+
+                if (hasCash)
+                {
+                        writer.writeStartElement("AVAILCASH");
+                        writeAmountElement(writer, "BALAMT", inv.availableCash);
+                        writeTextElement(writer, "DTASOF", inv.dtAsOf);
+                        writer.writeEndElement();
+                }
+
+                if (hasMarketValue)
+                {
+                        writer.writeStartElement("MKTVAL");
+                        writeAmountElement(writer, "BALAMT", inv.marketValue);
+                        writeTextElement(writer, "DTASOF", inv.dtAsOf);
+                        writer.writeEndElement();
+                }
+
+                writer.writeEndElement();
+        }
+
+        private static void writeInvestmentPositions(XMLStreamWriter writer, InvestmentData inv) throws Exception
+        {
+                if (inv.positions == null || inv.positions.isEmpty())
+                {
+                        return;
+                }
+
+                writer.writeStartElement("INVPOSLIST");
+
+                for (InvestmentPosition position : inv.positions)
+                {
+                        if (position == null)
+                        {
+                                continue;
+                        }
+
+                        String container = hasText(position.positionTypeTag)
+                                ? position.positionTypeTag
+                                : "POSSTOCK";
+
+                        writer.writeStartElement(container);
+                        writer.writeStartElement("INVPOS");
+
+                        writeSecurity(writer, position.security);
+                        writeAmountElement(writer, "UNITS", position.units);
+                        writeAmountElement(writer, "UNITPRICE", position.unitPrice);
+                        writeAmountElement(writer, "MKTVAL", position.marketValue);
+
+                        String priceDate = hasText(position.priceAsOf) ? position.priceAsOf : inv.dtAsOf;
+                        writeTextElement(writer, "DTPRICEASOF", priceDate);
+                        writeTextElement(writer, "POSITIONTYPE", position.positionType);
+
+                        String held = hasText(position.heldInAccount) ? position.heldInAccount : inv.subAccountType;
+                        writeTextElement(writer, "HELDINACCT", hasText(held) ? held : "CASH");
+
+                        writer.writeEndElement();
+                        writer.writeEndElement();
+                }
+
+                writer.writeEndElement();
+        }
+
+        private static void writeInvestmentTransactions(XMLStreamWriter writer, InvestmentData inv) throws Exception
+        {
+                if (inv.transactions == null || inv.transactions.isEmpty())
+                {
+                        return;
+                }
+
+                writer.writeStartElement("INVTRANLIST");
+
+                String[] range = determineTransactionRange(inv);
+                writeTextElement(writer, "DTSTART", range[0]);
+                writeTextElement(writer, "DTEND", range[1]);
+
+                String subAccount = hasText(inv.subAccountType) ? inv.subAccountType : "CASH";
+
+                for (InvestmentTransaction tx : inv.transactions)
+                {
+                        if (tx == null)
+                        {
+                                continue;
+                        }
+
+                        writer.writeStartElement(determineTransactionElement(tx.getTransactionType()));
+
+                        writer.writeStartElement("INVTRAN");
+                        writeTextElement(writer, "FITID", tx.getFitid());
+                        writeTextElement(writer, "DTTRADE", tradeDateOf(tx));
+                        writeTextElement(writer, "MEMO", tx.getMemo());
+                        writeTextElement(writer, "NAME", tx.getPayee());
+                        writer.writeEndElement();
+
+                        writeSecurity(writer, tx.getSecurityNode());
+                        writeAmountElement(writer, "UNITS", tx.getQuantity());
+                        writeAmountElement(writer, "UNITPRICE", tx.getPrice());
+                        writeAmountElement(writer, "TOTAL", tx.getTotal());
+
+                        BigDecimal fees = tx.getFees();
+                        if (fees != null && fees.compareTo(BigDecimal.ZERO) != 0)
+                        {
+                                writeAmountElement(writer, "FEES", fees);
+                        }
+
+                        writeTextElement(writer, "SUBACCTSEC", subAccount);
+                        writeTextElement(writer, "SUBACCTFUND", subAccount);
+
+                        writer.writeEndElement();
+                }
+
+                writer.writeEndElement();
+        }
+
+        private static void writeSecurity(XMLStreamWriter writer, SecurityNode security) throws Exception
+        {
+                if (security == null)
+                {
+                        return;
+                }
+
+                String isin = security.getISIN();
+                String symbol = security.getSymbol();
+
+                if (!hasText(isin) && !hasText(symbol))
+                {
+                        return;
+                }
+
+                writer.writeStartElement("SECID");
+
+                if (hasText(isin))
+                {
+                        writeTextElement(writer, "UNIQUEID", isin);
+                        writeTextElement(writer, "UNIQUEIDTYPE", "ISIN");
+                }
+
+                if (hasText(symbol))
+                {
+                        writeTextElement(writer, "TICKER", symbol);
+                }
+
+                writer.writeEndElement();
+        }
+
+        private static void writeTextElement(XMLStreamWriter writer, String element, String value) throws Exception
+        {
+                if (!hasText(value))
+                {
+                        return;
+                }
+
+                writer.writeStartElement(element);
+                writer.writeCharacters(value);
+                writer.writeEndElement();
+        }
+
+        private static void writeAmountElement(XMLStreamWriter writer, String element, BigDecimal value) throws Exception
+        {
+                if (value == null)
+                {
+                        return;
+                }
+
+                writer.writeStartElement(element);
+                writer.writeCharacters(value.stripTrailingZeros().toPlainString());
+                writer.writeEndElement();
+        }
+
+        private static String[] determineTransactionRange(InvestmentData inv)
+        {
+                String start = hasText(inv.transactionDateStart) ? inv.transactionDateStart : null;
+                String end = hasText(inv.transactionDateEnd) ? inv.transactionDateEnd : null;
+
+                if (start != null && end != null)
+                {
+                        return new String[] { start, end };
+                }
+
+                LocalDate min = null;
+                LocalDate max = null;
+
+                for (InvestmentTransaction tx : inv.transactions)
+                {
+                        LocalDate date = safeLocalDate(tx);
+
+                        if (date == null)
+                        {
+                                continue;
+                        }
+
+                        if (min == null || date.isBefore(min))
+                        {
+                                min = date;
+                        }
+
+                        if (max == null || date.isAfter(max))
+                        {
+                                max = date;
+                        }
+                }
+
+                if (start == null)
+                {
+                        start = min != null ? OFX_DATE.format(min) : inv.dtAsOf;
+                }
+
+                if (end == null)
+                {
+                        end = max != null ? OFX_DATE.format(max) : inv.dtAsOf;
+                }
+
+                return new String[] { start, end };
+        }
+
+        private static LocalDate safeLocalDate(InvestmentTransaction tx)
+        {
+                if (tx == null)
+                {
+                        return null;
+                }
+
+                try
+                {
+                        return tx.getLocalDate();
+                }
+                catch (Exception ex)
+                {
+                        return null;
+                }
+        }
+
+        private static String tradeDateOf(InvestmentTransaction tx)
+        {
+                LocalDate date = safeLocalDate(tx);
+                return date != null ? OFX_DATE.format(date) : null;
+        }
+
+        private static String determineTransactionElement(String transactionType)
+        {
+                if (!hasText(transactionType))
+                {
+                        return "INVTRAN";
+                }
+
+                String normalized = transactionType.trim().toUpperCase(Locale.ROOT);
+
+                return switch (normalized)
+                {
+                        case "BUY", "BUYMF", "BUYSTOCK" -> "INVBUY";
+                        case "SELL", "SELLMF", "SELLSTOCK" -> "INVSELL";
+                        default -> "INVTRAN";
+                };
+        }
+
+        private static boolean hasText(String value)
+        {
+                return value != null && !value.isBlank();
+        }
+
+        /**
+         * Inner class to hold data for a single transaction, used by the OFX writer methods.
+         */
 	public static class TransactionData
 	{
 		/** Type of transaction (e.g., "CREDIT", "DEBIT", "CHECK"). */
@@ -516,11 +768,11 @@ public class OfxV2Writer
 	/**
 	 * Inner class to hold data for investment account information used in OFX sections.
 	 */
-	public static class InvestmentData
-	{
-		/** Transaction UID for the statement response. */
-		public String trnUid;
-		/** Broker ID for the investment account. */
+        public static class InvestmentData
+        {
+                /** Transaction UID for the statement response. */
+                public String trnUid;
+                /** Broker ID for the investment account. */
 		public String brokerId;
 		/** Account ID for the investment account. */
 		public String accountId;
@@ -529,12 +781,48 @@ public class OfxV2Writer
 		/** 'As of' date for the investment statement data (OFX format). */
 		public String dtAsOf;
 		/** Status code for the statement response. */
-		public String statusCode;
-		/** Severity of the status for the statement response. */
-		public String severity;
-		/** Available cash balance in the investment account. */
-		public BigDecimal availableCash;
-		
-	}
-	
+                public String statusCode;
+                /** Severity of the status for the statement response. */
+                public String severity;
+                /** Available cash balance in the investment account. */
+                public BigDecimal availableCash;
+                /** Market value of holdings in the investment account. */
+                public BigDecimal marketValue;
+                /** Explicit start date for investment transactions, if provided. */
+                public String transactionDateStart;
+                /** Explicit end date for investment transactions, if provided. */
+                public String transactionDateEnd;
+                /** Default sub-account classification for securities and cash movements. */
+                public String subAccountType = "CASH";
+                /** Positions held inside the account. */
+                public List<InvestmentPosition> positions = new ArrayList<>();
+                /** Investment transactions reported for the account. */
+                public List<InvestmentTransaction> transactions = new ArrayList<>();
+
+        }
+
+        /**
+         * Describes a single investment position included in an OFX investment
+         * statement.
+         */
+        public static class InvestmentPosition
+        {
+                /** Security associated with the position. */
+                public SecurityNode security;
+                /** Units held of the security. */
+                public BigDecimal units;
+                /** Unit price applied to the security. */
+                public BigDecimal unitPrice;
+                /** Market value of the position. */
+                public BigDecimal marketValue;
+                /** Pricing date for the position. */
+                public String priceAsOf;
+                /** Position type such as LONG or SHORT. */
+                public String positionType;
+                /** Sub-account in which the position is held. */
+                public String heldInAccount = "CASH";
+                /** Optional override for the OFX element (e.g., POSSTOCK, POSMF). */
+                public String positionTypeTag = "POSSTOCK";
+        }
+
 }
