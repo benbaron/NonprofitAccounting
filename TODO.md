@@ -154,10 +154,10 @@ This document lists potential code issues, areas for improvement, or bugs that w
 - Add dynamic UI listeners in `BudgetLineDialog.attachListeners` for validation and field updates. *(complete – the JavaFX dialog now validates amounts as users type, updates per-period previews, and disables the OK button when input is invalid.)*
 - Provide working backup and restore features in `SettingsPanelFX.backupTab`. *(complete)*
 - Generate real output in `GenerateReportPanelFX` rather than placeholder text. *(complete – the panel now invokes `ReportService.generateJasperReport` for every template and surfaces success/failure messages in the UI.)*
-- Extend `PageViewer.getTableModel` to load data from the ledger or relevant source.
+- Extend `PageViewer.getTableModel` to load data from the ledger or relevant source. *(complete – the viewer now surfaces current ledger entries and helpful empty-state rows.)*
 - Make `CompanySelectionPanelFX.OnCompanyOpenedHandler` a proper callback interface and invoke it when a company is opened. *(complete)*
-- Implement data-driven logic in `ReconciliationService` methods such as `getUnreconciled`, `listReconcilableAccounts`, `reconcile`, and `addTransactionToReconcile`.
-- Calculate totals in `InvestmentTransaction.getTotal(Account)` using the account's transaction history.
-- Expand `OfxV2Writer.writeInvestmentSection` to output investment positions and transactions.
+- Implement data-driven logic in `ReconciliationService` methods such as `getUnreconciled`, `listReconcilableAccounts`, `reconcile`, and `addTransactionToReconcile`. *(complete – the service builds account buckets from the ledger, exposes table-ready rows, and removes transactions when cleared.)*
+- Calculate totals in `InvestmentTransaction.getTotal(Account)` using the account's transaction history. *(complete – totals derive from the ledger entries recorded for the investment account.)*
+- Expand `OfxV2Writer.writeInvestmentSection` to output investment positions and transactions. *(complete – the writer now emits position and transaction lists for investment exports.)*
 - Review Swing stub methods like `performAction()` in report actions and implement or remove them if unused.
 - Move remaining company subsections into separate JSON files inside the `.npbk` archive for modular storage.

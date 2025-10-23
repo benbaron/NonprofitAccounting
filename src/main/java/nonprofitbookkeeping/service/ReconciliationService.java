@@ -1,20 +1,29 @@
 
 package nonprofitbookkeeping.service;
 
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
-import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import nonprofitbookkeeping.model.Account;
+import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountType;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
+import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.util.FormatUtils;
 
 /**
  * Service class providing functionalities for account reconciliation.
@@ -26,190 +35,653 @@ public class ReconciliationService
 {
        private static final Logger LOGGER = Logger.getLogger(ReconciliationService.class.getName());
 
+       private static final EnumSet<AccountType> RECONCILABLE_TYPES = EnumSet.of(AccountType.ASSET,
+               AccountType.BANK,
+               AccountType.CASH,
+               AccountType.CHECKING,
+               AccountType.CREDITCARD,
+               AccountType.MONEYMKRT,
+               AccountType.INVEST,
+               AccountType.SIMPLEINVEST);
+
+       private static final DateTimeFormatter ISO_DATE = DateTimeFormatter.ISO_LOCAL_DATE;
+
+       /**
+        * Guards access to the shared reconciliation state. All mutating
+        * operations should synchronize on this lock to avoid race conditions
+        * when UI code and background imports both add transactions.
+        */
+       private static final Object LOCK = new Object();
+
        /** Transactions queued for reconciliation. */
        private final List<AccountingTransaction> pendingTransactions = new ArrayList<>();
 
        /**
-        * In-memory store of unreconciled transactions keyed by account number.
-        * This is populated lazily from the current company's ledger or via
-        * {@link #addTransactionToReconcile(AccountingTransaction)}.
+        * In-memory store of unreconciled transactions keyed by a human friendly
+        * account identifier (preferably the account name).
         */
-       private static final Map<String, List<AccountingTransaction>> UNRECONCILED = new HashMap<>();
-	
-	/**
-	 * Fetches unreconciled entries for a specific account within a given date range.
-	 * <p>
-	 * Note: This is currently a placeholder implementation that returns a fixed list of sample entries.
-	 * A real implementation would query a data source (e.g., database) for actual unreconciled transactions
-	 * based on the provided account and date criteria. The structure of the returned {@code String[]}
-	 * (e.g., {"TXN_ID", "Amount", "Description", "Status"}) is based on the sample data.
-	 * </p>
-	 *
-	 * @param account The name or identifier of the account to fetch unreconciled entries for.
-	 * @param from The start date of the period (inclusive), as a String. Format should be consistent with data source expectations.
-	 * @param to The end date of the period (inclusive), as a String. Format should be consistent with data source expectations.
-	 * @return A {@link List} of {@code String[]} where each array represents an unreconciled entry's details.
-	 *         Returns sample data in the current placeholder implementation.
-	 */
-    public static List<String[]> getUnreconciledEntries(String account, String from, String to)
-    {
-            // Placeholder for future database queries - not used by the FX panel.
-            return List.of();
-    }
-	
-	/**
-	 * Marks a specific financial entry (transaction) as reconciled using its transaction ID.
-	 * <p>
-	 * Note: This is currently a placeholder implementation. It prints the transaction ID to standard output
-	 * and always returns {@code true}. A real implementation would update the reconciliation status
-	 * of the specified transaction in a persistent data store.
-	 * </p>
-	 *
-	 * @param txnId The unique identifier (ID) of the transaction to be marked as reconciled.
-	 * @return {@code true} if the (placeholder) reconciliation was successful, {@code false} otherwise.
-	 *         In a real implementation, this would reflect the actual success of the update operation.
-	 */
-	public static boolean reconcileEntry(Long txnId)
-	{
-		// In a real implementation, the transaction ID
-		// would be marked as reconciled in a database
-		LOGGER.fine("Reconciled transaction ID: " + txnId);
-		return true;
-	}
-
-
-	/**
-	 * Retrieves a list of unreconciled accounting transactions based on a specified value or criteria.
-	 * Note: This is a stub implementation and currently returns null.
-	 * The exact nature of the 'value' parameter and how it's used for filtering needs to be defined.
-	 *
-	 * @param value A string representing the criteria or value to filter unreconciled transactions by.
-	 * @return A list of {@link AccountingTransaction} objects that are unreconciled and match the criteria,
-	 *         or null if the implementation is not complete.
-	 */
-      public static List<AccountingTransaction> getUnreconciled(String value)
-      {
-              if (value == null || value.isBlank())
-                      return List.of();
-
-              ensureLoaded();
-
-              List<AccountingTransaction> list = UNRECONCILED.get(value);
-              if (list == null)
-                      return List.of();
-
-              return new ArrayList<>(list);
-      }
-
-	/**
-	 * Lists accounts that are eligible for reconciliation.
-	 * Note: This is a stub implementation and currently returns null.
-	 * This method should query the system for accounts that typically undergo a reconciliation process
-	 * (e.g., bank accounts, credit card accounts).
-	 *
-	 * @return A list of strings, where each string is an identifier or name of a reconcilable account,
-	 *         or null if the implementation is not complete.
-	 */
-      public static List<String> listReconcilableAccounts()
-      {
-              ensureLoaded();
-              return UNRECONCILED.keySet().stream()
-                      .sorted()
-                      .collect(Collectors.toCollection(ArrayList::new));
-      }
-
-	/**
-	 * Performs the reconciliation process for a given account.
-	 * This typically involves comparing a list of cleared transaction IDs against an ending balance.
-	 * Note: This is a stub implementation and currently does nothing.
-	 * The parameters 'value' and 'string' are not clearly defined by their names and need clarification.
-	 *
-	 * @param accountIdentifier An identifier for the account to be reconciled (renamed from 'value' for clarity).
-	 * @param statementDate A string representing the statement date for the reconciliation (renamed from 'string' for clarity).
-	 * @param endingBalance The ending balance from the financial statement being reconciled against.
-	 * @param clearedIds A list of transaction IDs that have been marked as cleared.
-	 */
-       public void reconcile(String accountIdentifier, String statementDate, BigDecimal endingBalance, List<Long> clearedIds)
-       {
-               if (accountIdentifier == null || accountIdentifier.isBlank())
-                       return;
-
-               if (clearedIds == null)
-                       return;
-
-               List<AccountingTransaction> list = UNRECONCILED.get(accountIdentifier);
-               if (list == null)
-                       return;
-
-               list.removeIf(tx -> tx != null && tx.getBookingDateTimestamp() != null && clearedIds.contains(tx.getBookingDateTimestamp()));
-               this.pendingTransactions.clear();
-       }
-
-	/**
-	 * Adds a transaction to a list or batch of transactions that are pending reconciliation.
-	 * Note: This is a stub implementation and currently does nothing.
-	 * This method would typically be used in a scenario where transactions are selected or prepared
-	 * before the main {@link #reconcile(String, String, BigDecimal, List)} method is called.
-	 *
-	 * @param transaction The {@link AccountingTransaction} to add to the reconciliation batch.
-	 *                    The parameter name "mockTx1" suggests it might have been used for testing.
-	 */
-       public void addTransactionToReconcile(AccountingTransaction transaction)
-       {
-               if (transaction == null)
-                       return;
-
-               Account acc = null;
-               if (transaction.getEntries() != null)
-               {
-                       for (AccountingEntry e : transaction.getEntries())
-                       {
-                               Account a = CurrentCompany.getCompany().getChartOfAccounts().getAccount(e.getAccountNumber());
-                               if (a != null && (a.getAccountType() == AccountType.CASH || a.getAccountType() == AccountType.BANK || a.getAccountType() == AccountType.CHECKING))
-                               {
-                                       acc = a;
-                                       break;
-                               }
-                       }
-               }
-
-               if (acc == null || acc.getAccountNumber() == null)
-                       return;
-
-               UNRECONCILED.computeIfAbsent(acc.getAccountNumber(), k -> new ArrayList<>()).add(transaction);
-               this.pendingTransactions.add(transaction);
-       }
+       private static final Map<String, List<AccountingTransaction>> UNRECONCILED = new LinkedHashMap<>();
 
        /**
-        * Ensures the unreconciled map is loaded from the current company's ledger.
+        * Maps the display identifier used in {@link #UNRECONCILED} back to the
+        * canonical account number. This allows callers to query using either
+        * the name or the number and keeps lookups stable even if duplicate
+        * names exist.
         */
-       private static void ensureLoaded()
-       {
-               if (!UNRECONCILED.isEmpty())
-                       return;
+       private static final Map<String, String> ACCOUNT_NUMBERS = new LinkedHashMap<>();
 
-               Company company = CurrentCompany.getCompany();
-               if (company == null || company.getLedger() == null)
-                       return;
+       /** Tracks the company instance last used to populate {@link #UNRECONCILED}. */
+        private static Company loadedCompany;
 
-               var ledgerTxns = company.getLedger().getTransactions();
-               if (ledgerTxns == null)
-                       return;
+       /** Hash of the ledger transactions when {@link #loadedCompany} was cached. */
+        private static int loadedLedgerHash;
+	
+        /**
+         * Clears all cached reconciliation state. Primarily intended for tests
+         * and scenarios where the active company changes.
+         */
+        public static void reset()
+        {
+                synchronized (LOCK)
+                {
+                        resetLocked();
+                }
+        }
 
-               for (AccountingTransaction tx : ledgerTxns)
-               {
-                       if (tx == null || tx.getEntries() == null)
-                               continue;
+        /**
+         * Fetches unreconciled entries for a specific account within a given date range.
+         *
+         * @param accountIdentifier The display name or account number to fetch entries for.
+         * @param from              Inclusive lower bound in ISO-8601 format (yyyy-MM-dd). May be {@code null}.
+         * @param to                Inclusive upper bound in ISO-8601 format (yyyy-MM-dd). May be {@code null}.
+         * @return rows describing each unreconciled entry. Columns are transaction id,
+         *         booking date, formatted amount, and description.
+         */
+        public static List<String[]> getUnreconciledEntries(String accountIdentifier, String from, String to)
+        {
+                ensureLoaded();
 
-                       for (AccountingEntry e : tx.getEntries())
-                       {
-                               Account acc = company.getChartOfAccounts().getAccount(e.getAccountNumber());
-                               if (acc != null && (acc.getAccountType() == AccountType.CASH || acc.getAccountType() == AccountType.BANK || acc.getAccountType() == AccountType.CHECKING))
-                               {
-                                       UNRECONCILED.computeIfAbsent(acc.getAccountNumber(), k -> new ArrayList<>()).add(tx);
-                               }
-                       }
-               }
-       }
+                LocalDate fromDate = parseDate(from);
+                LocalDate toDate = parseDate(to);
+
+                List<AccountingTransaction> transactions = getUnreconciled(accountIdentifier);
+                if (transactions.isEmpty())
+                {
+                        return List.of();
+                }
+
+                List<String[]> rows = new ArrayList<>();
+                for (AccountingTransaction tx : transactions)
+                {
+                        if (tx == null)
+                        {
+                                continue;
+                        }
+
+                        LocalDate txDate = transactionDate(tx);
+                        if (!withinRange(txDate, fromDate, toDate))
+                        {
+                                continue;
+                        }
+
+                        BigDecimal amount = entryAmount(tx, accountIdentifier);
+                        String formattedAmount = FormatUtils.formatCurrency(amount);
+                        String dateText = txDate != null ? txDate.toString() : "";
+                        String description = Optional.ofNullable(tx.getDescription()).orElse("");
+                        String id = Optional.ofNullable(tx.getBookingDateTimestamp()).map(String::valueOf).orElse("-");
+
+                        rows.add(new String[] { id, dateText, formattedAmount, description });
+                }
+
+                return rows;
+        }
+
+        /**
+         * Marks a specific financial entry (transaction) as reconciled using its transaction ID.
+         *
+         * @param txnId The unique identifier (ID) of the transaction to be marked as reconciled.
+         * @return {@code true} if a matching transaction was removed, {@code false} otherwise.
+         */
+        public static boolean reconcileEntry(Long txnId)
+        {
+                if (txnId == null)
+                {
+                        return false;
+                }
+
+                ensureLoaded();
+
+                boolean removed = false;
+                synchronized (LOCK)
+                {
+                        for (List<AccountingTransaction> list : UNRECONCILED.values())
+                        {
+                                if (list.removeIf(tx -> matchesId(tx, txnId)))
+                                {
+                                        removed = true;
+                                }
+                        }
+
+                        UNRECONCILED.entrySet().removeIf(e -> e.getValue().isEmpty());
+                        ACCOUNT_NUMBERS.entrySet().removeIf(e -> !UNRECONCILED.containsKey(e.getKey()));
+                }
+
+                if (removed)
+                {
+                        LOGGER.fine(() -> "Reconciled transaction ID: " + txnId);
+                }
+
+                return removed;
+        }
+
+        /**
+         * Retrieves a list of unreconciled accounting transactions for the supplied account identifier.
+         * The identifier can be either the display name or the canonical account number.
+         */
+        public static List<AccountingTransaction> getUnreconciled(String accountIdentifier)
+        {
+                if (accountIdentifier == null || accountIdentifier.isBlank())
+                {
+                        return List.of();
+                }
+
+                ensureLoaded();
+
+                synchronized (LOCK)
+                {
+                        String key = resolveKey(accountIdentifier);
+                        if (key == null)
+                        {
+                                return List.of();
+                        }
+
+                        List<AccountingTransaction> list = UNRECONCILED.get(key);
+                        if (list == null || list.isEmpty())
+                        {
+                                return List.of();
+                        }
+
+                        return new ArrayList<>(list);
+                }
+        }
+
+        /**
+         * Lists accounts that are eligible for reconciliation.
+         */
+        public static List<String> listReconcilableAccounts()
+        {
+                ensureLoaded();
+
+                synchronized (LOCK)
+                {
+                        if (UNRECONCILED.isEmpty())
+                        {
+                                return List.of();
+                        }
+
+                        return UNRECONCILED.keySet().stream()
+                                .sorted(String::compareToIgnoreCase)
+                                .collect(Collectors.toCollection(ArrayList::new));
+                }
+        }
+
+        /**
+         * Performs the reconciliation process for a given account.
+         */
+        public void reconcile(String accountIdentifier, String statementDate, BigDecimal endingBalance,
+                List<Long> clearedIds)
+        {
+                if (accountIdentifier == null || accountIdentifier.isBlank() || clearedIds == null
+                        || clearedIds.isEmpty())
+                {
+                        return;
+                }
+
+                ensureLoaded();
+
+                synchronized (LOCK)
+                {
+                        String key = resolveKey(accountIdentifier);
+                        if (key == null)
+                        {
+                                return;
+                        }
+
+                        List<AccountingTransaction> list = UNRECONCILED.get(key);
+                        if (list == null)
+                        {
+                                return;
+                        }
+
+                        list.removeIf(tx -> tx != null
+                                && tx.getBookingDateTimestamp() != null
+                                && clearedIds.contains(tx.getBookingDateTimestamp()));
+
+                        if (list.isEmpty())
+                        {
+                                UNRECONCILED.remove(key);
+                                ACCOUNT_NUMBERS.remove(key);
+                        }
+                }
+
+                this.pendingTransactions.clear();
+        }
+
+        /**
+         * Adds a transaction to the reconciliation map. The transaction is bucketed
+         * by each reconcilable account that participates in it.
+         */
+        public void addTransactionToReconcile(AccountingTransaction transaction)
+        {
+                if (transaction == null)
+                {
+                        return;
+                }
+
+                ensureLoaded();
+
+                synchronized (LOCK)
+                {
+                        Company company = CurrentCompany.getCompany();
+                        addTransactionInternal(company, transaction);
+                }
+
+                this.pendingTransactions.add(transaction);
+        }
+
+        /**
+         * Ensures the unreconciled map is loaded from the current company's ledger.
+         */
+        private static void ensureLoaded()
+        {
+                Company company = CurrentCompany.getCompany();
+
+                synchronized (LOCK)
+                {
+                        if (company == null || company.getLedger() == null)
+                        {
+                                resetLocked();
+                                return;
+                        }
+
+                        List<AccountingTransaction> transactions = company.getLedger().getTransactions();
+                        int ledgerHash = ledgerHash(transactions);
+
+                        if (company == loadedCompany && ledgerHash == loadedLedgerHash && !UNRECONCILED.isEmpty())
+                        {
+                                return;
+                        }
+
+                        resetLocked();
+                        loadedCompany = company;
+                        loadedLedgerHash = ledgerHash;
+
+                        if (transactions == null)
+                        {
+                                return;
+                        }
+
+                        for (AccountingTransaction tx : transactions)
+                        {
+                                addTransactionInternal(company, tx);
+                        }
+                }
+        }
+
+        private static void resetLocked()
+        {
+                UNRECONCILED.clear();
+                ACCOUNT_NUMBERS.clear();
+                loadedCompany = null;
+                loadedLedgerHash = 0;
+        }
+
+        private static int ledgerHash(List<AccountingTransaction> transactions)
+        {
+                if (transactions == null || transactions.isEmpty())
+                {
+                        return 0;
+                }
+
+                int hash = 1;
+                for (AccountingTransaction tx : transactions)
+                {
+                        long id = tx != null && tx.getBookingDateTimestamp() != null ? tx.getBookingDateTimestamp() : 0L;
+                        hash = 31 * hash + Long.hashCode(id);
+                }
+                return hash;
+        }
+
+        private static void addTransactionInternal(Company company, AccountingTransaction transaction)
+        {
+                if (transaction == null || transaction.getEntries() == null || transaction.getEntries().isEmpty())
+                {
+                        return;
+                }
+
+                Map<String, String> keys = accountKeysForTransaction(company, transaction);
+                if (keys.isEmpty())
+                {
+                        return;
+                }
+
+                for (Map.Entry<String, String> entry : keys.entrySet())
+                {
+                        String key = entry.getKey();
+                        if (key == null || key.isBlank())
+                        {
+                                continue;
+                        }
+
+                        ACCOUNT_NUMBERS.putIfAbsent(key, entry.getValue());
+                        List<AccountingTransaction> list = UNRECONCILED.computeIfAbsent(key, k -> new ArrayList<>());
+
+                        if (list.stream().noneMatch(existing -> sameTransaction(existing, transaction)))
+                        {
+                                list.add(transaction);
+                        }
+                }
+        }
+
+        private static Map<String, String> accountKeysForTransaction(Company company, AccountingTransaction transaction)
+        {
+                Map<String, String> result = new LinkedHashMap<>();
+                if (transaction == null || transaction.getEntries() == null)
+                {
+                        return result;
+                }
+
+                ChartOfAccounts chart = company != null ? company.getChartOfAccounts() : null;
+
+                for (AccountingEntry entry : transaction.getEntries())
+                {
+                        if (entry == null)
+                        {
+                                continue;
+                        }
+
+                        String accountNumber = entry.getAccountNumber();
+                        Account account = chart != null ? chart.getAccount(accountNumber) : null;
+                        AccountType type = account != null ? account.getAccountType() : null;
+
+                        boolean reconcilable = type != null && RECONCILABLE_TYPES.contains(type);
+
+                        if (!reconcilable)
+                        {
+                                if (account == null && accountNumber != null && !accountNumber.isBlank())
+                                {
+                                        reconcilable = true;
+                                }
+                                else
+                                {
+                                        continue;
+                                }
+                        }
+
+                        String key = accountKey(account, entry);
+                        if (key == null || key.isBlank())
+                        {
+                                continue;
+                        }
+
+                        if (!result.containsKey(key))
+                        {
+                                result.put(key, accountNumber);
+                        }
+                }
+
+                return result;
+        }
+
+        private static String accountKey(Account account, AccountingEntry entry)
+        {
+                if (account != null)
+                {
+                        String display = displayName(account);
+                        if (display != null && !display.isBlank())
+                        {
+                                return display;
+                        }
+                }
+
+                if (entry != null)
+                {
+                        if (entry.getAccountName() != null && !entry.getAccountName().isBlank())
+                        {
+                                return entry.getAccountName();
+                        }
+
+                        if (entry.getAccountNumber() != null && !entry.getAccountNumber().isBlank())
+                        {
+                                return entry.getAccountNumber();
+                        }
+                }
+
+                return null;
+        }
+
+        private static String displayName(Account account)
+        {
+                if (account == null)
+                {
+                        return null;
+                }
+
+                if (account.getName() != null && !account.getName().isBlank())
+                {
+                        return account.getName();
+                }
+
+                return account.getAccountNumber();
+        }
+
+        private static boolean sameTransaction(AccountingTransaction left, AccountingTransaction right)
+        {
+                if (left == right)
+                {
+                        return true;
+                }
+
+                if (left == null || right == null)
+                {
+                        return false;
+                }
+
+                Long leftId = left.getBookingDateTimestamp();
+                Long rightId = right.getBookingDateTimestamp();
+
+                if (leftId != null && rightId != null)
+                {
+                        return leftId.equals(rightId);
+                }
+
+                return false;
+        }
+
+        private static boolean matchesId(AccountingTransaction tx, Long txnId)
+        {
+                if (tx == null || txnId == null)
+                {
+                        return false;
+                }
+
+                Long id = tx.getBookingDateTimestamp();
+                return id != null && id.equals(txnId);
+        }
+
+        private static String resolveKey(String identifier)
+        {
+                if (identifier == null)
+                {
+                        return null;
+                }
+
+                if (UNRECONCILED.containsKey(identifier))
+                {
+                        return identifier;
+                }
+
+                for (Map.Entry<String, String> entry : ACCOUNT_NUMBERS.entrySet())
+                {
+                        if (identifier.equals(entry.getValue()))
+                        {
+                                return entry.getKey();
+                        }
+                }
+
+                return null;
+        }
+
+        private static String resolveAccountNumber(String identifier)
+        {
+                if (identifier == null)
+                {
+                        return null;
+                }
+
+                String number = ACCOUNT_NUMBERS.get(identifier);
+                if (number != null)
+                {
+                        return number;
+                }
+
+                for (String value : ACCOUNT_NUMBERS.values())
+                {
+                        if (identifier.equals(value))
+                        {
+                                return value;
+                        }
+                }
+
+                return identifier;
+        }
+
+        private static BigDecimal entryAmount(AccountingTransaction tx, String accountIdentifier)
+        {
+                if (tx == null || tx.getEntries() == null)
+                {
+                        return BigDecimal.ZERO;
+                }
+
+                String accountNumber = resolveAccountNumber(accountIdentifier);
+                BigDecimal total = BigDecimal.ZERO;
+
+                for (AccountingEntry entry : tx.getEntries())
+                {
+                        if (entryMatchesKey(entry, accountIdentifier, accountNumber))
+                        {
+                                BigDecimal amount = entry.getAmount();
+                                if (amount == null)
+                                {
+                                        continue;
+                                }
+
+                                switch (entry.getAccountSide())
+                                {
+                                case CREDIT:
+                                        total = total.subtract(amount);
+                                        break;
+                                case DEBIT:
+                                        total = total.add(amount);
+                                        break;
+                                default:
+                                        break;
+                                }
+                        }
+                }
+
+                return total;
+        }
+
+        private static boolean entryMatchesKey(AccountingEntry entry, String identifier, String accountNumber)
+        {
+                if (entry == null)
+                {
+                        return false;
+                }
+
+                if (accountNumber != null && accountNumber.equals(entry.getAccountNumber()))
+                {
+                        return true;
+                }
+
+                if (identifier == null)
+                {
+                        return false;
+                }
+
+                if (identifier.equals(entry.getAccountNumber()))
+                {
+                        return true;
+                }
+
+                return identifier.equals(entry.getAccountName());
+        }
+
+        private static LocalDate transactionDate(AccountingTransaction tx)
+        {
+                if (tx == null)
+                {
+                        return null;
+                }
+
+                String date = tx.getDate();
+                if (date != null && !date.isBlank())
+                {
+                        try
+                        {
+                                return LocalDate.parse(date, ISO_DATE);
+                        }
+                        catch (Exception ex)
+                        {
+                                // Fall back to timestamp
+                        }
+                }
+
+                Long timestamp = tx.getBookingDateTimestamp();
+                if (timestamp == null || timestamp == 0L)
+                {
+                        return null;
+                }
+
+                return Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault()).toLocalDate();
+        }
+
+        private static LocalDate parseDate(String value)
+        {
+                if (value == null || value.isBlank())
+                {
+                        return null;
+                }
+
+                try
+                {
+                        return LocalDate.parse(value, ISO_DATE);
+                }
+                catch (Exception ex)
+                {
+                        return null;
+                }
+        }
+
+        private static boolean withinRange(LocalDate date, LocalDate from, LocalDate to)
+        {
+                if (date == null)
+                {
+                        return true;
+                }
+
+                if (from != null && date.isBefore(from))
+                {
+                        return false;
+                }
+
+                if (to != null && date.isAfter(to))
+                {
+                        return false;
+                }
+
+                return true;
+        }
 	
 }
