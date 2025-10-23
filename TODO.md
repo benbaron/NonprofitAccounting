@@ -149,11 +149,11 @@ This document lists potential code issues, areas for improvement, or bugs that w
 
 ### 11. Implement Placeholder Functions
 - Implement real file export logic in `ExportFileActionFX.handle` instead of writing placeholder text. *(complete)*
-- Implement actual import processing in `ImportFileActionFX.handle`.
-- Replace the alert in `AccountsActivityPanelFX` with functional statement import code.
-- Add dynamic UI listeners in `BudgetLineDialog.attachListeners` for validation and field updates.
+- Implement actual import processing in `ImportFileActionFX.handle`. *(complete – file chooser now imports OFX/QIF/XLSX data into the ledger and persists the company.)*
+- Replace the alert in `AccountsActivityPanelFX` with functional statement import code. *(complete – the panel adds imported transactions to the ledger, queues them for reconciliation, and persists the company.)*
+- Add dynamic UI listeners in `BudgetLineDialog.attachListeners` for validation and field updates. *(complete – the JavaFX dialog now validates amounts as users type, updates per-period previews, and disables the OK button when input is invalid.)*
 - Provide working backup and restore features in `SettingsPanelFX.backupTab`. *(complete)*
-- Generate real output in `GenerateReportPanelFX` rather than placeholder text.
+- Generate real output in `GenerateReportPanelFX` rather than placeholder text. *(complete – the panel now invokes `ReportService.generateJasperReport` for every template and surfaces success/failure messages in the UI.)*
 - Extend `PageViewer.getTableModel` to load data from the ledger or relevant source.
 - Make `CompanySelectionPanelFX.OnCompanyOpenedHandler` a proper callback interface and invoke it when a company is opened. *(complete)*
 - Implement data-driven logic in `ReconciliationService` methods such as `getUnreconciled`, `listReconcilableAccounts`, `reconcile`, and `addTransactionToReconcile`.

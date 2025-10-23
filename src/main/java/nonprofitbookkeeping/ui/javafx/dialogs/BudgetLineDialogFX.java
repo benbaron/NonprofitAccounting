@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 import nonprofitbookkeeping.util.FormatUtils;
 import java.util.stream.Collectors;
+import java.math.RoundingMode;
 
 public class BudgetLineDialogFX extends Dialog<BudgetLine>
 {
@@ -28,10 +29,13 @@ public class BudgetLineDialogFX extends Dialog<BudgetLine>
 	private ChartOfAccounts chartOfAccounts;
 	private List<Fund> availableFunds;
 	
-	private ComboBox<Account> cmbAccount;
-	private TextField txtTotalAmount;
-	private ComboBox<Periodicity> cmbPeriodicity;
-	private ComboBox<Fund> cmbFund; // Will add a "None" option representation
+        private ComboBox<Account> cmbAccount;
+        private TextField txtTotalAmount;
+        private ComboBox<Periodicity> cmbPeriodicity;
+        private ComboBox<Fund> cmbFund; // Will add a "None" option representation
+        private Label amountErrorLabel;
+        private Label periodicBreakdownLabel;
+        private Button okButton;
 	
 	private static final Fund NO_FUND_SENTINEL = new Fund(); // Sentinel for "None" option
 	
@@ -62,12 +66,13 @@ public class BudgetLineDialogFX extends Dialog<BudgetLine>
 		setTitle(title);
 		getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 		
-		initializeComponents();
-		GridPane grid = createLayout();
-		getDialogPane().setContent(grid);
-		
-		populateFields();
-		setupResultConverter();
+                initializeComponents();
+                GridPane grid = createLayout();
+                getDialogPane().setContent(grid);
+
+                populateFields();
+                setupResultConverter();
+                attachListeners();
 	}
 	
 	private void initializeComponents()
@@ -142,16 +147,19 @@ public class BudgetLineDialogFX extends Dialog<BudgetLine>
 			}
 			
 		});
-		this.cmbFund.setCellFactory(listView -> new ListCell<Fund>()
-		{
-			@Override protected void updateItem(Fund fund, boolean empty)
-			{
-				super.updateItem(fund, empty);
-				setText(empty || fund == null ? "" : fund.getName());
-			}
-			
-		});
-	}
+                this.cmbFund.setCellFactory(listView -> new ListCell<Fund>()
+                {
+                        @Override protected void updateItem(Fund fund, boolean empty)
+                        {
+                                super.updateItem(fund, empty);
+                                setText(empty || fund == null ? "" : fund.getName());
+                        }
+
+                });
+
+                this.amountErrorLabel = new Label();
+                this.periodicBreakdownLabel = new Label();
+        }
 	
 	private GridPane createLayout()
 	{
@@ -164,20 +172,24 @@ public class BudgetLineDialogFX extends Dialog<BudgetLine>
 		grid.add(this.cmbAccount, 1, 0);
 		GridPane.setHgrow(this.cmbAccount, Priority.ALWAYS);
 		
-		grid.add(new Label("Total Budgeted Amount:"), 0, 1);
-		grid.add(this.txtTotalAmount, 1, 1);
-		GridPane.setHgrow(this.txtTotalAmount, Priority.ALWAYS);
-		
-		grid.add(new Label("Periodicity:"), 0, 2);
-		grid.add(this.cmbPeriodicity, 1, 2);
-		GridPane.setHgrow(this.cmbPeriodicity, Priority.ALWAYS);
-		
-		grid.add(new Label("Line-specific Fund:"), 0, 3);
-		grid.add(this.cmbFund, 1, 3);
-		GridPane.setHgrow(this.cmbFund, Priority.ALWAYS);
-		
-		return grid;
-	}
+                grid.add(new Label("Total Budgeted Amount:"), 0, 1);
+                grid.add(this.txtTotalAmount, 1, 1);
+                GridPane.setHgrow(this.txtTotalAmount, Priority.ALWAYS);
+
+                grid.add(this.amountErrorLabel, 1, 2);
+
+                grid.add(new Label("Periodicity:"), 0, 3);
+                grid.add(this.cmbPeriodicity, 1, 3);
+                GridPane.setHgrow(this.cmbPeriodicity, Priority.ALWAYS);
+
+                grid.add(this.periodicBreakdownLabel, 1, 4);
+
+                grid.add(new Label("Line-specific Fund:"), 0, 5);
+                grid.add(this.cmbFund, 1, 5);
+                GridPane.setHgrow(this.cmbFund, Priority.ALWAYS);
+
+                return grid;
+        }
 	
 	private void populateFields()
 	{
@@ -213,70 +225,198 @@ public class BudgetLineDialogFX extends Dialog<BudgetLine>
 		
 	}
 	
-	private void setupResultConverter()
-	{
-		setResultConverter(dialogButton -> {
-			
-			if (dialogButton == ButtonType.OK)
-			{
-				
-				// Basic validation (can be expanded)
-				if (this.cmbAccount.getValue() == null)
-				{
-					showValidationError("Account must be selected.");
-					return null; // Prevents dialog from closing
-				}
-				
-				String amountStr = this.txtTotalAmount.getText().trim();
-				
-				if (amountStr.isEmpty())
-				{
-					showValidationError("Total Budgeted Amount cannot be empty.");
-					return null;
-				}
-				
-				try
-				{
-					BigDecimal totalAmount = new BigDecimal(amountStr);
-					
-					if (totalAmount.compareTo(BigDecimal.ZERO) < 0)
-					{
-						showValidationError("Total Budgeted Amount cannot be negative.");
-						return null;
-					}
-					
-					this.budgetLine.setTotalBudgetedAmount(totalAmount);
-				}
-				catch (NumberFormatException e)
-				{
-					showValidationError("Invalid number format for Total Budgeted Amount.");
-					return null;
-				}
-				
-				this.budgetLine.setAccountId(this.cmbAccount.getValue().getAccountNumber());
-				this.budgetLine.setAccountName(this.cmbAccount.getValue().getName()); // Store name for
-																			// convenience
-				this.budgetLine.setPeriodicity(this.cmbPeriodicity.getValue());
-				
-				Fund selectedFund = this.cmbFund.getValue();
-				
-				if (selectedFund != null && selectedFund != NO_FUND_SENTINEL)
-				{
-					this.budgetLine.setFundId(selectedFund.getFundId());
-				}
-				else
-				{
-					this.budgetLine.setFundId(null); // "None" selected
-				}
-				
-				return this.budgetLine;
-			}
-			
-			return null; // Cancel or close
-		});
-	}
-	
-	private void showValidationError(String message)
+        private void setupResultConverter()
+        {
+                setResultConverter(dialogButton -> {
+
+                        if (dialogButton == ButtonType.OK)
+                        {
+
+                                if (this.cmbAccount.getValue() == null)
+                                {
+                                        showValidationError("Account must be selected.");
+                                        return null;
+                                }
+
+                                BigDecimal totalAmount = parseAmount(this.txtTotalAmount.getText());
+
+                                if (totalAmount == null)
+                                {
+                                        showValidationError("Total Budgeted Amount cannot be empty or invalid.");
+                                        return null;
+                                }
+
+                                if (totalAmount.compareTo(BigDecimal.ZERO) < 0)
+                                {
+                                        showValidationError("Total Budgeted Amount cannot be negative.");
+                                        return null;
+                                }
+
+                                this.budgetLine.setTotalBudgetedAmount(totalAmount);
+                                this.budgetLine.setAccountId(this.cmbAccount.getValue().getAccountNumber());
+                                this.budgetLine.setAccountName(this.cmbAccount.getValue().getName());
+                                this.budgetLine.setPeriodicity(this.cmbPeriodicity.getValue());
+
+                                Fund selectedFund = this.cmbFund.getValue();
+
+                                if (selectedFund != null && selectedFund != NO_FUND_SENTINEL)
+                                {
+                                        this.budgetLine.setFundId(selectedFund.getFundId());
+                                }
+                                else
+                                {
+                                        this.budgetLine.setFundId(null);
+                                }
+
+                                return this.budgetLine;
+                        }
+
+                        return null;
+                });
+        }
+
+        private void attachListeners()
+        {
+                this.okButton = (Button) getDialogPane().lookupButton(ButtonType.OK);
+
+                this.txtTotalAmount.textProperty().addListener((obs, oldText, newText) -> updateAmountFeedback());
+                this.txtTotalAmount.focusedProperty().addListener((obs, wasFocused, focused) ->
+                {
+                        if (!focused)
+                        {
+                                BigDecimal parsed = parseAmount(this.txtTotalAmount.getText());
+
+                                if (parsed != null)
+                                {
+                                        this.txtTotalAmount.setText(FormatUtils.formatCurrency(parsed));
+                                }
+                        }
+                });
+
+                this.cmbPeriodicity.valueProperty().addListener((obs, oldValue, newValue) -> updateAmountFeedback());
+                this.cmbAccount.valueProperty().addListener((obs, oldValue, newValue) -> updateAmountFeedback());
+
+                updateAmountFeedback();
+        }
+
+        private void updateAmountFeedback()
+        {
+                BigDecimal amount = parseAmount(this.txtTotalAmount.getText());
+                boolean accountSelected = this.cmbAccount.getValue() != null;
+                boolean amountValid = amount != null && amount.compareTo(BigDecimal.ZERO) >= 0;
+
+                if (amount == null)
+                {
+                        if (this.txtTotalAmount.getText() == null || this.txtTotalAmount.getText().trim().isEmpty())
+                        {
+                                setAmountError("Enter a total budgeted amount.");
+                        }
+                        else
+                        {
+                                setAmountError("Enter a valid monetary amount (e.g., 100.00).");
+                        }
+                        this.periodicBreakdownLabel.setText("");
+                }
+                else if (amount.compareTo(BigDecimal.ZERO) < 0)
+                {
+                        setAmountError("Amount cannot be negative.");
+                        this.periodicBreakdownLabel.setText("");
+                        amountValid = false;
+                }
+                else
+                {
+                        setAmountError(null);
+                        updatePeriodicBreakdown(amount);
+                }
+
+                if (this.okButton != null)
+                {
+                        this.okButton.setDisable(!(amountValid && accountSelected));
+                }
+        }
+
+        private void setAmountError(String message)
+        {
+                if (message == null || message.isBlank())
+                {
+                        this.amountErrorLabel.setText("");
+                        this.amountErrorLabel.setTooltip(null);
+                }
+                else
+                {
+                        this.amountErrorLabel.setText(message);
+                        this.amountErrorLabel.setTooltip(new Tooltip(message));
+                }
+        }
+
+        private void updatePeriodicBreakdown(BigDecimal total)
+        {
+                if (total == null)
+                {
+                        this.periodicBreakdownLabel.setText("");
+                        return;
+                }
+
+                Periodicity periodicity = this.cmbPeriodicity.getValue();
+                BigDecimal perPeriod = computePerPeriodAmount(total, periodicity);
+                StringBuilder builder = new StringBuilder();
+                builder.append(describePeriodicity(periodicity)).append(':').append(' ')
+                        .append(FormatUtils.formatCurrency(perPeriod));
+
+                if (periodicity != Periodicity.ANNUAL)
+                {
+                        builder.append(" (Total ")
+                                .append(FormatUtils.formatCurrency(total))
+                                .append(')');
+                }
+
+                this.periodicBreakdownLabel.setText(builder.toString());
+        }
+
+        private BigDecimal computePerPeriodAmount(BigDecimal total, Periodicity periodicity)
+        {
+                if (total == null)
+                {
+                        return BigDecimal.ZERO;
+                }
+
+                Periodicity effective = periodicity != null ? periodicity : Periodicity.ANNUAL;
+                int periods = switch (effective)
+                {
+                        case MONTHLY -> 12;
+                        case QUARTERLY -> 4;
+                        case ANNUAL -> 1;
+                };
+
+                if (periods <= 1)
+                {
+                        return total;
+                }
+
+                return total.divide(BigDecimal.valueOf(periods), 2, RoundingMode.HALF_UP);
+        }
+
+        private String describePeriodicity(Periodicity periodicity)
+        {
+                if (periodicity == null)
+                {
+                        return "Annual total";
+                }
+
+                return switch (periodicity)
+                {
+                        case ANNUAL -> "Annual total";
+                        case QUARTERLY -> "Quarterly amount";
+                        case MONTHLY -> "Monthly amount";
+                };
+        }
+
+        private BigDecimal parseAmount(String rawText)
+        {
+                return FormatUtils.parseCurrency(rawText);
+        }
+
+        private void showValidationError(String message)
 	{
 		Alert alert = new Alert(Alert.AlertType.ERROR);
 		alert.setTitle("Validation Error");

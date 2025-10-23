@@ -129,10 +129,10 @@ public class GenerateReportPanelFXTest extends JavaFXTestBase {
     }
 
     @Test
-    public void testGenerateOtherReportType_IncomeStatement() {
-        // For non-Jasper reports, it uses GenerateReportsAction.
-        // We can't easily mock `new GenerateReportsAction(...)` without PowerMock or refactoring panel.
-        // So, we'll verify the UI output which is currently placeholder text.
+    public void testGenerateOtherReportType_IncomeStatement() throws Exception {
+        File mockFile = new File("mock_income_statement.pdf");
+        when(this.mockReportService.generateJasperReport(any(ReportContext.class), eq("pdf")))
+            .thenReturn(mockFile);
 
         Platform.runLater(() -> this.reportSelector.setValue("Income Statement"));
         WaitForAsyncUtils.waitForFxEvents();
@@ -140,19 +140,12 @@ public class GenerateReportPanelFXTest extends JavaFXTestBase {
         clickOn(this.generateButton);
         WaitForAsyncUtils.waitForFxEvents();
 
-        // Verify no call to generateJasperReport for this type
-        try
-		{
-			verify(this.mockReportService, never()).generateJasperReport(any(ReportContext.class), anyString());
-		}
-		catch (Exception e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        ArgumentCaptor<ReportContext> contextCaptor = ArgumentCaptor.forClass(ReportContext.class);
+        verify(this.mockReportService).generateJasperReport(contextCaptor.capture(), eq("pdf"));
+        assertEquals("income_statement_alt_jasper", contextCaptor.getValue().getReportType());
 
         String outputText = this.outputArea.getText();
-        assertTrue(outputText.contains("Generating Income Statement..."));
-        assertTrue(outputText.contains("Done. (This is a placeholder for the actual report)"));
+        assertTrue(outputText.contains("Generating Income Statement"));
+        assertTrue(outputText.contains("Report generated successfully:"));
     }
 }
