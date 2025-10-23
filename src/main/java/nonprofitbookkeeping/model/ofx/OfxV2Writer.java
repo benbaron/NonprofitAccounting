@@ -7,10 +7,12 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Provides utility methods to write OFX (Open Financial Exchange) version 2.0 compliant XML files.
@@ -21,8 +23,10 @@ import java.util.List;
 public class OfxV2Writer
 {
 	
-	private static final DateTimeFormatter OFX_DATE_TIME =
-		DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'.000'"); // Standard OFX DateTime format
+        private static final DateTimeFormatter OFX_DATE_TIME =
+                DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'.000'"); // Standard OFX DateTime format
+        private static final DateTimeFormatter OFX_DATE =
+                DateTimeFormatter.ofPattern("yyyyMMdd");
 	
 	
 	/**
