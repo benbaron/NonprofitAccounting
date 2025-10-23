@@ -7,7 +7,6 @@ import java.util.List;
 import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
-import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Ledger;
 
@@ -109,36 +108,33 @@ public class InvestmentTransaction extends Transaction
 	 */
         public static BigDecimal getTotal(Account account)
         {
-                if (account == null)
+                if (account == null || account.getAccountNumber() == null
+                        || account.getAccountNumber().isBlank())
                 {
                         return BigDecimal.ZERO;
                 }
 
-                String accountNumber = account.getAccountNumber();
-                if (accountNumber == null || accountNumber.isBlank())
+                Ledger ledger = null;
+                if (CurrentCompany.getCompany() != null)
                 {
-                        return BigDecimal.ZERO;
+                        ledger = CurrentCompany.getCompany().getLedger();
                 }
 
-                Company company = CurrentCompany.getCompany();
-                if (company == null)
-                {
-                        return BigDecimal.ZERO;
-                }
-
-                Ledger ledger = company.getLedger();
                 if (ledger == null)
                 {
                         return BigDecimal.ZERO;
                 }
 
-                List<AccountingEntry> entries = ledger.getEntriesForAccount(accountNumber);
+                List<AccountingEntry> entries = ledger.getEntriesForAccount(account.getAccountNumber());
+
                 if (entries == null || entries.isEmpty())
                 {
                         return BigDecimal.ZERO;
                 }
 
+                AccountSide naturalSide = account.getIncreaseSide();
                 BigDecimal total = BigDecimal.ZERO;
+
                 for (AccountingEntry entry : entries)
                 {
                         if (entry == null || entry.getAmount() == null)
@@ -147,13 +143,19 @@ public class InvestmentTransaction extends Transaction
                         }
 
                         BigDecimal amount = entry.getAmount();
-                        if (entry.getAccountSide() == AccountSide.CREDIT)
+                        AccountSide entrySide = entry.getAccountSide();
+
+                        if (entrySide == null || naturalSide == null)
                         {
-                                total = total.subtract(amount);
+                                total = total.add(amount);
+                        }
+                        else if (entrySide == naturalSide)
+                        {
+                                total = total.add(amount);
                         }
                         else
                         {
-                                total = total.add(amount);
+                                total = total.subtract(amount);
                         }
                 }
 
