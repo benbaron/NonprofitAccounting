@@ -7,8 +7,6 @@ import java.util.List;
 import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
-import nonprofitbookkeeping.model.AccountingTransaction;
-import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Ledger;
 
@@ -110,82 +108,58 @@ public class InvestmentTransaction extends Transaction
 	 */
         public static BigDecimal getTotal(Account account)
         {
-                if (account == null)
+                if (account == null || account.getAccountNumber() == null
+                        || account.getAccountNumber().isBlank())
                 {
                         return BigDecimal.ZERO;
                 }
 
-                String accountNumber = account.getAccountNumber();
-
-                if (accountNumber == null || accountNumber.isBlank())
+                Ledger ledger = null;
+                if (CurrentCompany.getCompany() != null)
                 {
-                        return BigDecimal.ZERO;
+                        ledger = CurrentCompany.getCompany().getLedger();
                 }
-
-                Company company = CurrentCompany.getCompany();
-
-                if (company == null)
-                {
-                        return BigDecimal.ZERO;
-                }
-
-                Ledger ledger = company.getLedger();
 
                 if (ledger == null)
                 {
                         return BigDecimal.ZERO;
                 }
 
-                List<AccountingTransaction> transactions = ledger.getTransactions();
+                List<AccountingEntry> entries = ledger.getEntriesForAccount(account.getAccountNumber());
 
-                if (transactions == null || transactions.isEmpty())
+                if (entries == null || entries.isEmpty())
                 {
                         return BigDecimal.ZERO;
                 }
 
-                BigDecimal runningTotal = BigDecimal.ZERO;
-                AccountSide increaseSide = account.getIncreaseSide();
+                AccountSide naturalSide = account.getIncreaseSide();
+                BigDecimal total = BigDecimal.ZERO;
 
-                for (AccountingTransaction transaction : transactions)
+                for (AccountingEntry entry : entries)
                 {
-                        if (transaction == null || transaction.getEntries() == null)
+                        if (entry == null || entry.getAmount() == null)
                         {
                                 continue;
                         }
 
-                        for (AccountingEntry entry : transaction.getEntries())
+                        BigDecimal amount = entry.getAmount();
+                        AccountSide entrySide = entry.getAccountSide();
+
+                        if (entrySide == null || naturalSide == null)
                         {
-                                if (entry == null)
-                                {
-                                        continue;
-                                }
-
-                                if (!accountNumber.equals(entry.getAccountNumber()))
-                                {
-                                        continue;
-                                }
-
-                                BigDecimal amount = entry.getAmount();
-
-                                if (amount == null)
-                                {
-                                        continue;
-                                }
-
-                                AccountSide entrySide = entry.getAccountSide();
-
-                                if (entrySide == null || increaseSide == null || entrySide == increaseSide)
-                                {
-                                        runningTotal = runningTotal.add(amount);
-                                }
-                                else
-                                {
-                                        runningTotal = runningTotal.subtract(amount);
-                                }
+                                total = total.add(amount);
+                        }
+                        else if (entrySide == naturalSide)
+                        {
+                                total = total.add(amount);
+                        }
+                        else
+                        {
+                                total = total.subtract(amount);
                         }
                 }
 
-                return runningTotal;
+                return total;
         }
 	
 	/**

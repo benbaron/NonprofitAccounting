@@ -1,70 +1,67 @@
 package nonprofitbookkeeping.model.ofx;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import nonprofitbookkeeping.core.AccountingTransactionBuilder;
 import nonprofitbookkeeping.model.Account;
-import nonprofitbookkeeping.model.AccountSide;
-import nonprofitbookkeeping.model.AccountingEntry;
+import nonprofitbookkeeping.model.AccountType;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 
-/**
- * Tests for {@link InvestmentTransaction} helper methods.
- */
 class InvestmentTransactionTest
 {
+        private Company company;
+        private Account investment;
+        private Account cash;
 
-        @AfterEach
-        void resetCompany()
+        @BeforeEach void setUp()
+        {
+                this.company = new Company();
+                this.investment = new Account("500", "Brokerage", AccountType.INVEST, BigDecimal.ZERO);
+                this.cash = new Account("600", "Settlement Cash", AccountType.CASH, BigDecimal.ZERO);
+
+                this.company.getChartOfAccounts().addAccount(this.investment);
+                this.company.getChartOfAccounts().addAccount(this.cash);
+
+                AccountingTransaction buy = AccountingTransactionBuilder.create()
+                        .debit(new BigDecimal("120.00"), this.investment.getAccountNumber())
+                        .credit(new BigDecimal("120.00"), this.cash.getAccountNumber())
+                        .build();
+                buy.setBookingDateTimestamp(10L);
+                this.company.getLedger().getJournal().addTransaction(buy);
+
+                CurrentCompany.forceCompanyLoad(this.company);
+        }
+
+        @AfterEach void tearDown()
         {
                 CurrentCompany.forceCompanyLoad(null);
         }
 
-        @Test
-        void getTotalSumsLedgerEntriesRespectingAccountSide()
+        @Test void getTotalReturnsNetBalanceForAccount()
         {
-                Company company = new Company();
+                assertEquals(new BigDecimal("120.00"), InvestmentTransaction.getTotal(this.investment));
 
-                Account investment = new Account("200", "Investments", AccountSide.DEBIT);
-                Account offset = new Account("999", "Offset", AccountSide.CREDIT);
+                AccountingTransaction sell = AccountingTransactionBuilder.create()
+                        .debit(new BigDecimal("20.00"), this.cash.getAccountNumber())
+                        .credit(new BigDecimal("20.00"), this.investment.getAccountNumber())
+                        .build();
+                sell.setBookingDateTimestamp(11L);
+                this.company.getLedger().getJournal().addTransaction(sell);
 
-                company.getChartOfAccounts().addAccount(investment);
-                company.getChartOfAccounts().addAccount(offset);
+                assertEquals(new BigDecimal("100.00"), InvestmentTransaction.getTotal(this.investment));
+        }
 
-                // First transaction increases the balance.
-                Set<AccountingEntry> firstEntries = new LinkedHashSet<>();
-                firstEntries.add(new AccountingEntry(new BigDecimal("100.00"), investment.getAccountNumber(),
-                        AccountSide.DEBIT, investment.getName()));
-                firstEntries.add(new AccountingEntry(new BigDecimal("100.00"), offset.getAccountNumber(),
-                        AccountSide.CREDIT, offset.getName()));
-
-                AccountingTransaction first = new AccountingTransaction();
-                first.setEntries(firstEntries);
-                first.setBookingDateTimestamp(1L);
-                company.getLedger().getJournal().addTransaction(first);
-
-                // Second transaction decreases the balance.
-                Set<AccountingEntry> secondEntries = new LinkedHashSet<>();
-                secondEntries.add(new AccountingEntry(new BigDecimal("40.00"), investment.getAccountNumber(),
-                        AccountSide.CREDIT, investment.getName()));
-                secondEntries.add(new AccountingEntry(new BigDecimal("40.00"), offset.getAccountNumber(),
-                        AccountSide.DEBIT, offset.getName()));
-
-                AccountingTransaction second = new AccountingTransaction();
-                second.setEntries(secondEntries);
-                second.setBookingDateTimestamp(2L);
-                company.getLedger().getJournal().addTransaction(second);
-
-                CurrentCompany.forceCompanyLoad(company);
-
-                assertEquals(new BigDecimal("60.00"), InvestmentTransaction.getTotal(investment));
+        @Test void getTotalGracefullyHandlesMissingContext()
+        {
+                CurrentCompany.forceCompanyLoad(null);
+                assertEquals(BigDecimal.ZERO, InvestmentTransaction.getTotal(this.investment));
+                assertEquals(BigDecimal.ZERO, InvestmentTransaction.getTotal(null));
         }
 }

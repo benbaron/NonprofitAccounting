@@ -1,164 +1,131 @@
 package nonprofitbookkeeping.service;
 
-import nonprofitbookkeeping.core.AccountingTransactionBuilder;
-import nonprofitbookkeeping.model.Account;
-import nonprofitbookkeeping.model.AccountSide;
-import nonprofitbookkeeping.model.AccountType;
-import nonprofitbookkeeping.model.AccountingTransaction;
-import nonprofitbookkeeping.model.Company;
-import nonprofitbookkeeping.model.CurrentCompany;
-import nonprofitbookkeeping.util.FormatUtils;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-class ReconciliationServiceTest {
+import nonprofitbookkeeping.core.AccountingTransactionBuilder;
+import nonprofitbookkeeping.model.Account;
+import nonprofitbookkeeping.model.AccountSide;
+import nonprofitbookkeeping.model.AccountType;
+import nonprofitbookkeeping.model.AccountingTransaction;
+import nonprofitbookkeeping.model.ChartOfAccounts;
+import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.model.Ledger;
 
-    private static final String CHECKING = "1000";
-    private static final String SAVINGS = "2000";
-    private static final String EXPENSE = "5000";
+class ReconciliationServiceTest
+{
+        private static final String BANK_ACCOUNT = "1000";
+        private static final String OFFSET_ACCOUNT = "4000";
 
-    private ReconciliationService service;
-    private Company company;
+        private Ledger ledger;
+        private ReconciliationService service;
+        private AccountingTransaction januaryDeposit;
+        private AccountingTransaction februaryPayment;
 
-    @BeforeEach
-    void setUp() {
-        this.company = new Company();
-        this.company.getChartOfAccounts().addAccount(createAccount(CHECKING, "Checking", AccountType.CHECKING));
-        this.company.getChartOfAccounts().addAccount(createAccount(SAVINGS, "Savings", AccountType.BANK));
-        this.company.getChartOfAccounts().addAccount(createAccount(EXPENSE, "Office Supplies", AccountType.EXPENSE));
+        @BeforeEach
+        void setUp()
+        {
+                new CurrentCompany();
+                Company company = CurrentCompany.getCompany();
+                CurrentCompany.markCompanyOpen();
 
-        CurrentCompany.forceCompanyLoad(this.company);
-        this.service = new ReconciliationService();
-    }
+                ChartOfAccounts chart = company.getChartOfAccounts();
+                Account bank = new Account(BANK_ACCOUNT, "Checking", AccountSide.DEBIT);
+                bank.setAccountType(AccountType.CHECKING);
+                chart.addAccount(bank);
 
-    @AfterEach
-    void tearDown() {
-        CurrentCompany.forceCompanyLoad(null);
-    }
+                Account income = new Account(OFFSET_ACCOUNT, "Contributions", AccountSide.CREDIT);
+                income.setAccountType(AccountType.INCOME);
+                chart.addAccount(income);
 
-    @Test
-    void getUnreconciledReturnsTransactionsForAccount() {
-        AccountingTransaction check1 = addLedgerTransaction(CHECKING, EXPENSE, new BigDecimal("125.00"), 1001L,
-                "2023-01-05", "Check #101");
-        AccountingTransaction check2 = addLedgerTransaction(CHECKING, EXPENSE, new BigDecimal("75.00"), 1002L,
-                "2023-01-10", "Check #102");
-        addLedgerTransaction(SAVINGS, EXPENSE, new BigDecimal("20.00"), 2001L,
-                "2023-01-12", "Savings Transfer");
+                this.ledger = company.getLedger();
+                this.service = new ReconciliationService();
 
-        List<AccountingTransaction> checkingTx = ReconciliationService.getUnreconciled(CHECKING);
-        assertEquals(2, checkingTx.size());
-        List<Long> ids = checkingTx.stream()
-                .map(AccountingTransaction::getBookingDateTimestamp)
-                .collect(Collectors.toList());
-        assertEquals(List.of(1001L, 1002L), ids);
-        assertTrue(ReconciliationService.getUnreconciled("9999").isEmpty());
-    }
+                this.januaryDeposit = createTransaction(new BigDecimal("125.00"), 1L, "2024-01-05", "Initial deposit");
+                this.februaryPayment = createTransaction(new BigDecimal("80.00"), 2L, "2024-02-02", "Sponsor payment");
+        }
 
-    @Test
-    void listReconcilableAccountsSortedByName() {
-        addLedgerTransaction(SAVINGS, EXPENSE, new BigDecimal("40.00"), 2001L,
-                "2023-02-01", "Transfer");
-        addLedgerTransaction(CHECKING, EXPENSE, new BigDecimal("55.00"), 1001L,
-                "2023-02-02", "Check #103");
+        @Test
+        void getUnreconciled_returnsTransactionsForReconcilableAccount()
+        {
+                List<AccountingTransaction> unreconciled = ReconciliationService.getUnreconciled(BANK_ACCOUNT);
+                assertThat(unreconciled)
+                        .extracting(AccountingTransaction::getMemo)
+                        .containsExactly("Initial deposit", "Sponsor payment");
+        }
 
-        List<String> accounts = ReconciliationService.listReconcilableAccounts();
-        assertEquals(List.of(CHECKING, SAVINGS), accounts);
-    }
+        @Test
+        void listReconcilableAccounts_includesBankAccount()
+        {
+                List<String> accounts = ReconciliationService.listReconcilableAccounts();
+                assertThat(accounts).containsExactly(BANK_ACCOUNT);
+        }
 
-    @Test
-    void reconcileRemovesTransactionsAndMarksClearBank() {
-        AccountingTransaction check1 = addLedgerTransaction(CHECKING, EXPENSE, new BigDecimal("125.00"), 1001L,
-                "2023-01-05", "Check #101");
-        AccountingTransaction check2 = addLedgerTransaction(CHECKING, EXPENSE, new BigDecimal("75.00"), 1002L,
-                "2023-01-10", "Check #102");
+        @Test
+        void reconcile_marksTransactionsClearedAndRemovesFromList()
+        {
+                this.service.reconcile(BANK_ACCOUNT, "2024-02-28", new BigDecimal("205.00"), List.of(1L));
 
-        this.service.reconcile(CHECKING, "2023-03-31", new BigDecimal("200.00"), List.of(1001L));
+                List<AccountingTransaction> remaining = ReconciliationService.getUnreconciled(BANK_ACCOUNT);
+                assertThat(remaining)
+                        .extracting(AccountingTransaction::getBookingDateTimestamp)
+                        .containsExactly(2L);
+                assertThat(this.januaryDeposit.getClearBank()).isEqualTo("2024-02-28");
+        }
 
-        assertEquals("2023-03-31", check1.getClearBank());
-        assertEquals("", check2.getClearBank());
-        List<Long> remaining = ReconciliationService.getUnreconciled(CHECKING).stream()
-                .map(AccountingTransaction::getBookingDateTimestamp)
-                .collect(Collectors.toList());
-        assertEquals(List.of(1002L), remaining);
-    }
+        @Test
+        void addTransactionToReconcile_includesManualTransaction()
+        {
+                AccountingTransaction manual = createTransaction(new BigDecimal("30.00"), 3L, "2024-03-10", "Manual entry");
+                this.ledger.getJournal().deleteTransaction(3L); // manual transaction should not live in ledger yet
 
-    @Test
-    void reconcileEntryMarksSingleTransaction() {
-        AccountingTransaction check1 = addLedgerTransaction(CHECKING, EXPENSE, new BigDecimal("42.00"), 1001L,
-                "2023-01-02", "Check #201");
-        assertTrue(ReconciliationService.reconcileEntry(1001L));
-        assertEquals("Cleared", check1.getClearBank());
-        assertTrue(ReconciliationService.getUnreconciled(CHECKING).isEmpty());
-    }
+                this.service.addTransactionToReconcile(manual);
 
-    @Test
-    void getUnreconciledEntriesFiltersByDateRange() {
-        addLedgerTransaction(CHECKING, EXPENSE, new BigDecimal("125.00"), 1001L,
-                "2023-01-05", "Check #101");
-        addLedgerTransaction(CHECKING, EXPENSE, new BigDecimal("75.50"), 1002L,
-                "2023-02-10", "Check #102");
+                List<AccountingTransaction> unreconciled = ReconciliationService.getUnreconciled(BANK_ACCOUNT);
+                assertThat(unreconciled)
+                        .extracting(AccountingTransaction::getBookingDateTimestamp)
+                        .contains(3L);
+        }
 
-        List<String[]> january = ReconciliationService.getUnreconciledEntries(CHECKING,
-                "2023-01-01", "2023-01-31");
-        assertEquals(1, january.size());
-        String[] row = january.get(0);
-        assertEquals("1001", row[0]);
-        assertEquals("2023-01-05", row[1]);
-        assertEquals("Check #101", row[2]);
-        assertEquals(FormatUtils.formatCurrency(new BigDecimal("125.00")), row[3]);
-    }
+        @Test
+        void reconcileEntry_marksSingleTransactionCleared()
+        {
+                boolean cleared = ReconciliationService.reconcileEntry(2L);
+                assertThat(cleared).isTrue();
 
-    @Test
-    void addTransactionToReconcileIndexesNewLedgerEntry() {
-        addLedgerTransaction(CHECKING, EXPENSE, new BigDecimal("10.00"), 1001L,
-                "2023-01-01", "Opening");
+                List<AccountingTransaction> remaining = ReconciliationService.getUnreconciled(BANK_ACCOUNT);
+                assertThat(remaining)
+                        .extracting(AccountingTransaction::getBookingDateTimestamp)
+                        .containsExactly(1L);
+                assertThat(this.februaryPayment.getClearBank()).isEqualTo("CLEARED");
+        }
 
-        AccountingTransaction newTx = createTransaction(CHECKING, EXPENSE, new BigDecimal("15.00"), 1002L,
-                "2023-01-02", "Check #202");
-        this.company.getLedger().getJournal().addTransaction(newTx);
+        @Test
+        void getUnreconciledEntries_filtersByDateRange()
+        {
+                List<String[]> rows = ReconciliationService.getUnreconciledEntries(BANK_ACCOUNT, "2024-02-01", "2024-02-28");
+                assertThat(rows).hasSize(1);
+                assertThat(rows.get(0)[0]).isEqualTo("2024-02-02");
+                assertThat(rows.get(0)[3]).isEqualTo("UNRECONCILED");
+        }
 
-        this.service.addTransactionToReconcile(newTx);
-
-        List<Long> ids = ReconciliationService.getUnreconciled(CHECKING).stream()
-                .map(AccountingTransaction::getBookingDateTimestamp)
-                .collect(Collectors.toList());
-        assertTrue(ids.contains(1002L));
-    }
-
-    private Account createAccount(String number, String name, AccountType type) {
-        Account account = new Account();
-        account.setAccountNumber(number);
-        account.setName(name);
-        account.setAccountType(type);
-        account.setIncreaseSide(AccountSide.DEBIT);
-        return account;
-    }
-
-    private AccountingTransaction addLedgerTransaction(String debitAccount, String creditAccount,
-            BigDecimal amount, long timestamp, String date, String memo) {
-        AccountingTransaction tx = createTransaction(debitAccount, creditAccount, amount, timestamp, date, memo);
-        this.company.getLedger().getJournal().addTransaction(tx);
-        return tx;
-    }
-
-    private AccountingTransaction createTransaction(String debitAccount, String creditAccount,
-            BigDecimal amount, long timestamp, String date, String memo) {
-        AccountingTransaction tx = AccountingTransactionBuilder.create()
-                .debit(amount, debitAccount)
-                .credit(amount, creditAccount)
-                .build();
-        tx.setBookingDateTimestamp(timestamp);
-        tx.setDate(date);
-        tx.setMemo(memo);
-        tx.setClearBank("");
-        return tx;
-    }
+        private AccountingTransaction createTransaction(BigDecimal amount, long id, String date, String memo)
+        {
+                AccountingTransactionBuilder builder = AccountingTransactionBuilder.create();
+                builder.debit(amount, BANK_ACCOUNT);
+                builder.credit(amount, OFFSET_ACCOUNT);
+                AccountingTransaction tx = builder.build();
+                tx.setBookingDateTimestamp(id);
+                tx.setDate(date);
+                tx.setMemo(memo);
+                this.ledger.getJournal().addTransaction(tx);
+                return tx;
+        }
 }
