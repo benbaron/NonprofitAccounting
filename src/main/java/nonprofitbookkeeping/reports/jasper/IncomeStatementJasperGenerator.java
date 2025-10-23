@@ -34,8 +34,10 @@ import java.math.BigDecimal;
  */
 public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 {
-	
-	private ReportContext reportContext;
+
+        private static final DateTimeFormatter FILE_DATE_FORMAT = DateTimeFormatter.BASIC_ISO_DATE;
+
+        private ReportContext reportContext;
 	/**
 	 * Constructs an {@code IncomeStatementJasperGenerator}.
 	 *
@@ -452,12 +454,51 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 	/**
 	 * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getBaseName() 
 	 */
-	@Override public String getBaseName()
-	{
-		// TODO Auto-generated method stub
-		return "Income_Statement_" + (this.reportContext.getEndDate() != null ?
-				this.reportContext.getEndDate().toString() : LocalDate.now().toString());
-		
-	}
-	
+        @Override public String getBaseName()
+        {
+                String companyPart = resolveCompanyName();
+                String periodPart = resolvePeriodSuffix();
+                return String.format("Income_Statement_%s_%s", companyPart, periodPart);
+
+        }
+
+        private String resolveCompanyName()
+        {
+                Company company = CurrentCompany.getCompany();
+
+                if (company != null && company.getCompanyProfile() != null)
+                {
+                        String name = company.getCompanyProfile().getCompanyName();
+
+                        if (name != null && !name.isBlank())
+                        {
+                                return sanitizeForFileName(name);
+                        }
+                }
+
+                return "Company";
+        }
+
+        private String resolvePeriodSuffix()
+        {
+                LocalDate start = (this.reportContext != null) ? this.reportContext.getStartDate() : null;
+                LocalDate end = (this.reportContext != null) ? this.reportContext.getEndDate() : null;
+
+                if (start != null && end != null)
+                {
+                        return FILE_DATE_FORMAT.format(start) + "-" + FILE_DATE_FORMAT.format(end);
+                }
+
+                LocalDate fallback = (end != null) ? end : LocalDate.now();
+                return FILE_DATE_FORMAT.format(fallback);
+        }
+
+        private String sanitizeForFileName(String value)
+        {
+                String sanitized = value.replaceAll("[^A-Za-z0-9]+", "_");
+                sanitized = sanitized.replaceAll("_+", "_");
+                sanitized = sanitized.replaceAll("^_", "").replaceAll("_$", "");
+                return sanitized.isEmpty() ? "Company" : sanitized;
+        }
+
 }
