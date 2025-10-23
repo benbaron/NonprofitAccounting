@@ -48,6 +48,8 @@ public class JacksonDataStorerZipTest {
         assertTrue(testFile.exists(), "Test file should exist after saving.");
         boolean foundJsonEntry = false;
         boolean foundCoaEntry = false;
+        boolean foundProfileEntry = false;
+        boolean foundLedgerEntry = false;
         try (FileInputStream fis = new FileInputStream(testFile);
              ZipInputStream zis = new ZipInputStream(fis)) {
             ZipEntry entry;
@@ -56,6 +58,10 @@ public class JacksonDataStorerZipTest {
                     foundJsonEntry = true;
                 } else if ("chart_of_accounts.json".equals(entry.getName())) {
                     foundCoaEntry = true;
+                } else if ("company_profile.json".equals(entry.getName())) {
+                    foundProfileEntry = true;
+                } else if ("ledger.json".equals(entry.getName())) {
+                    foundLedgerEntry = true;
                 }
             }
         } catch (IOException e) {
@@ -63,6 +69,8 @@ public class JacksonDataStorerZipTest {
         }
         assertTrue(foundJsonEntry, "Zip file should contain 'company_data.json' entry.");
         assertTrue(foundCoaEntry, "Zip file should contain 'chart_of_accounts.json' entry.");
+        assertTrue(foundProfileEntry, "Zip file should contain 'company_profile.json' entry.");
+        assertTrue(foundLedgerEntry, "Zip file should contain 'ledger.json' entry.");
 
         // 4. Use JacksonDataStorer.loadData() to load the Company object back
         Company loadedCompany = null;
@@ -78,6 +86,7 @@ public class JacksonDataStorerZipTest {
         assertNotNull(loadedCompany, "Loaded company should not be null.");
         assertNotNull(loadedCompany.getCompanyProfileModel(), "Loaded company profile should not be null."); // Corrected method name
         assertNotNull(loadedCompany.getChartOfAccounts(), "Chart should load from separate entry.");
+        assertNotNull(loadedCompany.getLedger(), "Ledger should load from separate entry.");
         assertEquals(originalCompany.getCompanyProfileModel().getCompanyName(), loadedCompany.getCompanyProfileModel().getCompanyName(), "Company names should match."); // Corrected method name
         assertEquals(originalCompany.getCompanyProfileModel().getFiscalYearStart(), loadedCompany.getCompanyProfileModel().getFiscalYearStart(), "Fiscal year starts should match."); // Corrected method name
         assertEquals(originalCompany.getCompanyProfileModel().getBaseCurrency(), loadedCompany.getCompanyProfileModel().getBaseCurrency(), "Currencies should match."); // Corrected method name

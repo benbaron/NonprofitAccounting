@@ -6,6 +6,8 @@ import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CompanyProfileModel;
+import nonprofitbookkeeping.model.Ledger;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
@@ -43,6 +45,8 @@ public class JacksonDataStorer implements DataStorer
         public static JacksonDataStorer dataStorer = new JacksonDataStorer();
         private static final String JSON_ENTRY_NAME = "company_data.json";
         private static final String CHART_OF_ACCOUNTS_ENTRY_NAME = "chart_of_accounts.json";
+        private static final String COMPANY_PROFILE_ENTRY_NAME = "company_profile.json";
+        private static final String LEDGER_ENTRY_NAME = "ledger.json";
 	
 	/**
 	 * Constructs a JacksonDataStorer and initializes the Jackson ObjectMapper
@@ -89,6 +93,8 @@ public class JacksonDataStorer implements DataStorer
                                         ZipEntry zipEntry;
                                         boolean entryFound = false;
                                         ChartOfAccounts chartOfAccounts = null;
+                                        CompanyProfileModel profileModel = null;
+                                        Ledger ledger = null;
 
                                         while ((zipEntry = zis.getNextEntry()) != null)
                                         {
@@ -106,8 +112,45 @@ public class JacksonDataStorer implements DataStorer
                                                         chartOfAccounts = this.mapper.readValue(zis,
                                                                 ChartOfAccounts.class);
                                                 }
+                                                else if (COMPANY_PROFILE_ENTRY_NAME.equals(entryName) &&
+                                                        Company.class.isAssignableFrom(type))
+                                                {
+                                                        profileModel = this.mapper.readValue(zis,
+                                                                CompanyProfileModel.class);
+                                                }
+                                                else if (LEDGER_ENTRY_NAME.equals(entryName) &&
+                                                        Company.class.isAssignableFrom(type))
+                                                {
+                                                        ledger = this.mapper.readValue(zis, Ledger.class);
+                                                }
 
                                                 zis.closeEntry();
+                                        }
+
+                                        if (!entryFound && Company.class.isAssignableFrom(type))
+                                        {
+                                                Company composite = new Company();
+
+                                                if (profileModel != null)
+                                                {
+                                                        composite.setCompanyProfileModel(profileModel);
+                                                }
+
+                                                if (ledger != null)
+                                                {
+                                                        composite.setLedger(ledger);
+                                                }
+
+                                                if (chartOfAccounts != null)
+                                                {
+                                                        composite.setChartOfAccounts(chartOfAccounts);
+                                                }
+
+                                                if (profileModel != null || ledger != null || chartOfAccounts != null)
+                                                {
+                                                        value = type.cast(composite);
+                                                        entryFound = true;
+                                                }
                                         }
 
                                         if (!entryFound)
@@ -116,9 +159,22 @@ public class JacksonDataStorer implements DataStorer
                                                         "Entry '" + JSON_ENTRY_NAME + "' not found in the zip file.");
                                         }
 
-                                        if (chartOfAccounts != null && value instanceof Company company)
+                                        if (value instanceof Company company)
                                         {
-                                                company.setChartOfAccounts(chartOfAccounts);
+                                                if (chartOfAccounts != null)
+                                                {
+                                                        company.setChartOfAccounts(chartOfAccounts);
+                                                }
+
+                                                if (profileModel != null)
+                                                {
+                                                        company.setCompanyProfileModel(profileModel);
+                                                }
+
+                                                if (ledger != null)
+                                                {
+                                                        company.setLedger(ledger);
+                                                }
                                         }
                                 }
                         }
@@ -156,8 +212,9 @@ public class JacksonDataStorer implements DataStorer
         /**
          * {@inheritDoc}
          * This implementation writes data to a ZIP file, storing it as a JSON entry named "company_data.json".
-         * When persisting a {@link Company}, a secondary entry named "chart_of_accounts.json" is also written
-         * to maintain compatibility with legacy `.npbk` archives that exposed the chart separately.
+         * When persisting a {@link Company}, dedicated entries for the chart of accounts, company profile, and
+         * ledger are also written so that consumers can hydrate individual sections without parsing the entire
+         * aggregate. The legacy {@code company_data.json} payload is still emitted for backward compatibility.
          */
 	@Override public void saveData(Object obj, File file)	throws IOException,
 															ActionCancelledException,
@@ -176,12 +233,7 @@ public class JacksonDataStorer implements DataStorer
                         ZipOutputStream zos = new ZipOutputStream(fos))
                 {
 
-                        this.mapper.writeValue(baos, obj);
-
-                        ZipEntry zipEntry = new ZipEntry(JSON_ENTRY_NAME);
-                        zos.putNextEntry(zipEntry);
-                        zos.write(baos.toByteArray());
-                        zos.closeEntry();
+                        writeEntry(zos, baos, JSON_ENTRY_NAME, obj);
 
                         if (obj instanceof Company company)
                         {
@@ -189,12 +241,21 @@ public class JacksonDataStorer implements DataStorer
 
                                 if (chart != null)
                                 {
-                                        baos.reset();
-                                        this.mapper.writeValue(baos, chart);
-                                        ZipEntry chartEntry = new ZipEntry(CHART_OF_ACCOUNTS_ENTRY_NAME);
-                                        zos.putNextEntry(chartEntry);
-                                        zos.write(baos.toByteArray());
-                                        zos.closeEntry();
+                                        writeEntry(zos, baos, CHART_OF_ACCOUNTS_ENTRY_NAME, chart);
+                                }
+
+                                CompanyProfileModel profile = company.getCompanyProfileModel();
+
+                                if (profile != null)
+                                {
+                                        writeEntry(zos, baos, COMPANY_PROFILE_ENTRY_NAME, profile);
+                                }
+
+                                Ledger ledger = company.getLedger();
+
+                                if (ledger != null)
+                                {
+                                        writeEntry(zos, baos, LEDGER_ENTRY_NAME, ledger);
                                 }
                         }
                         LOGGER.debug("Exiting saveData");
@@ -272,6 +333,24 @@ public class JacksonDataStorer implements DataStorer
                                 (signature[2] == 0x03 || signature[2] == 0x05 || signature[2] == 0x07) &&
                                 (signature[3] == 0x04 || signature[3] == 0x06 || signature[3] == 0x08);
                 }
+        }
+
+        private void writeEntry(ZipOutputStream zos,
+                                 ByteArrayOutputStream baos,
+                                 String entryName,
+                                 Object value) throws IOException
+        {
+                if (value == null)
+                {
+                        return;
+                }
+
+                baos.reset();
+                this.mapper.writeValue(baos, value);
+                ZipEntry entry = new ZipEntry(entryName);
+                zos.putNextEntry(entry);
+                zos.write(baos.toByteArray());
+                zos.closeEntry();
         }
 
 }

@@ -24,7 +24,7 @@ public class JacksonDataStorerMultipleEntriesTest {
     Path tempDir;
 
     @Test
-    void testLoadZipWithMultipleEntries() throws IOException {
+    void testLoadZipWithMultipleEntries() throws IOException, ActionCancelledException, NoFileCreatedException {
         File zipFile = this.tempDir.resolve("multi_entry.npbk").toFile();
         ObjectMapper mapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
@@ -58,19 +58,59 @@ public class JacksonDataStorerMultipleEntriesTest {
         }
 
         JacksonDataStorer dataStorer = new JacksonDataStorer();
-        Company loaded = null;
-		
-		try
-		{
-			loaded = dataStorer.loadData(Company.class, zipFile);
-		}
-		catch (IOException | ActionCancelledException | NoFileCreatedException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        Company loaded = dataStorer.loadData(Company.class, zipFile);
 
         assertNotNull(loaded, "Loaded company should not be null");
         assertEquals("MultiEntry Co", loaded.getCompanyProfileModel().getCompanyName());
+    }
+
+    @Test
+    void testLoadZipWithSeparatedEntriesOnly() throws IOException, ActionCancelledException, NoFileCreatedException {
+        File zipFile = this.tempDir.resolve("separated_entries.npbk").toFile();
+        ObjectMapper mapper = new ObjectMapper()
+                .registerModule(new JavaTimeModule())
+                .enable(SerializationFeature.INDENT_OUTPUT);
+
+        CompanyProfileModel profile = new CompanyProfileModel();
+        profile.setCompanyName("Separated Co");
+
+        Ledger ledger = new Ledger();
+
+        ChartOfAccounts coa = new ChartOfAccounts();
+        Account savings = new Account("200", "Savings", AccountSide.DEBIT);
+        coa.addAccount(savings);
+
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+             FileOutputStream fos = new FileOutputStream(zipFile);
+             ZipOutputStream zos = new ZipOutputStream(fos)) {
+
+            mapper.writeValue(baos, profile);
+            ZipEntry profileEntry = new ZipEntry("company_profile.json");
+            zos.putNextEntry(profileEntry);
+            zos.write(baos.toByteArray());
+            zos.closeEntry();
+
+            baos.reset();
+            mapper.writeValue(baos, ledger);
+            ZipEntry ledgerEntry = new ZipEntry("ledger.json");
+            zos.putNextEntry(ledgerEntry);
+            zos.write(baos.toByteArray());
+            zos.closeEntry();
+
+            baos.reset();
+            mapper.writeValue(baos, coa);
+            ZipEntry chartEntry = new ZipEntry("chart_of_accounts.json");
+            zos.putNextEntry(chartEntry);
+            zos.write(baos.toByteArray());
+            zos.closeEntry();
+        }
+
+        JacksonDataStorer dataStorer = new JacksonDataStorer();
+        Company loaded = dataStorer.loadData(Company.class, zipFile);
+
+        assertNotNull(loaded, "Loaded company should not be null");
+        assertEquals("Separated Co", loaded.getCompanyProfileModel().getCompanyName());
+        assertEquals(1, loaded.getChartOfAccounts().getAccounts().size());
+        assertNotNull(loaded.getLedger(), "Ledger should be reconstructed from ledger.json");
     }
 }
