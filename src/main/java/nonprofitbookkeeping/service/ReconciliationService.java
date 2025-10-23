@@ -16,9 +16,11 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import nonprofitbookkeeping.model.Account;
+import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountType;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
+import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Ledger;

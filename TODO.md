@@ -154,7 +154,7 @@ This document lists potential code issues, areas for improvement, or bugs that w
 - Add dynamic UI listeners in `BudgetLineDialog.attachListeners` for validation and field updates. *(complete – the JavaFX dialog now validates amounts as users type, updates per-period previews, and disables the OK button when input is invalid.)*
 - Provide working backup and restore features in `SettingsPanelFX.backupTab`. *(complete)*
 - Generate real output in `GenerateReportPanelFX` rather than placeholder text. *(complete – the panel now invokes `ReportService.generateJasperReport` for every template and surfaces success/failure messages in the UI.)*
-- Extend `PageViewer.getTableModel` to load data from the ledger or relevant source.
+- Extend `PageViewer.getTableModel` to load data from the ledger or relevant source. *(complete – the viewer now surfaces current ledger entries and helpful empty-state rows.)*
 - Make `CompanySelectionPanelFX.OnCompanyOpenedHandler` a proper callback interface and invoke it when a company is opened. *(complete)*
 - Implement data-driven logic in `ReconciliationService` methods such as `getUnreconciled`, `listReconcilableAccounts`, `reconcile`, and `addTransactionToReconcile`. *(complete – the service now loads ledger activity, tracks pending imports, and marks transactions cleared when saved.)*
 - Calculate totals in `InvestmentTransaction.getTotal(Account)` using the account's transaction history. *(complete – the helper now sums ledger entries for the specified account, honoring debit/credit balance.)*
