@@ -2,7 +2,14 @@
 package nonprofitbookkeeping.model.ofx;
 
 import java.math.BigDecimal;
+import java.util.List;
+
 import nonprofitbookkeeping.model.Account;
+import nonprofitbookkeeping.model.AccountSide;
+import nonprofitbookkeeping.model.AccountingEntry;
+import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.model.Ledger;
 
 /**
  * Represents an investment transaction, extending the basic {@link Transaction} class.
@@ -100,13 +107,79 @@ public class InvestmentTransaction extends Transaction
 	 * in that account's transaction list. If the account has no entries or
 	 * none are investment transactions, {@link BigDecimal#ZERO} is returned.
 	 */
-	public static BigDecimal getTotal(Account account)
-	{
-		// Without access to the account's transaction history this method
-		// cannot produce a meaningful value. Returning zero keeps the
-		// logic safe until a proper implementation is provided.
-		return BigDecimal.ZERO;
-	}
+        public static BigDecimal getTotal(Account account)
+        {
+                if (account == null)
+                {
+                        return BigDecimal.ZERO;
+                }
+
+                String accountNumber = account.getAccountNumber();
+
+                if (accountNumber == null || accountNumber.isBlank())
+                {
+                        return BigDecimal.ZERO;
+                }
+
+                Company company = CurrentCompany.getCompany();
+
+                if (company == null)
+                {
+                        return BigDecimal.ZERO;
+                }
+
+                Ledger ledger = company.getLedger();
+
+                if (ledger == null)
+                {
+                        return BigDecimal.ZERO;
+                }
+
+                List<AccountingEntry> entries = ledger.getEntriesForAccount(accountNumber);
+
+                BigDecimal total = account.getOpeningBalance() != null ? account.getOpeningBalance()
+                        : BigDecimal.ZERO;
+                AccountSide naturalSide = account.getIncreaseSide();
+
+                for (AccountingEntry entry : entries)
+                {
+                        if (entry == null)
+                        {
+                                continue;
+                        }
+
+                        BigDecimal amount = entry.getAmount();
+
+                        if (amount == null)
+                        {
+                                continue;
+                        }
+
+                        AccountSide entrySide = entry.getAccountSide();
+
+                        if (entrySide == null || naturalSide == null)
+                        {
+                                if (entrySide == AccountSide.CREDIT)
+                                {
+                                        total = total.subtract(amount);
+                                }
+                                else
+                                {
+                                        total = total.add(amount);
+                                }
+                        }
+                        else if (entrySide == naturalSide)
+                        {
+                                total = total.add(amount);
+                        }
+                        else
+                        {
+                                total = total.subtract(amount);
+                        }
+                }
+
+                return total;
+        }
 	
 	/**
 	 * Gets the total amount of this investment transaction calculated from

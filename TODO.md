@@ -157,7 +157,7 @@ This document lists potential code issues, areas for improvement, or bugs that w
 - Extend `PageViewer.getTableModel` to load data from the ledger or relevant source.
 - Make `CompanySelectionPanelFX.OnCompanyOpenedHandler` a proper callback interface and invoke it when a company is opened. *(complete)*
 - Implement data-driven logic in `ReconciliationService` methods such as `getUnreconciled`, `listReconcilableAccounts`, `reconcile`, and `addTransactionToReconcile`.
-- Calculate totals in `InvestmentTransaction.getTotal(Account)` using the account's transaction history.
+- Calculate totals in `InvestmentTransaction.getTotal(Account)` using the account's transaction history. *(complete – the method now sums the account's ledger entries based on its natural balance side.)*
 - Expand `OfxV2Writer.writeInvestmentSection` to output investment positions and transactions.
 - Review Swing stub methods like `performAction()` in report actions and implement or remove them if unused.
 - Move remaining company subsections into separate JSON files inside the `.npbk` archive for modular storage.
