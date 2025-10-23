@@ -156,8 +156,8 @@ This document lists potential code issues, areas for improvement, or bugs that w
 - Generate real output in `GenerateReportPanelFX` rather than placeholder text. *(complete – the panel now invokes `ReportService.generateJasperReport` for every template and surfaces success/failure messages in the UI.)*
 - Extend `PageViewer.getTableModel` to load data from the ledger or relevant source.
 - Make `CompanySelectionPanelFX.OnCompanyOpenedHandler` a proper callback interface and invoke it when a company is opened. *(complete)*
-- Implement data-driven logic in `ReconciliationService` methods such as `getUnreconciled`, `listReconcilableAccounts`, `reconcile`, and `addTransactionToReconcile`.
-- Calculate totals in `InvestmentTransaction.getTotal(Account)` using the account's transaction history.
+- Implement data-driven logic in `ReconciliationService` methods such as `getUnreconciled`, `listReconcilableAccounts`, `reconcile`, and `addTransactionToReconcile`. *(complete – the service now loads ledger activity, tracks pending imports, and marks transactions cleared when saved.)*
+- Calculate totals in `InvestmentTransaction.getTotal(Account)` using the account's transaction history. *(complete – the helper now sums ledger entries for the specified account, honoring debit/credit balance.)*
 - Expand `OfxV2Writer.writeInvestmentSection` to output investment positions and transactions.
 - Review Swing stub methods like `performAction()` in report actions and implement or remove them if unused.
 - Move remaining company subsections into separate JSON files inside the `.npbk` archive for modular storage.
