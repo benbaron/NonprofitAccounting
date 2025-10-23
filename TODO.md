@@ -160,4 +160,4 @@ This document lists potential code issues, areas for improvement, or bugs that w
 - Calculate totals in `InvestmentTransaction.getTotal(Account)` using the account's transaction history. *(complete – the helper now sums ledger entries for the specified account, honoring debit/credit balance.)*
 - Expand `OfxV2Writer.writeInvestmentSection` to output investment positions and transactions. *(complete – the writer now emits `INVPOSLIST` and `INVTRANLIST` sections with OFX-compliant wrappers and unit tests verify the generated XML.)*
 - Review Swing stub methods like `performAction()` in report actions and implement or remove them if unused.
-- Move remaining company subsections into separate JSON files inside the `.npbk` archive for modular storage.
+- Move remaining company subsections into separate JSON files inside the `.npbk` archive for modular storage. *(complete – `JacksonDataStorer` now emits dedicated profile, ledger, and chart entries and reassembles them when loading archives while still writing the legacy aggregate for compatibility.)*
