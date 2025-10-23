@@ -1,5 +1,10 @@
 package nonprofitbookkeeping.core;
 
+import nonprofitbookkeeping.model.Account;
+import nonprofitbookkeeping.model.AccountSide;
+import nonprofitbookkeeping.model.AccountingEntry;
+import nonprofitbookkeeping.model.AccountingTransaction;
+import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Company; // Assuming Company is a concrete class that can be instantiated
 import nonprofitbookkeeping.model.CompanyProfileModel; // Company has a CompanyProfileModel
 import org.junit.jupiter.api.Test;
@@ -9,6 +14,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipEntry;
 
@@ -31,7 +38,23 @@ public class JacksonDataStorerZipTest {
         profile.setFiscalYearStart("01/01");
         profile.setBaseCurrency("USD"); // Corrected method name
         originalCompany.setCompanyProfileModel(profile); // Corrected method name
-        // Add more simple, serializable data to the company if needed for a more robust test
+
+        ChartOfAccounts chart = originalCompany.getChartOfAccounts();
+        chart.addAccount(new Account("100", "Cash", AccountSide.DEBIT));
+
+        AccountingTransaction transaction = new AccountingTransaction();
+        transaction.setMemo("Opening balance");
+        transaction.setBookingDateTimestamp(1704067200000L);
+
+        AccountingEntry debit = new AccountingEntry(java.math.BigDecimal.valueOf(1250),
+                "100", AccountSide.DEBIT, "Cash");
+        AccountingEntry credit = new AccountingEntry(java.math.BigDecimal.valueOf(1250),
+                "200", AccountSide.CREDIT, "Equity");
+        Set<AccountingEntry> entries = new LinkedHashSet<>();
+        entries.add(debit);
+        entries.add(credit);
+        transaction.setEntries(entries);
+        originalCompany.getLedger().getJournal().addTransaction(transaction);
 
         File testFile = this.tempDir.resolve("test_company.npbk").toFile();
 
@@ -48,6 +71,8 @@ public class JacksonDataStorerZipTest {
         assertTrue(testFile.exists(), "Test file should exist after saving.");
         boolean foundJsonEntry = false;
         boolean foundCoaEntry = false;
+        boolean foundProfileEntry = false;
+        boolean foundLedgerEntry = false;
         try (FileInputStream fis = new FileInputStream(testFile);
              ZipInputStream zis = new ZipInputStream(fis)) {
             ZipEntry entry;
@@ -56,6 +81,10 @@ public class JacksonDataStorerZipTest {
                     foundJsonEntry = true;
                 } else if ("chart_of_accounts.json".equals(entry.getName())) {
                     foundCoaEntry = true;
+                } else if ("company_profile.json".equals(entry.getName())) {
+                    foundProfileEntry = true;
+                } else if ("ledger.json".equals(entry.getName())) {
+                    foundLedgerEntry = true;
                 }
             }
         } catch (IOException e) {
@@ -63,6 +92,8 @@ public class JacksonDataStorerZipTest {
         }
         assertTrue(foundJsonEntry, "Zip file should contain 'company_data.json' entry.");
         assertTrue(foundCoaEntry, "Zip file should contain 'chart_of_accounts.json' entry.");
+        assertTrue(foundProfileEntry, "Zip file should contain 'company_profile.json' entry.");
+        assertTrue(foundLedgerEntry, "Zip file should contain 'ledger.json' entry.");
 
         // 4. Use JacksonDataStorer.loadData() to load the Company object back
         Company loadedCompany = null;
@@ -81,6 +112,10 @@ public class JacksonDataStorerZipTest {
         assertEquals(originalCompany.getCompanyProfileModel().getCompanyName(), loadedCompany.getCompanyProfileModel().getCompanyName(), "Company names should match."); // Corrected method name
         assertEquals(originalCompany.getCompanyProfileModel().getFiscalYearStart(), loadedCompany.getCompanyProfileModel().getFiscalYearStart(), "Fiscal year starts should match."); // Corrected method name
         assertEquals(originalCompany.getCompanyProfileModel().getBaseCurrency(), loadedCompany.getCompanyProfileModel().getBaseCurrency(), "Currencies should match."); // Corrected method name
+        assertEquals(1, loadedCompany.getLedger().getJournal().getJournalTransactions().size(),
+                "Ledger transactions should be preserved.");
+        assertEquals("Opening balance",
+                loadedCompany.getLedger().getJournal().getJournalTransactions().get(0).getMemo());
         // Add more assertions if other fields were set in originalCompany
         System.out.println("END: testSaveAndLoadZipFormat");
     }

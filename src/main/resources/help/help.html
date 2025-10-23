@@ -59,7 +59,7 @@
         <h2>Opening Legacy <code>.npbk</code> (JSON) Files</h2>
         <p>Earlier versions of Nonprofit Bookkeeping saved company archives as plain JSON with a <code>.npbk</code> extension. The current loader supports both formats:</p>
         <ul>
-            <li><strong>Modern archives</strong> — ZIP files containing <code>company_data.json</code>.</li>
+            <li><strong>Modern archives</strong> — ZIP files containing modular JSON sections such as <code>company_profile.json</code>, <code>ledger.json</code>, <code>chart_of_accounts.json</code>, and a compatibility <code>company_data.json</code>.</li>
             <li><strong>Legacy archives</strong> — standalone JSON files (with or without the <code>.npbk</code> extension).</li>
         </ul>
         <p>When you choose <strong>File → Open Company…</strong> the loader automatically detects which format you have and deserializes it accordingly. No conversion step is required.</p>

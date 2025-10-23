@@ -1,10 +1,14 @@
 package nonprofitbookkeeping.service;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CompanyProfileModel;
+import nonprofitbookkeeping.model.Ledger;
 import nonprofitbookkeeping.persistence.CompanyDataRepository;
 import nonprofitbookkeeping.persistence.CompanyRepository;
 
@@ -31,10 +35,14 @@ import java.util.zip.ZipInputStream;
 public class LegacyNpbkImportService
 {
         private static final String LEGACY_ENTRY = "company_data.json";
+        private static final String CHART_ENTRY = "chart_of_accounts.json";
+        private static final String PROFILE_ENTRY = "company_profile.json";
+        private static final String LEDGER_ENTRY = "ledger.json";
 
         private final ObjectMapper mapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
 
         /**
          * Imports the supplied legacy archive into the currently active H2 database.
@@ -105,6 +113,11 @@ public class LegacyNpbkImportService
         {
                 try (InputStream in = Files.newInputStream(archive); ZipInputStream zin = new ZipInputStream(in))
                 {
+                        Company company = null;
+                        ChartOfAccounts chart = null;
+                        CompanyProfileModel profile = null;
+                        Ledger ledger = null;
+
                         for (ZipEntry entry = zin.getNextEntry(); entry != null; entry = zin.getNextEntry())
                         {
                                 if (entry.isDirectory())
@@ -118,13 +131,52 @@ public class LegacyNpbkImportService
 
                                 if (LEGACY_ENTRY.equals(fileName))
                                 {
-                                        return this.mapper.readValue(zin, Company.class);
+                                        company = this.mapper.readValue(zin, Company.class);
                                 }
-                        }
-                }
+                                else if (CHART_ENTRY.equals(fileName))
+                                {
+                                        chart = this.mapper.readValue(zin, ChartOfAccounts.class);
+                                }
+                                else if (PROFILE_ENTRY.equals(fileName))
+                                {
+                                        profile = this.mapper.readValue(zin, CompanyProfileModel.class);
+                                }
+                                else if (LEDGER_ENTRY.equals(fileName))
+                                {
+                                        ledger = this.mapper.readValue(zin, Ledger.class);
+                                }
 
-                throw new IOException(
-                        "Entry '" + LEGACY_ENTRY + "' not found in archive " + archive.toAbsolutePath() + '.');
+                                zin.closeEntry();
+                        }
+
+                        if (company == null && profile == null && ledger == null && chart == null)
+                        {
+                                throw new IOException(
+                                        "No company entries found in archive " + archive.toAbsolutePath() + '.');
+                        }
+
+                        if (company == null)
+                        {
+                                company = new Company();
+                        }
+
+                        if (profile != null)
+                        {
+                                company.setCompanyProfileModel(profile);
+                        }
+
+                        if (ledger != null)
+                        {
+                                company.setLedger(ledger);
+                        }
+
+                        if (chart != null)
+                        {
+                                company.setChartOfAccounts(chart);
+                        }
+
+                        return company;
+                }
         }
 
         private Company readFromJson(Path archive) throws IOException

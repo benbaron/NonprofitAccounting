@@ -1,5 +1,6 @@
 package nonprofitbookkeeping.tools;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import nonprofitbookkeeping.core.Database;
@@ -8,6 +9,7 @@ import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CompanyProfileModel;
+import nonprofitbookkeeping.model.Ledger;
 import nonprofitbookkeeping.persistence.AccountRepository;
 import nonprofitbookkeeping.persistence.CompanyProfileRepository;
 import nonprofitbookkeeping.persistence.CompanyRepository;
@@ -15,9 +17,6 @@ import nonprofitbookkeeping.persistence.JournalRepository;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -36,7 +35,10 @@ import java.util.zip.ZipInputStream;
 public final class NpbkToH2ScriptMigrator
 {
 
-        private static final String ENTRY = "company_data.json";
+        private static final String COMPANY_ENTRY = "company_data.json";
+        private static final String CHART_ENTRY = "chart_of_accounts.json";
+        private static final String PROFILE_ENTRY = "company_profile.json";
+        private static final String LEDGER_ENTRY = "ledger.json";
 
         private NpbkToH2ScriptMigrator()
         {
@@ -96,25 +98,77 @@ public final class NpbkToH2ScriptMigrator
 
         private static Company readCompany(Path zipFile) throws IOException
         {
+                ObjectMapper mapper = new ObjectMapper()
+                        .registerModule(new JavaTimeModule())
+                        .configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
+
                 try (InputStream in = Files.newInputStream(zipFile);
                         ZipInputStream zin = new ZipInputStream(in))
                 {
+                        Company company = null;
+                        ChartOfAccounts chart = null;
+                        CompanyProfileModel profile = null;
+                        Ledger ledger = null;
+
                         for (ZipEntry entry = zin.getNextEntry(); entry != null;
                                 entry = zin.getNextEntry())
                         {
-                                if (ENTRY.equals(entry.getName()))
+                                if (entry.isDirectory())
                                 {
-                                        ObjectMapper mapper = new ObjectMapper()
-                                                .registerModule(new JavaTimeModule());
-                                        try (Reader reader = new InputStreamReader(zin, StandardCharsets.UTF_8))
-                                        {
-                                                return mapper.readValue(reader, Company.class);
-                                        }
+                                        continue;
                                 }
-                        }
-                }
 
-                throw new IOException("Entry not found in archive: " + ENTRY);
+                                String normalizedName = entry.getName().replace('\\', '/');
+                                int lastSlash = normalizedName.lastIndexOf('/');
+                                String fileName = lastSlash >= 0 ? normalizedName.substring(lastSlash + 1) : normalizedName;
+
+                                if (COMPANY_ENTRY.equals(fileName))
+                                {
+                                        company = mapper.readValue(zin, Company.class);
+                                }
+                                else if (CHART_ENTRY.equals(fileName))
+                                {
+                                        chart = mapper.readValue(zin, ChartOfAccounts.class);
+                                }
+                                else if (PROFILE_ENTRY.equals(fileName))
+                                {
+                                        profile = mapper.readValue(zin, CompanyProfileModel.class);
+                                }
+                                else if (LEDGER_ENTRY.equals(fileName))
+                                {
+                                        ledger = mapper.readValue(zin, Ledger.class);
+                                }
+
+                                zin.closeEntry();
+                        }
+
+                        if (company == null && profile == null && ledger == null && chart == null)
+                        {
+                                throw new IOException("No company entries found in archive: " + zipFile.toAbsolutePath());
+                        }
+
+                        if (company == null)
+                        {
+                                company = new Company();
+                        }
+
+                        if (profile != null)
+                        {
+                                company.setCompanyProfileModel(profile);
+                        }
+
+                        if (ledger != null)
+                        {
+                                company.setLedger(ledger);
+                        }
+
+                        if (chart != null)
+                        {
+                                company.setChartOfAccounts(chart);
+                        }
+
+                        return company;
+                }
         }
 
         private static void persistCompany(Company company) throws SQLException, IOException
