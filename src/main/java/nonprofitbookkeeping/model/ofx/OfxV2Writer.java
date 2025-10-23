@@ -95,7 +95,7 @@ public class OfxV2Writer
                                          String elementName,
                                          String value) throws Exception
         {
-                if (value == null)
+                if (!hasText(value))
                 {
                         return;
                 }
@@ -492,6 +492,8 @@ public class OfxV2Writer
                                 writer.writeStartElement(positionElement);
 
                                 writeSecurityElements(writer, pos.security);
+
+                                writer.writeStartElement("INVPOS");
                                 writeElement(writer, "HELDINACCT", pos.heldInAccount);
                                 writeElement(writer, "POSTYPE", pos.positionTypeIndicator);
                                 writeDecimalElement(writer, "UNITS", pos.units);
@@ -500,6 +502,7 @@ public class OfxV2Writer
                                 writeDecimalElement(writer, "COSTBASIS", pos.costBasis);
                                 writeElement(writer, "DTPRICEASOF", resolveDate(pos.priceAsOf, asOf));
                                 writeElement(writer, "MEMO", pos.memo);
+                                writer.writeEndElement();
 
                                 writer.writeEndElement();
                         }
@@ -518,6 +521,12 @@ public class OfxV2Writer
                                 String transactionElement = withDefault(txn.transactionType, "BUYOTHER");
                                 writer.writeStartElement(transactionElement);
 
+                                String containerElement = determineInvestmentContainer(transactionElement);
+                                if (containerElement != null)
+                                {
+                                        writer.writeStartElement(containerElement);
+                                }
+
                                 writer.writeStartElement("INVTRAN");
                                 writeElement(writer, "FITID", txn.fitId);
                                 writeElement(writer, "DTTRADE", resolveDate(txn.tradeDate, asOf));
@@ -535,6 +544,11 @@ public class OfxV2Writer
                                 writeDecimalElement(writer, "FEES", txn.fees);
                                 writeDecimalElement(writer, "TAXES", txn.taxes);
 
+                                if (containerElement != null)
+                                {
+                                        writer.writeEndElement();
+                                }
+
                                 writer.writeEndElement();
                         }
 
@@ -544,6 +558,28 @@ public class OfxV2Writer
                 writer.writeEndElement();
                 writer.writeEndElement();
                 writer.writeEndElement();
+        }
+
+        private static String determineInvestmentContainer(String transactionElement)
+        {
+                if (!hasText(transactionElement))
+                {
+                        return null;
+                }
+
+                String normalized = transactionElement.toUpperCase(Locale.ROOT);
+
+                if (normalized.startsWith("BUY"))
+                {
+                        return "INVBUY";
+                }
+
+                if (normalized.startsWith("SELL"))
+                {
+                        return "INVSELL";
+                }
+
+                return null;
         }
 	
 	/**
