@@ -402,21 +402,31 @@ public class BudgetPanel extends JDialog
                BudgetLineDialog dialog = createBudgetLineDialog("Add Budget Line", null);
                dialog.setVisible(true);
 		
-		if (dialog.isSaved())
-		{
-			BudgetLine newLine = dialog.getBudgetLine();
-			
-			if (newLine != null)
-			{
-				this.currentBudget.addBudgetLine(newLine); // Assumes addBudgetLine exists and
-															// handles null list
-				this.budgetLineTableModel.fireTableDataChanged(); // More specific event might be
-																	// better
-			}
-			
-		}
-		
-	}
+                if (!dialog.isSaved())
+                {
+                        return;
+                }
+
+                BudgetLine newLine = dialog.getBudgetLine();
+
+                if (newLine == null)
+                {
+                        LOGGER.warn("BudgetLineDialog reported a saved state but returned no budget line.");
+                        return;
+                }
+
+                // BudgetLineTableModel operates on the same list instance that the budget exposes, so mutating
+                // the model keeps both the UI and the underlying budget in sync.  Using the model ensures the
+                // appropriate table events fire for Swing listeners instead of redrawing the entire table.
+                this.budgetLineTableModel.addRow(newLine);
+
+                int lastRowIndex = this.budgetLineTableModel.getRowCount() - 1;
+                if (lastRowIndex >= 0)
+                {
+                        this.tblBudgetLines.getSelectionModel().setSelectionInterval(lastRowIndex, lastRowIndex);
+                }
+
+        }
 	
 	/**
 	 * Handles the action of editing an existing budget line.
