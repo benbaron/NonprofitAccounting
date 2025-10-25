@@ -53,7 +53,8 @@ import static org.mockito.Mockito.when;
 	private ReportContext trialBalanceReportContext;
 	private ReportContext cashFlowStatementReportContext;
 	private ReportContext bvaReportContext;
-	private ReportContext aaReportContext; // For Account Activity
+        private ReportContext aaReportContext; // For Account Activity
+        private List<AccountingTransaction> ledgerTransactions;
 	
 	private LocalDate startDate;
 	private LocalDate endDate;
@@ -94,7 +95,10 @@ import static org.mockito.Mockito.when;
 		this.bvaReportContext.setStartDate(this.startDate);
 		this.bvaReportContext.setEndDate(this.endDate);
 		
-		this.aaReportContext = new ReportContext(); // Added
+                this.aaReportContext = new ReportContext(); // Added
+                this.ledgerTransactions = new ArrayList<>();
+                lenient().when(this.mockLedger.getTransactions())
+                        .thenAnswer(inv -> new ArrayList<>(this.ledgerTransactions));
 		this.aaReportContext.setReportType("account_activity_detail");
 		this.aaReportContext.setStartDate(this.startDate);
 		this.aaReportContext.setEndDate(this.endDate);
@@ -157,7 +161,6 @@ import static org.mockito.Mockito.when;
 			this.mockFixedAssetAccount, this.mockFixedAssetAccount2_FundB, this.mockLongTermLoanAccount,
 			this.mockLoanAccount2_FundB));
 		lenient().when(this.mockChartOfAccounts.getAccounts()).thenReturn(allAccounts);
-		lenient().when(this.mockLedger.getTransactions()).thenReturn(null);
 	}
 	
 	private void setupAccountMock(	Account mock, String name, String number, AccountType type,
@@ -166,24 +169,34 @@ import static org.mockito.Mockito.when;
 		lenient().when(mock.getName()).thenReturn(name);
 		lenient().when(mock.getAccountNumber()).thenReturn(number);
 		lenient().when(mock.getAccountType()).thenReturn(type);
-		lenient().when(mock.getIncreaseSide()).thenReturn(increaseSide);
+                lenient().when(mock.getIncreaseSide()).thenReturn(increaseSide);
+                lenient().when(mock.getEffectiveIncreaseSide()).thenReturn(increaseSide);
 		lenient().when(mock.getOpeningBalance()).thenReturn(openingBalance);
 		lenient().when(this.mockChartOfAccounts.getAccount(number)).thenReturn(mock);
                 lenient().when(mock.getAssociatedFundIds()).thenReturn(new ArrayList<>()); // Default empty
 	}
 	
-	private static AccountingTransaction 
-	createMockTransaction(long timestamp, 
-	                      String memo,
-	                      Set<AccountingEntry> entries)
-	{
-		AccountingTransaction transaction = Mockito.mock(AccountingTransaction.class);
-		when(transaction.getBookingDateTimestamp()).thenReturn(timestamp);
-		when(transaction.getEntries()).thenReturn(entries);
-		lenient().when(transaction.getBookingDateTimestamp()).thenReturn((long) 0); 
-		lenient().when(transaction.getMemo()).thenReturn(memo);
-		return transaction;
-	}
+        private AccountingTransaction
+        createMockTransaction(long timestamp,
+                              String memo,
+                              Set<AccountingEntry> entries)
+        {
+                AccountingTransaction transaction = Mockito.mock(AccountingTransaction.class);
+                lenient().when(transaction.getBookingDateTimestamp()).thenReturn(timestamp);
+                lenient().when(transaction.getEntries()).thenReturn(entries);
+                lenient().when(transaction.getMemo()).thenReturn(memo);
+
+                for (AccountingEntry entry : entries)
+                {
+                        if (entry != null)
+                        {
+                                entry.setTransaction(transaction);
+                        }
+                }
+
+                this.ledgerTransactions.add(transaction);
+                return transaction;
+        }
 	
 	// --- All other existing test methods (IS, BS, TB, CFS, BvA, Fund Filters for
 	// IS/BS/TB/CFS) are presumed to be here ---
@@ -280,14 +293,13 @@ import static org.mockito.Mockito.when;
 		this.aaReportContext.setAccountIdsForDetailReport(List.of("ASSET100"));
 		BigDecimal openingBalance = new BigDecimal("100.00");
 		
-		try (var mockedStaticReportService =
-			Mockito.mockStatic(ReportService.class, Mockito.CALLS_REAL_METHODS))
-		{
-			mockedStaticReportService.when(() -> ReportService.getAccountBalanceAsOfDate(
-				eq(this.mockAssetAccount), eq(this.startDate.minusDays(1)), eq(this.mockLedger),
-				eq(this.mockChartOfAccounts), any(), anyBoolean()))
-				.thenReturn(openingBalance);
-			when(this.mockLedger.getTransactions()).thenReturn(null);
+                try (var mockedStaticReportService =
+                        Mockito.mockStatic(ReportService.class, Mockito.CALLS_REAL_METHODS))
+                {
+                        mockedStaticReportService.when(() -> ReportService.getAccountBalanceAsOfDate(
+                                eq(this.mockAssetAccount), eq(this.startDate.minusDays(1)), eq(this.mockLedger),
+                                eq(this.mockChartOfAccounts), any(), anyBoolean()))
+                                .thenReturn(openingBalance);
 			
 			Map<String, Object> context = ReportService
 				.prepareAccountActivityContext(this.aaReportContext, this.mockLedger, this.mockChartOfAccounts);
@@ -320,11 +332,9 @@ import static org.mockito.Mockito.when;
 			new AccountingEntry(new BigDecimal("20.00"), "ASSET100", AccountSide.CREDIT);
 		createMockTransaction(this.startDateMillis + 1000, "Tx Memo 2", Set.of(entry2));
 		
-		when(this.mockLedger.getTransactions()).thenReturn(null, null);
-		
-		try (var mockedStaticReportService =
-			Mockito.mockStatic(ReportService.class, Mockito.CALLS_REAL_METHODS))
-		{
+                try (var mockedStaticReportService =
+                        Mockito.mockStatic(ReportService.class, Mockito.CALLS_REAL_METHODS))
+                {
 			mockedStaticReportService
 				.when(() -> ReportService.getAccountBalanceAsOfDate(any(), any(), any(), any(),
 					any(), anyBoolean()))
@@ -346,7 +356,7 @@ import static org.mockito.Mockito.when;
 			
 			Map<String, Object> eData1 = entriesList.get(0); // tx1 (Debit)
 			assertEquals(DATE_FORMATTER.format(this.startDate), eData1.get("date"));
-			assertEquals("TX1", eData1.get("transactionId").toString());
+                        assertEquals(Long.toString(this.startDateMillis), eData1.get("transactionId").toString());
 			assertEquals("Tx Memo 1", eData1.get("description"));
 			assertEquals(0, new BigDecimal("50.00").compareTo((BigDecimal) eData1.get("debit")));
 			assertEquals(0, BigDecimal.ZERO.compareTo((BigDecimal) eData1.get("credit")));
@@ -384,11 +394,9 @@ import static org.mockito.Mockito.when;
 			new AccountingEntry(new BigDecimal("30.00"), "LIAB100", AccountSide.DEBIT);
 		createMockTransaction(this.startDateMillis + 1000, "Debit Entry", Set.of(entry2));
 		
-		when(this.mockLedger.getTransactions()).thenReturn(null);
-		
-		try (var mockedStaticReportService =
-			Mockito.mockStatic(ReportService.class, Mockito.CALLS_REAL_METHODS))
-		{
+                try (var mockedStaticReportService =
+                        Mockito.mockStatic(ReportService.class, Mockito.CALLS_REAL_METHODS))
+                {
 			mockedStaticReportService
 				.when(() -> ReportService.getAccountBalanceAsOfDate(any(), any(), any(), any(),
 					any(), anyBoolean()))
@@ -435,11 +443,9 @@ import static org.mockito.Mockito.when;
 			"",
 			Set.of(new AccountingEntry(new BigDecimal("200.00"), "ASSET100", AccountSide.DEBIT)));
 		
-		when(this.mockLedger.getTransactions()).thenReturn(null);
-		
-		try (var mockedStaticReportService =
-			Mockito.mockStatic(ReportService.class, Mockito.CALLS_REAL_METHODS))
-		{
+                try (var mockedStaticReportService =
+                        Mockito.mockStatic(ReportService.class, Mockito.CALLS_REAL_METHODS))
+                {
 			// getAccountBalanceAsOfDate is called for startDate.minusDays(1) to get OB
 			mockedStaticReportService.when(() -> ReportService.getAccountBalanceAsOfDate(
 				eq(this.mockAssetAccount), eq(this.aaReportContext.getStartDate().minusDays(1)),
@@ -456,7 +462,8 @@ import static org.mockito.Mockito.when;
 			
 			assertEquals(1, entriesList.size(),
 				"Only one transaction (txDuring) should be listed.");
-			assertEquals("TX_DURING", entriesList.get(0).get("transactionId").toString());
+                        long duringTs = LocalDate.of(2023, 2, 15).atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
+                        assertEquals(Long.toString(duringTs), entriesList.get(0).get("transactionId").toString());
 			assertEquals(0, obForFeb1.compareTo((BigDecimal) accountData.get("openingBalance")));
 			assertEquals(0,
 				new BigDecimal("150.00").compareTo((BigDecimal) accountData.get("closingBalance"))); // OB
@@ -474,7 +481,7 @@ import static org.mockito.Mockito.when;
                 when(this.mockAssetAccount.getAssociatedFundIds()).thenReturn(List.of("FundB")); // Does not
 																					// match FundA
 		this.aaReportContext.setAccountIdsForDetailReport(List.of("ASSET100"));
-		this.aaReportContext.setFundIds(List.of("Operations")); // Filter by FundA
+                this.aaReportContext.setFundIds(List.of("FundA")); // Filter by FundA
 		
 		Map<String, Object> context = ReportService.prepareAccountActivityContext(this.aaReportContext,
 			this.mockLedger, this.mockChartOfAccounts);
@@ -489,21 +496,19 @@ import static org.mockito.Mockito.when;
 	{
                 when(this.mockAssetAccount.getAssociatedFundIds()).thenReturn(List.of("FundA"));
 		this.aaReportContext.setAccountIdsForDetailReport(List.of("ASSET100"));
-		this.aaReportContext.setFundIds(List.of("Operations")); // FundA
+                this.aaReportContext.setFundIds(List.of("FundA")); // FundA
 		
 		BigDecimal fundASpecificOpeningBalance = new BigDecimal("77.00");
 		createMockTransaction(this.startDateMillis, "",
 			Set.of(new AccountingEntry(new BigDecimal("23.00"), "ASSET100", AccountSide.DEBIT)));
-		when(this.mockLedger.getTransactions()).thenReturn(null);
-		
-		try (var mockedStaticReportService =
-			Mockito.mockStatic(ReportService.class, Mockito.CALLS_REAL_METHODS))
-		{
+                try (var mockedStaticReportService =
+                        Mockito.mockStatic(ReportService.class, Mockito.CALLS_REAL_METHODS))
+                {
 			// Mock the fund-aware opening balance calculation for ASSET100 filtered by
 			// FundA
 			mockedStaticReportService.when(() -> ReportService.getAccountBalanceAsOfDate(
-				eq(this.mockAssetAccount), eq(this.startDate.minusDays(1)), eq(this.mockLedger),
-				eq(this.mockChartOfAccounts), eq(List.of("Operations")), eq(true)))
+                                eq(this.mockAssetAccount), eq(this.startDate.minusDays(1)), eq(this.mockLedger),
+                                eq(this.mockChartOfAccounts), eq(List.of("FundA")), eq(true)))
 				.thenReturn(fundASpecificOpeningBalance);
 			
 			Map<String, Object> context = ReportService
