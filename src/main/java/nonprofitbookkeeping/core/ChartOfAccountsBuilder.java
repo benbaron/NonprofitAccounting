@@ -1,14 +1,19 @@
 
 package nonprofitbookkeeping.core;
 
-import nonprofitbookkeeping.model.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import nonprofitbookkeeping.model.Account;
+import nonprofitbookkeeping.model.AccountSide;
+import nonprofitbookkeeping.model.ChartOfAccounts;
 
 /**
  * 
  */
 public class ChartOfAccountsBuilder
 {
-private final ChartOfAccounts chart = new ChartOfAccounts();
+        private final List<Account> pendingAccounts = new ArrayList<>();
 	
 	/**
 	 * Constructs a ChartOfAccountsBuilder.
@@ -33,30 +38,48 @@ private final ChartOfAccounts chart = new ChartOfAccounts();
 	 * @param increaseSide The side where the account increases (Debit or Credit).
 	 * @return This ChartOfAccountsBuilder instance for chaining.
 	 */
-	public ChartOfAccountsBuilder addAccount(
-		String accountNumber,
-		String name,
-		AccountSide increaseSide)
-	{
-		Account acc = new Account();
-		acc.setAccountNumber(accountNumber);
-		acc.setName(name);
-		acc.setIncreaseSide(increaseSide);
-		this.chart.addAccount(acc);
-		return this;
-	}
+        public ChartOfAccountsBuilder addAccount(
+                String accountNumber,
+                String name,
+                AccountSide increaseSide)
+        {
+                Account acc = new Account();
+                acc.setAccountNumber(accountNumber);
+                acc.setName(name);
+                acc.setIncreaseSide(increaseSide);
+                this.pendingAccounts.add(acc);
+                return this;
+        }
 
 	
-	/**
-	 * Builds the ChartOfAccounts.
-	 * @return A new ChartOfAccounts instance.
-	 * Note: The current implementation returns a new ChartOfAccounts without using the added accountDetails.
-	 * This might be a placeholder for future implementation.
-	 */
-	public ChartOfAccounts build()
-	{
-		return this.chart;
-	}
+        /**
+         * Builds a new {@link ChartOfAccounts} instance populated with the accounts
+         * registered through this builder.  Each invocation produces a fresh chart
+         * instance so callers can keep using the builder to create additional
+         * charts if desired.
+         *
+         * @return A populated {@link ChartOfAccounts}.
+         */
+        public ChartOfAccounts build()
+        {
+                ChartOfAccounts chart = new ChartOfAccounts();
 
-	
+                for (Account pending : this.pendingAccounts)
+                {
+                        chart.addAccount(copyAccount(pending));
+                }
+
+                return chart;
+        }
+
+        private static Account copyAccount(Account original)
+        {
+                Account copy = new Account();
+                copy.setAccountNumber(original.getAccountNumber());
+                copy.setName(original.getName());
+                copy.setIncreaseSide(original.getIncreaseSide());
+                return copy;
+        }
+
+
 }
