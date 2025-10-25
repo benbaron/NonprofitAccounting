@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.DatePicker;
@@ -100,6 +101,23 @@ public class SkeletonJournalPanel extends BorderPane
 		this.journalDisplayTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		this.journalDisplayTable
 				.setPlaceholder(new Label("No journal entries to display or company not open."));
+		this.journalDisplayTable.setRowFactory(tv -> {
+			TableRow<JournalDisplayEntry> row = new TableRow<>();
+
+			row.setOnMouseClicked(event -> {
+				if (event.getClickCount() == 2 && !row.isEmpty())
+				{
+					JournalDisplayEntry entry = row.getItem();
+
+					if (entry != null)
+					{
+						openEditor(entry.getOriginalTransaction());
+					}
+				}
+			});
+
+			return row;
+		});
 		
 		// Filter Controls (Top)
 		this.filterControlsBox = new HBox();
