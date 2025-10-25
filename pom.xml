@@ -63,6 +63,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.1.2</version>
                 <configuration>
+                    <skipTests>${panel.reset.only}</skipTests>
                     <useModulePath>false</useModulePath>
                     <excludes>
                         <!-- JavaFX/TestFX-based UI tests require native desktop libraries
@@ -420,4 +421,34 @@
             <version>2.2.224</version>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>panel-reset-tests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>3.1.2</version>
+                        <executions>
+                            <execution>
+                                <id>panel-reset-suite</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                                <configuration>
+                                    <useModulePath>false</useModulePath>
+                                    <includes>
+                                        <include>**/SkeletonPanelResetTest.java</include>
+                                    </includes>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
