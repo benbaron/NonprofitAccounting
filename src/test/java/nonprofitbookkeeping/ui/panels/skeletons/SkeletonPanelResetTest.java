@@ -1,6 +1,7 @@
 package nonprofitbookkeeping.ui.panels.skeletons;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Field;
@@ -21,9 +22,11 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.collections.ObservableList;
 import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountType;
@@ -31,6 +34,7 @@ import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.reports.ReportMetadata;
 import nonprofitbookkeeping.ui.JavaFXTestBase;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -45,9 +49,6 @@ public class SkeletonPanelResetTest extends JavaFXTestBase
         private SkeletonJournalPanel journalPanel;
         private SkeletonCoaPanel coaPanel;
         private SkeletonReportsPanel reportsPanel;
-
-        private static String originalUserHome;
-        private static Path tempUserHomeDir;
 
         @Start
         public void start(Stage stage)
@@ -150,41 +151,40 @@ public class SkeletonPanelResetTest extends JavaFXTestBase
                 Platform.runLater(() -> CurrentCompany.forceCompanyLoad(company));
                 WaitForAsyncUtils.waitForFxEvents();
 
-                TreeTableView<?> tree = getCoaTree();
-                assertTrue(fromFx(() -> !tree.getRoot().getChildren().isEmpty()));
+                TreeItem<?> rootNode = getCoaRootNode();
+                assertTrue(fromFx(() -> !rootNode.getChildren().isEmpty()));
 
                 Platform.runLater(() -> CurrentCompany.forceCompanyLoad(null));
                 WaitForAsyncUtils.waitForFxEvents();
 
-                assertTrue(fromFx(() -> tree.getRoot().getChildren().isEmpty()));
-                Label placeholder = (Label) fromFx(tree::getPlaceholder);
+                assertEquals(0, fromFx(() -> rootNode.getChildren().size()));
+                TreeTableView<?> treeTable = getCoaTreeTable();
+                Label placeholder = (Label) fromFx(treeTable::getPlaceholder);
                 assertEquals("No company open.", placeholder.getText());
         }
 
         @Test
         public void reportsClearWhenCompanyCloses() throws Exception
         {
-                Path reportsDir = Files
-                        .createDirectories(tempUserHomeDir.resolve("NonprofitBookkeepingReports"));
-                Path sampleReport = reportsDir.resolve("sample-report.pdf");
-                Files.writeString(sampleReport, "stub");
-                Files.setLastModifiedTime(sampleReport, FileTime.from(Instant.now()));
-
                 Company company = buildSampleCompany();
                 Platform.runLater(() -> CurrentCompany.forceCompanyLoad(company));
                 WaitForAsyncUtils.waitForFxEvents();
 
-                TableView<?> table = getReportsTable();
-                assertTrue(fromFx(() -> !table.getItems().isEmpty()));
+                ObservableList<ReportMetadata> dataList = getReportsDataList();
+                Platform.runLater(() -> dataList.add(new ReportMetadata("Balance Sheet",
+                        "2024-03-15T10:15:30Z",
+                        "/tmp/balance-sheet.pdf")));
+                WaitForAsyncUtils.waitForFxEvents();
+
+                assertFalse(fromFx(dataList::isEmpty));
 
                 Platform.runLater(() -> CurrentCompany.forceCompanyLoad(null));
                 WaitForAsyncUtils.waitForFxEvents();
 
-                assertTrue(fromFx(() -> table.getItems().isEmpty()));
+                assertTrue(fromFx(dataList::isEmpty));
+                TableView<?> table = getReportsTable();
                 Label placeholder = (Label) fromFx(table::getPlaceholder);
                 assertEquals("No company open.", placeholder.getText());
-
-                Files.deleteIfExists(sampleReport);
         }
 
         private Company buildSampleCompany()
@@ -248,17 +248,32 @@ public class SkeletonPanelResetTest extends JavaFXTestBase
         }
 
         @SuppressWarnings("unchecked")
-        private TreeTableView<?> getCoaTree() throws Exception
+        private TreeItem<?> getCoaRootNode() throws Exception
+        {
+                Field field = SkeletonCoaPanel.class.getDeclaredField("rootAccountsNode");
+                field.setAccessible(true);
+                return (TreeItem<Account>) field.get(this.coaPanel);
+        }
+
+        private TreeTableView<?> getCoaTreeTable() throws Exception
         {
                 Field field = SkeletonCoaPanel.class.getDeclaredField("coaTreeTable");
                 field.setAccessible(true);
                 return (TreeTableView<?>) field.get(this.coaPanel);
         }
 
-        private TableView<?> getReportsTable() throws Exception
+        @SuppressWarnings("unchecked")
+        private ObservableList<ReportMetadata> getReportsDataList() throws Exception
         {
                 Field field = SkeletonReportsPanel.class
-                        .getDeclaredField("generatedReportsTable");
+                        .getDeclaredField("generatedReportsDataList");
+                field.setAccessible(true);
+                return (ObservableList<ReportMetadata>) field.get(this.reportsPanel);
+        }
+
+        private TableView<?> getReportsTable() throws Exception
+        {
+                Field field = SkeletonReportsPanel.class.getDeclaredField("generatedReportsTable");
                 field.setAccessible(true);
                 return (TableView<?>) field.get(this.reportsPanel);
         }
