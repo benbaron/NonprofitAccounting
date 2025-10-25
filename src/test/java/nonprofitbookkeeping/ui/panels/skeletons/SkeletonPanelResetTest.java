@@ -11,6 +11,13 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
+import java.time.Instant;
+import java.util.Comparator;
+
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -29,7 +36,9 @@ import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.reports.ReportMetadata;
 import nonprofitbookkeeping.ui.JavaFXTestBase;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.Start;
 import org.testfx.util.WaitForAsyncUtils;
@@ -55,11 +64,46 @@ public class SkeletonPanelResetTest extends JavaFXTestBase
                 stage.show();
         }
 
+        @BeforeAll
+        static void redirectUserHome() throws IOException
+        {
+                originalUserHome = System.getProperty("user.home");
+                tempUserHomeDir = Files.createTempDirectory("npbk-panel-reset-home");
+                System.setProperty("user.home", tempUserHomeDir.toString());
+        }
+
         @AfterEach
         public void resetCompany()
         {
                 Platform.runLater(() -> CurrentCompany.forceCompanyLoad(null));
                 WaitForAsyncUtils.waitForFxEvents();
+        }
+
+        @AfterAll
+        static void restoreUserHome() throws IOException
+        {
+                if (originalUserHome != null)
+                {
+                        System.setProperty("user.home", originalUserHome);
+                }
+
+                if (tempUserHomeDir != null)
+                {
+                        try (var paths = Files.walk(tempUserHomeDir))
+                        {
+                                paths.sorted(Comparator.reverseOrder())
+                                        .forEach(path -> {
+                                                try
+                                                {
+                                                        Files.deleteIfExists(path);
+                                                }
+                                                catch (IOException ignored)
+                                                {
+                                                        // Best-effort cleanup.
+                                                }
+                                        });
+                        }
+                }
         }
 
         @Test
