@@ -2,11 +2,14 @@
 package nonprofitbookkeeping.ui.panels;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -28,8 +31,9 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToolBar;
 import javafx.scene.control.Separator;
+import javafx.scene.control.ToolBar;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -89,6 +93,7 @@ public class GeneralJournalEntryPanelFX extends BorderPane
         private final ChartOfAccounts coa;
         private final Consumer<AccountingTransaction> onSave;
         private AccountingTransaction original;
+        private final Tooltip saveErrorTooltip = new Tooltip();
 
         /**
          * Creates a new panel with a save callback.
@@ -102,8 +107,20 @@ public class GeneralJournalEntryPanelFX extends BorderPane
                 this.onSave = onSave;
                 setPadding(new Insets(10));
                 buildUI();
-                this.lines.addListener((ListChangeListener<Line>) c -> recalcTotals());
+                this.lines.addListener((ListChangeListener<Line>) change -> {
+                        while (change.next())
+                        {
+                                if (change.wasAdded())
+                                {
+                                        change.getAddedSubList().forEach(this::watch);
+                                }
+                        }
+
+                        recalcTotals();
+                        updateSaveButtonState();
+                });
                 recalcTotals();
+                updateSaveButtonState();
 		
 	}
 	
@@ -157,12 +174,8 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 			return row;
 		});
 		
-		Button add = new Button("+ Entry");
-		add.setOnAction(e -> {
-			Line l = new Line();
-			this.lines.add(l);
-			watch(l);
-		});
+                Button add = new Button("+ Entry");
+                add.setOnAction(e -> this.lines.add(new Line()));
 		
 		Button del = new Button("Remove");
 		del.setOnAction(e -> {
@@ -208,8 +221,39 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 
                 TableColumn<Line, String> col = new TableColumn<>("Account");
                 col.setCellValueFactory(cd -> cd.getValue().account);
-                col.setCellFactory(ComboBoxTableCell.forTableColumn(new DefaultStringConverter(),
-                                choices));
+                col.setCellFactory(column -> new ComboBoxTableCell<>(new DefaultStringConverter(), choices)
+                {
+                        @Override public void updateItem(String item, boolean empty)
+                        {
+                                super.updateItem(item, empty);
+
+                                if (empty)
+                                {
+                                        setStyle("");
+                                        setTooltip(null);
+                                        return;
+                                }
+
+                                Line line = getTableRow() != null ? getTableRow().getItem() : null;
+                                Account account = line != null ? GeneralJournalEntryPanelFX.this.resolveAccount(line.account.get()) :
+                                                GeneralJournalEntryPanelFX.this.resolveAccount(item);
+
+                                boolean highlight = line != null && account == null &&
+                                                (amountOrZero(line.debit.get()).signum() != 0 ||
+                                                                amountOrZero(line.credit.get()).signum() != 0);
+
+                                if (highlight)
+                                {
+                                        setStyle("-fx-background-color: rgba(255,0,0,0.2);");
+                                        setTooltip(new Tooltip("Account not found in chart"));
+                                }
+                                else
+                                {
+                                        setStyle("");
+                                        setTooltip(null);
+                                }
+                        }
+                });
 		col.setEditable(true);
 		col.setOnEditCommit(ev -> {
 			Line row = ev.getRowValue();
@@ -306,82 +350,75 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 				l.credit.set(e.getAmount());
 			}
 			
-			this.lines.add(l);
-			watch(l);
-		}
-		
-		recalcTotals();
-		
-	}
+                        this.lines.add(l);
+                }
+
+                recalcTotals();
+                updateSaveButtonState();
+
+        }
 	
 	private void persist()
 	{
+		Optional<String> validationError = validateLines();
+
+		if (validationError.isPresent())
+		{
+			AlertBox.showError(getScene() == null ? null : getScene().getWindow(),
+					validationError.get());
+			return;
+		}
+
 		BigDecimal debit = BigDecimal.ZERO;
 		BigDecimal credit = BigDecimal.ZERO;
 		Set<AccountingEntry> entries = new LinkedHashSet<>();
-		
+
 		for (Line l : this.lines)
 		{
-			String name = l.account.get();
-			
-			if (name == null || name.isBlank())
+			BigDecimal debitAmount = amountOrZero(l.debit.get());
+			BigDecimal creditAmount = amountOrZero(l.credit.get());
+
+			if (debitAmount.signum() == 0 && creditAmount.signum() == 0)
 			{
-				AlertBox.showError(getScene() == null ? null : getScene().getWindow(),
-						"Account name required");
-				return;
+				continue;
 			}
-			
-			Account account = this.coa.getAccountByName(name);
-			
+
+			Account account = resolveAccount(l.account.get());
+
 			if (account == null)
 			{
-				AlertBox.showError(getScene() == null ? null : getScene().getWindow(),
-						"Account not found: " + name);
-				return;
+				continue;
 			}
-			
+
 			String acctNum = account.getAccountNumber();
 			String acctName = account.getName();
-			
-                        BigDecimal debitAmount = amountOrZero(l.debit.get());
-                        BigDecimal creditAmount = amountOrZero(l.credit.get());
 
-                        if (debitAmount.signum() > 0)
-                        {
-                                entries.add(new AccountingEntry(debitAmount, acctNum,
-                                                                                                AccountSide.DEBIT, acctName));
-                                debit = debit.add(debitAmount);
-                        }
+			if (debitAmount.signum() > 0)
+			{
+				entries.add(new AccountingEntry(debitAmount, acctNum,
+							AccountSide.DEBIT, acctName));
+				debit = debit.add(debitAmount);
+			}
 
-                        if (creditAmount.signum() > 0)
-                        {
-                                entries.add(new AccountingEntry(creditAmount, acctNum,
-                                                                                                AccountSide.CREDIT, acctName));
-                                credit = credit.add(creditAmount);
-                        }
+			if (creditAmount.signum() > 0)
+			{
+				entries.add(new AccountingEntry(creditAmount, acctNum,
+							AccountSide.CREDIT, acctName));
+				credit = credit.add(creditAmount);
+			}
 
-                }
-		
-		if (debit.signum() == 0 || debit.compareTo(credit) != 0)
-		{
-			AlertBox.showError(getScene() == null ? null : getScene().getWindow(),
-					"Transaction is not balanced");
-			return;
 		}
-		
-		AccountingTransaction tx = new AccountingTransaction(	new Account(), entries,
-																Map.of(),
-																this.original != null ?
-																		this.original
-																				.getBookingDateTimestamp() :
-																		Instant.now()
-																				.toEpochMilli());
-		
+
+		AccountingTransaction tx = new AccountingTransaction(new Account(), entries,
+				Map.of(), this.original != null ?
+						this.original.getBookingDateTimestamp() :
+						Instant.now().toEpochMilli());
+
 		if (this.original != null)
 		{
 			tx.setId(this.original.getId());
 		}
-		
+
 		tx.setDate(this.datePicker.getValue().toString());
 		tx.setDescription(this.memoArea.getText());
 		tx.setToFrom(this.toFromField.getText());
@@ -389,40 +426,43 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 		tx.setClearBank(this.clearBankField.getText());
 		tx.setBudgetTracking(this.budgetTrackingField.getText());
 		tx.setAssociatedFundName(this.associatedFundNameField.getText());
-		
+
 		this.onSave.accept(tx);
-		
-	}
-	
-	private void watch(Line l)
-	{
-                l.debit.addListener((obs, o, n) -> {
-                        if (n == null)
-                        {
-                                l.debit.set(BigDecimal.ZERO);
-                                return;
-                        }
-                        adjustForAccountSide(l);
-                        recalcTotals();
-                });
-                l.credit.addListener((obs, o, n) -> {
-                        if (n == null)
-                        {
-                                l.credit.set(BigDecimal.ZERO);
-                                return;
-                        }
-                        adjustForAccountSide(l);
-                        recalcTotals();
-                });
-                l.account.addListener((obs, o, n) -> {
-                        adjustForAccountSide(l);
-                });
 
 	}
-	
+	private void watch(Line l)
+	{
+		l.debit.addListener((obs, o, n) -> {
+			if (n == null)
+			{
+				l.debit.set(BigDecimal.ZERO);
+				return;
+			}
+			adjustForAccountSide(l);
+			recalcTotals();
+			updateSaveButtonState();
+		});
+		l.credit.addListener((obs, o, n) -> {
+			if (n == null)
+			{
+				l.credit.set(BigDecimal.ZERO);
+				return;
+			}
+			adjustForAccountSide(l);
+			recalcTotals();
+			updateSaveButtonState();
+		});
+		l.account.addListener((obs, o, n) -> {
+			adjustForAccountSide(l);
+			updateSaveButtonState();
+			this.table.refresh();
+		});
+
+	}
+
 	private void adjustForAccountSide(Line l)
 	{
-		Account acc = this.coa.getAccountByName(l.account.get());
+		Account acc = resolveAccount(l.account.get());
 		
 		if (acc == null)
 		{
@@ -446,6 +486,110 @@ public class GeneralJournalEntryPanelFX extends BorderPane
                 }
 
         }
+
+	private Optional<String> validateLines()
+	{
+		BigDecimal debit = BigDecimal.ZERO;
+		BigDecimal credit = BigDecimal.ZERO;
+		List<String> missingAccounts = new ArrayList<>();
+		boolean hasAmounts = false;
+
+		for (Line l : this.lines)
+		{
+			BigDecimal debitAmount = amountOrZero(l.debit.get());
+			BigDecimal creditAmount = amountOrZero(l.credit.get());
+			boolean hasValue = debitAmount.signum() != 0 || creditAmount.signum() != 0;
+			String accountToken = l.account.get();
+
+			if (!hasValue && (accountToken == null || accountToken.isBlank()))
+			{
+				continue;
+			}
+
+			if (accountToken == null || accountToken.isBlank())
+			{
+				return Optional.of("Each amount must reference an account.");
+			}
+
+			if (debitAmount.signum() > 0 && creditAmount.signum() > 0)
+			{
+				return Optional.of("A line cannot have both debit and credit amounts.");
+			}
+
+			Account account = resolveAccount(accountToken);
+
+			if (account == null)
+			{
+				missingAccounts.add(accountToken);
+				continue;
+			}
+
+			hasAmounts |= hasValue;
+
+			if (debitAmount.signum() > 0)
+			{
+				debit = debit.add(debitAmount);
+			}
+
+			if (creditAmount.signum() > 0)
+			{
+				credit = credit.add(creditAmount);
+			}
+		}
+
+		if (!missingAccounts.isEmpty())
+		{
+			return Optional.of("Account not found: " + String.join(", ", missingAccounts));
+		}
+
+		if (!hasAmounts)
+		{
+			return Optional.of("Add at least one debit or credit amount.");
+		}
+
+		if (debit.compareTo(credit) != 0)
+		{
+			return Optional.of("Transaction is not balanced.");
+		}
+
+		return Optional.empty();
+	}
+
+	private void updateSaveButtonState()
+	{
+		Optional<String> error = validateLines();
+		boolean invalid = error.isPresent();
+		this.saveBtn.setDisable(invalid);
+
+		if (invalid)
+		{
+			this.saveErrorTooltip.setText(error.get());
+			this.saveBtn.setTooltip(this.saveErrorTooltip);
+		}
+		else
+		{
+			this.saveBtn.setTooltip(null);
+		}
+
+		this.table.refresh();
+	}
+
+	private Account resolveAccount(String accountToken)
+	{
+		if (accountToken == null || accountToken.isBlank())
+		{
+			return null;
+		}
+
+		Account byName = this.coa.getAccountByName(accountToken);
+
+		if (byName != null)
+		{
+			return byName;
+		}
+
+		return this.coa.getAccount(accountToken);
+	}
 
         private static ChartOfAccounts resolveChartOfAccounts()
         {
