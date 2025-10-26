@@ -146,12 +146,11 @@ public class JournalPanelFXTest extends JavaFXTestBase
 		// assertEquals("New Transaction",
 		// dialogPane.getScene().getWindow().getTitle());
 		
-		// Simulate the NewTransactionPanelFX saving a new transaction
-		// This is a simplification. A real test might need to interact with
-		// NewTransactionPanelFX's fields
-		// and then trigger its internal save mechanism that calls the consumer.
-		// For this test, we'll assume the consumer provided by JournalPanelFX to
-		// NewTransactionPanelFX
+                // Simulate the JournalEntryWorkspaceFX saving a new transaction
+                // This is a simplification. A real test might need to interact with
+                // the workspace fields and then trigger its internal save mechanism
+                // that calls the consumer. For this test, we'll assume the consumer
+                // provided by JournalPanelFX to the workspace
 		// is called with a new transaction.
 		
 		AccountingTransaction newTx = new AccountingTransaction();
@@ -161,8 +160,8 @@ public class JournalPanelFXTest extends JavaFXTestBase
 		newTx.setBookingDateTimestamp(Timestamp.from(Instant.now().plusSeconds(3600)));
 		
 		
-		// The JournalPanelFX passes a Consumer to NewTransactionPanelFX.
-		// We can't easily "click save" inside the NewTransactionPanelFX from *this*
+                // The JournalPanelFX passes a Consumer to JournalEntryWorkspaceFX.
+                // We can't easily "click save" inside the workspace from *this*
 		// test.
 		// So, we'll verify the mockJournal's addTransaction was called by virtue of the
 		// dialog setup.
@@ -172,7 +171,7 @@ public class JournalPanelFXTest extends JavaFXTestBase
 		
 		// This part is tricky without deeper interaction or a way to get the consumer.
 		// Let's assume the dialog is closed and the panel's refresh is triggered.
-		// The actual add happens in the consumer passed to NewTransactionPanelFX.
+                // The actual add happens in the consumer passed to the workspace.
 		// We'll verify by checking the table size after closing.
 		
 		// This is where direct testing of the consumer would be better.
@@ -181,8 +180,8 @@ public class JournalPanelFXTest extends JavaFXTestBase
 		// We will manually add to the list to simulate the callback being successful
 		// and then close the dialog, then verify table.
 		Platform.runLater(() -> {
-			// This simulates the callback that JournalPanelFX provides to
-			// NewTransactionPanelFX
+                        // This simulates the callback that JournalPanelFX provides to
+                        // the workspace
 			this.mockJournal.addTransaction(newTx);
 			this.panel.refresh(); // Manually call refresh as the dialog's internal save would
 		});
