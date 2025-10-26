@@ -248,32 +248,26 @@ public class PrimaryAccountReconciliation2aBean
 	/**
 	 * @param string
 	 */
-	public void setBankAccountType(String string)
-	{
-		// TODO Auto-generated method stub
-		
-		
-	}
+        public void setBankAccountType(String bankAccountType)
+        {
+                this.bankAccountType = bankAccountType;
+        }
 
 	/**
 	 * @param string
 	 */
-	public void setBankAccountNumber(String string)
-	{
-		// TODO Auto-generated method stub
-		
-		
-	}
+        public void setBankAccountNumber(String bankAccountNumber)
+        {
+                this.bankAccountNumber = bankAccountNumber;
+        }
 
 	/**
 	 * @param string
 	 */
-	public void setBankBranchPhoneAndName(String string)
-	{
-		// TODO Auto-generated method stub
-		
-		
-	}
+        public void setBankBranchPhoneAndName(String bankBranchPhoneAndName)
+        {
+                this.bankBranchPhoneAndName = bankBranchPhoneAndName;
+        }
 	
 	// (Add remaining getters/setters for all checkN* fields)
 }
