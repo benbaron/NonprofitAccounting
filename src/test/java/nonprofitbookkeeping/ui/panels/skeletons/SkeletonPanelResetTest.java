@@ -47,6 +47,7 @@ public class SkeletonPanelResetTest extends JavaFXTestBase
 {
         private static String originalUserHome;
         private static Path tempUserHomeDir;
+
         private SkeletonDashboardPanel dashboardPanel;
         private SkeletonJournalPanel journalPanel;
         private SkeletonCoaPanel coaPanel;
