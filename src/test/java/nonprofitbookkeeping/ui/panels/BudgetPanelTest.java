@@ -14,6 +14,8 @@ import java.nio.file.Files;
 import java.util.List;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,27 +25,46 @@ public class BudgetPanelTest {
     static class StubBudgetLineDialog extends BudgetLineDialog {
         private final boolean saved;
         private final BudgetLine line;
-        StubBudgetLineDialog(boolean saved, BudgetLine line) {
-            super((Dialog) null, "Stub", new ChartOfAccounts(), List.of(), line);
+        private final Consumer<BudgetLine> onShow;
+
+        StubBudgetLineDialog(ChartOfAccounts coa, List<Fund> funds, BudgetLine seed,
+                             boolean saved, Consumer<BudgetLine> onShow) {
+            super((Dialog) null, "Stub", coa, funds, seed != null ? seed : new BudgetLine());
+            this.line = seed != null ? seed : super.getBudgetLine();
             this.saved = saved;
-            this.line = line;
+            this.onShow = onShow;
         }
-        @Override public void setVisible(boolean b) { /* no UI */ }
+
+        @Override public void setVisible(boolean b) {
+            if (b && this.onShow != null) {
+                this.onShow.accept(this.line);
+            }
+        }
+
         @Override public boolean isSaved() { return this.saved; }
+
         @Override public BudgetLine getBudgetLine() { return this.line; }
     }
 
     /** Panel subclass that injects a stub dialog. */
     static class TestBudgetPanel extends BudgetPanel {
-        BudgetLineDialog stub;
+        private Function<BudgetLine, BudgetLineDialog> factory;
+
         TestBudgetPanel(ChartOfAccounts coa, List<Fund> funds,
                         BudgetService svc, File dir, Budget budget) {
             super(null, coa, funds, svc, dir, budget);
         }
-        void setStub(BudgetLineDialog d) { this.stub = d; }
+
+        void setDialogFactory(Function<BudgetLine, BudgetLineDialog> factory) {
+            this.factory = factory;
+        }
+
         @Override
         protected BudgetLineDialog createBudgetLineDialog(String title, BudgetLine line) {
-            return this.stub;
+            if (this.factory != null) {
+                return this.factory.apply(line);
+            }
+            return super.createBudgetLineDialog(title, line);
         }
     }
 
@@ -67,8 +88,7 @@ public class BudgetPanelTest {
         line.setTotalBudgetedAmount(new BigDecimal("100"));
         line.setPeriodicity(Periodicity.ANNUAL);
 
-        StubBudgetLineDialog dlg = new StubBudgetLineDialog(true, line);
-        panel.setStub(dlg);
+        panel.setDialogFactory(existing -> new StubBudgetLineDialog(coa, List.of(fund), line, true, null));
 
         Method add = BudgetPanel.class.getDeclaredMethod("actionAddLine", ActionEvent.class);
         add.setAccessible(true);
@@ -80,6 +100,11 @@ public class BudgetPanelTest {
 
         assertEquals(1, model.getBudgetLines().size());
         assertEquals(new BigDecimal("100"), model.getBudgetLines().get(0).getTotalBudgetedAmount());
+
+        Field tableField = BudgetPanel.class.getDeclaredField("tblBudgetLines");
+        tableField.setAccessible(true);
+        JTable table = (JTable) tableField.get(panel);
+        assertEquals(0, table.getSelectedRow());
     }
 
     @Test
@@ -109,13 +134,8 @@ public class BudgetPanelTest {
         JTable table = (JTable) tableField.get(panel);
         table.getSelectionModel().setSelectionInterval(0,0);
 
-        BudgetLine edited = new BudgetLine();
-        edited.setAccountId("A1");
-        edited.setAccountName("Cash");
-        edited.setTotalBudgetedAmount(new BigDecimal("75"));
-        edited.setPeriodicity(Periodicity.ANNUAL);
-        StubBudgetLineDialog dlg = new StubBudgetLineDialog(true, edited);
-        panel.setStub(dlg);
+        panel.setDialogFactory(existing -> new StubBudgetLineDialog(coa, List.of(fund), existing, true,
+                lineRef -> lineRef.setTotalBudgetedAmount(new BigDecimal("75"))));
 
         Method edit = BudgetPanel.class.getDeclaredMethod("actionEditLine", ActionEvent.class);
         edit.setAccessible(true);
@@ -127,5 +147,6 @@ public class BudgetPanelTest {
 
         assertEquals(1, model.getBudgetLines().size());
         assertEquals(new BigDecimal("75"), model.getBudgetLines().get(0).getTotalBudgetedAmount());
+        assertEquals(0, table.getSelectedRow());
     }
 }
