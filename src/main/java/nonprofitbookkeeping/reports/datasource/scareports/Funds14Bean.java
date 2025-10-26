@@ -148,14 +148,14 @@ public class Funds14Bean
 	private BigDecimal general_fund_9;
 	private BigDecimal total;
 	private BigDecimal total_of_lines_i_a_end_and_i_b_end_on_the_comparative_balance_sheet_cash;
-	/**
-	 * @param one
-	 */
-	public void setAll_non_dedicated_funds(BigDecimal one)
-	{
-		// TODO Auto-generated method stub
-		
-		
-	}
+        /**
+         * Sets the aggregate value for all non-dedicated funds.
+         *
+         * @param allNonDedicatedFunds consolidated amount from the worksheet
+         */
+        public void setAll_non_dedicated_funds(BigDecimal allNonDedicatedFunds)
+        {
+                this.all_non_dedicated_funds = allNonDedicatedFunds;
+        }
 	
 }

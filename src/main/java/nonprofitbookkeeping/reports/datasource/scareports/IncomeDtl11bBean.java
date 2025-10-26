@@ -152,14 +152,14 @@ public class IncomeDtl11bBean
 	private BigDecimal transaction_fees_6;
 	private BigDecimal transaction_fees_7;
 	
-	/**
-	 * @param one
-	 */
-	public void setAmount(BigDecimal one)
-	{
-		// TODO Auto-generated method stub
-		
-		
-	}
+        /**
+         * Captures the per-row amount for the PayPal and SCARS income section.
+         *
+         * @param amount value sourced from the report data
+         */
+        public void setAmount(BigDecimal amount)
+        {
+                this.amount = amount;
+        }
 	
 }

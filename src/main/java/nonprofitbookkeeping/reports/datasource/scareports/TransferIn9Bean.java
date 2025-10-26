@@ -184,14 +184,14 @@ public class TransferIn9Bean
 	private BigDecimal within_the_kingdom_7;
 	private BigDecimal within_the_kingdom_8;
 	private BigDecimal within_the_kingdom_9;
-	/**
-	 * @param one
-	 */
-	public void setAmount(BigDecimal one)
-	{
-		// TODO Auto-generated method stub
-		
-		
-	}
+        /**
+         * Persists the transfer-in amount for the current row.
+         *
+         * @param amount value imported from the ledger data
+         */
+        public void setAmount(BigDecimal amount)
+        {
+                this.amount = amount;
+        }
 	
 }

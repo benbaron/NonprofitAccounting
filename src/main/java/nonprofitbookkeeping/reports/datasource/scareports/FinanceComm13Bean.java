@@ -115,14 +115,14 @@ public class FinanceComm13Bean
 	private BigDecimal mark_only_one_3;
 	private BigDecimal seneschal;
 	private BigDecimal use_additional_sheets_if_necessary;
-	/**
-	 * @param one
-	 */
-	public void setExchequer(BigDecimal one)
-	{
-		// TODO Auto-generated method stub
-		
-		
-	}
+        /**
+         * Updates the exchequer total captured for the finance committee report.
+         *
+         * @param exchequer amount reported by the data source
+         */
+        public void setExchequer(BigDecimal exchequer)
+        {
+                this.exchequer = exchequer;
+        }
 	
 }

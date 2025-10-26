@@ -107,14 +107,14 @@ public class IncomeDtl11aBean
 	private BigDecimal show_total_on_pg_4_line_1b;
 	private BigDecimal show_total_on_pg_4_line_2;
 	private BigDecimal show_total_on_pg_4_line_3a;
-	/**
-	 * @param one
-	 */
-	public void setAmount(BigDecimal one)
-	{
-		// TODO Auto-generated method stub
-		
-		
-	}
+        /**
+         * Captures the amount associated with this row of income detail data.
+         *
+         * @param amount value imported from the spreadsheet
+         */
+        public void setAmount(BigDecimal amount)
+        {
+                this.amount = amount;
+        }
 	
 }

@@ -287,14 +287,14 @@ public class Newsletter15Bean
 	private BigDecimal subscription_due_8;
 	private BigDecimal subscription_due_9;
 	private BigDecimal total;
-	/**
-	 * @param one
-	 */
-	public void setAdj_gross_income_a_b_c(BigDecimal one)
-	{
-		// TODO Auto-generated method stub
-		
-		
-	}
+        /**
+         * Stores the adjusted gross income total for newsletter operations.
+         *
+         * @param adjustedGrossIncome aggregated amount of lines a through c
+         */
+        public void setAdj_gross_income_a_b_c(BigDecimal adjustedGrossIncome)
+        {
+                this.adj_gross_income_a_b_c = adjustedGrossIncome;
+        }
 	
 }

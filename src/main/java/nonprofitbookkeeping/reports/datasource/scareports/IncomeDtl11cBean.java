@@ -221,14 +221,14 @@ public class IncomeDtl11cBean
 	private BigDecimal reason_9;
 	private BigDecimal show_total_on_pg_4_line_1a;
 	private BigDecimal show_total_on_pg_4_line_1b;
-	/**
-	 * @param one
-	 */
-	public void setAmount(BigDecimal one)
-	{
-		// TODO Auto-generated method stub
-		
-		
-	}
+        /**
+         * Updates the additional income amount for this record.
+         *
+         * @param amount value read from the spreadsheet
+         */
+        public void setAmount(BigDecimal amount)
+        {
+                this.amount = amount;
+        }
 	
 }

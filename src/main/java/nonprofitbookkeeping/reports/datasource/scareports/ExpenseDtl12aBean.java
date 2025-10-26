@@ -139,14 +139,15 @@ public class ExpenseDtl12aBean
 	private BigDecimal show_total_on_pg_4_line_12;
 	private BigDecimal show_total_on_pg_4_line_13;
 	private BigDecimal show_total_on_pg_4_line_17;
-	/**
-	 * @param one
-	 */
-	public void setAmount(BigDecimal one)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+        /**
+         * Records the amount associated with this detail row.
+         *
+         * @param amount value to persist on the bean
+         */
+        public void setAmount(BigDecimal amount)
+        {
+                this.amount = amount;
+        }
 
 	
 }
