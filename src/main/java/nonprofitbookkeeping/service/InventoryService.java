@@ -12,9 +12,9 @@ import java.sql.SQLException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,7 +38,9 @@ public class InventoryService
                 MAPPER.getTypeFactory().constructCollectionType(List.class, InventoryItem.class);
 	
 	/** In-memory map to store {@link InventoryItem} objects, keyed by their unique ID. */
-	private final Map<String, InventoryItem> items;
+        private static final Map<String, InventoryItem> SHARED_ITEMS = new ConcurrentHashMap<>();
+
+        private final Map<String, InventoryItem> items;
 	
 	/**
 	 * Constructs an {@code InventoryService} and initializes an empty inventory map.
@@ -46,12 +48,7 @@ public class InventoryService
 	 */
         public InventoryService()
         {
-                this.items = new HashMap<>();
-		// Optionally pre-populate with sample data:
-		// addItem(new InventoryItem("I001", "Item A", new BigDecimal("100"),
-		// "2023-01-01", 5)); // Example with BigDecimal
-		// addItem(new InventoryItem("I002", "Item B", new BigDecimal("50"),
-		// "2023-02-01", 3));
+                this.items = SHARED_ITEMS;
 	}
 	
 	/**
@@ -133,41 +130,66 @@ public class InventoryService
 	 * calculate depreciation, and update their accumulated depreciation and net book value.
 	 * </p>
 	 */
-	public void applyYearlyDepreciation()
-	{
-		
-		for (InventoryItem item : this.items.values())
-		{
-			
-			if (item.getCost() == null || item.getLifeYears() <= 0)
-			{
-				continue; // insufficient data
-			}
-			
-			BigDecimal rate = item.getDepreciationRate();
-			BigDecimal yearly;
-			
-			if (rate != null)
-			{
-				yearly = item.getCost().multiply(rate);
-			}
-			else
-			{
-				yearly = item.getCost().divide(BigDecimal.valueOf(item.getLifeYears()), 2,
-					RoundingMode.HALF_UP);
-			}
-			
-			BigDecimal current = item.getAccumulatedDepreciation();
-			
-			if (current == null)
-			{
-				current = BigDecimal.ZERO;
-			}
-			
-			item.withAccumDep(current.add(yearly));
-		}
-		
-	}
+        public void applyYearlyDepreciation()
+        {
+
+                for (InventoryItem item : this.items.values())
+                {
+
+                        if (item == null)
+                        {
+                                continue;
+                        }
+
+                        BigDecimal cost = item.getCost();
+
+                        if (cost == null)
+                        {
+                                continue; // insufficient data
+                        }
+
+                        String method = item.getDepreciationMethod();
+
+                        if (method == null || !"Straight-Line".equalsIgnoreCase(method.trim()))
+                        {
+                                continue; // unsupported or unspecified method
+                        }
+
+                        BigDecimal yearly = null;
+                        BigDecimal rate = item.getDepreciationRate();
+
+                        if (rate != null)
+                        {
+                                if (rate.signum() <= 0)
+                                {
+                                        continue; // ignore zero or negative rates
+                                }
+
+                                yearly = cost.multiply(rate).setScale(2, RoundingMode.HALF_UP);
+                        }
+                        else if (item.getLifeYears() > 0)
+                        {
+                                yearly = cost.divide(BigDecimal.valueOf(item.getLifeYears()), 2,
+                                        RoundingMode.HALF_UP);
+                        }
+
+                        if (yearly == null || yearly.signum() <= 0)
+                        {
+                                continue;
+                        }
+
+                        BigDecimal current = item.getAccumulatedDepreciation();
+
+                        if (current == null)
+                        {
+                                current = BigDecimal.ZERO;
+                        }
+
+                        BigDecimal updated = current.add(yearly).setScale(2, RoundingMode.HALF_UP);
+                        item.withAccumDep(updated);
+                }
+
+        }
 	
 	/**
 	 * Clears all items from the inventory managed by this service instance.
@@ -241,6 +263,13 @@ public class InventoryService
                 }
                 catch (SQLException e)
                 {
+                        if ("42104".equals(e.getSQLState()))
+                        {
+                                LOGGER.log(Level.FINE,
+                                        "Inventory document table not initialized; treating inventory as empty.", e);
+                                return;
+                        }
+
                         throw new IOException("Failed to load inventory from database", e);
                 }
 
@@ -257,21 +286,15 @@ public class InventoryService
 	 */
         public static List<String[]> getInventoryItems()
         {
-                InventoryService service = new InventoryService();
-
-                try
-                {
-                        service.loadItems(null);
-                }
-                catch (IOException ex)
-                {
-                        throw new RuntimeException("Failed to load inventory", ex);
-                }
-
                 List<String[]> rows = new ArrayList<>();
 
-                for (InventoryItem item : service.listItems())
+                for (InventoryItem item : SHARED_ITEMS.values())
                 {
+                        if (item == null || item.getId() == null)
+                        {
+                                continue;
+                        }
+
                         String cost = item.getCost() == null ? "0.00" :
                                 item.getCost().setScale(2, RoundingMode.HALF_UP).toString();
                         rows.add(new String[]

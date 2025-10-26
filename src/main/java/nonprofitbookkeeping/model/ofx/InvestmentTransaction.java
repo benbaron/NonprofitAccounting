@@ -132,7 +132,7 @@ public class InvestmentTransaction extends Transaction
                         return BigDecimal.ZERO;
                 }
 
-                AccountSide naturalSide = account.getIncreaseSide();
+                AccountSide naturalSide = account.getEffectiveIncreaseSide();
                 BigDecimal total = BigDecimal.ZERO;
 
                 for (AccountingEntry entry : entries)

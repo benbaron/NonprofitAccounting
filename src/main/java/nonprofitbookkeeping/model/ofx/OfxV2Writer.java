@@ -6,6 +6,7 @@ import javax.xml.stream.XMLStreamWriter;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -123,11 +124,22 @@ public class OfxV2Writer
 
         private static String formatDecimal(BigDecimal value)
         {
+                int originalScale = value.scale();
                 BigDecimal normalized = value.stripTrailingZeros();
 
                 if (normalized.scale() < 0)
                 {
                         normalized = normalized.setScale(0);
+                }
+
+                if (originalScale > 0)
+                {
+                        int targetScale = Math.max(originalScale, 2);
+
+                        if (normalized.scale() < targetScale)
+                        {
+                                normalized = normalized.setScale(targetScale, RoundingMode.HALF_UP);
+                        }
                 }
 
                 return normalized.toPlainString();
