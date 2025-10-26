@@ -4,6 +4,7 @@ package nonprofitbookkeeping.ui.panels;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -749,49 +750,43 @@ public class CoaEditorPanelFX extends BorderPane
 	 * @param parent The parent {@link Account} under which to insert the new item.
 	 *               If null, {@code det} is added as a root-level account in the tree.
 	 */
-	private void insertIntoTree(Account det, Account parent)
-	{
-		
-		if (det == null)
-		{
-			LOGGER.warn("Attempted to insert null account into tree");
-			return;
-		}
-		
-		// Avoid duplicate nodes if account already exists in tree
-		if (find(this.rootItem, det) != null)
-		{
-			LOGGER.debug("Account {} already present in tree", det.getName());
-			return;
-		}
-		
-		if (parent == null)
-		{
-			this.rootItem.getChildren().add(makeNode(det)); // Add as a child of the (hidden) root
-		}
-		else
-		{
-			TreeItem<Account> parentItem = find(this.rootItem, parent); // Find the parent TreeItem
-			
-			if (parentItem != null)
-			{
-				parentItem.getChildren().add(makeNode(det));
-				parentItem.setExpanded(true); // Ensure parent is expanded to show new child
-			}
-			else
-			{
-				// Should not happen if parent is valid and tree is consistent
-				LOGGER.warn("Could not find parent TreeItem for account: " + parent.getName() +
-					" when inserting child " + det.getName());
-				// As a fallback, could add to root, but this indicates an issue.
-				this.rootItem.getChildren().add(makeNode(det));
-			}
-			
-		}
-		
-		this.tree.refresh(); // Refresh to show the new item
-	}
-	
+        private void insertIntoTree(Account det, Account parent)
+        {
+
+                if (det == null)
+                {
+                        LOGGER.warn("Attempted to insert null account into tree");
+                        return;
+                }
+
+                // Avoid duplicate nodes if account already exists in tree
+                if (find(this.rootItem, det) != null)
+                {
+                        LOGGER.debug("Account {} already present in tree", describeAccount(det));
+                        return;
+                }
+
+                TreeItem<Account> parentItem = (parent == null)
+                        ? this.rootItem
+                        : find(this.rootItem, parent);
+
+                if (parent != null && parentItem == null)
+                {
+                        LOGGER.warn("Could not find parent {} when inserting child {}",
+                                describeAccount(parent), describeAccount(det));
+                        parentItem = this.rootItem;
+                }
+
+                parentItem.getChildren().add(makeNode(det));
+
+                if (parentItem != this.rootItem)
+                {
+                        parentItem.setExpanded(true); // Ensure parent is expanded to show new child
+                }
+
+                this.tree.refresh(); // Refresh to show the new item
+        }
+
 	/**
 	 * Recursively searches for a {@link TreeItem} within the subtree of {@code n}
 	 * that wraps the specified {@link Account} {@code acc}.
@@ -800,15 +795,20 @@ public class CoaEditorPanelFX extends BorderPane
 	 * @param acc The {@link Account} to find within the tree.
 	 * @return The {@link TreeItem} that wraps {@code acc} if found; otherwise, null.
 	 */
-	private TreeItem<Account> find(TreeItem<Account> n, Account acc)
-	{
-		
-		if (Objects.equals(n.getValue(), acc))
-		{ // Use Objects.equals for null-safe comparison
-			return n;
-		}
-		
-		for (TreeItem<Account> c : n.getChildren())
+        private TreeItem<Account> find(TreeItem<Account> n, Account acc)
+        {
+
+                if (n == null || acc == null)
+                {
+                        return null;
+                }
+
+                if (accountsMatch(n.getValue(), acc))
+                {
+                        return n;
+                }
+
+                for (TreeItem<Account> c : n.getChildren())
 		{
 			TreeItem<Account> hit = find(c, acc);
 			
@@ -816,12 +816,80 @@ public class CoaEditorPanelFX extends BorderPane
 			{
 				return hit;
 			}
-			
 		}
-		
+
 		return null;
-	}
-	
+        }
+
+        private boolean accountsMatch(Account left, Account right)
+        {
+
+                if (left == null || right == null)
+                {
+                        return false;
+                }
+
+                String leftNumber = normalizeAccountNumber(left.getAccountNumber());
+                String rightNumber = normalizeAccountNumber(right.getAccountNumber());
+
+                if (!leftNumber.isEmpty() && !rightNumber.isEmpty())
+                {
+                        return leftNumber.equals(rightNumber);
+                }
+
+                String leftName = normalizeName(left.getName());
+                String rightName = normalizeName(right.getName());
+
+                if (!leftName.isEmpty() && !rightName.isEmpty())
+                {
+                        return leftName.equals(rightName);
+                }
+
+                return Objects.equals(left, right);
+        }
+
+        private String normalizeAccountNumber(String number)
+        {
+                return (number == null) ? "" : number.trim().toUpperCase(Locale.ROOT);
+        }
+
+        private String normalizeName(String name)
+        {
+                return (name == null) ? "" : name.trim().toUpperCase(Locale.ROOT);
+        }
+
+        private String describeAccount(Account account)
+        {
+
+                if (account == null)
+                {
+                        return "<null>";
+                }
+
+                String number = account.getAccountNumber();
+                String name = account.getName();
+
+                boolean hasNumber = number != null && !number.isBlank();
+                boolean hasName = name != null && !name.isBlank();
+
+                if (hasNumber && hasName)
+                {
+                        return number.trim() + " (" + name.trim() + ")";
+                }
+
+                if (hasNumber)
+                {
+                        return number.trim();
+                }
+
+                if (hasName)
+                {
+                        return name.trim();
+                }
+
+                return account.toString();
+        }
+
 	/**
 	 * handleCompanyChange
 	 * @param isOpen
