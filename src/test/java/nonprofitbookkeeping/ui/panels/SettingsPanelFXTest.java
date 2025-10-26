@@ -74,21 +74,59 @@ public class SettingsPanelFXTest extends JavaFXTestBase
 	 * @param string
 	 * @return
 	 */
-	private Matcher<ComboBox> hasValue(String string)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+        private Matcher<ComboBox<?>> hasValue(String expectedValue)
+        {
+                return new org.hamcrest.TypeSafeMatcher<ComboBox<?>>()
+                {
+                        @Override public void describeTo(org.hamcrest.Description description)
+                        {
+                                description.appendText("a ComboBox with value ")
+                                        .appendValue(expectedValue);
+                        }
+
+                        @Override protected boolean matchesSafely(ComboBox<?> comboBox)
+                        {
+                                Object value = comboBox.getValue();
+                                String actual = value == null ? null : value.toString();
+                                return java.util.Objects.equals(actual, expectedValue);
+                        }
+
+                        @Override protected void describeMismatchSafely(ComboBox<?> comboBox,
+                                org.hamcrest.Description mismatchDescription)
+                        {
+                                mismatchDescription.appendText("was ")
+                                        .appendValue(comboBox.getValue());
+                        }
+                };
+        }
 	
 	/**
 	 * @param string
 	 * @return
 	 */
-	private Matcher<TextField> hasTextInField(String string)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+        private Matcher<TextField> hasTextInField(String expectedText)
+        {
+                return new org.hamcrest.TypeSafeMatcher<TextField>()
+                {
+                        @Override public void describeTo(org.hamcrest.Description description)
+                        {
+                                description.appendText("a TextField with text ")
+                                        .appendValue(expectedText);
+                        }
+
+                        @Override protected boolean matchesSafely(TextField textField)
+                        {
+                                return java.util.Objects.equals(textField.getText(), expectedText);
+                        }
+
+                        @Override protected void describeMismatchSafely(TextField textField,
+                                org.hamcrest.Description mismatchDescription)
+                        {
+                                mismatchDescription.appendText("was ")
+                                        .appendValue(textField.getText());
+                        }
+                };
+        }
 	
 	@Test
 	public	void testUsersTab_TableDisplaysDemoData()
