@@ -63,18 +63,48 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.1.2</version>
                 <configuration>
+                    <skipTests>${panel.reset.only}</skipTests>
                     <useModulePath>false</useModulePath>
                     <excludes>
-                        <!-- JavaFX/TestFX-based UI tests require native desktop libraries
-                             that are unavailable in the execution environment. Exclude
-                             them so headless builds can run the remaining unit tests. -->
+                        <!-- Keep heavier UI suites disabled until they are adapted for headless execution. -->
                         <exclude>**/ui/**/*</exclude>
                         <exclude>**/*FXTest.java</exclude>
                         <exclude>**/*UITest.java</exclude>
+                        <exclude>**/ui/SimpleUITest.java</exclude>
                         <!-- ApplicationContextImplTest spins up the JavaFX toolkit -->
                         <exclude>**/core/ApplicationContextImplTest.java</exclude>
                     </excludes>
+                    <systemPropertyVariables>
+                        <testfx.toolkit>glass</testfx.toolkit>
+                        <testfx.robot>glass</testfx.robot>
+                        <testfx.headless>true</testfx.headless>
+                        <glass.platform>Monocle</glass.platform>
+                        <monocle.platform>Headless</monocle.platform>
+                        <prism.order>sw</prism.order>
+                        <prism.text>t2k</prism.text>
+                        <prism.es2>false</prism.es2>
+                        <prism.allowhidpi>false</prism.allowhidpi>
+                        <java.awt.headless>false</java.awt.headless>
+                    </systemPropertyVariables>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>skeleton-panel-reset-tests</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <excludes combine.self="override"></excludes>
+                            <includes>
+                                <include>**/SkeletonPanelResetTest.java</include>
+                            </includes>
+                            <reportsDirectory>
+                                ${project.build.directory}/surefire-reports/skeleton-panels
+                            </reportsDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
@@ -420,4 +450,34 @@
             <version>2.2.224</version>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>panel-reset-tests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>3.1.2</version>
+                        <executions>
+                            <execution>
+                                <id>panel-reset-suite</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                                <configuration>
+                                    <useModulePath>false</useModulePath>
+                                    <includes>
+                                        <include>**/SkeletonPanelResetTest.java</include>
+                                    </includes>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
