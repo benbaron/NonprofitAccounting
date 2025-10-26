@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import nonprofitbookkeeping.util.FormatUtils;
@@ -759,68 +760,116 @@ public class CoaEditorPanelFX extends BorderPane
 		}
 		
 		// Avoid duplicate nodes if account already exists in tree
-		if (find(this.rootItem, det) != null)
-		{
-			LOGGER.debug("Account {} already present in tree", det.getName());
-			return;
-		}
-		
-		if (parent == null)
-		{
+                if (findAccountNode(this.rootItem, det) != null)
+                {
+                        LOGGER.debug("Account {} (#{}) already present in tree", det.getName(),
+                                det.getAccountNumber());
+                        return;
+                }
+
+                if (parent == null)
+                {
 			this.rootItem.getChildren().add(makeNode(det)); // Add as a child of the (hidden) root
 		}
 		else
 		{
-			TreeItem<Account> parentItem = find(this.rootItem, parent); // Find the parent TreeItem
-			
-			if (parentItem != null)
-			{
-				parentItem.getChildren().add(makeNode(det));
-				parentItem.setExpanded(true); // Ensure parent is expanded to show new child
-			}
-			else
-			{
-				// Should not happen if parent is valid and tree is consistent
-				LOGGER.warn("Could not find parent TreeItem for account: " + parent.getName() +
-					" when inserting child " + det.getName());
-				// As a fallback, could add to root, but this indicates an issue.
-				this.rootItem.getChildren().add(makeNode(det));
-			}
-			
-		}
+                        TreeItem<Account> parentItem = findAccountNode(this.rootItem, parent);
+
+                        if (parentItem != null)
+                        {
+                                parentItem.getChildren().add(makeNode(det));
+                                parentItem.setExpanded(true); // Ensure parent is expanded to show new child
+                        }
+                        else
+                        {
+                                // Should not happen if parent is valid and tree is consistent
+                                LOGGER.warn(
+                                        "Could not find parent TreeItem for account {} (#{}) when inserting child {} (#{})",
+                                        parent.getName(), parent.getAccountNumber(), det.getName(),
+                                        det.getAccountNumber());
+                                // As a fallback, could add to root, but this indicates an issue.
+                                this.rootItem.getChildren().add(makeNode(det));
+                        }
+
+                }
 		
 		this.tree.refresh(); // Refresh to show the new item
 	}
 	
-	/**
-	 * Recursively searches for a {@link TreeItem} within the subtree of {@code n}
-	 * that wraps the specified {@link Account} {@code acc}.
-	 *
-	 * @param n The current {@link TreeItem} node to search from.
-	 * @param acc The {@link Account} to find within the tree.
-	 * @return The {@link TreeItem} that wraps {@code acc} if found; otherwise, null.
-	 */
-	private TreeItem<Account> find(TreeItem<Account> n, Account acc)
-	{
-		
-		if (Objects.equals(n.getValue(), acc))
-		{ // Use Objects.equals for null-safe comparison
-			return n;
-		}
-		
-		for (TreeItem<Account> c : n.getChildren())
-		{
-			TreeItem<Account> hit = find(c, acc);
-			
-			if (hit != null)
-			{
-				return hit;
-			}
-			
-		}
-		
-		return null;
-	}
+        /**
+         * Recursively searches for a {@link TreeItem} within the provided subtree that
+         * represents the supplied {@link Account}. Matching primarily occurs by account
+         * number to avoid duplicate nodes when Account instances differ.
+         *
+         * @param node the root of the subtree to search
+         * @param account the account to find
+         * @return the matching {@link TreeItem} or {@code null} when not present
+         */
+        private TreeItem<Account> findAccountNode(TreeItem<Account> node, Account account)
+        {
+                if (account == null)
+                {
+                        return null;
+                }
+
+                String accountNumber = account.getAccountNumber();
+
+                Predicate<Account> matcher = (candidate) -> {
+                        if (candidate == null)
+                        {
+                                return false;
+                        }
+
+                        if (candidate == account)
+                        {
+                                return true;
+                        }
+
+                        if (accountNumber != null)
+                        {
+                                return accountNumber.equals(candidate.getAccountNumber());
+                        }
+
+                        return false;
+                };
+
+                return find(node, matcher);
+        }
+
+        /**
+         * Recursively search starting at {@code node} for the first {@link TreeItem}
+         * whose wrapped {@link Account} satisfies {@code matcher}.
+         *
+         * @param node the subtree root to search
+         * @param matcher predicate that determines whether an account matches
+         * @return the first {@link TreeItem} whose account satisfies {@code matcher},
+         *         or {@code null} when no match exists
+         */
+        private TreeItem<Account> find(TreeItem<Account> node, Predicate<Account> matcher)
+        {
+
+                if (node == null || matcher == null)
+                {
+                        return null;
+                }
+
+                if (matcher.test(node.getValue()))
+                {
+                        return node;
+                }
+
+                for (TreeItem<Account> child : node.getChildren())
+                {
+                        TreeItem<Account> hit = find(child, matcher);
+
+                        if (hit != null)
+                        {
+                                return hit;
+                        }
+                }
+
+                return null;
+        }
 	
 	/**
 	 * handleCompanyChange
