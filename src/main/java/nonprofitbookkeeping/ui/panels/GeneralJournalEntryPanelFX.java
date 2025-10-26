@@ -11,6 +11,7 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -459,6 +460,23 @@ public class GeneralJournalEntryPanelFX extends JournalEntryWorkspaceFX
 
                this.debitTotalLbl.setText(FormatUtils.formatCurrency(debit));
                this.creditTotalLbl.setText(FormatUtils.formatCurrency(credit));
+
+               boolean balanced = debit.compareTo(credit) == 0 && debit.signum() != 0;
+               if (balanced)
+               {
+                       this.balanceStatusLbl.setText("Balanced");
+                       this.balanceStatusLbl.setStyle("-fx-text-fill: -fx-text-inner-color;");
+               }
+               else if (debit.compareTo(credit) == 0)
+               {
+                       this.balanceStatusLbl.setText("No amounts entered");
+                       this.balanceStatusLbl.setStyle("-fx-text-fill: -fx-text-inner-color;");
+               }
+               else
+               {
+                       this.balanceStatusLbl.setText("Out of balance");
+                       this.balanceStatusLbl.setStyle("-fx-text-fill: crimson; -fx-font-weight: bold;");
+               }
 
         }
 	
