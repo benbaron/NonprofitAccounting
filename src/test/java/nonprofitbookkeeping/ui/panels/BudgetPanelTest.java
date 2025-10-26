@@ -112,8 +112,10 @@ public class BudgetPanelTest {
         line.setPeriodicity(Periodicity.ANNUAL);
 
         StubBudgetLineDialog dlg = new StubBudgetLineDialog();
-        dlg.configure(true, line);
-        panel.setStub(dlg);
+        panel.setDialogFactory(ignored -> {
+            dlg.configure(true, line);
+            return dlg;
+        });
 
         Method add = BudgetPanel.class.getDeclaredMethod("actionAddLine", ActionEvent.class);
         add.setAccessible(true);
@@ -161,8 +163,10 @@ public class BudgetPanelTest {
         BudgetLine edited = initialBudget.getBudgetLines().get(0);
         edited.setTotalBudgetedAmount(new BigDecimal("75"));
         StubBudgetLineDialog dlg = new StubBudgetLineDialog();
-        dlg.configure(true, edited);
-        panel.setStub(dlg);
+        panel.setDialogFactory(ignored -> {
+            dlg.configure(true, edited);
+            return dlg;
+        });
 
         Method edit = BudgetPanel.class.getDeclaredMethod("actionEditLine", ActionEvent.class);
         edit.setAccessible(true);
@@ -213,7 +217,7 @@ public class BudgetPanelTest {
         table.getSelectionModel().setSelectionInterval(0,0);
 
         MutatingStubBudgetLineDialog dlg = new MutatingStubBudgetLineDialog(line);
-        panel.setStub(dlg);
+        panel.setDialogFactory(ignored -> dlg);
 
         Method edit = BudgetPanel.class.getDeclaredMethod("actionEditLine", ActionEvent.class);
         edit.setAccessible(true);
