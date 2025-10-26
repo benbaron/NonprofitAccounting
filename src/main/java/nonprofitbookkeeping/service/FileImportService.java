@@ -25,6 +25,7 @@ import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Ledger; // Added
 import nonprofitbookkeeping.model.impex.ImportedTransaction;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -50,6 +51,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Service class for importing financial transactions from various file formats like OFX and QIF.
@@ -110,92 +113,133 @@ public class FileImportService
 	 * @throws OFXParseException If an error occurs during the parsing of the OFX content.
 	 */
 	static List<ImportedTransaction> parseOfx(InputStream inputStream)	throws IOException,
-																		OFXParseException
+				OFXParseException
 	{
 		List<ImportedTransaction> importedTransactions = new ArrayList<>();
+		String sanitizedOfx = sanitizeOfxPayload(inputStream);
+		validateOfxStructure(sanitizedOfx);
 		AggregateUnmarshaller<ResponseEnvelope> unmarshaller =
-			new AggregateUnmarshaller<>(ResponseEnvelope.class);
-		ResponseEnvelope envelope = unmarshaller.unmarshal(inputStream);
-		
-                ResponseMessageSet bankMessageSet = envelope.getMessageSet(MessageSetType.banking);
+				new AggregateUnmarshaller<>(ResponseEnvelope.class);
 
-                if (bankMessageSet != null)
-                {
-                        List<ResponseMessage> bankingResponses = bankMessageSet.getResponseMessages();
+		try (InputStream sanitizedStream =
+				new ByteArrayInputStream(sanitizedOfx.getBytes(StandardCharsets.UTF_8)))
+		{
+			ResponseEnvelope envelope = unmarshaller.unmarshal(sanitizedStream);
 
-                        if (bankingResponses != null)
-                        {
-                                for (ResponseMessage responseMessage : bankingResponses)
-                                {
-                                        BankStatementResponseTransaction bankResponse =
-                                                (BankStatementResponseTransaction) responseMessage;
+			ResponseMessageSet bankMessageSet = envelope.getMessageSet(MessageSetType.banking);
 
-                                        if (bankResponse != null && bankResponse.getWrappedMessage() != null)
-                                        {
-                                                BankStatementResponse statement = bankResponse.getWrappedMessage();
-                                                BankAccountDetails bankAccount = statement.getAccount();
-                                                String accountNumber = bankAccount.getAccountNumber();
-                                                String accountType = bankAccount.getAccountType() != null ?
-                                                        bankAccount.getAccountType().toString() : "BANK";
-                                                String currencyCode = statement.getCurrencyCode();
-                                                TransactionList transactionList = statement.getTransactionList();
+			if (bankMessageSet != null)
+			{
+				List<ResponseMessage> bankingResponses = bankMessageSet.getResponseMessages();
 
-                                                if (transactionList != null &&
-                                                        transactionList.getTransactions() != null)
-                                                {
-                                                        for (Transaction ofxTransaction : transactionList.getTransactions())
-                                                        {
-                                                                importedTransactions.add(
-                                                                        mapToImportedTransaction(ofxTransaction,
-                                                                                accountNumber, accountType, currencyCode));
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
+				if (bankingResponses != null)
+				{
+					for (ResponseMessage responseMessage : bankingResponses)
+					{
+						BankStatementResponseTransaction bankResponse =
+							(BankStatementResponseTransaction) responseMessage;
 
-                ResponseMessageSet creditMessageSet = envelope.getMessageSet(MessageSetType.creditcard);
+						if (bankResponse != null && bankResponse.getWrappedMessage() != null)
+						{
+							BankStatementResponse statement = bankResponse.getWrappedMessage();
+							BankAccountDetails bankAccount = statement.getAccount();
+							String accountNumber = bankAccount.getAccountNumber();
+							String accountType = bankAccount.getAccountType() != null ?
+									bankAccount.getAccountType().toString() : "BANK";
+							String currencyCode = statement.getCurrencyCode();
+							TransactionList transactionList = statement.getTransactionList();
 
-                if (creditMessageSet != null)
-                {
-                        List<ResponseMessage> creditResponses = creditMessageSet.getResponseMessages();
+							if (transactionList != null &&
+									transactionList.getTransactions() != null)
+							{
+								for (Transaction ofxTransaction : transactionList.getTransactions())
+								{
+									importedTransactions.add(
+										mapToImportedTransaction(ofxTransaction,
+											accountNumber, accountType, currencyCode));
+								}
+							}
+						}
+					}
+				}
+			}
 
-                        if (creditResponses != null)
-                        {
-                                for (ResponseMessage responseMessage : creditResponses)
-                                {
-                                        CreditCardStatementResponseTransaction ccResponse =
-                                                (CreditCardStatementResponseTransaction) responseMessage;
+			ResponseMessageSet creditMessageSet = envelope.getMessageSet(MessageSetType.creditcard);
 
-                                        // Using getMessage() as suggested by OFX4J patterns for TransactionWrapper
-                                        if (ccResponse != null && ccResponse.getMessage() != null)
-                                        {
-                                                CreditCardStatementResponse statement = ccResponse.getMessage();
-                                                CreditCardAccountDetails ccAccount = statement.getAccount();
-                                                String accountNumber = ccAccount.getAccountNumber();
-                                                String accountType = "CREDITCARD";
-                                                String currencyCode = statement.getCurrencyCode();
-                                                TransactionList transactionList = statement.getTransactionList();
+			if (creditMessageSet != null)
+			{
+				List<ResponseMessage> creditResponses = creditMessageSet.getResponseMessages();
 
-                                                if (transactionList != null &&
-                                                        transactionList.getTransactions() != null)
-                                                {
-                                                        for (Transaction ofxTransaction : transactionList.getTransactions())
-                                                        {
-                                                                importedTransactions.add(
-                                                                        mapToImportedTransaction(ofxTransaction,
-                                                                                accountNumber, accountType, currencyCode));
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-		
+				if (creditResponses != null)
+				{
+					for (ResponseMessage responseMessage : creditResponses)
+					{
+						CreditCardStatementResponseTransaction ccResponse =
+							(CreditCardStatementResponseTransaction) responseMessage;
+
+						// Using getMessage() as suggested by OFX4J patterns for TransactionWrapper
+						if (ccResponse != null && ccResponse.getMessage() != null)
+						{
+							CreditCardStatementResponse statement = ccResponse.getMessage();
+							CreditCardAccountDetails ccAccount = statement.getAccount();
+							String accountNumber = ccAccount.getAccountNumber();
+							String accountType = "CREDITCARD";
+							String currencyCode = statement.getCurrencyCode();
+							TransactionList transactionList = statement.getTransactionList();
+
+							if (transactionList != null &&
+									transactionList.getTransactions() != null)
+							{
+								for (Transaction ofxTransaction : transactionList.getTransactions())
+								{
+									importedTransactions.add(
+										mapToImportedTransaction(ofxTransaction,
+											accountNumber, accountType, currencyCode));
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
 		return importedTransactions;
 	}
-	
+
+        private static String sanitizeOfxPayload(InputStream rawInputStream) throws IOException
+        {
+                String ofxContent = new String(rawInputStream.readAllBytes(), StandardCharsets.UTF_8);
+
+                Matcher malformedMatcher = MALFORMED_COMMENT_PATTERN.matcher(ofxContent);
+                StringBuffer sanitizedBuffer = new StringBuffer();
+
+                while (malformedMatcher.find())
+                {
+                        malformedMatcher.appendReplacement(sanitizedBuffer, "");
+                }
+
+                malformedMatcher.appendTail(sanitizedBuffer);
+
+                return sanitizedBuffer.toString();
+        }
+
+        private static void validateOfxStructure(String sanitizedOfx) throws OFXParseException
+        {
+                String normalized = sanitizedOfx.toUpperCase();
+
+                if (normalized.contains("<ACCTTYPE>") && !normalized.contains("</ACCTTYPE>"))
+                {
+                        throw new OFXParseException("Malformed OFX content: missing closing </ACCTTYPE> tag.");
+                }
+
+                if (normalized.contains("<TRNAMT>") && !normalized.contains("</TRNAMT>"))
+                {
+                        throw new OFXParseException("Malformed OFX content: missing closing </TRNAMT> tag.");
+                }
+        }
+
+        private static final Pattern MALFORMED_COMMENT_PATTERN =
+                Pattern.compile("<!-(?!-)(.*?)->", Pattern.DOTALL);
 	/**
 	 * Maps an OFX4J {@link Transaction} object to this application's {@link ImportedTransaction} format.
 	 *

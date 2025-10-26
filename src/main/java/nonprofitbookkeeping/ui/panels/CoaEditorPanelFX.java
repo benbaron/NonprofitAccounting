@@ -749,106 +749,131 @@ public class CoaEditorPanelFX extends BorderPane
 	 * @param parent The parent {@link Account} under which to insert the new item.
 	 *               If null, {@code det} is added as a root-level account in the tree.
 	 */
-        private void insertIntoTree(Account det, Account parent)
-        {
+	private void insertIntoTree(Account det, Account parent)
+	{
 
-                if (det == null)
-                {
-                        LOGGER.warn("Attempted to insert null account into tree");
-                        return;
-                }
+		if (det == null)
+		{
+			LOGGER.warn("Attempted to insert null account into tree");
+			return;
+		}
 
-                TreeItem<Account> existingItem = find(this.rootItem, det);
+		TreeItem<Account> existingNode = findByAccountIdentifier(this.rootItem, det);
 
-                if (existingItem != null)
-                {
-                        existingItem.setValue(det);
-                        LOGGER.debug("Account {} ({}) already present in tree; refreshing existing node",
-                                det.getName(), det.getAccountNumber());
-                        this.tree.refresh();
-                        return;
-                }
+		if (existingNode != null)
+		{
+			LOGGER.debug("Account {} ({}) already present in tree", det.getName(), det.getAccountNumber());
+			return;
+		}
 
-                TreeItem<Account> parentItem = this.rootItem;
+		TreeItem<Account> nodeToInsert = makeNode(det);
 
-                if (parent != null)
-                {
-                        parentItem = find(this.rootItem, parent);
+		if (parent == null)
+		{
+			this.rootItem.getChildren().add(nodeToInsert); // Add as a child of the (hidden) root
+		}
+		else
+		{
+			TreeItem<Account> parentItem = findByAccountIdentifier(this.rootItem, parent);
 
-                        if (parentItem == null)
-                        {
-                                LOGGER.warn("Parent account {} ({}) not found; adding {} ({}) to root",
-                                        parent.getName(), parent.getAccountNumber(), det.getName(), det.getAccountNumber());
-                                parentItem = this.rootItem;
-                        }
-                }
+			if (parentItem != null)
+			{
+				parentItem.getChildren().add(nodeToInsert);
+				parentItem.setExpanded(true); // Ensure parent is expanded to show new child
+			}
+			else
+			{
+				LOGGER.warn("Could not locate parent [{} - {}] when inserting child [{} - {}]. Adding to root instead.",
+					parent.getAccountNumber(), parent.getName(), det.getAccountNumber(), det.getName());
+				this.rootItem.getChildren().add(nodeToInsert);
+			}
 
-                TreeItem<Account> newNode = makeNode(det);
-                parentItem.getChildren().add(newNode);
+		}
 
-                if (parentItem != this.rootItem)
-                {
-                        parentItem.setExpanded(true);
-                }
+		this.tree.refresh(); // Refresh to show the new item
+	}
 
-                this.tree.refresh(); // Refresh to show the new item
-        }
-	
 	/**
-	 * Recursively searches for a {@link TreeItem} within the subtree of {@code n}
-	 * that wraps the specified {@link Account} {@code acc}.
+	 * Attempts to locate the {@link TreeItem} in the tree corresponding to the provided
+	 * {@link Account}. If the account has a number, the lookup is based on that identifier;
+	 * otherwise the search falls back to reference equality.
 	 *
-	 * @param n The current {@link TreeItem} node to search from.
-	 * @param acc The {@link Account} to find within the tree.
-	 * @return The {@link TreeItem} that wraps {@code acc} if found; otherwise, null.
+	 * @param root the root of the subtree to search
+	 * @param target the account to locate
+	 * @return the matching {@link TreeItem}, or {@code null} when no match is found
 	 */
-        private TreeItem<Account> find(TreeItem<Account> n, Account acc)
-        {
+	private TreeItem<Account> findByAccountIdentifier(TreeItem<Account> root, Account target)
+	{
 
-                if (n == null || acc == null)
-                {
-                        return null;
-                }
+		if (root == null || target == null)
+		{
+			return null;
+		}
 
-                Account nodeAccount = n.getValue();
+		String accountNumber = target.getAccountNumber();
 
-                if (isSameAccount(nodeAccount, acc))
-                {
-                        return n;
-                }
+		if (accountNumber != null && !accountNumber.isBlank())
+		{
+			return findByAccountNumber(root, accountNumber);
+		}
 
-                for (TreeItem<Account> c : n.getChildren())
-                {
-                        TreeItem<Account> hit = find(c, acc);
+		return findByReference(root, target);
+	}
 
-                        if (hit != null)
-                        {
-                                return hit;
-                        }
+	private TreeItem<Account> findByAccountNumber(TreeItem<Account> node, String accountNumber)
+	{
 
-                }
+		if (node == null || accountNumber == null)
+		{
+			return null;
+		}
 
-                return null;
-        }
+		Account value = node.getValue();
 
-        private boolean isSameAccount(Account nodeAccount, Account target)
-        {
-                if (nodeAccount == null || target == null)
-                {
-                        return false;
-                }
+		if (value != null && accountNumber.equals(value.getAccountNumber()))
+		{
+			return node;
+		}
 
-                String nodeNumber = nodeAccount.getAccountNumber();
-                String targetNumber = target.getAccountNumber();
+		for (TreeItem<Account> child : node.getChildren())
+		{
+			TreeItem<Account> match = findByAccountNumber(child, accountNumber);
 
-                if (nodeNumber != null && targetNumber != null && nodeNumber.equals(targetNumber))
-                {
-                        return true;
-                }
+			if (match != null)
+			{
+				return match;
+			}
+		}
 
-                return Objects.equals(nodeAccount, target);
-        }
-	
+		return null;
+	}
+
+	private TreeItem<Account> findByReference(TreeItem<Account> node, Account account)
+	{
+
+		if (node == null || account == null)
+		{
+			return null;
+		}
+
+		if (Objects.equals(node.getValue(), account))
+		{
+			return node;
+		}
+
+		for (TreeItem<Account> child : node.getChildren())
+		{
+			TreeItem<Account> match = findByReference(child, account);
+
+			if (match != null)
+			{
+				return match;
+			}
+		}
+
+		return null;
+	}
+
 	/**
 	 * handleCompanyChange
 	 * @param isOpen
