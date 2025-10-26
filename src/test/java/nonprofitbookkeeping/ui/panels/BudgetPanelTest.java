@@ -28,6 +28,7 @@ public class BudgetPanelTest {
         StubBudgetLineDialog() {
             super((Dialog) null, "Stub", new ChartOfAccounts(), List.of(), null);
         }
+
         void configure(boolean saved, BudgetLine line) {
             this.saved = saved;
             this.line = line;
@@ -66,6 +67,10 @@ public class BudgetPanelTest {
 
         void setDialogFactory(Function<BudgetLine, BudgetLineDialog> factory) {
             this.factory = factory;
+        }
+
+        void setStub(BudgetLineDialog dialog) {
+            setDialogFactory(line -> dialog);
         }
 
         @Override
