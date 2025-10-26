@@ -68,6 +68,8 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 	
         /** Listener for changes in the currently open company, to refresh UI elements. */
         private CompanyChangeListener companyChangeListener;
+        /** Tracks whether {@link #companyChangeListener} is currently registered. */
+        private boolean companyChangeListenerRegistered;
 	
 	/**
 	 * Constructs a new {@code AccountTransactionDetailsPanelFX}.
@@ -534,10 +536,16 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 	 */
         private void setupCompanyChangeListener()
         {
+
+                if (this.companyChangeListenerRegistered)
+                {
+                        return; // Already registered for company change notifications
+                }
+
                 if (this.companyChangeListener != null)
                 {
-                        // Already registered; avoid duplicate listener instances.
-                        return;
+                        // Clean up any stale listener before creating a new one
+                        CurrentCompany.CompanyListener.removeCompanyListener(this.companyChangeListener);
                 }
 
                 this.companyChangeListener = new CompanyChangeListener()
@@ -560,6 +568,7 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 
                 };
                 CurrentCompany.CompanyListener.addCompanyListener(this.companyChangeListener);
+                this.companyChangeListenerRegistered = true;
 
         }
 	
@@ -572,13 +581,14 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 	public void dispose()
 	{
 		
-		if (this.companyChangeListener != null)
-		{
-			CurrentCompany.CompanyListener.removeCompanyListener(this.companyChangeListener);
-			this.companyChangeListener = null;
-		}
-		
-	}
+                if (this.companyChangeListener != null)
+                {
+                        CurrentCompany.CompanyListener.removeCompanyListener(this.companyChangeListener);
+                        this.companyChangeListener = null;
+                }
+                this.companyChangeListenerRegistered = false;
+
+        }
 	
 	/**
 	 * Represents a single row of data to be displayed in the transaction details table.

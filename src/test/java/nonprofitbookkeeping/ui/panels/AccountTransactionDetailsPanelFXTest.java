@@ -1,6 +1,7 @@
 package nonprofitbookkeeping.ui.panels;
 
 import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.ui.JavaFXTestBase;
@@ -18,26 +19,34 @@ public class AccountTransactionDetailsPanelFXTest extends JavaFXTestBase {
 
     private AccountTransactionDetailsPanelFX panel;
 
+    @Start
+    @Override
+    public void start(Stage stage) throws Exception {
+        super.start(stage);
+        getStage().setScene(new Scene(new BorderPane(), 800, 600));
+    }
+
     @BeforeEach
-    public void clearListeners() {
+    public void createPanel() {
         for (CurrentCompany.CompanyChangeListener l : CurrentCompany.CompanyListener.getListeners()) {
             CurrentCompany.CompanyListener.removeCompanyListener(l);
         }
-    }
 
-    @Start
-    @Override
-    public void start(Stage stage) {
-        this.panel = new AccountTransactionDetailsPanelFX();
-        Scene scene = new Scene(this.panel, 800, 600);
-        stage.setScene(scene);
-        stage.show();
+        interact(() -> {
+            this.panel = new AccountTransactionDetailsPanelFX();
+            getStage().setScene(new Scene(this.panel, 800, 600));
+        });
     }
 
     @AfterEach
     public void disposePanel() {
         if (this.panel != null) {
             this.panel.dispose();
+            this.panel = null;
+        }
+
+        for (CurrentCompany.CompanyChangeListener l : CurrentCompany.CompanyListener.getListeners()) {
+            CurrentCompany.CompanyListener.removeCompanyListener(l);
         }
     }
 
@@ -70,5 +79,21 @@ public class AccountTransactionDetailsPanelFXTest extends JavaFXTestBase {
         assertDoesNotThrow(() -> this.panel.dispose(),
                 "Disposing twice should not throw and should keep listeners cleared");
         assertTrue(CurrentCompany.CompanyListener.getListeners().isEmpty());
+    }
+
+    @Test
+    public void testRecreatingPanelAfterDisposeRegistersListenerOnlyOnce() {
+        assertEquals(1, CurrentCompany.CompanyListener.getListeners().size());
+
+        this.panel.dispose();
+        assertTrue(CurrentCompany.CompanyListener.getListeners().isEmpty());
+
+        interact(() -> {
+            AccountTransactionDetailsPanelFX newPanel = new AccountTransactionDetailsPanelFX();
+            getStage().setScene(new Scene(newPanel, 800, 600));
+            this.panel = newPanel;
+        });
+
+        assertEquals(1, CurrentCompany.CompanyListener.getListeners().size());
     }
 }
