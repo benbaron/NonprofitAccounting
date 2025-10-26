@@ -30,13 +30,11 @@ public class BudgetPanelTest {
         }
         void configure(boolean saved, BudgetLine line) {
             this.saved = saved;
-            this.onShow = onShow;
+            this.line = line;
         }
 
         @Override public void setVisible(boolean b) {
-            if (b && this.onShow != null) {
-                this.onShow.accept(this.line);
-            }
+            // No-op: the dialog never becomes visible in tests.
         }
 
         @Override public boolean isSaved() { return this.saved; }
@@ -72,10 +70,19 @@ public class BudgetPanelTest {
 
         @Override
         protected BudgetLineDialog createBudgetLineDialog(String title, BudgetLine line) {
+            if (this.stub != null) {
+                return this.stub;
+            }
             if (this.factory != null) {
                 return this.factory.apply(line);
             }
             return super.createBudgetLineDialog(title, line);
+        }
+
+        private BudgetLineDialog stub;
+
+        void setStub(BudgetLineDialog stub) {
+            this.stub = stub;
         }
     }
 

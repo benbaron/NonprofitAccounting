@@ -202,6 +202,16 @@ public class InventoryItem
                 this.depreciationRate = valueOf;
         }
 
+        /**
+         * Returns the configured depreciation method, if any.
+         *
+         * @return the depreciation method name or {@code null}
+         */
+        public String getDepreciationMethod()
+        {
+                return this.depreciationMethod;
+        }
+
 	/**
 	 * Gets the depreciation rate of the item.
 	 * Note: This is a stub method and currently returns null.
