@@ -402,21 +402,22 @@ public class BudgetPanel extends JDialog
                BudgetLineDialog dialog = createBudgetLineDialog("Add Budget Line", null);
                dialog.setVisible(true);
 		
-		if (dialog.isSaved())
-		{
-			BudgetLine newLine = dialog.getBudgetLine();
-			
-			if (newLine != null)
-			{
-				this.currentBudget.addBudgetLine(newLine); // Assumes addBudgetLine exists and
-															// handles null list
-				this.budgetLineTableModel.fireTableDataChanged(); // More specific event might be
-																	// better
-			}
-			
-		}
-		
-	}
+                if (!dialog.isSaved())
+                {
+                        return;
+                }
+
+                BudgetLine newLine = dialog.getBudgetLine();
+
+                if (newLine == null)
+                {
+                        LOGGER.warn("BudgetLineDialog reported success but returned no budget line.");
+                        return;
+                }
+
+                this.budgetLineTableModel.addRow(newLine);
+
+        }
 	
 	/**
 	 * Handles the action of editing an existing budget line.
@@ -443,23 +444,27 @@ public class BudgetPanel extends JDialog
                        BudgetLineDialog dialog = createBudgetLineDialog("Edit Budget Line", lineToEdit);
 			dialog.setVisible(true);
 			
-			if (dialog.isSaved())
-			{
-				// The dialog modifies the lineToEdit object directly if it's passed by
-				// reference
-				// and the dialog works on that instance. Or it returns a new/modified instance.
-				// Assuming dialog.getBudgetLine() returns the potentially modified instance.
-				BudgetLine editedLine = dialog.getBudgetLine();
-				
-				if (editedLine != lineToEdit)
-				{ // If dialog returned a new instance
-					this.currentBudget.getBudgetLines().set(selectedRow, editedLine);
-				}
-				
-				this.budgetLineTableModel.fireTableRowsUpdated(selectedRow, selectedRow);
-			}
-			
-		}
+                        if (!dialog.isSaved())
+                        {
+                                return;
+                        }
+
+                        BudgetLine editedLine = dialog.getBudgetLine();
+
+                        if (editedLine == null)
+                        {
+                                LOGGER.warn("BudgetLineDialog reported success but returned no budget line.");
+                                return;
+                        }
+
+                        if (editedLine != lineToEdit)
+                        { // If dialog returned a new instance
+                                this.currentBudget.getBudgetLines().set(selectedRow, editedLine);
+                        }
+
+                        this.budgetLineTableModel.fireTableRowsUpdated(selectedRow, selectedRow);
+
+                }
 		else
 		{
 			JOptionPane.showMessageDialog(this, "Please select a line to edit.", "No Selection",

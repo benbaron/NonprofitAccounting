@@ -24,13 +24,34 @@ public class BudgetPanelTest {
         private final boolean saved;
         private final BudgetLine line;
         StubBudgetLineDialog(boolean saved, BudgetLine line) {
-            super((Dialog) null, "Stub", new ChartOfAccounts(), List.of(), line);
+            this(saved, line, new ChartOfAccounts());
+        }
+        StubBudgetLineDialog(boolean saved, BudgetLine line, ChartOfAccounts coa) {
+            super((Dialog) null, "Stub", coa, List.of(), line);
             this.saved = saved;
             this.line = line;
         }
         @Override public void setVisible(boolean b) { /* no UI */ }
         @Override public boolean isSaved() { return this.saved; }
         @Override public BudgetLine getBudgetLine() { return this.line; }
+    }
+
+    /** Stub dialog that mutates an existing budget line before closing. */
+    static class MutatingStubBudgetLineDialog extends BudgetLineDialog {
+        private final BudgetLine target;
+        private final Runnable mutation;
+        MutatingStubBudgetLineDialog(BudgetLine target, ChartOfAccounts coa, Runnable mutation) {
+            super((Dialog) null, "Stub", coa, List.of(), target);
+            this.target = target;
+            this.mutation = mutation;
+        }
+        @Override public void setVisible(boolean b) {
+            if (b && this.mutation != null) {
+                this.mutation.run();
+            }
+        }
+        @Override public boolean isSaved() { return true; }
+        @Override public BudgetLine getBudgetLine() { return this.target; }
     }
 
     /** Panel subclass that injects a stub dialog. */
@@ -67,7 +88,7 @@ public class BudgetPanelTest {
         line.setTotalBudgetedAmount(new BigDecimal("100"));
         line.setPeriodicity(Periodicity.ANNUAL);
 
-        StubBudgetLineDialog dlg = new StubBudgetLineDialog(true, line);
+        StubBudgetLineDialog dlg = new StubBudgetLineDialog(true, line, coa);
         panel.setStub(dlg);
 
         Method add = BudgetPanel.class.getDeclaredMethod("actionAddLine", ActionEvent.class);
@@ -114,7 +135,7 @@ public class BudgetPanelTest {
         edited.setAccountName("Cash");
         edited.setTotalBudgetedAmount(new BigDecimal("75"));
         edited.setPeriodicity(Periodicity.ANNUAL);
-        StubBudgetLineDialog dlg = new StubBudgetLineDialog(true, edited);
+        StubBudgetLineDialog dlg = new StubBudgetLineDialog(true, edited, coa);
         panel.setStub(dlg);
 
         Method edit = BudgetPanel.class.getDeclaredMethod("actionEditLine", ActionEvent.class);
@@ -127,5 +148,48 @@ public class BudgetPanelTest {
 
         assertEquals(1, model.getBudgetLines().size());
         assertEquals(new BigDecimal("75"), model.getBudgetLines().get(0).getTotalBudgetedAmount());
+    }
+
+    @Test
+    public void testEditBudgetLineInPlaceInstance() throws Exception {
+        ChartOfAccounts coa = new ChartOfAccounts();
+        Account acc = new Account();
+        acc.setAccountNumber("A1");
+        acc.setName("Cash");
+        coa.addAccount(acc);
+
+        Fund fund = new Fund("General");
+        BudgetService svc = new BudgetService();
+        File dir = Files.createTempDirectory("budtest3").toFile();
+
+        Budget initialBudget = new Budget("B", 2026);
+        BudgetLine line = new BudgetLine();
+        line.setAccountId("A1");
+        line.setAccountName("Cash");
+        line.setTotalBudgetedAmount(new BigDecimal("40"));
+        line.setPeriodicity(Periodicity.ANNUAL);
+        initialBudget.setBudgetLines(new java.util.ArrayList<>(List.of(line)));
+
+        TestBudgetPanel panel = new TestBudgetPanel(coa, List.of(fund), svc, dir, initialBudget);
+
+        Field tableField = BudgetPanel.class.getDeclaredField("tblBudgetLines");
+        tableField.setAccessible(true);
+        JTable table = (JTable) tableField.get(panel);
+        table.getSelectionModel().setSelectionInterval(0,0);
+
+        MutatingStubBudgetLineDialog dlg = new MutatingStubBudgetLineDialog(line, coa,
+                () -> line.setTotalBudgetedAmount(new BigDecimal("95")));
+        panel.setStub(dlg);
+
+        Method edit = BudgetPanel.class.getDeclaredMethod("actionEditLine", ActionEvent.class);
+        edit.setAccessible(true);
+        edit.invoke(panel, new ActionEvent(panel, ActionEvent.ACTION_PERFORMED, "edit"));
+
+        Field modelField = BudgetPanel.class.getDeclaredField("budgetLineTableModel");
+        modelField.setAccessible(true);
+        BudgetLineTableModel model = (BudgetLineTableModel) modelField.get(panel);
+
+        assertSame(line, model.getBudgetLines().get(0));
+        assertEquals(new BigDecimal("95"), model.getBudgetLines().get(0).getTotalBudgetedAmount());
     }
 }
