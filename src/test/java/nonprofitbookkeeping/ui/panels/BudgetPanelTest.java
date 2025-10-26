@@ -14,6 +14,8 @@ import java.nio.file.Files;
 import java.util.List;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,10 +30,17 @@ public class BudgetPanelTest {
         }
         void configure(boolean saved, BudgetLine line) {
             this.saved = saved;
-            this.line = line;
+            this.onShow = onShow;
         }
-        @Override public void setVisible(boolean b) { /* no UI */ }
+
+        @Override public void setVisible(boolean b) {
+            if (b && this.onShow != null) {
+                this.onShow.accept(this.line);
+            }
+        }
+
         @Override public boolean isSaved() { return this.saved; }
+
         @Override public BudgetLine getBudgetLine() { return this.line; }
     }
 
@@ -50,15 +59,23 @@ public class BudgetPanelTest {
 
     /** Panel subclass that injects a stub dialog. */
     static class TestBudgetPanel extends BudgetPanel {
-        BudgetLineDialog stub;
+        private Function<BudgetLine, BudgetLineDialog> factory;
+
         TestBudgetPanel(ChartOfAccounts coa, List<Fund> funds,
                         BudgetService svc, File dir, Budget budget) {
             super(null, coa, funds, svc, dir, budget);
         }
-        void setStub(BudgetLineDialog d) { this.stub = d; }
+
+        void setDialogFactory(Function<BudgetLine, BudgetLineDialog> factory) {
+            this.factory = factory;
+        }
+
         @Override
         protected BudgetLineDialog createBudgetLineDialog(String title, BudgetLine line) {
-            return this.stub;
+            if (this.factory != null) {
+                return this.factory.apply(line);
+            }
+            return super.createBudgetLineDialog(title, line);
         }
     }
 
