@@ -39,13 +39,22 @@ public class CustomerService
         *
         * @param customer The {@link Customer} object to add. Null values are ignored.
         */
-       public static void addCustomer(Customer customer)
-       {
-               if (customer != null)
-               {
-                       customers.add(customer);
-               }
-       }
+      public static void addCustomer(Customer customer)
+      {
+              if (customer == null)
+              {
+                      return;
+              }
+
+              String customerId = customer.getId();
+
+              if (customerId == null || customerId.trim().isEmpty())
+              {
+                      return;
+              }
+
+              customers.add(customer);
+      }
 
        /**
         * Clears all customer data from the system.

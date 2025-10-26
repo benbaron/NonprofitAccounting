@@ -5,6 +5,7 @@
 package nonprofitbookkeeping.model;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -48,16 +49,16 @@ import lombok.NoArgsConstructor;
 	 * @param credit        credit amount or {@code null}
 	 * @param text          descriptive memo text
 	 */
-	public JournalEntry(String id, String transactionId, String date, String account,
-		BigDecimal debit, BigDecimal credit, String text)
-	{
-		this.id = id;
-		this.transactionId = (transactionId != null) ? transactionId : id;
-		this.date = date;
-		this.account = account;
-		this.debit = debit;
-		this.credit = credit;
-		this.memo = text;
+        public JournalEntry(String id, String transactionId, String date, String account,
+                BigDecimal debit, BigDecimal credit, String text)
+        {
+                this.id = id;
+                this.transactionId = Objects.requireNonNullElse(transactionId, id);
+                this.date = date;
+                this.account = account;
+                this.debit = debit;
+                this.credit = credit;
+                this.memo = text;
 	}
 	
 	/**
