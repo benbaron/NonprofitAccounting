@@ -237,9 +237,9 @@ public class RegaliaSalesDtl7Bean
 	/**
 	 * @param one
 	 */
-        public void setA_b_value_lost(BigDecimal one)
+        public void setA_b_value_lost(BigDecimal valueLost)
         {
-                this.a_b_value_lost = one;
+                this.a_b_value_lost = valueLost;
         }
 	
 }

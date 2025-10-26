@@ -151,9 +151,9 @@ public class Funds14Bean
 	/**
 	 * @param one
 	 */
-        public void setAll_non_dedicated_funds(BigDecimal one)
+        public void setAll_non_dedicated_funds(BigDecimal allNonDedicatedFunds)
         {
-                this.all_non_dedicated_funds = one;
+                this.all_non_dedicated_funds = allNonDedicatedFunds;
         }
 	
 }

@@ -218,9 +218,9 @@ public class ExpenseDtl12bBean
 	/**
 	 * @param one
 	 */
-        public void setAmount(BigDecimal one)
+        public void setAmount(BigDecimal amount)
         {
-                this.amount = one;
+                this.amount = amount;
         }
 	
 }

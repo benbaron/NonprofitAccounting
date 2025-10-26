@@ -290,9 +290,9 @@ public class Newsletter15Bean
 	/**
 	 * @param one
 	 */
-        public void setAdj_gross_income_a_b_c(BigDecimal one)
+        public void setAdj_gross_income_a_b_c(BigDecimal adjustedGrossIncome)
         {
-                this.adj_gross_income_a_b_c = one;
+                this.adj_gross_income_a_b_c = adjustedGrossIncome;
         }
 	
 }

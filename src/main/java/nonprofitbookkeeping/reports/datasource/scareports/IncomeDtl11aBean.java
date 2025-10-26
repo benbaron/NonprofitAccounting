@@ -110,9 +110,9 @@ public class IncomeDtl11aBean
 	/**
 	 * @param one
 	 */
-        public void setAmount(BigDecimal one)
+        public void setAmount(BigDecimal amount)
         {
-                this.amount = one;
+                this.amount = amount;
         }
 	
 }

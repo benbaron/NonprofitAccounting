@@ -107,9 +107,9 @@ public class Income4Bean
 	/**
 	 * @param one
 	 */
-        public void setExchequer(BigDecimal one)
+        public void setExchequer(BigDecimal exchequer)
         {
-                this.exchequer = one;
+                this.exchequer = exchequer;
         }
 	
 }

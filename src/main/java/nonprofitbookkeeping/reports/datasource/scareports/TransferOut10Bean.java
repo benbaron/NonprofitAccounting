@@ -164,9 +164,9 @@ public class TransferOut10Bean
 	/**
 	 * @param one
 	 */
-        public void setAmount(BigDecimal one)
+        public void setAmount(BigDecimal amount)
         {
-                this.amount = one;
+                this.amount = amount;
         }
 	
 }

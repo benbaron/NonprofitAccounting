@@ -131,9 +131,9 @@ public class LiabilityDtl5bBean
 	/**
 	 * @param one
 	 */
-        public void setCurrent_amount(BigDecimal one)
+        public void setCurrent_amount(BigDecimal currentAmount)
         {
-                this.current_amount = one;
+                this.current_amount = currentAmount;
         }
 	
 }

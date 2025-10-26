@@ -118,9 +118,9 @@ public class FinanceComm13Bean
 	/**
 	 * @param one
 	 */
-        public void setExchequer(BigDecimal one)
+        public void setExchequer(BigDecimal exchequer)
         {
-                this.exchequer = one;
+                this.exchequer = exchequer;
         }
 	
 }

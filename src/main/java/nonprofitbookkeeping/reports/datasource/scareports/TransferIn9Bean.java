@@ -187,9 +187,9 @@ public class TransferIn9Bean
 	/**
 	 * @param one
 	 */
-        public void setAmount(BigDecimal one)
+        public void setAmount(BigDecimal amount)
         {
-                this.amount = one;
+                this.amount = amount;
         }
 	
 }

@@ -139,9 +139,9 @@ public class InventoryDtl6Bean
 	/**
 	 * @param one
 	 */
-        public void setActual_gross_income_from_inventory_sales(BigDecimal one)
+        public void setActual_gross_income_from_inventory_sales(BigDecimal amount)
         {
-                this.actual_gross_income_from_inventory_sales = one;
+                this.actual_gross_income_from_inventory_sales = amount;
         }
 	
 }
