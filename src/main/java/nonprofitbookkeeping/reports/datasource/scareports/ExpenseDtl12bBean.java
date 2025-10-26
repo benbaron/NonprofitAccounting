@@ -215,11 +215,9 @@ public class ExpenseDtl12bBean
 	private BigDecimal show_total_on_pg_4_line_28;
 	private BigDecimal show_total_on_pg_4_line_29;
 	
-        /**
-         * Records the reported amount for the transfer detail row.
-         *
-         * @param amount value captured from the report data
-         */
+	/**
+	 * @param one
+	 */
         public void setAmount(BigDecimal amount)
         {
                 this.amount = amount;

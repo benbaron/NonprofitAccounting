@@ -104,11 +104,9 @@ public class Income4Bean
 	private BigDecimal line_11_minus_line_31;
 	private BigDecimal exchequer;
 	private BigDecimal seneschal;
-        /**
-         * Records the exchequer value for the summary section of the report.
-         *
-         * @param exchequer amount reported by the workbook
-         */
+	/**
+	 * @param one
+	 */
         public void setExchequer(BigDecimal exchequer)
         {
                 this.exchequer = exchequer;

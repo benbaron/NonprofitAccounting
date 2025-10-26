@@ -128,11 +128,9 @@ public class LiabilityDtl5bBean
 	private BigDecimal total_4;
 	private BigDecimal total_5;
 	private BigDecimal total_6;
-        /**
-         * Updates the current amount for the liability entry.
-         *
-         * @param currentAmount balance captured from the report
-         */
+	/**
+	 * @param one
+	 */
         public void setCurrent_amount(BigDecimal currentAmount)
         {
                 this.current_amount = currentAmount;

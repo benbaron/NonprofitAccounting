@@ -234,11 +234,9 @@ public class RegaliaSalesDtl7Bean
 	private BigDecimal year_acquired_7;
 	private BigDecimal year_acquired_8;
 	private BigDecimal year_acquired_9;
-        /**
-         * Sets the value lost between columns A and B for regalia sales.
-         *
-         * @param valueLost computed depreciation amount
-         */
+	/**
+	 * @param one
+	 */
         public void setA_b_value_lost(BigDecimal valueLost)
         {
                 this.a_b_value_lost = valueLost;

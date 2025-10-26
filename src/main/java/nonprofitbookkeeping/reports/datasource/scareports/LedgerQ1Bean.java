@@ -79,11 +79,9 @@ public class LedgerQ1Bean
 	/**
 	 * @param string
 	 */
-	public void setCol_0(String string)
-	{
-		// TODO Auto-generated method stub
-		
-		
-	}
+        public void setCol_0(String col0)
+        {
+                this.col_0 = col0;
+        }
 	
 }
