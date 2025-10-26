@@ -1,6 +1,7 @@
 package nonprofitbookkeeping.core;
 
 import nonprofitbookkeeping.model.Account;
+import nonprofitbookkeeping.model.AccountDetailsImpl;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountType;
 import nonprofitbookkeeping.model.ChartOfAccounts;
@@ -9,92 +10,85 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ChartOfAccountsBuilderTest
 {
         @Test
-        void buildCreatesChartWithStagedAccounts()
+        void buildIncludesAccountsAddedByNumber()
         {
-                ChartOfAccountsBuilder builder = new ChartOfAccountsBuilder()
-                        .addAccount("100", "Cash", AccountSide.DEBIT)
-                        .addAccount("200", "Revenue", AccountSide.CREDIT);
+                ChartOfAccounts chart = ChartOfAccountsBuilder.create()
+                        .addAccount("1000", "Operating Cash", AccountSide.DEBIT)
+                        .addAccount("2000", "Accounts Payable", AccountSide.CREDIT)
+                        .build();
 
-                ChartOfAccounts chart = builder.build();
-
-                Account cash = chart.getAccount("100");
-                Account revenue = chart.getAccount("200");
-
-                assertNotNull(cash, "Cash account should be present in the chart");
-                assertNotNull(revenue, "Revenue account should be present in the chart");
-                assertEquals("Cash", cash.getName());
-                assertEquals(AccountSide.DEBIT, cash.getIncreaseSide());
-                assertEquals("Revenue", revenue.getName());
-                assertEquals(AccountSide.CREDIT, revenue.getIncreaseSide());
+                assertNotNull(chart.getAccount("1000"));
+                assertNotNull(chart.getAccount("2000"));
+                assertEquals(2, chart.getAccounts().size());
         }
 
         @Test
-        void buildAttachesChildAccountsWhenParentExists()
+        void buildCopiesAccountDetailsMetadata()
+        {
+                AccountDetailsImpl details = new AccountDetailsImpl("3000",
+                        "Unrestricted Net Assets",
+                        AccountSide.CREDIT);
+                details.setAccountCode("EQ-3000");
+                details.setAccountType(AccountType.EQUITY.name());
+                details.setCurrency("USD");
+                details.setOpeningBalance(new BigDecimal("125.75"));
+
+                ChartOfAccounts chart = ChartOfAccountsBuilder.create()
+                        .addAccount(details)
+                        .build();
+
+                Account account = chart.getAccount("3000");
+
+                assertNotNull(account);
+                assertEquals("Unrestricted Net Assets", account.getName());
+                assertEquals("EQ-3000", account.getAccountCode());
+                assertEquals(AccountType.EQUITY, account.getAccountType());
+                assertEquals("USD", account.getCurrency());
+                assertEquals(new BigDecimal("125.75"), account.getOpeningBalance());
+        }
+
+        @Test
+        void buildResolvesChildAccounts()
         {
                 Account parent = new Account();
-                parent.setAccountNumber("300");
-                parent.setName("Expenses");
+                parent.setAccountNumber("1000");
+                parent.setName("Cash");
                 parent.setIncreaseSide(AccountSide.DEBIT);
-                parent.setAccountType(AccountType.EXPENSE);
 
                 Account child = new Account();
-                child.setAccountNumber("301");
-                child.setName("Supplies");
+                child.setAccountNumber("1001");
+                child.setName("Petty Cash");
                 child.setIncreaseSide(AccountSide.DEBIT);
-                child.setParentAccountId("300");
-                child.setOpeningBalance(new BigDecimal("42.00"));
+                child.setParentAccountId("1000");
 
-                ChartOfAccounts chart = new ChartOfAccountsBuilder()
+                ChartOfAccounts chart = ChartOfAccountsBuilder.create()
                         .addAccount(parent)
                         .addAccount(child)
                         .build();
 
-                Account storedParent = chart.getAccount("300");
-                Account storedChild = chart.getAccount("301");
+                Account root = chart.getAccount("1000");
+                assertNotNull(root);
 
-                assertNotNull(storedParent, "Parent account should be present");
-                assertNotNull(storedChild, "Child account should be present");
-                assertTrue(storedChild.hasParent(), "Child account should retain its parent");
-                assertEquals("300", storedChild.getParentAccountId());
-                assertEquals(new BigDecimal("42.00"), storedChild.getOpeningBalance());
-                assertEquals(List.of(storedChild), chart.getChildren(storedParent));
+                List<Account> children = chart.getChildren(root);
+                assertEquals(1, children.size());
+                assertEquals("1001", children.get(0).getAccountNumber());
+                assertEquals("1000", children.get(0).getParentAccountId());
         }
 
         @Test
-        void buildReturnsFreshChartEachTime()
+        void addingDuplicateAccountNumberThrows()
         {
-                ChartOfAccountsBuilder builder = new ChartOfAccountsBuilder()
-                        .addAccount("400", "Equity", AccountSide.CREDIT);
+                ChartOfAccountsBuilder builder = ChartOfAccountsBuilder.create()
+                        .addAccount("1000", "Operating Cash", AccountSide.DEBIT);
 
-                ChartOfAccounts first = builder.build();
-                first.addAccount(new Account("999", "Temp", AccountSide.DEBIT));
-
-                ChartOfAccounts second = builder.build();
-
-                assertNull(second.getAccount("999"), "Temporary account should not leak into subsequent builds");
-        }
-
-        @Test
-        void getAccountsReturnsDefensiveCopies()
-        {
-                ChartOfAccountsBuilder builder = new ChartOfAccountsBuilder()
-                        .addAccount("500", "Checking", AccountSide.DEBIT);
-
-                List<Account> snapshot = builder.getAccounts();
-                Account staged = snapshot.get(0);
-
-                assertThrows(UnsupportedOperationException.class, () -> snapshot.add(new Account()));
-
-                staged.setName("Mutated");
-
-                ChartOfAccounts chart = builder.build();
-
-                assertEquals("Checking", chart.getAccount("500").getName(),
-                        "Mutating the snapshot should not impact the builder state");
+                assertThrows(IllegalArgumentException.class,
+                        () -> builder.addAccount("1000", "Petty Cash", AccountSide.DEBIT));
         }
 }
