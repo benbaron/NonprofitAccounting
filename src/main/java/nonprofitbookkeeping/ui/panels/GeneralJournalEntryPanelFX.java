@@ -22,7 +22,9 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -31,12 +33,17 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Separator;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.util.converter.BigDecimalStringConverter;
 import javafx.util.converter.DefaultStringConverter;
 
@@ -87,9 +94,11 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 	private final TextField clearBankField = new TextField();
 	private final TextField budgetTrackingField = new TextField();
 	private final TextField associatedFundNameField = new TextField();
-	private final Button saveBtn = new Button("Save");
-	private final Label debitTotalLbl = new Label();
-	private final Label creditTotalLbl = new Label();
+        private final Button saveBtn = new Button("Save Entry");
+        private final Label debitTotalLbl = new Label();
+        private final Label creditTotalLbl = new Label();
+        private final Label balanceStatusLbl = new Label();
+        private final Label validationMessageLbl = new Label();
         private final ChartOfAccounts coa;
         private final Consumer<AccountingTransaction> onSave;
         private AccountingTransaction original;
@@ -107,6 +116,9 @@ public class GeneralJournalEntryPanelFX extends BorderPane
                 this.onSave = onSave;
                 setPadding(new Insets(10));
                 buildUI();
+                Line initialLine = new Line();
+                watch(initialLine);
+                this.lines.add(initialLine);
                 this.lines.addListener((ListChangeListener<Line>) change -> {
                         while (change.next())
                         {
@@ -164,52 +176,211 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 		this.table.setRowFactory(tv -> {
 			TableRow<Line> row = new TableRow<>();
 			row.setOnMouseClicked(e -> {
-				
+
 				if (e.getClickCount() == 1 && !row.isEmpty())
 				{
 					this.table.edit(row.getIndex(), this.table.getColumns().get(0));
 				}
-				
+
 			});
 			return row;
 		});
-		
-                Button add = new Button("+ Entry");
-                add.setOnAction(e -> this.lines.add(new Line()));
-		
-		Button del = new Button("Remove");
-		del.setOnAction(e -> {
+		this.table.setPlaceholder(new Label("Add lines to build this transaction."));
+
+		Button add = new Button("Add Line");
+		add.setOnAction(e -> {
+			Line fresh = new Line();
+			this.lines.add(fresh);
+			this.table.getSelectionModel().select(fresh);
+			this.table.layout();
+			this.table.edit(this.lines.size() - 1, this.table.getColumns().get(0));
+		});
+
+		Button duplicate = new Button("Duplicate Line");
+		duplicate.setOnAction(e -> {
+			Line selected = this.table.getSelectionModel().getSelectedItem();
+
+			if (selected == null)
+			{
+				return;
+			}
+
+			Line copy = new Line();
+			copy.account.set(selected.account.get());
+			copy.debit.set(amountOrZero(selected.debit.get()));
+			copy.credit.set(amountOrZero(selected.credit.get()));
+			int index = this.table.getSelectionModel().getSelectedIndex();
+			int insertAt = index >= 0 ? index + 1 : this.lines.size();
+			this.lines.add(insertAt, copy);
+			this.table.getSelectionModel().select(copy);
+			this.table.layout();
+			this.table.edit(insertAt, this.table.getColumns().get(0));
+		});
+
+		Button remove = new Button("Remove Line");
+		remove.setOnAction(e -> {
 			Line sel = this.table.getSelectionModel().getSelectedItem();
-			
+
 			if (sel != null)
 			{
 				this.lines.remove(sel);
 			}
-			
+
 		});
-		
+
+		Button clear = new Button("Clear All");
+		clear.setOnAction(e -> {
+			this.lines.clear();
+			this.lines.add(new Line());
+		});
+
+		this.saveBtn.setDefaultButton(true);
 		this.saveBtn.setOnAction(e -> persist());
-		
-		GridPane top = new GridPane();
-		top.setHgap(10);
-		top.setVgap(8);
-		top.addRow(0, new Label("Date:"), this.datePicker);
-		top.addRow(1, new Label("Memo:"), this.memoArea);
-		top.addRow(2, new Label("To/From:"), this.toFromField);
-		top.addRow(3, new Label("Check #:"), this.checkNumberField);
-		top.addRow(4, new Label("Clear Bank:"), this.clearBankField);
-		top.addRow(5, new Label("Budget Tracking:"), this.budgetTrackingField);
-		top.addRow(6, new Label("Fund Name:"), this.associatedFundNameField);
-		
-		setTop(top);
-		setCenter(this.table);
-		ToolBar bottom = new ToolBar(	add, del, new Separator(), this.saveBtn,
-										new Separator(), new Label("Debit:"), this.debitTotalLbl,
-										new Label("Credit:"), this.creditTotalLbl);
-		setBottom(bottom);
-		
+
+		this.memoArea.setWrapText(true);
+		this.memoArea.setPrefRowCount(3);
+		this.toFromField.setPromptText("Vendor, donor, or partner");
+		this.checkNumberField.setPromptText("Optional");
+		this.clearBankField.setPromptText("Optional");
+		this.budgetTrackingField.setPromptText("Project code or grant");
+		this.associatedFundNameField.setPromptText("Fund name");
+
+		GridPane details = buildDetailsGrid();
+
+		ToolBar tableActions = new ToolBar(add, duplicate, remove, clear);
+
+		VBox entriesSection = new VBox(8,
+			sectionTitle("Entry Lines"),
+			tableActions,
+			this.table,
+			buildTotalsRow());
+		entriesSection.setAlignment(Pos.TOP_LEFT);
+
+		VBox detailsSection = new VBox(8,
+			sectionTitle("Transaction Details"),
+			details);
+
+		VBox content = new VBox(20, detailsSection, entriesSection);
+		content.setPadding(new Insets(16));
+
+		ScrollPane scroller = new ScrollPane(content);
+		scroller.setFitToWidth(true);
+		scroller.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+
+		setCenter(scroller);
+		setBottom(buildActionRow());
+
 	}
-	
+	private GridPane buildDetailsGrid()
+	{
+		GridPane grid = new GridPane();
+		grid.setHgap(12);
+		grid.setVgap(10);
+		grid.setPadding(new Insets(4, 0, 0, 0));
+
+		ColumnConstraints left = new ColumnConstraints();
+		left.setPercentWidth(30);
+		ColumnConstraints right = new ColumnConstraints();
+		right.setPercentWidth(70);
+		grid.getColumnConstraints().addAll(left, right);
+
+		Label dateLbl = new Label("Date");
+		grid.add(dateLbl, 0, 0);
+		grid.add(this.datePicker, 1, 0);
+		GridPane.setHalignment(dateLbl, HPos.RIGHT);
+
+		Label memoLbl = new Label("Memo");
+		grid.add(memoLbl, 0, 1);
+		grid.add(this.memoArea, 1, 1);
+		GridPane.setHalignment(memoLbl, HPos.RIGHT);
+
+		Label toFromLbl = new Label("To / From");
+		grid.add(toFromLbl, 0, 2);
+		grid.add(this.toFromField, 1, 2);
+		GridPane.setHalignment(toFromLbl, HPos.RIGHT);
+
+		Label checkLbl = new Label("Check #");
+		grid.add(checkLbl, 0, 3);
+		grid.add(this.checkNumberField, 1, 3);
+		GridPane.setHalignment(checkLbl, HPos.RIGHT);
+
+		Label clearLbl = new Label("Clear Bank");
+		grid.add(clearLbl, 0, 4);
+		grid.add(this.clearBankField, 1, 4);
+		GridPane.setHalignment(clearLbl, HPos.RIGHT);
+
+		Label budgetLbl = new Label("Budget Tracking");
+		grid.add(budgetLbl, 0, 5);
+		grid.add(this.budgetTrackingField, 1, 5);
+		GridPane.setHalignment(budgetLbl, HPos.RIGHT);
+
+		Label fundLbl = new Label("Fund Name");
+		grid.add(fundLbl, 0, 6);
+		grid.add(this.associatedFundNameField, 1, 6);
+		GridPane.setHalignment(fundLbl, HPos.RIGHT);
+
+		return grid;
+	}
+
+	private Label sectionTitle(String text)
+	{
+		Label title = new Label(text);
+		title.setStyle("-fx-font-size: 15px; -fx-font-weight: bold;");
+		return title;
+	}
+
+	private HBox buildTotalsRow()
+	{
+		Label debitLabel = new Label("Debit Total:");
+		Label creditLabel = new Label("Credit Total:");
+
+		HBox totals = new HBox(12, debitLabel, this.debitTotalLbl, creditLabel, this.creditTotalLbl,
+		                this.balanceStatusLbl);
+		totals.setAlignment(Pos.CENTER_LEFT);
+		totals.setPadding(new Insets(8, 0, 0, 0));
+
+		return totals;
+	}
+
+	private HBox buildActionRow()
+	{
+		Button resetBtn = new Button("Reset Form");
+		resetBtn.setOnAction(e -> resetForm());
+
+		Region spacer = new Region();
+		HBox.setHgrow(spacer, Priority.ALWAYS);
+
+		this.validationMessageLbl.setWrapText(true);
+		this.validationMessageLbl.setStyle("-fx-text-fill: -fx-text-base-color; -fx-opacity: 0.75;");
+
+		HBox actions = new HBox(12, resetBtn, spacer, this.validationMessageLbl, this.saveBtn);
+		actions.setAlignment(Pos.CENTER_RIGHT);
+		actions.setPadding(new Insets(12, 16, 16, 16));
+
+		return actions;
+	}
+
+	private void resetForm()
+	{
+		if (this.original != null)
+		{
+			loadFromTransaction(this.original);
+			return;
+		}
+
+		this.datePicker.setValue(LocalDate.now());
+		this.memoArea.clear();
+		this.toFromField.clear();
+		this.checkNumberField.clear();
+		this.clearBankField.clear();
+		this.budgetTrackingField.clear();
+		this.associatedFundNameField.clear();
+		this.lines.clear();
+		this.lines.add(new Line());
+		recalcTotals();
+		updateSaveButtonState();
+	}
+
 	private TableColumn<Line, String> accountCol()
 	{
                 ObservableList<String> choices = FXCollections.observableArrayList(
@@ -318,6 +489,23 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 
                this.debitTotalLbl.setText(FormatUtils.formatCurrency(debit));
                this.creditTotalLbl.setText(FormatUtils.formatCurrency(credit));
+
+               boolean balanced = debit.compareTo(credit) == 0 && debit.signum() != 0;
+               if (balanced)
+               {
+                       this.balanceStatusLbl.setText("Balanced");
+                       this.balanceStatusLbl.setStyle("-fx-text-fill: -fx-text-inner-color;");
+               }
+               else if (debit.compareTo(credit) == 0)
+               {
+                       this.balanceStatusLbl.setText("No amounts entered");
+                       this.balanceStatusLbl.setStyle("-fx-text-fill: -fx-text-inner-color;");
+               }
+               else
+               {
+                       this.balanceStatusLbl.setText("Out of balance");
+                       this.balanceStatusLbl.setStyle("-fx-text-fill: crimson; -fx-font-weight: bold;");
+               }
 
         }
 	
@@ -565,10 +753,14 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 		{
 			this.saveErrorTooltip.setText(error.get());
 			this.saveBtn.setTooltip(this.saveErrorTooltip);
+			this.validationMessageLbl.setText(error.get());
+			this.validationMessageLbl.setStyle("-fx-text-fill: crimson;");
 		}
 		else
 		{
 			this.saveBtn.setTooltip(null);
+			this.validationMessageLbl.setText("Ready to save");
+			this.validationMessageLbl.setStyle("-fx-text-fill: seagreen; -fx-font-weight: bold;");
 		}
 
 		this.table.refresh();
