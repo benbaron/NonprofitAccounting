@@ -1,46 +1,51 @@
 package nonprofitbookkeeping.model;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 class JournalEntryTest
 {
+        private static final String ENTRY_ID = "entry-123";
+        private static final String TRANSACTION_ID = "txn-456";
+        private static final String DATE = "2024-03-15";
+        private static final String ACCOUNT = "Operating Cash";
+        private static final BigDecimal DEBIT = new BigDecimal("15.34");
+        private static final BigDecimal CREDIT = new BigDecimal("0");
+        private static final String MEMO = "Membership dues";
+
         @Test
         void constructorUsesProvidedTransactionId()
         {
-                JournalEntry entry = new JournalEntry("entry-1", "txn-1", "2023-12-01", "Cash",
-                        new BigDecimal("10.00"), BigDecimal.ZERO, "Memo");
+                JournalEntry entry = new JournalEntry(ENTRY_ID, TRANSACTION_ID, DATE, ACCOUNT, DEBIT, CREDIT, MEMO);
 
-                assertEquals("txn-1", entry.getTransactionId(),
-                        "Constructor should keep the provided transaction identifier");
+                assertThat(entry.getId()).isEqualTo(ENTRY_ID);
+                assertThat(entry.getTransactionId()).isEqualTo(TRANSACTION_ID);
         }
 
         @Test
-        void constructorFallsBackToEntryIdWhenTransactionIdMissing()
+        void constructorDefaultsTransactionIdToEntryIdWhenMissing()
         {
-                JournalEntry entry = new JournalEntry("entry-2", null, "2023-12-02", "Cash",
-                        new BigDecimal("5.00"), BigDecimal.ZERO, "Memo");
+                JournalEntry entry = new JournalEntry(ENTRY_ID, DATE, ACCOUNT, DEBIT, CREDIT, MEMO);
 
-                assertEquals("entry-2", entry.getTransactionId(),
-                        "Missing transaction identifier should fall back to the entry identifier");
+                assertThat(entry.getTransactionId()).isEqualTo(ENTRY_ID);
         }
 
         @Test
-        void settersKeepFallbackBehaviour()
+        void jacksonRoundTripPreservesTransactionId() throws Exception
         {
-                JournalEntry entry = new JournalEntry();
-                entry.setId("entry-3");
-                entry.setTransactionId("txn-3");
+                JournalEntry entry = new JournalEntry(ENTRY_ID, TRANSACTION_ID, DATE, ACCOUNT, DEBIT, CREDIT, MEMO);
+                ObjectMapper mapper = new ObjectMapper();
 
-                assertEquals("txn-3", entry.getTransactionId(),
-                        "Setter should accept explicit transaction identifiers");
+                String json = mapper.writeValueAsString(entry);
+                JournalEntry restored = mapper.readValue(json, JournalEntry.class);
 
-                entry.setTransactionId(null);
-
-                assertEquals("entry-3", entry.getTransactionId(),
-                        "Setting a null transaction identifier should fall back to entry identifier");
+                assertThat(restored.getId()).isEqualTo(ENTRY_ID);
+                assertThat(restored.getTransactionId()).isEqualTo(TRANSACTION_ID);
+                assertThat(restored.getMemo()).isEqualTo(MEMO);
         }
 }

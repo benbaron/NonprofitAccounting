@@ -5,6 +5,7 @@
 package nonprofitbookkeeping.model;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -52,12 +53,12 @@ import lombok.NoArgsConstructor;
                 BigDecimal debit, BigDecimal credit, String text)
         {
                 this.id = id;
-                this.transactionId = normalizeTransactionId(transactionId, id);
-		this.date = date;
-		this.account = account;
-		this.debit = debit;
-		this.credit = credit;
-		this.memo = text;
+                this.transactionId = Objects.requireNonNullElse(transactionId, id);
+                this.date = date;
+                this.account = account;
+                this.debit = debit;
+                this.credit = credit;
+                this.memo = text;
 	}
 	
 	/**
