@@ -21,7 +21,19 @@ public interface AccountDetails
 	 * Gets the side where the account increases.
 	 * @return The side where the account increases.
 	 */
-	AccountSide getIncreaseSide();
+        AccountSide getIncreaseSide();
+
+        /**
+         * Returns the effective increase side for this account.
+         * Implementations may override to provide a derived value, but by default
+         * this simply returns {@link #getIncreaseSide()}.
+         *
+         * @return the effective increase side
+         */
+        default AccountSide getEffectiveIncreaseSide()
+        {
+                return getIncreaseSide();
+        }
 	
 	/**
 	 * Gets the name of the account.

@@ -52,14 +52,14 @@ import lombok.NoArgsConstructor;
         public JournalEntry(String id, String transactionId, String date, String account,
                 BigDecimal debit, BigDecimal credit, String text)
         {
-                this.id = Objects.requireNonNull(id, "id");
-                this.transactionId = normaliseTransactionId(transactionId, this.id);
+                this.id = id;
+                this.transactionId = Objects.requireNonNullElse(transactionId, id);
                 this.date = date;
                 this.account = account;
                 this.debit = debit;
                 this.credit = credit;
                 this.memo = text;
-        }
+	}
 	
 	/**
 	 * Backwards compatible constructor that assumes the entry and transaction
