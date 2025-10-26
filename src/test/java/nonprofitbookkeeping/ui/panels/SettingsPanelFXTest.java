@@ -10,12 +10,15 @@ import javafx.stage.Stage;
 import nonprofitbookkeeping.ui.JavaFXTestBase;
 import nonprofitbookkeeping.ui.panels.SettingsPanelFX.UserRow; // Ensure UserRow is accessible
 
+import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.Start;
 import org.testfx.util.WaitForAsyncUtils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -74,21 +77,65 @@ public class SettingsPanelFXTest extends JavaFXTestBase
 	 * @param string
 	 * @return
 	 */
-	private Matcher<ComboBox> hasValue(String string)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	/**
-	 * @param string
-	 * @return
-	 */
-	private Matcher<TextField> hasTextInField(String string)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+        private Matcher<ComboBox<String>> hasValue(String expectedValue)
+        {
+                return new TypeSafeMatcher<ComboBox<String>>()
+                {
+                        @Override public void describeTo(Description description)
+                        {
+                                description.appendText("ComboBox with value ")
+                                        .appendValue(expectedValue);
+                        }
+
+                        @Override protected boolean matchesSafely(ComboBox<String> comboBox)
+                        {
+                                String value = comboBox == null ? null : comboBox.getValue();
+
+                                if (expectedValue == null)
+                                {
+                                        return value == null;
+                                }
+
+                                return expectedValue.equals(value);
+                        }
+
+                        @Override protected void describeMismatchSafely(ComboBox<String> comboBox,
+                                Description mismatchDescription)
+                        {
+                                String value = comboBox == null ? null : comboBox.getValue();
+                                mismatchDescription.appendText("was ").appendValue(value);
+                        }
+                };
+        }
+
+        /**
+         * @param string
+         * @return
+         */
+        private Matcher<TextField> hasTextInField(String expectedText)
+        {
+                return new TypeSafeMatcher<TextField>()
+                {
+                        @Override public void describeTo(Description description)
+                        {
+                                description.appendText("TextField with text ")
+                                        .appendValue(expectedText);
+                        }
+
+                        @Override protected boolean matchesSafely(TextField textField)
+                        {
+                                String text = textField == null ? null : textField.getText();
+                                return expectedText == null ? text == null : expectedText.equals(text);
+                        }
+
+                        @Override protected void describeMismatchSafely(TextField textField,
+                                Description mismatchDescription)
+                        {
+                                mismatchDescription.appendText("was ")
+                                        .appendValue(textField == null ? null : textField.getText());
+                        }
+                };
+        }
 	
 	@Test
 	public	void testUsersTab_TableDisplaysDemoData()
