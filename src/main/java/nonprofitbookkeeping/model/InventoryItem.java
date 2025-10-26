@@ -223,6 +223,17 @@ public class InventoryItem
                 this.depreciationMethod = (method == null || method.isBlank()) ? null : method;
         }
 
+        /**
+         * Gets the depreciation method used by this asset.
+         *
+         * @return the configured depreciation method, or {@code null} if none
+         *         has been set
+         */
+        public String getDepreciationMethod()
+        {
+                return this.depreciationMethod;
+        }
+
 	/**
 	 * Gets the net book value of the item.
 	 * Note: This is a stub method and currently returns null.

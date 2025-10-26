@@ -30,13 +30,11 @@ public class BudgetPanelTest {
         }
         void configure(boolean saved, BudgetLine line) {
             this.saved = saved;
-            this.onShow = onShow;
+            this.line = line;
         }
 
         @Override public void setVisible(boolean b) {
-            if (b && this.onShow != null) {
-                this.onShow.accept(this.line);
-            }
+            // no-op; visibility is short-circuited for tests
         }
 
         @Override public boolean isSaved() { return this.saved; }
@@ -100,8 +98,10 @@ public class BudgetPanelTest {
         line.setPeriodicity(Periodicity.ANNUAL);
 
         StubBudgetLineDialog dlg = new StubBudgetLineDialog();
-        dlg.configure(true, line);
-        panel.setStub(dlg);
+        panel.setDialogFactory(ignored -> {
+            dlg.configure(true, line);
+            return dlg;
+        });
 
         Method add = BudgetPanel.class.getDeclaredMethod("actionAddLine", ActionEvent.class);
         add.setAccessible(true);
@@ -149,8 +149,10 @@ public class BudgetPanelTest {
         BudgetLine edited = initialBudget.getBudgetLines().get(0);
         edited.setTotalBudgetedAmount(new BigDecimal("75"));
         StubBudgetLineDialog dlg = new StubBudgetLineDialog();
-        dlg.configure(true, edited);
-        panel.setStub(dlg);
+        panel.setDialogFactory(ignored -> {
+            dlg.configure(true, edited);
+            return dlg;
+        });
 
         Method edit = BudgetPanel.class.getDeclaredMethod("actionEditLine", ActionEvent.class);
         edit.setAccessible(true);
@@ -201,7 +203,7 @@ public class BudgetPanelTest {
         table.getSelectionModel().setSelectionInterval(0,0);
 
         MutatingStubBudgetLineDialog dlg = new MutatingStubBudgetLineDialog(line);
-        panel.setStub(dlg);
+        panel.setDialogFactory(ignored -> dlg);
 
         Method edit = BudgetPanel.class.getDeclaredMethod("actionEditLine", ActionEvent.class);
         edit.setAccessible(true);
