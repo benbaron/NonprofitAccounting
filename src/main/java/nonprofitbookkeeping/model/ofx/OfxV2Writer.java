@@ -123,14 +123,7 @@ public class OfxV2Writer
 
         private static String formatDecimal(BigDecimal value)
         {
-                BigDecimal normalized = value.stripTrailingZeros();
-
-                if (normalized.scale() < 0)
-                {
-                        normalized = normalized.setScale(0);
-                }
-
-                return normalized.toPlainString();
+                return value.toPlainString();
         }
 
 

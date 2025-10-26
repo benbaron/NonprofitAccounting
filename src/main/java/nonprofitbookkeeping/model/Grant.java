@@ -14,6 +14,12 @@ import java.math.BigDecimal;
  */
 public class Grant
 {
+        /**
+         * Default constructor required for Jackson deserialization.
+         */
+        public Grant()
+        {
+        }
 	/** The unique identifier for the grant. */
 	@JsonProperty String grantId = "";
 	/** The name of the organization or individual who awarded the grant. */

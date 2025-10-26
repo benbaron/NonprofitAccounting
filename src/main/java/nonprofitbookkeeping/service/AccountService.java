@@ -84,11 +84,11 @@ public class AccountService
 	 *         service's internal storage. However, modifications to the {@link Account}
 	 *         objects within the list will affect the original objects.
 	 */
-	public static List<Account> getAllAccounts()
-	{
-		// Return a copy to prevent external modification of the internal list structure
-		return new ArrayList<>(accounts);
-	}
+        public static List<Account> getAllAccounts()
+        {
+                // Return an unmodifiable copy so callers cannot mutate the service state
+                return Collections.unmodifiableList(new ArrayList<>(accounts));
+        }
 	
 	/**
 	 * Clears all accounts from the internal in-memory storage.

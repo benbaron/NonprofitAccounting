@@ -73,6 +73,7 @@ public final class Account implements Serializable
                 this.name = bankAccountName;
                 this.accountType = asset;
                 this.openingBalance = zero;
+                this.increaseSide = defaultIncreaseSide(asset);
         }
 	
 	/* ================= fund helpers =================================== */
