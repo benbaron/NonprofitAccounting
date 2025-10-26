@@ -6,6 +6,7 @@
 package nonprofitbookkeeping.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -140,18 +141,45 @@ public class InventoryItem
 	 * @param accDep1 The accumulated depreciation amount to set.
 	 * @return This InventoryItem instance for chaining.
 	 */
-	public InventoryItem withAccumDep(BigDecimal accDep1)
-	{
-		this.accDep = accDep1;
-		if (this.cost == null) {
-			this.netValue = null;
-		} else if (this.accDep == null) {
-			this.netValue = this.cost;
-		} else {
-			this.netValue = this.cost.subtract(this.accDep);
-		}
-		return this;
-	}
+        public InventoryItem withAccumDep(BigDecimal accDep1)
+        {
+                BigDecimal normalized = accDep1;
+
+                if (normalized != null)
+                {
+                        if (normalized.compareTo(BigDecimal.ZERO) < 0)
+                        {
+                                normalized = BigDecimal.ZERO;
+                        }
+
+                        if (this.cost != null && normalized.compareTo(this.cost) > 0)
+                        {
+                                normalized = this.cost;
+                        }
+
+                        normalized = normalized.setScale(2, RoundingMode.HALF_UP);
+                }
+
+                this.accDep = normalized;
+
+                if (this.cost == null || this.accDep == null)
+                {
+                        this.netValue = this.cost;
+                }
+                else
+                {
+                        BigDecimal net = this.cost.subtract(this.accDep);
+
+                        if (net.compareTo(BigDecimal.ZERO) < 0)
+                        {
+                                net = BigDecimal.ZERO;
+                        }
+
+                        this.netValue = net.setScale(2, RoundingMode.HALF_UP);
+                }
+
+                return this;
+        }
 
 	/**
 	 * Sets the accumulated depreciation for the item.
@@ -190,9 +218,9 @@ public class InventoryItem
 	 * Note: This is a stub method. The {@code @Data} annotation from Lombok should provide this setter.
 	 * @param method The depreciation method to set (e.g., "Straight-Line").
 	 */
-        public void setDepreciationMethod(Object method) // Parameter type should likely be String
+        public void setDepreciationMethod(String method)
         {
-                this.depreciationMethod = method == null ? null : method.toString();
+                this.depreciationMethod = (method == null || method.isBlank()) ? null : method;
         }
 
 	/**

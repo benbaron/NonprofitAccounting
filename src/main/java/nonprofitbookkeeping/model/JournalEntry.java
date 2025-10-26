@@ -65,45 +65,20 @@ import lombok.NoArgsConstructor;
 	 * Backwards compatible constructor that assumes the entry and transaction
 	 * IDs are the same.
 	 */
-	public JournalEntry(String id, String date, String account, BigDecimal debit, BigDecimal credit,
-		String text)
-	{
+        public JournalEntry(String id, String date, String account, BigDecimal debit, BigDecimal credit,
+                String text)
+        {
                 this(id, id, date, account, debit, credit, text);
         }
 
-        private String normalizeTransactionId(String candidateId, String fallbackId)
+        private static String normaliseTransactionId(String transactionId, String fallbackId)
         {
-                if (candidateId == null || candidateId.isBlank())
+                if (transactionId == null || transactionId.isBlank())
                 {
                         return fallbackId;
                 }
-                return candidateId;
-        }
 
-        /**
-         * Sets the unique identifier of this journal entry.
-         * Ensures that a missing transaction identifier continues to fall back to the
-         * entry identifier, preserving compatibility with legacy data that only stored
-         * a single identifier value.
-         *
-         * @param id the entry identifier to assign
-         */
-        public void setId(String id)
-        {
-                this.id = id;
-                this.transactionId = normalizeTransactionId(this.transactionId, id);
-        }
-
-        /**
-         * Sets the identifier of the transaction this entry belongs to.
-         * A blank or {@code null} identifier automatically reuses the entry identifier
-         * so existing data sets that omitted the field remain readable.
-         *
-         * @param transactionId the transaction identifier to assign
-         */
-        public void setTransactionId(String transactionId)
-        {
-                this.transactionId = normalizeTransactionId(transactionId, this.id);
+                return transactionId;
         }
 	
 	/**
