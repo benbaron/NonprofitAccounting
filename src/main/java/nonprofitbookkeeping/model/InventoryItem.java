@@ -234,18 +234,8 @@ public class InventoryItem
         }
 
         /**
-         * Returns the depreciation method selected for the item, if any.
-         *
-         * @return the depreciation method, or {@code null} when unspecified
-         */
-        public String getDepreciationMethod()
-        {
-                return this.depreciationMethod;
-        }
-
-	/**
-	 * Gets the net book value of the item.
-	 * Note: This is a stub method and currently returns null.
+         * Gets the net book value of the item.
+         * Note: This is a stub method and currently returns null.
 	 * The {@code @Data} annotation from Lombok should provide a getter for 'netValue'.
 	 * The actual calculation is typically Cost - Accumulated Depreciation.
 	 * @return The net book value, or null if not calculated or if stub is not replaced.

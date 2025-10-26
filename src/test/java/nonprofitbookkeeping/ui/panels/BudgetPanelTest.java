@@ -69,10 +69,6 @@ public class BudgetPanelTest {
             this.factory = factory;
         }
 
-        void setStub(BudgetLineDialog dialog) {
-            setDialogFactory(line -> dialog);
-        }
-
         @Override
         protected BudgetLineDialog createBudgetLineDialog(String title, BudgetLine line) {
             if (this.stub != null) {
