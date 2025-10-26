@@ -15,15 +15,19 @@ import java.util.prefs.Preferences;
  */
 public class PreferencesManager
 {
-        /** Key for storing the last directory used by a file chooser for general purposes. */
-        private static final String LAST_DIR_KEY = "lastFileChooserDirectory";
+        /**
+         * Key for storing the last directory used by a file chooser for open dialogs. The
+         * previous implementation reused {@code "last_directory"} for both read and write
+         * paths, so this value is intentionally distinct to avoid collisions.
+         */
+        private static final String LAST_DIR_KEY = "last_open_directory";
         /**
          * Key for storing the last directory used by a file chooser for
          * write/save operations. This is intentionally separate from
          * {@link #LAST_DIR_KEY} so that read and write dialogs can remember
          * different locations.
          */
-	private static final String LAST_WRITE_DIR_KEY = "last_write_directory";
+        private static final String LAST_WRITE_DIR_KEY = "last_write_directory";
         /** The {@link Preferences} node used for storing preferences for this class. */
         private static final Preferences prefs =
                 Preferences.userNodeForPackage(PreferencesManager.class);
@@ -35,29 +39,50 @@ public class PreferencesManager
          * directory shared the same value. Retained so we can migrate any
          * existing preference to the new dedicated write key.
          */
-        private static final String LEGACY_DIR_KEY = "lastFileChooserDirectory";
+        private static final String LEGACY_SHARED_DIR_KEY = "last_directory";
+        /**
+         * Another historical key that was used temporarily while experimenting with
+         * distinct read/write directories.
+         */
+        private static final String LEGACY_INTERMEDIATE_DIR_KEY = "lastFileChooserDirectory";
 
         static
         {
-                // If an older installation stored a directory under the legacy
-                // key but the new write key is unset, copy the value so users
-                // retain their preferred write directory after upgrading.
-                if (!LAST_WRITE_DIR_KEY.equals(LEGACY_DIR_KEY))
+                migrateLegacyDirectory(LEGACY_SHARED_DIR_KEY);
+                migrateLegacyDirectory(LEGACY_INTERMEDIATE_DIR_KEY);
+        }
+
+        /**
+         * Copies the value stored at a legacy key to the new independent read/write keys.
+         * The migration preserves the user's chosen directory the first time the updated
+         * application is launched and cleans up the obsolete preference entry afterwards.
+         *
+         * @param legacyKey the historical key to inspect for migration. If the key matches
+         *                  one of the current keys no action is taken.
+         */
+        private static void migrateLegacyDirectory(String legacyKey)
+        {
+                if (LAST_DIR_KEY.equals(legacyKey) || LAST_WRITE_DIR_KEY.equals(legacyKey))
                 {
-                        String legacy = prefs.get(LEGACY_DIR_KEY, null);
-                        String writeValue = prefs.get(LAST_WRITE_DIR_KEY, null);
-                        if (legacy != null && writeValue == null)
-                        {
-                                prefs.put(LAST_WRITE_DIR_KEY, legacy);
-                        }
+                        return;
                 }
-                // Migrate from an even older key if present
-                String old = prefs.get("last_directory", null);
-                if (old != null && prefs.get(LAST_DIR_KEY, null) == null)
+
+                String legacyValue = prefs.get(legacyKey, null);
+                if (legacyValue == null)
                 {
-                        prefs.put(LAST_DIR_KEY, old);
-                        prefs.remove("last_directory");
+                        return;
                 }
+
+                if (prefs.get(LAST_DIR_KEY, null) == null)
+                {
+                        prefs.put(LAST_DIR_KEY, legacyValue);
+                }
+                if (prefs.get(LAST_WRITE_DIR_KEY, null) == null)
+                {
+                        prefs.put(LAST_WRITE_DIR_KEY, legacyValue);
+                }
+
+                prefs.remove(legacyKey);
         }
 	
 	/**
