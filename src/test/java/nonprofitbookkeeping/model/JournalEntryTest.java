@@ -1,42 +1,51 @@
 package nonprofitbookkeeping.model;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 class JournalEntryTest
 {
+        private static final String ENTRY_ID = "entry-123";
+        private static final String TRANSACTION_ID = "txn-456";
+        private static final String DATE = "2024-03-15";
+        private static final String ACCOUNT = "Operating Cash";
+        private static final BigDecimal DEBIT = new BigDecimal("15.34");
+        private static final BigDecimal CREDIT = new BigDecimal("0");
+        private static final String MEMO = "Membership dues";
+
         @Test
         void constructorUsesProvidedTransactionId()
         {
-                JournalEntry entry = new JournalEntry(
-                        "ENTRY-1",
-                        "TX-42",
-                        "2024-06-01",
-                        "Checking",
-                        new BigDecimal("100.00"),
-                        BigDecimal.ZERO,
-                        "Deposit");
+                JournalEntry entry = new JournalEntry(ENTRY_ID, TRANSACTION_ID, DATE, ACCOUNT, DEBIT, CREDIT, MEMO);
 
-                assertEquals("ENTRY-1", entry.getId());
-                assertEquals("TX-42", entry.getTransactionId());
+                assertThat(entry.getId()).isEqualTo(ENTRY_ID);
+                assertThat(entry.getTransactionId()).isEqualTo(TRANSACTION_ID);
         }
 
         @Test
         void constructorDefaultsTransactionIdToEntryIdWhenMissing()
         {
-                JournalEntry entry = new JournalEntry(
-                        "ENTRY-2",
-                        null,
-                        "2024-06-01",
-                        "Checking",
-                        BigDecimal.ZERO,
-                        new BigDecimal("100.00"),
-                        "Payment");
+                JournalEntry entry = new JournalEntry(ENTRY_ID, DATE, ACCOUNT, DEBIT, CREDIT, MEMO);
 
-                assertEquals("ENTRY-2", entry.getId());
-                assertEquals("ENTRY-2", entry.getTransactionId());
+                assertThat(entry.getTransactionId()).isEqualTo(ENTRY_ID);
+        }
+
+        @Test
+        void jacksonRoundTripPreservesTransactionId() throws Exception
+        {
+                JournalEntry entry = new JournalEntry(ENTRY_ID, TRANSACTION_ID, DATE, ACCOUNT, DEBIT, CREDIT, MEMO);
+                ObjectMapper mapper = new ObjectMapper();
+
+                String json = mapper.writeValueAsString(entry);
+                JournalEntry restored = mapper.readValue(json, JournalEntry.class);
+
+                assertThat(restored.getId()).isEqualTo(ENTRY_ID);
+                assertThat(restored.getTransactionId()).isEqualTo(TRANSACTION_ID);
+                assertThat(restored.getMemo()).isEqualTo(MEMO);
         }
 }
