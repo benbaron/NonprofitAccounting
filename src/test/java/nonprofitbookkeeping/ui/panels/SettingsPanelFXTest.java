@@ -10,7 +10,9 @@ import javafx.stage.Stage;
 import nonprofitbookkeeping.ui.JavaFXTestBase;
 import nonprofitbookkeeping.ui.panels.SettingsPanelFX.UserRow; // Ensure UserRow is accessible
 
+import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.Start;
 import org.testfx.util.WaitForAsyncUtils;
@@ -74,56 +76,62 @@ public class SettingsPanelFXTest extends JavaFXTestBase
 	 * @param string
 	 * @return
 	 */
-        private Matcher<ComboBox<?>> hasValue(String expectedValue)
+        private Matcher<ComboBox<String>> hasValue(String expectedValue)
         {
-                return new org.hamcrest.TypeSafeMatcher<ComboBox<?>>()
+                return new TypeSafeMatcher<ComboBox<String>>()
                 {
-                        @Override public void describeTo(org.hamcrest.Description description)
+                        @Override public void describeTo(Description description)
                         {
-                                description.appendText("a ComboBox with value ")
+                                description.appendText("ComboBox with value ")
                                         .appendValue(expectedValue);
                         }
 
-                        @Override protected boolean matchesSafely(ComboBox<?> comboBox)
+                        @Override protected boolean matchesSafely(ComboBox<String> comboBox)
                         {
-                                Object value = comboBox.getValue();
-                                String actual = value == null ? null : value.toString();
-                                return java.util.Objects.equals(actual, expectedValue);
+                                String value = comboBox == null ? null : comboBox.getValue();
+
+                                if (expectedValue == null)
+                                {
+                                        return value == null;
+                                }
+
+                                return expectedValue.equals(value);
                         }
 
-                        @Override protected void describeMismatchSafely(ComboBox<?> comboBox,
-                                org.hamcrest.Description mismatchDescription)
+                        @Override protected void describeMismatchSafely(ComboBox<String> comboBox,
+                                Description mismatchDescription)
                         {
-                                mismatchDescription.appendText("was ")
-                                        .appendValue(comboBox.getValue());
+                                String value = comboBox == null ? null : comboBox.getValue();
+                                mismatchDescription.appendText("was ").appendValue(value);
                         }
                 };
         }
-	
-	/**
-	 * @param string
-	 * @return
-	 */
+
+        /**
+         * @param string
+         * @return
+         */
         private Matcher<TextField> hasTextInField(String expectedText)
         {
-                return new org.hamcrest.TypeSafeMatcher<TextField>()
+                return new TypeSafeMatcher<TextField>()
                 {
-                        @Override public void describeTo(org.hamcrest.Description description)
+                        @Override public void describeTo(Description description)
                         {
-                                description.appendText("a TextField with text ")
+                                description.appendText("TextField with text ")
                                         .appendValue(expectedText);
                         }
 
                         @Override protected boolean matchesSafely(TextField textField)
                         {
-                                return java.util.Objects.equals(textField.getText(), expectedText);
+                                String text = textField == null ? null : textField.getText();
+                                return expectedText == null ? text == null : expectedText.equals(text);
                         }
 
                         @Override protected void describeMismatchSafely(TextField textField,
-                                org.hamcrest.Description mismatchDescription)
+                                Description mismatchDescription)
                         {
                                 mismatchDescription.appendText("was ")
-                                        .appendValue(textField.getText());
+                                        .appendValue(textField == null ? null : textField.getText());
                         }
                 };
         }
