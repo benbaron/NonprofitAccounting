@@ -147,5 +147,4 @@ public class ExpenseDtl12aBean
                 this.amount = amount;
         }
 
-	
 }
