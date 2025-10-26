@@ -169,18 +169,6 @@ public class JacksonDataStorer implements DataStorer
 
                                                         componentFound = true;
                                                 }
-                                                else if (COMPANY_PROFILE_ENTRY_NAME.equals(entryName) &&
-                                                        Company.class.isAssignableFrom(type))
-                                                {
-                                                        profile = this.mapper.readValue(zis,
-                                                                CompanyProfileModel.class);
-                                                }
-                                                else if (LEDGER_ENTRY_NAME.equals(entryName) &&
-                                                        Company.class.isAssignableFrom(type))
-                                                {
-                                                        ledger = this.mapper.readValue(zis, Ledger.class);
-                                                }
-
                                                 zis.closeEntry();
                                         }
 
