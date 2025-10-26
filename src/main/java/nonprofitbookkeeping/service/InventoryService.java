@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -273,6 +274,13 @@ public class InventoryService
                 }
                 catch (SQLException e)
                 {
+                        if ("42104".equals(e.getSQLState()))
+                        {
+                                LOGGER.log(Level.FINE,
+                                        "Inventory document table not initialized; treating inventory as empty.", e);
+                                return;
+                        }
+
                         throw new IOException("Failed to load inventory from database", e);
                 }
 
@@ -307,6 +315,11 @@ public class InventoryService
 
                 for (InventoryItem item : INVENTORY.values())
                 {
+                        if (item == null || item.getId() == null)
+                        {
+                                continue;
+                        }
+
                         String cost = item.getCost() == null ? "0.00" :
                                 item.getCost().setScale(2, RoundingMode.HALF_UP).toString();
                         rows.add(new String[]

@@ -86,8 +86,8 @@ public class AccountService
 	 */
 	public static List<Account> getAllAccounts()
 	{
-		// Return a copy to prevent external modification of the internal list structure
-		return new ArrayList<>(accounts);
+                // Return an unmodifiable copy to prevent external modification of the internal list structure
+                return Collections.unmodifiableList(new ArrayList<>(accounts));
 	}
 	
 	/**
