@@ -28,15 +28,17 @@ public class BudgetPanelTest {
         StubBudgetLineDialog() {
             super((Dialog) null, "Stub", new ChartOfAccounts(), List.of(), null);
         }
+
         void configure(boolean saved, BudgetLine line) {
             this.saved = saved;
-            this.onShow = onShow;
+            this.line = line;
         }
 
         @Override public void setVisible(boolean b) {
-            if (b && this.onShow != null) {
-                this.onShow.accept(this.line);
-            }
+            // Bypass the Swing UI entirely – the tests configure the dialog
+            // ahead of time and expect {@link #isSaved()} and
+            // {@link #getBudgetLine()} to reflect those values once the
+            // dialog would have been shown.
         }
 
         @Override public boolean isSaved() { return this.saved; }
@@ -68,6 +70,10 @@ public class BudgetPanelTest {
 
         void setDialogFactory(Function<BudgetLine, BudgetLineDialog> factory) {
             this.factory = factory;
+        }
+
+        void setStub(BudgetLineDialog dialog) {
+            setDialogFactory(line -> dialog);
         }
 
         @Override
