@@ -1,6 +1,7 @@
 
 package nonprofitbookkeeping.ui.panels.skeletons;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -16,12 +17,16 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Separator;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.ToolBar;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.Region;
 import nonprofitbookkeeping.util.FormatUtils;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.panels.GeneralJournalEntryPanelFX;
 
@@ -45,14 +50,15 @@ import org.slf4j.LoggerFactory;
  * A JavaFX panel that displays journal entries from the current company's ledger.
  * It provides a table view ({@link #journalDisplayTable}) for individual debit/credit entries
  * derived from {@link AccountingTransaction}s.
- * Includes filter controls for searching by description/account and date,
- * and action buttons for New, Edit, and Delete operations on journal entries
- * (though some actions like New/Edit and filtering are placeholders).
- * The panel listens for changes in the {@link CurrentCompany} to reload data.
+ * Includes filter controls for searching by description/account and date and
+ * a built-in workspace for creating or editing transactions without leaving
+ * the journal view. The panel listens for changes in the
+ * {@link CurrentCompany} to reload data.
  */
 public class SkeletonJournalPanel extends BorderPane
 {
         private static final Logger LOGGER = LoggerFactory.getLogger(SkeletonJournalPanel.class);
+        private static final String PLACEHOLDER = "—";
 	
 	/** TableView to display journal entries, using {@link JournalDisplayEntry} as the row model. */
 	private TableView<JournalDisplayEntry> journalDisplayTable;
@@ -71,19 +77,34 @@ public class SkeletonJournalPanel extends BorderPane
 	private Button applyFilterButton;
 	/** Button to refresh the table without changing filters. */
 	private Button refreshButton;
-	/** Button to initiate creating a new journal entry. (Currently placeholder) */
-	private Button newEntryButton;
-	/** Button to initiate editing the selected journal entry. (Currently placeholder) */
-	private Button editEntryButton;
-	/** Button to delete the selected journal entry's original transaction. */
-	private Button deleteEntryButton;
-	
-	/** HBox container for the filter input controls. */
-	private HBox filterControlsBox;
-	/** ScrollPane to ensure filter controls are accessible if they overflow. */
-	private ScrollPane filterScrollPane;
-	/** HBox container for the CRUD action buttons (New, Edit, Delete). */
-	private HBox crudButtonsHBox;
+        /** Button to initiate creating a new journal entry from the in-panel workspace. */
+        private Button createTransactionButton;
+        /** Button to move the currently selected entry into the workspace for editing. */
+        private Button editSelectedButton;
+        /** Button to close the workspace and return to the entry preview state. */
+        private Button closeEditorButton;
+        /** Button to delete the selected journal entry's original transaction. */
+        private Button deleteEntryButton;
+
+        /** HBox container for the filter input controls. */
+        private HBox filterControlsBox;
+        /** ScrollPane to ensure filter controls are accessible if they overflow. */
+        private ScrollPane filterScrollPane;
+        /** Pane hosting either the entry preview or the editor workspace. */
+        private StackPane editorHost;
+        /** Preview container displaying a summary of the currently selected entry. */
+        private VBox previewContainer;
+        /** Label summarising the workspace mode (preview vs. editing). */
+        private Label editorModeLabel;
+        private Label previewInstructionLabel;
+        private Label previewDateLabel;
+        private Label previewTransactionLabel;
+        private Label previewAccountLabel;
+        private Label previewDescriptionLabel;
+        private Label previewCounterpartyLabel;
+        private Label previewAmountLabel;
+        private Label previewFundLabel;
+        private boolean editorActive;
 	
 	/**
 	 * Constructs a new {@code SkeletonJournalPanel}.
@@ -151,26 +172,93 @@ public class SkeletonJournalPanel extends BorderPane
 		this.filterScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 		this.setTop(this.filterScrollPane);
 		
-		// Action Buttons (Bottom)
-		this.crudButtonsHBox = new HBox();
-		this.crudButtonsHBox.setPadding(new Insets(10, 0, 0, 0));
-		this.crudButtonsHBox.setSpacing(10);
-		this.crudButtonsHBox.setAlignment(Pos.CENTER_LEFT);
-		
-		this.newEntryButton = new Button("New Entry");
-		this.editEntryButton = new Button("Edit Entry");
-		this.deleteEntryButton = new Button("Delete Entry");
-		this.crudButtonsHBox.getChildren().addAll(this.newEntryButton, this.editEntryButton,
-				this.deleteEntryButton);
-		this.setBottom(this.crudButtonsHBox);
-		
-		// Setup and initial load
-		setupTableColumns();
-		setCenter(this.journalDisplayTable); // Place table in center
-		
-		setupEventListenersAndRefresh();
-		
-	}
+                // Workspace and action controls
+                this.createTransactionButton = new Button("Create Transaction");
+                this.editSelectedButton = new Button("Edit Selected");
+                this.closeEditorButton = new Button("Close Workspace");
+                this.deleteEntryButton = new Button("Delete Entry");
+                this.closeEditorButton.setDisable(true);
+
+                this.editSelectedButton.disableProperty().bind(
+                                Bindings.isNull(this.journalDisplayTable.getSelectionModel().selectedItemProperty()));
+                this.deleteEntryButton.disableProperty()
+                                .bind(Bindings.isEmpty(this.journalDisplayTable.getSelectionModel().getSelectedItems()));
+
+                this.editorModeLabel = new Label("Entry preview");
+                this.editorModeLabel.getStyleClass().add("journal-editor-mode-label");
+
+                this.previewContainer = new VBox(10);
+                this.previewContainer.setAlignment(Pos.TOP_LEFT);
+                this.previewContainer.setPadding(new Insets(10));
+
+                Label previewTitle = new Label("Entry Preview");
+                previewTitle.getStyleClass().add("journal-preview-title");
+
+                this.previewInstructionLabel = new Label();
+                this.previewInstructionLabel.setWrapText(true);
+
+                this.previewDateLabel = new Label();
+                this.previewTransactionLabel = new Label();
+                this.previewAccountLabel = new Label();
+                this.previewDescriptionLabel = new Label();
+                this.previewCounterpartyLabel = new Label();
+                this.previewAmountLabel = new Label();
+                this.previewFundLabel = new Label();
+
+                this.previewTransactionLabel.setWrapText(true);
+                this.previewAccountLabel.setWrapText(true);
+                this.previewDescriptionLabel.setWrapText(true);
+                this.previewCounterpartyLabel.setWrapText(true);
+                this.previewAmountLabel.setWrapText(true);
+                this.previewFundLabel.setWrapText(true);
+
+                Separator previewDivider = new Separator();
+                previewDivider.setMaxWidth(Double.MAX_VALUE);
+
+                this.previewContainer.getChildren().addAll(previewTitle, this.previewInstructionLabel,
+                                previewDivider, this.previewDateLabel, this.previewTransactionLabel,
+                                this.previewAccountLabel, this.previewDescriptionLabel, this.previewCounterpartyLabel,
+                                this.previewAmountLabel, this.previewFundLabel);
+
+                this.editorHost = new StackPane();
+                this.editorHost.setPadding(new Insets(10));
+                this.editorHost.getChildren().add(this.previewContainer);
+
+                this.journalDisplayTable.getSelectionModel().selectedItemProperty()
+                                .addListener((obs, oldSelection, newSelection) -> updatePreview(newSelection));
+
+                ToolBar editorToolbar = new ToolBar(this.createTransactionButton, this.editSelectedButton,
+                                new Separator(), this.closeEditorButton);
+                editorToolbar.setPadding(new Insets(0, 0, 0, 0));
+
+                VBox editorHeader = new VBox(6);
+                Label workspaceTitle = new Label("Transaction Workspace");
+                workspaceTitle.getStyleClass().add("journal-editor-title");
+                editorHeader.getChildren().addAll(workspaceTitle, editorToolbar, this.editorModeLabel);
+                editorHeader.setPadding(new Insets(10, 10, 10, 10));
+
+                BorderPane editorPane = new BorderPane();
+                editorPane.setTop(editorHeader);
+                editorPane.setCenter(this.editorHost);
+
+                ToolBar tableActionsToolbar = new ToolBar(this.deleteEntryButton);
+                tableActionsToolbar.setPadding(new Insets(10, 0, 0, 0));
+
+                BorderPane tablePane = new BorderPane();
+                tablePane.setCenter(this.journalDisplayTable);
+                tablePane.setBottom(tableActionsToolbar);
+
+                SplitPane contentSplitPane = new SplitPane(tablePane, editorPane);
+                contentSplitPane.setDividerPositions(0.62);
+
+                // Setup and initial load
+                setupTableColumns();
+                setCenter(contentSplitPane);
+
+                resetEditorWorkspace();
+                setupEventListenersAndRefresh();
+
+        }
 	
 	/**
 	 * Sets up the columns for the {@link #journalDisplayTable}.
@@ -248,14 +336,15 @@ public class SkeletonJournalPanel extends BorderPane
 	 * If no company is open or no entries are found, a placeholder message is shown in the table.
 	 */
 	
-	private void loadData()
-	{
-		this.journalDataList.clear();
-		
-		if (!CurrentCompany.isOpen() || CurrentCompany.getCompany() == null)
-		{
-			this.journalDisplayTable
-					.setPlaceholder(new Label("No journal entries found or company not open."));
+        private void loadData()
+        {
+                this.journalDataList.clear();
+                this.journalDisplayTable.setItems(this.journalDataList);
+
+                if (!CurrentCompany.isOpen() || CurrentCompany.getCompany() == null)
+                {
+                        this.journalDisplayTable
+                                        .setPlaceholder(new Label("No journal entries found or company not open."));
 			return;
 		}
 		
@@ -286,22 +375,26 @@ public class SkeletonJournalPanel extends BorderPane
 			
 		}
 		
-		if (this.journalDataList.isEmpty())
-		{
-			this.journalDisplayTable
-					.setPlaceholder(new Label("No journal entries found or company not open."));
-		}
-		
-		// No need for an 'else' to set placeholder to null, TableView handles it.
-	}
+                if (this.journalDataList.isEmpty())
+                {
+                        this.journalDisplayTable
+                                        .setPlaceholder(new Label("No journal entries found or company not open."));
+                }
+
+                // No need for an 'else' to set placeholder to null, TableView handles it.
+                if (!this.editorActive)
+                {
+                        updatePreview(this.journalDisplayTable.getSelectionModel().getSelectedItem());
+                }
+        }
 	
 	/**
 	 * Sets up event listeners for UI components and performs an initial data refresh.
 	 * This includes:
 	 * <ul>
 	 *   <li>Registering a {@link CompanyChangeListener} to reload journal data when the current company changes.</li>
-	 *   <li>Setting action handlers for the "Apply Filter", "New Entry", "Edit Entry", and "Delete Entry" buttons.
-	 *       (Note: Filter, New, and Edit actions are currently placeholders or have partial implementations.)</li>
+         *   <li>Setting action handlers for the filtering controls and the workspace buttons used to create, edit,
+         *       or delete transactions.</li>
 	 *   <li>Performing an initial call to {@link #loadData()} to populate the table.</li>
 	 * </ul>
 	 */
@@ -312,26 +405,25 @@ public class SkeletonJournalPanel extends BorderPane
 		{
 			@Override public void companyChange(boolean companyNowOpen)
 			{
-				loadData();
-				
-			}
-			
-		};
-		CurrentCompany.CompanyListener.addCompanyListener(this.companyChangeListener);
-		
-		// On filter
-		this.applyFilterButton.setOnAction(e -> onFilterButtonAction());
-		this.refreshButton.setOnAction(e -> refresh());
-		// on New Entry
-		this.newEntryButton.setOnAction(e -> openEditor(null));
-		// on Edit Entry
-		this.editEntryButton.setOnAction(e -> onEditAction());
-		// on Delete
-		this.deleteEntryButton.setOnAction(e -> onDeleteAction());
-		
-		loadData(); // Initial data load
-		
-	}
+                                loadData();
+                                resetEditorWorkspace();
+
+                        }
+
+                };
+                CurrentCompany.CompanyListener.addCompanyListener(this.companyChangeListener);
+
+                // On filter
+                this.applyFilterButton.setOnAction(e -> onFilterButtonAction());
+                this.refreshButton.setOnAction(e -> refresh());
+                this.createTransactionButton.setOnAction(e -> openEditor(null));
+                this.editSelectedButton.setOnAction(e -> onEditAction());
+                this.closeEditorButton.setOnAction(e -> resetEditorWorkspace());
+                this.deleteEntryButton.setOnAction(e -> onDeleteAction());
+
+                loadData(); // Initial data load
+
+        }
 	
 	/**
 	 * On Filter Button
@@ -352,11 +444,11 @@ public class SkeletonJournalPanel extends BorderPane
 		DateTimeFormatter fmt = DateTimeFormatter.ISO_LOCAL_DATE;
 		ObservableList<JournalDisplayEntry> filtered = FXCollections.observableArrayList();
 		
-		for (JournalDisplayEntry entry : this.journalDataList)
-		{
-			boolean match = true;
-			
-			if (search != null && !search.isBlank())
+                for (JournalDisplayEntry entry : this.journalDataList)
+                {
+                        boolean match = true;
+
+                        if (search != null && !search.isBlank())
 			{
 				match &= entry.descriptionProperty().get().toLowerCase().contains(search) ||
 						entry.accountNameProperty().get().toLowerCase().contains(search);
@@ -383,28 +475,243 @@ public class SkeletonJournalPanel extends BorderPane
 				filtered.add(entry);
 			}
 			
-		}
-		
-		this.journalDisplayTable.setItems(filtered);
-		
-	}
+                }
+
+                this.journalDisplayTable.setItems(filtered);
+
+                JournalDisplayEntry selected = this.journalDisplayTable.getSelectionModel().getSelectedItem();
+
+                if (selected != null && !filtered.contains(selected))
+                {
+                        this.journalDisplayTable.getSelectionModel().clearSelection();
+                        selected = null;
+                }
+
+                if (!this.editorActive)
+                {
+                        updatePreview(selected);
+                }
+
+        }
 	
 	/**
 	 * Reloads journal data using the current filter settings. This is used
 	 * by the Refresh button to show newly added or edited entries without
 	 * clearing the user's search or date filters.
 	 */
-	void refresh()
-	{
-		onFilterButtonAction();
-		
-	}
-	
-	/**
-	 * On Edit Button
-	 */
-	void onEditAction()
-	{
+        void refresh()
+        {
+                onFilterButtonAction();
+
+        }
+
+        private void showEditor(BorderPane pane, String modeDescription)
+        {
+                this.editorActive = true;
+                this.closeEditorButton.setDisable(false);
+                pane.prefWidthProperty().bind(this.editorHost.widthProperty());
+                pane.maxWidthProperty().bind(this.editorHost.widthProperty());
+                pane.prefHeightProperty().bind(this.editorHost.heightProperty());
+                pane.maxHeightProperty().bind(this.editorHost.heightProperty());
+                this.editorHost.getChildren().setAll(pane);
+                this.editorModeLabel.setText(modeDescription);
+        }
+
+        private void showPreview()
+        {
+                this.editorHost.getChildren().setAll(this.previewContainer);
+                this.editorModeLabel.setText("Entry preview");
+                this.closeEditorButton.setDisable(true);
+        }
+
+        private void resetEditorWorkspace()
+        {
+                this.editorActive = false;
+                showPreview();
+                updatePreview(this.journalDisplayTable.getSelectionModel().getSelectedItem());
+        }
+
+        private void updatePreview(JournalDisplayEntry entry)
+        {
+                if (this.previewInstructionLabel == null)
+                {
+                        return;
+                }
+
+                if (entry == null)
+                {
+                        this.previewInstructionLabel.setText(
+                                        "Select a journal entry to see its details or choose \"Create Transaction\" to begin a new one.");
+                }
+                else
+                {
+                        this.previewInstructionLabel
+                                        .setText("Use the workspace to edit this transaction or create a new one.");
+                }
+
+                this.previewDateLabel.setText("Date: " + withPlaceholder(entry == null ? null : entry.getDate()));
+                this.previewTransactionLabel
+                                .setText("Transaction ID: " + withPlaceholder(entry == null ? null : entry.getTransactionId()));
+                this.previewAccountLabel
+                                .setText("Account: " + withPlaceholder(entry == null ? null : entry.getAccountName()));
+                this.previewDescriptionLabel
+                                .setText("Memo: " + withPlaceholder(entry == null ? null : entry.getDescription()));
+                this.previewCounterpartyLabel.setText(buildCounterpartyLine(entry));
+                this.previewAmountLabel
+                                .setText("Amount: " + (entry == null ? PLACEHOLDER : summariseAmount(entry)));
+                this.previewFundLabel.setText(buildFundLine(entry));
+
+                if (!this.editorActive)
+                {
+                        showPreview();
+                }
+        }
+
+        private String withPlaceholder(String value)
+        {
+                return (value == null || value.isBlank()) ? PLACEHOLDER : value;
+        }
+
+        private String summariseAmount(JournalDisplayEntry entry)
+        {
+                BigDecimal debit = FormatUtils.parseCurrency(entry.getDebit());
+
+                if (debit != null && debit.compareTo(BigDecimal.ZERO) != 0)
+                {
+                        return "Debit " + entry.getDebit();
+                }
+
+                BigDecimal credit = FormatUtils.parseCurrency(entry.getCredit());
+
+                if (credit != null && credit.compareTo(BigDecimal.ZERO) != 0)
+                {
+                        return "Credit " + entry.getCredit();
+                }
+
+                return PLACEHOLDER;
+        }
+
+        private String buildCounterpartyLine(JournalDisplayEntry entry)
+        {
+                if (entry == null)
+                {
+                        return "Counterparty: " + PLACEHOLDER + System.lineSeparator() +
+                                        "Check #: " + PLACEHOLDER + "   Clear Bank: " + PLACEHOLDER;
+                }
+
+                String toFrom = withPlaceholder(entry.getToFrom());
+                String check = withPlaceholder(entry.getCheckNumber());
+                String clearBank = withPlaceholder(entry.getClearBank());
+
+                return "Counterparty: " + toFrom + System.lineSeparator() + "Check #: " + check +
+                                "   Clear Bank: " + clearBank;
+        }
+
+        private String buildFundLine(JournalDisplayEntry entry)
+        {
+                if (entry == null)
+                {
+                        return "Fund: " + PLACEHOLDER;
+                }
+
+                String fundName = withPlaceholder(entry.getFundName());
+                String fundNumber = withPlaceholder(entry.getFundNumber());
+
+                if (PLACEHOLDER.equals(fundName) && PLACEHOLDER.equals(fundNumber))
+                {
+                        return "Fund: " + PLACEHOLDER;
+                }
+
+                StringBuilder builder = new StringBuilder("Fund: ");
+
+                if (!PLACEHOLDER.equals(fundName))
+                {
+                        builder.append(fundName);
+                }
+
+                if (!PLACEHOLDER.equals(fundNumber))
+                {
+                        if (!PLACEHOLDER.equals(fundName))
+                        {
+                                builder.append("  •  #");
+                        }
+                        else
+                        {
+                                builder.append('#');
+                        }
+
+                        builder.append(fundNumber);
+                }
+
+                if (builder.length() == "Fund: ".length())
+                {
+                        builder.append(PLACEHOLDER);
+                }
+
+                return builder.toString();
+        }
+
+        private void focusOnTransaction(long bookingTimestamp)
+        {
+                if (bookingTimestamp <= 0)
+                {
+                        return;
+                }
+
+                for (JournalDisplayEntry entry : this.journalDisplayTable.getItems())
+                {
+                        AccountingTransaction tx = entry.getOriginalTransaction();
+
+                        if (tx != null && tx.getBookingDateTimestamp() == bookingTimestamp)
+                        {
+                                this.journalDisplayTable.getSelectionModel().select(entry);
+
+                                if (!this.editorActive)
+                                {
+                                        updatePreview(entry);
+                                }
+
+                                break;
+                        }
+                }
+        }
+
+        private void handlePersistAndRefresh(AccountingTransaction tx)
+        {
+                boolean persisted = true;
+
+                try
+                {
+                        CurrentCompany.persist();
+                }
+                catch (Exception ex)
+                {
+                        persisted = false;
+                        LOGGER.error("Unable to persist journal changes", ex);
+                        AlertBox.showError(getScene() == null ? null : getScene().getWindow(),
+                                        "Unable to save the transaction. Please try again.");
+                }
+
+                if (!persisted)
+                {
+                        return;
+                }
+
+                refresh();
+
+                if (tx != null)
+                {
+                        focusOnTransaction(tx.getBookingDateTimestamp());
+                }
+
+                resetEditorWorkspace();
+        }
+
+        /**
+         * On Edit Button
+         */
+        void onEditAction()
+        {
 		JournalDisplayEntry selected =
 				this.journalDisplayTable.getSelectionModel().getSelectedItem();
 		
@@ -452,9 +759,10 @@ public class SkeletonJournalPanel extends BorderPane
 				anyDeleted |= journal.deleteTransaction(originalTx.getBookingDateTimestamp());
 			}
 			
-			if (anyDeleted)
-			{
+                        if (anyDeleted)
+                        {
                                 loadData();
+                                resetEditorWorkspace();
                                 LOGGER.info("Deleted selected entries.");
                         }
                         else
@@ -471,49 +779,39 @@ public class SkeletonJournalPanel extends BorderPane
 	 * Opens the GeneralJournalEntryPanelFX for creating or 
 	 * editing a transaction. 
 	 * */
-	private void openEditor(AccountingTransaction existing)
-	{
-		Company company = CurrentCompany.getCompany();
-		
-		if (company == null || company.getLedger() == null ||
-				company.getLedger().getJournal() == null)
-		{
-			AlertBox.showError(getScene().getWindow(), "No company open.");
-			return;
-		}
-		
-		Journal journal = company.getLedger().getJournal();
-		
-		BorderPane pane = new GeneralJournalEntryPanelFX(existing, tx -> {
-			
-			if (existing == null)
-			{
-				journal.addTransaction(tx);
-			}
-			else
-			{
-				journal.updateTransaction(tx);
-			}
-			
-			try
-			{
-				CurrentCompany.persist();
-			}
-			catch (Exception ex)
-			{
-				ex.printStackTrace();
-			}
-			
-			loadData();
-		});
-		
-		Stage s = new Stage();
-		s.setTitle(existing == null ? "New Transaction" : "Edit Transaction");
-		s.initOwner(getScene().getWindow());
-		s.setScene(new Scene(pane, 800, 600));
-		s.showAndWait();
-		
-	}
+        private void openEditor(AccountingTransaction existing)
+        {
+                Company company = CurrentCompany.getCompany();
+
+                if (company == null || company.getLedger() == null ||
+                                company.getLedger().getJournal() == null)
+                {
+                        AlertBox.showError(getScene() == null ? null : getScene().getWindow(), "No company open.");
+                        return;
+                }
+
+                Journal journal = company.getLedger().getJournal();
+
+                GeneralJournalEntryPanelFX editorPane;
+
+                if (existing == null)
+                {
+                        editorPane = new GeneralJournalEntryPanelFX(tx -> {
+                                journal.addTransaction(tx);
+                                handlePersistAndRefresh(tx);
+                        });
+                        showEditor(editorPane, "Creating transaction");
+                }
+                else
+                {
+                        editorPane = new GeneralJournalEntryPanelFX(existing, tx -> {
+                                journal.updateTransaction(tx);
+                                handlePersistAndRefresh(tx);
+                        });
+                        showEditor(editorPane, "Editing transaction");
+                }
+
+        }
 	
 	/**
 	 * Represents a single displayable row in the journal table.
