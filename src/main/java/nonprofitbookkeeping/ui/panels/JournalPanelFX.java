@@ -69,9 +69,20 @@ public class JournalPanelFX extends BorderPane
 				col("Clear Bank", "clearBank"),
 				col("Budget Tracking", "budgetTracking"),
 				col("Fund Name", "associatedFundName"));
-		
+
+		this.table.setRowFactory(tv -> {
+			TableRow<AccountingTransaction> row = new TableRow<>();
+
+			row.setOnMouseClicked(event -> {
+				if (event.getClickCount() == 2 && !row.isEmpty())
+				{
+					openEditor(row.getItem());
+				}
+			});
+
+			return row;
+		});
 	}
-	
 	/**
 	 * Utility method to create a {@link TableColumn} for displaying String properties
 	 * from an {@link AccountingTransaction}.
@@ -126,13 +137,13 @@ public class JournalPanelFX extends BorderPane
 		add.setOnAction(e -> openEditor(null));
 		edit.setOnAction(e -> {
 			AccountingTransaction sel = this.table.getSelectionModel().getSelectedItem();
-			
+
 			if (sel != null)
 			{
 				openEditor(sel);
 			}
-			
 		});
+
 		del.setOnAction(e -> {
 			ObservableList<AccountingTransaction> selected =
 					this.table.getSelectionModel().getSelectedItems();
