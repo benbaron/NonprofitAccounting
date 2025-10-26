@@ -1,16 +1,5 @@
-
 package nonprofitbookkeeping.ui.panels;
 
-import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -22,6 +11,7 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -44,9 +34,6 @@ import javafx.scene.layout.VBox;
 import javafx.util.converter.BigDecimalStringConverter;
 import javafx.util.converter.DefaultStringConverter;
 
-import nonprofitbookkeeping.model.Account;
-import nonprofitbookkeeping.model.AccountSide;
-import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Company;
@@ -62,13 +49,12 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * JavaFX panel for creating a new general journal transaction.
- * <p>
- * Each row represents an account entry with columns for the account,
- * debit amount and credit amount. Debit and credit totals are shown at
- * the bottom and must balance when saving.
+ * Compatibility wrapper that exposes the reimagined journal entry workspace
+ * under the historic {@code GeneralJournalEntryPanelFX} type. Existing views
+ * and tests continue to refer to this class while the new implementation
+ * lives in {@link JournalEntryWorkspaceFX}.
  */
-public class GeneralJournalEntryPanelFX extends BorderPane
+public class GeneralJournalEntryPanelFX extends JournalEntryWorkspaceFX
 {
         private static final Logger LOGGER = LoggerFactory.getLogger(GeneralJournalEntryPanelFX.class);
 	
@@ -475,6 +461,23 @@ public class GeneralJournalEntryPanelFX extends BorderPane
                this.debitTotalLbl.setText(FormatUtils.formatCurrency(debit));
                this.creditTotalLbl.setText(FormatUtils.formatCurrency(credit));
 
+               boolean balanced = debit.compareTo(credit) == 0 && debit.signum() != 0;
+               if (balanced)
+               {
+                       this.balanceStatusLbl.setText("Balanced");
+                       this.balanceStatusLbl.setStyle("-fx-text-fill: -fx-text-inner-color;");
+               }
+               else if (debit.compareTo(credit) == 0)
+               {
+                       this.balanceStatusLbl.setText("No amounts entered");
+                       this.balanceStatusLbl.setStyle("-fx-text-fill: -fx-text-inner-color;");
+               }
+               else
+               {
+                       this.balanceStatusLbl.setText("Out of balance");
+                       this.balanceStatusLbl.setStyle("-fx-text-fill: crimson; -fx-font-weight: bold;");
+               }
+
         }
 	
 	/**
@@ -650,134 +653,15 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 
         }
 
-	private Optional<String> validateLines()
-	{
-		BigDecimal debit = BigDecimal.ZERO;
-		BigDecimal credit = BigDecimal.ZERO;
-		List<String> missingAccounts = new ArrayList<>();
-		boolean hasAmounts = false;
-
-		for (Line l : this.lines)
-		{
-			BigDecimal debitAmount = amountOrZero(l.debit.get());
-			BigDecimal creditAmount = amountOrZero(l.credit.get());
-			boolean hasValue = debitAmount.signum() != 0 || creditAmount.signum() != 0;
-			String accountToken = l.account.get();
-
-			if (!hasValue && (accountToken == null || accountToken.isBlank()))
-			{
-				continue;
-			}
-
-			if (accountToken == null || accountToken.isBlank())
-			{
-				return Optional.of("Each amount must reference an account.");
-			}
-
-			if (debitAmount.signum() > 0 && creditAmount.signum() > 0)
-			{
-				return Optional.of("A line cannot have both debit and credit amounts.");
-			}
-
-			Account account = resolveAccount(accountToken);
-
-			if (account == null)
-			{
-				missingAccounts.add(accountToken);
-				continue;
-			}
-
-			hasAmounts |= hasValue;
-
-			if (debitAmount.signum() > 0)
-			{
-				debit = debit.add(debitAmount);
-			}
-
-			if (creditAmount.signum() > 0)
-			{
-				credit = credit.add(creditAmount);
-			}
-		}
-
-		if (!missingAccounts.isEmpty())
-		{
-			return Optional.of("Account not found: " + String.join(", ", missingAccounts));
-		}
-
-		if (!hasAmounts)
-		{
-			return Optional.of("Add at least one debit or credit amount.");
-		}
-
-		if (debit.compareTo(credit) != 0)
-		{
-			return Optional.of("Transaction is not balanced.");
-		}
-
-		return Optional.empty();
-	}
-
-	private void updateSaveButtonState()
-	{
-		Optional<String> error = validateLines();
-		boolean invalid = error.isPresent();
-		this.saveBtn.setDisable(invalid);
-
-		if (invalid)
-		{
-			this.saveErrorTooltip.setText(error.get());
-			this.saveBtn.setTooltip(this.saveErrorTooltip);
-		}
-		else
-		{
-			this.saveBtn.setTooltip(null);
-		}
-
-		this.table.refresh();
-	}
-
-	private Account resolveAccount(String accountToken)
-	{
-		if (accountToken == null || accountToken.isBlank())
-		{
-			return null;
-		}
-
-		Account byName = this.coa.getAccountByName(accountToken);
-
-		if (byName != null)
-		{
-			return byName;
-		}
-
-		return this.coa.getAccount(accountToken);
-	}
-
-        private static ChartOfAccounts resolveChartOfAccounts()
+        public GeneralJournalEntryPanelFX(AccountingTransaction existing,
+                        Consumer<AccountingTransaction> onSave)
         {
-                Company company = CurrentCompany.getCompany();
-
-                if (company == null)
-                {
-                        throw new IllegalStateException(
-                                        "GeneralJournalEntryPanelFX requires an open company");
-                }
-
-                ChartOfAccounts chart = company.getChartOfAccounts();
-
-                if (chart == null)
-                {
-                        throw new IllegalStateException(
-                                        "Current company does not have a chart of accounts loaded");
-                }
-
-                return chart;
+                super(existing, onSave);
         }
 
-        private static BigDecimal amountOrZero(BigDecimal value)
+        public GeneralJournalEntryPanelFX()
         {
-                return value != null ? value : BigDecimal.ZERO;
+                super();
         }
-
 }
+

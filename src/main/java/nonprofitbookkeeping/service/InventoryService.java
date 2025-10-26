@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,9 +38,10 @@ public class InventoryService
         private static final CollectionType LIST_TYPE =
                 MAPPER.getTypeFactory().constructCollectionType(List.class, InventoryItem.class);
 	
-	/** In-memory map to store {@link InventoryItem} objects, keyed by their unique ID. */
-        private static final Map<String, InventoryItem> SHARED_ITEMS = new ConcurrentHashMap<>();
+        /** Shared in-memory map to store {@link InventoryItem} objects, keyed by their unique ID. */
+        private static final Map<String, InventoryItem> INVENTORY = new LinkedHashMap<>();
 
+        /** View over {@link #INVENTORY} used by each service instance. */
         private final Map<String, InventoryItem> items;
 	
 	/**
@@ -48,8 +50,8 @@ public class InventoryService
 	 */
         public InventoryService()
         {
-                this.items = SHARED_ITEMS;
-	}
+                this.items = INVENTORY;
+        }
 	
 	/**
 	 * Retrieves a list of all inventory items currently managed by this service.
@@ -130,66 +132,75 @@ public class InventoryService
 	 * calculate depreciation, and update their accumulated depreciation and net book value.
 	 * </p>
 	 */
-        public void applyYearlyDepreciation()
-        {
-
+	public void applyYearlyDepreciation()
+	{
+		
                 for (InventoryItem item : this.items.values())
                 {
-
-                        if (item == null)
-                        {
-                                continue;
-                        }
-
                         BigDecimal cost = item.getCost();
 
-                        if (cost == null)
+                        if (cost == null || cost.compareTo(BigDecimal.ZERO) <= 0)
                         {
-                                continue; // insufficient data
+                                continue;
                         }
 
                         String method = item.getDepreciationMethod();
 
                         if (method == null || !"Straight-Line".equalsIgnoreCase(method.trim()))
                         {
-                                continue; // unsupported or unspecified method
+                                continue;
                         }
 
-                        BigDecimal yearly = null;
                         BigDecimal rate = item.getDepreciationRate();
 
-                        if (rate != null)
+                        if (rate == null || rate.compareTo(BigDecimal.ZERO) <= 0)
                         {
-                                if (rate.signum() <= 0)
+                                int lifeYears = item.getLifeYears();
+
+                                if (lifeYears <= 0)
                                 {
-                                        continue; // ignore zero or negative rates
+                                        continue;
                                 }
 
-                                yearly = cost.multiply(rate).setScale(2, RoundingMode.HALF_UP);
-                        }
-                        else if (item.getLifeYears() > 0)
-                        {
-                                yearly = cost.divide(BigDecimal.valueOf(item.getLifeYears()), 2,
-                                        RoundingMode.HALF_UP);
+                                rate = BigDecimal.ONE.divide(BigDecimal.valueOf(lifeYears), 10, RoundingMode.HALF_UP);
                         }
 
-                        if (yearly == null || yearly.signum() <= 0)
+                        BigDecimal yearly = cost.multiply(rate);
+
+                        if (yearly.compareTo(BigDecimal.ZERO) <= 0)
                         {
                                 continue;
                         }
 
-                        BigDecimal current = item.getAccumulatedDepreciation();
+                        BigDecimal existing = item.getAccumulatedDepreciation();
+                        BigDecimal accumulated = existing != null ? existing : BigDecimal.ZERO;
+                        BigDecimal remaining = cost.subtract(accumulated);
 
-                        if (current == null)
+                        if (remaining.compareTo(BigDecimal.ZERO) <= 0)
                         {
-                                current = BigDecimal.ZERO;
+                                item.withAccumDep(cost);
+                                continue;
                         }
 
-                        BigDecimal updated = current.add(yearly).setScale(2, RoundingMode.HALF_UP);
+                        BigDecimal depreciation = yearly.min(remaining);
+                        depreciation = depreciation.setScale(2, RoundingMode.HALF_UP);
+
+                        if (depreciation.compareTo(BigDecimal.ZERO) <= 0)
+                        {
+                                continue;
+                        }
+
+                        BigDecimal updated = accumulated.add(depreciation);
+
+                        if (updated.compareTo(cost) > 0)
+                        {
+                                updated = cost;
+                        }
+
                         item.withAccumDep(updated);
                 }
-
-        }
+		
+	}
 	
 	/**
 	 * Clears all items from the inventory managed by this service instance.
@@ -286,9 +297,23 @@ public class InventoryService
 	 */
         public static List<String[]> getInventoryItems()
         {
+                if (INVENTORY.isEmpty())
+                {
+                        InventoryService bootstrap = new InventoryService();
+
+                        try
+                        {
+                                bootstrap.loadItems(null);
+                        }
+                        catch (IOException ex)
+                        {
+                                throw new RuntimeException("Failed to load inventory", ex);
+                        }
+                }
+
                 List<String[]> rows = new ArrayList<>();
 
-                for (InventoryItem item : SHARED_ITEMS.values())
+                for (InventoryItem item : INVENTORY.values())
                 {
                         if (item == null || item.getId() == null)
                         {
