@@ -11,7 +11,6 @@ import java.util.Locale;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import nonprofitbookkeeping.service.ReportService;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Represents an account with entries and a many-to-many relationship with
