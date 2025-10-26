@@ -15,12 +15,8 @@ import java.util.prefs.Preferences;
  */
 public class PreferencesManager
 {
-        /**
-         * Key for storing the last directory used by a file chooser for open dialogs. The
-         * previous implementation reused {@code "last_directory"} for both read and write
-         * paths, so this value is intentionally distinct to avoid collisions.
-         */
-        private static final String LAST_DIR_KEY = "last_open_directory";
+        /** Key for storing the last directory used by a file chooser for general purposes. */
+        private static final String LAST_DIR_KEY = "last_directory";
         /**
          * Key for storing the last directory used by a file chooser for
          * write/save operations. This is intentionally separate from
@@ -34,52 +30,26 @@ public class PreferencesManager
         /** Key for storing the last selected database file location. */
         private static final String LAST_DATABASE_PATH_KEY = "last_database_path";
 
-        /**
-         * Preference key used in older versions when the read and write
-         * directory shared the same value. Retained so we can migrate any
-         * existing preference to the new dedicated write key.
-         */
-        private static final String LEGACY_SHARED_DIR_KEY = "last_directory";
-        /**
-         * Another historical key that was used temporarily while experimenting with
-         * distinct read/write directories.
-         */
-        private static final String LEGACY_INTERMEDIATE_DIR_KEY = "lastFileChooserDirectory";
-
         static
         {
-                migrateLegacyDirectory(LEGACY_SHARED_DIR_KEY);
-                migrateLegacyDirectory(LEGACY_INTERMEDIATE_DIR_KEY);
-        }
-
-        /**
-         * Copies the value stored at a legacy key to the new independent read/write keys.
-         * The migration preserves the user's chosen directory the first time the updated
-         * application is launched and cleans up the obsolete preference entry afterwards.
-         *
-         * @param legacyKey the historical key to inspect for migration. If the key matches
-         *                  one of the current keys no action is taken.
-         */
-        private static void migrateLegacyDirectory(String legacyKey)
-        {
-                if (LAST_DIR_KEY.equals(legacyKey) || LAST_WRITE_DIR_KEY.equals(legacyKey))
+                // Older releases stored both the read and write locations under the same
+                // key.  If a value exists for the shared key but the new write key has not
+                // yet been initialised, copy it so that users retain their preferred
+                // directory for save operations after upgrading.
+                String sharedValue = prefs.get(LAST_DIR_KEY, null);
+                if (sharedValue != null && prefs.get(LAST_WRITE_DIR_KEY, null) == null)
                 {
-                        return;
+                        prefs.put(LAST_WRITE_DIR_KEY, sharedValue);
                 }
 
-                String legacyValue = prefs.get(legacyKey, null);
-                if (legacyValue == null)
+                // If a previous build stored the chooser location under a renamed key,
+                // adopt that value as the read directory while leaving any explicit
+                // write directory untouched.
+                String renamedKeyValue = prefs.get("lastFileChooserDirectory", null);
+                if (renamedKeyValue != null && prefs.get(LAST_DIR_KEY, null) == null)
                 {
-                        return;
-                }
-
-                if (prefs.get(LAST_DIR_KEY, null) == null)
-                {
-                        prefs.put(LAST_DIR_KEY, legacyValue);
-                }
-                if (prefs.get(LAST_WRITE_DIR_KEY, null) == null)
-                {
-                        prefs.put(LAST_WRITE_DIR_KEY, legacyValue);
+                        prefs.put(LAST_DIR_KEY, renamedKeyValue);
+                        prefs.remove("lastFileChooserDirectory");
                 }
 
                 prefs.remove(legacyKey);

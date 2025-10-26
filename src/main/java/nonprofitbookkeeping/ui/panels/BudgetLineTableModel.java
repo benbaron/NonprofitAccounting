@@ -274,11 +274,36 @@ public class BudgetLineTableModel extends AbstractTableModel
      *
      * @param line The {@link BudgetLine} to add.
      */
-	public void addRow(BudgetLine line)
-	{
-		this.budgetLines.add(line);
-		fireTableRowsInserted(this.budgetLines.size() - 1, this.budgetLines.size() - 1);
-	}
+        public void addRow(BudgetLine line)
+        {
+                this.budgetLines.add(line);
+                fireTableRowsInserted(this.budgetLines.size() - 1, this.budgetLines.size() - 1);
+        }
+
+        /**
+     * Replaces the {@link BudgetLine} stored at the supplied index with a new instance.
+     * <p>
+     * This helper keeps the underlying list and table view in sync when edits return a
+     * different {@link BudgetLine} object than the one currently stored.  When the dialog
+     * mutates the original instance, callers should prefer {@link #fireTableRowsUpdated(int, int)}
+     * directly instead.
+     *
+     * @param rowIndex the zero-based index to replace
+     * @param updatedLine the replacement {@link BudgetLine}; ignored when {@code null}
+     */
+        public void replaceRow(int rowIndex, BudgetLine updatedLine)
+        {
+                if (updatedLine == null)
+                {
+                        return;
+                }
+
+                if (rowIndex >= 0 && rowIndex < this.budgetLines.size())
+                {
+                        this.budgetLines.set(rowIndex, updatedLine);
+                        fireTableRowsUpdated(rowIndex, rowIndex);
+                }
+        }
 	
 	/**
      * Removes the {@link BudgetLine} at the specified row index from the table model.
