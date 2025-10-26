@@ -5,25 +5,25 @@ import java.util.function.Consumer;
 import nonprofitbookkeeping.model.AccountingTransaction;
 
 /**
- * Legacy entry point that now delegates to {@link JournalEntryWorkspaceFX}.
- *
- * <p>The historic Swing application referenced {@code GeneralJournalEntryPanelFX}
- * directly when embedding the general journal editor.  The modernised
- * implementation lives in {@link JournalEntryWorkspaceFX}; this class simply
- * exposes the former type while reusing the new workspace behaviour.</p>
+ * Backwards-compatible entry point that preserves the legacy
+ * {@code GeneralJournalEntryPanelFX} type while delegating to the modern
+ * {@link JournalEntryWorkspaceFX} implementation.  Older call-sites can
+ * continue to construct this class and receive the updated workspace without
+ * needing to change imports.
  */
 public class GeneralJournalEntryPanelFX extends JournalEntryWorkspaceFX
 {
-        /** Creates a new entry workspace that logs saved transactions. */
+        /** Convenience constructor mirroring the historical no-arg variant. */
         public GeneralJournalEntryPanelFX()
         {
                 super();
         }
 
         /**
-         * Creates a workspace configured for capturing a new transaction.
+         * Creates a new panel that invokes {@code onSave} when a transaction is
+         * persisted.
          *
-         * @param onSave callback invoked when the user saves the entry
+         * @param onSave callback executed after the transaction is saved
          */
         public GeneralJournalEntryPanelFX(Consumer<AccountingTransaction> onSave)
         {
@@ -31,10 +31,11 @@ public class GeneralJournalEntryPanelFX extends JournalEntryWorkspaceFX
         }
 
         /**
-         * Creates a workspace for editing an existing transaction.
+         * Creates a panel that pre-populates the UI using an existing
+         * transaction and notifies {@code onSave} when edits are committed.
          *
-         * @param existing the transaction to edit (or {@code null} for new)
-         * @param onSave   callback invoked with the saved transaction
+         * @param existing existing transaction to edit (may be {@code null})
+         * @param onSave   callback executed after saving the transaction
          */
         public GeneralJournalEntryPanelFX(AccountingTransaction existing,
                         Consumer<AccountingTransaction> onSave)

@@ -35,10 +35,7 @@ public class BudgetPanelTest {
         }
 
         @Override public void setVisible(boolean b) {
-            // Bypass the Swing UI entirely – the tests configure the dialog
-            // ahead of time and expect {@link #isSaved()} and
-            // {@link #getBudgetLine()} to reflect those values once the
-            // dialog would have been shown.
+            // No-op: the dialog never becomes visible in tests.
         }
 
         @Override public boolean isSaved() { return this.saved; }
@@ -78,10 +75,19 @@ public class BudgetPanelTest {
 
         @Override
         protected BudgetLineDialog createBudgetLineDialog(String title, BudgetLine line) {
+            if (this.stub != null) {
+                return this.stub;
+            }
             if (this.factory != null) {
                 return this.factory.apply(line);
             }
             return super.createBudgetLineDialog(title, line);
+        }
+
+        private BudgetLineDialog stub;
+
+        void setStub(BudgetLineDialog stub) {
+            this.stub = stub;
         }
     }
 
