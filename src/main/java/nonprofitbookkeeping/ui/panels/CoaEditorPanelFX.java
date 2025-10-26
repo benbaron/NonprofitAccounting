@@ -749,48 +749,50 @@ public class CoaEditorPanelFX extends BorderPane
 	 * @param parent The parent {@link Account} under which to insert the new item.
 	 *               If null, {@code det} is added as a root-level account in the tree.
 	 */
-	private void insertIntoTree(Account det, Account parent)
-	{
-		
-		if (det == null)
-		{
-			LOGGER.warn("Attempted to insert null account into tree");
-			return;
-		}
-		
-		// Avoid duplicate nodes if account already exists in tree
-		if (find(this.rootItem, det) != null)
-		{
-			LOGGER.debug("Account {} already present in tree", det.getName());
-			return;
-		}
-		
-		if (parent == null)
-		{
-			this.rootItem.getChildren().add(makeNode(det)); // Add as a child of the (hidden) root
-		}
-		else
-		{
-			TreeItem<Account> parentItem = find(this.rootItem, parent); // Find the parent TreeItem
-			
-			if (parentItem != null)
-			{
-				parentItem.getChildren().add(makeNode(det));
-				parentItem.setExpanded(true); // Ensure parent is expanded to show new child
-			}
-			else
-			{
-				// Should not happen if parent is valid and tree is consistent
-				LOGGER.warn("Could not find parent TreeItem for account: " + parent.getName() +
-					" when inserting child " + det.getName());
-				// As a fallback, could add to root, but this indicates an issue.
-				this.rootItem.getChildren().add(makeNode(det));
-			}
-			
-		}
-		
-		this.tree.refresh(); // Refresh to show the new item
-	}
+        private void insertIntoTree(Account det, Account parent)
+        {
+
+                if (det == null)
+                {
+                        LOGGER.warn("Attempted to insert null account into tree");
+                        return;
+                }
+
+                TreeItem<Account> existingItem = find(this.rootItem, det);
+
+                if (existingItem != null)
+                {
+                        existingItem.setValue(det);
+                        LOGGER.debug("Account {} ({}) already present in tree; refreshing existing node",
+                                det.getName(), det.getAccountNumber());
+                        this.tree.refresh();
+                        return;
+                }
+
+                TreeItem<Account> parentItem = this.rootItem;
+
+                if (parent != null)
+                {
+                        parentItem = find(this.rootItem, parent);
+
+                        if (parentItem == null)
+                        {
+                                LOGGER.warn("Parent account {} ({}) not found; adding {} ({}) to root",
+                                        parent.getName(), parent.getAccountNumber(), det.getName(), det.getAccountNumber());
+                                parentItem = this.rootItem;
+                        }
+                }
+
+                TreeItem<Account> newNode = makeNode(det);
+                parentItem.getChildren().add(newNode);
+
+                if (parentItem != this.rootItem)
+                {
+                        parentItem.setExpanded(true);
+                }
+
+                this.tree.refresh(); // Refresh to show the new item
+        }
 	
 	/**
 	 * Recursively searches for a {@link TreeItem} within the subtree of {@code n}
@@ -800,27 +802,52 @@ public class CoaEditorPanelFX extends BorderPane
 	 * @param acc The {@link Account} to find within the tree.
 	 * @return The {@link TreeItem} that wraps {@code acc} if found; otherwise, null.
 	 */
-	private TreeItem<Account> find(TreeItem<Account> n, Account acc)
-	{
-		
-		if (Objects.equals(n.getValue(), acc))
-		{ // Use Objects.equals for null-safe comparison
-			return n;
-		}
-		
-		for (TreeItem<Account> c : n.getChildren())
-		{
-			TreeItem<Account> hit = find(c, acc);
-			
-			if (hit != null)
-			{
-				return hit;
-			}
-			
-		}
-		
-		return null;
-	}
+        private TreeItem<Account> find(TreeItem<Account> n, Account acc)
+        {
+
+                if (n == null || acc == null)
+                {
+                        return null;
+                }
+
+                Account nodeAccount = n.getValue();
+
+                if (isSameAccount(nodeAccount, acc))
+                {
+                        return n;
+                }
+
+                for (TreeItem<Account> c : n.getChildren())
+                {
+                        TreeItem<Account> hit = find(c, acc);
+
+                        if (hit != null)
+                        {
+                                return hit;
+                        }
+
+                }
+
+                return null;
+        }
+
+        private boolean isSameAccount(Account nodeAccount, Account target)
+        {
+                if (nodeAccount == null || target == null)
+                {
+                        return false;
+                }
+
+                String nodeNumber = nodeAccount.getAccountNumber();
+                String targetNumber = target.getAccountNumber();
+
+                if (nodeNumber != null && targetNumber != null && nodeNumber.equals(targetNumber))
+                {
+                        return true;
+                }
+
+                return Objects.equals(nodeAccount, target);
+        }
 	
 	/**
 	 * handleCompanyChange
