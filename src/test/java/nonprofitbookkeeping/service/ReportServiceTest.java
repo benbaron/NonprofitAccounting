@@ -170,7 +170,6 @@ import static org.mockito.Mockito.when;
 		lenient().when(mock.getAccountNumber()).thenReturn(number);
 		lenient().when(mock.getAccountType()).thenReturn(type);
                 lenient().when(mock.getIncreaseSide()).thenReturn(increaseSide);
-                lenient().when(mock.getEffectiveIncreaseSide()).thenReturn(increaseSide);
 		lenient().when(mock.getOpeningBalance()).thenReturn(openingBalance);
 		lenient().when(this.mockChartOfAccounts.getAccount(number)).thenReturn(mock);
                 lenient().when(mock.getAssociatedFundIds()).thenReturn(new ArrayList<>()); // Default empty
