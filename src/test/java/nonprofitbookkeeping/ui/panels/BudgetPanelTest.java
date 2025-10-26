@@ -28,13 +28,14 @@ public class BudgetPanelTest {
         StubBudgetLineDialog() {
             super((Dialog) null, "Stub", new ChartOfAccounts(), List.of(), null);
         }
+
         void configure(boolean saved, BudgetLine line) {
             this.saved = saved;
             this.line = line;
         }
 
         @Override public void setVisible(boolean b) {
-            // no-op; visibility is short-circuited for tests
+            // No-op: the dialog never becomes visible in tests.
         }
 
         @Override public boolean isSaved() { return this.saved; }
@@ -68,12 +69,25 @@ public class BudgetPanelTest {
             this.factory = factory;
         }
 
+        void setStub(BudgetLineDialog dialog) {
+            setDialogFactory(line -> dialog);
+        }
+
         @Override
         protected BudgetLineDialog createBudgetLineDialog(String title, BudgetLine line) {
+            if (this.stub != null) {
+                return this.stub;
+            }
             if (this.factory != null) {
                 return this.factory.apply(line);
             }
             return super.createBudgetLineDialog(title, line);
+        }
+
+        private BudgetLineDialog stub;
+
+        void setStub(BudgetLineDialog stub) {
+            this.stub = stub;
         }
     }
 
