@@ -6,6 +6,8 @@ import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CompanyProfileModel;
+import nonprofitbookkeeping.model.Ledger;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
@@ -43,6 +45,8 @@ public class JacksonDataStorer implements DataStorer
         public static JacksonDataStorer dataStorer = new JacksonDataStorer();
         private static final String JSON_ENTRY_NAME = "company_data.json";
         private static final String CHART_OF_ACCOUNTS_ENTRY_NAME = "chart_of_accounts.json";
+        private static final String COMPANY_PROFILE_ENTRY_NAME = "company_profile.json";
+        private static final String LEDGER_ENTRY_NAME = "ledger.json";
 	
 	/**
 	 * Constructs a JacksonDataStorer and initializes the Jackson ObjectMapper
@@ -63,9 +67,13 @@ public class JacksonDataStorer implements DataStorer
 	
         /**
          * {@inheritDoc}
-         * This implementation reads data from a ZIP file, expecting a JSON entry named "company_data.json".
-         * If a companion entry named "chart_of_accounts.json" is present and the requested type is a
-         * {@link Company}, the chart data is loaded from that entry as well.
+         * This implementation reads data from a ZIP file and reconstructs the requested type from
+         * JSON entries. Legacy archives provide a {@code company_data.json} entry that serializes the
+         * entire {@link Company}. Modern archives include modular entries for the chart of accounts,
+         * company profile, and ledger ({@code chart_of_accounts.json}, {@code company_profile.json},
+         * and {@code ledger.json} respectively). When loading a {@link Company}, those modular
+         * sections are merged after deserialization. Requests for individual components (e.g.
+         * {@link ChartOfAccounts}) are satisfied directly from their dedicated entries when present.
          */
 	@Override public <T> T loadData(Class<T> type, File file)	throws IOException,
 																ActionCancelledException,
@@ -88,7 +96,11 @@ public class JacksonDataStorer implements DataStorer
                                 {
                                         ZipEntry zipEntry;
                                         boolean entryFound = false;
+                                        boolean componentFound = false;
                                         ChartOfAccounts chartOfAccounts = null;
+                                        CompanyProfileModel profile = null;
+                                        Ledger ledger = null;
+                                        Company reconstructedCompany = null;
 
                                         while ((zipEntry = zis.getNextEntry()) != null)
                                         {
@@ -99,26 +111,110 @@ public class JacksonDataStorer implements DataStorer
                                                 {
                                                         value = this.mapper.readValue(zis, type);
                                                         entryFound = true;
+                                                        if (value instanceof Company company)
+                                                        {
+                                                                reconstructedCompany = company;
+                                                        }
                                                 }
-                                                else if (CHART_OF_ACCOUNTS_ENTRY_NAME.equals(entryName) &&
-                                                        Company.class.isAssignableFrom(type))
+                                                else if (CHART_OF_ACCOUNTS_ENTRY_NAME.equals(entryName))
                                                 {
-                                                        chartOfAccounts = this.mapper.readValue(zis,
+                                                        ChartOfAccounts chart = this.mapper.readValue(zis,
                                                                 ChartOfAccounts.class);
+
+                                                        if (Company.class.isAssignableFrom(type))
+                                                        {
+                                                                chartOfAccounts = chart;
+                                                        }
+
+                                                        if (ChartOfAccounts.class.isAssignableFrom(type))
+                                                        {
+                                                                value = type.cast(chart);
+                                                                entryFound = true;
+                                                        }
+
+                                                        componentFound = true;
+                                                }
+                                                else if (COMPANY_PROFILE_ENTRY_NAME.equals(entryName))
+                                                {
+                                                        CompanyProfileModel profileModel = this.mapper.readValue(zis,
+                                                                CompanyProfileModel.class);
+
+                                                        if (Company.class.isAssignableFrom(type))
+                                                        {
+                                                                profile = profileModel;
+                                                        }
+
+                                                        if (CompanyProfileModel.class.isAssignableFrom(type))
+                                                        {
+                                                                value = type.cast(profileModel);
+                                                                entryFound = true;
+                                                        }
+
+                                                        componentFound = true;
+                                                }
+                                                else if (LEDGER_ENTRY_NAME.equals(entryName))
+                                                {
+                                                        Ledger readLedger = this.mapper.readValue(zis, Ledger.class);
+
+                                                        if (Company.class.isAssignableFrom(type))
+                                                        {
+                                                                ledger = readLedger;
+                                                        }
+
+                                                        if (Ledger.class.isAssignableFrom(type))
+                                                        {
+                                                                value = type.cast(readLedger);
+                                                                entryFound = true;
+                                                        }
+
+                                                        componentFound = true;
                                                 }
 
                                                 zis.closeEntry();
+                                        }
+
+                                        if (Company.class.isAssignableFrom(type))
+                                        {
+                                                if (reconstructedCompany == null && (entryFound || componentFound))
+                                                {
+                                                        try
+                                                        {
+                                                                reconstructedCompany = (Company) type.getDeclaredConstructor()
+                                                                        .newInstance();
+                                                        }
+                                                        catch (ReflectiveOperationException ex)
+                                                        {
+                                                                throw new IOException(
+                                                                        "Failed to instantiate " + type.getName(), ex);
+                                                        }
+                                                }
+
+                                                if (reconstructedCompany != null)
+                                                {
+                                                        if (profile != null)
+                                                        {
+                                                                reconstructedCompany.setCompanyProfileModel(profile);
+                                                        }
+
+                                                        if (ledger != null)
+                                                        {
+                                                                reconstructedCompany.setLedger(ledger);
+                                                        }
+
+                                                        if (chartOfAccounts != null)
+                                                        {
+                                                                reconstructedCompany.setChartOfAccounts(chartOfAccounts);
+                                                        }
+
+                                                        value = type.cast(reconstructedCompany);
+                                                        entryFound = entryFound || componentFound;
+                                                }
                                         }
 
                                         if (!entryFound)
                                         {
                                                 throw new IOException(
                                                         "Entry '" + JSON_ENTRY_NAME + "' not found in the zip file.");
-                                        }
-
-                                        if (chartOfAccounts != null && value instanceof Company company)
-                                        {
-                                                company.setChartOfAccounts(chartOfAccounts);
                                         }
                                 }
                         }
@@ -155,9 +251,11 @@ public class JacksonDataStorer implements DataStorer
 	
         /**
          * {@inheritDoc}
-         * This implementation writes data to a ZIP file, storing it as a JSON entry named "company_data.json".
-         * When persisting a {@link Company}, a secondary entry named "chart_of_accounts.json" is also written
-         * to maintain compatibility with legacy `.npbk` archives that exposed the chart separately.
+         * This implementation writes data to a ZIP file. For general objects a single
+         * {@code company_data.json} entry is produced. When persisting a {@link Company}, modular
+         * entries for the profile, ledger, and chart of accounts are also written so that the archive
+         * can be partially extracted without deserializing the entire aggregate. The legacy
+         * {@code company_data.json} entry is still written to preserve backwards compatibility.
          */
 	@Override public void saveData(Object obj, File file)	throws IOException,
 															ActionCancelledException,
@@ -176,26 +274,18 @@ public class JacksonDataStorer implements DataStorer
                         ZipOutputStream zos = new ZipOutputStream(fos))
                 {
 
-                        this.mapper.writeValue(baos, obj);
-
-                        ZipEntry zipEntry = new ZipEntry(JSON_ENTRY_NAME);
-                        zos.putNextEntry(zipEntry);
-                        zos.write(baos.toByteArray());
-                        zos.closeEntry();
-
                         if (obj instanceof Company company)
                         {
-                                ChartOfAccounts chart = company.getChartOfAccounts();
-
-                                if (chart != null)
-                                {
-                                        baos.reset();
-                                        this.mapper.writeValue(baos, chart);
-                                        ZipEntry chartEntry = new ZipEntry(CHART_OF_ACCOUNTS_ENTRY_NAME);
-                                        zos.putNextEntry(chartEntry);
-                                        zos.write(baos.toByteArray());
-                                        zos.closeEntry();
-                                }
+                                writeEntry(zos, JSON_ENTRY_NAME, company, baos);
+                                writeEntry(zos, COMPANY_PROFILE_ENTRY_NAME,
+                                        company.getCompanyProfileModel(), baos);
+                                writeEntry(zos, LEDGER_ENTRY_NAME, company.getLedger(), baos);
+                                writeEntry(zos, CHART_OF_ACCOUNTS_ENTRY_NAME,
+                                        company.getChartOfAccounts(), baos);
+                        }
+                        else
+                        {
+                                writeEntry(zos, JSON_ENTRY_NAME, obj, baos);
                         }
                         LOGGER.debug("Exiting saveData");
                 }
@@ -207,10 +297,26 @@ public class JacksonDataStorer implements DataStorer
                 }
 
         }
-	
-	/**
-	 * {@inheritDoc}
-	 */
+
+        private void writeEntry(ZipOutputStream zos, String entryName, Object data,
+                ByteArrayOutputStream buffer) throws IOException
+        {
+                if (data == null)
+                {
+                        return;
+                }
+
+                buffer.reset();
+                this.mapper.writeValue(buffer, data);
+                ZipEntry zipEntry = new ZipEntry(entryName);
+                zos.putNextEntry(zipEntry);
+                zos.write(buffer.toByteArray());
+                zos.closeEntry();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
 	@Override public List<File> listFiles(File directory, String extension)
 	{
 		

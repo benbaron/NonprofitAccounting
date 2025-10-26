@@ -62,9 +62,9 @@ public class BudgetPanel extends JDialog
 	private JTextField txtCurrency;
 	
 	/** JTable to display and manage individual budget lines. */
-	private JTable tblBudgetLines;
-	/** The {@link BudgetLineTableModel} that backs the {@code tblBudgetLines}. */
-	private BudgetLineTableModel budgetLineTableModel;
+        private JTable tblBudgetLines;
+        /** The {@link BudgetLineTableModel} that backs the {@code tblBudgetLines}. */
+        private BudgetLineTableModel budgetLineTableModel;
 	
 	/** Button to add a new budget line. */
 	private JButton btnAddLine;
@@ -231,7 +231,8 @@ public class BudgetPanel extends JDialog
 		
 		this.budgetLineTableModel = new BudgetLineTableModel(this.currentBudget.getBudgetLines(),
 			this.chartOfAccounts, this.availableFunds);
-		this.tblBudgetLines = new JTable(this.budgetLineTableModel);
+                this.tblBudgetLines = new JTable(this.budgetLineTableModel);
+                this.tblBudgetLines.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
 		// Setup JComboBox for Periodicity column in the table
 		JComboBox<Periodicity> periodicityComboBox = new JComboBox<>(Periodicity.values());
@@ -251,9 +252,11 @@ public class BudgetPanel extends JDialog
 		
 		
 		// Buttons
-		this.btnAddLine = new JButton("Add Line");
-		this.btnEditLine = new JButton("Edit Line");
-		this.btnRemoveLine = new JButton("Remove Line");
+                this.btnAddLine = new JButton("Add Line");
+                this.btnEditLine = new JButton("Edit Line");
+                this.btnRemoveLine = new JButton("Remove Line");
+                this.btnEditLine.setEnabled(false);
+                this.btnRemoveLine.setEnabled(false);
 		this.btnSaveBudget = new JButton("Save Budget");
 		this.btnClose = new JButton("Close");
 	}
@@ -355,14 +358,22 @@ public class BudgetPanel extends JDialog
                return new BudgetLineDialog(this, title, this.chartOfAccounts, this.availableFunds, existingLine);
        }
 
-	private void attachListeners()
-	{
-		this.btnClose.addActionListener(e -> dispose());
-		
-		this.btnAddLine.addActionListener(this::actionAddLine);
-		this.btnEditLine.addActionListener(this::actionEditLine);
-		this.btnRemoveLine.addActionListener(this::actionRemoveLine);
-		this.btnSaveBudget.addActionListener(this::actionSaveBudget);
+        private void attachListeners()
+        {
+                this.btnClose.addActionListener(e -> dispose());
+
+                this.btnAddLine.addActionListener(this::actionAddLine);
+                this.btnEditLine.addActionListener(this::actionEditLine);
+                this.btnRemoveLine.addActionListener(this::actionRemoveLine);
+                this.btnSaveBudget.addActionListener(this::actionSaveBudget);
+
+                this.tblBudgetLines.getSelectionModel().addListSelectionListener(event ->
+                {
+                        if (!event.getValueIsAdjusting())
+                        {
+                                updateLineActionButtons();
+                        }
+                });
 		
 		// Helper for focus listeners
 		BiConsumer<JTextField, BiConsumer<Budget, String>> addBudgetUpdateFocusListener =
@@ -386,8 +397,17 @@ public class BudgetPanel extends JDialog
 				e -> this.currentBudget.setDescription(this.txtDescription.getText()));
 		addBudgetUpdateFocusListener.accept(this.txtDescription, Budget::setDescription);
 
-		this.cmbApplicableFund.addActionListener(e -> updateCurrentBudgetApplicableFund());
-	}
+                this.cmbApplicableFund.addActionListener(e -> updateCurrentBudgetApplicableFund());
+
+                updateLineActionButtons();
+        }
+
+        private void updateLineActionButtons()
+        {
+                boolean hasSelection = this.tblBudgetLines.getSelectedRow() >= 0;
+                this.btnEditLine.setEnabled(hasSelection);
+                this.btnRemoveLine.setEnabled(hasSelection);
+        }
 	
 	/**
 	 * Handles the action of adding a new budget line.
@@ -402,21 +422,31 @@ public class BudgetPanel extends JDialog
                BudgetLineDialog dialog = createBudgetLineDialog("Add Budget Line", null);
                dialog.setVisible(true);
 		
-		if (dialog.isSaved())
-		{
-			BudgetLine newLine = dialog.getBudgetLine();
-			
-			if (newLine != null)
-			{
-				this.currentBudget.addBudgetLine(newLine); // Assumes addBudgetLine exists and
-															// handles null list
-				this.budgetLineTableModel.fireTableDataChanged(); // More specific event might be
-																	// better
-			}
-			
-		}
-		
-	}
+                if (!dialog.isSaved())
+                {
+                        return;
+                }
+
+                BudgetLine newLine = dialog.getBudgetLine();
+
+                if (newLine == null)
+                {
+                        LOGGER.warn("BudgetLineDialog reported a saved state but returned no budget line.");
+                        return;
+                }
+
+                // BudgetLineTableModel operates on the same list instance that the budget exposes, so mutating
+                // the model keeps both the UI and the underlying budget in sync.  Using the model ensures the
+                // appropriate table events fire for Swing listeners instead of redrawing the entire table.
+                this.budgetLineTableModel.addRow(newLine);
+
+                int lastRowIndex = this.budgetLineTableModel.getRowCount() - 1;
+                if (lastRowIndex >= 0)
+                {
+                        this.tblBudgetLines.getSelectionModel().setSelectionInterval(lastRowIndex, lastRowIndex);
+                }
+
+        }
 	
 	/**
 	 * Handles the action of editing an existing budget line.
@@ -428,46 +458,47 @@ public class BudgetPanel extends JDialog
 	private void actionEditLine(ActionEvent e)
 	{
 		int selectedRow = this.tblBudgetLines.getSelectedRow();
-		
+
 		if (selectedRow >= 0)
 		{
 			BudgetLine lineToEdit = this.budgetLineTableModel.getBudgetLineAt(selectedRow);
-			
+
 			if (lineToEdit == null)
 			{ // Should not happen if row is selected, but defensive
 				JOptionPane.showMessageDialog(this, "Selected line data is not available.", "Error",
 					JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			
-                       BudgetLineDialog dialog = createBudgetLineDialog("Edit Budget Line", lineToEdit);
+
+			BudgetLineDialog dialog = createBudgetLineDialog("Edit Budget Line", lineToEdit);
 			dialog.setVisible(true);
-			
+
 			if (dialog.isSaved())
 			{
 				// The dialog modifies the lineToEdit object directly if it's passed by
 				// reference
 				// and the dialog works on that instance. Or it returns a new/modified instance.
 				// Assuming dialog.getBudgetLine() returns the potentially modified instance.
-				BudgetLine editedLine = dialog.getBudgetLine();
-				
-				if (editedLine != lineToEdit)
-				{ // If dialog returned a new instance
-					this.currentBudget.getBudgetLines().set(selectedRow, editedLine);
-				}
-				
-				this.budgetLineTableModel.fireTableRowsUpdated(selectedRow, selectedRow);
-			}
-			
-		}
+                                BudgetLine editedLine = dialog.getBudgetLine();
+
+                                if (editedLine == lineToEdit)
+                                {
+                                        this.budgetLineTableModel.fireTableRowsUpdated(selectedRow, selectedRow);
+                                }
+                                else
+                                {
+                                        this.budgetLineTableModel.replaceRow(selectedRow, editedLine);
+                                }
+                        }
+
+                }
 		else
 		{
 			JOptionPane.showMessageDialog(this, "Please select a line to edit.", "No Selection",
 				JOptionPane.WARNING_MESSAGE);
 		}
-		
 	}
-	
+
 	/**
 	 * Handles the action of removing a selected budget line from the table.
 	 * Prompts the user for confirmation before removing the line.
@@ -475,29 +506,37 @@ public class BudgetPanel extends JDialog
 	 *
 	 * @param e The {@link ActionEvent} that triggered this action.
 	 */
-	private void actionRemoveLine(ActionEvent e)
+		private void actionRemoveLine(ActionEvent e)
 	{
 		int selectedRow = this.tblBudgetLines.getSelectedRow();
-		
+
 		if (selectedRow >= 0)
 		{
-			
 			if (JOptionPane.showConfirmDialog(this, "Are you sure you want to remove this line?",
 				"Confirm Remove", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
 			{
 				this.budgetLineTableModel.removeRow(selectedRow); // This modifies
-																	// currentBudget.getBudgetLines()
+				int remaining = this.budgetLineTableModel.getRowCount();
+				if (remaining > 0)
+				{
+					int nextSelection = Math.min(selectedRow, remaining - 1);
+					this.tblBudgetLines.getSelectionModel().setSelectionInterval(nextSelection, nextSelection);
+				}
+				else
+				{
+					this.tblBudgetLines.clearSelection();
+				}
+
+				updateLineActionButtons();
 			}
-			
 		}
 		else
 		{
 			JOptionPane.showMessageDialog(this, "Please select a line to remove.", "No Selection",
 				JOptionPane.WARNING_MESSAGE);
 		}
-		
 	}
-	
+
 	/**
 	 * Handles the action of saving the current budget (new or edited).
 	 * It first updates the {@link #currentBudget} object with the latest values from all UI fields.

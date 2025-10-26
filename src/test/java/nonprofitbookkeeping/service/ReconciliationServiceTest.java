@@ -1,274 +1,131 @@
 package nonprofitbookkeeping.service;
 
-import nonprofitbookkeeping.model.Account;
-import nonprofitbookkeeping.model.AccountingTransaction;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
+import nonprofitbookkeeping.core.AccountingTransactionBuilder;
+import nonprofitbookkeeping.model.Account;
+import nonprofitbookkeeping.model.AccountSide;
+import nonprofitbookkeeping.model.AccountType;
+import nonprofitbookkeeping.model.AccountingTransaction;
+import nonprofitbookkeeping.model.ChartOfAccounts;
+import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.model.Ledger;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.lenient; // For lenient stubbing if needed
-import static org.mockito.Mockito.mock;
+class ReconciliationServiceTest
+{
+        private static final String BANK_ACCOUNT = "1000";
+        private static final String OFFSET_ACCOUNT = "4000";
 
-@ExtendWith(MockitoExtension.class)
-class ReconciliationServiceTest {
+        private Ledger ledger;
+        private ReconciliationService service;
+        private AccountingTransaction januaryDeposit;
+        private AccountingTransaction februaryPayment;
 
-    private ReconciliationService service;
+        @BeforeEach
+        void setUp()
+        {
+                new CurrentCompany();
+                Company company = CurrentCompany.getCompany();
+                CurrentCompany.markCompanyOpen();
 
-    @Mock
-    private AccountingTransaction mockTx1, mockTx2, mockTx3, mockTx4;
+                ChartOfAccounts chart = company.getChartOfAccounts();
+                Account bank = new Account(BANK_ACCOUNT, "Checking", AccountSide.DEBIT);
+                bank.setAccountType(AccountType.CHECKING);
+                chart.addAccount(bank);
 
-    @Mock
-    private Account mockAccount1, mockAccount2, mockAccountNullNum;
+                Account income = new Account(OFFSET_ACCOUNT, "Contributions", AccountSide.CREDIT);
+                income.setAccountType(AccountType.INCOME);
+                chart.addAccount(income);
 
-    // Common statement details (not used by current reconcile logic but part of signature)
-    private final String STATEMENT_DATE = "2023-01-31";
-    private final BigDecimal STATEMENT_ENDING_BALANCE = new BigDecimal("1000.00");
+                this.ledger = company.getLedger();
+                this.service = new ReconciliationService();
 
+                this.januaryDeposit = createTransaction(new BigDecimal("125.00"), 1L, "2024-01-05", "Initial deposit");
+                this.februaryPayment = createTransaction(new BigDecimal("80.00"), 2L, "2024-02-02", "Sponsor payment");
+        }
 
-    @BeforeEach
-    void setUp() {
-        this.service = new ReconciliationService();
+        @Test
+        void getUnreconciled_returnsTransactionsForReconcilableAccount()
+        {
+                List<AccountingTransaction> unreconciled = ReconciliationService.getUnreconciled(BANK_ACCOUNT);
+                assertThat(unreconciled)
+                        .extracting(AccountingTransaction::getMemo)
+                        .containsExactly("Initial deposit", "Sponsor payment");
+        }
 
-        // Common stubs - can be overridden in specific tests if needed
-        lenient().when(this.mockAccount1.getAccountNumber()).thenReturn("ACC1");
-        lenient().when(this.mockAccount2.getAccountNumber()).thenReturn("ACC2");
-        lenient().when(this.mockAccountNullNum.getAccountNumber()).thenReturn(null); // Account with null number
+        @Test
+        void listReconcilableAccounts_includesBankAccount()
+        {
+                List<String> accounts = ReconciliationService.listReconcilableAccounts();
+                assertThat(accounts).containsExactly(BANK_ACCOUNT);
+        }
 
-        lenient().when(this.mockTx1.getBookingDateTimestamp()).thenReturn(1L);
+        @Test
+        void reconcile_marksTransactionsClearedAndRemovesFromList()
+        {
+                this.service.reconcile(BANK_ACCOUNT, "2024-02-28", new BigDecimal("205.00"), List.of(1L));
 
-        lenient().when(this.mockTx2.getBookingDateTimestamp()).thenReturn(2L);
+                List<AccountingTransaction> remaining = ReconciliationService.getUnreconciled(BANK_ACCOUNT);
+                assertThat(remaining)
+                        .extracting(AccountingTransaction::getBookingDateTimestamp)
+                        .containsExactly(2L);
+                assertThat(this.januaryDeposit.getClearBank()).isEqualTo("2024-02-28");
+        }
 
-        lenient().when(this.mockTx3.getBookingDateTimestamp()).thenReturn(3L);
+        @Test
+        void addTransactionToReconcile_includesManualTransaction()
+        {
+                AccountingTransaction manual = createTransaction(new BigDecimal("30.00"), 3L, "2024-03-10", "Manual entry");
+                this.ledger.getJournal().deleteTransaction(3L); // manual transaction should not live in ledger yet
 
-        lenient().when(this.mockTx4.getBookingDateTimestamp()).thenReturn(4L);
-    }
+                this.service.addTransactionToReconcile(manual);
 
-    // --- Constructor Test ---
-    @Test
-    @DisplayName("Constructor: New instance should have an empty unreconciled list")
-    void testConstructor_newInstance_unreconciledListIsEmpty() {
-        assertTrue(ReconciliationService.getUnreconciled("anyAccount").isEmpty(), "Newly created service should have no unreconciled transactions.");
-        assertTrue(ReconciliationService.listReconcilableAccounts().isEmpty(), "Newly created service should have no reconcilable accounts.");
-    }
+                List<AccountingTransaction> unreconciled = ReconciliationService.getUnreconciled(BANK_ACCOUNT);
+                assertThat(unreconciled)
+                        .extracting(AccountingTransaction::getBookingDateTimestamp)
+                        .contains(3L);
+        }
 
-    // --- addTransactionToReconcile Tests ---
-    @Test
-    @DisplayName("addTransactionToReconcile: Valid transaction should be added")
-    void testAddTransactionToReconcile_validTransaction_isAdded() {
-        this.service.addTransactionToReconcile(this.mockTx1);
-        assertEquals(1, ReconciliationService.getUnreconciled("ACC1").size());
-        assertSame(this.mockTx1, ReconciliationService.getUnreconciled("ACC1").get(0));
-    }
+        @Test
+        void reconcileEntry_marksSingleTransactionCleared()
+        {
+                boolean cleared = ReconciliationService.reconcileEntry(2L);
+                assertThat(cleared).isTrue();
 
-    @Test
-    @DisplayName("addTransactionToReconcile: Null transaction should be ignored")
-    void testAddTransactionToReconcile_nullTransaction_isIgnored() {
-        this.service.addTransactionToReconcile(null);
-        assertTrue(ReconciliationService.listReconcilableAccounts().isEmpty());
-    }
+                List<AccountingTransaction> remaining = ReconciliationService.getUnreconciled(BANK_ACCOUNT);
+                assertThat(remaining)
+                        .extracting(AccountingTransaction::getBookingDateTimestamp)
+                        .containsExactly(1L);
+                assertThat(this.februaryPayment.getClearBank()).isEqualTo("CLEARED");
+        }
 
-    // --- getUnreconciled Tests ---
-    @Test
-    @DisplayName("getUnreconciled: Null accountId should return empty list")
-    void testGetUnreconciled_nullAccountId_returnsEmptyList() {
-        this.service.addTransactionToReconcile(this.mockTx1);
-        assertTrue(ReconciliationService.getUnreconciled(null).isEmpty());
-    }
+        @Test
+        void getUnreconciledEntries_filtersByDateRange()
+        {
+                List<String[]> rows = ReconciliationService.getUnreconciledEntries(BANK_ACCOUNT, "2024-02-01", "2024-02-28");
+                assertThat(rows).hasSize(1);
+                assertThat(rows.get(0)[0]).isEqualTo("2024-02-02");
+                assertThat(rows.get(0)[3]).isEqualTo("UNRECONCILED");
+        }
 
-    @Test
-    @DisplayName("getUnreconciled: Blank accountId should return empty list")
-    void testGetUnreconciled_blankAccountId_returnsEmptyList() {
-        this.service.addTransactionToReconcile(this.mockTx1);
-        assertTrue(ReconciliationService.getUnreconciled("   ").isEmpty());
-    }
-
-    @Test
-    @DisplayName("getUnreconciled: No transactions added should return empty list")
-    void testGetUnreconciled_noTransactionsAdded_returnsEmptyList() {
-        assertTrue(ReconciliationService.getUnreconciled("ACC1").isEmpty());
-    }
-
-    @Test
-    @DisplayName("getUnreconciled: Returns only transactions for the specified accountId")
-    void testGetUnreconciled_transactionsForSpecificAccount_returnsOnlyMatchingTransactions() {
-        this.service.addTransactionToReconcile(this.mockTx1); // ACC1
-        this.service.addTransactionToReconcile(this.mockTx2); // ACC1
-        this.service.addTransactionToReconcile(this.mockTx3); // ACC2
-
-        List<AccountingTransaction> acc1Transactions = ReconciliationService.getUnreconciled("ACC1");
-        assertEquals(2, acc1Transactions.size());
-        assertTrue(acc1Transactions.contains(this.mockTx1));
-        assertTrue(acc1Transactions.contains(this.mockTx2));
-
-        List<AccountingTransaction> acc2Transactions = ReconciliationService.getUnreconciled("ACC2");
-        assertEquals(1, acc2Transactions.size());
-        assertTrue(acc2Transactions.contains(this.mockTx3));
-    }
-
-    @Test
-    @DisplayName("getUnreconciled: AccountId with no transactions should return empty list")
-    void testGetUnreconciled_accountIdWithNoTransactions_returnsEmptyList() {
-        this.service.addTransactionToReconcile(this.mockTx1); // ACC1
-        assertTrue(ReconciliationService.getUnreconciled("NONEXISTENT_ACC").isEmpty());
-    }
-
-    @Test
-    @DisplayName("getUnreconciled: Transaction with null Account object should be skipped")
-    void testGetUnreconciled_transactionWithNullAccount_isSkipped() {
-        this.service.addTransactionToReconcile(this.mockTx1);
-        assertTrue(ReconciliationService.getUnreconciled("ACC1").isEmpty());
-    }
-
-    @Test
-    @DisplayName("getUnreconciled: Transaction with null Account number should be skipped")
-    void testGetUnreconciled_transactionWithNullAccountNumber_isSkipped() {
-        this.service.addTransactionToReconcile(this.mockTx1);
-        assertTrue(ReconciliationService.getUnreconciled("ACC1").isEmpty()); // Won't match ACC1
-        assertTrue(ReconciliationService.getUnreconciled(null).isEmpty()); // Also won't match null due to filter logic
-    }
-
-
-    // --- listReconcilableAccounts Tests ---
-    @Test
-    @DisplayName("listReconcilableAccounts: No transactions should return empty list")
-    void testListReconcilableAccounts_noTransactions_returnsEmptyList() {
-        assertTrue(ReconciliationService.listReconcilableAccounts().isEmpty());
-    }
-
-    @Test
-    @DisplayName("listReconcilableAccounts: Transactions for one account returns single ID")
-    void testListReconcilableAccounts_transactionsForOneAccount_returnsSingleAccountId() {
-        this.service.addTransactionToReconcile(this.mockTx1);
-        this.service.addTransactionToReconcile(this.mockTx2);
-        List<String> accountIds = ReconciliationService.listReconcilableAccounts();
-        assertEquals(1, accountIds.size());
-        assertEquals("ACC1", accountIds.get(0));
-    }
-
-    @Test
-    @DisplayName("listReconcilableAccounts: Transactions for multiple accounts returns unique IDs")
-    void testListReconcilableAccounts_transactionsForMultipleAccounts_returnsUniqueAccountIds() {
-        this.service.addTransactionToReconcile(this.mockTx1); // ACC1
-        this.service.addTransactionToReconcile(this.mockTx3); // ACC2
-        List<String> accountIds = ReconciliationService.listReconcilableAccounts();
-        assertEquals(2, accountIds.size());
-        assertTrue(accountIds.contains("ACC1"));
-        assertTrue(accountIds.contains("ACC2"));
-    }
-
-    @Test
-    @DisplayName("listReconcilableAccounts: Handles transactions with null account or account number gracefully")
-    void testListReconcilableAccounts_withNullOrPartialTransactionData_handlesGracefully() {
-        this.service.addTransactionToReconcile(this.mockTx1); // ACC1
-
-        AccountingTransaction txWithNullAccount = mock(AccountingTransaction.class);
-        this.service.addTransactionToReconcile(txWithNullAccount);
-
-        AccountingTransaction txWithNullAccNum = mock(AccountingTransaction.class);
-        this.service.addTransactionToReconcile(txWithNullAccNum);
-
-        List<String> accountIds = ReconciliationService.listReconcilableAccounts();
-        assertEquals(1, accountIds.size());
-        assertEquals("ACC1", accountIds.get(0));
-    }
-
-
-    // --- reconcile Tests ---
-    @Test
-    @DisplayName("reconcile: Null accountId should make no changes")
-    void testReconcile_nullAccountId_noChange() {
-        this.service.addTransactionToReconcile(this.mockTx1);
-        this.service.reconcile(null, this.STATEMENT_DATE, 
-        	this.STATEMENT_ENDING_BALANCE, List.of(1L));
-        assertEquals(1, ReconciliationService.getUnreconciled("ACC1").size());
-    }
-
-    @Test
-    @DisplayName("reconcile: Blank accountId should make no changes")
-    void testReconcile_blankAccountId_noChange() {
-        this.service.addTransactionToReconcile(this.mockTx1);
-        this.service.reconcile("  ", this.STATEMENT_DATE, 
-        	this.STATEMENT_ENDING_BALANCE, List.of(1L));
-        assertEquals(1, ReconciliationService.getUnreconciled("ACC1").size());
-    }
-
-    @Test
-    @DisplayName("reconcile: Null clearedTransactionIds should make no changes")
-    void testReconcile_nullClearedTransactionIds_noChange() {
-        this.service.addTransactionToReconcile(this.mockTx1);
-        this.service.reconcile("ACC1", this.STATEMENT_DATE, this.STATEMENT_ENDING_BALANCE, null);
-        assertEquals(1, ReconciliationService.getUnreconciled("ACC1").size());
-    }
-
-    @Test
-    @DisplayName("reconcile: Removes cleared transactions for specific account, leaves others")
-    void testReconcile_validInput_removesClearedTransactionsForSpecificAccount() {
-        this.service.addTransactionToReconcile(this.mockTx1); // ACC1, TXN101
-        this.service.addTransactionToReconcile(this.mockTx2); // ACC1, TXN102
-        this.service.addTransactionToReconcile(this.mockTx3); // ACC2, TXN201
-        this.service.addTransactionToReconcile(this.mockTx4); // ACC1, TXN103
-
-        List<Long> clearedIdsForAcc1 = Arrays.asList(1L, 3L);
-        this.service.reconcile("ACC1", this.STATEMENT_DATE, this.STATEMENT_ENDING_BALANCE, clearedIdsForAcc1);
-
-        List<AccountingTransaction> acc1Unreconciled = ReconciliationService.getUnreconciled("ACC1");
-        assertEquals(1, acc1Unreconciled.size(), "ACC1 should have one unreconciled transaction left.");
-        assertSame(this.mockTx2, acc1Unreconciled.get(0), "TXN102 should be the remaining transaction for ACC1.");
-
-        List<AccountingTransaction> acc2Unreconciled = ReconciliationService.getUnreconciled("ACC2");
-        assertEquals(1, acc2Unreconciled.size(), "ACC2 transactions should be unaffected.");
-        assertSame(this.mockTx3, acc2Unreconciled.get(0));
-    }
-
-    @Test
-    @DisplayName("reconcile: Cleared IDs not matching any transactions for the account make no change to that account")
-    void testReconcile_clearedIdsDoNotMatchAnyTransactions_noChange() {
-        this.service.addTransactionToReconcile(this.mockTx1); // ACC1, TXN101
-        this.service.addTransactionToReconcile(this.mockTx2); // ACC1, TXN102
-
-        List<Long> nonMatchingClearedIds = Arrays.asList(9L, 8L);
-        this.service.reconcile("ACC1", this.STATEMENT_DATE, this.STATEMENT_ENDING_BALANCE, nonMatchingClearedIds);
-
-        assertEquals(2, ReconciliationService.getUnreconciled("ACC1").size(), "No transactions should be removed if IDs don't match.");
-    }
-
-    @Test
-    @DisplayName("reconcile: Reconciling all transactions for an account empties its list")
-    void testReconcile_reconcileAllTransactionsForAccount_emptiesListForThatAccount() {
-        this.service.addTransactionToReconcile(this.mockTx1); // ACC1, TXN101
-        this.service.addTransactionToReconcile(this.mockTx2); // ACC1, TXN102
-        this.service.addTransactionToReconcile(this.mockTx3); // ACC2, TXN201
-
-        List<Long> allAcc1ClearedIds = Arrays.asList(1L, 2L);
-        this.service.reconcile("ACC1", this.STATEMENT_DATE, this.STATEMENT_ENDING_BALANCE, allAcc1ClearedIds);
-
-        assertTrue(ReconciliationService.getUnreconciled("ACC1").isEmpty(), "ACC1 should have no unreconciled transactions left.");
-        assertFalse(ReconciliationService.getUnreconciled("ACC2").isEmpty(), "ACC2 transactions should remain.");
-    }
-
-    @Test
-    @DisplayName("reconcile: Transaction with null ID in service is not removed by reconcile")
-    void testReconcile_transactionWithNullId_isNotRemoved() {
-        AccountingTransaction txWithNullId = mock(AccountingTransaction.class);
-        when(txWithNullId.getBookingDateTimestamp()).thenReturn(null); // Transaction with null ID
-        this.service.addTransactionToReconcile(txWithNullId);
-        this.service.addTransactionToReconcile(this.mockTx1); // ACC1, TXN101
-
-        this.service.reconcile("ACC1", this.STATEMENT_DATE, 
-        	this.STATEMENT_ENDING_BALANCE, List.of(1L, -1L));
-
-        List<AccountingTransaction> acc1Unreconciled = ReconciliationService.getUnreconciled("ACC1");
-        assertEquals(1, acc1Unreconciled.size(), "Only transaction 1 should be removed.");
-        assertSame(txWithNullId, acc1Unreconciled.get(0), "Transaction with null ID should remain.");
-    }
+        private AccountingTransaction createTransaction(BigDecimal amount, long id, String date, String memo)
+        {
+                AccountingTransactionBuilder builder = AccountingTransactionBuilder.create();
+                builder.debit(amount, BANK_ACCOUNT);
+                builder.credit(amount, OFFSET_ACCOUNT);
+                AccountingTransaction tx = builder.build();
+                tx.setBookingDateTimestamp(id);
+                tx.setDate(date);
+                tx.setMemo(memo);
+                this.ledger.getJournal().addTransaction(tx);
+                return tx;
+        }
 }

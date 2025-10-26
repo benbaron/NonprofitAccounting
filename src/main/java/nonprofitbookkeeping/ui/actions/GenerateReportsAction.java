@@ -3,18 +3,19 @@ package nonprofitbookkeeping.ui.actions;
 
 import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.service.ReportService;
-import nonprofitbookkeeping.ui.helpers.AlertBox; 
-import nonprofitbookkeeping.ui.helpers.DateRangePickerDialog; 
+import nonprofitbookkeeping.ui.helpers.AlertBox;
+import nonprofitbookkeeping.ui.helpers.DateRangePickerDialog;
 
-import javafx.event.ActionEvent; 
-import javafx.event.EventHandler; 
-import javafx.scene.control.ChoiceDialog; 
-import javafx.stage.Window; 
+import java.awt.event.ActionListener;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.ChoiceDialog;
+import javafx.stage.Window;
 import java.io.File;
 import java.time.LocalDate;
-import java.util.Arrays; 
-import java.util.List; 
-import java.util.Optional; 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -30,7 +31,7 @@ import java.util.Optional;
  * report. User input is gathered through a series of {@link ChoiceDialog} and
  * {@link TextInputDialog} instances.
  */
-public class GenerateReportsAction implements EventHandler<ActionEvent>
+public class GenerateReportsAction implements EventHandler<ActionEvent>, ActionListener
 {
 
         /** Backing service used to dispatch report generation. */
@@ -176,16 +177,23 @@ public class GenerateReportsAction implements EventHandler<ActionEvent>
 		
 	}
 	
-	/**
-	 * Placeholder method, potentially from a previous Swing context or an unimplemented interface.
-	 * This method is not part of the JavaFX {@link EventHandler} interface and is currently a stub.
-	 *
-	 * @param object The event object (type is generic Object, specific context unknown).
-	 */
-	public void actionPerformed(Object object)
-	{
-		handle(new ActionEvent());
-		
-	}
-	
+        /**
+         * Bridges legacy Swing integrations by delegating {@link java.awt.event.ActionListener}
+         * invocations to the JavaFX {@link EventHandler} implementation. Older panels still wire
+         * this action using Swing listeners; keeping this override ensures those call sites now
+         * exercise the fully implemented {@link #handle(ActionEvent)} logic instead of silently
+         * doing nothing.
+         *
+         * @param event the Swing {@link java.awt.event.ActionEvent} triggering the action. May be
+         *              {@code null} when invoked programmatically.
+         */
+        @Override
+        public void actionPerformed(java.awt.event.ActionEvent event)
+        {
+                ActionEvent fxEvent = (event == null)
+                        ? new ActionEvent()
+                        : new ActionEvent(event.getSource(), null);
+                handle(fxEvent);
+        }
+
 }

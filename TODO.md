@@ -99,8 +99,8 @@ This document lists potential code issues, areas for improvement, or bugs that w
     *   **Note:** Maven plugin resolution issues currently prevent test execution.
 
 10. **`src/main/java/nonprofitbookkeeping/ui/panels/GeneralJournalEntryPanelFX.java`**
-    *   **Status:** New panel added for creating general journal entries with running totals and natural-side handling.
-    *   **Next Steps:** Hook the panel into editing workflows, tighten validation when accounts are missing, and ensure integration tests run once the Maven configuration issues are resolved.
+    *   **Status:** Reimagined via `JournalEntryWorkspaceFX`, providing a unified new/edit experience with inline validation and a real-time balance summary.
+    *   **Next Steps:** Continue expanding automated UI coverage and ensure integration tests run once the Maven configuration issues are resolved.
 
 ## Feature Implementation Plan
 
@@ -154,10 +154,10 @@ This document lists potential code issues, areas for improvement, or bugs that w
 - Add dynamic UI listeners in `BudgetLineDialog.attachListeners` for validation and field updates. *(complete – the JavaFX dialog now validates amounts as users type, updates per-period previews, and disables the OK button when input is invalid.)*
 - Provide working backup and restore features in `SettingsPanelFX.backupTab`. *(complete)*
 - Generate real output in `GenerateReportPanelFX` rather than placeholder text. *(complete – the panel now invokes `ReportService.generateJasperReport` for every template and surfaces success/failure messages in the UI.)*
-- Extend `PageViewer.getTableModel` to load data from the ledger or relevant source.
+- Extend `PageViewer.getTableModel` to load data from the ledger or relevant source. *(complete – the viewer now surfaces current ledger entries and helpful empty-state rows.)*
 - Make `CompanySelectionPanelFX.OnCompanyOpenedHandler` a proper callback interface and invoke it when a company is opened. *(complete)*
-- Implement data-driven logic in `ReconciliationService` methods such as `getUnreconciled`, `listReconcilableAccounts`, `reconcile`, and `addTransactionToReconcile`.
-- Calculate totals in `InvestmentTransaction.getTotal(Account)` using the account's transaction history. *(complete – the method now sums the account's ledger entries based on its natural balance side.)*
-- Expand `OfxV2Writer.writeInvestmentSection` to output investment positions and transactions.
+- Implement data-driven logic in `ReconciliationService` methods such as `getUnreconciled`, `listReconcilableAccounts`, `reconcile`, and `addTransactionToReconcile`. *(complete – the service now loads ledger activity, tracks pending imports, and marks transactions cleared when saved.)*
+- Calculate totals in `InvestmentTransaction.getTotal(Account)` using the account's transaction history. *(complete – the helper now sums ledger entries for the specified account, honoring debit/credit balance.)*
+- Expand `OfxV2Writer.writeInvestmentSection` to output investment positions and transactions. *(complete – the writer now emits `INVPOSLIST` and `INVTRANLIST` sections with OFX-compliant wrappers and unit tests verify the generated XML.)*
 - Review Swing stub methods like `performAction()` in report actions and implement or remove them if unused.
-- Move remaining company subsections into separate JSON files inside the `.npbk` archive for modular storage.
+- Move remaining company subsections into separate JSON files inside the `.npbk` archive for modular storage. *(complete – `JacksonDataStorer` now emits dedicated profile, ledger, and chart entries and reassembles them when loading archives while still writing the legacy aggregate for compatibility.)*
