@@ -117,14 +117,15 @@ The primary focus is to **standardize and expand the application's reporting cap
 
 ## Recent Work: General Journal Entry Panel
 
-The latest code introduces a new JavaFX component named
-`GeneralJournalEntryPanelFX`. It provides a table-based interface for entering
-multi-line journal transactions. Each line includes an account selector along
-with debit and credit fields. Running totals for the debit and credit columns
-appear in the bottom toolbar. The panel allows saving regardless of balance, but
-an error dialog appears if the totals do not match when Save is pressed. It is
-used for creating new transactions in `JournalPanelFX` and
-`SkeletonJournalPanel` but is not yet wired up for editing existing entries.
+The latest code introduces a reimagined JavaFX workspace named
+`JournalEntryWorkspaceFX` (still surfaced publicly through
+`GeneralJournalEntryPanelFX`). It provides a unified experience for entering or
+editing multi-line journal transactions. The new layout combines a line-entry
+table, contextual metadata form, and a status footer that tracks debit, credit
+and difference totals in real time. Save is prevented until the workspace is
+balanced and any validation issue is highlighted inline. It is used for creating
+and editing transactions within both `JournalPanelFX` and
+`SkeletonJournalPanel`.
 
 ### Next Steps
 
