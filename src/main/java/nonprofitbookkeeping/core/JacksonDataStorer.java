@@ -172,7 +172,7 @@ public class JacksonDataStorer implements DataStorer
                                                 else if (COMPANY_PROFILE_ENTRY_NAME.equals(entryName) &&
                                                         Company.class.isAssignableFrom(type))
                                                 {
-                                                        profileModel = this.mapper.readValue(zis,
+                                                        profile = this.mapper.readValue(zis,
                                                                 CompanyProfileModel.class);
                                                 }
                                                 else if (LEDGER_ENTRY_NAME.equals(entryName) &&
