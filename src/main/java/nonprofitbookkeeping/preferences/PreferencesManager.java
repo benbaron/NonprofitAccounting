@@ -16,7 +16,7 @@ import java.util.prefs.Preferences;
 public class PreferencesManager
 {
         /** Key for storing the last directory used by a file chooser for general purposes. */
-        private static final String LAST_DIR_KEY = "lastFileChooserDirectory";
+	private static final String LAST_DIR_KEY = "last_directory";
         /**
          * Key for storing the last directory used by a file chooser for
          * write/save operations. This is intentionally separate from
@@ -30,33 +30,16 @@ public class PreferencesManager
         /** Key for storing the last selected database file location. */
         private static final String LAST_DATABASE_PATH_KEY = "last_database_path";
 
-        /**
-         * Preference key used in older versions when the read and write
-         * directory shared the same value. Retained so we can migrate any
-         * existing preference to the new dedicated write key.
-         */
-        private static final String LEGACY_DIR_KEY = "lastFileChooserDirectory";
-
         static
         {
-                // If an older installation stored a directory under the legacy
-                // key but the new write key is unset, copy the value so users
-                // retain their preferred write directory after upgrading.
-                if (!LAST_WRITE_DIR_KEY.equals(LEGACY_DIR_KEY))
+                // The application previously stored both read and write
+                // directories under the same key.  If that value exists but the
+                // new dedicated write key is empty, copy the existing value so
+                // the preference is preserved after upgrading.
+                String shared = prefs.get(LAST_DIR_KEY, null);
+                if (shared != null && prefs.get(LAST_WRITE_DIR_KEY, null) == null)
                 {
-                        String legacy = prefs.get(LEGACY_DIR_KEY, null);
-                        String writeValue = prefs.get(LAST_WRITE_DIR_KEY, null);
-                        if (legacy != null && writeValue == null)
-                        {
-                                prefs.put(LAST_WRITE_DIR_KEY, legacy);
-                        }
-                }
-                // Migrate from an even older key if present
-                String old = prefs.get("last_directory", null);
-                if (old != null && prefs.get(LAST_DIR_KEY, null) == null)
-                {
-                        prefs.put(LAST_DIR_KEY, old);
-                        prefs.remove("last_directory");
+                        prefs.put(LAST_WRITE_DIR_KEY, shared);
                 }
         }
 	
