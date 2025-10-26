@@ -51,6 +51,8 @@ public class PreferencesManager
                         prefs.put(LAST_DIR_KEY, renamedKeyValue);
                         prefs.remove("lastFileChooserDirectory");
                 }
+
+                prefs.remove(legacyKey);
         }
 	
 	/**
