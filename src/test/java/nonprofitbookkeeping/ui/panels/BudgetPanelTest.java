@@ -33,6 +33,19 @@ public class BudgetPanelTest {
         @Override public BudgetLine getBudgetLine() { return this.line; }
     }
 
+    static class MutatingStubBudgetLineDialog extends BudgetLineDialog {
+        private final BudgetLine line;
+        MutatingStubBudgetLineDialog(BudgetLine line) {
+            super((Dialog) null, "Stub", new ChartOfAccounts(), List.of(), line);
+            this.line = line;
+        }
+        @Override public void setVisible(boolean b) {
+            this.line.setTotalBudgetedAmount(new BigDecimal("125"));
+        }
+        @Override public boolean isSaved() { return true; }
+        @Override public BudgetLine getBudgetLine() { return this.line; }
+    }
+
     /** Panel subclass that injects a stub dialog. */
     static class TestBudgetPanel extends BudgetPanel {
         BudgetLineDialog stub;
@@ -127,5 +140,47 @@ public class BudgetPanelTest {
 
         assertEquals(1, model.getBudgetLines().size());
         assertEquals(new BigDecimal("75"), model.getBudgetLines().get(0).getTotalBudgetedAmount());
+    }
+
+    @Test
+    public void testEditBudgetLineMutatesExistingInstance() throws Exception {
+        ChartOfAccounts coa = new ChartOfAccounts();
+        Account acc = new Account();
+        acc.setAccountNumber("A1");
+        acc.setName("Cash");
+        coa.addAccount(acc);
+
+        Fund fund = new Fund("General");
+        BudgetService svc = new BudgetService();
+        File dir = Files.createTempDirectory("budtest3").toFile();
+
+        Budget initialBudget = new Budget("B", 2025);
+        BudgetLine line = new BudgetLine();
+        line.setAccountId("A1");
+        line.setAccountName("Cash");
+        line.setTotalBudgetedAmount(new BigDecimal("50"));
+        line.setPeriodicity(Periodicity.ANNUAL);
+        initialBudget.setBudgetLines(new java.util.ArrayList<>(List.of(line)));
+
+        TestBudgetPanel panel = new TestBudgetPanel(coa, List.of(fund), svc, dir, initialBudget);
+
+        Field tableField = BudgetPanel.class.getDeclaredField("tblBudgetLines");
+        tableField.setAccessible(true);
+        JTable table = (JTable) tableField.get(panel);
+        table.getSelectionModel().setSelectionInterval(0,0);
+
+        MutatingStubBudgetLineDialog dlg = new MutatingStubBudgetLineDialog(line);
+        panel.setStub(dlg);
+
+        Method edit = BudgetPanel.class.getDeclaredMethod("actionEditLine", ActionEvent.class);
+        edit.setAccessible(true);
+        edit.invoke(panel, new ActionEvent(panel, ActionEvent.ACTION_PERFORMED, "edit"));
+
+        Field budgetField = BudgetPanel.class.getDeclaredField("currentBudget");
+        budgetField.setAccessible(true);
+        Budget budget = (Budget) budgetField.get(panel);
+
+        assertSame(line, budget.getBudgetLines().get(0));
+        assertEquals(new BigDecimal("125"), line.getTotalBudgetedAmount());
     }
 }

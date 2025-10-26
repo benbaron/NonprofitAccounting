@@ -401,20 +401,17 @@ public class BudgetPanel extends JDialog
        {
                BudgetLineDialog dialog = createBudgetLineDialog("Add Budget Line", null);
                dialog.setVisible(true);
-		
-		if (dialog.isSaved())
-		{
-			BudgetLine newLine = dialog.getBudgetLine();
-			
-			if (newLine != null)
-			{
-				this.currentBudget.addBudgetLine(newLine); // Assumes addBudgetLine exists and
-															// handles null list
-				this.budgetLineTableModel.fireTableDataChanged(); // More specific event might be
-																	// better
-			}
-			
-		}
+
+                if (dialog.isSaved())
+                {
+                        BudgetLine newLine = dialog.getBudgetLine();
+
+                        if (newLine != null)
+                        {
+                                this.budgetLineTableModel.addRow(newLine);
+                        }
+
+                }
 		
 	}
 	
@@ -449,17 +446,19 @@ public class BudgetPanel extends JDialog
 				// reference
 				// and the dialog works on that instance. Or it returns a new/modified instance.
 				// Assuming dialog.getBudgetLine() returns the potentially modified instance.
-				BudgetLine editedLine = dialog.getBudgetLine();
-				
-				if (editedLine != lineToEdit)
-				{ // If dialog returned a new instance
-					this.currentBudget.getBudgetLines().set(selectedRow, editedLine);
-				}
-				
-				this.budgetLineTableModel.fireTableRowsUpdated(selectedRow, selectedRow);
-			}
-			
-		}
+                                BudgetLine editedLine = dialog.getBudgetLine();
+
+                                if (editedLine == lineToEdit)
+                                {
+                                        this.budgetLineTableModel.fireTableRowsUpdated(selectedRow, selectedRow);
+                                }
+                                else
+                                {
+                                        this.budgetLineTableModel.replaceRow(selectedRow, editedLine);
+                                }
+                        }
+
+                }
 		else
 		{
 			JOptionPane.showMessageDialog(this, "Please select a line to edit.", "No Selection",
