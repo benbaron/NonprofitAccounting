@@ -303,8 +303,8 @@ import static org.mockito.Mockito.when;
 		ImportedTransaction impTxn = new ImportedTransaction(LocalDate.now(), BigDecimal.TEN,
 			"Test OFX", null, "DUPLICATE_FITID", "USD", "BANK", "orig");
 		AccountingTransaction existingTx = Mockito.mock(AccountingTransaction.class);
-		when(existingTx.getInfo()).thenReturn(Map.of(this.FITID_KEY, "DUPLICATE_FITID"));
-		when(this.mockLedger.getTransactions()).thenReturn(null);
+                when(existingTx.getInfo()).thenReturn(Map.of(this.FITID_KEY, "DUPLICATE_FITID"));
+                when(this.mockLedger.getTransactions()).thenReturn(List.of(existingTx));
 		
 		List<AccountingTransaction> result = FileImportService.mapToAccountingTransactions(
 			List.of(impTxn), this.mockTargetAccount, this.mockChartOfAccounts, this.mockLedger);
@@ -333,8 +333,8 @@ import static org.mockito.Mockito.when;
 		// So existingTxAmountForTarget should be positive.
 		entries.add(new AccountingEntry(txAmount, "TARGET_ACC_NUM", AccountSide.DEBIT));
 		entries.add(new AccountingEntry(txAmount, this.NEEDS_CAT_ACC_NUM, AccountSide.CREDIT));
-		when(existingTx.getEntries()).thenReturn(entries);
-		when(this.mockLedger.getTransactions()).thenReturn(null);
+                when(existingTx.getEntries()).thenReturn(entries);
+                when(this.mockLedger.getTransactions()).thenReturn(List.of(existingTx));
 		
 		List<AccountingTransaction> result = FileImportService.mapToAccountingTransactions(
 			List.of(impTxn), this.mockTargetAccount, this.mockChartOfAccounts, this.mockLedger);

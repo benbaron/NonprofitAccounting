@@ -16,14 +16,14 @@ import java.util.prefs.Preferences;
 public class PreferencesManager
 {
         /** Key for storing the last directory used by a file chooser for general purposes. */
-	private static final String LAST_DIR_KEY = "last_directory";
+        private static final String LAST_DIR_KEY = "last_directory";
         /**
          * Key for storing the last directory used by a file chooser for
          * write/save operations. This is intentionally separate from
          * {@link #LAST_DIR_KEY} so that read and write dialogs can remember
          * different locations.
          */
-	private static final String LAST_WRITE_DIR_KEY = "last_write_directory";
+        private static final String LAST_WRITE_DIR_KEY = "last_write_directory";
         /** The {@link Preferences} node used for storing preferences for this class. */
         private static final Preferences prefs =
                 Preferences.userNodeForPackage(PreferencesManager.class);
@@ -32,14 +32,24 @@ public class PreferencesManager
 
         static
         {
-                // The application previously stored both read and write
-                // directories under the same key.  If that value exists but the
-                // new dedicated write key is empty, copy the existing value so
-                // the preference is preserved after upgrading.
-                String shared = prefs.get(LAST_DIR_KEY, null);
-                if (shared != null && prefs.get(LAST_WRITE_DIR_KEY, null) == null)
+                // Older releases stored both the read and write locations under the same
+                // key.  If a value exists for the shared key but the new write key has not
+                // yet been initialised, copy it so that users retain their preferred
+                // directory for save operations after upgrading.
+                String sharedValue = prefs.get(LAST_DIR_KEY, null);
+                if (sharedValue != null && prefs.get(LAST_WRITE_DIR_KEY, null) == null)
                 {
-                        prefs.put(LAST_WRITE_DIR_KEY, shared);
+                        prefs.put(LAST_WRITE_DIR_KEY, sharedValue);
+                }
+
+                // If a previous build stored the chooser location under a renamed key,
+                // adopt that value as the read directory while leaving any explicit
+                // write directory untouched.
+                String renamedKeyValue = prefs.get("lastFileChooserDirectory", null);
+                if (renamedKeyValue != null && prefs.get(LAST_DIR_KEY, null) == null)
+                {
+                        prefs.put(LAST_DIR_KEY, renamedKeyValue);
+                        prefs.remove("lastFileChooserDirectory");
                 }
         }
 	
