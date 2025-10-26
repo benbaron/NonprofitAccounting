@@ -12,9 +12,10 @@ import java.sql.SQLException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,8 +38,11 @@ public class InventoryService
         private static final CollectionType LIST_TYPE =
                 MAPPER.getTypeFactory().constructCollectionType(List.class, InventoryItem.class);
 	
-	/** In-memory map to store {@link InventoryItem} objects, keyed by their unique ID. */
-	private final Map<String, InventoryItem> items;
+        /** Shared in-memory map to store {@link InventoryItem} objects, keyed by their unique ID. */
+        private static final Map<String, InventoryItem> INVENTORY = new LinkedHashMap<>();
+
+        /** View over {@link #INVENTORY} used by each service instance. */
+        private final Map<String, InventoryItem> items;
 	
 	/**
 	 * Constructs an {@code InventoryService} and initializes an empty inventory map.
@@ -46,13 +50,8 @@ public class InventoryService
 	 */
         public InventoryService()
         {
-                this.items = new HashMap<>();
-		// Optionally pre-populate with sample data:
-		// addItem(new InventoryItem("I001", "Item A", new BigDecimal("100"),
-		// "2023-01-01", 5)); // Example with BigDecimal
-		// addItem(new InventoryItem("I002", "Item B", new BigDecimal("50"),
-		// "2023-02-01", 3));
-	}
+                this.items = INVENTORY;
+        }
 	
 	/**
 	 * Retrieves a list of all inventory items currently managed by this service.
@@ -136,36 +135,70 @@ public class InventoryService
 	public void applyYearlyDepreciation()
 	{
 		
-		for (InventoryItem item : this.items.values())
-		{
-			
-			if (item.getCost() == null || item.getLifeYears() <= 0)
-			{
-				continue; // insufficient data
-			}
-			
-			BigDecimal rate = item.getDepreciationRate();
-			BigDecimal yearly;
-			
-			if (rate != null)
-			{
-				yearly = item.getCost().multiply(rate);
-			}
-			else
-			{
-				yearly = item.getCost().divide(BigDecimal.valueOf(item.getLifeYears()), 2,
-					RoundingMode.HALF_UP);
-			}
-			
-			BigDecimal current = item.getAccumulatedDepreciation();
-			
-			if (current == null)
-			{
-				current = BigDecimal.ZERO;
-			}
-			
-			item.withAccumDep(current.add(yearly));
-		}
+                for (InventoryItem item : this.items.values())
+                {
+                        BigDecimal cost = item.getCost();
+
+                        if (cost == null || cost.compareTo(BigDecimal.ZERO) <= 0)
+                        {
+                                continue;
+                        }
+
+                        String method = item.getDepreciationMethod();
+
+                        if (method == null || !"Straight-Line".equalsIgnoreCase(method.trim()))
+                        {
+                                continue;
+                        }
+
+                        BigDecimal rate = item.getDepreciationRate();
+
+                        if (rate == null || rate.compareTo(BigDecimal.ZERO) <= 0)
+                        {
+                                int lifeYears = item.getLifeYears();
+
+                                if (lifeYears <= 0)
+                                {
+                                        continue;
+                                }
+
+                                rate = BigDecimal.ONE.divide(BigDecimal.valueOf(lifeYears), 10, RoundingMode.HALF_UP);
+                        }
+
+                        BigDecimal yearly = cost.multiply(rate);
+
+                        if (yearly.compareTo(BigDecimal.ZERO) <= 0)
+                        {
+                                continue;
+                        }
+
+                        BigDecimal existing = item.getAccumulatedDepreciation();
+                        BigDecimal accumulated = existing != null ? existing : BigDecimal.ZERO;
+                        BigDecimal remaining = cost.subtract(accumulated);
+
+                        if (remaining.compareTo(BigDecimal.ZERO) <= 0)
+                        {
+                                item.withAccumDep(cost);
+                                continue;
+                        }
+
+                        BigDecimal depreciation = yearly.min(remaining);
+                        depreciation = depreciation.setScale(2, RoundingMode.HALF_UP);
+
+                        if (depreciation.compareTo(BigDecimal.ZERO) <= 0)
+                        {
+                                continue;
+                        }
+
+                        BigDecimal updated = accumulated.add(depreciation);
+
+                        if (updated.compareTo(cost) > 0)
+                        {
+                                updated = cost;
+                        }
+
+                        item.withAccumDep(updated);
+                }
 		
 	}
 	
@@ -241,6 +274,13 @@ public class InventoryService
                 }
                 catch (SQLException e)
                 {
+                        if ("42104".equals(e.getSQLState()))
+                        {
+                                LOGGER.log(Level.FINE,
+                                        "Inventory document table not initialized; treating inventory as empty.", e);
+                                return;
+                        }
+
                         throw new IOException("Failed to load inventory from database", e);
                 }
 
@@ -257,21 +297,29 @@ public class InventoryService
 	 */
         public static List<String[]> getInventoryItems()
         {
-                InventoryService service = new InventoryService();
+                if (INVENTORY.isEmpty())
+                {
+                        InventoryService bootstrap = new InventoryService();
 
-                try
-                {
-                        service.loadItems(null);
-                }
-                catch (IOException ex)
-                {
-                        throw new RuntimeException("Failed to load inventory", ex);
+                        try
+                        {
+                                bootstrap.loadItems(null);
+                        }
+                        catch (IOException ex)
+                        {
+                                throw new RuntimeException("Failed to load inventory", ex);
+                        }
                 }
 
                 List<String[]> rows = new ArrayList<>();
 
-                for (InventoryItem item : service.listItems())
+                for (InventoryItem item : INVENTORY.values())
                 {
+                        if (item == null || item.getId() == null)
+                        {
+                                continue;
+                        }
+
                         String cost = item.getCost() == null ? "0.00" :
                                 item.getCost().setScale(2, RoundingMode.HALF_UP).toString();
                         rows.add(new String[]

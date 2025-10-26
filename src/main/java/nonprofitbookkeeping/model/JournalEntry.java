@@ -65,11 +65,21 @@ import lombok.NoArgsConstructor;
 	 * Backwards compatible constructor that assumes the entry and transaction
 	 * IDs are the same.
 	 */
-	public JournalEntry(String id, String date, String account, BigDecimal debit, BigDecimal credit,
-		String text)
-	{
-		this(id, id, date, account, debit, credit, text);
-	}
+        public JournalEntry(String id, String date, String account, BigDecimal debit, BigDecimal credit,
+                String text)
+        {
+                this(id, id, date, account, debit, credit, text);
+        }
+
+        private static String normaliseTransactionId(String transactionId, String fallbackId)
+        {
+                if (transactionId == null || transactionId.isBlank())
+                {
+                        return fallbackId;
+                }
+
+                return transactionId;
+        }
 	
 	/**
 	 * Gets the unique identifier of this journal entry.
