@@ -77,9 +77,9 @@ public class SettingsPanelFXTest extends JavaFXTestBase
 	 * @param string
 	 * @return
 	 */
-        private Matcher<ComboBox<?>> hasValue(String expectedValue)
+        private Matcher<ComboBox<String>> hasValue(String expectedValue)
         {
-                return new TypeSafeMatcher<ComboBox<?>>()
+                return new TypeSafeMatcher<ComboBox<String>>()
                 {
                         @Override public void describeTo(Description description)
                         {
@@ -87,25 +87,31 @@ public class SettingsPanelFXTest extends JavaFXTestBase
                                         .appendValue(expectedValue);
                         }
 
-                        @Override protected boolean matchesSafely(ComboBox<?> comboBox)
+                        @Override protected boolean matchesSafely(ComboBox<String> comboBox)
                         {
-                                Object actualValue = comboBox.getValue();
-                                return Objects.equals(actualValue, expectedValue);
+                                String value = comboBox == null ? null : comboBox.getValue();
+
+                                if (expectedValue == null)
+                                {
+                                        return value == null;
+                                }
+
+                                return expectedValue.equals(value);
                         }
 
-                        @Override protected void describeMismatchSafely(ComboBox<?> comboBox,
+                        @Override protected void describeMismatchSafely(ComboBox<String> comboBox,
                                 Description mismatchDescription)
                         {
-                                mismatchDescription.appendText("was ")
-                                        .appendValue(comboBox.getValue());
+                                String value = comboBox == null ? null : comboBox.getValue();
+                                mismatchDescription.appendText("was ").appendValue(value);
                         }
                 };
         }
-	
-	/**
-	 * @param string
-	 * @return
-	 */
+
+        /**
+         * @param string
+         * @return
+         */
         private Matcher<TextField> hasTextInField(String expectedText)
         {
                 return new TypeSafeMatcher<TextField>()
@@ -118,14 +124,15 @@ public class SettingsPanelFXTest extends JavaFXTestBase
 
                         @Override protected boolean matchesSafely(TextField textField)
                         {
-                                return Objects.equals(textField.getText(), expectedText);
+                                String text = textField == null ? null : textField.getText();
+                                return expectedText == null ? text == null : expectedText.equals(text);
                         }
 
                         @Override protected void describeMismatchSafely(TextField textField,
                                 Description mismatchDescription)
                         {
                                 mismatchDescription.appendText("was ")
-                                        .appendValue(textField.getText());
+                                        .appendValue(textField == null ? null : textField.getText());
                         }
                 };
         }
