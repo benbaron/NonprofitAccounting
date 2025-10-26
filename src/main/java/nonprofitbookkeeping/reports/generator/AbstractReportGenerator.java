@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * Abstract base class for report generators using JasperReports.
@@ -27,6 +28,9 @@ import java.util.Map;
  */
 public abstract class AbstractReportGenerator
 {
+        /** Logger for reporting template resolution issues. */
+        private static final Logger LOGGER =
+                Logger.getLogger(AbstractReportGenerator.class.getName());
 	/**
 	 * Data beans supplied to populate the report. Subclasses may override
 	 * {@link #getReportData()} to compute data dynamically, but in cases where
@@ -108,7 +112,17 @@ public abstract class AbstractReportGenerator
 			throw new JRException("Unable to resolve report path", e);
 		}
 		
-		JasperReport report = JasperCompileManager.compileReport(jrxmlPath);
+                File jrxmlFile = new File(jrxmlPath);
+                if (!jrxmlFile.exists())
+                {
+                        LOGGER.severe(() ->
+                                "JRXML template not found: " + jrxmlFile.getAbsolutePath());
+                        throw new JRException(
+                                "JRXML template not found: " + jrxmlFile.getAbsolutePath());
+                }
+
+                JasperReport report =
+                        JasperCompileManager.compileReport(jrxmlFile.getAbsolutePath());
 		JRBeanCollectionDataSource dataSource =
 			new JRBeanCollectionDataSource(getReportData());
 		Map<String, Object> params =
