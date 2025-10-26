@@ -5,6 +5,7 @@
 package nonprofitbookkeeping.model;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -48,27 +49,37 @@ import lombok.NoArgsConstructor;
 	 * @param credit        credit amount or {@code null}
 	 * @param text          descriptive memo text
 	 */
-	public JournalEntry(String id, String transactionId, String date, String account,
-		BigDecimal debit, BigDecimal credit, String text)
-	{
-		this.id = id;
-		this.transactionId = (transactionId != null) ? transactionId : id;
-		this.date = date;
-		this.account = account;
-		this.debit = debit;
-		this.credit = credit;
-		this.memo = text;
-	}
+        public JournalEntry(String id, String transactionId, String date, String account,
+                BigDecimal debit, BigDecimal credit, String text)
+        {
+                this.id = Objects.requireNonNull(id, "id");
+                this.transactionId = normaliseTransactionId(transactionId, this.id);
+                this.date = date;
+                this.account = account;
+                this.debit = debit;
+                this.credit = credit;
+                this.memo = text;
+        }
 	
 	/**
 	 * Backwards compatible constructor that assumes the entry and transaction
 	 * IDs are the same.
 	 */
-	public JournalEntry(String id, String date, String account, BigDecimal debit, BigDecimal credit,
-		String text)
-	{
-		this(id, id, date, account, debit, credit, text);
-	}
+        public JournalEntry(String id, String date, String account, BigDecimal debit, BigDecimal credit,
+                String text)
+        {
+                this(id, id, date, account, debit, credit, text);
+        }
+
+        private static String normaliseTransactionId(String transactionId, String fallbackId)
+        {
+                if (transactionId == null || transactionId.isBlank())
+                {
+                        return fallbackId;
+                }
+
+                return transactionId;
+        }
 	
 	/**
 	 * Gets the unique identifier of this journal entry.
