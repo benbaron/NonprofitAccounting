@@ -2,6 +2,7 @@
 package nonprofitbookkeeping.model.ofx;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import nonprofitbookkeeping.model.Account;
@@ -133,6 +134,11 @@ public class InvestmentTransaction extends Transaction
                 }
 
                 AccountSide naturalSide = account.getIncreaseSide();
+
+                if (naturalSide == null)
+                {
+                        naturalSide = AccountSide.DEBIT;
+                }
                 BigDecimal total = BigDecimal.ZERO;
 
                 for (AccountingEntry entry : entries)
@@ -159,7 +165,7 @@ public class InvestmentTransaction extends Transaction
                         }
                 }
 
-                return total;
+                return total.setScale(Math.max(total.scale(), 2), RoundingMode.HALF_UP);
         }
 	
 	/**
