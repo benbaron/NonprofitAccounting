@@ -99,8 +99,8 @@ This document lists potential code issues, areas for improvement, or bugs that w
     *   **Note:** Maven plugin resolution issues currently prevent test execution.
 
 10. **`src/main/java/nonprofitbookkeeping/ui/panels/GeneralJournalEntryPanelFX.java`**
-    *   **Status:** New panel added for creating general journal entries with running totals and natural-side handling.
-    *   **Next Steps:** Hook the panel into editing workflows, tighten validation when accounts are missing, and ensure integration tests run once the Maven configuration issues are resolved.
+    *   **Status:** Reimagined via `JournalEntryWorkspaceFX`, providing a unified new/edit experience with inline validation and a real-time balance summary.
+    *   **Next Steps:** Continue expanding automated UI coverage and ensure integration tests run once the Maven configuration issues are resolved.
 
 ## Feature Implementation Plan
 
