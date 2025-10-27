@@ -3,7 +3,9 @@ package nonprofitbookkeeping.util;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.text.ParsePosition;
+import java.util.Locale;
 
 /**
  * Utility class for formatting currency values across the UI. The format
@@ -11,9 +13,10 @@ import java.text.ParsePosition;
  */
 public final class FormatUtils {
     /** Default currency pattern. */
-    private static String pattern = "$#,##0.00";
+    private static String patternOverride;
     private static final Object FORMAT_LOCK = new Object();
-    private static DecimalFormat formatter = createFormatter(pattern);
+    private static Locale locale = Locale.getDefault();
+    private static DecimalFormat formatter = createFormatter();
 
     private FormatUtils() {}
 
@@ -39,11 +42,9 @@ public final class FormatUtils {
      * @param newPattern DecimalFormat pattern string
      */
     public static void setCurrencyFormat(String newPattern) {
-        if (newPattern != null && !newPattern.isEmpty()) {
-            synchronized (FORMAT_LOCK) {
-                pattern = newPattern;
-                formatter = createFormatter(pattern);
-            }
+        synchronized (FORMAT_LOCK) {
+            patternOverride = (newPattern == null || newPattern.isBlank()) ? null : newPattern;
+            formatter = createFormatter();
         }
     }
 
@@ -54,7 +55,25 @@ public final class FormatUtils {
      */
     public static String getCurrencyFormat() {
         synchronized (FORMAT_LOCK) {
-            return pattern;
+            if (patternOverride != null) {
+                return patternOverride;
+            }
+            return ((DecimalFormat) NumberFormat.getCurrencyInstance(locale)).toPattern();
+        }
+    }
+
+    /**
+     * Updates the locale used for currency formatting.
+     *
+     * @param newLocale locale to use, ignored when {@code null}
+     */
+    public static void setCurrencyLocale(Locale newLocale) {
+        if (newLocale == null) {
+            return;
+        }
+        synchronized (FORMAT_LOCK) {
+            locale = newLocale;
+            formatter = createFormatter();
         }
     }
 
@@ -103,8 +122,13 @@ public final class FormatUtils {
         return negative ? parsed.negate() : parsed;
     }
 
-    private static DecimalFormat createFormatter(String pattern) {
-        DecimalFormat format = new DecimalFormat(pattern);
+    private static DecimalFormat createFormatter() {
+        DecimalFormat format;
+        if (patternOverride == null) {
+            format = (DecimalFormat) NumberFormat.getCurrencyInstance(locale);
+        } else {
+            format = new DecimalFormat(patternOverride, DecimalFormatSymbols.getInstance(locale));
+        }
         format.setParseBigDecimal(true);
         return format;
     }

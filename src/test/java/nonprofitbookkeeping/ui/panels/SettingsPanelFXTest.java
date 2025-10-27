@@ -8,7 +8,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.ui.JavaFXTestBase;
-import nonprofitbookkeeping.ui.panels.SettingsPanelFX.UserRow; // Ensure UserRow is accessible
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -136,28 +135,7 @@ public class SettingsPanelFXTest extends JavaFXTestBase
                         }
                 };
         }
-	
-	@Test
-	public	void testUsersTab_TableDisplaysDemoData()
-	{
-		selectTab("Users");
-		
-		TableView<UserRow> usersTable = lookup(".table-view").queryTableView();
-		assertNotNull(usersTable);
-		verifyThat(usersTable, hasNumRows(2));
-		
-		// Verify content of UserRow - requires UserRow to have working equals or check
-		// properties
-		// For simplicity, checking if specific data exists.
-		// PropertyValueFactory is used, so we can check properties of UserRow.
-		List<UserRow> items = usersTable.getItems();
-		assertTrue(items.stream()
-			.anyMatch(r -> "admin".equals(r.getUsername()) && "Administrator".equals(r.getRole())));
-		assertTrue(items.stream()
-			.anyMatch(r -> "user1".equals(r.getUsername()) && "Viewer".equals(r.getRole())));
-	}
-	
-	@Test public void testAccountingTab_InitialValuesAndInteraction()
+        @Test public void testAccountingTab_InitialValuesAndInteraction()
 	{
 		selectTab("Accounting");
 		
@@ -193,20 +171,36 @@ public class SettingsPanelFXTest extends JavaFXTestBase
                         "Restore import should rely on a file chooser without showing alerts when cancelled.");
         }
 	
-	@Test public void testUiPreferencesTab_InitialValuesAndInteraction()
+	
+        @Test public void testApplicationTab_PreferencesDisplayed()
+        {
+                selectTab("Application");
+
+                Spinner<Integer> autosaveSpinner = lookupSpinnerByLabel("Autosave Interval (minutes):");
+                assertNotNull(autosaveSpinner);
+                assertTrue(autosaveSpinner.getValue() >= 0);
+
+                TextField defaultDirectory = lookupTextFieldByLabel("Default Directory:");
+                assertNotNull(defaultDirectory);
+
+                TextField lastFile = lookupTextFieldByLabel("Last Used File:");
+                assertNotNull(lastFile);
+        }
+
+        @Test public void testUiPreferencesTab_InitialValuesAndInteraction()
 	{
 		selectTab("UI Preferences");
 		
 		verifyThat(lookupComboBoxByLabel("Theme:"), hasValue("System"));
-		verifyThat(lookupComboBoxByLabel("Language:"), hasValue("English"));
+		verifyThat(lookupComboBoxByLabel("Language:"), hasValue("English (United States)"));
 		
 		Platform.runLater(() -> lookupComboBoxByLabel("Theme:").setValue("Dark"));
 		WaitForAsyncUtils.waitForFxEvents();
 		verifyThat(lookupComboBoxByLabel("Theme:"), hasValue("Dark"));
 		
-		Platform.runLater(() -> lookupComboBoxByLabel("Language:").setValue("Spanish"));
+		Platform.runLater(() -> lookupComboBoxByLabel("Language:").setValue("French (France)"));
 		WaitForAsyncUtils.waitForFxEvents();
-		verifyThat(lookupComboBoxByLabel("Language:"), hasValue("Spanish"));
+		verifyThat(lookupComboBoxByLabel("Language:"), hasValue("French (France)"));
 	}
 	
 	// --- Helper methods for locating controls within Grids ---
@@ -263,36 +257,62 @@ public class SettingsPanelFXTest extends JavaFXTestBase
 		return null;
 	}
 	
-	private CheckBox lookupCheckBoxByLabel(String labelText)
-	{
-		Labeled label = lookup(labelText).queryLabeled();
-		Node parent = label.getParent();
-		
-		if (parent instanceof GridPane)
-		{
-			GridPane grid = (GridPane) parent;
-			Integer labelRowIndex = GridPane.getRowIndex(label);
-			Integer labelColIndex = GridPane.getColumnIndex(label);
-			Optional<Node> checkBoxOpt = grid.getChildren().stream()
-				.filter(node -> node instanceof CheckBox &&
-					GridPane.getRowIndex(node) != null &&
-					GridPane.getRowIndex(node).equals(labelRowIndex) &&
-					GridPane.getColumnIndex(node) != null &&
-					GridPane.getColumnIndex(node).equals(labelColIndex + 1))
-				.findFirst();
-			assertTrue(checkBoxOpt.isPresent(),
-				"CheckBox next to label '" + labelText + "' not found.");
-			return (CheckBox) checkBoxOpt.get();
-		}
-		
-		fail("Label '" + labelText + "' is not in a GridPane or CheckBox not found next to it.");
-		return null;
-	}
-	
-	private DialogPane getTopModalDialogPane()
-	{
-		Optional<Node> dialogPaneOpt = lookup((Node n) -> n instanceof DialogPane &&
-			n.getScene() != null && n.getScene().getWindow() instanceof Stage &&
+        private CheckBox lookupCheckBoxByLabel(String labelText)
+        {
+                Labeled label = lookup(labelText).queryLabeled();
+                Node parent = label.getParent();
+
+                if (parent instanceof GridPane)
+                {
+                        GridPane grid = (GridPane) parent;
+                        Integer labelRowIndex = GridPane.getRowIndex(label);
+                        Integer labelColIndex = GridPane.getColumnIndex(label);
+                        Optional<Node> checkBoxOpt = grid.getChildren().stream()
+                                .filter(node -> node instanceof CheckBox &&
+                                        GridPane.getRowIndex(node) != null &&
+                                        GridPane.getRowIndex(node).equals(labelRowIndex) &&
+                                        GridPane.getColumnIndex(node) != null &&
+                                        GridPane.getColumnIndex(node).equals(labelColIndex + 1))
+                                .findFirst();
+                        assertTrue(checkBoxOpt.isPresent(),
+                                "CheckBox next to label '" + labelText + "' not found.");
+                        return (CheckBox) checkBoxOpt.get();
+                }
+
+                fail("Label '" + labelText + "' is not in a GridPane or CheckBox not found next to it.");
+                return null;
+        }
+
+        @SuppressWarnings("unchecked") private <T> Spinner<T> lookupSpinnerByLabel(String labelText)
+        {
+                Labeled label = lookup(labelText).queryLabeled();
+                Node parent = label.getParent();
+
+                if (parent instanceof GridPane)
+                {
+                        GridPane grid = (GridPane) parent;
+                        Integer labelRowIndex = GridPane.getRowIndex(label);
+                        Integer labelColIndex = GridPane.getColumnIndex(label);
+                        Optional<Node> spinnerOpt = grid.getChildren().stream()
+                                .filter(node -> node instanceof Spinner &&
+                                        GridPane.getRowIndex(node) != null &&
+                                        GridPane.getRowIndex(node).equals(labelRowIndex) &&
+                                        GridPane.getColumnIndex(node) != null &&
+                                        GridPane.getColumnIndex(node).equals(labelColIndex + 1))
+                                .findFirst();
+                        assertTrue(spinnerOpt.isPresent(),
+                                "Spinner next to label '" + labelText + "' not found.");
+                        return (Spinner<T>) spinnerOpt.get();
+                }
+
+                fail("Label '" + labelText + "' is not in a GridPane or Spinner not found next to it.");
+                return null;
+        }
+
+        private DialogPane getTopModalDialogPane()
+        {
+                Optional<Node> dialogPaneOpt = lookup((Node n) -> n instanceof DialogPane &&
+                        n.getScene() != null && n.getScene().getWindow() instanceof Stage &&
 			((Stage) n.getScene().getWindow()).isShowing()).tryQuery();
 		return (DialogPane) dialogPaneOpt.orElse(null);
 	}

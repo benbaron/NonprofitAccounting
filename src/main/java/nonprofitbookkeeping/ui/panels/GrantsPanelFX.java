@@ -55,10 +55,14 @@ public class GrantsPanelFX extends BorderPane
 			}
 			
 		});
-		Button refresh = new Button("Refresh");
-		Button add = new Button("Add Grant");
-		Button edit = new Button("Edit");
-		Button del = new Button("Delete");
+                Button refresh = new Button("Refresh");
+                refresh.setTooltip(new Tooltip("Reload the list of grants from storage."));
+                Button add = new Button("Add Grant");
+                add.setTooltip(new Tooltip("Create a new grant record."));
+                Button edit = new Button("Edit");
+                edit.setTooltip(new Tooltip("Modify the selected grant."));
+                Button del = new Button("Delete");
+                del.setTooltip(new Tooltip("Remove the selected grant."));
 		
 		refresh.setOnAction(e -> loadGrantData());
 		add.setOnAction(e -> grantDialog(null));
@@ -181,12 +185,21 @@ public class GrantsPanelFX extends BorderPane
 				new HBox(5, new Label("Purpose:"), purposeF),
 				new HBox(5, new Label("Status:"), statusF)));
 		
-		dlg.setResultConverter(btn -> btn == okType ?
-			new Grant(existing == null ? UUID.randomUUID().toString() : existing.getGrantId(),
-				grantorF.getText(),
-				new BigDecimal(amountF.getText().isBlank() ? "0" : amountF.getText()),
-				dateF.getText(), purposeF.getText(), statusF.getText()) :
-			null);
+                dlg.setResultConverter(btn -> {
+                        if (btn != okType)
+                        {
+                                return null;
+                        }
+
+                        BigDecimal amount = FormatUtils.parseCurrency(amountF.getText());
+                        if (amount == null)
+                        {
+                                amount = BigDecimal.ZERO;
+                        }
+
+                        return new Grant(existing == null ? UUID.randomUUID().toString() : existing.getGrantId(),
+                                grantorF.getText(), amount, dateF.getText(), purposeF.getText(), statusF.getText());
+                });
 		
 		dlg.showAndWait().ifPresent(g -> {
 			
@@ -225,10 +238,14 @@ public class GrantsPanelFX extends BorderPane
 	
 	private Grant toGrant(GrantRow row)
 	{
-		String amt = row.amount.replace("$", "").replace(",", "");
-		return new Grant(row.getGrantId(), row.getGrantor(), new BigDecimal(amt),
-			row.getDateAwarded(), row.getPurpose(), row.getStatus());
-	}
+                BigDecimal amount = FormatUtils.parseCurrency(row.amount);
+                if (amount == null)
+                {
+                        amount = BigDecimal.ZERO;
+                }
+                return new Grant(row.getGrantId(), row.getGrantor(), amount,
+                        row.getDateAwarded(), row.getPurpose(), row.getStatus());
+        }
 	
 	/**
 	 * A simple data class (POJO) used to represent a row in the grants {@link TableView}.

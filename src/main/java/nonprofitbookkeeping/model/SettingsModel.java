@@ -1,8 +1,10 @@
 
 package nonprofitbookkeeping.model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -28,24 +30,155 @@ import lombok.NoArgsConstructor;
 	@JsonProperty private String defaultCurrency;
 	
 	// User Accounts
-	/** A list of user accounts configured in the system. */
-	@JsonProperty private List<User> users = new ArrayList<>();
-	
-	// Accounting Settings
-	/** The default account number or name for income transactions. */
-	@JsonProperty private String defaultIncomeAccount;
+       // Accounting Settings
+        /** The default account number or name for income transactions. */
+        @JsonProperty private String defaultIncomeAccount;
 	/** The default account number or name for expense transactions. */
 	@JsonProperty private String defaultExpenseAccount;
-	/** Flag indicating whether vouchers/invoices should be auto-numbered. */
-	@JsonProperty private boolean autoNumberVouchers;
-	
-	// UI Preferences
+       /** Flag indicating whether vouchers/invoices should be auto-numbered. */
+       @JsonProperty private boolean autoNumberVouchers;
+
+       // Autosave and filesystem preferences
+       /** Autosave interval, in minutes. A value of 0 disables autosave. */
+       @JsonProperty private int autosaveIntervalMinutes = 5;
+       /** Default directory presented in file choosers. */
+       @JsonProperty private String defaultDirectory;
+       /** Path to the most recently opened company file. */
+       @JsonProperty private String lastOpenedFile;
+
+       // Reporting defaults
+       /** Preferred default period for reports and account detail filters. */
+       @JsonProperty private String defaultReportPeriod = DefaultReportPeriod.YEAR_TO_DATE.name();
+       /** Calendar year to use when {@link #defaultReportPeriod} is {@link DefaultReportPeriod#FISCAL_YEAR}. */
+       @JsonProperty private Integer defaultReportYear;
+
+       // UI Preferences
         /** The name of the UI theme (e.g., "Dark", "Light"). */
         @JsonProperty private String theme;
         /** The language code for UI localization (e.g., "en_US", "fr_FR"). */
         @JsonProperty private String language;
        /** Pattern used for formatting currency values (e.g., "$#,##0.00"). */
-       @JsonProperty private String currencyFormat = "$#,##0.00";
+       @JsonProperty private String currencyFormat;
+       /** Locale used for formatting currency values and other locale aware data. */
+       @JsonProperty private String currencyLocale = Locale.getDefault().toLanguageTag();
+
+       /** A list of user accounts configured in the system. */
+       @JsonProperty private List<User> users = new ArrayList<>();
+
+       /** Default reporting options available in the UI. */
+       public enum DefaultReportPeriod
+       {
+               /** Range spans the fiscal year start through the current date. */
+               YEAR_TO_DATE,
+               /** Entire fiscal year for the configured or current year. */
+               FISCAL_YEAR,
+               /** Previous calendar month. */
+               LAST_MONTH
+       }
+
+       /**
+        * Returns the configured {@link DefaultReportPeriod}. If the stored value is invalid or not set,
+        * {@link DefaultReportPeriod#YEAR_TO_DATE} is returned.
+        *
+        * @return effective default report period
+        */
+       public DefaultReportPeriod getDefaultReportPeriodEnum()
+       {
+               if (this.defaultReportPeriod == null)
+               {
+                       return DefaultReportPeriod.YEAR_TO_DATE;
+               }
+
+               try
+               {
+                       return DefaultReportPeriod.valueOf(this.defaultReportPeriod);
+               }
+               catch (IllegalArgumentException ex)
+               {
+                       return DefaultReportPeriod.YEAR_TO_DATE;
+               }
+       }
+
+       /**
+        * Updates the stored default report period.
+        *
+        * @param period new period value, {@code null} keeps the current configuration
+        */
+       public void setDefaultReportPeriodEnum(DefaultReportPeriod period)
+       {
+               if (period != null)
+               {
+                       this.defaultReportPeriod = period.name();
+               }
+       }
+
+       /**
+        * Returns the preferred currency {@link Locale}. Invalid or missing language tags fall back
+        * to {@link Locale#getDefault()}.
+        *
+        * @return locale derived from the stored language tag
+        */
+       public Locale getCurrencyLocale()
+       {
+               if (this.currencyLocale == null || this.currencyLocale.isBlank())
+               {
+                       return Locale.getDefault();
+               }
+
+               try
+               {
+                       return Locale.forLanguageTag(this.currencyLocale);
+               }
+               catch (Exception ex)
+               {
+                       return Locale.getDefault();
+               }
+       }
+
+       /**
+        * Stores the locale to use for currency formatting.
+        *
+        * @param locale locale to persist, {@code null} keeps the existing preference
+        */
+       public void setCurrencyLocale(Locale locale)
+       {
+               if (locale != null)
+               {
+                       this.currencyLocale = locale.toLanguageTag();
+               }
+       }
+
+       /**
+        * Provides a default fiscal year start date as a {@link LocalDate} for the supplied calendar year.
+        * If the stored value is invalid, January 1st of the provided year is used.
+        *
+        * @param year calendar year
+        * @return start date of the fiscal year for {@code year}
+        */
+       public LocalDate getFiscalYearStartDate(int year)
+       {
+               if (this.fiscalYearStart == null || this.fiscalYearStart.isBlank())
+               {
+                       return LocalDate.of(year, 1, 1);
+               }
+
+               String[] parts = this.fiscalYearStart.split("-");
+               if (parts.length != 2)
+               {
+                       return LocalDate.of(year, 1, 1);
+               }
+
+               try
+               {
+                       int month = Integer.parseInt(parts[0]);
+                       int day = Integer.parseInt(parts[1]);
+                       return LocalDate.of(year, month, day);
+               }
+               catch (Exception ex)
+               {
+                       return LocalDate.of(year, 1, 1);
+               }
+       }
 	
 	/**
 	 * Represents a user account within the settings model.
@@ -168,19 +301,19 @@ import lombok.NoArgsConstructor;
 	 * Gets the list of configured user accounts.
 	 * @return A list of {@link User} objects.
 	 */
-	public List<User> getUsers()
-	{
-		return this.users;
-	}
-	
-	/**
-	 * Sets the list of configured user accounts.
-	 * @param users A list of {@link User} objects to set.
-	 */
-	public void setUsers(List<User> users)
-	{
-		this.users = users;
-	}
+        public List<User> getUsers()
+        {
+                return this.users;
+        }
+
+        /**
+         * Sets the list of configured user accounts.
+         * @param users A list of {@link User} objects to set.
+         */
+        public void setUsers(List<User> users)
+        {
+                this.users = users;
+        }
 	
 	/**
 	 * Gets the default income account.

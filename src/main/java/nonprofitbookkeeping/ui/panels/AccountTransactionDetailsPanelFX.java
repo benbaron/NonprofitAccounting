@@ -1,6 +1,7 @@
 
 package nonprofitbookkeeping.ui.panels;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -9,8 +10,11 @@ import java.util.Objects;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 import nonprofitbookkeeping.util.FormatUtils;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -24,6 +28,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 
+import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
@@ -33,6 +38,9 @@ import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
+import nonprofitbookkeeping.model.SettingsModel;
+import nonprofitbookkeeping.model.SettingsModel.DefaultReportPeriod;
+import nonprofitbookkeeping.service.SettingsService;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 
 /**
@@ -44,11 +52,12 @@ import nonprofitbookkeeping.ui.helpers.AlertBox;
  */
 public class AccountTransactionDetailsPanelFX extends BorderPane
 {
-	/** ComboBox for selecting the account whose transactions are to be displayed. */
-	private ComboBox<Account> accountSelectorComboBox;
-	/** DatePicker for selecting the start date of the transaction period. */
-	private DatePicker startDatePicker;
-	/** DatePicker for selecting the end date of the transaction period. */
+        private static final Logger LOGGER = Logger.getLogger(AccountTransactionDetailsPanelFX.class.getName());
+        /** ComboBox for selecting the account whose transactions are to be displayed. */
+        private ComboBox<Account> accountSelectorComboBox;
+        /** DatePicker for selecting the start date of the transaction period. */
+        private DatePicker startDatePicker;
+        /** DatePicker for selecting the end date of the transaction period. */
 	private DatePicker endDatePicker;
 	/** Button to trigger loading of transactions based on selected criteria. */
 	private Button loadTransactionsButton;
@@ -63,13 +72,17 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 	private Label totalDebitsLabel;
 	/** Label to display the total credit amount for the selected period and account. */
 	private Label totalCreditsLabel;
-	/** Label to display the net change (debits - credits) for the selected period and account. */
-	private Label netChangeLabel;
-	
+        /** Label to display the net change (debits - credits) for the selected period and account. */
+        private Label netChangeLabel;
+
         /** Listener for changes in the currently open company, to refresh UI elements. */
         private CompanyChangeListener companyChangeListener;
         /** Tracks whether {@link #companyChangeListener} is currently registered. */
         private boolean companyChangeListenerRegistered;
+        /** Service used to load persisted settings. */
+        private final SettingsService settingsService = new SettingsService();
+        /** Cached settings snapshot. */
+        private SettingsModel settings;
 	
 	/**
 	 * Constructs a new {@code AccountTransactionDetailsPanelFX}.
@@ -78,23 +91,27 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 	 * for company changes to update the account selector and clear data.
 	 * The transaction table is initially empty, prompting the user to select criteria and load data.
 	 */
-	public AccountTransactionDetailsPanelFX()
-	{
-		setPadding(new Insets(10));
-		
-		// TOP: Controls
-		GridPane controlsGrid = new GridPane();
-		controlsGrid.setHgap(10);
-		controlsGrid.setVgap(8);
-		controlsGrid.setPadding(new Insets(5));
-		
-		this.accountSelectorComboBox = new ComboBox<>();
-		this.accountSelectorComboBox.setPromptText("Select Account");
-		
-		refreshAccountSelector();
-		
-		this.accountSelectorComboBox.setOnAction(e -> {
-			this.transactionDataList.clear();
+        public AccountTransactionDetailsPanelFX()
+        {
+                setPadding(new Insets(10));
+
+                loadSettings();
+
+                // TOP: Controls
+                GridPane controlsGrid = new GridPane();
+                controlsGrid.setHgap(10);
+                controlsGrid.setVgap(8);
+                controlsGrid.setPadding(new Insets(5));
+
+                this.accountSelectorComboBox = new ComboBox<>();
+                this.accountSelectorComboBox.setPromptText("Select Account");
+                this.accountSelectorComboBox
+                                .setTooltip(new Tooltip("Choose the account to display transaction history."));
+
+                refreshAccountSelector();
+
+                this.accountSelectorComboBox.setOnAction(e -> {
+                        this.transactionDataList.clear();
 			this.transactionsTable
 					.setPlaceholder(
 							new Label("Account selection changed. Click 'Load Transactions'."));
@@ -103,26 +120,40 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
                        this.netChangeLabel.setText("Net Change: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
 		});
 		
-		this.startDatePicker = new DatePicker();
-		this.endDatePicker = new DatePicker();
-		this.loadTransactionsButton = new Button("Load Transactions");
-		this.loadTransactionsButton.setOnAction(e -> loadTransactionData());
-		this.refreshButton = new Button("Refresh");
-		this.refreshButton.setOnAction(e -> refresh());
-		
-		controlsGrid.add(new Label("Account:"), 0, 0);
-		controlsGrid.add(this.accountSelectorComboBox, 1, 0, 2, 1);
-		controlsGrid.add(new Label("Start Date:"), 0, 1);
-		controlsGrid.add(this.startDatePicker, 1, 1);
-		controlsGrid.add(new Label("End Date:"), 0, 2);
-		controlsGrid.add(this.endDatePicker, 1, 2);
-		controlsGrid.add(this.loadTransactionsButton, 2, 2);
-		controlsGrid.add(this.refreshButton, 3, 2);
-		
-		ScrollPane controlsScrollPane = new ScrollPane(controlsGrid);
-		controlsScrollPane.setFitToWidth(true);
-		controlsScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-		controlsScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+               this.startDatePicker = new DatePicker();
+                this.startDatePicker.setTooltip(new Tooltip("Beginning date for the transaction search."));
+                this.endDatePicker = new DatePicker();
+                this.endDatePicker.setTooltip(new Tooltip("Ending date for the transaction search."));
+                this.loadTransactionsButton = new Button("Load Transactions");
+                this.loadTransactionsButton
+                                .setTooltip(new Tooltip("Loads transactions for the selected account and date range."));
+                this.loadTransactionsButton.setOnAction(e -> loadTransactionData());
+                this.refreshButton = new Button("Refresh");
+                this.refreshButton.setOnAction(e -> refresh());
+                this.refreshButton.setTooltip(new Tooltip("Reloads the table using the existing filters."));
+                Button defaultPeriodButton = new Button("Default Period");
+                defaultPeriodButton
+                                .setTooltip(new Tooltip("Apply the default reporting period from Settings."));
+                defaultPeriodButton.setOnAction(e -> {
+                        applyDefaultPeriod();
+                });
+
+                controlsGrid.add(new Label("Account:"), 0, 0);
+                controlsGrid.add(this.accountSelectorComboBox, 1, 0, 2, 1);
+                controlsGrid.add(new Label("Start Date:"), 0, 1);
+                controlsGrid.add(this.startDatePicker, 1, 1);
+                controlsGrid.add(new Label("End Date:"), 0, 2);
+                controlsGrid.add(this.endDatePicker, 1, 2);
+
+                HBox buttonRow = new HBox(10, this.loadTransactionsButton, this.refreshButton,
+                        defaultPeriodButton);
+                buttonRow.setAlignment(Pos.CENTER_LEFT);
+                controlsGrid.add(buttonRow, 1, 3, 3, 1);
+
+                ScrollPane controlsScrollPane = new ScrollPane(controlsGrid);
+                controlsScrollPane.setFitToWidth(true);
+                controlsScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+                controlsScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 		setTop(controlsScrollPane);
 		
 		this.transactionDataList = FXCollections.observableArrayList();
@@ -141,13 +172,15 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
                this.totalDebitsLabel = new Label("Total Debits: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
                this.totalCreditsLabel = new Label("Total Credits: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
                this.netChangeLabel = new Label("Net Change: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
-		totalsBox.getChildren().addAll(this.totalDebitsLabel, this.totalCreditsLabel,
-				this.netChangeLabel);
-		setBottom(totalsBox);
-		
-		setupCompanyChangeListener(); // Call to setup listener
-		
-	}
+                totalsBox.getChildren().addAll(this.totalDebitsLabel, this.totalCreditsLabel,
+                                this.netChangeLabel);
+                setBottom(totalsBox);
+
+                setupCompanyChangeListener(); // Call to setup listener
+
+                applyDefaultPeriod();
+
+        }
 	
 	/**
 	 * Sets up the columns for the {@link #transactionsTable}.
@@ -155,11 +188,11 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 	 * and binds them to the properties of the {@link TransactionDisplayRow} class.
 	 * Sets preferred widths and cell alignments for some columns.
 	 */
-	private void setupTableColumns()
-	{
-		this.transactionsTable.getColumns().clear();
-		
-		TableColumn<TransactionDisplayRow, String> dateCol = new TableColumn<>("Date");
+        private void setupTableColumns()
+        {
+                this.transactionsTable.getColumns().clear();
+
+                TableColumn<TransactionDisplayRow, String> dateCol = new TableColumn<>("Date");
 		dateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
 		dateCol.setPrefWidth(100);
 		
@@ -222,56 +255,136 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 	 * If no company is open or the chart of accounts is empty, the selector
 	 * prompt will indicate that no accounts are available.
 	 */
-	private void refreshAccountSelector()
-	{
-		this.accountSelectorComboBox.getItems().clear();
-		this.accountSelectorComboBox.setValue(null);
+        private void refreshAccountSelector()
+        {
+                this.accountSelectorComboBox.getItems().clear();
+                this.accountSelectorComboBox.setValue(null);
+
+                Company company = CurrentCompany.getCompany();
+
+                if (company != null && company.getChartOfAccounts() != null)
+                {
+                        ChartOfAccounts coa = company.getChartOfAccounts();
+
+                        if (coa.getAccounts() != null)
+                        {
+                                List<Account> sortedAccounts = coa.getAccounts().stream()
+                                                .filter(Objects::nonNull)
+                                                .sorted(Comparator.comparing(Account::getName,
+                                                                String.CASE_INSENSITIVE_ORDER))
+                                                .collect(Collectors.toList());
+
+                                this.accountSelectorComboBox
+                                                .setItems(FXCollections.observableArrayList(sortedAccounts));
+
+                                Callback<ListView<Account>, ListCell<Account>> cellFactory =
+                                                lv -> new ListCell<Account>()
+                                                {
+                                                        @Override
+                                                        protected void updateItem(Account item, boolean empty)
+                                                        {
+                                                                super.updateItem(item, empty);
+                                                                setText(empty || item == null ? null
+                                                                                : item.getName() + " (" + item.getAccountNumber() + ")");
+                                                        }
+                                                };
+
+                                this.accountSelectorComboBox.setCellFactory(cellFactory);
+                                this.accountSelectorComboBox.setButtonCell(cellFactory.call(null));
+                        }
+                }
+
+                if (this.accountSelectorComboBox.getItems().isEmpty())
+                {
+                        this.accountSelectorComboBox.setPromptText("No accounts in COA");
+                }
+                else
+                {
+                        this.accountSelectorComboBox.setPromptText("Select Account");
+                }
+        }
+
+        private void loadSettings()
+        {
+                if (!Database.isInitialized())
+                {
+                        return;
+                }
+
+                try
+                {
+                        this.settingsService.loadSettings(null);
+                        this.settings = this.settingsService.getSettings();
+                }
+                catch (IOException ex)
+                {
+                        LOGGER.log(Level.FINE, "Unable to load settings for account details", ex);
+                }
+        }
+
+        private void applyDefaultPeriod()
+        {
+                if (this.startDatePicker == null || this.endDatePicker == null)
+                {
+                        return;
+                }
+
+                if (this.settings == null)
+                {
+                        loadSettings();
+                }
+
+                if (this.settings == null)
+                {
+                        return;
+                }
+
+                LocalDate today = LocalDate.now();
+                LocalDate start;
+                LocalDate end;
+
+                DefaultReportPeriod period = this.settings.getDefaultReportPeriodEnum();
+
+                switch (period)
+                {
+                        case FISCAL_YEAR:
+                        {
+                                int year = this.settings.getDefaultReportYear() != null ?
+                                        this.settings.getDefaultReportYear() : today.getYear();
+                                start = this.settings.getFiscalYearStartDate(year);
+                                end = start.plusYears(1).minusDays(1);
+                                break;
+                        }
+                        case LAST_MONTH:
+                        {
+                                LocalDate firstOfCurrent = today.withDayOfMonth(1);
+                                start = firstOfCurrent.minusMonths(1);
+                                end = firstOfCurrent.minusDays(1);
+                                break;
+                        }
+                        case YEAR_TO_DATE:
+                        default:
+                        {
+                                LocalDate fiscalStart = this.settings.getFiscalYearStartDate(today.getYear());
+                                if (today.isBefore(fiscalStart))
+                                {
+                                        fiscalStart = this.settings.getFiscalYearStartDate(today.minusYears(1).getYear());
+                                }
+                                start = fiscalStart;
+                                end = today;
+                                break;
+                        }
+                }
+
+                if (end.isBefore(start))
+                {
+                        end = start;
+                }
+
+                this.startDatePicker.setValue(start);
+                this.endDatePicker.setValue(end);
+        }
 		
-		Company company = CurrentCompany.getCompany();
-		
-		if (company != null && company.getChartOfAccounts() != null)
-		{
-			ChartOfAccounts coa = company.getChartOfAccounts();
-			
-			if (coa.getAccounts() != null)
-			{
-				List<Account> sortedAccounts = coa.getAccounts().stream().filter(Objects::nonNull)
-						.sorted(Comparator.comparing(Account::getName,
-								String.CASE_INSENSITIVE_ORDER))
-						.collect(Collectors.toList());
-				
-				this.accountSelectorComboBox
-						.setItems(FXCollections.observableArrayList(sortedAccounts));
-				
-				Callback<ListView<Account>, ListCell<Account>> cellFactory =
-						lv -> new ListCell<Account>()
-						{
-							@Override protected void updateItem(Account item, boolean empty)
-							{
-								super.updateItem(item, empty);
-								setText(empty ? null :
-										item.getName() + " (" + item.getAccountNumber() + ")");
-								
-							}
-							
-						};
-				
-				this.accountSelectorComboBox.setCellFactory(cellFactory);
-				this.accountSelectorComboBox.setButtonCell(cellFactory.call(null));
-			}
-			
-		}
-		
-		if (this.accountSelectorComboBox.getItems().isEmpty())
-		{
-			this.accountSelectorComboBox.setPromptText("No accounts in COA");
-		}
-		else
-		{
-			this.accountSelectorComboBox.setPromptText("Select Account");
-		}
-		
-	}
 	
 	/**
 	 * Loads transaction data into the {@link #transactionsTable} based on the
@@ -374,9 +487,9 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 								else
 								{
 									runningBalance = runningBalance.subtract(amount);
-								}
-								
-							}
+        }
+
+}
 							
 						}
 						
@@ -467,27 +580,19 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 							periodCreditTotal = periodCreditTotal.add(creditAmount);
 						}
 						
-						displayRows.add(new TransactionDisplayRow(	tx.getDate(),
-																	String.valueOf(tx
-																			.getBookingDateTimestamp()),
-																	tx.getMemo() != null ?
-																			tx.getMemo() : "",
-																	tx.getToFrom() != null ?
-																			tx.getToFrom() : "",
-																	tx.getCheckNumber() !=
-																			null ? tx.getCheckNumber() : "",
-																	tx.getClearBank() !=
-																			null ? tx.getClearBank() : "",
-																	tx.getBudgetTracking() !=
-																			null ? tx.getBudgetTracking() : "",
-																	tx.getAssociatedFundName() !=
-																			null ? tx.getAssociatedFundName() : "",
-																	entry.getFundNumber() != null ?
-																			entry.getFundNumber() :
-																			"",
-																	debitAmount, creditAmount,
-																	new BigDecimal(runningBalance
-																			.toString())));
+						                                                displayRows.add(new TransactionDisplayRow(
+                                                                tx.getDate(),
+                                                                String.valueOf(tx.getBookingDateTimestamp()),
+                                                                tx.getMemo() != null ? tx.getMemo() : "",
+                                                                tx.getToFrom() != null ? tx.getToFrom() : "",
+                                                                tx.getCheckNumber() != null ? tx.getCheckNumber() : "",
+                                                                tx.getClearBank() != null ? tx.getClearBank() : "",
+                                                                tx.getBudgetTracking() != null ? tx.getBudgetTracking() : "",
+                                                                tx.getAssociatedFundName() != null ? tx.getAssociatedFundName() : "",
+                                                                entry.getFundNumber() != null ? entry.getFundNumber() : "",
+                                                                debitAmount,
+                                                                creditAmount,
+                                                                runningBalance));
 					}
 					
 				}
@@ -544,29 +649,23 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 
                 if (this.companyChangeListener != null)
                 {
-                        // Clean up any stale listener before creating a new one
                         CurrentCompany.CompanyListener.removeCompanyListener(this.companyChangeListener);
                 }
 
-                this.companyChangeListener = new CompanyChangeListener()
-                {
-                        @Override public void companyChange(boolean companyNowOpen)
-                        {
-                                AccountTransactionDetailsPanelFX.this.transactionDataList.clear();
-                                AccountTransactionDetailsPanelFX.this.transactionsTable.setPlaceholder(new Label(
-                                                                                                                              "Company changed. Select account and date range, then click 'Load Transactions'."));
-                               AccountTransactionDetailsPanelFX.this.totalDebitsLabel
-                                               .setText("Total Debits: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
-                               AccountTransactionDetailsPanelFX.this.totalCreditsLabel
-                                               .setText("Total Credits: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
-                               AccountTransactionDetailsPanelFX.this.netChangeLabel
-                                               .setText("Net Change: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
-
-                                refreshAccountSelector();
-
-                        }
-
+                this.companyChangeListener = companyNowOpen -> {
+                        this.transactionDataList.clear();
+                        this.transactionsTable.setPlaceholder(new Label(
+                                "Company changed. Select account and date range, then click 'Load Transactions'."));
+                        this.totalDebitsLabel
+                                .setText("Total Debits: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
+                        this.totalCreditsLabel
+                                .setText("Total Credits: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
+                        this.netChangeLabel
+                                .setText("Net Change: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
+                        applyDefaultPeriod();
+                        refreshAccountSelector();
                 };
+
                 CurrentCompany.CompanyListener.addCompanyListener(this.companyChangeListener);
                 this.companyChangeListenerRegistered = true;
 
