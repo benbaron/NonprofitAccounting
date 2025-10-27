@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParsePosition;
+import java.util.Currency;
+import java.util.Locale;
 
 /**
  * Utility class for formatting currency values across the UI. The format
@@ -13,9 +15,24 @@ public final class FormatUtils {
     /** Default currency pattern. */
     private static String pattern = "$#,##0.00";
     private static final Object FORMAT_LOCK = new Object();
+    private static Locale locale = Locale.getDefault();
+    private static DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(locale);
+    private static String currencyCode = resolveDefaultCurrency(locale);
     private static DecimalFormat formatter = createFormatter(pattern);
 
     private FormatUtils() {}
+
+    private static String resolveDefaultCurrency(Locale candidate)
+    {
+        try
+        {
+            return Currency.getInstance(candidate).getCurrencyCode();
+        }
+        catch (IllegalArgumentException ex)
+        {
+            return Currency.getInstance(Locale.US).getCurrencyCode();
+        }
+    }
 
     /**
      * Formats the given value using the current currency pattern.
@@ -55,6 +72,34 @@ public final class FormatUtils {
     public static String getCurrencyFormat() {
         synchronized (FORMAT_LOCK) {
             return pattern;
+        }
+    }
+
+    /**
+     * Updates the locale and currency symbol used for formatting/parsing.
+     *
+     * @param newLocale locale to apply; when {@code null} the previous locale is retained
+     * @param desiredCurrencyCode ISO currency code such as "USD"; when {@code null} the locale default is used
+     */
+    public static void configureLocale(Locale newLocale, String desiredCurrencyCode) {
+        synchronized (FORMAT_LOCK) {
+            if (newLocale != null) {
+                locale = newLocale;
+                symbols = DecimalFormatSymbols.getInstance(locale);
+                if (desiredCurrencyCode == null || desiredCurrencyCode.isBlank()) {
+                    currencyCode = resolveDefaultCurrency(locale);
+                }
+            }
+
+            if (desiredCurrencyCode != null && !desiredCurrencyCode.isBlank()) {
+                try {
+                    currencyCode = Currency.getInstance(desiredCurrencyCode).getCurrencyCode();
+                } catch (IllegalArgumentException ex) {
+                    currencyCode = resolveDefaultCurrency(locale);
+                }
+            }
+
+            formatter = createFormatter(pattern);
         }
     }
 
@@ -104,8 +149,15 @@ public final class FormatUtils {
     }
 
     private static DecimalFormat createFormatter(String pattern) {
-        DecimalFormat format = new DecimalFormat(pattern);
+        DecimalFormat format = new DecimalFormat(pattern, symbols);
         format.setParseBigDecimal(true);
+        if (currencyCode != null) {
+            try {
+                format.setCurrency(Currency.getInstance(currencyCode));
+            } catch (IllegalArgumentException ex) {
+                // keep existing currency configuration
+            }
+        }
         return format;
     }
 

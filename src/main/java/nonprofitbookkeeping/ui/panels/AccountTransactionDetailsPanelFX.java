@@ -3,6 +3,7 @@ package nonprofitbookkeeping.ui.panels;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.MonthDay;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -21,6 +22,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 
@@ -34,6 +36,7 @@ import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
+import nonprofitbookkeeping.model.ReportPeriodPreset;
 
 /**
  * A JavaFX {@link BorderPane} that displays transaction details for a selected account
@@ -50,12 +53,14 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 	private DatePicker startDatePicker;
 	/** DatePicker for selecting the end date of the transaction period. */
 	private DatePicker endDatePicker;
-	/** Button to trigger loading of transactions based on selected criteria. */
-	private Button loadTransactionsButton;
-	/** Button to refresh the table using the currently selected criteria. */
-	private Button refreshButton;
-	/** TableView to display the transaction details. */
-	private TableView<TransactionDisplayRow> transactionsTable;
+        /** Button to trigger loading of transactions based on selected criteria. */
+        private Button loadTransactionsButton;
+        /** Button to refresh the table using the currently selected criteria. */
+        private Button refreshButton;
+        /** Button menu offering quick report ranges. */
+        private MenuButton quickRangeButton;
+        /** TableView to display the transaction details. */
+        private TableView<TransactionDisplayRow> transactionsTable;
 	/** ObservableList holding the {@link TransactionDisplayRow} objects for the table. */
 	private ObservableList<TransactionDisplayRow> transactionDataList;
 	
@@ -88,12 +93,14 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		controlsGrid.setVgap(8);
 		controlsGrid.setPadding(new Insets(5));
 		
-		this.accountSelectorComboBox = new ComboBox<>();
-		this.accountSelectorComboBox.setPromptText("Select Account");
-		
-		refreshAccountSelector();
-		
-		this.accountSelectorComboBox.setOnAction(e -> {
+                this.accountSelectorComboBox = new ComboBox<>();
+                this.accountSelectorComboBox.setPromptText("Select Account");
+                this.accountSelectorComboBox
+                                .setTooltip(new Tooltip("Choose an account to review its transactions."));
+
+                refreshAccountSelector();
+
+                this.accountSelectorComboBox.setOnAction(e -> {
 			this.transactionDataList.clear();
 			this.transactionsTable
 					.setPlaceholder(
@@ -103,23 +110,32 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
                        this.netChangeLabel.setText("Net Change: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
 		});
 		
-		this.startDatePicker = new DatePicker();
-		this.endDatePicker = new DatePicker();
-		this.loadTransactionsButton = new Button("Load Transactions");
-		this.loadTransactionsButton.setOnAction(e -> loadTransactionData());
-		this.refreshButton = new Button("Refresh");
-		this.refreshButton.setOnAction(e -> refresh());
+                this.startDatePicker = new DatePicker();
+                this.startDatePicker.setTooltip(new Tooltip("Start of the reporting period."));
+                this.endDatePicker = new DatePicker();
+                this.endDatePicker.setTooltip(new Tooltip("End of the reporting period."));
+                this.loadTransactionsButton = new Button("Load Transactions");
+                this.loadTransactionsButton.setTooltip(new Tooltip("Load transactions for the selected criteria."));
+                this.loadTransactionsButton.setOnAction(e -> loadTransactionData());
+                this.refreshButton = new Button("Refresh");
+                this.refreshButton.setTooltip(new Tooltip("Reload transactions while keeping the selected filters."));
+                this.refreshButton.setOnAction(e -> refresh());
 		
 		controlsGrid.add(new Label("Account:"), 0, 0);
 		controlsGrid.add(this.accountSelectorComboBox, 1, 0, 2, 1);
 		controlsGrid.add(new Label("Start Date:"), 0, 1);
 		controlsGrid.add(this.startDatePicker, 1, 1);
-		controlsGrid.add(new Label("End Date:"), 0, 2);
-		controlsGrid.add(this.endDatePicker, 1, 2);
-		controlsGrid.add(this.loadTransactionsButton, 2, 2);
-		controlsGrid.add(this.refreshButton, 3, 2);
-		
-		ScrollPane controlsScrollPane = new ScrollPane(controlsGrid);
+                controlsGrid.add(new Label("End Date:"), 0, 2);
+                controlsGrid.add(this.endDatePicker, 1, 2);
+                controlsGrid.add(this.loadTransactionsButton, 2, 2);
+                controlsGrid.add(this.refreshButton, 3, 2);
+                this.quickRangeButton = new MenuButton("Quick Ranges");
+                this.quickRangeButton.setTooltip(new Tooltip("Apply preset date ranges."));
+                this.quickRangeButton.setVisible(false);
+                this.quickRangeButton.setManaged(false);
+                controlsGrid.add(this.quickRangeButton, 4, 2);
+
+                ScrollPane controlsScrollPane = new ScrollPane(controlsGrid);
 		controlsScrollPane.setFitToWidth(true);
 		controlsScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 		controlsScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
@@ -145,9 +161,60 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 				this.netChangeLabel);
 		setBottom(totalsBox);
 		
-		setupCompanyChangeListener(); // Call to setup listener
-		
-	}
+                setupCompanyChangeListener(); // Call to setup listener
+
+        }
+
+        /** Applies the default reporting period from settings. */
+        public void applyDefaultPeriod(ReportPeriodPreset preset, MonthDay fiscalYearStart)
+        {
+                if (preset == null)
+                {
+                        return;
+                }
+
+                ReportPeriodPreset.DateRange range = preset.resolve(LocalDate.now(), fiscalYearStart);
+                this.startDatePicker.setValue(range.getStart());
+                this.endDatePicker.setValue(range.getEnd());
+        }
+
+        /** Configures visibility and actions for quick range presets. */
+        public void configureQuickRanges(boolean showYearToDate, boolean showFullYear, boolean showLastMonth,
+                MonthDay fiscalYearStart)
+        {
+                if (this.quickRangeButton == null)
+                {
+                        return;
+                }
+
+                this.quickRangeButton.getItems().clear();
+                MonthDay start = fiscalYearStart != null ? fiscalYearStart : MonthDay.of(1, 1);
+
+                if (showYearToDate)
+                {
+                        MenuItem item = new MenuItem("Year to Date");
+                        item.setOnAction(e -> applyDefaultPeriod(ReportPeriodPreset.YEAR_TO_DATE, start));
+                        this.quickRangeButton.getItems().add(item);
+                }
+
+                if (showFullYear)
+                {
+                        MenuItem item = new MenuItem("Full Fiscal Year");
+                        item.setOnAction(e -> applyDefaultPeriod(ReportPeriodPreset.FULL_YEAR, start));
+                        this.quickRangeButton.getItems().add(item);
+                }
+
+                if (showLastMonth)
+                {
+                        MenuItem item = new MenuItem("Last Month");
+                        item.setOnAction(e -> applyDefaultPeriod(ReportPeriodPreset.LAST_MONTH, start));
+                        this.quickRangeButton.getItems().add(item);
+                }
+
+                boolean visible = !this.quickRangeButton.getItems().isEmpty();
+                this.quickRangeButton.setVisible(visible);
+                this.quickRangeButton.setManaged(visible);
+        }
 	
 	/**
 	 * Sets up the columns for the {@link #transactionsTable}.
