@@ -20,6 +20,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Separator;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.ToolBar;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -73,10 +74,12 @@ public class SkeletonJournalPanel extends BorderPane
 	private DatePicker startDatePicker;
 	/** End date picker for filtering journal entries. */
 	private DatePicker endDatePicker;
-	/** Button to apply the filters entered in {@link #searchFilterField} and the date range. */
-	private Button applyFilterButton;
-	/** Button to refresh the table without changing filters. */
-	private Button refreshButton;
+        /** Button to apply the filters entered in {@link #searchFilterField} and the date range. */
+        private Button applyFilterButton;
+        /** Button to refresh the table without changing filters. */
+        private Button refreshButton;
+        /** Button that clears all filter criteria. */
+        private Button clearFilterButton;
         /** Button to initiate creating a new journal entry from the in-panel workspace. */
         private Button createTransactionButton;
         /** Button to move the currently selected entry into the workspace for editing. */
@@ -149,20 +152,25 @@ public class SkeletonJournalPanel extends BorderPane
 		// Filter
 		Label filterLabel = new Label("Filter:");
 		// search
-		this.searchFilterField = new TextField();
-		this.searchFilterField.setPromptText("Search description/account...");
-		this.searchFilterField.setPrefWidth(200);
+                this.searchFilterField = new TextField();
+                this.searchFilterField.setPromptText("Search description/account...");
+                this.searchFilterField.setPrefWidth(200);
+                this.searchFilterField.setTooltip(new Tooltip("Search by description or account name."));
 		// date range
-		this.startDatePicker = new DatePicker();
-		this.startDatePicker.setPromptText("Start Date");
-		this.endDatePicker = new DatePicker();
-		this.endDatePicker.setPromptText("End Date");
-		// apply
-		this.applyFilterButton = new Button("Apply Filter");
-		this.refreshButton = new Button("Refresh");
-		this.filterControlsBox.getChildren().addAll(filterLabel, this.searchFilterField,
-				this.startDatePicker, this.endDatePicker, this.applyFilterButton,
-				this.refreshButton);
+                this.startDatePicker = new DatePicker();
+                this.startDatePicker.setPromptText("Start Date");
+                this.endDatePicker = new DatePicker();
+                this.endDatePicker.setPromptText("End Date");
+                // apply
+                this.applyFilterButton = new Button("Apply Filter");
+                this.refreshButton = new Button("Refresh");
+                this.clearFilterButton = new Button("Clear Filter");
+                this.applyFilterButton.setTooltip(new Tooltip("Apply the current search text and date range."));
+                this.refreshButton.setTooltip(new Tooltip("Reload data using the existing filter."));
+                this.clearFilterButton.setTooltip(new Tooltip("Remove all filters and show every entry."));
+                this.filterControlsBox.getChildren().addAll(filterLabel, this.searchFilterField,
+                                this.startDatePicker, this.endDatePicker, this.applyFilterButton,
+                                this.refreshButton, this.clearFilterButton);
 		
 		// scroll pane
 		this.filterScrollPane = new ScrollPane(this.filterControlsBox);
@@ -416,6 +424,7 @@ public class SkeletonJournalPanel extends BorderPane
                 // On filter
                 this.applyFilterButton.setOnAction(e -> onFilterButtonAction());
                 this.refreshButton.setOnAction(e -> refresh());
+                this.clearFilterButton.setOnAction(e -> clearFilters());
                 this.createTransactionButton.setOnAction(e -> openEditor(null));
                 this.editSelectedButton.setOnAction(e -> onEditAction());
                 this.closeEditorButton.setOnAction(e -> resetEditorWorkspace());
@@ -503,6 +512,28 @@ public class SkeletonJournalPanel extends BorderPane
         {
                 onFilterButtonAction();
 
+        }
+
+        /** Clears all search criteria and reloads the full journal dataset. */
+        private void clearFilters()
+        {
+                this.searchFilterField.clear();
+                this.startDatePicker.setValue(null);
+                this.endDatePicker.setValue(null);
+                loadData();
+                this.journalDisplayTable.setItems(this.journalDataList);
+
+                if (!this.editorActive)
+                {
+                        updatePreview(this.journalDisplayTable.getSelectionModel().getSelectedItem());
+                }
+        }
+
+        /** Moves keyboard focus to the search filter field. */
+        public void focusSearchField()
+        {
+                this.searchFilterField.requestFocus();
+                this.searchFilterField.selectAll();
         }
 
         private void showEditor(BorderPane pane, String modeDescription)

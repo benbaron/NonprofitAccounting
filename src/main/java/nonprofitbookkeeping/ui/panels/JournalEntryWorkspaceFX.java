@@ -54,6 +54,10 @@ import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.model.SettingsModel;
+import nonprofitbookkeeping.service.SettingsService;
+import nonprofitbookkeeping.core.Database;
+import java.io.IOException;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.helpers.FocusCommitTextFieldTableCell;
 import nonprofitbookkeeping.util.FormatUtils;
@@ -157,6 +161,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 else
                 {
                         addLine();
+                        applyDefaultAccountsFromSettings();
                 }
 
                 recalcTotals();
@@ -519,6 +524,57 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 recalcTotals();
                 updateValidationState();
                 this.table.refresh();
+        }
+
+        private void applyDefaultAccountsFromSettings()
+        {
+                if (!Database.isInitialized())
+                {
+                        return;
+                }
+
+                SettingsService settingsService = new SettingsService();
+
+                try
+                {
+                        settingsService.loadSettings(null);
+                }
+                catch (IOException ex)
+                {
+                        return;
+                }
+
+                SettingsModel settings = settingsService.getSettings();
+
+                if (settings == null || this.lines.isEmpty())
+                {
+                        return;
+                }
+
+                if (settings.getDefaultExpenseAccount() != null
+                        && !settings.getDefaultExpenseAccount().isBlank())
+                {
+                        this.lines.get(0).account.set(settings.getDefaultExpenseAccount());
+                }
+
+                if (settings.getDefaultIncomeAccount() != null
+                        && !settings.getDefaultIncomeAccount().isBlank())
+                {
+                        if (this.lines.size() == 1)
+                        {
+                                addLine();
+                        }
+
+                        if (this.lines.size() >= 2)
+                        {
+                                this.lines.get(1).account.set(settings.getDefaultIncomeAccount());
+                        }
+                }
+
+                if (!this.lines.isEmpty())
+                {
+                        this.table.getSelectionModel().select(this.lines.get(0));
+                }
         }
 
         private void addLine()

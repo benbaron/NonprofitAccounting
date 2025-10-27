@@ -4,11 +4,15 @@ package nonprofitbookkeeping.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.time.MonthDay;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import nonprofitbookkeeping.model.ReportPeriodPreset;
 
 /**
  * Represents the application settings model.
@@ -46,6 +50,26 @@ import lombok.NoArgsConstructor;
         @JsonProperty private String language;
        /** Pattern used for formatting currency values (e.g., "$#,##0.00"). */
        @JsonProperty private String currencyFormat = "$#,##0.00";
+
+       // Application behaviour
+       /** Flag indicating whether background autosave is enabled. */
+       @JsonProperty private boolean autosaveEnabled = true;
+       /** Interval, in minutes, between background autosave executions. */
+       @JsonProperty private int autosaveIntervalMinutes = 5;
+       /** User-selected default directory for company data. */
+       @JsonProperty private String defaultCompanyDirectory;
+       /** Path to the most recently used company file. */
+       @JsonProperty private String lastUsedCompanyFile;
+
+       // Reporting preferences
+       /** Default report period selection applied across dashboards. */
+       @JsonProperty private String defaultReportPeriod = ReportPeriodPreset.YEAR_TO_DATE.name();
+       /** Whether the Year-To-Date period should be offered in report pickers. */
+       @JsonProperty private boolean enableYearToDateOption = true;
+       /** Whether the current fiscal year option should be available. */
+       @JsonProperty private boolean enableFullYearOption = true;
+       /** Whether the "Last Month" option should be available. */
+       @JsonProperty private boolean enableLastMonthOption = true;
 	
 	/**
 	 * Represents a user account within the settings model.
@@ -146,14 +170,38 @@ import lombok.NoArgsConstructor;
 		this.fiscalYearStart = start;
 	}
 	
-	/**
-	 * Gets the default currency code.
-	 * @return The default currency code (e.g., "USD").
-	 */
-	public String getDefaultCurrency()
-	{
-		return this.defaultCurrency;
-	}
+        /**
+         * Gets the default currency code.
+         * @return The default currency code (e.g., "USD").
+         */
+        public String getDefaultCurrency()
+        {
+                return this.defaultCurrency;
+        }
+
+        /**
+         * Returns the fiscal year start as a {@link MonthDay} when possible.
+         *
+         * @return month/day representation of the fiscal year start or {@code null}
+         *         when the stored value cannot be parsed.
+         */
+        public MonthDay getFiscalYearStartMonthDay()
+        {
+                if (this.fiscalYearStart == null || this.fiscalYearStart.isBlank())
+                {
+                        return null;
+                }
+
+                try
+                {
+                        return MonthDay.parse(this.fiscalYearStart,
+                                java.time.format.DateTimeFormatter.ofPattern("MM-dd"));
+                }
+                catch (Exception ex)
+                {
+                        return null;
+                }
+        }
 	
 	/**
 	 * Sets the default currency code.
