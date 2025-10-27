@@ -339,5 +339,165 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
        {
                this.currencyFormat = currencyFormat;
        }
+
+       /**
+        * Indicates whether background autosave is enabled.
+        *
+        * @return {@code true} when autosave is enabled; otherwise {@code false}.
+        */
+       public boolean isAutosaveEnabled()
+       {
+               return this.autosaveEnabled;
+       }
+
+       /**
+        * Enables or disables background autosave.
+        *
+        * @param autosaveEnabled {@code true} to enable autosave; {@code false} to disable.
+        */
+       public void setAutosaveEnabled(boolean autosaveEnabled)
+       {
+               this.autosaveEnabled = autosaveEnabled;
+       }
+
+       /**
+        * Retrieves the autosave interval in minutes.
+        *
+        * @return interval between autosave executions in minutes.
+        */
+       public int getAutosaveIntervalMinutes()
+       {
+               return this.autosaveIntervalMinutes;
+       }
+
+       /**
+        * Updates the autosave interval value.
+        *
+        * @param autosaveIntervalMinutes new interval (in minutes) between autosave executions.
+        */
+       public void setAutosaveIntervalMinutes(int autosaveIntervalMinutes)
+       {
+               this.autosaveIntervalMinutes = autosaveIntervalMinutes;
+       }
+
+       /**
+        * Provides the default directory to use for company files.
+        *
+        * @return configured default company directory path.
+        */
+       public String getDefaultCompanyDirectory()
+       {
+               return this.defaultCompanyDirectory;
+       }
+
+       /**
+        * Sets the default directory to use for company files.
+        *
+        * @param defaultCompanyDirectory directory path to persist.
+        */
+       public void setDefaultCompanyDirectory(String defaultCompanyDirectory)
+       {
+               this.defaultCompanyDirectory = defaultCompanyDirectory;
+       }
+
+       /**
+        * Retrieves the path to the last company file opened by the user.
+        *
+        * @return last used company file path.
+        */
+       public String getLastUsedCompanyFile()
+       {
+               return this.lastUsedCompanyFile;
+       }
+
+       /**
+        * Records the path to the most recently used company file.
+        *
+        * @param lastUsedCompanyFile file path to store.
+        */
+       public void setLastUsedCompanyFile(String lastUsedCompanyFile)
+       {
+               this.lastUsedCompanyFile = lastUsedCompanyFile;
+       }
+
+       /**
+        * Returns the default report period selection.
+        *
+        * @return default report period preset as a string.
+        */
+       public String getDefaultReportPeriod()
+       {
+               return this.defaultReportPeriod;
+       }
+
+       /**
+        * Updates the default report period selection.
+        *
+        * @param defaultReportPeriod preset identifier to set as default.
+        */
+       public void setDefaultReportPeriod(String defaultReportPeriod)
+       {
+               this.defaultReportPeriod = defaultReportPeriod;
+       }
+
+       /**
+        * Indicates whether the Year-To-Date preset option should be available.
+        *
+        * @return {@code true} when enabled; otherwise {@code false}.
+        */
+       public boolean isEnableYearToDateOption()
+       {
+               return this.enableYearToDateOption;
+       }
+
+       /**
+        * Toggles the availability of the Year-To-Date preset option.
+        *
+        * @param enableYearToDateOption {@code true} to enable; {@code false} to disable.
+        */
+       public void setEnableYearToDateOption(boolean enableYearToDateOption)
+       {
+               this.enableYearToDateOption = enableYearToDateOption;
+       }
+
+       /**
+        * Indicates whether the full year preset option should be available.
+        *
+        * @return {@code true} when enabled; otherwise {@code false}.
+        */
+       public boolean isEnableFullYearOption()
+       {
+               return this.enableFullYearOption;
+       }
+
+       /**
+        * Toggles the availability of the full year preset option.
+        *
+        * @param enableFullYearOption {@code true} to enable; {@code false} to disable.
+        */
+       public void setEnableFullYearOption(boolean enableFullYearOption)
+       {
+               this.enableFullYearOption = enableFullYearOption;
+       }
+
+       /**
+        * Indicates whether the "Last Month" preset option should be available.
+        *
+        * @return {@code true} when enabled; otherwise {@code false}.
+        */
+       public boolean isEnableLastMonthOption()
+       {
+               return this.enableLastMonthOption;
+       }
+
+       /**
+        * Toggles the availability of the "Last Month" preset option.
+        *
+        * @param enableLastMonthOption {@code true} to enable; {@code false} to disable.
+        */
+       public void setEnableLastMonthOption(boolean enableLastMonthOption)
+       {
+               this.enableLastMonthOption = enableLastMonthOption;
+       }
 	
 }
