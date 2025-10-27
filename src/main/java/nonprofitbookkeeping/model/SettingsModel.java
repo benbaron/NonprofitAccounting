@@ -339,5 +339,166 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
        {
                this.currencyFormat = currencyFormat;
        }
+
+       /**
+        * Indicates whether background autosave is enabled.
+        *
+        * @return {@code true} when autosave is enabled, {@code false} otherwise
+        */
+       public boolean isAutosaveEnabled()
+       {
+               return this.autosaveEnabled;
+       }
+
+       /**
+        * Enables or disables the autosave feature.
+        *
+        * @param autosaveEnabled {@code true} to enable autosave
+        */
+       public void setAutosaveEnabled(boolean autosaveEnabled)
+       {
+               this.autosaveEnabled = autosaveEnabled;
+       }
+
+       /**
+        * Retrieves the configured autosave interval in minutes.
+        *
+        * @return autosave interval in minutes
+        */
+       public int getAutosaveIntervalMinutes()
+       {
+               return this.autosaveIntervalMinutes;
+       }
+
+       /**
+        * Updates the autosave interval, treating {@code null} as zero.
+        *
+        * @param autosaveIntervalMinutes new autosave interval in minutes
+        */
+       public void setAutosaveIntervalMinutes(Integer autosaveIntervalMinutes)
+       {
+               this.autosaveIntervalMinutes = autosaveIntervalMinutes == null ? 0
+                       : autosaveIntervalMinutes;
+       }
+
+       /**
+        * Returns the default directory path used when opening company files.
+        *
+        * @return directory path or {@code null} when unset
+        */
+       public String getDefaultCompanyDirectory()
+       {
+               return this.defaultCompanyDirectory;
+       }
+
+       /**
+        * Sets the default directory path used for company files.
+        *
+        * @param defaultCompanyDirectory directory path to set
+        */
+       public void setDefaultCompanyDirectory(String defaultCompanyDirectory)
+       {
+               this.defaultCompanyDirectory = defaultCompanyDirectory;
+       }
+
+       /**
+        * Returns the path to the most recently used company file.
+        *
+        * @return path to the last used company file or {@code null}
+        */
+       public String getLastUsedCompanyFile()
+       {
+               return this.lastUsedCompanyFile;
+       }
+
+       /**
+        * Stores the path to the most recently used company file.
+        *
+        * @param lastUsedCompanyFile path of the last used company file
+        */
+       public void setLastUsedCompanyFile(String lastUsedCompanyFile)
+       {
+               this.lastUsedCompanyFile = lastUsedCompanyFile;
+       }
+
+       /**
+        * Retrieves the default report period preset key.
+        *
+        * @return preset key such as {@link ReportPeriodPreset#YEAR_TO_DATE}
+        */
+       public String getDefaultReportPeriod()
+       {
+               return this.defaultReportPeriod;
+       }
+
+       /**
+        * Sets the default report period preset key.
+        *
+        * @param defaultReportPeriod preset key to use as default
+        */
+       public void setDefaultReportPeriod(String defaultReportPeriod)
+       {
+               this.defaultReportPeriod = defaultReportPeriod;
+       }
+
+       /**
+        * Indicates whether the Year-To-Date report option is available to users.
+        *
+        * @return {@code true} when enabled
+        */
+       public boolean isEnableYearToDateOption()
+       {
+               return this.enableYearToDateOption;
+       }
+
+       /**
+        * Enables or disables the Year-To-Date report option.
+        *
+        * @param enableYearToDateOption {@code true} to enable
+        */
+       public void setEnableYearToDateOption(boolean enableYearToDateOption)
+       {
+               this.enableYearToDateOption = enableYearToDateOption;
+       }
+
+       /**
+        * Indicates whether the full fiscal year report option is available.
+        *
+        * @return {@code true} when the option is enabled
+        */
+       public boolean isEnableFullYearOption()
+       {
+               return this.enableFullYearOption;
+       }
+
+       /**
+        * Enables or disables the full fiscal year report option.
+        *
+        * @param enableFullYearOption {@code true} to enable
+        */
+       public void setEnableFullYearOption(boolean enableFullYearOption)
+       {
+               this.enableFullYearOption = enableFullYearOption;
+       }
+
+       /**
+        * Indicates whether the "Last Month" report option is available.
+        *
+        * @return {@code true} when the option is enabled
+        */
+       public boolean isEnableLastMonthOption()
+       {
+               return this.enableLastMonthOption;
+       }
+
+       /**
+        * Enables or disables the "Last Month" report option.
+        *
+        * @param enableLastMonthOption {@code true} to enable
+        */
+       public void setEnableLastMonthOption(boolean enableLastMonthOption)
+       {
+               this.enableLastMonthOption = enableLastMonthOption;
+       }
 	
 }
