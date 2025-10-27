@@ -21,7 +21,7 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
  * Lombok's {@code @Data}, {@code @AllArgsConstructor}, and {@code @NoArgsConstructor}
  * are used for boilerplate code generation.
  */
-@Data @AllArgsConstructor @NoArgsConstructor public class SettingsModel
+public class SettingsModel
 {
 	// Company Info
 	/** The name of the organization. */
@@ -159,7 +159,7 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
          *
          * @return the number of minutes between autosave executions.
          */
-        public int getAutosaveIntervalMinutes()
+		public int getAutosaveIntervalMinutes()
         {
                 return this.autosaveIntervalMinutes;
         }
@@ -501,164 +501,6 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
                this.currencyFormat = currencyFormat;
        }
 
-       /**
-        * Indicates whether autosave is enabled.
-        *
-        * @return {@code true} if autosave is enabled, otherwise {@code false}.
-        */
-       public boolean isAutosaveEnabled()
-       {
-               return this.autosaveEnabled;
-       }
-
-       /**
-        * Enables or disables autosave.
-        *
-        * @param autosaveEnabled {@code true} to enable autosave; {@code false} to disable.
-        */
-       public void setAutosaveEnabled(boolean autosaveEnabled)
-       {
-               this.autosaveEnabled = autosaveEnabled;
-       }
-
-       /**
-        * Gets the autosave interval in minutes.
-        *
-        * @return autosave interval expressed in minutes.
-        */
-       public int getAutosaveIntervalMinutes()
-       {
-               return this.autosaveIntervalMinutes;
-       }
-
-       /**
-        * Sets the autosave interval in minutes.
-        *
-        * @param autosaveIntervalMinutes the interval in minutes to use for autosave.
-        */
-       public void setAutosaveIntervalMinutes(int autosaveIntervalMinutes)
-       {
-               this.autosaveIntervalMinutes = autosaveIntervalMinutes;
-       }
-
-       /**
-        * Gets the default company directory path.
-        *
-        * @return directory path used when opening or creating companies.
-        */
-       public String getDefaultCompanyDirectory()
-       {
-               return this.defaultCompanyDirectory;
-       }
-
-       /**
-        * Sets the default company directory path.
-        *
-        * @param defaultCompanyDirectory directory path to set.
-        */
-       public void setDefaultCompanyDirectory(String defaultCompanyDirectory)
-       {
-               this.defaultCompanyDirectory = defaultCompanyDirectory;
-       }
-
-       /**
-        * Gets the path of the last used company file.
-        *
-        * @return path to the last company file opened by the user.
-        */
-       public String getLastUsedCompanyFile()
-       {
-               return this.lastUsedCompanyFile;
-       }
-
-       /**
-        * Sets the path of the last used company file.
-        *
-        * @param lastUsedCompanyFile company file path to set.
-        */
-       public void setLastUsedCompanyFile(String lastUsedCompanyFile)
-       {
-               this.lastUsedCompanyFile = lastUsedCompanyFile;
-       }
-
-       /**
-        * Gets the default report period preset identifier.
-        *
-        * @return default report period preset.
-        */
-       public String getDefaultReportPeriod()
-       {
-               return this.defaultReportPeriod;
-       }
-
-       /**
-        * Sets the default report period preset identifier.
-        *
-        * @param defaultReportPeriod preset identifier to set.
-        */
-       public void setDefaultReportPeriod(String defaultReportPeriod)
-       {
-               this.defaultReportPeriod = defaultReportPeriod;
-       }
-
-       /**
-        * Indicates whether the Year-To-Date option is available in report filters.
-        *
-        * @return {@code true} when enabled; otherwise {@code false}.
-        */
-       public boolean isEnableYearToDateOption()
-       {
-               return this.enableYearToDateOption;
-       }
-
-       /**
-        * Enables or disables the Year-To-Date option in report filters.
-        *
-        * @param enableYearToDateOption {@code true} to enable the option; otherwise {@code false}.
-        */
-       public void setEnableYearToDateOption(boolean enableYearToDateOption)
-       {
-               this.enableYearToDateOption = enableYearToDateOption;
-       }
-
-       /**
-        * Indicates whether the full year option is available in report filters.
-        *
-        * @return {@code true} when enabled; otherwise {@code false}.
-        */
-       public boolean isEnableFullYearOption()
-       {
-               return this.enableFullYearOption;
-       }
-
-       /**
-        * Enables or disables the full year option in report filters.
-        *
-        * @param enableFullYearOption {@code true} to enable the option; otherwise {@code false}.
-        */
-       public void setEnableFullYearOption(boolean enableFullYearOption)
-       {
-               this.enableFullYearOption = enableFullYearOption;
-       }
-
-       /**
-        * Indicates whether the last month option is available in report filters.
-        *
-        * @return {@code true} when enabled; otherwise {@code false}.
-        */
-       public boolean isEnableLastMonthOption()
-       {
-               return this.enableLastMonthOption;
-       }
-
-       /**
-        * Enables or disables the last month option in report filters.
-        *
-        * @param enableLastMonthOption {@code true} to enable the option; otherwise {@code false}.
-        */
-       public void setEnableLastMonthOption(boolean enableLastMonthOption)
-       {
-               this.enableLastMonthOption = enableLastMonthOption;
-       }
+  
 	
 }
