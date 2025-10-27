@@ -124,21 +124,182 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
 		 * Sets the role for this user.
 		 * @param role The role to set.
 		 */
-		public void setRole(String role)
-		{
-			this.role = role;
-		}
-		
-	}
-	
-	// Explicit Getters/Setters below are mostly redundant due to Lombok @Data
-	// but are documented as they exist in the original code.
-	
-	/**
-	 * Gets the organization name.
-	 * @return The name of the organization.
-	 */
-	public String getOrganizationName()
+                public void setRole(String role)
+                {
+                        this.role = role;
+                }
+
+        }
+
+        // Explicit Getters/Setters below are mostly redundant due to Lombok @Data
+        // but are documented as they exist in the original code.
+
+        /**
+         * Indicates whether autosave is enabled.
+         *
+         * @return {@code true} when background autosave is enabled; {@code false} otherwise.
+         */
+        public boolean isAutosaveEnabled()
+        {
+                return this.autosaveEnabled;
+        }
+
+        /**
+         * Enables or disables the autosave feature.
+         *
+         * @param autosaveEnabled {@code true} to enable autosave; {@code false} to disable it.
+         */
+        public void setAutosaveEnabled(boolean autosaveEnabled)
+        {
+                this.autosaveEnabled = autosaveEnabled;
+        }
+
+        /**
+         * Retrieves the autosave interval in minutes.
+         *
+         * @return the number of minutes between autosave executions.
+         */
+        public int getAutosaveIntervalMinutes()
+        {
+                return this.autosaveIntervalMinutes;
+        }
+
+        /**
+         * Updates the autosave interval.
+         *
+         * @param autosaveIntervalMinutes interval, in minutes, between autosave executions.
+         */
+        public void setAutosaveIntervalMinutes(int autosaveIntervalMinutes)
+        {
+                this.autosaveIntervalMinutes = autosaveIntervalMinutes;
+        }
+
+        /**
+         * Returns the default company directory path configured by the user.
+         *
+         * @return the default company directory path or {@code null} when unset.
+         */
+        public String getDefaultCompanyDirectory()
+        {
+                return this.defaultCompanyDirectory;
+        }
+
+        /**
+         * Sets the default company directory path.
+         *
+         * @param defaultCompanyDirectory directory path to use by default when opening/saving
+         *                               company files.
+         */
+        public void setDefaultCompanyDirectory(String defaultCompanyDirectory)
+        {
+                this.defaultCompanyDirectory = defaultCompanyDirectory;
+        }
+
+        /**
+         * Retrieves the last used company file path.
+         *
+         * @return the last used company file path or {@code null} when no history exists.
+         */
+        public String getLastUsedCompanyFile()
+        {
+                return this.lastUsedCompanyFile;
+        }
+
+        /**
+         * Persists the path to the last used company file.
+         *
+         * @param lastUsedCompanyFile path to the most recently opened company file.
+         */
+        public void setLastUsedCompanyFile(String lastUsedCompanyFile)
+        {
+                this.lastUsedCompanyFile = lastUsedCompanyFile;
+        }
+
+        /**
+         * Provides the default report period selection.
+         *
+         * @return the identifier of the default report period preset.
+         */
+        public String getDefaultReportPeriod()
+        {
+                return this.defaultReportPeriod;
+        }
+
+        /**
+         * Updates the default report period selection.
+         *
+         * @param defaultReportPeriod identifier of the desired default report period preset.
+         */
+        public void setDefaultReportPeriod(String defaultReportPeriod)
+        {
+                this.defaultReportPeriod = defaultReportPeriod;
+        }
+
+        /**
+         * Indicates whether the "Year-To-Date" report preset is available.
+         *
+         * @return {@code true} when the preset is offered; {@code false} otherwise.
+         */
+        public boolean isEnableYearToDateOption()
+        {
+                return this.enableYearToDateOption;
+        }
+
+        /**
+         * Enables or disables the "Year-To-Date" report preset.
+         *
+         * @param enableYearToDateOption {@code true} to enable the preset; {@code false} otherwise.
+         */
+        public void setEnableYearToDateOption(boolean enableYearToDateOption)
+        {
+                this.enableYearToDateOption = enableYearToDateOption;
+        }
+
+        /**
+         * Indicates whether the "Full Year" report preset is available.
+         *
+         * @return {@code true} when enabled; {@code false} otherwise.
+         */
+        public boolean isEnableFullYearOption()
+        {
+                return this.enableFullYearOption;
+        }
+
+        /**
+         * Enables or disables the "Full Year" report preset option.
+         *
+         * @param enableFullYearOption {@code true} to enable; {@code false} otherwise.
+         */
+        public void setEnableFullYearOption(boolean enableFullYearOption)
+        {
+                this.enableFullYearOption = enableFullYearOption;
+        }
+
+        /**
+         * Indicates whether the "Last Month" report preset is available.
+         *
+         * @return {@code true} when enabled; {@code false} otherwise.
+         */
+        public boolean isEnableLastMonthOption()
+        {
+                return this.enableLastMonthOption;
+        }
+
+        /**
+         * Enables or disables the "Last Month" report preset option.
+         *
+         * @param enableLastMonthOption {@code true} to enable; {@code false} otherwise.
+         */
+        public void setEnableLastMonthOption(boolean enableLastMonthOption)
+        {
+                this.enableLastMonthOption = enableLastMonthOption;
+        }
+
+        /**
+         * Gets the organization name.
+         * @return The name of the organization.
+         */
+        public String getOrganizationName()
 	{
 		return this.organizationName;
 	}
@@ -341,9 +502,9 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
        }
 
        /**
-        * Indicates whether background autosave is enabled.
+        * Indicates whether autosave is enabled.
         *
-        * @return {@code true} when autosave is enabled; otherwise {@code false}.
+        * @return {@code true} if autosave is enabled, otherwise {@code false}.
         */
        public boolean isAutosaveEnabled()
        {
@@ -351,7 +512,7 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
        }
 
        /**
-        * Enables or disables background autosave.
+        * Enables or disables autosave.
         *
         * @param autosaveEnabled {@code true} to enable autosave; {@code false} to disable.
         */
@@ -361,9 +522,9 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
        }
 
        /**
-        * Retrieves the autosave interval in minutes.
+        * Gets the autosave interval in minutes.
         *
-        * @return interval between autosave executions in minutes.
+        * @return autosave interval expressed in minutes.
         */
        public int getAutosaveIntervalMinutes()
        {
@@ -371,9 +532,9 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
        }
 
        /**
-        * Updates the autosave interval value.
+        * Sets the autosave interval in minutes.
         *
-        * @param autosaveIntervalMinutes new interval (in minutes) between autosave executions.
+        * @param autosaveIntervalMinutes the interval in minutes to use for autosave.
         */
        public void setAutosaveIntervalMinutes(int autosaveIntervalMinutes)
        {
@@ -381,9 +542,9 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
        }
 
        /**
-        * Provides the default directory to use for company files.
+        * Gets the default company directory path.
         *
-        * @return configured default company directory path.
+        * @return directory path used when opening or creating companies.
         */
        public String getDefaultCompanyDirectory()
        {
@@ -391,9 +552,9 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
        }
 
        /**
-        * Sets the default directory to use for company files.
+        * Sets the default company directory path.
         *
-        * @param defaultCompanyDirectory directory path to persist.
+        * @param defaultCompanyDirectory directory path to set.
         */
        public void setDefaultCompanyDirectory(String defaultCompanyDirectory)
        {
@@ -401,9 +562,9 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
        }
 
        /**
-        * Retrieves the path to the last company file opened by the user.
+        * Gets the path of the last used company file.
         *
-        * @return last used company file path.
+        * @return path to the last company file opened by the user.
         */
        public String getLastUsedCompanyFile()
        {
@@ -411,9 +572,9 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
        }
 
        /**
-        * Records the path to the most recently used company file.
+        * Sets the path of the last used company file.
         *
-        * @param lastUsedCompanyFile file path to store.
+        * @param lastUsedCompanyFile company file path to set.
         */
        public void setLastUsedCompanyFile(String lastUsedCompanyFile)
        {
@@ -421,9 +582,9 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
        }
 
        /**
-        * Returns the default report period selection.
+        * Gets the default report period preset identifier.
         *
-        * @return default report period preset as a string.
+        * @return default report period preset.
         */
        public String getDefaultReportPeriod()
        {
@@ -431,9 +592,9 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
        }
 
        /**
-        * Updates the default report period selection.
+        * Sets the default report period preset identifier.
         *
-        * @param defaultReportPeriod preset identifier to set as default.
+        * @param defaultReportPeriod preset identifier to set.
         */
        public void setDefaultReportPeriod(String defaultReportPeriod)
        {
@@ -441,7 +602,7 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
        }
 
        /**
-        * Indicates whether the Year-To-Date preset option should be available.
+        * Indicates whether the Year-To-Date option is available in report filters.
         *
         * @return {@code true} when enabled; otherwise {@code false}.
         */
@@ -451,9 +612,9 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
        }
 
        /**
-        * Toggles the availability of the Year-To-Date preset option.
+        * Enables or disables the Year-To-Date option in report filters.
         *
-        * @param enableYearToDateOption {@code true} to enable; {@code false} to disable.
+        * @param enableYearToDateOption {@code true} to enable the option; otherwise {@code false}.
         */
        public void setEnableYearToDateOption(boolean enableYearToDateOption)
        {
@@ -461,7 +622,7 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
        }
 
        /**
-        * Indicates whether the full year preset option should be available.
+        * Indicates whether the full year option is available in report filters.
         *
         * @return {@code true} when enabled; otherwise {@code false}.
         */
@@ -471,9 +632,9 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
        }
 
        /**
-        * Toggles the availability of the full year preset option.
+        * Enables or disables the full year option in report filters.
         *
-        * @param enableFullYearOption {@code true} to enable; {@code false} to disable.
+        * @param enableFullYearOption {@code true} to enable the option; otherwise {@code false}.
         */
        public void setEnableFullYearOption(boolean enableFullYearOption)
        {
@@ -481,7 +642,7 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
        }
 
        /**
-        * Indicates whether the "Last Month" preset option should be available.
+        * Indicates whether the last month option is available in report filters.
         *
         * @return {@code true} when enabled; otherwise {@code false}.
         */
@@ -491,9 +652,9 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
        }
 
        /**
-        * Toggles the availability of the "Last Month" preset option.
+        * Enables or disables the last month option in report filters.
         *
-        * @param enableLastMonthOption {@code true} to enable; {@code false} to disable.
+        * @param enableLastMonthOption {@code true} to enable the option; otherwise {@code false}.
         */
        public void setEnableLastMonthOption(boolean enableLastMonthOption)
        {
