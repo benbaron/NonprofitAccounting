@@ -63,75 +63,75 @@ public final class ReportTemplates
                         ReportType.GENERAL_LEDGER_JASPER);
 
                 // Alternate Contact Info template used by SCA reports
-                add(map, "Contact Info 1 Fixed Labeled",
-                        "jrxml/sca-reports/CONTACT_INFO_1_fixed_labeled.jrxml",
+                add(map, "Contact Info 1",
+                        "jrxml/sca-reports/CONTACT_INFO_1.jrxml",
                         generatorClass("ContactInfoJasperGenerator"),
                         ReportType.SCA_CONTACT_INFO_JASPER);
 
-                add(map, "jrxml/sca-reports/ASSET_DTL_5a_ROWS.jrxml",
+                add(map, "jrxml/sca-reports/ASSET_DTL_5a.jrxml",
                         generatorClass("AssetDtl5aJasperGenerator"),
                         ReportType.SCA_ASSET_DTL_5A_JASPER);
-                add(map, "jrxml/sca-reports/BALANCE_3_FIXED_SEMANTIC_STRINGS_v2.jrxml",
+                add(map, "jrxml/sca-reports/BALANCE_3.jrxml",
                         generatorClass("Balance3v2JasperGenerator"),
                         ReportType.SCA_BALANCE_3_V2_JASPER);
-                add(map, "jrxml/sca-reports/DEPR_DTL_8_ROWS_2SECTIONS.jrxml",
+                add(map, "jrxml/sca-reports/DEPR_DTL_8.jrxml",
                         generatorClass("DeprDtl8JasperGenerator"),
                         ReportType.SCA_DEPR_DTL_8_JASPER);
-                add(map, "jrxml/sca-reports/EXPENSE_DTL_12a_ROW_BASED.jrxml",
+                add(map, "jrxml/sca-reports/EXPENSE_DTL_12a.jrxml",
                         generatorClass("ExpenseDtl12aJasperGenerator"),
                         ReportType.SCA_EXPENSE_DTL_12A_JASPER);
-                add(map, "jrxml/sca-reports/EXPENSE_DTL_12b_ROW_BASED.jrxml",
+                add(map, "jrxml/sca-reports/EXPENSE_DTL_12b.jrxml",
                         generatorClass("ExpenseDtl12bJasperGenerator"),
                         ReportType.SCA_EXPENSE_DTL_12B_JASPER);
                 add(map, "jrxml/sca-reports/FundLedger.jrxml",
                         generatorClass("FundLedgerJasperGenerator"),
                         ReportType.FUND_LEDGER_JASPER);
-                add(map, "jrxml/sca-reports/FUNDS_14_AUTO_STYLED_labeled_rowbased.jrxml",
+                add(map, "jrxml/sca-reports/FUNDS_14.jrxml",
                         generatorClass("Funds14JasperGenerator"),
                         ReportType.SCA_FUNDS_14_JASPER);
-                add(map, "jrxml/sca-reports/INCOME_4_AUTO_STYLED_labeled.jrxml",
+                add(map, "jrxml/sca-reports/INCOME_4.jrxml",
                         generatorClass("Income4JasperGenerator"),
                         ReportType.SCA_INCOME_4_JASPER);
-                add(map, "jrxml/sca-reports/INCOME_DTL_11a_AUTO_STYLED_fixed_-_Copy_rowbased.jrxml",
+                add(map, "jrxml/sca-reports/INCOME_DTL_11a.jrxml",
                         generatorClass("IncomeDtl11aJasperGenerator"),
                         ReportType.SCA_INCOME_DTL_11A_JASPER);
-                add(map, "jrxml/sca-reports/INCOME_DTL_11b_AUTO_STYLED_fixed_-_Copy_rowbased.jrxml",
+                add(map, "jrxml/sca-reports/INCOME_DTL_11b.jrxml",
                         generatorClass("IncomeDtl11bJasperGenerator"),
                         ReportType.SCA_INCOME_DTL_11B_JASPER);
-                add(map, "jrxml/sca-reports/INCOME_DTL_11c_AUTO_STYLED_fixed_-_Copy_rowbased.jrxml",
+                add(map, "jrxml/sca-reports/INCOME_DTL_11c.jrxml",
                         generatorClass("IncomeDtl11cJasperGenerator"),
                         ReportType.SCA_INCOME_DTL_11C_JASPER);
-                add(map, "jrxml/sca-reports/INVENTORY_DTL_6_ROWS.jrxml",
+                add(map, "jrxml/sca-reports/INVENTORY_DTL_6.jrxml",
                         generatorClass("InventoryDtl6JasperGenerator"),
                         ReportType.SCA_INVENTORY_DTL_6_JASPER);
                 add(map, "jrxml/sca-reports/Ledger_Q1.jrxml",
                         generatorClass("LedgerQ1JasperGenerator"),
                         ReportType.SCA_LEDGER_Q1_JASPER);
-                add(map, "jrxml/sca-reports/LIABILITY_DETAIL_5b_ROW.jrxml",
+                add(map, "jrxml/sca-reports/LIABILITY_DTL_5b.jrxml",
                         generatorClass("LiabilityDtl5bJasperGenerator"),
                         ReportType.SCA_LIABILITY_DTL_5B_JASPER);
                 add(map,
-                        "jrxml/sca-reports/NEWSLETTER_15_AUTO_STYLED_fixed_labeled_-_Copy_rowbased.jrxml",
+                        "jrxml/sca-reports/NEWSLETTER_15.jrxml",
                         generatorClass("Newsletter15JasperGenerator"),
                         ReportType.SCA_NEWSLETTER_15_JASPER);
-                add(map, "jrxml/sca-reports/PRIMARY_ACCOUNT_2a_fixed_labeled.jrxml",
+                add(map, "jrxml/sca-reports/PRIMARY_ACCOUNT_2a.jrxml",
                         generatorClass("PrimaryAccountJasperGenerator"),
                         ReportType.SCA_PRIMARY_ACCOUNT_JASPER);
-                add(map, "jrxml/sca-reports/REGALIA_SALES_DTL_7_ROWS_3SECTION.jrxml",
+                add(map, "jrxml/sca-reports/REGALIA_SALES_DTL_7.jrxml",
                         generatorClass("RegaliaSalesDtl7JasperGenerator"),
                         ReportType.SCA_REGALIA_SALES_DTL_7_JASPER);
-                add(map, "jrxml/sca-reports/SECONDARY_ACCOUNT_2B_fixed_labeled.jrxml",
+                add(map, "jrxml/sca-reports/SECONDARY_ACCOUNTS_2b.jrxml",
                         generatorClass("SecondaryAccountJasperGenerator"),
                         ReportType.SCA_SECONDARY_ACCOUNT_JASPER);
                 add(map,
-                        "jrxml/sca-reports/TRANSFER_IN_9_AUTO_STYLED_fixed_labeled_rowbased.jrxml",
+                        "jrxml/sca-reports/TRANSFER_IN_9.jrxml",
                         generatorClass("TransferIn9JasperGenerator"),
                         ReportType.SCA_TRANSFER_IN_9_JASPER);
                 add(map,
-                        "jrxml/sca-reports/TRANSFER_OUT_10_AUTO_STYLED_fixed_labeled_-_Copy_rowbased.jrxml",
+                        "jrxml/sca-reports/TRANSFER_OUT_10.jrxml",
                         generatorClass("TransferOut10JasperGenerator"),
                         ReportType.SCA_TRANSFER_OUT_10_JASPER);
-                add(map, "jrxml/sca-reports/FINANCE_COMM_13_AUTO_STYLED_labeled.jrxml",
+                add(map, "jrxml/sca-reports/FINANCE_COMM_13.jrxml",
                         generatorClass("FinanceComm13JasperGenerator"),
                         ReportType.SCA_FINANCE_COMM_13_JASPER);
 

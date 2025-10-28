@@ -165,7 +165,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 }
 
                 recalcTotals();
-                updateValidationState();
+                markValidationPending();
         }
 
         /** Returns the backing list of lines. Primarily used by tests. */
@@ -506,7 +506,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
                         refreshAfterEdit();
                 });
 
-                this.memoArea.textProperty().addListener((obs, o, n) -> updateValidationState());
+                this.memoArea.textProperty().addListener((obs, o, n) -> markValidationPending());
         }
 
         private void watchLine(Line line)
@@ -522,7 +522,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
         private void refreshAfterEdit()
         {
                 recalcTotals();
-                updateValidationState();
+                markValidationPending();
                 this.table.refresh();
         }
 
@@ -637,29 +637,32 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 this.differenceLabel.setText(FormatUtils.formatCurrency(diff.abs()));
         }
 
-        private void updateValidationState()
+        private void markValidationPending()
         {
-                Optional<String> error = validateLines();
-                boolean invalid = error.isPresent();
-                this.saveButton.setDisable(invalid);
+                this.saveButton.setDisable(false);
+                this.validationMessage.setText("Press Save to validate the entry totals.");
+                this.saveButton.setTooltip(null);
+                this.statusBadge.setText("Pending check");
+                this.statusBadge.setStyle("-fx-background-color: #666666; -fx-text-fill: white; -fx-background-radius: 12;");
+        }
 
-                if (invalid)
-                {
-                        this.validationMessage.setText(error.get());
-                        this.saveErrorTooltip.setText(error.get());
-                        this.saveButton.setTooltip(this.saveErrorTooltip);
-                        this.statusBadge.setText("Needs attention");
-                        this.statusBadge.setStyle(
-                                        "-fx-background-color: #cc3300; -fx-text-fill: white; -fx-background-radius: 12;");
-                }
-                else
-                {
-                        this.validationMessage.setText("");
-                        this.saveButton.setTooltip(null);
-                        this.statusBadge.setText("Balanced");
-                        this.statusBadge.setStyle(
-                                        "-fx-background-color: #2e7d32; -fx-text-fill: white; -fx-background-radius: 12;");
-                }
+        private void showValidationError(String message)
+        {
+                this.saveButton.setDisable(false);
+                this.validationMessage.setText(message);
+                this.saveErrorTooltip.setText(message);
+                this.saveButton.setTooltip(this.saveErrorTooltip);
+                this.statusBadge.setText("Needs attention");
+                this.statusBadge.setStyle("-fx-background-color: #cc3300; -fx-text-fill: white; -fx-background-radius: 12;");
+        }
+
+        private void showBalancedState()
+        {
+                this.saveButton.setDisable(false);
+                this.validationMessage.setText("");
+                this.saveButton.setTooltip(null);
+                this.statusBadge.setText("Balanced");
+                this.statusBadge.setStyle("-fx-background-color: #2e7d32; -fx-text-fill: white; -fx-background-radius: 12;");
         }
 
         private Optional<String> validateLines()
@@ -763,10 +766,13 @@ public class JournalEntryWorkspaceFX extends BorderPane
 
                 if (validationError.isPresent())
                 {
+                        showValidationError(validationError.get());
                         AlertBox.showError(getScene() == null ? null : getScene().getWindow(),
                                         validationError.get());
                         return;
                 }
+
+                showBalancedState();
 
                 BigDecimal debit = BigDecimal.ZERO;
                 BigDecimal credit = BigDecimal.ZERO;

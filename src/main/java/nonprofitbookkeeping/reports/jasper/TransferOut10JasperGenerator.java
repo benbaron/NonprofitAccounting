@@ -14,12 +14,12 @@ public class TransferOut10JasperGenerator extends AbstractReportGenerator
 		
 	}
 	
-	@Override
-	protected String getReportPath()
-	{
-		return "jrxml/sca-reports/TRANSFER_OUT_10_AUTO_STYLED_fixed_labeled_-_Copy_rowbased.jrxml";
-		
-	}
+        @Override
+        protected String getReportPath()
+        {
+                return "jrxml/sca-reports/TRANSFER_OUT_10.jrxml";
+
+        }
 	
 	@Override
 	public String getBaseName()

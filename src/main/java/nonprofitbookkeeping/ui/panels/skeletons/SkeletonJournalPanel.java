@@ -12,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -44,6 +45,8 @@ import java.util.List;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -186,6 +189,8 @@ public class SkeletonJournalPanel extends BorderPane
                 this.closeEditorButton = new Button("Close Workspace");
                 this.deleteEntryButton = new Button("Delete Entry");
                 this.closeEditorButton.setDisable(true);
+                this.closeEditorButton.setVisible(false);
+                this.closeEditorButton.setManaged(false);
 
                 this.editSelectedButton.disableProperty().bind(
                                 Bindings.isNull(this.journalDisplayTable.getSelectionModel().selectedItemProperty()));
@@ -536,18 +541,6 @@ public class SkeletonJournalPanel extends BorderPane
                 this.searchFilterField.selectAll();
         }
 
-        private void showEditor(BorderPane pane, String modeDescription)
-        {
-                this.editorActive = true;
-                this.closeEditorButton.setDisable(false);
-                pane.prefWidthProperty().bind(this.editorHost.widthProperty());
-                pane.maxWidthProperty().bind(this.editorHost.widthProperty());
-                pane.prefHeightProperty().bind(this.editorHost.heightProperty());
-                pane.maxHeightProperty().bind(this.editorHost.heightProperty());
-                this.editorHost.getChildren().setAll(pane);
-                this.editorModeLabel.setText(modeDescription);
-        }
-
         private void showPreview()
         {
                 this.editorHost.getChildren().setAll(this.previewContainer);
@@ -572,12 +565,12 @@ public class SkeletonJournalPanel extends BorderPane
                 if (entry == null)
                 {
                         this.previewInstructionLabel.setText(
-                                        "Select a journal entry to see its details or choose \"Create Transaction\" to begin a new one.");
+                                        "Select a journal entry to see its details or choose \"Create Transaction\" to open the editor window.");
                 }
                 else
                 {
                         this.previewInstructionLabel
-                                        .setText("Use the workspace to edit this transaction or create a new one.");
+                                        .setText("Use the buttons above to open this transaction in the editor window.");
                 }
 
                 this.previewDateLabel.setText("Date: " + withPlaceholder(entry == null ? null : entry.getDate()));
@@ -822,6 +815,18 @@ public class SkeletonJournalPanel extends BorderPane
                 }
 
                 Journal journal = company.getLedger().getJournal();
+                Stage ownerStage = getScene() != null ? (Stage) getScene().getWindow() : null;
+                Stage dialog = new Stage();
+
+                if (ownerStage != null)
+                {
+                        dialog.initOwner(ownerStage);
+                }
+
+                dialog.initModality(Modality.APPLICATION_MODAL);
+
+                String modeDescription = (existing == null) ? "Create Journal Entry" : "Edit Journal Entry";
+                dialog.setTitle(modeDescription);
 
                 GeneralJournalEntryPanelFX editorPane;
 
@@ -830,17 +835,28 @@ public class SkeletonJournalPanel extends BorderPane
                         editorPane = new GeneralJournalEntryPanelFX(tx -> {
                                 journal.addTransaction(tx);
                                 handlePersistAndRefresh(tx);
+                                dialog.close();
                         });
-                        showEditor(editorPane, "Creating transaction");
                 }
                 else
                 {
                         editorPane = new GeneralJournalEntryPanelFX(existing, tx -> {
                                 journal.updateTransaction(tx);
                                 handlePersistAndRefresh(tx);
+                                dialog.close();
                         });
-                        showEditor(editorPane, "Editing transaction");
                 }
+
+                Scene scene = new Scene(editorPane, 900, 600);
+
+                if (ownerStage != null && ownerStage.getScene() != null)
+                {
+                        scene.getStylesheets().addAll(ownerStage.getScene().getStylesheets());
+                }
+
+                dialog.setScene(scene);
+                dialog.setResizable(true);
+                dialog.showAndWait();
 
         }
 	
