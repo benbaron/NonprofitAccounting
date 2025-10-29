@@ -19,10 +19,10 @@ public final class FormatUtils
 	private static String patternOverride;
 	private static final Object FORMAT_LOCK = new Object();
 	private static Locale locale = Locale.getDefault();
-	private static DecimalFormatSymbols symbols =
-		DecimalFormatSymbols.getInstance(locale);
-	private static String currencyCode = resolveDefaultCurrency(locale);
-        private static DecimalFormat formatter = createFormatter(resolveActivePattern());
+        private static DecimalFormatSymbols symbols =
+                DecimalFormatSymbols.getInstance(locale);
+        private static String currencyCode = resolveDefaultCurrency(locale);
+        private static DecimalFormat formatter = createFormatter();
 	
 	private FormatUtils()
 	{
@@ -77,7 +77,7 @@ public final class FormatUtils
 		{
 			patternOverride = (newPattern == null || newPattern.isBlank()) ?
 				null : newPattern;
-			formatter = createFormatter();
+                        formatter = createFormatter();
 		}
 		
 	}
@@ -117,13 +117,11 @@ public final class FormatUtils
 			return;
 		}
 		
-                synchronized (FORMAT_LOCK)
-                {
-                        locale = newLocale;
-                        symbols = DecimalFormatSymbols.getInstance(locale);
-                        currencyCode = resolveDefaultCurrency(locale);
+		synchronized (FORMAT_LOCK)
+		{
+			locale = newLocale;
                         formatter = createFormatter();
-                }
+		}
 		
 	}
 	
@@ -169,9 +167,9 @@ public final class FormatUtils
 			}
 			
                         formatter = createFormatter();
-                }
-
-        }
+		}
+		
+	}
 	
 	/**
 	 * Parses the provided text using the active currency pattern, falling back to
@@ -238,50 +236,56 @@ public final class FormatUtils
 		
 	}
 	
-        private static DecimalFormat createFormatter(String pattern)
-        {
-                DecimalFormat format = new DecimalFormat(pattern, symbols);
-                format.setParseBigDecimal(true);
-
-                if (currencyCode != null)
-                {
-
-                        try
-                        {
-                                format.setCurrency(Currency.getInstance(currencyCode));
-                        }
-                        catch (IllegalArgumentException ex)
-                        {
-                                // keep existing currency configuration
-                        }
-
-                }
-
-                return format;
-
-        }
-
         private static DecimalFormat createFormatter()
         {
-                return createFormatter(resolveActivePattern());
+                return createFormatter(patternOverride);
         }
 
-        private static String resolveActivePattern()
+        private static DecimalFormat createFormatter(String requestedPattern)
         {
-                if (patternOverride != null && !patternOverride.isBlank())
+                DecimalFormatSymbols localSymbols = DecimalFormatSymbols.getInstance(locale);
+                symbols = localSymbols;
+                String patternToUse = requestedPattern;
+
+                if (patternToUse == null || patternToUse.isBlank())
                 {
-                        return patternOverride;
+                        NumberFormat numberFormat = NumberFormat.getCurrencyInstance(locale);
+
+                        if (numberFormat instanceof DecimalFormat decimalFormat)
+                        {
+                                patternToUse = decimalFormat.toPattern();
+                        }
+                        else
+                        {
+                                patternToUse = "¤#,##0.00";
+                        }
                 }
 
-                DecimalFormat currencyInstance =
-                        (DecimalFormat) NumberFormat.getCurrencyInstance(locale);
-                return currencyInstance.toPattern();
-        }
-
-        private static BigDecimal parseWithFormatter(String text)
-        {
-
-                synchronized (FORMAT_LOCK)
+                DecimalFormat format = new DecimalFormat(patternToUse, localSymbols);
+		format.setParseBigDecimal(true);
+		
+		if (currencyCode != null)
+		{
+			
+			try
+			{
+				format.setCurrency(Currency.getInstance(currencyCode));
+			}
+			catch (IllegalArgumentException ex)
+			{
+				// keep existing currency configuration
+			}
+			
+		}
+		
+		return format;
+		
+	}
+	
+	private static BigDecimal parseWithFormatter(String text)
+	{
+		
+		synchronized (FORMAT_LOCK)
 		{
 			ParsePosition position = new ParsePosition(0);
 			Number number = formatter.parse(text, position);

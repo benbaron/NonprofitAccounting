@@ -134,11 +134,11 @@ public abstract class AbstractReportGenerator
                 List<?> data = resolveReportData();
                 JRBeanCollectionDataSource dataSource =
                         new JRBeanCollectionDataSource(data);
-		Map<String, Object> params =
-			ensureMutableParameters(getReportParameters());
-		return JasperFillManager.fillReport(report, params, dataSource);
-		
-	}
+                Map<String, Object> params =
+                        ensureMutableParameters(getReportParameters());
+                return JasperFillManager.fillReport(report, params, dataSource);
+
+        }
 	
 	
 	/**
@@ -282,9 +282,9 @@ public abstract class AbstractReportGenerator
 	}
 	
 	
-	/**
-	 * @param beans
-	 */
+        /**
+         * @param beans
+         */
         public void setReportData(List<?> beans)
         {
                 if (beans == null)
@@ -299,26 +299,25 @@ public abstract class AbstractReportGenerator
         }
 
         /**
-         * Resolves the effective data beans to use for reporting, combining
-         * subclass-supplied data with any explicitly provided list.
+         * Resolves the data beans that should populate the report.
          *
-         * @return immutable list of data beans, never {@code null}.
+         * @return unmodifiable list of beans, never {@code null}.
          */
-        protected List<?> resolveReportData()
+        protected final List<?> resolveReportData()
         {
-                List<?> data = this.reportDataProvided ? this.reportData : getReportData();
+                if (this.reportDataProvided)
+                {
+                        return this.reportData;
+                }
 
-                if (data == null)
+                List<?> generated = getReportData();
+
+                if (generated == null)
                 {
                         return Collections.emptyList();
                 }
 
-                if (this.reportDataProvided)
-                {
-                        return data;
-                }
-
-                return Collections.unmodifiableList(new ArrayList<>(data));
+                return Collections.unmodifiableList(new ArrayList<>(generated));
         }
-	
+
 }
