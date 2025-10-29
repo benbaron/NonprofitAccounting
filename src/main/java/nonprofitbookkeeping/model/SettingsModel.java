@@ -88,8 +88,8 @@ public class SettingsModel
 	 * Represents a user account within the settings model.
 	 * Stores username and role.
 	 */
-	public static class User
-	{
+        public static class User
+        {
 		/** The username for the user account. */
 		private String username;
 		/** The role assigned to the user (e.g., "Admin", "User"). */
@@ -600,19 +600,49 @@ public class SettingsModel
 	 * Gets the UI language code.
 	 * @return The language code (e.g., "en_US").
 	 */
-	public String getLanguage()
-	{
-		return this.language;
-	}
-	
+        public String getLanguage()
+        {
+                return this.language;
+        }
+
 	/**
 	 * Sets the UI language code.
 	 * @param language The language code to set (e.g., "en_US").
 	 */
-        public void setLanguage(String language)
-        {
-                this.language = language;
-        }
+       public void setLanguage(String language)
+       {
+               this.language = language;
+       }
+
+       /**
+        * Resolves the locale used for currency formatting preferences.
+        *
+        * @return configured {@link Locale}, or the system default when unspecified.
+        */
+       public Locale getCurrencyLocale()
+       {
+               if (this.currencyLocaleTag != null && !this.currencyLocaleTag.isBlank())
+               {
+                       return Locale.forLanguageTag(this.currencyLocaleTag.replace('_', '-'));
+               }
+
+               if (this.language != null && !this.language.isBlank())
+               {
+                       return Locale.forLanguageTag(this.language.replace('_', '-'));
+               }
+
+               return Locale.getDefault();
+       }
+
+       /**
+        * Updates the locale preference for currency formatting.
+        *
+        * @param locale {@link Locale} to persist; {@code null} clears the preference.
+        */
+       public void setCurrencyLocale(Locale locale)
+       {
+               this.currencyLocaleTag = (locale == null) ? null : locale.toLanguageTag();
+       }
 
        /**
         * Resolves the locale to use for currency formatting.

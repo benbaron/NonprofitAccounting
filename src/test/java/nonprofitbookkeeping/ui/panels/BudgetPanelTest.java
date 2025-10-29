@@ -14,7 +14,6 @@ import java.nio.file.Files;
 import java.util.List;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
