@@ -169,7 +169,6 @@ public class JacksonDataStorer implements DataStorer
 
                                                         componentFound = true;
                                                 }
-
                                                 zis.closeEntry();
                                         }
 
@@ -378,6 +377,24 @@ public class JacksonDataStorer implements DataStorer
                                 (signature[2] == 0x03 || signature[2] == 0x05 || signature[2] == 0x07) &&
                                 (signature[3] == 0x04 || signature[3] == 0x06 || signature[3] == 0x08);
                 }
+        }
+
+        private void writeEntry(ZipOutputStream zos,
+                                 ByteArrayOutputStream baos,
+                                 String entryName,
+                                 Object value) throws IOException
+        {
+                if (value == null)
+                {
+                        return;
+                }
+
+                baos.reset();
+                this.mapper.writeValue(baos, value);
+                ZipEntry entry = new ZipEntry(entryName);
+                zos.putNextEntry(entry);
+                zos.write(baos.toByteArray());
+                zos.closeEntry();
         }
 
 }

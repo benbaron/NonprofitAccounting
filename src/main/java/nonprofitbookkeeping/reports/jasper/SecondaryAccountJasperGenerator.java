@@ -14,12 +14,12 @@ public class SecondaryAccountJasperGenerator extends AbstractReportGenerator
 		
 	}
 	
-	@Override
-	protected String getReportPath()
-	{
-                return "jrxml/sca-reports/SECONDARY_ACCOUNT_2B_fixed_labeled.jrxml";
-		
-	}
+        @Override
+        protected String getReportPath()
+        {
+                return "jrxml/sca-reports/SECONDARY_ACCOUNTS_2b.jrxml";
+
+        }
 	
 	@Override
 	public String getBaseName()

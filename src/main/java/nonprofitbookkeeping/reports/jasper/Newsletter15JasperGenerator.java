@@ -14,12 +14,12 @@ public class Newsletter15JasperGenerator extends AbstractReportGenerator
 		
 	}
 	
-	@Override
-	protected String getReportPath()
-	{
-                return "jrxml/sca-reports/NEWSLETTER_15_AUTO_STYLED_fixed_labeled_-_Copy_rowbased.jrxml";
-		
-	}
+        @Override
+        protected String getReportPath()
+        {
+                return "jrxml/sca-reports/NEWSLETTER_15.jrxml";
+
+        }
 	
 	@Override
 	public String getBaseName()

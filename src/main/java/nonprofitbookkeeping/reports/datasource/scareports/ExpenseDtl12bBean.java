@@ -1,5 +1,4 @@
 package nonprofitbookkeeping.reports.datasource.scareports;
-import java.util.Date;
 
 /** Auto-generated bean for sheet 'EXPENSE_DTL_12b'. */
 public class ExpenseDtl12bBean {

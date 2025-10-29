@@ -16,12 +16,12 @@ public class PrimaryAccountReconciliationJasperGenerator
 		
 	}
 	
-	@Override
-	protected String getReportPath()
-	{
-		return "jrxml/sca-reports/PRIMARY_ACCOUNT_2a_fixed_labeled.jrxml";
-		
-	}
+        @Override
+        protected String getReportPath()
+        {
+                return "jrxml/sca-reports/PRIMARY_ACCOUNT_2a.jrxml";
+
+        }
 	
 	@Override
 	public String getBaseName()

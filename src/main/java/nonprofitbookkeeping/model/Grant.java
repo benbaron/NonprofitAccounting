@@ -25,7 +25,7 @@ public class Grant
 	/** The name of the organization or individual who awarded the grant. */
 	@JsonProperty String grantor = "";
 	/** The monetary amount of the grant. */
-	@JsonProperty BigDecimal amount = new BigDecimal(0);
+        @JsonProperty BigDecimal amount = BigDecimal.ZERO;
 	/** The date when the grant was awarded, typically in a string format (e.g., "YYYY-MM-DD"). */
 	@JsonProperty String dateAwarded= "";
 	/** The specific purpose or project for which the grant was awarded. */
@@ -34,18 +34,26 @@ public class Grant
 	@JsonProperty String status= "";
 	
 	
-	/**  
-	 * Constructs a new Grant with specified details.
-	 * @param grantId The unique identifier for the grant.
-	 * @param grantor The name of the grantor.
-	 * @param amount The monetary amount of the grant.
-	 * @param dateAwarded The date the grant was awarded.
-	 * @param purpose The purpose of the grant.
-	 * @param status The current status of the grant.
-	 */
-	public Grant(String grantId, String grantor, 
-	             BigDecimal amount, String dateAwarded,
-	             String purpose, String status)
+        /**
+         * Default constructor required for JSON deserialization frameworks.
+         */
+        public Grant()
+        {
+                // Jackson / JPA constructor
+        }
+
+        /**
+         * Constructs a new Grant with specified details.
+         * @param grantId The unique identifier for the grant.
+         * @param grantor The name of the grantor.
+         * @param amount The monetary amount of the grant.
+         * @param dateAwarded The date the grant was awarded.
+         * @param purpose The purpose of the grant.
+         * @param status The current status of the grant.
+         */
+        public Grant(String grantId, String grantor,
+                     BigDecimal amount, String dateAwarded,
+                     String purpose, String status)
 	{
 		this.grantId = grantId;
 		this.grantor = grantor;

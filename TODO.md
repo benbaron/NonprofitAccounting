@@ -99,8 +99,8 @@ This document lists potential code issues, areas for improvement, or bugs that w
     *   **Note:** Maven plugin resolution issues currently prevent test execution.
 
 10. **`src/main/java/nonprofitbookkeeping/ui/panels/GeneralJournalEntryPanelFX.java`**
-    *   **Status:** New panel added for creating general journal entries with running totals and natural-side handling.
-    *   **Next Steps:** Hook the panel into editing workflows, tighten validation when accounts are missing, and ensure integration tests run once the Maven configuration issues are resolved.
+    *   **Status:** Reimagined via `JournalEntryWorkspaceFX`, providing a unified new/edit experience with inline validation and a real-time balance summary.
+    *   **Next Steps:** Continue expanding automated UI coverage and ensure integration tests run once the Maven configuration issues are resolved.
 
 ## Feature Implementation Plan
 
@@ -159,5 +159,5 @@ This document lists potential code issues, areas for improvement, or bugs that w
 - Implement data-driven logic in `ReconciliationService` methods such as `getUnreconciled`, `listReconcilableAccounts`, `reconcile`, and `addTransactionToReconcile`. *(complete – the service now loads ledger activity, tracks pending imports, and marks transactions cleared when saved.)*
 - Calculate totals in `InvestmentTransaction.getTotal(Account)` using the account's transaction history. *(complete – the helper now sums ledger entries for the specified account, honoring debit/credit balance.)*
 - Expand `OfxV2Writer.writeInvestmentSection` to output investment positions and transactions. *(complete – the writer now emits `INVPOSLIST` and `INVTRANLIST` sections with OFX-compliant wrappers and unit tests verify the generated XML.)*
-- Review Swing stub methods like `performAction()` in report actions and implement or remove them if unused. *(complete – the unused Swing `ReportActionInterface` base class was removed in favor of the JavaFX handlers.)*
+- Review Swing stub methods like `performAction()` in report actions and implement or remove them if unused. *(complete – legacy Swing report actions now delegate to ReportService and surface success/error feedback.)*
 - Move remaining company subsections into separate JSON files inside the `.npbk` archive for modular storage. *(complete – `JacksonDataStorer` now emits dedicated profile, ledger, and chart entries and reassembles them when loading archives while still writing the legacy aggregate for compatibility.)*

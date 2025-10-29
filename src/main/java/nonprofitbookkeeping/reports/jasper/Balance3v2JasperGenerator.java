@@ -20,12 +20,12 @@ public class Balance3v2JasperGenerator extends AbstractReportGenerator
 		
 	}
 	
-	@Override
-	protected String getReportPath()
-	{
-		return "jrxml/sca-reports/BALANCE_3_FIXED_SEMANTIC_STRINGS_v2.jrxml";
-		
-	}
+        @Override
+        protected String getReportPath()
+        {
+                return "jrxml/sca-reports/BALANCE_3.jrxml";
+
+        }
 	
 	@Override
 	public String getBaseName()
