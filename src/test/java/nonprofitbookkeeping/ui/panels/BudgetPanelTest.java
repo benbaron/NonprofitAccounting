@@ -226,4 +226,47 @@ public class BudgetPanelTest {
         assertSame(line, budget.getBudgetLines().get(0));
         assertEquals(new BigDecimal("125"), line.getTotalBudgetedAmount());
     }
+
+    @Test
+    public void testEditBudgetLineInPlaceInstance() throws Exception {
+        ChartOfAccounts coa = new ChartOfAccounts();
+        Account acc = new Account();
+        acc.setAccountNumber("A1");
+        acc.setName("Cash");
+        coa.addAccount(acc);
+
+        Fund fund = new Fund("General");
+        BudgetService svc = new BudgetService();
+        File dir = Files.createTempDirectory("budtest3").toFile();
+
+        Budget initialBudget = new Budget("B", 2026);
+        BudgetLine line = new BudgetLine();
+        line.setAccountId("A1");
+        line.setAccountName("Cash");
+        line.setTotalBudgetedAmount(new BigDecimal("40"));
+        line.setPeriodicity(Periodicity.ANNUAL);
+        initialBudget.setBudgetLines(new java.util.ArrayList<>(List.of(line)));
+
+        TestBudgetPanel panel = new TestBudgetPanel(coa, List.of(fund), svc, dir, initialBudget);
+
+        Field tableField = BudgetPanel.class.getDeclaredField("tblBudgetLines");
+        tableField.setAccessible(true);
+        JTable table = (JTable) tableField.get(panel);
+        table.getSelectionModel().setSelectionInterval(0,0);
+
+        MutatingStubBudgetLineDialog dlg = new MutatingStubBudgetLineDialog(line, coa,
+                () -> line.setTotalBudgetedAmount(new BigDecimal("95")));
+        panel.setStub(dlg);
+
+        Method edit = BudgetPanel.class.getDeclaredMethod("actionEditLine", ActionEvent.class);
+        edit.setAccessible(true);
+        edit.invoke(panel, new ActionEvent(panel, ActionEvent.ACTION_PERFORMED, "edit"));
+
+        Field modelField = BudgetPanel.class.getDeclaredField("budgetLineTableModel");
+        modelField.setAccessible(true);
+        BudgetLineTableModel model = (BudgetLineTableModel) modelField.get(panel);
+
+        assertSame(line, model.getBudgetLines().get(0));
+        assertEquals(new BigDecimal("95"), model.getBudgetLines().get(0).getTotalBudgetedAmount());
+    }
 }
