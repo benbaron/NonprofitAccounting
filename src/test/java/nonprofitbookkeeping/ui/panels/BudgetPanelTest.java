@@ -14,7 +14,6 @@ import java.nio.file.Files;
 import java.util.List;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -48,13 +47,14 @@ public class BudgetPanelTest {
         private final Runnable mutation;
 
         MutatingStubBudgetLineDialog(BudgetLine line) {
-            this(line, new ChartOfAccounts(), () -> line.setTotalBudgetedAmount(new BigDecimal("125")));
+            this(line, new ChartOfAccounts(), () ->
+                    line.setTotalBudgetedAmount(new BigDecimal("125")));
         }
 
         MutatingStubBudgetLineDialog(BudgetLine line, ChartOfAccounts coa, Runnable mutation) {
             super((Dialog) null, "Stub", coa, List.of(), line);
             this.line = line;
-            this.mutation = (mutation != null) ? mutation : () -> { };
+            this.mutation = (mutation == null) ? () -> { } : mutation;
         }
 
         @Override public void setVisible(boolean b) {

@@ -139,26 +139,6 @@ public abstract class AbstractReportGenerator
                 return JasperFillManager.fillReport(report, params, dataSource);
 
         }
-
-        /**
-         * Determines the collection of beans that should be supplied to Jasper when
-         * generating a report. When {@link #setReportData(List)} has been called the
-         * provided beans take precedence; otherwise subclasses can supply their own
-         * dynamically generated data via {@link #getReportData()}.
-         *
-         * @return the immutable list of beans to be used when populating the report
-         */
-        protected List<?> resolveReportData()
-        {
-                List<?> data = this.reportDataProvided ? this.reportData : getReportData();
-
-                if (data == null)
-                {
-                        return Collections.emptyList();
-                }
-
-                return data;
-        }
 	
 	
 	/**
@@ -302,9 +282,9 @@ public abstract class AbstractReportGenerator
 	}
 	
 	
-	/**
-	 * @param beans
-	 */
+        /**
+         * @param beans
+         */
         public void setReportData(List<?> beans)
         {
                 if (beans == null)
@@ -316,6 +296,28 @@ public abstract class AbstractReportGenerator
 
                 this.reportData = Collections.unmodifiableList(new ArrayList<>(beans));
                 this.reportDataProvided = true;
+        }
+
+        /**
+         * Resolves the data beans that should populate the report.
+         *
+         * @return unmodifiable list of beans, never {@code null}.
+         */
+        protected final List<?> resolveReportData()
+        {
+                if (this.reportDataProvided)
+                {
+                        return this.reportData;
+                }
+
+                List<?> generated = getReportData();
+
+                if (generated == null)
+                {
+                        return Collections.emptyList();
+                }
+
+                return Collections.unmodifiableList(new ArrayList<>(generated));
         }
 
 }

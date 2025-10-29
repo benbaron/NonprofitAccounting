@@ -16,13 +16,13 @@ import java.util.Locale;
 public final class FormatUtils
 {
 	/** Default currency pattern. */
-        private static String patternOverride;
-        private static final Object FORMAT_LOCK = new Object();
-        private static Locale locale = Locale.getDefault();
+	private static String patternOverride;
+	private static final Object FORMAT_LOCK = new Object();
+	private static Locale locale = Locale.getDefault();
         private static DecimalFormatSymbols symbols =
                 DecimalFormatSymbols.getInstance(locale);
         private static String currencyCode = resolveDefaultCurrency(locale);
-        private static DecimalFormat formatter = createFormatter(resolvePattern());
+        private static DecimalFormat formatter = createFormatter();
 	
 	private FormatUtils()
 	{
@@ -119,9 +119,7 @@ public final class FormatUtils
 		
 		synchronized (FORMAT_LOCK)
 		{
-                        locale = newLocale;
-                        symbols = DecimalFormatSymbols.getInstance(locale);
-                        currencyCode = resolveDefaultCurrency(locale);
+			locale = newLocale;
                         formatter = createFormatter();
 		}
 		
@@ -169,9 +167,9 @@ public final class FormatUtils
 			}
 			
                         formatter = createFormatter();
-                }
-
-        }
+		}
+		
+	}
 	
 	/**
 	 * Parses the provided text using the active currency pattern, falling back to
@@ -240,19 +238,32 @@ public final class FormatUtils
 	
         private static DecimalFormat createFormatter()
         {
-                return createFormatter(resolvePattern());
+                return createFormatter(patternOverride);
         }
 
-        private static DecimalFormat createFormatter(String pattern)
+        private static DecimalFormat createFormatter(String requestedPattern)
         {
-                if (pattern == null || pattern.isBlank())
+                DecimalFormatSymbols localSymbols = DecimalFormatSymbols.getInstance(locale);
+                symbols = localSymbols;
+                String patternToUse = requestedPattern;
+
+                if (patternToUse == null || patternToUse.isBlank())
                 {
-                        pattern = resolvePattern();
+                        NumberFormat numberFormat = NumberFormat.getCurrencyInstance(locale);
+
+                        if (numberFormat instanceof DecimalFormat decimalFormat)
+                        {
+                                patternToUse = decimalFormat.toPattern();
+                        }
+                        else
+                        {
+                                patternToUse = "¤#,##0.00";
+                        }
                 }
 
-                DecimalFormat format = new DecimalFormat(pattern, symbols);
-                format.setParseBigDecimal(true);
-
+                DecimalFormat format = new DecimalFormat(patternToUse, localSymbols);
+		format.setParseBigDecimal(true);
+		
 		if (currencyCode != null)
 		{
 			
