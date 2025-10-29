@@ -131,14 +131,14 @@ public abstract class AbstractReportGenerator
 			throw e;
 		}
 		
-                List<?> data = this.reportDataProvided ? this.reportData : getReportData();
+                List<?> data = resolveReportData();
                 JRBeanCollectionDataSource dataSource =
                         new JRBeanCollectionDataSource(data);
-		Map<String, Object> params =
-			ensureMutableParameters(getReportParameters());
-		return JasperFillManager.fillReport(report, params, dataSource);
-		
-	}
+                Map<String, Object> params =
+                        ensureMutableParameters(getReportParameters());
+                return JasperFillManager.fillReport(report, params, dataSource);
+
+        }
 	
 	
 	/**
@@ -296,6 +296,28 @@ public abstract class AbstractReportGenerator
 
                 this.reportData = Collections.unmodifiableList(new ArrayList<>(beans));
                 this.reportDataProvided = true;
+        }
+
+        /**
+         * Resolves the data collection to use for report generation.
+         *
+         * @return an immutable view of the data beans powering the report.
+         */
+        protected List<?> resolveReportData()
+        {
+                List<?> data = this.reportDataProvided ? this.reportData : getReportData();
+
+                if (data == null)
+                {
+                        return Collections.emptyList();
+                }
+
+                if (this.reportDataProvided)
+                {
+                        return data;
+                }
+
+                return Collections.unmodifiableList(new ArrayList<>(data));
         }
 	
 }
