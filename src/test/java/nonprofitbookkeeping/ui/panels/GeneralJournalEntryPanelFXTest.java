@@ -5,7 +5,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.model.*;
 import nonprofitbookkeeping.ui.JavaFXTestBase;
-import nonprofitbookkeeping.ui.panels.JournalEntryWorkspaceFX;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;

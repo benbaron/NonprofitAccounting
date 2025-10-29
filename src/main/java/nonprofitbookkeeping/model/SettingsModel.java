@@ -67,16 +67,14 @@ public class SettingsModel
        // Application behaviour
        /** Flag indicating whether background autosave is enabled. */
        @JsonProperty private boolean autosaveEnabled = true;
-       /** Interval, in minutes, between background autosave executions. */
-       @JsonProperty private int autosaveIntervalMinutes = 5;
+
+
        /** User-selected default directory for company data. */
        @JsonProperty private String defaultCompanyDirectory;
        /** Path to the most recently used company file. */
        @JsonProperty private String lastUsedCompanyFile;
 
        // Reporting preferences
-       /** Default report period selection applied across dashboards. */
-       @JsonProperty private String defaultReportPeriod = ReportPeriodPreset.YEAR_TO_DATE.name();
        /** Whether the Year-To-Date period should be offered in report pickers. */
        @JsonProperty private boolean enableYearToDateOption = true;
        /** Whether the current fiscal year option should be available. */

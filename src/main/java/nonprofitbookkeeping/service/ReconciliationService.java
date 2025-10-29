@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,7 +15,6 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import nonprofitbookkeeping.model.Account;
-import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountType;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;

@@ -379,22 +379,5 @@ public class JacksonDataStorer implements DataStorer
                 }
         }
 
-        private void writeEntry(ZipOutputStream zos,
-                                 ByteArrayOutputStream baos,
-                                 String entryName,
-                                 Object value) throws IOException
-        {
-                if (value == null)
-                {
-                        return;
-                }
-
-                baos.reset();
-                this.mapper.writeValue(baos, value);
-                ZipEntry entry = new ZipEntry(entryName);
-                zos.putNextEntry(entry);
-                zos.write(baos.toByteArray());
-                zos.closeEntry();
-        }
 
 }

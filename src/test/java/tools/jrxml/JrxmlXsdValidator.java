@@ -263,12 +263,6 @@ public class JrxmlXsdValidator
 		
 	}
 	
-	private static String localName(Node n)
-	{
-		String ln = n.getLocalName();
-		return (ln != null) ? ln : n.getNodeName();
-		
-	}
 	
 	// ---------------- DOM Parse / Write ----------------
 	

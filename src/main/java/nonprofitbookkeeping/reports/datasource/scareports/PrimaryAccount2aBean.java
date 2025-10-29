@@ -1,6 +1,5 @@
 package nonprofitbookkeeping.reports.datasource.scareports;
 
-import java.util.Date;
 
 /** Auto-generated bean for sheet 'PRIMARY_ACCOUNT_2a'. */
 public class PrimaryAccount2aBean {

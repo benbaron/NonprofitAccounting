@@ -11,7 +11,6 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -770,6 +770,8 @@ public class JrxmlValidator
 				case "--normalize-bandless":
 					m.put("normalize-bandless", "true");
 					break;
+				default:
+					break;
 			}
 			
 		}

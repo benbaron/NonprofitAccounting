@@ -1,7 +1,6 @@
 
 package nonprofitbookkeeping.ui.panels;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.MonthDay;
@@ -11,11 +10,8 @@ import java.util.Objects;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 import nonprofitbookkeeping.util.FormatUtils;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -30,7 +26,6 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 
-import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
@@ -40,9 +35,6 @@ import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
-import nonprofitbookkeeping.model.SettingsModel;
-import nonprofitbookkeeping.model.SettingsModel.DefaultReportPeriod;
-import nonprofitbookkeeping.service.SettingsService;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.model.ReportPeriodPreset;
 
@@ -55,12 +47,13 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
  */
 public class AccountTransactionDetailsPanelFX extends BorderPane
 {
-        private static final Logger LOGGER = Logger.getLogger(AccountTransactionDetailsPanelFX.class.getName());
-        /** ComboBox for selecting the account whose transactions are to be displayed. */
-        private ComboBox<Account> accountSelectorComboBox;
-        /** DatePicker for selecting the start date of the transaction period. */
-        private DatePicker startDatePicker;
-        /** DatePicker for selecting the end date of the transaction period. */
+	private static final Logger LOGGER =
+		Logger.getLogger(AccountTransactionDetailsPanelFX.class.getName());
+	/** ComboBox for selecting the account whose transactions are to be displayed. */
+	private ComboBox<Account> accountSelectorComboBox;
+	/** DatePicker for selecting the start date of the transaction period. */
+	private DatePicker startDatePicker;
+	/** DatePicker for selecting the end date of the transaction period. */
 	private DatePicker endDatePicker;
 	/** Button to trigger loading of transactions based on selected criteria. */
 	private Button loadTransactionsButton;
@@ -394,6 +387,8 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 			this.accountSelectorComboBox.setPromptText("Select Account");
 		}
 		
+	}
+	
 	
 	/**
 	 * Loads transaction data into the {@link #transactionsTable} based on the
