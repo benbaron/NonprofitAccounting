@@ -2,22 +2,32 @@ package nonprofitbookkeeping.util;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.Objects;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 /**
  * Utility class for formatting currency values across the UI. The format
  * pattern can be updated at runtime, typically loaded from user preferences.
  */
 public final class FormatUtils {
-    /** Default currency pattern. */
+    /** Default currency pattern used when none has been customised. */
     private static final String DEFAULT_PATTERN = "$#,##0.00";
-    /** Guard for updating global formatter state. */
-    private static final Object FORMAT_LOCK = new Object();
-    /** Active pattern used for new {@link DecimalFormat} instances. */
+
+    /**
+     * Tracks the active pattern so that callers can retrieve or override it. The
+     * field is {@code volatile} because it can be mutated from different UI
+     * threads (Swing and JavaFX) in the application.
+     */
     private static volatile String pattern = DEFAULT_PATTERN;
-    /** Thread-local formatter to avoid sharing {@link DecimalFormat} instances. */
-    private static ThreadLocal<DecimalFormat> formatter =
-            ThreadLocal.withInitial(() -> createFormatter(DEFAULT_PATTERN));
+
+    /**
+     * Thread-safe container for {@link DecimalFormat} instances. {@link
+     * DecimalFormat} is mutable and not thread-safe, so a {@link ThreadLocal}
+     * keeps per-thread formatters while still honouring runtime changes to the
+     * pattern.
+     */
+    private static final ThreadLocal<DecimalFormat> FORMATTER =
+            ThreadLocal.withInitial(FormatUtils::createFormatter);
 
     private FormatUtils() {}
 
@@ -31,7 +41,7 @@ public final class FormatUtils {
         if (value == null) {
             return "";
         }
-        return formatter.get().format(value);
+        return FORMATTER.get().format(value);
     }
 
     /**
@@ -41,15 +51,12 @@ public final class FormatUtils {
      * @param newPattern DecimalFormat pattern string
      */
     public static void setCurrencyFormat(String newPattern) {
-        synchronized (FORMAT_LOCK) {
-            String updated = (newPattern == null || newPattern.isBlank()) ? DEFAULT_PATTERN : newPattern;
-            if (!Objects.equals(pattern, updated)) {
-                pattern = updated;
-                formatter = ThreadLocal.withInitial(() -> createFormatter(pattern));
-            } else {
-                pattern = updated;
-            }
+        if (newPattern == null || newPattern.isBlank()) {
+            return;
         }
+
+        pattern = newPattern;
+        FORMATTER.set(createFormatter(pattern));
     }
 
     /**
@@ -62,26 +69,37 @@ public final class FormatUtils {
     }
 
     /**
-     * Creates a {@link DecimalFormat} instance using the active pattern.
+     * Creates a {@link DecimalFormat} for the supplied pattern using default
+     * currency symbols for the active locale.
      *
-     * @return a formatter configured with the current pattern
+     * @param patternToApply pattern describing how currency should be rendered
+     * @return configured {@link DecimalFormat}
+     */
+    public static DecimalFormat createFormatter(String patternToApply) {
+        String resolvedPattern = (patternToApply == null || patternToApply.isBlank())
+                ? DEFAULT_PATTERN
+                : patternToApply;
+
+        DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(Locale.getDefault());
+        DecimalFormat decimalFormat = new DecimalFormat(resolvedPattern, symbols);
+        decimalFormat.setParseBigDecimal(true);
+        return decimalFormat;
+    }
+
+    /**
+     * Convenience overload that uses the currently configured pattern.
+     *
+     * @return formatter bound to the active currency pattern
      */
     public static DecimalFormat createFormatter() {
         return createFormatter(pattern);
     }
 
     /**
-     * Creates a {@link DecimalFormat} instance using the supplied pattern.
-     *
-     * @param customPattern custom pattern to apply; if blank the default pattern is used
-     * @return configured {@link DecimalFormat}
+     * Resets the cached formatter so that subsequent calls honour the latest
+     * locale defaults. Primarily intended for tests.
      */
-    public static DecimalFormat createFormatter(String customPattern) {
-        String effectivePattern = (customPattern == null || customPattern.isBlank())
-                ? DEFAULT_PATTERN
-                : customPattern;
-        DecimalFormat decimalFormat = new DecimalFormat(effectivePattern);
-        decimalFormat.setParseBigDecimal(true);
-        return decimalFormat;
+    static void resetFormatterCache() {
+        FORMATTER.remove();
     }
 }

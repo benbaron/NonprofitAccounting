@@ -46,10 +46,11 @@ public class BudgetLineDialog extends JDialog
 	
 	/** The {@link ChartOfAccounts} used to populate the account selector. */
 	private ChartOfAccounts chartOfAccounts;
-	/** A list of available {@link Fund}s to populate the fund selector. */
-	private List<Fund> availableFunds;
-	/** Callback invoked when the budget line is successfully mutated. */
-	private Runnable onBudgetLineChange = () -> {};
+        /** A list of available {@link Fund}s to populate the fund selector. */
+        private List<Fund> availableFunds;
+
+        /** Callback invoked after a successful save. */
+        private final Runnable onSaveCallback;
 	
 	/**
 	 * Wrapper class for displaying {@link Account} objects in a JComboBox.
@@ -212,39 +213,35 @@ public class BudgetLineDialog extends JDialog
 		
 	}
 	
-        /**
-         * Constructs a {@code BudgetLineDialog}.
-         *
-         * @param owner The parent {@link Dialog} that owns this dialog.
-         * @param title The title of the dialog window.
-         * @param coa The {@link ChartOfAccounts} used to populate the account selection ComboBox.
-         * @param funds A list of available {@link Fund}s to populate the fund selection ComboBox. Can be null or empty.
-         * @param existingLine The {@link BudgetLine} to edit. If null, the dialog is configured for creating a new budget line.
-         */
+	/**
+	 * Constructs a {@code BudgetLineDialog}.
+	 *
+	 * @param owner The parent {@link Dialog} that owns this dialog.
+	 * @param title The title of the dialog window.
+	 * @param coa The {@link ChartOfAccounts} used to populate the account selection ComboBox.
+	 * @param funds A list of available {@link Fund}s to populate the fund selection ComboBox. Can be null or empty.
+	 * @param existingLine The {@link BudgetLine} to edit. If null, the dialog is configured for creating a new budget line.
+	 */
         public BudgetLineDialog(Dialog owner, String title, ChartOfAccounts coa, List<Fund> funds,
                 BudgetLine existingLine)
         {
-                this(owner, title, coa, funds, existingLine, () -> {});
+                this(owner, title, coa, funds, existingLine, null);
         }
 
         /**
-         * Fully configurable constructor that also accepts a callback to run after the dialog saves successfully.
-         *
-         * @param owner The parent dialog that owns this dialog.
-         * @param title The dialog title.
-         * @param coa Chart of accounts used to populate selections.
-         * @param funds Available funds for selection.
-         * @param existingLine Existing budget line being edited, or null for a new one.
-         * @param onBudgetLineChange callback invoked when the budget line is saved.
+         * Constructs a {@code BudgetLineDialog} with an optional callback executed
+         * after the dialog saves successfully.
          */
         public BudgetLineDialog(Dialog owner, String title, ChartOfAccounts coa, List<Fund> funds,
-                BudgetLine existingLine, Runnable onBudgetLineChange)
+                BudgetLine existingLine, Runnable saveCallback)
         {
                 super(owner, title, true); // Modal dialog
                 this.chartOfAccounts = Objects.requireNonNull(coa, "ChartOfAccounts cannot be null.");
                 this.availableFunds = funds != null ? funds : List.of(); // Ensure non-null list
-                this.budgetLine = (existingLine != null) ? existingLine : new BudgetLine(); // Use existing or create new
-                this.onBudgetLineChange = onBudgetLineChange != null ? onBudgetLineChange : () -> {};
+                this.budgetLine = (existingLine != null) ? existingLine : new BudgetLine(); // Use existing
+                                                                                                                               // or create new
+                this.onSaveCallback = saveCallback != null ? saveCallback : () -> {
+                };
 
                 // Ensure a new budget line has a default periodicity if not set
                 if (this.budgetLine.getPeriodicity() == null)
@@ -263,15 +260,12 @@ public class BudgetLineDialog extends JDialog
         }
 
         /**
-         * Convenience constructor used primarily by tests where no parent dialog is needed.
-         *
-         * @param existingLine The line to edit or null for a new line.
-         * @param coa Chart of accounts that backs the dialog.
-         * @param onBudgetLineChange callback invoked when the line changes.
+         * Convenience constructor useful for tests where a parent dialog and funds
+         * list are not required.
          */
-        public BudgetLineDialog(BudgetLine existingLine, ChartOfAccounts coa, Runnable onBudgetLineChange)
+        protected BudgetLineDialog(BudgetLine existingLine, ChartOfAccounts coa, Runnable saveCallback)
         {
-                this(null, "Budget Line", coa, List.of(), existingLine, onBudgetLineChange);
+                this(null, "Budget Line", coa, List.of(), existingLine, saveCallback);
         }
 	
 	/**
@@ -510,17 +504,10 @@ public class BudgetLineDialog extends JDialog
 		// Note: periodicAmounts are not handled in this V1 dialog.
 		// They would need additional input fields based on periodicity.
 		
-		this.saved = true;
-
-		try
-		{
-			this.onBudgetLineChange.run();
-		}
-		finally
-		{
-			dispose(); // Close the dialog
-		}
-	}
+                this.saved = true;
+                this.onSaveCallback.run();
+                dispose(); // Close the dialog
+        }
 	
 	/**
 	 * Checks if the dialog was saved (i.e., the "OK" button was clicked and data was successfully saved).
