@@ -3,6 +3,7 @@ package nonprofitbookkeeping.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -24,8 +25,12 @@ import lombok.NoArgsConstructor;
 	@JsonProperty private String organizationName;
 	/** The start date of the fiscal year (e.g., "MM-DD"). */
 	@JsonProperty private String fiscalYearStart;
-	/** The default currency code used in the application (e.g., "USD"). */
-	@JsonProperty private String defaultCurrency;
+        /** The default currency code used in the application (e.g., "USD"). */
+        @JsonProperty private String defaultCurrency;
+        /** Directory where generated files should be stored by default. */
+        @JsonProperty private String defaultDirectory;
+        /** Path to the last opened company file. */
+        @JsonProperty private String lastOpenedFile;
 	
 	// User Accounts
 	/** A list of user accounts configured in the system. */
@@ -36,8 +41,10 @@ import lombok.NoArgsConstructor;
 	@JsonProperty private String defaultIncomeAccount;
 	/** The default account number or name for expense transactions. */
 	@JsonProperty private String defaultExpenseAccount;
-	/** Flag indicating whether vouchers/invoices should be auto-numbered. */
-	@JsonProperty private boolean autoNumberVouchers;
+        /** Flag indicating whether vouchers/invoices should be auto-numbered. */
+        @JsonProperty private boolean autoNumberVouchers;
+        /** Period that reports default to when opened. */
+        @JsonProperty private DefaultReportPeriod defaultReportPeriod = DefaultReportPeriod.MONTH_TO_DATE;
 	
 	// UI Preferences
         /** The name of the UI theme (e.g., "Dark", "Light"). */
@@ -46,6 +53,22 @@ import lombok.NoArgsConstructor;
         @JsonProperty private String language;
        /** Pattern used for formatting currency values (e.g., "$#,##0.00"). */
        @JsonProperty private String currencyFormat = "$#,##0.00";
+        /** Locale to use for currency formatting when none is specified. */
+        @JsonProperty private Locale currencyLocale = Locale.getDefault();
+
+        /**
+         * Enumeration describing the default period that should be selected in report dialogs.
+         */
+        public enum DefaultReportPeriod {
+                /** Use the current calendar month. */
+                MONTH_TO_DATE,
+                /** Use the current calendar quarter. */
+                QUARTER_TO_DATE,
+                /** Use the current fiscal year. */
+                YEAR_TO_DATE,
+                /** Use the previous fiscal year. */
+                PREVIOUS_YEAR
+        }
 	
 	/**
 	 * Represents a user account within the settings model.
@@ -159,10 +182,46 @@ import lombok.NoArgsConstructor;
 	 * Sets the default currency code.
 	 * @param currency The default currency code to set (e.g., "USD").
 	 */
-	public void setDefaultCurrency(String currency)
-	{
-		this.defaultCurrency = currency;
-	}
+        public void setDefaultCurrency(String currency)
+        {
+                this.defaultCurrency = currency;
+        }
+
+        /**
+         * Gets the default directory for file pickers and exports.
+         * @return default directory path or {@code null} if unset.
+         */
+        public String getDefaultDirectory()
+        {
+                return this.defaultDirectory;
+        }
+
+        /**
+         * Sets the default directory for file pickers and exports.
+         * @param defaultDirectory directory path to remember.
+         */
+        public void setDefaultDirectory(String defaultDirectory)
+        {
+                this.defaultDirectory = defaultDirectory;
+        }
+
+        /**
+         * Gets the last opened company file path.
+         * @return path to last opened file or {@code null}.
+         */
+        public String getLastOpenedFile()
+        {
+                return this.lastOpenedFile;
+        }
+
+        /**
+         * Records the path to the last opened company file.
+         * @param lastOpenedFile path to remember.
+         */
+        public void setLastOpenedFile(String lastOpenedFile)
+        {
+                this.lastOpenedFile = lastOpenedFile;
+        }
 	
 	/**
 	 * Gets the list of configured user accounts.
@@ -231,10 +290,28 @@ import lombok.NoArgsConstructor;
 	 * Sets whether auto-numbering for vouchers is enabled.
 	 * @param autoNumberVouchers {@code true} to enable, {@code false} to disable.
 	 */
-	public void setAutoNumberVouchers(boolean autoNumberVouchers)
-	{
-		this.autoNumberVouchers = autoNumberVouchers;
-	}
+        public void setAutoNumberVouchers(boolean autoNumberVouchers)
+        {
+                this.autoNumberVouchers = autoNumberVouchers;
+        }
+
+        /**
+         * Gets the default report period selection.
+         * @return configured default report period.
+         */
+        public DefaultReportPeriod getDefaultReportPeriod()
+        {
+                return this.defaultReportPeriod;
+        }
+
+        /**
+         * Sets the default report period selection.
+         * @param defaultReportPeriod report period preference to set.
+         */
+        public void setDefaultReportPeriod(DefaultReportPeriod defaultReportPeriod)
+        {
+                this.defaultReportPeriod = defaultReportPeriod;
+        }
 	
 	/**
 	 * Gets the UI theme name.
@@ -267,10 +344,10 @@ import lombok.NoArgsConstructor;
 	 * Sets the UI language code.
 	 * @param language The language code to set (e.g., "en_US").
 	 */
-        public void setLanguage(String language)
-        {
+       public void setLanguage(String language)
+       {
                 this.language = language;
-        }
+       }
 
        /**
         * Gets the currency format pattern.
@@ -290,6 +367,26 @@ import lombok.NoArgsConstructor;
        public void setCurrencyFormat(String currencyFormat)
        {
                this.currencyFormat = currencyFormat;
+       }
+
+       /**
+        * Returns the configured currency locale falling back to {@link Locale#getDefault()} if unset.
+        *
+        * @return preferred currency locale
+        */
+       public Locale getCurrencyLocale()
+       {
+               return this.currencyLocale == null ? Locale.getDefault() : this.currencyLocale;
+       }
+
+       /**
+        * Sets the preferred currency locale.
+        *
+        * @param currencyLocale locale to use when formatting currency
+        */
+       public void setCurrencyLocale(Locale currencyLocale)
+       {
+               this.currencyLocale = currencyLocale;
        }
 	
 }

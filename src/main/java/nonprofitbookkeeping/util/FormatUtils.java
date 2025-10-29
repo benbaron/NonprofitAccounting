@@ -10,7 +10,10 @@ import java.text.DecimalFormat;
 public final class FormatUtils {
     /** Default currency pattern. */
     private static String pattern = "$#,##0.00";
+    /** Cached formatter instance used as the template for clones. */
     private static DecimalFormat formatter = new DecimalFormat(pattern);
+    /** Synchronization guard for formatter updates. */
+    private static final Object LOCK = new Object();
 
     private FormatUtils() {}
 
@@ -24,7 +27,7 @@ public final class FormatUtils {
         if (value == null) {
             return "";
         }
-        return formatter.format(value);
+        return createFormatter().format(value);
     }
 
     /**
@@ -35,9 +38,38 @@ public final class FormatUtils {
      */
     public static void setCurrencyFormat(String newPattern) {
         if (newPattern != null && !newPattern.isEmpty()) {
-            pattern = newPattern;
-            formatter = new DecimalFormat(pattern);
+            synchronized (LOCK) {
+                pattern = newPattern;
+                formatter = new DecimalFormat(pattern);
+            }
         }
+    }
+
+    /**
+     * Creates a {@link DecimalFormat} instance using either the supplied pattern or,
+     * if the argument is {@code null} or blank, the currently configured pattern.
+     * The returned instance is a clone of the cached formatter which avoids
+     * concurrency issues with {@link DecimalFormat}'s mutable state.
+     *
+     * @param patternOverride optional pattern to apply
+     * @return a formatter configured with the resolved pattern
+     */
+    public static DecimalFormat createFormatter(String patternOverride) {
+        synchronized (LOCK) {
+            if (patternOverride != null && !patternOverride.isBlank()) {
+                return new DecimalFormat(patternOverride);
+            }
+            return (DecimalFormat) formatter.clone();
+        }
+    }
+
+    /**
+     * Creates a {@link DecimalFormat} using the currently configured pattern.
+     *
+     * @return formatter configured with the active currency pattern
+     */
+    public static DecimalFormat createFormatter() {
+        return createFormatter(null);
     }
 
     /**
@@ -46,6 +78,8 @@ public final class FormatUtils {
      * @return active pattern string
      */
     public static String getCurrencyFormat() {
-        return pattern;
+        synchronized (LOCK) {
+            return pattern;
+        }
     }
 }

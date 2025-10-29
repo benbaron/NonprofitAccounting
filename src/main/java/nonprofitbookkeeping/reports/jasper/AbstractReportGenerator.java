@@ -33,7 +33,8 @@ public abstract class AbstractReportGenerator
 	 * the data is prepared externally it can be injected here via
 	 * {@link #setReportData(List)}.
 	 */
-	private List<?> reportData = Collections.emptyList();
+        private List<?> reportData = Collections.emptyList();
+        private boolean reportDataInjected = false;
 	
 	/**
 	 * Retrieves the collection of data beans that will populate the report.
@@ -41,7 +42,19 @@ public abstract class AbstractReportGenerator
 	 * @return A {@link List} of objects (JavaBeans) to be used as the report's
 	 *         data source. The exact type depends on the specific report.
 	 */
-	protected abstract List<?> getReportData();
+        protected abstract List<?> getReportData();
+
+        /**
+         * Resolves the collection of data beans that will be supplied to JasperReports.
+         * If external data has been injected via {@link #setReportData(List)}, that data
+         * takes precedence. Otherwise this method delegates to {@link #getReportData()}.
+         *
+         * @return data beans ready for consumption by JasperReports
+         */
+        protected List<?> resolveReportData()
+        {
+                return this.reportDataInjected ? this.reportData : getReportData();
+        }
 	
 	
 	/**
@@ -129,8 +142,8 @@ public abstract class AbstractReportGenerator
 			throw e;
 		}
 		
-		JRBeanCollectionDataSource dataSource =
-			new JRBeanCollectionDataSource(getReportData());
+                JRBeanCollectionDataSource dataSource =
+                        new JRBeanCollectionDataSource(resolveReportData());
 		Map<String, Object> params =
 			ensureMutableParameters(getReportParameters());
 		return JasperFillManager.fillReport(report, params, dataSource);
@@ -282,10 +295,10 @@ public abstract class AbstractReportGenerator
 	/**
 	 * @param beans
 	 */
-	public void setReportData(List<?> beans)
-	{
-		
-		// TODO Auto-generated method stub
-	}
+        public void setReportData(List<?> beans)
+        {
+                this.reportData = (beans == null) ? Collections.emptyList() : beans;
+                this.reportDataInjected = (beans != null);
+        }
 	
 }
