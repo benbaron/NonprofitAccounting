@@ -282,9 +282,9 @@ public abstract class AbstractReportGenerator
 	}
 	
 	
-	/**
-	 * @param beans
-	 */
+        /**
+         * @param beans
+         */
         public void setReportData(List<?> beans)
         {
                 if (beans == null)
@@ -299,25 +299,25 @@ public abstract class AbstractReportGenerator
         }
 
         /**
-         * Resolves the data collection to use for report generation.
+         * Resolves the data beans that should populate the report.
          *
-         * @return an immutable view of the data beans powering the report.
+         * @return unmodifiable list of beans, never {@code null}.
          */
-        protected List<?> resolveReportData()
+        protected final List<?> resolveReportData()
         {
-                List<?> data = this.reportDataProvided ? this.reportData : getReportData();
+                if (this.reportDataProvided)
+                {
+                        return this.reportData;
+                }
 
-                if (data == null)
+                List<?> generated = getReportData();
+
+                if (generated == null)
                 {
                         return Collections.emptyList();
                 }
 
-                if (this.reportDataProvided)
-                {
-                        return data;
-                }
-
-                return Collections.unmodifiableList(new ArrayList<>(data));
+                return Collections.unmodifiableList(new ArrayList<>(generated));
         }
-	
+
 }
