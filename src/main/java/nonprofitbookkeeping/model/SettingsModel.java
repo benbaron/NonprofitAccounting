@@ -5,13 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import java.time.MonthDay;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import nonprofitbookkeeping.model.ReportPeriodPreset;
 
@@ -19,8 +13,6 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
  * Represents the application settings model.
  * This class encapsulates various configuration options including company information,
  * user accounts, accounting defaults, and UI preferences.
- * Lombok's {@code @Data}, {@code @AllArgsConstructor}, and {@code @NoArgsConstructor}
- * are used for boilerplate code generation.
  */
 public class SettingsModel
 {
@@ -32,7 +24,10 @@ public class SettingsModel
 	/** The default currency code used in the application (e.g., "USD"). */
 	@JsonProperty private String defaultCurrency;
 	
-	// User Accounts
+       // User Accounts
+       /** Configured application users. */
+       @JsonProperty private List<User> users = new ArrayList<>();
+
        // Accounting Settings
         /** The default account number or name for income transactions. */
         @JsonProperty private String defaultIncomeAccount;
@@ -61,6 +56,8 @@ public class SettingsModel
         @JsonProperty private String theme;
         /** The language code for UI localization (e.g., "en_US", "fr_FR"). */
         @JsonProperty private String language;
+       /** BCP 47 tag representing the locale used for currency formatting. */
+       @JsonProperty private String currencyLocale;
        /** Pattern used for formatting currency values (e.g., "$#,##0.00"). */
        @JsonProperty private String currencyFormat = "$#,##0.00";
        /** Locale tag (IETF BCP 47) used for currency formatting. */
@@ -188,6 +185,46 @@ public class SettingsModel
         public void setAutosaveIntervalMinutes(int autosaveIntervalMinutes)
         {
                 this.autosaveIntervalMinutes = autosaveIntervalMinutes;
+        }
+
+        /**
+         * Retrieves the default filesystem directory presented in choosers.
+         *
+         * @return directory path or {@code null} when unset.
+         */
+        public String getDefaultDirectory()
+        {
+                return this.defaultDirectory;
+        }
+
+        /**
+         * Updates the default filesystem directory presented in choosers.
+         *
+         * @param defaultDirectory directory path to store.
+         */
+        public void setDefaultDirectory(String defaultDirectory)
+        {
+                this.defaultDirectory = defaultDirectory;
+        }
+
+        /**
+         * Retrieves the last opened bookkeeping file.
+         *
+         * @return absolute path to the most recently opened file or {@code null}.
+         */
+        public String getLastOpenedFile()
+        {
+                return this.lastOpenedFile;
+        }
+
+        /**
+         * Stores the most recently opened bookkeeping file path.
+         *
+         * @param lastOpenedFile absolute path to persist.
+         */
+        public void setLastOpenedFile(String lastOpenedFile)
+        {
+                this.lastOpenedFile = lastOpenedFile;
         }
 
         /**
@@ -576,6 +613,46 @@ public class SettingsModel
         {
                 this.language = language;
         }
+
+       /**
+        * Resolves the locale to use for currency formatting.
+        *
+        * @return configured locale or the JVM default when none is stored.
+        */
+       public Locale getCurrencyLocale()
+       {
+               if (this.currencyLocale != null && !this.currencyLocale.isBlank())
+               {
+                       return Locale.forLanguageTag(this.currencyLocale.replace('_', '-'));
+               }
+
+               if (this.language != null && !this.language.isBlank())
+               {
+                       return Locale.forLanguageTag(this.language.replace('_', '-'));
+               }
+
+               return Locale.getDefault();
+       }
+
+       /**
+        * Stores the locale to use for currency formatting.
+        *
+        * @param locale locale instance to persist, {@code null} clears the preference.
+        */
+       public void setCurrencyLocale(Locale locale)
+       {
+               this.currencyLocale = (locale == null) ? null : locale.toLanguageTag();
+       }
+
+       /**
+        * Stores the locale to use for currency formatting using a BCP 47 tag.
+        *
+        * @param localeTag language tag (e.g., {@code en-US}) to persist.
+        */
+       public void setCurrencyLocale(String localeTag)
+       {
+               this.currencyLocale = localeTag;
+       }
 
        /**
         * Gets the currency format pattern.

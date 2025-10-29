@@ -134,11 +134,11 @@ public abstract class AbstractReportGenerator
                 List<?> data = resolveReportData();
                 JRBeanCollectionDataSource dataSource =
                         new JRBeanCollectionDataSource(data);
-		Map<String, Object> params =
-			ensureMutableParameters(getReportParameters());
-		return JasperFillManager.fillReport(report, params, dataSource);
-		
-	}
+                Map<String, Object> params =
+                        ensureMutableParameters(getReportParameters());
+                return JasperFillManager.fillReport(report, params, dataSource);
+
+        }
 	
 	
 	/**
