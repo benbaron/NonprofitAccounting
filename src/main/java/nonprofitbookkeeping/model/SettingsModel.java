@@ -3,6 +3,7 @@ package nonprofitbookkeeping.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -44,8 +45,22 @@ import lombok.NoArgsConstructor;
         @JsonProperty private String theme;
         /** The language code for UI localization (e.g., "en_US", "fr_FR"). */
         @JsonProperty private String language;
-       /** Pattern used for formatting currency values (e.g., "$#,##0.00"). */
-       @JsonProperty private String currencyFormat = "$#,##0.00";
+        /** Pattern used for formatting currency values (e.g., "$#,##0.00"). */
+        @JsonProperty private String currencyFormat = "$#,##0.00";
+        /** ISO language tag describing the locale used for currency formatting. */
+        @JsonProperty private String currencyLocale =
+                Locale.getDefault(Locale.Category.FORMAT).toLanguageTag();
+
+        // File system preferences
+        /** Default directory presented in file chooser dialogs. */
+        @JsonProperty private String defaultDirectory;
+        /** Tracks the most recently opened bookkeeping data file. */
+        @JsonProperty private String lastOpenedFile;
+
+        // Reporting preferences
+        /** Preferred period used when opening report dialogs. */
+        @JsonProperty private DefaultReportPeriod defaultReportPeriod =
+                DefaultReportPeriod.CURRENT_MONTH;
 	
 	/**
 	 * Represents a user account within the settings model.
@@ -272,24 +287,134 @@ import lombok.NoArgsConstructor;
                 this.language = language;
         }
 
-       /**
-        * Gets the currency format pattern.
-        *
-        * @return pattern used to format currency values
-        */
-       public String getCurrencyFormat()
-       {
-               return this.currencyFormat;
-       }
+        /**
+         * Gets the currency format pattern.
+         *
+         * @return pattern used to format currency values
+         */
+        public String getCurrencyFormat()
+        {
+                return this.currencyFormat;
+        }
 
-       /**
-        * Sets the currency format pattern.
-        *
-        * @param currencyFormat format pattern to set
-        */
-       public void setCurrencyFormat(String currencyFormat)
-       {
-               this.currencyFormat = currencyFormat;
-       }
-	
+        /**
+         * Sets the currency format pattern.
+         *
+         * @param currencyFormat format pattern to set
+         */
+        public void setCurrencyFormat(String currencyFormat)
+        {
+                this.currencyFormat = currencyFormat;
+        }
+
+        /**
+         * Returns the locale that should be used for currency values. The locale is stored
+         * internally as an IETF BCP 47 language tag so that it can be easily serialised.
+         * When the locale has not been explicitly configured the system default format locale
+         * is returned.
+         *
+         * @return locale describing the preferred currency formatting conventions
+         */
+        public Locale getCurrencyLocale()
+        {
+                if (this.currencyLocale == null || this.currencyLocale.isBlank())
+                {
+                        return Locale.getDefault(Locale.Category.FORMAT);
+                }
+                return Locale.forLanguageTag(this.currencyLocale);
+        }
+
+        /**
+         * Sets the preferred locale for currency formatting.
+         *
+         * @param locale new locale to store
+         */
+        public void setCurrencyLocale(Locale locale)
+        {
+                this.currencyLocale =
+                        (locale == null) ? null : locale.toLanguageTag();
+        }
+
+        /**
+         * Returns the stored language tag used for persistence of the currency locale.
+         *
+         * @return language tag or {@code null} if not set
+         */
+        public String getCurrencyLocaleTag()
+        {
+                return this.currencyLocale;
+        }
+
+        /**
+         * Updates the stored language tag representing the currency locale.
+         *
+         * @param localeTag new locale tag to persist
+         */
+        public void setCurrencyLocaleTag(String localeTag)
+        {
+                this.currencyLocale = localeTag;
+        }
+
+        /**
+         * Gets the default directory presented to the user when opening or saving data files.
+         *
+         * @return configured default directory or {@code null}
+         */
+        public String getDefaultDirectory()
+        {
+                return this.defaultDirectory;
+        }
+
+        /**
+         * Sets the default directory used by file choosers.
+         *
+         * @param defaultDirectory directory path to remember
+         */
+        public void setDefaultDirectory(String defaultDirectory)
+        {
+                this.defaultDirectory = defaultDirectory;
+        }
+
+        /**
+         * Gets the most recently opened bookkeeping file path.
+         *
+         * @return last opened file path or {@code null} if no history is stored
+         */
+        public String getLastOpenedFile()
+        {
+                return this.lastOpenedFile;
+        }
+
+        /**
+         * Remembers the most recently opened bookkeeping file.
+         *
+         * @param lastOpenedFile file path to persist
+         */
+        public void setLastOpenedFile(String lastOpenedFile)
+        {
+                this.lastOpenedFile = lastOpenedFile;
+        }
+
+        /**
+         * Retrieves the preferred default reporting period selection for the UI.
+         *
+         * @return configured default report period, never {@code null}
+         */
+        public DefaultReportPeriod getDefaultReportPeriod()
+        {
+                return (this.defaultReportPeriod == null)
+                        ? DefaultReportPeriod.CURRENT_MONTH
+                        : this.defaultReportPeriod;
+        }
+
+        /**
+         * Sets the default report period selection used by the UI.
+         *
+         * @param defaultReportPeriod period to store
+         */
+        public void setDefaultReportPeriod(DefaultReportPeriod defaultReportPeriod)
+        {
+                this.defaultReportPeriod = defaultReportPeriod;
+        }
+
 }
