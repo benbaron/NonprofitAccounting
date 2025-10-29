@@ -23,14 +23,12 @@ import lombok.NoArgsConstructor;
 	// Company Info
 	/** The name of the organization. */
 	@JsonProperty private String organizationName;
-	/** The start date of the fiscal year (e.g., "MM-DD"). */
-	@JsonProperty private String fiscalYearStart;
+        /** The start date of the fiscal year (e.g., "MM-DD"). */
+        @JsonProperty private String fiscalYearStart;
         /** The default currency code used in the application (e.g., "USD"). */
         @JsonProperty private String defaultCurrency;
-        /** Directory where generated files should be stored by default. */
-        @JsonProperty private String defaultDirectory;
-        /** Path to the last opened company file. */
-        @JsonProperty private String lastOpenedFile;
+        /** Locale tag used to localise currency related formatting. */
+        @JsonProperty("currencyLocale") private String currencyLocaleTag = Locale.getDefault().toLanguageTag();
 	
 	// User Accounts
 	/** A list of user accounts configured in the system. */
@@ -53,22 +51,12 @@ import lombok.NoArgsConstructor;
         @JsonProperty private String language;
        /** Pattern used for formatting currency values (e.g., "$#,##0.00"). */
        @JsonProperty private String currencyFormat = "$#,##0.00";
-        /** Locale to use for currency formatting when none is specified. */
-        @JsonProperty private Locale currencyLocale = Locale.getDefault();
-
-        /**
-         * Enumeration describing the default period that should be selected in report dialogs.
-         */
-        public enum DefaultReportPeriod {
-                /** Use the current calendar month. */
-                MONTH_TO_DATE,
-                /** Use the current calendar quarter. */
-                QUARTER_TO_DATE,
-                /** Use the current fiscal year. */
-                YEAR_TO_DATE,
-                /** Use the previous fiscal year. */
-                PREVIOUS_YEAR
-        }
+       /** Default report period selection for dashboard/report defaults. */
+       @JsonProperty private DefaultReportPeriod defaultReportPeriod = DefaultReportPeriod.CURRENT_MONTH;
+       /** Preferred directory for loading or saving company data files. */
+       @JsonProperty private String defaultDirectory;
+       /** Tracks the most recently opened company file path. */
+       @JsonProperty private String lastOpenedFile;
 	
 	/**
 	 * Represents a user account within the settings model.
@@ -173,10 +161,10 @@ import lombok.NoArgsConstructor;
 	 * Gets the default currency code.
 	 * @return The default currency code (e.g., "USD").
 	 */
-	public String getDefaultCurrency()
-	{
-		return this.defaultCurrency;
-	}
+        public String getDefaultCurrency()
+        {
+                return this.defaultCurrency;
+        }
 	
 	/**
 	 * Sets the default currency code.
@@ -188,39 +176,44 @@ import lombok.NoArgsConstructor;
         }
 
         /**
-         * Gets the default directory for file pickers and exports.
-         * @return default directory path or {@code null} if unset.
+         * Returns the {@link Locale} preferred for currency formatting. The value is
+         * stored internally as a BCP-47 language tag for ease of persistence.
+         *
+         * @return preferred currency {@link Locale}
          */
-        public String getDefaultDirectory()
+        public Locale getCurrencyLocale()
         {
-                return this.defaultDirectory;
+                if (this.currencyLocaleTag == null || this.currencyLocaleTag.isBlank())
+                {
+                        return Locale.getDefault();
+                }
+
+                return Locale.forLanguageTag(this.currencyLocaleTag);
         }
 
         /**
-         * Sets the default directory for file pickers and exports.
-         * @param defaultDirectory directory path to remember.
+         * Updates the preferred currency {@link Locale}.
+         *
+         * @param locale locale to store; if {@code null} the system default is used
          */
-        public void setDefaultDirectory(String defaultDirectory)
+        public void setCurrencyLocale(Locale locale)
         {
-                this.defaultDirectory = defaultDirectory;
+                this.currencyLocaleTag = (locale != null)
+                        ? locale.toLanguageTag()
+                        : Locale.getDefault().toLanguageTag();
         }
 
         /**
-         * Gets the last opened company file path.
-         * @return path to last opened file or {@code null}.
+         * Allows deserialisation from persisted JSON that stores the locale as a
+         * string value.
+         *
+         * @param localeTag BCP-47 language tag representing the locale
          */
-        public String getLastOpenedFile()
+        public void setCurrencyLocale(String localeTag)
         {
-                return this.lastOpenedFile;
-        }
-
-        /**
-         * Records the path to the last opened company file.
-         * @param lastOpenedFile path to remember.
-         */
-        public void setLastOpenedFile(String lastOpenedFile)
-        {
-                this.lastOpenedFile = lastOpenedFile;
+                this.currencyLocaleTag = (localeTag != null && !localeTag.isBlank())
+                        ? localeTag
+                        : Locale.getDefault().toLanguageTag();
         }
 	
 	/**
@@ -370,23 +363,75 @@ import lombok.NoArgsConstructor;
        }
 
        /**
-        * Returns the configured currency locale falling back to {@link Locale#getDefault()} if unset.
+        * Retrieves the default reporting period preference.
         *
-        * @return preferred currency locale
+        * @return configured default period
         */
-       public Locale getCurrencyLocale()
+       public DefaultReportPeriod getDefaultReportPeriod()
        {
-               return this.currencyLocale == null ? Locale.getDefault() : this.currencyLocale;
+               return this.defaultReportPeriod;
        }
 
        /**
-        * Sets the preferred currency locale.
+        * Updates the default report period selection.
         *
-        * @param currencyLocale locale to use when formatting currency
+        * @param defaultReportPeriod period preference
         */
-       public void setCurrencyLocale(Locale currencyLocale)
+       public void setDefaultReportPeriod(DefaultReportPeriod defaultReportPeriod)
        {
-               this.currencyLocale = currencyLocale;
+               this.defaultReportPeriod = defaultReportPeriod;
        }
-	
+
+       /**
+        * Gets the preferred default directory for file dialogs.
+        *
+        * @return directory path or {@code null}
+        */
+       public String getDefaultDirectory()
+       {
+               return this.defaultDirectory;
+       }
+
+       /**
+        * Sets the preferred default directory for file dialogs.
+        *
+        * @param defaultDirectory path to persist
+        */
+       public void setDefaultDirectory(String defaultDirectory)
+       {
+               this.defaultDirectory = defaultDirectory;
+       }
+
+       /**
+        * Gets the last opened company file path.
+        *
+        * @return file path or {@code null}
+        */
+       public String getLastOpenedFile()
+       {
+               return this.lastOpenedFile;
+       }
+
+       /**
+        * Records the last opened company file path.
+        *
+        * @param lastOpenedFile file path to remember
+        */
+       public void setLastOpenedFile(String lastOpenedFile)
+       {
+               this.lastOpenedFile = lastOpenedFile;
+       }
+
+       /**
+        * Enumerates common default reporting periods available in the UI.
+        */
+       public enum DefaultReportPeriod
+       {
+               CURRENT_MONTH,
+               CURRENT_QUARTER,
+               CURRENT_YEAR,
+               YEAR_TO_DATE,
+               CUSTOM
+       }
+
 }

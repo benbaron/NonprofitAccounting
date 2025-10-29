@@ -34,7 +34,9 @@ public abstract class AbstractReportGenerator
 	 * {@link #setReportData(List)}.
 	 */
         private List<?> reportData = Collections.emptyList();
-        private boolean reportDataInjected = false;
+
+        /** Flag indicating whether report data was explicitly injected. */
+        private boolean hasExplicitReportData;
 	
 	/**
 	 * Retrieves the collection of data beans that will populate the report.
@@ -42,19 +44,10 @@ public abstract class AbstractReportGenerator
 	 * @return A {@link List} of objects (JavaBeans) to be used as the report's
 	 *         data source. The exact type depends on the specific report.
 	 */
-        protected abstract List<?> getReportData();
-
-        /**
-         * Resolves the collection of data beans that will be supplied to JasperReports.
-         * If external data has been injected via {@link #setReportData(List)}, that data
-         * takes precedence. Otherwise this method delegates to {@link #getReportData()}.
-         *
-         * @return data beans ready for consumption by JasperReports
-         */
-        protected List<?> resolveReportData()
-        {
-                return this.reportDataInjected ? this.reportData : getReportData();
-        }
+	protected List<?> getReportData()
+	{
+		return resolveReportData();
+	}
 	
 	
 	/**
@@ -297,8 +290,27 @@ public abstract class AbstractReportGenerator
 	 */
         public void setReportData(List<?> beans)
         {
-                this.reportData = (beans == null) ? Collections.emptyList() : beans;
-                this.reportDataInjected = (beans != null);
+                this.reportData = beans != null ? beans : Collections.emptyList();
+                this.hasExplicitReportData = true;
+        }
+
+        /**
+         * Determines the data set that should be supplied to Jasper. When explicit
+         * data has been injected through {@link #setReportData(List)} it is used as
+         * is; otherwise subclasses can lazily provide data through
+         * {@link #getReportData()}.
+         *
+         * @return non-null collection of beans for the report
+         */
+        protected List<?> resolveReportData()
+        {
+                if (this.hasExplicitReportData)
+                {
+                        return this.reportData;
+                }
+
+                List<?> generated = getReportData();
+                return generated != null ? generated : Collections.emptyList();
         }
 	
 }
