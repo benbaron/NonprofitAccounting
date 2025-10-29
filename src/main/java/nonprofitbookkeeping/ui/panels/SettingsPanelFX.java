@@ -99,8 +99,8 @@ public class SettingsPanelFX extends BorderPane
                                                this.primaryStage.setTitle("Nonprofit Bookkeeping");
                                        }
                                }
-				
-			}
+
+                        }
 			catch (IOException ex)
 			{
 				ex.printStackTrace();

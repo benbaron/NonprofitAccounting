@@ -23,6 +23,12 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -128,11 +134,11 @@ public class SkeletonJournalPanel extends BorderPane
 		this.journalDisplayTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		this.journalDisplayTable
 				.setPlaceholder(new Label("No journal entries to display or company not open."));
-		this.journalDisplayTable.setRowFactory(tv -> {
-			TableRow<JournalDisplayEntry> row = new TableRow<>();
+                this.journalDisplayTable.setRowFactory(tv -> {
+                        TableRow<JournalDisplayEntry> row = new TableRow<>();
 
-			row.setOnMouseClicked(event -> {
-				if (event.getClickCount() == 2 && !row.isEmpty())
+                        row.setOnMouseClicked(event -> {
+                                if (event.getClickCount() == 2 && !row.isEmpty())
 				{
 					JournalDisplayEntry entry = row.getItem();
 
@@ -143,14 +149,47 @@ public class SkeletonJournalPanel extends BorderPane
 				}
 			});
 
-			return row;
-		});
-		
-		// Filter Controls (Top)
-		this.filterControlsBox = new HBox();
-		this.filterControlsBox.setPadding(new Insets(0, 0, 10, 0));
-		this.filterControlsBox.setSpacing(10);
-		this.filterControlsBox.setAlignment(Pos.CENTER_LEFT);
+                        return row;
+                });
+
+                KeyCodeCombination copyCombination = new KeyCodeCombination(KeyCode.C,
+                                KeyCombination.CONTROL_DOWN);
+                this.journalDisplayTable.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+                        if (copyCombination.match(event))
+                        {
+                                JournalDisplayEntry entry = this.journalDisplayTable.getSelectionModel()
+                                                .getSelectedItem();
+                                if (entry != null)
+                                {
+                                        ClipboardContent content = new ClipboardContent();
+                                        content.putString(buildClipboardSummary(entry));
+                                        Clipboard.getSystemClipboard().setContent(content);
+                                }
+                                event.consume();
+                        }
+                });
+
+                // Filter Controls (Top)
+                this.filterControlsBox = new HBox();
+                this.filterControlsBox.setPadding(new Insets(0, 0, 10, 0));
+                this.filterControlsBox.setSpacing(10);
+                this.filterControlsBox.setAlignment(Pos.CENTER_LEFT);
+                KeyCodeCombination findCombination = new KeyCodeCombination(KeyCode.F,
+                                KeyCombination.CONTROL_DOWN);
+                KeyCodeCombination undoCombination = new KeyCodeCombination(KeyCode.Z,
+                                KeyCombination.CONTROL_DOWN);
+                this.filterControlsBox.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+                        if (findCombination.match(event))
+                        {
+                                this.searchFilterField.requestFocus();
+                                event.consume();
+                        }
+                        else if (undoCombination.match(event))
+                        {
+                                clearFilters();
+                                event.consume();
+                        }
+                });
 		
 		// Filter
 		Label filterLabel = new Label("Filter:");
@@ -442,11 +481,11 @@ public class SkeletonJournalPanel extends BorderPane
 	/**
 	 * On Filter Button
 	 */
-	void onFilterButtonAction()
-	{
-		String search = this.searchFilterField.getText().toLowerCase();
-		LocalDate start = this.startDatePicker.getValue();
-		LocalDate end = this.endDatePicker.getValue();
+        void onFilterButtonAction()
+        {
+                String search = this.searchFilterField.getText().toLowerCase();
+                LocalDate start = this.startDatePicker.getValue();
+                LocalDate end = this.endDatePicker.getValue();
 		
 		loadData();
 		
@@ -506,6 +545,22 @@ public class SkeletonJournalPanel extends BorderPane
                         updatePreview(selected);
                 }
 
+        }
+
+        /** Clears all filter controls and reloads the full journal. */
+        void clearFilters()
+        {
+                this.searchFilterField.clear();
+                this.startDatePicker.setValue(null);
+                this.endDatePicker.setValue(null);
+                loadData();
+                this.journalDisplayTable.setItems(this.journalDataList);
+                this.journalDisplayTable.getSelectionModel().clearSelection();
+
+                if (!this.editorActive)
+                {
+                        updatePreview(null);
+                }
         }
 	
 	/**
@@ -673,6 +728,23 @@ public class SkeletonJournalPanel extends BorderPane
                 }
 
                 return builder.toString();
+        }
+
+        private String buildClipboardSummary(JournalDisplayEntry entry)
+        {
+                if (entry == null)
+                {
+                        return "";
+                }
+
+                String amount = summariseAmount(entry);
+
+                return String.join("\t",
+                        entry.dateProperty().get(),
+                        entry.transactionIdProperty().get(),
+                        entry.accountNameProperty().get(),
+                        entry.descriptionProperty().get(),
+                        amount == null ? "" : amount);
         }
 
         private void focusOnTransaction(long bookingTimestamp)

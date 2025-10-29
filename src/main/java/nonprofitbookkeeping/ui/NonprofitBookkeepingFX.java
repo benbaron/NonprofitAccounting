@@ -2,6 +2,7 @@
 package nonprofitbookkeeping.ui;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
@@ -12,6 +13,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.ServiceLoader;
+import java.util.Locale;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.concurrent.Executors;
@@ -58,6 +64,8 @@ import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.panels.*;
 import nonprofitbookkeeping.ui.javafx.BudgetPanelFX;
 import nonprofitbookkeeping.tools.H2ScriptCompanyImporter;
+import nonprofitbookkeeping.model.SettingsModel;
+import nonprofitbookkeeping.util.FormatUtils;
 
 
 /**
@@ -142,6 +150,14 @@ public class NonprofitBookkeepingFX extends Application
         private ScheduledFuture<?> autosaveFuture;
         /** Service that imports legacy .npbk archives into the active database. */
         private final LegacyNpbkImportService legacyNpbkImportService = new LegacyNpbkImportService();
+        /** Service for loading and persisting user settings. */
+        private final SettingsService settingsService = new SettingsService();
+        /** Cached settings to avoid redundant database reads. */
+        private SettingsModel cachedSettings = new SettingsModel();
+        /** Executor managing the background autosave task. */
+        private ScheduledExecutorService autosaveExecutor;
+        /** Handle to the active autosave schedule. */
+        private ScheduledFuture<?> autosaveFuture;
 	
 	/**
 	 * Static inner class acting as a container for singleton service instances.
@@ -926,6 +942,105 @@ public class NonprofitBookkeepingFX extends Application
 
         }
 
+        private void reloadSettings()
+        {
+                if (!Database.isInitialized())
+                {
+                        return;
+                }
+
+                try
+                {
+                        this.settingsService.loadSettings(null);
+                        this.cachedSettings = this.settingsService.getSettings();
+                        applySettings(this.cachedSettings);
+                }
+                catch (IOException ex)
+                {
+                        LOGGER.log(Level.FINE, "Unable to load settings", ex);
+                }
+        }
+
+        private void applySettings(SettingsModel settings)
+        {
+                if (settings == null)
+                {
+                        return;
+                }
+
+                Locale locale = settings.getCurrencyLocale();
+                FormatUtils.setCurrencyLocale(locale);
+                FormatUtils.setCurrencyFormat(settings.getCurrencyFormat());
+
+                if (this.primaryStage != null && this.primaryStage.getScene() != null)
+                {
+                        ThemeManager.applyTheme(this.primaryStage.getScene(), settings.getTheme());
+                }
+        }
+
+        private void configureAutosave()
+        {
+                cancelAutosave();
+
+                if (this.cachedSettings == null)
+                {
+                        return;
+                }
+
+                int interval = Math.max(0, this.cachedSettings.getAutosaveIntervalMinutes());
+
+                if (interval <= 0)
+                {
+                        return;
+                }
+
+                if (this.autosaveExecutor == null || this.autosaveExecutor.isShutdown())
+                {
+                        this.autosaveExecutor = Executors.newSingleThreadScheduledExecutor(r -> {
+                                Thread t = new Thread(r, "npbk-autosave");
+                                t.setDaemon(true);
+                                return t;
+                        });
+                }
+
+                this.autosaveFuture = this.autosaveExecutor.scheduleAtFixedRate(() -> {
+                        if (!CurrentCompany.isOpen())
+                        {
+                                return;
+                        }
+
+                        try
+                        {
+                                CurrentCompany.persist();
+                        }
+                        catch (IOException ex)
+                        {
+                                LOGGER.log(Level.WARNING, "Autosave failed", ex);
+                        }
+                }, interval, interval, TimeUnit.MINUTES);
+        }
+
+        private void cancelAutosave()
+        {
+                if (this.autosaveFuture != null)
+                {
+                        this.autosaveFuture.cancel(false);
+                        this.autosaveFuture = null;
+                }
+        }
+
+        private void onSettingsSaved(SettingsModel updated)
+        {
+                if (updated == null)
+                {
+                        return;
+                }
+
+                this.cachedSettings = updated;
+                applySettings(updated);
+                configureAutosave();
+        }
+
         private void handleCompanyOpened(Company company)
         {
                 if (company == null)
@@ -937,6 +1052,34 @@ public class NonprofitBookkeepingFX extends Application
                 ensureSettingsLoaded();
                 applyGlobalSettings();
                 scheduleAutosave();
+
+                reloadSettings();
+                configureAutosave();
+
+                if (company.getCompanyFile() != null && Database.isInitialized())
+                {
+                        String path = company.getCompanyFile().getAbsolutePath();
+                        this.cachedSettings.setLastOpenedFile(path);
+                        PreferencesManager.setLastDatabasePath(path);
+
+                        File parent = company.getCompanyFile().getParentFile();
+                        if (parent != null)
+                        {
+                                String dir = parent.getAbsolutePath();
+                                this.cachedSettings.setDefaultDirectory(dir);
+                                PreferencesManager.setLastDirectory(dir);
+                                PreferencesManager.setLastWriteDirectory(dir);
+                        }
+
+                        try
+                        {
+                                this.settingsService.saveSettings(null);
+                        }
+                        catch (IOException ex)
+                        {
+                                LOGGER.log(Level.FINE, "Unable to persist updated file preferences", ex);
+                        }
+                }
 
                 if (this.companySelectionPanel != null)
                 {
@@ -1002,6 +1145,7 @@ public class NonprofitBookkeepingFX extends Application
                         {
                                 // After action, set state.
                                 setState(AppState.NO_COMPANY);
+                                cancelAutosave();
                                 if (this.companySelectionPanel != null)
                                 {
                                         this.companySelectionPanel.refreshCompanyList();

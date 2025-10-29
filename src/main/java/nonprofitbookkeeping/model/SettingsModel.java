@@ -1,8 +1,10 @@
 
 package nonprofitbookkeeping.model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import java.time.MonthDay;
 
@@ -32,18 +34,29 @@ public class SettingsModel
 	@JsonProperty private String defaultCurrency;
 	
 	// User Accounts
-	/** A list of user accounts configured in the system. */
-	@JsonProperty private List<User> users = new ArrayList<>();
-	
-	// Accounting Settings
-	/** The default account number or name for income transactions. */
-	@JsonProperty private String defaultIncomeAccount;
+       // Accounting Settings
+        /** The default account number or name for income transactions. */
+        @JsonProperty private String defaultIncomeAccount;
 	/** The default account number or name for expense transactions. */
 	@JsonProperty private String defaultExpenseAccount;
-	/** Flag indicating whether vouchers/invoices should be auto-numbered. */
-	@JsonProperty private boolean autoNumberVouchers;
-	
-	// UI Preferences
+       /** Flag indicating whether vouchers/invoices should be auto-numbered. */
+       @JsonProperty private boolean autoNumberVouchers;
+
+       // Autosave and filesystem preferences
+       /** Autosave interval, in minutes. A value of 0 disables autosave. */
+       @JsonProperty private int autosaveIntervalMinutes = 5;
+       /** Default directory presented in file choosers. */
+       @JsonProperty private String defaultDirectory;
+       /** Path to the most recently opened company file. */
+       @JsonProperty private String lastOpenedFile;
+
+       // Reporting defaults
+       /** Preferred default period for reports and account detail filters. */
+       @JsonProperty private String defaultReportPeriod = DefaultReportPeriod.YEAR_TO_DATE.name();
+       /** Calendar year to use when {@link #defaultReportPeriod} is {@link DefaultReportPeriod#FISCAL_YEAR}. */
+       @JsonProperty private Integer defaultReportYear;
+
+       // UI Preferences
         /** The name of the UI theme (e.g., "Dark", "Light"). */
         @JsonProperty private String theme;
         /** The language code for UI localization (e.g., "en_US", "fr_FR"). */
@@ -377,19 +390,19 @@ public class SettingsModel
 	 * Gets the list of configured user accounts.
 	 * @return A list of {@link User} objects.
 	 */
-	public List<User> getUsers()
-	{
-		return this.users;
-	}
-	
-	/**
-	 * Sets the list of configured user accounts.
-	 * @param users A list of {@link User} objects to set.
-	 */
-	public void setUsers(List<User> users)
-	{
-		this.users = users;
-	}
+        public List<User> getUsers()
+        {
+                return this.users;
+        }
+
+        /**
+         * Sets the list of configured user accounts.
+         * @param users A list of {@link User} objects to set.
+         */
+        public void setUsers(List<User> users)
+        {
+                this.users = users;
+        }
 	
 	/**
 	 * Gets the default income account.
