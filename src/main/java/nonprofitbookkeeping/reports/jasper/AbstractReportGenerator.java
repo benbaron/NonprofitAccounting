@@ -131,7 +131,7 @@ public abstract class AbstractReportGenerator
 			throw e;
 		}
 		
-                List<?> data = this.reportDataProvided ? this.reportData : getReportData();
+                List<?> data = resolveReportData();
                 JRBeanCollectionDataSource dataSource =
                         new JRBeanCollectionDataSource(data);
 		Map<String, Object> params =
@@ -296,6 +296,29 @@ public abstract class AbstractReportGenerator
 
                 this.reportData = Collections.unmodifiableList(new ArrayList<>(beans));
                 this.reportDataProvided = true;
+        }
+
+        /**
+         * Resolves the effective data beans to use for reporting, combining
+         * subclass-supplied data with any explicitly provided list.
+         *
+         * @return immutable list of data beans, never {@code null}.
+         */
+        protected List<?> resolveReportData()
+        {
+                List<?> data = this.reportDataProvided ? this.reportData : getReportData();
+
+                if (data == null)
+                {
+                        return Collections.emptyList();
+                }
+
+                if (this.reportDataProvided)
+                {
+                        return data;
+                }
+
+                return Collections.unmodifiableList(new ArrayList<>(data));
         }
 	
 }
