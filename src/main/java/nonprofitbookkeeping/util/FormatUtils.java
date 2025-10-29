@@ -46,7 +46,7 @@ public final class FormatUtils {
 
     /**
      * Updates the currency format pattern. If the supplied pattern is null or
-     * empty, the existing format is retained.
+     * empty, the default format is used.
      *
      * @param newPattern DecimalFormat pattern string
      */
