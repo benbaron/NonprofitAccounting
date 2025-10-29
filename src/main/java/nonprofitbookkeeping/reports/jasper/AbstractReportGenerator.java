@@ -41,7 +41,10 @@ public abstract class AbstractReportGenerator
 	 * @return A {@link List} of objects (JavaBeans) to be used as the report's
 	 *         data source. The exact type depends on the specific report.
 	 */
-	protected abstract List<?> getReportData();
+	protected List<?> getReportData()
+	{
+		return resolveReportData();
+	}
 	
 	
 	/**
@@ -279,13 +282,14 @@ public abstract class AbstractReportGenerator
 	}
 	
 	
-	/**
-	 * @param beans
-	 */
+	protected List<?> resolveReportData()
+	{
+		return this.reportData;
+	}
+
 	public void setReportData(List<?> beans)
 	{
-		
-		// TODO Auto-generated method stub
+		this.reportData = beans != null ? beans : Collections.emptyList();
 	}
 	
 }

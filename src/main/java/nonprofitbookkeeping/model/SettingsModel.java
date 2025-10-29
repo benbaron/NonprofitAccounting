@@ -3,6 +3,7 @@ package nonprofitbookkeeping.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -46,6 +47,15 @@ import lombok.NoArgsConstructor;
         @JsonProperty private String language;
        /** Pattern used for formatting currency values (e.g., "$#,##0.00"). */
        @JsonProperty private String currencyFormat = "$#,##0.00";
+       /** ISO language tag representing the locale used when formatting currency. */
+       @JsonProperty private Locale currencyLocale = Locale.getDefault();
+       /** Directory where reports should be written by default. */
+       @JsonProperty private String defaultDirectory;
+       /** Tracks the most recently opened bookkeeping file. */
+       @JsonProperty private String lastOpenedFile;
+       /** Preferred period selection for newly generated reports. */
+       @JsonProperty private DefaultReportPeriod defaultReportPeriod = DefaultReportPeriod.YEAR_TO_DATE;
+
 	
 	/**
 	 * Represents a user account within the settings model.
@@ -292,4 +302,44 @@ import lombok.NoArgsConstructor;
                this.currencyFormat = currencyFormat;
        }
 	
+       public Locale getCurrencyLocale()
+       {
+               return this.currencyLocale != null ? this.currencyLocale : Locale.getDefault();
+       }
+
+       public void setCurrencyLocale(Locale currencyLocale)
+       {
+               this.currencyLocale = (currencyLocale != null) ? currencyLocale : Locale.getDefault();
+       }
+
+       public String getDefaultDirectory()
+       {
+               return this.defaultDirectory;
+       }
+
+       public void setDefaultDirectory(String defaultDirectory)
+       {
+               this.defaultDirectory = defaultDirectory;
+       }
+
+       public String getLastOpenedFile()
+       {
+               return this.lastOpenedFile;
+       }
+
+       public void setLastOpenedFile(String lastOpenedFile)
+       {
+               this.lastOpenedFile = lastOpenedFile;
+       }
+
+       public DefaultReportPeriod getDefaultReportPeriod()
+       {
+               return this.defaultReportPeriod;
+       }
+
+       public void setDefaultReportPeriod(DefaultReportPeriod defaultReportPeriod)
+       {
+               this.defaultReportPeriod = defaultReportPeriod;
+       }
+
 }
