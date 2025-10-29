@@ -15,6 +15,9 @@ import nonprofitbookkeeping.ui.panels.AccountTransactionDetailsPanelFX; // Added
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.model.ReportPeriodPreset;
+
+import java.time.MonthDay;
 
 /**
  * Represents the main application view, structured as a {@link BorderPane}.
@@ -51,11 +54,11 @@ public class MainApplicationView extends BorderPane
 	// Tab instances as fields for easy reference
 	/** Tab for displaying the Dashboard. */
 	private Tab dashboardTab;
-	/** Tab for displaying the Journal. */
-	private Tab journalTab;
-	/** Tab for displaying the Chart of Accounts. */
-	private Tab coaTab;
-	/** Tab for displaying Reports. */
+        /** Tab for displaying the Journal. */
+        private Tab journalTab;
+        /** Tab for displaying the Chart of Accounts. */
+        private Tab coaTab;
+        /** Tab for displaying Reports. */
         private Tab reportsTab;
         /** Tab for displaying Account Transaction Details. */
         private Tab accountDetailsTab;
@@ -63,6 +66,10 @@ public class MainApplicationView extends BorderPane
         private CoaEditorPanelFX coaEditorPanel;
         /** Panel used to select or create companies when none are open. */
         private final CompanySelectionPanelFX companySelectionPanel;
+        /** Journal panel instance to expose search helpers. */
+        private final SkeletonJournalPanel journalPanel;
+        /** Account details panel for report defaults. */
+        private final AccountTransactionDetailsPanelFX accountDetailsPanel;
 	
 	
 	/**
@@ -81,8 +88,9 @@ public class MainApplicationView extends BorderPane
                 this.companySelectionPanel = new CompanySelectionPanelFX();
 		
 		// Create Tab instances
-		this.dashboardTab = new Tab("Dashboard", new SkeletonDashboardPanel());
-		this.journalTab = new Tab("Journal", new SkeletonJournalPanel());
+                this.dashboardTab = new Tab("Dashboard", new SkeletonDashboardPanel());
+                this.journalPanel = new SkeletonJournalPanel();
+                this.journalTab = new Tab("Journal", this.journalPanel);
 		
 		Company company = CurrentCompany.getCompany();
 		ChartOfAccounts coa =
@@ -107,8 +115,9 @@ public class MainApplicationView extends BorderPane
 		this.reportsTab.setClosable(false);
 		
 		// Add new tab for Account Details
-		this.accountDetailsTab = new Tab("Account Details", new AccountTransactionDetailsPanelFX());
-		this.accountDetailsTab.setClosable(false);
+                this.accountDetailsPanel = new AccountTransactionDetailsPanelFX();
+                this.accountDetailsTab = new Tab("Account Details", this.accountDetailsPanel);
+                this.accountDetailsTab.setClosable(false);
 	
 		
                 // Add tabs to the tabPane
@@ -245,6 +254,32 @@ public class MainApplicationView extends BorderPane
                         showCompanySelection();
                 }
 
+        }
+
+        /** Provides access to the shared journal panel instance. */
+        public SkeletonJournalPanel getJournalPanel()
+        {
+                return this.journalPanel;
+        }
+
+        /** Exposes the account details panel instance. */
+        public AccountTransactionDetailsPanelFX getAccountDetailsPanel()
+        {
+                return this.accountDetailsPanel;
+        }
+
+        /** Applies the configured default report period to the account details view. */
+        public void applyAccountDetailsDefaults(ReportPeriodPreset preset, MonthDay fiscalYearStart,
+                boolean showYearToDate, boolean showFullYear, boolean showLastMonth)
+        {
+                if (preset == null || this.accountDetailsPanel == null)
+                {
+                        return;
+                }
+
+                this.accountDetailsPanel.applyDefaultPeriod(preset, fiscalYearStart);
+                this.accountDetailsPanel.configureQuickRanges(showYearToDate, showFullYear, showLastMonth,
+                        fiscalYearStart);
         }
 
 }

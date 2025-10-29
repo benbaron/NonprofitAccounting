@@ -1,6 +1,7 @@
 
 package nonprofitbookkeeping.service;
 
+import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.InventoryItem; // Correct import
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -242,35 +244,41 @@ public class InventoryService
          */
         public void loadItems(File companyDirectory) throws IOException
         {
-                this.items.clear();
+                Map<String, InventoryItem> loaded = new HashMap<>();
 
                 try
                 {
-                        new DocumentRepository().find(DOCUMENT_NAME)
-                                .ifPresent(payload -> {
-                                        try
-                                        {
-                                                List<InventoryItem> loaded = MAPPER.readValue(payload, LIST_TYPE);
+                        Optional<String> payload = new DocumentRepository().find(DOCUMENT_NAME);
 
-                                                for (InventoryItem item : loaded)
+                        if (payload.isPresent())
+                        {
+                                try
+                                {
+                                        List<InventoryItem> decoded = MAPPER.readValue(payload.get(), LIST_TYPE);
+
+                                        for (InventoryItem item : decoded)
+                                        {
+                                                if (item.getId() != null)
                                                 {
-
-                                                        if (item.getId() != null)
-                                                        {
-                                                                this.items.put(item.getId(), item);
-                                                        }
-
+                                                        loaded.put(item.getId(), item);
                                                 }
+                                        }
 
-                                                LOGGER.info("Inventory loaded from database document '" + DOCUMENT_NAME
-                                                        + "'.");
-                                        }
-                                        catch (IOException ex)
-                                        {
-                                                LOGGER.log(Level.SEVERE,
-                                                        "Failed to deserialize inventory JSON from database", ex);
-                                        }
-                                });
+                                        LOGGER.info("Inventory loaded from database document '" + DOCUMENT_NAME
+                                                + "'.");
+                                }
+                                catch (IOException ex)
+                                {
+                                        LOGGER.log(Level.SEVERE,
+                                                "Failed to deserialize inventory JSON from database", ex);
+                                        return;
+                                }
+                        }
+                        else
+                        {
+                                this.items.clear();
+                                return;
+                        }
                 }
                 catch (SQLException e)
                 {
@@ -283,6 +291,9 @@ public class InventoryService
 
                         throw new IOException("Failed to load inventory from database", e);
                 }
+
+                this.items.clear();
+                this.items.putAll(loaded);
 
         }
 	

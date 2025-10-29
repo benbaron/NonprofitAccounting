@@ -14,12 +14,12 @@ public class ExpenseDtl12bJasperGenerator extends AbstractReportGenerator
 		
 	}
 	
-	@Override
-	protected String getReportPath()
-	{
-                return "jrxml/sca-reports/EXPENSE_DTL_12b_ROW_BASED.jrxml";
-		
-	}
+        @Override
+        protected String getReportPath()
+        {
+                return "jrxml/sca-reports/EXPENSE_DTL_12b.jrxml";
+
+        }
 	
 	@Override
 	public String getBaseName()

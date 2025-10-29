@@ -6,11 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import java.time.MonthDay;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import nonprofitbookkeeping.model.ReportPeriodPreset;
 
 /**
  * Represents the application settings model.
@@ -19,7 +23,7 @@ import lombok.NoArgsConstructor;
  * Lombok's {@code @Data}, {@code @AllArgsConstructor}, and {@code @NoArgsConstructor}
  * are used for boilerplate code generation.
  */
-@Data @AllArgsConstructor @NoArgsConstructor public class SettingsModel
+public class SettingsModel
 {
 	// Company Info
 	/** The name of the organization. */
@@ -58,127 +62,27 @@ import lombok.NoArgsConstructor;
         /** The language code for UI localization (e.g., "en_US", "fr_FR"). */
         @JsonProperty private String language;
        /** Pattern used for formatting currency values (e.g., "$#,##0.00"). */
-       @JsonProperty private String currencyFormat;
-       /** Locale used for formatting currency values and other locale aware data. */
-       @JsonProperty private String currencyLocale = Locale.getDefault().toLanguageTag();
+       @JsonProperty private String currencyFormat = "$#,##0.00";
 
-       /** A list of user accounts configured in the system. */
-       @JsonProperty private List<User> users = new ArrayList<>();
+       // Application behaviour
+       /** Flag indicating whether background autosave is enabled. */
+       @JsonProperty private boolean autosaveEnabled = true;
+       /** Interval, in minutes, between background autosave executions. */
+       @JsonProperty private int autosaveIntervalMinutes = 5;
+       /** User-selected default directory for company data. */
+       @JsonProperty private String defaultCompanyDirectory;
+       /** Path to the most recently used company file. */
+       @JsonProperty private String lastUsedCompanyFile;
 
-       /** Default reporting options available in the UI. */
-       public enum DefaultReportPeriod
-       {
-               /** Range spans the fiscal year start through the current date. */
-               YEAR_TO_DATE,
-               /** Entire fiscal year for the configured or current year. */
-               FISCAL_YEAR,
-               /** Previous calendar month. */
-               LAST_MONTH
-       }
-
-       /**
-        * Returns the configured {@link DefaultReportPeriod}. If the stored value is invalid or not set,
-        * {@link DefaultReportPeriod#YEAR_TO_DATE} is returned.
-        *
-        * @return effective default report period
-        */
-       public DefaultReportPeriod getDefaultReportPeriodEnum()
-       {
-               if (this.defaultReportPeriod == null)
-               {
-                       return DefaultReportPeriod.YEAR_TO_DATE;
-               }
-
-               try
-               {
-                       return DefaultReportPeriod.valueOf(this.defaultReportPeriod);
-               }
-               catch (IllegalArgumentException ex)
-               {
-                       return DefaultReportPeriod.YEAR_TO_DATE;
-               }
-       }
-
-       /**
-        * Updates the stored default report period.
-        *
-        * @param period new period value, {@code null} keeps the current configuration
-        */
-       public void setDefaultReportPeriodEnum(DefaultReportPeriod period)
-       {
-               if (period != null)
-               {
-                       this.defaultReportPeriod = period.name();
-               }
-       }
-
-       /**
-        * Returns the preferred currency {@link Locale}. Invalid or missing language tags fall back
-        * to {@link Locale#getDefault()}.
-        *
-        * @return locale derived from the stored language tag
-        */
-       public Locale getCurrencyLocale()
-       {
-               if (this.currencyLocale == null || this.currencyLocale.isBlank())
-               {
-                       return Locale.getDefault();
-               }
-
-               try
-               {
-                       return Locale.forLanguageTag(this.currencyLocale);
-               }
-               catch (Exception ex)
-               {
-                       return Locale.getDefault();
-               }
-       }
-
-       /**
-        * Stores the locale to use for currency formatting.
-        *
-        * @param locale locale to persist, {@code null} keeps the existing preference
-        */
-       public void setCurrencyLocale(Locale locale)
-       {
-               if (locale != null)
-               {
-                       this.currencyLocale = locale.toLanguageTag();
-               }
-       }
-
-       /**
-        * Provides a default fiscal year start date as a {@link LocalDate} for the supplied calendar year.
-        * If the stored value is invalid, January 1st of the provided year is used.
-        *
-        * @param year calendar year
-        * @return start date of the fiscal year for {@code year}
-        */
-       public LocalDate getFiscalYearStartDate(int year)
-       {
-               if (this.fiscalYearStart == null || this.fiscalYearStart.isBlank())
-               {
-                       return LocalDate.of(year, 1, 1);
-               }
-
-               String[] parts = this.fiscalYearStart.split("-");
-               if (parts.length != 2)
-               {
-                       return LocalDate.of(year, 1, 1);
-               }
-
-               try
-               {
-                       int month = Integer.parseInt(parts[0]);
-                       int day = Integer.parseInt(parts[1]);
-                       return LocalDate.of(year, month, day);
-               }
-               catch (Exception ex)
-               {
-                       return LocalDate.of(year, 1, 1);
-               }
-       }
+       // Reporting preferences
+       /** Default report period selection applied across dashboards. */
+       @JsonProperty private String defaultReportPeriod = ReportPeriodPreset.YEAR_TO_DATE.name();
+       /** Whether the Year-To-Date period should be offered in report pickers. */
+       @JsonProperty private boolean enableYearToDateOption = true;
+       /** Whether the current fiscal year option should be available. */
+       @JsonProperty private boolean enableFullYearOption = true;
+       /** Whether the "Last Month" option should be available. */
+       @JsonProperty private boolean enableLastMonthOption = true;
 	
 	/**
 	 * Represents a user account within the settings model.
@@ -233,21 +137,182 @@ import lombok.NoArgsConstructor;
 		 * Sets the role for this user.
 		 * @param role The role to set.
 		 */
-		public void setRole(String role)
-		{
-			this.role = role;
-		}
-		
-	}
-	
-	// Explicit Getters/Setters below are mostly redundant due to Lombok @Data
-	// but are documented as they exist in the original code.
-	
-	/**
-	 * Gets the organization name.
-	 * @return The name of the organization.
-	 */
-	public String getOrganizationName()
+                public void setRole(String role)
+                {
+                        this.role = role;
+                }
+
+        }
+
+        // Explicit Getters/Setters below are mostly redundant due to Lombok @Data
+        // but are documented as they exist in the original code.
+
+        /**
+         * Indicates whether autosave is enabled.
+         *
+         * @return {@code true} when background autosave is enabled; {@code false} otherwise.
+         */
+        public boolean isAutosaveEnabled()
+        {
+                return this.autosaveEnabled;
+        }
+
+        /**
+         * Enables or disables the autosave feature.
+         *
+         * @param autosaveEnabled {@code true} to enable autosave; {@code false} to disable it.
+         */
+        public void setAutosaveEnabled(boolean autosaveEnabled)
+        {
+                this.autosaveEnabled = autosaveEnabled;
+        }
+
+        /**
+         * Retrieves the autosave interval in minutes.
+         *
+         * @return the number of minutes between autosave executions.
+         */
+		public int getAutosaveIntervalMinutes()
+        {
+                return this.autosaveIntervalMinutes;
+        }
+
+        /**
+         * Updates the autosave interval.
+         *
+         * @param autosaveIntervalMinutes interval, in minutes, between autosave executions.
+         */
+        public void setAutosaveIntervalMinutes(int autosaveIntervalMinutes)
+        {
+                this.autosaveIntervalMinutes = autosaveIntervalMinutes;
+        }
+
+        /**
+         * Returns the default company directory path configured by the user.
+         *
+         * @return the default company directory path or {@code null} when unset.
+         */
+        public String getDefaultCompanyDirectory()
+        {
+                return this.defaultCompanyDirectory;
+        }
+
+        /**
+         * Sets the default company directory path.
+         *
+         * @param defaultCompanyDirectory directory path to use by default when opening/saving
+         *                               company files.
+         */
+        public void setDefaultCompanyDirectory(String defaultCompanyDirectory)
+        {
+                this.defaultCompanyDirectory = defaultCompanyDirectory;
+        }
+
+        /**
+         * Retrieves the last used company file path.
+         *
+         * @return the last used company file path or {@code null} when no history exists.
+         */
+        public String getLastUsedCompanyFile()
+        {
+                return this.lastUsedCompanyFile;
+        }
+
+        /**
+         * Persists the path to the last used company file.
+         *
+         * @param lastUsedCompanyFile path to the most recently opened company file.
+         */
+        public void setLastUsedCompanyFile(String lastUsedCompanyFile)
+        {
+                this.lastUsedCompanyFile = lastUsedCompanyFile;
+        }
+
+        /**
+         * Provides the default report period selection.
+         *
+         * @return the identifier of the default report period preset.
+         */
+        public String getDefaultReportPeriod()
+        {
+                return this.defaultReportPeriod;
+        }
+
+        /**
+         * Updates the default report period selection.
+         *
+         * @param defaultReportPeriod identifier of the desired default report period preset.
+         */
+        public void setDefaultReportPeriod(String defaultReportPeriod)
+        {
+                this.defaultReportPeriod = defaultReportPeriod;
+        }
+
+        /**
+         * Indicates whether the "Year-To-Date" report preset is available.
+         *
+         * @return {@code true} when the preset is offered; {@code false} otherwise.
+         */
+        public boolean isEnableYearToDateOption()
+        {
+                return this.enableYearToDateOption;
+        }
+
+        /**
+         * Enables or disables the "Year-To-Date" report preset.
+         *
+         * @param enableYearToDateOption {@code true} to enable the preset; {@code false} otherwise.
+         */
+        public void setEnableYearToDateOption(boolean enableYearToDateOption)
+        {
+                this.enableYearToDateOption = enableYearToDateOption;
+        }
+
+        /**
+         * Indicates whether the "Full Year" report preset is available.
+         *
+         * @return {@code true} when enabled; {@code false} otherwise.
+         */
+        public boolean isEnableFullYearOption()
+        {
+                return this.enableFullYearOption;
+        }
+
+        /**
+         * Enables or disables the "Full Year" report preset option.
+         *
+         * @param enableFullYearOption {@code true} to enable; {@code false} otherwise.
+         */
+        public void setEnableFullYearOption(boolean enableFullYearOption)
+        {
+                this.enableFullYearOption = enableFullYearOption;
+        }
+
+        /**
+         * Indicates whether the "Last Month" report preset is available.
+         *
+         * @return {@code true} when enabled; {@code false} otherwise.
+         */
+        public boolean isEnableLastMonthOption()
+        {
+                return this.enableLastMonthOption;
+        }
+
+        /**
+         * Enables or disables the "Last Month" report preset option.
+         *
+         * @param enableLastMonthOption {@code true} to enable; {@code false} otherwise.
+         */
+        public void setEnableLastMonthOption(boolean enableLastMonthOption)
+        {
+                this.enableLastMonthOption = enableLastMonthOption;
+        }
+
+        /**
+         * Gets the organization name.
+         * @return The name of the organization.
+         */
+        public String getOrganizationName()
 	{
 		return this.organizationName;
 	}
@@ -279,14 +344,38 @@ import lombok.NoArgsConstructor;
 		this.fiscalYearStart = start;
 	}
 	
-	/**
-	 * Gets the default currency code.
-	 * @return The default currency code (e.g., "USD").
-	 */
-	public String getDefaultCurrency()
-	{
-		return this.defaultCurrency;
-	}
+        /**
+         * Gets the default currency code.
+         * @return The default currency code (e.g., "USD").
+         */
+        public String getDefaultCurrency()
+        {
+                return this.defaultCurrency;
+        }
+
+        /**
+         * Returns the fiscal year start as a {@link MonthDay} when possible.
+         *
+         * @return month/day representation of the fiscal year start or {@code null}
+         *         when the stored value cannot be parsed.
+         */
+        public MonthDay getFiscalYearStartMonthDay()
+        {
+                if (this.fiscalYearStart == null || this.fiscalYearStart.isBlank())
+                {
+                        return null;
+                }
+
+                try
+                {
+                        return MonthDay.parse(this.fiscalYearStart,
+                                java.time.format.DateTimeFormatter.ofPattern("MM-dd"));
+                }
+                catch (Exception ex)
+                {
+                        return null;
+                }
+        }
 	
 	/**
 	 * Sets the default currency code.
@@ -424,5 +513,7 @@ import lombok.NoArgsConstructor;
        {
                this.currencyFormat = currencyFormat;
        }
+
+  
 	
 }

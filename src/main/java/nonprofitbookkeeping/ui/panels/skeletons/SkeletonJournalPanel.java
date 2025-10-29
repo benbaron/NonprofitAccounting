@@ -12,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -50,6 +51,8 @@ import java.util.List;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,7 +87,7 @@ public class SkeletonJournalPanel extends BorderPane
         private Button applyFilterButton;
         /** Button to refresh the table without changing filters. */
         private Button refreshButton;
-        /** Button to clear all filters and show every journal entry. */
+        /** Button that clears all filter criteria. */
         private Button clearFilterButton;
         /** Button to initiate creating a new journal entry from the in-panel workspace. */
         private Button createTransactionButton;
@@ -190,29 +193,23 @@ public class SkeletonJournalPanel extends BorderPane
 		
 		// Filter
 		Label filterLabel = new Label("Filter:");
-                // search
+		// search
                 this.searchFilterField = new TextField();
                 this.searchFilterField.setPromptText("Search description/account...");
                 this.searchFilterField.setPrefWidth(200);
-                this.searchFilterField.setTooltip(
-                                new Tooltip("Filter journal entries by description or account name."));
-                // date range
+                this.searchFilterField.setTooltip(new Tooltip("Search by description or account name."));
+		// date range
                 this.startDatePicker = new DatePicker();
                 this.startDatePicker.setPromptText("Start Date");
-                this.startDatePicker
-                                .setTooltip(new Tooltip("Include entries on or after this date."));
                 this.endDatePicker = new DatePicker();
                 this.endDatePicker.setPromptText("End Date");
-                this.endDatePicker.setTooltip(new Tooltip("Include entries on or before this date."));
                 // apply
                 this.applyFilterButton = new Button("Apply Filter");
-                this.applyFilterButton
-                                .setTooltip(new Tooltip("Apply the filter criteria to the journal table."));
                 this.refreshButton = new Button("Refresh");
-                this.refreshButton.setTooltip(new Tooltip("Reload the table without modifying filters."));
                 this.clearFilterButton = new Button("Clear Filter");
-                this.clearFilterButton.setTooltip(new Tooltip("Reset the filter and show all entries."));
-                this.clearFilterButton.setOnAction(e -> clearFilters());
+                this.applyFilterButton.setTooltip(new Tooltip("Apply the current search text and date range."));
+                this.refreshButton.setTooltip(new Tooltip("Reload data using the existing filter."));
+                this.clearFilterButton.setTooltip(new Tooltip("Remove all filters and show every entry."));
                 this.filterControlsBox.getChildren().addAll(filterLabel, this.searchFilterField,
                                 this.startDatePicker, this.endDatePicker, this.applyFilterButton,
                                 this.refreshButton, this.clearFilterButton);
@@ -231,6 +228,8 @@ public class SkeletonJournalPanel extends BorderPane
                 this.closeEditorButton = new Button("Close Workspace");
                 this.deleteEntryButton = new Button("Delete Entry");
                 this.closeEditorButton.setDisable(true);
+                this.closeEditorButton.setVisible(false);
+                this.closeEditorButton.setManaged(false);
 
                 this.editSelectedButton.disableProperty().bind(
                                 Bindings.isNull(this.journalDisplayTable.getSelectionModel().selectedItemProperty()));
@@ -469,6 +468,7 @@ public class SkeletonJournalPanel extends BorderPane
                 // On filter
                 this.applyFilterButton.setOnAction(e -> onFilterButtonAction());
                 this.refreshButton.setOnAction(e -> refresh());
+                this.clearFilterButton.setOnAction(e -> clearFilters());
                 this.createTransactionButton.setOnAction(e -> openEditor(null));
                 this.editSelectedButton.setOnAction(e -> onEditAction());
                 this.closeEditorButton.setOnAction(e -> resetEditorWorkspace());
@@ -574,16 +574,26 @@ public class SkeletonJournalPanel extends BorderPane
 
         }
 
-        private void showEditor(BorderPane pane, String modeDescription)
+        /** Clears all search criteria and reloads the full journal dataset. */
+        private void clearFilters()
         {
-                this.editorActive = true;
-                this.closeEditorButton.setDisable(false);
-                pane.prefWidthProperty().bind(this.editorHost.widthProperty());
-                pane.maxWidthProperty().bind(this.editorHost.widthProperty());
-                pane.prefHeightProperty().bind(this.editorHost.heightProperty());
-                pane.maxHeightProperty().bind(this.editorHost.heightProperty());
-                this.editorHost.getChildren().setAll(pane);
-                this.editorModeLabel.setText(modeDescription);
+                this.searchFilterField.clear();
+                this.startDatePicker.setValue(null);
+                this.endDatePicker.setValue(null);
+                loadData();
+                this.journalDisplayTable.setItems(this.journalDataList);
+
+                if (!this.editorActive)
+                {
+                        updatePreview(this.journalDisplayTable.getSelectionModel().getSelectedItem());
+                }
+        }
+
+        /** Moves keyboard focus to the search filter field. */
+        public void focusSearchField()
+        {
+                this.searchFilterField.requestFocus();
+                this.searchFilterField.selectAll();
         }
 
         private void showPreview()
@@ -610,12 +620,12 @@ public class SkeletonJournalPanel extends BorderPane
                 if (entry == null)
                 {
                         this.previewInstructionLabel.setText(
-                                        "Select a journal entry to see its details or choose \"Create Transaction\" to begin a new one.");
+                                        "Select a journal entry to see its details or choose \"Create Transaction\" to open the editor window.");
                 }
                 else
                 {
                         this.previewInstructionLabel
-                                        .setText("Use the workspace to edit this transaction or create a new one.");
+                                        .setText("Use the buttons above to open this transaction in the editor window.");
                 }
 
                 this.previewDateLabel.setText("Date: " + withPlaceholder(entry == null ? null : entry.getDate()));
@@ -877,6 +887,18 @@ public class SkeletonJournalPanel extends BorderPane
                 }
 
                 Journal journal = company.getLedger().getJournal();
+                Stage ownerStage = getScene() != null ? (Stage) getScene().getWindow() : null;
+                Stage dialog = new Stage();
+
+                if (ownerStage != null)
+                {
+                        dialog.initOwner(ownerStage);
+                }
+
+                dialog.initModality(Modality.APPLICATION_MODAL);
+
+                String modeDescription = (existing == null) ? "Create Journal Entry" : "Edit Journal Entry";
+                dialog.setTitle(modeDescription);
 
                 GeneralJournalEntryPanelFX editorPane;
 
@@ -885,17 +907,28 @@ public class SkeletonJournalPanel extends BorderPane
                         editorPane = new GeneralJournalEntryPanelFX(tx -> {
                                 journal.addTransaction(tx);
                                 handlePersistAndRefresh(tx);
+                                dialog.close();
                         });
-                        showEditor(editorPane, "Creating transaction");
                 }
                 else
                 {
                         editorPane = new GeneralJournalEntryPanelFX(existing, tx -> {
                                 journal.updateTransaction(tx);
                                 handlePersistAndRefresh(tx);
+                                dialog.close();
                         });
-                        showEditor(editorPane, "Editing transaction");
                 }
+
+                Scene scene = new Scene(editorPane, 900, 600);
+
+                if (ownerStage != null && ownerStage.getScene() != null)
+                {
+                        scene.getStylesheets().addAll(ownerStage.getScene().getStylesheets());
+                }
+
+                dialog.setScene(scene);
+                dialog.setResizable(true);
+                dialog.showAndWait();
 
         }
 	

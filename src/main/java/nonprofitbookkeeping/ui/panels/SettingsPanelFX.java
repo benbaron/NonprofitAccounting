@@ -4,25 +4,24 @@ package nonprofitbookkeeping.ui.panels;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.stage.Stage;
-import javafx.stage.FileChooser;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.util.StringConverter;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.Year;
 import java.util.Locale;
-import java.util.Map;
-import java.util.function.Consumer;
-import nonprofitbookkeeping.model.SettingsModel.DefaultReportPeriod;
+
 import nonprofitbookkeeping.core.Database;
-import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.ChartOfAccounts;
-import nonprofitbookkeeping.preferences.PreferencesManager;
-import nonprofitbookkeeping.service.SettingsService;
+import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.model.ReportPeriodPreset;
 import nonprofitbookkeeping.model.SettingsModel;
+import nonprofitbookkeeping.service.SettingsService;
 import nonprofitbookkeeping.ui.ThemeManager;
 import nonprofitbookkeeping.util.FormatUtils;
 
@@ -33,32 +32,28 @@ public class SettingsPanelFX extends BorderPane
 {
         private final SettingsService service;
         private final Stage primaryStage;
-        private final Consumer<SettingsModel> onSettingsSaved;
-
-        private TextField orgNameField;
-        private TextField fiscalStartField;
+        private final Runnable onSettingsSaved;
+	
+	private TextField orgNameField;
+	private TextField fiscalStartField;
         private ComboBox<String> currencyBox;
         private ComboBox<String> incomeAccountBox;
         private ComboBox<String> expenseAccountBox;
-       private ComboBox<String> themeCombo;
-       private ComboBox<String> languageCombo;
-       /** Text field for customizing the currency format pattern. */
-       private TextField currencyFormatField;
-       /** Spinner to configure the autosave interval. */
-       private Spinner<Integer> autosaveSpinner;
-       /** Field storing the default directory used by file choosers. */
-       private TextField defaultDirectoryField;
-       /** Field storing the last opened file location. */
-       private TextField lastFileField;
-       /** Combo box to select the default report period. */
-       private ComboBox<DefaultReportPeriod> defaultPeriodCombo;
-       /** Spinner to capture the fiscal/reporting year when a full year is selected. */
-       private Spinner<Integer> reportYearSpinner;
-       /** Stores the map of supported languages to locales. */
-       private Map<String, Locale> availableLocales;
-
-        /**
-         * Constructs a new {@code SettingsPanelFX}.
+        private ComboBox<String> themeCombo;
+        private ComboBox<Locale> languageCombo;
+        /** Text field for customizing the currency format pattern. */
+        private TextField currencyFormatField;
+        private CheckBox autosaveEnabledCheck;
+        private Spinner<Integer> autosaveIntervalSpinner;
+        private TextField defaultDirectoryField;
+        private TextField lastFileField;
+        private ComboBox<ReportPeriodPreset> defaultReportPeriodCombo;
+        private CheckBox yearToDateOptionCheck;
+        private CheckBox fullYearOptionCheck;
+        private CheckBox lastMonthOptionCheck;
+	
+	/**
+	 * Constructs a new {@code SettingsPanelFX}.
 	 *
 	* @param primaryStage reference to the main stage so theme changes can be applied
 	 * @param service      settings service for persistence
@@ -69,8 +64,8 @@ public class SettingsPanelFX extends BorderPane
                 this(primaryStage, service, null);
         }
 
-        public SettingsPanelFX(Stage primaryStage, SettingsService service,
-                Consumer<SettingsModel> onSettingsSaved)
+        /** Convenience constructor including a callback invoked after successful save. */
+        public SettingsPanelFX(Stage primaryStage, SettingsService service, Runnable onSettingsSaved)
         {
                 this.primaryStage = primaryStage;
                 this.service = service;
@@ -83,12 +78,26 @@ public class SettingsPanelFX extends BorderPane
                         {
                                 this.service.loadSettings(null);
 
+                               SettingsModel current = this.service.getSettings();
+                               FormatUtils.configureLocale(
+                                       current.getLanguage() != null ? Locale.forLanguageTag(current.getLanguage())
+                                               : Locale.getDefault(),
+                                       current.getDefaultCurrency());
+                               FormatUtils.setCurrencyFormat(current.getCurrencyFormat());
+
                                if (this.primaryStage != null && this.primaryStage.getScene() != null)
                                {
-                                       ThemeManager.applyTheme(this.primaryStage.getScene(),
-                                               this.service.getSettings().getTheme());
-                                       FormatUtils.setCurrencyLocale(this.service.getSettings().getCurrencyLocale());
-                                       FormatUtils.setCurrencyFormat(this.service.getSettings().getCurrencyFormat());
+                                       ThemeManager.applyTheme(this.primaryStage.getScene(), current.getTheme());
+                                       if (current.getOrganizationName() != null
+                                               && !current.getOrganizationName().isBlank())
+                                       {
+                                               this.primaryStage.setTitle(current.getOrganizationName()
+                                                       + " - Nonprofit Bookkeeping");
+                                       }
+                                       else
+                                       {
+                                               this.primaryStage.setTitle("Nonprofit Bookkeeping");
+                                       }
                                }
 
                         }
@@ -100,17 +109,10 @@ public class SettingsPanelFX extends BorderPane
 		}
 		
 		setPadding(new Insets(10));
-		TabPane tabs = new TabPane();
-		
-                this.availableLocales = Map.of(
-                        "English (United States)", Locale.US,
-                        "English (United Kingdom)", Locale.UK,
-                        "French (France)", Locale.FRANCE,
-                        "Spanish (Spain)", new Locale("es", "ES"),
-                        "Canadian English", Locale.CANADA);
+                TabPane tabs = new TabPane();
 
-                tabs.getTabs().addAll(companyInfoTab(), accountingTab(), reportsTab(), applicationTab(),
-                        backupTab(), uiPrefsTab());
+                tabs.getTabs().addAll(companyInfoTab(), accountingTab(), applicationTab(), backupTab(),
+                        uiPrefsTab());
 		
 		setCenter(tabs);
 		
@@ -127,24 +129,31 @@ public class SettingsPanelFX extends BorderPane
 
                                        if (this.primaryStage != null && this.primaryStage.getScene() != null)
                                        {
-                                       ThemeManager.applyTheme(this.primaryStage.getScene(),
-                                               this.service.getSettings().getTheme());
-                                       SettingsModel saved = this.service.getSettings();
-                                       FormatUtils.setCurrencyLocale(saved.getCurrencyLocale());
-                                       FormatUtils.setCurrencyFormat(saved.getCurrencyFormat());
-                               }
+                                               ThemeManager.applyTheme(this.primaryStage.getScene(),
+                                                       this.service.getSettings().getTheme());
+                                               FormatUtils.setCurrencyFormat(this.service.getSettings().getCurrencyFormat());
+                                               String org = this.service.getSettings().getOrganizationName();
+                                               if (org != null && !org.isBlank())
+                                               {
+                                                       this.primaryStage.setTitle(org + " - Nonprofit Bookkeeping");
+                                               }
+                                               else
+                                               {
+                                                       this.primaryStage.setTitle("Nonprofit Bookkeeping");
+                                               }
+                                       }
 
-                                alert("Settings saved");
+                                        alert("Settings saved");
 
-                               if (this.onSettingsSaved != null)
-                               {
-                                       this.onSettingsSaved.accept(this.service.getSettings());
-                               }
-                        }
-				catch (IOException ex)
-				{
-					alert("Failed to save settings: " + ex.getMessage());
-				}
+                                        if (this.onSettingsSaved != null)
+                                        {
+                                                this.onSettingsSaved.run();
+                                        }
+                                }
+                                catch (IOException ex)
+                                {
+                                        alert("Failed to save settings: " + ex.getMessage());
+                                }
 				
 			}
 			
@@ -173,15 +182,18 @@ public class SettingsPanelFX extends BorderPane
 	 */
 	private Tab companyInfoTab()
 	{
-		GridPane grid = grid(3, 2);
-		this.orgNameField = new TextField();
-		this.fiscalStartField = new TextField();
-		this.currencyBox = new ComboBox<>();
+                GridPane grid = grid(3, 2);
+                this.orgNameField = new TextField();
+                this.orgNameField.setTooltip(new Tooltip("Displayed in window titles and reports."));
+                this.fiscalStartField = new TextField();
+                this.fiscalStartField.setPromptText("MM-DD");
+                this.fiscalStartField.setTooltip(new Tooltip("Fiscal year start in MM-DD format."));
+                this.currencyBox = new ComboBox<>();
                 this.currencyBox.getItems().addAll("USD", "EUR", "GBP");
-                this.currencyBox.setTooltip(new Tooltip("Select the default currency for new companies."));
-
-                if (this.service != null)
-                {
+                this.currencyBox.setTooltip(new Tooltip("Currency symbol applied to formatted amounts."));
+		
+		if (this.service != null)
+		{
 			SettingsModel m = this.service.getSettings();
 			if (m.getOrganizationName() != null)
 				this.orgNameField.setText(m.getOrganizationName());
@@ -198,15 +210,15 @@ public class SettingsPanelFX extends BorderPane
 		}
 		
                 Label orgLabel = new Label("Organization Name:");
-                orgLabel.setTooltip(new Tooltip("Displayed in reports and exported documents."));
+                orgLabel.setTooltip(this.orgNameField.getTooltip());
                 grid.add(orgLabel, 0, 0);
                 grid.add(this.orgNameField, 1, 0);
                 Label fiscalLabel = new Label("Fiscal Year Start:");
-                fiscalLabel.setTooltip(new Tooltip("Specify as MM-DD. Used for default reporting ranges."));
+                fiscalLabel.setTooltip(this.fiscalStartField.getTooltip());
                 grid.add(fiscalLabel, 0, 1);
                 grid.add(this.fiscalStartField, 1, 1);
                 Label currencyLabel = new Label("Default Currency:");
-                currencyLabel.setTooltip(new Tooltip("Applied to new companies that do not specify a currency."));
+                currencyLabel.setTooltip(this.currencyBox.getTooltip());
                 grid.add(currencyLabel, 0, 2);
                 grid.add(this.currencyBox, 1, 2);
 		
@@ -214,26 +226,17 @@ public class SettingsPanelFX extends BorderPane
 		return new Tab("Company Info", wrapper);
 	}
 	
+	
 	/**
-	 * Builds and returns the "Users" tab for the settings panel.
-	 * This tab displays a table of users ({@link UserRow}) with their usernames and roles.
-	 * Currently, it shows demo data.
-	 * The {@code @SuppressWarnings({ "unchecked", "deprecation" })} is used because {@link PropertyValueFactory}
-	 * uses reflection and can lead to type safety warnings if property names don't strictly match
-	 * Java bean conventions or if raw types are inferred. "deprecation" might relate to older patterns.
+	 * Builds and returns the "Accounting" tab for the settings panel.
+	 * This tab includes settings related to default accounts (income, expense)
+	 * and options like auto-numbering for vouchers.
 	 * 
-	 * @return A {@link Tab} configured with user management settings.
+	 * @return A {@link Tab} configured with accounting-related settings.
 	 */
-        /**
-         * Builds and returns the "Accounting" tab for the settings panel.
-         * This tab includes settings related to default accounts (income, expense)
-         * and options like auto-numbering for vouchers.
-         *
-         * @return A {@link Tab} configured with accounting-related settings.
-         */
-        private Tab accountingTab()
-        {
-                GridPane grid = grid(2, 2);
+	private Tab accountingTab()
+	{
+		GridPane grid = grid(2, 2);
 		this.incomeAccountBox = new ComboBox<>();
 		this.expenseAccountBox = new ComboBox<>();
 		
@@ -261,149 +264,158 @@ public class SettingsPanelFX extends BorderPane
 				this.expenseAccountBox.setValue(m.getDefaultExpenseAccount());
 		}
 		
-                Label defaultIncome = new Label("Default Income Account:");
-                defaultIncome.setTooltip(new Tooltip("Used when creating new revenue transactions."));
-                grid.add(defaultIncome, 0, 0);
-                grid.add(this.incomeAccountBox, 1, 0);
-                Label defaultExpense = new Label("Default Expense Account:");
-                defaultExpense.setTooltip(new Tooltip("Used when creating new expense transactions."));
-                grid.add(defaultExpense, 0, 1);
-                grid.add(this.expenseAccountBox, 1, 1);
-
+		grid.add(new Label("Default Income Account:"), 0, 0);
+		grid.add(this.incomeAccountBox, 1, 0);
+		grid.add(new Label("Default Expense Account:"), 0, 1);
+		grid.add(this.expenseAccountBox, 1, 1);
+		
                 TitledPane wrapper = titled("Accounting Settings", grid);
                 return new Tab("Accounting", wrapper);
         }
 
         /**
-         * Builds the Reports tab where users can select default reporting periods.
-         *
-         * @return configured reports {@link Tab}
-         */
-        private Tab reportsTab()
-        {
-                GridPane grid = grid(2, 2);
-
-                this.defaultPeriodCombo = new ComboBox<>();
-                this.defaultPeriodCombo.getItems().addAll(DefaultReportPeriod.values());
-                this.defaultPeriodCombo.setTooltip(new Tooltip(
-                        "Select the default date range used in Account Details and reports."));
-
-                this.reportYearSpinner = new Spinner<>();
-                int currentYear = Year.now().getValue();
-                SpinnerValueFactory.IntegerSpinnerValueFactory factory =
-                        new SpinnerValueFactory.IntegerSpinnerValueFactory(2000, 2100, currentYear);
-                this.reportYearSpinner.setValueFactory(factory);
-                this.reportYearSpinner.setEditable(true);
-                this.reportYearSpinner.setTooltip(new Tooltip(
-                        "Fiscal year to use when the default period spans an entire year."));
-
-                if (this.service != null)
-                {
-                        SettingsModel m = this.service.getSettings();
-                        this.defaultPeriodCombo.setValue(m.getDefaultReportPeriodEnum());
-                        if (m.getDefaultReportYear() != null)
-                        {
-                                this.reportYearSpinner.getValueFactory().setValue(m.getDefaultReportYear());
-                        }
-                }
-                else
-                {
-                        this.defaultPeriodCombo.setValue(DefaultReportPeriod.YEAR_TO_DATE);
-                }
-
-                Label periodLabel = new Label("Default Period:");
-                periodLabel.setTooltip(this.defaultPeriodCombo.getTooltip());
-                Label yearLabel = new Label("Fiscal Year:");
-                yearLabel.setTooltip(this.reportYearSpinner.getTooltip());
-
-                grid.add(periodLabel, 0, 0);
-                grid.add(this.defaultPeriodCombo, 1, 0);
-                grid.add(yearLabel, 0, 1);
-                grid.add(this.reportYearSpinner, 1, 1);
-
-                TitledPane wrapper = titled("Reporting Defaults", grid);
-                return new Tab("Reports", wrapper);
-        }
-
-        /**
-         * Builds the Application tab with autosave and filesystem preferences.
-         *
-         * @return application {@link Tab}
+         * Builds the "Application" tab containing autosave and reporting preferences.
          */
         private Tab applicationTab()
         {
-                GridPane grid = grid(3, 2);
+                GridPane grid = grid(5, 2);
 
-                this.autosaveSpinner = new Spinner<>();
-                SpinnerValueFactory.IntegerSpinnerValueFactory valueFactory =
-                        new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 720, 5);
-                this.autosaveSpinner.setValueFactory(valueFactory);
-                this.autosaveSpinner.setEditable(true);
-                this.autosaveSpinner.setTooltip(new Tooltip(
-                        "Minutes between automatic saves. Set to 0 to disable autosave."));
+                this.autosaveEnabledCheck = new CheckBox("Enable background autosave");
+                this.autosaveEnabledCheck
+                        .setTooltip(new Tooltip("Automatically persist the open company at regular intervals."));
+                this.autosaveIntervalSpinner = new Spinner<>(1, 240, 5);
+                this.autosaveIntervalSpinner.setEditable(true);
+                this.autosaveIntervalSpinner.setTooltip(new Tooltip("Minutes between automatic saves."));
+                HBox autosaveControls = new HBox(10, this.autosaveEnabledCheck,
+                        new Label("Interval (minutes):"), this.autosaveIntervalSpinner);
 
                 this.defaultDirectoryField = new TextField();
                 this.defaultDirectoryField.setEditable(false);
-                this.defaultDirectoryField.setTooltip(new Tooltip(
-                        "Default folder shown when opening or exporting files."));
-                Button browseDefaultDir = new Button("Browse...");
-                browseDefaultDir.setOnAction(e -> chooseDefaultDirectory());
-                browseDefaultDir.setTooltip(new Tooltip("Pick the directory used by file choosers."));
+                this.defaultDirectoryField
+                        .setTooltip(new Tooltip("Used as the starting directory when creating companies."));
+                Button chooseDir = new Button("Browse...");
+                chooseDir.setTooltip(new Tooltip("Select a default directory."));
+                chooseDir.setOnAction(e -> {
+                        DirectoryChooser chooser = new DirectoryChooser();
+                        chooser.setTitle("Select Default Directory");
+
+                        if (this.defaultDirectoryField.getText() != null
+                                && !this.defaultDirectoryField.getText().isBlank())
+                        {
+                                File current = new File(this.defaultDirectoryField.getText());
+                                if (current.exists())
+                                {
+                                        chooser.setInitialDirectory(current.isDirectory()
+                                                ? current : current.getParentFile());
+                                }
+                        }
+
+                        File selected = chooser.showDialog(this.primaryStage);
+
+                        if (selected != null)
+                        {
+                                this.defaultDirectoryField.setText(selected.getAbsolutePath());
+                        }
+                });
+                HBox dirBox = new HBox(8, this.defaultDirectoryField, chooseDir);
+                HBox.setHgrow(this.defaultDirectoryField, Priority.ALWAYS);
 
                 this.lastFileField = new TextField();
                 this.lastFileField.setEditable(false);
-                this.lastFileField.setTooltip(new Tooltip(
-                        "Remember the most recently opened company or data file."));
-                Button browseLastFile = new Button("Select...");
-                browseLastFile.setOnAction(e -> chooseLastFile());
-                browseLastFile.setTooltip(new Tooltip("Choose the last company/data file you worked with."));
+                this.lastFileField.setTooltip(new Tooltip("Remembers the previously opened company file."));
+                Button chooseFile = new Button("Browse...");
+                chooseFile.setTooltip(new Tooltip("Select a recent company file."));
+                chooseFile.setOnAction(e -> {
+                        FileChooser chooser = new FileChooser();
+                        chooser.setTitle("Select Company File");
+
+                        if (this.lastFileField.getText() != null && !this.lastFileField.getText().isBlank())
+                        {
+                                File current = new File(this.lastFileField.getText());
+                                if (current.exists())
+                                {
+                                        chooser.setInitialDirectory(current.getParentFile());
+                                        chooser.setInitialFileName(current.getName());
+                                }
+                        }
+
+                        File selected = chooser.showOpenDialog(this.primaryStage);
+
+                        if (selected != null)
+                        {
+                                this.lastFileField.setText(selected.getAbsolutePath());
+                        }
+                });
+                HBox fileBox = new HBox(8, this.lastFileField, chooseFile);
+                HBox.setHgrow(this.lastFileField, Priority.ALWAYS);
+
+                this.defaultReportPeriodCombo = new ComboBox<>();
+                this.defaultReportPeriodCombo.getItems().setAll(ReportPeriodPreset.values());
+                this.defaultReportPeriodCombo
+                        .setTooltip(new Tooltip("Default range applied when opening account details and reports."));
+                this.defaultReportPeriodCombo.setConverter(new StringConverter<>()
+                {
+                        @Override public String toString(ReportPeriodPreset preset)
+                        {
+                                if (preset == null)
+                                {
+                                        return "";
+                                }
+                                return switch (preset)
+                                {
+                                        case YEAR_TO_DATE -> "Year to Date";
+                                        case FULL_YEAR -> "Full Fiscal Year";
+                                        case LAST_MONTH -> "Last Month";
+                                };
+                        }
+
+                        @Override public ReportPeriodPreset fromString(String string)
+                        {
+                                return ReportPeriodPreset.fromString(string, ReportPeriodPreset.YEAR_TO_DATE);
+                        }
+                });
+
+                this.yearToDateOptionCheck = new CheckBox("Offer Year to Date");
+                this.fullYearOptionCheck = new CheckBox("Offer Full Year");
+                this.lastMonthOptionCheck = new CheckBox("Offer Last Month");
+                VBox reportOptions = new VBox(6, this.yearToDateOptionCheck, this.fullYearOptionCheck,
+                        this.lastMonthOptionCheck);
 
                 if (this.service != null)
                 {
                         SettingsModel m = this.service.getSettings();
-                        this.autosaveSpinner.getValueFactory().setValue(m.getAutosaveIntervalMinutes());
-                        if (m.getDefaultDirectory() != null)
-                        {
-                                this.defaultDirectoryField.setText(m.getDefaultDirectory());
-                        }
-                        else
-                        {
-                                this.defaultDirectoryField.setText(PreferencesManager.getLastDirectory());
-                        }
-                        if (m.getLastOpenedFile() != null)
-                        {
-                                this.lastFileField.setText(m.getLastOpenedFile());
-                        }
-                        else
-                        {
-                                String lastDb = PreferencesManager.getLastDatabasePath();
-                                if (lastDb != null)
-                                {
-                                        this.lastFileField.setText(lastDb);
-                                }
-                        }
+                        this.autosaveEnabledCheck.setSelected(m.isAutosaveEnabled());
+                        this.autosaveIntervalSpinner.getValueFactory().setValue(m.getAutosaveIntervalMinutes());
+                        this.defaultDirectoryField.setText(m.getDefaultCompanyDirectory());
+                        this.lastFileField.setText(m.getLastUsedCompanyFile());
+                        this.defaultReportPeriodCombo.setValue(ReportPeriodPreset
+                                .fromString(m.getDefaultReportPeriod(), ReportPeriodPreset.YEAR_TO_DATE));
+                        this.yearToDateOptionCheck.setSelected(m.isEnableYearToDateOption());
+                        this.fullYearOptionCheck.setSelected(m.isEnableFullYearOption());
+                        this.lastMonthOptionCheck.setSelected(m.isEnableLastMonthOption());
+                }
+                else
+                {
+                        this.autosaveEnabledCheck.setSelected(true);
+                        this.autosaveIntervalSpinner.getValueFactory().setValue(5);
+                        this.defaultReportPeriodCombo.setValue(ReportPeriodPreset.YEAR_TO_DATE);
+                        this.yearToDateOptionCheck.setSelected(true);
+                        this.fullYearOptionCheck.setSelected(true);
+                        this.lastMonthOptionCheck.setSelected(true);
                 }
 
-                Label autosaveLabel = new Label("Autosave Interval (minutes):");
-                autosaveLabel.setTooltip(this.autosaveSpinner.getTooltip());
-                Label defaultDirLabel = new Label("Default Directory:");
-                defaultDirLabel.setTooltip(this.defaultDirectoryField.getTooltip());
-                Label lastFileLabel = new Label("Last Used File:");
-                lastFileLabel.setTooltip(this.lastFileField.getTooltip());
+                grid.add(new Label("Autosave:"), 0, 0);
+                grid.add(autosaveControls, 1, 0);
+                grid.add(new Label("Default Directory:"), 0, 1);
+                grid.add(dirBox, 1, 1);
+                grid.add(new Label("Last Used File:"), 0, 2);
+                grid.add(fileBox, 1, 2);
+                grid.add(new Label("Default Report Period:"), 0, 3);
+                grid.add(this.defaultReportPeriodCombo, 1, 3);
+                grid.add(new Label("Enable Report Filters:"), 0, 4);
+                grid.add(reportOptions, 1, 4);
 
-                grid.add(autosaveLabel, 0, 0);
-                grid.add(this.autosaveSpinner, 1, 0);
-                grid.add(new Label(), 2, 0);
-
-                grid.add(defaultDirLabel, 0, 1);
-                grid.add(this.defaultDirectoryField, 1, 1);
-                grid.add(browseDefaultDir, 2, 1);
-
-                grid.add(lastFileLabel, 0, 2);
-                grid.add(this.lastFileField, 1, 2);
-                grid.add(browseLastFile, 2, 2);
-
-                TitledPane wrapper = titled("Application Preferences", grid);
+                TitledPane wrapper = titled("Application Settings", grid);
                 return new Tab("Application", wrapper);
         }
 	
@@ -523,11 +535,11 @@ public class SettingsPanelFX extends BorderPane
                 this.themeCombo = new ComboBox<>();
                 this.themeCombo.getItems().addAll("Light", "Dark", "System");
                 this.themeCombo.setValue("System");
-		
-		if (this.service != null)
-		{
-			String theme = this.service.getSettings().getTheme();
-			if (theme != null)
+
+                if (this.service != null)
+                {
+                        String theme = this.service.getSettings().getTheme();
+                        if (theme != null)
 				this.themeCombo.setValue(theme);
 		}
 		
@@ -535,31 +547,38 @@ public class SettingsPanelFX extends BorderPane
 		
                 grid.add(new Label("Language:"), 0, 1);
                 this.languageCombo = new ComboBox<>();
-                this.languageCombo.getItems().addAll(this.availableLocales.keySet());
-                this.languageCombo.setTooltip(new Tooltip("Select UI language and locale."));
+                this.languageCombo.getItems().addAll(
+                        Locale.forLanguageTag("en-US"),
+                        Locale.forLanguageTag("es-ES"),
+                        Locale.forLanguageTag("fr-FR"));
+                this.languageCombo.setConverter(new StringConverter<>()
+                {
+                        @Override public String toString(Locale locale)
+                        {
+                                if (locale == null)
+                                {
+                                        return "";
+                                }
+                                return locale.getDisplayLanguage(locale) + " (" + locale.getCountry() + ")";
+                        }
+
+                        @Override public Locale fromString(String string)
+                        {
+                                return null;
+                        }
+                });
+                this.languageCombo.setValue(Locale.forLanguageTag("en-US"));
 
                 if (this.service != null)
                 {
                         String lang = this.service.getSettings().getLanguage();
-                        if (lang != null && this.availableLocales.containsKey(lang))
+                        if (lang != null && !lang.isBlank())
                         {
-                                this.languageCombo.setValue(lang);
+                                this.languageCombo.setValue(Locale.forLanguageTag(lang));
                         }
-                        else
-                        {
-                                Locale locale = this.service.getSettings().getCurrencyLocale();
-                                this.languageCombo.setValue(this.availableLocales.entrySet().stream()
-                                        .filter(e -> e.getValue().equals(locale))
-                                        .map(Map.Entry::getKey).findFirst()
-                                        .orElse("English (United States)"));
-                        }
-                }
-                else
-                {
-                        this.languageCombo.setValue("English (United States)");
                 }
 
-               grid.add(this.languageCombo, 1, 1);
+                grid.add(this.languageCombo, 1, 1);
 
                grid.add(new Label("Currency Format:"), 0, 2);
                this.currencyFormatField = new TextField();
@@ -660,93 +679,30 @@ public class SettingsPanelFX extends BorderPane
                         m.setTheme(this.themeCombo.getValue());
                 if (this.languageCombo != null && this.languageCombo.getValue() != null)
                 {
-                        String selection = this.languageCombo.getValue();
-                        m.setLanguage(selection);
-                        Locale locale = this.availableLocales.getOrDefault(selection, Locale.US);
-                        m.setCurrencyLocale(locale);
-                        FormatUtils.setCurrencyLocale(locale);
+                        Locale locale = this.languageCombo.getValue();
+                        m.setLanguage(locale.toLanguageTag());
+                        FormatUtils.configureLocale(locale, this.currencyBox != null ? this.currencyBox.getValue()
+                                : null);
                 }
-               if (this.currencyFormatField != null)
-               {
-                       String text = this.currencyFormatField.getText();
-                       if (text == null || text.isBlank())
-                       {
-                               m.setCurrencyFormat(null);
-                               FormatUtils.setCurrencyFormat(null);
-                       }
-                       else
-                       {
-                               m.setCurrencyFormat(text);
-                               FormatUtils.setCurrencyFormat(text);
-                       }
-               }
+                if (this.currencyFormatField != null && !this.currencyFormatField.getText().isEmpty())
+                        m.setCurrencyFormat(this.currencyFormatField.getText());
 
-               if (this.autosaveSpinner != null)
-               {
-                       m.setAutosaveIntervalMinutes(this.autosaveSpinner.getValue());
-               }
-
-               if (this.defaultDirectoryField != null)
-               {
-                       String path = this.defaultDirectoryField.getText();
-                       m.setDefaultDirectory(path == null || path.isBlank() ? null : path);
-                       if (path != null && !path.isBlank())
-                       {
-                               PreferencesManager.setLastDirectory(path);
-                               PreferencesManager.setLastWriteDirectory(path);
-                       }
-               }
-
-               if (this.lastFileField != null)
-               {
-                       String file = this.lastFileField.getText();
-                       m.setLastOpenedFile(file == null || file.isBlank() ? null : file);
-                       if (file != null && !file.isBlank())
-                       {
-                               PreferencesManager.setLastDatabasePath(file);
-                       }
-               }
-
-               if (this.defaultPeriodCombo != null && this.defaultPeriodCombo.getValue() != null)
-               {
-                       m.setDefaultReportPeriodEnum(this.defaultPeriodCombo.getValue());
-               }
-
-               if (this.reportYearSpinner != null && this.reportYearSpinner.getValue() != null)
-               {
-                       m.setDefaultReportYear(this.reportYearSpinner.getValue());
-               }
+                if (this.autosaveEnabledCheck != null)
+                        m.setAutosaveEnabled(this.autosaveEnabledCheck.isSelected());
+                if (this.autosaveIntervalSpinner != null && this.autosaveIntervalSpinner.getValue() != null)
+                        m.setAutosaveIntervalMinutes(this.autosaveIntervalSpinner.getValue());
+                if (this.defaultDirectoryField != null)
+                        m.setDefaultCompanyDirectory(this.defaultDirectoryField.getText());
+                if (this.lastFileField != null)
+                        m.setLastUsedCompanyFile(this.lastFileField.getText());
+                if (this.defaultReportPeriodCombo != null && this.defaultReportPeriodCombo.getValue() != null)
+                        m.setDefaultReportPeriod(this.defaultReportPeriodCombo.getValue().name());
+                if (this.yearToDateOptionCheck != null)
+                        m.setEnableYearToDateOption(this.yearToDateOptionCheck.isSelected());
+                if (this.fullYearOptionCheck != null)
+                        m.setEnableFullYearOption(this.fullYearOptionCheck.isSelected());
+                if (this.lastMonthOptionCheck != null)
+                        m.setEnableLastMonthOption(this.lastMonthOptionCheck.isSelected());
 
         }
-
-        private void chooseDefaultDirectory()
-        {
-                DirectoryChooser chooser = new DirectoryChooser();
-                chooser.setTitle("Select Default Directory");
-                if (this.defaultDirectoryField != null && !this.defaultDirectoryField.getText().isBlank())
-                {
-                        File current = new File(this.defaultDirectoryField.getText());
-                        if (current.exists())
-                        {
-                                chooser.setInitialDirectory(current);
-                        }
-                }
-                File selected = chooser.showDialog(this.primaryStage);
-                if (selected != null)
-                {
-                        this.defaultDirectoryField.setText(selected.getAbsolutePath());
-                }
-        }
-
-        private void chooseLastFile()
-        {
-                FileChooser chooser = new FileChooser();
-                chooser.setTitle("Select Last Used File");
-                File selected = chooser.showOpenDialog(this.primaryStage);
-                if (selected != null)
-                {
-                        this.lastFileField.setText(selected.getAbsolutePath());
-                }
-        }
-
 }

@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
+import java.util.Currency;
 import java.util.Locale;
 
 /**
@@ -16,9 +17,23 @@ public final class FormatUtils {
     private static String patternOverride;
     private static final Object FORMAT_LOCK = new Object();
     private static Locale locale = Locale.getDefault();
-    private static DecimalFormat formatter = createFormatter();
+    private static DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(locale);
+    private static String currencyCode = resolveDefaultCurrency(locale);
+    private static DecimalFormat formatter = createFormatter(pattern);
 
     private FormatUtils() {}
+
+    private static String resolveDefaultCurrency(Locale candidate)
+    {
+        try
+        {
+            return Currency.getInstance(candidate).getCurrencyCode();
+        }
+        catch (IllegalArgumentException ex)
+        {
+            return Currency.getInstance(Locale.US).getCurrencyCode();
+        }
+    }
 
     /**
      * Formats the given value using the current currency pattern.
@@ -78,6 +93,34 @@ public final class FormatUtils {
     }
 
     /**
+     * Updates the locale and currency symbol used for formatting/parsing.
+     *
+     * @param newLocale locale to apply; when {@code null} the previous locale is retained
+     * @param desiredCurrencyCode ISO currency code such as "USD"; when {@code null} the locale default is used
+     */
+    public static void configureLocale(Locale newLocale, String desiredCurrencyCode) {
+        synchronized (FORMAT_LOCK) {
+            if (newLocale != null) {
+                locale = newLocale;
+                symbols = DecimalFormatSymbols.getInstance(locale);
+                if (desiredCurrencyCode == null || desiredCurrencyCode.isBlank()) {
+                    currencyCode = resolveDefaultCurrency(locale);
+                }
+            }
+
+            if (desiredCurrencyCode != null && !desiredCurrencyCode.isBlank()) {
+                try {
+                    currencyCode = Currency.getInstance(desiredCurrencyCode).getCurrencyCode();
+                } catch (IllegalArgumentException ex) {
+                    currencyCode = resolveDefaultCurrency(locale);
+                }
+            }
+
+            formatter = createFormatter(pattern);
+        }
+    }
+
+    /**
      * Parses the provided text using the active currency pattern, falling back to
      * a locale-aware sanitisation when the exact pattern cannot be matched.
      *
@@ -122,14 +165,16 @@ public final class FormatUtils {
         return negative ? parsed.negate() : parsed;
     }
 
-    private static DecimalFormat createFormatter() {
-        DecimalFormat format;
-        if (patternOverride == null) {
-            format = (DecimalFormat) NumberFormat.getCurrencyInstance(locale);
-        } else {
-            format = new DecimalFormat(patternOverride, DecimalFormatSymbols.getInstance(locale));
-        }
+    private static DecimalFormat createFormatter(String pattern) {
+        DecimalFormat format = new DecimalFormat(pattern, symbols);
         format.setParseBigDecimal(true);
+        if (currencyCode != null) {
+            try {
+                format.setCurrency(Currency.getInstance(currencyCode));
+            } catch (IllegalArgumentException ex) {
+                // keep existing currency configuration
+            }
+        }
         return format;
     }
 
