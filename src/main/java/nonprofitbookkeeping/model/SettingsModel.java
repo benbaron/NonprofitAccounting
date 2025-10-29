@@ -382,7 +382,7 @@ public class SettingsModel
          *
          * @return parsed month/day or {@code null} when parsing fails or not provided
          */
-        public MonthDay getFiscalYearStartMonthDay()
+        public void setCurrencyLocale(String localeTag)
         {
                 if (this.fiscalYearStart == null || this.fiscalYearStart.isBlank())
                 {
