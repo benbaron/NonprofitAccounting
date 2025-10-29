@@ -11,7 +11,6 @@ import java.util.Locale;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import nonprofitbookkeeping.service.ReportService;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Represents an account with entries and a many-to-many relationship with
@@ -73,6 +72,7 @@ public final class Account implements Serializable
                 this.name = bankAccountName;
                 this.accountType = asset;
                 this.openingBalance = zero;
+                this.increaseSide = defaultIncreaseSide(asset);
         }
 	
 	/* ================= fund helpers =================================== */
@@ -225,10 +225,35 @@ public final class Account implements Serializable
 	 * Gets the side (Debit or Credit) where the account balance increases.
 	 * @return The increase side of the account.
 	 */
-	public AccountSide getIncreaseSide()
-	{
-		return this.increaseSide;
-	}
+        public AccountSide getIncreaseSide()
+        {
+                return this.increaseSide;
+        }
+
+        /**
+         * Determines the effective increase side for this account.
+         * If an explicit increase side has been set, it is returned.
+         * Otherwise the side is derived from the account type and falls
+         * back to {@link AccountSide#DEBIT} when no type mapping exists.
+         *
+         * @return the effective increase side, never {@code null}
+         */
+        public AccountSide getEffectiveIncreaseSide()
+        {
+                if (this.increaseSide != null)
+                {
+                        return this.increaseSide;
+                }
+
+                AccountSide derived = defaultIncreaseSide(this.accountType);
+
+                if (derived != null)
+                {
+                        return derived;
+                }
+
+                return AccountSide.DEBIT;
+        }
 	
 	/**
 	 * Sets the side (Debit or Credit) where the account balance increases.

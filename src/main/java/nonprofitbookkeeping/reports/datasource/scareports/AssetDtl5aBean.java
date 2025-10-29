@@ -1,6 +1,6 @@
 package nonprofitbookkeeping.reports.datasource.scareports;
 
-import java.util.Date;
+
 
 /** Auto-generated bean for sheet 'ASSET_DTL_5a'. */
 public class AssetDtl5aBean {

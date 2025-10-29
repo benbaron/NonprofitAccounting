@@ -1,6 +1,5 @@
 package nonprofitbookkeeping.reports.datasource.scareports;
 
-import java.util.Date;
 
 /** Bean backing the BALANCE_3 v2 Jasper template. */
 public class Balance3Beanv2 {

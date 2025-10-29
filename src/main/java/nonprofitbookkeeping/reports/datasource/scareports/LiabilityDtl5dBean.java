@@ -1,7 +1,5 @@
 package nonprofitbookkeeping.reports.datasource.scareports;
 
-import java.util.Date;
-
 /** Auto-generated bean for sheet 'LIABILITY_DTL_5d'. */
 public class LiabilityDtl5dBean {
     private String LIABILITY_DTL_5d_C2;

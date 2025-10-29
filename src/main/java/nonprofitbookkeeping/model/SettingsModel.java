@@ -1,14 +1,20 @@
 
 package nonprofitbookkeeping.model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
+import java.time.MonthDay;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import nonprofitbookkeeping.model.ReportPeriodPreset;
 
 /**
  * Represents the application settings model.
@@ -17,7 +23,7 @@ import lombok.NoArgsConstructor;
  * Lombok's {@code @Data}, {@code @AllArgsConstructor}, and {@code @NoArgsConstructor}
  * are used for boilerplate code generation.
  */
-@Data @AllArgsConstructor @NoArgsConstructor public class SettingsModel
+public class SettingsModel
 {
 	// Company Info
 	/** The name of the organization. */
@@ -28,24 +34,55 @@ import lombok.NoArgsConstructor;
 	@JsonProperty private String defaultCurrency;
 	
 	// User Accounts
-	/** A list of user accounts configured in the system. */
-	@JsonProperty private List<User> users = new ArrayList<>();
-	
-	// Accounting Settings
-	/** The default account number or name for income transactions. */
-	@JsonProperty private String defaultIncomeAccount;
+       // Accounting Settings
+        /** The default account number or name for income transactions. */
+        @JsonProperty private String defaultIncomeAccount;
 	/** The default account number or name for expense transactions. */
 	@JsonProperty private String defaultExpenseAccount;
-	/** Flag indicating whether vouchers/invoices should be auto-numbered. */
-	@JsonProperty private boolean autoNumberVouchers;
-	
-	// UI Preferences
+       /** Flag indicating whether vouchers/invoices should be auto-numbered. */
+       @JsonProperty private boolean autoNumberVouchers;
+
+       // Autosave and filesystem preferences
+       /** Autosave interval, in minutes. A value of 0 disables autosave. */
+       @JsonProperty private int autosaveIntervalMinutes = 5;
+       /** Default directory presented in file choosers. */
+       @JsonProperty private String defaultDirectory;
+       /** Path to the most recently opened company file. */
+       @JsonProperty private String lastOpenedFile;
+
+       // Reporting defaults
+       /** Preferred default period for reports and account detail filters. */
+       @JsonProperty private String defaultReportPeriod = DefaultReportPeriod.YEAR_TO_DATE.name();
+       /** Calendar year to use when {@link #defaultReportPeriod} is {@link DefaultReportPeriod#FISCAL_YEAR}. */
+       @JsonProperty private Integer defaultReportYear;
+
+       // UI Preferences
         /** The name of the UI theme (e.g., "Dark", "Light"). */
         @JsonProperty private String theme;
         /** The language code for UI localization (e.g., "en_US", "fr_FR"). */
         @JsonProperty private String language;
        /** Pattern used for formatting currency values (e.g., "$#,##0.00"). */
        @JsonProperty private String currencyFormat = "$#,##0.00";
+
+       // Application behaviour
+       /** Flag indicating whether background autosave is enabled. */
+       @JsonProperty private boolean autosaveEnabled = true;
+       /** Interval, in minutes, between background autosave executions. */
+       @JsonProperty private int autosaveIntervalMinutes = 5;
+       /** User-selected default directory for company data. */
+       @JsonProperty private String defaultCompanyDirectory;
+       /** Path to the most recently used company file. */
+       @JsonProperty private String lastUsedCompanyFile;
+
+       // Reporting preferences
+       /** Default report period selection applied across dashboards. */
+       @JsonProperty private String defaultReportPeriod = ReportPeriodPreset.YEAR_TO_DATE.name();
+       /** Whether the Year-To-Date period should be offered in report pickers. */
+       @JsonProperty private boolean enableYearToDateOption = true;
+       /** Whether the current fiscal year option should be available. */
+       @JsonProperty private boolean enableFullYearOption = true;
+       /** Whether the "Last Month" option should be available. */
+       @JsonProperty private boolean enableLastMonthOption = true;
 	
 	/**
 	 * Represents a user account within the settings model.
@@ -100,21 +137,182 @@ import lombok.NoArgsConstructor;
 		 * Sets the role for this user.
 		 * @param role The role to set.
 		 */
-		public void setRole(String role)
-		{
-			this.role = role;
-		}
-		
-	}
-	
-	// Explicit Getters/Setters below are mostly redundant due to Lombok @Data
-	// but are documented as they exist in the original code.
-	
-	/**
-	 * Gets the organization name.
-	 * @return The name of the organization.
-	 */
-	public String getOrganizationName()
+                public void setRole(String role)
+                {
+                        this.role = role;
+                }
+
+        }
+
+        // Explicit Getters/Setters below are mostly redundant due to Lombok @Data
+        // but are documented as they exist in the original code.
+
+        /**
+         * Indicates whether autosave is enabled.
+         *
+         * @return {@code true} when background autosave is enabled; {@code false} otherwise.
+         */
+        public boolean isAutosaveEnabled()
+        {
+                return this.autosaveEnabled;
+        }
+
+        /**
+         * Enables or disables the autosave feature.
+         *
+         * @param autosaveEnabled {@code true} to enable autosave; {@code false} to disable it.
+         */
+        public void setAutosaveEnabled(boolean autosaveEnabled)
+        {
+                this.autosaveEnabled = autosaveEnabled;
+        }
+
+        /**
+         * Retrieves the autosave interval in minutes.
+         *
+         * @return the number of minutes between autosave executions.
+         */
+		public int getAutosaveIntervalMinutes()
+        {
+                return this.autosaveIntervalMinutes;
+        }
+
+        /**
+         * Updates the autosave interval.
+         *
+         * @param autosaveIntervalMinutes interval, in minutes, between autosave executions.
+         */
+        public void setAutosaveIntervalMinutes(int autosaveIntervalMinutes)
+        {
+                this.autosaveIntervalMinutes = autosaveIntervalMinutes;
+        }
+
+        /**
+         * Returns the default company directory path configured by the user.
+         *
+         * @return the default company directory path or {@code null} when unset.
+         */
+        public String getDefaultCompanyDirectory()
+        {
+                return this.defaultCompanyDirectory;
+        }
+
+        /**
+         * Sets the default company directory path.
+         *
+         * @param defaultCompanyDirectory directory path to use by default when opening/saving
+         *                               company files.
+         */
+        public void setDefaultCompanyDirectory(String defaultCompanyDirectory)
+        {
+                this.defaultCompanyDirectory = defaultCompanyDirectory;
+        }
+
+        /**
+         * Retrieves the last used company file path.
+         *
+         * @return the last used company file path or {@code null} when no history exists.
+         */
+        public String getLastUsedCompanyFile()
+        {
+                return this.lastUsedCompanyFile;
+        }
+
+        /**
+         * Persists the path to the last used company file.
+         *
+         * @param lastUsedCompanyFile path to the most recently opened company file.
+         */
+        public void setLastUsedCompanyFile(String lastUsedCompanyFile)
+        {
+                this.lastUsedCompanyFile = lastUsedCompanyFile;
+        }
+
+        /**
+         * Provides the default report period selection.
+         *
+         * @return the identifier of the default report period preset.
+         */
+        public String getDefaultReportPeriod()
+        {
+                return this.defaultReportPeriod;
+        }
+
+        /**
+         * Updates the default report period selection.
+         *
+         * @param defaultReportPeriod identifier of the desired default report period preset.
+         */
+        public void setDefaultReportPeriod(String defaultReportPeriod)
+        {
+                this.defaultReportPeriod = defaultReportPeriod;
+        }
+
+        /**
+         * Indicates whether the "Year-To-Date" report preset is available.
+         *
+         * @return {@code true} when the preset is offered; {@code false} otherwise.
+         */
+        public boolean isEnableYearToDateOption()
+        {
+                return this.enableYearToDateOption;
+        }
+
+        /**
+         * Enables or disables the "Year-To-Date" report preset.
+         *
+         * @param enableYearToDateOption {@code true} to enable the preset; {@code false} otherwise.
+         */
+        public void setEnableYearToDateOption(boolean enableYearToDateOption)
+        {
+                this.enableYearToDateOption = enableYearToDateOption;
+        }
+
+        /**
+         * Indicates whether the "Full Year" report preset is available.
+         *
+         * @return {@code true} when enabled; {@code false} otherwise.
+         */
+        public boolean isEnableFullYearOption()
+        {
+                return this.enableFullYearOption;
+        }
+
+        /**
+         * Enables or disables the "Full Year" report preset option.
+         *
+         * @param enableFullYearOption {@code true} to enable; {@code false} otherwise.
+         */
+        public void setEnableFullYearOption(boolean enableFullYearOption)
+        {
+                this.enableFullYearOption = enableFullYearOption;
+        }
+
+        /**
+         * Indicates whether the "Last Month" report preset is available.
+         *
+         * @return {@code true} when enabled; {@code false} otherwise.
+         */
+        public boolean isEnableLastMonthOption()
+        {
+                return this.enableLastMonthOption;
+        }
+
+        /**
+         * Enables or disables the "Last Month" report preset option.
+         *
+         * @param enableLastMonthOption {@code true} to enable; {@code false} otherwise.
+         */
+        public void setEnableLastMonthOption(boolean enableLastMonthOption)
+        {
+                this.enableLastMonthOption = enableLastMonthOption;
+        }
+
+        /**
+         * Gets the organization name.
+         * @return The name of the organization.
+         */
+        public String getOrganizationName()
 	{
 		return this.organizationName;
 	}
@@ -146,14 +344,38 @@ import lombok.NoArgsConstructor;
 		this.fiscalYearStart = start;
 	}
 	
-	/**
-	 * Gets the default currency code.
-	 * @return The default currency code (e.g., "USD").
-	 */
-	public String getDefaultCurrency()
-	{
-		return this.defaultCurrency;
-	}
+        /**
+         * Gets the default currency code.
+         * @return The default currency code (e.g., "USD").
+         */
+        public String getDefaultCurrency()
+        {
+                return this.defaultCurrency;
+        }
+
+        /**
+         * Returns the fiscal year start as a {@link MonthDay} when possible.
+         *
+         * @return month/day representation of the fiscal year start or {@code null}
+         *         when the stored value cannot be parsed.
+         */
+        public MonthDay getFiscalYearStartMonthDay()
+        {
+                if (this.fiscalYearStart == null || this.fiscalYearStart.isBlank())
+                {
+                        return null;
+                }
+
+                try
+                {
+                        return MonthDay.parse(this.fiscalYearStart,
+                                java.time.format.DateTimeFormatter.ofPattern("MM-dd"));
+                }
+                catch (Exception ex)
+                {
+                        return null;
+                }
+        }
 	
 	/**
 	 * Sets the default currency code.
@@ -168,19 +390,19 @@ import lombok.NoArgsConstructor;
 	 * Gets the list of configured user accounts.
 	 * @return A list of {@link User} objects.
 	 */
-	public List<User> getUsers()
-	{
-		return this.users;
-	}
-	
-	/**
-	 * Sets the list of configured user accounts.
-	 * @param users A list of {@link User} objects to set.
-	 */
-	public void setUsers(List<User> users)
-	{
-		this.users = users;
-	}
+        public List<User> getUsers()
+        {
+                return this.users;
+        }
+
+        /**
+         * Sets the list of configured user accounts.
+         * @param users A list of {@link User} objects to set.
+         */
+        public void setUsers(List<User> users)
+        {
+                this.users = users;
+        }
 	
 	/**
 	 * Gets the default income account.
@@ -291,5 +513,7 @@ import lombok.NoArgsConstructor;
        {
                this.currencyFormat = currencyFormat;
        }
+
+  
 	
 }

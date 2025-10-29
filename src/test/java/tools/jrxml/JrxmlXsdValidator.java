@@ -22,7 +22,6 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * JRXML -> XSD validator (portable Java, no external deps)
