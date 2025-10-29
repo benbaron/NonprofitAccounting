@@ -45,12 +45,21 @@ public class BudgetPanelTest {
 
     static class MutatingStubBudgetLineDialog extends BudgetLineDialog {
         private final BudgetLine line;
+        private final Runnable mutation;
+
         MutatingStubBudgetLineDialog(BudgetLine line) {
-            super((Dialog) null, "Stub", new ChartOfAccounts(), List.of(), line);
-            this.line = line;
+            this(line, new ChartOfAccounts(), () ->
+                    line.setTotalBudgetedAmount(new BigDecimal("125")));
         }
+
+        MutatingStubBudgetLineDialog(BudgetLine line, ChartOfAccounts coa, Runnable mutation) {
+            super((Dialog) null, "Stub", coa, List.of(), line);
+            this.line = line;
+            this.mutation = (mutation == null) ? () -> { } : mutation;
+        }
+
         @Override public void setVisible(boolean b) {
-            this.line.setTotalBudgetedAmount(new BigDecimal("125"));
+            this.mutation.run();
         }
         @Override public boolean isSaved() { return true; }
         @Override public BudgetLine getBudgetLine() { return this.line; }
