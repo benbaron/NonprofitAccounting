@@ -115,6 +115,7 @@ public class SettingsModel
 
                 public void setRole(String role)
                 {
+                        this.username = username;
                         this.role = role;
                 }
         }
@@ -342,7 +343,7 @@ public class SettingsModel
          *
          * @return configured {@link Locale} or the JVM default when unset.
          */
-        public Locale getCurrencyLocale()
+        public String getFiscalYearStart()
         {
                 if (this.currencyLocaleTag != null && !this.currencyLocaleTag.isBlank())
                 {
