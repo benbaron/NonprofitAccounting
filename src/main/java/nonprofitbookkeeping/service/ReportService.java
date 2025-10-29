@@ -1852,8 +1852,8 @@ public class ReportService
 						Map<String, Object> entryData = new HashMap<>();
 						entryData.put("date",
 							transactionDate.format(DATE_FORMATTER));
-						entryData.put("transactionId",
-							transaction.getBookingDateTimestamp());
+                                                entryData.put("transactionId",
+                                                        resolveTransactionIdentifier(transaction));
 						
 						// Attempt to find the "other side" of the transaction
 						// for a more meaningful description
@@ -1945,10 +1945,51 @@ public class ReportService
 			accountsReportDataList.add(singleAccountReportData);
 		}
 		
-		jxlsContext.put("accountsDetail", accountsReportDataList);
-		return jxlsContext;
-		
-	}
+                jxlsContext.put("accountsDetail", accountsReportDataList);
+                return jxlsContext;
+
+        }
+
+        private static String resolveTransactionIdentifier(AccountingTransaction transaction)
+        {
+                if (transaction == null)
+                {
+                        return "";
+                }
+
+                Map<String, String> info = transaction.getInfo();
+
+                if (info != null)
+                {
+                        String identifier = info.get("transactionId");
+
+                        if (identifier == null)
+                        {
+                                identifier = info.get("TransactionId");
+                        }
+
+                        if (identifier == null)
+                        {
+                                identifier = info.get("transactionNumber");
+                        }
+
+                        if (identifier != null && !identifier.isBlank())
+                        {
+                                return identifier;
+                        }
+                }
+
+                int numericId = transaction.getId();
+
+                if (numericId != 0)
+                {
+                        return "TX" + numericId;
+                }
+
+                Long timestamp = transaction.getBookingDateTimestamp();
+
+                return (timestamp != null) ? timestamp.toString() : "";
+        }
 	
 	
 	/**
