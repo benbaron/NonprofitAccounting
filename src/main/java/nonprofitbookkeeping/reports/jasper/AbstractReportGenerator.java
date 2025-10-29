@@ -131,14 +131,34 @@ public abstract class AbstractReportGenerator
 			throw e;
 		}
 		
-                List<?> data = this.reportDataProvided ? this.reportData : getReportData();
+                List<?> data = resolveReportData();
                 JRBeanCollectionDataSource dataSource =
                         new JRBeanCollectionDataSource(data);
-		Map<String, Object> params =
-			ensureMutableParameters(getReportParameters());
-		return JasperFillManager.fillReport(report, params, dataSource);
-		
-	}
+                Map<String, Object> params =
+                        ensureMutableParameters(getReportParameters());
+                return JasperFillManager.fillReport(report, params, dataSource);
+
+        }
+
+        /**
+         * Determines the collection of beans that should be supplied to Jasper when
+         * generating a report. When {@link #setReportData(List)} has been called the
+         * provided beans take precedence; otherwise subclasses can supply their own
+         * dynamically generated data via {@link #getReportData()}.
+         *
+         * @return the immutable list of beans to be used when populating the report
+         */
+        protected List<?> resolveReportData()
+        {
+                List<?> data = this.reportDataProvided ? this.reportData : getReportData();
+
+                if (data == null)
+                {
+                        return Collections.emptyList();
+                }
+
+                return data;
+        }
 	
 	
 	/**
@@ -297,5 +317,5 @@ public abstract class AbstractReportGenerator
                 this.reportData = Collections.unmodifiableList(new ArrayList<>(beans));
                 this.reportDataProvided = true;
         }
-	
+
 }

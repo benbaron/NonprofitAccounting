@@ -1,7 +1,6 @@
 
 package nonprofitbookkeeping.model;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -9,10 +8,6 @@ import java.util.Locale;
 import java.time.MonthDay;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import nonprofitbookkeeping.model.ReportPeriodPreset;
 
@@ -33,7 +28,8 @@ public class SettingsModel
 	/** The default currency code used in the application (e.g., "USD"). */
 	@JsonProperty private String defaultCurrency;
 	
-	// User Accounts
+        // User Accounts
+       @JsonProperty private List<User> users = new ArrayList<>();
        // Accounting Settings
         /** The default account number or name for income transactions. */
         @JsonProperty private String defaultIncomeAccount;
@@ -52,8 +48,8 @@ public class SettingsModel
 
        // Reporting defaults
        /** Preferred default period for reports and account detail filters. */
-       @JsonProperty private String defaultReportPeriod = DefaultReportPeriod.YEAR_TO_DATE.name();
-       /** Calendar year to use when {@link #defaultReportPeriod} is {@link DefaultReportPeriod#FISCAL_YEAR}. */
+       @JsonProperty private String defaultReportPeriod = ReportPeriodPreset.YEAR_TO_DATE.name();
+       /** Calendar year to use when {@link #defaultReportPeriod} is {@link ReportPeriodPreset#FISCAL_YEAR}. */
        @JsonProperty private Integer defaultReportYear;
 
        // UI Preferences
@@ -82,11 +78,11 @@ public class SettingsModel
        /** Whether the "Last Month" option should be available. */
        @JsonProperty private boolean enableLastMonthOption = true;
 	
-	/**
-	 * Represents a user account within the settings model.
-	 * Stores username and role.
-	 */
-	public static class User
+       /**
+        * Represents a user account within the settings model.
+        * Stores username and role.
+        */
+       public static class User
 	{
 		/** The username for the user account. */
 		private String username;
@@ -170,7 +166,7 @@ public class SettingsModel
          *
          * @return the number of minutes between autosave executions.
          */
-		public int getAutosaveIntervalMinutes()
+        public int getAutosaveIntervalMinutes()
         {
                 return this.autosaveIntervalMinutes;
         }
@@ -207,6 +203,26 @@ public class SettingsModel
         }
 
         /**
+         * Returns the default directory that should be used by file chooser dialogs.
+         *
+         * @return default directory path or {@code null} when not configured
+         */
+        public String getDefaultDirectory()
+        {
+                return this.defaultDirectory;
+        }
+
+        /**
+         * Updates the default directory that file choosers should open.
+         *
+         * @param defaultDirectory directory path selected by the user
+         */
+        public void setDefaultDirectory(String defaultDirectory)
+        {
+                this.defaultDirectory = defaultDirectory;
+        }
+
+        /**
          * Retrieves the last used company file path.
          *
          * @return the last used company file path or {@code null} when no history exists.
@@ -224,6 +240,26 @@ public class SettingsModel
         public void setLastUsedCompanyFile(String lastUsedCompanyFile)
         {
                 this.lastUsedCompanyFile = lastUsedCompanyFile;
+        }
+
+        /**
+         * Retrieves the path to the most recently opened bookkeeping data file.
+         *
+         * @return path of the last opened file or {@code null} when not tracked
+         */
+        public String getLastOpenedFile()
+        {
+                return this.lastOpenedFile;
+        }
+
+        /**
+         * Persists the path to the most recently opened bookkeeping data file.
+         *
+         * @param lastOpenedFile path selected by the user
+         */
+        public void setLastOpenedFile(String lastOpenedFile)
+        {
+                this.lastOpenedFile = lastOpenedFile;
         }
 
         /**
@@ -352,6 +388,29 @@ public class SettingsModel
         }
 
         /**
+         * Resolves the locale that should be used for currency formatting.
+         *
+         * @return locale derived from the configured language or the system default
+         */
+        public Locale getCurrencyLocale()
+        {
+                if (this.language == null || this.language.isBlank())
+                {
+                        return Locale.getDefault();
+                }
+
+                String normalized = this.language.replace('_', '-');
+                Locale resolved = Locale.forLanguageTag(normalized);
+
+                if (resolved == null || resolved.getLanguage().isEmpty())
+                {
+                        return Locale.getDefault();
+                }
+
+                return resolved;
+        }
+
+        /**
          * Returns the fiscal year start as a {@link MonthDay} when possible.
          *
          * @return month/day representation of the fiscal year start or {@code null}
@@ -390,6 +449,11 @@ public class SettingsModel
 	 */
         public List<User> getUsers()
         {
+                if (this.users == null)
+                {
+                        this.users = new ArrayList<>();
+                }
+
                 return this.users;
         }
 
@@ -399,7 +463,7 @@ public class SettingsModel
          */
         public void setUsers(List<User> users)
         {
-                this.users = users;
+                this.users = (users == null) ? new ArrayList<>() : users;
         }
 	
 	/**
