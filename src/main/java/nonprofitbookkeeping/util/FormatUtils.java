@@ -98,11 +98,11 @@ public final class FormatUtils
 				return patternOverride;
 			}
 			
-			return ((DecimalFormat) NumberFormat.getCurrencyInstance(locale))
-				.toPattern();
-		}
-		
-	}
+                        return ((DecimalFormat) NumberFormat.getCurrencyInstance(locale))
+                                .toPattern();
+                }
+
+        }
 	
 	/**
 	 * Updates the locale used for currency formatting.
@@ -277,10 +277,22 @@ public final class FormatUtils
 			}
 			
 		}
-		
-		return format;
-		
-	}
+
+                return format;
+
+        }
+
+        private static String resolvePattern()
+        {
+                if (patternOverride != null)
+                {
+                        return patternOverride;
+                }
+
+                DecimalFormat currencyFormat =
+                        (DecimalFormat) NumberFormat.getCurrencyInstance(locale);
+                return currencyFormat.toPattern();
+        }
 	
 	private static BigDecimal parseWithFormatter(String text)
 	{

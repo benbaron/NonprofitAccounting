@@ -172,7 +172,7 @@ public class SettingsModel
          *
          * @return the number of minutes between autosave executions.
          */
-		public int getAutosaveIntervalMinutes()
+        public int getAutosaveIntervalMinutes()
         {
                 return this.autosaveIntervalMinutes;
         }
@@ -306,6 +306,26 @@ public class SettingsModel
         public void setLastUsedCompanyFile(String lastUsedCompanyFile)
         {
                 this.lastUsedCompanyFile = lastUsedCompanyFile;
+        }
+
+        /**
+         * Retrieves the path to the most recently opened bookkeeping data file.
+         *
+         * @return path of the last opened file or {@code null} when not tracked
+         */
+        public String getLastOpenedFile()
+        {
+                return this.lastOpenedFile;
+        }
+
+        /**
+         * Persists the path to the most recently opened bookkeeping data file.
+         *
+         * @param lastOpenedFile path selected by the user
+         */
+        public void setLastOpenedFile(String lastOpenedFile)
+        {
+                this.lastOpenedFile = lastOpenedFile;
         }
 
         /**
@@ -466,6 +486,29 @@ public class SettingsModel
         public String getDefaultCurrency()
         {
                 return this.defaultCurrency;
+        }
+
+        /**
+         * Resolves the locale that should be used for currency formatting.
+         *
+         * @return locale derived from the configured language or the system default
+         */
+        public Locale getCurrencyLocale()
+        {
+                if (this.language == null || this.language.isBlank())
+                {
+                        return Locale.getDefault();
+                }
+
+                String normalized = this.language.replace('_', '-');
+                Locale resolved = Locale.forLanguageTag(normalized);
+
+                if (resolved == null || resolved.getLanguage().isEmpty())
+                {
+                        return Locale.getDefault();
+                }
+
+                return resolved;
         }
 
         /**
