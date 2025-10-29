@@ -4,7 +4,6 @@ package nonprofitbookkeeping.ui.panels;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
-import java.io.File;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -19,6 +18,7 @@ import javafx.scene.layout.HBox;
 import nonprofitbookkeeping.model.SaleRecord;
 import nonprofitbookkeeping.service.SalesService;
 import nonprofitbookkeeping.util.FormatUtils;
+import nonprofitbookkeeping.core.Database;
 
 /**
  * JavaFX port of {@code SalesAndCOGPanel}. Maintains an in‑memory table of sale
@@ -34,33 +34,30 @@ public class SalesAndCOGPanelFX extends BorderPane
 	private final TableView<SaleRow> table = new TableView<>();
 	/** Label to display the calculated total gross profit from all sales. */
        private final Label totalLbl = new Label("Gross Profit: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
-	/** Service for persisting sales. */
-	private final SalesService service;
-	/** Directory used for persistence, may be null. */
-	private final File companyDirectory;
+        /** Service for persisting sales. */
+        private final SalesService service;
 	
 	/**
 	 * Constructs a new {@code SalesAndCOGPanelFX}.
 	 * Initializes the panel with a table to display sale transactions and buttons for managing sales.
 	 */
-	public SalesAndCOGPanelFX(SalesService service, File companyDirectory)
-	{
-		this.service = service == null ? new SalesService() : service;
-		this.companyDirectory = companyDirectory;
-		
-		if (this.companyDirectory != null)
-		{
-			
-			try
-			{
-				this.service.loadSales(this.companyDirectory);
-			}
-			catch (Exception ex)
-			{
-				ex.printStackTrace();
-			}
-			
-		}
+        public SalesAndCOGPanelFX(SalesService service)
+        {
+                this.service = service == null ? new SalesService() : service;
+
+                if (Database.isInitialized())
+                {
+
+                        try
+                        {
+                                this.service.loadSales(null);
+                        }
+                        catch (Exception ex)
+                        {
+                                ex.printStackTrace();
+                        }
+
+                }
 		
 		setPadding(new Insets(10));
 		buildTable();
@@ -70,12 +67,6 @@ public class SalesAndCOGPanelFX extends BorderPane
 		for (SaleRecord r : this.service.listSales())
 			this.rows.add(new SaleRow(r));
 		updateTotals();
-	}
-	
-	/** Convenience constructor when no directory is available. */
-	public SalesAndCOGPanelFX(SalesService service)
-	{
-		this(service, null);
 	}
 	
 	/* ------------------------------------------------------------------ */
@@ -260,19 +251,19 @@ public class SalesAndCOGPanelFX extends BorderPane
 		
 	}
 	
-	/** Saves data to disk if a directory is provided. */
-	private void save()
-	{
-		
-		if (this.companyDirectory != null)
-		{
-			
-			try
-			{
-				this.service.saveSales(this.companyDirectory);
-			}
-			catch (Exception ex)
-			{
+        /** Saves data to disk when the database is available. */
+        private void save()
+        {
+
+                if (Database.isInitialized())
+                {
+
+                        try
+                        {
+                                this.service.saveSales(null);
+                        }
+                        catch (Exception ex)
+                        {
 				ex.printStackTrace();
 			}
 			

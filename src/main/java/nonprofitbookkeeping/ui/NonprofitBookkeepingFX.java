@@ -309,9 +309,9 @@ public class NonprofitBookkeepingFX extends Application
 		add(this.run, "Documents & Attachments",
 			e -> showPanel(new DocumentsPanelFX(ServiceContainer.dss), "Documents"));
                 add(this.run, "Inventory & Depreciation",
-                        e -> showPanel(new InventoryPanelFX(ServiceContainer.iss, null), "Inventory"));
+                        e -> showPanel(new InventoryPanelFX(ServiceContainer.iss), "Inventory"));
                 add(this.run, "Funds & Fund Accounting",
-                        e -> showPanel(new FundsPanelFX(ServiceContainer.fas, null), "Funds"));
+                        e -> showPanel(new FundsPanelFX(ServiceContainer.fas), "Funds"));
 		add(this.run, "Reconcile",
 			e -> showPanel(new LedgerReconcilePanelFX(new ReconciliationService()),
 				"Reconciliation"));
@@ -393,13 +393,13 @@ public class NonprofitBookkeepingFX extends Application
 		/* PANELS */
                 this.panels = new Menu("Panels");
                 add(this.panels, "Donors",
-                        e -> showPanel(new DonorsPanelFX(ServiceContainer.donorService, null), "Donors"));
+                        e -> showPanel(new DonorsPanelFX(ServiceContainer.donorService), "Donors"));
                 add(this.panels, "Donations",
                         e -> showPanel(new DonationsPanelFX(this.primaryStage), "Donations"));
                 add(this.panels, "Grants",
                         e -> showPanel(new GrantsPanelFX(ServiceContainer.grantsService), "Grants"));
                 add(this.panels, "Sales & COG",
-                        e -> showPanel(new SalesAndCOGPanelFX(ServiceContainer.salesService, null), "Sales & COG"));
+                        e -> showPanel(new SalesAndCOGPanelFX(ServiceContainer.salesService), "Sales & COG"));
 		bar.getMenus().add(this.panels);
 		
                 bar.getMenus().add(createDatabaseMenu());

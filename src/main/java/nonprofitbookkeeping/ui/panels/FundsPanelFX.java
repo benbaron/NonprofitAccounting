@@ -3,7 +3,7 @@ package nonprofitbookkeeping.ui.panels;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.io.File;
+import nonprofitbookkeeping.core.Database;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -28,8 +28,6 @@ public class FundsPanelFX extends BorderPane
 	
         /** The service layer for fund accounting operations. */
         private final FundAccountingService service;
-        /** Directory where data should be persisted, may be null. */
-        private final File companyDirectory;
         /** TableView to display fund names and their balances. */
         private final TableView<FundRow> table = new TableView<>();
 	
@@ -40,16 +38,15 @@ public class FundsPanelFX extends BorderPane
 	 *
 	 * @param service The {@link FundAccountingService} to be used for all fund-related operations. Must not be null.
 	 */
-        public FundsPanelFX(FundAccountingService service, File companyDirectory)
+        public FundsPanelFX(FundAccountingService service)
         {
                 this.service = service;
-                this.companyDirectory = companyDirectory;
 
-                if (this.companyDirectory != null)
+                if (Database.isInitialized())
                 {
                         try
                         {
-                                this.service.loadFunds(this.companyDirectory);
+                                this.service.loadFunds(null);
                         }
                         catch (Exception ex)
                         {
@@ -66,11 +63,6 @@ public class FundsPanelFX extends BorderPane
                 refresh();
         }
 
-        /** Convenience constructor when no directory is available. */
-        public FundsPanelFX(FundAccountingService service)
-        {
-                this(service, null);
-        }
 	
 	/* ───────────────────────── UI sections ───────────────────────── */
 	
@@ -240,14 +232,14 @@ public class FundsPanelFX extends BorderPane
                 this.table.getItems().setAll(funds.stream().map(FundRow::new).toList());
         }
 
-        /** Saves current funds to disk if a company directory is set. */
+        /** Saves current funds to disk when the database is available. */
         private void save()
         {
-                if (this.companyDirectory != null)
+                if (Database.isInitialized())
                 {
                         try
                         {
-                                this.service.saveFunds(this.companyDirectory);
+                                this.service.saveFunds(null);
                         }
                         catch (Exception ex)
                         {

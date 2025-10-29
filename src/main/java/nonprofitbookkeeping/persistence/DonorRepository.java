@@ -9,18 +9,29 @@ import java.util.*;
 
 public class DonorRepository
 {
-	public void upsert(DonorContact d) throws SQLException
-	{
-		
-		try (Connection c = Database.get().getConnection();
-			PreparedStatement ps = c.prepareStatement(
-				"MERGE INTO donor(name) KEY(name) VALUES (?)"))
-		{
-			ps.setString(1, d.getName());
-			ps.executeUpdate();
-		}
-		
-	}
+        public void upsert(DonorContact d) throws SQLException
+        {
+
+                try (Connection c = Database.get().getConnection();
+                        PreparedStatement ps = c.prepareStatement(
+                                "MERGE INTO donor(name) KEY(name) VALUES (?)"))
+                {
+                        ps.setString(1, d.getName());
+                        ps.executeUpdate();
+                }
+
+        }
+
+        public void deleteAll() throws SQLException
+        {
+
+                try (Connection c = Database.get().getConnection();
+                        PreparedStatement ps = c.prepareStatement("DELETE FROM donor"))
+                {
+                        ps.executeUpdate();
+                }
+
+        }
 	
 	public List<DonorContact> list() throws SQLException
 	{
