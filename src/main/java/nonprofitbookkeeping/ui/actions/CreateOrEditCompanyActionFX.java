@@ -57,37 +57,43 @@ public class CreateOrEditCompanyActionFX
 		if (!CurrentCompany.isOpen())
 		{
 			// If no company is open, we might be creating a new one.
-			// A new Company object might be instantiated here, or CurrentCompany.getCompany() might provide one.
+			// A new Company object might be instantiated here, or
+			// CurrentCompany.getCompany() might provide one.
 			// The original code had: existingCompany = new Company();
 			// Then immediately overwrote it. Let's clarify the intent.
-			// For "create" mode, the panel likely needs a fresh or default CompanyProfileModel.
-			// If CurrentCompany.getCompany() returns a valid new/empty company, that's fine.
-			// If CurrentCompany.getCompany() could be null, then `new Company()` would be appropriate.
-			// The current logic relies on CurrentCompany.getCompany() to provide the instance to be edited or filled.
+			// For "create" mode, the panel likely needs a fresh or default
+			// CompanyProfileModel.
+			// If CurrentCompany.getCompany() returns a valid new/empty company, that's
+			// fine.
+			// If CurrentCompany.getCompany() could be null, then `new Company()` would be
+			// appropriate.
+			// The current logic relies on CurrentCompany.getCompany() to provide the
+			// instance to be edited or filled.
 		}
 		
-		// 1. Existing profile if you’re in “edit” mode, or a new one if creating.
+		// 1. Existing profile if you’re in "edit" mode, or a new one if creating.
 		existingCompany = CurrentCompany.getCompany();
-		// It's assumed CurrentCompany.getCompany() provides an appropriate instance (new or existing).
-		// If existingCompany is null here (e.g. first run, no default company in CurrentCompany),
-        // the CreateOrEditCompanyPanelFX constructor might need to handle it or a new Company should be explicitly made.
-        // For this Javadoc, we assume `existingCompany` will be non-null or handled by the panel.
-
+		// It's assumed CurrentCompany.getCompany() provides an appropriate instance
+		// (new or existing).
+		// If existingCompany is null here (e.g. first run, no default company in
+		// CurrentCompany),
+		// the CreateOrEditCompanyPanelFX constructor might need to handle it or a new
+		// Company should be explicitly made.
+		// For this Javadoc, we assume `existingCompany` will be non-null or handled by
+		// the panel.
+		
 		// 2. Dialog-style stage
 		Stage dialog = new Stage();
 		dialog.initOwner(primaryStage);
-		dialog.setTitle(CurrentCompany.isOpen() ?
-			"Edit Company" : "Create Company");
+		dialog.setTitle(CurrentCompany.isOpen() ? "Edit Company" : "Create Company");
 		
 		// 3. Build the FX panel
-		CreateOrEditCompanyPanelFX panel = new CreateOrEditCompanyPanelFX(
-			existingCompany,
+		CreateOrEditCompanyPanelFX panel = new CreateOrEditCompanyPanelFX(existingCompany,
 			// void onCreatedProfileModel(CompanyProfileModel created)
 			created ->
-			{				
+			{
 				// callback fires when the wizard saves
-				File out = new File(
-					PreferencesService.getDefaultCompanyDir(),
+				File out = new File(PreferencesService.getDefaultCompanyDir(),
 					created.getCompanyName() + ".npbk");
 				
 				// Set the created file to the one just created.
@@ -103,10 +109,10 @@ public class CreateOrEditCompanyActionFX
 					e.printStackTrace();
 				}
 				
-                                PreferencesService.setLastUsedCompanyFile(out.getAbsolutePath());
-                                CurrentCompany.markCompanyOpen();
-
-                                dialog.close();
+				PreferencesService.setLastUsedCompanyFile(out.getAbsolutePath());
+				CurrentCompany.markCompanyOpen();
+				
+				dialog.close();
 			});
 			
 		// 4. Show it

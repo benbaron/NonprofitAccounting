@@ -6,7 +6,6 @@ import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Fund;
 import nonprofitbookkeeping.model.reports.ReportConfiguration;
 import nonprofitbookkeeping.reports.ReportCriteria;
-import nonprofitbookkeeping.ui.panels.ManageReportConfigurationsDialog;
 import javafx.embed.swing.JFXPanel;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -188,9 +187,7 @@ public class ReportCriteriaDialog
 	 * @return An {@link Optional} containing the {@link ReportCriteria} if the user confirms,
 	 *         or an empty Optional if the user cancels.
 	 */
-	public static Optional<ReportCriteria> showDialog(
-														Window parentWindow,
-														String title,
+	public static Optional<ReportCriteria> showDialog(	Window parentWindow, String title,
 														List<Fund> availableFunds,
 														DateSelectionMode dateMode,
 														boolean showFundSelector)
@@ -214,9 +211,7 @@ public class ReportCriteriaDialog
 	 * @return An {@link Optional} containing the {@link ReportCriteria} if the user confirms,
 	 *         or an empty Optional if the user cancels.
 	 */
-	public static Optional<ReportCriteria> showDialog(
-														Window parentWindow,
-														String title,
+	public static Optional<ReportCriteria> showDialog(	Window parentWindow, String title,
 														List<Fund> availableFunds,
 														DateSelectionMode dateMode,
 														boolean showFundSelector,
@@ -247,15 +242,12 @@ public class ReportCriteriaDialog
 	 *         user cancels the dialog or if name input for saving configuration is cancelled.
 	 *         Returns null from the result converter if validation fails (e.g., required dates missing).
 	 */
-	public static Optional<ReportCriteria> showDialog(
-														Window parentWindow,
-														String dialogTitle,
-														List<Fund> availableFunds,
-														ChartOfAccounts chartOfAccounts,
-														DateSelectionMode dateMode,
-														boolean showFundSelector,
-														boolean showAccountSelector,
-														ReportConfiguration initialConfig)
+	public static
+			Optional<ReportCriteria>
+			showDialog(	Window parentWindow, String dialogTitle, List<Fund> availableFunds,
+						ChartOfAccounts chartOfAccounts, DateSelectionMode dateMode,
+						boolean showFundSelector, boolean showAccountSelector,
+						ReportConfiguration initialConfig)
 	{
 		
 		Dialog<ReportCriteria> dialog = new Dialog<>();
@@ -490,20 +482,16 @@ public class ReportCriteriaDialog
 				if (showFundSelector && finalSelectAllFundsCheckbox != null &&
 					!finalSelectAllFundsCheckbox.isSelected() && finalFundListView != null)
 				{
-					selectedFundIds =
-						finalFundListView.getSelectionModel().getSelectedItems().stream()
-							.map(FundItem::getId)
-							.collect(Collectors.toList());
+					selectedFundIds = finalFundListView.getSelectionModel().getSelectedItems()
+						.stream().map(FundItem::getId).collect(Collectors.toList());
 				}
 				
 				List<String> selectedAccountIds = new ArrayList<>();
 				
 				if (showAccountSelector && finalAccountListView != null)
 				{
-					selectedAccountIds =
-						finalAccountListView.getSelectionModel().getSelectedItems().stream()
-							.map(AccountItem::getId)
-							.collect(Collectors.toList());
+					selectedAccountIds = finalAccountListView.getSelectionModel().getSelectedItems()
+						.stream().map(AccountItem::getId).collect(Collectors.toList());
 				}
 				
 				ReportCriteria criteria = new ReportCriteria(startDate, endDate, selectedFundIds,
@@ -539,39 +527,5 @@ public class ReportCriteriaDialog
 		return dialog.showAndWait();
 	}
 	
-	/**
-	 * Overloaded version of {@code showDialog}, potentially intended for use with a
-	 * {@link ManageReportConfigurationsDialog} as a parent or context.
-	 * Convenience overload that attempts to obtain a JavaFX {@link Window} from the
-	 * provided {@code ManageReportConfigurationsDialog} and then delegates to the
-	 * primary {@link #showDialog(Window, String, List, Fund, DateSelectionMode, boolean, boolean, ReportConfiguration)}
-	 * method. If the window cannot be determined, the dialog is shown without an
-	 * explicit parent.
-	 *
-	 * @param manageReportConfigurationsDialog A custom dialog/component, its role as parent is unclear.
-	 * @param title The title of the dialog window.
-	 * @param availableFunds A list of {@link Fund}s available for selection.
-	 * @param dateSelectionMode The {@link DateSelectionMode} to configure the date pickers.
-	 * @param showFundSelector If true, the fund selection UI will be displayed.
-	 * @param selectedConfig A {@link ReportConfiguration} to pre-populate dialog fields.
-	 * @return The resulting {@link ReportCriteria} selected by the user, or an
-	 *         empty {@link Optional} if the dialog was cancelled.
-	 */
-	public static
-			Optional<ReportCriteria>
-			showDialog(	ManageReportConfigurationsDialog manageReportConfigurationsDialog,
-						String title, List<Fund> availableFunds,
-						DateSelectionMode dateSelectionMode, boolean showFundSelector,
-						ReportConfiguration selectedConfig)
-	{
-		javafx.stage.Window parent = null;		
-		
-		JFXPanel jfx = new JFXPanel();
-		parent = jfx.getScene().getWindow();
-		
-		return showDialog(parent, title, availableFunds, null,
-			dateSelectionMode, showFundSelector,
-			false, selectedConfig);
-	}
-	
+
 }

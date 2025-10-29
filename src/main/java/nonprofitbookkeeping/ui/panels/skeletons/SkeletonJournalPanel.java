@@ -10,6 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -17,6 +18,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import nonprofitbookkeeping.util.FormatUtils;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
@@ -30,9 +32,13 @@ import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.Journal;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A JavaFX panel that displays journal entries from the current company's ledger.
@@ -45,6 +51,7 @@ import java.time.format.DateTimeFormatter;
  */
 public class SkeletonJournalPanel extends BorderPane
 {
+        private static final Logger LOGGER = LoggerFactory.getLogger(SkeletonJournalPanel.class);
 	
 	/** TableView to display journal entries, using {@link JournalDisplayEntry} as the row model. */
 	private TableView<JournalDisplayEntry> journalDisplayTable;
@@ -55,12 +62,14 @@ public class SkeletonJournalPanel extends BorderPane
 	
 	/** TextField for entering search terms to filter journal entries by description or account. */
 	private TextField searchFilterField;
-        /** Start date picker for filtering journal entries. */
-        private DatePicker startDatePicker;
-        /** End date picker for filtering journal entries. */
-        private DatePicker endDatePicker;
-        /** Button to apply the filters entered in {@link #searchFilterField} and the date range. */
-        private Button applyFilterButton;
+	/** Start date picker for filtering journal entries. */
+	private DatePicker startDatePicker;
+	/** End date picker for filtering journal entries. */
+	private DatePicker endDatePicker;
+	/** Button to apply the filters entered in {@link #searchFilterField} and the date range. */
+	private Button applyFilterButton;
+	/** Button to refresh the table without changing filters. */
+	private Button refreshButton;
 	/** Button to initiate creating a new journal entry. (Currently placeholder) */
 	private Button newEntryButton;
 	/** Button to initiate editing the selected journal entry. (Currently placeholder) */
@@ -88,8 +97,9 @@ public class SkeletonJournalPanel extends BorderPane
 		// Initialize collections
 		this.journalDataList = FXCollections.observableArrayList();
 		this.journalDisplayTable = new TableView<>(this.journalDataList);
+		this.journalDisplayTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		this.journalDisplayTable
-			.setPlaceholder(new Label("No journal entries to display or company not open."));
+				.setPlaceholder(new Label("No journal entries to display or company not open."));
 		
 		// Filter Controls (Top)
 		this.filterControlsBox = new HBox();
@@ -103,19 +113,17 @@ public class SkeletonJournalPanel extends BorderPane
 		this.searchFilterField = new TextField();
 		this.searchFilterField.setPromptText("Search description/account...");
 		this.searchFilterField.setPrefWidth(200);
-                // date range
-                this.startDatePicker = new DatePicker();
-                this.startDatePicker.setPromptText("Start Date");
-                this.endDatePicker = new DatePicker();
-                this.endDatePicker.setPromptText("End Date");
-                // apply
-                this.applyFilterButton = new Button("Apply Filter");
-                this.filterControlsBox.getChildren()
-                        .addAll(filterLabel,
-                                this.searchFilterField,
-                                this.startDatePicker,
-                                this.endDatePicker,
-                                this.applyFilterButton);
+		// date range
+		this.startDatePicker = new DatePicker();
+		this.startDatePicker.setPromptText("Start Date");
+		this.endDatePicker = new DatePicker();
+		this.endDatePicker.setPromptText("End Date");
+		// apply
+		this.applyFilterButton = new Button("Apply Filter");
+		this.refreshButton = new Button("Refresh");
+		this.filterControlsBox.getChildren().addAll(filterLabel, this.searchFilterField,
+				this.startDatePicker, this.endDatePicker, this.applyFilterButton,
+				this.refreshButton);
 		
 		// scroll pane
 		this.filterScrollPane = new ScrollPane(this.filterControlsBox);
@@ -135,7 +143,7 @@ public class SkeletonJournalPanel extends BorderPane
 		this.editEntryButton = new Button("Edit Entry");
 		this.deleteEntryButton = new Button("Delete Entry");
 		this.crudButtonsHBox.getChildren().addAll(this.newEntryButton, this.editEntryButton,
-			this.deleteEntryButton);
+				this.deleteEntryButton);
 		this.setBottom(this.crudButtonsHBox);
 		
 		// Setup and initial load
@@ -143,6 +151,7 @@ public class SkeletonJournalPanel extends BorderPane
 		setCenter(this.journalDisplayTable); // Place table in center
 		
 		setupEventListenersAndRefresh();
+		
 	}
 	
 	/**
@@ -151,7 +160,7 @@ public class SkeletonJournalPanel extends BorderPane
 	 * Cell value factories are configured using {@link PropertyValueFactory} to bind to
 	 * properties of the {@link JournalDisplayEntry} class.
 	 */
-	private void setupTableColumns()
+	@SuppressWarnings("unchecked") private void setupTableColumns()
 	{
 		this.journalDisplayTable.getColumns().clear();
 		
@@ -171,6 +180,30 @@ public class SkeletonJournalPanel extends BorderPane
 		descCol.setCellValueFactory(new PropertyValueFactory<>("description"));
 		descCol.setPrefWidth(220);
 		
+		TableColumn<JournalDisplayEntry, String> toFromCol = new TableColumn<>("To/From");
+		toFromCol.setCellValueFactory(new PropertyValueFactory<>("toFrom"));
+		toFromCol.setPrefWidth(120);
+		
+		TableColumn<JournalDisplayEntry, String> checkCol = new TableColumn<>("Check #");
+		checkCol.setCellValueFactory(new PropertyValueFactory<>("checkNumber"));
+		checkCol.setPrefWidth(80);
+		
+		TableColumn<JournalDisplayEntry, String> clearBankCol = new TableColumn<>("Clear Bank");
+		clearBankCol.setCellValueFactory(new PropertyValueFactory<>("clearBank"));
+		clearBankCol.setPrefWidth(100);
+		
+		TableColumn<JournalDisplayEntry, String> budgetCol = new TableColumn<>("Budget Tracking");
+		budgetCol.setCellValueFactory(new PropertyValueFactory<>("budgetTracking"));
+		budgetCol.setPrefWidth(120);
+		
+		TableColumn<JournalDisplayEntry, String> fundNameCol = new TableColumn<>("Fund Name");
+		fundNameCol.setCellValueFactory(new PropertyValueFactory<>("fundName"));
+		fundNameCol.setPrefWidth(120);
+		
+		TableColumn<JournalDisplayEntry, String> fundNumCol = new TableColumn<>("Fund #");
+		fundNumCol.setCellValueFactory(new PropertyValueFactory<>("fundNumber"));
+		fundNumCol.setPrefWidth(80);
+		
 		TableColumn<JournalDisplayEntry, String> debitCol = new TableColumn<>("Debit");
 		debitCol.setCellValueFactory(new PropertyValueFactory<>("debit"));
 		debitCol.setStyle("-fx-alignment: CENTER-RIGHT;");
@@ -181,13 +214,10 @@ public class SkeletonJournalPanel extends BorderPane
 		creditCol.setStyle("-fx-alignment: CENTER-RIGHT;");
 		creditCol.setPrefWidth(90);
 		
-		this.journalDisplayTable.getColumns()
-			.addAll(dateCol,
-				transIdCol,
-				accountCol,
-				descCol,
-				debitCol,
-				creditCol);
+		this.journalDisplayTable.getColumns().addAll(dateCol, transIdCol, accountCol, descCol,
+				toFromCol, checkCol, clearBankCol, budgetCol, fundNameCol, fundNumCol,
+				debitCol, creditCol);
+		
 	}
 	
 	/**
@@ -200,21 +230,21 @@ public class SkeletonJournalPanel extends BorderPane
 	 * If no company is open or no entries are found, a placeholder message is shown in the table.
 	 */
 	
-        private void loadData()
-        {
+	private void loadData()
+	{
 		this.journalDataList.clear();
 		
 		if (!CurrentCompany.isOpen() || CurrentCompany.getCompany() == null)
 		{
 			this.journalDisplayTable
-				.setPlaceholder(new Label("No journal entries found or company not open."));
+					.setPlaceholder(new Label("No journal entries found or company not open."));
 			return;
 		}
 		
 		Company company = CurrentCompany.getCompany();
 		
 		if (company != null && company.getLedger() != null &&
-			company.getLedger().getJournal() != null)
+				company.getLedger().getJournal() != null)
 		{
 			Journal journal = company.getLedger().getJournal();
 			// Iterate in reverse to show newest transactions first at the top of the list
@@ -241,7 +271,7 @@ public class SkeletonJournalPanel extends BorderPane
 		if (this.journalDataList.isEmpty())
 		{
 			this.journalDisplayTable
-				.setPlaceholder(new Label("No journal entries found or company not open."));
+					.setPlaceholder(new Label("No journal entries found or company not open."));
 		}
 		
 		// No need for an 'else' to set placeholder to null, TableView handles it.
@@ -265,6 +295,7 @@ public class SkeletonJournalPanel extends BorderPane
 			@Override public void companyChange(boolean companyNowOpen)
 			{
 				loadData();
+				
 			}
 			
 		};
@@ -272,6 +303,7 @@ public class SkeletonJournalPanel extends BorderPane
 		
 		// On filter
 		this.applyFilterButton.setOnAction(e -> onFilterButtonAction());
+		this.refreshButton.setOnAction(e -> refresh());
 		// on New Entry
 		this.newEntryButton.setOnAction(e -> openEditor(null));
 		// on Edit Entry
@@ -280,54 +312,75 @@ public class SkeletonJournalPanel extends BorderPane
 		this.deleteEntryButton.setOnAction(e -> onDeleteAction());
 		
 		loadData(); // Initial data load
+		
 	}
 	
 	/**
 	 * On Filter Button
 	 */
-        void onFilterButtonAction()
-        {
-                String search = this.searchFilterField.getText().toLowerCase();
-                LocalDate start = this.startDatePicker.getValue();
-                LocalDate end = this.endDatePicker.getValue();
-
-                loadData();
-
-                if ((search == null || search.isBlank()) && start == null && end == null)
-                {
-                        return; // nothing to filter
-                }
-
-                DateTimeFormatter fmt = DateTimeFormatter.ISO_LOCAL_DATE;
-                ObservableList<JournalDisplayEntry> filtered = FXCollections.observableArrayList();
-                for (JournalDisplayEntry entry : this.journalDataList)
-                {
-                        boolean match = true;
-                        if (search != null && !search.isBlank())
-                        {
-                                match &= entry.descriptionProperty().get().toLowerCase().contains(search)
-                                        || entry.accountNameProperty().get().toLowerCase().contains(search);
-                        }
-                        if (start != null || end != null)
-                        {
-                                LocalDate entryDate = LocalDate.parse(entry.dateProperty().get(), fmt);
-                                if (start != null)
-                                {
-                                        match &= !entryDate.isBefore(start);
-                                }
-                                if (end != null)
-                                {
-                                        match &= !entryDate.isAfter(end);
-                                }
-                        }
-                        if (match)
-                        {
-                                filtered.add(entry);
-                        }
-                }
-
-                this.journalDisplayTable.setItems(filtered);
-        }
+	void onFilterButtonAction()
+	{
+		String search = this.searchFilterField.getText().toLowerCase();
+		LocalDate start = this.startDatePicker.getValue();
+		LocalDate end = this.endDatePicker.getValue();
+		
+		loadData();
+		
+		if ((search == null || search.isBlank()) && start == null && end == null)
+		{
+			return; // nothing to filter
+		}
+		
+		DateTimeFormatter fmt = DateTimeFormatter.ISO_LOCAL_DATE;
+		ObservableList<JournalDisplayEntry> filtered = FXCollections.observableArrayList();
+		
+		for (JournalDisplayEntry entry : this.journalDataList)
+		{
+			boolean match = true;
+			
+			if (search != null && !search.isBlank())
+			{
+				match &= entry.descriptionProperty().get().toLowerCase().contains(search) ||
+						entry.accountNameProperty().get().toLowerCase().contains(search);
+			}
+			
+			if (start != null || end != null)
+			{
+				LocalDate entryDate = LocalDate.parse(entry.dateProperty().get(), fmt);
+				
+				if (start != null)
+				{
+					match &= !entryDate.isBefore(start);
+				}
+				
+				if (end != null)
+				{
+					match &= !entryDate.isAfter(end);
+				}
+				
+			}
+			
+			if (match)
+			{
+				filtered.add(entry);
+			}
+			
+		}
+		
+		this.journalDisplayTable.setItems(filtered);
+		
+	}
+	
+	/**
+	 * Reloads journal data using the current filter settings. This is used
+	 * by the Refresh button to show newly added or edited entries without
+	 * clearing the user's search or date filters.
+	 */
+	void refresh()
+	{
+		onFilterButtonAction();
+		
+	}
 	
 	/**
 	 * On Edit Button
@@ -335,7 +388,7 @@ public class SkeletonJournalPanel extends BorderPane
 	void onEditAction()
 	{
 		JournalDisplayEntry selected =
-			this.journalDisplayTable.getSelectionModel().getSelectedItem();
+				this.journalDisplayTable.getSelectionModel().getSelectedItem();
 		
 		if (selected != null)
 		{
@@ -344,7 +397,7 @@ public class SkeletonJournalPanel extends BorderPane
 		}
 		else
 		{
-			System.out.println("No journal entry selected for editing.");
+                        LOGGER.warn("No journal entry selected for editing.");
 			AlertBox.showError(getScene().getWindow(), "No entry selected.");
 		}
 		
@@ -355,53 +408,57 @@ public class SkeletonJournalPanel extends BorderPane
 	 */
 	void onDeleteAction()
 	{
-		JournalDisplayEntry selected =
-			this.journalDisplayTable.getSelectionModel().getSelectedItem();
+		ObservableList<JournalDisplayEntry> selected =
+				this.journalDisplayTable.getSelectionModel().getSelectedItems();
 		
-		if (selected != null)
+		if (selected == null || selected.isEmpty())
 		{
-			AccountingTransaction originalTx = selected.getOriginalTransaction();
-			Company company = CurrentCompany.getCompany();
-			
-			if (company != null && company.getLedger() != null &&
+                        LOGGER.warn("No journal entry selected for deletion.");
+			AlertBox.showError(getScene().getWindow(), "No entry selected for deletion.");
+			return;
+		}
+		
+		Company company = CurrentCompany.getCompany();
+		
+		if (company != null && company.getLedger() != null &&
 				company.getLedger().getJournal() != null)
+		{
+			Journal journal = company.getLedger().getJournal();
+			boolean anyDeleted = false;
+			
+			List<JournalDisplayEntry> toDelete = new ArrayList<>(selected);
+			
+			for (JournalDisplayEntry entry : toDelete)
 			{
-				boolean deleted = company.getLedger().getJournal()
-					.deleteTransaction(originalTx.getBookingDateTimestamp());
-				
-				if (deleted)
-				{
-					loadData(); // Refresh table
-					System.out.println(
-						"Successfully deleted TX ID: " + originalTx.getBookingDateTimestamp());
-				}
-				else
-				{
-					System.out.println(
-						"Failed to delete TX ID: " + originalTx.getBookingDateTimestamp());
-					AlertBox.showError(getScene().getWindow(), "Deletion failed.");
-				}
-				
+				AccountingTransaction originalTx = entry.getOriginalTransaction();
+				anyDeleted |= journal.deleteTransaction(originalTx.getBookingDateTimestamp());
 			}
 			
-		}
-		else
-		{
-			System.out.println("No journal entry selected for deletion.");
-			AlertBox.showError(getScene().getWindow(),
-				"No entry selected for deletion.");
+			if (anyDeleted)
+			{
+                                loadData();
+                                LOGGER.info("Deleted selected entries.");
+                        }
+                        else
+                        {
+                                LOGGER.error("Failed to delete selected entries.");
+                                AlertBox.showError(getScene().getWindow(), "Deletion failed.");
+                        }
+			
 		}
 		
 	}
 	
-        /** Opens the GeneralJournalEntryPanelFX for creating or editing a transaction. */
+	/** 
+	 * Opens the GeneralJournalEntryPanelFX for creating or 
+	 * editing a transaction. 
+	 * */
 	private void openEditor(AccountingTransaction existing)
 	{
 		Company company = CurrentCompany.getCompany();
 		
-		if (company == null ||
-			company.getLedger() == null ||
-			company.getLedger().getJournal() == null)
+		if (company == null || company.getLedger() == null ||
+				company.getLedger().getJournal() == null)
 		{
 			AlertBox.showError(getScene().getWindow(), "No company open.");
 			return;
@@ -409,34 +466,35 @@ public class SkeletonJournalPanel extends BorderPane
 		
 		Journal journal = company.getLedger().getJournal();
 		
-                BorderPane pane = new GeneralJournalEntryPanelFX(existing, tx ->
-                {
-                        if (existing == null)
-                        {
-                                journal.addTransaction(tx);
-                        }
-                        else
-                        {
-                                journal.updateTransaction(tx);
-                        }
-
-                        try
-                        {
-                                CurrentCompany.persist();
-                        }
-                        catch (Exception ex)
-                        {
-                                ex.printStackTrace();
-                        }
-
-                        loadData();
-                });
-				
+		BorderPane pane = new GeneralJournalEntryPanelFX(existing, tx -> {
+			
+			if (existing == null)
+			{
+				journal.addTransaction(tx);
+			}
+			else
+			{
+				journal.updateTransaction(tx);
+			}
+			
+			try
+			{
+				CurrentCompany.persist();
+			}
+			catch (Exception ex)
+			{
+				ex.printStackTrace();
+			}
+			
+			loadData();
+		});
+		
 		Stage s = new Stage();
 		s.setTitle(existing == null ? "New Transaction" : "Edit Transaction");
 		s.initOwner(getScene().getWindow());
 		s.setScene(new Scene(pane, 800, 600));
 		s.showAndWait();
+		
 	}
 	
 	/**
@@ -456,6 +514,18 @@ public class SkeletonJournalPanel extends BorderPane
 		private final SimpleStringProperty accountName;
 		/** The overall description or memo of the transaction. */
 		private final SimpleStringProperty description;
+		/** Payee or counterparty for this transaction. */
+		private final SimpleStringProperty toFrom;
+		/** Check number associated with the transaction. */
+		private final SimpleStringProperty checkNumber;
+		/** Clearing bank information. */
+		private final SimpleStringProperty clearBank;
+		/** Budget tracking notes. */
+		private final SimpleStringProperty budgetTracking;
+		/** Associated fund name for the transaction. */
+		private final SimpleStringProperty fundName;
+		/** Fund number for this entry line. */
+		private final SimpleStringProperty fundNumber;
 		/** The debit amount for this entry line, as a string. Empty if it's a credit. */
 		private final SimpleStringProperty debit;
 		/** The credit amount for this entry line, as a string. Empty if it's a debit. */
@@ -475,25 +545,43 @@ public class SkeletonJournalPanel extends BorderPane
 			this.originalTransaction = tx;
 			this.date = new SimpleStringProperty(tx.getDate());
 			this.transactionId =
-				new SimpleStringProperty(String.valueOf(tx.getBookingDateTimestamp()));
+					new SimpleStringProperty(String.valueOf(tx.getBookingDateTimestamp()));
 			this.description = new SimpleStringProperty(tx.getDescription() != null ?
-				tx.getDescription() : (tx.getMemo() != null ? tx.getMemo() : ""));
+					tx.getDescription() : (tx.getMemo() != null ? tx.getMemo() : ""));
+			this.toFrom = new SimpleStringProperty(
+													tx.getToFrom() != null ? tx.getToFrom() : "");
+			this.checkNumber = new SimpleStringProperty(
+														tx.getCheckNumber() != null ?
+																tx.getCheckNumber() : "");
+			this.clearBank = new SimpleStringProperty(
+														tx.getClearBank() != null ?
+																tx.getClearBank() : "");
+			this.budgetTracking = new SimpleStringProperty(
+															tx.getBudgetTracking() != null ?
+																	tx.getBudgetTracking() : "");
+			this.fundName = new SimpleStringProperty(
+														tx.getAssociatedFundName() != null ?
+																tx.getAssociatedFundName() : "");
+			this.fundNumber = new SimpleStringProperty(
+														entry != null &&
+																entry.getFundNumber() != null ?
+																		entry.getFundNumber() : "");
 			
 			if (entry != null && entry.getAccount() != null)
 			{
 				this.accountName = new SimpleStringProperty(entry.getAccount().getName());
 				BigDecimal amount = entry.getAmount() != null ? entry.getAmount() : BigDecimal.ZERO;
 				
-				if (entry.getAccountSide() == AccountSide.DEBIT)
-				{
-					this.debit = new SimpleStringProperty(amount.toPlainString());
-					this.credit = new SimpleStringProperty("");
-				}
-				else
-				{
-					this.debit = new SimpleStringProperty("");
-					this.credit = new SimpleStringProperty(amount.toPlainString());
-				}
+                               if (entry.getAccountSide() == AccountSide.DEBIT)
+                               {
+                                       this.debit = new SimpleStringProperty(FormatUtils.formatCurrency(amount));
+                                       this.credit = new SimpleStringProperty("");
+                               }
+                               else
+                               {
+                                       this.debit = new SimpleStringProperty("");
+                                       this.credit = new SimpleStringProperty(FormatUtils.formatCurrency(amount));
+                               }
 				
 			}
 			else
@@ -513,6 +601,7 @@ public class SkeletonJournalPanel extends BorderPane
 		public StringProperty dateProperty()
 		{
 			return this.date;
+			
 		}
 		
 		/**
@@ -522,6 +611,7 @@ public class SkeletonJournalPanel extends BorderPane
 		public StringProperty transactionIdProperty()
 		{
 			return this.transactionId;
+			
 		}
 		
 		/**
@@ -531,6 +621,7 @@ public class SkeletonJournalPanel extends BorderPane
 		public StringProperty accountNameProperty()
 		{
 			return this.accountName;
+			
 		}
 		
 		/**
@@ -540,6 +631,49 @@ public class SkeletonJournalPanel extends BorderPane
 		public StringProperty descriptionProperty()
 		{
 			return this.description;
+			
+		}
+		
+		/** Returns the to/from property. */
+		public StringProperty toFromProperty()
+		{
+			return this.toFrom;
+			
+		}
+		
+		/** Returns the check number property. */
+		public StringProperty checkNumberProperty()
+		{
+			return this.checkNumber;
+			
+		}
+		
+		/** Returns the clear bank property. */
+		public StringProperty clearBankProperty()
+		{
+			return this.clearBank;
+			
+		}
+		
+		/** Returns the budget tracking property. */
+		public StringProperty budgetTrackingProperty()
+		{
+			return this.budgetTracking;
+			
+		}
+		
+		/** Returns the fund name property. */
+		public StringProperty fundNameProperty()
+		{
+			return this.fundName;
+			
+		}
+		
+		/** Returns the fund number property. */
+		public StringProperty fundNumberProperty()
+		{
+			return this.fundNumber;
+			
 		}
 		
 		/**
@@ -549,6 +683,7 @@ public class SkeletonJournalPanel extends BorderPane
 		public StringProperty debitProperty()
 		{
 			return this.debit;
+			
 		}
 		
 		/**
@@ -558,6 +693,7 @@ public class SkeletonJournalPanel extends BorderPane
 		public StringProperty creditProperty()
 		{
 			return this.credit;
+			
 		}
 		
 		/**
@@ -568,6 +704,7 @@ public class SkeletonJournalPanel extends BorderPane
 		public AccountingTransaction getOriginalTransaction()
 		{
 			return this.originalTransaction;
+			
 		}
 		
 		/** 
@@ -576,6 +713,7 @@ public class SkeletonJournalPanel extends BorderPane
 		public String getDate()
 		{
 			return this.date.get();
+			
 		}
 		
 		/** 
@@ -584,6 +722,7 @@ public class SkeletonJournalPanel extends BorderPane
 		public String getTransactionId()
 		{
 			return this.transactionId.get();
+			
 		}
 		
 		/** 
@@ -592,6 +731,7 @@ public class SkeletonJournalPanel extends BorderPane
 		public String getAccountName()
 		{
 			return this.accountName.get();
+			
 		}
 		
 		/** 
@@ -600,6 +740,49 @@ public class SkeletonJournalPanel extends BorderPane
 		public String getDescription()
 		{
 			return this.description.get();
+			
+		}
+		
+		/** Returns the to/from value. */
+		public String getToFrom()
+		{
+			return this.toFrom.get();
+			
+		}
+		
+		/** Returns the check number. */
+		public String getCheckNumber()
+		{
+			return this.checkNumber.get();
+			
+		}
+		
+		/** Returns the clearing bank string. */
+		public String getClearBank()
+		{
+			return this.clearBank.get();
+			
+		}
+		
+		/** Returns the budget tracking notes. */
+		public String getBudgetTracking()
+		{
+			return this.budgetTracking.get();
+			
+		}
+		
+		/** Returns the fund name. */
+		public String getFundName()
+		{
+			return this.fundName.get();
+			
+		}
+		
+		/** Returns the fund number. */
+		public String getFundNumber()
+		{
+			return this.fundNumber.get();
+			
 		}
 		
 		/** 
@@ -609,6 +792,7 @@ public class SkeletonJournalPanel extends BorderPane
 		public String getDebit()
 		{
 			return this.debit.get();
+			
 		}
 		
 		/** 
@@ -618,6 +802,7 @@ public class SkeletonJournalPanel extends BorderPane
 		public String getCredit()
 		{
 			return this.credit.get();
+			
 		}
 		
 	}

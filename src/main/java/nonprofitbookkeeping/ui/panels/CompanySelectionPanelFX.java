@@ -43,22 +43,22 @@ public class CompanySelectionPanelFX extends BorderPane
 	 * {@code @FunctionalInterface}.
 	 * @see nonprofitbookkeeping.ui.CompanySelectionPanelFX.OnCompanyOpenedHandler for an example of a functional interface.
 	 */
-        /**
-         * Callback interface invoked when a company is opened from this panel.
-         * Implementations can update UI state or trigger additional logic after
-         * the company has been loaded into {@link CurrentCompany}.
-         */
-        @FunctionalInterface
-        public interface OnCompanyOpenedHandler
-        {
-                /**
-                 * Called when a company has been opened.
-                 *
-                 * @param company the company that was opened; may be {@code null}
-                 *                 if loading failed
-                 */
-                void onCompanyOpened(Company company);
-        }
+	/**
+	 * Callback interface invoked when a company is opened from this panel.
+	 * Implementations can update UI state or trigger additional logic after
+	 * the company has been loaded into {@link CurrentCompany}.
+	 */
+	@FunctionalInterface public interface OnCompanyOpenedHandler
+	{
+		/**
+		 * Called when a company has been opened.
+		 *
+		 * @param company the company that was opened; may be {@code null}
+		 *                 if loading failed
+		 */
+		void onCompanyOpened(Company company);
+		
+	}
 	
 	/** ListView component to display the list of discoverable ".npbk" company files. */
 	private final ListView<File> companyList = new ListView<>();
@@ -252,17 +252,15 @@ public class CompanySelectionPanelFX extends BorderPane
 		
 		if (sel == null)
 		{
-			AlertBox.showWarning(getScene().getWindow(),
-				"No Company Selected");
+			AlertBox.showWarning(getScene().getWindow(), "No Company Selected");
 			return;
 		}
 		
 		// Assuming showPreview already loaded it into CurrentCompany and set it as
 		// open.
 		// If not, the loading logic would be here.
-		Alert alert = new Alert(Alert.AlertType.INFORMATION,
-			"Opening company: " + sel.getName() +
-				"\n(Note: Company might have already been loaded for preview).");
+		Alert alert = new Alert(Alert.AlertType.INFORMATION, "Opening company: " + sel.getName() +
+			"\n(Note: Company might have already been loaded for preview).");
 		alert.initOwner(this.getScene() != null ? this.getScene().getWindow() : null);
 		alert.showAndWait();
 		
@@ -312,13 +310,10 @@ public class CompanySelectionPanelFX extends BorderPane
 		dlg.initOwner(this.getScene() != null ? this.getScene().getWindow() : null); // Set owner
 		dlg.setTitle("Create New Company");
 		
-		CreateOrEditCompanyPanelFX form =
-			new CreateOrEditCompanyPanelFX(null,
-				model ->
-				{
-					dlg.close();
-					reloadCompanyList();
-				});
+		CreateOrEditCompanyPanelFX form = new CreateOrEditCompanyPanelFX(null, model -> {
+			dlg.close();
+			reloadCompanyList();
+		});
 		dlg.setScene(new Scene(form, 800, 600));
 		dlg.show();
 	}

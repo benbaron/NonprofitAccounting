@@ -17,10 +17,7 @@ import lombok.NoArgsConstructor;
  * Lombok's {@code @Data}, {@code @AllArgsConstructor}, and {@code @NoArgsConstructor}
  * are used for boilerplate code generation.
  */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class SettingsModel
+@Data @AllArgsConstructor @NoArgsConstructor public class SettingsModel
 {
 	// Company Info
 	/** The name of the organization. */
@@ -42,11 +39,13 @@ public class SettingsModel
 	/** Flag indicating whether vouchers/invoices should be auto-numbered. */
 	@JsonProperty private boolean autoNumberVouchers;
 	
-        // UI Preferences
+	// UI Preferences
         /** The name of the UI theme (e.g., "Dark", "Light"). */
         @JsonProperty private String theme;
         /** The language code for UI localization (e.g., "en_US", "fr_FR"). */
         @JsonProperty private String language;
+       /** Pattern used for formatting currency values (e.g., "$#,##0.00"). */
+       @JsonProperty private String currencyFormat = "$#,##0.00";
 	
 	/**
 	 * Represents a user account within the settings model.
@@ -110,7 +109,7 @@ public class SettingsModel
 	
 	// Explicit Getters/Setters below are mostly redundant due to Lombok @Data
 	// but are documented as they exist in the original code.
-
+	
 	/**
 	 * Gets the organization name.
 	 * @return The name of the organization.
@@ -268,9 +267,29 @@ public class SettingsModel
 	 * Sets the UI language code.
 	 * @param language The language code to set (e.g., "en_US").
 	 */
-	public void setLanguage(String language)
-	{
-		this.language = language;
-	}
+        public void setLanguage(String language)
+        {
+                this.language = language;
+        }
+
+       /**
+        * Gets the currency format pattern.
+        *
+        * @return pattern used to format currency values
+        */
+       public String getCurrencyFormat()
+       {
+               return this.currencyFormat;
+       }
+
+       /**
+        * Sets the currency format pattern.
+        *
+        * @param currencyFormat format pattern to set
+        */
+       public void setCurrencyFormat(String currencyFormat)
+       {
+               this.currencyFormat = currencyFormat;
+       }
 	
 }

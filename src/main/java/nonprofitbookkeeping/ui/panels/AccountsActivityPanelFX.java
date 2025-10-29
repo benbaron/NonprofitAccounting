@@ -61,8 +61,6 @@ public class AccountsActivityPanelFX extends BorderPane
 	 *  It is updated by {@link #applyFilters()} and used in the filtering predicate.
 	 *  Will be {@code null} if the amount filter field is empty or contains an invalid number format. */
 	private BigDecimal amountFilter = null; 
-	// Renamed from the local variable in applyFilters to be
-	// a field
 	
 	private AccountsActivityPanelCompanyListener companyListener;
 
@@ -540,7 +538,7 @@ public class AccountsActivityPanelFX extends BorderPane
 			this.amount =
 				new SimpleObjectProperty<>(totalAmount != null ? totalAmount : BigDecimal.ZERO);
 			
-			BigDecimal accountBalance = t.countAccountBalance();			
+			BigDecimal accountBalance = AccountingTransaction.countAccountBalance();			
 			this.balance = new SimpleObjectProperty<>(
 				accountBalance != null ? accountBalance : BigDecimal.ZERO);
 			

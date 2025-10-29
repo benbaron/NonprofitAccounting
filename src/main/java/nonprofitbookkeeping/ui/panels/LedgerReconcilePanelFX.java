@@ -44,7 +44,7 @@ import com.webcohesion.ofx4j.domain.data.banking.BankStatementResponseTransactio
  *  • pick an account
  *  • import bank transactions from an OFX file (via ofx4j 1.38)
  *  • add bank transactions manually
- *  • toggle “cleared” on any row
+ *  • toggle "cleared" on any row
  *  • export uncleared items to CSV
  */
 public class LedgerReconcilePanelFX extends BorderPane
@@ -78,34 +78,34 @@ public class LedgerReconcilePanelFX extends BorderPane
 	 *
 	 * @param svc The {@link ReconciliationService} to be used for accessing ledger data and account information. Must not be null.
 	 */
-        public LedgerReconcilePanelFX(ReconciliationService svc)
-        {
-                setPadding(new Insets(10));
-                buildTop();
-                buildTable();
-                setCenter(this.table);
-                setBottom(buildButtons());
-                refreshAccountList();
-        }
-
-        /**
-         * Selects the given account in the account combo box if present and
-         * refreshes the table. This is useful when another panel wants to
-         * preselect an account before showing the reconciliation UI.
-         *
-         * @param account account name to select
-         */
-        public void selectAccount(String account)
-        {
-                if (account == null)
-                        return;
-
-                if (!this.accountBox.getItems().contains(account))
-                        return;
-
-                this.accountBox.getSelectionModel().select(account);
-                reloadRows();
-        }
+	public LedgerReconcilePanelFX(ReconciliationService svc)
+	{
+		setPadding(new Insets(10));
+		buildTop();
+		buildTable();
+		setCenter(this.table);
+		setBottom(buildButtons());
+		refreshAccountList();
+	}
+	
+	/**
+	 * Selects the given account in the account combo box if present and
+	 * refreshes the table. This is useful when another panel wants to
+	 * preselect an account before showing the reconciliation UI.
+	 *
+	 * @param account account name to select
+	 */
+	public void selectAccount(String account)
+	{
+		if (account == null)
+			return;
+		
+		if (!this.accountBox.getItems().contains(account))
+			return;
+		
+		this.accountBox.getSelectionModel().select(account);
+		reloadRows();
+	}
 	
 	/* ----------------------- UI builders ----------------------- */
 	/**
@@ -144,11 +144,8 @@ public class LedgerReconcilePanelFX extends BorderPane
 		clrCol.setCellFactory(CheckBoxTableCell.forTableColumn(clrCol));
 		clrCol.setEditable(true);
 		
-		this.table.getColumns().addAll(
-			clrCol,
-			col("Date", r -> r.date),
-			col("Description", r -> r.desc),
-			col("Amount", r -> r.amount),
+		this.table.getColumns().addAll(clrCol, col("Date", r -> r.date),
+			col("Description", r -> r.desc), col("Amount", r -> r.amount),
 			col("Source", r -> r.source));
 		this.table.setItems(this.rows);
 		this.table.setEditable(true);
@@ -237,14 +234,10 @@ public class LedgerReconcilePanelFX extends BorderPane
 	 */
 	private void updateTotals()
 	{
-		BigDecimal ledgerBal = this.rows.stream()
-			.filter(r -> r.source.equals("Ledger"))
-			.map(r -> r.amount)
-			.reduce(BigDecimal.ZERO, BigDecimal::add);
+		BigDecimal ledgerBal = this.rows.stream().filter(r -> r.source.equals("Ledger"))
+			.map(r -> r.amount).reduce(BigDecimal.ZERO, BigDecimal::add);
 		
-		BigDecimal clearedBal = this.rows.stream()
-			.filter(r -> r.cleared.get())
-			.map(r -> r.amount)
+		BigDecimal clearedBal = this.rows.stream().filter(r -> r.cleared.get()).map(r -> r.amount)
 			.reduce(BigDecimal.ZERO, BigDecimal::add);
 		
 		this.ledgerBalLbl.setText("Ledger Balance: " + ledgerBal);
@@ -310,8 +303,7 @@ public class LedgerReconcilePanelFX extends BorderPane
 		{
 			FileChooser fc = new FileChooser();
 			fc.setTitle("Open OFX File");
-			fc.getExtensionFilters().add(
-				new FileChooser.ExtensionFilter("OFX", "*.ofx"));
+			fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("OFX", "*.ofx"));
 			File f = fc.showOpenDialog(getScene().getWindow());
 			if (f == null)
 				return;
@@ -322,14 +314,13 @@ public class LedgerReconcilePanelFX extends BorderPane
 				LedgerReconcilePanelFX.this.bankTxns
 					.put(LedgerReconcilePanelFX.this.accountBox.getValue(), bank);
 				reloadRows();
-				new Alert(Alert.AlertType.INFORMATION,
-					"Imported " + bank.size() + " transactions.")
+				new Alert(Alert.AlertType.INFORMATION, "Imported " + bank.size() + " transactions.")
 					.showAndWait();
 			}
 			catch (Exception ex)
 			{
-				new Alert(Alert.AlertType.ERROR,
-					"OFX import failed:\n" + ex.getMessage()).showAndWait();
+				new Alert(Alert.AlertType.ERROR, "OFX import failed:\n" + ex.getMessage())
+					.showAndWait();
 				ex.printStackTrace();
 			}
 			
@@ -370,8 +361,11 @@ public class LedgerReconcilePanelFX extends BorderPane
 			
 			BankingResponseMessageSet banking =
 				(BankingResponseMessageSet) envelope.getMessageSet(MessageSetType.banking);
-			BankStatementResponseTransaction stmt =
-				banking.getStatementResponses().get(0); // first (and usually only) statement
+			BankStatementResponseTransaction stmt = banking.getStatementResponses().get(0); // first
+																							// (and
+																							// usually
+																							// only)
+																							// statement
 			
 			List<Transaction> l = stmt.getMessage().getTransactionList().getTransactions();
 			
@@ -379,8 +373,7 @@ public class LedgerReconcilePanelFX extends BorderPane
 			{
 				AccountingTransaction at = new AccountingTransaction();
 				at.setDate(tx.getDatePosted().toString());
-				at.setDescription(
-					tx.getName() != null ? tx.getName() : tx.getMemo());
+				at.setDescription(tx.getName() != null ? tx.getName() : tx.getMemo());
 				out.add(at);
 			}
 			
@@ -416,8 +409,7 @@ public class LedgerReconcilePanelFX extends BorderPane
 		{
 			Dialog<AccountingTransaction> dlg = new Dialog<>();
 			dlg.setTitle("Add Bank Transaction");
-			dlg.getDialogPane().getButtonTypes().addAll(
-				ButtonType.OK, ButtonType.CANCEL);
+			dlg.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 			
 			DatePicker dateP = new DatePicker(LocalDate.now());
 			TextField descF = new TextField();
@@ -431,12 +423,10 @@ public class LedgerReconcilePanelFX extends BorderPane
 			gp.addRow(2, new Label("Amount"), amtF);
 			dlg.getDialogPane().setContent(gp);
 			
-			dlg.setResultConverter(btn -> btn == ButtonType.OK ?
-				build(dateP, descF, amtF) : null);
+			dlg.setResultConverter(btn -> btn == ButtonType.OK ? build(dateP, descF, amtF) : null);
 			dlg.showAndWait().ifPresent(tx -> {
 				LedgerReconcilePanelFX.this.bankTxns
-					.computeIfAbsent(
-						LedgerReconcilePanelFX.this.accountBox.getValue(),
+					.computeIfAbsent(LedgerReconcilePanelFX.this.accountBox.getValue(),
 						k -> new ArrayList<>())
 					.add(tx);
 				reloadRows();
@@ -454,9 +444,7 @@ public class LedgerReconcilePanelFX extends BorderPane
 		        * @return A new {@link AccountingTransaction} based on dialog inputs or
 		        *         {@code null} if validation fails.
 		        */
-		private AccountingTransaction build(DatePicker dateP,
-											TextField descF,
-											TextField amtF)
+		private AccountingTransaction build(DatePicker dateP, TextField descF, TextField amtF)
 		{
 			
 			if (dateP.getValue() == null)
@@ -524,21 +512,18 @@ public class LedgerReconcilePanelFX extends BorderPane
 		 */
 		@Override public void handle(ActionEvent e)
 		{
-			List<Row> uncleared = this.p.rows.stream()
-				.filter(r -> !r.cleared.get())
-				.collect(Collectors.toList());
+			List<Row> uncleared =
+				this.p.rows.stream().filter(r -> !r.cleared.get()).collect(Collectors.toList());
 			
 			if (uncleared.isEmpty())
 			{
-				new Alert(Alert.AlertType.INFORMATION,
-					"No uncleared items.").showAndWait();
+				new Alert(Alert.AlertType.INFORMATION, "No uncleared items.").showAndWait();
 				return;
 			}
 			
 			FileChooser fc = new FileChooser();
 			fc.setTitle("Save Uncleared CSV");
-			fc.getExtensionFilters().add(
-				new FileChooser.ExtensionFilter("CSV", "*.csv"));
+			fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV", "*.csv"));
 			File f = fc.showSaveDialog(this.p.getScene().getWindow());
 			if (f == null)
 				return;
@@ -546,14 +531,13 @@ public class LedgerReconcilePanelFX extends BorderPane
 			try (java.io.PrintWriter pw = new java.io.PrintWriter(f))
 			{
 				pw.println("Date,Description,Amount,Source");
-				uncleared.forEach(r -> pw.printf("%s,%s,%s,%s%n",
-					r.date, r.desc.replace(',', ' '), r.amount, r.source));
+				uncleared.forEach(r -> pw.printf("%s,%s,%s,%s%n", r.date, r.desc.replace(',', ' '),
+					r.amount, r.source));
 				new Alert(Alert.AlertType.INFORMATION, "Saved.").showAndWait();
 			}
 			catch (Exception ex)
 			{
-				new Alert(Alert.AlertType.ERROR,
-					"Write failed:\n" + ex.getMessage()).showAndWait();
+				new Alert(Alert.AlertType.ERROR, "Write failed:\n" + ex.getMessage()).showAndWait();
 			}
 			
 		}
@@ -577,14 +561,13 @@ public class LedgerReconcilePanelFX extends BorderPane
 		 * @param bank A list of {@link AccountingTransaction}s from the bank statement.
 		 * @return A new {@link List} of {@link Row} objects containing all transactions from both sources.
 		 */
-		static List<Row> merge(	List<AccountingTransaction> ledger,
-								List<AccountingTransaction> bank)
+		static List<Row> merge(List<AccountingTransaction> ledger, List<AccountingTransaction> bank)
 		{
 			List<Row> out = new ArrayList<>();
-			ledger.forEach(t -> out.add(new Row(t.getDate(), t.getDescription(),
-				t.getTotalAmount(), "Ledger")));
-			bank.forEach(t -> out.add(new Row(t.getDate(), t.getDescription(),
-				t.getTotalAmount(), "Bank")));
+			ledger.forEach(t -> out
+				.add(new Row(t.getDate(), t.getDescription(), t.getTotalAmount(), "Ledger")));
+			bank.forEach(
+				t -> out.add(new Row(t.getDate(), t.getDescription(), t.getTotalAmount(), "Bank")));
 			return out;
 		}
 		

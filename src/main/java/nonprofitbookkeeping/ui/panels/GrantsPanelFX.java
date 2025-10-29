@@ -3,6 +3,7 @@ package nonprofitbookkeeping.ui.panels;
 
 import java.io.File;
 import java.math.BigDecimal;
+import nonprofitbookkeeping.util.FormatUtils;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,9 +27,9 @@ public class GrantsPanelFX extends BorderPane
 {
 	
 	/** Service layer for grant data operations. */
-        private final GrantsService grantsService;
-        /** Company file where grants are persisted. */
-        private File companyFile;
+	private final GrantsService grantsService;
+	/** Company file where grants are persisted. */
+	private File companyFile;
 	/** ObservableList to hold {@link GrantRow} objects for display in the table. */
 	private final ObservableList<GrantRow> rows = FXCollections.observableArrayList();
 	/** TableView to display the list of grants. */
@@ -38,52 +39,63 @@ public class GrantsPanelFX extends BorderPane
 	 * Constructs a new {@code GrantsPanelFX}.
 	 * Initializes the panel with a {@link GrantsService} instance, a table to display grant information,
 	 * and a "Refresh" button to reload grant data.
-        */
-        public GrantsPanelFX(GrantsService service, File companyFile)
-        {
-                this.grantsService = service != null ? service : new GrantsService();
-                this.companyFile = companyFile;
-
-                setPadding(new Insets(10));
-                buildTable();
-                setCenter(new TitledPane("Grant List", this.table)
-                {
-                        {
-                                setCollapsible(false);
-                        }
-
-                });
-                Button refresh = new Button("Refresh");
-                Button add = new Button("Add Grant");
-                Button edit = new Button("Edit");
-                Button del = new Button("Delete");
-
-                refresh.setOnAction(e -> loadGrantData());
-                add.setOnAction(e -> grantDialog(null));
-                edit.setOnAction(e -> {
-                        GrantRow sel = this.table.getSelectionModel().getSelectedItem();
-                        if (sel != null)
-                                grantDialog(toGrant(sel));
-                });
-                del.setOnAction(e -> {
-                        GrantRow sel = this.table.getSelectionModel().getSelectedItem();
-                        if (sel != null)
-                        {
-                                this.grantsService.removeGrant(sel.getGrantId());
-                                refresh();
-                                save();
-                        }
-                });
-
-                setBottom(new ToolBar(refresh, new Separator(), new HBox(5, add, edit, del)));
-
-                if (this.companyFile != null)
-                {
-                        try { this.grantsService.loadGrantsFromZip(this.companyFile); } catch (Exception ex) { ex.printStackTrace(); }
-                }
-
-                loadGrantData();
-        }
+	    */
+	public GrantsPanelFX(GrantsService service, File companyFile)
+	{
+		this.grantsService = service != null ? service : new GrantsService();
+		this.companyFile = companyFile;
+		
+		setPadding(new Insets(10));
+		buildTable();
+		setCenter(new TitledPane("Grant List", this.table)
+		{
+			{
+				setCollapsible(false);
+			}
+			
+		});
+		Button refresh = new Button("Refresh");
+		Button add = new Button("Add Grant");
+		Button edit = new Button("Edit");
+		Button del = new Button("Delete");
+		
+		refresh.setOnAction(e -> loadGrantData());
+		add.setOnAction(e -> grantDialog(null));
+		edit.setOnAction(e -> {
+			GrantRow sel = this.table.getSelectionModel().getSelectedItem();
+			if (sel != null)
+				grantDialog(toGrant(sel));
+		});
+		del.setOnAction(e -> {
+			GrantRow sel = this.table.getSelectionModel().getSelectedItem();
+			
+			if (sel != null)
+			{
+				this.grantsService.removeGrant(sel.getGrantId());
+				refresh();
+				save();
+			}
+			
+		});
+		
+		setBottom(new ToolBar(refresh, new Separator(), new HBox(5, add, edit, del)));
+		
+		if (this.companyFile != null)
+		{
+			
+			try
+			{
+				this.grantsService.loadGrantsFromZip(this.companyFile);
+			}
+			catch (Exception ex)
+			{
+				ex.printStackTrace();
+			}
+			
+		}
+		
+		loadGrantData();
+	}
 	
 	/* ------------------------------------------------------------------ */
 	/**
@@ -131,86 +143,99 @@ public class GrantsPanelFX extends BorderPane
 	 * converts each {@link Grant} object into a {@link GrantRow}, and adds them to the
 	 * {@link #rows} observable list, which updates the table view.
 	 */
-        private void loadGrantData()
-        {
-                this.rows.clear();
-                List<Grant> list = this.grantsService.getAllGrants();
-                for (var g : list)
-                        this.rows.add(new GrantRow(g));
-        }
-
-        /** Displays a dialog for adding or editing a grant. */
-        private void grantDialog(Grant existing)
-        {
-                Dialog<Grant> dlg = new Dialog<>();
-                dlg.setTitle(existing == null ? "Add Grant" : "Edit Grant");
-                ButtonType okType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-                dlg.getDialogPane().getButtonTypes().addAll(okType, ButtonType.CANCEL);
-
-                TextField grantorF = new TextField();
-                TextField amountF = new TextField();
-                TextField dateF = new TextField();
-                TextField purposeF = new TextField();
-                TextField statusF = new TextField();
-
-                if (existing != null)
-                {
-                        grantorF.setText(existing.getGrantor());
-                        amountF.setText(existing.getAmount() != null ? existing.getAmount().toPlainString() : "");
-                        dateF.setText(existing.getDateAwarded());
-                        purposeF.setText(existing.getPurpose());
-                        statusF.setText(existing.getStatus());
-                }
-
-                dlg.getDialogPane().setContent(new VBox(8,
-                        new HBox(5, new Label("Grantor:"), grantorF),
-                        new HBox(5, new Label("Amount:"), amountF),
-                        new HBox(5, new Label("Date:"), dateF),
-                        new HBox(5, new Label("Purpose:"), purposeF),
-                        new HBox(5, new Label("Status:"), statusF)));
-
-                dlg.setResultConverter(btn -> btn == okType ? new Grant(
-                        existing == null ? UUID.randomUUID().toString() : existing.getGrantId(),
-                        grantorF.getText(),
-                        new BigDecimal(amountF.getText().isBlank() ? "0" : amountF.getText()),
-                        dateF.getText(),
-                        purposeF.getText(),
-                        statusF.getText()) : null);
-
-                dlg.showAndWait().ifPresent(g -> {
-                        if (existing == null)
-                                this.grantsService.addGrant(g);
-                        else
-                        {
-                                this.grantsService.removeGrant(existing.getGrantId());
-                                this.grantsService.addGrant(g);
-                        }
-                        refresh();
-                        save();
-                });
-        }
-
-        /** Refreshes the table from the service layer. */
-        private void refresh()
-        {
-                loadGrantData();
-                this.table.refresh();
-        }
-
-        /** Saves grants to the company file if set. */
-        private void save()
-        {
-                if (this.companyFile != null)
-                {
-                        try { this.grantsService.saveGrantsToZip(this.companyFile); } catch (Exception ex) { ex.printStackTrace(); }
-                }
-        }
-
-        private Grant toGrant(GrantRow row)
-        {
-                String amt = row.amount.replace("$", "").replace(",", "");
-                return new Grant(row.getGrantId(), row.getGrantor(), new BigDecimal(amt), row.getDateAwarded(), row.getPurpose(), row.getStatus());
-        }
+	private void loadGrantData()
+	{
+		this.rows.clear();
+		List<Grant> list = this.grantsService.getAllGrants();
+		for (var g : list)
+			this.rows.add(new GrantRow(g));
+	}
+	
+	/** Displays a dialog for adding or editing a grant. */
+	private void grantDialog(Grant existing)
+	{
+		Dialog<Grant> dlg = new Dialog<>();
+		dlg.setTitle(existing == null ? "Add Grant" : "Edit Grant");
+		ButtonType okType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+		dlg.getDialogPane().getButtonTypes().addAll(okType, ButtonType.CANCEL);
+		
+		TextField grantorF = new TextField();
+		TextField amountF = new TextField();
+		TextField dateF = new TextField();
+		TextField purposeF = new TextField();
+		TextField statusF = new TextField();
+		
+		if (existing != null)
+		{
+			grantorF.setText(existing.getGrantor());
+                       amountF
+                               .setText(existing.getAmount() != null ? FormatUtils.formatCurrency(existing.getAmount()) : "");
+			dateF.setText(existing.getDateAwarded());
+			purposeF.setText(existing.getPurpose());
+			statusF.setText(existing.getStatus());
+		}
+		
+		dlg.getDialogPane()
+			.setContent(new VBox(8, new HBox(5, new Label("Grantor:"), grantorF),
+				new HBox(5, new Label("Amount:"), amountF), new HBox(5, new Label("Date:"), dateF),
+				new HBox(5, new Label("Purpose:"), purposeF),
+				new HBox(5, new Label("Status:"), statusF)));
+		
+		dlg.setResultConverter(btn -> btn == okType ?
+			new Grant(existing == null ? UUID.randomUUID().toString() : existing.getGrantId(),
+				grantorF.getText(),
+				new BigDecimal(amountF.getText().isBlank() ? "0" : amountF.getText()),
+				dateF.getText(), purposeF.getText(), statusF.getText()) :
+			null);
+		
+		dlg.showAndWait().ifPresent(g -> {
+			
+			if (existing == null)
+				this.grantsService.addGrant(g);
+			else
+			{
+				this.grantsService.removeGrant(existing.getGrantId());
+				this.grantsService.addGrant(g);
+			}
+			
+			refresh();
+			save();
+		});
+	}
+	
+	/** Refreshes the table from the service layer. */
+	private void refresh()
+	{
+		loadGrantData();
+		this.table.refresh();
+	}
+	
+	/** Saves grants to the company file if set. */
+	private void save()
+	{
+		
+		if (this.companyFile != null)
+		{
+			
+			try
+			{
+				this.grantsService.saveGrantsToZip(this.companyFile);
+			}
+			catch (Exception ex)
+			{
+				ex.printStackTrace();
+			}
+			
+		}
+		
+	}
+	
+	private Grant toGrant(GrantRow row)
+	{
+		String amt = row.amount.replace("$", "").replace(",", "");
+		return new Grant(row.getGrantId(), row.getGrantor(), new BigDecimal(amt),
+			row.getDateAwarded(), row.getPurpose(), row.getStatus());
+	}
 	
 	/**
 	 * A simple data class (POJO) used to represent a row in the grants {@link TableView}.
@@ -239,12 +264,12 @@ public class GrantsPanelFX extends BorderPane
 		 */
 		GrantRow(Grant g)
 		{
-			this.grantId = g.getGrantId();
-			this.grantor = g.getGrantor();
-			this.amount = String.format("$%.2f", g.getAmount());
-			this.dateAwarded = g.getDateAwarded();
-			this.purpose = g.getPurpose();
-			this.status = g.getStatus();
+                       this.grantId = g.getGrantId();
+                       this.grantor = g.getGrantor();
+                       this.amount = FormatUtils.formatCurrency(g.getAmount());
+                       this.dateAwarded = g.getDateAwarded();
+                       this.purpose = g.getPurpose();
+                       this.status = g.getStatus();
 		}
 		
 		/**

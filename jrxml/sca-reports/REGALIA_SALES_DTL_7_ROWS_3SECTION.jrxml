@@ -1,0 +1,204 @@
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+    name="REGALIA_SALES_DTL_7_ROWS_3SECTION" language="java" uuid="bdfe2a69-9a6b-457e-8be6-c682a88d99cd" 
+    pageWidth="792" pageHeight="612" orientation="Landscape"
+    columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+    
+    <!-- Parameters -->
+    <parameter name="P_ORG_NAME" class="java.lang.String"/>
+    <parameter name="P_REPORT_TITLE" class="java.lang.String"/>
+    <parameter name="P_CONTACT_INFO" class="java.lang.String"/>
+    
+    <!-- Styles -->
+    <style name="Base" fontName="Garamond" fontSize="10"/>
+    <style name="Label" style="Base" isBold="true"/>
+    <style name="Header" style="Base" fontSize="11" isBold="true"/>
+    <style name="CellRight" style="Base" textColor="#000000">
+        <textElement textAlignment="Right" verticalAlignment="Middle"/>
+    </style>
+    <style name="CellLeft" style="Base">
+        <textElement textAlignment="Left" verticalAlignment="Middle"/>
+    </style>
+    <style name="CellCenter" style="Base">
+        <textElement textAlignment="Center" verticalAlignment="Middle"/>
+    </style>
+
+    <!-- Fields (purpose-based, strings where textual) -->
+    <field name="section" class="java.lang.String"/>
+    <field name="entryDate" class="java.lang.String"/>
+    <field name="itemDescription" class="java.lang.String"/>
+    <field name="quantity" class="java.lang.String"/>
+    <field name="unitCost" class="java.math.BigDecimal"/>
+    <field name="unitPrice" class="java.math.BigDecimal"/>
+    <field name="amount" class="java.math.BigDecimal"/>
+    <field name="counterparty" class="java.lang.String"/>
+    <field name="notes" class="java.lang.String"/>
+
+    <!-- Variables -->
+    <variable name="vSectionSubtotal" class="java.math.BigDecimal" calculation="Sum" resetType="Group" resetGroup="SectionGroup">
+        <variableExpression><![CDATA[$F{amount}]]></variableExpression>
+        <initialValueExpression><![CDATA[new java.math.BigDecimal("0")]]></initialValueExpression>
+    </variable>
+    <variable name="vGrandTotal" class="java.math.BigDecimal" calculation="Sum" resetType="Report">
+        <variableExpression><![CDATA[$F{amount}]]></variableExpression>
+        <initialValueExpression><![CDATA[new java.math.BigDecimal("0")]]></initialValueExpression>
+    </variable>
+
+    <!-- Title -->
+    <title>
+        <band height="40">
+            <staticText>
+                <reportElement x="0" y="0" width="752" height="20"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Garamond" size="14" isBold="true"/>
+                </textElement>
+                <text><![CDATA[$P{P_ORG_NAME}]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="0" y="20" width="752" height="20"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Garamond" size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[$P{P_REPORT_TITLE}]]></text>
+            </staticText>
+        </band>
+    </title>
+
+    <!-- Page Header -->
+    <pageHeader>
+        <band height="18">
+            <textField>
+                <reportElement x="0" y="0" width="752" height="18"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="Garamond" size="9" isItalic="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{P_CONTACT_INFO}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageHeader>
+
+    <!-- Group by section (PURCHASE, SALE, ADJUSTMENT) -->
+    <group name="SectionGroup">
+        <groupExpression><![CDATA[$F{section}]]></groupExpression>
+        <groupHeader>
+            <band height="42" splitType="Prevent">
+                <!-- Section title -->
+                <textField pattern="">
+                    <reportElement x="0" y="0" width="752" height="20"/>
+                    <textElement textAlignment="Left" verticalAlignment="Middle">
+                        <font fontName="Garamond" size="12" isBold="true"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[
+$F{section} == null ? "UNSPECIFIED" :
+($F{section}.equalsIgnoreCase("PURCHASE") ? "PURCHASES" :
+ ($F{section}.equalsIgnoreCase("SALE") ? "SALES" : "ADJUSTMENTS"))
+                    ]]></textFieldExpression>
+                </textField>
+                <!-- Column headers -->
+                <staticText>
+                    <reportElement x="0" y="24" width="80" height="18" style="Header"/>
+                    <text><![CDATA[Date]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="82" y="24" width="190" height="18" style="Header"/>
+                    <text><![CDATA[Item / Description]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="274" y="24" width="60" height="18" style="Header"/>
+                    <text><![CDATA[Qty]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="336" y="24" width="80" height="18" style="Header"/>
+                    <text><![CDATA[Unit Cost]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="418" y="24" width="80" height="18" style="Header"/>
+                    <text><![CDATA[Unit Price]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="500" y="24" width="90" height="18" style="Header"/>
+                    <text><![CDATA[Amount]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="592" y="24" width="90" height="18" style="Header"/>
+                    <text><![CDATA[Counterparty]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="684" y="24" width="68" height="18" style="Header"/>
+                    <text><![CDATA[Notes]]></text>
+                </staticText>
+            </band>
+        </groupHeader>
+        <groupFooter>
+            <band height="22" splitType="Prevent">
+                <line>
+                    <reportElement x="0" y="0" width="752" height="1"/>
+                </line>
+                <staticText>
+                    <reportElement x="336" y="4" width="162" height="18" style="Label"/>
+                    <text><![CDATA[Section Subtotal:]]></text>
+                </staticText>
+                <textField pattern="$#,##0.00">
+                    <reportElement x="500" y="4" width="90" height="18" style="CellRight"/>
+                    <textFieldExpression><![CDATA[$V{vSectionSubtotal}]]></textFieldExpression>
+                </textField>
+            </band>
+        </groupFooter>
+    </group>
+
+    <!-- Detail row -->
+    <detail>
+        <band height="18">
+            <textField>
+                <reportElement x="0" y="0" width="80" height="18" style="CellLeft"/>
+                <textFieldExpression><![CDATA[$F{entryDate}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="82" y="0" width="190" height="18" style="CellLeft"/>
+                <textFieldExpression><![CDATA[$F{itemDescription}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="274" y="0" width="60" height="18" style="CellCenter"/>
+                <textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
+            </textField>
+            <textField pattern="$#,##0.00">
+                <reportElement x="336" y="0" width="80" height="18" style="CellRight"/>
+                <textFieldExpression><![CDATA[$F{unitCost}]]></textFieldExpression>
+            </textField>
+            <textField pattern="$#,##0.00">
+                <reportElement x="418" y="0" width="80" height="18" style="CellRight"/>
+                <textFieldExpression><![CDATA[$F{unitPrice}]]></textFieldExpression>
+            </textField>
+            <textField pattern="$#,##0.00">
+                <reportElement x="500" y="0" width="90" height="18" style="CellRight"/>
+                <textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="592" y="0" width="90" height="18" style="CellLeft"/>
+                <textFieldExpression><![CDATA[$F{counterparty}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="684" y="0" width="68" height="18" style="CellLeft"/>
+                <textFieldExpression><![CDATA[$F{notes}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+    <!-- Summary (grand total) -->
+    <summary>
+        <band height="26">
+            <line>
+                <reportElement x="0" y="0" width="752" height="1"/>
+            </line>
+            <staticText>
+                <reportElement x="336" y="4" width="162" height="20" style="Label"/>
+                <text><![CDATA[Grand Total:]]></text>
+            </staticText>
+            <textField pattern="$#,##0.00">
+                <reportElement x="500" y="4" width="90" height="20" style="CellRight"/>
+                <textFieldExpression><![CDATA[$V{vGrandTotal}]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+</jasperReport>

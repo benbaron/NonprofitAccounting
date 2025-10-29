@@ -1,0 +1,127 @@
+
+package nonprofitbookkeeping.reports.datasource.scareports;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+
+/**
+ * Auto-generated bean for ASSET_DTL_5a report.
+ * Generated on 2025-08-01.
+ */
+
+public class AssetDtl5aBean
+{
+	private ArrayList<AssetDtl5aRow> rows;
+	
+	private BigDecimal _1_contact_info;
+	private BigDecimal add_total_to_pg_3_i_a_end;
+	private BigDecimal amount;
+	private BigDecimal amount_2;
+	private BigDecimal amount_3;
+	private BigDecimal amount_4;
+	private BigDecimal amount_5;
+	private BigDecimal amount_6;
+	private BigDecimal amount_7;
+	private BigDecimal amount_8;
+	private BigDecimal contents_b59;
+	private BigDecimal contents_e_3;
+	private BigDecimal contents_e_4;
+	private BigDecimal current_amount;
+	private BigDecimal current_amount_10;
+	private BigDecimal current_amount_11;
+	private BigDecimal current_amount_12;
+	private BigDecimal current_amount_13;
+	private BigDecimal current_amount_14;
+	private BigDecimal current_amount_15;
+	private BigDecimal current_amount_16;
+	private BigDecimal current_amount_17;
+	private BigDecimal current_amount_18;
+	private BigDecimal current_amount_19;
+	private BigDecimal current_amount_2;
+	private BigDecimal current_amount_20;
+	private BigDecimal current_amount_21;
+	private BigDecimal current_amount_22;
+	private BigDecimal current_amount_23;
+	private BigDecimal current_amount_24;
+	private BigDecimal current_amount_25;
+	private BigDecimal current_amount_26;
+	private BigDecimal current_amount_3;
+	private BigDecimal current_amount_4;
+	private BigDecimal current_amount_5;
+	private BigDecimal current_amount_6;
+	private BigDecimal current_amount_7;
+	private BigDecimal current_amount_8;
+	private BigDecimal current_amount_9;
+	private BigDecimal other_assets_description;
+	private BigDecimal other_assets_description_2;
+	private BigDecimal other_assets_description_3;
+	private BigDecimal other_assets_description_4;
+	private BigDecimal other_assets_description_5;
+	private BigDecimal other_assets_description_6;
+	private BigDecimal other_assets_description_7;
+	private BigDecimal other_assets_description_8;
+	private BigDecimal prepaid_expenses_description;
+	private BigDecimal prepaid_expenses_description_2;
+	private BigDecimal prepaid_expenses_description_3;
+	private BigDecimal prepaid_expenses_description_4;
+	private BigDecimal prepaid_expenses_description_5;
+	private BigDecimal prior_amount;
+	private BigDecimal prior_amount_10;
+	private BigDecimal prior_amount_11;
+	private BigDecimal prior_amount_12;
+	private BigDecimal prior_amount_13;
+	private BigDecimal prior_amount_14;
+	private BigDecimal prior_amount_15;
+	private BigDecimal prior_amount_16;
+	private BigDecimal prior_amount_17;
+	private BigDecimal prior_amount_18;
+	private BigDecimal prior_amount_19;
+	private BigDecimal prior_amount_2;
+	private BigDecimal prior_amount_20;
+	private BigDecimal prior_amount_21;
+	private BigDecimal prior_amount_22;
+	private BigDecimal prior_amount_23;
+	private BigDecimal prior_amount_24;
+	private BigDecimal prior_amount_25;
+	private BigDecimal prior_amount_26;
+	private BigDecimal prior_amount_3;
+	private BigDecimal prior_amount_4;
+	private BigDecimal prior_amount_5;
+	private BigDecimal prior_amount_6;
+	private BigDecimal prior_amount_7;
+	private BigDecimal prior_amount_8;
+	private BigDecimal prior_amount_9;
+	private BigDecimal reason;
+	private BigDecimal reason_10;
+	private BigDecimal reason_11;
+	private BigDecimal reason_2;
+	private BigDecimal reason_3;
+	private BigDecimal reason_4;
+	private BigDecimal reason_5;
+	private BigDecimal reason_6;
+	private BigDecimal reason_7;
+	private BigDecimal reason_8;
+	private BigDecimal reason_9;
+	private BigDecimal receivables_owed_from;
+	private BigDecimal receivables_owed_from_10;
+	private BigDecimal receivables_owed_from_11;
+	private BigDecimal receivables_owed_from_2;
+	private BigDecimal receivables_owed_from_3;
+	private BigDecimal receivables_owed_from_4;
+	private BigDecimal receivables_owed_from_5;
+	private BigDecimal receivables_owed_from_6;
+	private BigDecimal receivables_owed_from_7;
+	private BigDecimal receivables_owed_from_8;
+	private BigDecimal receivables_owed_from_9;
+	private BigDecimal sending_branch_or_reason;
+	private BigDecimal sending_branch_or_reason_2;
+	private BigDecimal sending_branch_or_reason_3;
+	private BigDecimal sending_branch_or_reason_4;
+	private BigDecimal sending_branch_or_reason_5;
+	private BigDecimal sending_branch_or_reason_6;
+	private BigDecimal sending_branch_or_reason_7;
+	private BigDecimal sending_branch_or_reason_8;
+	private BigDecimal total;
+	private BigDecimal total_2;
+	
+}

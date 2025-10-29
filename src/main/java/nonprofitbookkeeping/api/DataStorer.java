@@ -1,4 +1,5 @@
 // File: DataStore.java
+
 package nonprofitbookkeeping.api;
 
 import java.io.File;
@@ -15,39 +16,43 @@ import nonprofitbookkeeping.exception.NoFileCreatedException;
  * as well as listing files in a directory with a given extension.
  * </p>
  */
-public interface DataStorer {
-
-    /**
-     * Loads an instance of the given type from the specified file.
-     *
-     * @param <T>   the type of the object to load
-     * @param type  the Class of the object to load
-     * @param file  the file to read from (expected to contain JSON)
-     * @return the deserialized object
-     * @throws IOException if an error occurs while reading or parsing the file
-     * @throws ActionCancelledException if file chooser is cancelled
-     * @throws NoFileCreatedException 
-     */
-    <T> T loadData(Class<T> type, File file) throws IOException, ActionCancelledException, NoFileCreatedException;
-
-    /**
-     * Saves the given object to the specified file in JSON format.
-     *
-     * @param obj   the object to serialize
-     * @param file  the file to write to
-     * @throws IOException if an error occurs while writing the file
-     * @throws ActionCancelledException if file chooser is cancelled
-     * @throws NoFileCreatedException 
-     */
-    void saveData(Object obj, File file) throws IOException, ActionCancelledException, NoFileCreatedException;
-
-    /**
-     * Lists all files in the given directory (non-recursively) whose names end
-     * with the specified extension.
-     *
-     * @param directory   the directory to search
-     * @param extension   the file extension filter (e.g. ".npbk" or "json")
-     * @return a List of matching File instances; empty if none found or directory invalid
-     */
-    List<File> listFiles(File directory, String extension);
+public interface DataStorer
+{
+	
+	/**
+	 * Loads an instance of the given type from the specified file.
+	 *
+	 * @param <T>   the type of the object to load
+	 * @param type  the Class of the object to load
+	 * @param file  the file to read from (expected to contain JSON)
+	 * @return the deserialized object
+	 * @throws IOException if an error occurs while reading or parsing the file
+	 * @throws ActionCancelledException if file chooser is cancelled
+	 * @throws NoFileCreatedException 
+	 */
+	<T> T loadData(Class<T> type, File file)	throws IOException, ActionCancelledException,
+												NoFileCreatedException;
+	
+	/**
+	 * Saves the given object to the specified file in JSON format.
+	 *
+	 * @param obj   the object to serialize
+	 * @param file  the file to write to
+	 * @throws IOException if an error occurs while writing the file
+	 * @throws ActionCancelledException if file chooser is cancelled
+	 * @throws NoFileCreatedException 
+	 */
+	void saveData(Object obj, File file)	throws IOException, ActionCancelledException,
+											NoFileCreatedException;
+	
+	/**
+	 * Lists all files in the given directory (non-recursively) whose names end
+	 * with the specified extension.
+	 *
+	 * @param directory   the directory to search
+	 * @param extension   the file extension filter (e.g. ".npbk" or "json")
+	 * @return a List of matching File instances; empty if none found or directory invalid
+	 */
+	List<File> listFiles(File directory, String extension);
+	
 }

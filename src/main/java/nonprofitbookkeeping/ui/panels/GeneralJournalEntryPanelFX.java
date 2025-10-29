@@ -9,6 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import nonprofitbookkeeping.util.FormatUtils;
 
 import java.util.function.Consumer;
 
@@ -28,6 +29,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Separator;
 import javafx.scene.control.cell.ComboBoxTableCell;
@@ -45,6 +47,11 @@ import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.helpers.FocusCommitTextFieldTableCell;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 /**
  * JavaFX panel for creating a new general journal transaction.
  * <p>
@@ -54,15 +61,16 @@ import nonprofitbookkeeping.ui.helpers.FocusCommitTextFieldTableCell;
  */
 public class GeneralJournalEntryPanelFX extends BorderPane
 {
+        private static final Logger LOGGER = LoggerFactory.getLogger(GeneralJournalEntryPanelFX.class);
 	
 	/** Model for a single entry row. */
 	public static final class Line
 	{
 		public StringProperty account = new SimpleStringProperty("");
 		public ObjectProperty<BigDecimal> debit =
-			new SimpleObjectProperty<>(BigDecimal.ZERO);
+				new SimpleObjectProperty<>(BigDecimal.ZERO);
 		public ObjectProperty<BigDecimal> credit =
-			new SimpleObjectProperty<>(BigDecimal.ZERO);
+				new SimpleObjectProperty<>(BigDecimal.ZERO);
 		
 	}
 	
@@ -70,11 +78,16 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 	private final TableView<Line> table = new TableView<>(this.lines);
 	private final DatePicker datePicker = new DatePicker(LocalDate.now());
 	private final TextArea memoArea = new TextArea();
+	private final TextField toFromField = new TextField();
+	private final TextField checkNumberField = new TextField();
+	private final TextField clearBankField = new TextField();
+	private final TextField budgetTrackingField = new TextField();
+	private final TextField associatedFundNameField = new TextField();
 	private final Button saveBtn = new Button("Save");
 	private final Label debitTotalLbl = new Label();
 	private final Label creditTotalLbl = new Label();
 	private final ChartOfAccounts coa =
-		CurrentCompany.getCompany().getChartOfAccounts();
+			CurrentCompany.getCompany().getChartOfAccounts();
 	private final Consumer<AccountingTransaction> onSave;
 	private AccountingTransaction original;
 	
@@ -91,6 +104,7 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 		buildUI();
 		this.lines.addListener((ListChangeListener<Line>) c -> recalcTotals());
 		recalcTotals();
+		
 	}
 	
 	/**
@@ -101,7 +115,7 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 	 * @param onSave   callback invoked with the updated transaction when saved
 	 */
 	public GeneralJournalEntryPanelFX(AccountingTransaction existing,
-		Consumer<AccountingTransaction> onSave)
+			Consumer<AccountingTransaction> onSave)
 	{
 		this(onSave);
 		this.original = existing;
@@ -113,17 +127,21 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 		
 	}
 	
-	/** Convenience constructor printing the transaction to stdout. */
-	public GeneralJournalEntryPanelFX()
-	{
-		this(tx -> System.out.println(tx));
-	}
+        /** Convenience constructor logging the transaction. */
+        public GeneralJournalEntryPanelFX()
+        {
+                this(tx -> LOGGER.debug("{}", tx));
+
+        }
 	
+	/**
+	 * buildUI
+	 */
 	@SuppressWarnings("unchecked") private void buildUI()
 	{
 		this.table.getColumns().addAll(accountCol(),
-			amtCol("Debit", l -> l.debit),
-			amtCol("Credit", l -> l.credit));
+				amtCol("Debit", l -> l.debit),
+				amtCol("Credit", l -> l.credit));
 		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 		this.table.setEditable(true);
 		this.table.setRowFactory(tv -> {
@@ -164,28 +182,34 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 		top.setVgap(8);
 		top.addRow(0, new Label("Date:"), this.datePicker);
 		top.addRow(1, new Label("Memo:"), this.memoArea);
+		top.addRow(2, new Label("To/From:"), this.toFromField);
+		top.addRow(3, new Label("Check #:"), this.checkNumberField);
+		top.addRow(4, new Label("Clear Bank:"), this.clearBankField);
+		top.addRow(5, new Label("Budget Tracking:"), this.budgetTrackingField);
+		top.addRow(6, new Label("Fund Name:"), this.associatedFundNameField);
 		
 		setTop(top);
 		setCenter(this.table);
-		ToolBar bottom = new ToolBar(add, del, new Separator(), this.saveBtn,
-			new Separator(), new Label("Debit:"), this.debitTotalLbl,
-			new Label("Credit:"), this.creditTotalLbl);
+		ToolBar bottom = new ToolBar(	add, del, new Separator(), this.saveBtn,
+										new Separator(), new Label("Debit:"), this.debitTotalLbl,
+										new Label("Credit:"), this.creditTotalLbl);
 		setBottom(bottom);
+		
 	}
 	
 	private TableColumn<Line, String> accountCol()
 	{
 		ObservableList<String> choices = FXCollections.observableArrayList(
-			this.coa.createAccountNumberMap().asMap().values().stream()
-				.map(Account::getName).sorted().toList());
+				this.coa.createAccountNumberMap().asMap().values().stream()
+						.map(Account::getName).sorted().toList());
 		Map<String, Account> byName = this.coa.createAccountNumberMap().asMap().values()
-			.stream().collect(Collectors.toMap(Account::getName, a -> a,
-				(a, b) -> a, LinkedHashMap::new));
+				.stream().collect(Collectors.toMap(Account::getName, a -> a,
+						(a, b) -> a, LinkedHashMap::new));
 		
 		TableColumn<Line, String> col = new TableColumn<>("Account");
 		col.setCellValueFactory(cd -> cd.getValue().account);
 		col.setCellFactory(ComboBoxTableCell.forTableColumn(new DefaultStringConverter(),
-			choices));
+				choices));
 		col.setEditable(true);
 		col.setOnEditCommit(ev -> {
 			Line row = ev.getRowValue();
@@ -198,15 +222,15 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 				
 				// Auto-set natural side: debit field for debit accounts etc.
 				if (acc.getIncreaseSide() == AccountSide.DEBIT &&
-					row.credit.get().signum() != 0 &&
-					row.debit.get().signum() == 0)
+						row.credit.get().signum() != 0 &&
+						row.debit.get().signum() == 0)
 				{
 					row.debit.set(row.credit.get());
 					row.credit.set(BigDecimal.ZERO);
 				}
 				else if (acc.getIncreaseSide() == AccountSide.CREDIT &&
-					row.debit.get().signum() != 0 &&
-					row.credit.get().signum() == 0)
+						row.debit.get().signum() != 0 &&
+						row.credit.get().signum() == 0)
 				{
 					row.credit.set(row.debit.get());
 					row.debit.set(BigDecimal.ZERO);
@@ -216,17 +240,19 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 			
 		});
 		return col;
+		
 	}
 	
 	private static TableColumn<Line, BigDecimal> amtCol(String title,
 														javafx.util.Callback<Line,
-															Property<BigDecimal>> prop)
+																Property<BigDecimal>> prop)
 	{
 		TableColumn<Line, BigDecimal> c = new TableColumn<>(title);
 		c.setCellValueFactory(cell -> prop.call(cell.getValue()));
 		c.setCellFactory(
-			param -> new FocusCommitTextFieldTableCell<>(new BigDecimalStringConverter()));
+				param -> new FocusCommitTextFieldTableCell<>(new BigDecimalStringConverter()));
 		return c;
+		
 	}
 	
 	private void recalcTotals()
@@ -249,8 +275,9 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 			
 		}
 		
-		this.debitTotalLbl.setText(debit.toPlainString());
-		this.creditTotalLbl.setText(credit.toPlainString());
+               this.debitTotalLbl.setText(FormatUtils.formatCurrency(debit));
+               this.creditTotalLbl.setText(FormatUtils.formatCurrency(credit));
+		
 	}
 	
 	/**
@@ -260,6 +287,11 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 	{
 		this.datePicker.setValue(LocalDate.parse(tx.getDate()));
 		this.memoArea.setText(tx.getDescription() != null ? tx.getDescription() : tx.getMemo());
+		this.toFromField.setText(tx.getToFrom());
+		this.checkNumberField.setText(tx.getCheckNumber());
+		this.clearBankField.setText(tx.getClearBank());
+		this.budgetTrackingField.setText(tx.getBudgetTracking());
+		this.associatedFundNameField.setText(tx.getAssociatedFundName());
 		this.lines.clear();
 		
 		for (AccountingEntry e : tx.getEntries())
@@ -282,6 +314,7 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 		}
 		
 		recalcTotals();
+		
 	}
 	
 	private void persist()
@@ -297,7 +330,7 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 			if (name == null || name.isBlank())
 			{
 				AlertBox.showError(getScene() == null ? null : getScene().getWindow(),
-					"Account name required");
+						"Account name required");
 				return;
 			}
 			
@@ -306,7 +339,7 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 			if (account == null)
 			{
 				AlertBox.showError(getScene() == null ? null : getScene().getWindow(),
-					"Account not found: " + name);
+						"Account not found: " + name);
 				return;
 			}
 			
@@ -316,14 +349,14 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 			if (l.debit.get().signum() > 0)
 			{
 				entries.add(new AccountingEntry(l.debit.get(), acctNum,
-					AccountSide.DEBIT, acctName));
+												AccountSide.DEBIT, acctName));
 				debit = debit.add(l.debit.get());
 			}
 			
 			if (l.credit.get().signum() > 0)
 			{
 				entries.add(new AccountingEntry(l.credit.get(), acctNum,
-					AccountSide.CREDIT, acctName));
+												AccountSide.CREDIT, acctName));
 				credit = credit.add(l.credit.get());
 			}
 			
@@ -332,13 +365,17 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 		if (debit.signum() == 0 || debit.compareTo(credit) != 0)
 		{
 			AlertBox.showError(getScene() == null ? null : getScene().getWindow(),
-				"Transaction is not balanced");
+					"Transaction is not balanced");
 			return;
 		}
 		
-		AccountingTransaction tx = new AccountingTransaction(new Account(), entries,
-			Map.of(),
-			this.original != null ? this.original.getBookingDateTimestamp() : Instant.now().toEpochMilli());
+		AccountingTransaction tx = new AccountingTransaction(	new Account(), entries,
+																Map.of(),
+																this.original != null ?
+																		this.original
+																				.getBookingDateTimestamp() :
+																		Instant.now()
+																				.toEpochMilli());
 		
 		if (this.original != null)
 		{
@@ -347,8 +384,14 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 		
 		tx.setDate(this.datePicker.getValue().toString());
 		tx.setDescription(this.memoArea.getText());
+		tx.setToFrom(this.toFromField.getText());
+		tx.setCheckNumber(this.checkNumberField.getText());
+		tx.setClearBank(this.clearBankField.getText());
+		tx.setBudgetTracking(this.budgetTrackingField.getText());
+		tx.setAssociatedFundName(this.associatedFundNameField.getText());
 		
 		this.onSave.accept(tx);
+		
 	}
 	
 	private void watch(Line l)
@@ -364,6 +407,7 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 		l.account.addListener((obs, o, n) -> {
 			adjustForAccountSide(l);
 		});
+		
 	}
 	
 	private void adjustForAccountSide(Line l)
@@ -376,13 +420,13 @@ public class GeneralJournalEntryPanelFX extends BorderPane
 		}
 		
 		if (acc.getIncreaseSide() == AccountSide.DEBIT &&
-			l.credit.get().signum() > 0 && l.debit.get().signum() == 0)
+				l.credit.get().signum() > 0 && l.debit.get().signum() == 0)
 		{
 			l.debit.set(l.credit.get());
 			l.credit.set(BigDecimal.ZERO);
 		}
 		else if (acc.getIncreaseSide() == AccountSide.CREDIT &&
-			l.debit.get().signum() > 0 && l.credit.get().signum() == 0)
+				l.debit.get().signum() > 0 && l.credit.get().signum() == 0)
 		{
 			l.credit.set(l.debit.get());
 			l.debit.set(BigDecimal.ZERO);

@@ -26,7 +26,7 @@ public class AlertBox
 	public static void showError(Window owner, String message)
 	{
 		Alert alert = new Alert(AlertType.ERROR);
-		alert.initOwner(owner); // optional – ties it to your main stage
+		alert.initOwner(owner); 
 		alert.setTitle("Error");
 		alert.setHeaderText("Something went wrong"); // Standard header for errors
 		alert.setContentText(message);
@@ -36,7 +36,7 @@ public class AlertBox
 		
 		alert.showAndWait(); // blocks until the user clicks OK (or another button if configured)
 	}
-
+	
 	/**
 	 * Displays an informational dialog with a predefined title ("Information").
 	 * The provided message is used as the header text of the alert.
@@ -51,11 +51,12 @@ public class AlertBox
 		alert.initOwner(owner);
 		alert.setTitle("Information");
 		alert.setHeaderText(message); // Message used as header
-		// alert.setContentText(message); // Content text is not set, header is primary display for message
+		// alert.setContentText(message); // Content text is not set, header is primary
+		// display for message
 		
 		alert.showAndWait();
 	}
-
+	
 	/**
 	 * Displays a warning dialog with a predefined title ("Warning").
 	 * The provided message is used as the header text of the alert.
@@ -73,7 +74,7 @@ public class AlertBox
 		
 		alert.showAndWait();
 	}
-
+	
 	/**
 	 * @param string
 	 * @param message
@@ -90,6 +91,6 @@ public class AlertBox
 		
 		alert.showAndWait(); // blocks until the user clicks OK (or another button if configured)
 	}
-
-
+	
+	
 }

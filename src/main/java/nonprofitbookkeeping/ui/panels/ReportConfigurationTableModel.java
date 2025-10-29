@@ -19,6 +19,10 @@ import java.util.stream.Collectors;
 public class ReportConfigurationTableModel extends AbstractTableModel
 {
 	
+	/**
+	 * serialVersionUID : long
+	 */
+	private static final long serialVersionUID = 689752243083174861L;
 	/** The list of {@link ReportConfiguration} objects this table model represents. */
 	private final List<ReportConfiguration> configurations;
 	/** The names of the columns to be displayed in the table header. */

@@ -13,8 +13,9 @@ import java.util.List;
  * The row contains general transaction info and up to four
  * allocation groups consisting of amount and account details.
  */
-@Data @NoArgsConstructor public class ExcelLedgerRow
+@Data public class ExcelLedgerRow
 {
+	private BigDecimal balance;
 	/** Transaction date from the spreadsheet. */
 	private LocalDate date;
 	/** Optional check number. */
@@ -27,109 +28,48 @@ import java.util.List;
 	private String memoNotes;
 	/** Optional budget tracking value. */
 	private String budgetTracking;
+	/** Optional subtotal - should be the sum of the allocation amounts */
+	private BigDecimal netTotal;
+	
 	
 	/** List of up to four allocation groups. */
 	private List<Allocation> allocations = new ArrayList<>();
+	
 	/**  
 	 * Constructor ExcelLedgerRow
 	 */
 	public ExcelLedgerRow()
-	{
+	{		
 		// TODO Auto-generated constructor stub
 	}
+	
 
 	/**
-	 * Represents one amount allocation within a row.
+	 * @return the balance
 	 */
-	@Data @NoArgsConstructor 
-	public static class Allocation
+	public BigDecimal getBalance()
 	{
-		private BigDecimal amount;
-		private String assetLiabilityAccount;
-		private String incomeCategory;
-		private String expenseCategory;
-		private String fund;
-		/**
-		 * @return the amount
-		 */
-		public BigDecimal getAmount()
-		{
-			return amount;
-		}
-		/**
-		 * @param amount the amount to set
-		 */
-		public void setAmount(BigDecimal amount)
-		{
-			this.amount = amount;
-		}
-		/**
-		 * @return the assetLiabilityAccount
-		 */
-		public String getAssetLiabilityAccount()
-		{
-			return assetLiabilityAccount;
-		}
-		/**
-		 * @param assetLiabilityAccount the assetLiabilityAccount to set
-		 */
-		public void setAssetLiabilityAccount(String assetLiabilityAccount)
-		{
-			this.assetLiabilityAccount = assetLiabilityAccount;
-		}
-		/**
-		 * @return the incomeCategory
-		 */
-		public String getIncomeCategory()
-		{
-			return incomeCategory;
-		}
-		/**
-		 * @param incomeCategory the incomeCategory to set
-		 */
-		public void setIncomeCategory(String incomeCategory)
-		{
-			this.incomeCategory = incomeCategory;
-		}
-		/**
-		 * @return the expenseCategory
-		 */
-		public String getExpenseCategory()
-		{
-			return expenseCategory;
-		}
-		/**
-		 * @param expenseCategory the expenseCategory to set
-		 */
-		public void setExpenseCategory(String expenseCategory)
-		{
-			this.expenseCategory = expenseCategory;
-		}
-		/**
-		 * @return the fund
-		 */
-		public String getFund()
-		{
-			return fund;
-		}
-		/**
-		 * @param fund the fund to set
-		 */
-		public void setFund(String fund)
-		{
-			this.fund = fund;
-		}
-		
+		return this.balance;
 		
 	}
-
+	
+	/**
+	 * @param balance the balance to set
+	 */
+	public void setBalance(BigDecimal balance)
+	{
+		System.out.print(balance + ";");
+		this.balance = balance;
+		
+	}
 	
 	/**
 	 * @return the date
 	 */
 	public LocalDate getDate()
 	{
-		return date;
+		return this.date;
+		
 	}
 	
 	/**
@@ -137,7 +77,9 @@ import java.util.List;
 	 */
 	public void setDate(LocalDate date)
 	{
+		System.out.print(date + ";");
 		this.date = date;
+		
 	}
 	
 	/**
@@ -145,7 +87,8 @@ import java.util.List;
 	 */
 	public String getCheckNumber()
 	{
-		return checkNumber;
+		return this.checkNumber;
+		
 	}
 	
 	/**
@@ -153,7 +96,9 @@ import java.util.List;
 	 */
 	public void setCheckNumber(String checkNumber)
 	{
+		System.out.print(checkNumber + ";");
 		this.checkNumber = checkNumber;
+		
 	}
 	
 	/**
@@ -161,7 +106,8 @@ import java.util.List;
 	 */
 	public String getClearBank()
 	{
-		return clearBank;
+		return this.clearBank;
+		
 	}
 	
 	/**
@@ -169,7 +115,9 @@ import java.util.List;
 	 */
 	public void setClearBank(String clearBank)
 	{
+		System.out.print(clearBank + ";");
 		this.clearBank = clearBank;
+		
 	}
 	
 	/**
@@ -177,7 +125,8 @@ import java.util.List;
 	 */
 	public String getToFrom()
 	{
-		return toFrom;
+		return this.toFrom;
+		
 	}
 	
 	/**
@@ -185,7 +134,9 @@ import java.util.List;
 	 */
 	public void setToFrom(String toFrom)
 	{
+		System.out.print(toFrom + ";");
 		this.toFrom = toFrom;
+		
 	}
 	
 	/**
@@ -193,7 +144,8 @@ import java.util.List;
 	 */
 	public String getMemoNotes()
 	{
-		return memoNotes;
+		return this.memoNotes;
+		
 	}
 	
 	/**
@@ -201,7 +153,9 @@ import java.util.List;
 	 */
 	public void setMemoNotes(String memoNotes)
 	{
+		System.out.print(memoNotes + ";");
 		this.memoNotes = memoNotes;
+		
 	}
 	
 	/**
@@ -209,7 +163,8 @@ import java.util.List;
 	 */
 	public String getBudgetTracking()
 	{
-		return budgetTracking;
+		return this.budgetTracking;
+		
 	}
 	
 	/**
@@ -217,7 +172,28 @@ import java.util.List;
 	 */
 	public void setBudgetTracking(String budgetTracking)
 	{
+		System.out.print(budgetTracking + ";");
 		this.budgetTracking = budgetTracking;
+		
+	}
+	
+	/**
+	 * @return the netTotal
+	 */
+	public BigDecimal getNetTotal()
+	{
+		return this.netTotal;
+		
+	}
+	
+	/**
+	 * @param netTotal the netTotal to set
+	 */
+	public void setNetTotal(BigDecimal netTotal)
+	{
+		System.out.print(netTotal + ";");
+		this.netTotal = netTotal;
+		
 	}
 	
 	/**
@@ -225,7 +201,8 @@ import java.util.List;
 	 */
 	public List<Allocation> getAllocations()
 	{
-		return allocations;
+		return this.allocations;
+		
 	}
 	
 	/**
@@ -234,9 +211,167 @@ import java.util.List;
 	public void setAllocations(List<Allocation> allocations)
 	{
 		this.allocations = allocations;
+		
+	}
+	
+	/**
+	 * Override @see java.lang.Object#toString() 
+	 */
+	@Override public String toString()
+	{
+		StringBuilder builder = new StringBuilder();
+		builder.append("ExcelLedgerRow [balance=")
+				.append(this.balance)
+				.append(", date=")
+				.append(this.date)
+				.append(", checkNumber=")
+				.append(this.checkNumber)
+				.append(", clearBank=")
+				.append(this.clearBank)
+				.append(", toFrom=")
+				.append(this.toFrom)
+				.append(", memoNotes=")
+				.append(this.memoNotes)
+				.append(", budgetTracking=")
+				.append(this.budgetTracking)
+				.append(", netTotal=")
+				.append(this.netTotal)
+				.append(", allocations=")
+				.append(this.allocations)
+				.append("]");
+		return builder.toString();
+		
+	}
+	/**
+	 * Represents one amount allocation within a row.
+	 */
+	@Data @NoArgsConstructor public static class Allocation
+	{
+		private BigDecimal amount;
+		private String assetLiabilityAccount;
+		private String incomeCategory;
+		private String expenseCategory;
+		private String fund;
+		
+		/**
+		 * @return the amount
+		 */
+		public BigDecimal getAmount()
+		{
+			return this.amount;
+			
+		}
+		
+		/**
+		 * @param amount the amount to set
+		 */
+		public void setAmount(BigDecimal amount)
+		{
+			System.out.print(amount + ";");
+			this.amount = amount;
+			
+		}
+		
+		/**
+		 * @return the assetLiabilityAccount
+		 */
+		public String getAssetLiabilityAccount()
+		{
+			return this.assetLiabilityAccount;
+			
+		}
+		
+		/**
+		 * @param assetLiabilityAccount the assetLiabilityAccount to set
+		 */
+		public void setAssetLiabilityAccount(String assetLiabilityAccount)
+		{
+			System.out.print(assetLiabilityAccount + ";");
+			this.assetLiabilityAccount = assetLiabilityAccount;
+			
+		}
+		
+		/**
+		 * @return the incomeCategory
+		 */
+		public String getIncomeCategory()
+		{
+			return this.incomeCategory;
+			
+		}
+		
+		/**
+		 * @param incomeCategory the incomeCategory to set
+		 */
+		public void setIncomeCategory(String incomeCategory)
+		{
+			System.out.print(incomeCategory + ";");
+			this.incomeCategory = incomeCategory;
+			
+		}
+		
+		/**
+		 * @return the expenseCategory
+		 */
+		public String getExpenseCategory()
+		{
+			return this.expenseCategory;
+			
+		}
+		
+		/**
+		 * @param expenseCategory the expenseCategory to set
+		 */
+		public void setExpenseCategory(String expenseCategory)
+		{
+			System.out.print(expenseCategory + ";");
+			this.expenseCategory = expenseCategory;
+			
+		}
+		
+		/**
+		 * @return the fund
+		 */
+		public String getFund()
+		{
+			return this.fund;
+			
+		}
+		
+		/**
+		 * @param fund the fund to set
+		 */
+		public void setFund(String fund)
+		{
+			System.out.print(fund + ";");
+			this.fund = fund;
+			
+		}
+		
+
+		/**
+		 * Override @see java.lang.Object#toString() 
+		 */
+		@Override public String toString()
+		{
+			StringBuilder builder = new StringBuilder();
+			builder.append("Allocation [amount=");
+			builder.append(this.amount);
+			builder.append(", assetLiabilityAccount=");
+			builder.append(this.assetLiabilityAccount);
+			builder.append(", incomeCategory=");
+			builder.append(this.incomeCategory);
+			builder.append(", expenseCategory=");
+			builder.append(this.expenseCategory);
+			builder.append(", fund=");
+			builder.append(this.fund);
+			builder.append("]");
+			return builder.toString();
+			
+		}
+		
+		
 	}
 
-
-	
 	
 }

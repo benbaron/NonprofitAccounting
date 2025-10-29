@@ -21,7 +21,7 @@ public class BalanceSheetRowBean
 	
 	public String getCategory()
 	{
-		return category;
+		return this.category;
 	}
 	
 	public void setCategory(String category)
@@ -31,7 +31,7 @@ public class BalanceSheetRowBean
 	
 	public String getAccount()
 	{
-		return account;
+		return this.account;
 	}
 	
 	public void setAccount(String account)
@@ -41,7 +41,7 @@ public class BalanceSheetRowBean
 	
 	public BigDecimal getAmount()
 	{
-		return amount;
+		return this.amount;
 	}
 	
 	public void setAmount(BigDecimal amount)

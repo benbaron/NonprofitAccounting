@@ -30,7 +30,7 @@ import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 public class DashboardPanelFX extends BorderPane
 {
 	
-	/* ── “company loaded” banner ─────────────────────────────── */
+	/* ── "company loaded" banner ─────────────────────────────── */
 	/** Label to display the name of the currently loaded company. Defaults to "No company loaded". */
 	private final Label companyLbl = new Label("No company loaded");
 	/** Button to manually trigger a reload of the current company's data. */
@@ -96,10 +96,7 @@ public class DashboardPanelFX extends BorderPane
 		this.companyLbl.getStyleClass().add("company-indicator");
 		this.reloadBtn.setOnAction(e -> loadCompany(CurrentCompany.getCompany()));
 		
-		HBox banner = new HBox(10,
-			new Label("Current Company:"),
-			this.companyLbl,
-			this.reloadBtn);
+		HBox banner = new HBox(10, new Label("Current Company:"), this.companyLbl, this.reloadBtn);
 		
 		banner.setPadding(new Insets(4));
 		banner.setStyle("-fx-background-color:#f0f0f0; -fx-border-color:lightgray;");
@@ -119,19 +116,17 @@ public class DashboardPanelFX extends BorderPane
 	private void buildTopFilters()
 	{
 		/* selector */
-		HBox selectorBox = new HBox(10, new Label("Account:"),
-			this.accountSelector);
+		HBox selectorBox = new HBox(10, new Label("Account:"), this.accountSelector);
 		selectorBox.setPadding(new Insets(5));
 		selectorBox.setStyle("-fx-border-color: lightgray;");
 		
 		this.applyFiltersButton = new Button("Apply"); // Assign to field
 		this.applyFiltersButton.setOnAction(e -> refresh());
 		
-		HBox filterBox = new HBox(10,
-			new Label("Date (yyyy-mm-dd):"), this.dateFilter,
-			new Label("Memo:"), this.memoFilter,
-			new Label("Amount:"), this.amountFilter,
-			this.applyFiltersButton); // Use field
+		HBox filterBox =
+			new HBox(10, new Label("Date (yyyy-mm-dd):"), this.dateFilter, new Label("Memo:"),
+				this.memoFilter, new Label("Amount:"), this.amountFilter, this.applyFiltersButton); // Use
+																									// field
 		filterBox.setPadding(new Insets(5));
 		filterBox.setStyle("-fx-border-color: lightgray;");
 		
@@ -231,11 +226,9 @@ public class DashboardPanelFX extends BorderPane
 			
 			if (cdf.getChartOfAccounts() != null && cdf.getChartOfAccounts().getAccounts() != null)
 			{
-				List<String> accountNames = cdf.getChartOfAccounts().getAccounts().stream()
-					.map(Account::getName)
-					.filter(Objects::nonNull)
-					.sorted()
-					.collect(Collectors.toList());
+				List<String> accountNames =
+					cdf.getChartOfAccounts().getAccounts().stream().map(Account::getName)
+						.filter(Objects::nonNull).sorted().collect(Collectors.toList());
 				this.accountSelector.getItems().addAll(accountNames);
 				
 				if (!accountNames.isEmpty())
@@ -253,11 +246,10 @@ public class DashboardPanelFX extends BorderPane
 				this.accountSelector.setPlaceholder(new Label("COA not available"));
 			}
 			
-			this.allTxns = (cdf.getLedger() != null && 
-				cdf.getLedger().getTransactions() != null) ?
+			this.allTxns = (cdf.getLedger() != null && cdf.getLedger().getTransactions() != null) ?
 				cdf.getLedger().getTransactions() : List.of();
 			
-			this.reloadBtn.setOnAction(e -> loadCompany(CurrentCompany.getCompany())); 
+			this.reloadBtn.setOnAction(e -> loadCompany(CurrentCompany.getCompany()));
 			refresh(); // Refresh table content
 		}
 		
@@ -297,8 +289,7 @@ public class DashboardPanelFX extends BorderPane
 		
 		String acct = this.accountSelector.getValue();
 		
-		if (acct == null && CurrentCompany.isOpen() &&
-			!this.accountSelector.getItems().isEmpty())
+		if (acct == null && CurrentCompany.isOpen() && !this.accountSelector.getItems().isEmpty())
 		{
 			this.rows.clear();
 			return;
@@ -328,18 +319,16 @@ public class DashboardPanelFX extends BorderPane
 			
 		}
 		
-                Predicate<AccountingTransaction> p =
-                        t -> t != null &&
-                                t.getEntries().stream()
-                                        .anyMatch(e -> Objects.equals(e.getAccountName(), acct)) &&
-				(dateFText.isEmpty() || (t.getDate() != null && t.getDate().contains(dateFText))) &&
-				(memoFText.isEmpty() ||	(t.getMemo() != null && t.getMemo().toLowerCase().contains(memoFText))) &&
-				(this.amtF == null || 
+		Predicate<AccountingTransaction> p = t -> t != null &&
+			t.getEntries().stream().anyMatch(e -> Objects.equals(e.getAccountName(), acct)) &&
+			(dateFText.isEmpty() || (t.getDate() != null && t.getDate().contains(dateFText))) &&
+			(memoFText.isEmpty() ||
+				(t.getMemo() != null && t.getMemo().toLowerCase().contains(memoFText))) &&
+			(this.amtF == null ||
 				(t.getTotalAmount() != null && t.getTotalAmount().compareTo(this.amtF) == 0));
 		
-		List<AccountingTransaction> list = this.allTxns.stream()
-			.filter(p)
-			.collect(Collectors.toList());
+		List<AccountingTransaction> list =
+			this.allTxns.stream().filter(p).collect(Collectors.toList());
 		
 		this.rows.clear();
 		BigDecimal running = BigDecimal.ZERO;

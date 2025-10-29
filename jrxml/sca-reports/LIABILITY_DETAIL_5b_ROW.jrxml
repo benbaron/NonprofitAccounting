@@ -1,0 +1,186 @@
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+                      http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+  name="LIABILITY_DTL_5b_ROWS" language="java"
+  pageWidth="1714" pageHeight="906"
+  columnWidth="1714" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+
+  <!-- ===== Styles ===== -->
+  <style name="base" fontName="Garamond" fontSize="10"/>
+  <style name="label" style="base"/>
+  <style name="labelBold" style="base" isBold="true" fontSize="11"/>
+  <style name="hdr" style="base" isBold="true" fontSize="12"/>
+  <style name="note" style="base" isItalic="true"/>
+  <style name="num" style="base" hAlign="Right"/>
+
+  <!-- ===== Parameters (off-page / header) ===== -->
+  <parameter name="P_ORG_NAME" class="java.lang.String"/>
+  <parameter name="P_REPORT_TITLE" class="java.lang.String"/>
+  <parameter name="P_CONTACT_INFO" class="java.lang.String"/>
+  <parameter name="P_FROM_PAGE_PRIMARY" class="java.lang.String"/>
+  <parameter name="P_FROM_PAGE_SECONDARY" class="java.lang.String"/>
+
+  <!-- ===== Dataset fields (rows) ===== -->
+  <!-- Section: DEFERRED_REVENUE | PAYABLES | OTHER_LIABILITIES -->
+  <field name="section" class="java.lang.String"/>
+  <!-- Item name: Event name (for Deferred), Owed To (for Payables/Other) -->
+  <field name="itemName" class="java.lang.String"/>
+  <!-- Optional reason (used for Payables/Other; blank for Deferred) -->
+  <field name="reason" class="java.lang.String"/>
+  <!-- Amounts -->
+  <field name="priorAmount" class="java.math.BigDecimal"/>
+  <field name="currentAmount" class="java.math.BigDecimal"/>
+
+  <!-- ===== Title ===== -->
+  <title>
+    <band height="80">
+      <textField>
+        <reportElement x="84" y="10" width="900" height="20" style="hdr"/>
+        <textFieldExpression><![CDATA[$P{P_REPORT_TITLE} == null ? "LIABILITY DETAIL (5b)" : $P{P_REPORT_TITLE}]]></textFieldExpression>
+      </textField>
+      <textField>
+        <reportElement x="84" y="34" width="900" height="16" style="label"/>
+        <textFieldExpression><![CDATA[$P{P_ORG_NAME}]]></textFieldExpression>
+      </textField>
+      <textField>
+        <reportElement x="84" y="54" width="350" height="16" style="label"/>
+        <textFieldExpression><![CDATA[$P{P_CONTACT_INFO}]]></textFieldExpression>
+      </textField>
+      <textField>
+        <reportElement x="450" y="54" width="300" height="16" style="label"/>
+        <textFieldExpression><![CDATA[$P{P_FROM_PAGE_PRIMARY}]]></textFieldExpression>
+      </textField>
+      <textField>
+        <reportElement x="760" y="54" width="300" height="16" style="label"/>
+        <textFieldExpression><![CDATA[$P{P_FROM_PAGE_SECONDARY}]]></textFieldExpression>
+      </textField>
+    </band>
+  </title>
+
+  <!-- ===== Group by section ===== -->
+  <group name="gSection">
+    <groupExpression><![CDATA[$F{section}]]></groupExpression>
+
+    <!-- Group header: section title + column headers -->
+    <groupHeader>
+      <band height="44">
+        <!-- Section title -->
+        <textField>
+          <reportElement x="84" y="6" width="860" height="16" style="labelBold"/>
+          <textFieldExpression><![CDATA[
+            "DEFERRED_REVENUE".equals($F{section}) ? "DEFERRED REVENUE: Event" :
+            ("PAYABLES".equals($F{section}) ? "PAYABLES: Owed To" : "OTHER LIABILITIES: Owed To")
+          ]]></textFieldExpression>
+        </textField>
+
+        <!-- Column headers -->
+        <staticText>
+          <reportElement x="84"  y="26" width="320" height="16" style="labelBold"/>
+          <text><![CDATA[Event / Owed To]]></text>
+        </staticText>
+        <staticText>
+          <reportElement x="410" y="26" width="240" height="16" style="labelBold">
+            <printWhenExpression><![CDATA[!"DEFERRED_REVENUE".equals($F{section})]]></printWhenExpression>
+          </reportElement>
+          <text><![CDATA[Reason]]></text>
+        </staticText>
+        <staticText>
+          <reportElement x="660" y="26" width="160" height="16" style="labelBold"/>
+          <text><![CDATA[Prior Amount]]></text>
+        </staticText>
+        <staticText>
+          <reportElement x="830" y="26" width="160" height="16" style="labelBold"/>
+          <text><![CDATA[Current Amount]]></text>
+        </staticText>
+      </band>
+    </groupHeader>
+
+    <!-- Group totals -->
+    <variable name="GROUP_SUM_PRIOR" class="java.math.BigDecimal" calculation="Sum" resetType="Group" resetGroup="gSection">
+      <variableExpression><![CDATA[$F{priorAmount}]]></variableExpression>
+      <initialValueExpression><![CDATA[new java.math.BigDecimal("0")]]></initialValueExpression>
+    </variable>
+    <variable name="GROUP_SUM_CURRENT" class="java.math.BigDecimal" calculation="Sum" resetType="Group" resetGroup="gSection">
+      <variableExpression><![CDATA[$F{currentAmount}]]></variableExpression>
+      <initialValueExpression><![CDATA[new java.math.BigDecimal("0")]]></initialValueExpression>
+    </variable>
+
+    <groupFooter>
+      <band height="40">
+        <staticText>
+          <reportElement x="310" y="2" width="200" height="16" style="labelBold"/>
+          <text><![CDATA[TOTAL]]></text>
+        </staticText>
+
+        <!-- Totals -->
+        <textField isBlankWhenNull="true">
+          <reportElement x="660" y="2" width="160" height="16" style="num"/>
+          <textFieldExpression><![CDATA[$V{GROUP_SUM_PRIOR}]]></textFieldExpression>
+        </textField>
+        <textField isBlankWhenNull="true">
+          <reportElement x="830" y="2" width="160" height="16" style="num"/>
+          <textFieldExpression><![CDATA[$V{GROUP_SUM_CURRENT}]]></textFieldExpression>
+        </textField>
+
+        <!-- Show on Pg. 3 … -->
+        <textField>
+          <reportElement x="310" y="20" width="200" height="16" style="labelBold"/>
+          <textFieldExpression><![CDATA["Show on"]]></textFieldExpression>
+        </textField>
+        <textField>
+          <reportElement x="520" y="20" width="260" height="16" style="note"/>
+          <textFieldExpression><![CDATA[
+            "DEFERRED_REVENUE".equals($F{section}) ? "Pg. 3 II.b (Start)" :
+            ("PAYABLES".equals($F{section}) ? "Pg. 3 II.c (Start)" : "Pg. 3 II.d (Start)")
+          ]]></textFieldExpression>
+        </textField>
+        <textField>
+          <reportElement x="790" y="20" width="260" height="16" style="note"/>
+          <textFieldExpression><![CDATA[
+            "DEFERRED_REVENUE".equals($F{section}) ? "Pg. 3 II.b (End)" :
+            ("PAYABLES".equals($F{section}) ? "Pg. 3 II.c (End)" : "Pg. 3 II.d (End)")
+          ]]></textFieldExpression>
+        </textField>
+      </band>
+    </groupFooter>
+  </group>
+
+  <!-- ===== Detail rows (one per liability line) ===== -->
+  <detail>
+    <band height="20">
+      <textField isBlankWhenNull="true">
+        <reportElement x="84" y="2" width="320" height="16" style="label"/>
+        <textFieldExpression><![CDATA[$F{itemName}]]></textFieldExpression>
+      </textField>
+
+      <textField isBlankWhenNull="true">
+        <reportElement x="410" y="2" width="240" height="16" style="label">
+          <printWhenExpression><![CDATA[!"DEFERRED_REVENUE".equals($F{section})]]></printWhenExpression>
+        </reportElement>
+        <textFieldExpression><![CDATA[$F{reason}]]></textFieldExpression>
+      </textField>
+
+      <textField isBlankWhenNull="true">
+        <reportElement x="660" y="2" width="160" height="16" style="num"/>
+        <textFieldExpression><![CDATA[$F{priorAmount}]]></textFieldExpression>
+      </textField>
+
+      <textField isBlankWhenNull="true">
+        <reportElement x="830" y="2" width="160" height="16" style="num"/>
+        <textFieldExpression><![CDATA[$F{currentAmount}]]></textFieldExpression>
+      </textField>
+    </band>
+  </detail>
+
+  <summary>
+    <band height="28">
+      <staticText>
+        <reportElement x="84" y="4" width="540" height="16" style="note"/>
+        <text><![CDATA[Use additional sheets if necessary  •  -5b-]]></text>
+      </staticText>
+    </band>
+  </summary>
+
+  <queryString><![CDATA[]]></queryString>
+</jasperReport>

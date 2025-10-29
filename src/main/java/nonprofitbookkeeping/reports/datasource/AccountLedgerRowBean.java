@@ -14,7 +14,9 @@ public class AccountLedgerRowBean
 	private BigDecimal credit;
 	private BigDecimal balance;
 	
-	public AccountLedgerRowBean(String date, String description, BigDecimal debit,
+	public AccountLedgerRowBean(String date, 
+	                            String description, 
+	                            BigDecimal debit,
 		BigDecimal credit, BigDecimal balance)
 	{
 		this.date = date;

@@ -1,3 +1,4 @@
+
 package nonprofitbookkeeping.core;
 
 import nonprofitbookkeeping.api.DataStorer;
@@ -27,11 +28,16 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class JacksonDataStorer implements DataStorer
 {
-	private ObjectMapper mapper;
-	public static JacksonDataStorer dataStorer = new JacksonDataStorer();
-	private static final String JSON_ENTRY_NAME = "company_data.json";
+        private static final Logger LOGGER = LoggerFactory.getLogger(JacksonDataStorer.class);
+
+        private ObjectMapper mapper;
+        public static JacksonDataStorer dataStorer = new JacksonDataStorer();
+        private static final String JSON_ENTRY_NAME = "company_data.json";
 	
 	/**
 	 * Constructs a JacksonDataStorer and initializes the Jackson ObjectMapper
@@ -39,18 +45,16 @@ public class JacksonDataStorer implements DataStorer
 	 */
 	public JacksonDataStorer()
 	{
-
-                this.mapper = new ObjectMapper()
-                        .registerModule(new JavaTimeModule())
-                        .enable(SerializationFeature.INDENT_OUTPUT)
-                        .disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES)
-                        .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-                        .enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE);
-                this.mapper.configOverride(List.class)
-                        .setSetterInfo(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY));
-                this.mapper.getFactory().configure(
-                        JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
-        }
+		
+		this.mapper = new ObjectMapper().registerModule(new JavaTimeModule())
+			.enable(SerializationFeature.INDENT_OUTPUT)
+			.disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES)
+			.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+			.enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE);
+		this.mapper.configOverride(List.class)
+			.setSetterInfo(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY));
+		this.mapper.getFactory().configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -59,9 +63,9 @@ public class JacksonDataStorer implements DataStorer
 	@Override public <T> T loadData(Class<T> type, File file)	throws IOException,
 																ActionCancelledException,
 																NoFileCreatedException
-	{
-		System.out.println("DEBUG: Entering loadData"); // Minimal logging
-		T value = null;
+        {
+                LOGGER.debug("Entering loadData");
+                T value = null;
 		
 		try (FileInputStream fis = new FileInputStream(file);
 			ZipInputStream zis = new ZipInputStream(fis))
@@ -84,29 +88,32 @@ public class JacksonDataStorer implements DataStorer
 			
 			if (!entryFound)
 			{
-				// System.out.println("loadData: ERROR - company_data.json not found in zip");
+                                // LOGGER.warn("loadData: ERROR - company_data.json not found in zip");
 				throw new IOException("Entry '" + JSON_ENTRY_NAME + "' not found in the zip file.");
 			}
 			
 		}
-		catch (StreamReadException e)
-		{
-			e.printStackTrace();
-			throw new IOException("Error reading JSON stream from zip: " + e.getMessage(), e);
-		}
-		catch (DatabindException e)
-		{
-			e.printStackTrace();
-			throw new IOException("Error deserializing JSON data from zip: " + e.getMessage(), e);
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-			throw e;
-		}
-		
-		System.out.println("DEBUG: Exiting loadData"); // Minimal logging
-		return value;
+                catch (StreamReadException e)
+                {
+                        LOGGER.error("Error reading JSON stream from zip", e);
+                        AlertBox.showError(null, "Error reading JSON stream from zip: " + e.getMessage());
+                        throw new IOException("Error reading JSON stream from zip: " + e.getMessage(), e);
+                }
+                catch (DatabindException e)
+                {
+                        LOGGER.error("Error deserializing JSON data from zip", e);
+                        AlertBox.showError(null, "Error deserializing JSON data from zip: " + e.getMessage());
+                        throw new IOException("Error deserializing JSON data from zip: " + e.getMessage(), e);
+                }
+                catch (IOException e)
+                {
+                        LOGGER.error("I/O error while loading data", e);
+                        AlertBox.showError(null, "Error loading data: " + e.getMessage());
+                        throw e;
+                }
+
+                LOGGER.debug("Exiting loadData");
+                return value;
 	}
 	
 	/**
@@ -116,35 +123,36 @@ public class JacksonDataStorer implements DataStorer
 	@Override public void saveData(Object obj, File file)	throws IOException,
 															ActionCancelledException,
 															NoFileCreatedException
-	{
-		System.out.println("DEBUG: Entering saveData"); // Minimal logging
-		
-		if (file == null)
-		{
-			AlertBox.showError(null, "No open file");
-			return;
-		}
-		
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			FileOutputStream fos = new FileOutputStream(file);
-			ZipOutputStream zos = new ZipOutputStream(fos))
-		{
-			
-			this.mapper.writeValue(baos, obj);
-			
-			ZipEntry zipEntry = new ZipEntry(JSON_ENTRY_NAME);
-			zos.putNextEntry(zipEntry);
-			zos.write(baos.toByteArray());
-			zos.closeEntry();
-			System.out.println("DEBUG: Exiting saveData"); // Minimal logging
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-			throw new IOException("Error saving data to zip file: " + e.getMessage(), e);
-		}
-		
-	}
+        {
+                LOGGER.debug("Entering saveData");
+
+                if (file == null)
+                {
+                        AlertBox.showError(null, "No open file");
+                        return;
+                }
+
+                try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        FileOutputStream fos = new FileOutputStream(file);
+                        ZipOutputStream zos = new ZipOutputStream(fos))
+                {
+
+                        this.mapper.writeValue(baos, obj);
+
+                        ZipEntry zipEntry = new ZipEntry(JSON_ENTRY_NAME);
+                        zos.putNextEntry(zipEntry);
+                        zos.write(baos.toByteArray());
+                        zos.closeEntry();
+                        LOGGER.debug("Exiting saveData");
+                }
+                catch (IOException e)
+                {
+                        LOGGER.error("Error saving data to zip file", e);
+                        AlertBox.showError(null, "Error saving data to zip file: " + e.getMessage());
+                        throw new IOException("Error saving data to zip file: " + e.getMessage(), e);
+                }
+
+        }
 	
 	/**
 	 * {@inheritDoc}
@@ -181,5 +189,5 @@ public class JacksonDataStorer implements DataStorer
 		return JacksonDataStorer.dataStorer;
 	}
 	
-
+	
 }

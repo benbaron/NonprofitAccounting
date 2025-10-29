@@ -39,7 +39,7 @@ class BudgetServiceTest
 		void testSaveAndLoad_EmptyList() throws IOException
 	{
 		List<Budget> emptyList = new ArrayList<>();
-		this.budgetService.saveBudgets(emptyList, this.companyDirectory);
+		BudgetService.saveBudgets(emptyList, this.companyDirectory);
 		
 		File budgetsFile = new File(this.companyDirectory, "budgets.json");
 		assertTrue(budgetsFile.exists(), "budgets.json file should be created.");
@@ -67,7 +67,7 @@ class BudgetServiceTest
 		budget.addBudgetLine(line2);
 		
 		List<Budget> budgetsToSave = List.of(budget);
-		this.budgetService.saveBudgets(budgetsToSave, this.companyDirectory);
+		BudgetService.saveBudgets(budgetsToSave, this.companyDirectory);
 		
 		List<Budget> loadedBudgets = this.budgetService.loadBudgets(this.companyDirectory);
 		assertNotNull(loadedBudgets);
@@ -122,7 +122,7 @@ class BudgetServiceTest
 			Periodicity.ANNUAL, new ArrayList<>(), null));
 		
 		List<Budget> budgetsToSave = List.of(budget1, budget2);
-		this.budgetService.saveBudgets(budgetsToSave, this.companyDirectory);
+		BudgetService.saveBudgets(budgetsToSave, this.companyDirectory);
 		
 		List<Budget> loadedBudgets = this.budgetService.loadBudgets(this.companyDirectory);
 		assertNotNull(loadedBudgets);
@@ -182,7 +182,7 @@ class BudgetServiceTest
 	{
 		List<Budget> budgets = List.of(new Budget("Test Budget", 2024));
 		Exception exception = assertThrows(IOException.class, () -> {
-			this.budgetService.saveBudgets(budgets, null);
+			BudgetService.saveBudgets(budgets, null);
 		});
 		assertEquals("Company directory is invalid or not provided.", exception.getMessage());
 	}
@@ -195,7 +195,7 @@ class BudgetServiceTest
 		assertTrue(testFileAsDirectory.createNewFile(), "Failed to create test file.");
 		
 		Exception exception = assertThrows(IOException.class, () -> {
-			this.budgetService.saveBudgets(budgets, testFileAsDirectory);
+			BudgetService.saveBudgets(budgets, testFileAsDirectory);
 		});
 		assertEquals("Company directory is invalid or not provided.", exception.getMessage());
 		
@@ -207,7 +207,7 @@ class BudgetServiceTest
 	{
 		// As per BudgetService implementation, this logs a warning and does not create
 		// the file.
-		this.budgetService.saveBudgets(null, this.companyDirectory);
+		BudgetService.saveBudgets(null, this.companyDirectory);
 		File budgetsFile = new File(this.companyDirectory, "budgets.json");
 		assertFalse(budgetsFile.exists(), "budgets.json should not be created for null list.");
 	}

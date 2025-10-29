@@ -2,28 +2,27 @@
 package nonprofitbookkeeping.service;
 
 import nonprofitbookkeeping.model.impex.ExcelLedgerRow;
-import nonprofitbookkeeping.model.impex.ExcelLedgerRow.Allocation;
 import org.apache.poi.ss.usermodel.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 /**
  * Utility service for importing a specialized Excel ledger format.
- * <p>
- * The first row of the sheet is used as a header. Columns are matched
- * case-insensitively and by partial text to the expected fields. Any
- * unmatched columns are ignored. Up to four allocation groups can be
- * read (Amount, Asset/Liability Account, Income Category, Expense
- * Category, General or Dedicated Fund).
  */
 public class ExcelLedgerImportService
 {
+        private static final Logger LOGGER = LoggerFactory.getLogger(ExcelLedgerImportService.class);
 	
 	/**
 	 * Reads the first worksheet of the given Excel file and converts the rows
@@ -42,7 +41,7 @@ public class ExcelLedgerImportService
 		}
 		
 		try (FileInputStream fis = new FileInputStream(file);
-			Workbook workbook = WorkbookFactory.create(fis))
+				Workbook workbook = WorkbookFactory.create(fis))
 		{
 			Sheet sheet = workbook.getSheetAt(0);
 			
@@ -51,27 +50,33 @@ public class ExcelLedgerImportService
 				return Collections.emptyList();
 			}
 			
-			HeaderMapping mapping = buildHeaderMapping(sheet.getRow(sheet.getFirstRowNum()));
+			// Ingest the body rows
 			List<ExcelLedgerRow> results = new ArrayList<>();
 			int firstRow = sheet.getFirstRowNum() + 1;
 			int lastRow = sheet.getLastRowNum();
 			
-			for (int r = firstRow; r <= lastRow; r++)
-			{
-				Row row = sheet.getRow(r);
+			DataFormatter formatter = new DataFormatter();
+			FormulaEvaluator evaluator = workbook.getCreationHelper()
+					.createFormulaEvaluator();
+			
+                        for (int r = firstRow; r <= lastRow; r++)
+                        {
+                                LOGGER.debug("Row number {}", r);
+                                Row row = sheet.getRow(r);
 				
 				if (row == null)
 				{
 					continue;
 				}
 				
-				ExcelLedgerRow record = parseRow(row, mapping);
+				RowReader reader = new RowReader(row, r, formatter, evaluator);
+				ExcelLedgerRow excelLedgerRow = reader.readLedgerRow();
+				results.add(excelLedgerRow);
 				
-				// Skip completely blank rows
-				if (!record.getAllocations().isEmpty() || record.getDate() != null)
-				{
-					results.add(record);
-				}
+				// debug
+                                java.io.StringWriter sw = new java.io.StringWriter();
+                                printRow(row, formatter, evaluator, sw);
+                                LOGGER.trace(sw.toString());
 				
 			}
 			
@@ -80,331 +85,305 @@ public class ExcelLedgerImportService
 		
 	}
 	
-	/* ------------------------------------------------------------- */
-	private static class HeaderMapping
-	{
-		int date = -1;
-		int check = -1;
-		int clearBank = -1;
-		int toFrom = -1;
-		int memo = -1;
-		int budget = -1;
-		GroupColumns[] groups = new GroupColumns[4];
-		
-		HeaderMapping()
-		{
-			
-			for (int i = 0; i < this.groups.length; i++)
-			{
-				this.groups[i] = new GroupColumns();
-			}
-			
-		}
-		
-	}
-	
 	/**
-	 * 
-	 */
-	private static class GroupColumns
-	{
-		int amount = -1;
-		int asset = -1;
-		int income = -1;
-		int expense = -1;
-		int fund = -1;
-		
-	}
-	
-	/**
-	 * 
-	 * @param header
-	 * @return
-	 */
-	private static HeaderMapping buildHeaderMapping(Row header)
-	{
-		HeaderMapping map = new HeaderMapping();
-		
-		if (header == null)
-		{
-			return map;
-		}
-		
-		DataFormatter fmt = new DataFormatter();
-		
-		for (Cell cell : header)
-		{
-			String text = fmt.formatCellValue(cell).toLowerCase();
-			int idx = cell.getColumnIndex();
-			
-			if (text.contains("date"))
-			{
-				map.date = idx;
-			}
-			else if (text.contains("check"))
-			{
-				map.check = idx;
-			}
-			else if (text.contains("clear") && text.contains("bank"))
-			{
-				map.clearBank = idx;
-			}
-			else if (text.contains("to") && text.contains("from"))
-			{
-				map.toFrom = idx;
-			}
-			else if (text.contains("memo") || text.contains("note"))
-			{
-				map.memo = idx;
-			}
-			else if (text.contains("budget"))
-			{
-				map.budget = idx;
-			}
-			else if (text.contains("amount"))
-			{
-				group(map.groups, text).amount = idx;
-			}
-			else if (text.contains("asset") || text.contains("liability"))
-			{
-				group(map.groups, text).asset = idx;
-			}
-			else if (text.contains("income"))
-			{
-				group(map.groups, text).income = idx;
-			}
-			else if (text.contains("expense"))
-			{
-				group(map.groups, text).expense = idx;
-			}
-			else if (text.contains("fund"))
-			{
-				group(map.groups, text).fund = idx;
-			}
-			
-		}
-		
-		return map;
-	}
-	
-	/**
-	 * 
-	 * @param groups
-	 * @param headerText
-	 * @return
-	 */
-	private static GroupColumns group(GroupColumns[] groups, String headerText)
-	{
-		int index = extractGroupIndex(headerText);
-		
-		if (index < 0 || index >= groups.length)
-		{
-			index = firstAvailableGroup(groups);
-		}
-		
-		return groups[index];
-	}
-	
-	/**
-	 * 
-	 * @param groups
-	 * @return
-	 */
-	private static int firstAvailableGroup(GroupColumns[] groups)
-	{
-		
-		for (int i = 0; i < groups.length; i++)
-		{
-			// choose first group that has at least one unset column
-			GroupColumns g = groups[i];
-			
-			if (g.amount == -1 && g.asset == -1 && 
-				g.income == -1 && g.expense == -1 &&
-				g.fund == -1)
-			{
-				return i;
-			}
-			
-		}
-		
-		return 0;
-	}
-	
-	/**
-	 * 
-	 * @param text
-	 * @return
-	 */
-	private static int extractGroupIndex(String text)
-	{
-		
-		for (char c : text.toCharArray())
-		{
-			
-			if (Character.isDigit(c))
-			{
-				int idx = Character.digit(c, 10) - 1; // digits are 1-based
-				
-				if (idx >= 0)
-				{
-					return idx;
-				}
-				
-			}
-			
-		}
-		
-		return -1;
-	}
-	
-	/**
+	 * printRow
 	 * 
 	 * @param row
-	 * @param map
-	 * @return
+	 * @param formatter
+	 * @param evaluator
+	 * @param out
 	 */
-	private static ExcelLedgerRow parseRow(Row row, HeaderMapping map)
-	{
-		DataFormatter fmt = new DataFormatter();
-		ExcelLedgerRow out = new ExcelLedgerRow();
-		
-		if (map.date >= 0)
-		{
-			out.setDate(readDate(row.getCell(map.date)));
-		}
-		
-		if (map.check >= 0)
-		{
-			out.setCheckNumber(fmt.formatCellValue(row.getCell(map.check)).trim());
-		}
-		
-		if (map.clearBank >= 0)
-		{
-			out.setClearBank(fmt.formatCellValue(row.getCell(map.clearBank)).trim());
-		}
-		
-		if (map.toFrom >= 0)
-		{
-			out.setToFrom(fmt.formatCellValue(row.getCell(map.toFrom)).trim());
-		}
-		
-		if (map.memo >= 0)
-		{
-			out.setMemoNotes(fmt.formatCellValue(row.getCell(map.memo)).trim());
-		}
-		
-		if (map.budget >= 0)
-		{
-			out.setBudgetTracking(fmt.formatCellValue(row.getCell(map.budget)).trim());
-		}
-		
-		for (GroupColumns g : map.groups)
-		{
-			Allocation alloc = readAllocation(row, g, fmt);
-			
-			if (alloc != null)
-			{
-				out.getAllocations().add(alloc);
-			}
-			
-		}
-		
-		return out;
-	}
-	
-	/**
-	 * 
-	 * @param row
-	 * @param g
-	 * @param fmt
-	 * @return
-	 */
-	private static Allocation readAllocation(Row row, GroupColumns g, DataFormatter fmt)
+	public static void printRow(Row row,
+								DataFormatter formatter,
+								FormulaEvaluator evaluator,
+								Appendable out)
 	{
 		
-		if (g.amount < 0 && g.asset < 0 && g.income < 0 && g.expense < 0 && g.fund < 0)
+		if (row == null)
 		{
-			return null;
-		}
-		
-		Allocation a = new Allocation();
-		
-		if (g.amount >= 0)
-		{
-			String val = fmt.formatCellValue(row.getCell(g.amount)).trim();
-			
-			if (val.isBlank())
-			{
-				return null; // no amount means skip this allocation
-			}
-			
-			try
-			{
-				a.setAmount(new BigDecimal(val.replace(",", "")));
-			}
-			catch (NumberFormatException e)
-			{
-				// treat as zero if not parseable
-				a.setAmount(BigDecimal.ZERO);
-			}
-			
-		}
-		
-		if (g.asset >= 0)
-		{
-			a.setAssetLiabilityAccount(fmt.formatCellValue(row.getCell(g.asset)).trim());
-		}
-		
-		if (g.income >= 0)
-		{
-			a.setIncomeCategory(fmt.formatCellValue(row.getCell(g.income)).trim());
-		}
-		
-		if (g.expense >= 0)
-		{
-			a.setExpenseCategory(fmt.formatCellValue(row.getCell(g.expense)).trim());
-		}
-		
-		if (g.fund >= 0)
-		{
-			a.setFund(fmt.formatCellValue(row.getCell(g.fund)).trim());
-		}
-		
-		return a;
-	}
-	
-	/**
-	 * 
-	 * @param cell
-	 * @return
-	 */
-	private static LocalDate readDate(Cell cell)
-	{
-		
-		if (cell == null)
-		{
-			return null;
-		}
-		
-		if (cell.getCellType() == CellType.NUMERIC && DateUtil.isCellDateFormatted(cell))
-		{
-			return cell.getDateCellValue().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		}
-		
-		String txt = new DataFormatter().formatCellValue(cell).trim();
-		
-		if (txt.isBlank())
-		{
-			return null;
+			return;
 		}
 		
 		try
 		{
-			return LocalDate.parse(txt);
+			
+			for (int i = row.getFirstCellNum(); i < row.getLastCellNum(); i++)
+			{
+				Cell cell = row.getCell(i, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
+				String value = (cell == null) ? "" :
+						" " +
+								"[" + i + "]=" +
+								formatter.formatCellValue(cell, evaluator);
+				out.append(value);
+			}
+			
+			out.append('\n');
 		}
-		catch (Exception e)
+		catch (IOException e)
 		{
+			throw new UncheckedIOException(e);
+		}
+		
+	}
+	
+	
+	/**
+	 * Helper wrapper that provides easy access to cell values from a row.
+	 * All values returned are trimmed strings and each access is printed
+	 * with the row/column information for debugging purposes.
+	 */
+	private static class RowReader
+	{
+		final Row row;
+		final int index;
+		final DataFormatter fmt;
+		final FormulaEvaluator eval;
+		
+		RowReader(Row row, int index, DataFormatter fmt, FormulaEvaluator evaluator)
+		{
+			this.row = row;
+			this.index = index;
+			this.fmt = fmt;
+			this.eval = evaluator;
+			
+		}
+		
+		/**
+		 * isBlank
+		 * @param s
+		 * @return
+		 */
+		private static boolean isBlank(String s)
+		{
+			return s == null || s.trim().isEmpty();
+			
+		}
+		
+		/**
+		 * readLedgerRow
+		 * @param row
+		 * @param fmt
+		 * @param eval
+		 * @return
+		 */
+		public ExcelLedgerRow readLedgerRow()
+		{
+			
+			if (this.row == null)
+			{
+				return null;
+			}
+			
+			ExcelLedgerRow bean = new ExcelLedgerRow();
+			
+			int c = this.row.getFirstCellNum();
+			
+			if (c < 0)
+			{
+				return null; // empty
+			}
+			
+			// ---- Fixed columns (in the declared order) ----
+			bean.setBalance(readBigDecimal(this.row.getCell(c++), this.fmt, this.eval));
+			bean.setDate(readLocalDate(this.row.getCell(c++), this.fmt, this.eval));
+			bean.setCheckNumber(readString(this.row.getCell(c++), this.fmt, this.eval));
+			c++; // skip amount
+			bean.setClearBank(readString(this.row.getCell(c++), this.fmt, this.eval));
+			bean.setToFrom(readString(this.row.getCell(c++), this.fmt, this.eval));
+			bean.setMemoNotes(readString(this.row.getCell(c++), this.fmt, this.eval));
+			bean.setBudgetTracking(readString(this.row.getCell(c++), this.fmt, this.eval));
+			
+			c++; // skip number column
+			bean.setNetTotal(readBigDecimal(this.row.getCell(c++), this.fmt, this.eval));
+			
+			// ---- Allocation groups (5 columns each) ----
+			final int GROUP_SIZE = 5;
+			int last = this.row.getLastCellNum();
+			
+			while (c < last)
+			{
+				
+				for (int i = 0; i < 2; i++)
+				{
+					// Pull raw strings first
+					String amt = readString(this.row.getCell(c), this.fmt, this.eval);
+					String acct = readString(this.row.getCell(c + 1), this.fmt, this.eval);
+					String income = readString(this.row.getCell(c + 2), this.fmt, this.eval);
+					String exp = readString(this.row.getCell(c + 3), this.fmt, this.eval);
+					String fund = readString(this.row.getCell(c + 4), this.fmt, this.eval);
+					
+					boolean allBlank = (isBlank(amt) && isBlank(acct) && isBlank(income) &&
+							isBlank(exp) && isBlank(fund));
+					
+					if (!allBlank)
+					{
+						ExcelLedgerRow.Allocation a = new ExcelLedgerRow.Allocation();
+						a.setAmount(readBigDecimal(this.row.getCell(c),
+								this.fmt,
+								this.eval)); // use numeric parse foramt
+						a.setAssetLiabilityAccount(acct);
+						a.setIncomeCategory(income);
+						a.setExpenseCategory(exp);
+						a.setFund(fund);
+						bean.getAllocations().add(a);
+					}
+					
+					c += GROUP_SIZE; // advance regardless; tolerate gaps
+				}
+				
+				c++; // skip the number column
+			}
+			
+                        LOGGER.trace("Bean: {}", bean);
+			return bean;
+			
+		}
+		
+		
+		/**
+		 * readString
+		 * @param cell
+		 * @param fmt
+		 * @param eval
+		 * @return
+		 */
+		private static String readString(	Cell cell,
+											DataFormatter fmt,
+											FormulaEvaluator eval)
+		{
+			
+			if (cell == null)
+			{
+				return null;
+			}
+			
+			return fmt.formatCellValue(cell, eval).trim();
+			
+		}
+		
+		/**
+		 * readBigDecimal
+		 * @param cell
+		 * @param fmt
+		 * @param eval
+		 * @return
+		 */
+		private static BigDecimal readBigDecimal(Cell cell,
+		                                         DataFormatter fmt,
+		                                         FormulaEvaluator eval)
+		{
+			
+			if (cell == null)
+			{
+				return null;
+			}
+			
+			// If it’s a pure numeric cell, avoid the formatter’s rounding/formatting
+			CellType type = cell.getCellType();
+			
+			if (type == CellType.FORMULA)
+			{
+				type = eval.evaluateFormulaCell(cell);
+			}
+			
+			if (type == CellType.NUMERIC)
+			{
+				return BigDecimal.valueOf(cell.getNumericCellValue());
+			}
+			
+			// Otherwise parse the formatted text
+			String s = fmt.formatCellValue(cell, eval).trim();
+			
+			if (s.isEmpty())
+			{
+				return null;
+			}
+			
+			// Handle common accounting formats: commas and parentheses for negatives
+			s = s.replace(",", "");
+			
+			if (s.startsWith("(") && s.endsWith(")"))
+			{
+				s = "-" + s.substring(1, s.length() - 1);
+			}
+			
+			try
+			{
+				return new BigDecimal(s);
+			}
+			catch (NumberFormatException ex)
+			{
+				return null; // or BigDecimal.ZERO, depending on your rule
+			}
+			
+		}
+		
+		/**
+		 * readLocalDate
+		 * @param cell
+		 * @param fmt
+		 * @param eval
+		 * @return
+		 */
+		private static LocalDate readLocalDate(	Cell cell,
+												DataFormatter fmt,
+												FormulaEvaluator eval)
+		{
+			
+			if (cell == null)
+			{
+				return null;
+			}
+			
+			CellType type = cell.getCellType();
+			
+			if (type == CellType.FORMULA)
+			{
+				type = eval.evaluateFormulaCell(cell);
+			}
+			
+			// Numeric Excel date?
+			if (type == CellType.NUMERIC && DateUtil.isCellDateFormatted(cell))
+			{
+				return cell.getLocalDateTimeCellValue().toLocalDate();
+			}
+			
+			// Fallback: parse text
+			String s = fmt.formatCellValue(cell, eval).trim();
+			
+			if (s.isEmpty())
+			{
+				return null;
+			}
+			
+			// Try a few common patterns
+			DateTimeFormatter[] patterns = new DateTimeFormatter[]
+			{
+				DateTimeFormatter.ISO_LOCAL_DATE, // 2025-07-26
+				DateTimeFormatter.ofPattern("M/d/uuuu"), // 7/26/2025
+				DateTimeFormatter.ofPattern("M/d/uu"), // 7/26/25
+				DateTimeFormatter.ofPattern("MM/dd/uuuu"), // 07/26/2025
+				DateTimeFormatter.ofPattern("MM/dd/uu"), // 07/26/25
+				DateTimeFormatter.ofPattern("d-M-uuuu"), // 26-7-2025
+				DateTimeFormatter.ofPattern("d-MMM-uuuu") // 26-Jul-2025
+			};
+			
+			for (DateTimeFormatter f : patterns)
+			{
+				
+				try
+				{
+					return LocalDate.parse(s, f);
+				}
+				catch (DateTimeParseException ignore)
+				{
+				}
+				
+			}
+			
+			// Give up
 			return null;
+			
 		}
 		
 	}
