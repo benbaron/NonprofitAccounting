@@ -33,7 +33,10 @@ public abstract class AbstractReportGenerator
 	 * the data is prepared externally it can be injected here via
 	 * {@link #setReportData(List)}.
 	 */
-	private List<?> reportData = Collections.emptyList();
+        private List<?> reportData = Collections.emptyList();
+
+        /** Flag indicating whether report data was explicitly injected. */
+        private boolean hasExplicitReportData;
 	
 	/**
 	 * Retrieves the collection of data beans that will populate the report.
@@ -129,8 +132,8 @@ public abstract class AbstractReportGenerator
 			throw e;
 		}
 		
-		JRBeanCollectionDataSource dataSource =
-			new JRBeanCollectionDataSource(getReportData());
+                JRBeanCollectionDataSource dataSource =
+                        new JRBeanCollectionDataSource(resolveReportData());
 		Map<String, Object> params =
 			ensureMutableParameters(getReportParameters());
 		return JasperFillManager.fillReport(report, params, dataSource);
@@ -282,10 +285,29 @@ public abstract class AbstractReportGenerator
 	/**
 	 * @param beans
 	 */
-	public void setReportData(List<?> beans)
-	{
-		
-		// TODO Auto-generated method stub
-	}
+        public void setReportData(List<?> beans)
+        {
+                this.reportData = beans != null ? beans : Collections.emptyList();
+                this.hasExplicitReportData = true;
+        }
+
+        /**
+         * Determines the data set that should be supplied to Jasper. When explicit
+         * data has been injected through {@link #setReportData(List)} it is used as
+         * is; otherwise subclasses can lazily provide data through
+         * {@link #getReportData()}.
+         *
+         * @return non-null collection of beans for the report
+         */
+        protected List<?> resolveReportData()
+        {
+                if (this.hasExplicitReportData)
+                {
+                        return this.reportData;
+                }
+
+                List<?> generated = getReportData();
+                return generated != null ? generated : Collections.emptyList();
+        }
 	
 }
