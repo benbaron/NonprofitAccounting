@@ -1,6 +1,5 @@
 package nonprofitbookkeeping.reports.datasource.scareports;
 
-import java.util.Date;
 
 /** Auto-generated bean for sheet 'INCOME_DTL_11a'. */
 public class IncomeDtl11aBean {

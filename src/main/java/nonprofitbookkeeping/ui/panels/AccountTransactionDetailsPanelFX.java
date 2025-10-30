@@ -10,7 +10,6 @@ import java.util.Objects;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 import nonprofitbookkeeping.util.FormatUtils;
-import java.util.logging.Logger;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
@@ -47,8 +46,6 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
  */
 public class AccountTransactionDetailsPanelFX extends BorderPane
 {
-	private static final Logger LOGGER =
-		Logger.getLogger(AccountTransactionDetailsPanelFX.class.getName());
 	/** ComboBox for selecting the account whose transactions are to be displayed. */
 	private ComboBox<Account> accountSelectorComboBox;
 	/** DatePicker for selecting the start date of the transaction period. */

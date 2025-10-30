@@ -14,8 +14,6 @@ import java.util.concurrent.TimeUnit;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.FileTime;
-import java.time.Instant;
 import java.util.Comparator;
 
 import javafx.application.Platform;
@@ -227,7 +225,6 @@ public class SkeletonPanelResetTest extends JavaFXTestBase
                 return new AccountingTransaction(new Account(), entries, null, timestamp);
         }
 
-        @SuppressWarnings("unchecked")
         private TableView<?> getDashboardTable() throws Exception
         {
                 Field field = SkeletonDashboardPanel.class.getDeclaredField("recentTransactionsTable");
@@ -242,7 +239,6 @@ public class SkeletonPanelResetTest extends JavaFXTestBase
                 return (Label) field.get(this.dashboardPanel);
         }
 
-        @SuppressWarnings("unchecked")
         private TableView<?> getJournalTable() throws Exception
         {
                 Field field = SkeletonJournalPanel.class.getDeclaredField("journalDisplayTable");

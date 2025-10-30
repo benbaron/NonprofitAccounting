@@ -1,6 +1,5 @@
 package nonprofitbookkeeping.reports.datasource.scareports;
 
-import java.util.Date;
 
 /** Auto-generated bean for sheet 'DEPR_DTL_8'. */
 public class DeprDtl8Bean {

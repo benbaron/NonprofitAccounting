@@ -1,7 +1,5 @@
 package nonprofitbookkeeping.reports.datasource.scareports;
 
-import java.util.Date;
-
 /** Auto-generated bean for sheet 'TRANSFER_OUT_10d'. */
 public class TransferOut10dBean {
     private String TRANSFER_OUT_10d_C2;

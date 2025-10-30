@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
-import java.time.MonthDay;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -48,17 +47,14 @@ import nonprofitbookkeeping.model.Fund;
 import nonprofitbookkeeping.plugin.Plugin;
 import nonprofitbookkeeping.preferences.PreferencesManager;
 import nonprofitbookkeeping.service.*;
-import nonprofitbookkeeping.model.ReportPeriodPreset;
 import nonprofitbookkeeping.model.SettingsModel;
 import nonprofitbookkeeping.util.FormatUtils;
-import nonprofitbookkeeping.ui.ThemeManager;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonJournalPanel;
 import nonprofitbookkeeping.ui.actions.*;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.panels.*;
 import nonprofitbookkeeping.ui.javafx.BudgetPanelFX;
 import nonprofitbookkeeping.tools.H2ScriptCompanyImporter;
-
 
 
 /**
@@ -77,11 +73,6 @@ public class NonprofitBookkeepingFX extends Application
 	private MainApplicationView mainView;
 	/** Shared company selection panel displayed when no company is open. */
 	private CompanySelectionPanelFX companySelectionPanel;
-	/** Reference to the dashboard panel, used as a fallback or initial view. */
-	private DashboardPanelFX dashboard; // Potentially part of
-										// MainApplicationView's default tabs
-	/** Instance managing the currently loaded company data. Suppressed unused warning as it's initialized. */
-	private CurrentCompany c;
 	
 	/**
 	 * Enum representing the different operational states of the application,
@@ -146,11 +137,10 @@ public class NonprofitBookkeepingFX extends Application
 	/** Service that imports legacy .npbk archives into the active database. */
 	private final LegacyNpbkImportService legacyNpbkImportService =
 		new LegacyNpbkImportService();
-
+	
 	/** Cached settings to avoid redundant database reads. */
 	private SettingsModel cachedSettings = new SettingsModel();
-
-
+	
 	
 	/**
 	 * Static inner class acting as a container for singleton service instances.
@@ -246,8 +236,8 @@ public class NonprofitBookkeepingFX extends Application
 		stage.getIcons().addAll(
 			new Image(getClass().getResourceAsStream("../../cg-128px.png")));
 		this.primaryStage = stage;
-		this.c = new CurrentCompany();
-		this.dashboard = new DashboardPanelFX();
+
+
 		this.mainView = new MainApplicationView();
 		this.root = this.mainView; // Assign MainApplicationView to root
 		this.companySelectionPanel = this.mainView.getCompanySelectionPanel();
@@ -1135,21 +1125,6 @@ public class NonprofitBookkeepingFX extends Application
 		
 	}
 	
-
-	
-	private void onSettingsSaved(SettingsModel updated)
-	{
-		
-		if (updated == null)
-		{
-			return;
-		}
-		
-		this.cachedSettings = updated;
-		applySettings(updated);
-		configureAutosave();
-		
-	}
 	
 	private void handleCompanyOpened(Company company)
 	{

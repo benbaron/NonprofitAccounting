@@ -1,7 +1,5 @@
 package nonprofitbookkeeping.reports.datasource.scareports;
 
-import java.util.Date;
-
 /** Auto-generated bean for sheet 'SECONDARY_ACCOUNTS_2d'. */
 public class SecondaryAccounts2dBean {
     private String SECONDARY_ACCOUNTS_2d_C2;
