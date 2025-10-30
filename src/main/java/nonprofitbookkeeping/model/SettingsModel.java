@@ -115,7 +115,6 @@ public class SettingsModel
 
                 public void setRole(String role)
                 {
-                        this.username = username;
                         this.role = role;
                 }
         }
@@ -343,7 +342,7 @@ public class SettingsModel
          *
          * @return configured {@link Locale} or the JVM default when unset.
          */
-        public String getFiscalYearStart()
+        public Locale getCurrencyLocale()
         {
                 if (this.currencyLocaleTag != null && !this.currencyLocaleTag.isBlank())
                 {
@@ -375,7 +374,13 @@ public class SettingsModel
          */
         public void setCurrencyLocale(String localeTag)
         {
-                this.currencyLocaleTag = localeTag;
+                if (localeTag == null || localeTag.isBlank())
+                {
+                        this.currencyLocaleTag = null;
+                        return;
+                }
+
+                setCurrencyLocale(Locale.forLanguageTag(localeTag.replace('_', '-')));
         }
 
         /**
@@ -383,7 +388,7 @@ public class SettingsModel
          *
          * @return parsed month/day or {@code null} when parsing fails or not provided
          */
-        public void setCurrencyLocale(String localeTag)
+        public MonthDay getFiscalYearStartMonthDay()
         {
                 if (this.fiscalYearStart == null || this.fiscalYearStart.isBlank())
                 {
