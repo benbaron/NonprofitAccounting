@@ -338,25 +338,6 @@ public class SettingsModel
         // Derived helpers
         // ---------------------------------------------------------------------
 
-        /**
-         * Resolves the locale to use for currency formatting.
-         *
-         * @return configured {@link Locale} or the JVM default when unset.
-         */
-        public String getFiscalYearStart()
-        {
-                if (this.currencyLocaleTag != null && !this.currencyLocaleTag.isBlank())
-                {
-                        return Locale.forLanguageTag(this.currencyLocaleTag.replace('_', '-'));
-                }
-
-                if (this.language != null && !this.language.isBlank())
-                {
-                        return Locale.forLanguageTag(this.language.replace('_', '-'));
-                }
-
-                return Locale.getDefault();
-        }
 
         /**
          * Stores the locale to use for currency formatting using a {@link Locale} instance.
@@ -369,32 +350,25 @@ public class SettingsModel
         }
 
 
-        /**
-         * Returns the start of the fiscal year as a {@link MonthDay}.
-         *
-         * @return parsed month/day or {@code null} when parsing fails or not provided
-         */
-        public void setCurrencyLocale(String localeTag)
-        {
-                if (this.fiscalYearStart == null || this.fiscalYearStart.isBlank())
-                {
-                        return null;
-                }
 
-                String normalized = this.fiscalYearStart.trim().replace('/', '-');
 
-                if (!normalized.startsWith("--"))
-                {
-                        normalized = "--" + normalized;
-                }
+		/**
+		 * @return
+		 */
+		public Locale getCurrencyLocale()
+		{
+			// TODO Auto-generated method stub
+			return null;
+			
+		}
 
-                try
-                {
-                        return MonthDay.parse(normalized);
-                }
-                catch (DateTimeParseException ex)
-                {
-                        return null;
-                }
-        }
+		/**
+		 * @return
+		 */
+		public MonthDay getFiscalYearStartMonthDay()
+		{
+			// TODO Auto-generated method stub
+			return null;
+			
+		}
 }
