@@ -93,7 +93,7 @@ public class IncomeStatementAltJasperGenerator extends AbstractReportGenerator
 	
 	@Override protected String getReportPath()
 	{
-		return "jrxml/IncomeStatementAlt.jrxml";
+		return bundledReportPath();
 	}
 	
 

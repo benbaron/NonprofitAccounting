@@ -4,12 +4,13 @@ package nonprofitbookkeeping.reports.jasper;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.HtmlExporter;
-import net.sf.jasperreports.export.*;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
+import net.sf.jasperreports.export.*;
 
 
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
+import nonprofitbookkeeping.reports.ReportBundles;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -64,8 +65,20 @@ public abstract class AbstractReportGenerator
 	 * @throws ActionCancelledException If determining the report path involves an action that is cancelled.
 	 * @throws NoFileCreatedException If the report template file cannot be found or accessed.
 	 */
-	protected abstract String getReportPath() throws ActionCancelledException,
-		NoFileCreatedException;
+        protected abstract String getReportPath() throws ActionCancelledException,
+                NoFileCreatedException;
+
+        /**
+         * Resolves the JRXML location from the co-located bundle metadata for this
+         * generator. Subclasses that simply rely on the bundled template can return
+         * this value from {@link #getReportPath()}.
+         *
+         * @return classpath path to the JRXML template
+         */
+        protected final String bundledReportPath()
+        {
+                return ReportBundles.bundleForGenerator(getClass()).jrxmlResource();
+        }
 	
 	
 	/**

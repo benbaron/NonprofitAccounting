@@ -110,7 +110,7 @@ public class GeneralLedgerJasperGenerator extends AbstractReportGenerator
 	
 	@Override protected String getReportPath()
 	{
-		return "jrxml/GeneralLedger.jrxml";
+		return bundledReportPath();
 	}
 	
 

@@ -18,7 +18,7 @@ public class LedgerQ1JasperGenerator extends AbstractReportGenerator
 	@Override
 	protected String getReportPath()
 	{
-		return "jrxml/sca-reports/Ledger_Q1.jrxml";
+		return bundledReportPath();
 		
 	}
 	

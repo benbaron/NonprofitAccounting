@@ -113,7 +113,7 @@ public class BalanceResultReportGenerator extends AbstractReportGenerator
 	{
 		// Path relative to the resources directory
 		// Updated to match the current location of the JRXML template.
-		return "jrxml/balanceReport.jrxml";
+		return bundledReportPath();
 	}
 	
 	/**

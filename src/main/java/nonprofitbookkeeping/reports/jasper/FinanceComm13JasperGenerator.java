@@ -17,7 +17,7 @@ public class FinanceComm13JasperGenerator extends AbstractReportGenerator
         @Override
         protected String getReportPath()
         {
-                return "jrxml/sca-reports/FINANCE_COMM_13.jrxml";
+                return bundledReportPath();
 
         }
 	

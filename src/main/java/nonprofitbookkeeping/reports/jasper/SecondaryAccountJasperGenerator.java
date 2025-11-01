@@ -17,7 +17,7 @@ public class SecondaryAccountJasperGenerator extends AbstractReportGenerator
         @Override
         protected String getReportPath()
         {
-                return "jrxml/sca-reports/SECONDARY_ACCOUNTS_2b.jrxml";
+                return bundledReportPath();
 
         }
 	

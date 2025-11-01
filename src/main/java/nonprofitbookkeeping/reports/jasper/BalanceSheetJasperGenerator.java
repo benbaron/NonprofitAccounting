@@ -61,7 +61,7 @@ public class BalanceSheetJasperGenerator extends AbstractReportGenerator
 	
 	@Override protected String getReportPath()
 	{
-		return "jrxml/BalanceSheet.jrxml";
+		return bundledReportPath();
 	}
 	
 	/**

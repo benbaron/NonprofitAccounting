@@ -17,7 +17,7 @@ public class Newsletter15JasperGenerator extends AbstractReportGenerator
         @Override
         protected String getReportPath()
         {
-                return "jrxml/sca-reports/NEWSLETTER_15.jrxml";
+                return bundledReportPath();
 
         }
 	
