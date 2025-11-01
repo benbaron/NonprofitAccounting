@@ -28,6 +28,8 @@ import java.util.Map;
  */
 public abstract class AbstractReportGenerator
 {
+        private static final java.util.regex.Pattern SCHEMA_LOCATION_ATTRIBUTE_PATTERN =
+                java.util.regex.Pattern.compile("\\s+xsi:schemaLocation=\"[^\"]*\"");
 	/**
 	 * Data beans supplied to populate the report. Subclasses may override
 	 * {@link #getReportData()} to compute data dynamically, but in cases where
@@ -111,25 +113,25 @@ public abstract class AbstractReportGenerator
 			throw new JRException("Unable to resolve report path", e);
 		}
 		
-		JasperReport report;
-		
-		try
-		{
-			report = JasperCompileManager.compileReport(jrxmlPath);
-		}
-		catch (JRException e)
-		{
-			Throwable t = e;
-			
-			while (t != null)
-			{
-				System.err.println("Cause: " + t.getClass().getName() + " - " +
-					t.getMessage());
-				t = t.getCause();
-			}
-			
-			throw e;
-		}
+                JasperReport report;
+
+                try
+                {
+                        report = compileReportSanitizingSchemaLocation(jrxmlPath);
+                }
+                catch (JRException e)
+                {
+                        Throwable t = e;
+
+                        while (t != null)
+                        {
+                                System.err.println("Cause: " + t.getClass().getName() + " - " +
+                                        t.getMessage());
+                                t = t.getCause();
+                        }
+
+                        throw e;
+                }
 		
                 List<?> data = resolveReportData();
                 JRBeanCollectionDataSource dataSource =
@@ -138,6 +140,64 @@ public abstract class AbstractReportGenerator
                         ensureMutableParameters(getReportParameters());
                 return JasperFillManager.fillReport(report, params, dataSource);
 
+        }
+
+        private JasperReport compileReportSanitizingSchemaLocation(String jrxmlPath)
+                throws JRException
+        {
+                byte[] jrxmlBytes;
+
+                try
+                {
+                        jrxmlBytes = readJrxmlBytes(jrxmlPath);
+                }
+                catch (IOException e)
+                {
+                        throw new JRException("Unable to read JRXML template: " + jrxmlPath, e);
+                }
+
+                byte[] sanitized = removeSchemaLocationAttribute(jrxmlBytes);
+
+                try (java.io.ByteArrayInputStream input =
+                        new java.io.ByteArrayInputStream(sanitized))
+                {
+                        return JasperCompileManager.compileReport(input);
+                }
+                catch (IOException e)
+                {
+                        throw new JRException("Failed to close JRXML stream", e);
+                }
+        }
+
+        private static byte[] readJrxmlBytes(String jrxmlPath) throws IOException
+        {
+                java.nio.file.Path path = java.nio.file.Paths.get(jrxmlPath);
+
+                if (java.nio.file.Files.exists(path))
+                {
+                        return java.nio.file.Files.readAllBytes(path);
+                }
+
+                String normalized = jrxmlPath.startsWith("/") ?
+                        jrxmlPath.substring(1) : jrxmlPath;
+                try (java.io.InputStream resource =
+                        AbstractReportGenerator.class.getClassLoader()
+                                .getResourceAsStream(normalized))
+                {
+                        if (resource == null)
+                        {
+                                throw new IOException("JRXML template not found: " + jrxmlPath);
+                        }
+
+                        return resource.readAllBytes();
+                }
+        }
+
+        private static byte[] removeSchemaLocationAttribute(byte[] xmlBytes)
+        {
+                String xml = new String(xmlBytes, java.nio.charset.StandardCharsets.UTF_8);
+                String sanitized = SCHEMA_LOCATION_ATTRIBUTE_PATTERN.matcher(xml).replaceAll("");
+                return sanitized.getBytes(java.nio.charset.StandardCharsets.UTF_8);
         }
 	
 	
