@@ -92,7 +92,7 @@ public class TransactionReportJasperGenerator extends AbstractReportGenerator
 	
 	@Override protected String getReportPath()
 	{
-		return "jrxml/TransactionReport.jrxml";
+		return bundledReportPath();
 	}
 	
 	/**

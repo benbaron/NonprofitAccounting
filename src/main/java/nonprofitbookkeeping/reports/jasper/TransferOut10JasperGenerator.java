@@ -17,7 +17,7 @@ public class TransferOut10JasperGenerator extends AbstractReportGenerator
         @Override
         protected String getReportPath()
         {
-                return "jrxml/sca-reports/TRANSFER_OUT_10.jrxml";
+                return bundledReportPath();
 
         }
 	

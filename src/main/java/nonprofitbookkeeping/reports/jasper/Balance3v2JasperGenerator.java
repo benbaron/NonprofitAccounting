@@ -23,7 +23,7 @@ public class Balance3v2JasperGenerator extends AbstractReportGenerator
         @Override
         protected String getReportPath()
         {
-                return "jrxml/sca-reports/BALANCE_3.jrxml";
+                return bundledReportPath();
 
         }
 	

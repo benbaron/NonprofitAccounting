@@ -17,7 +17,7 @@ public class IncomeDtl11cJasperGenerator extends AbstractReportGenerator
         @Override
         protected String getReportPath()
         {
-                return "jrxml/sca-reports/INCOME_DTL_11c.jrxml";
+                return bundledReportPath();
 
         }
 	

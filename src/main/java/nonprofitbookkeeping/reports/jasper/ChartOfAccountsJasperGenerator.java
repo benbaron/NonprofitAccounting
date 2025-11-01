@@ -76,7 +76,7 @@ public class ChartOfAccountsJasperGenerator extends AbstractReportGenerator
 	
 	@Override protected String getReportPath()
 	{
-		return "jrxml/ChartOfAccountsAlt.jrxml";
+		return bundledReportPath();
 	}
 	
 	/**

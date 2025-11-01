@@ -95,7 +95,7 @@ public class GeneralJournalJasperGenerator extends AbstractReportGenerator
 	
 	@Override protected String getReportPath()
 	{
-		return "jrxml/GeneralJournal.jrxml";
+		return bundledReportPath();
 	}
 	
 

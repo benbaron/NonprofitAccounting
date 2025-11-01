@@ -62,7 +62,7 @@ public class AccountSummaryJasperGenerator extends AbstractReportGenerator
 	
 	@Override protected String getReportPath()
 	{
-		return "jrxml/AccountSummary.jrxml";
+		return bundledReportPath();
 	}
 
 	/**

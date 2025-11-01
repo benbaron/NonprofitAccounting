@@ -92,7 +92,7 @@ public class FundLedgerJasperGenerator extends AbstractReportGenerator
 	
 	@Override protected String getReportPath()
 	{
-                return "jrxml/sca-reports/FundLedger.jrxml";
+                return bundledReportPath();
 	}
 	
 

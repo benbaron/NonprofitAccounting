@@ -50,15 +50,11 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 		this.reportContext = reportContext;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 * @return The classpath resource path "jrxml/income_statement.jrxml" for the Income Statement template.
-	 */
-	@Override protected String getReportPath()
-	{
-		// Path relative to the resources directory
-		return "jrxml/income_statement.jrxml";
-	}
+        /** {@inheritDoc} */
+        @Override protected String getReportPath()
+        {
+                return bundledReportPath();
+        }
 	
 	/**
 	 * {@inheritDoc}

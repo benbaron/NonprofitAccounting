@@ -20,7 +20,7 @@ public class AssetDtl5aJasperGenerator extends AbstractReportGenerator
         @Override
         protected String getReportPath()
         {
-                return "jrxml/sca-reports/ASSET_DTL_5a.jrxml";
+                return bundledReportPath();
 
         }
 	

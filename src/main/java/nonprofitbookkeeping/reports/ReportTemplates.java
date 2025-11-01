@@ -1,5 +1,7 @@
 package nonprofitbookkeeping.reports;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -16,7 +18,11 @@ public final class ReportTemplates
         public record TemplateInfo(String displayName,
                 String jrxmlPath,
                 String generatorClassName,
-                ReportType reportType)
+                String beanClassName,
+                ReportType reportType,
+                String bundleId,
+                String metadataResource,
+                String description)
         {
                 /**
                  * Returns the report type identifier used by {@link nonprofitbookkeeping.service.ReportService}.
@@ -39,158 +45,25 @@ public final class ReportTemplates
         private static Map<String, TemplateInfo> createTemplates()
         {
                 Map<String, TemplateInfo> map = new LinkedHashMap<>();
+                var bundles = new ArrayList<>(ReportBundles.bundles());
 
-                add(map, "jrxml/IncomeStatementAlt.jrxml",
-                        generatorClass("IncomeStatementAltJasperGenerator"),
-                        ReportType.INCOME_STATEMENT_ALT_JASPER);
-                add(map, "jrxml/AccountLedger.jrxml",
-                        generatorClass("AccountLedgerJasperGenerator"),
-                        ReportType.ACCOUNT_LEDGER_JASPER);
-                add(map, "jrxml/BankReconciliation.jrxml",
-                        generatorClass("BankReconciliationJasperGenerator"),
-                        ReportType.BANK_RECONCILIATION_JASPER);
-                add(map, "jrxml/BalanceSheet.jrxml",
-                        generatorClass("BalanceSheetJasperGenerator"),
-                        ReportType.BALANCE_SHEET_JASPER);
-                add(map, "jrxml/ChartOfAccountsAlt.jrxml",
-                        generatorClass("ChartOfAccountsJasperGenerator"),
-                        ReportType.CHART_OF_ACCOUNTS_JASPER);
-                add(map, "jrxml/ContactInfoReport.jrxml",
-                        generatorClass("ContactInfoJasperGenerator"),
-                        ReportType.SCA_CONTACT_INFO_JASPER);
-                add(map, "jrxml/GeneralLedger.jrxml",
-                        generatorClass("GeneralLedgerJasperGenerator"),
-                        ReportType.GENERAL_LEDGER_JASPER);
+                bundles.sort(Comparator.comparing(ReportBundles.Bundle::displayName,
+                        String.CASE_INSENSITIVE_ORDER));
 
-                // Alternate Contact Info template used by SCA reports
-                add(map, "Contact Info 1",
-                        "jrxml/sca-reports/CONTACT_INFO_1.jrxml",
-                        generatorClass("ContactInfoJasperGenerator"),
-                        ReportType.SCA_CONTACT_INFO_JASPER);
-
-                add(map, "jrxml/sca-reports/ASSET_DTL_5a.jrxml",
-                        generatorClass("AssetDtl5aJasperGenerator"),
-                        ReportType.SCA_ASSET_DTL_5A_JASPER);
-                add(map, "jrxml/sca-reports/BALANCE_3.jrxml",
-                        generatorClass("Balance3v2JasperGenerator"),
-                        ReportType.SCA_BALANCE_3_V2_JASPER);
-                add(map, "jrxml/sca-reports/DEPR_DTL_8.jrxml",
-                        generatorClass("DeprDtl8JasperGenerator"),
-                        ReportType.SCA_DEPR_DTL_8_JASPER);
-                add(map, "jrxml/sca-reports/EXPENSE_DTL_12a.jrxml",
-                        generatorClass("ExpenseDtl12aJasperGenerator"),
-                        ReportType.SCA_EXPENSE_DTL_12A_JASPER);
-                add(map, "jrxml/sca-reports/EXPENSE_DTL_12b.jrxml",
-                        generatorClass("ExpenseDtl12bJasperGenerator"),
-                        ReportType.SCA_EXPENSE_DTL_12B_JASPER);
-                add(map, "jrxml/sca-reports/FundLedger.jrxml",
-                        generatorClass("FundLedgerJasperGenerator"),
-                        ReportType.FUND_LEDGER_JASPER);
-                add(map, "jrxml/sca-reports/FUNDS_14.jrxml",
-                        generatorClass("Funds14JasperGenerator"),
-                        ReportType.SCA_FUNDS_14_JASPER);
-                add(map, "jrxml/sca-reports/INCOME_4.jrxml",
-                        generatorClass("Income4JasperGenerator"),
-                        ReportType.SCA_INCOME_4_JASPER);
-                add(map, "jrxml/sca-reports/INCOME_DTL_11a.jrxml",
-                        generatorClass("IncomeDtl11aJasperGenerator"),
-                        ReportType.SCA_INCOME_DTL_11A_JASPER);
-                add(map, "jrxml/sca-reports/INCOME_DTL_11b.jrxml",
-                        generatorClass("IncomeDtl11bJasperGenerator"),
-                        ReportType.SCA_INCOME_DTL_11B_JASPER);
-                add(map, "jrxml/sca-reports/INCOME_DTL_11c.jrxml",
-                        generatorClass("IncomeDtl11cJasperGenerator"),
-                        ReportType.SCA_INCOME_DTL_11C_JASPER);
-                add(map, "jrxml/sca-reports/INVENTORY_DTL_6.jrxml",
-                        generatorClass("InventoryDtl6JasperGenerator"),
-                        ReportType.SCA_INVENTORY_DTL_6_JASPER);
-                add(map, "jrxml/sca-reports/Ledger_Q1.jrxml",
-                        generatorClass("LedgerQ1JasperGenerator"),
-                        ReportType.SCA_LEDGER_Q1_JASPER);
-                add(map, "jrxml/sca-reports/LIABILITY_DTL_5b.jrxml",
-                        generatorClass("LiabilityDtl5bJasperGenerator"),
-                        ReportType.SCA_LIABILITY_DTL_5B_JASPER);
-                add(map,
-                        "jrxml/sca-reports/NEWSLETTER_15.jrxml",
-                        generatorClass("Newsletter15JasperGenerator"),
-                        ReportType.SCA_NEWSLETTER_15_JASPER);
-                add(map, "jrxml/sca-reports/PRIMARY_ACCOUNT_2a.jrxml",
-                        generatorClass("PrimaryAccountJasperGenerator"),
-                        ReportType.SCA_PRIMARY_ACCOUNT_JASPER);
-                add(map, "jrxml/sca-reports/REGALIA_SALES_DTL_7.jrxml",
-                        generatorClass("RegaliaSalesDtl7JasperGenerator"),
-                        ReportType.SCA_REGALIA_SALES_DTL_7_JASPER);
-                add(map, "jrxml/sca-reports/SECONDARY_ACCOUNTS_2b.jrxml",
-                        generatorClass("SecondaryAccountJasperGenerator"),
-                        ReportType.SCA_SECONDARY_ACCOUNT_JASPER);
-                add(map,
-                        "jrxml/sca-reports/TRANSFER_IN_9.jrxml",
-                        generatorClass("TransferIn9JasperGenerator"),
-                        ReportType.SCA_TRANSFER_IN_9_JASPER);
-                add(map,
-                        "jrxml/sca-reports/TRANSFER_OUT_10.jrxml",
-                        generatorClass("TransferOut10JasperGenerator"),
-                        ReportType.SCA_TRANSFER_OUT_10_JASPER);
-                add(map, "jrxml/sca-reports/FINANCE_COMM_13.jrxml",
-                        generatorClass("FinanceComm13JasperGenerator"),
-                        ReportType.SCA_FINANCE_COMM_13_JASPER);
-
-                return Map.copyOf(map);
-        }
-
-        private static void add(Map<String, TemplateInfo> map, String jrxmlPath,
-                String generatorClassName,
-                ReportType type)
-        {
-                String base = simpleName(generatorClassName)
-                        .replaceFirst("JasperGenerator$", "");
-                String display = toDisplayName(base);
-                add(map, display, jrxmlPath, generatorClassName, type);
-
-        }
-
-        private static void add(Map<String, TemplateInfo> map, String displayName,
-                String jrxmlPath,
-                String generatorClassName,
-                ReportType type)
-        {
-                map.put(displayName,
-                        new TemplateInfo(displayName, jrxmlPath, generatorClassName, type));
-
-        }
-
-        private static String simpleName(String className)
-        {
-                int lastDot = className.lastIndexOf('.');
-                return lastDot >= 0 ? className.substring(lastDot + 1) : className;
-
-        }
-
-        private static String generatorClass(String simpleName)
-        {
-                return "nonprofitbookkeeping.reports.jasper." + simpleName;
-
-        }
-
-        private static String toDisplayName(String base)
-        {
-                String withSpaces = base.replaceAll("([a-z])([A-Z])", "$1 $2");
-                String[] parts = withSpaces.split("\\s+");
-                StringBuilder sb = new StringBuilder();
-
-                for (String part : parts)
+                for (ReportBundles.Bundle bundle : bundles)
                 {
-                        if (part.isEmpty())
-                        {
-                                continue;
-                        }
-
-                        sb.append(Character.toUpperCase(part.charAt(0)))
-                                .append(part.substring(1).toLowerCase())
-                                .append(' ');
+                        TemplateInfo info = new TemplateInfo(bundle.displayName(),
+                                bundle.jrxmlResource(),
+                                bundle.generatorClassName(),
+                                bundle.beanClassName(),
+                                bundle.reportType(),
+                                bundle.id(),
+                                bundle.metadataResource(),
+                                bundle.description());
+                        map.put(bundle.displayName(), info);
                 }
 
-                return sb.toString().trim();
+                return Map.copyOf(map);
         }
 
         /**

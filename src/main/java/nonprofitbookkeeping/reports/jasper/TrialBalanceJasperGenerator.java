@@ -62,7 +62,7 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 												NoFileCreatedException
 	{
 		// Path within the resources directory
-		return "jrxml/TrialBalance.jrxml";
+		return bundledReportPath();
 	}
 	
 	/**

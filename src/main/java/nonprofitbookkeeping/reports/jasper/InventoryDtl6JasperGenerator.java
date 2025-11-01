@@ -17,7 +17,7 @@ public class InventoryDtl6JasperGenerator extends AbstractReportGenerator
         @Override
         protected String getReportPath()
         {
-                return "jrxml/sca-reports/INVENTORY_DTL_6.jrxml";
+                return bundledReportPath();
 
         }
 	

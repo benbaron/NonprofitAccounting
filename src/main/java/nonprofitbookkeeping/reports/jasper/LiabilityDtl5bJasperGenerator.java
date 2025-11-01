@@ -17,7 +17,7 @@ public class LiabilityDtl5bJasperGenerator extends AbstractReportGenerator
         @Override
         protected String getReportPath()
         {
-                return "jrxml/sca-reports/LIABILITY_DTL_5b.jrxml";
+                return bundledReportPath();
 
         }
 	

@@ -117,7 +117,7 @@ public class BankReconciliationJasperGenerator extends AbstractReportGenerator
 	
 	@Override protected String getReportPath()
 	{
-		return "jrxml/BankReconciliation.jrxml";
+		return bundledReportPath();
 	}
 	
 	/**
