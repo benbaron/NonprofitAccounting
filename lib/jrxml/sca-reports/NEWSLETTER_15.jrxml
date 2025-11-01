@@ -1,0 +1,1722 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+    name="NEWSLETTER_15" pageWidth="612" pageHeight="792" columnWidth="552" leftMargin="30" rightMargin="30" topMargin="24" bottomMargin="24" uuid="00000000-0000-0000-0000-059940237889">
+
+    <!-- Styles first (no parent attribute) -->
+    <style name="base" fontName="SansSerif" fontSize="10"/>
+    <style name="label" isBold="true"/>
+    <style name="value"/>
+
+    <!-- Parameters after styles -->
+    <parameter name="reportTitle" class="java.lang.String"/>
+    <parameter name="organizationName" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_C2" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_C3" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_C4" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_C6" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_E14" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_E15" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_E16" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_E17" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_H17" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I17" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_F22" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I22" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C23" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F23" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I23" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C24" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F24" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I24" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C25" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F25" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I25" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C26" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F26" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I26" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C27" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F27" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I27" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C28" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F28" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I28" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C29" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F29" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I29" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C30" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F30" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I30" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C31" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F31" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I31" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C32" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F32" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I32" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C33" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F33" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I33" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C34" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F34" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I34" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C35" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F35" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I35" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C36" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F36" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I36" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C37" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F37" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I37" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C38" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F38" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I38" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C39" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F39" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I39" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C40" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F40" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I40" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C41" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F41" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I41" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C42" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F42" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I42" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C43" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F43" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I43" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C44" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F44" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I44" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C45" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F45" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I45" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C46" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F46" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I46" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C47" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F47" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I47" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C48" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F48" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I48" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C49" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F49" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I49" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C50" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F50" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I50" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C51" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F51" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I51" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C52" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F52" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I52" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C53" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F53" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I53" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C54" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F54" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I54" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C55" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F55" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I55" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C56" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F56" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I56" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_C57" class="java.lang.String"/>
+    <field name="NEWSLETTER_15_F57" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I57" class="java.lang.Double"/>
+    <field name="NEWSLETTER_15_I59" class="java.lang.Double"/>
+
+    <title>
+      <band height="76">
+        <staticText>
+          <reportElement x="0" y="0" width="552" height="24"/>
+          <textElement textAlignment="Center"><font size="12"/></textElement>
+          <text><![CDATA[$P{reportTitle}]]></text>
+        </staticText>
+        <staticText>
+          <reportElement x="0" y="26" width="552" height="22"/>
+          <textElement textAlignment="Center"><font size="10"/></textElement>
+          <text><![CDATA[$P{organizationName}]]></text>
+        </staticText>
+        <staticText>
+          <reportElement x="0" y="50" width="552" height="22"/>
+          <textElement textAlignment="Center"><font size="9"/></textElement>
+          <text><![CDATA[NEWSLETTER_15]]></text>
+        </staticText>
+      </band>
+    </title>
+
+    <detail>
+      <band height="744">
+          <staticText>
+            <reportElement x="358" y="24" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[CONTENTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="423" y="24" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[CONTENTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="488" y="24" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[CONTENTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="24" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[CONTENTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="24" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[CONTENTS]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="64" y="36" width="44" height="12"/>
+            <textElement><font size="6"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C2}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="358" y="36" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[1. CONTACT INFO]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="423" y="36" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[1. CONTACT INFO]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="488" y="36" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[1. CONTACT INFO]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="36" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[1. CONTACT INFO]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="36" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[1. CONTACT INFO]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="64" y="48" width="44" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C3}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="358" y="48" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[2.a PRIMARY ACCOUNT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="423" y="48" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[2.a PRIMARY ACCOUNT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="488" y="48" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[2.a PRIMARY ACCOUNT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="48" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[2.a PRIMARY ACCOUNT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="48" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[2.a PRIMARY ACCOUNT]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="64" y="60" width="44" height="12"/>
+            <textElement><font size="7"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C4}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="358" y="60" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[2.b SECONDARY ACCOUNTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="423" y="60" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[2.b SECONDARY ACCOUNTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="488" y="60" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[2.b SECONDARY ACCOUNTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="60" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[2.b SECONDARY ACCOUNTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="60" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[2.b SECONDARY ACCOUNTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="358" y="72" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[3. BALANCE]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="423" y="72" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[3. BALANCE]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="488" y="72" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[3. BALANCE]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="72" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[3. BALANCE]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="72" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[3. BALANCE]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="64" y="84" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C6}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="358" y="84" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[4. INCOME]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="423" y="84" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[4. INCOME]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="488" y="84" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[4. INCOME]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="84" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[4. INCOME]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="84" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[4. INCOME]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="358" y="96" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[5.a ASSET DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="423" y="96" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[5.a ASSET DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="488" y="96" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[5.a ASSET DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="96" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[5.a ASSET DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="96" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[5.a ASSET DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="64" y="108" width="44" height="15"/>
+            <textElement><font size="12"/></textElement>
+            <text><![CDATA[NEWSLETTER INCOME WORKSHEET]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="358" y="108" width="65" height="15"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[5.b LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="423" y="108" width="65" height="15"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[5.b LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="488" y="108" width="24" height="15"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[5.b LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="108" width="24" height="15"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[5.b LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="108" width="24" height="15"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[5.b LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="64" y="123" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[Use this form only if you sell issues of your newsletter.  ]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="358" y="123" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[6. INVENTORY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="423" y="123" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[6. INVENTORY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="488" y="123" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[9. TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="123" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[9. TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="123" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[6. INVENTORY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="358" y="135" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[7. REGALIA SALES DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="423" y="135" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[7. REGALIA SALES DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="488" y="135" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[10. TRANSFER OUT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="135" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[10. TRANSFER OUT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="135" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[7. REGALIA SALES DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="108" y="147" width="24" height="12"/>
+            <textElement><font size="9"/></textElement>
+            <text><![CDATA[Newsletter Name:]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="204" y="147" width="24" height="12"/>
+            <textElement><font size="9"/></textElement>
+            <text><![CDATA[Gross Income:]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="358" y="147" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[8. DEPRECIATION DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="423" y="147" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[8. DEPRECIATION DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="488" y="147" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[11.a INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="147" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[11.a INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="147" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[8. DEPRECIATION DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="358" y="159" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[9. TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="423" y="159" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[9. TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="488" y="159" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[11.b INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="159" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[11.b INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="159" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[9. TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="64" y="171" width="44" height="12"/>
+            <textElement><font size="9"/></textElement>
+            <text><![CDATA[If you sell issues IN ADVANCE using subscriptions, fill in the sections below.]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="358" y="171" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[10. TRANSFER OUT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="423" y="171" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[10. TRANSFER OUT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="488" y="171" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[11.c INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="171" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[11.c INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="171" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[10. TRANSFER OUT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="64" y="183" width="44" height="13"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[Gross Income (A)]]></text>
+          </staticText>
+          <textField pattern="$ #,##0.00">
+            <reportElement x="132" y="183" width="24" height="13"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_E14}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="156" y="183" width="24" height="13"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[For calculating price per Issue:]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="204" y="183" width="24" height="13"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[Rate 1]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="228" y="183" width="24" height="13"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[Rate 2]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="358" y="183" width="65" height="13"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[11.a INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="423" y="183" width="65" height="13"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[11.a INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="488" y="183" width="24" height="13"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[12.a EXPENSE DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="183" width="24" height="13"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[12.a EXPENSE DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="183" width="24" height="13"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[11.a INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="64" y="196" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[Start Subs Due (B)]]></text>
+          </staticText>
+          <textField pattern="$ #,##0.00">
+            <reportElement x="132" y="196" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_E15}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="156" y="196" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[Price of one subscription:]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="358" y="196" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[11.b INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="423" y="196" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[11.b INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="488" y="196" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[12.b EXPENSE DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="196" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[12.b EXPENSE DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="196" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[11.b INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="108" y="208" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[End Subs Due (C)]]></text>
+          </staticText>
+          <textField pattern="$ #,##0.00">
+            <reportElement x="132" y="208" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_E16}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="156" y="208" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[# of Issues per Subscription:]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="358" y="208" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[11.c INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="423" y="208" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[11.c INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="488" y="208" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[13. FINANCE COMM]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="208" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[13. FINANCE COMM]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="208" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[11.c INCOME DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="64" y="220" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[Adj. Gross Income (A+B-C)]]></text>
+          </staticText>
+          <textField pattern="$ #,##0.00">
+            <reportElement x="132" y="220" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_E17}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="156" y="220" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[Price Per Issue:]]></text>
+          </staticText>
+          <textField pattern="$ #,##0.00">
+            <reportElement x="204" y="220" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_H17}]]></textFieldExpression>
+          </textField>
+          <textField pattern="$ #,##0.00">
+            <reportElement x="228" y="220" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I17}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="358" y="220" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[12.a EXPENSE DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="423" y="220" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[12.a EXPENSE DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="488" y="220" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[COMMENTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="220" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[14. FUNDS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="220" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[12.a EXPENSE DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="358" y="232" width="65" height="13"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[12.b EXPENSE DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="423" y="232" width="65" height="13"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[12.b EXPENSE DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="488" y="232" width="24" height="13"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[FREE FORM]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="232" width="24" height="13"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[COMMENTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="232" width="24" height="13"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[12.b EXPENSE DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="64" y="245" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[(A)]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="108" y="245" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[(B1)]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="132" y="245" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[(C1)]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="156" y="245" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[(A) x (B1) x (C1)]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="180" y="245" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[(B2)]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="204" y="245" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[(C2)]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="228" y="245" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[(A) x (B2) x (C2)]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="358" y="245" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[13. FINANCE COMM]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="423" y="245" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[13. FINANCE COMM]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="245" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[5.c ASSET DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="245" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[13. FINANCE COMM]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="64" y="257" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[# of Issues]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="108" y="257" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[# of Subs]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="132" y="257" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[Price per Issue]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="156" y="257" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[Balance of ]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="180" y="257" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[# of Subs]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="204" y="257" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[Price per Issue]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="228" y="257" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[Balance of ]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="358" y="257" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[14. FUNDS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="423" y="257" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[14. FUNDS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="257" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[5.d LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="257" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[14. FUNDS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="64" y="269" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[Remaining]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="108" y="269" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[Expiring ]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="156" y="269" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[Subscription Due]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="180" y="269" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[Expiring ]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="228" y="269" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[Subscription Due]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="358" y="269" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[15. NEWSLETTER]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="423" y="269" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[15. NEWSLETTER]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="269" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[5.e LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="269" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[15. NEWSLETTER]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="64" y="281" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[1]]></text>
+          </staticText>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="281" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F22}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="281" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I22}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="358" y="281" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[COMMENTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="423" y="281" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[COMMENTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="281" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[5.f LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="281" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[COMMENTS]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="64" y="293" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C23}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="293" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F23}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="293" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I23}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="358" y="293" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[2.c SECONDARY ACCOUNTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="423" y="293" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[9.b TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="293" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[5.g LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="293" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[2.c SECONDARY ACCOUNTS]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="64" y="305" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C24}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="305" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F24}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="305" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I24}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="358" y="305" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[2.d SECONDARY ACCOUNTS]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="423" y="305" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[10.b TRANSFER OUT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="305" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[5.h LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="305" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[2.d SECONDARY ACCOUNTS]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="64" y="317" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C25}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="317" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F25}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="317" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I25}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="358" y="317" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[5.c ASSET DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="423" y="317" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[FREE FORM]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="317" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[5.i LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="317" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[5.c ASSET DTL]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="64" y="329" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C26}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="329" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F26}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="329" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I26}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="358" y="329" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[5.d LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="329" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[9.b TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="329" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[5.d LIABILITY DTL]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="64" y="341" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C27}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="341" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F27}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="341" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I27}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="358" y="341" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[5.e LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="341" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[9.c TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="341" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[6.b INVENTORY DTL]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="64" y="353" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C28}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="353" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F28}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="353" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I28}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="358" y="353" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[5.f LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="353" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[9.d TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="353" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[7.b REGALIA SALES DTL]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="64" y="365" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C29}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="365" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F29}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="365" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I29}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="358" y="365" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[5.g LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="365" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[10.b TRANSFER OUT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="365" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[8.b DEPR DTL]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="64" y="377" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C30}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="377" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F30}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="377" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I30}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="358" y="377" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[5.h LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="512" y="377" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[FREE FORM]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="377" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[8.c DEPR DTL]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="64" y="389" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C31}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="389" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F31}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="389" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I31}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="358" y="389" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[5.i LIABILITY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="389" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[9.b TRANSFER IN]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="64" y="401" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C32}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="401" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F32}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="401" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I32}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="358" y="401" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[6.b INVENTORY DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="401" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[9.c TRANSFER IN]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="64" y="413" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C33}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="413" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F33}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="413" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I33}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="358" y="413" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[7.b REGALIA SALES DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="413" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[9.d TRANSFER IN]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="64" y="425" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C34}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="425" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F34}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="425" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I34}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="358" y="425" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[8.b DEPR DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="425" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[10.b TRANSFER OUT]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="64" y="437" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C35}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="437" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F35}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="437" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I35}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="358" y="437" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[8.c DEPR DTL]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="437" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[10.c TRANSFER OUT]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="64" y="449" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C36}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="449" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F36}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="449" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I36}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="358" y="449" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[9.b TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="449" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[10.d TRANSFER OUT]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="64" y="461" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C37}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="461" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F37}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="461" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I37}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="358" y="461" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[9.c TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="461" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[12.c EXPENSE DETAIL]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="64" y="473" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C38}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="473" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F38}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="473" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I38}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="358" y="473" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[9.d TRANSFER IN]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="473" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[FREE FORM]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="64" y="485" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C39}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="485" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F39}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="485" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I39}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="358" y="485" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[10.b TRANSFER OUT]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="536" y="485" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[FreeForm!A1]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="64" y="497" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C40}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="497" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F40}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="497" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I40}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="358" y="497" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[10.c TRANSFER OUT]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="64" y="509" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C41}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="509" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F41}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="509" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I41}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="358" y="509" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[10.d TRANSFER OUT]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="64" y="521" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C42}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="521" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F42}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="521" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I42}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="358" y="521" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[12.c EXPENSE DETAIL]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="64" y="533" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C43}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="533" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F43}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="533" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I43}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="358" y="533" width="65" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[FREE FORM]]></text>
+          </staticText>
+          <textField>
+            <reportElement x="64" y="545" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C44}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="545" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F44}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="545" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I44}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="64" y="557" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C45}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="557" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F45}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="557" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I45}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="64" y="569" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C46}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="569" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F46}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="569" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I46}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="64" y="581" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C47}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="581" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F47}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="581" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I47}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="64" y="593" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C48}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="593" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F48}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="593" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I48}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="64" y="605" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C49}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="605" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F49}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="605" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I49}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="64" y="617" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C50}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="617" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F50}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="617" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I50}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="64" y="629" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C51}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="629" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F51}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="629" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I51}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="64" y="641" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C52}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="641" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F52}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="641" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I52}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="64" y="653" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C53}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="653" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F53}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="653" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I53}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="64" y="665" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C54}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="665" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F54}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="665" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I54}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="64" y="677" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C55}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="677" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F55}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="677" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I55}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="64" y="689" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C56}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="689" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F56}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="689" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I56}]]></textFieldExpression>
+          </textField>
+          <textField>
+            <reportElement x="64" y="701" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_C57}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="156" y="701" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_F57}]]></textFieldExpression>
+          </textField>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="701" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I57}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="64" y="713" width="44" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[BEYOND 36 ISSUES]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="132" y="713" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[Calculate Separately]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="204" y="713" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[Calculate Separately]]></text>
+          </staticText>
+          <staticText>
+            <reportElement x="204" y="725" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[Total :]]></text>
+          </staticText>
+          <textField pattern="#,##0.###">
+            <reportElement x="228" y="725" width="24" height="12"/>
+            <textElement><font size="8"/></textElement>
+            <textFieldExpression><![CDATA[$F{NEWSLETTER_15_I59}]]></textFieldExpression>
+          </textField>
+          <staticText>
+            <reportElement x="64" y="737" width="44" height="31"/>
+            <textElement><font size="8"/></textElement>
+            <text><![CDATA[-15-]]></text>
+          </staticText>
+      </band>
+    </detail>
+</jasperReport>

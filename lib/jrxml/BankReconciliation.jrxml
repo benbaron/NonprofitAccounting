@@ -1,0 +1,105 @@
+<jasperReport whenNoDataType="AllSectionsNoDetail" xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+                                  http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="BankReconciliation" pageWidth="595" pageHeight="842"
+              columnWidth="555" leftMargin="20" rightMargin="20"
+              topMargin="20" bottomMargin="20" uuid="780833af-00e0-422f-8d30-825bbcd3622e">
+    <parameter name="P_REPORT_TITLE" class="java.lang.String"/>
+    <parameter name="P_COMPANY_NAME" class="java.lang.String"/>
+    <parameter name="P_STATEMENT_DATE" class="java.lang.String"/>
+    <parameter name="P_GENERATION_DATE" class="java.lang.String"/>
+    <field name="date" class="java.lang.String"/>
+    <field name="description" class="java.lang.String"/>
+    <field name="deposit" class="java.math.BigDecimal"/>
+    <field name="withdrawal" class="java.math.BigDecimal"/>
+    <field name="balance" class="java.math.BigDecimal"/>
+    <title>
+        <band height="50">
+            <textField>
+                <reportElement x="0" y="0" width="555" height="20"/>
+                <textElement textAlignment="Center">
+                    <font size="16" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{P_REPORT_TITLE}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="20" width="555" height="15"/>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$P{P_COMPANY_NAME}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="35" width="555" height="15"/>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$P{P_STATEMENT_DATE}]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+    <pageHeader>
+        <band height="20">
+            <staticText>
+                <reportElement x="0" y="0" width="100" height="20"/>
+                <text><![CDATA[Date]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="100" y="0" width="250" height="20"/>
+                <text><![CDATA[Description]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="350" y="0" width="70" height="20"/>
+                <textElement textAlignment="Right"/>
+                <text><![CDATA[Deposit]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="420" y="0" width="70" height="20"/>
+                <textElement textAlignment="Right"/>
+                <text><![CDATA[Withdrawal]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="490" y="0" width="65" height="20"/>
+                <textElement textAlignment="Right"/>
+                <text><![CDATA[Balance]]></text>
+            </staticText>
+        </band>
+    </pageHeader>
+    <detail>
+        <band height="20">
+            <textField>
+                <reportElement x="0" y="0" width="100" height="20"/>
+                <textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="100" y="0" width="250" height="20"/>
+                <textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement x="350" y="0" width="70" height="20"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$F{deposit}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement x="420" y="0" width="70" height="20"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$F{withdrawal}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement x="490" y="0" width="65" height="20"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$F{balance}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+    <pageFooter>
+        <band height="20">
+            <textField>
+                <reportElement x="0" y="0" width="200" height="20"/>
+                <textFieldExpression><![CDATA["Generated: " + $P{P_GENERATION_DATE}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="455" y="0" width="100" height="20"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
+</jasperReport>
