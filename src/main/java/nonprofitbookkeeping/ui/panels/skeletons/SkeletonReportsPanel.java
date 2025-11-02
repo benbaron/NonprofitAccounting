@@ -27,13 +27,16 @@ import nonprofitbookkeeping.reports.ReportTemplates;
 import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 
-import java.util.List;
-import java.util.Map;
-import java.io.File;
 import java.awt.Desktop;
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
+import net.sf.jasperreports.engine.design.JRValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,10 +105,14 @@ public class SkeletonReportsPanel extends BorderPane
 		this.controlsGrid.setVgap(10);
 		
 		this.controlsGrid.add(new Label("Report Type:"), 0, 0);
-		this.availableTemplates = ReportTemplates.templates();
-		this.reportTypeComboBox =
-			new ComboBox<>(FXCollections
-				.observableArrayList(this.availableTemplates.keySet()));
+                this.availableTemplates = ReportTemplates.templates();
+
+                List<String> sortedReportNames =
+                        new ArrayList<>(this.availableTemplates.keySet());
+                sortedReportNames.sort(String.CASE_INSENSITIVE_ORDER);
+
+                this.reportTypeComboBox = new ComboBox<>(
+                        FXCollections.observableArrayList(sortedReportNames));
 		this.reportTypeComboBox.setPromptText("Select Report");
 		this.controlsGrid.add(this.reportTypeComboBox, 1, 0);
 		
@@ -435,8 +442,8 @@ public class SkeletonReportsPanel extends BorderPane
 			LocalDate startDate = this.startDatePicker.getValue();
 			LocalDate endDate = this.endDatePicker.getValue();
 			
-			ReportTemplates.TemplateInfo info =
-				this.availableTemplates.get(reportTypeDisplay);
+                        ReportTemplates.TemplateInfo info =
+                                this.availableTemplates.get(reportTypeDisplay);
 			
 			if (info == null)
 			{
@@ -489,9 +496,9 @@ public class SkeletonReportsPanel extends BorderPane
 				return;
 			}
 			
-			try
-			{
-				File generatedFile = null;
+                        try
+                        {
+                                File generatedFile = null;
 				
 				if ("xlsx".equalsIgnoreCase(outputFormat))
 				{
@@ -546,14 +553,54 @@ public class SkeletonReportsPanel extends BorderPane
 						" could not be generated or found. Check console/logs.");
 				}
 				
-			}
-			catch (Exception ex)
-			{
-				LOGGER.error("Error generating {}", reportTypeDisplay, ex);
-				AlertBox.showError(ownerWindow,
-					"Error generating " + reportTypeDisplay + ": " +
-						ex.getMessage());
-			}
+                        }
+                        catch (JRValidationException validationEx)
+                        {
+                                LOGGER.error(
+                                        "JasperReports template validation failed for {} (template: {})",
+                                        reportTypeDisplay,
+                                        info != null ? info.jrxmlPath() : "unknown",
+                                        validationEx);
+
+                                StringBuilder messageBuilder = new StringBuilder();
+                                messageBuilder.append(reportTypeDisplay)
+                                        .append(
+                                                " could not be generated because its JasperReports template failed validation.");
+
+                                if (info != null && info.jrxmlPath() != null)
+                                {
+                                        messageBuilder.append("\nTemplate: ")
+                                                .append(info.jrxmlPath());
+                                }
+
+                                String validationMessage = validationEx.getMessage();
+                                if (validationMessage != null && !validationMessage.isBlank())
+                                {
+                                        messageBuilder.append("\n\nJasperReports details:\n")
+                                                .append(validationMessage.trim());
+
+                                        String diagnosis = deriveValidationDiagnosis(validationMessage);
+                                        if (diagnosis != null)
+                                        {
+                                                messageBuilder.append("\n\nLikely cause: ")
+                                                        .append(diagnosis);
+                                        }
+                                }
+
+                                messageBuilder.append(
+                                        "\n\nPlease adjust the report layout so that elements fit within their bands, then try again.");
+
+                                AlertBox.showError(ownerWindow,
+                                        reportTypeDisplay + " template validation failed",
+                                        messageBuilder.toString());
+                        }
+                        catch (Exception ex)
+                        {
+                                LOGGER.error("Error generating {}", reportTypeDisplay, ex);
+                                AlertBox.showError(ownerWindow,
+                                        "Error generating " + reportTypeDisplay + ": " +
+                                                ex.getMessage());
+                        }
 			finally
 			{
 				loadGeneratedReports();
@@ -564,5 +611,29 @@ public class SkeletonReportsPanel extends BorderPane
 		loadGeneratedReports();
 		
 	}
-	
+
+	private String deriveValidationDiagnosis(String validationMessage)
+	{
+		if (validationMessage == null)
+		{
+			return null;
+		}
+
+		String normalized = validationMessage.toLowerCase(Locale.ROOT);
+
+		if (normalized.contains("band-height=0"))
+		{
+			return "The template defines one or more bands with a height of 0. In Jaspersoft Studio, "
+				+ "set a positive height for sections like Title, Page Header, and Page Footer.";
+		}
+
+		if (normalized.contains("element bottom reaches outside band area"))
+		{
+			return "At least one element extends beyond its band height. Increase the band height or "
+				+ "move the element so it fits within the band.";
+		}
+
+		return null;
+	}
+
 }
