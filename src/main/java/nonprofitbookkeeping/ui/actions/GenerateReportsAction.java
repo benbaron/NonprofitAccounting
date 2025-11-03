@@ -15,6 +15,7 @@ import java.io.File;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 
@@ -26,10 +27,10 @@ import java.util.Optional;
 /**
  * JavaFX action handler for generating various types of reports. This action
  * prompts the user to select a report type (e.g., ledger, income statement), a
- * date range (start and end dates), and an output format (e.g., xlsx, csv,
- * pdf). It then utilizes the {@link ReportService} to generate the specified
- * report. User input is gathered through a series of {@link ChoiceDialog} and
- * {@link TextInputDialog} instances.
+ * date range (start and end dates), and an output format (e.g., pdf, html,
+ * xlsx). It then utilizes the {@link ReportService} to generate the specified
+ * report. User input is gathered through a series of {@link ChoiceDialog}
+ * instances.
  */
 public class GenerateReportsAction implements EventHandler<ActionEvent>, ActionListener
 {
@@ -56,7 +57,7 @@ public class GenerateReportsAction implements EventHandler<ActionEvent>, ActionL
 	 *       using a {@link ChoiceDialog}.</li>
 	 *   <li>Prompts for start and end dates using a custom dialog with {@link javafx.scene.control.DatePicker}s.</li>
 	 *   <li>Validates that both dates are provided and that the end date is not before the start date.</li>
-	 *   <li>Prompts for the output format (xlsx, csv, pdf) using a {@link ChoiceDialog}.</li>
+         *   <li>Prompts for the output format (pdf, html, xlsx) using a {@link ChoiceDialog}.</li>
 	 *   <li>If any dialog is cancelled by the user, the action terminates.</li>
 
          *   <li>Constructs a {@link ReportContext} with the selected criteria.</li>
@@ -135,7 +136,7 @@ public class GenerateReportsAction implements EventHandler<ActionEvent>, ActionL
 			}
 			
 			// Prompt for output format.
-			List<String> formatOptions = Arrays.asList("xlsx", "csv", "pdf");
+                        List<String> formatOptions = Arrays.asList("pdf", "html", "xlsx");
 			
 			ChoiceDialog<String> formatDialog =
 				new ChoiceDialog<>(
@@ -153,18 +154,21 @@ public class GenerateReportsAction implements EventHandler<ActionEvent>, ActionL
 				return; // User cancelled.
 			}
 			
-			String outputFormat = outputFormatOpt.get();
-			
-			// Create and populate ReportContext.
-			ReportContext ctx = new ReportContext();
-			ctx.setReportType(reportType);
-			ctx.setStartDate(startDate);
-			ctx.setEndDate(endDate);
-			ctx.setOutputFormat(outputFormat);
+                        String outputFormat =
+                                outputFormatOpt.get().trim().toLowerCase(Locale.ROOT);
 
-      // Generate the report using the injected service instance.
-      File output = this.service.generateJasperReport(ctx, outputFormat);
-      AlertBox.showInfo(parentWindow, "Report generated at: " + output.getAbsolutePath());
+                        // Create and populate ReportContext.
+                        ReportContext ctx = new ReportContext();
+                        ctx.setReportType(reportType);
+                        ctx.setStartDate(startDate);
+                        ctx.setEndDate(endDate);
+                        ctx.setOutputFormat(outputFormat);
+
+                        // Generate the report using the injected service instance.
+                        File output =
+                                this.service.generateJasperReport(ctx, outputFormat);
+                        AlertBox.showInfo(parentWindow,
+                                "Report generated at: " + output.getAbsolutePath());
 
 			
 		}
