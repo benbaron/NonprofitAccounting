@@ -178,13 +178,14 @@ public abstract class AbstractReportGenerator
 				e);
 		}
 		
-                byte[] sanitized = sanitizeJrxml(jrxmlBytes);
-		
-		try (java.io.ByteArrayInputStream input =
-			new java.io.ByteArrayInputStream(sanitized))
-		{
-			return JasperCompileManager.compileReport(input);
-		}
+                byte[] sanitized = removeSchemaLocationAttribute(jrxmlBytes);
+                byte[] normalized = normalizeBooleanStyleAttributes(sanitized);
+
+                try (java.io.ByteArrayInputStream input =
+                        new java.io.ByteArrayInputStream(normalized))
+                {
+                        return JasperCompileManager.compileReport(input);
+                }
 		catch (IOException e)
 		{
 			throw new JRException("Failed to close JRXML stream", e);
@@ -219,52 +220,45 @@ public abstract class AbstractReportGenerator
 		
 	}
 	
-        private static byte[] sanitizeJrxml(byte[] xmlBytes)
+        private static final java.util.Map<String, String> STYLE_ATTRIBUTE_RENAMES =
+                java.util.Map.of(
+                        "isBold",
+                        "bold",
+                        "isItalic",
+                        "italic",
+                        "isUnderline",
+                        "underline",
+                        "isStrikethrough",
+                        "strikeThrough",
+                        "hAlign",
+                        "hTextAlign");
+
+        private static byte[] removeSchemaLocationAttribute(byte[] xmlBytes)
         {
                 String xml =
                         new String(xmlBytes, java.nio.charset.StandardCharsets.UTF_8);
                 String sanitized =
                         SCHEMA_LOCATION_ATTRIBUTE_PATTERN.matcher(xml).replaceAll("");
-                sanitized = applyLegacyStyleAttributeAliases(sanitized);
+                sanitized = replaceLegacyStyleAttributes(sanitized);
                 return sanitized.getBytes(java.nio.charset.StandardCharsets.UTF_8);
 
         }
 
-        private static String applyLegacyStyleAttributeAliases(String xml)
+        private static String replaceLegacyStyleAttributes(String xml)
         {
                 String sanitized = xml;
 
-                for (java.util.Map.Entry<String, String> alias :
-                        LEGACY_STYLE_ATTRIBUTE_ALIASES.entrySet())
+                for (java.util.Map.Entry<String, String> entry :
+                        STYLE_ATTRIBUTE_RENAMES.entrySet())
                 {
-                        sanitized = replaceAttributeName(sanitized,
-                                alias.getKey(),
-                                alias.getValue());
+                        java.util.regex.Pattern pattern =
+                                java.util.regex.Pattern.compile("(?<=\\s)" +
+                                        java.util.regex.Pattern.quote(entry.getKey()) + "=");
+                        sanitized = pattern.matcher(sanitized)
+                                .replaceAll(entry.getValue() + "=");
                 }
 
                 return sanitized;
-
-        }
-
-        private static String replaceAttributeName(String xml,
-                String legacyName,
-                String replacementName)
-        {
-                java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(
-                        "\\b" + legacyName + "=\"([^\"]*)\"");
-                java.util.regex.Matcher matcher = pattern.matcher(xml);
-                StringBuffer buffer = new StringBuffer();
-
-                while (matcher.find())
-                {
-                        String replacement =
-                                replacementName + "=\"" + matcher.group(1) + "\"";
-                        matcher.appendReplacement(buffer,
-                                java.util.regex.Matcher.quoteReplacement(replacement));
-                }
-
-                matcher.appendTail(buffer);
-                return buffer.toString();
 
         }
 	
