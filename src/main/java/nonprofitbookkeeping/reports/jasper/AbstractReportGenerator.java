@@ -171,13 +171,14 @@ public abstract class AbstractReportGenerator
 				e);
 		}
 		
-		byte[] sanitized = removeSchemaLocationAttribute(jrxmlBytes);
-		
-		try (java.io.ByteArrayInputStream input =
-			new java.io.ByteArrayInputStream(sanitized))
-		{
-			return JasperCompileManager.compileReport(input);
-		}
+                byte[] sanitized = removeSchemaLocationAttribute(jrxmlBytes);
+                byte[] normalized = normalizeBooleanStyleAttributes(sanitized);
+
+                try (java.io.ByteArrayInputStream input =
+                        new java.io.ByteArrayInputStream(normalized))
+                {
+                        return JasperCompileManager.compileReport(input);
+                }
 		catch (IOException e)
 		{
 			throw new JRException("Failed to close JRXML stream", e);
@@ -212,15 +213,27 @@ public abstract class AbstractReportGenerator
 		
 	}
 	
-	private static byte[] removeSchemaLocationAttribute(byte[] xmlBytes)
-	{
-		String xml =
-			new String(xmlBytes, java.nio.charset.StandardCharsets.UTF_8);
-		String sanitized =
-			SCHEMA_LOCATION_ATTRIBUTE_PATTERN.matcher(xml).replaceAll("");
-		return sanitized.getBytes(java.nio.charset.StandardCharsets.UTF_8);
-		
-	}
+        private static byte[] removeSchemaLocationAttribute(byte[] xmlBytes)
+        {
+                String xml =
+                        new String(xmlBytes, java.nio.charset.StandardCharsets.UTF_8);
+                String sanitized =
+                        SCHEMA_LOCATION_ATTRIBUTE_PATTERN.matcher(xml).replaceAll("");
+                return sanitized.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+
+        }
+
+        private static byte[] normalizeBooleanStyleAttributes(byte[] xmlBytes)
+        {
+                String xml =
+                        new String(xmlBytes, java.nio.charset.StandardCharsets.UTF_8);
+                xml = xml.replace("isBold=\"", "bold=\"");
+                xml = xml.replace("isItalic=\"", "italic=\"");
+                xml = xml.replace("isUnderline=\"", "underline=\"");
+                xml = xml.replace("isStrikethrough=\"", "strikeThrough=\"");
+                return xml.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+
+        }
 	
 	
 	/**
