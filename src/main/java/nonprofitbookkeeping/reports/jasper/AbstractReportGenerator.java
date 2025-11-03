@@ -171,13 +171,14 @@ public abstract class AbstractReportGenerator
 				e);
 		}
 		
-		byte[] sanitized = removeSchemaLocationAttribute(jrxmlBytes);
-		
-		try (java.io.ByteArrayInputStream input =
-			new java.io.ByteArrayInputStream(sanitized))
-		{
-			return JasperCompileManager.compileReport(input);
-		}
+                byte[] sanitized = removeSchemaLocationAttribute(jrxmlBytes);
+                byte[] normalized = normalizeBooleanStyleAttributes(sanitized);
+
+                try (java.io.ByteArrayInputStream input =
+                        new java.io.ByteArrayInputStream(normalized))
+                {
+                        return JasperCompileManager.compileReport(input);
+                }
 		catch (IOException e)
 		{
 			throw new JRException("Failed to close JRXML stream", e);
