@@ -212,15 +212,47 @@ public abstract class AbstractReportGenerator
 		
 	}
 	
-	private static byte[] removeSchemaLocationAttribute(byte[] xmlBytes)
-	{
-		String xml =
-			new String(xmlBytes, java.nio.charset.StandardCharsets.UTF_8);
-		String sanitized =
-			SCHEMA_LOCATION_ATTRIBUTE_PATTERN.matcher(xml).replaceAll("");
-		return sanitized.getBytes(java.nio.charset.StandardCharsets.UTF_8);
-		
-	}
+        private static final java.util.Map<String, String> STYLE_ATTRIBUTE_RENAMES =
+                java.util.Map.of(
+                        "isBold",
+                        "bold",
+                        "isItalic",
+                        "italic",
+                        "isUnderline",
+                        "underline",
+                        "isStrikethrough",
+                        "strikeThrough",
+                        "hAlign",
+                        "hTextAlign");
+
+        private static byte[] removeSchemaLocationAttribute(byte[] xmlBytes)
+        {
+                String xml =
+                        new String(xmlBytes, java.nio.charset.StandardCharsets.UTF_8);
+                String sanitized =
+                        SCHEMA_LOCATION_ATTRIBUTE_PATTERN.matcher(xml).replaceAll("");
+                sanitized = replaceLegacyStyleAttributes(sanitized);
+                return sanitized.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+
+        }
+
+        private static String replaceLegacyStyleAttributes(String xml)
+        {
+                String sanitized = xml;
+
+                for (java.util.Map.Entry<String, String> entry :
+                        STYLE_ATTRIBUTE_RENAMES.entrySet())
+                {
+                        java.util.regex.Pattern pattern =
+                                java.util.regex.Pattern.compile("(?<=\\s)" +
+                                        java.util.regex.Pattern.quote(entry.getKey()) + "=");
+                        sanitized = pattern.matcher(sanitized)
+                                .replaceAll(entry.getValue() + "=");
+                }
+
+                return sanitized;
+
+        }
 	
 	
 	/**
