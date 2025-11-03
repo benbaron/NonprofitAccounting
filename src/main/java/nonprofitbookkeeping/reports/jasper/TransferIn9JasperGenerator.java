@@ -14,12 +14,12 @@ public class TransferIn9JasperGenerator extends AbstractReportGenerator
 		
 	}
 	
-        @Override
-        protected String getReportPath()
-        {
-                return bundledReportPath();
-
-        }
+	@Override
+	protected String getReportPath()
+	{
+		return bundledReportPath();
+		
+	}
 	
 	@Override
 	public String getBaseName()
@@ -34,12 +34,12 @@ public class TransferIn9JasperGenerator extends AbstractReportGenerator
 	@Override
 	protected List<TransferIn9Bean> getReportData()
 	{
-                TransferIn9Bean bean = new TransferIn9Bean();
-                bean.setTRANSFER_IN_9_F38(Double.valueOf(1));
-                bean.setTRANSFER_IN_9_F58(Double.valueOf(1));
-                return java.util.Collections.singletonList(bean);
-
-        }
+		TransferIn9Bean bean = new TransferIn9Bean();
+		bean.setTRANSFER_IN_9_F38(Double.valueOf(1));
+		bean.setTRANSFER_IN_9_F58(Double.valueOf(1));
+		return java.util.Collections.singletonList(bean);
+		
+	}
 	
 	
 }

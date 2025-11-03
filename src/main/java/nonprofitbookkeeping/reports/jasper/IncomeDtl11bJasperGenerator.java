@@ -14,12 +14,12 @@ public class IncomeDtl11bJasperGenerator extends AbstractReportGenerator
 		
 	}
 	
-        @Override
-        protected String getReportPath()
-        {
-                return bundledReportPath();
-
-        }
+	@Override
+	protected String getReportPath()
+	{
+		return bundledReportPath();
+		
+	}
 	
 	@Override
 	public String getBaseName()

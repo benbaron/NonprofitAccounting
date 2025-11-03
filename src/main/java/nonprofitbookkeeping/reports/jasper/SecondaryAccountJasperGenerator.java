@@ -14,12 +14,12 @@ public class SecondaryAccountJasperGenerator extends AbstractReportGenerator
 		
 	}
 	
-        @Override
-        protected String getReportPath()
-        {
-                return bundledReportPath();
-
-        }
+	@Override
+	protected String getReportPath()
+	{
+		return bundledReportPath();
+		
+	}
 	
 	@Override
 	public String getBaseName()
@@ -27,18 +27,17 @@ public class SecondaryAccountJasperGenerator extends AbstractReportGenerator
 		return "SecondaryAccount";
 		
 	}
-
+	
 	/**
 	 * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getReportData() 
 	 */
-        @Override
-        protected List<SecondaryAccounts2bBean> getReportData()
-        {
-                SecondaryAccounts2bBean bean = new SecondaryAccounts2bBean();
-                return java.util.Collections.singletonList(bean);
-
-        }
-
+	@Override
+	protected List<SecondaryAccounts2bBean> getReportData()
+	{
+		SecondaryAccounts2bBean bean = new SecondaryAccounts2bBean();
+		return java.util.Collections.singletonList(bean);
+		
+	}
 	
 	
 }

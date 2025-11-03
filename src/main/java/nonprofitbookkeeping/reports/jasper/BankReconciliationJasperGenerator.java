@@ -24,12 +24,14 @@ public class BankReconciliationJasperGenerator extends AbstractReportGenerator
 	 * 
 	 * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getReportData()
 	 */
-	@Override protected List<BankReconciliationRowBean> getReportData()
+	@Override
+	protected List<BankReconciliationRowBean> getReportData()
 	{
 		nonprofitbookkeeping.model.Company company =
 			nonprofitbookkeeping.model.CurrentCompany.getCompany();
 		
-		if (company == null || company.getLedger() == null || company.getChartOfAccounts() == null)
+		if (company == null || company.getLedger() == null ||
+			company.getChartOfAccounts() == null)
 		{
 			return Collections.emptyList();
 		}
@@ -40,6 +42,7 @@ public class BankReconciliationJasperGenerator extends AbstractReportGenerator
 		for (AccountingTransaction tx : company.getLedger()
 			.getTransactions())
 		{
+			
 			if (tx == null || tx.getEntries() == null)
 			{
 				continue;
@@ -47,13 +50,15 @@ public class BankReconciliationJasperGenerator extends AbstractReportGenerator
 			
 			for (AccountingEntry entry : tx.getEntries())
 			{
+				
 				if (entry == null || entry.getAmount() == null)
 				{
 					continue;
 				}
 				
 				Account acct =
-					company.getChartOfAccounts().getAccount(entry.getAccountNumber());
+					company.getChartOfAccounts()
+						.getAccount(entry.getAccountNumber());
 				
 				if (acct == null)
 				{
@@ -72,7 +77,8 @@ public class BankReconciliationJasperGenerator extends AbstractReportGenerator
 				BigDecimal deposit = BigDecimal.ZERO;
 				BigDecimal withdrawal = BigDecimal.ZERO;
 				
-				if (entry.getAccountSide() == nonprofitbookkeeping.model.AccountSide.DEBIT)
+				if (entry.getAccountSide() ==
+					nonprofitbookkeeping.model.AccountSide.DEBIT)
 				{
 					deposit = entry.getAmount();
 					running = running.add(deposit);
@@ -84,15 +90,18 @@ public class BankReconciliationJasperGenerator extends AbstractReportGenerator
 				}
 				
 				rows.add(new BankReconciliationRowBean(tx.getDate(),
-					tx.getMemo() != null ? tx.getMemo() : "", deposit, withdrawal, running));
+					tx.getMemo() != null ? tx.getMemo() : "", deposit,
+					withdrawal, running));
 			}
 			
 		}
 		
 		return rows;
+		
 	}
 	
-	@Override protected Map<String, Object> getReportParameters()
+	@Override
+	protected Map<String, Object> getReportParameters()
 	{
 		Map<String, Object> params = new HashMap<>();
 		params.put("P_REPORT_TITLE", "Bank Reconciliation");
@@ -101,29 +110,38 @@ public class BankReconciliationJasperGenerator extends AbstractReportGenerator
 		String companyName = "N/A";
 		
 		if (nonprofitbookkeeping.model.CurrentCompany.getCompany() != null &&
-			nonprofitbookkeeping.model.CurrentCompany.getCompany().getCompanyProfile() != null &&
-			nonprofitbookkeeping.model.CurrentCompany.getCompany().getCompanyProfile()
+			nonprofitbookkeeping.model.CurrentCompany.getCompany()
+				.getCompanyProfile() != null &&
+			nonprofitbookkeeping.model.CurrentCompany.getCompany()
+				.getCompanyProfile()
 				.getCompanyName() != null)
 		{
-			companyName = nonprofitbookkeeping.model.CurrentCompany.getCompany().getCompanyProfile()
+			companyName = nonprofitbookkeeping.model.CurrentCompany.getCompany()
+				.getCompanyProfile()
 				.getCompanyName();
 		}
 		
 		params.put("P_COMPANY_NAME", companyName);
-		params.put("P_STATEMENT_DATE", LocalDate.now().format(DateTimeFormatter.ISO_DATE));
-		params.put("P_GENERATION_DATE", LocalDate.now().format(DateTimeFormatter.ISO_DATE));
+		params.put("P_STATEMENT_DATE",
+			LocalDate.now().format(DateTimeFormatter.ISO_DATE));
+		params.put("P_GENERATION_DATE",
+			LocalDate.now().format(DateTimeFormatter.ISO_DATE));
 		return params;
+		
 	}
 	
-	@Override protected String getReportPath()
+	@Override
+	protected String getReportPath()
 	{
 		return bundledReportPath();
+		
 	}
 	
 	/**
 	 * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getBaseName() 
 	 */
-	@Override public String getBaseName()
+	@Override
+	public String getBaseName()
 	{
 		return "Bank_Reconciliation_" + LocalDate.now();
 		

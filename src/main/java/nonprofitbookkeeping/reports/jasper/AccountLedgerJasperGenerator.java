@@ -22,10 +22,11 @@ public class AccountLedgerJasperGenerator extends AbstractReportGenerator
 	/**
 	 * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getReportData()
 	 */
-	@Override protected List<AccountLedgerRowBean> getReportData()
+	@Override
+	protected List<AccountLedgerRowBean> getReportData()
 	{
 		nonprofitbookkeeping.model.Company company =
-				nonprofitbookkeeping.model.CurrentCompany.getCompany();
+			nonprofitbookkeeping.model.CurrentCompany.getCompany();
 		
 		if (company == null || company.getLedger() == null)
 		{
@@ -36,7 +37,7 @@ public class AccountLedgerJasperGenerator extends AbstractReportGenerator
 		BigDecimal running = BigDecimal.ZERO;
 		
 		List<nonprofitbookkeeping.model.AccountingTransaction> txns =
-				company.getLedger().getTransactions();
+			company.getLedger().getTransactions();
 		
 		if (txns == null)
 		{
@@ -44,10 +45,11 @@ public class AccountLedgerJasperGenerator extends AbstractReportGenerator
 		}
 		
 		txns.sort(Comparator.comparingLong(
-				nonprofitbookkeeping.model.AccountingTransaction::getBookingDateTimestamp));
+			nonprofitbookkeeping.model.AccountingTransaction::getBookingDateTimestamp));
 		
 		for (nonprofitbookkeeping.model.AccountingTransaction tx : txns)
 		{
+			
 			if (tx == null || tx.getEntries() == null)
 			{
 				continue;
@@ -61,7 +63,8 @@ public class AccountLedgerJasperGenerator extends AbstractReportGenerator
 				if (entry == null || entry.getAmount() == null)
 					continue;
 				
-				if (entry.getAccountSide() == nonprofitbookkeeping.model.AccountSide.DEBIT)
+				if (entry.getAccountSide() ==
+					nonprofitbookkeeping.model.AccountSide.DEBIT)
 				{
 					debit = debit.add(entry.getAmount());
 				}
@@ -74,19 +77,20 @@ public class AccountLedgerJasperGenerator extends AbstractReportGenerator
 			
 			running = running.add(debit).subtract(credit);
 			
-			rows.add(new AccountLedgerRowBean(	tx.getDate(),
-												tx.getMemo() != null ? 
-													tx.getMemo() : "", 
-													debit,
-													credit, 
-													running));
+			rows.add(new AccountLedgerRowBean(tx.getDate(),
+				tx.getMemo() != null ?
+					tx.getMemo() : "",
+				debit,
+				credit,
+				running));
 		}
 		
 		return rows;
 		
 	}
 	
-	@Override protected Map<String, Object> getReportParameters()
+	@Override
+	protected Map<String, Object> getReportParameters()
 	{
 		Map<String, Object> params = new HashMap<>();
 		params.put("P_REPORT_TITLE", "Account Ledger");
@@ -94,33 +98,41 @@ public class AccountLedgerJasperGenerator extends AbstractReportGenerator
 		String companyName = "N/A";
 		
 		if (nonprofitbookkeeping.model.CurrentCompany.getCompany() != null &&
-				nonprofitbookkeeping.model.CurrentCompany.getCompany().getCompanyProfile() !=
-						null &&
-				nonprofitbookkeeping.model.CurrentCompany.getCompany().getCompanyProfile()
-						.getCompanyName() != null)
+			nonprofitbookkeeping.model.CurrentCompany.getCompany()
+				.getCompanyProfile() !=
+				null &&
+			nonprofitbookkeeping.model.CurrentCompany.getCompany()
+				.getCompanyProfile()
+				.getCompanyName() != null)
 		{
-			companyName = nonprofitbookkeeping.model.CurrentCompany.getCompany().getCompanyProfile()
-					.getCompanyName();
+			companyName = nonprofitbookkeeping.model.CurrentCompany.getCompany()
+				.getCompanyProfile()
+				.getCompanyName();
 		}
 		
 		params.put("P_COMPANY_NAME", companyName);
 		params.put("P_ACCOUNT", "N/A");
-		params.put("P_REPORT_PERIOD", LocalDate.now().format(DateTimeFormatter.ISO_DATE));
-		params.put("P_GENERATION_DATE", LocalDate.now().format(DateTimeFormatter.ISO_DATE));
+		params.put("P_REPORT_PERIOD",
+			LocalDate.now().format(DateTimeFormatter.ISO_DATE));
+		params.put("P_GENERATION_DATE",
+			LocalDate.now().format(DateTimeFormatter.ISO_DATE));
 		return params;
 		
 	}
 	
-	@Override protected String getReportPath()
+	@Override
+	protected String getReportPath()
 	{
 		return bundledReportPath();
 		
 	}
 	
 	// write output
-	@Override public String getBaseName()
+	@Override
+	public String getBaseName()
 	{
-		return "Account_Ledger_" + LocalDate.now();	
+		return "Account_Ledger_" + LocalDate.now();
+		
 	}
 	
 	

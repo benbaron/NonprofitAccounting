@@ -14,12 +14,12 @@ public class Funds14JasperGenerator extends AbstractReportGenerator
 		
 	}
 	
-        @Override
-        protected String getReportPath()
-        {
-                return bundledReportPath();
-
-        }
+	@Override
+	protected String getReportPath()
+	{
+		return bundledReportPath();
+		
+	}
 	
 	@Override
 	public String getBaseName()

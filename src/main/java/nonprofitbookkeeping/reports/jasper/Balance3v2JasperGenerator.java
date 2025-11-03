@@ -8,7 +8,6 @@ import nonprofitbookkeeping.reports.datasource.scareports.Balance3Beanv2;
 public class Balance3v2JasperGenerator extends AbstractReportGenerator
 {
 	/**
-	 * 
 	 * Constructor Balance3v2JasperGenerator
 	 * @param ctx
 	 * @param svc
@@ -20,12 +19,12 @@ public class Balance3v2JasperGenerator extends AbstractReportGenerator
 		
 	}
 	
-        @Override
-        protected String getReportPath()
-        {
-                return bundledReportPath();
-
-        }
+	@Override
+	protected String getReportPath()
+	{
+		return bundledReportPath();
+		
+	}
 	
 	@Override
 	public String getBaseName()

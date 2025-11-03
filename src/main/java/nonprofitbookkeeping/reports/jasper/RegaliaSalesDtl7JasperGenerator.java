@@ -14,12 +14,12 @@ public class RegaliaSalesDtl7JasperGenerator extends AbstractReportGenerator
 		
 	}
 	
-        @Override
-        protected String getReportPath()
-        {
-                return bundledReportPath();
-
-        }
+	@Override
+	protected String getReportPath()
+	{
+		return bundledReportPath();
+		
+	}
 	
 	@Override
 	public String getBaseName()
@@ -34,11 +34,11 @@ public class RegaliaSalesDtl7JasperGenerator extends AbstractReportGenerator
 	@Override
 	protected List<RegaliaSalesDtl7Bean> getReportData()
 	{
-                RegaliaSalesDtl7Bean bean = new RegaliaSalesDtl7Bean();
-                bean.setREGALIA_SALES_DTL_7_I20(Double.valueOf(1));
-                return java.util.Collections.singletonList(bean);
-
-        }
+		RegaliaSalesDtl7Bean bean = new RegaliaSalesDtl7Bean();
+		bean.setREGALIA_SALES_DTL_7_I20(Double.valueOf(1));
+		return java.util.Collections.singletonList(bean);
+		
+	}
 	
 	
 }

@@ -34,7 +34,8 @@ public class UndoEditAction extends AbstractAction
 	 * </p>
 	 * @param e The {@link ActionEvent} that occurred.
 	 */
-	@Override public void actionPerformed(ActionEvent e)
+	@Override
+	public void actionPerformed(ActionEvent e)
 	{
 		
 		if (this.undoManager.canUndo())
@@ -61,6 +62,7 @@ public class UndoEditAction extends AbstractAction
 	{
 		super("Undo Last Edit");
 		this.undoManager = new UndoManager();
+		
 	}
 	
 	/**
@@ -72,6 +74,7 @@ public class UndoEditAction extends AbstractAction
 	{
 		super("Undo Last Edit");
 		this.undoManager = manager;
+		
 	}
 	
 	/**
@@ -83,6 +86,7 @@ public class UndoEditAction extends AbstractAction
 	public UndoManager getUndoManager()
 	{
 		return this.undoManager;
+		
 	}
 	
 }

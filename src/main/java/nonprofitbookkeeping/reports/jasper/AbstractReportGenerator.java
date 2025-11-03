@@ -29,16 +29,16 @@ import java.util.Map;
  */
 public abstract class AbstractReportGenerator
 {
-        private static final java.util.regex.Pattern SCHEMA_LOCATION_ATTRIBUTE_PATTERN =
-                java.util.regex.Pattern.compile("\\s+xsi:schemaLocation=\"[^\"]*\"");
+	private static final java.util.regex.Pattern SCHEMA_LOCATION_ATTRIBUTE_PATTERN =
+		java.util.regex.Pattern.compile("\\s+xsi:schemaLocation=\"[^\"]*\"");
 	/**
 	 * Data beans supplied to populate the report. Subclasses may override
 	 * {@link #getReportData()} to compute data dynamically, but in cases where
 	 * the data is prepared externally it can be injected here via
 	 * {@link #setReportData(List)}.
 	 */
-        private List<?> reportData = Collections.emptyList();
-        private boolean reportDataProvided;
+	private List<?> reportData = Collections.emptyList();
+	private boolean reportDataProvided;
 	
 	/**
 	 * Retrieves the collection of data beans that will populate the report.
@@ -46,7 +46,7 @@ public abstract class AbstractReportGenerator
 	 * @return A {@link List} of objects (JavaBeans) to be used as the report's
 	 *         data source. The exact type depends on the specific report.
 	 */
-        protected abstract List<?> getReportData();
+	protected abstract List<?> getReportData();
 	
 	
 	/**
@@ -65,20 +65,21 @@ public abstract class AbstractReportGenerator
 	 * @throws ActionCancelledException If determining the report path involves an action that is cancelled.
 	 * @throws NoFileCreatedException If the report template file cannot be found or accessed.
 	 */
-        protected abstract String getReportPath() throws ActionCancelledException,
-                NoFileCreatedException;
-
-        /**
-         * Resolves the JRXML location from the co-located bundle metadata for this
-         * generator. Subclasses that simply rely on the bundled template can return
-         * this value from {@link #getReportPath()}.
-         *
-         * @return classpath path to the JRXML template
-         */
-        protected final String bundledReportPath()
-        {
-                return ReportBundles.bundleForGenerator(getClass()).jrxmlResource();
-        }
+	protected abstract String getReportPath() throws ActionCancelledException,
+		NoFileCreatedException;
+	
+	/**
+	 * Resolves the JRXML location from the co-located bundle metadata for this
+	 * generator. Subclasses that simply rely on the bundled template can return
+	 * this value from {@link #getReportPath()}.
+	 *
+	 * @return classpath path to the JRXML template
+	 */
+	protected final String bundledReportPath()
+	{
+		return ReportBundles.bundleForGenerator(getClass()).jrxmlResource();
+		
+	}
 	
 	
 	/**
@@ -126,92 +127,100 @@ public abstract class AbstractReportGenerator
 			throw new JRException("Unable to resolve report path", e);
 		}
 		
-                JasperReport report;
-
-                try
-                {
-                        report = compileReportSanitizingSchemaLocation(jrxmlPath);
-                }
-                catch (JRException e)
-                {
-                        Throwable t = e;
-
-                        while (t != null)
-                        {
-                                System.err.println("Cause: " + t.getClass().getName() + " - " +
-                                        t.getMessage());
-                                t = t.getCause();
-                        }
-
-                        throw e;
-                }
+		JasperReport report;
 		
-                List<?> data = resolveReportData();
-                JRBeanCollectionDataSource dataSource =
-                        new JRBeanCollectionDataSource(data);
-                Map<String, Object> params =
-                        ensureMutableParameters(getReportParameters());
-                return JasperFillManager.fillReport(report, params, dataSource);
-
-        }
-
-        private JasperReport compileReportSanitizingSchemaLocation(String jrxmlPath)
-                throws JRException
-        {
-                byte[] jrxmlBytes;
-
-                try
-                {
-                        jrxmlBytes = readJrxmlBytes(jrxmlPath);
-                }
-                catch (IOException e)
-                {
-                        throw new JRException("Unable to read JRXML template: " + jrxmlPath, e);
-                }
-
-                byte[] sanitized = removeSchemaLocationAttribute(jrxmlBytes);
-
-                try (java.io.ByteArrayInputStream input =
-                        new java.io.ByteArrayInputStream(sanitized))
-                {
-                        return JasperCompileManager.compileReport(input);
-                }
-                catch (IOException e)
-                {
-                        throw new JRException("Failed to close JRXML stream", e);
-                }
-        }
-
-        private static byte[] readJrxmlBytes(String jrxmlPath) throws IOException
-        {
-                java.nio.file.Path path = java.nio.file.Paths.get(jrxmlPath);
-
-                if (java.nio.file.Files.exists(path))
-                {
-                        return java.nio.file.Files.readAllBytes(path);
-                }
-
-                String normalized = jrxmlPath.startsWith("/") ?
-                        jrxmlPath.substring(1) : jrxmlPath;
-                try (java.io.InputStream resource =
-                        AbstractReportGenerator.class.getClassLoader()
-                                .getResourceAsStream(normalized))
-                {
-                        if (resource == null)
-                        {
-                                throw new IOException("JRXML template not found: " + jrxmlPath);
-                        }
-
-                        return resource.readAllBytes();
-                }
-        }
-
-        private static byte[] removeSchemaLocationAttribute(byte[] xmlBytes)
-        {
-                String xml = new String(xmlBytes, java.nio.charset.StandardCharsets.UTF_8);
-                String sanitized = SCHEMA_LOCATION_ATTRIBUTE_PATTERN.matcher(xml).replaceAll("");
-                return sanitized.getBytes(java.nio.charset.StandardCharsets.UTF_8);
-        }
+		try
+		{
+			report = compileReportSanitizingSchemaLocation(jrxmlPath);
+		}
+		catch (JRException e)
+		{
+			Throwable t = e;
+			
+			while (t != null)
+			{
+				System.err.println("Cause: " + t.getClass().getName() + " - " +
+					t.getMessage());
+				t = t.getCause();
+			}
+			
+			throw e;
+		}
+		
+		List<?> data = resolveReportData();
+		JRBeanCollectionDataSource dataSource =
+			new JRBeanCollectionDataSource(data);
+		Map<String, Object> params =
+			ensureMutableParameters(getReportParameters());
+		return JasperFillManager.fillReport(report, params, dataSource);
+		
+	}
+	
+	private JasperReport compileReportSanitizingSchemaLocation(String jrxmlPath)
+		throws JRException
+	{
+		byte[] jrxmlBytes;
+		
+		try
+		{
+			jrxmlBytes = readJrxmlBytes(jrxmlPath);
+		}
+		catch (IOException e)
+		{
+			throw new JRException("Unable to read JRXML template: " + jrxmlPath,
+				e);
+		}
+		
+		byte[] sanitized = removeSchemaLocationAttribute(jrxmlBytes);
+		
+		try (java.io.ByteArrayInputStream input =
+			new java.io.ByteArrayInputStream(sanitized))
+		{
+			return JasperCompileManager.compileReport(input);
+		}
+		catch (IOException e)
+		{
+			throw new JRException("Failed to close JRXML stream", e);
+		}
+		
+	}
+	
+	private static byte[] readJrxmlBytes(String jrxmlPath) throws IOException
+	{
+		java.nio.file.Path path = java.nio.file.Paths.get(jrxmlPath);
+		
+		if (java.nio.file.Files.exists(path))
+		{
+			return java.nio.file.Files.readAllBytes(path);
+		}
+		
+		String normalized = jrxmlPath.startsWith("/") ?
+			jrxmlPath.substring(1) : jrxmlPath;
+		
+		try (java.io.InputStream resource =
+			AbstractReportGenerator.class.getClassLoader()
+				.getResourceAsStream(normalized))
+		{
+			
+			if (resource == null)
+			{
+				throw new IOException("JRXML template not found: " + jrxmlPath);
+			}
+			
+			return resource.readAllBytes();
+		}
+		
+	}
+	
+	private static byte[] removeSchemaLocationAttribute(byte[] xmlBytes)
+	{
+		String xml =
+			new String(xmlBytes, java.nio.charset.StandardCharsets.UTF_8);
+		String sanitized =
+			SCHEMA_LOCATION_ATTRIBUTE_PATTERN.matcher(xml).replaceAll("");
+		return sanitized.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+		
+	}
 	
 	
 	/**
@@ -355,42 +364,46 @@ public abstract class AbstractReportGenerator
 	}
 	
 	
-        /**
-         * @param beans
-         */
-        public void setReportData(List<?> beans)
-        {
-                if (beans == null)
-                {
-                        this.reportData = Collections.emptyList();
-                        this.reportDataProvided = false;
-                        return;
-                }
-
-                this.reportData = Collections.unmodifiableList(new ArrayList<>(beans));
-                this.reportDataProvided = true;
-        }
-
-        /**
-         * Resolves the data beans that should populate the report.
-         *
-         * @return unmodifiable list of beans, never {@code null}.
-         */
-        protected final List<?> resolveReportData()
-        {
-                if (this.reportDataProvided)
-                {
-                        return this.reportData;
-                }
-
-                List<?> generated = getReportData();
-
-                if (generated == null)
-                {
-                        return Collections.emptyList();
-                }
-
-                return Collections.unmodifiableList(new ArrayList<>(generated));
-        }
-
+	/**
+	 * @param beans
+	 */
+	public void setReportData(List<?> beans)
+	{
+		
+		if (beans == null)
+		{
+			this.reportData = Collections.emptyList();
+			this.reportDataProvided = false;
+			return;
+		}
+		
+		this.reportData = Collections.unmodifiableList(new ArrayList<>(beans));
+		this.reportDataProvided = true;
+		
+	}
+	
+	/**
+	 * Resolves the data beans that should populate the report.
+	 *
+	 * @return unmodifiable list of beans, never {@code null}.
+	 */
+	protected final List<?> resolveReportData()
+	{
+		
+		if (this.reportDataProvided)
+		{
+			return this.reportData;
+		}
+		
+		List<?> generated = getReportData();
+		
+		if (generated == null)
+		{
+			return Collections.emptyList();
+		}
+		
+		return Collections.unmodifiableList(new ArrayList<>(generated));
+		
+	}
+	
 }

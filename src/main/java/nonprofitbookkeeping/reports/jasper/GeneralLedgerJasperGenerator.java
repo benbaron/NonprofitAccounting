@@ -19,7 +19,8 @@ public class GeneralLedgerJasperGenerator extends AbstractReportGenerator
 	 * 
 	 * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getReportData()
 	 */
-	@Override protected List<GeneralLedgerRowBean> getReportData()
+	@Override
+	protected List<GeneralLedgerRowBean> getReportData()
 	{
 		nonprofitbookkeeping.model.Company company =
 			nonprofitbookkeeping.model.CurrentCompany.getCompany();
@@ -31,7 +32,8 @@ public class GeneralLedgerJasperGenerator extends AbstractReportGenerator
 		
 		java.util.List<GeneralLedgerRowBean> rows = new java.util.ArrayList<>();
 		
-		java.util.Map<String, java.math.BigDecimal> balances = new java.util.HashMap<>();
+		java.util.Map<String, java.math.BigDecimal> balances =
+			new java.util.HashMap<>();
 		
 		java.util.List<nonprofitbookkeeping.model.AccountingTransaction> txns =
 			company.getLedger().getTransactions();
@@ -46,25 +48,30 @@ public class GeneralLedgerJasperGenerator extends AbstractReportGenerator
 		
 		for (nonprofitbookkeeping.model.AccountingTransaction tx : txns)
 		{
+			
 			if (tx == null || tx.getEntries() == null)
 			{
 				continue;
 			}
 			
-			for (nonprofitbookkeeping.model.AccountingEntry entry : tx.getEntries())
+			for (nonprofitbookkeeping.model.AccountingEntry entry : tx
+				.getEntries())
 			{
+				
 				if (entry == null || entry.getAmount() == null)
 				{
 					continue;
 				}
 				
 				String acct = entry.getAccountNumber();
-				java.math.BigDecimal bal = balances.getOrDefault(acct, java.math.BigDecimal.ZERO);
+				java.math.BigDecimal bal =
+					balances.getOrDefault(acct, java.math.BigDecimal.ZERO);
 				
 				java.math.BigDecimal debit = java.math.BigDecimal.ZERO;
 				java.math.BigDecimal credit = java.math.BigDecimal.ZERO;
 				
-				if (entry.getAccountSide() == nonprofitbookkeeping.model.AccountSide.DEBIT)
+				if (entry.getAccountSide() ==
+					nonprofitbookkeeping.model.AccountSide.DEBIT)
 				{
 					debit = entry.getAmount();
 					bal = bal.add(debit);
@@ -78,15 +85,18 @@ public class GeneralLedgerJasperGenerator extends AbstractReportGenerator
 				balances.put(acct, bal);
 				
 				rows.add(new GeneralLedgerRowBean(tx.getDate(), acct,
-					tx.getMemo() != null ? tx.getMemo() : "", debit, credit, bal));
+					tx.getMemo() != null ? tx.getMemo() : "", debit, credit,
+					bal));
 			}
 			
 		}
 		
 		return rows;
+		
 	}
 	
-	@Override protected Map<String, Object> getReportParameters()
+	@Override
+	protected Map<String, Object> getReportParameters()
 	{
 		Map<String, Object> params = new HashMap<>();
 		params.put("P_REPORT_TITLE", "General Ledger");
@@ -94,30 +104,39 @@ public class GeneralLedgerJasperGenerator extends AbstractReportGenerator
 		String companyName = "N/A";
 		
 		if (nonprofitbookkeeping.model.CurrentCompany.getCompany() != null &&
-			nonprofitbookkeeping.model.CurrentCompany.getCompany().getCompanyProfile() != null &&
-			nonprofitbookkeeping.model.CurrentCompany.getCompany().getCompanyProfile()
+			nonprofitbookkeeping.model.CurrentCompany.getCompany()
+				.getCompanyProfile() != null &&
+			nonprofitbookkeeping.model.CurrentCompany.getCompany()
+				.getCompanyProfile()
 				.getCompanyName() != null)
 		{
-			companyName = nonprofitbookkeeping.model.CurrentCompany.getCompany().getCompanyProfile()
+			companyName = nonprofitbookkeeping.model.CurrentCompany.getCompany()
+				.getCompanyProfile()
 				.getCompanyName();
 		}
 		
 		params.put("P_COMPANY_NAME", companyName);
-		params.put("P_REPORT_PERIOD", LocalDate.now().format(DateTimeFormatter.ISO_DATE));
-		params.put("P_GENERATION_DATE", LocalDate.now().format(DateTimeFormatter.ISO_DATE));
+		params.put("P_REPORT_PERIOD",
+			LocalDate.now().format(DateTimeFormatter.ISO_DATE));
+		params.put("P_GENERATION_DATE",
+			LocalDate.now().format(DateTimeFormatter.ISO_DATE));
 		return params;
+		
 	}
 	
-	@Override protected String getReportPath()
+	@Override
+	protected String getReportPath()
 	{
 		return bundledReportPath();
+		
 	}
 	
-
+	
 	/**
 	 * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getBaseName() 
 	 */
-	@Override public String getBaseName()
+	@Override
+	public String getBaseName()
 	{
 		return "General_Ledger_" + LocalDate.now();
 		

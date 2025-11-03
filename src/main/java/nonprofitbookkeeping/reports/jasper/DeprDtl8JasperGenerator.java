@@ -15,12 +15,12 @@ public class DeprDtl8JasperGenerator extends AbstractReportGenerator
 		
 	}
 	
-        @Override
-        protected String getReportPath()
-        {
-                return bundledReportPath();
-
-        }
+	@Override
+	protected String getReportPath()
+	{
+		return bundledReportPath();
+		
+	}
 	
 	@Override
 	public String getBaseName()
@@ -28,18 +28,17 @@ public class DeprDtl8JasperGenerator extends AbstractReportGenerator
 		return "DeprDtl8";
 		
 	}
-
+	
 	/**
 	 * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getReportData() 
 	 */
-        @Override
-        protected List<DeprDtl8Bean> getReportData()
-        {
-                DeprDtl8Bean bean = new DeprDtl8Bean();
-                return java.util.Collections.singletonList(bean);
-
-        }
-
+	@Override
+	protected List<DeprDtl8Bean> getReportData()
+	{
+		DeprDtl8Bean bean = new DeprDtl8Bean();
+		return java.util.Collections.singletonList(bean);
+		
+	}
 	
 	
 }

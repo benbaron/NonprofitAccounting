@@ -34,27 +34,32 @@ import java.math.BigDecimal;
  */
 public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 {
-
-        private static final DateTimeFormatter FILE_DATE_FORMAT = DateTimeFormatter.BASIC_ISO_DATE;
-
-        private ReportContext reportContext;
+	
+	private static final DateTimeFormatter FILE_DATE_FORMAT =
+		DateTimeFormatter.BASIC_ISO_DATE;
+	
+	private ReportContext reportContext;
+	
 	/**
 	 * Constructs an {@code IncomeStatementJasperGenerator}.
 	 *
 	 * @param reportContext The {@link ReportContext} containing criteria and settings for the report.
 	 * @param reportService The {@link ReportService} used to prepare the data for the report.
 	 */
-	public IncomeStatementJasperGenerator(ReportContext reportContext, 
-	                                      ReportService reportService)
+	public IncomeStatementJasperGenerator(ReportContext reportContext,
+		ReportService reportService)
 	{
 		this.reportContext = reportContext;
+		
 	}
 	
-        /** {@inheritDoc} */
-        @Override protected String getReportPath()
-        {
-                return bundledReportPath();
-        }
+	/** {@inheritDoc} */
+	@Override
+	protected String getReportPath()
+	{
+		return bundledReportPath();
+		
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -66,12 +71,13 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 	 * </p>
 	 * @return A list of {@link IncomeStatementRowBean} objects for the report, or an empty list if data cannot be prepared.
 	 */
-	@Override protected List<IncomeStatementRowBean> getReportData()
+	@Override
+	protected List<IncomeStatementRowBean> getReportData()
 	{
 		Company company = CurrentCompany.getCompany();
 		
-		if (company == null || 
-			company.getLedger() == null || 
+		if (company == null ||
+			company.getLedger() == null ||
 			company.getChartOfAccounts() == null)
 		{
 			System.err.println(
@@ -82,7 +88,9 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 		Ledger ledger = company.getLedger();
 		ChartOfAccounts coa = company.getChartOfAccounts();
 		
-		return IncomeStatementJasperGenerator.prepareIncomeStatementJasperData(this.reportContext, ledger, coa);
+		return IncomeStatementJasperGenerator
+			.prepareIncomeStatementJasperData(this.reportContext, ledger, coa);
+		
 	}
 	
 	/**
@@ -98,7 +106,8 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 	 * </p>
 	 * @return A map of parameters for the JasperReport.
 	 */
-	@Override protected Map<String, Object> getReportParameters()
+	@Override
+	protected Map<String, Object> getReportParameters()
 	{
 		Map<String, Object> params = new HashMap<>();
 		params.put("P_REPORT_TITLE", "Income Statement");
@@ -116,24 +125,30 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 		
 		String reportPeriod = "N/A";
 		
-		if (this.reportContext.getStartDate() != null && this.reportContext.getEndDate() != null)
+		if (this.reportContext.getStartDate() != null &&
+			this.reportContext.getEndDate() != null)
 		{
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
-			reportPeriod = this.reportContext.getStartDate().format(formatter) + " - " +
-				this.reportContext.getEndDate().format(formatter);
+			DateTimeFormatter formatter =
+				DateTimeFormatter.ofPattern("MMMM d, yyyy");
+			reportPeriod =
+				this.reportContext.getStartDate().format(formatter) + " - " +
+					this.reportContext.getEndDate().format(formatter);
 		}
 		
 		params.put("P_REPORT_PERIOD", reportPeriod);
 		params.put("P_GENERATION_DATE",
-			LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM d, yyyy")));
+			LocalDate.now()
+				.format(DateTimeFormatter.ofPattern("MMMM d, yyyy")));
 		
 		// Net Income parameter calculation can be added here if needed by JRXML
 		// List<IncomeStatementRowBean> data = getReportData(); // This might be
 		// inefficient if called again
 		// Consider calculating sums from the data if not done by Jasper itself.
-		// For now, assuming JRXML handles summary or it's part of the bean list.
+		// For now, assuming JRXML handles summary or it's part of the bean
+		// list.
 		
 		return params;
+		
 	}
 	
 	/**
@@ -148,8 +163,9 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 	 *         totals, net income, and report date information.
 	 * @throws IllegalArgumentException if start date or end date is not provided in the {@code context}.
 	 */
-	public static Map<String, Object> prepareIncomeStatementContext(	ReportContext context, nonprofitbookkeeping.model.Ledger ledger,
-																nonprofitbookkeeping.model.ChartOfAccounts chartOfAccounts)
+	public static Map<String, Object> prepareIncomeStatementContext(
+		ReportContext context, nonprofitbookkeeping.model.Ledger ledger,
+		nonprofitbookkeeping.model.ChartOfAccounts chartOfAccounts)
 	{
 		Map<String, BigDecimal> incomeTotals = new HashMap<>();
 		Map<String, BigDecimal> expenseTotals = new HashMap<>();
@@ -161,19 +177,24 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 		}
 		
 		List<String> selectedFundNames = context.getFundIds();
-		boolean applyFundFilter = (selectedFundNames != null && !selectedFundNames.isEmpty());
+		boolean applyFundFilter =
+			(selectedFundNames != null && !selectedFundNames.isEmpty());
 		
 		long startDateMillis =
-			context.getStartDate().atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
-		long endDateMillis = context.getEndDate().plusDays(1).atStartOfDay(ZoneOffset.UTC)
-			.toInstant().toEpochMilli();
+			context.getStartDate().atStartOfDay(ZoneOffset.UTC).toInstant()
+				.toEpochMilli();
+		long endDateMillis =
+			context.getEndDate().plusDays(1).atStartOfDay(ZoneOffset.UTC)
+				.toInstant().toEpochMilli();
 		
-		List<nonprofitbookkeeping.model.AccountingTransaction> transactions = ledger.getTransactions();
+		List<nonprofitbookkeeping.model.AccountingTransaction> transactions =
+			ledger.getTransactions();
 		
 		if (transactions == null)
 		{
 			ReportService.LOGGER.info("No transactions found in the ledger.");
-			transactions = new ArrayList<nonprofitbookkeeping.model.AccountingTransaction>();
+			transactions = new ArrayList<
+				nonprofitbookkeeping.model.AccountingTransaction>();
 		}
 		
 		for (nonprofitbookkeeping.model.AccountingTransaction transaction : transactions)
@@ -184,13 +205,16 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 			if (transaction.getBookingDateTimestamp() >= startDateMillis &&
 				transaction.getBookingDateTimestamp() < endDateMillis)
 			{
-				Set<nonprofitbookkeeping.model.AccountingEntry> entries = transaction.getEntries();
+				Set<nonprofitbookkeeping.model.AccountingEntry> entries =
+					transaction.getEntries();
 				
 				if (entries == null)
 				{
-					ReportService.LOGGER.fine("Transaction with ID " + transaction.getBookingDateTimestamp() + 
+					ReportService.LOGGER.fine("Transaction with ID " +
+						transaction.getBookingDateTimestamp() +
 						" has no entries.");
-					entries = new java.util.HashSet<>(); // Ensure non-null for iteration
+					entries = new java.util.HashSet<>(); // Ensure non-null for
+															// iteration
 				}
 				
 				for (nonprofitbookkeeping.model.AccountingEntry entry : entries)
@@ -198,32 +222,38 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 					if (entry == null || entry.getAccountNumber() == null)
 						continue;
 					
-					nonprofitbookkeeping.model.Account account = chartOfAccounts.getAccount(entry.getAccountNumber());
+					nonprofitbookkeeping.model.Account account =
+						chartOfAccounts.getAccount(entry.getAccountNumber());
 					
 					if (account == null)
 					{
 						ReportService.LOGGER.warning(
-							"IS: Account not found for number: " + entry.getAccountNumber());
+							"IS: Account not found for number: " +
+								entry.getAccountNumber());
 						continue;
 					}
 					
 					if (applyFundFilter)
 					{
 						
-						if (!ReportService.doesAccountMatchFunds(account, selectedFundNames, chartOfAccounts))
+						if (!ReportService.doesAccountMatchFunds(account,
+							selectedFundNames, chartOfAccounts))
 						{
 							continue;
 						}
 						
 					}
 					
-					nonprofitbookkeeping.model.AccountType accountType = account.getAccountType(); // Prefer direct
-																		// enum usage
+					nonprofitbookkeeping.model.AccountType accountType =
+						account.getAccountType(); // Prefer direct
+					// enum usage
 					
 					if (accountType == null)
 					{
-						ReportService.LOGGER.warning("IS: Account type is null for account: " +
-							account.getName() + " (ID: " + account.getAccountNumber() + ")");
+						ReportService.LOGGER
+							.warning("IS: Account type is null for account: " +
+								account.getName() + " (ID: " +
+								account.getAccountNumber() + ")");
 						continue;
 					}
 					
@@ -232,31 +262,41 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 					
 					if (amount == null)
 					{
-						ReportService.LOGGER.warning("Entry amount is null for account: " + accountName);
+						ReportService.LOGGER.warning(
+							"Entry amount is null for account: " + accountName);
 						continue;
 					}
 					
-					nonprofitbookkeeping.model.AccountSide side = entry.getAccountSide();
+					nonprofitbookkeeping.model.AccountSide side =
+						entry.getAccountSide();
 					
 					if (accountType == AccountType.INCOME)
 					{
 						BigDecimal currentTotal =
-							incomeTotals.getOrDefault(accountName, BigDecimal.ZERO);
-						if (side == AccountSide.CREDIT) // Income typically increases on
+							incomeTotals.getOrDefault(accountName,
+								BigDecimal.ZERO);
+						if (side == AccountSide.CREDIT) // Income typically
+														// increases on
 														// credit side
-							incomeTotals.put(accountName, currentTotal.add(amount));
+							incomeTotals.put(accountName,
+								currentTotal.add(amount));
 						else if (side == AccountSide.DEBIT)
-							incomeTotals.put(accountName, currentTotal.subtract(amount));
+							incomeTotals.put(accountName,
+								currentTotal.subtract(amount));
 					}
 					else if (accountType == AccountType.EXPENSE)
 					{
 						BigDecimal currentTotal =
-							expenseTotals.getOrDefault(accountName, BigDecimal.ZERO);
-						if (side == AccountSide.DEBIT) // Expenses typically increase on
+							expenseTotals.getOrDefault(accountName,
+								BigDecimal.ZERO);
+						if (side == AccountSide.DEBIT) // Expenses typically
+														// increase on
 														// debit side
-							expenseTotals.put(accountName, currentTotal.add(amount));
+							expenseTotals.put(accountName,
+								currentTotal.add(amount));
 						else if (side == AccountSide.CREDIT)
-							expenseTotals.put(accountName, currentTotal.subtract(amount));
+							expenseTotals.put(accountName,
+								currentTotal.subtract(amount));
 					}
 					
 				}
@@ -266,15 +306,19 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 		}
 		
 		BigDecimal totalIncome =
-			incomeTotals.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+			incomeTotals.values().stream().reduce(BigDecimal.ZERO,
+				BigDecimal::add);
 		BigDecimal totalExpenses =
-			expenseTotals.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+			expenseTotals.values().stream().reduce(BigDecimal.ZERO,
+				BigDecimal::add);
 		BigDecimal netIncome = totalIncome.subtract(totalExpenses);
 		
 		List<Map<String, Object>> incomeItems = new ArrayList<>();
-		incomeTotals.forEach((name, bal) -> incomeItems.add(Map.of("name", name, "amount", bal)));
+		incomeTotals.forEach((name, bal) -> incomeItems
+			.add(Map.of("name", name, "amount", bal)));
 		List<Map<String, Object>> expenseItems = new ArrayList<>();
-		expenseTotals.forEach((name, bal) -> expenseItems.add(Map.of("name", name, "amount", bal)));
+		expenseTotals.forEach((name, bal) -> expenseItems
+			.add(Map.of("name", name, "amount", bal)));
 		
 		Map<String, Object> jxlsContext = new HashMap<>();
 		jxlsContext.put("incomeItems", incomeItems);
@@ -286,8 +330,9 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 		jxlsContext.put("reportEndDate", context.getEndDate().toString());
 		jxlsContext.put("reportDate", LocalDate.now().toString());
 		return jxlsContext;
+		
 	}
-
+	
 	/**
 	 * Prepares a list of {@link IncomeStatementRowBean} objects for use as a JasperReports data source.
 	 * This method calculates income and expense account balances for the period specified in the
@@ -300,9 +345,10 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 	 *         required data (dates, ledger, COA) is missing or no relevant transactions are found.
 	 */
 	public static
-			List<IncomeStatementRowBean>
-			prepareIncomeStatementJasperData(	ReportContext context, nonprofitbookkeeping.model.Ledger ledger,
-												nonprofitbookkeeping.model.ChartOfAccounts chartOfAccounts)
+		List<IncomeStatementRowBean>
+		prepareIncomeStatementJasperData(ReportContext context,
+			nonprofitbookkeeping.model.Ledger ledger,
+			nonprofitbookkeeping.model.ChartOfAccounts chartOfAccounts)
 	{
 		
 		List<IncomeStatementRowBean> reportData = new ArrayList<>();
@@ -316,7 +362,8 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 		
 		if (ledger == null || chartOfAccounts == null)
 		{
-			ReportService.LOGGER.warning("Ledger or Chart of Accounts not available for income statement data.");
+			ReportService.LOGGER.warning(
+				"Ledger or Chart of Accounts not available for income statement data.");
 			return reportData;
 		}
 		
@@ -324,12 +371,15 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 		Map<String, BigDecimal> expenseAccountBalances = new HashMap<>();
 		
 		List<String> selectedFundIds = context.getFundIds();
-		boolean applyFundFilter = (selectedFundIds != null && !selectedFundIds.isEmpty());
+		boolean applyFundFilter =
+			(selectedFundIds != null && !selectedFundIds.isEmpty());
 		
 		long startDateMillis =
-			context.getStartDate().atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
-		long endDateMillisExclusive = context.getEndDate().plusDays(1).atStartOfDay(ZoneOffset.UTC)
-			.toInstant().toEpochMilli();
+			context.getStartDate().atStartOfDay(ZoneOffset.UTC).toInstant()
+				.toEpochMilli();
+		long endDateMillisExclusive =
+			context.getEndDate().plusDays(1).atStartOfDay(ZoneOffset.UTC)
+				.toInstant().toEpochMilli();
 		
 		List<AccountingTransaction> transactions = ledger.getTransactions();
 		
@@ -357,7 +407,8 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 						entry.getAmount() == null)
 						continue;
 					
-					Account account = chartOfAccounts.getAccount(entry.getAccountNumber());
+					Account account =
+						chartOfAccounts.getAccount(entry.getAccountNumber());
 					
 					if (account == null || account.getAccountType() == null ||
 						account.getName() == null)
@@ -371,7 +422,8 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 					if (applyFundFilter)
 					{
 						
-						if (!ReportService.doesAccountMatchFunds(account, selectedFundIds, chartOfAccounts))
+						if (!ReportService.doesAccountMatchFunds(account,
+							selectedFundIds, chartOfAccounts))
 						{
 							continue;
 						}
@@ -386,30 +438,36 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 					if (accountType == AccountType.INCOME)
 					{
 						BigDecimal currentTotal =
-							incomeAccountBalances.getOrDefault(accountName, BigDecimal.ZERO);
+							incomeAccountBalances.getOrDefault(accountName,
+								BigDecimal.ZERO);
 						
 						if (side == AccountSide.CREDIT)
 						{ // Income increases on credit
-							incomeAccountBalances.put(accountName, currentTotal.add(amount));
+							incomeAccountBalances.put(accountName,
+								currentTotal.add(amount));
 						}
 						else if (side == AccountSide.DEBIT)
 						{
-							incomeAccountBalances.put(accountName, currentTotal.subtract(amount));
+							incomeAccountBalances.put(accountName,
+								currentTotal.subtract(amount));
 						}
 						
 					}
 					else if (accountType == AccountType.EXPENSE)
 					{
 						BigDecimal currentTotal =
-							expenseAccountBalances.getOrDefault(accountName, BigDecimal.ZERO);
+							expenseAccountBalances.getOrDefault(accountName,
+								BigDecimal.ZERO);
 						
 						if (side == AccountSide.DEBIT)
 						{ // Expense increases on debit
-							expenseAccountBalances.put(accountName, currentTotal.add(amount));
+							expenseAccountBalances.put(accountName,
+								currentTotal.add(amount));
 						}
 						else if (side == AccountSide.CREDIT)
 						{
-							expenseAccountBalances.put(accountName, currentTotal.subtract(amount));
+							expenseAccountBalances.put(accountName,
+								currentTotal.subtract(amount));
 						}
 						
 					}
@@ -421,80 +479,93 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 		}
 		
 		// Add income items to reportData
-		for (Map.Entry<String, BigDecimal> entry : incomeAccountBalances.entrySet())
+		for (Map.Entry<String, BigDecimal> entry : incomeAccountBalances
+			.entrySet())
 		{
 			
 			if (entry.getValue().compareTo(BigDecimal.ZERO) != 0)
 			{ // Only include accounts with non-zero balance for the period
 				reportData
-					.add(new IncomeStatementRowBean("Income", entry.getKey(), entry.getValue()));
+					.add(new IncomeStatementRowBean("Income", entry.getKey(),
+						entry.getValue()));
 			}
 			
 		}
 		
 		// Add expense items to reportData
-		for (Map.Entry<String, BigDecimal> entry : expenseAccountBalances.entrySet())
+		for (Map.Entry<String, BigDecimal> entry : expenseAccountBalances
+			.entrySet())
 		{
 			
 			if (entry.getValue().compareTo(BigDecimal.ZERO) != 0)
 			{ // Only include accounts with non-zero balance for the period
 				reportData
-					.add(new IncomeStatementRowBean("Expenses", entry.getKey(), entry.getValue()));
+					.add(new IncomeStatementRowBean("Expenses", entry.getKey(),
+						entry.getValue()));
 			}
 			
-		}		
+		}
 		
 		return reportData;
+		
 	}
-
+	
 	/**
 	 * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getBaseName() 
 	 */
-        @Override public String getBaseName()
-        {
-                String companyPart = resolveCompanyName();
-                String periodPart = resolvePeriodSuffix();
-                return String.format("Income_Statement_%s_%s", companyPart, periodPart);
-
-        }
-
-        private String resolveCompanyName()
-        {
-                Company company = CurrentCompany.getCompany();
-
-                if (company != null && company.getCompanyProfile() != null)
-                {
-                        String name = company.getCompanyProfile().getCompanyName();
-
-                        if (name != null && !name.isBlank())
-                        {
-                                return sanitizeForFileName(name);
-                        }
-                }
-
-                return "Company";
-        }
-
-        private String resolvePeriodSuffix()
-        {
-                LocalDate start = (this.reportContext != null) ? this.reportContext.getStartDate() : null;
-                LocalDate end = (this.reportContext != null) ? this.reportContext.getEndDate() : null;
-
-                if (start != null && end != null)
-                {
-                        return FILE_DATE_FORMAT.format(start) + "-" + FILE_DATE_FORMAT.format(end);
-                }
-
-                LocalDate fallback = (end != null) ? end : LocalDate.now();
-                return FILE_DATE_FORMAT.format(fallback);
-        }
-
-        private String sanitizeForFileName(String value)
-        {
-                String sanitized = value.replaceAll("[^A-Za-z0-9]+", "_");
-                sanitized = sanitized.replaceAll("_+", "_");
-                sanitized = sanitized.replaceAll("^_", "").replaceAll("_$", "");
-                return sanitized.isEmpty() ? "Company" : sanitized;
-        }
-
+	@Override
+	public String getBaseName()
+	{
+		String companyPart = resolveCompanyName();
+		String periodPart = resolvePeriodSuffix();
+		return String.format("Income_Statement_%s_%s", companyPart, periodPart);
+		
+	}
+	
+	private String resolveCompanyName()
+	{
+		Company company = CurrentCompany.getCompany();
+		
+		if (company != null && company.getCompanyProfile() != null)
+		{
+			String name = company.getCompanyProfile().getCompanyName();
+			
+			if (name != null && !name.isBlank())
+			{
+				return sanitizeForFileName(name);
+			}
+			
+		}
+		
+		return "Company";
+		
+	}
+	
+	private String resolvePeriodSuffix()
+	{
+		LocalDate start = (this.reportContext != null) ?
+			this.reportContext.getStartDate() : null;
+		LocalDate end = (this.reportContext != null) ?
+			this.reportContext.getEndDate() : null;
+		
+		if (start != null && end != null)
+		{
+			return FILE_DATE_FORMAT.format(start) + "-" +
+				FILE_DATE_FORMAT.format(end);
+		}
+		
+		LocalDate fallback = (end != null) ? end : LocalDate.now();
+		return FILE_DATE_FORMAT.format(fallback);
+		
+	}
+	
+	private String sanitizeForFileName(String value)
+	{
+		String sanitized = value.replaceAll("[^A-Za-z0-9]+", "_");
+		sanitized = sanitized.replaceAll("_+", "_");
+		sanitized = sanitized.replaceAll("^_", "").replaceAll("_$", "");
+		return sanitized.isEmpty() ? "Company" : sanitized;
+		
+	}
+	
 }
