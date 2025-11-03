@@ -29,8 +29,15 @@ import java.util.Map;
  */
 public abstract class AbstractReportGenerator
 {
-	private static final java.util.regex.Pattern SCHEMA_LOCATION_ATTRIBUTE_PATTERN =
-		java.util.regex.Pattern.compile("\\s+xsi:schemaLocation=\"[^\"]*\"");
+        private static final java.util.regex.Pattern SCHEMA_LOCATION_ATTRIBUTE_PATTERN =
+                java.util.regex.Pattern.compile("\\s+xsi:schemaLocation=\"[^\"]*\"");
+        private static final java.util.Map<String, String> LEGACY_STYLE_ATTRIBUTE_ALIASES =
+                java.util.Map.ofEntries(
+                        java.util.Map.entry("isBold", "bold"),
+                        java.util.Map.entry("isItalic", "italic"),
+                        java.util.Map.entry("isUnderline", "underline"),
+                        java.util.Map.entry("isStrikethrough", "strikeThrough"),
+                        java.util.Map.entry("hAlign", "hTextAlign"));
 	/**
 	 * Data beans supplied to populate the report. Subclasses may override
 	 * {@link #getReportData()} to compute data dynamically, but in cases where
@@ -171,7 +178,7 @@ public abstract class AbstractReportGenerator
 				e);
 		}
 		
-		byte[] sanitized = removeSchemaLocationAttribute(jrxmlBytes);
+                byte[] sanitized = sanitizeJrxml(jrxmlBytes);
 		
 		try (java.io.ByteArrayInputStream input =
 			new java.io.ByteArrayInputStream(sanitized))
@@ -212,15 +219,54 @@ public abstract class AbstractReportGenerator
 		
 	}
 	
-	private static byte[] removeSchemaLocationAttribute(byte[] xmlBytes)
-	{
-		String xml =
-			new String(xmlBytes, java.nio.charset.StandardCharsets.UTF_8);
-		String sanitized =
-			SCHEMA_LOCATION_ATTRIBUTE_PATTERN.matcher(xml).replaceAll("");
-		return sanitized.getBytes(java.nio.charset.StandardCharsets.UTF_8);
-		
-	}
+        private static byte[] sanitizeJrxml(byte[] xmlBytes)
+        {
+                String xml =
+                        new String(xmlBytes, java.nio.charset.StandardCharsets.UTF_8);
+                String sanitized =
+                        SCHEMA_LOCATION_ATTRIBUTE_PATTERN.matcher(xml).replaceAll("");
+                sanitized = applyLegacyStyleAttributeAliases(sanitized);
+                return sanitized.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+
+        }
+
+        private static String applyLegacyStyleAttributeAliases(String xml)
+        {
+                String sanitized = xml;
+
+                for (java.util.Map.Entry<String, String> alias :
+                        LEGACY_STYLE_ATTRIBUTE_ALIASES.entrySet())
+                {
+                        sanitized = replaceAttributeName(sanitized,
+                                alias.getKey(),
+                                alias.getValue());
+                }
+
+                return sanitized;
+
+        }
+
+        private static String replaceAttributeName(String xml,
+                String legacyName,
+                String replacementName)
+        {
+                java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(
+                        "\\b" + legacyName + "=\"([^\"]*)\"");
+                java.util.regex.Matcher matcher = pattern.matcher(xml);
+                StringBuffer buffer = new StringBuffer();
+
+                while (matcher.find())
+                {
+                        String replacement =
+                                replacementName + "=\"" + matcher.group(1) + "\"";
+                        matcher.appendReplacement(buffer,
+                                java.util.regex.Matcher.quoteReplacement(replacement));
+                }
+
+                matcher.appendTail(buffer);
+                return buffer.toString();
+
+        }
 	
 	
 	/**
