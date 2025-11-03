@@ -14,6 +14,7 @@ import nonprofitbookkeeping.ui.actions.InputFileActionFX;
 import nonprofitbookkeeping.ui.actions.OutputFileActionFX; 
 import nonprofitbookkeeping.ui.actions.scaledger.ImportFromExcelActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.ImportFromJsonActionFX;
+import nonprofitbookkeeping.ui.actions.scaledger.ImportLedgerToJournalActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.LoadXlsmTableActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.SaveModifiedCopyActionFX;
 
@@ -110,6 +111,10 @@ public class SCALedgerPlugin implements Plugin {
         MenuItem importExcelItem = new MenuItem("Import from Excel (SCA)");
         importExcelItem.setOnAction(e -> new ImportFromExcelActionFX(primaryStage, this).handle(e));
         scaMenu.getItems().add(importExcelItem);
+
+        MenuItem persistLedgerItem = new MenuItem("Persist Ledger to Journal (SCA)");
+        persistLedgerItem.setOnAction(e -> new ImportLedgerToJournalActionFX(primaryStage).handle(e));
+        scaMenu.getItems().add(persistLedgerItem);
 
         MenuItem importJsonItem = new MenuItem("Import from JSON (SCA)");
         // ImportFromJsonActionFX does not use BeanShell/NonCompanyFile directly based on previous investigation.
