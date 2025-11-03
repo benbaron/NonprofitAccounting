@@ -1,8 +1,10 @@
 package nonprofitbookkeeping.ui.actions.scaledger;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -70,5 +72,34 @@ public class ChartTranslationMap
         Map<String,String> parsed = mapper.readValue(bytes, Map.class);
 
         return new ChartTranslationMap(parsed);
+    }
+
+    /**
+     * Load a map from a classpath resource packaged with the application.
+     *
+     * @param resourcePath classpath-relative path to the JSON resource
+     * @return translation map parsed from the resource
+     * @throws IOException if the resource is missing or cannot be parsed
+     */
+    public static ChartTranslationMap fromClasspathResource(String resourcePath) throws IOException
+    {
+        if (resourcePath == null || resourcePath.isBlank())
+        {
+            throw new IOException("Resource path is required");
+        }
+
+        ClassLoader loader = ChartTranslationMap.class.getClassLoader();
+        try (InputStream in = loader.getResourceAsStream(resourcePath))
+        {
+            if (in == null)
+            {
+                throw new IOException("Resource not found: " + resourcePath);
+            }
+
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String,String> parsed = mapper.readValue(in,
+                    new TypeReference<Map<String,String>>() { });
+            return new ChartTranslationMap(parsed);
+        }
     }
 }
