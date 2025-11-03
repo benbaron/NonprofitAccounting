@@ -29,8 +29,15 @@ import java.util.Map;
  */
 public abstract class AbstractReportGenerator
 {
-	private static final java.util.regex.Pattern SCHEMA_LOCATION_ATTRIBUTE_PATTERN =
-		java.util.regex.Pattern.compile("\\s+xsi:schemaLocation=\"[^\"]*\"");
+        private static final java.util.regex.Pattern SCHEMA_LOCATION_ATTRIBUTE_PATTERN =
+                java.util.regex.Pattern.compile("\\s+xsi:schemaLocation=\"[^\"]*\"");
+        private static final java.util.Map<String, String> LEGACY_STYLE_ATTRIBUTE_ALIASES =
+                java.util.Map.ofEntries(
+                        java.util.Map.entry("isBold", "bold"),
+                        java.util.Map.entry("isItalic", "italic"),
+                        java.util.Map.entry("isUnderline", "underline"),
+                        java.util.Map.entry("isStrikethrough", "strikeThrough"),
+                        java.util.Map.entry("hAlign", "hTextAlign"));
 	/**
 	 * Data beans supplied to populate the report. Subclasses may override
 	 * {@link #getReportData()} to compute data dynamically, but in cases where
