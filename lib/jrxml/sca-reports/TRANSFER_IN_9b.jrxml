@@ -5,7 +5,7 @@
 
     <!-- Styles first (no parent attribute) -->
     <style name="base" fontName="SansSerif" fontSize="10"/>
-    <style name="label" isBold="true"/>
+    <style name="label" bold="true"/>
     <style name="value"/>
 
     <!-- Parameters after styles -->
