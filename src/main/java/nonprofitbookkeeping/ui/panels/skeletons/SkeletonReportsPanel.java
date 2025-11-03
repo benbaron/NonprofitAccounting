@@ -125,9 +125,9 @@ public class SkeletonReportsPanel extends BorderPane
 		this.controlsGrid.add(this.endDatePicker, 1, 2);
 		
 		this.controlsGrid.add(new Label("Format:"), 0, 3);
-		this.outputFormatComboBox =
-			new ComboBox<>(FXCollections.observableArrayList("pdf", "html",
-				"xlsx", "text"));
+                this.outputFormatComboBox =
+                        new ComboBox<>(FXCollections.observableArrayList("pdf", "html",
+                                "xlsx", "text"));
 		this.outputFormatComboBox.getSelectionModel().selectFirst();
 		this.controlsGrid.add(this.outputFormatComboBox, 1, 3);
 		
@@ -459,16 +459,17 @@ public class SkeletonReportsPanel extends BorderPane
 			ctx.setReportType(reportTypeKey);
 			ctx.setStartDate(startDate);
 			ctx.setEndDate(endDate);
-			ctx.setFundIds(java.util.Collections.emptyList());
-			ctx.setSelectedBudget(null);
-			ctx.setAccountIdsForDetailReport(java.util.Collections.emptyList());
+                        ctx.setFundIds(java.util.Collections.emptyList());
+                        ctx.setSelectedBudget(null);
+                        ctx.setAccountIdsForDetailReport(java.util.Collections.emptyList());
 			
-			String outputFormat = this.outputFormatComboBox.getValue();
-			
-			if (outputFormat == null || outputFormat.isEmpty())
-			{
-				outputFormat = "pdf";
-			}
+                        String outputFormat = this.outputFormatComboBox.getValue();
+
+                        if (outputFormat == null || outputFormat.isEmpty())
+                        {
+                                outputFormat = "pdf";
+                        }
+                        ctx.setOutputFormat(outputFormat);
 			
 			if (("income_statement_jasper".equals(reportTypeKey) ||
 				"cash_flow_statement_jasper".equals(reportTypeKey)) &&
@@ -498,21 +499,17 @@ public class SkeletonReportsPanel extends BorderPane
 			
                         try
                         {
-                                File generatedFile = null;
-				
-				if ("xlsx".equalsIgnoreCase(outputFormat))
-				{
-					// FIXME
-				}
-				else if ("text".equalsIgnoreCase(outputFormat))
-				{
-					generatedFile = ReportService.generatePlainTextReport(ctx);
-				}
-				else // pdf
-				{
-					generatedFile = this.reportService.generateJasperReport(ctx,
-						outputFormat);
-				}
+                                File generatedFile;
+
+                                if ("text".equalsIgnoreCase(outputFormat))
+                                {
+                                        generatedFile = ReportService.generatePlainTextReport(ctx);
+                                }
+                                else
+                                {
+                                        generatedFile = this.reportService.generateJasperReport(ctx,
+                                                outputFormat);
+                                }
 				
 				if (generatedFile != null && generatedFile.exists())
 				{
