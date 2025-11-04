@@ -1,5 +1,6 @@
 package nonprofitbookkeeping.reports.datasource.scareports;
 
+import java.util.Date;
 
 /** Auto-generated bean for sheet 'FINANCE_COMM_13'. */
 public class FinanceComm13Bean {

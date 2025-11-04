@@ -1,5 +1,6 @@
 package nonprofitbookkeeping.reports.datasource.scareports;
 
+import java.util.Date;
 
 /** Auto-generated bean for sheet 'BALANCE_3'. */
 public class Balance3Bean {

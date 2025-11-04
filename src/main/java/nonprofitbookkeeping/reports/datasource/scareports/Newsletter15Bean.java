@@ -1,5 +1,7 @@
 package nonprofitbookkeeping.reports.datasource.scareports;
 
+import java.util.Date;
+
 /** Auto-generated bean for sheet 'NEWSLETTER_15'. */
 public class Newsletter15Bean {
     private String NEWSLETTER_15_C2;

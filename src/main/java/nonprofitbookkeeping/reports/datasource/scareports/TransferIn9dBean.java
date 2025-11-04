@@ -1,5 +1,7 @@
 package nonprofitbookkeeping.reports.datasource.scareports;
 
+import java.util.Date;
+
 /** Auto-generated bean for sheet 'TRANSFER_IN_9d'. */
 public class TransferIn9dBean {
     private String TRANSFER_IN_9d_C2;

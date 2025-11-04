@@ -1,5 +1,6 @@
 package nonprofitbookkeeping.reports.datasource.scareports;
 
+import java.util.Date;
 
 /** Auto-generated bean for sheet 'INVENTORY_DTL_6'. */
 public class InventoryDtl6Bean {

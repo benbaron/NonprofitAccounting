@@ -1,5 +1,7 @@
 package nonprofitbookkeeping.reports.datasource.scareports;
 
+import java.util.Date;
+
 /** Auto-generated bean for sheet 'REGALIA_SALES_DTL_7b'. */
 public class RegaliaSalesDtl7bBean {
     private String REGALIA_SALES_DTL_7b_C2;

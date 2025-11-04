@@ -1,5 +1,6 @@
 package nonprofitbookkeeping.reports.datasource.scareports;
 
+import java.util.Date;
 
 /** Auto-generated bean for sheet 'INCOME_4'. */
 public class Income4Bean {
