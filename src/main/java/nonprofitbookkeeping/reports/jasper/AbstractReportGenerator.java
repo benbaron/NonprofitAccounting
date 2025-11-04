@@ -193,6 +193,18 @@ public abstract class AbstractReportGenerator
 		
 	}
 	
+	/**
+	 * @param sanitized
+	 * @return
+	 */
+	private byte[] normalizeBooleanStyleAttributes(byte[] sanitized)
+	{
+		// TODO Auto-generated method stub
+		return sanitized;
+		
+	}
+
+
 	private static byte[] readJrxmlBytes(String jrxmlPath) throws IOException
 	{
 		java.nio.file.Path path = java.nio.file.Paths.get(jrxmlPath);
