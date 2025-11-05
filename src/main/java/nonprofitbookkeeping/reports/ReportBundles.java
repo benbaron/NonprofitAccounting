@@ -202,6 +202,10 @@ public final class ReportBundles
                                         "Bean name defined without bean class in " + metadataPath);
                         }
 
+                        String beanName = props.getProperty("beanName");
+
+                        beanName = normalizeBeanName(beanClass, beanName);
+
                         String description = Optional
                                 .ofNullable(props.getProperty("description"))
                                 .map(String::trim)
@@ -245,6 +249,31 @@ public final class ReportBundles
                 return new BundlesData(Map.copyOf(byId), Map.copyOf(byGenerator));
         }
 
+        private static String deriveBeanSimpleName(String beanClass)
+        {
+                if (beanClass == null || beanClass.isBlank())
+                {
+                        return null;
+                }
+
+                String candidate = beanClass.trim();
+                int lastDot = candidate.lastIndexOf('.');
+
+                if (lastDot >= 0 && lastDot < candidate.length() - 1)
+                {
+                        candidate = candidate.substring(lastDot + 1);
+                }
+
+                int lastDollar = candidate.lastIndexOf('$');
+
+                if (lastDollar >= 0 && lastDollar < candidate.length() - 1)
+                {
+                        candidate = candidate.substring(lastDollar + 1);
+                }
+
+                return candidate;
+        }
+
         private static String require(Properties props, String key, String source)
         {
                 String value = props.getProperty(key);
@@ -258,19 +287,44 @@ public final class ReportBundles
                 return value.trim();
         }
 
-        private static String simpleBeanName(String beanClass)
+        private static String normalizeBeanName(String beanClass, String beanName)
         {
-                int lastDot = beanClass.lastIndexOf('.');
-                String simple = lastDot >= 0 ? beanClass.substring(lastDot + 1) : beanClass;
-
-                int innerClassSeparator = simple.lastIndexOf('$');
-
-                if (innerClassSeparator >= 0)
+                if (beanClass == null)
                 {
-                        simple = simple.substring(innerClassSeparator + 1);
+                        return null;
                 }
 
-                return simple;
+                if (beanName != null)
+                {
+                        beanName = beanName.trim();
+
+                        if (!beanName.isEmpty())
+                        {
+                                return beanName;
+                        }
+                }
+
+                int lastDot = beanClass.lastIndexOf('.') + 1;
+                String simple = beanClass.substring(lastDot);
+
+                int inner = simple.lastIndexOf('$');
+
+                if (inner >= 0)
+                {
+                        simple = simple.substring(inner + 1);
+                }
+
+                if (simple.endsWith("Bean"))
+                {
+                        simple = simple.substring(0, simple.length() - 4);
+                }
+
+                if (simple.isEmpty())
+                {
+                        return null;
+                }
+
+                return Character.toLowerCase(simple.charAt(0)) + simple.substring(1);
         }
 
         private static List<BundleResource> discoverBundleResources()
