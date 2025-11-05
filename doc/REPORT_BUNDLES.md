@@ -17,4 +17,6 @@ The `nonprofitbookkeeping.reports.ReportBundles` loader scans these directories
 at runtime, and `ReportTemplates` builds the UI catalog from the collected
 metadata. Generators call `bundledReportPath()` to retrieve the JRXML resource
 resolved through the bundle metadata, keeping paths, beans, and documentation in
-sync.
+sync. `ReportBundlePackager` can export a bundle (or all bundles) to a
+filesystem directory, copying the metadata, JRXML template, and compiled bean
+class together for distribution.
