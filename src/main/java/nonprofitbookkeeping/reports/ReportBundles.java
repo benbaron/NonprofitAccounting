@@ -41,6 +41,7 @@ public final class ReportBundles
                 String jrxmlResource,
                 String generatorClassName,
                 String beanClassName,
+                String beanName,
                 String description,
                 ReportType reportType)
         {
@@ -48,6 +49,46 @@ public final class ReportBundles
                 public boolean hasBeanClass()
                 {
                         return this.beanClassName != null && !this.beanClassName.isBlank();
+                }
+
+                /**
+                 * @return optional classpath resource for the bean class compiled output
+                 */
+                public Optional<String> beanResourcePath()
+                {
+                        if (!hasBeanClass())
+                        {
+                                return Optional.empty();
+                        }
+
+                        return Optional.of(this.beanClassName.replace('.', '/') + ".class");
+                }
+
+                /**
+                 * Returns the resources that should be included when packaging this bundle.
+                 * The list always contains the metadata and JRXML resources and conditionally
+                 * includes the bean class resource if one is defined.
+                 *
+                 * @return immutable list of classpath resources that compose the bundle
+                 */
+                public List<String> packagedResources()
+                {
+                        final List<String> resources = new ArrayList<>();
+                        resources.add(this.metadataResource);
+                        resources.add(this.jrxmlResource);
+                        return finalizePackagedResources(resources);
+                }
+
+                private List<String> finalizePackagedResources(final List<String> resources)
+                {
+                        Optional<String> beanResource = beanResourcePath();
+
+                        if (beanResource.isPresent())
+                        {
+                                resources.add(beanResource.get());
+                        }
+
+                        return List.copyOf(resources);
                 }
         }
 
@@ -164,6 +205,14 @@ public final class ReportBundles
                                 beanClass = null;
                         }
 
+                        String derivedBeanName = deriveBeanSimpleName(beanClass);
+
+                        String beanName = Optional
+                                .ofNullable(props.getProperty("beanName"))
+                                .map(String::trim)
+                                .filter(s -> !s.isEmpty())
+                                .orElse(derivedBeanName);
+
                         String description = Optional
                                 .ofNullable(props.getProperty("description"))
                                 .map(String::trim)
@@ -181,6 +230,7 @@ public final class ReportBundles
                                 jrxmlResource,
                                 generator,
                                 beanClass,
+                                beanName,
                                 description,
                                 reportType);
 
@@ -204,6 +254,31 @@ public final class ReportBundles
                 }
 
                 return new BundlesData(Map.copyOf(byId), Map.copyOf(byGenerator));
+        }
+
+        private static String deriveBeanSimpleName(String beanClass)
+        {
+                if (beanClass == null || beanClass.isBlank())
+                {
+                        return null;
+                }
+
+                String candidate = beanClass.trim();
+                int lastDot = candidate.lastIndexOf('.');
+
+                if (lastDot >= 0 && lastDot < candidate.length() - 1)
+                {
+                        candidate = candidate.substring(lastDot + 1);
+                }
+
+                int lastDollar = candidate.lastIndexOf('$');
+
+                if (lastDollar >= 0 && lastDollar < candidate.length() - 1)
+                {
+                        candidate = candidate.substring(lastDollar + 1);
+                }
+
+                return candidate;
         }
 
         private static String require(Properties props, String key, String source)
