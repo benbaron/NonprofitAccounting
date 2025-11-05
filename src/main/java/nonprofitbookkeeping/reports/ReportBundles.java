@@ -202,13 +202,9 @@ public final class ReportBundles
                                         "Bean name defined without bean class in " + metadataPath);
                         }
 
-                        String derivedBeanName = deriveBeanSimpleName(beanClass);
+                        String beanName = props.getProperty("beanName");
 
-                        String beanName = Optional
-                                .ofNullable(props.getProperty("beanName"))
-                                .map(String::trim)
-                                .filter(s -> !s.isEmpty())
-                                .orElse(derivedBeanName);
+                        beanName = normalizeBeanName(beanClass, beanName);
 
                         String description = Optional
                                 .ofNullable(props.getProperty("description"))
@@ -289,6 +285,46 @@ public final class ReportBundles
                 }
 
                 return value.trim();
+        }
+
+        private static String normalizeBeanName(String beanClass, String beanName)
+        {
+                if (beanClass == null)
+                {
+                        return null;
+                }
+
+                if (beanName != null)
+                {
+                        beanName = beanName.trim();
+
+                        if (!beanName.isEmpty())
+                        {
+                                return beanName;
+                        }
+                }
+
+                int lastDot = beanClass.lastIndexOf('.') + 1;
+                String simple = beanClass.substring(lastDot);
+
+                int inner = simple.lastIndexOf('$');
+
+                if (inner >= 0)
+                {
+                        simple = simple.substring(inner + 1);
+                }
+
+                if (simple.endsWith("Bean"))
+                {
+                        simple = simple.substring(0, simple.length() - 4);
+                }
+
+                if (simple.isEmpty())
+                {
+                        return null;
+                }
+
+                return Character.toLowerCase(simple.charAt(0)) + simple.substring(1);
         }
 
         private static List<BundleResource> discoverBundleResources()
