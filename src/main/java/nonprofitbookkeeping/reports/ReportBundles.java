@@ -41,6 +41,7 @@ public final class ReportBundles
                 String jrxmlResource,
                 String generatorClassName,
                 String beanClassName,
+                String beanSimpleName,
                 String description,
                 ReportType reportType)
         {
@@ -48,6 +49,28 @@ public final class ReportBundles
                 public boolean hasBeanClass()
                 {
                         return this.beanClassName != null && !this.beanClassName.isBlank();
+                }
+
+                /**
+                 * Resolves the simple bean name for display or packaging purposes.
+                 *
+                 * @return optional simple bean name, empty when no bean class is defined
+                 */
+                public Optional<String> beanName()
+                {
+                        if (!hasBeanClass())
+                        {
+                                return Optional.empty();
+                        }
+
+                        if (this.beanSimpleName != null && !this.beanSimpleName.isBlank())
+                        {
+                                return Optional.of(this.beanSimpleName);
+                        }
+
+                        String className = this.beanClassName.substring(
+                                this.beanClassName.lastIndexOf('.') + 1);
+                        return Optional.of(className);
                 }
         }
 
@@ -157,11 +180,26 @@ public final class ReportBundles
                                         ex);
                         }
 
-                        String beanClass = props.getProperty("beanClass");
+                        String beanClass = Optional.ofNullable(props.getProperty("beanClass"))
+                                .map(String::trim)
+                                .filter(s -> !s.isEmpty())
+                                .orElse(null);
 
-                        if (beanClass != null && beanClass.isBlank())
+                        String beanSimpleName = null;
+
+                        if (beanClass != null)
                         {
-                                beanClass = null;
+                                beanSimpleName = Optional
+                                        .ofNullable(props.getProperty("beanName"))
+                                        .map(String::trim)
+                                        .filter(s -> !s.isEmpty())
+                                        .orElseGet(() -> beanClass
+                                                .substring(beanClass.lastIndexOf('.') + 1));
+                        }
+                        else if (props.getProperty("beanName") != null)
+                        {
+                                throw new IllegalStateException(
+                                        "Bean name defined without bean class in " + metadataPath);
                         }
 
                         String description = Optional
@@ -181,6 +219,7 @@ public final class ReportBundles
                                 jrxmlResource,
                                 generator,
                                 beanClass,
+                                beanSimpleName,
                                 description,
                                 reportType);
 
