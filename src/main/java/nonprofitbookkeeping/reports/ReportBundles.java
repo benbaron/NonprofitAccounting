@@ -249,6 +249,31 @@ public final class ReportBundles
                 return new BundlesData(Map.copyOf(byId), Map.copyOf(byGenerator));
         }
 
+        private static String deriveBeanSimpleName(String beanClass)
+        {
+                if (beanClass == null || beanClass.isBlank())
+                {
+                        return null;
+                }
+
+                String candidate = beanClass.trim();
+                int lastDot = candidate.lastIndexOf('.');
+
+                if (lastDot >= 0 && lastDot < candidate.length() - 1)
+                {
+                        candidate = candidate.substring(lastDot + 1);
+                }
+
+                int lastDollar = candidate.lastIndexOf('$');
+
+                if (lastDollar >= 0 && lastDollar < candidate.length() - 1)
+                {
+                        candidate = candidate.substring(lastDollar + 1);
+                }
+
+                return candidate;
+        }
+
         private static String require(Properties props, String key, String source)
         {
                 String value = props.getProperty(key);
