@@ -41,7 +41,7 @@ public final class ReportBundles
                 String jrxmlResource,
                 String generatorClassName,
                 String beanClassName,
-                String beanName,
+                String beanSimpleName,
                 String description,
                 ReportType reportType)
         {
@@ -52,43 +52,25 @@ public final class ReportBundles
                 }
 
                 /**
-                 * @return optional classpath resource for the bean class compiled output
+                 * Resolves the simple bean name for display or packaging purposes.
+                 *
+                 * @return optional simple bean name, empty when no bean class is defined
                  */
-                public Optional<String> beanResourcePath()
+                public Optional<String> beanName()
                 {
                         if (!hasBeanClass())
                         {
                                 return Optional.empty();
                         }
 
-                        return Optional.of(this.beanClassName.replace('.', '/') + ".class");
-                }
-
-                /**
-                 * Returns the resources that should be included when packaging this bundle.
-                 * The list always contains the metadata and JRXML resources and conditionally
-                 * includes the bean class resource if one is defined.
-                 *
-                 * @return immutable list of classpath resources that compose the bundle
-                 */
-                public List<String> packagedResources()
-                {
-                        final List<String> resources = new ArrayList<>();
-                        resources.add(this.metadataResource);
-                        resources.add(this.jrxmlResource);
-                        return finalizePackagedResources(resources);
-                }
-
-                private List<String> finalizePackagedResources(final List<String> resources)
-                {
-                        Optional<String> beanResource = beanResourcePath();
-
-                        if (beanResource.isPresent())
+                        if (this.beanSimpleName != null && !this.beanSimpleName.isBlank())
                         {
-                                resources.add(beanResource.get());
+                                return Optional.of(this.beanSimpleName);
                         }
 
-                        return List.copyOf(resources);
+                        String className = this.beanClassName.substring(
+                                this.beanClassName.lastIndexOf('.') + 1);
+                        return Optional.of(className);
                 }
         }
 
@@ -198,11 +180,26 @@ public final class ReportBundles
                                         ex);
                         }
 
-                        String beanClass = props.getProperty("beanClass");
+                        String beanClass = Optional.ofNullable(props.getProperty("beanClass"))
+                                .map(String::trim)
+                                .filter(s -> !s.isEmpty())
+                                .orElse(null);
 
-                        if (beanClass != null && beanClass.isBlank())
+                        String beanSimpleName = null;
+
+                        if (beanClass != null)
                         {
-                                beanClass = null;
+                                beanSimpleName = Optional
+                                        .ofNullable(props.getProperty("beanName"))
+                                        .map(String::trim)
+                                        .filter(s -> !s.isEmpty())
+                                        .orElseGet(() -> beanClass
+                                                .substring(beanClass.lastIndexOf('.') + 1));
+                        }
+                        else if (props.getProperty("beanName") != null)
+                        {
+                                throw new IllegalStateException(
+                                        "Bean name defined without bean class in " + metadataPath);
                         }
 
                         String derivedBeanName = deriveBeanSimpleName(beanClass);
@@ -230,7 +227,7 @@ public final class ReportBundles
                                 jrxmlResource,
                                 generator,
                                 beanClass,
-                                beanName,
+                                beanSimpleName,
                                 description,
                                 reportType);
 
