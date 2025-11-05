@@ -131,35 +131,9 @@
                 </executions>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.3.1</version>
-                <executions>
-                    <execution>
-                        <id>copy-report-bean-sources</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.outputDirectory}/nonprofitbookkeeping/reports/bundles/_beans</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>src/main/java/nonprofitbookkeeping/reports/datasource</directory>
-                                    <includes>
-                                        <include>**/*.java</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-                    <!-- Regular JAR with Main-Class set -->
-                    <plugin>
-                      <groupId>org.apache.maven.plugins</groupId>
+		    <!-- Regular JAR with Main-Class set -->
+		    <plugin>
+		      <groupId>org.apache.maven.plugins</groupId>
 		      <artifactId>maven-jar-plugin</artifactId>
 		      <version>3.3.0</version>
 		      <configuration>
