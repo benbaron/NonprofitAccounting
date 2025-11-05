@@ -6,10 +6,7 @@ Every bundle directory contains:
 
 * the JRXML template file that Jasper compiles,
 * one or more `.properties` files documenting the display name, generator
-  implementation, report type, data bean class, and the bean name used when
-  registering it with a data context,
-* the generated bean source packaged under `_beans/` so downstream tools can
-  ship the matching data structure alongside the template,
+  implementation, report type, and data bean,
 * optional descriptive text stored in the `description` property to help future
   maintainers understand the schedule.
 
