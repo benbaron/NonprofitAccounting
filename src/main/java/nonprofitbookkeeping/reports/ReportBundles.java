@@ -41,6 +41,7 @@ public final class ReportBundles
                 String jrxmlResource,
                 String generatorClassName,
                 String beanClassName,
+                String beanSimpleName,
                 String description,
                 ReportType reportType)
         {
@@ -48,6 +49,28 @@ public final class ReportBundles
                 public boolean hasBeanClass()
                 {
                         return this.beanClassName != null && !this.beanClassName.isBlank();
+                }
+
+                /**
+                 * Resolves the simple bean name for display or packaging purposes.
+                 *
+                 * @return optional simple bean name, empty when no bean class is defined
+                 */
+                public Optional<String> beanName()
+                {
+                        if (!hasBeanClass())
+                        {
+                                return Optional.empty();
+                        }
+
+                        if (this.beanSimpleName != null && !this.beanSimpleName.isBlank())
+                        {
+                                return Optional.of(this.beanSimpleName);
+                        }
+
+                        String className = this.beanClassName.substring(
+                                this.beanClassName.lastIndexOf('.') + 1);
+                        return Optional.of(className);
                 }
         }
 
@@ -157,12 +180,31 @@ public final class ReportBundles
                                         ex);
                         }
 
-                        String beanClass = props.getProperty("beanClass");
+                        String beanClass = Optional.ofNullable(props.getProperty("beanClass"))
+                                .map(String::trim)
+                                .filter(s -> !s.isEmpty())
+                                .orElse(null);
 
-                        if (beanClass != null && beanClass.isBlank())
+                        String beanSimpleName = null;
+
+                        if (beanClass != null)
                         {
-                                beanClass = null;
+                                beanSimpleName = Optional
+                                        .ofNullable(props.getProperty("beanName"))
+                                        .map(String::trim)
+                                        .filter(s -> !s.isEmpty())
+                                        .orElseGet(() -> beanClass
+                                                .substring(beanClass.lastIndexOf('.') + 1));
                         }
+                        else if (props.getProperty("beanName") != null)
+                        {
+                                throw new IllegalStateException(
+                                        "Bean name defined without bean class in " + metadataPath);
+                        }
+
+                        String beanName = props.getProperty("beanName");
+
+                        beanName = normalizeBeanName(beanClass, beanName);
 
                         String description = Optional
                                 .ofNullable(props.getProperty("description"))
@@ -181,6 +223,7 @@ public final class ReportBundles
                                 jrxmlResource,
                                 generator,
                                 beanClass,
+                                beanSimpleName,
                                 description,
                                 reportType);
 
@@ -206,6 +249,31 @@ public final class ReportBundles
                 return new BundlesData(Map.copyOf(byId), Map.copyOf(byGenerator));
         }
 
+        private static String deriveBeanSimpleName(String beanClass)
+        {
+                if (beanClass == null || beanClass.isBlank())
+                {
+                        return null;
+                }
+
+                String candidate = beanClass.trim();
+                int lastDot = candidate.lastIndexOf('.');
+
+                if (lastDot >= 0 && lastDot < candidate.length() - 1)
+                {
+                        candidate = candidate.substring(lastDot + 1);
+                }
+
+                int lastDollar = candidate.lastIndexOf('$');
+
+                if (lastDollar >= 0 && lastDollar < candidate.length() - 1)
+                {
+                        candidate = candidate.substring(lastDollar + 1);
+                }
+
+                return candidate;
+        }
+
         private static String require(Properties props, String key, String source)
         {
                 String value = props.getProperty(key);
@@ -217,6 +285,46 @@ public final class ReportBundles
                 }
 
                 return value.trim();
+        }
+
+        private static String normalizeBeanName(String beanClass, String beanName)
+        {
+                if (beanClass == null)
+                {
+                        return null;
+                }
+
+                if (beanName != null)
+                {
+                        beanName = beanName.trim();
+
+                        if (!beanName.isEmpty())
+                        {
+                                return beanName;
+                        }
+                }
+
+                int lastDot = beanClass.lastIndexOf('.') + 1;
+                String simple = beanClass.substring(lastDot);
+
+                int inner = simple.lastIndexOf('$');
+
+                if (inner >= 0)
+                {
+                        simple = simple.substring(inner + 1);
+                }
+
+                if (simple.endsWith("Bean"))
+                {
+                        simple = simple.substring(0, simple.length() - 4);
+                }
+
+                if (simple.isEmpty())
+                {
+                        return null;
+                }
+
+                return Character.toLowerCase(simple.charAt(0)) + simple.substring(1);
         }
 
         private static List<BundleResource> discoverBundleResources()
