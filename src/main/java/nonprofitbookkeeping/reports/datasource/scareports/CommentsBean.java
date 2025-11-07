@@ -1,7 +1,5 @@
 package nonprofitbookkeeping.reports.datasource.scareports;
 
-import java.util.Date;
-
 /** Auto-generated bean for sheet 'COMMENTS'. */
 public class CommentsBean {
     private String COMMENTS_C2;

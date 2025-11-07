@@ -1,16 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-    name="PRIMARY_ACCOUNT_2a" pageWidth="612" pageHeight="792" columnWidth="552" leftMargin="30" rightMargin="30" topMargin="24" bottomMargin="24" uuid="00000000-0000-0000-0000-577124487310">
-
-    <!-- Styles first (no parent attribute) -->
-    <style name="base" fontName="SansSerif" fontSize="10"/>
-    <style name="label" bold="true"/>
-    <style name="value"/>
-
-    <!-- Parameters after styles -->
-    <parameter name="reportTitle" class="java.lang.String"/>
-    <parameter name="organizationName" class="java.lang.String"/>
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="NEWSLETTER_15" language="java" pageWidth="612" pageHeight="792" columnWidth="552" leftMargin="30" rightMargin="30" topMargin="24" bottomMargin="24" uuid="00000000-0000-0000-0000-059940237889">
+	<style name="base" fontName="SansSerif" fontSize="10.0"/>
+	<style name="label" bold="true"/>
+	<style name="value"/>
+	<parameter name="reportTitle" class="java.lang.String"/>
+	<parameter name="organizationName" class="java.lang.String"/>
     <field name="PRIMARY_ACCOUNT_2a_C2" class="java.lang.String"/>
     <field name="PRIMARY_ACCOUNT_2a_C3" class="java.lang.String"/>
     <field name="PRIMARY_ACCOUNT_2a_C4" class="java.lang.String"/>
@@ -26,9 +20,7 @@
     <field name="PRIMARY_ACCOUNT_2a_F43" class="java.lang.String"/>
     <field name="PRIMARY_ACCOUNT_2a_H43" class="java.lang.String"/>
     <field name="PRIMARY_ACCOUNT_2a_C65" class="java.lang.String"/>
-
     <title>
-      <band height="76">
         <staticText>
           <reportElement x="0" y="0" width="552" height="24"/>
           <textElement textAlignment="Center"><font size="10"/></textElement>
@@ -36,7 +28,9 @@
         </staticText>
         <staticText>
           <reportElement x="0" y="26" width="552" height="22"/>
-          <textElement textAlignment="Center"><font size="9"/></textElement>
+          <textElement textAlignment="Center">
+          <font size="9"/>
+          </textElement>
           <text><![CDATA[$P{organizationName}]]></text>
         </staticText>
         <staticText>
@@ -44,7 +38,6 @@
           <textElement textAlignment="Center"><font size="8"/></textElement>
           <text><![CDATA[PRIMARY_ACCOUNT_2a]]></text>
         </staticText>
-      </band>
     </title>
 
     <detail>

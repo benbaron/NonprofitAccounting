@@ -1,1999 +1,811 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-    name="DEPR_DTL_8" pageWidth="612" pageHeight="792" columnWidth="552" leftMargin="30" rightMargin="30" topMargin="24" bottomMargin="24" uuid="00000000-0000-0000-0000-497882303011">
-
-    <!-- Styles first (no parent attribute) -->
-    <style name="base" fontName="SansSerif" fontSize="10"/>
-    <style name="label" isBold="true"/>
-    <style name="value"/>
-
-    <!-- Parameters after styles -->
-    <parameter name="reportTitle" class="java.lang.String"/>
-    <parameter name="organizationName" class="java.lang.String"/>
-    <field name="DEPR_DTL_8_D2" class="java.lang.String"/>
-    <field name="DEPR_DTL_8_D3" class="java.lang.String"/>
-    <field name="DEPR_DTL_8_D4" class="java.lang.String"/>
-    <field name="DEPR_DTL_8_D6" class="java.lang.String"/>
-    <field name="DEPR_DTL_8_H14" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_I14" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_K14" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_L14" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_M14" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_H15" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_I15" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_K15" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_L15" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_M15" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_H16" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_I16" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_K16" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_L16" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_M16" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_H17" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_I17" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_K17" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_L17" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_M17" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_H18" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_I18" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_K18" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_L18" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_M18" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_H19" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_I19" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_K19" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_L19" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_M19" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_H20" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_I20" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_K20" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_L20" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_M20" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_H21" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_I21" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_K21" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_L21" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_M21" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_H22" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_I22" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_K22" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_L22" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_M22" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_H23" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_I23" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_K23" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_L23" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_M23" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_I24" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_J24" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_K24" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_L24" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_M24" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_H26" class="java.lang.String"/>
-    <field name="DEPR_DTL_8_I26" class="java.lang.String"/>
-    <field name="DEPR_DTL_8_J26" class="java.lang.String"/>
-    <field name="DEPR_DTL_8_K26" class="java.lang.String"/>
-    <field name="DEPR_DTL_8_L26" class="java.lang.String"/>
-    <field name="DEPR_DTL_8_M26" class="java.lang.String"/>
-    <field name="DEPR_DTL_8_H32" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_I32" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_K32" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_L32" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_M32" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_H33" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_I33" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_K33" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_L33" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_M33" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_H34" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_I34" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_K34" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_L34" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_M34" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_H35" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_I35" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_K35" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_L35" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_M35" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_H36" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_I36" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_K36" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_L36" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_M36" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_H37" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_I37" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_K37" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_L37" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_M37" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_H38" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_I38" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_K38" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_L38" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_M38" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_H39" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_I39" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_K39" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_L39" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_M39" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_H40" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_I40" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_K40" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_L40" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_M40" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_H41" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_I41" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_K41" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_L41" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_M41" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_I42" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_J42" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_K42" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_L42" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_M42" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_F44" class="java.lang.String"/>
-    <field name="DEPR_DTL_8_G44" class="java.lang.String"/>
-    <field name="DEPR_DTL_8_H44" class="java.lang.String"/>
-    <field name="DEPR_DTL_8_I44" class="java.lang.String"/>
-    <field name="DEPR_DTL_8_J44" class="java.lang.String"/>
-    <field name="DEPR_DTL_8_K44" class="java.lang.String"/>
-    <field name="DEPR_DTL_8_L44" class="java.lang.String"/>
-    <field name="DEPR_DTL_8_M44" class="java.lang.String"/>
-    <field name="DEPR_DTL_8_I47" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_J47" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_K47" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_L47" class="java.lang.Double"/>
-    <field name="DEPR_DTL_8_M47" class="java.lang.Double"/>
-
-    <title>
-      <band height="76">
-        <staticText>
-          <reportElement x="0" y="0" width="552" height="24"/>
-          <textElement textAlignment="Center"><font size="11"/></textElement>
-          <text><![CDATA[$P{reportTitle}]]></text>
-        </staticText>
-        <staticText>
-          <reportElement x="0" y="26" width="552" height="22"/>
-          <textElement textAlignment="Center"><font size="9"/></textElement>
-          <text><![CDATA[$P{organizationName}]]></text>
-        </staticText>
-        <staticText>
-          <reportElement x="0" y="50" width="552" height="22"/>
-          <textElement textAlignment="Center"><font size="9"/></textElement>
-          <text><![CDATA[DEPR_DTL_8]]></text>
-        </staticText>
-      </band>
-    </title>
-
-    <detail>
-      <band height="744">
-          <staticText>
-            <reportElement x="371" y="24" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[CONTENTS]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="432" y="24" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[CONTENTS]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="493" y="24" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[CONTENTS]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="24" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[CONTENTS]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="24" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[CONTENTS]]></text>
-          </staticText>
-          <textField>
-            <reportElement x="77" y="36" width="22" height="12"/>
-            <textElement><font size="6"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_D2}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="371" y="36" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[1. CONTACT INFO]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="432" y="36" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[1. CONTACT INFO]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="493" y="36" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[1. CONTACT INFO]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="36" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[1. CONTACT INFO]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="36" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[1. CONTACT INFO]]></text>
-          </staticText>
-          <textField>
-            <reportElement x="77" y="48" width="22" height="12"/>
-            <textElement><font size="7"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_D3}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="371" y="48" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[2.a PRIMARY ACCOUNT]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="432" y="48" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[2.a PRIMARY ACCOUNT]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="493" y="48" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[2.a PRIMARY ACCOUNT]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="48" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[2.a PRIMARY ACCOUNT]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="48" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[2.a PRIMARY ACCOUNT]]></text>
-          </staticText>
-          <textField>
-            <reportElement x="77" y="60" width="22" height="12"/>
-            <textElement><font size="7"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_D4}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="371" y="60" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[2.b SECONDARY ACCOUNTS]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="432" y="60" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[2.b SECONDARY ACCOUNTS]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="493" y="60" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[2.b SECONDARY ACCOUNTS]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="60" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[2.b SECONDARY ACCOUNTS]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="60" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[2.b SECONDARY ACCOUNTS]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="371" y="72" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[3. BALANCE]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="432" y="72" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[3. BALANCE]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="493" y="72" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[3. BALANCE]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="72" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[3. BALANCE]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="72" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[3. BALANCE]]></text>
-          </staticText>
-          <textField>
-            <reportElement x="77" y="84" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_D6}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="371" y="84" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[4. INCOME]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="432" y="84" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[4. INCOME]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="493" y="84" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[4. INCOME]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="84" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[4. INCOME]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="84" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[4. INCOME]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="371" y="96" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[5.a ASSET DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="432" y="96" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[5.a ASSET DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="493" y="96" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[5.a ASSET DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="96" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[5.a ASSET DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="96" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[5.a ASSET DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="77" y="108" width="22" height="14"/>
-            <textElement><font size="11"/></textElement>
-            <text><![CDATA[DEPRECIATION DETAIL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="371" y="108" width="61" height="14"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[5.b LIABILITY DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="432" y="108" width="61" height="14"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[5.b LIABILITY DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="493" y="108" width="22" height="14"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[5.b LIABILITY DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="108" width="22" height="14"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[5.b LIABILITY DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="108" width="22" height="14"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[5.b LIABILITY DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="77" y="122" width="22" height="12"/>
-            <textElement><font size="6"/></textElement>
-            <text><![CDATA[To remove an item previously listed, do not list it here. Instead, list it on the bottom of page 7 for reported equipment.]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="371" y="122" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[6. INVENTORY DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="432" y="122" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[6. INVENTORY DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="493" y="122" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[9. TRANSFER IN]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="122" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[9. TRANSFER IN]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="122" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[6. INVENTORY DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="371" y="134" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[7. REGALIA SALES DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="432" y="134" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[7. REGALIA SALES DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="493" y="134" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[10. TRANSFER OUT]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="134" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[10. TRANSFER OUT]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="134" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[7. REGALIA SALES DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="77" y="146" width="22" height="12"/>
-            <textElement><font size="9"/></textElement>
-            <text><![CDATA[5 Year Depreciation: Trailers and Electronic Equipment]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="371" y="146" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[8. DEPRECIATION DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="432" y="146" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[8. DEPRECIATION DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="493" y="146" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[11.a INCOME DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="146" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[11.a INCOME DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="146" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[8. DEPRECIATION DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="77" y="158" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[Note: If the item is not electronic or a trailer, it belongs to 7 year property below. For trailers, put in comments whether it is licensed.]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="371" y="158" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[9. TRANSFER IN]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="432" y="158" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[9. TRANSFER IN]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="493" y="158" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[11.b INCOME DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="158" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[11.b INCOME DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="158" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[9. TRANSFER IN]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="30" y="170" width="15" height="42"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[Purch
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="DEPR_DTL_8" language="java" columnCount="1" pageWidth="612" pageHeight="792" orientation="Landscape" columnWidth="576" leftMargin="18" rightMargin="18" topMargin="18" bottomMargin="18" uuid="00000000-0000-0000-0000-497882303011">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<style name="base" fontName="SansSerif" fontSize="10.0"/>
+	<style name="label" bold="true"/>
+	<style name="value"/>
+	<parameter name="reportTitle" class="java.lang.String"/>
+	<parameter name="organizationName" class="java.lang.String"/>
+	<field name="DEPR_DTL_8_D2" class="java.lang.String"/>
+	<field name="DEPR_DTL_8_D3" class="java.lang.String"/>
+	<field name="DEPR_DTL_8_D4" class="java.lang.String"/>
+	<field name="DEPR_DTL_8_D6" class="java.lang.String"/>
+	<field name="DEPR_DTL_8_H14" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_I14" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_K14" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_L14" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_M14" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_H15" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_I15" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_K15" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_L15" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_M15" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_H16" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_I16" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_K16" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_L16" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_M16" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_H17" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_I17" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_K17" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_L17" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_M17" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_H18" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_I18" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_K18" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_L18" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_M18" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_H19" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_I19" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_K19" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_L19" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_M19" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_H20" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_I20" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_K20" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_L20" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_M20" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_H21" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_I21" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_K21" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_L21" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_M21" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_H22" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_I22" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_K22" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_L22" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_M22" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_H23" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_I23" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_K23" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_L23" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_M23" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_I24" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_J24" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_K24" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_L24" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_M24" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_H26" class="java.lang.String"/>
+	<field name="DEPR_DTL_8_I26" class="java.lang.String"/>
+	<field name="DEPR_DTL_8_J26" class="java.lang.String"/>
+	<field name="DEPR_DTL_8_K26" class="java.lang.String"/>
+	<field name="DEPR_DTL_8_L26" class="java.lang.String"/>
+	<field name="DEPR_DTL_8_M26" class="java.lang.String"/>
+	<field name="DEPR_DTL_8_H32" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_I32" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_K32" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_L32" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_M32" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_H33" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_I33" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_K33" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_L33" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_M33" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_H34" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_I34" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_K34" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_L34" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_M34" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_H35" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_I35" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_K35" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_L35" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_M35" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_H36" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_I36" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_K36" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_L36" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_M36" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_H37" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_I37" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_K37" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_L37" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_M37" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_H38" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_I38" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_K38" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_L38" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_M38" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_H39" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_I39" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_K39" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_L39" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_M39" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_H40" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_I40" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_K40" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_L40" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_M40" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_H41" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_I41" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_K41" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_L41" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_M41" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_I42" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_J42" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_K42" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_L42" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_M42" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_F44" class="java.lang.String"/>
+	<field name="DEPR_DTL_8_G44" class="java.lang.String"/>
+	<field name="DEPR_DTL_8_H44" class="java.lang.String"/>
+	<field name="DEPR_DTL_8_I44" class="java.lang.String"/>
+	<field name="DEPR_DTL_8_J44" class="java.lang.String"/>
+	<field name="DEPR_DTL_8_K44" class="java.lang.String"/>
+	<field name="DEPR_DTL_8_L44" class="java.lang.String"/>
+	<field name="DEPR_DTL_8_M44" class="java.lang.String"/>
+	<field name="DEPR_DTL_8_I47" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_J47" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_K47" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_L47" class="java.lang.Double"/>
+	<field name="DEPR_DTL_8_M47" class="java.lang.Double"/>
+	<title height="54">
+		<element kind="staticText" uuid="e6215687-6cd0-42e9-ad81-4ac0ea755c6c" x="0" y="0" width="210" height="24" fontSize="11.0" hTextAlign="Center">
+			<text><![CDATA[$P{reportTitle}]]></text>
+		</element>
+		<element kind="staticText" uuid="fea378d1-9154-4389-8a91-7096977ac87e" x="150" y="1" width="229" height="22" fontSize="9.0" hTextAlign="Center">
+			<text><![CDATA[$P{organizationName}]]></text>
+		</element>
+		<element kind="staticText" uuid="c4fcec4e-8ac4-4465-829f-8e30b6d4943d" x="321" y="2" width="273" height="22" fontSize="9.0" hTextAlign="Center">
+			<text><![CDATA[DEPR_DTL_8]]></text>
+		</element>
+	</title>
+	<detail>
+		<band height="756">
+			<element kind="textField" uuid="2930979a-129d-428d-9d1c-ed46606a1bbf" x="77" y="36" width="22" height="12" fontSize="6.0">
+				<expression><![CDATA[$F{DEPR_DTL_8_D2}]]></expression>
+			</element>
+			<element kind="textField" uuid="d76d71cc-f00c-43b8-947c-1da8dc4781e6" x="77" y="48" width="22" height="12" fontSize="7.0">
+				<expression><![CDATA[$F{DEPR_DTL_8_D3}]]></expression>
+			</element>
+			<element kind="textField" uuid="d9f211b9-2835-4171-9994-319c87c06ac4" x="77" y="60" width="22" height="12" fontSize="7.0">
+				<expression><![CDATA[$F{DEPR_DTL_8_D4}]]></expression>
+			</element>
+			<element kind="textField" uuid="a6f1b998-fe36-4117-8de0-01dc74066070" x="77" y="84" width="22" height="12" fontSize="8.0">
+				<expression><![CDATA[$F{DEPR_DTL_8_D6}]]></expression>
+			</element>
+			<element kind="staticText" uuid="ca2fbe40-487b-41da-b235-73517e2014e8" x="77" y="108" width="22" height="14" fontSize="11.0">
+				<text><![CDATA[DEPRECIATION DETAIL]]></text>
+			</element>
+			<element kind="staticText" uuid="1b91c386-c319-4e9a-80b7-e9448d0c19e7" x="77" y="122" width="22" height="12" fontSize="6.0">
+				<text><![CDATA[To remove an item previously listed, do not list it here. Instead, list it on the bottom of page 7 for reported equipment.]]></text>
+			</element>
+			<element kind="staticText" uuid="eac39ada-53b8-4fbd-84c3-72560fa4ce5a" x="77" y="146" width="22" height="12" fontSize="9.0">
+				<text><![CDATA[5 Year Depreciation: Trailers and Electronic Equipment]]></text>
+			</element>
+			<element kind="staticText" uuid="bf70ab40-a835-4cc7-8055-bcb6a694039a" x="77" y="158" width="22" height="12" fontSize="8.0">
+				<text><![CDATA[Note: If the item is not electronic or a trailer, it belongs to 7 year property below. For trailers, put in comments whether it is licensed.]]></text>
+			</element>
+			<element kind="staticText" uuid="6c654ec6-d351-4107-892c-45aa764b1999" x="30" y="170" width="15" height="42" fontSize="8.0">
+				<text><![CDATA[Purch
 Q
 T
 R]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="77" y="170" width="22" height="42"/>
-            <textElement><font size="6"/></textElement>
-            <text><![CDATA[OA, 
+			</element>
+			<element kind="staticText" uuid="54d4b352-013d-4647-a44a-b55e52c58b8c" x="77" y="170" width="22" height="42" fontSize="6.0">
+				<text><![CDATA[OA, 
 AR or 
 FR]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="99" y="170" width="63" height="42"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[Equipment
+			</element>
+			<element kind="staticText" uuid="03d8a04d-5706-4630-a95d-136b9bd9ffd8" x="99" y="170" width="63" height="42" fontSize="8.0">
+				<text><![CDATA[Equipment
 (purchases or value 
 &gt; $2000 each)
 Item Description]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="162" y="170" width="19" height="42"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[Qty]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="181" y="170" width="24" height="42"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[Purchase Year]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="205" y="170" width="24" height="42"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[(A)
+			</element>
+			<element kind="staticText" uuid="93b8a4a8-dfc8-4481-af51-dbf77cb1e7ef" x="162" y="170" width="19" height="42" fontSize="8.0">
+				<text><![CDATA[Qty]]></text>
+			</element>
+			<element kind="staticText" uuid="8b327c97-3719-414f-a517-a888b77c9012" x="181" y="170" width="24" height="42" fontSize="8.0">
+				<text><![CDATA[Purchase Year]]></text>
+			</element>
+			<element kind="staticText" uuid="3d6b5b52-fcbf-4a2c-8dde-a7c0eb4ea034" x="205" y="170" width="24" height="42" fontSize="8.0">
+				<text><![CDATA[(A)
 % This Year from grid below]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="229" y="170" width="22" height="42"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[Prior Cost or Value]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="251" y="170" width="22" height="42"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[(B)
+			</element>
+			<element kind="staticText" uuid="2fa3fcd4-43a5-40c0-926f-f6d846fcdb21" x="229" y="170" width="22" height="42" fontSize="8.0">
+				<text><![CDATA[Prior Cost or Value]]></text>
+			</element>
+			<element kind="staticText" uuid="c40ac1b4-d0e3-4205-a83e-244432860cd6" x="251" y="170" width="22" height="42" fontSize="8.0">
+				<text><![CDATA[(B)
 Current Cost or Value]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="273" y="170" width="22" height="42"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[(C)
+			</element>
+			<element kind="staticText" uuid="8d7e09e6-f1b2-43a1-97df-d7d4c5aa85a2" x="273" y="170" width="22" height="42" fontSize="8.0">
+				<text><![CDATA[(C)
 (Start)
 Accum.
 Deprec.]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="295" y="170" width="22" height="42"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[(D)
+			</element>
+			<element kind="staticText" uuid="d17ff6d8-ab2b-4433-9656-4b1bf6b23c8a" x="295" y="170" width="22" height="42" fontSize="8.0">
+				<text><![CDATA[(D)
 Depr. This
 Year
 (A x B)]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="317" y="170" width="22" height="42"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[(End)
+			</element>
+			<element kind="staticText" uuid="2cb34dd5-ef7a-456b-bb9f-02444f4a65a9" x="317" y="170" width="22" height="42" fontSize="8.0">
+				<text><![CDATA[(End)
 Accum.
 Deprec.
 (C + D)]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="371" y="170" width="61" height="42"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[10. TRANSFER OUT]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="432" y="170" width="61" height="42"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[10. TRANSFER OUT]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="493" y="170" width="22" height="42"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[11.c INCOME DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="170" width="22" height="42"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[11.c INCOME DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="170" width="22" height="42"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[10. TRANSFER OUT]]></text>
-          </staticText>
-          <textField pattern="#,##0.###">
-            <reportElement x="205" y="212" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_H14}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="229" y="212" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_I14}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="273" y="212" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_K14}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="295" y="212" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_L14}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="317" y="212" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_M14}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="371" y="212" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[11.a INCOME DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="432" y="212" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[11.a INCOME DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="493" y="212" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[12.a EXPENSE DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="212" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[12.a EXPENSE DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="212" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[11.a INCOME DTL]]></text>
-          </staticText>
-          <textField pattern="#,##0.###">
-            <reportElement x="205" y="224" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_H15}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="229" y="224" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_I15}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="273" y="224" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_K15}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="295" y="224" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_L15}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="317" y="224" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_M15}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="371" y="224" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[11.b INCOME DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="432" y="224" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[11.b INCOME DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="493" y="224" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[12.b EXPENSE DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="224" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[12.b EXPENSE DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="224" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[11.b INCOME DTL]]></text>
-          </staticText>
-          <textField pattern="#,##0.###">
-            <reportElement x="205" y="236" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_H16}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="229" y="236" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_I16}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="273" y="236" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_K16}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="295" y="236" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_L16}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="317" y="236" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_M16}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="371" y="236" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[11.c INCOME DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="432" y="236" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[11.c INCOME DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="493" y="236" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[13. FINANCE COMM]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="236" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[13. FINANCE COMM]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="236" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[11.c INCOME DTL]]></text>
-          </staticText>
-          <textField pattern="#,##0.###">
-            <reportElement x="205" y="248" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_H17}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="229" y="248" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_I17}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="273" y="248" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_K17}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="295" y="248" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_L17}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="317" y="248" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_M17}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="371" y="248" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[12.a EXPENSE DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="432" y="248" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[12.a EXPENSE DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="493" y="248" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[COMMENTS]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="248" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[14. FUNDS]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="248" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[12.a EXPENSE DTL]]></text>
-          </staticText>
-          <textField pattern="#,##0.###">
-            <reportElement x="205" y="260" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_H18}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="229" y="260" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_I18}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="273" y="260" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_K18}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="295" y="260" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_L18}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="317" y="260" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_M18}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="371" y="260" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[12.b EXPENSE DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="432" y="260" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[12.b EXPENSE DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="493" y="260" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[FREE FORM]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="260" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[COMMENTS]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="260" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[12.b EXPENSE DTL]]></text>
-          </staticText>
-          <textField pattern="#,##0.###">
-            <reportElement x="205" y="272" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_H19}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="229" y="272" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_I19}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="273" y="272" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_K19}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="295" y="272" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_L19}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="317" y="272" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_M19}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="371" y="272" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[13. FINANCE COMM]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="432" y="272" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[13. FINANCE COMM]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="272" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[5.c ASSET DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="272" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[13. FINANCE COMM]]></text>
-          </staticText>
-          <textField pattern="#,##0.###">
-            <reportElement x="205" y="284" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_H20}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="229" y="284" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_I20}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="273" y="284" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_K20}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="295" y="284" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_L20}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="317" y="284" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_M20}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="371" y="284" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[14. FUNDS]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="432" y="284" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[14. FUNDS]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="284" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[5.d LIABILITY DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="284" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[14. FUNDS]]></text>
-          </staticText>
-          <textField pattern="#,##0.###">
-            <reportElement x="205" y="296" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_H21}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="229" y="296" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_I21}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="273" y="296" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_K21}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="295" y="296" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_L21}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="317" y="296" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_M21}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="371" y="296" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[15. NEWSLETTER]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="432" y="296" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[15. NEWSLETTER]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="296" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[5.e LIABILITY DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="296" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[15. NEWSLETTER]]></text>
-          </staticText>
-          <textField pattern="#,##0.###">
-            <reportElement x="205" y="308" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_H22}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="229" y="308" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_I22}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="273" y="308" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_K22}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="295" y="308" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_L22}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="317" y="308" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_M22}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="371" y="308" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[COMMENTS]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="432" y="308" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[COMMENTS]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="308" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[5.f LIABILITY DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="308" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[COMMENTS]]></text>
-          </staticText>
-          <textField pattern="#,##0.###">
-            <reportElement x="205" y="320" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_H23}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="229" y="320" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_I23}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="273" y="320" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_K23}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="295" y="320" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_L23}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="317" y="320" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_M23}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="371" y="320" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[2.c SECONDARY ACCOUNTS]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="432" y="320" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[9.b TRANSFER IN]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="320" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[5.g LIABILITY DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="320" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[2.c SECONDARY ACCOUNTS]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="181" y="332" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[5 YEAR TOTAL ]]></text>
-          </staticText>
-          <textField pattern="#,##0.###">
-            <reportElement x="229" y="332" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_I24}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="251" y="332" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_J24}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="273" y="332" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_K24}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="295" y="332" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_L24}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="317" y="332" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_M24}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="371" y="332" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[2.d SECONDARY ACCOUNTS]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="432" y="332" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[10.b TRANSFER OUT]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="332" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[5.h LIABILITY DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="332" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[2.d SECONDARY ACCOUNTS]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="77" y="344" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[MACRS Schedule 5 Year]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="181" y="344" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[NOTE: Depreciation this year (D) is only calculated during 4th quarter for the year.]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="371" y="344" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[5.c ASSET DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="432" y="344" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[FREE FORM]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="344" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[5.i LIABILITY DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="344" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[5.c ASSET DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="77" y="356" width="22" height="12"/>
-            <textElement><font size="7"/></textElement>
-            <text><![CDATA[Year Purchased]]></text>
-          </staticText>
-          <textField>
-            <reportElement x="205" y="356" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_H26}]]></textFieldExpression>
-          </textField>
-          <textField>
-            <reportElement x="229" y="356" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_I26}]]></textFieldExpression>
-          </textField>
-          <textField>
-            <reportElement x="251" y="356" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_J26}]]></textFieldExpression>
-          </textField>
-          <textField>
-            <reportElement x="273" y="356" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_K26}]]></textFieldExpression>
-          </textField>
-          <textField>
-            <reportElement x="295" y="356" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_L26}]]></textFieldExpression>
-          </textField>
-          <textField>
-            <reportElement x="317" y="356" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_M26}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="371" y="356" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[5.d LIABILITY DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="356" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[9.b TRANSFER IN]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="356" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[5.d LIABILITY DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="77" y="368" width="22" height="12"/>
-            <textElement><font size="7"/></textElement>
-            <text><![CDATA[Percent to depreciate by year]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="205" y="368" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[0.2]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="229" y="368" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[0.32]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="251" y="368" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[0.192]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="273" y="368" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[0.1152]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="295" y="368" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[0.1152]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="317" y="368" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[0.0576]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="371" y="368" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[5.e LIABILITY DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="368" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[9.c TRANSFER IN]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="368" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[6.b INVENTORY DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="371" y="380" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[5.f LIABILITY DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="380" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[9.d TRANSFER IN]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="380" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[7.b REGALIA SALES DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="77" y="392" width="22" height="12"/>
-            <textElement><font size="9"/></textElement>
-            <text><![CDATA[7 Year Depreciation:]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="371" y="392" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[5.g LIABILITY DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="392" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[10.b TRANSFER OUT]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="392" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[8.b DEPR DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="77" y="404" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[Seven year assets are all assets except electronic equipment and trailers. Thrones, pavilions, cooking equipment, Crowns etc. are all 7 year assets.]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="371" y="404" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[5.h LIABILITY DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="515" y="404" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[FREE FORM]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="404" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[8.c DEPR DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="30" y="416" width="15" height="42"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[Purch
+			</element>
+			<element kind="textField" uuid="af17cdd3-ac65-48b3-8986-12afcef3b390" x="205" y="212" width="24" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_H14}]]></expression>
+			</element>
+			<element kind="textField" uuid="8ee4d77c-150b-406b-b7e6-e2b02cb7d97c" x="229" y="212" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_I14}]]></expression>
+			</element>
+			<element kind="textField" uuid="4fdda6b3-9638-4c14-99d3-e2a4eaac1a00" x="273" y="212" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_K14}]]></expression>
+			</element>
+			<element kind="textField" uuid="0b3a6965-a156-43da-a111-c0f4d5d91be4" x="295" y="212" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_L14}]]></expression>
+			</element>
+			<element kind="textField" uuid="5be8bee7-6c9d-4136-9dcd-f5a5979c7184" x="317" y="212" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_M14}]]></expression>
+			</element>
+			<element kind="textField" uuid="48cec800-2dbd-46de-a1bd-df5c03332b70" x="205" y="224" width="24" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_H15}]]></expression>
+			</element>
+			<element kind="textField" uuid="a428b883-1aa2-4c00-95b1-d58327979f36" x="229" y="224" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_I15}]]></expression>
+			</element>
+			<element kind="textField" uuid="e23cd899-2459-44ae-b2df-30b838b5cafb" x="273" y="224" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_K15}]]></expression>
+			</element>
+			<element kind="textField" uuid="aba077e2-2b1f-4c98-9f16-21d6f8677fbc" x="295" y="224" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_L15}]]></expression>
+			</element>
+			<element kind="textField" uuid="9edd3e81-f3a4-4617-88fe-dca73be6e62f" x="317" y="224" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_M15}]]></expression>
+			</element>
+			<element kind="textField" uuid="1582e494-12a0-413e-b8f0-41d6ffcdc952" x="205" y="236" width="24" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_H16}]]></expression>
+			</element>
+			<element kind="textField" uuid="cfdf94ae-2c79-4e76-b7ec-7864269784ba" x="229" y="236" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_I16}]]></expression>
+			</element>
+			<element kind="textField" uuid="0b4aa7e8-5a6f-4b15-b7de-19ba486f7216" x="273" y="236" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_K16}]]></expression>
+			</element>
+			<element kind="textField" uuid="bd4e70fc-d56b-41d0-8b26-33b66539a8f1" x="295" y="236" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_L16}]]></expression>
+			</element>
+			<element kind="textField" uuid="cb650f13-2bda-4475-a9c6-d91e1084752e" x="317" y="236" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_M16}]]></expression>
+			</element>
+			<element kind="textField" uuid="6c9078d3-e73d-4445-8503-1b1235cfc38d" x="205" y="248" width="24" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_H17}]]></expression>
+			</element>
+			<element kind="textField" uuid="3841b94e-944a-48bb-9bd9-f175af431f94" x="229" y="248" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_I17}]]></expression>
+			</element>
+			<element kind="textField" uuid="1db7e414-6b1f-4ad1-8088-eaf39c3d00fe" x="273" y="248" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_K17}]]></expression>
+			</element>
+			<element kind="textField" uuid="a24d43d4-9767-42f2-a739-a3f2a668596d" x="295" y="248" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_L17}]]></expression>
+			</element>
+			<element kind="textField" uuid="20e258f0-5a9f-48cf-96fc-cda425759783" x="317" y="248" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_M17}]]></expression>
+			</element>
+			<element kind="textField" uuid="8ad04b67-d2eb-4b1d-b7d0-036b43d058e5" x="205" y="260" width="24" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_H18}]]></expression>
+			</element>
+			<element kind="textField" uuid="d7be5331-2fb4-4bcb-8c41-3cf55cb96426" x="229" y="260" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_I18}]]></expression>
+			</element>
+			<element kind="textField" uuid="f1b74836-b317-46df-a075-d942ef10746b" x="273" y="260" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_K18}]]></expression>
+			</element>
+			<element kind="textField" uuid="91f95012-5413-46e8-b6fa-e63d5cf4a7b0" x="295" y="260" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_L18}]]></expression>
+			</element>
+			<element kind="textField" uuid="e5a57742-131d-4d7c-aed2-4cc7dfe53b52" x="317" y="260" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_M18}]]></expression>
+			</element>
+			<element kind="textField" uuid="0689d365-5236-48f5-9317-34cfc8fde1c4" x="205" y="272" width="24" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_H19}]]></expression>
+			</element>
+			<element kind="textField" uuid="b4e48acd-41d8-426c-afd9-8e2c385c8b75" x="229" y="272" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_I19}]]></expression>
+			</element>
+			<element kind="textField" uuid="1107fdba-3337-4c5b-965a-12bba9f50836" x="273" y="272" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_K19}]]></expression>
+			</element>
+			<element kind="textField" uuid="2f14701d-68cb-46e6-9d1f-5702eb9ee0f6" x="295" y="272" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_L19}]]></expression>
+			</element>
+			<element kind="textField" uuid="c8b8fda7-4eee-400b-8417-49b21b32cd31" x="317" y="272" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_M19}]]></expression>
+			</element>
+			<element kind="textField" uuid="f6b794f1-e75c-4e45-9f1e-52b2e029537a" x="205" y="284" width="24" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_H20}]]></expression>
+			</element>
+			<element kind="textField" uuid="9c35a7eb-62c3-4ccd-b450-480b9b6ae394" x="229" y="284" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_I20}]]></expression>
+			</element>
+			<element kind="textField" uuid="72ffc335-c01b-4576-9fff-59882bd09ba8" x="273" y="284" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_K20}]]></expression>
+			</element>
+			<element kind="textField" uuid="d965ab68-8d61-4033-83f9-10313a5cc099" x="295" y="284" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_L20}]]></expression>
+			</element>
+			<element kind="textField" uuid="ec235580-933f-4142-abf2-21869e71accd" x="317" y="284" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_M20}]]></expression>
+			</element>
+			<element kind="textField" uuid="6b6826cf-47dd-456d-aaa9-bc3234da907f" x="205" y="296" width="24" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_H21}]]></expression>
+			</element>
+			<element kind="textField" uuid="d8460d6c-bce5-4613-ad5d-9e4791219440" x="229" y="296" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_I21}]]></expression>
+			</element>
+			<element kind="textField" uuid="7e695974-1bae-4a30-83b0-c02dcbc60b60" x="273" y="296" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_K21}]]></expression>
+			</element>
+			<element kind="textField" uuid="d3e49161-1a9b-4aee-875e-329fb65e8f7c" x="295" y="296" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_L21}]]></expression>
+			</element>
+			<element kind="textField" uuid="0cef03af-a87a-47fb-997e-e350b18b6228" x="317" y="296" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_M21}]]></expression>
+			</element>
+			<element kind="textField" uuid="d0984071-cfbc-435f-a57c-e8a450ed11e4" x="205" y="308" width="24" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_H22}]]></expression>
+			</element>
+			<element kind="textField" uuid="131eed5b-0c41-41eb-9666-95917dda155a" x="229" y="308" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_I22}]]></expression>
+			</element>
+			<element kind="textField" uuid="c4efcd87-2f98-4e9d-b1ac-3777473b32e1" x="273" y="308" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_K22}]]></expression>
+			</element>
+			<element kind="textField" uuid="dddd706c-238a-4fb8-91db-ac3cbb6fe3fa" x="295" y="308" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_L22}]]></expression>
+			</element>
+			<element kind="textField" uuid="a57f2c84-a4cd-41ac-b960-f7ecb079eb22" x="317" y="308" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_M22}]]></expression>
+			</element>
+			<element kind="textField" uuid="dd0bac19-8595-44d2-8d5f-61f3c432f91d" x="205" y="320" width="24" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_H23}]]></expression>
+			</element>
+			<element kind="textField" uuid="b69c1ad7-fe07-4fbc-9886-0d2b229e96fe" x="229" y="320" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_I23}]]></expression>
+			</element>
+			<element kind="textField" uuid="1a83cdea-5a9e-4407-b9aa-c205db229cce" x="273" y="320" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_K23}]]></expression>
+			</element>
+			<element kind="textField" uuid="b06624ec-a085-4f35-9632-84fb2bae4f61" x="295" y="320" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_L23}]]></expression>
+			</element>
+			<element kind="textField" uuid="fc52dfa1-528b-42c7-93b1-714892e2fa9b" x="317" y="320" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_M23}]]></expression>
+			</element>
+			<element kind="staticText" uuid="f9e8bc6f-9daf-4407-8de2-5f75ec748221" x="181" y="332" width="24" height="12" fontSize="8.0">
+				<text><![CDATA[5 YEAR TOTAL ]]></text>
+			</element>
+			<element kind="textField" uuid="7d9b8796-f176-4ff8-a49c-afbd6898ceab" x="229" y="332" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_I24}]]></expression>
+			</element>
+			<element kind="textField" uuid="0a941e63-c352-49ee-98ec-af9b1df88889" x="251" y="332" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_J24}]]></expression>
+			</element>
+			<element kind="textField" uuid="0a5b4acf-cd42-42ce-86de-474443ce35c1" x="273" y="332" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_K24}]]></expression>
+			</element>
+			<element kind="textField" uuid="1dde59b9-9f56-423d-b095-34e4a95986f8" x="295" y="332" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_L24}]]></expression>
+			</element>
+			<element kind="textField" uuid="5f912ecf-0e6c-4d90-98de-050e90e4d2b8" x="317" y="332" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_M24}]]></expression>
+			</element>
+			<element kind="staticText" uuid="8a939ff9-2911-4154-bd3d-7374726bc7e7" x="77" y="344" width="22" height="12" fontSize="8.0">
+				<text><![CDATA[MACRS Schedule 5 Year]]></text>
+			</element>
+			<element kind="staticText" uuid="526f0177-e6b6-441c-b001-5b0b0122b65f" x="181" y="344" width="24" height="12" fontSize="8.0">
+				<text><![CDATA[NOTE: Depreciation this year (D) is only calculated during 4th quarter for the year.]]></text>
+			</element>
+			<element kind="staticText" uuid="b00141f7-c6c0-4d93-92b1-bde4874e2c49" x="77" y="356" width="22" height="12" fontSize="7.0">
+				<text><![CDATA[Year Purchased]]></text>
+			</element>
+			<element kind="textField" uuid="065b7464-d0a8-4add-9ca3-4230bcc08814" x="205" y="356" width="24" height="12" fontSize="8.0">
+				<expression><![CDATA[$F{DEPR_DTL_8_H26}]]></expression>
+			</element>
+			<element kind="textField" uuid="083005d9-01a0-484e-8bdd-682af3f9d7ad" x="229" y="356" width="22" height="12" fontSize="8.0">
+				<expression><![CDATA[$F{DEPR_DTL_8_I26}]]></expression>
+			</element>
+			<element kind="textField" uuid="1ce194d1-134c-48a4-bc9d-9107222dae2c" x="251" y="356" width="22" height="12" fontSize="8.0">
+				<expression><![CDATA[$F{DEPR_DTL_8_J26}]]></expression>
+			</element>
+			<element kind="textField" uuid="ccf2bdae-ba0f-4c88-bfd0-499412422292" x="273" y="356" width="22" height="12" fontSize="8.0">
+				<expression><![CDATA[$F{DEPR_DTL_8_K26}]]></expression>
+			</element>
+			<element kind="textField" uuid="f2b95d88-5da3-4b45-9acc-7a7b9b1cfdf4" x="295" y="356" width="22" height="12" fontSize="8.0">
+				<expression><![CDATA[$F{DEPR_DTL_8_L26}]]></expression>
+			</element>
+			<element kind="textField" uuid="3ed67188-8d47-42ec-a140-7b4e17bf4fc4" x="317" y="356" width="22" height="12" fontSize="8.0">
+				<expression><![CDATA[$F{DEPR_DTL_8_M26}]]></expression>
+			</element>
+			<element kind="staticText" uuid="fff17241-9a1b-4827-81ce-07bb58880e2d" x="77" y="368" width="22" height="12" fontSize="7.0">
+				<text><![CDATA[Percent to depreciate by year]]></text>
+			</element>
+			<element kind="staticText" uuid="16e027e2-9147-4b4a-b660-deb631cfcb24" x="205" y="368" width="24" height="12" fontSize="8.0">
+				<text><![CDATA[0.2]]></text>
+			</element>
+			<element kind="staticText" uuid="3705fb21-c8bd-4ff7-9527-21ddefff2f93" x="229" y="368" width="22" height="12" fontSize="8.0">
+				<text><![CDATA[0.32]]></text>
+			</element>
+			<element kind="staticText" uuid="45773034-7c83-4376-83b9-ebe1ac1a9621" x="251" y="368" width="22" height="12" fontSize="8.0">
+				<text><![CDATA[0.192]]></text>
+			</element>
+			<element kind="staticText" uuid="186f6aad-9949-4d76-b531-4afa86d6c931" x="273" y="368" width="22" height="12" fontSize="8.0">
+				<text><![CDATA[0.1152]]></text>
+			</element>
+			<element kind="staticText" uuid="b36f23f6-ecc4-4cb7-8d2a-a6bebd9ae1d1" x="295" y="368" width="22" height="12" fontSize="8.0">
+				<text><![CDATA[0.1152]]></text>
+			</element>
+			<element kind="staticText" uuid="8c9fbeca-c667-4c0b-aa5f-6e3bf57b9273" x="317" y="368" width="22" height="12" fontSize="8.0">
+				<text><![CDATA[0.0576]]></text>
+			</element>
+			<element kind="staticText" uuid="d7f7919c-7ad8-453e-8091-598eee6fd42f" x="77" y="392" width="22" height="12" fontSize="9.0">
+				<text><![CDATA[7 Year Depreciation:]]></text>
+			</element>
+			<element kind="staticText" uuid="0ce28278-9db2-41b5-b15d-8faeef027461" x="77" y="404" width="22" height="12" fontSize="8.0">
+				<text><![CDATA[Seven year assets are all assets except electronic equipment and trailers. Thrones, pavilions, cooking equipment, Crowns etc. are all 7 year assets.]]></text>
+			</element>
+			<element kind="staticText" uuid="b5b5f9ce-a99b-4e2d-a3ca-ea919e8dcdbb" x="30" y="416" width="15" height="42" fontSize="8.0">
+				<text><![CDATA[Purch
 Q
 T
 R]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="99" y="416" width="63" height="42"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[Equipment
+			</element>
+			<element kind="staticText" uuid="861c031d-3294-47e4-9c1c-5cbd6e115bcb" x="99" y="416" width="63" height="42" fontSize="8.0">
+				<text><![CDATA[Equipment
 (purchases or value 
 &gt; $2000 each)
 Item Description ]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="162" y="416" width="19" height="42"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[Qty]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="181" y="416" width="24" height="42"/>
-            <textElement><font size="9"/></textElement>
-            <text><![CDATA[Purchase Year]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="205" y="416" width="24" height="42"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[(A)
+			</element>
+			<element kind="staticText" uuid="7a8e4235-a3bb-46df-bf32-42db05884d0e" x="162" y="416" width="19" height="42" fontSize="8.0">
+				<text><![CDATA[Qty]]></text>
+			</element>
+			<element kind="staticText" uuid="5d014255-cf0e-4bd5-8f12-0bfafa7b88b3" x="181" y="416" width="24" height="42" fontSize="9.0">
+				<text><![CDATA[Purchase Year]]></text>
+			</element>
+			<element kind="staticText" uuid="a14ab32f-c6c3-40da-8846-39522cf0f6c1" x="205" y="416" width="24" height="42" fontSize="8.0">
+				<text><![CDATA[(A)
 % This Year from grid below]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="229" y="416" width="22" height="42"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[
+			</element>
+			<element kind="staticText" uuid="80d860b3-230c-41ff-b462-0115802ea8ed" x="229" y="416" width="22" height="42" fontSize="8.0">
+				<text><![CDATA[
 Prior Cost or Value]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="251" y="416" width="22" height="42"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[(B)
+			</element>
+			<element kind="staticText" uuid="2fe5da51-0ff2-44f0-8822-f3248609ed35" x="251" y="416" width="22" height="42" fontSize="8.0">
+				<text><![CDATA[(B)
 Current Cost or Value]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="273" y="416" width="22" height="42"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[(C)
+			</element>
+			<element kind="staticText" uuid="e2385c37-28f8-42a2-8e8c-e197bfc8bb8f" x="273" y="416" width="22" height="42" fontSize="8.0">
+				<text><![CDATA[(C)
 (Start)
 Accum.
 Deprec.]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="295" y="416" width="22" height="42"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[(D)
+			</element>
+			<element kind="staticText" uuid="47cec215-4843-40d5-9718-421cfbb3598a" x="295" y="416" width="22" height="42" fontSize="8.0">
+				<text><![CDATA[(D)
 Depr. This
 Year
 (A x B)]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="317" y="416" width="22" height="42"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[(End)
+			</element>
+			<element kind="staticText" uuid="cf04b2cb-4224-41ba-b60b-c87a41a11760" x="317" y="416" width="22" height="42" fontSize="8.0">
+				<text><![CDATA[(End)
 Accum.
 Deprec.
 (C + D)]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="371" y="416" width="61" height="42"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[5.i LIABILITY DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="416" width="22" height="42"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[9.b TRANSFER IN]]></text>
-          </staticText>
-          <textField pattern="#,##0.###">
-            <reportElement x="205" y="458" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_H32}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="229" y="458" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_I32}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="273" y="458" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_K32}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="295" y="458" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_L32}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="317" y="458" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_M32}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="371" y="458" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[6.b INVENTORY DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="458" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[9.c TRANSFER IN]]></text>
-          </staticText>
-          <textField pattern="#,##0.###">
-            <reportElement x="205" y="470" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_H33}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="229" y="470" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_I33}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="273" y="470" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_K33}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="295" y="470" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_L33}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="317" y="470" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_M33}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="371" y="470" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[7.b REGALIA SALES DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="470" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[9.d TRANSFER IN]]></text>
-          </staticText>
-          <textField pattern="#,##0.###">
-            <reportElement x="205" y="482" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_H34}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="229" y="482" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_I34}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="273" y="482" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_K34}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="295" y="482" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_L34}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="317" y="482" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_M34}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="371" y="482" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[8.b DEPR DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="482" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[10.b TRANSFER OUT]]></text>
-          </staticText>
-          <textField pattern="#,##0.###">
-            <reportElement x="205" y="494" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_H35}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="229" y="494" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_I35}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="273" y="494" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_K35}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="295" y="494" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_L35}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="317" y="494" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_M35}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="371" y="494" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[8.c DEPR DTL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="494" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[10.c TRANSFER OUT]]></text>
-          </staticText>
-          <textField pattern="#,##0.###">
-            <reportElement x="205" y="506" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_H36}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="229" y="506" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_I36}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="273" y="506" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_K36}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="295" y="506" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_L36}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="317" y="506" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_M36}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="371" y="506" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[9.b TRANSFER IN]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="506" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[10.d TRANSFER OUT]]></text>
-          </staticText>
-          <textField pattern="#,##0.###">
-            <reportElement x="205" y="518" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_H37}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="229" y="518" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_I37}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="273" y="518" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_K37}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="295" y="518" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_L37}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="317" y="518" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_M37}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="371" y="518" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[9.c TRANSFER IN]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="518" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[12.c EXPENSE DETAIL]]></text>
-          </staticText>
-          <textField pattern="#,##0.###">
-            <reportElement x="205" y="530" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_H38}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="229" y="530" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_I38}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="273" y="530" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_K38}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="295" y="530" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_L38}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="317" y="530" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_M38}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="371" y="530" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[9.d TRANSFER IN]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="530" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[FREE FORM]]></text>
-          </staticText>
-          <textField pattern="#,##0.###">
-            <reportElement x="205" y="542" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_H39}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="229" y="542" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_I39}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="273" y="542" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_K39}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="295" y="542" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_L39}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="317" y="542" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_M39}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="371" y="542" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[10.b TRANSFER OUT]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="537" y="542" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[FreeForm!A1]]></text>
-          </staticText>
-          <textField pattern="#,##0.###">
-            <reportElement x="205" y="554" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_H40}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="229" y="554" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_I40}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="273" y="554" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_K40}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="295" y="554" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_L40}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="317" y="554" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_M40}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="371" y="554" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[10.c TRANSFER OUT]]></text>
-          </staticText>
-          <textField pattern="#,##0.###">
-            <reportElement x="205" y="566" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_H41}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="229" y="566" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_I41}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="273" y="566" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_K41}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="295" y="566" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_L41}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="317" y="566" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_M41}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="371" y="566" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[10.d TRANSFER OUT]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="162" y="578" width="19" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[7 YEAR TOTAL ]]></text>
-          </staticText>
-          <textField pattern="#,##0.###">
-            <reportElement x="229" y="578" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_I42}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="251" y="578" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_J42}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="273" y="578" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_K42}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="295" y="578" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_L42}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="317" y="578" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_M42}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="371" y="578" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[12.c EXPENSE DETAIL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="77" y="590" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[MACRS Schedule 7 Year]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="181" y="590" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[NOTE: Depreciation this year (D) is only calculated during 4th quarter for the year.]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="371" y="590" width="61" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[FREE FORM]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="77" y="602" width="22" height="12"/>
-            <textElement><font size="7"/></textElement>
-            <text><![CDATA[Year Purchased]]></text>
-          </staticText>
-          <textField>
-            <reportElement x="162" y="602" width="19" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_F44}]]></textFieldExpression>
-          </textField>
-          <textField>
-            <reportElement x="181" y="602" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_G44}]]></textFieldExpression>
-          </textField>
-          <textField>
-            <reportElement x="205" y="602" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_H44}]]></textFieldExpression>
-          </textField>
-          <textField>
-            <reportElement x="229" y="602" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_I44}]]></textFieldExpression>
-          </textField>
-          <textField>
-            <reportElement x="251" y="602" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_J44}]]></textFieldExpression>
-          </textField>
-          <textField>
-            <reportElement x="273" y="602" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_K44}]]></textFieldExpression>
-          </textField>
-          <textField>
-            <reportElement x="295" y="602" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_L44}]]></textFieldExpression>
-          </textField>
-          <textField>
-            <reportElement x="317" y="602" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_M44}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="77" y="614" width="22" height="12"/>
-            <textElement><font size="7"/></textElement>
-            <text><![CDATA[Percent to depreciate by year]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="162" y="614" width="19" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[0.1429]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="181" y="614" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[0.2449]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="205" y="614" width="24" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[0.1749]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="229" y="614" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[0.1249]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="251" y="614" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[0.0893]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="273" y="614" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[0.0892]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="295" y="614" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[0.0893]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="317" y="614" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[0.0446]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="77" y="638" width="22" height="12"/>
-            <textElement><font size="9"/></textElement>
-            <text><![CDATA[5 Year Total + 7 Year Total]]></text>
-          </staticText>
-          <textField pattern="#,##0.###">
-            <reportElement x="229" y="638" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_I47}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="251" y="638" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_J47}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="273" y="638" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_K47}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="295" y="638" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_L47}]]></textFieldExpression>
-          </textField>
-          <textField pattern="#,##0.###">
-            <reportElement x="317" y="638" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <textFieldExpression><![CDATA[$F{DEPR_DTL_8_M47}]]></textFieldExpression>
-          </textField>
-          <staticText>
-            <reportElement x="229" y="650" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[Pg. 3 I.f]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="251" y="650" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[Pg. 3 I.f]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="273" y="650" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[Pg.1 I.g(Start)]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="295" y="650" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[Pg. 4 L 15]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="317" y="650" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[Pg. 3 I.g]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="229" y="662" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[(Start)]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="251" y="662" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[(End)]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="295" y="662" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[TOTAL]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="317" y="662" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[(End)]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="77" y="674" width="22" height="12"/>
-            <textElement><font size="7"/></textElement>
-            <text><![CDATA[Use additional sheets if necessary.]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="77" y="686" width="22" height="12"/>
-            <textElement><font size="8"/></textElement>
-            <text><![CDATA[ -8-]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="30" y="698" width="15" height="12"/>
-            <textElement><font size="9"/></textElement>
-            <text><![CDATA[OA]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="30" y="710" width="15" height="12"/>
-            <textElement><font size="9"/></textElement>
-            <text><![CDATA[AR]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="30" y="722" width="15" height="12"/>
-            <textElement><font size="9"/></textElement>
-            <text><![CDATA[FR]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="30" y="734" width="15" height="12"/>
-            <textElement><font size="9"/></textElement>
-            <text><![CDATA[1]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="30" y="746" width="15" height="12"/>
-            <textElement><font size="9"/></textElement>
-            <text><![CDATA[2]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="30" y="758" width="15" height="12"/>
-            <textElement><font size="9"/></textElement>
-            <text><![CDATA[3]]></text>
-          </staticText>
-          <staticText>
-            <reportElement x="30" y="770" width="15" height="12"/>
-            <textElement><font size="9"/></textElement>
-            <text><![CDATA[4]]></text>
-          </staticText>
-      </band>
-    </detail>
+			</element>
+			<element kind="textField" uuid="e0d28b7b-b787-4ea6-a7fb-37fae5ea434e" x="205" y="458" width="24" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_H32}]]></expression>
+			</element>
+			<element kind="textField" uuid="e0902ef3-48e8-441c-8d04-7956a3ea0f33" x="229" y="458" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_I32}]]></expression>
+			</element>
+			<element kind="textField" uuid="8837c49e-de8b-4105-af22-b1f73a742ed1" x="273" y="458" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_K32}]]></expression>
+			</element>
+			<element kind="textField" uuid="001c144a-a9ca-4ab6-9961-0d6203f44766" x="295" y="458" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_L32}]]></expression>
+			</element>
+			<element kind="textField" uuid="41d32b41-6147-499c-90d1-a482627b047a" x="317" y="458" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_M32}]]></expression>
+			</element>
+			<element kind="textField" uuid="2899f32b-05c3-4396-a260-51d26e050ef3" x="205" y="470" width="24" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_H33}]]></expression>
+			</element>
+			<element kind="textField" uuid="7aa9c289-2f63-49ec-9fd0-901e0ffce0fd" x="229" y="470" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_I33}]]></expression>
+			</element>
+			<element kind="textField" uuid="c5cb2289-ae74-4dad-8ae5-8b0b8d464dfa" x="273" y="470" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_K33}]]></expression>
+			</element>
+			<element kind="textField" uuid="29ff4113-41a1-4637-a833-ccb6a61d685d" x="295" y="470" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_L33}]]></expression>
+			</element>
+			<element kind="textField" uuid="e544df89-d94d-4b3f-bc2b-a845afa690d3" x="317" y="470" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_M33}]]></expression>
+			</element>
+			<element kind="textField" uuid="9bad3cb3-3896-4a0e-b443-67063652a8f2" x="205" y="482" width="24" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_H34}]]></expression>
+			</element>
+			<element kind="textField" uuid="624c74db-d0e1-40b7-9a03-540395320890" x="229" y="482" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_I34}]]></expression>
+			</element>
+			<element kind="textField" uuid="dd61fb07-8c89-4386-8143-416dd6e08ee8" x="273" y="482" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_K34}]]></expression>
+			</element>
+			<element kind="textField" uuid="b8d34214-455a-4e9b-9f57-dc876c26b259" x="295" y="482" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_L34}]]></expression>
+			</element>
+			<element kind="textField" uuid="2ef3c5a2-8207-4207-ba13-6da69dbebb14" x="317" y="482" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_M34}]]></expression>
+			</element>
+			<element kind="textField" uuid="54c27f92-08ce-42a9-859b-fc816773ed3d" x="205" y="494" width="24" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_H35}]]></expression>
+			</element>
+			<element kind="textField" uuid="85c55095-0b16-4043-98b1-9af1b590d987" x="229" y="494" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_I35}]]></expression>
+			</element>
+			<element kind="textField" uuid="ce4e1c89-fe51-4925-9d4f-148bb97e9e6f" x="273" y="494" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_K35}]]></expression>
+			</element>
+			<element kind="textField" uuid="d84d1342-8461-4f2c-aec0-dee82dd2a518" x="295" y="494" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_L35}]]></expression>
+			</element>
+			<element kind="textField" uuid="66e75d7c-c754-44ec-8ceb-23746721c08d" x="317" y="494" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_M35}]]></expression>
+			</element>
+			<element kind="textField" uuid="147e8abc-8805-4af7-8de8-46b4b751c8f8" x="205" y="506" width="24" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_H36}]]></expression>
+			</element>
+			<element kind="textField" uuid="ed0bf57f-8da7-4c71-b41d-540ccfb5693f" x="229" y="506" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_I36}]]></expression>
+			</element>
+			<element kind="textField" uuid="158f01b8-3c6d-4acb-bd86-428ff945647d" x="273" y="506" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_K36}]]></expression>
+			</element>
+			<element kind="textField" uuid="fb2d0180-2e72-4d99-a157-fc612bf9ec78" x="295" y="506" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_L36}]]></expression>
+			</element>
+			<element kind="textField" uuid="930e5c02-aebd-4fc5-835b-48e43f42d96b" x="317" y="506" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_M36}]]></expression>
+			</element>
+			<element kind="textField" uuid="25876161-ddee-4d29-aa02-f035afc1a3b9" x="205" y="518" width="24" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_H37}]]></expression>
+			</element>
+			<element kind="textField" uuid="6e1e6c4b-d217-4f01-ad3d-7c3c5d045187" x="229" y="518" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_I37}]]></expression>
+			</element>
+			<element kind="textField" uuid="532b3b68-c68b-4215-8160-78108934b17e" x="273" y="518" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_K37}]]></expression>
+			</element>
+			<element kind="textField" uuid="c8bd2f76-a55c-4947-a80b-2ca1d6f32698" x="295" y="518" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_L37}]]></expression>
+			</element>
+			<element kind="textField" uuid="5e484903-5dc2-435c-8fd2-8a3d2320f1dd" x="317" y="518" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_M37}]]></expression>
+			</element>
+			<element kind="textField" uuid="84bd1bc1-e9d8-49e8-8d81-fc4c607faaa4" x="205" y="530" width="24" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_H38}]]></expression>
+			</element>
+			<element kind="textField" uuid="7f8a9047-97b6-4627-ab41-41fbca41163e" x="229" y="530" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_I38}]]></expression>
+			</element>
+			<element kind="textField" uuid="8fffa11a-7d08-4064-a549-96e61cec74c7" x="273" y="530" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_K38}]]></expression>
+			</element>
+			<element kind="textField" uuid="837816de-570d-464f-90a1-e346834c3cac" x="295" y="530" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_L38}]]></expression>
+			</element>
+			<element kind="textField" uuid="38bf8bd3-32b7-4186-ad01-c84140565a03" x="317" y="530" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_M38}]]></expression>
+			</element>
+			<element kind="textField" uuid="208a570c-a043-4fc9-a299-db762e7e226a" x="205" y="542" width="24" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_H39}]]></expression>
+			</element>
+			<element kind="textField" uuid="b6eee38e-a431-43e1-806b-5746cf62bcc6" x="229" y="542" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_I39}]]></expression>
+			</element>
+			<element kind="textField" uuid="2a9b49fd-5890-44f9-ab58-491116d418d4" x="273" y="542" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_K39}]]></expression>
+			</element>
+			<element kind="textField" uuid="c3710bb4-3017-48b8-9480-60a627d9fba1" x="295" y="542" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_L39}]]></expression>
+			</element>
+			<element kind="textField" uuid="42c55f17-2eff-4e2b-8bf2-15a377a6b2e0" x="317" y="542" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_M39}]]></expression>
+			</element>
+			<element kind="textField" uuid="107aec8b-58ac-4cb8-8508-e37c78d29d2c" x="205" y="554" width="24" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_H40}]]></expression>
+			</element>
+			<element kind="textField" uuid="5e3b675a-7ba2-43a0-826e-fd9c99d5643b" x="229" y="554" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_I40}]]></expression>
+			</element>
+			<element kind="textField" uuid="84f0197d-8b39-4479-9d8d-f2902fecdea1" x="273" y="554" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_K40}]]></expression>
+			</element>
+			<element kind="textField" uuid="0f015f99-82e0-4aa2-a813-d67cdc26c4e3" x="295" y="554" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_L40}]]></expression>
+			</element>
+			<element kind="textField" uuid="8e3d9684-c8e2-42d6-af74-2230b0da46f0" x="317" y="554" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_M40}]]></expression>
+			</element>
+			<element kind="textField" uuid="264152df-614f-462c-8e5c-dd316135125f" x="205" y="566" width="24" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_H41}]]></expression>
+			</element>
+			<element kind="textField" uuid="1b187f2d-75af-4ec2-bf9d-77bc89fc0751" x="229" y="566" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_I41}]]></expression>
+			</element>
+			<element kind="textField" uuid="c01ae3f0-f9c5-4ac5-ae0f-6a19cdb4cc71" x="273" y="566" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_K41}]]></expression>
+			</element>
+			<element kind="textField" uuid="5799ff45-bdc6-4f7d-810f-2bf4b1ff997e" x="295" y="566" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_L41}]]></expression>
+			</element>
+			<element kind="textField" uuid="8f15c353-76a5-43fd-930b-c497a837e70a" x="317" y="566" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_M41}]]></expression>
+			</element>
+			<element kind="staticText" uuid="89c0e645-0420-4c07-b599-f5b083f07341" x="162" y="578" width="19" height="12" fontSize="8.0">
+				<text><![CDATA[7 YEAR TOTAL ]]></text>
+			</element>
+			<element kind="textField" uuid="bc45864d-867d-431d-b7de-a84929f50521" x="229" y="578" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_I42}]]></expression>
+			</element>
+			<element kind="textField" uuid="e390e330-3fcd-450b-8632-64fb406026df" x="251" y="578" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_J42}]]></expression>
+			</element>
+			<element kind="textField" uuid="3ba4a567-eaff-4dfa-a7ad-6d997653b0f2" x="273" y="578" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_K42}]]></expression>
+			</element>
+			<element kind="textField" uuid="00fa0e16-4364-4334-9062-0f240847fca6" x="295" y="578" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_L42}]]></expression>
+			</element>
+			<element kind="textField" uuid="715c677f-c296-4253-a8d4-509900a91b13" x="317" y="578" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_M42}]]></expression>
+			</element>
+			<element kind="staticText" uuid="f6cd4909-e471-42e5-9769-fcc07f7d99f0" x="77" y="590" width="22" height="12" fontSize="8.0">
+				<text><![CDATA[MACRS Schedule 7 Year]]></text>
+			</element>
+			<element kind="staticText" uuid="867510a9-bad6-4bac-bde0-d8225a2405e5" x="181" y="590" width="24" height="12" fontSize="8.0">
+				<text><![CDATA[NOTE: Depreciation this year (D) is only calculated during 4th quarter for the year.]]></text>
+			</element>
+			<element kind="staticText" uuid="acb7131f-c36a-4a66-8633-38fd5efdd554" x="77" y="602" width="22" height="12" fontSize="7.0">
+				<text><![CDATA[Year Purchased]]></text>
+			</element>
+			<element kind="textField" uuid="109e02cb-f727-4fb9-b86f-6b02cd141d74" x="162" y="602" width="19" height="12" fontSize="8.0">
+				<expression><![CDATA[$F{DEPR_DTL_8_F44}]]></expression>
+			</element>
+			<element kind="textField" uuid="3d5e03b9-04b3-4826-ad75-cb99e0e97fd8" x="181" y="602" width="24" height="12" fontSize="8.0">
+				<expression><![CDATA[$F{DEPR_DTL_8_G44}]]></expression>
+			</element>
+			<element kind="textField" uuid="c2b2c794-dbc7-4484-8b73-4534fa06f9f8" x="205" y="602" width="24" height="12" fontSize="8.0">
+				<expression><![CDATA[$F{DEPR_DTL_8_H44}]]></expression>
+			</element>
+			<element kind="textField" uuid="a1dab37f-7097-4e05-be40-88d70af3eb6e" x="229" y="602" width="22" height="12" fontSize="8.0">
+				<expression><![CDATA[$F{DEPR_DTL_8_I44}]]></expression>
+			</element>
+			<element kind="textField" uuid="2bceae35-0428-4f97-b5e0-24b89fa5d907" x="251" y="602" width="22" height="12" fontSize="8.0">
+				<expression><![CDATA[$F{DEPR_DTL_8_J44}]]></expression>
+			</element>
+			<element kind="textField" uuid="93c9743e-e808-42e8-a5de-66cfae6bd97c" x="273" y="602" width="22" height="12" fontSize="8.0">
+				<expression><![CDATA[$F{DEPR_DTL_8_K44}]]></expression>
+			</element>
+			<element kind="textField" uuid="ddc5c535-5448-4fd8-8881-d86edf0bac64" x="295" y="602" width="22" height="12" fontSize="8.0">
+				<expression><![CDATA[$F{DEPR_DTL_8_L44}]]></expression>
+			</element>
+			<element kind="textField" uuid="93a9b6f0-a716-4173-9105-f42bcee39829" x="317" y="602" width="22" height="12" fontSize="8.0">
+				<expression><![CDATA[$F{DEPR_DTL_8_M44}]]></expression>
+			</element>
+			<element kind="staticText" uuid="b58e70d9-df5c-4c63-9c22-f98d902105a2" x="77" y="614" width="22" height="12" fontSize="7.0">
+				<text><![CDATA[Percent to depreciate by year]]></text>
+			</element>
+			<element kind="staticText" uuid="73a352f9-06b1-477a-b235-adc3fa6f93ad" x="162" y="614" width="19" height="12" fontSize="8.0">
+				<text><![CDATA[0.1429]]></text>
+			</element>
+			<element kind="staticText" uuid="68d89b1d-6049-4579-913f-3d74afc0f5d0" x="181" y="614" width="24" height="12" fontSize="8.0">
+				<text><![CDATA[0.2449]]></text>
+			</element>
+			<element kind="staticText" uuid="6a577b11-a91a-4e6b-b9c9-0f39d66698a5" x="205" y="614" width="24" height="12" fontSize="8.0">
+				<text><![CDATA[0.1749]]></text>
+			</element>
+			<element kind="staticText" uuid="1bb6133a-9366-49ec-ae8d-2f68f94a2866" x="229" y="614" width="22" height="12" fontSize="8.0">
+				<text><![CDATA[0.1249]]></text>
+			</element>
+			<element kind="staticText" uuid="ae16a21f-c16c-46e5-afef-69852fb32cd7" x="251" y="614" width="22" height="12" fontSize="8.0">
+				<text><![CDATA[0.0893]]></text>
+			</element>
+			<element kind="staticText" uuid="2ed94fef-e911-456b-829d-51036cec4e3c" x="273" y="614" width="22" height="12" fontSize="8.0">
+				<text><![CDATA[0.0892]]></text>
+			</element>
+			<element kind="staticText" uuid="24fe1b2e-0303-4e3c-843e-349b17bb2f3f" x="295" y="614" width="22" height="12" fontSize="8.0">
+				<text><![CDATA[0.0893]]></text>
+			</element>
+			<element kind="staticText" uuid="47e074e5-b520-417b-bdec-391dffe50810" x="317" y="614" width="22" height="12" fontSize="8.0">
+				<text><![CDATA[0.0446]]></text>
+			</element>
+			<element kind="staticText" uuid="f8b7a060-020b-49ab-8010-73b642d972b9" x="77" y="638" width="22" height="12" fontSize="9.0">
+				<text><![CDATA[5 Year Total + 7 Year Total]]></text>
+			</element>
+			<element kind="textField" uuid="89880e81-b40d-4741-8be6-87d11da3d625" x="229" y="638" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_I47}]]></expression>
+			</element>
+			<element kind="textField" uuid="d4da6776-4391-439d-9a46-4855dca83b7a" x="251" y="638" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_J47}]]></expression>
+			</element>
+			<element kind="textField" uuid="8ff3b6b8-bed4-43c3-8bc9-5582baa43859" x="273" y="638" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_K47}]]></expression>
+			</element>
+			<element kind="textField" uuid="79a6acc0-1f25-47d2-9466-d3728d7f6802" x="295" y="638" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_L47}]]></expression>
+			</element>
+			<element kind="textField" uuid="890c0428-4a34-41ad-994d-fc02a0c6df49" x="317" y="638" width="22" height="12" fontSize="8.0" pattern="#,##0.###">
+				<expression><![CDATA[$F{DEPR_DTL_8_M47}]]></expression>
+			</element>
+			<element kind="staticText" uuid="3f6481b0-c6f4-49bd-a0b6-c292809f4015" x="229" y="650" width="22" height="12" fontSize="8.0">
+				<text><![CDATA[Pg. 3 I.f]]></text>
+			</element>
+			<element kind="staticText" uuid="17fc38a0-d013-47bc-bf55-e17786ac5128" x="251" y="650" width="22" height="12" fontSize="8.0">
+				<text><![CDATA[Pg. 3 I.f]]></text>
+			</element>
+			<element kind="staticText" uuid="7513e716-29ef-4bba-93d0-8707dd89c9c1" x="273" y="650" width="22" height="12" fontSize="8.0">
+				<text><![CDATA[Pg.1 I.g(Start)]]></text>
+			</element>
+			<element kind="staticText" uuid="40a299c6-42db-4fbb-a4b0-210af2612f57" x="295" y="650" width="22" height="12" fontSize="8.0">
+				<text><![CDATA[Pg. 4 L 15]]></text>
+			</element>
+			<element kind="staticText" uuid="4db1d520-286f-4269-87f6-a5d6c175d4db" x="317" y="650" width="22" height="12" fontSize="8.0">
+				<text><![CDATA[Pg. 3 I.g]]></text>
+			</element>
+			<element kind="staticText" uuid="d53a7fe5-78b4-4884-b855-038b2380fc80" x="229" y="662" width="22" height="12" fontSize="8.0">
+				<text><![CDATA[(Start)]]></text>
+			</element>
+			<element kind="staticText" uuid="1a08e8b9-ea91-49b1-b489-873c976166a9" x="251" y="662" width="22" height="12" fontSize="8.0">
+				<text><![CDATA[(End)]]></text>
+			</element>
+			<element kind="staticText" uuid="ef36adb2-4c37-4a6f-b44c-d4fa77b0704f" x="295" y="662" width="22" height="12" fontSize="8.0">
+				<text><![CDATA[TOTAL]]></text>
+			</element>
+			<element kind="staticText" uuid="c3ff0192-a2c5-42ae-8864-40e33f8adc00" x="317" y="662" width="22" height="12" fontSize="8.0">
+				<text><![CDATA[(End)]]></text>
+			</element>
+			<element kind="staticText" uuid="5d51c7ef-6c0a-42e4-8cfd-1f8d33993f4b" x="77" y="674" width="22" height="12" fontSize="7.0">
+				<text><![CDATA[Use additional sheets if necessary.]]></text>
+			</element>
+			<element kind="staticText" uuid="65a96cf2-0450-4b9f-942d-a7fbb6b594cb" x="77" y="686" width="22" height="12" fontSize="8.0">
+				<text><![CDATA[ -8-]]></text>
+			</element>
+			<element kind="staticText" uuid="7d6a899d-bab6-4d19-b561-ca8e1fbb3319" x="30" y="698" width="15" height="12" fontSize="9.0">
+				<text><![CDATA[OA]]></text>
+			</element>
+			<element kind="staticText" uuid="c07ba17f-d68a-45bb-a0a4-b32d9acc852d" x="30" y="710" width="15" height="12" fontSize="9.0">
+				<text><![CDATA[AR]]></text>
+			</element>
+			<element kind="staticText" uuid="1f4daee7-e1aa-432d-85fd-7b7f0bae64fb" x="30" y="722" width="15" height="12" fontSize="9.0">
+				<text><![CDATA[FR]]></text>
+			</element>
+			<element kind="staticText" uuid="18e5dbd9-a704-42ea-b15d-64f8a26d75b2" x="30" y="734" width="15" height="12" fontSize="9.0">
+				<text><![CDATA[1]]></text>
+			</element>
+			<element kind="staticText" uuid="c059f95f-7041-4f36-94c4-419940907105" x="30" y="746" width="15" height="12" fontSize="9.0">
+				<text><![CDATA[2]]></text>
+			</element>
+			<element kind="staticText" uuid="92865b62-cb27-41f1-9c38-39831ce89a29" x="30" y="758" width="15" height="12" fontSize="9.0">
+				<text><![CDATA[3]]></text>
+			</element>
+			<element kind="staticText" uuid="c472d485-3053-4532-baac-a605ad2eaa22" x="30" y="770" width="15" height="12" fontSize="9.0">
+				<text><![CDATA[4]]></text>
+			</element>
+		</band>
+	</detail>
 </jasperReport>

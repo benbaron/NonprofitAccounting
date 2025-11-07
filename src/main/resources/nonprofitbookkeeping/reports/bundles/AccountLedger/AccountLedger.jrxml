@@ -15,7 +15,7 @@
 		<element kind="textField" uuid="bc0d4997-a728-44a4-92d5-b88548d81b3a" x="2" y="69" width="555" height="20" fontSize="16.0" bold="true" hTextAlign="Center">
 			<expression><![CDATA[$P{P_REPORT_TITLE}]]></expression>
 		</element>
-		<element kind="textField" uuid="dcb71aeb-6dc3-49db-acdd-12040385844e" x="-10" y="50" width="555" height="19" hTextAlign="Center">
+		<element kind="textField" uuid="dcb71aeb-6dc3-49db-acdd-12040385844e" x="-10" y="50" width="555" height="19" fontSize="10.0" hTextAlign="Center">
 			<expression><![CDATA[$P{P_COMPANY_NAME}]]></expression>
 		</element>
 		<element kind="textField" uuid="85660ea3-6b9d-47ce-b11f-934025074e55" x="2" y="10" width="555" height="15" hTextAlign="Center">
@@ -27,7 +27,7 @@
 				<rightPen lineStyle="Solid" lineColor="#000000"/>
 			</box>
 		</element>
-		<element kind="staticText" uuid="ddcebe7c-032b-410d-8872-ee4c744fe73b" x="380" y="50" width="70" height="20" hTextAlign="Right">
+		<element kind="staticText" uuid="ddcebe7c-032b-410d-8872-ee4c744fe73b" x="360" y="50" width="110" height="39" fontSize="16.0" hTextAlign="Right">
 			<text><![CDATA[Debit]]></text>
 		</element>
 		<element kind="staticText" uuid="2ae7cfbf-1f2f-483d-88d1-6d7916986b6e" x="420" y="30" width="70" height="20" hTextAlign="Right">
@@ -35,6 +35,9 @@
 		</element>
 		<element kind="staticText" uuid="5435d823-2a0a-4b11-97df-48c9cc790ca8" x="490" y="40" width="65" height="20" hTextAlign="Right">
 			<text><![CDATA[Balance]]></text>
+		</element>
+		<element kind="textField" uuid="3c7ad4fa-3073-419b-a1b2-3a61782befa9" x="350" y="90" width="100" height="30">
+			<expression><![CDATA["Text Field"]]></expression>
 		</element>
 	</title>
 	<pageHeader height="70">

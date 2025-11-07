@@ -133,13 +133,7 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 		params.put("P_AS_OF_DATE", reportAsOfDate);
 		params.put("P_GENERATION_DATE",
 			LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM d, yyyy")));
-		
-		// Parameters matching the existing TrialBalanceReport.jrxml:
-		// <parameter name="reporttitle" class="java.lang.String"/>
-		// <parameter name="dateToday" class="java.lang.String"/>
-		// <parameter name="companyname" class="java.lang.String"/>
-		// It seems the JRXML uses lowercase for these specific ones. Let's ensure they
-		// are provided.		
+				
 		params.put("reporttitle", "Trial Balance"); // Specific for JRXML
 		params.put("dateToday", LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE));
 		params.put("companyname", companyName);
