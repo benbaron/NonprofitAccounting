@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport name="Contents" language="java"
+              pageWidth="595" pageHeight="842"
+              columnWidth="555"
+              leftMargin="20" rightMargin="20"
+              topMargin="20" bottomMargin="20"
+              uuid="00000000-0000-0000-0000-000000000000">
+  <field name="name_of_branch" class="java.lang.String"/>
+  <field name="seneschal_name" class="java.lang.String"/>
+  <field name="exchequer_name" class="java.lang.String"/>
+  <field name="year_yyyy" class="java.lang.String"/>
+  <field name="quarter_1_2_3_4" class="java.lang.String"/>
+  <field name="cumulative_currency_type" class="java.lang.String"/>
+
+  <title height="1090">
+      <element kind="staticText" x="320" y="40" width="80" height="20">
+        <text><![CDATA["THE SOCIETY FOR CREATIVE ANACHRONISM"&IF(OR(C15="Corporate",C15="Non-US"),"","-"&UPPER(C15))&", INC."]]></text>
+      </element>
+      <element kind="staticText" x="320" y="60" width="80" height="20">
+        <text><![CDATA[FINANCIAL REPORT]]></text>
+      </element>
+      <element kind="staticText" x="320" y="100" width="80" height="20">
+        <text><![CDATA[Contents!B58]]></text>
+      </element>
+      <element kind="staticText" x="320" y="120" width="80" height="20">
+        <text><![CDATA[CONTENTS]]></text>
+      </element>
+      <element kind="staticText" x="400" y="120" width="80" height="20">
+        <text><![CDATA[Table of Contents]]></text>
+      </element>
+      <element kind="staticText" x="480" y="120" width="80" height="20">
+        <text><![CDATA[REQUIRED]]></text>
+      </element>
+      <element kind="staticText" x="80" y="140" width="80" height="20">
+        <text><![CDATA[Name of Branch]]></text>
+      </element>
+      <element kind="textField" x="160" y="140" width="80" height="20">
+        <expression><![CDATA[$F{name_of_branch}]]></expression>
+      </element>
+      <element kind="staticText" x="320" y="140" width="80" height="20">
+        <text><![CDATA[1. CONTACT INFO]]></text>
+      </element>
+      <element kind="staticText" x="400" y="140" width="80" height="20">
+        <text><![CDATA["Contact Information "&IF(ISBLANK(DATEVALUE($C$64))," ",IF($F$81,"- EXPIRED Signatory",IF($G$81,"- Expiring Signatory"," ")))]]></text>
+      </element>
+      <element kind="staticText" x="480" y="140" width="80" height="20">
+        <text><![CDATA[REQUIRED]]></text>
+      </element>
+      <element kind="staticText" x="80" y="160" width="80" height="20">
+        <text><![CDATA[Seneschal Name]]></text>
+      </element>
+      <element kind="textField" x="160" y="160" width="80" height="20">
+        <expression><![CDATA[$F{seneschal_name}]]></expression>
+      </element>
+      <element kind="staticText" x="320" y="160" width="80" height="20">
+        <text><![CDATA[2.a PRIMARY ACCOUNT]]></text>
+      </element>
+      <element kind="staticText" x="400" y="160" width="80" height="20">
+        <text><![CDATA["Primary Account Reconciliation "&IF(ISBLANK(DATEVALUE($C$64))," ",IF($F$82,"- EXPIRED Signatory",IF($G$82,"- Expiring Signatory"," ")))]]></text>
+      </element>
+      <element kind="staticText" x="480" y="160" width="80" height="20">
+        <text><![CDATA[REQUIRED]]></text>
+      </element>
+      <element kind="staticText" x="80" y="180" width="80" height="20">
+        <text><![CDATA[Exchequer Name]]></text>
+      </element>
+      <element kind="textField" x="160" y="180" width="80" height="20">
+        <expression><![CDATA[$F{exchequer_name}]]></expression>
+      </element>
+      <element kind="staticText" x="320" y="180" width="80" height="20">
+        <text><![CDATA[2.b SECONDARY ACCOUNTS]]></text>
+      </element>
+      <element kind="staticText" x="400" y="180" width="80" height="20">
+        <text><![CDATA["Secondary Account Reconciliation "&IF(ISBLANK(DATEVALUE($C$64))," ",IF($F$83,"- EXPIRED Signatory",IF($G$83,"- Expiring Signatory"," ")))]]></text>
+      </element>
+      <element kind="staticText" x="480" y="180" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(SECONDARY_ACCOUNTS_2b!$D$19 = 0, "No Data","REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="80" y="200" width="80" height="20">
+        <text><![CDATA[Year (yyyy)]]></text>
+      </element>
+      <element kind="textField" x="160" y="200" width="80" height="20">
+        <expression><![CDATA[$F{year_yyyy}]]></expression>
+      </element>
+      <element kind="staticText" x="320" y="200" width="80" height="20">
+        <text><![CDATA[3. BALANCE]]></text>
+      </element>
+      <element kind="staticText" x="400" y="200" width="80" height="20">
+        <text><![CDATA["Comparative Balance Statement"&IF(AND(BALANCE_3!$G$37=0,BALANCE_3!$H$37=0)," ",IF(AND(OR(BALANCE_3!$G$37<>0,BALANCE_3!$H$37<>0),ROUND(BALANCE_3!$G$38,2)=ROUND(BALANCE_3!$G$39,2))," - Balanced!"," - OUT OF BALANCE"))]]></text>
+      </element>
+      <element kind="staticText" x="480" y="200" width="80" height="20">
+        <text><![CDATA[REQUIRED]]></text>
+      </element>
+      <element kind="staticText" x="80" y="220" width="80" height="20">
+        <text><![CDATA[Quarter (1,2,3,4)]]></text>
+      </element>
+      <element kind="textField" x="160" y="220" width="80" height="20">
+        <expression><![CDATA[$F{quarter_1_2_3_4}]]></expression>
+      </element>
+      <element kind="staticText" x="320" y="220" width="80" height="20">
+        <text><![CDATA[4. INCOME]]></text>
+      </element>
+      <element kind="staticText" x="400" y="220" width="80" height="20">
+        <text><![CDATA[Income Statement]]></text>
+      </element>
+      <element kind="staticText" x="480" y="220" width="80" height="20">
+        <text><![CDATA[REQUIRED]]></text>
+      </element>
+      <element kind="staticText" x="80" y="240" width="80" height="20">
+        <text><![CDATA[Quarter Type (Cumulative)]]></text>
+      </element>
+      <element kind="staticText" x="160" y="240" width="80" height="20">
+        <text><![CDATA[Cumulative]]></text>
+      </element>
+      <element kind="staticText" x="320" y="240" width="80" height="20">
+        <text><![CDATA[5.a ASSET DTL]]></text>
+      </element>
+      <element kind="staticText" x="400" y="240" width="80" height="20">
+        <text><![CDATA[Asset Detail]]></text>
+      </element>
+      <element kind="staticText" x="480" y="240" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(ASSET_DTL_5a!$G$19 + ASSET_DTL_5a!$F$35 + ASSET_DTL_5a!$G$35+ ASSET_DTL_5a!$F$46 + ASSET_DTL_5a!$G$46+ ASSET_DTL_5a!$F$56 + ASSET_DTL_5a!$G$56 = 0, "No Data", "REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="80" y="260" width="80" height="20">
+        <text><![CDATA[Currency Type]]></text>
+      </element>
+      <element kind="textField" x="160" y="260" width="80" height="20">
+        <expression><![CDATA[$F{cumulative_currency_type}]]></expression>
+      </element>
+      <element kind="staticText" x="320" y="260" width="80" height="20">
+        <text><![CDATA[5.b LIABILITY DTL]]></text>
+      </element>
+      <element kind="staticText" x="400" y="260" width="80" height="20">
+        <text><![CDATA[Liability Detail]]></text>
+      </element>
+      <element kind="staticText" x="480" y="260" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(LIABILITY_DTL_5b!$F$31 + LIABILITY_DTL_5b!$E$31 + LIABILITY_DTL_5b!$F$44 + LIABILITY_DTL_5b!$E$44 + LIABILITY_DTL_5b!$F$56 + LIABILITY_DTL_5b!$E$56 = 0, "No Data", "REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="80" y="280" width="80" height="20">
+        <text><![CDATA[Corporate or Which State Subsidiary]]></text>
+      </element>
+      <element kind="staticText" x="160" y="280" width="80" height="20">
+        <text><![CDATA[Corporate]]></text>
+      </element>
+      <element kind="staticText" x="320" y="280" width="80" height="20">
+        <text><![CDATA[6. INVENTORY DTL]]></text>
+      </element>
+      <element kind="staticText" x="400" y="280" width="80" height="20">
+        <text><![CDATA[Inventory Detail]]></text>
+      </element>
+      <element kind="staticText" x="480" y="280" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(INVENTORY_DTL_6!$M$17 + INVENTORY_DTL_6!$M$27 + INVENTORY_DTL_6!$M$29 + INVENTORY_DTL_6!$M$30 = 0, "No Data","REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="320" y="300" width="80" height="20">
+        <text><![CDATA[7. REGALIA SALES DTL]]></text>
+      </element>
+      <element kind="staticText" x="400" y="300" width="80" height="20">
+        <text><![CDATA[Regalia & Other Sales Detail]]></text>
+      </element>
+      <element kind="staticText" x="480" y="300" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(REGALIA_SALES_DTL_7!$F$32 + REGALIA_SALES_DTL_7!$H$32 + REGALIA_SALES_DTL_7!$I$32 + REGALIA_SALES_DTL_7!$H$52 + REGALIA_SALES_DTL_7!$I$53 = 0,"No Data","REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="320" y="320" width="80" height="20">
+        <text><![CDATA[8. DEPRECIATION DTL]]></text>
+      </element>
+      <element kind="staticText" x="400" y="320" width="80" height="20">
+        <text><![CDATA[Depreciation Detail]]></text>
+      </element>
+      <element kind="staticText" x="480" y="320" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(DEPR_DTL_8!$I$47 + DEPR_DTL_8!$J$47 + DEPR_DTL_8!$K$47 + DEPR_DTL_8!$L$47 + DEPR_DTL_8!$M$47 = 0, "No Data","REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="320" y="340" width="80" height="20">
+        <text><![CDATA[9. TRANSFER IN]]></text>
+      </element>
+      <element kind="staticText" x="400" y="340" width="80" height="20">
+        <text><![CDATA[Transfer Income Detail]]></text>
+      </element>
+      <element kind="staticText" x="480" y="340" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(TRANSFER_IN_9!$F$38 + TRANSFER_IN_9!$F$58 = 0,"No Data","REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="80" y="360" width="80" height="20">
+        <text><![CDATA[For Year-end Reports, you must deliver a copy of this report to your superior officer, along with a copy of the ending bank statement and general ledger/check register. The preferred method is electronically via email. ]]></text>
+      </element>
+      <element kind="staticText" x="320" y="360" width="80" height="20">
+        <text><![CDATA[10. TRANSFER OUT]]></text>
+      </element>
+      <element kind="staticText" x="400" y="360" width="80" height="20">
+        <text><![CDATA[Transfer Expense Detail]]></text>
+      </element>
+      <element kind="staticText" x="480" y="360" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(TRANSFER_OUT_10!$F$25 + TRANSFER_OUT_10!$F$52 = 0,"No Data","REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="320" y="380" width="80" height="20">
+        <text><![CDATA[11.a INCOME DTL]]></text>
+      </element>
+      <element kind="staticText" x="400" y="380" width="80" height="20">
+        <text><![CDATA[Income Detail Part 1]]></text>
+      </element>
+      <element kind="staticText" x="480" y="380" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(INCOME_DTL_11a!$E$20 + INCOME_DTL_11a!$E$30 + INCOME_DTL_11a!$E$36 + INCOME_DTL_11a!$E$52 = 0,"No Data","REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="80" y="400" width="80" height="20">
+        <text><![CDATA[Some Kingdoms may require additional documents. ]]></text>
+      </element>
+      <element kind="staticText" x="320" y="400" width="80" height="20">
+        <text><![CDATA[11.b INCOME DTL]]></text>
+      </element>
+      <element kind="staticText" x="400" y="400" width="80" height="20">
+        <text><![CDATA[Income Detail Part 2]]></text>
+      </element>
+      <element kind="staticText" x="480" y="400" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(INCOME_DTL_11b!$G$37 + INCOME_DTL_11b!$G$43 + INCOME_DTL_11b!$G$56 = 0,"No Data","REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="80" y="420" width="80" height="20">
+        <text><![CDATA[Whether sent by paper or electronically for the first 3 quarter reports:]]></text>
+      </element>
+      <element kind="staticText" x="320" y="420" width="80" height="20">
+        <text><![CDATA[11.c INCOME DTL]]></text>
+      </element>
+      <element kind="staticText" x="400" y="420" width="80" height="20">
+        <text><![CDATA[Income Detail Part 3]]></text>
+      </element>
+      <element kind="staticText" x="480" y="420" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(INCOME_DTL_11c!$G$24 + INCOME_DTL_11c!$G$66 = 0,"No Data","REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="80" y="440" width="80" height="20">
+        <text><![CDATA[Pages 1-4 must be completed, printed, signed, and submitted with a copy of the bank statement(s) ]]></text>
+      </element>
+      <element kind="staticText" x="320" y="440" width="80" height="20">
+        <text><![CDATA[12.a EXPENSE DTL]]></text>
+      </element>
+      <element kind="staticText" x="400" y="440" width="80" height="20">
+        <text><![CDATA[Expense Detail Part 1]]></text>
+      </element>
+      <element kind="staticText" x="480" y="440" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(EXPENSE_DTL_12a!$F$23 + EXPENSE_DTL_12a!$F$39 + EXPENSE_DTL_12a!$F$55  = 0,"No Data","REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="80" y="460" width="80" height="20">
+        <text><![CDATA[and workbook pages according to Kingdom Policy. ]]></text>
+      </element>
+      <element kind="staticText" x="320" y="460" width="80" height="20">
+        <text><![CDATA[12.b EXPENSE DTL]]></text>
+      </element>
+      <element kind="staticText" x="400" y="460" width="80" height="20">
+        <text><![CDATA[Expense Detail Part 2]]></text>
+      </element>
+      <element kind="staticText" x="480" y="460" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(EXPENSE_DTL_12b!$I$16 + EXPENSE_DTL_12b!$I$27 + EXPENSE_DTL_12b!$I$56 = 0,"No Data","REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="80" y="480" width="80" height="20">
+        <text><![CDATA[All financial reports, bank statements and backup documentation must be kept for 7 years by either]]></text>
+      </element>
+      <element kind="staticText" x="320" y="480" width="80" height="20">
+        <text><![CDATA[13. FINANCE COMM]]></text>
+      </element>
+      <element kind="staticText" x="400" y="480" width="80" height="20">
+        <text><![CDATA["Financial Committee Information "&IF(ISBLANK(DATEVALUE($C$64))," ",IF($F$84,"- EXPIRED Member",IF($G$84,"- Expiring Member"," ")))]]></text>
+      </element>
+      <element kind="staticText" x="480" y="480" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(AND(COUNTA(FINANCE_COMM_13!$D$21:$D$27)=0, COUNTA(FINANCE_COMM_13!$C$11:$C$13)=0),"No Data","REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="80" y="500" width="80" height="20">
+        <text><![CDATA[paper copy or stored electronically with a minimum of one backup copy. ]]></text>
+      </element>
+      <element kind="staticText" x="320" y="500" width="80" height="20">
+        <text><![CDATA[14. FUNDS]]></text>
+      </element>
+      <element kind="staticText" x="400" y="500" width="80" height="20">
+        <text><![CDATA["Dedicated Fund List"&
+IF(AND(BALANCE_3!$G$19=0,BALANCE_3!$H$19=0,BALANCE_3!$G$20=0,BALANCE_3!$H$20=0,FUNDS_14!$F$14=0)," ",
+IF(AND(OR(FUNDS_14!$F$11<>0,FUNDS_14!$F$56<>0),FUNDS_14!$F$11=FUNDS_14!$F$56),"- Balanced!",
+IF(AND(OR(BALANCE_3!$G$19<>0,BALANCE_3!$G$20<>0),FUNDS_14!$F$14=0,FUNDS_14!$F$56=0)," - Balanced!"," - OUT OF BALANCE")))]]></text>
+      </element>
+      <element kind="staticText" x="480" y="500" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(FUNDS_14!$F$14 = 0,"No Data","REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="320" y="520" width="80" height="20">
+        <text><![CDATA[15. NEWSLETTER]]></text>
+      </element>
+      <element kind="staticText" x="400" y="520" width="80" height="20">
+        <text><![CDATA[Newsletter Income Detail]]></text>
+      </element>
+      <element kind="staticText" x="480" y="520" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(SUM(NEWSLETTER_15!$E$27:$E$50) = 0,"No Subscription Data","REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="320" y="540" width="80" height="20">
+        <text><![CDATA[COMMENTS]]></text>
+      </element>
+      <element kind="staticText" x="400" y="540" width="80" height="20">
+        <text><![CDATA[Comments]]></text>
+      </element>
+      <element kind="staticText" x="480" y="540" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(COUNTA(COMMENTS!$C$8:$C$20)=0,"No Data","REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="320" y="560" width="80" height="20">
+        <text><![CDATA[ADDITIONAL WORKSHEETS]]></text>
+      </element>
+      <element kind="staticText" x="320" y="580" width="80" height="20">
+        <text><![CDATA[2.c SECONDARY ACCOUNTS]]></text>
+      </element>
+      <element kind="staticText" x="400" y="580" width="80" height="20">
+        <text><![CDATA["Secondary Account Reconciliation "&IF(ISBLANK(DATEVALUE($C$64))," ",IF($F$85,"- EXPIRED Signatory",IF($G$85,"- Expiring Signatory"," ")))]]></text>
+      </element>
+      <element kind="staticText" x="480" y="580" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(SECONDARY_ACCOUNTS_2c!$D$19 = 0, "No Data","REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="320" y="600" width="80" height="20">
+        <text><![CDATA[2.d SECONDARY ACCOUNTS]]></text>
+      </element>
+      <element kind="staticText" x="400" y="600" width="80" height="20">
+        <text><![CDATA["Secondary Account Reconciliation "&IF(ISBLANK(DATEVALUE($C$64))," ",IF($F$86,"- EXPIRED Signatory",IF($G$86,"- Expiring Signatory"," ")))]]></text>
+      </element>
+      <element kind="staticText" x="480" y="600" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(SECONDARY_ACCOUNTS_2d!$D$19 = 0, "No Data","REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="320" y="620" width="80" height="20">
+        <text><![CDATA[5.c ASSET DTL]]></text>
+      </element>
+      <element kind="staticText" x="400" y="620" width="80" height="20">
+        <text><![CDATA[Asset Detail]]></text>
+      </element>
+      <element kind="staticText" x="480" y="620" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(ASSET_DTL_5c!$F$33 + ASSET_DTL_5c!$G$33  + ASSET_DTL_5c!$F$44+ ASSET_DTL_5c!$G$44 + ASSET_DTL_5c!$F$58 + ASSET_DTL_5c!$G$58  = 0, "No Data", "REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="320" y="760" width="80" height="20">
+        <text><![CDATA[6.b INVENTORY DTL]]></text>
+      </element>
+      <element kind="staticText" x="400" y="760" width="80" height="20">
+        <text><![CDATA[Inventory Detail]]></text>
+      </element>
+      <element kind="staticText" x="480" y="760" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(INVENTORY_DTL_6b!$J$18 + INVENTORY_DTL_6b!$J$28 + INVENTORY_DTL_6b!$J$30 + INVENTORY_DTL_6b!$J$31 = 0, "No Data","REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="320" y="780" width="80" height="20">
+        <text><![CDATA[7.b REGALIA SALES DTL]]></text>
+      </element>
+      <element kind="staticText" x="400" y="780" width="80" height="20">
+        <text><![CDATA[Regalia & Other Sales Detail]]></text>
+      </element>
+      <element kind="staticText" x="480" y="780" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(REGALIA_SALES_DTL_7b!$F$32 + REGALIA_SALES_DTL_7b!$H$32 + REGALIA_SALES_DTL_7b!$I$32 +REGALIA_SALES_DTL_7b!$I$53   = 0,"No Data","REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="320" y="800" width="80" height="20">
+        <text><![CDATA[8.b DEPR DTL]]></text>
+      </element>
+      <element kind="staticText" x="400" y="800" width="80" height="20">
+        <text><![CDATA[Depreciation Detail - 5 year]]></text>
+      </element>
+      <element kind="staticText" x="480" y="800" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(DEPR_DTL_8b!$I$54 + DEPR_DTL_8b!$J$54 + DEPR_DTL_8b!$K$54 + DEPR_DTL_8b!$L$54 + DEPR_DTL_8b!$M$54 = 0, "No Data","REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="320" y="820" width="80" height="20">
+        <text><![CDATA[8.c DEPR DTL]]></text>
+      </element>
+      <element kind="staticText" x="400" y="820" width="80" height="20">
+        <text><![CDATA[Depreciation Detail - 7 year]]></text>
+      </element>
+      <element kind="staticText" x="480" y="820" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(DEPR_DTL_8c!$I$54 + DEPR_DTL_8c!$J$54 + DEPR_DTL_8c!$K$54 + DEPR_DTL_8c!$L$54 + DEPR_DTL_8c!$M$54 = 0, "No Data","REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="320" y="840" width="80" height="20">
+        <text><![CDATA[9.b TRANSFER IN]]></text>
+      </element>
+      <element kind="staticText" x="400" y="840" width="80" height="20">
+        <text><![CDATA[Transfer Income]]></text>
+      </element>
+      <element kind="staticText" x="480" y="840" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(TRANSFER_IN_9b!$F$32 + TRANSFER_IN_9b!$F$47 + TRANSFER_IN_9b!$F$54 = 0,"No Data","REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="320" y="860" width="80" height="20">
+        <text><![CDATA[9.c TRANSFER IN]]></text>
+      </element>
+      <element kind="staticText" x="400" y="860" width="80" height="20">
+        <text><![CDATA[Transfer Income]]></text>
+      </element>
+      <element kind="staticText" x="480" y="860" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(TRANSFER_IN_9c!$F$32 + TRANSFER_IN_9c!$F$47 + TRANSFER_IN_9c!$F$54 = 0,"No Data","REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="320" y="880" width="80" height="20">
+        <text><![CDATA[9.d TRANSFER IN]]></text>
+      </element>
+      <element kind="staticText" x="400" y="880" width="80" height="20">
+        <text><![CDATA[Transfer Income]]></text>
+      </element>
+      <element kind="staticText" x="480" y="880" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(TRANSFER_IN_9d!$F$55 = 0,"No Data","REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="320" y="900" width="80" height="20">
+        <text><![CDATA[10.b TRANSFER OUT]]></text>
+      </element>
+      <element kind="staticText" x="400" y="900" width="80" height="20">
+        <text><![CDATA[Transfer Expense]]></text>
+      </element>
+      <element kind="staticText" x="480" y="900" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(TRANSFER_OUT_10b!$F$28 + TRANSFER_OUT_10b!$F$42 + TRANSFER_OUT_10b!$F$36 + TRANSFER_OUT_10b!$F$54 = 0,"No Data","REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="320" y="920" width="80" height="20">
+        <text><![CDATA[10.c TRANSFER OUT]]></text>
+      </element>
+      <element kind="staticText" x="400" y="920" width="80" height="20">
+        <text><![CDATA[Transfer Expense]]></text>
+      </element>
+      <element kind="staticText" x="480" y="920" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(TRANSFER_OUT_10c!$F$28 + TRANSFER_OUT_10c!$F$42 + TRANSFER_OUT_10c!$F$36 + TRANSFER_OUT_10c!$F$54 = 0,"No Data","REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="320" y="940" width="80" height="20">
+        <text><![CDATA[10.d TRANSFER OUT]]></text>
+      </element>
+      <element kind="staticText" x="400" y="940" width="80" height="20">
+        <text><![CDATA[Transfer Expense]]></text>
+      </element>
+      <element kind="staticText" x="480" y="940" width="80" height="20">
+        <text><![CDATA[IF($C$11=0,"REQUIRED IF DATA",IF(TRANSFER_OUT_10d!$F$28 + TRANSFER_OUT_10d!$F$42 + TRANSFER_OUT_10d!$F$38 + TRANSFER_OUT_10d!$F$54 = 0,"No Data","REQUIRED"))]]></text>
+      </element>
+      <element kind="staticText" x="320" y="980" width="80" height="20">
+        <text><![CDATA[FREE FORM]]></text>
+      </element>
+      <element kind="staticText" x="400" y="980" width="80" height="20">
+        <text><![CDATA[Unlocked Worksheet for other information (ledgers, etc.)]]></text>
+      </element>
+      <element kind="staticText" x="320" y="1040" width="80" height="20">
+        <text><![CDATA[CONCATENATE("Version: ",F59," ",B39," ",B38," ",B40)]]></text>
+      </element>
+      <element kind="staticText" x="320" y="1060" width="80" height="20">
+        <text><![CDATA[Make sure that all pages marked 'REQUIRED' are submitted and filed.]]></text>
+      </element>
+  </title>
+
+  <detail>
+    <band height="10"/>
+  </detail>
+</jasperReport>
