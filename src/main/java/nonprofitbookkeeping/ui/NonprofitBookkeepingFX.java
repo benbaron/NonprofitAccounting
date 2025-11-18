@@ -50,7 +50,13 @@ import nonprofitbookkeeping.service.*;
 import nonprofitbookkeeping.model.SettingsModel;
 import nonprofitbookkeeping.util.FormatUtils;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonJournalPanel;
+import nonprofitbookkeeping.plugins.scaledger.SCALedgerPlugin;
 import nonprofitbookkeeping.ui.actions.*;
+import nonprofitbookkeeping.ui.actions.scaledger.ImportFromExcelActionFX;
+import nonprofitbookkeeping.ui.actions.scaledger.ImportFromJsonActionFX;
+import nonprofitbookkeeping.ui.actions.scaledger.ImportLedgerToJournalActionFX;
+import nonprofitbookkeeping.ui.actions.scaledger.LoadXlsmTableActionFX;
+import nonprofitbookkeeping.ui.actions.scaledger.SaveModifiedCopyActionFX;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.panels.*;
 import nonprofitbookkeeping.ui.javafx.BudgetPanelFX;
@@ -109,15 +115,36 @@ public class NonprofitBookkeepingFX extends Application
 	/** Menu item for exporting COA to XLSX. */
 	private MenuItem miExportCoaXlsx;
 	/** Menu item for exporting account statements to OFX/QFX. */
-	private MenuItem miExportStatementOfx;
-	
-	// Menus that need their state managed
-	/** Top-level menu for running various tools and plugin features. */
-	private Menu run;
-	/** Top-level menu for generating and viewing reports. */
-	private Menu reports;
-	/** Top-level menu for accessing different data panels like Donors, Grants etc. */
-	private Menu panels;
+        private MenuItem miExportStatementOfx;
+        /** Menu item for importing financial files directly into the data model. */
+        private MenuItem miImportFile;
+        /** Menu item for loading an SCA XLSM workbook via the plugin. */
+        private MenuItem miLoadScaXlsm;
+        /** Menu item for importing an SCA Excel ledger via the plugin. */
+        private MenuItem miImportScaExcel;
+        /** Menu item for importing an SCA JSON ledger via the plugin. */
+        private MenuItem miImportScaJson;
+        /** Menu item for persisting an SCA ledger into the journal tables. */
+        private MenuItem miPersistScaLedger;
+        /** Menu item for saving a modified copy of an SCA workbook. */
+        private MenuItem miSaveScaModifiedCopy;
+
+        // Menus that need their state managed
+        /** Top-level menu for running various tools and plugin features. */
+        private Menu run;
+        /** Top-level menu for generating and viewing reports. */
+        private Menu reports;
+        /** Top-level menu for accessing different data panels like Donors, Grants etc. */
+        private Menu panels;
+        /** Top-level menu dedicated to import workflows. */
+        private Menu importMenu;
+        /** Top-level menu dedicated to export workflows. */
+        private Menu exportMenu;
+        /** Top-level menu that lists available plugins. */
+        private Menu pluginsMenu;
+
+        /** Reference to the loaded SCA Ledger plugin, if available. */
+        private SCALedgerPlugin scaLedgerPlugin;
 	
 	/** Logger for this class. */
 	private static final Logger LOGGER =
@@ -248,12 +275,14 @@ public class NonprofitBookkeepingFX extends Application
 		
 		// Instantiate ApplicationContextImpl
 		// Services are passed from the static ServiceContainer
-		this.applicationContext = new ApplicationContextImpl(this.primaryStage,
-			ServiceContainer.reportService, ServiceContainer.budgetService,
-			ServiceContainer.reportConfigurationService, ServiceContainer.iss, // InventoryService
-			ServiceContainer.dss, // DocumentStorageService
-			ServiceContainer.fas // FundAccountingService
-		);
+                MenuBar contextMenuBar = new MenuBar();
+                this.applicationContext = new ApplicationContextImpl(this.primaryStage,
+                        contextMenuBar, ServiceContainer.reportService,
+                        ServiceContainer.budgetService,
+                        ServiceContainer.reportConfigurationService, ServiceContainer.iss, // InventoryService
+                        ServiceContainer.dss, // DocumentStorageService
+                        ServiceContainer.fas // FundAccountingService
+                );
 		
 		// Plugin Discovery and Initialization
 		LOGGER.info("Starting plugin discovery...");
@@ -267,7 +296,12 @@ public class NonprofitBookkeepingFX extends Application
 				LOGGER.info(
 					"Initializing plugin: " + plugin.getName() + " - " +
 						plugin.getDescription());
-				plugin.initialize(this.applicationContext);
+                                plugin.initialize(this.applicationContext);
+
+                                if (plugin instanceof SCALedgerPlugin scaPlugin)
+                                {
+                                        this.scaLedgerPlugin = scaPlugin;
+                                }
 				this.loadedPlugins.add(plugin);
 				LOGGER.info(
 					"Plugin initialized successfully: " + plugin.getName());
@@ -328,14 +362,18 @@ public class NonprofitBookkeepingFX extends Application
 	 *
 	 * @return The fully constructed {@link MenuBar}.
 	 */
-	private MenuBar buildMenuBar()
-	{
-		MenuBar bar = new MenuBar();
-		
-		/* FILE */
-		Menu companyMenu = new Menu("Company");
-		this.miOpen = add(companyMenu, "Open Company", e -> doOpenCompany());
-		this.miOpen.setAccelerator(
+        private MenuBar buildMenuBar()
+        {
+                MenuBar bar = (this.applicationContext != null &&
+                        this.applicationContext.getMenuBar() != null)
+                                ? this.applicationContext.getMenuBar()
+                                : new MenuBar();
+                bar.getMenus().clear();
+
+                /* FILE */
+                Menu companyMenu = new Menu("Company");
+                this.miOpen = add(companyMenu, "Open Company", e -> doOpenCompany());
+                this.miOpen.setAccelerator(
 			new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
 		this.miClose = add(companyMenu, "Close Company", e -> doCloseCompany());
 		this.miClose.setAccelerator(
@@ -343,18 +381,93 @@ public class NonprofitBookkeepingFX extends Application
 		this.miSave = add(companyMenu, "Save Company", e -> doSaveCompany());
 		this.miSave.setAccelerator(
 			new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
-		this.miImportCoaXlsx = add(companyMenu, "Import COA (XLSX)",
-			e -> new ImportCoaXlsxActionFX(this.primaryStage).handle(e));
-		this.miExportCoaXlsx = add(companyMenu, "Export COA (XLSX)",
-			e -> new ExportCoaXlsxActionFX(this.primaryStage).handle(e));
-		this.miExportStatementOfx =
-			add(companyMenu, "Export Statement (OFX/QFX)",
-				e -> new ExportFileActionFX(this.primaryStage).handle(e));
-		bar.getMenus().add(companyMenu);
-		
-		/* EDIT */
-		Menu edit = new Menu("Edit");
-		this.miEditCompany =
+                this.miImportCoaXlsx = add(companyMenu, "Import COA (XLSX)",
+                        e -> new ImportCoaXlsxActionFX(this.primaryStage).handle(e));
+                this.miExportCoaXlsx = add(companyMenu, "Export COA (XLSX)",
+                        e -> new ExportCoaXlsxActionFX(this.primaryStage).handle(e));
+                bar.getMenus().add(companyMenu);
+
+                /* IMPORT */
+                this.importMenu = new Menu("Import");
+                this.miImportFile = add(this.importMenu, "Import Financial File...",
+                        e -> new ImportFileActionFX(this.primaryStage).handle(e));
+
+                this.miLoadScaXlsm = new MenuItem("Load SCA XLSM Table...");
+
+                if (this.scaLedgerPlugin != null)
+                {
+                        this.miLoadScaXlsm.setOnAction(
+                                e -> new LoadXlsmTableActionFX(this.primaryStage,
+                                        this.scaLedgerPlugin).handle(e));
+                }
+                else
+                {
+                        this.miLoadScaXlsm.setDisable(true);
+                }
+
+                this.importMenu.getItems().add(this.miLoadScaXlsm);
+
+                this.miImportScaExcel = new MenuItem("Import SCA Excel Ledger...");
+
+                if (this.scaLedgerPlugin != null)
+                {
+                        this.miImportScaExcel.setOnAction(
+                                e -> new ImportFromExcelActionFX(this.primaryStage,
+                                        this.scaLedgerPlugin).handle(e));
+                }
+                else
+                {
+                        this.miImportScaExcel.setDisable(true);
+                }
+
+                this.importMenu.getItems().add(this.miImportScaExcel);
+
+                this.miImportScaJson = new MenuItem("Import SCA JSON Ledger...");
+
+                if (this.scaLedgerPlugin != null)
+                {
+                        this.miImportScaJson.setOnAction(
+                                e -> new ImportFromJsonActionFX(this.primaryStage,
+                                        this.scaLedgerPlugin).handle(e));
+                }
+                else
+                {
+                        this.miImportScaJson.setDisable(true);
+                }
+
+                this.importMenu.getItems().add(this.miImportScaJson);
+
+                this.miPersistScaLedger = add(this.importMenu,
+                        "Persist SCA Ledger to Journal...",
+                        e -> new ImportLedgerToJournalActionFX(this.primaryStage)
+                                .handle(e));
+                bar.getMenus().add(this.importMenu);
+
+                /* EXPORT */
+                this.exportMenu = new Menu("Export");
+                this.miSaveScaModifiedCopy = new MenuItem("Save Modified SCA Workbook...");
+
+                if (this.scaLedgerPlugin != null)
+                {
+                        this.miSaveScaModifiedCopy.setOnAction(
+                                e -> new SaveModifiedCopyActionFX(this.primaryStage,
+                                        this.scaLedgerPlugin).handle(e));
+                }
+                else
+                {
+                        this.miSaveScaModifiedCopy.setDisable(true);
+                }
+
+                this.exportMenu.getItems().add(this.miSaveScaModifiedCopy);
+
+                this.miExportStatementOfx = add(this.exportMenu,
+                        "Export Account Statement (OFX/QFX)...",
+                        e -> new ExportFileActionFX(this.primaryStage).handle(e));
+                bar.getMenus().add(this.exportMenu);
+
+                /* EDIT */
+                Menu edit = new Menu("Edit");
+                this.miEditCompany =
 			add(edit, "Create or Edit Company", e -> startCreateWizard());
 		this.miEditCoa = add(edit, "Edit Chart of Accounts",
 			e -> ((MainApplicationView) this.root)
@@ -494,12 +607,12 @@ public class NonprofitBookkeepingFX extends Application
 			e -> showPanel(
 				new SalesAndCOGPanelFX(ServiceContainer.salesService, null),
 				"Sales & COG"));
-		bar.getMenus().add(this.panels);
-		
-		bar.getMenus().add(createDatabaseMenu());
-		
-		/* SETTINGS */
-		Menu settings = new Menu("Settings");
+                bar.getMenus().add(this.panels);
+
+                bar.getMenus().add(createDatabaseMenu());
+
+                /* SETTINGS */
+                Menu settings = new Menu("Settings");
 		add(settings, "Show Settings", e -> {
 			ensureSettingsLoaded();
 			showPanel(new SettingsPanelFX(this.primaryStage,
@@ -519,45 +632,93 @@ public class NonprofitBookkeepingFX extends Application
 		
 		/* HELP */
 		Menu help = new Menu("Help");
-		add(help, "Help",
-			e -> showPanel(new HelpPanelFX(this.primaryStage), "Help"));
-		bar.getMenus().add(help);
-		
-		// Add plugin menu items
-		LOGGER.info("Adding plugin menu items. Number of plugins: " +
-			(this.loadedPlugins != null ? this.loadedPlugins.size() : 0));
-		
-		if (this.loadedPlugins != null)
-		{
-			
-			for (Plugin plugin : this.loadedPlugins)
-			{
-				
-				try
-				{
-					LOGGER.info(
-						"Adding menu items for plugin: " + plugin.getName());
-					plugin.addMenuItems(bar); // 'bar' is the MenuBar instance
-				}
-				catch (Exception ex)
-				{
-					LOGGER.log(Level.WARNING, "Plugin " + plugin.getName() +
+                add(help, "Help",
+                        e -> showPanel(new HelpPanelFX(this.primaryStage), "Help"));
+                bar.getMenus().add(help);
+
+                /* PLUGINS */
+                this.pluginsMenu = new Menu("Plugins");
+
+                if (this.loadedPlugins == null || this.loadedPlugins.isEmpty())
+                {
+                        MenuItem none = new MenuItem("No plugins available");
+                        none.setDisable(true);
+                        this.pluginsMenu.getItems().add(none);
+                }
+
+                bar.getMenus().add(this.pluginsMenu);
+
+                // Add plugin menu items
+                LOGGER.info("Adding plugin menu items. Number of plugins: " +
+                        (this.loadedPlugins != null ? this.loadedPlugins.size() : 0));
+
+                if (this.loadedPlugins != null)
+                {
+
+                        for (Plugin plugin : this.loadedPlugins)
+                        {
+
+                                try
+                                {
+                                        LOGGER.info(
+                                                "Adding menu items for plugin: " + plugin.getName());
+                                        addPluginInfoMenuItem(plugin);
+                                        plugin.addMenuItems(bar); // 'bar' is the MenuBar instance
+                                }
+                                catch (Exception ex)
+                                {
+                                        LOGGER.log(Level.WARNING, "Plugin " + plugin.getName() +
 						" failed to add its menu items: " + ex.getMessage(),
 						ex);
 				}
 				
 			}
 			
-		}
-		
-		return bar;
-		
-	}
-	
-	/**
-	 * Helper method to create a {@link MenuItem}, set its label and action handler,
-	 * and add it to the specified {@link Menu}.
-	 *
+                }
+
+                return bar;
+
+        }
+
+        private void addPluginInfoMenuItem(Plugin plugin)
+        {
+                if (this.pluginsMenu == null || plugin == null)
+                {
+                        return;
+                }
+
+                MenuItem item = new MenuItem(plugin.getName());
+                item.setOnAction(e -> showPluginDetails(plugin));
+                this.pluginsMenu.getItems().add(item);
+        }
+
+        private void showPluginDetails(Plugin plugin)
+        {
+                if (plugin == null)
+                {
+                        return;
+                }
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+
+                if (this.primaryStage != null)
+                {
+                        alert.initOwner(this.primaryStage);
+                }
+
+                alert.setTitle("Plugin Information");
+                alert.setHeaderText(plugin.getName());
+                String description = Optional.ofNullable(plugin.getDescription())
+                        .filter(desc -> !desc.isBlank())
+                        .orElse("No description available.");
+                alert.setContentText(description);
+                alert.showAndWait();
+        }
+
+        /**
+         * Helper method to create a {@link MenuItem}, set its label and action handler,
+         * and add it to the specified {@link Menu}.
+         *
 	 * @param menu The {@link Menu} to which the new item will be added.
 	 * @param label The text label for the menu item.
 	 * @param handler The {@link EventHandler} to be called when the menu item is actioned.
@@ -1015,19 +1176,54 @@ public class NonprofitBookkeepingFX extends Application
 		this.miSave.setDisable(!companyOpen || creatingCompany);
 		this.miEditCompany.setDisable(!databaseReady || creatingCompany);
 		this.miEditCoa.setDisable(!companyOpen || creatingCompany);
-		this.miEditJournal.setDisable(!companyOpen || creatingCompany);
-		this.miImportCoaXlsx.setDisable(!companyOpen || creatingCompany);
-		this.miExportCoaXlsx.setDisable(!companyOpen || creatingCompany);
-		
-		if (this.miExportStatementOfx != null)
-		{
-			this.miExportStatementOfx
-				.setDisable(!companyOpen || creatingCompany);
-		}
-		
-		this.run.setDisable(!companyOpen || creatingCompany);
-		this.panels.setDisable(!companyOpen || creatingCompany);
-		this.reports.setDisable(!companyOpen || creatingCompany);
+                this.miEditJournal.setDisable(!companyOpen || creatingCompany);
+                this.miImportCoaXlsx.setDisable(!companyOpen || creatingCompany);
+                this.miExportCoaXlsx.setDisable(!companyOpen || creatingCompany);
+
+                if (this.miImportFile != null)
+                {
+                        this.miImportFile.setDisable(!companyOpen || creatingCompany);
+                }
+
+                if (this.miPersistScaLedger != null)
+                {
+                        this.miPersistScaLedger
+                                .setDisable(!companyOpen || creatingCompany);
+                }
+
+                if (this.miExportStatementOfx != null)
+                {
+                        this.miExportStatementOfx
+                                .setDisable(!companyOpen || creatingCompany);
+                }
+
+                if (this.miLoadScaXlsm != null)
+                {
+                        this.miLoadScaXlsm
+                                .setDisable(this.scaLedgerPlugin == null || creatingCompany);
+                }
+
+                if (this.miImportScaExcel != null)
+                {
+                        this.miImportScaExcel
+                                .setDisable(this.scaLedgerPlugin == null || creatingCompany);
+                }
+
+                if (this.miImportScaJson != null)
+                {
+                        this.miImportScaJson
+                                .setDisable(this.scaLedgerPlugin == null || creatingCompany);
+                }
+
+                if (this.miSaveScaModifiedCopy != null)
+                {
+                        this.miSaveScaModifiedCopy
+                                .setDisable(this.scaLedgerPlugin == null || creatingCompany);
+                }
+
+                this.run.setDisable(!companyOpen || creatingCompany);
+                this.panels.setDisable(!companyOpen || creatingCompany);
+                this.reports.setDisable(!companyOpen || creatingCompany);
 		
 		if (this.mainView != null)
 		{
