@@ -318,7 +318,7 @@ public final class ReportBundles
 
                 List<BundleResource> resources = new ArrayList<>();
 
-                try (var paths = Files.walk(base, 2))
+                try (var paths = Files.walk(base))
                 {
                         paths.filter(Files::isRegularFile)
                                 .filter(p -> p.getFileName().toString().endsWith(".properties"))
