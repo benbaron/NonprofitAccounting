@@ -15,3 +15,12 @@ at runtime, and `ReportTemplates` builds the UI catalog from the collected
 metadata. Generators call `bundledReportPath()` to retrieve the JRXML resource
 resolved through the bundle metadata, keeping paths, beans, and documentation in
 sync.
+
+## Packaging bundles for distribution
+
+Use `nonprofitbookkeeping.reports.ReportBundlePackager` to export the discovered
+bundles (metadata, JRXML templates, and their associated bean sources) into ZIP
+archives. This is handy when distributing the reports to external consumers who
+need the compiled template and the bean contract in a single artifact. The
+packager automatically embeds each bundle's `beanName` alongside the source so
+downstream tooling can reference the correct data bean key.
