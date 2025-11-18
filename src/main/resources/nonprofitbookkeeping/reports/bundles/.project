@@ -8,4 +8,31 @@
 	</buildSpec>
 	<natures>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>ASSET_DTL_5a.jrxml</name>
+			<type>1</type>
+			<location>C:/Users/benba/eclipse-workspace/xlsx-2-jrxml-2/output/ASSET_DTL_5a.jrxml</location>
+		</link>
+		<link>
+			<name>ASSET_DTL_5a_ROWS.jrxml</name>
+			<type>1</type>
+			<location>C:/Users/benba/Desktop/jrxml-converted/jrxml_normalized_only/jrxml/sca-reports/ASSET_DTL_5a_ROWS.jrxml</location>
+		</link>
+		<link>
+			<name>AccountLedger.jrxml</name>
+			<type>1</type>
+			<location>C:/Users/benba/Desktop/jrxml-converted/jrxml_normalized_only/jrxml/AccountLedger.jrxml</location>
+		</link>
+		<link>
+			<name>COMMENTS.jrxml</name>
+			<type>1</type>
+			<location>C:/Users/benba/git/NonprofitAccounting/src/main/resources/nonprofitbookkeeping/reports/COMMENTS.jrxml</location>
+		</link>
+		<link>
+			<name>FundLedger.jrxml</name>
+			<type>1</type>
+			<location>C:/Users/benba/Desktop/jrxml-converted/jrxml_normalized_only/jrxml/sca-reports/FundLedger.jrxml</location>
+		</link>
+	</linkedResources>
 </projectDescription>

@@ -14,14 +14,15 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(MockitoExtension.class) class ImportFileActionFXTest
+@ExtendWith(MockitoExtension.class)
+class ImportFileActionFXTest
 {
 	
 	@Mock private Stage mockStage; // Owner stage for dialogs
 	
 	@Test
 	@DisplayName("Constructor: Valid Stage should create instance successfully")
-		void
+	void
 		testConstructor_validStage_succeeds()
 	{
 		ImportFileActionFX action = new ImportFileActionFX(this.mockStage);
@@ -31,35 +32,39 @@ import static org.junit.jupiter.api.Assertions.*;
 	
 	@Test
 	@DisplayName("Constructor: Null Stage should throw IllegalArgumentException")
-		void
+	void
 		testConstructor_nullStage_throwsIllegalArgumentException()
 	{
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-		});
+		Exception exception =
+			assertThrows(IllegalArgumentException.class, () ->
+			{});
 		assertEquals("Owner stage cannot be null.", exception.getMessage(),
-				"Exception message for null stage is not as expected.");
+			"Exception message for null stage is not as expected.");
 		
 	}
 	
 	@Test
 	@DisplayName("handle: Basic call with null ActionEvent should not throw unexpected exceptions")
-		void
+	void
 		testHandle_basicCall_noUnexpectedExceptions()
 	{
 		ImportFileActionFX action = new ImportFileActionFX(this.mockStage);
 		
 		// Similar to ExportFileActionFXTest, this is a basic sanity check.
 		// The handle method shows a FileChooser and then an Alert.
-		// In a non-JavaFX test environment, showOpenDialog will likely return null.
+		// In a non-JavaFX test environment, showOpenDialog will likely return
+		// null.
 		// The method should handle this gracefully without throwing NPEs.
-		assertDoesNotThrow(() -> action.handle(null), // Pass null for ActionEvent as it's not used
-				"Calling handle(null) should not throw unexpected exceptions in its current placeholder state.");
+		assertDoesNotThrow(() -> action.handle(null), // Pass null for
+														// ActionEvent as it's
+														// not used
+			"Calling handle(null) should not throw unexpected exceptions in its current placeholder state.");
 		
 	}
 	
 	@Test
 	@DisplayName("convertExcelRows: valid allocations produce balanced transaction")
-		void
+	void
 		testConvertExcelRows_validAllocations()
 	{
 		// setup chart of accounts
@@ -87,7 +92,8 @@ import static org.junit.jupiter.api.Assertions.*;
 		row.getAllocations().add(a1);
 		row.getAllocations().add(a2);
 		
-		List<AccountingTransaction> txs = ImportFileActionFX.convertExcelRows(List.of(row));
+		List<AccountingTransaction> txs =
+			ImportFileActionFX.convertExcelRows(List.of(row));
 		assertEquals(1, txs.size());
 		AccountingTransaction tx = txs.get(0);
 		assertEquals(4, tx.getEntries().size());
@@ -96,7 +102,7 @@ import static org.junit.jupiter.api.Assertions.*;
 	
 	@Test
 	@DisplayName("convertExcelRows: ignores allocations without two accounts")
-		void
+	void
 		testConvertExcelRows_invalidAllocationIgnored()
 	{
 		ChartOfAccounts chart = new ChartOfAccounts();
@@ -113,7 +119,8 @@ import static org.junit.jupiter.api.Assertions.*;
 		// missing second account
 		row.getAllocations().add(a);
 		
-		List<AccountingTransaction> txs = ImportFileActionFX.convertExcelRows(List.of(row));
+		List<AccountingTransaction> txs =
+			ImportFileActionFX.convertExcelRows(List.of(row));
 		assertTrue(txs.isEmpty());
 		
 	}

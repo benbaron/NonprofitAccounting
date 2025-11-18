@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport name="BALANCE_3" language="java"
+              pageWidth="595" pageHeight="842"
+              columnWidth="555"
+              leftMargin="20" rightMargin="20"
+              topMargin="20" bottomMargin="20"
+              uuid="00000000-0000-0000-0000-000000000000">
+  <field name="start_2_5a" class="java.lang.String"/>
+  <field name="start_2" class="java.lang.String"/>
+  <field name="sum_g19_g27_15" class="java.lang.String"/>
+
+  <title height="910">
+      <element kind="staticText" x="160" y="20" width="80" height="20">
+        <text><![CDATA[Contents!B59]]></text>
+      </element>
+      <element kind="staticText" x="160" y="40" width="80" height="20">
+        <text><![CDATA[Contents!$E$3]]></text>
+      </element>
+      <element kind="staticText" x="160" y="60" width="80" height="20">
+        <text><![CDATA[Contents!$E$4]]></text>
+      </element>
+      <element kind="staticText" x="160" y="120" width="80" height="20">
+        <text><![CDATA[Contents!B58]]></text>
+      </element>
+      <element kind="staticText" x="160" y="160" width="80" height="20">
+        <text><![CDATA[COMPARATIVE BALANCE STATEMENT]]></text>
+      </element>
+      <element kind="staticText" x="160" y="200" width="80" height="20">
+        <text><![CDATA[For Cumulative Quarterly Reports, use last year's Comparative Balance Sheet (End) amounts for the (Start) amounts. ]]></text>
+      </element>
+      <element kind="staticText" x="160" y="220" width="80" height="20">
+        <text><![CDATA[For Sequential Quarterly Reports, use last report's Comparative Balance Sheet (End) amounts for the (Start) amounts. ]]></text>
+      </element>
+      <element kind="staticText" x="160" y="240" width="80" height="20">
+        <text><![CDATA[For Year-end Reports, the (Start) numbers will be provided to you by the Kingdom Exchequer. The numbers may have ]]></text>
+      </element>
+      <element kind="staticText" x="160" y="260" width="80" height="20">
+        <text><![CDATA[changed from what was submitted last year because of transfer reconciliation between your account and other accounts.]]></text>
+      </element>
+      <element kind="staticText" x="160" y="280" width="80" height="20">
+        <text><![CDATA[The Year-end Report must be signed by the person preparing the report.]]></text>
+      </element>
+      <element kind="staticText" x="160" y="300" width="80" height="20">
+        <text><![CDATA[(START) FIGURES MAY NOT BE CHANGED UNDER ANY CIRCUMSTANCES! ]]></text>
+      </element>
+      <element kind="staticText" x="480" y="320" width="80" height="20">
+        <text><![CDATA[Contents!$C$14]]></text>
+      </element>
+      <element kind="staticText" x="560" y="320" width="80" height="20">
+        <text><![CDATA[Contents!$C$14]]></text>
+      </element>
+      <element kind="staticText" x="160" y="340" width="80" height="20">
+        <text><![CDATA[I.  ASSETS]]></text>
+      </element>
+      <element kind="staticText" x="320" y="340" width="80" height="20">
+        <text><![CDATA[(from page)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="340" width="80" height="20">
+        <text><![CDATA[Start]]></text>
+      </element>
+      <element kind="staticText" x="560" y="340" width="80" height="20">
+        <text><![CDATA[End ]]></text>
+      </element>
+      <element kind="staticText" x="640" y="340" width="80" height="20">
+        <text><![CDATA[Diff]]></text>
+      </element>
+      <element kind="staticText" x="160" y="360" width="80" height="20">
+        <text><![CDATA[a)  Undeposited and Non-Interest Bearing Cash ]]></text>
+      </element>
+      <element kind="staticText" x="400" y="360" width="80" height="20">
+        <text><![CDATA[(2,5a)]]></text>
+      </element>
+      <element kind="textField" x="480" y="360" width="80" height="20">
+        <expression><![CDATA[$F{start_2_5a}]]></expression>
+      </element>
+      <element kind="staticText" x="560" y="360" width="80" height="20">
+        <text><![CDATA[IF(PRIMARY_ACCOUNT_2a!$F$38<>"YES",IF(PRIMARY_ACCOUNT_2a!$H$37=PRIMARY_ACCOUNT_2a!$H$36,PRIMARY_ACCOUNT_2a!$H$37,0),0)+SECONDARY_ACCOUNTS_2b!I22+SECONDARY_ACCOUNTS_2c!I22+SECONDARY_ACCOUNTS_2d!I22+ASSET_DTL_5a!G19]]></text>
+      </element>
+      <element kind="staticText" x="640" y="360" width="80" height="20">
+        <text><![CDATA[H19-G19]]></text>
+      </element>
+      <element kind="staticText" x="160" y="380" width="80" height="20">
+        <text><![CDATA[b)  Cash Earning Interest]]></text>
+      </element>
+      <element kind="staticText" x="400" y="380" width="80" height="20">
+        <text><![CDATA[(2)]]></text>
+      </element>
+      <element kind="textField" x="480" y="380" width="80" height="20">
+        <expression><![CDATA[$F{start_2}]]></expression>
+      </element>
+      <element kind="staticText" x="560" y="380" width="80" height="20">
+        <text><![CDATA[IF(PRIMARY_ACCOUNT_2a!F38="YES",IF(PRIMARY_ACCOUNT_2a!H37=PRIMARY_ACCOUNT_2a!H36,PRIMARY_ACCOUNT_2a!H37,0),0)+SECONDARY_ACCOUNTS_2b!I23+SECONDARY_ACCOUNTS_2c!I23+SECONDARY_ACCOUNTS_2d!I23]]></text>
+      </element>
+      <element kind="staticText" x="640" y="380" width="80" height="20">
+        <text><![CDATA[H20-G20]]></text>
+      </element>
+      <element kind="staticText" x="160" y="400" width="80" height="20">
+        <text><![CDATA[c)  Receivables]]></text>
+      </element>
+      <element kind="staticText" x="400" y="400" width="80" height="20">
+        <text><![CDATA[(5a)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="400" width="80" height="20">
+        <text><![CDATA[ASSET_DTL_5a!F35+ASSET_DTL_5c!E33]]></text>
+      </element>
+      <element kind="staticText" x="560" y="400" width="80" height="20">
+        <text><![CDATA[ASSET_DTL_5a!G35+ASSET_DTL_5c!F33]]></text>
+      </element>
+      <element kind="staticText" x="640" y="400" width="80" height="20">
+        <text><![CDATA[H21-G21]]></text>
+      </element>
+      <element kind="staticText" x="160" y="420" width="80" height="20">
+        <text><![CDATA[d)  Inventory For Sale (Major Inventory)]]></text>
+      </element>
+      <element kind="staticText" x="400" y="420" width="80" height="20">
+        <text><![CDATA[(6)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="420" width="80" height="20">
+        <text><![CDATA[INVENTORY_DTL_6!M17+INVENTORY_DTL_6b!M17]]></text>
+      </element>
+      <element kind="staticText" x="560" y="420" width="80" height="20">
+        <text><![CDATA[INVENTORY_DTL_6!M27+INVENTORY_DTL_6b!M27]]></text>
+      </element>
+      <element kind="staticText" x="640" y="420" width="80" height="20">
+        <text><![CDATA[H22-G22]]></text>
+      </element>
+      <element kind="staticText" x="160" y="440" width="80" height="20">
+        <text><![CDATA[e)  Regalia & Non-Depreciated Equipment]]></text>
+      </element>
+      <element kind="staticText" x="400" y="440" width="80" height="20">
+        <text><![CDATA[(7)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="440" width="80" height="20">
+        <text><![CDATA[REGALIA_SALES_DTL_7!F32+REGALIA_SALES_DTL_7b!F32]]></text>
+      </element>
+      <element kind="staticText" x="560" y="440" width="80" height="20">
+        <text><![CDATA[REGALIA_SALES_DTL_7!I32+REGALIA_SALES_DTL_7b!I32]]></text>
+      </element>
+      <element kind="staticText" x="640" y="440" width="80" height="20">
+        <text><![CDATA[H23-G23]]></text>
+      </element>
+      <element kind="staticText" x="160" y="460" width="80" height="20">
+        <text><![CDATA[f)  Depreciated Equipment]]></text>
+      </element>
+      <element kind="staticText" x="400" y="460" width="80" height="20">
+        <text><![CDATA[(8)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="460" width="80" height="20">
+        <text><![CDATA[DEPR_DTL_8!I47+DEPR_DTL_8b!I54+DEPR_DTL_8c!I54+
+REGALIA_SALES_DTL_7!F49+REGALIA_SALES_DTL_7!F50+REGALIA_SALES_DTL_7!F51+
+REGALIA_SALES_DTL_7b!F49+REGALIA_SALES_DTL_7b!F50+REGALIA_SALES_DTL_7b!F51]]></text>
+      </element>
+      <element kind="staticText" x="560" y="460" width="80" height="20">
+        <text><![CDATA[DEPR_DTL_8!J47+DEPR_DTL_8b!J54+DEPR_DTL_8c!J54]]></text>
+      </element>
+      <element kind="staticText" x="640" y="460" width="80" height="20">
+        <text><![CDATA[H24-G24]]></text>
+      </element>
+      <element kind="staticText" x="160" y="480" width="80" height="20">
+        <text><![CDATA[g)  MINUS Accumulated Depreciation]]></text>
+      </element>
+      <element kind="staticText" x="400" y="480" width="80" height="20">
+        <text><![CDATA[(8)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="480" width="80" height="20">
+        <text><![CDATA[-1*(DEPR_DTL_8!K47+DEPR_DTL_8b!K54+DEPR_DTL_8c!K54+
+REGALIA_SALES_DTL_7!G49+REGALIA_SALES_DTL_7!G50+REGALIA_SALES_DTL_7!G51+
+REGALIA_SALES_DTL_7b!G49+REGALIA_SALES_DTL_7b!G50+REGALIA_SALES_DTL_7b!G51)]]></text>
+      </element>
+      <element kind="staticText" x="560" y="480" width="80" height="20">
+        <text><![CDATA[(DEPR_DTL_8!M47*-1)+(DEPR_DTL_8b!M54*-1)+(DEPR_DTL_8c!M54*-1)]]></text>
+      </element>
+      <element kind="staticText" x="640" y="480" width="80" height="20">
+        <text><![CDATA[H25-G25]]></text>
+      </element>
+      <element kind="staticText" x="160" y="500" width="80" height="20">
+        <text><![CDATA[h)  Prepaid Expenses]]></text>
+      </element>
+      <element kind="staticText" x="400" y="500" width="80" height="20">
+        <text><![CDATA[(5a)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="500" width="80" height="20">
+        <text><![CDATA[ASSET_DTL_5a!F46+ASSET_DTL_5c!E44]]></text>
+      </element>
+      <element kind="staticText" x="560" y="500" width="80" height="20">
+        <text><![CDATA[ASSET_DTL_5a!G46+ASSET_DTL_5c!F44]]></text>
+      </element>
+      <element kind="staticText" x="640" y="500" width="80" height="20">
+        <text><![CDATA[H26-G26]]></text>
+      </element>
+      <element kind="staticText" x="160" y="520" width="80" height="20">
+        <text><![CDATA[i)  Other Assets]]></text>
+      </element>
+      <element kind="staticText" x="400" y="520" width="80" height="20">
+        <text><![CDATA[(5a)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="520" width="80" height="20">
+        <text><![CDATA[ASSET_DTL_5a!F60+ASSET_DTL_5c!E58]]></text>
+      </element>
+      <element kind="staticText" x="560" y="520" width="80" height="20">
+        <text><![CDATA[ASSET_DTL_5a!G60+ASSET_DTL_5c!F58]]></text>
+      </element>
+      <element kind="staticText" x="640" y="520" width="80" height="20">
+        <text><![CDATA[H27-G27]]></text>
+      </element>
+      <element kind="staticText" x="160" y="540" width="80" height="20">
+        <text><![CDATA[j) TOTAL ASSETS]]></text>
+      </element>
+      <element kind="staticText" x="320" y="540" width="80" height="20">
+        <text><![CDATA[Add a through f, subtract g, then add h and i]]></text>
+      </element>
+      <element kind="staticText" x="480" y="540" width="80" height="20">
+        <text><![CDATA[SUM(G19:G27)]]></text>
+      </element>
+      <element kind="staticText" x="560" y="540" width="80" height="20">
+        <text><![CDATA[SUM(H19:H27)]]></text>
+      </element>
+      <element kind="staticText" x="640" y="540" width="80" height="20">
+        <text><![CDATA[SUM(I19:I27)]]></text>
+      </element>
+      <element kind="staticText" x="160" y="580" width="80" height="20">
+        <text><![CDATA[II.  LIABILITIES]]></text>
+      </element>
+      <element kind="staticText" x="160" y="600" width="80" height="20">
+        <text><![CDATA[a)  Newsletter Subscriptions Due]]></text>
+      </element>
+      <element kind="staticText" x="400" y="600" width="80" height="20">
+        <text><![CDATA[(15)]]></text>
+      </element>
+      <element kind="textField" x="480" y="600" width="80" height="20">
+        <expression><![CDATA[$F{sum_g19_g27_15}]]></expression>
+      </element>
+      <element kind="staticText" x="560" y="600" width="80" height="20">
+        <text><![CDATA[NEWSLETTER_15!E16]]></text>
+      </element>
+      <element kind="staticText" x="640" y="600" width="80" height="20">
+        <text><![CDATA[H31-G31]]></text>
+      </element>
+      <element kind="staticText" x="160" y="620" width="80" height="20">
+        <text><![CDATA[b)  Deferred Revenue ]]></text>
+      </element>
+      <element kind="staticText" x="400" y="620" width="80" height="20">
+        <text><![CDATA[(5b)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="620" width="80" height="20">
+        <text><![CDATA[LIABILITY_DTL_5b!E31+LIABILITY_DTL_5d!E29]]></text>
+      </element>
+      <element kind="staticText" x="560" y="620" width="80" height="20">
+        <text><![CDATA[LIABILITY_DTL_5b!F31+LIABILITY_DTL_5d!F29]]></text>
+      </element>
+      <element kind="staticText" x="640" y="620" width="80" height="20">
+        <text><![CDATA[H32-G32]]></text>
+      </element>
+      <element kind="staticText" x="160" y="640" width="80" height="20">
+        <text><![CDATA[c)  Payables]]></text>
+      </element>
+      <element kind="staticText" x="400" y="640" width="80" height="20">
+        <text><![CDATA[(5b)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="640" width="80" height="20">
+        <text><![CDATA[LIABILITY_DTL_5b!E44+LIABILITY_DTL_5d!E47]]></text>
+      </element>
+      <element kind="staticText" x="560" y="640" width="80" height="20">
+        <text><![CDATA[LIABILITY_DTL_5b!F44+LIABILITY_DTL_5d!F47]]></text>
+      </element>
+      <element kind="staticText" x="640" y="640" width="80" height="20">
+        <text><![CDATA[H33-G33]]></text>
+      </element>
+      <element kind="staticText" x="160" y="660" width="80" height="20">
+        <text><![CDATA[d)  Other Liabilities]]></text>
+      </element>
+      <element kind="staticText" x="400" y="660" width="80" height="20">
+        <text><![CDATA[(5b)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="660" width="80" height="20">
+        <text><![CDATA[LIABILITY_DTL_5b!E56+LIABILITY_DTL_5d!E56]]></text>
+      </element>
+      <element kind="staticText" x="560" y="660" width="80" height="20">
+        <text><![CDATA[LIABILITY_DTL_5b!F56+LIABILITY_DTL_5d!F56]]></text>
+      </element>
+      <element kind="staticText" x="640" y="660" width="80" height="20">
+        <text><![CDATA[H34-G34]]></text>
+      </element>
+      <element kind="staticText" x="160" y="680" width="80" height="20">
+        <text><![CDATA[e)  TOTAL LIABILITIES]]></text>
+      </element>
+      <element kind="staticText" x="320" y="680" width="80" height="20">
+        <text><![CDATA[Add a through d]]></text>
+      </element>
+      <element kind="staticText" x="480" y="680" width="80" height="20">
+        <text><![CDATA[SUM(G31:G34)]]></text>
+      </element>
+      <element kind="staticText" x="560" y="680" width="80" height="20">
+        <text><![CDATA[SUM(H31:H34)]]></text>
+      </element>
+      <element kind="staticText" x="640" y="680" width="80" height="20">
+        <text><![CDATA[SUM(I31:I34)]]></text>
+      </element>
+      <element kind="staticText" x="160" y="720" width="80" height="20">
+        <text><![CDATA[III.  NET WORTH]]></text>
+      </element>
+      <element kind="staticText" x="320" y="720" width="80" height="20">
+        <text><![CDATA[Line I.i minus Line II.d]]></text>
+      </element>
+      <element kind="staticText" x="480" y="720" width="80" height="20">
+        <text><![CDATA[ROUND(G28-G35,2)]]></text>
+      </element>
+      <element kind="staticText" x="560" y="720" width="80" height="20">
+        <text><![CDATA[ROUND(H28-H35,2)]]></text>
+      </element>
+      <element kind="staticText" x="160" y="740" width="80" height="20">
+        <text><![CDATA[Proof:]]></text>
+      </element>
+      <element kind="staticText" x="240" y="740" width="80" height="20">
+        <text><![CDATA[Change in Net Worth]]></text>
+      </element>
+      <element kind="staticText" x="320" y="740" width="80" height="20">
+        <text><![CDATA[III(End) - III(Start)]]></text>
+      </element>
+      <element kind="staticText" x="400" y="740" width="80" height="20">
+        <text><![CDATA[(A)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="740" width="80" height="20">
+        <text><![CDATA[H37-G37]]></text>
+      </element>
+      <element kind="staticText" x="560" y="740" width="80" height="20">
+        <text><![CDATA[(A = B) ? If NO, the report is incomplete.]]></text>
+      </element>
+      <element kind="staticText" x="240" y="760" width="80" height="20">
+        <text><![CDATA[Net Income]]></text>
+      </element>
+      <element kind="staticText" x="320" y="760" width="80" height="20">
+        <text><![CDATA[Income Statement Line 32]]></text>
+      </element>
+      <element kind="staticText" x="400" y="760" width="80" height="20">
+        <text><![CDATA[(B)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="760" width="80" height="20">
+        <text><![CDATA[INCOME_4!J48]]></text>
+      </element>
+      <element kind="staticText" x="160" y="800" width="80" height="20">
+        <text><![CDATA[Legal Names:]]></text>
+      </element>
+      <element kind="staticText" x="240" y="800" width="80" height="20">
+        <text><![CDATA[Print]]></text>
+      </element>
+      <element kind="staticText" x="320" y="800" width="80" height="20">
+        <text><![CDATA[Sign]]></text>
+      </element>
+      <element kind="staticText" x="160" y="820" width="80" height="20">
+        <text><![CDATA[Exchequer:]]></text>
+      </element>
+      <element kind="staticText" x="240" y="820" width="80" height="20">
+        <text><![CDATA[IF(Contents!$C$10="","",Contents!$C$10)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="820" width="80" height="20">
+        <text><![CDATA[Date:]]></text>
+      </element>
+      <element kind="staticText" x="160" y="840" width="80" height="20">
+        <text><![CDATA[Seneschal:]]></text>
+      </element>
+      <element kind="staticText" x="240" y="840" width="80" height="20">
+        <text><![CDATA[IF(Contents!$C$9="","",Contents!$C$9)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="840" width="80" height="20">
+        <text><![CDATA[Date:]]></text>
+      </element>
+      <element kind="staticText" x="160" y="860" width="80" height="20">
+        <text><![CDATA[Signatures below certify that the information on this report is correct and complete to the best of their knowledge.]]></text>
+      </element>
+      <element kind="staticText" x="160" y="880" width="80" height="20">
+        <text><![CDATA[-3-]]></text>
+      </element>
+  </title>
+
+  <detail>
+    <band height="10"/>
+  </detail>
+</jasperReport>

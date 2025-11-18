@@ -1,0 +1,692 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport name="INCOME_4" language="java"
+              pageWidth="595" pageHeight="842"
+              columnWidth="555"
+              leftMargin="20" rightMargin="20"
+              topMargin="20" bottomMargin="20"
+              uuid="00000000-0000-0000-0000-000000000000">
+  <field name="transfer_in_9_f58_transfer_in_9b_f54_transfer_in_9c_f54_interest_earned" class="java.lang.String"/>
+  <field name="sumif_expense_dtl_12a_c27_c38_oa_expense_dtl_12a_f27_f38_bank_service_charges" class="java.lang.String"/>
+  <field name="sumif_expense_dtl_12a_c27_c38_ar_expense_dtl_12a_f27_f38_bank_service_charges" class="java.lang.String"/>
+  <field name="sumif_expense_dtl_12a_c27_c38_fr_expense_dtl_12a_f27_f38_bank_service_charges" class="java.lang.String"/>
+  <field name="sumif_depr_dtl_8_d14_d23_oa_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_oa_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_oa_depr_dtl_8b_l14_l53_equipment_rental_maintenance" class="java.lang.String"/>
+  <field name="sumif_depr_dtl_8_d14_d23_ar_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_ar_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_ar_depr_dtl_8b_l14_l53_sumif_depr_dtl_8c_d14_d53_ar_depr_dtl_8c_l14_l53_equipment_rental_maintenance" class="java.lang.String"/>
+  <field name="sumif_depr_dtl_8_d14_d23_fr_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_fr_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_fr_depr_dtl_8b_l14_l53_equipment_rental_maintenance" class="java.lang.String"/>
+  <field name="sumif_expense_dtl_12a_c43_c54_oa_expense_dtl_12a_f43_f54_food" class="java.lang.String"/>
+  <field name="sumif_expense_dtl_12a_c43_c54_ar_expense_dtl_12a_f43_f54_food" class="java.lang.String"/>
+  <field name="sumif_expense_dtl_12a_c43_c54_fr_expense_dtl_12a_f43_f54_food" class="java.lang.String"/>
+  <field name="sumif_expense_dtl_12a_c43_c54_oa_expense_dtl_12a_f43_f54_general_supplies" class="java.lang.String"/>
+  <field name="sumif_expense_dtl_12a_c43_c54_ar_expense_dtl_12a_f43_f54_general_supplies" class="java.lang.String"/>
+  <field name="sumif_expense_dtl_12a_c43_c54_fr_expense_dtl_12a_f43_f54_general_supplies" class="java.lang.String"/>
+  <field name="_0_0_occupancy_site_charges" class="java.lang.String"/>
+  <field name="expense_dtl_12b_i16_occupancy_site_charges" class="java.lang.String"/>
+  <field name="_0_0_occupancy_site_charges_2" class="java.lang.String"/>
+  <field name="_0_0_postage_shipping_po_box_rental" class="java.lang.String"/>
+  <field name="expense_dtl_12b_i16_postage_shipping_po_box_rental" class="java.lang.String"/>
+  <field name="_0_0_postage_shipping_po_box_rental_2" class="java.lang.String"/>
+  <field name="_0_0_printing_publications" class="java.lang.String"/>
+  <field name="expense_dtl_12b_i16_printing_publications" class="java.lang.String"/>
+  <field name="_0_0_printing_publications_2" class="java.lang.String"/>
+  <field name="_0_0_telephone" class="java.lang.String"/>
+  <field name="regalia_sales_dtl_7_h52_regalia_sales_dtl_7b_h52_telephone" class="java.lang.String"/>
+  <field name="_0_0_telephone_2" class="java.lang.String"/>
+  <field name="_0_0_travel_gas_tolls_airfare" class="java.lang.String"/>
+  <field name="regalia_sales_dtl_7_h52_regalia_sales_dtl_7b_h52_travel_gas_tolls_airfare" class="java.lang.String"/>
+  <field name="_0_0_travel_gas_tolls_airfare_2" class="java.lang.String"/>
+
+  <title height="1050">
+      <element kind="staticText" x="160" y="20" width="80" height="20">
+        <text><![CDATA[Contents!B59]]></text>
+      </element>
+      <element kind="staticText" x="160" y="40" width="80" height="20">
+        <text><![CDATA[Contents!$E$3]]></text>
+      </element>
+      <element kind="staticText" x="160" y="60" width="80" height="20">
+        <text><![CDATA[Contents!$E$4]]></text>
+      </element>
+      <element kind="staticText" x="160" y="100" width="80" height="20">
+        <text><![CDATA[Contents!B58]]></text>
+      </element>
+      <element kind="staticText" x="240" y="140" width="80" height="20">
+        <text><![CDATA[INCOME STATEMENT]]></text>
+      </element>
+      <element kind="staticText" x="720" y="160" width="80" height="20">
+        <text><![CDATA[Contents!$C$14]]></text>
+      </element>
+      <element kind="staticText" x="160" y="180" width="80" height="20">
+        <text><![CDATA[INCOME]]></text>
+      </element>
+      <element kind="staticText" x="400" y="180" width="80" height="20">
+        <text><![CDATA[(from page)]]></text>
+      </element>
+      <element kind="staticText" x="560" y="180" width="80" height="20">
+        <text><![CDATA[Gross]]></text>
+      </element>
+      <element kind="staticText" x="640" y="180" width="80" height="20">
+        <text><![CDATA[Cost]]></text>
+      </element>
+      <element kind="staticText" x="720" y="180" width="80" height="20">
+        <text><![CDATA[ Amount]]></text>
+      </element>
+      <element kind="staticText" x="160" y="200" width="80" height="20">
+        <text><![CDATA[1a]]></text>
+      </element>
+      <element kind="staticText" x="240" y="200" width="80" height="20">
+        <text><![CDATA[Fund Raising: Non-medieval activities to earn 
+income (car washes, bake sales, etc.)]]></text>
+      </element>
+      <element kind="staticText" x="400" y="200" width="80" height="20">
+        <text><![CDATA[(11a)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="200" width="80" height="20">
+        <text><![CDATA[INTERNAL]]></text>
+      </element>
+      <element kind="staticText" x="720" y="200" width="80" height="20">
+        <text><![CDATA[INCOME_DTL_11a!E20]]></text>
+      </element>
+      <element kind="staticText" x="160" y="220" width="80" height="20">
+        <text><![CDATA[1b]]></text>
+      </element>
+      <element kind="staticText" x="400" y="220" width="80" height="20">
+        <text><![CDATA[(11a)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="220" width="80" height="20">
+        <text><![CDATA[EXTERNAL]]></text>
+      </element>
+      <element kind="staticText" x="720" y="220" width="80" height="20">
+        <text><![CDATA[INCOME_DTL_11a!E30]]></text>
+      </element>
+      <element kind="staticText" x="160" y="240" width="80" height="20">
+        <text><![CDATA[2.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="240" width="80" height="20">
+        <text><![CDATA[Direct Contributions/Donations: No activity]]></text>
+      </element>
+      <element kind="staticText" x="400" y="240" width="80" height="20">
+        <text><![CDATA[(11a)]]></text>
+      </element>
+      <element kind="staticText" x="720" y="240" width="80" height="20">
+        <text><![CDATA[INCOME_DTL_11a!E36]]></text>
+      </element>
+      <element kind="staticText" x="160" y="260" width="80" height="20">
+        <text><![CDATA[3a]]></text>
+      </element>
+      <element kind="staticText" x="240" y="260" width="80" height="20">
+        <text><![CDATA[Activity Related: Medieval activities to earn income (events, demos, heraldry fees)]]></text>
+      </element>
+      <element kind="staticText" x="400" y="260" width="80" height="20">
+        <text><![CDATA[(11a)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="260" width="80" height="20">
+        <text><![CDATA[Income from Demos and Activity Fees]]></text>
+      </element>
+      <element kind="staticText" x="720" y="260" width="80" height="20">
+        <text><![CDATA[INCOME_DTL_11a!E52]]></text>
+      </element>
+      <element kind="staticText" x="160" y="280" width="80" height="20">
+        <text><![CDATA[3b]]></text>
+      </element>
+      <element kind="staticText" x="400" y="280" width="80" height="20">
+        <text><![CDATA[(11b)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="280" width="80" height="20">
+        <text><![CDATA[Adjusted Gross Event Income]]></text>
+      </element>
+      <element kind="staticText" x="720" y="280" width="80" height="20">
+        <text><![CDATA[INCOME_DTL_11b!G37]]></text>
+      </element>
+      <element kind="staticText" x="160" y="300" width="80" height="20">
+        <text><![CDATA[4a]]></text>
+      </element>
+      <element kind="staticText" x="240" y="300" width="80" height="20">
+        <text><![CDATA[Funds Transferred In from Another SCA Account]]></text>
+      </element>
+      <element kind="staticText" x="400" y="300" width="80" height="20">
+        <text><![CDATA[(9)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="300" width="80" height="20">
+        <text><![CDATA[WITHIN KINGDOM ]]></text>
+      </element>
+      <element kind="staticText" x="720" y="300" width="80" height="20">
+        <text><![CDATA[TRANSFER_IN_9!F38+TRANSFER_IN_9b!F32+TRANSFER_IN_9c!F32+TRANSFER_IN_9d!F55]]></text>
+      </element>
+      <element kind="staticText" x="160" y="320" width="80" height="20">
+        <text><![CDATA[4b]]></text>
+      </element>
+      <element kind="staticText" x="400" y="320" width="80" height="20">
+        <text><![CDATA[(9)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="320" width="80" height="20">
+        <text><![CDATA[OUTSIDE KINGDOM ]]></text>
+      </element>
+      <element kind="staticText" x="720" y="320" width="80" height="20">
+        <text><![CDATA[TRANSFER_IN_9!F58+TRANSFER_IN_9b!F54+TRANSFER_IN_9c!F54]]></text>
+      </element>
+      <element kind="staticText" x="160" y="340" width="80" height="20">
+        <text><![CDATA[5.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="340" width="80" height="20">
+        <text><![CDATA[Interest Earned]]></text>
+      </element>
+      <element kind="textField" x="720" y="340" width="80" height="20">
+        <expression><![CDATA[$F{transfer_in_9_f58_transfer_in_9b_f54_transfer_in_9c_f54_interest_earned}]]></expression>
+      </element>
+      <element kind="staticText" x="160" y="360" width="80" height="20">
+        <text><![CDATA[6.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="360" width="80" height="20">
+        <text><![CDATA[Net Inventory Sales Income]]></text>
+      </element>
+      <element kind="staticText" x="400" y="360" width="80" height="20">
+        <text><![CDATA[(6)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="360" width="80" height="20">
+        <text><![CDATA[Gross-Cost=Net]]></text>
+      </element>
+      <element kind="staticText" x="560" y="360" width="80" height="20">
+        <text><![CDATA[INVENTORY_DTL_6!M30+INVENTORY_DTL_6b!M30]]></text>
+      </element>
+      <element kind="staticText" x="640" y="360" width="80" height="20">
+        <text><![CDATA[INVENTORY_DTL_6!M29+INVENTORY_DTL_6b!M29]]></text>
+      </element>
+      <element kind="staticText" x="720" y="360" width="80" height="20">
+        <text><![CDATA[H19-I19]]></text>
+      </element>
+      <element kind="staticText" x="160" y="380" width="80" height="20">
+        <text><![CDATA[7.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="380" width="80" height="20">
+        <text><![CDATA[Other Sales Income]]></text>
+      </element>
+      <element kind="staticText" x="400" y="380" width="80" height="20">
+        <text><![CDATA[(7)]]></text>
+      </element>
+      <element kind="staticText" x="720" y="380" width="80" height="20">
+        <text><![CDATA[REGALIA_SALES_DTL_7!I53+REGALIA_SALES_DTL_7b!I53]]></text>
+      </element>
+      <element kind="staticText" x="160" y="400" width="80" height="20">
+        <text><![CDATA[8.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="400" width="80" height="20">
+        <text><![CDATA[Adjusted Gross Newsletter Income]]></text>
+      </element>
+      <element kind="staticText" x="400" y="400" width="80" height="20">
+        <text><![CDATA[(15)]]></text>
+      </element>
+      <element kind="staticText" x="720" y="400" width="80" height="20">
+        <text><![CDATA[NEWSLETTER_15!E17]]></text>
+      </element>
+      <element kind="staticText" x="160" y="420" width="80" height="20">
+        <text><![CDATA[9.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="420" width="80" height="20">
+        <text><![CDATA[Net Advertising Income]]></text>
+      </element>
+      <element kind="staticText" x="400" y="420" width="80" height="20">
+        <text><![CDATA[(11b)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="420" width="80" height="20">
+        <text><![CDATA[Gross-Cost=Net]]></text>
+      </element>
+      <element kind="staticText" x="560" y="420" width="80" height="20">
+        <text><![CDATA[INCOME_DTL_11b!E43]]></text>
+      </element>
+      <element kind="staticText" x="640" y="420" width="80" height="20">
+        <text><![CDATA[INCOME_DTL_11b!F43]]></text>
+      </element>
+      <element kind="staticText" x="720" y="420" width="80" height="20">
+        <text><![CDATA[H22-I22]]></text>
+      </element>
+      <element kind="staticText" x="160" y="440" width="80" height="20">
+        <text><![CDATA[10.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="440" width="80" height="20">
+        <text><![CDATA[Other Income ]]></text>
+      </element>
+      <element kind="staticText" x="400" y="440" width="80" height="20">
+        <text><![CDATA[(11b)]]></text>
+      </element>
+      <element kind="staticText" x="720" y="440" width="80" height="20">
+        <text><![CDATA[INCOME_DTL_11b!G56]]></text>
+      </element>
+      <element kind="staticText" x="160" y="460" width="80" height="20">
+        <text><![CDATA[11.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="460" width="80" height="20">
+        <text><![CDATA[TOTAL GROSS INCOME ]]></text>
+      </element>
+      <element kind="staticText" x="640" y="460" width="80" height="20">
+        <text><![CDATA[(Sum of Lines 1 through 9)]]></text>
+      </element>
+      <element kind="staticText" x="720" y="460" width="80" height="20">
+        <text><![CDATA[SUM(J11:J23)]]></text>
+      </element>
+      <element kind="staticText" x="160" y="500" width="80" height="20">
+        <text><![CDATA[EXPENSES]]></text>
+      </element>
+      <element kind="staticText" x="400" y="500" width="80" height="20">
+        <text><![CDATA[(from page)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="500" width="80" height="20">
+        <text><![CDATA[Office & Admin.]]></text>
+      </element>
+      <element kind="staticText" x="560" y="500" width="80" height="20">
+        <text><![CDATA[Activity Related]]></text>
+      </element>
+      <element kind="staticText" x="640" y="500" width="80" height="20">
+        <text><![CDATA[Fund Raising]]></text>
+      </element>
+      <element kind="staticText" x="720" y="500" width="80" height="20">
+        <text><![CDATA[Total]]></text>
+      </element>
+      <element kind="staticText" x="160" y="520" width="80" height="20">
+        <text><![CDATA[12.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="520" width="80" height="20">
+        <text><![CDATA[Advertising (NON-SCA)]]></text>
+      </element>
+      <element kind="staticText" x="400" y="520" width="80" height="20">
+        <text><![CDATA[(12a)]]></text>
+      </element>
+      <element kind="staticText" x="560" y="520" width="80" height="20">
+        <text><![CDATA[SUMIF(EXPENSE_DTL_12a!C12:C22,"AR",EXPENSE_DTL_12a!F12:F22)]]></text>
+      </element>
+      <element kind="staticText" x="720" y="520" width="80" height="20">
+        <text><![CDATA[SUM(G27:I27)]]></text>
+      </element>
+      <element kind="staticText" x="160" y="540" width="80" height="20">
+        <text><![CDATA[13.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="540" width="80" height="20">
+        <text><![CDATA[Bad Debts]]></text>
+      </element>
+      <element kind="staticText" x="400" y="540" width="80" height="20">
+        <text><![CDATA[(12a)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="540" width="80" height="20">
+        <text><![CDATA[SUMIF(EXPENSE_DTL_12a!C27:C38,"OA",EXPENSE_DTL_12a!F27:F38)]]></text>
+      </element>
+      <element kind="staticText" x="560" y="540" width="80" height="20">
+        <text><![CDATA[SUMIF(EXPENSE_DTL_12a!C27:C38,"AR",EXPENSE_DTL_12a!F27:F38)]]></text>
+      </element>
+      <element kind="staticText" x="640" y="540" width="80" height="20">
+        <text><![CDATA[SUMIF(EXPENSE_DTL_12a!C27:C38,"FR",EXPENSE_DTL_12a!F27:F38)]]></text>
+      </element>
+      <element kind="staticText" x="720" y="540" width="80" height="20">
+        <text><![CDATA[SUM(G28:I28)]]></text>
+      </element>
+      <element kind="staticText" x="160" y="560" width="80" height="20">
+        <text><![CDATA[14.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="560" width="80" height="20">
+        <text><![CDATA[Bank Service Charges]]></text>
+      </element>
+      <element kind="textField" x="480" y="560" width="80" height="20">
+        <expression><![CDATA[$F{sumif_expense_dtl_12a_c27_c38_oa_expense_dtl_12a_f27_f38_bank_service_charges}]]></expression>
+      </element>
+      <element kind="textField" x="560" y="560" width="80" height="20">
+        <expression><![CDATA[$F{sumif_expense_dtl_12a_c27_c38_ar_expense_dtl_12a_f27_f38_bank_service_charges}]]></expression>
+      </element>
+      <element kind="textField" x="640" y="560" width="80" height="20">
+        <expression><![CDATA[$F{sumif_expense_dtl_12a_c27_c38_fr_expense_dtl_12a_f27_f38_bank_service_charges}]]></expression>
+      </element>
+      <element kind="staticText" x="720" y="560" width="80" height="20">
+        <text><![CDATA[SUM(G29:I29)]]></text>
+      </element>
+      <element kind="staticText" x="160" y="580" width="80" height="20">
+        <text><![CDATA[15.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="580" width="80" height="20">
+        <text><![CDATA[Depreciation ]]></text>
+      </element>
+      <element kind="staticText" x="400" y="580" width="80" height="20">
+        <text><![CDATA[(8)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="580" width="80" height="20">
+        <text><![CDATA[SUMIF(DEPR_DTL_8!$D14:$D23,"OA",DEPR_DTL_8!$L14:$L23)+SUMIF(DEPR_DTL_8!$D32:$D41,"OA",DEPR_DTL_8!$L32:$L41)+SUMIF(DEPR_DTL_8b!$D14:$D53,"OA",DEPR_DTL_8b!$L14:$L53)]]></text>
+      </element>
+      <element kind="staticText" x="560" y="580" width="80" height="20">
+        <text><![CDATA[SUMIF(DEPR_DTL_8!$D14:$D23,"AR",DEPR_DTL_8!$L14:$L23)+SUMIF(DEPR_DTL_8!$D32:$D41,"AR",DEPR_DTL_8!$L32:$L41)+SUMIF(DEPR_DTL_8b!$D14:$D53,"AR",DEPR_DTL_8b!$L14:$L53)+SUMIF(DEPR_DTL_8c!$D14:$D53,"AR",DEPR_DTL_8c!$L14:$L53)]]></text>
+      </element>
+      <element kind="staticText" x="640" y="580" width="80" height="20">
+        <text><![CDATA[SUMIF(DEPR_DTL_8!$D14:$D23,"FR",DEPR_DTL_8!$L14:$L23)+SUMIF(DEPR_DTL_8!$D32:$D41,"FR",DEPR_DTL_8!$L32:$L41)+SUMIF(DEPR_DTL_8b!$D14:$D53,"FR",DEPR_DTL_8b!$L14:$L53)]]></text>
+      </element>
+      <element kind="staticText" x="720" y="580" width="80" height="20">
+        <text><![CDATA[SUM(G30:I30)]]></text>
+      </element>
+      <element kind="staticText" x="160" y="600" width="80" height="20">
+        <text><![CDATA[16.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="600" width="80" height="20">
+        <text><![CDATA[Equipment Rental & Maintenance]]></text>
+      </element>
+      <element kind="textField" x="480" y="600" width="80" height="20">
+        <expression><![CDATA[$F{sumif_depr_dtl_8_d14_d23_oa_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_oa_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_oa_depr_dtl_8b_l14_l53_equipment_rental_maintenance}]]></expression>
+      </element>
+      <element kind="textField" x="560" y="600" width="80" height="20">
+        <expression><![CDATA[$F{sumif_depr_dtl_8_d14_d23_ar_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_ar_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_ar_depr_dtl_8b_l14_l53_sumif_depr_dtl_8c_d14_d53_ar_depr_dtl_8c_l14_l53_equipment_rental_maintenance}]]></expression>
+      </element>
+      <element kind="textField" x="640" y="600" width="80" height="20">
+        <expression><![CDATA[$F{sumif_depr_dtl_8_d14_d23_fr_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_fr_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_fr_depr_dtl_8b_l14_l53_equipment_rental_maintenance}]]></expression>
+      </element>
+      <element kind="staticText" x="720" y="600" width="80" height="20">
+        <text><![CDATA[SUM(G31:I31)]]></text>
+      </element>
+      <element kind="staticText" x="160" y="620" width="80" height="20">
+        <text><![CDATA[17.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="620" width="80" height="20">
+        <text><![CDATA[Fees & Honoraria    ]]></text>
+      </element>
+      <element kind="staticText" x="400" y="620" width="80" height="20">
+        <text><![CDATA[(12a)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="620" width="80" height="20">
+        <text><![CDATA[SUMIF(EXPENSE_DTL_12a!C43:C54,"OA",EXPENSE_DTL_12a!F43:F54)]]></text>
+      </element>
+      <element kind="staticText" x="560" y="620" width="80" height="20">
+        <text><![CDATA[SUMIF(EXPENSE_DTL_12a!C43:C54,"AR",EXPENSE_DTL_12a!F43:F54)]]></text>
+      </element>
+      <element kind="staticText" x="640" y="620" width="80" height="20">
+        <text><![CDATA[SUMIF(EXPENSE_DTL_12a!C43:C54,"FR",EXPENSE_DTL_12a!F43:F54)]]></text>
+      </element>
+      <element kind="staticText" x="720" y="620" width="80" height="20">
+        <text><![CDATA[SUM(G32:I32)]]></text>
+      </element>
+      <element kind="staticText" x="160" y="640" width="80" height="20">
+        <text><![CDATA[18.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="640" width="80" height="20">
+        <text><![CDATA[Food]]></text>
+      </element>
+      <element kind="textField" x="480" y="640" width="80" height="20">
+        <expression><![CDATA[$F{sumif_expense_dtl_12a_c43_c54_oa_expense_dtl_12a_f43_f54_food}]]></expression>
+      </element>
+      <element kind="textField" x="560" y="640" width="80" height="20">
+        <expression><![CDATA[$F{sumif_expense_dtl_12a_c43_c54_ar_expense_dtl_12a_f43_f54_food}]]></expression>
+      </element>
+      <element kind="textField" x="640" y="640" width="80" height="20">
+        <expression><![CDATA[$F{sumif_expense_dtl_12a_c43_c54_fr_expense_dtl_12a_f43_f54_food}]]></expression>
+      </element>
+      <element kind="staticText" x="720" y="640" width="80" height="20">
+        <text><![CDATA[SUM(G33:I33)]]></text>
+      </element>
+      <element kind="staticText" x="160" y="660" width="80" height="20">
+        <text><![CDATA[19.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="660" width="80" height="20">
+        <text><![CDATA[General Supplies]]></text>
+      </element>
+      <element kind="textField" x="480" y="660" width="80" height="20">
+        <expression><![CDATA[$F{sumif_expense_dtl_12a_c43_c54_oa_expense_dtl_12a_f43_f54_general_supplies}]]></expression>
+      </element>
+      <element kind="textField" x="560" y="660" width="80" height="20">
+        <expression><![CDATA[$F{sumif_expense_dtl_12a_c43_c54_ar_expense_dtl_12a_f43_f54_general_supplies}]]></expression>
+      </element>
+      <element kind="textField" x="640" y="660" width="80" height="20">
+        <expression><![CDATA[$F{sumif_expense_dtl_12a_c43_c54_fr_expense_dtl_12a_f43_f54_general_supplies}]]></expression>
+      </element>
+      <element kind="staticText" x="720" y="660" width="80" height="20">
+        <text><![CDATA[SUM(G34:I34)]]></text>
+      </element>
+      <element kind="staticText" x="160" y="680" width="80" height="20">
+        <text><![CDATA[20.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="680" width="80" height="20">
+        <text><![CDATA[Insurance (NON-SCA)]]></text>
+      </element>
+      <element kind="staticText" x="400" y="680" width="80" height="20">
+        <text><![CDATA[(12b)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="680" width="80" height="20">
+        <text><![CDATA[0.0]]></text>
+      </element>
+      <element kind="staticText" x="560" y="680" width="80" height="20">
+        <text><![CDATA[EXPENSE_DTL_12b!I16]]></text>
+      </element>
+      <element kind="staticText" x="640" y="680" width="80" height="20">
+        <text><![CDATA[0.0]]></text>
+      </element>
+      <element kind="staticText" x="720" y="680" width="80" height="20">
+        <text><![CDATA[SUM(G35:I35)]]></text>
+      </element>
+      <element kind="staticText" x="160" y="700" width="80" height="20">
+        <text><![CDATA[21.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="700" width="80" height="20">
+        <text><![CDATA[Occupancy & Site Charges]]></text>
+      </element>
+      <element kind="textField" x="480" y="700" width="80" height="20">
+        <expression><![CDATA[$F{_0_0_occupancy_site_charges}]]></expression>
+      </element>
+      <element kind="textField" x="560" y="700" width="80" height="20">
+        <expression><![CDATA[$F{expense_dtl_12b_i16_occupancy_site_charges}]]></expression>
+      </element>
+      <element kind="textField" x="640" y="700" width="80" height="20">
+        <expression><![CDATA[$F{_0_0_occupancy_site_charges_2}]]></expression>
+      </element>
+      <element kind="staticText" x="720" y="700" width="80" height="20">
+        <text><![CDATA[SUM(G36:I36)]]></text>
+      </element>
+      <element kind="staticText" x="160" y="720" width="80" height="20">
+        <text><![CDATA[22.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="720" width="80" height="20">
+        <text><![CDATA[Postage & Shipping, PO Box Rental]]></text>
+      </element>
+      <element kind="textField" x="480" y="720" width="80" height="20">
+        <expression><![CDATA[$F{_0_0_postage_shipping_po_box_rental}]]></expression>
+      </element>
+      <element kind="textField" x="560" y="720" width="80" height="20">
+        <expression><![CDATA[$F{expense_dtl_12b_i16_postage_shipping_po_box_rental}]]></expression>
+      </element>
+      <element kind="textField" x="640" y="720" width="80" height="20">
+        <expression><![CDATA[$F{_0_0_postage_shipping_po_box_rental_2}]]></expression>
+      </element>
+      <element kind="staticText" x="720" y="720" width="80" height="20">
+        <text><![CDATA[SUM(G37:I37)]]></text>
+      </element>
+      <element kind="staticText" x="160" y="740" width="80" height="20">
+        <text><![CDATA[23.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="740" width="80" height="20">
+        <text><![CDATA[Printing & Publications]]></text>
+      </element>
+      <element kind="textField" x="480" y="740" width="80" height="20">
+        <expression><![CDATA[$F{_0_0_printing_publications}]]></expression>
+      </element>
+      <element kind="textField" x="560" y="740" width="80" height="20">
+        <expression><![CDATA[$F{expense_dtl_12b_i16_printing_publications}]]></expression>
+      </element>
+      <element kind="textField" x="640" y="740" width="80" height="20">
+        <expression><![CDATA[$F{_0_0_printing_publications_2}]]></expression>
+      </element>
+      <element kind="staticText" x="720" y="740" width="80" height="20">
+        <text><![CDATA[SUM(G38:I38)]]></text>
+      </element>
+      <element kind="staticText" x="160" y="760" width="80" height="20">
+        <text><![CDATA[24.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="760" width="80" height="20">
+        <text><![CDATA[Released Equipment/Assets]]></text>
+      </element>
+      <element kind="staticText" x="400" y="760" width="80" height="20">
+        <text><![CDATA[(7)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="760" width="80" height="20">
+        <text><![CDATA[0.0]]></text>
+      </element>
+      <element kind="staticText" x="560" y="760" width="80" height="20">
+        <text><![CDATA[REGALIA_SALES_DTL_7!H52+REGALIA_SALES_DTL_7b!H52]]></text>
+      </element>
+      <element kind="staticText" x="640" y="760" width="80" height="20">
+        <text><![CDATA[0.0]]></text>
+      </element>
+      <element kind="staticText" x="720" y="760" width="80" height="20">
+        <text><![CDATA[SUM(G39:I39)]]></text>
+      </element>
+      <element kind="staticText" x="160" y="780" width="80" height="20">
+        <text><![CDATA[25.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="780" width="80" height="20">
+        <text><![CDATA[Telephone]]></text>
+      </element>
+      <element kind="textField" x="480" y="780" width="80" height="20">
+        <expression><![CDATA[$F{_0_0_telephone}]]></expression>
+      </element>
+      <element kind="textField" x="560" y="780" width="80" height="20">
+        <expression><![CDATA[$F{regalia_sales_dtl_7_h52_regalia_sales_dtl_7b_h52_telephone}]]></expression>
+      </element>
+      <element kind="textField" x="640" y="780" width="80" height="20">
+        <expression><![CDATA[$F{_0_0_telephone_2}]]></expression>
+      </element>
+      <element kind="staticText" x="720" y="780" width="80" height="20">
+        <text><![CDATA[SUM(G40:I40)]]></text>
+      </element>
+      <element kind="staticText" x="160" y="800" width="80" height="20">
+        <text><![CDATA[26.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="800" width="80" height="20">
+        <text><![CDATA[Travel (Gas, Tolls, Airfare)]]></text>
+      </element>
+      <element kind="textField" x="480" y="800" width="80" height="20">
+        <expression><![CDATA[$F{_0_0_travel_gas_tolls_airfare}]]></expression>
+      </element>
+      <element kind="textField" x="560" y="800" width="80" height="20">
+        <expression><![CDATA[$F{regalia_sales_dtl_7_h52_regalia_sales_dtl_7b_h52_travel_gas_tolls_airfare}]]></expression>
+      </element>
+      <element kind="textField" x="640" y="800" width="80" height="20">
+        <expression><![CDATA[$F{_0_0_travel_gas_tolls_airfare_2}]]></expression>
+      </element>
+      <element kind="staticText" x="720" y="800" width="80" height="20">
+        <text><![CDATA[SUM(G41:I41)]]></text>
+      </element>
+      <element kind="staticText" x="160" y="820" width="80" height="20">
+        <text><![CDATA[27.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="820" width="80" height="20">
+        <text><![CDATA[SUB-TOTAL                       (Lines 12-26)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="820" width="80" height="20">
+        <text><![CDATA[SUM(G27:G41)]]></text>
+      </element>
+      <element kind="staticText" x="560" y="820" width="80" height="20">
+        <text><![CDATA[SUM(H27:H41)]]></text>
+      </element>
+      <element kind="staticText" x="640" y="820" width="80" height="20">
+        <text><![CDATA[SUM(I27:I41)]]></text>
+      </element>
+      <element kind="staticText" x="720" y="820" width="80" height="20">
+        <text><![CDATA[SUM(J27:J41)]]></text>
+      </element>
+      <element kind="staticText" x="160" y="840" width="80" height="20">
+        <text><![CDATA[28.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="840" width="80" height="20">
+        <text><![CDATA[Other Expenses ]]></text>
+      </element>
+      <element kind="staticText" x="640" y="840" width="80" height="20">
+        <text><![CDATA[(12b)]]></text>
+      </element>
+      <element kind="staticText" x="720" y="840" width="80" height="20">
+        <text><![CDATA[EXPENSE_DTL_12b!I27]]></text>
+      </element>
+      <element kind="staticText" x="160" y="860" width="80" height="20">
+        <text><![CDATA[29.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="860" width="80" height="20">
+        <text><![CDATA[Donations to Other 501(c)(3) [Nonprofit] Organizations   ]]></text>
+      </element>
+      <element kind="staticText" x="640" y="860" width="80" height="20">
+        <text><![CDATA[(12b)]]></text>
+      </element>
+      <element kind="staticText" x="720" y="860" width="80" height="20">
+        <text><![CDATA[EXPENSE_DTL_12b!I56]]></text>
+      </element>
+      <element kind="staticText" x="160" y="880" width="80" height="20">
+        <text><![CDATA[30a]]></text>
+      </element>
+      <element kind="staticText" x="240" y="880" width="80" height="20">
+        <text><![CDATA[Funds Transferred Out to Another SCA Account ]]></text>
+      </element>
+      <element kind="staticText" x="560" y="880" width="80" height="20">
+        <text><![CDATA[WITHIN KINGDOM]]></text>
+      </element>
+      <element kind="staticText" x="640" y="880" width="80" height="20">
+        <text><![CDATA[(10)]]></text>
+      </element>
+      <element kind="staticText" x="720" y="880" width="80" height="20">
+        <text><![CDATA[TRANSFER_OUT_10!F25+TRANSFER_OUT_10b!F28+TRANSFER_OUT_10c!F28+TRANSFER_OUT_10d!F28]]></text>
+      </element>
+      <element kind="staticText" x="160" y="900" width="80" height="20">
+        <text><![CDATA[30b]]></text>
+      </element>
+      <element kind="staticText" x="560" y="900" width="80" height="20">
+        <text><![CDATA[OUTSIDE KINGDOM]]></text>
+      </element>
+      <element kind="staticText" x="640" y="900" width="80" height="20">
+        <text><![CDATA[(10)]]></text>
+      </element>
+      <element kind="staticText" x="720" y="900" width="80" height="20">
+        <text><![CDATA[TRANSFER_OUT_10!F52+TRANSFER_OUT_10b!F42+TRANSFER_OUT_10b!F54+TRANSFER_OUT_10c!F42+TRANSFER_OUT_10c!F54+TRANSFER_OUT_10d!F42+TRANSFER_OUT_10d!F54]]></text>
+      </element>
+      <element kind="staticText" x="160" y="920" width="80" height="20">
+        <text><![CDATA[31.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="920" width="80" height="20">
+        <text><![CDATA[TOTAL EXPENSES]]></text>
+      </element>
+      <element kind="staticText" x="640" y="920" width="80" height="20">
+        <text><![CDATA[(Line 27 TOTAL + Lines 28 to 30b)]]></text>
+      </element>
+      <element kind="staticText" x="720" y="920" width="80" height="20">
+        <text><![CDATA[SUM(J42:J46)]]></text>
+      </element>
+      <element kind="staticText" x="160" y="940" width="80" height="20">
+        <text><![CDATA[32.0]]></text>
+      </element>
+      <element kind="staticText" x="240" y="940" width="80" height="20">
+        <text><![CDATA[NET INCOME  (MUST MATCH Change in Net Worth)]]></text>
+      </element>
+      <element kind="staticText" x="640" y="940" width="80" height="20">
+        <text><![CDATA[(Line 11 Minus Line 31)]]></text>
+      </element>
+      <element kind="staticText" x="720" y="940" width="80" height="20">
+        <text><![CDATA[J24-J47]]></text>
+      </element>
+      <element kind="staticText" x="160" y="960" width="80" height="20">
+        <text><![CDATA[Legal Names:]]></text>
+      </element>
+      <element kind="staticText" x="320" y="960" width="80" height="20">
+        <text><![CDATA[Print]]></text>
+      </element>
+      <element kind="staticText" x="400" y="960" width="80" height="20">
+        <text><![CDATA[Sign]]></text>
+      </element>
+      <element kind="staticText" x="160" y="980" width="80" height="20">
+        <text><![CDATA[Exchequer:]]></text>
+      </element>
+      <element kind="staticText" x="320" y="980" width="80" height="20">
+        <text><![CDATA[IF(Contents!$C$10="","",Contents!$C$10)]]></text>
+      </element>
+      <element kind="staticText" x="640" y="980" width="80" height="20">
+        <text><![CDATA[Date:]]></text>
+      </element>
+      <element kind="staticText" x="160" y="1000" width="80" height="20">
+        <text><![CDATA[Seneschal:]]></text>
+      </element>
+      <element kind="staticText" x="320" y="1000" width="80" height="20">
+        <text><![CDATA[IF(Contents!$C$9="","",Contents!$C$9)]]></text>
+      </element>
+      <element kind="staticText" x="640" y="1000" width="80" height="20">
+        <text><![CDATA[Date:]]></text>
+      </element>
+      <element kind="staticText" x="160" y="1020" width="80" height="20">
+        <text><![CDATA[-4-]]></text>
+      </element>
+  </title>
+
+  <detail>
+    <band height="10"/>
+  </detail>
+</jasperReport>

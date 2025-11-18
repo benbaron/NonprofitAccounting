@@ -41,7 +41,9 @@ public class AccountSummaryJasperGenerator extends AbstractReportGenerator
 		for (nonprofitbookkeeping.model.Account acct : company.getChartOfAccounts().getAccounts())
 		{
 			if (acct == null)
+			{
 				continue;
+			}
 			
 			BigDecimal bal = acct.totalAccountBalance(company.getLedger());
 			String debit = bal.compareTo(BigDecimal.ZERO) >= 0 ? bal.toPlainString() : "";
