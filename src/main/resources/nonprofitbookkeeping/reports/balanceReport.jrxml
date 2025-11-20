@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+    name="BalanceResult" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="219ad30d-9c92-4465-9bba-aad1bc260187">
+    <parameter name="REPORT_TITLE" class="java.lang.String"/>
+    <detail>
+        <band height="24" splitType="Stretch">
+            <textField>
+                <reportElement x="0" y="0" width="555" height="20" uuid="8d1c109f-9d68-483e-a59d-bef2ee6bd031"/>
+                <textFieldExpression><![CDATA[$P{REPORT_TITLE} != null ? $P{REPORT_TITLE} : "BalanceResult"]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+</jasperReport>

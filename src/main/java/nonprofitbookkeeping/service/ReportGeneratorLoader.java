@@ -4,6 +4,8 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 
 import nonprofitbookkeeping.reports.ReportContext;
+import nonprofitbookkeeping.reports.ReportBundles;
+import nonprofitbookkeeping.reports.jasper.BundledTemplateJasperGenerator;
 
 import java.io.File;
 import java.io.IOException;
@@ -90,8 +92,10 @@ final class ReportGeneratorLoader
                 }
                 catch (ClassNotFoundException e)
                 {
-                        throw new IllegalArgumentException(
-                                "Generator class not found: " + className, e);
+                        ReportBundles.Bundle bundle = ReportBundles
+                                .bundleForGenerator(className);
+
+                        return new BundledTemplateJasperGenerator(bundle, context);
                 }
                 catch (InvocationTargetException | InstantiationException | IllegalAccessException e)
                 {

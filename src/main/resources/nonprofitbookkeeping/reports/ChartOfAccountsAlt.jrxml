@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+    name="ChartOfAccounts" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c0aaa328-21b2-4390-95e7-02b70e4edde4">
+    <parameter name="REPORT_TITLE" class="java.lang.String"/>
+    <detail>
+        <band height="24" splitType="Stretch">
+            <textField>
+                <reportElement x="0" y="0" width="555" height="20" uuid="85b46eb1-351b-4edb-9801-ac022b55ec70"/>
+                <textFieldExpression><![CDATA[$P{REPORT_TITLE} != null ? $P{REPORT_TITLE} : "ChartOfAccounts"]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+</jasperReport>
