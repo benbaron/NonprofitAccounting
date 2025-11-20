@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+    name="TrialBalance" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="972cade4-1ce4-4bcc-bf74-75d8cc062618">
+    <parameter name="REPORT_TITLE" class="java.lang.String"/>
+    <detail>
+        <band height="24" splitType="Stretch">
+            <textField>
+                <reportElement x="0" y="0" width="555" height="20" uuid="869a73a5-72f1-4fd5-84e5-a99c90216a17"/>
+                <textFieldExpression><![CDATA[$P{REPORT_TITLE} != null ? $P{REPORT_TITLE} : "TrialBalance"]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+</jasperReport>
