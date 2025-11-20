@@ -1,73 +1,61 @@
 package nonprofitbookkeeping.reports;
 
-import nonprofitbookkeeping.service.ReportService.ReportType;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
+import java.util.zip.ZipFile;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ReportBundlePackagerTest
 {
-        @TempDir
-        Path tempDir;
-
         @Test
-        void beanEntryUsesBundleRoot() throws IOException
+        void packageBundleIncludesMetadataTemplateAndBean() throws IOException
         {
-                Path bundlesDir = tempDir.resolve("bundles");
-                Path bundleRoot = bundlesDir.resolve("fixture");
-                Path metadataDir = bundleRoot.resolve("metadata");
-                Path beansDir = bundleRoot.resolve("beans");
-                Files.createDirectories(metadataDir);
-                Files.createDirectories(beansDir);
+                ReportBundles.Bundle bundle =
+                        ReportBundles.bundleForGenerator(
+                                nonprofitbookkeeping.reports.jasper.TransactionReportJasperGenerator.class);
 
-                Path beanFile = beansDir.resolve("FixtureBean.class");
-                byte[] beanBytes = "bean-bytes".getBytes();
-                Files.write(beanFile, beanBytes);
+                Path tempDir = Files.createTempDirectory("bundlePackageTest");
 
-                ReportBundles.Bundle bundle = new ReportBundles.Bundle(
-                        "fixture/metadata/bundle.properties",
-                        "fixture/metadata",
-                        "fixture",
-                        "nonprofitbookkeeping/reports/bundles/fixture/metadata/bundle.properties",
-                        "Fixture",
-                        "nonprofitbookkeeping/reports/bundles/fixture/templates/template.jrxml",
-                        "nonprofitbookkeeping.reports.fixture.Generator",
-                        "nonprofitbookkeeping.reports.fixture.FixtureBean",
-                        null,
-                        ReportType.GENERAL_LEDGER_JASPER);
+                Path archive = ReportBundlePackager.packageBundle(bundle, tempDir);
 
-                ReportBundlePackager packager = new ReportBundlePackager(bundlesDir);
+                assertTrue(Files.exists(archive), "Archive should be created");
 
-                assertEquals("fixture/beans/FixtureBean.class",
-                        packager.beanEntryName(bundle, beanFile));
-
-                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-
-                try (ZipOutputStream zipOut = new ZipOutputStream(buffer))
+                try (ZipFile zip = new ZipFile(archive.toFile()))
                 {
-                                packager.addBeanToArchive(bundle, beanFile, zipOut);
+                        assertNotNull(zip.getEntry(bundle.metadataResource()),
+                                "Metadata file should be present in archive");
+                        assertNotNull(zip.getEntry(bundle.jrxmlResource()),
+                                "JRXML template should be present in archive");
+
+                        String beanBaseName = bundle.beanName() != null ? bundle.beanName()
+                                : simpleNameFromClass(bundle.beanClassName());
+                        String beanDirectory = "nonprofitbookkeeping/reports/bundles/"
+                                + bundle.directory() + "/";
+                        ZipEntry beanEntry = zip.getEntry(beanDirectory + beanBaseName + ".java");
+
+                        if (beanEntry == null)
+                        {
+                                beanEntry = zip.getEntry(beanDirectory + beanBaseName + ".class");
+                        }
+
+                        assertNotNull(beanEntry, "Bean source or class should be packaged");
+                }
+        }
+
+        private static String simpleNameFromClass(String className)
+        {
+                if (className == null || className.isBlank())
+                {
+                        return null;
                 }
 
-                try (ZipInputStream zipIn = new ZipInputStream(
-                        new ByteArrayInputStream(buffer.toByteArray())))
-                {
-                        ZipEntry entry = zipIn.getNextEntry();
-                        assertNotNull(entry, "Expected bean entry to be written");
-                        assertEquals("fixture/beans/FixtureBean.class", entry.getName());
-                        byte[] actual = zipIn.readAllBytes();
-                        assertArrayEquals(beanBytes, actual);
-                }
+                String simple = className.substring(className.lastIndexOf('.') + 1);
+                int dollar = simple.lastIndexOf('$');
+                return dollar >= 0 ? simple.substring(dollar + 1) : simple;
         }
 }

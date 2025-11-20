@@ -42,6 +42,7 @@ public final class ReportBundles
                 String jrxmlResource,
                 String generatorClassName,
                 String beanClassName,
+                String beanName,
                 String description,
                 ReportType reportType)
         {
@@ -174,6 +175,21 @@ public final class ReportBundles
                                 beanClass = null;
                         }
 
+                        String beanName = null;
+
+                        if (beanClass != null)
+                        {
+                                String rawBeanName = props.getProperty("beanName");
+
+                                if (rawBeanName == null || rawBeanName.isBlank())
+                                {
+                                        throw new IllegalStateException(
+                                                "Missing required property 'beanName' in " + metadataPath);
+                                }
+
+                                beanName = rawBeanName.trim();
+                        }
+
                         String description = Optional
                                 .ofNullable(props.getProperty("description"))
                                 .map(String::trim)
@@ -193,6 +209,7 @@ public final class ReportBundles
                                 jrxmlResource,
                                 generator,
                                 beanClass,
+                                beanName,
                                 description,
                                 reportType);
 

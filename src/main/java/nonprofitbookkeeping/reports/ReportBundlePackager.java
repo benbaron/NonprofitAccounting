@@ -1,106 +1,190 @@
 package nonprofitbookkeeping.reports;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 /**
- * Helper for packaging report bundle assets (metadata, templates, and optional
- * beans) into a distributable archive. The packager understands the
- * "metadata" subdirectory convention used by {@link ReportBundles} and can
- * emit bean entries relative to the bundle root rather than the metadata
- * directory.
+ * Utility for exporting Jasper report bundles (metadata, template, and data beans)
+ * into distributable ZIP archives. Each bundle is packaged using the metadata
+ * discovered by {@link ReportBundles} so consumers have a single artifact that
+ * contains everything required to run a report outside of the main application.
  */
 public final class ReportBundlePackager
 {
-        private final Path bundlesDirectory;
+        private static final String SOURCE_ROOT = "src/main/java";
 
-        /**
-         * @param bundlesDirectory base directory that contains bundle root
-         *            folders.
-         */
-        public ReportBundlePackager(Path bundlesDirectory)
+        private ReportBundlePackager()
         {
-                Objects.requireNonNull(bundlesDirectory, "bundlesDirectory");
-                this.bundlesDirectory = bundlesDirectory.toAbsolutePath().normalize();
         }
 
         /**
-         * Adds the provided bean file to the destination archive, returning the
-         * path used for the entry.
+         * Packages all discovered report bundles into individual ZIP archives located
+         * under the supplied output directory.
          *
-         * @param bundle bundle metadata describing the target directory
-         * @param beanFile compiled bean class that should be archived
-         * @param zipOut open ZIP stream receiving the bean entry
-         * @return the entry name written to the archive
-         * @throws IOException if the file cannot be copied into the archive
+         * @param outputDirectory Directory that will receive the generated ZIP files.
+         * @return immutable list of generated archive paths.
+         * @throws IOException if any bundle resource cannot be read or the archive
+         *         cannot be written.
          */
-        public String addBeanToArchive(ReportBundles.Bundle bundle,
-                Path beanFile,
-                ZipOutputStream zipOut) throws IOException
+        public static List<Path> packageAll(Path outputDirectory) throws IOException
         {
-                Objects.requireNonNull(zipOut, "zipOut");
+                Objects.requireNonNull(outputDirectory, "outputDirectory");
 
-                String entryName = beanEntryName(bundle, beanFile);
-                ZipEntry entry = new ZipEntry(entryName);
-                zipOut.putNextEntry(entry);
-                Files.copy(beanFile, zipOut);
-                zipOut.closeEntry();
-                return entryName;
+                List<Path> archives = new ArrayList<>();
+
+                for (ReportBundles.Bundle bundle : ReportBundles.bundles())
+                {
+                        archives.add(packageBundle(bundle, outputDirectory));
+                }
+
+                return List.copyOf(archives);
         }
 
         /**
-         * Computes the relative entry name that should be used for the bean
-         * when adding it to an archive.
+         * Packages a single report bundle into a ZIP archive. The archive includes the
+         * bundle's metadata file, JRXML template, and the associated bean source (when
+         * available) or compiled class file as a fallback.
          *
-         * @param bundle bundle metadata describing the target directory
-         * @param beanFile compiled bean class that should be archived
-         * @return entry name suitable for {@link ZipEntry}
+         * @param bundle          Bundle metadata describing the resources that should
+         *                        be packaged.
+         * @param outputDirectory Destination directory for the generated archive.
+         * @return Path to the created ZIP archive.
+         * @throws IOException if any of the bundle resources cannot be read or the
+         *         archive cannot be written.
          */
-        public String beanEntryName(ReportBundles.Bundle bundle, Path beanFile)
+        public static Path packageBundle(ReportBundles.Bundle bundle, Path outputDirectory)
+                throws IOException
         {
                 Objects.requireNonNull(bundle, "bundle");
-                Objects.requireNonNull(beanFile, "beanFile");
+                Objects.requireNonNull(outputDirectory, "outputDirectory");
 
-                String bundleRoot = Optional.ofNullable(bundle.bundleRoot()).orElse("").trim();
-                Path bundleRootPath = bundleRootPath(bundleRoot);
-                Path beanPath = beanFile.toAbsolutePath().normalize();
+                Files.createDirectories(outputDirectory);
 
-                if (!beanPath.startsWith(bundleRootPath))
+                String archiveName = sanitizeId(bundle.id()) + ".zip";
+                Path archivePath = outputDirectory.resolve(archiveName);
+                Files.deleteIfExists(archivePath);
+
+                try (ZipOutputStream zip = new ZipOutputStream(Files.newOutputStream(archivePath)))
                 {
-                        throw new IllegalArgumentException("Bean file " + beanFile
-                                + " must reside under bundle root " + bundleRootPath);
+                        addResource(zip,
+                                bundle.metadataResource(),
+                                bundle.metadataResource());
+                        addResource(zip,
+                                bundle.jrxmlResource(),
+                                bundle.jrxmlResource());
+                        addBeanResource(zip, bundle);
                 }
 
-                Path relative = bundleRootPath.relativize(beanPath);
-                String entry = relative.toString().replace('\\', '/');
-
-                if (entry.isEmpty())
-                {
-                        throw new IllegalArgumentException(
-                                "Bean file cannot be located at the bundle root itself");
-                }
-
-                if (bundleRoot.isEmpty())
-                {
-                        return entry;
-                }
-
-                return bundleRoot + "/" + entry;
+                return archivePath;
         }
 
-        private Path bundleRootPath(String bundleRoot)
+        private static void addBeanResource(ZipOutputStream zip, ReportBundles.Bundle bundle)
+                throws IOException
         {
-                if (bundleRoot.isEmpty())
+                if (!bundle.hasBeanClass())
                 {
-                        return bundlesDirectory;
+                        return;
                 }
 
-                Path relative = Path.of(bundleRoot);
-                return bundlesDirectory.resolve(relative).normalize();
+                String beanClassName = bundle.beanClassName();
+                String simpleName = beanSimpleName(beanClassName);
+                String targetPrefix = "nonprofitbookkeeping/reports/bundles/"
+                        + bundle.directory() + "/";
+
+                Path sourceFile = locateBeanSource(beanClassName);
+
+                if (sourceFile != null)
+                {
+                        addFile(zip, sourceFile, targetPrefix + simpleName + ".java");
+                        return;
+                }
+
+                String classResource = beanClassName.replace('.', '/') + ".class";
+                addResource(zip, classResource, targetPrefix + simpleName + ".class");
+        }
+
+        private static Path locateBeanSource(String beanClassName)
+        {
+                Path base = Paths.get(SOURCE_ROOT);
+                String candidate = beanClassName;
+
+                while (candidate != null)
+                {
+                        Path source = base.resolve(candidate.replace('.', '/') + ".java");
+
+                        if (Files.exists(source))
+                        {
+                                return source;
+                        }
+
+                        int dollar = candidate.lastIndexOf('$');
+
+                        if (dollar < 0)
+                        {
+                                break;
+                        }
+
+                        candidate = candidate.substring(0, dollar);
+                }
+
+                return null;
+        }
+
+        private static void addResource(ZipOutputStream zip,
+                String resource,
+                String entryName) throws IOException
+        {
+                ClassLoader loader = ReportBundles.class.getClassLoader();
+
+                try (InputStream in = loader.getResourceAsStream(resource))
+                {
+                        if (in == null)
+                        {
+                                throw new IOException("Unable to locate bundle resource: " + resource);
+                        }
+
+                        zip.putNextEntry(new ZipEntry(entryName));
+                        in.transferTo(zip);
+                        zip.closeEntry();
+                }
+        }
+
+        private static void addFile(ZipOutputStream zip, Path file, String entryName)
+                throws IOException
+        {
+                zip.putNextEntry(new ZipEntry(entryName));
+
+                try (InputStream in = Files.newInputStream(file))
+                {
+                        in.transferTo(zip);
+                }
+
+                zip.closeEntry();
+        }
+
+        private static String beanSimpleName(String beanClassName)
+        {
+                String simple = beanClassName.substring(beanClassName.lastIndexOf('.') + 1);
+                int dollar = simple.lastIndexOf('$');
+
+                if (dollar >= 0)
+                {
+                        return simple.substring(dollar + 1);
+                }
+
+                return simple;
+        }
+
+        private static String sanitizeId(String id)
+        {
+                return id.replace('/', '_').replace('\\', '_');
         }
 }
