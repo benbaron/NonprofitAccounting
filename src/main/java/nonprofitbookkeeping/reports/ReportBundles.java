@@ -407,6 +407,17 @@ public final class ReportBundles
                 }
 
                 String prefix = Optional.ofNullable(bundleRoot).orElse("").trim();
+                ClassLoader loader = ReportBundles.class.getClassLoader();
+
+                List<String> candidates = new ArrayList<>();
+
+                if (!prefix.isEmpty())
+                {
+                        candidates.add(BUNDLES_ROOT + "/" + prefix + "/"
+                                + normalizedTemplate);
+                }
+
+                candidates.add(BUNDLES_ROOT + "/" + normalizedTemplate);
 
                 List<String> candidates = new ArrayList<>();
 

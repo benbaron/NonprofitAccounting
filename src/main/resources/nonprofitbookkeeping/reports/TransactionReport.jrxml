@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+    name="TransactionReport" pageWidth="842" pageHeight="595" columnWidth="802" leftMargin="20" rightMargin="20"
+    topMargin="20" bottomMargin="20" uuid="22222222-2222-2222-2222-222222222222">
+    <parameter name="P_REPORT_TITLE" class="java.lang.String"/>
+    <parameter name="P_GENERATION_DATE" class="java.lang.String"/>
+
+    <field name="actId" class="java.lang.String"/>
+    <field name="invDate" class="java.lang.String"/>
+    <field name="accountNum" class="java.lang.String"/>
+    <field name="accountName" class="java.lang.String"/>
+    <field name="customer" class="java.lang.String"/>
+    <field name="debitFormat" class="java.lang.String"/>
+    <field name="creditFormat" class="java.lang.String"/>
+    <field name="comment" class="java.lang.String"/>
+
+    <title>
+        <band height="40">
+            <staticText>
+                <reportElement x="0" y="0" width="400" height="20" uuid="a6de432b-1cbe-4d1b-9c73-6c6dfc332ad8"/>
+                <text><![CDATA[$P{P_REPORT_TITLE}]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="0" y="20" width="400" height="20" uuid="6f315798-e6bb-4cd9-8c79-7d86a7b09d0e"/>
+                <text><![CDATA[Generated: $P{P_GENERATION_DATE}]]></text>
+            </staticText>
+        </band>
+    </title>
+
+    <columnHeader>
+        <band height="20">
+            <staticText><reportElement x="0" y="0" width="80" height="20" uuid="cfc0e03f-4c58-4bd3-9b2a-664ce3b5b296"/><text><![CDATA[Act ID]]></text></staticText>
+            <staticText><reportElement x="90" y="0" width="80" height="20" uuid="f3b483ef-0623-40cc-90a7-8057b19a3a2e"/><text><![CDATA[Invoice]]></text></staticText>
+            <staticText><reportElement x="180" y="0" width="80" height="20" uuid="590593fd-6596-4c07-9d98-e11d9ae38b2f"/><text><![CDATA[Acct #]]></text></staticText>
+            <staticText><reportElement x="270" y="0" width="120" height="20" uuid="1dfa5b10-7b47-4a15-9402-5e49ff15daf3"/><text><![CDATA[Account]]></text></staticText>
+            <staticText><reportElement x="400" y="0" width="120" height="20" uuid="9c8c1568-e073-47e2-b0d3-1d60e79ebcf5"/><text><![CDATA[Customer]]></text></staticText>
+            <staticText><reportElement x="530" y="0" width="80" height="20" uuid="e2cc197f-5f46-4402-866d-5072da00704a"/><text><![CDATA[Debit]]></text></staticText>
+            <staticText><reportElement x="620" y="0" width="80" height="20" uuid="a0abb0dc-5a37-472e-b7a3-0d3806c3bc45"/><text><![CDATA[Credit]]></text></staticText>
+            <staticText><reportElement x="710" y="0" width="90" height="20" uuid="3676b5e6-4195-4185-a850-01a620d92657"/><text><![CDATA[Comment]]></text></staticText>
+        </band>
+    </columnHeader>
+
+    <detail>
+        <band height="18">
+            <textField><reportElement x="0" y="0" width="80" height="18" uuid="602c52a0-a53f-4f1a-9f6d-1d99a6b60938"/><textFieldExpression><![CDATA[$F{actId}]]></textFieldExpression></textField>
+            <textField><reportElement x="90" y="0" width="80" height="18" uuid="21517eda-9b44-482b-9d29-e258c1d7766d"/><textFieldExpression><![CDATA[$F{invDate}]]></textFieldExpression></textField>
+            <textField><reportElement x="180" y="0" width="80" height="18" uuid="cd2cc244-2d54-4a90-8bfb-0af7d828f83b"/><textFieldExpression><![CDATA[$F{accountNum}]]></textFieldExpression></textField>
+            <textField><reportElement x="270" y="0" width="120" height="18" uuid="0b919572-7b5c-4ab2-b090-d772dccb1a5d"/><textFieldExpression><![CDATA[$F{accountName}]]></textFieldExpression></textField>
+            <textField><reportElement x="400" y="0" width="120" height="18" uuid="37195f60-6d02-43f3-b3e3-6ce5a3444b29"/><textFieldExpression><![CDATA[$F{customer}]]></textFieldExpression></textField>
+            <textField><reportElement x="530" y="0" width="80" height="18" uuid="e8a0c838-6fcd-4b7e-a693-8a9aa0fabbae"/><textFieldExpression><![CDATA[$F{debitFormat}]]></textFieldExpression></textField>
+            <textField><reportElement x="620" y="0" width="80" height="18" uuid="7a0160cb-876b-45f6-8f8d-abded99ed2fe"/><textFieldExpression><![CDATA[$F{creditFormat}]]></textFieldExpression></textField>
+            <textField><reportElement x="710" y="0" width="90" height="18" uuid="e95d49c0-7b69-4c01-8d6c-55fcb8c036df"/><textFieldExpression><![CDATA[$F{comment}]]></textFieldExpression></textField>
+        </band>
+    </detail>
+</jasperReport>
