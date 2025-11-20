@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+        name="AccountLedger" pageWidth="595" pageHeight="842" columnWidth="535"
+        leftMargin="30" rightMargin="30" topMargin="30" bottomMargin="30" uuid="c7c5d4b0-1c5d-4e70-913d-04b06c5aefb2">
+    <property name="ireport.zoom" value="1.0"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <parameter name="P_REPORT_TITLE" class="java.lang.String"/>
+    <parameter name="P_COMPANY_NAME" class="java.lang.String"/>
+    <parameter name="P_ACCOUNT" class="java.lang.String"/>
+    <parameter name="P_REPORT_PERIOD" class="java.lang.String"/>
+    <parameter name="P_GENERATION_DATE" class="java.lang.String"/>
+    <field name="date" class="java.lang.String"/>
+    <field name="description" class="java.lang.String"/>
+    <field name="debit" class="java.math.BigDecimal"/>
+    <field name="credit" class="java.math.BigDecimal"/>
+    <field name="balance" class="java.math.BigDecimal"/>
+    <title>
+        <band height="60">
+            <textField>
+                <reportElement x="0" y="0" width="535" height="24" uuid="6cf3d0f4-083d-4bad-8db7-f0f1ff5f47e8"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="16" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{P_REPORT_TITLE}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="28" width="535" height="16" uuid="658db362-88f0-4e78-a866-7c0516489dc4"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{P_COMPANY_NAME} + " — " + $P{P_ACCOUNT}]]></textFieldExpression>
+            </textField>
+            <textField pattern="yyyy-MM-dd">
+                <reportElement x="0" y="44" width="535" height="16" uuid="9f2380ad-6476-4e34-9f0c-94f15a35414a"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="9"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{P_REPORT_PERIOD} + " (generated " + $P{P_GENERATION_DATE} + ")"]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+    <columnHeader>
+        <band height="20">
+            <staticText>
+                <reportElement x="0" y="0" width="70" height="20" uuid="9e0deae2-260d-4a1e-8f5e-31c7361979bd"/>
+                <textElement textAlignment="Left"/>
+                <text><![CDATA[Date]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="70" y="0" width="235" height="20" uuid="f5e7cd3f-8ad6-46c7-bb43-06b10a3f45b8"/>
+                <textElement textAlignment="Left"/>
+                <text><![CDATA[Description]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="305" y="0" width="75" height="20" uuid="f66f29fb-78a4-4b9e-9045-968bf7a0ed2e"/>
+                <textElement textAlignment="Right"/>
+                <text><![CDATA[Debit]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="380" y="0" width="75" height="20" uuid="0b95dc4a-46c1-4299-a6fe-3ebe34ee00ed"/>
+                <textElement textAlignment="Right"/>
+                <text><![CDATA[Credit]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="455" y="0" width="80" height="20" uuid="0d3cbf25-52e0-4cf0-8b20-957e11ea72a2"/>
+                <textElement textAlignment="Right"/>
+                <text><![CDATA[Balance]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+    <detail>
+        <band height="18">
+            <textField>
+                <reportElement x="0" y="0" width="70" height="18" uuid="a2fa866f-1adc-4c55-a41f-06639012759e"/>
+                <textElement textAlignment="Left"/>
+                <textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="70" y="0" width="235" height="18" uuid="b88b0662-591c-4e89-8d7a-f431c597eb7c"/>
+                <textElement textAlignment="Left"/>
+                <textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement x="305" y="0" width="75" height="18" uuid="be0a01d0-8da7-4807-ae25-61850e6c7145"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$F{debit}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement x="380" y="0" width="75" height="18" uuid="29cfefc3-2f0c-4b7f-a7f2-39d24d7e1b21"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$F{credit}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement x="455" y="0" width="80" height="18" uuid="58e4b495-9c2a-4d5a-8f2f-715e786c41f0"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$F{balance}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+</jasperReport>

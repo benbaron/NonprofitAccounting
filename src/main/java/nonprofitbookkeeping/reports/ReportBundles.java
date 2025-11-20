@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  * Loads Jasper report bundle metadata and exposes lookup helpers for
@@ -32,6 +34,8 @@ public final class ReportBundles
 {
         private static final String BUNDLES_ROOT =
                 "nonprofitbookkeeping/reports/bundles";
+        private static final String REPORTS_ROOT =
+                "nonprofitbookkeeping/reports";
 
         /** Immutable metadata describing a single generator/template bundle. */
         public record Bundle(String id,
@@ -64,6 +68,8 @@ public final class ReportBundles
 
         private static final Map<String, Bundle> BUNDLES_BY_ID;
         private static final Map<String, Bundle> BUNDLES_BY_GENERATOR;
+        private static final Logger LOGGER =
+                Logger.getLogger(ReportBundles.class.getName());
 
         static
         {
@@ -196,11 +202,21 @@ public final class ReportBundles
                                 .filter(s -> !s.isEmpty())
                                 .orElse(null);
 
-                        String jrxmlResource = buildTemplatePath(resource.bundleRoot(),
-                                templateName);
-
+                        String jrxmlResource;
                         String id = resource.metadataDirectory() + "/"
                                 + resource.fileName();
+
+                        try
+                        {
+                                jrxmlResource = buildTemplatePath(resource.bundleRoot(),
+                                        templateName);
+                        }
+                        catch (IllegalStateException e)
+                        {
+                                LOGGER.log(Level.WARNING, "Skipping bundle {0}: {1}",
+                                        new Object[] { id, e.getMessage() });
+                                continue;
+                        }
                         Bundle bundle = new Bundle(id,
                                 resource.metadataDirectory(),
                                 resource.bundleRoot(),
@@ -383,12 +399,32 @@ public final class ReportBundles
 
                 String prefix = Optional.ofNullable(bundleRoot).orElse("").trim();
 
-                if (prefix.isEmpty())
+                String bundledPath = prefix.isEmpty() ?
+                        BUNDLES_ROOT + "/" + normalizedTemplate :
+                        BUNDLES_ROOT + "/" + prefix + "/" + normalizedTemplate;
+
+                if (resourceExists(bundledPath))
                 {
-                        return BUNDLES_ROOT + "/" + normalizedTemplate;
+                        return bundledPath;
                 }
 
-                return BUNDLES_ROOT + "/" + prefix + "/" + normalizedTemplate;
+                String reportsRootPath = REPORTS_ROOT + "/" + normalizedTemplate;
+
+                if (resourceExists(reportsRootPath))
+                {
+                        return reportsRootPath;
+                }
+
+                LOGGER.log(Level.WARNING,
+                        "JRXML template not found at {0} or {1}; defaulting to bundled path",
+                        new Object[] { bundledPath, reportsRootPath });
+                return bundledPath;
+        }
+
+        private static boolean resourceExists(String resourcePath)
+        {
+                return ReportBundles.class.getClassLoader().getResource(resourcePath)
+                        != null;
         }
 
         private static String computeBundleRoot(Path metadataDirectory)
