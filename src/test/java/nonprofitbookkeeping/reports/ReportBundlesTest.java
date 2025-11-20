@@ -43,4 +43,23 @@ class ReportBundlesTest
                         "nonprofitbookkeeping/reports/bundles/split/templates/separate-template.jrxml",
                         bundle.jrxmlResource());
         }
+
+        @Test
+        void discoversTopLevelMetadataAndTemplates()
+        {
+                String generator =
+                        "nonprofitbookkeeping.reports.fixture.TopLevelGenerator";
+
+                ReportBundles.Bundle bundle = ReportBundles.bundleForGenerator(generator);
+
+                assertNotNull(bundle, "Expected top-level bundle to be discovered");
+                assertEquals("Top-level Template", bundle.displayName());
+                assertEquals("", bundle.metadataDirectory());
+                assertEquals("", bundle.bundleRoot());
+                assertEquals("top-level-template.properties", bundle.id());
+                assertEquals("nonprofitbookkeeping/reports/top-level-template.properties",
+                        bundle.metadataResource());
+                assertEquals("nonprofitbookkeeping/reports/top-level-template.jrxml",
+                        bundle.jrxmlResource());
+        }
 }
