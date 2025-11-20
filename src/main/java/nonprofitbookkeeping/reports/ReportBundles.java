@@ -32,10 +32,11 @@ import java.util.logging.Level;
  */
 public final class ReportBundles
 {
-        private static final String BUNDLES_ROOT =
-                "nonprofitbookkeeping/reports/bundles";
-        private static final String REPORTS_ROOT =
-                "nonprofitbookkeeping/reports";
+        private static final List<String> BUNDLE_ROOTS = List.of(
+                "nonprofitbookkeeping/reports/bundles",
+                "nonprofitbookkeeping/reports");
+
+        private static final String TEMPLATE_ROOT = "nonprofitbookkeeping/reports";
 
         /** Immutable metadata describing a single generator/template bundle. */
         public record Bundle(String id,
@@ -133,8 +134,8 @@ public final class ReportBundles
 
                 for (BundleResource resource : resources)
                 {
-                        String metadataPath = BUNDLES_ROOT + "/"
-                                + resource.metadataDirectory() + "/" + resource.fileName();
+                        String metadataPath = buildMetadataPath(resource.root(),
+                                resource.metadataDirectory(), resource.fileName());
 
                         Properties props = new Properties();
 
@@ -168,10 +169,9 @@ public final class ReportBundles
                         }
                         catch (IllegalArgumentException ex)
                         {
-                                throw new IllegalStateException(
-                                        "Unknown report type '" + reportTypeName + "' in "
-                                                + metadataPath,
-                                        ex);
+                                System.err.println("Skipping bundle due to unknown report type '"
+                                        + reportTypeName + "' in " + metadataPath);
+                                continue;
                         }
 
                         String beanClass = props.getProperty("beanClass");
@@ -202,21 +202,12 @@ public final class ReportBundles
                                 .filter(s -> !s.isEmpty())
                                 .orElse(null);
 
-                        String jrxmlResource;
-                        String id = resource.metadataDirectory() + "/"
-                                + resource.fileName();
+                        String jrxmlResource = buildTemplatePath(loader,
+                                resource.root(), resource.bundleRoot(), templateName);
 
-                        try
-                        {
-                                jrxmlResource = buildTemplatePath(resource.bundleRoot(),
-                                        templateName);
-                        }
-                        catch (IllegalStateException e)
-                        {
-                                LOGGER.log(Level.WARNING, "Skipping bundle {0}: {1}",
-                                        new Object[] { id, e.getMessage() });
-                                continue;
-                        }
+                        String id = resource.metadataDirectory().isBlank()
+                                ? resource.fileName()
+                                : resource.metadataDirectory() + "/" + resource.fileName();
                         Bundle bundle = new Bundle(id,
                                 resource.metadataDirectory(),
                                 resource.bundleRoot(),
@@ -269,25 +260,29 @@ public final class ReportBundles
                 List<BundleResource> resources = new ArrayList<>();
                 ClassLoader loader = ReportBundles.class.getClassLoader();
 
-                try
+                for (String root : BUNDLE_ROOTS)
                 {
-                        Enumeration<URL> roots = loader.getResources(BUNDLES_ROOT);
-
-                        while (roots.hasMoreElements())
+                        try
                         {
-                                URL url = roots.nextElement();
-                                resources.addAll(scanRoot(url));
+                                Enumeration<URL> roots = loader.getResources(root);
+
+                                while (roots.hasMoreElements())
+                                {
+                                        URL url = roots.nextElement();
+                                        resources.addAll(scanRoot(url, root));
+                                }
                         }
-                }
-                catch (IOException e)
-                {
-                        throw new IllegalStateException("Unable to enumerate bundle roots", e);
+                        catch (IOException e)
+                        {
+                                throw new IllegalStateException(
+                                        "Unable to enumerate bundle roots", e);
+                        }
                 }
 
                 return resources;
         }
 
-        private static List<BundleResource> scanRoot(URL url)
+        private static List<BundleResource> scanRoot(URL url, String resourceRoot)
         {
                 String protocol = url.getProtocol();
 
@@ -296,12 +291,12 @@ public final class ReportBundles
                         if ("file".equals(protocol))
                         {
                                 Path base = Paths.get(url.toURI());
-                                return collectBundleResources(base);
+                                return collectBundleResources(base, resourceRoot);
                         }
 
                         if ("jar".equals(protocol))
                         {
-                                return collectFromJar(url);
+                                return collectFromJar(url, resourceRoot);
                         }
                 }
                 catch (IOException | URISyntaxException e)
@@ -312,7 +307,7 @@ public final class ReportBundles
                 throw new IllegalStateException("Unsupported bundle protocol: " + protocol);
         }
 
-        private static List<BundleResource> collectFromJar(URL url)
+        private static List<BundleResource> collectFromJar(URL url, String resourceRoot)
                 throws IOException, URISyntaxException
         {
                 String spec = url.toExternalForm();
@@ -342,7 +337,7 @@ public final class ReportBundles
                 try
                 {
                         Path base = fs.getPath(entryPath);
-                        return collectBundleResources(base);
+                        return collectBundleResources(base, resourceRoot);
                 }
                 finally
                 {
@@ -353,8 +348,8 @@ public final class ReportBundles
                 }
         }
 
-        private static List<BundleResource> collectBundleResources(Path base)
-                throws IOException
+        private static List<BundleResource> collectBundleResources(Path base,
+                String resourceRoot) throws IOException
         {
                 if (!Files.exists(base))
                 {
@@ -370,25 +365,43 @@ public final class ReportBundles
                                 .forEach(p -> {
                                         Path relative = base.relativize(p);
 
-                                        if (relative.getNameCount() < 2)
+                                        if (resourceRoot.equals(TEMPLATE_ROOT)
+                                                && relative.getNameCount() > 0
+                                                && "bundles".equals(relative.getName(0).toString()))
                                         {
                                                 return;
                                         }
 
-                                        Path directory = relative.subpath(0,
-                                                relative.getNameCount() - 1);
+                                        Path directory = relative.getNameCount() > 1 ? relative
+                                                .subpath(0, relative.getNameCount() - 1)
+                                                : Path.of("");
                                         String dir = directory.toString().replace('\\', '/');
                                         String bundleRoot = computeBundleRoot(directory);
                                         String file = relative.getFileName().toString();
-                                        resources.add(
-                                                new BundleResource(dir, bundleRoot, file));
+                                        resources.add(new BundleResource(resourceRoot, dir, bundleRoot,
+                                                file));
                                 });
                 }
 
                 return resources;
         }
 
-        private static String buildTemplatePath(String bundleRoot, String templateName)
+        private static String buildMetadataPath(String root,
+                String metadataDirectory,
+                String fileName)
+        {
+                if (metadataDirectory == null || metadataDirectory.isBlank())
+                {
+                        return root + "/" + fileName;
+                }
+
+                return root + "/" + metadataDirectory + "/" + fileName;
+        }
+
+        private static String buildTemplatePath(ClassLoader loader,
+                String resourceRoot,
+                String bundleRoot,
+                String templateName)
         {
                 String normalizedTemplate = templateName.trim();
 
@@ -398,33 +411,43 @@ public final class ReportBundles
                 }
 
                 String prefix = Optional.ofNullable(bundleRoot).orElse("").trim();
+                ClassLoader loader = ReportBundles.class.getClassLoader();
 
-                String bundledPath = prefix.isEmpty() ?
-                        BUNDLES_ROOT + "/" + normalizedTemplate :
-                        BUNDLES_ROOT + "/" + prefix + "/" + normalizedTemplate;
+                List<String> candidates = new ArrayList<>();
 
-                if (resourceExists(bundledPath))
+                if (!prefix.isEmpty())
                 {
-                        return bundledPath;
+                        candidates.add(BUNDLES_ROOT + "/" + prefix + "/"
+                                + normalizedTemplate);
                 }
 
-                String reportsRootPath = REPORTS_ROOT + "/" + normalizedTemplate;
+                candidates.add(BUNDLES_ROOT + "/" + normalizedTemplate);
 
-                if (resourceExists(reportsRootPath))
+                List<String> candidates = new ArrayList<>();
+
+                if (!prefix.isEmpty())
                 {
-                        return reportsRootPath;
+                        candidates.add(resourceRoot + "/" + prefix + "/" + normalizedTemplate);
+                        candidates.add(TEMPLATE_ROOT + "/" + prefix + "/" + normalizedTemplate);
                 }
 
-                LOGGER.log(Level.WARNING,
-                        "JRXML template not found at {0} or {1}; defaulting to bundled path",
-                        new Object[] { bundledPath, reportsRootPath });
-                return bundledPath;
+                candidates.add(resourceRoot + "/" + normalizedTemplate);
+                candidates.add(TEMPLATE_ROOT + "/" + normalizedTemplate);
+
+                for (String candidate : candidates)
+                {
+                        if (resourceExists(loader, candidate))
+                        {
+                                return candidate;
+                        }
+                }
+
+                return candidates.get(0);
         }
 
-        private static boolean resourceExists(String resourcePath)
+        private static boolean resourceExists(ClassLoader loader, String resource)
         {
-                return ReportBundles.class.getClassLoader().getResource(resourcePath)
-                        != null;
+                return loader.getResource(resource) != null;
         }
 
         private static String computeBundleRoot(Path metadataDirectory)
@@ -451,12 +474,14 @@ public final class ReportBundles
                 return root.toString().replace('\\', '/');
         }
 
-        private record BundleResource(String metadataDirectory,
+        private record BundleResource(String root,
+                String metadataDirectory,
                 String bundleRoot,
                 String fileName)
         {
                 BundleResource
                 {
+                        Objects.requireNonNull(root, "root");
                         Objects.requireNonNull(metadataDirectory, "metadataDirectory");
                         Objects.requireNonNull(bundleRoot, "bundleRoot");
                         Objects.requireNonNull(fileName, "fileName");
