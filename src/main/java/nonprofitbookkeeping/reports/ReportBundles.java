@@ -35,7 +35,8 @@ public final class ReportBundles
 
         /** Immutable metadata describing a single generator/template bundle. */
         public record Bundle(String id,
-                String directory,
+                String metadataDirectory,
+                String bundleRoot,
                 String metadataResource,
                 String displayName,
                 String jrxmlResource,
@@ -48,6 +49,15 @@ public final class ReportBundles
                 public boolean hasBeanClass()
                 {
                         return this.beanClassName != null && !this.beanClassName.isBlank();
+                }
+
+                /**
+                 * @deprecated Prefer {@link #metadataDirectory()} for clarity.
+                 */
+                @Deprecated
+                public String directory()
+                {
+                        return this.metadataDirectory;
                 }
         }
 
@@ -116,8 +126,8 @@ public final class ReportBundles
 
                 for (BundleResource resource : resources)
                 {
-                        String metadataPath = BUNDLES_ROOT + "/" + resource.directory() + "/"
-                                + resource.fileName();
+                        String metadataPath = BUNDLES_ROOT + "/"
+                                + resource.metadataDirectory() + "/" + resource.fileName();
 
                         Properties props = new Properties();
 
@@ -170,12 +180,14 @@ public final class ReportBundles
                                 .filter(s -> !s.isEmpty())
                                 .orElse(null);
 
-                        String jrxmlResource = BUNDLES_ROOT + "/" + resource.directory()
-                                + "/" + templateName;
+                        String jrxmlResource = buildTemplatePath(resource.bundleRoot(),
+                                templateName);
 
-                        String id = resource.directory() + "/" + resource.fileName();
+                        String id = resource.metadataDirectory() + "/"
+                                + resource.fileName();
                         Bundle bundle = new Bundle(id,
-                                resource.directory(),
+                                resource.metadataDirectory(),
+                                resource.bundleRoot(),
                                 metadataPath,
                                 displayName,
                                 jrxmlResource,
@@ -333,19 +345,67 @@ public final class ReportBundles
                                         Path directory = relative.subpath(0,
                                                 relative.getNameCount() - 1);
                                         String dir = directory.toString().replace('\\', '/');
+                                        String bundleRoot = computeBundleRoot(directory);
                                         String file = relative.getFileName().toString();
-                                        resources.add(new BundleResource(dir, file));
+                                        resources.add(
+                                                new BundleResource(dir, bundleRoot, file));
                                 });
                 }
 
                 return resources;
         }
 
-        private record BundleResource(String directory, String fileName)
+        private static String buildTemplatePath(String bundleRoot, String templateName)
+        {
+                String normalizedTemplate = templateName.trim();
+
+                if (normalizedTemplate.startsWith("/"))
+                {
+                        normalizedTemplate = normalizedTemplate.substring(1);
+                }
+
+                String prefix = Optional.ofNullable(bundleRoot).orElse("").trim();
+
+                if (prefix.isEmpty())
+                {
+                        return BUNDLES_ROOT + "/" + normalizedTemplate;
+                }
+
+                return BUNDLES_ROOT + "/" + prefix + "/" + normalizedTemplate;
+        }
+
+        private static String computeBundleRoot(Path metadataDirectory)
+        {
+                Path root = metadataDirectory;
+
+                Path fileName = metadataDirectory.getFileName();
+
+                if (fileName != null && fileName.toString().equals("metadata"))
+                {
+                        root = metadataDirectory.getParent();
+                }
+
+                if (root == null)
+                {
+                        return "";
+                }
+
+                if (root.getNameCount() == 0)
+                {
+                        return "";
+                }
+
+                return root.toString().replace('\\', '/');
+        }
+
+        private record BundleResource(String metadataDirectory,
+                String bundleRoot,
+                String fileName)
         {
                 BundleResource
                 {
-                        Objects.requireNonNull(directory, "directory");
+                        Objects.requireNonNull(metadataDirectory, "metadataDirectory");
+                        Objects.requireNonNull(bundleRoot, "bundleRoot");
                         Objects.requireNonNull(fileName, "fileName");
                 }
         }

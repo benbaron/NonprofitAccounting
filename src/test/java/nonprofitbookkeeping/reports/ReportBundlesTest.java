@@ -17,13 +17,30 @@ class ReportBundlesTest
 
                 assertNotNull(bundle, "Expected fixture bundle to be discovered");
                 assertEquals("Nested Metadata Fixture", bundle.displayName());
-                assertEquals("fixture/metadata", bundle.directory());
+                assertEquals("fixture/metadata", bundle.metadataDirectory());
+                assertEquals("fixture", bundle.bundleRoot());
                 assertEquals("fixture/metadata/nested-metadata.properties", bundle.id());
                 assertEquals(
                         "nonprofitbookkeeping/reports/bundles/fixture/metadata/nested-metadata.properties",
                         bundle.metadataResource());
                 assertEquals(
-                        "nonprofitbookkeeping/reports/bundles/fixture/metadata/fixture-template.jrxml",
+                        "nonprofitbookkeeping/reports/bundles/fixture/fixture-template.jrxml",
+                        bundle.jrxmlResource());
+        }
+
+        @Test
+        void resolvesTemplateRelativeToBundleRoot()
+        {
+                String generator =
+                        "nonprofitbookkeeping.reports.fixture.MultiDirectoryFixtureGenerator";
+
+                ReportBundles.Bundle bundle = ReportBundles.bundleForGenerator(generator);
+
+                assertEquals("Split Template Fixture", bundle.displayName());
+                assertEquals("split/metadata", bundle.metadataDirectory());
+                assertEquals("split", bundle.bundleRoot());
+                assertEquals(
+                        "nonprofitbookkeeping/reports/bundles/split/templates/separate-template.jrxml",
                         bundle.jrxmlResource());
         }
 }
