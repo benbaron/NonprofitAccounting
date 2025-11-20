@@ -32,6 +32,8 @@ public final class ReportBundles
 {
         private static final String BUNDLES_ROOT =
                 "nonprofitbookkeeping/reports/bundles";
+        private static final String TEMPLATE_ROOT =
+                "nonprofitbookkeeping/reports";
 
         /** Immutable metadata describing a single generator/template bundle. */
         public record Bundle(String id,
@@ -382,13 +384,36 @@ public final class ReportBundles
                 }
 
                 String prefix = Optional.ofNullable(bundleRoot).orElse("").trim();
+                ClassLoader loader = ReportBundles.class.getClassLoader();
 
-                if (prefix.isEmpty())
+                List<String> candidates = new ArrayList<>();
+
+                if (!prefix.isEmpty())
                 {
-                        return BUNDLES_ROOT + "/" + normalizedTemplate;
+                        candidates.add(BUNDLES_ROOT + "/" + prefix + "/"
+                                + normalizedTemplate);
                 }
 
-                return BUNDLES_ROOT + "/" + prefix + "/" + normalizedTemplate;
+                candidates.add(BUNDLES_ROOT + "/" + normalizedTemplate);
+
+                if (!prefix.isEmpty())
+                {
+                        candidates.add(TEMPLATE_ROOT + "/" + prefix + "/"
+                                + normalizedTemplate);
+                }
+
+                candidates.add(TEMPLATE_ROOT + "/" + normalizedTemplate);
+
+                for (String candidate : candidates)
+                {
+                        if (loader.getResource(candidate) != null)
+                        {
+                                return candidate;
+                        }
+                }
+
+                // Fall back to the most specific expected location to preserve error context
+                return candidates.get(0);
         }
 
         private static String computeBundleRoot(Path metadataDirectory)
