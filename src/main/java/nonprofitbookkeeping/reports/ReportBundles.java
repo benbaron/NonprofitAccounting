@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  * Loads Jasper report bundle metadata and exposes lookup helpers for
@@ -67,6 +69,8 @@ public final class ReportBundles
 
         private static final Map<String, Bundle> BUNDLES_BY_ID;
         private static final Map<String, Bundle> BUNDLES_BY_GENERATOR;
+        private static final Logger LOGGER =
+                Logger.getLogger(ReportBundles.class.getName());
 
         static
         {
