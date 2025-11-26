@@ -5,6 +5,7 @@ import nonprofitbookkeeping.model.*;
 import nonprofitbookkeeping.model.budget.Budget;
 import nonprofitbookkeeping.model.budget.BudgetLine;
 import nonprofitbookkeeping.model.budget.Periodicity;
+import nonprofitbookkeeping.reports.ReportBundles;
 import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.reports.ReportMetadata;
 import net.sf.jasperreports.engine.JRException;
@@ -82,17 +83,54 @@ public class ReportService
 		ACCOUNT_LEDGER_JASPER("account_ledger_jasper"),
 		ACCOUNT_SUMMARY_JASPER("account_summary_jasper"),
 		BANK_RECONCILIATION_JASPER("bank_reconciliation_jasper"),
-		CHART_OF_ACCOUNTS_JASPER("chart_of_accounts_jasper"),
-		FUND_LEDGER_JASPER("fund_ledger_jasper"),
-		GENERAL_JOURNAL_JASPER("general_journal_jasper"),
-		GENERAL_LEDGER_JASPER("general_ledger_jasper"),
-		INCOME_STATEMENT_ALT_JASPER("income_statement_alt_jasper"),
-		TRANSACTION_REPORT_JASPER("transaction_report_jasper"),
-		SCA_ASSET_DTL_5A_JASPER("sca_asset_dtl_5a_jasper"),
-		SCA_BALANCE_3_JASPER("sca_balance_3_jasper"),
-		SCA_BALANCE_3_V2_JASPER("sca_balance_3_v2_jasper"),
-		SCA_CONTACT_INFO_JASPER("sca_contact_info_jasper"),
-		SCA_DEPR_DTL_8_JASPER("sca_depr_dtl_8_jasper"),
+                CHART_OF_ACCOUNTS_JASPER("chart_of_accounts_jasper"),
+                FUND_LEDGER_JASPER("fund_ledger_jasper"),
+                GENERAL_JOURNAL_JASPER("general_journal_jasper"),
+                GENERAL_LEDGER_JASPER("general_ledger_jasper"),
+                INCOME_STATEMENT_ALT_JASPER("income_statement_alt_jasper"),
+                TRANSACTION_REPORT_JASPER("transaction_report_jasper"),
+                ASSET_DTL_5A_JASPER("asset_dtl_5a_jasper"),
+                ASSET_DTL_5C_JASPER("asset_dtl_5c_jasper"),
+                BALANCE_3_JASPER("balance_3_jasper"),
+                COMMENTS_JASPER("comments_jasper"),
+                CONTACT_INFO_1_JASPER("contact_info_1_jasper"),
+                CONTENTS_JASPER("contents_jasper"),
+                DEPR_DTL_8_JASPER("depr_dtl_8_jasper"),
+                DEPR_DTL_8B_JASPER("depr_dtl_8b_jasper"),
+                DEPR_DTL_8C_JASPER("depr_dtl_8c_jasper"),
+                EXPENSE_DTL_12A_JASPER("expense_dtl_12a_jasper"),
+                EXPENSE_DTL_12B_JASPER("expense_dtl_12b_jasper"),
+                FINANCE_COMM_13_JASPER("finance_comm_13_jasper"),
+                FREE_FORM_JASPER("free_form_jasper"),
+                FUNDS_14_JASPER("funds_14_jasper"),
+                INCOME_4_JASPER("income_4_jasper"),
+                INCOME_DTL_11A_JASPER("income_dtl_11a_jasper"),
+                INCOME_DTL_11B_JASPER("income_dtl_11b_jasper"),
+                INCOME_DTL_11C_JASPER("income_dtl_11c_jasper"),
+                INVENTORY_DTL_6_JASPER("inventory_dtl_6_jasper"),
+                INVENTORY_DTL_6B_JASPER("inventory_dtl_6b_jasper"),
+                LIABILITY_DTL_5B_JASPER("liability_dtl_5b_jasper"),
+                LIABILITY_DTL_5D_JASPER("liability_dtl_5d_jasper"),
+                NEWSLETTER_15_JASPER("newsletter_15_jasper"),
+                PRIMARY_ACCOUNT_2A_JASPER("primary_account_2a_jasper"),
+                REGALIA_SALES_DTL_7_JASPER("regalia_sales_dtl_7_jasper"),
+                REGALIA_SALES_DTL_7B_JASPER("regalia_sales_dtl_7b_jasper"),
+                SECONDARY_ACCOUNTS_2B_JASPER("secondary_accounts_2b_jasper"),
+                SECONDARY_ACCOUNTS_2C_JASPER("secondary_accounts_2c_jasper"),
+                SECONDARY_ACCOUNTS_2D_JASPER("secondary_accounts_2d_jasper"),
+                TRANSFER_IN_9_JASPER("transfer_in_9_jasper"),
+                TRANSFER_IN_9B_JASPER("transfer_in_9b_jasper"),
+                TRANSFER_IN_9C_JASPER("transfer_in_9c_jasper"),
+                TRANSFER_IN_9D_JASPER("transfer_in_9d_jasper"),
+                TRANSFER_OUT_10_JASPER("transfer_out_10_jasper"),
+                TRANSFER_OUT_10B_JASPER("transfer_out_10b_jasper"),
+                TRANSFER_OUT_10C_JASPER("transfer_out_10c_jasper"),
+                TRANSFER_OUT_10D_JASPER("transfer_out_10d_jasper"),
+                SCA_ASSET_DTL_5A_JASPER("sca_asset_dtl_5a_jasper"),
+                SCA_BALANCE_3_JASPER("sca_balance_3_jasper"),
+                SCA_BALANCE_3_V2_JASPER("sca_balance_3_v2_jasper"),
+                SCA_CONTACT_INFO_JASPER("sca_contact_info_jasper"),
+                SCA_DEPR_DTL_8_JASPER("sca_depr_dtl_8_jasper"),
 		SCA_EXPENSE_DTL_12A_JASPER("sca_expense_dtl_12a_jasper"),
 		SCA_EXPENSE_DTL_12B_JASPER("sca_expense_dtl_12b_jasper"),
 		SCA_FINANCE_COMM_13_JASPER("sca_finance_comm_13_jasper"),
@@ -227,15 +265,25 @@ public class ReportService
 			generatorClass("PrimaryAccountReconciliationJasperGenerator"));
 		map.put(ReportType.SCA_REGALIA_SALES_DTL_7_JASPER,
 			generatorClass("RegaliaSalesDtl7JasperGenerator"));
-		map.put(ReportType.SCA_SECONDARY_ACCOUNT_JASPER,
-			generatorClass("SecondaryAccountJasperGenerator"));
-		map.put(ReportType.SCA_TRANSFER_IN_9_JASPER,
-			generatorClass("TransferIn9JasperGenerator"));
-		map.put(ReportType.SCA_TRANSFER_OUT_10_JASPER,
-			generatorClass("TransferOut10JasperGenerator"));
-		return map;
+                map.put(ReportType.SCA_SECONDARY_ACCOUNT_JASPER,
+                        generatorClass("SecondaryAccountJasperGenerator"));
+                map.put(ReportType.SCA_TRANSFER_IN_9_JASPER,
+                        generatorClass("TransferIn9JasperGenerator"));
+                map.put(ReportType.SCA_TRANSFER_OUT_10_JASPER,
+                        generatorClass("TransferOut10JasperGenerator"));
 
-	}
+                registerBundledGenerators(map);
+                return map;
+
+        }
+
+        private static void registerBundledGenerators(Map<ReportType, String> registry)
+        {
+                for (ReportBundles.Bundle bundle : ReportBundles.bundles())
+                {
+                        registry.putIfAbsent(bundle.reportType(), bundle.generatorClassName());
+                }
+        }
 		
 	
         private static String generatorClass(String simpleName)

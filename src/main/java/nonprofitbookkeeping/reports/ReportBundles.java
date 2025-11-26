@@ -189,11 +189,15 @@ public final class ReportBundles
 
                                 if (rawBeanName == null || rawBeanName.isBlank())
                                 {
-                                        throw new IllegalStateException(
-                                                "Missing required property 'beanName' in " + metadataPath);
+                                        LOGGER.log(Level.WARNING,
+                                                "Bundle {0} declares beanClass {1} without beanName; "
+                                                        + "defaulting beanName to null",
+                                                new Object[]{metadataPath, beanClass});
                                 }
-
-                                beanName = rawBeanName.trim();
+                                else
+                                {
+                                        beanName = rawBeanName.trim();
+                                }
                         }
 
                         String description = Optional
