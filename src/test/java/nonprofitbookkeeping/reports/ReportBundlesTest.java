@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ReportBundlesTest
 {
@@ -50,16 +51,12 @@ class ReportBundlesTest
                 String generator =
                         "nonprofitbookkeeping.reports.fixture.TopLevelGenerator";
 
-                ReportBundles.Bundle bundle = ReportBundles.bundleForGenerator(generator);
+                IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+                        () -> ReportBundles.bundleForGenerator(generator),
+                        "Top-level bundles should be ignored to avoid loading legacy metadata");
 
-                assertNotNull(bundle, "Expected top-level bundle to be discovered");
-                assertEquals("Top-level Template", bundle.displayName());
-                assertEquals("", bundle.metadataDirectory());
-                assertEquals("", bundle.bundleRoot());
-                assertEquals("top-level-template.properties", bundle.id());
-                assertEquals("nonprofitbookkeeping/reports/top-level-template.properties",
-                        bundle.metadataResource());
-                assertEquals("nonprofitbookkeeping/reports/top-level-template.jrxml",
-                        bundle.jrxmlResource());
+                assertEquals(
+                        "No report bundle registered for generator: " + generator,
+                        ex.getMessage());
         }
 }

@@ -32,9 +32,15 @@ import java.util.logging.Level;
  */
 public final class ReportBundles
 {
+        // The curated bundle metadata lives under the bundles/ directory. The
+        // legacy top-level metadata files in nonprofitbookkeeping/reports use
+        // outdated reportType identifiers that no longer align with the
+        // ReportType enum, which causes noisy "unknown report type" messages at
+        // startup. Restrict discovery to the vetted bundles/ metadata to avoid
+        // loading the stale files while still keeping access to the JRXML
+        // templates under nonprofitbookkeeping/reports.
         private static final List<String> BUNDLE_ROOTS = List.of(
-                "nonprofitbookkeeping/reports/bundles",
-                "nonprofitbookkeeping/reports");
+                "nonprofitbookkeeping/reports/bundles");
 
         private static final String TEMPLATE_ROOT = "nonprofitbookkeeping/reports";
 
