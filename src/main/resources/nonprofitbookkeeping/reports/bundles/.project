@@ -10,11 +10,6 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>ASSET_DTL_5a.jrxml</name>
-			<type>1</type>
-			<location>C:/Users/benba/eclipse-workspace/xlsx-2-jrxml-2/output/ASSET_DTL_5a.jrxml</location>
-		</link>
-		<link>
 			<name>ASSET_DTL_5a_ROWS.jrxml</name>
 			<type>1</type>
 			<location>C:/Users/benba/Desktop/jrxml-converted/jrxml_normalized_only/jrxml/sca-reports/ASSET_DTL_5a_ROWS.jrxml</location>
