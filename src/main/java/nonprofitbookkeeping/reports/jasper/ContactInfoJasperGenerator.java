@@ -1,3 +1,4 @@
+
 package nonprofitbookkeeping.reports.jasper;
 
 import nonprofitbookkeeping.exception.ActionCancelledException;
@@ -18,47 +19,56 @@ import java.util.Map;
  */
 public class ContactInfoJasperGenerator extends AbstractReportGenerator
 {
-        private final ReportContext context;
-
-        public ContactInfoJasperGenerator(ReportContext context)
-        {
-                this.context = context;
-
-                if (context != null && context.getBeans() != null)
-                {
-                        setReportData(context.getBeans());
-                }
-        }
-
-        @Override
-        protected List<?> getReportData()
-        {
-                if (this.context == null || this.context.getBeans() == null)
-                {
-                        return Collections.emptyList();
-                }
-
-                return this.context.getBeans();
-        }
-
-        @Override
-        protected Map<String, Object> getReportParameters()
-        {
-                Map<String, Object> params = new HashMap<>();
-                params.put("P_GENERATION_DATE", LocalDate.now());
-                return params;
-        }
-
-        @Override
-        protected String getReportPath() throws ActionCancelledException, NoFileCreatedException
-        {
-                return bundledReportPath();
-        }
-
-        @Override
-        public String getBaseName()
-        {
-                String display = ReportBundles.bundleForGenerator(getClass()).displayName();
-                return display.replaceAll("\\s+", "_") + "_" + LocalDate.now();
-        }
+	private final ReportContext context;
+	
+	public ContactInfoJasperGenerator(ReportContext context)
+	{
+		this.context = context;
+		
+		if (context != null && context.getBeans() != null)
+		{
+			setReportData(context.getBeans());
+		}
+		
+	}
+	
+	@Override
+	protected List<?> getReportData()
+	{
+		
+		if (this.context == null || this.context.getBeans() == null)
+		{
+			return Collections.emptyList();
+		}
+		
+		return this.context.getBeans();
+		
+	}
+	
+	@Override
+	protected Map<String, Object> getReportParameters()
+	{
+		Map<String, Object> params = new HashMap<>();
+		params.put("P_GENERATION_DATE", LocalDate.now());
+		return params;
+		
+	}
+	
+	@Override
+	protected String getReportPath()
+		throws ActionCancelledException, NoFileCreatedException
+	{
+		return bundledReportPath();
+		
+	}
+	
+	@Override
+	public String getBaseName()
+	{
+		String display =
+			ReportBundles.bundleForGenerator(getClass()).displayName();
+		return display.replaceAll("\\s+", "_") + "_" + LocalDate.now();
+		
+	}
+	
 }
