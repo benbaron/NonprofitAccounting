@@ -51,19 +51,15 @@ class TypeEntry:
         return f"{self.package}.{self.name}" if self.package else self.name
 
 
-def load_sources() -> tuple[Dict[Path, str], Dict[Path, str]]:
-    def read(paths: Iterable[Path]) -> Dict[Path, str]:
-        contents: Dict[Path, str] = {}
-        for path in paths:
-            try:
-                contents[path] = path.read_text(encoding="utf-8")
-            except UnicodeDecodeError:
-                contents[path] = path.read_text(encoding="latin-1")
-        return contents
-
-    main_files = MAIN_SRC.rglob(JAVA_GLOB)
-    test_files = TEST_SRC.rglob(JAVA_GLOB)
-    return read(main_files), read(test_files)
+def load_sources() -> Dict[Path, str]:
+    files = list(MAIN_SRC.rglob(JAVA_GLOB)) + list(TEST_SRC.rglob(JAVA_GLOB))
+    contents = {}
+    for path in files:
+        try:
+            contents[path] = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            contents[path] = path.read_text(encoding="latin-1")
+    return contents
 
 
 def parse_types(contents: Dict[Path, str]) -> List[TypeEntry]:
@@ -89,50 +85,32 @@ def build_token_counts(contents: Dict[Path, str]) -> tuple[Counter[str], dict[Pa
     return total_counts, per_file_counts
 
 
-@dataclass
-class UnusedType:
-    entry: TypeEntry
-    reason: str
-
-
 def detect_unused(
     entries: Iterable[TypeEntry],
-    main_total: Counter[str],
-    main_per_file: dict[Path, Counter[str]],
-    test_total: Counter[str],
-) -> List[UnusedType]:
-    unused: List[UnusedType] = []
+    total_counts: Counter[str],
+    per_file_counts: dict[Path, Counter[str]],
+) -> List[TypeEntry]:
+    unused: List[TypeEntry] = []
     for entry in entries:
-        main_refs = main_total.get(entry.name, 0) - main_per_file.get(entry.path, Counter()).get(entry.name, 0)
-        test_refs = test_total.get(entry.name, 0)
-        total_refs = main_refs + test_refs
-        if entry.has_main_method:
-            continue
-
-        if total_refs <= 0:
-            unused.append(UnusedType(entry=entry, reason="no external references"))
-        elif main_refs <= 0 and test_refs > 0:
-            unused.append(UnusedType(entry=entry, reason="referenced only from tests"))
+        total_refs = total_counts.get(entry.name, 0) - per_file_counts.get(entry.path, Counter()).get(entry.name, 0)
+        if total_refs <= 0 and not entry.has_main_method:
+            unused.append(entry)
     return unused
 
 
 def main() -> None:
-    main_contents, test_contents = load_sources()
-    entries = parse_types(main_contents)
-    main_total, main_per_file = build_token_counts(main_contents)
-    test_total, _ = build_token_counts(test_contents)
-    unused = detect_unused(entries, main_total, main_per_file, test_total)
+    contents = load_sources()
+    entries = parse_types(contents)
+    total_counts, per_file_counts = build_token_counts(contents)
+    unused = detect_unused(entries, total_counts, per_file_counts)
 
     print("Potentially unused types (no references outside their own file):")
     if not unused:
         print("None found")
         return
 
-    for unused_type in sorted(unused, key=lambda item: str(item.entry.path)):
-        entry = unused_type.entry
-        print(
-            f"- {entry.fqcn} (file: {entry.path.relative_to(ROOT)}; {unused_type.reason})"
-        )
+    for entry in sorted(unused, key=lambda item: str(item.path)):
+        print(f"- {entry.fqcn} (file: {entry.path.relative_to(ROOT)})")
 
 
 if __name__ == "__main__":
