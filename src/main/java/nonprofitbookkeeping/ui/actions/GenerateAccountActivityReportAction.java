@@ -1,3 +1,4 @@
+
 package nonprofitbookkeeping.ui.actions;
 
 import nonprofitbookkeeping.service.ReportService;
@@ -8,10 +9,13 @@ import nonprofitbookkeeping.service.ReportService.ReportType;
  */
 public class GenerateAccountActivityReportAction extends SwingReportAction
 {
-        private static final long serialVersionUID = 1L;
-
-        public GenerateAccountActivityReportAction(ReportService reportService)
-        {
-                super(reportService, ReportType.TRANSACTION_REPORT_JASPER, "Account Activity Detail");
-        }
+	private static final long serialVersionUID = 1L;
+	
+	public GenerateAccountActivityReportAction(ReportService reportService)
+	{
+		super(reportService, ReportType.TRANSACTION_REPORT_JASPER,
+			"Account Activity Detail");
+		
+	}
+	
 }

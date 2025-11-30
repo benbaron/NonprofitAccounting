@@ -105,14 +105,14 @@ public class SkeletonReportsPanel extends BorderPane
 		this.controlsGrid.setVgap(10);
 		
 		this.controlsGrid.add(new Label("Report Type:"), 0, 0);
-                this.availableTemplates = ReportTemplates.templates();
-
-                List<String> sortedReportNames =
-                        new ArrayList<>(this.availableTemplates.keySet());
-                sortedReportNames.sort(String.CASE_INSENSITIVE_ORDER);
-
-                this.reportTypeComboBox = new ComboBox<>(
-                        FXCollections.observableArrayList(sortedReportNames));
+		this.availableTemplates = ReportTemplates.templates();
+		
+		List<String> sortedReportNames =
+			new ArrayList<>(this.availableTemplates.keySet());
+		sortedReportNames.sort(String.CASE_INSENSITIVE_ORDER);
+		
+		this.reportTypeComboBox = new ComboBox<>(
+			FXCollections.observableArrayList(sortedReportNames));
 		this.reportTypeComboBox.setPromptText("Select Report");
 		this.controlsGrid.add(this.reportTypeComboBox, 1, 0);
 		
@@ -125,9 +125,9 @@ public class SkeletonReportsPanel extends BorderPane
 		this.controlsGrid.add(this.endDatePicker, 1, 2);
 		
 		this.controlsGrid.add(new Label("Format:"), 0, 3);
-                this.outputFormatComboBox =
-                        new ComboBox<>(FXCollections.observableArrayList("pdf", "html",
-                                "xlsx", "text"));
+		this.outputFormatComboBox =
+			new ComboBox<>(FXCollections.observableArrayList("pdf", "html",
+				"xlsx", "text"));
 		this.outputFormatComboBox.getSelectionModel().selectFirst();
 		this.controlsGrid.add(this.outputFormatComboBox, 1, 3);
 		
@@ -442,8 +442,8 @@ public class SkeletonReportsPanel extends BorderPane
 			LocalDate startDate = this.startDatePicker.getValue();
 			LocalDate endDate = this.endDatePicker.getValue();
 			
-                        ReportTemplates.TemplateInfo info =
-                                this.availableTemplates.get(reportTypeDisplay);
+			ReportTemplates.TemplateInfo info =
+				this.availableTemplates.get(reportTypeDisplay);
 			
 			if (info == null)
 			{
@@ -459,17 +459,18 @@ public class SkeletonReportsPanel extends BorderPane
 			ctx.setReportType(reportTypeKey);
 			ctx.setStartDate(startDate);
 			ctx.setEndDate(endDate);
-                        ctx.setFundIds(java.util.Collections.emptyList());
-                        ctx.setSelectedBudget(null);
-                        ctx.setAccountIdsForDetailReport(java.util.Collections.emptyList());
+			ctx.setFundIds(java.util.Collections.emptyList());
+			ctx.setSelectedBudget(null);
+			ctx.setAccountIdsForDetailReport(java.util.Collections.emptyList());
 			
-                        String outputFormat = this.outputFormatComboBox.getValue();
-
-                        if (outputFormat == null || outputFormat.isEmpty())
-                        {
-                                outputFormat = "pdf";
-                        }
-                        ctx.setOutputFormat(outputFormat);
+			String outputFormat = this.outputFormatComboBox.getValue();
+			
+			if (outputFormat == null || outputFormat.isEmpty())
+			{
+				outputFormat = "pdf";
+			}
+			
+			ctx.setOutputFormat(outputFormat);
 			
 			if (("income_statement_jasper".equals(reportTypeKey) ||
 				"cash_flow_statement_jasper".equals(reportTypeKey)) &&
@@ -497,19 +498,19 @@ public class SkeletonReportsPanel extends BorderPane
 				return;
 			}
 			
-                        try
-                        {
-                                File generatedFile;
-
-                                if ("text".equalsIgnoreCase(outputFormat))
-                                {
-                                        generatedFile = ReportService.generatePlainTextReport(ctx);
-                                }
-                                else
-                                {
-                                        generatedFile = this.reportService.generateJasperReport(ctx,
-                                                outputFormat);
-                                }
+			try
+			{
+				File generatedFile;
+				
+				if ("text".equalsIgnoreCase(outputFormat))
+				{
+					generatedFile = ReportService.generatePlainTextReport(ctx);
+				}
+				else
+				{
+					generatedFile = this.reportService.generateJasperReport(ctx,
+						outputFormat);
+				}
 				
 				if (generatedFile != null && generatedFile.exists())
 				{
@@ -550,54 +551,58 @@ public class SkeletonReportsPanel extends BorderPane
 						" could not be generated or found. Check console/logs.");
 				}
 				
-                        }
-                        catch (JRValidationException validationEx)
-                        {
-                                LOGGER.error(
-                                        "JasperReports template validation failed for {} (template: {})",
-                                        reportTypeDisplay,
-                                        info != null ? info.jrxmlPath() : "unknown",
-                                        validationEx);
-
-                                StringBuilder messageBuilder = new StringBuilder();
-                                messageBuilder.append(reportTypeDisplay)
-                                        .append(
-                                                " could not be generated because its JasperReports template failed validation.");
-
-                                if (info != null && info.jrxmlPath() != null)
-                                {
-                                        messageBuilder.append("\nTemplate: ")
-                                                .append(info.jrxmlPath());
-                                }
-
-                                String validationMessage = validationEx.getMessage();
-                                if (validationMessage != null && !validationMessage.isBlank())
-                                {
-                                        messageBuilder.append("\n\nJasperReports details:\n")
-                                                .append(validationMessage.trim());
-
-                                        String diagnosis = deriveValidationDiagnosis(validationMessage);
-                                        if (diagnosis != null)
-                                        {
-                                                messageBuilder.append("\n\nLikely cause: ")
-                                                        .append(diagnosis);
-                                        }
-                                }
-
-                                messageBuilder.append(
-                                        "\n\nPlease adjust the report layout so that elements fit within their bands, then try again.");
-
-                                AlertBox.showError(ownerWindow,
-                                        reportTypeDisplay + " template validation failed",
-                                        messageBuilder.toString());
-                        }
-                        catch (Exception ex)
-                        {
-                                LOGGER.error("Error generating {}", reportTypeDisplay, ex);
-                                AlertBox.showError(ownerWindow,
-                                        "Error generating " + reportTypeDisplay + ": " +
-                                                ex.getMessage());
-                        }
+			}
+			catch (JRValidationException validationEx)
+			{
+				LOGGER.error(
+					"JasperReports template validation failed for {} (template: {})",
+					reportTypeDisplay,
+					info != null ? info.jrxmlPath() : "unknown",
+					validationEx);
+				
+				StringBuilder messageBuilder = new StringBuilder();
+				messageBuilder.append(reportTypeDisplay)
+					.append(
+						" could not be generated because its JasperReports template failed validation.");
+				
+				if (info != null && info.jrxmlPath() != null)
+				{
+					messageBuilder.append("\nTemplate: ")
+						.append(info.jrxmlPath());
+				}
+				
+				String validationMessage = validationEx.getMessage();
+				
+				if (validationMessage != null && !validationMessage.isBlank())
+				{
+					messageBuilder.append("\n\nJasperReports details:\n")
+						.append(validationMessage.trim());
+					
+					String diagnosis =
+						deriveValidationDiagnosis(validationMessage);
+					
+					if (diagnosis != null)
+					{
+						messageBuilder.append("\n\nLikely cause: ")
+							.append(diagnosis);
+					}
+					
+				}
+				
+				messageBuilder.append(
+					"\n\nPlease adjust the report layout so that elements fit within their bands, then try again.");
+				
+				AlertBox.showError(ownerWindow,
+					reportTypeDisplay + " template validation failed",
+					messageBuilder.toString());
+			}
+			catch (Exception ex)
+			{
+				LOGGER.error("Error generating {}", reportTypeDisplay, ex);
+				AlertBox.showError(ownerWindow,
+					"Error generating " + reportTypeDisplay + ": " +
+						ex.getMessage());
+			}
 			finally
 			{
 				loadGeneratedReports();
@@ -608,29 +613,31 @@ public class SkeletonReportsPanel extends BorderPane
 		loadGeneratedReports();
 		
 	}
-
+	
 	private String deriveValidationDiagnosis(String validationMessage)
 	{
+		
 		if (validationMessage == null)
 		{
 			return null;
 		}
-
+		
 		String normalized = validationMessage.toLowerCase(Locale.ROOT);
-
+		
 		if (normalized.contains("band-height=0"))
 		{
-			return "The template defines one or more bands with a height of 0. In Jaspersoft Studio, "
-				+ "set a positive height for sections like Title, Page Header, and Page Footer.";
+			return "The template defines one or more bands with a height of 0. In Jaspersoft Studio, " +
+				"set a positive height for sections like Title, Page Header, and Page Footer.";
 		}
-
+		
 		if (normalized.contains("element bottom reaches outside band area"))
 		{
-			return "At least one element extends beyond its band height. Increase the band height or "
-				+ "move the element so it fits within the band.";
+			return "At least one element extends beyond its band height. Increase the band height or " +
+				"move the element so it fits within the band.";
 		}
-
+		
 		return null;
+		
 	}
-
+	
 }

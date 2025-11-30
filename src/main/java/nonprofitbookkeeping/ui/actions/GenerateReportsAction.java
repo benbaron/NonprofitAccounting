@@ -32,20 +32,23 @@ import java.util.Optional;
  * report. User input is gathered through a series of {@link ChoiceDialog}
  * instances.
  */
-public class GenerateReportsAction implements EventHandler<ActionEvent>, ActionListener
+public class GenerateReportsAction
+	implements EventHandler<ActionEvent>, ActionListener
 {
-
-        /** Backing service used to dispatch report generation. */
-        private final ReportService service;
+	
+	/** Backing service used to dispatch report generation. */
+	private final ReportService service;
+	
 	/**
 	 * Constructs a new {@code GenerateReportsAction}.
 	 *
-         * @param service The {@link ReportService} to be used for generating reports.
-         */
-        public GenerateReportsAction(ReportService service)
-        {
-                this.service = service;
-        }
+	     * @param service The {@link ReportService} to be used for generating reports.
+	     */
+	public GenerateReportsAction(ReportService service)
+	{
+		this.service = service;
+		
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -57,11 +60,11 @@ public class GenerateReportsAction implements EventHandler<ActionEvent>, ActionL
 	 *       using a {@link ChoiceDialog}.</li>
 	 *   <li>Prompts for start and end dates using a custom dialog with {@link javafx.scene.control.DatePicker}s.</li>
 	 *   <li>Validates that both dates are provided and that the end date is not before the start date.</li>
-         *   <li>Prompts for the output format (pdf, html, xlsx) using a {@link ChoiceDialog}.</li>
+	     *   <li>Prompts for the output format (pdf, html, xlsx) using a {@link ChoiceDialog}.</li>
 	 *   <li>If any dialog is cancelled by the user, the action terminates.</li>
-
-         *   <li>Constructs a {@link ReportContext} with the selected criteria.</li>
-         *   <li>Calls the injected {@link ReportService} to produce the report file.</li>
+	
+	     *   <li>Constructs a {@link ReportContext} with the selected criteria.</li>
+	     *   <li>Calls the injected {@link ReportService} to produce the report file.</li>
 	 *   <li>Shows an information alert with the path to the generated report, or an error alert if generation fails.</li>
 	 * </ol>
 	 * Displays general {@link Exception} messages if errors occur during report generation.
@@ -136,11 +139,11 @@ public class GenerateReportsAction implements EventHandler<ActionEvent>, ActionL
 			}
 			
 			// Prompt for output format.
-                        List<String> formatOptions = Arrays.asList("pdf", "html", "xlsx");
+			List<String> formatOptions = Arrays.asList("pdf", "html", "xlsx");
 			
 			ChoiceDialog<String> formatDialog =
 				new ChoiceDialog<>(
-					formatOptions.get(0), 
+					formatOptions.get(0),
 					formatOptions);
 			
 			formatDialog.initOwner(parentWindow);
@@ -154,22 +157,22 @@ public class GenerateReportsAction implements EventHandler<ActionEvent>, ActionL
 				return; // User cancelled.
 			}
 			
-                        String outputFormat =
-                                outputFormatOpt.get().trim().toLowerCase(Locale.ROOT);
-
-                        // Create and populate ReportContext.
-                        ReportContext ctx = new ReportContext();
-                        ctx.setReportType(reportType);
-                        ctx.setStartDate(startDate);
-                        ctx.setEndDate(endDate);
-                        ctx.setOutputFormat(outputFormat);
-
-                        // Generate the report using the injected service instance.
-                        File output =
-                                this.service.generateJasperReport(ctx, outputFormat);
-                        AlertBox.showInfo(parentWindow,
-                                "Report generated at: " + output.getAbsolutePath());
-
+			String outputFormat =
+				outputFormatOpt.get().trim().toLowerCase(Locale.ROOT);
+			
+			// Create and populate ReportContext.
+			ReportContext ctx = new ReportContext();
+			ctx.setReportType(reportType);
+			ctx.setStartDate(startDate);
+			ctx.setEndDate(endDate);
+			ctx.setOutputFormat(outputFormat);
+			
+			// Generate the report using the injected service instance.
+			File output =
+				this.service.generateJasperReport(ctx, outputFormat);
+			AlertBox.showInfo(parentWindow,
+				"Report generated at: " + output.getAbsolutePath());
+			
 			
 		}
 		catch (Exception ex)
@@ -181,23 +184,23 @@ public class GenerateReportsAction implements EventHandler<ActionEvent>, ActionL
 		
 	}
 	
-        /**
-         * Bridges legacy Swing integrations by delegating {@link java.awt.event.ActionListener}
-         * invocations to the JavaFX {@link EventHandler} implementation. Older panels still wire
-         * this action using Swing listeners; keeping this override ensures those call sites now
-         * exercise the fully implemented {@link #handle(ActionEvent)} logic instead of silently
-         * doing nothing.
-         *
-         * @param event the Swing {@link java.awt.event.ActionEvent} triggering the action. May be
-         *              {@code null} when invoked programmatically.
-         */
-        @Override
-        public void actionPerformed(java.awt.event.ActionEvent event)
-        {
-                ActionEvent fxEvent = (event == null)
-                        ? new ActionEvent()
-                        : new ActionEvent(event.getSource(), null);
-                handle(fxEvent);
-        }
-
+	/**
+	 * Bridges legacy Swing integrations by delegating {@link java.awt.event.ActionListener}
+	 * invocations to the JavaFX {@link EventHandler} implementation. Older panels still wire
+	 * this action using Swing listeners; keeping this override ensures those call sites now
+	 * exercise the fully implemented {@link #handle(ActionEvent)} logic instead of silently
+	 * doing nothing.
+	 *
+	 * @param event the Swing {@link java.awt.event.ActionEvent} triggering the action. May be
+	 *              {@code null} when invoked programmatically.
+	 */
+	@Override
+	public void actionPerformed(java.awt.event.ActionEvent event)
+	{
+		ActionEvent fxEvent = (event == null) ? new ActionEvent() :
+			new ActionEvent(event.getSource(), null);
+		handle(fxEvent);
+		
+	}
+	
 }
