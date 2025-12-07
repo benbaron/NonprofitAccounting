@@ -5,6 +5,7 @@
 package nonprofitbookkeeping.model;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -19,7 +20,8 @@ import lombok.NoArgsConstructor;
  * Lombok's {@code @Data}, {@code @AllArgsConstructor}, and {@code @NoArgsConstructor}
  * are used for boilerplate code generation.
  */
-@Data @AllArgsConstructor @NoArgsConstructor public class JournalEntry
+@Data @AllArgsConstructor @NoArgsConstructor
+public class JournalEntry
 {
 	/** The unique identifier for this journal entry. */
 	@JsonProperty private String id;
@@ -48,27 +50,32 @@ import lombok.NoArgsConstructor;
 	 * @param credit        credit amount or {@code null}
 	 * @param text          descriptive memo text
 	 */
-	public JournalEntry(String id, String transactionId, String date, String account,
+	public JournalEntry(String id, String transactionId, String date,
+		String account,
 		BigDecimal debit, BigDecimal credit, String text)
 	{
 		this.id = id;
-		this.transactionId = (transactionId != null) ? transactionId : id;
+		this.transactionId = Objects.requireNonNullElse(transactionId, id);
 		this.date = date;
 		this.account = account;
 		this.debit = debit;
 		this.credit = credit;
 		this.memo = text;
+		
 	}
 	
 	/**
 	 * Backwards compatible constructor that assumes the entry and transaction
 	 * IDs are the same.
 	 */
-	public JournalEntry(String id, String date, String account, BigDecimal debit, BigDecimal credit,
+	public JournalEntry(String id, String date, String account,
+		BigDecimal debit, BigDecimal credit,
 		String text)
 	{
 		this(id, id, date, account, debit, credit, text);
+		
 	}
+	
 	
 	/**
 	 * Gets the unique identifier of this journal entry.
@@ -77,6 +84,7 @@ import lombok.NoArgsConstructor;
 	public String getId()
 	{
 		return this.id;
+		
 	}
 	
 	/**
@@ -87,6 +95,7 @@ import lombok.NoArgsConstructor;
 	public String getTransactionId()
 	{
 		return this.transactionId;
+		
 	}
 	
 	/**
@@ -96,6 +105,7 @@ import lombok.NoArgsConstructor;
 	public String getDate()
 	{
 		return this.date;
+		
 	}
 	
 	/**
@@ -105,6 +115,7 @@ import lombok.NoArgsConstructor;
 	public String getAccount()
 	{
 		return this.account;
+		
 	}
 	
 	/**
@@ -114,6 +125,7 @@ import lombok.NoArgsConstructor;
 	public BigDecimal getDebit()
 	{
 		return this.debit;
+		
 	}
 	
 	/**
@@ -123,6 +135,7 @@ import lombok.NoArgsConstructor;
 	public BigDecimal getCredit()
 	{
 		return this.credit;
+		
 	}
 	
 	/**
@@ -132,6 +145,7 @@ import lombok.NoArgsConstructor;
 	public String getMemo()
 	{
 		return this.memo;
+		
 	}
 	
 }

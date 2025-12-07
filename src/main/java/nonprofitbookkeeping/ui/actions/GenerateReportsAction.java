@@ -3,20 +3,20 @@ package nonprofitbookkeeping.ui.actions;
 
 import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.service.ReportService;
-import nonprofitbookkeeping.ui.helpers.AlertBox; // Added
-import nonprofitbookkeeping.ui.helpers.DateRangePickerDialog; // Added
+import nonprofitbookkeeping.ui.helpers.AlertBox;
+import nonprofitbookkeeping.ui.helpers.DateRangePickerDialog;
 
-import javafx.event.ActionEvent; // Added
-import javafx.event.EventHandler; // Added
-import javafx.scene.control.ChoiceDialog; // Added
-import javafx.stage.Window; // Added
-// import javax.swing.*; // Removed
-// import java.awt.event.ActionEvent; // Removed
+import java.awt.event.ActionListener;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.ChoiceDialog;
+import javafx.stage.Window;
 import java.io.File;
 import java.time.LocalDate;
-import java.util.Arrays; // Added
-import java.util.List; // Added
-import java.util.Optional; // Added
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 
 /**
@@ -27,22 +27,27 @@ import java.util.Optional; // Added
 /**
  * JavaFX action handler for generating various types of reports. This action
  * prompts the user to select a report type (e.g., ledger, income statement), a
- * date range (start and end dates), and an output format (e.g., xlsx, csv,
- * pdf). It then utilizes the {@link ReportService} to generate the specified
- * report. User input is gathered through a series of {@link ChoiceDialog} and
- * {@link TextInputDialog} instances.
+ * date range (start and end dates), and an output format (e.g., pdf, html,
+ * xlsx). It then utilizes the {@link ReportService} to generate the specified
+ * report. User input is gathered through a series of {@link ChoiceDialog}
+ * instances.
  */
-public class GenerateReportsAction implements EventHandler<ActionEvent>
+public class GenerateReportsAction
+	implements EventHandler<ActionEvent>, ActionListener
 {
+	
+	/** Backing service used to dispatch report generation. */
+	private final ReportService service;
+	
 	/**
 	 * Constructs a new {@code GenerateReportsAction}.
 	 *
-	 * @param service The {@link ReportService} to be used for generating reports.
-	 *                While the current implementation calls a static {@code ReportService.generate} method,
-	 *                this instance is stored for potential future refactoring or extended use.
-	 */
+	     * @param service The {@link ReportService} to be used for generating reports.
+	     */
 	public GenerateReportsAction(ReportService service)
 	{
+		this.service = service;
+		
 	}
 	
 	/**
@@ -55,31 +60,36 @@ public class GenerateReportsAction implements EventHandler<ActionEvent>
 	 *       using a {@link ChoiceDialog}.</li>
 	 *   <li>Prompts for start and end dates using a custom dialog with {@link javafx.scene.control.DatePicker}s.</li>
 	 *   <li>Validates that both dates are provided and that the end date is not before the start date.</li>
-	 *   <li>Prompts for the output format (xlsx, csv, pdf) using a {@link ChoiceDialog}.</li>
+	     *   <li>Prompts for the output format (pdf, html, xlsx) using a {@link ChoiceDialog}.</li>
 	 *   <li>If any dialog is cancelled by the user, the action terminates.</li>
-	 *   <li>Constructs a {@link ReportContext} with the selected criteria.</li>
-	 *   <li>Calls the static {@link ReportService#generateJasper(ReportContext)} method to produce the report file.</li>
+	
+	     *   <li>Constructs a {@link ReportContext} with the selected criteria.</li>
+	     *   <li>Calls the injected {@link ReportService} to produce the report file.</li>
 	 *   <li>Shows an information alert with the path to the generated report, or an error alert if generation fails.</li>
 	 * </ol>
 	 * Displays general {@link Exception} messages if errors occur during report generation.
 	 * </p>
 	 * @param event The {@link ActionEvent} that triggered this handler (e.g., a menu item click).
 	 */
-	@Override public void handle(ActionEvent event)
+	@Override
+	public void handle(ActionEvent event)
 	{
 		Window parentWindow = null;
 		
 		if (event.getSource() instanceof javafx.scene.Node)
 		{
-			parentWindow = ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+			parentWindow =
+				((javafx.scene.Node) event.getSource()).getScene().getWindow();
 		}
 		
 		try
 		{
 			// Prompt for report type.
 			List<String> reportOptions =
-				Arrays.asList("ledger", "income_statement", "balance_sheet", "trial_balance",
-					"cash_flow", "budget_vs_actuals", "account_activity_detail", "general_ledger");
+				Arrays.asList("ledger", "income_statement", "balance_sheet",
+					"trial_balance",
+					"cash_flow", "budget_vs_actuals", "account_activity_detail",
+					"general_ledger");
 			ChoiceDialog<String> reportTypeDialog =
 				new ChoiceDialog<>(reportOptions.get(0), reportOptions);
 			reportTypeDialog.initOwner(parentWindow);
@@ -96,8 +106,9 @@ public class GenerateReportsAction implements EventHandler<ActionEvent>
 			String reportType = reportTypeOpt.get();
 			
 			// Prompt for start and end dates using a JavaFX DatePicker dialog.
-			Optional<LocalDate[]> rangeOpt = DateRangePickerDialog.show(parentWindow,
-				"Select Report Period", "Start Date:", "End Date:");
+			Optional<LocalDate[]> rangeOpt =
+				DateRangePickerDialog.show(parentWindow,
+					"Select Report Period", "Start Date:", "End Date:");
 			
 			if (!rangeOpt.isPresent())
 			{
@@ -122,14 +133,19 @@ public class GenerateReportsAction implements EventHandler<ActionEvent>
 			
 			if (endDate.isBefore(startDate))
 			{
-				AlertBox.showError(parentWindow, "End Date cannot be before Start Date.");
+				AlertBox.showError(parentWindow,
+					"End Date cannot be before Start Date.");
 				return;
 			}
 			
 			// Prompt for output format.
-			List<String> formatOptions = Arrays.asList("xlsx", "csv", "pdf");
+			List<String> formatOptions = Arrays.asList("pdf", "html", "xlsx");
+			
 			ChoiceDialog<String> formatDialog =
-				new ChoiceDialog<>(formatOptions.get(0), formatOptions);
+				new ChoiceDialog<>(
+					formatOptions.get(0),
+					formatOptions);
+			
 			formatDialog.initOwner(parentWindow);
 			formatDialog.setTitle("Output Format");
 			formatDialog.setHeaderText("Select output format:");
@@ -141,7 +157,8 @@ public class GenerateReportsAction implements EventHandler<ActionEvent>
 				return; // User cancelled.
 			}
 			
-			String outputFormat = outputFormatOpt.get();
+			String outputFormat =
+				outputFormatOpt.get().trim().toLowerCase(Locale.ROOT);
 			
 			// Create and populate ReportContext.
 			ReportContext ctx = new ReportContext();
@@ -150,28 +167,40 @@ public class GenerateReportsAction implements EventHandler<ActionEvent>
 			ctx.setEndDate(endDate);
 			ctx.setOutputFormat(outputFormat);
 			
-			// Generate the report.
-			File output = ReportService.generateJasper(ctx); // Assuming this static call is correct
-			AlertBox.showInfo(parentWindow, "Report generated at: " + output.getAbsolutePath());
+			// Generate the report using the injected service instance.
+			File output =
+				this.service.generateJasperReport(ctx, outputFormat);
+			AlertBox.showInfo(parentWindow,
+				"Report generated at: " + output.getAbsolutePath());
+			
 			
 		}
 		catch (Exception ex)
 		{
 			ex.printStackTrace();
-			AlertBox.showError(parentWindow, "Error generating report: " + ex.getMessage());
+			AlertBox.showError(parentWindow,
+				"Error generating report: " + ex.getMessage());
 		}
 		
 	}
 	
 	/**
-	 * Placeholder method, potentially from a previous Swing context or an unimplemented interface.
-	 * This method is not part of the JavaFX {@link EventHandler} interface and is currently a stub.
+	 * Bridges legacy Swing integrations by delegating {@link java.awt.event.ActionListener}
+	 * invocations to the JavaFX {@link EventHandler} implementation. Older panels still wire
+	 * this action using Swing listeners; keeping this override ensures those call sites now
+	 * exercise the fully implemented {@link #handle(ActionEvent)} logic instead of silently
+	 * doing nothing.
 	 *
-	 * @param object The event object (type is generic Object, specific context unknown).
+	 * @param event the Swing {@link java.awt.event.ActionEvent} triggering the action. May be
+	 *              {@code null} when invoked programmatically.
 	 */
-	public void actionPerformed(Object object)
+	@Override
+	public void actionPerformed(java.awt.event.ActionEvent event)
 	{
-		handle(new ActionEvent());
+		ActionEvent fxEvent = (event == null) ? new ActionEvent() :
+			new ActionEvent(event.getSource(), null);
+		handle(fxEvent);
+		
 	}
 	
 }

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="User manual for the Nonprofit Bookkeeping desktop application.">
+    <title>Nonprofit Bookkeeping User Manual</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="scripts.js"></script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="brand">
+            <h1>Nonprofit Bookkeeping</h1>
+            <p class="tagline">User Manual &amp; Operations Guide</p>
+        </div>
+        <button class="nav-toggle" aria-controls="primary-nav" aria-expanded="false">☰ Menu</button>
+        <nav id="primary-nav" class="site-nav" aria-label="Primary">
+            <ul>
+                <li><a href="#introduction">Introduction</a></li>
+                <li><a href="#requirements">Requirements</a></li>
+                <li><a href="#installation">Installation</a></li>
+                <li><a href="#workspace">Workspace</a></li>
+                <li><a href="#workflows">Key Workflows</a></li>
+                <li><a href="#modules">Modules</a></li>
+                <li><a href="#data-management">Data Management</a></li>
+                <li><a href="#plugins">Plugins</a></li>
+                <li><a href="#support">Support</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="page-layout">
+        <article class="manual-content">
+            <section id="introduction" class="card">
+                <h2>1. Introduction</h2>
+                <p>The Nonprofit Bookkeeping desktop application centralises the daily accounting operations performed by small to mid-sized nonprofit organisations. It combines ledger management, budgeting, donor tracking, inventory oversight, and reporting into a single JavaFX workspace backed by a plugin-friendly architecture.</p>
+                <p>This manual provides a guided tour of the application, outlines the standard operating procedures for each functional area, and shares best practices for safeguarding your financial data. Whenever code-level behaviour influences the user experience (for example, when certain menu items remain disabled until a company is open), those nuances are called out explicitly.</p>
+                <div class="callout">
+                    <p><strong>Application build:</strong> nonprofitbookkeeping 1.0-SNAPSHOT</p>
+                    <p><strong>Interface:</strong> JavaFX primary workspace with contextual Swing panels.</p>
+                </div>
+            </section>
+
+            <section id="requirements" class="card">
+                <h2>2. System Requirements</h2>
+                <ul>
+                    <li><strong>Operating System:</strong> Windows 10+, macOS 12+, or a modern Linux distribution capable of running JavaFX.</li>
+                    <li><strong>Java Runtime:</strong> OpenJDK/Oracle JDK 17 or later. The build uses Java 17 toolchains and JavaFX modules.</li>
+                    <li><strong>Memory:</strong> Minimum 4 GB RAM (8 GB recommended when working with large ledgers or JasperReports exports).</li>
+                    <li><strong>Disk Space:</strong> ~500 MB for the application, reports, and H2 database files, plus additional space for attachments or exports.</li>
+                    <li><strong>Permissions:</strong> Ability to read/write the company directory, including sub-folders for reports, backups, and document attachments.</li>
+                </ul>
+            </section>
+
+            <section id="installation" class="card">
+                <h2>3. Installation &amp; Launch</h2>
+                <ol class="numbered">
+                    <li><strong>Install Java:</strong> Verify <code>java -version</code> reports JDK 17 or newer.</li>
+                    <li><strong>Obtain the application:</strong> Clone the repository or download the packaged distribution zip provided by your deployment pipeline.</li>
+                    <li><strong>Build (from source):</strong>
+                        <ul>
+                            <li>Open a terminal in the project root.</li>
+                            <li>Run <code>mvn clean package -DskipTests</code> to build a shaded executable JAR.</li>
+                            <li>The artifact will be written to <code>target/nonprofitbookkeeping-1.0-SNAPSHOT.jar</code>.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Launch:</strong>
+                        <ul>
+                            <li>Execute <code>java -jar target/nonprofitbookkeeping-1.0-SNAPSHOT.jar</code>.</li>
+                            <li>The primary window titled <em>Nonprofit Bookkeeping</em> appears, initially showing the Company Selection panel.</li>
+                        </ul>
+                    </li>
+                </ol>
+                <p>If you distribute pre-built binaries, provide the JAR together with the matching JavaFX runtime or bundle them using the platform-specific packaging tool of your choice.</p>
+            </section>
+
+            <section id="workspace" class="card">
+                <h2>4. Workspace Overview</h2>
+                <h3>4.1 Main Layout</h3>
+                <p>The main stage uses a tabbed <code>MainApplicationView</code>. Tabs for Dashboard, Journal, Chart of Accounts, Reports, and Account Details are always present but disabled until a company file is open. When no company is selected the Company Selection panel occupies the centre area.</p>
+                <h3>4.2 Menu Bar</h3>
+                <p>The menu bar is the primary entry point for application commands. Items become enabled or disabled depending on the active company state.</p>
+                <table class="menu-table">
+                    <caption>Core menus and commands</caption>
+                    <thead>
+                        <tr>
+                            <th>Menu</th>
+                            <th>Commands</th>
+                            <th>Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Company</td>
+                            <td>Open Company, Close Company, Save Company, Import COA (XLSX), Export COA (XLSX), Export Statement (OFX/QFX)</td>
+                            <td>Lifecycle management for company files and chart of accounts interchange.</td>
+                        </tr>
+                        <tr>
+                            <td>Edit</td>
+                            <td>Create or Edit Company, Edit Chart of Accounts, Edit Journal, Open Budget Editor</td>
+                            <td>Launches editors for master data, ledger activity, and budgeting.</td>
+                        </tr>
+                        <tr>
+                            <td>Run</td>
+                            <td>Documents &amp; Attachments, Inventory &amp; Depreciation, Funds &amp; Fund Accounting, Reconcile</td>
+                            <td>Opens operational panels for document storage, asset tracking, fund management, and bank reconciliation.</td>
+                        </tr>
+                        <tr>
+                            <td>Panels</td>
+                            <td>Donors, Donations, Grants, Sales &amp; COG</td>
+                            <td>Provides quick access to development, fundraising, and revenue panels.</td>
+                        </tr>
+                        <tr>
+                            <td>Database</td>
+                            <td>Open/Create H2 DB…, Import H2 script into DB…</td>
+                            <td>Manages the embedded H2 database lifecycle and bulk script import.</td>
+                        </tr>
+                        <tr>
+                            <td>Settings</td>
+                            <td>Show Settings</td>
+                            <td>Opens configuration panes for application preferences and directories.</td>
+                        </tr>
+                        <tr>
+                            <td>Help</td>
+                            <td>Help</td>
+                            <td>Displays the in-application help panel.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>Plugins can contribute additional top-level menus. See <a href="#plugins">Plugins</a> for details.</p>
+                <h3>4.3 Menu Navigation Map</h3>
+                <p>This tree expands each menu into the commands you will see in the running application. Use it when onboarding
+new staff or documenting process walkthroughs.</p>
+                <div class="menu-map" role="group" aria-label="Application menu navigation map">
+                    <h4>Core menus</h4>
+                    <ul class="menu-tree">
+                        <li><span>Company</span>
+                            <ul>
+                                <li>Open Company</li>
+                                <li>Close Company</li>
+                                <li>Save Company</li>
+                                <li>Import COA (XLSX)</li>
+                                <li>Export COA (XLSX)</li>
+                                <li>Export Statement (OFX/QFX)</li>
+                            </ul>
+                        </li>
+                        <li><span>Edit</span>
+                            <ul>
+                                <li>Create or Edit Company</li>
+                                <li>Edit Chart of Accounts</li>
+                                <li>Edit Journal</li>
+                                <li>Open Budget Editor</li>
+                            </ul>
+                        </li>
+                        <li><span>Run</span>
+                            <ul>
+                                <li>Documents &amp; Attachments</li>
+                                <li>Inventory &amp; Depreciation</li>
+                                <li>Funds &amp; Fund Accounting</li>
+                                <li>Reconcile</li>
+                            </ul>
+                        </li>
+                        <li><span>Panels</span>
+                            <ul>
+                                <li>Donors</li>
+                                <li>Donations</li>
+                                <li>Grants</li>
+                                <li>Sales &amp; COG</li>
+                            </ul>
+                        </li>
+                        <li><span>Database</span>
+                            <ul>
+                                <li>Open/Create H2 DB…</li>
+                                <li>Import H2 script into DB…</li>
+                            </ul>
+                        </li>
+                        <li><span>Settings</span>
+                            <ul>
+                                <li>Show Settings</li>
+                            </ul>
+                        </li>
+                        <li><span>Help</span>
+                            <ul>
+                                <li>Help</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <h4>Plugin menus (when available)</h4>
+                    <ul class="menu-tree">
+                        <li><span>Tools</span>
+                            <ul>
+                                <li>Show Sample Plugin Alert</li>
+                            </ul>
+                        </li>
+                        <li><span>SCA Ledger</span>
+                            <ul>
+                                <li>Load XLSM Table (SCA)</li>
+                                <li>Import from Excel (SCA)</li>
+                                <li>Import from JSON (SCA)</li>
+                                <li>Save Modified Copy (SCA)</li>
+                                <li>Input File (Generic – SCA context)</li>
+                                <li>Output File (Generic – SCA context)</li>
+                                <li>Undo Last Edit (SCA)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="workflows" class="card">
+                <h2>5. Getting Started Workflows</h2>
+                <h3 id="create-company">5.1 Create a New Company</h3>
+                <ol class="numbered">
+                    <li>Choose <em>Edit &gt; Create or Edit Company</em>.</li>
+                    <li>Follow the wizard to enter the organisation profile, fiscal settings, and base chart of accounts.</li>
+                    <li>When prompted, save the company file into a dedicated directory. The application enables the workspace tabs once the company is active.</li>
+                </ol>
+                <h3 id="open-company">5.2 Open an Existing Company</h3>
+                <ol class="numbered">
+                    <li>Use <em>Company &gt; Open Company</em> and browse to the company file (.json/.zip depending on your deployment).</li>
+                    <li>Confirm that the Dashboard tab activates and the window title reflects the open company.</li>
+                    <li>If you need to switch organisations later, choose <em>Company &gt; Close Company</em> before opening a new file.</li>
+                </ol>
+                <h3 id="daily-journal">5.3 Record a Journal Entry</h3>
+                <ol class="numbered">
+                    <li>Navigate to the Journal tab or use <em>Edit &gt; Edit Journal</em>.</li>
+                    <li>Use the <strong>General Journal Entry</strong> panel to add lines with account, debit, credit, and memo information. Totals appear in the toolbar; imbalances trigger an alert when you attempt to save.</li>
+                    <li>Click <em>Save</em> to commit the transaction to the ledger. Entries immediately surface in the Account Details panel.</li>
+                </ol>
+                <h3 id="chart-maintenance">5.4 Maintain the Chart of Accounts</h3>
+                <ol class="numbered">
+                    <li>Open the Chart of Accounts tab or select <em>Edit &gt; Edit Chart of Accounts</em>.</li>
+                    <li>Use the tree to add, rename, or re-parent accounts. Invalid operations (duplicate codes, missing parents) trigger descriptive log entries and alerts.</li>
+                    <li>Save changes to persist them into the active company profile.</li>
+                </ol>
+            </section>
+
+            <section id="modules" class="card">
+                <h2>6. Module Reference</h2>
+                <h3>6.1 Dashboard</h3>
+                <p>Summarises key balances, recent journal activity, and quick links. The skeleton implementation clears itself automatically whenever the company closes to avoid stale data.</p>
+                <h3>6.2 Journal</h3>
+                <p>Features the General Journal Entry panel and supporting tables for transaction review. Use filters to limit by date or account once implemented. The <em>Undo Last Edit (SCA)</em> action from the SCA Ledger plugin integrates with this tab.</p>
+                <h3>6.3 Reports</h3>
+                <p>Hosts JasperReports-driven outputs (Income Statement, Cash Flow, Trial Balance, and more). In the current build the tab displays a skeleton panel awaiting activation of the Jasper workflow, but menu commands and services are in place.</p>
+                <h3>6.4 Account Details</h3>
+                <p>Displays transaction history for a selected account, consolidating ledger entries generated from journal postings and imports.</p>
+                <h3>6.5 Budget Editor</h3>
+                <p>Accessible through <em>Edit &gt; Open Budget Editor</em>, this JavaFX panel supports drafting and updating annual budgets. Launching requires an open company because it sources fund and account information from the active profile.</p>
+                <h3>6.6 Operational Panels</h3>
+                <ul>
+                    <li><strong>Documents &amp; Attachments:</strong> Stores supporting files linked to transactions.</li>
+                    <li><strong>Inventory &amp; Depreciation:</strong> Tracks asset acquisition, depreciation schedules, and disposals.</li>
+                    <li><strong>Funds &amp; Fund Accounting:</strong> Manages restricted/unrestricted fund balances.</li>
+                    <li><strong>Reconcile:</strong> Launches the bank reconciliation flow via <code>LedgerReconcilePanelFX</code>.</li>
+                </ul>
+                <h3>6.7 Development &amp; Revenue Panels</h3>
+                <ul>
+                    <li><strong>Donors / Donations:</strong> Manage donor profiles and received gifts. Donations integrate with ledger posting rules to ensure audit trails.</li>
+                    <li><strong>Grants:</strong> Track awards, milestones, and expenditure requirements.</li>
+                    <li><strong>Sales &amp; COG:</strong> Supports earned revenue tracking with cost-of-goods details.</li>
+                </ul>
+                <h3>6.8 Settings</h3>
+                <p>The Settings panel surfaces application preferences, including default directories and optional integrations. Some fields are placeholders pending backend wiring—planned updates are tracked in <code>TODO.md</code>.</p>
+            </section>
+
+            <section id="data-management" class="card">
+                <h2>7. Data Management</h2>
+                <h3>7.1 Company Files</h3>
+                <p>Company data is stored as structured JSON bundled with ledger attachments. Use <em>Company &gt; Save Company</em> after significant changes, especially before closing the application.</p>
+                <h3>7.2 Chart of Accounts Import/Export</h3>
+                <p>Import a new or updated chart from Excel via <em>Company &gt; Import COA (XLSX)</em>. Export the current structure using <em>Company &gt; Export COA (XLSX)</em> for backups or collaboration.</p>
+                <h3>7.3 Statement Export</h3>
+                <p>Select <em>Company &gt; Export Statement (OFX/QFX)</em> to produce bank-compatible statements using the ledger. Validate the destination path before exporting; the application remembers the last used directory.</p>
+                <h3>7.4 Database Operations</h3>
+                <p>For advanced scenarios, use the Database menu to initialise or import an H2 database. <em>Open/Create H2 DB…</em> configures the storage location and ensures schema readiness. <em>Import H2 script into DB…</em> runs SQL scripts against the selected database.</p>
+                <h3>7.5 Attachments &amp; Documents</h3>
+                <p>Within the Documents panel, upload supporting PDFs, receipts, or correspondence. Files are stored alongside the company directory; keep consistent backups to avoid orphaned references.</p>
+                <h3>7.6 Backups</h3>
+                <p>Use the Settings panel’s backup tab to capture point-in-time archives. Combine manual backups with source control or secure cloud storage for redundancy.</p>
+            </section>
+
+            <section id="plugins" class="card">
+                <h2>8. Plugins &amp; Extensions</h2>
+                <h3>8.1 Plugin Discovery</h3>
+                <p>At startup the application scans the plugin directory and lets each plugin contribute menu items through the shared menu bar. Plugin menus appear to the right of the core commands.</p>
+                <h3>8.2 Sample Plugin</h3>
+                <p>The <em>Sample Plugin</em> adds a <strong>Tools</strong> menu that demonstrates how plugins can inject UI actions by displaying a simple alert. Use it as a starting point for your own extensions.</p>
+                <h3>8.3 SCA Ledger Plugin</h3>
+                <p>The <strong>SCA Ledger</strong> plugin introduces a dedicated menu with utilities tailored to Spreadsheet Consolidation Accounting (SCA) workflows:</p>
+                <ul>
+                    <li>Load XLSM Table (SCA)</li>
+                    <li>Import from Excel (SCA)</li>
+                    <li>Import from JSON (SCA)</li>
+                    <li>Save Modified Copy (SCA)</li>
+                    <li>Input File (Generic – SCA context)</li>
+                    <li>Output File (Generic – SCA context)</li>
+                    <li>Undo Last Edit (SCA)</li>
+                </ul>
+                <p>The plugin maintains its own working file context and integrates with the <code>PageViewer</code> panel to preview ledger pages after import.</p>
+            </section>
+
+            <section id="support" class="card">
+                <h2>9. Tips, Troubleshooting &amp; Support</h2>
+                <ul>
+                    <li><strong>Menus stay disabled:</strong> Ensure a company is open. The application guards against actions that require company context.</li>
+                    <li><strong>Budget editor alerts:</strong> Open or create a company first; the panel validates its data sources before loading.</li>
+                    <li><strong>Plugin errors:</strong> Check the application logs. Plugin exceptions are caught and logged without crashing the core UI.</li>
+                    <li><strong>Report placeholders:</strong> Some report menu items are still under active development. Track progress in <code>TODO.md</code> or via the issue tracker.</li>
+                    <li><strong>Backups:</strong> Schedule regular backups using the Settings panel and off-site storage to protect against device failure.</li>
+                </ul>
+                <p>For additional help, consult the in-app Help panel or escalate through your organisation’s support channel.</p>
+            </section>
+        </article>
+
+        <aside class="quick-reference">
+            <section class="card">
+                <h2>Quick Reference</h2>
+                <ul>
+                    <li><strong>Open company:</strong> Company &gt; Open Company</li>
+                    <li><strong>Save ledger snapshot:</strong> Company &gt; Save Company</li>
+                    <li><strong>Launch budget editor:</strong> Edit &gt; Open Budget Editor</li>
+                    <li><strong>Bank reconciliation:</strong> Run &gt; Reconcile</li>
+                    <li><strong>Generate exports:</strong> Company &gt; Export Statement (OFX/QFX)</li>
+                    <li><strong>Database maintenance:</strong> Database &gt; Open/Create H2 DB…</li>
+                </ul>
+            </section>
+            <section class="card version">
+                <h2>Version History</h2>
+                <p><strong>1.0-SNAPSHOT</strong> – Initial JavaFX workspace, ledger-driven Page Viewer, plugin menu integration, and skeleton regression tests.</p>
+            </section>
+        </aside>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2025 Nonprofit Bookkeeping Project Team. Licensed for internal organisational use.</p>
+    </footer>
+</body>
+</html>

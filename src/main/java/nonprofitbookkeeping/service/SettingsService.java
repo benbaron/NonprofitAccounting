@@ -3,21 +3,31 @@ package nonprofitbookkeeping.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+
+import nonprofitbookkeeping.model.ReportPeriodPreset;
 import nonprofitbookkeeping.model.SettingsModel;
+import nonprofitbookkeeping.persistence.DocumentRepository;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.time.MonthDay;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import nonprofitbookkeeping.util.FormatUtils;
 
 /**
  * Service for loading and saving application settings.
  */
 public class SettingsService
 {
-	private static final Logger LOGGER = Logger.getLogger(SettingsService.class.getName());
-	/** File name where settings are persisted. */
-	private static final String SETTINGS_FILE = "settings.json";
+	private static final Logger LOGGER =
+		Logger.getLogger(SettingsService.class.getName());
+	/** Database document name where settings are persisted. */
+	private static final String DOCUMENT_NAME = "settings";
+	private static final ObjectMapper MAPPER = new ObjectMapper()
+		.enable(SerializationFeature.INDENT_OUTPUT);
 	
 	/** Settings cached in memory. */
 	private SettingsModel settings = new SettingsModel();
@@ -26,72 +36,164 @@ public class SettingsService
 	public SettingsModel getSettings()
 	{
 		return this.settings;
+		
 	}
 	
 	/**
-	 * Loads settings from the given company directory. If the file does not
-	 * exist, the in-memory settings remain empty.
+	 * Loads settings from the persistent document store.
 	 *
-	 * @param companyDir directory containing the settings file
-	 * @throws IOException if the directory is invalid or read fails
+	 * @param companyDir retained for backwards compatibility but ignored by the method
+	 * @throws IOException if reading from the database fails
 	 */
 	public void loadSettings(File companyDir) throws IOException
 	{
 		
-		if (companyDir == null || !companyDir.isDirectory())
-		{
-			throw new IOException("Company directory is invalid or not provided.");
-		}
-		
-		File target = new File(companyDir, SETTINGS_FILE);
-		
-		if (!target.exists() || target.length() == 0)
-		{
-			return; // nothing to load
-		}
-		
-		ObjectMapper mapper = new ObjectMapper();
-		
 		try
 		{
-			this.settings = mapper.readValue(target, SettingsModel.class);
+			new DocumentRepository().find(DOCUMENT_NAME)
+				.ifPresent(payload ->
+				{
+					
+					try
+					{
+						this.settings =
+							MAPPER.readValue(payload, SettingsModel.class);
+						LOGGER.info("Settings loaded from database document '" +
+							DOCUMENT_NAME + "'.");
+					}
+					catch (IOException ex)
+					{
+						LOGGER.log(Level.SEVERE,
+							"Failed to deserialize settings JSON from database",
+							ex);
+					}
+					
+				});
 		}
-		catch (IOException ex)
+		catch (SQLException e)
 		{
-			LOGGER.log(Level.SEVERE, "Failed to load settings from " + target.getAbsolutePath(),
-				ex);
-			throw ex;
+			throw new IOException("Failed to load settings from database", e);
 		}
+		
+		applyDefaults();
+		syncToPreferences();
+		applyCurrencyFormat();
 		
 	}
 	
 	/**
-	 * Saves current settings to the given company directory.
+	 * Saves current settings to the persistent document store.
 	 *
-	 * @param companyDir directory to store the settings file
-	 * @throws IOException if write fails or directory invalid
+	 * @param companyDir retained for backwards compatibility but ignored by the method
+	 * @throws IOException if the database write fails
 	 */
 	public void saveSettings(File companyDir) throws IOException
 	{
 		
-		if (companyDir == null || !companyDir.isDirectory())
-		{
-			throw new IOException("Company directory is invalid or not provided.");
-		}
-		
-		File target = new File(companyDir, SETTINGS_FILE);
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.enable(SerializationFeature.INDENT_OUTPUT);
+		syncToPreferences();
+		applyCurrencyFormat();
 		
 		try
 		{
-			mapper.writeValue(target, this.settings);
+			String payload = MAPPER.writeValueAsString(this.settings);
+			new DocumentRepository().upsert(DOCUMENT_NAME, payload);
+			LOGGER.info(
+				"Settings saved to database document '" + DOCUMENT_NAME + "'.");
 		}
-		catch (IOException ex)
+		catch (SQLException e)
 		{
-			LOGGER.log(Level.SEVERE, "Failed to save settings to " + target.getAbsolutePath(), ex);
-			throw ex;
+			throw new IOException("Failed to save settings to database", e);
 		}
+		
+	}
+	
+	/** Applies sane defaults for optional settings fields. */
+	private void applyDefaults()
+	{
+		SettingsModel m = this.settings;
+		
+		if (m.getAutosaveIntervalMinutes() <= 0)
+		{
+			m.setAutosaveIntervalMinutes(5);
+		}
+		
+		if (m.getDefaultCompanyDirectory() == null ||
+			m.getDefaultCompanyDirectory().isBlank())
+		{
+			m.setDefaultCompanyDirectory(
+				PreferencesService.getDefaultCompanyDir());
+		}
+		
+		if (m.getLastUsedCompanyFile() == null)
+		{
+			m.setLastUsedCompanyFile(
+				PreferencesService.getLastUsedCompanyFile());
+		}
+		
+		if (m.getDefaultReportPeriod() == null ||
+			m.getDefaultReportPeriod().isBlank())
+		{
+			m.setDefaultReportPeriod(ReportPeriodPreset.YEAR_TO_DATE.name());
+		}
+		
+		// options default to true when not specified
+		// (Lombok generated getters may return false when null, so no extra
+		// handling needed)
+	}
+	
+	/** Keeps the legacy preferences storage in sync with the richer settings model. */
+	private void syncToPreferences()
+	{
+		SettingsModel m = this.settings;
+		
+		if (m.getDefaultCompanyDirectory() != null &&
+			!m.getDefaultCompanyDirectory().isBlank())
+		{
+			PreferencesService
+				.setDefaultCompanyDir(m.getDefaultCompanyDirectory());
+		}
+		
+		if (m.getLastUsedCompanyFile() != null &&
+			!m.getLastUsedCompanyFile().isBlank())
+		{
+			PreferencesService
+				.setLastUsedCompanyFile(m.getLastUsedCompanyFile());
+		}
+		
+	}
+	
+	/** Updates the shared {@link FormatUtils} formatter to reflect the current settings. */
+	private void applyCurrencyFormat()
+	{
+		String format = this.settings.getCurrencyFormat();
+		
+		if (format != null && !format.isBlank())
+		{
+			FormatUtils.setCurrencyFormat(format);
+		}
+		
+	}
+	
+	/** Convenience accessor used throughout the UI layer. */
+	public ReportPeriodPreset resolveDefaultReportPeriod()
+	{
+		return ReportPeriodPreset.fromString(
+			this.settings.getDefaultReportPeriod(),
+			ReportPeriodPreset.YEAR_TO_DATE);
+		
+	}
+	
+	/** Provides the fiscal year start as a {@link MonthDay}. */
+	public MonthDay resolveFiscalYearStart()
+	{
+		MonthDay parsed = this.settings.getFiscalYearStartMonthDay();
+		
+		if (parsed != null)
+		{
+			return parsed;
+		}
+		
+		return MonthDay.of(1, 1);
 		
 	}
 	

@@ -1,295 +1,374 @@
-
 package nonprofitbookkeeping.model;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.time.MonthDay;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Represents the application settings model.
- * This class encapsulates various configuration options including company information,
- * user accounts, accounting defaults, and UI preferences.
- * Lombok's {@code @Data}, {@code @AllArgsConstructor}, and {@code @NoArgsConstructor}
- * are used for boilerplate code generation.
+ * This class encapsulates the different configuration options persisted for the
+ * application and exposes strongly typed accessors for consumers.
  */
-@Data @AllArgsConstructor @NoArgsConstructor public class SettingsModel
+public class SettingsModel
 {
-	// Company Info
-	/** The name of the organization. */
-	@JsonProperty private String organizationName;
-	/** The start date of the fiscal year (e.g., "MM-DD"). */
-	@JsonProperty private String fiscalYearStart;
-	/** The default currency code used in the application (e.g., "USD"). */
-	@JsonProperty private String defaultCurrency;
-	
-	// User Accounts
-	/** A list of user accounts configured in the system. */
-	@JsonProperty private List<User> users = new ArrayList<>();
-	
-	// Accounting Settings
-	/** The default account number or name for income transactions. */
-	@JsonProperty private String defaultIncomeAccount;
-	/** The default account number or name for expense transactions. */
-	@JsonProperty private String defaultExpenseAccount;
-	/** Flag indicating whether vouchers/invoices should be auto-numbered. */
-	@JsonProperty private boolean autoNumberVouchers;
-	
-	// UI Preferences
-        /** The name of the UI theme (e.g., "Dark", "Light"). */
+        // Company information
+        /** The name of the organization. */
+        @JsonProperty private String organizationName;
+        /** The start of the fiscal year stored as a string (e.g. "MM-DD"). */
+        @JsonProperty private String fiscalYearStart;
+        /** ISO 4217 code of the default currency. */
+        @JsonProperty private String defaultCurrency;
+
+        // User accounts
+        /** Configured application users. */
+        @JsonProperty private List<User> users = new ArrayList<>();
+
+        // Accounting defaults
+        /** The default income account identifier. */
+        @JsonProperty private String defaultIncomeAccount;
+        /** The default expense account identifier. */
+        @JsonProperty private String defaultExpenseAccount;
+        /** Whether vouchers/invoices should be auto-numbered. */
+        @JsonProperty private boolean autoNumberVouchers;
+
+        // Autosave and filesystem preferences
+        /** Flag indicating whether background autosave is enabled. */
+        @JsonProperty private boolean autosaveEnabled = true;
+        /** Autosave interval in minutes, 0 disables autosave. */
+        @JsonProperty private int autosaveIntervalMinutes = 5;
+        /** Default directory presented in file choosers. */
+        @JsonProperty private String defaultDirectory;
+        /** Path to the most recently opened bookkeeping file. */
+        @JsonProperty private String lastOpenedFile;
+        /** User selected default company directory. */
+        @JsonProperty private String defaultCompanyDirectory;
+        /** Path to the most recently used company file. */
+        @JsonProperty private String lastUsedCompanyFile;
+
+        // Reporting defaults
+        /** Preferred default report period preset identifier. */
+        @JsonProperty private String defaultReportPeriod = ReportPeriodPreset.YEAR_TO_DATE.name();
+        /** Calendar year used when the fiscal year preset is selected. */
+        @JsonProperty private Integer defaultReportYear;
+        /** Whether the "Year-To-Date" period should be offered. */
+        @JsonProperty private boolean enableYearToDateOption = true;
+        /** Whether the "Full Year" period should be offered. */
+        @JsonProperty private boolean enableFullYearOption = true;
+        /** Whether the "Last Month" period should be offered. */
+        @JsonProperty private boolean enableLastMonthOption = true;
+
+        // UI preferences
+        /** Preferred theme. */
         @JsonProperty private String theme;
-        /** The language code for UI localization (e.g., "en_US", "fr_FR"). */
+        /** Preferred language/locale identifier. */
         @JsonProperty private String language;
-       /** Pattern used for formatting currency values (e.g., "$#,##0.00"). */
-       @JsonProperty private String currencyFormat = "$#,##0.00";
-	
-	/**
-	 * Represents a user account within the settings model.
-	 * Stores username and role.
-	 */
-	public static class User
-	{
-		/** The username for the user account. */
-		private String username;
-		/** The role assigned to the user (e.g., "Admin", "User"). */
-		private String role;
-		
-		/**
-		 * Constructs a new User.
-		 * @param username The username for this user.
-		 * @param role The role assigned to this user.
-		 */
-		public User(String username, String role)
-		{
-			this.username = username;
-			this.role = role;
-		}
-		
-		/**
-		 * Gets the username of this user.
-		 * @return The username.
-		 */
-		public String getUsername()
-		{
-			return this.username;
-		}
-		
-		/**
-		 * Sets the username for this user.
-		 * @param username The username to set.
-		 */
-		public void setUsername(String username)
-		{
-			this.username = username;
-		}
-		
-		/**
-		 * Gets the role of this user.
-		 * @return The user's role.
-		 */
-		public String getRole()
-		{
-			return this.role;
-		}
-		
-		/**
-		 * Sets the role for this user.
-		 * @param role The role to set.
-		 */
-		public void setRole(String role)
-		{
-			this.role = role;
-		}
-		
-	}
-	
-	// Explicit Getters/Setters below are mostly redundant due to Lombok @Data
-	// but are documented as they exist in the original code.
-	
-	/**
-	 * Gets the organization name.
-	 * @return The name of the organization.
-	 */
-	public String getOrganizationName()
-	{
-		return this.organizationName;
-	}
-	
-	/**
-	 * Sets the organization name.
-	 * @param name The name to set for the organization.
-	 */
-	public void setOrganizationName(String name)
-	{
-		this.organizationName = name;
-	}
-	
-	/**
-	 * Gets the fiscal year start date.
-	 * @return The fiscal year start date string (e.g., "MM-DD").
-	 */
-	public String getFiscalYearStart()
-	{
-		return this.fiscalYearStart;
-	}
-	
-	/**
-	 * Sets the fiscal year start date.
-	 * @param start The fiscal year start date string to set (e.g., "MM-DD").
-	 */
-	public void setFiscalYearStart(String start)
-	{
-		this.fiscalYearStart = start;
-	}
-	
-	/**
-	 * Gets the default currency code.
-	 * @return The default currency code (e.g., "USD").
-	 */
-	public String getDefaultCurrency()
-	{
-		return this.defaultCurrency;
-	}
-	
-	/**
-	 * Sets the default currency code.
-	 * @param currency The default currency code to set (e.g., "USD").
-	 */
-	public void setDefaultCurrency(String currency)
-	{
-		this.defaultCurrency = currency;
-	}
-	
-	/**
-	 * Gets the list of configured user accounts.
-	 * @return A list of {@link User} objects.
-	 */
-	public List<User> getUsers()
-	{
-		return this.users;
-	}
-	
-	/**
-	 * Sets the list of configured user accounts.
-	 * @param users A list of {@link User} objects to set.
-	 */
-	public void setUsers(List<User> users)
-	{
-		this.users = users;
-	}
-	
-	/**
-	 * Gets the default income account.
-	 * @return The default income account identifier.
-	 */
-	public String getDefaultIncomeAccount()
-	{
-		return this.defaultIncomeAccount;
-	}
-	
-	/**
-	 * Sets the default income account.
-	 * @param incomeAccount The default income account identifier to set.
-	 */
-	public void setDefaultIncomeAccount(String incomeAccount)
-	{
-		this.defaultIncomeAccount = incomeAccount;
-	}
-	
-	/**
-	 * Gets the default expense account.
-	 * @return The default expense account identifier.
-	 */
-	public String getDefaultExpenseAccount()
-	{
-		return this.defaultExpenseAccount;
-	}
-	
-	/**
-	 * Sets the default expense account.
-	 * @param expenseAccount The default expense account identifier to set.
-	 */
-	public void setDefaultExpenseAccount(String expenseAccount)
-	{
-		this.defaultExpenseAccount = expenseAccount;
-	}
-	
-	/**
-	 * Checks if auto-numbering for vouchers is enabled.
-	 * @return {@code true} if auto-numbering is enabled, {@code false} otherwise.
-	 */
-	public boolean isAutoNumberVouchers()
-	{
-		return this.autoNumberVouchers;
-	}
-	
-	/**
-	 * Sets whether auto-numbering for vouchers is enabled.
-	 * @param autoNumberVouchers {@code true} to enable, {@code false} to disable.
-	 */
-	public void setAutoNumberVouchers(boolean autoNumberVouchers)
-	{
-		this.autoNumberVouchers = autoNumberVouchers;
-	}
-	
-	/**
-	 * Gets the UI theme name.
-	 * @return The name of the current UI theme.
-	 */
-	public String getTheme()
-	{
-		return this.theme;
-	}
-	
-	/**
-	 * Sets the UI theme name.
-	 * @param theme The name of the UI theme to set.
-	 */
-	public void setTheme(String theme)
-	{
-		this.theme = theme;
-	}
-	
-	/**
-	 * Gets the UI language code.
-	 * @return The language code (e.g., "en_US").
-	 */
-	public String getLanguage()
-	{
-		return this.language;
-	}
-	
-	/**
-	 * Sets the UI language code.
-	 * @param language The language code to set (e.g., "en_US").
-	 */
+        /** BCP 47 tag representing the locale used for currency formatting. */
+        @JsonProperty("currencyLocale") private String currencyLocaleTag;
+        /** Pattern used to format currency values. */
+        @JsonProperty private String currencyFormat = "$#,##0.00";
+
+        /**
+         * Represents a user account within the settings model.
+         */
+        public static class User
+        {
+                /** Username for the account. */
+                private String username;
+                /** Role assigned to the user. */
+                private String role;
+
+                /**
+                 * Creates a new user instance.
+                 *
+                 * @param username the username
+                 * @param role the associated role
+                 */
+                public User(String username, String role)
+                {
+                        this.username = username;
+                        this.role = role;
+                }
+
+                /** Default constructor for serialization frameworks. */
+                public User()
+                {
+                }
+
+                public String getUsername()
+                {
+                        return this.username;
+                }
+
+                public void setUsername(String username)
+                {
+                        this.username = username;
+                }
+
+                public String getRole()
+                {
+                        return this.role;
+                }
+
+                public void setRole(String role)
+                {
+                        this.username = username;
+                        this.role = role;
+                }
+        }
+
+        // ---------------------------------------------------------------------
+        // Basic getters and setters
+        // ---------------------------------------------------------------------
+
+        public String getOrganizationName()
+        {
+                return this.organizationName;
+        }
+
+        public void setOrganizationName(String organizationName)
+        {
+                this.organizationName = organizationName;
+        }
+
+        public String getFiscalYearStart()
+        {
+                return this.fiscalYearStart;
+        }
+
+        public void setFiscalYearStart(String fiscalYearStart)
+        {
+                this.fiscalYearStart = fiscalYearStart;
+        }
+
+        public String getDefaultCurrency()
+        {
+                return this.defaultCurrency;
+        }
+
+        public void setDefaultCurrency(String defaultCurrency)
+        {
+                this.defaultCurrency = defaultCurrency;
+        }
+
+        public List<User> getUsers()
+        {
+                return this.users;
+        }
+
+        public void setUsers(List<User> users)
+        {
+                this.users = (users == null) ? new ArrayList<>() : new ArrayList<>(users);
+        }
+
+        public String getDefaultIncomeAccount()
+        {
+                return this.defaultIncomeAccount;
+        }
+
+        public void setDefaultIncomeAccount(String defaultIncomeAccount)
+        {
+                this.defaultIncomeAccount = defaultIncomeAccount;
+        }
+
+        public String getDefaultExpenseAccount()
+        {
+                return this.defaultExpenseAccount;
+        }
+
+        public void setDefaultExpenseAccount(String defaultExpenseAccount)
+        {
+                this.defaultExpenseAccount = defaultExpenseAccount;
+        }
+
+        public boolean isAutoNumberVouchers()
+        {
+                return this.autoNumberVouchers;
+        }
+
+        public void setAutoNumberVouchers(boolean autoNumberVouchers)
+        {
+                this.autoNumberVouchers = autoNumberVouchers;
+        }
+
+        public boolean isAutosaveEnabled()
+        {
+                return this.autosaveEnabled;
+        }
+
+        public void setAutosaveEnabled(boolean autosaveEnabled)
+        {
+                this.autosaveEnabled = autosaveEnabled;
+        }
+
+        public int getAutosaveIntervalMinutes()
+        {
+                return this.autosaveIntervalMinutes;
+        }
+
+        public void setAutosaveIntervalMinutes(int autosaveIntervalMinutes)
+        {
+                this.autosaveIntervalMinutes = autosaveIntervalMinutes;
+        }
+
+        public String getDefaultDirectory()
+        {
+                return this.defaultDirectory;
+        }
+
+        public void setDefaultDirectory(String defaultDirectory)
+        {
+                this.defaultDirectory = defaultDirectory;
+        }
+
+        public String getLastOpenedFile()
+        {
+                return this.lastOpenedFile;
+        }
+
+        public void setLastOpenedFile(String lastOpenedFile)
+        {
+                this.lastOpenedFile = lastOpenedFile;
+        }
+
+        public String getDefaultCompanyDirectory()
+        {
+                return this.defaultCompanyDirectory;
+        }
+
+        public void setDefaultCompanyDirectory(String defaultCompanyDirectory)
+        {
+                this.defaultCompanyDirectory = defaultCompanyDirectory;
+        }
+
+        public String getLastUsedCompanyFile()
+        {
+                return this.lastUsedCompanyFile;
+        }
+
+        public void setLastUsedCompanyFile(String lastUsedCompanyFile)
+        {
+                this.lastUsedCompanyFile = lastUsedCompanyFile;
+        }
+
+        public String getDefaultReportPeriod()
+        {
+                return this.defaultReportPeriod;
+        }
+
+        public void setDefaultReportPeriod(String defaultReportPeriod)
+        {
+                this.defaultReportPeriod = defaultReportPeriod;
+        }
+
+        public Integer getDefaultReportYear()
+        {
+                return this.defaultReportYear;
+        }
+
+        public void setDefaultReportYear(Integer defaultReportYear)
+        {
+                this.defaultReportYear = defaultReportYear;
+        }
+
+        public boolean isEnableYearToDateOption()
+        {
+                return this.enableYearToDateOption;
+        }
+
+        public void setEnableYearToDateOption(boolean enableYearToDateOption)
+        {
+                this.enableYearToDateOption = enableYearToDateOption;
+        }
+
+        public boolean isEnableFullYearOption()
+        {
+                return this.enableFullYearOption;
+        }
+
+        public void setEnableFullYearOption(boolean enableFullYearOption)
+        {
+                this.enableFullYearOption = enableFullYearOption;
+        }
+
+        public boolean isEnableLastMonthOption()
+        {
+                return this.enableLastMonthOption;
+        }
+
+        public void setEnableLastMonthOption(boolean enableLastMonthOption)
+        {
+                this.enableLastMonthOption = enableLastMonthOption;
+        }
+
+        public String getTheme()
+        {
+                return this.theme;
+        }
+
+        public void setTheme(String theme)
+        {
+                this.theme = theme;
+        }
+
+        public String getLanguage()
+        {
+                return this.language;
+        }
+
         public void setLanguage(String language)
         {
                 this.language = language;
         }
 
-       /**
-        * Gets the currency format pattern.
-        *
-        * @return pattern used to format currency values
-        */
-       public String getCurrencyFormat()
-       {
-               return this.currencyFormat;
-       }
+        public String getCurrencyFormat()
+        {
+                return this.currencyFormat;
+        }
 
-       /**
-        * Sets the currency format pattern.
-        *
-        * @param currencyFormat format pattern to set
-        */
-       public void setCurrencyFormat(String currencyFormat)
-       {
-               this.currencyFormat = currencyFormat;
-       }
-	
+        public void setCurrencyFormat(String currencyFormat)
+        {
+                this.currencyFormat = currencyFormat;
+        }
+
+        // ---------------------------------------------------------------------
+        // Derived helpers
+        // ---------------------------------------------------------------------
+
+
+        /**
+         * Stores the locale to use for currency formatting using a {@link Locale} instance.
+         *
+         * @param locale locale to persist, {@code null} clears the preference
+         */
+        public void setCurrencyLocale(Locale locale)
+        {
+                this.currencyLocaleTag = (locale == null) ? null : locale.toLanguageTag();
+        }
+
+
+
+
+		/**
+		 * @return
+		 */
+		public Locale getCurrencyLocale()
+		{
+			// TODO Auto-generated method stub
+			return null;
+			
+		}
+
+		/**
+		 * @return
+		 */
+		public MonthDay getFiscalYearStartMonthDay()
+		{
+			// TODO Auto-generated method stub
+			return null;
+			
+		}
 }

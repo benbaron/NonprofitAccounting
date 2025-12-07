@@ -1,0 +1,206 @@
+
+package nonprofitbookkeeping.persistence;
+
+import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.model.AccountSide;
+import nonprofitbookkeeping.model.AccountingEntry;
+import nonprofitbookkeeping.model.AccountingTransaction;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+
+public class JournalRepository {
+
+    public void upsertTransaction(AccountingTransaction txn) throws SQLException {
+        try (Connection c = Database.get().getConnection()) {
+            c.setAutoCommit(false);
+            writeTransaction(c, txn);
+            c.commit();
+        }
+    }
+
+    public void replaceAll(List<AccountingTransaction> transactions) throws SQLException {
+        try (Connection c = Database.get().getConnection()) {
+            boolean originalAutoCommit = c.getAutoCommit();
+            c.setAutoCommit(false);
+
+            try {
+                replaceAll(c, transactions);
+                c.commit();
+            } catch (SQLException ex) {
+                try {
+                    c.rollback();
+                } catch (SQLException rollbackEx) {
+                    ex.addSuppressed(rollbackEx);
+                }
+                throw ex;
+            } finally {
+                c.setAutoCommit(originalAutoCommit);
+            }
+        }
+    }
+
+    void replaceAll(Connection c, List<AccountingTransaction> transactions) throws SQLException {
+        if (c == null) {
+            throw new IllegalArgumentException("connection required");
+        }
+
+        try (Statement st = c.createStatement()) {
+            st.executeUpdate("DELETE FROM transaction_info");
+            st.executeUpdate("DELETE FROM journal_entry");
+            st.executeUpdate("DELETE FROM journal_transaction");
+        }
+
+        if (transactions != null) {
+            for (AccountingTransaction txn : transactions) {
+                if (txn == null) {
+                    continue;
+                }
+                writeTransaction(c, txn);
+            }
+        }
+    }
+
+    public List<AccountingTransaction> listTransactions() throws SQLException {
+        Map<Integer, AccountingTransaction> byId = new LinkedHashMap<>();
+        List<AccountingTransaction> transactions = new ArrayList<>();
+
+        try (Connection c = Database.get().getConnection();
+                PreparedStatement ps = c.prepareStatement("""
+                        SELECT id, booking_ts, date_text, memo, to_from, check_number,
+                               clear_bank, budget_tracking, associated_fund_name
+                        FROM journal_transaction
+                        ORDER BY id
+                    """);
+                ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                AccountingTransaction txn = new AccountingTransaction();
+                txn.setId(rs.getInt("id"));
+                txn.setBookingDateTimestamp(rs.getLong("booking_ts"));
+                txn.setDate(rs.getString("date_text"));
+                txn.setMemo(rs.getString("memo"));
+                txn.setToFrom(rs.getString("to_from"));
+                txn.setCheckNumber(rs.getString("check_number"));
+                txn.setClearBank(rs.getString("clear_bank"));
+                txn.setBudgetTracking(rs.getString("budget_tracking"));
+                txn.setAssociatedFundName(rs.getString("associated_fund_name"));
+                txn.setEntries(new LinkedHashSet<>());
+                txn.setInfo(new LinkedHashMap<>());
+                transactions.add(txn);
+                byId.put(txn.getId(), txn);
+            }
+        }
+
+        if (!byId.isEmpty()) {
+            try (Connection c = Database.get().getConnection();
+                    PreparedStatement ps = c.prepareStatement("""
+                            SELECT txn_id, amount, account_number, account_side, account_name, fund_number, id
+                            FROM journal_entry
+                            ORDER BY id
+                        """);
+                    ResultSet rs = ps.executeQuery()) {
+
+                while (rs.next()) {
+                    AccountingTransaction txn = byId.get(rs.getInt("txn_id"));
+                    if (txn == null) {
+                        continue;
+                    }
+
+                    String sideText = rs.getString("account_side");
+                    AccountSide side = sideText == null ? AccountSide.UNKNOWN : AccountSide.fromString(sideText);
+                    AccountingEntry entry = new AccountingEntry(rs.getBigDecimal("amount"),
+                            rs.getString("account_number"),
+                            side,
+                            rs.getString("account_name"));
+                    entry.setFundNumber(rs.getString("fund_number"));
+                    txn.addEntry(entry);
+                }
+            }
+
+            try (Connection c = Database.get().getConnection();
+                    PreparedStatement ps = c.prepareStatement("""
+                            SELECT txn_id, k, v FROM transaction_info ORDER BY txn_id, k
+                        """);
+                    ResultSet rs = ps.executeQuery()) {
+
+                while (rs.next()) {
+                    AccountingTransaction txn = byId.get(rs.getInt("txn_id"));
+                    if (txn == null) {
+                        continue;
+                    }
+                    txn.getInfo().put(rs.getString("k"), rs.getString("v"));
+                }
+            }
+        }
+
+        return transactions;
+    }
+
+    private void writeTransaction(Connection c, AccountingTransaction txn) throws SQLException {
+        String upsertTxn = """
+            MERGE INTO journal_transaction(id, booking_ts, date_text, memo, to_from, check_number,
+                                           clear_bank, budget_tracking, associated_fund_name)
+            KEY(id)
+            VALUES(?,?,?,?,?,?,?,?,?)
+        """;
+
+        try (PreparedStatement ps = c.prepareStatement(upsertTxn)) {
+            int i=0;
+            ps.setInt(++i, txn.getId());
+            ps.setLong(++i, txn.getBookingDateTimestamp());
+            ps.setString(++i, txn.getDate());
+            ps.setString(++i, txn.getMemo());
+            ps.setString(++i, txn.getToFrom());
+            ps.setString(++i, txn.getCheckNumber());
+            ps.setString(++i, txn.getClearBank());
+            ps.setString(++i, txn.getBudgetTracking());
+            ps.setString(++i, txn.getAssociatedFundName());
+            ps.executeUpdate();
+        }
+
+        try (PreparedStatement del = c.prepareStatement("DELETE FROM journal_entry WHERE txn_id=?")) {
+            del.setInt(1, txn.getId());
+            del.executeUpdate();
+        }
+
+        try (PreparedStatement ins = c.prepareStatement("""
+                INSERT INTO journal_entry(txn_id, amount, account_number, account_side, account_name, fund_number)
+                VALUES (?,?,?,?,?,?)
+            """)) {
+            for (AccountingEntry e : txn.getEntries()) {
+                int j=0;
+                ins.setInt(++j, txn.getId());
+                ins.setBigDecimal(++j, e.getAmount());
+                ins.setString(++j, e.getAccountNumber());
+                ins.setString(++j, e.getAccountSide()==null? null : e.getAccountSide().name());
+                ins.setString(++j, e.getAccountName());
+                ins.setString(++j, e.getFundNumber());
+                ins.addBatch();
+            }
+            ins.executeBatch();
+        }
+
+        try (PreparedStatement del = c.prepareStatement("DELETE FROM transaction_info WHERE txn_id=?")) {
+            del.setInt(1, txn.getId());
+            del.executeUpdate();
+        }
+        Map<String,String> info = txn.getInfo();
+        if (info!=null && !info.isEmpty()) {
+            try (PreparedStatement ins = c.prepareStatement(
+                    "INSERT INTO transaction_info(txn_id, k, v) VALUES (?,?,?)")) {
+                for (Map.Entry<String,String> en : info.entrySet()) {
+                    ins.setInt(1, txn.getId());
+                    ins.setString(2, en.getKey());
+                    ins.setString(3, en.getValue());
+                    ins.addBatch();
+                }
+                ins.executeBatch();
+            }
+        }
+    }
+}

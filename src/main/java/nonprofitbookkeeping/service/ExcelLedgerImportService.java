@@ -4,6 +4,9 @@ package nonprofitbookkeeping.service;
 import nonprofitbookkeeping.model.impex.ExcelLedgerRow;
 import org.apache.poi.ss.usermodel.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -19,6 +22,7 @@ import java.util.*;
  */
 public class ExcelLedgerImportService
 {
+        private static final Logger LOGGER = LoggerFactory.getLogger(ExcelLedgerImportService.class);
 	
 	/**
 	 * Reads the first worksheet of the given Excel file and converts the rows
@@ -55,10 +59,10 @@ public class ExcelLedgerImportService
 			FormulaEvaluator evaluator = workbook.getCreationHelper()
 					.createFormulaEvaluator();
 			
-			for (int r = firstRow; r <= lastRow; r++)
-			{
-				System.out.println("\n\n---------------- Row number " + r + " ------------ ");
-				Row row = sheet.getRow(r);
+                        for (int r = firstRow; r <= lastRow; r++)
+                        {
+                                LOGGER.debug("Row number {}", r);
+                                Row row = sheet.getRow(r);
 				
 				if (row == null)
 				{
@@ -70,9 +74,9 @@ public class ExcelLedgerImportService
 				results.add(excelLedgerRow);
 				
 				// debug
-				java.io.StringWriter sw = new java.io.StringWriter();
-				printRow(row, formatter, evaluator, sw);
-				System.out.println(sw.toString());
+                                java.io.StringWriter sw = new java.io.StringWriter();
+                                printRow(row, formatter, evaluator, sw);
+                                LOGGER.trace(sw.toString());
 				
 			}
 			
@@ -230,7 +234,7 @@ public class ExcelLedgerImportService
 				c++; // skip the number column
 			}
 			
-			System.out.println("\nBean:" + bean +"\n");
+                        LOGGER.trace("Bean: {}", bean);
 			return bean;
 			
 		}

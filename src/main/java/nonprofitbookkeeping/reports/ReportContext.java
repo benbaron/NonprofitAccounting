@@ -25,7 +25,15 @@ public class ReportContext
 	/** A list of fund IDs (typically fund names) to filter the report data. Can be null or empty. */
 	private List<String> fundIds;
 	/** A list of account IDs used for generating detail-specific sections or filtering in some reports. Can be null or empty. */
-	private List<String> accountIdsForDetailReport; // Added new field
+    private List<String> accountIdsForDetailReport; // Added new field
+    /** Optional transaction type filter (e.g., DEBIT or CREDIT). */
+    private String transactionType;
+    /** Optional substring filter for transaction memos. */
+    private String memoFilter;
+    /** If true, all supplied accounts must be present on a transaction. */
+    private boolean requireAllAccounts;
+	/** Optional pre-built beans to drive Jasper reports that expect their data to be provided externally. */
+	private List<?> beans;
 	
 	/**
 	 * Default constructor for ReportContext.
@@ -33,6 +41,7 @@ public class ReportContext
 	 */
 	public ReportContext()
 	{
+	
 	}
 	
 	/**
@@ -42,6 +51,7 @@ public class ReportContext
 	public String getReportType()
 	{
 		return this.reportType;
+		
 	}
 	
 	/**
@@ -51,6 +61,7 @@ public class ReportContext
 	public void setReportType(String reportType)
 	{
 		this.reportType = reportType;
+		
 	}
 	
 	/**
@@ -60,6 +71,7 @@ public class ReportContext
 	public LocalDate getStartDate()
 	{
 		return this.startDate;
+		
 	}
 	
 	/**
@@ -69,6 +81,7 @@ public class ReportContext
 	public void setStartDate(LocalDate startDate)
 	{
 		this.startDate = startDate;
+		
 	}
 	
 	/**
@@ -78,6 +91,7 @@ public class ReportContext
 	public LocalDate getEndDate()
 	{
 		return this.endDate;
+		
 	}
 	
 	/**
@@ -87,6 +101,7 @@ public class ReportContext
 	public void setEndDate(LocalDate endDate)
 	{
 		this.endDate = endDate;
+		
 	}
 	
 	/**
@@ -96,6 +111,7 @@ public class ReportContext
 	public String getOutputFormat()
 	{
 		return this.outputFormat;
+		
 	}
 	
 	/**
@@ -105,6 +121,7 @@ public class ReportContext
 	public void setOutputFormat(String outputFormat)
 	{
 		this.outputFormat = outputFormat;
+		
 	}
 	
 	/**
@@ -115,6 +132,7 @@ public class ReportContext
 	public Budget getSelectedBudget()
 	{
 		return this.selectedBudget;
+		
 	}
 	
 	/**
@@ -124,6 +142,7 @@ public class ReportContext
 	public void setSelectedBudget(Budget selectedBudget)
 	{
 		this.selectedBudget = selectedBudget;
+		
 	}
 	
 	/**
@@ -133,6 +152,7 @@ public class ReportContext
 	public List<String> getFundIds()
 	{
 		return this.fundIds;
+		
 	}
 	
 	/**
@@ -142,6 +162,7 @@ public class ReportContext
 	public void setFundIds(List<String> fundIds)
 	{
 		this.fundIds = fundIds;
+		
 	}
 	
 	/**
@@ -151,15 +172,100 @@ public class ReportContext
 	public List<String> getAccountIdsForDetailReport()
 	{
 		return this.accountIdsForDetailReport;
+		
 	}
 	
 	/**
 	 * Sets the list of account IDs to be used for detail sections or filtering in some reports.
 	 * @param accountIdsForDetailReport A list of account ID strings to set.
 	 */
-	public void setAccountIdsForDetailReport(List<String> accountIdsForDetailReport)
+	public void setAccountIdsForDetailReport(
+		List<String> accountIdsForDetailReport)
 	{
 		this.accountIdsForDetailReport = accountIdsForDetailReport;
+		
 	}
+	
+	/**
+	 * Gets the list of beans prepared for Jasper report generation.
+	 *
+	 * @return List of beans or {@code null} if none were supplied.
+	 */
+    public List<?> getBeans()
+    {
+            return this.beans;
+
+    }
+	
+	/**
+	 * Sets the list of beans to be used directly by a {@link nonprofitbookkeeping.reports.jasper.AbstractReportGenerator}.
+	 *
+	 * @param beans data beans for the report
+	 */
+    public void setBeans(List<?> beans)
+    {
+            this.beans = beans;
+
+    }
+
+    /**
+     * Gets the transaction type filter text (e.g., "DEBIT", "CREDIT").
+     * @return transaction type filter or {@code null} if not set
+     */
+    public String getTransactionType()
+    {
+            return this.transactionType;
+
+    }
+
+    /**
+     * Sets the transaction type filter text.
+     * @param transactionType type text to match against {@link nonprofitbookkeeping.model.AccountSide}
+     */
+    public void setTransactionType(String transactionType)
+    {
+            this.transactionType = transactionType;
+
+    }
+
+    /**
+     * Gets the memo substring filter for transaction lookups.
+     * @return memo substring or {@code null}
+     */
+    public String getMemoFilter()
+    {
+            return this.memoFilter;
+
+    }
+
+    /**
+     * Sets the memo substring filter for transaction lookups.
+     * @param memoFilter substring to search for (case-insensitive)
+     */
+    public void setMemoFilter(String memoFilter)
+    {
+            this.memoFilter = memoFilter;
+
+    }
+
+    /**
+     * Indicates whether all provided accounts must be present on a transaction.
+     * @return true if all accounts are required; false to match any
+     */
+    public boolean isRequireAllAccounts()
+    {
+            return this.requireAllAccounts;
+
+    }
+
+    /**
+     * Sets whether a transaction must include all provided accounts.
+     * @param requireAllAccounts true to require all accounts, false to match any
+     */
+    public void setRequireAllAccounts(boolean requireAllAccounts)
+    {
+            this.requireAllAccounts = requireAllAccounts;
+
+    }
 	
 }

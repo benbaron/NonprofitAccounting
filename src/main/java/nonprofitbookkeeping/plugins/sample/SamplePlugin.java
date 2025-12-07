@@ -7,7 +7,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A sample plugin implementation to demonstrate and test the plugin framework.
@@ -17,7 +19,7 @@ import java.util.logging.Logger;
  */
 public class SamplePlugin implements Plugin {
 
-    private static final Logger LOGGER = Logger.getLogger(SamplePlugin.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(SamplePlugin.class);
     private ApplicationContext applicationContext;
 
     /**
@@ -105,9 +107,9 @@ public class SamplePlugin implements Plugin {
                 alert.setContentText(getDescription() + "\nApplicationContext is available.");
                 alert.showAndWait();
             } else {
-                LOGGER.warning("ApplicationContext or PrimaryStage not available for SamplePlugin action.");
-                 // Fallback if context/stage is null (e.g. show simple system out)
-                System.out.println(getName() + ": Action executed, but UI context was not available for Alert.");
+                LOGGER.warn("ApplicationContext or PrimaryStage not available for SamplePlugin action.");
+                // Fallback log when context/stage is null
+                LOGGER.info("{}: Action executed, but UI context was not available for Alert.", getName());
             }
         });
         toolsMenu.getItems().add(sampleActionItem);

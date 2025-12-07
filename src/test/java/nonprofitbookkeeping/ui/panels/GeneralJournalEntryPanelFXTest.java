@@ -1,7 +1,6 @@
 package nonprofitbookkeeping.ui.panels;
 
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.model.*;
@@ -12,8 +11,6 @@ import org.mockito.MockedStatic;
 import org.testfx.framework.junit5.Start;
 import org.testfx.util.WaitForAsyncUtils;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -21,7 +18,8 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.contains;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.times;
 
 public class GeneralJournalEntryPanelFXTest extends JavaFXTestBase {
 
@@ -54,12 +52,8 @@ public class GeneralJournalEntryPanelFXTest extends JavaFXTestBase {
     }
 
     @Test
-    public void testPersistKeepsIdAndTimestamp() throws Exception {
-        Method persist = GeneralJournalEntryPanelFX.class.getDeclaredMethod("persist");
-        persist.setAccessible(true);
-        Platform.runLater(() -> {
-            try { persist.invoke(this.panel); } catch (Exception e) { throw new RuntimeException(e); }
-        });
+    public void testPersistKeepsIdAndTimestamp() {
+        Platform.runLater(() -> this.panel.getSaveButton().fire());
         WaitForAsyncUtils.waitForFxEvents();
         assertNotNull(this.saved);
         assertEquals(1, this.saved.getId());
@@ -67,25 +61,19 @@ public class GeneralJournalEntryPanelFXTest extends JavaFXTestBase {
     }
 
     @Test
-    public void testMissingAccountShowsError() throws Exception {
-        Field linesField = GeneralJournalEntryPanelFX.class.getDeclaredField("lines");
-        linesField.setAccessible(true);
-        @SuppressWarnings("unchecked") ObservableList<GeneralJournalEntryPanelFX.Line> lines =
-                (ObservableList<GeneralJournalEntryPanelFX.Line>) linesField.get(this.panel);
+    public void testMissingAccountShowsError() {
         Platform.runLater(() -> {
-            lines.clear();
-            GeneralJournalEntryPanelFX.Line bad = new GeneralJournalEntryPanelFX.Line();
+            this.panel.getLines().clear();
+            JournalEntryWorkspaceFX.Line bad = new JournalEntryWorkspaceFX.Line();
             bad.account.set("Bad");
             bad.debit.set(BigDecimal.TEN);
-            lines.add(bad);
+            this.panel.getLines().add(bad);
         });
         WaitForAsyncUtils.waitForFxEvents();
 
-        Method persist = GeneralJournalEntryPanelFX.class.getDeclaredMethod("persist");
-        persist.setAccessible(true);
         try (MockedStatic<AlertBox> mocked = mockStatic(AlertBox.class)) {
             Platform.runLater(() -> {
-                try { persist.invoke(this.panel); } catch (Exception e) { throw new RuntimeException(e); }
+                this.panel.getSaveButton().fire();
             });
             WaitForAsyncUtils.waitForFxEvents();
             mocked.verify(() -> AlertBox.showError(any(), contains("Account not found")), times(1));

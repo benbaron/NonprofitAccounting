@@ -22,7 +22,7 @@ def find_bean_and_jrxml(generator_path):
     return bean, jrxml
 
 errors = []
-for gen in ROOT.glob('src/main/java/nonprofitbookkeeping/reports/generator/*JasperGenerator.java'):
+for gen in ROOT.glob('src/main/java/nonprofitbookkeeping/reports/jasper/*JasperGenerator.java'):
     bean, jrxml = find_bean_and_jrxml(gen)
     if not bean or not jrxml:
         continue

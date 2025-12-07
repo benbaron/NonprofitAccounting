@@ -30,7 +30,7 @@ import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 public class DashboardPanelFX extends BorderPane
 {
 	
-	/* ── “company loaded” banner ─────────────────────────────── */
+	/* ── "company loaded" banner ─────────────────────────────── */
 	/** Label to display the name of the currently loaded company. Defaults to "No company loaded". */
 	private final Label companyLbl = new Label("No company loaded");
 	/** Button to manually trigger a reload of the current company's data. */

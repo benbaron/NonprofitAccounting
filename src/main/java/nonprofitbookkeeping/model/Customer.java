@@ -36,10 +36,11 @@ public class Customer
 	 * @param object
 	 * @param string
 	 */
-	public Customer(Object object, String string)
-	{
-		// TODO Auto-generated constructor stub
-	}
+        public Customer(Object object, String string)
+        {
+                this.id = (object == null) ? null : object.toString();
+                this.name = string;
+        }
 
 	/**
 	 * @return the id

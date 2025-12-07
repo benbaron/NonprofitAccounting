@@ -12,7 +12,9 @@ import javafx.stage.Stage; // For action constructors
 import nonprofitbookkeeping.plugins.scaledger.ui.PageViewerPanel; // Added
 import nonprofitbookkeeping.ui.actions.InputFileActionFX; 
 import nonprofitbookkeeping.ui.actions.OutputFileActionFX; 
+import nonprofitbookkeeping.ui.actions.scaledger.ImportFromExcelActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.ImportFromJsonActionFX;
+import nonprofitbookkeeping.ui.actions.scaledger.ImportLedgerToJournalActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.LoadXlsmTableActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.SaveModifiedCopyActionFX;
 
@@ -57,7 +59,7 @@ public class SCALedgerPlugin implements Plugin {
      */
     @Override
     public String getDescription() {
-        return "Provides tools for loading, viewing, and processing specialized SCA (Standard Chart of Accounts) formatted ledgers from XLSM and JSON files.";
+        return "Provides tools for loading, viewing, and processing specialized SCA (Standard Chart of Accounts) formatted ledgers from XLSM, XLSX, and JSON files.";
     }
 
     /**
@@ -106,10 +108,18 @@ public class SCALedgerPlugin implements Plugin {
         loadXlsmItem.setOnAction(e -> new LoadXlsmTableActionFX(primaryStage, this).handle(e)); // Pass plugin instance
         scaMenu.getItems().add(loadXlsmItem);
 
+        MenuItem importExcelItem = new MenuItem("Import from Excel (SCA)");
+        importExcelItem.setOnAction(e -> new ImportFromExcelActionFX(primaryStage, this).handle(e));
+        scaMenu.getItems().add(importExcelItem);
+
+        MenuItem persistLedgerItem = new MenuItem("Persist Ledger to Journal (SCA)");
+        persistLedgerItem.setOnAction(e -> new ImportLedgerToJournalActionFX(primaryStage).handle(e));
+        scaMenu.getItems().add(persistLedgerItem);
+
         MenuItem importJsonItem = new MenuItem("Import from JSON (SCA)");
         // ImportFromJsonActionFX does not use BeanShell/NonCompanyFile directly based on previous investigation.
         // If it needs plugin context for other reasons later (e.g. PageViewer), its constructor would change.
-        importJsonItem.setOnAction(e -> new ImportFromJsonActionFX(primaryStage, null).handle(e)); 
+        importJsonItem.setOnAction(e -> new ImportFromJsonActionFX(primaryStage, this).handle(e));
         scaMenu.getItems().add(importJsonItem);
         
         MenuItem saveModifiedItem = new MenuItem("Save Modified Copy (SCA)");

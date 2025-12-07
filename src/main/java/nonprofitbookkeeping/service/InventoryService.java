@@ -5,14 +5,18 @@ import nonprofitbookkeeping.model.InventoryItem; // Correct import
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
+import nonprofitbookkeeping.persistence.DocumentRepository;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,16 +29,23 @@ import java.util.logging.Logger;
 public class InventoryService
 {
 	
-	/** Shared in-memory map to store {@link InventoryItem} objects across service instances. */
-	private static final Map<String, InventoryItem> SHARED_ITEMS = new HashMap<>();
-	
 	/** Logger instance for this service. */
-	private static final Logger LOGGER = Logger.getLogger(InventoryService.class.getName());
+	private static final Logger LOGGER =
+		Logger.getLogger(InventoryService.class.getName());
 	
-	/** Standard filename for storing inventory data. */
-	private static final String INVENTORY_FILENAME = "inventory.json";
+	/** Database document name for storing inventory data. */
+	private static final String DOCUMENT_NAME = "inventory";
+	private static final ObjectMapper MAPPER = new ObjectMapper()
+		.enable(SerializationFeature.INDENT_OUTPUT);
+	private static final CollectionType LIST_TYPE =
+		MAPPER.getTypeFactory().constructCollectionType(List.class,
+			InventoryItem.class);
 	
-	/** In-memory map to store {@link InventoryItem} objects, keyed by their unique ID. */
+	/** Shared in-memory map to store {@link InventoryItem} objects, keyed by their unique ID. */
+	private static final Map<String, InventoryItem> INVENTORY =
+		new LinkedHashMap<>();
+	
+	/** View over {@link #INVENTORY} used by each service instance. */
 	private final Map<String, InventoryItem> items;
 	
 	/**
@@ -43,12 +54,8 @@ public class InventoryService
 	 */
 	public InventoryService()
 	{
-		this.items = SHARED_ITEMS;
-		// Optionally pre-populate with sample data:
-		// addItem(new InventoryItem("I001", "Item A", new BigDecimal("100"),
-		// "2023-01-01", 5)); // Example with BigDecimal
-		// addItem(new InventoryItem("I002", "Item B", new BigDecimal("50"),
-		// "2023-02-01", 3));
+		this.items = INVENTORY;
+		
 	}
 	
 	/**
@@ -61,6 +68,7 @@ public class InventoryService
 	public List<InventoryItem> listItems()
 	{
 		return new ArrayList<>(this.items.values());
+		
 	}
 	
 	/**
@@ -99,7 +107,8 @@ public class InventoryService
 				this.items.put(item.getId(), item);
 			}
 			
-			// Else: Consider logging or throwing an exception if item to update is not
+			// Else: Consider logging or throwing an exception if item to update
+			// is not
 			// found,
 			// depending on desired behavior.
 		}
@@ -135,33 +144,70 @@ public class InventoryService
 		
 		for (InventoryItem item : this.items.values())
 		{
+			BigDecimal cost = item.getCost();
 			
-			if (item.getCost() == null || item.getLifeYears() <= 0)
+			if (cost == null || cost.compareTo(BigDecimal.ZERO) <= 0)
 			{
-				continue; // insufficient data
+				continue;
+			}
+			
+			String method = item.getDepreciationMethod();
+			
+			if (method == null ||
+				!"Straight-Line".equalsIgnoreCase(method.trim()))
+			{
+				continue;
 			}
 			
 			BigDecimal rate = item.getDepreciationRate();
-			BigDecimal yearly;
 			
-			if (rate != null)
+			if (rate == null || rate.compareTo(BigDecimal.ZERO) <= 0)
 			{
-				yearly = item.getCost().multiply(rate);
-			}
-			else
-			{
-				yearly = item.getCost().divide(BigDecimal.valueOf(item.getLifeYears()), 2,
+				int lifeYears = item.getLifeYears();
+				
+				if (lifeYears <= 0)
+				{
+					continue;
+				}
+				
+				rate = BigDecimal.ONE.divide(BigDecimal.valueOf(lifeYears), 10,
 					RoundingMode.HALF_UP);
 			}
 			
-			BigDecimal current = item.getAccumulatedDepreciation();
+			BigDecimal yearly = cost.multiply(rate);
 			
-			if (current == null)
+			if (yearly.compareTo(BigDecimal.ZERO) <= 0)
 			{
-				current = BigDecimal.ZERO;
+				continue;
 			}
 			
-			item.withAccumDep(current.add(yearly));
+			BigDecimal existing = item.getAccumulatedDepreciation();
+			BigDecimal accumulated =
+				existing != null ? existing : BigDecimal.ZERO;
+			BigDecimal remaining = cost.subtract(accumulated);
+			
+			if (remaining.compareTo(BigDecimal.ZERO) <= 0)
+			{
+				item.withAccumDep(cost);
+				continue;
+			}
+			
+			BigDecimal depreciation = yearly.min(remaining);
+			depreciation = depreciation.setScale(2, RoundingMode.HALF_UP);
+			
+			if (depreciation.compareTo(BigDecimal.ZERO) <= 0)
+			{
+				continue;
+			}
+			
+			BigDecimal updated = accumulated.add(depreciation);
+			
+			if (updated.compareTo(cost) > 0)
+			{
+				updated = cost;
+			}
+			
+			item.withAccumDep(updated);
 		}
 		
 	}
@@ -174,88 +220,100 @@ public class InventoryService
 	{
 		this.items.clear();
 		LOGGER.info("Inventory cleared.");
+		
 	}
 	
 	/**
-	 * Saves all inventory items to a JSON file located in the given company directory.
-	 * If the directory is invalid, an {@link IOException} is thrown.
+	 * Saves all inventory items to the database.
 	 *
-	 * @param companyDirectory directory where the inventory file should be written
-	 * @throws IOException if writing fails or the directory is invalid
+	 * @param companyDirectory unused but preserved for backwards compatibility
+	 * @throws IOException if the database write fails
 	 */
 	public void saveItems(File companyDirectory) throws IOException
 	{
 		
-		if (companyDirectory == null || !companyDirectory.isDirectory())
-		{
-			throw new IOException("Company directory is invalid or not provided.");
-		}
-		
-		File target = new File(companyDirectory, INVENTORY_FILENAME);
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.enable(SerializationFeature.INDENT_OUTPUT);
-		
 		try
 		{
-			mapper.writeValue(target, listItems());
+			String payload = MAPPER.writeValueAsString(listItems());
+			new DocumentRepository().upsert(DOCUMENT_NAME, payload);
+			LOGGER.info("Inventory saved to database document '" +
+				DOCUMENT_NAME + "'.");
 		}
-		catch (IOException ex)
+		catch (SQLException e)
 		{
-			LOGGER.log(Level.SEVERE, "Failed to save inventory to " + target.getAbsolutePath(), ex);
-			throw ex;
+			throw new IOException("Failed to save inventory to database", e);
 		}
 		
 	}
 	
 	/**
-	 * Loads inventory items from a JSON file located in the given company directory.
-	 * Existing in-memory items are cleared before loading new ones.
-	 * If the file does not exist, this method simply returns with an empty inventory.
+	 * Loads inventory items from the database.
 	 *
-	 * @param companyDirectory directory where the inventory file is located
-	 * @throws IOException if reading fails or the directory is invalid
+	 * @param companyDirectory unused but preserved for backwards compatibility
+	 * @throws IOException if the database read fails
 	 */
 	public void loadItems(File companyDirectory) throws IOException
 	{
-		this.items.clear();
-		
-		if (companyDirectory == null || !companyDirectory.isDirectory())
-		{
-			throw new IOException("Company directory is invalid or not provided.");
-		}
-		
-		File target = new File(companyDirectory, INVENTORY_FILENAME);
-		
-		if (!target.exists() || target.length() == 0)
-		{
-			return; // nothing to load
-		}
-		
-		ObjectMapper mapper = new ObjectMapper();
-		CollectionType listType =
-			mapper.getTypeFactory().constructCollectionType(List.class, InventoryItem.class);
+		Map<String, InventoryItem> loaded = new HashMap<>();
 		
 		try
 		{
-			List<InventoryItem> loaded = mapper.readValue(target, listType);
+			Optional<String> payload =
+				new DocumentRepository().find(DOCUMENT_NAME);
 			
-			for (InventoryItem item : loaded)
+			if (payload.isPresent())
 			{
 				
-				if (item.getId() != null)
+				try
 				{
-					this.items.put(item.getId(), item);
+					List<InventoryItem> decoded =
+						MAPPER.readValue(payload.get(), LIST_TYPE);
+					
+					for (InventoryItem item : decoded)
+					{
+						
+						if (item.getId() != null)
+						{
+							loaded.put(item.getId(), item);
+						}
+						
+					}
+					
+					LOGGER.info("Inventory loaded from database document '" +
+						DOCUMENT_NAME + "'.");
+				}
+				catch (IOException ex)
+				{
+					LOGGER.log(Level.SEVERE,
+						"Failed to deserialize inventory JSON from database",
+						ex);
+					return;
 				}
 				
 			}
+			else
+			{
+				this.items.clear();
+				return;
+			}
 			
 		}
-		catch (IOException ex)
+		catch (SQLException e)
 		{
-			LOGGER.log(Level.SEVERE, "Failed to load inventory from " + target.getAbsolutePath(),
-				ex);
-			throw ex;
+			
+			if ("42104".equals(e.getSQLState()))
+			{
+				LOGGER.log(Level.FINE,
+					"Inventory document table not initialized; treating inventory as empty.",
+					e);
+				return;
+			}
+			
+			throw new IOException("Failed to load inventory from database", e);
 		}
+		
+		this.items.clear();
+		this.items.putAll(loaded);
 		
 	}
 	
@@ -270,10 +328,32 @@ public class InventoryService
 	 */
 	public static List<String[]> getInventoryItems()
 	{
+		
+		if (INVENTORY.isEmpty())
+		{
+			InventoryService bootstrap = new InventoryService();
+			
+			try
+			{
+				bootstrap.loadItems(null);
+			}
+			catch (IOException ex)
+			{
+				throw new RuntimeException("Failed to load inventory", ex);
+			}
+			
+		}
+		
 		List<String[]> rows = new ArrayList<>();
 		
-		for (InventoryItem item : SHARED_ITEMS.values())
+		for (InventoryItem item : INVENTORY.values())
 		{
+			
+			if (item == null || item.getId() == null)
+			{
+				continue;
+			}
+			
 			String cost = item.getCost() == null ? "0.00" :
 				item.getCost().setScale(2, RoundingMode.HALF_UP).toString();
 			rows.add(new String[]
@@ -281,10 +361,12 @@ public class InventoryService
 		}
 		
 		return rows;
+		
 	}
 	
 	// Removed private static inner class InventoryItem
 	// Removed old getInventoryItems()
-	// Removed old updateInventoryItem(String id, String name, int quantity, double
+	// Removed old updateInventoryItem(String id, String name, int quantity,
+	// double
 	// cost)
 }

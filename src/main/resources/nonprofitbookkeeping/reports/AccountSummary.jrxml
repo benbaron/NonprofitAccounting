@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+    name="AccountSummary" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0878efb4-2be8-4c37-98f2-898d4237b255">
+    <parameter name="REPORT_TITLE" class="java.lang.String"/>
+    <detail>
+        <band height="24" splitType="Stretch">
+            <textField>
+                <reportElement x="0" y="0" width="555" height="20" uuid="0f67d9c7-77b4-4a5d-93d3-4c4281ff8310"/>
+                <textFieldExpression><![CDATA[$P{REPORT_TITLE} != null ? $P{REPORT_TITLE} : "AccountSummary"]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+</jasperReport>

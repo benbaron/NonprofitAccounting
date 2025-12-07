@@ -4,21 +4,206 @@
     <meta charset="UTF-8">
     <title>Nonprofit Bookkeeping Help</title>
     <style>
-        body { font-family: sans-serif; margin: 20px; }
-        h1 { color: #333; }
-        p { line-height: 1.6; }
-        a { color: #0066cc; }
+        body { font-family: "Segoe UI", Helvetica, Arial, sans-serif; margin: 24px; line-height: 1.6; color: #1a1a1a; }
+        h1, h2, h3 { color: #0f4a7f; }
+        pre { background: #f5f5f5; padding: 12px; border-radius: 6px; overflow-x: auto; }
+        code { font-family: "Fira Code", Consolas, "Courier New", monospace; }
+        ul { margin-bottom: 16px; }
+        .toc { background: #eef3f9; border-radius: 8px; padding: 12px 20px; }
+        .tip { border-left: 4px solid #0f4a7f; padding-left: 12px; margin: 16px 0; background: #f7fbff; }
+        a { color: #0f4a7f; }
     </style>
 </head>
 <body>
     <h1>Nonprofit Bookkeeping Help</h1>
-    <p>Welcome to the help section for the Nonprofit Bookkeeping application.</p>
-    <p>This system allows you to manage your accounting, track funds, and generate reports.</p>
-    <h2>Topics:</h2>
-    <ul>
-        <li><a href="other_topic.html">Example Topic: Getting Started</a></li>
-        <li><a href="another_placeholder.html">Future Topic (Link to non-existent file)</a></li>
-    </ul>
-    <p><em>More help content will be available in future versions.</em></p>
+    <p>Welcome! This guide highlights common import/export tasks and shares UI craftsmanship tips that keep the application accessible and consistent.</p>
+
+    <nav class="toc" aria-label="Help topics">
+        <h2>Quick Topics</h2>
+        <ul>
+            <li><a href="#import-ofx">Importing OFX/QFX Statements</a></li>
+            <li><a href="#export-ofx">Exporting OFX/QFX Statements</a></li>
+            <li><a href="#legacy-npbk">Opening Legacy <code>.npbk</code> (JSON) Files</a></li>
+            <li><a href="#javafx-tooltips">JavaFX Tooltip Checklist</a></li>
+        </ul>
+    </nav>
+
+    <section id="import-ofx">
+        <h2>Importing OFX/QFX Statements</h2>
+        <ol>
+            <li>Choose <strong>File → Import Statement…</strong>.</li>
+            <li>Select your bank's <code>.ofx</code>, <code>.qfx</code>, <code>.qif</code>, or Excel ledger extract and press <strong>Open</strong>.</li>
+            <li>Confirm the file format if prompted, then pick the destination account.</li>
+            <li>Imported transactions are added to the ledger and queued for reconciliation. Duplicate detection runs automatically.</li>
+        </ol>
+        <p class="tip"><strong>Tip:</strong> Importing into a liability account (for example, a credit card) automatically flips the sign of the amount so charges appear as withdrawals and payments as deposits.</p>
+    </section>
+
+    <section id="export-ofx">
+        <h2>Exporting OFX/QFX Statements</h2>
+        <ol>
+            <li>Choose <strong>File → Export Statement…</strong>.</li>
+            <li>Select the account to export. Bank accounts and credit cards are supported.</li>
+            <li>Pick <strong>OFX</strong> or <strong>QFX</strong>, choose a destination file, and click <strong>Save</strong>.</li>
+        </ol>
+        <p>The export includes all ledger transactions for the chosen account with:</p>
+        <ul>
+            <li>Accurate debit/credit direction based on the account type.</li>
+            <li>Transaction names sourced from “To/From” with memo fallbacks.</li>
+            <li>Auto-generated FITIDs, ledger balance, and statement date range.</li>
+        </ul>
+        <p class="tip"><strong>Need Quicken compatibility?</strong> Choose QFX. The exporter adjusts sign-on metadata so Quicken recognizes the file immediately.</p>
+    </section>
+
+    <section id="legacy-npbk">
+        <h2>Opening Legacy <code>.npbk</code> (JSON) Files</h2>
+        <p>Earlier versions of Nonprofit Bookkeeping saved company archives as plain JSON with a <code>.npbk</code> extension. The current loader supports both formats:</p>
+        <ul>
+            <li><strong>Modern archives</strong> — ZIP files containing <code>company_data.json</code>.</li>
+            <li><strong>Legacy archives</strong> — standalone JSON files (with or without the <code>.npbk</code> extension).</li>
+        </ul>
+        <p>When you choose <strong>File → Open Company…</strong> the loader automatically detects which format you have and deserializes it accordingly. No conversion step is required.</p>
+    </section>
+
+    <section id="javafx-tooltips">
+        <h2>JavaFX Tooltip Checklist</h2>
+        <p>This checklist keeps hover tooltips clean, consistent, and accessible across the application.</p>
+
+        <h3>1. Standardize with a Factory</h3>
+        <pre><code>public final class Tips {
+  private Tips() {}
+
+  public static Tooltip mk(String text) {
+    Tooltip t = new Tooltip(text);
+    t.setShowDelay(Duration.millis(500));
+    t.setShowDuration(Duration.seconds(30));
+    t.setHideDelay(Duration.millis(150));
+    t.setWrapText(true);
+    t.setMaxWidth(360);
+    t.setAutoFix(true);
+    return t;
+  }
+}</code></pre>
+
+        <h3>2. Attach Correctly</h3>
+        <ul>
+            <li><code>control.setTooltip(Tips.mk("…"));</code> for UI controls.</li>
+            <li><code>Tooltip.install(node, Tips.mk("…"));</code> for generic nodes.</li>
+            <li>Menu items aren’t nodes—consider mirroring the message in a status bar.</li>
+        </ul>
+
+        <h3>3. Global Styling</h3>
+        <pre><code>.tooltip {
+  -fx-font-size: 12px;
+  -fx-padding: 8 10;
+  -fx-background-radius: 8;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 10, 0.2, 0, 2);
+  -fx-show-delay: 500ms;
+  -fx-hide-delay: 150ms;
+  -fx-show-duration: 30s;
+}</code></pre>
+
+        <h3>4. Keep Them Short &amp; Focused</h3>
+        <ul>
+            <li>Aim for two concise lines explaining the “why”.</li>
+            <li>For longer help, pair an info icon that opens the full Help window.</li>
+        </ul>
+
+        <h3>5. Rich Content Without HTML</h3>
+        <pre><code>Tooltip tip = Tips.mk("Drag files here to import");
+tip.setGraphic(new ImageView("/icons/info.png"));
+tip.setContentDisplay(ContentDisplay.LEFT);
+button.setTooltip(tip);</code></pre>
+
+        <h3>6. Keyboard Accessibility</h3>
+        <pre><code>static void showOnFocus(Control c) {
+  Tooltip tip = c.getTooltip();
+  if (tip == null) return;
+  c.focusedProperty().addListener((obs, was, is) -&gt; {
+    if (is) {
+      Bounds b = c.localToScreen(c.getBoundsInLocal());
+      tip.show(c, b.getMaxX() + 8, b.getMinY());
+    } else {
+      tip.hide();
+    }
+  });
+}</code></pre>
+
+        <h3>7. Validation Tooltips</h3>
+        <pre><code>private static final PseudoClass PC_ERROR = PseudoClass.getPseudoClass("error");
+
+static void bindErrorTip(TextField tf, ObservableStringValue errorText) {
+  Tooltip errTip = Tips.mk("");
+  errorText.addListener((o, oldV, v) -&gt; {
+    boolean has = v != null &amp;&amp; !v.isBlank();
+    tf.pseudoClassStateChanged(PC_ERROR, has);
+    tf.setTooltip(has ? errTip : null);
+    if (has) errTip.setText(v);
+  });
+}</code></pre>
+
+        <h3>8. Dynamic Tooltips</h3>
+        <pre><code>Tooltip tip = Tips.mk("");
+tip.textProperty().bind(Bindings.format(
+  "Runs %s items (shift-click = dry run)", selectedCountProperty()));
+runButton.setTooltip(tip);</code></pre>
+
+        <h3>9. Table/List Cells</h3>
+        <pre><code>nameCol.setCellFactory(tc -&gt; new TableCell&lt;&gt;() {
+  private final Tooltip tip = Tips.mk("");
+  private final Text measure = new Text();
+
+  @Override protected void updateItem(String s, boolean empty) {
+    super.updateItem(s, empty);
+    setText(empty ? null : s);
+    setTooltip(null);
+    if (!empty &amp;&amp; s != null) {
+      measure.setFont(getFont());
+      measure.setText(s);
+      boolean truncated = measure.getLayoutBounds().getWidth() &gt;
+          (getWidth() - getPadding().getLeft() - getPadding().getRight());
+      if (truncated) {
+        tip.setText(s);
+        setTooltip(tip);
+      }
+    }
+  }
+});</code></pre>
+
+        <h3>10. Disabled Controls</h3>
+        <pre><code>Button disabled = new Button("Pro feature");
+disabled.setDisable(true);
+StackPane wrapper = new StackPane(disabled);
+wrapper.setPickOnBounds(true);
+Tooltip.install(wrapper, Tips.mk("Upgrade to enable"));</code></pre>
+
+        <h3>11. Placement &amp; Timing</h3>
+        <ul>
+            <li>Offset tips slightly so they do not obscure the control.</li>
+            <li>Use 300–700&nbsp;ms show delay, 100–200&nbsp;ms hide delay, 10–30&nbsp;s duration.</li>
+        </ul>
+
+        <h3>12. Internationalization</h3>
+        <ul>
+            <li>Load strings from a <code>ResourceBundle</code>.</li>
+            <li>Keep sentences short to minimize reflow in translated UIs.</li>
+        </ul>
+
+        <h3>13. Performance Hygiene</h3>
+        <ul>
+            <li>Reuse tooltip instances; avoid creating new ones in mouse-move handlers.</li>
+            <li>Detach bindings in cell factories when cells become empty.</li>
+        </ul>
+
+        <h3>14. Testing</h3>
+        <ul>
+            <li>Use TestFX to hover nodes and assert tooltip text.</li>
+            <li>Capture snapshots at different scales and themes.</li>
+        </ul>
+    </section>
+
+    <footer>
+        <p><em>Last updated: April 2025. For additional assistance contact your system administrator.</em></p>
+    </footer>
 </body>
 </html>

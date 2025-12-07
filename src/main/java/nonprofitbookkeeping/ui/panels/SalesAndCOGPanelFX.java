@@ -45,22 +45,17 @@ public class SalesAndCOGPanelFX extends BorderPane
 	 */
 	public SalesAndCOGPanelFX(SalesService service, File companyDirectory)
 	{
-		this.service = service == null ? new SalesService() : service;
-		this.companyDirectory = companyDirectory;
-		
-		if (this.companyDirectory != null)
-		{
-			
-			try
-			{
-				this.service.loadSales(this.companyDirectory);
-			}
-			catch (Exception ex)
-			{
-				ex.printStackTrace();
-			}
-			
-		}
+                this.service = service == null ? new SalesService() : service;
+                this.companyDirectory = companyDirectory;
+
+                try
+                {
+                        this.service.loadSales(this.companyDirectory);
+                }
+                catch (Exception ex)
+                {
+                        ex.printStackTrace();
+                }
 		
 		setPadding(new Insets(10));
 		buildTable();
@@ -264,21 +259,16 @@ public class SalesAndCOGPanelFX extends BorderPane
 	private void save()
 	{
 		
-		if (this.companyDirectory != null)
-		{
-			
-			try
-			{
-				this.service.saveSales(this.companyDirectory);
-			}
-			catch (Exception ex)
-			{
-				ex.printStackTrace();
-			}
-			
-		}
-		
-	}
+                try
+                {
+                        this.service.saveSales(this.companyDirectory);
+                }
+                catch (Exception ex)
+                {
+                        ex.printStackTrace();
+                }
+
+        }
 	
 	/* ------------------------------------------------------------------ */
 	/**

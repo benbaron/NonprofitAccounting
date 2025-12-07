@@ -11,8 +11,6 @@ import java.util.Optional;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
-import nonprofitbookkeeping.exception.ActionCancelledException;
-import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.model.CurrentCompany;
 
 /**
@@ -41,24 +39,24 @@ public class SaveCompanyFileAction
 	 */
 	public SaveCompanyFileAction(Stage primaryStage)
 	{
-		Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-			"Save current company file?");
-		confirm.initOwner(primaryStage);
-		Optional<ButtonType> res = confirm.showAndWait();
+                Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                        "Save current company to the database?");
+                confirm.initOwner(primaryStage);
+                Optional<ButtonType> res = confirm.showAndWait();
 		
 		if (res.isEmpty() || res.get() != ButtonType.OK)
 		{
 			return; // user chose not to save
 		}
 		
-		try
-		{
-			CurrentCompany.persist();
-		}
-		catch (IOException | ActionCancelledException | NoFileCreatedException e)
-		{
-			e.printStackTrace();
-		}
+                try
+                {
+                        CurrentCompany.persist();
+                }
+                catch (IOException e)
+                {
+                        e.printStackTrace();
+                }
 		
 	}
 	

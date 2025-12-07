@@ -33,7 +33,7 @@ public final class AccountingEntry implements Serializable
 	 */
 	public String getFundNumber()
 	{
-		return fundNumber;
+		return this.fundNumber;
 		
 	}
 

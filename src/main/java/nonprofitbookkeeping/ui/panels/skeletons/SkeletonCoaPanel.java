@@ -26,6 +26,9 @@ import nonprofitbookkeeping.model.AccountType;
 import java.util.List;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A JavaFX panel that displays a company's Chart of Accounts (COA) in a {@link TreeTableView}.
  * It provides basic CRUD (Create, Read, Update, Delete) functionalities for managing accounts,
@@ -34,6 +37,13 @@ import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
  */
 public class SkeletonCoaPanel extends BorderPane
 {
+        private static final Logger LOGGER = LoggerFactory.getLogger(SkeletonCoaPanel.class);
+
+        /** Default placeholder shown when the tree is empty but the panel is active. */
+        private static final String DEFAULT_PLACEHOLDER_TEXT =
+                "No Chart of Accounts data to display or company not open.";
+        /** Placeholder text used specifically when no company is open. */
+        private static final String NO_COMPANY_PLACEHOLDER_TEXT = "No company open.";
 	
 	/** The TreeTableView used to display the hierarchical chart of accounts. */
 	private TreeTableView<Account> coaTreeTable;
@@ -62,10 +72,9 @@ public class SkeletonCoaPanel extends BorderPane
 		setPadding(new Insets(15)); // Overall padding
 		
 		this.rootAccountsNode = new TreeItem<>();
-		this.coaTreeTable = new TreeTableView<>(this.rootAccountsNode);
-		this.coaTreeTable.setShowRoot(false); // Hide the dummy root
-		this.coaTreeTable
-			.setPlaceholder(new Label("No Chart of Accounts data to display or company not open."));
+                this.coaTreeTable = new TreeTableView<>(this.rootAccountsNode);
+                this.coaTreeTable.setShowRoot(false); // Hide the dummy root
+                this.coaTreeTable.setPlaceholder(new Label(DEFAULT_PLACEHOLDER_TEXT));
 		this.setCenter(this.coaTreeTable);
 		
 		// Action Buttons (Bottom)
@@ -134,37 +143,47 @@ public class SkeletonCoaPanel extends BorderPane
 	 * and recursively builds the tree structure using {@link #createAccountTreeItem(Account, ChartOfAccounts)}.
 	 * If no company is open or the COA is unavailable, the table will remain empty or show its placeholder.
 	 */
-	private void loadCoaData()
-	{
-		this.rootAccountsNode.getChildren().clear();
-		
-		if (!CurrentCompany.isOpen() || CurrentCompany.getCompany() == null)
-		{
-			this.coaTreeTable.setPlaceholder(new Label("No company open."));
-			return;
-		}
-		
-		Company company = CurrentCompany.getCompany();
-		
-		if (company != null && company.getChartOfAccounts() != null)
-		{
-			ChartOfAccounts coa = company.getChartOfAccounts();
-			List<Account> rootLevelAccounts = coa.getRootAccounts(); // Assuming this method exists
-			
-			if (rootLevelAccounts != null)
-			{
-				
-				for (Account acc : rootLevelAccounts)
-				{
-					TreeItem<Account> accountNode = createAccountTreeItem(acc, coa);
-					this.rootAccountsNode.getChildren().add(accountNode);
-				}
-				
-			}
-			
-		}		
+        private void loadCoaData()
+        {
+                this.rootAccountsNode.getChildren().clear();
 
-	}
+                if (!CurrentCompany.isOpen() || CurrentCompany.getCompany() == null)
+                {
+                        this.coaTreeTable.setRoot(null);
+                        this.coaTreeTable.setPlaceholder(new Label(NO_COMPANY_PLACEHOLDER_TEXT));
+                        return;
+                }
+
+                if (this.coaTreeTable.getRoot() == null)
+                {
+                        this.coaTreeTable.setRoot(this.rootAccountsNode);
+                }
+
+                this.coaTreeTable.setPlaceholder(new Label(DEFAULT_PLACEHOLDER_TEXT));
+
+                Company company = CurrentCompany.getCompany();
+
+                if (company != null && company.getChartOfAccounts() != null)
+                {
+                        ChartOfAccounts coa = company.getChartOfAccounts();
+                        List<Account> rootLevelAccounts = coa.getRootAccounts();
+
+                        if (rootLevelAccounts != null)
+                        {
+                                for (Account acc : rootLevelAccounts)
+                                {
+                                        TreeItem<Account> accountNode = createAccountTreeItem(acc, coa);
+                                        this.rootAccountsNode.getChildren().add(accountNode);
+                                }
+                        }
+                }
+
+                if (this.rootAccountsNode.getChildren().isEmpty())
+                {
+                        this.coaTreeTable
+                                .setPlaceholder(new Label("No Chart of Accounts data to display."));
+                }
+        }
 	
 	/**
 	 * Recursively creates a {@link TreeItem} for a given {@link Account} and its children.
@@ -304,8 +323,8 @@ public class SkeletonCoaPanel extends BorderPane
 			
 			if (deleted)
 			{
-				loadCoaData();
-				System.out.println("Deleted account: " + selectedAccount.getName());
+                                loadCoaData();
+                                LOGGER.info("Deleted account: {}", selectedAccount.getName());
 			}
 			else
 			{

@@ -9,8 +9,14 @@ import nonprofitbookkeeping.model.budget.Periodicity;
 import nonprofitbookkeeping.util.FormatUtils;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.ItemEvent;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -39,10 +45,20 @@ public class BudgetLineDialog extends JDialog
 	private JComboBox<AccountItem> cmbAccount;
 	/** JTextField for entering the total budgeted amount. */
 	private JTextField txtTotalAmount;
-	/** JComboBox for selecting the {@link Periodicity} of the budget line (e.g., ANNUAL, MONTHLY). */
-	private JComboBox<Periodicity> cmbPeriodicity;
-	/** JComboBox for selecting an optional fund specific to this budget line. Includes a "None" option. */
-	private JComboBox<FundItem> cmbFund;
+        /** JComboBox for selecting the {@link Periodicity} of the budget line (e.g., ANNUAL, MONTHLY). */
+        private JComboBox<Periodicity> cmbPeriodicity;
+        /** JComboBox for selecting an optional fund specific to this budget line. Includes a "None" option. */
+        private JComboBox<FundItem> cmbFund;
+
+        /** Button used to persist the dialog; toggled by validation logic. */
+        private JButton btnOk;
+        /** Label that surfaces validation feedback for the amount entry field. */
+        private JLabel amountErrorLabel;
+        /** Label that previews how the total breaks down per period. */
+        private JLabel periodicBreakdownLabel;
+
+        /** Blank placeholder text used when validation messages are hidden. */
+        private static final String EMPTY_MESSAGE = "\u00a0";
 	
 	/** The {@link ChartOfAccounts} used to populate the account selector. */
 	private ChartOfAccounts chartOfAccounts;
@@ -271,80 +287,113 @@ public class BudgetLineDialog extends JDialog
 			.sorted(Comparator.comparing(Fund::getName, String.CASE_INSENSITIVE_ORDER)) // Sort by
 																						// name
 			.map(FundItem::new).forEach(fundItems::add);
-		this.cmbFund = new JComboBox<>(fundItems);
-	}
+                this.cmbFund = new JComboBox<>(fundItems);
+
+                this.amountErrorLabel = new JLabel(EMPTY_MESSAGE);
+                this.amountErrorLabel.setForeground(Color.RED);
+                this.periodicBreakdownLabel = new JLabel(EMPTY_MESSAGE);
+                Font baseFont = this.periodicBreakdownLabel.getFont();
+                this.periodicBreakdownLabel
+                        .setFont(baseFont.deriveFont(Math.max(10f, baseFont.getSize2D() - 1f)));
+        }
 	
 	/**
 	 * Arranges the UI components on the dialog panel using {@link GridBagLayout}.
 	 * This includes labels, input fields (JComboBoxes, JTextField), and action buttons (OK, Cancel).
 	 */
-	private void layoutComponents()
-	{
-		setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(5, 5, 5, 5); // Padding around components
-		gbc.fill = GridBagConstraints.HORIZONTAL; // Components expand horizontally
-		
-		// Account
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.anchor = GridBagConstraints.EAST;
-		add(new JLabel("Account:"), gbc);
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.weightx = 1.0;
-		add(this.cmbAccount, gbc);
-		gbc.weightx = 0; // Reset
-		
-		// Total Amount
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.anchor = GridBagConstraints.EAST;
-		add(new JLabel("Total Budgeted Amount:"), gbc);
-		gbc.gridx = 1;
-		gbc.gridy = 1;
-		gbc.anchor = GridBagConstraints.WEST;
-		add(this.txtTotalAmount, gbc);
-		
-		// Periodicity
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		gbc.anchor = GridBagConstraints.EAST;
-		add(new JLabel("Periodicity:"), gbc);
-		gbc.gridx = 1;
-		gbc.gridy = 2;
-		gbc.anchor = GridBagConstraints.WEST;
-		add(this.cmbPeriodicity, gbc);
-		
-		// Fund
-		gbc.gridx = 0;
-		gbc.gridy = 3;
-		gbc.anchor = GridBagConstraints.EAST;
-		add(new JLabel("Line-specific Fund:"), gbc);
-		gbc.gridx = 1;
-		gbc.gridy = 3;
-		gbc.anchor = GridBagConstraints.WEST;
-		add(this.cmbFund, gbc);
-		
-		// Buttons
-		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		JButton btnOK = new JButton("OK");
-		JButton btnCancel = new JButton("Cancel");
-		buttonPanel.add(btnOK);
-		buttonPanel.add(btnCancel);
-		
-		gbc.gridx = 0;
-		gbc.gridy = 4;
-		gbc.gridwidth = 2;
-		gbc.anchor = GridBagConstraints.CENTER;
-		gbc.fill = GridBagConstraints.NONE;
-		add(buttonPanel, gbc);
-		
-		// Action Listeners for buttons
-		btnOK.addActionListener(e -> saveAndClose());
-		btnCancel.addActionListener(e -> dispose()); // Close dialog without saving
-	}
+        private void layoutComponents()
+        {
+                setLayout(new GridBagLayout());
+                GridBagConstraints gbc = new GridBagConstraints();
+                gbc.insets = new Insets(5, 5, 5, 5); // Padding around components
+                gbc.fill = GridBagConstraints.HORIZONTAL; // Components expand horizontally
+
+                int row = 0;
+
+                // Account
+                gbc.gridx = 0;
+                gbc.gridy = row;
+                gbc.anchor = GridBagConstraints.EAST;
+                add(new JLabel("Account:"), gbc);
+                gbc.gridx = 1;
+                gbc.gridy = row;
+                gbc.anchor = GridBagConstraints.WEST;
+                gbc.weightx = 1.0;
+                add(this.cmbAccount, gbc);
+                gbc.weightx = 0; // Reset
+
+                row++;
+
+                // Total Amount
+                gbc.gridx = 0;
+                gbc.gridy = row;
+                gbc.anchor = GridBagConstraints.EAST;
+                add(new JLabel("Total Budgeted Amount:"), gbc);
+                gbc.gridx = 1;
+                gbc.gridy = row;
+                gbc.anchor = GridBagConstraints.WEST;
+                add(this.txtTotalAmount, gbc);
+
+                row++;
+
+                // Amount validation message
+                gbc.gridx = 1;
+                gbc.gridy = row;
+                gbc.anchor = GridBagConstraints.WEST;
+                add(this.amountErrorLabel, gbc);
+
+                row++;
+
+                // Periodicity
+                gbc.gridx = 0;
+                gbc.gridy = row;
+                gbc.anchor = GridBagConstraints.EAST;
+                add(new JLabel("Periodicity:"), gbc);
+                gbc.gridx = 1;
+                gbc.gridy = row;
+                gbc.anchor = GridBagConstraints.WEST;
+                add(this.cmbPeriodicity, gbc);
+
+                row++;
+
+                // Per-period preview
+                gbc.gridx = 1;
+                gbc.gridy = row;
+                gbc.anchor = GridBagConstraints.WEST;
+                add(this.periodicBreakdownLabel, gbc);
+
+                row++;
+
+                // Fund
+                gbc.gridx = 0;
+                gbc.gridy = row;
+                gbc.anchor = GridBagConstraints.EAST;
+                add(new JLabel("Line-specific Fund:"), gbc);
+                gbc.gridx = 1;
+                gbc.gridy = row;
+                gbc.anchor = GridBagConstraints.WEST;
+                add(this.cmbFund, gbc);
+
+                row++;
+
+                // Buttons
+                JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+                this.btnOk = new JButton("OK");
+                JButton btnCancel = new JButton("Cancel");
+                buttonPanel.add(this.btnOk);
+                buttonPanel.add(btnCancel);
+
+                gbc.gridx = 0;
+                gbc.gridy = row;
+                gbc.gridwidth = 2;
+                gbc.anchor = GridBagConstraints.CENTER;
+                gbc.fill = GridBagConstraints.NONE;
+                add(buttonPanel, gbc);
+
+                // Action Listeners for buttons
+                this.btnOk.addActionListener(e -> saveAndClose());
+                btnCancel.addActionListener(e -> dispose()); // Close dialog without saving
+        }
 	
 	/**
 	 * Populates the dialog's input fields with data from the current {@link #budgetLine} object.
@@ -397,18 +446,167 @@ public class BudgetLineDialog extends JDialog
 		
 	}
 	
-	/**
-	 * Attaches listeners to UI components.
-	 * Currently, this method is a placeholder and does not attach any listeners.
-	 * It could be used for dynamic interactions, such as enabling/disabling fields
-	 * based on selections in other fields, before the "OK" button is pressed.
-	 */
-	private void attachListeners()
-	{
-		// Listeners can be added if dynamic interactions are needed before OK is
-		// pressed (e.g., validating input on the fly, changing available options based
-		// on selections).
-	}
+        /**
+         * Attaches runtime listeners that keep the dialog responsive. The listeners validate
+         * the total amount, update the per-period preview, and toggle the OK button so users
+         * can only persist valid budget lines.
+         */
+        private void attachListeners()
+        {
+                this.txtTotalAmount.getDocument().addDocumentListener(new DocumentListener()
+                {
+                        @Override public void insertUpdate(DocumentEvent e)
+                        {
+                                updateAmountFeedback();
+                        }
+
+                        @Override public void removeUpdate(DocumentEvent e)
+                        {
+                                updateAmountFeedback();
+                        }
+
+                        @Override public void changedUpdate(DocumentEvent e)
+                        {
+                                updateAmountFeedback();
+                        }
+                });
+
+                this.txtTotalAmount.addFocusListener(new FocusAdapter()
+                {
+                        @Override public void focusLost(FocusEvent e)
+                        {
+                                BigDecimal parsed = parseAmount(BudgetLineDialog.this.txtTotalAmount.getText());
+
+                                if (parsed != null)
+                                {
+                                        BudgetLineDialog.this.txtTotalAmount
+                                                .setText(FormatUtils.formatCurrency(parsed));
+                                }
+                        }
+                });
+
+                this.cmbPeriodicity.addItemListener(event ->
+                {
+                        if (event.getStateChange() == ItemEvent.SELECTED)
+                        {
+                                updateAmountFeedback();
+                        }
+                });
+
+                this.cmbAccount.addActionListener(e -> updateAmountFeedback());
+
+                updateAmountFeedback();
+        }
+
+        private void updateAmountFeedback()
+        {
+                BigDecimal amount = parseAmount(this.txtTotalAmount.getText());
+                boolean amountValid = amount != null && amount.compareTo(BigDecimal.ZERO) >= 0;
+                boolean accountSelected = this.cmbAccount.getSelectedItem() != null;
+
+                if (amount == null)
+                {
+                        if (this.txtTotalAmount.getText() == null || this.txtTotalAmount.getText().trim().isEmpty())
+                        {
+                                setAmountError("Enter a total budgeted amount.");
+                        }
+                        else
+                        {
+                                setAmountError("Enter a valid monetary amount (e.g., 100.00).");
+                        }
+                        this.periodicBreakdownLabel.setText(EMPTY_MESSAGE);
+                }
+                else if (amount.compareTo(BigDecimal.ZERO) < 0)
+                {
+                        setAmountError("Amount cannot be negative.");
+                        this.periodicBreakdownLabel.setText(EMPTY_MESSAGE);
+                        amountValid = false;
+                }
+                else
+                {
+                        setAmountError(null);
+                        updatePeriodicBreakdown(amount);
+                }
+
+                if (this.btnOk != null)
+                {
+                        this.btnOk.setEnabled(amountValid && accountSelected);
+                }
+        }
+
+        private void setAmountError(String message)
+        {
+                String text = (message == null || message.isBlank()) ? EMPTY_MESSAGE : message;
+                this.amountErrorLabel.setText(text);
+                this.amountErrorLabel.setToolTipText(text.equals(EMPTY_MESSAGE) ? null : message);
+        }
+
+        private void updatePeriodicBreakdown(BigDecimal total)
+        {
+                if (total == null)
+                {
+                        this.periodicBreakdownLabel.setText(EMPTY_MESSAGE);
+                        return;
+                }
+
+                Periodicity periodicity = (Periodicity) this.cmbPeriodicity.getSelectedItem();
+                BigDecimal perPeriod = computePerPeriodAmount(total, periodicity);
+
+                StringBuilder builder = new StringBuilder();
+                builder.append(describePeriodicity(periodicity)).append(':').append(' ')
+                        .append(FormatUtils.formatCurrency(perPeriod));
+
+                if (periodicity != Periodicity.ANNUAL)
+                {
+                        builder.append(" (Total ")
+                                .append(FormatUtils.formatCurrency(total))
+                                .append(')');
+                }
+
+                this.periodicBreakdownLabel.setText(builder.toString());
+        }
+
+        private BigDecimal computePerPeriodAmount(BigDecimal total, Periodicity periodicity)
+        {
+                if (total == null)
+                {
+                        return BigDecimal.ZERO;
+                }
+
+                int periods = switch (periodicity != null ? periodicity : Periodicity.ANNUAL)
+                {
+                        case MONTHLY -> 12;
+                        case QUARTERLY -> 4;
+                        case ANNUAL -> 1;
+                };
+
+                if (periods <= 1)
+                {
+                        return total;
+                }
+
+                return total.divide(BigDecimal.valueOf(periods), 2, RoundingMode.HALF_UP);
+        }
+
+        private String describePeriodicity(Periodicity periodicity)
+        {
+                if (periodicity == null)
+                {
+                        return "Annual total";
+                }
+
+                return switch (periodicity)
+                {
+                        case ANNUAL -> "Annual total";
+                        case QUARTERLY -> "Quarterly amount";
+                        case MONTHLY -> "Monthly amount";
+                };
+        }
+
+        private BigDecimal parseAmount(String rawText)
+        {
+                return FormatUtils.parseCurrency(rawText);
+        }
 	
 	/**
 	 * Validates the input fields, saves the data from the dialog fields into the
@@ -429,37 +627,27 @@ public class BudgetLineDialog extends JDialog
 		
 		Account selectedAccount = selectedAccountItem.getAccount();
 		
-		String amountStr = this.txtTotalAmount.getText().trim();
-		
-		if (amountStr.isEmpty())
-		{
-			JOptionPane.showMessageDialog(this, "Total Budgeted Amount cannot be empty.",
-				"Input Error", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-		
-		BigDecimal totalAmount;
-		
-		try
-		{
-			totalAmount = new BigDecimal(amountStr);
-			
-			if (totalAmount.compareTo(BigDecimal.ZERO) < 0)
-			{
-				JOptionPane.showMessageDialog(this, "Total Budgeted Amount cannot be negative.",
-					"Input Error", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			
-		}
-		catch (NumberFormatException e)
-		{
-			JOptionPane.showMessageDialog(this, "Invalid number format for Total Budgeted Amount.",
-				"Input Error", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-		
-		this.budgetLine.setAccountId(selectedAccount.getAccountNumber()); // Assuming
+                String rawAmount = this.txtTotalAmount.getText();
+                BigDecimal totalAmount = parseAmount(rawAmount);
+
+                if (totalAmount == null)
+                {
+                        String message = (rawAmount == null || rawAmount.trim().isEmpty())
+                                ? "Total Budgeted Amount cannot be empty."
+                                : "Please enter a valid Total Budgeted Amount.";
+                        JOptionPane.showMessageDialog(this, message,
+                                "Input Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                }
+
+                if (totalAmount.compareTo(BigDecimal.ZERO) < 0)
+                {
+                        JOptionPane.showMessageDialog(this, "Total Budgeted Amount cannot be negative.",
+                                "Input Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                }
+
+                this.budgetLine.setAccountId(selectedAccount.getAccountNumber()); // Assuming
 																			// getAccountNumber()
 																			// is the ID
 		this.budgetLine.setAccountName(selectedAccount.getName()); // Store name for convenience

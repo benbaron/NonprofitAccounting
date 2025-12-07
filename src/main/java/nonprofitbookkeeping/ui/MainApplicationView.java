@@ -7,6 +7,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
 
 import nonprofitbookkeeping.ui.panels.CoaEditorPanelFX;
+import nonprofitbookkeeping.ui.panels.CompanySelectionPanelFX;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonDashboardPanel;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonJournalPanel;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonReportsPanel;
@@ -14,6 +15,9 @@ import nonprofitbookkeeping.ui.panels.AccountTransactionDetailsPanelFX; // Added
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.model.ReportPeriodPreset;
+
+import java.time.MonthDay;
 
 /**
  * Represents the main application view, structured as a {@link BorderPane}.
@@ -50,19 +54,23 @@ public class MainApplicationView extends BorderPane
 	// Tab instances as fields for easy reference
 	/** Tab for displaying the Dashboard. */
 	private Tab dashboardTab;
-	/** Tab for displaying the Journal. */
-	private Tab journalTab;
-	/** Tab for displaying the Chart of Accounts. */
-	private Tab coaTab;
+        /** Tab for displaying the Journal. */
+        private Tab journalTab;
+        /** Tab for displaying the Chart of Accounts. */
+        private Tab coaTab;
         /** Tab for displaying Reports. */
         private Tab reportsTab;
         /** Tab for displaying Account Transaction Details. */
         private Tab accountDetailsTab;
-       /** Embedded Chart of Accounts editor panel. */
-       private CoaEditorPanelFX coaEditorPanel;
+        /** Embedded Chart of Accounts editor panel. */
+        private CoaEditorPanelFX coaEditorPanel;
+        /** Panel used to select or create companies when none are open. */
+        private final CompanySelectionPanelFX companySelectionPanel;
+        /** Journal panel instance to expose search helpers. */
+        private final SkeletonJournalPanel journalPanel;
+        /** Account details panel for report defaults. */
+        private final AccountTransactionDetailsPanelFX accountDetailsPanel;
 	
-//	/** Tab for selecting or creating a company when none is open. */
-//	private Tab companySelectTab;
 	
 	/**
 	 * Constructs a new {@code MainApplicationView}.
@@ -76,22 +84,29 @@ public class MainApplicationView extends BorderPane
 	{
 		this.menuBar = null; // Initialize menuBar, will be set via setter
 		
-		this.tabPane = new TabPane();
+                this.tabPane = new TabPane();
+                this.companySelectionPanel = new CompanySelectionPanelFX();
 		
-               // Create Tab instances
-               this.dashboardTab = new Tab("Dashboard", new SkeletonDashboardPanel());
-               this.journalTab = new Tab("Journal", new SkeletonJournalPanel());
-
-               Company company = CurrentCompany.getCompany();
-               ChartOfAccounts coa = company != null ? company.getChartOfAccounts() : new ChartOfAccounts();
-               this.coaEditorPanel = new CoaEditorPanelFX(coa, c -> {
-                       if (company != null) {
-                               company.setChartOfAccounts(c);
-                       }
-               }, () -> {});
-               this.coaTab = new Tab("Chart of Accounts", this.coaEditorPanel);
-
-               this.reportsTab = new Tab("Reports", new SkeletonReportsPanel());
+		// Create Tab instances
+                this.dashboardTab = new Tab("Dashboard", new SkeletonDashboardPanel());
+                this.journalPanel = new SkeletonJournalPanel();
+                this.journalTab = new Tab("Journal", this.journalPanel);
+		
+		Company company = CurrentCompany.getCompany();
+		ChartOfAccounts coa =
+				company != null ? company.getChartOfAccounts() : new ChartOfAccounts();
+		this.coaEditorPanel = new CoaEditorPanelFX(coa, c -> {
+			
+			if (company != null)
+			{
+				company.setChartOfAccounts(c);
+			}
+			
+		}, () -> {
+		});
+		this.coaTab = new Tab("Chart of Accounts", this.coaEditorPanel);
+		
+		this.reportsTab = new Tab("Reports", new SkeletonReportsPanel());
 		
 		// Set tabs to be non-closable
 		this.dashboardTab.setClosable(false);
@@ -100,37 +115,42 @@ public class MainApplicationView extends BorderPane
 		this.reportsTab.setClosable(false);
 		
 		// Add new tab for Account Details
-		this.accountDetailsTab = new Tab("Account Details", new AccountTransactionDetailsPanelFX());
-		this.accountDetailsTab.setClosable(false);
+                this.accountDetailsPanel = new AccountTransactionDetailsPanelFX();
+                this.accountDetailsTab = new Tab("Account Details", this.accountDetailsPanel);
+                this.accountDetailsTab.setClosable(false);
+	
 		
-		// Tab shown when no company is open
-		// Commented out. The previewer opens the file to look at it
-		// which is misleading and complicated.
-//		CompanySelectionPanelFX selectPanel = new CompanySelectionPanelFX();
-//		selectPanel.setOnCompanyOpenedHandler(selectPanel.new OnCompanyOpenedHandler()
-//		{
-//			@Override public void onCompanyOpened(nonprofitbookkeeping.model.Company company)
-//			{
-//				updateCompanyOpenState(true);
-//			}
-//			
-//		});
-//		this.companySelectTab = new Tab("Select Company", selectPanel);
-//		this.companySelectTab.setClosable(false);
-		
-		// Add tabs to the tabPane
-		this.tabPane.getTabs()
-		.addAll(this.dashboardTab, 
-			this.journalTab, 
-			this.coaTab,
-			this.reportsTab, 
-			this.accountDetailsTab
-			//this.companySelectTab
-			);
-		
-		// Set the TabPane as the center of the BorderPane
-		setCenter(this.tabPane);
-	}
+                // Add tabs to the tabPane
+                this.tabPane.getTabs()
+                                .addAll(this.dashboardTab,
+                                                this.journalTab,
+                                                this.coaTab,
+                                                this.reportsTab,
+                                                this.accountDetailsTab
+                                );
+
+                // Default to the company selection view until a company is opened.
+                setCenter(this.companySelectionPanel);
+
+        }
+
+        /** Exposes the company selection panel for additional configuration. */
+        public CompanySelectionPanelFX getCompanySelectionPanel()
+        {
+                return this.companySelectionPanel;
+        }
+
+        /** Displays the company selection panel in the main content area. */
+        public void showCompanySelection()
+        {
+                setCenter(this.companySelectionPanel);
+        }
+
+        /** Restores the workspace tab pane to the main content area. */
+        public void showWorkspaceTabs()
+        {
+                setCenter(this.tabPane);
+        }
 	
 	/**
 	 * Sets the main {@link MenuBar} for the application view.
@@ -142,6 +162,7 @@ public class MainApplicationView extends BorderPane
 	{
 		this.menuBar = menuBar;
 		setTop(this.menuBar); // Directly set the MenuBar to the top
+		
 	}
 	
 	/**
@@ -152,35 +173,38 @@ public class MainApplicationView extends BorderPane
 	 *
 	 * @param panelType The {@link PanelType} indicating which tab/panel to display.
 	 */
-	public void showPanel(PanelType panelType)
-	{
-		
-		switch(panelType)
-		{
+        public void showPanel(PanelType panelType)
+        {
+                if (getCenter() != this.tabPane)
+                {
+                        showWorkspaceTabs();
+                }
+
+                switch(panelType)
+                {
 			case DASHBOARD:
 				this.tabPane.getSelectionModel().select(this.dashboardTab);
 				break;
-				
+			
 			case JOURNAL:
 				this.tabPane.getSelectionModel().select(this.journalTab);
 				break;
-				
+			
 			case COA:
 				this.tabPane.getSelectionModel().select(this.coaTab);
 				break;
-				
+			
 			case REPORTS:
 				this.tabPane.getSelectionModel().select(this.reportsTab);
 				break;
-				
+			
 			case ACCOUNT_DETAILS:
 				this.tabPane.getSelectionModel().select(this.accountDetailsTab);
 				break;
-				
+			
 			default:
 				// Optionally, log an error or select a default tab
 				System.err.println("Unknown panel type: " + panelType); // Consider using a logger
-				// tabPane.getSelectionModel().select(dashboardTab); // Fallback to dashboard
 				break;
 		}
 		
@@ -200,43 +224,62 @@ public class MainApplicationView extends BorderPane
                 this.reportsTab.setDisable(!companyOpen);
                 this.accountDetailsTab.setDisable(!companyOpen);
 
-               if (companyOpen)
-               {
-                       Company company = CurrentCompany.getCompany();
-                       ChartOfAccounts coa = company != null ? company.getChartOfAccounts() : new ChartOfAccounts();
+                if (companyOpen)
+                {
+                        showWorkspaceTabs();
+                        Company company = CurrentCompany.getCompany();
+                        ChartOfAccounts coa =
+                                        company != null ? company.getChartOfAccounts() : new ChartOfAccounts();
 
-                       if (this.coaEditorPanel == null)
-                       {
-                               this.coaEditorPanel = new CoaEditorPanelFX(coa, c -> {
-                                       if (company != null)
-                                       {
-                                               company.setChartOfAccounts(c);
-                                       }
-                               }, () -> {});
-                               this.coaTab.setContent(this.coaEditorPanel);
-                       }
-                       else
-                       {
-                               this.coaEditorPanel.setChartOfAccounts(coa);
-                       }
-               }
-		
-//		if (companyOpen)
-//		{
-//			this.tabPane.getTabs().remove(this.companySelectTab);
-//			this.tabPane.getSelectionModel().select(this.dashboardTab);
-//		}
-//		else
-//		{
-//			
-//			if (!this.tabPane.getTabs().contains(this.companySelectTab))
-//			{
-//				this.tabPane.getTabs().add(0, this.companySelectTab);
-//			}
-//			
-//			this.tabPane.getSelectionModel().select(this.companySelectTab);
-//		}
-		
-	}
-	
+                        if (this.coaEditorPanel == null)
+			{
+				this.coaEditorPanel = new CoaEditorPanelFX(coa, c -> {
+					
+					if (company != null)
+					{
+						company.setChartOfAccounts(c);
+					}
+					
+				}, () -> {
+				});
+				this.coaTab.setContent(this.coaEditorPanel);
+			}
+                        else
+                        {
+                                this.coaEditorPanel.setChartOfAccounts(coa);
+                        }
+                }
+                else
+                {
+                        showCompanySelection();
+                }
+
+        }
+
+        /** Provides access to the shared journal panel instance. */
+        public SkeletonJournalPanel getJournalPanel()
+        {
+                return this.journalPanel;
+        }
+
+        /** Exposes the account details panel instance. */
+        public AccountTransactionDetailsPanelFX getAccountDetailsPanel()
+        {
+                return this.accountDetailsPanel;
+        }
+
+        /** Applies the configured default report period to the account details view. */
+        public void applyAccountDetailsDefaults(ReportPeriodPreset preset, MonthDay fiscalYearStart,
+                boolean showYearToDate, boolean showFullYear, boolean showLastMonth)
+        {
+                if (preset == null || this.accountDetailsPanel == null)
+                {
+                        return;
+                }
+
+                this.accountDetailsPanel.applyDefaultPeriod(preset, fiscalYearStart);
+                this.accountDetailsPanel.configureQuickRanges(showYearToDate, showFullYear, showLastMonth,
+                        fiscalYearStart);
+        }
+
 }

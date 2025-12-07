@@ -26,8 +26,6 @@ import nonprofitbookkeeping.model.*;
 import nonprofitbookkeeping.service.ChartOfAccountsIOService;
 import nonprofitbookkeeping.service.ChartOfAccountsService;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
-import nonprofitbookkeeping.exception.ActionCancelledException;
-import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.model.CurrentCompany;
 
 /**
@@ -319,19 +317,14 @@ public class CoaEditorPanelFX extends BorderPane
 			this.onSave.accept(this.svc.asChart());
 		}
 		
-		try
-		{
-			
-			if (CurrentCompany.getCurrentFile() != null)
-			{
-				CurrentCompany.persist();
-			}
-			
-		}
-		catch (IOException | ActionCancelledException | NoFileCreatedException ex)
-		{
-			AlertBox.showError(null, "Failed to save company: " + ex.getMessage());
-		}
+                try
+                {
+                        CurrentCompany.persist();
+                }
+                catch (IOException ex)
+                {
+                        AlertBox.showError(null, "Failed to save company: " + ex.getMessage());
+                }
 		
 		closePanel();
 	}

@@ -1,18 +1,14 @@
 package nonprofitbookkeeping.service;
 
 import nonprofitbookkeeping.model.DonorContact;
+import nonprofitbookkeeping.persistence.DonorRepository;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.type.CollectionType;
-
-import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Service class for managing {@link DonorContact} information.
@@ -21,15 +17,8 @@ import java.util.logging.Logger;
  */
 public class DonorService {
 
-    /** Shared list storing donors across service instances. */
-    private static final List<DonorContact> SHARED_DONORS = new ArrayList<>();
-
-    /** Logger for this service. */
-    private static final Logger LOGGER = Logger.getLogger(DonorService.class.getName());
-
-    /** Filename used to persist donors to disk. */
-    private static final String DONORS_FILENAME = "donors.json";
-
+    /** Repository responsible for persisting donors. */
+    private final DonorRepository repository;
     /** In-memory list to store {@link DonorContact} objects. */
     private final List<DonorContact> donors;
 
@@ -38,7 +27,12 @@ public class DonorService {
      * Initializes an empty list to store donors.
      */
     public DonorService() {
-        this.donors = SHARED_DONORS;
+        this(new DonorRepository());
+    }
+
+    DonorService(DonorRepository repository) {
+        this.repository = Objects.requireNonNull(repository, "repository");
+        this.donors = new ArrayList<>();
     }
 
     /**
@@ -48,7 +42,20 @@ public class DonorService {
      * @throws NullPointerException if {@code donor} is null (due to ArrayList behavior).
      */
     public void addDonor(DonorContact donor) {
-        this.donors.add(donor);
+        if (donor == null) {
+            return;
+        }
+
+        if (donor.getId() == null || donor.getId().isBlank()) {
+            donor.setId(UUID.randomUUID().toString());
+        }
+
+        try {
+            this.repository.upsert(donor);
+            reloadFromRepository();
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to persist donor", e);
+        }
     }
 
     /**
@@ -59,20 +66,22 @@ public class DonorService {
      * @param updatedDonor A {@link DonorContact} object containing the updated information.
      * @return {@code true} if a donor with the given name was found and updated, {@code false} otherwise.
      */
-    public boolean editDonor(String donorName, DonorContact updatedDonor) {
-        Optional<DonorContact> donorToEdit = this.donors.stream()
-                .filter(donor -> donor.getName().equals(donorName))
-                .findFirst();
-
-        if (donorToEdit.isPresent()) {
-            DonorContact donor = donorToEdit.get();
-            donor.setEmail(updatedDonor.getEmail());
-            donor.setPhone(updatedDonor.getPhone());
-            donor.setName(updatedDonor.getName());
-            return true;
+    public boolean editDonor(String donorId, DonorContact updatedDonor) {
+        if (donorId == null || donorId.isBlank() || updatedDonor == null) {
+            return false;
         }
 
-        return false; // Donor not found
+        if (updatedDonor.getId() == null || updatedDonor.getId().isBlank()) {
+            updatedDonor.setId(donorId);
+        }
+
+        try {
+            this.repository.upsert(updatedDonor);
+            reloadFromRepository();
+            return this.donors.stream().anyMatch(d -> donorId.equals(d.getId()));
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to update donor", e);
+        }
     }
 
     /**
@@ -81,8 +90,18 @@ public class DonorService {
      * @param donorName The name of the donor to remove.
      * @return {@code true} if a donor with the given name was found and removed, {@code false} otherwise.
      */
-    public boolean removeDonor(String donorName) {
-        return this.donors.removeIf(donor -> donor.getName().equals(donorName));
+    public boolean removeDonor(String donorId) {
+        if (donorId == null || donorId.isBlank()) {
+            return false;
+        }
+
+        try {
+            boolean removed = this.repository.deleteByExternalId(donorId);
+            reloadFromRepository();
+            return removed;
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to delete donor", e);
+        }
     }
 
     /**
@@ -102,19 +121,11 @@ public class DonorService {
      * @param companyDirectory directory where the donors file should be written
      * @throws IOException if writing fails or the directory is invalid
      */
-    public void saveDonors(File companyDirectory) throws IOException {
-        if (companyDirectory == null || !companyDirectory.isDirectory()) {
-            throw new IOException("Company directory is invalid or not provided.");
-        }
-
-        File target = new File(companyDirectory, DONORS_FILENAME);
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+    public void saveDonors(java.io.File companyDirectory) throws java.io.IOException {
         try {
-            mapper.writeValue(target, getAllDonors());
-        } catch (IOException ex) {
-            LOGGER.log(Level.SEVERE, "Failed to save donors to " + target.getAbsolutePath(), ex);
-            throw ex;
+            this.repository.replaceAll(this.donors);
+        } catch (SQLException e) {
+            throw new IOException("Failed to save donors to H2 database", e);
         }
     }
 
@@ -126,25 +137,23 @@ public class DonorService {
      * @param companyDirectory directory where the donors file is located
      * @throws IOException if reading fails or the directory is invalid
      */
-    public void loadDonors(File companyDirectory) throws IOException {
-        this.donors.clear();
-        if (companyDirectory == null || !companyDirectory.isDirectory()) {
-            throw new IOException("Company directory is invalid or not provided.");
-        }
-
-        File target = new File(companyDirectory, DONORS_FILENAME);
-        if (!target.exists() || target.length() == 0) {
-            return; // nothing to load
-        }
-
-        ObjectMapper mapper = new ObjectMapper();
-        CollectionType listType = mapper.getTypeFactory().constructCollectionType(List.class, DonorContact.class);
+    public void loadDonors(java.io.File companyDirectory) throws java.io.IOException {
         try {
-            List<DonorContact> loaded = mapper.readValue(target, listType);
-            this.donors.addAll(loaded);
-        } catch (IOException ex) {
-            LOGGER.log(Level.SEVERE, "Failed to load donors from " + target.getAbsolutePath(), ex);
+            reloadFromRepository();
+        } catch (RuntimeException ex) {
+            if (ex.getCause() instanceof SQLException sqlException) {
+                throw new IOException("Failed to load donors from H2 database", sqlException);
+            }
             throw ex;
+        }
+    }
+
+    private void reloadFromRepository() {
+        try {
+            this.donors.clear();
+            this.donors.addAll(this.repository.list());
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to read donors from database", e);
         }
     }
 }

@@ -2,7 +2,50 @@
 
 This document lists potential code issues, areas for improvement, or bugs that were observed during the Javadoc documentation process.
 
-## Issues:
+## Bugs:
+- Help crashes
+    - Status: Resolved – The help panel now detects when JavaFX WebView cannot start (e.g. missing WebKit libraries) and falls back to the plain-text guide instead of throwing an error.
+- Importing `test7.npbk` fails with an H2 referential-integrity exception while deleting accounts
+    - Status: Resolved – The legacy importer clears journal tables before replacing accounts so the account foreign-key constraint stays satisfied during the import.
+
+## New features:
+- autosave in background
+- Journal - give an option to clear the filter entirely
+- tool tips on hover
+- shortcut keys
+
+- Account Details requires setting start data/end date. Give the ability to default to a period that is set in the settings.
+
+- Edit and new transaction panels need to be entirely scrapped and reimagined
+
+- Add settings for:
+	- autosave timeout
+	- default directory
+	- last used file
+	- fiscal year and day (use as the default for reports)
+	- Option on reports - Year to date
+	- Year
+	- Last Month
+	
+## These features are Non-working:
+
+- Journal->delete entry fails
+- Journal->new entry needs to be redone
+- Journal->edit transaction needs to be redone
+- numbers are not displayed in the money format given in the settings
+- Sales & COG -> Add Sale gets an error: invalid input
+- Grants-> Add Grant does nothing.
+
+- Fix settings. These are dummy values. Implement them:	
+	- Organization Name / Fiscal Year Start / Default Currency : these don't do anything
+	- Default Income and Expense accounts
+	- UI Preferences - language/ currency format
+	- Accounting
+	- Eliminate the users panel
+
+
+
+
 
 1.  **`src/main/java/nonprofitbookkeeping/ui/panels/AccountTransactionDetailsPanelFX.java`**
     *   **Issue:** Potential `StackOverflowError` in the `setupCompanyChangeListener` method.
@@ -20,6 +63,7 @@ This document lists potential code issues, areas for improvement, or bugs that w
     *   **Issue:** Undefined `LOGGER` instance in the `insertIntoTree` method.
     *   **Observation:** The code attempts to use a `LOGGER` variable that was not defined within the class or imported, which would lead to a compilation error.
     *   **Recommendation:** Define or import a `Logger` instance (e.g., `private static final Logger LOGGER = Logger.getLogger(CoaEditorPanelFX.class.getName());`).
+    *   **Status:** Resolved – the panel now uses an SLF4J logger, detects duplicates using account numbers, and warns cleanly when a parent node cannot be located.
 
 4.  **`src/main/java/nonprofitbookkeeping/preferences/PreferencesManager.java`**
     *   **Issue:** Duplicated preference keys.
@@ -55,8 +99,8 @@ This document lists potential code issues, areas for improvement, or bugs that w
     *   **Note:** Maven plugin resolution issues currently prevent test execution.
 
 10. **`src/main/java/nonprofitbookkeeping/ui/panels/GeneralJournalEntryPanelFX.java`**
-    *   **Status:** New panel added for creating general journal entries with running totals and natural-side handling.
-    *   **Next Steps:** Hook the panel into editing workflows, tighten validation when accounts are missing, and ensure integration tests run once the Maven configuration issues are resolved.
+    *   **Status:** Reimagined via `JournalEntryWorkspaceFX`, providing a unified new/edit experience with inline validation and a real-time balance summary.
+    *   **Next Steps:** Continue expanding automated UI coverage and ensure integration tests run once the Maven configuration issues are resolved.
 
 ## Feature Implementation Plan
 
@@ -104,16 +148,16 @@ This document lists potential code issues, areas for improvement, or bugs that w
 - Journal and skeleton panels were updated to use this panel for edits.
 
 ### 11. Implement Placeholder Functions
-- Implement real file export logic in `ExportFileActionFX.handle` instead of writing placeholder text.
-- Implement actual import processing in `ImportFileActionFX.handle`.
-- Replace the alert in `AccountsActivityPanelFX` with functional statement import code.
-- Add dynamic UI listeners in `BudgetLineDialog.attachListeners` for validation and field updates.
+- Implement real file export logic in `ExportFileActionFX.handle` instead of writing placeholder text. *(complete)*
+- Implement actual import processing in `ImportFileActionFX.handle`. *(complete – file chooser now imports OFX/QIF/XLSX data into the ledger and persists the company.)*
+- Replace the alert in `AccountsActivityPanelFX` with functional statement import code. *(complete – the panel adds imported transactions to the ledger, queues them for reconciliation, and persists the company.)*
+- Add dynamic UI listeners in `BudgetLineDialog.attachListeners` for validation and field updates. *(complete – the JavaFX dialog now validates amounts as users type, updates per-period previews, and disables the OK button when input is invalid.)*
 - Provide working backup and restore features in `SettingsPanelFX.backupTab`. *(complete)*
-- Generate real output in `GenerateReportPanelFX` rather than placeholder text.
-- Extend `PageViewer.getTableModel` to load data from the ledger or relevant source.
+- Generate real output in `GenerateReportPanelFX` rather than placeholder text. *(complete – the panel now invokes `ReportService.generateJasperReport` for every template and surfaces success/failure messages in the UI.)*
+- Extend `PageViewer.getTableModel` to load data from the ledger or relevant source. *(complete – the viewer now surfaces current ledger entries and helpful empty-state rows.)*
 - Make `CompanySelectionPanelFX.OnCompanyOpenedHandler` a proper callback interface and invoke it when a company is opened. *(complete)*
-- Implement data-driven logic in `ReconciliationService` methods such as `getUnreconciled`, `listReconcilableAccounts`, `reconcile`, and `addTransactionToReconcile`.
-- Calculate totals in `InvestmentTransaction.getTotal(Account)` using the account's transaction history.
-- Expand `OfxV2Writer.writeInvestmentSection` to output investment positions and transactions.
-- Review Swing stub methods like `performAction()` in report actions and implement or remove them if unused.
-- Move remaining company subsections into separate JSON files inside the `.npbk` archive for modular storage.
+- Implement data-driven logic in `ReconciliationService` methods such as `getUnreconciled`, `listReconcilableAccounts`, `reconcile`, and `addTransactionToReconcile`. *(complete – the service now loads ledger activity, tracks pending imports, and marks transactions cleared when saved.)*
+- Calculate totals in `InvestmentTransaction.getTotal(Account)` using the account's transaction history. *(complete – the helper now sums ledger entries for the specified account, honoring debit/credit balance.)*
+- Expand `OfxV2Writer.writeInvestmentSection` to output investment positions and transactions. *(complete – the writer now emits `INVPOSLIST` and `INVTRANLIST` sections with OFX-compliant wrappers and unit tests verify the generated XML.)*
+- Review Swing stub methods like `performAction()` in report actions and implement or remove them if unused. *(complete – legacy Swing report actions now delegate to ReportService and surface success/error feedback.)*
+- Move remaining company subsections into separate JSON files inside the `.npbk` archive for modular storage. *(complete – `JacksonDataStorer` now emits dedicated profile, ledger, and chart entries and reassembles them when loading archives while still writing the legacy aggregate for compatibility.)*

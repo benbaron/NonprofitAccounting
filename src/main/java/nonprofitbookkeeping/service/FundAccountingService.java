@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import nonprofitbookkeeping.persistence.DocumentRepository;
 
 /**
  * Service class for managing fund accounting operations.
@@ -33,8 +35,12 @@ public class FundAccountingService
 	/** Logger for this service. */
 	private static final Logger LOGGER = Logger.getLogger(FundAccountingService.class.getName());
 	
-	/** Filename used to persist funds to disk. */
-	private static final String FUNDS_FILENAME = "funds.json";
+        /** Database document name used to persist funds. */
+        private static final String DOCUMENT_NAME = "funds";
+        private static final ObjectMapper MAPPER = new ObjectMapper()
+                .enable(SerializationFeature.INDENT_OUTPUT);
+        private static final CollectionType LIST_TYPE =
+                MAPPER.getTypeFactory().constructCollectionType(List.class, Fund.class);
 	
 	/**
 	 * Constructs a new {@code FundAccountingService}.
@@ -190,86 +196,72 @@ public class FundAccountingService
 		return new ArrayList<>(this.fundMap.values());
 	}
 	
-	/**
-	 * Saves all funds to a JSON file located in the given company directory.
-	 *
-	 * @param companyDirectory directory where the funds file should be written
-	 * @throws IOException if writing fails or the directory is invalid
-	 */
-	public void saveFunds(File companyDirectory) throws IOException
-	{
-		
-		if (companyDirectory == null || !companyDirectory.isDirectory())
-		{
-			throw new IOException("Company directory is invalid or not provided.");
-		}
-		
-		File target = new File(companyDirectory, FUNDS_FILENAME);
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.enable(SerializationFeature.INDENT_OUTPUT);
-		
-		try
-		{
-			mapper.writeValue(target, listFunds());
-		}
-		catch (IOException ex)
-		{
-			LOGGER.log(Level.SEVERE, "Failed to save funds to " + target.getAbsolutePath(), ex);
-			throw ex;
-		}
-		
-	}
+        /**
+         * Saves all funds to the persistent document store.
+         *
+         * @param companyDirectory retained for backwards compatibility but ignored by the method
+         * @throws IOException if writing to the database fails
+         */
+        public void saveFunds(File companyDirectory) throws IOException
+        {
+
+                try
+                {
+                        String payload = MAPPER.writeValueAsString(listFunds());
+                        new DocumentRepository().upsert(DOCUMENT_NAME, payload);
+                        LOGGER.info("Funds saved to database document '" + DOCUMENT_NAME + "'.");
+                }
+                catch (SQLException e)
+                {
+                        throw new IOException("Failed to save funds to database", e);
+                }
+
+        }
 	
-	/**
-	 * Loads funds from a JSON file located in the given company directory.
-	 * Existing in-memory funds are cleared before loading new ones. If the
-	 * file does not exist, this method returns without modifying the current state.
-	 *
-	 * @param companyDirectory directory where the funds file is located
-	 * @throws IOException if reading fails or the directory is invalid
-	 */
+        /**
+         * Loads funds from the persistent document store.
+         * Existing in-memory funds are cleared before loading new ones.
+         *
+         * @param companyDirectory retained for backwards compatibility but ignored by the method
+         * @throws IOException if reading from the database fails
+         */
 	public void loadFunds(File companyDirectory) throws IOException
 	{
 		this.fundMap.clear();
 		
-		if (companyDirectory == null || !companyDirectory.isDirectory())
-		{
-			throw new IOException("Company directory is invalid or not provided.");
-		}
-		
-		File target = new File(companyDirectory, FUNDS_FILENAME);
-		
-		if (!target.exists() || target.length() == 0)
-		{
-			return; // nothing to load
-		}
-		
-		ObjectMapper mapper = new ObjectMapper();
-		CollectionType listType =
-			mapper.getTypeFactory().constructCollectionType(List.class, Fund.class);
-		
-		try
-		{
-			List<Fund> loaded = mapper.readValue(target, listType);
-			
-			for (Fund f : loaded)
-			{
-				
-				if (f.getName() != null)
-				{
-					this.fundMap.put(f.getName(), f);
-				}
-				
-			}
-			
-		}
-		catch (IOException ex)
-		{
-			LOGGER.log(Level.SEVERE, "Failed to load funds from " + target.getAbsolutePath(), ex);
-			throw ex;
-		}
-		
-	}
+                try
+                {
+                        new DocumentRepository().find(DOCUMENT_NAME)
+                                .ifPresent(payload -> {
+                                        try
+                                        {
+                                                List<Fund> loaded = MAPPER.readValue(payload, LIST_TYPE);
+
+                                                for (Fund f : loaded)
+                                                {
+
+                                                        if (f.getName() != null)
+                                                        {
+                                                                this.fundMap.put(f.getName(), f);
+                                                        }
+
+                                                }
+
+                                                LOGGER.info("Funds loaded from database document '" + DOCUMENT_NAME + "'.");
+                                        }
+                                        catch (IOException ex)
+                                        {
+                                                LOGGER.log(Level.SEVERE,
+                                                        "Failed to deserialize funds JSON from database", ex);
+                                        }
+                                });
+                }
+                catch (SQLException e)
+                {
+                        throw new IOException("Failed to load funds from database", e);
+                }
+
+        }
 	
 	/**
 	 * Retrieves a list of all accounts currently managed by this service.

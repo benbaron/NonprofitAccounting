@@ -12,21 +12,23 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter; // Added import
 
+import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Fund;
 import nonprofitbookkeeping.model.budget.Budget;
 import nonprofitbookkeeping.model.budget.BudgetLine;
 import nonprofitbookkeeping.model.budget.Periodicity;
 import nonprofitbookkeeping.ui.javafx.dialogs.BudgetLineDialogFX;
-import nonprofitbookkeeping.service.BudgetService;
 
-import java.io.File;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import nonprofitbookkeeping.service.BudgetService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects; // Added import
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,13 +38,13 @@ import java.util.stream.Collectors;
  */
 public class BudgetPanelFX extends VBox
 {
+        private static final Logger LOGGER = LoggerFactory.getLogger(BudgetPanelFX.class);
 	
 	// Data model fields
 	private Budget currentBudget;
 	private ChartOfAccounts chartOfAccounts;
 	private List<Fund> availableFunds;
-	private BudgetService budgetService;
-	private File companyDirectory;
+        private BudgetService budgetService;
 	
 	// UI Components for Budget Properties
 	private TextField txtBudgetName;
@@ -66,24 +68,27 @@ public class BudgetPanelFX extends VBox
 	private static final Fund ALL_FUNDS_SENTINEL = new Fund();
 	// Needs a way to set its display name if not null ID
 	
-	public BudgetPanelFX()
-	{
-		ALL_FUNDS_SENTINEL.setName("All Funds"); // Initialize sentinel display name
-		
-		initializeComponents();
-		layoutComponents();
-		attachListeners();
-	}
+        public BudgetPanelFX()
+        {
+                ALL_FUNDS_SENTINEL.setName("All Funds"); // Initialize sentinel display name
+
+                this.budgetService = new BudgetService();
+
+                initializeComponents();
+                layoutComponents();
+                attachListeners();
+        }
 	
-	public BudgetPanelFX(BudgetService budgetService, File companyDirectory, ChartOfAccounts coa,
-		List<Fund> funds, Budget budgetToEdit)
-	{
-		this();
-		this.budgetService = Objects.requireNonNull(budgetService, "BudgetService cannot be null");
-		this.companyDirectory =
-			Objects.requireNonNull(companyDirectory, "Company directory cannot be null");
-		loadBudget(budgetToEdit, coa, funds);
-	}
+        public BudgetPanelFX(BudgetService budgetService, ChartOfAccounts coa, List<Fund> funds,
+                Budget budgetToEdit)
+        {
+                this();
+                if (budgetService != null)
+                {
+                        this.budgetService = budgetService;
+                }
+                loadBudget(budgetToEdit, coa, funds);
+        }
 	
 	private void initializeComponents()
 	{
@@ -338,8 +343,8 @@ public class BudgetPanelFX extends VBox
 			
 		});
 		
-		this.btnSaveBudget.setOnAction(e -> actionSaveBudget());
-		this.btnClose.setOnAction(e -> System.out.println("Close clicked."));
+                this.btnSaveBudget.setOnAction(e -> actionSaveBudget());
+                this.btnClose.setOnAction(e -> LOGGER.debug("Close clicked."));
 		
 		this.btnAddLine.setOnAction(e -> actionAddLine());
 		this.btnEditLine.setOnAction(e -> actionEditLine());
@@ -349,19 +354,20 @@ public class BudgetPanelFX extends VBox
 	private void actionSaveBudget()
 	{
 		
-		if (this.currentBudget == null || this.budgetService == null ||
-			this.companyDirectory == null)
-		{
-			Alert alert =
-				new Alert(Alert.AlertType.ERROR, "Budget data not fully loaded. Cannot save.");
-			alert.setHeaderText(null);
-			alert.showAndWait();
-			return;
-		}
-		
-		try
-		{
-			List<Budget> allBudgets = this.budgetService.loadBudgets(this.companyDirectory);
+                if (this.currentBudget == null || this.budgetService == null ||
+                        !Database.isInitialized())
+                {
+                        Alert alert =
+                                new Alert(Alert.AlertType.ERROR,
+                                        "Budget data not fully loaded or database unavailable. Cannot save.");
+                        alert.setHeaderText(null);
+                        alert.showAndWait();
+                        return;
+                }
+
+                try
+                {
+                        List<Budget> allBudgets = this.budgetService.loadBudgets(null);
 			
 			if (allBudgets == null)
 			{
@@ -394,7 +400,7 @@ public class BudgetPanelFX extends VBox
 				allBudgets.add(this.currentBudget);
 			}
 			
-			BudgetService.saveBudgets(allBudgets, this.companyDirectory);
+                        BudgetService.saveBudgets(allBudgets, null);
 			
 			Alert alert = new Alert(Alert.AlertType.INFORMATION, "Budget saved successfully.");
 			alert.setHeaderText(null);

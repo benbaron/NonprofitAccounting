@@ -1,4 +1,3 @@
-
 package nonprofitbookkeeping.core;
 
 import nonprofitbookkeeping.model.*;
