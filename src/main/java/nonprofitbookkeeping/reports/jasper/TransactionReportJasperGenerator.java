@@ -31,18 +31,33 @@ public class TransactionReportJasperGenerator extends AbstractReportGenerator
 	private final TransactionQueryFacade.QueryConfig queryConfig;
 	private final ReportContext context;
 	
+	/**
+	 * 
+	 * Constructor TransactionReportJasperGenerator
+	 */
 	public TransactionReportJasperGenerator()
 	{
 		this(new ReportContext());
 		
 	}
 	
+	/**
+	 * 
+	 * Constructor TransactionReportJasperGenerator
+	 * @param context
+	 */
 	public TransactionReportJasperGenerator(ReportContext context)
 	{
 		this(context, new TransactionQueryFacade());
 		
 	}
 	
+	/**
+	 * 
+	 * Constructor TransactionReportJasperGenerator
+	 * @param context
+	 * @param queryFacade
+	 */
 	TransactionReportJasperGenerator(ReportContext context,
 		TransactionQueryFacade queryFacade)
 	{
@@ -53,13 +68,25 @@ public class TransactionReportJasperGenerator extends AbstractReportGenerator
 		
 	}
 	
+
+	/**
+	 * 
+	 * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getReportData()
+	 */
 	@Override
 	protected List<TransactionReportRowBean> getReportData()
 	{
-		return this.queryFacade.queryAndMap(this.queryConfig, this::toRowBean);
+		return this.queryFacade.queryAndMap(
+			this.queryConfig, // initialized by constructor
+			this::toRowBean); // 
 		
 	}
 	
+	/**
+	 * To Row Bean
+	 * @param record
+	 * @return
+	 */
 	private TransactionReportRowBean toRowBean(
 		TransactionQueryFacade.TransactionRecord record)
 	{
@@ -109,24 +136,35 @@ public class TransactionReportJasperGenerator extends AbstractReportGenerator
 			
 		}
 		
-		String debit = totalDebit.compareTo(java.math.BigDecimal.ZERO) != 0 ?
+		String debit = 
+			totalDebit.compareTo(java.math.BigDecimal.ZERO) != 0 ?
 			totalDebit.toPlainString() : "0";
-		String credit = totalCredit.compareTo(java.math.BigDecimal.ZERO) != 0 ?
+		String credit = 
+			totalCredit.compareTo(java.math.BigDecimal.ZERO) != 0 ?
 			totalCredit.toPlainString() : "0";
 		
 		String memo =
-			transaction.getMemo() != null ? transaction.getMemo() : "";
-		String accountNumber = account != null ? account.getAccountNumber() :
+			transaction.getMemo() != null ? 
+				transaction.getMemo() : "";
+		String accountNumber = account != null ? 
+			account.getAccountNumber() :
 			primaryEntry.getAccountNumber();
-		String accountName = account != null ? account.getName() :
+		String accountName = account != null ? 
+			account.getName() :
 			primaryEntry.getAccountNumber();
 		
 		return new TransactionReportRowBean(
 			String.valueOf(transaction.getBookingDateTimestamp()),
-			transaction.getDate(), memo,
-			memo, "", transaction.getDate(),
+			transaction.getDate(), 
+			memo,
+			memo, 
+			"", 
+			transaction.getDate(),
 			accountNumber,
-			accountName, "", debit, credit);
+			accountName, 
+			"", 
+			debit, 
+			credit);
 		
 	}
 	
@@ -154,16 +192,26 @@ public class TransactionReportJasperGenerator extends AbstractReportGenerator
 		
 	}
 	
+	/**
+	 * Builds query configuration
+	 * @param context
+	 * 
+	 * @return query configuration
+	 */
 	private static TransactionQueryFacade.QueryConfig buildQueryConfig(
 		ReportContext context)
 	{
 		TransactionQueryFacade.QueryConfig.Builder builder =
 			TransactionQueryFacade.QueryConfig
 				.builder()
-				.withDateRange(context.getStartDate(), context.getEndDate())
-				.withAccounts(context.getAccountIdsForDetailReport(),
+				.withDateRange(
+					context.getStartDate(), 
+					context.getEndDate())
+				.withAccounts(
+					context.getAccountIdsForDetailReport(),
 					context.isRequireAllAccounts())
-				.withMemoSubstring(context.getMemoFilter());
+				.withMemoSubstring(
+					context.getMemoFilter());
 		
 		AccountSide side = parseSide(context.getTransactionType());
 		builder.withTransactionType(side);
@@ -171,6 +219,12 @@ public class TransactionReportJasperGenerator extends AbstractReportGenerator
 		
 	}
 	
+	/**
+	 * Parses the Side debit/credit
+	 * 
+	 * @param sideText
+	 * @return
+	 */
 	private static AccountSide parseSide(String sideText)
 	{
 		

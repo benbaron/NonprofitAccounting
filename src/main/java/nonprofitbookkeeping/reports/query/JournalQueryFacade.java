@@ -1,3 +1,4 @@
+
 package nonprofitbookkeeping.reports.query;
 
 import nonprofitbookkeeping.model.AccountingEntry;
@@ -28,265 +29,315 @@ import java.util.stream.Collectors;
  */
 public class JournalQueryFacade
 {
-        private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
-
-        private final JournalRepository journalRepository;
-
-        /**
-         * Creates a facade that uses a new {@link JournalRepository} instance for
-         * loading transactions.
-         */
-        public JournalQueryFacade()
-        {
-                this(new JournalRepository());
-        }
-
-        /**
-         * Creates a facade that delegates data access to the provided repository.
-         *
-         * @param journalRepository repository used to load journal transactions; must
-         *                          not be {@code null}
-         */
-        public JournalQueryFacade(JournalRepository journalRepository)
-        {
-                this.journalRepository = journalRepository;
-        }
-
-        /**
-         * Retrieves all {@link AccountingTransaction} records that match the supplied
-         * criteria. Null criteria returns an empty list. Any repository failure is
-         * wrapped in an {@link IllegalStateException} to simplify caller handling.
-         *
-         * @param criteria filters for the query; may be {@code null}
-         * @return list of transactions satisfying the criteria
-         * @throws IllegalStateException if the repository cannot return transactions
-         */
-        public List<AccountingTransaction> fetchTransactions(JournalQueryCriteria criteria)
-        {
-                if (criteria == null)
-                {
-                        return Collections.emptyList();
-                }
-
-                List<AccountingTransaction> allTransactions;
-                try
-                {
-                        allTransactions = this.journalRepository.listTransactions();
-                }
-                catch (Exception ex)
-                {
-                        throw new IllegalStateException("Unable to load journal transactions", ex);
-                }
-
-                return allTransactions.stream()
-                        .filter(txn -> matchesCriteria(txn, criteria))
-                        .collect(Collectors.toList());
-        }
-
-        /**
-         * Determines whether the supplied transaction satisfies the given criteria.
-         *
-         * @param txn      transaction to evaluate
-         * @param criteria criteria to match against
-         * @return {@code true} if the transaction meets all criteria, otherwise
-         *         {@code false}
-         */
-        private boolean matchesCriteria(AccountingTransaction txn, JournalQueryCriteria criteria)
-        {
-                if (txn == null)
-                {
-                        return false;
-                }
-
-                if (criteria.getTransactionType() != null)
-                {
-                        String infoType = txn.getInfo() == null ? null
-                                : txn.getInfo().getOrDefault("transactionType",
-                                        txn.getInfo().get("type"));
-                        if (infoType == null
-                                || !infoType.equalsIgnoreCase(criteria.getTransactionType()))
-                        {
-                                return false;
-                        }
-                }
-
-                if (!isWithinDateRange(txn, criteria.getStartDate(), criteria.getEndDate()))
-                {
-                        return false;
-                }
-
-                if (criteria.getMemoContains() != null)
-                {
-                        if (txn.getMemo() == null || !txn.getMemo().toLowerCase(Locale.ROOT)
-                                .contains(criteria.getMemoContains()
-                                        .toLowerCase(Locale.ROOT)))
-                        {
-                                return false;
-                        }
-                }
-
-                if (!criteria.getInfoEquals().isEmpty())
-                {
-                        if (txn.getInfo() == null)
-                        {
-                                return false;
-                        }
-                        for (var entry : criteria.getInfoEquals().entrySet())
-                        {
-                                if (!Objects.equals(txn.getInfo().get(entry.getKey()),
-                                        entry.getValue()))
-                                {
-                                        return false;
-                                }
-                        }
-                }
-
-                if (!criteria.getAccountNumbers().isEmpty())
-                {
-                        Set<String> txnAccounts = collectAccountNumbers(txn);
-                        if (criteria.getAccountMatchMode() == JournalQueryCriteria.AccountMatchMode.ALL)
-                        {
-                                if (!txnAccounts.containsAll(criteria.getAccountNumbers()))
-                                {
-                                        return false;
-                                }
-                        }
-                        else if (Collections.disjoint(txnAccounts, criteria.getAccountNumbers()))
-                        {
-                                return false;
-                        }
-                }
-
-                if (criteria.getCustomPredicate() != null
-                        && !criteria.getCustomPredicate().test(txn))
-                {
-                        return false;
-                }
-
-                return true;
-        }
-
-        /**
-         * Retrieves mapped report beans generated from transactions that match the
-         * given criteria.
-         *
-         * @param criteria filters for selecting transactions; may be {@code null}
-         * @param mapper   function to convert each matching transaction into a bean;
-         *                 must not be {@code null}
-         * @param <T>      type of bean produced by the mapper
-         * @return list of non-null mapped beans
-         */
-        public <T> List<T> fetchBeans(JournalQueryCriteria criteria,
-                Function<AccountingTransaction, T> mapper)
-        {
-                Objects.requireNonNull(mapper, "mapper is required");
-
-                return fetchTransactions(criteria).stream()
-                        .map(mapper)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList());
-        }
-
-        /**
-         * Checks whether the transaction date falls within the provided start/end
-         * bounds. Null bounds disable that edge of the comparison, while an
-         * unparsable date fails the match to avoid incorrect inclusion.
-         *
-         * @param txn   transaction containing the date string to evaluate
-         * @param start inclusive lower bound; may be {@code null}
-         * @param end   inclusive upper bound; may be {@code null}
-         * @return {@code true} if the transaction date is within range
-         */
-        private boolean isWithinDateRange(AccountingTransaction txn, LocalDate start,
-                LocalDate end)
-        {
-                if (start == null && end == null)
-                {
-                        return true;
-                }
-                LocalDate txnDate = parseDate(txn.getDate());
-                if (txnDate == null)
-                {
-                        return false;
-                }
-                if (start != null && txnDate.isBefore(start))
-                {
-                        return false;
-                }
-                if (end != null && txnDate.isAfter(end))
-                {
-                        return false;
-                }
-                return true;
-        }
-
-        /**
-         * Parses a transaction date using {@link DateTimeFormatter#ISO_LOCAL_DATE}.
-         * Blank or invalid values return {@code null} so caller logic can decide how
-         * to treat missing dates.
-         *
-         * @param rawDate raw date string from a transaction
-         * @return parsed {@link LocalDate} or {@code null} when absent or invalid
-         */
-        private LocalDate parseDate(String rawDate)
-        {
-                if (rawDate == null || rawDate.isBlank())
-                {
-                        return null;
-                }
-                try
-                {
-                        return LocalDate.parse(rawDate.trim(), DATE_FORMATTER);
-                }
-                catch (DateTimeParseException ex)
-                {
-                        return null;
-                }
-        }
-
-        /**
-         * Collects account numbers referenced by the transaction's entries, ignoring
-         * null entries and blank account numbers.
-         *
-         * @param txn transaction from which to collect account numbers
-         * @return set of account numbers or an empty set if none exist
-         */
-        private Set<String> collectAccountNumbers(AccountingTransaction txn)
-        {
-                if (txn.getEntries() == null || txn.getEntries().isEmpty())
-                {
-                        return Collections.emptySet();
-                }
-                Set<String> numbers = new HashSet<>();
-                for (AccountingEntry entry : txn.getEntries())
-                {
-                        if (entry != null && entry.getAccountNumber() != null)
-                        {
-                                numbers.add(entry.getAccountNumber());
-                        }
-                }
-                return numbers;
-        }
-
-        /**
-         * Sums the absolute values of all non-null entry amounts in a transaction.
-         * Missing transactions or entries yield {@link BigDecimal#ZERO} to simplify
-         * caller calculations.
-         *
-         * @param txn transaction containing entries to aggregate
-         * @return sum of absolute entry amounts
-         */
-        public BigDecimal sumAbsoluteEntryAmounts(AccountingTransaction txn)
-        {
-                if (txn == null || txn.getEntries() == null)
-                {
-                        return BigDecimal.ZERO;
-                }
-                return txn.getEntries().stream()
-                        .filter(Objects::nonNull)
-                        .map(AccountingEntry::getAmount)
-                        .filter(Objects::nonNull)
-                        .map(BigDecimal::abs)
-                        .reduce(BigDecimal.ZERO, BigDecimal::add);
-        }
+	private static final DateTimeFormatter DATE_FORMATTER =
+		DateTimeFormatter.ISO_LOCAL_DATE;
+	
+	private final JournalRepository journalRepository;
+	
+	/**
+	 * Creates a facade that uses a new {@link JournalRepository} instance for
+	 * loading transactions.
+	 */
+	public JournalQueryFacade()
+	{
+		this(new JournalRepository());
+		
+	}
+	
+	/**
+	 * Creates a facade that delegates data access to the provided repository.
+	 *
+	 * @param journalRepository repository used to load journal transactions; must
+	 *                          not be {@code null}
+	 */
+	public JournalQueryFacade(JournalRepository journalRepository)
+	{
+		this.journalRepository = journalRepository;
+		
+	}
+	
+	/**
+	 * Retrieves all {@link AccountingTransaction} records that match the supplied
+	 * criteria. Null criteria returns an empty list. Any repository failure is
+	 * wrapped in an {@link IllegalStateException} to simplify caller handling.
+	 *
+	 * @param criteria filters for the query; may be {@code null}
+	 * @return list of transactions satisfying the criteria
+	 * @throws IllegalStateException if the repository cannot return transactions
+	 */
+	public List<AccountingTransaction> fetchTransactions(
+		JournalQueryCriteria criteria)
+	{
+		
+		if (criteria == null)
+		{
+			return Collections.emptyList();
+		}
+		
+		List<AccountingTransaction> allTransactions;
+		
+		try
+		{
+			allTransactions = this.journalRepository.listTransactions();
+		}
+		catch (Exception ex)
+		{
+			throw new IllegalStateException(
+				"Unable to load journal transactions", ex);
+		}
+		
+		return allTransactions.stream()
+			.filter(txn -> matchesCriteria(txn, criteria))
+			.collect(Collectors.toList());
+		
+	}
+	
+	/**
+	 * Determines whether the supplied transaction satisfies the given criteria.
+	 *
+	 * @param txn      transaction to evaluate
+	 * @param criteria criteria to match against
+	 * @return {@code true} if the transaction meets all criteria, otherwise
+	 *         {@code false}
+	 */
+	private boolean matchesCriteria(AccountingTransaction txn,
+		JournalQueryCriteria criteria)
+	{
+		
+		if (txn == null)
+		{
+			return false;
+		}
+		
+		if (criteria.getTransactionType() != null)
+		{
+			String infoType = txn.getInfo() == null ? null :
+				txn.getInfo().getOrDefault("transactionType",
+					txn.getInfo().get("type"));
+			
+			if (infoType == null ||
+				!infoType.equalsIgnoreCase(criteria.getTransactionType()))
+			{
+				return false;
+			}
+			
+		}
+		
+		if (!isWithinDateRange(txn, criteria.getStartDate(),
+			criteria.getEndDate()))
+		{
+			return false;
+		}
+		
+		if (criteria.getMemoContains() != null)
+		{
+			
+			if (txn.getMemo() == null || !txn.getMemo().toLowerCase(Locale.ROOT)
+				.contains(criteria.getMemoContains()
+					.toLowerCase(Locale.ROOT)))
+			{
+				return false;
+			}
+			
+		}
+		
+		if (!criteria.getInfoEquals().isEmpty())
+		{
+			
+			if (txn.getInfo() == null)
+			{
+				return false;
+			}
+			
+			for (var entry : criteria.getInfoEquals().entrySet())
+			{
+				
+				if (!Objects.equals(txn.getInfo().get(entry.getKey()),
+					entry.getValue()))
+				{
+					return false;
+				}
+				
+			}
+			
+		}
+		
+		if (!criteria.getAccountNumbers().isEmpty())
+		{
+			Set<String> txnAccounts = collectAccountNumbers(txn);
+			
+			if (criteria.getAccountMatchMode() ==
+				JournalQueryCriteria.AccountMatchMode.ALL)
+			{
+				
+				if (!txnAccounts.containsAll(criteria.getAccountNumbers()))
+				{
+					return false;
+				}
+				
+			}
+			else if (Collections.disjoint(txnAccounts,
+				criteria.getAccountNumbers()))
+			{
+				return false;
+			}
+			
+		}
+		
+		if (criteria.getCustomPredicate() != null &&
+			!criteria.getCustomPredicate().test(txn))
+		{
+			return false;
+		}
+		
+		return true;
+		
+	}
+	
+	/**
+	 * Retrieves mapped report beans generated from transactions that match the
+	 * given criteria.
+	 *
+	 * @param criteria filters for selecting transactions; may be {@code null}
+	 * @param mapper   function to convert each matching transaction into a bean;
+	 *                 must not be {@code null}
+	 * @param <T>      type of bean produced by the mapper
+	 * @return list of non-null mapped beans
+	 */
+	public <T> List<T> fetchBeans(JournalQueryCriteria criteria,
+		Function<AccountingTransaction, T> mapper)
+	{
+		Objects.requireNonNull(mapper, "mapper is required");
+		
+		return fetchTransactions(criteria).stream()
+			.map(mapper)
+			.filter(Objects::nonNull)
+			.collect(Collectors.toList());
+		
+	}
+	
+	/**
+	 * Checks whether the transaction date falls within the provided start/end
+	 * bounds. Null bounds disable that edge of the comparison, while an
+	 * unparsable date fails the match to avoid incorrect inclusion.
+	 *
+	 * @param txn   transaction containing the date string to evaluate
+	 * @param start inclusive lower bound; may be {@code null}
+	 * @param end   inclusive upper bound; may be {@code null}
+	 * @return {@code true} if the transaction date is within range
+	 */
+	private boolean isWithinDateRange(AccountingTransaction txn,
+		LocalDate start,
+		LocalDate end)
+	{
+		
+		if (start == null && end == null)
+		{
+			return true;
+		}
+		
+		LocalDate txnDate = parseDate(txn.getDate());
+		
+		if (txnDate == null)
+		{
+			return false;
+		}
+		
+		if (start != null && txnDate.isBefore(start))
+		{
+			return false;
+		}
+		
+		if (end != null && txnDate.isAfter(end))
+		{
+			return false;
+		}
+		
+		return true;
+		
+	}
+	
+	/**
+	 * Parses a transaction date using {@link DateTimeFormatter#ISO_LOCAL_DATE}.
+	 * Blank or invalid values return {@code null} so caller logic can decide how
+	 * to treat missing dates.
+	 *
+	 * @param rawDate raw date string from a transaction
+	 * @return parsed {@link LocalDate} or {@code null} when absent or invalid
+	 */
+	private LocalDate parseDate(String rawDate)
+	{
+		
+		if (rawDate == null || rawDate.isBlank())
+		{
+			return null;
+		}
+		
+		try
+		{
+			return LocalDate.parse(rawDate.trim(), DATE_FORMATTER);
+		}
+		catch (DateTimeParseException ex)
+		{
+			return null;
+		}
+		
+	}
+	
+	/**
+	 * Collects account numbers referenced by the transaction's entries, ignoring
+	 * null entries and blank account numbers.
+	 *
+	 * @param txn transaction from which to collect account numbers
+	 * @return set of account numbers or an empty set if none exist
+	 */
+	private Set<String> collectAccountNumbers(AccountingTransaction txn)
+	{
+		
+		if (txn.getEntries() == null || txn.getEntries().isEmpty())
+		{
+			return Collections.emptySet();
+		}
+		
+		Set<String> numbers = new HashSet<>();
+		
+		for (AccountingEntry entry : txn.getEntries())
+		{
+			
+			if (entry != null && entry.getAccountNumber() != null)
+			{
+				numbers.add(entry.getAccountNumber());
+			}
+			
+		}
+		
+		return numbers;
+		
+	}
+	
+	/**
+	 * Sums the absolute values of all non-null entry amounts in a transaction.
+	 * Missing transactions or entries yield {@link BigDecimal#ZERO} to simplify
+	 * caller calculations.
+	 *
+	 * @param txn transaction containing entries to aggregate
+	 * @return sum of absolute entry amounts
+	 */
+	public BigDecimal sumAbsoluteEntryAmounts(AccountingTransaction txn)
+	{
+		
+		if (txn == null || txn.getEntries() == null)
+		{
+			return BigDecimal.ZERO;
+		}
+		
+		return txn.getEntries().stream()
+			.filter(Objects::nonNull)
+			.map(AccountingEntry::getAmount)
+			.filter(Objects::nonNull)
+			.map(BigDecimal::abs)
+			.reduce(BigDecimal.ZERO, BigDecimal::add);
+		
+	}
+	
 }

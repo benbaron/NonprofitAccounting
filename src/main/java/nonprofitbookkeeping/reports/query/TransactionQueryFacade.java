@@ -135,6 +135,10 @@ public class TransactionQueryFacade
 		
 	}
 	
+	/**
+	 * Load transactions from current company
+	 * @return List of transactions
+	 */
 	private static
 		List<AccountingTransaction> loadTransactionsFromCurrentCompany()
 	{

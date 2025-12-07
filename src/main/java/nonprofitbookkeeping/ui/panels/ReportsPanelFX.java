@@ -56,7 +56,6 @@ public class ReportsPanelFX extends BorderPane
 		this.companyListener = new ReportsPanelCompanyListener(this);
 		CurrentCompany.CompanyListener.addCompanyListener(this.companyListener);
 		
-		// refresh(); // Old call, replaced by handleCompanyChange
 		handleCompanyChange(CurrentCompany.isOpen());
 		
 	}
@@ -71,15 +70,15 @@ public class ReportsPanelFX extends BorderPane
 	 *
 	 * @return A configured {@link ToolBar} for report generation controls.
 	 */
-	// Renamed to avoid potential API conflicts if buildGeneratorBar was considered
-	// public/protected
 	private ToolBar buildGeneratorBarInternal()
 	{
 		ComboBox<String> typeBox = new ComboBox<>();
-		typeBox.getItems().addAll("Income Statement", "Balance Sheet", "Cash Flow", "Donor Summary",
-				"Fund Activity Report");
-		// typeBox.getSelectionModel().selectFirst(); // Selection can be set in
-		// handleCompanyChange or when enabled
+		typeBox.getItems().addAll("Income Statement", 
+			"Balance Sheet", 
+			"Cash Flow", 
+			"Donor Summary",
+			"Fund Activity Report");
+
 		DatePicker from = new DatePicker(LocalDate.now().withDayOfYear(1));
 		DatePicker to = new DatePicker(LocalDate.now());
 		Button gen = new Button("Generate");
