@@ -29,6 +29,13 @@ public class CompanyProfileRepository {
             "FROM company_profile WHERE id = 1";
     private static final String DELETE_SQL = "DELETE FROM company_profile WHERE id = 1";
 
+    /**
+     * Saves the provided company profile. Passing {@code null} clears the stored row
+     * to reflect the absence of profile data.
+     *
+     * @param profile profile model to persist or {@code null} to delete
+     * @throws SQLException if any database statement fails
+     */
     public void save(CompanyProfileModel profile) throws SQLException {
         if (profile == null) {
             try (Connection c = Database.get().getConnection();
@@ -63,6 +70,12 @@ public class CompanyProfileRepository {
         }
     }
 
+    /**
+     * Loads the persisted company profile if present.
+     *
+     * @return an {@link Optional} containing the profile when stored
+     * @throws SQLException if the query fails
+     */
     public Optional<CompanyProfileModel> load() throws SQLException {
         try (Connection c = Database.get().getConnection();
              PreparedStatement ps = c.prepareStatement(SELECT_SQL);
