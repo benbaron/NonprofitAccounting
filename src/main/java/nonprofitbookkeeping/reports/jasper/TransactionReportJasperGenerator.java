@@ -1,12 +1,18 @@
 
 package nonprofitbookkeeping.reports.jasper;
 
+import nonprofitbookkeeping.model.Account;
+import nonprofitbookkeeping.model.AccountSide;
+import nonprofitbookkeeping.model.AccountingEntry;
+import nonprofitbookkeeping.model.AccountingTransaction;
+import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.reports.datasource.TransactionQueryFacade;
 import nonprofitbookkeeping.reports.datasource.TransactionReportRowBean;
-
-import java.util.ArrayList;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -19,71 +25,63 @@ public class TransactionReportJasperGenerator extends AbstractReportGenerator
 	 * 
 	 * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getReportData()
 	 */
-	@Override protected List<TransactionReportRowBean> getReportData()
-	{
-		nonprofitbookkeeping.model.Company company =
-			nonprofitbookkeeping.model.CurrentCompany.getCompany();
-		
-		if (company == null || company.getLedger() == null || company.getChartOfAccounts() == null)
-		{
-			return Collections.emptyList();
-		}
-		
-		List<TransactionReportRowBean> data = new ArrayList<>();
-		
-		List<nonprofitbookkeeping.model.AccountingTransaction> txns =
-			company.getLedger().getTransactions();
-		
-		if (txns == null)
-		{
-			return data;
-		}
-		
-		txns.sort(java.util.Comparator.comparingLong(
-			nonprofitbookkeeping.model.AccountingTransaction::getBookingDateTimestamp));
-		
-		for (nonprofitbookkeeping.model.AccountingTransaction tx : txns)
-		{
-			if (tx == null || tx.getEntries() == null)
-				continue;
-			
-			nonprofitbookkeeping.model.AccountingEntry first = tx.getEntries().iterator().next();
-			nonprofitbookkeeping.model.Account acct =
-				company.getChartOfAccounts().getAccount(first.getAccountNumber());
-			
-			String debit = "0";
-			String credit = "0";
-			java.math.BigDecimal totalDebit = java.math.BigDecimal.ZERO;
-			java.math.BigDecimal totalCredit = java.math.BigDecimal.ZERO;
-			
-			for (nonprofitbookkeeping.model.AccountingEntry entry : tx.getEntries())
-			{
-				
-				if (entry.getAccountSide() == nonprofitbookkeeping.model.AccountSide.DEBIT)
-				{
-					totalDebit = totalDebit.add(entry.getAmount());
-				}
-				else
-				{
-					totalCredit = totalCredit.add(entry.getAmount());
-				}
-				
-			}
-			
-			if (totalDebit.compareTo(java.math.BigDecimal.ZERO) != 0)
-				debit = totalDebit.toPlainString();
-			if (totalCredit.compareTo(java.math.BigDecimal.ZERO) != 0)
-				credit = totalCredit.toPlainString();
-			
-			data.add(new TransactionReportRowBean(String.valueOf(tx.getBookingDateTimestamp()),
-				tx.getDate(), tx.getMemo() != null ? tx.getMemo() : "",
-				tx.getMemo() != null ? tx.getMemo() : "", "", tx.getDate(),
-				acct != null ? acct.getAccountNumber() : first.getAccountNumber(),
-				acct != null ? acct.getName() : first.getAccountNumber(), "", debit, credit));
-		}
-		
-		return data;
-	}
+        @Override protected List<TransactionReportRowBean> getReportData()
+        {
+                Company company = CurrentCompany.getCompany();
+
+                if (company == null || company.getLedger() == null || company.getChartOfAccounts() == null)
+                {
+                        return Collections.emptyList();
+                }
+
+                List<AccountingTransaction> txns = company.getLedger().getTransactions();
+                if (txns == null)
+                {
+                        return Collections.emptyList();
+                }
+
+                txns.sort(Comparator.comparingLong(AccountingTransaction::getBookingDateTimestamp));
+
+                TransactionQueryFacade query = new TransactionQueryFacade();
+                List<TransactionReportRowBean> data = query.mapToBeans(txns,
+                        tx -> toRowBean(tx, company));
+
+                return data;
+        }
+
+        private TransactionReportRowBean toRowBean(AccountingTransaction tx, Company company)
+        {
+                AccountingEntry first = tx.getEntries().iterator().next();
+                Account acct = company.getChartOfAccounts().getAccount(first.getAccountNumber());
+
+                java.math.BigDecimal totalDebit = java.math.BigDecimal.ZERO;
+                java.math.BigDecimal totalCredit = java.math.BigDecimal.ZERO;
+
+                for (AccountingEntry entry : tx.getEntries())
+                {
+                        if (entry.getAccountSide() == AccountSide.DEBIT)
+                        {
+                                totalDebit = totalDebit.add(entry.getAmount());
+                        }
+                        else
+                        {
+                                totalCredit = totalCredit.add(entry.getAmount());
+                        }
+                }
+
+                String debit = totalDebit.compareTo(java.math.BigDecimal.ZERO) == 0
+                        ? "0"
+                        : totalDebit.toPlainString();
+                String credit = totalCredit.compareTo(java.math.BigDecimal.ZERO) == 0
+                        ? "0"
+                        : totalCredit.toPlainString();
+
+                return new TransactionReportRowBean(String.valueOf(tx.getBookingDateTimestamp()),
+                        tx.getDate(), tx.getMemo() != null ? tx.getMemo() : "",
+                        tx.getMemo() != null ? tx.getMemo() : "", "", tx.getDate(),
+                        acct != null ? acct.getAccountNumber() : first.getAccountNumber(),
+                        acct != null ? acct.getName() : first.getAccountNumber(), "", debit, credit);
+        }
 	
 	@Override protected Map<String, Object> getReportParameters()
 	{
