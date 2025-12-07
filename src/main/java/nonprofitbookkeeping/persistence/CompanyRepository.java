@@ -170,6 +170,13 @@ public class CompanyRepository {
         throw new SQLException("Failed to import company payload");
     }
 
+    /**
+     * Serializes a {@link Company} aggregate into a byte array for storage.
+     *
+     * @param company aggregate to serialize
+     * @return serialized payload
+     * @throws IOException if the object cannot be written
+     */
     private static byte[] serialize(Company company) throws IOException {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
              ObjectOutputStream oos = new ObjectOutputStream(baos)) {
@@ -179,6 +186,14 @@ public class CompanyRepository {
         }
     }
 
+    /**
+     * Deserializes the stored company payload back into an aggregate instance.
+     *
+     * @param payload serialized bytes
+     * @return reconstructed {@link Company}
+     * @throws IOException            if deserialization fails
+     * @throws ClassNotFoundException if referenced classes cannot be resolved
+     */
     private static Company deserialize(byte[] payload) throws IOException, ClassNotFoundException {
         if (payload == null) {
             throw new IOException("Company payload was null");
@@ -189,6 +204,13 @@ public class CompanyRepository {
         }
     }
 
+    /**
+     * Derives a friendly display name for the company using profile information when
+     * available. Falls back to the aggregate name or a default placeholder.
+     *
+     * @param company aggregate from which to pull the name
+     * @return resolved company name to persist
+     */
     private static String deriveName(Company company) {
         if (company.getCompanyProfileModel() != null && company.getCompanyProfileModel().getCompanyName() != null
                 && !company.getCompanyProfileModel().getCompanyName().isBlank()) {
