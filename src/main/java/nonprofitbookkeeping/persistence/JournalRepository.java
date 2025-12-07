@@ -13,8 +13,20 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Repository responsible for persisting {@link AccountingTransaction} entries and
+ * their related journal information. Operations are designed to run within single
+ * database transactions to keep parent transactions aligned with their entries.
+ */
 public class JournalRepository {
 
+    /**
+     * Inserts or updates a single journal transaction and its entries within an
+     * isolated transaction.
+     *
+     * @param txn transaction to persist
+     * @throws SQLException if any statement fails
+     */
     public void upsertTransaction(AccountingTransaction txn) throws SQLException {
         try (Connection c = Database.get().getConnection()) {
             c.setAutoCommit(false);
@@ -23,6 +35,14 @@ public class JournalRepository {
         }
     }
 
+    /**
+     * Replaces the existing journal contents with the supplied transactions.
+     * All operations execute inside a single transaction so the journal cannot
+     * be left partially updated.
+     *
+     * @param transactions complete set of transactions to store
+     * @throws SQLException if any database interaction fails
+     */
     public void replaceAll(List<AccountingTransaction> transactions) throws SQLException {
         try (Connection c = Database.get().getConnection()) {
             boolean originalAutoCommit = c.getAutoCommit();
@@ -44,6 +64,15 @@ public class JournalRepository {
         }
     }
 
+    /**
+     * Performs the transaction replacement using the provided connection. Existing
+     * rows are cleared before inserting the supplied transactions to ensure
+     * consistent ordering and associations.
+     *
+     * @param c             open database connection
+     * @param transactions  transactions to insert
+     * @throws SQLException if any statement fails
+     */
     void replaceAll(Connection c, List<AccountingTransaction> transactions) throws SQLException {
         if (c == null) {
             throw new IllegalArgumentException("connection required");
@@ -65,6 +94,13 @@ public class JournalRepository {
         }
     }
 
+    /**
+     * Loads all journal transactions, including their entries and supplemental
+     * transaction info, ordered by identifier.
+     *
+     * @return ordered list of persisted transactions
+     * @throws SQLException if any query fails
+     */
     public List<AccountingTransaction> listTransactions() throws SQLException {
         Map<Integer, AccountingTransaction> byId = new LinkedHashMap<>();
         List<AccountingTransaction> transactions = new ArrayList<>();
@@ -141,6 +177,15 @@ public class JournalRepository {
         return transactions;
     }
 
+    /**
+     * Writes the transaction header, entries, and arbitrary transaction metadata
+     * using the provided connection. Existing entries and metadata for the same
+     * transaction id are removed before inserting the current values.
+     *
+     * @param c   open connection participating in an outer transaction
+     * @param txn transaction to write
+     * @throws SQLException if any statement fails
+     */
     private void writeTransaction(Connection c, AccountingTransaction txn) throws SQLException {
         String upsertTxn = """
             MERGE INTO journal_transaction(id, booking_ts, date_text, memo, to_from, check_number,
