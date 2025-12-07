@@ -4,114 +4,84 @@ package nonprofitbookkeeping.reports.jasper;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
-import nonprofitbookkeeping.reports.datasource.LedgerQueryCriteria;
-import nonprofitbookkeeping.reports.datasource.LedgerQueryFacade;
+import nonprofitbookkeeping.model.ChartOfAccounts;
+import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.model.Account;
+import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.reports.datasource.TransactionReportRowBean;
+import nonprofitbookkeeping.reports.query.TransactionQueryFacade;
 
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Generator for the Transaction report.
  */
 public class TransactionReportJasperGenerator extends AbstractReportGenerator
 {
-        private final LedgerQueryFacade queryFacade;
-        private final LedgerQueryCriteria criteria;
-        private List<nonprofitbookkeeping.model.AccountingTransaction> providedTransactions;
+        private final TransactionQueryFacade queryFacade;
+        private final TransactionQueryFacade.QueryConfig queryConfig;
+        private final ReportContext context;
 
         public TransactionReportJasperGenerator()
         {
-                this(new LedgerQueryFacade(), LedgerQueryCriteria.builder().build());
+                this(new ReportContext());
         }
 
-        public TransactionReportJasperGenerator(LedgerQueryFacade queryFacade,
-                LedgerQueryCriteria criteria)
+        public TransactionReportJasperGenerator(ReportContext context)
         {
-                this.queryFacade = queryFacade == null ? new LedgerQueryFacade() : queryFacade;
-                this.criteria = criteria == null ? LedgerQueryCriteria.builder().build() : criteria;
+                this(context, new TransactionQueryFacade());
         }
 
-        /**
-         * Optionally provide transactions directly instead of reading from the current company.
-         * Useful for testing and ad-hoc report generation pipelines.
-         *
-         * @param transactions transactions to render in the report
-         * @return this generator for fluent use
-         */
-        public TransactionReportJasperGenerator withTransactions(
-                List<AccountingTransaction> transactions)
+        TransactionReportJasperGenerator(ReportContext context, TransactionQueryFacade queryFacade)
         {
-                this.providedTransactions = transactions;
-                return this;
-        }
-	/**
-	 * 
-	 * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getReportData()
-	 */
-	@Override protected List<TransactionReportRowBean> getReportData()
-	{
-		nonprofitbookkeeping.model.Company company =
-			nonprofitbookkeeping.model.CurrentCompany.getCompany();
-		
-		if (company == null || company.getLedger() == null || company.getChartOfAccounts() == null)
-		{
-			return Collections.emptyList();
-		}
-		
-                List<AccountingTransaction> txns = selectTransactions(company);
-
-                if (txns == null)
-                {
-                        return Collections.emptyList();
-                }
-
-                txns.sort(Comparator.comparingLong(AccountingTransaction::getBookingDateTimestamp));
-
-                return this.queryFacade.queryFromTransactions(txns,
-                        this.criteria,
-                        tx -> mapToBean(company, tx));
+                this.context = context == null ? new ReportContext() : context;
+                this.queryFacade = queryFacade == null ? new TransactionQueryFacade() : queryFacade;
+                this.queryConfig = buildQueryConfig(this.context);
         }
 
-        private List<AccountingTransaction> selectTransactions(
-                nonprofitbookkeeping.model.Company company)
+        @Override protected List<TransactionReportRowBean> getReportData()
         {
-                if (this.providedTransactions != null)
-                {
-                        return this.providedTransactions;
-                }
-
-                if (company == null || company.getLedger() == null)
-                {
-                        return Collections.emptyList();
-                }
-
-                return company.getLedger().getTransactions();
+                return this.queryFacade.queryAndMap(this.queryConfig, this::toRowBean);
         }
 
-        private TransactionReportRowBean mapToBean(nonprofitbookkeeping.model.Company company,
-                AccountingTransaction tx)
+        private TransactionReportRowBean toRowBean(TransactionQueryFacade.TransactionRecord record)
         {
-                if (tx == null || tx.getEntries() == null || tx.getEntries().isEmpty())
+                AccountingTransaction transaction = record.transaction();
+                List<AccountingEntry> entries = record.entries();
+                if (entries == null || entries.isEmpty())
                 {
                         return null;
                 }
 
-                AccountingEntry first = tx.getEntries().iterator().next();
-                nonprofitbookkeeping.model.Account acct = (company == null || company.getChartOfAccounts() == null)
-                        ? null
-                        : company.getChartOfAccounts().getAccount(first.getAccountNumber());
+                AccountingEntry primaryEntry = entries.stream()
+                        .filter(Objects::nonNull)
+                        .findFirst()
+                        .orElse(null);
+                if (primaryEntry == null)
+                {
+                        return null;
+                }
 
-                String debit = "0";
-                String credit = "0";
+                Company company = CurrentCompany.getCompany();
+                ChartOfAccounts chart = company == null ? null : company.getChartOfAccounts();
+                Account account = chart == null ? null : chart.getAccount(primaryEntry.getAccountNumber());
+
                 java.math.BigDecimal totalDebit = java.math.BigDecimal.ZERO;
                 java.math.BigDecimal totalCredit = java.math.BigDecimal.ZERO;
 
-                for (nonprofitbookkeeping.model.AccountingEntry entry : tx.getEntries())
+                for (AccountingEntry entry : entries)
                 {
+                        if (entry == null)
+                        {
+                                continue;
+                        }
+
                         if (entry.getAccountSide() == AccountSide.DEBIT)
                         {
                                 totalDebit = totalDebit.add(entry.getAmount());
@@ -123,35 +93,68 @@ public class TransactionReportJasperGenerator extends AbstractReportGenerator
 
                 }
 
-                if (totalDebit.compareTo(java.math.BigDecimal.ZERO) != 0)
-                        debit = totalDebit.toPlainString();
-                if (totalCredit.compareTo(java.math.BigDecimal.ZERO) != 0)
-                        credit = totalCredit.toPlainString();
+                String debit = totalDebit.compareTo(java.math.BigDecimal.ZERO) != 0
+                        ? totalDebit.toPlainString() : "0";
+                String credit = totalCredit.compareTo(java.math.BigDecimal.ZERO) != 0
+                        ? totalCredit.toPlainString() : "0";
 
-                return new TransactionReportRowBean(String.valueOf(tx.getBookingDateTimestamp()),
-                        tx.getDate(), tx.getMemo() != null ? tx.getMemo() : "",
-                        tx.getMemo() != null ? tx.getMemo() : "", "", tx.getDate(),
-                        acct != null ? acct.getAccountNumber() : first.getAccountNumber(),
-                        acct != null ? acct.getName() : first.getAccountNumber(), "", debit, credit);
+                String memo = transaction.getMemo() != null ? transaction.getMemo() : "";
+                String accountNumber = account != null ? account.getAccountNumber() : primaryEntry.getAccountNumber();
+                String accountName = account != null ? account.getName() : primaryEntry.getAccountNumber();
+
+                return new TransactionReportRowBean(String.valueOf(transaction.getBookingDateTimestamp()),
+                        transaction.getDate(), memo,
+                        memo, "", transaction.getDate(),
+                        accountNumber,
+                        accountName, "", debit, credit);
         }
-	
-	@Override protected Map<String, Object> getReportParameters()
-	{
-		return Collections.emptyMap();
-	}
-	
-	@Override protected String getReportPath()
-	{
-		return bundledReportPath();
-	}
-	
-	/**
-	 * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getBaseName() 
-	 */
-	@Override public String getBaseName()
-	{
-		return "Transaction_Report_" + LocalDate.now();
-		
-	}
-	
+
+        @Override protected Map<String, Object> getReportParameters()
+        {
+                return Collections.emptyMap();
+        }
+
+        @Override protected String getReportPath()
+        {
+                return bundledReportPath();
+        }
+
+        /**
+         * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getBaseName()
+         */
+        @Override public String getBaseName()
+        {
+                return "Transaction_Report_" + LocalDate.now();
+
+        }
+
+        private static TransactionQueryFacade.QueryConfig buildQueryConfig(ReportContext context)
+        {
+                TransactionQueryFacade.QueryConfig.Builder builder = TransactionQueryFacade.QueryConfig
+                        .builder()
+                        .withDateRange(context.getStartDate(), context.getEndDate())
+                        .withAccounts(context.getAccountIdsForDetailReport(), context.isRequireAllAccounts())
+                        .withMemoSubstring(context.getMemoFilter());
+
+                AccountSide side = parseSide(context.getTransactionType());
+                builder.withTransactionType(side);
+                return builder.build();
+        }
+
+        private static AccountSide parseSide(String sideText)
+        {
+                if (sideText == null || sideText.isBlank())
+                {
+                        return null;
+                }
+
+                try
+                {
+                        return AccountSide.valueOf(sideText.trim().toUpperCase());
+                }
+                catch (IllegalArgumentException ex)
+                {
+                        return null;
+                }
+        }
 }

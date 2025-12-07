@@ -3,6 +3,7 @@ package nonprofitbookkeeping.ui.panels;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import nonprofitbookkeeping.util.FormatUtils;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
