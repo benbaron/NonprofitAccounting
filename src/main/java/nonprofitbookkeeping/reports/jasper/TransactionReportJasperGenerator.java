@@ -19,7 +19,11 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Generator for the Transaction report.
+ * Generator responsible for producing the Jasper Transaction report. The
+ * generator pulls transactions using {@link TransactionQueryFacade}, converts
+ * them into {@link nonprofitbookkeeping.reports.datasource.TransactionReportRowBean}
+ * instances, and delegates rendering to the shared {@link AbstractReportGenerator}
+ * infrastructure.
  */
 public class TransactionReportJasperGenerator extends AbstractReportGenerator
 {
