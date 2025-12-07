@@ -20,7 +20,11 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Generator for the Transaction report.
+ * Generator responsible for producing the Jasper Transaction report. The
+ * generator pulls transactions using {@link TransactionQueryFacade}, converts
+ * them into {@link nonprofitbookkeeping.reports.datasource.TransactionReportRowBean}
+ * instances, and delegates rendering to the shared {@link AbstractReportGenerator}
+ * infrastructure.
  */
 public class TransactionReportJasperGenerator extends AbstractReportGenerator
 {
@@ -28,16 +32,33 @@ public class TransactionReportJasperGenerator extends AbstractReportGenerator
         private final TransactionQueryFacade.QueryConfig queryConfig;
         private final ReportContext context;
 
+        /**
+         * Creates a transaction report generator with a default, empty
+         * {@link ReportContext} and the current company's transactions.
+         */
         public TransactionReportJasperGenerator()
         {
                 this(new ReportContext());
         }
 
+        /**
+         * Creates a transaction report generator using the provided context and
+         * querying transactions from the current company.
+         *
+         * @param context context describing date ranges, accounts, and type
+         *                filters for the report
+         */
         public TransactionReportJasperGenerator(ReportContext context)
         {
                 this(context, new TransactionQueryFacade());
         }
 
+        /**
+         * Creates a generator with explicit collaborators, primarily for testing.
+         *
+         * @param context     report configuration and filter criteria
+         * @param queryFacade facade used to fetch and filter transactions
+         */
         TransactionReportJasperGenerator(ReportContext context, TransactionQueryFacade queryFacade)
         {
                 this.context = context == null ? new ReportContext() : context;
@@ -45,11 +66,25 @@ public class TransactionReportJasperGenerator extends AbstractReportGenerator
                 this.queryConfig = buildQueryConfig(this.context);
         }
 
+        /**
+         * Retrieves and maps transactions into row beans used by the Jasper
+         * template.
+         *
+         * @return ordered list of report row beans
+         */
         @Override protected List<TransactionReportRowBean> getReportData()
         {
                 return this.queryFacade.queryAndMap(this.queryConfig, this::toRowBean);
         }
 
+        /**
+         * Converts a transaction record into a single report row bean, summing
+         * debit and credit amounts for the scoped entries.
+         *
+         * @param record transaction record produced by the query facade
+         * @return populated row bean or {@code null} if the record cannot be
+         *         mapped
+         */
         private TransactionReportRowBean toRowBean(TransactionQueryFacade.TransactionRecord record)
         {
                 AccountingTransaction transaction = record.transaction();
@@ -114,13 +149,18 @@ public class TransactionReportJasperGenerator extends AbstractReportGenerator
                 return Collections.emptyMap();
         }
 
+        /**
+         * Resolves the bundled report path for the Jasper template.
+         */
         @Override protected String getReportPath()
         {
                 return bundledReportPath();
         }
 
         /**
-         * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getBaseName()
+         * Provides a date-stamped base name for the generated report output.
+         *
+         * @return base name used by the {@link AbstractReportGenerator}
          */
         @Override public String getBaseName()
         {
@@ -128,6 +168,11 @@ public class TransactionReportJasperGenerator extends AbstractReportGenerator
 
         }
 
+        /**
+         * Builds a query configuration based on the supplied report context,
+         * capturing date ranges, account filters, memo filters, and transaction
+         * side constraints.
+         */
         private static TransactionQueryFacade.QueryConfig buildQueryConfig(ReportContext context)
         {
                 TransactionQueryFacade.QueryConfig.Builder builder = TransactionQueryFacade.QueryConfig
@@ -141,6 +186,13 @@ public class TransactionReportJasperGenerator extends AbstractReportGenerator
                 return builder.build();
         }
 
+        /**
+         * Parses a transaction side string into the corresponding enum value.
+         *
+         * @param sideText text representation of the side
+         * @return matching {@link AccountSide} or {@code null} when invalid or
+         *         absent
+         */
         private static AccountSide parseSide(String sideText)
         {
                 if (sideText == null || sideText.isBlank())

@@ -13,14 +13,25 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Repository that manages {@link Account} rows and their associated fund mappings
+ * inside the database. The APIs are intentionally simple to keep persistence logic
+ * consistent across import/export operations.
+ */
 public class AccountRepository
 {
-	
-	public void upsert(Account a) throws SQLException
-	{
-		String sql =
-			"""
-				    MERGE INTO account(account_number, name, account_code, account_type, increase_side,
+
+        /**
+         * Inserts or updates an account row and its fund associations.
+         *
+         * @param a account to persist
+         * @throws SQLException if any database statement fails
+         */
+        public void upsert(Account a) throws SQLException
+        {
+                String sql =
+                        """
+                                    MERGE INTO account(account_number, name, account_code, account_type, increase_side,
 				                       parent_account_id, currency, opening_balance)
 				    KEY(account_number)
 				    VALUES(?,?,?,?,?,?,?,?)
@@ -74,11 +85,18 @@ public class AccountRepository
 				
 			}
 			
-			c.commit();
-		}
-		
-	}
-	
+                        c.commit();
+                }
+
+        }
+
+        /**
+         * Retrieves all accounts in account number order, eagerly loading any
+         * associated fund ids.
+         *
+         * @return ordered list of accounts
+         * @throws SQLException if reading from the database fails
+         */
         public List<Account> listAll() throws SQLException
         {
                 Map<String, Account> byNumber = new LinkedHashMap<>();
@@ -139,8 +157,14 @@ public class AccountRepository
                 return new ArrayList<>(byNumber.values());
 
         }
-	
-	
+
+
+        /**
+         * Deletes an account by its account number.
+         *
+         * @param accountNumber identifier of the account to remove
+         * @throws SQLException if the delete fails
+         */
         public void delete(String accountNumber) throws java.sql.SQLException
         {
 
@@ -156,6 +180,13 @@ public class AccountRepository
 
         }
 
+        /**
+         * Atomically replaces all accounts with the supplied collection, resetting
+         * existing fund associations in the process.
+         *
+         * @param accounts complete set of accounts to persist
+         * @throws SQLException if any database write fails
+         */
         public void replaceAll(List<Account> accounts) throws SQLException
         {
                 try (Connection c = Database.get().getConnection())
@@ -187,6 +218,14 @@ public class AccountRepository
                 }
         }
 
+        /**
+         * Performs the replacement of all account rows using the provided connection.
+         * Fund associations are removed and then recreated for the supplied accounts.
+         *
+         * @param c         open database connection with an active transaction
+         * @param accounts  accounts to insert
+         * @throws SQLException if any statement fails
+         */
         void replaceAll(Connection c, List<Account> accounts) throws SQLException
         {
                 if (c == null)

@@ -285,31 +285,64 @@ public class TransactionQueryFacade
                         return this.transactionType;
                 }
 
+                /**
+                 * Inclusive start date for booking date filtering.
+                 *
+                 * @return configured start date or {@code null} if not set
+                 */
                 public LocalDate getStartDate()
                 {
                         return this.startDate;
                 }
 
+                /**
+                 * Inclusive end date for booking date filtering.
+                 *
+                 * @return configured end date or {@code null} if not set
+                 */
                 public LocalDate getEndDate()
                 {
                         return this.endDate;
                 }
 
+                /**
+                 * Immutable set of account numbers the query should consider.
+                 *
+                 * @return account numbers; empty when no account filter applied
+                 */
                 public Set<String> getAccountNumbers()
                 {
                         return this.accountNumbers;
                 }
 
+                /**
+                 * Indicates whether all configured account numbers must appear
+                 * on a transaction for it to match.
+                 *
+                 * @return {@code true} when all accounts are required
+                 */
                 public boolean isRequireAllAccounts()
                 {
                         return this.requireAllAccounts;
                 }
 
+                /**
+                 * Memo substring that must be present for a transaction to
+                 * match.
+                 *
+                 * @return memo substring filter value or {@code null}
+                 */
                 public String getMemoSubstring()
                 {
                         return this.memoSubstring;
                 }
 
+                /**
+                 * Additional predicates that must evaluate to {@code true} for
+                 * a transaction record to be included.
+                 *
+                 * @return immutable list of custom predicates
+                 */
                 public List<Predicate<TransactionRecord>> getExtraPredicates()
                 {
                         return this.extraPredicates;
@@ -332,6 +365,14 @@ public class TransactionQueryFacade
                                 return this;
                         }
 
+                        /**
+                         * Applies an inclusive date range filter based on a
+                         * transaction's booking date.
+                         *
+                         * @param startDate start of the range; ignored when null
+                         * @param endDate   end of the range; ignored when null
+                         * @return this builder for chaining
+                         */
                         public Builder withDateRange(LocalDate startDate, LocalDate endDate)
                         {
                                 this.startDate = startDate;
@@ -339,6 +380,16 @@ public class TransactionQueryFacade
                                 return this;
                         }
 
+                        /**
+                         * Filters by account numbers, optionally requiring every
+                         * supplied account to appear on a transaction.
+                         *
+                         * @param accounts   account numbers to match; blanks and
+                         *                   nulls are ignored
+                         * @param requireAll whether all account numbers must be
+                         *                   present for a match
+                         * @return this builder for chaining
+                         */
                         public Builder withAccounts(Collection<String> accounts, boolean requireAll)
                         {
                                 if (accounts != null)
@@ -356,12 +407,26 @@ public class TransactionQueryFacade
                                 return this;
                         }
 
+                        /**
+                         * Filters transactions whose memo contains the provided
+                         * substring (case-insensitive).
+                         *
+                         * @param memoSubstring memo content to search for
+                         * @return this builder for chaining
+                         */
                         public Builder withMemoSubstring(String memoSubstring)
                         {
                                 this.memoSubstring = memoSubstring;
                                 return this;
                         }
 
+                        /**
+                         * Adds a custom predicate that must evaluate to
+                         * {@code true} for a transaction record to be included.
+                         *
+                         * @param predicate predicate to apply; ignored when null
+                         * @return this builder for chaining
+                         */
                         public Builder addPredicate(Predicate<TransactionRecord> predicate)
                         {
                                 if (predicate == null)
@@ -376,6 +441,12 @@ public class TransactionQueryFacade
                                 return this;
                         }
 
+                        /**
+                         * Builds an immutable {@link QueryConfig} instance using
+                         * the current builder settings.
+                         *
+                         * @return constructed query configuration
+                         */
                         public QueryConfig build()
                         {
                                 return new QueryConfig(this);
