@@ -24,6 +24,14 @@ public class CompanyDataRepository {
     private final JournalRepository journalRepository = new JournalRepository();
     private final CompanyProfileRepository profileRepository = new CompanyProfileRepository();
 
+    /**
+     * Persists the supplied {@link Company} aggregate using the normalized persistence
+     * schema. The chart of accounts and journal entries are written within a single
+     * transaction so that related updates are committed atomically.
+     *
+     * @param company the aggregate to save; when {@code null} the operation is ignored
+     * @throws SQLException if any database interaction fails
+     */
     public void persist(Company company) throws SQLException {
         if (company == null) {
             return;
@@ -71,6 +79,16 @@ public class CompanyDataRepository {
         profileRepository.save(profile);
     }
 
+    /**
+     * Ensures that every transaction entry references an account row by adding
+     * placeholder accounts for any missing account numbers. This prevents foreign
+     * key issues when saving journal entries that reference an account that was not
+     * included in the provided chart of accounts.
+     *
+     * @param accounts      current chart of accounts
+     * @param transactions  journal transactions that may introduce new account numbers
+     * @return a list containing the original accounts plus any required placeholders
+     */
     private List<Account> ensureAccountsForTransactions(List<Account> accounts,
             List<AccountingTransaction> transactions) {
         Map<String, Account> byNumber = new LinkedHashMap<>();
@@ -125,6 +143,13 @@ public class CompanyDataRepository {
         return new ArrayList<>(byNumber.values());
     }
 
+    /**
+     * Safely retrieves the account number, returning {@code null} if the account is
+     * {@code null} or throws an unexpected {@link NullPointerException}.
+     *
+     * @param account account to inspect
+     * @return the account number or {@code null} when unavailable
+     */
     private String safeAccountNumber(Account account) {
         try {
             return account.getAccountNumber();
@@ -133,6 +158,13 @@ public class CompanyDataRepository {
         }
     }
 
+    /**
+     * Loads the persisted company aggregate, reconstructing the chart of accounts,
+     * journal transactions, and profile data from their respective repositories.
+     *
+     * @return a fully populated {@link Company}
+     * @throws SQLException if any database query fails
+     */
     public Company load() throws SQLException {
         Company company = new Company();
         company.getChartOfAccounts().replaceAllAccounts(accountRepository.listAll());

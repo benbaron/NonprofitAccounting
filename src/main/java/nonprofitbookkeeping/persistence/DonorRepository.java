@@ -114,6 +114,13 @@ public class DonorRepository {
         }
     }
 
+    /**
+     * Maps the current {@link ResultSet} row to a {@link DonorContact} instance.
+     *
+     * @param rs active result set positioned on the desired row
+     * @return populated donor contact
+     * @throws SQLException if column access fails
+     */
     private static DonorContact mapRow(ResultSet rs) throws SQLException {
         DonorContact donor = new DonorContact();
         donor.setId(rs.getString("external_id"));

@@ -24,16 +24,27 @@ import java.util.Objects;
  */
 final class ReportGeneratorLoader
 {
-	private ReportGeneratorLoader()
-	{
-	
-	}
-	
-	static Object instantiate(String className,
-		ReportContext context,
-		ReportService service)
-	{
-		Objects.requireNonNull(className, "className");
+        private ReportGeneratorLoader()
+        {
+
+        }
+
+        /**
+         * Instantiates a report generator by trying common constructor signatures. If the class
+         * cannot be found on the classpath, the method falls back to loading a bundled Jasper
+         * template generator using {@link ReportBundles#bundleForGenerator(String)}.
+         *
+         * @param className fully qualified generator class name or bundled identifier
+         * @param context   report context to pass into the generator when supported
+         * @param service   calling {@link ReportService}; supplied to constructors that accept it
+         * @return a new generator instance capable of producing reports
+         * @throws IllegalStateException when no usable constructor exists or instantiation fails
+         */
+        static Object instantiate(String className,
+                ReportContext context,
+                ReportService service)
+        {
+                Objects.requireNonNull(className, "className");
 		
 		try
 		{
@@ -110,25 +121,41 @@ final class ReportGeneratorLoader
 		
 	}
 	
-	private static Constructor<?> findConstructor(Class<?> clazz,
-		Class<?>... signature)
-	{
-		
-		try
-		{
-			Constructor<?> ctor = clazz.getDeclaredConstructor(signature);
-			ctor.setAccessible(true);
-			return ctor;
-		}
-		catch (NoSuchMethodException e)
-		{
-			return null;
-		}
-		
-	}
-	
-	private static boolean hasPrimitiveParameters(Constructor<?> ctor)
-	{
+        /**
+         * Attempts to retrieve a declared constructor matching the provided signature and makes it
+         * accessible for reflective invocation.
+         *
+         * @param clazz      class to inspect
+         * @param signature  ordered parameter types describing the desired constructor
+         * @return matching {@link Constructor} or {@code null} when none exists
+         */
+        private static Constructor<?> findConstructor(Class<?> clazz,
+                Class<?>... signature)
+        {
+
+                try
+                {
+                        Constructor<?> ctor = clazz.getDeclaredConstructor(signature);
+                        ctor.setAccessible(true);
+                        return ctor;
+                }
+                catch (NoSuchMethodException e)
+                {
+                        return null;
+                }
+
+        }
+
+        /**
+         * Determines whether the constructor requires primitive arguments. Primitive parameters
+         * cannot be satisfied with {@code null} values during the best-effort instantiation pass
+         * and therefore disqualify the constructor from consideration.
+         *
+         * @param ctor constructor to inspect
+         * @return {@code true} when any parameter is primitive; {@code false} otherwise
+         */
+        private static boolean hasPrimitiveParameters(Constructor<?> ctor)
+        {
 		
 		for (Class<?> param : ctor.getParameterTypes())
 		{
@@ -140,12 +167,21 @@ final class ReportGeneratorLoader
 			
 		}
 		
-		return false;
-		
-	}
-	
-	static void setReportData(Object generator, List<?> beans)
-	{
+                return false;
+
+        }
+
+        /**
+         * Passes the provided bean collection to a generator that advertises a
+         * {@code setReportData(List)} method. Generators that do not implement the method are
+         * silently ignored.
+         *
+         * @param generator generator instance created by {@link #instantiate(String, ReportContext, ReportService)}
+         * @param beans     domain objects to supply as report data; ignored when {@code null} or empty
+         * @throws IllegalStateException if reflection errors prevent invoking the method
+         */
+        static void setReportData(Object generator, List<?> beans)
+        {
 		
 		if (beans == null || beans.isEmpty())
 		{
@@ -167,12 +203,21 @@ final class ReportGeneratorLoader
 		{
 			throw new IllegalStateException(
 				"Failed to set report data on generator", e);
-		}
-		
-	}
-	
-	static JasperPrint generatePrint(Object generator) throws JRException
-	{
+                }
+
+        }
+
+        /**
+         * Invokes the generator's {@code generatePrint()} method to produce a {@link JasperPrint}
+         * that can be written to disk. Exceptions thrown by the generator are unwrapped to preserve
+         * their original {@link JRException} or {@link IOException} types.
+         *
+         * @param generator generator instance created by {@link #instantiate(String, ReportContext, ReportService)}
+         * @return rendered {@link JasperPrint} ready for export
+         * @throws JRException when the generator is missing the method or it fails
+         */
+        static JasperPrint generatePrint(Object generator) throws JRException
+        {
 		
 		try
 		{
@@ -198,12 +243,21 @@ final class ReportGeneratorLoader
 			}
 			
 			throw new JRException("Generator generatePrint() failed", cause);
-		}
-		
-	}
-	
-	static String getBaseName(Object generator)
-	{
+                }
+
+        }
+
+        /**
+         * Retrieves a human-friendly base name from the generator. Implementations that declare a
+         * {@code getBaseName()} method can control the returned name; otherwise the generator's
+         * simple class name is used.
+         *
+         * @param generator generator instance created by {@link #instantiate(String, ReportContext, ReportService)}
+         * @return base name used when constructing output filenames
+         * @throws IllegalStateException if the optional method exists but cannot be invoked
+         */
+        static String getBaseName(Object generator)
+        {
 		
 		try
 		{
@@ -227,13 +281,28 @@ final class ReportGeneratorLoader
 				"Unable to determine generator base name", e);
 		}
 		
-		return generator.getClass().getSimpleName();
-		
-	}
-	
-	static File writeOutput(Object generator,
-		String format,
-		JasperPrint print,
+                return generator.getClass().getSimpleName();
+
+        }
+
+        /**
+         * Delegates to the generator's {@code writeJasperOutput(format, print, baseName)} method to
+         * export the rendered report to disk. The method ensures a {@link File} is returned and
+         * unwraps checked and runtime exceptions thrown by the generator for clearer diagnostics.
+         *
+         * @param generator generator instance created by {@link #instantiate(String, ReportContext, ReportService)}
+         * @param format    output format such as {@code pdf} or {@code html}
+         * @param print     prepared {@link JasperPrint} to render
+         * @param baseName  base filename to pass through to the generator
+         * @return file produced by the generator
+         * @throws JRException when the generator is missing the required method or signals a Jasper
+         *                     failure
+         * @throws IOException if the generator wraps an {@link IOException}
+         * @throws IllegalStateException if reflection fails or the method returns a non-file result
+         */
+        static File writeOutput(Object generator,
+                String format,
+                JasperPrint print,
 		String baseName) throws JRException, IOException
 	{
 		
