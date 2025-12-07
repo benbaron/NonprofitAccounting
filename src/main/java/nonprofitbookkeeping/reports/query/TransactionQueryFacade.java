@@ -1,3 +1,4 @@
+
 package nonprofitbookkeeping.reports.query;
 
 import nonprofitbookkeeping.model.AccountSide;
@@ -38,431 +39,435 @@ import java.util.stream.Collectors;
  */
 public class TransactionQueryFacade
 {
-        private final Supplier<List<AccountingTransaction>> transactionSupplier;
-
-        /**
-         * Builds a facade that reads transactions from the current company
-         * context. If no company or ledger is available, the query returns an
-         * empty result set.
-         */
-        public TransactionQueryFacade()
-        {
-                this(TransactionQueryFacade::loadTransactionsFromCurrentCompany);
-        }
-
-        /**
-         * Builds a facade that reads transactions from the provided supplier.
-         *
-         * @param transactionSupplier supplies the transactions to search
-         */
-        public TransactionQueryFacade(Supplier<List<AccountingTransaction>> transactionSupplier)
-        {
-                this.transactionSupplier = transactionSupplier == null
-                        ? Collections::emptyList
-                        : transactionSupplier;
-        }
-
-        /**
-         * Queries transactions according to the provided configuration and
-         * returns a lightweight record containing the transaction and the
-         * entries that matched the account filter (if any).
-         *
-         * @param config configuration describing the desired filters
-         * @return ordered list of matching transaction records
-         */
-        public List<TransactionRecord> query(QueryConfig config)
-        {
-                QueryConfig effectiveConfig = config == null
-                        ? QueryConfig.builder().build()
-                        : config;
-
-                List<AccountingTransaction> transactions = new ArrayList<>(this.transactionSupplier.get());
-                transactions.sort(Comparator.comparingLong(
-                        tx -> tx.getBookingDateTimestamp() == null ? Long.MAX_VALUE : tx.getBookingDateTimestamp()));
-
-                List<TransactionRecord> records = new ArrayList<>();
-                for (AccountingTransaction transaction : transactions)
-                {
-                        if (transaction == null)
-                        {
-                                continue;
-                        }
-
-                        List<AccountingEntry> scopedEntries = scopeEntries(transaction, effectiveConfig.accountNumbers);
-                        TransactionRecord record = new TransactionRecord(transaction, scopedEntries);
-
-                        if (matches(record, effectiveConfig))
-                        {
-                                records.add(record);
-                        }
-                }
-
-                return records;
-        }
-
-        /**
-         * Queries and immediately maps the resulting records into bean
-         * instances.
-         *
-         * @param config configuration describing the desired filters
-         * @param mapper mapping function to transform a record into a bean
-         * @param <T>    bean type
-         * @return mapped beans (null results are skipped)
-         */
-        public <T> List<T> queryAndMap(QueryConfig config, Function<TransactionRecord, T> mapper)
-        {
-                if (mapper == null)
-                {
-                        return Collections.emptyList();
-                }
-
-                return query(config).stream()
-                        .map(mapper)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList());
-        }
-
-        private static List<AccountingTransaction> loadTransactionsFromCurrentCompany()
-        {
-                Company company = CurrentCompany.getCompany();
-                if (company == null || company.getLedger() == null)
-                {
-                        return Collections.emptyList();
-                }
-                List<AccountingTransaction> transactions = company.getLedger().getTransactions();
-                return transactions == null ? Collections.emptyList() : transactions;
-        }
-
-        private static List<AccountingEntry> scopeEntries(AccountingTransaction transaction, Set<String> accounts)
-        {
-                if (transaction.getEntries() == null)
-                {
-                        return Collections.emptyList();
-                }
-
-                if (accounts == null || accounts.isEmpty())
-                {
-                        return new ArrayList<>(transaction.getEntries());
-                }
-
-                List<AccountingEntry> scoped = new ArrayList<>();
-                for (AccountingEntry entry : transaction.getEntries())
-                {
-                        if (entry != null && accounts.contains(entry.getAccountNumber()))
-                        {
-                                scoped.add(entry);
-                        }
-                }
-                return scoped;
-        }
-
-        private static boolean matches(TransactionRecord record, QueryConfig config)
-        {
-                return record != null
-                        && matchesDate(record, config)
-                        && matchesMemo(record, config.memoSubstring)
-                        && matchesAccounts(record, config.accountNumbers, config.requireAllAccounts)
-                        && matchesType(record, config.transactionType)
-                        && config.extraPredicates.stream().allMatch(p -> p.test(record));
-        }
-
-        private static boolean matchesDate(TransactionRecord record, QueryConfig config)
-        {
-                Long timestamp = record.transaction().getBookingDateTimestamp();
-                if (timestamp == null || timestamp <= 0)
-                {
-                        return config.startDate == null && config.endDate == null;
-                }
-
-                LocalDate date = Instant.ofEpochMilli(timestamp)
-                        .atZone(ZoneId.systemDefault())
-                        .toLocalDate();
-                if (config.startDate != null && date.isBefore(config.startDate))
-                {
-                        return false;
-                }
-                if (config.endDate != null && date.isAfter(config.endDate))
-                {
-                        return false;
-                }
-                return true;
-        }
-
-        private static boolean matchesMemo(TransactionRecord record, String memoSubstring)
-        {
-                if (memoSubstring == null || memoSubstring.isBlank())
-                {
-                        return true;
-                }
-
-                String memo = record.transaction().getMemo();
-                if (memo == null)
-                {
-                        return false;
-                }
-
-                return memo.toLowerCase().contains(memoSubstring.toLowerCase());
-        }
-
-        private static boolean matchesAccounts(TransactionRecord record,
-                Set<String> accounts,
-                boolean requireAll)
-        {
-                if (accounts == null || accounts.isEmpty())
-                {
-                        return true;
-                }
-
-                Set<String> presentAccounts = record.transaction().getEntries() == null
-                        ? Collections.emptySet()
-                        : record.transaction().getEntries().stream()
-                                .filter(Objects::nonNull)
-                                .map(AccountingEntry::getAccountNumber)
-                                .filter(Objects::nonNull)
-                                .collect(Collectors.toSet());
-
-                if (requireAll)
-                {
-                        return presentAccounts.containsAll(accounts);
-                }
-
-                for (String candidate : accounts)
-                {
-                        if (presentAccounts.contains(candidate))
-                        {
-                                return true;
-                        }
-                }
-                return false;
-        }
-
-        private static boolean matchesType(TransactionRecord record, AccountSide type)
-        {
-                if (type == null || type == AccountSide.UNKNOWN)
-                {
-                        return true;
-                }
-
-                return record.entries().stream()
-                        .anyMatch(entry -> entry != null && type.equals(entry.getAccountSide()));
-        }
-
-        /**
-         * Immutable configuration for running a transaction query.
-         */
-        public static final class QueryConfig
-        {
-                private final AccountSide transactionType;
-                private final LocalDate startDate;
-                private final LocalDate endDate;
-                private final Set<String> accountNumbers;
-                private final boolean requireAllAccounts;
-                private final String memoSubstring;
-                private final List<Predicate<TransactionRecord>> extraPredicates;
-
-                private QueryConfig(Builder builder)
-                {
-                        this.transactionType = builder.transactionType;
-                        this.startDate = builder.startDate;
-                        this.endDate = builder.endDate;
-                        this.accountNumbers = builder.accountNumbers == null
-                                ? Collections.emptySet()
-                                : Collections.unmodifiableSet(new HashSet<>(builder.accountNumbers));
-                        this.requireAllAccounts = builder.requireAllAccounts;
-                        this.memoSubstring = builder.memoSubstring;
-                        this.extraPredicates = builder.extraPredicates == null
-                                ? Collections.emptyList()
-                                : Collections.unmodifiableList(new ArrayList<>(builder.extraPredicates));
-                }
-
-                public static Builder builder()
-                {
-                        return new Builder();
-                }
-
-                public AccountSide getTransactionType()
-                {
-                        return this.transactionType;
-                }
-
-                /**
-                 * Inclusive start date for booking date filtering.
-                 *
-                 * @return configured start date or {@code null} if not set
-                 */
-                public LocalDate getStartDate()
-                {
-                        return this.startDate;
-                }
-
-                /**
-                 * Inclusive end date for booking date filtering.
-                 *
-                 * @return configured end date or {@code null} if not set
-                 */
-                public LocalDate getEndDate()
-                {
-                        return this.endDate;
-                }
-
-                /**
-                 * Immutable set of account numbers the query should consider.
-                 *
-                 * @return account numbers; empty when no account filter applied
-                 */
-                public Set<String> getAccountNumbers()
-                {
-                        return this.accountNumbers;
-                }
-
-                /**
-                 * Indicates whether all configured account numbers must appear
-                 * on a transaction for it to match.
-                 *
-                 * @return {@code true} when all accounts are required
-                 */
-                public boolean isRequireAllAccounts()
-                {
-                        return this.requireAllAccounts;
-                }
-
-                /**
-                 * Memo substring that must be present for a transaction to
-                 * match.
-                 *
-                 * @return memo substring filter value or {@code null}
-                 */
-                public String getMemoSubstring()
-                {
-                        return this.memoSubstring;
-                }
-
-                /**
-                 * Additional predicates that must evaluate to {@code true} for
-                 * a transaction record to be included.
-                 *
-                 * @return immutable list of custom predicates
-                 */
-                public List<Predicate<TransactionRecord>> getExtraPredicates()
-                {
-                        return this.extraPredicates;
-                }
-
-                /** Builder for {@link QueryConfig}. */
-                public static final class Builder
-                {
-                        private AccountSide transactionType;
-                        private LocalDate startDate;
-                        private LocalDate endDate;
-                        private Set<String> accountNumbers;
-                        private boolean requireAllAccounts;
-                        private String memoSubstring;
-                        private List<Predicate<TransactionRecord>> extraPredicates;
-
-                        public Builder withTransactionType(AccountSide transactionType)
-                        {
-                                this.transactionType = transactionType;
-                                return this;
-                        }
-
-                        /**
-                         * Applies an inclusive date range filter based on a
-                         * transaction's booking date.
-                         *
-                         * @param startDate start of the range; ignored when null
-                         * @param endDate   end of the range; ignored when null
-                         * @return this builder for chaining
-                         */
-                        public Builder withDateRange(LocalDate startDate, LocalDate endDate)
-                        {
-                                this.startDate = startDate;
-                                this.endDate = endDate;
-                                return this;
-                        }
-
-                        /**
-                         * Filters by account numbers, optionally requiring every
-                         * supplied account to appear on a transaction.
-                         *
-                         * @param accounts   account numbers to match; blanks and
-                         *                   nulls are ignored
-                         * @param requireAll whether all account numbers must be
-                         *                   present for a match
-                         * @return this builder for chaining
-                         */
-                        public Builder withAccounts(Collection<String> accounts, boolean requireAll)
-                        {
-                                if (accounts != null)
-                                {
-                                        this.accountNumbers = new HashSet<>();
-                                        for (String account : accounts)
-                                        {
-                                                if (account != null && !account.isBlank())
-                                                {
-                                                        this.accountNumbers.add(account);
-                                                }
-                                        }
-                                }
-                                this.requireAllAccounts = requireAll;
-                                return this;
-                        }
-
-                        /**
-                         * Filters transactions whose memo contains the provided
-                         * substring (case-insensitive).
-                         *
-                         * @param memoSubstring memo content to search for
-                         * @return this builder for chaining
-                         */
-                        public Builder withMemoSubstring(String memoSubstring)
-                        {
-                                this.memoSubstring = memoSubstring;
-                                return this;
-                        }
-
-                        /**
-                         * Adds a custom predicate that must evaluate to
-                         * {@code true} for a transaction record to be included.
-                         *
-                         * @param predicate predicate to apply; ignored when null
-                         * @return this builder for chaining
-                         */
-                        public Builder addPredicate(Predicate<TransactionRecord> predicate)
-                        {
-                                if (predicate == null)
-                                {
-                                        return this;
-                                }
-                                if (this.extraPredicates == null)
-                                {
-                                        this.extraPredicates = new ArrayList<>();
-                                }
-                                this.extraPredicates.add(predicate);
-                                return this;
-                        }
-
-                        /**
-                         * Builds an immutable {@link QueryConfig} instance using
-                         * the current builder settings.
-                         *
-                         * @return constructed query configuration
-                         */
-                        public QueryConfig build()
-                        {
-                                return new QueryConfig(this);
-                        }
-                }
-        }
-
-        /**
-         * Result of a transaction query that captures the parent transaction and
-         * the entries that were used for filtering.
-         */
-        public record TransactionRecord(AccountingTransaction transaction, List<AccountingEntry> entries)
-        {
-                public TransactionRecord
-                {
-                        entries = entries == null ? Collections.emptyList() : entries;
-                }
-        }
+	private final Supplier<List<AccountingTransaction>> transactionSupplier;
+	
+	/**
+	 * Builds a facade that reads transactions from the current company
+	 * context. If no company or ledger is available, the query returns an
+	 * empty result set.
+	 */
+	public TransactionQueryFacade()
+	{
+		this(TransactionQueryFacade::loadTransactionsFromCurrentCompany);
+		
+	}
+	
+	/**
+	 * Builds a facade that reads transactions from the provided supplier.
+	 *
+	 * @param transactionSupplier supplies the transactions to search
+	 */
+	public TransactionQueryFacade(
+		Supplier<List<AccountingTransaction>> transactionSupplier)
+	{
+		this.transactionSupplier = transactionSupplier == null ?
+			Collections::emptyList : transactionSupplier;
+		
+	}
+	
+	/**
+	 * Queries transactions according to the provided configuration and
+	 * returns a lightweight record containing the transaction and the
+	 * entries that matched the account filter (if any).
+	 *
+	 * @param config configuration describing the desired filters
+	 * @return ordered list of matching transaction records
+	 */
+	public List<TransactionRecord> query(QueryConfig config)
+	{
+		QueryConfig effectiveConfig =
+			config == null ? QueryConfig.builder().build() : config;
+		
+		List<AccountingTransaction> transactions =
+			new ArrayList<>(this.transactionSupplier.get());
+		transactions.sort(Comparator.comparingLong(
+			tx -> tx.getBookingDateTimestamp() == null ? Long.MAX_VALUE :
+				tx.getBookingDateTimestamp()));
+		
+		List<TransactionRecord> records = new ArrayList<>();
+		
+		for (AccountingTransaction transaction : transactions)
+		{
+			
+			if (transaction == null)
+			{
+				continue;
+			}
+			
+			List<AccountingEntry> scopedEntries =
+				scopeEntries(transaction, effectiveConfig.accountNumbers);
+			TransactionRecord record =
+				new TransactionRecord(transaction, scopedEntries);
+			
+			if (matches(record, effectiveConfig))
+			{
+				records.add(record);
+			}
+			
+		}
+		
+		return records;
+		
+	}
+	
+	/**
+	 * Queries and immediately maps the resulting records into bean
+	 * instances.
+	 *
+	 * @param config configuration describing the desired filters
+	 * @param mapper mapping function to transform a record into a bean
+	 * @param <T>    bean type
+	 * @return mapped beans (null results are skipped)
+	 */
+	public <T> List<T> queryAndMap(QueryConfig config,
+		Function<TransactionRecord, T> mapper)
+	{
+		
+		if (mapper == null)
+		{
+			return Collections.emptyList();
+		}
+		
+		return query(config).stream()
+			.map(mapper)
+			.filter(Objects::nonNull)
+			.collect(Collectors.toList());
+		
+	}
+	
+	private static
+		List<AccountingTransaction> loadTransactionsFromCurrentCompany()
+	{
+		Company company = CurrentCompany.getCompany();
+		
+		if (company == null || company.getLedger() == null)
+		{
+			return Collections.emptyList();
+		}
+		
+		List<AccountingTransaction> transactions =
+			company.getLedger().getTransactions();
+		return transactions == null ? Collections.emptyList() : transactions;
+		
+	}
+	
+	private static List<AccountingEntry> scopeEntries(
+		AccountingTransaction transaction, Set<String> accounts)
+	{
+		
+		if (transaction.getEntries() == null)
+		{
+			return Collections.emptyList();
+		}
+		
+		if (accounts == null || accounts.isEmpty())
+		{
+			return new ArrayList<>(transaction.getEntries());
+		}
+		
+		List<AccountingEntry> scoped = new ArrayList<>();
+		
+		for (AccountingEntry entry : transaction.getEntries())
+		{
+			
+			if (entry != null && accounts.contains(entry.getAccountNumber()))
+			{
+				scoped.add(entry);
+			}
+			
+		}
+		
+		return scoped;
+		
+	}
+	
+	private static boolean matches(TransactionRecord record, QueryConfig config)
+	{
+		return record != null && matchesDate(record, config) &&
+			matchesMemo(record, config.memoSubstring) &&
+			matchesAccounts(record, config.accountNumbers,
+				config.requireAllAccounts) &&
+			matchesType(record, config.transactionType) &&
+			config.extraPredicates.stream().allMatch(p -> p.test(record));
+		
+	}
+	
+	private static boolean matchesDate(TransactionRecord record,
+		QueryConfig config)
+	{
+		Long timestamp = record.transaction().getBookingDateTimestamp();
+		
+		if (timestamp == null || timestamp <= 0)
+		{
+			return config.startDate == null && config.endDate == null;
+		}
+		
+		LocalDate date = Instant.ofEpochMilli(timestamp)
+			.atZone(ZoneId.systemDefault())
+			.toLocalDate();
+		
+		if (config.startDate != null && date.isBefore(config.startDate))
+		{
+			return false;
+		}
+		
+		if (config.endDate != null && date.isAfter(config.endDate))
+		{
+			return false;
+		}
+		
+		return true;
+		
+	}
+	
+	private static boolean matchesMemo(TransactionRecord record,
+		String memoSubstring)
+	{
+		
+		if (memoSubstring == null || memoSubstring.isBlank())
+		{
+			return true;
+		}
+		
+		String memo = record.transaction().getMemo();
+		
+		if (memo == null)
+		{
+			return false;
+		}
+		
+		return memo.toLowerCase().contains(memoSubstring.toLowerCase());
+		
+	}
+	
+	private static boolean matchesAccounts(TransactionRecord record,
+		Set<String> accounts,
+		boolean requireAll)
+	{
+		
+		if (accounts == null || accounts.isEmpty())
+		{
+			return true;
+		}
+		
+		Set<String> presentAccounts =
+			record.transaction().getEntries() == null ? Collections.emptySet() :
+				record.transaction().getEntries().stream()
+					.filter(Objects::nonNull)
+					.map(AccountingEntry::getAccountNumber)
+					.filter(Objects::nonNull)
+					.collect(Collectors.toSet());
+		
+		if (requireAll)
+		{
+			return presentAccounts.containsAll(accounts);
+		}
+		
+		for (String candidate : accounts)
+		{
+			
+			if (presentAccounts.contains(candidate))
+			{
+				return true;
+			}
+			
+		}
+		
+		return false;
+		
+	}
+	
+	private static boolean matchesType(TransactionRecord record,
+		AccountSide type)
+	{
+		
+		if (type == null || type == AccountSide.UNKNOWN)
+		{
+			return true;
+		}
+		
+		return record.entries().stream()
+			.anyMatch(
+				entry -> entry != null && type.equals(entry.getAccountSide()));
+		
+	}
+	
+	/**
+	 * Immutable configuration for running a transaction query.
+	 */
+	public static final class QueryConfig
+	{
+		private final AccountSide transactionType;
+		private final LocalDate startDate;
+		private final LocalDate endDate;
+		private final Set<String> accountNumbers;
+		private final boolean requireAllAccounts;
+		private final String memoSubstring;
+		private final List<Predicate<TransactionRecord>> extraPredicates;
+		
+		private QueryConfig(Builder builder)
+		{
+			this.transactionType = builder.transactionType;
+			this.startDate = builder.startDate;
+			this.endDate = builder.endDate;
+			this.accountNumbers = builder.accountNumbers == null ?
+				Collections.emptySet() : Collections
+					.unmodifiableSet(new HashSet<>(builder.accountNumbers));
+			this.requireAllAccounts = builder.requireAllAccounts;
+			this.memoSubstring = builder.memoSubstring;
+			this.extraPredicates = builder.extraPredicates == null ?
+				Collections.emptyList() : Collections
+					.unmodifiableList(new ArrayList<>(builder.extraPredicates));
+			
+		}
+		
+		public static Builder builder()
+		{
+			return new Builder();
+			
+		}
+		
+		public AccountSide getTransactionType()
+		{
+			return this.transactionType;
+			
+		}
+		
+		public LocalDate getStartDate()
+		{
+			return this.startDate;
+			
+		}
+		
+		public LocalDate getEndDate()
+		{
+			return this.endDate;
+			
+		}
+		
+		public Set<String> getAccountNumbers()
+		{
+			return this.accountNumbers;
+			
+		}
+		
+		public boolean isRequireAllAccounts()
+		{
+			return this.requireAllAccounts;
+			
+		}
+		
+		public String getMemoSubstring()
+		{
+			return this.memoSubstring;
+			
+		}
+		
+		public List<Predicate<TransactionRecord>> getExtraPredicates()
+		{
+			return this.extraPredicates;
+			
+		}
+		
+		/** Builder for {@link QueryConfig}. */
+		public static final class Builder
+		{
+			private AccountSide transactionType;
+			private LocalDate startDate;
+			private LocalDate endDate;
+			private Set<String> accountNumbers;
+			private boolean requireAllAccounts;
+			private String memoSubstring;
+			private List<Predicate<TransactionRecord>> extraPredicates;
+			
+			public Builder withTransactionType(AccountSide transactionType)
+			{
+				this.transactionType = transactionType;
+				return this;
+				
+			}
+			
+			public Builder withDateRange(LocalDate startDate, LocalDate endDate)
+			{
+				this.startDate = startDate;
+				this.endDate = endDate;
+				return this;
+				
+			}
+			
+			public Builder withAccounts(Collection<String> accounts,
+				boolean requireAll)
+			{
+				
+				if (accounts != null)
+				{
+					this.accountNumbers = new HashSet<>();
+					
+					for (String account : accounts)
+					{
+						
+						if (account != null && !account.isBlank())
+						{
+							this.accountNumbers.add(account);
+						}
+						
+					}
+					
+				}
+				
+				this.requireAllAccounts = requireAll;
+				return this;
+				
+			}
+			
+			public Builder withMemoSubstring(String memoSubstring)
+			{
+				this.memoSubstring = memoSubstring;
+				return this;
+				
+			}
+			
+			public Builder addPredicate(Predicate<TransactionRecord> predicate)
+			{
+				
+				if (predicate == null)
+				{
+					return this;
+				}
+				
+				if (this.extraPredicates == null)
+				{
+					this.extraPredicates = new ArrayList<>();
+				}
+				
+				this.extraPredicates.add(predicate);
+				return this;
+				
+			}
+			
+			public QueryConfig build()
+			{
+				return new QueryConfig(this);
+				
+			}
+			
+		}
+		
+	}
+	
+	/**
+	 * Result of a transaction query that captures the parent transaction and
+	 * the entries that were used for filtering.
+	 */
+	public record TransactionRecord(AccountingTransaction transaction,
+		List<AccountingEntry> entries)
+	{
+		public TransactionRecord
+		{
+			entries = entries == null ? Collections.emptyList() : entries;
+			
+		}
+		
+	}
+	
 }

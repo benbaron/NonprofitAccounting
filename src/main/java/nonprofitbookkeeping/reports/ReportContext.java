@@ -25,13 +25,13 @@ public class ReportContext
 	/** A list of fund IDs (typically fund names) to filter the report data. Can be null or empty. */
 	private List<String> fundIds;
 	/** A list of account IDs used for generating detail-specific sections or filtering in some reports. Can be null or empty. */
-    private List<String> accountIdsForDetailReport; // Added new field
-    /** Optional transaction type filter (e.g., DEBIT or CREDIT). */
-    private String transactionType;
-    /** Optional substring filter for transaction memos. */
-    private String memoFilter;
-    /** If true, all supplied accounts must be present on a transaction. */
-    private boolean requireAllAccounts;
+	private List<String> accountIdsForDetailReport; // Added new field
+	/** Optional transaction type filter (e.g., DEBIT or CREDIT). */
+	private String transactionType;
+	/** Optional substring filter for transaction memos. */
+	private String memoFilter;
+	/** If true, all supplied accounts must be present on a transaction. */
+	private boolean requireAllAccounts;
 	/** Optional pre-built beans to drive Jasper reports that expect their data to be provided externally. */
 	private List<?> beans;
 	
@@ -41,7 +41,7 @@ public class ReportContext
 	 */
 	public ReportContext()
 	{
-	
+		
 	}
 	
 	/**
@@ -191,81 +191,81 @@ public class ReportContext
 	 *
 	 * @return List of beans or {@code null} if none were supplied.
 	 */
-    public List<?> getBeans()
-    {
-            return this.beans;
-
-    }
+	public List<?> getBeans()
+	{
+		return this.beans;
+		
+	}
 	
 	/**
 	 * Sets the list of beans to be used directly by a {@link nonprofitbookkeeping.reports.jasper.AbstractReportGenerator}.
 	 *
 	 * @param beans data beans for the report
 	 */
-    public void setBeans(List<?> beans)
-    {
-            this.beans = beans;
-
-    }
-
-    /**
-     * Gets the transaction type filter text (e.g., "DEBIT", "CREDIT").
-     * @return transaction type filter or {@code null} if not set
-     */
-    public String getTransactionType()
-    {
-            return this.transactionType;
-
-    }
-
-    /**
-     * Sets the transaction type filter text.
-     * @param transactionType type text to match against {@link nonprofitbookkeeping.model.AccountSide}
-     */
-    public void setTransactionType(String transactionType)
-    {
-            this.transactionType = transactionType;
-
-    }
-
-    /**
-     * Gets the memo substring filter for transaction lookups.
-     * @return memo substring or {@code null}
-     */
-    public String getMemoFilter()
-    {
-            return this.memoFilter;
-
-    }
-
-    /**
-     * Sets the memo substring filter for transaction lookups.
-     * @param memoFilter substring to search for (case-insensitive)
-     */
-    public void setMemoFilter(String memoFilter)
-    {
-            this.memoFilter = memoFilter;
-
-    }
-
-    /**
-     * Indicates whether all provided accounts must be present on a transaction.
-     * @return true if all accounts are required; false to match any
-     */
-    public boolean isRequireAllAccounts()
-    {
-            return this.requireAllAccounts;
-
-    }
-
-    /**
-     * Sets whether a transaction must include all provided accounts.
-     * @param requireAllAccounts true to require all accounts, false to match any
-     */
-    public void setRequireAllAccounts(boolean requireAllAccounts)
-    {
-            this.requireAllAccounts = requireAllAccounts;
-
-    }
+	public void setBeans(List<?> beans)
+	{
+		this.beans = beans;
+		
+	}
+	
+	/**
+	 * Gets the transaction type filter text (e.g., "DEBIT", "CREDIT").
+	 * @return transaction type filter or {@code null} if not set
+	 */
+	public String getTransactionType()
+	{
+		return this.transactionType;
+		
+	}
+	
+	/**
+	 * Sets the transaction type filter text.
+	 * @param transactionType type text to match against {@link nonprofitbookkeeping.model.AccountSide}
+	 */
+	public void setTransactionType(String transactionType)
+	{
+		this.transactionType = transactionType;
+		
+	}
+	
+	/**
+	 * Gets the memo substring filter for transaction lookups.
+	 * @return memo substring or {@code null}
+	 */
+	public String getMemoFilter()
+	{
+		return this.memoFilter;
+		
+	}
+	
+	/**
+	 * Sets the memo substring filter for transaction lookups.
+	 * @param memoFilter substring to search for (case-insensitive)
+	 */
+	public void setMemoFilter(String memoFilter)
+	{
+		this.memoFilter = memoFilter;
+		
+	}
+	
+	/**
+	 * Indicates whether all provided accounts must be present on a transaction.
+	 * @return true if all accounts are required; false to match any
+	 */
+	public boolean isRequireAllAccounts()
+	{
+		return this.requireAllAccounts;
+		
+	}
+	
+	/**
+	 * Sets whether a transaction must include all provided accounts.
+	 * @param requireAllAccounts true to require all accounts, false to match any
+	 */
+	public void setRequireAllAccounts(boolean requireAllAccounts)
+	{
+		this.requireAllAccounts = requireAllAccounts;
+		
+	}
 	
 }
