@@ -198,7 +198,7 @@ public abstract class AbstractReportGenerator
 	 * @param sanitized
 	 * @return
 	 */
-	private byte[] normalizeBooleanStyleAttributes(byte[] sanitized)
+	private static byte[] normalizeBooleanStyleAttributes(byte[] sanitized)
 	{
 		// TODO Auto-generated method stub
 		return sanitized;

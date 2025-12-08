@@ -27,27 +27,30 @@ import nonprofitbookkeeping.persistence.JsonStorageRepository;
  */
 public class GrantsService
 {
-        /** Logger for this service. */
-        private static final Logger LOGGER = Logger.getLogger(GrantsService.class.getName());
+	/** Logger for this service. */
+	private static final Logger LOGGER =
+		Logger.getLogger(GrantsService.class.getName());
 	
-        /** Logical storage key used for persisting grants in the shared database. */
-        private static final String STORAGE_KEY = "grants";
-        private static final ObjectMapper MAPPER = new ObjectMapper()
-                .enable(SerializationFeature.INDENT_OUTPUT);
-        private static final CollectionType LIST_TYPE =
-                MAPPER.getTypeFactory().constructCollectionType(List.class, Grant.class);
-
-        /** In-memory list to store {@link Grant} objects. */
-        private List<Grant> grants;
-        private final JsonStorageRepository jsonRepository = new JsonStorageRepository();
+	/** Logical storage key used for persisting grants in the shared database. */
+	private static final String STORAGE_KEY = "grants";
+	private static final ObjectMapper MAPPER = new ObjectMapper()
+		.enable(SerializationFeature.INDENT_OUTPUT);
+	private static final CollectionType LIST_TYPE =
+		MAPPER.getTypeFactory().constructCollectionType(List.class,
+			Grant.class);
+	
+	/** In-memory list to store {@link Grant} objects. */
+	private List<Grant> grants;
+	private final JsonStorageRepository jsonRepository =
+		new JsonStorageRepository();
 	
 	/**
 	 * Constructs a new GrantsService, initializing an empty list for storing grants.
 	 */
-        public GrantsService()
-        {
-                this.grants = new ArrayList<>();
-        }
+	public GrantsService()
+	{
+		this.grants = new ArrayList<>();
+	}
 	
 	/**
 	 * Retrieves all grants currently stored in this service instance.
@@ -57,8 +60,7 @@ public class GrantsService
 	 *         so modifications to the returned list do not affect internal storage.
 	 */
 	public List<Grant> getAllGrants()
-	{
-		
+	{		
 		// Return a copy to prevent external modification
 		if (this.grants == null)
 		{ // Should be initialized by constructor, but defensive
@@ -66,6 +68,7 @@ public class GrantsService
 		}
 		
 		return new ArrayList<>(this.grants);
+		
 	}
 	
 	/**
@@ -80,7 +83,8 @@ public class GrantsService
 	public void addGrant(Grant grant)
 	{
 		
-		if (grant == null || grant.getGrantId() == null || grant.getGrantId().trim().isEmpty())
+		if (grant == null || grant.getGrantId() == null ||
+			grant.getGrantId().trim().isEmpty())
 		{
 			// Optionally, log a warning here
 			return;
@@ -92,6 +96,7 @@ public class GrantsService
 		}
 		
 		this.grants.add(grant);
+		
 	}
 	
 	/**
@@ -111,7 +116,9 @@ public class GrantsService
 			return false;
 		}
 		
-		return this.grants.removeIf(grant -> grantId.equals(grant.getGrantId()));
+		return this.grants
+			.removeIf(grant -> grantId.equals(grant.getGrantId()));
+		
 	}
 	
 	/**
@@ -134,120 +141,131 @@ public class GrantsService
 		
 	}
 	
-        /**
-         * Saves all grants to the persistent document store.
-         *
-         * @param companyDirectory retained for backwards compatibility but ignored by the method
-         * @throws IOException if writing to the database fails
-         */
-        public void saveGrants() throws IOException
-        {
-                saveGrants((File) null);
-        }
-
-        /**
-         * Saves all grants to the persistent document store.
-         *
-         * @param companyDirectory retained for backwards compatibility but ignored by the method
-         * @throws IOException if writing to the database fails
-         */
-        public void saveGrants(File companyDirectory) throws IOException
-        {
-
-                try
-                {
-                        String payload = MAPPER.writeValueAsString(getAllGrants());
-                        this.jsonRepository.save(STORAGE_KEY, payload);
-                        LOGGER.info("Grants saved to database storage key '" + STORAGE_KEY + "'.");
-                }
-                catch (SQLException e)
-                {
-                        throw new IOException("Failed to save grants to database", e);
-                }
-
-        }
+	/**
+	 * Saves all grants to the persistent document store.
+	 *
+	 * @param companyDirectory retained for backwards compatibility but ignored by the method
+	 * @throws IOException if writing to the database fails
+	 */
+	public void saveGrants() throws IOException
+	{
+		saveGrants((File) null);
+		
+	}
 	
-        /**
-         * Loads grants from the persistent document store.
-         * Existing in-memory grants are cleared before loading new ones.
-         *
-         * @param companyDirectory retained for backwards compatibility but ignored by the method
-         * @throws IOException if reading from the database fails
-         */
-        public void loadGrants() throws IOException
-        {
-                if (this.grants == null)
-                {
-                        this.grants = new ArrayList<>();
-                }
-                else
-                {
-                        this.grants.clear();
-                }
-
-                try
-                {
-                        this.jsonRepository.load(STORAGE_KEY)
-                                .ifPresent(payload -> {
-                                        try
-                                        {
-                                                List<Grant> loaded = MAPPER.readValue(payload, LIST_TYPE);
-                                                this.grants.addAll(loaded);
-                                                LOGGER.info("Grants loaded from database storage key '" + STORAGE_KEY
-                                                        + "'.");
-                                        }
-                                        catch (IOException ex)
-                                        {
-                                                LOGGER.log(Level.SEVERE,
-                                                        "Failed to deserialize grants JSON from database", ex);
-                                        }
-                                });
-                }
-                catch (SQLException e)
-                {
-                        throw new IOException("Failed to load grants from database", e);
-                }
-
-        }
-
-        /**
-         * Loads grants from the persistent document store.
-         * Existing in-memory grants are cleared before loading new ones.
-         *
-         * @param companyDirectory retained for backwards compatibility but ignored by the method
-         * @throws IOException if reading from the database fails
-         */
-        public void loadGrants(File companyDirectory) throws IOException
-        {
-                loadGrants();
-        }
-
-        /**
-         * Legacy API retained for compatibility with callers that previously wrote
-         * grants into a company zip file. The implementation now simply persists the
-         * current in-memory grants to the shared database via {@link JsonStorageRepository}.
-         *
-         * @param companyFile ignored
-         * @throws IOException if persisting grants fails
-         */
-        public void saveGrantsToZip(File companyFile) throws IOException
-        {
-
-                saveGrants();
-
-        }
-
-        /**
-         * Legacy API retained for compatibility with callers that previously read grants
-         * from a company zip file. The implementation now loads the grants directly from
-         * the shared database via {@link JsonStorageRepository}.
-         *
-         * @param companyFile ignored
-         * @throws IOException if loading grants fails
-         */
-        public void loadGrantsFromZip(File companyFile) throws IOException
-        {
-                loadGrants();
-        }
+	/**
+	 * Saves all grants to the persistent document store.
+	 *
+	 * @param companyDirectory retained for backwards compatibility but ignored by the method
+	 * @throws IOException if writing to the database fails
+	 */
+	public void saveGrants(File companyDirectory) throws IOException
+	{
+		
+		try
+		{
+			String payload = MAPPER.writeValueAsString(getAllGrants());
+			this.jsonRepository.save(STORAGE_KEY, payload);
+			LOGGER.info(
+				"Grants saved to database storage key '" + STORAGE_KEY + "'.");
+		}
+		catch (SQLException e)
+		{
+			throw new IOException("Failed to save grants to database", e);
+		}
+		
+	}
+	
+	/**
+	 * Loads grants from the persistent document store.
+	 * Existing in-memory grants are cleared before loading new ones.
+	 *
+	 * @param companyDirectory retained for backwards compatibility but ignored by the method
+	 * @throws IOException if reading from the database fails
+	 */
+	public void loadGrants() throws IOException
+	{
+		
+		if (this.grants == null)
+		{
+			this.grants = new ArrayList<>();
+		}
+		else
+		{
+			this.grants.clear();
+		}
+		
+		try
+		{
+			this.jsonRepository.load(STORAGE_KEY)
+				.ifPresent(payload ->
+				{
+					
+					try
+					{
+						List<Grant> loaded =
+							MAPPER.readValue(payload, LIST_TYPE);
+						this.grants.addAll(loaded);
+						LOGGER
+							.info("Grants loaded from database storage key '" +
+								STORAGE_KEY + "'.");
+					}
+					catch (IOException ex)
+					{
+						LOGGER.log(Level.SEVERE,
+							"Failed to deserialize grants JSON from database",
+							ex);
+					}
+					
+				});
+		}
+		catch (SQLException e)
+		{
+			throw new IOException("Failed to load grants from database", e);
+		}
+		
+	}
+	
+	/**
+	 * Loads grants from the persistent document store.
+	 * Existing in-memory grants are cleared before loading new ones.
+	 *
+	 * @param companyDirectory retained for backwards compatibility but ignored by the method
+	 * @throws IOException if reading from the database fails
+	 */
+	public void loadGrants(File companyDirectory) throws IOException
+	{
+		loadGrants();
+		
+	}
+	
+	/**
+	 * Legacy API retained for compatibility with callers that previously wrote
+	 * grants into a company zip file. The implementation now simply persists the
+	 * current in-memory grants to the shared database via {@link JsonStorageRepository}.
+	 *
+	 * @param companyFile ignored
+	 * @throws IOException if persisting grants fails
+	 */
+	public void saveGrantsToZip(File companyFile) throws IOException
+	{
+		
+		saveGrants();
+		
+	}
+	
+	/**
+	 * Legacy API retained for compatibility with callers that previously read grants
+	 * from a company zip file. The implementation now loads the grants directly from
+	 * the shared database via {@link JsonStorageRepository}.
+	 *
+	 * @param companyFile ignored
+	 * @throws IOException if loading grants fails
+	 */
+	public void loadGrantsFromZip(File companyFile) throws IOException
+	{
+		loadGrants();
+		
+	}
 	
 }

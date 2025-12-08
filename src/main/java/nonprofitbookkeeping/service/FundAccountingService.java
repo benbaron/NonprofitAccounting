@@ -33,14 +33,15 @@ public class FundAccountingService
 	@JsonProperty private final Map<String, Account> accountMap;
 	
 	/** Logger for this service. */
-	private static final Logger LOGGER = Logger.getLogger(FundAccountingService.class.getName());
+	private static final Logger LOGGER =
+		Logger.getLogger(FundAccountingService.class.getName());
 	
-        /** Database document name used to persist funds. */
-        private static final String DOCUMENT_NAME = "funds";
-        private static final ObjectMapper MAPPER = new ObjectMapper()
-                .enable(SerializationFeature.INDENT_OUTPUT);
-        private static final CollectionType LIST_TYPE =
-                MAPPER.getTypeFactory().constructCollectionType(List.class, Fund.class);
+	/** Database document name used to persist funds. */
+	private static final String DOCUMENT_NAME = "funds";
+	private static final ObjectMapper MAPPER = new ObjectMapper()
+		.enable(SerializationFeature.INDENT_OUTPUT);
+	private static final CollectionType LIST_TYPE =
+		MAPPER.getTypeFactory().constructCollectionType(List.class, Fund.class);
 	
 	/**
 	 * Constructs a new {@code FundAccountingService}.
@@ -50,6 +51,7 @@ public class FundAccountingService
 	{
 		this.fundMap = new HashMap<>();
 		this.accountMap = new HashMap<>();
+		
 	}
 	
 	/**
@@ -64,7 +66,8 @@ public class FundAccountingService
 		
 		if (fund == null || fund.getName() == null)
 		{
-			throw new IllegalArgumentException("Fund and fund name must not be null.");
+			throw new IllegalArgumentException(
+				"Fund and fund name must not be null.");
 		}
 		
 		if (this.fundMap.containsKey(fund.getName()))
@@ -74,6 +77,7 @@ public class FundAccountingService
 		}
 		
 		this.fundMap.put(fund.getName(), fund);
+		
 	}
 	
 	/**
@@ -98,7 +102,8 @@ public class FundAccountingService
 		{
 			
 			// Disassociate this fund from all related accounts
-			List<String> associatedAccounts = new ArrayList<>(fund.getAccountIds());
+			List<String> associatedAccounts =
+				new ArrayList<>(fund.getAccountIds());
 			
 			for (String accountId : associatedAccounts)
 			{
@@ -117,6 +122,7 @@ public class FundAccountingService
 		}
 		
 		return false;
+		
 	}
 	
 	/**
@@ -131,16 +137,19 @@ public class FundAccountingService
 		
 		if (account == null || account.getName() == null)
 		{
-			throw new IllegalArgumentException("Account and account name must not be null.");
+			throw new IllegalArgumentException(
+				"Account and account name must not be null.");
 		}
 		
 		if (this.accountMap.containsKey(account.getName()))
 		{
 			throw new IllegalArgumentException(
-				"Account with name '" + account.getName() + "' already exists.");
+				"Account with name '" + account.getName() +
+					"' already exists.");
 		}
 		
 		this.accountMap.put(account.getName(), account);
+		
 	}
 	
 	/**
@@ -164,7 +173,8 @@ public class FundAccountingService
 		if (account != null)
 		{
 			// Disassociate account from all related funds
-			List<String> associatedFunds = new ArrayList<>(account.getAssociatedFundIds());
+			List<String> associatedFunds =
+				new ArrayList<>(account.getAssociatedFundIds());
 			
 			for (String fundId : associatedFunds)
 			{
@@ -183,6 +193,7 @@ public class FundAccountingService
 		}
 		
 		return false;
+		
 	}
 	
 	/**
@@ -194,74 +205,82 @@ public class FundAccountingService
 	public List<Fund> listFunds()
 	{
 		return new ArrayList<>(this.fundMap.values());
+		
 	}
 	
-        /**
-         * Saves all funds to the persistent document store.
-         *
-         * @param companyDirectory retained for backwards compatibility but ignored by the method
-         * @throws IOException if writing to the database fails
-         */
-        public void saveFunds(File companyDirectory) throws IOException
-        {
-
-                try
-                {
-                        String payload = MAPPER.writeValueAsString(listFunds());
-                        new DocumentRepository().upsert(DOCUMENT_NAME, payload);
-                        LOGGER.info("Funds saved to database document '" + DOCUMENT_NAME + "'.");
-                }
-                catch (SQLException e)
-                {
-                        throw new IOException("Failed to save funds to database", e);
-                }
-
-        }
+	/**
+	 * Saves all funds to the persistent document store.
+	 *
+	 * @param companyDirectory retained for backwards compatibility but ignored by the method
+	 * @throws IOException if writing to the database fails
+	 */
+	public void saveFunds(File companyDirectory) throws IOException
+	{
+		
+		try
+		{
+			String payload = MAPPER.writeValueAsString(listFunds());
+			new DocumentRepository().upsert(DOCUMENT_NAME, payload);
+			LOGGER.info(
+				"Funds saved to database document '" + DOCUMENT_NAME + "'.");
+		}
+		catch (SQLException e)
+		{
+			throw new IOException("Failed to save funds to database", e);
+		}
+		
+	}
 	
-        /**
-         * Loads funds from the persistent document store.
-         * Existing in-memory funds are cleared before loading new ones.
-         *
-         * @param companyDirectory retained for backwards compatibility but ignored by the method
-         * @throws IOException if reading from the database fails
-         */
+	/**
+	 * Loads funds from the persistent document store.
+	 * Existing in-memory funds are cleared before loading new ones.
+	 *
+	 * @param companyDirectory retained for backwards compatibility but ignored by the method
+	 * @throws IOException if reading from the database fails
+	 */
 	public void loadFunds(File companyDirectory) throws IOException
 	{
 		this.fundMap.clear();
 		
-                try
-                {
-                        new DocumentRepository().find(DOCUMENT_NAME)
-                                .ifPresent(payload -> {
-                                        try
-                                        {
-                                                List<Fund> loaded = MAPPER.readValue(payload, LIST_TYPE);
-
-                                                for (Fund f : loaded)
-                                                {
-
-                                                        if (f.getName() != null)
-                                                        {
-                                                                this.fundMap.put(f.getName(), f);
-                                                        }
-
-                                                }
-
-                                                LOGGER.info("Funds loaded from database document '" + DOCUMENT_NAME + "'.");
-                                        }
-                                        catch (IOException ex)
-                                        {
-                                                LOGGER.log(Level.SEVERE,
-                                                        "Failed to deserialize funds JSON from database", ex);
-                                        }
-                                });
-                }
-                catch (SQLException e)
-                {
-                        throw new IOException("Failed to load funds from database", e);
-                }
-
-        }
+		try
+		{
+			new DocumentRepository().find(DOCUMENT_NAME)
+				.ifPresent(payload ->
+				{
+					
+					try
+					{
+						List<Fund> loaded =
+							MAPPER.readValue(payload, LIST_TYPE);
+						
+						for (Fund f : loaded)
+						{
+							
+							if (f.getName() != null)
+							{
+								this.fundMap.put(f.getName(), f);
+							}
+							
+						}
+						
+						LOGGER.info("Funds loaded from database document '" +
+							DOCUMENT_NAME + "'.");
+					}
+					catch (IOException ex)
+					{
+						LOGGER.log(Level.SEVERE,
+							"Failed to deserialize funds JSON from database",
+							ex);
+					}
+					
+				});
+		}
+		catch (SQLException e)
+		{
+			throw new IOException("Failed to load funds from database", e);
+		}
+		
+	}
 	
 	/**
 	 * Retrieves a list of all accounts currently managed by this service.
@@ -272,6 +291,7 @@ public class FundAccountingService
 	public List<Account> listAccounts()
 	{
 		return new ArrayList<>(this.accountMap.values());
+		
 	}
 	
 	/**
@@ -291,6 +311,7 @@ public class FundAccountingService
 		}
 		
 		return balances;
+		
 	}
 	
 	/**
@@ -309,7 +330,8 @@ public class FundAccountingService
 		
 		if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0)
 		{
-			throw new IllegalArgumentException("Amount must be greater than zero.");
+			throw new IllegalArgumentException(
+				"Amount must be greater than zero.");
 		}
 		
 		Fund from = this.fundMap.get(fromFund);
@@ -317,12 +339,14 @@ public class FundAccountingService
 		
 		if (from == null || to == null)
 		{
-			throw new IllegalArgumentException("Source or destination fund does not exist.");
+			throw new IllegalArgumentException(
+				"Source or destination fund does not exist.");
 		}
 		
 		// Perform the transfer logic (using BigDecimal for balance operations)
 		from.setBalance(from.getBalance().subtract(amount));
 		to.setBalance(to.getBalance().add(amount));
+		
 	}
 	
 }
