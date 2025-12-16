@@ -27,6 +27,7 @@ public class CashFlowStatementJasperGenerator extends AbstractReportGenerator
 {
 	
 	private ReportContext reportContext;
+	
 	/**
 	 * Constructs a {@code CashFlowStatementJasperGenerator}.
 	 *
@@ -37,13 +38,16 @@ public class CashFlowStatementJasperGenerator extends AbstractReportGenerator
 		ReportService reportService2)
 	{
 		this.reportContext = reportContext;
+		
 	}
 	
-        /** {@inheritDoc} */
-        @Override protected String getReportPath()
-        {
-                return bundledReportPath();
-        }
+	/** {@inheritDoc} */
+	@Override
+	protected String getReportPath()
+	{
+		return bundledReportPath();
+		
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -55,22 +59,26 @@ public class CashFlowStatementJasperGenerator extends AbstractReportGenerator
 	 * </p>
 	 * @return A list of {@link CashFlowStatementRowBean} objects for the report, or an empty list if data cannot be prepared.
 	 */
-	@Override protected List<CashFlowStatementRowBean> getReportData()
+	@Override
+	protected List<CashFlowStatementRowBean> getReportData()
 	{
 		Company company = CurrentCompany.getCompany();
 		
-		if (company == null || company.getLedger() == null || company.getChartOfAccounts() == null)
+		if (company == null || company.getLedger() == null ||
+			company.getChartOfAccounts() == null)
 		{
 			System.err.println(
-				"CashFlowStatementJasperGenerator: Company, Ledger, or COA is null. Cannot generate data."); 
+				"CashFlowStatementJasperGenerator: Company, Ledger, or COA is null. Cannot generate data.");
 			return Collections.emptyList();
 		}
 		
 		Ledger ledger = company.getLedger();
 		ChartOfAccounts coa = company.getChartOfAccounts();
 		
-		return CashFlowStatementJasperGenerator.prepareCashFlowStatementJasperData(this.reportContext, ledger,
-			coa);
+		return CashFlowStatementJasperGenerator
+			.prepareCashFlowStatementJasperData(this.reportContext, ledger,
+				coa);
+		
 	}
 	
 	/**
@@ -85,7 +93,8 @@ public class CashFlowStatementJasperGenerator extends AbstractReportGenerator
 	 * </p>
 	 * @return A map of parameters for the JasperReport.
 	 */
-	@Override protected Map<String, Object> getReportParameters()
+	@Override
+	protected Map<String, Object> getReportParameters()
 	{
 		Map<String, Object> params = new HashMap<>();
 		params.put("P_REPORT_TITLE", "Cash Flow Statement");
@@ -103,22 +112,26 @@ public class CashFlowStatementJasperGenerator extends AbstractReportGenerator
 		
 		String reportPeriod = "N/A";
 		
-		if (this.reportContext.getStartDate() != null && this.reportContext.getEndDate() != null)
+		if (this.reportContext.getStartDate() != null &&
+			this.reportContext.getEndDate() != null)
 		{
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
-			reportPeriod = this.reportContext.getStartDate().format(formatter) + " - " +
-				this.reportContext.getEndDate().format(formatter);
+			DateTimeFormatter formatter =
+				DateTimeFormatter.ofPattern("MMMM d, yyyy");
+			reportPeriod =
+				this.reportContext.getStartDate().format(formatter) + " - " +
+					this.reportContext.getEndDate().format(formatter);
 		}
 		
 		params.put("P_REPORT_PERIOD", reportPeriod);
 		params.put("P_GENERATION_DATE",
-			LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM d, yyyy")));
+			LocalDate.now()
+				.format(DateTimeFormatter.ofPattern("MMMM d, yyyy")));
 		
 		return params;
+		
 	}
 	
-
-
+	
 	/**
 	 * @param reportContext
 	 * @param ledger
@@ -126,20 +139,24 @@ public class CashFlowStatementJasperGenerator extends AbstractReportGenerator
 	 * @return
 	 */
 	public static
-			List<CashFlowStatementRowBean>
-			prepareCashFlowStatementJasperData(	ReportContext reportContext, nonprofitbookkeeping.model.Ledger ledger,
-												nonprofitbookkeeping.model.ChartOfAccounts coa)
+		List<CashFlowStatementRowBean>
+		prepareCashFlowStatementJasperData(ReportContext reportContext,
+			nonprofitbookkeeping.model.Ledger ledger,
+			nonprofitbookkeeping.model.ChartOfAccounts coa)
 	{
 		return new ArrayList<>();
+		
 	}
-
+	
 	/**
 	 * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getBaseName() 
 	 */
-	@Override public String getBaseName()
+	@Override
+	public String getBaseName()
 	{
-		String currentDateStr = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE); // YYYY-MM-DD
-
+		String currentDateStr =
+			LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE); // YYYY-MM-DD
+		
 		return "Cash_Flow_Statement_Report_" + currentDateStr;
 		
 	}

@@ -164,7 +164,7 @@ public class IncomeStatementJasperGenerator extends AbstractReportGenerator
 	 * @throws IllegalArgumentException if start date or end date is not provided in the {@code context}.
 	 */
 	public static Map<String, Object> prepareIncomeStatementContext(
-		ReportContext context, 
+		ReportContext context,
 		nonprofitbookkeeping.model.Ledger ledger,
 		nonprofitbookkeeping.model.ChartOfAccounts chartOfAccounts)
 	{

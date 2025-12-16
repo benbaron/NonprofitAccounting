@@ -1,215 +1,228 @@
 package nonprofitbookkeeping.model.budget;
 
-import lombok.Data;
-import lombok.NoArgsConstructor; // For Jackson
-// No @AllArgsConstructor to allow custom constructor logic for budgetId
-
-import java.util.List;
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.UUID;
+import java.util.List;
 
 /**
- * Represents a budget for a specific fiscal year.
- * A budget consists of a name, fiscal year, an optional description, a list of budget lines,
- * currency, and an optional associated fund ID.
- * Lombok's {@code @Data} and {@code @NoArgsConstructor} are used for boilerplate code generation.
+ * Stub Budget class for the standalone demo project.
+ *
+ * In your real NonprofitBookkeeping / SCALedger codebase, this should be
+ * replaced by the full-featured Budget model.
  */
-@Data
-@NoArgsConstructor // Keep for Jackson, but ensure budgetId is handled if object created this way
-public class Budget {
-    /** The unique identifier for the budget. Typically a UUID. */
-    private String budgetId;
-    /** The name of the budget (e.g., "Annual Operational Budget"). */
-    private String budgetName;
-    /** The fiscal year to which this budget applies (e.g., 2024). */
-    private int fiscalYear;
-    /** An optional description for the budget. */
-    private String description; // Optional
-    /** A list of {@link BudgetLine} items that make up this budget. Initialized to an empty ArrayList. */
-    private List<BudgetLine> budgetLines = new ArrayList<>();
-    /** The currency code for the amounts in this budget (e.g., "USD"). Should ideally match the company's base currency. */
-    private String currency; // Should match company currency
-    /** The identifier of a specific fund to which this budget applies, if any. Optional. */
-    private String applicableFundId; // Optional
+public class Budget
+{
 
-    /**
-     * Constructs a Budget with a given name and fiscal year.
-     * A unique {@code budgetId} is automatically generated using UUID.
-     * The list of budget lines is initialized as empty.
-     * @param budgetName The name for the budget.
-     * @param fiscalYear The fiscal year for the budget.
-     */
-    public Budget(String budgetName, int fiscalYear) {
-        this.budgetId = UUID.randomUUID().toString(); // Generate new ID
-        this.budgetName = budgetName;
-        this.fiscalYear = fiscalYear;
-        // budgetLines is initialized by field declaration
-    }
-    
-    /**
-     * Gets the unique identifier for the budget.
-     * If the {@code budgetId} is currently null (e.g., if the object was created via
-     * the no-args constructor and not yet populated), a new UUID will be generated and assigned.
-     * @return The budget ID string.
-     */
-    public String getBudgetId() {
-        if (this.budgetId == null) {
-            this.budgetId = UUID.randomUUID().toString();
-        }
-        return this.budgetId;
-    }
-    
-    // Note: The following comment block from original code is retained for context,
-    // but the primary mechanism for ID generation is now in the constructor and the custom getter.
-    // Ensure budgetId is set upon construction if using @NoArgsConstructor path,
-    // though this is better handled by having Jackson populate it or using a factory.
-    // For robust handling with @NoArgsConstructor, budgetId might need to be checked/set
-    // upon first access or through a specific init method if not deserialized.
-    // The getter approach above is a common pattern.
-
-    /**
-     * Adds a {@link BudgetLine} to this budget.
-     * If the internal list of budget lines is null (which shouldn't happen with current field initialization),
-     * it will be initialized.
-     * @param line The budget line to add.
-     */
-    public void addBudgetLine(BudgetLine line) {
-        if (this.budgetLines == null) { // Defensive check, though current initialization prevents this
-            this.budgetLines = new ArrayList<>();
-        }
-        this.budgetLines.add(line);
-    }
-
-    /**
-     * Removes a specific {@link BudgetLine} from this budget.
-     * If the budget lines list is null or the line is not found, no action occurs.
-     * @param line The budget line to remove.
-     */
-    public void removeBudgetLine(BudgetLine line) {
-        if (this.budgetLines != null) {
-            this.budgetLines.remove(line);
-        }
-    }
-
-    // Explicit getters and setters below are mostly redundant due to Lombok @Data,
-    // but are documented as they exist.
+	/**  
+	 * Constructor Budget
+	 * @param string
+	 * @param i
+	 */
+	public Budget(String string, int i)
+	{
+		// TODO Auto-generated constructor stub
+		
+	}
+    // Add real fields and methods in your main project.
 
 	/**
-	 * Gets the name of the budget.
-	 * @return The budget name.
+	 * @param string
 	 */
-	public String getBudgetName()
+	public void setBudgetId(String string)
 	{
-		return this.budgetName;
+		// TODO Auto-generated method stub
+		
+		
 	}
 
 	/**
-	 * Sets the name of the budget.
-	 * @param budgetName The budget name to set.
+	 * @param string
 	 */
-	public void setBudgetName(String budgetName)
+	public void setDescription(String string)
 	{
-		this.budgetName = budgetName;
+		// TODO Auto-generated method stub
+		
+		
 	}
 
 	/**
-	 * Gets the fiscal year of the budget.
-	 * @return The fiscal year.
+	 * @param string
 	 */
-	public int getFiscalYear()
+	public void setCurrency(String string)
 	{
-		return this.fiscalYear;
+		// TODO Auto-generated method stub
+		
+		
 	}
 
 	/**
-	 * Sets the fiscal year of the budget.
-	 * @param fiscalYear The fiscal year to set.
+	 * @param line1
 	 */
-	public void setFiscalYear(int fiscalYear)
+	public void addBudgetLine(BudgetLine line1)
 	{
-		this.fiscalYear = fiscalYear;
+		// TODO Auto-generated method stub
+		
+		
 	}
 
 	/**
-	 * Gets the optional description of the budget.
-	 * @return The budget description, or null if not set.
+	 * @return
 	 */
-	public String getDescription()
+	public Short getBudgetId()
 	{
-		return this.description;
+		// TODO Auto-generated method stub
+		return null;
+		
 	}
 
 	/**
-	 * Sets the optional description of the budget.
-	 * @param description The budget description to set.
+	 * @return
 	 */
-	public void setDescription(String description)
+	public Short getBudgetName()
 	{
-		this.description = description;
+		// TODO Auto-generated method stub
+		return null;
+		
 	}
 
 	/**
-	 * Gets the list of budget lines for this budget.
-	 * @return A list of {@link BudgetLine} objects.
+	 * @return
 	 */
-	public List<BudgetLine> getBudgetLines()
+	public Short getFiscalYear()
 	{
-		return this.budgetLines;
+		// TODO Auto-generated method stub
+		return null;
+		
 	}
 
 	/**
-	 * Sets the list of budget lines for this budget.
-	 * @param budgetLines A list of {@link BudgetLine} objects to set.
+	 * @return
 	 */
-	public void setBudgetLines(List<BudgetLine> budgetLines)
+	public Short getDescription()
 	{
-		this.budgetLines = budgetLines;
+		// TODO Auto-generated method stub
+		return null;
+		
 	}
 
 	/**
-	 * Gets the currency code for this budget.
-	 * @return The currency code (e.g., "USD").
+	 * @return
 	 */
-	public String getCurrency()
+	public Short getCurrency()
 	{
-		return this.currency;
+		// TODO Auto-generated method stub
+		return null;
+		
 	}
 
 	/**
-	 * Sets the currency code for this budget.
-	 * @param currency The currency code to set.
+	 * @return
 	 */
-	public void setCurrency(String currency)
+	public List<Budget> getBudgetLines()
 	{
-		this.currency = currency;
+		// TODO Auto-generated method stub
+		return null;
+		
 	}
 
 	/**
-	 * Gets the ID of the fund to which this budget applies, if any.
-	 * @return The applicable fund ID, or null if not set.
+	 * @return
 	 */
-	public String getApplicableFundId()
+	public String getAccountId()
 	{
-		return this.applicableFundId;
+		// TODO Auto-generated method stub
+		return null;
+		
 	}
 
 	/**
-	 * Sets the ID of the fund to which this budget applies.
-	 * @param applicableFundId The fund ID to set.
+	 * @return
 	 */
-	public void setApplicableFundId(String applicableFundId)
+	public String getAccountName()
 	{
-		this.applicableFundId = applicableFundId;
+		// TODO Auto-generated method stub
+		return null;
+		
 	}
 
 	/**
-	 * Sets the unique identifier for the budget.
-	 * This is typically generated automatically but can be set manually if needed (e.g., during deserialization).
-	 * @param budgetId The budget ID to set.
+	 * @return
 	 */
-	public void setBudgetId(String budgetId)
+	public Periodicity getTotalBudgetedAmount()
 	{
-		this.budgetId = budgetId;
+		// TODO Auto-generated method stub
+		return null;
+		
 	}
 
+	/**
+	 * @return
+	 */
+	public Periodicity getPeriodicity()
+	{
+		// TODO Auto-generated method stub
+		return null;
+		
+	}
+
+	/**
+	 * @return
+	 */
+	public List<Budget> getPeriodicAmounts()
+	{
+		// TODO Auto-generated method stub
+		return null;
+		
+	}
+
+	/**
+	 * @param budget
+	 * @return
+	 */
+	public int compareTo(Budget budget)
+	{
+		// TODO Auto-generated method stub
+		return 0;
+		
+	}
+
+	/**
+	 * @param arrayList
+	 */
+	public void setBudgetLines(ArrayList arrayList)
+	{
+		// TODO Auto-generated method stub
+		
+		
+	}
+
+	/**
+	 * @param bigDecimal
+	 */
+	public void setTotalBudgetedAmount(BigDecimal bigDecimal)
+	{
+		// TODO Auto-generated method stub
+		
+		
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setApplicableFundId(String string)
+	{
+		// TODO Auto-generated method stub
+		
+		
+	}
+
+	/**
+	 * @return
+	 */
+	public String getFundId()
+	{
+		// TODO Auto-generated method stub
+		return null;
+		
+	}
 }

@@ -25,8 +25,9 @@ import nonprofitbookkeeping.service.ReportService;
 public class ChartOfAccountsJasperGenerator extends AbstractReportGenerator
 {
 	
-	public static final Logger LOGGER = Logger.getLogger(ReportService.class.getName());
-
+	public static final Logger LOGGER =
+		Logger.getLogger(ReportService.class.getName());
+	
 	/**
 	 * Constructs the generator with the required {@link ReportService}.
 	 *
@@ -41,7 +42,8 @@ public class ChartOfAccountsJasperGenerator extends AbstractReportGenerator
 	 * 
 	 * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getReportData()
 	 */
-	@Override protected List<ChartOfAccountsRowBean> getReportData()
+	@Override
+	protected List<ChartOfAccountsRowBean> getReportData()
 	{
 		Company company = CurrentCompany.getCompany();
 		
@@ -54,9 +56,11 @@ public class ChartOfAccountsJasperGenerator extends AbstractReportGenerator
 		
 		ChartOfAccounts coa = company.getChartOfAccounts();
 		return prepareChartOfAccountsJasperData(coa);
+		
 	}
 	
-	@Override protected Map<String, Object> getReportParameters()
+	@Override
+	protected Map<String, Object> getReportParameters()
 	{
 		Map<String, Object> params = new HashMap<>();
 		params.put("P_REPORT_TITLE", "Chart of Accounts");
@@ -70,13 +74,17 @@ public class ChartOfAccountsJasperGenerator extends AbstractReportGenerator
 		}
 		
 		params.put("P_COMPANY_NAME", companyName);
-		params.put("P_GENERATION_DATE", LocalDate.now().format(DateTimeFormatter.ISO_DATE));
+		params.put("P_GENERATION_DATE",
+			LocalDate.now().format(DateTimeFormatter.ISO_DATE));
 		return params;
+		
 	}
 	
-	@Override protected String getReportPath()
+	@Override
+	protected String getReportPath()
 	{
 		return bundledReportPath();
+		
 	}
 	
 	/**
@@ -88,14 +96,15 @@ public class ChartOfAccountsJasperGenerator extends AbstractReportGenerator
 	 *         the chart is null or contains no accounts.
 	 */
 	public
-			List<ChartOfAccountsRowBean>
-			prepareChartOfAccountsJasperData(ChartOfAccounts chartOfAccounts)
+		List<ChartOfAccountsRowBean>
+		prepareChartOfAccountsJasperData(ChartOfAccounts chartOfAccounts)
 	{
 		List<ChartOfAccountsRowBean> data = new ArrayList<>();
 		
 		if (chartOfAccounts == null)
 		{
-			LOGGER.warning("ChartOfAccounts is null - cannot prepare COA report data.");
+			LOGGER.warning(
+				"ChartOfAccounts is null - cannot prepare COA report data.");
 			return data;
 		}
 		
@@ -114,19 +123,24 @@ public class ChartOfAccountsJasperGenerator extends AbstractReportGenerator
 			if (acct == null)
 				continue;
 			
-			String type = (acct.getAccountType() != null) ? acct.getAccountType().name() : "";
-			data.add(new ChartOfAccountsRowBean(acct.getAccountNumber(), acct.getName(), type));
+			String type = (acct.getAccountType() != null) ?
+				acct.getAccountType().name() : "";
+			data.add(new ChartOfAccountsRowBean(acct.getAccountNumber(),
+				acct.getName(), type));
 		}
 		
 		return data;
+		
 	}
-
+	
 	/**
 	 * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getBaseName() 
 	 */
-	@Override public String getBaseName()
+	@Override
+	public String getBaseName()
 	{
 		return "Chart_of_Accounts_" + LocalDate.now();
+		
 	}
 	
 }

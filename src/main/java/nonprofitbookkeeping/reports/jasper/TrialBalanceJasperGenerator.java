@@ -39,6 +39,7 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 {
 	
 	private ReportContext reportContext;
+	
 	/**
 	 * Constructs a {@code TrialBalanceJasperGenerator}.
 	 *
@@ -47,9 +48,11 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 	 * @param reportService The {@link ReportService} used to prepare the data (list of {@link TrialBalanceRowBean})
 	 *                      for the report.
 	 */
-	public TrialBalanceJasperGenerator(ReportContext reportContext, ReportService reportService)
+	public TrialBalanceJasperGenerator(ReportContext reportContext,
+		ReportService reportService)
 	{
 		this.reportContext = reportContext;
+		
 	}
 	
 	/**
@@ -58,11 +61,13 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 	 * @throws ActionCancelledException Not directly thrown by this implementation, but declared due to the interface.
 	 * @throws NoFileCreatedException Not directly thrown by this implementation, but declared due to the interface.
 	 */
-	@Override protected String getReportPath()	throws ActionCancelledException,
-												NoFileCreatedException
+	@Override
+	protected String getReportPath() throws ActionCancelledException,
+		NoFileCreatedException
 	{
 		// Path within the resources directory
 		return bundledReportPath();
+		
 	}
 	
 	/**
@@ -75,11 +80,13 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 	 * </p>
 	 * @return A list of {@link TrialBalanceRowBean} objects for the report, or an empty list if data cannot be prepared.
 	 */
-	@Override protected List<TrialBalanceRowBean> getReportData()
+	@Override
+	protected List<TrialBalanceRowBean> getReportData()
 	{
 		Company company = CurrentCompany.getCompany();
 		
-		if (company == null || company.getLedger() == null || company.getChartOfAccounts() == null)
+		if (company == null || company.getLedger() == null ||
+			company.getChartOfAccounts() == null)
 		{
 			System.err.println(
 				"TrialBalanceJasperGenerator: Company, Ledger, or COA is null. Cannot generate data.");
@@ -89,7 +96,9 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 		Ledger ledger = company.getLedger();
 		ChartOfAccounts coa = company.getChartOfAccounts();
 		
-		return TrialBalanceJasperGenerator.prepareTrialBalanceJasperData(this.reportContext, ledger, coa);
+		return TrialBalanceJasperGenerator
+			.prepareTrialBalanceJasperData(this.reportContext, ledger, coa);
+		
 	}
 	
 	/**
@@ -104,7 +113,8 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 	 * </p>
 	 * @return A map of parameters for the JasperReport.
 	 */
-	@Override protected Map<String, Object> getReportParameters()
+	@Override
+	protected Map<String, Object> getReportParameters()
 	{
 		Map<String, Object> params = new HashMap<>();
 		
@@ -126,19 +136,24 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 		
 		if (this.reportContext.getEndDate() != null)
 		{
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
-			reportAsOfDate = "As of " + this.reportContext.getEndDate().format(formatter);
+			DateTimeFormatter formatter =
+				DateTimeFormatter.ofPattern("MMMM d, yyyy");
+			reportAsOfDate =
+				"As of " + this.reportContext.getEndDate().format(formatter);
 		}
 		
 		params.put("P_AS_OF_DATE", reportAsOfDate);
 		params.put("P_GENERATION_DATE",
-			LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM d, yyyy")));
-				
+			LocalDate.now()
+				.format(DateTimeFormatter.ofPattern("MMMM d, yyyy")));
+		
 		params.put("reporttitle", "Trial Balance"); // Specific for JRXML
-		params.put("dateToday", LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE));
+		params.put("dateToday",
+			LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE));
 		params.put("companyname", companyName);
 		
 		return params;
+		
 	}
 	
 	/**
@@ -154,35 +169,42 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 	 *         required data (end date, ledger, COA) is missing.
 	 */
 	public static
-			List<TrialBalanceRowBean> prepareTrialBalanceJasperData(ReportContext context,
-																	nonprofitbookkeeping.model.Ledger ledger,
-																	nonprofitbookkeeping.model.ChartOfAccounts chartOfAccounts)
+		List<TrialBalanceRowBean>
+		prepareTrialBalanceJasperData(ReportContext context,
+			nonprofitbookkeeping.model.Ledger ledger,
+			nonprofitbookkeeping.model.ChartOfAccounts chartOfAccounts)
 	{
 		
 		List<TrialBalanceRowBean> reportData = new ArrayList<>();
 		
-		if (context.getEndDate() == null || ledger == null || chartOfAccounts == null)
+		if (context.getEndDate() == null || ledger == null ||
+			chartOfAccounts == null)
 		{
-			ReportService.LOGGER.warning("End date, ledger, or COA missing for Trial Balance data preparation.");
+			ReportService.LOGGER.warning(
+				"End date, ledger, or COA missing for Trial Balance data preparation.");
 			return reportData; // Return empty list
 		}
 		
 		LocalDate reportEndDate = context.getEndDate();
 		long reportEndDateMillisInclusive =
-			reportEndDate.plusDays(1).atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli(); // Exclusive
-																								// end
+			reportEndDate.plusDays(1).atStartOfDay(ZoneOffset.UTC).toInstant()
+				.toEpochMilli(); // Exclusive
+									// end
 		
-		long reportStartDateMillis = 0; // Default to include all transactions up to end
+		long reportStartDateMillis = 0; // Default to include all transactions
+										// up to end
 										// date if start date is null
 		
 		if (context.getStartDate() != null)
 		{
 			reportStartDateMillis =
-				context.getStartDate().atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
+				context.getStartDate().atStartOfDay(ZoneOffset.UTC).toInstant()
+					.toEpochMilli();
 		}
 		
 		List<String> selectedFundIds = context.getFundIds();
-		boolean applyFundFilter = (selectedFundIds != null && !selectedFundIds.isEmpty());
+		boolean applyFundFilter =
+			(selectedFundIds != null && !selectedFundIds.isEmpty());
 		
 		List<Account> accountsToList = chartOfAccounts.getAccounts();
 		
@@ -202,19 +224,23 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 			if (account == null || account.getAccountNumber() == null ||
 				account.getName() == null || account.getAccountType() == null)
 			{
-				ReportService.LOGGER.warning("TB Data: Skipping account with missing critical information: " +
-					(account != null ? account.getAccountNumber() : "null account object"));
+				ReportService.LOGGER.warning(
+					"TB Data: Skipping account with missing critical information: " +
+						(account != null ? account.getAccountNumber() :
+							"null account object"));
 				continue;
 			}
 			
 			if (applyFundFilter &&
-				!ReportService.doesAccountMatchFunds(account, selectedFundIds, chartOfAccounts))
+				!ReportService.doesAccountMatchFunds(account, selectedFundIds,
+					chartOfAccounts))
 			{
 				continue; // Skip account if it doesn't match fund filter
 			}
 			
 			BigDecimal accountBalance =
-				account.getOpeningBalance() != null ? account.getOpeningBalance() : BigDecimal.ZERO;
+				account.getOpeningBalance() != null ?
+					account.getOpeningBalance() : BigDecimal.ZERO;
 			
 			List<AccountingTransaction> transactions = ledger.getTransactions();
 			
@@ -225,15 +251,18 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 				{
 					
 					if (transaction == null ||
-						transaction.getBookingDateTimestamp() >= reportEndDateMillisInclusive)
-					{ 
+						transaction.getBookingDateTimestamp() >=
+							reportEndDateMillisInclusive)
+					{
 						// Strictly before end of end date + 1 day
 						continue;
 					}
 					
-					// Apply start date filter for transactions if start date is specified
+					// Apply start date filter for transactions if start date is
+					// specified
 					if (reportStartDateMillis > 0 &&
-						transaction.getBookingDateTimestamp() < reportStartDateMillis)
+						transaction.getBookingDateTimestamp() <
+							reportStartDateMillis)
 					{
 						continue;
 					}
@@ -245,55 +274,65 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 					{
 						
 						if (entry == null ||
-							!account.getAccountNumber().equals(entry.getAccountNumber()) ||
+							!account.getAccountNumber()
+								.equals(entry.getAccountNumber()) ||
 							entry.getAmount() == null)
 						{
 							continue;
 						}
 						
-						// Fund filtering for transactions: Already handled by filtering the
+						// Fund filtering for transactions: Already handled by
+						// filtering the
 						// account itself.
-						// If the account is relevant to the selected funds, all its
-						// transactions contribute to its balance for this filtered view.
+						// If the account is relevant to the selected funds, all
+						// its
+						// transactions contribute to its balance for this
+						// filtered view.
 						
 						AccountType type = account.getAccountType();
 						AccountSide increaseSide = account.getIncreaseSide();
 						
 						if (type == null || increaseSide == null)
 						{
-							ReportService.LOGGER.warning("TB Data: Account " + account.getAccountNumber() +
+							ReportService.LOGGER.warning("TB Data: Account " +
+								account.getAccountNumber() +
 								" missing type or increase side.");
 							continue;
 						}
 						
 						if (increaseSide == AccountSide.DEBIT)
-						{ 
+						{
 							// For ASSET and EXPENSE typically
 							
 							if (entry.getAccountSide() == AccountSide.DEBIT)
 							{
-								accountBalance = accountBalance.add(entry.getAmount());
+								accountBalance =
+									accountBalance.add(entry.getAmount());
 							}
 							else
-							{ 
+							{
 								// CREDIT
-								accountBalance = accountBalance.subtract(entry.getAmount());
+								accountBalance =
+									accountBalance.subtract(entry.getAmount());
 							}
 							
 						}
 						else
-						{ 
-							// increaseSide is CREDIT (for LIABILITY, EQUITY, INCOME
+						{
+							// increaseSide is CREDIT (for LIABILITY, EQUITY,
+							// INCOME
 							// typically)
 							
 							if (entry.getAccountSide() == AccountSide.CREDIT)
 							{
-								accountBalance = accountBalance.add(entry.getAmount());
+								accountBalance =
+									accountBalance.add(entry.getAmount());
 							}
 							else
-							{ 
+							{
 								// DEBIT
-								accountBalance = accountBalance.subtract(entry.getAmount());
+								accountBalance =
+									accountBalance.subtract(entry.getAmount());
 							}
 							
 						}
@@ -309,13 +348,14 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 			
 			AccountType type = account.getAccountType();
 			AccountSide increaseSide = account.getIncreaseSide();
+			
 			if (type == null || increaseSide == null)
 			{
 				continue; // Already logged above
 			}
-				
+			
 			if (increaseSide == AccountSide.DEBIT)
-			{ 
+			{
 				// ASSET, EXPENSE
 				
 				if (accountBalance.compareTo(BigDecimal.ZERO) >= 0)
@@ -323,53 +363,63 @@ public class TrialBalanceJasperGenerator extends AbstractReportGenerator
 					debitAmount = accountBalance;
 				}
 				else
-				{ 
-					// Negative balance for a debit-normal account implies a credit nature in
+				{
+					// Negative balance for a debit-normal account implies a
+					// credit nature in
 					// TB
 					creditAmount = accountBalance.abs();
 				}
 				
 			}
 			else
-			{ 
-				// Credit-normal accounts: LIABILITY, EQUITY, INCOME				
+			{
+				
+				// Credit-normal accounts: LIABILITY, EQUITY, INCOME
 				if (accountBalance.compareTo(BigDecimal.ZERO) >= 0)
 				{
 					creditAmount = accountBalance;
 				}
 				else
-				{ 
-					// Negative balance for a credit-normal account implies a debit nature in
+				{
+					// Negative balance for a credit-normal account implies a
+					// debit nature in
 					// TB
 					debitAmount = accountBalance.abs();
 				}
 				
 			}
 			
-			// Only include accounts with non-zero balances or if they had an opening
+			// Only include accounts with non-zero balances or if they had an
+			// opening
 			// balance (even if ending is zero)
 			if (debitAmount.compareTo(BigDecimal.ZERO) != 0 ||
 				creditAmount.compareTo(BigDecimal.ZERO) != 0 ||
 				(account.getOpeningBalance() != null &&
-					account.getOpeningBalance().compareTo(BigDecimal.ZERO) != 0))
+					account.getOpeningBalance().compareTo(BigDecimal.ZERO) !=
+						0))
 			{
-				reportData.add(new TrialBalanceRowBean(account.getAccountNumber(),
-					account.getName(), debitAmount, creditAmount));
+				reportData
+					.add(new TrialBalanceRowBean(account.getAccountNumber(),
+						account.getName(), debitAmount, creditAmount));
 			}
 			
 		}
 		
 		return reportData;
+		
 	}
-
+	
 	/**
 	 * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getBaseName() 
 	 */
-	@Override public String getBaseName()
+	@Override
+	public String getBaseName()
 	{
-		String currentDateStr = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
-		String reportBaseName = "Trial_Balance_Report_" + (this.reportContext.getEndDate() != null ?
-			this.reportContext.getEndDate().toString() : currentDateStr);
+		String currentDateStr =
+			LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
+		String reportBaseName =
+			"Trial_Balance_Report_" + (this.reportContext.getEndDate() != null ?
+				this.reportContext.getEndDate().toString() : currentDateStr);
 		return reportBaseName;
 		
 	}

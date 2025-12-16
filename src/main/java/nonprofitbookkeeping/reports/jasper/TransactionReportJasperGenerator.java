@@ -68,7 +68,7 @@ public class TransactionReportJasperGenerator extends AbstractReportGenerator
 		
 	}
 	
-
+	
 	/**
 	 * 
 	 * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getReportData()
@@ -78,7 +78,7 @@ public class TransactionReportJasperGenerator extends AbstractReportGenerator
 	{
 		return this.queryFacade.queryAndMap(
 			this.queryConfig, // initialized by constructor
-			this::toRowBean); // 
+			this::toRowBean); //
 		
 	}
 	
@@ -136,34 +136,34 @@ public class TransactionReportJasperGenerator extends AbstractReportGenerator
 			
 		}
 		
-		String debit = 
+		String debit =
 			totalDebit.compareTo(java.math.BigDecimal.ZERO) != 0 ?
-			totalDebit.toPlainString() : "0";
-		String credit = 
+				totalDebit.toPlainString() : "0";
+		String credit =
 			totalCredit.compareTo(java.math.BigDecimal.ZERO) != 0 ?
-			totalCredit.toPlainString() : "0";
+				totalCredit.toPlainString() : "0";
 		
 		String memo =
-			transaction.getMemo() != null ? 
+			transaction.getMemo() != null ?
 				transaction.getMemo() : "";
-		String accountNumber = account != null ? 
+		String accountNumber = account != null ?
 			account.getAccountNumber() :
 			primaryEntry.getAccountNumber();
-		String accountName = account != null ? 
+		String accountName = account != null ?
 			account.getName() :
 			primaryEntry.getAccountNumber();
 		
 		return new TransactionReportRowBean(
 			String.valueOf(transaction.getBookingDateTimestamp()),
-			transaction.getDate(), 
+			transaction.getDate(),
 			memo,
-			memo, 
-			"", 
+			memo,
+			"",
 			transaction.getDate(),
 			accountNumber,
-			accountName, 
-			"", 
-			debit, 
+			accountName,
+			"",
+			debit,
 			credit);
 		
 	}
@@ -205,7 +205,7 @@ public class TransactionReportJasperGenerator extends AbstractReportGenerator
 			TransactionQueryFacade.QueryConfig
 				.builder()
 				.withDateRange(
-					context.getStartDate(), 
+					context.getStartDate(),
 					context.getEndDate())
 				.withAccounts(
 					context.getAccountIdsForDetailReport(),

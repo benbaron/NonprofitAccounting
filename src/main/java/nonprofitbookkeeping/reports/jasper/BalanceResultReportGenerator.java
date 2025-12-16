@@ -33,9 +33,13 @@ public class BalanceResultReportGenerator extends AbstractReportGenerator
 	 */
 	public BalanceResultReportGenerator(AccountService accountService)
 	{
-		// accountService parameter is not currently used by this generator's methods
-		// as getReportData() calls AccountService.getBalanceResults(Ledger) statically.
-		// If AccountService were to become an instance service, this would need to
+		
+		// accountService parameter is not currently used by this generator's
+		// methods
+		// as getReportData() calls AccountService.getBalanceResults(Ledger)
+		// statically.
+		// If AccountService were to become an instance service, this would need
+		// to
 		// change.
 	}
 	
@@ -53,24 +57,33 @@ public class BalanceResultReportGenerator extends AbstractReportGenerator
 	 * </p>
 	 * @return A map of parameters for the JasperReport.
 	 */
-	@Override protected Map<String, Object> getReportParameters()
+	@Override
+	protected Map<String, Object> getReportParameters()
 	{
 		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("P_REPORT_TITLE", "Balance Result Report"); // Match typical JRXML param
+		parameters.put("P_REPORT_TITLE", "Balance Result Report"); // Match
+																	// typical
+																	// JRXML
+																	// param
 																	// names
 		parameters.put("P_GENERATION_DATE",
-			LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM d, yyyy")));
+			LocalDate.now()
+				.format(DateTimeFormatter.ofPattern("MMMM d, yyyy")));
 		
 		Company currentCompany = CurrentCompany.getCompany();
 		String companyName = "N/A";
-		String companyDetailsText = "Company details not available."; // Default text
+		String companyDetailsText = "Company details not available."; // Default
+																		// text
 		
-		if (currentCompany != null && currentCompany.getCompanyProfile() != null)
+		if (currentCompany != null &&
+			currentCompany.getCompanyProfile() != null)
 		{
-			companyName = currentCompany.getCompanyProfile().getCompanyName() != null ?
-				currentCompany.getCompanyProfile().getCompanyName() : "N/A";
+			companyName =
+				currentCompany.getCompanyProfile().getCompanyName() != null ?
+					currentCompany.getCompanyProfile().getCompanyName() : "N/A";
 			// For companytext, using a simpler approach.
-			// If CompanyProfileModel had a formatted address or details string, that could
+			// If CompanyProfileModel had a formatted address or details string,
+			// that could
 			// be used.
 			companyDetailsText = "Report for: " + companyName;
 		}
@@ -78,13 +91,15 @@ public class BalanceResultReportGenerator extends AbstractReportGenerator
 		parameters.put("P_COMPANY_NAME", companyName);
 		// The JRXML for BalanceResultReport might not have P_COMPANY_DETAILS or
 		// P_REPORT_PERIOD.
-		// Adjust parameters based on actual JRXML. For now, providing common ones.
-
+		// Adjust parameters based on actual JRXML. For now, providing common
+		// ones.
+		
 		// parameters.put("P_COMPANY_DETAILS", companyDetailsText);
-
+		
 		// If JRXML uses this
 		parameters.put("P_REPORT_PERIOD",
-			"As of " + LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM d, yyyy")));
+			"As of " + LocalDate.now()
+				.format(DateTimeFormatter.ofPattern("MMMM d, yyyy")));
 		
 		
 		// Parameters from original BalanceResultReport.jrxml:
@@ -92,14 +107,17 @@ public class BalanceResultReportGenerator extends AbstractReportGenerator
 		// <parameter name="companytext" class="java.lang.String"/>
 		// <parameter name="dateToday" class="java.lang.String"/>
 		// <parameter name="reporttitle" class="java.lang.String"/>
-		// Mapping to these specific names based on the provided JRXML structure:
+		// Mapping to these specific names based on the provided JRXML
+		// structure:
 		parameters.put("reporttitle", "Balance Result Report");
-		parameters.put("dateToday", LocalDate.now().toString()); // e.g., "2024-01-15"
+		parameters.put("dateToday", LocalDate.now().toString()); // e.g.,
+																	// "2024-01-15"
 		parameters.put("company", companyName);
 		parameters.put("companytext", companyDetailsText);
 		
 		
 		return parameters;
+		
 	}
 	
 	/**
@@ -108,12 +126,14 @@ public class BalanceResultReportGenerator extends AbstractReportGenerator
 	 * @throws ActionCancelledException Not directly thrown by this implementation, but declared due to the interface.
 	 * @throws NoFileCreatedException Not directly thrown by this implementation, but declared due to the interface.
 	 */
-	@Override protected String getReportPath()	throws ActionCancelledException,
-												NoFileCreatedException
+	@Override
+	protected String getReportPath() throws ActionCancelledException,
+		NoFileCreatedException
 	{
 		// Path relative to the resources directory
 		// Updated to match the current location of the JRXML template.
 		return bundledReportPath();
+		
 	}
 	
 	/**
@@ -126,7 +146,8 @@ public class BalanceResultReportGenerator extends AbstractReportGenerator
 	 * </p>
 	 * @return A list of {@link AccountService.AccountBalance} objects, or an empty list if no data is available.
 	 */
-	@Override protected List<?> getReportData()
+	@Override
+	protected List<?> getReportData()
 	{
 		// Fetch the ledger from the currently loaded company if available.
 		Ledger ledger = null;
@@ -137,21 +158,27 @@ public class BalanceResultReportGenerator extends AbstractReportGenerator
 			ledger = currentCompany.getLedger();
 		}
 		
-		// The data structure returned by AccountService.getBalanceResults(ledger)
+		// The data structure returned by
+		// AccountService.getBalanceResults(ledger)
 		// must be a List of JavaBeans compatible with the fields defined in
-		// BalanceResultReport.jrxml (name, number, type, balance_currency_string).
+		// BalanceResultReport.jrxml (name, number, type,
+		// balance_currency_string).
 		List<AccountService.AccountBalance> balanceResults =
 			AccountService.getBalanceResults(ledger);
 		
-		return balanceResults != null ? balanceResults : Collections.emptyList();
+		return balanceResults != null ? balanceResults :
+			Collections.emptyList();
+		
 	}
-
+	
 	/**
 	 * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getBaseName() 
 	 */
-	@Override public String getBaseName()
+	@Override
+	public String getBaseName()
 	{
-		String currentDateStr = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
+		String currentDateStr =
+			LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
 		String reportBaseName = "Balance_Result_Report_" + currentDateStr;
 		return reportBaseName;
 		

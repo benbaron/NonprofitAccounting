@@ -28,13 +28,16 @@ public class TrialBalanceRowBean
 	 * @param debit The debit balance for the account. If null, defaults to BigDecimal.ZERO.
 	 * @param credit The credit balance for the account. If null, defaults to BigDecimal.ZERO.
 	 */
-	public TrialBalanceRowBean(String accountNumber, String accountName, BigDecimal debit,
+	public TrialBalanceRowBean(String accountNumber, String accountName,
+		BigDecimal debit,
 		BigDecimal credit)
 	{
 		this.accountNumber = accountNumber;
 		this.accountName = accountName;
 		this.debit = debit != null ? debit : BigDecimal.ZERO; // Ensure non-null
-		this.credit = credit != null ? credit : BigDecimal.ZERO; // Ensure non-null
+		this.credit = credit != null ? credit : BigDecimal.ZERO; // Ensure
+		// non-null
+		
 	}
 	
 	/**
@@ -44,6 +47,7 @@ public class TrialBalanceRowBean
 	public String getAccountNumber()
 	{
 		return this.accountNumber;
+		
 	}
 	
 	/**
@@ -53,6 +57,7 @@ public class TrialBalanceRowBean
 	public String getAccountName()
 	{
 		return this.accountName;
+		
 	}
 	
 	/**
@@ -62,6 +67,7 @@ public class TrialBalanceRowBean
 	public BigDecimal getDebit()
 	{
 		return this.debit;
+		
 	}
 	
 	/**
@@ -71,6 +77,7 @@ public class TrialBalanceRowBean
 	public BigDecimal getCredit()
 	{
 		return this.credit;
+		
 	}
 	
 	// ---------------------------------------------------------------------
@@ -86,6 +93,7 @@ public class TrialBalanceRowBean
 	public String getAccnum()
 	{
 		return getAccountNumber();
+		
 	}
 	
 	/**
@@ -97,6 +105,7 @@ public class TrialBalanceRowBean
 	public String getAccname()
 	{
 		return getAccountName();
+		
 	}
 	
 	/**
@@ -108,6 +117,7 @@ public class TrialBalanceRowBean
 	public BigDecimal getIncomming()
 	{
 		return getDebit();
+		
 	}
 	
 	/**
@@ -119,6 +129,7 @@ public class TrialBalanceRowBean
 	public BigDecimal getAmount()
 	{
 		return this.debit.subtract(this.credit);
+		
 	}
 	
 	/**
@@ -130,6 +141,7 @@ public class TrialBalanceRowBean
 	public BigDecimal getOutgoing()
 	{
 		return getCredit();
+		
 	}
 	
 	/**
@@ -139,6 +151,7 @@ public class TrialBalanceRowBean
 	public void setAccountNumber(String accountNumber)
 	{
 		this.accountNumber = accountNumber;
+		
 	}
 	
 	/**
@@ -148,6 +161,7 @@ public class TrialBalanceRowBean
 	public void setAccountName(String accountName)
 	{
 		this.accountName = accountName;
+		
 	}
 	
 	/**
@@ -158,6 +172,7 @@ public class TrialBalanceRowBean
 	public void setDebit(BigDecimal debit)
 	{
 		this.debit = debit != null ? debit : BigDecimal.ZERO;
+		
 	}
 	
 	/**
@@ -168,6 +183,7 @@ public class TrialBalanceRowBean
 	public void setCredit(BigDecimal credit)
 	{
 		this.credit = credit != null ? credit : BigDecimal.ZERO;
+		
 	}
 	
 }

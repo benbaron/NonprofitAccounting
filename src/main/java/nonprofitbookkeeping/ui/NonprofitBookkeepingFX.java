@@ -43,7 +43,6 @@ import nonprofitbookkeeping.core.ApplicationContextImpl;
 import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
-import nonprofitbookkeeping.model.Fund;
 import nonprofitbookkeeping.plugin.Plugin;
 import nonprofitbookkeeping.preferences.PreferencesManager;
 import nonprofitbookkeeping.service.*;
@@ -59,7 +58,6 @@ import nonprofitbookkeeping.ui.actions.scaledger.LoadXlsmTableActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.SaveModifiedCopyActionFX;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.panels.*;
-import nonprofitbookkeeping.ui.javafx.BudgetPanelFX;
 import nonprofitbookkeeping.tools.H2ScriptCompanyImporter;
 
 
@@ -179,8 +177,6 @@ public class NonprofitBookkeepingFX extends Application
 		static InventoryService iss = null;
 		/** Singleton instance of {@link ReportService}. */
 		static ReportService reportService = null;
-		/** Singleton instance of {@link BudgetService}. */
-		static BudgetService budgetService = null;
 		/** Singleton instance of {@link ReportConfigurationService}. */
 		
 		static ReportConfigurationService reportConfigurationService = null;
@@ -200,8 +196,6 @@ public class NonprofitBookkeepingFX extends Application
 				iss = new InventoryService();
 				/** Singleton instance of {@link ReportService}. */
 				reportService = new ReportService();
-				/** Singleton instance of {@link BudgetService}. */
-				budgetService = new BudgetService();
 				/** Singleton instance of {@link ReportConfigurationService}. */
 				reportConfigurationService = new ReportConfigurationService();
 				dss = new DocumentStorageService();
@@ -278,7 +272,6 @@ public class NonprofitBookkeepingFX extends Application
                 MenuBar contextMenuBar = new MenuBar();
                 this.applicationContext = new ApplicationContextImpl(this.primaryStage,
                         contextMenuBar, ServiceContainer.reportService,
-                        ServiceContainer.budgetService,
                         ServiceContainer.reportConfigurationService, ServiceContainer.iss, // InventoryService
                         ServiceContainer.dss, // DocumentStorageService
                         ServiceContainer.fas // FundAccountingService
@@ -478,22 +471,7 @@ public class NonprofitBookkeepingFX extends Application
 		this.miEditJournal.setAccelerator(
 			new KeyCodeCombination(KeyCode.J, KeyCombination.CONTROL_DOWN));
 		
-		add(edit, "Open Budget Editor", e -> {
-			Company currentCompany = CurrentCompany.getCompany();
-			
-			if (!CurrentCompany.isOpen() || currentCompany == null)
-			{
-				AlertBox.showError(this.primaryStage,
-					"No company is currently open. Please open or create a company first.");
-				return;
-			}
-			
-			BudgetPanelFX panel =
-				new BudgetPanelFX(ServiceContainer.budgetService,
-					currentCompany.getChartOfAccounts(), new ArrayList<Fund>(),
-					null);
-			showPanel(panel, "Budget Editor");
-		});
+
 		bar.getMenus().add(edit);
 		
 		/* RUN */

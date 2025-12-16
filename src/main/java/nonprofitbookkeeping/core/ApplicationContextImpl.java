@@ -6,6 +6,7 @@ import javafx.scene.control.MenuBar;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.model.budget.BudgetLine;
 import nonprofitbookkeeping.service.*; // Import all from service
 
 public class ApplicationContextImpl implements ApplicationContext
@@ -14,7 +15,6 @@ public class ApplicationContextImpl implements ApplicationContext
 	private final Stage primaryStage;
 	private final MenuBar menuBar;
 	private final ReportService reportService;
-	private final BudgetService budgetService;
 	private final ReportConfigurationService reportConfigurationService;
 	private final InventoryService inventoryService;
 	private final DocumentStorageService documentStorageService;
@@ -38,7 +38,6 @@ public class ApplicationContextImpl implements ApplicationContext
 	public ApplicationContextImpl(Stage primaryStage,
 		MenuBar menuBar,
 		ReportService reportService,
-		BudgetService budgetService,
 		ReportConfigurationService reportConfigurationService,
 		InventoryService inventoryService,
 		DocumentStorageService documentStorageService,
@@ -60,7 +59,6 @@ public class ApplicationContextImpl implements ApplicationContext
 		this.primaryStage = primaryStage;
 		this.menuBar = menuBar;
 		this.reportService = reportService;
-		this.budgetService = budgetService;
 		this.reportConfigurationService = reportConfigurationService;
 		this.inventoryService = inventoryService;
 		this.documentStorageService = documentStorageService;
@@ -79,7 +77,6 @@ public class ApplicationContextImpl implements ApplicationContext
 	 */
 	public ApplicationContextImpl(Stage primaryStage, // Renamed parameter for clarity
 		ReportService reportService, // Renamed parameter for clarity
-		BudgetService budgetService, // Renamed parameter for clarity
 		ReportConfigurationService reportConfigurationService, // Renamed parameter for clarity
 		InventoryService inventoryService, // Renamed parameter for clarity
 		DocumentStorageService documentStorageService, // Renamed parameter for clarity
@@ -88,7 +85,6 @@ public class ApplicationContextImpl implements ApplicationContext
 		this.primaryStage = primaryStage != null ? primaryStage : new Stage(); // Use provided or new Stage
 		this.menuBar = new MenuBar(); // Always create a new MenuBar for this constructor
 		this.reportService = reportService != null ? reportService : new ReportService();
-		this.budgetService = budgetService != null ? budgetService : new BudgetService();
 		this.reportConfigurationService = reportConfigurationService != null ? reportConfigurationService : new ReportConfigurationService();
 		this.inventoryService = inventoryService != null ? inventoryService : new InventoryService();
 		this.documentStorageService = documentStorageService != null ? documentStorageService : new DocumentStorageService();
@@ -124,13 +120,6 @@ public class ApplicationContextImpl implements ApplicationContext
 		return this.reportService;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public BudgetService getBudgetService()
-	{
-		return this.budgetService;
-	}
 	
 	/**
 	 * {@inheritDoc}
@@ -201,5 +190,18 @@ public class ApplicationContextImpl implements ApplicationContext
 	{
 		return this.menuBar;
 	}
+
+	/**
+	 * Override @see nonprofitbookkeeping.core.ApplicationContext#getBudgetService() 
+	 */
+	@Override
+	public BudgetLine getBudgetService()
+	{
+		// TODO Auto-generated method stub
+		return null;
+		
+	}
+
+
 	
 }

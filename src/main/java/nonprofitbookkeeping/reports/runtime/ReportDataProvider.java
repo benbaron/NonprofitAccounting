@@ -1,4 +1,4 @@
-package nonprofitbookkeeping.reports.runtime;
+﻿package nonprofitbookkeeping.reports.runtime;
 
 import nonprofitbookkeeping.reports.ReportContext;
 

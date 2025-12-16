@@ -4,8 +4,8 @@ package nonprofitbookkeeping.core;
 import javafx.stage.Stage;
 import javafx.scene.control.MenuBar; // Added for plugins to add menus
 import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.budget.BudgetLine;
 import nonprofitbookkeeping.service.ReportService;
-import nonprofitbookkeeping.service.BudgetService;
 import nonprofitbookkeeping.service.ReportConfigurationService;
 import nonprofitbookkeeping.service.InventoryService;
 import nonprofitbookkeeping.service.DocumentStorageService;
@@ -37,7 +37,7 @@ public interface ApplicationContext
 	 * Gets the budget service.
 	 * @return The budget service.
 	 */
-	BudgetService getBudgetService();
+	BudgetLine getBudgetService();
 	
 	/**
 	 * Gets the report configuration service.

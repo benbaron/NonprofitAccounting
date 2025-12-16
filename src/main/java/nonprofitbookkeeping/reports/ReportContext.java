@@ -1,4 +1,3 @@
-
 package nonprofitbookkeeping.reports;
 
 import java.time.LocalDate;
