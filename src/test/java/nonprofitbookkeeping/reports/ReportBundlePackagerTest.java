@@ -1,6 +1,8 @@
 
 package nonprofitbookkeeping.reports;
 
+import nonprofitbookkeeping.reports.jasper.runtime.ReportBundlePackager;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportBundles;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

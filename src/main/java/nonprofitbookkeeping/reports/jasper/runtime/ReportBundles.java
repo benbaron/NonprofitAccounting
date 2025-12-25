@@ -239,17 +239,23 @@ public final class ReportBundles
 			
 			if (existing != null)
 			{
-				throw new IllegalStateException(
-					"Duplicate bundle id detected: " + id);
+				LOGGER.log(Level.WARNING,
+					"Duplicate bundle id detected: {0}; keeping {1}",
+					new Object[] { id, existing.metadataResource() });
+				continue;
 			}
 			
-			Bundle previous = byGenerator.put(generator, bundle);
+			Bundle previous = byGenerator.putIfAbsent(generator, bundle);
 			
 			if (previous != null)
 			{
-				throw new IllegalStateException(
-					"Generator " + generator +
-						" is already associated with bundle " + previous.id());
+				LOGGER.log(Level.WARNING,
+					"Generator {0} already associated with bundle {1}; " +
+						"skipping {2}",
+					new Object[]
+					{ generator, previous.id(), bundle.id() });
+				byId.remove(id);
+				continue;
 			}
 			
 		}
