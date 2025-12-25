@@ -12,8 +12,6 @@ import java.util.Map;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
-import nonprofitbookkeeping.reports.ReportContext;
-import nonprofitbookkeeping.reports.jasper.AbstractReportGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
