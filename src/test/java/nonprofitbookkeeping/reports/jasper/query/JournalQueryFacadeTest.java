@@ -1,10 +1,11 @@
 
-package nonprofitbookkeeping.reports.query;
+package nonprofitbookkeeping.reports.jasper.query;
 
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.persistence.JournalRepository;
+import nonprofitbookkeeping.reports.jasper.beans.TRANSFER_IN_9Bean;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +19,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -96,9 +96,18 @@ class JournalQueryFacadeTest
 			.transactionType("deposit")
 			.build();
 		
-		ScaTransferInReportDataGenerator generator =
-			new ScaTransferInReportDataGenerator(this.facade);
-		List<TRANSFER_IN_9Bean> beans = generator.generateBeans(criteria);
+		List<TRANSFER_IN_9Bean> beans = this.facade.fetchBeans(criteria,
+			txn -> {
+				TRANSFER_IN_9Bean bean = new TRANSFER_IN_9Bean();
+				bean.setSca_funds_transferred_detail_in(txn.getMemo());
+				bean.setCheck_date(txn.getDate());
+				bean.setAmount(txn.getEntries().stream()
+					.map(AccountingEntry::getAmount)
+					.reduce(BigDecimal.ZERO, BigDecimal::add)
+					.stripTrailingZeros()
+					.toPlainString());
+				return bean;
+			});
 		
 		assertEquals(1, beans.size());
 		TRANSFER_IN_9Bean bean = beans.get(0);

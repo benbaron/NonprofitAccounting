@@ -4,7 +4,7 @@ package nonprofitbookkeeping.api;
 import java.io.File;
 import java.io.IOException;
 
-import nonprofitbookkeeping.reports.ReportContext;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
 
 /**
  * Defines the contract for report writers.

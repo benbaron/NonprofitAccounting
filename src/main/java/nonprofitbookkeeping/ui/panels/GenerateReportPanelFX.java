@@ -15,8 +15,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import nonprofitbookkeeping.reports.ReportContext;
-import nonprofitbookkeeping.reports.ReportTemplates;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportTemplates;
 import nonprofitbookkeeping.service.ReportService;
 
 import java.io.File;

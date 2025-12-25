@@ -3,6 +3,7 @@ package nonprofitbookkeeping.reports.datasource;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
+import nonprofitbookkeeping.reports.jasper.query.TransactionQueryFacade;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;

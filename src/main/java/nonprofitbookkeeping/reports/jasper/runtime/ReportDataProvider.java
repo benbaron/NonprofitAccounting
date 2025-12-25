@@ -1,6 +1,4 @@
-﻿package nonprofitbookkeeping.reports.runtime;
-
-import nonprofitbookkeeping.reports.ReportContext;
+package nonprofitbookkeeping.reports.jasper.runtime;
 
 /**
  * SPI for a report-specific data provider backed by JDBC.

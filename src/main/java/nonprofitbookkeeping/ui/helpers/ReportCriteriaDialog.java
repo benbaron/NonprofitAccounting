@@ -5,7 +5,7 @@ import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Fund;
 import nonprofitbookkeeping.model.reports.ReportConfiguration;
-import nonprofitbookkeeping.reports.ReportCriteria;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportCriteria;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;

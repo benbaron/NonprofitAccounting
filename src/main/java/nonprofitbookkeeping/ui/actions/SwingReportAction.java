@@ -22,7 +22,7 @@ import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Ledger;
-import nonprofitbookkeeping.reports.ReportContext;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
 import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.service.ReportService.ReportType;
 

@@ -2,7 +2,7 @@
  * nonprofit-scaledger-ribbon.zip_expanded ReportMetadata.java ReportMetadata
  */
 
-package nonprofitbookkeeping.reports;
+package nonprofitbookkeeping.reports.jasper.runtime;
 
 /**
  * Holds metadata associated with a generated report.

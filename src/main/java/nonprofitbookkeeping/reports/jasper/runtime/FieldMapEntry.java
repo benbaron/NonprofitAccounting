@@ -1,4 +1,4 @@
-﻿package nonprofitbookkeeping.reports.runtime;
+package nonprofitbookkeeping.reports.jasper.runtime;
 
 /**
  * One row from a *_fieldmap.csv file.

@@ -21,9 +21,9 @@ import javafx.stage.Window; // Added for getScene().getWindow()
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
-import nonprofitbookkeeping.reports.ReportContext; // Added import
-import nonprofitbookkeeping.reports.ReportMetadata;
-import nonprofitbookkeeping.reports.ReportTemplates;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportContext; // Added import
+import nonprofitbookkeeping.reports.jasper.runtime.ReportMetadata;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportTemplates;
 import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 

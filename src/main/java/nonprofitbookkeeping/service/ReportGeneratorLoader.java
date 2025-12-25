@@ -4,8 +4,8 @@ package nonprofitbookkeeping.service;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 
-import nonprofitbookkeeping.reports.ReportContext;
-import nonprofitbookkeeping.reports.ReportBundles;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportBundles;
 import nonprofitbookkeeping.reports.jasper.BundledTemplateJasperGenerator;
 
 import java.io.File;

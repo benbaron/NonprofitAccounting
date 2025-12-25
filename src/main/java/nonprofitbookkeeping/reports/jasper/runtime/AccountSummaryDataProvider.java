@@ -1,11 +1,10 @@
-﻿package nonprofitbookkeeping.reports.runtime;
+package nonprofitbookkeeping.reports.jasper.runtime;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.time.LocalDate;
 
-import nonprofitbookkeeping.reports.ReportContext;
 import nonprofitbookkeeping.reports.datasource.AccountSummaryRowBean;
 
 /**

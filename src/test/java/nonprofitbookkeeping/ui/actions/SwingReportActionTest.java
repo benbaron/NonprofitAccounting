@@ -20,7 +20,7 @@ import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.service.ReportService.ReportType;
-import nonprofitbookkeeping.reports.ReportContext;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
 
 /**
  * Tests for {@link SwingReportAction} and its concrete subclasses.

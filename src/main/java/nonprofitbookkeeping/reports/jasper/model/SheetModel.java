@@ -1,4 +1,4 @@
-package nonprofitbookkeeping.reports.generator.model;
+package nonprofitbookkeeping.reports.jasper.model;
 
 import java.util.List;
 import java.util.Map;

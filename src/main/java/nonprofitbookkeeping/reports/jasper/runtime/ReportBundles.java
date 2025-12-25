@@ -1,5 +1,5 @@
 
-package nonprofitbookkeeping.reports;
+package nonprofitbookkeeping.reports.jasper.runtime;
 
 import nonprofitbookkeeping.service.ReportService.ReportType;
 

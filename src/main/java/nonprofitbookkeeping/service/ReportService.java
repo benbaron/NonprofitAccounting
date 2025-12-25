@@ -5,9 +5,9 @@ import nonprofitbookkeeping.model.*;
 import nonprofitbookkeeping.model.budget.Budget;
 import nonprofitbookkeeping.model.budget.BudgetLine;
 import nonprofitbookkeeping.model.budget.Periodicity;
-import nonprofitbookkeeping.reports.ReportBundles;
-import nonprofitbookkeeping.reports.ReportContext;
-import nonprofitbookkeeping.reports.ReportMetadata;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportBundles;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportMetadata;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 
