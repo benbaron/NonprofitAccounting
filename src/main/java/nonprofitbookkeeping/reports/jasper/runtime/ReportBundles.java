@@ -235,28 +235,23 @@ public final class ReportBundles
 				description,
 				reportType);
 			
-			Bundle existing = byId.putIfAbsent(id, bundle);
-			
-			if (existing != null)
+			if (byId.containsKey(id))
 			{
-				LOGGER.log(Level.WARNING,
-					"Duplicate bundle id detected: {0}; keeping {1}",
-					new Object[] { id, existing.metadataResource() });
+				LOGGER.warning("Duplicate bundle id detected: " + id +
+					"; keeping first occurrence.");
 				continue;
 			}
 			
-			Bundle previous = byGenerator.putIfAbsent(generator, bundle);
-			
-			if (previous != null)
+			if (byGenerator.containsKey(generator))
 			{
-				LOGGER.log(Level.WARNING,
-					"Generator {0} already associated with bundle {1}; " +
-						"skipping {2}",
-					new Object[]
-					{ generator, previous.id(), bundle.id() });
-				byId.remove(id);
+				LOGGER.warning("Generator " + generator +
+					" is already associated with bundle " +
+					byGenerator.get(generator).id() + "; keeping first.");
 				continue;
 			}
+			
+			byId.put(id, bundle);
+			byGenerator.put(generator, bundle);
 			
 		}
 		
@@ -406,6 +401,13 @@ public final class ReportBundles
 					if (resourceRoot.equals(TEMPLATE_ROOT) &&
 						relative.getNameCount() > 0 &&
 						"bundles".equals(relative.getName(0).toString()))
+					{
+						return;
+					}
+					
+					if (resourceRoot.equals(TEMPLATE_ROOT) &&
+						relative.getNameCount() > 0 &&
+						"jrxml".equals(relative.getName(0).toString()))
 					{
 						return;
 					}

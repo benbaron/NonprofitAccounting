@@ -3,12 +3,14 @@ package nonprofitbookkeeping.service;
 
 import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
 import nonprofitbookkeeping.model.*;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.Mockito;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;

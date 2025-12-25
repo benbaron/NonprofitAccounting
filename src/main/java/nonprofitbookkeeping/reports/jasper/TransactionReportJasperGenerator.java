@@ -1,40 +1,37 @@
 package nonprofitbookkeeping.reports.jasper;
 
-import nonprofitbookkeeping.exception.ActionCancelledException;
-import nonprofitbookkeeping.exception.NoFileCreatedException;
+import nonprofitbookkeeping.reports.jasper.beans.TransactionReportBean;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Minimal generator for the TransactionReport JRXML template.
+ * Jasper generator for the TransactionReport template.
  */
 public class TransactionReportJasperGenerator extends AbstractReportGenerator
 {
-    @Override
-    protected List<?> getReportData()
-    {
-        return Collections.emptyList();
-    }
-
-    @Override
-    protected Map<String, Object> getReportParameters()
-    {
-        return new HashMap<>();
-    }
-
-    @Override
-    protected String getReportPath()
-        throws ActionCancelledException, NoFileCreatedException
-    {
-        return "nonprofitbookkeeping/reports/TransactionReport.jrxml";
-    }
-
-    @Override
-    public String getBaseName()
-    {
-        return "TransactionReport";
-    }
+	@Override
+	protected List<TransactionReportBean> getReportData()
+	{
+		return Collections.emptyList();
+	}
+	
+	@Override
+	protected Map<String, Object> getReportParameters()
+	{
+		return Collections.emptyMap();
+	}
+	
+	@Override
+	protected String getReportPath()
+	{
+		return bundledReportPath();
+	}
+	
+	@Override
+	public String getBaseName()
+	{
+		return "TransactionReport";
+	}
 }
