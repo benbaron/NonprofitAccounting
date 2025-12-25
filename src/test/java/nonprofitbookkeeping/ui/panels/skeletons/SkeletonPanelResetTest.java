@@ -33,7 +33,7 @@ import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
-import nonprofitbookkeeping.reports.ReportMetadata;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportMetadata;
 import nonprofitbookkeeping.ui.JavaFXTestBase;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;

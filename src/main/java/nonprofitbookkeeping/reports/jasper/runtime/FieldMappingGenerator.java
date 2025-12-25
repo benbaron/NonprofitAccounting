@@ -1,4 +1,4 @@
-package nonprofitbookkeeping.reports.generator.fieldmap;
+package nonprofitbookkeeping.reports.jasper.runtime;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import nonprofitbookkeeping.reports.generator.model.CellItem;
-import nonprofitbookkeeping.reports.generator.model.FieldInfo;
-import nonprofitbookkeeping.reports.generator.model.SheetModel;
+import nonprofitbookkeeping.reports.jasper.model.CellItem;
+import nonprofitbookkeeping.reports.jasper.model.FieldInfo;
+import nonprofitbookkeeping.reports.jasper.model.SheetModel;
 
 /**
  * Generates a fieldmap CSV from a SheetModel. The CSV has the columns:

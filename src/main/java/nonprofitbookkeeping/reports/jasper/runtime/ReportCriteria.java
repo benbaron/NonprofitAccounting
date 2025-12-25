@@ -1,5 +1,5 @@
 
-package nonprofitbookkeeping.reports;
+package nonprofitbookkeeping.reports.jasper.runtime;
 
 import java.time.LocalDate;
 import java.util.List;

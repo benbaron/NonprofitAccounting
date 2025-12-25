@@ -1,4 +1,4 @@
-package nonprofitbookkeeping.reports.query;
+package nonprofitbookkeeping.reports.jasper.query;
 
 import java.time.LocalDate;
 import java.util.Collections;

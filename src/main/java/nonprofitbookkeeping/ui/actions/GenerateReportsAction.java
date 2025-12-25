@@ -1,7 +1,7 @@
 
 package nonprofitbookkeeping.ui.actions;
 
-import nonprofitbookkeeping.reports.ReportContext;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
 import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.helpers.DateRangePickerDialog;

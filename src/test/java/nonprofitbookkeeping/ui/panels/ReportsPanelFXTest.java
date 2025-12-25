@@ -6,7 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import nonprofitbookkeeping.reports.ReportMetadata;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportMetadata;
 import nonprofitbookkeeping.ui.JavaFXTestBase;
 import nonprofitbookkeeping.ui.panels.ReportsPanelFX.ReportRow;
 

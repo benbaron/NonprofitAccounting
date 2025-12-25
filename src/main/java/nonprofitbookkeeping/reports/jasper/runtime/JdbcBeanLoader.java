@@ -1,4 +1,4 @@
-﻿package nonprofitbookkeeping.reports.runtime;
+package nonprofitbookkeeping.reports.jasper.runtime;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

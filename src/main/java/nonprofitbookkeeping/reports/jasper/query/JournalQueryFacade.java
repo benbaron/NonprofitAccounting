@@ -1,5 +1,5 @@
 
-package nonprofitbookkeeping.reports.query;
+package nonprofitbookkeeping.reports.jasper.query;
 
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;

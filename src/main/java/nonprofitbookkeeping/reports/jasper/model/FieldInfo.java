@@ -1,4 +1,4 @@
-package nonprofitbookkeeping.reports.generator.model;
+package nonprofitbookkeeping.reports.jasper.model;
 
 /**
  * Describes a dynamic data field discovered in an Excel sheet.

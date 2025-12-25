@@ -1,4 +1,4 @@
-package nonprofitbookkeeping.reports.generator.model;
+package nonprofitbookkeeping.reports.jasper.model;
 
 /**
  * Represents a single cell from an Excel sheet in the logical model.
