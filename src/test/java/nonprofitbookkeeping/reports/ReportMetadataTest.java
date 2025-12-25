@@ -1,6 +1,7 @@
 
 package nonprofitbookkeeping.reports;
 
+import nonprofitbookkeeping.reports.jasper.runtime.ReportMetadata;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 
