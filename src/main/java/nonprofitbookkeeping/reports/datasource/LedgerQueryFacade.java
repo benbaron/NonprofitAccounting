@@ -6,13 +6,17 @@ import nonprofitbookkeeping.model.AccountingTransaction;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 
+/**
+ * Filters transactions based on {@link LedgerQueryCriteria}.
+ */
 public class LedgerQueryFacade
 {
 	public <T> List<T> queryFromTransactions(
@@ -21,14 +25,21 @@ public class LedgerQueryFacade
 		Function<AccountingTransaction, T> mapper)
 	{
 		
-		if (transactions == null || transactions.isEmpty() || mapper == null)
+		if (mapper == null)
 		{
-			return List.of();
+			return Collections.emptyList();
 		}
 		
 		LedgerQueryCriteria effective =
-			criteria == null ? LedgerQueryCriteria.builder().build() : criteria;
+			criteria == null ? LedgerQueryCriteria.builder().build() :
+				criteria;
+		
 		List<T> results = new ArrayList<>();
+		
+		if (transactions == null)
+		{
+			return results;
+		}
 		
 		for (AccountingTransaction transaction : transactions)
 		{
@@ -49,56 +60,79 @@ public class LedgerQueryFacade
 			{
 				results.add(mapped);
 			}
-			
 		}
 		
 		return results;
 		
 	}
 	
-	private static boolean matches(AccountingTransaction transaction,
+	private boolean matches(AccountingTransaction transaction,
 		LedgerQueryCriteria criteria)
 	{
-		return matchesDate(transaction, criteria.getStartDate(),
-			criteria.getEndDate()) &&
+		return matchesDate(transaction, criteria) &&
 			matchesMemo(transaction, criteria.getMemoContains()) &&
 			matchesAccounts(transaction, criteria.getAccountNumbers(),
 				criteria.isRequireAllAccounts()) &&
 			matchesSide(transaction, criteria.getTransactionSide()) &&
-			matchesPredicates(transaction, criteria.getPredicates());
-		
+			criteria.getPredicates().stream()
+				.allMatch(predicate -> predicate.test(transaction));
 	}
 	
-	private static boolean matchesDate(AccountingTransaction transaction,
-		LocalDate startDate,
-		LocalDate endDate)
+	private boolean matchesDate(AccountingTransaction transaction,
+		LedgerQueryCriteria criteria)
 	{
-		Long timestamp = transaction.getBookingDateTimestamp();
+		LocalDate date = resolveDate(transaction);
 		
-		if (timestamp == null || timestamp <= 0)
+		if (date == null)
 		{
-			return startDate == null && endDate == null;
+			return criteria.getStartDate() == null &&
+				criteria.getEndDate() == null;
 		}
 		
-		LocalDate date = Instant.ofEpochMilli(timestamp)
-			.atZone(ZoneOffset.UTC)
-			.toLocalDate();
-		
-		if (startDate != null && date.isBefore(startDate))
+		if (criteria.getStartDate() != null &&
+			date.isBefore(criteria.getStartDate()))
 		{
 			return false;
 		}
 		
-		if (endDate != null && date.isAfter(endDate))
+		if (criteria.getEndDate() != null &&
+			date.isAfter(criteria.getEndDate()))
 		{
 			return false;
 		}
 		
 		return true;
-		
 	}
 	
-	private static boolean matchesMemo(AccountingTransaction transaction,
+	private LocalDate resolveDate(AccountingTransaction transaction)
+	{
+		Long timestamp = transaction.getBookingDateTimestamp();
+		
+		if (timestamp != null && timestamp > 0)
+		{
+			return Instant.ofEpochMilli(timestamp)
+				.atZone(ZoneId.systemDefault())
+				.toLocalDate();
+		}
+		
+		String date = transaction.getDate();
+		
+		if (date == null)
+		{
+			return null;
+		}
+		
+		try
+		{
+			return LocalDate.parse(date);
+		}
+		catch (RuntimeException e)
+		{
+			return null;
+		}
+	}
+	
+	private boolean matchesMemo(AccountingTransaction transaction,
 		String memoContains)
 	{
 		
@@ -108,19 +142,12 @@ public class LedgerQueryFacade
 		}
 		
 		String memo = transaction.getMemo();
-		
-		if (memo == null)
-		{
-			return false;
-		}
-		
-		return memo.toLowerCase()
-			.contains(memoContains.toLowerCase());
-		
+		return memo != null &&
+			memo.toLowerCase().contains(memoContains.toLowerCase());
 	}
 	
-	private static boolean matchesAccounts(AccountingTransaction transaction,
-		Collection<String> accountNumbers,
+	private boolean matchesAccounts(AccountingTransaction transaction,
+		Set<String> accountNumbers,
 		boolean requireAll)
 	{
 		
@@ -129,23 +156,16 @@ public class LedgerQueryFacade
 			return true;
 		}
 		
-		if (transaction.getEntries() == null ||
-			transaction.getEntries().isEmpty())
+		if (transaction.getEntries() == null)
 		{
 			return false;
 		}
 		
-		List<String> present = new ArrayList<>();
-		
-		for (AccountingEntry entry : transaction.getEntries())
-		{
-			
-			if (entry != null && entry.getAccountNumber() != null)
-			{
-				present.add(entry.getAccountNumber());
-			}
-			
-		}
+		List<String> present = transaction.getEntries().stream()
+			.filter(Objects::nonNull)
+			.map(AccountingEntry::getAccountNumber)
+			.filter(Objects::nonNull)
+			.toList();
 		
 		if (requireAll)
 		{
@@ -159,14 +179,12 @@ public class LedgerQueryFacade
 			{
 				return true;
 			}
-			
 		}
 		
 		return false;
-		
 	}
 	
-	private static boolean matchesSide(AccountingTransaction transaction,
+	private boolean matchesSide(AccountingTransaction transaction,
 		AccountSide side)
 	{
 		
@@ -183,30 +201,5 @@ public class LedgerQueryFacade
 		return transaction.getEntries().stream()
 			.filter(Objects::nonNull)
 			.anyMatch(entry -> side.equals(entry.getAccountSide()));
-		
-	}
-	
-	private static boolean matchesPredicates(AccountingTransaction transaction,
-		List<java.util.function.Predicate<AccountingTransaction>> predicates)
-	{
-		
-		if (predicates == null || predicates.isEmpty())
-		{
-			return true;
-		}
-		
-		for (java.util.function.Predicate<AccountingTransaction> predicate :
-			predicates)
-		{
-			
-			if (!predicate.test(transaction))
-			{
-				return false;
-			}
-			
-		}
-		
-		return true;
-		
 	}
 }

@@ -1,109 +1,67 @@
 package nonprofitbookkeeping.reports.jasper.beans;
 
+import java.math.BigDecimal;
+
+/**
+ * Basic bean for the TransactionReport template.
+ */
 public class TransactionReportBean
 {
-	private String actId;
-	private String invDate;
-	private String accountNum;
-	private String accountName;
-	private String customer;
-	private String debitFormat;
-	private String creditFormat;
-	private String comment;
+	private String date;
+	private String memo;
+	private String accountNumber;
+	private BigDecimal amount;
 	
-	public String getActId()
+	public TransactionReportBean()
 	{
-		return this.actId;
-		
 	}
 	
-	public void setActId(String actId)
+	public TransactionReportBean(String date, String memo,
+		String accountNumber, BigDecimal amount)
 	{
-		this.actId = actId;
-		
+		this.date = date;
+		this.memo = memo;
+		this.accountNumber = accountNumber;
+		this.amount = amount;
 	}
 	
-	public String getInvDate()
+	public String getDate()
 	{
-		return this.invDate;
-		
+		return this.date;
 	}
 	
-	public void setInvDate(String invDate)
+	public void setDate(String date)
 	{
-		this.invDate = invDate;
-		
+		this.date = date;
 	}
 	
-	public String getAccountNum()
+	public String getMemo()
 	{
-		return this.accountNum;
-		
+		return this.memo;
 	}
 	
-	public void setAccountNum(String accountNum)
+	public void setMemo(String memo)
 	{
-		this.accountNum = accountNum;
-		
+		this.memo = memo;
 	}
 	
-	public String getAccountName()
+	public String getAccountNumber()
 	{
-		return this.accountName;
-		
+		return this.accountNumber;
 	}
 	
-	public void setAccountName(String accountName)
+	public void setAccountNumber(String accountNumber)
 	{
-		this.accountName = accountName;
-		
+		this.accountNumber = accountNumber;
 	}
 	
-	public String getCustomer()
+	public BigDecimal getAmount()
 	{
-		return this.customer;
-		
+		return this.amount;
 	}
 	
-	public void setCustomer(String customer)
+	public void setAmount(BigDecimal amount)
 	{
-		this.customer = customer;
-		
-	}
-	
-	public String getDebitFormat()
-	{
-		return this.debitFormat;
-		
-	}
-	
-	public void setDebitFormat(String debitFormat)
-	{
-		this.debitFormat = debitFormat;
-		
-	}
-	
-	public String getCreditFormat()
-	{
-		return this.creditFormat;
-		
-	}
-	
-	public void setCreditFormat(String creditFormat)
-	{
-		this.creditFormat = creditFormat;
-		
-	}
-	
-	public String getComment()
-	{
-		return this.comment;
-		
-	}
-	
-	public void setComment(String comment)
-	{
-		this.comment = comment;
-		
+		this.amount = amount;
 	}
 }
