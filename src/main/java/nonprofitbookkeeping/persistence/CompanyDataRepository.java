@@ -55,11 +55,11 @@ public class CompanyDataRepository {
             connection.setAutoCommit(false);
 
             try {
-                journalRepository.replaceAll(connection, Collections.emptyList());
-                accountRepository.replaceAll(connection, preparedAccounts);
+                this.journalRepository.replaceAll(connection, Collections.emptyList());
+                this.accountRepository.replaceAll(connection, preparedAccounts);
 
                 if (transactions != null && !transactions.isEmpty()) {
-                    journalRepository.replaceAll(connection, transactions);
+                    this.journalRepository.replaceAll(connection, transactions);
                 }
 
                 connection.commit();
@@ -76,7 +76,7 @@ public class CompanyDataRepository {
         }
 
         CompanyProfileModel profile = company.getCompanyProfileModel();
-        profileRepository.save(profile);
+        this.profileRepository.save(profile);
     }
 
     /**
@@ -167,9 +167,9 @@ public class CompanyDataRepository {
      */
     public Company load() throws SQLException {
         Company company = new Company();
-        company.getChartOfAccounts().replaceAllAccounts(accountRepository.listAll());
-        company.getLedger().getJournal().replaceAllTransactions(journalRepository.listTransactions());
-        profileRepository.load().ifPresent(company::setCompanyProfileModel);
+        company.getChartOfAccounts().replaceAllAccounts(this.accountRepository.listAll());
+        company.getLedger().getJournal().replaceAllTransactions(this.journalRepository.listTransactions());
+        this.profileRepository.load().ifPresent(company::setCompanyProfileModel);
         return company;
     }
 

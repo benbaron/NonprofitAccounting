@@ -47,7 +47,7 @@ public class LedgerSplit
 
     public BigDecimal getAmount()
     {
-        return amount;
+        return this.amount;
     }
 
     public void setAmount(BigDecimal amount)
@@ -57,7 +57,7 @@ public class LedgerSplit
 
     public String getAssetLiabilityAccount()
     {
-        return assetLiabilityAccount;
+        return this.assetLiabilityAccount;
     }
 
     public void setAssetLiabilityAccount(String assetLiabilityAccount)
@@ -67,7 +67,7 @@ public class LedgerSplit
 
     public String getIncomeCategory()
     {
-        return incomeCategory;
+        return this.incomeCategory;
     }
 
     public void setIncomeCategory(String incomeCategory)
@@ -77,7 +77,7 @@ public class LedgerSplit
 
     public String getExpenseCategory()
     {
-        return expenseCategory;
+        return this.expenseCategory;
     }
 
     public void setExpenseCategory(String expenseCategory)
@@ -87,7 +87,7 @@ public class LedgerSplit
 
     public String getFund()
     {
-        return fund;
+        return this.fund;
     }
 
     public void setFund(String fund)
@@ -97,7 +97,7 @@ public class LedgerSplit
 
     public String getCanonicalCategory()
     {
-        return canonicalCategory;
+        return this.canonicalCategory;
     }
 
     public void setCanonicalCategory(String canonicalCategory)
@@ -116,17 +116,17 @@ public class LedgerSplit
      */
     public String getPrimaryRawCategory()
     {
-        if (assetLiabilityAccount != null && !assetLiabilityAccount.isBlank())
+        if (this.assetLiabilityAccount != null && !this.assetLiabilityAccount.isBlank())
         {
-            return assetLiabilityAccount;
+            return this.assetLiabilityAccount;
         }
-        if (incomeCategory != null && !incomeCategory.isBlank())
+        if (this.incomeCategory != null && !this.incomeCategory.isBlank())
         {
-            return incomeCategory;
+            return this.incomeCategory;
         }
-        if (expenseCategory != null && !expenseCategory.isBlank())
+        if (this.expenseCategory != null && !this.expenseCategory.isBlank())
         {
-            return expenseCategory;
+            return this.expenseCategory;
         }
         return null;
     }
@@ -137,8 +137,8 @@ public class LedgerSplit
      */
     public boolean isEmpty()
     {
-        boolean amountIsZero = (amount == null
-            || amount.compareTo(java.math.BigDecimal.ZERO) == 0);
+        boolean amountIsZero = (this.amount == null
+            || this.amount.compareTo(java.math.BigDecimal.ZERO) == 0);
 
         String primary = getPrimaryRawCategory();
         boolean noCategory = (primary == null || primary.isBlank());

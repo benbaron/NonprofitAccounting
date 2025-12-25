@@ -81,8 +81,8 @@ class LedgerImportServiceTest
         @Override
         public AccountingTransaction saveTransactionWithEntries(AccountingTransaction transaction)
         {
-            transaction.setId(nextId++);
-            saved.add(transaction);
+            transaction.setId(this.nextId++);
+            this.saved.add(transaction);
             return transaction;
         }
     }

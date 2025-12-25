@@ -148,7 +148,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.Double getAsset_dtl_5a_r2c3()
     {
-        return asset_dtl_5a_r2c3;
+        return this.asset_dtl_5a_r2c3;
     }
 
     public void setAsset_dtl_5a_r2c3(java.lang.Double v)
@@ -158,7 +158,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.Double getContents_b59()
     {
-        return contents_b59;
+        return this.contents_b59;
     }
 
     public void setContents_b59(java.lang.Double v)
@@ -168,7 +168,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.Double getContents_e_3()
     {
-        return contents_e_3;
+        return this.contents_e_3;
     }
 
     public void setContents_e_3(java.lang.Double v)
@@ -178,7 +178,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.Double getContents_e_4()
     {
-        return contents_e_4;
+        return this.contents_e_4;
     }
 
     public void setContents_e_4(java.lang.Double v)
@@ -188,7 +188,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getSending_branch_or_reason()
     {
-        return sending_branch_or_reason;
+        return this.sending_branch_or_reason;
     }
 
     public void setSending_branch_or_reason(java.lang.String v)
@@ -198,7 +198,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getAmount()
     {
-        return amount;
+        return this.amount;
     }
 
     public void setAmount(java.lang.String v)
@@ -208,7 +208,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getSending_branch_or_reason_2()
     {
-        return sending_branch_or_reason_2;
+        return this.sending_branch_or_reason_2;
     }
 
     public void setSending_branch_or_reason_2(java.lang.String v)
@@ -218,7 +218,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getAsset_dtl_5a_r15c6()
     {
-        return asset_dtl_5a_r15c6;
+        return this.asset_dtl_5a_r15c6;
     }
 
     public void setAsset_dtl_5a_r15c6(java.lang.String v)
@@ -228,7 +228,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getAmount_2()
     {
-        return amount_2;
+        return this.amount_2;
     }
 
     public void setAmount_2(java.lang.String v)
@@ -238,7 +238,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getSending_branch_or_reason_3()
     {
-        return sending_branch_or_reason_3;
+        return this.sending_branch_or_reason_3;
     }
 
     public void setSending_branch_or_reason_3(java.lang.String v)
@@ -248,7 +248,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getAmount_3()
     {
-        return amount_3;
+        return this.amount_3;
     }
 
     public void setAmount_3(java.lang.String v)
@@ -258,7 +258,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getSending_branch_or_reason_4()
     {
-        return sending_branch_or_reason_4;
+        return this.sending_branch_or_reason_4;
     }
 
     public void setSending_branch_or_reason_4(java.lang.String v)
@@ -268,7 +268,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getAsset_dtl_5a_r16c6()
     {
-        return asset_dtl_5a_r16c6;
+        return this.asset_dtl_5a_r16c6;
     }
 
     public void setAsset_dtl_5a_r16c6(java.lang.String v)
@@ -278,7 +278,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getAmount_4()
     {
-        return amount_4;
+        return this.amount_4;
     }
 
     public void setAmount_4(java.lang.String v)
@@ -288,7 +288,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getSending_branch_or_reason_5()
     {
-        return sending_branch_or_reason_5;
+        return this.sending_branch_or_reason_5;
     }
 
     public void setSending_branch_or_reason_5(java.lang.String v)
@@ -298,7 +298,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getAmount_5()
     {
-        return amount_5;
+        return this.amount_5;
     }
 
     public void setAmount_5(java.lang.String v)
@@ -308,7 +308,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getSending_branch_or_reason_6()
     {
-        return sending_branch_or_reason_6;
+        return this.sending_branch_or_reason_6;
     }
 
     public void setSending_branch_or_reason_6(java.lang.String v)
@@ -318,7 +318,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getAsset_dtl_5a_r17c6()
     {
-        return asset_dtl_5a_r17c6;
+        return this.asset_dtl_5a_r17c6;
     }
 
     public void setAsset_dtl_5a_r17c6(java.lang.String v)
@@ -328,7 +328,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getAmount_6()
     {
-        return amount_6;
+        return this.amount_6;
     }
 
     public void setAmount_6(java.lang.String v)
@@ -338,7 +338,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getSending_branch_or_reason_7()
     {
-        return sending_branch_or_reason_7;
+        return this.sending_branch_or_reason_7;
     }
 
     public void setSending_branch_or_reason_7(java.lang.String v)
@@ -348,7 +348,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getAmount_7()
     {
-        return amount_7;
+        return this.amount_7;
     }
 
     public void setAmount_7(java.lang.String v)
@@ -358,7 +358,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getSending_branch_or_reason_8()
     {
-        return sending_branch_or_reason_8;
+        return this.sending_branch_or_reason_8;
     }
 
     public void setSending_branch_or_reason_8(java.lang.String v)
@@ -368,7 +368,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getAsset_dtl_5a_r18c6()
     {
-        return asset_dtl_5a_r18c6;
+        return this.asset_dtl_5a_r18c6;
     }
 
     public void setAsset_dtl_5a_r18c6(java.lang.String v)
@@ -378,7 +378,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getAmount_8()
     {
-        return amount_8;
+        return this.amount_8;
     }
 
     public void setAmount_8(java.lang.String v)
@@ -388,7 +388,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.Double getAmount_add_total_to_pg_3_i_a_end()
     {
-        return amount_add_total_to_pg_3_i_a_end;
+        return this.amount_add_total_to_pg_3_i_a_end;
     }
 
     public void setAmount_add_total_to_pg_3_i_a_end(java.lang.Double v)
@@ -398,7 +398,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getReceivables_owed_from()
     {
-        return receivables_owed_from;
+        return this.receivables_owed_from;
     }
 
     public void setReceivables_owed_from(java.lang.String v)
@@ -408,7 +408,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getReason()
     {
-        return reason;
+        return this.reason;
     }
 
     public void setReason(java.lang.String v)
@@ -418,7 +418,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getSending_branch_or_reason_9()
     {
-        return sending_branch_or_reason_9;
+        return this.sending_branch_or_reason_9;
     }
 
     public void setSending_branch_or_reason_9(java.lang.String v)
@@ -428,7 +428,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getPrior_amount()
     {
-        return prior_amount;
+        return this.prior_amount;
     }
 
     public void setPrior_amount(java.lang.String v)
@@ -438,7 +438,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getCurrent_amount()
     {
-        return current_amount;
+        return this.current_amount;
     }
 
     public void setCurrent_amount(java.lang.String v)
@@ -448,7 +448,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getReceivables_owed_from_2()
     {
-        return receivables_owed_from_2;
+        return this.receivables_owed_from_2;
     }
 
     public void setReceivables_owed_from_2(java.lang.String v)
@@ -458,7 +458,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getReason_2()
     {
-        return reason_2;
+        return this.reason_2;
     }
 
     public void setReason_2(java.lang.String v)
@@ -468,7 +468,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getSending_branch_or_reason_10()
     {
-        return sending_branch_or_reason_10;
+        return this.sending_branch_or_reason_10;
     }
 
     public void setSending_branch_or_reason_10(java.lang.String v)
@@ -478,7 +478,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getPrior_amount_2()
     {
-        return prior_amount_2;
+        return this.prior_amount_2;
     }
 
     public void setPrior_amount_2(java.lang.String v)
@@ -488,7 +488,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getCurrent_amount_2()
     {
-        return current_amount_2;
+        return this.current_amount_2;
     }
 
     public void setCurrent_amount_2(java.lang.String v)
@@ -498,7 +498,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getReceivables_owed_from_3()
     {
-        return receivables_owed_from_3;
+        return this.receivables_owed_from_3;
     }
 
     public void setReceivables_owed_from_3(java.lang.String v)
@@ -508,7 +508,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getReason_3()
     {
-        return reason_3;
+        return this.reason_3;
     }
 
     public void setReason_3(java.lang.String v)
@@ -518,7 +518,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getSending_branch_or_reason_11()
     {
-        return sending_branch_or_reason_11;
+        return this.sending_branch_or_reason_11;
     }
 
     public void setSending_branch_or_reason_11(java.lang.String v)
@@ -528,7 +528,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getPrior_amount_3()
     {
-        return prior_amount_3;
+        return this.prior_amount_3;
     }
 
     public void setPrior_amount_3(java.lang.String v)
@@ -538,7 +538,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getCurrent_amount_3()
     {
-        return current_amount_3;
+        return this.current_amount_3;
     }
 
     public void setCurrent_amount_3(java.lang.String v)
@@ -548,7 +548,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getReceivables_owed_from_4()
     {
-        return receivables_owed_from_4;
+        return this.receivables_owed_from_4;
     }
 
     public void setReceivables_owed_from_4(java.lang.String v)
@@ -558,7 +558,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getReason_4()
     {
-        return reason_4;
+        return this.reason_4;
     }
 
     public void setReason_4(java.lang.String v)
@@ -568,7 +568,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getSending_branch_or_reason_12()
     {
-        return sending_branch_or_reason_12;
+        return this.sending_branch_or_reason_12;
     }
 
     public void setSending_branch_or_reason_12(java.lang.String v)
@@ -578,7 +578,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getPrior_amount_4()
     {
-        return prior_amount_4;
+        return this.prior_amount_4;
     }
 
     public void setPrior_amount_4(java.lang.String v)
@@ -588,7 +588,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getCurrent_amount_4()
     {
-        return current_amount_4;
+        return this.current_amount_4;
     }
 
     public void setCurrent_amount_4(java.lang.String v)
@@ -598,7 +598,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getReceivables_owed_from_5()
     {
-        return receivables_owed_from_5;
+        return this.receivables_owed_from_5;
     }
 
     public void setReceivables_owed_from_5(java.lang.String v)
@@ -608,7 +608,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getReason_5()
     {
-        return reason_5;
+        return this.reason_5;
     }
 
     public void setReason_5(java.lang.String v)
@@ -618,7 +618,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getSending_branch_or_reason_13()
     {
-        return sending_branch_or_reason_13;
+        return this.sending_branch_or_reason_13;
     }
 
     public void setSending_branch_or_reason_13(java.lang.String v)
@@ -628,7 +628,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getPrior_amount_5()
     {
-        return prior_amount_5;
+        return this.prior_amount_5;
     }
 
     public void setPrior_amount_5(java.lang.String v)
@@ -638,7 +638,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getCurrent_amount_5()
     {
-        return current_amount_5;
+        return this.current_amount_5;
     }
 
     public void setCurrent_amount_5(java.lang.String v)
@@ -648,7 +648,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getReceivables_owed_from_6()
     {
-        return receivables_owed_from_6;
+        return this.receivables_owed_from_6;
     }
 
     public void setReceivables_owed_from_6(java.lang.String v)
@@ -658,7 +658,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getReason_6()
     {
-        return reason_6;
+        return this.reason_6;
     }
 
     public void setReason_6(java.lang.String v)
@@ -668,7 +668,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getSending_branch_or_reason_14()
     {
-        return sending_branch_or_reason_14;
+        return this.sending_branch_or_reason_14;
     }
 
     public void setSending_branch_or_reason_14(java.lang.String v)
@@ -678,7 +678,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getPrior_amount_6()
     {
-        return prior_amount_6;
+        return this.prior_amount_6;
     }
 
     public void setPrior_amount_6(java.lang.String v)
@@ -688,7 +688,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getCurrent_amount_6()
     {
-        return current_amount_6;
+        return this.current_amount_6;
     }
 
     public void setCurrent_amount_6(java.lang.String v)
@@ -698,7 +698,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getReceivables_owed_from_7()
     {
-        return receivables_owed_from_7;
+        return this.receivables_owed_from_7;
     }
 
     public void setReceivables_owed_from_7(java.lang.String v)
@@ -708,7 +708,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getReason_7()
     {
-        return reason_7;
+        return this.reason_7;
     }
 
     public void setReason_7(java.lang.String v)
@@ -718,7 +718,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getSending_branch_or_reason_15()
     {
-        return sending_branch_or_reason_15;
+        return this.sending_branch_or_reason_15;
     }
 
     public void setSending_branch_or_reason_15(java.lang.String v)
@@ -728,7 +728,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getPrior_amount_7()
     {
-        return prior_amount_7;
+        return this.prior_amount_7;
     }
 
     public void setPrior_amount_7(java.lang.String v)
@@ -738,7 +738,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getCurrent_amount_7()
     {
-        return current_amount_7;
+        return this.current_amount_7;
     }
 
     public void setCurrent_amount_7(java.lang.String v)
@@ -748,7 +748,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getReceivables_owed_from_8()
     {
-        return receivables_owed_from_8;
+        return this.receivables_owed_from_8;
     }
 
     public void setReceivables_owed_from_8(java.lang.String v)
@@ -758,7 +758,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getReason_8()
     {
-        return reason_8;
+        return this.reason_8;
     }
 
     public void setReason_8(java.lang.String v)
@@ -768,7 +768,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getSending_branch_or_reason_16()
     {
-        return sending_branch_or_reason_16;
+        return this.sending_branch_or_reason_16;
     }
 
     public void setSending_branch_or_reason_16(java.lang.String v)
@@ -778,7 +778,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getPrior_amount_8()
     {
-        return prior_amount_8;
+        return this.prior_amount_8;
     }
 
     public void setPrior_amount_8(java.lang.String v)
@@ -788,7 +788,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getCurrent_amount_8()
     {
-        return current_amount_8;
+        return this.current_amount_8;
     }
 
     public void setCurrent_amount_8(java.lang.String v)
@@ -798,7 +798,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getReceivables_owed_from_9()
     {
-        return receivables_owed_from_9;
+        return this.receivables_owed_from_9;
     }
 
     public void setReceivables_owed_from_9(java.lang.String v)
@@ -808,7 +808,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getReason_9()
     {
-        return reason_9;
+        return this.reason_9;
     }
 
     public void setReason_9(java.lang.String v)
@@ -818,7 +818,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getSending_branch_or_reason_17()
     {
-        return sending_branch_or_reason_17;
+        return this.sending_branch_or_reason_17;
     }
 
     public void setSending_branch_or_reason_17(java.lang.String v)
@@ -828,7 +828,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getPrior_amount_9()
     {
-        return prior_amount_9;
+        return this.prior_amount_9;
     }
 
     public void setPrior_amount_9(java.lang.String v)
@@ -838,7 +838,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getCurrent_amount_9()
     {
-        return current_amount_9;
+        return this.current_amount_9;
     }
 
     public void setCurrent_amount_9(java.lang.String v)
@@ -848,7 +848,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getReceivables_owed_from_10()
     {
-        return receivables_owed_from_10;
+        return this.receivables_owed_from_10;
     }
 
     public void setReceivables_owed_from_10(java.lang.String v)
@@ -858,7 +858,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getReason_10()
     {
-        return reason_10;
+        return this.reason_10;
     }
 
     public void setReason_10(java.lang.String v)
@@ -868,7 +868,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getSending_branch_or_reason_18()
     {
-        return sending_branch_or_reason_18;
+        return this.sending_branch_or_reason_18;
     }
 
     public void setSending_branch_or_reason_18(java.lang.String v)
@@ -878,7 +878,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getPrior_amount_10()
     {
-        return prior_amount_10;
+        return this.prior_amount_10;
     }
 
     public void setPrior_amount_10(java.lang.String v)
@@ -888,7 +888,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getCurrent_amount_10()
     {
-        return current_amount_10;
+        return this.current_amount_10;
     }
 
     public void setCurrent_amount_10(java.lang.String v)
@@ -898,7 +898,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getReceivables_owed_from_11()
     {
-        return receivables_owed_from_11;
+        return this.receivables_owed_from_11;
     }
 
     public void setReceivables_owed_from_11(java.lang.String v)
@@ -908,7 +908,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getReason_11()
     {
-        return reason_11;
+        return this.reason_11;
     }
 
     public void setReason_11(java.lang.String v)
@@ -918,7 +918,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getSending_branch_or_reason_19()
     {
-        return sending_branch_or_reason_19;
+        return this.sending_branch_or_reason_19;
     }
 
     public void setSending_branch_or_reason_19(java.lang.String v)
@@ -928,7 +928,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getPrior_amount_11()
     {
-        return prior_amount_11;
+        return this.prior_amount_11;
     }
 
     public void setPrior_amount_11(java.lang.String v)
@@ -938,7 +938,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getCurrent_amount_11()
     {
-        return current_amount_11;
+        return this.current_amount_11;
     }
 
     public void setCurrent_amount_11(java.lang.String v)
@@ -948,7 +948,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.Double getPrior_amount_total()
     {
-        return prior_amount_total;
+        return this.prior_amount_total;
     }
 
     public void setPrior_amount_total(java.lang.Double v)
@@ -958,7 +958,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.Double getCurrent_amount_sum_f24_f34()
     {
-        return current_amount_sum_f24_f34;
+        return this.current_amount_sum_f24_f34;
     }
 
     public void setCurrent_amount_sum_f24_f34(java.lang.Double v)
@@ -968,7 +968,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getPrepaid_expenses_description()
     {
-        return prepaid_expenses_description;
+        return this.prepaid_expenses_description;
     }
 
     public void setPrepaid_expenses_description(java.lang.String v)
@@ -978,7 +978,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getPrior_amount_12()
     {
-        return prior_amount_12;
+        return this.prior_amount_12;
     }
 
     public void setPrior_amount_12(java.lang.String v)
@@ -988,7 +988,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getCurrent_amount_12()
     {
-        return current_amount_12;
+        return this.current_amount_12;
     }
 
     public void setCurrent_amount_12(java.lang.String v)
@@ -998,7 +998,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getPrepaid_expenses_description_2()
     {
-        return prepaid_expenses_description_2;
+        return this.prepaid_expenses_description_2;
     }
 
     public void setPrepaid_expenses_description_2(java.lang.String v)
@@ -1008,7 +1008,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getPrior_amount_13()
     {
-        return prior_amount_13;
+        return this.prior_amount_13;
     }
 
     public void setPrior_amount_13(java.lang.String v)
@@ -1018,7 +1018,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getCurrent_amount_13()
     {
-        return current_amount_13;
+        return this.current_amount_13;
     }
 
     public void setCurrent_amount_13(java.lang.String v)
@@ -1028,7 +1028,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getPrepaid_expenses_description_3()
     {
-        return prepaid_expenses_description_3;
+        return this.prepaid_expenses_description_3;
     }
 
     public void setPrepaid_expenses_description_3(java.lang.String v)
@@ -1038,7 +1038,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getPrior_amount_14()
     {
-        return prior_amount_14;
+        return this.prior_amount_14;
     }
 
     public void setPrior_amount_14(java.lang.String v)
@@ -1048,7 +1048,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getCurrent_amount_14()
     {
-        return current_amount_14;
+        return this.current_amount_14;
     }
 
     public void setCurrent_amount_14(java.lang.String v)
@@ -1058,7 +1058,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getPrepaid_expenses_description_4()
     {
-        return prepaid_expenses_description_4;
+        return this.prepaid_expenses_description_4;
     }
 
     public void setPrepaid_expenses_description_4(java.lang.String v)
@@ -1068,7 +1068,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getPrior_amount_15()
     {
-        return prior_amount_15;
+        return this.prior_amount_15;
     }
 
     public void setPrior_amount_15(java.lang.String v)
@@ -1078,7 +1078,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getCurrent_amount_15()
     {
-        return current_amount_15;
+        return this.current_amount_15;
     }
 
     public void setCurrent_amount_15(java.lang.String v)
@@ -1088,7 +1088,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getPrepaid_expenses_description_5()
     {
-        return prepaid_expenses_description_5;
+        return this.prepaid_expenses_description_5;
     }
 
     public void setPrepaid_expenses_description_5(java.lang.String v)
@@ -1098,7 +1098,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getPrior_amount_16()
     {
-        return prior_amount_16;
+        return this.prior_amount_16;
     }
 
     public void setPrior_amount_16(java.lang.String v)
@@ -1108,7 +1108,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getCurrent_amount_16()
     {
-        return current_amount_16;
+        return this.current_amount_16;
     }
 
     public void setCurrent_amount_16(java.lang.String v)
@@ -1118,7 +1118,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.Double getPrior_amount_17()
     {
-        return prior_amount_17;
+        return this.prior_amount_17;
     }
 
     public void setPrior_amount_17(java.lang.Double v)
@@ -1128,7 +1128,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.Double getCurrent_amount_sum_f41_f45()
     {
-        return current_amount_sum_f41_f45;
+        return this.current_amount_sum_f41_f45;
     }
 
     public void setCurrent_amount_sum_f41_f45(java.lang.Double v)
@@ -1138,7 +1138,7 @@ public class ASSET_DTL_5aBean
 
     public java.lang.String getOther_assets_description()
     {
-        return other_assets_description;
+        return this.other_assets_description;
     }
 
     public void setOther_assets_description(java.lang.String v)

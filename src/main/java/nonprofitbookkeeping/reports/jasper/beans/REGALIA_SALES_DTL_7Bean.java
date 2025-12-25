@@ -235,7 +235,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.Double getRegalia_sales_dtl_7_r2c3()
     {
-        return regalia_sales_dtl_7_r2c3;
+        return this.regalia_sales_dtl_7_r2c3;
     }
 
     public void setRegalia_sales_dtl_7_r2c3(java.lang.Double v)
@@ -245,7 +245,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.Double getContents_b59()
     {
-        return contents_b59;
+        return this.contents_b59;
     }
 
     public void setContents_b59(java.lang.Double v)
@@ -255,7 +255,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.Double getContents_e_3()
     {
-        return contents_e_3;
+        return this.contents_e_3;
     }
 
     public void setContents_e_3(java.lang.Double v)
@@ -265,7 +265,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.Double getContents_e_4()
     {
-        return contents_e_4;
+        return this.contents_e_4;
     }
 
     public void setContents_e_4(java.lang.Double v)
@@ -275,7 +275,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getRegalia_other_sales_detail()
     {
-        return regalia_other_sales_detail;
+        return this.regalia_other_sales_detail;
     }
 
     public void setRegalia_other_sales_detail(java.lang.String v)
@@ -285,7 +285,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getRegalia_non_depreciated_equipment_this_section_will_be_going_away()
     {
-        return regalia_non_depreciated_equipment_this_section_will_be_going_away;
+        return this.regalia_non_depreciated_equipment_this_section_will_be_going_away;
     }
 
     public void setRegalia_non_depreciated_equipment_this_section_will_be_going_away(java.lang.String v)
@@ -295,7 +295,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getRegalia_non_depreciated_equipment_this_section_will_be_going_away_2()
     {
-        return regalia_non_depreciated_equipment_this_section_will_be_going_away_2;
+        return this.regalia_non_depreciated_equipment_this_section_will_be_going_away_2;
     }
 
     public void setRegalia_non_depreciated_equipment_this_section_will_be_going_away_2(java.lang.String v)
@@ -305,7 +305,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getRegalia_non_depreciated_equipment_this_section_will_be_going_away_3()
     {
-        return regalia_non_depreciated_equipment_this_section_will_be_going_away_3;
+        return this.regalia_non_depreciated_equipment_this_section_will_be_going_away_3;
     }
 
     public void setRegalia_non_depreciated_equipment_this_section_will_be_going_away_3(java.lang.String v)
@@ -315,7 +315,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getRegalia_non_depreciated_equipment_this_section_will_be_going_away_4()
     {
-        return regalia_non_depreciated_equipment_this_section_will_be_going_away_4;
+        return this.regalia_non_depreciated_equipment_this_section_will_be_going_away_4;
     }
 
     public void setRegalia_non_depreciated_equipment_this_section_will_be_going_away_4(java.lang.String v)
@@ -325,7 +325,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getRegalia_non_depreciated_equipment_this_section_will_be_going_away_5()
     {
-        return regalia_non_depreciated_equipment_this_section_will_be_going_away_5;
+        return this.regalia_non_depreciated_equipment_this_section_will_be_going_away_5;
     }
 
     public void setRegalia_non_depreciated_equipment_this_section_will_be_going_away_5(java.lang.String v)
@@ -335,7 +335,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getRegalia_non_depreciated_equipment_this_section_will_be_going_away_6()
     {
-        return regalia_non_depreciated_equipment_this_section_will_be_going_away_6;
+        return this.regalia_non_depreciated_equipment_this_section_will_be_going_away_6;
     }
 
     public void setRegalia_non_depreciated_equipment_this_section_will_be_going_away_6(java.lang.String v)
@@ -345,7 +345,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getRegalia_non_depreciated_equipment_this_section_will_be_going_away_7()
     {
-        return regalia_non_depreciated_equipment_this_section_will_be_going_away_7;
+        return this.regalia_non_depreciated_equipment_this_section_will_be_going_away_7;
     }
 
     public void setRegalia_non_depreciated_equipment_this_section_will_be_going_away_7(java.lang.String v)
@@ -355,7 +355,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getDo_not_enter_any_more_items_under_regalia()
     {
-        return do_not_enter_any_more_items_under_regalia;
+        return this.do_not_enter_any_more_items_under_regalia;
     }
 
     public void setDo_not_enter_any_more_items_under_regalia(java.lang.String v)
@@ -365,7 +365,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getDo_not_enter_any_more_items_under_regalia_2()
     {
-        return do_not_enter_any_more_items_under_regalia_2;
+        return this.do_not_enter_any_more_items_under_regalia_2;
     }
 
     public void setDo_not_enter_any_more_items_under_regalia_2(java.lang.String v)
@@ -375,7 +375,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getDo_not_enter_any_more_items_under_regalia_3()
     {
-        return do_not_enter_any_more_items_under_regalia_3;
+        return this.do_not_enter_any_more_items_under_regalia_3;
     }
 
     public void setDo_not_enter_any_more_items_under_regalia_3(java.lang.String v)
@@ -385,7 +385,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getDo_not_enter_any_more_items_under_regalia_4()
     {
-        return do_not_enter_any_more_items_under_regalia_4;
+        return this.do_not_enter_any_more_items_under_regalia_4;
     }
 
     public void setDo_not_enter_any_more_items_under_regalia_4(java.lang.String v)
@@ -395,7 +395,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getDo_not_enter_any_more_items_under_regalia_5()
     {
-        return do_not_enter_any_more_items_under_regalia_5;
+        return this.do_not_enter_any_more_items_under_regalia_5;
     }
 
     public void setDo_not_enter_any_more_items_under_regalia_5(java.lang.String v)
@@ -405,7 +405,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getDo_not_enter_any_more_items_under_regalia_6()
     {
-        return do_not_enter_any_more_items_under_regalia_6;
+        return this.do_not_enter_any_more_items_under_regalia_6;
     }
 
     public void setDo_not_enter_any_more_items_under_regalia_6(java.lang.String v)
@@ -415,7 +415,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getDo_not_enter_any_more_items_under_regalia_7()
     {
-        return do_not_enter_any_more_items_under_regalia_7;
+        return this.do_not_enter_any_more_items_under_regalia_7;
     }
 
     public void setDo_not_enter_any_more_items_under_regalia_7(java.lang.String v)
@@ -425,7 +425,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getAny_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section()
     {
-        return any_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section;
+        return this.any_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section;
     }
 
     public void setAny_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section(java.lang.String v)
@@ -435,7 +435,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getAny_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section_2()
     {
-        return any_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section_2;
+        return this.any_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section_2;
     }
 
     public void setAny_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section_2(java.lang.String v)
@@ -445,7 +445,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getAny_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section_3()
     {
-        return any_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section_3;
+        return this.any_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section_3;
     }
 
     public void setAny_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section_3(java.lang.String v)
@@ -455,7 +455,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getAny_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section_4()
     {
-        return any_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section_4;
+        return this.any_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section_4;
     }
 
     public void setAny_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section_4(java.lang.String v)
@@ -465,7 +465,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getAny_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section_5()
     {
-        return any_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section_5;
+        return this.any_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section_5;
     }
 
     public void setAny_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section_5(java.lang.String v)
@@ -475,7 +475,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getAny_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section_6()
     {
-        return any_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section_6;
+        return this.any_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section_6;
     }
 
     public void setAny_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section_6(java.lang.String v)
@@ -485,7 +485,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getAny_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section_7()
     {
-        return any_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section_7;
+        return this.any_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section_7;
     }
 
     public void setAny_regalia_type_item_such_as_a_crown_that_cost_2000_or_more_needs_to_be_depreciated_under_the_7_year_section_7(java.lang.String v)
@@ -495,7 +495,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getIf_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be()
     {
-        return if_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be;
+        return this.if_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be;
     }
 
     public void setIf_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be(java.lang.String v)
@@ -505,7 +505,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getIf_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be_2()
     {
-        return if_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be_2;
+        return this.if_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be_2;
     }
 
     public void setIf_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be_2(java.lang.String v)
@@ -515,7 +515,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getIf_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be_3()
     {
-        return if_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be_3;
+        return this.if_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be_3;
     }
 
     public void setIf_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be_3(java.lang.String v)
@@ -525,7 +525,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getIf_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be_4()
     {
-        return if_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be_4;
+        return this.if_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be_4;
     }
 
     public void setIf_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be_4(java.lang.String v)
@@ -535,7 +535,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getIf_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be_5()
     {
-        return if_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be_5;
+        return this.if_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be_5;
     }
 
     public void setIf_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be_5(java.lang.String v)
@@ -545,7 +545,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getIf_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be_6()
     {
-        return if_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be_6;
+        return this.if_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be_6;
     }
 
     public void setIf_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be_6(java.lang.String v)
@@ -555,7 +555,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getIf_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be_7()
     {
-        return if_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be_7;
+        return this.if_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be_7;
     }
 
     public void setIf_you_purchased_two_crowns_coronets_for_3000_then_each_one_would_be_1500_a_piece_and_these_would_not_be_7(java.lang.String v)
@@ -565,7 +565,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getDepreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s()
     {
-        return depreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s;
+        return this.depreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s;
     }
 
     public void setDepreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s(java.lang.String v)
@@ -575,7 +575,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getDepreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s_2()
     {
-        return depreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s_2;
+        return this.depreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s_2;
     }
 
     public void setDepreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s_2(java.lang.String v)
@@ -585,7 +585,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getDepreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s_3()
     {
-        return depreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s_3;
+        return this.depreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s_3;
     }
 
     public void setDepreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s_3(java.lang.String v)
@@ -595,7 +595,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getDepreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s_4()
     {
-        return depreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s_4;
+        return this.depreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s_4;
     }
 
     public void setDepreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s_4(java.lang.String v)
@@ -605,7 +605,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getDepreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s_5()
     {
-        return depreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s_5;
+        return this.depreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s_5;
     }
 
     public void setDepreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s_5(java.lang.String v)
@@ -615,7 +615,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getDepreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s_6()
     {
-        return depreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s_6;
+        return this.depreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s_6;
     }
 
     public void setDepreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s_6(java.lang.String v)
@@ -625,7 +625,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getDepreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s_7()
     {
-        return depreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s_7;
+        return this.depreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s_7;
     }
 
     public void setDepreciatied_but_rather_expensed_under_ar_general_supplies_you_would_still_need_to_list_the_items_on_the_group_s_7(java.lang.String v)
@@ -635,7 +635,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getProperty_list()
     {
-        return property_list;
+        return this.property_list;
     }
 
     public void setProperty_list(java.lang.String v)
@@ -645,7 +645,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getProperty_list_2()
     {
-        return property_list_2;
+        return this.property_list_2;
     }
 
     public void setProperty_list_2(java.lang.String v)
@@ -655,7 +655,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getProperty_list_3()
     {
-        return property_list_3;
+        return this.property_list_3;
     }
 
     public void setProperty_list_3(java.lang.String v)
@@ -665,7 +665,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getProperty_list_4()
     {
-        return property_list_4;
+        return this.property_list_4;
     }
 
     public void setProperty_list_4(java.lang.String v)
@@ -675,7 +675,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getProperty_list_5()
     {
-        return property_list_5;
+        return this.property_list_5;
     }
 
     public void setProperty_list_5(java.lang.String v)
@@ -685,7 +685,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getProperty_list_6()
     {
-        return property_list_6;
+        return this.property_list_6;
     }
 
     public void setProperty_list_6(java.lang.String v)
@@ -695,7 +695,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getItem_description()
     {
-        return item_description;
+        return this.item_description;
     }
 
     public void setItem_description(java.lang.String v)
@@ -705,7 +705,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getQty()
     {
-        return qty;
+        return this.qty;
     }
 
     public void setQty(java.lang.String v)
@@ -715,7 +715,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getYear_acquired()
     {
-        return year_acquired;
+        return this.year_acquired;
     }
 
     public void setYear_acquired(java.lang.String v)
@@ -725,7 +725,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getA_start_prior_value()
     {
-        return a_start_prior_value;
+        return this.a_start_prior_value;
     }
 
     public void setA_start_prior_value(java.lang.String v)
@@ -735,7 +735,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getB_value_of_new_item()
     {
-        return b_value_of_new_item;
+        return this.b_value_of_new_item;
     }
 
     public void setB_value_of_new_item(java.lang.String v)
@@ -745,7 +745,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getC_value_adjustment()
     {
-        return c_value_adjustment;
+        return this.c_value_adjustment;
     }
 
     public void setC_value_adjustment(java.lang.String v)
@@ -755,7 +755,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.Double getA_or_b_c_end_value()
     {
-        return a_or_b_c_end_value;
+        return this.a_or_b_c_end_value;
     }
 
     public void setA_or_b_c_end_value(java.lang.Double v)
@@ -765,7 +765,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getItem_description_2()
     {
-        return item_description_2;
+        return this.item_description_2;
     }
 
     public void setItem_description_2(java.lang.String v)
@@ -775,7 +775,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getQty_2()
     {
-        return qty_2;
+        return this.qty_2;
     }
 
     public void setQty_2(java.lang.String v)
@@ -785,7 +785,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getYear_acquired_2()
     {
-        return year_acquired_2;
+        return this.year_acquired_2;
     }
 
     public void setYear_acquired_2(java.lang.String v)
@@ -795,7 +795,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getA_start_prior_value_2()
     {
-        return a_start_prior_value_2;
+        return this.a_start_prior_value_2;
     }
 
     public void setA_start_prior_value_2(java.lang.String v)
@@ -805,7 +805,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getB_value_of_new_item_2()
     {
-        return b_value_of_new_item_2;
+        return this.b_value_of_new_item_2;
     }
 
     public void setB_value_of_new_item_2(java.lang.String v)
@@ -815,7 +815,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getC_value_adjustment_2()
     {
-        return c_value_adjustment_2;
+        return this.c_value_adjustment_2;
     }
 
     public void setC_value_adjustment_2(java.lang.String v)
@@ -825,7 +825,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.Double getIf_f20_0_f20_g20_h20()
     {
-        return if_f20_0_f20_g20_h20;
+        return this.if_f20_0_f20_g20_h20;
     }
 
     public void setIf_f20_0_f20_g20_h20(java.lang.Double v)
@@ -835,7 +835,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getItem_description_3()
     {
-        return item_description_3;
+        return this.item_description_3;
     }
 
     public void setItem_description_3(java.lang.String v)
@@ -845,7 +845,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getQty_3()
     {
-        return qty_3;
+        return this.qty_3;
     }
 
     public void setQty_3(java.lang.String v)
@@ -855,7 +855,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getYear_acquired_3()
     {
-        return year_acquired_3;
+        return this.year_acquired_3;
     }
 
     public void setYear_acquired_3(java.lang.String v)
@@ -865,7 +865,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getA_start_prior_value_3()
     {
-        return a_start_prior_value_3;
+        return this.a_start_prior_value_3;
     }
 
     public void setA_start_prior_value_3(java.lang.String v)
@@ -875,7 +875,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getB_value_of_new_item_3()
     {
-        return b_value_of_new_item_3;
+        return this.b_value_of_new_item_3;
     }
 
     public void setB_value_of_new_item_3(java.lang.String v)
@@ -885,7 +885,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getC_value_adjustment_3()
     {
-        return c_value_adjustment_3;
+        return this.c_value_adjustment_3;
     }
 
     public void setC_value_adjustment_3(java.lang.String v)
@@ -895,7 +895,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.Double getIf_f21_0_f21_g21_h21()
     {
-        return if_f21_0_f21_g21_h21;
+        return this.if_f21_0_f21_g21_h21;
     }
 
     public void setIf_f21_0_f21_g21_h21(java.lang.Double v)
@@ -905,7 +905,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getItem_description_4()
     {
-        return item_description_4;
+        return this.item_description_4;
     }
 
     public void setItem_description_4(java.lang.String v)
@@ -915,7 +915,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getQty_4()
     {
-        return qty_4;
+        return this.qty_4;
     }
 
     public void setQty_4(java.lang.String v)
@@ -925,7 +925,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getYear_acquired_4()
     {
-        return year_acquired_4;
+        return this.year_acquired_4;
     }
 
     public void setYear_acquired_4(java.lang.String v)
@@ -935,7 +935,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getA_start_prior_value_4()
     {
-        return a_start_prior_value_4;
+        return this.a_start_prior_value_4;
     }
 
     public void setA_start_prior_value_4(java.lang.String v)
@@ -945,7 +945,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getB_value_of_new_item_4()
     {
-        return b_value_of_new_item_4;
+        return this.b_value_of_new_item_4;
     }
 
     public void setB_value_of_new_item_4(java.lang.String v)
@@ -955,7 +955,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getC_value_adjustment_4()
     {
-        return c_value_adjustment_4;
+        return this.c_value_adjustment_4;
     }
 
     public void setC_value_adjustment_4(java.lang.String v)
@@ -965,7 +965,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.Double getIf_f22_0_f22_g22_h22()
     {
-        return if_f22_0_f22_g22_h22;
+        return this.if_f22_0_f22_g22_h22;
     }
 
     public void setIf_f22_0_f22_g22_h22(java.lang.Double v)
@@ -975,7 +975,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getItem_description_5()
     {
-        return item_description_5;
+        return this.item_description_5;
     }
 
     public void setItem_description_5(java.lang.String v)
@@ -985,7 +985,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getQty_5()
     {
-        return qty_5;
+        return this.qty_5;
     }
 
     public void setQty_5(java.lang.String v)
@@ -995,7 +995,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getYear_acquired_5()
     {
-        return year_acquired_5;
+        return this.year_acquired_5;
     }
 
     public void setYear_acquired_5(java.lang.String v)
@@ -1005,7 +1005,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getA_start_prior_value_5()
     {
-        return a_start_prior_value_5;
+        return this.a_start_prior_value_5;
     }
 
     public void setA_start_prior_value_5(java.lang.String v)
@@ -1015,7 +1015,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getB_value_of_new_item_5()
     {
-        return b_value_of_new_item_5;
+        return this.b_value_of_new_item_5;
     }
 
     public void setB_value_of_new_item_5(java.lang.String v)
@@ -1025,7 +1025,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getC_value_adjustment_5()
     {
-        return c_value_adjustment_5;
+        return this.c_value_adjustment_5;
     }
 
     public void setC_value_adjustment_5(java.lang.String v)
@@ -1035,7 +1035,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.Double getIf_f23_0_f23_g23_h23()
     {
-        return if_f23_0_f23_g23_h23;
+        return this.if_f23_0_f23_g23_h23;
     }
 
     public void setIf_f23_0_f23_g23_h23(java.lang.Double v)
@@ -1045,7 +1045,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getItem_description_6()
     {
-        return item_description_6;
+        return this.item_description_6;
     }
 
     public void setItem_description_6(java.lang.String v)
@@ -1055,7 +1055,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getQty_6()
     {
-        return qty_6;
+        return this.qty_6;
     }
 
     public void setQty_6(java.lang.String v)
@@ -1065,7 +1065,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getYear_acquired_6()
     {
-        return year_acquired_6;
+        return this.year_acquired_6;
     }
 
     public void setYear_acquired_6(java.lang.String v)
@@ -1075,7 +1075,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getA_start_prior_value_6()
     {
-        return a_start_prior_value_6;
+        return this.a_start_prior_value_6;
     }
 
     public void setA_start_prior_value_6(java.lang.String v)
@@ -1085,7 +1085,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getB_value_of_new_item_6()
     {
-        return b_value_of_new_item_6;
+        return this.b_value_of_new_item_6;
     }
 
     public void setB_value_of_new_item_6(java.lang.String v)
@@ -1095,7 +1095,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getC_value_adjustment_6()
     {
-        return c_value_adjustment_6;
+        return this.c_value_adjustment_6;
     }
 
     public void setC_value_adjustment_6(java.lang.String v)
@@ -1105,7 +1105,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.Double getIf_f24_0_f24_g24_h24()
     {
-        return if_f24_0_f24_g24_h24;
+        return this.if_f24_0_f24_g24_h24;
     }
 
     public void setIf_f24_0_f24_g24_h24(java.lang.Double v)
@@ -1115,7 +1115,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getItem_description_7()
     {
-        return item_description_7;
+        return this.item_description_7;
     }
 
     public void setItem_description_7(java.lang.String v)
@@ -1125,7 +1125,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getQty_7()
     {
-        return qty_7;
+        return this.qty_7;
     }
 
     public void setQty_7(java.lang.String v)
@@ -1135,7 +1135,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getYear_acquired_7()
     {
-        return year_acquired_7;
+        return this.year_acquired_7;
     }
 
     public void setYear_acquired_7(java.lang.String v)
@@ -1145,7 +1145,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getA_start_prior_value_7()
     {
-        return a_start_prior_value_7;
+        return this.a_start_prior_value_7;
     }
 
     public void setA_start_prior_value_7(java.lang.String v)
@@ -1155,7 +1155,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getB_value_of_new_item_7()
     {
-        return b_value_of_new_item_7;
+        return this.b_value_of_new_item_7;
     }
 
     public void setB_value_of_new_item_7(java.lang.String v)
@@ -1165,7 +1165,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getC_value_adjustment_7()
     {
-        return c_value_adjustment_7;
+        return this.c_value_adjustment_7;
     }
 
     public void setC_value_adjustment_7(java.lang.String v)
@@ -1175,7 +1175,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.Double getIf_f25_0_f25_g25_h25()
     {
-        return if_f25_0_f25_g25_h25;
+        return this.if_f25_0_f25_g25_h25;
     }
 
     public void setIf_f25_0_f25_g25_h25(java.lang.Double v)
@@ -1185,7 +1185,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getItem_description_8()
     {
-        return item_description_8;
+        return this.item_description_8;
     }
 
     public void setItem_description_8(java.lang.String v)
@@ -1195,7 +1195,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getQty_8()
     {
-        return qty_8;
+        return this.qty_8;
     }
 
     public void setQty_8(java.lang.String v)
@@ -1205,7 +1205,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getYear_acquired_8()
     {
-        return year_acquired_8;
+        return this.year_acquired_8;
     }
 
     public void setYear_acquired_8(java.lang.String v)
@@ -1215,7 +1215,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getA_start_prior_value_8()
     {
-        return a_start_prior_value_8;
+        return this.a_start_prior_value_8;
     }
 
     public void setA_start_prior_value_8(java.lang.String v)
@@ -1225,7 +1225,7 @@ public class REGALIA_SALES_DTL_7Bean
 
     public java.lang.String getB_value_of_new_item_8()
     {
-        return b_value_of_new_item_8;
+        return this.b_value_of_new_item_8;
     }
 
     public void setB_value_of_new_item_8(java.lang.String v)

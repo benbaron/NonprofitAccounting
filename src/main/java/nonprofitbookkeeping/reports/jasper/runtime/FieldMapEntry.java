@@ -37,23 +37,23 @@ public final class FieldMapEntry {
     }
 
     public String getSheetName() {
-        return sheetName;
+        return this.sheetName;
     }
 
     public String getCellRef() {
-        return cellRef;
+        return this.cellRef;
     }
 
     public String getFieldName() {
-        return fieldName;
+        return this.fieldName;
     }
 
     public String getJavaType() {
-        return javaType;
+        return this.javaType;
     }
 
     public String getExcelFormat() {
-        return excelFormat;
+        return this.excelFormat;
     }
 
     /**
@@ -61,6 +61,6 @@ public final class FieldMapEntry {
      * May be null if the CSV has only 5 columns.
      */
     public String getDbExpr() {
-        return dbExpr;
+        return this.dbExpr;
     }
 }

@@ -54,8 +54,8 @@ public class AccountSummaryDataProvider
         // 1) Try to build SELECT from dbExpr in the fieldmap.
         String selectList = null;
 
-        if (fieldMap != null) {
-            String fromDbExpr = fieldMap.buildSelectListFromDbExprs();
+        if (this.fieldMap != null) {
+            String fromDbExpr = this.fieldMap.buildSelectListFromDbExprs();
             if (fromDbExpr != null && !fromDbExpr.trim().isEmpty()) {
                 selectList = fromDbExpr;
             }

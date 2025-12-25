@@ -42,7 +42,7 @@ public class LedgerRow
 
     public LocalDate getDate()
     {
-        return date;
+        return this.date;
     }
 
     public void setDate(LocalDate date)
@@ -52,7 +52,7 @@ public class LedgerRow
 
     public String getCheckNumber()
     {
-        return checkNumber;
+        return this.checkNumber;
     }
 
     public void setCheckNumber(String checkNumber)
@@ -62,7 +62,7 @@ public class LedgerRow
 
     public String getClearedBankTag()
     {
-        return clearedBankTag;
+        return this.clearedBankTag;
     }
 
     public void setClearedBankTag(String clearedBankTag)
@@ -72,7 +72,7 @@ public class LedgerRow
 
     public String getToFrom()
     {
-        return toFrom;
+        return this.toFrom;
     }
 
     public void setToFrom(String toFrom)
@@ -82,7 +82,7 @@ public class LedgerRow
 
     public String getMemo()
     {
-        return memo;
+        return this.memo;
     }
 
     public void setMemo(String memo)
@@ -92,7 +92,7 @@ public class LedgerRow
 
     public String getBudgetNotes()
     {
-        return budgetNotes;
+        return this.budgetNotes;
     }
 
     public void setBudgetNotes(String budgetNotes)
@@ -102,7 +102,7 @@ public class LedgerRow
 
     public Integer getSheetRowNumber()
     {
-        return sheetRowNumber;
+        return this.sheetRowNumber;
     }
 
     public void setSheetRowNumber(Integer sheetRowNumber)
@@ -112,7 +112,7 @@ public class LedgerRow
 
     public List<LedgerSplit> getSplits()
     {
-        return splits;
+        return this.splits;
     }
 
     public void addSplit(LedgerSplit split)
@@ -129,9 +129,9 @@ public class LedgerRow
      */
     public boolean isEffectivelyBlank()
     {
-        boolean noDate = (date == null);
-        boolean allSplitsEmpty = splits.stream().allMatch(LedgerSplit::isEmpty);
-        boolean noMemo = (memo == null || memo.isBlank());
+        boolean noDate = (this.date == null);
+        boolean allSplitsEmpty = this.splits.stream().allMatch(LedgerSplit::isEmpty);
+        boolean noMemo = (this.memo == null || this.memo.isBlank());
 
         return noDate && noMemo && allSplitsEmpty;
     }

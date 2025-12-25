@@ -52,12 +52,12 @@ public class ChartTranslationMap
         {
             return null;
         }
-        return rawToCanonical.get(raw);
+        return this.rawToCanonical.get(raw);
     }
 
     public Map<String,String> asMap()
     {
-        return Collections.unmodifiableMap(rawToCanonical);
+        return Collections.unmodifiableMap(this.rawToCanonical);
     }
 
     /**

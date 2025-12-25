@@ -41,7 +41,7 @@ class LedgerToDomainMapperTest
         income.setFund("General Fund");
         row.addSplit(income);
 
-        AccountingTransaction transaction = mapper.mapRowToTransaction(row, "Ledger_Q1");
+        AccountingTransaction transaction = this.mapper.mapRowToTransaction(row, "Ledger_Q1");
 
         assertEquals("2024-01-15", transaction.getDate());
         assertEquals("1095", transaction.getCheckNumber());
@@ -88,7 +88,7 @@ class LedgerToDomainMapperTest
         expense.setCanonicalCategory("19b General Supplies - Activity");
         row.addSplit(expense);
 
-        AccountingTransaction transaction = mapper.mapRowToTransaction(row, "Ledger_Q1");
+        AccountingTransaction transaction = this.mapper.mapRowToTransaction(row, "Ledger_Q1");
         assertEquals(2, transaction.getEntries().size());
 
         Iterator<AccountingEntry> iterator = transaction.getEntries().iterator();

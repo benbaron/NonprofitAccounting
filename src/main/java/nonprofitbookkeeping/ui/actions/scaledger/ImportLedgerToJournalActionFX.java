@@ -62,7 +62,7 @@ public class ImportLedgerToJournalActionFX implements EventHandler<ActionEvent>
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Select Ledger Workbook");
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel Workbook", "*.xlsx", "*.xlsm"));
-        return chooser.showOpenDialog(owner);
+        return chooser.showOpenDialog(this.owner);
     }
 
     private File promptForChartMap()
@@ -70,15 +70,15 @@ public class ImportLedgerToJournalActionFX implements EventHandler<ActionEvent>
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Select Chart Translation Map");
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON", "*.json"));
-        return chooser.showOpenDialog(owner);
+        return chooser.showOpenDialog(this.owner);
     }
 
     private Optional<String> promptForSheetName()
     {
         TextInputDialog dialog = new TextInputDialog("Ledger_Q1");
-        if (owner != null)
+        if (this.owner != null)
         {
-            dialog.initOwner(owner);
+            dialog.initOwner(this.owner);
         }
         dialog.setTitle("Sheet Name");
         dialog.setHeaderText("Enter the sheet name to import (e.g., Ledger_Q1)");
@@ -98,9 +98,9 @@ public class ImportLedgerToJournalActionFX implements EventHandler<ActionEvent>
             Alert alert = new Alert(Alert.AlertType.INFORMATION,
                     String.format("Imported %d transactions from %s", saved.size(), sheetName),
                     ButtonType.OK);
-            if (owner != null)
+            if (this.owner != null)
             {
-                alert.initOwner(owner);
+                alert.initOwner(this.owner);
             }
             alert.showAndWait();
         }
@@ -109,9 +109,9 @@ public class ImportLedgerToJournalActionFX implements EventHandler<ActionEvent>
             LOGGER.log(Level.WARNING, "Failed to import ledger", ex);
             Alert alert = new Alert(Alert.AlertType.ERROR,
                     "Failed to import ledger: " + ex.getMessage(), ButtonType.OK);
-            if (owner != null)
+            if (this.owner != null)
             {
-                alert.initOwner(owner);
+                alert.initOwner(this.owner);
             }
             alert.showAndWait();
         }

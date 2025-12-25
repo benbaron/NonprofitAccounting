@@ -24,7 +24,7 @@ public class DonorContact implements Serializable {
     }
 
     public String getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(String id) {
@@ -32,7 +32,7 @@ public class DonorContact implements Serializable {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -40,7 +40,7 @@ public class DonorContact implements Serializable {
     }
 
     public String getEmail() {
-        return email;
+        return this.email;
     }
 
     public void setEmail(String email) {
@@ -48,7 +48,7 @@ public class DonorContact implements Serializable {
     }
 
     public String getPhone() {
-        return phone;
+        return this.phone;
     }
 
     public void setPhone(String phone) {
@@ -64,24 +64,24 @@ public class DonorContact implements Serializable {
             return false;
         }
         DonorContact that = (DonorContact) o;
-        return Objects.equals(id, that.id)
-                && Objects.equals(name, that.name)
-                && Objects.equals(email, that.email)
-                && Objects.equals(phone, that.phone);
+        return Objects.equals(this.id, that.id)
+                && Objects.equals(this.name, that.name)
+                && Objects.equals(this.email, that.email)
+                && Objects.equals(this.phone, that.phone);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, email, phone);
+        return Objects.hash(this.id, this.name, this.email, this.phone);
     }
 
     @Override
     public String toString() {
         return "DonorContact{"
-                + "id='" + id + '\''
-                + ", name='" + name + '\''
-                + ", email='" + email + '\''
-                + ", phone='" + phone + '\''
+                + "id='" + this.id + '\''
+                + ", name='" + this.name + '\''
+                + ", email='" + this.email + '\''
+                + ", phone='" + this.phone + '\''
                 + '}';
     }
 }

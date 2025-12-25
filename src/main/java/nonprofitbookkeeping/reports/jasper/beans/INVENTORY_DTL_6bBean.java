@@ -127,7 +127,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getInventory_dtl_6b_r2c3()
     {
-        return inventory_dtl_6b_r2c3;
+        return this.inventory_dtl_6b_r2c3;
     }
 
     public void setInventory_dtl_6b_r2c3(java.lang.Double v)
@@ -137,7 +137,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getContents_b59()
     {
-        return contents_b59;
+        return this.contents_b59;
     }
 
     public void setContents_b59(java.lang.Double v)
@@ -147,7 +147,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getContents_e_3()
     {
-        return contents_e_3;
+        return this.contents_e_3;
     }
 
     public void setContents_e_3(java.lang.Double v)
@@ -157,7 +157,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getContents_e_4()
     {
-        return contents_e_4;
+        return this.contents_e_4;
     }
 
     public void setContents_e_4(java.lang.Double v)
@@ -167,7 +167,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getLot_item_description()
     {
-        return lot_item_description;
+        return this.lot_item_description;
     }
 
     public void setLot_item_description(java.lang.String v)
@@ -177,7 +177,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getLot_item_description_2()
     {
-        return lot_item_description_2;
+        return this.lot_item_description_2;
     }
 
     public void setLot_item_description_2(java.lang.String v)
@@ -187,7 +187,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getLot_item_description_3()
     {
-        return lot_item_description_3;
+        return this.lot_item_description_3;
     }
 
     public void setLot_item_description_3(java.lang.String v)
@@ -197,7 +197,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getLot_item_description_4()
     {
-        return lot_item_description_4;
+        return this.lot_item_description_4;
     }
 
     public void setLot_item_description_4(java.lang.String v)
@@ -207,7 +207,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getLot_item_description_5()
     {
-        return lot_item_description_5;
+        return this.lot_item_description_5;
     }
 
     public void setLot_item_description_5(java.lang.String v)
@@ -217,7 +217,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getLot_item_description_6()
     {
-        return lot_item_description_6;
+        return this.lot_item_description_6;
     }
 
     public void setLot_item_description_6(java.lang.String v)
@@ -227,7 +227,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getLot_item_description_7()
     {
-        return lot_item_description_7;
+        return this.lot_item_description_7;
     }
 
     public void setLot_item_description_7(java.lang.String v)
@@ -237,7 +237,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getLot_item_description_8()
     {
-        return lot_item_description_8;
+        return this.lot_item_description_8;
     }
 
     public void setLot_item_description_8(java.lang.String v)
@@ -247,7 +247,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getSuggested_selling_price()
     {
-        return suggested_selling_price;
+        return this.suggested_selling_price;
     }
 
     public void setSuggested_selling_price(java.lang.String v)
@@ -257,7 +257,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getSuggested_selling_price_2()
     {
-        return suggested_selling_price_2;
+        return this.suggested_selling_price_2;
     }
 
     public void setSuggested_selling_price_2(java.lang.String v)
@@ -267,7 +267,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getSuggested_selling_price_3()
     {
-        return suggested_selling_price_3;
+        return this.suggested_selling_price_3;
     }
 
     public void setSuggested_selling_price_3(java.lang.String v)
@@ -277,7 +277,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getSuggested_selling_price_4()
     {
-        return suggested_selling_price_4;
+        return this.suggested_selling_price_4;
     }
 
     public void setSuggested_selling_price_4(java.lang.String v)
@@ -287,7 +287,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getSuggested_selling_price_5()
     {
-        return suggested_selling_price_5;
+        return this.suggested_selling_price_5;
     }
 
     public void setSuggested_selling_price_5(java.lang.String v)
@@ -297,7 +297,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getSuggested_selling_price_6()
     {
-        return suggested_selling_price_6;
+        return this.suggested_selling_price_6;
     }
 
     public void setSuggested_selling_price_6(java.lang.String v)
@@ -307,7 +307,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getSuggested_selling_price_7()
     {
-        return suggested_selling_price_7;
+        return this.suggested_selling_price_7;
     }
 
     public void setSuggested_selling_price_7(java.lang.String v)
@@ -317,7 +317,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getSuggested_selling_price_8()
     {
-        return suggested_selling_price_8;
+        return this.suggested_selling_price_8;
     }
 
     public void setSuggested_selling_price_8(java.lang.String v)
@@ -327,7 +327,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getExisting_lot_quantity()
     {
-        return existing_lot_quantity;
+        return this.existing_lot_quantity;
     }
 
     public void setExisting_lot_quantity(java.lang.String v)
@@ -337,7 +337,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getExisting_lot_quantity_2()
     {
-        return existing_lot_quantity_2;
+        return this.existing_lot_quantity_2;
     }
 
     public void setExisting_lot_quantity_2(java.lang.String v)
@@ -347,7 +347,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getExisting_lot_quantity_3()
     {
-        return existing_lot_quantity_3;
+        return this.existing_lot_quantity_3;
     }
 
     public void setExisting_lot_quantity_3(java.lang.String v)
@@ -357,7 +357,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getExisting_lot_quantity_4()
     {
-        return existing_lot_quantity_4;
+        return this.existing_lot_quantity_4;
     }
 
     public void setExisting_lot_quantity_4(java.lang.String v)
@@ -367,7 +367,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getExisting_lot_quantity_5()
     {
-        return existing_lot_quantity_5;
+        return this.existing_lot_quantity_5;
     }
 
     public void setExisting_lot_quantity_5(java.lang.String v)
@@ -377,7 +377,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getExisting_lot_quantity_6()
     {
-        return existing_lot_quantity_6;
+        return this.existing_lot_quantity_6;
     }
 
     public void setExisting_lot_quantity_6(java.lang.String v)
@@ -387,7 +387,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getExisting_lot_quantity_7()
     {
-        return existing_lot_quantity_7;
+        return this.existing_lot_quantity_7;
     }
 
     public void setExisting_lot_quantity_7(java.lang.String v)
@@ -397,7 +397,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getExisting_lot_quantity_8()
     {
-        return existing_lot_quantity_8;
+        return this.existing_lot_quantity_8;
     }
 
     public void setExisting_lot_quantity_8(java.lang.String v)
@@ -407,7 +407,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getExisting_lot_extended_cost()
     {
-        return existing_lot_extended_cost;
+        return this.existing_lot_extended_cost;
     }
 
     public void setExisting_lot_extended_cost(java.lang.String v)
@@ -417,7 +417,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getExisting_lot_extended_cost_2()
     {
-        return existing_lot_extended_cost_2;
+        return this.existing_lot_extended_cost_2;
     }
 
     public void setExisting_lot_extended_cost_2(java.lang.String v)
@@ -427,7 +427,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getExisting_lot_extended_cost_3()
     {
-        return existing_lot_extended_cost_3;
+        return this.existing_lot_extended_cost_3;
     }
 
     public void setExisting_lot_extended_cost_3(java.lang.String v)
@@ -437,7 +437,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getExisting_lot_extended_cost_4()
     {
-        return existing_lot_extended_cost_4;
+        return this.existing_lot_extended_cost_4;
     }
 
     public void setExisting_lot_extended_cost_4(java.lang.String v)
@@ -447,7 +447,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getExisting_lot_extended_cost_5()
     {
-        return existing_lot_extended_cost_5;
+        return this.existing_lot_extended_cost_5;
     }
 
     public void setExisting_lot_extended_cost_5(java.lang.String v)
@@ -457,7 +457,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getExisting_lot_extended_cost_6()
     {
-        return existing_lot_extended_cost_6;
+        return this.existing_lot_extended_cost_6;
     }
 
     public void setExisting_lot_extended_cost_6(java.lang.String v)
@@ -467,7 +467,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getExisting_lot_extended_cost_7()
     {
-        return existing_lot_extended_cost_7;
+        return this.existing_lot_extended_cost_7;
     }
 
     public void setExisting_lot_extended_cost_7(java.lang.String v)
@@ -477,7 +477,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getExisting_lot_extended_cost_8()
     {
-        return existing_lot_extended_cost_8;
+        return this.existing_lot_extended_cost_8;
     }
 
     public void setExisting_lot_extended_cost_8(java.lang.String v)
@@ -487,7 +487,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getPg_3_i_d_start_existing_lot_extended_cost()
     {
-        return pg_3_i_d_start_existing_lot_extended_cost;
+        return this.pg_3_i_d_start_existing_lot_extended_cost;
     }
 
     public void setPg_3_i_d_start_existing_lot_extended_cost(java.lang.Double v)
@@ -497,7 +497,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getNew_lot_purchase_quantity()
     {
-        return new_lot_purchase_quantity;
+        return this.new_lot_purchase_quantity;
     }
 
     public void setNew_lot_purchase_quantity(java.lang.String v)
@@ -507,7 +507,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getNew_lot_purchase_quantity_2()
     {
-        return new_lot_purchase_quantity_2;
+        return this.new_lot_purchase_quantity_2;
     }
 
     public void setNew_lot_purchase_quantity_2(java.lang.String v)
@@ -517,7 +517,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getNew_lot_purchase_quantity_3()
     {
-        return new_lot_purchase_quantity_3;
+        return this.new_lot_purchase_quantity_3;
     }
 
     public void setNew_lot_purchase_quantity_3(java.lang.String v)
@@ -527,7 +527,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getNew_lot_purchase_quantity_4()
     {
-        return new_lot_purchase_quantity_4;
+        return this.new_lot_purchase_quantity_4;
     }
 
     public void setNew_lot_purchase_quantity_4(java.lang.String v)
@@ -537,7 +537,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getNew_lot_purchase_quantity_5()
     {
-        return new_lot_purchase_quantity_5;
+        return this.new_lot_purchase_quantity_5;
     }
 
     public void setNew_lot_purchase_quantity_5(java.lang.String v)
@@ -547,7 +547,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getNew_lot_purchase_quantity_6()
     {
-        return new_lot_purchase_quantity_6;
+        return this.new_lot_purchase_quantity_6;
     }
 
     public void setNew_lot_purchase_quantity_6(java.lang.String v)
@@ -557,7 +557,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getNew_lot_purchase_quantity_7()
     {
-        return new_lot_purchase_quantity_7;
+        return this.new_lot_purchase_quantity_7;
     }
 
     public void setNew_lot_purchase_quantity_7(java.lang.String v)
@@ -567,7 +567,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getNew_lot_purchase_quantity_8()
     {
-        return new_lot_purchase_quantity_8;
+        return this.new_lot_purchase_quantity_8;
     }
 
     public void setNew_lot_purchase_quantity_8(java.lang.String v)
@@ -577,7 +577,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getNew_lot_purchase_cost()
     {
-        return new_lot_purchase_cost;
+        return this.new_lot_purchase_cost;
     }
 
     public void setNew_lot_purchase_cost(java.lang.String v)
@@ -587,7 +587,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getNew_lot_purchase_cost_2()
     {
-        return new_lot_purchase_cost_2;
+        return this.new_lot_purchase_cost_2;
     }
 
     public void setNew_lot_purchase_cost_2(java.lang.String v)
@@ -597,7 +597,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getNew_lot_purchase_cost_3()
     {
-        return new_lot_purchase_cost_3;
+        return this.new_lot_purchase_cost_3;
     }
 
     public void setNew_lot_purchase_cost_3(java.lang.String v)
@@ -607,7 +607,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getNew_lot_purchase_cost_4()
     {
-        return new_lot_purchase_cost_4;
+        return this.new_lot_purchase_cost_4;
     }
 
     public void setNew_lot_purchase_cost_4(java.lang.String v)
@@ -617,7 +617,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getNew_lot_purchase_cost_5()
     {
-        return new_lot_purchase_cost_5;
+        return this.new_lot_purchase_cost_5;
     }
 
     public void setNew_lot_purchase_cost_5(java.lang.String v)
@@ -627,7 +627,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getNew_lot_purchase_cost_6()
     {
-        return new_lot_purchase_cost_6;
+        return this.new_lot_purchase_cost_6;
     }
 
     public void setNew_lot_purchase_cost_6(java.lang.String v)
@@ -637,7 +637,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getNew_lot_purchase_cost_7()
     {
-        return new_lot_purchase_cost_7;
+        return this.new_lot_purchase_cost_7;
     }
 
     public void setNew_lot_purchase_cost_7(java.lang.String v)
@@ -647,7 +647,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getNew_lot_purchase_cost_8()
     {
-        return new_lot_purchase_cost_8;
+        return this.new_lot_purchase_cost_8;
     }
 
     public void setNew_lot_purchase_cost_8(java.lang.String v)
@@ -657,7 +657,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getPer_unit_cost_b1_a1_or_b2_a2()
     {
-        return per_unit_cost_b1_a1_or_b2_a2;
+        return this.per_unit_cost_b1_a1_or_b2_a2;
     }
 
     public void setPer_unit_cost_b1_a1_or_b2_a2(java.lang.Double v)
@@ -667,7 +667,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getIf_and_e16_0_e17_0_e17_e16_if_and_e19_0_e20_0_e20_e19_0()
     {
-        return if_and_e16_0_e17_0_e17_e16_if_and_e19_0_e20_0_e20_e19_0;
+        return this.if_and_e16_0_e17_0_e17_e16_if_and_e19_0_e20_0_e20_e19_0;
     }
 
     public void setIf_and_e16_0_e17_0_e17_e16_if_and_e19_0_e20_0_e20_e19_0(java.lang.Double v)
@@ -677,7 +677,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getIf_and_f16_0_f17_0_f17_f16_if_and_f19_0_f20_0_f20_f19_0()
     {
-        return if_and_f16_0_f17_0_f17_f16_if_and_f19_0_f20_0_f20_f19_0;
+        return this.if_and_f16_0_f17_0_f17_f16_if_and_f19_0_f20_0_f20_f19_0;
     }
 
     public void setIf_and_f16_0_f17_0_f17_f16_if_and_f19_0_f20_0_f20_f19_0(java.lang.Double v)
@@ -687,7 +687,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getIf_and_g16_0_g17_0_g17_g16_if_and_g19_0_g20_0_g20_g19_0()
     {
-        return if_and_g16_0_g17_0_g17_g16_if_and_g19_0_g20_0_g20_g19_0;
+        return this.if_and_g16_0_g17_0_g17_g16_if_and_g19_0_g20_0_g20_g19_0;
     }
 
     public void setIf_and_g16_0_g17_0_g17_g16_if_and_g19_0_g20_0_g20_g19_0(java.lang.Double v)
@@ -697,7 +697,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getIf_and_h16_0_h17_0_h17_h16_if_and_h19_0_h20_0_h20_h19_0()
     {
-        return if_and_h16_0_h17_0_h17_h16_if_and_h19_0_h20_0_h20_h19_0;
+        return this.if_and_h16_0_h17_0_h17_h16_if_and_h19_0_h20_0_h20_h19_0;
     }
 
     public void setIf_and_h16_0_h17_0_h17_h16_if_and_h19_0_h20_0_h20_h19_0(java.lang.Double v)
@@ -707,7 +707,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getIf_and_i16_0_i17_0_i17_i16_if_and_i19_0_i20_0_i20_i19_0()
     {
-        return if_and_i16_0_i17_0_i17_i16_if_and_i19_0_i20_0_i20_i19_0;
+        return this.if_and_i16_0_i17_0_i17_i16_if_and_i19_0_i20_0_i20_i19_0;
     }
 
     public void setIf_and_i16_0_i17_0_i17_i16_if_and_i19_0_i20_0_i20_i19_0(java.lang.Double v)
@@ -717,7 +717,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getIf_and_j16_0_j17_0_j17_j16_if_and_j19_0_j20_0_j20_j19_0()
     {
-        return if_and_j16_0_j17_0_j17_j16_if_and_j19_0_j20_0_j20_j19_0;
+        return this.if_and_j16_0_j17_0_j17_j16_if_and_j19_0_j20_0_j20_j19_0;
     }
 
     public void setIf_and_j16_0_j17_0_j17_j16_if_and_j19_0_j20_0_j20_j19_0(java.lang.Double v)
@@ -727,7 +727,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getIf_and_k16_0_k17_0_k17_k16_if_and_k19_0_k20_0_k20_k19_0()
     {
-        return if_and_k16_0_k17_0_k17_k16_if_and_k19_0_k20_0_k20_k19_0;
+        return this.if_and_k16_0_k17_0_k17_k16_if_and_k19_0_k20_0_k20_k19_0;
     }
 
     public void setIf_and_k16_0_k17_0_k17_k16_if_and_k19_0_k20_0_k20_k19_0(java.lang.Double v)
@@ -737,7 +737,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getIf_and_e16_0_e17_0_e17_e16_if_and_e19_0_e20_0_e20_e19_0_quantity_sold_at_any_price()
     {
-        return if_and_e16_0_e17_0_e17_e16_if_and_e19_0_e20_0_e20_e19_0_quantity_sold_at_any_price;
+        return this.if_and_e16_0_e17_0_e17_e16_if_and_e19_0_e20_0_e20_e19_0_quantity_sold_at_any_price;
     }
 
     public void setIf_and_e16_0_e17_0_e17_e16_if_and_e19_0_e20_0_e20_e19_0_quantity_sold_at_any_price(java.lang.String v)
@@ -747,7 +747,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getIf_and_f16_0_f17_0_f17_f16_if_and_f19_0_f20_0_f20_f19_0_quantity_sold_at_any_price()
     {
-        return if_and_f16_0_f17_0_f17_f16_if_and_f19_0_f20_0_f20_f19_0_quantity_sold_at_any_price;
+        return this.if_and_f16_0_f17_0_f17_f16_if_and_f19_0_f20_0_f20_f19_0_quantity_sold_at_any_price;
     }
 
     public void setIf_and_f16_0_f17_0_f17_f16_if_and_f19_0_f20_0_f20_f19_0_quantity_sold_at_any_price(java.lang.String v)
@@ -757,7 +757,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getIf_and_g16_0_g17_0_g17_g16_if_and_g19_0_g20_0_g20_g19_0_quantity_sold_at_any_price()
     {
-        return if_and_g16_0_g17_0_g17_g16_if_and_g19_0_g20_0_g20_g19_0_quantity_sold_at_any_price;
+        return this.if_and_g16_0_g17_0_g17_g16_if_and_g19_0_g20_0_g20_g19_0_quantity_sold_at_any_price;
     }
 
     public void setIf_and_g16_0_g17_0_g17_g16_if_and_g19_0_g20_0_g20_g19_0_quantity_sold_at_any_price(java.lang.String v)
@@ -767,7 +767,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getIf_and_h16_0_h17_0_h17_h16_if_and_h19_0_h20_0_h20_h19_0_quantity_sold_at_any_price()
     {
-        return if_and_h16_0_h17_0_h17_h16_if_and_h19_0_h20_0_h20_h19_0_quantity_sold_at_any_price;
+        return this.if_and_h16_0_h17_0_h17_h16_if_and_h19_0_h20_0_h20_h19_0_quantity_sold_at_any_price;
     }
 
     public void setIf_and_h16_0_h17_0_h17_h16_if_and_h19_0_h20_0_h20_h19_0_quantity_sold_at_any_price(java.lang.String v)
@@ -777,7 +777,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getIf_and_i16_0_i17_0_i17_i16_if_and_i19_0_i20_0_i20_i19_0_quantity_sold_at_any_price()
     {
-        return if_and_i16_0_i17_0_i17_i16_if_and_i19_0_i20_0_i20_i19_0_quantity_sold_at_any_price;
+        return this.if_and_i16_0_i17_0_i17_i16_if_and_i19_0_i20_0_i20_i19_0_quantity_sold_at_any_price;
     }
 
     public void setIf_and_i16_0_i17_0_i17_i16_if_and_i19_0_i20_0_i20_i19_0_quantity_sold_at_any_price(java.lang.String v)
@@ -787,7 +787,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getIf_and_j16_0_j17_0_j17_j16_if_and_j19_0_j20_0_j20_j19_0_quantity_sold_at_any_price()
     {
-        return if_and_j16_0_j17_0_j17_j16_if_and_j19_0_j20_0_j20_j19_0_quantity_sold_at_any_price;
+        return this.if_and_j16_0_j17_0_j17_j16_if_and_j19_0_j20_0_j20_j19_0_quantity_sold_at_any_price;
     }
 
     public void setIf_and_j16_0_j17_0_j17_j16_if_and_j19_0_j20_0_j20_j19_0_quantity_sold_at_any_price(java.lang.String v)
@@ -797,7 +797,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getIf_and_k16_0_k17_0_k17_k16_if_and_k19_0_k20_0_k20_k19_0_quantity_sold_at_any_price()
     {
-        return if_and_k16_0_k17_0_k17_k16_if_and_k19_0_k20_0_k20_k19_0_quantity_sold_at_any_price;
+        return this.if_and_k16_0_k17_0_k17_k16_if_and_k19_0_k20_0_k20_k19_0_quantity_sold_at_any_price;
     }
 
     public void setIf_and_k16_0_k17_0_k17_k16_if_and_k19_0_k20_0_k20_k19_0_quantity_sold_at_any_price(java.lang.String v)
@@ -807,7 +807,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getIf_and_l16_0_l17_0_l17_l16_if_and_l19_0_l20_0_l20_l19_0_quantity_sold_at_any_price()
     {
-        return if_and_l16_0_l17_0_l17_l16_if_and_l19_0_l20_0_l20_l19_0_quantity_sold_at_any_price;
+        return this.if_and_l16_0_l17_0_l17_l16_if_and_l19_0_l20_0_l20_l19_0_quantity_sold_at_any_price;
     }
 
     public void setIf_and_l16_0_l17_0_l17_l16_if_and_l19_0_l20_0_l20_l19_0_quantity_sold_at_any_price(java.lang.String v)
@@ -817,7 +817,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getIf_and_e16_0_e17_0_e17_e16_if_and_e19_0_e20_0_e20_e19_0_quantity_removed_or_discarded()
     {
-        return if_and_e16_0_e17_0_e17_e16_if_and_e19_0_e20_0_e20_e19_0_quantity_removed_or_discarded;
+        return this.if_and_e16_0_e17_0_e17_e16_if_and_e19_0_e20_0_e20_e19_0_quantity_removed_or_discarded;
     }
 
     public void setIf_and_e16_0_e17_0_e17_e16_if_and_e19_0_e20_0_e20_e19_0_quantity_removed_or_discarded(java.lang.String v)
@@ -827,7 +827,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getIf_and_f16_0_f17_0_f17_f16_if_and_f19_0_f20_0_f20_f19_0_quantity_removed_or_discarded()
     {
-        return if_and_f16_0_f17_0_f17_f16_if_and_f19_0_f20_0_f20_f19_0_quantity_removed_or_discarded;
+        return this.if_and_f16_0_f17_0_f17_f16_if_and_f19_0_f20_0_f20_f19_0_quantity_removed_or_discarded;
     }
 
     public void setIf_and_f16_0_f17_0_f17_f16_if_and_f19_0_f20_0_f20_f19_0_quantity_removed_or_discarded(java.lang.String v)
@@ -837,7 +837,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getIf_and_g16_0_g17_0_g17_g16_if_and_g19_0_g20_0_g20_g19_0_quantity_removed_or_discarded()
     {
-        return if_and_g16_0_g17_0_g17_g16_if_and_g19_0_g20_0_g20_g19_0_quantity_removed_or_discarded;
+        return this.if_and_g16_0_g17_0_g17_g16_if_and_g19_0_g20_0_g20_g19_0_quantity_removed_or_discarded;
     }
 
     public void setIf_and_g16_0_g17_0_g17_g16_if_and_g19_0_g20_0_g20_g19_0_quantity_removed_or_discarded(java.lang.String v)
@@ -847,7 +847,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getIf_and_h16_0_h17_0_h17_h16_if_and_h19_0_h20_0_h20_h19_0_quantity_removed_or_discarded()
     {
-        return if_and_h16_0_h17_0_h17_h16_if_and_h19_0_h20_0_h20_h19_0_quantity_removed_or_discarded;
+        return this.if_and_h16_0_h17_0_h17_h16_if_and_h19_0_h20_0_h20_h19_0_quantity_removed_or_discarded;
     }
 
     public void setIf_and_h16_0_h17_0_h17_h16_if_and_h19_0_h20_0_h20_h19_0_quantity_removed_or_discarded(java.lang.String v)
@@ -857,7 +857,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getIf_and_i16_0_i17_0_i17_i16_if_and_i19_0_i20_0_i20_i19_0_quantity_removed_or_discarded()
     {
-        return if_and_i16_0_i17_0_i17_i16_if_and_i19_0_i20_0_i20_i19_0_quantity_removed_or_discarded;
+        return this.if_and_i16_0_i17_0_i17_i16_if_and_i19_0_i20_0_i20_i19_0_quantity_removed_or_discarded;
     }
 
     public void setIf_and_i16_0_i17_0_i17_i16_if_and_i19_0_i20_0_i20_i19_0_quantity_removed_or_discarded(java.lang.String v)
@@ -867,7 +867,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getIf_and_j16_0_j17_0_j17_j16_if_and_j19_0_j20_0_j20_j19_0_quantity_removed_or_discarded()
     {
-        return if_and_j16_0_j17_0_j17_j16_if_and_j19_0_j20_0_j20_j19_0_quantity_removed_or_discarded;
+        return this.if_and_j16_0_j17_0_j17_j16_if_and_j19_0_j20_0_j20_j19_0_quantity_removed_or_discarded;
     }
 
     public void setIf_and_j16_0_j17_0_j17_j16_if_and_j19_0_j20_0_j20_j19_0_quantity_removed_or_discarded(java.lang.String v)
@@ -877,7 +877,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getIf_and_k16_0_k17_0_k17_k16_if_and_k19_0_k20_0_k20_k19_0_quantity_removed_or_discarded()
     {
-        return if_and_k16_0_k17_0_k17_k16_if_and_k19_0_k20_0_k20_k19_0_quantity_removed_or_discarded;
+        return this.if_and_k16_0_k17_0_k17_k16_if_and_k19_0_k20_0_k20_k19_0_quantity_removed_or_discarded;
     }
 
     public void setIf_and_k16_0_k17_0_k17_k16_if_and_k19_0_k20_0_k20_k19_0_quantity_removed_or_discarded(java.lang.String v)
@@ -887,7 +887,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.String getIf_and_l16_0_l17_0_l17_l16_if_and_l19_0_l20_0_l20_l19_0_quantity_removed_or_discarded()
     {
-        return if_and_l16_0_l17_0_l17_l16_if_and_l19_0_l20_0_l20_l19_0_quantity_removed_or_discarded;
+        return this.if_and_l16_0_l17_0_l17_l16_if_and_l19_0_l20_0_l20_l19_0_quantity_removed_or_discarded;
     }
 
     public void setIf_and_l16_0_l17_0_l17_l16_if_and_l19_0_l20_0_l20_l19_0_quantity_removed_or_discarded(java.lang.String v)
@@ -897,7 +897,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getIf_and_e16_0_e17_0_e17_e16_if_and_e19_0_e20_0_e20_e19_0_ending_quantity_b1or_b2_d_e()
     {
-        return if_and_e16_0_e17_0_e17_e16_if_and_e19_0_e20_0_e20_e19_0_ending_quantity_b1or_b2_d_e;
+        return this.if_and_e16_0_e17_0_e17_e16_if_and_e19_0_e20_0_e20_e19_0_ending_quantity_b1or_b2_d_e;
     }
 
     public void setIf_and_e16_0_e17_0_e17_e16_if_and_e19_0_e20_0_e20_e19_0_ending_quantity_b1or_b2_d_e(java.lang.Double v)
@@ -907,7 +907,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getIf_and_f16_0_f17_0_f17_f16_if_and_f19_0_f20_0_f20_f19_0_if_e16_0_e16_e19_e24_e25()
     {
-        return if_and_f16_0_f17_0_f17_f16_if_and_f19_0_f20_0_f20_f19_0_if_e16_0_e16_e19_e24_e25;
+        return this.if_and_f16_0_f17_0_f17_f16_if_and_f19_0_f20_0_f20_f19_0_if_e16_0_e16_e19_e24_e25;
     }
 
     public void setIf_and_f16_0_f17_0_f17_f16_if_and_f19_0_f20_0_f20_f19_0_if_e16_0_e16_e19_e24_e25(java.lang.Double v)
@@ -917,7 +917,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getIf_and_g16_0_g17_0_g17_g16_if_and_g19_0_g20_0_g20_g19_0_if_f16_0_f16_f19_f24_f25()
     {
-        return if_and_g16_0_g17_0_g17_g16_if_and_g19_0_g20_0_g20_g19_0_if_f16_0_f16_f19_f24_f25;
+        return this.if_and_g16_0_g17_0_g17_g16_if_and_g19_0_g20_0_g20_g19_0_if_f16_0_f16_f19_f24_f25;
     }
 
     public void setIf_and_g16_0_g17_0_g17_g16_if_and_g19_0_g20_0_g20_g19_0_if_f16_0_f16_f19_f24_f25(java.lang.Double v)
@@ -927,7 +927,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getIf_and_h16_0_h17_0_h17_h16_if_and_h19_0_h20_0_h20_h19_0_if_g16_0_g16_g19_g24_g25()
     {
-        return if_and_h16_0_h17_0_h17_h16_if_and_h19_0_h20_0_h20_h19_0_if_g16_0_g16_g19_g24_g25;
+        return this.if_and_h16_0_h17_0_h17_h16_if_and_h19_0_h20_0_h20_h19_0_if_g16_0_g16_g19_g24_g25;
     }
 
     public void setIf_and_h16_0_h17_0_h17_h16_if_and_h19_0_h20_0_h20_h19_0_if_g16_0_g16_g19_g24_g25(java.lang.Double v)
@@ -937,7 +937,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getIf_and_i16_0_i17_0_i17_i16_if_and_i19_0_i20_0_i20_i19_0_if_h16_0_h16_h19_h24_h25()
     {
-        return if_and_i16_0_i17_0_i17_i16_if_and_i19_0_i20_0_i20_i19_0_if_h16_0_h16_h19_h24_h25;
+        return this.if_and_i16_0_i17_0_i17_i16_if_and_i19_0_i20_0_i20_i19_0_if_h16_0_h16_h19_h24_h25;
     }
 
     public void setIf_and_i16_0_i17_0_i17_i16_if_and_i19_0_i20_0_i20_i19_0_if_h16_0_h16_h19_h24_h25(java.lang.Double v)
@@ -947,7 +947,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getIf_and_j16_0_j17_0_j17_j16_if_and_j19_0_j20_0_j20_j19_0_if_i16_0_i16_i19_i24_i25()
     {
-        return if_and_j16_0_j17_0_j17_j16_if_and_j19_0_j20_0_j20_j19_0_if_i16_0_i16_i19_i24_i25;
+        return this.if_and_j16_0_j17_0_j17_j16_if_and_j19_0_j20_0_j20_j19_0_if_i16_0_i16_i19_i24_i25;
     }
 
     public void setIf_and_j16_0_j17_0_j17_j16_if_and_j19_0_j20_0_j20_j19_0_if_i16_0_i16_i19_i24_i25(java.lang.Double v)
@@ -957,7 +957,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getIf_and_k16_0_k17_0_k17_k16_if_and_k19_0_k20_0_k20_k19_0_if_j16_0_j16_j19_j24_j25()
     {
-        return if_and_k16_0_k17_0_k17_k16_if_and_k19_0_k20_0_k20_k19_0_if_j16_0_j16_j19_j24_j25;
+        return this.if_and_k16_0_k17_0_k17_k16_if_and_k19_0_k20_0_k20_k19_0_if_j16_0_j16_j19_j24_j25;
     }
 
     public void setIf_and_k16_0_k17_0_k17_k16_if_and_k19_0_k20_0_k20_k19_0_if_j16_0_j16_j19_j24_j25(java.lang.Double v)
@@ -967,7 +967,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getIf_and_l16_0_l17_0_l17_l16_if_and_l19_0_l20_0_l20_l19_0_if_k16_0_k16_k19_k24_k25()
     {
-        return if_and_l16_0_l17_0_l17_l16_if_and_l19_0_l20_0_l20_l19_0_if_k16_0_k16_k19_k24_k25;
+        return this.if_and_l16_0_l17_0_l17_l16_if_and_l19_0_l20_0_l20_l19_0_if_k16_0_k16_k19_k24_k25;
     }
 
     public void setIf_and_l16_0_l17_0_l17_l16_if_and_l19_0_l20_0_l20_l19_0_if_k16_0_k16_k19_k24_k25(java.lang.Double v)
@@ -977,7 +977,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getIf_e16_0_e16_e19_e24_e25_ending_extended_cost_f_x_c()
     {
-        return if_e16_0_e16_e19_e24_e25_ending_extended_cost_f_x_c;
+        return this.if_e16_0_e16_e19_e24_e25_ending_extended_cost_f_x_c;
     }
 
     public void setIf_e16_0_e16_e19_e24_e25_ending_extended_cost_f_x_c(java.lang.Double v)
@@ -987,7 +987,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getIf_f16_0_f16_f19_f24_f25_e26_e22()
     {
-        return if_f16_0_f16_f19_f24_f25_e26_e22;
+        return this.if_f16_0_f16_f19_f24_f25_e26_e22;
     }
 
     public void setIf_f16_0_f16_f19_f24_f25_e26_e22(java.lang.Double v)
@@ -997,7 +997,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getIf_g16_0_g16_g19_g24_g25_f26_f22()
     {
-        return if_g16_0_g16_g19_g24_g25_f26_f22;
+        return this.if_g16_0_g16_g19_g24_g25_f26_f22;
     }
 
     public void setIf_g16_0_g16_g19_g24_g25_f26_f22(java.lang.Double v)
@@ -1007,7 +1007,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getIf_h16_0_h16_h19_h24_h25_g26_g22()
     {
-        return if_h16_0_h16_h19_h24_h25_g26_g22;
+        return this.if_h16_0_h16_h19_h24_h25_g26_g22;
     }
 
     public void setIf_h16_0_h16_h19_h24_h25_g26_g22(java.lang.Double v)
@@ -1017,7 +1017,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getIf_i16_0_i16_i19_i24_i25_h26_h22()
     {
-        return if_i16_0_i16_i19_i24_i25_h26_h22;
+        return this.if_i16_0_i16_i19_i24_i25_h26_h22;
     }
 
     public void setIf_i16_0_i16_i19_i24_i25_h26_h22(java.lang.Double v)
@@ -1027,7 +1027,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getIf_j16_0_j16_j19_j24_j25_i26_i22()
     {
-        return if_j16_0_j16_j19_j24_j25_i26_i22;
+        return this.if_j16_0_j16_j19_j24_j25_i26_i22;
     }
 
     public void setIf_j16_0_j16_j19_j24_j25_i26_i22(java.lang.Double v)
@@ -1037,7 +1037,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getIf_k16_0_k16_k19_k24_k25_j26_j22()
     {
-        return if_k16_0_k16_k19_k24_k25_j26_j22;
+        return this.if_k16_0_k16_k19_k24_k25_j26_j22;
     }
 
     public void setIf_k16_0_k16_k19_k24_k25_j26_j22(java.lang.Double v)
@@ -1047,7 +1047,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getIf_l16_0_l16_l19_l24_l25_k26_k22()
     {
-        return if_l16_0_l16_l19_l24_l25_k26_k22;
+        return this.if_l16_0_l16_l19_l24_l25_k26_k22;
     }
 
     public void setIf_l16_0_l16_l19_l24_l25_k26_k22(java.lang.Double v)
@@ -1057,7 +1057,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getPg_3_i_d_end_l26_l22()
     {
-        return pg_3_i_d_end_l26_l22;
+        return this.pg_3_i_d_end_l26_l22;
     }
 
     public void setPg_3_i_d_end_l26_l22(java.lang.Double v)
@@ -1067,7 +1067,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getE26_e22_cost_of_goods_b1_b2_g()
     {
-        return e26_e22_cost_of_goods_b1_b2_g;
+        return this.e26_e22_cost_of_goods_b1_b2_g;
     }
 
     public void setE26_e22_cost_of_goods_b1_b2_g(java.lang.Double v)
@@ -1077,7 +1077,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getF26_f22_e17_e20_e27()
     {
-        return f26_f22_e17_e20_e27;
+        return this.f26_f22_e17_e20_e27;
     }
 
     public void setF26_f22_e17_e20_e27(java.lang.Double v)
@@ -1087,7 +1087,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getG26_g22_f17_f20_f27()
     {
-        return g26_g22_f17_f20_f27;
+        return this.g26_g22_f17_f20_f27;
     }
 
     public void setG26_g22_f17_f20_f27(java.lang.Double v)
@@ -1097,7 +1097,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getH26_h22_g17_g20_g27()
     {
-        return h26_h22_g17_g20_g27;
+        return this.h26_h22_g17_g20_g27;
     }
 
     public void setH26_h22_g17_g20_g27(java.lang.Double v)
@@ -1107,7 +1107,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getI26_i22_h17_h20_h27()
     {
-        return i26_i22_h17_h20_h27;
+        return this.i26_i22_h17_h20_h27;
     }
 
     public void setI26_i22_h17_h20_h27(java.lang.Double v)
@@ -1117,7 +1117,7 @@ public class INVENTORY_DTL_6bBean
 
     public java.lang.Double getJ26_j22_i17_i20_i27()
     {
-        return j26_j22_i17_i20_i27;
+        return this.j26_j22_i17_i20_i27;
     }
 
     public void setJ26_j22_i17_i20_i27(java.lang.Double v)

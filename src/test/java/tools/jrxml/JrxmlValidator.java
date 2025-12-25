@@ -2076,50 +2076,50 @@ public class JrxmlValidator
 		
 		void info(String tag, String msg)
 		{
-			infos.add("[" + tag + "] " + msg);
+			this.infos.add("[" + tag + "] " + msg);
 			
 		}
 		
 		void warn(String tag, String msg)
 		{
-			warns.add("[" + tag + "] " + msg);
+			this.warns.add("[" + tag + "] " + msg);
 			
 		}
 		
 		void err(String tag, String msg)
 		{
-			errs.add("[" + tag + "] " + msg);
+			this.errs.add("[" + tag + "] " + msg);
 			
 		}
 		
 		boolean isValid()
 		{
-			return errs.isEmpty() && (!failOnWarn || warns.isEmpty());
+			return this.errs.isEmpty() && (!this.failOnWarn || this.warns.isEmpty());
 			
 		}
 		
 		void print()
 		{
-			System.out.println("\n=== " + file.getAbsolutePath() + " ===");
+			System.out.println("\n=== " + this.file.getAbsolutePath() + " ===");
 			
-			if (!infos.isEmpty())
+			if (!this.infos.isEmpty())
 			{
 				System.out.println("Info:");
-				infos.forEach(s -> System.out.println("  " + s));
+				this.infos.forEach(s -> System.out.println("  " + s));
 			}
 			
-			if (!warns.isEmpty())
+			if (!this.warns.isEmpty())
 			{
 				System.out.println("Warnings:");
-				warns.forEach(s -> System.out.println("  " + s));
+				this.warns.forEach(s -> System.out.println("  " + s));
 			}
 			
-			if (!errs.isEmpty())
+			if (!this.errs.isEmpty())
 			{
 				System.out.println("Errors:");
-				errs.forEach(s -> System.out.println("  " + s));
+				this.errs.forEach(s -> System.out.println("  " + s));
 			}
-			else if (failOnWarn && !warns.isEmpty())
+			else if (this.failOnWarn && !this.warns.isEmpty())
 			{
 				System.out.println(
 					" No errors, but warnings present (fail-on-warn enabled).");

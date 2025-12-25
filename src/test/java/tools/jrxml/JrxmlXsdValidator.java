@@ -171,13 +171,13 @@ public class JrxmlXsdValidator
 		void add(String sev, String code, String msg, Integer line, Integer col,
 			List<String> ctx)
 		{
-			issues.add(new Issue(sev, code, msg, line, col, ctx));
+			this.issues.add(new Issue(sev, code, msg, line, col, ctx));
 			
 		}
 		
 		boolean isValid()
 		{
-			for (Issue i : issues)
+			for (Issue i : this.issues)
 				if ("ERROR".equals(i.severity))
 					return false;
 			return true;
@@ -398,27 +398,27 @@ public class JrxmlXsdValidator
 		@Override
 		public void warning(SAXParseException e)
 		{
-			warnings.add(e);
+			this.warnings.add(e);
 			
 		}
 		
 		@Override
 		public void error(SAXParseException e)
 		{
-			errors.add(e);
+			this.errors.add(e);
 			
 		}
 		
 		@Override
 		public void fatalError(SAXParseException e)
 		{
-			fatals.add(e);
+			this.fatals.add(e);
 			
 		}
 		
 		boolean hasErrors()
 		{
-			return !errors.isEmpty() || !fatals.isEmpty();
+			return !this.errors.isEmpty() || !this.fatals.isEmpty();
 			
 		}
 		

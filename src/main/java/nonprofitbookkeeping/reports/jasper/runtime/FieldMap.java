@@ -29,28 +29,28 @@ public final class FieldMap {
     }
 
     public String getSheetName() {
-        return sheetName;
+        return this.sheetName;
     }
 
     /**
      * All entries, in CSV order.
      */
     public List<FieldMapEntry> getEntries() {
-        return entries;
+        return this.entries;
     }
 
     /**
      * Lookup by JRXML/bean field name.
      */
     public FieldMapEntry getByFieldName(String fieldName) {
-        return byFieldName.get(fieldName);
+        return this.byFieldName.get(fieldName);
     }
 
     /**
      * Map of fieldName -> FieldMapEntry.
      */
     public Map<String, FieldMapEntry> getEntriesByFieldName() {
-        return byFieldName;
+        return this.byFieldName;
     }
 
     /**
@@ -67,7 +67,7 @@ public final class FieldMap {
         StringBuilder sb = new StringBuilder();
         boolean first = true;
 
-        for (FieldMapEntry e : entries) {
+        for (FieldMapEntry e : this.entries) {
             String expr = e.getDbExpr();
             if (expr == null || expr.trim().isEmpty()) {
                 continue;

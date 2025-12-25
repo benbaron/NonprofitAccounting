@@ -31,16 +31,16 @@ public final class SheetModel
 
     public String sheetName()
     {
-        return sheetName;
+        return this.sheetName;
     }
 
     public List<CellItem> items()
     {
-        return items;
+        return this.items;
     }
 
     public Map<String, FieldInfo> fields()
     {
-        return fields;
+        return this.fields;
     }
 }

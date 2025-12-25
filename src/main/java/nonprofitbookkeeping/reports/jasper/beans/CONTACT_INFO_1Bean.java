@@ -104,7 +104,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.Double getContact_info_1_r2c3()
     {
-        return contact_info_1_r2c3;
+        return this.contact_info_1_r2c3;
     }
 
     public void setContact_info_1_r2c3(java.lang.Double v)
@@ -114,7 +114,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.Double getContents_b59()
     {
-        return contents_b59;
+        return this.contents_b59;
     }
 
     public void setContents_b59(java.lang.Double v)
@@ -124,7 +124,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.Double getContents_e_3()
     {
-        return contents_e_3;
+        return this.contents_e_3;
     }
 
     public void setContents_e_3(java.lang.Double v)
@@ -134,7 +134,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.Double getContents_e_4()
     {
-        return contents_e_4;
+        return this.contents_e_4;
     }
 
     public void setContents_e_4(java.lang.Double v)
@@ -144,7 +144,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getWarrant_end_date()
     {
-        return warrant_end_date;
+        return this.warrant_end_date;
     }
 
     public void setWarrant_end_date(java.lang.String v)
@@ -154,7 +154,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getWarrant_end_date_2()
     {
-        return warrant_end_date_2;
+        return this.warrant_end_date_2;
     }
 
     public void setWarrant_end_date_2(java.lang.String v)
@@ -164,7 +164,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getWarrant_end_date_3()
     {
-        return warrant_end_date_3;
+        return this.warrant_end_date_3;
     }
 
     public void setWarrant_end_date_3(java.lang.String v)
@@ -174,7 +174,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getWarrant_end_date_4()
     {
-        return warrant_end_date_4;
+        return this.warrant_end_date_4;
     }
 
     public void setWarrant_end_date_4(java.lang.String v)
@@ -184,7 +184,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getWarrant_end_date_5()
     {
-        return warrant_end_date_5;
+        return this.warrant_end_date_5;
     }
 
     public void setWarrant_end_date_5(java.lang.String v)
@@ -194,7 +194,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.Double getLegal_name()
     {
-        return legal_name;
+        return this.legal_name;
     }
 
     public void setLegal_name(java.lang.Double v)
@@ -204,7 +204,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getIf_contents_c_10_contents_c_10_street_address()
     {
-        return if_contents_c_10_contents_c_10_street_address;
+        return this.if_contents_c_10_contents_c_10_street_address;
     }
 
     public void setIf_contents_c_10_contents_c_10_street_address(java.lang.String v)
@@ -214,7 +214,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getStreet_address()
     {
-        return street_address;
+        return this.street_address;
     }
 
     public void setStreet_address(java.lang.String v)
@@ -224,7 +224,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getStreet_address_2()
     {
-        return street_address_2;
+        return this.street_address_2;
     }
 
     public void setStreet_address_2(java.lang.String v)
@@ -234,7 +234,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getStreet_address_3()
     {
-        return street_address_3;
+        return this.street_address_3;
     }
 
     public void setStreet_address_3(java.lang.String v)
@@ -244,7 +244,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getStreet_address_4()
     {
-        return street_address_4;
+        return this.street_address_4;
     }
 
     public void setStreet_address_4(java.lang.String v)
@@ -254,7 +254,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getIf_contents_c_10_contents_c_10_city()
     {
-        return if_contents_c_10_contents_c_10_city;
+        return this.if_contents_c_10_contents_c_10_city;
     }
 
     public void setIf_contents_c_10_contents_c_10_city(java.lang.String v)
@@ -264,7 +264,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getState_or_province()
     {
-        return state_or_province;
+        return this.state_or_province;
     }
 
     public void setState_or_province(java.lang.String v)
@@ -274,7 +274,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getZip_or_postal_code()
     {
-        return zip_or_postal_code;
+        return this.zip_or_postal_code;
     }
 
     public void setZip_or_postal_code(java.lang.String v)
@@ -284,7 +284,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getIf_contents_c_10_contents_c_10_home_telephone()
     {
-        return if_contents_c_10_contents_c_10_home_telephone;
+        return this.if_contents_c_10_contents_c_10_home_telephone;
     }
 
     public void setIf_contents_c_10_contents_c_10_home_telephone(java.lang.String v)
@@ -294,7 +294,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getAlternate_phone()
     {
-        return alternate_phone;
+        return this.alternate_phone;
     }
 
     public void setAlternate_phone(java.lang.String v)
@@ -304,7 +304,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getZip_or_postal_code_alternate_phone()
     {
-        return zip_or_postal_code_alternate_phone;
+        return this.zip_or_postal_code_alternate_phone;
     }
 
     public void setZip_or_postal_code_alternate_phone(java.lang.String v)
@@ -314,7 +314,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getAlternate_phone_2()
     {
-        return alternate_phone_2;
+        return this.alternate_phone_2;
     }
 
     public void setAlternate_phone_2(java.lang.String v)
@@ -324,7 +324,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getIf_contents_c_10_contents_c_10_internet_or_e_mail_address_required_if_available()
     {
-        return if_contents_c_10_contents_c_10_internet_or_e_mail_address_required_if_available;
+        return this.if_contents_c_10_contents_c_10_internet_or_e_mail_address_required_if_available;
     }
 
     public void setIf_contents_c_10_contents_c_10_internet_or_e_mail_address_required_if_available(java.lang.String v)
@@ -334,7 +334,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getAlternate_phone_internet_or_e_mail_address_required_if_available()
     {
-        return alternate_phone_internet_or_e_mail_address_required_if_available;
+        return this.alternate_phone_internet_or_e_mail_address_required_if_available;
     }
 
     public void setAlternate_phone_internet_or_e_mail_address_required_if_available(java.lang.String v)
@@ -344,7 +344,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getInternet_or_e_mail_address_required_if_available()
     {
-        return internet_or_e_mail_address_required_if_available;
+        return this.internet_or_e_mail_address_required_if_available;
     }
 
     public void setInternet_or_e_mail_address_required_if_available(java.lang.String v)
@@ -354,7 +354,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getMembership()
     {
-        return membership;
+        return this.membership;
     }
 
     public void setMembership(java.lang.String v)
@@ -364,7 +364,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getIf_contents_c_10_contents_c_10_sca_name()
     {
-        return if_contents_c_10_contents_c_10_sca_name;
+        return this.if_contents_c_10_contents_c_10_sca_name;
     }
 
     public void setIf_contents_c_10_contents_c_10_sca_name(java.lang.String v)
@@ -374,7 +374,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getAlternate_phone_sca_name()
     {
-        return alternate_phone_sca_name;
+        return this.alternate_phone_sca_name;
     }
 
     public void setAlternate_phone_sca_name(java.lang.String v)
@@ -384,7 +384,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getSca_name()
     {
-        return sca_name;
+        return this.sca_name;
     }
 
     public void setSca_name(java.lang.String v)
@@ -394,7 +394,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getExp_date()
     {
-        return exp_date;
+        return this.exp_date;
     }
 
     public void setExp_date(java.lang.String v)
@@ -404,7 +404,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getIf_contents_c_10_contents_c_10_po_box_address()
     {
-        return if_contents_c_10_contents_c_10_po_box_address;
+        return this.if_contents_c_10_contents_c_10_po_box_address;
     }
 
     public void setIf_contents_c_10_contents_c_10_po_box_address(java.lang.String v)
@@ -414,7 +414,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getAlternate_phone_po_box_address()
     {
-        return alternate_phone_po_box_address;
+        return this.alternate_phone_po_box_address;
     }
 
     public void setAlternate_phone_po_box_address(java.lang.String v)
@@ -424,7 +424,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getPo_box_address()
     {
-        return po_box_address;
+        return this.po_box_address;
     }
 
     public void setPo_box_address(java.lang.String v)
@@ -434,7 +434,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getExp_date_po_box_address()
     {
-        return exp_date_po_box_address;
+        return this.exp_date_po_box_address;
     }
 
     public void setExp_date_po_box_address(java.lang.String v)
@@ -444,7 +444,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getPo_box_address_2()
     {
-        return po_box_address_2;
+        return this.po_box_address_2;
     }
 
     public void setPo_box_address_2(java.lang.String v)
@@ -454,7 +454,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getIf_contents_c_10_contents_c_10_city_2()
     {
-        return if_contents_c_10_contents_c_10_city_2;
+        return this.if_contents_c_10_contents_c_10_city_2;
     }
 
     public void setIf_contents_c_10_contents_c_10_city_2(java.lang.String v)
@@ -464,7 +464,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getState_or_province_2()
     {
-        return state_or_province_2;
+        return this.state_or_province_2;
     }
 
     public void setState_or_province_2(java.lang.String v)
@@ -474,7 +474,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getZip_or_postal_code_2()
     {
-        return zip_or_postal_code_2;
+        return this.zip_or_postal_code_2;
     }
 
     public void setZip_or_postal_code_2(java.lang.String v)
@@ -484,7 +484,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getState_or_province_deputy_for()
     {
-        return state_or_province_deputy_for;
+        return this.state_or_province_deputy_for;
     }
 
     public void setState_or_province_deputy_for(java.lang.String v)
@@ -494,7 +494,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getDeputy_for()
     {
-        return deputy_for;
+        return this.deputy_for;
     }
 
     public void setDeputy_for(java.lang.String v)
@@ -504,7 +504,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getZip_or_postal_code_deputy_for()
     {
-        return zip_or_postal_code_deputy_for;
+        return this.zip_or_postal_code_deputy_for;
     }
 
     public void setZip_or_postal_code_deputy_for(java.lang.String v)
@@ -514,7 +514,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getDeputy_for_2()
     {
-        return deputy_for_2;
+        return this.deputy_for_2;
     }
 
     public void setDeputy_for_2(java.lang.String v)
@@ -524,7 +524,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getDeputy_for_legal_name()
     {
-        return deputy_for_legal_name;
+        return this.deputy_for_legal_name;
     }
 
     public void setDeputy_for_legal_name(java.lang.String v)
@@ -534,7 +534,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getState_or_province_legal_name()
     {
-        return state_or_province_legal_name;
+        return this.state_or_province_legal_name;
     }
 
     public void setState_or_province_legal_name(java.lang.String v)
@@ -544,7 +544,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getLegal_name_2()
     {
-        return legal_name_2;
+        return this.legal_name_2;
     }
 
     public void setLegal_name_2(java.lang.String v)
@@ -554,7 +554,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getZip_or_postal_code_legal_name()
     {
-        return zip_or_postal_code_legal_name;
+        return this.zip_or_postal_code_legal_name;
     }
 
     public void setZip_or_postal_code_legal_name(java.lang.String v)
@@ -564,7 +564,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getLegal_name_3()
     {
-        return legal_name_3;
+        return this.legal_name_3;
     }
 
     public void setLegal_name_3(java.lang.String v)
@@ -574,7 +574,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getDeputy_for_street_address()
     {
-        return deputy_for_street_address;
+        return this.deputy_for_street_address;
     }
 
     public void setDeputy_for_street_address(java.lang.String v)
@@ -584,7 +584,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getState_or_province_street_address()
     {
-        return state_or_province_street_address;
+        return this.state_or_province_street_address;
     }
 
     public void setState_or_province_street_address(java.lang.String v)
@@ -594,7 +594,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getStreet_address_5()
     {
-        return street_address_5;
+        return this.street_address_5;
     }
 
     public void setStreet_address_5(java.lang.String v)
@@ -604,7 +604,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getZip_or_postal_code_street_address()
     {
-        return zip_or_postal_code_street_address;
+        return this.zip_or_postal_code_street_address;
     }
 
     public void setZip_or_postal_code_street_address(java.lang.String v)
@@ -614,7 +614,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getStreet_address_6()
     {
-        return street_address_6;
+        return this.street_address_6;
     }
 
     public void setStreet_address_6(java.lang.String v)
@@ -624,7 +624,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getDeputy_for_city()
     {
-        return deputy_for_city;
+        return this.deputy_for_city;
     }
 
     public void setDeputy_for_city(java.lang.String v)
@@ -634,7 +634,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getState_or_province_3()
     {
-        return state_or_province_3;
+        return this.state_or_province_3;
     }
 
     public void setState_or_province_3(java.lang.String v)
@@ -644,7 +644,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getZip_or_postal_code_3()
     {
-        return zip_or_postal_code_3;
+        return this.zip_or_postal_code_3;
     }
 
     public void setZip_or_postal_code_3(java.lang.String v)
@@ -654,7 +654,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getDeputy_for_home_telephone()
     {
-        return deputy_for_home_telephone;
+        return this.deputy_for_home_telephone;
     }
 
     public void setDeputy_for_home_telephone(java.lang.String v)
@@ -664,7 +664,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getAlternate_phone_3()
     {
-        return alternate_phone_3;
+        return this.alternate_phone_3;
     }
 
     public void setAlternate_phone_3(java.lang.String v)
@@ -674,7 +674,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getZip_or_postal_code_alternate_phone_2()
     {
-        return zip_or_postal_code_alternate_phone_2;
+        return this.zip_or_postal_code_alternate_phone_2;
     }
 
     public void setZip_or_postal_code_alternate_phone_2(java.lang.String v)
@@ -684,7 +684,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getAlternate_phone_4()
     {
-        return alternate_phone_4;
+        return this.alternate_phone_4;
     }
 
     public void setAlternate_phone_4(java.lang.String v)
@@ -694,7 +694,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getDeputy_for_internet_or_e_mail_address_required_if_available()
     {
-        return deputy_for_internet_or_e_mail_address_required_if_available;
+        return this.deputy_for_internet_or_e_mail_address_required_if_available;
     }
 
     public void setDeputy_for_internet_or_e_mail_address_required_if_available(java.lang.String v)
@@ -704,7 +704,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getAlternate_phone_internet_or_e_mail_address_required_if_available_2()
     {
-        return alternate_phone_internet_or_e_mail_address_required_if_available_2;
+        return this.alternate_phone_internet_or_e_mail_address_required_if_available_2;
     }
 
     public void setAlternate_phone_internet_or_e_mail_address_required_if_available_2(java.lang.String v)
@@ -714,7 +714,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getInternet_or_e_mail_address_required_if_available_2()
     {
-        return internet_or_e_mail_address_required_if_available_2;
+        return this.internet_or_e_mail_address_required_if_available_2;
     }
 
     public void setInternet_or_e_mail_address_required_if_available_2(java.lang.String v)
@@ -724,7 +724,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getMembership_2()
     {
-        return membership_2;
+        return this.membership_2;
     }
 
     public void setMembership_2(java.lang.String v)
@@ -734,7 +734,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getDeputy_for_sca_name()
     {
-        return deputy_for_sca_name;
+        return this.deputy_for_sca_name;
     }
 
     public void setDeputy_for_sca_name(java.lang.String v)
@@ -744,7 +744,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getAlternate_phone_sca_name_2()
     {
-        return alternate_phone_sca_name_2;
+        return this.alternate_phone_sca_name_2;
     }
 
     public void setAlternate_phone_sca_name_2(java.lang.String v)
@@ -754,7 +754,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getSca_name_2()
     {
-        return sca_name_2;
+        return this.sca_name_2;
     }
 
     public void setSca_name_2(java.lang.String v)
@@ -764,7 +764,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getExp_date_2()
     {
-        return exp_date_2;
+        return this.exp_date_2;
     }
 
     public void setExp_date_2(java.lang.String v)
@@ -774,7 +774,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getAlternate_phone_deputy_for()
     {
-        return alternate_phone_deputy_for;
+        return this.alternate_phone_deputy_for;
     }
 
     public void setAlternate_phone_deputy_for(java.lang.String v)
@@ -784,7 +784,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getDeputy_for_3()
     {
-        return deputy_for_3;
+        return this.deputy_for_3;
     }
 
     public void setDeputy_for_3(java.lang.String v)
@@ -794,7 +794,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getExp_date_deputy_for()
     {
-        return exp_date_deputy_for;
+        return this.exp_date_deputy_for;
     }
 
     public void setExp_date_deputy_for(java.lang.String v)
@@ -804,7 +804,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getDeputy_for_4()
     {
-        return deputy_for_4;
+        return this.deputy_for_4;
     }
 
     public void setDeputy_for_4(java.lang.String v)
@@ -814,7 +814,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getDeputy_for_legal_name_2()
     {
-        return deputy_for_legal_name_2;
+        return this.deputy_for_legal_name_2;
     }
 
     public void setDeputy_for_legal_name_2(java.lang.String v)
@@ -824,7 +824,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getAlternate_phone_legal_name()
     {
-        return alternate_phone_legal_name;
+        return this.alternate_phone_legal_name;
     }
 
     public void setAlternate_phone_legal_name(java.lang.String v)
@@ -834,7 +834,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getLegal_name_4()
     {
-        return legal_name_4;
+        return this.legal_name_4;
     }
 
     public void setLegal_name_4(java.lang.String v)
@@ -844,7 +844,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getExp_date_legal_name()
     {
-        return exp_date_legal_name;
+        return this.exp_date_legal_name;
     }
 
     public void setExp_date_legal_name(java.lang.String v)
@@ -854,7 +854,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getLegal_name_5()
     {
-        return legal_name_5;
+        return this.legal_name_5;
     }
 
     public void setLegal_name_5(java.lang.String v)
@@ -864,7 +864,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getDeputy_for_street_address_2()
     {
-        return deputy_for_street_address_2;
+        return this.deputy_for_street_address_2;
     }
 
     public void setDeputy_for_street_address_2(java.lang.String v)
@@ -874,7 +874,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getAlternate_phone_street_address()
     {
-        return alternate_phone_street_address;
+        return this.alternate_phone_street_address;
     }
 
     public void setAlternate_phone_street_address(java.lang.String v)
@@ -884,7 +884,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getStreet_address_7()
     {
-        return street_address_7;
+        return this.street_address_7;
     }
 
     public void setStreet_address_7(java.lang.String v)
@@ -894,7 +894,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getExp_date_street_address()
     {
-        return exp_date_street_address;
+        return this.exp_date_street_address;
     }
 
     public void setExp_date_street_address(java.lang.String v)
@@ -904,7 +904,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getStreet_address_8()
     {
-        return street_address_8;
+        return this.street_address_8;
     }
 
     public void setStreet_address_8(java.lang.String v)
@@ -914,7 +914,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getDeputy_for_city_2()
     {
-        return deputy_for_city_2;
+        return this.deputy_for_city_2;
     }
 
     public void setDeputy_for_city_2(java.lang.String v)
@@ -924,7 +924,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getState_or_province_4()
     {
-        return state_or_province_4;
+        return this.state_or_province_4;
     }
 
     public void setState_or_province_4(java.lang.String v)
@@ -934,7 +934,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getZip_or_postal_code_4()
     {
-        return zip_or_postal_code_4;
+        return this.zip_or_postal_code_4;
     }
 
     public void setZip_or_postal_code_4(java.lang.String v)
@@ -944,7 +944,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getDeputy_for_home_telephone_2()
     {
-        return deputy_for_home_telephone_2;
+        return this.deputy_for_home_telephone_2;
     }
 
     public void setDeputy_for_home_telephone_2(java.lang.String v)
@@ -954,7 +954,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getAlternate_phone_5()
     {
-        return alternate_phone_5;
+        return this.alternate_phone_5;
     }
 
     public void setAlternate_phone_5(java.lang.String v)
@@ -964,7 +964,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getZip_or_postal_code_alternate_phone_3()
     {
-        return zip_or_postal_code_alternate_phone_3;
+        return this.zip_or_postal_code_alternate_phone_3;
     }
 
     public void setZip_or_postal_code_alternate_phone_3(java.lang.String v)
@@ -974,7 +974,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getAlternate_phone_6()
     {
-        return alternate_phone_6;
+        return this.alternate_phone_6;
     }
 
     public void setAlternate_phone_6(java.lang.String v)
@@ -984,7 +984,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getDeputy_for_internet_or_e_mail_address_required_if_available_2()
     {
-        return deputy_for_internet_or_e_mail_address_required_if_available_2;
+        return this.deputy_for_internet_or_e_mail_address_required_if_available_2;
     }
 
     public void setDeputy_for_internet_or_e_mail_address_required_if_available_2(java.lang.String v)
@@ -994,7 +994,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getAlternate_phone_internet_or_e_mail_address_required_if_available_3()
     {
-        return alternate_phone_internet_or_e_mail_address_required_if_available_3;
+        return this.alternate_phone_internet_or_e_mail_address_required_if_available_3;
     }
 
     public void setAlternate_phone_internet_or_e_mail_address_required_if_available_3(java.lang.String v)
@@ -1004,7 +1004,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getInternet_or_e_mail_address_required_if_available_3()
     {
-        return internet_or_e_mail_address_required_if_available_3;
+        return this.internet_or_e_mail_address_required_if_available_3;
     }
 
     public void setInternet_or_e_mail_address_required_if_available_3(java.lang.String v)
@@ -1014,7 +1014,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getMembership_3()
     {
-        return membership_3;
+        return this.membership_3;
     }
 
     public void setMembership_3(java.lang.String v)
@@ -1024,7 +1024,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getDeputy_for_sca_name_2()
     {
-        return deputy_for_sca_name_2;
+        return this.deputy_for_sca_name_2;
     }
 
     public void setDeputy_for_sca_name_2(java.lang.String v)
@@ -1034,7 +1034,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getAlternate_phone_sca_name_3()
     {
-        return alternate_phone_sca_name_3;
+        return this.alternate_phone_sca_name_3;
     }
 
     public void setAlternate_phone_sca_name_3(java.lang.String v)
@@ -1044,7 +1044,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getSca_name_3()
     {
-        return sca_name_3;
+        return this.sca_name_3;
     }
 
     public void setSca_name_3(java.lang.String v)
@@ -1054,7 +1054,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.String getExp_date_3()
     {
-        return exp_date_3;
+        return this.exp_date_3;
     }
 
     public void setExp_date_3(java.lang.String v)
@@ -1064,7 +1064,7 @@ public class CONTACT_INFO_1Bean
 
     public java.lang.Double get_1()
     {
-        return _1;
+        return this._1;
     }
 
     public void set_1(java.lang.Double v)

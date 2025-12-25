@@ -49,7 +49,7 @@ public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
 
         try
         {
-            journalRepository.upsertTransaction(transaction);
+            this.journalRepository.upsertTransaction(transaction);
             return transaction;
         }
         catch (SQLException ex)

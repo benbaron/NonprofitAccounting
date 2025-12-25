@@ -68,7 +68,7 @@ public class LedgerImportService
         Objects.requireNonNull(workbookFile, "workbookFile");
         Objects.requireNonNull(sheetName, "sheetName");
 
-        LedgerQuarter quarter = sheetImporter.importQuarter(workbookFile, sheetName, translation);
+        LedgerQuarter quarter = this.sheetImporter.importQuarter(workbookFile, sheetName, translation);
         if (quarter == null || quarter.getRows().isEmpty())
         {
             return Collections.emptyList();
@@ -83,8 +83,8 @@ public class LedgerImportService
                 continue;
             }
 
-            AccountingTransaction transaction = mapper.mapRowToTransaction(row, quarter.getSheetName());
-            AccountingTransaction saved = persistenceGateway.saveTransactionWithEntries(transaction);
+            AccountingTransaction transaction = this.mapper.mapRowToTransaction(row, quarter.getSheetName());
+            AccountingTransaction saved = this.persistenceGateway.saveTransactionWithEntries(transaction);
             if (saved != null)
             {
                 persisted.add(saved);

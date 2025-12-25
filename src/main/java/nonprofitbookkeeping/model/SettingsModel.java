@@ -115,7 +115,7 @@ public class SettingsModel
 
                 public void setRole(String role)
                 {
-                        this.username = username;
+                        this.username = this.username;
                         this.role = role;
                 }
         }

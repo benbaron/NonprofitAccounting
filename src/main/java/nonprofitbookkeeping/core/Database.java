@@ -29,7 +29,7 @@ public final class Database {
         return INSTANCE;
     }
     public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(url, user, pass);
+        return DriverManager.getConnection(this.url, this.user, this.pass);
     }
 
     public void ensureSchema() throws SQLException {

@@ -15,7 +15,7 @@ class CompanyPersistenceTest {
 
     @Test
     void accountsPersistAndReloadWithParentLinks() throws Exception {
-        Path dbPath = tempDir.resolve("company-db");
+        Path dbPath = this.tempDir.resolve("company-db");
         Database.init(dbPath);
         Database.get().ensureSchema();
 

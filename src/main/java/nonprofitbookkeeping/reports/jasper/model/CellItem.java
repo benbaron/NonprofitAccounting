@@ -20,21 +20,21 @@ public final class CellItem
 
     public int row()
     {
-        return row;
+        return this.row;
     }
 
     public int col()
     {
-        return col;
+        return this.col;
     }
 
     public boolean isDynamic()
     {
-        return dynamic;
+        return this.dynamic;
     }
 
     public String fieldName()
     {
-        return fieldName;
+        return this.fieldName;
     }
 }

@@ -78,7 +78,7 @@ public class JRXmlLoader
 	 */
 	public JasperReportsContext getJasperReportsContext()
 	{
-		return jasperReportsContext;
+		return this.jasperReportsContext;
 	}
 
 
@@ -159,11 +159,11 @@ public class JRXmlLoader
 	public JasperDesign loadXML(InputStream is) throws JRException
 	{
 		byte[] data = JRLoader.loadBytes(is);
-		List<ReportLoader> loaders = jasperReportsContext.getExtensions(ReportLoader.class);
+		List<ReportLoader> loaders = this.jasperReportsContext.getExtensions(ReportLoader.class);
 		for (ReportLoader reportLoader : loaders)
 		{
 			//TODO legacyxml ignoreConsistencyProblems
-			Optional<JasperDesign> report = reportLoader.loadReport(jasperReportsContext, data);
+			Optional<JasperDesign> report = reportLoader.loadReport(this.jasperReportsContext, data);
 			if (report.isPresent())
 			{
 				return report.get();
@@ -178,7 +178,7 @@ public class JRXmlLoader
 	 * @return the ignoreConsistencyProblems flag.
 	 */
 	public boolean isIgnoreConsistencyProblems() {
-		return ignoreConsistencyProblems;
+		return this.ignoreConsistencyProblems;
 	}
 	
 	/**

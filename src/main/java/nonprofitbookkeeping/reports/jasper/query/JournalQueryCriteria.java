@@ -171,21 +171,21 @@ public class JournalQueryCriteria
         public String toString()
         {
                 return "JournalQueryCriteria{" +
-                        "transactionType='" + transactionType + '\'' +
-                        ", startDate=" + startDate +
-                        ", endDate=" + endDate +
-                        ", accountNumbers=" + accountNumbers +
-                        ", accountMatchMode=" + accountMatchMode +
-                        ", memoContains='" + memoContains + '\'' +
-                        ", infoEquals=" + infoEquals +
+                        "transactionType='" + this.transactionType + '\'' +
+                        ", startDate=" + this.startDate +
+                        ", endDate=" + this.endDate +
+                        ", accountNumbers=" + this.accountNumbers +
+                        ", accountMatchMode=" + this.accountMatchMode +
+                        ", memoContains='" + this.memoContains + '\'' +
+                        ", infoEquals=" + this.infoEquals +
                         '}';
         }
 
         @Override
         public int hashCode()
         {
-                return Objects.hash(transactionType, startDate, endDate, accountNumbers,
-                        accountMatchMode, memoContains, infoEquals, customPredicate);
+                return Objects.hash(this.transactionType, this.startDate, this.endDate, this.accountNumbers,
+                        this.accountMatchMode, this.memoContains, this.infoEquals, this.customPredicate);
         }
 
         @Override

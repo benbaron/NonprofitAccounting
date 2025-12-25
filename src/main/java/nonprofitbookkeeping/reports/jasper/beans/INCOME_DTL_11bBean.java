@@ -187,7 +187,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.Double getIncome_dtl_11b_r2c3()
     {
-        return income_dtl_11b_r2c3;
+        return this.income_dtl_11b_r2c3;
     }
 
     public void setIncome_dtl_11b_r2c3(java.lang.Double v)
@@ -197,7 +197,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.Double getContents_b59()
     {
-        return contents_b59;
+        return this.contents_b59;
     }
 
     public void setContents_b59(java.lang.Double v)
@@ -207,7 +207,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.Double getContents_e_3()
     {
-        return contents_e_3;
+        return this.contents_e_3;
     }
 
     public void setContents_e_3(java.lang.Double v)
@@ -217,7 +217,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.Double getContents_e_4()
     {
-        return contents_e_4;
+        return this.contents_e_4;
     }
 
     public void setContents_e_4(java.lang.Double v)
@@ -227,7 +227,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getIncome_detail_part_2()
     {
-        return income_detail_part_2;
+        return this.income_detail_part_2;
     }
 
     public void setIncome_detail_part_2(java.lang.String v)
@@ -237,7 +237,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getDo_not_include_cash_box_start_up_money_in_event_income()
     {
-        return do_not_include_cash_box_start_up_money_in_event_income;
+        return this.do_not_include_cash_box_start_up_money_in_event_income;
     }
 
     public void setDo_not_include_cash_box_start_up_money_in_event_income(java.lang.String v)
@@ -247,7 +247,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getDo_not_include_cash_box_start_up_money_in_event_income_2()
     {
-        return do_not_include_cash_box_start_up_money_in_event_income_2;
+        return this.do_not_include_cash_box_start_up_money_in_event_income_2;
     }
 
     public void setDo_not_include_cash_box_start_up_money_in_event_income_2(java.lang.String v)
@@ -257,7 +257,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getDo_not_include_cash_box_start_up_money_in_event_income_3()
     {
-        return do_not_include_cash_box_start_up_money_in_event_income_3;
+        return this.do_not_include_cash_box_start_up_money_in_event_income_3;
     }
 
     public void setDo_not_include_cash_box_start_up_money_in_event_income_3(java.lang.String v)
@@ -267,7 +267,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getEvent_name()
     {
-        return event_name;
+        return this.event_name;
     }
 
     public void setEvent_name(java.lang.String v)
@@ -277,7 +277,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getIncome_dtl_11b_r12c4()
     {
-        return income_dtl_11b_r12c4;
+        return this.income_dtl_11b_r12c4;
     }
 
     public void setIncome_dtl_11b_r12c4(java.lang.String v)
@@ -287,7 +287,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getA_gross_gate_income_nmr()
     {
-        return a_gross_gate_income_nmr;
+        return this.a_gross_gate_income_nmr;
     }
 
     public void setA_gross_gate_income_nmr(java.lang.String v)
@@ -297,7 +297,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getB_total_refunds()
     {
-        return b_total_refunds;
+        return this.b_total_refunds;
     }
 
     public void setB_total_refunds(java.lang.String v)
@@ -307,7 +307,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.Double getA_b_adj_gross_income()
     {
-        return a_b_adj_gross_income;
+        return this.a_b_adj_gross_income;
     }
 
     public void setA_b_adj_gross_income(java.lang.Double v)
@@ -317,7 +317,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getEvent_name_2()
     {
-        return event_name_2;
+        return this.event_name_2;
     }
 
     public void setEvent_name_2(java.lang.String v)
@@ -327,7 +327,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getIncome_dtl_11b_r13c4()
     {
-        return income_dtl_11b_r13c4;
+        return this.income_dtl_11b_r13c4;
     }
 
     public void setIncome_dtl_11b_r13c4(java.lang.String v)
@@ -337,7 +337,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getA_gross_gate_income_nmr_2()
     {
-        return a_gross_gate_income_nmr_2;
+        return this.a_gross_gate_income_nmr_2;
     }
 
     public void setA_gross_gate_income_nmr_2(java.lang.String v)
@@ -347,7 +347,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getB_total_refunds_2()
     {
-        return b_total_refunds_2;
+        return this.b_total_refunds_2;
     }
 
     public void setB_total_refunds_2(java.lang.String v)
@@ -357,7 +357,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.Double getE12_f12()
     {
-        return e12_f12;
+        return this.e12_f12;
     }
 
     public void setE12_f12(java.lang.Double v)
@@ -367,7 +367,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getEvent_name_3()
     {
-        return event_name_3;
+        return this.event_name_3;
     }
 
     public void setEvent_name_3(java.lang.String v)
@@ -377,7 +377,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getIncome_dtl_11b_r14c4()
     {
-        return income_dtl_11b_r14c4;
+        return this.income_dtl_11b_r14c4;
     }
 
     public void setIncome_dtl_11b_r14c4(java.lang.String v)
@@ -387,7 +387,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getA_gross_gate_income_nmr_3()
     {
-        return a_gross_gate_income_nmr_3;
+        return this.a_gross_gate_income_nmr_3;
     }
 
     public void setA_gross_gate_income_nmr_3(java.lang.String v)
@@ -397,7 +397,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getB_total_refunds_3()
     {
-        return b_total_refunds_3;
+        return this.b_total_refunds_3;
     }
 
     public void setB_total_refunds_3(java.lang.String v)
@@ -407,7 +407,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.Double getE13_f13()
     {
-        return e13_f13;
+        return this.e13_f13;
     }
 
     public void setE13_f13(java.lang.Double v)
@@ -417,7 +417,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getEvent_name_4()
     {
-        return event_name_4;
+        return this.event_name_4;
     }
 
     public void setEvent_name_4(java.lang.String v)
@@ -427,7 +427,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getIncome_dtl_11b_r15c4()
     {
-        return income_dtl_11b_r15c4;
+        return this.income_dtl_11b_r15c4;
     }
 
     public void setIncome_dtl_11b_r15c4(java.lang.String v)
@@ -437,7 +437,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getA_gross_gate_income_nmr_4()
     {
-        return a_gross_gate_income_nmr_4;
+        return this.a_gross_gate_income_nmr_4;
     }
 
     public void setA_gross_gate_income_nmr_4(java.lang.String v)
@@ -447,7 +447,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getB_total_refunds_4()
     {
-        return b_total_refunds_4;
+        return this.b_total_refunds_4;
     }
 
     public void setB_total_refunds_4(java.lang.String v)
@@ -457,7 +457,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.Double getE14_f14()
     {
-        return e14_f14;
+        return this.e14_f14;
     }
 
     public void setE14_f14(java.lang.Double v)
@@ -467,7 +467,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getEvent_name_5()
     {
-        return event_name_5;
+        return this.event_name_5;
     }
 
     public void setEvent_name_5(java.lang.String v)
@@ -477,7 +477,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getIncome_dtl_11b_r16c4()
     {
-        return income_dtl_11b_r16c4;
+        return this.income_dtl_11b_r16c4;
     }
 
     public void setIncome_dtl_11b_r16c4(java.lang.String v)
@@ -487,7 +487,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getA_gross_gate_income_nmr_5()
     {
-        return a_gross_gate_income_nmr_5;
+        return this.a_gross_gate_income_nmr_5;
     }
 
     public void setA_gross_gate_income_nmr_5(java.lang.String v)
@@ -497,7 +497,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getB_total_refunds_5()
     {
-        return b_total_refunds_5;
+        return this.b_total_refunds_5;
     }
 
     public void setB_total_refunds_5(java.lang.String v)
@@ -507,7 +507,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.Double getE15_f15()
     {
-        return e15_f15;
+        return this.e15_f15;
     }
 
     public void setE15_f15(java.lang.Double v)
@@ -517,7 +517,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getEvent_name_6()
     {
-        return event_name_6;
+        return this.event_name_6;
     }
 
     public void setEvent_name_6(java.lang.String v)
@@ -527,7 +527,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getIncome_dtl_11b_r17c4()
     {
-        return income_dtl_11b_r17c4;
+        return this.income_dtl_11b_r17c4;
     }
 
     public void setIncome_dtl_11b_r17c4(java.lang.String v)
@@ -537,7 +537,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getA_gross_gate_income_nmr_6()
     {
-        return a_gross_gate_income_nmr_6;
+        return this.a_gross_gate_income_nmr_6;
     }
 
     public void setA_gross_gate_income_nmr_6(java.lang.String v)
@@ -547,7 +547,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getB_total_refunds_6()
     {
-        return b_total_refunds_6;
+        return this.b_total_refunds_6;
     }
 
     public void setB_total_refunds_6(java.lang.String v)
@@ -557,7 +557,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.Double getE16_f16()
     {
-        return e16_f16;
+        return this.e16_f16;
     }
 
     public void setE16_f16(java.lang.Double v)
@@ -567,7 +567,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getEvent_name_7()
     {
-        return event_name_7;
+        return this.event_name_7;
     }
 
     public void setEvent_name_7(java.lang.String v)
@@ -577,7 +577,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getIncome_dtl_11b_r18c4()
     {
-        return income_dtl_11b_r18c4;
+        return this.income_dtl_11b_r18c4;
     }
 
     public void setIncome_dtl_11b_r18c4(java.lang.String v)
@@ -587,7 +587,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getA_gross_gate_income_nmr_7()
     {
-        return a_gross_gate_income_nmr_7;
+        return this.a_gross_gate_income_nmr_7;
     }
 
     public void setA_gross_gate_income_nmr_7(java.lang.String v)
@@ -597,7 +597,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getB_total_refunds_7()
     {
-        return b_total_refunds_7;
+        return this.b_total_refunds_7;
     }
 
     public void setB_total_refunds_7(java.lang.String v)
@@ -607,7 +607,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.Double getE17_f17()
     {
-        return e17_f17;
+        return this.e17_f17;
     }
 
     public void setE17_f17(java.lang.Double v)
@@ -617,7 +617,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getEvent_name_8()
     {
-        return event_name_8;
+        return this.event_name_8;
     }
 
     public void setEvent_name_8(java.lang.String v)
@@ -627,7 +627,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getIncome_dtl_11b_r19c4()
     {
-        return income_dtl_11b_r19c4;
+        return this.income_dtl_11b_r19c4;
     }
 
     public void setIncome_dtl_11b_r19c4(java.lang.String v)
@@ -637,7 +637,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getA_gross_gate_income_nmr_8()
     {
-        return a_gross_gate_income_nmr_8;
+        return this.a_gross_gate_income_nmr_8;
     }
 
     public void setA_gross_gate_income_nmr_8(java.lang.String v)
@@ -647,7 +647,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getB_total_refunds_8()
     {
-        return b_total_refunds_8;
+        return this.b_total_refunds_8;
     }
 
     public void setB_total_refunds_8(java.lang.String v)
@@ -657,7 +657,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.Double getE18_f18()
     {
-        return e18_f18;
+        return this.e18_f18;
     }
 
     public void setE18_f18(java.lang.Double v)
@@ -667,7 +667,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getEvent_name_9()
     {
-        return event_name_9;
+        return this.event_name_9;
     }
 
     public void setEvent_name_9(java.lang.String v)
@@ -677,7 +677,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getIncome_dtl_11b_r20c4()
     {
-        return income_dtl_11b_r20c4;
+        return this.income_dtl_11b_r20c4;
     }
 
     public void setIncome_dtl_11b_r20c4(java.lang.String v)
@@ -687,7 +687,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getA_gross_gate_income_nmr_9()
     {
-        return a_gross_gate_income_nmr_9;
+        return this.a_gross_gate_income_nmr_9;
     }
 
     public void setA_gross_gate_income_nmr_9(java.lang.String v)
@@ -697,7 +697,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getB_total_refunds_9()
     {
-        return b_total_refunds_9;
+        return this.b_total_refunds_9;
     }
 
     public void setB_total_refunds_9(java.lang.String v)
@@ -707,7 +707,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.Double getE19_f19()
     {
-        return e19_f19;
+        return this.e19_f19;
     }
 
     public void setE19_f19(java.lang.Double v)
@@ -717,7 +717,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getEvent_name_10()
     {
-        return event_name_10;
+        return this.event_name_10;
     }
 
     public void setEvent_name_10(java.lang.String v)
@@ -727,7 +727,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getIncome_dtl_11b_r21c4()
     {
-        return income_dtl_11b_r21c4;
+        return this.income_dtl_11b_r21c4;
     }
 
     public void setIncome_dtl_11b_r21c4(java.lang.String v)
@@ -737,7 +737,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getA_gross_gate_income_nmr_10()
     {
-        return a_gross_gate_income_nmr_10;
+        return this.a_gross_gate_income_nmr_10;
     }
 
     public void setA_gross_gate_income_nmr_10(java.lang.String v)
@@ -747,7 +747,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getB_total_refunds_10()
     {
-        return b_total_refunds_10;
+        return this.b_total_refunds_10;
     }
 
     public void setB_total_refunds_10(java.lang.String v)
@@ -757,7 +757,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.Double getE20_f20()
     {
-        return e20_f20;
+        return this.e20_f20;
     }
 
     public void setE20_f20(java.lang.Double v)
@@ -767,7 +767,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getEvent_name_11()
     {
-        return event_name_11;
+        return this.event_name_11;
     }
 
     public void setEvent_name_11(java.lang.String v)
@@ -777,7 +777,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getIncome_dtl_11b_r22c4()
     {
-        return income_dtl_11b_r22c4;
+        return this.income_dtl_11b_r22c4;
     }
 
     public void setIncome_dtl_11b_r22c4(java.lang.String v)
@@ -787,7 +787,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getA_gross_gate_income_nmr_11()
     {
-        return a_gross_gate_income_nmr_11;
+        return this.a_gross_gate_income_nmr_11;
     }
 
     public void setA_gross_gate_income_nmr_11(java.lang.String v)
@@ -797,7 +797,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getB_total_refunds_11()
     {
-        return b_total_refunds_11;
+        return this.b_total_refunds_11;
     }
 
     public void setB_total_refunds_11(java.lang.String v)
@@ -807,7 +807,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.Double getE21_f21()
     {
-        return e21_f21;
+        return this.e21_f21;
     }
 
     public void setE21_f21(java.lang.Double v)
@@ -817,7 +817,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getEvent_name_12()
     {
-        return event_name_12;
+        return this.event_name_12;
     }
 
     public void setEvent_name_12(java.lang.String v)
@@ -827,7 +827,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getIncome_dtl_11b_r23c4()
     {
-        return income_dtl_11b_r23c4;
+        return this.income_dtl_11b_r23c4;
     }
 
     public void setIncome_dtl_11b_r23c4(java.lang.String v)
@@ -837,7 +837,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getA_gross_gate_income_nmr_12()
     {
-        return a_gross_gate_income_nmr_12;
+        return this.a_gross_gate_income_nmr_12;
     }
 
     public void setA_gross_gate_income_nmr_12(java.lang.String v)
@@ -847,7 +847,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getB_total_refunds_12()
     {
-        return b_total_refunds_12;
+        return this.b_total_refunds_12;
     }
 
     public void setB_total_refunds_12(java.lang.String v)
@@ -857,7 +857,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.Double getE22_f22()
     {
-        return e22_f22;
+        return this.e22_f22;
     }
 
     public void setE22_f22(java.lang.Double v)
@@ -867,7 +867,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getEvent_name_13()
     {
-        return event_name_13;
+        return this.event_name_13;
     }
 
     public void setEvent_name_13(java.lang.String v)
@@ -877,7 +877,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getIncome_dtl_11b_r24c4()
     {
-        return income_dtl_11b_r24c4;
+        return this.income_dtl_11b_r24c4;
     }
 
     public void setIncome_dtl_11b_r24c4(java.lang.String v)
@@ -887,7 +887,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getA_gross_gate_income_nmr_13()
     {
-        return a_gross_gate_income_nmr_13;
+        return this.a_gross_gate_income_nmr_13;
     }
 
     public void setA_gross_gate_income_nmr_13(java.lang.String v)
@@ -897,7 +897,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getB_total_refunds_13()
     {
-        return b_total_refunds_13;
+        return this.b_total_refunds_13;
     }
 
     public void setB_total_refunds_13(java.lang.String v)
@@ -907,7 +907,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.Double getE23_f23()
     {
-        return e23_f23;
+        return this.e23_f23;
     }
 
     public void setE23_f23(java.lang.Double v)
@@ -917,7 +917,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getEvent_name_14()
     {
-        return event_name_14;
+        return this.event_name_14;
     }
 
     public void setEvent_name_14(java.lang.String v)
@@ -927,7 +927,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getIncome_dtl_11b_r25c4()
     {
-        return income_dtl_11b_r25c4;
+        return this.income_dtl_11b_r25c4;
     }
 
     public void setIncome_dtl_11b_r25c4(java.lang.String v)
@@ -937,7 +937,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getA_gross_gate_income_nmr_14()
     {
-        return a_gross_gate_income_nmr_14;
+        return this.a_gross_gate_income_nmr_14;
     }
 
     public void setA_gross_gate_income_nmr_14(java.lang.String v)
@@ -947,7 +947,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getB_total_refunds_14()
     {
-        return b_total_refunds_14;
+        return this.b_total_refunds_14;
     }
 
     public void setB_total_refunds_14(java.lang.String v)
@@ -957,7 +957,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.Double getE24_f24()
     {
-        return e24_f24;
+        return this.e24_f24;
     }
 
     public void setE24_f24(java.lang.Double v)
@@ -967,7 +967,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getEvent_name_15()
     {
-        return event_name_15;
+        return this.event_name_15;
     }
 
     public void setEvent_name_15(java.lang.String v)
@@ -977,7 +977,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getIncome_dtl_11b_r26c4()
     {
-        return income_dtl_11b_r26c4;
+        return this.income_dtl_11b_r26c4;
     }
 
     public void setIncome_dtl_11b_r26c4(java.lang.String v)
@@ -987,7 +987,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getA_gross_gate_income_nmr_15()
     {
-        return a_gross_gate_income_nmr_15;
+        return this.a_gross_gate_income_nmr_15;
     }
 
     public void setA_gross_gate_income_nmr_15(java.lang.String v)
@@ -997,7 +997,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getB_total_refunds_15()
     {
-        return b_total_refunds_15;
+        return this.b_total_refunds_15;
     }
 
     public void setB_total_refunds_15(java.lang.String v)
@@ -1007,7 +1007,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.Double getE25_f25()
     {
-        return e25_f25;
+        return this.e25_f25;
     }
 
     public void setE25_f25(java.lang.Double v)
@@ -1017,7 +1017,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.Double getE26_f26_total_a()
     {
-        return e26_f26_total_a;
+        return this.e26_f26_total_a;
     }
 
     public void setE26_f26_total_a(java.lang.Double v)
@@ -1027,7 +1027,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getPaypal_scars_income_event_name()
     {
-        return paypal_scars_income_event_name;
+        return this.paypal_scars_income_event_name;
     }
 
     public void setPaypal_scars_income_event_name(java.lang.String v)
@@ -1037,7 +1037,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getPaypal_scars()
     {
-        return paypal_scars;
+        return this.paypal_scars;
     }
 
     public void setPaypal_scars(java.lang.String v)
@@ -1047,7 +1047,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getGross()
     {
-        return gross;
+        return this.gross;
     }
 
     public void setGross(java.lang.String v)
@@ -1057,7 +1057,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getTransaction_fees()
     {
-        return transaction_fees;
+        return this.transaction_fees;
     }
 
     public void setTransaction_fees(java.lang.String v)
@@ -1067,7 +1067,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.Double getActual_amount_received()
     {
-        return actual_amount_received;
+        return this.actual_amount_received;
     }
 
     public void setActual_amount_received(java.lang.Double v)
@@ -1077,7 +1077,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getPaypal_scars_income_event_name_2()
     {
-        return paypal_scars_income_event_name_2;
+        return this.paypal_scars_income_event_name_2;
     }
 
     public void setPaypal_scars_income_event_name_2(java.lang.String v)
@@ -1087,7 +1087,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getPaypal_scars_2()
     {
-        return paypal_scars_2;
+        return this.paypal_scars_2;
     }
 
     public void setPaypal_scars_2(java.lang.String v)
@@ -1097,7 +1097,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getGross_2()
     {
-        return gross_2;
+        return this.gross_2;
     }
 
     public void setGross_2(java.lang.String v)
@@ -1107,7 +1107,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getTransaction_fees_2()
     {
-        return transaction_fees_2;
+        return this.transaction_fees_2;
     }
 
     public void setTransaction_fees_2(java.lang.String v)
@@ -1117,7 +1117,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.Double getE29_f29()
     {
-        return e29_f29;
+        return this.e29_f29;
     }
 
     public void setE29_f29(java.lang.Double v)
@@ -1127,7 +1127,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getPaypal_scars_income_event_name_3()
     {
-        return paypal_scars_income_event_name_3;
+        return this.paypal_scars_income_event_name_3;
     }
 
     public void setPaypal_scars_income_event_name_3(java.lang.String v)
@@ -1137,7 +1137,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getPaypal_scars_3()
     {
-        return paypal_scars_3;
+        return this.paypal_scars_3;
     }
 
     public void setPaypal_scars_3(java.lang.String v)
@@ -1147,7 +1147,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getGross_3()
     {
-        return gross_3;
+        return this.gross_3;
     }
 
     public void setGross_3(java.lang.String v)
@@ -1157,7 +1157,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getTransaction_fees_3()
     {
-        return transaction_fees_3;
+        return this.transaction_fees_3;
     }
 
     public void setTransaction_fees_3(java.lang.String v)
@@ -1167,7 +1167,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.Double getE30_f30()
     {
-        return e30_f30;
+        return this.e30_f30;
     }
 
     public void setE30_f30(java.lang.Double v)
@@ -1177,7 +1177,7 @@ public class INCOME_DTL_11bBean
 
     public java.lang.String getPaypal_scars_income_event_name_4()
     {
-        return paypal_scars_income_event_name_4;
+        return this.paypal_scars_income_event_name_4;
     }
 
     public void setPaypal_scars_income_event_name_4(java.lang.String v)

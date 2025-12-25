@@ -21,19 +21,19 @@ public class LedgerQuarter
 
     public String getSheetName()
     {
-        return sheetName;
+        return this.sheetName;
     }
 
     public List<LedgerRow> getRows()
     {
-        return rows;
+        return this.rows;
     }
 
     public void addRow(LedgerRow row)
     {
         if (row != null && !row.isEffectivelyBlank())
         {
-            rows.add(row);
+            this.rows.add(row);
         }
     }
 }

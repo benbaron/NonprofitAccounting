@@ -52,7 +52,7 @@ class ReportServiceJasperExportTest
 			"Stub generator should create the XLSX file on disk.");
 		assertEquals("stub-balance.xlsx", output.getName(),
 			"File name should use the generator's base name and format extension.");
-		assertEquals(tempDir.toPath(), output.getParentFile().toPath(),
+		assertEquals(this.tempDir.toPath(), output.getParentFile().toPath(),
 			"Output directory should be the injected temporary location.");
 		assertEquals("xlsx", StubGenerator.lastFormat(),
 			"The generator should receive the XLSX format flag.");

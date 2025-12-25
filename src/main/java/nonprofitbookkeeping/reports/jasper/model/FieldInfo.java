@@ -24,16 +24,16 @@ public final class FieldInfo
 
     public String fieldName()
     {
-        return fieldName;
+        return this.fieldName;
     }
 
     public String javaType()
     {
-        return javaType;
+        return this.javaType;
     }
 
     public String excelFormat()
     {
-        return excelFormat;
+        return this.excelFormat;
     }
 }
