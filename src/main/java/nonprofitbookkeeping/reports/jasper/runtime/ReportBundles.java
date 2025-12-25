@@ -235,22 +235,23 @@ public final class ReportBundles
 				description,
 				reportType);
 			
-			Bundle existing = byId.putIfAbsent(id, bundle);
-			
-			if (existing != null)
+			if (byId.containsKey(id))
 			{
-				throw new IllegalStateException(
-					"Duplicate bundle id detected: " + id);
+				LOGGER.warning("Duplicate bundle id detected: " + id +
+					"; keeping first occurrence.");
+				continue;
 			}
 			
-			Bundle previous = byGenerator.put(generator, bundle);
-			
-			if (previous != null)
+			if (byGenerator.containsKey(generator))
 			{
-				throw new IllegalStateException(
-					"Generator " + generator +
-						" is already associated with bundle " + previous.id());
+				LOGGER.warning("Generator " + generator +
+					" is already associated with bundle " +
+					byGenerator.get(generator).id() + "; keeping first.");
+				continue;
 			}
+			
+			byId.put(id, bundle);
+			byGenerator.put(generator, bundle);
 			
 		}
 		

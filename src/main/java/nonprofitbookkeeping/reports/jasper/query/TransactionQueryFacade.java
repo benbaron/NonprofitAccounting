@@ -40,6 +40,12 @@ import java.util.stream.Collectors;
 public class TransactionQueryFacade
 {
 	private final Supplier<List<AccountingTransaction>> transactionSupplier;
+	private String transactionTypeFilter;
+	private LocalDate startDateFilter;
+	private LocalDate endDateFilter;
+	private List<String> accountFilter;
+	private boolean requireAllAccounts;
+	private String memoFilter;
 	
 	/**
 	 * Builds a facade that reads transactions from the current company
@@ -63,6 +69,96 @@ public class TransactionQueryFacade
 		this.transactionSupplier = transactionSupplier == null ?
 			Collections::emptyList : transactionSupplier;
 		
+	}
+	
+	/**
+	 * Filters by transaction info type (e.g., DEPOSIT, EXPENSE).
+	 */
+	public TransactionQueryFacade filterByTransactionType(String type)
+	{
+		this.transactionTypeFilter = type;
+		return this;
+	}
+	
+	/**
+	 * Filters by inclusive date range.
+	 */
+	public TransactionQueryFacade dateRange(LocalDate startDate,
+		LocalDate endDate)
+	{
+		this.startDateFilter = startDate;
+		this.endDateFilter = endDate;
+		return this;
+	}
+	
+	/**
+	 * Filters by account numbers.
+	 */
+	public TransactionQueryFacade accounts(List<String> accounts,
+		boolean requireAll)
+	{
+		this.accountFilter =
+			accounts == null ? Collections.emptyList() : accounts;
+		this.requireAllAccounts = requireAll;
+		return this;
+	}
+	
+	/**
+	 * Filters by memo substring.
+	 */
+	public TransactionQueryFacade memoContains(String memoContains)
+	{
+		this.memoFilter = memoContains;
+		return this;
+	}
+	
+	/**
+	 * Filters a supplied list of transactions according to the configured filters.
+	 */
+	public List<AccountingTransaction> filterTransactions(
+		List<AccountingTransaction> transactions)
+	{
+		
+		if (transactions == null)
+		{
+			return Collections.emptyList();
+		}
+		
+		List<AccountingTransaction> results = new ArrayList<>();
+		
+		for (AccountingTransaction transaction : transactions)
+		{
+			
+			if (transaction == null)
+			{
+				continue;
+			}
+			
+			if (matchesConfiguredFilters(transaction))
+			{
+				results.add(transaction);
+			}
+		}
+		
+		return results;
+	}
+	
+	/**
+	 * Maps the filtered transactions into a new list of beans.
+	 */
+	public <T> List<T> mapToBeans(List<AccountingTransaction> transactions,
+		Function<AccountingTransaction, T> mapper)
+	{
+		
+		if (mapper == null)
+		{
+			return Collections.emptyList();
+		}
+		
+		return filterTransactions(transactions).stream()
+			.map(mapper)
+			.filter(Objects::nonNull)
+			.collect(Collectors.toList());
 	}
 	
 	/**
@@ -294,6 +390,130 @@ public class TransactionQueryFacade
 			.anyMatch(
 				entry -> entry != null && type.equals(entry.getAccountSide()));
 		
+	}
+	
+	private boolean matchesConfiguredFilters(AccountingTransaction transaction)
+	{
+		return matchesTransactionType(transaction) &&
+			matchesConfiguredDate(transaction) &&
+			matchesConfiguredAccounts(transaction) &&
+			matchesConfiguredMemo(transaction);
+	}
+	
+	private boolean matchesTransactionType(AccountingTransaction transaction)
+	{
+		
+		if (this.transactionTypeFilter == null ||
+			this.transactionTypeFilter.isBlank())
+		{
+			return true;
+		}
+		
+		if (transaction.getInfo() == null)
+		{
+			return false;
+		}
+		
+		String infoType = transaction.getInfo().get("transactionType");
+		
+		if (infoType == null)
+		{
+			infoType = transaction.getInfo().get("type");
+		}
+		
+		if (infoType == null)
+		{
+			return false;
+		}
+		
+		return infoType.equalsIgnoreCase(this.transactionTypeFilter);
+	}
+	
+	private boolean matchesConfiguredDate(AccountingTransaction transaction)
+	{
+		
+		if (this.startDateFilter == null && this.endDateFilter == null)
+		{
+			return true;
+		}
+		
+		Long timestamp = transaction.getBookingDateTimestamp();
+		
+		if (timestamp == null || timestamp <= 0)
+		{
+			return false;
+		}
+		
+		LocalDate date = Instant.ofEpochMilli(timestamp)
+			.atZone(ZoneId.systemDefault())
+			.toLocalDate();
+		
+		if (this.startDateFilter != null &&
+			date.isBefore(this.startDateFilter))
+		{
+			return false;
+		}
+		
+		if (this.endDateFilter != null && date.isAfter(this.endDateFilter))
+		{
+			return false;
+		}
+		
+		return true;
+	}
+	
+	private boolean matchesConfiguredAccounts(AccountingTransaction transaction)
+	{
+		
+		if (this.accountFilter == null || this.accountFilter.isEmpty())
+		{
+			return true;
+		}
+		
+		if (transaction.getEntries() == null)
+		{
+			return false;
+		}
+		
+		Set<String> presentAccounts = transaction.getEntries().stream()
+			.filter(Objects::nonNull)
+			.map(AccountingEntry::getAccountNumber)
+			.filter(Objects::nonNull)
+			.collect(Collectors.toSet());
+		
+		if (this.requireAllAccounts)
+		{
+			return presentAccounts.containsAll(this.accountFilter);
+		}
+		
+		for (String account : this.accountFilter)
+		{
+			
+			if (presentAccounts.contains(account))
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	private boolean matchesConfiguredMemo(AccountingTransaction transaction)
+	{
+		
+		if (this.memoFilter == null || this.memoFilter.isBlank())
+		{
+			return true;
+		}
+		
+		String memo = transaction.getMemo();
+		
+		if (memo == null)
+		{
+			return false;
+		}
+		
+		return memo.toLowerCase().contains(this.memoFilter.toLowerCase());
 	}
 	
 	/**
