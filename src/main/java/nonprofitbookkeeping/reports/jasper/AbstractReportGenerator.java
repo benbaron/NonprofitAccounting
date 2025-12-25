@@ -1,16 +1,9 @@
 package nonprofitbookkeeping.reports.jasper;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.reports.jasper.runtime.ReportBundles;
+import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -18,194 +11,210 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
-import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Base class for Jasper report generators.
  */
 public abstract class AbstractReportGenerator
 {
-	private List<?> reportData;
+	private static final String DEFAULT_OUTPUT_DIR =
+		"NonprofitBookkeepingReports";
+	
+	private List<?> reportDataOverride;
+	private boolean reportDataExplicit;
 	
 	/**
-	 * Generate the Jasper report output.
-	 *
-	 * @return JasperPrint instance
-	 * @throws JRException if Jasper fails to compile or fill the report
-	 * @throws IOException if the report template cannot be read
+	 * Subclasses provide the data beans needed for the report.
 	 */
-	public JasperPrint generatePrint() throws JRException, IOException
-	{
-		String reportPath;
-		
-		try
-		{
-			reportPath = getReportPath();
-		}
-		catch (ActionCancelledException | NoFileCreatedException ex)
-		{
-			throw new JRException("Unable to resolve report path", ex);
-		}
-		
-		if (reportPath == null || reportPath.isBlank())
-		{
-			throw new JRException("Report path is required");
-		}
-		
-		JasperReport report;
-		
-		try (InputStream stream = loadReportStream(reportPath))
-		{
-			
-			if (stream != null)
-			{
-				report = JasperCompileManager.compileReport(stream);
-			}
-			else
-			{
-				report = JasperCompileManager.compileReport(reportPath);
-			}
-			
-		}
-		
-		Map<String, Object> parameters = getReportParameters();
-		
-		if (parameters == null)
-		{
-			parameters = Collections.emptyMap();
-		}
-		
-		List<?> data = resolveReportData();
-		JRBeanCollectionDataSource dataSource =
-			new JRBeanCollectionDataSource(data);
-		
-		return JasperFillManager.fillReport(report, parameters, dataSource);
-		
-	}
+	protected abstract List<?> getReportData();
 	
 	/**
-	 * Writes the JasperPrint output to disk using the specified format.
-	 *
-	 * @param format output format, e.g. pdf or xlsx
-	 * @param print JasperPrint instance
-	 * @param baseName base file name without extension
-	 * @return created file
-	 * @throws JRException if export fails
-	 * @throws IOException if file output fails
+	 * Subclasses provide any report parameters for the template.
 	 */
-	public File writeJasperOutput(String format, JasperPrint print,
-		String baseName) throws JRException, IOException
-	{
-		String normalized =
-			format == null ? "pdf" : format.trim().toLowerCase();
-		
-		File outputDirectory = new File(System.getProperty("user.home"),
-			"NonprofitBookkeepingReports");
-		
-		if (!outputDirectory.exists() && !outputDirectory.mkdirs())
-		{
-			throw new IOException(
-				"Unable to create report output directory: " +
-					outputDirectory);
-		}
-		
-		String safeBaseName =
-			baseName == null || baseName.isBlank() ? "report" : baseName;
-		File output =
-			new File(outputDirectory, safeBaseName + "." + normalized);
-		
-		switch (normalized)
-		{
-			case "html" ->
-				JasperExportManager.exportReportToHtmlFile(print,
-					output.getAbsolutePath());
-			case "xlsx" ->
-				exportXlsx(print, output);
-			case "pdf" ->
-				JasperExportManager.exportReportToPdfFile(print,
-					output.getAbsolutePath());
-			default ->
-				throw new JRException("Unsupported Jasper output format: " +
-					normalized);
-		}
-		
-		return output;
-		
-	}
+	protected abstract Map<String, Object> getReportParameters();
 	
+	/**
+	 * Subclasses provide the JRXML path for the report.
+	 */
+	protected abstract String getReportPath()
+		throws ActionCancelledException, NoFileCreatedException;
+	
+	/**
+	 * Base name used when writing output files.
+	 */
+	public abstract String getBaseName();
+	
+	/**
+	 * Allows callers to provide report data directly rather than generating
+	 * it through {@link #getReportData()}.
+	 */
 	public void setReportData(List<?> reportData)
 	{
 		
 		if (reportData == null)
 		{
-			this.reportData = null;
+			this.reportDataOverride = null;
+			this.reportDataExplicit = false;
 			return;
 		}
 		
-		this.reportData =
-			Collections.unmodifiableList(new ArrayList<>(reportData));
+		this.reportDataOverride = List.copyOf(reportData);
+		this.reportDataExplicit = true;
 		
 	}
 	
+	/**
+	 * Resolve the effective report data, preferring explicitly supplied beans.
+	 */
 	protected List<?> resolveReportData()
 	{
 		
-		if (this.reportData != null)
+		if (this.reportDataExplicit)
 		{
-			return this.reportData;
+			return this.reportDataOverride == null ?
+				Collections.emptyList() : this.reportDataOverride;
 		}
 		
 		List<?> data = getReportData();
-		
-		if (data == null)
-		{
-			return Collections.emptyList();
-		}
-		
-		return Collections.unmodifiableList(new ArrayList<>(data));
+		return data == null ? Collections.emptyList() : List.copyOf(data);
 		
 	}
 	
+	/**
+	 * Convenience helper for templates packaged alongside metadata bundles.
+	 */
 	protected String bundledReportPath()
 	{
-		return ReportBundles.bundleForGenerator(getClass()).jrxmlResource();
+		
+		try
+		{
+			ReportBundles.Bundle bundle =
+				ReportBundles.bundleForGenerator(getClass());
+			return bundle.jrxmlResource();
+		}
+		catch (RuntimeException e)
+		{
+			return "nonprofitbookkeeping/reports/" + getBaseName() + ".jrxml";
+		}
 		
 	}
 	
-	protected abstract List<?> getReportData();
-	
-	protected abstract Map<String, Object> getReportParameters();
-	
-	protected abstract String getReportPath()
-		throws ActionCancelledException, NoFileCreatedException;
-	
-	public abstract String getBaseName();
-	
-	private InputStream loadReportStream(String reportPath)
+	/**
+	 * Compile and fill the Jasper template for this generator.
+	 */
+	public JasperPrint generatePrint()
+		throws JRException, IOException, ActionCancelledException,
+		NoFileCreatedException
 	{
-		ClassLoader loader = getClass().getClassLoader();
-		return loader.getResourceAsStream(reportPath);
+		String reportPath = getReportPath();
+		
+		try (InputStream input = openReportStream(reportPath))
+		{
+			JasperReport report = JasperCompileManager.compileReport(input);
+			Map<String, Object> parameters = getReportParameters();
+			
+			if (parameters == null)
+			{
+				parameters = new HashMap<>();
+			}
+			
+			JRDataSource dataSource =
+				new JRBeanCollectionDataSource(resolveReportData());
+			return JasperFillManager.fillReport(report, parameters,
+				dataSource);
+		}
 		
 	}
 	
-	private void exportXlsx(JasperPrint print, File output) throws JRException
+	/**
+	 * Writes the filled Jasper report to disk using the requested format.
+	 */
+	public File writeJasperOutput(String format, JasperPrint print,
+		String baseName) throws JRException, IOException
 	{
-		JRXlsxExporter exporter = new JRXlsxExporter();
-		exporter.setExporterInput(new SimpleExporterInput(print));
-		exporter.setExporterOutput(
-			new SimpleOutputStreamExporterOutput(output));
+		String normalized =
+			(format == null ? "pdf" : format).trim().toLowerCase();
+		File outputDirectory =
+			new File(System.getProperty("user.home"), DEFAULT_OUTPUT_DIR);
 		
-		SimpleXlsxReportConfiguration configuration =
-			new SimpleXlsxReportConfiguration();
-		configuration.setDetectCellType(true);
-		configuration.setCollapseRowSpan(false);
-		exporter.setConfiguration(configuration);
+		if (!outputDirectory.exists() && !outputDirectory.mkdirs())
+		{
+			throw new IOException(
+				"Unable to create output directory: " + outputDirectory);
+		}
 		
-		exporter.exportReport();
+		File outputFile = new File(outputDirectory,
+			baseName + "." + normalized);
+		
+		switch (normalized)
+		{
+			case "pdf":
+				JasperExportManager.exportReportToPdfFile(print,
+					outputFile.getAbsolutePath());
+				break;
+			case "html":
+				JasperExportManager.exportReportToHtmlFile(print,
+					outputFile.getAbsolutePath());
+				break;
+			case "xml":
+				JasperExportManager.exportReportToXmlFile(print,
+					outputFile.getAbsolutePath(), true);
+				break;
+			case "xlsx":
+				JRXlsxExporter exporter = new JRXlsxExporter();
+				exporter.setExporterInput(new SimpleExporterInput(print));
+				exporter.setExporterOutput(
+					new SimpleOutputStreamExporterOutput(outputFile));
+				SimpleXlsxReportConfiguration config =
+					new SimpleXlsxReportConfiguration();
+				config.setDetectCellType(true);
+				exporter.setConfiguration(config);
+				exporter.exportReport();
+				break;
+			default:
+				JasperExportManager.exportReportToPdfFile(print,
+					outputFile.getAbsolutePath());
+		}
+		
+		return outputFile;
 		
 	}
 	
+	private InputStream openReportStream(String reportPath)
+		throws IOException
+	{
+		
+		if (reportPath == null || reportPath.isBlank())
+		{
+			throw new FileNotFoundException(
+				"Report path is not defined for generator " + getClass());
+		}
+		
+		String resourcePath = reportPath.startsWith("/") ?
+			reportPath.substring(1) : reportPath;
+		InputStream input =
+			getClass().getClassLoader().getResourceAsStream(resourcePath);
+		
+		if (input != null)
+		{
+			return input;
+		}
+		
+		return new FileInputStream(reportPath);
+		
+	}
 }

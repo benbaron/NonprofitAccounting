@@ -1,7 +1,7 @@
 package nonprofitbookkeeping.reports;
 
 /**
- * Compatibility wrapper for report metadata.
+ * Compatibility wrapper around {@link nonprofitbookkeeping.reports.jasper.runtime.ReportMetadata}.
  */
 public class ReportMetadata
 	extends nonprofitbookkeeping.reports.jasper.runtime.ReportMetadata
@@ -9,14 +9,11 @@ public class ReportMetadata
 	public ReportMetadata(String reportName, String created, String filePath)
 	{
 		super(reportName, created, filePath);
-		
 	}
 	
-	public ReportMetadata(String string, String format,
-		String nonExistentFilePath, String string2)
+	public ReportMetadata(String reportName, String created, String filePath,
+		String unused)
 	{
-		super(string, format, nonExistentFilePath, string2);
-		
+		super(reportName, created, filePath, unused);
 	}
-	
 }

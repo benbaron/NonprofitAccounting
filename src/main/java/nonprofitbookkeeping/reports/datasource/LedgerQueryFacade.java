@@ -1,21 +1,21 @@
 package nonprofitbookkeeping.reports.datasource;
 
+import nonprofitbookkeeping.model.AccountSide;
+import nonprofitbookkeeping.model.AccountingEntry;
+import nonprofitbookkeeping.model.AccountingTransaction;
+
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
-import nonprofitbookkeeping.model.AccountingEntry;
-import nonprofitbookkeeping.model.AccountingTransaction;
-
 /**
- * Facade for filtering ledger transactions and mapping results into beans.
+ * Filters transactions based on {@link LedgerQueryCriteria}.
  */
 public class LedgerQueryFacade
 {
@@ -25,17 +25,31 @@ public class LedgerQueryFacade
 		Function<AccountingTransaction, T> mapper)
 	{
 		
-		if (transactions == null || mapper == null)
+		if (mapper == null)
 		{
 			return Collections.emptyList();
 		}
 		
+		LedgerQueryCriteria effective =
+			criteria == null ? LedgerQueryCriteria.builder().build() :
+				criteria;
+		
 		List<T> results = new ArrayList<>();
+		
+		if (transactions == null)
+		{
+			return results;
+		}
 		
 		for (AccountingTransaction transaction : transactions)
 		{
 			
-			if (transaction == null || !matches(transaction, criteria))
+			if (transaction == null)
+			{
+				continue;
+			}
+			
+			if (!matches(transaction, effective))
 			{
 				continue;
 			}
@@ -46,7 +60,6 @@ public class LedgerQueryFacade
 			{
 				results.add(mapped);
 			}
-			
 		}
 		
 		return results;
@@ -56,77 +69,39 @@ public class LedgerQueryFacade
 	private boolean matches(AccountingTransaction transaction,
 		LedgerQueryCriteria criteria)
 	{
-		
-		if (criteria == null)
-		{
-			return true;
-		}
-		
-		if (!matchesDate(transaction, criteria.getStartDate(),
-			criteria.getEndDate()))
-		{
-			return false;
-		}
-		
-		if (!matchesMemo(transaction, criteria.getMemoContains()))
-		{
-			return false;
-		}
-		
-		if (!matchesAccounts(transaction, criteria.getAccountNumbers(),
-			criteria.isRequireAllAccounts()))
-		{
-			return false;
-		}
-		
-		if (!matchesSide(transaction, criteria.getTransactionSide()))
-		{
-			return false;
-		}
-		
-		for (var predicate : criteria.getPredicates())
-		{
-			
-			if (!predicate.test(transaction))
-			{
-				return false;
-			}
-			
-		}
-		
-		return true;
-		
+		return matchesDate(transaction, criteria) &&
+			matchesMemo(transaction, criteria.getMemoContains()) &&
+			matchesAccounts(transaction, criteria.getAccountNumbers(),
+				criteria.isRequireAllAccounts()) &&
+			matchesSide(transaction, criteria.getTransactionSide()) &&
+			criteria.getPredicates().stream()
+				.allMatch(predicate -> predicate.test(transaction));
 	}
 	
 	private boolean matchesDate(AccountingTransaction transaction,
-		LocalDate start,
-		LocalDate end)
+		LedgerQueryCriteria criteria)
 	{
-		
-		if (start == null && end == null)
-		{
-			return true;
-		}
-		
 		LocalDate date = resolveDate(transaction);
 		
 		if (date == null)
 		{
-			return false;
+			return criteria.getStartDate() == null &&
+				criteria.getEndDate() == null;
 		}
 		
-		if (start != null && date.isBefore(start))
+		if (criteria.getStartDate() != null &&
+			date.isBefore(criteria.getStartDate()))
 		{
 			return false;
 		}
 		
-		if (end != null && date.isAfter(end))
+		if (criteria.getEndDate() != null &&
+			date.isAfter(criteria.getEndDate()))
 		{
 			return false;
 		}
 		
 		return true;
-		
 	}
 	
 	private LocalDate resolveDate(AccountingTransaction transaction)
@@ -140,22 +115,21 @@ public class LedgerQueryFacade
 				.toLocalDate();
 		}
 		
-		String dateText = transaction.getDate();
+		String date = transaction.getDate();
 		
-		if (dateText == null || dateText.isBlank())
+		if (date == null)
 		{
 			return null;
 		}
 		
 		try
 		{
-			return LocalDate.parse(dateText);
+			return LocalDate.parse(date);
 		}
-		catch (Exception ex)
+		catch (RuntimeException e)
 		{
 			return null;
 		}
-		
 	}
 	
 	private boolean matchesMemo(AccountingTransaction transaction,
@@ -168,57 +142,53 @@ public class LedgerQueryFacade
 		}
 		
 		String memo = transaction.getMemo();
-		
-		if (memo == null)
-		{
-			return false;
-		}
-		
-		return memo.toLowerCase().contains(memoContains.toLowerCase());
-		
+		return memo != null &&
+			memo.toLowerCase().contains(memoContains.toLowerCase());
 	}
 	
 	private boolean matchesAccounts(AccountingTransaction transaction,
-		Set<String> accounts,
+		Set<String> accountNumbers,
 		boolean requireAll)
 	{
 		
-		if (accounts == null || accounts.isEmpty())
+		if (accountNumbers == null || accountNumbers.isEmpty())
 		{
 			return true;
 		}
 		
-		Set<String> present = new HashSet<>();
-		
-		if (transaction.getEntries() != null)
+		if (transaction.getEntries() == null)
 		{
-			
-			for (AccountingEntry entry : transaction.getEntries())
-			{
-				
-				if (entry != null && entry.getAccountNumber() != null)
-				{
-					present.add(entry.getAccountNumber());
-				}
-				
-			}
-			
+			return false;
 		}
+		
+		List<String> present = transaction.getEntries().stream()
+			.filter(Objects::nonNull)
+			.map(AccountingEntry::getAccountNumber)
+			.filter(Objects::nonNull)
+			.toList();
 		
 		if (requireAll)
 		{
-			return present.containsAll(accounts);
+			return present.containsAll(accountNumbers);
 		}
 		
-		return !Collections.disjoint(present, accounts);
+		for (String account : accountNumbers)
+		{
+			
+			if (present.contains(account))
+			{
+				return true;
+			}
+		}
 		
+		return false;
 	}
 	
 	private boolean matchesSide(AccountingTransaction transaction,
-		nonprofitbookkeeping.model.AccountSide side)
+		AccountSide side)
 	{
 		
-		if (side == null || side == nonprofitbookkeeping.model.AccountSide.UNKNOWN)
+		if (side == null || side == AccountSide.UNKNOWN)
 		{
 			return true;
 		}
@@ -231,6 +201,5 @@ public class LedgerQueryFacade
 		return transaction.getEntries().stream()
 			.filter(Objects::nonNull)
 			.anyMatch(entry -> side.equals(entry.getAccountSide()));
-		
 	}
 }
