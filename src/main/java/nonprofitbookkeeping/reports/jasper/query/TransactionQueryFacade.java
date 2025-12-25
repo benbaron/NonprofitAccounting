@@ -44,7 +44,7 @@ public class TransactionQueryFacade
 	private String transactionTypeFilter;
 	private LocalDate startDateFilter;
 	private LocalDate endDateFilter;
-	private List<String> accountFilter;
+	private Set<String> accountNumberFilter;
 	private boolean requireAllAccounts;
 	private String memoFilter;
 	
@@ -81,7 +81,7 @@ public class TransactionQueryFacade
 	 */
 	public TransactionQueryFacade filterByTransactionType(String transactionType)
 	{
-		this.infoTransactionType = transactionType;
+		this.transactionTypeFilter = normalize(transactionType);
 		return this;
 	}
 
@@ -111,51 +111,8 @@ public class TransactionQueryFacade
 	public TransactionQueryFacade accounts(Collection<String> accounts,
 		boolean requireAll)
 	{
-		this.accountFilters = accounts == null ? null : new HashSet<>(accounts);
-		this.requireAllAccountFilters = requireAll;
-		return this;
-	}
-
-	/**
-	 * Filters transactions by memo substring.
-	 *
-	 * @param memoSubstring memo substring to match
-	 * @return this facade for chaining
-	 */
-	public TransactionQueryFacade memoContains(String memoSubstring)
-	{
-		this.memoSubstringFilter = memoSubstring;
-		return this;
-	}
-	
-	/**
-	 * Filters by transaction info type (e.g., DEPOSIT, EXPENSE).
-	 */
-	public TransactionQueryFacade filterByTransactionType(String type)
-	{
-		this.transactionTypeFilter = type;
-		return this;
-	}
-	
-	/**
-	 * Filters by inclusive date range.
-	 */
-	public TransactionQueryFacade dateRange(LocalDate startDate,
-		LocalDate endDate)
-	{
-		this.startDateFilter = startDate;
-		this.endDateFilter = endDate;
-		return this;
-	}
-	
-	/**
-	 * Filters by account numbers.
-	 */
-	public TransactionQueryFacade accounts(List<String> accounts,
-		boolean requireAll)
-	{
-		this.accountFilter =
-			accounts == null ? Collections.emptyList() : accounts;
+		this.accountNumberFilter =
+			accounts == null ? Collections.emptySet() : new HashSet<>(accounts);
 		this.requireAllAccounts = requireAll;
 		return this;
 	}
@@ -165,57 +122,8 @@ public class TransactionQueryFacade
 	 */
 	public TransactionQueryFacade memoContains(String memoContains)
 	{
-		this.memoFilter = memoContains;
+		this.memoFilter = normalize(memoContains);
 		return this;
-	}
-	
-	/**
-	 * Filters a supplied list of transactions according to the configured filters.
-	 */
-	public List<AccountingTransaction> filterTransactions(
-		List<AccountingTransaction> transactions)
-	{
-		
-		if (transactions == null)
-		{
-			return Collections.emptyList();
-		}
-		
-		List<AccountingTransaction> results = new ArrayList<>();
-		
-		for (AccountingTransaction transaction : transactions)
-		{
-			
-			if (transaction == null)
-			{
-				continue;
-			}
-			
-			if (matchesConfiguredFilters(transaction))
-			{
-				results.add(transaction);
-			}
-		}
-		
-		return results;
-	}
-	
-	/**
-	 * Maps the filtered transactions into a new list of beans.
-	 */
-	public <T> List<T> mapToBeans(List<AccountingTransaction> transactions,
-		Function<AccountingTransaction, T> mapper)
-	{
-		
-		if (mapper == null)
-		{
-			return Collections.emptyList();
-		}
-		
-		return filterTransactions(transactions).stream()
-			.map(mapper)
-			.filter(Objects::nonNull)
-			.collect(Collectors.toList());
 	}
 	
 	/**
@@ -264,138 +172,6 @@ public class TransactionQueryFacade
 	}
 
 	/**
-	 * Adds a transaction type filter based on info map entries.
-	 *
-	 * @param transactionType transaction type string
-	 * @return this facade for chaining
-	 */
-	public TransactionQueryFacade filterByTransactionType(String transactionType)
-	{
-		this.transactionTypeFilter = normalize(transactionType);
-		return this;
-		
-	}
-
-	/**
-	 * Filters transactions by booking date range (inclusive).
-	 *
-	 * @param startDate start date or {@code null}
-	 * @param endDate end date or {@code null}
-	 * @return this facade for chaining
-	 */
-	public TransactionQueryFacade dateRange(LocalDate startDate,
-		LocalDate endDate)
-	{
-		this.startDateFilter = startDate;
-		this.endDateFilter = endDate;
-		return this;
-		
-	}
-
-	/**
-	 * Filters transactions by account numbers.
-	 *
-	 * @param accountNumbers account numbers to match
-	 * @param requireAll whether all accounts must be present
-	 * @return this facade for chaining
-	 */
-	public TransactionQueryFacade accounts(Collection<String> accountNumbers,
-		boolean requireAll)
-	{
-		this.accountNumberFilter = accountNumbers == null ?
-			Collections.emptySet() :
-			new HashSet<>(accountNumbers);
-		this.requireAllAccounts = requireAll;
-		return this;
-		
-	}
-
-	/**
-	 * Filters transactions by memo substring.
-	 *
-	 * @param memoSubstring substring to search for
-	 * @return this facade for chaining
-	 */
-	public TransactionQueryFacade memoContains(String memoSubstring)
-	{
-		this.memoFilter = normalize(memoSubstring);
-		return this;
-		
-	}
-
-	/**
-	 * Filters a list of transactions according to the configured criteria.
-	 *
-	 * @param transactions transactions to filter
-	 * @return filtered transactions
-	 */
-	public List<AccountingTransaction> filterTransactions(
-		List<AccountingTransaction> transactions)
-	{
-		
-		if (transactions == null || transactions.isEmpty())
-		{
-			return Collections.emptyList();
-		}
-		
-		List<AccountingTransaction> results = new ArrayList<>();
-		
-		for (AccountingTransaction transaction : transactions)
-		{
-			
-			if (transaction == null)
-			{
-				continue;
-			}
-			
-			if (matchesLegacyFilters(transaction))
-			{
-				results.add(transaction);
-			}
-			
-		}
-		
-		return results;
-		
-	}
-
-	/**
-	 * Filters transactions and maps them to beans using the supplied mapper.
-	 *
-	 * @param transactions transactions to filter
-	 * @param mapper mapping function
-	 * @param <T> bean type
-	 * @return mapped beans
-	 */
-	public <T> List<T> mapToBeans(List<AccountingTransaction> transactions,
-		Function<AccountingTransaction, T> mapper)
-	{
-		
-		if (mapper == null)
-		{
-			return Collections.emptyList();
-		}
-		
-		List<AccountingTransaction> filtered =
-			filterTransactions(transactions);
-		List<T> mapped = new ArrayList<>();
-		
-		for (AccountingTransaction transaction : filtered)
-		{
-			T bean = mapper.apply(transaction);
-			
-			if (bean != null)
-			{
-				mapped.add(bean);
-			}
-			
-		}
-		
-		return mapped;
-		
-	}
-	
-	/**
 	 * Queries and immediately maps the resulting records into bean
 	 * instances.
 	 *
@@ -438,7 +214,7 @@ public class TransactionQueryFacade
 
 		for (AccountingTransaction transaction : transactions)
 		{
-			if (matchesTransactionFilters(transaction))
+			if (transaction != null && matchesConfiguredFilters(transaction))
 			{
 				results.add(transaction);
 			}
@@ -530,16 +306,16 @@ public class TransactionQueryFacade
 		
 	}
 
-	private boolean matchesLegacyFilters(AccountingTransaction transaction)
+	private boolean matchesConfiguredFilters(AccountingTransaction transaction)
 	{
-		return matchesLegacyType(transaction) &&
-			matchesLegacyDate(transaction) &&
-			matchesLegacyAccounts(transaction) &&
-			matchesLegacyMemo(transaction);
+		return matchesTransactionType(transaction) &&
+			matchesConfiguredDate(transaction) &&
+			matchesConfiguredAccounts(transaction) &&
+			matchesConfiguredMemo(transaction);
 		
 	}
 
-	private boolean matchesLegacyType(AccountingTransaction transaction)
+	private boolean matchesTransactionType(AccountingTransaction transaction)
 	{
 		
 		if (this.transactionTypeFilter == null)
@@ -561,12 +337,13 @@ public class TransactionQueryFacade
 			raw = info.get("type");
 		}
 		
-		return normalize(raw) != null &&
-			normalize(raw).equals(this.transactionTypeFilter);
+		String normalized = normalize(raw);
+		return normalized != null &&
+			normalized.equals(this.transactionTypeFilter);
 		
 	}
 
-	private boolean matchesLegacyDate(AccountingTransaction transaction)
+	private boolean matchesConfiguredDate(AccountingTransaction transaction)
 	{
 		Long timestamp = transaction.getBookingDateTimestamp();
 		
@@ -593,7 +370,7 @@ public class TransactionQueryFacade
 		
 	}
 
-	private boolean matchesLegacyAccounts(AccountingTransaction transaction)
+	private boolean matchesConfiguredAccounts(AccountingTransaction transaction)
 	{
 		
 		if (this.accountNumberFilter == null ||
@@ -629,7 +406,7 @@ public class TransactionQueryFacade
 		
 	}
 
-	private boolean matchesLegacyMemo(AccountingTransaction transaction)
+	private boolean matchesConfiguredMemo(AccountingTransaction transaction)
 	{
 		
 		if (this.memoFilter == null)
@@ -709,137 +486,6 @@ public class TransactionQueryFacade
 		
 	}
 
-	private boolean matchesInfoType(AccountingTransaction transaction)
-	{
-		
-		if (this.transactionType == null)
-		{
-			return true;
-		}
-		
-		if (transaction.getInfo() == null)
-		{
-			return false;
-		}
-		
-		String infoType =
-			transaction.getInfo().getOrDefault("transactionType",
-				transaction.getInfo().get("type"));
-		
-		return normalize(infoType) != null &&
-			normalize(infoType).equals(this.transactionType);
-		
-	}
-
-	private boolean matchesDate(AccountingTransaction transaction)
-	{
-		
-		if (this.startDate == null && this.endDate == null)
-		{
-			return true;
-		}
-		
-		LocalDate date = resolveDate(transaction);
-		
-		if (date == null)
-		{
-			return false;
-		}
-		
-		if (this.startDate != null && date.isBefore(this.startDate))
-		{
-			return false;
-		}
-		
-		if (this.endDate != null && date.isAfter(this.endDate))
-		{
-			return false;
-		}
-		
-		return true;
-		
-	}
-
-	private LocalDate resolveDate(AccountingTransaction transaction)
-	{
-		Long timestamp = transaction.getBookingDateTimestamp();
-		
-		if (timestamp != null && timestamp > 0)
-		{
-			return Instant.ofEpochMilli(timestamp)
-				.atZone(ZoneId.systemDefault())
-				.toLocalDate();
-		}
-		
-		String dateText = transaction.getDate();
-		
-		if (dateText == null || dateText.isBlank())
-		{
-			return null;
-		}
-		
-		try
-		{
-			return LocalDate.parse(dateText);
-		}
-		catch (Exception ex)
-		{
-			return null;
-		}
-		
-	}
-
-	private boolean matchesAccounts(AccountingTransaction transaction)
-	{
-		
-		if (this.accountNumbers == null || this.accountNumbers.isEmpty())
-		{
-			return true;
-		}
-		
-		Set<String> presentAccounts = transaction.getEntries() == null ?
-			Collections.emptySet() :
-			transaction.getEntries().stream()
-				.filter(Objects::nonNull)
-				.map(AccountingEntry::getAccountNumber)
-				.filter(Objects::nonNull)
-				.collect(Collectors.toSet());
-		
-		if (this.requireAllAccounts)
-		{
-			return presentAccounts.containsAll(this.accountNumbers);
-		}
-		
-		return !Collections.disjoint(presentAccounts, this.accountNumbers);
-		
-	}
-
-	private boolean matchesMemo(AccountingTransaction transaction)
-	{
-		
-		if (this.memoContains == null || this.memoContains.isBlank())
-		{
-			return true;
-		}
-		
-		String memo = transaction.getMemo();
-		
-		if (memo == null)
-		{
-			return false;
-		}
-		
-		return memo.toLowerCase().contains(this.memoContains.toLowerCase());
-		
-	}
-
-	private String normalize(String value)
-	{
-		return value == null || value.isBlank() ? null :
-			value.trim().toLowerCase();
-		
-	}
-	
 	private static boolean matchesAccounts(TransactionRecord record,
 		Set<String> accounts,
 		boolean requireAll)
@@ -890,273 +536,6 @@ public class TransactionQueryFacade
 			.anyMatch(
 				entry -> entry != null && type.equals(entry.getAccountSide()));
 		
-	}
-
-	private boolean matchesTransactionFilters(AccountingTransaction transaction)
-	{
-		if (transaction == null)
-		{
-			return false;
-		}
-
-		if (!matchesTransactionInfo(transaction, this.infoTransactionType))
-		{
-			return false;
-		}
-
-		if (!matchesDateRange(transaction, this.startDateFilter,
-			this.endDateFilter))
-		{
-			return false;
-		}
-
-		if (!matchesMemoSubstring(transaction, this.memoSubstringFilter))
-		{
-			return false;
-		}
-
-		if (!matchesAccountNumbers(transaction, this.accountFilters,
-			this.requireAllAccountFilters))
-		{
-			return false;
-		}
-
-		return true;
-	}
-
-	private static boolean matchesTransactionInfo(AccountingTransaction txn,
-		String transactionType)
-	{
-		if (transactionType == null || transactionType.isBlank())
-		{
-			return true;
-		}
-
-		if (txn.getInfo() == null)
-		{
-			return false;
-		}
-
-		String infoType = txn.getInfo().get("transactionType");
-		if (infoType == null)
-		{
-			infoType = txn.getInfo().get("type");
-		}
-
-		if (infoType == null)
-		{
-			return false;
-		}
-
-		return infoType.toLowerCase(Locale.ROOT)
-			.contains(transactionType.toLowerCase(Locale.ROOT));
-	}
-
-	private static boolean matchesDateRange(AccountingTransaction txn,
-		LocalDate startDate,
-		LocalDate endDate)
-	{
-		if (startDate == null && endDate == null)
-		{
-			return true;
-		}
-
-		Long timestamp = txn.getBookingDateTimestamp();
-		if (timestamp == null || timestamp <= 0)
-		{
-			return false;
-		}
-
-		LocalDate date = Instant.ofEpochMilli(timestamp)
-			.atZone(ZoneId.systemDefault())
-			.toLocalDate();
-
-		if (startDate != null && date.isBefore(startDate))
-		{
-			return false;
-		}
-
-		if (endDate != null && date.isAfter(endDate))
-		{
-			return false;
-		}
-
-		return true;
-	}
-
-	private static boolean matchesMemoSubstring(AccountingTransaction txn,
-		String memoSubstring)
-	{
-		if (memoSubstring == null || memoSubstring.isBlank())
-		{
-			return true;
-		}
-
-		String memo = txn.getMemo();
-		if (memo == null)
-		{
-			return false;
-		}
-
-		return memo.toLowerCase(Locale.ROOT)
-			.contains(memoSubstring.toLowerCase(Locale.ROOT));
-	}
-
-	private static boolean matchesAccountNumbers(AccountingTransaction txn,
-		Set<String> accountNumbers,
-		boolean requireAll)
-	{
-		if (accountNumbers == null || accountNumbers.isEmpty())
-		{
-			return true;
-		}
-
-		Set<String> presentAccounts =
-			txn.getEntries() == null ? Collections.emptySet() :
-				txn.getEntries().stream()
-					.filter(Objects::nonNull)
-					.map(AccountingEntry::getAccountNumber)
-					.filter(Objects::nonNull)
-					.collect(Collectors.toSet());
-
-		if (requireAll)
-		{
-			return presentAccounts.containsAll(accountNumbers);
-		}
-
-		for (String account : accountNumbers)
-		{
-			if (presentAccounts.contains(account))
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-	
-	private boolean matchesConfiguredFilters(AccountingTransaction transaction)
-	{
-		return matchesTransactionType(transaction) &&
-			matchesConfiguredDate(transaction) &&
-			matchesConfiguredAccounts(transaction) &&
-			matchesConfiguredMemo(transaction);
-	}
-	
-	private boolean matchesTransactionType(AccountingTransaction transaction)
-	{
-		
-		if (this.transactionTypeFilter == null ||
-			this.transactionTypeFilter.isBlank())
-		{
-			return true;
-		}
-		
-		if (transaction.getInfo() == null)
-		{
-			return false;
-		}
-		
-		String infoType = transaction.getInfo().get("transactionType");
-		
-		if (infoType == null)
-		{
-			infoType = transaction.getInfo().get("type");
-		}
-		
-		if (infoType == null)
-		{
-			return false;
-		}
-		
-		return infoType.equalsIgnoreCase(this.transactionTypeFilter);
-	}
-	
-	private boolean matchesConfiguredDate(AccountingTransaction transaction)
-	{
-		
-		if (this.startDateFilter == null && this.endDateFilter == null)
-		{
-			return true;
-		}
-		
-		Long timestamp = transaction.getBookingDateTimestamp();
-		
-		if (timestamp == null || timestamp <= 0)
-		{
-			return false;
-		}
-		
-		LocalDate date = Instant.ofEpochMilli(timestamp)
-			.atZone(ZoneId.systemDefault())
-			.toLocalDate();
-		
-		if (this.startDateFilter != null &&
-			date.isBefore(this.startDateFilter))
-		{
-			return false;
-		}
-		
-		if (this.endDateFilter != null && date.isAfter(this.endDateFilter))
-		{
-			return false;
-		}
-		
-		return true;
-	}
-	
-	private boolean matchesConfiguredAccounts(AccountingTransaction transaction)
-	{
-		
-		if (this.accountFilter == null || this.accountFilter.isEmpty())
-		{
-			return true;
-		}
-		
-		if (transaction.getEntries() == null)
-		{
-			return false;
-		}
-		
-		Set<String> presentAccounts = transaction.getEntries().stream()
-			.filter(Objects::nonNull)
-			.map(AccountingEntry::getAccountNumber)
-			.filter(Objects::nonNull)
-			.collect(Collectors.toSet());
-		
-		if (this.requireAllAccounts)
-		{
-			return presentAccounts.containsAll(this.accountFilter);
-		}
-		
-		for (String account : this.accountFilter)
-		{
-			
-			if (presentAccounts.contains(account))
-			{
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	private boolean matchesConfiguredMemo(AccountingTransaction transaction)
-	{
-		
-		if (this.memoFilter == null || this.memoFilter.isBlank())
-		{
-			return true;
-		}
-		
-		String memo = transaction.getMemo();
-		
-		if (memo == null)
-		{
-			return false;
-		}
-		
-		return memo.toLowerCase().contains(this.memoFilter.toLowerCase());
 	}
 	
 	/**
