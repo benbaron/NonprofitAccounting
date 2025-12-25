@@ -1,6 +1,8 @@
 
 package nonprofitbookkeeping.service;
 
+import nonprofitbookkeeping.reports.jasper.AbstractReportGenerator;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
