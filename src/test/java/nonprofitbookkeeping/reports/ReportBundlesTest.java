@@ -1,6 +1,7 @@
 
 package nonprofitbookkeeping.reports;
 
+import nonprofitbookkeeping.reports.jasper.runtime.ReportBundles;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

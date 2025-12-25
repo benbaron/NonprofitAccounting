@@ -405,6 +405,13 @@ public final class ReportBundles
 						return;
 					}
 					
+					if (resourceRoot.equals(TEMPLATE_ROOT) &&
+						relative.getNameCount() > 0 &&
+						"jrxml".equals(relative.getName(0).toString()))
+					{
+						return;
+					}
+					
 					Path directory = relative.getNameCount() > 1 ? relative
 						.subpath(0, relative.getNameCount() - 1) : Path.of("");
 					String dir = directory.toString().replace('\\', '/');
