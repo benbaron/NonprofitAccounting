@@ -40,6 +40,12 @@ import java.util.stream.Collectors;
 public class TransactionQueryFacade
 {
 	private final Supplier<List<AccountingTransaction>> transactionSupplier;
+	private String transactionType;
+	private LocalDate startDate;
+	private LocalDate endDate;
+	private Set<String> accountNumbers;
+	private boolean requireAllAccounts;
+	private String memoContains;
 	
 	/**
 	 * Builds a facade that reads transactions from the current company
@@ -62,6 +68,170 @@ public class TransactionQueryFacade
 	{
 		this.transactionSupplier = transactionSupplier == null ?
 			Collections::emptyList : transactionSupplier;
+		
+	}
+
+	/**
+	 * Filters by transaction type stored in the transaction info map.
+	 *
+	 * @param transactionType case-insensitive type string
+	 * @return this facade for chaining
+	 */
+	public TransactionQueryFacade filterByTransactionType(String transactionType)
+	{
+		this.transactionType = normalize(transactionType);
+		return this;
+		
+	}
+
+	/**
+	 * Sets an inclusive date range filter.
+	 *
+	 * @param startDate start date
+	 * @param endDate end date
+	 * @return this facade for chaining
+	 */
+	public TransactionQueryFacade dateRange(LocalDate startDate,
+		LocalDate endDate)
+	{
+		this.startDate = startDate;
+		this.endDate = endDate;
+		return this;
+		
+	}
+
+	/**
+	 * Filters by account numbers.
+	 *
+	 * @param accounts account numbers to match
+	 * @param requireAll if true all accounts must be present
+	 * @return this facade for chaining
+	 */
+	public TransactionQueryFacade accounts(List<String> accounts,
+		boolean requireAll)
+	{
+		this.requireAllAccounts = requireAll;
+		
+		if (accounts == null)
+		{
+			this.accountNumbers = null;
+			return this;
+		}
+		
+		Set<String> normalized = new HashSet<>();
+		
+		for (String account : accounts)
+		{
+			
+			if (account != null && !account.isBlank())
+			{
+				normalized.add(account.trim());
+			}
+			
+		}
+		
+		this.accountNumbers = normalized;
+		return this;
+		
+	}
+
+	/**
+	 * Filters by memo substring (case-insensitive).
+	 *
+	 * @param memo memo fragment
+	 * @return this facade for chaining
+	 */
+	public TransactionQueryFacade memoContains(String memo)
+	{
+		this.memoContains = memo;
+		return this;
+		
+	}
+
+	/**
+	 * Filters the supplied transactions according to the configured criteria.
+	 *
+	 * @param transactions list of transactions to filter
+	 * @return filtered list
+	 */
+	public List<AccountingTransaction> filterTransactions(
+		List<AccountingTransaction> transactions)
+	{
+		
+		if (transactions == null)
+		{
+			return Collections.emptyList();
+		}
+		
+		List<AccountingTransaction> results = new ArrayList<>();
+		
+		for (AccountingTransaction transaction : transactions)
+		{
+			
+			if (transaction == null)
+			{
+				continue;
+			}
+			
+			if (!matchesInfoType(transaction))
+			{
+				continue;
+			}
+			
+			if (!matchesDate(transaction))
+			{
+				continue;
+			}
+			
+			if (!matchesAccounts(transaction))
+			{
+				continue;
+			}
+			
+			if (!matchesMemo(transaction))
+			{
+				continue;
+			}
+			
+			results.add(transaction);
+			
+		}
+		
+		return results;
+		
+	}
+
+	/**
+	 * Maps filtered transactions into beans.
+	 *
+	 * @param transactions transactions to filter and map
+	 * @param mapper mapping function
+	 * @param <T> bean type
+	 * @return mapped beans
+	 */
+	public <T> List<T> mapToBeans(List<AccountingTransaction> transactions,
+		Function<AccountingTransaction, T> mapper)
+	{
+		
+		if (mapper == null)
+		{
+			return Collections.emptyList();
+		}
+		
+		List<T> results = new ArrayList<>();
+		
+		for (AccountingTransaction transaction : filterTransactions(transactions))
+		{
+			T mapped = mapper.apply(transaction);
+			
+			if (mapped != null)
+			{
+				results.add(mapped);
+			}
+			
+		}
+		
+		return results;
 		
 	}
 	
@@ -241,6 +411,137 @@ public class TransactionQueryFacade
 		}
 		
 		return memo.toLowerCase().contains(memoSubstring.toLowerCase());
+		
+	}
+
+	private boolean matchesInfoType(AccountingTransaction transaction)
+	{
+		
+		if (this.transactionType == null)
+		{
+			return true;
+		}
+		
+		if (transaction.getInfo() == null)
+		{
+			return false;
+		}
+		
+		String infoType =
+			transaction.getInfo().getOrDefault("transactionType",
+				transaction.getInfo().get("type"));
+		
+		return normalize(infoType) != null &&
+			normalize(infoType).equals(this.transactionType);
+		
+	}
+
+	private boolean matchesDate(AccountingTransaction transaction)
+	{
+		
+		if (this.startDate == null && this.endDate == null)
+		{
+			return true;
+		}
+		
+		LocalDate date = resolveDate(transaction);
+		
+		if (date == null)
+		{
+			return false;
+		}
+		
+		if (this.startDate != null && date.isBefore(this.startDate))
+		{
+			return false;
+		}
+		
+		if (this.endDate != null && date.isAfter(this.endDate))
+		{
+			return false;
+		}
+		
+		return true;
+		
+	}
+
+	private LocalDate resolveDate(AccountingTransaction transaction)
+	{
+		Long timestamp = transaction.getBookingDateTimestamp();
+		
+		if (timestamp != null && timestamp > 0)
+		{
+			return Instant.ofEpochMilli(timestamp)
+				.atZone(ZoneId.systemDefault())
+				.toLocalDate();
+		}
+		
+		String dateText = transaction.getDate();
+		
+		if (dateText == null || dateText.isBlank())
+		{
+			return null;
+		}
+		
+		try
+		{
+			return LocalDate.parse(dateText);
+		}
+		catch (Exception ex)
+		{
+			return null;
+		}
+		
+	}
+
+	private boolean matchesAccounts(AccountingTransaction transaction)
+	{
+		
+		if (this.accountNumbers == null || this.accountNumbers.isEmpty())
+		{
+			return true;
+		}
+		
+		Set<String> presentAccounts = transaction.getEntries() == null ?
+			Collections.emptySet() :
+			transaction.getEntries().stream()
+				.filter(Objects::nonNull)
+				.map(AccountingEntry::getAccountNumber)
+				.filter(Objects::nonNull)
+				.collect(Collectors.toSet());
+		
+		if (this.requireAllAccounts)
+		{
+			return presentAccounts.containsAll(this.accountNumbers);
+		}
+		
+		return !Collections.disjoint(presentAccounts, this.accountNumbers);
+		
+	}
+
+	private boolean matchesMemo(AccountingTransaction transaction)
+	{
+		
+		if (this.memoContains == null || this.memoContains.isBlank())
+		{
+			return true;
+		}
+		
+		String memo = transaction.getMemo();
+		
+		if (memo == null)
+		{
+			return false;
+		}
+		
+		return memo.toLowerCase().contains(this.memoContains.toLowerCase());
+		
+	}
+
+	private String normalize(String value)
+	{
+		return value == null || value.isBlank() ? null :
+			value.trim().toLowerCase();
 		
 	}
 	

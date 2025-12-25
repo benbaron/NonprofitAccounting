@@ -399,7 +399,8 @@ public final class ReportBundles
 					
 					if (resourceRoot.equals(TEMPLATE_ROOT) &&
 						relative.getNameCount() > 0 &&
-						"bundles".equals(relative.getName(0).toString()))
+						("bundles".equals(relative.getName(0).toString()) ||
+							"jrxml".equals(relative.getName(0).toString())))
 					{
 						return;
 					}
