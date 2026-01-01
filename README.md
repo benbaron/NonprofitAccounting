@@ -4,6 +4,8 @@ This bundle lets your NonprofitAccounting / SCALedger codebase ingest the Excel 
 (`Ledger_Q1` / `Ledger_Q2` / `Ledger_Q3` / `Ledger_Q4` sheets) and turn them into
 Java objects you can persist in H2.
 
+See [doc/sql-data-map.md](doc/sql-data-map.md) for the H2 schema and repository access map.
+
 ## Package / Namespace
 
 All classes are under:
