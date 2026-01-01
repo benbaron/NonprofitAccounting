@@ -1,38 +1,26 @@
 package nonprofitbookkeeping.reports.jasper.generator;
 
-import nonprofitbookkeeping.exception.ActionCancelledException;
-import nonprofitbookkeeping.exception.NoFileCreatedException;
-import nonprofitbookkeeping.reports.jasper.AbstractReportGenerator;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import nonprofitbookkeeping.reports.jasper.runtime.FieldMappedReportGenerator;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
 import nonprofitbookkeeping.reports.jasper.beans.INVENTORY_DTL_6bBean;
 
-/** Skeleton generator for JRXML template INVENTORY_DTL_6b.jrxml */
-public class INVENTORY_DTL_6bJasperGenerator extends AbstractReportGenerator
+/** Jasper generator for JRXML template INVENTORY_DTL_6b.jrxml */
+public class INVENTORY_DTL_6bJasperGenerator extends FieldMappedReportGenerator<INVENTORY_DTL_6bBean>
 {
-    @Override
-    protected List<INVENTORY_DTL_6bBean> getReportData()
+    public INVENTORY_DTL_6bJasperGenerator()
     {
-        // TODO supply data beans for the report
-        return Collections.emptyList();
+        super();
+    }
+
+    public INVENTORY_DTL_6bJasperGenerator(ReportContext context)
+    {
+        super(context);
     }
 
     @Override
-    protected Map<String, Object> getReportParameters()
+    protected Class<INVENTORY_DTL_6bBean> getBeanClass()
     {
-        Map<String, Object> params = new HashMap<>();
-        // TODO populate report parameters such as title or filters
-        return params;
-    }
-
-    @Override
-    protected String getReportPath() throws ActionCancelledException, NoFileCreatedException
-    {
-        // TODO return the classpath or filesystem path to INVENTORY_DTL_6b.jrxml
-        return bundledReportPath();
+        return INVENTORY_DTL_6bBean.class;
     }
 
     @Override
