@@ -3,12 +3,14 @@ package nonprofitbookkeeping.reports.jasper.generator;
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.reports.jasper.AbstractReportGenerator;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.io.IOException;
 
 import nonprofitbookkeeping.reports.jasper.beans.PRIMARY_ACCOUNT_2aBean;
+import nonprofitbookkeeping.reports.jasper.runtime.FieldMapSqlBuilder;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportDataFetcher;
 
 /** Skeleton generator for JRXML template PRIMARY_ACCOUNT_2a.jrxml */
 public class PRIMARY_ACCOUNT_2aJasperGenerator extends AbstractReportGenerator
@@ -16,8 +18,36 @@ public class PRIMARY_ACCOUNT_2aJasperGenerator extends AbstractReportGenerator
     @Override
     protected List<PRIMARY_ACCOUNT_2aBean> getReportData()
     {
-        // TODO supply data beans for the report
-        return Collections.emptyList();
+        Map<String, String> overrides = new HashMap<>();
+        overrides.put("bank_name", "a.name");
+        overrides.put("bank_account_title", "a.account_code");
+        overrides.put("bank_account_type", "a.account_type");
+        overrides.put("bank_account_number", "a.account_number");
+        overrides.put("deposit_date", "jt.date_text");
+        overrides.put("amount_of_deposit", "je.amount");
+        overrides.put("check_number", "jt.check_number");
+
+        String selectList;
+        try
+        {
+            selectList = FieldMapSqlBuilder.buildSelectList(
+                "/nonprofitbookkeeping/reports/PRIMARY_ACCOUNT_2a_fieldmap.csv",
+                overrides
+            );
+        }
+        catch (IOException ex)
+        {
+            throw new IllegalStateException(
+                "Unable to load PRIMARY_ACCOUNT_2a field map", ex);
+        }
+
+        String sql = "select\n" +
+            selectList + "\n" +
+            "from account a\n" +
+            "left join journal_entry je on je.account_number = a.account_number\n" +
+            "left join journal_transaction jt on jt.id = je.txn_id";
+
+        return ReportDataFetcher.queryBeans(PRIMARY_ACCOUNT_2aBean.class, sql);
     }
 
     @Override
