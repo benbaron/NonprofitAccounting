@@ -2,20 +2,22 @@ package nonprofitbookkeeping.reports.jasper.generator;
 
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
-import nonprofitbookkeeping.reports.jasper.JdbcReportGenerator;
+import nonprofitbookkeeping.reports.jasper.AbstractReportGenerator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import nonprofitbookkeeping.reports.jasper.beans.FreeFormBean;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportDataFetcher;
 
 /** Skeleton generator for JRXML template FreeForm.jrxml */
-public class FreeFormJasperGenerator extends JdbcReportGenerator<FreeFormBean>
+public class FreeFormJasperGenerator extends AbstractReportGenerator
 {
     @Override
     protected List<FreeFormBean> getReportData()
     {
-        return super.getReportData();
+        String sql = "select count(*) as placeholder from company_profile";
+        return ReportDataFetcher.queryBeans(FreeFormBean.class, sql);
     }
 
     @Override
