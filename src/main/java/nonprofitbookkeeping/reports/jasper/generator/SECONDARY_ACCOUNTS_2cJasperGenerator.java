@@ -2,8 +2,7 @@ package nonprofitbookkeeping.reports.jasper.generator;
 
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
-import nonprofitbookkeeping.reports.jasper.AbstractReportGenerator;
-import java.util.Collections;
+import nonprofitbookkeeping.reports.jasper.JdbcReportGenerator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,13 +10,12 @@ import java.util.Map;
 import nonprofitbookkeeping.reports.jasper.beans.SECONDARY_ACCOUNTS_2cBean;
 
 /** Skeleton generator for JRXML template SECONDARY_ACCOUNTS_2c.jrxml */
-public class SECONDARY_ACCOUNTS_2cJasperGenerator extends AbstractReportGenerator
+public class SECONDARY_ACCOUNTS_2cJasperGenerator extends JdbcReportGenerator<SECONDARY_ACCOUNTS_2cBean>
 {
     @Override
     protected List<SECONDARY_ACCOUNTS_2cBean> getReportData()
     {
-        // TODO supply data beans for the report
-        return Collections.emptyList();
+        return super.getReportData();
     }
 
     @Override

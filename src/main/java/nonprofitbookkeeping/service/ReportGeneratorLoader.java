@@ -6,6 +6,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 
 import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
 import nonprofitbookkeeping.reports.jasper.runtime.ReportBundles;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportContextAware;
 import nonprofitbookkeeping.reports.jasper.BundledTemplateJasperGenerator;
 
 import java.io.File;
@@ -54,28 +55,36 @@ final class ReportGeneratorLoader
 			
 			if (ctor != null)
 			{
-				return ctor.newInstance(context, service);
+				Object instance = ctor.newInstance(context, service);
+				assignContext(instance, context);
+				return instance;
 			}
 			
 			ctor = findConstructor(clazz, ReportContext.class);
 			
 			if (ctor != null)
 			{
-				return ctor.newInstance(context);
+				Object instance = ctor.newInstance(context);
+				assignContext(instance, context);
+				return instance;
 			}
 			
 			ctor = findConstructor(clazz, ReportService.class);
 			
 			if (ctor != null)
 			{
-				return ctor.newInstance(service);
+				Object instance = ctor.newInstance(service);
+				assignContext(instance, context);
+				return instance;
 			}
 			
 			ctor = findConstructor(clazz);
 			
 			if (ctor != null)
 			{
-				return ctor.newInstance();
+				Object instance = ctor.newInstance();
+				assignContext(instance, context);
+				return instance;
 			}
 			
 			for (Constructor<?> candidate : clazz.getDeclaredConstructors())
@@ -92,7 +101,9 @@ final class ReportGeneratorLoader
 				
 				try
 				{
-					return candidate.newInstance(args);
+					Object instance = candidate.newInstance(args);
+					assignContext(instance, context);
+					return instance;
 				}
 				catch (InvocationTargetException | InstantiationException |
 					IllegalAccessException e)
@@ -110,13 +121,25 @@ final class ReportGeneratorLoader
 			ReportBundles.Bundle bundle = ReportBundles
 				.bundleForGenerator(className);
 			
-			return new BundledTemplateJasperGenerator(bundle, context);
+			Object instance = new BundledTemplateJasperGenerator(bundle, context);
+			assignContext(instance, context);
+			return instance;
 		}
 		catch (InvocationTargetException | InstantiationException |
 			IllegalAccessException e)
 		{
 			throw new IllegalStateException(
 				"Unable to instantiate generator: " + className, e);
+		}
+		
+	}
+
+	private static void assignContext(Object instance, ReportContext context)
+	{
+		
+		if (instance instanceof ReportContextAware aware)
+		{
+			aware.setReportContext(context);
 		}
 		
 	}

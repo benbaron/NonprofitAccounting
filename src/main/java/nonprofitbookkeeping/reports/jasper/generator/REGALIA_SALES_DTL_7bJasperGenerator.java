@@ -2,8 +2,7 @@ package nonprofitbookkeeping.reports.jasper.generator;
 
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
-import nonprofitbookkeeping.reports.jasper.AbstractReportGenerator;
-import java.util.Collections;
+import nonprofitbookkeeping.reports.jasper.JdbcReportGenerator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,13 +10,12 @@ import java.util.Map;
 import nonprofitbookkeeping.reports.jasper.beans.REGALIA_SALES_DTL_7bBean;
 
 /** Skeleton generator for JRXML template REGALIA_SALES_DTL_7b.jrxml */
-public class REGALIA_SALES_DTL_7bJasperGenerator extends AbstractReportGenerator
+public class REGALIA_SALES_DTL_7bJasperGenerator extends JdbcReportGenerator<REGALIA_SALES_DTL_7bBean>
 {
     @Override
     protected List<REGALIA_SALES_DTL_7bBean> getReportData()
     {
-        // TODO supply data beans for the report
-        return Collections.emptyList();
+        return super.getReportData();
     }
 
     @Override

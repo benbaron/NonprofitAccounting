@@ -2,8 +2,7 @@ package nonprofitbookkeeping.reports.jasper.generator;
 
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
-import nonprofitbookkeeping.reports.jasper.AbstractReportGenerator;
-import java.util.Collections;
+import nonprofitbookkeeping.reports.jasper.JdbcReportGenerator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,13 +10,12 @@ import java.util.Map;
 import nonprofitbookkeeping.reports.jasper.beans.INVENTORY_DTL_6Bean;
 
 /** Skeleton generator for JRXML template INVENTORY_DTL_6.jrxml */
-public class INVENTORY_DTL_6JasperGenerator extends AbstractReportGenerator
+public class INVENTORY_DTL_6JasperGenerator extends JdbcReportGenerator<INVENTORY_DTL_6Bean>
 {
     @Override
     protected List<INVENTORY_DTL_6Bean> getReportData()
     {
-        // TODO supply data beans for the report
-        return Collections.emptyList();
+        return super.getReportData();
     }
 
     @Override
