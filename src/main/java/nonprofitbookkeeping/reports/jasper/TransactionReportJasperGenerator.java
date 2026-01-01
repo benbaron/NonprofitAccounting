@@ -1,37 +1,34 @@
 package nonprofitbookkeeping.reports.jasper;
 
 import nonprofitbookkeeping.reports.jasper.beans.TransactionReportBean;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import nonprofitbookkeeping.reports.jasper.runtime.FieldMappedReportGenerator;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
 
 /**
  * Jasper generator for the TransactionReport template.
  */
-public class TransactionReportJasperGenerator extends AbstractReportGenerator
+public class TransactionReportJasperGenerator
+    extends FieldMappedReportGenerator<TransactionReportBean>
 {
-	@Override
-	protected List<TransactionReportBean> getReportData()
-	{
-		return Collections.emptyList();
-	}
-	
-	@Override
-	protected Map<String, Object> getReportParameters()
-	{
-		return Collections.emptyMap();
-	}
-	
-	@Override
-	protected String getReportPath()
-	{
-		return bundledReportPath();
-	}
-	
-	@Override
-	public String getBaseName()
-	{
-		return "TransactionReport";
-	}
+    public TransactionReportJasperGenerator()
+    {
+        super();
+    }
+
+    public TransactionReportJasperGenerator(ReportContext context)
+    {
+        super(context);
+    }
+
+    @Override
+    protected Class<TransactionReportBean> getBeanClass()
+    {
+        return TransactionReportBean.class;
+    }
+
+    @Override
+    public String getBaseName()
+    {
+        return "TransactionReport";
+    }
 }
