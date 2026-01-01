@@ -1,38 +1,26 @@
 package nonprofitbookkeeping.reports.jasper.generator;
 
-import nonprofitbookkeeping.exception.ActionCancelledException;
-import nonprofitbookkeeping.exception.NoFileCreatedException;
-import nonprofitbookkeeping.reports.jasper.AbstractReportGenerator;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import nonprofitbookkeeping.reports.jasper.runtime.FieldMappedReportGenerator;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
 import nonprofitbookkeeping.reports.jasper.beans.DEPR_DTL_8bBean;
 
-/** Skeleton generator for JRXML template DEPR_DTL_8b.jrxml */
-public class DEPR_DTL_8bJasperGenerator extends AbstractReportGenerator
+/** Jasper generator for JRXML template DEPR_DTL_8b.jrxml */
+public class DEPR_DTL_8bJasperGenerator extends FieldMappedReportGenerator<DEPR_DTL_8bBean>
 {
-    @Override
-    protected List<DEPR_DTL_8bBean> getReportData()
+    public DEPR_DTL_8bJasperGenerator()
     {
-        // TODO supply data beans for the report
-        return Collections.emptyList();
+        super();
+    }
+
+    public DEPR_DTL_8bJasperGenerator(ReportContext context)
+    {
+        super(context);
     }
 
     @Override
-    protected Map<String, Object> getReportParameters()
+    protected Class<DEPR_DTL_8bBean> getBeanClass()
     {
-        Map<String, Object> params = new HashMap<>();
-        // TODO populate report parameters such as title or filters
-        return params;
-    }
-
-    @Override
-    protected String getReportPath() throws ActionCancelledException, NoFileCreatedException
-    {
-        // TODO return the classpath or filesystem path to DEPR_DTL_8b.jrxml
-        return bundledReportPath();
+        return DEPR_DTL_8bBean.class;
     }
 
     @Override

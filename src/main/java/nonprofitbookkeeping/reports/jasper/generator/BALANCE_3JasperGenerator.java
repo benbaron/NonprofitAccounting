@@ -1,38 +1,26 @@
 package nonprofitbookkeeping.reports.jasper.generator;
 
-import nonprofitbookkeeping.exception.ActionCancelledException;
-import nonprofitbookkeeping.exception.NoFileCreatedException;
-import nonprofitbookkeeping.reports.jasper.AbstractReportGenerator;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import nonprofitbookkeeping.reports.jasper.runtime.FieldMappedReportGenerator;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
 import nonprofitbookkeeping.reports.jasper.beans.BALANCE_3Bean;
 
-/** Skeleton generator for JRXML template BALANCE_3.jrxml */
-public class BALANCE_3JasperGenerator extends AbstractReportGenerator
+/** Jasper generator for JRXML template BALANCE_3.jrxml */
+public class BALANCE_3JasperGenerator extends FieldMappedReportGenerator<BALANCE_3Bean>
 {
-    @Override
-    protected List<BALANCE_3Bean> getReportData()
+    public BALANCE_3JasperGenerator()
     {
-        // TODO supply data beans for the report
-        return Collections.emptyList();
+        super();
+    }
+
+    public BALANCE_3JasperGenerator(ReportContext context)
+    {
+        super(context);
     }
 
     @Override
-    protected Map<String, Object> getReportParameters()
+    protected Class<BALANCE_3Bean> getBeanClass()
     {
-        Map<String, Object> params = new HashMap<>();
-        // TODO populate report parameters such as title or filters
-        return params;
-    }
-
-    @Override
-    protected String getReportPath() throws ActionCancelledException, NoFileCreatedException
-    {
-        // TODO return the classpath or filesystem path to BALANCE_3.jrxml
-        return bundledReportPath();
+        return BALANCE_3Bean.class;
     }
 
     @Override
