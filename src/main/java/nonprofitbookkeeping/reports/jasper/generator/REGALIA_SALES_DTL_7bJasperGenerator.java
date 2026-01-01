@@ -3,12 +3,14 @@ package nonprofitbookkeeping.reports.jasper.generator;
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.reports.jasper.AbstractReportGenerator;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.io.IOException;
 
 import nonprofitbookkeeping.reports.jasper.beans.REGALIA_SALES_DTL_7bBean;
+import nonprofitbookkeeping.reports.jasper.runtime.FieldMapSqlBuilder;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportDataFetcher;
 
 /** Skeleton generator for JRXML template REGALIA_SALES_DTL_7b.jrxml */
 public class REGALIA_SALES_DTL_7bJasperGenerator extends AbstractReportGenerator
@@ -16,8 +18,31 @@ public class REGALIA_SALES_DTL_7bJasperGenerator extends AbstractReportGenerator
     @Override
     protected List<REGALIA_SALES_DTL_7bBean> getReportData()
     {
-        // TODO supply data beans for the report
-        return Collections.emptyList();
+        Map<String, String> overrides = new HashMap<>();
+        overrides.put("regalia_other_sales_detail", "jt.memo");
+        overrides.put("do_not_enter_any_more_items_under_regalia",
+            "jt.to_from");
+
+        String selectList;
+        try
+        {
+            selectList = FieldMapSqlBuilder.buildSelectList(
+                "/nonprofitbookkeeping/reports/REGALIA_SALES_DTL_7b_fieldmap.csv",
+                overrides
+            );
+        }
+        catch (IOException ex)
+        {
+            throw new IllegalStateException(
+                "Unable to load REGALIA_SALES_DTL_7b field map", ex);
+        }
+
+        String sql = "select\n" +
+            selectList + "\n" +
+            "from journal_transaction jt\n" +
+            "join journal_entry je on je.txn_id = jt.id";
+
+        return ReportDataFetcher.queryBeans(REGALIA_SALES_DTL_7bBean.class, sql);
     }
 
     @Override
