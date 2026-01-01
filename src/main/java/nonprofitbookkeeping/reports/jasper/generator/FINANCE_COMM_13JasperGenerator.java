@@ -1,26 +1,36 @@
 package nonprofitbookkeeping.reports.jasper.generator;
 
-import nonprofitbookkeeping.reports.jasper.runtime.FieldMappedReportGenerator;
-import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
+import nonprofitbookkeeping.exception.ActionCancelledException;
+import nonprofitbookkeeping.exception.NoFileCreatedException;
+import nonprofitbookkeeping.reports.jasper.JdbcReportGenerator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import nonprofitbookkeeping.reports.jasper.beans.FINANCE_COMM_13Bean;
 
-/** Jasper generator for JRXML template FINANCE_COMM_13.jrxml */
-public class FINANCE_COMM_13JasperGenerator extends FieldMappedReportGenerator<FINANCE_COMM_13Bean>
+/** Skeleton generator for JRXML template FINANCE_COMM_13.jrxml */
+public class FINANCE_COMM_13JasperGenerator extends JdbcReportGenerator<FINANCE_COMM_13Bean>
 {
-    public FINANCE_COMM_13JasperGenerator()
+    @Override
+    protected List<FINANCE_COMM_13Bean> getReportData()
     {
-        super();
-    }
-
-    public FINANCE_COMM_13JasperGenerator(ReportContext context)
-    {
-        super(context);
+        return super.getReportData();
     }
 
     @Override
-    protected Class<FINANCE_COMM_13Bean> getBeanClass()
+    protected Map<String, Object> getReportParameters()
     {
-        return FINANCE_COMM_13Bean.class;
+        Map<String, Object> params = new HashMap<>();
+        // TODO populate report parameters such as title or filters
+        return params;
+    }
+
+    @Override
+    protected String getReportPath() throws ActionCancelledException, NoFileCreatedException
+    {
+        // TODO return the classpath or filesystem path to FINANCE_COMM_13.jrxml
+        return bundledReportPath();
     }
 
     @Override

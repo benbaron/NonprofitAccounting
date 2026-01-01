@@ -81,4 +81,27 @@ public final class FieldMap {
 
         return sb.toString();
     }
+
+    /**
+     * Build a SELECT list using dbExpr when present; otherwise use the supplied
+     * fallback expression (e.g., "null") for every field.
+     */
+    public String buildSelectListWithFallback(String fallbackExpr) {
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+
+        for (FieldMapEntry e : this.entries) {
+            String expr = e.getDbExpr();
+            if (expr == null || expr.trim().isEmpty()) {
+                expr = fallbackExpr;
+            }
+            if (!first) {
+                sb.append(",\n");
+            }
+            sb.append(expr).append(" as ").append(e.getFieldName());
+            first = false;
+        }
+
+        return sb.toString();
+    }
 }

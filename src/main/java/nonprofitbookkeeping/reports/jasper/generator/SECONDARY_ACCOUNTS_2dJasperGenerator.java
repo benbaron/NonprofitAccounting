@@ -1,26 +1,36 @@
 package nonprofitbookkeeping.reports.jasper.generator;
 
-import nonprofitbookkeeping.reports.jasper.runtime.FieldMappedReportGenerator;
-import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
+import nonprofitbookkeeping.exception.ActionCancelledException;
+import nonprofitbookkeeping.exception.NoFileCreatedException;
+import nonprofitbookkeeping.reports.jasper.JdbcReportGenerator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import nonprofitbookkeeping.reports.jasper.beans.SECONDARY_ACCOUNTS_2dBean;
 
-/** Jasper generator for JRXML template SECONDARY_ACCOUNTS_2d.jrxml */
-public class SECONDARY_ACCOUNTS_2dJasperGenerator extends FieldMappedReportGenerator<SECONDARY_ACCOUNTS_2dBean>
+/** Skeleton generator for JRXML template SECONDARY_ACCOUNTS_2d.jrxml */
+public class SECONDARY_ACCOUNTS_2dJasperGenerator extends JdbcReportGenerator<SECONDARY_ACCOUNTS_2dBean>
 {
-    public SECONDARY_ACCOUNTS_2dJasperGenerator()
+    @Override
+    protected List<SECONDARY_ACCOUNTS_2dBean> getReportData()
     {
-        super();
-    }
-
-    public SECONDARY_ACCOUNTS_2dJasperGenerator(ReportContext context)
-    {
-        super(context);
+        return super.getReportData();
     }
 
     @Override
-    protected Class<SECONDARY_ACCOUNTS_2dBean> getBeanClass()
+    protected Map<String, Object> getReportParameters()
     {
-        return SECONDARY_ACCOUNTS_2dBean.class;
+        Map<String, Object> params = new HashMap<>();
+        // TODO populate report parameters such as title or filters
+        return params;
+    }
+
+    @Override
+    protected String getReportPath() throws ActionCancelledException, NoFileCreatedException
+    {
+        // TODO return the classpath or filesystem path to SECONDARY_ACCOUNTS_2d.jrxml
+        return bundledReportPath();
     }
 
     @Override
