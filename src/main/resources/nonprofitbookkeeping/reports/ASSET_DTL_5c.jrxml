@@ -1,654 +1,648 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<jasperReport name="ASSET_DTL_5c" language="java"
-              pageWidth="595" pageHeight="842"
-              columnWidth="555"
-              leftMargin="20" rightMargin="20"
-              topMargin="20" bottomMargin="20"
-              uuid="00000000-0000-0000-0000-000000000000">
-  <field name="asset_dtl_5c_r2c3" class="java.lang.Double"/>
-  <field name="contents_b59" class="java.lang.Double"/>
-  <field name="contents_e_3" class="java.lang.Double"/>
-  <field name="contents_e_4" class="java.lang.Double"/>
-  <field name="receivables_owed_from" class="java.lang.String"/>
-  <field name="reason" class="java.lang.String"/>
-  <field name="prior_amount" class="java.lang.String"/>
-  <field name="current_amount" class="java.lang.String"/>
-  <field name="receivables_owed_from_2" class="java.lang.String"/>
-  <field name="reason_2" class="java.lang.String"/>
-  <field name="prior_amount_2" class="java.lang.String"/>
-  <field name="current_amount_2" class="java.lang.String"/>
-  <field name="receivables_owed_from_3" class="java.lang.String"/>
-  <field name="reason_3" class="java.lang.String"/>
-  <field name="prior_amount_3" class="java.lang.String"/>
-  <field name="current_amount_3" class="java.lang.String"/>
-  <field name="receivables_owed_from_4" class="java.lang.String"/>
-  <field name="reason_4" class="java.lang.String"/>
-  <field name="prior_amount_4" class="java.lang.String"/>
-  <field name="current_amount_4" class="java.lang.String"/>
-  <field name="receivables_owed_from_5" class="java.lang.String"/>
-  <field name="reason_5" class="java.lang.String"/>
-  <field name="prior_amount_5" class="java.lang.String"/>
-  <field name="current_amount_5" class="java.lang.String"/>
-  <field name="receivables_owed_from_6" class="java.lang.String"/>
-  <field name="reason_6" class="java.lang.String"/>
-  <field name="prior_amount_6" class="java.lang.String"/>
-  <field name="current_amount_6" class="java.lang.String"/>
-  <field name="receivables_owed_from_7" class="java.lang.String"/>
-  <field name="reason_7" class="java.lang.String"/>
-  <field name="prior_amount_7" class="java.lang.String"/>
-  <field name="current_amount_7" class="java.lang.String"/>
-  <field name="receivables_owed_from_8" class="java.lang.String"/>
-  <field name="reason_8" class="java.lang.String"/>
-  <field name="prior_amount_8" class="java.lang.String"/>
-  <field name="current_amount_8" class="java.lang.String"/>
-  <field name="receivables_owed_from_9" class="java.lang.String"/>
-  <field name="reason_9" class="java.lang.String"/>
-  <field name="prior_amount_9" class="java.lang.String"/>
-  <field name="current_amount_9" class="java.lang.String"/>
-  <field name="receivables_owed_from_10" class="java.lang.String"/>
-  <field name="reason_10" class="java.lang.String"/>
-  <field name="prior_amount_10" class="java.lang.String"/>
-  <field name="current_amount_10" class="java.lang.String"/>
-  <field name="receivables_owed_from_11" class="java.lang.String"/>
-  <field name="reason_11" class="java.lang.String"/>
-  <field name="prior_amount_11" class="java.lang.String"/>
-  <field name="current_amount_11" class="java.lang.String"/>
-  <field name="receivables_owed_from_12" class="java.lang.String"/>
-  <field name="reason_12" class="java.lang.String"/>
-  <field name="prior_amount_12" class="java.lang.String"/>
-  <field name="current_amount_12" class="java.lang.String"/>
-  <field name="receivables_owed_from_13" class="java.lang.String"/>
-  <field name="reason_13" class="java.lang.String"/>
-  <field name="prior_amount_13" class="java.lang.String"/>
-  <field name="current_amount_13" class="java.lang.String"/>
-  <field name="receivables_owed_from_14" class="java.lang.String"/>
-  <field name="reason_14" class="java.lang.String"/>
-  <field name="prior_amount_14" class="java.lang.String"/>
-  <field name="current_amount_14" class="java.lang.String"/>
-  <field name="receivables_owed_from_15" class="java.lang.String"/>
-  <field name="reason_15" class="java.lang.String"/>
-  <field name="prior_amount_15" class="java.lang.String"/>
-  <field name="current_amount_15" class="java.lang.String"/>
-  <field name="receivables_owed_from_16" class="java.lang.String"/>
-  <field name="reason_16" class="java.lang.String"/>
-  <field name="prior_amount_16" class="java.lang.String"/>
-  <field name="current_amount_16" class="java.lang.String"/>
-  <field name="receivables_owed_from_17" class="java.lang.String"/>
-  <field name="reason_17" class="java.lang.String"/>
-  <field name="prior_amount_17" class="java.lang.String"/>
-  <field name="current_amount_17" class="java.lang.String"/>
-  <field name="receivables_owed_from_18" class="java.lang.String"/>
-  <field name="reason_18" class="java.lang.String"/>
-  <field name="prior_amount_18" class="java.lang.String"/>
-  <field name="current_amount_18" class="java.lang.String"/>
-  <field name="receivables_owed_from_19" class="java.lang.String"/>
-  <field name="reason_19" class="java.lang.String"/>
-  <field name="prior_amount_19" class="java.lang.String"/>
-  <field name="current_amount_19" class="java.lang.String"/>
-  <field name="receivables_owed_from_20" class="java.lang.String"/>
-  <field name="reason_20" class="java.lang.String"/>
-  <field name="prior_amount_20" class="java.lang.String"/>
-  <field name="current_amount_20" class="java.lang.String"/>
-  <field name="prior_amount_total" class="java.lang.Double"/>
-  <field name="current_amount_sum_e13_e32" class="java.lang.Double"/>
-  <field name="prepaid_expenses_description" class="java.lang.String"/>
-  <field name="prior_amount_21" class="java.lang.String"/>
-  <field name="current_amount_21" class="java.lang.String"/>
-  <field name="prepaid_expenses_description_2" class="java.lang.String"/>
-  <field name="prior_amount_22" class="java.lang.String"/>
-  <field name="current_amount_22" class="java.lang.String"/>
-  <field name="prepaid_expenses_description_3" class="java.lang.String"/>
-  <field name="prior_amount_23" class="java.lang.String"/>
-  <field name="current_amount_23" class="java.lang.String"/>
-  <field name="prepaid_expenses_description_4" class="java.lang.String"/>
-  <field name="prior_amount_24" class="java.lang.String"/>
-  <field name="current_amount_24" class="java.lang.String"/>
-  <field name="prepaid_expenses_description_5" class="java.lang.String"/>
-  <field name="prior_amount_25" class="java.lang.String"/>
-  <field name="current_amount_25" class="java.lang.String"/>
-  <field name="prior_amount_total_2" class="java.lang.Double"/>
-  <field name="current_amount_sum_e39_e43" class="java.lang.Double"/>
-  <field name="other_assets_description" class="java.lang.String"/>
-  <field name="show_on" class="java.lang.String"/>
-  <field name="prior_amount_26" class="java.lang.String"/>
-  <field name="current_amount_26" class="java.lang.String"/>
-  <field name="other_assets_description_2" class="java.lang.String"/>
-  <field name="show_on_2" class="java.lang.String"/>
-  <field name="prior_amount_27" class="java.lang.String"/>
-  <field name="current_amount_27" class="java.lang.String"/>
-  <field name="other_assets_description_3" class="java.lang.String"/>
-  <field name="show_on_3" class="java.lang.String"/>
-  <field name="prior_amount_28" class="java.lang.String"/>
-  <field name="current_amount_28" class="java.lang.String"/>
-  <field name="other_assets_description_4" class="java.lang.String"/>
-  <field name="show_on_4" class="java.lang.String"/>
-  <field name="prior_amount_29" class="java.lang.String"/>
-  <field name="current_amount_29" class="java.lang.String"/>
-  <field name="other_assets_description_5" class="java.lang.String"/>
-  <field name="show_on_5" class="java.lang.String"/>
-  <field name="prior_amount_30" class="java.lang.String"/>
-  <field name="current_amount_30" class="java.lang.String"/>
-  <field name="other_assets_description_6" class="java.lang.String"/>
-  <field name="show_on_6" class="java.lang.String"/>
-  <field name="prior_amount_31" class="java.lang.String"/>
-  <field name="current_amount_31" class="java.lang.String"/>
-  <field name="other_assets_description_7" class="java.lang.String"/>
-  <field name="show_on_7" class="java.lang.String"/>
-  <field name="prior_amount_32" class="java.lang.String"/>
-  <field name="current_amount_32" class="java.lang.String"/>
-  <field name="other_assets_description_8" class="java.lang.String"/>
-  <field name="show_on_8" class="java.lang.String"/>
-  <field name="prior_amount_33" class="java.lang.String"/>
-  <field name="current_amount_33" class="java.lang.String"/>
-  <field name="prior_amount_total_3" class="java.lang.Double"/>
-  <field name="current_amount_sum_e50_e57" class="java.lang.Double"/>
-
-  <detail>
-    <band height="1200">
-      <element kind="textField" x="160" y="0" width="80" height="20">
-        <expression><![CDATA[$F{asset_dtl_5c_r2c3}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="20" width="80" height="20">
-        <expression><![CDATA[$F{contents_b59}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="40" width="80" height="20">
-        <expression><![CDATA[$F{contents_e_3}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="80" width="80" height="20">
-        <expression><![CDATA[$F{contents_e_4}]]></expression>
-      </element>
-      <element kind="staticText" x="160" y="120" width="80" height="20">
-        <text><![CDATA[ASSET DETAIL - OVERFLOW]]></text>
-      </element>
-      <element kind="staticText" x="160" y="160" width="80" height="20">
-        <text><![CDATA[Receivables are funds that are due to the SCA, Inc. from third parties through already established obligations. Examples include:]]></text>
-      </element>
-      <element kind="staticText" x="160" y="180" width="80" height="20">
-        <text><![CDATA[Unresolved cash advances, returned checks and bank fees, etc.]]></text>
-      </element>
-      <element kind="staticText" x="160" y="200" width="80" height="20">
-        <text><![CDATA[RECEIVABLES:  Owed From]]></text>
-      </element>
-      <element kind="staticText" x="240" y="200" width="80" height="20">
-        <text><![CDATA[Reason]]></text>
-      </element>
-      <element kind="staticText" x="320" y="200" width="80" height="20">
-        <text><![CDATA[Prior Amount]]></text>
-      </element>
-      <element kind="staticText" x="400" y="200" width="80" height="20">
-        <text><![CDATA[Current Amount]]></text>
-      </element>
-      <element kind="textField" x="160" y="220" width="80" height="20">
-        <expression><![CDATA[$F{receivables_owed_from}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="220" width="80" height="20">
-        <expression><![CDATA[$F{reason}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="220" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="220" width="80" height="20">
-        <expression><![CDATA[$F{current_amount}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="240" width="80" height="20">
-        <expression><![CDATA[$F{receivables_owed_from_2}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="240" width="80" height="20">
-        <expression><![CDATA[$F{reason_2}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="240" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_2}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="240" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_2}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="260" width="80" height="20">
-        <expression><![CDATA[$F{receivables_owed_from_3}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="260" width="80" height="20">
-        <expression><![CDATA[$F{reason_3}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="260" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_3}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="260" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_3}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="280" width="80" height="20">
-        <expression><![CDATA[$F{receivables_owed_from_4}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="280" width="80" height="20">
-        <expression><![CDATA[$F{reason_4}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="280" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_4}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="280" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_4}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="300" width="80" height="20">
-        <expression><![CDATA[$F{receivables_owed_from_5}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="300" width="80" height="20">
-        <expression><![CDATA[$F{reason_5}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="300" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_5}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="300" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_5}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="320" width="80" height="20">
-        <expression><![CDATA[$F{receivables_owed_from_6}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="320" width="80" height="20">
-        <expression><![CDATA[$F{reason_6}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="320" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_6}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="320" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_6}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="340" width="80" height="20">
-        <expression><![CDATA[$F{receivables_owed_from_7}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="340" width="80" height="20">
-        <expression><![CDATA[$F{reason_7}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="340" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_7}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="340" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_7}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="360" width="80" height="20">
-        <expression><![CDATA[$F{receivables_owed_from_8}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="360" width="80" height="20">
-        <expression><![CDATA[$F{reason_8}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="360" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_8}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="360" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_8}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="380" width="80" height="20">
-        <expression><![CDATA[$F{receivables_owed_from_9}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="380" width="80" height="20">
-        <expression><![CDATA[$F{reason_9}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="380" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_9}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="380" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_9}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="400" width="80" height="20">
-        <expression><![CDATA[$F{receivables_owed_from_10}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="400" width="80" height="20">
-        <expression><![CDATA[$F{reason_10}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="400" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_10}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="400" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_10}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="420" width="80" height="20">
-        <expression><![CDATA[$F{receivables_owed_from_11}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="420" width="80" height="20">
-        <expression><![CDATA[$F{reason_11}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="420" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_11}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="420" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_11}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="440" width="80" height="20">
-        <expression><![CDATA[$F{receivables_owed_from_12}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="440" width="80" height="20">
-        <expression><![CDATA[$F{reason_12}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="440" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_12}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="440" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_12}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="460" width="80" height="20">
-        <expression><![CDATA[$F{receivables_owed_from_13}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="460" width="80" height="20">
-        <expression><![CDATA[$F{reason_13}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="460" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_13}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="460" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_13}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="480" width="80" height="20">
-        <expression><![CDATA[$F{receivables_owed_from_14}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="480" width="80" height="20">
-        <expression><![CDATA[$F{reason_14}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="480" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_14}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="480" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_14}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="500" width="80" height="20">
-        <expression><![CDATA[$F{receivables_owed_from_15}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="500" width="80" height="20">
-        <expression><![CDATA[$F{reason_15}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="500" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_15}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="500" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_15}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="520" width="80" height="20">
-        <expression><![CDATA[$F{receivables_owed_from_16}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="520" width="80" height="20">
-        <expression><![CDATA[$F{reason_16}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="520" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_16}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="520" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_16}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="540" width="80" height="20">
-        <expression><![CDATA[$F{receivables_owed_from_17}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="540" width="80" height="20">
-        <expression><![CDATA[$F{reason_17}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="540" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_17}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="540" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_17}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="560" width="80" height="20">
-        <expression><![CDATA[$F{receivables_owed_from_18}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="560" width="80" height="20">
-        <expression><![CDATA[$F{reason_18}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="560" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_18}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="560" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_18}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="580" width="80" height="20">
-        <expression><![CDATA[$F{receivables_owed_from_19}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="580" width="80" height="20">
-        <expression><![CDATA[$F{reason_19}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="580" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_19}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="580" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_19}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="600" width="80" height="20">
-        <expression><![CDATA[$F{receivables_owed_from_20}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="600" width="80" height="20">
-        <expression><![CDATA[$F{reason_20}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="600" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_20}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="600" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_20}]]></expression>
-      </element>
-      <element kind="staticText" x="240" y="620" width="80" height="20">
-        <text><![CDATA[TOTAL]]></text>
-      </element>
-      <element kind="textField" x="320" y="620" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_total}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="620" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_sum_e13_e32}]]></expression>
-      </element>
-      <element kind="staticText" x="240" y="640" width="80" height="20">
-        <text><![CDATA[Show on]]></text>
-      </element>
-      <element kind="staticText" x="320" y="640" width="80" height="20">
-        <text><![CDATA[Pg. 3 I.c (Start)]]></text>
-      </element>
-      <element kind="staticText" x="400" y="640" width="80" height="20">
-        <text><![CDATA[Pg. 3 I.c (End)]]></text>
-      </element>
-      <element kind="staticText" x="160" y="680" width="80" height="20">
-        <text><![CDATA[Prepaid expenses are any expenses that we have paid for in advance, such as site deposits or down payments, that will be used]]></text>
-      </element>
-      <element kind="staticText" x="160" y="700" width="80" height="20">
-        <text><![CDATA[toward a site's occupancy payment. We are still owed the product or service for which that payment is related, or a refund.]]></text>
-      </element>
-      <element kind="staticText" x="160" y="720" width="80" height="20">
-        <text><![CDATA[PREPAID EXPENSES: Description]]></text>
-      </element>
-      <element kind="staticText" x="320" y="720" width="80" height="20">
-        <text><![CDATA[Prior Amount]]></text>
-      </element>
-      <element kind="staticText" x="400" y="720" width="80" height="20">
-        <text><![CDATA[Current Amount]]></text>
-      </element>
-      <element kind="textField" x="160" y="740" width="80" height="20">
-        <expression><![CDATA[$F{prepaid_expenses_description}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="740" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_21}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="740" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_21}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="760" width="80" height="20">
-        <expression><![CDATA[$F{prepaid_expenses_description_2}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="760" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_22}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="760" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_22}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="780" width="80" height="20">
-        <expression><![CDATA[$F{prepaid_expenses_description_3}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="780" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_23}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="780" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_23}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="800" width="80" height="20">
-        <expression><![CDATA[$F{prepaid_expenses_description_4}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="800" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_24}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="800" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_24}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="820" width="80" height="20">
-        <expression><![CDATA[$F{prepaid_expenses_description_5}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="820" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_25}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="820" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_25}]]></expression>
-      </element>
-      <element kind="staticText" x="240" y="840" width="80" height="20">
-        <text><![CDATA[TOTAL]]></text>
-      </element>
-      <element kind="textField" x="320" y="840" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_total_2}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="840" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_sum_e39_e43}]]></expression>
-      </element>
-      <element kind="staticText" x="240" y="860" width="80" height="20">
-        <text><![CDATA[Show on]]></text>
-      </element>
-      <element kind="staticText" x="320" y="860" width="80" height="20">
-        <text><![CDATA[Pg. 3 I.h (Start)]]></text>
-      </element>
-      <element kind="staticText" x="400" y="860" width="80" height="20">
-        <text><![CDATA[Pg. 3 I.h (End)]]></text>
-      </element>
-      <element kind="staticText" x="160" y="900" width="80" height="20">
-        <text><![CDATA[Other assets are any assets that do not fall into any other category. An example is a site security deposit which will be returned]]></text>
-      </element>
-      <element kind="staticText" x="160" y="920" width="80" height="20">
-        <text><![CDATA[after the event has occurred and the site is inspected.]]></text>
-      </element>
-      <element kind="staticText" x="160" y="940" width="80" height="20">
-        <text><![CDATA[OTHER ASSETS: Description]]></text>
-      </element>
-      <element kind="staticText" x="320" y="940" width="80" height="20">
-        <text><![CDATA[Prior Amount]]></text>
-      </element>
-      <element kind="staticText" x="400" y="940" width="80" height="20">
-        <text><![CDATA[Current Amount]]></text>
-      </element>
-      <element kind="textField" x="160" y="960" width="80" height="20">
-        <expression><![CDATA[$F{other_assets_description}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="960" width="80" height="20">
-        <expression><![CDATA[$F{show_on}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="960" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_26}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="960" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_26}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="980" width="80" height="20">
-        <expression><![CDATA[$F{other_assets_description_2}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="980" width="80" height="20">
-        <expression><![CDATA[$F{show_on_2}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="980" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_27}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="980" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_27}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="1000" width="80" height="20">
-        <expression><![CDATA[$F{other_assets_description_3}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="1000" width="80" height="20">
-        <expression><![CDATA[$F{show_on_3}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="1000" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_28}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="1000" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_28}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="1020" width="80" height="20">
-        <expression><![CDATA[$F{other_assets_description_4}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="1020" width="80" height="20">
-        <expression><![CDATA[$F{show_on_4}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="1020" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_29}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="1020" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_29}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="1040" width="80" height="20">
-        <expression><![CDATA[$F{other_assets_description_5}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="1040" width="80" height="20">
-        <expression><![CDATA[$F{show_on_5}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="1040" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_30}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="1040" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_30}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="1060" width="80" height="20">
-        <expression><![CDATA[$F{other_assets_description_6}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="1060" width="80" height="20">
-        <expression><![CDATA[$F{show_on_6}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="1060" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_31}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="1060" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_31}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="1080" width="80" height="20">
-        <expression><![CDATA[$F{other_assets_description_7}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="1080" width="80" height="20">
-        <expression><![CDATA[$F{show_on_7}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="1080" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_32}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="1080" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_32}]]></expression>
-      </element>
-      <element kind="textField" x="160" y="1100" width="80" height="20">
-        <expression><![CDATA[$F{other_assets_description_8}]]></expression>
-      </element>
-      <element kind="textField" x="240" y="1100" width="80" height="20">
-        <expression><![CDATA[$F{show_on_8}]]></expression>
-      </element>
-      <element kind="textField" x="320" y="1100" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_33}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="1100" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_33}]]></expression>
-      </element>
-      <element kind="staticText" x="240" y="1120" width="80" height="20">
-        <text><![CDATA[TOTAL]]></text>
-      </element>
-      <element kind="textField" x="320" y="1120" width="80" height="20">
-        <expression><![CDATA[$F{prior_amount_total_3}]]></expression>
-      </element>
-      <element kind="textField" x="400" y="1120" width="80" height="20">
-        <expression><![CDATA[$F{current_amount_sum_e50_e57}]]></expression>
-      </element>
-      <element kind="staticText" x="240" y="1140" width="80" height="20">
-        <text><![CDATA[Show on]]></text>
-      </element>
-      <element kind="staticText" x="320" y="1140" width="80" height="20">
-        <text><![CDATA[Pg. 3 I.i (Start)]]></text>
-      </element>
-      <element kind="staticText" x="400" y="1140" width="80" height="20">
-        <text><![CDATA[Pg. 3 I.i (End)]]></text>
-      </element>
-      <element kind="staticText" x="160" y="1160" width="80" height="20">
-        <text><![CDATA[Use additional sheets if necessary]]></text>
-      </element>
-      <element kind="staticText" x="160" y="1180" width="80" height="20">
-        <text><![CDATA[-5c-]]></text>
-      </element>
-    </band>
-  </detail>
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="ASSET_DTL_5c" language="java" pageWidth="595" pageHeight="3000" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="00000000-0000-0000-0000-000000000000">
+	<field name="asset_dtl_5c_r2c3" class="java.lang.Double"/>
+	<field name="contents_b59" class="java.lang.Double"/>
+	<field name="contents_e_3" class="java.lang.Double"/>
+	<field name="contents_e_4" class="java.lang.Double"/>
+	<field name="receivables_owed_from" class="java.lang.String"/>
+	<field name="reason" class="java.lang.String"/>
+	<field name="prior_amount" class="java.lang.String"/>
+	<field name="current_amount" class="java.lang.String"/>
+	<field name="receivables_owed_from_2" class="java.lang.String"/>
+	<field name="reason_2" class="java.lang.String"/>
+	<field name="prior_amount_2" class="java.lang.String"/>
+	<field name="current_amount_2" class="java.lang.String"/>
+	<field name="receivables_owed_from_3" class="java.lang.String"/>
+	<field name="reason_3" class="java.lang.String"/>
+	<field name="prior_amount_3" class="java.lang.String"/>
+	<field name="current_amount_3" class="java.lang.String"/>
+	<field name="receivables_owed_from_4" class="java.lang.String"/>
+	<field name="reason_4" class="java.lang.String"/>
+	<field name="prior_amount_4" class="java.lang.String"/>
+	<field name="current_amount_4" class="java.lang.String"/>
+	<field name="receivables_owed_from_5" class="java.lang.String"/>
+	<field name="reason_5" class="java.lang.String"/>
+	<field name="prior_amount_5" class="java.lang.String"/>
+	<field name="current_amount_5" class="java.lang.String"/>
+	<field name="receivables_owed_from_6" class="java.lang.String"/>
+	<field name="reason_6" class="java.lang.String"/>
+	<field name="prior_amount_6" class="java.lang.String"/>
+	<field name="current_amount_6" class="java.lang.String"/>
+	<field name="receivables_owed_from_7" class="java.lang.String"/>
+	<field name="reason_7" class="java.lang.String"/>
+	<field name="prior_amount_7" class="java.lang.String"/>
+	<field name="current_amount_7" class="java.lang.String"/>
+	<field name="receivables_owed_from_8" class="java.lang.String"/>
+	<field name="reason_8" class="java.lang.String"/>
+	<field name="prior_amount_8" class="java.lang.String"/>
+	<field name="current_amount_8" class="java.lang.String"/>
+	<field name="receivables_owed_from_9" class="java.lang.String"/>
+	<field name="reason_9" class="java.lang.String"/>
+	<field name="prior_amount_9" class="java.lang.String"/>
+	<field name="current_amount_9" class="java.lang.String"/>
+	<field name="receivables_owed_from_10" class="java.lang.String"/>
+	<field name="reason_10" class="java.lang.String"/>
+	<field name="prior_amount_10" class="java.lang.String"/>
+	<field name="current_amount_10" class="java.lang.String"/>
+	<field name="receivables_owed_from_11" class="java.lang.String"/>
+	<field name="reason_11" class="java.lang.String"/>
+	<field name="prior_amount_11" class="java.lang.String"/>
+	<field name="current_amount_11" class="java.lang.String"/>
+	<field name="receivables_owed_from_12" class="java.lang.String"/>
+	<field name="reason_12" class="java.lang.String"/>
+	<field name="prior_amount_12" class="java.lang.String"/>
+	<field name="current_amount_12" class="java.lang.String"/>
+	<field name="receivables_owed_from_13" class="java.lang.String"/>
+	<field name="reason_13" class="java.lang.String"/>
+	<field name="prior_amount_13" class="java.lang.String"/>
+	<field name="current_amount_13" class="java.lang.String"/>
+	<field name="receivables_owed_from_14" class="java.lang.String"/>
+	<field name="reason_14" class="java.lang.String"/>
+	<field name="prior_amount_14" class="java.lang.String"/>
+	<field name="current_amount_14" class="java.lang.String"/>
+	<field name="receivables_owed_from_15" class="java.lang.String"/>
+	<field name="reason_15" class="java.lang.String"/>
+	<field name="prior_amount_15" class="java.lang.String"/>
+	<field name="current_amount_15" class="java.lang.String"/>
+	<field name="receivables_owed_from_16" class="java.lang.String"/>
+	<field name="reason_16" class="java.lang.String"/>
+	<field name="prior_amount_16" class="java.lang.String"/>
+	<field name="current_amount_16" class="java.lang.String"/>
+	<field name="receivables_owed_from_17" class="java.lang.String"/>
+	<field name="reason_17" class="java.lang.String"/>
+	<field name="prior_amount_17" class="java.lang.String"/>
+	<field name="current_amount_17" class="java.lang.String"/>
+	<field name="receivables_owed_from_18" class="java.lang.String"/>
+	<field name="reason_18" class="java.lang.String"/>
+	<field name="prior_amount_18" class="java.lang.String"/>
+	<field name="current_amount_18" class="java.lang.String"/>
+	<field name="receivables_owed_from_19" class="java.lang.String"/>
+	<field name="reason_19" class="java.lang.String"/>
+	<field name="prior_amount_19" class="java.lang.String"/>
+	<field name="current_amount_19" class="java.lang.String"/>
+	<field name="receivables_owed_from_20" class="java.lang.String"/>
+	<field name="reason_20" class="java.lang.String"/>
+	<field name="prior_amount_20" class="java.lang.String"/>
+	<field name="current_amount_20" class="java.lang.String"/>
+	<field name="prior_amount_total" class="java.lang.Double"/>
+	<field name="current_amount_sum_e13_e32" class="java.lang.Double"/>
+	<field name="prepaid_expenses_description" class="java.lang.String"/>
+	<field name="prior_amount_21" class="java.lang.String"/>
+	<field name="current_amount_21" class="java.lang.String"/>
+	<field name="prepaid_expenses_description_2" class="java.lang.String"/>
+	<field name="prior_amount_22" class="java.lang.String"/>
+	<field name="current_amount_22" class="java.lang.String"/>
+	<field name="prepaid_expenses_description_3" class="java.lang.String"/>
+	<field name="prior_amount_23" class="java.lang.String"/>
+	<field name="current_amount_23" class="java.lang.String"/>
+	<field name="prepaid_expenses_description_4" class="java.lang.String"/>
+	<field name="prior_amount_24" class="java.lang.String"/>
+	<field name="current_amount_24" class="java.lang.String"/>
+	<field name="prepaid_expenses_description_5" class="java.lang.String"/>
+	<field name="prior_amount_25" class="java.lang.String"/>
+	<field name="current_amount_25" class="java.lang.String"/>
+	<field name="prior_amount_total_2" class="java.lang.Double"/>
+	<field name="current_amount_sum_e39_e43" class="java.lang.Double"/>
+	<field name="other_assets_description" class="java.lang.String"/>
+	<field name="show_on" class="java.lang.String"/>
+	<field name="prior_amount_26" class="java.lang.String"/>
+	<field name="current_amount_26" class="java.lang.String"/>
+	<field name="other_assets_description_2" class="java.lang.String"/>
+	<field name="show_on_2" class="java.lang.String"/>
+	<field name="prior_amount_27" class="java.lang.String"/>
+	<field name="current_amount_27" class="java.lang.String"/>
+	<field name="other_assets_description_3" class="java.lang.String"/>
+	<field name="show_on_3" class="java.lang.String"/>
+	<field name="prior_amount_28" class="java.lang.String"/>
+	<field name="current_amount_28" class="java.lang.String"/>
+	<field name="other_assets_description_4" class="java.lang.String"/>
+	<field name="show_on_4" class="java.lang.String"/>
+	<field name="prior_amount_29" class="java.lang.String"/>
+	<field name="current_amount_29" class="java.lang.String"/>
+	<field name="other_assets_description_5" class="java.lang.String"/>
+	<field name="show_on_5" class="java.lang.String"/>
+	<field name="prior_amount_30" class="java.lang.String"/>
+	<field name="current_amount_30" class="java.lang.String"/>
+	<field name="other_assets_description_6" class="java.lang.String"/>
+	<field name="show_on_6" class="java.lang.String"/>
+	<field name="prior_amount_31" class="java.lang.String"/>
+	<field name="current_amount_31" class="java.lang.String"/>
+	<field name="other_assets_description_7" class="java.lang.String"/>
+	<field name="show_on_7" class="java.lang.String"/>
+	<field name="prior_amount_32" class="java.lang.String"/>
+	<field name="current_amount_32" class="java.lang.String"/>
+	<field name="other_assets_description_8" class="java.lang.String"/>
+	<field name="show_on_8" class="java.lang.String"/>
+	<field name="prior_amount_33" class="java.lang.String"/>
+	<field name="current_amount_33" class="java.lang.String"/>
+	<field name="prior_amount_total_3" class="java.lang.Double"/>
+	<field name="current_amount_sum_e50_e57" class="java.lang.Double"/>
+	<detail>
+		<band height="1200">
+			<element kind="textField" uuid="9c4423bc-3f86-4a1c-b731-f82a717831ea" x="160" y="0" width="80" height="20">
+				<expression><![CDATA[$F{asset_dtl_5c_r2c3}]]></expression>
+			</element>
+			<element kind="textField" uuid="7ccf7b5d-4d76-4e12-940f-36631f7990df" x="160" y="20" width="80" height="20">
+				<expression><![CDATA[$F{contents_b59}]]></expression>
+			</element>
+			<element kind="textField" uuid="5d09538a-acc3-4a13-b52c-348b16adf4c0" x="160" y="40" width="80" height="20">
+				<expression><![CDATA[$F{contents_e_3}]]></expression>
+			</element>
+			<element kind="textField" uuid="e5b4ccae-2243-4ca6-95ca-880133c916be" x="160" y="80" width="80" height="20">
+				<expression><![CDATA[$F{contents_e_4}]]></expression>
+			</element>
+			<element kind="staticText" uuid="225f7736-d73d-43ea-83fc-91a15ac2ca2e" x="160" y="120" width="80" height="20">
+				<text><![CDATA[ASSET DETAIL - OVERFLOW]]></text>
+			</element>
+			<element kind="staticText" uuid="696979d5-7d49-4ad0-9cca-90e7c1187d9a" x="160" y="160" width="80" height="20">
+				<text><![CDATA[Receivables are funds that are due to the SCA, Inc. from third parties through already established obligations. Examples include:]]></text>
+			</element>
+			<element kind="staticText" uuid="e1a577bc-dead-4d89-b5c7-74ba6f970528" x="160" y="180" width="80" height="20">
+				<text><![CDATA[Unresolved cash advances, returned checks and bank fees, etc.]]></text>
+			</element>
+			<element kind="staticText" uuid="6a8f3a09-9101-4381-935c-532ba1d27cef" x="160" y="200" width="80" height="20">
+				<text><![CDATA[RECEIVABLES:  Owed From]]></text>
+			</element>
+			<element kind="staticText" uuid="aee781ff-45af-4d28-9d6b-e9e2d8e33ed6" x="240" y="200" width="80" height="20">
+				<text><![CDATA[Reason]]></text>
+			</element>
+			<element kind="staticText" uuid="0c88cf18-01a3-4392-b62c-3e57c75c809d" x="320" y="200" width="80" height="20">
+				<text><![CDATA[Prior Amount]]></text>
+			</element>
+			<element kind="staticText" uuid="c186b3e8-2ae8-4819-b4f0-004063bccba9" x="400" y="200" width="80" height="20">
+				<text><![CDATA[Current Amount]]></text>
+			</element>
+			<element kind="textField" uuid="1bbdb6ec-ae91-4d95-8d84-087040863db0" x="160" y="220" width="80" height="20">
+				<expression><![CDATA[$F{receivables_owed_from}]]></expression>
+			</element>
+			<element kind="textField" uuid="20b77848-c683-4a24-8d50-f4dce9c7c179" x="240" y="220" width="80" height="20">
+				<expression><![CDATA[$F{reason}]]></expression>
+			</element>
+			<element kind="textField" uuid="f52843f6-2751-4b34-875a-c126bd75dbb9" x="320" y="220" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount}]]></expression>
+			</element>
+			<element kind="textField" uuid="e4e7e6f7-6799-497c-8f33-3f4e34339ebf" x="400" y="220" width="80" height="20">
+				<expression><![CDATA[$F{current_amount}]]></expression>
+			</element>
+			<element kind="textField" uuid="f12fe479-6935-46bc-b201-116fb1e49836" x="160" y="240" width="80" height="20">
+				<expression><![CDATA[$F{receivables_owed_from_2}]]></expression>
+			</element>
+			<element kind="textField" uuid="31c4a02e-6a3f-4247-8cde-0b2de547fa99" x="240" y="240" width="80" height="20">
+				<expression><![CDATA[$F{reason_2}]]></expression>
+			</element>
+			<element kind="textField" uuid="ca92bfba-eafb-4af0-ac01-c9e538568f8b" x="320" y="240" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_2}]]></expression>
+			</element>
+			<element kind="textField" uuid="9bac68c9-da14-4dfb-8df6-12574964c0ac" x="400" y="240" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_2}]]></expression>
+			</element>
+			<element kind="textField" uuid="d6c5f563-2576-4cee-9467-878dde8fc601" x="160" y="260" width="80" height="20">
+				<expression><![CDATA[$F{receivables_owed_from_3}]]></expression>
+			</element>
+			<element kind="textField" uuid="c1cd008a-6e74-4eed-aeca-02c17b6735a7" x="240" y="260" width="80" height="20">
+				<expression><![CDATA[$F{reason_3}]]></expression>
+			</element>
+			<element kind="textField" uuid="7e4fddc2-9590-4da6-9b80-90c9f3cb572e" x="320" y="260" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_3}]]></expression>
+			</element>
+			<element kind="textField" uuid="96357e62-c6d3-4e65-85c9-4bb09d51ade7" x="400" y="260" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_3}]]></expression>
+			</element>
+			<element kind="textField" uuid="1ca3b190-7ddc-4fed-a64c-9cb780c5bf9d" x="160" y="280" width="80" height="20">
+				<expression><![CDATA[$F{receivables_owed_from_4}]]></expression>
+			</element>
+			<element kind="textField" uuid="ca1a4b60-8a3f-49e1-869f-9d337b4f982a" x="240" y="280" width="80" height="20">
+				<expression><![CDATA[$F{reason_4}]]></expression>
+			</element>
+			<element kind="textField" uuid="961540ee-6eac-4039-99cc-e2645ca70517" x="320" y="280" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_4}]]></expression>
+			</element>
+			<element kind="textField" uuid="886958e8-bf10-49e1-9d7e-517086e372fc" x="400" y="280" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_4}]]></expression>
+			</element>
+			<element kind="textField" uuid="4fa7af98-bc03-4024-8e29-3d9b6cba595d" x="160" y="300" width="80" height="20">
+				<expression><![CDATA[$F{receivables_owed_from_5}]]></expression>
+			</element>
+			<element kind="textField" uuid="5646e807-46b1-41fb-b7af-5f3384b95ce3" x="240" y="300" width="80" height="20">
+				<expression><![CDATA[$F{reason_5}]]></expression>
+			</element>
+			<element kind="textField" uuid="e885adc6-22fc-4cdd-8d67-e74ca69bc38d" x="320" y="300" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_5}]]></expression>
+			</element>
+			<element kind="textField" uuid="c94f6d45-9eff-4f6e-804e-2728be7a49f8" x="400" y="300" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_5}]]></expression>
+			</element>
+			<element kind="textField" uuid="6202944b-dbc4-48ba-8171-72a7239723b9" x="160" y="320" width="80" height="20">
+				<expression><![CDATA[$F{receivables_owed_from_6}]]></expression>
+			</element>
+			<element kind="textField" uuid="0e3fc2b8-09da-4e98-bc05-0deb49d36358" x="240" y="320" width="80" height="20">
+				<expression><![CDATA[$F{reason_6}]]></expression>
+			</element>
+			<element kind="textField" uuid="abf81c23-6b2d-4d8e-a505-66c75b99c70f" x="320" y="320" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_6}]]></expression>
+			</element>
+			<element kind="textField" uuid="b289f2d5-0747-45e8-a22a-4999eee102f8" x="400" y="320" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_6}]]></expression>
+			</element>
+			<element kind="textField" uuid="644827f9-1543-4749-877b-7ec457ca26f9" x="160" y="340" width="80" height="20">
+				<expression><![CDATA[$F{receivables_owed_from_7}]]></expression>
+			</element>
+			<element kind="textField" uuid="e1b709dc-c2ec-41f4-9b76-24c99c55d49a" x="240" y="340" width="80" height="20">
+				<expression><![CDATA[$F{reason_7}]]></expression>
+			</element>
+			<element kind="textField" uuid="c9363054-00ee-4976-928d-ee17d06e27e6" x="320" y="340" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_7}]]></expression>
+			</element>
+			<element kind="textField" uuid="579577c6-945d-43e9-9066-a4a7e9e03ea2" x="400" y="340" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_7}]]></expression>
+			</element>
+			<element kind="textField" uuid="5834fab3-55f2-41e8-9d56-385dec54c7b6" x="160" y="360" width="80" height="20">
+				<expression><![CDATA[$F{receivables_owed_from_8}]]></expression>
+			</element>
+			<element kind="textField" uuid="47a9b402-a8c9-4aa7-a572-04f6126cef87" x="240" y="360" width="80" height="20">
+				<expression><![CDATA[$F{reason_8}]]></expression>
+			</element>
+			<element kind="textField" uuid="0e6673a6-2eac-43ff-bc9d-cb4240b3e743" x="320" y="360" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_8}]]></expression>
+			</element>
+			<element kind="textField" uuid="4d33d0fb-abf2-4dc2-9965-0df3b4f0e5ba" x="400" y="360" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_8}]]></expression>
+			</element>
+			<element kind="textField" uuid="36d72404-d9a1-4409-b0a6-d898cbc9c361" x="160" y="380" width="80" height="20">
+				<expression><![CDATA[$F{receivables_owed_from_9}]]></expression>
+			</element>
+			<element kind="textField" uuid="907a8b39-b691-4718-b6e5-19ff77e5746b" x="240" y="380" width="80" height="20">
+				<expression><![CDATA[$F{reason_9}]]></expression>
+			</element>
+			<element kind="textField" uuid="b6c2e25a-d859-486a-ad27-e7b56a517c37" x="320" y="380" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_9}]]></expression>
+			</element>
+			<element kind="textField" uuid="e95bafed-7180-487c-9fe3-87a1b4cdfa86" x="400" y="380" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_9}]]></expression>
+			</element>
+			<element kind="textField" uuid="6747202b-adcb-4fad-9f02-2d9ffbd804cb" x="160" y="400" width="80" height="20">
+				<expression><![CDATA[$F{receivables_owed_from_10}]]></expression>
+			</element>
+			<element kind="textField" uuid="13cfc5d5-5e26-4ac1-ba75-76c4ffe7f7ef" x="240" y="400" width="80" height="20">
+				<expression><![CDATA[$F{reason_10}]]></expression>
+			</element>
+			<element kind="textField" uuid="a187a5ec-04b1-492c-baac-2443f079ba8f" x="320" y="400" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_10}]]></expression>
+			</element>
+			<element kind="textField" uuid="1292ca99-bea4-48cc-83a8-c51edf5c86ac" x="400" y="400" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_10}]]></expression>
+			</element>
+			<element kind="textField" uuid="1635ba01-cafc-4495-86e9-5499f53bb437" x="160" y="420" width="80" height="20">
+				<expression><![CDATA[$F{receivables_owed_from_11}]]></expression>
+			</element>
+			<element kind="textField" uuid="a2ea2918-4086-42f0-bd1f-b6ec307088ca" x="240" y="420" width="80" height="20">
+				<expression><![CDATA[$F{reason_11}]]></expression>
+			</element>
+			<element kind="textField" uuid="7ca5c742-15ac-477a-a652-b44c317b6c0e" x="320" y="420" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_11}]]></expression>
+			</element>
+			<element kind="textField" uuid="1d7b4264-654a-4396-8c38-f1c0b7ed91fe" x="400" y="420" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_11}]]></expression>
+			</element>
+			<element kind="textField" uuid="787dc7f5-b160-4b17-8761-e5b741dd92c5" x="160" y="440" width="80" height="20">
+				<expression><![CDATA[$F{receivables_owed_from_12}]]></expression>
+			</element>
+			<element kind="textField" uuid="476639af-9925-4314-b584-63147c39b37c" x="240" y="440" width="80" height="20">
+				<expression><![CDATA[$F{reason_12}]]></expression>
+			</element>
+			<element kind="textField" uuid="2ad5e014-48ed-4cff-bf2d-63fea5052b3e" x="320" y="440" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_12}]]></expression>
+			</element>
+			<element kind="textField" uuid="e73e2a32-ea1a-4c63-8465-bf302ea85c32" x="400" y="440" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_12}]]></expression>
+			</element>
+			<element kind="textField" uuid="13330e82-ac49-40d7-95bb-e8ffbba39433" x="160" y="460" width="80" height="20">
+				<expression><![CDATA[$F{receivables_owed_from_13}]]></expression>
+			</element>
+			<element kind="textField" uuid="ede1f219-e2b6-4055-94d0-00ab9e1e89bf" x="240" y="460" width="80" height="20">
+				<expression><![CDATA[$F{reason_13}]]></expression>
+			</element>
+			<element kind="textField" uuid="8b4a3af6-8ddf-4f19-b175-bb5ebf525dd0" x="320" y="460" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_13}]]></expression>
+			</element>
+			<element kind="textField" uuid="e23fe21c-fbe6-4c19-bbe5-711912052f67" x="400" y="460" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_13}]]></expression>
+			</element>
+			<element kind="textField" uuid="2b3cb451-f3ea-4002-82a6-310f1440207b" x="160" y="480" width="80" height="20">
+				<expression><![CDATA[$F{receivables_owed_from_14}]]></expression>
+			</element>
+			<element kind="textField" uuid="8b85295c-4c00-463d-af30-b603e15f30f3" x="240" y="480" width="80" height="20">
+				<expression><![CDATA[$F{reason_14}]]></expression>
+			</element>
+			<element kind="textField" uuid="b8fe854c-1a56-442c-8153-bec61237bbb4" x="320" y="480" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_14}]]></expression>
+			</element>
+			<element kind="textField" uuid="cd82c60a-76e2-4da3-bb0f-86d981b7a9ca" x="400" y="480" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_14}]]></expression>
+			</element>
+			<element kind="textField" uuid="60bab0b2-1a00-4f49-a484-9bcbcfaaa778" x="160" y="500" width="80" height="20">
+				<expression><![CDATA[$F{receivables_owed_from_15}]]></expression>
+			</element>
+			<element kind="textField" uuid="895f534b-d236-4e6e-bedd-5246d9115426" x="240" y="500" width="80" height="20">
+				<expression><![CDATA[$F{reason_15}]]></expression>
+			</element>
+			<element kind="textField" uuid="1e0a9a5b-f477-4352-aeb0-0ff7a675af1b" x="320" y="500" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_15}]]></expression>
+			</element>
+			<element kind="textField" uuid="27c73164-7ca0-4664-9a45-dee9eb7f89c8" x="400" y="500" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_15}]]></expression>
+			</element>
+			<element kind="textField" uuid="ec336135-ca12-4214-a96c-7e00f0d7ff6f" x="160" y="520" width="80" height="20">
+				<expression><![CDATA[$F{receivables_owed_from_16}]]></expression>
+			</element>
+			<element kind="textField" uuid="c16b8c27-3dde-479d-9f41-486c4cb6c592" x="240" y="520" width="80" height="20">
+				<expression><![CDATA[$F{reason_16}]]></expression>
+			</element>
+			<element kind="textField" uuid="10cd32d8-974d-4cae-9892-e9eedb8e1d33" x="320" y="520" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_16}]]></expression>
+			</element>
+			<element kind="textField" uuid="fda40ac7-17e3-4ad0-af3f-5096f2b9e404" x="400" y="520" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_16}]]></expression>
+			</element>
+			<element kind="textField" uuid="64f8888b-0981-4fe8-a740-95bacf8ff75a" x="160" y="540" width="80" height="20">
+				<expression><![CDATA[$F{receivables_owed_from_17}]]></expression>
+			</element>
+			<element kind="textField" uuid="2ba13d3c-a465-41f4-a813-9e6ec06d8b28" x="240" y="540" width="80" height="20">
+				<expression><![CDATA[$F{reason_17}]]></expression>
+			</element>
+			<element kind="textField" uuid="7eb09191-4b44-458a-b2ce-27a3c304b791" x="320" y="540" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_17}]]></expression>
+			</element>
+			<element kind="textField" uuid="61c19387-e7ed-4664-914f-fa6f5d1e6dab" x="400" y="540" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_17}]]></expression>
+			</element>
+			<element kind="textField" uuid="98266f60-c2c6-43ad-8a24-c823c968a653" x="160" y="560" width="80" height="20">
+				<expression><![CDATA[$F{receivables_owed_from_18}]]></expression>
+			</element>
+			<element kind="textField" uuid="88d31243-b8a1-4990-8b91-e21e993e1dc9" x="240" y="560" width="80" height="20">
+				<expression><![CDATA[$F{reason_18}]]></expression>
+			</element>
+			<element kind="textField" uuid="ed8fac35-4d97-4bec-ae55-75fd4f982230" x="320" y="560" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_18}]]></expression>
+			</element>
+			<element kind="textField" uuid="ef9205bd-85f6-4689-ba78-d475daf05b66" x="400" y="560" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_18}]]></expression>
+			</element>
+			<element kind="textField" uuid="7ea732d2-f055-4266-bfb2-808d09a1b5ee" x="160" y="580" width="80" height="20">
+				<expression><![CDATA[$F{receivables_owed_from_19}]]></expression>
+			</element>
+			<element kind="textField" uuid="0ed48996-38d4-415e-b510-05744baa6061" x="240" y="580" width="80" height="20">
+				<expression><![CDATA[$F{reason_19}]]></expression>
+			</element>
+			<element kind="textField" uuid="c3846bf0-272e-4a18-80b4-1c428c4a9920" x="320" y="580" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_19}]]></expression>
+			</element>
+			<element kind="textField" uuid="985d7c26-65b6-4435-98ec-c18dcd2affaa" x="400" y="580" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_19}]]></expression>
+			</element>
+			<element kind="textField" uuid="b6d9d528-fd1f-4a7c-977b-86ca34ba70ff" x="160" y="600" width="80" height="20">
+				<expression><![CDATA[$F{receivables_owed_from_20}]]></expression>
+			</element>
+			<element kind="textField" uuid="f3f579c8-e547-42d7-bf77-6161c36ece07" x="240" y="600" width="80" height="20">
+				<expression><![CDATA[$F{reason_20}]]></expression>
+			</element>
+			<element kind="textField" uuid="df0e5de3-086f-409e-86be-a6d1d0397249" x="320" y="600" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_20}]]></expression>
+			</element>
+			<element kind="textField" uuid="02e301b6-9de4-41f7-9e6c-81eea173e9e1" x="400" y="600" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_20}]]></expression>
+			</element>
+			<element kind="staticText" uuid="760bb75e-90e5-4f22-8d4e-395d51d72cdc" x="240" y="620" width="80" height="20">
+				<text><![CDATA[TOTAL]]></text>
+			</element>
+			<element kind="textField" uuid="43986912-64ec-4f3d-b02e-4f4490ca5634" x="320" y="620" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_total}]]></expression>
+			</element>
+			<element kind="textField" uuid="8d77c44b-f275-4e34-86cb-066755a4c4b4" x="400" y="620" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_sum_e13_e32}]]></expression>
+			</element>
+			<element kind="staticText" uuid="5f715d03-b5f8-4031-acff-1b2256df5d2c" x="240" y="640" width="80" height="20">
+				<text><![CDATA[Show on]]></text>
+			</element>
+			<element kind="staticText" uuid="4b6f648f-a102-4ba4-905b-528bc4b46031" x="320" y="640" width="80" height="20">
+				<text><![CDATA[Pg. 3 I.c (Start)]]></text>
+			</element>
+			<element kind="staticText" uuid="c41d3dc8-3bf9-433d-92b2-ca7a11ae1016" x="400" y="640" width="80" height="20">
+				<text><![CDATA[Pg. 3 I.c (End)]]></text>
+			</element>
+			<element kind="staticText" uuid="6c7066e0-a96e-45e0-bc8b-0b2c45bc1cb5" x="160" y="680" width="80" height="20">
+				<text><![CDATA[Prepaid expenses are any expenses that we have paid for in advance, such as site deposits or down payments, that will be used]]></text>
+			</element>
+			<element kind="staticText" uuid="48aabe25-6bc7-41d5-ad21-33d9bf4c9d73" x="160" y="700" width="80" height="20">
+				<text><![CDATA[toward a site's occupancy payment. We are still owed the product or service for which that payment is related, or a refund.]]></text>
+			</element>
+			<element kind="staticText" uuid="e63776e0-0b61-41fe-b860-61dad1eb5073" x="160" y="720" width="80" height="20">
+				<text><![CDATA[PREPAID EXPENSES: Description]]></text>
+			</element>
+			<element kind="staticText" uuid="b6f8db26-b442-4f39-8c53-a115ceef7cc1" x="320" y="720" width="80" height="20">
+				<text><![CDATA[Prior Amount]]></text>
+			</element>
+			<element kind="staticText" uuid="be109472-756f-43ef-88f6-503bcacfba2a" x="400" y="720" width="80" height="20">
+				<text><![CDATA[Current Amount]]></text>
+			</element>
+			<element kind="textField" uuid="47b18af9-e087-4449-ac7c-e3d83905633a" x="160" y="740" width="80" height="20">
+				<expression><![CDATA[$F{prepaid_expenses_description}]]></expression>
+			</element>
+			<element kind="textField" uuid="447a6ae6-8075-454a-871b-d0a3b7174a76" x="320" y="740" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_21}]]></expression>
+			</element>
+			<element kind="textField" uuid="3a741ed0-ce17-4b57-817a-45cdc693d0ee" x="400" y="740" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_21}]]></expression>
+			</element>
+			<element kind="textField" uuid="3f59f1a5-c883-4a86-9d38-b7fd3d965119" x="160" y="760" width="80" height="20">
+				<expression><![CDATA[$F{prepaid_expenses_description_2}]]></expression>
+			</element>
+			<element kind="textField" uuid="a383915c-8abf-4e52-a713-b735e89c9b73" x="320" y="760" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_22}]]></expression>
+			</element>
+			<element kind="textField" uuid="928b5da7-ade7-4a7c-be93-3c7aeed01689" x="400" y="760" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_22}]]></expression>
+			</element>
+			<element kind="textField" uuid="53d0fd74-8b11-41c0-9fce-5eba1d7cae00" x="160" y="780" width="80" height="20">
+				<expression><![CDATA[$F{prepaid_expenses_description_3}]]></expression>
+			</element>
+			<element kind="textField" uuid="4206dccd-28f4-4bc5-8a00-15b18648ef3e" x="320" y="780" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_23}]]></expression>
+			</element>
+			<element kind="textField" uuid="522af1b2-cafa-415f-9f6c-7ac850626cae" x="400" y="780" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_23}]]></expression>
+			</element>
+			<element kind="textField" uuid="990e0c72-4c18-4551-ba83-552c6adf853f" x="160" y="800" width="80" height="20">
+				<expression><![CDATA[$F{prepaid_expenses_description_4}]]></expression>
+			</element>
+			<element kind="textField" uuid="8ecd51aa-104a-40e1-bf20-e0af579a83a1" x="320" y="800" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_24}]]></expression>
+			</element>
+			<element kind="textField" uuid="c15f288e-71ab-46ff-b396-e2123f1e0e12" x="400" y="800" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_24}]]></expression>
+			</element>
+			<element kind="textField" uuid="910939ed-5501-4222-abe3-c28de2cb50d1" x="160" y="820" width="80" height="20">
+				<expression><![CDATA[$F{prepaid_expenses_description_5}]]></expression>
+			</element>
+			<element kind="textField" uuid="cf807155-28f6-4eb1-b50a-0e40bde3b110" x="320" y="820" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_25}]]></expression>
+			</element>
+			<element kind="textField" uuid="a4bac104-3cf5-418f-88fb-f12799be0406" x="400" y="820" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_25}]]></expression>
+			</element>
+			<element kind="staticText" uuid="fe925a93-4580-4508-b3ec-5dce6eefb963" x="240" y="840" width="80" height="20">
+				<text><![CDATA[TOTAL]]></text>
+			</element>
+			<element kind="textField" uuid="f597c3d3-2594-4166-b5f5-f5ee1f4efb5b" x="320" y="840" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_total_2}]]></expression>
+			</element>
+			<element kind="textField" uuid="461ee076-8498-46a6-91b7-a0428f31180f" x="400" y="840" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_sum_e39_e43}]]></expression>
+			</element>
+			<element kind="staticText" uuid="eb96fd73-d28d-4ea1-a3ff-335b88b8209a" x="240" y="860" width="80" height="20">
+				<text><![CDATA[Show on]]></text>
+			</element>
+			<element kind="staticText" uuid="2f9a295e-1655-4d39-95c3-5ed25a2c8c79" x="320" y="860" width="80" height="20">
+				<text><![CDATA[Pg. 3 I.h (Start)]]></text>
+			</element>
+			<element kind="staticText" uuid="ff3737dc-fec3-4dc9-bb23-4a4216ed9b37" x="400" y="860" width="80" height="20">
+				<text><![CDATA[Pg. 3 I.h (End)]]></text>
+			</element>
+			<element kind="staticText" uuid="ccdf7f76-944c-4855-b6d2-8a6530ae3910" x="160" y="900" width="80" height="20">
+				<text><![CDATA[Other assets are any assets that do not fall into any other category. An example is a site security deposit which will be returned]]></text>
+			</element>
+			<element kind="staticText" uuid="2dac8914-2e67-47bc-8ae9-4eacb8984560" x="160" y="920" width="80" height="20">
+				<text><![CDATA[after the event has occurred and the site is inspected.]]></text>
+			</element>
+			<element kind="staticText" uuid="40c13715-f42e-49e8-8444-f117c3e4d7c6" x="160" y="940" width="80" height="20">
+				<text><![CDATA[OTHER ASSETS: Description]]></text>
+			</element>
+			<element kind="staticText" uuid="3140d527-86e5-43b2-ab05-f9321ad870f4" x="320" y="940" width="80" height="20">
+				<text><![CDATA[Prior Amount]]></text>
+			</element>
+			<element kind="staticText" uuid="6ea74d86-a970-48c7-9b69-932d67dcffe0" x="400" y="940" width="80" height="20">
+				<text><![CDATA[Current Amount]]></text>
+			</element>
+			<element kind="textField" uuid="586b9fbc-8a6c-4890-92ac-5c2154c718bb" x="160" y="960" width="80" height="20">
+				<expression><![CDATA[$F{other_assets_description}]]></expression>
+			</element>
+			<element kind="textField" uuid="4f94ceed-af03-4cd9-a28d-209a2306c1ac" x="240" y="960" width="80" height="20">
+				<expression><![CDATA[$F{show_on}]]></expression>
+			</element>
+			<element kind="textField" uuid="de4dff0c-561d-4450-988e-f003f1dfa714" x="320" y="960" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_26}]]></expression>
+			</element>
+			<element kind="textField" uuid="32c62492-fdbf-4c07-abbe-8c9bf79f2ae0" x="400" y="960" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_26}]]></expression>
+			</element>
+			<element kind="textField" uuid="78aa1603-7b52-4bfe-b2b4-f7b49c19fcc1" x="160" y="980" width="80" height="20">
+				<expression><![CDATA[$F{other_assets_description_2}]]></expression>
+			</element>
+			<element kind="textField" uuid="6d95342d-1f56-47fc-bf9a-b04b7a803f11" x="240" y="980" width="80" height="20">
+				<expression><![CDATA[$F{show_on_2}]]></expression>
+			</element>
+			<element kind="textField" uuid="aa09f49c-a070-476a-8065-93debf9c68f3" x="320" y="980" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_27}]]></expression>
+			</element>
+			<element kind="textField" uuid="bd9b5ed6-e3ea-404d-9b6f-f5f123637b6d" x="400" y="980" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_27}]]></expression>
+			</element>
+			<element kind="textField" uuid="5cb92516-86ee-4e58-85eb-44cd82603bd4" x="160" y="1000" width="80" height="20">
+				<expression><![CDATA[$F{other_assets_description_3}]]></expression>
+			</element>
+			<element kind="textField" uuid="9a14f8bf-16af-49a6-a910-4552494faf45" x="240" y="1000" width="80" height="20">
+				<expression><![CDATA[$F{show_on_3}]]></expression>
+			</element>
+			<element kind="textField" uuid="85c7e7ca-e729-40ec-a822-a38930c0c45e" x="320" y="1000" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_28}]]></expression>
+			</element>
+			<element kind="textField" uuid="c3227f99-cd68-436c-b8b7-d3b8126bf46f" x="400" y="1000" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_28}]]></expression>
+			</element>
+			<element kind="textField" uuid="9b51cd18-073f-4b61-a2eb-bb15cf857329" x="160" y="1020" width="80" height="20">
+				<expression><![CDATA[$F{other_assets_description_4}]]></expression>
+			</element>
+			<element kind="textField" uuid="f575739d-ffe8-4a4c-9a57-f88aa97fc65a" x="240" y="1020" width="80" height="20">
+				<expression><![CDATA[$F{show_on_4}]]></expression>
+			</element>
+			<element kind="textField" uuid="36e881dc-0e73-4fb6-b1d2-d31693ecd203" x="320" y="1020" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_29}]]></expression>
+			</element>
+			<element kind="textField" uuid="80344d54-c540-4bba-b008-e67e84f5ac29" x="400" y="1020" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_29}]]></expression>
+			</element>
+			<element kind="textField" uuid="25322281-e290-4893-830c-4df258fff85a" x="160" y="1040" width="80" height="20">
+				<expression><![CDATA[$F{other_assets_description_5}]]></expression>
+			</element>
+			<element kind="textField" uuid="f98bff44-6932-4025-9070-d70e9cd624d2" x="240" y="1040" width="80" height="20">
+				<expression><![CDATA[$F{show_on_5}]]></expression>
+			</element>
+			<element kind="textField" uuid="f1e38e78-5fad-4908-ae9e-6dee33d7f43f" x="320" y="1040" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_30}]]></expression>
+			</element>
+			<element kind="textField" uuid="06bffbef-e514-4f6b-919d-51c7256ec3f0" x="400" y="1040" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_30}]]></expression>
+			</element>
+			<element kind="textField" uuid="a03fd4b2-8aa5-4d1e-9024-c5b2be593010" x="160" y="1060" width="80" height="20">
+				<expression><![CDATA[$F{other_assets_description_6}]]></expression>
+			</element>
+			<element kind="textField" uuid="b6f1de94-48d9-4a1d-9192-97421c119406" x="240" y="1060" width="80" height="20">
+				<expression><![CDATA[$F{show_on_6}]]></expression>
+			</element>
+			<element kind="textField" uuid="f5992321-0bfe-4ef0-ac6d-718181330bcc" x="320" y="1060" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_31}]]></expression>
+			</element>
+			<element kind="textField" uuid="28511802-6a13-4463-a18c-74b12ada94bc" x="400" y="1060" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_31}]]></expression>
+			</element>
+			<element kind="textField" uuid="1fcf5060-f684-480c-9e07-0779f3adece5" x="160" y="1080" width="80" height="20">
+				<expression><![CDATA[$F{other_assets_description_7}]]></expression>
+			</element>
+			<element kind="textField" uuid="7cc512e9-30d7-424c-af31-c6b2c45a86be" x="240" y="1080" width="80" height="20">
+				<expression><![CDATA[$F{show_on_7}]]></expression>
+			</element>
+			<element kind="textField" uuid="98ebda91-380c-4edc-9a63-96c3822f10c5" x="320" y="1080" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_32}]]></expression>
+			</element>
+			<element kind="textField" uuid="83bbc43d-3206-4a43-a72b-96a5ac337030" x="400" y="1080" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_32}]]></expression>
+			</element>
+			<element kind="textField" uuid="ffd1fd3d-f0ff-4cc0-b55a-0de7e529f0ea" x="160" y="1100" width="80" height="20">
+				<expression><![CDATA[$F{other_assets_description_8}]]></expression>
+			</element>
+			<element kind="textField" uuid="8be1a582-940b-433d-b98f-7d5e36eb158c" x="240" y="1100" width="80" height="20">
+				<expression><![CDATA[$F{show_on_8}]]></expression>
+			</element>
+			<element kind="textField" uuid="66ea450f-e04f-4518-9346-c6e3f97a2b85" x="320" y="1100" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_33}]]></expression>
+			</element>
+			<element kind="textField" uuid="e6ae6cb7-2b7e-4f1f-9ef2-bf086dda0090" x="400" y="1100" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_33}]]></expression>
+			</element>
+			<element kind="staticText" uuid="ab7f9f0d-4bc4-46eb-89a4-929a854962ed" x="240" y="1120" width="80" height="20">
+				<text><![CDATA[TOTAL]]></text>
+			</element>
+			<element kind="textField" uuid="f9c3035f-fa45-4270-97bf-8c8f3697bc80" x="320" y="1120" width="80" height="20">
+				<expression><![CDATA[$F{prior_amount_total_3}]]></expression>
+			</element>
+			<element kind="textField" uuid="c2242298-238b-4b30-a101-ea310e8982d4" x="400" y="1120" width="80" height="20">
+				<expression><![CDATA[$F{current_amount_sum_e50_e57}]]></expression>
+			</element>
+			<element kind="staticText" uuid="90bb9795-b3ce-403e-9025-a958ad05449a" x="240" y="1140" width="80" height="20">
+				<text><![CDATA[Show on]]></text>
+			</element>
+			<element kind="staticText" uuid="a0eef11e-daed-4582-a285-9c0a5fa01332" x="320" y="1140" width="80" height="20">
+				<text><![CDATA[Pg. 3 I.i (Start)]]></text>
+			</element>
+			<element kind="staticText" uuid="bce686e4-de73-4de3-8619-e2822dc683b8" x="400" y="1140" width="80" height="20">
+				<text><![CDATA[Pg. 3 I.i (End)]]></text>
+			</element>
+			<element kind="staticText" uuid="10736c26-6c90-4fdd-9059-2a2e7ec09dc6" x="160" y="1160" width="80" height="20">
+				<text><![CDATA[Use additional sheets if necessary]]></text>
+			</element>
+			<element kind="staticText" uuid="a7c9ba10-1d37-462b-b7ee-52b428009f8d" x="160" y="1180" width="80" height="20">
+				<text><![CDATA[-5c-]]></text>
+			</element>
+		</band>
+	</detail>
 </jasperReport>
