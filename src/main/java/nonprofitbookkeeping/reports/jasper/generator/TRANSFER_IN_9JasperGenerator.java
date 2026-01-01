@@ -1,38 +1,26 @@
 package nonprofitbookkeeping.reports.jasper.generator;
 
-import nonprofitbookkeeping.exception.ActionCancelledException;
-import nonprofitbookkeeping.exception.NoFileCreatedException;
-import nonprofitbookkeeping.reports.jasper.AbstractReportGenerator;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import nonprofitbookkeeping.reports.jasper.runtime.FieldMappedReportGenerator;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
 import nonprofitbookkeeping.reports.jasper.beans.TRANSFER_IN_9Bean;
 
-/** Skeleton generator for JRXML template TRANSFER_IN_9.jrxml */
-public class TRANSFER_IN_9JasperGenerator extends AbstractReportGenerator
+/** Jasper generator for JRXML template TRANSFER_IN_9.jrxml */
+public class TRANSFER_IN_9JasperGenerator extends FieldMappedReportGenerator<TRANSFER_IN_9Bean>
 {
-    @Override
-    protected List<TRANSFER_IN_9Bean> getReportData()
+    public TRANSFER_IN_9JasperGenerator()
     {
-        // TODO supply data beans for the report
-        return Collections.emptyList();
+        super();
+    }
+
+    public TRANSFER_IN_9JasperGenerator(ReportContext context)
+    {
+        super(context);
     }
 
     @Override
-    protected Map<String, Object> getReportParameters()
+    protected Class<TRANSFER_IN_9Bean> getBeanClass()
     {
-        Map<String, Object> params = new HashMap<>();
-        // TODO populate report parameters such as title or filters
-        return params;
-    }
-
-    @Override
-    protected String getReportPath() throws ActionCancelledException, NoFileCreatedException
-    {
-        // TODO return the classpath or filesystem path to TRANSFER_IN_9.jrxml
-        return bundledReportPath();
+        return TRANSFER_IN_9Bean.class;
     }
 
     @Override
