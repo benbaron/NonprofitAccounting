@@ -1,76 +1,90 @@
 package nonprofitbookkeeping.reports.jasper;
 
-import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
+import nonprofitbookkeeping.reports.jasper.runtime.FieldMap;
+import nonprofitbookkeeping.reports.jasper.runtime.FieldMapLoader;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRField;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * Base generator that resolves report fields from a {@link ReportContext}.
+ * Base class for report generators that load field maps and JRXML metadata.
  */
 public abstract class FieldMappedReportGenerator extends AbstractReportGenerator
 {
-	private final Map<String, Function<ReportContext, Object>> fieldMappings;
-	
-	protected FieldMappedReportGenerator()
+	private static final Logger LOGGER =
+		Logger.getLogger(FieldMappedReportGenerator.class.getName());
+
+	protected FieldMap loadFieldMap(String fieldMapPath)
 	{
-		this.fieldMappings = new HashMap<>();
-		registerDefaultFieldMappings(this.fieldMappings);
-		registerFieldMappings(this.fieldMappings);
-	}
-	
-	/**
-	 * Hook for subclasses to provide additional field mappings.
-	 *
-	 * @param mappings mutable map for registering field resolvers
-	 */
-	protected void registerFieldMappings(
-		Map<String, Function<ReportContext, Object>> mappings)
-	{
-		// Default no-op.
-	}
-	
-	/**
-	 * Resolves the value of a field based on its explicit mapping.
-	 *
-	 * @param fieldName field name to resolve
-	 * @param context report context
-	 * @return resolved value or {@code null} when no mapping is registered
-	 */
-	protected Object resolveFieldValue(String fieldName, ReportContext context)
-	{
-		if (fieldName == null || fieldName.isBlank() || context == null)
+		if (fieldMapPath == null || fieldMapPath.isBlank())
 		{
 			return null;
 		}
-		
-		Function<ReportContext, Object> resolver =
-			this.fieldMappings.get(fieldName);
-		
-		if (resolver == null)
+
+		try
 		{
+			Path path = Path.of(fieldMapPath);
+
+			if (Files.exists(path))
+			{
+				return FieldMapLoader.load(path);
+			}
+
+			return FieldMapLoader.loadFromResource(getClass(), fieldMapPath);
+		}
+		catch (Exception ex)
+		{
+			LOGGER.log(Level.WARNING,
+				"Report {0} failed to load field map at {1}: {2}",
+				new Object[] { getBaseName(), fieldMapPath, ex.getMessage() });
 			return null;
 		}
-		
-		return resolver.apply(context);
 	}
-	
-	private void registerDefaultFieldMappings(
-		Map<String, Function<ReportContext, Object>> mappings)
+
+	protected List<JRField> loadJrxmlFields(String jrxmlPath)
 	{
-		mappings.put("report_type", ReportContext::getReportType);
-		mappings.put("start_date", ReportContext::getStartDate);
-		mappings.put("end_date", ReportContext::getEndDate);
-		mappings.put("output_format", ReportContext::getOutputFormat);
-		mappings.put("selected_budget", ReportContext::getSelectedBudget);
-		mappings.put("fund_ids", ReportContext::getFundIds);
-		mappings.put("account_ids_for_detail_report",
-			ReportContext::getAccountIdsForDetailReport);
-		mappings.put("transaction_type", ReportContext::getTransactionType);
-		mappings.put("memo_filter", ReportContext::getMemoFilter);
-		mappings.put("require_all_accounts",
-			ctx -> ctx.isRequireAllAccounts());
-		mappings.put("beans", ReportContext::getBeans);
+		if (jrxmlPath == null || jrxmlPath.isBlank())
+		{
+			return Collections.emptyList();
+		}
+
+		try (InputStream input = openJrxmlStream(jrxmlPath))
+		{
+			JasperDesign design = JRXmlLoader.load(input);
+			return design.getFieldsList();
+		}
+		catch (IOException | JRException ex)
+		{
+			LOGGER.log(Level.WARNING,
+				"Report {0} failed to load JRXML fields from {1}: {2}",
+				new Object[] { getBaseName(), jrxmlPath, ex.getMessage() });
+			return Collections.emptyList();
+		}
+	}
+
+	private InputStream openJrxmlStream(String jrxmlPath) throws IOException
+	{
+		String resourcePath = jrxmlPath.startsWith("/") ?
+			jrxmlPath.substring(1) : jrxmlPath;
+		InputStream input =
+			getClass().getClassLoader().getResourceAsStream(resourcePath);
+
+		if (input != null)
+		{
+			return input;
+		}
+
+		return new FileInputStream(jrxmlPath);
 	}
 }

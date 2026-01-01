@@ -1,38 +1,26 @@
 package nonprofitbookkeeping.reports.jasper.generator;
 
-import nonprofitbookkeeping.exception.ActionCancelledException;
-import nonprofitbookkeeping.exception.NoFileCreatedException;
-import nonprofitbookkeeping.reports.jasper.AbstractReportGenerator;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import nonprofitbookkeeping.reports.jasper.runtime.FieldMappedReportGenerator;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
 import nonprofitbookkeeping.reports.jasper.beans.REGALIA_SALES_DTL_7Bean;
 
-/** Skeleton generator for JRXML template REGALIA_SALES_DTL_7.jrxml */
-public class REGALIA_SALES_DTL_7JasperGenerator extends AbstractReportGenerator
+/** Jasper generator for JRXML template REGALIA_SALES_DTL_7.jrxml */
+public class REGALIA_SALES_DTL_7JasperGenerator extends FieldMappedReportGenerator<REGALIA_SALES_DTL_7Bean>
 {
-    @Override
-    protected List<REGALIA_SALES_DTL_7Bean> getReportData()
+    public REGALIA_SALES_DTL_7JasperGenerator()
     {
-        // TODO supply data beans for the report
-        return Collections.emptyList();
+        super();
+    }
+
+    public REGALIA_SALES_DTL_7JasperGenerator(ReportContext context)
+    {
+        super(context);
     }
 
     @Override
-    protected Map<String, Object> getReportParameters()
+    protected Class<REGALIA_SALES_DTL_7Bean> getBeanClass()
     {
-        Map<String, Object> params = new HashMap<>();
-        // TODO populate report parameters such as title or filters
-        return params;
-    }
-
-    @Override
-    protected String getReportPath() throws ActionCancelledException, NoFileCreatedException
-    {
-        // TODO return the classpath or filesystem path to REGALIA_SALES_DTL_7.jrxml
-        return bundledReportPath();
+        return REGALIA_SALES_DTL_7Bean.class;
     }
 
     @Override

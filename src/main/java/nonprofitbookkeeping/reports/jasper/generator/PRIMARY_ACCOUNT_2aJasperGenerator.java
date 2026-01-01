@@ -1,38 +1,26 @@
 package nonprofitbookkeeping.reports.jasper.generator;
 
-import nonprofitbookkeeping.exception.ActionCancelledException;
-import nonprofitbookkeeping.exception.NoFileCreatedException;
-import nonprofitbookkeeping.reports.jasper.AbstractReportGenerator;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import nonprofitbookkeeping.reports.jasper.runtime.FieldMappedReportGenerator;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
 import nonprofitbookkeeping.reports.jasper.beans.PRIMARY_ACCOUNT_2aBean;
 
-/** Skeleton generator for JRXML template PRIMARY_ACCOUNT_2a.jrxml */
-public class PRIMARY_ACCOUNT_2aJasperGenerator extends AbstractReportGenerator
+/** Jasper generator for JRXML template PRIMARY_ACCOUNT_2a.jrxml */
+public class PRIMARY_ACCOUNT_2aJasperGenerator extends FieldMappedReportGenerator<PRIMARY_ACCOUNT_2aBean>
 {
-    @Override
-    protected List<PRIMARY_ACCOUNT_2aBean> getReportData()
+    public PRIMARY_ACCOUNT_2aJasperGenerator()
     {
-        // TODO supply data beans for the report
-        return Collections.emptyList();
+        super();
+    }
+
+    public PRIMARY_ACCOUNT_2aJasperGenerator(ReportContext context)
+    {
+        super(context);
     }
 
     @Override
-    protected Map<String, Object> getReportParameters()
+    protected Class<PRIMARY_ACCOUNT_2aBean> getBeanClass()
     {
-        Map<String, Object> params = new HashMap<>();
-        // TODO populate report parameters such as title or filters
-        return params;
-    }
-
-    @Override
-    protected String getReportPath() throws ActionCancelledException, NoFileCreatedException
-    {
-        // TODO return the classpath or filesystem path to PRIMARY_ACCOUNT_2a.jrxml
-        return bundledReportPath();
+        return PRIMARY_ACCOUNT_2aBean.class;
     }
 
     @Override
