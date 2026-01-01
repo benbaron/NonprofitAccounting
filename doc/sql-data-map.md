@@ -4,18 +4,29 @@ This document summarizes the H2 database schema created by `nonprofitbookkeeping
 
 ## Schema overview
 
-| Table | Purpose | Primary Key | Related Tables | Main Repository/Service |
-| --- | --- | --- | --- | --- |
-| `company_profile` | Single-row company profile/configuration | `id` | — | `CompanyProfileRepository` |
-| `account` | Chart of accounts master data | `account_number` | `account_fund`, `journal_entry` | `AccountRepository` |
-| `account_fund` | Many-to-many mapping between accounts and funds | `(account_number, fund_id)` | `account` | `AccountRepository` |
-| `journal_transaction` | Journal transaction headers | `id` | `journal_entry`, `transaction_info` | `JournalRepository` |
-| `journal_entry` | Journal transaction lines | `id` (auto) | `journal_transaction`, `account` | `JournalRepository` |
-| `transaction_info` | Key/value metadata for transactions | `(txn_id, k)` | `journal_transaction` | `JournalRepository` |
-| `donor` | Donor contacts | `id` (auto), `external_id` (unique) | — | `DonorRepository` |
-| `document` | JSON-like documents (legacy file replacements) | `name` | — | `DocumentRepository` |
-| `json_storage` | Generic JSON storage by key | `storage_key` | — | `JsonStorageRepository` |
-| `company_store` | Serialized company snapshots (binary payload) | `id` (identity) | — | `CompanyRepository` |
+<table>
+  <thead>
+    <tr>
+      <th>Table</th><th>Purpose</th><th>Primary Key</th><th>Related Tables</th><th>Main Repository/Service</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>company_profile</td><td>Single-row company profile/configuration</td><td>id</td><td>-</td><td>CompanyProfileRepository</td></tr>
+    <tr><td>account</td><td>Chart of accounts master data</td><td>account_number</td><td>account_fund, journal_entry</td><td>AccountRepository</td></tr>
+    <tr><td>account_fund</td><td>Many-to-many mapping between accounts and funds</td><td>(account_number, fund_id)</td><td>account</td><td>AccountRepository</td></tr>
+    <tr><td>journal_transaction</td><td>Journal transaction headers</td><td>id</td><td>journal_entry, transaction_info</td><td>JournalRepository</td></tr>
+    <tr><td>journal_entry</td><td>Journal transaction lines</td><td>id (auto)</td><td>journal_transaction, account</td><td>JournalRepository</td></tr>
+    <tr><td>transaction_info</td><td>Key/value metadata for transactions</td><td>(txn_id, k)</td><td>journal_transaction</td><td>JournalRepository</td></tr>
+    <tr><td>donor</td><td>Donor contacts</td><td>id (auto), external_id (unique)</td><td>-</td><td>DonorRepository</td></tr>
+    <tr><td>document</td><td>JSON-like documents (legacy file replacements)</td><td>name</td><td>-</td><td>DocumentRepository</td></tr>
+    <tr><td>json_storage</td><td>Generic JSON storage by key</td><td>storage_key</td><td>-</td><td>JsonStorageRepository</td></tr>
+    <tr><td>company_store</td><td>Serialized company snapshots (binary payload)</td><td>id (identity)</td><td>-</td><td>CompanyRepository</td></tr>
+  </tbody>
+</table>
+
+
+
+
 
 ## Table details
 
