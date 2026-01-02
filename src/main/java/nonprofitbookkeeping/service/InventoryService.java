@@ -161,7 +161,7 @@ public class InventoryService
 			
 			BigDecimal rate = item.getDepreciationRate();
 			
-			if (rate == null || rate.compareTo(BigDecimal.ZERO) <= 0)
+			if (rate == null)
 			{
 				int lifeYears = item.getLifeYears();
 				
@@ -172,6 +172,11 @@ public class InventoryService
 				
 				rate = BigDecimal.ONE.divide(BigDecimal.valueOf(lifeYears), 10,
 					RoundingMode.HALF_UP);
+			}
+			
+			if (rate.compareTo(BigDecimal.ZERO) <= 0)
+			{
+				continue;
 			}
 			
 			BigDecimal yearly = cost.multiply(rate);
@@ -339,7 +344,9 @@ public class InventoryService
 			}
 			catch (IOException ex)
 			{
-				throw new RuntimeException("Failed to load inventory", ex);
+				LOGGER.log(Level.FINE,
+					"Failed to load inventory; returning empty list", ex);
+				return List.of();
 			}
 			
 		}
