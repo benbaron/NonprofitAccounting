@@ -17,16 +17,17 @@ public class PreferencesService
 	private static final String PREFS_FILE_NAME = "preferences.properties";
 	/** Key for storing the default directory for company files. */
 	private static final String DEFAULT_DIR_KEY = "defaultCompanyDir";
-        /** Key for storing the path of the last used company file. */
-        private static final String LAST_FILE_KEY = "lastUsedCompanyFile";
-        /** Key for storing the identifier of the last opened company. */
-        private static final String LAST_COMPANY_ID_KEY = "lastUsedCompanyId";
+	/** Key for storing the path of the last used company file. */
+	private static final String LAST_FILE_KEY = "lastUsedCompanyFile";
+	/** Key for storing the identifier of the last opened company. */
+	private static final String LAST_COMPANY_ID_KEY = "lastUsedCompanyId";
 	
 	/** The {@link Properties} object used to store and manage preferences. */
 	private static final Properties props = new Properties();
 	/** The {@link Path} to the preferences file. */
 	private static final Path configPath =
-		Paths.get(System.getProperty("user.home"), ".nonprofitbookkeeping", PREFS_FILE_NAME);
+		Paths.get(System.getProperty("user.home"), ".nonprofitbookkeeping",
+			PREFS_FILE_NAME);
 	
 	/**
 	 * Static initializer block to load preferences from the properties file when the class is loaded.
@@ -39,7 +40,10 @@ public class PreferencesService
 		
 		try
 		{
-			Files.createDirectories(configPath.getParent()); // Ensure .nonprofitbookkeeping directory exists
+			Files.createDirectories(configPath.getParent()); // Ensure
+																// .nonprofitbookkeeping
+																// directory
+																// exists
 			
 			if (Files.exists(configPath))
 			{
@@ -54,7 +58,8 @@ public class PreferencesService
 		}
 		catch (IOException e)
 		{
-			// Consider logging this more formally or handling it based on application requirements
+			// Consider logging this more formally or handling it based on
+			// application requirements
 			e.printStackTrace();
 		}
 		
@@ -70,7 +75,9 @@ public class PreferencesService
 	public static String getDefaultCompanyDir()
 	{
 		return props.getProperty(DEFAULT_DIR_KEY,
-			Paths.get(System.getProperty("user.home"), "NonprofitBookkeeping").toString());
+			Paths.get(System.getProperty("user.home"), "NonprofitBookkeeping")
+				.toString());
+		
 	}
 	
 	/**
@@ -83,6 +90,7 @@ public class PreferencesService
 	{
 		props.setProperty(DEFAULT_DIR_KEY, path);
 		save();
+		
 	}
 	
 	/**
@@ -91,100 +99,112 @@ public class PreferencesService
 	 *
 	 * @return The path of the last used company file as a String, or an empty string if not set.
 	 */
-        public static String getLastUsedCompanyFile()
-        {
-                return props.getProperty(LAST_FILE_KEY, "");
-        }
-
+	public static String getLastUsedCompanyFile()
+	{
+		return props.getProperty(LAST_FILE_KEY, "");
+		
+	}
+	
 	/**
 	 * Sets the path of the last used company file and saves this preference.
 	 *
 	 * @param filePath The file path to set as the last used. If null, the behavior
 	 *                 of {@link Properties#setProperty(String, String)} for null values will apply (may throw NPE).
 	 */
-        public static void setLastUsedCompanyFile(String filePath)
-        {
-                if (filePath == null)
-                {
-                        props.remove(LAST_FILE_KEY);
-                }
-                else
-                {
-                        props.setProperty(LAST_FILE_KEY, filePath);
-                }
-                save();
-        }
-
-        /**
-         * Returns the identifier of the last company that was opened, if available.
-         */
-        public static Long getLastUsedCompanyId()
-        {
-                String value = props.getProperty(LAST_COMPANY_ID_KEY);
-
-                if (value == null || value.isBlank())
-                {
-                        return null;
-                }
-
-                try
-                {
-                        return Long.parseLong(value);
-                }
-                catch (NumberFormatException ex)
-                {
-                        return null;
-                }
-        }
-
-        /**
-         * Stores the identifier of the most recently opened company.
-         */
-        public static void setLastUsedCompanyId(Long companyId)
-        {
-                if (companyId == null)
-                {
-                        props.remove(LAST_COMPANY_ID_KEY);
-                }
-                else
-                {
-                        props.setProperty(LAST_COMPANY_ID_KEY, Long.toString(companyId));
-                }
-                save();
-        }
+	public static void setLastUsedCompanyFile(String filePath)
+	{
+		
+		if (filePath == null)
+		{
+			props.remove(LAST_FILE_KEY);
+		}
+		else
+		{
+			props.setProperty(LAST_FILE_KEY, filePath);
+		}
+		
+		save();
+		
+	}
+	
+	/**
+	 * Returns the identifier of the last company that was opened, if available.
+	 */
+	public static Long getLastUsedCompanyId()
+	{
+		String value = props.getProperty(LAST_COMPANY_ID_KEY);
+		
+		if (value == null || value.isBlank())
+		{
+			return null;
+		}
+		
+		try
+		{
+			return Long.parseLong(value);
+		}
+		catch (NumberFormatException ex)
+		{
+			return null;
+		}
+		
+	}
+	
+	/**
+	 * Stores the identifier of the most recently opened company.
+	 */
+	public static void setLastUsedCompanyId(Long companyId)
+	{
+		
+		if (companyId == null)
+		{
+			props.remove(LAST_COMPANY_ID_KEY);
+		}
+		else
+		{
+			props.setProperty(LAST_COMPANY_ID_KEY, Long.toString(companyId));
+		}
+		
+		save();
+		
+	}
 	
 	/**
 	 * Saves the current state of the {@link #props} object to the preferences file defined by {@link #configPath}.
 	 * If an {@link IOException} occurs during saving, it is printed to the error stream.
 	 */
-        private static void save()
-        {
-                try (OutputStream out = Files.newOutputStream(configPath))
-                {
-                        props.store(out, "Nonprofit Bookkeeping Preferences");
-                }
-                catch (IOException e)
-                {
-                        // Consider logging this more formally or handling it based on application requirements
-                        e.printStackTrace();
-                }
-
-        }
-
-        /** Singleton instance of the service. */
-        private static final PreferencesService INSTANCE = new PreferencesService();
-
-        /** Private constructor to prevent external instantiation. */
-        private PreferencesService()
-        {
-        }
-
-        /**
-         * @return
-         */
-        public static PreferencesService getInstance()
-        {
-                return INSTANCE;
-        }
-
+	private static void save()
+	{
+		
+		try (OutputStream out = Files.newOutputStream(configPath))
+		{
+			props.store(out, "Nonprofit Bookkeeping Preferences");
+		}
+		catch (IOException e)
+		{
+			// Consider logging this more formally or handling it based on
+			// application requirements
+			e.printStackTrace();
+		}
+		
+	}
+	
+	/** Singleton instance of the service. */
+	private static final PreferencesService INSTANCE = new PreferencesService();
+	
+	/** Private constructor to prevent external instantiation. */
+	private PreferencesService()
+	{
+	
+	}
+	
+	/**
+	 * @return
+	 */
+	public static PreferencesService getInstance()
+	{
+		return INSTANCE;
+		
+	}
+	
 }

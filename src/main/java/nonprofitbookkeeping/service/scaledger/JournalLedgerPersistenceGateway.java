@@ -31,11 +31,19 @@ public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
         this(new JournalRepository());
     }
 
+    /**
+     * Instantiates a new journal ledger persistence gateway.
+     *
+     * @param journalRepository the journal repository
+     */
     public JournalLedgerPersistenceGateway(JournalRepository journalRepository)
     {
         this.journalRepository = journalRepository;
     }
 
+    /**
+     * Override @see nonprofitbookkeeping.ui.actions.scaledger.LedgerPersistenceGateway#saveTransactionWithEntries(nonprofitbookkeeping.model.AccountingTransaction) 
+     */
     @Override
     public AccountingTransaction saveTransactionWithEntries(AccountingTransaction transaction)
     {
@@ -59,6 +67,11 @@ public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
         }
     }
 
+    /**
+     * Ensure identifiers.
+     *
+     * @param transaction the transaction
+     */
     private void ensureIdentifiers(AccountingTransaction transaction)
     {
         if (transaction.getId() <= 0)
@@ -97,6 +110,11 @@ public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
         }
     }
 
+    /**
+     * Fetch next transaction id.
+     *
+     * @return the int
+     */
     private int fetchNextTransactionId()
     {
         try (Connection connection = Database.get().getConnection();
