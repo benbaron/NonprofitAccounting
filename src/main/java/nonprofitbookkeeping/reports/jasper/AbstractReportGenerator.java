@@ -161,6 +161,9 @@ public abstract class AbstractReportGenerator
 			}
 			else
 			{
+				LOGGER.fine(() -> "Resolved " + data.size() +
+					" data rows for generator " +
+					getClass().getName() + ".");
 				dataSource = new JRBeanCollectionDataSource(data);
 			}
 			
