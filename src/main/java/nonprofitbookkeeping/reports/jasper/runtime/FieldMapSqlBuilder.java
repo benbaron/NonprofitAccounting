@@ -26,6 +26,9 @@ public final class FieldMapSqlBuilder {
             String fieldName = entry.getFieldName();
             String expr = overrides != null ? overrides.get(fieldName) : null;
             if (expr == null || expr.isBlank()) {
+                expr = entry.getDbExpr();
+            }
+            if (expr == null || expr.isBlank()) {
                 expr = "NULL";
             }
             sb.append(expr).append(" as ").append(fieldName);
