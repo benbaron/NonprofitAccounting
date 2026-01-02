@@ -453,6 +453,8 @@ public class ReportService
 		
 		// Resolve report type and generator
 		ReportType type = ReportType.fromId(ctx.getReportType());
+		LOGGER.fine(() -> "Resolving report generator for reportType '" +
+			ctx.getReportType() + "'.");
 		
 		if (type == null)
 		{
@@ -461,6 +463,8 @@ public class ReportService
 		}
 		
 		String generatorClassName = this.generatorRegistry.get(type);
+		LOGGER.fine(() -> "Selected generator class '" + generatorClassName +
+			"' for reportType '" + type.id() + "'.");
 		
 		if (generatorClassName == null || generatorClassName.isBlank())
 		{
@@ -1699,4 +1703,3 @@ public class ReportService
 	
 	
 }
-

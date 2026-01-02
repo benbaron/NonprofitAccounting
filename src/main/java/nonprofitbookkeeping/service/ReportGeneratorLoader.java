@@ -17,6 +17,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 /**
  * Utility that instantiates and interacts with Jasper report generator classes using reflection.
@@ -25,6 +26,9 @@ import java.util.Objects;
  */
 final class ReportGeneratorLoader
 {
+	private static final Logger LOGGER =
+		Logger.getLogger(ReportGeneratorLoader.class.getName());
+
 	private ReportGeneratorLoader()
 	{
 		
@@ -46,6 +50,8 @@ final class ReportGeneratorLoader
 		ReportService service)
 	{
 		Objects.requireNonNull(className, "className");
+		LOGGER.fine(() -> "Resolving report generator for class: " +
+			className);
 		
 		try
 		{
@@ -55,6 +61,9 @@ final class ReportGeneratorLoader
 			
 			if (ctor != null)
 			{
+				LOGGER.fine(() -> "Instantiating report generator " +
+					className +
+					" using (ReportContext, ReportService) constructor.");
 				Object instance = ctor.newInstance(context, service);
 				assignContext(instance, context);
 				return instance;
@@ -64,6 +73,8 @@ final class ReportGeneratorLoader
 			
 			if (ctor != null)
 			{
+				LOGGER.fine(() -> "Instantiating report generator " +
+					className + " using (ReportContext) constructor.");
 				Object instance = ctor.newInstance(context);
 				assignContext(instance, context);
 				return instance;
@@ -73,6 +84,8 @@ final class ReportGeneratorLoader
 			
 			if (ctor != null)
 			{
+				LOGGER.fine(() -> "Instantiating report generator " +
+					className + " using (ReportService) constructor.");
 				Object instance = ctor.newInstance(service);
 				assignContext(instance, context);
 				return instance;
@@ -82,6 +95,8 @@ final class ReportGeneratorLoader
 			
 			if (ctor != null)
 			{
+				LOGGER.fine(() -> "Instantiating report generator " +
+					className + " using no-arg constructor.");
 				Object instance = ctor.newInstance();
 				assignContext(instance, context);
 				return instance;
@@ -101,6 +116,9 @@ final class ReportGeneratorLoader
 				
 				try
 				{
+					LOGGER.fine(() -> "Instantiating report generator " +
+						className +
+						" using fallback constructor with nulls.");
 					Object instance = candidate.newInstance(args);
 					assignContext(instance, context);
 					return instance;
@@ -118,6 +136,9 @@ final class ReportGeneratorLoader
 		}
 		catch (ClassNotFoundException e)
 		{
+			LOGGER.fine(() -> "Report generator class not found for " +
+				className +
+				"; attempting bundled template fallback.");
 			ReportBundles.Bundle bundle = ReportBundles
 				.bundleForGenerator(className);
 			
@@ -209,6 +230,8 @@ final class ReportGeneratorLoader
 		
 		if (beans == null || beans.isEmpty())
 		{
+			LOGGER.fine(() -> "No report data provided for generator " +
+				generator.getClass().getName() + "; skipping override.");
 			return;
 		}
 		
@@ -217,11 +240,16 @@ final class ReportGeneratorLoader
 			Method method = generator.getClass()
 				.getMethod("setReportData", List.class);
 			method.setAccessible(true);
+			LOGGER.fine(() -> "Supplying " + beans.size() +
+				" report data rows to generator " +
+				generator.getClass().getName() + ".");
 			method.invoke(generator, beans);
 		}
 		catch (NoSuchMethodException e)
 		{
 			// Optional API; ignore if not present.
+			LOGGER.fine(() -> "Generator " + generator.getClass().getName() +
+				" does not implement setReportData; skipping.");
 		}
 		catch (IllegalAccessException | InvocationTargetException e)
 		{
@@ -245,6 +273,8 @@ final class ReportGeneratorLoader
 		
 		try
 		{
+			LOGGER.fine(() -> "Generating JasperPrint with generator " +
+				generator.getClass().getName() + ".");
 			Method method = generator.getClass().getMethod("generatePrint");
 			method.setAccessible(true);
 			return (JasperPrint) method.invoke(generator);
@@ -291,6 +321,9 @@ final class ReportGeneratorLoader
 			
 			if (result instanceof String name && !name.isBlank())
 			{
+				LOGGER.fine(() -> "Resolved report base name '" + name +
+					"' from generator " + generator.getClass().getName() +
+					".");
 				return name;
 			}
 			
@@ -336,6 +369,9 @@ final class ReportGeneratorLoader
 				.getMethod("writeJasperOutput", String.class, JasperPrint.class,
 					String.class);
 			method.setAccessible(true);
+			LOGGER.fine(() -> "Writing report output for generator " +
+				generator.getClass().getName() + " with format '" +
+				format + "' and baseName '" + baseName + "'.");
 			Object result = method.invoke(generator, format, print, baseName);
 			
 			if (result instanceof File file)

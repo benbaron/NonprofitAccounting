@@ -125,6 +125,9 @@ public abstract class AbstractReportGenerator
 		NoFileCreatedException
 	{
 		String reportPath = getReportPath();
+		LOGGER.fine(() -> "Preparing Jasper report for generator " +
+			getClass().getName() + " using template path '" +
+			reportPath + "'.");
 		
 		try (InputStream input = openReportStream(reportPath))
 		{
@@ -135,6 +138,10 @@ public abstract class AbstractReportGenerator
 			{
 				parameters = new HashMap<>();
 			}
+			Map<String, Object> finalParameters = parameters;
+			LOGGER.fine(() -> "Resolved " + finalParameters.size() +
+				" report parameters for generator " +
+				getClass().getName() + ".");
 
 			List<?> data = resolveReportData();
 			JRDataSource dataSource;
@@ -148,8 +155,13 @@ public abstract class AbstractReportGenerator
 			}
 			else
 			{
+				LOGGER.fine(() -> "Resolved " + data.size() +
+					" data rows for generator " +
+					getClass().getName() + ".");
 				dataSource = new JRBeanCollectionDataSource(data);
 			}
+			LOGGER.fine(() -> "Filling Jasper report for generator " +
+				getClass().getName() + ".");
 			return JasperFillManager.fillReport(report, parameters,
 				dataSource);
 		}
