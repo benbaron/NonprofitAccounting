@@ -21,6 +21,11 @@ public class ASSET_DTL_5aJasperGenerator extends AbstractReportGenerator
         Map<String, String> overrides = new HashMap<>();
         overrides.put("sending_branch_or_reason", "jt.memo");
         overrides.put("amount", "je.amount");
+        for (int line = 2; line <= 19; line++)
+        {
+            overrides.put("sending_branch_or_reason_" + line, "jt.memo");
+            overrides.put("amount_" + line, "je.amount");
+        }
 
         String selectList;
         try
