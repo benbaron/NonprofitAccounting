@@ -70,6 +70,7 @@ final class ReportGeneratorLoader
 			{
 				logConstructorSelection(clazz, ctor);
 				Object instance = ctor.newInstance(context, service);
+				logConstructorSelection(clazz, ctor);
 				assignContext(instance, context);
 				return instance;
 			}
@@ -80,6 +81,7 @@ final class ReportGeneratorLoader
 			{
 				logConstructorSelection(clazz, ctor);
 				Object instance = ctor.newInstance(context);
+				logConstructorSelection(clazz, ctor);
 				assignContext(instance, context);
 				return instance;
 			}
@@ -90,6 +92,7 @@ final class ReportGeneratorLoader
 			{
 				logConstructorSelection(clazz, ctor);
 				Object instance = ctor.newInstance(service);
+				logConstructorSelection(clazz, ctor);
 				assignContext(instance, context);
 				return instance;
 			}
@@ -100,6 +103,7 @@ final class ReportGeneratorLoader
 			{
 				logConstructorSelection(clazz, ctor);
 				Object instance = ctor.newInstance();
+				logConstructorSelection(clazz, ctor);
 				assignContext(instance, context);
 				return instance;
 			}
@@ -120,6 +124,7 @@ final class ReportGeneratorLoader
 				{
 					logConstructorSelection(clazz, candidate);
 					Object instance = candidate.newInstance(args);
+					logConstructorSelection(clazz, candidate);
 					assignContext(instance, context);
 					return instance;
 				}
@@ -443,8 +448,14 @@ final class ReportGeneratorLoader
 	{
 		if (LOGGER.isLoggable(Level.FINE))
 		{
-			LOGGER.fine("Using constructor for " + clazz.getName() + ": " +
-				ctor.toGenericString());
+			Class<?>[] params = ctor.getParameterTypes();
+			String description = params.length == 0 ? "no-arg" :
+				Arrays.stream(params)
+					.map(Class::getSimpleName)
+					.reduce((left, right) -> left + ", " + right)
+					.orElse("");
+			LOGGER.fine("Using constructor for " + clazz.getName() +
+				" with params [" + description + "]");
 		}
 	}
 	
