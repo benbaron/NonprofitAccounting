@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -451,6 +452,12 @@ public class ReportService
 				"ReportContext and reportType are required.");
 		}
 		
+		if (LOGGER.isLoggable(Level.FINE))
+		{
+			LOGGER.fine("Starting Jasper report generation for reportType=" +
+				ctx.getReportType());
+		}
+		
 		// Resolve report type and generator
 		ReportType type = ReportType.fromId(ctx.getReportType());
 		LOGGER.fine(() -> "Resolving report generator for reportType '" +
@@ -472,6 +479,12 @@ public class ReportService
 				"No generator registered for reportType: " + type.id());
 		}
 		
+		if (LOGGER.isLoggable(Level.FINE))
+		{
+			LOGGER.fine("Selected generator " + generatorClassName +
+				" for reportType=" + type.id());
+		}
+		
 		Object generator = ReportGeneratorLoader
 			.instantiate(generatorClassName, ctx, this);
 		
@@ -486,6 +499,10 @@ public class ReportService
 		// Normalize format; default to PDF
 		String fmt =
 			(outputFormat == null ? "pdf" : outputFormat).trim().toLowerCase();
+		if (LOGGER.isLoggable(Level.FINE))
+		{
+			LOGGER.fine("Resolved output format: " + fmt);
+		}
 		
 		String baseName = ReportGeneratorLoader.getBaseName(generator);
 		File out = ReportGeneratorLoader

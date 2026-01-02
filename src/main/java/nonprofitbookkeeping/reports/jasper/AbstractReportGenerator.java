@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -125,9 +126,11 @@ public abstract class AbstractReportGenerator
 		NoFileCreatedException
 	{
 		String reportPath = getReportPath();
-		LOGGER.fine(() -> "Preparing Jasper report for generator " +
-			getClass().getName() + " using template path '" +
-			reportPath + "'.");
+		if (LOGGER.isLoggable(Level.FINE))
+		{
+			LOGGER.fine("Compiling Jasper report from path " + reportPath +
+				" for generator " + getClass().getName());
+		}
 		
 		try (InputStream input = openReportStream(reportPath))
 		{
@@ -138,10 +141,13 @@ public abstract class AbstractReportGenerator
 			{
 				parameters = new HashMap<>();
 			}
-			Map<String, Object> finalParameters = parameters;
-			LOGGER.fine(() -> "Resolved " + finalParameters.size() +
-				" report parameters for generator " +
-				getClass().getName() + ".");
+			
+			if (LOGGER.isLoggable(Level.FINE))
+			{
+				LOGGER.fine("Resolved " + parameters.size() +
+					" report parameters for generator " + getClass().getName() +
+					": " + parameters.keySet());
+			}
 
 			List<?> data = resolveReportData();
 			JRDataSource dataSource;
@@ -160,8 +166,13 @@ public abstract class AbstractReportGenerator
 					getClass().getName() + ".");
 				dataSource = new JRBeanCollectionDataSource(data);
 			}
-			LOGGER.fine(() -> "Filling Jasper report for generator " +
-				getClass().getName() + ".");
+			
+			if (LOGGER.isLoggable(Level.FINE))
+			{
+				LOGGER.fine("Filling Jasper report for generator " +
+					getClass().getName() + " with " +
+					(data == null ? 0 : data.size()) + " data rows");
+			}
 			return JasperFillManager.fillReport(report, parameters,
 				dataSource);
 		}
