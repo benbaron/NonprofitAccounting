@@ -17,6 +17,8 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Utility that instantiates and interacts with Jasper report generator classes using reflection.
@@ -25,6 +27,9 @@ import java.util.Objects;
  */
 final class ReportGeneratorLoader
 {
+	private static final Logger LOGGER =
+		Logger.getLogger(ReportGeneratorLoader.class.getName());
+	
 	private ReportGeneratorLoader()
 	{
 		
@@ -46,15 +51,24 @@ final class ReportGeneratorLoader
 		ReportService service)
 	{
 		Objects.requireNonNull(className, "className");
+		if (LOGGER.isLoggable(Level.FINE))
+		{
+			LOGGER.fine("Looking up report generator: " + className);
+		}
 		
 		try
 		{
 			Class<?> clazz = Class.forName(className);
+			if (LOGGER.isLoggable(Level.FINE))
+			{
+				LOGGER.fine("Found generator class: " + clazz.getName());
+			}
 			Constructor<?> ctor = findConstructor(clazz,
 				ReportContext.class, ReportService.class);
 			
 			if (ctor != null)
 			{
+				logConstructorSelection(clazz, ctor);
 				Object instance = ctor.newInstance(context, service);
 				assignContext(instance, context);
 				return instance;
@@ -64,6 +78,7 @@ final class ReportGeneratorLoader
 			
 			if (ctor != null)
 			{
+				logConstructorSelection(clazz, ctor);
 				Object instance = ctor.newInstance(context);
 				assignContext(instance, context);
 				return instance;
@@ -73,6 +88,7 @@ final class ReportGeneratorLoader
 			
 			if (ctor != null)
 			{
+				logConstructorSelection(clazz, ctor);
 				Object instance = ctor.newInstance(service);
 				assignContext(instance, context);
 				return instance;
@@ -82,6 +98,7 @@ final class ReportGeneratorLoader
 			
 			if (ctor != null)
 			{
+				logConstructorSelection(clazz, ctor);
 				Object instance = ctor.newInstance();
 				assignContext(instance, context);
 				return instance;
@@ -101,6 +118,7 @@ final class ReportGeneratorLoader
 				
 				try
 				{
+					logConstructorSelection(clazz, candidate);
 					Object instance = candidate.newInstance(args);
 					assignContext(instance, context);
 					return instance;
@@ -118,6 +136,11 @@ final class ReportGeneratorLoader
 		}
 		catch (ClassNotFoundException e)
 		{
+			if (LOGGER.isLoggable(Level.FINE))
+			{
+				LOGGER.fine("Generator class not on classpath; using bundle for " +
+					className);
+			}
 			ReportBundles.Bundle bundle = ReportBundles
 				.bundleForGenerator(className);
 			
@@ -212,6 +235,13 @@ final class ReportGeneratorLoader
 			return;
 		}
 		
+		if (LOGGER.isLoggable(Level.FINE))
+		{
+			LOGGER.fine("Setting report data on generator " +
+				generator.getClass().getName() + " with " + beans.size() +
+				" beans");
+		}
+		
 		try
 		{
 			Method method = generator.getClass()
@@ -242,6 +272,12 @@ final class ReportGeneratorLoader
 	 */
 	static JasperPrint generatePrint(Object generator) throws JRException
 	{
+		
+		if (LOGGER.isLoggable(Level.FINE))
+		{
+			LOGGER.fine("Generating JasperPrint using generator " +
+				generator.getClass().getName());
+		}
 		
 		try
 		{
@@ -329,6 +365,12 @@ final class ReportGeneratorLoader
 		JasperPrint print,
 		String baseName) throws JRException, IOException
 	{
+		if (LOGGER.isLoggable(Level.FINE))
+		{
+			LOGGER.fine("Writing Jasper output for generator " +
+				generator.getClass().getName() + " with format=" + format +
+				", baseName=" + baseName);
+		}
 		
 		try
 		{
@@ -379,6 +421,16 @@ final class ReportGeneratorLoader
 			throw new JRException("writeJasperOutput failed", cause);
 		}
 		
+	}
+	
+	private static void logConstructorSelection(Class<?> clazz,
+		Constructor<?> ctor)
+	{
+		if (LOGGER.isLoggable(Level.FINE))
+		{
+			LOGGER.fine("Using constructor for " + clazz.getName() + ": " +
+				ctor.toGenericString());
+		}
 	}
 	
 }

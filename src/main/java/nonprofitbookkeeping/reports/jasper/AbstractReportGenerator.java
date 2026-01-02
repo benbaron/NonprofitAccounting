@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -125,6 +126,11 @@ public abstract class AbstractReportGenerator
 		NoFileCreatedException
 	{
 		String reportPath = getReportPath();
+		if (LOGGER.isLoggable(Level.FINE))
+		{
+			LOGGER.fine("Compiling Jasper report from path " + reportPath +
+				" for generator " + getClass().getName());
+		}
 		
 		try (InputStream input = openReportStream(reportPath))
 		{
@@ -134,6 +140,13 @@ public abstract class AbstractReportGenerator
 			if (parameters == null)
 			{
 				parameters = new HashMap<>();
+			}
+			
+			if (LOGGER.isLoggable(Level.FINE))
+			{
+				LOGGER.fine("Resolved " + parameters.size() +
+					" report parameters for generator " + getClass().getName() +
+					": " + parameters.keySet());
 			}
 
 			List<?> data = resolveReportData();
@@ -149,6 +162,13 @@ public abstract class AbstractReportGenerator
 			else
 			{
 				dataSource = new JRBeanCollectionDataSource(data);
+			}
+			
+			if (LOGGER.isLoggable(Level.FINE))
+			{
+				LOGGER.fine("Filling Jasper report for generator " +
+					getClass().getName() + " with " +
+					(data == null ? 0 : data.size()) + " data rows");
 			}
 			return JasperFillManager.fillReport(report, parameters,
 				dataSource);
