@@ -5,6 +5,7 @@ import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.reports.jasper.runtime.ReportBundles;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -22,6 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.logging.Logger;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -31,6 +33,8 @@ import java.util.HashMap;
  */
 public abstract class AbstractReportGenerator
 {
+	private static final Logger LOGGER =
+		Logger.getLogger(AbstractReportGenerator.class.getName());
 	private static final String DEFAULT_OUTPUT_DIR =
 		"NonprofitBookkeepingReports";
 	
@@ -131,9 +135,21 @@ public abstract class AbstractReportGenerator
 			{
 				parameters = new HashMap<>();
 			}
-			
-			JRDataSource dataSource =
-				new JRBeanCollectionDataSource(resolveReportData());
+
+			List<?> data = resolveReportData();
+			JRDataSource dataSource;
+
+			if (data == null || data.isEmpty())
+			{
+				LOGGER.warning(() ->
+					"Report generator " + getClass().getName() +
+						" returned no data rows; using empty datasource.");
+				dataSource = new JREmptyDataSource(1);
+			}
+			else
+			{
+				dataSource = new JRBeanCollectionDataSource(data);
+			}
 			return JasperFillManager.fillReport(report, parameters,
 				dataSource);
 		}
