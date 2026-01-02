@@ -1,3 +1,4 @@
+
 package nonprofitbookkeeping.reports.jasper.runtime;
 
 /**
@@ -11,56 +12,72 @@ package nonprofitbookkeeping.reports.jasper.runtime;
  *   4: excelFormat    - raw Excel data format string (may be empty)
  *   5: dbExpr         - OPTIONAL; SQL expression to compute this field (e.g. "s.opening_balance")
  */
-public final class FieldMapEntry {
-
-    private final String sheetName;
-    private final String cellRef;
-    private final String fieldName;
-    private final String javaType;
-    private final String excelFormat;
-    private final String dbExpr;
-
-    public FieldMapEntry(
-        String sheetName,
-        String cellRef,
-        String fieldName,
-        String javaType,
-        String excelFormat,
-        String dbExpr
-    ) {
-        this.sheetName = sheetName;
-        this.cellRef = cellRef;
-        this.fieldName = fieldName;
-        this.javaType = javaType;
-        this.excelFormat = excelFormat;
-        this.dbExpr = dbExpr;
-    }
-
-    public String getSheetName() {
-        return this.sheetName;
-    }
-
-    public String getCellRef() {
-        return this.cellRef;
-    }
-
-    public String getFieldName() {
-        return this.fieldName;
-    }
-
-    public String getJavaType() {
-        return this.javaType;
-    }
-
-    public String getExcelFormat() {
-        return this.excelFormat;
-    }
-
-    /**
-     * Optional SQL expression for this field, e.g. "a.name" or "s.opening_balance".
-     * May be null if the CSV has only 5 columns.
-     */
-    public String getDbExpr() {
-        return this.dbExpr;
-    }
+public final class FieldMapEntry
+{
+	
+	private final String sheetName;
+	private final String cellRef;
+	private final String fieldName;
+	private final String javaType;
+	private final String excelFormat;
+	private final String dbExpr;
+	
+	public FieldMapEntry(
+		String sheetName,
+		String cellRef,
+		String fieldName,
+		String javaType,
+		String excelFormat,
+		String dbExpr
+	)
+	{
+		this.sheetName = sheetName;
+		this.cellRef = cellRef;
+		this.fieldName = fieldName;
+		this.javaType = javaType;
+		this.excelFormat = excelFormat;
+		this.dbExpr = dbExpr;
+		
+	}
+	
+	public String getSheetName()
+	{
+		return this.sheetName;
+		
+	}
+	
+	public String getCellRef()
+	{
+		return this.cellRef;
+		
+	}
+	
+	public String getFieldName()
+	{
+		return this.fieldName;
+		
+	}
+	
+	public String getJavaType()
+	{
+		return this.javaType;
+		
+	}
+	
+	public String getExcelFormat()
+	{
+		return this.excelFormat;
+		
+	}
+	
+	/**
+	 * Optional SQL expression for this field, e.g. "a.name" or "s.opening_balance".
+	 * May be null if the CSV has only 5 columns.
+	 */
+	public String getDbExpr()
+	{
+		return this.dbExpr;
+		
+	}
+	
 }
