@@ -68,6 +68,7 @@ final class ReportGeneratorLoader
 			
 			if (ctor != null)
 			{
+				logConstructorSelection(clazz, ctor);
 				Object instance = ctor.newInstance(context, service);
 				logConstructorSelection(clazz, ctor);
 				assignContext(instance, context);
@@ -78,6 +79,7 @@ final class ReportGeneratorLoader
 			
 			if (ctor != null)
 			{
+				logConstructorSelection(clazz, ctor);
 				Object instance = ctor.newInstance(context);
 				logConstructorSelection(clazz, ctor);
 				assignContext(instance, context);
@@ -88,6 +90,7 @@ final class ReportGeneratorLoader
 			
 			if (ctor != null)
 			{
+				logConstructorSelection(clazz, ctor);
 				Object instance = ctor.newInstance(service);
 				logConstructorSelection(clazz, ctor);
 				assignContext(instance, context);
@@ -98,6 +101,7 @@ final class ReportGeneratorLoader
 			
 			if (ctor != null)
 			{
+				logConstructorSelection(clazz, ctor);
 				Object instance = ctor.newInstance();
 				logConstructorSelection(clazz, ctor);
 				assignContext(instance, context);
@@ -118,6 +122,7 @@ final class ReportGeneratorLoader
 				
 				try
 				{
+					logConstructorSelection(clazz, candidate);
 					Object instance = candidate.newInstance(args);
 					logConstructorSelection(clazz, candidate);
 					assignContext(instance, context);
@@ -232,6 +237,8 @@ final class ReportGeneratorLoader
 		
 		if (beans == null || beans.isEmpty())
 		{
+			LOGGER.fine(() -> "No report data provided for generator " +
+				generator.getClass().getName() + "; skipping override.");
 			return;
 		}
 		
@@ -247,11 +254,16 @@ final class ReportGeneratorLoader
 			Method method = generator.getClass()
 				.getMethod("setReportData", List.class);
 			method.setAccessible(true);
+			LOGGER.fine(() -> "Supplying " + beans.size() +
+				" report data rows to generator " +
+				generator.getClass().getName() + ".");
 			method.invoke(generator, beans);
 		}
 		catch (NoSuchMethodException e)
 		{
 			// Optional API; ignore if not present.
+			LOGGER.fine(() -> "Generator " + generator.getClass().getName() +
+				" does not implement setReportData; skipping.");
 		}
 		catch (IllegalAccessException | InvocationTargetException e)
 		{
@@ -281,6 +293,8 @@ final class ReportGeneratorLoader
 		
 		try
 		{
+			LOGGER.fine(() -> "Generating JasperPrint with generator " +
+				generator.getClass().getName() + ".");
 			Method method = generator.getClass().getMethod("generatePrint");
 			method.setAccessible(true);
 			return (JasperPrint) method.invoke(generator);
@@ -327,6 +341,9 @@ final class ReportGeneratorLoader
 			
 			if (result instanceof String name && !name.isBlank())
 			{
+				LOGGER.fine(() -> "Resolved report base name '" + name +
+					"' from generator " + generator.getClass().getName() +
+					".");
 				return name;
 			}
 			
@@ -378,6 +395,9 @@ final class ReportGeneratorLoader
 				.getMethod("writeJasperOutput", String.class, JasperPrint.class,
 					String.class);
 			method.setAccessible(true);
+			LOGGER.fine(() -> "Writing report output for generator " +
+				generator.getClass().getName() + " with format '" +
+				format + "' and baseName '" + baseName + "'.");
 			Object result = method.invoke(generator, format, print, baseName);
 			
 			if (result instanceof File file)

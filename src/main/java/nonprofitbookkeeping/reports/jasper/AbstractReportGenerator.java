@@ -145,7 +145,8 @@ public abstract class AbstractReportGenerator
 			if (LOGGER.isLoggable(Level.FINE))
 			{
 				LOGGER.fine("Resolved " + parameters.size() +
-					" report parameters for generator " + getClass().getName());
+					" report parameters for generator " + getClass().getName() +
+					": " + parameters.keySet());
 			}
 
 			List<?> data = resolveReportData();
@@ -160,6 +161,9 @@ public abstract class AbstractReportGenerator
 			}
 			else
 			{
+				LOGGER.fine(() -> "Resolved " + data.size() +
+					" data rows for generator " +
+					getClass().getName() + ".");
 				dataSource = new JRBeanCollectionDataSource(data);
 			}
 			
