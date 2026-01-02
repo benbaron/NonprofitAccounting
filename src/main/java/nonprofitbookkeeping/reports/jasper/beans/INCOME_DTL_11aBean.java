@@ -100,7 +100,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.Double getIncome_dtl_11a_r2c3()
     {
-        return this.income_dtl_11a_r2c3;
+        return income_dtl_11a_r2c3;
     }
 
     public void setIncome_dtl_11a_r2c3(java.lang.Double v)
@@ -110,7 +110,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.Double getContents_b59()
     {
-        return this.contents_b59;
+        return contents_b59;
     }
 
     public void setContents_b59(java.lang.Double v)
@@ -120,7 +120,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.Double getContents_e_3()
     {
-        return this.contents_e_3;
+        return contents_e_3;
     }
 
     public void setContents_e_3(java.lang.Double v)
@@ -130,7 +130,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.Double getContents_e_4()
     {
-        return this.contents_e_4;
+        return contents_e_4;
     }
 
     public void setContents_e_4(java.lang.Double v)
@@ -140,7 +140,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_1a_fundraising_income_internal_event()
     {
-        return this._1a_fundraising_income_internal_event;
+        return _1a_fundraising_income_internal_event;
     }
 
     public void set_1a_fundraising_income_internal_event(java.lang.String v)
@@ -150,7 +150,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity_at_the_event()
     {
-        return this.activity_at_the_event;
+        return activity_at_the_event;
     }
 
     public void setActivity_at_the_event(java.lang.String v)
@@ -160,7 +160,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount()
     {
-        return this.amount;
+        return amount;
     }
 
     public void setAmount(java.lang.String v)
@@ -170,7 +170,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_1a_fundraising_income_internal_event_2()
     {
-        return this._1a_fundraising_income_internal_event_2;
+        return _1a_fundraising_income_internal_event_2;
     }
 
     public void set_1a_fundraising_income_internal_event_2(java.lang.String v)
@@ -180,7 +180,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity_at_the_event_2()
     {
-        return this.activity_at_the_event_2;
+        return activity_at_the_event_2;
     }
 
     public void setActivity_at_the_event_2(java.lang.String v)
@@ -190,7 +190,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount_2()
     {
-        return this.amount_2;
+        return amount_2;
     }
 
     public void setAmount_2(java.lang.String v)
@@ -200,7 +200,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_1a_fundraising_income_internal_event_3()
     {
-        return this._1a_fundraising_income_internal_event_3;
+        return _1a_fundraising_income_internal_event_3;
     }
 
     public void set_1a_fundraising_income_internal_event_3(java.lang.String v)
@@ -210,7 +210,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity_at_the_event_3()
     {
-        return this.activity_at_the_event_3;
+        return activity_at_the_event_3;
     }
 
     public void setActivity_at_the_event_3(java.lang.String v)
@@ -220,7 +220,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount_3()
     {
-        return this.amount_3;
+        return amount_3;
     }
 
     public void setAmount_3(java.lang.String v)
@@ -230,7 +230,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_1a_fundraising_income_internal_event_4()
     {
-        return this._1a_fundraising_income_internal_event_4;
+        return _1a_fundraising_income_internal_event_4;
     }
 
     public void set_1a_fundraising_income_internal_event_4(java.lang.String v)
@@ -240,7 +240,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity_at_the_event_4()
     {
-        return this.activity_at_the_event_4;
+        return activity_at_the_event_4;
     }
 
     public void setActivity_at_the_event_4(java.lang.String v)
@@ -250,7 +250,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount_4()
     {
-        return this.amount_4;
+        return amount_4;
     }
 
     public void setAmount_4(java.lang.String v)
@@ -260,7 +260,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_1a_fundraising_income_internal_event_5()
     {
-        return this._1a_fundraising_income_internal_event_5;
+        return _1a_fundraising_income_internal_event_5;
     }
 
     public void set_1a_fundraising_income_internal_event_5(java.lang.String v)
@@ -270,7 +270,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity_at_the_event_5()
     {
-        return this.activity_at_the_event_5;
+        return activity_at_the_event_5;
     }
 
     public void setActivity_at_the_event_5(java.lang.String v)
@@ -280,7 +280,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount_5()
     {
-        return this.amount_5;
+        return amount_5;
     }
 
     public void setAmount_5(java.lang.String v)
@@ -290,7 +290,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_1a_fundraising_income_internal_event_6()
     {
-        return this._1a_fundraising_income_internal_event_6;
+        return _1a_fundraising_income_internal_event_6;
     }
 
     public void set_1a_fundraising_income_internal_event_6(java.lang.String v)
@@ -300,7 +300,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity_at_the_event_6()
     {
-        return this.activity_at_the_event_6;
+        return activity_at_the_event_6;
     }
 
     public void setActivity_at_the_event_6(java.lang.String v)
@@ -310,7 +310,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount_6()
     {
-        return this.amount_6;
+        return amount_6;
     }
 
     public void setAmount_6(java.lang.String v)
@@ -320,7 +320,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_1a_fundraising_income_internal_event_7()
     {
-        return this._1a_fundraising_income_internal_event_7;
+        return _1a_fundraising_income_internal_event_7;
     }
 
     public void set_1a_fundraising_income_internal_event_7(java.lang.String v)
@@ -330,7 +330,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity_at_the_event_7()
     {
-        return this.activity_at_the_event_7;
+        return activity_at_the_event_7;
     }
 
     public void setActivity_at_the_event_7(java.lang.String v)
@@ -340,7 +340,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount_7()
     {
-        return this.amount_7;
+        return amount_7;
     }
 
     public void setAmount_7(java.lang.String v)
@@ -350,7 +350,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_1a_fundraising_income_internal_event_8()
     {
-        return this._1a_fundraising_income_internal_event_8;
+        return _1a_fundraising_income_internal_event_8;
     }
 
     public void set_1a_fundraising_income_internal_event_8(java.lang.String v)
@@ -360,7 +360,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity_at_the_event_8()
     {
-        return this.activity_at_the_event_8;
+        return activity_at_the_event_8;
     }
 
     public void setActivity_at_the_event_8(java.lang.String v)
@@ -370,7 +370,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount_8()
     {
-        return this.amount_8;
+        return amount_8;
     }
 
     public void setAmount_8(java.lang.String v)
@@ -380,7 +380,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_1a_fundraising_income_internal_event_9()
     {
-        return this._1a_fundraising_income_internal_event_9;
+        return _1a_fundraising_income_internal_event_9;
     }
 
     public void set_1a_fundraising_income_internal_event_9(java.lang.String v)
@@ -390,7 +390,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity_at_the_event_9()
     {
-        return this.activity_at_the_event_9;
+        return activity_at_the_event_9;
     }
 
     public void setActivity_at_the_event_9(java.lang.String v)
@@ -400,7 +400,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount_9()
     {
-        return this.amount_9;
+        return amount_9;
     }
 
     public void setAmount_9(java.lang.String v)
@@ -410,7 +410,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.Double getAmount_show_total_on_pg_4_line_1a()
     {
-        return this.amount_show_total_on_pg_4_line_1a;
+        return amount_show_total_on_pg_4_line_1a;
     }
 
     public void setAmount_show_total_on_pg_4_line_1a(java.lang.Double v)
@@ -420,7 +420,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_1b_fundraising_income_external_place()
     {
-        return this._1b_fundraising_income_external_place;
+        return _1b_fundraising_income_external_place;
     }
 
     public void set_1b_fundraising_income_external_place(java.lang.String v)
@@ -430,7 +430,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity()
     {
-        return this.activity;
+        return activity;
     }
 
     public void setActivity(java.lang.String v)
@@ -440,7 +440,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount_10()
     {
-        return this.amount_10;
+        return amount_10;
     }
 
     public void setAmount_10(java.lang.String v)
@@ -450,7 +450,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_1b_fundraising_income_external_place_2()
     {
-        return this._1b_fundraising_income_external_place_2;
+        return _1b_fundraising_income_external_place_2;
     }
 
     public void set_1b_fundraising_income_external_place_2(java.lang.String v)
@@ -460,7 +460,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity_2()
     {
-        return this.activity_2;
+        return activity_2;
     }
 
     public void setActivity_2(java.lang.String v)
@@ -470,7 +470,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount_11()
     {
-        return this.amount_11;
+        return amount_11;
     }
 
     public void setAmount_11(java.lang.String v)
@@ -480,7 +480,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_1b_fundraising_income_external_place_3()
     {
-        return this._1b_fundraising_income_external_place_3;
+        return _1b_fundraising_income_external_place_3;
     }
 
     public void set_1b_fundraising_income_external_place_3(java.lang.String v)
@@ -490,7 +490,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity_3()
     {
-        return this.activity_3;
+        return activity_3;
     }
 
     public void setActivity_3(java.lang.String v)
@@ -500,7 +500,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount_12()
     {
-        return this.amount_12;
+        return amount_12;
     }
 
     public void setAmount_12(java.lang.String v)
@@ -510,7 +510,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_1b_fundraising_income_external_place_4()
     {
-        return this._1b_fundraising_income_external_place_4;
+        return _1b_fundraising_income_external_place_4;
     }
 
     public void set_1b_fundraising_income_external_place_4(java.lang.String v)
@@ -520,7 +520,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity_4()
     {
-        return this.activity_4;
+        return activity_4;
     }
 
     public void setActivity_4(java.lang.String v)
@@ -530,7 +530,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount_13()
     {
-        return this.amount_13;
+        return amount_13;
     }
 
     public void setAmount_13(java.lang.String v)
@@ -540,7 +540,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_1b_fundraising_income_external_place_5()
     {
-        return this._1b_fundraising_income_external_place_5;
+        return _1b_fundraising_income_external_place_5;
     }
 
     public void set_1b_fundraising_income_external_place_5(java.lang.String v)
@@ -550,7 +550,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity_5()
     {
-        return this.activity_5;
+        return activity_5;
     }
 
     public void setActivity_5(java.lang.String v)
@@ -560,7 +560,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount_14()
     {
-        return this.amount_14;
+        return amount_14;
     }
 
     public void setAmount_14(java.lang.String v)
@@ -570,7 +570,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_1b_fundraising_income_external_place_6()
     {
-        return this._1b_fundraising_income_external_place_6;
+        return _1b_fundraising_income_external_place_6;
     }
 
     public void set_1b_fundraising_income_external_place_6(java.lang.String v)
@@ -580,7 +580,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity_6()
     {
-        return this.activity_6;
+        return activity_6;
     }
 
     public void setActivity_6(java.lang.String v)
@@ -590,7 +590,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount_15()
     {
-        return this.amount_15;
+        return amount_15;
     }
 
     public void setAmount_15(java.lang.String v)
@@ -600,7 +600,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_1b_fundraising_income_external_place_7()
     {
-        return this._1b_fundraising_income_external_place_7;
+        return _1b_fundraising_income_external_place_7;
     }
 
     public void set_1b_fundraising_income_external_place_7(java.lang.String v)
@@ -610,7 +610,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity_7()
     {
-        return this.activity_7;
+        return activity_7;
     }
 
     public void setActivity_7(java.lang.String v)
@@ -620,7 +620,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount_16()
     {
-        return this.amount_16;
+        return amount_16;
     }
 
     public void setAmount_16(java.lang.String v)
@@ -630,7 +630,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.Double getAmount_show_total_on_pg_4_line_1b()
     {
-        return this.amount_show_total_on_pg_4_line_1b;
+        return amount_show_total_on_pg_4_line_1b;
     }
 
     public void setAmount_show_total_on_pg_4_line_1b(java.lang.Double v)
@@ -640,7 +640,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.Double getAmount_a_donations_received_without_consideration_list_each_transaction_on_income_dtl_11c_worksheet()
     {
-        return this.amount_a_donations_received_without_consideration_list_each_transaction_on_income_dtl_11c_worksheet;
+        return amount_a_donations_received_without_consideration_list_each_transaction_on_income_dtl_11c_worksheet;
     }
 
     public void setAmount_a_donations_received_without_consideration_list_each_transaction_on_income_dtl_11c_worksheet(java.lang.Double v)
@@ -650,7 +650,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.Double getIncome_dtl_11c_g24_income_dtl_11c_g66_show_total_on_pg_4_line_2()
     {
-        return this.income_dtl_11c_g24_income_dtl_11c_g66_show_total_on_pg_4_line_2;
+        return income_dtl_11c_g24_income_dtl_11c_g66_show_total_on_pg_4_line_2;
     }
 
     public void setIncome_dtl_11c_g24_income_dtl_11c_g66_show_total_on_pg_4_line_2(java.lang.Double v)
@@ -660,7 +660,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_3a_income_from_demos_and_activity_fees_from()
     {
-        return this._3a_income_from_demos_and_activity_fees_from;
+        return _3a_income_from_demos_and_activity_fees_from;
     }
 
     public void set_3a_income_from_demos_and_activity_fees_from(java.lang.String v)
@@ -670,7 +670,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity_8()
     {
-        return this.activity_8;
+        return activity_8;
     }
 
     public void setActivity_8(java.lang.String v)
@@ -680,7 +680,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount_17()
     {
-        return this.amount_17;
+        return amount_17;
     }
 
     public void setAmount_17(java.lang.String v)
@@ -690,7 +690,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_3a_income_from_demos_and_activity_fees_from_2()
     {
-        return this._3a_income_from_demos_and_activity_fees_from_2;
+        return _3a_income_from_demos_and_activity_fees_from_2;
     }
 
     public void set_3a_income_from_demos_and_activity_fees_from_2(java.lang.String v)
@@ -700,7 +700,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity_9()
     {
-        return this.activity_9;
+        return activity_9;
     }
 
     public void setActivity_9(java.lang.String v)
@@ -710,7 +710,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount_18()
     {
-        return this.amount_18;
+        return amount_18;
     }
 
     public void setAmount_18(java.lang.String v)
@@ -720,7 +720,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_3a_income_from_demos_and_activity_fees_from_3()
     {
-        return this._3a_income_from_demos_and_activity_fees_from_3;
+        return _3a_income_from_demos_and_activity_fees_from_3;
     }
 
     public void set_3a_income_from_demos_and_activity_fees_from_3(java.lang.String v)
@@ -730,7 +730,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity_10()
     {
-        return this.activity_10;
+        return activity_10;
     }
 
     public void setActivity_10(java.lang.String v)
@@ -740,7 +740,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount_19()
     {
-        return this.amount_19;
+        return amount_19;
     }
 
     public void setAmount_19(java.lang.String v)
@@ -750,7 +750,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_3a_income_from_demos_and_activity_fees_from_4()
     {
-        return this._3a_income_from_demos_and_activity_fees_from_4;
+        return _3a_income_from_demos_and_activity_fees_from_4;
     }
 
     public void set_3a_income_from_demos_and_activity_fees_from_4(java.lang.String v)
@@ -760,7 +760,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity_11()
     {
-        return this.activity_11;
+        return activity_11;
     }
 
     public void setActivity_11(java.lang.String v)
@@ -770,7 +770,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount_20()
     {
-        return this.amount_20;
+        return amount_20;
     }
 
     public void setAmount_20(java.lang.String v)
@@ -780,7 +780,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_3a_income_from_demos_and_activity_fees_from_5()
     {
-        return this._3a_income_from_demos_and_activity_fees_from_5;
+        return _3a_income_from_demos_and_activity_fees_from_5;
     }
 
     public void set_3a_income_from_demos_and_activity_fees_from_5(java.lang.String v)
@@ -790,7 +790,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity_12()
     {
-        return this.activity_12;
+        return activity_12;
     }
 
     public void setActivity_12(java.lang.String v)
@@ -800,7 +800,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount_21()
     {
-        return this.amount_21;
+        return amount_21;
     }
 
     public void setAmount_21(java.lang.String v)
@@ -810,7 +810,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_3a_income_from_demos_and_activity_fees_from_6()
     {
-        return this._3a_income_from_demos_and_activity_fees_from_6;
+        return _3a_income_from_demos_and_activity_fees_from_6;
     }
 
     public void set_3a_income_from_demos_and_activity_fees_from_6(java.lang.String v)
@@ -820,7 +820,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity_13()
     {
-        return this.activity_13;
+        return activity_13;
     }
 
     public void setActivity_13(java.lang.String v)
@@ -830,7 +830,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount_22()
     {
-        return this.amount_22;
+        return amount_22;
     }
 
     public void setAmount_22(java.lang.String v)
@@ -840,7 +840,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_3a_income_from_demos_and_activity_fees_from_7()
     {
-        return this._3a_income_from_demos_and_activity_fees_from_7;
+        return _3a_income_from_demos_and_activity_fees_from_7;
     }
 
     public void set_3a_income_from_demos_and_activity_fees_from_7(java.lang.String v)
@@ -850,7 +850,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity_14()
     {
-        return this.activity_14;
+        return activity_14;
     }
 
     public void setActivity_14(java.lang.String v)
@@ -860,7 +860,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount_23()
     {
-        return this.amount_23;
+        return amount_23;
     }
 
     public void setAmount_23(java.lang.String v)
@@ -870,7 +870,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_3a_income_from_demos_and_activity_fees_from_8()
     {
-        return this._3a_income_from_demos_and_activity_fees_from_8;
+        return _3a_income_from_demos_and_activity_fees_from_8;
     }
 
     public void set_3a_income_from_demos_and_activity_fees_from_8(java.lang.String v)
@@ -880,7 +880,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity_15()
     {
-        return this.activity_15;
+        return activity_15;
     }
 
     public void setActivity_15(java.lang.String v)
@@ -890,7 +890,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount_24()
     {
-        return this.amount_24;
+        return amount_24;
     }
 
     public void setAmount_24(java.lang.String v)
@@ -900,7 +900,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_3a_income_from_demos_and_activity_fees_from_9()
     {
-        return this._3a_income_from_demos_and_activity_fees_from_9;
+        return _3a_income_from_demos_and_activity_fees_from_9;
     }
 
     public void set_3a_income_from_demos_and_activity_fees_from_9(java.lang.String v)
@@ -910,7 +910,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity_16()
     {
-        return this.activity_16;
+        return activity_16;
     }
 
     public void setActivity_16(java.lang.String v)
@@ -920,7 +920,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount_25()
     {
-        return this.amount_25;
+        return amount_25;
     }
 
     public void setAmount_25(java.lang.String v)
@@ -930,7 +930,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_3a_income_from_demos_and_activity_fees_from_10()
     {
-        return this._3a_income_from_demos_and_activity_fees_from_10;
+        return _3a_income_from_demos_and_activity_fees_from_10;
     }
 
     public void set_3a_income_from_demos_and_activity_fees_from_10(java.lang.String v)
@@ -940,7 +940,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity_17()
     {
-        return this.activity_17;
+        return activity_17;
     }
 
     public void setActivity_17(java.lang.String v)
@@ -950,7 +950,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount_26()
     {
-        return this.amount_26;
+        return amount_26;
     }
 
     public void setAmount_26(java.lang.String v)
@@ -960,7 +960,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_3a_income_from_demos_and_activity_fees_from_11()
     {
-        return this._3a_income_from_demos_and_activity_fees_from_11;
+        return _3a_income_from_demos_and_activity_fees_from_11;
     }
 
     public void set_3a_income_from_demos_and_activity_fees_from_11(java.lang.String v)
@@ -970,7 +970,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity_18()
     {
-        return this.activity_18;
+        return activity_18;
     }
 
     public void setActivity_18(java.lang.String v)
@@ -980,7 +980,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount_27()
     {
-        return this.amount_27;
+        return amount_27;
     }
 
     public void setAmount_27(java.lang.String v)
@@ -990,7 +990,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String get_3a_income_from_demos_and_activity_fees_from_12()
     {
-        return this._3a_income_from_demos_and_activity_fees_from_12;
+        return _3a_income_from_demos_and_activity_fees_from_12;
     }
 
     public void set_3a_income_from_demos_and_activity_fees_from_12(java.lang.String v)
@@ -1000,7 +1000,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getActivity_19()
     {
-        return this.activity_19;
+        return activity_19;
     }
 
     public void setActivity_19(java.lang.String v)
@@ -1010,7 +1010,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.String getAmount_28()
     {
-        return this.amount_28;
+        return amount_28;
     }
 
     public void setAmount_28(java.lang.String v)
@@ -1020,7 +1020,7 @@ public class INCOME_DTL_11aBean
 
     public java.lang.Double getAmount_show_total_on_pg_4_line_3a()
     {
-        return this.amount_show_total_on_pg_4_line_3a;
+        return amount_show_total_on_pg_4_line_3a;
     }
 
     public void setAmount_show_total_on_pg_4_line_3a(java.lang.Double v)

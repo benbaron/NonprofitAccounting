@@ -1,421 +1,427 @@
-<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
-<jasperReport name="BALANCE_3" language="java" pageWidth="595" pageHeight="3000" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="00000000-0000-0000-0000-000000000000">
-	<field name="balance_3_r2c3" class="java.lang.Double"/>
-	<field name="contents_b59" class="java.lang.Double"/>
-	<field name="contents_e_3" class="java.lang.Double"/>
-	<field name="contents_e_4" class="java.lang.Double"/>
-	<field name="balance_3_r17c7" class="java.lang.Double"/>
-	<field name="contents_c_14" class="java.lang.Double"/>
-	<field name="start_2_5a" class="java.lang.String"/>
-	<field name="end_2_5a" class="java.lang.Double"/>
-	<field name="diff_if_primary_account_2a_f_38_yes_if_primary_account_2a_h_37_primary_account_2a_h_36_primary_account_2a_h_37_0_0_secondary_accounts_2b_i22_secondary_accounts_2c_i22_secondary_accounts_2d_i22_asset_dtl_5a_g19" class="java.lang.Double"/>
-	<field name="start_2" class="java.lang.String"/>
-	<field name="if_primary_account_2a_f_38_yes_if_primary_account_2a_h_37_primary_account_2a_h_36_primary_account_2a_h_37_0_0_secondary_accounts_2b_i22_secondary_accounts_2c_i22_secondary_accounts_2d_i22_asset_dtl_5a_g19_2" class="java.lang.Double"/>
-	<field name="h19_g19_if_primary_account_2a_f38_yes_if_primary_account_2a_h37_primary_account_2a_h36_primary_account_2a_h37_0_0_secondary_accounts_2b_i23_secondary_accounts_2c_i23_secondary_accounts_2d_i23" class="java.lang.Double"/>
-	<field name="start_5a" class="java.lang.Double"/>
-	<field name="if_primary_account_2a_f38_yes_if_primary_account_2a_h37_primary_account_2a_h36_primary_account_2a_h37_0_0_secondary_accounts_2b_i23_secondary_accounts_2c_i23_secondary_accounts_2d_i23_asset_dtl_5a_f35_asset_dtl_5c_e33" class="java.lang.Double"/>
-	<field name="h20_g20_asset_dtl_5a_g35_asset_dtl_5c_f33" class="java.lang.Double"/>
-	<field name="asset_dtl_5a_f35_asset_dtl_5c_e33_6" class="java.lang.Double"/>
-	<field name="asset_dtl_5a_g35_asset_dtl_5c_f33_inventory_dtl_6_m17_inventory_dtl_6b_m17" class="java.lang.Double"/>
-	<field name="h21_g21_inventory_dtl_6_m27_inventory_dtl_6b_m27" class="java.lang.Double"/>
-	<field name="inventory_dtl_6_m17_inventory_dtl_6b_m17_7" class="java.lang.Double"/>
-	<field name="inventory_dtl_6_m27_inventory_dtl_6b_m27_regalia_sales_dtl_7_f32_regalia_sales_dtl_7b_f32" class="java.lang.Double"/>
-	<field name="h22_g22_regalia_sales_dtl_7_i32_regalia_sales_dtl_7b_i32" class="java.lang.Double"/>
-	<field name="regalia_sales_dtl_7_f32_regalia_sales_dtl_7b_f32_8" class="java.lang.Double"/>
-	<field name="regalia_sales_dtl_7_i32_regalia_sales_dtl_7b_i32_depr_dtl_8_i47_depr_dtl_8b_i54_depr_dtl_8c_i54_regalia_sales_dtl_7_f49_regalia_sales_dtl_7_f50_regalia_sales_dtl_7_f51_regalia_sales_dtl_7b_f49_regalia_sales_dtl_7b_f50_regalia_sales_dtl_7b_f51" class="java.lang.Double"/>
-	<field name="h23_g23_depr_dtl_8_j47_depr_dtl_8b_j54_depr_dtl_8c_j54" class="java.lang.Double"/>
-	<field name="depr_dtl_8_i47_depr_dtl_8b_i54_depr_dtl_8c_i54_regalia_sales_dtl_7_f49_regalia_sales_dtl_7_f50_regalia_sales_dtl_7_f51_regalia_sales_dtl_7b_f49_regalia_sales_dtl_7b_f50_regalia_sales_dtl_7b_f51_8" class="java.lang.Double"/>
-	<field name="depr_dtl_8_j47_depr_dtl_8b_j54_depr_dtl_8c_j54_1_depr_dtl_8_k47_depr_dtl_8b_k54_depr_dtl_8c_k54_regalia_sales_dtl_7_g49_regalia_sales_dtl_7_g50_regalia_sales_dtl_7_g51_regalia_sales_dtl_7b_g49_regalia_sales_dtl_7b_g50_regalia_sales_dtl_7b_g51" class="java.lang.Double"/>
-	<field name="h24_g24_depr_dtl_8_m47_1_depr_dtl_8b_m54_1_depr_dtl_8c_m54_1" class="java.lang.Double"/>
-	<field name="_1_depr_dtl_8_k47_depr_dtl_8b_k54_depr_dtl_8c_k54_regalia_sales_dtl_7_g49_regalia_sales_dtl_7_g50_regalia_sales_dtl_7_g51_regalia_sales_dtl_7b_g49_regalia_sales_dtl_7b_g50_regalia_sales_dtl_7b_g51_5a" class="java.lang.Double"/>
-	<field name="depr_dtl_8_m47_1_depr_dtl_8b_m54_1_depr_dtl_8c_m54_1_asset_dtl_5a_f46_asset_dtl_5c_e44" class="java.lang.Double"/>
-	<field name="h25_g25_asset_dtl_5a_g46_asset_dtl_5c_f44" class="java.lang.Double"/>
-	<field name="asset_dtl_5a_f46_asset_dtl_5c_e44_5a" class="java.lang.Double"/>
-	<field name="asset_dtl_5a_g46_asset_dtl_5c_f44_asset_dtl_5a_f60_asset_dtl_5c_e58" class="java.lang.Double"/>
-	<field name="h26_g26_asset_dtl_5a_g60_asset_dtl_5c_f58" class="java.lang.Double"/>
-	<field name="asset_dtl_5a_f60_asset_dtl_5c_e58_add_a_through_f_subtract_g_then_add_h_and_i" class="java.lang.Double"/>
-	<field name="asset_dtl_5a_g60_asset_dtl_5c_f58_sum_g19_g27" class="java.lang.Double"/>
-	<field name="h27_g27_sum_h19_h27" class="java.lang.Double"/>
-	<field name="sum_g19_g27_15" class="java.lang.String"/>
-	<field name="sum_h19_h27_15" class="java.lang.Double"/>
-	<field name="sum_i19_i27_newsletter_15_e16" class="java.lang.Double"/>
-	<field name="sum_g19_g27_5b" class="java.lang.Double"/>
-	<field name="newsletter_15_e16_liability_dtl_5b_e31_liability_dtl_5d_e29" class="java.lang.Double"/>
-	<field name="h31_g31_liability_dtl_5b_f31_liability_dtl_5d_f29" class="java.lang.Double"/>
-	<field name="liability_dtl_5b_e31_liability_dtl_5d_e29_5b" class="java.lang.Double"/>
-	<field name="liability_dtl_5b_f31_liability_dtl_5d_f29_liability_dtl_5b_e44_liability_dtl_5d_e47" class="java.lang.Double"/>
-	<field name="h32_g32_liability_dtl_5b_f44_liability_dtl_5d_f47" class="java.lang.Double"/>
-	<field name="liability_dtl_5b_e44_liability_dtl_5d_e47_5b" class="java.lang.Double"/>
-	<field name="liability_dtl_5b_f44_liability_dtl_5d_f47_liability_dtl_5b_e56_liability_dtl_5d_e56" class="java.lang.Double"/>
-	<field name="h33_g33_liability_dtl_5b_f56_liability_dtl_5d_f56" class="java.lang.Double"/>
-	<field name="liability_dtl_5b_e56_liability_dtl_5d_e56_add_a_through_d" class="java.lang.Double"/>
-	<field name="liability_dtl_5b_f56_liability_dtl_5d_f56_sum_g31_g34" class="java.lang.Double"/>
-	<field name="h34_g34_sum_h31_h34" class="java.lang.Double"/>
-	<field name="sum_g31_g34_line_i_i_minus_line_ii_d" class="java.lang.Double"/>
-	<field name="sum_h31_h34_round_g28_g35_2" class="java.lang.Double"/>
-	<field name="round_g28_g35_2_a" class="java.lang.Double"/>
-	<field name="h37_g37_b" class="java.lang.Double"/>
-	<field name="print_exchequer" class="java.lang.Double"/>
-	<field name="if_contents_c_10_contents_c_10_seneschal" class="java.lang.Double"/>
-	<detail>
-		<band height="880">
-			<element kind="textField" uuid="1263f6b6-2dce-4b2c-8220-7b745962f0c6" x="10" y="0" width="80" height="20">
-				<expression><![CDATA[$F{balance_3_r2c3}]]></expression>
-			</element>
-			<element kind="textField" uuid="80b5a341-b3de-4748-9f50-ad0beac0e189" x="10" y="20" width="80" height="20">
-				<expression><![CDATA[$F{contents_b59}]]></expression>
-			</element>
-			<element kind="textField" uuid="b3e20cab-ddfb-4c79-ad3e-8a3183e3c7a8" x="10" y="40" width="80" height="20">
-				<expression><![CDATA[$F{contents_e_3}]]></expression>
-			</element>
-			<element kind="textField" uuid="d3fe84c7-296e-4447-adce-17218992eb87" x="10" y="100" width="80" height="20">
-				<expression><![CDATA[$F{contents_e_4}]]></expression>
-			</element>
-			<element kind="staticText" uuid="2073ca90-9f99-4f2c-aa73-0e629bbac802" x="10" y="140" width="80" height="20">
-				<text><![CDATA[COMPARATIVE BALANCE STATEMENT]]></text>
-			</element>
-			<element kind="staticText" uuid="84de0f2a-525f-4455-97cd-fd1f24a549e5" x="10" y="180" width="80" height="20">
-				<text><![CDATA[For Cumulative Quarterly Reports, use last year's Comparative Balance Sheet (End) amounts for the (Start) amounts.]]></text>
-			</element>
-			<element kind="staticText" uuid="aaaee4b7-ef09-426b-be98-143b700b4949" x="10" y="200" width="80" height="20">
-				<text><![CDATA[For Sequential Quarterly Reports, use last report's Comparative Balance Sheet (End) amounts for the (Start) amounts.]]></text>
-			</element>
-			<element kind="staticText" uuid="3edd797e-45f6-47fa-a189-a736dfd54ec6" x="10" y="220" width="80" height="20">
-				<text><![CDATA[For Year-end Reports, the (Start) numbers will be provided to you by the Kingdom Exchequer. The numbers may have]]></text>
-			</element>
-			<element kind="staticText" uuid="d06da149-88a5-41e9-8743-967713378452" x="10" y="240" width="80" height="20">
-				<text><![CDATA[changed from what was submitted last year because of transfer reconciliation between your account and other accounts.]]></text>
-			</element>
-			<element kind="staticText" uuid="3b7d9c82-a077-4439-af46-d9150b127269" x="10" y="260" width="80" height="20">
-				<text><![CDATA[The Year-end Report must be signed by the person preparing the report.]]></text>
-			</element>
-			<element kind="staticText" uuid="815f4ee1-2de9-48b4-af8d-3821b9d70e9e" x="10" y="280" width="80" height="20">
-				<text><![CDATA[(START) FIGURES MAY NOT BE CHANGED UNDER ANY CIRCUMSTANCES!]]></text>
-			</element>
-			<element kind="textField" uuid="9d103ef4-fbd0-4498-8e61-a55587955ee9" x="330" y="300" width="80" height="20">
-				<expression><![CDATA[$F{balance_3_r17c7}]]></expression>
-			</element>
-			<element kind="textField" uuid="74fecf97-b7f3-44df-87c3-2e0094fff050" x="410" y="300" width="80" height="20">
-				<expression><![CDATA[$F{contents_c_14}]]></expression>
-			</element>
-			<element kind="staticText" uuid="6846ce71-b36f-472a-9fe1-7d1f0da6a4cd" x="10" y="320" width="80" height="20">
-				<text><![CDATA[I.  ASSETS]]></text>
-			</element>
-			<element kind="staticText" uuid="60f2d0db-8272-46e4-81e7-f00ec3398aae" x="170" y="320" width="80" height="20">
-				<text><![CDATA[(from page)]]></text>
-			</element>
-			<element kind="staticText" uuid="521cfba2-7eff-4459-8319-9c4b91464ce6" x="330" y="320" width="80" height="20">
-				<text><![CDATA[Start]]></text>
-			</element>
-			<element kind="staticText" uuid="511f4991-7835-47e7-b38c-d42984d8e9a8" x="410" y="320" width="80" height="20">
-				<text><![CDATA[End]]></text>
-			</element>
-			<element kind="staticText" uuid="8f6df68b-b52f-436e-bcf0-cb3220a9ecea" x="490" y="320" width="80" height="20">
-				<text><![CDATA[Diff]]></text>
-			</element>
-			<element kind="staticText" uuid="7b2183b4-a451-4b74-be8a-adee8a8e66ea" x="10" y="340" width="80" height="20">
-				<text><![CDATA[a)  Undeposited and Non-Interest Bearing Cash]]></text>
-			</element>
-			<element kind="staticText" uuid="0c73faf8-5542-4997-8198-08bcd1719129" x="250" y="340" width="80" height="20">
-				<text><![CDATA[(2,5a)]]></text>
-			</element>
-			<element kind="textField" uuid="0bb2e076-c31b-471d-b932-aff4477bf6c4" x="330" y="340" width="80" height="20">
-				<expression><![CDATA[$F{start_2_5a}]]></expression>
-			</element>
-			<element kind="textField" uuid="85b325c8-89a0-4bd1-8789-94a786ffdc0d" x="410" y="340" width="80" height="20">
-				<expression><![CDATA[$F{end_2_5a}]]></expression>
-			</element>
-			<element kind="textField" uuid="5a16d762-dca4-43e4-bdca-645c21a8f783" x="490" y="340" width="80" height="20">
-				<expression><![CDATA[$F{diff_if_primary_account_2a_f_38_yes_if_primary_account_2a_h_37_primary_account_2a_h_36_primary_account_2a_h_37_0_0_secondary_accounts_2b_i22_secondary_accounts_2c_i22_secondary_accounts_2d_i22_asset_dtl_5a_g19}]]></expression>
-			</element>
-			<element kind="staticText" uuid="1bf87a38-031d-4e29-b97e-ba7338b7e35e" x="10" y="360" width="80" height="20">
-				<text><![CDATA[b)  Cash Earning Interest]]></text>
-			</element>
-			<element kind="staticText" uuid="1572b316-2d11-4168-8e4c-80b931a1dac3" x="250" y="360" width="80" height="20">
-				<text><![CDATA[(2)]]></text>
-			</element>
-			<element kind="textField" uuid="4cb1b127-f05a-418f-be6d-61ad0f33283e" x="330" y="360" width="80" height="20">
-				<expression><![CDATA[$F{start_2}]]></expression>
-			</element>
-			<element kind="textField" uuid="ceb353e6-9a5c-4003-90d1-1500831b0d8c" x="410" y="360" width="80" height="20">
-				<expression><![CDATA[$F{if_primary_account_2a_f_38_yes_if_primary_account_2a_h_37_primary_account_2a_h_36_primary_account_2a_h_37_0_0_secondary_accounts_2b_i22_secondary_accounts_2c_i22_secondary_accounts_2d_i22_asset_dtl_5a_g19_2}]]></expression>
-			</element>
-			<element kind="textField" uuid="9f23291d-b5d6-4ca2-9b70-ed93f4077b32" x="490" y="360" width="80" height="20">
-				<expression><![CDATA[$F{h19_g19_if_primary_account_2a_f38_yes_if_primary_account_2a_h37_primary_account_2a_h36_primary_account_2a_h37_0_0_secondary_accounts_2b_i23_secondary_accounts_2c_i23_secondary_accounts_2d_i23}]]></expression>
-			</element>
-			<element kind="staticText" uuid="8616987d-8ade-41fa-94e9-fbf94c99d626" x="10" y="380" width="80" height="20">
-				<text><![CDATA[c)  Receivables]]></text>
-			</element>
-			<element kind="staticText" uuid="6ef09f8e-b8b0-4b1d-88a5-e744177a7cd6" x="250" y="380" width="80" height="20">
-				<text><![CDATA[(5a)]]></text>
-			</element>
-			<element kind="textField" uuid="5fffbcde-4223-4fcc-92b6-f0ed4b679ddb" x="330" y="380" width="80" height="20">
-				<expression><![CDATA[$F{start_5a}]]></expression>
-			</element>
-			<element kind="textField" uuid="50ea35f6-25da-4be0-8997-e50a9b1832bf" x="410" y="380" width="80" height="20">
-				<expression><![CDATA[$F{if_primary_account_2a_f38_yes_if_primary_account_2a_h37_primary_account_2a_h36_primary_account_2a_h37_0_0_secondary_accounts_2b_i23_secondary_accounts_2c_i23_secondary_accounts_2d_i23_asset_dtl_5a_f35_asset_dtl_5c_e33}]]></expression>
-			</element>
-			<element kind="textField" uuid="e319754a-38d0-4467-919f-9e9f32780fc6" x="490" y="380" width="80" height="20">
-				<expression><![CDATA[$F{h20_g20_asset_dtl_5a_g35_asset_dtl_5c_f33}]]></expression>
-			</element>
-			<element kind="staticText" uuid="78216a4c-dba9-491f-8cd1-b84fc250e2bf" x="10" y="400" width="80" height="20">
-				<text><![CDATA[d)  Inventory For Sale (Major Inventory)]]></text>
-			</element>
-			<element kind="staticText" uuid="5ea9d43a-1c8b-40cb-a32e-e0bbc5db2b63" x="250" y="400" width="80" height="20">
-				<text><![CDATA[(6)]]></text>
-			</element>
-			<element kind="textField" uuid="0de6fb07-ba35-4ab4-b92b-3a8a72ab70e1" x="330" y="400" width="80" height="20">
-				<expression><![CDATA[$F{asset_dtl_5a_f35_asset_dtl_5c_e33_6}]]></expression>
-			</element>
-			<element kind="textField" uuid="c73b1785-ebd6-4a19-9743-d7e230b21520" x="410" y="400" width="80" height="20">
-				<expression><![CDATA[$F{asset_dtl_5a_g35_asset_dtl_5c_f33_inventory_dtl_6_m17_inventory_dtl_6b_m17}]]></expression>
-			</element>
-			<element kind="textField" uuid="2d8955fb-169c-48d5-9885-ca27912dbf55" x="490" y="400" width="80" height="20">
-				<expression><![CDATA[$F{h21_g21_inventory_dtl_6_m27_inventory_dtl_6b_m27}]]></expression>
-			</element>
-			<element kind="staticText" uuid="d0ec3108-c954-4187-990c-a2cb68f46052" x="10" y="420" width="80" height="20">
-				<text><![CDATA[e)  Regalia & Non-Depreciated Equipment]]></text>
-			</element>
-			<element kind="staticText" uuid="eee40736-17cf-405c-a3e8-205bf1a97890" x="250" y="420" width="80" height="20">
-				<text><![CDATA[(7)]]></text>
-			</element>
-			<element kind="textField" uuid="5106393a-0117-45ba-8ec5-5010c235c755" x="330" y="420" width="80" height="20">
-				<expression><![CDATA[$F{inventory_dtl_6_m17_inventory_dtl_6b_m17_7}]]></expression>
-			</element>
-			<element kind="textField" uuid="ce461f8a-7c58-4de3-912d-7a814d2cc45e" x="410" y="420" width="80" height="20">
-				<expression><![CDATA[$F{inventory_dtl_6_m27_inventory_dtl_6b_m27_regalia_sales_dtl_7_f32_regalia_sales_dtl_7b_f32}]]></expression>
-			</element>
-			<element kind="textField" uuid="f7913d4f-1117-45b5-923e-e54cf11b7006" x="490" y="420" width="80" height="20">
-				<expression><![CDATA[$F{h22_g22_regalia_sales_dtl_7_i32_regalia_sales_dtl_7b_i32}]]></expression>
-			</element>
-			<element kind="staticText" uuid="cab5ac0a-e306-417d-a12f-92e6aedd8fb6" x="10" y="440" width="80" height="20">
-				<text><![CDATA[f)  Depreciated Equipment]]></text>
-			</element>
-			<element kind="staticText" uuid="807f2314-e5cb-44ea-a0a6-16594b6d45a5" x="250" y="440" width="80" height="20">
-				<text><![CDATA[(8)]]></text>
-			</element>
-			<element kind="textField" uuid="ee1807a0-69c3-4c2c-bc03-4d075de47c4d" x="330" y="440" width="80" height="20">
-				<expression><![CDATA[$F{regalia_sales_dtl_7_f32_regalia_sales_dtl_7b_f32_8}]]></expression>
-			</element>
-			<element kind="textField" uuid="926dfda5-c2ca-406e-8faf-8e0423880f9f" x="410" y="440" width="80" height="20">
-				<expression><![CDATA[$F{regalia_sales_dtl_7_i32_regalia_sales_dtl_7b_i32_depr_dtl_8_i47_depr_dtl_8b_i54_depr_dtl_8c_i54_regalia_sales_dtl_7_f49_regalia_sales_dtl_7_f50_regalia_sales_dtl_7_f51_regalia_sales_dtl_7b_f49_regalia_sales_dtl_7b_f50_regalia_sales_dtl_7b_f51}]]></expression>
-			</element>
-			<element kind="textField" uuid="ff649052-7bf0-40de-b93c-57a402c487a8" x="490" y="440" width="80" height="20">
-				<expression><![CDATA[$F{h23_g23_depr_dtl_8_j47_depr_dtl_8b_j54_depr_dtl_8c_j54}]]></expression>
-			</element>
-			<element kind="staticText" uuid="066a1502-bfe7-4855-9f98-f08acbc08b40" x="10" y="460" width="80" height="20">
-				<text><![CDATA[g)  MINUS Accumulated Depreciation]]></text>
-			</element>
-			<element kind="staticText" uuid="e15a5e43-793e-4320-86fd-e56a4ed7ed60" x="250" y="460" width="80" height="20">
-				<text><![CDATA[(8)]]></text>
-			</element>
-			<element kind="textField" uuid="6acae554-e390-4f10-a3d2-e08718cde18e" x="330" y="460" width="80" height="20">
-				<expression><![CDATA[$F{depr_dtl_8_i47_depr_dtl_8b_i54_depr_dtl_8c_i54_regalia_sales_dtl_7_f49_regalia_sales_dtl_7_f50_regalia_sales_dtl_7_f51_regalia_sales_dtl_7b_f49_regalia_sales_dtl_7b_f50_regalia_sales_dtl_7b_f51_8}]]></expression>
-			</element>
-			<element kind="textField" uuid="07ac6a77-9119-472f-97eb-80e121b6c1cc" x="410" y="460" width="80" height="20">
-				<expression><![CDATA[$F{depr_dtl_8_j47_depr_dtl_8b_j54_depr_dtl_8c_j54_1_depr_dtl_8_k47_depr_dtl_8b_k54_depr_dtl_8c_k54_regalia_sales_dtl_7_g49_regalia_sales_dtl_7_g50_regalia_sales_dtl_7_g51_regalia_sales_dtl_7b_g49_regalia_sales_dtl_7b_g50_regalia_sales_dtl_7b_g51}]]></expression>
-			</element>
-			<element kind="textField" uuid="eba4138e-95f4-48c4-bbc1-ec705bace976" x="490" y="460" width="80" height="20">
-				<expression><![CDATA[$F{h24_g24_depr_dtl_8_m47_1_depr_dtl_8b_m54_1_depr_dtl_8c_m54_1}]]></expression>
-			</element>
-			<element kind="staticText" uuid="008e2e01-8f6d-422c-b2b1-e31f851c630f" x="10" y="480" width="80" height="20">
-				<text><![CDATA[h)  Prepaid Expenses]]></text>
-			</element>
-			<element kind="staticText" uuid="cc53b6da-b64c-4f1b-b7cf-8fa36a7e7139" x="250" y="480" width="80" height="20">
-				<text><![CDATA[(5a)]]></text>
-			</element>
-			<element kind="textField" uuid="8587062b-6771-4d50-ad11-ae68634ff358" x="330" y="480" width="80" height="20">
-				<expression><![CDATA[$F{_1_depr_dtl_8_k47_depr_dtl_8b_k54_depr_dtl_8c_k54_regalia_sales_dtl_7_g49_regalia_sales_dtl_7_g50_regalia_sales_dtl_7_g51_regalia_sales_dtl_7b_g49_regalia_sales_dtl_7b_g50_regalia_sales_dtl_7b_g51_5a}]]></expression>
-			</element>
-			<element kind="textField" uuid="5b381a7c-7122-4475-a05e-4f2e055b2691" x="410" y="480" width="80" height="20">
-				<expression><![CDATA[$F{depr_dtl_8_m47_1_depr_dtl_8b_m54_1_depr_dtl_8c_m54_1_asset_dtl_5a_f46_asset_dtl_5c_e44}]]></expression>
-			</element>
-			<element kind="textField" uuid="a9cccc6d-a8fc-48ae-bdd3-467d80a084ba" x="490" y="480" width="80" height="20">
-				<expression><![CDATA[$F{h25_g25_asset_dtl_5a_g46_asset_dtl_5c_f44}]]></expression>
-			</element>
-			<element kind="staticText" uuid="279182d5-ce5e-426b-9d0b-d6ea683cbc75" x="10" y="500" width="80" height="20">
-				<text><![CDATA[i)  Other Assets]]></text>
-			</element>
-			<element kind="staticText" uuid="673c53d0-e8ba-4355-a9f5-81c609072253" x="250" y="500" width="80" height="20">
-				<text><![CDATA[(5a)]]></text>
-			</element>
-			<element kind="textField" uuid="35a63082-339c-4956-9066-e27bd8943b24" x="330" y="500" width="80" height="20">
-				<expression><![CDATA[$F{asset_dtl_5a_f46_asset_dtl_5c_e44_5a}]]></expression>
-			</element>
-			<element kind="textField" uuid="facb1133-e8d7-4f83-af44-4382a7efe90e" x="410" y="500" width="80" height="20">
-				<expression><![CDATA[$F{asset_dtl_5a_g46_asset_dtl_5c_f44_asset_dtl_5a_f60_asset_dtl_5c_e58}]]></expression>
-			</element>
-			<element kind="textField" uuid="830d93e0-2264-48fa-bb8a-6ba84ab01a37" x="490" y="500" width="80" height="20">
-				<expression><![CDATA[$F{h26_g26_asset_dtl_5a_g60_asset_dtl_5c_f58}]]></expression>
-			</element>
-			<element kind="staticText" uuid="063e2bbf-fd4b-454d-9433-b2b2fee0d806" x="10" y="520" width="80" height="20">
-				<text><![CDATA[j) TOTAL ASSETS]]></text>
-			</element>
-			<element kind="staticText" uuid="71b83aa9-bd05-44e8-878e-0fe4e588eb17" x="170" y="520" width="80" height="20">
-				<text><![CDATA[Add a through f, subtract g, then add h and i]]></text>
-			</element>
-			<element kind="textField" uuid="2b2d2330-786d-4aae-8af1-f14012687de5" x="330" y="520" width="80" height="20">
-				<expression><![CDATA[$F{asset_dtl_5a_f60_asset_dtl_5c_e58_add_a_through_f_subtract_g_then_add_h_and_i}]]></expression>
-			</element>
-			<element kind="textField" uuid="7140fb90-ebd7-4cb9-bed9-4db1f9547bbc" x="410" y="520" width="80" height="20">
-				<expression><![CDATA[$F{asset_dtl_5a_g60_asset_dtl_5c_f58_sum_g19_g27}]]></expression>
-			</element>
-			<element kind="textField" uuid="7bee1668-4bce-4eb3-85b1-2d8035d545b0" x="490" y="520" width="80" height="20">
-				<expression><![CDATA[$F{h27_g27_sum_h19_h27}]]></expression>
-			</element>
-			<element kind="staticText" uuid="0897363a-5ac8-4340-af83-62222d077461" x="10" y="560" width="80" height="20">
-				<text><![CDATA[II.  LIABILITIES]]></text>
-			</element>
-			<element kind="staticText" uuid="ffd06ef9-24ce-4f6c-9d68-369bb82b4535" x="10" y="580" width="80" height="20">
-				<text><![CDATA[a)  Newsletter Subscriptions Due]]></text>
-			</element>
-			<element kind="staticText" uuid="94d3abbf-720d-4a44-a61a-c44a2043268e" x="250" y="580" width="80" height="20">
-				<text><![CDATA[(15)]]></text>
-			</element>
-			<element kind="textField" uuid="9423c08e-46ca-4f88-bdb8-e0a6a58c81ab" x="330" y="580" width="80" height="20">
-				<expression><![CDATA[$F{sum_g19_g27_15}]]></expression>
-			</element>
-			<element kind="textField" uuid="64cad9e8-c1a9-4291-9ad2-ca06965a9b6b" x="410" y="580" width="80" height="20">
-				<expression><![CDATA[$F{sum_h19_h27_15}]]></expression>
-			</element>
-			<element kind="textField" uuid="2dd441ed-249a-45b3-9a98-ef8fed1f4bcf" x="490" y="580" width="80" height="20">
-				<expression><![CDATA[$F{sum_i19_i27_newsletter_15_e16}]]></expression>
-			</element>
-			<element kind="staticText" uuid="2b738646-e46d-4cb0-80fc-1a0907c5c2b0" x="10" y="600" width="80" height="20">
-				<text><![CDATA[b)  Deferred Revenue]]></text>
-			</element>
-			<element kind="staticText" uuid="35f08d60-ccc5-4130-9312-a048065ad403" x="250" y="600" width="80" height="20">
-				<text><![CDATA[(5b)]]></text>
-			</element>
-			<element kind="textField" uuid="545df997-1cd9-4744-8cf0-4eb0ebd9685c" x="330" y="600" width="80" height="20">
-				<expression><![CDATA[$F{sum_g19_g27_5b}]]></expression>
-			</element>
-			<element kind="textField" uuid="81a58332-cd8c-40f0-bd2a-c853640fc8d5" x="410" y="600" width="80" height="20">
-				<expression><![CDATA[$F{newsletter_15_e16_liability_dtl_5b_e31_liability_dtl_5d_e29}]]></expression>
-			</element>
-			<element kind="textField" uuid="d62520aa-c683-4e7d-9560-f9939e7ae1a2" x="490" y="600" width="80" height="20">
-				<expression><![CDATA[$F{h31_g31_liability_dtl_5b_f31_liability_dtl_5d_f29}]]></expression>
-			</element>
-			<element kind="staticText" uuid="9318ef4a-d1e7-4bee-83e9-82c2bae4da3d" x="10" y="620" width="80" height="20">
-				<text><![CDATA[c)  Payables]]></text>
-			</element>
-			<element kind="staticText" uuid="84003140-70ec-4a91-9411-a31bca1b4186" x="250" y="620" width="80" height="20">
-				<text><![CDATA[(5b)]]></text>
-			</element>
-			<element kind="textField" uuid="579abb37-d193-4ffd-a7ca-f41ad46c1938" x="330" y="620" width="80" height="20">
-				<expression><![CDATA[$F{liability_dtl_5b_e31_liability_dtl_5d_e29_5b}]]></expression>
-			</element>
-			<element kind="textField" uuid="2b1380ce-60d5-4e4d-9bcc-4ae30752abd8" x="410" y="620" width="80" height="20">
-				<expression><![CDATA[$F{liability_dtl_5b_f31_liability_dtl_5d_f29_liability_dtl_5b_e44_liability_dtl_5d_e47}]]></expression>
-			</element>
-			<element kind="textField" uuid="8fa1eff2-9fbf-4895-96bb-6c478c306c2e" x="490" y="620" width="80" height="20">
-				<expression><![CDATA[$F{h32_g32_liability_dtl_5b_f44_liability_dtl_5d_f47}]]></expression>
-			</element>
-			<element kind="staticText" uuid="bd971602-df28-48ee-a939-ce161514deaf" x="10" y="640" width="80" height="20">
-				<text><![CDATA[d)  Other Liabilities]]></text>
-			</element>
-			<element kind="staticText" uuid="1a37985f-46f0-4840-bf75-bb45a630c956" x="250" y="640" width="80" height="20">
-				<text><![CDATA[(5b)]]></text>
-			</element>
-			<element kind="textField" uuid="11e39ade-d4a2-42fb-bbde-cbe2537f948a" x="330" y="640" width="80" height="20">
-				<expression><![CDATA[$F{liability_dtl_5b_e44_liability_dtl_5d_e47_5b}]]></expression>
-			</element>
-			<element kind="textField" uuid="d38e367e-76ba-468c-ad67-722804b3e11e" x="410" y="640" width="80" height="20">
-				<expression><![CDATA[$F{liability_dtl_5b_f44_liability_dtl_5d_f47_liability_dtl_5b_e56_liability_dtl_5d_e56}]]></expression>
-			</element>
-			<element kind="textField" uuid="0f985d1b-1aaa-4561-b2c8-9b84a92103ee" x="490" y="640" width="80" height="20">
-				<expression><![CDATA[$F{h33_g33_liability_dtl_5b_f56_liability_dtl_5d_f56}]]></expression>
-			</element>
-			<element kind="staticText" uuid="e0e20948-5ca7-4972-8b11-fe7a29c21254" x="10" y="660" width="80" height="20">
-				<text><![CDATA[e)  TOTAL LIABILITIES]]></text>
-			</element>
-			<element kind="staticText" uuid="11d2c349-6e6a-45a8-8631-7bf69d84ce2b" x="170" y="660" width="80" height="20">
-				<text><![CDATA[Add a through d]]></text>
-			</element>
-			<element kind="textField" uuid="2b6cf087-a5da-420b-9bf5-26856cdafafe" x="330" y="660" width="80" height="20">
-				<expression><![CDATA[$F{liability_dtl_5b_e56_liability_dtl_5d_e56_add_a_through_d}]]></expression>
-			</element>
-			<element kind="textField" uuid="ac9526e3-6598-4e33-b07a-4f2e3f656cce" x="410" y="660" width="80" height="20">
-				<expression><![CDATA[$F{liability_dtl_5b_f56_liability_dtl_5d_f56_sum_g31_g34}]]></expression>
-			</element>
-			<element kind="textField" uuid="57ccc9f3-02f1-4f40-9502-99c86a908743" x="490" y="660" width="80" height="20">
-				<expression><![CDATA[$F{h34_g34_sum_h31_h34}]]></expression>
-			</element>
-			<element kind="staticText" uuid="fe40a589-9f0f-433a-a5f8-d113a7908ca2" x="10" y="700" width="80" height="20">
-				<text><![CDATA[III.  NET WORTH]]></text>
-			</element>
-			<element kind="staticText" uuid="b6174008-a34a-4875-bac9-ade48dddf8f5" x="170" y="700" width="80" height="20">
-				<text><![CDATA[Line I.i minus Line II.d]]></text>
-			</element>
-			<element kind="textField" uuid="4460442f-3db2-4689-b16d-f90ab9682b8f" x="330" y="700" width="80" height="20">
-				<expression><![CDATA[$F{sum_g31_g34_line_i_i_minus_line_ii_d}]]></expression>
-			</element>
-			<element kind="textField" uuid="3b8f3a57-e8f8-4d12-9167-f27bfe94318e" x="410" y="700" width="80" height="20">
-				<expression><![CDATA[$F{sum_h31_h34_round_g28_g35_2}]]></expression>
-			</element>
-			<element kind="staticText" uuid="5e86f354-4577-43b7-9ea8-5671a27dbbb7" x="10" y="720" width="80" height="20">
-				<text><![CDATA[Proof:]]></text>
-			</element>
-			<element kind="staticText" uuid="1d3a9a6e-cb9b-4102-8a8a-7f5e79651283" x="90" y="720" width="80" height="20">
-				<text><![CDATA[Change in Net Worth]]></text>
-			</element>
-			<element kind="staticText" uuid="cf6ced85-8f96-44c1-879c-42d52c2067a9" x="170" y="720" width="80" height="20">
-				<text><![CDATA[III(End) - III(Start)]]></text>
-			</element>
-			<element kind="staticText" uuid="483c1d79-4737-466f-9328-67801cb6da51" x="250" y="720" width="80" height="20">
-				<text><![CDATA[(A)]]></text>
-			</element>
-			<element kind="textField" uuid="0f5c1830-0a3d-4fd7-939b-505e7c6ae12b" x="330" y="720" width="80" height="20">
-				<expression><![CDATA[$F{round_g28_g35_2_a}]]></expression>
-			</element>
-			<element kind="staticText" uuid="645bd0ff-4a52-46c2-9f40-4e99d811b63b" x="410" y="720" width="80" height="20">
-				<text><![CDATA[(A = B) ? If NO, the report is incomplete.]]></text>
-			</element>
-			<element kind="staticText" uuid="2956cb9e-1131-495d-b085-ea6ab26c3e51" x="90" y="740" width="80" height="20">
-				<text><![CDATA[Net Income]]></text>
-			</element>
-			<element kind="staticText" uuid="5903d087-9418-4b96-bca3-8a9fe1841b51" x="170" y="740" width="80" height="20">
-				<text><![CDATA[Income Statement Line 32]]></text>
-			</element>
-			<element kind="staticText" uuid="b8082b2c-07b3-4496-aa93-a3084d22cf3d" x="250" y="740" width="80" height="20">
-				<text><![CDATA[(B)]]></text>
-			</element>
-			<element kind="textField" uuid="026491f2-91d8-4698-b66a-95c48e1f7974" x="330" y="740" width="80" height="20">
-				<expression><![CDATA[$F{h37_g37_b}]]></expression>
-			</element>
-			<element kind="staticText" uuid="4d2bae45-0d53-492d-8e6d-4e324fda3b3b" x="10" y="780" width="80" height="20">
-				<text><![CDATA[Legal Names:]]></text>
-			</element>
-			<element kind="staticText" uuid="8a5b0773-fc16-4d5a-a252-22f7f065fc97" x="90" y="780" width="80" height="20">
-				<text><![CDATA[Print]]></text>
-			</element>
-			<element kind="staticText" uuid="f74fd3af-3794-4241-b885-b0e322c7d161" x="170" y="780" width="80" height="20">
-				<text><![CDATA[Sign]]></text>
-			</element>
-			<element kind="staticText" uuid="c529aea0-cbd0-44a8-b152-4b030f0f2fc1" x="10" y="800" width="80" height="20">
-				<text><![CDATA[Exchequer:]]></text>
-			</element>
-			<element kind="textField" uuid="098b56ef-2635-48b6-8125-b75c84d44371" x="90" y="800" width="80" height="20">
-				<expression><![CDATA[$F{print_exchequer}]]></expression>
-			</element>
-			<element kind="staticText" uuid="eb94ee8e-ee8a-440a-875c-8fff0c2da894" x="330" y="800" width="80" height="20">
-				<text><![CDATA[Date:]]></text>
-			</element>
-			<element kind="staticText" uuid="a3b832f5-3f73-47e0-b719-e6e12d815b28" x="10" y="820" width="80" height="20">
-				<text><![CDATA[Seneschal:]]></text>
-			</element>
-			<element kind="textField" uuid="ef11f237-05bd-4bde-a2dc-38c406db36f0" x="90" y="820" width="80" height="20">
-				<expression><![CDATA[$F{if_contents_c_10_contents_c_10_seneschal}]]></expression>
-			</element>
-			<element kind="staticText" uuid="056290d2-6f79-4047-969a-3fd8ce69e009" x="330" y="820" width="80" height="20">
-				<text><![CDATA[Date:]]></text>
-			</element>
-			<element kind="staticText" uuid="c01aaab4-e703-4837-bc50-0dc7a67c3a06" x="10" y="840" width="80" height="20">
-				<text><![CDATA[Signatures below certify that the information on this report is correct and complete to the best of their knowledge.]]></text>
-			</element>
-			<element kind="staticText" uuid="5e0c8e8b-e87a-49a7-a442-08afd67320b9" x="10" y="860" width="80" height="20">
-				<text><![CDATA[-3-]]></text>
-			</element>
-		</band>
-	</detail>
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport name="BALANCE_3" language="java"
+              pageWidth="595" pageHeight="3000"
+              columnWidth="555"
+              leftMargin="20" rightMargin="20"
+              topMargin="20" bottomMargin="20"
+              uuid="00000000-0000-0000-0000-000000000000">
+  <field name="balance_3_r2c3" class="java.lang.Double"/>
+  <field name="contents_b59" class="java.lang.Double"/>
+  <field name="contents_e_3" class="java.lang.Double"/>
+  <field name="contents_e_4" class="java.lang.Double"/>
+  <field name="balance_3_r17c7" class="java.lang.Double"/>
+  <field name="contents_c_14" class="java.lang.Double"/>
+  <field name="start_2_5a" class="java.lang.String"/>
+  <field name="end_2_5a" class="java.lang.Double"/>
+  <field name="diff_if_primary_account_2a_f_38_yes_if_primary_account_2a_h_37_primary_account_2a_h_36_primary_account_2a_h_37_0_0_secondary_accounts_2b_i22_secondary_accounts_2c_i22_secondary_accounts_2d_i22_asset_dtl_5a_g19" class="java.lang.Double"/>
+  <field name="start_2" class="java.lang.String"/>
+  <field name="if_primary_account_2a_f_38_yes_if_primary_account_2a_h_37_primary_account_2a_h_36_primary_account_2a_h_37_0_0_secondary_accounts_2b_i22_secondary_accounts_2c_i22_secondary_accounts_2d_i22_asset_dtl_5a_g19_2" class="java.lang.Double"/>
+  <field name="h19_g19_if_primary_account_2a_f38_yes_if_primary_account_2a_h37_primary_account_2a_h36_primary_account_2a_h37_0_0_secondary_accounts_2b_i23_secondary_accounts_2c_i23_secondary_accounts_2d_i23" class="java.lang.Double"/>
+  <field name="start_5a" class="java.lang.Double"/>
+  <field name="if_primary_account_2a_f38_yes_if_primary_account_2a_h37_primary_account_2a_h36_primary_account_2a_h37_0_0_secondary_accounts_2b_i23_secondary_accounts_2c_i23_secondary_accounts_2d_i23_asset_dtl_5a_f35_asset_dtl_5c_e33" class="java.lang.Double"/>
+  <field name="h20_g20_asset_dtl_5a_g35_asset_dtl_5c_f33" class="java.lang.Double"/>
+  <field name="asset_dtl_5a_f35_asset_dtl_5c_e33_6" class="java.lang.Double"/>
+  <field name="asset_dtl_5a_g35_asset_dtl_5c_f33_inventory_dtl_6_m17_inventory_dtl_6b_m17" class="java.lang.Double"/>
+  <field name="h21_g21_inventory_dtl_6_m27_inventory_dtl_6b_m27" class="java.lang.Double"/>
+  <field name="inventory_dtl_6_m17_inventory_dtl_6b_m17_7" class="java.lang.Double"/>
+  <field name="inventory_dtl_6_m27_inventory_dtl_6b_m27_regalia_sales_dtl_7_f32_regalia_sales_dtl_7b_f32" class="java.lang.Double"/>
+  <field name="h22_g22_regalia_sales_dtl_7_i32_regalia_sales_dtl_7b_i32" class="java.lang.Double"/>
+  <field name="regalia_sales_dtl_7_f32_regalia_sales_dtl_7b_f32_8" class="java.lang.Double"/>
+  <field name="regalia_sales_dtl_7_i32_regalia_sales_dtl_7b_i32_depr_dtl_8_i47_depr_dtl_8b_i54_depr_dtl_8c_i54_regalia_sales_dtl_7_f49_regalia_sales_dtl_7_f50_regalia_sales_dtl_7_f51_regalia_sales_dtl_7b_f49_regalia_sales_dtl_7b_f50_regalia_sales_dtl_7b_f51" class="java.lang.Double"/>
+  <field name="h23_g23_depr_dtl_8_j47_depr_dtl_8b_j54_depr_dtl_8c_j54" class="java.lang.Double"/>
+  <field name="depr_dtl_8_i47_depr_dtl_8b_i54_depr_dtl_8c_i54_regalia_sales_dtl_7_f49_regalia_sales_dtl_7_f50_regalia_sales_dtl_7_f51_regalia_sales_dtl_7b_f49_regalia_sales_dtl_7b_f50_regalia_sales_dtl_7b_f51_8" class="java.lang.Double"/>
+  <field name="depr_dtl_8_j47_depr_dtl_8b_j54_depr_dtl_8c_j54_1_depr_dtl_8_k47_depr_dtl_8b_k54_depr_dtl_8c_k54_regalia_sales_dtl_7_g49_regalia_sales_dtl_7_g50_regalia_sales_dtl_7_g51_regalia_sales_dtl_7b_g49_regalia_sales_dtl_7b_g50_regalia_sales_dtl_7b_g51" class="java.lang.Double"/>
+  <field name="h24_g24_depr_dtl_8_m47_1_depr_dtl_8b_m54_1_depr_dtl_8c_m54_1" class="java.lang.Double"/>
+  <field name="_1_depr_dtl_8_k47_depr_dtl_8b_k54_depr_dtl_8c_k54_regalia_sales_dtl_7_g49_regalia_sales_dtl_7_g50_regalia_sales_dtl_7_g51_regalia_sales_dtl_7b_g49_regalia_sales_dtl_7b_g50_regalia_sales_dtl_7b_g51_5a" class="java.lang.Double"/>
+  <field name="depr_dtl_8_m47_1_depr_dtl_8b_m54_1_depr_dtl_8c_m54_1_asset_dtl_5a_f46_asset_dtl_5c_e44" class="java.lang.Double"/>
+  <field name="h25_g25_asset_dtl_5a_g46_asset_dtl_5c_f44" class="java.lang.Double"/>
+  <field name="asset_dtl_5a_f46_asset_dtl_5c_e44_5a" class="java.lang.Double"/>
+  <field name="asset_dtl_5a_g46_asset_dtl_5c_f44_asset_dtl_5a_f60_asset_dtl_5c_e58" class="java.lang.Double"/>
+  <field name="h26_g26_asset_dtl_5a_g60_asset_dtl_5c_f58" class="java.lang.Double"/>
+  <field name="asset_dtl_5a_f60_asset_dtl_5c_e58_add_a_through_f_subtract_g_then_add_h_and_i" class="java.lang.Double"/>
+  <field name="asset_dtl_5a_g60_asset_dtl_5c_f58_sum_g19_g27" class="java.lang.Double"/>
+  <field name="h27_g27_sum_h19_h27" class="java.lang.Double"/>
+  <field name="sum_g19_g27_15" class="java.lang.String"/>
+  <field name="sum_h19_h27_15" class="java.lang.Double"/>
+  <field name="sum_i19_i27_newsletter_15_e16" class="java.lang.Double"/>
+  <field name="sum_g19_g27_5b" class="java.lang.Double"/>
+  <field name="newsletter_15_e16_liability_dtl_5b_e31_liability_dtl_5d_e29" class="java.lang.Double"/>
+  <field name="h31_g31_liability_dtl_5b_f31_liability_dtl_5d_f29" class="java.lang.Double"/>
+  <field name="liability_dtl_5b_e31_liability_dtl_5d_e29_5b" class="java.lang.Double"/>
+  <field name="liability_dtl_5b_f31_liability_dtl_5d_f29_liability_dtl_5b_e44_liability_dtl_5d_e47" class="java.lang.Double"/>
+  <field name="h32_g32_liability_dtl_5b_f44_liability_dtl_5d_f47" class="java.lang.Double"/>
+  <field name="liability_dtl_5b_e44_liability_dtl_5d_e47_5b" class="java.lang.Double"/>
+  <field name="liability_dtl_5b_f44_liability_dtl_5d_f47_liability_dtl_5b_e56_liability_dtl_5d_e56" class="java.lang.Double"/>
+  <field name="h33_g33_liability_dtl_5b_f56_liability_dtl_5d_f56" class="java.lang.Double"/>
+  <field name="liability_dtl_5b_e56_liability_dtl_5d_e56_add_a_through_d" class="java.lang.Double"/>
+  <field name="liability_dtl_5b_f56_liability_dtl_5d_f56_sum_g31_g34" class="java.lang.Double"/>
+  <field name="h34_g34_sum_h31_h34" class="java.lang.Double"/>
+  <field name="sum_g31_g34_line_i_i_minus_line_ii_d" class="java.lang.Double"/>
+  <field name="sum_h31_h34_round_g28_g35_2" class="java.lang.Double"/>
+  <field name="round_g28_g35_2_a" class="java.lang.Double"/>
+  <field name="h37_g37_b" class="java.lang.Double"/>
+  <field name="print_exchequer" class="java.lang.Double"/>
+  <field name="if_contents_c_10_contents_c_10_seneschal" class="java.lang.Double"/>
+
+  <detail>
+    <band height="880">
+      <element kind="textField" x="160" y="0" width="80" height="20">
+        <expression><![CDATA[$F{balance_3_r2c3}]]></expression>
+      </element>
+      <element kind="textField" x="160" y="20" width="80" height="20">
+        <expression><![CDATA[$F{contents_b59}]]></expression>
+      </element>
+      <element kind="textField" x="160" y="40" width="80" height="20">
+        <expression><![CDATA[$F{contents_e_3}]]></expression>
+      </element>
+      <element kind="textField" x="160" y="100" width="80" height="20">
+        <expression><![CDATA[$F{contents_e_4}]]></expression>
+      </element>
+      <element kind="staticText" x="160" y="140" width="80" height="20">
+        <text><![CDATA[COMPARATIVE BALANCE STATEMENT]]></text>
+      </element>
+      <element kind="staticText" x="160" y="180" width="80" height="20">
+        <text><![CDATA[For Cumulative Quarterly Reports, use last year's Comparative Balance Sheet (End) amounts for the (Start) amounts.]]></text>
+      </element>
+      <element kind="staticText" x="160" y="200" width="80" height="20">
+        <text><![CDATA[For Sequential Quarterly Reports, use last report's Comparative Balance Sheet (End) amounts for the (Start) amounts.]]></text>
+      </element>
+      <element kind="staticText" x="160" y="220" width="80" height="20">
+        <text><![CDATA[For Year-end Reports, the (Start) numbers will be provided to you by the Kingdom Exchequer. The numbers may have]]></text>
+      </element>
+      <element kind="staticText" x="160" y="240" width="80" height="20">
+        <text><![CDATA[changed from what was submitted last year because of transfer reconciliation between your account and other accounts.]]></text>
+      </element>
+      <element kind="staticText" x="160" y="260" width="80" height="20">
+        <text><![CDATA[The Year-end Report must be signed by the person preparing the report.]]></text>
+      </element>
+      <element kind="staticText" x="160" y="280" width="80" height="20">
+        <text><![CDATA[(START) FIGURES MAY NOT BE CHANGED UNDER ANY CIRCUMSTANCES!]]></text>
+      </element>
+      <element kind="textField" x="480" y="300" width="80" height="20">
+        <expression><![CDATA[$F{balance_3_r17c7}]]></expression>
+      </element>
+      <element kind="textField" x="560" y="300" width="80" height="20">
+        <expression><![CDATA[$F{contents_c_14}]]></expression>
+      </element>
+      <element kind="staticText" x="160" y="320" width="80" height="20">
+        <text><![CDATA[I.  ASSETS]]></text>
+      </element>
+      <element kind="staticText" x="320" y="320" width="80" height="20">
+        <text><![CDATA[(from page)]]></text>
+      </element>
+      <element kind="staticText" x="480" y="320" width="80" height="20">
+        <text><![CDATA[Start]]></text>
+      </element>
+      <element kind="staticText" x="560" y="320" width="80" height="20">
+        <text><![CDATA[End]]></text>
+      </element>
+      <element kind="staticText" x="640" y="320" width="80" height="20">
+        <text><![CDATA[Diff]]></text>
+      </element>
+      <element kind="staticText" x="160" y="340" width="80" height="20">
+        <text><![CDATA[a)  Undeposited and Non-Interest Bearing Cash]]></text>
+      </element>
+      <element kind="staticText" x="400" y="340" width="80" height="20">
+        <text><![CDATA[(2,5a)]]></text>
+      </element>
+      <element kind="textField" x="480" y="340" width="80" height="20">
+        <expression><![CDATA[$F{start_2_5a}]]></expression>
+      </element>
+      <element kind="textField" x="560" y="340" width="80" height="20">
+        <expression><![CDATA[$F{end_2_5a}]]></expression>
+      </element>
+      <element kind="textField" x="640" y="340" width="80" height="20">
+        <expression><![CDATA[$F{diff_if_primary_account_2a_f_38_yes_if_primary_account_2a_h_37_primary_account_2a_h_36_primary_account_2a_h_37_0_0_secondary_accounts_2b_i22_secondary_accounts_2c_i22_secondary_accounts_2d_i22_asset_dtl_5a_g19}]]></expression>
+      </element>
+      <element kind="staticText" x="160" y="360" width="80" height="20">
+        <text><![CDATA[b)  Cash Earning Interest]]></text>
+      </element>
+      <element kind="staticText" x="400" y="360" width="80" height="20">
+        <text><![CDATA[(2)]]></text>
+      </element>
+      <element kind="textField" x="480" y="360" width="80" height="20">
+        <expression><![CDATA[$F{start_2}]]></expression>
+      </element>
+      <element kind="textField" x="560" y="360" width="80" height="20">
+        <expression><![CDATA[$F{if_primary_account_2a_f_38_yes_if_primary_account_2a_h_37_primary_account_2a_h_36_primary_account_2a_h_37_0_0_secondary_accounts_2b_i22_secondary_accounts_2c_i22_secondary_accounts_2d_i22_asset_dtl_5a_g19_2}]]></expression>
+      </element>
+      <element kind="textField" x="640" y="360" width="80" height="20">
+        <expression><![CDATA[$F{h19_g19_if_primary_account_2a_f38_yes_if_primary_account_2a_h37_primary_account_2a_h36_primary_account_2a_h37_0_0_secondary_accounts_2b_i23_secondary_accounts_2c_i23_secondary_accounts_2d_i23}]]></expression>
+      </element>
+      <element kind="staticText" x="160" y="380" width="80" height="20">
+        <text><![CDATA[c)  Receivables]]></text>
+      </element>
+      <element kind="staticText" x="400" y="380" width="80" height="20">
+        <text><![CDATA[(5a)]]></text>
+      </element>
+      <element kind="textField" x="480" y="380" width="80" height="20">
+        <expression><![CDATA[$F{start_5a}]]></expression>
+      </element>
+      <element kind="textField" x="560" y="380" width="80" height="20">
+        <expression><![CDATA[$F{if_primary_account_2a_f38_yes_if_primary_account_2a_h37_primary_account_2a_h36_primary_account_2a_h37_0_0_secondary_accounts_2b_i23_secondary_accounts_2c_i23_secondary_accounts_2d_i23_asset_dtl_5a_f35_asset_dtl_5c_e33}]]></expression>
+      </element>
+      <element kind="textField" x="640" y="380" width="80" height="20">
+        <expression><![CDATA[$F{h20_g20_asset_dtl_5a_g35_asset_dtl_5c_f33}]]></expression>
+      </element>
+      <element kind="staticText" x="160" y="400" width="80" height="20">
+        <text><![CDATA[d)  Inventory For Sale (Major Inventory)]]></text>
+      </element>
+      <element kind="staticText" x="400" y="400" width="80" height="20">
+        <text><![CDATA[(6)]]></text>
+      </element>
+      <element kind="textField" x="480" y="400" width="80" height="20">
+        <expression><![CDATA[$F{asset_dtl_5a_f35_asset_dtl_5c_e33_6}]]></expression>
+      </element>
+      <element kind="textField" x="560" y="400" width="80" height="20">
+        <expression><![CDATA[$F{asset_dtl_5a_g35_asset_dtl_5c_f33_inventory_dtl_6_m17_inventory_dtl_6b_m17}]]></expression>
+      </element>
+      <element kind="textField" x="640" y="400" width="80" height="20">
+        <expression><![CDATA[$F{h21_g21_inventory_dtl_6_m27_inventory_dtl_6b_m27}]]></expression>
+      </element>
+      <element kind="staticText" x="160" y="420" width="80" height="20">
+        <text><![CDATA[e)  Regalia & Non-Depreciated Equipment]]></text>
+      </element>
+      <element kind="staticText" x="400" y="420" width="80" height="20">
+        <text><![CDATA[(7)]]></text>
+      </element>
+      <element kind="textField" x="480" y="420" width="80" height="20">
+        <expression><![CDATA[$F{inventory_dtl_6_m17_inventory_dtl_6b_m17_7}]]></expression>
+      </element>
+      <element kind="textField" x="560" y="420" width="80" height="20">
+        <expression><![CDATA[$F{inventory_dtl_6_m27_inventory_dtl_6b_m27_regalia_sales_dtl_7_f32_regalia_sales_dtl_7b_f32}]]></expression>
+      </element>
+      <element kind="textField" x="640" y="420" width="80" height="20">
+        <expression><![CDATA[$F{h22_g22_regalia_sales_dtl_7_i32_regalia_sales_dtl_7b_i32}]]></expression>
+      </element>
+      <element kind="staticText" x="160" y="440" width="80" height="20">
+        <text><![CDATA[f)  Depreciated Equipment]]></text>
+      </element>
+      <element kind="staticText" x="400" y="440" width="80" height="20">
+        <text><![CDATA[(8)]]></text>
+      </element>
+      <element kind="textField" x="480" y="440" width="80" height="20">
+        <expression><![CDATA[$F{regalia_sales_dtl_7_f32_regalia_sales_dtl_7b_f32_8}]]></expression>
+      </element>
+      <element kind="textField" x="560" y="440" width="80" height="20">
+        <expression><![CDATA[$F{regalia_sales_dtl_7_i32_regalia_sales_dtl_7b_i32_depr_dtl_8_i47_depr_dtl_8b_i54_depr_dtl_8c_i54_regalia_sales_dtl_7_f49_regalia_sales_dtl_7_f50_regalia_sales_dtl_7_f51_regalia_sales_dtl_7b_f49_regalia_sales_dtl_7b_f50_regalia_sales_dtl_7b_f51}]]></expression>
+      </element>
+      <element kind="textField" x="640" y="440" width="80" height="20">
+        <expression><![CDATA[$F{h23_g23_depr_dtl_8_j47_depr_dtl_8b_j54_depr_dtl_8c_j54}]]></expression>
+      </element>
+      <element kind="staticText" x="160" y="460" width="80" height="20">
+        <text><![CDATA[g)  MINUS Accumulated Depreciation]]></text>
+      </element>
+      <element kind="staticText" x="400" y="460" width="80" height="20">
+        <text><![CDATA[(8)]]></text>
+      </element>
+      <element kind="textField" x="480" y="460" width="80" height="20">
+        <expression><![CDATA[$F{depr_dtl_8_i47_depr_dtl_8b_i54_depr_dtl_8c_i54_regalia_sales_dtl_7_f49_regalia_sales_dtl_7_f50_regalia_sales_dtl_7_f51_regalia_sales_dtl_7b_f49_regalia_sales_dtl_7b_f50_regalia_sales_dtl_7b_f51_8}]]></expression>
+      </element>
+      <element kind="textField" x="560" y="460" width="80" height="20">
+        <expression><![CDATA[$F{depr_dtl_8_j47_depr_dtl_8b_j54_depr_dtl_8c_j54_1_depr_dtl_8_k47_depr_dtl_8b_k54_depr_dtl_8c_k54_regalia_sales_dtl_7_g49_regalia_sales_dtl_7_g50_regalia_sales_dtl_7_g51_regalia_sales_dtl_7b_g49_regalia_sales_dtl_7b_g50_regalia_sales_dtl_7b_g51}]]></expression>
+      </element>
+      <element kind="textField" x="640" y="460" width="80" height="20">
+        <expression><![CDATA[$F{h24_g24_depr_dtl_8_m47_1_depr_dtl_8b_m54_1_depr_dtl_8c_m54_1}]]></expression>
+      </element>
+      <element kind="staticText" x="160" y="480" width="80" height="20">
+        <text><![CDATA[h)  Prepaid Expenses]]></text>
+      </element>
+      <element kind="staticText" x="400" y="480" width="80" height="20">
+        <text><![CDATA[(5a)]]></text>
+      </element>
+      <element kind="textField" x="480" y="480" width="80" height="20">
+        <expression><![CDATA[$F{_1_depr_dtl_8_k47_depr_dtl_8b_k54_depr_dtl_8c_k54_regalia_sales_dtl_7_g49_regalia_sales_dtl_7_g50_regalia_sales_dtl_7_g51_regalia_sales_dtl_7b_g49_regalia_sales_dtl_7b_g50_regalia_sales_dtl_7b_g51_5a}]]></expression>
+      </element>
+      <element kind="textField" x="560" y="480" width="80" height="20">
+        <expression><![CDATA[$F{depr_dtl_8_m47_1_depr_dtl_8b_m54_1_depr_dtl_8c_m54_1_asset_dtl_5a_f46_asset_dtl_5c_e44}]]></expression>
+      </element>
+      <element kind="textField" x="640" y="480" width="80" height="20">
+        <expression><![CDATA[$F{h25_g25_asset_dtl_5a_g46_asset_dtl_5c_f44}]]></expression>
+      </element>
+      <element kind="staticText" x="160" y="500" width="80" height="20">
+        <text><![CDATA[i)  Other Assets]]></text>
+      </element>
+      <element kind="staticText" x="400" y="500" width="80" height="20">
+        <text><![CDATA[(5a)]]></text>
+      </element>
+      <element kind="textField" x="480" y="500" width="80" height="20">
+        <expression><![CDATA[$F{asset_dtl_5a_f46_asset_dtl_5c_e44_5a}]]></expression>
+      </element>
+      <element kind="textField" x="560" y="500" width="80" height="20">
+        <expression><![CDATA[$F{asset_dtl_5a_g46_asset_dtl_5c_f44_asset_dtl_5a_f60_asset_dtl_5c_e58}]]></expression>
+      </element>
+      <element kind="textField" x="640" y="500" width="80" height="20">
+        <expression><![CDATA[$F{h26_g26_asset_dtl_5a_g60_asset_dtl_5c_f58}]]></expression>
+      </element>
+      <element kind="staticText" x="160" y="520" width="80" height="20">
+        <text><![CDATA[j) TOTAL ASSETS]]></text>
+      </element>
+      <element kind="staticText" x="320" y="520" width="80" height="20">
+        <text><![CDATA[Add a through f, subtract g, then add h and i]]></text>
+      </element>
+      <element kind="textField" x="480" y="520" width="80" height="20">
+        <expression><![CDATA[$F{asset_dtl_5a_f60_asset_dtl_5c_e58_add_a_through_f_subtract_g_then_add_h_and_i}]]></expression>
+      </element>
+      <element kind="textField" x="560" y="520" width="80" height="20">
+        <expression><![CDATA[$F{asset_dtl_5a_g60_asset_dtl_5c_f58_sum_g19_g27}]]></expression>
+      </element>
+      <element kind="textField" x="640" y="520" width="80" height="20">
+        <expression><![CDATA[$F{h27_g27_sum_h19_h27}]]></expression>
+      </element>
+      <element kind="staticText" x="160" y="560" width="80" height="20">
+        <text><![CDATA[II.  LIABILITIES]]></text>
+      </element>
+      <element kind="staticText" x="160" y="580" width="80" height="20">
+        <text><![CDATA[a)  Newsletter Subscriptions Due]]></text>
+      </element>
+      <element kind="staticText" x="400" y="580" width="80" height="20">
+        <text><![CDATA[(15)]]></text>
+      </element>
+      <element kind="textField" x="480" y="580" width="80" height="20">
+        <expression><![CDATA[$F{sum_g19_g27_15}]]></expression>
+      </element>
+      <element kind="textField" x="560" y="580" width="80" height="20">
+        <expression><![CDATA[$F{sum_h19_h27_15}]]></expression>
+      </element>
+      <element kind="textField" x="640" y="580" width="80" height="20">
+        <expression><![CDATA[$F{sum_i19_i27_newsletter_15_e16}]]></expression>
+      </element>
+      <element kind="staticText" x="160" y="600" width="80" height="20">
+        <text><![CDATA[b)  Deferred Revenue]]></text>
+      </element>
+      <element kind="staticText" x="400" y="600" width="80" height="20">
+        <text><![CDATA[(5b)]]></text>
+      </element>
+      <element kind="textField" x="480" y="600" width="80" height="20">
+        <expression><![CDATA[$F{sum_g19_g27_5b}]]></expression>
+      </element>
+      <element kind="textField" x="560" y="600" width="80" height="20">
+        <expression><![CDATA[$F{newsletter_15_e16_liability_dtl_5b_e31_liability_dtl_5d_e29}]]></expression>
+      </element>
+      <element kind="textField" x="640" y="600" width="80" height="20">
+        <expression><![CDATA[$F{h31_g31_liability_dtl_5b_f31_liability_dtl_5d_f29}]]></expression>
+      </element>
+      <element kind="staticText" x="160" y="620" width="80" height="20">
+        <text><![CDATA[c)  Payables]]></text>
+      </element>
+      <element kind="staticText" x="400" y="620" width="80" height="20">
+        <text><![CDATA[(5b)]]></text>
+      </element>
+      <element kind="textField" x="480" y="620" width="80" height="20">
+        <expression><![CDATA[$F{liability_dtl_5b_e31_liability_dtl_5d_e29_5b}]]></expression>
+      </element>
+      <element kind="textField" x="560" y="620" width="80" height="20">
+        <expression><![CDATA[$F{liability_dtl_5b_f31_liability_dtl_5d_f29_liability_dtl_5b_e44_liability_dtl_5d_e47}]]></expression>
+      </element>
+      <element kind="textField" x="640" y="620" width="80" height="20">
+        <expression><![CDATA[$F{h32_g32_liability_dtl_5b_f44_liability_dtl_5d_f47}]]></expression>
+      </element>
+      <element kind="staticText" x="160" y="640" width="80" height="20">
+        <text><![CDATA[d)  Other Liabilities]]></text>
+      </element>
+      <element kind="staticText" x="400" y="640" width="80" height="20">
+        <text><![CDATA[(5b)]]></text>
+      </element>
+      <element kind="textField" x="480" y="640" width="80" height="20">
+        <expression><![CDATA[$F{liability_dtl_5b_e44_liability_dtl_5d_e47_5b}]]></expression>
+      </element>
+      <element kind="textField" x="560" y="640" width="80" height="20">
+        <expression><![CDATA[$F{liability_dtl_5b_f44_liability_dtl_5d_f47_liability_dtl_5b_e56_liability_dtl_5d_e56}]]></expression>
+      </element>
+      <element kind="textField" x="640" y="640" width="80" height="20">
+        <expression><![CDATA[$F{h33_g33_liability_dtl_5b_f56_liability_dtl_5d_f56}]]></expression>
+      </element>
+      <element kind="staticText" x="160" y="660" width="80" height="20">
+        <text><![CDATA[e)  TOTAL LIABILITIES]]></text>
+      </element>
+      <element kind="staticText" x="320" y="660" width="80" height="20">
+        <text><![CDATA[Add a through d]]></text>
+      </element>
+      <element kind="textField" x="480" y="660" width="80" height="20">
+        <expression><![CDATA[$F{liability_dtl_5b_e56_liability_dtl_5d_e56_add_a_through_d}]]></expression>
+      </element>
+      <element kind="textField" x="560" y="660" width="80" height="20">
+        <expression><![CDATA[$F{liability_dtl_5b_f56_liability_dtl_5d_f56_sum_g31_g34}]]></expression>
+      </element>
+      <element kind="textField" x="640" y="660" width="80" height="20">
+        <expression><![CDATA[$F{h34_g34_sum_h31_h34}]]></expression>
+      </element>
+      <element kind="staticText" x="160" y="700" width="80" height="20">
+        <text><![CDATA[III.  NET WORTH]]></text>
+      </element>
+      <element kind="staticText" x="320" y="700" width="80" height="20">
+        <text><![CDATA[Line I.i minus Line II.d]]></text>
+      </element>
+      <element kind="textField" x="480" y="700" width="80" height="20">
+        <expression><![CDATA[$F{sum_g31_g34_line_i_i_minus_line_ii_d}]]></expression>
+      </element>
+      <element kind="textField" x="560" y="700" width="80" height="20">
+        <expression><![CDATA[$F{sum_h31_h34_round_g28_g35_2}]]></expression>
+      </element>
+      <element kind="staticText" x="160" y="720" width="80" height="20">
+        <text><![CDATA[Proof:]]></text>
+      </element>
+      <element kind="staticText" x="240" y="720" width="80" height="20">
+        <text><![CDATA[Change in Net Worth]]></text>
+      </element>
+      <element kind="staticText" x="320" y="720" width="80" height="20">
+        <text><![CDATA[III(End) - III(Start)]]></text>
+      </element>
+      <element kind="staticText" x="400" y="720" width="80" height="20">
+        <text><![CDATA[(A)]]></text>
+      </element>
+      <element kind="textField" x="480" y="720" width="80" height="20">
+        <expression><![CDATA[$F{round_g28_g35_2_a}]]></expression>
+      </element>
+      <element kind="staticText" x="560" y="720" width="80" height="20">
+        <text><![CDATA[(A = B) ? If NO, the report is incomplete.]]></text>
+      </element>
+      <element kind="staticText" x="240" y="740" width="80" height="20">
+        <text><![CDATA[Net Income]]></text>
+      </element>
+      <element kind="staticText" x="320" y="740" width="80" height="20">
+        <text><![CDATA[Income Statement Line 32]]></text>
+      </element>
+      <element kind="staticText" x="400" y="740" width="80" height="20">
+        <text><![CDATA[(B)]]></text>
+      </element>
+      <element kind="textField" x="480" y="740" width="80" height="20">
+        <expression><![CDATA[$F{h37_g37_b}]]></expression>
+      </element>
+      <element kind="staticText" x="160" y="780" width="80" height="20">
+        <text><![CDATA[Legal Names:]]></text>
+      </element>
+      <element kind="staticText" x="240" y="780" width="80" height="20">
+        <text><![CDATA[Print]]></text>
+      </element>
+      <element kind="staticText" x="320" y="780" width="80" height="20">
+        <text><![CDATA[Sign]]></text>
+      </element>
+      <element kind="staticText" x="160" y="800" width="80" height="20">
+        <text><![CDATA[Exchequer:]]></text>
+      </element>
+      <element kind="textField" x="240" y="800" width="80" height="20">
+        <expression><![CDATA[$F{print_exchequer}]]></expression>
+      </element>
+      <element kind="staticText" x="480" y="800" width="80" height="20">
+        <text><![CDATA[Date:]]></text>
+      </element>
+      <element kind="staticText" x="160" y="820" width="80" height="20">
+        <text><![CDATA[Seneschal:]]></text>
+      </element>
+      <element kind="textField" x="240" y="820" width="80" height="20">
+        <expression><![CDATA[$F{if_contents_c_10_contents_c_10_seneschal}]]></expression>
+      </element>
+      <element kind="staticText" x="480" y="820" width="80" height="20">
+        <text><![CDATA[Date:]]></text>
+      </element>
+      <element kind="staticText" x="160" y="840" width="80" height="20">
+        <text><![CDATA[Signatures below certify that the information on this report is correct and complete to the best of their knowledge.]]></text>
+      </element>
+      <element kind="staticText" x="160" y="860" width="80" height="20">
+        <text><![CDATA[-3-]]></text>
+      </element>
+    </band>
+  </detail>
 </jasperReport>

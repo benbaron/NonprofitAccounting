@@ -262,7 +262,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.Double getExpense_dtl_12b_r2c3()
     {
-        return this.expense_dtl_12b_r2c3;
+        return expense_dtl_12b_r2c3;
     }
 
     public void setExpense_dtl_12b_r2c3(java.lang.Double v)
@@ -272,7 +272,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.Double getExpense_dtl_12b_r3c2()
     {
-        return this.expense_dtl_12b_r3c2;
+        return expense_dtl_12b_r3c2;
     }
 
     public void setExpense_dtl_12b_r3c2(java.lang.Double v)
@@ -282,7 +282,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.Double getContents_e_3()
     {
-        return this.contents_e_3;
+        return contents_e_3;
     }
 
     public void setContents_e_3(java.lang.Double v)
@@ -292,7 +292,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.Double getContents_e_4()
     {
-        return this.contents_e_4;
+        return contents_e_4;
     }
 
     public void setContents_e_4(java.lang.Double v)
@@ -302,7 +302,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getOrganization_or_person_ar()
     {
-        return this.organization_or_person_ar;
+        return organization_or_person_ar;
     }
 
     public void setOrganization_or_person_ar(java.lang.String v)
@@ -312,7 +312,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getAr()
     {
-        return this.ar;
+        return ar;
     }
 
     public void setAr(java.lang.String v)
@@ -322,7 +322,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getAr_2()
     {
-        return this.ar_2;
+        return ar_2;
     }
 
     public void setAr_2(java.lang.String v)
@@ -332,7 +332,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getCheck_ar()
     {
-        return this.check_ar;
+        return check_ar;
     }
 
     public void setCheck_ar(java.lang.String v)
@@ -342,7 +342,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getCheck_date_ar()
     {
-        return this.check_date_ar;
+        return check_date_ar;
     }
 
     public void setCheck_date_ar(java.lang.String v)
@@ -352,7 +352,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getAmount_ar()
     {
-        return this.amount_ar;
+        return amount_ar;
     }
 
     public void setAmount_ar(java.lang.String v)
@@ -362,7 +362,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getOrganization_or_person_ar_2()
     {
-        return this.organization_or_person_ar_2;
+        return organization_or_person_ar_2;
     }
 
     public void setOrganization_or_person_ar_2(java.lang.String v)
@@ -372,7 +372,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getAr_3()
     {
-        return this.ar_3;
+        return ar_3;
     }
 
     public void setAr_3(java.lang.String v)
@@ -382,7 +382,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getAr_4()
     {
-        return this.ar_4;
+        return ar_4;
     }
 
     public void setAr_4(java.lang.String v)
@@ -392,7 +392,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getCheck_ar_2()
     {
-        return this.check_ar_2;
+        return check_ar_2;
     }
 
     public void setCheck_ar_2(java.lang.String v)
@@ -402,7 +402,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getCheck_date_ar_2()
     {
-        return this.check_date_ar_2;
+        return check_date_ar_2;
     }
 
     public void setCheck_date_ar_2(java.lang.String v)
@@ -412,7 +412,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getAmount_ar_2()
     {
-        return this.amount_ar_2;
+        return amount_ar_2;
     }
 
     public void setAmount_ar_2(java.lang.String v)
@@ -422,7 +422,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getOrganization_or_person_ar_3()
     {
-        return this.organization_or_person_ar_3;
+        return organization_or_person_ar_3;
     }
 
     public void setOrganization_or_person_ar_3(java.lang.String v)
@@ -432,7 +432,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getAr_5()
     {
-        return this.ar_5;
+        return ar_5;
     }
 
     public void setAr_5(java.lang.String v)
@@ -442,7 +442,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getAr_6()
     {
-        return this.ar_6;
+        return ar_6;
     }
 
     public void setAr_6(java.lang.String v)
@@ -452,7 +452,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getCheck_ar_3()
     {
-        return this.check_ar_3;
+        return check_ar_3;
     }
 
     public void setCheck_ar_3(java.lang.String v)
@@ -462,7 +462,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getCheck_date_ar_3()
     {
-        return this.check_date_ar_3;
+        return check_date_ar_3;
     }
 
     public void setCheck_date_ar_3(java.lang.String v)
@@ -472,7 +472,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getAmount_ar_3()
     {
-        return this.amount_ar_3;
+        return amount_ar_3;
     }
 
     public void setAmount_ar_3(java.lang.String v)
@@ -482,7 +482,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getOrganization_or_person_ar_4()
     {
-        return this.organization_or_person_ar_4;
+        return organization_or_person_ar_4;
     }
 
     public void setOrganization_or_person_ar_4(java.lang.String v)
@@ -492,7 +492,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getAr_7()
     {
-        return this.ar_7;
+        return ar_7;
     }
 
     public void setAr_7(java.lang.String v)
@@ -502,7 +502,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getAr_8()
     {
-        return this.ar_8;
+        return ar_8;
     }
 
     public void setAr_8(java.lang.String v)
@@ -512,7 +512,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getCheck_ar_4()
     {
-        return this.check_ar_4;
+        return check_ar_4;
     }
 
     public void setCheck_ar_4(java.lang.String v)
@@ -522,7 +522,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getCheck_date_ar_4()
     {
-        return this.check_date_ar_4;
+        return check_date_ar_4;
     }
 
     public void setCheck_date_ar_4(java.lang.String v)
@@ -532,7 +532,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getAmount_ar_4()
     {
-        return this.amount_ar_4;
+        return amount_ar_4;
     }
 
     public void setAmount_ar_4(java.lang.String v)
@@ -542,7 +542,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.Double getAmount_show_total_on_pg_4_line_20()
     {
-        return this.amount_show_total_on_pg_4_line_20;
+        return amount_show_total_on_pg_4_line_20;
     }
 
     public void setAmount_show_total_on_pg_4_line_20(java.lang.Double v)
@@ -552,7 +552,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getAr_9()
     {
-        return this.ar_9;
+        return ar_9;
     }
 
     public void setAr_9(java.lang.String v)
@@ -562,7 +562,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getOrganization_or_person_contact_your_kingdom_exchequer_before_using_this_section()
     {
-        return this.organization_or_person_contact_your_kingdom_exchequer_before_using_this_section;
+        return organization_or_person_contact_your_kingdom_exchequer_before_using_this_section;
     }
 
     public void setOrganization_or_person_contact_your_kingdom_exchequer_before_using_this_section(java.lang.String v)
@@ -572,7 +572,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getContact_your_kingdom_exchequer_before_using_this_section()
     {
-        return this.contact_your_kingdom_exchequer_before_using_this_section;
+        return contact_your_kingdom_exchequer_before_using_this_section;
     }
 
     public void setContact_your_kingdom_exchequer_before_using_this_section(java.lang.String v)
@@ -582,7 +582,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getContact_your_kingdom_exchequer_before_using_this_section_2()
     {
-        return this.contact_your_kingdom_exchequer_before_using_this_section_2;
+        return contact_your_kingdom_exchequer_before_using_this_section_2;
     }
 
     public void setContact_your_kingdom_exchequer_before_using_this_section_2(java.lang.String v)
@@ -592,7 +592,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getCheck_contact_your_kingdom_exchequer_before_using_this_section()
     {
-        return this.check_contact_your_kingdom_exchequer_before_using_this_section;
+        return check_contact_your_kingdom_exchequer_before_using_this_section;
     }
 
     public void setCheck_contact_your_kingdom_exchequer_before_using_this_section(java.lang.String v)
@@ -602,7 +602,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getShow_total_on_pg_4_line_20_contact_your_kingdom_exchequer_before_using_this_section()
     {
-        return this.show_total_on_pg_4_line_20_contact_your_kingdom_exchequer_before_using_this_section;
+        return show_total_on_pg_4_line_20_contact_your_kingdom_exchequer_before_using_this_section;
     }
 
     public void setShow_total_on_pg_4_line_20_contact_your_kingdom_exchequer_before_using_this_section(java.lang.String v)
@@ -612,7 +612,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getSum_i12_i15_contact_your_kingdom_exchequer_before_using_this_section()
     {
-        return this.sum_i12_i15_contact_your_kingdom_exchequer_before_using_this_section;
+        return sum_i12_i15_contact_your_kingdom_exchequer_before_using_this_section;
     }
 
     public void setSum_i12_i15_contact_your_kingdom_exchequer_before_using_this_section(java.lang.String v)
@@ -622,7 +622,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getReason()
     {
-        return this.reason;
+        return reason;
     }
 
     public void setReason(java.lang.String v)
@@ -632,7 +632,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getOrganization_or_person()
     {
-        return this.organization_or_person;
+        return organization_or_person;
     }
 
     public void setOrganization_or_person(java.lang.String v)
@@ -642,7 +642,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getExpense_dtl_12b_r21c5()
     {
-        return this.expense_dtl_12b_r21c5;
+        return expense_dtl_12b_r21c5;
     }
 
     public void setExpense_dtl_12b_r21c5(java.lang.String v)
@@ -652,7 +652,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getExpense_dtl_12b_r21c6()
     {
-        return this.expense_dtl_12b_r21c6;
+        return expense_dtl_12b_r21c6;
     }
 
     public void setExpense_dtl_12b_r21c6(java.lang.String v)
@@ -662,7 +662,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getCheck()
     {
-        return this.check;
+        return check;
     }
 
     public void setCheck(java.lang.String v)
@@ -672,7 +672,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getPaid_to()
     {
-        return this.paid_to;
+        return paid_to;
     }
 
     public void setPaid_to(java.lang.String v)
@@ -682,7 +682,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getAmount()
     {
-        return this.amount;
+        return amount;
     }
 
     public void setAmount(java.lang.String v)
@@ -692,7 +692,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getReason_2()
     {
-        return this.reason_2;
+        return reason_2;
     }
 
     public void setReason_2(java.lang.String v)
@@ -702,7 +702,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getOrganization_or_person_2()
     {
-        return this.organization_or_person_2;
+        return organization_or_person_2;
     }
 
     public void setOrganization_or_person_2(java.lang.String v)
@@ -712,7 +712,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getExpense_dtl_12b_r22c5()
     {
-        return this.expense_dtl_12b_r22c5;
+        return expense_dtl_12b_r22c5;
     }
 
     public void setExpense_dtl_12b_r22c5(java.lang.String v)
@@ -722,7 +722,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getExpense_dtl_12b_r22c6()
     {
-        return this.expense_dtl_12b_r22c6;
+        return expense_dtl_12b_r22c6;
     }
 
     public void setExpense_dtl_12b_r22c6(java.lang.String v)
@@ -732,7 +732,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getCheck_2()
     {
-        return this.check_2;
+        return check_2;
     }
 
     public void setCheck_2(java.lang.String v)
@@ -742,7 +742,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getPaid_to_2()
     {
-        return this.paid_to_2;
+        return paid_to_2;
     }
 
     public void setPaid_to_2(java.lang.String v)
@@ -752,7 +752,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getAmount_2()
     {
-        return this.amount_2;
+        return amount_2;
     }
 
     public void setAmount_2(java.lang.String v)
@@ -762,7 +762,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getReason_3()
     {
-        return this.reason_3;
+        return reason_3;
     }
 
     public void setReason_3(java.lang.String v)
@@ -772,7 +772,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getOrganization_or_person_3()
     {
-        return this.organization_or_person_3;
+        return organization_or_person_3;
     }
 
     public void setOrganization_or_person_3(java.lang.String v)
@@ -782,7 +782,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getExpense_dtl_12b_r23c5()
     {
-        return this.expense_dtl_12b_r23c5;
+        return expense_dtl_12b_r23c5;
     }
 
     public void setExpense_dtl_12b_r23c5(java.lang.String v)
@@ -792,7 +792,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getExpense_dtl_12b_r23c6()
     {
-        return this.expense_dtl_12b_r23c6;
+        return expense_dtl_12b_r23c6;
     }
 
     public void setExpense_dtl_12b_r23c6(java.lang.String v)
@@ -802,7 +802,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getCheck_3()
     {
-        return this.check_3;
+        return check_3;
     }
 
     public void setCheck_3(java.lang.String v)
@@ -812,7 +812,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getPaid_to_3()
     {
-        return this.paid_to_3;
+        return paid_to_3;
     }
 
     public void setPaid_to_3(java.lang.String v)
@@ -822,7 +822,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getAmount_3()
     {
-        return this.amount_3;
+        return amount_3;
     }
 
     public void setAmount_3(java.lang.String v)
@@ -832,7 +832,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getReason_4()
     {
-        return this.reason_4;
+        return reason_4;
     }
 
     public void setReason_4(java.lang.String v)
@@ -842,7 +842,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getOrganization_or_person_4()
     {
-        return this.organization_or_person_4;
+        return organization_or_person_4;
     }
 
     public void setOrganization_or_person_4(java.lang.String v)
@@ -852,7 +852,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getExpense_dtl_12b_r24c5()
     {
-        return this.expense_dtl_12b_r24c5;
+        return expense_dtl_12b_r24c5;
     }
 
     public void setExpense_dtl_12b_r24c5(java.lang.String v)
@@ -862,7 +862,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getExpense_dtl_12b_r24c6()
     {
-        return this.expense_dtl_12b_r24c6;
+        return expense_dtl_12b_r24c6;
     }
 
     public void setExpense_dtl_12b_r24c6(java.lang.String v)
@@ -872,7 +872,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getCheck_4()
     {
-        return this.check_4;
+        return check_4;
     }
 
     public void setCheck_4(java.lang.String v)
@@ -882,7 +882,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getPaid_to_4()
     {
-        return this.paid_to_4;
+        return paid_to_4;
     }
 
     public void setPaid_to_4(java.lang.String v)
@@ -892,7 +892,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getAmount_4()
     {
-        return this.amount_4;
+        return amount_4;
     }
 
     public void setAmount_4(java.lang.String v)
@@ -902,7 +902,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getReason_5()
     {
-        return this.reason_5;
+        return reason_5;
     }
 
     public void setReason_5(java.lang.String v)
@@ -912,7 +912,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getOrganization_or_person_5()
     {
-        return this.organization_or_person_5;
+        return organization_or_person_5;
     }
 
     public void setOrganization_or_person_5(java.lang.String v)
@@ -922,7 +922,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getExpense_dtl_12b_r25c5()
     {
-        return this.expense_dtl_12b_r25c5;
+        return expense_dtl_12b_r25c5;
     }
 
     public void setExpense_dtl_12b_r25c5(java.lang.String v)
@@ -932,7 +932,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getExpense_dtl_12b_r25c6()
     {
-        return this.expense_dtl_12b_r25c6;
+        return expense_dtl_12b_r25c6;
     }
 
     public void setExpense_dtl_12b_r25c6(java.lang.String v)
@@ -942,7 +942,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getCheck_5()
     {
-        return this.check_5;
+        return check_5;
     }
 
     public void setCheck_5(java.lang.String v)
@@ -952,7 +952,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getPaid_to_5()
     {
-        return this.paid_to_5;
+        return paid_to_5;
     }
 
     public void setPaid_to_5(java.lang.String v)
@@ -962,7 +962,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getAmount_5()
     {
-        return this.amount_5;
+        return amount_5;
     }
 
     public void setAmount_5(java.lang.String v)
@@ -972,7 +972,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getReason_6()
     {
-        return this.reason_6;
+        return reason_6;
     }
 
     public void setReason_6(java.lang.String v)
@@ -982,7 +982,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getOrganization_or_person_6()
     {
-        return this.organization_or_person_6;
+        return organization_or_person_6;
     }
 
     public void setOrganization_or_person_6(java.lang.String v)
@@ -992,7 +992,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getExpense_dtl_12b_r26c5()
     {
-        return this.expense_dtl_12b_r26c5;
+        return expense_dtl_12b_r26c5;
     }
 
     public void setExpense_dtl_12b_r26c5(java.lang.String v)
@@ -1002,7 +1002,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getExpense_dtl_12b_r26c6()
     {
-        return this.expense_dtl_12b_r26c6;
+        return expense_dtl_12b_r26c6;
     }
 
     public void setExpense_dtl_12b_r26c6(java.lang.String v)
@@ -1012,7 +1012,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getCheck_6()
     {
-        return this.check_6;
+        return check_6;
     }
 
     public void setCheck_6(java.lang.String v)
@@ -1022,7 +1022,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getPaid_to_6()
     {
-        return this.paid_to_6;
+        return paid_to_6;
     }
 
     public void setPaid_to_6(java.lang.String v)
@@ -1032,7 +1032,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getAmount_6()
     {
-        return this.amount_6;
+        return amount_6;
     }
 
     public void setAmount_6(java.lang.String v)
@@ -1042,7 +1042,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.Double getAmount_show_total_on_pg_4_line_28()
     {
-        return this.amount_show_total_on_pg_4_line_28;
+        return amount_show_total_on_pg_4_line_28;
     }
 
     public void setAmount_show_total_on_pg_4_line_28(java.lang.Double v)
@@ -1052,7 +1052,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String get_501_c_3_nonprofit_organizations_organization_name()
     {
-        return this._501_c_3_nonprofit_organizations_organization_name;
+        return _501_c_3_nonprofit_organizations_organization_name;
     }
 
     public void set_501_c_3_nonprofit_organizations_organization_name(java.lang.String v)
@@ -1062,7 +1062,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getOrganization_or_person_7()
     {
-        return this.organization_or_person_7;
+        return organization_or_person_7;
     }
 
     public void setOrganization_or_person_7(java.lang.String v)
@@ -1072,7 +1072,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getReason_7()
     {
-        return this.reason_7;
+        return reason_7;
     }
 
     public void setReason_7(java.lang.String v)
@@ -1082,7 +1082,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getCheck_7()
     {
-        return this.check_7;
+        return check_7;
     }
 
     public void setCheck_7(java.lang.String v)
@@ -1092,7 +1092,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getCheck_date()
     {
-        return this.check_date;
+        return check_date;
     }
 
     public void setCheck_date(java.lang.String v)
@@ -1102,7 +1102,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getFed_id_number()
     {
-        return this.fed_id_number;
+        return fed_id_number;
     }
 
     public void setFed_id_number(java.lang.String v)
@@ -1112,7 +1112,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getAmount_7()
     {
-        return this.amount_7;
+        return amount_7;
     }
 
     public void setAmount_7(java.lang.String v)
@@ -1122,7 +1122,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String get_501_c_3_nonprofit_organizations_organization_name_2()
     {
-        return this._501_c_3_nonprofit_organizations_organization_name_2;
+        return _501_c_3_nonprofit_organizations_organization_name_2;
     }
 
     public void set_501_c_3_nonprofit_organizations_organization_name_2(java.lang.String v)
@@ -1132,7 +1132,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getOrganization_or_person_8()
     {
-        return this.organization_or_person_8;
+        return organization_or_person_8;
     }
 
     public void setOrganization_or_person_8(java.lang.String v)
@@ -1142,7 +1142,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getReason_8()
     {
-        return this.reason_8;
+        return reason_8;
     }
 
     public void setReason_8(java.lang.String v)
@@ -1152,7 +1152,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getCheck_8()
     {
-        return this.check_8;
+        return check_8;
     }
 
     public void setCheck_8(java.lang.String v)
@@ -1162,7 +1162,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getCheck_date_2()
     {
-        return this.check_date_2;
+        return check_date_2;
     }
 
     public void setCheck_date_2(java.lang.String v)
@@ -1172,7 +1172,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getFed_id_number_2()
     {
-        return this.fed_id_number_2;
+        return fed_id_number_2;
     }
 
     public void setFed_id_number_2(java.lang.String v)
@@ -1182,7 +1182,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getAmount_8()
     {
-        return this.amount_8;
+        return amount_8;
     }
 
     public void setAmount_8(java.lang.String v)
@@ -1192,7 +1192,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String get_501_c_3_nonprofit_organizations_organization_name_3()
     {
-        return this._501_c_3_nonprofit_organizations_organization_name_3;
+        return _501_c_3_nonprofit_organizations_organization_name_3;
     }
 
     public void set_501_c_3_nonprofit_organizations_organization_name_3(java.lang.String v)
@@ -1202,7 +1202,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getOrganization_or_person_9()
     {
-        return this.organization_or_person_9;
+        return organization_or_person_9;
     }
 
     public void setOrganization_or_person_9(java.lang.String v)
@@ -1212,7 +1212,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getReason_9()
     {
-        return this.reason_9;
+        return reason_9;
     }
 
     public void setReason_9(java.lang.String v)
@@ -1222,7 +1222,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getCheck_9()
     {
-        return this.check_9;
+        return check_9;
     }
 
     public void setCheck_9(java.lang.String v)
@@ -1232,7 +1232,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getCheck_date_3()
     {
-        return this.check_date_3;
+        return check_date_3;
     }
 
     public void setCheck_date_3(java.lang.String v)
@@ -1242,7 +1242,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getFed_id_number_3()
     {
-        return this.fed_id_number_3;
+        return fed_id_number_3;
     }
 
     public void setFed_id_number_3(java.lang.String v)
@@ -1252,7 +1252,7 @@ public class EXPENSE_DTL_12bBean
 
     public java.lang.String getAmount_9()
     {
-        return this.amount_9;
+        return amount_9;
     }
 
     public void setAmount_9(java.lang.String v)

@@ -223,7 +223,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.Double getIncome_dtl_11c_r2c3()
     {
-        return this.income_dtl_11c_r2c3;
+        return income_dtl_11c_r2c3;
     }
 
     public void setIncome_dtl_11c_r2c3(java.lang.Double v)
@@ -233,7 +233,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.Double getContents_b59()
     {
-        return this.contents_b59;
+        return contents_b59;
     }
 
     public void setContents_b59(java.lang.Double v)
@@ -243,7 +243,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.Double getContents_e_3()
     {
-        return this.contents_e_3;
+        return contents_e_3;
     }
 
     public void setContents_e_3(java.lang.Double v)
@@ -253,7 +253,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.Double getContents_e_4()
     {
-        return this.contents_e_4;
+        return contents_e_4;
     }
 
     public void setContents_e_4(java.lang.Double v)
@@ -263,7 +263,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getName_of_organization_or_individual()
     {
-        return this.name_of_organization_or_individual;
+        return name_of_organization_or_individual;
     }
 
     public void setName_of_organization_or_individual(java.lang.String v)
@@ -273,7 +273,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getReason()
     {
-        return this.reason;
+        return reason;
     }
 
     public void setReason(java.lang.String v)
@@ -283,7 +283,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getIncome_dtl_11c_r13c5()
     {
-        return this.income_dtl_11c_r13c5;
+        return income_dtl_11c_r13c5;
     }
 
     public void setIncome_dtl_11c_r13c5(java.lang.String v)
@@ -293,7 +293,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getDate_received()
     {
-        return this.date_received;
+        return date_received;
     }
 
     public void setDate_received(java.lang.String v)
@@ -303,7 +303,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getAmount()
     {
-        return this.amount;
+        return amount;
     }
 
     public void setAmount(java.lang.String v)
@@ -313,7 +313,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getName_of_organization_or_individual_2()
     {
-        return this.name_of_organization_or_individual_2;
+        return name_of_organization_or_individual_2;
     }
 
     public void setName_of_organization_or_individual_2(java.lang.String v)
@@ -323,7 +323,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getReason_2()
     {
-        return this.reason_2;
+        return reason_2;
     }
 
     public void setReason_2(java.lang.String v)
@@ -333,7 +333,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getIncome_dtl_11c_r14c5()
     {
-        return this.income_dtl_11c_r14c5;
+        return income_dtl_11c_r14c5;
     }
 
     public void setIncome_dtl_11c_r14c5(java.lang.String v)
@@ -343,7 +343,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getDate_received_2()
     {
-        return this.date_received_2;
+        return date_received_2;
     }
 
     public void setDate_received_2(java.lang.String v)
@@ -353,7 +353,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getAmount_2()
     {
-        return this.amount_2;
+        return amount_2;
     }
 
     public void setAmount_2(java.lang.String v)
@@ -363,7 +363,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getName_of_organization_or_individual_3()
     {
-        return this.name_of_organization_or_individual_3;
+        return name_of_organization_or_individual_3;
     }
 
     public void setName_of_organization_or_individual_3(java.lang.String v)
@@ -373,7 +373,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getReason_3()
     {
-        return this.reason_3;
+        return reason_3;
     }
 
     public void setReason_3(java.lang.String v)
@@ -383,7 +383,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getIncome_dtl_11c_r15c5()
     {
-        return this.income_dtl_11c_r15c5;
+        return income_dtl_11c_r15c5;
     }
 
     public void setIncome_dtl_11c_r15c5(java.lang.String v)
@@ -393,7 +393,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getDate_received_3()
     {
-        return this.date_received_3;
+        return date_received_3;
     }
 
     public void setDate_received_3(java.lang.String v)
@@ -403,7 +403,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getAmount_3()
     {
-        return this.amount_3;
+        return amount_3;
     }
 
     public void setAmount_3(java.lang.String v)
@@ -413,7 +413,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getName_of_organization_or_individual_4()
     {
-        return this.name_of_organization_or_individual_4;
+        return name_of_organization_or_individual_4;
     }
 
     public void setName_of_organization_or_individual_4(java.lang.String v)
@@ -423,7 +423,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getReason_4()
     {
-        return this.reason_4;
+        return reason_4;
     }
 
     public void setReason_4(java.lang.String v)
@@ -433,7 +433,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getIncome_dtl_11c_r16c5()
     {
-        return this.income_dtl_11c_r16c5;
+        return income_dtl_11c_r16c5;
     }
 
     public void setIncome_dtl_11c_r16c5(java.lang.String v)
@@ -443,7 +443,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getDate_received_4()
     {
-        return this.date_received_4;
+        return date_received_4;
     }
 
     public void setDate_received_4(java.lang.String v)
@@ -453,7 +453,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getAmount_4()
     {
-        return this.amount_4;
+        return amount_4;
     }
 
     public void setAmount_4(java.lang.String v)
@@ -463,7 +463,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getName_of_organization_or_individual_5()
     {
-        return this.name_of_organization_or_individual_5;
+        return name_of_organization_or_individual_5;
     }
 
     public void setName_of_organization_or_individual_5(java.lang.String v)
@@ -473,7 +473,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getReason_5()
     {
-        return this.reason_5;
+        return reason_5;
     }
 
     public void setReason_5(java.lang.String v)
@@ -483,7 +483,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getIncome_dtl_11c_r17c5()
     {
-        return this.income_dtl_11c_r17c5;
+        return income_dtl_11c_r17c5;
     }
 
     public void setIncome_dtl_11c_r17c5(java.lang.String v)
@@ -493,7 +493,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getDate_received_5()
     {
-        return this.date_received_5;
+        return date_received_5;
     }
 
     public void setDate_received_5(java.lang.String v)
@@ -503,7 +503,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getAmount_5()
     {
-        return this.amount_5;
+        return amount_5;
     }
 
     public void setAmount_5(java.lang.String v)
@@ -513,7 +513,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getName_of_organization_or_individual_6()
     {
-        return this.name_of_organization_or_individual_6;
+        return name_of_organization_or_individual_6;
     }
 
     public void setName_of_organization_or_individual_6(java.lang.String v)
@@ -523,7 +523,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getReason_6()
     {
-        return this.reason_6;
+        return reason_6;
     }
 
     public void setReason_6(java.lang.String v)
@@ -533,7 +533,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getIncome_dtl_11c_r18c5()
     {
-        return this.income_dtl_11c_r18c5;
+        return income_dtl_11c_r18c5;
     }
 
     public void setIncome_dtl_11c_r18c5(java.lang.String v)
@@ -543,7 +543,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getDate_received_6()
     {
-        return this.date_received_6;
+        return date_received_6;
     }
 
     public void setDate_received_6(java.lang.String v)
@@ -553,7 +553,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getAmount_6()
     {
-        return this.amount_6;
+        return amount_6;
     }
 
     public void setAmount_6(java.lang.String v)
@@ -563,7 +563,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getName_of_organization_or_individual_7()
     {
-        return this.name_of_organization_or_individual_7;
+        return name_of_organization_or_individual_7;
     }
 
     public void setName_of_organization_or_individual_7(java.lang.String v)
@@ -573,7 +573,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getReason_7()
     {
-        return this.reason_7;
+        return reason_7;
     }
 
     public void setReason_7(java.lang.String v)
@@ -583,7 +583,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getIncome_dtl_11c_r19c5()
     {
-        return this.income_dtl_11c_r19c5;
+        return income_dtl_11c_r19c5;
     }
 
     public void setIncome_dtl_11c_r19c5(java.lang.String v)
@@ -593,7 +593,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getDate_received_7()
     {
-        return this.date_received_7;
+        return date_received_7;
     }
 
     public void setDate_received_7(java.lang.String v)
@@ -603,7 +603,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getAmount_7()
     {
-        return this.amount_7;
+        return amount_7;
     }
 
     public void setAmount_7(java.lang.String v)
@@ -613,7 +613,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getName_of_organization_or_individual_8()
     {
-        return this.name_of_organization_or_individual_8;
+        return name_of_organization_or_individual_8;
     }
 
     public void setName_of_organization_or_individual_8(java.lang.String v)
@@ -623,7 +623,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getReason_8()
     {
-        return this.reason_8;
+        return reason_8;
     }
 
     public void setReason_8(java.lang.String v)
@@ -633,7 +633,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getIncome_dtl_11c_r20c5()
     {
-        return this.income_dtl_11c_r20c5;
+        return income_dtl_11c_r20c5;
     }
 
     public void setIncome_dtl_11c_r20c5(java.lang.String v)
@@ -643,7 +643,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getDate_received_8()
     {
-        return this.date_received_8;
+        return date_received_8;
     }
 
     public void setDate_received_8(java.lang.String v)
@@ -653,7 +653,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getAmount_8()
     {
-        return this.amount_8;
+        return amount_8;
     }
 
     public void setAmount_8(java.lang.String v)
@@ -663,7 +663,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getName_of_organization_or_individual_9()
     {
-        return this.name_of_organization_or_individual_9;
+        return name_of_organization_or_individual_9;
     }
 
     public void setName_of_organization_or_individual_9(java.lang.String v)
@@ -673,7 +673,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getReason_9()
     {
-        return this.reason_9;
+        return reason_9;
     }
 
     public void setReason_9(java.lang.String v)
@@ -683,7 +683,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getIncome_dtl_11c_r21c5()
     {
-        return this.income_dtl_11c_r21c5;
+        return income_dtl_11c_r21c5;
     }
 
     public void setIncome_dtl_11c_r21c5(java.lang.String v)
@@ -693,7 +693,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getDate_received_9()
     {
-        return this.date_received_9;
+        return date_received_9;
     }
 
     public void setDate_received_9(java.lang.String v)
@@ -703,7 +703,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getAmount_9()
     {
-        return this.amount_9;
+        return amount_9;
     }
 
     public void setAmount_9(java.lang.String v)
@@ -713,7 +713,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getName_of_organization_or_individual_10()
     {
-        return this.name_of_organization_or_individual_10;
+        return name_of_organization_or_individual_10;
     }
 
     public void setName_of_organization_or_individual_10(java.lang.String v)
@@ -723,7 +723,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getReason_10()
     {
-        return this.reason_10;
+        return reason_10;
     }
 
     public void setReason_10(java.lang.String v)
@@ -733,7 +733,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getIncome_dtl_11c_r22c5()
     {
-        return this.income_dtl_11c_r22c5;
+        return income_dtl_11c_r22c5;
     }
 
     public void setIncome_dtl_11c_r22c5(java.lang.String v)
@@ -743,7 +743,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getDate_received_10()
     {
-        return this.date_received_10;
+        return date_received_10;
     }
 
     public void setDate_received_10(java.lang.String v)
@@ -753,7 +753,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getAmount_10()
     {
-        return this.amount_10;
+        return amount_10;
     }
 
     public void setAmount_10(java.lang.String v)
@@ -763,7 +763,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getName_of_organization_or_individual_11()
     {
-        return this.name_of_organization_or_individual_11;
+        return name_of_organization_or_individual_11;
     }
 
     public void setName_of_organization_or_individual_11(java.lang.String v)
@@ -773,7 +773,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getReason_11()
     {
-        return this.reason_11;
+        return reason_11;
     }
 
     public void setReason_11(java.lang.String v)
@@ -783,7 +783,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getIncome_dtl_11c_r23c5()
     {
-        return this.income_dtl_11c_r23c5;
+        return income_dtl_11c_r23c5;
     }
 
     public void setIncome_dtl_11c_r23c5(java.lang.String v)
@@ -793,7 +793,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getDate_received_11()
     {
-        return this.date_received_11;
+        return date_received_11;
     }
 
     public void setDate_received_11(java.lang.String v)
@@ -803,7 +803,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getAmount_11()
     {
-        return this.amount_11;
+        return amount_11;
     }
 
     public void setAmount_11(java.lang.String v)
@@ -813,7 +813,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.Double getAmount_show_total_on_pg_4_line_1a()
     {
-        return this.amount_show_total_on_pg_4_line_1a;
+        return amount_show_total_on_pg_4_line_1a;
     }
 
     public void setAmount_show_total_on_pg_4_line_1a(java.lang.Double v)
@@ -823,7 +823,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getGroup_name_and_kingdom()
     {
-        return this.group_name_and_kingdom;
+        return group_name_and_kingdom;
     }
 
     public void setGroup_name_and_kingdom(java.lang.String v)
@@ -833,7 +833,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getReason_12()
     {
-        return this.reason_12;
+        return reason_12;
     }
 
     public void setReason_12(java.lang.String v)
@@ -843,7 +843,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getCheck()
     {
-        return this.check;
+        return check;
     }
 
     public void setCheck(java.lang.String v)
@@ -853,7 +853,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getCheck_date()
     {
-        return this.check_date;
+        return check_date;
     }
 
     public void setCheck_date(java.lang.String v)
@@ -863,7 +863,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getAmount_12()
     {
-        return this.amount_12;
+        return amount_12;
     }
 
     public void setAmount_12(java.lang.String v)
@@ -873,7 +873,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getGroup_name_and_kingdom_2()
     {
-        return this.group_name_and_kingdom_2;
+        return group_name_and_kingdom_2;
     }
 
     public void setGroup_name_and_kingdom_2(java.lang.String v)
@@ -883,7 +883,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getReason_13()
     {
-        return this.reason_13;
+        return reason_13;
     }
 
     public void setReason_13(java.lang.String v)
@@ -893,7 +893,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getCheck_2()
     {
-        return this.check_2;
+        return check_2;
     }
 
     public void setCheck_2(java.lang.String v)
@@ -903,7 +903,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getCheck_date_2()
     {
-        return this.check_date_2;
+        return check_date_2;
     }
 
     public void setCheck_date_2(java.lang.String v)
@@ -913,7 +913,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getAmount_13()
     {
-        return this.amount_13;
+        return amount_13;
     }
 
     public void setAmount_13(java.lang.String v)
@@ -923,7 +923,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getGroup_name_and_kingdom_3()
     {
-        return this.group_name_and_kingdom_3;
+        return group_name_and_kingdom_3;
     }
 
     public void setGroup_name_and_kingdom_3(java.lang.String v)
@@ -933,7 +933,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getReason_14()
     {
-        return this.reason_14;
+        return reason_14;
     }
 
     public void setReason_14(java.lang.String v)
@@ -943,7 +943,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getCheck_3()
     {
-        return this.check_3;
+        return check_3;
     }
 
     public void setCheck_3(java.lang.String v)
@@ -953,7 +953,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getCheck_date_3()
     {
-        return this.check_date_3;
+        return check_date_3;
     }
 
     public void setCheck_date_3(java.lang.String v)
@@ -963,7 +963,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getAmount_14()
     {
-        return this.amount_14;
+        return amount_14;
     }
 
     public void setAmount_14(java.lang.String v)
@@ -973,7 +973,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getGroup_name_and_kingdom_4()
     {
-        return this.group_name_and_kingdom_4;
+        return group_name_and_kingdom_4;
     }
 
     public void setGroup_name_and_kingdom_4(java.lang.String v)
@@ -983,7 +983,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getReason_15()
     {
-        return this.reason_15;
+        return reason_15;
     }
 
     public void setReason_15(java.lang.String v)
@@ -993,7 +993,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getCheck_4()
     {
-        return this.check_4;
+        return check_4;
     }
 
     public void setCheck_4(java.lang.String v)
@@ -1003,7 +1003,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getCheck_date_4()
     {
-        return this.check_date_4;
+        return check_date_4;
     }
 
     public void setCheck_date_4(java.lang.String v)
@@ -1013,7 +1013,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getAmount_15()
     {
-        return this.amount_15;
+        return amount_15;
     }
 
     public void setAmount_15(java.lang.String v)
@@ -1023,7 +1023,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getGroup_name_and_kingdom_5()
     {
-        return this.group_name_and_kingdom_5;
+        return group_name_and_kingdom_5;
     }
 
     public void setGroup_name_and_kingdom_5(java.lang.String v)
@@ -1033,7 +1033,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getReason_16()
     {
-        return this.reason_16;
+        return reason_16;
     }
 
     public void setReason_16(java.lang.String v)
@@ -1043,7 +1043,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getCheck_5()
     {
-        return this.check_5;
+        return check_5;
     }
 
     public void setCheck_5(java.lang.String v)
@@ -1053,7 +1053,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getCheck_date_5()
     {
-        return this.check_date_5;
+        return check_date_5;
     }
 
     public void setCheck_date_5(java.lang.String v)
@@ -1063,7 +1063,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getAmount_16()
     {
-        return this.amount_16;
+        return amount_16;
     }
 
     public void setAmount_16(java.lang.String v)
@@ -1073,7 +1073,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getGroup_name_and_kingdom_6()
     {
-        return this.group_name_and_kingdom_6;
+        return group_name_and_kingdom_6;
     }
 
     public void setGroup_name_and_kingdom_6(java.lang.String v)
@@ -1083,7 +1083,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getReason_17()
     {
-        return this.reason_17;
+        return reason_17;
     }
 
     public void setReason_17(java.lang.String v)
@@ -1093,7 +1093,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getCheck_6()
     {
-        return this.check_6;
+        return check_6;
     }
 
     public void setCheck_6(java.lang.String v)
@@ -1103,7 +1103,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getCheck_date_6()
     {
-        return this.check_date_6;
+        return check_date_6;
     }
 
     public void setCheck_date_6(java.lang.String v)
@@ -1113,7 +1113,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getAmount_17()
     {
-        return this.amount_17;
+        return amount_17;
     }
 
     public void setAmount_17(java.lang.String v)
@@ -1123,7 +1123,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getGroup_name_and_kingdom_7()
     {
-        return this.group_name_and_kingdom_7;
+        return group_name_and_kingdom_7;
     }
 
     public void setGroup_name_and_kingdom_7(java.lang.String v)
@@ -1133,7 +1133,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getReason_18()
     {
-        return this.reason_18;
+        return reason_18;
     }
 
     public void setReason_18(java.lang.String v)
@@ -1143,7 +1143,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getCheck_7()
     {
-        return this.check_7;
+        return check_7;
     }
 
     public void setCheck_7(java.lang.String v)
@@ -1153,7 +1153,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getCheck_date_7()
     {
-        return this.check_date_7;
+        return check_date_7;
     }
 
     public void setCheck_date_7(java.lang.String v)
@@ -1163,7 +1163,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getAmount_18()
     {
-        return this.amount_18;
+        return amount_18;
     }
 
     public void setAmount_18(java.lang.String v)
@@ -1173,7 +1173,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getGroup_name_and_kingdom_8()
     {
-        return this.group_name_and_kingdom_8;
+        return group_name_and_kingdom_8;
     }
 
     public void setGroup_name_and_kingdom_8(java.lang.String v)
@@ -1183,7 +1183,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getReason_19()
     {
-        return this.reason_19;
+        return reason_19;
     }
 
     public void setReason_19(java.lang.String v)
@@ -1193,7 +1193,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getCheck_8()
     {
-        return this.check_8;
+        return check_8;
     }
 
     public void setCheck_8(java.lang.String v)
@@ -1203,7 +1203,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getCheck_date_8()
     {
-        return this.check_date_8;
+        return check_date_8;
     }
 
     public void setCheck_date_8(java.lang.String v)
@@ -1213,7 +1213,7 @@ public class INCOME_DTL_11cBean
 
     public java.lang.String getAmount_19()
     {
-        return this.amount_19;
+        return amount_19;
     }
 
     public void setAmount_19(java.lang.String v)

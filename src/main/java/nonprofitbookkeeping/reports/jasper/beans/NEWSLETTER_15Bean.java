@@ -279,7 +279,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getNewsletter_15_r2c3()
     {
-        return this.newsletter_15_r2c3;
+        return newsletter_15_r2c3;
     }
 
     public void setNewsletter_15_r2c3(java.lang.Double v)
@@ -289,7 +289,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getContents_b59()
     {
-        return this.contents_b59;
+        return contents_b59;
     }
 
     public void setContents_b59(java.lang.Double v)
@@ -299,7 +299,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getContents_e_3()
     {
-        return this.contents_e_3;
+        return contents_e_3;
     }
 
     public void setContents_e_3(java.lang.Double v)
@@ -309,7 +309,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getContents_e_4()
     {
-        return this.contents_e_4;
+        return contents_e_4;
     }
 
     public void setContents_e_4(java.lang.Double v)
@@ -319,7 +319,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getNewsletter_name()
     {
-        return this.newsletter_name;
+        return newsletter_name;
     }
 
     public void setNewsletter_name(java.lang.String v)
@@ -329,7 +329,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getNewsletter_name_2()
     {
-        return this.newsletter_name_2;
+        return newsletter_name_2;
     }
 
     public void setNewsletter_name_2(java.lang.String v)
@@ -339,7 +339,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getNewsletter_name_3()
     {
-        return this.newsletter_name_3;
+        return newsletter_name_3;
     }
 
     public void setNewsletter_name_3(java.lang.String v)
@@ -349,7 +349,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getGross_income()
     {
-        return this.gross_income;
+        return gross_income;
     }
 
     public void setGross_income(java.lang.String v)
@@ -359,7 +359,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getGross_income_a()
     {
-        return this.gross_income_a;
+        return gross_income_a;
     }
 
     public void setGross_income_a(java.lang.Double v)
@@ -369,7 +369,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getI11_start_subs_due_b()
     {
-        return this.i11_start_subs_due_b;
+        return i11_start_subs_due_b;
     }
 
     public void setI11_start_subs_due_b(java.lang.Double v)
@@ -379,7 +379,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getRate_1_price_of_one_subscription()
     {
-        return this.rate_1_price_of_one_subscription;
+        return rate_1_price_of_one_subscription;
     }
 
     public void setRate_1_price_of_one_subscription(java.lang.String v)
@@ -389,7 +389,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getRate_2_price_of_one_subscription()
     {
-        return this.rate_2_price_of_one_subscription;
+        return rate_2_price_of_one_subscription;
     }
 
     public void setRate_2_price_of_one_subscription(java.lang.String v)
@@ -399,7 +399,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getBalance_3_g31_end_subs_due_c()
     {
-        return this.balance_3_g31_end_subs_due_c;
+        return balance_3_g31_end_subs_due_c;
     }
 
     public void setBalance_3_g31_end_subs_due_c(java.lang.Double v)
@@ -409,7 +409,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getRate_1_of_issues_per_subscription()
     {
-        return this.rate_1_of_issues_per_subscription;
+        return rate_1_of_issues_per_subscription;
     }
 
     public void setRate_1_of_issues_per_subscription(java.lang.String v)
@@ -419,7 +419,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getRate_2_of_issues_per_subscription()
     {
-        return this.rate_2_of_issues_per_subscription;
+        return rate_2_of_issues_per_subscription;
     }
 
     public void setRate_2_of_issues_per_subscription(java.lang.String v)
@@ -429,7 +429,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getI59_adj_gross_income_a_b_c()
     {
-        return this.i59_adj_gross_income_a_b_c;
+        return i59_adj_gross_income_a_b_c;
     }
 
     public void setI59_adj_gross_income_a_b_c(java.lang.Double v)
@@ -439,7 +439,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getRate_1_price_per_issue()
     {
-        return this.rate_1_price_per_issue;
+        return rate_1_price_per_issue;
     }
 
     public void setRate_1_price_per_issue(java.lang.Double v)
@@ -449,7 +449,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getRate_2_if_h16_0_0_round_h15_h16_2()
     {
-        return this.rate_2_if_h16_0_0_round_h15_h16_2;
+        return rate_2_if_h16_0_0_round_h15_h16_2;
     }
 
     public void setRate_2_if_h16_0_0_round_h15_h16_2(java.lang.Double v)
@@ -459,7 +459,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getExpiring_1_0()
     {
-        return this.expiring_1_0;
+        return expiring_1_0;
     }
 
     public void setExpiring_1_0(java.lang.String v)
@@ -469,7 +469,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getPrice_per_issue_1_0()
     {
-        return this.price_per_issue_1_0;
+        return price_per_issue_1_0;
     }
 
     public void setPrice_per_issue_1_0(java.lang.String v)
@@ -479,7 +479,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getSubscription_due_1_0()
     {
-        return this.subscription_due_1_0;
+        return subscription_due_1_0;
     }
 
     public void setSubscription_due_1_0(java.lang.Double v)
@@ -489,7 +489,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getExpiring_e22_c22_d22()
     {
-        return this.expiring_e22_c22_d22;
+        return expiring_e22_c22_d22;
     }
 
     public void setExpiring_e22_c22_d22(java.lang.String v)
@@ -499,7 +499,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getPrice_per_issue_e22_c22_d22()
     {
-        return this.price_per_issue_e22_c22_d22;
+        return price_per_issue_e22_c22_d22;
     }
 
     public void setPrice_per_issue_e22_c22_d22(java.lang.String v)
@@ -509,7 +509,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getSubscription_due_e22_c22_d22()
     {
-        return this.subscription_due_e22_c22_d22;
+        return subscription_due_e22_c22_d22;
     }
 
     public void setSubscription_due_e22_c22_d22(java.lang.Double v)
@@ -519,7 +519,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double get_1_0()
     {
-        return this._1_0;
+        return _1_0;
     }
 
     public void set_1_0(java.lang.Double v)
@@ -529,7 +529,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getExpiring_c22_1()
     {
-        return this.expiring_c22_1;
+        return expiring_c22_1;
     }
 
     public void setExpiring_c22_1(java.lang.String v)
@@ -539,7 +539,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getPrice_per_issue_c22_1()
     {
-        return this.price_per_issue_c22_1;
+        return price_per_issue_c22_1;
     }
 
     public void setPrice_per_issue_c22_1(java.lang.String v)
@@ -549,7 +549,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getE22_c22_d22_c22_1()
     {
-        return this.e22_c22_d22_c22_1;
+        return e22_c22_d22_c22_1;
     }
 
     public void setE22_c22_d22_c22_1(java.lang.Double v)
@@ -559,7 +559,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getExpiring_e23_c23_d23()
     {
-        return this.expiring_e23_c23_d23;
+        return expiring_e23_c23_d23;
     }
 
     public void setExpiring_e23_c23_d23(java.lang.String v)
@@ -569,7 +569,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getPrice_per_issue_e23_c23_d23()
     {
-        return this.price_per_issue_e23_c23_d23;
+        return price_per_issue_e23_c23_d23;
     }
 
     public void setPrice_per_issue_e23_c23_d23(java.lang.String v)
@@ -579,7 +579,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getH22_c22_g22_e23_c23_d23()
     {
-        return this.h22_c22_g22_e23_c23_d23;
+        return h22_c22_g22_e23_c23_d23;
     }
 
     public void setH22_c22_g22_e23_c23_d23(java.lang.Double v)
@@ -589,7 +589,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getC22_1()
     {
-        return this.c22_1;
+        return c22_1;
     }
 
     public void setC22_1(java.lang.Double v)
@@ -599,7 +599,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getExpiring_c23_1()
     {
-        return this.expiring_c23_1;
+        return expiring_c23_1;
     }
 
     public void setExpiring_c23_1(java.lang.String v)
@@ -609,7 +609,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getPrice_per_issue_c23_1()
     {
-        return this.price_per_issue_c23_1;
+        return price_per_issue_c23_1;
     }
 
     public void setPrice_per_issue_c23_1(java.lang.String v)
@@ -619,7 +619,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getE23_c23_d23_c23_1()
     {
-        return this.e23_c23_d23_c23_1;
+        return e23_c23_d23_c23_1;
     }
 
     public void setE23_c23_d23_c23_1(java.lang.Double v)
@@ -629,7 +629,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getExpiring_e24_c24_d24()
     {
-        return this.expiring_e24_c24_d24;
+        return expiring_e24_c24_d24;
     }
 
     public void setExpiring_e24_c24_d24(java.lang.String v)
@@ -639,7 +639,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getPrice_per_issue_e24_c24_d24()
     {
-        return this.price_per_issue_e24_c24_d24;
+        return price_per_issue_e24_c24_d24;
     }
 
     public void setPrice_per_issue_e24_c24_d24(java.lang.String v)
@@ -649,7 +649,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getH23_c23_g23_e24_c24_d24()
     {
-        return this.h23_c23_g23_e24_c24_d24;
+        return h23_c23_g23_e24_c24_d24;
     }
 
     public void setH23_c23_g23_e24_c24_d24(java.lang.Double v)
@@ -659,7 +659,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getC23_1()
     {
-        return this.c23_1;
+        return c23_1;
     }
 
     public void setC23_1(java.lang.Double v)
@@ -669,7 +669,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getExpiring_c24_1()
     {
-        return this.expiring_c24_1;
+        return expiring_c24_1;
     }
 
     public void setExpiring_c24_1(java.lang.String v)
@@ -679,7 +679,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getPrice_per_issue_c24_1()
     {
-        return this.price_per_issue_c24_1;
+        return price_per_issue_c24_1;
     }
 
     public void setPrice_per_issue_c24_1(java.lang.String v)
@@ -689,7 +689,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getE24_c24_d24_c24_1()
     {
-        return this.e24_c24_d24_c24_1;
+        return e24_c24_d24_c24_1;
     }
 
     public void setE24_c24_d24_c24_1(java.lang.Double v)
@@ -699,7 +699,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getExpiring_e25_c25_d25()
     {
-        return this.expiring_e25_c25_d25;
+        return expiring_e25_c25_d25;
     }
 
     public void setExpiring_e25_c25_d25(java.lang.String v)
@@ -709,7 +709,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getPrice_per_issue_e25_c25_d25()
     {
-        return this.price_per_issue_e25_c25_d25;
+        return price_per_issue_e25_c25_d25;
     }
 
     public void setPrice_per_issue_e25_c25_d25(java.lang.String v)
@@ -719,7 +719,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getH24_c24_g24_e25_c25_d25()
     {
-        return this.h24_c24_g24_e25_c25_d25;
+        return h24_c24_g24_e25_c25_d25;
     }
 
     public void setH24_c24_g24_e25_c25_d25(java.lang.Double v)
@@ -729,7 +729,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getC24_1()
     {
-        return this.c24_1;
+        return c24_1;
     }
 
     public void setC24_1(java.lang.Double v)
@@ -739,7 +739,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getExpiring_c25_1()
     {
-        return this.expiring_c25_1;
+        return expiring_c25_1;
     }
 
     public void setExpiring_c25_1(java.lang.String v)
@@ -749,7 +749,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getPrice_per_issue_c25_1()
     {
-        return this.price_per_issue_c25_1;
+        return price_per_issue_c25_1;
     }
 
     public void setPrice_per_issue_c25_1(java.lang.String v)
@@ -759,7 +759,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getE25_c25_d25_c25_1()
     {
-        return this.e25_c25_d25_c25_1;
+        return e25_c25_d25_c25_1;
     }
 
     public void setE25_c25_d25_c25_1(java.lang.Double v)
@@ -769,7 +769,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getExpiring_e26_c26_d26()
     {
-        return this.expiring_e26_c26_d26;
+        return expiring_e26_c26_d26;
     }
 
     public void setExpiring_e26_c26_d26(java.lang.String v)
@@ -779,7 +779,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getPrice_per_issue_e26_c26_d26()
     {
-        return this.price_per_issue_e26_c26_d26;
+        return price_per_issue_e26_c26_d26;
     }
 
     public void setPrice_per_issue_e26_c26_d26(java.lang.String v)
@@ -789,7 +789,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getH25_c25_g25_e26_c26_d26()
     {
-        return this.h25_c25_g25_e26_c26_d26;
+        return h25_c25_g25_e26_c26_d26;
     }
 
     public void setH25_c25_g25_e26_c26_d26(java.lang.Double v)
@@ -799,7 +799,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getC25_1()
     {
-        return this.c25_1;
+        return c25_1;
     }
 
     public void setC25_1(java.lang.Double v)
@@ -809,7 +809,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getExpiring_c26_1()
     {
-        return this.expiring_c26_1;
+        return expiring_c26_1;
     }
 
     public void setExpiring_c26_1(java.lang.String v)
@@ -819,7 +819,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getPrice_per_issue_c26_1()
     {
-        return this.price_per_issue_c26_1;
+        return price_per_issue_c26_1;
     }
 
     public void setPrice_per_issue_c26_1(java.lang.String v)
@@ -829,7 +829,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getE26_c26_d26_c26_1()
     {
-        return this.e26_c26_d26_c26_1;
+        return e26_c26_d26_c26_1;
     }
 
     public void setE26_c26_d26_c26_1(java.lang.Double v)
@@ -839,7 +839,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getExpiring_e27_c27_d27()
     {
-        return this.expiring_e27_c27_d27;
+        return expiring_e27_c27_d27;
     }
 
     public void setExpiring_e27_c27_d27(java.lang.String v)
@@ -849,7 +849,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getPrice_per_issue_e27_c27_d27()
     {
-        return this.price_per_issue_e27_c27_d27;
+        return price_per_issue_e27_c27_d27;
     }
 
     public void setPrice_per_issue_e27_c27_d27(java.lang.String v)
@@ -859,7 +859,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getH26_c26_g26_e27_c27_d27()
     {
-        return this.h26_c26_g26_e27_c27_d27;
+        return h26_c26_g26_e27_c27_d27;
     }
 
     public void setH26_c26_g26_e27_c27_d27(java.lang.Double v)
@@ -869,7 +869,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getC26_1()
     {
-        return this.c26_1;
+        return c26_1;
     }
 
     public void setC26_1(java.lang.Double v)
@@ -879,7 +879,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getExpiring_c27_1()
     {
-        return this.expiring_c27_1;
+        return expiring_c27_1;
     }
 
     public void setExpiring_c27_1(java.lang.String v)
@@ -889,7 +889,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getPrice_per_issue_c27_1()
     {
-        return this.price_per_issue_c27_1;
+        return price_per_issue_c27_1;
     }
 
     public void setPrice_per_issue_c27_1(java.lang.String v)
@@ -899,7 +899,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getE27_c27_d27_c27_1()
     {
-        return this.e27_c27_d27_c27_1;
+        return e27_c27_d27_c27_1;
     }
 
     public void setE27_c27_d27_c27_1(java.lang.Double v)
@@ -909,7 +909,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getExpiring_e28_c28_d28()
     {
-        return this.expiring_e28_c28_d28;
+        return expiring_e28_c28_d28;
     }
 
     public void setExpiring_e28_c28_d28(java.lang.String v)
@@ -919,7 +919,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getPrice_per_issue_e28_c28_d28()
     {
-        return this.price_per_issue_e28_c28_d28;
+        return price_per_issue_e28_c28_d28;
     }
 
     public void setPrice_per_issue_e28_c28_d28(java.lang.String v)
@@ -929,7 +929,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getH27_c27_g27_e28_c28_d28()
     {
-        return this.h27_c27_g27_e28_c28_d28;
+        return h27_c27_g27_e28_c28_d28;
     }
 
     public void setH27_c27_g27_e28_c28_d28(java.lang.Double v)
@@ -939,7 +939,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getC27_1()
     {
-        return this.c27_1;
+        return c27_1;
     }
 
     public void setC27_1(java.lang.Double v)
@@ -949,7 +949,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getExpiring_c28_1()
     {
-        return this.expiring_c28_1;
+        return expiring_c28_1;
     }
 
     public void setExpiring_c28_1(java.lang.String v)
@@ -959,7 +959,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getPrice_per_issue_c28_1()
     {
-        return this.price_per_issue_c28_1;
+        return price_per_issue_c28_1;
     }
 
     public void setPrice_per_issue_c28_1(java.lang.String v)
@@ -969,7 +969,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getE28_c28_d28_c28_1()
     {
-        return this.e28_c28_d28_c28_1;
+        return e28_c28_d28_c28_1;
     }
 
     public void setE28_c28_d28_c28_1(java.lang.Double v)
@@ -979,7 +979,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getExpiring_e29_c29_d29()
     {
-        return this.expiring_e29_c29_d29;
+        return expiring_e29_c29_d29;
     }
 
     public void setExpiring_e29_c29_d29(java.lang.String v)
@@ -989,7 +989,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getPrice_per_issue_e29_c29_d29()
     {
-        return this.price_per_issue_e29_c29_d29;
+        return price_per_issue_e29_c29_d29;
     }
 
     public void setPrice_per_issue_e29_c29_d29(java.lang.String v)
@@ -999,7 +999,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getH28_c28_g28_e29_c29_d29()
     {
-        return this.h28_c28_g28_e29_c29_d29;
+        return h28_c28_g28_e29_c29_d29;
     }
 
     public void setH28_c28_g28_e29_c29_d29(java.lang.Double v)
@@ -1009,7 +1009,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getC28_1()
     {
-        return this.c28_1;
+        return c28_1;
     }
 
     public void setC28_1(java.lang.Double v)
@@ -1019,7 +1019,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getExpiring_c29_1()
     {
-        return this.expiring_c29_1;
+        return expiring_c29_1;
     }
 
     public void setExpiring_c29_1(java.lang.String v)
@@ -1029,7 +1029,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getPrice_per_issue_c29_1()
     {
-        return this.price_per_issue_c29_1;
+        return price_per_issue_c29_1;
     }
 
     public void setPrice_per_issue_c29_1(java.lang.String v)
@@ -1039,7 +1039,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getE29_c29_d29_c29_1()
     {
-        return this.e29_c29_d29_c29_1;
+        return e29_c29_d29_c29_1;
     }
 
     public void setE29_c29_d29_c29_1(java.lang.Double v)
@@ -1049,7 +1049,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getExpiring_e30_c30_d30()
     {
-        return this.expiring_e30_c30_d30;
+        return expiring_e30_c30_d30;
     }
 
     public void setExpiring_e30_c30_d30(java.lang.String v)
@@ -1059,7 +1059,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getPrice_per_issue_e30_c30_d30()
     {
-        return this.price_per_issue_e30_c30_d30;
+        return price_per_issue_e30_c30_d30;
     }
 
     public void setPrice_per_issue_e30_c30_d30(java.lang.String v)
@@ -1069,7 +1069,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getH29_c29_g29_e30_c30_d30()
     {
-        return this.h29_c29_g29_e30_c30_d30;
+        return h29_c29_g29_e30_c30_d30;
     }
 
     public void setH29_c29_g29_e30_c30_d30(java.lang.Double v)
@@ -1079,7 +1079,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getC29_1()
     {
-        return this.c29_1;
+        return c29_1;
     }
 
     public void setC29_1(java.lang.Double v)
@@ -1089,7 +1089,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getExpiring_c30_1()
     {
-        return this.expiring_c30_1;
+        return expiring_c30_1;
     }
 
     public void setExpiring_c30_1(java.lang.String v)
@@ -1099,7 +1099,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getPrice_per_issue_c30_1()
     {
-        return this.price_per_issue_c30_1;
+        return price_per_issue_c30_1;
     }
 
     public void setPrice_per_issue_c30_1(java.lang.String v)
@@ -1109,7 +1109,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getE30_c30_d30_c30_1()
     {
-        return this.e30_c30_d30_c30_1;
+        return e30_c30_d30_c30_1;
     }
 
     public void setE30_c30_d30_c30_1(java.lang.Double v)
@@ -1119,7 +1119,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getExpiring_e31_c31_d31()
     {
-        return this.expiring_e31_c31_d31;
+        return expiring_e31_c31_d31;
     }
 
     public void setExpiring_e31_c31_d31(java.lang.String v)
@@ -1129,7 +1129,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getPrice_per_issue_e31_c31_d31()
     {
-        return this.price_per_issue_e31_c31_d31;
+        return price_per_issue_e31_c31_d31;
     }
 
     public void setPrice_per_issue_e31_c31_d31(java.lang.String v)
@@ -1139,7 +1139,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getH30_c30_g30_e31_c31_d31()
     {
-        return this.h30_c30_g30_e31_c31_d31;
+        return h30_c30_g30_e31_c31_d31;
     }
 
     public void setH30_c30_g30_e31_c31_d31(java.lang.Double v)
@@ -1149,7 +1149,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getC30_1()
     {
-        return this.c30_1;
+        return c30_1;
     }
 
     public void setC30_1(java.lang.Double v)
@@ -1159,7 +1159,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getExpiring_c31_1()
     {
-        return this.expiring_c31_1;
+        return expiring_c31_1;
     }
 
     public void setExpiring_c31_1(java.lang.String v)
@@ -1169,7 +1169,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getPrice_per_issue_c31_1()
     {
-        return this.price_per_issue_c31_1;
+        return price_per_issue_c31_1;
     }
 
     public void setPrice_per_issue_c31_1(java.lang.String v)
@@ -1179,7 +1179,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getE31_c31_d31_c31_1()
     {
-        return this.e31_c31_d31_c31_1;
+        return e31_c31_d31_c31_1;
     }
 
     public void setE31_c31_d31_c31_1(java.lang.Double v)
@@ -1189,7 +1189,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getExpiring_e32_c32_d32()
     {
-        return this.expiring_e32_c32_d32;
+        return expiring_e32_c32_d32;
     }
 
     public void setExpiring_e32_c32_d32(java.lang.String v)
@@ -1199,7 +1199,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getPrice_per_issue_e32_c32_d32()
     {
-        return this.price_per_issue_e32_c32_d32;
+        return price_per_issue_e32_c32_d32;
     }
 
     public void setPrice_per_issue_e32_c32_d32(java.lang.String v)
@@ -1209,7 +1209,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getH31_c31_g31_e32_c32_d32()
     {
-        return this.h31_c31_g31_e32_c32_d32;
+        return h31_c31_g31_e32_c32_d32;
     }
 
     public void setH31_c31_g31_e32_c32_d32(java.lang.Double v)
@@ -1219,7 +1219,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getC31_1()
     {
-        return this.c31_1;
+        return c31_1;
     }
 
     public void setC31_1(java.lang.Double v)
@@ -1229,7 +1229,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getExpiring_c32_1()
     {
-        return this.expiring_c32_1;
+        return expiring_c32_1;
     }
 
     public void setExpiring_c32_1(java.lang.String v)
@@ -1239,7 +1239,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getPrice_per_issue_c32_1()
     {
-        return this.price_per_issue_c32_1;
+        return price_per_issue_c32_1;
     }
 
     public void setPrice_per_issue_c32_1(java.lang.String v)
@@ -1249,7 +1249,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.Double getE32_c32_d32_c32_1()
     {
-        return this.e32_c32_d32_c32_1;
+        return e32_c32_d32_c32_1;
     }
 
     public void setE32_c32_d32_c32_1(java.lang.Double v)
@@ -1259,7 +1259,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getExpiring_e33_c33_d33()
     {
-        return this.expiring_e33_c33_d33;
+        return expiring_e33_c33_d33;
     }
 
     public void setExpiring_e33_c33_d33(java.lang.String v)
@@ -1269,7 +1269,7 @@ public class NEWSLETTER_15Bean
 
     public java.lang.String getPrice_per_issue_e33_c33_d33()
     {
-        return this.price_per_issue_e33_c33_d33;
+        return price_per_issue_e33_c33_d33;
     }
 
     public void setPrice_per_issue_e33_c33_d33(java.lang.String v)

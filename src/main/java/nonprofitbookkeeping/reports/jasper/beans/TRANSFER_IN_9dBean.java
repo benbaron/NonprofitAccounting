@@ -188,7 +188,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.Double getTransfer_in_9d_r2c3()
     {
-        return this.transfer_in_9d_r2c3;
+        return transfer_in_9d_r2c3;
     }
 
     public void setTransfer_in_9d_r2c3(java.lang.Double v)
@@ -198,7 +198,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.Double getContents_b59()
     {
-        return this.contents_b59;
+        return contents_b59;
     }
 
     public void setContents_b59(java.lang.Double v)
@@ -208,7 +208,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.Double getContents_e_3()
     {
-        return this.contents_e_3;
+        return contents_e_3;
     }
 
     public void setContents_e_3(java.lang.Double v)
@@ -218,7 +218,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.Double getContents_e_4()
     {
-        return this.contents_e_4;
+        return contents_e_4;
     }
 
     public void setContents_e_4(java.lang.Double v)
@@ -228,7 +228,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getWithin_the_kingdom()
     {
-        return this.within_the_kingdom;
+        return within_the_kingdom;
     }
 
     public void setWithin_the_kingdom(java.lang.String v)
@@ -238,7 +238,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck()
     {
-        return this.check;
+        return check;
     }
 
     public void setCheck(java.lang.String v)
@@ -248,7 +248,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_date()
     {
-        return this.check_date;
+        return check_date;
     }
 
     public void setCheck_date(java.lang.String v)
@@ -258,7 +258,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getAmount()
     {
-        return this.amount;
+        return amount;
     }
 
     public void setAmount(java.lang.String v)
@@ -268,7 +268,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getWithin_the_kingdom_2()
     {
-        return this.within_the_kingdom_2;
+        return within_the_kingdom_2;
     }
 
     public void setWithin_the_kingdom_2(java.lang.String v)
@@ -278,7 +278,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_2()
     {
-        return this.check_2;
+        return check_2;
     }
 
     public void setCheck_2(java.lang.String v)
@@ -288,7 +288,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_date_2()
     {
-        return this.check_date_2;
+        return check_date_2;
     }
 
     public void setCheck_date_2(java.lang.String v)
@@ -298,7 +298,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getAmount_2()
     {
-        return this.amount_2;
+        return amount_2;
     }
 
     public void setAmount_2(java.lang.String v)
@@ -308,7 +308,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getWithin_the_kingdom_3()
     {
-        return this.within_the_kingdom_3;
+        return within_the_kingdom_3;
     }
 
     public void setWithin_the_kingdom_3(java.lang.String v)
@@ -318,7 +318,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_3()
     {
-        return this.check_3;
+        return check_3;
     }
 
     public void setCheck_3(java.lang.String v)
@@ -328,7 +328,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_date_3()
     {
-        return this.check_date_3;
+        return check_date_3;
     }
 
     public void setCheck_date_3(java.lang.String v)
@@ -338,7 +338,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getAmount_3()
     {
-        return this.amount_3;
+        return amount_3;
     }
 
     public void setAmount_3(java.lang.String v)
@@ -348,7 +348,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getWithin_the_kingdom_4()
     {
-        return this.within_the_kingdom_4;
+        return within_the_kingdom_4;
     }
 
     public void setWithin_the_kingdom_4(java.lang.String v)
@@ -358,7 +358,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_4()
     {
-        return this.check_4;
+        return check_4;
     }
 
     public void setCheck_4(java.lang.String v)
@@ -368,7 +368,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_date_4()
     {
-        return this.check_date_4;
+        return check_date_4;
     }
 
     public void setCheck_date_4(java.lang.String v)
@@ -378,7 +378,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getAmount_4()
     {
-        return this.amount_4;
+        return amount_4;
     }
 
     public void setAmount_4(java.lang.String v)
@@ -388,7 +388,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getWithin_the_kingdom_5()
     {
-        return this.within_the_kingdom_5;
+        return within_the_kingdom_5;
     }
 
     public void setWithin_the_kingdom_5(java.lang.String v)
@@ -398,7 +398,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_5()
     {
-        return this.check_5;
+        return check_5;
     }
 
     public void setCheck_5(java.lang.String v)
@@ -408,7 +408,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_date_5()
     {
-        return this.check_date_5;
+        return check_date_5;
     }
 
     public void setCheck_date_5(java.lang.String v)
@@ -418,7 +418,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getAmount_5()
     {
-        return this.amount_5;
+        return amount_5;
     }
 
     public void setAmount_5(java.lang.String v)
@@ -428,7 +428,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getWithin_the_kingdom_6()
     {
-        return this.within_the_kingdom_6;
+        return within_the_kingdom_6;
     }
 
     public void setWithin_the_kingdom_6(java.lang.String v)
@@ -438,7 +438,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_6()
     {
-        return this.check_6;
+        return check_6;
     }
 
     public void setCheck_6(java.lang.String v)
@@ -448,7 +448,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_date_6()
     {
-        return this.check_date_6;
+        return check_date_6;
     }
 
     public void setCheck_date_6(java.lang.String v)
@@ -458,7 +458,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getAmount_6()
     {
-        return this.amount_6;
+        return amount_6;
     }
 
     public void setAmount_6(java.lang.String v)
@@ -468,7 +468,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getWithin_the_kingdom_7()
     {
-        return this.within_the_kingdom_7;
+        return within_the_kingdom_7;
     }
 
     public void setWithin_the_kingdom_7(java.lang.String v)
@@ -478,7 +478,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_7()
     {
-        return this.check_7;
+        return check_7;
     }
 
     public void setCheck_7(java.lang.String v)
@@ -488,7 +488,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_date_7()
     {
-        return this.check_date_7;
+        return check_date_7;
     }
 
     public void setCheck_date_7(java.lang.String v)
@@ -498,7 +498,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getAmount_7()
     {
-        return this.amount_7;
+        return amount_7;
     }
 
     public void setAmount_7(java.lang.String v)
@@ -508,7 +508,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getWithin_the_kingdom_8()
     {
-        return this.within_the_kingdom_8;
+        return within_the_kingdom_8;
     }
 
     public void setWithin_the_kingdom_8(java.lang.String v)
@@ -518,7 +518,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_8()
     {
-        return this.check_8;
+        return check_8;
     }
 
     public void setCheck_8(java.lang.String v)
@@ -528,7 +528,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_date_8()
     {
-        return this.check_date_8;
+        return check_date_8;
     }
 
     public void setCheck_date_8(java.lang.String v)
@@ -538,7 +538,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getAmount_8()
     {
-        return this.amount_8;
+        return amount_8;
     }
 
     public void setAmount_8(java.lang.String v)
@@ -548,7 +548,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getWithin_the_kingdom_9()
     {
-        return this.within_the_kingdom_9;
+        return within_the_kingdom_9;
     }
 
     public void setWithin_the_kingdom_9(java.lang.String v)
@@ -558,7 +558,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_9()
     {
-        return this.check_9;
+        return check_9;
     }
 
     public void setCheck_9(java.lang.String v)
@@ -568,7 +568,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_date_9()
     {
-        return this.check_date_9;
+        return check_date_9;
     }
 
     public void setCheck_date_9(java.lang.String v)
@@ -578,7 +578,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getAmount_9()
     {
-        return this.amount_9;
+        return amount_9;
     }
 
     public void setAmount_9(java.lang.String v)
@@ -588,7 +588,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getWithin_the_kingdom_10()
     {
-        return this.within_the_kingdom_10;
+        return within_the_kingdom_10;
     }
 
     public void setWithin_the_kingdom_10(java.lang.String v)
@@ -598,7 +598,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_10()
     {
-        return this.check_10;
+        return check_10;
     }
 
     public void setCheck_10(java.lang.String v)
@@ -608,7 +608,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_date_10()
     {
-        return this.check_date_10;
+        return check_date_10;
     }
 
     public void setCheck_date_10(java.lang.String v)
@@ -618,7 +618,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getAmount_10()
     {
-        return this.amount_10;
+        return amount_10;
     }
 
     public void setAmount_10(java.lang.String v)
@@ -628,7 +628,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getWithin_the_kingdom_11()
     {
-        return this.within_the_kingdom_11;
+        return within_the_kingdom_11;
     }
 
     public void setWithin_the_kingdom_11(java.lang.String v)
@@ -638,7 +638,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_11()
     {
-        return this.check_11;
+        return check_11;
     }
 
     public void setCheck_11(java.lang.String v)
@@ -648,7 +648,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_date_11()
     {
-        return this.check_date_11;
+        return check_date_11;
     }
 
     public void setCheck_date_11(java.lang.String v)
@@ -658,7 +658,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getAmount_11()
     {
-        return this.amount_11;
+        return amount_11;
     }
 
     public void setAmount_11(java.lang.String v)
@@ -668,7 +668,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getWithin_the_kingdom_12()
     {
-        return this.within_the_kingdom_12;
+        return within_the_kingdom_12;
     }
 
     public void setWithin_the_kingdom_12(java.lang.String v)
@@ -678,7 +678,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_12()
     {
-        return this.check_12;
+        return check_12;
     }
 
     public void setCheck_12(java.lang.String v)
@@ -688,7 +688,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_date_12()
     {
-        return this.check_date_12;
+        return check_date_12;
     }
 
     public void setCheck_date_12(java.lang.String v)
@@ -698,7 +698,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getAmount_12()
     {
-        return this.amount_12;
+        return amount_12;
     }
 
     public void setAmount_12(java.lang.String v)
@@ -708,7 +708,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getWithin_the_kingdom_13()
     {
-        return this.within_the_kingdom_13;
+        return within_the_kingdom_13;
     }
 
     public void setWithin_the_kingdom_13(java.lang.String v)
@@ -718,7 +718,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_13()
     {
-        return this.check_13;
+        return check_13;
     }
 
     public void setCheck_13(java.lang.String v)
@@ -728,7 +728,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_date_13()
     {
-        return this.check_date_13;
+        return check_date_13;
     }
 
     public void setCheck_date_13(java.lang.String v)
@@ -738,7 +738,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getAmount_13()
     {
-        return this.amount_13;
+        return amount_13;
     }
 
     public void setAmount_13(java.lang.String v)
@@ -748,7 +748,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getWithin_the_kingdom_14()
     {
-        return this.within_the_kingdom_14;
+        return within_the_kingdom_14;
     }
 
     public void setWithin_the_kingdom_14(java.lang.String v)
@@ -758,7 +758,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_14()
     {
-        return this.check_14;
+        return check_14;
     }
 
     public void setCheck_14(java.lang.String v)
@@ -768,7 +768,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_date_14()
     {
-        return this.check_date_14;
+        return check_date_14;
     }
 
     public void setCheck_date_14(java.lang.String v)
@@ -778,7 +778,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getAmount_14()
     {
-        return this.amount_14;
+        return amount_14;
     }
 
     public void setAmount_14(java.lang.String v)
@@ -788,7 +788,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getWithin_the_kingdom_15()
     {
-        return this.within_the_kingdom_15;
+        return within_the_kingdom_15;
     }
 
     public void setWithin_the_kingdom_15(java.lang.String v)
@@ -798,7 +798,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_15()
     {
-        return this.check_15;
+        return check_15;
     }
 
     public void setCheck_15(java.lang.String v)
@@ -808,7 +808,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_date_15()
     {
-        return this.check_date_15;
+        return check_date_15;
     }
 
     public void setCheck_date_15(java.lang.String v)
@@ -818,7 +818,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getAmount_15()
     {
-        return this.amount_15;
+        return amount_15;
     }
 
     public void setAmount_15(java.lang.String v)
@@ -828,7 +828,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getWithin_the_kingdom_16()
     {
-        return this.within_the_kingdom_16;
+        return within_the_kingdom_16;
     }
 
     public void setWithin_the_kingdom_16(java.lang.String v)
@@ -838,7 +838,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_16()
     {
-        return this.check_16;
+        return check_16;
     }
 
     public void setCheck_16(java.lang.String v)
@@ -848,7 +848,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_date_16()
     {
-        return this.check_date_16;
+        return check_date_16;
     }
 
     public void setCheck_date_16(java.lang.String v)
@@ -858,7 +858,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getAmount_16()
     {
-        return this.amount_16;
+        return amount_16;
     }
 
     public void setAmount_16(java.lang.String v)
@@ -868,7 +868,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getWithin_the_kingdom_17()
     {
-        return this.within_the_kingdom_17;
+        return within_the_kingdom_17;
     }
 
     public void setWithin_the_kingdom_17(java.lang.String v)
@@ -878,7 +878,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_17()
     {
-        return this.check_17;
+        return check_17;
     }
 
     public void setCheck_17(java.lang.String v)
@@ -888,7 +888,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_date_17()
     {
-        return this.check_date_17;
+        return check_date_17;
     }
 
     public void setCheck_date_17(java.lang.String v)
@@ -898,7 +898,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getAmount_17()
     {
-        return this.amount_17;
+        return amount_17;
     }
 
     public void setAmount_17(java.lang.String v)
@@ -908,7 +908,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getWithin_the_kingdom_18()
     {
-        return this.within_the_kingdom_18;
+        return within_the_kingdom_18;
     }
 
     public void setWithin_the_kingdom_18(java.lang.String v)
@@ -918,7 +918,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_18()
     {
-        return this.check_18;
+        return check_18;
     }
 
     public void setCheck_18(java.lang.String v)
@@ -928,7 +928,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_date_18()
     {
-        return this.check_date_18;
+        return check_date_18;
     }
 
     public void setCheck_date_18(java.lang.String v)
@@ -938,7 +938,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getAmount_18()
     {
-        return this.amount_18;
+        return amount_18;
     }
 
     public void setAmount_18(java.lang.String v)
@@ -948,7 +948,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getWithin_the_kingdom_19()
     {
-        return this.within_the_kingdom_19;
+        return within_the_kingdom_19;
     }
 
     public void setWithin_the_kingdom_19(java.lang.String v)
@@ -958,7 +958,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_19()
     {
-        return this.check_19;
+        return check_19;
     }
 
     public void setCheck_19(java.lang.String v)
@@ -968,7 +968,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_date_19()
     {
-        return this.check_date_19;
+        return check_date_19;
     }
 
     public void setCheck_date_19(java.lang.String v)
@@ -978,7 +978,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getAmount_19()
     {
-        return this.amount_19;
+        return amount_19;
     }
 
     public void setAmount_19(java.lang.String v)
@@ -988,7 +988,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getWithin_the_kingdom_20()
     {
-        return this.within_the_kingdom_20;
+        return within_the_kingdom_20;
     }
 
     public void setWithin_the_kingdom_20(java.lang.String v)
@@ -998,7 +998,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_20()
     {
-        return this.check_20;
+        return check_20;
     }
 
     public void setCheck_20(java.lang.String v)
@@ -1008,7 +1008,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_date_20()
     {
-        return this.check_date_20;
+        return check_date_20;
     }
 
     public void setCheck_date_20(java.lang.String v)
@@ -1018,7 +1018,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getAmount_20()
     {
-        return this.amount_20;
+        return amount_20;
     }
 
     public void setAmount_20(java.lang.String v)
@@ -1028,7 +1028,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getWithin_the_kingdom_21()
     {
-        return this.within_the_kingdom_21;
+        return within_the_kingdom_21;
     }
 
     public void setWithin_the_kingdom_21(java.lang.String v)
@@ -1038,7 +1038,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_21()
     {
-        return this.check_21;
+        return check_21;
     }
 
     public void setCheck_21(java.lang.String v)
@@ -1048,7 +1048,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_date_21()
     {
-        return this.check_date_21;
+        return check_date_21;
     }
 
     public void setCheck_date_21(java.lang.String v)
@@ -1058,7 +1058,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getAmount_21()
     {
-        return this.amount_21;
+        return amount_21;
     }
 
     public void setAmount_21(java.lang.String v)
@@ -1068,7 +1068,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getWithin_the_kingdom_22()
     {
-        return this.within_the_kingdom_22;
+        return within_the_kingdom_22;
     }
 
     public void setWithin_the_kingdom_22(java.lang.String v)
@@ -1078,7 +1078,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_22()
     {
-        return this.check_22;
+        return check_22;
     }
 
     public void setCheck_22(java.lang.String v)
@@ -1088,7 +1088,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_date_22()
     {
-        return this.check_date_22;
+        return check_date_22;
     }
 
     public void setCheck_date_22(java.lang.String v)
@@ -1098,7 +1098,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getAmount_22()
     {
-        return this.amount_22;
+        return amount_22;
     }
 
     public void setAmount_22(java.lang.String v)
@@ -1108,7 +1108,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getWithin_the_kingdom_23()
     {
-        return this.within_the_kingdom_23;
+        return within_the_kingdom_23;
     }
 
     public void setWithin_the_kingdom_23(java.lang.String v)
@@ -1118,7 +1118,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_23()
     {
-        return this.check_23;
+        return check_23;
     }
 
     public void setCheck_23(java.lang.String v)
@@ -1128,7 +1128,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_date_23()
     {
-        return this.check_date_23;
+        return check_date_23;
     }
 
     public void setCheck_date_23(java.lang.String v)
@@ -1138,7 +1138,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getAmount_23()
     {
-        return this.amount_23;
+        return amount_23;
     }
 
     public void setAmount_23(java.lang.String v)
@@ -1148,7 +1148,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getWithin_the_kingdom_24()
     {
-        return this.within_the_kingdom_24;
+        return within_the_kingdom_24;
     }
 
     public void setWithin_the_kingdom_24(java.lang.String v)
@@ -1158,7 +1158,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_24()
     {
-        return this.check_24;
+        return check_24;
     }
 
     public void setCheck_24(java.lang.String v)
@@ -1168,7 +1168,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getCheck_date_24()
     {
-        return this.check_date_24;
+        return check_date_24;
     }
 
     public void setCheck_date_24(java.lang.String v)
@@ -1178,7 +1178,7 @@ public class TRANSFER_IN_9dBean
 
     public java.lang.String getAmount_24()
     {
-        return this.amount_24;
+        return amount_24;
     }
 
     public void setAmount_24(java.lang.String v)

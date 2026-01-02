@@ -143,7 +143,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.Double getExpense_dtl_12a_r2c3()
     {
-        return this.expense_dtl_12a_r2c3;
+        return expense_dtl_12a_r2c3;
     }
 
     public void setExpense_dtl_12a_r2c3(java.lang.Double v)
@@ -153,7 +153,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.Double getContents_b59()
     {
-        return this.contents_b59;
+        return contents_b59;
     }
 
     public void setContents_b59(java.lang.Double v)
@@ -163,7 +163,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.Double getContents_e_3()
     {
-        return this.contents_e_3;
+        return contents_e_3;
     }
 
     public void setContents_e_3(java.lang.Double v)
@@ -173,7 +173,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.Double getContents_e_4()
     {
-        return this.contents_e_4;
+        return contents_e_4;
     }
 
     public void setContents_e_4(java.lang.Double v)
@@ -183,7 +183,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOrganization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published()
     {
-        return this.organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published;
+        return organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published;
     }
 
     public void setOrganization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published(java.lang.String v)
@@ -193,7 +193,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getExpense_dtl_12a_r12c5()
     {
-        return this.expense_dtl_12a_r12c5;
+        return expense_dtl_12a_r12c5;
     }
 
     public void setExpense_dtl_12a_r12c5(java.lang.String v)
@@ -203,7 +203,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getAmount()
     {
-        return this.amount;
+        return amount;
     }
 
     public void setAmount(java.lang.String v)
@@ -213,7 +213,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOrganization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_2()
     {
-        return this.organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_2;
+        return organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_2;
     }
 
     public void setOrganization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_2(java.lang.String v)
@@ -223,7 +223,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getExpense_dtl_12a_r13c5()
     {
-        return this.expense_dtl_12a_r13c5;
+        return expense_dtl_12a_r13c5;
     }
 
     public void setExpense_dtl_12a_r13c5(java.lang.String v)
@@ -233,7 +233,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getAmount_2()
     {
-        return this.amount_2;
+        return amount_2;
     }
 
     public void setAmount_2(java.lang.String v)
@@ -243,7 +243,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOrganization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_3()
     {
-        return this.organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_3;
+        return organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_3;
     }
 
     public void setOrganization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_3(java.lang.String v)
@@ -253,7 +253,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getExpense_dtl_12a_r14c5()
     {
-        return this.expense_dtl_12a_r14c5;
+        return expense_dtl_12a_r14c5;
     }
 
     public void setExpense_dtl_12a_r14c5(java.lang.String v)
@@ -263,7 +263,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getAmount_3()
     {
-        return this.amount_3;
+        return amount_3;
     }
 
     public void setAmount_3(java.lang.String v)
@@ -273,7 +273,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOrganization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_4()
     {
-        return this.organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_4;
+        return organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_4;
     }
 
     public void setOrganization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_4(java.lang.String v)
@@ -283,7 +283,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getExpense_dtl_12a_r15c5()
     {
-        return this.expense_dtl_12a_r15c5;
+        return expense_dtl_12a_r15c5;
     }
 
     public void setExpense_dtl_12a_r15c5(java.lang.String v)
@@ -293,7 +293,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getAmount_4()
     {
-        return this.amount_4;
+        return amount_4;
     }
 
     public void setAmount_4(java.lang.String v)
@@ -303,7 +303,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOrganization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_5()
     {
-        return this.organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_5;
+        return organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_5;
     }
 
     public void setOrganization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_5(java.lang.String v)
@@ -313,7 +313,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getExpense_dtl_12a_r16c5()
     {
-        return this.expense_dtl_12a_r16c5;
+        return expense_dtl_12a_r16c5;
     }
 
     public void setExpense_dtl_12a_r16c5(java.lang.String v)
@@ -323,7 +323,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getAmount_5()
     {
-        return this.amount_5;
+        return amount_5;
     }
 
     public void setAmount_5(java.lang.String v)
@@ -333,7 +333,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOrganization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_6()
     {
-        return this.organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_6;
+        return organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_6;
     }
 
     public void setOrganization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_6(java.lang.String v)
@@ -343,7 +343,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getExpense_dtl_12a_r17c5()
     {
-        return this.expense_dtl_12a_r17c5;
+        return expense_dtl_12a_r17c5;
     }
 
     public void setExpense_dtl_12a_r17c5(java.lang.String v)
@@ -353,7 +353,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getAmount_6()
     {
-        return this.amount_6;
+        return amount_6;
     }
 
     public void setAmount_6(java.lang.String v)
@@ -363,7 +363,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOrganization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_7()
     {
-        return this.organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_7;
+        return organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_7;
     }
 
     public void setOrganization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_7(java.lang.String v)
@@ -373,7 +373,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getExpense_dtl_12a_r18c5()
     {
-        return this.expense_dtl_12a_r18c5;
+        return expense_dtl_12a_r18c5;
     }
 
     public void setExpense_dtl_12a_r18c5(java.lang.String v)
@@ -383,7 +383,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getAmount_7()
     {
-        return this.amount_7;
+        return amount_7;
     }
 
     public void setAmount_7(java.lang.String v)
@@ -393,7 +393,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOrganization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_8()
     {
-        return this.organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_8;
+        return organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_8;
     }
 
     public void setOrganization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_8(java.lang.String v)
@@ -403,7 +403,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getExpense_dtl_12a_r19c5()
     {
-        return this.expense_dtl_12a_r19c5;
+        return expense_dtl_12a_r19c5;
     }
 
     public void setExpense_dtl_12a_r19c5(java.lang.String v)
@@ -413,7 +413,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getAmount_8()
     {
-        return this.amount_8;
+        return amount_8;
     }
 
     public void setAmount_8(java.lang.String v)
@@ -423,7 +423,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOrganization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_9()
     {
-        return this.organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_9;
+        return organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_9;
     }
 
     public void setOrganization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_9(java.lang.String v)
@@ -433,7 +433,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getExpense_dtl_12a_r20c5()
     {
-        return this.expense_dtl_12a_r20c5;
+        return expense_dtl_12a_r20c5;
     }
 
     public void setExpense_dtl_12a_r20c5(java.lang.String v)
@@ -443,7 +443,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getAmount_9()
     {
-        return this.amount_9;
+        return amount_9;
     }
 
     public void setAmount_9(java.lang.String v)
@@ -453,7 +453,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOrganization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_10()
     {
-        return this.organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_10;
+        return organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_10;
     }
 
     public void setOrganization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_10(java.lang.String v)
@@ -463,7 +463,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getExpense_dtl_12a_r21c5()
     {
-        return this.expense_dtl_12a_r21c5;
+        return expense_dtl_12a_r21c5;
     }
 
     public void setExpense_dtl_12a_r21c5(java.lang.String v)
@@ -473,7 +473,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getAmount_10()
     {
-        return this.amount_10;
+        return amount_10;
     }
 
     public void setAmount_10(java.lang.String v)
@@ -483,7 +483,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOrganization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_11()
     {
-        return this.organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_11;
+        return organization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_11;
     }
 
     public void setOrganization_or_periodical_not_a_kingdom_newsletter_and_date_ad_was_published_11(java.lang.String v)
@@ -493,7 +493,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getExpense_dtl_12a_r22c5()
     {
-        return this.expense_dtl_12a_r22c5;
+        return expense_dtl_12a_r22c5;
     }
 
     public void setExpense_dtl_12a_r22c5(java.lang.String v)
@@ -503,7 +503,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getAmount_11()
     {
-        return this.amount_11;
+        return amount_11;
     }
 
     public void setAmount_11(java.lang.String v)
@@ -513,7 +513,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.Double getAmount_show_total_on_pg_4_line_12()
     {
-        return this.amount_show_total_on_pg_4_line_12;
+        return amount_show_total_on_pg_4_line_12;
     }
 
     public void setAmount_show_total_on_pg_4_line_12(java.lang.Double v)
@@ -523,7 +523,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOa_ar_or_fr()
     {
-        return this.oa_ar_or_fr;
+        return oa_ar_or_fr;
     }
 
     public void setOa_ar_or_fr(java.lang.String v)
@@ -533,7 +533,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOrganization_or_person()
     {
-        return this.organization_or_person;
+        return organization_or_person;
     }
 
     public void setOrganization_or_person(java.lang.String v)
@@ -543,7 +543,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getReason()
     {
-        return this.reason;
+        return reason;
     }
 
     public void setReason(java.lang.String v)
@@ -553,7 +553,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getAmount_12()
     {
-        return this.amount_12;
+        return amount_12;
     }
 
     public void setAmount_12(java.lang.String v)
@@ -563,7 +563,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOa_ar_or_fr_2()
     {
-        return this.oa_ar_or_fr_2;
+        return oa_ar_or_fr_2;
     }
 
     public void setOa_ar_or_fr_2(java.lang.String v)
@@ -573,7 +573,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOrganization_or_person_2()
     {
-        return this.organization_or_person_2;
+        return organization_or_person_2;
     }
 
     public void setOrganization_or_person_2(java.lang.String v)
@@ -583,7 +583,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getReason_2()
     {
-        return this.reason_2;
+        return reason_2;
     }
 
     public void setReason_2(java.lang.String v)
@@ -593,7 +593,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getAmount_13()
     {
-        return this.amount_13;
+        return amount_13;
     }
 
     public void setAmount_13(java.lang.String v)
@@ -603,7 +603,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOa_ar_or_fr_3()
     {
-        return this.oa_ar_or_fr_3;
+        return oa_ar_or_fr_3;
     }
 
     public void setOa_ar_or_fr_3(java.lang.String v)
@@ -613,7 +613,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOrganization_or_person_3()
     {
-        return this.organization_or_person_3;
+        return organization_or_person_3;
     }
 
     public void setOrganization_or_person_3(java.lang.String v)
@@ -623,7 +623,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getReason_3()
     {
-        return this.reason_3;
+        return reason_3;
     }
 
     public void setReason_3(java.lang.String v)
@@ -633,7 +633,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getAmount_14()
     {
-        return this.amount_14;
+        return amount_14;
     }
 
     public void setAmount_14(java.lang.String v)
@@ -643,7 +643,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOa_ar_or_fr_4()
     {
-        return this.oa_ar_or_fr_4;
+        return oa_ar_or_fr_4;
     }
 
     public void setOa_ar_or_fr_4(java.lang.String v)
@@ -653,7 +653,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOrganization_or_person_4()
     {
-        return this.organization_or_person_4;
+        return organization_or_person_4;
     }
 
     public void setOrganization_or_person_4(java.lang.String v)
@@ -663,7 +663,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getReason_4()
     {
-        return this.reason_4;
+        return reason_4;
     }
 
     public void setReason_4(java.lang.String v)
@@ -673,7 +673,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getAmount_15()
     {
-        return this.amount_15;
+        return amount_15;
     }
 
     public void setAmount_15(java.lang.String v)
@@ -683,7 +683,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOa_ar_or_fr_5()
     {
-        return this.oa_ar_or_fr_5;
+        return oa_ar_or_fr_5;
     }
 
     public void setOa_ar_or_fr_5(java.lang.String v)
@@ -693,7 +693,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOrganization_or_person_5()
     {
-        return this.organization_or_person_5;
+        return organization_or_person_5;
     }
 
     public void setOrganization_or_person_5(java.lang.String v)
@@ -703,7 +703,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getReason_5()
     {
-        return this.reason_5;
+        return reason_5;
     }
 
     public void setReason_5(java.lang.String v)
@@ -713,7 +713,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getAmount_16()
     {
-        return this.amount_16;
+        return amount_16;
     }
 
     public void setAmount_16(java.lang.String v)
@@ -723,7 +723,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOa_ar_or_fr_6()
     {
-        return this.oa_ar_or_fr_6;
+        return oa_ar_or_fr_6;
     }
 
     public void setOa_ar_or_fr_6(java.lang.String v)
@@ -733,7 +733,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOrganization_or_person_6()
     {
-        return this.organization_or_person_6;
+        return organization_or_person_6;
     }
 
     public void setOrganization_or_person_6(java.lang.String v)
@@ -743,7 +743,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getReason_6()
     {
-        return this.reason_6;
+        return reason_6;
     }
 
     public void setReason_6(java.lang.String v)
@@ -753,7 +753,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getAmount_17()
     {
-        return this.amount_17;
+        return amount_17;
     }
 
     public void setAmount_17(java.lang.String v)
@@ -763,7 +763,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOa_ar_or_fr_7()
     {
-        return this.oa_ar_or_fr_7;
+        return oa_ar_or_fr_7;
     }
 
     public void setOa_ar_or_fr_7(java.lang.String v)
@@ -773,7 +773,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOrganization_or_person_7()
     {
-        return this.organization_or_person_7;
+        return organization_or_person_7;
     }
 
     public void setOrganization_or_person_7(java.lang.String v)
@@ -783,7 +783,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getReason_7()
     {
-        return this.reason_7;
+        return reason_7;
     }
 
     public void setReason_7(java.lang.String v)
@@ -793,7 +793,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getAmount_18()
     {
-        return this.amount_18;
+        return amount_18;
     }
 
     public void setAmount_18(java.lang.String v)
@@ -803,7 +803,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOa_ar_or_fr_8()
     {
-        return this.oa_ar_or_fr_8;
+        return oa_ar_or_fr_8;
     }
 
     public void setOa_ar_or_fr_8(java.lang.String v)
@@ -813,7 +813,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOrganization_or_person_8()
     {
-        return this.organization_or_person_8;
+        return organization_or_person_8;
     }
 
     public void setOrganization_or_person_8(java.lang.String v)
@@ -823,7 +823,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getReason_8()
     {
-        return this.reason_8;
+        return reason_8;
     }
 
     public void setReason_8(java.lang.String v)
@@ -833,7 +833,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getAmount_19()
     {
-        return this.amount_19;
+        return amount_19;
     }
 
     public void setAmount_19(java.lang.String v)
@@ -843,7 +843,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOa_ar_or_fr_9()
     {
-        return this.oa_ar_or_fr_9;
+        return oa_ar_or_fr_9;
     }
 
     public void setOa_ar_or_fr_9(java.lang.String v)
@@ -853,7 +853,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOrganization_or_person_9()
     {
-        return this.organization_or_person_9;
+        return organization_or_person_9;
     }
 
     public void setOrganization_or_person_9(java.lang.String v)
@@ -863,7 +863,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getReason_9()
     {
-        return this.reason_9;
+        return reason_9;
     }
 
     public void setReason_9(java.lang.String v)
@@ -873,7 +873,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getAmount_20()
     {
-        return this.amount_20;
+        return amount_20;
     }
 
     public void setAmount_20(java.lang.String v)
@@ -883,7 +883,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOa_ar_or_fr_10()
     {
-        return this.oa_ar_or_fr_10;
+        return oa_ar_or_fr_10;
     }
 
     public void setOa_ar_or_fr_10(java.lang.String v)
@@ -893,7 +893,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOrganization_or_person_10()
     {
-        return this.organization_or_person_10;
+        return organization_or_person_10;
     }
 
     public void setOrganization_or_person_10(java.lang.String v)
@@ -903,7 +903,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getReason_10()
     {
-        return this.reason_10;
+        return reason_10;
     }
 
     public void setReason_10(java.lang.String v)
@@ -913,7 +913,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getAmount_21()
     {
-        return this.amount_21;
+        return amount_21;
     }
 
     public void setAmount_21(java.lang.String v)
@@ -923,7 +923,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOa_ar_or_fr_11()
     {
-        return this.oa_ar_or_fr_11;
+        return oa_ar_or_fr_11;
     }
 
     public void setOa_ar_or_fr_11(java.lang.String v)
@@ -933,7 +933,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOrganization_or_person_11()
     {
-        return this.organization_or_person_11;
+        return organization_or_person_11;
     }
 
     public void setOrganization_or_person_11(java.lang.String v)
@@ -943,7 +943,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getReason_11()
     {
-        return this.reason_11;
+        return reason_11;
     }
 
     public void setReason_11(java.lang.String v)
@@ -953,7 +953,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getAmount_22()
     {
-        return this.amount_22;
+        return amount_22;
     }
 
     public void setAmount_22(java.lang.String v)
@@ -963,7 +963,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOa_ar_or_fr_12()
     {
-        return this.oa_ar_or_fr_12;
+        return oa_ar_or_fr_12;
     }
 
     public void setOa_ar_or_fr_12(java.lang.String v)
@@ -973,7 +973,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOrganization_or_person_12()
     {
-        return this.organization_or_person_12;
+        return organization_or_person_12;
     }
 
     public void setOrganization_or_person_12(java.lang.String v)
@@ -983,7 +983,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getReason_12()
     {
-        return this.reason_12;
+        return reason_12;
     }
 
     public void setReason_12(java.lang.String v)
@@ -993,7 +993,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getAmount_23()
     {
-        return this.amount_23;
+        return amount_23;
     }
 
     public void setAmount_23(java.lang.String v)
@@ -1003,7 +1003,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.Double getAmount_show_total_on_pg_4_line_13()
     {
-        return this.amount_show_total_on_pg_4_line_13;
+        return amount_show_total_on_pg_4_line_13;
     }
 
     public void setAmount_show_total_on_pg_4_line_13(java.lang.Double v)
@@ -1013,7 +1013,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOa_ar_or_fr_13()
     {
-        return this.oa_ar_or_fr_13;
+        return oa_ar_or_fr_13;
     }
 
     public void setOa_ar_or_fr_13(java.lang.String v)
@@ -1023,7 +1023,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOrganization_or_person_13()
     {
-        return this.organization_or_person_13;
+        return organization_or_person_13;
     }
 
     public void setOrganization_or_person_13(java.lang.String v)
@@ -1033,7 +1033,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getService_provided()
     {
-        return this.service_provided;
+        return service_provided;
     }
 
     public void setService_provided(java.lang.String v)
@@ -1043,7 +1043,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getAmount_24()
     {
-        return this.amount_24;
+        return amount_24;
     }
 
     public void setAmount_24(java.lang.String v)
@@ -1053,7 +1053,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOa_ar_or_fr_14()
     {
-        return this.oa_ar_or_fr_14;
+        return oa_ar_or_fr_14;
     }
 
     public void setOa_ar_or_fr_14(java.lang.String v)
@@ -1063,7 +1063,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOrganization_or_person_14()
     {
-        return this.organization_or_person_14;
+        return organization_or_person_14;
     }
 
     public void setOrganization_or_person_14(java.lang.String v)
@@ -1073,7 +1073,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getService_provided_2()
     {
-        return this.service_provided_2;
+        return service_provided_2;
     }
 
     public void setService_provided_2(java.lang.String v)
@@ -1083,7 +1083,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getAmount_25()
     {
-        return this.amount_25;
+        return amount_25;
     }
 
     public void setAmount_25(java.lang.String v)
@@ -1093,7 +1093,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOa_ar_or_fr_15()
     {
-        return this.oa_ar_or_fr_15;
+        return oa_ar_or_fr_15;
     }
 
     public void setOa_ar_or_fr_15(java.lang.String v)
@@ -1103,7 +1103,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOrganization_or_person_15()
     {
-        return this.organization_or_person_15;
+        return organization_or_person_15;
     }
 
     public void setOrganization_or_person_15(java.lang.String v)
@@ -1113,7 +1113,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getService_provided_3()
     {
-        return this.service_provided_3;
+        return service_provided_3;
     }
 
     public void setService_provided_3(java.lang.String v)
@@ -1123,7 +1123,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getAmount_26()
     {
-        return this.amount_26;
+        return amount_26;
     }
 
     public void setAmount_26(java.lang.String v)
@@ -1133,7 +1133,7 @@ public class EXPENSE_DTL_12aBean
 
     public java.lang.String getOa_ar_or_fr_16()
     {
-        return this.oa_ar_or_fr_16;
+        return oa_ar_or_fr_16;
     }
 
     public void setOa_ar_or_fr_16(java.lang.String v)

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport name="INVENTORY_DTL_6" language="java"
-              pageWidth="595" pageHeight="842"
+              pageWidth="595" pageHeight="3000"
               columnWidth="555"
               leftMargin="20" rightMargin="20"
               topMargin="20" bottomMargin="20"

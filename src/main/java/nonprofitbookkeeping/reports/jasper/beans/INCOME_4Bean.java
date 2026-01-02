@@ -96,7 +96,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getIncome_4_r2c3()
     {
-        return this.income_4_r2c3;
+        return income_4_r2c3;
     }
 
     public void setIncome_4_r2c3(java.lang.Double v)
@@ -106,7 +106,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getContents_b59()
     {
-        return this.contents_b59;
+        return contents_b59;
     }
 
     public void setContents_b59(java.lang.Double v)
@@ -116,7 +116,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getContents_e_3()
     {
-        return this.contents_e_3;
+        return contents_e_3;
     }
 
     public void setContents_e_3(java.lang.Double v)
@@ -126,7 +126,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getContents_e_4()
     {
-        return this.contents_e_4;
+        return contents_e_4;
     }
 
     public void setContents_e_4(java.lang.Double v)
@@ -136,7 +136,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getIncome_4_r9c10()
     {
-        return this.income_4_r9c10;
+        return income_4_r9c10;
     }
 
     public void setIncome_4_r9c10(java.lang.Double v)
@@ -146,7 +146,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getAmount_internal()
     {
-        return this.amount_internal;
+        return amount_internal;
     }
 
     public void setAmount_internal(java.lang.Double v)
@@ -156,7 +156,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getIncome_dtl_11a_e20_external()
     {
-        return this.income_dtl_11a_e20_external;
+        return income_dtl_11a_e20_external;
     }
 
     public void setIncome_dtl_11a_e20_external(java.lang.Double v)
@@ -166,7 +166,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getIncome_dtl_11a_e30_11a()
     {
-        return this.income_dtl_11a_e30_11a;
+        return income_dtl_11a_e30_11a;
     }
 
     public void setIncome_dtl_11a_e30_11a(java.lang.Double v)
@@ -176,7 +176,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getIncome_dtl_11a_e36_income_from_demos_and_activity_fees()
     {
-        return this.income_dtl_11a_e36_income_from_demos_and_activity_fees;
+        return income_dtl_11a_e36_income_from_demos_and_activity_fees;
     }
 
     public void setIncome_dtl_11a_e36_income_from_demos_and_activity_fees(java.lang.Double v)
@@ -186,7 +186,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getIncome_dtl_11a_e52_adjusted_gross_event_income()
     {
-        return this.income_dtl_11a_e52_adjusted_gross_event_income;
+        return income_dtl_11a_e52_adjusted_gross_event_income;
     }
 
     public void setIncome_dtl_11a_e52_adjusted_gross_event_income(java.lang.Double v)
@@ -196,7 +196,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getIncome_dtl_11b_g37_within_kingdom()
     {
-        return this.income_dtl_11b_g37_within_kingdom;
+        return income_dtl_11b_g37_within_kingdom;
     }
 
     public void setIncome_dtl_11b_g37_within_kingdom(java.lang.Double v)
@@ -206,7 +206,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getTransfer_in_9_f38_transfer_in_9b_f32_transfer_in_9c_f32_transfer_in_9d_f55_outside_kingdom()
     {
-        return this.transfer_in_9_f38_transfer_in_9b_f32_transfer_in_9c_f32_transfer_in_9d_f55_outside_kingdom;
+        return transfer_in_9_f38_transfer_in_9b_f32_transfer_in_9c_f32_transfer_in_9d_f55_outside_kingdom;
     }
 
     public void setTransfer_in_9_f38_transfer_in_9b_f32_transfer_in_9c_f32_transfer_in_9d_f55_outside_kingdom(java.lang.Double v)
@@ -216,7 +216,7 @@ public class INCOME_4Bean
 
     public java.lang.String getTransfer_in_9_f58_transfer_in_9b_f54_transfer_in_9c_f54_interest_earned()
     {
-        return this.transfer_in_9_f58_transfer_in_9b_f54_transfer_in_9c_f54_interest_earned;
+        return transfer_in_9_f58_transfer_in_9b_f54_transfer_in_9c_f54_interest_earned;
     }
 
     public void setTransfer_in_9_f58_transfer_in_9b_f54_transfer_in_9c_f54_interest_earned(java.lang.String v)
@@ -226,7 +226,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getGross_gross_cost_net()
     {
-        return this.gross_gross_cost_net;
+        return gross_gross_cost_net;
     }
 
     public void setGross_gross_cost_net(java.lang.Double v)
@@ -236,7 +236,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getCost_inventory_dtl_6_m30_inventory_dtl_6b_m30()
     {
-        return this.cost_inventory_dtl_6_m30_inventory_dtl_6b_m30;
+        return cost_inventory_dtl_6_m30_inventory_dtl_6b_m30;
     }
 
     public void setCost_inventory_dtl_6_m30_inventory_dtl_6b_m30(java.lang.Double v)
@@ -246,7 +246,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getTransfer_in_9_f58_transfer_in_9b_f54_transfer_in_9c_f54_inventory_dtl_6_m29_inventory_dtl_6b_m29()
     {
-        return this.transfer_in_9_f58_transfer_in_9b_f54_transfer_in_9c_f54_inventory_dtl_6_m29_inventory_dtl_6b_m29;
+        return transfer_in_9_f58_transfer_in_9b_f54_transfer_in_9c_f54_inventory_dtl_6_m29_inventory_dtl_6b_m29;
     }
 
     public void setTransfer_in_9_f58_transfer_in_9b_f54_transfer_in_9c_f54_inventory_dtl_6_m29_inventory_dtl_6b_m29(java.lang.Double v)
@@ -256,7 +256,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getH19_i19_7()
     {
-        return this.h19_i19_7;
+        return h19_i19_7;
     }
 
     public void setH19_i19_7(java.lang.Double v)
@@ -266,7 +266,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getRegalia_sales_dtl_7_i53_regalia_sales_dtl_7b_i53_15()
     {
-        return this.regalia_sales_dtl_7_i53_regalia_sales_dtl_7b_i53_15;
+        return regalia_sales_dtl_7_i53_regalia_sales_dtl_7b_i53_15;
     }
 
     public void setRegalia_sales_dtl_7_i53_regalia_sales_dtl_7b_i53_15(java.lang.Double v)
@@ -276,7 +276,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getInventory_dtl_6_m30_inventory_dtl_6b_m30_gross_cost_net()
     {
-        return this.inventory_dtl_6_m30_inventory_dtl_6b_m30_gross_cost_net;
+        return inventory_dtl_6_m30_inventory_dtl_6b_m30_gross_cost_net;
     }
 
     public void setInventory_dtl_6_m30_inventory_dtl_6b_m30_gross_cost_net(java.lang.Double v)
@@ -286,7 +286,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getInventory_dtl_6_m29_inventory_dtl_6b_m29_income_dtl_11b_e43()
     {
-        return this.inventory_dtl_6_m29_inventory_dtl_6b_m29_income_dtl_11b_e43;
+        return inventory_dtl_6_m29_inventory_dtl_6b_m29_income_dtl_11b_e43;
     }
 
     public void setInventory_dtl_6_m29_inventory_dtl_6b_m29_income_dtl_11b_e43(java.lang.Double v)
@@ -296,7 +296,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getNewsletter_15_e17_income_dtl_11b_f43()
     {
-        return this.newsletter_15_e17_income_dtl_11b_f43;
+        return newsletter_15_e17_income_dtl_11b_f43;
     }
 
     public void setNewsletter_15_e17_income_dtl_11b_f43(java.lang.Double v)
@@ -306,7 +306,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getH22_i22_11b()
     {
-        return this.h22_i22_11b;
+        return h22_i22_11b;
     }
 
     public void setH22_i22_11b(java.lang.Double v)
@@ -316,7 +316,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getIncome_dtl_11b_g56_sum_of_lines_1_through_9()
     {
-        return this.income_dtl_11b_g56_sum_of_lines_1_through_9;
+        return income_dtl_11b_g56_sum_of_lines_1_through_9;
     }
 
     public void setIncome_dtl_11b_g56_sum_of_lines_1_through_9(java.lang.Double v)
@@ -326,7 +326,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getActivity_related_12a()
     {
-        return this.activity_related_12a;
+        return activity_related_12a;
     }
 
     public void setActivity_related_12a(java.lang.Double v)
@@ -336,7 +336,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getTotal_sumif_expense_dtl_12a_c12_c22_ar_expense_dtl_12a_f12_f22()
     {
-        return this.total_sumif_expense_dtl_12a_c12_c22_ar_expense_dtl_12a_f12_f22;
+        return total_sumif_expense_dtl_12a_c12_c22_ar_expense_dtl_12a_f12_f22;
     }
 
     public void setTotal_sumif_expense_dtl_12a_c12_c22_ar_expense_dtl_12a_f12_f22(java.lang.Double v)
@@ -346,7 +346,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getOffice_admin_12a()
     {
-        return this.office_admin_12a;
+        return office_admin_12a;
     }
 
     public void setOffice_admin_12a(java.lang.Double v)
@@ -356,7 +356,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getSumif_expense_dtl_12a_c12_c22_ar_expense_dtl_12a_f12_f22_sumif_expense_dtl_12a_c27_c38_oa_expense_dtl_12a_f27_f38()
     {
-        return this.sumif_expense_dtl_12a_c12_c22_ar_expense_dtl_12a_f12_f22_sumif_expense_dtl_12a_c27_c38_oa_expense_dtl_12a_f27_f38;
+        return sumif_expense_dtl_12a_c12_c22_ar_expense_dtl_12a_f12_f22_sumif_expense_dtl_12a_c27_c38_oa_expense_dtl_12a_f27_f38;
     }
 
     public void setSumif_expense_dtl_12a_c12_c22_ar_expense_dtl_12a_f12_f22_sumif_expense_dtl_12a_c27_c38_oa_expense_dtl_12a_f27_f38(java.lang.Double v)
@@ -366,7 +366,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getFund_raising_sumif_expense_dtl_12a_c27_c38_ar_expense_dtl_12a_f27_f38()
     {
-        return this.fund_raising_sumif_expense_dtl_12a_c27_c38_ar_expense_dtl_12a_f27_f38;
+        return fund_raising_sumif_expense_dtl_12a_c27_c38_ar_expense_dtl_12a_f27_f38;
     }
 
     public void setFund_raising_sumif_expense_dtl_12a_c27_c38_ar_expense_dtl_12a_f27_f38(java.lang.Double v)
@@ -376,7 +376,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getSum_g27_i27_sumif_expense_dtl_12a_c27_c38_fr_expense_dtl_12a_f27_f38()
     {
-        return this.sum_g27_i27_sumif_expense_dtl_12a_c27_c38_fr_expense_dtl_12a_f27_f38;
+        return sum_g27_i27_sumif_expense_dtl_12a_c27_c38_fr_expense_dtl_12a_f27_f38;
     }
 
     public void setSum_g27_i27_sumif_expense_dtl_12a_c27_c38_fr_expense_dtl_12a_f27_f38(java.lang.Double v)
@@ -386,7 +386,7 @@ public class INCOME_4Bean
 
     public java.lang.String getSumif_expense_dtl_12a_c27_c38_oa_expense_dtl_12a_f27_f38_bank_service_charges()
     {
-        return this.sumif_expense_dtl_12a_c27_c38_oa_expense_dtl_12a_f27_f38_bank_service_charges;
+        return sumif_expense_dtl_12a_c27_c38_oa_expense_dtl_12a_f27_f38_bank_service_charges;
     }
 
     public void setSumif_expense_dtl_12a_c27_c38_oa_expense_dtl_12a_f27_f38_bank_service_charges(java.lang.String v)
@@ -396,7 +396,7 @@ public class INCOME_4Bean
 
     public java.lang.String getSumif_expense_dtl_12a_c27_c38_ar_expense_dtl_12a_f27_f38_bank_service_charges()
     {
-        return this.sumif_expense_dtl_12a_c27_c38_ar_expense_dtl_12a_f27_f38_bank_service_charges;
+        return sumif_expense_dtl_12a_c27_c38_ar_expense_dtl_12a_f27_f38_bank_service_charges;
     }
 
     public void setSumif_expense_dtl_12a_c27_c38_ar_expense_dtl_12a_f27_f38_bank_service_charges(java.lang.String v)
@@ -406,7 +406,7 @@ public class INCOME_4Bean
 
     public java.lang.String getSumif_expense_dtl_12a_c27_c38_fr_expense_dtl_12a_f27_f38_bank_service_charges()
     {
-        return this.sumif_expense_dtl_12a_c27_c38_fr_expense_dtl_12a_f27_f38_bank_service_charges;
+        return sumif_expense_dtl_12a_c27_c38_fr_expense_dtl_12a_f27_f38_bank_service_charges;
     }
 
     public void setSumif_expense_dtl_12a_c27_c38_fr_expense_dtl_12a_f27_f38_bank_service_charges(java.lang.String v)
@@ -416,7 +416,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getSum_g28_i28_bank_service_charges()
     {
-        return this.sum_g28_i28_bank_service_charges;
+        return sum_g28_i28_bank_service_charges;
     }
 
     public void setSum_g28_i28_bank_service_charges(java.lang.Double v)
@@ -426,7 +426,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getSumif_expense_dtl_12a_c27_c38_oa_expense_dtl_12a_f27_f38_8()
     {
-        return this.sumif_expense_dtl_12a_c27_c38_oa_expense_dtl_12a_f27_f38_8;
+        return sumif_expense_dtl_12a_c27_c38_oa_expense_dtl_12a_f27_f38_8;
     }
 
     public void setSumif_expense_dtl_12a_c27_c38_oa_expense_dtl_12a_f27_f38_8(java.lang.Double v)
@@ -436,7 +436,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getSumif_expense_dtl_12a_c27_c38_ar_expense_dtl_12a_f27_f38_sumif_depr_dtl_8_d14_d23_oa_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_oa_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_oa_depr_dtl_8b_l14_l53()
     {
-        return this.sumif_expense_dtl_12a_c27_c38_ar_expense_dtl_12a_f27_f38_sumif_depr_dtl_8_d14_d23_oa_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_oa_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_oa_depr_dtl_8b_l14_l53;
+        return sumif_expense_dtl_12a_c27_c38_ar_expense_dtl_12a_f27_f38_sumif_depr_dtl_8_d14_d23_oa_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_oa_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_oa_depr_dtl_8b_l14_l53;
     }
 
     public void setSumif_expense_dtl_12a_c27_c38_ar_expense_dtl_12a_f27_f38_sumif_depr_dtl_8_d14_d23_oa_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_oa_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_oa_depr_dtl_8b_l14_l53(java.lang.Double v)
@@ -446,7 +446,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getSumif_expense_dtl_12a_c27_c38_fr_expense_dtl_12a_f27_f38_sumif_depr_dtl_8_d14_d23_ar_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_ar_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_ar_depr_dtl_8b_l14_l53_sumif_depr_dtl_8c_d14_d53_ar_depr_dtl_8c_l14_l53()
     {
-        return this.sumif_expense_dtl_12a_c27_c38_fr_expense_dtl_12a_f27_f38_sumif_depr_dtl_8_d14_d23_ar_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_ar_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_ar_depr_dtl_8b_l14_l53_sumif_depr_dtl_8c_d14_d53_ar_depr_dtl_8c_l14_l53;
+        return sumif_expense_dtl_12a_c27_c38_fr_expense_dtl_12a_f27_f38_sumif_depr_dtl_8_d14_d23_ar_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_ar_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_ar_depr_dtl_8b_l14_l53_sumif_depr_dtl_8c_d14_d53_ar_depr_dtl_8c_l14_l53;
     }
 
     public void setSumif_expense_dtl_12a_c27_c38_fr_expense_dtl_12a_f27_f38_sumif_depr_dtl_8_d14_d23_ar_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_ar_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_ar_depr_dtl_8b_l14_l53_sumif_depr_dtl_8c_d14_d53_ar_depr_dtl_8c_l14_l53(java.lang.Double v)
@@ -456,7 +456,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getSum_g29_i29_sumif_depr_dtl_8_d14_d23_fr_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_fr_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_fr_depr_dtl_8b_l14_l53()
     {
-        return this.sum_g29_i29_sumif_depr_dtl_8_d14_d23_fr_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_fr_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_fr_depr_dtl_8b_l14_l53;
+        return sum_g29_i29_sumif_depr_dtl_8_d14_d23_fr_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_fr_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_fr_depr_dtl_8b_l14_l53;
     }
 
     public void setSum_g29_i29_sumif_depr_dtl_8_d14_d23_fr_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_fr_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_fr_depr_dtl_8b_l14_l53(java.lang.Double v)
@@ -466,7 +466,7 @@ public class INCOME_4Bean
 
     public java.lang.String getSumif_depr_dtl_8_d14_d23_oa_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_oa_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_oa_depr_dtl_8b_l14_l53_equipment_rental_maintenance()
     {
-        return this.sumif_depr_dtl_8_d14_d23_oa_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_oa_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_oa_depr_dtl_8b_l14_l53_equipment_rental_maintenance;
+        return sumif_depr_dtl_8_d14_d23_oa_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_oa_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_oa_depr_dtl_8b_l14_l53_equipment_rental_maintenance;
     }
 
     public void setSumif_depr_dtl_8_d14_d23_oa_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_oa_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_oa_depr_dtl_8b_l14_l53_equipment_rental_maintenance(java.lang.String v)
@@ -476,7 +476,7 @@ public class INCOME_4Bean
 
     public java.lang.String getSumif_depr_dtl_8_d14_d23_ar_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_ar_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_ar_depr_dtl_8b_l14_l53_sumif_depr_dtl_8c_d14_d53_ar_depr_dtl_8c_l14_l53_equipment_rental_maintenance()
     {
-        return this.sumif_depr_dtl_8_d14_d23_ar_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_ar_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_ar_depr_dtl_8b_l14_l53_sumif_depr_dtl_8c_d14_d53_ar_depr_dtl_8c_l14_l53_equipment_rental_maintenance;
+        return sumif_depr_dtl_8_d14_d23_ar_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_ar_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_ar_depr_dtl_8b_l14_l53_sumif_depr_dtl_8c_d14_d53_ar_depr_dtl_8c_l14_l53_equipment_rental_maintenance;
     }
 
     public void setSumif_depr_dtl_8_d14_d23_ar_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_ar_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_ar_depr_dtl_8b_l14_l53_sumif_depr_dtl_8c_d14_d53_ar_depr_dtl_8c_l14_l53_equipment_rental_maintenance(java.lang.String v)
@@ -486,7 +486,7 @@ public class INCOME_4Bean
 
     public java.lang.String getSumif_depr_dtl_8_d14_d23_fr_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_fr_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_fr_depr_dtl_8b_l14_l53_equipment_rental_maintenance()
     {
-        return this.sumif_depr_dtl_8_d14_d23_fr_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_fr_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_fr_depr_dtl_8b_l14_l53_equipment_rental_maintenance;
+        return sumif_depr_dtl_8_d14_d23_fr_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_fr_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_fr_depr_dtl_8b_l14_l53_equipment_rental_maintenance;
     }
 
     public void setSumif_depr_dtl_8_d14_d23_fr_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_fr_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_fr_depr_dtl_8b_l14_l53_equipment_rental_maintenance(java.lang.String v)
@@ -496,7 +496,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getSum_g30_i30_equipment_rental_maintenance()
     {
-        return this.sum_g30_i30_equipment_rental_maintenance;
+        return sum_g30_i30_equipment_rental_maintenance;
     }
 
     public void setSum_g30_i30_equipment_rental_maintenance(java.lang.Double v)
@@ -506,7 +506,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getSumif_depr_dtl_8_d14_d23_oa_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_oa_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_oa_depr_dtl_8b_l14_l53_12a()
     {
-        return this.sumif_depr_dtl_8_d14_d23_oa_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_oa_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_oa_depr_dtl_8b_l14_l53_12a;
+        return sumif_depr_dtl_8_d14_d23_oa_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_oa_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_oa_depr_dtl_8b_l14_l53_12a;
     }
 
     public void setSumif_depr_dtl_8_d14_d23_oa_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_oa_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_oa_depr_dtl_8b_l14_l53_12a(java.lang.Double v)
@@ -516,7 +516,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getSumif_depr_dtl_8_d14_d23_ar_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_ar_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_ar_depr_dtl_8b_l14_l53_sumif_depr_dtl_8c_d14_d53_ar_depr_dtl_8c_l14_l53_sumif_expense_dtl_12a_c43_c54_oa_expense_dtl_12a_f43_f54()
     {
-        return this.sumif_depr_dtl_8_d14_d23_ar_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_ar_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_ar_depr_dtl_8b_l14_l53_sumif_depr_dtl_8c_d14_d53_ar_depr_dtl_8c_l14_l53_sumif_expense_dtl_12a_c43_c54_oa_expense_dtl_12a_f43_f54;
+        return sumif_depr_dtl_8_d14_d23_ar_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_ar_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_ar_depr_dtl_8b_l14_l53_sumif_depr_dtl_8c_d14_d53_ar_depr_dtl_8c_l14_l53_sumif_expense_dtl_12a_c43_c54_oa_expense_dtl_12a_f43_f54;
     }
 
     public void setSumif_depr_dtl_8_d14_d23_ar_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_ar_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_ar_depr_dtl_8b_l14_l53_sumif_depr_dtl_8c_d14_d53_ar_depr_dtl_8c_l14_l53_sumif_expense_dtl_12a_c43_c54_oa_expense_dtl_12a_f43_f54(java.lang.Double v)
@@ -526,7 +526,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getSumif_depr_dtl_8_d14_d23_fr_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_fr_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_fr_depr_dtl_8b_l14_l53_sumif_expense_dtl_12a_c43_c54_ar_expense_dtl_12a_f43_f54()
     {
-        return this.sumif_depr_dtl_8_d14_d23_fr_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_fr_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_fr_depr_dtl_8b_l14_l53_sumif_expense_dtl_12a_c43_c54_ar_expense_dtl_12a_f43_f54;
+        return sumif_depr_dtl_8_d14_d23_fr_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_fr_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_fr_depr_dtl_8b_l14_l53_sumif_expense_dtl_12a_c43_c54_ar_expense_dtl_12a_f43_f54;
     }
 
     public void setSumif_depr_dtl_8_d14_d23_fr_depr_dtl_8_l14_l23_sumif_depr_dtl_8_d32_d41_fr_depr_dtl_8_l32_l41_sumif_depr_dtl_8b_d14_d53_fr_depr_dtl_8b_l14_l53_sumif_expense_dtl_12a_c43_c54_ar_expense_dtl_12a_f43_f54(java.lang.Double v)
@@ -536,7 +536,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getSum_g31_i31_sumif_expense_dtl_12a_c43_c54_fr_expense_dtl_12a_f43_f54()
     {
-        return this.sum_g31_i31_sumif_expense_dtl_12a_c43_c54_fr_expense_dtl_12a_f43_f54;
+        return sum_g31_i31_sumif_expense_dtl_12a_c43_c54_fr_expense_dtl_12a_f43_f54;
     }
 
     public void setSum_g31_i31_sumif_expense_dtl_12a_c43_c54_fr_expense_dtl_12a_f43_f54(java.lang.Double v)
@@ -546,7 +546,7 @@ public class INCOME_4Bean
 
     public java.lang.String getSumif_expense_dtl_12a_c43_c54_oa_expense_dtl_12a_f43_f54_food()
     {
-        return this.sumif_expense_dtl_12a_c43_c54_oa_expense_dtl_12a_f43_f54_food;
+        return sumif_expense_dtl_12a_c43_c54_oa_expense_dtl_12a_f43_f54_food;
     }
 
     public void setSumif_expense_dtl_12a_c43_c54_oa_expense_dtl_12a_f43_f54_food(java.lang.String v)
@@ -556,7 +556,7 @@ public class INCOME_4Bean
 
     public java.lang.String getSumif_expense_dtl_12a_c43_c54_ar_expense_dtl_12a_f43_f54_food()
     {
-        return this.sumif_expense_dtl_12a_c43_c54_ar_expense_dtl_12a_f43_f54_food;
+        return sumif_expense_dtl_12a_c43_c54_ar_expense_dtl_12a_f43_f54_food;
     }
 
     public void setSumif_expense_dtl_12a_c43_c54_ar_expense_dtl_12a_f43_f54_food(java.lang.String v)
@@ -566,7 +566,7 @@ public class INCOME_4Bean
 
     public java.lang.String getSumif_expense_dtl_12a_c43_c54_fr_expense_dtl_12a_f43_f54_food()
     {
-        return this.sumif_expense_dtl_12a_c43_c54_fr_expense_dtl_12a_f43_f54_food;
+        return sumif_expense_dtl_12a_c43_c54_fr_expense_dtl_12a_f43_f54_food;
     }
 
     public void setSumif_expense_dtl_12a_c43_c54_fr_expense_dtl_12a_f43_f54_food(java.lang.String v)
@@ -576,7 +576,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getSum_g32_i32_food()
     {
-        return this.sum_g32_i32_food;
+        return sum_g32_i32_food;
     }
 
     public void setSum_g32_i32_food(java.lang.Double v)
@@ -586,7 +586,7 @@ public class INCOME_4Bean
 
     public java.lang.String getSumif_expense_dtl_12a_c43_c54_oa_expense_dtl_12a_f43_f54_general_supplies()
     {
-        return this.sumif_expense_dtl_12a_c43_c54_oa_expense_dtl_12a_f43_f54_general_supplies;
+        return sumif_expense_dtl_12a_c43_c54_oa_expense_dtl_12a_f43_f54_general_supplies;
     }
 
     public void setSumif_expense_dtl_12a_c43_c54_oa_expense_dtl_12a_f43_f54_general_supplies(java.lang.String v)
@@ -596,7 +596,7 @@ public class INCOME_4Bean
 
     public java.lang.String getSumif_expense_dtl_12a_c43_c54_ar_expense_dtl_12a_f43_f54_general_supplies()
     {
-        return this.sumif_expense_dtl_12a_c43_c54_ar_expense_dtl_12a_f43_f54_general_supplies;
+        return sumif_expense_dtl_12a_c43_c54_ar_expense_dtl_12a_f43_f54_general_supplies;
     }
 
     public void setSumif_expense_dtl_12a_c43_c54_ar_expense_dtl_12a_f43_f54_general_supplies(java.lang.String v)
@@ -606,7 +606,7 @@ public class INCOME_4Bean
 
     public java.lang.String getSumif_expense_dtl_12a_c43_c54_fr_expense_dtl_12a_f43_f54_general_supplies()
     {
-        return this.sumif_expense_dtl_12a_c43_c54_fr_expense_dtl_12a_f43_f54_general_supplies;
+        return sumif_expense_dtl_12a_c43_c54_fr_expense_dtl_12a_f43_f54_general_supplies;
     }
 
     public void setSumif_expense_dtl_12a_c43_c54_fr_expense_dtl_12a_f43_f54_general_supplies(java.lang.String v)
@@ -616,7 +616,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getSum_g33_i33_general_supplies()
     {
-        return this.sum_g33_i33_general_supplies;
+        return sum_g33_i33_general_supplies;
     }
 
     public void setSum_g33_i33_general_supplies(java.lang.Double v)
@@ -626,7 +626,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getSumif_expense_dtl_12a_c43_c54_ar_expense_dtl_12a_f43_f54_0_0()
     {
-        return this.sumif_expense_dtl_12a_c43_c54_ar_expense_dtl_12a_f43_f54_0_0;
+        return sumif_expense_dtl_12a_c43_c54_ar_expense_dtl_12a_f43_f54_0_0;
     }
 
     public void setSumif_expense_dtl_12a_c43_c54_ar_expense_dtl_12a_f43_f54_0_0(java.lang.Double v)
@@ -636,7 +636,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getSum_g34_i34_0_0()
     {
-        return this.sum_g34_i34_0_0;
+        return sum_g34_i34_0_0;
     }
 
     public void setSum_g34_i34_0_0(java.lang.Double v)
@@ -646,7 +646,7 @@ public class INCOME_4Bean
 
     public java.lang.String get_0_0_occupancy_site_charges()
     {
-        return this._0_0_occupancy_site_charges;
+        return _0_0_occupancy_site_charges;
     }
 
     public void set_0_0_occupancy_site_charges(java.lang.String v)
@@ -656,7 +656,7 @@ public class INCOME_4Bean
 
     public java.lang.String getExpense_dtl_12b_i16_occupancy_site_charges()
     {
-        return this.expense_dtl_12b_i16_occupancy_site_charges;
+        return expense_dtl_12b_i16_occupancy_site_charges;
     }
 
     public void setExpense_dtl_12b_i16_occupancy_site_charges(java.lang.String v)
@@ -666,7 +666,7 @@ public class INCOME_4Bean
 
     public java.lang.String get_0_0_occupancy_site_charges_2()
     {
-        return this._0_0_occupancy_site_charges_2;
+        return _0_0_occupancy_site_charges_2;
     }
 
     public void set_0_0_occupancy_site_charges_2(java.lang.String v)
@@ -676,7 +676,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getSum_g35_i35_occupancy_site_charges()
     {
-        return this.sum_g35_i35_occupancy_site_charges;
+        return sum_g35_i35_occupancy_site_charges;
     }
 
     public void setSum_g35_i35_occupancy_site_charges(java.lang.Double v)
@@ -686,7 +686,7 @@ public class INCOME_4Bean
 
     public java.lang.String get_0_0_postage_shipping_po_box_rental()
     {
-        return this._0_0_postage_shipping_po_box_rental;
+        return _0_0_postage_shipping_po_box_rental;
     }
 
     public void set_0_0_postage_shipping_po_box_rental(java.lang.String v)
@@ -696,7 +696,7 @@ public class INCOME_4Bean
 
     public java.lang.String getExpense_dtl_12b_i16_postage_shipping_po_box_rental()
     {
-        return this.expense_dtl_12b_i16_postage_shipping_po_box_rental;
+        return expense_dtl_12b_i16_postage_shipping_po_box_rental;
     }
 
     public void setExpense_dtl_12b_i16_postage_shipping_po_box_rental(java.lang.String v)
@@ -706,7 +706,7 @@ public class INCOME_4Bean
 
     public java.lang.String get_0_0_postage_shipping_po_box_rental_2()
     {
-        return this._0_0_postage_shipping_po_box_rental_2;
+        return _0_0_postage_shipping_po_box_rental_2;
     }
 
     public void set_0_0_postage_shipping_po_box_rental_2(java.lang.String v)
@@ -716,7 +716,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getSum_g36_i36_postage_shipping_po_box_rental()
     {
-        return this.sum_g36_i36_postage_shipping_po_box_rental;
+        return sum_g36_i36_postage_shipping_po_box_rental;
     }
 
     public void setSum_g36_i36_postage_shipping_po_box_rental(java.lang.Double v)
@@ -726,7 +726,7 @@ public class INCOME_4Bean
 
     public java.lang.String get_0_0_printing_publications()
     {
-        return this._0_0_printing_publications;
+        return _0_0_printing_publications;
     }
 
     public void set_0_0_printing_publications(java.lang.String v)
@@ -736,7 +736,7 @@ public class INCOME_4Bean
 
     public java.lang.String getExpense_dtl_12b_i16_printing_publications()
     {
-        return this.expense_dtl_12b_i16_printing_publications;
+        return expense_dtl_12b_i16_printing_publications;
     }
 
     public void setExpense_dtl_12b_i16_printing_publications(java.lang.String v)
@@ -746,7 +746,7 @@ public class INCOME_4Bean
 
     public java.lang.String get_0_0_printing_publications_2()
     {
-        return this._0_0_printing_publications_2;
+        return _0_0_printing_publications_2;
     }
 
     public void set_0_0_printing_publications_2(java.lang.String v)
@@ -756,7 +756,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getSum_g37_i37_printing_publications()
     {
-        return this.sum_g37_i37_printing_publications;
+        return sum_g37_i37_printing_publications;
     }
 
     public void setSum_g37_i37_printing_publications(java.lang.Double v)
@@ -766,7 +766,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getExpense_dtl_12b_i16_0_0()
     {
-        return this.expense_dtl_12b_i16_0_0;
+        return expense_dtl_12b_i16_0_0;
     }
 
     public void setExpense_dtl_12b_i16_0_0(java.lang.Double v)
@@ -776,7 +776,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getSum_g38_i38_0_0()
     {
-        return this.sum_g38_i38_0_0;
+        return sum_g38_i38_0_0;
     }
 
     public void setSum_g38_i38_0_0(java.lang.Double v)
@@ -786,7 +786,7 @@ public class INCOME_4Bean
 
     public java.lang.String get_0_0_telephone()
     {
-        return this._0_0_telephone;
+        return _0_0_telephone;
     }
 
     public void set_0_0_telephone(java.lang.String v)
@@ -796,7 +796,7 @@ public class INCOME_4Bean
 
     public java.lang.String getRegalia_sales_dtl_7_h52_regalia_sales_dtl_7b_h52_telephone()
     {
-        return this.regalia_sales_dtl_7_h52_regalia_sales_dtl_7b_h52_telephone;
+        return regalia_sales_dtl_7_h52_regalia_sales_dtl_7b_h52_telephone;
     }
 
     public void setRegalia_sales_dtl_7_h52_regalia_sales_dtl_7b_h52_telephone(java.lang.String v)
@@ -806,7 +806,7 @@ public class INCOME_4Bean
 
     public java.lang.String get_0_0_telephone_2()
     {
-        return this._0_0_telephone_2;
+        return _0_0_telephone_2;
     }
 
     public void set_0_0_telephone_2(java.lang.String v)
@@ -816,7 +816,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getSum_g39_i39_telephone()
     {
-        return this.sum_g39_i39_telephone;
+        return sum_g39_i39_telephone;
     }
 
     public void setSum_g39_i39_telephone(java.lang.Double v)
@@ -826,7 +826,7 @@ public class INCOME_4Bean
 
     public java.lang.String get_0_0_travel_gas_tolls_airfare()
     {
-        return this._0_0_travel_gas_tolls_airfare;
+        return _0_0_travel_gas_tolls_airfare;
     }
 
     public void set_0_0_travel_gas_tolls_airfare(java.lang.String v)
@@ -836,7 +836,7 @@ public class INCOME_4Bean
 
     public java.lang.String getRegalia_sales_dtl_7_h52_regalia_sales_dtl_7b_h52_travel_gas_tolls_airfare()
     {
-        return this.regalia_sales_dtl_7_h52_regalia_sales_dtl_7b_h52_travel_gas_tolls_airfare;
+        return regalia_sales_dtl_7_h52_regalia_sales_dtl_7b_h52_travel_gas_tolls_airfare;
     }
 
     public void setRegalia_sales_dtl_7_h52_regalia_sales_dtl_7b_h52_travel_gas_tolls_airfare(java.lang.String v)
@@ -846,7 +846,7 @@ public class INCOME_4Bean
 
     public java.lang.String get_0_0_travel_gas_tolls_airfare_2()
     {
-        return this._0_0_travel_gas_tolls_airfare_2;
+        return _0_0_travel_gas_tolls_airfare_2;
     }
 
     public void set_0_0_travel_gas_tolls_airfare_2(java.lang.String v)
@@ -856,7 +856,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getSum_g40_i40_travel_gas_tolls_airfare()
     {
-        return this.sum_g40_i40_travel_gas_tolls_airfare;
+        return sum_g40_i40_travel_gas_tolls_airfare;
     }
 
     public void setSum_g40_i40_travel_gas_tolls_airfare(java.lang.Double v)
@@ -866,7 +866,7 @@ public class INCOME_4Bean
 
     public java.lang.Double get_0_0_sub_total_lines_12_26()
     {
-        return this._0_0_sub_total_lines_12_26;
+        return _0_0_sub_total_lines_12_26;
     }
 
     public void set_0_0_sub_total_lines_12_26(java.lang.Double v)
@@ -876,7 +876,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getRegalia_sales_dtl_7_h52_regalia_sales_dtl_7b_h52_sum_g27_g41()
     {
-        return this.regalia_sales_dtl_7_h52_regalia_sales_dtl_7b_h52_sum_g27_g41;
+        return regalia_sales_dtl_7_h52_regalia_sales_dtl_7b_h52_sum_g27_g41;
     }
 
     public void setRegalia_sales_dtl_7_h52_regalia_sales_dtl_7b_h52_sum_g27_g41(java.lang.Double v)
@@ -886,7 +886,7 @@ public class INCOME_4Bean
 
     public java.lang.Double get_0_0_sum_h27_h41()
     {
-        return this._0_0_sum_h27_h41;
+        return _0_0_sum_h27_h41;
     }
 
     public void set_0_0_sum_h27_h41(java.lang.Double v)
@@ -896,7 +896,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getSum_g41_i41_sum_i27_i41()
     {
-        return this.sum_g41_i41_sum_i27_i41;
+        return sum_g41_i41_sum_i27_i41;
     }
 
     public void setSum_g41_i41_sum_i27_i41(java.lang.Double v)
@@ -906,7 +906,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getSum_j27_j41_12b()
     {
-        return this.sum_j27_j41_12b;
+        return sum_j27_j41_12b;
     }
 
     public void setSum_j27_j41_12b(java.lang.Double v)
@@ -916,7 +916,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getExpense_dtl_12b_i27_12b()
     {
-        return this.expense_dtl_12b_i27_12b;
+        return expense_dtl_12b_i27_12b;
     }
 
     public void setExpense_dtl_12b_i27_12b(java.lang.Double v)
@@ -926,7 +926,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getExpense_dtl_12b_i56_10()
     {
-        return this.expense_dtl_12b_i56_10;
+        return expense_dtl_12b_i56_10;
     }
 
     public void setExpense_dtl_12b_i56_10(java.lang.Double v)
@@ -936,7 +936,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getTransfer_out_10_f25_transfer_out_10b_f28_transfer_out_10c_f28_transfer_out_10d_f28_10()
     {
-        return this.transfer_out_10_f25_transfer_out_10b_f28_transfer_out_10c_f28_transfer_out_10d_f28_10;
+        return transfer_out_10_f25_transfer_out_10b_f28_transfer_out_10c_f28_transfer_out_10d_f28_10;
     }
 
     public void setTransfer_out_10_f25_transfer_out_10b_f28_transfer_out_10c_f28_transfer_out_10d_f28_10(java.lang.Double v)
@@ -946,7 +946,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getTransfer_out_10_f52_transfer_out_10b_f42_transfer_out_10b_f54_transfer_out_10c_f42_transfer_out_10c_f54_transfer_out_10d_f42_transfer_out_10d_f54_line_27_total_lines_28_to_30b()
     {
-        return this.transfer_out_10_f52_transfer_out_10b_f42_transfer_out_10b_f54_transfer_out_10c_f42_transfer_out_10c_f54_transfer_out_10d_f42_transfer_out_10d_f54_line_27_total_lines_28_to_30b;
+        return transfer_out_10_f52_transfer_out_10b_f42_transfer_out_10b_f54_transfer_out_10c_f42_transfer_out_10c_f54_transfer_out_10d_f42_transfer_out_10d_f54_line_27_total_lines_28_to_30b;
     }
 
     public void setTransfer_out_10_f52_transfer_out_10b_f42_transfer_out_10b_f54_transfer_out_10c_f42_transfer_out_10c_f54_transfer_out_10d_f42_transfer_out_10d_f54_line_27_total_lines_28_to_30b(java.lang.Double v)
@@ -956,7 +956,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getSum_j42_j46_line_11_minus_line_31()
     {
-        return this.sum_j42_j46_line_11_minus_line_31;
+        return sum_j42_j46_line_11_minus_line_31;
     }
 
     public void setSum_j42_j46_line_11_minus_line_31(java.lang.Double v)
@@ -966,7 +966,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getPrint_exchequer()
     {
-        return this.print_exchequer;
+        return print_exchequer;
     }
 
     public void setPrint_exchequer(java.lang.Double v)
@@ -976,7 +976,7 @@ public class INCOME_4Bean
 
     public java.lang.Double getIf_contents_c_10_contents_c_10_seneschal()
     {
-        return this.if_contents_c_10_contents_c_10_seneschal;
+        return if_contents_c_10_contents_c_10_seneschal;
     }
 
     public void setIf_contents_c_10_contents_c_10_seneschal(java.lang.Double v)
