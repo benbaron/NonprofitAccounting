@@ -55,8 +55,8 @@ public class AccountingTransaction implements Serializable
 	public AccountingTransaction()
 	{
 		this.id = 0;
-		this.entries = null;
-		this.info = null;
+		this.entries = new LinkedHashSet<>();
+		this.info = new LinkedHashMap<>();
 		this.bookingDateTimestamp = 0;
 		
 		this.date = "";

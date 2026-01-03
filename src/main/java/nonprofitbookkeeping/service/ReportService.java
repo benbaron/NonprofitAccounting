@@ -1478,10 +1478,19 @@ public class ReportService
 								.toEpochMilli())
 					{
 						boolean relevantToThisAccount = false;
-						
-						for (AccountingEntry entry : tx.getEntries())
+						Set<AccountingEntry> entries = tx.getEntries();
+						if (entries == null)
 						{
-							
+							continue;
+						}
+						
+						for (AccountingEntry entry : entries)
+						{
+							if (entry == null || entry.getAccountNumber() == null)
+							{
+								continue;
+							}
+
 							if (entry.getAccountNumber().equals(accountId))
 							{
 								relevantToThisAccount = true;
@@ -1512,12 +1521,21 @@ public class ReportService
 				LocalDate transactionDate =
 					Instant.ofEpochMilli(transaction.getBookingDateTimestamp())
 						.atZone(ZoneId.systemDefault()).toLocalDate();
+				Set<AccountingEntry> transactionEntries = transaction.getEntries();
+				if (transactionEntries == null)
+				{
+					continue;
+				}
 				
 				// Each transaction might have multiple entries; we are
 				// interested in the one for `accountId`
-				for (AccountingEntry entry : transaction.getEntries())
+				for (AccountingEntry entry : transactionEntries)
 				{
-					
+					if (entry == null || entry.getAccountNumber() == null)
+					{
+						continue;
+					}
+
 					if (entry.getAccountNumber().equals(accountId))
 					{
 						Map<String, Object> entryData = new HashMap<>();
@@ -1532,13 +1550,17 @@ public class ReportService
 							transaction.getMemo() != null ?
 								transaction.getMemo() : "";
 						
-						if (transaction.getEntries().size() > 1)
+						if (transactionEntries.size() > 1)
 						{
 							
-							for (AccountingEntry otherEntry : transaction
-								.getEntries())
+							for (AccountingEntry otherEntry : transactionEntries)
 							{
-								
+								if (otherEntry == null ||
+									otherEntry.getAccountNumber() == null)
+								{
+									continue;
+								}
+
 								if (!otherEntry.getAccountNumber()
 									.equals(accountId))
 								{
