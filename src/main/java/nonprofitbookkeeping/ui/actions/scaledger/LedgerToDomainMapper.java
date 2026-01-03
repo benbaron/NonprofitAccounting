@@ -65,10 +65,7 @@ public class LedgerToDomainMapper
             }
         }
 
-        if (!entries.isEmpty())
-        {
-            transaction.setEntries(entries);
-        }
+        transaction.setEntries(entries);
 
         if (primaryFund != null)
         {
