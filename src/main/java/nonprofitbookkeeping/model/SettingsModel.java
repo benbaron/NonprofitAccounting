@@ -1,5 +1,6 @@
 package nonprofitbookkeeping.model;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.MonthDay;
@@ -19,6 +20,7 @@ public class SettingsModel
         /** The name of the organization. */
         @JsonProperty private String organizationName;
         /** The start of the fiscal year stored as a string (e.g. "MM-DD"). */
+        @JsonAlias("fiscalYearStartMonthDay")
         @JsonProperty private String fiscalYearStart;
         /** ISO 4217 code of the default currency. */
         @JsonProperty private String defaultCurrency;
@@ -355,20 +357,33 @@ public class SettingsModel
 		/**
 		 * @return
 		 */
-		public Locale getCurrencyLocale()
-		{
-			// TODO Auto-generated method stub
-			return null;
-			
-		}
+        public Locale getCurrencyLocale()
+        {
+                if (this.currencyLocaleTag == null || this.currencyLocaleTag.isBlank())
+                {
+                        return null;
+                }
+
+                return Locale.forLanguageTag(this.currencyLocaleTag);
+        }
 
 		/**
 		 * @return
 		 */
-		public MonthDay getFiscalYearStartMonthDay()
-		{
-			// TODO Auto-generated method stub
-			return null;
-			
-		}
+        public MonthDay getFiscalYearStartMonthDay()
+        {
+                if (this.fiscalYearStart == null || this.fiscalYearStart.isBlank())
+                {
+                        return null;
+                }
+
+                try
+                {
+                        return MonthDay.parse(this.fiscalYearStart);
+                }
+                catch (DateTimeParseException ex)
+                {
+                        return null;
+                }
+        }
 }
