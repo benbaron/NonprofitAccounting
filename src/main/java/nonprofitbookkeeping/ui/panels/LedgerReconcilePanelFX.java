@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -374,6 +375,7 @@ public class LedgerReconcilePanelFX extends BorderPane
 				AccountingTransaction at = new AccountingTransaction();
 				at.setDate(tx.getDatePosted().toString());
 				at.setDescription(tx.getName() != null ? tx.getName() : tx.getMemo());
+				at.setEntries(new LinkedHashSet<>());
 				out.add(at);
 			}
 			
