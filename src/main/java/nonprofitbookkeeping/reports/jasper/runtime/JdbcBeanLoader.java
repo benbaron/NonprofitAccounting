@@ -106,12 +106,7 @@ public final class JdbcBeanLoader
 		String sql
 	) throws SQLException
 	{
-		List<B> lb = queryBeans(cx, beanClass, sql, null);
-		if (lb.isEmpty())
-		{
-			throw new SQLException("query is empty");
-		}
-		return lb;
+		return queryBeans(cx, beanClass, sql, null);
 		
 	}
 	
