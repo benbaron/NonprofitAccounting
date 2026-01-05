@@ -111,6 +111,7 @@ public final class JdbcBeanLoader
 		{
 			throw new SQLException("query is empty");
 		}
+		System.out.println(lb.toString());
 		return lb;
 		
 	}

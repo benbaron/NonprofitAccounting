@@ -33,8 +33,10 @@ public final class ReportDataFetcher
 	{
 		
 		try (Connection cx = Database.get().getConnection())
-		{
-			return JdbcBeanLoader.queryBeans(cx, beanClass, sql);
+		{				
+			List<B> lb = JdbcBeanLoader.queryBeans(cx, beanClass, sql);
+			System.out.println(lb.toString());
+			return lb;
 		}
 		catch (SQLException ex)
 		{

@@ -41,7 +41,9 @@ public class ASSET_DTL_5aJasperGenerator extends AbstractReportGenerator
             "from journal_transaction jt\n" +
             "join journal_entry je on je.txn_id = jt.id";
 
-        return ReportDataFetcher.queryBeans(ASSET_DTL_5aBean.class, sql);
+        return 
+        	
+        	ReportDataFetcher.queryBeans(ASSET_DTL_5aBean.class, sql);
     }
 
     @Override
