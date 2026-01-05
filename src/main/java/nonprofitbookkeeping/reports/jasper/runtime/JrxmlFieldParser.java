@@ -27,6 +27,13 @@ public final class JrxmlFieldParser
     {
     }
 
+    /**
+     * Parses the inputstream.
+     *
+     * @param input the input
+     * @return the jrxml fields
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static JrxmlFields parse(InputStream input) throws IOException
     {
         if (input == null)
@@ -91,6 +98,9 @@ public final class JrxmlFieldParser
         }
     }
 
+    /**
+     * The Class JrxmlFields.
+     */
     public static final class JrxmlFields
     {
         private final Map<String, String> fields;
@@ -105,11 +115,21 @@ public final class JrxmlFieldParser
                 new LinkedHashSet<>(parameters));
         }
 
+        /**
+         * Fields.
+         *
+         * @return the map
+         */
         public Map<String, String> fields()
         {
             return this.fields;
         }
 
+        /**
+         * Parameters.
+         *
+         * @return the set of parameters
+         */
         public Set<String> parameters()
         {
             return this.parameters;

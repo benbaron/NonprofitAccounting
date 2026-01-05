@@ -15,6 +15,10 @@ import nonprofitbookkeeping.reports.jasper.runtime.ReportDataFetcher;
 /** Skeleton generator for JRXML template TRANSFER_OUT_10d.jrxml */
 public class TRANSFER_OUT_10dJasperGenerator extends AbstractReportGenerator
 {
+    
+    /**
+     * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getReportData() 
+     */
     @Override
     protected List<TRANSFER_OUT_10dBean> getReportData()
     {
@@ -46,6 +50,9 @@ public class TRANSFER_OUT_10dJasperGenerator extends AbstractReportGenerator
         return ReportDataFetcher.queryBeans(TRANSFER_OUT_10dBean.class, sql);
     }
 
+    /**
+     * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getReportParameters() 
+     */
     @Override
     protected Map<String, Object> getReportParameters()
     {
@@ -54,6 +61,9 @@ public class TRANSFER_OUT_10dJasperGenerator extends AbstractReportGenerator
         return params;
     }
 
+    /**
+     * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getReportPath() 
+     */
     @Override
     protected String getReportPath() throws ActionCancelledException, NoFileCreatedException
     {
@@ -61,6 +71,9 @@ public class TRANSFER_OUT_10dJasperGenerator extends AbstractReportGenerator
         return bundledReportPath();
     }
 
+    /**
+     * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getBaseName() 
+     */
     @Override
     public String getBaseName()
     {
