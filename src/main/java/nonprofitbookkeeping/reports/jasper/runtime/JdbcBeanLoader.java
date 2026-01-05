@@ -106,6 +106,7 @@ public final class JdbcBeanLoader
 		String sql
 	) throws SQLException
 	{
+
 		List<B> lb = queryBeans(cx, beanClass, sql, null);
 		if (lb.isEmpty())
 		{
@@ -113,6 +114,7 @@ public final class JdbcBeanLoader
 		}
 		System.out.println(lb.toString());
 		return lb;
+
 		
 	}
 	

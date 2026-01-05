@@ -1,5 +1,9 @@
 package nonprofitbookkeeping.reports.jasper.beans;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.StringJoiner;
+
 /** Generated bean for sheet ASSET_DTL_5a */
 public class ASSET_DTL_5aBean
 {
@@ -1554,6 +1558,30 @@ public class ASSET_DTL_5aBean
     public void setCurrent_amount_sum_f52_f59(java.lang.Double v)
     {
         this.current_amount_sum_f52_f59 = v;
+    }
+
+    @Override
+    public String toString()
+    {
+        StringJoiner joiner =
+            new StringJoiner(", ", "ASSET_DTL_5aBean{", "}");
+        for (Field field : ASSET_DTL_5aBean.class.getDeclaredFields())
+        {
+            if (Modifier.isStatic(field.getModifiers()))
+            {
+                continue;
+            }
+            field.setAccessible(true);
+            try
+            {
+                joiner.add(field.getName() + "=" + field.get(this));
+            }
+            catch (IllegalAccessException ex)
+            {
+                joiner.add(field.getName() + "=<inaccessible>");
+            }
+        }
+        return joiner.toString();
     }
 
     public ASSET_DTL_5aBean()
