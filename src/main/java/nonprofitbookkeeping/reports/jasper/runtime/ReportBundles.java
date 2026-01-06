@@ -1,6 +1,10 @@
+/*
+ * 
+ */
 
 package nonprofitbookkeeping.reports.jasper.runtime;
 
+import nonprofitbookkeeping.core.JacksonDataStorer;
 import nonprofitbookkeeping.service.ReportService.ReportType;
 
 import java.io.IOException;
@@ -25,6 +29,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.logging.Logger;
+
+import org.slf4j.LoggerFactory;
+
 import java.util.logging.Level;
 
 /**
@@ -83,6 +90,9 @@ public final class ReportBundles
 		BUNDLES_BY_GENERATOR = data.byGenerator();
 	}
 	
+	/**
+	 * Instantiates a new report bundles.
+	 */
 	private ReportBundles()
 	{
 	
@@ -132,6 +142,11 @@ public final class ReportBundles
 		
 	}
 	
+	/**
+	 * Load bundles.
+	 *
+	 * @return the bundles data
+	 */
 	private static BundlesData loadBundles()
 	{
 		Map<String, Bundle> byId = new LinkedHashMap<>();
@@ -183,6 +198,7 @@ public final class ReportBundles
 				continue;
 			}
 			
+			require(props, "beanClass", metadataPath);
 			String beanClass = props.getProperty("beanClass");
 			
 			if (beanClass != null && beanClass.isBlank())
@@ -194,6 +210,7 @@ public final class ReportBundles
 			
 			if (beanClass != null)
 			{
+				require(props, "beanName", metadataPath);
 				String rawBeanName = props.getProperty("beanName");
 				
 				if (rawBeanName == null || rawBeanName.isBlank())
@@ -259,12 +276,22 @@ public final class ReportBundles
 		
 	}
 	
+	/**
+	 * Require
+	 *
+	 * @param props the props
+	 * @param key the key
+	 * @param source the source
+	 * @return the string
+	 */
 	private static String require(Properties props, String key, String source)
 	{
 		String value = props.getProperty(key);
 		
 		if (value == null || value.isBlank())
 		{
+			LOGGER.severe("Missing required property '" + key + "' in " + source);
+
 			throw new IllegalStateException(
 				"Missing required property '" + key + "' in " + source);
 		}
@@ -273,6 +300,11 @@ public final class ReportBundles
 		
 	}
 	
+	/**
+	 * Discover bundle resources.
+	 *
+	 * @return the list
+	 */
 	private static List<BundleResource> discoverBundleResources()
 	{
 		List<BundleResource> resources = new ArrayList<>();
@@ -304,6 +336,13 @@ public final class ReportBundles
 		
 	}
 	
+	/**
+	 * Scan root.
+	 *
+	 * @param url the url
+	 * @param resourceRoot the resource root
+	 * @return the list
+	 */
 	private static List<BundleResource> scanRoot(URL url, String resourceRoot)
 	{
 		String protocol = url.getProtocol();
@@ -334,6 +373,15 @@ public final class ReportBundles
 		
 	}
 	
+	/**
+	 * Collect from jar.
+	 *
+	 * @param url the url
+	 * @param resourceRoot the resource root
+	 * @return the list
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws URISyntaxException the URI syntax exception
+	 */
 	private static List<BundleResource> collectFromJar(URL url,
 		String resourceRoot)
 		throws IOException, URISyntaxException
@@ -379,6 +427,14 @@ public final class ReportBundles
 		
 	}
 	
+	/**
+	 * Collect bundle resources.
+	 *
+	 * @param base the base
+	 * @param resourceRoot the resource root
+	 * @return the list
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private static List<BundleResource> collectBundleResources(Path base,
 		String resourceRoot) throws IOException
 	{
@@ -428,6 +484,14 @@ public final class ReportBundles
 		
 	}
 	
+	/**
+	 * Builds the metadata path.
+	 *
+	 * @param root the root
+	 * @param metadataDirectory the metadata directory
+	 * @param fileName the file name
+	 * @return the string
+	 */
 	private static String buildMetadataPath(String root,
 		String metadataDirectory,
 		String fileName)
@@ -483,12 +547,25 @@ public final class ReportBundles
 		
 	}
 	
+	/**
+	 * Resource exists.
+	 *
+	 * @param loader the loader
+	 * @param resource the resource
+	 * @return true, if successful
+	 */
 	private static boolean resourceExists(ClassLoader loader, String resource)
 	{
 		return loader.getResource(resource) != null;
 		
 	}
 	
+	/**
+	 * Compute bundle root.
+	 *
+	 * @param metadataDirectory the metadata directory
+	 * @return the string
+	 */
 	private static String computeBundleRoot(Path metadataDirectory)
 	{
 		Path root = metadataDirectory;
@@ -514,6 +591,14 @@ public final class ReportBundles
 		
 	}
 	
+	/**
+	 * The Record BundleResource.
+	 *
+	 * @param root the root
+	 * @param metadataDirectory the metadata directory
+	 * @param bundleRoot the bundle root
+	 * @param fileName the file name
+	 */
 	private record BundleResource(String root,
 		String metadataDirectory,
 		String bundleRoot,
@@ -530,6 +615,12 @@ public final class ReportBundles
 		
 	}
 	
+	/**
+	 * The Record BundlesData.
+	 *
+	 * @param byId the by id
+	 * @param byGenerator the by generator
+	 */
 	private record BundlesData(Map<String, Bundle> byId,
 		Map<String, Bundle> byGenerator)
 	{

@@ -108,9 +108,7 @@ public class InventoryService
 			}
 			
 			// Else: Consider logging or throwing an exception if item to update
-			// is not
-			// found,
-			// depending on desired behavior.
+			// is not found, depending on desired behavior.
 		}
 		
 	}
