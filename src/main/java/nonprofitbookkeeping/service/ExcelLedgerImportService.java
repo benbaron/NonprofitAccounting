@@ -22,7 +22,8 @@ import java.util.*;
  */
 public class ExcelLedgerImportService
 {
-        private static final Logger LOGGER = LoggerFactory.getLogger(ExcelLedgerImportService.class);
+	private static final Logger LOGGER =
+		LoggerFactory.getLogger(ExcelLedgerImportService.class);
 	
 	/**
 	 * Reads the first worksheet of the given Excel file and converts the rows
@@ -32,7 +33,8 @@ public class ExcelLedgerImportService
 	 * @return list of parsed rows in order of appearance.
 	 * @throws IOException if the file cannot be read or parsed.
 	 */
-	public static List<ExcelLedgerRow> importSpreadsheet(File file) throws IOException
+	public static List<ExcelLedgerRow> importSpreadsheet(File file)
+		throws IOException
 	{
 		
 		if (file == null || !file.exists())
@@ -41,7 +43,7 @@ public class ExcelLedgerImportService
 		}
 		
 		try (FileInputStream fis = new FileInputStream(file);
-				Workbook workbook = WorkbookFactory.create(fis))
+			Workbook workbook = WorkbookFactory.create(fis))
 		{
 			Sheet sheet = workbook.getSheetAt(0);
 			
@@ -57,12 +59,12 @@ public class ExcelLedgerImportService
 			
 			DataFormatter formatter = new DataFormatter();
 			FormulaEvaluator evaluator = workbook.getCreationHelper()
-					.createFormulaEvaluator();
+				.createFormulaEvaluator();
 			
-                        for (int r = firstRow; r <= lastRow; r++)
-                        {
-                                LOGGER.debug("Row number {}", r);
-                                Row row = sheet.getRow(r);
+			for (int r = firstRow; r <= lastRow; r++)
+			{
+				LOGGER.debug("Row number {}", r);
+				Row row = sheet.getRow(r);
 				
 				if (row == null)
 				{
@@ -74,9 +76,9 @@ public class ExcelLedgerImportService
 				results.add(excelLedgerRow);
 				
 				// debug
-                                java.io.StringWriter sw = new java.io.StringWriter();
-                                printRow(row, formatter, evaluator, sw);
-                                LOGGER.trace(sw.toString());
+				java.io.StringWriter sw = new java.io.StringWriter();
+				printRow(row, formatter, evaluator, sw);
+				LOGGER.trace(sw.toString());
 				
 			}
 			
@@ -94,9 +96,9 @@ public class ExcelLedgerImportService
 	 * @param out
 	 */
 	public static void printRow(Row row,
-								DataFormatter formatter,
-								FormulaEvaluator evaluator,
-								Appendable out)
+		DataFormatter formatter,
+		FormulaEvaluator evaluator,
+		Appendable out)
 	{
 		
 		if (row == null)
@@ -109,11 +111,12 @@ public class ExcelLedgerImportService
 			
 			for (int i = row.getFirstCellNum(); i < row.getLastCellNum(); i++)
 			{
-				Cell cell = row.getCell(i, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
+				Cell cell =
+					row.getCell(i, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
 				String value = (cell == null) ? "" :
-						" " +
-								"[" + i + "]=" +
-								formatter.formatCellValue(cell, evaluator);
+					" " +
+						"[" + i + "]=" +
+						formatter.formatCellValue(cell, evaluator);
 				out.append(value);
 			}
 			
@@ -139,7 +142,8 @@ public class ExcelLedgerImportService
 		final DataFormatter fmt;
 		final FormulaEvaluator eval;
 		
-		RowReader(Row row, int index, DataFormatter fmt, FormulaEvaluator evaluator)
+		RowReader(Row row, int index, DataFormatter fmt,
+			FormulaEvaluator evaluator)
 		{
 			this.row = row;
 			this.index = index;
@@ -184,17 +188,25 @@ public class ExcelLedgerImportService
 			}
 			
 			// ---- Fixed columns (in the declared order) ----
-			bean.setBalance(readBigDecimal(this.row.getCell(c++), this.fmt, this.eval));
-			bean.setDate(readLocalDate(this.row.getCell(c++), this.fmt, this.eval));
-			bean.setCheckNumber(readString(this.row.getCell(c++), this.fmt, this.eval));
+			bean.setBalance(
+				readBigDecimal(this.row.getCell(c++), this.fmt, this.eval));
+			bean.setDate(
+				readLocalDate(this.row.getCell(c++), this.fmt, this.eval));
+			bean.setCheckNumber(
+				readString(this.row.getCell(c++), this.fmt, this.eval));
 			c++; // skip amount
-			bean.setClearBank(readString(this.row.getCell(c++), this.fmt, this.eval));
-			bean.setToFrom(readString(this.row.getCell(c++), this.fmt, this.eval));
-			bean.setMemoNotes(readString(this.row.getCell(c++), this.fmt, this.eval));
-			bean.setBudgetTracking(readString(this.row.getCell(c++), this.fmt, this.eval));
+			bean.setClearBank(
+				readString(this.row.getCell(c++), this.fmt, this.eval));
+			bean.setToFrom(
+				readString(this.row.getCell(c++), this.fmt, this.eval));
+			bean.setMemoNotes(
+				readString(this.row.getCell(c++), this.fmt, this.eval));
+			bean.setBudgetTracking(
+				readString(this.row.getCell(c++), this.fmt, this.eval));
 			
 			c++; // skip number column
-			bean.setNetTotal(readBigDecimal(this.row.getCell(c++), this.fmt, this.eval));
+			bean.setNetTotal(
+				readBigDecimal(this.row.getCell(c++), this.fmt, this.eval));
 			
 			// ---- Allocation groups (5 columns each) ----
 			final int GROUP_SIZE = 5;
@@ -206,21 +218,28 @@ public class ExcelLedgerImportService
 				for (int i = 0; i < 2; i++)
 				{
 					// Pull raw strings first
-					String amt = readString(this.row.getCell(c), this.fmt, this.eval);
-					String acct = readString(this.row.getCell(c + 1), this.fmt, this.eval);
-					String income = readString(this.row.getCell(c + 2), this.fmt, this.eval);
-					String exp = readString(this.row.getCell(c + 3), this.fmt, this.eval);
-					String fund = readString(this.row.getCell(c + 4), this.fmt, this.eval);
+					String amt =
+						readString(this.row.getCell(c), this.fmt, this.eval);
+					String acct = readString(this.row.getCell(c + 1), this.fmt,
+						this.eval);
+					String income = readString(this.row.getCell(c + 2),
+						this.fmt, this.eval);
+					String exp = readString(this.row.getCell(c + 3), this.fmt,
+						this.eval);
+					String fund = readString(this.row.getCell(c + 4), this.fmt,
+						this.eval);
 					
-					boolean allBlank = (isBlank(amt) && isBlank(acct) && isBlank(income) &&
+					boolean allBlank =
+						(isBlank(amt) && isBlank(acct) && isBlank(income) &&
 							isBlank(exp) && isBlank(fund));
 					
 					if (!allBlank)
 					{
-						ExcelLedgerRow.Allocation a = new ExcelLedgerRow.Allocation();
+						ExcelLedgerRow.Allocation a =
+							new ExcelLedgerRow.Allocation();
 						a.setAmount(readBigDecimal(this.row.getCell(c),
-								this.fmt,
-								this.eval)); // use numeric parse foramt
+							this.fmt,
+							this.eval)); // use numeric parse foramt
 						a.setAssetLiabilityAccount(acct);
 						a.setIncomeCategory(income);
 						a.setExpenseCategory(exp);
@@ -234,7 +253,7 @@ public class ExcelLedgerImportService
 				c++; // skip the number column
 			}
 			
-                        LOGGER.trace("Bean: {}", bean);
+			LOGGER.trace("Bean: {}", bean);
 			return bean;
 			
 		}
@@ -247,9 +266,9 @@ public class ExcelLedgerImportService
 		 * @param eval
 		 * @return
 		 */
-		private static String readString(	Cell cell,
-											DataFormatter fmt,
-											FormulaEvaluator eval)
+		private static String readString(Cell cell,
+			DataFormatter fmt,
+			FormulaEvaluator eval)
 		{
 			
 			if (cell == null)
@@ -269,8 +288,8 @@ public class ExcelLedgerImportService
 		 * @return
 		 */
 		private static BigDecimal readBigDecimal(Cell cell,
-		                                         DataFormatter fmt,
-		                                         FormulaEvaluator eval)
+			DataFormatter fmt,
+			FormulaEvaluator eval)
 		{
 			
 			if (cell == null)
@@ -278,7 +297,8 @@ public class ExcelLedgerImportService
 				return null;
 			}
 			
-			// If it’s a pure numeric cell, avoid the formatter’s rounding/formatting
+			// If it’s a pure numeric cell, avoid the formatter’s
+			// rounding/formatting
 			CellType type = cell.getCellType();
 			
 			if (type == CellType.FORMULA)
@@ -299,7 +319,8 @@ public class ExcelLedgerImportService
 				return null;
 			}
 			
-			// Handle common accounting formats: commas and parentheses for negatives
+			// Handle common accounting formats: commas and parentheses for
+			// negatives
 			s = s.replace(",", "");
 			
 			if (s.startsWith("(") && s.endsWith(")"))
@@ -325,9 +346,9 @@ public class ExcelLedgerImportService
 		 * @param eval
 		 * @return
 		 */
-		private static LocalDate readLocalDate(	Cell cell,
-												DataFormatter fmt,
-												FormulaEvaluator eval)
+		private static LocalDate readLocalDate(Cell cell,
+			DataFormatter fmt,
+			FormulaEvaluator eval)
 		{
 			
 			if (cell == null)
