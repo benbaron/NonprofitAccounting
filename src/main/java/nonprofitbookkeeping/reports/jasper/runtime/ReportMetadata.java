@@ -27,6 +27,7 @@ public class ReportMetadata
 		this.reportName = reportName;
 		this.created = created;
 		this.filePath = filePath;
+		
 	}
 	
 	/**  
@@ -36,9 +37,11 @@ public class ReportMetadata
 	 * @param nonExistentFilePath
 	 * @param string2
 	 */
-	public ReportMetadata(String string, String format, String nonExistentFilePath, String string2)
+	public ReportMetadata(String string, String format,
+		String nonExistentFilePath, String string2)
 	{
 		this(string, format, nonExistentFilePath);
+		
 	}
 	
 	/**
@@ -49,6 +52,7 @@ public class ReportMetadata
 	public String getReportName()
 	{
 		return this.reportName;
+		
 	}
 	
 	/**
@@ -59,6 +63,7 @@ public class ReportMetadata
 	public String getCreated()
 	{
 		return this.created;
+		
 	}
 	
 	/**
@@ -69,6 +74,7 @@ public class ReportMetadata
 	public String getFilePath()
 	{
 		return this.filePath;
+		
 	}
 	
 }
