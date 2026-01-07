@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Executes a JDBC query and maps each row to a bean using DataFiller.
@@ -20,6 +22,8 @@ import java.util.Map;
  */
 public final class JdbcBeanLoader
 {
+	private static final Logger LOGGER =
+		LoggerFactory.getLogger(JdbcBeanLoader.class);
 	
 	private JdbcBeanLoader()
 	{
@@ -50,6 +54,8 @@ public final class JdbcBeanLoader
 	) throws SQLException
 	{
 		
+		LOGGER.debug("Executing report query for beanClass={}, sql={}",
+			beanClass.getName(), sql);
 		try (PreparedStatement ps = cx.prepareStatement(sql))
 		{
 			
@@ -63,9 +69,11 @@ public final class JdbcBeanLoader
 				List<B> result = new ArrayList<>();
 				ResultSetMetaData md = rs.getMetaData();
 				int cols = md.getColumnCount();
+				int rowIndex = 0;
 				
 				while (rs.next())
 				{
+					rowIndex++;
 					Map<String, Object> row = new HashMap<>();
 					
 					for (int i = 1; i <= cols; i++)
@@ -86,7 +94,10 @@ public final class JdbcBeanLoader
 						
 					}
 					
+					LOGGER.debug("Mapping row {} for beanClass={} with columns={}",
+						rowIndex, beanClass.getName(), row);
 					B bean = DataFiller.fill(beanClass, row);
+					LOGGER.debug("Mapped row {} to bean {}", rowIndex, bean);
 					result.add(bean);
 				}
 				
@@ -110,9 +121,12 @@ public final class JdbcBeanLoader
 		List<B> lb = queryBeans(cx, beanClass, sql, null);
 		if (lb.isEmpty())
 		{
+			LOGGER.debug("No rows returned for beanClass={}, sql={}",
+				beanClass.getName(), sql);
 			throw new SQLException("query is empty");
 		}
-		System.out.println(lb.toString());
+		LOGGER.debug("Loaded {} beans for beanClass={}", lb.size(),
+			beanClass.getName());
 		return lb;
 
 		

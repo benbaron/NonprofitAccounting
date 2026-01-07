@@ -8,6 +8,8 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Reflection-based helper that populates a bean from a Map of fieldName -> value.
@@ -21,6 +23,8 @@ import java.util.Map;
  */
 public final class DataFiller
 {
+	private static final Logger LOGGER =
+		LoggerFactory.getLogger(DataFiller.class);
 	
 	private DataFiller()
 	{
@@ -44,8 +48,13 @@ public final class DataFiller
 			
 			if (values == null || values.isEmpty())
 			{
+				LOGGER.debug("No values provided for beanClass={}",
+					beanClass.getName());
 				return bean;
 			}
+			
+			LOGGER.debug("Filling beanClass={} with {} values",
+				beanClass.getName(), values.size());
 			
 			Method[] methods = beanClass.getMethods();
 			
@@ -56,11 +65,15 @@ public final class DataFiller
 				
 				if (fieldName == null || fieldName.isBlank())
 				{
+					LOGGER.debug("Skipping blank field name for beanClass={}",
+						beanClass.getName());
 					continue;
 				}
 				
 				if (value == null)
 				{
+					LOGGER.debug("Skipping null value for beanClass={}, field={}",
+						beanClass.getName(), fieldName);
 					continue;
 				}
 				
@@ -71,6 +84,9 @@ public final class DataFiller
 				if (setter == null)
 				{
 					// No matching setter; skip
+					LOGGER.debug(
+						"No setter found for beanClass={}, field={}, setter={}",
+						beanClass.getName(), fieldName, setterName);
 					continue;
 				}
 				
@@ -80,10 +96,17 @@ public final class DataFiller
 				if (converted == null && value != null)
 				{
 					// Could not convert; skip rather than throwing
+					LOGGER.debug(
+						"Unable to convert value for beanClass={}, field={}, " +
+							"setter={}, valueType={}, targetType={}",
+						beanClass.getName(), fieldName, setterName,
+						value.getClass().getName(), paramType.getName());
 					continue;
 				}
 				
 				setter.invoke(bean, converted);
+				LOGGER.debug("Set beanClass={} field={} with value={}",
+					beanClass.getName(), fieldName, converted);
 			}
 			
 			return bean;
