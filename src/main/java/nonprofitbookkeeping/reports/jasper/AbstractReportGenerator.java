@@ -90,11 +90,31 @@ public abstract class AbstractReportGenerator
 		
 		if (this.reportDataExplicit)
 		{
+			if (LOGGER.isLoggable(Level.FINE))
+			{
+				LOGGER.fine("Using explicit report data for generator " +
+					getClass().getName() + " with " +
+					(this.reportDataOverride == null ?
+						0 : this.reportDataOverride.size()) +
+					" rows.");
+			}
 			return this.reportDataOverride == null ?
 				Collections.emptyList() : this.reportDataOverride;
 		}
 		
+		if (LOGGER.isLoggable(Level.FINE))
+		{
+			LOGGER.fine("Generating report data via getReportData() for " +
+				"generator " + getClass().getName() + ".");
+		}
 		List<?> data = getReportData();
+		if (LOGGER.isLoggable(Level.FINE))
+		{
+			LOGGER.fine("Generated " +
+				(data == null ? 0 : data.size()) +
+				" report data rows for generator " + getClass().getName() +
+				".");
+		}
 		return data == null ? Collections.emptyList() : List.copyOf(data);
 		
 	}
