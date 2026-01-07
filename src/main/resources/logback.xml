@@ -18,11 +18,6 @@
     <appender-ref ref="File" />
   </logger>
 
-  <logger name="net.sf.jasperreports.engine" level="DEBUG" additivity="false">
-    <appender-ref ref="Console" />
-    <appender-ref ref="File" />
-  </logger>
-
   <root level="INFO">
     <appender-ref ref="Console" />
     <appender-ref ref="File" />
