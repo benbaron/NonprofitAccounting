@@ -50,6 +50,17 @@ class JasperNullSqlTest
     }
 
     @Test
+    void fieldMapSqlBuilderUsesDbExprWhenPresent() throws Exception
+    {
+        String selectList = FieldMapSqlBuilder.buildSelectList(
+            "/nonprofitbookkeeping/reports/test_fieldmap_with_dbexpr.csv",
+            null);
+
+        assertTrue(selectList.contains("accounts.name as account_name"));
+        assertTrue(selectList.contains("NULL as fallback_field"));
+    }
+
+    @Test
     void assetDetailGeneratorReturnsNullsWhenSelectUsesNullFallback(@TempDir Path tempDir)
         throws SQLException
     {

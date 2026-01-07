@@ -91,6 +91,14 @@ public final class JdbcBeanLoader
 						{
 							row.put(label, value);
 						}
+
+						LOGGER.trace(
+							"Row {} column {} label={} value={} valueType={}",
+							rowIndex,
+							i,
+							label,
+							value,
+							value == null ? "null" : value.getClass().getName());
 						
 					}
 					
