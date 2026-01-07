@@ -1,0 +1,25 @@
+<configuration>
+  <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="File" class="ch.qos.logback.core.FileAppender">
+    <file>logs/app.log</file>
+    <append>true</append>
+    <encoder>
+      <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <logger name="nonprofitbookkeeping.reports" level="DEBUG" additivity="false">
+    <appender-ref ref="Console" />
+    <appender-ref ref="File" />
+  </logger>
+
+  <root level="INFO">
+    <appender-ref ref="Console" />
+    <appender-ref ref="File" />
+  </root>
+</configuration>
