@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.Locale;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,15 +71,17 @@ public final class DataFiller
 					continue;
 				}
 				
+				String normalizedFieldName = fieldName.trim();
+				String setterName = "set" +
+					capitalize(normalizedFieldName.toLowerCase(Locale.ROOT));
+				
 				if (value == null)
 				{
 					LOGGER.debug("Skipping null value for beanClass={}, field={}",
 						beanClass.getName(), fieldName);
 					continue;
 				}
-				
-				String setterName = "set" + capitalize(fieldName);
-				
+
 				Method setter = findSetter(methods, setterName);
 				
 				if (setter == null)

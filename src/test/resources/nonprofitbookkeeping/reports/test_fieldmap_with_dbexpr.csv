@@ -1,0 +1,3 @@
+sheetName,cellRef,fieldName,javaType,excelFormat,dbExpr
+"TEST","A1","account_name","java.lang.String","@","accounts.name"
+"TEST","A2","fallback_field","java.lang.String","@",
