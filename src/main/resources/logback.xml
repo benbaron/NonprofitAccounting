@@ -13,7 +13,7 @@
     </encoder>
   </appender>
 
-  <logger name="nonprofitbookkeeping.reports" level="DEBUG" additivity="false">
+  <logger name="nonprofitbookkeeping.reports" level="FINE" additivity="false">
     <appender-ref ref="Console" />
     <appender-ref ref="File" />
   </logger>

@@ -365,15 +365,15 @@ public class ReportService
 				"ReportContext and reportType are required.");
 		}
 		
-		if (LOGGER.isLoggable(Level.FINE))
+		if (LOGGER.isLoggable(Level.INFO))
 		{
-			LOGGER.fine("Starting Jasper report generation for reportType=" +
+			LOGGER.info("Starting Jasper report generation for reportType=" +
 				ctx.getReportType());
 		}
 		
 		// Resolve report type and generator
 		ReportType type = ReportType.fromId(ctx.getReportType());
-		LOGGER.fine(() -> "Resolving report generator for reportType '" +
+		LOGGER.info(() -> "Resolving report generator for reportType '" +
 			ctx.getReportType() + "'.");
 		
 		if (type == null)
@@ -383,7 +383,7 @@ public class ReportService
 		}
 		
 		String generatorClassName = this.generatorRegistry.get(type);
-		LOGGER.fine(() -> "Selected generator class '" + generatorClassName +
+		LOGGER.info(() -> "Selected generator class '" + generatorClassName +
 			"' for reportType '" + type.id() + "'.");
 		
 		if (generatorClassName == null || generatorClassName.isBlank())
@@ -392,9 +392,9 @@ public class ReportService
 				"No generator registered for reportType: " + type.id());
 		}
 		
-		if (LOGGER.isLoggable(Level.FINE))
+		if (LOGGER.isLoggable(Level.INFO))
 		{
-			LOGGER.fine("Selected generator " + generatorClassName +
+			LOGGER.info("Selected generator " + generatorClassName +
 				" for reportType=" + type.id());
 		}
 		
@@ -412,9 +412,9 @@ public class ReportService
 		// Normalize format; default to PDF
 		String fmt =
 			(outputFormat == null ? "pdf" : outputFormat).trim().toLowerCase();
-		if (LOGGER.isLoggable(Level.FINE))
+		if (LOGGER.isLoggable(Level.INFO))
 		{
-			LOGGER.fine("Resolved output format: " + fmt);
+			LOGGER.info("Resolved output format: " + fmt);
 		}
 		
 		String baseName = ReportGeneratorLoader.getBaseName(generator);
