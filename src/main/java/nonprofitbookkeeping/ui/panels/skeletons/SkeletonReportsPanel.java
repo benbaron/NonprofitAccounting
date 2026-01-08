@@ -258,8 +258,9 @@ public class SkeletonReportsPanel extends BorderPane
 				
 			}
 			
+
 			/**
-			 * 
+			 * Open directory.
 			 */
 			private void openDirectory()
 			{
@@ -614,6 +615,12 @@ public class SkeletonReportsPanel extends BorderPane
 		
 	}
 	
+	/**
+	 * Derive validation diagnosis.
+	 *
+	 * @param validationMessage the validation message
+	 * @return the string
+	 */
 	private String deriveValidationDiagnosis(String validationMessage)
 	{
 		

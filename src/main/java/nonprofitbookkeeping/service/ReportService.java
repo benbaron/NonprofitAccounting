@@ -13,14 +13,11 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -267,6 +264,11 @@ public class ReportService
 		
 	}
 	
+	/**
+	 * Register bundled generators.
+	 *
+	 * @param registry the registry
+	 */
 	private static
 		void registerBundledGenerators(Map<ReportType, String> registry)
 	{
@@ -280,6 +282,12 @@ public class ReportService
 	}
 	
 	
+	/**
+	 * Generator class.
+	 *
+	 * @param simpleName the simple name
+	 * @return the string
+	 */
 	private static String generatorClass(String simpleName)
 	{
 		return "nonprofitbookkeeping.reports.jasper." + simpleName;
@@ -418,58 +426,6 @@ public class ReportService
 	}
 	
 	
-	/**
-	 * Checks if a given account is associated with any of the selected funds.
-	 * This is a helper method used for filtering report data based on fund selections.
-	 *
-	 * @param account The {@link Account} to check.
-	 * @param selectedFundNames A list of names of the funds selected for filtering.
-	 * @param chartOfAccounts The {@link ChartOfAccounts} (currently unused in this specific method logic but could be for future enhancements).
-	 *
-	 * @return {@code true} if {@code selectedFundNames} is null or empty (implying no filter),
-	 *         or if the {@code account} is not null, has associated funds, and at least one of its
-	 *         associated funds is in the {@code selectedFundNames} list. Returns {@code false} otherwise.
-	 */
-	public static boolean doesAccountMatchFunds(Account account,
-		List<String> selectedFundNames,
-		ChartOfAccounts chartOfAccounts)
-	{
-		
-		if (selectedFundNames == null || selectedFundNames.isEmpty())
-		{
-			return true;
-			// No fund filter applied, so account matches by default.
-		}
-		
-		if (account == null)
-		{
-			return false; // Null account cannot match.
-		}
-		
-		List<String> associatedFunds = account.getAssociatedFundIds();
-		
-		if (associatedFunds == null || associatedFunds.isEmpty())
-		{
-			return false;
-			// Account has no associated funds, so cannot match specific fund
-			// selection.
-		}
-		
-		for (String fundId : associatedFunds)
-		{
-			
-			if (fundId != null && selectedFundNames.contains(fundId))
-			{
-				return true; // Account is associated with at least one of the
-								// selected funds.
-			}
-			
-		}
-		
-		return false; // Account is not associated with any of the selected
-						// funds.
-		
-	}
 	
 	/**
 	 * Calculates the balance of the provided account using the supplied
