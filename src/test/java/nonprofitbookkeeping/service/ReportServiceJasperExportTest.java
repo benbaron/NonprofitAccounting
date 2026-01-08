@@ -77,32 +77,7 @@ class ReportServiceJasperExportTest
 			return lastFormat;
 			
 		}
-		
-		@Override
-		public JasperPrint generatePrint()
-		{
-			return new JasperPrint();
-			
-		}
-		
-		@Override
-		public File writeJasperOutput(String format, JasperPrint print,
-			String baseName)
-			throws JRException, IOException
-		{
-			lastFormat = format;
-			
-			if (outputDirectory == null)
-			{
-				throw new IOException("Temporary directory not configured");
-			}
-			
-			File file = new File(outputDirectory, baseName + "." + format);
-			Files.write(file.toPath(), new byte[0]);
-			return file;
-			
-		}
-		
+				
 		@Override
 		protected List<?> getReportData()
 		{

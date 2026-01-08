@@ -19,8 +19,6 @@ public final class FormatUtils
 	private static String patternOverride;
 	private static final Object FORMAT_LOCK = new Object();
 	private static Locale locale = Locale.getDefault();
-	private static DecimalFormatSymbols symbols =
-		DecimalFormatSymbols.getInstance(locale);
 	private static String currencyCode = resolveDefaultCurrency(locale);
 	private static DecimalFormat formatter = createFormatter();
 	
@@ -141,7 +139,7 @@ public final class FormatUtils
 			if (newLocale != null)
 			{
 				locale = newLocale;
-				symbols = DecimalFormatSymbols.getInstance(locale);
+				DecimalFormatSymbols.getInstance(locale);
 				
 				if (desiredCurrencyCode == null ||
 					desiredCurrencyCode.isBlank())
@@ -246,7 +244,6 @@ public final class FormatUtils
 	{
 		DecimalFormatSymbols localSymbols =
 			DecimalFormatSymbols.getInstance(locale);
-		symbols = localSymbols;
 		String patternToUse = requestedPattern;
 		
 		if (patternToUse == null || patternToUse.isBlank())
@@ -286,20 +283,12 @@ public final class FormatUtils
 		
 	}
 	
-	private static String resolvePattern()
-	{
-		
-		if (patternOverride != null)
-		{
-			return patternOverride;
-		}
-		
-		DecimalFormat currencyFormat =
-			(DecimalFormat) NumberFormat.getCurrencyInstance(locale);
-		return currencyFormat.toPattern();
-		
-	}
-	
+	/**
+	 * Parses the with formatter.
+	 *
+	 * @param text the text
+	 * @return the big decimal
+	 */
 	private static BigDecimal parseWithFormatter(String text)
 	{
 		

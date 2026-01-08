@@ -163,6 +163,12 @@ final class ReportGeneratorLoader
 		
 	}
 	
+	/**
+	 * Assign context.
+	 *
+	 * @param instance the instance
+	 * @param context the context
+	 */
 	private static void assignContext(Object instance, ReportContext context)
 	{
 		

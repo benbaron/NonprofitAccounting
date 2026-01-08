@@ -119,6 +119,13 @@ public final class DataFiller
 		
 	}
 	
+	/**
+	 * Find setter.
+	 *
+	 * @param methods the methods
+	 * @param setterName the setter name
+	 * @return the method
+	 */
 	private static Method findSetter(Method[] methods, String setterName)
 	{
 		

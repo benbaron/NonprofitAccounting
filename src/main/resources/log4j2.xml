@@ -51,6 +51,11 @@
       <AppenderRef ref="Console"/>
       <AppenderRef ref="File"/>
     </Logger>
+    <!-- Reports subsystem -->
+    <Logger name="nonprofitbookkeeping.reports" level="debug" additivity="false">
+      <AppenderRef ref="Console"/>
+      <AppenderRef ref="File"/>
+    </Logger>
 
     <Root level="info">
       <AppenderRef ref="Console"/>

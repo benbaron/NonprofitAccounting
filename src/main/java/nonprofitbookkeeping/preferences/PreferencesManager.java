@@ -33,10 +33,10 @@ public class PreferencesManager
 	static
 	{
 		// Older releases stored both the read and write locations under the
-		// same
-		// key. If a value exists for the shared key but the new write key has
-		// not
-		// yet been initialised, copy it so that users retain their preferred
+		// same key. If a value exists for the shared key but the new write key
+		// has
+		// not yet been initialised, copy it so that users retain their
+		// preferred
 		// directory for save operations after upgrading.
 		String sharedValue = prefs.get(LAST_DIR_KEY, null);
 		
@@ -72,12 +72,12 @@ public class PreferencesManager
 	}
 	
 	/**
-	    * Gets the last directory path that was used by a file chooser
-	    * specifically for write or save operations. If no preference is set, it
-	    * defaults to the user's home directory.
-	    *
-	    * @return The last write directory path as a String.
-	    */
+	 * Gets the last directory path that was used by a file chooser
+	 * specifically for write or save operations. If no preference is set, it
+	 * defaults to the user's home directory.
+	 *
+	 * @return The last write directory path as a String.
+	 */
 	public static String getLastWriteDirectory()
 	{
 		return prefs.get(LAST_WRITE_DIR_KEY, System.getProperty("user.home"));

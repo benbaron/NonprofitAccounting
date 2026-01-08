@@ -28,6 +28,12 @@ public final class ReportSqlFilters
 	private final String whereClause;
 	private final List<SqlBinder> binders;
 	
+	/**
+	 * Instantiates a new report sql filters.
+	 *
+	 * @param whereClause the where clause
+	 * @param binders the binders
+	 */
 	private ReportSqlFilters(String whereClause, List<SqlBinder> binders)
 	{
 		this.whereClause = whereClause;
@@ -35,6 +41,11 @@ public final class ReportSqlFilters
 		
 	}
 	
+	/**
+	 * Where clause.
+	 *
+	 * @return the string
+	 */
 	public String whereClause()
 	{
 		return this.whereClause;
@@ -55,6 +66,12 @@ public final class ReportSqlFilters
 		
 	}
 	
+	/**
+	 * From context.
+	 *
+	 * @param context the context
+	 * @return the report sql filters
+	 */
 	public static ReportSqlFilters fromContext(ReportContext context)
 	{
 		List<String> clauses = new ArrayList<>();
@@ -137,6 +154,12 @@ public final class ReportSqlFilters
 		
 	}
 	
+	/**
+	 * Placeholders.
+	 *
+	 * @param count the count
+	 * @return the string
+	 */
 	private static String placeholders(int count)
 	{
 		return String.join(",", java.util.Collections.nCopies(count, "?"));

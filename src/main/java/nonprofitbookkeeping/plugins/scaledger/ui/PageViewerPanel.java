@@ -41,6 +41,7 @@ public class PageViewerPanel extends JPanel
 		// Set layout for the panel and add scrollPane
 		setLayout(new BorderLayout());
 		add(this.scrollPane, BorderLayout.CENTER);
+		
 	}
 	
 	/**
@@ -50,6 +51,7 @@ public class PageViewerPanel extends JPanel
 	public DefaultTableModel getTableModel()
 	{
 		return this.tableModel;
+		
 	}
 	
 	/**
@@ -68,21 +70,28 @@ public class PageViewerPanel extends JPanel
 		if (newModelData == null)
 		{
 			// Clear existing data if new data is null
-			this.tableModel.setDataVector(new Vector<>(), new Vector<>()); // Empty data and columns
+			this.tableModel.setDataVector(new Vector<>(), new Vector<>()); // Empty
+																			// data
+																			// and
+																			// columns
 			return;
 		}
 		
 		// Extract column identifiers from the newModelData
 		Vector<String> columnIdentifiers = new Vector<>();
-		for (int i = 0; i < newModelData.getColumnCount(); i++) {
+		
+		for (int i = 0; i < newModelData.getColumnCount(); i++)
+		{
 			columnIdentifiers.add(newModelData.getColumnName(i));
 		}
-
+		
 		// Replace data and columns with newModelData's content
 		this.tableModel.setDataVector(
 			newModelData.getDataVector(),
 			columnIdentifiers);
-		// No need to call fireTableStructureChanged() as setDataVector does this.
+		
+		// No need to call fireTableStructureChanged() as setDataVector does
+		// this.
 	}
 	
 	/**
@@ -95,7 +104,8 @@ public class PageViewerPanel extends JPanel
 	 *                                   Can be null, in which case the dialog may be centered on the screen.
 	 * @param title The title for the dialog window.
 	 */
-	public void displayInWindow(Component parentComponentForLocation, String title)
+	public void displayInWindow(Component parentComponentForLocation,
+		String title)
 	{
 		// Determine owner Frame for JDialog
 		Frame ownerFrame = null;
@@ -107,7 +117,8 @@ public class PageViewerPanel extends JPanel
 		else if (parentComponentForLocation != null)
 		{
 			// Try to find a Frame ancestor
-			Component ancestor = SwingUtilities.getWindowAncestor(parentComponentForLocation);
+			Component ancestor =
+				SwingUtilities.getWindowAncestor(parentComponentForLocation);
 			
 			if (ancestor instanceof Frame)
 			{
@@ -116,9 +127,14 @@ public class PageViewerPanel extends JPanel
 			
 		}
 		
-		JDialog dialog = new JDialog(ownerFrame, title, false); // false for modeless
-		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE); // Dispose on close to free
-																	// resources
+		JDialog dialog = new JDialog(ownerFrame, title, false); // false for
+																// modeless
+		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE); // Dispose
+																			// on
+																			// close
+																			// to
+																			// free
+		// resources
 		dialog.setContentPane(this); // Add this panel to the dialog
 		dialog.pack(); // Size the dialog to fit its contents
 		
@@ -128,8 +144,11 @@ public class PageViewerPanel extends JPanel
 			dialog.setSize(new Dimension(600, 400)); // A reasonable default
 		}
 		
-		dialog.setLocationRelativeTo(parentComponentForLocation); // Center relative to parent
+		dialog.setLocationRelativeTo(parentComponentForLocation); // Center
+																	// relative
+																	// to parent
 		dialog.setVisible(true);
+		
 	}
 	
 	/**
@@ -160,8 +179,10 @@ public class PageViewerPanel extends JPanel
 			// Display the panel in a JFrame for testing
 			JFrame frame = new JFrame("Page Viewer Panel Test");
 			frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-			frame.setContentPane(panel); // Add panel directly or use displayInWindow
-			// panel.displayInWindow(null, "Page Viewer Panel Test"); // Alternative using
+			frame.setContentPane(panel); // Add panel directly or use
+											// displayInWindow
+			// panel.displayInWindow(null, "Page Viewer Panel Test"); //
+			// Alternative using
 			// the method
 			frame.pack();
 			
@@ -173,6 +194,7 @@ public class PageViewerPanel extends JPanel
 			frame.setLocationRelativeTo(null);
 			frame.setVisible(true);
 		});
+		
 	}
 	
 }
