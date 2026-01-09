@@ -46,34 +46,34 @@ public class JacksonReportLoader implements ReportLoader
 	private static final JacksonReportLoader INSTANCE =
 		new JacksonReportLoader();
 	
-        /**
-         * Returns the shared singleton instance.
-         *
-         * @return loader instance
-         */
-        public static JacksonReportLoader instance()
-        {
-                return INSTANCE;
-
-        }
-
-        /**
-         * Attempts to load a {@link JasperDesign} from the provided XML bytes when the
-         * root element indicates a Jasper report. The underlying Jackson loader handles
-         * the XML-to-object conversion.
-         *
-         * @param context JasperReports context used for parsing
-         * @param data serialized report XML content
-         * @return populated design when a report root element is detected; otherwise empty
-         * @throws JRException if the XML cannot be parsed into a Jasper design
-         */
-        @Override
-        public Optional<JasperDesign> loadReport(JasperReportsContext context,
-                byte[] data) throws JRException
-        {
-                boolean detectedReport = detectReportXML(data);
-
-                if (detectedReport)
+	/**
+	 * Returns the shared singleton instance.
+	 *
+	 * @return loader instance
+	 */
+	public static JacksonReportLoader instance()
+	{
+		return INSTANCE;
+		
+	}
+	
+	/**
+	 * Attempts to load a {@link JasperDesign} from the provided XML bytes when the
+	 * root element indicates a Jasper report. The underlying Jackson loader handles
+	 * the XML-to-object conversion.
+	 *
+	 * @param context JasperReports context used for parsing
+	 * @param data serialized report XML content
+	 * @return populated design when a report root element is detected; otherwise empty
+	 * @throws JRException if the XML cannot be parsed into a Jasper design
+	 */
+	@Override
+	public Optional<JasperDesign> loadReport(JasperReportsContext context,
+		byte[] data) throws JRException
+	{
+		boolean detectedReport = detectReportXML(data);
+		
+		if (detectedReport)
 		{
 			JasperDesign report = null;
 			ByteArrayInputStream dataStream = new ByteArrayInputStream(data);
@@ -97,31 +97,31 @@ public class JacksonReportLoader implements ReportLoader
 		
 	}
 	
-        /**
-         * Checks if the supplied XML represents a Jasper report.
-         *
-         * @param data serialized XML
-         * @return {@code true} when the root element is {@code jasperReport}
-         */
-        protected boolean detectReportXML(byte[] data)
-        {
-                return detectRootElement(data, JRXmlConstants.ELEMENT_jasperReport);
-
-        }
-
-        /**
-         * Attempts to load a {@link JRTemplate} when the XML payload represents a
-         * template root element.
-         *
-         * @param context JasperReports context used for parsing
-         * @param data serialized template XML content
-         * @return populated template when a template root is detected; otherwise empty
-         */
-        @Override
-        public Optional<JRTemplate> loadTemplate(JasperReportsContext context,
-                byte[] data)
-        {
-                boolean detectedReport = detectTemplateXML(data);
+	/**
+	 * Checks if the supplied XML represents a Jasper report.
+	 *
+	 * @param data serialized XML
+	 * @return {@code true} when the root element is {@code jasperReport}
+	 */
+	protected boolean detectReportXML(byte[] data)
+	{
+		return detectRootElement(data, JRXmlConstants.ELEMENT_jasperReport);
+		
+	}
+	
+	/**
+	 * Attempts to load a {@link JRTemplate} when the XML payload represents a
+	 * template root element.
+	 *
+	 * @param context JasperReports context used for parsing
+	 * @param data serialized template XML content
+	 * @return populated template when a template root is detected; otherwise empty
+	 */
+	@Override
+	public Optional<JRTemplate> loadTemplate(JasperReportsContext context,
+		byte[] data)
+	{
+		boolean detectedReport = detectTemplateXML(data);
 		
 		if (detectedReport)
 		{
@@ -136,31 +136,31 @@ public class JacksonReportLoader implements ReportLoader
 		
 	}
 	
-        /**
-         * Checks if the XML payload represents a Jasper template by verifying the
-         * expected root element.
-         *
-         * @param data serialized XML
-         * @return {@code true} when the root element matches the template name
-         */
-        private boolean detectTemplateXML(byte[] data)
-        {
-                return detectRootElement(data, JRXmlConstants.TEMPLATE_ELEMENT_ROOT);
-
-        }
-
-        /**
-         * Streams the XML bytes and inspects the first start element to see if it matches
-         * the provided element name. The reader is namespace aware but only checks the
-         * local name to keep compatibility with different namespace declarations.
-         *
-         * @param data        serialized XML to inspect
-         * @param elementName expected root element local name
-         * @return {@code true} when the first start element matches
-         */
-        protected boolean detectRootElement(byte[] data, String elementName)
-        {
-                XMLInputFactory f = XMLInputFactory.newInstance();
+	/**
+	 * Checks if the XML payload represents a Jasper template by verifying the
+	 * expected root element.
+	 *
+	 * @param data serialized XML
+	 * @return {@code true} when the root element matches the template name
+	 */
+	private boolean detectTemplateXML(byte[] data)
+	{
+		return detectRootElement(data, JRXmlConstants.TEMPLATE_ELEMENT_ROOT);
+		
+	}
+	
+	/**
+	 * Streams the XML bytes and inspects the first start element to see if it matches
+	 * the provided element name. The reader is namespace aware but only checks the
+	 * local name to keep compatibility with different namespace declarations.
+	 *
+	 * @param data        serialized XML to inspect
+	 * @param elementName expected root element local name
+	 * @return {@code true} when the first start element matches
+	 */
+	protected boolean detectRootElement(byte[] data, String elementName)
+	{
+		XMLInputFactory f = XMLInputFactory.newInstance();
 		f.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
 		f.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES,
 			Boolean.FALSE);

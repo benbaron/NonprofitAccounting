@@ -1,4 +1,3 @@
-// File: DataStore.java
 
 package nonprofitbookkeeping.api;
 
@@ -30,8 +29,9 @@ public interface DataStorer
 	 * @throws ActionCancelledException if file chooser is cancelled
 	 * @throws NoFileCreatedException 
 	 */
-	<T> T loadData(Class<T> type, File file)	throws IOException, ActionCancelledException,
-												NoFileCreatedException;
+	<T> T loadData(Class<T> type, File file)
+		throws IOException, ActionCancelledException,
+		NoFileCreatedException;
 	
 	/**
 	 * Saves the given object to the specified file in JSON format.
@@ -42,8 +42,9 @@ public interface DataStorer
 	 * @throws ActionCancelledException if file chooser is cancelled
 	 * @throws NoFileCreatedException 
 	 */
-	void saveData(Object obj, File file)	throws IOException, ActionCancelledException,
-											NoFileCreatedException;
+	void saveData(Object obj, File file)
+		throws IOException, ActionCancelledException,
+		NoFileCreatedException;
 	
 	/**
 	 * Lists all files in the given directory (non-recursively) whose names end
