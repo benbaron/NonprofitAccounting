@@ -64,7 +64,7 @@ final class ReportGeneratorLoader
 				LOGGER.info("Found generator class: " + clazz.getName());
 			}
 			
-			// check both ReportContext, ReportService
+			// matches a constructor with 2 arguments: check both ReportContext, ReportService
 			Constructor<?> ctor = findConstructor(clazz,
 				ReportContext.class, ReportService.class);
 			
@@ -77,7 +77,7 @@ final class ReportGeneratorLoader
 				return instance;
 			}
 			
-			// check ReportContext
+			// matches a constructor with argument of ReportContext
 			ctor = findConstructor(clazz, ReportContext.class);
 			
 			if (ctor != null)
@@ -89,7 +89,7 @@ final class ReportGeneratorLoader
 				return instance;
 			}
 			
-			// check ReportService
+			//  matches a constructor with argument of ReportService
 			ctor = findConstructor(clazz, ReportService.class);
 			
 			if (ctor != null)
@@ -101,7 +101,7 @@ final class ReportGeneratorLoader
 				return instance;
 			}
 			
-			// check empty
+			//  matches a constructor with no arguments
 			ctor = findConstructor(clazz);
 			
 			if (ctor != null)
