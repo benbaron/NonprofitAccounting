@@ -95,7 +95,14 @@ class ReportServiceJasperExportTest
 		@Override
 		protected String getReportPath()
 		{
-			return "unused";
+			return "nonprofitbookkeeping/reports/COMMENTS.jrxml";
+			
+		}
+
+		@Override
+		protected File getOutputDirectory()
+		{
+			return outputDirectory;
 			
 		}
 		
