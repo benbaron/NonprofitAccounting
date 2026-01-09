@@ -8,6 +8,7 @@ import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
 import nonprofitbookkeeping.reports.jasper.runtime.ReportBundles;
 import nonprofitbookkeeping.reports.jasper.runtime.ReportContextAware;
 import nonprofitbookkeeping.reports.jasper.BundledTemplateJasperGenerator;
+import nonprofitbookkeeping.reports.jasper.AbstractReportGenerator;
 
 import java.io.File;
 import java.io.IOException;
@@ -301,6 +302,11 @@ final class ReportGeneratorLoader
 			LOGGER.info("Generating JasperPrint using generator " +
 				generator.getClass().getName());
 		}
+
+		if (generator instanceof AbstractReportGenerator reportGenerator)
+		{
+			return reportGenerator.generatePrint();
+		}
 		
 		try
 		{
@@ -398,6 +404,11 @@ final class ReportGeneratorLoader
 			LOGGER.info("Writing Jasper output for generator " +
 				generator.getClass().getName() + " with format=" + format +
 				", baseName=" + baseName);
+		}
+
+		if (generator instanceof AbstractReportGenerator reportGenerator)
+		{
+			return reportGenerator.writeJasperOutput(format, print, baseName);
 		}
 		
 		try

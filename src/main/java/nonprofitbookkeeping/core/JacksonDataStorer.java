@@ -109,11 +109,46 @@ public class JacksonDataStorer implements DataStorer
 
                                                 if (JSON_ENTRY_NAME.equals(entryName))
                                                 {
-                                                        value = this.mapper.readValue(zis, type);
-                                                        entryFound = true;
-                                                        if (value instanceof Company company)
+                                                        if (Company.class.isAssignableFrom(type))
                                                         {
-                                                                reconstructedCompany = company;
+                                                                value = this.mapper.readValue(zis, type);
+                                                                entryFound = true;
+                                                                if (value instanceof Company company)
+                                                                {
+                                                                        reconstructedCompany = company;
+                                                                }
+                                                        }
+                                                        else
+                                                        {
+                                                                Company legacyCompany = this.mapper.readValue(zis,
+                                                                        Company.class);
+
+                                                                if (ChartOfAccounts.class.isAssignableFrom(type))
+                                                                {
+                                                                        if (value == null)
+                                                                        {
+                                                                                value = type.cast(
+                                                                                        legacyCompany.getChartOfAccounts());
+                                                                                entryFound = true;
+                                                                        }
+                                                                }
+                                                                else if (CompanyProfileModel.class.isAssignableFrom(type))
+                                                                {
+                                                                        if (value == null)
+                                                                        {
+                                                                                value = type.cast(
+                                                                                        legacyCompany.getCompanyProfileModel());
+                                                                                entryFound = true;
+                                                                        }
+                                                                }
+                                                                else if (Ledger.class.isAssignableFrom(type))
+                                                                {
+                                                                        if (value == null)
+                                                                        {
+                                                                                value = type.cast(legacyCompany.getLedger());
+                                                                                entryFound = true;
+                                                                        }
+                                                                }
                                                         }
                                                 }
                                                 else if (CHART_OF_ACCOUNTS_ENTRY_NAME.equals(entryName))
