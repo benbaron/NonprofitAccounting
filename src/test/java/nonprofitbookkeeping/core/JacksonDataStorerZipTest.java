@@ -3,6 +3,8 @@ package nonprofitbookkeeping.core;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
+import nonprofitbookkeeping.model.Account;
+import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Company; // Assuming Company is a concrete class that can be instantiated
 import nonprofitbookkeeping.model.CompanyProfileModel; // Company has a CompanyProfileModel
 import nonprofitbookkeeping.model.CurrentCompany;
@@ -133,5 +135,51 @@ public class JacksonDataStorerZipTest {
         {
                 CurrentCompany.forceCompanyLoad(null);
         }
+    }
+
+    @Test
+    void testLoadChartOfAccountsFromZip() throws IOException {
+        System.out.println("START: testLoadChartOfAccountsFromZip");
+        JacksonDataStorer dataStorer = new JacksonDataStorer();
+
+        Company company = new Company();
+        ChartOfAccounts chart = company.getChartOfAccounts();
+        Account cash = new Account("101", "Cash", AccountSide.DEBIT);
+        chart.addAccount(cash);
+        CurrentCompany.forceCompanyLoad(company);
+
+        try
+        {
+                File testFile = this.tempDir.resolve("test_coa_only.npbk").toFile();
+                try
+                {
+                        dataStorer.saveData(company, testFile);
+                }
+                catch (Exception e)
+                {
+                        fail("Saving data failed: " + e.getMessage());
+                }
+
+                ChartOfAccounts loadedChart = null;
+                try
+                {
+                        loadedChart = dataStorer.loadData(ChartOfAccounts.class, testFile);
+                }
+                catch (Exception e)
+                {
+                        fail("Loading chart of accounts failed: " + e.getMessage());
+                }
+
+                assertNotNull(loadedChart, "Loaded chart should not be null.");
+                assertEquals(1, loadedChart.getRootAccounts().size(),
+                        "Chart of accounts should load from the zip archive.");
+                assertEquals("101", loadedChart.getRootAccounts().get(0).getAccountNumber());
+        }
+        finally
+        {
+                CurrentCompany.forceCompanyLoad(null);
+        }
+
+        System.out.println("END: testLoadChartOfAccountsFromZip");
     }
 }
