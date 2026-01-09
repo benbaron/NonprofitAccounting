@@ -42,11 +42,19 @@ public final class ReportTemplates
 	private static final Map<String, TemplateInfo> TEMPLATES =
 		createTemplates();
 	
+	/**
+	 * Instantiates a new report templates.
+	 */
 	private ReportTemplates()
 	{
 	
 	}
 	
+	/**
+	 * Creates the templates.
+	 *
+	 * @return the map
+	 */
 	private static Map<String, TemplateInfo> createTemplates()
 	{
 		Map<String, TemplateInfo> map = new LinkedHashMap<>();

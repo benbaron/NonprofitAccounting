@@ -63,6 +63,8 @@ final class ReportGeneratorLoader
 			{
 				LOGGER.info("Found generator class: " + clazz.getName());
 			}
+			
+			// check both ReportContext, ReportService
 			Constructor<?> ctor = findConstructor(clazz,
 				ReportContext.class, ReportService.class);
 			
@@ -75,6 +77,7 @@ final class ReportGeneratorLoader
 				return instance;
 			}
 			
+			// check ReportContext
 			ctor = findConstructor(clazz, ReportContext.class);
 			
 			if (ctor != null)
@@ -86,6 +89,7 @@ final class ReportGeneratorLoader
 				return instance;
 			}
 			
+			// check ReportService
 			ctor = findConstructor(clazz, ReportService.class);
 			
 			if (ctor != null)
@@ -97,17 +101,18 @@ final class ReportGeneratorLoader
 				return instance;
 			}
 			
+			// check empty
 			ctor = findConstructor(clazz);
 			
 			if (ctor != null)
 			{
 				logConstructorSelection(clazz, ctor);
 				Object instance = ctor.newInstance();
-				logConstructorSelection(clazz, ctor);
 				assignContext(instance, context);
 				return instance;
 			}
 			
+			// get all declared
 			for (Constructor<?> candidate : clazz.getDeclaredConstructors())
 			{
 				

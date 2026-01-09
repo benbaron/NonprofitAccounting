@@ -48,7 +48,8 @@ public class ReportCriteria
 	 * @param dateSelectionMode The {@link DateSelectionMode} indicating how dates are interpreted.
 	 * @param selectedAccountIds A list of account IDs for filtering. If null, an empty list is used.
 	 */
-	public ReportCriteria(LocalDate startDate, LocalDate endDate, List<String> selectedFundIds,
+	public ReportCriteria(LocalDate startDate, LocalDate endDate,
+		List<String> selectedFundIds,
 		DateSelectionMode dateSelectionMode, List<String> selectedAccountIds)
 	{
 		this.startDate = startDate;
@@ -56,9 +57,8 @@ public class ReportCriteria
 		this.selectedFundIds = selectedFundIds;
 		this.dateSelectionMode = dateSelectionMode;
 		this.selectedAccountIds =
-			(selectedAccountIds != null) ? selectedAccountIds : new java.util.ArrayList<>(); // Ensure
-																								// not
-																								// null
+			(selectedAccountIds != null) ? selectedAccountIds :
+				new java.util.ArrayList<>(); 		
 	}
 	
 	/**
@@ -68,6 +68,7 @@ public class ReportCriteria
 	public LocalDate getStartDate()
 	{
 		return this.startDate;
+		
 	}
 	
 	/**
@@ -77,6 +78,7 @@ public class ReportCriteria
 	public LocalDate getEndDate()
 	{
 		return this.endDate;
+		
 	}
 	
 	/**
@@ -87,6 +89,7 @@ public class ReportCriteria
 	public List<String> getSelectedFundIds()
 	{
 		return this.selectedFundIds;
+		
 	}
 	
 	/**
@@ -96,6 +99,7 @@ public class ReportCriteria
 	public String getNameForSaving()
 	{
 		return this.nameForSaving;
+		
 	}
 	
 	/**
@@ -105,6 +109,7 @@ public class ReportCriteria
 	public void setNameForSaving(String nameForSaving)
 	{
 		this.nameForSaving = nameForSaving;
+		
 	}
 	
 	/**
@@ -116,6 +121,7 @@ public class ReportCriteria
 	public DateSelectionMode getDateSelectionMode()
 	{
 		return this.dateSelectionMode;
+		
 	}
 	
 	/**
@@ -125,6 +131,7 @@ public class ReportCriteria
 	public List<String> getSelectedAccountIds()
 	{ // Added getter
 		return this.selectedAccountIds;
+		
 	}
 	
 }

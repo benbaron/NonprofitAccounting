@@ -123,26 +123,6 @@ public class ReportContext
 		
 	}
 	
-	/**
-	 * Gets the selected budget for the report.
-	 * This budget may be used for comparisons like budget vs. actual.
-	 * @return The selected {@link Budget}, or null if no budget is selected.
-	 */
-	public Budget getSelectedBudget()
-	{
-		return this.selectedBudget;
-		
-	}
-	
-	/**
-	 * Sets the selected budget for the report.
-	 * @param selectedBudget The {@link Budget} to set.
-	 */
-	public void setSelectedBudget(Budget selectedBudget)
-	{
-		this.selectedBudget = selectedBudget;
-		
-	}
 	
 	/**
 	 * Gets the list of fund IDs to be used for filtering the report.

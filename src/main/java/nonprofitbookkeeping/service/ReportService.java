@@ -382,9 +382,7 @@ public class ReportService
 				"Unknown reportType: " + ctx.getReportType());
 		}
 		
-		String generatorClassName = this.generatorRegistry.get(type);
-		LOGGER.info(() -> "Selected generator class '" + generatorClassName +
-			"' for reportType '" + type.id() + "'.");
+		String generatorClassName = this.generatorRegistry.get(type);		
 		
 		if (generatorClassName == null || generatorClassName.isBlank())
 		{

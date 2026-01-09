@@ -116,8 +116,16 @@ public final class JdbcBeanLoader
 		
 	}
 	
+
 	/**
-	 * Overload: no parameters.
+	 * Query beans.
+	 *
+	 * @param <B> the generic type
+	 * @param cx the cx
+	 * @param beanClass the bean class
+	 * @param sql the sql
+	 * @return the list
+	 * @throws SQLException the SQL exception
 	 */
 	public static <B> List<B> queryBeans(
 		Connection cx,

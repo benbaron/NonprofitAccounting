@@ -30,21 +30,7 @@ public final class FieldMapLoader
 	{
 	
 	}
-	
-	/**
-	 * Load a fieldmap from a filesystem path.
-	 */
-	public static FieldMap load(Path csvPath) throws IOException
-	{
 		
-		try (BufferedReader reader =
-			Files.newBufferedReader(csvPath, StandardCharsets.UTF_8))
-		{
-			return loadFromReader(reader, csvPath.toString());
-		}
-		
-	}
-	
 	/**
 	 * Load a fieldmap from a classpath resource, using the given anchor class
 	 * for resource resolution.
@@ -90,6 +76,14 @@ public final class FieldMapLoader
 	
 	// --- Internal helpers ---
 	
+	/**
+	 * Load from reader.
+	 *
+	 * @param reader the reader
+	 * @param sourceId the source id
+	 * @return the field map
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private static FieldMap loadFromReader(BufferedReader reader,
 		String sourceId)
 		throws IOException
@@ -169,6 +163,12 @@ public final class FieldMapLoader
 		
 	}
 	
+	/**
+	 * Empty to null.
+	 *
+	 * @param s the s
+	 * @return the string
+	 */
 	private static String emptyToNull(String s)
 	{
 		

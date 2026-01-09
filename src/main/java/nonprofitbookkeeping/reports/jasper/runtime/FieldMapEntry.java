@@ -15,13 +15,34 @@ package nonprofitbookkeeping.reports.jasper.runtime;
 public final class FieldMapEntry
 {
 	
+	/** The sheet name. */
 	private final String sheetName;
+	
+	/** The cell ref. */
 	private final String cellRef;
+	
+	/** The field name. */
 	private final String fieldName;
+	
+	/** The java type. */
 	private final String javaType;
+	
+	/** The excel format. */
 	private final String excelFormat;
+	
+	/** The db expr. */
 	private final String dbExpr;
 	
+	/**
+	 * Instantiates a new field map entry.
+	 *
+	 * @param sheetName the sheet name
+	 * @param cellRef the cell ref
+	 * @param fieldName the field name
+	 * @param javaType the java type
+	 * @param excelFormat the excel format
+	 * @param dbExpr the db expr
+	 */
 	public FieldMapEntry(
 		String sheetName,
 		String cellRef,
@@ -40,39 +61,22 @@ public final class FieldMapEntry
 		
 	}
 	
-	public String getSheetName()
-	{
-		return this.sheetName;
-		
-	}
-	
-	public String getCellRef()
-	{
-		return this.cellRef;
-		
-	}
-	
+	/**
+	 * Gets the field name.
+	 *
+	 * @return the field name
+	 */
 	public String getFieldName()
 	{
 		return this.fieldName;
 		
 	}
 	
-	public String getJavaType()
-	{
-		return this.javaType;
-		
-	}
-	
-	public String getExcelFormat()
-	{
-		return this.excelFormat;
-		
-	}
-	
 	/**
 	 * Optional SQL expression for this field, e.g. "a.name" or "s.opening_balance".
 	 * May be null if the CSV has only 5 columns.
+	 *
+	 * @return the db expr
 	 */
 	public String getDbExpr()
 	{

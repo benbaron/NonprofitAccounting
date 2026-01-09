@@ -1,6 +1,3 @@
-/*
- * 
- */
 
 package nonprofitbookkeeping.reports.jasper.runtime;
 
@@ -61,17 +58,7 @@ public final class ReportBundles
 		{
 			return this.beanClassName != null && !this.beanClassName.isBlank();
 			
-		}
-		
-		/**
-		 * @deprecated Prefer {@link #metadataDirectory()} for clarity.
-		 */
-		@Deprecated
-		public String directory()
-		{
-			return this.metadataDirectory;
-			
-		}
+		}		
 		
 	}
 	
@@ -504,6 +491,15 @@ public final class ReportBundles
 		
 	}
 	
+	/**
+	 * Builds the template path.
+	 *
+	 * @param loader the loader
+	 * @param resourceRoot the resource root
+	 * @param bundleRoot the bundle root
+	 * @param templateName the template name
+	 * @return the string
+	 */
 	private static String buildTemplatePath(ClassLoader loader,
 		String resourceRoot,
 		String bundleRoot,

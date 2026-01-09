@@ -461,7 +461,6 @@ public class SkeletonReportsPanel extends BorderPane
 			ctx.setStartDate(startDate);
 			ctx.setEndDate(endDate);
 			ctx.setFundIds(java.util.Collections.emptyList());
-			ctx.setSelectedBudget(null);
 			ctx.setAccountIdsForDetailReport(java.util.Collections.emptyList());
 			
 			String outputFormat = this.outputFormatComboBox.getValue();
