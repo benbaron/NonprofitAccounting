@@ -56,6 +56,7 @@ public final class JdbcBeanLoader
 		
 		LOGGER.debug("Executing report query for beanClass={}, sql={}",
 			beanClass.getName(), sql);
+		
 		try (PreparedStatement ps = cx.prepareStatement(sql))
 		{
 			
@@ -71,6 +72,7 @@ public final class JdbcBeanLoader
 				int cols = md.getColumnCount();
 				int rowIndex = 0;
 				
+				// result set
 				while (rs.next())
 				{
 					rowIndex++;
@@ -91,20 +93,24 @@ public final class JdbcBeanLoader
 						{
 							row.put(label, value);
 						}
-
+						
 						LOGGER.trace(
 							"Row {} column {} label={} value={} valueType={}",
 							rowIndex,
 							i,
 							label,
 							value,
-							value == null ? "null" : value.getClass().getName());
+							value == null ? "null" :
+								value.getClass().getName());
 						
 					}
 					
-					LOGGER.debug("Mapping row {} for beanClass={} with columns={}",
+					LOGGER.debug(
+						"\nMapping row {} for beanClass={} with columns={}",
 						rowIndex, beanClass.getName(), row);
+					
 					B bean = DataFiller.fill(beanClass, row);
+					
 					LOGGER.debug("Mapped row {} to bean {}", rowIndex, bean);
 					result.add(bean);
 				}
@@ -116,7 +122,7 @@ public final class JdbcBeanLoader
 		
 	}
 	
-
+	
 	/**
 	 * Query beans.
 	 *
@@ -133,18 +139,19 @@ public final class JdbcBeanLoader
 		String sql
 	) throws SQLException
 	{
-
 		List<B> lb = queryBeans(cx, beanClass, sql, null);
+		
 		if (lb.isEmpty())
 		{
 			LOGGER.debug("No rows returned for beanClass={}, sql={}",
 				beanClass.getName(), sql);
 			throw new SQLException("query is empty");
 		}
+		
 		LOGGER.debug("Loaded {} beans for beanClass={}", lb.size(),
 			beanClass.getName());
+		
 		return lb;
-
 		
 	}
 	
