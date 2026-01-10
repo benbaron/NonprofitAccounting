@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport name="FreeForm" language="java"
+              whenNoDataType="NoDataSection"
               pageWidth="595" pageHeight="3000"
               columnWidth="555"
               leftMargin="20" rightMargin="20"
@@ -9,4 +10,13 @@
   <detail>
     <band height="10"/>
   </detail>
+  <noData>
+    <band height="40">
+      <staticText>
+        <reportElement x="0" y="0" width="555" height="20"/>
+        <textElement textAlignment="Center"/>
+        <text><![CDATA[No results.]]></text>
+      </staticText>
+    </band>
+  </noData>
 </jasperReport>
