@@ -16,6 +16,13 @@ metadata. Generators call `bundledReportPath()` to retrieve the JRXML resource
 resolved through the bundle metadata, keeping paths, beans, and documentation in
 sync.
 
+## No-data behavior
+
+Report generators now treat empty JDBC results as a valid outcome (they return
+an empty list instead of throwing). Templates that need explicit output for
+empty results should configure `whenNoDataType` or define a `noData` band in the
+JRXML (for example, to render a "No results" message).
+
 ## Packaging bundles for distribution
 
 Use `nonprofitbookkeeping.reports.ReportBundlePackager` to export the discovered
