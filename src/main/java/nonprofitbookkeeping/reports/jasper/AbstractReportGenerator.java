@@ -3,6 +3,9 @@ package nonprofitbookkeeping.reports.jasper;
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.reports.jasper.runtime.ReportBundles;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportContextAware;
+import nonprofitbookkeeping.reports.jasper.runtime.ReportContextHolder;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -31,6 +34,7 @@ import java.util.Map;
  * Base class for Jasper report generators.
  */
 public abstract class AbstractReportGenerator
+	implements ReportContextAware
 {
 	private static final Logger LOGGER =
 		Logger.getLogger(AbstractReportGenerator.class.getName());
@@ -39,6 +43,7 @@ public abstract class AbstractReportGenerator
 	
 	private List<?> reportDataOverride;
 	private boolean reportDataExplicit;
+	private ReportContext reportContext;
 	
 	/**
 	 * Subclasses provide the data beans needed for the report.
@@ -214,7 +219,10 @@ public abstract class AbstractReportGenerator
 			LOGGER.fine("Generating report data via getReportData() for " +
 				"generator " + getClass().getName() + ".");
 		}
-		List<?> data = getReportData();
+		List<?> data = ReportContextHolder.withContext(
+			this.reportContext,
+			this::getReportData
+		);
 		if (LOGGER.isLoggable(Level.FINE))
 		{
 			LOGGER.fine("Generated " +
@@ -223,6 +231,19 @@ public abstract class AbstractReportGenerator
 				".");
 		}
 		return data == null ? Collections.emptyList() : List.copyOf(data);
+		
+	}
+
+	@Override
+	public void setReportContext(ReportContext context)
+	{
+		this.reportContext = context;
+		
+	}
+
+	protected ReportContext getReportContext()
+	{
+		return this.reportContext;
 		
 	}
 	
