@@ -1,6 +1,6 @@
 package nonprofitbookkeeping.reports.jasper.runtime;
 
-import nonprofitbookkeeping.reports.jasper.beans.ASSET_DTL_5aBean;
+import nonprofitbookkeeping.reports.jasper.beans.AssetDtl5aUndepositedFundsEntry;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,11 +15,12 @@ class DataFillerTest
     void fill_normalizesUppercaseFieldNames()
     {
         Map<String, Object> values = new HashMap<>();
-        values.put("AMOUNT_4", "100.00");
+        values.put("AMOUNT", "100.00");
 
-        ASSET_DTL_5aBean bean = DataFiller.fill(ASSET_DTL_5aBean.class, values);
+        AssetDtl5aUndepositedFundsEntry bean =
+            DataFiller.fill(AssetDtl5aUndepositedFundsEntry.class, values);
 
-        assertEquals("100.00", bean.getAmount_4(),
+        assertEquals("100.00", bean.getAmount(),
             "Expected uppercase column labels to map to bean setters.");
     }
 
@@ -27,11 +28,12 @@ class DataFillerTest
     void fill_normalizesMixedCaseFieldNames()
     {
         Map<String, Object> values = new HashMap<>();
-        values.put("AmOuNt_4", "250.00");
+        values.put("AmOuNt", "250.00");
 
-        ASSET_DTL_5aBean bean = DataFiller.fill(ASSET_DTL_5aBean.class, values);
+        AssetDtl5aUndepositedFundsEntry bean =
+            DataFiller.fill(AssetDtl5aUndepositedFundsEntry.class, values);
 
-        assertEquals("250.00", bean.getAmount_4(),
+        assertEquals("250.00", bean.getAmount(),
             "Expected mixed-case column labels to map to bean setters.");
     }
 }

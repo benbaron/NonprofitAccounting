@@ -9,16 +9,14 @@ import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import nonprofitbookkeeping.TestDatabase;
 import nonprofitbookkeeping.core.Database;
-import nonprofitbookkeeping.reports.jasper.beans.ASSET_DTL_5aBean;
+import nonprofitbookkeeping.reports.jasper.beans.AssetDtl5aReportBean;
 import nonprofitbookkeeping.reports.jasper.generator.ASSET_DTL_5aJasperGenerator;
 import nonprofitbookkeeping.reports.jasper.runtime.FieldMapSqlBuilder;
 
@@ -27,7 +25,7 @@ class JasperNullSqlTest
     private static final class ExposedAssetDetailGenerator
         extends ASSET_DTL_5aJasperGenerator
     {
-        private List<ASSET_DTL_5aBean> load()
+        private List<AssetDtl5aReportBean> load()
         {
             return super.getReportData();
         }
@@ -36,16 +34,11 @@ class JasperNullSqlTest
     @Test
     void fieldMapSqlBuilderUsesNullForMissingExpressions() throws Exception
     {
-        Map<String, String> overrides = new HashMap<>();
-        overrides.put("sending_branch_or_reason", "jt.memo");
-        overrides.put("amount", "je.amount");
-
         String selectList = FieldMapSqlBuilder.buildSelectList(
             "/nonprofitbookkeeping/reports/ASSET_DTL_5a_fieldmap.csv",
-            overrides);
+            null);
 
-        assertTrue(selectList.contains("jt.memo as sending_branch_or_reason"));
-        assertTrue(selectList.contains("je.amount as amount"));
+        assertTrue(selectList.contains("NULL as asset_dtl_5a_r2c3"));
         assertTrue(selectList.contains("NULL as contents_b59"));
     }
 
@@ -80,11 +73,11 @@ class JasperNullSqlTest
         }
 
         ExposedAssetDetailGenerator generator = new ExposedAssetDetailGenerator();
-        List<ASSET_DTL_5aBean> data = generator.load();
+        List<AssetDtl5aReportBean> data = generator.load();
 
         assertFalse(data.isEmpty());
 
-        ASSET_DTL_5aBean bean = data.get(0);
+        AssetDtl5aReportBean bean = data.get(0);
         assertNull(bean.getContents_b59());
     }
 }
