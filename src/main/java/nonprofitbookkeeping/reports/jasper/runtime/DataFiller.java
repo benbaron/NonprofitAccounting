@@ -8,6 +8,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Locale;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,7 @@ public final class DataFiller
 {
 	private static final Logger LOGGER =
 		LoggerFactory.getLogger(DataFiller.class);
+	private static final String DEFAULT_NULL_PLACEHOLDER = "-";
 	
 	private DataFiller()
 	{
@@ -75,13 +77,6 @@ public final class DataFiller
 				String setterName = "set" +
 					capitalize(normalizedFieldName.toLowerCase(Locale.ROOT));
 				
-				if (value == null)
-				{
-					LOGGER.debug("Skipping null value for beanClass={}, field={}",
-						beanClass.getName(), fieldName);
-					continue;
-				}
-
 				Method setter = findSetter(methods, setterName);
 				
 				if (setter == null)
@@ -92,7 +87,36 @@ public final class DataFiller
 						beanClass.getName(), fieldName, setterName);
 					continue;
 				}
-				
+
+				if (value == null)
+				{
+					Class<?> paramType = setter.getParameterTypes()[0];
+					if (paramType == String.class)
+					{
+						String placeholder =
+							resolveNullPlaceholder(fieldName);
+						if (placeholder != null)
+						{
+							setter.invoke(bean, placeholder);
+							LOGGER.debug(
+								"Replaced null value for beanClass={}, field={} with placeholder",
+								beanClass.getName(), fieldName);
+						}
+						else
+						{
+							LOGGER.debug(
+								"Skipping null value for beanClass={}, field={}",
+								beanClass.getName(), fieldName);
+						}
+					}
+					else
+					{
+						LOGGER.debug("Skipping null value for beanClass={}, field={}",
+							beanClass.getName(), fieldName);
+					}
+					continue;
+				}
+
 				Class<?> paramType = setter.getParameterTypes()[0];
 				Object converted = convertValue(value, paramType);
 				
@@ -167,6 +191,35 @@ public final class DataFiller
 		
 		return Character.toUpperCase(s.charAt(0)) + s.substring(1);
 		
+	}
+
+	private static String resolveNullPlaceholder(String fieldName)
+	{
+		ReportContext context = ReportContextHolder.get();
+		if (context == null)
+		{
+			return DEFAULT_NULL_PLACEHOLDER;
+		}
+
+		List<String> skipFields = context.getNullPlaceholderSkipFields();
+		if (skipFields != null && fieldName != null)
+		{
+			for (String skip : skipFields)
+			{
+				if (skip != null && skip.equalsIgnoreCase(fieldName))
+				{
+					return null;
+				}
+			}
+		}
+
+		String placeholder = context.getNullPlaceholder();
+		if (placeholder == null)
+		{
+			return null;
+		}
+
+		return placeholder;
 	}
 	
 	/**

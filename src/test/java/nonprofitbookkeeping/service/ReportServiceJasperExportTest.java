@@ -1,19 +1,15 @@
 
 package nonprofitbookkeeping.service;
 
-import nonprofitbookkeeping.reports.jasper.AbstractReportGenerator;
-import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+import java.awt.Toolkit;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
 import nonprofitbookkeeping.reports.jasper.AbstractReportGenerator;
 import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
 import org.junit.jupiter.api.Test;
@@ -31,6 +27,8 @@ class ReportServiceJasperExportTest
 	@Test
 	void generateJasperReportExportsXlsxViaGenerator() throws Exception
 	{
+		assumeTrue(isAwtAvailable(),
+			"Skipping Jasper export test: AWT native libraries unavailable.");
 		StubGenerator.reset(this.tempDir);
 		Map<ReportService.ReportType,
 			String> registry = Collections.singletonMap(
@@ -56,6 +54,20 @@ class ReportServiceJasperExportTest
 			"Output directory should be the injected temporary location.");
 		assertEquals("xlsx", StubGenerator.lastFormat(),
 			"The generator should receive the XLSX format flag.");
+		
+	}
+
+	private static boolean isAwtAvailable()
+	{
+		try
+		{
+			Toolkit.getDefaultToolkit();
+			return true;
+		}
+		catch (UnsatisfiedLinkError | Exception ex)
+		{
+			return false;
+		}
 		
 	}
 	
@@ -95,7 +107,14 @@ class ReportServiceJasperExportTest
 		@Override
 		protected String getReportPath()
 		{
-			return "unused";
+			return "nonprofitbookkeeping/reports/COMMENTS.jrxml";
+			
+		}
+
+		@Override
+		protected File getOutputDirectory()
+		{
+			return outputDirectory;
 			
 		}
 		

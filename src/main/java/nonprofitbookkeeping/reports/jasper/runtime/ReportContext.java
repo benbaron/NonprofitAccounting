@@ -33,6 +33,10 @@ public class ReportContext
 	private boolean requireAllAccounts;
 	/** Optional pre-built beans to drive Jasper reports that expect their data to be provided externally. */
 	private List<?> beans;
+	/** Optional placeholder text used when string fields are null in report output. */
+	private String nullPlaceholder = "-";
+	/** Optional list of field names that should retain null values instead of placeholders. */
+	private List<String> nullPlaceholderSkipFields;
 	
 	/**
 	 * Default constructor for ReportContext.
@@ -184,6 +188,52 @@ public class ReportContext
 	public void setBeans(List<?> beans)
 	{
 		this.beans = beans;
+		
+	}
+
+	/**
+	 * Gets the placeholder used for null string fields in report output.
+	 *
+	 * @return placeholder string; defaults to "-" when unset, or {@code null}
+	 * to disable placeholder substitution
+	 */
+	public String getNullPlaceholder()
+	{
+		return this.nullPlaceholder;
+		
+	}
+
+	/**
+	 * Sets the placeholder used for null string fields in report output.
+	 *
+	 * @param nullPlaceholder placeholder text to substitute for nulls; use
+	 * {@code null} to leave nulls as-is, or an empty string for blank output
+	 */
+	public void setNullPlaceholder(String nullPlaceholder)
+	{
+		this.nullPlaceholder = nullPlaceholder;
+		
+	}
+
+	/**
+	 * Gets the list of field names that should keep null values in output.
+	 *
+	 * @return list of field names or {@code null} if none are configured
+	 */
+	public List<String> getNullPlaceholderSkipFields()
+	{
+		return this.nullPlaceholderSkipFields;
+		
+	}
+
+	/**
+	 * Sets the list of field names that should keep null values in output.
+	 *
+	 * @param nullPlaceholderSkipFields field names to exclude from placeholder substitution
+	 */
+	public void setNullPlaceholderSkipFields(List<String> nullPlaceholderSkipFields)
+	{
+		this.nullPlaceholderSkipFields = nullPlaceholderSkipFields;
 		
 	}
 	
