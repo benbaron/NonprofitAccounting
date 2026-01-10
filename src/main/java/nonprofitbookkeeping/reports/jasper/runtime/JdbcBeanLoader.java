@@ -145,11 +145,12 @@ public final class JdbcBeanLoader
 		{
 			LOGGER.debug("No rows returned for beanClass={}, sql={}",
 				beanClass.getName(), sql);
-			throw new SQLException("query is empty");
 		}
-		
-		LOGGER.debug("Loaded {} beans for beanClass={}", lb.size(),
-			beanClass.getName());
+		else
+		{
+			LOGGER.debug("Loaded {} beans for beanClass={}", lb.size(),
+				beanClass.getName());
+		}
 		
 		return lb;
 		

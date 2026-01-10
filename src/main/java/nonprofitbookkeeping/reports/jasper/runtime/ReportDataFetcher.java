@@ -41,8 +41,18 @@ public final class ReportDataFetcher
 		try (Connection cx = Database.get().getConnection())
 		{				
 			List<B> lb = JdbcBeanLoader.queryBeans(cx, beanClass, sql);
-			LOGGER.debug("Fetched {} rows for beanClass={}", lb.size(),
-				beanClass.getName());
+			if (lb.isEmpty())
+			{
+				LOGGER.info(
+					"No rows returned for beanClass={}, report will rely on "
+						+ "JRXML no-data handling",
+					beanClass.getName());
+			}
+			else
+			{
+				LOGGER.debug("Fetched {} rows for beanClass={}", lb.size(),
+					beanClass.getName());
+			}
 			return lb;
 		}
 		catch (SQLException ex)
