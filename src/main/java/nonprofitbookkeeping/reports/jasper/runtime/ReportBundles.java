@@ -35,7 +35,6 @@ import java.util.logging.Level;
 public final class ReportBundles
 {
 	private static final List<String> BUNDLE_ROOTS = List.of(
-		"nonprofitbookkeeping/reports/bundles",
 		"nonprofitbookkeeping/reports");
 	
 	private static final String TEMPLATE_ROOT = "nonprofitbookkeeping/reports";

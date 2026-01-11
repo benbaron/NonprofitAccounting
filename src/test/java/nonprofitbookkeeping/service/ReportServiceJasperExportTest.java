@@ -120,6 +120,15 @@ class ReportServiceJasperExportTest
 			return outputDirectory;
 			
 		}
+
+		@Override
+		public File writeJasperOutput(String format, JasperPrint print,
+			String baseName) throws JRException, IOException
+		{
+			lastFormat = format;
+			return super.writeJasperOutput(format, print, baseName);
+			
+		}
 		
 		@Override
 		public String getBaseName()

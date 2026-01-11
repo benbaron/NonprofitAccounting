@@ -48,7 +48,14 @@ public abstract class AbstractReportGenerator
 		Logger.getLogger(AbstractReportGenerator.class.getName());
 	private static final String DEFAULT_OUTPUT_DIR =
 		"NonprofitBookkeepingReports";
+	/**
+	 * Parameter key exposing the full report row list to Jasper templates.
+	 */
 	private static final String REPORT_DATA_ROWS_PARAM = "REPORT_DATA_ROWS";
+	/**
+	 * Field name on the single-row data-source envelope that holds the row
+	 * list for band-driven templates.
+	 */
 	private static final String REPORT_DATA_ROWS_FIELD = "rows";
 	
 	private List<?> reportDataOverride;
