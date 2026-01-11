@@ -24,10 +24,10 @@ class ReportBundleDiscoveryTest
 		assertEquals("discovery/metadata/discovery-bundle.properties",
 			bundle.id());
 		assertEquals(
-			"nonprofitbookkeeping/reports/bundles/discovery/metadata/discovery-bundle.properties",
+			"nonprofitbookkeeping/reports/discovery/metadata/discovery-bundle.properties",
 			bundle.metadataResource());
 		assertEquals(
-			"nonprofitbookkeeping/reports/bundles/discovery/discovery-template.jrxml",
+			"nonprofitbookkeeping/reports/discovery/discovery-template.jrxml",
 			bundle.jrxmlResource());
 		
 	}
