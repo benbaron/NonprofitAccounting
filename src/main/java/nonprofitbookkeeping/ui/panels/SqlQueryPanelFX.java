@@ -13,6 +13,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -28,7 +29,11 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -73,16 +78,25 @@ public class SqlQueryPanelFX extends BorderPane
 	private final Button refreshButton = new Button("Refresh Schema");
 	private final ProgressIndicator progressIndicator = new ProgressIndicator();
 	private final Map<String, Integer> columnTypes = new HashMap<>();
+	private boolean suppressInsert = false;
 
 	public SqlQueryPanelFX()
 	{
 		setPadding(new Insets(12));
 		this.progressIndicator.setMaxSize(24, 24);
 		this.progressIndicator.setVisible(false);
-		this.queryPreview.setEditable(false);
+		this.queryPreview.setEditable(true);
 		this.queryPreview.setPrefRowCount(3);
+		this.queryPreview.setText("SELECT *\nFROM ");
 		this.operatorBox.setItems(FXCollections.observableArrayList(OPERATORS));
 		this.operatorBox.getSelectionModel().selectFirst();
+
+		Button insertValueButton = new Button("Insert Value");
+		insertValueButton.setOnAction(e -> insertValue());
+		Button insertDateButton = new Button("Insert Date...");
+		insertDateButton.setOnAction(e -> showDatePicker());
+		HBox valueControls = new HBox(8, this.valueField, insertValueButton,
+			insertDateButton);
 
 		GridPane grid = new GridPane();
 		grid.setHgap(10);
@@ -95,7 +109,7 @@ public class SqlQueryPanelFX extends BorderPane
 		grid.add(new Label("Operator"), 0, 2);
 		grid.add(this.operatorBox, 1, 2);
 		grid.add(new Label("Value"), 0, 3);
-		grid.add(this.valueField, 1, 3);
+		grid.add(valueControls, 1, 3);
 
 		HBox actions = new HBox(10, this.runButton, this.progressIndicator);
 		actions.setPadding(new Insets(10, 0, 0, 0));
@@ -105,19 +119,23 @@ public class SqlQueryPanelFX extends BorderPane
 		VBox.setVgrow(this.queryPreview, Priority.NEVER);
 		setCenter(form);
 
-		this.tableBox.setOnAction(e -> loadColumns());
-		this.operatorBox.setOnAction(e -> updateOperatorState());
-		this.valueField.textProperty().addListener((obs, oldVal, newVal) ->
-			updateQueryPreview());
-		this.fieldBox.setOnAction(e -> updateQueryPreview());
-		this.tableBox.valueProperty().addListener((obs, oldVal, newVal) ->
-			updateQueryPreview());
+		this.tableBox.setOnAction(e ->
+		{
+			loadColumns();
+			insertTable();
+		});
+		this.valueField.setOnAction(e -> insertValue());
+		this.fieldBox.setOnAction(e -> insertField());
+		this.operatorBox.setOnAction(e ->
+		{
+			updateOperatorState();
+			insertOperator();
+		});
 		this.refreshButton.setOnAction(e -> loadTables());
 		this.runButton.setOnAction(e -> runQuery());
 
 		loadTables();
 		updateOperatorState();
-		updateQueryPreview();
 	}
 
 	private void loadTables()
@@ -157,7 +175,9 @@ public class SqlQueryPanelFX extends BorderPane
 				this.tableBox.getItems().setAll(tables);
 				if (!tables.isEmpty())
 				{
+					this.suppressInsert = true;
 					this.tableBox.getSelectionModel().selectFirst();
+					this.suppressInsert = false;
 				}
 			}
 			setDisabledState(false);
@@ -176,7 +196,6 @@ public class SqlQueryPanelFX extends BorderPane
 		String table = this.tableBox.getValue();
 		if (table == null || table.isBlank())
 		{
-			updateQueryPreview();
 			return;
 		}
 
@@ -200,7 +219,9 @@ public class SqlQueryPanelFX extends BorderPane
 				this.fieldBox.getItems().setAll(fields);
 				if (!fields.isEmpty())
 				{
+					this.suppressInsert = true;
 					this.fieldBox.getSelectionModel().selectFirst();
+					this.suppressInsert = false;
 				}
 			}
 		}
@@ -209,7 +230,48 @@ public class SqlQueryPanelFX extends BorderPane
 			AlertBox.showError(getOwnerWindow(),
 				"Unable to load fields for table: " + table);
 		}
-		updateQueryPreview();
+	}
+
+	private void insertTable()
+	{
+		insertToken(this.tableBox.getValue());
+	}
+
+	private void insertField()
+	{
+		insertToken(this.fieldBox.getValue());
+	}
+
+	private void insertOperator()
+	{
+		String operator = this.operatorBox.getValue();
+		if (operator == null || operator.isBlank())
+		{
+			return;
+		}
+		insertToken(" " + operator + " ");
+	}
+
+	private void insertValue()
+	{
+		String value = this.valueField.getText();
+		if (value == null || value.isBlank())
+		{
+			return;
+		}
+		insertToken(value);
+	}
+
+	private void insertToken(String token)
+	{
+		if (this.suppressInsert || token == null || token.isBlank())
+		{
+			return;
+		}
+		int caret = this.queryPreview.getCaretPosition();
+		this.queryPreview.insertText(caret, token);
+		this.queryPreview.requestFocus();
+		this.queryPreview.positionCaret(caret + token.length());
 	}
 
 	private void updateOperatorState()
@@ -221,33 +283,6 @@ public class SqlQueryPanelFX extends BorderPane
 		{
 			this.valueField.clear();
 		}
-		updateQueryPreview();
-	}
-
-	private void updateQueryPreview()
-	{
-		StringBuilder sb = new StringBuilder();
-		String table = this.tableBox.getValue();
-		String field = this.fieldBox.getValue();
-		String operator = this.operatorBox.getValue();
-		boolean hasTable = table != null && !table.isBlank();
-		boolean hasField = field != null && !field.isBlank();
-		boolean hasOperator = operator != null && !operator.isBlank();
-
-		sb.append("SELECT *\nFROM ");
-		sb.append(hasTable ? table : "<table>");
-		if (hasTable && hasField && hasOperator)
-		{
-			sb.append("\nWHERE ").append(field).append(" ")
-				.append(operator);
-			if (operatorNeedsValue(operator))
-			{
-				sb.append(" ");
-				String val = this.valueField.getText();
-				sb.append(val == null || val.isBlank() ? "<value>" : val);
-			}
-		}
-		this.queryPreview.setText(sb.toString());
 	}
 
 	private void runQuery()
@@ -258,35 +293,11 @@ public class SqlQueryPanelFX extends BorderPane
 			return;
 		}
 
-		String table = this.tableBox.getValue();
-		if (table == null || table.isBlank())
+		String rawSql = this.queryPreview.getText();
+		SqlSelection selection = buildSelectionSql(rawSql);
+		if (selection == null)
 		{
-			AlertBox.showWarning(getOwnerWindow(), "Select a table to query.");
 			return;
-		}
-
-		String field = this.fieldBox.getValue();
-		String operator = this.operatorBox.getValue();
-		boolean includeWhere = field != null && !field.isBlank() &&
-			operator != null && !operator.isBlank();
-		boolean needsValue = includeWhere && operatorNeedsValue(operator);
-		String value = this.valueField.getText();
-		if (needsValue && (value == null || value.isBlank()))
-		{
-			AlertBox.showWarning(getOwnerWindow(), "Enter a value for the filter.");
-			return;
-		}
-
-		StringBuilder sql = new StringBuilder("SELECT * FROM ");
-		sql.append(table);
-		if (includeWhere)
-		{
-			sql.append(" WHERE ").append(field).append(" ")
-				.append(operator);
-			if (needsValue)
-			{
-				sql.append(" ?");
-			}
 		}
 
 		Task<QueryResult> task = new Task<>()
@@ -296,12 +307,12 @@ public class SqlQueryPanelFX extends BorderPane
 			{
 				try (Connection connection = Database.get().getConnection();
 					PreparedStatement ps =
-						connection.prepareStatement(sql.toString()))
+						connection.prepareStatement(selection.sql()))
 				{
-					if (needsValue)
+					if (selection.hasParameter())
 					{
-						int type = columnTypes.getOrDefault(field, Types.VARCHAR);
-						setParameter(ps, 1, type, value);
+						setParameter(ps, 1, selection.parameterType(),
+							selection.parameterValue());
 					}
 					try (ResultSet rs = ps.executeQuery())
 					{
@@ -318,7 +329,7 @@ public class SqlQueryPanelFX extends BorderPane
 			this.runButton.setDisable(false);
 			this.progressIndicator.setVisible(false);
 			QueryResult result = task.getValue();
-			showResults(result, sql.toString());
+			showResults(result, selection.sql());
 		});
 		task.setOnFailed(e ->
 		{
@@ -332,6 +343,65 @@ public class SqlQueryPanelFX extends BorderPane
 		Thread thread = new Thread(task, "sql-query-task");
 		thread.setDaemon(true);
 		thread.start();
+	}
+
+	private SqlSelection buildSelectionSql(String rawSql)
+	{
+		if (rawSql != null && !rawSql.isBlank())
+		{
+			return new SqlSelection(rawSql.trim(), false, null, null);
+		}
+		String table = this.tableBox.getValue();
+		if (table == null || table.isBlank())
+		{
+			AlertBox.showWarning(getOwnerWindow(), "Select a table to query.");
+			return null;
+		}
+
+		String field = this.fieldBox.getValue();
+		String operator = this.operatorBox.getValue();
+		boolean includeWhere = field != null && !field.isBlank() &&
+			operator != null && !operator.isBlank();
+		boolean needsValue = includeWhere && operatorNeedsValue(operator);
+		String value = this.valueField.getText();
+		if (needsValue && (value == null || value.isBlank()))
+		{
+			AlertBox.showWarning(getOwnerWindow(), "Enter a value for the filter.");
+			return null;
+		}
+
+		StringBuilder sql = new StringBuilder("SELECT * FROM ");
+		sql.append(table);
+		Integer paramType = null;
+		if (includeWhere)
+		{
+			sql.append(" WHERE ").append(field).append(" ").append(operator);
+			if (needsValue)
+			{
+				sql.append(" ?");
+				paramType = columnTypes.getOrDefault(field, Types.VARCHAR);
+			}
+		}
+
+		return new SqlSelection(sql.toString(), needsValue, paramType, value);
+	}
+
+	private void showDatePicker()
+	{
+		Dialog<LocalDate> dialog = new Dialog<>();
+		dialog.setTitle("Select Date");
+		DatePicker picker = new DatePicker(LocalDate.now());
+		DialogPane pane = dialog.getDialogPane();
+		pane.setContent(picker);
+		pane.getButtonTypes().setAll(ButtonType.OK, ButtonType.CANCEL);
+		dialog.setResultConverter(button ->
+			button == ButtonType.OK ? picker.getValue() : null);
+
+		dialog.showAndWait().ifPresent(date ->
+		{
+			String formatted = DateTimeFormatter.ISO_LOCAL_DATE.format(date);
+			insertToken("DATE '" + formatted + "'");
+		});
 	}
 
 	private void showResults(QueryResult result, String sql)
@@ -592,6 +662,11 @@ public class SqlQueryPanelFX extends BorderPane
 
 	private record QueryResult(List<String> columns,
 		List<Map<String, Object>> rows)
+	{
+	}
+
+	private record SqlSelection(String sql, boolean hasParameter,
+		Integer parameterType, String parameterValue)
 	{
 	}
 }
