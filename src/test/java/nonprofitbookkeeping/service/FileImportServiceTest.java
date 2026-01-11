@@ -346,7 +346,9 @@ import static org.mockito.Mockito.when;
 	{
 		ImportedTransaction impTxn = new ImportedTransaction(LocalDate.now(), BigDecimal.TEN,
 			"Unique OFX", null, "UNIQUE_FITID", "USD", "BANK", "orig");
-		when(this.mockLedger.getTransactions()).thenReturn(null, null);
+		when(this.mockLedger.getTransactions()).thenReturn(
+			(List<AccountingTransaction>) null,
+			(List<AccountingTransaction>) null);
 		
 		List<AccountingTransaction> result = FileImportService.mapToAccountingTransactions(
 			List.of(impTxn), this.mockTargetAccount, this.mockChartOfAccounts, this.mockLedger);
