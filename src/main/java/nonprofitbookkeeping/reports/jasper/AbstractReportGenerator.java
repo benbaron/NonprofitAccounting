@@ -230,7 +230,9 @@ public abstract class AbstractReportGenerator
 				" report data rows for generator " + getClass().getName() +
 				".");
 		}
-		return data == null ? Collections.emptyList() : List.copyOf(data);
+		List<?> resolvedData =
+			data == null ? Collections.emptyList() : List.copyOf(data);
+		return normalizeReportData(resolvedData);
 		
 	}
 
@@ -245,6 +247,31 @@ public abstract class AbstractReportGenerator
 	{
 		return this.reportContext;
 		
+	}
+
+	/**
+	 * Indicates whether this report should be driven by a single bean that
+	 * represents the entire report output.
+	 *
+	 * @return {@code true} when the report should render once per bean
+	 */
+	protected boolean isSingleBeanReport()
+	{
+		return true;
+	}
+
+	private List<?> normalizeReportData(List<?> data)
+	{
+		if (!isSingleBeanReport() || data == null || data.size() <= 1)
+		{
+			return data == null ? Collections.emptyList() : data;
+		}
+
+		LOGGER.warning("Multiple data rows were provided for generator " +
+			getClass().getName() + "; rendering only the first row. " +
+			"Consider consolidating data into a single bean and using report " +
+			"bands for detail sections.");
+		return Collections.singletonList(data.get(0));
 	}
 	
 	/**
