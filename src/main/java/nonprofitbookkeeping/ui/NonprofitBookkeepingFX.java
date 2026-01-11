@@ -388,10 +388,7 @@ public class NonprofitBookkeepingFX extends Application
 		this.importMenu = new Menu("Import");
 		this.miImportFile = add(this.importMenu, "Import Financial (OFX, QFX) File...",
 			e -> new ImportFileActionFX(this.primaryStage).handle(e));
-		
-		
-		this.importMenu.getItems().add(this.miLoadScaXlsm);
-		
+				
 		this.miImportScaExcel = new MenuItem("Import Outlands Ledger...");
 		this.miImportScaExcel.setOnAction(
 			e -> new ImportFromOutlandsLedgerActionFX(this.primaryStage,
@@ -1094,7 +1091,7 @@ public class NonprofitBookkeepingFX extends Application
 		
 		this.run.setDisable(!companyOpen || creatingCompany);
 		this.panels.setDisable(!companyOpen || creatingCompany);
-		this.reports.setDisable(!companyOpen || creatingCompany);
+//		this.reports.setDisable(!companyOpen || creatingCompany);
 		
 		if (this.mainView != null)
 		{
