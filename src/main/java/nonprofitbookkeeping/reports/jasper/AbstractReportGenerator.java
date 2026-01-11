@@ -29,7 +29,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.beans.IntrospectionException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -245,6 +244,12 @@ public abstract class AbstractReportGenerator
 		
 	}
 
+	/**
+	 * Normalize report data.
+	 *
+	 * @param data the data
+	 * @return the list
+	 */
 	private List<?> normalizeReportData(List<?> data)
 	{
 		if (data == null || data.isEmpty())
@@ -272,6 +277,9 @@ public abstract class AbstractReportGenerator
 		}
 	}
 
+	/**
+	 * Override @see nonprofitbookkeeping.reports.jasper.runtime.ReportContextAware#setReportContext(nonprofitbookkeeping.reports.jasper.runtime.ReportContext) 
+	 */
 	@Override
 	public void setReportContext(ReportContext context)
 	{
@@ -279,6 +287,11 @@ public abstract class AbstractReportGenerator
 		
 	}
 
+	/**
+	 * Gets the report context.
+	 *
+	 * @return the report context
+	 */
 	protected ReportContext getReportContext()
 	{
 		return this.reportContext;
@@ -294,20 +307,6 @@ public abstract class AbstractReportGenerator
 	protected boolean isSingleBeanReport()
 	{
 		return true;
-	}
-
-	private List<?> normalizeReportData(List<?> data)
-	{
-		if (!isSingleBeanReport() || data == null || data.size() <= 1)
-		{
-			return data == null ? Collections.emptyList() : data;
-		}
-
-		LOGGER.warning("Multiple data rows were provided for generator " +
-			getClass().getName() + "; rendering only the first row. " +
-			"Consider consolidating data into a single bean and using report " +
-			"bands for detail sections.");
-		return Collections.singletonList(data.get(0));
 	}
 	
 	/**
@@ -329,6 +328,13 @@ public abstract class AbstractReportGenerator
 		
 	}
 
+	/**
+	 * Load report.
+	 *
+	 * @param reportPath the report path
+	 * @return the jasper report
+	 * @throws JRException the JR exception
+	 */
 	private JasperReport loadReport(String reportPath) throws JRException
 	{
 		String normalized = reportPath.startsWith("/") ?
@@ -370,6 +376,12 @@ public abstract class AbstractReportGenerator
 		throw new JRException("Report template not found: " + reportPath);
 	}
 
+	/**
+	 * Open classpath report.
+	 *
+	 * @param reportPath the report path
+	 * @return the input stream
+	 */
 	private InputStream openClasspathReport(String reportPath)
 	{
 		ClassLoader loader =
@@ -383,6 +395,12 @@ public abstract class AbstractReportGenerator
 		return getClass().getClassLoader().getResourceAsStream(reportPath);
 	}
 
+	/**
+	 * Builds the data source.
+	 *
+	 * @param data the data
+	 * @return the JR data source
+	 */
 	private JRDataSource buildDataSource(List<?> data)
 	{
 		if (data == null || data.isEmpty())
@@ -413,6 +431,12 @@ public abstract class AbstractReportGenerator
 		return new JRMapCollectionDataSource(List.of(envelope));
 	}
 
+	/**
+	 * Extract bean properties.
+	 *
+	 * @param bean the bean
+	 * @return the map
+	 */
 	private Map<String, Object> extractBeanProperties(Object bean)
 	{
 		Map<String, Object> properties = new LinkedHashMap<>();
