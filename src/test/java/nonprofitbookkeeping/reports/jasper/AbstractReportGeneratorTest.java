@@ -72,8 +72,15 @@ class AbstractReportGeneratorTest
 		beans.add("c"); // Ensure the internal copy is defensive.
 		
 		List<?> resolved = generator.resolved();
-		assertEquals(List.of("a", "b"), resolved,
-			"Explicit beans should override subclass generated data.");
+		assertEquals(1, resolved.size(),
+			"Explicit beans should be normalized into a single report bean.");
+		Object normalized = resolved.get(0);
+		assertTrue(normalized instanceof Map,
+			"Normalized report bean should expose map-like fields.");
+		@SuppressWarnings("unchecked")
+		Map<String, Object> normalizedMap = (Map<String, Object>) normalized;
+		assertEquals(List.of("a", "b"), normalizedMap.get("rows"),
+			"Normalized report bean should retain the original rows.");
 		
 		@SuppressWarnings("unchecked")
 		List<Object> mutableView = (List<Object>) resolved;
@@ -98,4 +105,3 @@ class AbstractReportGeneratorTest
 	}
 	
 }
-

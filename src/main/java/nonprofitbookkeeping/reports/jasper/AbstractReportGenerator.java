@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.beans.IntrospectionException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.logging.Logger;
@@ -210,8 +211,7 @@ public abstract class AbstractReportGenerator
 						0 : this.reportDataOverride.size()) +
 					" rows.");
 			}
-			return this.reportDataOverride == null ?
-				Collections.emptyList() : this.reportDataOverride;
+			return normalizeReportData(this.reportDataOverride);
 		}
 		
 		if (LOGGER.isLoggable(Level.FINE))
@@ -230,10 +230,35 @@ public abstract class AbstractReportGenerator
 				" report data rows for generator " + getClass().getName() +
 				".");
 		}
-		List<?> resolvedData =
-			data == null ? Collections.emptyList() : List.copyOf(data);
-		return normalizeReportData(resolvedData);
+		return normalizeReportData(data);
 		
+	}
+
+	private List<?> normalizeReportData(List<?> data)
+	{
+		if (data == null || data.isEmpty())
+		{
+			return Collections.emptyList();
+		}
+		if (data.size() == 1)
+		{
+			return List.copyOf(data);
+		}
+		try
+		{
+			return List.of(
+				nonprofitbookkeeping.reports.jasper.runtime.ReportDataBundle
+					.fromRows(data)
+			);
+		}
+		catch (IntrospectionException ex)
+		{
+			throw new IllegalStateException(
+				"Failed to normalize report data for " +
+					getClass().getName(),
+				ex
+			);
+		}
 	}
 
 	@Override
