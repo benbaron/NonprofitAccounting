@@ -6,11 +6,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.ServiceLoader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -52,10 +51,10 @@ import nonprofitbookkeeping.ui.panels.skeletons.SkeletonJournalPanel;
 import nonprofitbookkeeping.plugins.scaledger.SCALedgerPlugin;
 import nonprofitbookkeeping.ui.actions.*;
 import nonprofitbookkeeping.ui.actions.scaledger.ImportFromExcelActionFX;
-import nonprofitbookkeeping.ui.actions.scaledger.ImportFromJsonActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.ImportLedgerToJournalActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.LoadXlsmTableActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.SaveModifiedCopyActionFX;
+import nonprofitbookkeeping.plugins.scaledger.ui.PageViewerPanel;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.panels.*;
 import nonprofitbookkeeping.tools.H2ScriptCompanyImporter;
@@ -120,8 +119,6 @@ public class NonprofitBookkeepingFX extends Application
         private MenuItem miLoadScaXlsm;
         /** Menu item for importing an SCA Excel ledger via the plugin. */
         private MenuItem miImportScaExcel;
-        /** Menu item for importing an SCA JSON ledger via the plugin. */
-        private MenuItem miImportScaJson;
         /** Menu item for persisting an SCA ledger into the journal tables. */
         private MenuItem miPersistScaLedger;
         /** Menu item for saving a modified copy of an SCA workbook. */
@@ -143,6 +140,8 @@ public class NonprofitBookkeepingFX extends Application
 
         /** Reference to the loaded SCA Ledger plugin, if available. */
         private SCALedgerPlugin scaLedgerPlugin;
+        /** Shared viewer used for SCA Excel imports. */
+        private final PageViewerPanel scaExcelViewerPanel = new PageViewerPanel();
 	
 	/** Logger for this class. */
 	private static final Logger LOGGER =
@@ -278,10 +277,12 @@ public class NonprofitBookkeepingFX extends Application
                 );
 		
 		// Plugin Discovery and Initialization
-		LOGGER.info("Starting plugin discovery...");
-		ServiceLoader<Plugin> pluginLoader = ServiceLoader.load(Plugin.class);
+		LOGGER.info("Starting plugin initialization...");
+		List<Plugin> pluginsToLoad = new ArrayList<>();
+		pluginsToLoad.add(new nonprofitbookkeeping.plugins.scaledger.SCALedgerPlugin());
+		pluginsToLoad.add(new nonprofitbookkeeping.plugins.sample.SamplePlugin());
 		
-		for (Plugin plugin : pluginLoader)
+		for (Plugin plugin : pluginsToLoad)
 		{
 			
 			try
@@ -401,34 +402,10 @@ public class NonprofitBookkeepingFX extends Application
                 this.importMenu.getItems().add(this.miLoadScaXlsm);
 
                 this.miImportScaExcel = new MenuItem("Import SCA Excel Ledger...");
-
-                if (this.scaLedgerPlugin != null)
-                {
-                        this.miImportScaExcel.setOnAction(
-                                e -> new ImportFromExcelActionFX(this.primaryStage,
-                                        this.scaLedgerPlugin).handle(e));
-                }
-                else
-                {
-                        this.miImportScaExcel.setDisable(true);
-                }
-
+                this.miImportScaExcel.setOnAction(
+                        e -> new ImportFromExcelActionFX(this.primaryStage,
+                                this.scaExcelViewerPanel).handle(e));
                 this.importMenu.getItems().add(this.miImportScaExcel);
-
-                this.miImportScaJson = new MenuItem("Import SCA JSON Ledger...");
-
-                if (this.scaLedgerPlugin != null)
-                {
-                        this.miImportScaJson.setOnAction(
-                                e -> new ImportFromJsonActionFX(this.primaryStage,
-                                        this.scaLedgerPlugin).handle(e));
-                }
-                else
-                {
-                        this.miImportScaJson.setDisable(true);
-                }
-
-                this.importMenu.getItems().add(this.miImportScaJson);
 
                 this.miPersistScaLedger = add(this.importMenu,
                         "Persist SCA Ledger to Journal...",
@@ -1186,13 +1163,7 @@ public class NonprofitBookkeepingFX extends Application
                 if (this.miImportScaExcel != null)
                 {
                         this.miImportScaExcel
-                                .setDisable(this.scaLedgerPlugin == null || creatingCompany);
-                }
-
-                if (this.miImportScaJson != null)
-                {
-                        this.miImportScaJson
-                                .setDisable(this.scaLedgerPlugin == null || creatingCompany);
+                                .setDisable(creatingCompany);
                 }
 
                 if (this.miSaveScaModifiedCopy != null)
