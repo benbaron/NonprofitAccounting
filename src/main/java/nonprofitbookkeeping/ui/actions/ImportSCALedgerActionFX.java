@@ -24,14 +24,14 @@ import java.util.logging.Logger;
  * JavaFX action that runs the full ledger import pipeline and persists
  * transactions into the application's journal tables.
  */
-public class ImportLedgerToJournalActionFX implements EventHandler<ActionEvent>
+public class ImportSCALedgerActionFX implements EventHandler<ActionEvent>
 {
 	private static final Logger LOGGER =
-		Logger.getLogger(ImportLedgerToJournalActionFX.class.getName());
+		Logger.getLogger(ImportSCALedgerActionFX.class.getName());
 
 	private final Stage owner;
 
-	public ImportLedgerToJournalActionFX(Stage owner)
+	public ImportSCALedgerActionFX(Stage owner)
 	{
 		this.owner = owner;
 	}

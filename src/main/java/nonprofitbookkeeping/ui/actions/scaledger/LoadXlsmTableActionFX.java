@@ -17,11 +17,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.exception.NoFileException;
-// import nonprofitbookkeeping.model.BeanShell; // Replaced by plugin
-// import nonprofitbookkeeping.model.NonCompanyFile; // Replaced by plugin
 import nonprofitbookkeeping.plugins.scaledger.SCALedgerPlugin; // Added
 import nonprofitbookkeeping.preferences.PreferencesManager;
-// import nonprofitbookkeeping.ui.NonprofitBookkeepingFX; // NonprofitBookkeepingFX.currentFile was an error
 import nonprofitbookkeeping.ui.helpers.NpbkFileChooserFX;
 
 /**

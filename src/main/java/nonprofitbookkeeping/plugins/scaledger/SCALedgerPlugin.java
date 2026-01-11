@@ -13,7 +13,7 @@ import javafx.stage.Stage; // For action constructors
 import nonprofitbookkeeping.plugins.scaledger.ui.PageViewerPanel; // Added
 import nonprofitbookkeeping.ui.actions.InputFileActionFX;
 import nonprofitbookkeeping.ui.actions.OutputFileActionFX;
-import nonprofitbookkeeping.ui.actions.scaledger.ImportFromExcelActionFX;
+import nonprofitbookkeeping.ui.actions.scaledger.ImportFromOutlandsLedgerActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.LoadXlsmTableActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.SaveModifiedCopyActionFX;
 
@@ -126,7 +126,7 @@ public class SCALedgerPlugin implements Plugin
 		scaMenu.getItems().add(loadXlsmItem);
 		
 		MenuItem importExcelItem = new MenuItem("Import from Excel (SCA)");
-		importExcelItem.setOnAction(e -> new ImportFromExcelActionFX(primaryStage,
+		importExcelItem.setOnAction(e -> new ImportFromOutlandsLedgerActionFX(primaryStage,
 			this.pageViewerPanel).handle(e));
 		scaMenu.getItems().add(importExcelItem);
 		

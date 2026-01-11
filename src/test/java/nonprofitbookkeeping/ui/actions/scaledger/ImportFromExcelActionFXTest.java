@@ -48,7 +48,7 @@ class ImportFromExcelActionFXTest
 		row.getAllocations().add(alloc2);
 		
 		DefaultTableModel model =
-			ImportFromExcelActionFX.buildTableModel(List.of(row));
+			ImportFromOutlandsLedgerActionFX.buildTableModel(List.of(row));
 		
 		assertEquals(1, model.getRowCount());
 		assertEquals(8 + (2 * 5), model.getColumnCount());
@@ -93,7 +93,7 @@ class ImportFromExcelActionFXTest
 		row.getAllocations().add(null);
 		
 		DefaultTableModel model =
-			ImportFromExcelActionFX.buildTableModel(List.of(row));
+			ImportFromOutlandsLedgerActionFX.buildTableModel(List.of(row));
 		
 		assertEquals(1, model.getRowCount());
 		assertEquals(13, model.getColumnCount());

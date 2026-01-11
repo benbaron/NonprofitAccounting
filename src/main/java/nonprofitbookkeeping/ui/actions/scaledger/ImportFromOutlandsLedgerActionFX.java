@@ -29,10 +29,10 @@ import nonprofitbookkeeping.service.ExcelLedgerImportService;
  * (typically <code>.xlsx</code>) and displays the parsed rows inside the
  * shared {@link PageViewerPanel}.
  */
-public class ImportFromExcelActionFX implements EventHandler<ActionEvent>
+public class ImportFromOutlandsLedgerActionFX implements EventHandler<ActionEvent>
 {
 	private static final Logger LOGGER =
-		Logger.getLogger(ImportFromExcelActionFX.class.getName());
+		Logger.getLogger(ImportFromOutlandsLedgerActionFX.class.getName());
 	
 	private final Stage owner;
 	private final PageViewerPanel viewerPanel;
@@ -43,7 +43,7 @@ public class ImportFromExcelActionFX implements EventHandler<ActionEvent>
 	 * @param owner the owner window used for file pickers and alerts
 	 * @param viewerPanel the shared {@link PageViewerPanel} used to display data
 	 */
-	public ImportFromExcelActionFX(Stage owner, PageViewerPanel viewerPanel)
+	public ImportFromOutlandsLedgerActionFX(Stage owner, PageViewerPanel viewerPanel)
 	{
 		this.owner = owner;
 		this.viewerPanel =

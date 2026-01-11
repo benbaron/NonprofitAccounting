@@ -50,7 +50,7 @@ import nonprofitbookkeeping.util.FormatUtils;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonJournalPanel;
 import nonprofitbookkeeping.plugins.scaledger.SCALedgerPlugin;
 import nonprofitbookkeeping.ui.actions.*;
-import nonprofitbookkeeping.ui.actions.scaledger.ImportFromExcelActionFX;
+import nonprofitbookkeeping.ui.actions.scaledger.ImportFromOutlandsLedgerActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.LoadXlsmTableActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.SaveModifiedCopyActionFX;
 import nonprofitbookkeeping.plugins.scaledger.ui.PageViewerPanel;
@@ -386,33 +386,21 @@ public class NonprofitBookkeepingFX extends Application
 		
 		/* IMPORT */
 		this.importMenu = new Menu("Import");
-		this.miImportFile = add(this.importMenu, "Import Financial File...",
+		this.miImportFile = add(this.importMenu, "Import Financial (OFX, QFX) File...",
 			e -> new ImportFileActionFX(this.primaryStage).handle(e));
 		
-		this.miLoadScaXlsm = new MenuItem("Load SCA XLSM Table...");
-		
-		if (this.scaLedgerPlugin != null)
-		{
-			this.miLoadScaXlsm.setOnAction(
-				e -> new LoadXlsmTableActionFX(this.primaryStage,
-					this.scaLedgerPlugin).handle(e));
-		}
-		else
-		{
-			this.miLoadScaXlsm.setDisable(true);
-		}
 		
 		this.importMenu.getItems().add(this.miLoadScaXlsm);
 		
-		this.miImportScaExcel = new MenuItem("Import SCA Excel Ledger...");
+		this.miImportScaExcel = new MenuItem("Import Outlands Ledger...");
 		this.miImportScaExcel.setOnAction(
-			e -> new ImportFromExcelActionFX(this.primaryStage,
+			e -> new ImportFromOutlandsLedgerActionFX(this.primaryStage,
 				this.scaExcelViewerPanel).handle(e));
 		this.importMenu.getItems().add(this.miImportScaExcel);
 		
 		this.miPersistScaLedger = add(this.importMenu,
-			"Persist SCA Ledger to Journal...",
-			e -> new ImportLedgerToJournalActionFX(this.primaryStage)
+			"Import SCA Ledger...",
+			e -> new ImportSCALedgerActionFX(this.primaryStage)
 				.handle(e));
 		bar.getMenus().add(this.importMenu);
 		
@@ -472,83 +460,6 @@ public class NonprofitBookkeepingFX extends Application
 				"Reconciliation"));
 		bar.getMenus().add(this.run);
 		
-// /* REPORTS */
-		this.reports = new Menu("Reports");
-// add(this.reports, "Show Reports", e -> ((MainApplicationView) this.root)
-// .showPanel(MainApplicationView.PanelType.REPORTS));
-// add(this.reports, "Show Accounts",
-//
-// e -> showPanel(new AccountsPanelFX(new AccountService()), "Chart of
-// Accounts"));
-// add(this.reports, "Show Account Activity", e -> {
-// Company currentCompany = CurrentCompany.getCompany();
-//
-//
-// if (currentCompany != null && currentCompany.getLedger() != null)
-// {
-// showPanel(new AccountsActivityPanelFX(currentCompany.getLedger()),
-// "Account Activity");
-// }
-// else
-// {
-// AlertBox.showError(this.primaryStage, "No company or ledger open.");
-// }
-//
-// });
-// add(this.reports, "Generate Reports...",
-// e -> new GenerateReportsAction(ServiceContainer.reportService).handle(e));
-// add(this.reports, "Generate Income Statement",
-// e -> new GenerateIncomeStatementAction(ServiceContainer.reportService)
-// .actionPerformed(null));
-// add(this.reports, "Generate Balance Sheet",
-// e -> new GenerateBalanceSheetAction(ServiceContainer.reportService)
-// .actionPerformed(null));
-// add(this.reports, "Generate Trial Balance",
-// e -> new GenerateTrialBalanceAction(ServiceContainer.reportService)
-// .actionPerformed(null));
-// add(this.reports, "Generate Cash Flow Statement",
-// e -> new GenerateCashFlowStatementAction(ServiceContainer.reportService)
-// .actionPerformed(null));
-// add(this.reports, "Generate Budget vs. Actuals Report",
-// e -> new GenerateBudgetVsActualsReportAction(ServiceContainer.reportService,
-// ServiceContainer.budgetService).actionPerformed(null));
-// add(this.reports, "Manage Saved Reports", e -> {
-//
-// if (!CurrentCompany.isOpen())
-// {
-// AlertBox.showError(this.primaryStage,
-// "No company open. Load or create a company first.");
-// return;
-// }
-//
-// File companyFile = CurrentCompany.getCurrentFile();
-//
-// if (companyFile == null)
-// {
-// Company currentCompany = CurrentCompany.getCompany();
-// companyFile = currentCompany != null ? currentCompany.getCompanyFile() :
-// null;
-// }
-//
-// File companyDir = (companyFile != null) ? companyFile.getParentFile() : null;
-//
-// if (companyDir == null)
-// {
-// AlertBox.showError(this.primaryStage,
-// "Company directory not available. Save the company before managing
-// reports.");
-// return;
-// }
-//
-// new ManageReportConfigurationsDialog(null,
-// ServiceContainer.reportConfigurationService,
-// companyDir, new ArrayList<Fund>(),
-// ServiceContainer.reportService).setVisible(true);
-// });
-// add(this.reports, "Generate Account Activity Detail",
-// e -> new GenerateAccountActivityReportAction(ServiceContainer.reportService)
-// .actionPerformed(null));
-// bar.getMenus().add(this.reports);
 		
 		/* PANELS */
 		this.panels = new Menu("Panels");
