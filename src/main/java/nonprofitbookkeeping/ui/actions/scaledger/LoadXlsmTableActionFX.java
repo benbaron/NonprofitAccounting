@@ -154,6 +154,7 @@ public class LoadXlsmTableActionFX implements EventHandler<ActionEvent>
 	 *             Consider reviewing if any underlying Swing/JavaFX interop parts are subject to deprecation.
 	 *             The method itself is functional for converting table data.
 	 */
+	@Deprecated
 	private static TableView<Map<String, Object>> createFxTable(javax.swing.table.DefaultTableModel model)
 	{
 		TableView<Map<String, Object>> tv = new TableView<>();

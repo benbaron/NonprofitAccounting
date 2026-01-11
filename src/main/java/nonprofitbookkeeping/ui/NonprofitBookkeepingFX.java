@@ -720,6 +720,8 @@ public class NonprofitBookkeepingFX extends Application
 			e -> handleImportLegacyArchive());
 		add(db, "Import H2 script into DB...",
 			e -> handleImportScriptIntoDatabase());
+		add(db, "Run SQL Query...", e -> showPanel(new SqlQueryPanelFX(),
+			"SQL Query"));
 		return db;
 		
 	}

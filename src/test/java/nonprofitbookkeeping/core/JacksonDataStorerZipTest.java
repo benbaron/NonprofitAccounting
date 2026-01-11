@@ -23,6 +23,7 @@ import java.util.zip.ZipEntry;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SuppressWarnings("removal")
 public class JacksonDataStorerZipTest {
 
     @TempDir
