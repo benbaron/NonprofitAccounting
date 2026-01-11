@@ -56,6 +56,8 @@ public class ASSET_DTL_5aJasperGenerator extends AbstractReportGenerator
         {
             reportBean.setUndeposited_funds(
                 buildUndepositedFunds(
+                    // ASSET_DTL_5a.jrxml expects left/right columns per row,
+                    // so we pair single entry rows into a line item.
                     queryBeans(
                         cx,
                         AssetDtl5aUndepositedFundsEntry.class,
