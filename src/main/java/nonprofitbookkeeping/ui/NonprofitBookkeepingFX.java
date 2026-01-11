@@ -6,11 +6,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.ServiceLoader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -52,10 +51,10 @@ import nonprofitbookkeeping.ui.panels.skeletons.SkeletonJournalPanel;
 import nonprofitbookkeeping.plugins.scaledger.SCALedgerPlugin;
 import nonprofitbookkeeping.ui.actions.*;
 import nonprofitbookkeeping.ui.actions.scaledger.ImportFromExcelActionFX;
-import nonprofitbookkeeping.ui.actions.scaledger.ImportFromJsonActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.ImportLedgerToJournalActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.LoadXlsmTableActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.SaveModifiedCopyActionFX;
+import nonprofitbookkeeping.plugins.scaledger.ui.PageViewerPanel;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.panels.*;
 import nonprofitbookkeeping.tools.H2ScriptCompanyImporter;
@@ -113,6 +112,7 @@ public class NonprofitBookkeepingFX extends Application
 	/** Menu item for exporting COA to XLSX. */
 	private MenuItem miExportCoaXlsx;
 	/** Menu item for exporting account statements to OFX/QFX. */
+<<<<<<< HEAD
 	private MenuItem miExportStatementOfx;
 	/** Menu item for importing financial files directly into the data model. */
 	private MenuItem miImportFile;
@@ -143,6 +143,38 @@ public class NonprofitBookkeepingFX extends Application
 	
 	/** Reference to the loaded SCA Ledger plugin, if available. */
 	private SCALedgerPlugin scaLedgerPlugin;
+=======
+        private MenuItem miExportStatementOfx;
+        /** Menu item for importing financial files directly into the data model. */
+        private MenuItem miImportFile;
+        /** Menu item for loading an SCA XLSM workbook via the plugin. */
+        private MenuItem miLoadScaXlsm;
+        /** Menu item for importing an SCA Excel ledger via the plugin. */
+        private MenuItem miImportScaExcel;
+        /** Menu item for persisting an SCA ledger into the journal tables. */
+        private MenuItem miPersistScaLedger;
+        /** Menu item for saving a modified copy of an SCA workbook. */
+        private MenuItem miSaveScaModifiedCopy;
+
+        // Menus that need their state managed
+        /** Top-level menu for running various tools and plugin features. */
+        private Menu run;
+        /** Top-level menu for generating and viewing reports. */
+        private Menu reports;
+        /** Top-level menu for accessing different data panels like Donors, Grants etc. */
+        private Menu panels;
+        /** Top-level menu dedicated to import workflows. */
+        private Menu importMenu;
+        /** Top-level menu dedicated to export workflows. */
+        private Menu exportMenu;
+        /** Top-level menu that lists available plugins. */
+        private Menu pluginsMenu;
+
+        /** Reference to the loaded SCA Ledger plugin, if available. */
+        private SCALedgerPlugin scaLedgerPlugin;
+        /** Shared viewer used for SCA Excel imports. */
+        private final PageViewerPanel scaExcelViewerPanel = new PageViewerPanel();
+>>>>>>> branch 'main' of git@github.com:benbaron/NonprofitAccounting.git
 	
 	/** Logger for this class. */
 	private static final Logger LOGGER =
@@ -278,10 +310,12 @@ public class NonprofitBookkeepingFX extends Application
 		);
 		
 		// Plugin Discovery and Initialization
-		LOGGER.info("Starting plugin discovery...");
-		ServiceLoader<Plugin> pluginLoader = ServiceLoader.load(Plugin.class);
+		LOGGER.info("Starting plugin initialization...");
+		List<Plugin> pluginsToLoad = new ArrayList<>();
+		pluginsToLoad.add(new nonprofitbookkeeping.plugins.scaledger.SCALedgerPlugin());
+		pluginsToLoad.add(new nonprofitbookkeeping.plugins.sample.SamplePlugin());
 		
-		for (Plugin plugin : pluginLoader)
+		for (Plugin plugin : pluginsToLoad)
 		{
 			
 			try
@@ -374,6 +408,7 @@ public class NonprofitBookkeepingFX extends Application
 		this.miSave = add(companyMenu, "Save Company", e -> doSaveCompany());
 		this.miSave.setAccelerator(
 			new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
+<<<<<<< HEAD
 		this.miImportCoaXlsx = add(companyMenu, "Import COA (XLSX)",
 			e -> new ImportCoaXlsxActionFX(this.primaryStage).handle(e));
 		this.miExportCoaXlsx = add(companyMenu, "Export COA (XLSX)",
@@ -462,6 +497,71 @@ public class NonprofitBookkeepingFX extends Application
 		/* EDIT */
 		Menu edit = new Menu("Edit");
 		this.miEditCompany =
+=======
+                this.miImportCoaXlsx = add(companyMenu, "Import COA (XLSX)",
+                        e -> new ImportCoaXlsxActionFX(this.primaryStage).handle(e));
+                this.miExportCoaXlsx = add(companyMenu, "Export COA (XLSX)",
+                        e -> new ExportCoaXlsxActionFX(this.primaryStage).handle(e));
+                bar.getMenus().add(companyMenu);
+
+                /* IMPORT */
+                this.importMenu = new Menu("Import");
+                this.miImportFile = add(this.importMenu, "Import Financial File...",
+                        e -> new ImportFileActionFX(this.primaryStage).handle(e));
+
+                this.miLoadScaXlsm = new MenuItem("Load SCA XLSM Table...");
+
+                if (this.scaLedgerPlugin != null)
+                {
+                        this.miLoadScaXlsm.setOnAction(
+                                e -> new LoadXlsmTableActionFX(this.primaryStage,
+                                        this.scaLedgerPlugin).handle(e));
+                }
+                else
+                {
+                        this.miLoadScaXlsm.setDisable(true);
+                }
+
+                this.importMenu.getItems().add(this.miLoadScaXlsm);
+
+                this.miImportScaExcel = new MenuItem("Import SCA Excel Ledger...");
+                this.miImportScaExcel.setOnAction(
+                        e -> new ImportFromExcelActionFX(this.primaryStage,
+                                this.scaExcelViewerPanel).handle(e));
+                this.importMenu.getItems().add(this.miImportScaExcel);
+
+                this.miPersistScaLedger = add(this.importMenu,
+                        "Persist SCA Ledger to Journal...",
+                        e -> new ImportLedgerToJournalActionFX(this.primaryStage)
+                                .handle(e));
+                bar.getMenus().add(this.importMenu);
+
+                /* EXPORT */
+                this.exportMenu = new Menu("Export");
+                this.miSaveScaModifiedCopy = new MenuItem("Save Modified SCA Workbook...");
+
+                if (this.scaLedgerPlugin != null)
+                {
+                        this.miSaveScaModifiedCopy.setOnAction(
+                                e -> new SaveModifiedCopyActionFX(this.primaryStage,
+                                        this.scaLedgerPlugin).handle(e));
+                }
+                else
+                {
+                        this.miSaveScaModifiedCopy.setDisable(true);
+                }
+
+                this.exportMenu.getItems().add(this.miSaveScaModifiedCopy);
+
+                this.miExportStatementOfx = add(this.exportMenu,
+                        "Export Account Statement (OFX/QFX)...",
+                        e -> new ExportFileActionFX(this.primaryStage).handle(e));
+                bar.getMenus().add(this.exportMenu);
+
+                /* EDIT */
+                Menu edit = new Menu("Edit");
+                this.miEditCompany =
+>>>>>>> branch 'main' of git@github.com:benbaron/NonprofitAccounting.git
 			add(edit, "Create or Edit Company", e -> startCreateWizard());
 		this.miEditCoa = add(edit, "Edit Chart of Accounts",
 			e -> ((MainApplicationView) this.root)
@@ -1161,6 +1261,7 @@ public class NonprofitBookkeepingFX extends Application
 		this.miSave.setDisable(!companyOpen || creatingCompany);
 		this.miEditCompany.setDisable(!databaseReady || creatingCompany);
 		this.miEditCoa.setDisable(!companyOpen || creatingCompany);
+<<<<<<< HEAD
 		this.miEditJournal.setDisable(!companyOpen || creatingCompany);
 		this.miImportCoaXlsx.setDisable(!companyOpen || creatingCompany);
 		this.miExportCoaXlsx.setDisable(!companyOpen || creatingCompany);
@@ -1209,6 +1310,50 @@ public class NonprofitBookkeepingFX extends Application
 		this.run.setDisable(!companyOpen || creatingCompany);
 		this.panels.setDisable(!companyOpen || creatingCompany);
 		this.reports.setDisable(!companyOpen || creatingCompany);
+=======
+                this.miEditJournal.setDisable(!companyOpen || creatingCompany);
+                this.miImportCoaXlsx.setDisable(!companyOpen || creatingCompany);
+                this.miExportCoaXlsx.setDisable(!companyOpen || creatingCompany);
+
+                if (this.miImportFile != null)
+                {
+                        this.miImportFile.setDisable(!companyOpen || creatingCompany);
+                }
+
+                if (this.miPersistScaLedger != null)
+                {
+                        this.miPersistScaLedger
+                                .setDisable(!companyOpen || creatingCompany);
+                }
+
+                if (this.miExportStatementOfx != null)
+                {
+                        this.miExportStatementOfx
+                                .setDisable(!companyOpen || creatingCompany);
+                }
+
+                if (this.miLoadScaXlsm != null)
+                {
+                        this.miLoadScaXlsm
+                                .setDisable(this.scaLedgerPlugin == null || creatingCompany);
+                }
+
+                if (this.miImportScaExcel != null)
+                {
+                        this.miImportScaExcel
+                                .setDisable(creatingCompany);
+                }
+
+                if (this.miSaveScaModifiedCopy != null)
+                {
+                        this.miSaveScaModifiedCopy
+                                .setDisable(this.scaLedgerPlugin == null || creatingCompany);
+                }
+
+                this.run.setDisable(!companyOpen || creatingCompany);
+                this.panels.setDisable(!companyOpen || creatingCompany);
+                this.reports.setDisable(!companyOpen || creatingCompany);
+>>>>>>> branch 'main' of git@github.com:benbaron/NonprofitAccounting.git
 		
 		if (this.mainView != null)
 		{
