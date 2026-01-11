@@ -5,7 +5,6 @@ import nonprofitbookkeeping.exception.NoFileCreatedException;
 import nonprofitbookkeeping.reports.jasper.AbstractReportGenerator;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +15,6 @@ import nonprofitbookkeeping.reports.jasper.beans.AssetDtl5aOtherAssetLineItem;
 import nonprofitbookkeeping.reports.jasper.beans.AssetDtl5aPrepaidExpenseLineItem;
 import nonprofitbookkeeping.reports.jasper.beans.AssetDtl5aReceivableLineItem;
 import nonprofitbookkeeping.reports.jasper.beans.AssetDtl5aReportBean;
-import nonprofitbookkeeping.reports.jasper.beans.AssetDtl5aUndepositedFundsEntry;
 import nonprofitbookkeeping.reports.jasper.beans.AssetDtl5aUndepositedFundsLineItem;
 import nonprofitbookkeeping.reports.jasper.runtime.FieldMapSqlBuilder;
 import nonprofitbookkeeping.reports.jasper.runtime.JdbcBeanLoader;
@@ -55,18 +53,26 @@ public class ASSET_DTL_5aJasperGenerator extends AbstractReportGenerator
         try (Connection cx = Database.get().getConnection())
         {
             reportBean.setUndeposited_funds(
-                buildUndepositedFunds(
-                    // ASSET_DTL_5a.jrxml expects left/right columns per row,
-                    // so we pair single entry rows into a line item.
-                    queryBeans(
-                        cx,
-                        AssetDtl5aUndepositedFundsEntry.class,
+                queryBeans(
+                    cx,
+                    AssetDtl5aUndepositedFundsLineItem.class,
+                    "with numbered as (\n" +
+                        "  select\n" +
+                        "    jt.memo as sending_branch_or_reason,\n" +
+                        "    je.amount as amount,\n" +
+                        "    row_number() over (order by jt.id, je.id) as rn\n" +
+                        "  from journal_transaction jt\n" +
+                        "  join journal_entry je on je.txn_id = jt.id\n" +
+                        ")\n" +
                         "select\n" +
-                            "jt.memo as sending_branch_or_reason,\n" +
-                            "je.amount as amount\n" +
-                            "from journal_transaction jt\n" +
-                            "join journal_entry je on je.txn_id = jt.id"
-                    )
+                        "  left_entry.sending_branch_or_reason as sending_branch_or_reason_left,\n" +
+                        "  left_entry.amount as amount_left,\n" +
+                        "  right_entry.sending_branch_or_reason as sending_branch_or_reason_right,\n" +
+                        "  right_entry.sending_branch_or_reason as sending_branch_or_reason_detail,\n" +
+                        "  right_entry.amount as amount_right\n" +
+                        "from numbered left_entry\n" +
+                        "left join numbered right_entry on right_entry.rn = left_entry.rn + 1\n" +
+                        "where left_entry.rn % 2 = 1"
                 )
             );
             reportBean.setReceivables(
@@ -126,39 +132,6 @@ public class ASSET_DTL_5aJasperGenerator extends AbstractReportGenerator
     ) throws SQLException
     {
         return JdbcBeanLoader.queryBeans(cx, beanClass, sql, null);
-    }
-
-    private List<AssetDtl5aUndepositedFundsLineItem> buildUndepositedFunds(
-        List<AssetDtl5aUndepositedFundsEntry> entries
-    )
-    {
-        List<AssetDtl5aUndepositedFundsLineItem> rows = new ArrayList<>();
-
-        for (int i = 0; i < entries.size(); i += 2)
-        {
-            AssetDtl5aUndepositedFundsEntry left = entries.get(i);
-            AssetDtl5aUndepositedFundsEntry right =
-                i + 1 < entries.size() ? entries.get(i + 1) : null;
-
-            AssetDtl5aUndepositedFundsLineItem row =
-                new AssetDtl5aUndepositedFundsLineItem();
-            row.setSending_branch_or_reason_left(
-                left.getSending_branch_or_reason());
-            row.setAmount_left(left.getAmount());
-
-            if (right != null)
-            {
-                row.setSending_branch_or_reason_right(
-                    right.getSending_branch_or_reason());
-                row.setSending_branch_or_reason_detail(
-                    right.getSending_branch_or_reason());
-                row.setAmount_right(right.getAmount());
-            }
-
-            rows.add(row);
-        }
-
-        return rows;
     }
 
     @Override
