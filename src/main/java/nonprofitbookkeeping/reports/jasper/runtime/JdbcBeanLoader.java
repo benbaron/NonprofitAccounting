@@ -121,6 +121,92 @@ public final class JdbcBeanLoader
 		}
 		
 	}
+
+	/**
+	 * Run the SQL query and merge each row into a single bean using
+	 * a row-based naming convention.
+	 *
+	 * Row 1 uses the original column label. Subsequent rows append
+	 * "_2", "_3", etc. to the column label so Jasper beans can
+	 * expose fields like item_description_2 or amount_3.
+	 *
+	 * @param cx open JDBC connection
+	 * @param beanClass bean type to instantiate
+	 * @param sql SQL to execute
+	 * @param paramSetter binder for PreparedStatement parameters (may be null)
+	 * @return a list with a single populated bean, or empty if no rows
+	 * @throws SQLException when SQL errors occur
+	 */
+	public static <B> List<B> queryRowBasedBeans(
+		Connection cx,
+		Class<B> beanClass,
+		String sql,
+		SqlParameterSetter paramSetter
+	) throws SQLException
+	{
+		LOGGER.debug("Executing row-based report query for beanClass={}, sql={}",
+			beanClass.getName(), sql);
+
+		try (PreparedStatement ps = cx.prepareStatement(sql))
+		{
+			if (paramSetter != null)
+			{
+				paramSetter.setParameters(ps);
+			}
+
+			try (ResultSet rs = ps.executeQuery())
+			{
+				Map<String, Object> merged = new HashMap<>();
+				ResultSetMetaData md = rs.getMetaData();
+				int cols = md.getColumnCount();
+				int rowIndex = 0;
+
+				while (rs.next())
+				{
+					rowIndex++;
+					for (int i = 1; i <= cols; i++)
+					{
+						String label = md.getColumnLabel(i);
+						if (label == null || label.isBlank())
+						{
+							label = md.getColumnName(i);
+						}
+						if (label == null || label.isBlank())
+						{
+							continue;
+						}
+						String mappedLabel = rowIndex == 1
+							? label
+							: label + "_" + rowIndex;
+						Object value = rs.getObject(i);
+						merged.put(mappedLabel, value);
+						LOGGER.trace(
+							"Row {} column {} label={} mappedLabel={} value={} valueType={}",
+							rowIndex,
+							i,
+							label,
+							mappedLabel,
+							value,
+							value == null ? "null" :
+								value.getClass().getName());
+					}
+				}
+
+				if (rowIndex == 0)
+				{
+					LOGGER.debug("No rows returned for beanClass={}, sql={}",
+						beanClass.getName(), sql);
+					return List.of();
+				}
+
+				LOGGER.debug(
+					"Merged {} rows into beanClass={} with columns={}",
+					rowIndex, beanClass.getName(), merged.keySet());
+				B bean = DataFiller.fill(beanClass, merged);
+				return List.of(bean);
+			}
+		}
+	}
 	
 	
 	/**

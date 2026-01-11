@@ -228,8 +228,7 @@ public abstract class AbstractReportGenerator
 						0 : this.reportDataOverride.size()) +
 					" rows.");
 			}
-			return this.reportDataOverride == null ?
-				Collections.emptyList() : this.reportDataOverride;
+			return normalizeReportData(this.reportDataOverride);
 		}
 		
 		if (LOGGER.isLoggable(Level.FINE))
@@ -248,10 +247,46 @@ public abstract class AbstractReportGenerator
 				" report data rows for generator " + getClass().getName() +
 				".");
 		}
-		return data == null ? Collections.emptyList() : List.copyOf(data);
+		return normalizeReportData(data);
 		
 	}
 
+	/**
+	 * Normalize report data.
+	 *
+	 * @param data the data
+	 * @return the list
+	 */
+	private List<?> normalizeReportData(List<?> data)
+	{
+		if (data == null || data.isEmpty())
+		{
+			return Collections.emptyList();
+		}
+		if (data.size() == 1)
+		{
+			return List.copyOf(data);
+		}
+		try
+		{
+			return List.of(
+				nonprofitbookkeeping.reports.jasper.runtime.ReportDataBundle
+					.fromRows(data)
+			);
+		}
+		catch (IntrospectionException ex)
+		{
+			throw new IllegalStateException(
+				"Failed to normalize report data for " +
+					getClass().getName(),
+				ex
+			);
+		}
+	}
+
+	/**
+	 * Override @see nonprofitbookkeeping.reports.jasper.runtime.ReportContextAware#setReportContext(nonprofitbookkeeping.reports.jasper.runtime.ReportContext) 
+	 */
 	@Override
 	public void setReportContext(ReportContext context)
 	{
@@ -259,10 +294,26 @@ public abstract class AbstractReportGenerator
 		
 	}
 
+	/**
+	 * Gets the report context.
+	 *
+	 * @return the report context
+	 */
 	protected ReportContext getReportContext()
 	{
 		return this.reportContext;
 		
+	}
+
+	/**
+	 * Indicates whether this report should be driven by a single bean that
+	 * represents the entire report output.
+	 *
+	 * @return {@code true} when the report should render once per bean
+	 */
+	protected boolean isSingleBeanReport()
+	{
+		return true;
 	}
 	
 	/**
@@ -284,6 +335,13 @@ public abstract class AbstractReportGenerator
 		
 	}
 
+	/**
+	 * Load report.
+	 *
+	 * @param reportPath the report path
+	 * @return the jasper report
+	 * @throws JRException the JR exception
+	 */
 	private JasperReport loadReport(String reportPath) throws JRException
 	{
 		String normalized = reportPath.startsWith("/") ?
@@ -325,6 +383,12 @@ public abstract class AbstractReportGenerator
 		throw new JRException("Report template not found: " + reportPath);
 	}
 
+	/**
+	 * Open classpath report.
+	 *
+	 * @param reportPath the report path
+	 * @return the input stream
+	 */
 	private InputStream openClasspathReport(String reportPath)
 	{
 		ClassLoader loader =
@@ -338,6 +402,12 @@ public abstract class AbstractReportGenerator
 		return getClass().getClassLoader().getResourceAsStream(reportPath);
 	}
 
+	/**
+	 * Builds the data source.
+	 *
+	 * @param data the data
+	 * @return the JR data source
+	 */
 	private JRDataSource buildDataSource(List<?> data)
 	{
 		if (data == null || data.isEmpty())
@@ -368,6 +438,12 @@ public abstract class AbstractReportGenerator
 		return new JRMapCollectionDataSource(List.of(envelope));
 	}
 
+	/**
+	 * Extract bean properties.
+	 *
+	 * @param bean the bean
+	 * @return the map
+	 */
 	private Map<String, Object> extractBeanProperties(Object bean)
 	{
 		Map<String, Object> properties = new LinkedHashMap<>();
@@ -397,11 +473,11 @@ public abstract class AbstractReportGenerator
 			}
 			catch (ReflectiveOperationException e)
 			{
-				LOGGER.log(Level.WARNING,
-					"Skipping report bean property " + descriptor.getName() +
-						" on " + bean.getClass().getName() +
-						" due to read failure.",
-					e);
+				throw new IllegalStateException(
+					"Unable to read property " + descriptor.getName() +
+						" from " + bean.getClass().getName(),
+					e
+				);
 			}
 		}
 		return properties;

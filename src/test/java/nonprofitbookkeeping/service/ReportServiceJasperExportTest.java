@@ -136,6 +136,14 @@ class ReportServiceJasperExportTest
 			return "stub-balance";
 			
 		}
+
+		@Override
+		public File writeJasperOutput(String format, JasperPrint print,
+			String baseName) throws JRException, IOException
+		{
+			lastFormat = format;
+			return super.writeJasperOutput(format, print, baseName);
+		}
 		
 	}
 	
