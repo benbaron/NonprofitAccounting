@@ -9,24 +9,32 @@ import nonprofitbookkeeping.reports.jasper.runtime.ReportContextHolder;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +48,8 @@ public abstract class AbstractReportGenerator
 		Logger.getLogger(AbstractReportGenerator.class.getName());
 	private static final String DEFAULT_OUTPUT_DIR =
 		"NonprofitBookkeepingReports";
+	private static final String REPORT_DATA_ROWS_PARAM = "REPORT_DATA_ROWS";
+	private static final String REPORT_DATA_ROWS_FIELD = "rows";
 	
 	private List<?> reportDataOverride;
 	private boolean reportDataExplicit;
@@ -95,8 +105,9 @@ public abstract class AbstractReportGenerator
 			getReportParameters() == null ? new HashMap<>() :
 				new HashMap<>(getReportParameters());
 		List<?> data = resolveReportData();
-		JRBeanCollectionDataSource dataSource =
-			new JRBeanCollectionDataSource(data, false);
+		List<?> safeData = data == null ? Collections.emptyList() : data;
+		params.put(REPORT_DATA_ROWS_PARAM, List.copyOf(safeData));
+		JRDataSource dataSource = buildDataSource(safeData);
 		return JasperFillManager.fillReport(report, params, dataSource);
 	}
 
@@ -318,6 +329,75 @@ public abstract class AbstractReportGenerator
 			return stream;
 		}
 		return getClass().getClassLoader().getResourceAsStream(reportPath);
+	}
+
+	private JRDataSource buildDataSource(List<?> data)
+	{
+		if (data == null || data.isEmpty())
+		{
+			return new JRBeanCollectionDataSource(Collections.emptyList(), false);
+		}
+		if (data.size() == 1)
+		{
+			return new JRBeanCollectionDataSource(data, false);
+		}
+		Map<String, Object> envelope = new LinkedHashMap<>();
+		Object first = data.get(0);
+		if (first instanceof Map<?, ?> map)
+		{
+			map.forEach((key, value) ->
+			{
+				if (key != null)
+				{
+					envelope.put(key.toString(), value);
+				}
+			});
+		}
+		else if (first != null)
+		{
+			envelope.putAll(extractBeanProperties(first));
+		}
+		envelope.put(REPORT_DATA_ROWS_FIELD, List.copyOf(data));
+		return new JRMapCollectionDataSource(List.of(envelope));
+	}
+
+	private Map<String, Object> extractBeanProperties(Object bean)
+	{
+		Map<String, Object> properties = new LinkedHashMap<>();
+		BeanInfo info;
+		try
+		{
+			info = Introspector.getBeanInfo(bean.getClass(), Object.class);
+		}
+		catch (IntrospectionException e)
+		{
+			throw new IllegalStateException(
+				"Unable to introspect report bean " + bean.getClass().getName(),
+				e
+			);
+		}
+		for (PropertyDescriptor descriptor : info.getPropertyDescriptors())
+		{
+			Method readMethod = descriptor.getReadMethod();
+			if (readMethod == null)
+			{
+				continue;
+			}
+			try
+			{
+				properties.put(descriptor.getName(),
+					readMethod.invoke(bean));
+			}
+			catch (ReflectiveOperationException e)
+			{
+				throw new IllegalStateException(
+					"Unable to read property " + descriptor.getName() +
+						" from " + bean.getClass().getName(),
+					e
+				);
+			}
+		}
+		return properties;
 	}
 	
 }
