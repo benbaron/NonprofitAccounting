@@ -20,7 +20,6 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.model.impex.ExcelLedgerRow;
-import nonprofitbookkeeping.plugins.scaledger.SCALedgerPlugin;
 import nonprofitbookkeeping.plugins.scaledger.ui.PageViewerPanel;
 import nonprofitbookkeeping.preferences.PreferencesManager;
 import nonprofitbookkeeping.service.ExcelLedgerImportService;
@@ -28,7 +27,7 @@ import nonprofitbookkeeping.service.ExcelLedgerImportService;
 /**
  * JavaFX action that imports an SCA ledger stored in an Excel workbook
  * (typically <code>.xlsx</code>) and displays the parsed rows inside the
- * plugin's {@link PageViewerPanel}.
+ * shared {@link PageViewerPanel}.
  */
 public class ImportFromExcelActionFX implements EventHandler<ActionEvent>
 {
@@ -36,18 +35,19 @@ public class ImportFromExcelActionFX implements EventHandler<ActionEvent>
 		Logger.getLogger(ImportFromExcelActionFX.class.getName());
 	
 	private final Stage owner;
-	private final SCALedgerPlugin plugin;
+	private final PageViewerPanel viewerPanel;
 	
 	/**
 	 * Creates a new importer bound to the provided JavaFX stage and plugin.
 	 *
-	 * @param owner  the owner window used for file pickers and alerts
-	 * @param plugin the SCA plugin that exposes the shared {@link PageViewerPanel}
+	 * @param owner the owner window used for file pickers and alerts
+	 * @param viewerPanel the shared {@link PageViewerPanel} used to display data
 	 */
-	public ImportFromExcelActionFX(Stage owner, SCALedgerPlugin plugin)
+	public ImportFromExcelActionFX(Stage owner, PageViewerPanel viewerPanel)
 	{
 		this.owner = owner;
-		this.plugin = Objects.requireNonNull(plugin, "plugin");
+		this.viewerPanel =
+			Objects.requireNonNull(viewerPanel, "viewerPanel");
 		
 	}
 	
@@ -88,20 +88,10 @@ public class ImportFromExcelActionFX implements EventHandler<ActionEvent>
 				ExcelLedgerImportService.importSpreadsheet(selected);
 			DefaultTableModel model = buildTableModel(rows);
 			
-			PageViewerPanel viewerPanel = this.plugin.getPageViewerPanel();
-			
-			if (viewerPanel == null)
-			{
-				new Alert(AlertType.ERROR, "Page viewer is not available.")
-					.showAndWait();
-				return;
-			}
-			
-			viewerPanel.loadData(model);
-			viewerPanel.displayInWindow(null,
+			this.viewerPanel.loadData(model);
+			this.viewerPanel.displayInWindow(null,
 				"Excel Import Viewer - " + selected.getName());
 			
-			this.plugin.setCurrentScaFile(selected);
 			PreferencesManager.setLastDirectory(selected.getParent());
 			
 			new Alert(AlertType.INFORMATION,
