@@ -26,21 +26,22 @@ public final class ReportDataFetcher
 	}
 	
 	/**
-	 * Query beans.
+	 * Query beans and collapse rows into a single report bean.
 	 *
 	 * @param <B> the generic type
 	 * @param beanClass the bean class
 	 * @param sql the sql
-	 * @return the list
+	 * @return a list with a single bean or empty if no rows were returned
 	 */
 	public static <B> List<B> queryBeans(Class<B> beanClass, String sql)
 	{
 		
-		LOGGER.debug("Fetching report data for beanClass={}, sql={}",
+		LOGGER.debug("Fetching row-based report data for beanClass={}, sql={}",
 			beanClass.getName(), sql);
 		try (Connection cx = Database.get().getConnection())
 		{				
-			List<B> lb = JdbcBeanLoader.queryBeans(cx, beanClass, sql);
+			List<B> lb =
+				JdbcBeanLoader.queryRowBasedBeans(cx, beanClass, sql, null);
 			if (lb.isEmpty())
 			{
 				LOGGER.info(
