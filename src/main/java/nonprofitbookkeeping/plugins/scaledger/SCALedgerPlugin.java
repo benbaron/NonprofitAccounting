@@ -14,7 +14,6 @@ import nonprofitbookkeeping.plugins.scaledger.ui.PageViewerPanel; // Added
 import nonprofitbookkeeping.ui.actions.InputFileActionFX;
 import nonprofitbookkeeping.ui.actions.OutputFileActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.ImportFromExcelActionFX;
-import nonprofitbookkeeping.ui.actions.scaledger.ImportLedgerToJournalActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.LoadXlsmTableActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.SaveModifiedCopyActionFX;
 
