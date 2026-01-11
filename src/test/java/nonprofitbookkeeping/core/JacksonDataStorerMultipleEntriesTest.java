@@ -22,6 +22,7 @@ import java.util.zip.ZipOutputStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SuppressWarnings("removal")
 public class JacksonDataStorerMultipleEntriesTest {
     @TempDir
     Path tempDir;
