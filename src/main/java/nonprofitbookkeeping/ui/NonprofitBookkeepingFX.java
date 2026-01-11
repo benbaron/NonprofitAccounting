@@ -51,6 +51,7 @@ import nonprofitbookkeeping.ui.panels.skeletons.SkeletonJournalPanel;
 import nonprofitbookkeeping.plugins.scaledger.SCALedgerPlugin;
 import nonprofitbookkeeping.ui.actions.*;
 import nonprofitbookkeeping.ui.actions.scaledger.ImportFromExcelActionFX;
+import nonprofitbookkeeping.ui.actions.scaledger.ImportLedgerToJournalActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.LoadXlsmTableActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.SaveModifiedCopyActionFX;
 import nonprofitbookkeeping.plugins.scaledger.ui.PageViewerPanel;
