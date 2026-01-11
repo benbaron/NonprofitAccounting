@@ -6,10 +6,13 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.awt.Toolkit;
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
 import nonprofitbookkeeping.reports.jasper.AbstractReportGenerator;
 import nonprofitbookkeeping.reports.jasper.runtime.ReportContext;
 import org.junit.jupiter.api.Test;
@@ -123,6 +126,14 @@ class ReportServiceJasperExportTest
 		{
 			return "stub-balance";
 			
+		}
+
+		@Override
+		public File writeJasperOutput(String format, JasperPrint print,
+			String baseName) throws JRException, IOException
+		{
+			lastFormat = format;
+			return super.writeJasperOutput(format, print, baseName);
 		}
 		
 	}
