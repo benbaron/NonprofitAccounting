@@ -13,11 +13,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-<<<<<<< HEAD
+
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-=======
->>>>>>> branch 'main' of git@github.com:benbaron/NonprofitAccounting.git
+
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
