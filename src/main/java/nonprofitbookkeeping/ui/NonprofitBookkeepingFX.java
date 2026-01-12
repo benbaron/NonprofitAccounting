@@ -386,9 +386,10 @@ public class NonprofitBookkeepingFX extends Application
 		
 		/* IMPORT */
 		this.importMenu = new Menu("Import");
-		this.miImportFile = add(this.importMenu, "Import Financial (OFX, QFX) File...",
-			e -> new ImportFileActionFX(this.primaryStage).handle(e));
-				
+		this.miImportFile =
+			add(this.importMenu, "Import Financial (OFX, QFX) File...",
+				e -> new ImportFileActionFX(this.primaryStage).handle(e));
+		
 		this.miImportScaExcel = new MenuItem("Import Outlands Ledger...");
 		this.miImportScaExcel.setOnAction(
 			e -> new ImportFromOutlandsLedgerActionFX(this.primaryStage,
@@ -547,6 +548,11 @@ public class NonprofitBookkeepingFX extends Application
 		
 	}
 	
+	/**
+	 * Adds the plugin info menu item.
+	 *
+	 * @param plugin the plugin
+	 */
 	private void addPluginInfoMenuItem(Plugin plugin)
 	{
 		
@@ -561,6 +567,11 @@ public class NonprofitBookkeepingFX extends Application
 		
 	}
 	
+	/**
+	 * Show plugin details.
+	 *
+	 * @param plugin the plugin
+	 */
 	private void showPluginDetails(Plugin plugin)
 	{
 		
@@ -605,6 +616,11 @@ public class NonprofitBookkeepingFX extends Application
 		
 	}
 	
+	/**
+	 * Creates the database menu.
+	 *
+	 * @return the menu
+	 */
 	private Menu createDatabaseMenu()
 	{
 		Menu db = new Menu("Database");
@@ -619,6 +635,9 @@ public class NonprofitBookkeepingFX extends Application
 		
 	}
 	
+	/**
+	 * Handle open or create database.
+	 */
 	private void handleOpenOrCreateDatabase()
 	{
 		FileChooser chooser = new FileChooser();
@@ -736,6 +755,9 @@ public class NonprofitBookkeepingFX extends Application
 		
 	}
 	
+	/**
+	 * Handle import legacy archive.
+	 */
 	private void handleImportLegacyArchive()
 	{
 		
@@ -800,6 +822,9 @@ public class NonprofitBookkeepingFX extends Application
 		
 	}
 	
+	/**
+	 * Handle import script into database.
+	 */
 	private void handleImportScriptIntoDatabase()
 	{
 		
@@ -857,6 +882,12 @@ public class NonprofitBookkeepingFX extends Application
 		
 	}
 	
+	/**
+	 * Resolve H 2 data file.
+	 *
+	 * @param base the base
+	 * @return the path
+	 */
 	private static Path resolveH2DataFile(Path base)
 	{
 		String fileName = base.getFileName() != null ?
@@ -952,6 +983,9 @@ public class NonprofitBookkeepingFX extends Application
 		
 	}
 	
+	/**
+	 * Schedule autosave.
+	 */
 	private void scheduleAutosave()
 	{
 		cancelAutosave();
@@ -987,6 +1021,9 @@ public class NonprofitBookkeepingFX extends Application
 		
 	}
 	
+	/**
+	 * Cancel autosave.
+	 */
 	private void cancelAutosave()
 	{
 		
@@ -998,6 +1035,9 @@ public class NonprofitBookkeepingFX extends Application
 		
 	}
 	
+	/**
+	 * Perform autosave.
+	 */
 	private void performAutosave()
 	{
 		
@@ -1091,7 +1131,6 @@ public class NonprofitBookkeepingFX extends Application
 		
 		this.run.setDisable(!companyOpen || creatingCompany);
 		this.panels.setDisable(!companyOpen || creatingCompany);
-//		this.reports.setDisable(!companyOpen || creatingCompany);
 		
 		if (this.mainView != null)
 		{
@@ -1100,6 +1139,9 @@ public class NonprofitBookkeepingFX extends Application
 		
 	}
 	
+	/**
+	 * Reload settings.
+	 */
 	private void reloadSettings()
 	{
 		
@@ -1121,6 +1163,11 @@ public class NonprofitBookkeepingFX extends Application
 		
 	}
 	
+	/**
+	 * Apply settings.
+	 *
+	 * @param settings the settings
+	 */
 	private void applySettings(SettingsModel settings)
 	{
 		
@@ -1141,6 +1188,9 @@ public class NonprofitBookkeepingFX extends Application
 		
 	}
 	
+	/**
+	 * Configure autosave.
+	 */
 	private void configureAutosave()
 	{
 		cancelAutosave();
@@ -1169,8 +1219,7 @@ public class NonprofitBookkeepingFX extends Application
 				});
 		}
 		
-		this.autosaveFuture = this.autosaveExecutor.scheduleAtFixedRate(() -> {
-			
+		this.autosaveFuture = this.autosaveExecutor.scheduleAtFixedRate(() -> {			
 			if (!CurrentCompany.isOpen())
 			{
 				return;
@@ -1190,6 +1239,11 @@ public class NonprofitBookkeepingFX extends Application
 	}
 	
 	
+	/**
+	 * Handle company opened.
+	 *
+	 * @param company the company
+	 */
 	private void handleCompanyOpened(Company company)
 	{
 		

@@ -250,6 +250,8 @@ public class JournalRepository
 	private void writeTransaction(Connection c, AccountingTransaction txn)
 		throws SQLException
 	{
+		ensureAccountsExist(c, txn.getEntries());
+
 		String upsertTxn =
 			"""
 				    MERGE INTO journal_transaction(id, booking_ts, date_text, memo, to_from, check_number,
@@ -351,6 +353,45 @@ public class JournalRepository
 			
 		}
 		
+	}
+
+	private void ensureAccountsExist(Connection c, Iterable<AccountingEntry> entries)
+		throws SQLException
+	{
+		if (entries == null)
+		{
+			return;
+		}
+
+		try (PreparedStatement ps = c.prepareStatement(
+			"MERGE INTO account(account_number, name) KEY(account_number) VALUES (?,?)"))
+		{
+			for (AccountingEntry entry : entries)
+			{
+				if (entry == null)
+				{
+					continue;
+				}
+
+				String accountNumber = entry.getAccountNumber();
+				if (accountNumber == null || accountNumber.isBlank())
+				{
+					continue;
+				}
+
+				String accountName = entry.getAccountName();
+				if (accountName == null || accountName.isBlank())
+				{
+					accountName = accountNumber;
+				}
+
+				ps.setString(1, accountNumber);
+				ps.setString(2, accountName);
+				ps.addBatch();
+			}
+
+			ps.executeBatch();
+		}
 	}
 	
 }
