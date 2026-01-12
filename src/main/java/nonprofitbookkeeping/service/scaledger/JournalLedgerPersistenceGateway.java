@@ -1,8 +1,10 @@
 package nonprofitbookkeeping.service.scaledger;
 
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
+import nonprofitbookkeeping.persistence.AccountRepository;
 import nonprofitbookkeeping.persistence.JournalRepository;
 import nonprofitbookkeeping.ui.actions.scaledger.LedgerPersistenceGateway;
 
@@ -10,7 +12,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -57,6 +61,7 @@ public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
 
         try
         {
+            ensureAccountsForEntries(transaction);
             this.journalRepository.upsertTransaction(transaction);
             return transaction;
         }
@@ -131,5 +136,62 @@ public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
             LOGGER.log(Level.WARNING, "Failed to fetch next journal transaction id", ex);
         }
         return 1;
+    }
+
+    private void ensureAccountsForEntries(AccountingTransaction transaction) throws SQLException
+    {
+        Set<AccountingEntry> entries = transaction.getEntries();
+        if (entries == null || entries.isEmpty())
+        {
+            return;
+        }
+
+        AccountRepository accountRepository = new AccountRepository();
+        List<Account> accounts = accountRepository.listAll();
+        Map<String, Account> byNumber = new HashMap<>();
+
+        for (Account account : accounts)
+        {
+            if (account == null || account.getAccountNumber() == null)
+            {
+                continue;
+            }
+            byNumber.put(account.getAccountNumber(), account);
+        }
+
+        for (AccountingEntry entry : entries)
+        {
+            if (entry == null)
+            {
+                continue;
+            }
+
+            String accountNumber = entry.getAccountNumber();
+            if (accountNumber == null || accountNumber.isBlank())
+            {
+                continue;
+            }
+
+            if (byNumber.containsKey(accountNumber))
+            {
+                continue;
+            }
+
+            String entryName = entry.getAccountName();
+            Account placeholder = new Account();
+            placeholder.setAccountNumber(accountNumber);
+            if (entryName == null || entryName.isBlank())
+            {
+                entryName = accountNumber;
+            }
+            placeholder.setName(entryName);
+            if (entry.getAccountSide() != null)
+            {
+                placeholder.setIncreaseSide(entry.getAccountSide());
+            }
+
+            accountRepository.upsert(placeholder);
+            byNumber.put(accountNumber, placeholder);
+        }
     }
 }
