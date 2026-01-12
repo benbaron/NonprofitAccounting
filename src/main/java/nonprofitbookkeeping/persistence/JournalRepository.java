@@ -248,14 +248,14 @@ public class JournalRepository
 		throws SQLException
 	{
 		ensureAccountsExist(c, txn.getEntries());
-
+		
 		String upsertTxn =
 			"""
-				    MERGE INTO journal_transaction(id, booking_ts, date_text, memo, to_from, check_number,
-				                                   clear_bank, budget_tracking, associated_fund_name)
-				    KEY(id)
-				    VALUES(?,?,?,?,?,?,?,?,?)
-				""";
+				MERGE INTO journal_transaction(id, booking_ts, date_text, memo, to_from, check_number,
+	                       clear_bank, budget_tracking, associated_fund_name)
+					    KEY(id)
+					    VALUES(?,?,?,?,?,?,?,?,?)
+			""";
 		
 		try (PreparedStatement ps = c.prepareStatement(upsertTxn))
 		{
@@ -281,9 +281,9 @@ public class JournalRepository
 		
 		try (PreparedStatement ins = c.prepareStatement(
 			"""
-				    INSERT INTO journal_entry(txn_id, amount, account_number, account_side, account_name, fund_number)
-				    VALUES (?,?,?,?,?,?)
-				"""))
+		    INSERT INTO journal_entry(txn_id, amount, account_number, account_side, account_name, fund_number)
+		    VALUES (?,?,?,?,?,?)
+			"""))
 		{
 			
 			for (AccountingEntry e : txn.getEntries())
@@ -332,44 +332,51 @@ public class JournalRepository
 		}
 		
 	}
-
-	private void ensureAccountsExist(Connection c, Iterable<AccountingEntry> entries)
+	
+	private void ensureAccountsExist(Connection c,
+		Iterable<AccountingEntry> entries)
 		throws SQLException
 	{
+		
 		if (entries == null)
 		{
 			return;
 		}
-
+		
 		try (PreparedStatement ps = c.prepareStatement(
 			"MERGE INTO account(account_number, name) KEY(account_number) VALUES (?,?)"))
 		{
+			
 			for (AccountingEntry entry : entries)
 			{
+				
 				if (entry == null)
 				{
 					continue;
 				}
-
+				
 				String accountNumber = entry.getAccountNumber();
+				
 				if (accountNumber == null || accountNumber.isBlank())
 				{
 					continue;
 				}
-
+				
 				String accountName = entry.getAccountName();
+				
 				if (accountName == null || accountName.isBlank())
 				{
 					accountName = accountNumber;
 				}
-
+				
 				ps.setString(1, accountNumber);
 				ps.setString(2, accountName);
 				ps.addBatch();
 			}
-
+			
 			ps.executeBatch();
 		}
+		
 	}
 	
 }

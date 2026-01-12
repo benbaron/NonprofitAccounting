@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -89,6 +90,11 @@ public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
         }
     }
 
+    /**
+     * Ensure entry back references.
+     *
+     * @param transaction the transaction
+     */
     private void ensureEntryBackReferences(AccountingTransaction transaction)
     {
         Set<AccountingEntry> entries = transaction.getEntries();
@@ -119,6 +125,11 @@ public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
         }
     }
 
+    /**
+     * Ensure accounts exist.
+     *
+     * @param transaction the transaction
+     */
     private void ensureAccountsExist(AccountingTransaction transaction)
     {
         Set<AccountingEntry> entries = transaction.getEntries();
@@ -195,6 +206,13 @@ public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
         }
     }
 
+    /**
+     * Fetch existing account numbers.
+     *
+     * @param accountNumbers the account numbers
+     * @return the sets the
+     * @throws SQLException the SQL exception
+     */
     private Set<String> fetchExistingAccountNumbers(Set<String> accountNumbers) throws SQLException
     {
         if (accountNumbers == null || accountNumbers.isEmpty())
