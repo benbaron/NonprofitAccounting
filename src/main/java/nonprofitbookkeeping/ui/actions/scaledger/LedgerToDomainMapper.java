@@ -1,8 +1,11 @@
 package nonprofitbookkeeping.ui.actions.scaledger;
 
+import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
+import nonprofitbookkeeping.model.ChartOfAccounts;
+import nonprofitbookkeeping.model.CurrentCompany;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -105,15 +108,52 @@ public class LedgerToDomainMapper
             return null;
         }
 
+        Account account = resolveAccount(accountNumber);
+        if (account != null && account.getAccountNumber() != null && !account.getAccountNumber().isBlank())
+        {
+            accountNumber = account.getAccountNumber();
+        }
+
         int sign = amount.signum();
         BigDecimal magnitude = amount.abs();
         AccountSide side = determineSide(split, sign);
 
-        AccountingEntry entry = new AccountingEntry(magnitude, accountNumber, side, accountNumber);
+        String accountName = account != null && account.getName() != null && !account.getName().isBlank()
+            ? account.getName()
+            : accountNumber;
+
+        AccountingEntry entry = new AccountingEntry(magnitude, accountNumber, side, accountName);
         entry.setFundNumber(split.getFund());
-        entry.setAccountName(accountNumber);
+        entry.setAccountName(accountName);
         entry.setTransaction(parent);
         return entry;
+    }
+
+    private Account resolveAccount(String identifier)
+    {
+        if (identifier == null || identifier.isBlank())
+        {
+            return null;
+        }
+
+        if (!CurrentCompany.isOpen() || CurrentCompany.getCompany() == null)
+        {
+            return null;
+        }
+
+        ChartOfAccounts chart = CurrentCompany.getCompany().getChartOfAccounts();
+        if (chart == null)
+        {
+            return null;
+        }
+
+        Account account = chart.getAccount(identifier);
+        if (account != null)
+        {
+            return account;
+        }
+
+        return chart.getAccountByName(identifier);
     }
 
     private String determineAccountIdentifier(LedgerSplit split)
