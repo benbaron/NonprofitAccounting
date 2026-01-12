@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- * Plugin for handling SCA (Standard Chart of Accounts) Ledger functionalities.
+ * Plugin for handling SCA Ledger functionalities.
  * This plugin provides UI elements and actions to load, process, and save
  * SCA ledger data from XLSM and JSON formats. It manages its own state
  * for SCA-specific beans and the currently active SCA file, replacing
@@ -104,8 +104,7 @@ public class SCALedgerPlugin implements Plugin
 		Menu scaMenu = new Menu("SCA Ledger");
 		// Add this new top-level menu to the main menubar.
 		// A more refined approach might add it to a "Tools" or "Plugins" menu
-		// if one exists,
-		// or the core app could provide a dedicated menu for plugins.
+		// if one exists, or the core app could provide a dedicated menu for plugins.
 		// For now, adding as a new top-level menu for visibility.
 		mainMenuBar.getMenus().add(scaMenu);
 		
@@ -113,8 +112,7 @@ public class SCALedgerPlugin implements Plugin
 			this.applicationContext.getPrimaryStage() : null;
 		
 		// Wire up actions - these actions will need refactoring to use plugin
-		// state
-		// and potentially the applicationContext. For now, just instantiating
+		// state and potentially the applicationContext. For now, just instantiating
 		// them.
 		
 		// SCA Specific (from nonprofitbookkeeping.ui.actions.scaledger package)
@@ -155,8 +153,7 @@ public class SCALedgerPlugin implements Plugin
 		MenuItem undoEditItem = new MenuItem("Undo Last Edit (SCA)"); // Clarified
 																		// name
 		// UndoEditAction is Swing-based and its actionPerformed is called with
-		// null
-		// This will need refactoring for JavaFX and plugin state.
+		// null. This will need refactoring for JavaFX and plugin state.
 		undoEditItem.setOnAction(
 			e -> new nonprofitbookkeeping.ui.actions.scaledger.UndoEditAction()
 				.actionPerformed(null));
@@ -164,8 +161,7 @@ public class SCALedgerPlugin implements Plugin
 		
 		// Initial state of the menu (enabled/disabled)
 		// This should ideally be managed by the core application's state
-		// machine
-		// that enables/disables menus based on whether a company is open, etc.
+		// machine that enables/disables menus based on whether a company is open, etc.
 		// The plugin itself should not assume it controls this beyond its own
 		// items if needed.
 		// If applicationContext is null or no company, the core app should
