@@ -12,8 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -66,7 +65,20 @@ public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
         try
         {
             ensureAccountsForEntries(transaction);
+            if (LOGGER.isLoggable(Level.FINE))
+            {
+                int entryCount = transaction.getEntries() == null ? 0 : transaction.getEntries().size();
+                LOGGER.fine(String.format(
+                    "Persisting ledger transaction id=%d date=%s entries=%d",
+                    transaction.getId(),
+                    transaction.getDate(),
+                    entryCount));
+            }
             this.journalRepository.upsertTransaction(transaction);
+            if (LOGGER.isLoggable(Level.FINE))
+            {
+                LOGGER.fine(String.format("Ledger transaction id=%d persisted", transaction.getId()));
+            }
             return transaction;
         }
         catch (SQLException ex)
@@ -313,6 +325,13 @@ public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
 
             accountRepository.upsert(placeholder);
             byNumber.put(accountNumber, placeholder);
+            if (LOGGER.isLoggable(Level.FINE))
+            {
+                LOGGER.fine(String.format(
+                    "Created placeholder account for ledger entry accountNumber=%s name=%s",
+                    accountNumber,
+                    entryName));
+            }
         }
     }
 }
