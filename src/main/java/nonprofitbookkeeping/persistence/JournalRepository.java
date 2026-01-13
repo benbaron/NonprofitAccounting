@@ -12,8 +12,9 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Repository responsible for persisting {@link AccountingTransaction} entries and
@@ -22,7 +23,8 @@ import java.util.logging.Logger;
  */
 public class JournalRepository
 {
-	private static final Logger LOGGER = Logger.getLogger(JournalRepository.class.getName());
+	private static final Logger LOGGER =
+		LoggerFactory.getLogger(JournalRepository.class);
 	
 	/**
 	 * Inserts or updates a single journal transaction and its entries within an
@@ -303,7 +305,7 @@ public class JournalRepository
 			}
 			
 			int[] results = ins.executeBatch();
-			if (LOGGER.isLoggable(Level.FINE))
+			if (LOGGER.isDebugEnabled())
 			{
 				int inserted = 0;
 				for (int result : results)
@@ -317,10 +319,9 @@ public class JournalRepository
 						inserted++;
 					}
 				}
-				LOGGER.fine(String.format(
-					"Inserted %d journal entries for transaction id=%d",
+				LOGGER.debug("Inserted {} journal entries for transaction id={}",
 					inserted,
-					txn.getId()));
+					txn.getId());
 			}
 		}
 		

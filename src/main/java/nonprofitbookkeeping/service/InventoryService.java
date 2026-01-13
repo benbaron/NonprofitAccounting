@@ -17,8 +17,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * InventoryService manages inventory items for the nonprofit bookkeeping system.
@@ -31,7 +32,7 @@ public class InventoryService
 	
 	/** Logger instance for this service. */
 	private static final Logger LOGGER =
-		Logger.getLogger(InventoryService.class.getName());
+		LoggerFactory.getLogger(InventoryService.class);
 	
 	/** Database document name for storing inventory data. */
 	private static final String DOCUMENT_NAME = "inventory";
@@ -239,8 +240,8 @@ public class InventoryService
 		{
 			String payload = MAPPER.writeValueAsString(listItems());
 			new DocumentRepository().upsert(DOCUMENT_NAME, payload);
-			LOGGER.info("Inventory saved to database document '" +
-				DOCUMENT_NAME + "'.");
+			LOGGER.info("Inventory saved to database document '{}'.",
+				DOCUMENT_NAME);
 		}
 		catch (SQLException e)
 		{
@@ -282,12 +283,12 @@ public class InventoryService
 						
 					}
 					
-					LOGGER.info("Inventory loaded from database document '" +
-						DOCUMENT_NAME + "'.");
+					LOGGER.info("Inventory loaded from database document '{}'.",
+						DOCUMENT_NAME);
 				}
 				catch (IOException ex)
 				{
-					LOGGER.log(Level.SEVERE,
+					LOGGER.error(
 						"Failed to deserialize inventory JSON from database",
 						ex);
 					return;
@@ -306,7 +307,7 @@ public class InventoryService
 			
 			if ("42104".equals(e.getSQLState()))
 			{
-				LOGGER.log(Level.FINE,
+				LOGGER.debug(
 					"Inventory document table not initialized; treating inventory as empty.",
 					e);
 				return;
@@ -342,8 +343,8 @@ public class InventoryService
 			}
 			catch (IOException ex)
 			{
-				LOGGER.log(Level.FINE,
-					"Failed to load inventory; returning empty list", ex);
+				LOGGER.debug("Failed to load inventory; returning empty list",
+					ex);
 				return List.of();
 			}
 			

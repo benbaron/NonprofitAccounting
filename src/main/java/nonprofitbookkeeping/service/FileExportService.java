@@ -14,8 +14,9 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountSide;
@@ -37,7 +38,8 @@ import nonprofitbookkeeping.model.ofx.OfxV2Writer.TransactionData;
 public final class FileExportService
 {
 
-private static final Logger LOGGER = Logger.getLogger(FileExportService.class.getName());
+private static final Logger LOGGER =
+LoggerFactory.getLogger(FileExportService.class);
 
 private static final DateTimeFormatter OFX_DATE = DateTimeFormatter.ofPattern("yyyyMMdd");
 
@@ -205,7 +207,8 @@ LocalDate txDate = parseDate(tx.getDate());
 
 if (txDate == null)
 {
-LOGGER.fine(() -> "Skipping transaction without valid date for OFX export: " + tx.getMemo());
+LOGGER.debug("Skipping transaction without valid date for OFX export: {}",
+tx.getMemo());
 continue;
 }
 
@@ -293,7 +296,7 @@ null);
 }
 catch (Exception ex)
 {
-LOGGER.log(Level.SEVERE, "Failed to export OFX/QFX file", ex);
+LOGGER.error("Failed to export OFX/QFX file", ex);
 return new ExportResult(false, 0, "Failed to write OFX/QFX file: " + ex.getMessage());
 }
 
@@ -343,7 +346,9 @@ return LocalDate.parse(raw.trim());
 }
 catch (DateTimeParseException ex)
 {
-LOGGER.fine(() -> "Unable to parse transaction date '" + raw + "': " + ex.getMessage());
+LOGGER.debug("Unable to parse transaction date '{}': {}",
+raw,
+ex.getMessage());
 return null;
 }
 }

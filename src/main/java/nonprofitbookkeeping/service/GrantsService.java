@@ -8,8 +8,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.sql.SQLException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,7 +30,7 @@ public class GrantsService
 {
 	/** Logger for this service. */
 	private static final Logger LOGGER =
-		Logger.getLogger(GrantsService.class.getName());
+		LoggerFactory.getLogger(GrantsService.class);
 	
 	/** Logical storage key used for persisting grants in the shared database. */
 	private static final String STORAGE_KEY = "grants";
@@ -166,8 +167,8 @@ public class GrantsService
 		{
 			String payload = MAPPER.writeValueAsString(getAllGrants());
 			this.jsonRepository.save(STORAGE_KEY, payload);
-			LOGGER.info(
-				"Grants saved to database storage key '" + STORAGE_KEY + "'.");
+			LOGGER.info("Grants saved to database storage key '{}'.",
+				STORAGE_KEY);
 		}
 		catch (SQLException e)
 		{
@@ -206,13 +207,13 @@ public class GrantsService
 						List<Grant> loaded =
 							MAPPER.readValue(payload, LIST_TYPE);
 						this.grants.addAll(loaded);
-						LOGGER
-							.info("Grants loaded from database storage key '" +
-								STORAGE_KEY + "'.");
+						LOGGER.info(
+							"Grants loaded from database storage key '{}'.",
+							STORAGE_KEY);
 					}
 					catch (IOException ex)
 					{
-						LOGGER.log(Level.SEVERE,
+						LOGGER.error(
 							"Failed to deserialize grants JSON from database",
 							ex);
 					}

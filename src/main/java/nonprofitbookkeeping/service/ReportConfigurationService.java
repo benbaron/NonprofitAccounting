@@ -14,8 +14,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Persists {@link ReportConfiguration} definitions in the H2 database.
@@ -28,7 +29,7 @@ public class ReportConfigurationService
 {
 	
 	private static final Logger LOGGER =
-		Logger.getLogger(ReportConfigurationService.class.getName());
+		LoggerFactory.getLogger(ReportConfigurationService.class);
 	private static final String DOCUMENT_NAME = "report_configurations";
 	
 	private final ObjectMapper objectMapper;
@@ -63,7 +64,7 @@ public class ReportConfigurationService
 		
 		if (configs == null)
 		{
-			LOGGER.warning(
+			LOGGER.warn(
 				"Attempted to save a null list of report configurations. Aborting.");
 			return;
 		}
@@ -72,8 +73,9 @@ public class ReportConfigurationService
 		{
 			String payload = this.objectMapper.writeValueAsString(configs);
 			new DocumentRepository().upsert(DOCUMENT_NAME, payload);
-			LOGGER.info("Report configurations saved to database document '" +
-				DOCUMENT_NAME + "'.");
+			LOGGER.info(
+				"Report configurations saved to database document '{}'.",
+				DOCUMENT_NAME);
 		}
 		catch (SQLException e)
 		{
@@ -108,16 +110,16 @@ public class ReportConfigurationService
 								{
 								});
 						LOGGER.info(
-							"Report configurations loaded successfully from database document '" +
-								DOCUMENT_NAME + "'.");
+							"Report configurations loaded successfully from database document '{}'.",
+							DOCUMENT_NAME);
 						configs.forEach(config -> {
 							
 							if (config.getConfigurationId() == null ||
 								config.getConfigurationId().trim().isEmpty())
 							{
-								LOGGER.warning(
-									"Loaded a ReportConfiguration with a missing or empty ID. UserGivenName: " +
-										config.getUserGivenName());
+								LOGGER.warn(
+									"Loaded a ReportConfiguration with a missing or empty ID. UserGivenName: {}",
+									config.getUserGivenName());
 							}
 							
 						});
@@ -125,19 +127,18 @@ public class ReportConfigurationService
 					}
 					catch (IOException ex)
 					{
-						LOGGER.log(Level.SEVERE,
+						LOGGER.error(
 							"Failed to deserialize report configurations JSON from database.",
 							ex);
 						return new ArrayList<ReportConfiguration>();
 					}
 					
 				})
-				.orElseGet(ArrayList::new);
+				.orElseGet(() -> new ArrayList<ReportConfiguration>());
 		}
 		catch (SQLException e)
 		{
-			LOGGER.log(Level.SEVERE,
-				"Failed to load report configurations from database", e);
+			LOGGER.error("Failed to load report configurations from database", e);
 			return new ArrayList<>();
 		}
 		

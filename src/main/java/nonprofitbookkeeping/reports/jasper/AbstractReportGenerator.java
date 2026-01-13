@@ -32,8 +32,8 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.logging.Logger;
-import java.util.logging.Level;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +45,7 @@ public abstract class AbstractReportGenerator
 	implements ReportContextAware
 {
 	private static final Logger LOGGER =
-		Logger.getLogger(AbstractReportGenerator.class.getName());
+		LoggerFactory.getLogger(AbstractReportGenerator.class);
 	private static final String DEFAULT_OUTPUT_DIR =
 		"NonprofitBookkeepingReports";
 	/**
@@ -220,32 +220,30 @@ public abstract class AbstractReportGenerator
 		
 		if (this.reportDataExplicit)
 		{
-			if (LOGGER.isLoggable(Level.FINE))
+			if (LOGGER.isDebugEnabled())
 			{
-				LOGGER.fine("Using explicit report data for generator " +
-					getClass().getName() + " with " +
-					(this.reportDataOverride == null ?
-						0 : this.reportDataOverride.size()) +
-					" rows.");
+				LOGGER.debug("Using explicit report data for generator {} with {} rows.",
+					getClass().getName(),
+					(this.reportDataOverride == null ? 0
+						: this.reportDataOverride.size()));
 			}
 			return normalizeReportData(this.reportDataOverride);
 		}
 		
-		if (LOGGER.isLoggable(Level.FINE))
+		if (LOGGER.isDebugEnabled())
 		{
-			LOGGER.fine("Generating report data via getReportData() for " +
-				"generator " + getClass().getName() + ".");
+			LOGGER.debug("Generating report data via getReportData() for generator {}.",
+				getClass().getName());
 		}
 		List<?> data = ReportContextHolder.withContext(
 			this.reportContext,
 			this::getReportData
 		);
-		if (LOGGER.isLoggable(Level.FINE))
+		if (LOGGER.isDebugEnabled())
 		{
-			LOGGER.fine("Generated " +
-				(data == null ? 0 : data.size()) +
-				" report data rows for generator " + getClass().getName() +
-				".");
+			LOGGER.debug("Generated {} report data rows for generator {}.",
+				(data == null ? 0 : data.size()),
+				getClass().getName());
 		}
 		return normalizeReportData(data);
 		

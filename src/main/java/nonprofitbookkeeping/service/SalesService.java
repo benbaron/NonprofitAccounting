@@ -12,8 +12,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Service class for managing {@link SaleRecord} objects.
@@ -21,7 +22,8 @@ import java.util.logging.Logger;
 public class SalesService
 {
         /** Logger instance for this service. */
-        private static final Logger LOGGER = Logger.getLogger(SalesService.class.getName());
+        private static final Logger LOGGER =
+                LoggerFactory.getLogger(SalesService.class);
         /** Database document name for storing sales data. */
         private static final String DOCUMENT_NAME = "sales";
         private static final ObjectMapper MAPPER = new ObjectMapper()
@@ -74,7 +76,8 @@ public class SalesService
                 {
                         String payload = MAPPER.writeValueAsString(listSales());
                         new DocumentRepository().upsert(DOCUMENT_NAME, payload);
-                        LOGGER.info("Sales saved to database document '" + DOCUMENT_NAME + "'.");
+                        LOGGER.info("Sales saved to database document '{}'.",
+                                DOCUMENT_NAME);
                 }
                 catch (SQLException e)
                 {
@@ -97,12 +100,14 @@ public class SalesService
                                                 List<SaleRecord> loaded = MAPPER.readValue(payload, LIST_TYPE);
                                                 this.sales.addAll(loaded);
                                                 LOGGER.info(
-                                                        "Sales loaded from database document '" + DOCUMENT_NAME + "'.");
+                                                        "Sales loaded from database document '{}'.",
+                                                        DOCUMENT_NAME);
                                         }
                                         catch (IOException ex)
                                         {
-                                                LOGGER.log(Level.SEVERE,
-                                                        "Failed to deserialize sales JSON from database", ex);
+                                                LOGGER.error(
+                                                        "Failed to deserialize sales JSON from database",
+                                                        ex);
                                         }
                                 });
                 }
@@ -114,4 +119,3 @@ public class SalesService
         }
 
 }
-

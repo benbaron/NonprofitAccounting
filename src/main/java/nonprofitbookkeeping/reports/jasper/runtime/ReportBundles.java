@@ -24,9 +24,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.logging.Logger;
-
-import java.util.logging.Level;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Loads Jasper report bundle metadata and exposes lookup helpers for
@@ -64,7 +63,7 @@ public final class ReportBundles
 	private static final Map<String, Bundle> BUNDLES_BY_ID;
 	private static final Map<String, Bundle> BUNDLES_BY_GENERATOR;
 	private static final Logger LOGGER =
-		Logger.getLogger(ReportBundles.class.getName());
+		LoggerFactory.getLogger(ReportBundles.class);
 	
 	static
 	{
@@ -199,11 +198,10 @@ public final class ReportBundles
 				
 				if (rawBeanName == null || rawBeanName.isBlank())
 				{
-					LOGGER.log(Level.WARNING,
-						"Bundle {0} declares beanClass {1} without beanName; " +
-							"defaulting beanName to null",
-						new Object[]
-						{ metadataPath, beanClass });
+					LOGGER.warn(
+						"Bundle {} declares beanClass {} without beanName; defaulting beanName to null",
+						metadataPath,
+						beanClass);
 				}
 				else
 				{
@@ -238,16 +236,16 @@ public final class ReportBundles
 			
 			if (byId.containsKey(id))
 			{
-				LOGGER.warning("Duplicate bundle id detected: " + id +
-					"; keeping first occurrence.");
+				LOGGER.warn("Duplicate bundle id detected: {}; keeping first occurrence.", id);
 				continue;
 			}
 			
 			if (byGenerator.containsKey(generator))
 			{
-				LOGGER.warning("Generator " + generator +
-					" is already associated with bundle " +
-					byGenerator.get(generator).id() + "; keeping first.");
+				LOGGER.warn(
+					"Generator {} is already associated with bundle {}; keeping first.",
+					generator,
+					byGenerator.get(generator).id());
 				continue;
 			}
 			
@@ -274,7 +272,7 @@ public final class ReportBundles
 		
 		if (value == null || value.isBlank())
 		{
-			LOGGER.severe("Missing required property '" + key + "' in " + source);
+			LOGGER.error("Missing required property '{}' in {}", key, source);
 
 			throw new IllegalStateException(
 				"Missing required property '" + key + "' in " + source);
