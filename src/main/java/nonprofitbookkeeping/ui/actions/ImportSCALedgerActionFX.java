@@ -18,8 +18,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * JavaFX action that runs the full ledger import pipeline and persists
@@ -28,7 +29,7 @@ import java.util.logging.Logger;
 public class ImportSCALedgerActionFX implements EventHandler<ActionEvent>
 {
 	private static final Logger LOGGER =
-		Logger.getLogger(ImportSCALedgerActionFX.class.getName());
+		LoggerFactory.getLogger(ImportSCALedgerActionFX.class);
 	
 	private final Stage owner;
 	
@@ -157,7 +158,7 @@ public class ImportSCALedgerActionFX implements EventHandler<ActionEvent>
 		}
 		catch (IOException ex)
 		{
-			LOGGER.log(Level.WARNING, "Failed to import ledger", ex);
+			LOGGER.warn("Failed to import ledger", ex);
 			Alert alert = new Alert(Alert.AlertType.ERROR,
 				"Failed to import ledger: " + ex.getMessage(), ButtonType.OK);
 			

@@ -21,8 +21,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * JDBC-backed implementation that stores transactions using
@@ -30,7 +31,8 @@ import java.util.logging.Logger;
  */
 public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
 {
-    private static final Logger LOGGER = Logger.getLogger(JournalLedgerPersistenceGateway.class.getName());
+    private static final Logger LOGGER =
+        LoggerFactory.getLogger(JournalLedgerPersistenceGateway.class);
 
     private final JournalRepository journalRepository;
     private final AccountRepository accountRepository;
@@ -69,25 +71,26 @@ public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
         try
         {
             ensureAccountsForEntries(transaction);
-            if (LOGGER.isLoggable(Level.FINE))
+            if (LOGGER.isDebugEnabled())
             {
                 int entryCount = transaction.getEntries() == null ? 0 : transaction.getEntries().size();
-                LOGGER.fine(String.format(
-                    "Persisting ledger transaction id=%d date=%s entries=%d",
+                LOGGER.debug(
+                    "Persisting ledger transaction id={} date={} entries={}",
                     transaction.getId(),
                     transaction.getDate(),
-                    entryCount));
+                    entryCount);
             }
             this.journalRepository.upsertTransaction(transaction);
-            if (LOGGER.isLoggable(Level.FINE))
+            if (LOGGER.isDebugEnabled())
             {
-                LOGGER.fine(String.format("Ledger transaction id=%d persisted", transaction.getId()));
+                LOGGER.debug("Ledger transaction id={} persisted",
+                    transaction.getId());
             }
             return transaction;
         }
         catch (SQLException ex)
         {
-            LOGGER.log(Level.WARNING, "Failed to persist ledger transaction", ex);
+            LOGGER.warn("Failed to persist ledger transaction", ex);
             throw new IllegalStateException("Failed to persist ledger transaction", ex);
         }
     }
@@ -287,7 +290,7 @@ public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
         }
         catch (SQLException ex)
         {
-            LOGGER.log(Level.WARNING, "Failed to fetch next journal transaction id", ex);
+            LOGGER.warn("Failed to fetch next journal transaction id", ex);
         }
         return 1;
     }
@@ -346,12 +349,12 @@ public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
 
             accountRepository.upsert(placeholder);
             byNumber.put(accountNumber, placeholder);
-            if (LOGGER.isLoggable(Level.FINE))
+            if (LOGGER.isDebugEnabled())
             {
-                LOGGER.fine(String.format(
-                    "Created placeholder account for ledger entry accountNumber=%s name=%s",
+                LOGGER.debug(
+                    "Created placeholder account for ledger entry accountNumber={} name={}",
                     accountNumber,
-                    entryName));
+                    entryName);
             }
         }
     }

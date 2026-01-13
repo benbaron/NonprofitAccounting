@@ -49,8 +49,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -64,7 +65,8 @@ import java.util.regex.Pattern;
 public class FileImportService
 {
 	/** Logger for this class. */
-	private static final Logger LOGGER = Logger.getLogger(FileImportService.class.getName());
+	private static final Logger LOGGER =
+		LoggerFactory.getLogger(FileImportService.class);
 	/**
 	 * The account number designated for transactions that need further categorization after import.
 	 * This is a suspense account.
@@ -329,8 +331,10 @@ public class FileImportService
 					else if (typeHeader.startsWith("CASH"))
 						qifAccountType = "CASH";
 					else
-						LOGGER.warning("Unsupported QIF account type in header: " + typeHeader +
-							". Using hint: " + targetAccountTypeHint);
+						LOGGER.warn(
+							"Unsupported QIF account type in header: {}. Using hint: {}",
+							typeHeader,
+							targetAccountTypeHint);
 					continue;
 				}
 				
@@ -354,8 +358,9 @@ public class FileImportService
 						}
 						catch (DateTimeParseException e)
 						{
-							LOGGER.warning(
-								"Could not parse QIF date '" + value + "': " + e.getMessage());
+							LOGGER.warn("Could not parse QIF date '{}': {}",
+								value,
+								e.getMessage());
 						}
 						break;
 					
@@ -366,8 +371,9 @@ public class FileImportService
 						}
 						catch (NumberFormatException e)
 						{
-							LOGGER.warning(
-								"Could not parse QIF amount '" + value + "': " + e.getMessage());
+							LOGGER.warn("Could not parse QIF amount '{}': {}",
+								value,
+								e.getMessage());
 						}
 						break;
 					
@@ -393,7 +399,8 @@ public class FileImportService
 						if (isValidTransaction(currentTx))
 							importedTransactions.add(currentTx);
 						else
-							LOGGER.warning("Skipping incomplete QIF transaction: " + currentTx);
+							LOGGER.warn("Skipping incomplete QIF transaction: {}",
+								currentTx);
 						currentTx = null;
 						break;
 					
@@ -537,8 +544,9 @@ public class FileImportService
 		
 		if (needsCategorizationAccount == null)
 		{
-			LOGGER.severe("Critical: 'Needs Categorization' account ('" +
-				NEEDS_CATEGORIZATION_ACCOUNT_NUMBER + "') not found. Cannot map transactions.");
+			LOGGER.error(
+				"Critical: 'Needs Categorization' account ('{}') not found. Cannot map transactions.",
+				NEEDS_CATEGORIZATION_ACCOUNT_NUMBER);
 			throw new IllegalArgumentException("'Needs Categorization' account not found.");
 		}
 		
@@ -561,8 +569,8 @@ public class FileImportService
 		
 		if (!skippedDuplicateTxns.isEmpty())
 		{
-			LOGGER.info(
-				"Skipped " + skippedDuplicateTxns.size() + " potential duplicate transactions.");
+			LOGGER.info("Skipped {} potential duplicate transactions.",
+				skippedDuplicateTxns.size());
 		}
 		
 		for (ImportedTransaction impTxn : nonDuplicateImportedTxns)
@@ -570,8 +578,9 @@ public class FileImportService
 			
 			if (impTxn.getDatePosted() == null || impTxn.getAmount() == null)
 			{
-				LOGGER.warning(
-					"Skipping imported transaction with missing date or amount: " + impTxn);
+				LOGGER.warn(
+					"Skipping imported transaction with missing date or amount: {}",
+					impTxn);
 				continue;
 			}
 			
@@ -689,8 +698,9 @@ public class FileImportService
 				
 				if (info != null && impTxn.getTransactionId().equals(info.get(FITID_KEY)))
 				{
-					LOGGER.info("Potential OFX duplicate (FITID match): Imported FITID=" +
-						impTxn.getTransactionId() + ", Existing Tx BookingDate=" +
+					LOGGER.info(
+						"Potential OFX duplicate (FITID match): Imported FITID={}, Existing Tx BookingDate={}",
+						impTxn.getTransactionId(),
 						Instant.ofEpochMilli(existingTx.getBookingDateTimestamp()));
 					return true; // Found duplicate by FITID
 				}
@@ -827,9 +837,14 @@ public class FileImportService
 			}
 			
 			// If all heuristic checks pass
-			LOGGER.info("Potential heuristic duplicate found: Imported=" + impTxn.getDatePosted() +
-				"|" + impTxn.getAmount() + "|" + impDescription + " vs Existing=" + existingTxDate +
-				"|" + existingTxAmountForTarget + "|" + existingTxMemo);
+			LOGGER.info(
+				"Potential heuristic duplicate found: Imported={}|{}|{} vs Existing={}|{}|{}",
+				impTxn.getDatePosted(),
+				impTxn.getAmount(),
+				impDescription,
+				existingTxDate,
+				existingTxAmountForTarget,
+				existingTxMemo);
 			return true;
 		}
 		
@@ -858,26 +873,26 @@ public class FileImportService
 		
 		if (file == null || !file.exists())
 		{
-			LOGGER.warning("Import file is null or does not exist. Path: " +
+			LOGGER.warn("Import file is null or does not exist. Path: {}",
 				(file != null ? file.getAbsolutePath() : "null"));
 			return Collections.emptyList();
 		}
 		
 		if (targetAccountInCOA == null)
 		{
-			LOGGER.warning("Target account for import is null.");
+			LOGGER.warn("Target account for import is null.");
 			return Collections.emptyList();
 		}
 		
 		if (chartOfAccounts == null)
 		{
-			LOGGER.warning("Chart of Accounts is null. Cannot process import mapping.");
+			LOGGER.warn("Chart of Accounts is null. Cannot process import mapping.");
 			return Collections.emptyList();
 		}
 		
 		if (ledger == null)
 		{
-			LOGGER.warning("Ledger is null. Cannot check for duplicates or save transactions.");
+			LOGGER.warn("Ledger is null. Cannot check for duplicates or save transactions.");
 			return Collections.emptyList();
 		}
 		
@@ -890,8 +905,9 @@ public class FileImportService
 			if (fileName.endsWith(".ofx") || fileName.endsWith(".qfx"))
 			{
 				importedTxns = parseOfx(fis);
-				LOGGER.info("Successfully parsed " + importedTxns.size() +
-					" transactions from OFX file: " + file.getAbsolutePath());
+				LOGGER.info("Successfully parsed {} transactions from OFX file: {}",
+					importedTxns.size(),
+					file.getAbsolutePath());
 			}
 			else if (fileName.endsWith(".qif"))
 			{
@@ -909,25 +925,26 @@ public class FileImportService
 				}
 				
 				importedTxns = parseQif(fis, accountTypeHint);
-				LOGGER.info("Successfully parsed " + importedTxns.size() +
-					" transactions from QIF file: " + file.getAbsolutePath());
+				LOGGER.info("Successfully parsed {} transactions from QIF file: {}",
+					importedTxns.size(),
+					file.getAbsolutePath());
 			}
 			else
 			{
-				LOGGER.warning("Unsupported file type for import: " + file.getName());
+				LOGGER.warn("Unsupported file type for import: {}", file.getName());
 				return Collections.emptyList();
 			}
 			
 		}
 		catch (OFXParseException e)
 		{
-			LOGGER.log(Level.SEVERE, "Failed to parse OFX file: " + file.getAbsolutePath(), e);
+			LOGGER.error("Failed to parse OFX file: {}", file.getAbsolutePath(), e);
 			return Collections.emptyList();
 		}
 		catch (IOException e)
 		{
-			LOGGER.log(Level.SEVERE,
-				"Error reading or parsing import file: " + file.getAbsolutePath(), e);
+			LOGGER.error("Error reading or parsing import file: {}",
+				file.getAbsolutePath(), e);
 			return Collections.emptyList();
 		}
 		
@@ -944,7 +961,7 @@ public class FileImportService
 		}
 		catch (IllegalArgumentException e)
 		{
-			LOGGER.log(Level.SEVERE, "Error mapping transactions: " + e.getMessage(), e);
+			LOGGER.error("Error mapping transactions: {}", e.getMessage(), e);
 			return Collections.emptyList();
 		}
 		

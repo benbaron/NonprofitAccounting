@@ -23,8 +23,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * JavaFX action that exports account activity to OFX/QFX files.
@@ -32,7 +32,8 @@ import java.util.logging.Logger;
 public class ExportFileActionFX implements EventHandler<ActionEvent>
 {
 
-private static final Logger LOGGER = Logger.getLogger(ExportFileActionFX.class.getName());
+private static final Logger LOGGER =
+LoggerFactory.getLogger(ExportFileActionFX.class);
 
 private final Stage ownerStage;
 
@@ -56,13 +57,13 @@ fxReady = Platform.isFxApplicationThread();
 }
 catch (IllegalStateException ex)
 {
-LOGGER.log(Level.FINE, "JavaFX runtime not initialised. Skipping export dialog.", ex);
+LOGGER.debug("JavaFX runtime not initialised. Skipping export dialog.", ex);
 return;
 }
 
 if (!fxReady)
 {
-LOGGER.fine("Export invoked outside the JavaFX Application Thread; ignoring request.");
+LOGGER.debug("Export invoked outside the JavaFX Application Thread; ignoring request.");
 return;
 }
 
@@ -216,4 +217,3 @@ alert.initOwner(this.ownerStage);
 alert.showAndWait();
 }
 }
-

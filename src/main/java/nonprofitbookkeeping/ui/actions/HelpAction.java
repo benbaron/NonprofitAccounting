@@ -14,8 +14,9 @@ import javafx.stage.Stage;
 
 import java.awt.GraphicsEnvironment;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import nonprofitbookkeeping.ui.help.HelpContent;
 
@@ -28,7 +29,7 @@ import nonprofitbookkeeping.ui.help.HelpContent;
  */
 public class HelpAction implements EventHandler<ActionEvent>
 {
-        private static final Logger LOGGER = Logger.getLogger(HelpAction.class.getName());
+        private static final Logger LOGGER = LoggerFactory.getLogger(HelpAction.class);
 
         /** The owner Stage for the help window, used to ensure proper window modality and positioning. */
         private final Stage ownerStage;
@@ -66,7 +67,7 @@ public class HelpAction implements EventHandler<ActionEvent>
         {
                 if (isHeadlessEnvironment())
                 {
-                        LOGGER.fine("Help view skipped because the runtime is headless.");
+                        LOGGER.debug("Help view skipped because the runtime is headless.");
                         return;
                 }
 
@@ -96,7 +97,7 @@ public class HelpAction implements EventHandler<ActionEvent>
                 }
                 catch (RuntimeException ex)
                 {
-                        LOGGER.log(Level.WARNING, "Unable to display the help window", ex);
+                        LOGGER.warn("Unable to display the help window", ex);
                 }
         }
 
@@ -119,8 +120,9 @@ public class HelpAction implements EventHandler<ActionEvent>
                 }
                 catch (Throwable ex)
                 {
-                        LOGGER.log(Level.WARNING,
-                                "Falling back to text help because the WebView could not be created or loaded.", ex);
+                        LOGGER.warn(
+                                "Falling back to text help because the WebView could not be created or loaded.",
+                                ex);
                         TextArea fallback = new TextArea(HelpContent.fallbackText());
                         fallback.setEditable(false);
                         fallback.setWrapText(true);

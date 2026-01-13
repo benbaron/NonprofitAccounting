@@ -14,8 +14,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
@@ -145,7 +146,7 @@ public class NonprofitBookkeepingFX extends Application
 	
 	/** Logger for this class. */
 	private static final Logger LOGGER =
-		Logger.getLogger(NonprofitBookkeepingFX.class.getName());
+		LoggerFactory.getLogger(NonprofitBookkeepingFX.class);
 	/** List to hold all successfully loaded plugins. */
 	private List<Plugin> loadedPlugins = new ArrayList<>();
 	/** The application context passed to plugins and potentially other components. */
@@ -289,9 +290,8 @@ public class NonprofitBookkeepingFX extends Application
 			
 			try
 			{
-				LOGGER.info(
-					"Initializing plugin: " + plugin.getName() + " - " +
-						plugin.getDescription());
+				LOGGER.info("Initializing plugin: {} - {}", plugin.getName(),
+					plugin.getDescription());
 				plugin.initialize(this.applicationContext);
 				
 				if (plugin instanceof SCALedgerPlugin scaPlugin)
@@ -300,20 +300,20 @@ public class NonprofitBookkeepingFX extends Application
 				}
 				
 				this.loadedPlugins.add(plugin);
-				LOGGER.info(
-					"Plugin initialized successfully: " + plugin.getName());
+				LOGGER.info("Plugin initialized successfully: {}",
+					plugin.getName());
 			}
 			catch (Exception e)
 			{
-				LOGGER.log(Level.SEVERE, "Failed to initialize plugin: " +
-					plugin.getClass().getName() + " - " + e.getMessage(), e);
+				LOGGER.error("Failed to initialize plugin: {} - {}",
+					plugin.getClass().getName(), e.getMessage(), e);
 				AlertBox.showError(this.primaryStage, "Plugin Load Error");
 			}
 			
 		}
 		
-		LOGGER.info("Plugin discovery complete. Loaded " +
-			this.loadedPlugins.size() + " plugins.");
+		LOGGER.info("Plugin discovery complete. Loaded {} plugins.",
+			this.loadedPlugins.size());
 		
 		// MenuBar must be built *after* plugins are loaded so
 		// they can add their items.
@@ -517,7 +517,7 @@ public class NonprofitBookkeepingFX extends Application
 		bar.getMenus().add(this.pluginsMenu);
 		
 		// Add plugin menu items
-		LOGGER.info("Adding plugin menu items. Number of plugins: " +
+		LOGGER.info("Adding plugin menu items. Number of plugins: {}",
 			(this.loadedPlugins != null ? this.loadedPlugins.size() : 0));
 		
 		if (this.loadedPlugins != null)
@@ -528,16 +528,15 @@ public class NonprofitBookkeepingFX extends Application
 				
 				try
 				{
-					LOGGER.info(
-						"Adding menu items for plugin: " + plugin.getName());
+					LOGGER.info("Adding menu items for plugin: {}",
+						plugin.getName());
 					addPluginInfoMenuItem(plugin);
 					plugin.addMenuItems(bar); // 'bar' is the MenuBar instance
 				}
 				catch (Exception ex)
 				{
-					LOGGER.log(Level.WARNING, "Plugin " + plugin.getName() +
-						" failed to add its menu items: " + ex.getMessage(),
-						ex);
+					LOGGER.warn("Plugin {} failed to add its menu items: {}",
+						plugin.getName(), ex.getMessage(), ex);
 				}
 				
 			}
@@ -665,9 +664,8 @@ public class NonprofitBookkeepingFX extends Application
 			}
 			catch (InvalidPathException ex)
 			{
-				LOGGER.log(Level.FINE,
-					"Ignoring invalid DB path preference: " + lastDatabasePath,
-					ex);
+				LOGGER.debug("Ignoring invalid DB path preference: {}",
+					lastDatabasePath, ex);
 			}
 			
 		}
@@ -746,7 +744,7 @@ public class NonprofitBookkeepingFX extends Application
 		}
 		catch (Exception ex)
 		{
-			LOGGER.log(Level.SEVERE, "Failed to open DB: " + base, ex);
+			LOGGER.error("Failed to open DB: {}", base, ex);
 			Alert alert = new Alert(Alert.AlertType.ERROR,
 				"Failed to open DB: " + ex.getMessage());
 			alert.setHeaderText("Database Error");
@@ -813,7 +811,7 @@ public class NonprofitBookkeepingFX extends Application
 		}
 		catch (Exception ex)
 		{
-			LOGGER.log(Level.SEVERE, "Failed to import legacy archive", ex);
+			LOGGER.error("Failed to import legacy archive", ex);
 			Alert alert = new Alert(Alert.AlertType.ERROR,
 				"Failed to import legacy archive: " + ex.getMessage());
 			alert.setHeaderText("Import Failed");
@@ -856,7 +854,7 @@ public class NonprofitBookkeepingFX extends Application
 		}
 		catch (Exception ex)
 		{
-			LOGGER.log(Level.SEVERE, "Import failed for file: " + file, ex);
+			LOGGER.error("Import failed for file: {}", file, ex);
 			Alert alert = new Alert(Alert.AlertType.ERROR,
 				"Import failed: " + ex.getMessage());
 			alert.setHeaderText("Import Error");
@@ -942,7 +940,7 @@ public class NonprofitBookkeepingFX extends Application
 		}
 		catch (IOException ex)
 		{
-			LOGGER.log(Level.FINE, "Unable to load settings", ex);
+			LOGGER.debug("Unable to load settings", ex);
 		}
 		
 	}
@@ -1049,11 +1047,11 @@ public class NonprofitBookkeepingFX extends Application
 		try
 		{
 			CurrentCompany.persist();
-			LOGGER.fine("Background autosave completed");
+			LOGGER.debug("Background autosave completed");
 		}
 		catch (IOException ex)
 		{
-			LOGGER.log(Level.WARNING, "Autosave failed", ex);
+			LOGGER.warn("Autosave failed", ex);
 		}
 		
 	}
@@ -1158,7 +1156,7 @@ public class NonprofitBookkeepingFX extends Application
 		}
 		catch (IOException ex)
 		{
-			LOGGER.log(Level.FINE, "Unable to load settings", ex);
+			LOGGER.debug("Unable to load settings", ex);
 		}
 		
 	}
@@ -1231,7 +1229,7 @@ public class NonprofitBookkeepingFX extends Application
 			}
 			catch (IOException ex)
 			{
-				LOGGER.log(Level.WARNING, "Autosave failed", ex);
+				LOGGER.warn("Autosave failed", ex);
 			}
 			
 		}, interval, interval, TimeUnit.MINUTES);
@@ -1282,8 +1280,7 @@ public class NonprofitBookkeepingFX extends Application
 			}
 			catch (IOException ex)
 			{
-				LOGGER.log(Level.FINE,
-					"Unable to persist updated file preferences", ex);
+				LOGGER.debug("Unable to persist updated file preferences", ex);
 			}
 			
 		}
@@ -1512,15 +1509,13 @@ public class NonprofitBookkeepingFX extends Application
 				
 				try
 				{
-					LOGGER.info("Shutting down plugin: " + plugin.getName());
+					LOGGER.info("Shutting down plugin: {}", plugin.getName());
 					plugin.shutdown();
 				}
 				catch (Exception e)
 				{
-					LOGGER.log(Level.WARNING,
-						"Error shutting down plugin: " + plugin.getName() +
-							" - " + e.getMessage(),
-						e);
+					LOGGER.warn("Error shutting down plugin: {} - {}",
+						plugin.getName(), e.getMessage(), e);
 				}
 				
 			}
