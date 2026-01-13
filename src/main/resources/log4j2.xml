@@ -31,13 +31,11 @@
 	  <AppenderRef ref="Console"/>
 	  <AppenderRef ref="File"/>
 	</Logger>
-
     <!-- If you want everything under net.sf.jasperreports -->
     <Logger name="net.sf.jasperreports" level="debug" additivity="false">
       <AppenderRef ref="Console"/>
       <AppenderRef ref="File"/>
     </Logger>
-
     <!-- Optional: Jackson debugging (fixed appender name) -->
     <Logger name="com.fasterxml.jackson" level="debug" additivity="false">
       <AppenderRef ref="Console"/>
@@ -56,7 +54,6 @@
       <AppenderRef ref="Console"/>
       <AppenderRef ref="File"/>
     </Logger>
-
     <!-- Reports subsystem -->
     <Logger name="nonprofitbookkeeping.reports" level="debug" additivity="false">
       <AppenderRef ref="Console"/>
