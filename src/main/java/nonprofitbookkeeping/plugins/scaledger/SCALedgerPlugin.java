@@ -19,7 +19,8 @@ import nonprofitbookkeeping.ui.actions.scaledger.SaveModifiedCopyActionFX;
 
 import java.io.File;
 import java.util.Map;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Plugin for handling SCA Ledger functionalities.
@@ -32,7 +33,7 @@ public class SCALedgerPlugin implements Plugin
 {
 	
 	private static final Logger LOGGER =
-		Logger.getLogger(SCALedgerPlugin.class.getName());
+		LoggerFactory.getLogger(SCALedgerPlugin.class);
 	public static final String PLUGIN_NAME = "SCA Ledger Tools";
 	
 	private ApplicationContext applicationContext;
@@ -79,7 +80,7 @@ public class SCALedgerPlugin implements Plugin
 	{
 		this.applicationContext = context;
 		this.pageViewerPanel = new PageViewerPanel(); // Added initialization
-		LOGGER.info(PLUGIN_NAME + " initialized.");
+		LOGGER.info("{} initialized.", PLUGIN_NAME);
 		
 		// Any other one-time setup for the plugin.
 		// For example, if PageViewer was a real component managed by the
@@ -99,7 +100,7 @@ public class SCALedgerPlugin implements Plugin
 	@Override
 	public void addMenuItems(MenuBar mainMenuBar)
 	{
-		LOGGER.info("Adding menu items for " + PLUGIN_NAME);
+		LOGGER.info("Adding menu items for {}", PLUGIN_NAME);
 		
 		Menu scaMenu = new Menu("SCA Ledger");
 		// Add this new top-level menu to the main menubar.
@@ -190,7 +191,7 @@ public class SCALedgerPlugin implements Plugin
 	@Override
 	public void shutdown()
 	{
-		LOGGER.info(PLUGIN_NAME + " shutting down.");
+		LOGGER.info("{} shutting down.", PLUGIN_NAME);
 		// Release any plugin-specific resources
 		this.scaBeans = null;
 		this.currentScaFile = null;

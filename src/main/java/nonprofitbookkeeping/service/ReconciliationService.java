@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.stream.Collectors;
 
 import nonprofitbookkeeping.model.Account;
@@ -30,7 +32,8 @@ import nonprofitbookkeeping.util.FormatUtils;
  */
 public class ReconciliationService
 {
-        private static final Logger LOGGER = Logger.getLogger(ReconciliationService.class.getName());
+        private static final Logger LOGGER =
+                LoggerFactory.getLogger(ReconciliationService.class);
 
         /** Marker stored in {@link AccountingTransaction#setClearBank(String)} when a transaction is cleared. */
         private static final String CLEARED_FLAG = "CLEARED";
@@ -214,7 +217,9 @@ public class ReconciliationService
 
                 if (endingBalance != null)
                 {
-                        LOGGER.fine(() -> "Reconciled account " + accountIdentifier + " with ending balance " + endingBalance);
+                        LOGGER.debug("Reconciled account {} with ending balance {}",
+                                accountIdentifier,
+                                endingBalance);
                 }
         }
 
@@ -345,7 +350,9 @@ public class ReconciliationService
                 }
                 catch (DateTimeParseException ex)
                 {
-                        LOGGER.fine(() -> "Unable to parse date '" + value + "': " + ex.getMessage());
+                        LOGGER.debug("Unable to parse date '{}': {}",
+                                value,
+                                ex.getMessage());
                         return null;
                 }
         }

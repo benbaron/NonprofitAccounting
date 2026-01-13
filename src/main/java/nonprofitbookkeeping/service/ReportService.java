@@ -19,8 +19,9 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Service class responsible for preparing data contexts for various financial reports
@@ -32,7 +33,7 @@ public class ReportService
 {
 	/** Logger for this class. */
 	public static final Logger LOGGER =
-		Logger.getLogger(ReportService.class.getName());
+		LoggerFactory.getLogger(ReportService.class);
 	
 
 	/** 
@@ -365,16 +366,16 @@ public class ReportService
 				"ReportContext and reportType are required.");
 		}
 		
-		if (LOGGER.isLoggable(Level.INFO))
+		if (LOGGER.isInfoEnabled())
 		{
-			LOGGER.info("Starting Jasper report generation for reportType=" +
+			LOGGER.info("Starting Jasper report generation for reportType={}",
 				ctx.getReportType());
 		}
 		
 		// Resolve report type and generator
 		ReportType type = ReportType.fromId(ctx.getReportType());
-		LOGGER.info(() -> "Resolving report generator for reportType '" +
-			ctx.getReportType() + "'.");
+		LOGGER.info("Resolving report generator for reportType '{}'.",
+			ctx.getReportType());
 		
 		if (type == null)
 		{
@@ -390,10 +391,11 @@ public class ReportService
 				"No generator registered for reportType: " + type.id());
 		}
 		
-		if (LOGGER.isLoggable(Level.INFO))
+		if (LOGGER.isInfoEnabled())
 		{
-			LOGGER.info("Selected generator " + generatorClassName +
-				" for reportType=" + type.id());
+			LOGGER.info("Selected generator {} for reportType={}",
+				generatorClassName,
+				type.id());
 		}
 		
 		Object generator = ReportGeneratorLoader
@@ -410,15 +412,15 @@ public class ReportService
 		// Normalize format; default to PDF
 		String fmt =
 			(outputFormat == null ? "pdf" : outputFormat).trim().toLowerCase();
-		if (LOGGER.isLoggable(Level.INFO))
+		if (LOGGER.isInfoEnabled())
 		{
-			LOGGER.info("Resolved output format: " + fmt);
+			LOGGER.info("Resolved output format: {}", fmt);
 		}
 		
 		String baseName = ReportGeneratorLoader.getBaseName(generator);
 		File out = ReportGeneratorLoader
 			.writeOutput(generator, fmt, print, baseName);
-		LOGGER.info("Report generated: " + out.getAbsolutePath());
+		LOGGER.info("Report generated: {}", out.getAbsolutePath());
 		return out;
 		
 	}
@@ -459,9 +461,8 @@ public class ReportService
 		
 		if (increaseSide == null)
 		{
-			LOGGER.warning(
-				"Account " + account.getAccountNumber() +
-					" has no defined increase side.");
+			LOGGER.warn("Account {} has no defined increase side.",
+				account.getAccountNumber());
 			return balance;
 		}
 		

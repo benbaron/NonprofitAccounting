@@ -11,8 +11,8 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
@@ -50,7 +50,7 @@ public abstract class SwingReportAction extends AbstractAction
 	private final ReportService reportService;
 	private final ReportType reportType;
 	private final String reportDisplayName;
-	private final Logger logger = Logger.getLogger(getClass().getName());
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	protected SwingReportAction(ReportService reportService,
 		ReportType reportType,
@@ -92,8 +92,8 @@ public abstract class SwingReportAction extends AbstractAction
 		}
 		catch (JRException | IOException ex)
 		{
-			this.logger.log(Level.WARNING,
-				"Failed to generate " + this.reportDisplayName + " report",
+			this.logger.warn("Failed to generate {} report",
+				this.reportDisplayName,
 				ex);
 			handleError(ex);
 		}
@@ -298,13 +298,12 @@ public abstract class SwingReportAction extends AbstractAction
 		}
 		else
 		{
-			Level level = switch(messageType)
+			switch (messageType)
 			{
-				case JOptionPane.ERROR_MESSAGE -> Level.SEVERE;
-				case JOptionPane.WARNING_MESSAGE -> Level.WARNING;
-				default -> Level.INFO;
+				case JOptionPane.ERROR_MESSAGE -> this.logger.error(message);
+				case JOptionPane.WARNING_MESSAGE -> this.logger.warn(message);
+				default -> this.logger.info(message);
 			};
-			this.logger.log(level, message);
 		}
 		
 	}

@@ -9,8 +9,9 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -34,7 +35,7 @@ public class FundAccountingService
 	
 	/** Logger for this service. */
 	private static final Logger LOGGER =
-		Logger.getLogger(FundAccountingService.class.getName());
+		LoggerFactory.getLogger(FundAccountingService.class);
 	
 	/** Database document name used to persist funds. */
 	private static final String DOCUMENT_NAME = "funds";
@@ -221,8 +222,8 @@ public class FundAccountingService
 		{
 			String payload = MAPPER.writeValueAsString(listFunds());
 			new DocumentRepository().upsert(DOCUMENT_NAME, payload);
-			LOGGER.info(
-				"Funds saved to database document '" + DOCUMENT_NAME + "'.");
+			LOGGER.info("Funds saved to database document '{}'.",
+				DOCUMENT_NAME);
 		}
 		catch (SQLException e)
 		{
@@ -263,12 +264,13 @@ public class FundAccountingService
 							
 						}
 						
-						LOGGER.info("Funds loaded from database document '" +
-							DOCUMENT_NAME + "'.");
+						LOGGER.info(
+							"Funds loaded from database document '{}'.",
+							DOCUMENT_NAME);
 					}
 					catch (IOException ex)
 					{
-						LOGGER.log(Level.SEVERE,
+						LOGGER.error(
 							"Failed to deserialize funds JSON from database",
 							ex);
 					}

@@ -10,8 +10,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.EventListener;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.event.EventListenerList;
 
@@ -26,7 +27,8 @@ import nonprofitbookkeeping.persistence.CompanyRepository;
  */
 public class CurrentCompany
 {
-        private static final Logger LOGGER = Logger.getLogger(CurrentCompany.class.getName());
+        private static final Logger LOGGER =
+                LoggerFactory.getLogger(CurrentCompany.class);
         /** The currently active company instance. */
         private static Company company;
         /** Flag indicating whether a company is currently considered open. */
@@ -125,8 +127,10 @@ public class CurrentCompany
                                 }
                                 catch (SQLException ex)
                                 {
-                                        LOGGER.log(Level.WARNING,
-                                                "Failed to read normalized company data for company " + companyId, ex);
+                                        LOGGER.warn(
+                                                "Failed to read normalized company data for company {}",
+                                                companyId,
+                                                ex);
                                 }
                         }
 
@@ -139,8 +143,10 @@ public class CurrentCompany
                                 }
                                 catch (SQLException ex)
                                 {
-                                        LOGGER.log(Level.WARNING,
-                                                "Failed to synchronize normalized data for company " + companyId, ex);
+                                        LOGGER.warn(
+                                                "Failed to synchronize normalized data for company {}",
+                                                companyId,
+                                                ex);
                                 }
                         }
                         else
@@ -156,8 +162,10 @@ public class CurrentCompany
                                 }
                                 catch (Exception ex)
                                 {
-                                        LOGGER.log(Level.FINE,
-                                                "Failed to merge legacy file metadata for company " + companyId, ex);
+                                        LOGGER.debug(
+                                                "Failed to merge legacy file metadata for company {}",
+                                                companyId,
+                                                ex);
                                 }
 
                                 company = normalized;

@@ -6,8 +6,9 @@ import java.math.BigDecimal;
 import nonprofitbookkeeping.util.FormatUtils;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,7 +31,8 @@ import nonprofitbookkeeping.ui.helpers.AlertBox;
 public class GrantsPanelFX extends BorderPane
 {
 
-        private static final Logger LOGGER = Logger.getLogger(GrantsPanelFX.class.getName());
+        private static final Logger LOGGER =
+                LoggerFactory.getLogger(GrantsPanelFX.class);
 
         /** Service layer for grant data operations. */
         private final GrantsService grantsService;
@@ -146,7 +148,7 @@ public class GrantsPanelFX extends BorderPane
                 }
                 catch (IOException ex)
                 {
-                        LOGGER.log(Level.SEVERE, "Failed to load grants from database", ex);
+                        LOGGER.error("Failed to load grants from database", ex);
                         this.rows.clear();
                         return;
                 }
@@ -246,7 +248,7 @@ public class GrantsPanelFX extends BorderPane
                 }
                 catch (IOException ex)
                 {
-                        LOGGER.log(Level.SEVERE, "Failed to save grants to database", ex);
+                        LOGGER.error("Failed to save grants to database", ex);
                 }
         }
 	

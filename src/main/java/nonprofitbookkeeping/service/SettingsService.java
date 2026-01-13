@@ -12,8 +12,9 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.MonthDay;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import nonprofitbookkeeping.util.FormatUtils;
 
@@ -22,8 +23,8 @@ import nonprofitbookkeeping.util.FormatUtils;
  */
 public class SettingsService
 {
-	private static final Logger LOGGER =
-		Logger.getLogger(SettingsService.class.getName());
+private static final Logger LOGGER =
+		LoggerFactory.getLogger(SettingsService.class);
 	/** Database document name where settings are persisted. */
 	private static final String DOCUMENT_NAME = "settings";
 	private static final ObjectMapper MAPPER = new ObjectMapper()
@@ -58,12 +59,13 @@ public class SettingsService
 					{
 						this.settings =
 							MAPPER.readValue(payload, SettingsModel.class);
-						LOGGER.info("Settings loaded from database document '" +
-							DOCUMENT_NAME + "'.");
+						LOGGER.info(
+							"Settings loaded from database document '{}'.",
+							DOCUMENT_NAME);
 					}
 					catch (IOException ex)
 					{
-						LOGGER.log(Level.SEVERE,
+						LOGGER.error(
 							"Failed to deserialize settings JSON from database",
 							ex);
 					}
@@ -97,8 +99,8 @@ public class SettingsService
 		{
 			String payload = MAPPER.writeValueAsString(this.settings);
 			new DocumentRepository().upsert(DOCUMENT_NAME, payload);
-			LOGGER.info(
-				"Settings saved to database document '" + DOCUMENT_NAME + "'.");
+			LOGGER.info("Settings saved to database document '{}'.",
+				DOCUMENT_NAME);
 		}
 		catch (SQLException e)
 		{

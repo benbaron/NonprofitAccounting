@@ -6,8 +6,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.stream.Collectors;
 
 /**
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  */
 public final class HelpContent
 {
-        private static final Logger LOGGER = Logger.getLogger(HelpContent.class.getName());
+        private static final Logger LOGGER = LoggerFactory.getLogger(HelpContent.class);
 
         private static final String FALLBACK_TEXT = String.join("\n",
                 "Nonprofit Bookkeeping",
@@ -55,7 +55,7 @@ public final class HelpContent
                 }
                 catch (IOException ex)
                 {
-                        LOGGER.log(Level.FINE, "Unable to load help document from " + resourcePath, ex);
+                        LOGGER.debug("Unable to load help document from {}", resourcePath, ex);
                         return Optional.empty();
                 }
         }

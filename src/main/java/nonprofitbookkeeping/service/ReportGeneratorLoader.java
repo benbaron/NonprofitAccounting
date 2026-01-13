@@ -18,8 +18,9 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility that instantiates and interacts with Jasper report generator classes using reflection.
@@ -29,7 +30,7 @@ import java.util.logging.Logger;
 final class ReportGeneratorLoader
 {
 	private static final Logger LOGGER =
-		Logger.getLogger(ReportGeneratorLoader.class.getName());
+		LoggerFactory.getLogger(ReportGeneratorLoader.class);
 	
 	private ReportGeneratorLoader()
 	{
@@ -52,17 +53,17 @@ final class ReportGeneratorLoader
 		ReportService service)
 	{
 		Objects.requireNonNull(className, "className");
-		if (LOGGER.isLoggable(Level.INFO))
+		if (LOGGER.isInfoEnabled())
 		{
-			LOGGER.info("Looking up report generator: " + className);
+			LOGGER.info("Looking up report generator: {}", className);
 		}
 		
 		try
 		{
 			Class<?> clazz = Class.forName(className);
-			if (LOGGER.isLoggable(Level.INFO))
+			if (LOGGER.isInfoEnabled())
 			{
-				LOGGER.info("Found generator class: " + clazz.getName());
+				LOGGER.info("Found generator class: {}", clazz.getName());
 			}
 			
 			// matches a constructor with 2 arguments: check both ReportContext, ReportService
@@ -147,9 +148,9 @@ final class ReportGeneratorLoader
 		}
 		catch (ClassNotFoundException e)
 		{
-			if (LOGGER.isLoggable(Level.INFO))
+			if (LOGGER.isInfoEnabled())
 			{
-				LOGGER.info("Generator class not on classpath; using bundle for " +
+				LOGGER.info("Generator class not on classpath; using bundle for {}",
 					className);
 			}
 			ReportBundles.Bundle bundle = ReportBundles
@@ -249,16 +250,17 @@ final class ReportGeneratorLoader
 		
 		if (beans == null || beans.isEmpty())
 		{
-			LOGGER.info(() -> "No report data provided for generator " +
-				generator.getClass().getName() + "; skipping override.");
+			LOGGER.info(
+				"No report data provided for generator {}; skipping override.",
+				generator.getClass().getName());
 			return;
 		}
 		
-		if (LOGGER.isLoggable(Level.INFO))
+		if (LOGGER.isInfoEnabled())
 		{
-			LOGGER.info("Setting report data on generator " +
-				generator.getClass().getName() + " with " + beans.size() +
-				" beans");
+			LOGGER.info("Setting report data on generator {} with {} beans",
+				generator.getClass().getName(),
+				beans.size());
 		}
 		
 		try
@@ -266,16 +268,17 @@ final class ReportGeneratorLoader
 			Method method = generator.getClass()
 				.getMethod("setReportData", List.class);
 			method.setAccessible(true);
-			LOGGER.info(() -> "Supplying " + beans.size() +
-				" report data rows to generator " +
-				generator.getClass().getName() + ".");
+			LOGGER.info("Supplying {} report data rows to generator {}.",
+				beans.size(),
+				generator.getClass().getName());
 			method.invoke(generator, beans);
 		}
 		catch (NoSuchMethodException e)
 		{
 			// Optional API; ignore if not present.
-			LOGGER.info(() -> "Generator " + generator.getClass().getName() +
-				" does not implement setReportData; skipping.");
+			LOGGER.info(
+				"Generator {} does not implement setReportData; skipping.",
+				generator.getClass().getName());
 		}
 		catch (IllegalAccessException | InvocationTargetException e)
 		{
@@ -297,9 +300,9 @@ final class ReportGeneratorLoader
 	static JasperPrint generatePrint(Object generator) throws JRException
 	{
 		
-		if (LOGGER.isLoggable(Level.INFO))
+		if (LOGGER.isInfoEnabled())
 		{
-			LOGGER.info("Generating JasperPrint using generator " +
+			LOGGER.info("Generating JasperPrint using generator {}",
 				generator.getClass().getName());
 		}
 
@@ -310,8 +313,8 @@ final class ReportGeneratorLoader
 		
 		try
 		{
-			LOGGER.info(() -> "Generating JasperPrint with generator " +
-				generator.getClass().getName() + ".");
+			LOGGER.info("Generating JasperPrint with generator {}.",
+				generator.getClass().getName());
 			Method method = generator.getClass().getMethod("generatePrint");
 			method.setAccessible(true);
 			return (JasperPrint) method.invoke(generator);
@@ -358,9 +361,9 @@ final class ReportGeneratorLoader
 			
 			if (result instanceof String name && !name.isBlank())
 			{
-				LOGGER.info(() -> "Resolved report base name '" + name +
-					"' from generator " + generator.getClass().getName() +
-					".");
+				LOGGER.info("Resolved report base name '{}' from generator {}.",
+					name,
+					generator.getClass().getName());
 				return name;
 			}
 			
@@ -399,11 +402,13 @@ final class ReportGeneratorLoader
 		JasperPrint print,
 		String baseName) throws JRException, IOException
 	{
-		if (LOGGER.isLoggable(Level.INFO))
+		if (LOGGER.isInfoEnabled())
 		{
-			LOGGER.info("Writing Jasper output for generator " +
-				generator.getClass().getName() + " with format=" + format +
-				", baseName=" + baseName);
+			LOGGER.info(
+				"Writing Jasper output for generator {} with format={}, baseName={}",
+				generator.getClass().getName(),
+				format,
+				baseName);
 		}
 
 		if (generator instanceof AbstractReportGenerator reportGenerator)
@@ -417,9 +422,11 @@ final class ReportGeneratorLoader
 				.getMethod("writeJasperOutput", String.class, JasperPrint.class,
 					String.class);
 			method.setAccessible(true);
-			LOGGER.info(() -> "Writing report output for generator " +
-				generator.getClass().getName() + " with format '" +
-				format + "' and baseName '" + baseName + "'.");
+			LOGGER.info(
+				"Writing report output for generator {} with format '{}' and baseName '{}'.",
+				generator.getClass().getName(),
+				format,
+				baseName);
 			Object result = method.invoke(generator, format, print, baseName);
 			
 			if (result instanceof File file)
@@ -474,7 +481,7 @@ final class ReportGeneratorLoader
 	private static void logConstructorSelection(Class<?> clazz,
 		Constructor<?> ctor)
 	{
-		if (LOGGER.isLoggable(Level.INFO))
+		if (LOGGER.isInfoEnabled())
 		{
 			Class<?>[] params = ctor.getParameterTypes();
 			String description = params.length == 0 ? "no-arg" :
@@ -482,8 +489,9 @@ final class ReportGeneratorLoader
 					.map(Class::getSimpleName)
 					.reduce((left, right) -> left + ", " + right)
 					.orElse("");
-			LOGGER.info("Using constructor for " + clazz.getName() +
-				" with params [" + description + "]");
+			LOGGER.info("Using constructor for {} with params [{}]",
+				clazz.getName(),
+				description);
 		}
 	}
 	

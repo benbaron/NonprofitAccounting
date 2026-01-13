@@ -8,8 +8,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.table.DefaultTableModel;
 
@@ -32,7 +33,7 @@ import nonprofitbookkeeping.service.ExcelLedgerImportService;
 public class ImportFromOutlandsLedgerActionFX implements EventHandler<ActionEvent>
 {
 	private static final Logger LOGGER =
-		Logger.getLogger(ImportFromOutlandsLedgerActionFX.class.getName());
+		LoggerFactory.getLogger(ImportFromOutlandsLedgerActionFX.class);
 	
 	private final Stage owner;
 	private final PageViewerPanel viewerPanel;
@@ -99,7 +100,7 @@ public class ImportFromOutlandsLedgerActionFX implements EventHandler<ActionEven
 		}
 		catch (IOException ex)
 		{
-			LOGGER.log(Level.WARNING, "Failed to import Excel ledger", ex);
+			LOGGER.warn("Failed to import Excel ledger", ex);
 			new Alert(AlertType.ERROR,
 				"Failed to import from Excel.\n" + ex.getMessage())
 				.showAndWait();

@@ -14,8 +14,9 @@ import nonprofitbookkeeping.service.ChartOfAccountsIOService;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Handles exporting the current company's Chart of Accounts to an XLSX file.
@@ -23,7 +24,8 @@ import java.util.logging.Logger;
 public class ExportCoaXlsxActionFX implements EventHandler<ActionEvent>
 {
 	
-	private static final Logger logger = Logger.getLogger(ExportCoaXlsxActionFX.class.getName());
+	private static final Logger logger =
+		LoggerFactory.getLogger(ExportCoaXlsxActionFX.class);
 	
 	private final Stage ownerStage;
 	
@@ -45,7 +47,7 @@ public class ExportCoaXlsxActionFX implements EventHandler<ActionEvent>
 				"No company is currently open. Please open a company to export its Chart of Accounts.");
 			alert.initOwner(this.ownerStage);
 			alert.showAndWait();
-			logger.log(Level.WARNING, "Export COA action triggered but no company is open.");
+			logger.warn("Export COA action triggered but no company is open.");
 			return;
 		}
 		
@@ -60,8 +62,8 @@ public class ExportCoaXlsxActionFX implements EventHandler<ActionEvent>
 				.setContentText("The current company does not have a Chart of Accounts to export.");
 			alert.initOwner(this.ownerStage);
 			alert.showAndWait();
-			logger.log(Level.WARNING, "Export COA action triggered but company '" +
-				currentCompany.getCompanyProfile() + "' has no COA.");
+			logger.warn("Export COA action triggered but company '{}' has no COA.",
+				currentCompany.getCompanyProfile());
 			return;
 		}
 		
@@ -95,8 +97,8 @@ public class ExportCoaXlsxActionFX implements EventHandler<ActionEvent>
 					"Chart of Accounts exported successfully to " + selectedFile.getAbsolutePath());
 				alert.initOwner(this.ownerStage);
 				alert.showAndWait();
-				logger.log(Level.INFO,
-					"Chart of Accounts exported successfully to " + selectedFile.getAbsolutePath());
+				logger.info("Chart of Accounts exported successfully to {}",
+					selectedFile.getAbsolutePath());
 				
 			}
 			catch (IOException e)
@@ -108,14 +110,14 @@ public class ExportCoaXlsxActionFX implements EventHandler<ActionEvent>
 					"An error occurred while exporting the Chart of Accounts: " + e.getMessage());
 				alert.initOwner(this.ownerStage);
 				alert.showAndWait();
-				logger.log(Level.SEVERE,
-					"Error exporting Chart of Accounts to " + selectedFile.getAbsolutePath(), e);
+				logger.error("Error exporting Chart of Accounts to {}",
+					selectedFile.getAbsolutePath(), e);
 			}
 			
 		}
 		else
 		{
-			logger.log(Level.INFO, "Chart of Accounts export was cancelled by the user.");
+			logger.info("Chart of Accounts export was cancelled by the user.");
 		}
 		
 	}
