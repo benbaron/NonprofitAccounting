@@ -290,9 +290,28 @@ public class JournalRepository
 		    VALUES (?,?,?,?,?,?)
 			"""))
 		{
-			
+			List<AccountingEntry> batchEntries = new ArrayList<>();
+
 			for (AccountingEntry e : txn.getEntries())
 			{
+				if (e == null)
+				{
+					LOGGER.warn("Skipping null journal entry for transaction id={}", txn.getId());
+					continue;
+				}
+
+				if (e.getAmount() == null)
+				{
+					throw new SQLException("Journal entry amount is required for transaction id="
+						+ txn.getId() + ", entry=" + e);
+				}
+
+				if (e.getAccountNumber() == null || e.getAccountNumber().isBlank())
+				{
+					throw new SQLException("Journal entry account number is required for transaction id="
+						+ txn.getId() + ", entry=" + e);
+				}
+
 				int j = 0;
 				ins.setInt(++j, txn.getId());
 				ins.setBigDecimal(++j, e.getAmount());
@@ -302,9 +321,19 @@ public class JournalRepository
 				ins.setString(++j, e.getAccountName());
 				ins.setString(++j, e.getFundNumber());
 				ins.addBatch();
+				batchEntries.add(e);
 			}
 			
-			int[] results = ins.executeBatch();
+			int[] results;
+			try
+			{
+				results = ins.executeBatch();
+			}
+			catch (BatchUpdateException ex)
+			{
+				logBatchFailure(txn, batchEntries, ex.getUpdateCounts(), ex);
+				throw ex;
+			}
 			if (LOGGER.isDebugEnabled())
 			{
 				int inserted = 0;
@@ -317,6 +346,11 @@ public class JournalRepository
 					else if (result == Statement.SUCCESS_NO_INFO)
 					{
 						inserted++;
+					}
+					else if (result == Statement.EXECUTE_FAILED)
+					{
+						LOGGER.warn("Failed journal entry batch item for transaction id={}",
+							txn.getId());
 					}
 				}
 				LOGGER.debug("Inserted {} journal entries for transaction id={}",
@@ -354,6 +388,31 @@ public class JournalRepository
 			
 		}
 		
+	}
+
+	private void logBatchFailure(AccountingTransaction txn,
+		List<AccountingEntry> batchEntries,
+		int[] updateCounts,
+		BatchUpdateException ex)
+	{
+		LOGGER.error("Journal entry batch insert failed for transaction id={}",
+			txn.getId(),
+			ex);
+		if (updateCounts == null)
+		{
+			return;
+		}
+		int entriesToLog = Math.min(updateCounts.length, batchEntries.size());
+		for (int idx = 0; idx < entriesToLog; idx++)
+		{
+			if (updateCounts[idx] == Statement.EXECUTE_FAILED)
+			{
+				LOGGER.error("Failed journal entry at batch index {} for transaction id={}: {}",
+					idx,
+					txn.getId(),
+					batchEntries.get(idx));
+			}
+		}
 	}
 	
 	private void ensureAccountsExist(Connection c,
