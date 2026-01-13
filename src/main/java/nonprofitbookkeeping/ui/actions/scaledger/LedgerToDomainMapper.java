@@ -46,6 +46,7 @@ public class LedgerToDomainMapper
             transaction.setBookingDateTimestamp(Instant.now().toEpochMilli());
         }
 
+        transaction.setId(0);
         transaction.setCheckNumber(row.getCheckNumber());
         transaction.setClearBank(row.getClearedBankTag());
         transaction.setToFrom(row.getToFrom());

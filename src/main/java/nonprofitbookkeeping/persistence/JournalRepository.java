@@ -296,15 +296,17 @@ public class JournalRepository
 				int j = 0;
 				ins.setInt(++j, txn.getId());
 				ins.setBigDecimal(++j, e.getAmount());
-				ins.setString(++j, e.getAccountNumber());
+				ins.setString(++j, e.getAccountNumber());				
 				ins.setString(++j, e.getAccountSide() == null ? null :
-					e.getAccountSide().name());
+					e.getAccountSide().name());				
 				ins.setString(++j, e.getAccountName());
 				ins.setString(++j, e.getFundNumber());
+				
 				ins.addBatch();
 			}
 			
 			int[] results = ins.executeBatch();
+			
 			if (LOGGER.isDebugEnabled())
 			{
 				int inserted = 0;
