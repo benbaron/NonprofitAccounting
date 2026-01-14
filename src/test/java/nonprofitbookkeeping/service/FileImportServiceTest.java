@@ -11,10 +11,6 @@ import nonprofitbookkeeping.model.impex.ImportedTransaction;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.webcohesion.ofx4j.io.OFXParseException;
 
@@ -29,22 +25,20 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
-
-@ExtendWith(MockitoExtension.class) class FileImportServiceTest
+class FileImportServiceTest
 {
 	
-	@Mock private ChartOfAccounts mockChartOfAccounts;
-	@Mock private Ledger mockLedger;
-	@Mock private Account mockTargetAccount;
-	@Mock private Account mockNeedsCatAccount;
+	private ChartOfAccounts chartOfAccounts;
+	private Ledger ledger;
+	private Account targetAccount;
+	private Account needsCatAccount;
 	
 	private final String NEEDS_CAT_ACC_NUM = FileImportService.NEEDS_CATEGORIZATION_ACCOUNT_NUMBER;
 	private final String FITID_KEY = "IMPORT_ID";
@@ -53,17 +47,17 @@ import static org.mockito.Mockito.when;
 	@BeforeEach
 		void setUp()
 	{
-		lenient().when(this.mockNeedsCatAccount.getAccountNumber()).thenReturn(this.NEEDS_CAT_ACC_NUM);
-		lenient().when(this.mockNeedsCatAccount.getIncreaseSide()).thenReturn(AccountSide.DEBIT);
-		lenient().when(this.mockChartOfAccounts.getAccount(this.NEEDS_CAT_ACC_NUM))
-			.thenReturn(this.mockNeedsCatAccount);
+		this.chartOfAccounts = new ChartOfAccounts();
+		this.ledger = new Ledger();
+		this.needsCatAccount = new Account();
+		this.needsCatAccount.setAccountNumber(this.NEEDS_CAT_ACC_NUM);
+		this.needsCatAccount.setIncreaseSide(AccountSide.DEBIT);
+		this.chartOfAccounts.addAccount(this.needsCatAccount);
 		
-		lenient().when(this.mockTargetAccount.getAccountNumber()).thenReturn("TARGET_ACC_NUM");
-		lenient().when(this.mockTargetAccount.getIncreaseSide()).thenReturn(AccountSide.DEBIT);
-		lenient().when(this.mockChartOfAccounts.getAccount("TARGET_ACC_NUM"))
-			.thenReturn(this.mockTargetAccount);
-		
-		lenient().when(this.mockLedger.getTransactions()).thenReturn(new ArrayList<>());
+		this.targetAccount = new Account();
+		this.targetAccount.setAccountNumber("TARGET_ACC_NUM");
+		this.targetAccount.setIncreaseSide(AccountSide.DEBIT);
+		this.chartOfAccounts.addAccount(this.targetAccount);
 	}
 	
 	private InputStream getResourceAsStream(String resourceName) throws FileNotFoundException
@@ -124,7 +118,7 @@ import static org.mockito.Mockito.when;
 		URL resourceUrl = getClass().getClassLoader().getResource("sample_files/malformed.ofx");
 		File malformedFile = new File(resourceUrl.toURI());
 		List<AccountingTransaction> result = FileImportService.importOFXorQIFFile(malformedFile,
-			this.mockTargetAccount, this.mockChartOfAccounts, this.mockLedger);
+			this.targetAccount, this.chartOfAccounts, this.ledger);
 		assertTrue(result.isEmpty());
 	}
 	
@@ -213,8 +207,8 @@ import static org.mockito.Mockito.when;
 	@Test
 		void testMap_DebitNormalAccount_DepositAndWithdrawal()
 	{
-		when(this.mockTargetAccount.getIncreaseSide()).thenReturn(AccountSide.DEBIT);
-		when(this.mockTargetAccount.getAccountNumber()).thenReturn("BANK123");
+		this.targetAccount.setIncreaseSide(AccountSide.DEBIT);
+		this.targetAccount.setAccountNumber("BANK123");
 		
 		ImportedTransaction deposit = new ImportedTransaction(LocalDate.now(),
 			new BigDecimal("100.00"), "D", "m", "fit1", "USD", "BANK", "orig");
@@ -223,7 +217,7 @@ import static org.mockito.Mockito.when;
 		List<ImportedTransaction> imported = List.of(deposit, withdrawal);
 		
 		List<AccountingTransaction> result = FileImportService.mapToAccountingTransactions(imported,
-			this.mockTargetAccount, this.mockChartOfAccounts, this.mockLedger);
+			this.targetAccount, this.chartOfAccounts, this.ledger);
 		assertEquals(2, result.size());
 		// Check deposit
 		AccountingTransaction atDeposit = result.stream()
@@ -250,8 +244,8 @@ import static org.mockito.Mockito.when;
 	@Test
 		void testMap_CreditNormalAccount_ChargeAndPayment()
 	{
-		when(this.mockTargetAccount.getIncreaseSide()).thenReturn(AccountSide.CREDIT);
-		when(this.mockTargetAccount.getAccountNumber()).thenReturn("CC123");
+		this.targetAccount.setIncreaseSide(AccountSide.CREDIT);
+		this.targetAccount.setAccountNumber("CC123");
 		
 		ImportedTransaction charge = new ImportedTransaction(LocalDate.now(),
 			new BigDecimal("-75.00"), "Charge", "m", "fit1", "USD", "CC", "orig");
@@ -260,7 +254,7 @@ import static org.mockito.Mockito.when;
 		List<ImportedTransaction> imported = List.of(charge, payment);
 		
 		List<AccountingTransaction> result = FileImportService.mapToAccountingTransactions(imported,
-			this.mockTargetAccount, this.mockChartOfAccounts, this.mockLedger);
+			this.targetAccount, this.chartOfAccounts, this.ledger);
 		assertEquals(2, result.size());
 		// Check charge
 		AccountingTransaction atCharge = result.stream()
@@ -287,12 +281,12 @@ import static org.mockito.Mockito.when;
 	@Test
 		void testMap_MissingNeedsCategorizationAccount()
 	{
-		when(this.mockChartOfAccounts.getAccount(this.NEEDS_CAT_ACC_NUM)).thenReturn(null);
+		this.chartOfAccounts.removeAccount(this.needsCatAccount);
 		ImportedTransaction impTxn = new ImportedTransaction(LocalDate.now(), BigDecimal.TEN,
 			"Test", null, "1", null, null, null);
 		Exception ex = assertThrows(IllegalArgumentException.class,
-			() -> FileImportService.mapToAccountingTransactions(List.of(impTxn), this.mockTargetAccount,
-				this.mockChartOfAccounts, this.mockLedger));
+			() -> FileImportService.mapToAccountingTransactions(List.of(impTxn), this.targetAccount,
+				this.chartOfAccounts, this.ledger));
 		assertTrue(ex.getMessage().contains("'Needs Categorization' account not found"));
 	}
 	
@@ -302,12 +296,14 @@ import static org.mockito.Mockito.when;
 	{
 		ImportedTransaction impTxn = new ImportedTransaction(LocalDate.now(), BigDecimal.TEN,
 			"Test OFX", null, "DUPLICATE_FITID", "USD", "BANK", "orig");
-		AccountingTransaction existingTx = Mockito.mock(AccountingTransaction.class);
-                when(existingTx.getInfo()).thenReturn(Map.of(this.FITID_KEY, "DUPLICATE_FITID"));
-                when(this.mockLedger.getTransactions()).thenReturn(List.of(existingTx));
+		AccountingTransaction existingTx = new AccountingTransaction();
+		Map<String, String> info = new LinkedHashMap<>();
+		info.put(this.FITID_KEY, "DUPLICATE_FITID");
+		existingTx.setInfo(info);
+		this.ledger.getJournal().replaceAllTransactions(List.of(existingTx));
 		
 		List<AccountingTransaction> result = FileImportService.mapToAccountingTransactions(
-			List.of(impTxn), this.mockTargetAccount, this.mockChartOfAccounts, this.mockLedger);
+			List.of(impTxn), this.targetAccount, this.chartOfAccounts, this.ledger);
 		assertTrue(result.isEmpty());
 	}
 	
@@ -322,22 +318,22 @@ import static org.mockito.Mockito.when;
 		ImportedTransaction impTxn = new ImportedTransaction(txDate, txAmount, txDesc, null,
 			"QIF_N_FIELD", "USD", "BANK", "orig_qif");
 		
-		AccountingTransaction existingTx = Mockito.mock(AccountingTransaction.class);
-		when(existingTx.getBookingDateTimestamp())
-			.thenReturn(txDate.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli());
-		when(existingTx.getMemo()).thenReturn(txDesc);
+		AccountingTransaction existingTx = new AccountingTransaction();
+		existingTx.setBookingDateTimestamp(
+			txDate.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli());
+		existingTx.setMemo(txDesc);
 		
-		Set<AccountingEntry> entries = new HashSet<>();
+		Set<AccountingEntry> entries = new LinkedHashSet<>();
 		// For targetAccount (DEBIT normal), a positive impTxn.amount (deposit) means
 		// DEBIT to target.
 		// So existingTxAmountForTarget should be positive.
 		entries.add(new AccountingEntry(txAmount, "TARGET_ACC_NUM", AccountSide.DEBIT));
 		entries.add(new AccountingEntry(txAmount, this.NEEDS_CAT_ACC_NUM, AccountSide.CREDIT));
-                when(existingTx.getEntries()).thenReturn(entries);
-                when(this.mockLedger.getTransactions()).thenReturn(List.of(existingTx));
+		existingTx.setEntries(entries);
+		this.ledger.getJournal().replaceAllTransactions(List.of(existingTx));
 		
 		List<AccountingTransaction> result = FileImportService.mapToAccountingTransactions(
-			List.of(impTxn), this.mockTargetAccount, this.mockChartOfAccounts, this.mockLedger);
+			List.of(impTxn), this.targetAccount, this.chartOfAccounts, this.ledger);
 		assertTrue(result.isEmpty());
 	}
 	
@@ -346,12 +342,10 @@ import static org.mockito.Mockito.when;
 	{
 		ImportedTransaction impTxn = new ImportedTransaction(LocalDate.now(), BigDecimal.TEN,
 			"Unique OFX", null, "UNIQUE_FITID", "USD", "BANK", "orig");
-		when(this.mockLedger.getTransactions()).thenReturn(
-			(List<AccountingTransaction>) null,
-			(List<AccountingTransaction>) null);
+		this.ledger.getJournal().replaceAllTransactions(new ArrayList<>());
 		
 		List<AccountingTransaction> result = FileImportService.mapToAccountingTransactions(
-			List.of(impTxn), this.mockTargetAccount, this.mockChartOfAccounts, this.mockLedger);
+			List.of(impTxn), this.targetAccount, this.chartOfAccounts, this.ledger);
 		assertEquals(1, result.size());
 	}
 	
@@ -362,7 +356,7 @@ import static org.mockito.Mockito.when;
 		URL resourceUrl = getClass().getClassLoader().getResource("sample_files/sample_bank.ofx");
 		File file = new File(resourceUrl.toURI());
 		List<AccountingTransaction> result =
-			FileImportService.importOFXorQIFFile(file, this.mockTargetAccount, this.mockChartOfAccounts, this.mockLedger);
+			FileImportService.importOFXorQIFFile(file, this.targetAccount, this.chartOfAccounts, this.ledger);
 		assertEquals(2, result.size());
 	}
 	
@@ -372,7 +366,7 @@ import static org.mockito.Mockito.when;
 		URL resourceUrl = getClass().getClassLoader().getResource("sample_files/sample_bank.qif");
 		File file = new File(resourceUrl.toURI());
 		List<AccountingTransaction> result =
-			FileImportService.importOFXorQIFFile(file, this.mockTargetAccount, this.mockChartOfAccounts, this.mockLedger);
+			FileImportService.importOFXorQIFFile(file, this.targetAccount, this.chartOfAccounts, this.ledger);
 		assertEquals(4, result.size()); // From sample_bank.qif
 	}
 	
@@ -381,7 +375,7 @@ import static org.mockito.Mockito.when;
 	{
 		File nonExistentFile = new File("non_existent_file.ofx");
 		List<AccountingTransaction> result = FileImportService.importOFXorQIFFile(nonExistentFile,
-			this.mockTargetAccount, this.mockChartOfAccounts, this.mockLedger);
+			this.targetAccount, this.chartOfAccounts, this.ledger);
 		assertTrue(result.isEmpty());
 	}
 	
@@ -391,7 +385,7 @@ import static org.mockito.Mockito.when;
 		File unsupportedFile = File.createTempFile("unsupported", ".txt");
 		unsupportedFile.deleteOnExit(); // Ensure cleanup
 		List<AccountingTransaction> result = FileImportService.importOFXorQIFFile(unsupportedFile,
-			this.mockTargetAccount, this.mockChartOfAccounts, this.mockLedger);
+			this.targetAccount, this.chartOfAccounts, this.ledger);
 		assertTrue(result.isEmpty());
 	}
 	

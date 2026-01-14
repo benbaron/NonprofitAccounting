@@ -11,7 +11,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * Represents a single entry within a journal, detailing a transaction's impact
@@ -20,7 +19,7 @@ import lombok.NoArgsConstructor;
  * Lombok's {@code @Data}, {@code @AllArgsConstructor}, and {@code @NoArgsConstructor}
  * are used for boilerplate code generation.
  */
-@Data @AllArgsConstructor @NoArgsConstructor
+@Data @AllArgsConstructor
 public class JournalEntry
 {
 	/** The unique identifier for this journal entry. */
@@ -37,6 +36,13 @@ public class JournalEntry
 	@JsonProperty private String memo;
 	/** The account name or number affected by this journal entry. */
 	@JsonProperty private String account;
+	
+	/**
+	 * Default constructor for Jackson deserialization.
+	 */
+	public JournalEntry()
+	{
+	}
 	
 	
 	/**

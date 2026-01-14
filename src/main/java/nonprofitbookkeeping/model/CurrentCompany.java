@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.event.EventListenerList;
 
+import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.persistence.CompanyDataRepository;
 import nonprofitbookkeeping.persistence.CompanyRepository;
 
@@ -377,6 +378,58 @@ public class CurrentCompany
 		}
 		
 	}
+
+        /**
+         * Refreshes the active company with the latest chart of accounts and journal
+         * transactions from the normalized database tables. This keeps in-memory
+         * models aligned with database mutations (such as ledger imports) and
+         * triggers UI listeners so panels can refresh immediately.
+         *
+         * @throws IOException if the normalized tables cannot be read
+         */
+        public static void refreshFromPersistentData() throws IOException
+        {
+                if (!CurrentCompany.companyIsOpen || !Database.isInitialized())
+                {
+                        return;
+                }
+
+                try
+                {
+                        Company persisted = dataRepository.load();
+
+                        if (persisted == null)
+                        {
+                                return;
+                        }
+
+                        if (company == null)
+                        {
+                                company = persisted;
+                        }
+                        else
+                        {
+                                company.getChartOfAccounts().replaceAllAccounts(
+                                        persisted.getChartOfAccounts().getAccounts());
+                                company.getLedger().getJournal().replaceAllTransactions(
+                                        persisted.getLedger().getJournal().getJournalTransactions());
+
+                                if (company.getCompanyProfileModel() == null
+                                        && persisted.getCompanyProfileModel() != null)
+                                {
+                                        company.setCompanyProfileModel(
+                                                persisted.getCompanyProfileModel());
+                                }
+                        }
+
+                        CompanyListener.fireChanged(true);
+                }
+                catch (SQLException ex)
+                {
+                        throw new IOException(
+                                "Failed to refresh company data from the database", ex);
+                }
+        }
 	
 	/**
 	 * Convenience helper that sets both the active company identifier and the aggregate.
