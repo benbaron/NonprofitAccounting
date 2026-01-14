@@ -36,55 +36,139 @@ public class ExcelLedgerImportService
 	public static List<ExcelLedgerRow> importSpreadsheet(File file)
 		throws IOException
 	{
-		
+		return importSpreadsheet(file, Collections.emptyList());
+	}
+
+	/**
+	 * Reads the specified worksheets of the given Excel file and converts the
+	 * rows into {@link ExcelLedgerRow} objects.
+	 *
+	 * @param file Excel workbook to read (.xlsx or .xlsm).
+	 * @param sheetNames names of sheets to import; empty means the first sheet.
+	 * @return list of parsed rows in order of appearance.
+	 * @throws IOException if the file cannot be read or parsed.
+	 */
+	public static List<ExcelLedgerRow> importSpreadsheet(File file,
+		List<String> sheetNames) throws IOException
+	{
 		if (file == null || !file.exists())
 		{
 			throw new IOException("Input Excel file does not exist: " + file);
 		}
-		
+
 		try (FileInputStream fis = new FileInputStream(file);
 			Workbook workbook = WorkbookFactory.create(fis))
 		{
-			Sheet sheet = workbook.getSheetAt(0);
-			
-			if (sheet == null)
+			List<String> requestedSheets =
+				resolveSheetNames(workbook, sheetNames);
+
+			if (requestedSheets.isEmpty())
 			{
 				return Collections.emptyList();
 			}
-			
-			// Ingest the body rows
+
 			List<ExcelLedgerRow> results = new ArrayList<>();
-			int firstRow = sheet.getFirstRowNum() + 1;
-			int lastRow = sheet.getLastRowNum();
-			
 			DataFormatter formatter = new DataFormatter();
 			FormulaEvaluator evaluator = workbook.getCreationHelper()
 				.createFormulaEvaluator();
-			
-			for (int r = firstRow; r <= lastRow; r++)
+
+			for (String sheetName : requestedSheets)
 			{
-				LOGGER.debug("Row number {}", r);
-				Row row = sheet.getRow(r);
-				
-				if (row == null)
+				Sheet sheet = workbook.getSheet(sheetName);
+
+				if (sheet == null)
 				{
-					continue;
+					throw new IOException("Sheet not found: " + sheetName);
 				}
-				
-				RowReader reader = new RowReader(row, r, formatter, evaluator);
-				ExcelLedgerRow excelLedgerRow = reader.readLedgerRow();
-				results.add(excelLedgerRow);
-				
-				// debug
-				java.io.StringWriter sw = new java.io.StringWriter();
-				printRow(row, formatter, evaluator, sw);
-				LOGGER.trace(sw.toString());
-				
+
+				results.addAll(readSheet(sheet, formatter, evaluator, sheetName));
 			}
-			
+
 			return results;
 		}
-		
+	}
+
+	/**
+	 * Returns the sheet names contained in the workbook.
+	 *
+	 * @param file Excel workbook to read (.xlsx or .xlsm).
+	 * @return list of sheet names in workbook order.
+	 * @throws IOException if the file cannot be read or parsed.
+	 */
+	public static List<String> listSheetNames(File file) throws IOException
+	{
+		if (file == null || !file.exists())
+		{
+			throw new IOException("Input Excel file does not exist: " + file);
+		}
+
+		try (FileInputStream fis = new FileInputStream(file);
+			Workbook workbook = WorkbookFactory.create(fis))
+		{
+			int count = workbook.getNumberOfSheets();
+			List<String> names = new ArrayList<>(count);
+			for (int i = 0; i < count; i++)
+			{
+				names.add(workbook.getSheetAt(i).getSheetName());
+			}
+			return names;
+		}
+	}
+
+	private static List<String> resolveSheetNames(Workbook workbook,
+		List<String> sheetNames)
+	{
+		if (sheetNames == null || sheetNames.isEmpty())
+		{
+			if (workbook.getNumberOfSheets() == 0)
+			{
+				return Collections.emptyList();
+			}
+
+			return Collections.singletonList(
+				workbook.getSheetAt(0).getSheetName());
+		}
+
+		return new ArrayList<>(sheetNames);
+	}
+
+	private static List<ExcelLedgerRow> readSheet(Sheet sheet,
+		DataFormatter formatter,
+		FormulaEvaluator evaluator,
+		String sheetName)
+	{
+		// Ingest the body rows
+		List<ExcelLedgerRow> results = new ArrayList<>();
+		int firstRow = sheet.getFirstRowNum() + 1;
+		int lastRow = sheet.getLastRowNum();
+
+		for (int r = firstRow; r <= lastRow; r++)
+		{
+			LOGGER.debug("Row number {}", r);
+			Row row = sheet.getRow(r);
+
+			if (row == null)
+			{
+				continue;
+			}
+
+			RowReader reader = new RowReader(row, r, formatter, evaluator);
+			ExcelLedgerRow excelLedgerRow = reader.readLedgerRow();
+
+			if (excelLedgerRow != null)
+			{
+				excelLedgerRow.setSheetName(sheetName);
+			}
+
+			results.add(excelLedgerRow);
+
+			// debug
+			java.io.StringWriter sw = new java.io.StringWriter();
+			printRow(row, formatter, evaluator, sw);
+			LOGGER.trace(sw.toString());
+		}
+
+		return results;
 	}
 	
 	/**

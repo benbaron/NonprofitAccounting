@@ -30,6 +30,8 @@ import java.util.List;
 	private String budgetTracking;
 	/** Optional subtotal - should be the sum of the allocation amounts */
 	private BigDecimal netTotal;
+	/** Optional sheet name for the ledger page. */
+	private String sheetName;
 	
 	
 	/** List of up to four allocation groups. */
@@ -197,6 +199,23 @@ import java.util.List;
 		this.netTotal = netTotal;
 		
 	}
+
+	/**
+	 * @return the sheetName
+	 */
+	public String getSheetName()
+	{
+		return this.sheetName;
+	}
+
+	/**
+	 * @param sheetName the sheetName to set
+	 */
+	public void setSheetName(String sheetName)
+	{
+		System.out.print(sheetName + ";");
+		this.sheetName = sheetName;
+	}
 	
 	/**
 	 * @return the allocations
@@ -238,6 +257,8 @@ import java.util.List;
 				.append(this.budgetTracking)
 				.append(", netTotal=")
 				.append(this.netTotal)
+				.append(", sheetName=")
+				.append(this.sheetName)
 				.append(", allocations=")
 				.append(this.allocations)
 				.append("]");
