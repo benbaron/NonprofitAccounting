@@ -246,9 +246,18 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 		
 		try
 		{
+			List<String> sheetNames =
+				ExcelSheetSelectionDialog.selectSheets(this.ownerStage,
+					selectedFile);
+			if (sheetNames.isEmpty())
+			{
+				return;
+			}
+
 			// Map spreadsheet to rows
 			List<ExcelLedgerRow> rows =
-				ExcelLedgerImportService.importSpreadsheet(selectedFile);
+				ExcelLedgerImportService.importSpreadsheet(selectedFile,
+					sheetNames);
 			
 			// Convert the rows
 			imported.addAll(ImportFileActionFX.convertExcelRows(rows));
@@ -263,7 +272,7 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 		}
 		
 	}
-	
+
 	/**
 	 * Converts rows read from {@link ExcelLedgerImportService} into
 	 * {@link AccountingTransaction} instances. Allocation account names are

@@ -20,6 +20,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import nonprofitbookkeeping.ui.actions.ExcelSheetSelectionDialog;
 import nonprofitbookkeeping.model.impex.ExcelLedgerRow;
 import nonprofitbookkeeping.plugins.scaledger.ui.PageViewerPanel;
 import nonprofitbookkeeping.preferences.PreferencesManager;
@@ -85,8 +86,15 @@ public class ImportFromOutlandsLedgerActionFX implements EventHandler<ActionEven
 		
 		try
 		{
+			List<String> sheetNames =
+				ExcelSheetSelectionDialog.selectSheets(this.owner, selected);
+			if (sheetNames.isEmpty())
+			{
+				return;
+			}
+
 			List<ExcelLedgerRow> rows =
-				ExcelLedgerImportService.importSpreadsheet(selected);
+				ExcelLedgerImportService.importSpreadsheet(selected, sheetNames);
 			DefaultTableModel model = buildTableModel(rows);
 			
 			this.viewerPanel.loadData(model);
@@ -96,7 +104,8 @@ public class ImportFromOutlandsLedgerActionFX implements EventHandler<ActionEven
 			PreferencesManager.setLastDirectory(selected.getParent());
 			
 			new Alert(AlertType.INFORMATION,
-				"Data loaded into viewer from Excel.").showAndWait();
+				"Data loaded into viewer from Excel (" +
+					String.join(", ", sheetNames) + ").").showAndWait();
 		}
 		catch (IOException ex)
 		{
@@ -118,7 +127,13 @@ public class ImportFromOutlandsLedgerActionFX implements EventHandler<ActionEven
 	 */
 	static DefaultTableModel buildTableModel(List<ExcelLedgerRow> rows)
 	{
-		Vector<String> columns = new Vector<>(Arrays.asList(
+		boolean includeSheet = shouldIncludeSheetColumn(rows);
+		Vector<String> columns = new Vector<>();
+		if (includeSheet)
+		{
+			columns.add("Sheet");
+		}
+		columns.addAll(Arrays.asList(
 			"Balance",
 			"Date",
 			"Check Number",
@@ -171,6 +186,10 @@ public class ImportFromOutlandsLedgerActionFX implements EventHandler<ActionEven
 				}
 				
 				Vector<Object> values = new Vector<>();
+				if (includeSheet)
+				{
+					values.add(row.getSheetName());
+				}
 				values.add(row.getBalance());
 				values.add(row.getDate());
 				values.add(row.getCheckNumber());
@@ -224,5 +243,24 @@ public class ImportFromOutlandsLedgerActionFX implements EventHandler<ActionEven
 		};
 		
 	}
-	
+
+	private static boolean shouldIncludeSheetColumn(List<ExcelLedgerRow> rows)
+	{
+		if (rows == null || rows.isEmpty())
+		{
+			return false;
+		}
+
+		for (ExcelLedgerRow row : rows)
+		{
+			if (row != null && row.getSheetName() != null &&
+				!row.getSheetName().isBlank())
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 }
