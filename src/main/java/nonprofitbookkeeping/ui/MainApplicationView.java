@@ -6,8 +6,11 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
 
+import nonprofitbookkeeping.ui.panels.BalanceSheetPanelFX;
+import nonprofitbookkeeping.ui.panels.ChartOfAccountsTablePanelFX;
 import nonprofitbookkeeping.ui.panels.CoaEditorPanelFX;
 import nonprofitbookkeeping.ui.panels.CompanySelectionPanelFX;
+import nonprofitbookkeeping.ui.panels.IncomeStatementPanelFX;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonDashboardPanel;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonJournalPanel;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonReportsPanel;
@@ -42,6 +45,12 @@ public class MainApplicationView extends BorderPane
 		COA,
 		/** Represents the Reports panel. */
 		REPORTS,
+		/** Represents the Income Statement panel. */
+		INCOME_STATEMENT,
+		/** Represents the Balance Sheet panel. */
+		BALANCE_SHEET,
+		/** Represents the Chart of Accounts table panel. */
+		COA_TABLE,
 		/** Represents the Account Transaction Details panel. */
 		ACCOUNT_DETAILS
 	}
@@ -60,6 +69,12 @@ public class MainApplicationView extends BorderPane
         private Tab coaTab;
         /** Tab for displaying Reports. */
         private Tab reportsTab;
+        /** Tab for displaying Income Statement. */
+        private Tab incomeStatementTab;
+        /** Tab for displaying Balance Sheet. */
+        private Tab balanceSheetTab;
+        /** Tab for displaying Chart of Accounts table. */
+        private Tab coaTableTab;
         /** Tab for displaying Account Transaction Details. */
         private Tab accountDetailsTab;
         /** Embedded Chart of Accounts editor panel. */
@@ -107,12 +122,21 @@ public class MainApplicationView extends BorderPane
 		this.coaTab = new Tab("Chart of Accounts", this.coaEditorPanel);
 		
 		this.reportsTab = new Tab("Reports", new SkeletonReportsPanel());
+		this.incomeStatementTab = new Tab("Income Statement",
+			new IncomeStatementPanelFX());
+		this.balanceSheetTab = new Tab("Balance Sheet",
+			new BalanceSheetPanelFX());
+		this.coaTableTab = new Tab("Chart of Accounts Table",
+			new ChartOfAccountsTablePanelFX());
 		
 		// Set tabs to be non-closable
 		this.dashboardTab.setClosable(false);
 		this.journalTab.setClosable(false);
 		this.coaTab.setClosable(false);
 		this.reportsTab.setClosable(false);
+		this.incomeStatementTab.setClosable(false);
+		this.balanceSheetTab.setClosable(false);
+		this.coaTableTab.setClosable(false);
 		
 		// Add new tab for Account Details
                 this.accountDetailsPanel = new AccountTransactionDetailsPanelFX();
@@ -125,7 +149,10 @@ public class MainApplicationView extends BorderPane
                                 .addAll(this.dashboardTab,
                                                 this.journalTab,
                                                 this.coaTab,
+                                                this.coaTableTab,
                                                 this.reportsTab,
+                                                this.incomeStatementTab,
+                                                this.balanceSheetTab,
                                                 this.accountDetailsTab
                                 );
 
@@ -197,6 +224,19 @@ public class MainApplicationView extends BorderPane
 			case REPORTS:
 				this.tabPane.getSelectionModel().select(this.reportsTab);
 				break;
+
+			case INCOME_STATEMENT:
+				this.tabPane.getSelectionModel()
+					.select(this.incomeStatementTab);
+				break;
+
+			case BALANCE_SHEET:
+				this.tabPane.getSelectionModel().select(this.balanceSheetTab);
+				break;
+
+			case COA_TABLE:
+				this.tabPane.getSelectionModel().select(this.coaTableTab);
+				break;
 			
 			case ACCOUNT_DETAILS:
 				this.tabPane.getSelectionModel().select(this.accountDetailsTab);
@@ -221,7 +261,10 @@ public class MainApplicationView extends BorderPane
                 this.dashboardTab.setDisable(!companyOpen);
                 this.journalTab.setDisable(!companyOpen);
                 this.coaTab.setDisable(!companyOpen);
+                this.coaTableTab.setDisable(!companyOpen);
                 this.reportsTab.setDisable(!companyOpen);
+                this.incomeStatementTab.setDisable(!companyOpen);
+                this.balanceSheetTab.setDisable(!companyOpen);
                 this.accountDetailsTab.setDisable(!companyOpen);
 
                 if (companyOpen)
