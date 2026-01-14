@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import nonprofitbookkeeping.ui.helpers.DateSelectionMode; // Import the top-level enum
 
 /**
@@ -15,7 +14,7 @@ import nonprofitbookkeeping.ui.helpers.DateSelectionMode; // Import the top-leve
  * Lombok's {@code @Data} and {@code @NoArgsConstructor} are used for boilerplate code generation.
  */
 @Data
-@NoArgsConstructor public class ReportConfiguration
+public class ReportConfiguration
 {
 	
 	/** A unique identifier for this report configuration, typically a UUID. */
@@ -47,6 +46,13 @@ import nonprofitbookkeeping.ui.helpers.DateSelectionMode; // Import the top-leve
 	
 	/** A list of account IDs to filter a detail report by. Can be null or empty. */
 	private List<String> accountIdsForDetailReport;
+
+	/**
+	 * Default constructor for Jackson deserialization.
+	 */
+	public ReportConfiguration()
+	{
+	}
 	
 	/**
 	 * Constructs a new ReportConfiguration with essential details.

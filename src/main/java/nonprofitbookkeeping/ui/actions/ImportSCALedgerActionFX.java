@@ -9,6 +9,8 @@ import javafx.scene.control.TextInputDialog;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.model.AccountingTransaction;
+import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.service.scaledger.JournalLedgerPersistenceGateway;
 import nonprofitbookkeeping.ui.actions.scaledger.LedgerImportService;
 import nonprofitbookkeeping.ui.actions.scaledger.LedgerPersistenceGateway;
@@ -62,6 +64,11 @@ public class ImportSCALedgerActionFX implements EventHandler<ActionEvent>
 		Optional<String> sheetName = promptForSheetName();
 		
 		if (sheetName.isEmpty())
+		{
+			return;
+		}
+
+		if (!resolveImportStrategy())
 		{
 			return;
 		}
@@ -123,6 +130,85 @@ public class ImportSCALedgerActionFX implements EventHandler<ActionEvent>
 		return dialog.showAndWait().filter(name -> !name.isBlank());
 		
 	}
+
+	private boolean resolveImportStrategy()
+	{
+		if (!CurrentCompany.isOpen() || !Database.isInitialized())
+		{
+			return true;
+		}
+
+		ButtonType merge =
+			new ButtonType("Merge (preserve unsaved changes)");
+		ButtonType overwrite =
+			new ButtonType("Overwrite (discard unsaved changes)");
+		Alert prompt = new Alert(Alert.AlertType.CONFIRMATION,
+			"Choose how to handle any unsaved company changes before importing.",
+			merge,
+			overwrite,
+			ButtonType.CANCEL);
+
+		if (this.owner != null)
+		{
+			prompt.initOwner(this.owner);
+		}
+
+		Optional<ButtonType> result = prompt.showAndWait();
+		if (result.isEmpty() || result.get() == ButtonType.CANCEL)
+		{
+			return false;
+		}
+
+		if (result.get() == merge)
+		{
+			try
+			{
+				CurrentCompany.persist();
+				return true;
+			}
+			catch (IOException ex)
+			{
+				LOGGER.warn("Failed to merge company changes before import",
+					ex);
+				Alert alert = new Alert(Alert.AlertType.ERROR,
+					"Failed to merge company changes before import: " +
+						ex.getMessage(),
+					ButtonType.OK);
+
+				if (this.owner != null)
+				{
+					alert.initOwner(this.owner);
+				}
+
+				alert.showAndWait();
+				return false;
+			}
+		}
+
+		try
+		{
+			CurrentCompany.refreshFromPersistentData();
+			return true;
+		}
+		catch (IOException ex)
+		{
+			LOGGER.warn(
+				"Failed to overwrite company changes before import",
+				ex);
+			Alert alert = new Alert(Alert.AlertType.ERROR,
+				"Failed to overwrite company changes before import: " +
+					ex.getMessage(),
+				ButtonType.OK);
+
+			if (this.owner != null)
+			{
+				alert.initOwner(this.owner);
+			}
+
+			alert.showAndWait();
+			return false;
+		}
+	}
 	
 	/**
 	 * Run import.
@@ -143,6 +229,19 @@ public class ImportSCALedgerActionFX implements EventHandler<ActionEvent>
 			List<AccountingTransaction> saved =
 				importService.importAndPersist(chartMapPath, workbookPath,
 					sheetName);
+			IOException refreshError = null;
+			
+			try
+			{
+				CurrentCompany.refreshFromPersistentData();
+			}
+			catch (IOException ex)
+			{
+				refreshError = ex;
+				LOGGER.warn(
+					"Ledger import succeeded but failed to refresh the open company",
+					ex);
+			}
 			
 			Alert alert = new Alert(Alert.AlertType.INFORMATION,
 				String.format("Imported %d transactions from %s", saved.size(),
@@ -155,6 +254,21 @@ public class ImportSCALedgerActionFX implements EventHandler<ActionEvent>
 			}
 			
 			alert.showAndWait();
+			
+			if (refreshError != null)
+			{
+				Alert warn = new Alert(Alert.AlertType.WARNING,
+					"Imported ledger data, but failed to refresh the open company. "
+						+ "Reopen the company if the data does not appear.",
+					ButtonType.OK);
+				
+				if (this.owner != null)
+				{
+					warn.initOwner(this.owner);
+				}
+				
+				warn.showAndWait();
+			}
 		}
 		catch (IOException ex)
 		{
