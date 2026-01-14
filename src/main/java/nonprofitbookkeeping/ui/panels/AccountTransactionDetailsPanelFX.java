@@ -35,6 +35,7 @@ import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
+import nonprofitbookkeeping.ui.helpers.TableExportUtils;
 import nonprofitbookkeeping.model.ReportPeriodPreset;
 
 /**
@@ -58,6 +59,10 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 	private Button refreshButton;
 	/** Button menu offering quick report ranges. */
 	private MenuButton quickRangeButton;
+	/** Button to print the transactions table. */
+	private Button printButton;
+	/** Menu for exporting table data. */
+	private MenuButton exportMenuButton;
 	/** TableView to display the transaction details. */
 	private TableView<TransactionDisplayRow> transactionsTable;
 	/** ObservableList holding the {@link TransactionDisplayRow} objects for the table. */
@@ -128,6 +133,25 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		this.refreshButton.setTooltip(new Tooltip(
 			"Reload transactions while keeping the selected filters."));
 		this.refreshButton.setOnAction(e -> refresh());
+		this.printButton = new Button("Print");
+		this.printButton.setTooltip(
+			new Tooltip("Print the current transaction table."));
+		this.printButton.setOnAction(
+			e -> TableExportUtils.printTable(this.transactionsTable));
+		this.exportMenuButton = new MenuButton("Export");
+		this.exportMenuButton
+			.setTooltip(new Tooltip("Export the table to PDF or Excel."));
+		MenuItem exportPdf = new MenuItem("Export to PDF");
+		exportPdf.setOnAction(
+			e -> TableExportUtils.exportTableToPdf(this.transactionsTable,
+				"Account Activity", getScene() != null ?
+					getScene().getWindow() : null));
+		MenuItem exportXlsx = new MenuItem("Export to Excel");
+		exportXlsx.setOnAction(
+			e -> TableExportUtils.exportTableToXlsx(this.transactionsTable,
+				"Account Activity", getScene() != null ?
+					getScene().getWindow() : null));
+		this.exportMenuButton.getItems().addAll(exportPdf, exportXlsx);
 		
 		controlsGrid.add(new Label("Account:"), 0, 0);
 		controlsGrid.add(this.accountSelectorComboBox, 1, 0, 2, 1);
@@ -137,12 +161,14 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		controlsGrid.add(this.endDatePicker, 1, 2);
 		controlsGrid.add(this.loadTransactionsButton, 2, 2);
 		controlsGrid.add(this.refreshButton, 3, 2);
+		HBox exportBox = new HBox(8, this.printButton, this.exportMenuButton);
+		controlsGrid.add(exportBox, 4, 2);
 		this.quickRangeButton = new MenuButton("Quick Ranges");
 		this.quickRangeButton
 			.setTooltip(new Tooltip("Apply preset date ranges."));
 		this.quickRangeButton.setVisible(false);
 		this.quickRangeButton.setManaged(false);
-		controlsGrid.add(this.quickRangeButton, 4, 2);
+		controlsGrid.add(this.quickRangeButton, 4, 3);
 		
 		ScrollPane controlsScrollPane = new ScrollPane(controlsGrid);
 		controlsScrollPane.setFitToWidth(true);

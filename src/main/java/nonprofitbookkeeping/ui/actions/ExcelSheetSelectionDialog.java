@@ -51,13 +51,9 @@ public final class ExcelSheetSelectionDialog
 			"Choose a specific sheet to import, or import all ledger pages.");
 		ButtonType importButton = new ButtonType("Import Selected Sheet",
 			ButtonType.OK.getButtonData());
-		ButtonType allLedgerPagesButton = null;
-		if (ledgerPages.size() == 4)
-		{
-			allLedgerPagesButton =
-				new ButtonType("Import All Ledger Pages (Q1-Q4)",
-					ButtonType.APPLY.getButtonData());
-		}
+		ButtonType allLedgerPagesButton = ledgerPages.size() == 4 ?
+			new ButtonType("Import All Ledger Pages (Q1-Q4)",
+				ButtonType.APPLY.getButtonData()) : null;
 		if (allLedgerPagesButton != null)
 		{
 			dialog.getDialogPane().getButtonTypes().addAll(allLedgerPagesButton,
