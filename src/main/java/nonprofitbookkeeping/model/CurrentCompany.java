@@ -27,18 +27,19 @@ import nonprofitbookkeeping.persistence.CompanyRepository;
  */
 public class CurrentCompany
 {
-        private static final Logger LOGGER =
-                LoggerFactory.getLogger(CurrentCompany.class);
-        /** The currently active company instance. */
-        private static Company company;
-        /** Flag indicating whether a company is currently considered open. */
-        private static boolean companyIsOpen = false;
-        /** Identifier of the persisted company row. */
-        private static Long currentCompanyId = null;
-        /** Repository used to read/write company aggregates from the database. */
-        private static final CompanyRepository repository = new CompanyRepository();
-        /** Repository that synchronizes normalized company data tables. */
-        private static final CompanyDataRepository dataRepository = new CompanyDataRepository();
+	private static final Logger LOGGER =
+		LoggerFactory.getLogger(CurrentCompany.class);
+	/** The currently active company instance. */
+	private static Company company;
+	/** Flag indicating whether a company is currently considered open. */
+	private static boolean companyIsOpen = false;
+	/** Identifier of the persisted company row. */
+	private static Long currentCompanyId = null;
+	/** Repository used to read/write company aggregates from the database. */
+	private static final CompanyRepository repository = new CompanyRepository();
+	/** Repository that synchronizes normalized company data tables. */
+	private static final CompanyDataRepository dataRepository =
+		new CompanyDataRepository();
 	
 	/**  
 	 * Constructs a CurrentCompany manager.
@@ -50,6 +51,7 @@ public class CurrentCompany
 	{
 		company = new Company();
 		companyIsOpen = false;
+		
 	}
 	
 	/**
@@ -59,6 +61,7 @@ public class CurrentCompany
 	public static Company getCompany()
 	{
 		return company;
+		
 	}
 	
 	/**
@@ -66,15 +69,17 @@ public class CurrentCompany
 	 * including the current file and whether a company is open.
 	 * @return A string describing the current company state.
 	 */
-	@Override public String toString()
+	@Override
+	public String toString()
 	{
 		StringBuilder builder = new StringBuilder();
-                builder.append("CurrentCompany [companyId=");
-                builder.append(CurrentCompany.currentCompanyId);
-                builder.append(", companyIsOpen=");
+		builder.append("CurrentCompany [companyId=");
+		builder.append(CurrentCompany.currentCompanyId);
+		builder.append(", companyIsOpen=");
 		builder.append(CurrentCompany.companyIsOpen);
 		builder.append("]");
 		return builder.toString();
+		
 	}
 	
 	/**
@@ -86,22 +91,24 @@ public class CurrentCompany
 	 */
 	public static void persist() throws IOException
 	{
+		
 		try
 		{
-                        Company companyToPersist = checkNotNull(company,
-                                "Company must not be null when persisting");
-                        dataRepository.persist(companyToPersist);
-                        long id = repository.save(CurrentCompany.currentCompanyId, companyToPersist);
-                        CurrentCompany.currentCompanyId = id;
-                }
-                catch (IOException e)
-                {
-                        throw e;
-                }
-                catch (Exception e)
-                {
-                        throw new IOException("Failed to persist company", e);
-                }
+			Company companyToPersist = checkNotNull(company,
+				"Company must not be null when persisting");
+			dataRepository.persist(companyToPersist);
+			long id = repository.save(CurrentCompany.currentCompanyId,
+				companyToPersist);
+			CurrentCompany.currentCompanyId = id;
+		}
+		catch (IOException e)
+		{
+			throw e;
+		}
+		catch (Exception e)
+		{
+			throw new IOException("Failed to persist company", e);
+		}
 		
 	}
 	
@@ -111,134 +118,147 @@ public class CurrentCompany
 	 * @param companyId identifier of the stored company
 	 * @throws IOException if the company cannot be retrieved or deserialized
 	 */
-        public static void loadFromPersistent(long companyId) throws IOException
-        {
-                try
-                {
-                        boolean sameCompanyRequested = CurrentCompany.currentCompanyId != null
-                                && CurrentCompany.currentCompanyId.equals(companyId);
-                        Company normalized = null;
-
-                        if (sameCompanyRequested)
-                        {
-                                try
-                                {
-                                        normalized = dataRepository.load();
-                                }
-                                catch (SQLException ex)
-                                {
-                                        LOGGER.warn(
-                                                "Failed to read normalized company data for company {}",
-                                                companyId,
-                                                ex);
-                                }
-                        }
-
-                        if (!hasMeaningfulNormalizedData(normalized))
-                        {
-                                company = repository.load(companyId);
-                                try
-                                {
-                                        dataRepository.persist(company);
-                                }
-                                catch (SQLException ex)
-                                {
-                                        LOGGER.warn(
-                                                "Failed to synchronize normalized data for company {}",
-                                                companyId,
-                                                ex);
-                                }
-                        }
-                        else
-                        {
-                                try
-                                {
-                                        Company legacy = repository.load(companyId);
-
-                                        if (legacy != null)
-                                        {
-                                                normalized.setCompanyFile(legacy.getCompanyFile());
-                                        }
-                                }
-                                catch (Exception ex)
-                                {
-                                        LOGGER.debug(
-                                                "Failed to merge legacy file metadata for company {}",
-                                                companyId,
-                                                ex);
-                                }
-
-                                company = normalized;
-                        }
-
-                        CurrentCompany.currentCompanyId = companyId;
-                        if (company != null)
-                        {
-                                markCompanyOpen();
-                        }
-                }
-                catch (IOException e)
-                {
-                        throw e;
-                }
-                catch (Exception e)
-                {
-                        throw new IOException("Failed to load company", e);
-                }
-        }
-
-        private static boolean hasMeaningfulNormalizedData(Company normalized)
-        {
-                if (normalized == null)
-                {
-                        return false;
-                }
-
-                boolean hasAccounts = normalized.getChartOfAccounts() != null
-                        && !normalized.getChartOfAccounts().getAccounts().isEmpty();
-                boolean hasTransactions = normalized.getLedger() != null
-                        && normalized.getLedger().getJournal() != null
-                        && !normalized.getLedger().getJournal().getJournalTransactions().isEmpty();
-
-                return hasAccounts || hasTransactions
-                        || hasMeaningfulProfile(normalized.getCompanyProfileModel());
-        }
-
-        private static boolean hasMeaningfulProfile(CompanyProfileModel profile)
-        {
-                if (profile == null)
-                {
-                        return false;
-                }
-
-                if (hasText(profile.getCompanyName())
-                        || hasText(profile.getLegalStructure())
-                        || hasText(profile.getTaxId())
-                        || hasText(profile.getAddress())
-                        || hasText(profile.getPhone())
-                        || hasText(profile.getEmail())
-                        || hasText(profile.getFiscalYearStart())
-                        || hasText(profile.getBaseCurrency())
-                        || hasText(profile.getStartingBalanceDate())
-                        || hasText(profile.getChartOfAccountsType())
-                        || hasText(profile.getAdminUsername())
-                        || hasText(profile.getDefaultBankAccount())
-                        || hasText(profile.getCompanyFileDir())
-                        || hasText(profile.getCompanyFileName()))
-                {
-                        return true;
-                }
-
-                return profile.isEnableFundAccounting()
-                        || profile.isEnableInventory()
-                        || profile.isEnableMultiCurrency();
-        }
-
-        private static boolean hasText(String value)
-        {
-                return value != null && !value.isBlank();
-        }
-
+	public static void loadFromPersistent(long companyId) throws IOException
+	{
+		
+		try
+		{
+			boolean sameCompanyRequested =
+				CurrentCompany.currentCompanyId != null &&
+					CurrentCompany.currentCompanyId.equals(companyId);
+			Company normalized = null;
+			
+			if (sameCompanyRequested)
+			{
+				
+				try
+				{
+					normalized = dataRepository.load();
+				}
+				catch (SQLException ex)
+				{
+					LOGGER.warn(
+						"Failed to read normalized company data for company {}",
+						companyId,
+						ex);
+				}
+				
+			}
+			
+			if (!hasMeaningfulNormalizedData(normalized))
+			{
+				company = repository.load(companyId);
+				
+				try
+				{
+					dataRepository.persist(company);
+				}
+				catch (SQLException ex)
+				{
+					LOGGER.warn(
+						"Failed to synchronize normalized data for company {}",
+						companyId,
+						ex);
+				}
+				
+			}
+			else
+			{
+				
+				try
+				{
+					Company legacy = repository.load(companyId);
+					
+					if (legacy != null)
+					{
+						normalized.setCompanyFile(legacy.getCompanyFile());
+					}
+					
+				}
+				catch (Exception ex)
+				{
+					LOGGER.debug(
+						"Failed to merge legacy file metadata for company {}",
+						companyId,
+						ex);
+				}
+				
+				company = normalized;
+			}
+			
+			CurrentCompany.currentCompanyId = companyId;
+			
+			if (company != null)
+			{
+				markCompanyOpen();
+			}
+			
+		}
+		catch (IOException e)
+		{
+			throw e;
+		}
+		catch (Exception e)
+		{
+			throw new IOException("Failed to load company", e);
+		}
+		
+	}
+	
+	private static boolean hasMeaningfulNormalizedData(Company normalized)
+	{
+		
+		if (normalized == null)
+		{
+			return false;
+		}
+		
+		boolean hasAccounts = normalized.getChartOfAccounts() != null &&
+			!normalized.getChartOfAccounts().getAccounts().isEmpty();
+		boolean hasTransactions = normalized.getLedger() != null &&
+			normalized.getLedger().getJournal() != null && !normalized
+				.getLedger().getJournal().getJournalTransactions().isEmpty();
+		
+		return hasAccounts || hasTransactions ||
+			hasMeaningfulProfile(normalized.getCompanyProfileModel());
+		
+	}
+	
+	private static boolean hasMeaningfulProfile(CompanyProfileModel profile)
+	{
+		
+		if (profile == null)
+		{
+			return false;
+		}
+		
+		if (hasText(profile.getCompanyName()) ||
+			hasText(profile.getLegalStructure()) ||
+			hasText(profile.getTaxId()) || hasText(profile.getAddress()) ||
+			hasText(profile.getPhone()) || hasText(profile.getEmail()) ||
+			hasText(profile.getFiscalYearStart()) ||
+			hasText(profile.getBaseCurrency()) ||
+			hasText(profile.getStartingBalanceDate()) ||
+			hasText(profile.getChartOfAccountsType()) ||
+			hasText(profile.getAdminUsername()) ||
+			hasText(profile.getDefaultBankAccount()) ||
+			hasText(profile.getCompanyFileDir()) ||
+			hasText(profile.getCompanyFileName()))
+		{
+			return true;
+		}
+		
+		return profile.isEnableFundAccounting() ||
+			profile.isEnableInventory() || profile.isEnableMultiCurrency();
+		
+	}
+	
+	private static boolean hasText(String value)
+	{
+		return value != null && !value.isBlank();
+		
+	}
+	
 	/**
 	 * Closes the currently open company.
 	 * Sets the company open status to false and notifies listeners.
@@ -249,6 +269,7 @@ public class CurrentCompany
 		CurrentCompany.companyIsOpen = false;
 		CurrentCompany.currentCompanyId = null;
 		CompanyListener.fireChanged(false);
+		
 	}
 	
 	/**
@@ -258,6 +279,7 @@ public class CurrentCompany
 	public static boolean isOpen()
 	{
 		return CurrentCompany.companyIsOpen;
+		
 	}
 	
 	/**
@@ -272,7 +294,8 @@ public class CurrentCompany
 	public static void markCompanyOpen()
 	{
 		CurrentCompany.companyIsOpen = true;
-                CompanyListener.fireChanged(true);
+		CompanyListener.fireChanged(true);
+		
 	}
 	
 	/**
@@ -291,10 +314,11 @@ public class CurrentCompany
 	/**
 	 * Manages a list of {@link CompanyChangeListener}s and fires events to them.
 	 */
-        public static class CompanyListener
-        {
+	public static class CompanyListener
+	{
 		/** List of registered listeners. */
-		private final static EventListenerList listeners = new EventListenerList();
+		private final static EventListenerList listeners =
+			new EventListenerList();
 		
 		/**
 		 * Adds a {@link CompanyChangeListener} to the listener list.
@@ -303,6 +327,7 @@ public class CurrentCompany
 		public static void addCompanyListener(CompanyChangeListener l)
 		{
 			CompanyListener.listeners.add(CompanyChangeListener.class, l);
+			
 		}
 		
 		/**
@@ -312,6 +337,7 @@ public class CurrentCompany
 		public static void removeCompanyListener(CompanyChangeListener l)
 		{
 			CompanyListener.listeners.remove(CompanyChangeListener.class, l);
+			
 		}
 		
 		/**
@@ -326,26 +352,30 @@ public class CurrentCompany
 		 * @return an immutable {@link List} of registered listeners, or
 		 *         an empty list if none are registered
 		 */
-                public static List<CompanyChangeListener> getListeners()
-                {
-                        CompanyChangeListener[] arr =
-                                CompanyListener.listeners.getListeners(CompanyChangeListener.class);
-                        return List.of(arr);
-                }
-
-                /**
-                 * Notifies all registered {@link CompanyChangeListener}s that the company open state changed.
-                 * @param isOpen {@code true} if the company is now open, {@code false} otherwise.
-                 */
-                public static void fireChanged(boolean isOpen)
-                {
-                        for (CompanyChangeListener l : CompanyListener.getListeners())
-                        {
-                                l.companyChange(isOpen);
-                        }
-                }
-
-        }
+		public static List<CompanyChangeListener> getListeners()
+		{
+			CompanyChangeListener[] arr =
+				CompanyListener.listeners
+					.getListeners(CompanyChangeListener.class);
+			return List.of(arr);
+			
+		}
+		
+		/**
+		 * Notifies all registered {@link CompanyChangeListener}s that the company open state changed.
+		 * @param isOpen {@code true} if the company is now open, {@code false} otherwise.
+		 */
+		public static void fireChanged(boolean isOpen)
+		{
+			
+			for (CompanyChangeListener l : CompanyListener.getListeners())
+			{
+				l.companyChange(isOpen);
+			}
+			
+		}
+		
+	}
 	
 	/**
 	 * For test environments or specialized workflows where the caller needs
@@ -368,12 +398,12 @@ public class CurrentCompany
 		if (company2 != null)
 		{
 			CurrentCompany.companyIsOpen = true;
-                        CompanyListener.fireChanged(true);
+			CompanyListener.fireChanged(true);
 		}
 		else
 		{
 			CurrentCompany.companyIsOpen = false;
-                        CompanyListener.fireChanged(false);
+			CompanyListener.fireChanged(false);
 		}
 		
 	}
@@ -385,12 +415,14 @@ public class CurrentCompany
 	{
 		CurrentCompany.currentCompanyId = companyId;
 		forceCompanyLoad(company2);
+		
 	}
-
+	
 	/** Returns the identifier of the currently open company, or {@code null} if unsaved. */
 	public static Long getCurrentCompanyId()
 	{
 		return CurrentCompany.currentCompanyId;
+		
 	}
-
+	
 }
