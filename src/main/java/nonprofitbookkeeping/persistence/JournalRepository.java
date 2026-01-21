@@ -5,6 +5,10 @@ import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
+import nonprofitbookkeeping.model.supplemental.TxnSupplementalLineBase;
+import nonprofitbookkeeping.persistence.supplemental.TxnSupplementalLineMapper;
+import nonprofitbookkeeping.persistence.supplemental.TxnSupplementalLineRecord;
+import nonprofitbookkeeping.persistence.supplemental.TxnSupplementalLineRepository;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -214,12 +218,15 @@ public class JournalRepository
 			if (LOGGER.isDebugEnabled())
 			{
 				LOGGER.debug(
-					"replaceAll(conn): clearing tables transaction_info, journal_entry, journal_transaction");
+					"replaceAll(conn): clearing tables txn_supplemental_line, transaction_info, journal_entry, journal_transaction");
 			}
 			
 			st = c.createStatement();
 			
-			// Delete all transaction_info first (most dependent).
+			// Delete supplemental lines first (depends on journal_transaction/journal_entry).
+			int s = st.executeUpdate("DELETE FROM txn_supplemental_line");
+			
+			// Delete all transaction_info next (depends on journal_transaction).
 			int a = st.executeUpdate("DELETE FROM transaction_info");
 			
 			// Delete all journal entries next (depends on journal_transaction).
@@ -231,8 +238,8 @@ public class JournalRepository
 			if (LOGGER.isDebugEnabled())
 			{
 				LOGGER.debug(
-					"replaceAll(conn): deleted rows transaction_info={}, journal_entry={}, journal_transaction={}",
-					a, b, d);
+					"replaceAll(conn): deleted rows txn_supplemental_line={}, transaction_info={}, journal_entry={}, journal_transaction={}",
+					s, a, b, d);
 			}
 			
 		}
@@ -486,7 +493,23 @@ public class JournalRepository
 				closeQuietly(c3,
 					"Connection (listTransactions transaction_info)");
 			}
-			
+
+			TxnSupplementalLineRepository supplementalRepo =
+				new TxnSupplementalLineRepository();
+
+			for (AccountingTransaction txn : transactions)
+			{
+				List<TxnSupplementalLineRecord> records =
+					supplementalRepo.listByTxnId(txn.getId());
+				List<TxnSupplementalLineBase> beans = new ArrayList<>();
+
+				for (TxnSupplementalLineRecord record : records)
+				{
+					beans.add(TxnSupplementalLineMapper.toBean(record));
+				}
+
+				txn.setSupplementalLines(beans);
+			}
 		}
 		
 		return transactions;
@@ -890,7 +913,28 @@ public class JournalRepository
 			}
 			
 		}
+
+		insertSupplementalLines(c, txn);
 		
+	}
+
+	private static void insertSupplementalLines(Connection c, AccountingTransaction txn)
+		throws SQLException
+	{
+		if (txn == null)
+		{
+			return;
+		}
+
+		List<TxnSupplementalLineRecord> records = new ArrayList<>();
+
+		for (TxnSupplementalLineBase line : txn.getSupplementalLines())
+		{
+			records.add(TxnSupplementalLineMapper.toRecord(line));
+		}
+
+		TxnSupplementalLineRepository repo = new TxnSupplementalLineRepository();
+		repo.replaceForTxn(c, txn.getId(), records);
 	}
 	
 	/**
@@ -1076,4 +1120,3 @@ public class JournalRepository
 	}
 	
 }
-

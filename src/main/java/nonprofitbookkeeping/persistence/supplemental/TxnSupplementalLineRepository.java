@@ -48,42 +48,35 @@ public class TxnSupplementalLineRepository
 		return records;
 	}
 
-	public void replaceForTxn(long txnId, List<TxnSupplementalLineRecord> records)
+	public void replaceForTxn(Connection c, long txnId, List<TxnSupplementalLineRecord> records)
 		throws SQLException
 	{
-		try (Connection c = Database.get().getConnection())
+		deleteByTxnId(c, txnId);
+
+		if (records != null && !records.isEmpty())
 		{
-			c.setAutoCommit(false);
-
-			deleteByTxnId(c, txnId);
-
-			if (records != null && !records.isEmpty())
+			try (PreparedStatement ps = c.prepareStatement(INSERT_SQL,
+				Statement.RETURN_GENERATED_KEYS))
 			{
-				try (PreparedStatement ps = c.prepareStatement(INSERT_SQL,
-					Statement.RETURN_GENERATED_KEYS))
+				for (TxnSupplementalLineRecord record : records)
 				{
-					for (TxnSupplementalLineRecord record : records)
-					{
-						record.txnId = txnId;
-						bindInsert(ps, record);
-						ps.addBatch();
-					}
+					record.txnId = txnId;
+					bindInsert(ps, record);
+					ps.addBatch();
+				}
 
-					ps.executeBatch();
+				ps.executeBatch();
 
-					try (ResultSet keys = ps.getGeneratedKeys())
+				try (ResultSet keys = ps.getGeneratedKeys())
+				{
+					int index = 0;
+					while (keys.next() && index < records.size())
 					{
-						int index = 0;
-						while (keys.next() && index < records.size())
-						{
-							records.get(index).id = keys.getLong(1);
-							index++;
-						}
+						records.get(index).id = keys.getLong(1);
+						index++;
 					}
 				}
 			}
-
-			c.commit();
 		}
 	}
 

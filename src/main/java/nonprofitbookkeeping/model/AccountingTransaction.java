@@ -4,9 +4,6 @@ package nonprofitbookkeeping.model;
 import javax.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-
-
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -14,9 +11,9 @@ import java.util.*;
 
 import java.io.Serializable;
 
+import nonprofitbookkeeping.model.supplemental.TxnSupplementalLineBase;
+
 import static com.google.common.base.Preconditions.checkNotNull;
-
-
 
 public class AccountingTransaction implements Serializable
 {
@@ -48,6 +45,8 @@ public class AccountingTransaction implements Serializable
 	@JsonProperty private String clearBank; // Non-final
 	@JsonProperty private String budgetTracking; // Non-final
 	@JsonProperty private String associatedFundName; // Non-final
+
+	@JsonProperty private List<TxnSupplementalLineBase> supplementalLines;
 	
 	/**  
 	 * Constructor AccountingTransaction
@@ -66,6 +65,7 @@ public class AccountingTransaction implements Serializable
 		this.clearBank = "";
 		this.budgetTracking = "";
 		this.associatedFundName = "";		
+		this.supplementalLines = new ArrayList<>();
 	}
 
 	/**
@@ -105,6 +105,7 @@ public class AccountingTransaction implements Serializable
 		this.clearBank = "";
 		this.budgetTracking = "";
 		this.associatedFundName = "";
+		this.supplementalLines = new ArrayList<>();
 	}
 
 	
@@ -288,10 +289,24 @@ public class AccountingTransaction implements Serializable
 	 * Sets the date of the transaction.
 	 * @param date The date string to set (e.g., "YYYY-MM-DD").
 	 */
-	 public void setDate(String date)
-	 {
+	public void setDate(String date)
+	{
 		 this.date = date;
 	 }
+
+	public List<TxnSupplementalLineBase> getSupplementalLines()
+	{
+		return this.supplementalLines == null
+			? Collections.emptyList()
+			: this.supplementalLines;
+	}
+
+	public void setSupplementalLines(List<TxnSupplementalLineBase> supplementalLines)
+	{
+		this.supplementalLines = supplementalLines == null
+			? new ArrayList<>()
+			: new ArrayList<>(supplementalLines);
+	}
 	
 	/**
 	 * Sets the memo for this transaction.
