@@ -119,6 +119,28 @@ public final class Database {
                   FOREIGN KEY (txn_id) REFERENCES journal_transaction(id) ON DELETE CASCADE
                 )
             """);
+            st.execute("""
+                CREATE TABLE IF NOT EXISTS txn_supplemental_line(
+                  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                  txn_id INT NOT NULL,
+                  entry_id BIGINT,
+                  line_kind VARCHAR(40) NOT NULL,
+                  counterparty_person_id BIGINT,
+                  description VARCHAR(500) NOT NULL,
+                  reference VARCHAR(120),
+                  amount DECIMAL(18,2) NOT NULL,
+                  due_date DATE,
+                  start_date DATE,
+                  end_date DATE,
+                  notes VARCHAR(1000),
+                  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                  FOREIGN KEY (txn_id) REFERENCES journal_transaction(id) ON DELETE CASCADE
+                )
+            """);
+            st.execute("CREATE INDEX IF NOT EXISTS txn_supplemental_txn_idx ON txn_supplemental_line(txn_id)");
+            st.execute("CREATE INDEX IF NOT EXISTS txn_supplemental_entry_idx ON txn_supplemental_line(entry_id)");
+            st.execute("CREATE INDEX IF NOT EXISTS txn_supplemental_kind_idx ON txn_supplemental_line(line_kind)");
 
             st.execute("""
                 CREATE TABLE IF NOT EXISTS donor(
