@@ -128,15 +128,28 @@ public final class Database {
                   counterparty_person_id BIGINT,
                   description VARCHAR(500) NOT NULL,
                   reference VARCHAR(120),
-                  amount DECIMAL(18,2) NOT NULL,
+                  amount DECIMAL(12,2) NOT NULL,
                   due_date DATE,
                   start_date DATE,
                   end_date DATE,
                   notes VARCHAR(1000),
                   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
                   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                  FOREIGN KEY (txn_id) REFERENCES journal_transaction(id) ON DELETE CASCADE
+                  FOREIGN KEY (txn_id) REFERENCES journal_transaction(id) ON DELETE CASCADE,
+                  FOREIGN KEY (entry_id) REFERENCES journal_entry(id) ON DELETE SET NULL,
+                  CONSTRAINT chk_txn_supplemental_amount_nonnegative CHECK (amount >= 0)
                 )
+            """);
+            st.execute("ALTER TABLE txn_supplemental_line ALTER COLUMN amount DECIMAL(12,2);");
+            st.execute("""
+                ALTER TABLE txn_supplemental_line
+                ADD CONSTRAINT IF NOT EXISTS fk_txn_supplemental_entry
+                FOREIGN KEY (entry_id) REFERENCES journal_entry(id) ON DELETE SET NULL
+            """);
+            st.execute("""
+                ALTER TABLE txn_supplemental_line
+                ADD CONSTRAINT IF NOT EXISTS chk_txn_supplemental_amount_nonnegative
+                CHECK (amount >= 0)
             """);
             st.execute("CREATE INDEX IF NOT EXISTS txn_supplemental_txn_idx ON txn_supplemental_line(txn_id)");
             st.execute("CREATE INDEX IF NOT EXISTS txn_supplemental_entry_idx ON txn_supplemental_line(entry_id)");
