@@ -13,6 +13,8 @@ public class SupplementalLinesTabs extends TabPane
 {
 	private final Map<SupplementalLineKind, SupplementalLinesEditor> editors =
 		new EnumMap<>(SupplementalLineKind.class);
+	private final Map<SupplementalLineKind, Tab> tabs =
+		new EnumMap<>(SupplementalLineKind.class);
 
 	public SupplementalLinesTabs()
 	{
@@ -31,6 +33,7 @@ public class SupplementalLinesTabs extends TabPane
 			this.editors.put(kind, editor);
 
 			Tab tab = new Tab(config.tabTitle, editor);
+			this.tabs.put(kind, tab);
 			getTabs().add(tab);
 		}
 	}
@@ -43,8 +46,25 @@ public class SupplementalLinesTabs extends TabPane
 		}
 	}
 
+	public void setPersonRefs(List<PersonRef> personRefs)
+	{
+		for (SupplementalLinesEditor editor : this.editors.values())
+		{
+			editor.setPersonRefs(personRefs);
+		}
+	}
+
 	public SupplementalLinesEditor editor(SupplementalLineKind kind)
 	{
 		return this.editors.get(kind);
+	}
+
+	public void setEnabled(SupplementalLineKind kind, boolean enabled)
+	{
+		Tab tab = this.tabs.get(kind);
+		if (tab != null)
+		{
+			tab.setDisable(!enabled);
+		}
 	}
 }

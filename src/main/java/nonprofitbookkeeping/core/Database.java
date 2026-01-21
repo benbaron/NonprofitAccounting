@@ -172,6 +172,18 @@ public final class Database {
             st.execute("UPDATE donor SET external_id = name WHERE external_id IS NULL AND name IS NOT NULL;");
 
             st.execute("""
+                CREATE TABLE IF NOT EXISTS person(
+                  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                  name VARCHAR(255) NOT NULL,
+                  email VARCHAR(255),
+                  phone VARCHAR(64)
+                )
+            """);
+            st.execute("ALTER TABLE person ADD COLUMN IF NOT EXISTS email VARCHAR(255);");
+            st.execute("ALTER TABLE person ADD COLUMN IF NOT EXISTS phone VARCHAR(64);");
+            st.execute("CREATE INDEX IF NOT EXISTS person_name_idx ON person(name)");
+
+            st.execute("""
                 CREATE TABLE IF NOT EXISTS document(
                   name VARCHAR(128) PRIMARY KEY,
                   content CLOB

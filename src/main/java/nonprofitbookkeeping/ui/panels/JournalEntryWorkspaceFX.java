@@ -55,12 +55,24 @@ import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.SettingsModel;
+import nonprofitbookkeeping.model.supplemental.SupplementalLineKind;
+import nonprofitbookkeeping.model.supplemental.TxnSupplementalLineBase;
 import nonprofitbookkeeping.service.SettingsService;
 import nonprofitbookkeeping.core.Database;
 import java.io.IOException;
+import java.util.EnumMap;
+import java.util.EnumSet;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.helpers.FocusCommitTextFieldTableCell;
+import nonprofitbookkeeping.ui.javafx.supplemental.PersonRef;
+import nonprofitbookkeeping.ui.javafx.supplemental.SupplementalLineRow;
+import nonprofitbookkeeping.ui.javafx.supplemental.SupplementalLinesEditor;
+import nonprofitbookkeeping.ui.javafx.supplemental.SupplementalLinesFxAdapter;
+import nonprofitbookkeeping.ui.javafx.supplemental.SupplementalLinesTabs;
 import nonprofitbookkeeping.util.FormatUtils;
+import nonprofitbookkeeping.service.PersonService;
+import nonprofitbookkeeping.model.Person;
+import nonprofitbookkeeping.model.AccountType;
 
 /**
  * Shared workspace UI for creating or editing general journal entries.
@@ -109,6 +121,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
         private final ChartOfAccounts chartOfAccounts;
         private AccountingTransaction original;
         private final Map<String, Account> accountsByName;
+        private final SupplementalLinesTabs supplementalTabs = new SupplementalLinesTabs();
 
         private final String headingText;
 
@@ -162,6 +175,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 {
                         addLine();
                         applyDefaultAccountsFromSettings();
+                        updateSupplementalTabAvailability();
                 }
 
                 recalcTotals();
@@ -219,6 +233,8 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 VBox.setVgrow(root.getChildren().get(1), Priority.ALWAYS);
                 setCenter(root);
 
+                this.supplementalTabs.setPersonRefs(loadPersonRefs());
+
                 this.table.setId("entryTable");
                 this.saveButton.setId("saveBtn");
                 this.datePicker.setId("datePicker");
@@ -245,7 +261,10 @@ public class JournalEntryWorkspaceFX extends BorderPane
         {
                 HBox container = new HBox(18);
                 container.setAlignment(Pos.TOP_LEFT);
-                container.getChildren().addAll(buildTableSection(), buildDetailsSection());
+                VBox leftColumn = new VBox(12, buildTableSection(), buildSupplementalSection());
+                leftColumn.setAlignment(Pos.TOP_LEFT);
+                VBox.setVgrow(leftColumn.getChildren().get(0), Priority.ALWAYS);
+                container.getChildren().addAll(leftColumn, buildDetailsSection());
                 HBox.setHgrow(container.getChildren().get(0), Priority.ALWAYS);
                 return container;
         }
@@ -273,6 +292,20 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 VBox.setVgrow(this.table, Priority.ALWAYS);
 
                 section.getChildren().addAll(title, toolbar, this.table);
+                return section;
+        }
+
+        private Node buildSupplementalSection()
+        {
+                VBox section = new VBox(8);
+                section.setAlignment(Pos.TOP_LEFT);
+
+                Label title = new Label("Supplemental Schedules");
+                title.setStyle("-fx-font-weight: bold;");
+
+                section.getChildren().addAll(title, this.supplementalTabs);
+                VBox.setVgrow(this.supplementalTabs, Priority.ALWAYS);
+
                 return section;
         }
 
@@ -524,6 +557,93 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 recalcTotals();
                 markValidationPending();
                 this.table.refresh();
+                updateSupplementalTabAvailability();
+        }
+
+        private List<PersonRef> loadPersonRefs()
+        {
+                if (!Database.isInitialized())
+                {
+                        return List.of();
+                }
+
+                PersonService personService = new PersonService();
+                List<PersonRef> refs = new ArrayList<>();
+                for (Person person : personService.listPeople())
+                {
+                        refs.add(new PersonRef(person.getId(), person.getName()));
+                }
+                return refs;
+        }
+
+        private void updateSupplementalTabAvailability()
+        {
+                Set<SupplementalLineKind> enabledKinds = EnumSet.noneOf(SupplementalLineKind.class);
+
+                for (Line line : this.lines)
+                {
+                        Account account = resolveAccount(line.account.get());
+                        if (account == null)
+                        {
+                                continue;
+                        }
+                        enabledKinds.addAll(kindsForAccount(account));
+                }
+
+                for (SupplementalLineKind kind : SupplementalLineKind.values())
+                {
+                        boolean enabled = enabledKinds.contains(kind);
+                        this.supplementalTabs.setEnabled(kind, enabled);
+                }
+        }
+
+        private Set<SupplementalLineKind> kindsForAccount(Account account)
+        {
+                Set<SupplementalLineKind> kinds = EnumSet.noneOf(SupplementalLineKind.class);
+                String name = account.getName() == null ? "" : account.getName().toLowerCase();
+
+                if (name.contains("receivable"))
+                {
+                        kinds.add(SupplementalLineKind.RECEIVABLE);
+                }
+                if (name.contains("payable"))
+                {
+                        kinds.add(SupplementalLineKind.PAYABLE);
+                }
+                if (name.contains("prepaid"))
+                {
+                        kinds.add(SupplementalLineKind.PREPAID_EXPENSE);
+                }
+                if (name.contains("deferred"))
+                {
+                        kinds.add(SupplementalLineKind.DEFERRED_REVENUE);
+                }
+
+                AccountType type = account.getAccountType();
+                if (type == AccountType.ASSET || type == AccountType.FIXED_ASSET
+                        || type == AccountType.INVEST || type == AccountType.SIMPLEINVEST
+                        || type == AccountType.MUTUAL || type == AccountType.BANK
+                        || type == AccountType.CASH || type == AccountType.CHECKING
+                        || type == AccountType.MONEYMKRT)
+                {
+                        if (!kinds.contains(SupplementalLineKind.RECEIVABLE)
+                                && !kinds.contains(SupplementalLineKind.PREPAID_EXPENSE))
+                        {
+                                kinds.add(SupplementalLineKind.OTHER_ASSET);
+                        }
+                }
+
+                if (type == AccountType.LIABILITY || type == AccountType.LONG_TERM_LIABILITY
+                        || type == AccountType.CREDIT || type == AccountType.CREDITCARD)
+                {
+                        if (!kinds.contains(SupplementalLineKind.PAYABLE)
+                                && !kinds.contains(SupplementalLineKind.DEFERRED_REVENUE))
+                        {
+                                kinds.add(SupplementalLineKind.OTHER_LIABILITY);
+                        }
+                }
+
+                return kinds;
         }
 
         private void applyDefaultAccountsFromSettings()
@@ -734,6 +854,142 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 return Optional.empty();
         }
 
+        private Optional<String> validateSupplementalLines()
+        {
+                List<String> errors = new ArrayList<>();
+
+                for (SupplementalLineKind kind : SupplementalLineKind.values())
+                {
+                        SupplementalLinesEditor editor = this.supplementalTabs.editor(kind);
+                        if (editor == null)
+                        {
+                                continue;
+                        }
+                        if (!editor.validateAndDisplay())
+                        {
+                                errors.add("Fix validation errors in the " + editor.getConfig().tabTitle
+                                                + " tab.");
+                        }
+
+                        BigDecimal expected = expectedAmountForKind(kind);
+                        BigDecimal actual = sumSupplementalAmount(kind);
+                        if (expected.signum() != 0 || actual.signum() != 0)
+                        {
+                                if (expected.compareTo(actual) != 0)
+                                {
+                                        errors.add(editor.getConfig().tabTitle + " total "
+                                                + actual + " must match entry total " + expected + ".");
+                                }
+                        }
+                }
+
+                if (errors.isEmpty())
+                {
+                        return Optional.empty();
+                }
+                return Optional.of(String.join("\n", errors));
+        }
+
+        private BigDecimal expectedAmountForKind(SupplementalLineKind kind)
+        {
+                BigDecimal total = BigDecimal.ZERO;
+                for (Line line : this.lines)
+                {
+                        Account account = resolveAccount(line.account.get());
+                        if (account == null)
+                        {
+                                continue;
+                        }
+                        if (!kindsForAccount(account).contains(kind))
+                        {
+                                continue;
+                        }
+
+                        BigDecimal debitAmount = amountOrZero(line.debit.get());
+                        BigDecimal creditAmount = amountOrZero(line.credit.get());
+
+                        if (isAssetKind(kind))
+                        {
+                                total = total.add(debitAmount);
+                        }
+                        else
+                        {
+                                total = total.add(creditAmount);
+                        }
+                }
+                return total;
+        }
+
+        private BigDecimal sumSupplementalAmount(SupplementalLineKind kind)
+        {
+                SupplementalLinesEditor editor = this.supplementalTabs.editor(kind);
+                if (editor == null)
+                {
+                        return BigDecimal.ZERO;
+                }
+                BigDecimal total = BigDecimal.ZERO;
+                for (SupplementalLineRow row : editor.getRows())
+                {
+                        BigDecimal amount = row.getAmount();
+                        if (amount != null)
+                        {
+                                total = total.add(amount);
+                        }
+                }
+                return total;
+        }
+
+        private boolean isAssetKind(SupplementalLineKind kind)
+        {
+                return kind == SupplementalLineKind.RECEIVABLE
+                        || kind == SupplementalLineKind.PREPAID_EXPENSE
+                        || kind == SupplementalLineKind.OTHER_ASSET;
+        }
+
+        private List<TxnSupplementalLineBase> collectSupplementalLines()
+        {
+                List<TxnSupplementalLineBase> beans = new ArrayList<>();
+                for (SupplementalLineKind kind : SupplementalLineKind.values())
+                {
+                        SupplementalLinesEditor editor = this.supplementalTabs.editor(kind);
+                        if (editor == null)
+                        {
+                                continue;
+                        }
+                        beans.addAll(SupplementalLinesFxAdapter.toBeans(kind,
+                                new ArrayList<>(editor.getRows())));
+                }
+                return beans;
+        }
+
+        private void loadSupplementalLines(AccountingTransaction tx)
+        {
+                Map<SupplementalLineKind, List<SupplementalLineRow>> grouped =
+                        new EnumMap<>(SupplementalLineKind.class);
+                for (SupplementalLineKind kind : SupplementalLineKind.values())
+                {
+                        grouped.put(kind, new ArrayList<>());
+                }
+
+                if (tx.getSupplementalLines() != null)
+                {
+                        for (TxnSupplementalLineBase line : tx.getSupplementalLines())
+                        {
+                                grouped.get(line.getKind()).add(
+                                        SupplementalLinesFxAdapter.toRow(line));
+                        }
+                }
+
+                for (SupplementalLineKind kind : SupplementalLineKind.values())
+                {
+                        SupplementalLinesEditor editor = this.supplementalTabs.editor(kind);
+                        if (editor != null)
+                        {
+                                editor.setRows(grouped.get(kind));
+                        }
+                }
+        }
+
         private void adjustForAccountSide(Line line)
         {
                 Account account = resolveAccount(line.account.get());
@@ -769,6 +1025,14 @@ public class JournalEntryWorkspaceFX extends BorderPane
                         showValidationError(validationError.get());
                         AlertBox.showError(getScene() == null ? null : getScene().getWindow(),
                                         validationError.get());
+                        return;
+                }
+
+                Optional<String> supplementalError = validateSupplementalLines();
+                if (supplementalError.isPresent())
+                {
+                        AlertBox.showError(getScene() == null ? null : getScene().getWindow(),
+                                        supplementalError.get());
                         return;
                 }
 
@@ -829,6 +1093,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 tx.setClearBank(this.clearBankField.getText());
                 tx.setBudgetTracking(this.budgetTrackingField.getText());
                 tx.setAssociatedFundName(this.associatedFundNameField.getText());
+                tx.setSupplementalLines(collectSupplementalLines());
 
                 this.onSave.accept(tx);
         }
@@ -870,6 +1135,9 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 {
                         addLine();
                 }
+
+                loadSupplementalLines(tx);
+                updateSupplementalTabAvailability();
         }
 
         private Account resolveAccount(String token)
@@ -922,4 +1190,3 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 return value != null ? value : BigDecimal.ZERO;
         }
 }
-

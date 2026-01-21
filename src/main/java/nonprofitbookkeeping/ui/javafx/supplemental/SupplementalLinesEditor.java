@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+
 public class SupplementalLinesEditor extends VBox
 {
 	private final SupplementalLineConfig config;
@@ -34,6 +35,8 @@ public class SupplementalLinesEditor extends VBox
 		new TableView<>(rows);
 	private final Label validationLabel = new Label();
 	private final ObservableList<EntryRef> entryRefs =
+		FXCollections.observableArrayList();
+	private final ObservableList<PersonRef> personRefs =
 		FXCollections.observableArrayList();
 
 	public SupplementalLinesEditor(SupplementalLineConfig config)
@@ -75,9 +78,19 @@ public class SupplementalLinesEditor extends VBox
 		this.entryRefs.setAll(refs);
 	}
 
+	public void setPersonRefs(List<PersonRef> refs)
+	{
+		this.personRefs.setAll(refs);
+	}
+
 	public ObservableList<SupplementalLineRow> getRows()
 	{
 		return this.rows;
+	}
+
+	public SupplementalLineConfig getConfig()
+	{
+		return this.config;
 	}
 
 	public void setRows(Collection<SupplementalLineRow> newRows)
@@ -207,7 +220,13 @@ public class SupplementalLinesEditor extends VBox
 		amtCol.setOnEditCommit(event ->
 			event.getRowValue().setAmount(event.getNewValue()));
 
-		this.table.getColumns().addAll(entryCol, descCol, refCol, amtCol);
+		TableColumn<SupplementalLineRow, Long> personCol =
+			new TableColumn<>("Counterparty");
+		personCol.setCellValueFactory(cd -> cd.getValue().counterpartyPersonIdProperty());
+		personCol.setCellFactory(col -> new PersonLinkCell(this.personRefs));
+		personCol.setEditable(true);
+
+		this.table.getColumns().addAll(entryCol, personCol, descCol, refCol, amtCol);
 
 		if (this.config.showDueDate)
 		{
@@ -345,6 +364,106 @@ public class SupplementalLinesEditor extends VBox
 				return "";
 			}
 			return "Entry #" + entryId;
+		}
+	}
+
+	private static class PersonLinkCell extends TableCell<SupplementalLineRow, Long>
+	{
+		private final ComboBox<PersonRef> combo;
+
+		PersonLinkCell(ObservableList<PersonRef> personRefs)
+		{
+			this.combo = new ComboBox<>(personRefs);
+			this.combo.setMaxWidth(Double.MAX_VALUE);
+			this.combo.setConverter(new StringConverter<>()
+			{
+				@Override
+				public String toString(PersonRef ref)
+				{
+					return ref == null ? "" : ref.toString();
+				}
+
+				@Override
+				public PersonRef fromString(String value)
+				{
+					return null;
+				}
+			});
+
+			this.combo.valueProperty().addListener((obs, oldValue, newValue) ->
+			{
+				if (isEditing())
+				{
+					commitEdit(newValue == null ? null : newValue.getPersonId());
+				}
+			});
+		}
+
+		@Override
+		public void startEdit()
+		{
+			super.startEdit();
+			if (!isEmpty())
+			{
+				Long personId = getItem();
+				if (personId == null)
+				{
+					this.combo.getSelectionModel().clearSelection();
+				}
+				else
+				{
+					for (PersonRef ref : this.combo.getItems())
+					{
+						if (ref.getPersonId() == personId)
+						{
+							this.combo.getSelectionModel().select(ref);
+							break;
+						}
+					}
+				}
+				setGraphic(this.combo);
+				setText(null);
+			}
+		}
+
+		@Override
+		public void cancelEdit()
+		{
+			super.cancelEdit();
+			setGraphic(null);
+			setText(displayText(getItem()));
+		}
+
+		@Override
+		protected void updateItem(Long item, boolean empty)
+		{
+			super.updateItem(item, empty);
+			if (empty)
+			{
+				setText(null);
+				setGraphic(null);
+				return;
+			}
+
+			if (isEditing())
+			{
+				setText(null);
+				setGraphic(this.combo);
+			}
+			else
+			{
+				setGraphic(null);
+				setText(displayText(item));
+			}
+		}
+
+		private String displayText(Long personId)
+		{
+			if (personId == null)
+			{
+				return "";
+			}
+			return "Person #" + personId;
 		}
 	}
 
