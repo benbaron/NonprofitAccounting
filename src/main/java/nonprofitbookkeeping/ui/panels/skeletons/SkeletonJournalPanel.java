@@ -44,6 +44,7 @@ import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.Journal;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -937,6 +938,19 @@ public class SkeletonJournalPanel extends BorderPane
 			
 			if (anyDeleted)
 			{
+				try
+				{
+					CurrentCompany.persist();
+				}
+				catch (IOException ex)
+				{
+					LOGGER.error("Unable to persist journal changes", ex);
+					AlertBox.showError(
+						getScene() == null ? null : getScene().getWindow(),
+						"Unable to save deleted transactions. Please try again.");
+					return;
+				}
+				
 				loadData();
 				resetEditorWorkspace();
 				LOGGER.info("Deleted selected entries.");
