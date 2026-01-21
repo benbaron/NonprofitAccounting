@@ -1,6 +1,7 @@
 
 package nonprofitbookkeeping.ui.panels;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
@@ -10,10 +11,11 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 
-import nonprofitbookkeeping.model.*;
-import nonprofitbookkeeping.model.CurrentCompany; // Explicit import for inner class usage
 import javafx.scene.control.Button; // For casting items in toolbar
 import javafx.scene.control.ToolBar; // For the actionToolBar field
+import nonprofitbookkeeping.model.*;
+import nonprofitbookkeeping.model.CurrentCompany; // Explicit import for inner class usage
+import nonprofitbookkeeping.ui.helpers.AlertBox;
 
 /**
  * JavaFX panel for displaying and managing journal transactions.
@@ -165,6 +167,17 @@ public class JournalPanelFX extends BorderPane
 							journal.deleteTransaction(tx.getBookingDateTimestamp());
 						}
 						
+						try
+						{
+							CurrentCompany.persist();
+						}
+						catch (IOException ex)
+						{
+							AlertBox.showError(getScene() == null ? null : getScene().getWindow(),
+								"Unable to save deleted transactions. Please try again.");
+							return;
+						}
+						
 						refresh();
 					}
 					
@@ -222,6 +235,17 @@ public class JournalPanelFX extends BorderPane
 			else
 			{
 				mainJournal.updateTransaction(tx);
+			}
+			
+			try
+			{
+				CurrentCompany.persist();
+			}
+			catch (IOException ex)
+			{
+				AlertBox.showError(getScene() == null ? null : getScene().getWindow(),
+					"Unable to save the transaction. Please try again.");
+				return;
 			}
 			
 			refresh();
