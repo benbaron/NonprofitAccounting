@@ -1,0 +1,486 @@
+package nonprofitbookkeeping.ui.javafx.supplemental;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import javafx.util.StringConverter;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
+public class SupplementalLinesEditor extends VBox
+{
+	private final SupplementalLineConfig config;
+	private final ObservableList<SupplementalLineRow> rows =
+		FXCollections.observableArrayList();
+	private final TableView<SupplementalLineRow> table =
+		new TableView<>(rows);
+	private final Label validationLabel = new Label();
+	private final ObservableList<EntryRef> entryRefs =
+		FXCollections.observableArrayList();
+
+	public SupplementalLinesEditor(SupplementalLineConfig config)
+	{
+		this.config = config;
+
+		setSpacing(8);
+		setPadding(new Insets(8));
+
+		this.table.setEditable(true);
+		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+
+		buildColumns();
+
+		HBox buttons = new HBox(8);
+		Button add = new Button("Add");
+		Button remove = new Button("Remove");
+		add.setOnAction(event -> this.rows.add(new SupplementalLineRow()));
+		remove.setOnAction(event ->
+		{
+			SupplementalLineRow selected =
+				this.table.getSelectionModel().getSelectedItem();
+			if (selected != null)
+			{
+				this.rows.remove(selected);
+			}
+		});
+		buttons.getChildren().addAll(add, remove);
+
+		this.validationLabel.getStyleClass().add("validation-label");
+		this.validationLabel.setWrapText(true);
+
+		getChildren().addAll(buttons, this.table, this.validationLabel);
+		VBox.setVgrow(this.table, Priority.ALWAYS);
+	}
+
+	public void setEntryRefs(List<EntryRef> refs)
+	{
+		this.entryRefs.setAll(refs);
+	}
+
+	public ObservableList<SupplementalLineRow> getRows()
+	{
+		return this.rows;
+	}
+
+	public void setRows(Collection<SupplementalLineRow> newRows)
+	{
+		this.rows.setAll(newRows);
+	}
+
+	public List<String> validateRows()
+	{
+		List<String> errors = new ArrayList<>();
+
+		for (int i = 0; i < this.rows.size(); i++)
+		{
+			SupplementalLineRow row = this.rows.get(i);
+			int rowNo = i + 1;
+
+			if (row.getDescription() == null || row.getDescription().trim().isEmpty())
+			{
+				errors.add(this.config.tabTitle + " row " + rowNo +
+					": Description is required.");
+			}
+
+			if (row.getAmount() == null)
+			{
+				errors.add(this.config.tabTitle + " row " + rowNo +
+					": Amount is required.");
+			}
+			else if (row.getAmount().compareTo(BigDecimal.ZERO) < 0)
+			{
+				errors.add(this.config.tabTitle + " row " + rowNo +
+					": Amount must be >= 0.");
+			}
+
+			if (this.config.showStartEnd)
+			{
+				LocalDate start = row.getStartDate();
+				LocalDate end = row.getEndDate();
+				if ((start != null && end == null) || (start == null && end != null))
+				{
+					errors.add(this.config.tabTitle + " row " + rowNo +
+						": Start and End date must both be set.");
+				}
+				if (start != null && end != null && start.isAfter(end))
+				{
+					errors.add(this.config.tabTitle + " row " + rowNo +
+						": Start date must be <= End date.");
+				}
+			}
+		}
+
+		return errors;
+	}
+
+	public boolean validateAndDisplay()
+	{
+		List<String> errors = validateRows();
+		if (errors.isEmpty())
+		{
+			this.validationLabel.setText("");
+			return true;
+		}
+		this.validationLabel.setText(String.join("\n", errors));
+		return false;
+	}
+
+	public List<String> validateEntryLinkSums(Function<Long, BigDecimal> entryAmountLookup)
+	{
+		Map<Long, BigDecimal> sums = new HashMap<>();
+		for (SupplementalLineRow row : this.rows)
+		{
+			Long entryId = row.getEntryId();
+			if (entryId == null)
+			{
+				continue;
+			}
+			BigDecimal amount = row.getAmount() == null ? BigDecimal.ZERO : row.getAmount();
+			sums.merge(entryId, amount, BigDecimal::add);
+		}
+
+		List<String> errors = new ArrayList<>();
+		for (Map.Entry<Long, BigDecimal> entry : sums.entrySet())
+		{
+			long entryId = entry.getKey();
+			BigDecimal expected = entryAmountLookup.apply(entryId);
+			if (expected == null)
+			{
+				continue;
+			}
+			BigDecimal actual = entry.getValue();
+			if (actual.compareTo(expected) != 0)
+			{
+				errors.add(this.config.tabTitle + ": Entry " + entryId +
+					" schedule sum " + actual +
+					" does not match entry amount " + expected + ".");
+			}
+		}
+
+		return errors;
+	}
+
+	private void buildColumns()
+	{
+		TableColumn<SupplementalLineRow, Long> entryCol =
+			new TableColumn<>("Link to Entry");
+		entryCol.setCellValueFactory(cd -> cd.getValue().entryIdProperty());
+		entryCol.setCellFactory(col -> new EntryLinkCell(this.entryRefs));
+		entryCol.setEditable(true);
+
+		TableColumn<SupplementalLineRow, String> descCol =
+			new TableColumn<>("Description");
+		descCol.setCellValueFactory(cd -> cd.getValue().descriptionProperty());
+		descCol.setCellFactory(TextFieldTableCell.forTableColumn());
+		descCol.setOnEditCommit(event ->
+			event.getRowValue().setDescription(event.getNewValue()));
+
+		TableColumn<SupplementalLineRow, String> refCol =
+			new TableColumn<>("Reference");
+		refCol.setCellValueFactory(cd -> cd.getValue().referenceProperty());
+		refCol.setCellFactory(TextFieldTableCell.forTableColumn());
+		refCol.setOnEditCommit(event ->
+			event.getRowValue().setReference(event.getNewValue()));
+
+		TableColumn<SupplementalLineRow, BigDecimal> amtCol =
+			new TableColumn<>("Amount");
+		amtCol.setCellValueFactory(cd -> cd.getValue().amountProperty());
+		amtCol.setCellFactory(col -> new BigDecimalEditingCell());
+		amtCol.setOnEditCommit(event ->
+			event.getRowValue().setAmount(event.getNewValue()));
+
+		this.table.getColumns().addAll(entryCol, descCol, refCol, amtCol);
+
+		if (this.config.showDueDate)
+		{
+			TableColumn<SupplementalLineRow, LocalDate> dueCol =
+				new TableColumn<>("Due Date");
+			dueCol.setCellValueFactory(cd -> cd.getValue().dueDateProperty());
+			dueCol.setCellFactory(col -> new DatePickerCell());
+			dueCol.setOnEditCommit(event ->
+				event.getRowValue().setDueDate(event.getNewValue()));
+			this.table.getColumns().add(dueCol);
+		}
+
+		if (this.config.showStartEnd)
+		{
+			TableColumn<SupplementalLineRow, LocalDate> startCol =
+				new TableColumn<>("Start Date");
+			startCol.setCellValueFactory(cd -> cd.getValue().startDateProperty());
+			startCol.setCellFactory(col -> new DatePickerCell());
+			startCol.setOnEditCommit(event ->
+				event.getRowValue().setStartDate(event.getNewValue()));
+
+			TableColumn<SupplementalLineRow, LocalDate> endCol =
+				new TableColumn<>("End Date");
+			endCol.setCellValueFactory(cd -> cd.getValue().endDateProperty());
+			endCol.setCellFactory(col -> new DatePickerCell());
+			endCol.setOnEditCommit(event ->
+				event.getRowValue().setEndDate(event.getNewValue()));
+
+			this.table.getColumns().addAll(startCol, endCol);
+		}
+
+		TableColumn<SupplementalLineRow, String> notesCol =
+			new TableColumn<>("Notes");
+		notesCol.setCellValueFactory(cd -> cd.getValue().notesProperty());
+		notesCol.setCellFactory(TextFieldTableCell.forTableColumn());
+		notesCol.setOnEditCommit(event ->
+			event.getRowValue().setNotes(event.getNewValue()));
+		this.table.getColumns().add(notesCol);
+	}
+
+	private static class EntryLinkCell extends TableCell<SupplementalLineRow, Long>
+	{
+		private final ComboBox<EntryRef> combo;
+
+		EntryLinkCell(ObservableList<EntryRef> entryRefs)
+		{
+			this.combo = new ComboBox<>(entryRefs);
+			this.combo.setMaxWidth(Double.MAX_VALUE);
+			this.combo.setConverter(new StringConverter<>()
+			{
+				@Override
+				public String toString(EntryRef ref)
+				{
+					return ref == null ? "" : ref.toString();
+				}
+
+				@Override
+				public EntryRef fromString(String value)
+				{
+					return null;
+				}
+			});
+
+			this.combo.valueProperty().addListener((obs, oldValue, newValue) ->
+			{
+				if (isEditing())
+				{
+					commitEdit(newValue == null ? null : newValue.getEntryId());
+				}
+			});
+		}
+
+		@Override
+		public void startEdit()
+		{
+			super.startEdit();
+			if (!isEmpty())
+			{
+				Long entryId = getItem();
+				if (entryId == null)
+				{
+					this.combo.getSelectionModel().clearSelection();
+				}
+				else
+				{
+					for (EntryRef ref : this.combo.getItems())
+					{
+						if (ref.getEntryId() == entryId)
+						{
+							this.combo.getSelectionModel().select(ref);
+							break;
+						}
+					}
+				}
+				setGraphic(this.combo);
+				setText(null);
+			}
+		}
+
+		@Override
+		public void cancelEdit()
+		{
+			super.cancelEdit();
+			setGraphic(null);
+			setText(displayText(getItem()));
+		}
+
+		@Override
+		protected void updateItem(Long item, boolean empty)
+		{
+			super.updateItem(item, empty);
+			if (empty)
+			{
+				setText(null);
+				setGraphic(null);
+				return;
+			}
+
+			if (isEditing())
+			{
+				setText(null);
+				setGraphic(this.combo);
+			}
+			else
+			{
+				setGraphic(null);
+				setText(displayText(item));
+			}
+		}
+
+		private String displayText(Long entryId)
+		{
+			if (entryId == null)
+			{
+				return "";
+			}
+			return "Entry #" + entryId;
+		}
+	}
+
+	private static class BigDecimalEditingCell
+		extends TableCell<SupplementalLineRow, BigDecimal>
+	{
+		private final TextField field = new TextField();
+
+		BigDecimalEditingCell()
+		{
+			this.field.setOnAction(event -> commitFromText());
+			this.field.focusedProperty().addListener((obs, was, isNow) ->
+			{
+				if (!isNow)
+				{
+					commitFromText();
+				}
+			});
+		}
+
+		@Override
+		public void startEdit()
+		{
+			super.startEdit();
+			this.field.setText(getItem() == null ? "" : getItem().toPlainString());
+			setGraphic(this.field);
+			setText(null);
+		}
+
+		@Override
+		public void cancelEdit()
+		{
+			super.cancelEdit();
+			setGraphic(null);
+			setText(getItem() == null ? "" : getItem().toPlainString());
+		}
+
+		@Override
+		protected void updateItem(BigDecimal item, boolean empty)
+		{
+			super.updateItem(item, empty);
+			if (empty)
+			{
+				setText(null);
+				setGraphic(null);
+				return;
+			}
+			if (isEditing())
+			{
+				setText(null);
+				setGraphic(this.field);
+			}
+			else
+			{
+				setGraphic(null);
+				setText(item == null ? "" : item.toPlainString());
+			}
+		}
+
+		private void commitFromText()
+		{
+			if (!isEditing())
+			{
+				return;
+			}
+			String text = this.field.getText() == null ? "" : this.field.getText().trim();
+			if (text.isEmpty())
+			{
+				commitEdit(null);
+				return;
+			}
+			try
+			{
+				commitEdit(new BigDecimal(text));
+			}
+			catch (NumberFormatException ex)
+			{
+				cancelEdit();
+			}
+		}
+	}
+
+	private static class DatePickerCell extends TableCell<SupplementalLineRow, LocalDate>
+	{
+		private final javafx.scene.control.DatePicker picker =
+			new javafx.scene.control.DatePicker();
+
+		DatePickerCell()
+		{
+			this.picker.setOnAction(event -> commitEdit(this.picker.getValue()));
+			this.picker.focusedProperty().addListener((obs, was, isNow) ->
+			{
+				if (!isNow)
+				{
+					commitEdit(this.picker.getValue());
+				}
+			});
+		}
+
+		@Override
+		public void startEdit()
+		{
+			super.startEdit();
+			this.picker.setValue(getItem());
+			setGraphic(this.picker);
+			setText(null);
+		}
+
+		@Override
+		public void cancelEdit()
+		{
+			super.cancelEdit();
+			setGraphic(null);
+			setText(getItem() == null ? "" : getItem().toString());
+		}
+
+		@Override
+		protected void updateItem(LocalDate item, boolean empty)
+		{
+			super.updateItem(item, empty);
+			if (empty)
+			{
+				setText(null);
+				setGraphic(null);
+				return;
+			}
+			if (isEditing())
+			{
+				setText(null);
+				setGraphic(this.picker);
+			}
+			else
+			{
+				setGraphic(null);
+				setText(item == null ? "" : item.toString());
+			}
+		}
+	}
+}
