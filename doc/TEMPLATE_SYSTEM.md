@@ -69,14 +69,16 @@ you would populate.
 ### Example field map (`EXAMPLE_REPORT_fieldmap.csv`)
 
 ```
-Summary, B2, organization_name, java.lang.String, ,
-Summary, B3, reporting_period, java.lang.String, ,
-Summary, B5, total_revenue, java.math.BigDecimal, "$#,##0.00",
-Summary, B6, total_expense, java.math.BigDecimal, "$#,##0.00",
-Summary, B8, report_date, java.time.LocalDate, "yyyy-mm-dd",
+sheetName,cellRef,fieldName,javaType,excelFormat,dbExpr
+"Summary","B2","organization_name","java.lang.String","",
+"Summary","B3","reporting_period","java.lang.String","",
+"Summary","B5","total_revenue","java.math.BigDecimal","$#,##0.00",""
+"Summary","B6","total_expense","java.math.BigDecimal","$#,##0.00",""
+"Summary","B8","report_date","java.time.LocalDate","yyyy-mm-dd",""
 ```
 
 Notes:
+- The first line is a header row (required by the loader).
 - The sixth column (`dbExpr`) is left blank for template-only usage.
 
 ### Example template layout (`EXAMPLE_REPORT.xlsx`)
@@ -99,6 +101,90 @@ Notes:
 
 When the writer runs, it looks up each getter, writes the value into the mapped
 cell, and applies the `excelFormat` column when provided.
+
+### Example report bean (code structure)
+
+```java
+package nonprofitbookkeeping.reports.example;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+public class ExampleReportBean
+{
+    private String organization_name;
+    private String reporting_period;
+    private BigDecimal total_revenue;
+    private BigDecimal total_expense;
+    private LocalDate report_date;
+
+    public String getOrganization_name()
+    {
+        return organization_name;
+    }
+
+    public String getReporting_period()
+    {
+        return reporting_period;
+    }
+
+    public BigDecimal getTotal_revenue()
+    {
+        return total_revenue;
+    }
+
+    public BigDecimal getTotal_expense()
+    {
+        return total_expense;
+    }
+
+    public LocalDate getReport_date()
+    {
+        return report_date;
+    }
+}
+```
+
+### Example file locations
+
+- Field map CSVs live under `src/main/resources/nonprofitbookkeeping/reports/`.
+  For example: `src/main/resources/nonprofitbookkeeping/reports/EXAMPLE_REPORT_fieldmap.csv`.
+- Template workbooks are user-provided files; store them anywhere accessible to
+  the runtime. A common convention is a sibling directory alongside field maps,
+  such as `src/main/resources/nonprofitbookkeeping/reports/templates/EXAMPLE_REPORT.xlsx`.
+- Output files are written to the destination path you pass to the writer.
+
+### How templates are used in code
+
+- `ExcelTemplateWriter.writeTemplate(...)` loads the XLSX template, applies
+  field-map values, and writes the output workbook.
+- `ReportContext.setExcelTemplateFile(...)` carries the template reference when
+  a report flow wants to use a file-based template instead of Jasper.
+
+Example usage:
+
+```java
+FieldMap fieldMap = FieldMapLoader.loadFromResource(
+    "/nonprofitbookkeeping/reports/EXAMPLE_REPORT_fieldmap.csv");
+ExcelTemplateWriter writer = new ExcelTemplateWriter();
+writer.writeTemplate(new File("templates/EXAMPLE_REPORT.xlsx"), fieldMap,
+    reportBean, new File("output/EXAMPLE_REPORT.xlsx"));
+```
+
+### Debug messages and troubleshooting
+
+- **Missing template file**: `writeTemplate` throws
+  `IOException("Template file does not exist: <path>")`.
+- **Missing field map**: `writeTemplate` throws
+  `IOException("Field map is required to write template output.")`.
+- **Missing getter**: `readBeanValue` logs a warning:
+  `Unable to resolve getter <methodName> on bean <className>`.
+
+Troubleshooting tips:
+1. Verify the template path exists and is readable by the runtime.
+2. Confirm the sheet name and cell reference in the field map match the XLSX.
+3. Ensure bean getter names match the field-map `fieldName` values exactly.
+4. Check logs for the missing-getter warning to spot mismatched field names.
 
 ## Troubleshooting
 
