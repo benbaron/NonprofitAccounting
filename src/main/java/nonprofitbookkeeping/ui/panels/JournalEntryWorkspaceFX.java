@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -13,6 +15,10 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
@@ -64,6 +70,7 @@ import java.util.EnumMap;
 import java.util.EnumSet;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.helpers.FocusCommitTextFieldTableCell;
+import nonprofitbookkeeping.ui.javafx.supplemental.EntryRef;
 import nonprofitbookkeeping.ui.javafx.supplemental.PersonRef;
 import nonprofitbookkeeping.ui.javafx.supplemental.SupplementalLineRow;
 import nonprofitbookkeeping.ui.javafx.supplemental.SupplementalLinesEditor;
@@ -576,6 +583,111 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 return refs;
         }
 
+        private List<EntryRef> loadEntryRefs(long txnId)
+        {
+                if (!Database.isInitialized() || txnId <= 0)
+                {
+                        return List.of();
+                }
+
+                String sql =
+                        "SELECT id, amount, account_name, account_number, account_side " +
+                        "FROM journal_entry WHERE txn_id = ? ORDER BY id";
+
+                List<EntryRef> refs = new ArrayList<>();
+
+                try (Connection c = Database.get().getConnection();
+                        PreparedStatement ps = c.prepareStatement(sql))
+                {
+                        ps.setLong(1, txnId);
+                        try (ResultSet rs = ps.executeQuery())
+                        {
+                                while (rs.next())
+                                {
+                                        String accountName = rs.getString("account_name");
+                                        if (accountName == null || accountName.isBlank())
+                                        {
+                                                accountName = rs.getString("account_number");
+                                        }
+                                        AccountSide side = AccountSide.fromString(rs.getString("account_side"));
+                                        boolean debit = side == AccountSide.DEBIT;
+                                        refs.add(new EntryRef(
+                                                rs.getLong("id"),
+                                                accountName,
+                                                debit,
+                                                rs.getBigDecimal("amount")));
+                                }
+                        }
+                }
+                catch (SQLException ex)
+                {
+                        return Collections.emptyList();
+                }
+
+                return refs;
+        }
+
+        private Map<Long, BigDecimal> loadEntryAmountsById()
+        {
+                if (!Database.isInitialized())
+                {
+                        return Map.of();
+                }
+
+                Set<Long> entryIds = new LinkedHashSet<>();
+                for (SupplementalLineKind kind : SupplementalLineKind.values())
+                {
+                        SupplementalLinesEditor editor = this.supplementalTabs.editor(kind);
+                        if (editor == null)
+                        {
+                                continue;
+                        }
+                        for (SupplementalLineRow row : editor.getRows())
+                        {
+                                Long entryId = row.getEntryId();
+                                if (entryId != null)
+                                {
+                                        entryIds.add(entryId);
+                                }
+                        }
+                }
+
+                if (entryIds.isEmpty())
+                {
+                        return Map.of();
+                }
+
+                String placeholders = entryIds.stream()
+                        .map(id -> "?")
+                        .collect(Collectors.joining(", "));
+                String sql = "SELECT id, amount FROM journal_entry WHERE id IN (" + placeholders + ")";
+
+                Map<Long, BigDecimal> amounts = new HashMap<>();
+                try (Connection c = Database.get().getConnection();
+                        PreparedStatement ps = c.prepareStatement(sql))
+                {
+                        int index = 1;
+                        for (Long entryId : entryIds)
+                        {
+                                ps.setLong(index++, entryId);
+                        }
+
+                        try (ResultSet rs = ps.executeQuery())
+                        {
+                                while (rs.next())
+                                {
+                                        amounts.put(rs.getLong("id"), rs.getBigDecimal("amount"));
+                                }
+                        }
+                }
+                catch (SQLException ex)
+                {
+                        return Map.of();
+                }
+
+                return amounts;
+        }
+
         private void updateSupplementalTabAvailability()
         {
                 Set<SupplementalLineKind> enabledKinds = EnumSet.noneOf(SupplementalLineKind.class);
@@ -857,6 +969,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
         private Optional<String> validateSupplementalLines()
         {
                 List<String> errors = new ArrayList<>();
+                Map<Long, BigDecimal> entryAmounts = loadEntryAmountsById();
 
                 for (SupplementalLineKind kind : SupplementalLineKind.values())
                 {
@@ -869,6 +982,11 @@ public class JournalEntryWorkspaceFX extends BorderPane
                         {
                                 errors.add("Fix validation errors in the " + editor.getConfig().tabTitle
                                                 + " tab.");
+                        }
+
+                        if (!entryAmounts.isEmpty())
+                        {
+                                errors.addAll(editor.validateEntryLinkSums(entryAmounts::get));
                         }
 
                         BigDecimal expected = expectedAmountForKind(kind);
@@ -1136,6 +1254,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
                         addLine();
                 }
 
+                this.supplementalTabs.setEntryRefs(loadEntryRefs(tx.getId()));
                 loadSupplementalLines(tx);
                 updateSupplementalTabAvailability();
         }

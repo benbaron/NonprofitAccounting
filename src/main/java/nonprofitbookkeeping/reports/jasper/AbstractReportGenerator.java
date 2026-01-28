@@ -250,6 +250,16 @@ public abstract class AbstractReportGenerator
 	}
 
 	/**
+	 * Exposes resolved report data for non-Jasper export paths (e.g. XLSX templates).
+	 *
+	 * @return resolved report data list
+	 */
+	public List<?> getResolvedReportData()
+	{
+		return resolveReportData();
+	}
+
+	/**
 	 * Normalize report data.
 	 *
 	 * @param data the data
