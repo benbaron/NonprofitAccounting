@@ -48,7 +48,9 @@ public class ASSET_DTL_5aJasperGenerator extends AbstractReportGenerator
 
         List<AssetDtl5aReportBean> headerBeans =
             ReportDataFetcher.queryBeans(AssetDtl5aReportBean.class, sql);
-        AssetDtl5aReportBean reportBean = headerBeans.get(0);
+        AssetDtl5aReportBean reportBean = headerBeans.isEmpty()
+            ? new AssetDtl5aReportBean()
+            : headerBeans.get(0);
 
         try (Connection cx = Database.get().getConnection())
         {

@@ -1,5 +1,6 @@
 package nonprofitbookkeeping.reports.jasper.runtime;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.List; // Added import
 import nonprofitbookkeeping.model.budget.Budget; // Ensured import for Budget
@@ -37,6 +38,8 @@ public class ReportContext
 	private String nullPlaceholder = "-";
 	/** Optional list of field names that should retain null values instead of placeholders. */
 	private List<String> nullPlaceholderSkipFields;
+	/** Optional Excel template file for direct XLSX output. */
+	private File excelTemplateFile;
 	
 	/**
 	 * Default constructor for ReportContext.
@@ -125,6 +128,26 @@ public class ReportContext
 	{
 		this.outputFormat = outputFormat;
 		
+	}
+
+	/**
+	 * Gets the Excel template file used for direct XLSX output.
+	 *
+	 * @return Excel template file or {@code null} if not set
+	 */
+	public File getExcelTemplateFile()
+	{
+		return this.excelTemplateFile;
+	}
+
+	/**
+	 * Sets the Excel template file used for direct XLSX output.
+	 *
+	 * @param excelTemplateFile template file to populate
+	 */
+	public void setExcelTemplateFile(File excelTemplateFile)
+	{
+		this.excelTemplateFile = excelTemplateFile;
 	}
 	
 	

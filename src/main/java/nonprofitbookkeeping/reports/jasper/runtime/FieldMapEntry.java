@@ -71,6 +71,46 @@ public final class FieldMapEntry
 		return this.fieldName;
 		
 	}
+
+	/**
+	 * Gets the sheet name.
+	 *
+	 * @return the sheet name
+	 */
+	public String getSheetName()
+	{
+		return this.sheetName;
+	}
+
+	/**
+	 * Gets the cell reference.
+	 *
+	 * @return the cell reference
+	 */
+	public String getCellRef()
+	{
+		return this.cellRef;
+	}
+
+	/**
+	 * Gets the java type.
+	 *
+	 * @return the java type
+	 */
+	public String getJavaType()
+	{
+		return this.javaType;
+	}
+
+	/**
+	 * Gets the excel format string.
+	 *
+	 * @return the excel format
+	 */
+	public String getExcelFormat()
+	{
+		return this.excelFormat;
+	}
 	
 	/**
 	 * Optional SQL expression for this field, e.g. "a.name" or "s.opening_balance".
