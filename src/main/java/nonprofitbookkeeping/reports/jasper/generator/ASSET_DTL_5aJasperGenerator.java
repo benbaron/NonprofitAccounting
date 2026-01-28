@@ -48,7 +48,9 @@ public class ASSET_DTL_5aJasperGenerator extends AbstractReportGenerator
 
         List<AssetDtl5aReportBean> headerBeans =
             ReportDataFetcher.queryBeans(AssetDtl5aReportBean.class, sql);
-        AssetDtl5aReportBean reportBean = headerBeans.get(0);
+        AssetDtl5aReportBean reportBean = headerBeans.isEmpty()
+            ? new AssetDtl5aReportBean()
+            : headerBeans.get(0);
 
         try (Connection cx = Database.get().getConnection())
         {
@@ -80,13 +82,15 @@ public class ASSET_DTL_5aJasperGenerator extends AbstractReportGenerator
                     cx,
                     AssetDtl5aReceivableLineItem.class,
                     "select\n" +
-                        "jt.memo as receivables_owed_from,\n" +
-                        "jt.memo as reason,\n" +
-                        "jt.memo as sending_branch_or_reason,\n" +
-                        "je.amount as prior_amount,\n" +
-                        "je.amount as current_amount\n" +
-                        "from journal_transaction jt\n" +
-                        "join journal_entry je on je.txn_id = jt.id"
+                        "coalesce(p.name, tsl.description) as receivables_owed_from,\n" +
+                        "tsl.reference as reason,\n" +
+                        "tsl.notes as sending_branch_or_reason,\n" +
+                        "cast(tsl.amount as varchar) as prior_amount,\n" +
+                        "cast(tsl.amount as varchar) as current_amount\n" +
+                        "from txn_supplemental_line tsl\n" +
+                        "left join person p on p.id = tsl.counterparty_person_id\n" +
+                        "where tsl.line_kind = 'RECEIVABLE'\n" +
+                        "order by tsl.id"
                 )
             );
             reportBean.setPrepaid_expenses(
@@ -94,11 +98,12 @@ public class ASSET_DTL_5aJasperGenerator extends AbstractReportGenerator
                     cx,
                     AssetDtl5aPrepaidExpenseLineItem.class,
                     "select\n" +
-                        "jt.memo as prepaid_expenses_description,\n" +
-                        "je.amount as prior_amount,\n" +
-                        "je.amount as current_amount\n" +
-                        "from journal_transaction jt\n" +
-                        "join journal_entry je on je.txn_id = jt.id"
+                        "tsl.description as prepaid_expenses_description,\n" +
+                        "cast(tsl.amount as varchar) as prior_amount,\n" +
+                        "cast(tsl.amount as varchar) as current_amount\n" +
+                        "from txn_supplemental_line tsl\n" +
+                        "where tsl.line_kind = 'PREPAID_EXPENSE'\n" +
+                        "order by tsl.id"
                 )
             );
             reportBean.setOther_assets(
@@ -106,13 +111,14 @@ public class ASSET_DTL_5aJasperGenerator extends AbstractReportGenerator
                     cx,
                     AssetDtl5aOtherAssetLineItem.class,
                     "select\n" +
-                        "jt.memo as other_assets_description,\n" +
-                        "jt.memo as reason,\n" +
-                        "jt.memo as show_on,\n" +
-                        "je.amount as prior_amount,\n" +
-                        "je.amount as current_amount\n" +
-                        "from journal_transaction jt\n" +
-                        "join journal_entry je on je.txn_id = jt.id"
+                        "tsl.description as other_assets_description,\n" +
+                        "tsl.reference as reason,\n" +
+                        "tsl.notes as show_on,\n" +
+                        "cast(tsl.amount as varchar) as prior_amount,\n" +
+                        "cast(tsl.amount as varchar) as current_amount\n" +
+                        "from txn_supplemental_line tsl\n" +
+                        "where tsl.line_kind = 'OTHER_ASSET'\n" +
+                        "order by tsl.id"
                 )
             );
         }
