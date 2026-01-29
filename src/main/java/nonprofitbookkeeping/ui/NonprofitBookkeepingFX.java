@@ -452,6 +452,8 @@ public class NonprofitBookkeepingFX extends Application
 		add(this.run, "Funds & Fund Accounting",
 			e -> showPanel(new FundsPanelFX(ServiceContainer.fas, null),
 				"Funds"));
+		add(this.run, "Excel Template Report...",
+			e -> new ExcelTemplateReportActionFX(this.primaryStage).handle(e));
 		add(this.run, "Reconcile",
 			e -> showPanel(
 				new LedgerReconcilePanelFX(new ReconciliationService()),
