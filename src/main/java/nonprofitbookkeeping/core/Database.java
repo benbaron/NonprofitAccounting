@@ -182,6 +182,12 @@ public final class Database {
             st.execute("ALTER TABLE person ADD COLUMN IF NOT EXISTS email VARCHAR(255);");
             st.execute("ALTER TABLE person ADD COLUMN IF NOT EXISTS phone VARCHAR(64);");
             st.execute("CREATE INDEX IF NOT EXISTS person_name_idx ON person(name)");
+            st.execute("""
+                ALTER TABLE txn_supplemental_line
+                ADD CONSTRAINT IF NOT EXISTS fk_txn_supplemental_person
+                FOREIGN KEY (counterparty_person_id) REFERENCES person(id) ON DELETE SET NULL
+            """);
+            st.execute("CREATE INDEX IF NOT EXISTS txn_supplemental_person_idx ON txn_supplemental_line(counterparty_person_id)");
 
             st.execute("""
                 CREATE TABLE IF NOT EXISTS document(

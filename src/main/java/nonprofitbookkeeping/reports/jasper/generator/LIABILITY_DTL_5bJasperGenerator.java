@@ -18,11 +18,7 @@ public class LIABILITY_DTL_5bJasperGenerator extends AbstractReportGenerator
     @Override
     protected List<LIABILITY_DTL_5bBean> getReportData()
     {
-        Map<String, String> overrides = new HashMap<>();
-        overrides.put("deferred_revenue_event", "jt.memo");
-        overrides.put("event", "jt.to_from");
-        overrides.put("prior_amount", "je.amount");
-        overrides.put("current_amount", "je.amount");
+        Map<String, String> overrides = buildSupplementalOverrides();
 
         String selectList;
         try
@@ -40,10 +36,67 @@ public class LIABILITY_DTL_5bJasperGenerator extends AbstractReportGenerator
 
         String sql = "select\n" +
             selectList + "\n" +
-            "from journal_transaction jt\n" +
-            "join journal_entry je on je.txn_id = jt.id";
+            "from (select 1) as seed";
 
         return ReportDataFetcher.queryBeans(LIABILITY_DTL_5bBean.class, sql);
+    }
+
+    private static Map<String, String> buildSupplementalOverrides()
+    {
+        Map<String, String> overrides = new HashMap<>();
+
+        for (int i = 1; i <= 15; i++)
+        {
+            String suffix = i == 1 ? "" : "_" + i;
+            overrides.put("deferred_revenue_event" + suffix,
+                supplementalSubquery("DEFERRED_REVENUE", "coalesce(p.name, tsl.description)", i - 1));
+            overrides.put("event" + suffix,
+                supplementalSubquery("DEFERRED_REVENUE", "coalesce(tsl.reference, tsl.notes)", i - 1));
+            overrides.put("prior_amount" + suffix,
+                supplementalSubquery("DEFERRED_REVENUE", "cast(tsl.amount as varchar)", i - 1));
+            overrides.put("current_amount" + suffix,
+                supplementalSubquery("DEFERRED_REVENUE", "cast(tsl.amount as varchar)", i - 1));
+        }
+
+        for (int i = 1; i <= 7; i++)
+        {
+            String suffix = i == 1 ? "" : "_" + i;
+            int amountIndex = 15 + i;
+            overrides.put("payables_owed_to" + suffix,
+                supplementalSubquery("PAYABLE", "coalesce(p.name, tsl.description)", i - 1));
+            overrides.put("reason" + suffix,
+                supplementalSubquery("PAYABLE", "coalesce(tsl.reference, tsl.notes)", i - 1));
+            overrides.put("prior_amount_" + amountIndex,
+                supplementalSubquery("PAYABLE", "cast(tsl.amount as varchar)", i - 1));
+            overrides.put("current_amount_" + amountIndex,
+                supplementalSubquery("PAYABLE", "cast(tsl.amount as varchar)", i - 1));
+        }
+
+        for (int i = 1; i <= 7; i++)
+        {
+            String suffix = i == 1 ? "" : "_" + i;
+            int reasonIndex = 7 + i;
+            int amountIndex = 22 + i;
+            overrides.put("other_liabilities_owed_to" + suffix,
+                supplementalSubquery("OTHER_LIABILITY", "coalesce(p.name, tsl.description)", i - 1));
+            overrides.put("reason_" + reasonIndex,
+                supplementalSubquery("OTHER_LIABILITY", "coalesce(tsl.reference, tsl.notes)", i - 1));
+            overrides.put("prior_amount_" + amountIndex,
+                supplementalSubquery("OTHER_LIABILITY", "cast(tsl.amount as varchar)", i - 1));
+            overrides.put("current_amount_" + amountIndex,
+                supplementalSubquery("OTHER_LIABILITY", "cast(tsl.amount as varchar)", i - 1));
+        }
+
+        return overrides;
+    }
+
+    private static String supplementalSubquery(String kind, String valueExpr, int offset)
+    {
+        return "(select " + valueExpr +
+            " from txn_supplemental_line tsl " +
+            "left join person p on p.id = tsl.counterparty_person_id " +
+            "where tsl.line_kind = '" + kind + "' " +
+            "order by tsl.id limit 1 offset " + offset + ")";
     }
 
     @Override
