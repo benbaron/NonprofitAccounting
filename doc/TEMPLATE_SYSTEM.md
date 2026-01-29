@@ -171,6 +171,24 @@ writer.writeTemplate(new File("templates/EXAMPLE_REPORT.xlsx"), fieldMap,
     reportBean, new File("output/EXAMPLE_REPORT.xlsx"));
 ```
 
+### UI menu path (current behavior)
+
+The current UI exposes XLSX output via the **Reports** tab, which uses the
+Jasper-based report flow:
+
+1. Open the **Reports** tab.
+2. Choose a **Report Type** in the dropdown.
+3. Select **Start Date** / **End Date** if required.
+4. Set **Format** to `xlsx`.
+5. Click **Generate Report**.
+
+This path calls `ReportService.generateJasperReport(...)` behind the scenes. It
+does **not** yet invoke the `ExcelTemplateWriter` template-fill workflow, so
+custom XLSX templates are currently filled only when you call the writer in
+code (or in a custom action). If you need a UI entry point for template-based
+XLSX export, add a menu action that populates `ReportContext.excelTemplateFile`
+and calls the template writer explicitly.
+
 ### Debug messages and troubleshooting
 
 - **Missing template file**: `writeTemplate` throws
