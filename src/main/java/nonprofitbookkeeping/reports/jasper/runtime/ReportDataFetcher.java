@@ -65,5 +65,44 @@ public final class ReportDataFetcher
 		}
 		
 	}
+
+	/**
+	 * Query beans and merge rows into a single report bean.
+	 *
+	 * @param <B> the generic type
+	 * @param beanClass the bean class
+	 * @param sql the sql
+	 * @return a list with a single bean or empty if no rows were returned
+	 */
+	public static <B> List<B> queryRowBasedBeans(Class<B> beanClass, String sql)
+	{
+		LOGGER.debug("Fetching row-based report data for beanClass={}, sql={}",
+			beanClass.getName(), sql);
+		try (Connection cx = Database.get().getConnection())
+		{
+			List<B> lb =
+				JdbcBeanLoader.queryRowBasedBeans(cx, beanClass, sql, null);
+			if (lb.isEmpty())
+			{
+				LOGGER.info(
+					"No rows returned for beanClass={}, report will rely on "
+						+ "template no-data handling",
+					beanClass.getName());
+			}
+			else
+			{
+				LOGGER.debug("Fetched {} rows for beanClass={}", lb.size(),
+					beanClass.getName());
+			}
+			return lb;
+		}
+		catch (SQLException ex)
+		{
+			throw new IllegalStateException(
+				"Failed to query report data for " + beanClass.getSimpleName(),
+				ex
+			);
+		}
+	}
 	
 }

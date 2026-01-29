@@ -48,7 +48,7 @@ public class ExcelTemplateWriter
 		try (FileInputStream in = new FileInputStream(templateFile);
 			Workbook workbook = WorkbookFactory.create(in))
 		{
-			writeFields(workbook, fieldMap, bean);
+			writeFields(workbook, fieldMap, bean, null, true);
 			try (FileOutputStream out = new FileOutputStream(outputFile))
 			{
 				workbook.write(out);
@@ -58,7 +58,23 @@ public class ExcelTemplateWriter
 		return outputFile;
 	}
 
-	private void writeFields(Workbook workbook, FieldMap fieldMap, Object bean)
+	public void writeTemplate(Workbook workbook, FieldMap fieldMap, Object bean,
+		String sheetName, boolean createMissingSheets)
+	{
+		if (workbook == null)
+		{
+			throw new IllegalArgumentException("Workbook is required.");
+		}
+		if (fieldMap == null)
+		{
+			throw new IllegalArgumentException("Field map is required.");
+		}
+
+		writeFields(workbook, fieldMap, bean, sheetName, createMissingSheets);
+	}
+
+	private void writeFields(Workbook workbook, FieldMap fieldMap, Object bean,
+		String sheetNameFilter, boolean createMissingSheets)
 	{
 		if (bean == null)
 		{
@@ -81,11 +97,16 @@ public class ExcelTemplateWriter
 				continue;
 			}
 
+			if (sheetNameFilter != null && !sheetNameFilter.equals(sheetName))
+			{
+				continue;
+			}
+
 			Object value = readBeanValue(bean, fieldName);
 			String format = entry.getExcelFormat();
 
 			writeCell(workbook, dataFormat, styleCache, sheetName, cellRef,
-				fieldName, value, format);
+				fieldName, value, format, createMissingSheets);
 		}
 	}
 
@@ -112,12 +133,20 @@ public class ExcelTemplateWriter
 
 	private void writeCell(Workbook workbook, DataFormat dataFormat,
 		Map<String, CellStyle> styleCache, String sheetName, String cellRef,
-		String fieldName, Object value, String format)
+		String fieldName, Object value, String format, boolean createMissingSheets)
 	{
 		Sheet sheet = workbook.getSheet(sheetName);
 		if (sheet == null)
 		{
-			sheet = workbook.createSheet(sheetName);
+			if (createMissingSheets)
+			{
+				sheet = workbook.createSheet(sheetName);
+			}
+			else
+			{
+				throw new IllegalStateException(
+					"Sheet '" + sheetName + "' not found in workbook.");
+			}
 		}
 
 		CellReference ref = new CellReference(cellRef);
@@ -128,9 +157,20 @@ public class ExcelTemplateWriter
 		}
 
 		Cell cell = row.getCell(ref.getCol());
+		boolean existingCell = cell != null;
 		if (cell == null)
 		{
 			cell = row.createCell(ref.getCol());
+		}
+
+		if (existingCell && sheet.getProtect()
+			&& cell.getCellStyle() != null
+			&& cell.getCellStyle().getLocked())
+		{
+			LOGGER.info(
+				"Skipping locked cell {} on sheet {} for field {}.",
+				cellRef, sheetName, fieldName);
+			return;
 		}
 
 		if (value == null)

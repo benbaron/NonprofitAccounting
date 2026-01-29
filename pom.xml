@@ -14,6 +14,7 @@
         <mockito.version>5.12.0</mockito.version>
         <commons-compress.version>1.26.1</commons-compress.version>
         <poi.version>5.2.5</poi.version>
+        <javassist.version>3.30.2-GA</javassist.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- Skip the console launcher by default to avoid re-running UI-heavy tests -->
@@ -36,6 +37,11 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-compress</artifactId>
                 <version>${commons-compress.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>${javassist.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -90,6 +96,7 @@
                 <configuration>
                     <skipTests>${panel.reset.only}</skipTests>
                     <useModulePath>false</useModulePath>
+                    <argLine>--enable-native-access=ALL-UNNAMED</argLine>
                     <excludes>
                         <!-- Keep heavier UI suites disabled until they are adapted for headless execution. -->
                         <exclude>**/ui/**/*</exclude>
