@@ -2,9 +2,12 @@ package nonprofitbookkeeping.ui.actions;
 
 import nonprofitbookkeeping.reports.excel.ExcelWorkbookPageReportService;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
+import nonprofitbookkeeping.preferences.PreferencesManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -105,6 +108,10 @@ public class ExcelTemplateReportActionFX implements EventHandler<ActionEvent>
 
 			File templateFile = new File(templatePath);
 			File outputFile = new File(outputPath);
+			if (!validateInputs(templateFile, outputFile))
+			{
+				return;
+			}
 
 			Class<?> beanClass;
 			try
@@ -156,10 +163,12 @@ public class ExcelTemplateReportActionFX implements EventHandler<ActionEvent>
 		chooser.getExtensionFilters().add(
 			new FileChooser.ExtensionFilter("Excel files (*.xlsx, *.xlsm)",
 				"*.xlsx", "*.xlsm"));
+		setInitialDirectory(chooser, PreferencesManager.getLastDirectory());
 		File selected = chooser.showOpenDialog(this.owner);
 		if (selected != null)
 		{
 			this.templateField.setText(selected.getAbsolutePath());
+			rememberLastDirectory(selected);
 		}
 	}
 
@@ -170,15 +179,84 @@ public class ExcelTemplateReportActionFX implements EventHandler<ActionEvent>
 		chooser.getExtensionFilters().add(
 			new FileChooser.ExtensionFilter("Excel files (*.xlsx)",
 				"*.xlsx"));
+		setInitialDirectory(chooser, PreferencesManager.getLastWriteDirectory());
 		File selected = chooser.showSaveDialog(this.owner);
 		if (selected != null)
 		{
 			this.outputField.setText(selected.getAbsolutePath());
+			rememberLastWriteDirectory(selected);
 		}
 	}
 
 	private boolean isBlank(String value)
 	{
 		return value == null || value.trim().isEmpty();
+	}
+
+	private boolean validateInputs(File templateFile, File outputFile)
+	{
+		if (!templateFile.exists() || !templateFile.isFile())
+		{
+			AlertBox.showError(this.owner,
+				"Template file does not exist: " + templateFile.getAbsolutePath());
+			return false;
+		}
+
+		File outputDir = outputFile.getParentFile();
+		if (outputDir != null && !outputDir.exists())
+		{
+			AlertBox.showError(this.owner,
+				"Output directory does not exist: " + outputDir.getAbsolutePath());
+			return false;
+		}
+
+		return true;
+	}
+
+	private void setInitialDirectory(FileChooser chooser, String pathValue)
+	{
+		if (pathValue == null || pathValue.isBlank())
+		{
+			return;
+		}
+		try
+		{
+			Path path = Path.of(pathValue);
+			File dir = path.toFile();
+			if (dir.isDirectory())
+			{
+				chooser.setInitialDirectory(dir);
+			}
+		}
+		catch (InvalidPathException ex)
+		{
+			// ignore invalid stored preference
+		}
+	}
+
+	private void rememberLastDirectory(File file)
+	{
+		if (file == null)
+		{
+			return;
+		}
+		File dir = file.getParentFile();
+		if (dir != null)
+		{
+			PreferencesManager.setLastDirectory(dir.getAbsolutePath());
+		}
+	}
+
+	private void rememberLastWriteDirectory(File file)
+	{
+		if (file == null)
+		{
+			return;
+		}
+		File dir = file.getParentFile();
+		if (dir != null)
+		{
+			PreferencesManager.setLastWriteDirectory(dir.getAbsolutePath());
+		}
 	}
 }
