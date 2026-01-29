@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -47,6 +48,42 @@ public class ExcelWorkbookPageReportService
 		String sql
 	) throws IOException
 	{
+		return populateWorkbookPage(
+			templateFile,
+			outputFile,
+			sheetName,
+			fieldMapResource,
+			beanClass,
+			sql,
+			null
+		);
+	}
+
+	/**
+	 * Opens the template workbook, queries data for a page, fills a bean, writes
+	 * the mapped cells, and saves the output workbook.
+	 *
+	 * @param templateFile the input XLSX template
+	 * @param outputFile the destination XLSX file
+	 * @param sheetName the worksheet to populate
+	 * @param fieldMapResource classpath resource for the field map CSV
+	 * @param beanClass bean class matching the worksheet
+	 * @param sql SQL used to fetch data for the bean
+	 * @param emptyBeanSupplier optional supplier for an empty bean if no rows are returned
+	 * @return the output file
+	 * @param <B> bean type
+	 * @throws IOException when reading or writing fails
+	 */
+	public <B> File populateWorkbookPage(
+		File templateFile,
+		File outputFile,
+		String sheetName,
+		String fieldMapResource,
+		Class<B> beanClass,
+		String sql,
+		Supplier<B> emptyBeanSupplier
+	) throws IOException
+	{
 		if (templateFile == null || !templateFile.exists())
 		{
 			throw new IOException("Template file does not exist: " + templateFile);
@@ -77,7 +114,7 @@ public class ExcelWorkbookPageReportService
 
 		LOGGER.info("Querying report data for sheet {}.", sheetName);
 		List<B> beans = ReportDataFetcher.queryRowBasedBeans(beanClass, sql);
-		B bean = resolveBean(beanClass, beans);
+		B bean = resolveBean(beanClass, beans, emptyBeanSupplier);
 
 		try (FileInputStream in = new FileInputStream(templateFile);
 			Workbook workbook = WorkbookFactory.create(in))
@@ -95,11 +132,17 @@ public class ExcelWorkbookPageReportService
 		return outputFile;
 	}
 
-	private <B> B resolveBean(Class<B> beanClass, List<B> beans)
+	private <B> B resolveBean(Class<B> beanClass, List<B> beans,
+		Supplier<B> emptyBeanSupplier)
 	{
 		if (beans != null && !beans.isEmpty())
 		{
 			return beans.get(0);
+		}
+
+		if (emptyBeanSupplier != null)
+		{
+			return emptyBeanSupplier.get();
 		}
 
 		try
@@ -112,8 +155,10 @@ public class ExcelWorkbookPageReportService
 		catch (InstantiationException | IllegalAccessException
 			| InvocationTargetException | NoSuchMethodException ex)
 		{
-			throw new IllegalStateException(
-				"Unable to instantiate bean for " + beanClass.getName(), ex);
+			LOGGER.warn(
+				"Unable to instantiate bean for {}. Skipping template writes.",
+				beanClass.getName(), ex);
+			return null;
 		}
 	}
 }
