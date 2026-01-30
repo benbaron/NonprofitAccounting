@@ -11,6 +11,7 @@ import java.util.Locale;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import nonprofitbookkeeping.service.ReportService;
+import nonprofitbookkeeping.model.supplemental.SupplementalLineKind;
 
 /**
  * Represents an account with entries and a many-to-many relationship with
@@ -33,6 +34,8 @@ public final class Account implements Serializable
 	@JsonProperty private String parentAccountId;
 	@JsonProperty private String currency;
 	@JsonProperty private BigDecimal openingBalance = BigDecimal.ZERO;
+	@JsonProperty private List<SupplementalLineKind> supplementalLineKinds =
+		new ArrayList<>();
 	
 	/* ------------------------------------------------------------------ */
 	/**
@@ -365,6 +368,31 @@ public final class Account implements Serializable
 	public void setOpeningBalance(BigDecimal openingBalance)
 	{
 		this.openingBalance = openingBalance;
+		
+	}
+
+	/**
+	 * Returns the supplemental line kinds associated with this account.
+	 *
+	 * @return list of supplemental line kinds (never null)
+	 */
+	public List<SupplementalLineKind> getSupplementalLineKinds()
+	{
+		return this.supplementalLineKinds;
+		
+	}
+
+	/**
+	 * Sets the supplemental line kinds associated with this account.
+	 *
+	 * @param supplementalLineKinds kinds to set
+	 */
+	public void setSupplementalLineKinds(
+		List<SupplementalLineKind> supplementalLineKinds)
+	{
+		this.supplementalLineKinds =
+			supplementalLineKinds == null ? new ArrayList<>() :
+				new ArrayList<>(supplementalLineKinds);
 		
 	}
 	

@@ -5,6 +5,7 @@ import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountType;
+import nonprofitbookkeeping.model.supplemental.SupplementalLineKind;
 
 import java.math.BigDecimal;
 import java.sql.*;
@@ -32,9 +33,9 @@ public class AccountRepository
 		String sql =
 			"""
 				                                MERGE INTO account(account_number, name, account_code, account_type, increase_side,
-				                       parent_account_id, currency, opening_balance)
+				                       parent_account_id, currency, opening_balance, supplemental_kinds)
 				    KEY(account_number)
-				    VALUES(?,?,?,?,?,?,?,?)
+				    VALUES(?,?,?,?,?,?,?,?,?)
 				""";
 		
 		try (Connection c = Database.get().getConnection();
@@ -52,6 +53,8 @@ public class AccountRepository
 			ps.setString(++i, a.getCurrency());
 			ps.setBigDecimal(++i, a.getOpeningBalance() == null ?
 				BigDecimal.ZERO : a.getOpeningBalance());
+			ps.setString(++i,
+				encodeSupplementalKinds(a.getSupplementalLineKinds()));
 			ps.executeUpdate();
 		}
 		
@@ -133,6 +136,8 @@ public class AccountRepository
 				a.setParentAccountId(rs.getString("parent_account_id"));
 				a.setCurrency(rs.getString("currency"));
 				a.setOpeningBalance(rs.getBigDecimal("opening_balance"));
+				a.setSupplementalLineKinds(
+					decodeSupplementalKinds(rs.getString("supplemental_kinds")));
 				byNumber.put(a.getAccountNumber(), a);
 			}
 			
@@ -265,8 +270,8 @@ public class AccountRepository
 		
 		try (PreparedStatement insertAccount = c.prepareStatement(
 			"INSERT INTO account(account_number, name, account_code, account_type, " +
-				"increase_side, parent_account_id, currency, opening_balance) " +
-				"VALUES (?,?,?,?,?,?,?,?)");
+				"increase_side, parent_account_id, currency, opening_balance, supplemental_kinds) " +
+				"VALUES (?,?,?,?,?,?,?,?,?)");
 			PreparedStatement insertFund = c.prepareStatement(
 				"INSERT INTO account_fund(account_number, fund_id) VALUES (?,?)"))
 		{
@@ -288,6 +293,8 @@ public class AccountRepository
 				BigDecimal openingBalance = account.getOpeningBalance();
 				insertAccount.setBigDecimal(++i,
 					openingBalance == null ? BigDecimal.ZERO : openingBalance);
+				insertAccount.setString(++i,
+					encodeSupplementalKinds(account.getSupplementalLineKinds()));
 				insertAccount.addBatch();
 				
 				List<String> funds = account.getAssociatedFundIds();
@@ -316,6 +323,56 @@ public class AccountRepository
 			insertFund.executeBatch();
 		}
 		
+	}
+
+	private static String encodeSupplementalKinds(List<SupplementalLineKind> kinds)
+	{
+		
+		if (kinds == null || kinds.isEmpty())
+		{
+			return null;
+		}
+		
+		return kinds.stream()
+			.filter(kind -> kind != null)
+			.map(SupplementalLineKind::name)
+			.sorted()
+			.reduce((a, b) -> a + "," + b)
+			.orElse(null);
+	}
+
+	private static List<SupplementalLineKind> decodeSupplementalKinds(String value)
+	{
+		
+		if (value == null || value.isBlank())
+		{
+			return List.of();
+		}
+		
+		String[] parts = value.split(",");
+		List<SupplementalLineKind> kinds = new ArrayList<>();
+		
+		for (String part : parts)
+		{
+			String trimmed = part.trim();
+			
+			if (trimmed.isEmpty())
+			{
+				continue;
+			}
+			
+			try
+			{
+				kinds.add(SupplementalLineKind.valueOf(trimmed));
+			}
+			catch (IllegalArgumentException ex)
+			{
+				// ignore unknown values for forward compatibility
+			}
+			
+		}
+		
+		return kinds;
 	}
 	
 }
