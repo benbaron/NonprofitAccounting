@@ -83,8 +83,19 @@ def main() -> int:
     ]
     subprocess.run(cmd, check=True, env=env)
 
+    sql_file = output_dir / f"{db_base}.h2.sql"
     print("Recovery complete.")
-    print(f"Look for a file like: {output_dir}/{db_base}.h2.sql")
+    print(f"Look for a file like: {sql_file}")
+    print("")
+    print("To import into the app:")
+    print("  1) Open/Create H2 DB...")
+    print("  2) Database -> Import H2 script into DB... and select the file above")
+    print("")
+    print("To import via H2 RunScript:")
+    print(f"  java -cp {h2_jar} org.h2.tools.RunScript \\")
+    print("    -url jdbc:h2:/path/to/db \\")
+    print("    -user sa -password '' \\")
+    print(f"    -script \"{sql_file}\"")
     return 0
 
 
