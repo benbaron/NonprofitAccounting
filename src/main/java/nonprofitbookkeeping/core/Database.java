@@ -71,9 +71,11 @@ public final class Database {
                   increase_side VARCHAR(16),
                   parent_account_id VARCHAR(64),
                   currency VARCHAR(8),
-                  opening_balance DECIMAL(18,2) DEFAULT 0
+                  opening_balance DECIMAL(18,2) DEFAULT 0,
+                  supplemental_kinds VARCHAR(255)
                 )
             """);
+            st.execute("ALTER TABLE account ADD COLUMN IF NOT EXISTS supplemental_kinds VARCHAR(255);");
             st.execute("""
                 CREATE TABLE IF NOT EXISTS account_fund(
                   account_number VARCHAR(64) NOT NULL,

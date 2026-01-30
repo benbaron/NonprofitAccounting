@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nonprofitbookkeeping.model.*;
+import nonprofitbookkeeping.model.supplemental.SupplementalLineKind;
 
 /**
  * Thin façade over {@link ChartOfAccounts} that provides CRUD helpers used by
@@ -122,7 +123,8 @@ public class ChartOfAccountsService
 	public static void update(	Account tgt, 
 	                          	String name, 
 	                          	AccountType accountType,
-								BigDecimal openingBal)
+								BigDecimal openingBal,
+								List<SupplementalLineKind> supplementalLineKinds)
 	{
 		
 		if (tgt == null)
@@ -133,6 +135,7 @@ public class ChartOfAccountsService
 		tgt.setName(name);
 		tgt.setAccountType(accountType);
 		tgt.setOpeningBalance(openingBal);
+		tgt.setSupplementalLineKinds(supplementalLineKinds);
 	
     try {
         new nonprofitbookkeeping.persistence.AccountRepository().upsert(tgt);
@@ -243,6 +246,7 @@ public class ChartOfAccountsService
 		clone.setName(src.getName());
 		clone.setAccountType(src.getAccountType());
 		clone.setOpeningBalance(src.getOpeningBalance());
+		clone.setSupplementalLineKinds(src.getSupplementalLineKinds());
 		
 		/* attach to chart */
 		if (parentDest == null)
