@@ -27,6 +27,7 @@ import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountType;
+import nonprofitbookkeeping.model.supplemental.SupplementalLineKind;
 
 /**
  * Utility for persisting a {@link ChartOfAccounts} to / from either a human-readable
@@ -121,7 +122,7 @@ public final class ChartOfAccountsIOService
 	 * Writes the given {@link ChartOfAccounts} object to an Excel workbook at the
 	 * specified {@link Path}. The workbook will contain a single sheet named
 	 * "COA" with columns:
-	 * <code>Number, Name, Type, Parent, IncreaseSide, OpeningBalance</code>.
+	 * <code>Number, Name, Type, Parent, IncreaseSide, OpeningBalance, SupplementalKinds</code>.
 	 *
 	 * @param coa  The {@link ChartOfAccounts} to export. Must not be {@code null}.
 	 * @param path The destination {@link Path} for the workbook. Parent directories
@@ -154,6 +155,7 @@ public final class ChartOfAccountsIOService
 			header.createCell(3).setCellValue("Parent");
 			header.createCell(4).setCellValue("IncreaseSide");
 			header.createCell(5).setCellValue("OpeningBalance");
+			header.createCell(6).setCellValue("SupplementalKinds");
 			
 			int rowIdx = 1;
 			
@@ -177,6 +179,9 @@ public final class ChartOfAccountsIOService
 				{
 					row.createCell(5).setCellValue(0);
 				}
+				
+				row.createCell(6).setCellValue(
+					encodeSupplementalKinds(acc.getSupplementalLineKinds()));
 				
 			}
 			
@@ -277,9 +282,14 @@ public final class ChartOfAccountsIOService
 				// Col 5 = opening balance (BigDecimal)
 				BigDecimal bal = getBigDecimal(row.getCell(5), eval, BigDecimal.ZERO);
 				
+				// Col 6 = supplemental kinds (comma-separated)
+				String supplementalKinds = getString(row.getCell(6), eval);
+				
 				Account acc = new Account(number, name, side);
 				acc.setAccountType(type);
 				acc.setOpeningBalance(bal);
+				acc.setSupplementalLineKinds(
+					decodeSupplementalKinds(supplementalKinds));
 				
 				accountMap.put(number, acc);
 				parentNumbers.put(number, parentNum);
@@ -472,6 +482,58 @@ public final class ChartOfAccountsIOService
 				throw new IllegalArgumentException("Unsupported cell type: " + type);
 		}
 		
+	}
+
+	private static String encodeSupplementalKinds(
+		java.util.List<SupplementalLineKind> kinds)
+	{
+		
+		if (kinds == null || kinds.isEmpty())
+		{
+			return "";
+		}
+		
+		return kinds.stream()
+			.filter(kind -> kind != null)
+			.map(SupplementalLineKind::name)
+			.sorted()
+			.reduce((a, b) -> a + "," + b)
+			.orElse("");
+	}
+
+	private static java.util.List<SupplementalLineKind> decodeSupplementalKinds(
+		String value)
+	{
+		
+		if (value == null || value.isBlank())
+		{
+			return java.util.List.of();
+		}
+		
+		String[] parts = value.split(",");
+		java.util.List<SupplementalLineKind> kinds = new java.util.ArrayList<>();
+		
+		for (String part : parts)
+		{
+			String trimmed = part.trim();
+			
+			if (trimmed.isEmpty())
+			{
+				continue;
+			}
+			
+			try
+			{
+				kinds.add(SupplementalLineKind.valueOf(trimmed));
+			}
+			catch (IllegalArgumentException ex)
+			{
+				// ignore unknown values
+			}
+			
+		}
+		
+		return kinds;
 	}
 	
 }

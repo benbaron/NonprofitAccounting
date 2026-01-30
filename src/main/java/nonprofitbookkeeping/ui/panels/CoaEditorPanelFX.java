@@ -4,6 +4,8 @@ package nonprofitbookkeeping.ui.panels;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.EnumMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -18,6 +20,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -27,6 +30,7 @@ import nonprofitbookkeeping.service.ChartOfAccountsIOService;
 import nonprofitbookkeeping.service.ChartOfAccountsService;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.model.supplemental.SupplementalLineKind;
 
 /**
  * Interactive ladder view for editing a company's Chart of Accounts.
@@ -86,6 +90,9 @@ public class CoaEditorPanelFX extends BorderPane
 	private TextField balF;
 	/** ComboBox for selecting account type in the add/edit dialog. */
 	private ComboBox<AccountType> typeBox;
+	/** Supplemental schedule selection checkboxes in the add/edit dialog. */
+	private final EnumMap<SupplementalLineKind, CheckBox> supplementalKindChecks =
+		new EnumMap<>(SupplementalLineKind.class);
 	
 	private CoaEditorPanelCompanyListener companyListener;
 	private HBox actionButtonsBox;
@@ -390,6 +397,8 @@ public class CoaEditorPanelFX extends BorderPane
 		gp.addRow(1, new Label("Name"), this.nameF);
 		gp.addRow(2, new Label("Type"), this.typeBox); // combo instead of text
 		gp.addRow(3, new Label("Opening Balance"), this.balF);
+		gp.addRow(4, new Label("Supplemental Schedules"),
+			buildSupplementalKindsEditor(editing));
 		
 		dlg.getDialogPane().setContent(gp);
 		dlg.setResultConverter(btn -> {
@@ -411,7 +420,7 @@ public class CoaEditorPanelFX extends BorderPane
 		if (isEdit)
 		{
 			ChartOfAccountsService.update(editing, det.getName(), det.getAccountType(),
-				det.getOpeningBalance());
+				det.getOpeningBalance(), det.getSupplementalLineKinds());
 			this.tree.refresh();
 		}
 		else
@@ -698,7 +707,65 @@ public class CoaEditorPanelFX extends BorderPane
 			a.setOpeningBalance(BigDecimal.ZERO); // Default if parsing fails
 		}
 		
+		a.setSupplementalLineKinds(getSelectedSupplementalKinds());
 		return a;
+	}
+
+	private VBox buildSupplementalKindsEditor(Account editing)
+	{
+		this.supplementalKindChecks.clear();
+		VBox box = new VBox(4);
+		for (SupplementalLineKind kind : SupplementalLineKind.values())
+		{
+			CheckBox checkBox = new CheckBox(formatSupplementalKindLabel(kind));
+			if (editing != null && editing.getSupplementalLineKinds() != null
+				&& editing.getSupplementalLineKinds().contains(kind))
+			{
+				checkBox.setSelected(true);
+			}
+			this.supplementalKindChecks.put(kind, checkBox);
+			box.getChildren().add(checkBox);
+		}
+		return box;
+	}
+
+	private List<SupplementalLineKind> getSelectedSupplementalKinds()
+	{
+		List<SupplementalLineKind> selected = new java.util.ArrayList<>();
+		for (SupplementalLineKind kind : SupplementalLineKind.values())
+		{
+			CheckBox checkBox = this.supplementalKindChecks.get(kind);
+			if (checkBox != null && checkBox.isSelected())
+			{
+				selected.add(kind);
+			}
+		}
+		return selected;
+	}
+
+	private static String formatSupplementalKindLabel(SupplementalLineKind kind)
+	{
+		if (kind == null)
+		{
+			return "";
+		}
+		String lower = kind.name().toLowerCase().replace('_', ' ');
+		String[] parts = lower.split(" ");
+		StringBuilder builder = new StringBuilder();
+		for (String part : parts)
+		{
+			if (part.isEmpty())
+			{
+				continue;
+			}
+			if (builder.length() > 0)
+			{
+				builder.append(' ');
+			}
+			builder.append(Character.toUpperCase(part.charAt(0)))
+				.append(part.substring(1));
+		}
+		return builder.toString();
 	}
 	
 	
