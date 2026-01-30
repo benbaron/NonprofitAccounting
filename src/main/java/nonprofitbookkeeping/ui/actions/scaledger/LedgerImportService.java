@@ -19,11 +19,23 @@ public class LedgerImportService
     private final LedgerToDomainMapper mapper;
     private final LedgerPersistenceGateway persistenceGateway;
 
+    /**
+     * Instantiates a new ledger import service.
+     *
+     * @param persistenceGateway the persistence gateway
+     */
     public LedgerImportService(LedgerPersistenceGateway persistenceGateway)
     {
         this(new LedgerSheetImporter(), new LedgerToDomainMapper(), persistenceGateway);
     }
 
+    /**
+     * Instantiates a new ledger import service.
+     *
+     * @param sheetImporter the sheet importer
+     * @param mapper the mapper
+     * @param persistenceGateway the persistence gateway
+     */
     LedgerImportService(LedgerSheetImporter sheetImporter,
                         LedgerToDomainMapper mapper,
                         LedgerPersistenceGateway persistenceGateway)
