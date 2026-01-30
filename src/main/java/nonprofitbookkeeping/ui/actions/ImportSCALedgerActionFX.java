@@ -73,9 +73,19 @@ public class ImportSCALedgerActionFX implements EventHandler<ActionEvent>
 			return;
 		}
 		
-		runImport(chartMapFile.toPath(), workbookFile.toPath(),
-			sheetName.get());
 		
+		if (sheetName.get().equals("all"))
+		{
+			runImport(chartMapFile.toPath(), workbookFile.toPath(),	"Ledger_Q1");
+			runImport(chartMapFile.toPath(), workbookFile.toPath(),	"Ledger_Q2");
+			runImport(chartMapFile.toPath(), workbookFile.toPath(),	"Ledger_Q3");
+			runImport(chartMapFile.toPath(), workbookFile.toPath(),	"Ledger_Q4");
+		}
+		else
+		{
+			runImport(chartMapFile.toPath(), workbookFile.toPath(),	
+				sheetName.get());
+		}
 	}
 	
 	/**
@@ -131,6 +141,11 @@ public class ImportSCALedgerActionFX implements EventHandler<ActionEvent>
 		
 	}
 
+	/**
+	 * Resolve import strategy.
+	 *
+	 * @return true, if successful
+	 */
 	private boolean resolveImportStrategy()
 	{
 		if (!CurrentCompany.isOpen() || !Database.isInitialized())
