@@ -51,7 +51,6 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-import javafx.util.converter.BigDecimalStringConverter;
 
 import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountSide;
@@ -79,7 +78,6 @@ import nonprofitbookkeeping.ui.javafx.supplemental.SupplementalLinesTabs;
 import nonprofitbookkeeping.util.FormatUtils;
 import nonprofitbookkeeping.service.PersonService;
 import nonprofitbookkeeping.model.Person;
-import nonprofitbookkeeping.model.AccountType;
 
 /**
  * Shared workspace UI for creating or editing general journal entries.
@@ -433,7 +431,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 debitCol.setOnEditCommit(ev -> {
                         Line row = ev.getRowValue();
                         row.debit.set(amountOrZero(ev.getNewValue()));
-                        if (amountOrZero(row.debit.get()).signum() > 0)
+                        if (amountOrZero(row.debit.get()).signum() != 0)
                         {
                                 row.credit.set(BigDecimal.ZERO);
                         }
@@ -444,7 +442,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 creditCol.setOnEditCommit(ev -> {
                         Line row = ev.getRowValue();
                         row.credit.set(amountOrZero(ev.getNewValue()));
-                        if (amountOrZero(row.credit.get()).signum() > 0)
+                        if (amountOrZero(row.credit.get()).signum() != 0)
                         {
                                 row.debit.set(BigDecimal.ZERO);
                         }
@@ -527,10 +525,40 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 TableColumn<Line, BigDecimal> c = new TableColumn<>(title);
                 c.setCellValueFactory(cell -> prop.call(cell.getValue()));
                 c.setCellFactory(param -> new FocusCommitTextFieldTableCell<>(
-                                new BigDecimalStringConverter()));
+                                createCurrencyConverter()));
                 c.setEditable(true);
                 c.setStyle("-fx-alignment: CENTER-RIGHT;");
                 return c;
+        }
+
+        private static StringConverter<BigDecimal> createCurrencyConverter()
+        {
+                return new StringConverter<>()
+                {
+                        @Override public String toString(BigDecimal value)
+                        {
+                                if (value == null)
+                                {
+                                        return "";
+                                }
+                                return FormatUtils.formatCurrency(value);
+                        }
+
+                        @Override public BigDecimal fromString(String value)
+                        {
+                                if (value == null || value.isBlank())
+                                {
+                                        return null;
+                                }
+                                BigDecimal parsed = FormatUtils.parseCurrency(value);
+                                if (parsed == null)
+                                {
+                                        throw new IllegalArgumentException(
+                                                        "Invalid currency amount: " + value);
+                                }
+                                return parsed;
+                        }
+                };
         }
 
         private void attachListeners()
@@ -711,51 +739,12 @@ public class JournalEntryWorkspaceFX extends BorderPane
 
         private Set<SupplementalLineKind> kindsForAccount(Account account)
         {
-                Set<SupplementalLineKind> kinds = EnumSet.noneOf(SupplementalLineKind.class);
-                String name = account.getName() == null ? "" : account.getName().toLowerCase();
-
-                if (name.contains("receivable"))
+                if (account == null || account.getSupplementalLineKinds() == null
+                        || account.getSupplementalLineKinds().isEmpty())
                 {
-                        kinds.add(SupplementalLineKind.RECEIVABLE);
+                        return EnumSet.noneOf(SupplementalLineKind.class);
                 }
-                if (name.contains("payable"))
-                {
-                        kinds.add(SupplementalLineKind.PAYABLE);
-                }
-                if (name.contains("prepaid"))
-                {
-                        kinds.add(SupplementalLineKind.PREPAID_EXPENSE);
-                }
-                if (name.contains("deferred"))
-                {
-                        kinds.add(SupplementalLineKind.DEFERRED_REVENUE);
-                }
-
-                AccountType type = account.getAccountType();
-                if (type == AccountType.ASSET || type == AccountType.FIXED_ASSET
-                        || type == AccountType.INVEST || type == AccountType.SIMPLEINVEST
-                        || type == AccountType.MUTUAL || type == AccountType.BANK
-                        || type == AccountType.CASH || type == AccountType.CHECKING
-                        || type == AccountType.MONEYMKRT)
-                {
-                        if (!kinds.contains(SupplementalLineKind.RECEIVABLE)
-                                && !kinds.contains(SupplementalLineKind.PREPAID_EXPENSE))
-                        {
-                                kinds.add(SupplementalLineKind.OTHER_ASSET);
-                        }
-                }
-
-                if (type == AccountType.LIABILITY || type == AccountType.LONG_TERM_LIABILITY
-                        || type == AccountType.CREDIT || type == AccountType.CREDITCARD)
-                {
-                        if (!kinds.contains(SupplementalLineKind.PAYABLE)
-                                && !kinds.contains(SupplementalLineKind.DEFERRED_REVENUE))
-                        {
-                                kinds.add(SupplementalLineKind.OTHER_LIABILITY);
-                        }
-                }
-
-                return kinds;
+                return EnumSet.copyOf(account.getSupplementalLineKinds());
         }
 
         private void applyDefaultAccountsFromSettings()
@@ -921,7 +910,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
                                 return Optional.of("Each amount must reference an account.");
                         }
 
-                        if (debitAmount.signum() > 0 && creditAmount.signum() > 0)
+                        if (debitAmount.signum() != 0 && creditAmount.signum() != 0)
                         {
                                 return Optional.of(
                                                 "A line cannot contain both a debit and a credit amount.");
@@ -937,12 +926,12 @@ public class JournalEntryWorkspaceFX extends BorderPane
 
                         hasAmounts |= hasValue;
 
-                        if (debitAmount.signum() > 0)
+                        if (debitAmount.signum() != 0)
                         {
                                 debit = debit.add(debitAmount);
                         }
 
-                        if (creditAmount.signum() > 0)
+                        if (creditAmount.signum() != 0)
                         {
                                 credit = credit.add(creditAmount);
                         }
@@ -1120,13 +1109,13 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 BigDecimal debitAmount = amountOrZero(line.debit.get());
                 BigDecimal creditAmount = amountOrZero(line.credit.get());
 
-                if (account.getIncreaseSide() == AccountSide.DEBIT && creditAmount.signum() > 0
+                if (account.getIncreaseSide() == AccountSide.DEBIT && creditAmount.signum() != 0
                                 && debitAmount.signum() == 0)
                 {
                         line.debit.set(creditAmount);
                         line.credit.set(BigDecimal.ZERO);
                 }
-                else if (account.getIncreaseSide() == AccountSide.CREDIT && debitAmount.signum() > 0
+                else if (account.getIncreaseSide() == AccountSide.CREDIT && debitAmount.signum() != 0
                                 && creditAmount.signum() == 0)
                 {
                         line.credit.set(debitAmount);
@@ -1180,14 +1169,14 @@ public class JournalEntryWorkspaceFX extends BorderPane
                         String acctNum = account.getAccountNumber();
                         String acctName = account.getName();
 
-                        if (debitAmount.signum() > 0)
+                        if (debitAmount.signum() != 0)
                         {
                                 entries.add(new AccountingEntry(debitAmount, acctNum,
                                                         AccountSide.DEBIT, acctName));
                                 debit = debit.add(debitAmount);
                         }
 
-                        if (creditAmount.signum() > 0)
+                        if (creditAmount.signum() != 0)
                         {
                                 entries.add(new AccountingEntry(creditAmount, acctNum,
                                                         AccountSide.CREDIT, acctName));
