@@ -14,7 +14,7 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Utility class for loading data from SCA (Standard Chart of Accounts) formatted
+ * Utility class for loading data from SCA  formatted
  * Excel spreadsheets into Java objects using JXLS Reader.
  * It uses an XML mapping file to define how data from the Excel sheet
  * corresponds to Java bean properties.

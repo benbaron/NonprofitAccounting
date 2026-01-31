@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package nonprofitbookkeeping.ui.actions.scaledger;
 
 import org.apache.poi.EncryptedDocumentException;
@@ -68,6 +71,8 @@ public class LedgerSheetImporter
      * @param workbookPath path to Excel file
      * @param sheetName    e.g. "Ledger_Q4"
      * @param translation  chart-of-accounts translator (may be null)
+     * @return the ledger quarter
+     * @throws IOException Signals that an I/O exception has occurred.
      */
     public LedgerQuarter importQuarter(Path workbookPath,
                                        String sheetName,
@@ -148,6 +153,15 @@ public class LedgerSheetImporter
         }
     }
 
+    /**
+     * Import quarter streaming xlsx.
+     *
+     * @param workbookPath the workbook path
+     * @param sheetName the sheet name
+     * @param translation the translation
+     * @return the ledger quarter
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     private LedgerQuarter importQuarterStreamingXlsx(Path workbookPath,
                                                      String sheetName,
                                                      ChartTranslationMap translation)
@@ -330,6 +344,12 @@ public class LedgerSheetImporter
         return idx;
     }
 
+    /**
+     * Map columns.
+     *
+     * @param headerValues the header values
+     * @return the column index
+     */
     private ColumnIndex mapColumns(Map<Integer, String> headerValues)
     {
         ColumnIndex idx = new ColumnIndex();
@@ -559,6 +579,14 @@ public class LedgerSheetImporter
         }
     }
 
+    /**
+     * Adds the split from group.
+     *
+     * @param rowValues the row values
+     * @param group the group
+     * @param outRow the out row
+     * @param translation the translation
+     */
     private void addSplitFromGroup(Map<Integer, String> rowValues,
                                    SplitGroup group,
                                    LedgerRow outRow,
@@ -600,6 +628,13 @@ public class LedgerSheetImporter
         }
     }
 
+    /**
+     * Read date.
+     *
+     * @param rowValues the row values
+     * @param colIdx the col idx
+     * @return the local date
+     */
     private LocalDate readDate(Map<Integer, String> rowValues, int colIdx)
     {
         String value = getCellString(rowValues, colIdx);
@@ -648,6 +683,13 @@ public class LedgerSheetImporter
         }
     }
 
+    /**
+     * Read amount.
+     *
+     * @param rowValues the row values
+     * @param colIdx the col idx
+     * @return the java.math. big decimal
+     */
     private java.math.BigDecimal readAmount(Map<Integer, String> rowValues, int colIdx)
     {
         String value = getCellString(rowValues, colIdx);
@@ -673,6 +715,13 @@ public class LedgerSheetImporter
         }
     }
 
+    /**
+     * Gets the cell string.
+     *
+     * @param rowValues the row values
+     * @param colIdx the col idx
+     * @return the cell string
+     */
     private String getCellString(Map<Integer, String> rowValues, int colIdx)
     {
         if (rowValues == null || colIdx < 0)
@@ -690,12 +739,25 @@ public class LedgerSheetImporter
         return trimmed.isEmpty() ? null : trimmed;
     }
 
+    /**
+     * Checks if is streaming workbook.
+     *
+     * @param workbookPath the workbook path
+     * @return true, if is streaming workbook
+     */
     private boolean isStreamingWorkbook(Path workbookPath)
     {
         String name = workbookPath.getFileName().toString().toLowerCase(Locale.ROOT);
         return name.endsWith(".xlsx") || name.endsWith(".xlsm");
     }
 
+    /**
+     * Creates the xml reader.
+     *
+     * @param handler the handler
+     * @return the XML reader
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     private XMLReader createXmlReader(ContentHandler handler) throws IOException
     {
         try
@@ -712,11 +774,17 @@ public class LedgerSheetImporter
         }
     }
 
+    /**
+     * The Class StopParsingException.
+     */
     private static class StopParsingException extends RuntimeException
     {
         private static final long serialVersionUID = 1L;
     }
 
+    /**
+     * The Class LedgerStreamingHandler.
+     */
     private class LedgerStreamingHandler
         implements XSSFSheetXMLHandler.SheetContentsHandler
     {

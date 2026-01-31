@@ -90,6 +90,13 @@ public class LedgerToDomainMapper
         return transaction;
     }
 
+    /**
+     * Map split.
+     *
+     * @param split the split
+     * @param parent the parent
+     * @return the accounting entry
+     */
     private AccountingEntry mapSplit(LedgerSplit split, AccountingTransaction parent)
     {
         if (split == null)
@@ -130,6 +137,12 @@ public class LedgerToDomainMapper
         return entry;
     }
 
+    /**
+     * Resolve account.
+     *
+     * @param identifier the identifier
+     * @return the account
+     */
     private Account resolveAccount(String identifier)
     {
         if (identifier == null || identifier.isBlank())
@@ -157,6 +170,12 @@ public class LedgerToDomainMapper
         return chart.getAccountByName(identifier);
     }
 
+    /**
+     * Determine account identifier.
+     *
+     * @param split the split
+     * @return the string
+     */
     private String determineAccountIdentifier(LedgerSplit split)
     {
         if (split.getCanonicalCategory() != null && !split.getCanonicalCategory().isBlank())
@@ -166,6 +185,13 @@ public class LedgerToDomainMapper
         return split.getPrimaryRawCategory();
     }
 
+    /**
+     * Determine side.
+     *
+     * @param split the split
+     * @param sign the sign
+     * @return the account side
+     */
     private AccountSide determineSide(LedgerSplit split, int sign)
     {
         if (sign == 0)
