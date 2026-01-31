@@ -44,6 +44,7 @@ import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -326,6 +327,14 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 GridPane grid = new GridPane();
                 grid.setHgap(10);
                 grid.setVgap(8);
+                ColumnConstraints labelColumn = new ColumnConstraints();
+                labelColumn.setMinWidth(Region.USE_PREF_SIZE);
+                labelColumn.setPrefWidth(Region.USE_PREF_SIZE);
+                labelColumn.setMaxWidth(Region.USE_PREF_SIZE);
+                labelColumn.setHgrow(Priority.NEVER);
+                ColumnConstraints fieldColumn = new ColumnConstraints();
+                fieldColumn.setHgrow(Priority.ALWAYS);
+                grid.getColumnConstraints().addAll(labelColumn, fieldColumn);
 
                 int row = 0;
                 addDetailField(grid, row++, "Date", this.datePicker);
