@@ -1,10 +1,13 @@
 package nonprofitbookkeeping.model.supplemental;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public abstract class TxnSupplementalLineBase
+public abstract class TxnSupplementalLineBase implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private long id;
 	private long txnId;
 	private Long entryId;
