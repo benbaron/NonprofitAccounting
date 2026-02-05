@@ -192,6 +192,23 @@ public final class Database {
             st.execute("CREATE INDEX IF NOT EXISTS txn_supplemental_person_idx ON txn_supplemental_line(counterparty_person_id)");
 
             st.execute("""
+                CREATE TABLE IF NOT EXISTS undeposited_funds_item(
+                  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                  date_sent_received VARCHAR(32),
+                  date_transfer_or_check VARCHAR(64),
+                  date_on_statement VARCHAR(32),
+                  name_of_person_business VARCHAR(255),
+                  details_notes VARCHAR(512),
+                  from_to_card_merchant VARCHAR(255),
+                  account_for_payment_or_deposit VARCHAR(128),
+                  amount DECIMAL(12,2),
+                  date_reversed VARCHAR(32),
+                  reversal_approved_by VARCHAR(255)
+                )
+            """);
+            st.execute("CREATE INDEX IF NOT EXISTS undeposited_funds_item_idx ON undeposited_funds_item(id)");
+
+            st.execute("""
                 CREATE TABLE IF NOT EXISTS document(
                   name VARCHAR(128) PRIMARY KEY,
                   content CLOB
