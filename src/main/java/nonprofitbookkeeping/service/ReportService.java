@@ -111,6 +111,7 @@ public class ReportService
 		TRANSFER_OUT_10B_JASPER("transfer_out_10b_jasper"),
 		TRANSFER_OUT_10C_JASPER("transfer_out_10c_jasper"),
 		TRANSFER_OUT_10D_JASPER("transfer_out_10d_jasper"),
+		UNDEPOSITED_FUNDS_JASPER("undeposited_funds_jasper"),
 		SCA_ASSET_DTL_5A_JASPER("sca_asset_dtl_5a_jasper"),
 		SCA_BALANCE_3_JASPER("sca_balance_3_jasper"),
 		SCA_BALANCE_3_V2_JASPER("sca_balance_3_v2_jasper"),
