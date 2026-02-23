@@ -404,5 +404,16 @@ public class DashboardPanelFX extends BorderPane
 		}
 		
 	}
+
+
+	/**
+	 * 
+	 */
+	public void reloadData()
+	{
+		// TODO Auto-generated method stub
+		
+		
+	}
 	
 }
