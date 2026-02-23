@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * The Class UndepositedFundsService.
+ */
 public class UndepositedFundsService
 {
     private final UndepositedFundsRepository repository;

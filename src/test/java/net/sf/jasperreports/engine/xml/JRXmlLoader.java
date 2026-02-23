@@ -58,9 +58,7 @@ public class JRXmlLoader
 	
 	public static final String EXCEPTION_MESSAGE_KEY_NO_LOADER = "xml.loader.unknown.subdataset";
 
-	/**
-	 *
-	 */
+	/** The jasper reports context. */
 	private final JasperReportsContext jasperReportsContext;
 
 	private boolean ignoreConsistencyProblems;

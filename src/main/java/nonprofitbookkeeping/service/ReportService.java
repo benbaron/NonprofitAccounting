@@ -36,7 +36,6 @@ public class ReportService
 	public static final Logger LOGGER =
 		LoggerFactory.getLogger(ReportService.class);
 	
-	
 	/** 
 	 * Mapping of Jasper report types to their generator constructors. 
 	 */
@@ -216,7 +215,7 @@ public class ReportService
 		TRANSFER_OUT_10D_JASPER("transfer_out_10d_jasper"),
 		
 		/** The sca asset dtl 5a jasper. */
-
+		
 		UNDEPOSITED_FUNDS_JASPER("undeposited_funds_jasper"),
 		SCA_ASSET_DTL_5A_JASPER("sca_asset_dtl_5a_jasper"),
 		
