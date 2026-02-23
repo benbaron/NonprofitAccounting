@@ -184,6 +184,7 @@ public class NonprofitBookkeepingFX extends Application
 		static FundAccountingService fas = null;
 		static DonorService donorService = null;
 		static GrantsService grantsService = null;
+		static UndepositedFundsService undepositedFundsService = null;
 		public static SalesService salesService;
 		
 		static
@@ -202,6 +203,7 @@ public class NonprofitBookkeepingFX extends Application
 				fas = new FundAccountingService();
 				donorService = new DonorService();
 				grantsService = new GrantsService();
+				undepositedFundsService = new UndepositedFundsService();
 				
 			}
 			catch (Exception e)
@@ -473,6 +475,11 @@ public class NonprofitBookkeepingFX extends Application
 		add(this.panels, "Grants",
 			e -> showPanel(new GrantsPanelFX(ServiceContainer.grantsService),
 				"Grants"));
+		add(this.panels, "Undeposited Funds",
+			e -> showPanel(
+				new UndepositedFundsPanelFX(
+					ServiceContainer.undepositedFundsService),
+				"Undeposited Funds"));
 		add(this.panels, "Sales & COG",
 			e -> showPanel(
 				new SalesAndCOGPanelFX(ServiceContainer.salesService, null),

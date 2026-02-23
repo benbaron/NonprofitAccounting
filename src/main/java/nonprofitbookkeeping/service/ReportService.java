@@ -214,8 +214,12 @@ public class ReportService
 		
 		/** The transfer out 10d jasper. */
 		TRANSFER_OUT_10D_JASPER("transfer_out_10d_jasper"),
+<<<<<<< HEAD
 		
 		/** The sca asset dtl 5a jasper. */
+=======
+		UNDEPOSITED_FUNDS_JASPER("undeposited_funds_jasper"),
+>>>>>>> branch 'main' of git@github.com:benbaron/NonprofitAccounting.git
 		SCA_ASSET_DTL_5A_JASPER("sca_asset_dtl_5a_jasper"),
 		
 		/** The sca balance 3 jasper. */
