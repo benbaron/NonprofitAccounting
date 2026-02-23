@@ -36,16 +36,33 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class JacksonDataStorer.
+ */
 @Deprecated(forRemoval = true)
 public class JacksonDataStorer implements DataStorer
 {
+        
+        /** The Constant LOGGER. */
         private static final Logger LOGGER = LoggerFactory.getLogger(JacksonDataStorer.class);
 
+        /** The mapper. */
         private ObjectMapper mapper;
+        
+        /** The data storer. */
         public static JacksonDataStorer dataStorer = new JacksonDataStorer();
+        
+        /** The Constant JSON_ENTRY_NAME. */
         private static final String JSON_ENTRY_NAME = "company_data.json";
+        
+        /** The Constant CHART_OF_ACCOUNTS_ENTRY_NAME. */
         private static final String CHART_OF_ACCOUNTS_ENTRY_NAME = "chart_of_accounts.json";
+        
+        /** The Constant COMPANY_PROFILE_ENTRY_NAME. */
         private static final String COMPANY_PROFILE_ENTRY_NAME = "company_profile.json";
+        
+        /** The Constant LEDGER_ENTRY_NAME. */
         private static final String LEDGER_ENTRY_NAME = "ledger.json";
 	
 	/**
@@ -332,6 +349,15 @@ public class JacksonDataStorer implements DataStorer
 
         }
 
+        /**
+         * Write entry.
+         *
+         * @param zos the zos
+         * @param entryName the entry name
+         * @param data the data
+         * @param buffer the buffer
+         * @throws IOException Signals that an I/O exception has occurred.
+         */
         private void writeEntry(ZipOutputStream zos, String entryName, Object data,
                 ByteArrayOutputStream buffer) throws IOException
         {

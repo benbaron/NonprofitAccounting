@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
 /**
  * Loader for the *_fieldmap.csv files emitted by the Excelâ†’JRXML/bean generator.
  *
@@ -26,6 +27,9 @@ import java.util.List;
 public final class FieldMapLoader
 {
 	
+	/**
+	 * Instantiates a new field map loader.
+	 */
 	private FieldMapLoader()
 	{
 	
@@ -34,11 +38,16 @@ public final class FieldMapLoader
 	/**
 	 * Load a fieldmap from a classpath resource, using the given anchor class
 	 * for resource resolution.
-	 *
+	 * 
 	 * Example:
 	 *   FieldMapLoader.loadFromResource(
 	 *       AccountSummaryDataProvider.class,
 	 *       "/reports/AccountSummary_fieldmap.csv");
+	 *
+	 * @param anchor the anchor
+	 * @param resourcePath the resource path
+	 * @return the field map
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static FieldMap loadFromResource(Class<?> anchor,
 		String resourcePath)
@@ -64,8 +73,12 @@ public final class FieldMapLoader
 	
 	/**
 	 * Convenience overload using FieldMapLoader.class as the anchor.
-	 *
+	 * 
 	 * If resourcePath starts with "/", it is treated as absolute.
+	 *
+	 * @param resourcePath the resource path
+	 * @return the field map
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static FieldMap loadFromResource(String resourcePath)
 		throws IOException
@@ -184,11 +197,14 @@ public final class FieldMapLoader
 	
 	/**
 	 * Parse a single CSV line.
-	 *
+	 * 
 	 * This is a small RFC4180-ish parser that understands:
 	 *  - fields separated by commas
 	 *  - double-quoted fields
 	 *  - doubled double-quotes ("") inside quoted fields
+	 *
+	 * @param line the line
+	 * @return the list
 	 */
 	private static List<String> parseCsvLine(String line)
 	{

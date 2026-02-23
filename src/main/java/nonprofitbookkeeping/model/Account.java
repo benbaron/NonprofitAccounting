@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import nonprofitbookkeeping.service.ReportService;
 import nonprofitbookkeeping.model.supplemental.SupplementalLineKind;
 
+// TODO: Auto-generated Javadoc
 /**
  * Represents an account with entries and a many-to-many relationship with
  * {@link Fund}s.
@@ -21,19 +22,39 @@ public final class Account implements Serializable
 {
 	
 	
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -1149966185433260549L;
 	
 	/* ───────────────── fields ──────────── */
+	/** The associated fund ids. */
 	// Store fund references by ID to avoid circular serialization
 	@JsonProperty private List<String> associatedFundIds = new ArrayList<>();
+	
+	/** The account number. */
 	@JsonProperty private String accountNumber;
+	
+	/** The increase side. */
 	@JsonProperty private AccountSide increaseSide;
+	
+	/** The name. */
 	@JsonProperty private String name;
+	
+	/** The account code. */
 	@JsonProperty private String accountCode;
+	
+	/** The account type. */
 	@JsonProperty private AccountType accountType;
+	
+	/** The parent account id. */
 	@JsonProperty private String parentAccountId;
+	
+	/** The currency. */
 	@JsonProperty private String currency;
+	
+	/** The opening balance. */
 	@JsonProperty private BigDecimal openingBalance = BigDecimal.ZERO;
+	
+	/** The supplemental line kinds. */
 	@JsonProperty private List<SupplementalLineKind> supplementalLineKinds =
 		new ArrayList<>();
 	
@@ -63,12 +84,13 @@ public final class Account implements Serializable
 	}
 	
 	
-	/**  
-	 * Constructor Account
-	 * @param string
-	 * @param bankAccountName
-	 * @param asset
-	 * @param zero
+	/**
+	 * Constructor Account.
+	 *
+	 * @param string the string
+	 * @param bankAccountName the bank account name
+	 * @param asset the asset
+	 * @param zero the zero
 	 */
 	public Account(String string, String bankAccountName,
 		AccountType asset, BigDecimal zero)
@@ -87,7 +109,8 @@ public final class Account implements Serializable
 	 * Associates a fund with this account.
 	 * If the fund is not already associated, it adds the fund to this account's list
 	 * of associated funds and adds this account to the fund's list of associated accounts.
-	 * @param fund The fund to associate with this account.
+	 *
+	 * @param fundId the fund id
 	 */
 	public void addFund(String fundId)
 	{
@@ -105,7 +128,8 @@ public final class Account implements Serializable
 	 * Disassociates a fund from this account.
 	 * Removes the fund from this account's list of associated funds and
 	 * removes this account from the fund's list of associated accounts.
-	 * @param fund The fund to disassociate from this account.
+	 *
+	 * @param fundId the fund id
 	 */
 	public void removeFund(String fundId)
 	{
@@ -141,7 +165,11 @@ public final class Account implements Serializable
 		
 	}
 	
-	/** @return {@code true} if this account is a child of another. */
+	/**
+	 * Checks for parent.
+	 *
+	 * @return {@code true} if this account is a child of another.
+	 */
 	public boolean hasParent()
 	{
 		return this.parentAccountId != null && !this.parentAccountId.isBlank();
@@ -153,6 +181,8 @@ public final class Account implements Serializable
 	 * here mainly for compatibility with map-like code that expects a
 	 * {@code Collection<Account>}.  If you later store sub-accounts directly
 	 * inside the class, change this to return an unmodifiable view of that list.
+	 *
+	 * @return the collection
 	 */
 	public Collection<Account> values()
 	{
@@ -396,6 +426,12 @@ public final class Account implements Serializable
 		
 	}
 	
+	/**
+	 * Coerce account type.
+	 *
+	 * @param value the value
+	 * @return the account type
+	 */
 	private static AccountType coerceAccountType(Object value)
 	{
 		
@@ -422,6 +458,12 @@ public final class Account implements Serializable
 		
 	}
 	
+	/**
+	 * Coerce account side.
+	 *
+	 * @param value the value
+	 * @return the account side
+	 */
 	private static AccountSide coerceAccountSide(Object value)
 	{
 		
@@ -448,6 +490,12 @@ public final class Account implements Serializable
 		
 	}
 	
+	/**
+	 * Default increase side.
+	 *
+	 * @param type the type
+	 * @return the account side
+	 */
 	private static AccountSide defaultIncreaseSide(AccountType type)
 	{
 		
@@ -469,6 +517,12 @@ public final class Account implements Serializable
 		
 	}
 	
+	/**
+	 * Coerce opening balance.
+	 *
+	 * @param value the value
+	 * @return the big decimal
+	 */
 	private static BigDecimal coerceOpeningBalance(Object value)
 	{
 		

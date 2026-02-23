@@ -18,6 +18,7 @@ import nonprofitbookkeeping.model.InventoryItem;
 import nonprofitbookkeeping.service.InventoryService;
 import nonprofitbookkeeping.util.FormatUtils;
 
+// TODO: Auto-generated Javadoc
 /**
  * JavaFX port of {@code InventoryPanel}. Shows capital assets / inventory with
  * add, edit, delete and a simple "Apply Depreciation" button that calls the
@@ -41,6 +42,7 @@ public class InventoryPanelFX extends BorderPane
 	 * and buttons for managing these items (Add, Edit, Delete, Apply Depreciation).
 	 *
 	 * @param service The {@link InventoryService} to be used for all inventory-related operations. Must not be null.
+	 * @param companyDirectory the company directory
 	 */
 	public InventoryPanelFX(InventoryService service, File companyDirectory)
 	{
@@ -63,7 +65,11 @@ public class InventoryPanelFX extends BorderPane
 		refresh();
 	}
 	
-	/** Convenience constructor when no directory is available. */
+	/**
+	 * Convenience constructor when no directory is available.
+	 *
+	 * @param service the service
+	 */
 	public InventoryPanelFX(InventoryService service)
 	{
 		this(service, null);

@@ -27,18 +27,36 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// TODO: Auto-generated Javadoc
 /**
  * Loads Jasper report bundle metadata and exposes lookup helpers for
  * generators and UI registries.
  */
 public final class ReportBundles
 {
+	
+	/** The Constant BUNDLE_ROOTS. */
 	private static final List<String> BUNDLE_ROOTS = List.of(
 		"nonprofitbookkeeping/reports");
 	
+	/** The Constant TEMPLATE_ROOT. */
 	private static final String TEMPLATE_ROOT = "nonprofitbookkeeping/reports";
 	
-	/** Immutable metadata describing a single generator/template bundle. */
+	/**
+	 * Immutable metadata describing a single generator/template bundle.
+	 *
+	 * @param id the id
+	 * @param metadataDirectory the metadata directory
+	 * @param bundleRoot the bundle root
+	 * @param metadataResource the metadata resource
+	 * @param displayName the display name
+	 * @param jrxmlResource the jrxml resource
+	 * @param generatorClassName the generator class name
+	 * @param beanClassName the bean class name
+	 * @param beanName the bean name
+	 * @param description the description
+	 * @param reportType the report type
+	 */
 	public record Bundle(String id,
 		String metadataDirectory,
 		String bundleRoot,
@@ -51,7 +69,12 @@ public final class ReportBundles
 		String description,
 		ReportType reportType)
 	{
-		/** @return true when a bean class was documented for this bundle. */
+		
+		/**
+		 * Checks for bean class.
+		 *
+		 * @return true when a bean class was documented for this bundle.
+		 */
 		public boolean hasBeanClass()
 		{
 			return this.beanClassName != null && !this.beanClassName.isBlank();
@@ -60,8 +83,13 @@ public final class ReportBundles
 		
 	}
 	
+	/** The Constant BUNDLES_BY_ID. */
 	private static final Map<String, Bundle> BUNDLES_BY_ID;
+	
+	/** The Constant BUNDLES_BY_GENERATOR. */
 	private static final Map<String, Bundle> BUNDLES_BY_GENERATOR;
+	
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER =
 		LoggerFactory.getLogger(ReportBundles.class);
 	
@@ -259,7 +287,7 @@ public final class ReportBundles
 	}
 	
 	/**
-	 * Require
+	 * Require.
 	 *
 	 * @param props the props
 	 * @param key the key
@@ -595,6 +623,15 @@ public final class ReportBundles
 		String bundleRoot,
 		String fileName)
 	{
+		
+		/**
+		 * Instantiates a new bundle resource.
+		 *
+		 * @param root the root
+		 * @param metadataDirectory the metadata directory
+		 * @param bundleRoot the bundle root
+		 * @param fileName the file name
+		 */
 		BundleResource
 		{
 			Objects.requireNonNull(root, "root");

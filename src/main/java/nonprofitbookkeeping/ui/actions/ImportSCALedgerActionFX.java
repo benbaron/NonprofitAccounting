@@ -24,17 +24,26 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// TODO: Auto-generated Javadoc
 /**
  * JavaFX action that runs the full ledger import pipeline and persists
  * transactions into the application's journal tables.
  */
 public class ImportSCALedgerActionFX implements EventHandler<ActionEvent>
 {
+	
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER =
 		LoggerFactory.getLogger(ImportSCALedgerActionFX.class);
 	
+	/** The owner. */
 	private final Stage owner;
 	
+	/**
+	 * Instantiates a new import SCA ledger action FX.
+	 *
+	 * @param owner the owner
+	 */
 	public ImportSCALedgerActionFX(Stage owner)
 	{
 		this.owner = owner;
@@ -42,7 +51,9 @@ public class ImportSCALedgerActionFX implements EventHandler<ActionEvent>
 	}
 	
 	/**
-	 * Override @see javafx.event.EventHandler#handle(javafx.event.Event) 
+	 * Override @see javafx.event.EventHandler#handle(javafx.event.Event)
+	 *
+	 * @param event the event
 	 */
 	@Override
 	public void handle(ActionEvent event)

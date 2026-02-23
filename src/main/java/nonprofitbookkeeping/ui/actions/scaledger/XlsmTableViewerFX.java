@@ -13,6 +13,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+// TODO: Auto-generated Javadoc
 /**
  * Utility class for reading data from an Excel XLSM file (macro-enabled workbook)
  * and converting a specified sheet into a Swing {@link javax.swing.table.DefaultTableModel}.
@@ -48,18 +49,17 @@ public class XlsmTableViewerFX
 	 * @param sheetIndex The zero-based index of the sheet to read from the workbook.
 	 * @return A {@link DefaultTableModel} populated with data from the specified sheet.
 	 *         Column headers are derived from the first row of the sheet.
-	 * @throws java.io.FileNotFoundException if the specified {@code file} does not exist.
-	 * @throws org.apache.poi.openxml4j.exceptions.InvalidFormatException if the file format is invalid for XSSFWorkbook (e.g., not OOXML based).
-	 * @throws IOException if an I/O error occurs while reading the file or workbook.
-	 * @throws IllegalArgumentException if {@code sheetIndex} is out of bounds.
 	 * @throws Exception for other potential low-level errors during Apache POI processing.
+	 * @throws IllegalArgumentException if {@code sheetIndex} is out of bounds.
 	 */
-	public static DefaultTableModel readXlsmToTableModel(File file, int sheetIndex) throws Exception
+	public static DefaultTableModel readXlsmToTableModel(File file,
+		int sheetIndex) throws Exception
 	{
 		
-		try (FileInputStream fis = new FileInputStream(file); Workbook wb = new XSSFWorkbook(fis)) // XSSFWorkbook
-																									// for
-																									// .xlsx/.xlsm
+		try (FileInputStream fis = new FileInputStream(file);
+			Workbook wb = new XSSFWorkbook(fis)) // XSSFWorkbook
+													// for
+													// .xlsx/.xlsm
 		{
 			
 			if (sheetIndex < 0 || sheetIndex >= wb.getNumberOfSheets())
@@ -67,7 +67,8 @@ public class XlsmTableViewerFX
 				wb.close(); // Ensure workbook is closed on error path
 				fis.close(); // Ensure fis is closed
 				throw new IllegalArgumentException("Sheet index " + sheetIndex +
-					" is out of bounds for workbook with " + wb.getNumberOfSheets() + " sheets.");
+					" is out of bounds for workbook with " +
+					wb.getNumberOfSheets() + " sheets.");
 			}
 			
 			Sheet sheet = wb.getSheetAt(sheetIndex);
@@ -76,19 +77,26 @@ public class XlsmTableViewerFX
 			// Header row → column identifiers
 			Row header = sheet.getRow(sheet.getFirstRowNum());
 			
-			Vector<String> columnNames = new Vector<>(); // Initialize outside if block to ensure
-															// it's always available for model
+			Vector<String> columnNames = new Vector<>(); // Initialize outside
+															// if block to
+															// ensure
+															// it's always
+															// available for
+															// model
 			
 			if (header != null)
 			{
-				// Vector<String> cols = new Vector<>(); // Renamed to columnNames
+				// Vector<String> cols = new Vector<>(); // Renamed to
+				// columnNames
 				short firstCol = header.getFirstCellNum();
-				// Ensure lastCol is not negative, which can happen for empty rows
+				// Ensure lastCol is not negative, which can happen for empty
+				// rows
 				short lastCol = (firstCol >= 0) ? header.getLastCellNum() : 0;
 				
 				for (int c = firstCol; c < lastCol; c++)
 				{
-					Cell cell = header.getCell(c, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+					Cell cell = header.getCell(c,
+						Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
 					columnNames.add(cell.toString());
 				}
 				
@@ -111,7 +119,8 @@ public class XlsmTableViewerFX
 					
 					for (int c = firstCol; c < lastCol; c++)
 					{
-						Cell cell = row.getCell(c, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+						Cell cell = row.getCell(c,
+							Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
 						data.add(cell.toString());
 					}
 					

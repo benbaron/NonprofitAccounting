@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+// TODO: Auto-generated Javadoc
 /**
  * Repository responsible for persisting and retrieving {@link Company} aggregates
  * from the shared H2 database.  The entire aggregate is serialized into a binary
@@ -24,19 +25,34 @@ import java.util.Objects;
 public class CompanyRepository
 {
 	
-	/** Simple projection representing a stored company row. */
+	/**
+	 * Simple projection representing a stored company row.
+	 *
+	 * @param id the id
+	 * @param name the name
+	 * @param updatedAt the updated at
+	 */
 	public record CompanyRecord(long id, String name, Instant updatedAt)
 	{
 	}
 	
+	/** The Constant INSERT_SQL. */
 	private static final String INSERT_SQL =
 		"INSERT INTO company_store(name, payload, updated_at) VALUES (?,?,CURRENT_TIMESTAMP)";
+	
+	/** The Constant UPDATE_SQL. */
 	private static final String UPDATE_SQL =
 		"UPDATE company_store SET name=?, payload=?, updated_at=CURRENT_TIMESTAMP WHERE id=?";
+	
+	/** The Constant SELECT_SQL. */
 	private static final String SELECT_SQL =
 		"SELECT payload FROM company_store WHERE id=?";
+	
+	/** The Constant LIST_SQL. */
 	private static final String LIST_SQL =
 		"SELECT id, name, updated_at FROM company_store ORDER BY updated_at DESC, id DESC";
+	
+	/** The Constant DELETE_SQL. */
 	private static final String DELETE_SQL =
 		"DELETE FROM company_store WHERE id=?";
 	
@@ -144,6 +160,9 @@ public class CompanyRepository
 	
 	/**
 	 * Returns metadata for all stored companies ordered by most recent update.
+	 *
+	 * @return the list
+	 * @throws SQLException the SQL exception
 	 */
 	public List<CompanyRecord> listCompanies() throws SQLException
 	{
@@ -169,7 +188,12 @@ public class CompanyRepository
 		
 	}
 	
-	/** Deletes the stored company payload. */
+	/**
+	 * Deletes the stored company payload.
+	 *
+	 * @param companyId the company id
+	 * @throws SQLException the SQL exception
+	 */
 	public void delete(long companyId) throws SQLException
 	{
 		
@@ -184,6 +208,10 @@ public class CompanyRepository
 	
 	/**
 	 * Exports the raw serialized payload for the supplied company id.
+	 *
+	 * @param companyId the company id
+	 * @return the byte[]
+	 * @throws SQLException the SQL exception
 	 */
 	public byte[] exportCompany(long companyId) throws SQLException
 	{

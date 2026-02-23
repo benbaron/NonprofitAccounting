@@ -56,6 +56,7 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// TODO: Auto-generated Javadoc
 /**
  * A JavaFX panel that displays journal entries from the current company's ledger.
  * It provides a table view ({@link #journalDisplayTable}) for individual debit/credit entries
@@ -67,8 +68,12 @@ import org.slf4j.LoggerFactory;
  */
 public class SkeletonJournalPanel extends BorderPane
 {
+	
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER =
 		LoggerFactory.getLogger(SkeletonJournalPanel.class);
+	
+	/** The Constant PLACEHOLDER. */
 	private static final String PLACEHOLDER = "—";
 	
 	/** TableView to display journal entries, using {@link JournalDisplayEntry} as the row model. */
@@ -109,14 +114,32 @@ public class SkeletonJournalPanel extends BorderPane
 	private VBox previewContainer;
 	/** Label summarising the workspace mode (preview vs. editing). */
 	private Label editorModeLabel;
+	
+	/** The preview instruction label. */
 	private Label previewInstructionLabel;
+	
+	/** The preview date label. */
 	private Label previewDateLabel;
+	
+	/** The preview transaction label. */
 	private Label previewTransactionLabel;
+	
+	/** The preview account label. */
 	private Label previewAccountLabel;
+	
+	/** The preview description label. */
 	private Label previewDescriptionLabel;
+	
+	/** The preview counterparty label. */
 	private Label previewCounterpartyLabel;
+	
+	/** The preview amount label. */
 	private Label previewAmountLabel;
+	
+	/** The preview fund label. */
 	private Label previewFundLabel;
+	
+	/** The editor active. */
 	private boolean editorActive;
 	
 	/**
@@ -536,7 +559,7 @@ public class SkeletonJournalPanel extends BorderPane
 	}
 	
 	/**
-	 * On Filter Button
+	 * On Filter Button.
 	 */
 	void onFilterButtonAction()
 	{
@@ -647,6 +670,9 @@ public class SkeletonJournalPanel extends BorderPane
 		
 	}
 	
+	/**
+	 * Show preview.
+	 */
 	private void showPreview()
 	{
 		this.editorHost.getChildren().setAll(this.previewContainer);
@@ -655,6 +681,9 @@ public class SkeletonJournalPanel extends BorderPane
 		
 	}
 	
+	/**
+	 * Reset editor workspace.
+	 */
 	private void resetEditorWorkspace()
 	{
 		this.editorActive = false;
@@ -664,6 +693,11 @@ public class SkeletonJournalPanel extends BorderPane
 		
 	}
 	
+	/**
+	 * Update preview.
+	 *
+	 * @param entry the entry
+	 */
 	private void updatePreview(JournalDisplayEntry entry)
 	{
 		
@@ -708,12 +742,24 @@ public class SkeletonJournalPanel extends BorderPane
 		
 	}
 	
+	/**
+	 * With placeholder.
+	 *
+	 * @param value the value
+	 * @return the string
+	 */
 	private String withPlaceholder(String value)
 	{
 		return (value == null || value.isBlank()) ? PLACEHOLDER : value;
 		
 	}
 	
+	/**
+	 * Summarise amount.
+	 *
+	 * @param entry the entry
+	 * @return the string
+	 */
 	private String summariseAmount(JournalDisplayEntry entry)
 	{
 		BigDecimal debit = FormatUtils.parseCurrency(entry.getDebit());
@@ -734,6 +780,12 @@ public class SkeletonJournalPanel extends BorderPane
 		
 	}
 	
+	/**
+	 * Builds the counterparty line.
+	 *
+	 * @param entry the entry
+	 * @return the string
+	 */
 	private String buildCounterpartyLine(JournalDisplayEntry entry)
 	{
 		
@@ -753,6 +805,12 @@ public class SkeletonJournalPanel extends BorderPane
 		
 	}
 	
+	/**
+	 * Builds the fund line.
+	 *
+	 * @param entry the entry
+	 * @return the string
+	 */
 	private String buildFundLine(JournalDisplayEntry entry)
 	{
 		
@@ -800,6 +858,12 @@ public class SkeletonJournalPanel extends BorderPane
 		
 	}
 	
+	/**
+	 * Builds the clipboard summary.
+	 *
+	 * @param entry the entry
+	 * @return the string
+	 */
 	private String buildClipboardSummary(JournalDisplayEntry entry)
 	{
 		
@@ -819,6 +883,11 @@ public class SkeletonJournalPanel extends BorderPane
 		
 	}
 	
+	/**
+	 * Focus on transaction.
+	 *
+	 * @param bookingTimestamp the booking timestamp
+	 */
 	private void focusOnTransaction(long bookingTimestamp)
 	{
 		
@@ -847,6 +916,11 @@ public class SkeletonJournalPanel extends BorderPane
 		
 	}
 	
+	/**
+	 * Handle persist and refresh.
+	 *
+	 * @param tx the tx
+	 */
 	private void handlePersistAndRefresh(AccountingTransaction tx)
 	{
 		boolean persisted = true;
@@ -881,7 +955,7 @@ public class SkeletonJournalPanel extends BorderPane
 	}
 	
 	/**
-	 * On Edit Button
+	 * On Edit Button.
 	 */
 	void onEditAction()
 	{
@@ -903,7 +977,7 @@ public class SkeletonJournalPanel extends BorderPane
 	}
 	
 	/**
-	 * On delete button
+	 * On delete button.
 	 */
 	void onDeleteAction()
 	{
@@ -965,10 +1039,12 @@ public class SkeletonJournalPanel extends BorderPane
 		
 	}
 	
-	/** 
+	/**
 	 * Opens the GeneralJournalEntryPanelFX for creating or 
 	 * editing a transaction. 
-	 * */
+	 *
+	 * @param existing the existing
+	 */
 	private void openEditor(AccountingTransaction existing)
 	{
 		Company company = CurrentCompany.getCompany();
@@ -1177,42 +1253,66 @@ public class SkeletonJournalPanel extends BorderPane
 			
 		}
 		
-		/** Returns the to/from property. */
+		/**
+		 * Returns the to/from property.
+		 *
+		 * @return the string property
+		 */
 		public StringProperty toFromProperty()
 		{
 			return this.toFrom;
 			
 		}
 		
-		/** Returns the check number property. */
+		/**
+		 * Returns the check number property.
+		 *
+		 * @return the string property
+		 */
 		public StringProperty checkNumberProperty()
 		{
 			return this.checkNumber;
 			
 		}
 		
-		/** Returns the clear bank property. */
+		/**
+		 * Returns the clear bank property.
+		 *
+		 * @return the string property
+		 */
 		public StringProperty clearBankProperty()
 		{
 			return this.clearBank;
 			
 		}
 		
-		/** Returns the budget tracking property. */
+		/**
+		 * Returns the budget tracking property.
+		 *
+		 * @return the string property
+		 */
 		public StringProperty budgetTrackingProperty()
 		{
 			return this.budgetTracking;
 			
 		}
 		
-		/** Returns the fund name property. */
+		/**
+		 * Returns the fund name property.
+		 *
+		 * @return the string property
+		 */
 		public StringProperty fundNameProperty()
 		{
 			return this.fundName;
 			
 		}
 		
-		/** Returns the fund number property. */
+		/**
+		 * Returns the fund number property.
+		 *
+		 * @return the string property
+		 */
 		public StringProperty fundNumberProperty()
 		{
 			return this.fundNumber;
@@ -1250,98 +1350,134 @@ public class SkeletonJournalPanel extends BorderPane
 			
 		}
 		
-		/** 
+		/**
 		 * Gets the transaction date string. @return The date. 
-		 * */
+		 *
+		 * @return the date
+		 */
 		public String getDate()
 		{
 			return this.date.get();
 			
 		}
 		
-		/** 
+		/**
 		 * Gets the transaction ID string. @return The transaction ID. 
-		 * */
+		 *
+		 * @return the transaction id
+		 */
 		public String getTransactionId()
 		{
 			return this.transactionId.get();
 			
 		}
 		
-		/** 
+		/**
 		 * Gets the account name string for this entry line. @return The account name. 
-		 * */
+		 *
+		 * @return the account name
+		 */
 		public String getAccountName()
 		{
 			return this.accountName.get();
 			
 		}
 		
-		/** 
+		/**
 		 * Gets the transaction description/memo string. @return The description. 
-		 * */
+		 *
+		 * @return the description
+		 */
 		public String getDescription()
 		{
 			return this.description.get();
 			
 		}
 		
-		/** Returns the to/from value. */
+		/**
+		 * Returns the to/from value.
+		 *
+		 * @return the to from
+		 */
 		public String getToFrom()
 		{
 			return this.toFrom.get();
 			
 		}
 		
-		/** Returns the check number. */
+		/**
+		 * Returns the check number.
+		 *
+		 * @return the check number
+		 */
 		public String getCheckNumber()
 		{
 			return this.checkNumber.get();
 			
 		}
 		
-		/** Returns the clearing bank string. */
+		/**
+		 * Returns the clearing bank string.
+		 *
+		 * @return the clear bank
+		 */
 		public String getClearBank()
 		{
 			return this.clearBank.get();
 			
 		}
 		
-		/** Returns the budget tracking notes. */
+		/**
+		 * Returns the budget tracking notes.
+		 *
+		 * @return the budget tracking
+		 */
 		public String getBudgetTracking()
 		{
 			return this.budgetTracking.get();
 			
 		}
 		
-		/** Returns the fund name. */
+		/**
+		 * Returns the fund name.
+		 *
+		 * @return the fund name
+		 */
 		public String getFundName()
 		{
 			return this.fundName.get();
 			
 		}
 		
-		/** Returns the fund number. */
+		/**
+		 * Returns the fund number.
+		 *
+		 * @return the fund number
+		 */
 		public String getFundNumber()
 		{
 			return this.fundNumber.get();
 			
 		}
 		
-		/** 
+		/**
 		 * Gets the debit amount string for this entry line. 
 		 * Empty if it's a credit. @return The debit amount. 
-		 * */
+		 *
+		 * @return the debit
+		 */
 		public String getDebit()
 		{
 			return this.debit.get();
 			
 		}
 		
-		/** 
+		/**
 		 * Gets the credit amount string for this entry line. 
 		 * Empty if it's a debit. @return The credit amount. 
-		 * */
+		 *
+		 * @return the credit
+		 */
 		public String getCredit()
 		{
 			return this.credit.get();

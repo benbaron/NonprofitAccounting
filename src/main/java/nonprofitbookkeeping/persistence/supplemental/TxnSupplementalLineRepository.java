@@ -13,20 +13,37 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class TxnSupplementalLineRepository.
+ */
 public class TxnSupplementalLineRepository
 {
+	
+	/** The Constant LIST_BY_TXN_SQL. */
 	private static final String LIST_BY_TXN_SQL =
 		"SELECT id, txn_id, entry_id, line_kind, counterparty_person_id, description, " +
 		"reference, amount, due_date, start_date, end_date, notes " +
 		"FROM txn_supplemental_line WHERE txn_id = ? ORDER BY id";
+	
+	/** The Constant DELETE_BY_TXN_SQL. */
 	private static final String DELETE_BY_TXN_SQL =
 		"DELETE FROM txn_supplemental_line WHERE txn_id = ?";
+	
+	/** The Constant INSERT_SQL. */
 	private static final String INSERT_SQL =
 		"INSERT INTO txn_supplemental_line(" +
 		"txn_id, entry_id, line_kind, counterparty_person_id, description, reference, amount, " +
 		"due_date, start_date, end_date, notes, created_at, updated_at" +
 		") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
 
+	/**
+	 * List by txn id.
+	 *
+	 * @param txnId the txn id
+	 * @return the list
+	 * @throws SQLException the SQL exception
+	 */
 	public List<TxnSupplementalLineRecord> listByTxnId(long txnId) throws SQLException
 	{
 		List<TxnSupplementalLineRecord> records = new ArrayList<>();
@@ -48,6 +65,14 @@ public class TxnSupplementalLineRepository
 		return records;
 	}
 
+	/**
+	 * Replace for txn.
+	 *
+	 * @param c the c
+	 * @param txnId the txn id
+	 * @param records the records
+	 * @throws SQLException the SQL exception
+	 */
 	public void replaceForTxn(Connection c, long txnId, List<TxnSupplementalLineRecord> records)
 		throws SQLException
 	{
@@ -80,6 +105,13 @@ public class TxnSupplementalLineRepository
 		}
 	}
 
+	/**
+	 * Delete by txn id.
+	 *
+	 * @param c the c
+	 * @param txnId the txn id
+	 * @throws SQLException the SQL exception
+	 */
 	private static void deleteByTxnId(Connection c, long txnId) throws SQLException
 	{
 		try (PreparedStatement ps = c.prepareStatement(DELETE_BY_TXN_SQL))
@@ -89,6 +121,13 @@ public class TxnSupplementalLineRepository
 		}
 	}
 
+	/**
+	 * Bind insert.
+	 *
+	 * @param ps the ps
+	 * @param record the record
+	 * @throws SQLException the SQL exception
+	 */
 	private static void bindInsert(PreparedStatement ps, TxnSupplementalLineRecord record)
 		throws SQLException
 	{
@@ -105,6 +144,13 @@ public class TxnSupplementalLineRepository
 		ps.setString(11, record.notes);
 	}
 
+	/**
+	 * Map row.
+	 *
+	 * @param rs the rs
+	 * @return the txn supplemental line record
+	 * @throws SQLException the SQL exception
+	 */
 	private static TxnSupplementalLineRecord mapRow(ResultSet rs) throws SQLException
 	{
 		TxnSupplementalLineRecord record = new TxnSupplementalLineRecord();
@@ -126,12 +172,28 @@ public class TxnSupplementalLineRepository
 		return record;
 	}
 
+	/**
+	 * Gets the nullable long.
+	 *
+	 * @param rs the rs
+	 * @param column the column
+	 * @return the nullable long
+	 * @throws SQLException the SQL exception
+	 */
 	private static Long getNullableLong(ResultSet rs, String column) throws SQLException
 	{
 		long value = rs.getLong(column);
 		return rs.wasNull() ? null : value;
 	}
 
+	/**
+	 * Sets the nullable long.
+	 *
+	 * @param ps the ps
+	 * @param index the index
+	 * @param value the value
+	 * @throws SQLException the SQL exception
+	 */
 	private static void setNullableLong(PreparedStatement ps, int index, Long value)
 		throws SQLException
 	{

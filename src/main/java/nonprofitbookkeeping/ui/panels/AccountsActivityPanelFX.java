@@ -28,6 +28,7 @@ import nonprofitbookkeeping.model.Ledger;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 import nonprofitbookkeeping.service.ReconciliationService;
 
+// TODO: Auto-generated Javadoc
 /**
  * A JavaFX panel that displays account activity (transactions) from a given {@link Ledger}.
  * It provides UI controls for selecting an account and filtering transactions by date,
@@ -46,6 +47,8 @@ public class AccountsActivityPanelFX extends BorderPane
 	private final TextField filterMemoField = new TextField();
 	/** TextField for entering an amount to filter transactions (exact match). */
 	private final TextField filterAmountField = new TextField();
+	
+	/** The apply filters button. */
 	private Button applyFiltersButton; // Field for the button
 	
 	/** TableView to display the filtered account transactions. */
@@ -53,6 +56,7 @@ public class AccountsActivityPanelFX extends BorderPane
 	/** ObservableList that backs the {@code table}, holding {@link TransactionRow} objects. */
 	private final ObservableList<TransactionRow> backingList = FXCollections.observableArrayList();
 	
+	/** The transactions. */
 	private List<AccountingTransaction> transactions; 
 	// Made non-final to allow potential re-init,
 	// though not done in this step
@@ -62,8 +66,10 @@ public class AccountsActivityPanelFX extends BorderPane
 	 *  Will be {@code null} if the amount filter field is empty or contains an invalid number format. */
 	private BigDecimal amountFilter = null; 
 	
+	/** The company listener. */
 	private AccountsActivityPanelCompanyListener companyListener;
 
+	/** The bottom button bar. */
 	private HBox bottomButtonBar;
 	
 	
@@ -127,6 +133,9 @@ public class AccountsActivityPanelFX extends BorderPane
 		return box;
 	}
 	
+	/**
+	 * Populate account selector.
+	 */
 	private void populateAccountSelector()
 	{
 		this.accountSelector.getItems().clear();
@@ -392,14 +401,13 @@ public class AccountsActivityPanelFX extends BorderPane
 	}
 
 	/**
-	 * accountingTransactionPred
-	 * 
-	 * @param acct
-	 * @param dateFilterStr
-	 * @param memoFilterStr
-	 * @param t
-	 * 
-	 * @return
+	 * accountingTransactionPred.
+	 *
+	 * @param acct the acct
+	 * @param dateFilterStr the date filter str
+	 * @param memoFilterStr the memo filter str
+	 * @param t the t
+	 * @return true, if successful
 	 */
 	boolean accountingTransactionPred
 	(
@@ -451,8 +459,9 @@ public class AccountsActivityPanelFX extends BorderPane
 	}
 	
 	/**
-	 * Handle Company Change
-	 * @param isOpen
+	 * Handle Company Change.
+	 *
+	 * @param isOpen the is open
 	 */
 	private void handleCompanyChange(boolean isOpen)
 	{
@@ -492,17 +501,29 @@ public class AccountsActivityPanelFX extends BorderPane
 	}
 	
 	/**
-	 * AccountsActivityPanelCompanyListener
+	 * AccountsActivityPanelCompanyListener.
+	 *
+	 * @see AccountsActivityPanelCompanyEvent
 	 */
 	private class AccountsActivityPanelCompanyListener implements CompanyChangeListener
 	{
+		
+		/** The panel. */
 		private AccountsActivityPanelFX panel;
 		
+		/**
+		 * Instantiates a new accounts activity panel company listener.
+		 *
+		 * @param panel the panel
+		 */
 		public AccountsActivityPanelCompanyListener(AccountsActivityPanelFX panel)
 		{
 			this.panel = panel;
 		}
 		
+		/**
+		 * Override @see nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener#companyChange(boolean) 
+		 */
 		@Override public void companyChange(boolean isOpen)
 		{
 			this.panel.handleCompanyChange(isOpen);
@@ -516,12 +537,27 @@ public class AccountsActivityPanelFX extends BorderPane
 	 */
 	public static class TransactionRow
 	{
+		
+		/** The date. */
 		final SimpleStringProperty date;
+		
+		/** The description. */
 		final SimpleStringProperty description;
+		
+		/** The amount. */
 		final SimpleObjectProperty<BigDecimal> amount;
+		
+		/** The balance. */
 		final SimpleObjectProperty<BigDecimal> balance;
+		
+		/** The memo. */
 		final SimpleStringProperty memo;
 		
+		/**
+		 * Instantiates a new transaction row.
+		 *
+		 * @param t the t
+		 */
 		TransactionRow(AccountingTransaction t)
 		{
 			this.date = new SimpleStringProperty(Objects.toString(t.getDate(), ""));
@@ -545,26 +581,51 @@ public class AccountsActivityPanelFX extends BorderPane
 			this.memo = new SimpleStringProperty(Objects.toString(t.getMemo(), ""));
 		}
 		
+		/**
+		 * Date property.
+		 *
+		 * @return the simple string property
+		 */
 		public SimpleStringProperty dateProperty()
 		{
 			return this.date;
 		}
 		
+		/**
+		 * Description property.
+		 *
+		 * @return the simple string property
+		 */
 		public SimpleStringProperty descriptionProperty()
 		{
 			return this.description;
 		}
 		
+		/**
+		 * Amount property.
+		 *
+		 * @return the simple object property
+		 */
 		public SimpleObjectProperty<BigDecimal> amountProperty()
 		{
 			return this.amount;
 		}
 		
+		/**
+		 * Balance property.
+		 *
+		 * @return the simple object property
+		 */
 		public SimpleObjectProperty<BigDecimal> balanceProperty()
 		{
 			return this.balance;
 		}
 		
+		/**
+		 * Memo property.
+		 *
+		 * @return the simple string property
+		 */
 		public SimpleStringProperty memoProperty()
 		{
 			return this.memo;

@@ -5,6 +5,7 @@ import java.time.MonthDay;
 import java.time.YearMonth;
 import java.util.Locale;
 
+// TODO: Auto-generated Javadoc
 /**
  * Preset periods that can be applied to reporting and analytical views.
  */
@@ -51,6 +52,13 @@ public enum ReportPeriodPreset
                 }
         }
 
+        /**
+         * Start of fiscal year.
+         *
+         * @param referenceDate the reference date
+         * @param fiscalStart the fiscal start
+         * @return the local date
+         */
         private static LocalDate startOfFiscalYear(LocalDate referenceDate, MonthDay fiscalStart)
         {
                 if (fiscalStart == null)
@@ -71,20 +79,40 @@ public enum ReportPeriodPreset
         /** Simple value object describing a closed date range. */
         public static final class DateRange
         {
+                
+                /** The start. */
                 private final LocalDate start;
+                
+                /** The end. */
                 private final LocalDate end;
 
+                /**
+                 * Instantiates a new date range.
+                 *
+                 * @param start the start
+                 * @param end the end
+                 */
                 public DateRange(LocalDate start, LocalDate end)
                 {
                         this.start = start;
                         this.end = end;
                 }
 
+                /**
+                 * Gets the start.
+                 *
+                 * @return the start
+                 */
                 public LocalDate getStart()
                 {
                         return this.start;
                 }
 
+                /**
+                 * Gets the end.
+                 *
+                 * @return the end
+                 */
                 public LocalDate getEnd()
                 {
                         return this.end;

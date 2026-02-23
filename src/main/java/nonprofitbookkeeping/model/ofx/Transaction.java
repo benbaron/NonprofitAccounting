@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
+// TODO: Auto-generated Javadoc
 /**
  * Represents a banking transaction for OFX export.
  * <p>
@@ -21,20 +22,30 @@ import java.util.UUID;
 @XmlAccessorType(XmlAccessType.FIELD) public class Transaction
 {
 	
+	/** The trn type. */
 	@XmlElement(name = "TRNTYPE") private String trnType;
 	
+	/** The dt posted. */
 	@XmlElement(name = "DTPOSTED") private String dtPosted; // Expected in yyyyMMdd format.
 	
+	/** The trn amt. */
 	@XmlElement(name = "TRNAMT") private BigDecimal trnAmt;
 	
+	/** The fit id. */
 	@XmlElement(name = "FITID") private String fitId;
 	
+	/** The check num. */
 	@XmlElement(name = "CHECKNUM") private String checkNum;
 	
+	/** The name. */
 	@XmlElement(name = "NAME") private String name;
 	
+	/** The memo. */
 	@XmlElement(name = "MEMO") private String memo;
 	
+	/**
+	 * Instantiates a new transaction.
+	 */
 	// Default constructor for JAXB.
 	public Transaction()
 	{

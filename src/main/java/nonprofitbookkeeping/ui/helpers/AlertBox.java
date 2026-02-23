@@ -8,6 +8,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Window;
 
+// TODO: Auto-generated Javadoc
 /**
  * Utility class providing static methods to display common JavaFX {@link Alert} dialogs.
  * This class simplifies showing error, information, and warning alerts by
@@ -76,8 +77,11 @@ public class AlertBox
 	}
 	
 	/**
-	 * @param string
-	 * @param message
+	 * Show error.
+	 *
+	 * @param win the win
+	 * @param header the header
+	 * @param message the message
 	 */
 	public static void showError(Window win, String header, String message)
 	{

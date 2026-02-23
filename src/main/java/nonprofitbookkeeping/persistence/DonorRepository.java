@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+// TODO: Auto-generated Javadoc
 /**
  * Repository responsible for CRUD operations on the {@code donor} table.
  * Donors are keyed by their stable {@link DonorContact#getId() external id}
@@ -21,18 +22,30 @@ import java.util.Optional;
 public class DonorRepository
 {
 	
+	/** The Constant UPSERT_SQL. */
 	private static final String UPSERT_SQL =
 		"MERGE INTO donor(external_id, name, email, phone) KEY(external_id) VALUES (?,?,?,?)";
+	
+	/** The Constant LIST_SQL. */
 	private static final String LIST_SQL =
 		"SELECT external_id, name, email, phone FROM donor ORDER BY name, external_id";
+	
+	/** The Constant DELETE_SQL. */
 	private static final String DELETE_SQL =
 		"DELETE FROM donor WHERE external_id = ?";
+	
+	/** The Constant FIND_SQL. */
 	private static final String FIND_SQL =
 		"SELECT external_id, name, email, phone FROM donor WHERE external_id = ?";
+	
+	/** The Constant DELETE_ALL_SQL. */
 	private static final String DELETE_ALL_SQL = "DELETE FROM donor";
 	
 	/**
 	 * Inserts or updates the supplied donor.
+	 *
+	 * @param donor the donor
+	 * @throws SQLException the SQL exception
 	 */
 	public void upsert(DonorContact donor) throws SQLException
 	{
@@ -52,7 +65,9 @@ public class DonorRepository
 	/**
 	 * Deletes the donor identified by {@code externalId}.
 	 *
+	 * @param externalId the external id
 	 * @return {@code true} when a row was removed
+	 * @throws SQLException the SQL exception
 	 */
 	public boolean deleteByExternalId(String externalId) throws SQLException
 	{
@@ -68,6 +83,9 @@ public class DonorRepository
 	
 	/**
 	 * Returns all donors ordered by name.
+	 *
+	 * @return the list
+	 * @throws SQLException the SQL exception
 	 */
 	public List<DonorContact> list() throws SQLException
 	{
@@ -91,6 +109,10 @@ public class DonorRepository
 	
 	/**
 	 * Loads a single donor by its external id.
+	 *
+	 * @param externalId the external id
+	 * @return the optional
+	 * @throws SQLException the SQL exception
 	 */
 	public Optional<DonorContact> findByExternalId(String externalId)
 		throws SQLException
@@ -119,6 +141,9 @@ public class DonorRepository
 	
 	/**
 	 * Replaces the stored donors with the supplied collection. Existing rows are removed first.
+	 *
+	 * @param donors the donors
+	 * @throws SQLException the SQL exception
 	 */
 	public void replaceAll(List<DonorContact> donors) throws SQLException
 	{

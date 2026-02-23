@@ -9,15 +9,32 @@ import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.budget.BudgetLine;
 import nonprofitbookkeeping.service.*; // Import all from service
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ApplicationContextImpl.
+ */
 public class ApplicationContextImpl implements ApplicationContext
 {
 	
+	/** The primary stage. */
 	private final Stage primaryStage;
+	
+	/** The menu bar. */
 	private final MenuBar menuBar;
+	
+	/** The report service. */
 	private final ReportService reportService;
+	
+	/** The report configuration service. */
 	private final ReportConfigurationService reportConfigurationService;
+	
+	/** The inventory service. */
 	private final InventoryService inventoryService;
+	
+	/** The document storage service. */
 	private final DocumentStorageService documentStorageService;
+	
+	/** The fund accounting service. */
 	private final FundAccountingService fundAccountingService;
 	// Add FileImportService, FileExportService if they become part of
 	// ServiceContainer
@@ -25,10 +42,10 @@ public class ApplicationContextImpl implements ApplicationContext
 	
 	/**
 	 * Constructs an ApplicationContextImpl.
+	 *
 	 * @param primaryStage The primary stage of the application.
 	 * @param menuBar The menu bar of the application.
 	 * @param reportService The report service.
-	 * @param budgetService The budget service.
 	 * @param reportConfigurationService The report configuration service.
 	 * @param inventoryService The inventory service.
 	 * @param documentStorageService The document storage service.
@@ -67,9 +84,9 @@ public class ApplicationContextImpl implements ApplicationContext
 	
 	/**
 	 * Constructs an ApplicationContextImpl with default instances for services and UI components.
+	 *
 	 * @param primaryStage The primary stage of the application.
 	 * @param reportService The report service.
-	 * @param budgetService The budget service.
 	 * @param reportConfigurationService The report configuration service.
 	 * @param inventoryService The inventory service.
 	 * @param documentStorageService The document storage service.
@@ -192,7 +209,9 @@ public class ApplicationContextImpl implements ApplicationContext
 	}
 
 	/**
-	 * Override @see nonprofitbookkeeping.core.ApplicationContext#getBudgetService() 
+	 * Override @see nonprofitbookkeeping.core.ApplicationContext#getBudgetService()
+	 *
+	 * @return the budget service
 	 */
 	@Override
 	public BudgetLine getBudgetService()

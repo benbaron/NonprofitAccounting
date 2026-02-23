@@ -14,11 +14,22 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
+// TODO: Auto-generated Javadoc
 /**
  * Filters transactions based on {@link LedgerQueryCriteria}.
  */
 public class LedgerQueryFacade
 {
+	
+	/**
+	 * Query from transactions.
+	 *
+	 * @param <T> the generic type
+	 * @param transactions the transactions
+	 * @param criteria the criteria
+	 * @param mapper the mapper
+	 * @return the list
+	 */
 	public <T> List<T> queryFromTransactions(
 		List<AccountingTransaction> transactions,
 		LedgerQueryCriteria criteria,
@@ -66,6 +77,13 @@ public class LedgerQueryFacade
 		
 	}
 	
+	/**
+	 * Matches.
+	 *
+	 * @param transaction the transaction
+	 * @param criteria the criteria
+	 * @return true, if successful
+	 */
 	private boolean matches(AccountingTransaction transaction,
 		LedgerQueryCriteria criteria)
 	{
@@ -78,6 +96,13 @@ public class LedgerQueryFacade
 				.allMatch(predicate -> predicate.test(transaction));
 	}
 	
+	/**
+	 * Matches date.
+	 *
+	 * @param transaction the transaction
+	 * @param criteria the criteria
+	 * @return true, if successful
+	 */
 	private boolean matchesDate(AccountingTransaction transaction,
 		LedgerQueryCriteria criteria)
 	{
@@ -104,6 +129,12 @@ public class LedgerQueryFacade
 		return true;
 	}
 	
+	/**
+	 * Resolve date.
+	 *
+	 * @param transaction the transaction
+	 * @return the local date
+	 */
 	private LocalDate resolveDate(AccountingTransaction transaction)
 	{
 		Long timestamp = transaction.getBookingDateTimestamp();
@@ -132,6 +163,13 @@ public class LedgerQueryFacade
 		}
 	}
 	
+	/**
+	 * Matches memo.
+	 *
+	 * @param transaction the transaction
+	 * @param memoContains the memo contains
+	 * @return true, if successful
+	 */
 	private boolean matchesMemo(AccountingTransaction transaction,
 		String memoContains)
 	{
@@ -146,6 +184,14 @@ public class LedgerQueryFacade
 			memo.toLowerCase().contains(memoContains.toLowerCase());
 	}
 	
+	/**
+	 * Matches accounts.
+	 *
+	 * @param transaction the transaction
+	 * @param accountNumbers the account numbers
+	 * @param requireAll the require all
+	 * @return true, if successful
+	 */
 	private boolean matchesAccounts(AccountingTransaction transaction,
 		Set<String> accountNumbers,
 		boolean requireAll)
@@ -184,6 +230,13 @@ public class LedgerQueryFacade
 		return false;
 	}
 	
+	/**
+	 * Matches side.
+	 *
+	 * @param transaction the transaction
+	 * @param side the side
+	 * @return true, if successful
+	 */
 	private boolean matchesSide(AccountingTransaction transaction,
 		AccountSide side)
 	{

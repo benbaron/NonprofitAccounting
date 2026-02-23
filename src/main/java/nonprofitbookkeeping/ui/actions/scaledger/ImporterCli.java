@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.nio.file.Path;
 
+// TODO: Auto-generated Javadoc
 /**
  * Example CLI entry point.
  *
@@ -27,6 +28,13 @@ import java.nio.file.Path;
  */
 public class ImporterCli
 {
+    
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws Exception the exception
+     */
     public static void main(String[] args) throws Exception
     {
         if (args.length < 3)

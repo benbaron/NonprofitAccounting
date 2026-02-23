@@ -32,6 +32,7 @@ import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.supplemental.SupplementalLineKind;
 
+// TODO: Auto-generated Javadoc
 /**
  * Interactive ladder view for editing a company's Chart of Accounts.
  *
@@ -53,7 +54,10 @@ import nonprofitbookkeeping.model.supplemental.SupplementalLineKind;
  */
 public class CoaEditorPanelFX extends BorderPane
 {
-	private static final Logger LOGGER = LoggerFactory.getLogger(CoaEditorPanelFX.class);
+	
+	/** The Constant LOGGER. */
+	private static final Logger LOGGER =
+		LoggerFactory.getLogger(CoaEditorPanelFX.class);
 	
 	/** Service layer for Chart of Accounts operations. */
 	private final ChartOfAccountsService svc;
@@ -78,9 +82,11 @@ public class CoaEditorPanelFX extends BorderPane
 	public TreeTableView<Account> getTreeTable()
 	{
 		return this.tree;
+		
 	}
 	
-	// Dialog fields - these are instance members because they are accessed by the
+	// Dialog fields - these are instance members because they are accessed by
+	// the
 	// dialog's result converter lambda.
 	/** TextField for account number input in the add/edit dialog. */
 	private TextField numF;
@@ -91,18 +97,38 @@ public class CoaEditorPanelFX extends BorderPane
 	/** ComboBox for selecting account type in the add/edit dialog. */
 	private ComboBox<AccountType> typeBox;
 	/** Supplemental schedule selection checkboxes in the add/edit dialog. */
-	private final EnumMap<SupplementalLineKind, CheckBox> supplementalKindChecks =
-		new EnumMap<>(SupplementalLineKind.class);
+	private final EnumMap<SupplementalLineKind,
+		CheckBox> supplementalKindChecks =
+			new EnumMap<>(SupplementalLineKind.class);
 	
+	/** The company listener. */
 	private CoaEditorPanelCompanyListener companyListener;
+	
+	/** The action buttons box. */
 	private HBox actionButtonsBox;
+	
+	/** The add root btn. */
 	private Button addRootBtn;
+	
+	/** The add sub btn. */
 	private Button addSubBtn;
+	
+	/** The edit btn. */
 	private Button editBtn;
+	
+	/** The delete btn. */
 	private Button deleteBtn;
+	
+	/** The save btn. */
 	private Button saveBtn;
+	
+	/** The import btn. */
 	private Button importBtn;
+	
+	/** The export btn. */
 	private Button exportBtn;
+	
+	/** The cancel btn. */
 	private Button cancelBtn;
 	
 	/** 
@@ -114,6 +140,7 @@ public class CoaEditorPanelFX extends BorderPane
 	public CoaEditorPanelFX(ChartOfAccounts chart)
 	{
 		this(chart, null, null);
+		
 	}
 	
 	/**
@@ -128,7 +155,8 @@ public class CoaEditorPanelFX extends BorderPane
 	 *                either by saving or cancelling. Can be null if no close callback is needed.
 	 * @throws NullPointerException if {@code chart} is null.
 	 */
-	public CoaEditorPanelFX(ChartOfAccounts chart, Consumer<ChartOfAccounts> onSave,
+	public CoaEditorPanelFX(ChartOfAccounts chart,
+		Consumer<ChartOfAccounts> onSave,
 		Runnable onClose)
 	{
 		this.svc = new ChartOfAccountsService(
@@ -150,6 +178,7 @@ public class CoaEditorPanelFX extends BorderPane
 		CurrentCompany.CompanyListener.addCompanyListener(this.companyListener);
 		
 		handleCompanyChange(CurrentCompany.isOpen());
+		
 	}
 	
 	/**
@@ -170,6 +199,7 @@ public class CoaEditorPanelFX extends BorderPane
 		
 		this.svc.setChart(chart);
 		refresh();
+		
 	}
 	
 	
@@ -187,14 +217,20 @@ public class CoaEditorPanelFX extends BorderPane
 		// top-level accounts
 		this.tree.setRoot(this.rootItem);
 		
-		this.tree.setPlaceholder(new Label("No accounts. Use 'Add Root' to create one."));
+		this.tree.setPlaceholder(
+			new Label("No accounts. Use 'Add Root' to create one."));
 		
-		this.tree.getColumns().addAll(makeCol("Number", Account::getAccountNumber),
+		this.tree.getColumns().addAll(
+			makeCol("Number", Account::getAccountNumber),
 			makeCol("Name", Account::getName),
-			makeCol("Type", a -> (a.getAccountType() != null) ? a.getAccountType().toString() : ""),
+			makeCol("Type",
+				a -> (a.getAccountType() != null) ?
+					a.getAccountType().toString() : ""),
 			makeCol("Opening Balance", Account::getOpeningBalance));
 		
-		this.tree.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+		this.tree.setColumnResizePolicy(
+			TreeTableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+		
 	}
 	
 	/**
@@ -225,13 +261,15 @@ public class CoaEditorPanelFX extends BorderPane
 		this.saveBtn.setOnAction(e -> saveButtonAction());
 		this.cancelBtn.setOnAction(e -> closePanel());
 		
-		HBox hbox = new HBox(8, this.addRootBtn, this.addSubBtn, this.editBtn, this.deleteBtn,
+		HBox hbox = new HBox(8, this.addRootBtn, this.addSubBtn, this.editBtn,
+			this.deleteBtn,
 			this.importBtn, this.exportBtn, this.saveBtn, this.cancelBtn);
 		hbox.setPadding(new Insets(6));
 		this.tree.getSelectionModel().selectedItemProperty()
 			.addListener((obs, o, n) -> updateButtonsForSelection());
 		updateButtonsForSelection();
 		return hbox;
+		
 	}
 	
 	/**
@@ -266,10 +304,11 @@ public class CoaEditorPanelFX extends BorderPane
 		
 		if (this.cancelBtn != null)
 			this.cancelBtn.setDisable(!companyOpen);
+			
 	}
 	
 	/**
-	 * onSubAccountAction
+	 * onSubAccountAction.
 	 */
 	void onSubAccountAction()
 	{
@@ -287,7 +326,7 @@ public class CoaEditorPanelFX extends BorderPane
 	}
 	
 	/**
-	 * onEditAction
+	 * onEditAction.
 	 */
 	void onEditAction()
 	{
@@ -313,7 +352,7 @@ public class CoaEditorPanelFX extends BorderPane
 	}
 	
 	/**
-	 * saveButtonAction
+	 * saveButtonAction.
 	 */
 	void saveButtonAction()
 	{
@@ -324,16 +363,18 @@ public class CoaEditorPanelFX extends BorderPane
 			this.onSave.accept(this.svc.asChart());
 		}
 		
-                try
-                {
-                        CurrentCompany.persist();
-                }
-                catch (IOException ex)
-                {
-                        AlertBox.showError(null, "Failed to save company: " + ex.getMessage());
-                }
+		try
+		{
+			CurrentCompany.persist();
+		}
+		catch (IOException ex)
+		{
+			AlertBox.showError(null,
+				"Failed to save company: " + ex.getMessage());
+		}
 		
 		closePanel();
+		
 	}
 	
 	/**
@@ -373,22 +414,28 @@ public class CoaEditorPanelFX extends BorderPane
 		
 		Dialog<Account> dlg = new Dialog<>();
 		dlg.setTitle(isEdit ? "Edit Account" :
-			(parent == null ? "Add Root Account" : "Add Sub-account to " + parent.getName()));
-		dlg.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+			(parent == null ? "Add Root Account" :
+				"Add Sub-account to " + parent.getName()));
+		dlg.getDialogPane().getButtonTypes().addAll(ButtonType.OK,
+			ButtonType.CANCEL);
 		
 		// Initialize dialog fields
 		this.numF = new TextField(
-			isEdit && 
-			editing.getAccountNumber() != null ? 
-				editing.getAccountNumber() : "");
-		this.nameF = new TextField(isEdit && editing.getName() != null ? editing.getName() : "");
-		this.typeBox = new ComboBox<>(FXCollections.observableArrayList(AccountType.values()));
+			isEdit &&
+				editing.getAccountNumber() != null ?
+					editing.getAccountNumber() : "");
+		this.nameF = new TextField(
+			isEdit && editing.getName() != null ? editing.getName() : "");
+		this.typeBox = new ComboBox<>(
+			FXCollections.observableArrayList(AccountType.values()));
 		
 		AccountType initialType = isEdit && editing.getAccountType() != null ?
 			editing.getAccountType() : AccountType.ASSET;
 		this.typeBox.getSelectionModel().select(initialType);
-               this.balF = new TextField(isEdit && editing.getOpeningBalance() != null ?
-                       FormatUtils.formatCurrency(editing.getOpeningBalance()) : FormatUtils.formatCurrency(BigDecimal.ZERO));
+		this.balF =
+			new TextField(isEdit && editing.getOpeningBalance() != null ?
+				FormatUtils.formatCurrency(editing.getOpeningBalance()) :
+				FormatUtils.formatCurrency(BigDecimal.ZERO));
 		
 		GridPane gp = new GridPane();
 		gp.setHgap(10);
@@ -404,22 +451,27 @@ public class CoaEditorPanelFX extends BorderPane
 		dlg.setResultConverter(btn -> {
 			return resultConverterCallback(editing, btn);
 		});
-		dlg.showAndWait().ifPresent(det -> showAndWaitCallback(parent, editing, isEdit, det));
+		dlg.showAndWait().ifPresent(
+			det -> showAndWaitCallback(parent, editing, isEdit, det));
+		
 	}
 	
 	/**
-	 * showAndWaitCallback
-	 * @param parent
-	 * @param editing
-	 * @param isEdit
-	 * @param det
+	 * showAndWaitCallback.
+	 *
+	 * @param parent the parent
+	 * @param editing the editing
+	 * @param isEdit the is edit
+	 * @param det the det
 	 */
-	void showAndWaitCallback(Account parent, Account editing, boolean isEdit, Account det)
+	void showAndWaitCallback(Account parent, Account editing, boolean isEdit,
+		Account det)
 	{
 		
 		if (isEdit)
 		{
-			ChartOfAccountsService.update(editing, det.getName(), det.getAccountType(),
+			ChartOfAccountsService.update(editing, det.getName(),
+				det.getAccountType(),
 				det.getOpeningBalance(), det.getSupplementalLineKinds());
 			this.tree.refresh();
 		}
@@ -441,10 +493,11 @@ public class CoaEditorPanelFX extends BorderPane
 	}
 	
 	/**
-	 * resultConverterCallback
-	 * @param editing
-	 * @param btn
-	 * @return
+	 * resultConverterCallback.
+	 *
+	 * @param editing the editing
+	 * @param btn the btn
+	 * @return the account
 	 */
 	Account resultConverterCallback(Account editing, ButtonType btn)
 	{
@@ -459,7 +512,8 @@ public class CoaEditorPanelFX extends BorderPane
 		
 		if (!number.matches("\\d+"))
 		{
-			AlertBox.showError(null, "Account number must be a positive integer.");
+			AlertBox.showError(null,
+				"Account number must be a positive integer.");
 			return null;
 		}
 		
@@ -499,15 +553,18 @@ public class CoaEditorPanelFX extends BorderPane
 		
 		if (sel == null)
 		{
-			AlertBox.showWarning(null, "No account selected for deletion."); // Provide feedback
+			AlertBox.showWarning(null, "No account selected for deletion."); // Provide
+																				// feedback
 			return;
 		}
 		
 		this.svc.delete(sel); // Delete from the service/model
-		TreeItem<Account> selectedTreeItem = this.tree.getSelectionModel().getSelectedItem();
+		TreeItem<Account> selectedTreeItem =
+			this.tree.getSelectionModel().getSelectedItem();
 		
 		if (selectedTreeItem != null)
 		{
+			
 			// Remove from tree:
 			// If it's a root item's child:
 			if (selectedTreeItem.getParent() == this.rootItem)
@@ -517,7 +574,8 @@ public class CoaEditorPanelFX extends BorderPane
 			// If it's a child of another account node:
 			else if (selectedTreeItem.getParent() != null)
 			{
-				selectedTreeItem.getParent().getChildren().remove(selectedTreeItem);
+				selectedTreeItem.getParent().getChildren()
+					.remove(selectedTreeItem);
 			}
 			
 			this.tree.refresh(); // Refresh the tree view
@@ -546,8 +604,10 @@ public class CoaEditorPanelFX extends BorderPane
 		FileChooser fc = new FileChooser();
 		fc.setTitle("Import Chart of Accounts from XLSX");
 		fc.getExtensionFilters()
-			.add(new FileChooser.ExtensionFilter("Excel files (*.xlsx)", "*.xlsx"));
-		File f = fc.showOpenDialog(getScene() != null ? getScene().getWindow() : null);
+			.add(new FileChooser.ExtensionFilter("Excel files (*.xlsx)",
+				"*.xlsx"));
+		File f = fc
+			.showOpenDialog(getScene() != null ? getScene().getWindow() : null);
 		
 		if (f == null)
 		{
@@ -556,12 +616,16 @@ public class CoaEditorPanelFX extends BorderPane
 		
 		try
 		{
-			ChartOfAccounts imported = ChartOfAccountsIOService.importFromXlsx(f.toPath());
-			this.svc.replaceChart(imported); // Replace current COA with imported one
+			ChartOfAccounts imported =
+				ChartOfAccountsIOService.importFromXlsx(f.toPath());
+			this.svc.replaceChart(imported); // Replace current COA with
+												// imported one
 			refresh(); // Refresh the tree view
-			AlertBox.showInfo(null, "Chart of Accounts imported successfully from " + f.getName());
+			AlertBox.showInfo(null,
+				"Chart of Accounts imported successfully from " + f.getName());
 		}
-		catch (IOException | NullPointerException ex) // Catch more specific exceptions
+		catch (IOException | NullPointerException ex) // Catch more specific
+														// exceptions
 		{
 			LOGGER.error("Import failed", ex);
 			AlertBox.showError(null, "Import failed: " + ex.getMessage());
@@ -578,7 +642,9 @@ public class CoaEditorPanelFX extends BorderPane
 	 */
 	private void exportXlsx()
 	{
-		if (!CurrentCompany.isOpen() || this.svc.asChart().getAccounts().isEmpty())
+		
+		if (!CurrentCompany.isOpen() ||
+			this.svc.asChart().getAccounts().isEmpty())
 		{ // Check added & ensure chart has content
 			AlertBox.showError(null, "No Data to Export",
 				"Cannot export Chart of Accounts as no company is open or the chart is empty.");
@@ -590,8 +656,11 @@ public class CoaEditorPanelFX extends BorderPane
 		fc.setTitle("Export Chart of Accounts to XLSX");
 		fc.setInitialFileName("chart-of-accounts.xlsx");
 		fc.getExtensionFilters()
-			.add(new FileChooser.ExtensionFilter("Excel files (*.xlsx)", "*.xlsx"));
-		File f = fc.showSaveDialog(getScene() != null ? getScene().getWindow() : null); // Set owner
+			.add(new FileChooser.ExtensionFilter("Excel files (*.xlsx)",
+				"*.xlsx"));
+		File f = fc
+			.showSaveDialog(getScene() != null ? getScene().getWindow() : null); // Set
+																					// owner
 		
 		if (f == null)
 		{
@@ -600,11 +669,14 @@ public class CoaEditorPanelFX extends BorderPane
 		
 		try
 		{
-			ChartOfAccountsIOService.exportToXlsx(this.svc.asChart(), f.toPath());
+			ChartOfAccountsIOService.exportToXlsx(this.svc.asChart(),
+				f.toPath());
 			AlertBox.showInfo(null,
-				"Chart of Accounts exported successfully to " + f.getAbsolutePath());
+				"Chart of Accounts exported successfully to " +
+					f.getAbsolutePath());
 		}
-		catch (IOException | NullPointerException ex) // Catch more specific exceptions
+		catch (IOException | NullPointerException ex) // Catch more specific
+														// exceptions
 		{
 			LOGGER.error("Export failed", ex);
 			AlertBox.showError(null, "Export failed: " + ex.getMessage());
@@ -628,7 +700,8 @@ public class CoaEditorPanelFX extends BorderPane
 		}
 		else
 		{
-			// Fallback if no specific close handler: try to close the window this panel is
+			// Fallback if no specific close handler: try to close the window
+			// this panel is
 			// in.
 			Window window = getScene() != null ? getScene().getWindow() : null;
 			
@@ -656,7 +729,8 @@ public class CoaEditorPanelFX extends BorderPane
 		
 		if (CurrentCompany.isOpen())
 		{ // Only populate if a company is open
-			this.svc.roots().forEach(r -> this.rootItem.getChildren().add(makeNode(r)));
+			this.svc.roots()
+				.forEach(r -> this.rootItem.getChildren().add(makeNode(r)));
 		}
 		
 		if (!CurrentCompany.isOpen())
@@ -665,11 +739,13 @@ public class CoaEditorPanelFX extends BorderPane
 		}
 		else if (this.rootItem.getChildren().isEmpty())
 		{
-			this.tree.setPlaceholder(new Label("No accounts. Use 'Add Root' to create one."));
+			this.tree.setPlaceholder(
+				new Label("No accounts. Use 'Add Root' to create one."));
 		}
 		
 		updateButtonsForSelection();
 		this.tree.refresh();
+		
 	}
 	
 	/**
@@ -681,6 +757,7 @@ public class CoaEditorPanelFX extends BorderPane
 	{
 		TreeItem<Account> ti = this.tree.getSelectionModel().getSelectedItem();
 		return ti == null ? null : ti.getValue();
+		
 	}
 	
 	/**
@@ -696,7 +773,8 @@ public class CoaEditorPanelFX extends BorderPane
 		Account a = new Account();
 		a.setAccountNumber(number); // Assumes number is already validated
 		a.setName(this.nameF.getText().trim());
-		a.setAccountType(this.typeBox.getValue()); // Get selected AccountType from ComboBox
+		a.setAccountType(this.typeBox.getValue()); // Get selected AccountType
+													// from ComboBox
 		
 		try
 		{
@@ -709,63 +787,99 @@ public class CoaEditorPanelFX extends BorderPane
 		
 		a.setSupplementalLineKinds(getSelectedSupplementalKinds());
 		return a;
+		
 	}
-
+	
+	/**
+	 * Builds the supplemental kinds editor.
+	 *
+	 * @param editing the editing
+	 * @return the v box
+	 */
 	private VBox buildSupplementalKindsEditor(Account editing)
 	{
 		this.supplementalKindChecks.clear();
 		VBox box = new VBox(4);
+		
 		for (SupplementalLineKind kind : SupplementalLineKind.values())
 		{
 			CheckBox checkBox = new CheckBox(formatSupplementalKindLabel(kind));
-			if (editing != null && editing.getSupplementalLineKinds() != null
-				&& editing.getSupplementalLineKinds().contains(kind))
+			
+			if (editing != null && editing.getSupplementalLineKinds() != null &&
+				editing.getSupplementalLineKinds().contains(kind))
 			{
 				checkBox.setSelected(true);
 			}
+			
 			this.supplementalKindChecks.put(kind, checkBox);
 			box.getChildren().add(checkBox);
 		}
+		
 		return box;
+		
 	}
-
+	
+	/**
+	 * Gets the selected supplemental kinds.
+	 *
+	 * @return the selected supplemental kinds
+	 */
 	private List<SupplementalLineKind> getSelectedSupplementalKinds()
 	{
 		List<SupplementalLineKind> selected = new java.util.ArrayList<>();
+		
 		for (SupplementalLineKind kind : SupplementalLineKind.values())
 		{
 			CheckBox checkBox = this.supplementalKindChecks.get(kind);
+			
 			if (checkBox != null && checkBox.isSelected())
 			{
 				selected.add(kind);
 			}
+			
 		}
+		
 		return selected;
+		
 	}
-
+	
+	/**
+	 * Format supplemental kind label.
+	 *
+	 * @param kind the kind
+	 * @return the string
+	 */
 	private static String formatSupplementalKindLabel(SupplementalLineKind kind)
 	{
+		
 		if (kind == null)
 		{
 			return "";
 		}
+		
 		String lower = kind.name().toLowerCase().replace('_', ' ');
 		String[] parts = lower.split(" ");
 		StringBuilder builder = new StringBuilder();
+		
 		for (String part : parts)
 		{
+			
 			if (part.isEmpty())
 			{
 				continue;
 			}
+			
 			if (builder.length() > 0)
 			{
 				builder.append(' ');
 			}
+			
 			builder.append(Character.toUpperCase(part.charAt(0)))
 				.append(part.substring(1));
 		}
+		
 		return builder.toString();
+		
 	}
 	
 	
@@ -781,9 +895,11 @@ public class CoaEditorPanelFX extends BorderPane
 	{
 		TreeItem<Account> ti = new TreeItem<>(acc);
 		// Recursively add children
-		this.svc.childrenOf(acc).forEach(child -> ti.getChildren().add(makeNode(child)));
+		this.svc.childrenOf(acc)
+			.forEach(child -> ti.getChildren().add(makeNode(child)));
 		ti.setExpanded(true); // Expand nodes by default
 		return ti;
+		
 	}
 	
 	/**
@@ -795,14 +911,18 @@ public class CoaEditorPanelFX extends BorderPane
 	 *           and returns the value of type {@code T} to be displayed in the cell for that account.
 	 * @return A configured {@link TreeTableColumn}.
 	 */
-	private static <T> TreeTableColumn<Account, T> makeCol(String name, Function<Account, T> fn)
+	private static <T> TreeTableColumn<Account, T> makeCol(String name,
+		Function<Account, T> fn)
 	{
 		TreeTableColumn<Account, T> c = new TreeTableColumn<>(name);
-		// CellValueFactory that extracts a value from the Account object wrapped by the
+		// CellValueFactory that extracts a value from the Account object
+		// wrapped by the
 		// TreeItem
 		c.setCellValueFactory(
-			cd -> new ReadOnlyObjectWrapper<>(fn.apply(cd.getValue().getValue())));
+			cd -> new ReadOnlyObjectWrapper<>(
+				fn.apply(cd.getValue().getValue())));
 		return c;
+		
 	}
 	
 	/**
@@ -834,29 +954,37 @@ public class CoaEditorPanelFX extends BorderPane
 		
 		if (parent == null)
 		{
-			this.rootItem.getChildren().add(makeNode(det)); // Add as a child of the (hidden) root
+			this.rootItem.getChildren().add(makeNode(det)); // Add as a child of
+															// the (hidden) root
 		}
 		else
 		{
-			TreeItem<Account> parentItem = find(this.rootItem, parent); // Find the parent TreeItem
+			TreeItem<Account> parentItem = find(this.rootItem, parent); // Find
+																		// the
+																		// parent
+																		// TreeItem
 			
 			if (parentItem != null)
 			{
 				parentItem.getChildren().add(makeNode(det));
-				parentItem.setExpanded(true); // Ensure parent is expanded to show new child
+				parentItem.setExpanded(true); // Ensure parent is expanded to
+												// show new child
 			}
 			else
 			{
 				// Should not happen if parent is valid and tree is consistent
-				LOGGER.warn("Could not find parent TreeItem for account: " + parent.getName() +
+				LOGGER.warn("Could not find parent TreeItem for account: " +
+					parent.getName() +
 					" when inserting child " + det.getName());
-				// As a fallback, could add to root, but this indicates an issue.
+				// As a fallback, could add to root, but this indicates an
+				// issue.
 				this.rootItem.getChildren().add(makeNode(det));
 			}
 			
 		}
 		
 		this.tree.refresh(); // Refresh to show the new item
+		
 	}
 	
 	/**
@@ -887,11 +1015,13 @@ public class CoaEditorPanelFX extends BorderPane
 		}
 		
 		return null;
+		
 	}
 	
 	/**
-	 * handleCompanyChange
-	 * @param isOpen
+	 * handleCompanyChange.
+	 *
+	 * @param isOpen the is open
 	 */
 	private void handleCompanyChange(boolean isOpen)
 	{
@@ -937,20 +1067,38 @@ public class CoaEditorPanelFX extends BorderPane
 	}
 	
 	/**
-	 * CoaEditorPanelCompanyListener
+	 * CoaEditorPanelCompanyListener.
+	 *
+	 * @see CoaEditorPanelCompanyEvent
 	 */
-	private class CoaEditorPanelCompanyListener implements CurrentCompany.CompanyChangeListener
+	private class CoaEditorPanelCompanyListener
+		implements CurrentCompany.CompanyChangeListener
 	{
+		
+		/** The panel. */
 		private CoaEditorPanelFX panel;
 		
+		/**
+		 * Instantiates a new coa editor panel company listener.
+		 *
+		 * @param panel the panel
+		 */
 		public CoaEditorPanelCompanyListener(CoaEditorPanelFX panel)
 		{
 			this.panel = panel;
+			
 		}
 		
-		@Override public void companyChange(boolean isOpen)
+		/**
+		 * Override @see nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener#companyChange(boolean)
+		 *
+		 * @param isOpen the is open
+		 */
+		@Override
+		public void companyChange(boolean isOpen)
 		{
 			this.panel.handleCompanyChange(isOpen);
+			
 		}
 		
 	}

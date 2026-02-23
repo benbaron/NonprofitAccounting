@@ -12,6 +12,10 @@ import nonprofitbookkeeping.service.DocumentStorageService;
 import nonprofitbookkeeping.service.FundAccountingService;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Interface ApplicationContext.
+ */
 public interface ApplicationContext
 {
 	/**

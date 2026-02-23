@@ -13,6 +13,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// TODO: Auto-generated Javadoc
 /**
  * Reflection-based helper that populates a bean from a Map of fieldName -> value.
  *
@@ -25,10 +26,17 @@ import org.slf4j.LoggerFactory;
  */
 public final class DataFiller
 {
+	
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER =
 		LoggerFactory.getLogger(DataFiller.class);
+	
+	/** The Constant DEFAULT_NULL_PLACEHOLDER. */
 	private static final String DEFAULT_NULL_PLACEHOLDER = "-";
 	
+	/**
+	 * Instantiates a new data filler.
+	 */
 	private DataFiller()
 	{
 	
@@ -37,6 +45,7 @@ public final class DataFiller
 	/**
 	 * Create a new instance of the given beanClass and populate it from the Map.
 	 *
+	 * @param <T> the generic type
 	 * @param beanClass type to instantiate
 	 * @param values    map of fieldName -> value
 	 * @return populated bean instance
@@ -181,6 +190,12 @@ public final class DataFiller
 		
 	}
 	
+	/**
+	 * Capitalize.
+	 *
+	 * @param s the s
+	 * @return the string
+	 */
 	private static String capitalize(String s)
 	{
 		
@@ -193,6 +208,12 @@ public final class DataFiller
 		
 	}
 
+	/**
+	 * Resolve null placeholder.
+	 *
+	 * @param fieldName the field name
+	 * @return the string
+	 */
 	private static String resolveNullPlaceholder(String fieldName)
 	{
 		ReportContext context = ReportContextHolder.get();
@@ -224,6 +245,10 @@ public final class DataFiller
 	
 	/**
 	 * Best-effort type conversion from JDBC/Map values to bean property type.
+	 *
+	 * @param value the value
+	 * @param targetType the target type
+	 * @return the object
 	 */
 	private static Object convertValue(Object value, Class<?> targetType)
 	{

@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+// TODO: Auto-generated Javadoc
 /**
  * Wrapper that collapses multiple data rows into a single Jasper bean.
  * The first row's properties are promoted to top-level fields, while the
@@ -15,13 +16,27 @@ import java.util.Map;
  */
 public final class ReportDataBundle extends LinkedHashMap<String, Object>
 {
+    
+    /** The Constant ROWS_KEY. */
     private static final String ROWS_KEY = "rows";
+    
+    /** The Constant ROW_COUNT_KEY. */
     private static final String ROW_COUNT_KEY = "rowCount";
 
+    /**
+     * Instantiates a new report data bundle.
+     */
     private ReportDataBundle()
     {
     }
 
+    /**
+     * From rows.
+     *
+     * @param rows the rows
+     * @return the report data bundle
+     * @throws IntrospectionException the introspection exception
+     */
     public static ReportDataBundle fromRows(List<?> rows)
         throws IntrospectionException
     {

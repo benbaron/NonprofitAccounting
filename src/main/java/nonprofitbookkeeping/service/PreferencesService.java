@@ -5,6 +5,7 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.Properties;
 
+// TODO: Auto-generated Javadoc
 /**
  * Manages application preferences, such as default directories and last used files.
  * Preferences are stored in a ".properties" file located in a ".nonprofitbookkeeping"
@@ -129,6 +130,8 @@ public class PreferencesService
 	
 	/**
 	 * Returns the identifier of the last company that was opened, if available.
+	 *
+	 * @return the last used company id
 	 */
 	public static Long getLastUsedCompanyId()
 	{
@@ -152,6 +155,8 @@ public class PreferencesService
 	
 	/**
 	 * Stores the identifier of the most recently opened company.
+	 *
+	 * @param companyId the new last used company id
 	 */
 	public static void setLastUsedCompanyId(Long companyId)
 	{
@@ -199,7 +204,9 @@ public class PreferencesService
 	}
 	
 	/**
-	 * @return
+	 * Gets the single instance of PreferencesService.
+	 *
+	 * @return single instance of PreferencesService
 	 */
 	public static PreferencesService getInstance()
 	{

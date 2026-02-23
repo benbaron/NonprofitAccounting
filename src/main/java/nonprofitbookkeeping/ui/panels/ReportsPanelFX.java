@@ -20,6 +20,7 @@ import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener;
 import javafx.scene.Node; // For iterating over toolbar items
 
+// TODO: Auto-generated Javadoc
 /**
  * JavaFX rewrite of {@code ReportsPanel}. Lets the user generate a new report
  * (opens {@link GenerateReportPanelFX}) and shows previously generated reports
@@ -31,11 +32,15 @@ public class ReportsPanelFX extends BorderPane
 	/** Service layer for report generation and listing. */
 	private final ReportService reportService;
 	/** ObservableList to hold {@link ReportRow} objects for display in the table of generated reports. */
-	private final ObservableList<ReportRow> rows = FXCollections.observableArrayList();
+	private final ObservableList<ReportRow> rows =
+		FXCollections.observableArrayList();
 	/** TableView to display metadata of previously generated reports. */
 	private final TableView<ReportRow> table = new TableView<>();
 	
+	/** The company listener. */
 	private ReportsPanelCompanyListener companyListener;
+	
+	/** The generator tool bar. */
 	private ToolBar generatorToolBar;
 	
 	/**
@@ -50,7 +55,8 @@ public class ReportsPanelFX extends BorderPane
 		buildTable();
 		setCenter(this.table);
 		
-		this.generatorToolBar = buildGeneratorBarInternal(); // Call internal method
+		this.generatorToolBar = buildGeneratorBarInternal(); // Call internal
+																// method
 		setTop(this.generatorToolBar);
 		
 		this.companyListener = new ReportsPanelCompanyListener(this);
@@ -73,23 +79,26 @@ public class ReportsPanelFX extends BorderPane
 	private ToolBar buildGeneratorBarInternal()
 	{
 		ComboBox<String> typeBox = new ComboBox<>();
-		typeBox.getItems().addAll("Income Statement", 
-			"Balance Sheet", 
-			"Cash Flow", 
+		typeBox.getItems().addAll("Income Statement",
+			"Balance Sheet",
+			"Cash Flow",
 			"Donor Summary",
 			"Fund Activity Report");
-
+		
 		DatePicker from = new DatePicker(LocalDate.now().withDayOfYear(1));
 		DatePicker to = new DatePicker(LocalDate.now());
 		Button gen = new Button("Generate");
 		gen.setOnAction(e -> {
-			// This action itself should ideally be disabled if no company is open.
+			// This action itself should ideally be disabled if no company is
+			// open.
 			// The GenerateReportPanelFX might also need its own company checks.
 			Stage dlg = new Stage();
 			dlg.setTitle("Generating Report");
-			// Ensure GenerateReportPanelFX handles cases where no company is open if it's
+			// Ensure GenerateReportPanelFX handles cases where no company is
+			// open if it's
 			// possible to reach here.
-			dlg.setScene(new Scene(new GenerateReportPanelFX(this.reportService), 600, 400));
+			dlg.setScene(new Scene(
+				new GenerateReportPanelFX(this.reportService), 600, 400));
 			dlg.showAndWait();
 			
 			if (CurrentCompany.isOpen())
@@ -98,8 +107,9 @@ public class ReportsPanelFX extends BorderPane
 			}
 			
 		});
-		return new ToolBar(	new Label("Type:"), typeBox, new Label("From:"), from, new Label("To:"),
-							to, gen);
+		return new ToolBar(new Label("Type:"), typeBox, new Label("From:"),
+			from, new Label("To:"),
+			to, gen);
 		
 	}
 	
@@ -113,7 +123,8 @@ public class ReportsPanelFX extends BorderPane
 	 * types with {@code TableColumn}.
 	 */
 	@SuppressWarnings(
-	{ "unchecked", "deprecation" }) private void buildTable()
+	{ "unchecked", "deprecation" })
+	private void buildTable()
 	{
 		TableColumn<ReportRow, String> nameCol = col("Report", "name");
 		TableColumn<ReportRow, String> dateCol = col("Created", "date");
@@ -132,14 +143,16 @@ public class ReportsPanelFX extends BorderPane
 					}
 					catch (Exception ex)
 					{
-						new Alert(Alert.AlertType.ERROR, "Cannot open file: " + ex.getMessage())
-								.showAndWait();
+						new Alert(Alert.AlertType.ERROR,
+							"Cannot open file: " + ex.getMessage())
+							.showAndWait();
 					}
 					
 				});
 			}
 			
-			@Override protected void updateItem(Void item, boolean empty)
+			@Override
+			protected void updateItem(Void item, boolean empty)
 			{
 				super.updateItem(item, empty);
 				setGraphic(empty ? null : this.btn);
@@ -193,6 +206,11 @@ public class ReportsPanelFX extends BorderPane
 		
 	}
 	
+	/**
+	 * Handle company change.
+	 *
+	 * @param isOpen the is open
+	 */
 	private void handleCompanyChange(boolean isOpen)
 	{
 		
@@ -202,7 +220,8 @@ public class ReportsPanelFX extends BorderPane
 			
 			for (Node node : this.generatorToolBar.getItems())
 			{
-				// Check for specific types if needed, e.g., ComboBox, DatePicker, Button
+				// Check for specific types if needed, e.g., ComboBox,
+				// DatePicker, Button
 				node.setDisable(!isOpen);
 			}
 			
@@ -211,11 +230,13 @@ public class ReportsPanelFX extends BorderPane
 		// Specifically handle ComboBox selection placeholder if needed
 		ComboBox<String> typeBox = null;
 		
-		if (this.generatorToolBar != null && this.generatorToolBar.getItems().size() > 1 &&
-				this.generatorToolBar.getItems().get(1) instanceof ComboBox)
+		if (this.generatorToolBar != null &&
+			this.generatorToolBar.getItems().size() > 1 &&
+			this.generatorToolBar.getItems().get(1) instanceof ComboBox)
 		{
-			@SuppressWarnings("unchecked") ComboBox<String> tempCb =
-					(ComboBox<String>) this.generatorToolBar.getItems().get(1);
+			@SuppressWarnings("unchecked")
+			ComboBox<String> tempCb =
+				(ComboBox<String>) this.generatorToolBar.getItems().get(1);
 			typeBox = tempCb;
 		}
 		
@@ -236,24 +257,47 @@ public class ReportsPanelFX extends BorderPane
 			if (typeBox != null)
 			{
 				typeBox.getSelectionModel().clearSelection();
-				// typeBox.setPlaceholder(new Label("No company")); // Placeholder if desired
+				// typeBox.setPlaceholder(new Label("No company")); //
+				// Placeholder if desired
 			}
 			
 		}
 		
 	}
 	
+	/**
+	 * The listener interface for receiving reportsPanelCompany events.
+	 * The class that is interested in processing a reportsPanelCompany
+	 * event implements this interface, and the object created
+	 * with that class is registered with a component using the
+	 * component's <code>addReportsPanelCompanyListener</code> method. When
+	 * the reportsPanelCompany event occurs, that object's appropriate
+	 * method is invoked.
+	 *
+	 * @see ReportsPanelCompanyEvent
+	 */
 	private class ReportsPanelCompanyListener implements CompanyChangeListener
 	{
+		
+		/** The panel. */
 		private ReportsPanelFX panel;
 		
+		/**
+		 * Instantiates a new reports panel company listener.
+		 *
+		 * @param panel the panel
+		 */
 		public ReportsPanelCompanyListener(ReportsPanelFX panel)
 		{
 			this.panel = panel;
 			
 		}
 		
-		@Override public void companyChange(boolean isOpen)
+		/**
+		 * Override @see nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener#companyChange(boolean) 
+		 */
+		@Override
+		public void companyChange(boolean isOpen)
 		{
 			this.panel.handleCompanyChange(isOpen);
 			
@@ -266,10 +310,21 @@ public class ReportsPanelFX extends BorderPane
 	 */
 	public static class ReportRow
 	{
+		
+		/** The name. */
 		final String name;
+		
+		/** The date. */
 		final String date;
+		
+		/** The path. */
 		final String path;
 		
+		/**
+		 * Instantiates a new report row.
+		 *
+		 * @param m the m
+		 */
 		ReportRow(ReportMetadata m)
 		{
 			this.name = m.getReportName();
@@ -278,18 +333,33 @@ public class ReportsPanelFX extends BorderPane
 			
 		}
 		
+		/**
+		 * Gets the name.
+		 *
+		 * @return the name
+		 */
 		public String getName()
 		{
 			return this.name;
 			
 		}
 		
+		/**
+		 * Gets the date.
+		 *
+		 * @return the date
+		 */
 		public String getDate()
 		{
 			return this.date;
 			
 		}
 		
+		/**
+		 * Gets the path.
+		 *
+		 * @return the path
+		 */
 		public String getPath()
 		{
 			return this.path;

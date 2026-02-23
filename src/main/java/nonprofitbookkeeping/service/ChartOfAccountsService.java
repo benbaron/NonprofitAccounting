@@ -8,6 +8,7 @@ import java.util.Optional;
 import nonprofitbookkeeping.model.*;
 import nonprofitbookkeeping.model.supplemental.SupplementalLineKind;
 
+// TODO: Auto-generated Javadoc
 /**
  * Thin façade over {@link ChartOfAccounts} that provides CRUD helpers used by
  * the UI layer as well as import/export utilities. It wraps a {@link ChartOfAccounts}
@@ -97,8 +98,8 @@ public class ChartOfAccountsService
 	/**
 	 * Deletes the specified account and all its descendants from the chart of accounts.
 	 * Delegates to {@link ChartOfAccounts#removeAccount(Account)}.
-	 * 
-	 * @param target The {@link Account} to delete. If null, the underlying method may handle it or throw an error.
+	 *
+	 * @param det the det
 	 */
 	public void delete(nonprofitbookkeeping.model.Account det)
 {
@@ -113,11 +114,12 @@ public class ChartOfAccountsService
 	/**
 	 * Updates the properties of a target {@link Account} object.
 	 * Sets the name, account type, and opening balance of the target account.
-	 * 
+	 *
 	 * @param tgt The {@link Account} object to update. Must not be null.
 	 * @param name The new name for the account.
 	 * @param accountType The new {@link AccountType} for the account.
 	 * @param openingBal The new opening balance for the account.
+	 * @param supplementalLineKinds the supplemental line kinds
 	 * @throws NullPointerException if {@code tgt} is null.
 	 */
 	public static void update(	Account tgt, 
@@ -233,6 +235,7 @@ public class ChartOfAccountsService
 	 * Otherwise, it's added as a child of {@code parentDest}.
 	 * This is a helper method primarily used by {@link #replaceChart(ChartOfAccounts)}.
 	 *
+	 * @param sourceChart the source chart
 	 * @param src The source {@link Account} to copy.
 	 * @param parentDest The destination parent {@link Account} in the current chart under which
 	 *                   the {@code src} account (and its children) should be copied.

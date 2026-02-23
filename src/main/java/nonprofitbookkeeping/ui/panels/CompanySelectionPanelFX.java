@@ -31,6 +31,7 @@ import nonprofitbookkeeping.service.DemoCompanySeeder;
 import nonprofitbookkeeping.ui.actions.CreateOrEditCompanyActionFX;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 
+// TODO: Auto-generated Javadoc
 /**
  * Lists the companies stored inside the shared database and allows the user to preview
  * and open them. The legacy file-based workflow has been replaced with database-backed
@@ -38,23 +39,46 @@ import nonprofitbookkeeping.ui.helpers.AlertBox;
  */
 public class CompanySelectionPanelFX extends BorderPane
 {
+        
+        /** The Constant UPDATED_FORMATTER. */
         private static final DateTimeFormatter UPDATED_FORMATTER =
                 DateTimeFormatter.ofPattern("MMM d, yyyy h:mm a").withZone(ZoneId.systemDefault());
         /** Callback invoked when a company has been successfully opened. */
         @FunctionalInterface public interface OnCompanyOpenedHandler
         {
+                
+                /**
+                 * On company opened.
+                 *
+                 * @param company the company
+                 */
                 void onCompanyOpened(Company company);
         }
 
+        /** The repository. */
         private final CompanyRepository repository = new CompanyRepository();
+        
+        /** The company list. */
         private final ListView<CompanyRecord> companyList = new ListView<>();
+        
+        /** The company items. */
         private final ObservableList<CompanyRecord> companyItems = FXCollections.observableArrayList();
+        
+        /** The preview area. */
         private final TextArea previewArea = new TextArea();
+        
+        /** The demo company seeder. */
         private final DemoCompanySeeder demoCompanySeeder = new DemoCompanySeeder();
 
+        /** The company opened handler. */
         private OnCompanyOpenedHandler companyOpenedHandler;
+        
+        /** The error handler. */
         private Consumer<String> errorHandler = msg -> AlertBox.showError(null, msg);
 
+        /**
+         * Instantiates a new company selection panel FX.
+         */
         public CompanySelectionPanelFX()
         {
                 setPadding(new Insets(10));
@@ -62,13 +86,22 @@ public class CompanySelectionPanelFX extends BorderPane
                 reloadCompanyList();
         }
 
+        /**
+         * Instantiates a new company selection panel FX.
+         *
+         * @param companyOpenedHandler the company opened handler
+         */
         public CompanySelectionPanelFX(OnCompanyOpenedHandler companyOpenedHandler)
         {
                 this();
                 this.companyOpenedHandler = companyOpenedHandler;
         }
 
-        /** Allows callers to override how error messages are surfaced. */
+        /**
+         * Allows callers to override how error messages are surfaced.
+         *
+         * @param handler the new on error
+         */
         public void setOnError(Consumer<String> handler)
         {
                 if (handler != null)
@@ -77,12 +110,19 @@ public class CompanySelectionPanelFX extends BorderPane
                 }
         }
 
-        /** Sets the handler that will be notified when the user opens a company. */
+        /**
+         * Sets the handler that will be notified when the user opens a company.
+         *
+         * @param handler the new on company opened handler
+         */
         public void setOnCompanyOpenedHandler(OnCompanyOpenedHandler handler)
         {
                 this.companyOpenedHandler = handler;
         }
 
+        /**
+         * Builds the UI.
+         */
         private void buildUI()
         {
                 this.companyList.setItems(this.companyItems);
@@ -131,6 +171,9 @@ public class CompanySelectionPanelFX extends BorderPane
                 setBottom(buttons);
         }
 
+        /**
+         * Reload company list.
+         */
         private void reloadCompanyList()
         {
                 this.companyItems.clear();
@@ -166,6 +209,11 @@ public class CompanySelectionPanelFX extends BorderPane
                 reloadCompanyList();
         }
 
+        /**
+         * Select company.
+         *
+         * @param companyId the company id
+         */
         private void selectCompany(long companyId)
         {
                 for (CompanyRecord record : this.companyItems)
@@ -178,6 +226,11 @@ public class CompanySelectionPanelFX extends BorderPane
                 }
         }
 
+        /**
+         * Show preview.
+         *
+         * @param record the record
+         */
         private void showPreview(CompanyRecord record)
         {
                 if (record == null)
@@ -224,6 +277,9 @@ public class CompanySelectionPanelFX extends BorderPane
                 }
         }
 
+        /**
+         * Open selected.
+         */
         void openSelected()
         {
                 if (!Database.isInitialized())
@@ -256,6 +312,9 @@ public class CompanySelectionPanelFX extends BorderPane
                 }
         }
 
+        /**
+         * Creates the new.
+         */
         private void createNew()
         {
                 if (!Database.isInitialized())
@@ -274,6 +333,9 @@ public class CompanySelectionPanelFX extends BorderPane
                 }
         }
 
+        /**
+         * Creates the demo company.
+         */
         private void createDemoCompany()
         {
                 if (!Database.isInitialized())
@@ -304,6 +366,9 @@ public class CompanySelectionPanelFX extends BorderPane
                 }
         }
 
+        /**
+         * Delete selected.
+         */
         private void deleteSelected()
         {
                 if (!Database.isInitialized())
@@ -354,6 +419,12 @@ public class CompanySelectionPanelFX extends BorderPane
                 }
         }
 
+        /**
+         * Null to empty.
+         *
+         * @param value the value
+         * @return the string
+         */
         private static String nullToEmpty(String value)
         {
                 return value == null ? "" : value;

@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * Mutable container that holds every {@link Account} in the company and
  * supports parent/child relationships.
@@ -18,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Data public class ChartOfAccounts implements Serializable
 {
 	
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 6545569795380871696L;
 	
 	/**

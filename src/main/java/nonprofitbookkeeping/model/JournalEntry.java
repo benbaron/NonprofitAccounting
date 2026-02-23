@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+// TODO: Auto-generated Javadoc
 /**
  * Represents a single entry within a journal, detailing a transaction's impact
  * on a specific account. This typically includes the date, affected account,
@@ -73,6 +74,13 @@ public class JournalEntry
 	/**
 	 * Backwards compatible constructor that assumes the entry and transaction
 	 * IDs are the same.
+	 *
+	 * @param id the id
+	 * @param date the date
+	 * @param account the account
+	 * @param debit the debit
+	 * @param credit the credit
+	 * @param text the text
 	 */
 	public JournalEntry(String id, String date, String account,
 		BigDecimal debit, BigDecimal credit,

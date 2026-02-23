@@ -19,15 +19,25 @@ import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PageViewerTest.
+ */
 public class PageViewerTest
 {
 
+        /**
+         * Reset.
+         */
         @AfterEach
         public void reset()
         {
                 CurrentCompany.forceCompanyLoad(null);
         }
 
+        /**
+         * Test model reflects current ledger.
+         */
         @Test
         public void testModelReflectsCurrentLedger()
         {
@@ -53,6 +63,9 @@ public class PageViewerTest
                 assertEquals("$50.00", model.getValueAt(1, 4));
         }
 
+        /**
+         * Test model includes empty state when closed.
+         */
         @Test
         public void testModelIncludesEmptyStateWhenClosed()
         {
@@ -64,6 +77,11 @@ public class PageViewerTest
                 assertEquals("No company is currently open.", model.getValueAt(0, 5));
         }
 
+        /**
+         * Builds the sample company.
+         *
+         * @return the company
+         */
         private static Company buildSampleCompany()
         {
                 Company company = new Company();

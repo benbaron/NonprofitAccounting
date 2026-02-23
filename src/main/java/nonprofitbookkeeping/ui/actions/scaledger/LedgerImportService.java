@@ -9,14 +9,21 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+// TODO: Auto-generated Javadoc
 /**
  * Coordinates loading ledger spreadsheets and persisting the mapped
  * transactions through the supplied persistence gateway.
  */
 public class LedgerImportService
 {
+    
+    /** The sheet importer. */
     private final LedgerSheetImporter sheetImporter;
+    
+    /** The mapper. */
     private final LedgerToDomainMapper mapper;
+    
+    /** The persistence gateway. */
     private final LedgerPersistenceGateway persistenceGateway;
 
     /**
@@ -52,6 +59,7 @@ public class LedgerImportService
      * @param workbookFile Excel workbook path
      * @param sheetName    sheet within the workbook to read
      * @return list of persisted transactions in the order they were saved
+     * @throws IOException Signals that an I/O exception has occurred.
      */
     public List<AccountingTransaction> importAndPersist(Path chartMapFile,
                                                         Path workbookFile,
@@ -72,6 +80,12 @@ public class LedgerImportService
     /**
      * Import using a translation map that was loaded through an alternate mechanism
      * (for example, from the classpath).
+     *
+     * @param workbookFile the workbook file
+     * @param sheetName the sheet name
+     * @param translation the translation
+     * @return the list
+     * @throws IOException Signals that an I/O exception has occurred.
      */
     public List<AccountingTransaction> importAndPersist(Path workbookFile,
                                                         String sheetName,

@@ -20,6 +20,7 @@ import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.persistence.CompanyDataRepository;
 import nonprofitbookkeeping.persistence.CompanyRepository;
 
+// TODO: Auto-generated Javadoc
 /**
  * Manages the currently active {@link Company} instance in the application.
  * This class provides static methods to access, load, save, and manage the state
@@ -28,6 +29,8 @@ import nonprofitbookkeeping.persistence.CompanyRepository;
  */
 public class CurrentCompany
 {
+	
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER =
 		LoggerFactory.getLogger(CurrentCompany.class);
 	/** The currently active company instance. */
@@ -206,6 +209,12 @@ public class CurrentCompany
 		
 	}
 	
+	/**
+	 * Checks for meaningful normalized data.
+	 *
+	 * @param normalized the normalized
+	 * @return true, if successful
+	 */
 	private static boolean hasMeaningfulNormalizedData(Company normalized)
 	{
 		
@@ -225,6 +234,12 @@ public class CurrentCompany
 		
 	}
 	
+	/**
+	 * Checks for meaningful profile.
+	 *
+	 * @param profile the profile
+	 * @return true, if successful
+	 */
 	private static boolean hasMeaningfulProfile(CompanyProfileModel profile)
 	{
 		
@@ -254,6 +269,12 @@ public class CurrentCompany
 		
 	}
 	
+	/**
+	 * Checks for text.
+	 *
+	 * @param value the value
+	 * @return true, if successful
+	 */
 	private static boolean hasText(String value)
 	{
 		return value != null && !value.isBlank();
@@ -301,6 +322,8 @@ public class CurrentCompany
 	
 	/**
 	 * Listener interface for receiving notifications about company state changes (e.g., opened or closed).
+	 *
+	 * @see CompanyChangeEvent
 	 */
 	public interface CompanyChangeListener extends EventListener
 	{
@@ -314,6 +337,8 @@ public class CurrentCompany
 	
 	/**
 	 * Manages a list of {@link CompanyChangeListener}s and fires events to them.
+	 *
+	 * @see CompanyEvent
 	 */
 	public static class CompanyListener
 	{
@@ -463,6 +488,9 @@ public class CurrentCompany
 	
 	/**
 	 * Convenience helper that sets both the active company identifier and the aggregate.
+	 *
+	 * @param companyId the company id
+	 * @param company2 the company 2
 	 */
 	public static void forceCompanyLoad(Long companyId, Company company2)
 	{
@@ -471,7 +499,11 @@ public class CurrentCompany
 		
 	}
 	
-	/** Returns the identifier of the currently open company, or {@code null} if unsaved. */
+	/**
+	 * Returns the identifier of the currently open company, or {@code null} if unsaved.
+	 *
+	 * @return the current company id
+	 */
 	public static Long getCurrentCompanyId()
 	{
 		return CurrentCompany.currentCompanyId;

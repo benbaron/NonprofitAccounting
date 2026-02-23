@@ -38,14 +38,19 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
+// TODO: Auto-generated Javadoc
 /**
  * Base class for Jasper report generators.
  */
 public abstract class AbstractReportGenerator
 	implements ReportContextAware
 {
+	
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER =
 		LoggerFactory.getLogger(AbstractReportGenerator.class);
+	
+	/** The Constant DEFAULT_OUTPUT_DIR. */
 	private static final String DEFAULT_OUTPUT_DIR =
 		"NonprofitBookkeepingReports";
 	/**
@@ -58,28 +63,43 @@ public abstract class AbstractReportGenerator
 	 */
 	private static final String REPORT_DATA_ROWS_FIELD = "rows";
 	
+	/** The report data override. */
 	private List<?> reportDataOverride;
+	
+	/** The report data explicit. */
 	private boolean reportDataExplicit;
+	
+	/** The report context. */
 	private ReportContext reportContext;
 	
 	/**
 	 * Subclasses provide the data beans needed for the report.
+	 *
+	 * @return the report data
 	 */
 	protected abstract List<?> getReportData();
 	
 	/**
 	 * Subclasses provide any report parameters for the template.
+	 *
+	 * @return the report parameters
 	 */
 	protected abstract Map<String, Object> getReportParameters();
 	
 	/**
 	 * Subclasses provide the JRXML path for the report.
+	 *
+	 * @return the report path
+	 * @throws ActionCancelledException the action cancelled exception
+	 * @throws NoFileCreatedException the no file created exception
 	 */
 	protected abstract String getReportPath()
 		throws ActionCancelledException, NoFileCreatedException;
 	
 	/**
 	 * Base name used when writing output files.
+	 *
+	 * @return the base name
 	 */
 	public abstract String getBaseName();
 
@@ -169,6 +189,13 @@ public abstract class AbstractReportGenerator
 		return outFile;
 	}
 
+	/**
+	 * Export xlsx.
+	 *
+	 * @param print the print
+	 * @param outFile the out file
+	 * @throws JRException the JR exception
+	 */
 	private void exportXlsx(JasperPrint print, File outFile)
 		throws JRException
 	{
@@ -196,6 +223,8 @@ public abstract class AbstractReportGenerator
 	/**
 	 * Allows callers to provide report data directly rather than generating
 	 * it through {@link #getReportData()}.
+	 *
+	 * @param reportData the new report data
 	 */
 	public void setReportData(List<?> reportData)
 	{
@@ -214,6 +243,8 @@ public abstract class AbstractReportGenerator
 	
 	/**
 	 * Resolve the effective report data, preferring explicitly supplied beans.
+	 *
+	 * @return the list
 	 */
 	protected List<?> resolveReportData()
 	{
@@ -293,7 +324,9 @@ public abstract class AbstractReportGenerator
 	}
 
 	/**
-	 * Override @see nonprofitbookkeeping.reports.jasper.runtime.ReportContextAware#setReportContext(nonprofitbookkeeping.reports.jasper.runtime.ReportContext) 
+	 * Override @see nonprofitbookkeeping.reports.jasper.runtime.ReportContextAware#setReportContext(nonprofitbookkeeping.reports.jasper.runtime.ReportContext)
+	 *
+	 * @param context the new report context
 	 */
 	@Override
 	public void setReportContext(ReportContext context)
@@ -326,6 +359,8 @@ public abstract class AbstractReportGenerator
 	
 	/**
 	 * Convenience helper for templates packaged alongside metadata bundles.
+	 *
+	 * @return the string
 	 */
 	protected String bundledReportPath()
 	{

@@ -25,39 +25,74 @@ import nonprofitbookkeeping.service.SettingsService;
 import nonprofitbookkeeping.ui.ThemeManager;
 import nonprofitbookkeeping.util.FormatUtils;
 
+// TODO: Auto-generated Javadoc
 /**
  * JavaFX port of the original Swing {@code SettingsPanel}.
  */
 public class SettingsPanelFX extends BorderPane
 {
+	
+	/** The service. */
 	private final SettingsService service;
+	
+	/** The primary stage. */
 	private final Stage primaryStage;
+	
+	/** The on settings saved. */
 	private final Runnable onSettingsSaved;
 	
+	/** The org name field. */
 	private TextField orgNameField;
+	
+	/** The fiscal start field. */
 	private TextField fiscalStartField;
+	
+	/** The currency box. */
 	private ComboBox<String> currencyBox;
+	
+	/** The income account box. */
 	private ComboBox<String> incomeAccountBox;
+	
+	/** The expense account box. */
 	private ComboBox<String> expenseAccountBox;
+	
+	/** The theme combo. */
 	private ComboBox<String> themeCombo;
+	
+	/** The language combo. */
 	private ComboBox<Locale> languageCombo;
 	/** Text field for customizing the currency format pattern. */
 	private TextField currencyFormatField;
+	
+	/** The autosave enabled check. */
 	private CheckBox autosaveEnabledCheck;
+	
+	/** The autosave interval spinner. */
 	private Spinner<Integer> autosaveIntervalSpinner;
+	
+	/** The default directory field. */
 	private TextField defaultDirectoryField;
+	
+	/** The last file field. */
 	private TextField lastFileField;
+	
+	/** The default report period combo. */
 	private ComboBox<ReportPeriodPreset> defaultReportPeriodCombo;
+	
+	/** The year to date option check. */
 	private CheckBox yearToDateOptionCheck;
+	
+	/** The full year option check. */
 	private CheckBox fullYearOptionCheck;
+	
+	/** The last month option check. */
 	private CheckBox lastMonthOptionCheck;
 	
 	/**
 	 * Constructs a new {@code SettingsPanelFX}.
 	 *
-	* @param primaryStage reference to the main stage so theme changes can be applied
+	 * @param primaryStage reference to the main stage so theme changes can be applied
 	 * @param service      settings service for persistence
-	 * @param companyDir   directory of the current company
 	 */
 	public SettingsPanelFX(Stage primaryStage, SettingsService service)
 	{
@@ -65,7 +100,13 @@ public class SettingsPanelFX extends BorderPane
 		
 	}
 	
-	/** Convenience constructor including a callback invoked after successful save. */
+	/**
+	 * Convenience constructor including a callback invoked after successful save.
+	 *
+	 * @param primaryStage the primary stage
+	 * @param service the service
+	 * @param onSettingsSaved the on settings saved
+	 */
 	public SettingsPanelFX(Stage primaryStage, SettingsService service,
 		Runnable onSettingsSaved)
 	{
@@ -181,10 +222,11 @@ public class SettingsPanelFX extends BorderPane
 	
 	/* ───────────────────────── Tab builders ───────────────────────── */
 	
-	/**  
-		 * Constructor SettingsPanelFX
-		 * @param stage
-		 */
+	/**
+	 * Constructor SettingsPanelFX.
+	 *
+	 * @param stage the stage
+	 */
 	public SettingsPanelFX(Stage stage)
 	{
 		this(stage, new SettingsService(), null);
@@ -298,6 +340,8 @@ public class SettingsPanelFX extends BorderPane
 	
 	/**
 	 * Builds the "Application" tab containing autosave and reporting preferences.
+	 *
+	 * @return the tab
 	 */
 	private Tab applicationTab()
 	{
@@ -493,6 +537,9 @@ public class SettingsPanelFX extends BorderPane
 		
 	}
 	
+	/**
+	 * Creates the database backup.
+	 */
 	private void createDatabaseBackup()
 	{
 		
@@ -545,6 +592,9 @@ public class SettingsPanelFX extends BorderPane
 		
 	}
 	
+	/**
+	 * Restore database backup.
+	 */
 	private void restoreDatabaseBackup()
 	{
 		

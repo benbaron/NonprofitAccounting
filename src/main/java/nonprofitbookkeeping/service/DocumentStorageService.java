@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 
+// TODO: Auto-generated Javadoc
 /**
  * DocumentStorageService manages attachment and retrieval of document files
  * associated with transactions.
@@ -22,7 +23,10 @@ import nonprofitbookkeeping.ui.helpers.AlertBox;
  */
 public class DocumentStorageService
 {
-        private static final Logger LOGGER = LoggerFactory.getLogger(DocumentStorageService.class);
+	
+	/** The Constant LOGGER. */
+	private static final Logger LOGGER =
+		LoggerFactory.getLogger(DocumentStorageService.class);
 	
 	/** Base directory located in the user's home directory under "NonprofitDocuments" for storing all attached documents. */
 	private static final File DOCUMENT_BASE_DIR =
@@ -57,11 +61,16 @@ public class DocumentStorageService
 	 * @throws IOException if an error occurs during file copying (e.g., permission issues, disk full).
 	 * @throws IllegalArgumentException if {@code file} is null or does not exist, or if {@code transactionId} is null or empty.
 	 */
-	public void attachDocumentToTransaction(String transactionId, File file) throws IOException
+	public void attachDocumentToTransaction(String transactionId, File file)
+		throws IOException
 	{
-		if (transactionId == null || transactionId.trim().isEmpty()) {
-            throw new IllegalArgumentException("Transaction ID must not be null or empty.");
-        }
+		
+		if (transactionId == null || transactionId.trim().isEmpty())
+		{
+			throw new IllegalArgumentException(
+				"Transaction ID must not be null or empty.");
+		}
+		
 		if (file == null || !file.exists())
 		{
 			throw new IllegalArgumentException("File does not exist: " + file);
@@ -77,24 +86,31 @@ public class DocumentStorageService
 			extension = originalName.substring(idx);
 		}
 		
-		// Generate a new filename using the transactionId and the current timestamp.
-		String newFileName = transactionId + "_" + System.currentTimeMillis() + extension;
+		// Generate a new filename using the transactionId and the current
+		// timestamp.
+		String newFileName =
+			transactionId + "_" + System.currentTimeMillis() + extension;
 		File targetFile = new File(DOCUMENT_BASE_DIR, newFileName);
 		
-                try
-                {
-                        // Copy the source file to the target location, replacing any existing file.
-                        Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                        LOGGER.info("Document attached for transaction {}: {}", transactionId,
-                                        targetFile.getAbsolutePath());
-                }
-                catch (IOException e)
-                {
-                        LOGGER.error("Failed to attach document for transaction {}", transactionId, e);
-                        AlertBox.showError(null,
-                                        "Failed to attach document: " + e.getMessage());
-                        throw e;
-                }
+		try
+		{
+			// Copy the source file to the target location, replacing any
+			// existing file.
+			Files.copy(file.toPath(), targetFile.toPath(),
+				StandardCopyOption.REPLACE_EXISTING);
+			LOGGER.info("Document attached for transaction {}: {}",
+				transactionId,
+				targetFile.getAbsolutePath());
+		}
+		catch (IOException e)
+		{
+			LOGGER.error("Failed to attach document for transaction {}",
+				transactionId, e);
+			AlertBox.showError(null,
+				"Failed to attach document: " + e.getMessage());
+			throw e;
+		}
+		
 	}
 	
 	/**
@@ -113,7 +129,8 @@ public class DocumentStorageService
 		
 		if (documentId == null || documentId.trim().isEmpty())
 		{
-			throw new IllegalArgumentException("Document ID must not be empty.");
+			throw new IllegalArgumentException(
+				"Document ID must not be empty.");
 		}
 		
 		File targetFile = new File(DOCUMENT_BASE_DIR, documentId);
@@ -124,6 +141,7 @@ public class DocumentStorageService
 		}
 		
 		return targetFile;
+		
 	}
 	
 }

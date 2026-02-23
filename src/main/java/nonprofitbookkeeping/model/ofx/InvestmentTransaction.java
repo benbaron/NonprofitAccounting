@@ -11,6 +11,7 @@ import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.Ledger;
 
+// TODO: Auto-generated Javadoc
 /**
  * Represents an investment transaction, extending the basic {@link Transaction} class.
  * This class is intended to hold details specific to investment activities such as
@@ -20,9 +21,16 @@ import nonprofitbookkeeping.model.Ledger;
 public class InvestmentTransaction extends Transaction
 {
 	
+	/** The security node. */
 	private final SecurityNode securityNode;
+	
+	/** The quantity. */
 	private final BigDecimal quantity;
+	
+	/** The price. */
 	private final BigDecimal price;
+	
+	/** The fees. */
 	private final BigDecimal fees;
 	
 	/**
@@ -50,6 +58,14 @@ public class InvestmentTransaction extends Transaction
 		this.fees = fees;
 	}
 	
+	/**
+	 * Compute total amount.
+	 *
+	 * @param quantity the quantity
+	 * @param price the price
+	 * @param fees the fees
+	 * @return the big decimal
+	 */
 	private static BigDecimal computeTotalAmount(	BigDecimal quantity, BigDecimal price,
 													BigDecimal fees)
 	{
@@ -71,6 +87,8 @@ public class InvestmentTransaction extends Transaction
 	
 	/**
 	 * Returns the security involved in this transaction.
+	 *
+	 * @return the security node
 	 */
 	public SecurityNode getSecurityNode()
 	{
@@ -79,6 +97,8 @@ public class InvestmentTransaction extends Transaction
 	
 	/**
 	 * Returns the quantity of the security transacted.
+	 *
+	 * @return the quantity
 	 */
 	public BigDecimal getQuantity()
 	{
@@ -87,6 +107,8 @@ public class InvestmentTransaction extends Transaction
 	
 	/**
 	 * Returns the price per unit.
+	 *
+	 * @return the price
 	 */
 	public BigDecimal getPrice()
 	{
@@ -95,6 +117,8 @@ public class InvestmentTransaction extends Transaction
 	
 	/**
 	 * Returns any fees applied to the transaction.
+	 *
+	 * @return the fees
 	 */
 	public BigDecimal getFees()
 	{
@@ -106,6 +130,9 @@ public class InvestmentTransaction extends Transaction
 	 * summing the totals of all {@link InvestmentTransaction} objects stored
 	 * in that account's transaction list. If the account has no entries or
 	 * none are investment transactions, {@link BigDecimal#ZERO} is returned.
+	 *
+	 * @param account the account
+	 * @return the total
 	 */
         public static BigDecimal getTotal(Account account)
         {
@@ -171,6 +198,8 @@ public class InvestmentTransaction extends Transaction
 	/**
 	 * Gets the total amount of this investment transaction calculated from
 	 * quantity, price and fees.
+	 *
+	 * @return the total
 	 */
 	public BigDecimal getTotal()
 	{

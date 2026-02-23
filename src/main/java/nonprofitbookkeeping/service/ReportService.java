@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// TODO: Auto-generated Javadoc
 /**
  * Service class responsible for preparing data contexts for various financial reports
  * and orchestrating the generation of reports using templating engines like JasperReports.
@@ -35,7 +36,7 @@ public class ReportService
 	public static final Logger LOGGER =
 		LoggerFactory.getLogger(ReportService.class);
 	
-
+	
 	/** 
 	 * Mapping of Jasper report types to their generator constructors. 
 	 */
@@ -48,9 +49,11 @@ public class ReportService
 		
 	}
 	
-	/** 
+	/**
 	 * DI-friendly constructor that accepts a registry. 
-	 * The registry remains mutable for runtime changes. 
+	 * The registry remains mutable for runtime changes.
+	 *
+	 * @param registry the registry
 	 */
 	public ReportService(Map<ReportType, String> registry)
 	{
@@ -61,89 +64,246 @@ public class ReportService
 	/** Enum-safe keys for the Jasper report generator registry. */
 	public enum ReportType
 	{
+		
+		/** The income statement jasper. */
 		INCOME_STATEMENT_JASPER("income_statement_jasper"),
+		
+		/** The cash flow statement jasper. */
 		CASH_FLOW_STATEMENT_JASPER("cash_flow_statement_jasper"),
+		
+		/** The trial balance jasper. */
 		TRIAL_BALANCE_JASPER("trial_balance_jasper"),
+		
+		/** The balance sheet jasper. */
 		BALANCE_SHEET_JASPER("balance_sheet_jasper"),
+		
+		/** The account ledger jasper. */
 		ACCOUNT_LEDGER_JASPER("account_ledger_jasper"),
+		
+		/** The account summary jasper. */
 		ACCOUNT_SUMMARY_JASPER("account_summary_jasper"),
+		
+		/** The bank reconciliation jasper. */
 		BANK_RECONCILIATION_JASPER("bank_reconciliation_jasper"),
+		
+		/** The chart of accounts jasper. */
 		CHART_OF_ACCOUNTS_JASPER("chart_of_accounts_jasper"),
+		
+		/** The fund ledger jasper. */
 		FUND_LEDGER_JASPER("fund_ledger_jasper"),
+		
+		/** The general journal jasper. */
 		GENERAL_JOURNAL_JASPER("general_journal_jasper"),
+		
+		/** The general ledger jasper. */
 		GENERAL_LEDGER_JASPER("general_ledger_jasper"),
+		
+		/** The income statement alt jasper. */
 		INCOME_STATEMENT_ALT_JASPER("income_statement_alt_jasper"),
+		
+		/** The transaction report jasper. */
 		TRANSACTION_REPORT_JASPER("transaction_report_jasper"),
+		
+		/** The asset dtl 5a jasper. */
 		ASSET_DTL_5A_JASPER("asset_dtl_5a_jasper"),
+		
+		/** The asset dtl 5c jasper. */
 		ASSET_DTL_5C_JASPER("asset_dtl_5c_jasper"),
+		
+		/** The balance 3 jasper. */
 		BALANCE_3_JASPER("balance_3_jasper"),
+		
+		/** The comments jasper. */
 		COMMENTS_JASPER("comments_jasper"),
+		
+		/** The contact info 1 jasper. */
 		CONTACT_INFO_1_JASPER("contact_info_1_jasper"),
+		
+		/** The contents jasper. */
 		CONTENTS_JASPER("contents_jasper"),
+		
+		/** The depr dtl 8 jasper. */
 		DEPR_DTL_8_JASPER("depr_dtl_8_jasper"),
+		
+		/** The depr dtl 8b jasper. */
 		DEPR_DTL_8B_JASPER("depr_dtl_8b_jasper"),
+		
+		/** The depr dtl 8c jasper. */
 		DEPR_DTL_8C_JASPER("depr_dtl_8c_jasper"),
+		
+		/** The expense dtl 12a jasper. */
 		EXPENSE_DTL_12A_JASPER("expense_dtl_12a_jasper"),
+		
+		/** The expense dtl 12b jasper. */
 		EXPENSE_DTL_12B_JASPER("expense_dtl_12b_jasper"),
+		
+		/** The finance comm 13 jasper. */
 		FINANCE_COMM_13_JASPER("finance_comm_13_jasper"),
+		
+		/** The free form jasper. */
 		FREE_FORM_JASPER("free_form_jasper"),
+		
+		/** The funds 14 jasper. */
 		FUNDS_14_JASPER("funds_14_jasper"),
+		
+		/** The income 4 jasper. */
 		INCOME_4_JASPER("income_4_jasper"),
+		
+		/** The income dtl 11a jasper. */
 		INCOME_DTL_11A_JASPER("income_dtl_11a_jasper"),
+		
+		/** The income dtl 11b jasper. */
 		INCOME_DTL_11B_JASPER("income_dtl_11b_jasper"),
+		
+		/** The income dtl 11c jasper. */
 		INCOME_DTL_11C_JASPER("income_dtl_11c_jasper"),
+		
+		/** The inventory dtl 6 jasper. */
 		INVENTORY_DTL_6_JASPER("inventory_dtl_6_jasper"),
+		
+		/** The inventory dtl 6b jasper. */
 		INVENTORY_DTL_6B_JASPER("inventory_dtl_6b_jasper"),
+		
+		/** The liability dtl 5b jasper. */
 		LIABILITY_DTL_5B_JASPER("liability_dtl_5b_jasper"),
+		
+		/** The liability dtl 5d jasper. */
 		LIABILITY_DTL_5D_JASPER("liability_dtl_5d_jasper"),
+		
+		/** The newsletter 15 jasper. */
 		NEWSLETTER_15_JASPER("newsletter_15_jasper"),
+		
+		/** The primary account 2a jasper. */
 		PRIMARY_ACCOUNT_2A_JASPER("primary_account_2a_jasper"),
+		
+		/** The regalia sales dtl 7 jasper. */
 		REGALIA_SALES_DTL_7_JASPER("regalia_sales_dtl_7_jasper"),
+		
+		/** The regalia sales dtl 7b jasper. */
 		REGALIA_SALES_DTL_7B_JASPER("regalia_sales_dtl_7b_jasper"),
+		
+		/** The secondary accounts 2b jasper. */
 		SECONDARY_ACCOUNTS_2B_JASPER("secondary_accounts_2b_jasper"),
+		
+		/** The secondary accounts 2c jasper. */
 		SECONDARY_ACCOUNTS_2C_JASPER("secondary_accounts_2c_jasper"),
+		
+		/** The secondary accounts 2d jasper. */
 		SECONDARY_ACCOUNTS_2D_JASPER("secondary_accounts_2d_jasper"),
+		
+		/** The transfer in 9 jasper. */
 		TRANSFER_IN_9_JASPER("transfer_in_9_jasper"),
+		
+		/** The transfer in 9b jasper. */
 		TRANSFER_IN_9B_JASPER("transfer_in_9b_jasper"),
+		
+		/** The transfer in 9c jasper. */
 		TRANSFER_IN_9C_JASPER("transfer_in_9c_jasper"),
+		
+		/** The transfer in 9d jasper. */
 		TRANSFER_IN_9D_JASPER("transfer_in_9d_jasper"),
+		
+		/** The transfer out 10 jasper. */
 		TRANSFER_OUT_10_JASPER("transfer_out_10_jasper"),
+		
+		/** The transfer out 10b jasper. */
 		TRANSFER_OUT_10B_JASPER("transfer_out_10b_jasper"),
+		
+		/** The transfer out 10c jasper. */
 		TRANSFER_OUT_10C_JASPER("transfer_out_10c_jasper"),
+		
+		/** The transfer out 10d jasper. */
 		TRANSFER_OUT_10D_JASPER("transfer_out_10d_jasper"),
+		
+		/** The sca asset dtl 5a jasper. */
 		SCA_ASSET_DTL_5A_JASPER("sca_asset_dtl_5a_jasper"),
+		
+		/** The sca balance 3 jasper. */
 		SCA_BALANCE_3_JASPER("sca_balance_3_jasper"),
+		
+		/** The sca balance 3 v2 jasper. */
 		SCA_BALANCE_3_V2_JASPER("sca_balance_3_v2_jasper"),
+		
+		/** The sca contact info jasper. */
 		SCA_CONTACT_INFO_JASPER("sca_contact_info_jasper"),
+		
+		/** The sca depr dtl 8 jasper. */
 		SCA_DEPR_DTL_8_JASPER("sca_depr_dtl_8_jasper"),
+		
+		/** The sca expense dtl 12a jasper. */
 		SCA_EXPENSE_DTL_12A_JASPER("sca_expense_dtl_12a_jasper"),
+		
+		/** The sca expense dtl 12b jasper. */
 		SCA_EXPENSE_DTL_12B_JASPER("sca_expense_dtl_12b_jasper"),
+		
+		/** The sca finance comm 13 jasper. */
 		SCA_FINANCE_COMM_13_JASPER("sca_finance_comm_13_jasper"),
+		
+		/** The sca funds 14 jasper. */
 		SCA_FUNDS_14_JASPER("sca_funds_14_jasper"),
+		
+		/** The sca income 4 jasper. */
 		SCA_INCOME_4_JASPER("sca_income_4_jasper"),
+		
+		/** The sca income dtl 11a jasper. */
 		SCA_INCOME_DTL_11A_JASPER("sca_income_dtl_11a_jasper"),
+		
+		/** The sca income dtl 11b jasper. */
 		SCA_INCOME_DTL_11B_JASPER("sca_income_dtl_11b_jasper"),
+		
+		/** The sca income dtl 11c jasper. */
 		SCA_INCOME_DTL_11C_JASPER("sca_income_dtl_11c_jasper"),
+		
+		/** The sca inventory dtl 6 jasper. */
 		SCA_INVENTORY_DTL_6_JASPER("sca_inventory_dtl_6_jasper"),
+		
+		/** The sca ledger q1 jasper. */
 		SCA_LEDGER_Q1_JASPER("sca_ledger_q1_jasper"),
+		
+		/** The sca liability dtl 5b jasper. */
 		SCA_LIABILITY_DTL_5B_JASPER("sca_liability_dtl_5b_jasper"),
+		
+		/** The sca newsletter 15 jasper. */
 		SCA_NEWSLETTER_15_JASPER("sca_newsletter_15_jasper"),
+		
+		/** The sca primary account jasper. */
 		SCA_PRIMARY_ACCOUNT_JASPER("sca_primary_account_jasper"),
+		
+		/** The sca primary account reconciliation jasper. */
 		SCA_PRIMARY_ACCOUNT_RECONCILIATION_JASPER(
 			"sca_primary_account_reconciliation_jasper"),
+		
+		/** The sca regalia sales dtl 7 jasper. */
 		SCA_REGALIA_SALES_DTL_7_JASPER("sca_regalia_sales_dtl_7_jasper"),
+		
+		/** The sca secondary account jasper. */
 		SCA_SECONDARY_ACCOUNT_JASPER("sca_secondary_account_jasper"),
+		
+		/** The sca transfer in 9 jasper. */
 		SCA_TRANSFER_IN_9_JASPER("sca_transfer_in_9_jasper"),
+		
+		/** The sca transfer out 10 jasper. */
 		SCA_TRANSFER_OUT_10_JASPER("sca_transfer_out_10_jasper");
 		
+		/** The id. */
 		private final String id;
 		
+		/**
+		 * Instantiates a new report type.
+		 *
+		 * @param id the id
+		 */
 		ReportType(String id)
 		{
 			this.id = id;
 			
 		}
 		
+		/**
+		 * Id.
+		 *
+		 * @return the string
+		 */
 		public String id()
 		{
 			return this.id;
@@ -151,8 +311,9 @@ public class ReportService
 		}
 		
 		/**
-		 * fromId
-		 * @param id
+		 * fromId.
+		 *
+		 * @param id the id
 		 * @return ReportType enum
 		 */
 		public static ReportType fromId(String id)
@@ -183,7 +344,11 @@ public class ReportService
 		
 	}
 	
-	/** Factory for the built-in generator registry. */
+	/**
+	 * Factory for the built-in generator registry.
+	 *
+	 * @return the map
+	 */
 	private static
 		Map<ReportType, String> createDefaultRegistry()
 	{
@@ -383,7 +548,7 @@ public class ReportService
 				"Unknown reportType: " + ctx.getReportType());
 		}
 		
-		String generatorClassName = this.generatorRegistry.get(type);		
+		String generatorClassName = this.generatorRegistry.get(type);
 		
 		if (generatorClassName == null || generatorClassName.isBlank())
 		{
@@ -412,6 +577,7 @@ public class ReportService
 		// Normalize format; default to PDF
 		String fmt =
 			(outputFormat == null ? "pdf" : outputFormat).trim().toLowerCase();
+		
 		if (LOGGER.isInfoEnabled())
 		{
 			LOGGER.info("Resolved output format: {}", fmt);
@@ -424,7 +590,6 @@ public class ReportService
 		return out;
 		
 	}
-	
 	
 	
 	/**

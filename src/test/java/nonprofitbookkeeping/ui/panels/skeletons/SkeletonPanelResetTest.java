@@ -42,16 +42,34 @@ import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.Start;
 import org.testfx.util.WaitForAsyncUtils;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SkeletonPanelResetTest.
+ */
 public class SkeletonPanelResetTest extends JavaFXTestBase
 {
+	
+	/** The original user home. */
 	private static String originalUserHome;
+	
+	/** The temp user home dir. */
 	private static Path tempUserHomeDir;
 	
+	/** The dashboard panel. */
 	private SkeletonDashboardPanel dashboardPanel;
+	
+	/** The journal panel. */
 	private SkeletonJournalPanel journalPanel;
+	
+	/** The coa panel. */
 	private SkeletonCoaPanel coaPanel;
+	
+	/** The reports panel. */
 	private SkeletonReportsPanel reportsPanel;
 	
+	/**
+	 * Override @see nonprofitbookkeeping.ui.JavaFXTestBase#start(javafx.stage.Stage) 
+	 */
 	@Start
 	public void start(Stage stage)
 	{
@@ -68,6 +86,11 @@ public class SkeletonPanelResetTest extends JavaFXTestBase
 		
 	}
 	
+	/**
+	 * Redirect user home.
+	 *
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	@BeforeAll
 	static void redirectUserHome() throws IOException
 	{
@@ -77,6 +100,9 @@ public class SkeletonPanelResetTest extends JavaFXTestBase
 		
 	}
 	
+	/**
+	 * Reset company.
+	 */
 	@AfterEach
 	public void resetCompany()
 	{
@@ -85,6 +111,11 @@ public class SkeletonPanelResetTest extends JavaFXTestBase
 		
 	}
 	
+	/**
+	 * Restore user home.
+	 *
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	@AfterAll
 	static void restoreUserHome() throws IOException
 	{
@@ -119,6 +150,11 @@ public class SkeletonPanelResetTest extends JavaFXTestBase
 		
 	}
 	
+	/**
+	 * Dashboard clears when company closes.
+	 *
+	 * @throws Exception the exception
+	 */
 	@Test
 	public void dashboardClearsWhenCompanyCloses() throws Exception
 	{
@@ -140,6 +176,11 @@ public class SkeletonPanelResetTest extends JavaFXTestBase
 		
 	}
 	
+	/**
+	 * Journal clears when company closes.
+	 *
+	 * @throws Exception the exception
+	 */
 	@Test
 	public void journalClearsWhenCompanyCloses() throws Exception
 	{
@@ -160,6 +201,11 @@ public class SkeletonPanelResetTest extends JavaFXTestBase
 		
 	}
 	
+	/**
+	 * Coa clears when company closes.
+	 *
+	 * @throws Exception the exception
+	 */
 	@Test
 	public void coaClearsWhenCompanyCloses() throws Exception
 	{
@@ -180,6 +226,11 @@ public class SkeletonPanelResetTest extends JavaFXTestBase
 		
 	}
 	
+	/**
+	 * Reports clear when company closes.
+	 *
+	 * @throws Exception the exception
+	 */
 	@Test
 	public void reportsClearWhenCompanyCloses() throws Exception
 	{
@@ -205,6 +256,11 @@ public class SkeletonPanelResetTest extends JavaFXTestBase
 		
 	}
 	
+	/**
+	 * Builds the sample company.
+	 *
+	 * @return the company
+	 */
 	private Company buildSampleCompany()
 	{
 		Company company = new Company();
@@ -242,6 +298,14 @@ public class SkeletonPanelResetTest extends JavaFXTestBase
 		
 	}
 	
+	/**
+	 * Creates the transaction.
+	 *
+	 * @param timestamp the timestamp
+	 * @param debit the debit
+	 * @param credit the credit
+	 * @return the accounting transaction
+	 */
 	private static AccountingTransaction createTransaction(long timestamp,
 		AccountingEntry debit, AccountingEntry credit)
 	{
@@ -253,6 +317,12 @@ public class SkeletonPanelResetTest extends JavaFXTestBase
 		
 	}
 	
+	/**
+	 * Gets the dashboard table.
+	 *
+	 * @return the dashboard table
+	 * @throws Exception the exception
+	 */
 	private TableView<?> getDashboardTable() throws Exception
 	{
 		Field field = SkeletonDashboardPanel.class
@@ -262,6 +332,12 @@ public class SkeletonPanelResetTest extends JavaFXTestBase
 		
 	}
 	
+	/**
+	 * Gets the dashboard company label.
+	 *
+	 * @return the dashboard company label
+	 * @throws Exception the exception
+	 */
 	private Label getDashboardCompanyLabel() throws Exception
 	{
 		Field field =
@@ -271,6 +347,12 @@ public class SkeletonPanelResetTest extends JavaFXTestBase
 		
 	}
 	
+	/**
+	 * Gets the journal table.
+	 *
+	 * @return the journal table
+	 * @throws Exception the exception
+	 */
 	private TableView<?> getJournalTable() throws Exception
 	{
 		Field field =
@@ -280,6 +362,12 @@ public class SkeletonPanelResetTest extends JavaFXTestBase
 		
 	}
 	
+	/**
+	 * Gets the coa root node.
+	 *
+	 * @return the coa root node
+	 * @throws Exception the exception
+	 */
 	@SuppressWarnings("unchecked")
 	private TreeItem<?> getCoaRootNode() throws Exception
 	{
@@ -290,6 +378,12 @@ public class SkeletonPanelResetTest extends JavaFXTestBase
 		
 	}
 	
+	/**
+	 * Gets the coa tree table.
+	 *
+	 * @return the coa tree table
+	 * @throws Exception the exception
+	 */
 	private TreeTableView<?> getCoaTreeTable() throws Exception
 	{
 		Field field = SkeletonCoaPanel.class.getDeclaredField("coaTreeTable");
@@ -298,6 +392,12 @@ public class SkeletonPanelResetTest extends JavaFXTestBase
 		
 	}
 	
+	/**
+	 * Gets the reports data list.
+	 *
+	 * @return the reports data list
+	 * @throws Exception the exception
+	 */
 	@SuppressWarnings("unchecked")
 	private ObservableList<ReportMetadata> getReportsDataList() throws Exception
 	{
@@ -308,6 +408,12 @@ public class SkeletonPanelResetTest extends JavaFXTestBase
 		
 	}
 	
+	/**
+	 * Gets the reports table.
+	 *
+	 * @return the reports table
+	 * @throws Exception the exception
+	 */
 	private TableView<?> getReportsTable() throws Exception
 	{
 		Field field = SkeletonReportsPanel.class
@@ -317,6 +423,14 @@ public class SkeletonPanelResetTest extends JavaFXTestBase
 		
 	}
 	
+	/**
+	 * From fx.
+	 *
+	 * @param <T> the generic type
+	 * @param callable the callable
+	 * @return the t
+	 * @throws Exception the exception
+	 */
 	private static <T> T fromFx(java.util.concurrent.Callable<T> callable)
 		throws Exception
 	{

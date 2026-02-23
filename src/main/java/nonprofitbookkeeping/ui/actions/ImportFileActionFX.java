@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+// TODO: Auto-generated Javadoc
 /**
  * Handles the action of importing a financial statement file in a JavaFX
  * application.  The action prompts the user to choose a file (OFX, QFX or QIF),
@@ -236,7 +237,7 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 	}
 	
 	/**
-	 * Import XLSX for transactions
+	 * Import XLSX for transactions.
 	 *
 	 * @param selectedFile the Excel file to import
 	 * @param imported list where transactions will be added
@@ -278,7 +279,10 @@ public class ImportFileActionFX implements EventHandler<ActionEvent>
 	 * {@link AccountingTransaction} instances. Allocation account names are
 	 * matched against the chart of accounts and missing accounts prompt the
 	 * user to add or ignore them.
-	     */
+	 *
+	 * @param rows the rows
+	 * @return the list
+	 */
 	
 	static
 		List<AccountingTransaction> convertExcelRows(List<ExcelLedgerRow> rows)

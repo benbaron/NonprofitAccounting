@@ -25,18 +25,27 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// TODO: Auto-generated Javadoc
 /**
  * JDBC-backed implementation that stores transactions using
  * {@link JournalRepository}.
  */
 public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
 {
+    
+    /** The Constant LOGGER. */
     private static final Logger LOGGER =
         LoggerFactory.getLogger(JournalLedgerPersistenceGateway.class);
 
+    /** The journal repository. */
     private final JournalRepository journalRepository;
+    
+    /** The account repository. */
     private final AccountRepository accountRepository;
 
+    /**
+     * Instantiates a new journal ledger persistence gateway.
+     */
     public JournalLedgerPersistenceGateway()
     {
         this(new JournalRepository());
@@ -54,7 +63,10 @@ public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
     }
 
     /**
-     * Override @see nonprofitbookkeeping.ui.actions.scaledger.LedgerPersistenceGateway#saveTransactionWithEntries(nonprofitbookkeeping.model.AccountingTransaction) 
+     * Override @see nonprofitbookkeeping.ui.actions.scaledger.LedgerPersistenceGateway#saveTransactionWithEntries(nonprofitbookkeeping.model.AccountingTransaction)
+     *
+     * @param transaction the transaction
+     * @return the accounting transaction
      */
     @Override
     public AccountingTransaction saveTransactionWithEntries(AccountingTransaction transaction)
@@ -295,6 +307,12 @@ public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
         return 1;
     }
 
+    /**
+     * Ensure accounts for entries.
+     *
+     * @param transaction the transaction
+     * @throws SQLException the SQL exception
+     */
     private void ensureAccountsForEntries(AccountingTransaction transaction) throws SQLException
     {
         Set<AccountingEntry> entries = transaction.getEntries();

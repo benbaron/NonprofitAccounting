@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 
 import static com.google.common.base.Preconditions.*;
 
+// TODO: Auto-generated Javadoc
 /**
  * Represents an Accounting Entry.
  * The transaction reference is set automatically when an 
@@ -19,16 +20,24 @@ import static com.google.common.base.Preconditions.*;
 public final class AccountingEntry implements Serializable
 {
 	
-	/**
-	 * serialVersionUID : long
-	 */
+	/** serialVersionUID : long. */
 	private static final long serialVersionUID = 5837792781542533633L;
 	
+	/** The amount. */
 	@JsonProperty final private BigDecimal amount;
+	
+	/** The account side. */
 	@JsonProperty final private AccountSide accountSide;
+	
+	/** The account number. */
 	@JsonProperty private String accountNumber;
+	
+	/** The fund number. */
 	@JsonProperty private String fundNumber;
+	
 	/**
+	 * Gets the fund number.
+	 *
 	 * @return the fundNumber
 	 */
 	public String getFundNumber()
@@ -38,6 +47,8 @@ public final class AccountingEntry implements Serializable
 	}
 
 	/**
+	 * Sets the fund number.
+	 *
 	 * @param fundNumber the fundNumber to set
 	 */
 	public void setFundNumber(String fundNumber)
@@ -54,9 +65,11 @@ public final class AccountingEntry implements Serializable
 	 */
 	@JsonProperty private String accountName;
 	
+	/** The transaction. */
 	// Future versions can include this.
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY) private AccountingTransaction transaction;
 	
+	/** The freeze. */
 	// Indicates if the transaction was set
 	@JsonProperty private boolean freeze = false;
 	

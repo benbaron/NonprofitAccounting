@@ -13,6 +13,7 @@ import nonprofitbookkeeping.model.scaledger.LedgerMetadata;
 import java.io.*;
 import java.util.*;
 
+// TODO: Auto-generated Javadoc
 /**
  * Utility class for loading data from SCA  formatted
  * Excel spreadsheets into Java objects using JXLS Reader.
@@ -21,6 +22,7 @@ import java.util.*;
  */
 public class SCALedgerDataLoader
 {
+	
 	/**
 	 * Loads data from a specified Excel file (.xlsx or .xlsm) into a map of Java beans
 	 * using a JXLS XML mapping file.
@@ -31,17 +33,14 @@ public class SCALedgerDataLoader
 	 * and data from the {@code currentInputFile}.
 	 * Error skipping is enabled in the JXLS reader configuration.
 	 * </p>
-	 * 
+	 *
 	 * @param mappingFile The JXLS XML mapping {@link File} that defines how to read the Excel data
 	 *                    into the Java beans.
 	 * @param currentInputFile The Excel {@link File} (.xlsx or .xlsm) containing the SCA ledger data.
 	 * @return A {@link Map} where keys are bean names (e.g., "metadata", "summary", "ledgerQ1")
 	 *         and values are the populated Java bean objects.
-	 * @throws org.xml.sax.SAXException if there is an error parsing the JXLS mapping XML file.
-	 * @throws java.io.FileNotFoundException if either {@code mappingFile} or {@code currentInputFile} is not found.
-	 * @throws IOException if an I/O error occurs during reading of the files or JXLS processing.
-	 * @throws IllegalStateException if JXLS fails to read the Excel file successfully ({@code XLSReadStatus.isStatusOK()} is false).
 	 * @throws Exception for other potential errors during JXLS processing.
+	 * @throws IllegalStateException if JXLS fails to read the Excel file successfully ({@code XLSReadStatus.isStatusOK()} is false).
 	 */
 	public static Map<String, Object> loadData(File mappingFile,
 		File currentInputFile) throws Exception

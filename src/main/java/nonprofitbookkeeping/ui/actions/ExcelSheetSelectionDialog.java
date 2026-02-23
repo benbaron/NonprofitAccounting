@@ -18,15 +18,28 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.service.ExcelLedgerImportService;
 
+// TODO: Auto-generated Javadoc
 /**
  * Utility for selecting ledger sheets from an Excel workbook.
  */
 public final class ExcelSheetSelectionDialog
 {
+	
+	/**
+	 * Instantiates a new excel sheet selection dialog.
+	 */
 	private ExcelSheetSelectionDialog()
 	{
 	}
 
+	/**
+	 * Select sheets.
+	 *
+	 * @param owner the owner
+	 * @param workbook the workbook
+	 * @return the list
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static List<String> selectSheets(Stage owner, File workbook)
 		throws IOException
 	{
@@ -92,6 +105,12 @@ public final class ExcelSheetSelectionDialog
 		return result.orElse(Collections.emptyList());
 	}
 
+	/**
+	 * Resolve ledger pages.
+	 *
+	 * @param sheetNames the sheet names
+	 * @return the list
+	 */
 	private static List<String> resolveLedgerPages(List<String> sheetNames)
 	{
 		if (sheetNames == null || sheetNames.isEmpty())

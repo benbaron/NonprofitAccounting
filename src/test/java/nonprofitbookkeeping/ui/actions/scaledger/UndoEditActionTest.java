@@ -9,8 +9,16 @@ import java.awt.event.ActionEvent;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class UndoEditActionTest.
+ */
 public class UndoEditActionTest
 {
+	
+	/**
+	 * Test action undoes edit when available.
+	 */
 	@Test
 	public void testActionUndoesEditWhenAvailable()
 	{
@@ -36,6 +44,9 @@ public class UndoEditActionTest
 		
 	}
 	
+	/**
+	 * Test action shows dialog when nothing to undo.
+	 */
 	@Test
 	public void testActionShowsDialogWhenNothingToUndo()
 	{

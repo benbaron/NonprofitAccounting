@@ -1,7 +1,3 @@
-/**
- * nonprofit-scaledger-ribbon.zip_expanded InputFileActionFX.java
- * InputFileActionFX
- */
 
 package nonprofitbookkeeping.ui.actions;
 
@@ -21,6 +17,7 @@ import nonprofitbookkeeping.ui.helpers.AlertBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// TODO: Auto-generated Javadoc
 /**
  * JavaFX replacement for the Swing {@code InputFileAction}. Opens a native file
  * chooser, remembers the last directory via {@link PreferencesManager}.
@@ -35,6 +32,7 @@ public class InputFileActionFX implements EventHandler<ActionEvent>
 	/** The owner Stage for the FileChooser dialog, ensuring proper modality. */
 	private final Stage owner;
 	
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER =
 		LoggerFactory.getLogger(InputFileActionFX.class);
 	

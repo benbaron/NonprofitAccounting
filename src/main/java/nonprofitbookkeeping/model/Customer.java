@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+// TODO: Auto-generated Javadoc
 /**
  * Represents a customer in the nonprofit bookkeeping system.
  * This class stores information about customers, such as their ID and name.
@@ -31,10 +32,11 @@ public class Customer
 	
 
 
-	/**  
-	 * Constructor Customer
-	 * @param object
-	 * @param string
+	/**
+	 * Constructor Customer.
+	 *
+	 * @param object the object
+	 * @param string the string
 	 */
         public Customer(Object object, String string)
         {
@@ -43,6 +45,8 @@ public class Customer
         }
 
 	/**
+	 * Gets the id.
+	 *
 	 * @return the id
 	 */
 	public String getId()
@@ -51,6 +55,8 @@ public class Customer
 	}
 
 	/**
+	 * Sets the id.
+	 *
 	 * @param id the id to set
 	 */
 	public void setId(String id)
@@ -59,6 +65,8 @@ public class Customer
 	}
 
 	/**
+	 * Gets the name.
+	 *
 	 * @return the name
 	 */
 	public String getName()
@@ -67,6 +75,8 @@ public class Customer
 	}
 
 	/**
+	 * Sets the name.
+	 *
 	 * @param name the name to set
 	 */
 	public void setName(String name)

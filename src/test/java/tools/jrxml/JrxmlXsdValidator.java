@@ -23,6 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
 
+// TODO: Auto-generated Javadoc
 /**
  * JRXML -> XSD validator (portable Java, no external deps)
  *
@@ -48,19 +49,41 @@ public class JrxmlXsdValidator
 	
 	// ---------------- CLI ----------------
 	
+	/**
+	 * The Class Args.
+	 */
 	private static final class Args
 	{
+		
+		/** The file. */
 		String file;
+		
+		/** The dir. */
 		String dir;
+		
+		/** The xsd. */
 		String xsd;
+		
+		/** The csv. */
 		String csv;
+		
+		/** The normalize. */
 		boolean normalize = false;
+		
+		/** The write. */
 		boolean write = false;
+		
+		/** The out. */
 		String out;
+		
+		/** The context. */
 		int context = 3;
 		
 	}
 	
+	/**
+	 * Usage and exit.
+	 */
 	private static void usageAndExit()
 	{
 		System.err.println("Usage:");
@@ -70,6 +93,12 @@ public class JrxmlXsdValidator
 		
 	}
 	
+	/**
+	 * Parses the args.
+	 *
+	 * @param argv the argv
+	 * @return the args
+	 */
 	private static Args parseArgs(String[] argv)
 	{
 		Args a = new Args();
@@ -134,15 +163,40 @@ public class JrxmlXsdValidator
 	
 	// ---------------- Model ----------------
 	
+	/**
+	 * The Class Issue.
+	 */
 	private static final class Issue
 	{
+		
+		/** The severity. */
 		final String severity; // ERROR | WARNING | INFO
+		
+		/** The code. */
 		final String code; // e.g., XSD:SCHEMAV_CVC_... or XML, FIX, RUNTIME
+		
+		/** The message. */
 		final String message;
+		
+		/** The line. */
 		final Integer line;
+		
+		/** The column. */
 		final Integer column;
+		
+		/** The context. */
 		final List<String> context;
 		
+		/**
+		 * Instantiates a new issue.
+		 *
+		 * @param severity the severity
+		 * @param code the code
+		 * @param message the message
+		 * @param line the line
+		 * @param column the column
+		 * @param context the context
+		 */
 		Issue(String severity, String code, String message, Integer line,
 			Integer column, List<String> context)
 		{
@@ -157,17 +211,39 @@ public class JrxmlXsdValidator
 		
 	}
 	
+	/**
+	 * The Class FileReport.
+	 */
 	private static final class FileReport
 	{
+		
+		/** The path. */
 		final Path path;
+		
+		/** The issues. */
 		final List<Issue> issues = new ArrayList<>();
 		
+		/**
+		 * Instantiates a new file report.
+		 *
+		 * @param p the p
+		 */
 		FileReport(Path p)
 		{
 			this.path = p;
 			
 		}
 		
+		/**
+		 * Adds the.
+		 *
+		 * @param sev the sev
+		 * @param code the code
+		 * @param msg the msg
+		 * @param line the line
+		 * @param col the col
+		 * @param ctx the ctx
+		 */
 		void add(String sev, String code, String msg, Integer line, Integer col,
 			List<String> ctx)
 		{
@@ -175,6 +251,11 @@ public class JrxmlXsdValidator
 			
 		}
 		
+		/**
+		 * Checks if is valid.
+		 *
+		 * @return true, if is valid
+		 */
 		boolean isValid()
 		{
 			for (Issue i : this.issues)
@@ -188,6 +269,14 @@ public class JrxmlXsdValidator
 	
 	// ---------------- Utilities ----------------
 	
+	/**
+	 * Gather files.
+	 *
+	 * @param file the file
+	 * @param dir the dir
+	 * @return the list
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private static List<Path> gatherFiles(String file, String dir)
 		throws IOException
 	{
@@ -218,6 +307,12 @@ public class JrxmlXsdValidator
 		
 	}
 	
+	/**
+	 * Read lines.
+	 *
+	 * @param p the p
+	 * @return the list
+	 */
 	private static List<String> readLines(Path p)
 	{
 		
@@ -244,6 +339,14 @@ public class JrxmlXsdValidator
 		
 	}
 	
+	/**
+	 * Context lines.
+	 *
+	 * @param lines the lines
+	 * @param line the line
+	 * @param radius the radius
+	 * @return the list
+	 */
 	private static List<String> contextLines(List<String> lines, int line,
 		int radius)
 	{
@@ -266,6 +369,12 @@ public class JrxmlXsdValidator
 	
 	// ---------------- DOM Parse / Write ----------------
 	
+	/**
+	 * New secure document builder.
+	 *
+	 * @return the document builder
+	 * @throws Exception the exception
+	 */
 	private static DocumentBuilder newSecureDocumentBuilder() throws Exception
 	{
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -295,6 +404,13 @@ public class JrxmlXsdValidator
 		
 	}
 	
+	/**
+	 * Write dom.
+	 *
+	 * @param dom the dom
+	 * @param target the target
+	 * @throws Exception the exception
+	 */
 	private static void writeDom(Document dom, Path target) throws Exception
 	{
 		TransformerFactory tf = TransformerFactory.newInstance();
@@ -318,6 +434,12 @@ public class JrxmlXsdValidator
 	
 	// ---------------- Normalize ----------------
 	
+	/**
+	 * Normalize dom.
+	 *
+	 * @param dom the dom
+	 * @return the list
+	 */
 	private static List<String> normalizeDom(Document dom)
 	{
 		List<String> actions = new ArrayList<>();
@@ -371,6 +493,13 @@ public class JrxmlXsdValidator
 	
 	// ---------------- Schema ----------------
 	
+	/**
+	 * Load schema.
+	 *
+	 * @param xsd the xsd
+	 * @return the schema
+	 * @throws Exception the exception
+	 */
 	private static Schema loadSchema(Path xsd) throws Exception
 	{
 		SchemaFactory sf =
@@ -389,12 +518,24 @@ public class JrxmlXsdValidator
 		
 	}
 	
+	/**
+	 * The Class CollectingErrorHandler.
+	 */
 	private static final class CollectingErrorHandler implements ErrorHandler
 	{
+		
+		/** The warnings. */
 		final List<SAXParseException> warnings = new ArrayList<>();
+		
+		/** The errors. */
 		final List<SAXParseException> errors = new ArrayList<>();
+		
+		/** The fatals. */
 		final List<SAXParseException> fatals = new ArrayList<>();
 		
+		/**
+		 * Override @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException) 
+		 */
 		@Override
 		public void warning(SAXParseException e)
 		{
@@ -402,6 +543,9 @@ public class JrxmlXsdValidator
 			
 		}
 		
+		/**
+		 * Override @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException) 
+		 */
 		@Override
 		public void error(SAXParseException e)
 		{
@@ -409,6 +553,9 @@ public class JrxmlXsdValidator
 			
 		}
 		
+		/**
+		 * Override @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException) 
+		 */
 		@Override
 		public void fatalError(SAXParseException e)
 		{
@@ -416,6 +563,11 @@ public class JrxmlXsdValidator
 			
 		}
 		
+		/**
+		 * Checks for errors.
+		 *
+		 * @return true, if successful
+		 */
 		boolean hasErrors()
 		{
 			return !this.errors.isEmpty() || !this.fatals.isEmpty();
@@ -424,6 +576,17 @@ public class JrxmlXsdValidator
 		
 	}
 	
+	/**
+	 * Validate one.
+	 *
+	 * @param file the file
+	 * @param schema the schema
+	 * @param contextRadius the context radius
+	 * @param doNormalize the do normalize
+	 * @param write the write
+	 * @param outDir the out dir
+	 * @return the file report
+	 */
 	private static FileReport validateOne(Path file, Schema schema,
 		int contextRadius, boolean doNormalize,
 		boolean write, Path outDir)
@@ -532,6 +695,12 @@ public class JrxmlXsdValidator
 		
 	}
 	
+	/**
+	 * Safe type.
+	 *
+	 * @param e the e
+	 * @return the string
+	 */
 	private static String safeType(SAXParseException e)
 	{
 		// SAXParseException doesn't always expose type; keep minimal code label
@@ -541,6 +710,12 @@ public class JrxmlXsdValidator
 	
 	// ---------------- CSV ----------------
 	
+	/**
+	 * Write csv.
+	 *
+	 * @param csvPath the csv path
+	 * @param reports the reports
+	 */
 	private static void writeCsv(Path csvPath, List<FileReport> reports)
 	{
 		
@@ -595,6 +770,12 @@ public class JrxmlXsdValidator
 		
 	}
 	
+	/**
+	 * Escape csv.
+	 *
+	 * @param s the s
+	 * @return the string
+	 */
 	private static String escapeCsv(String s)
 	{
 		if (s == null)
@@ -610,6 +791,11 @@ public class JrxmlXsdValidator
 	
 	// ---------------- Main ----------------
 	
+	/**
+	 * Xsdmain.
+	 *
+	 * @param args the args
+	 */
 	public static void xsdmain(String[] args)
 	{
 		Args a = parseArgs(args);

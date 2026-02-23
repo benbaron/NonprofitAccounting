@@ -20,11 +20,12 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// TODO: Auto-generated Javadoc
 /**
  * JournalRepository
  * -----------------
  *
- * This repository is responsible for persisting and loading the application's “journal”:
+ * This repository is responsible for persisting and loading the application's journal:
  * a set of accounting transactions (headers) plus their line items (entries) and
  * optional key/value metadata (transaction_info).
  *
@@ -47,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * 4) account
  *    - Chart-of-accounts master table.
  *    - Has account_number and a display name.
- *    - ensureAccountsExist() “upserts” accounts referenced by entries so
+ *    - ensureAccountsExist() upserts accounts referenced by entries so
  *      journal_entry rows don't reference missing accounts.
  *
  * Transaction / atomicity goals:
@@ -59,7 +60,7 @@ import org.slf4j.LoggerFactory;
  * - replaceAll(transactions) uses a *single DB transaction*:
  *     clear tables then insert all supplied txns. If any insert fails, rollback.
  *
- * “Replace” strategy for child rows:
+ * Replace strategy for child rows:
  *
  * - Instead of trying to diff journal entries/metadata, this class deletes all
  *   existing child rows for a transaction id and re-inserts the current set.
@@ -67,6 +68,8 @@ import org.slf4j.LoggerFactory;
  */
 public class JournalRepository
 {
+	
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER =
 		LoggerFactory.getLogger(JournalRepository.class);
 	
@@ -271,23 +274,26 @@ public class JournalRepository
 	
 	/**
 	 * Loads all transactions (headers), then loads all entries and all info and attaches them.
-	 *
+	 * 
 	 * SQL actions:
-	 *
+	 * 
 	 * 1) Load headers:
 	 *    SELECT ... FROM journal_transaction ORDER BY id
-	 *
+	 * 
 	 * 2) Load entries:
 	 *    SELECT ... FROM journal_entry ORDER BY id
 	 *    For each row, find the parent AccountingTransaction by txn_id and add an AccountingEntry.
-	 *
+	 * 
 	 * 3) Load info:
 	 *    SELECT txn_id, k, v FROM transaction_info ORDER BY txn_id, k
 	 *    For each row, attach to txn.getInfo() map.
-	 *
+	 * 
 	 * Note: This method uses separate connections for each query (as the original did).
 	 * In most DBs it’s fine; if you want strict snapshot consistency, you could use one
-	 * connection/transaction, but this is typically acceptable for “read journal” use.
+	 * connection/transaction, but this is typically acceptable for read journal use.
+	 *
+	 * @return the list
+	 * @throws SQLException the SQL exception
 	 */
 	public static List<AccountingTransaction> listTransactions() throws SQLException
 	{
@@ -518,35 +524,39 @@ public class JournalRepository
 	
 	/**
 	 * Writes one AccountingTransaction using the provided connection (participating in an outer transaction).
-	 *
+	 * 
 	 * SQL actions, in order:
-	 *
+	 * 
 	 * A) ensureAccountsExist()
 	 *    MERGE INTO account(account_number, name) KEY(account_number) VALUES (?,?)
 	 *    - This ensures every account referenced by the journal entries exists in the master account table.
 	 *    - If the account already exists, it is updated (depending on DB semantics) or left as-is.
 	 *    - If it does not exist, it is inserted.
-	 *
+	 * 
 	 * B) Upsert the transaction header (journal_transaction):
 	 *    MERGE INTO journal_transaction(...) KEY(id) VALUES (?,?,?,?,?,?,?,?,?)
-	 *    - This is an “upsert” keyed by id:
+	 *    - This is an upsert keyed by id:
 	 *      If a row with id exists, update it.
 	 *      If not, insert it.
-	 *
+	 * 
 	 * C) Replace journal_entry rows for this transaction id:
 	 *    1) DELETE FROM journal_entry WHERE txn_id=?
 	 *       - Remove all old entries to prevent stale line items.
 	 *    2) INSERT INTO journal_entry(...) VALUES(?,?,?,?,?,?)
 	 *       - Insert the current entry set.
 	 *       - Uses batch inserts for efficiency.
-	 *
+	 * 
 	 * D) Replace transaction_info rows for this transaction id:
 	 *    1) DELETE FROM transaction_info WHERE txn_id=?
 	 *    2) INSERT INTO transaction_info(txn_id, k, v) VALUES (?,?,?)
 	 *       - Insert current metadata as a batch.
-	 *
-	 * The “delete then insert” approach guarantees that what’s in the DB matches exactly what’s
+	 * 
+	 * The delete then insert approach guarantees that what’s in the DB matches exactly what’s
 	 * in the AccountingTransaction object, without having to compute diffs.
+	 *
+	 * @param c the c
+	 * @param txn the txn
+	 * @throws SQLException the SQL exception
 	 */
 	private static void writeTransaction(Connection c, AccountingTransaction txn)
 		throws SQLException
@@ -918,6 +928,13 @@ public class JournalRepository
 		
 	}
 
+	/**
+	 * Insert supplemental lines.
+	 *
+	 * @param c the c
+	 * @param txn the txn
+	 * @throws SQLException the SQL exception
+	 */
 	private static void insertSupplementalLines(Connection c, AccountingTransaction txn)
 		throws SQLException
 	{
@@ -939,9 +956,14 @@ public class JournalRepository
 	
 	/**
 	 * Logs details about a failed batch insert.
-	 *
+	 * 
 	 * When JDBC executes a batch, it may fail on one row; updateCounts tells you which.
 	 * This method logs the transaction id and each failing entry at its batch index.
+	 *
+	 * @param txn the txn
+	 * @param batchEntries the batch entries
+	 * @param updateCounts the update counts
+	 * @param ex the ex
 	 */
 	private static void logBatchFailure(AccountingTransaction txn,
 		List<AccountingEntry> batchEntries,
@@ -977,20 +999,24 @@ public class JournalRepository
 	
 	/**
 	 * Ensures that every account referenced by the given journal entries exists in the account table.
-	 *
+	 * 
 	 * SQL action:
 	 *   MERGE INTO account(account_number, name) KEY(account_number) VALUES (?,?)
-	 *
-	 * This is an “upsert” keyed by account_number:
+	 * 
+	 * This is an upsert keyed by account_number:
 	 * - If the account exists, it may update the name (DB dependent).
 	 * - If it does not exist, it inserts it.
-	 *
+	 * 
 	 * Why do this here?
 	 * - journal_entry.account_number references an account. If your DB enforces
 	 *   referential integrity (foreign keys), inserts into journal_entry can fail
 	 *   if account rows are missing.
 	 * - Even without FK constraints, the UI/reporting usually expects accounts
 	 *   to exist in the master table.
+	 *
+	 * @param c the c
+	 * @param entries the entries
+	 * @throws SQLException the SQL exception
 	 */
 	private static void ensureAccountsExist(Connection c,
 		Iterable<AccountingEntry> entries)
@@ -1095,10 +1121,13 @@ public class JournalRepository
 	
 	/**
 	 * Best-effort closer for JDBC resources.
-	 *
+	 * 
 	 * Why not let close() throw?
 	 * - If a statement fails and then close() fails, we generally care about the statement failure.
 	 * - Close failures are still useful for diagnostics, so we log them at WARN.
+	 *
+	 * @param c the c
+	 * @param what the what
 	 */
 	private static void closeQuietly(AutoCloseable c, String what)
 	{

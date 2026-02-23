@@ -9,12 +9,26 @@ import nonprofitbookkeeping.model.supplemental.ReceivablesLine;
 import nonprofitbookkeeping.model.supplemental.SupplementalLineKind;
 import nonprofitbookkeeping.model.supplemental.TxnSupplementalLineBase;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class TxnSupplementalLineMapper.
+ */
 public final class TxnSupplementalLineMapper
 {
+	
+	/**
+	 * Instantiates a new txn supplemental line mapper.
+	 */
 	private TxnSupplementalLineMapper()
 	{
 	}
 
+	/**
+	 * To record.
+	 *
+	 * @param bean the bean
+	 * @return the txn supplemental line record
+	 */
 	public static TxnSupplementalLineRecord toRecord(TxnSupplementalLineBase bean)
 	{
 		TxnSupplementalLineRecord record = new TxnSupplementalLineRecord();
@@ -33,6 +47,12 @@ public final class TxnSupplementalLineMapper
 		return record;
 	}
 
+	/**
+	 * To bean.
+	 *
+	 * @param record the record
+	 * @return the txn supplemental line base
+	 */
 	public static TxnSupplementalLineBase toBean(TxnSupplementalLineRecord record)
 	{
 		TxnSupplementalLineBase bean = createBean(record.kind);
@@ -50,6 +70,12 @@ public final class TxnSupplementalLineMapper
 		return bean;
 	}
 
+	/**
+	 * Creates the bean.
+	 *
+	 * @param kind the kind
+	 * @return the txn supplemental line base
+	 */
 	private static TxnSupplementalLineBase createBean(SupplementalLineKind kind)
 	{
 		return switch (kind)

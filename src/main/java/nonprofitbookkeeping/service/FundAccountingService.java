@@ -19,6 +19,7 @@ import java.util.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import nonprofitbookkeeping.persistence.DocumentRepository;
 
+// TODO: Auto-generated Javadoc
 /**
  * Service class for managing fund accounting operations.
  * This includes managing funds and accounts, their relationships,
@@ -39,8 +40,12 @@ public class FundAccountingService
 	
 	/** Database document name used to persist funds. */
 	private static final String DOCUMENT_NAME = "funds";
+	
+	/** The Constant MAPPER. */
 	private static final ObjectMapper MAPPER = new ObjectMapper()
 		.enable(SerializationFeature.INDENT_OUTPUT);
+	
+	/** The Constant LIST_TYPE. */
 	private static final CollectionType LIST_TYPE =
 		MAPPER.getTypeFactory().constructCollectionType(List.class, Fund.class);
 	

@@ -13,6 +13,7 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.model.CurrentCompany;
 
+// TODO: Auto-generated Javadoc
 /**
  * Action class responsible for handling the closing of the current company file.
  * This action first attempts to persist (save) the current company's data
@@ -37,11 +38,11 @@ public class CloseCompanyFileAction
 	 */
 	public CloseCompanyFileAction(Stage primaryStage)
 	{
-                Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-                        "Save company changes before closing?",
-                        ButtonType.YES,
-                        ButtonType.NO,
-                        ButtonType.CANCEL);
+		Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+			"Save company changes before closing?",
+			ButtonType.YES,
+			ButtonType.NO,
+			ButtonType.CANCEL);
 		confirm.initOwner(primaryStage);
 		Optional<ButtonType> res = confirm.showAndWait();
 		
@@ -51,29 +52,34 @@ public class CloseCompanyFileAction
 			return; // user cancelled the action
 		}
 		
-                if (res.get() == ButtonType.YES)
-                {
-
-                        try
-                        {
-                                CurrentCompany.persist();
-                        }
-                        catch (IOException e)
-                        {
-                                e.printStackTrace();
-                        }
-
-                }
+		if (res.get() == ButtonType.YES)
+		{
+			
+			try
+			{
+				CurrentCompany.persist();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+			
+		}
 		
 		CurrentCompany.close();
 		this.closed = true;
+		
 	}
 	
 	/**
+	 * Checks if is closed.
+	 *
 	 * @return {@code true} if the company was closed as a result of this action
 	 */
 	public boolean isClosed()
 	{
 		return this.closed;
+		
 	}
+	
 }

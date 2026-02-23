@@ -9,6 +9,7 @@ import java.util.List;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+// TODO: Auto-generated Javadoc
 /**
  * Represents a fund within the nonprofit bookkeeping system.
  * A fund is a distinct financial entity used to track resources designated for specific purposes
@@ -45,7 +46,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	
 	
         /**
-         * Constructor Fund
+         * Constructor Fund.
          */
         public Fund()
         {
@@ -92,7 +93,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	 * to the specified account's list of associated funds. After adding the account,
 	 * the fund's balance is recalculated by calling {@link #updateBalance(Ledger)}.
 	 *
-	 * @param account The {@link Account} to associate with this fund. If null, the method does nothing.
+	 * @param accountId the account id
 	 */
 	/**
 	 * Adds an account to this fund. This overload does not immediately
@@ -110,8 +111,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	 * Adds an account to this fund if it's not already present and updates the
 	 * balance using the provided ledger.
 	 *
-	 * @param account The {@link Account} to associate with this fund. If null,
-	 *                the method does nothing.
+	 * @param accountId the account id
 	 * @param ledger  The {@link Ledger} used to calculate balances. May be null
 	 *                to skip ledger-based updates.
 	 */
@@ -133,7 +133,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	 * This overload mirrors the original method and does not require a
 	 * ledger for balance recalculation.
 	 *
-	 * @param account the {@link Account} to disassociate from this fund
+	 * @param accountId the account id
 	 */
 	public void removeAccount(String accountId)
 	{
@@ -144,9 +144,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	 * Removes an account from this fund and optionally recalculates the
 	 * balance using the provided ledger.
 	 *
-	 * @param account the {@link Account} to disassociate from this fund. If
-	 *                null, or if the account is not associated with this fund,
-	 *                the method does nothing.
+	 * @param accountId the account id
 	 * @param ledger  the ledger used to recalculate balances. May be null.
 	 */
 	public void removeAccount(String accountId, Ledger ledger)
@@ -167,6 +165,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	 * Updates (recalculates) the balance of this fund by summing the balances
 	 * (obtained via {@link Account#totalAccountBalance(Ledger)}) of all accounts currently
 	 * associated with this fund.
+	 *
+	 * @param ledger the ledger
 	 */
 	public void updateBalance(Ledger ledger)
 	{
@@ -204,6 +204,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		
 	}
 	
+	/**
+	 * Override @see java.lang.Object#toString() 
+	 */
 	@Override public String toString()
 	{
 		return "Fund{" + "name='" + this.name + '\'' + ", balance=" + this.balance + '}';
@@ -221,7 +224,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	}
 	
 	/**
-	 * @param string
+	 * Sets the name.
+	 *
+	 * @param string the new name
 	 */
 	public void setName(String string)
 	{
@@ -229,7 +234,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	}
 	
 	/**
-	 * @param string
+	 * Sets the fund id.
+	 *
+	 * @param string the new fund id
 	 */
 	public void setFundId(String string)
 	{

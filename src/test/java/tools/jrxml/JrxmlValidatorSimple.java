@@ -13,8 +13,20 @@ import java.io.File;
 import java.io.IOException;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class JrxmlValidatorSimple.
+ */
 public class JrxmlValidatorSimple
 {
+	
+	/**
+	 * Jvsmain.
+	 *
+	 * @param args the args
+	 * @throws SAXException the SAX exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static void jvsmain(String[] args) throws SAXException, IOException
 	{
 		

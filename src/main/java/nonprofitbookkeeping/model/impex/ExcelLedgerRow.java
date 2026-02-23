@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
 /**
  * Represents a single row from an imported Excel ledger.
  * The row contains general transaction info and up to four
@@ -15,6 +16,8 @@ import java.util.List;
  */
 @Data public class ExcelLedgerRow
 {
+	
+	/** The balance. */
 	private BigDecimal balance;
 	/** Transaction date from the spreadsheet. */
 	private LocalDate date;
@@ -28,7 +31,8 @@ import java.util.List;
 	private String memoNotes;
 	/** Optional budget tracking value. */
 	private String budgetTracking;
-	/** Optional subtotal - should be the sum of the allocation amounts */
+	
+	/** Optional subtotal - should be the sum of the allocation amounts. */
 	private BigDecimal netTotal;
 	/** Optional sheet name for the ledger page. */
 	private String sheetName;
@@ -38,7 +42,7 @@ import java.util.List;
 	private List<Allocation> allocations = new ArrayList<>();
 	
         /**
-         * Constructor ExcelLedgerRow
+         * Constructor ExcelLedgerRow.
          */
         public ExcelLedgerRow()
         {
@@ -49,6 +53,8 @@ import java.util.List;
 	
 
 	/**
+	 * Gets the balance.
+	 *
 	 * @return the balance
 	 */
 	public BigDecimal getBalance()
@@ -58,6 +64,8 @@ import java.util.List;
 	}
 	
 	/**
+	 * Sets the balance.
+	 *
 	 * @param balance the balance to set
 	 */
 	public void setBalance(BigDecimal balance)
@@ -68,6 +76,8 @@ import java.util.List;
 	}
 	
 	/**
+	 * Gets the date.
+	 *
 	 * @return the date
 	 */
 	public LocalDate getDate()
@@ -77,6 +87,8 @@ import java.util.List;
 	}
 	
 	/**
+	 * Sets the date.
+	 *
 	 * @param date the date to set
 	 */
 	public void setDate(LocalDate date)
@@ -87,6 +99,8 @@ import java.util.List;
 	}
 	
 	/**
+	 * Gets the check number.
+	 *
 	 * @return the checkNumber
 	 */
 	public String getCheckNumber()
@@ -96,6 +110,8 @@ import java.util.List;
 	}
 	
 	/**
+	 * Sets the check number.
+	 *
 	 * @param checkNumber the checkNumber to set
 	 */
 	public void setCheckNumber(String checkNumber)
@@ -106,6 +122,8 @@ import java.util.List;
 	}
 	
 	/**
+	 * Gets the clear bank.
+	 *
 	 * @return the clearBank
 	 */
 	public String getClearBank()
@@ -115,6 +133,8 @@ import java.util.List;
 	}
 	
 	/**
+	 * Sets the clear bank.
+	 *
 	 * @param clearBank the clearBank to set
 	 */
 	public void setClearBank(String clearBank)
@@ -125,6 +145,8 @@ import java.util.List;
 	}
 	
 	/**
+	 * Gets the to from.
+	 *
 	 * @return the toFrom
 	 */
 	public String getToFrom()
@@ -134,6 +156,8 @@ import java.util.List;
 	}
 	
 	/**
+	 * Sets the to from.
+	 *
 	 * @param toFrom the toFrom to set
 	 */
 	public void setToFrom(String toFrom)
@@ -144,6 +168,8 @@ import java.util.List;
 	}
 	
 	/**
+	 * Gets the memo notes.
+	 *
 	 * @return the memoNotes
 	 */
 	public String getMemoNotes()
@@ -153,6 +179,8 @@ import java.util.List;
 	}
 	
 	/**
+	 * Sets the memo notes.
+	 *
 	 * @param memoNotes the memoNotes to set
 	 */
 	public void setMemoNotes(String memoNotes)
@@ -163,6 +191,8 @@ import java.util.List;
 	}
 	
 	/**
+	 * Gets the budget tracking.
+	 *
 	 * @return the budgetTracking
 	 */
 	public String getBudgetTracking()
@@ -172,6 +202,8 @@ import java.util.List;
 	}
 	
 	/**
+	 * Sets the budget tracking.
+	 *
 	 * @param budgetTracking the budgetTracking to set
 	 */
 	public void setBudgetTracking(String budgetTracking)
@@ -182,6 +214,8 @@ import java.util.List;
 	}
 	
 	/**
+	 * Gets the net total.
+	 *
 	 * @return the netTotal
 	 */
 	public BigDecimal getNetTotal()
@@ -191,6 +225,8 @@ import java.util.List;
 	}
 	
 	/**
+	 * Sets the net total.
+	 *
 	 * @param netTotal the netTotal to set
 	 */
 	public void setNetTotal(BigDecimal netTotal)
@@ -201,6 +237,8 @@ import java.util.List;
 	}
 
 	/**
+	 * Gets the sheet name.
+	 *
 	 * @return the sheetName
 	 */
 	public String getSheetName()
@@ -209,6 +247,8 @@ import java.util.List;
 	}
 
 	/**
+	 * Sets the sheet name.
+	 *
 	 * @param sheetName the sheetName to set
 	 */
 	public void setSheetName(String sheetName)
@@ -218,6 +258,8 @@ import java.util.List;
 	}
 	
 	/**
+	 * Gets the allocations.
+	 *
 	 * @return the allocations
 	 */
 	public List<Allocation> getAllocations()
@@ -227,6 +269,8 @@ import java.util.List;
 	}
 	
 	/**
+	 * Sets the allocations.
+	 *
 	 * @param allocations the allocations to set
 	 */
 	public void setAllocations(List<Allocation> allocations)
@@ -236,7 +280,9 @@ import java.util.List;
 	}
 	
 	/**
-	 * Override @see java.lang.Object#toString() 
+	 * Override @see java.lang.Object#toString()
+	 *
+	 * @return the string
 	 */
 	@Override public String toString()
 	{
@@ -270,13 +316,25 @@ import java.util.List;
 	 */
 	@Data @NoArgsConstructor public static class Allocation
 	{
+		
+		/** The amount. */
 		private BigDecimal amount;
+		
+		/** The asset liability account. */
 		private String assetLiabilityAccount;
+		
+		/** The income category. */
 		private String incomeCategory;
+		
+		/** The expense category. */
 		private String expenseCategory;
+		
+		/** The fund. */
 		private String fund;
 		
 		/**
+		 * Gets the amount.
+		 *
 		 * @return the amount
 		 */
 		public BigDecimal getAmount()
@@ -286,6 +344,8 @@ import java.util.List;
 		}
 		
 		/**
+		 * Sets the amount.
+		 *
 		 * @param amount the amount to set
 		 */
 		public void setAmount(BigDecimal amount)
@@ -296,6 +356,8 @@ import java.util.List;
 		}
 		
 		/**
+		 * Gets the asset liability account.
+		 *
 		 * @return the assetLiabilityAccount
 		 */
 		public String getAssetLiabilityAccount()
@@ -305,6 +367,8 @@ import java.util.List;
 		}
 		
 		/**
+		 * Sets the asset liability account.
+		 *
 		 * @param assetLiabilityAccount the assetLiabilityAccount to set
 		 */
 		public void setAssetLiabilityAccount(String assetLiabilityAccount)
@@ -315,6 +379,8 @@ import java.util.List;
 		}
 		
 		/**
+		 * Gets the income category.
+		 *
 		 * @return the incomeCategory
 		 */
 		public String getIncomeCategory()
@@ -324,6 +390,8 @@ import java.util.List;
 		}
 		
 		/**
+		 * Sets the income category.
+		 *
 		 * @param incomeCategory the incomeCategory to set
 		 */
 		public void setIncomeCategory(String incomeCategory)
@@ -334,6 +402,8 @@ import java.util.List;
 		}
 		
 		/**
+		 * Gets the expense category.
+		 *
 		 * @return the expenseCategory
 		 */
 		public String getExpenseCategory()
@@ -343,6 +413,8 @@ import java.util.List;
 		}
 		
 		/**
+		 * Sets the expense category.
+		 *
 		 * @param expenseCategory the expenseCategory to set
 		 */
 		public void setExpenseCategory(String expenseCategory)
@@ -353,6 +425,8 @@ import java.util.List;
 		}
 		
 		/**
+		 * Gets the fund.
+		 *
 		 * @return the fund
 		 */
 		public String getFund()
@@ -362,6 +436,8 @@ import java.util.List;
 		}
 		
 		/**
+		 * Sets the fund.
+		 *
 		 * @param fund the fund to set
 		 */
 		public void setFund(String fund)
@@ -373,7 +449,9 @@ import java.util.List;
 		
 
 		/**
-		 * Override @see java.lang.Object#toString() 
+		 * Override @see java.lang.Object#toString()
+		 *
+		 * @return the string
 		 */
 		@Override public String toString()
 		{

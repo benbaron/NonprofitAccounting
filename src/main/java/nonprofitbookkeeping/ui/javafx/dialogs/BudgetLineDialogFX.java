@@ -22,23 +22,54 @@ import nonprofitbookkeeping.util.FormatUtils;
 import java.util.stream.Collectors;
 import java.math.RoundingMode;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class BudgetLineDialogFX.
+ */
 public class BudgetLineDialogFX extends Dialog<BudgetLine>
 {
 	
+	/** The budget line. */
 	private BudgetLine budgetLine;
+	
+	/** The chart of accounts. */
 	private ChartOfAccounts chartOfAccounts;
+	
+	/** The available funds. */
 	private List<Fund> availableFunds;
 	
+        /** The cmb account. */
         private ComboBox<Account> cmbAccount;
+        
+        /** The txt total amount. */
         private TextField txtTotalAmount;
+        
+        /** The cmb periodicity. */
         private ComboBox<Periodicity> cmbPeriodicity;
+        
+        /** The cmb fund. */
         private ComboBox<Fund> cmbFund; // Will add a "None" option representation
+        
+        /** The amount error label. */
         private Label amountErrorLabel;
+        
+        /** The periodic breakdown label. */
         private Label periodicBreakdownLabel;
+        
+        /** The ok button. */
         private Button okButton;
 	
+	/** The Constant NO_FUND_SENTINEL. */
 	private static final Fund NO_FUND_SENTINEL = new Fund(); // Sentinel for "None" option
 	
+	/**
+	 * Instantiates a new budget line dialog FX.
+	 *
+	 * @param title the title
+	 * @param lineToEdit the line to edit
+	 * @param coa the coa
+	 * @param funds the funds
+	 */
 	public BudgetLineDialogFX(String title, BudgetLine lineToEdit, ChartOfAccounts coa,
 		List<Fund> funds)
 	{
@@ -75,6 +106,9 @@ public class BudgetLineDialogFX extends Dialog<BudgetLine>
                 attachListeners();
 	}
 	
+	/**
+	 * Initialize components.
+	 */
 	private void initializeComponents()
 	{
 		this.cmbAccount = new ComboBox<>();
@@ -161,6 +195,11 @@ public class BudgetLineDialogFX extends Dialog<BudgetLine>
                 this.periodicBreakdownLabel = new Label();
         }
 	
+	/**
+	 * Creates the layout.
+	 *
+	 * @return the grid pane
+	 */
 	private GridPane createLayout()
 	{
 		GridPane grid = new GridPane();
@@ -191,6 +230,9 @@ public class BudgetLineDialogFX extends Dialog<BudgetLine>
                 return grid;
         }
 	
+	/**
+	 * Populate fields.
+	 */
 	private void populateFields()
 	{
 		
@@ -225,6 +267,9 @@ public class BudgetLineDialogFX extends Dialog<BudgetLine>
 		
 	}
 	
+        /**
+         * Setup result converter.
+         */
         private void setupResultConverter()
         {
                 setResultConverter(dialogButton -> {
@@ -275,6 +320,9 @@ public class BudgetLineDialogFX extends Dialog<BudgetLine>
                 });
         }
 
+        /**
+         * Attach listeners.
+         */
         private void attachListeners()
         {
                 this.okButton = (Button) getDialogPane().lookupButton(ButtonType.OK);
@@ -299,6 +347,9 @@ public class BudgetLineDialogFX extends Dialog<BudgetLine>
                 updateAmountFeedback();
         }
 
+        /**
+         * Update amount feedback.
+         */
         private void updateAmountFeedback()
         {
                 BigDecimal amount = parseAmount(this.txtTotalAmount.getText());
@@ -335,6 +386,11 @@ public class BudgetLineDialogFX extends Dialog<BudgetLine>
                 }
         }
 
+        /**
+         * Sets the amount error.
+         *
+         * @param message the new amount error
+         */
         private void setAmountError(String message)
         {
                 if (message == null || message.isBlank())
@@ -349,6 +405,11 @@ public class BudgetLineDialogFX extends Dialog<BudgetLine>
                 }
         }
 
+        /**
+         * Update periodic breakdown.
+         *
+         * @param total the total
+         */
         private void updatePeriodicBreakdown(BigDecimal total)
         {
                 if (total == null)
@@ -373,6 +434,13 @@ public class BudgetLineDialogFX extends Dialog<BudgetLine>
                 this.periodicBreakdownLabel.setText(builder.toString());
         }
 
+        /**
+         * Compute per period amount.
+         *
+         * @param total the total
+         * @param periodicity the periodicity
+         * @return the big decimal
+         */
         private BigDecimal computePerPeriodAmount(BigDecimal total, Periodicity periodicity)
         {
                 if (total == null)
@@ -396,6 +464,12 @@ public class BudgetLineDialogFX extends Dialog<BudgetLine>
                 return total.divide(BigDecimal.valueOf(periods), 2, RoundingMode.HALF_UP);
         }
 
+        /**
+         * Describe periodicity.
+         *
+         * @param periodicity the periodicity
+         * @return the string
+         */
         private String describePeriodicity(Periodicity periodicity)
         {
                 if (periodicity == null)
@@ -411,11 +485,22 @@ public class BudgetLineDialogFX extends Dialog<BudgetLine>
                 };
         }
 
+        /**
+         * Parses the amount.
+         *
+         * @param rawText the raw text
+         * @return the big decimal
+         */
         private BigDecimal parseAmount(String rawText)
         {
                 return FormatUtils.parseCurrency(rawText);
         }
 
+        /**
+         * Show validation error.
+         *
+         * @param message the message
+         */
         private void showValidationError(String message)
 	{
 		Alert alert = new Alert(Alert.AlertType.ERROR);

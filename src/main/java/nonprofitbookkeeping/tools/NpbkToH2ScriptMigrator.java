@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+// TODO: Auto-generated Javadoc
 /**
  * One-time utility that converts legacy {@code .npbk} archives into an H2
  * database script.  The generated script can later be imported by the
@@ -37,13 +38,23 @@ import java.util.zip.ZipInputStream;
 public final class NpbkToH2ScriptMigrator
 {
 	
+	/** The Constant ENTRY. */
 	private static final String ENTRY = "company_data.json";
 	
+	/**
+	 * Instantiates a new npbk to H 2 script migrator.
+	 */
 	private NpbkToH2ScriptMigrator()
 	{
 	
 	}
 	
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 * @throws Exception the exception
+	 */
 	public static void main(String[] args) throws Exception
 	{
 		
@@ -66,6 +77,7 @@ public final class NpbkToH2ScriptMigrator
 	 *
 	 * @param source Path to the legacy archive file.
 	 * @param target Path to the SQL script to be generated.
+	 * @throws Exception the exception
 	 */
 	public static void migrate(Path source, Path target) throws Exception
 	{
@@ -102,6 +114,13 @@ public final class NpbkToH2ScriptMigrator
 		
 	}
 	
+	/**
+	 * Read company.
+	 *
+	 * @param zipFile the zip file
+	 * @return the company
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private static Company readCompany(Path zipFile) throws IOException
 	{
 		
@@ -134,6 +153,13 @@ public final class NpbkToH2ScriptMigrator
 		
 	}
 	
+	/**
+	 * Persist company.
+	 *
+	 * @param company the company
+	 * @throws SQLException the SQL exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private static void persistCompany(Company company)
 		throws SQLException, IOException
 	{
@@ -167,6 +193,12 @@ public final class NpbkToH2ScriptMigrator
 		
 	}
 	
+	/**
+	 * Persist profile.
+	 *
+	 * @param profile the profile
+	 * @throws SQLException the SQL exception
+	 */
 	private static void persistProfile(CompanyProfileModel profile)
 		throws SQLException
 	{
@@ -174,6 +206,13 @@ public final class NpbkToH2ScriptMigrator
 		
 	}
 	
+	/**
+	 * Export script.
+	 *
+	 * @param target the target
+	 * @throws SQLException the SQL exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private static void exportScript(Path target)
 		throws SQLException, IOException
 	{
@@ -194,6 +233,12 @@ public final class NpbkToH2ScriptMigrator
 		
 	}
 	
+	/**
+	 * Cleanup temp database.
+	 *
+	 * @param tempDb the temp db
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private static void cleanupTempDatabase(Path tempDb) throws IOException
 	{
 		Files.deleteIfExists(tempDb);

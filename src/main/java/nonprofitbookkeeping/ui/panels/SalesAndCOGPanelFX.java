@@ -20,6 +20,7 @@ import nonprofitbookkeeping.model.SaleRecord;
 import nonprofitbookkeeping.service.SalesService;
 import nonprofitbookkeeping.util.FormatUtils;
 
+// TODO: Auto-generated Javadoc
 /**
  * JavaFX port of {@code SalesAndCOGPanel}. Maintains an in‑memory table of sale
  * transactions with calculated margin (Price – Cost).  In a full application
@@ -29,11 +30,13 @@ public class SalesAndCOGPanelFX extends BorderPane
 {
 	
 	/** ObservableList to hold {@link SaleRow} objects for display in the table. */
-	private final ObservableList<SaleRow> rows = FXCollections.observableArrayList();
+	private final ObservableList<SaleRow> rows =
+		FXCollections.observableArrayList();
 	/** TableView to display the list of sale transactions. */
 	private final TableView<SaleRow> table = new TableView<>();
 	/** Label to display the calculated total gross profit from all sales. */
-       private final Label totalLbl = new Label("Gross Profit: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
+	private final Label totalLbl = new Label(
+		"Gross Profit: " + FormatUtils.formatCurrency(BigDecimal.ZERO));
 	/** Service for persisting sales. */
 	private final SalesService service;
 	/** Directory used for persistence, may be null. */
@@ -42,20 +45,23 @@ public class SalesAndCOGPanelFX extends BorderPane
 	/**
 	 * Constructs a new {@code SalesAndCOGPanelFX}.
 	 * Initializes the panel with a table to display sale transactions and buttons for managing sales.
+	 *
+	 * @param service the service
+	 * @param companyDirectory the company directory
 	 */
 	public SalesAndCOGPanelFX(SalesService service, File companyDirectory)
 	{
-                this.service = service == null ? new SalesService() : service;
-                this.companyDirectory = companyDirectory;
-
-                try
-                {
-                        this.service.loadSales(this.companyDirectory);
-                }
-                catch (Exception ex)
-                {
-                        ex.printStackTrace();
-                }
+		this.service = service == null ? new SalesService() : service;
+		this.companyDirectory = companyDirectory;
+		
+		try
+		{
+			this.service.loadSales(this.companyDirectory);
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
 		
 		setPadding(new Insets(10));
 		buildTable();
@@ -65,12 +71,18 @@ public class SalesAndCOGPanelFX extends BorderPane
 		for (SaleRecord r : this.service.listSales())
 			this.rows.add(new SaleRow(r));
 		updateTotals();
+		
 	}
 	
-	/** Convenience constructor when no directory is available. */
+	/**
+	 * Convenience constructor when no directory is available.
+	 *
+	 * @param service the service
+	 */
 	public SalesAndCOGPanelFX(SalesService service)
 	{
 		this(service, null);
+		
 	}
 	
 	/* ------------------------------------------------------------------ */
@@ -84,7 +96,8 @@ public class SalesAndCOGPanelFX extends BorderPane
 	 * uses reflection and can lead to type safety warnings. "deprecation" might relate to older patterns.
 	 */
 	@SuppressWarnings(
-	{ "unchecked", "deprecation" }) private void buildTable()
+	{ "unchecked", "deprecation" })
+	private void buildTable()
 	{
 		TableColumn<SaleRow, String> dateCol = col("Date", "date");
 		TableColumn<SaleRow, String> itemCol = col("Item", "item");
@@ -94,11 +107,14 @@ public class SalesAndCOGPanelFX extends BorderPane
 		priceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
 		TableColumn<SaleRow, BigDecimal> costCol = new TableColumn<>("Cost");
 		costCol.setCellValueFactory(new PropertyValueFactory<>("cost"));
-		TableColumn<SaleRow, BigDecimal> marginCol = new TableColumn<>("Margin");
+		TableColumn<SaleRow, BigDecimal> marginCol =
+			new TableColumn<>("Margin");
 		marginCol.setCellValueFactory(new PropertyValueFactory<>("margin"));
-		this.table.getColumns().addAll(dateCol, itemCol, qtyCol, priceCol, costCol, marginCol);
+		this.table.getColumns().addAll(dateCol, itemCol, qtyCol, priceCol,
+			costCol, marginCol);
 		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		this.table.setItems(this.rows);
+		
 	}
 	
 	/**
@@ -113,6 +129,7 @@ public class SalesAndCOGPanelFX extends BorderPane
 		TableColumn<SaleRow, String> c = new TableColumn<>(t);
 		c.setCellValueFactory(new PropertyValueFactory<>(p));
 		return c;
+		
 	}
 	
 	/**
@@ -144,6 +161,7 @@ public class SalesAndCOGPanelFX extends BorderPane
 		HBox box = new HBox(10, add, del, this.totalLbl);
 		box.setPadding(new Insets(8));
 		return box;
+		
 	}
 	
 	/**
@@ -162,28 +180,34 @@ public class SalesAndCOGPanelFX extends BorderPane
 	{
 		Dialog<SaleRow> dlg = new Dialog<>();
 		dlg.setTitle(existing == null ? "Add Sale" : "Edit Sale");
-		dlg.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+		dlg.getDialogPane().getButtonTypes().addAll(ButtonType.OK,
+			ButtonType.CANCEL);
 		DatePicker dateP = new DatePicker(
-			existing == null ? LocalDate.now() : LocalDate.parse(existing.getDate())); // String →
-																						// LocalDate
+			existing == null ? LocalDate.now() :
+				LocalDate.parse(existing.getDate())); // String →
+														// LocalDate
 		
-		TextField itemF = new TextField(existing == null ? "" : existing.getItem());
+		TextField itemF =
+			new TextField(existing == null ? "" : existing.getItem());
 		
-		TextField qtyF = new TextField(existing == null ? "1" : String.valueOf(existing.getQty())); // Integer
-																									// →
-																									// String
+		TextField qtyF = new TextField(
+			existing == null ? "1" : String.valueOf(existing.getQty())); // Integer
+																			// →
+																			// String
 		
-               TextField priceF =
-                       new TextField(existing == null ? FormatUtils.formatCurrency(BigDecimal.ZERO) :
-                                       FormatUtils.formatCurrency(existing.getPrice()));
-																							// →
-																							// String
+		TextField priceF =
+			new TextField(
+				existing == null ? FormatUtils.formatCurrency(BigDecimal.ZERO) :
+					FormatUtils.formatCurrency(existing.getPrice()));
+		// →
+		// String
 		
-               TextField costF =
-                       new TextField(existing == null ? FormatUtils.formatCurrency(BigDecimal.ZERO) :
-                                       FormatUtils.formatCurrency(existing.getCost()));
-																							// →
-																							// String
+		TextField costF =
+			new TextField(
+				existing == null ? FormatUtils.formatCurrency(BigDecimal.ZERO) :
+					FormatUtils.formatCurrency(existing.getCost()));
+		// →
+		// String
 		GridPane g = new GridPane();
 		g.setHgap(10);
 		g.setVgap(8);
@@ -204,11 +228,14 @@ public class SalesAndCOGPanelFX extends BorderPane
 					int qty = Integer.parseInt(qtyF.getText().trim());
 					BigDecimal pr = new BigDecimal(priceF.getText().trim());
 					BigDecimal cs = new BigDecimal(costF.getText().trim());
-					return new SaleRow(dateP.getValue(), itemF.getText(), qty, pr, cs);
+					return new SaleRow(dateP.getValue(), itemF.getText(), qty,
+						pr, cs);
 				}
-				catch (@SuppressWarnings("unused") Exception ex)
+				catch (@SuppressWarnings("unused")
+				Exception ex)
 				{
-					new Alert(Alert.AlertType.ERROR, "Invalid input").showAndWait();
+					new Alert(Alert.AlertType.ERROR, "Invalid input")
+						.showAndWait();
 				}
 				
 			}
@@ -229,6 +256,7 @@ public class SalesAndCOGPanelFX extends BorderPane
 			syncServiceFromRows();
 			save();
 		});
+		
 	}
 	
 	/**
@@ -239,8 +267,10 @@ public class SalesAndCOGPanelFX extends BorderPane
 	private void updateTotals()
 	{
 		BigDecimal profit =
-			this.rows.stream().map(r -> r.margin.get()).reduce(BigDecimal.ZERO, BigDecimal::add);
+			this.rows.stream().map(r -> r.margin.get()).reduce(BigDecimal.ZERO,
+				BigDecimal::add);
 		this.totalLbl.setText("Gross Profit: " + profit);
+		
 	}
 	
 	/** Synchronizes the service with the current table rows. */
@@ -259,16 +289,16 @@ public class SalesAndCOGPanelFX extends BorderPane
 	private void save()
 	{
 		
-                try
-                {
-                        this.service.saveSales(this.companyDirectory);
-                }
-                catch (Exception ex)
-                {
-                        ex.printStackTrace();
-                }
-
-        }
+		try
+		{
+			this.service.saveSales(this.companyDirectory);
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		
+	}
 	
 	/* ------------------------------------------------------------------ */
 	/**
@@ -288,31 +318,55 @@ public class SalesAndCOGPanelFX extends BorderPane
 		/** The quantity of items sold, as a {@link SimpleObjectProperty} of {@link Integer}. */
 		final SimpleObjectProperty<Integer> qty = new SimpleObjectProperty<>();
 		/** The unit price of the item sold, as a {@link SimpleObjectProperty} of {@link BigDecimal}. */
-		final SimpleObjectProperty<BigDecimal> price = new SimpleObjectProperty<>();
+		final SimpleObjectProperty<BigDecimal> price =
+			new SimpleObjectProperty<>();
 		/** The unit cost of the item sold, as a {@link SimpleObjectProperty} of {@link BigDecimal}. */
-		final SimpleObjectProperty<BigDecimal> cost = new SimpleObjectProperty<>();
+		final SimpleObjectProperty<BigDecimal> cost =
+			new SimpleObjectProperty<>();
 		/** The calculated margin for this sale (Quantity * (Price - Cost)), as a {@link SimpleObjectProperty} of {@link BigDecimal}. */
-		final SimpleObjectProperty<BigDecimal> margin = new SimpleObjectProperty<>();
+		final SimpleObjectProperty<BigDecimal> margin =
+			new SimpleObjectProperty<>();
 		
 		/**
 		 * Constructs a new {@code SaleRow} with auto-generated ID.
+		 *
+		 * @param d the d
+		 * @param it the it
+		 * @param q the q
+		 * @param p the p
+		 * @param c the c
 		 */
 		SaleRow(LocalDate d, String it, int q, BigDecimal p, BigDecimal c)
 		{
 			this(UUID.randomUUID().toString(), d, it, q, p, c);
+			
 		}
 		
-		/** Construct from an existing {@link SaleRecord}. */
+		/**
+		 * Construct from an existing {@link SaleRecord}.
+		 *
+		 * @param rec the rec
+		 */
 		SaleRow(SaleRecord rec)
 		{
-			this(rec.getId(), LocalDate.parse(rec.getDate()), rec.getItem(), rec.getQty(),
+			this(rec.getId(), LocalDate.parse(rec.getDate()), rec.getItem(),
+				rec.getQty(),
 				rec.getPrice(), rec.getCost());
+			
 		}
 		
 		/**
 		 * Constructs a new {@code SaleRow} with explicit ID.
+		 *
+		 * @param id the id
+		 * @param d the d
+		 * @param it the it
+		 * @param q the q
+		 * @param p the p
+		 * @param c the c
 		 */
-		SaleRow(String id, LocalDate d, String it, int q, BigDecimal p, BigDecimal c)
+		SaleRow(String id, LocalDate d, String it, int q, BigDecimal p,
+			BigDecimal c)
 		{
 			this.id = id;
 			this.date.set(d.toString());
@@ -321,6 +375,7 @@ public class SalesAndCOGPanelFX extends BorderPane
 			this.price.set(p);
 			this.cost.set(c);
 			calcMargin();
+			
 		}
 		
 		/**
@@ -331,6 +386,7 @@ public class SalesAndCOGPanelFX extends BorderPane
 		{
 			this.margin.set(this.price.get().subtract(this.cost.get())
 				.multiply(new BigDecimal(this.qty.get())));
+			
 		} // extended margin = qty*(price-cost)
 		
 		/**
@@ -348,6 +404,7 @@ public class SalesAndCOGPanelFX extends BorderPane
 			this.price.set(other.price.get());
 			this.cost.set(other.cost.get());
 			calcMargin();
+			
 		}
 		
 		/**
@@ -357,6 +414,7 @@ public class SalesAndCOGPanelFX extends BorderPane
 		public String getDate()
 		{
 			return this.date.get();
+			
 		}
 		
 		/**
@@ -366,6 +424,7 @@ public class SalesAndCOGPanelFX extends BorderPane
 		public String getItem()
 		{
 			return this.item.get();
+			
 		}
 		
 		/**
@@ -375,6 +434,7 @@ public class SalesAndCOGPanelFX extends BorderPane
 		public int getQty()
 		{
 			return this.qty.get();
+			
 		}
 		
 		/**
@@ -384,6 +444,7 @@ public class SalesAndCOGPanelFX extends BorderPane
 		public BigDecimal getPrice()
 		{
 			return this.price.get();
+			
 		}
 		
 		/**
@@ -393,6 +454,7 @@ public class SalesAndCOGPanelFX extends BorderPane
 		public BigDecimal getCost()
 		{
 			return this.cost.get();
+			
 		}
 		
 		/**
@@ -402,15 +464,23 @@ public class SalesAndCOGPanelFX extends BorderPane
 		public BigDecimal getMargin()
 		{
 			return this.margin.get();
+			
 		}
 		
-		/** Convert this row to a {@link SaleRecord} for persistence. */
+		/**
+		 * Convert this row to a {@link SaleRecord} for persistence.
+		 *
+		 * @return the sale record
+		 */
 		SaleRecord toRecord()
 		{
-			return new SaleRecord(this.id, getDate(), getItem(), getQty(), getPrice(), getCost());
+			return new SaleRecord(this.id, getDate(), getItem(), getQty(),
+				getPrice(), getCost());
+			
 		}
 		
-		// Note: The 'id' field does not have a public getter, implies it's for internal
+		// Note: The 'id' field does not have a public getter, implies it's for
+		// internal
 		// use or PropertyValueFactory access.
 	}
 	

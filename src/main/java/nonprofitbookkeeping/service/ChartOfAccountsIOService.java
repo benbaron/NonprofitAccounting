@@ -29,6 +29,7 @@ import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountType;
 import nonprofitbookkeeping.model.supplemental.SupplementalLineKind;
 
+// TODO: Auto-generated Javadoc
 /**
  * Utility for persisting a {@link ChartOfAccounts} to / from either a human-readable
  * JSON document or an Excel spreadsheet (.xlsx). The JSON file format is:
@@ -329,10 +330,10 @@ public final class ChartOfAccountsIOService
 	}
 	
 	/**
-	 * Get a string from the cell
-	 * @param cell
-	 * @param eval
-	 * 
+	 * Get a string from the cell.
+	 *
+	 * @param cell the cell
+	 * @param eval the eval
 	 * @return String Value
 	 */
 	private static String getString(Cell cell, FormulaEvaluator eval)
@@ -367,11 +368,11 @@ public final class ChartOfAccountsIOService
 	}
 	
 	/**
-	 * Get a Big Decimal from the cell
-	 * @param cell
-	 * @param eval
-	 * @param defaultVal
-	 * 
+	 * Get a Big Decimal from the cell.
+	 *
+	 * @param cell the cell
+	 * @param eval the eval
+	 * @param defaultVal the default val
 	 * @return Big Decimal value
 	 */
 	private static BigDecimal getBigDecimal(Cell cell, FormulaEvaluator eval, BigDecimal defaultVal)
@@ -416,10 +417,10 @@ public final class ChartOfAccountsIOService
 	}
 	
 	/**
-	 * Read an integer
-	 * @param cell
-	 * @param eval
-	 * 
+	 * Read an integer.
+	 *
+	 * @param cell the cell
+	 * @param eval the eval
 	 * @return Integer Value
 	 */
 	private static Integer getInt(Cell cell, FormulaEvaluator eval)
@@ -484,6 +485,12 @@ public final class ChartOfAccountsIOService
 		
 	}
 
+	/**
+	 * Encode supplemental kinds.
+	 *
+	 * @param kinds the kinds
+	 * @return the string
+	 */
 	private static String encodeSupplementalKinds(
 		java.util.List<SupplementalLineKind> kinds)
 	{
@@ -501,6 +508,12 @@ public final class ChartOfAccountsIOService
 			.orElse("");
 	}
 
+	/**
+	 * Decode supplemental kinds.
+	 *
+	 * @param value the value
+	 * @return the java.util. list
+	 */
 	private static java.util.List<SupplementalLineKind> decodeSupplementalKinds(
 		String value)
 	{

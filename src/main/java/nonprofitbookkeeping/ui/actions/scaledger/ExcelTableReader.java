@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.Vector;
 
+// TODO: Auto-generated Javadoc
 /**
  * Utility class for reading data from an Excel sheet into a Swing {@link javax.swing.table.DefaultTableModel}.
  * This class uses Apache POI to interact with Excel files (specifically XSSFWorkbook for .xlsx format).
@@ -31,9 +32,6 @@ public class ExcelTableReader
 	 * @param sheetIndex The zero-based index of the sheet to read from the workbook.
 	 * @return A {@link DefaultTableModel} populated with the data from the specified Excel sheet.
 	 *         The model will have column headers based on the first row of the sheet.
-	 * @throws org.apache.poi.openxml4j.exceptions.InvalidFormatException if the file format is invalid.
-	 * @throws java.io.FileNotFoundException if the specified {@code file} does not exist.
-	 * @throws IOException if an I/O error occurs while reading the file or workbook.
 	 * @throws Exception for other potential errors during workbook processing by Apache POI (though more specific exceptions are preferred).
 	 */
 	public static DefaultTableModel readSheetAsTable(File file, int sheetIndex) throws Exception

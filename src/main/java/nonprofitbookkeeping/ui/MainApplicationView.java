@@ -22,6 +22,7 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
 
 import java.time.MonthDay;
 
+// TODO: Auto-generated Javadoc
 /**
  * Represents the main application view, structured as a {@link BorderPane}.
  * It uses a {@link TabPane} in the center to display different sections of the application
@@ -161,7 +162,11 @@ public class MainApplicationView extends BorderPane
 
         }
 
-        /** Exposes the company selection panel for additional configuration. */
+        /**
+         * Exposes the company selection panel for additional configuration.
+         *
+         * @return the company selection panel
+         */
         public CompanySelectionPanelFX getCompanySelectionPanel()
         {
                 return this.companySelectionPanel;
@@ -299,19 +304,35 @@ public class MainApplicationView extends BorderPane
 
         }
 
-        /** Provides access to the shared journal panel instance. */
+        /**
+         * Provides access to the shared journal panel instance.
+         *
+         * @return the journal panel
+         */
         public SkeletonJournalPanel getJournalPanel()
         {
                 return this.journalPanel;
         }
 
-        /** Exposes the account details panel instance. */
+        /**
+         * Exposes the account details panel instance.
+         *
+         * @return the account details panel
+         */
         public AccountTransactionDetailsPanelFX getAccountDetailsPanel()
         {
                 return this.accountDetailsPanel;
         }
 
-        /** Applies the configured default report period to the account details view. */
+        /**
+         * Applies the configured default report period to the account details view.
+         *
+         * @param preset the preset
+         * @param fiscalYearStart the fiscal year start
+         * @param showYearToDate the show year to date
+         * @param showFullYear the show full year
+         * @param showLastMonth the show last month
+         */
         public void applyAccountDetailsDefaults(ReportPeriodPreset preset, MonthDay fiscalYearStart,
                 boolean showYearToDate, boolean showFullYear, boolean showLastMonth)
         {

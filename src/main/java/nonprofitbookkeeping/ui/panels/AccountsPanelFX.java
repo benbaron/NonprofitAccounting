@@ -18,6 +18,7 @@ import nonprofitbookkeeping.service.AccountService;
 import nonprofitbookkeeping.model.CurrentCompany; // Added for listener
 import nonprofitbookkeeping.model.Company;
 
+// TODO: Auto-generated Javadoc
 /**
  * JavaFX port of {@code AccountsPanel}. Shows the chart of accounts and basic
  * add/edit/delete row operations. It uses an {@link AccountService} to fetch account data
@@ -30,9 +31,17 @@ public class AccountsPanelFX extends BorderPane
 	/** The ObservableList that backs the {@code table}, containing {@link AccountRow} objects. */
 	private final ObservableList<AccountRow> rows = FXCollections.observableArrayList();
 	
+	/** The company listener. */
 	private AccountsPanelCompanyListener companyListener;
+	
+	/** The action buttons box. */
 	private HBox actionButtonsBox; // To store the controls
 	
+	/**
+	 * Instantiates a new accounts panel FX.
+	 *
+	 * @param service the service
+	 */
 	public AccountsPanelFX(AccountService service)
 	{
 		// service param is kept for signature compatibility
@@ -130,7 +139,7 @@ public class AccountsPanelFX extends BorderPane
 	}
 	
 	/**
-	 * onDeleteAction
+	 * onDeleteAction.
 	 */
 	void onDeleteAction()
 	{
@@ -149,7 +158,7 @@ public class AccountsPanelFX extends BorderPane
 	}
 	
 	/**
-	 * onEditAction
+	 * onEditAction.
 	 */
 	void onEditAction()
 	{
@@ -208,9 +217,9 @@ public class AccountsPanelFX extends BorderPane
 	
 	
 	/**
-	 * New method to handle company state changes
-	 * 
-	 * @param companyIsOpen
+	 * New method to handle company state changes.
+	 *
+	 * @param companyIsOpen the company is open
 	 */
        private void handleCompanyChange(boolean companyIsOpen)
        {
@@ -262,17 +271,29 @@ public class AccountsPanelFX extends BorderPane
 	
 	
 	/**
-	 * AccountsPanelCompanyListener
+	 * AccountsPanelCompanyListener.
+	 *
+	 * @see AccountsPanelCompanyEvent
 	 */
 	private class AccountsPanelCompanyListener implements CurrentCompany.CompanyChangeListener
 	{
+		
+		/** The panel. */
 		private AccountsPanelFX panel;
 		
+		/**
+		 * Instantiates a new accounts panel company listener.
+		 *
+		 * @param panel the panel
+		 */
 		public AccountsPanelCompanyListener(AccountsPanelFX panel)
 		{
 			this.panel = panel;
 		}
 		
+		/**
+		 * Override @see nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener#companyChange(boolean) 
+		 */
 		@Override public void companyChange(boolean isOpen)
 		{
 			this.panel.handleCompanyChange(isOpen);
@@ -282,6 +303,9 @@ public class AccountsPanelFX extends BorderPane
 	
 	
 	/////////////////////////////////////////////////////////
+	/**
+	 * The Class AccountRow.
+	 */
 	/* This class acts as a data bean for JavaFX's {@link PropertyValueFactory} to
 	 * populate table cells. It typically wraps an {@link Account} object or holds
 	 * data for a new/editable account row. */
@@ -315,9 +339,9 @@ public class AccountsPanelFX extends BorderPane
 		}
 		
 		/**
-		 * 
-		 * Constructor AccountRow
-		 * @param a
+		 * Constructor AccountRow.
+		 *
+		 * @param a the a
 		 */
 		public AccountRow(Account a)
 		{
@@ -330,61 +354,121 @@ public class AccountsPanelFX extends BorderPane
 			this.opening = a.getOpeningBalance();
 		}
 		
+		/**
+		 * Gets the code.
+		 *
+		 * @return the code
+		 */
 		public String getCode()
 		{
 			return this.code;
 		}
 		
+		/**
+		 * Sets the code.
+		 *
+		 * @param s the new code
+		 */
 		public void setCode(String s)
 		{
 			this.code = s;
 		}
 		
+		/**
+		 * Gets the name.
+		 *
+		 * @return the name
+		 */
 		public String getName()
 		{
 			return this.name;
 		}
 		
+		/**
+		 * Sets the name.
+		 *
+		 * @param s the new name
+		 */
 		public void setName(String s)
 		{
 			this.name = s;
 		}
 		
+		/**
+		 * Gets the type.
+		 *
+		 * @return the type
+		 */
 		public AccountType getType()
 		{
 			return this.type;
 		}
 		
+		/**
+		 * Sets the type.
+		 *
+		 * @param s the new type
+		 */
 		public void setType(AccountType s)
 		{
 			this.type = s;
 		}
 		
+                /**
+                 * Gets the parent id.
+                 *
+                 * @return the parent id
+                 */
                 public String getParentId()
                 {
                         return this.parentId;
                 }
 
+                /**
+                 * Sets the parent id.
+                 *
+                 * @param s the new parent id
+                 */
                 public void setParentId(String s)
                 {
                         this.parentId = s;
                 }
 		
+		/**
+		 * Gets the currency.
+		 *
+		 * @return the currency
+		 */
 		public String getCurrency()
 		{
 			return this.currency;
 		}
 		
+		/**
+		 * Sets the currency.
+		 *
+		 * @param s the new currency
+		 */
 		public void setCurrency(String s)
 		{
 			this.currency = s;
 		}
 		
+		/**
+		 * Gets the opening.
+		 *
+		 * @return the opening
+		 */
 		public BigDecimal getOpening()
 		{
 			return this.opening;
 		}
 		
+		/**
+		 * Sets the opening.
+		 *
+		 * @param b the new opening
+		 */
 		public void setOpening(BigDecimal b)
 		{
 			this.opening = (b != null) ? b : BigDecimal.ZERO;

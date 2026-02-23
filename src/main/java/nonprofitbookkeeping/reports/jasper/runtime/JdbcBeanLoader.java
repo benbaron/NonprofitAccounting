@@ -13,6 +13,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// TODO: Auto-generated Javadoc
 /**
  * Executes a JDBC query and maps each row to a bean using DataFiller.
  *
@@ -22,17 +23,32 @@ import org.slf4j.LoggerFactory;
  */
 public final class JdbcBeanLoader
 {
+	
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER =
 		LoggerFactory.getLogger(JdbcBeanLoader.class);
 	
+	/**
+	 * Instantiates a new jdbc bean loader.
+	 */
 	private JdbcBeanLoader()
 	{
 		
 	}
 	
+	/**
+	 * The Interface SqlParameterSetter.
+	 */
 	@FunctionalInterface
 	public interface SqlParameterSetter
 	{
+		
+		/**
+		 * Sets the parameters.
+		 *
+		 * @param ps the new parameters
+		 * @throws SQLException the SQL exception
+		 */
 		void setParameters(PreparedStatement ps) throws SQLException;
 		
 	}
@@ -41,10 +57,13 @@ public final class JdbcBeanLoader
 	 * Run the given SQL using the provided connection, bind parameters using
 	 * the SqlParameterSetter, and map each row to a bean instance.
 	 *
+	 * @param <B> the generic type
 	 * @param cx          open JDBC connection
 	 * @param beanClass   bean type to instantiate
 	 * @param sql         SQL to execute
 	 * @param paramSetter binder for PreparedStatement parameters (may be null)
+	 * @return the list
+	 * @throws SQLException the SQL exception
 	 */
 	public static <B> List<B> queryBeans(
 		Connection cx,
@@ -125,11 +144,12 @@ public final class JdbcBeanLoader
 	/**
 	 * Run the SQL query and merge each row into a single bean using
 	 * a row-based naming convention.
-	 *
+	 * 
 	 * Row 1 uses the original column label. Subsequent rows append
 	 * "_2", "_3", etc. to the column label so Jasper beans can
 	 * expose fields like item_description_2 or amount_3.
 	 *
+	 * @param <B> the generic type
 	 * @param cx open JDBC connection
 	 * @param beanClass bean type to instantiate
 	 * @param sql SQL to execute

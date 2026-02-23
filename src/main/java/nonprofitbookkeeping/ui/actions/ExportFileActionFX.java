@@ -26,17 +26,25 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// TODO: Auto-generated Javadoc
 /**
  * JavaFX action that exports account activity to OFX/QFX files.
  */
 public class ExportFileActionFX implements EventHandler<ActionEvent>
 {
 
+/** The Constant LOGGER. */
 private static final Logger LOGGER =
 LoggerFactory.getLogger(ExportFileActionFX.class);
 
+/** The owner stage. */
 private final Stage ownerStage;
 
+/**
+ * Instantiates a new export file action FX.
+ *
+ * @param primaryStage the primary stage
+ */
 public ExportFileActionFX(Stage primaryStage)
 {
 if (primaryStage == null)
@@ -47,6 +55,9 @@ throw new IllegalArgumentException("Primary stage (owner stage) cannot be null."
 this.ownerStage = primaryStage;
 }
 
+/**
+ * Override @see javafx.event.EventHandler#handle(javafx.event.Event) 
+ */
 @Override public void handle(ActionEvent event)
 {
 boolean fxReady;
@@ -162,6 +173,12 @@ success.initOwner(this.ownerStage);
 success.showAndWait();
 }
 
+/**
+ * Account label.
+ *
+ * @param account the account
+ * @return the string
+ */
 private static String accountLabel(Account account)
 {
 String name = Optional.ofNullable(account.getName()).filter(n -> !n.isBlank()).orElse("Account");
@@ -169,6 +186,12 @@ String number = Optional.ofNullable(account.getAccountNumber()).orElse("?");
 return name + " (" + number + ")";
 }
 
+/**
+ * Suggest file name.
+ *
+ * @param account the account
+ * @return the string
+ */
 private static String suggestFileName(Account account)
 {
 String base = Optional.ofNullable(account.getName())
@@ -177,6 +200,13 @@ String base = Optional.ofNullable(account.getName())
 return base.replaceAll("[^A-Za-z0-9-_]", "_") + ".ofx";
 }
 
+/**
+ * Determine format.
+ *
+ * @param filter the filter
+ * @param chosen the chosen
+ * @return the statement format
+ */
 private static StatementFormat determineFormat(FileChooser.ExtensionFilter filter, File chosen)
 {
 String lowerName = chosen.getName().toLowerCase();
@@ -194,6 +224,13 @@ return StatementFormat.QFX;
 return StatementFormat.OFX;
 }
 
+/**
+ * Ensure extension.
+ *
+ * @param file the file
+ * @param format the format
+ * @return the file
+ */
 private static File ensureExtension(File file, StatementFormat format)
 {
 String lower = file.getName().toLowerCase();
@@ -207,6 +244,13 @@ String suffix = (format == StatementFormat.QFX) ? ".qfx" : ".ofx";
 return new File(file.getParentFile(), file.getName() + suffix);
 }
 
+/**
+ * Show alert.
+ *
+ * @param type the type
+ * @param title the title
+ * @param message the message
+ */
 private void showAlert(AlertType type, String title, String message)
 {
 Alert alert = new Alert(type);

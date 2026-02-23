@@ -26,13 +26,26 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
+// TODO: Auto-generated Javadoc
 /**
  * Writes report values into a pre-existing XLSX template using field map metadata.
  */
 public class ExcelTemplateWriter
 {
+	
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LogManager.getLogger(ExcelTemplateWriter.class);
 
+	/**
+	 * Write template.
+	 *
+	 * @param templateFile the template file
+	 * @param fieldMap the field map
+	 * @param bean the bean
+	 * @param outputFile the output file
+	 * @return the file
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public File writeTemplate(File templateFile, FieldMap fieldMap, Object bean, File outputFile)
 		throws IOException
 	{
@@ -58,6 +71,15 @@ public class ExcelTemplateWriter
 		return outputFile;
 	}
 
+	/**
+	 * Write template.
+	 *
+	 * @param workbook the workbook
+	 * @param fieldMap the field map
+	 * @param bean the bean
+	 * @param sheetName the sheet name
+	 * @param createMissingSheets the create missing sheets
+	 */
 	public void writeTemplate(Workbook workbook, FieldMap fieldMap, Object bean,
 		String sheetName, boolean createMissingSheets)
 	{
@@ -73,6 +95,15 @@ public class ExcelTemplateWriter
 		writeFields(workbook, fieldMap, bean, sheetName, createMissingSheets);
 	}
 
+	/**
+	 * Write fields.
+	 *
+	 * @param workbook the workbook
+	 * @param fieldMap the field map
+	 * @param bean the bean
+	 * @param sheetNameFilter the sheet name filter
+	 * @param createMissingSheets the create missing sheets
+	 */
 	private void writeFields(Workbook workbook, FieldMap fieldMap, Object bean,
 		String sheetNameFilter, boolean createMissingSheets)
 	{
@@ -110,6 +141,13 @@ public class ExcelTemplateWriter
 		}
 	}
 
+	/**
+	 * Read bean value.
+	 *
+	 * @param bean the bean
+	 * @param fieldName the field name
+	 * @return the object
+	 */
 	private Object readBeanValue(Object bean, String fieldName)
 	{
 		if (bean == null || fieldName == null || fieldName.isBlank())
@@ -131,6 +169,19 @@ public class ExcelTemplateWriter
 		}
 	}
 
+	/**
+	 * Write cell.
+	 *
+	 * @param workbook the workbook
+	 * @param dataFormat the data format
+	 * @param styleCache the style cache
+	 * @param sheetName the sheet name
+	 * @param cellRef the cell ref
+	 * @param fieldName the field name
+	 * @param value the value
+	 * @param format the format
+	 * @param createMissingSheets the create missing sheets
+	 */
 	private void writeCell(Workbook workbook, DataFormat dataFormat,
 		Map<String, CellStyle> styleCache, String sheetName, String cellRef,
 		String fieldName, Object value, String format, boolean createMissingSheets)
@@ -209,6 +260,12 @@ public class ExcelTemplateWriter
 		}
 	}
 
+	/**
+	 * Apply null placeholder.
+	 *
+	 * @param cell the cell
+	 * @param fieldName the field name
+	 */
 	private void applyNullPlaceholder(Cell cell, String fieldName)
 	{
 		ReportContext context = ReportContextHolder.get();
@@ -230,6 +287,12 @@ public class ExcelTemplateWriter
 		cell.setCellType(CellType.STRING);
 	}
 
+	/**
+	 * Capitalize.
+	 *
+	 * @param value the value
+	 * @return the string
+	 */
 	private static String capitalize(String value)
 	{
 		if (value == null || value.isEmpty())

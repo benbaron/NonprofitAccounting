@@ -1,3 +1,4 @@
+
 package nonprofitbookkeeping.ui.javafx.supplemental;
 
 import java.util.ArrayList;
@@ -12,12 +13,27 @@ import nonprofitbookkeeping.model.supplemental.ReceivablesLine;
 import nonprofitbookkeeping.model.supplemental.SupplementalLineKind;
 import nonprofitbookkeeping.model.supplemental.TxnSupplementalLineBase;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SupplementalLinesFxAdapter.
+ */
 public final class SupplementalLinesFxAdapter
 {
+	
+	/**
+	 * Instantiates a new supplemental lines fx adapter.
+	 */
 	private SupplementalLinesFxAdapter()
 	{
+		
 	}
-
+	
+	/**
+	 * To row.
+	 *
+	 * @param bean the bean
+	 * @return the supplemental line row
+	 */
 	public static SupplementalLineRow toRow(TxnSupplementalLineBase bean)
 	{
 		SupplementalLineRow row = new SupplementalLineRow();
@@ -33,8 +49,17 @@ public final class SupplementalLinesFxAdapter
 		row.setEndDate(bean.getEndDate());
 		row.setNotes(bean.getNotes());
 		return row;
+		
 	}
-
+	
+	/**
+	 * To bean.
+	 *
+	 * @param <T> the generic type
+	 * @param kind the kind
+	 * @param row the row
+	 * @return the t
+	 */
 	public static <T extends TxnSupplementalLineBase> T toBean(
 		SupplementalLineKind kind, SupplementalLineRow row)
 	{
@@ -50,45 +75,74 @@ public final class SupplementalLinesFxAdapter
 		bean.setStartDate(row.getStartDate());
 		bean.setEndDate(row.getEndDate());
 		bean.setNotes(row.getNotes());
-
+		
 		@SuppressWarnings("unchecked")
 		T result = (T) bean;
 		return result;
+		
 	}
-
+	
+	/**
+	 * To rows.
+	 *
+	 * @param beans the beans
+	 * @return the list
+	 */
 	public static List<SupplementalLineRow> toRows(
 		List<? extends TxnSupplementalLineBase> beans)
 	{
 		List<SupplementalLineRow> rows = new ArrayList<>();
+		
 		if (beans == null)
 		{
 			return rows;
 		}
+		
 		for (TxnSupplementalLineBase bean : beans)
 		{
 			rows.add(toRow(bean));
 		}
+		
 		return rows;
+		
 	}
-
+	
+	/**
+	 * To beans.
+	 *
+	 * @param <T> the generic type
+	 * @param kind the kind
+	 * @param rows the rows
+	 * @return the list
+	 */
 	public static <T extends TxnSupplementalLineBase> List<T> toBeans(
 		SupplementalLineKind kind, List<SupplementalLineRow> rows)
 	{
 		List<T> beans = new ArrayList<>();
+		
 		if (rows == null)
 		{
 			return beans;
 		}
+		
 		for (SupplementalLineRow row : rows)
 		{
 			beans.add(toBean(kind, row));
 		}
+		
 		return beans;
+		
 	}
-
+	
+	/**
+	 * Creates the bean.
+	 *
+	 * @param kind the kind
+	 * @return the txn supplemental line base
+	 */
 	private static TxnSupplementalLineBase createBean(SupplementalLineKind kind)
 	{
-		return switch (kind)
+		return switch(kind)
 		{
 			case RECEIVABLE -> new ReceivablesLine();
 			case PAYABLE -> new PayablesLine();
@@ -97,5 +151,7 @@ public final class SupplementalLinesFxAdapter
 			case OTHER_ASSET -> new OtherAssetsLine();
 			case OTHER_LIABILITY -> new OtherLiabilitiesLine();
 		};
+		
 	}
+	
 }

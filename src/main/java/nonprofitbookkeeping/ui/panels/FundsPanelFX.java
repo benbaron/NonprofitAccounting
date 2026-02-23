@@ -14,6 +14,7 @@ import javafx.scene.layout.HBox;
 import nonprofitbookkeeping.model.Fund;
 import nonprofitbookkeeping.service.FundAccountingService;
 
+// TODO: Auto-generated Javadoc
 /**
  * JavaFX translation of the Swing {@code FundsPanel}. Supports:
  * <ul>
@@ -26,12 +27,12 @@ import nonprofitbookkeeping.service.FundAccountingService;
 public class FundsPanelFX extends BorderPane
 {
 	
-        /** The service layer for fund accounting operations. */
-        private final FundAccountingService service;
-        /** Directory where data should be persisted, may be null. */
-        private final File companyDirectory;
-        /** TableView to display fund names and their balances. */
-        private final TableView<FundRow> table = new TableView<>();
+	/** The service layer for fund accounting operations. */
+	private final FundAccountingService service;
+	/** Directory where data should be persisted, may be null. */
+	private final File companyDirectory;
+	/** TableView to display fund names and their balances. */
+	private final TableView<FundRow> table = new TableView<>();
 	
 	/**
 	 * Constructs a new {@code FundsPanelFX}.
@@ -39,35 +40,42 @@ public class FundsPanelFX extends BorderPane
 	 * including sections for fund transfers, a table displaying fund balances, and fund management actions.
 	 *
 	 * @param service The {@link FundAccountingService} to be used for all fund-related operations. Must not be null.
+	 * @param companyDirectory the company directory
 	 */
-        public FundsPanelFX(FundAccountingService service, File companyDirectory)
-        {
-                this.service = service;
-                this.companyDirectory = companyDirectory;
-
-                try
-                {
-                        this.service.loadFunds(this.companyDirectory);
-                }
-                catch (Exception ex)
-                {
-                        ex.printStackTrace();
-                }
-
-                setPadding(new Insets(10));
-                buildTransferPane();
-
-                buildTable();
-
-                buildManagementPane();
-                refresh();
-        }
-
-        /** Convenience constructor when no directory is available. */
-        public FundsPanelFX(FundAccountingService service)
-        {
-                this(service, null);
-        }
+	public FundsPanelFX(FundAccountingService service, File companyDirectory)
+	{
+		this.service = service;
+		this.companyDirectory = companyDirectory;
+		
+		try
+		{
+			this.service.loadFunds(this.companyDirectory);
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		
+		setPadding(new Insets(10));
+		buildTransferPane();
+		
+		buildTable();
+		
+		buildManagementPane();
+		refresh();
+		
+	}
+	
+	/**
+	 * Convenience constructor when no directory is available.
+	 *
+	 * @param service the service
+	 */
+	public FundsPanelFX(FundAccountingService service)
+	{
+		this(service, null);
+		
+	}
 	
 	/* ───────────────────────── UI sections ───────────────────────── */
 	
@@ -90,15 +98,17 @@ public class FundsPanelFX extends BorderPane
 				BigDecimal amt = new BigDecimal(amtField.getText().trim());
 				if (amt.compareTo(BigDecimal.ZERO) <= 0)
 					throw new NumberFormatException();
-                                this.service.transferFunds(fromField.getText().trim(), toField.getText().trim(), amt);
-                                alert("Transfer complete.");
-                                fromField.clear();
-                                toField.clear();
-                                amtField.clear();
-                                refresh();
-                                save();
+				this.service.transferFunds(fromField.getText().trim(),
+					toField.getText().trim(), amt);
+				alert("Transfer complete.");
+				fromField.clear();
+				toField.clear();
+				amtField.clear();
+				refresh();
+				save();
 			}
-			catch (@SuppressWarnings("unused") NumberFormatException ex)
+			catch (@SuppressWarnings("unused")
+			NumberFormatException ex)
 			{
 				alert("Please enter a positive numeric amount.");
 			}
@@ -117,6 +127,7 @@ public class FundsPanelFX extends BorderPane
 		TitledPane tp = new TitledPane("Transfer Funds", fp);
 		tp.setCollapsible(false);
 		setTop(tp);
+		
 	}
 	
 	/**
@@ -129,7 +140,8 @@ public class FundsPanelFX extends BorderPane
 	 * Java bean conventions or if raw types are inferred. "deprecation" might relate to older patterns
 	 * of using PropertyValueFactory.
 	 */
-	@SuppressWarnings({ "unchecked", "deprecation" }) 
+	@SuppressWarnings(
+	{ "unchecked", "deprecation" })
 	private void buildTable()
 	{
 		TableColumn<FundRow, String> nameCol = new TableColumn<>("Fund");
@@ -139,6 +151,7 @@ public class FundsPanelFX extends BorderPane
 		this.table.getColumns().addAll(nameCol, balCol);
 		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		setCenter(this.table);
+		
 	}
 	
 	/**
@@ -156,6 +169,7 @@ public class FundsPanelFX extends BorderPane
 		TitledPane tp = new TitledPane("Fund Management", box);
 		tp.setCollapsible(false);
 		setBottom(tp);
+		
 	}
 	
 	/* ───────────────────────── Dialog helpers ───────────────────────── */
@@ -185,17 +199,19 @@ public class FundsPanelFX extends BorderPane
 					Fund f = new Fund(name);
 					f.setBalance(bal);
 					this.service.addFund(f);
-                                        alert("Fund added.");
-                                        refresh();
-                                        save();
+					alert("Fund added.");
+					refresh();
+					save();
 				}
-				catch (@SuppressWarnings("unused") NumberFormatException ex)
+				catch (@SuppressWarnings("unused")
+				NumberFormatException ex)
 				{
 					alert("Invalid balance amount.");
 				}
 				
 			});
 		});
+		
 	}
 	
 	/**
@@ -214,14 +230,15 @@ public class FundsPanelFX extends BorderPane
 			
 			if (this.service.removeFund(name))
 			{
-                                alert("Fund deleted.");
-                                refresh();
-                                save();
+				alert("Fund deleted.");
+				refresh();
+				save();
 			}
 			else
 				alert("Fund not found.");
-				
+			
 		});
+		
 	}
 	
 	/* ───────────────────────── Utility ───────────────────────── */
@@ -231,24 +248,27 @@ public class FundsPanelFX extends BorderPane
 	 * It fetches the current list of all funds from the {@link #service} and
 	 * repopulates the table with {@link FundRow} objects created from these funds.
 	 */
-        private void refresh()
-        {
-                List<Fund> funds = this.service.listFunds();
-                this.table.getItems().setAll(funds.stream().map(FundRow::new).toList());
-        }
-
-        /** Saves current funds to disk if a company directory is set. */
-        private void save()
-        {
-                try
-                {
-                        this.service.saveFunds(this.companyDirectory);
-                }
-                catch (Exception ex)
-                {
-                        ex.printStackTrace();
-                }
-        }
+	private void refresh()
+	{
+		List<Fund> funds = this.service.listFunds();
+		this.table.getItems().setAll(funds.stream().map(FundRow::new).toList());
+		
+	}
+	
+	/** Saves current funds to disk if a company directory is set. */
+	private void save()
+	{
+		
+		try
+		{
+			this.service.saveFunds(this.companyDirectory);
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		
+	}
 	
 	/**
 	 * Displays a simple informational alert dialog with an OK button.
@@ -257,7 +277,9 @@ public class FundsPanelFX extends BorderPane
 	 */
 	private static void alert(String msg)
 	{
-		new Alert(Alert.AlertType.INFORMATION, msg, ButtonType.OK).showAndWait();
+		new Alert(Alert.AlertType.INFORMATION, msg, ButtonType.OK)
+			.showAndWait();
+		
 	}
 	
 	/**
@@ -280,6 +302,7 @@ public class FundsPanelFX extends BorderPane
 		{
 			this.name = f.getName();
 			this.balance = f.getBalance();
+			
 		}
 		
 		/**
@@ -289,6 +312,7 @@ public class FundsPanelFX extends BorderPane
 		public String getName()
 		{
 			return this.name;
+			
 		}
 		
 		/**
@@ -298,6 +322,7 @@ public class FundsPanelFX extends BorderPane
 		public BigDecimal getBalance()
 		{
 			return this.balance;
+			
 		}
 		
 	}

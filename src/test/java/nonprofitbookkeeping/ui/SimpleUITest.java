@@ -12,9 +12,14 @@ import org.testfx.assertions.api.Assertions;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SimpleUITest.
+ */
 @ExtendWith(ApplicationExtension.class) public class SimpleUITest
 {
 	
+	/** The button. */
 	private Button button;
 	
 	/**
@@ -32,6 +37,8 @@ import org.testfx.framework.junit5.Start;
 	}
 	
 	/**
+	 * Should contain button with text.
+	 *
 	 * @param robot - Will be injected by the test runner.
 	 */
 	@Test
@@ -44,6 +51,11 @@ import org.testfx.framework.junit5.Start;
 		Assertions.assertThat(robot.lookup(".button").queryAs(Button.class)).hasText("click me!");
 	}
 	
+	/**
+	 * When button is clicked text changes.
+	 *
+	 * @param robot the robot
+	 */
 	@Test
 		void when_button_is_clicked_text_changes(FxRobot robot)
 	{

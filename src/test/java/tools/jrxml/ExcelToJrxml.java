@@ -14,16 +14,34 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.UUID;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ExcelToJrxml.
+ */
 public class ExcelToJrxml
 {
 	
+	/** The Constant CELL_W. */
 	private static final int CELL_W = 60;
+	
+	/** The Constant CELL_H. */
 	private static final int CELL_H = 20;
+	
+	/** The Constant W_DEFAULT. */
 	private static final int W_DEFAULT = 200;
+	
+	/** The Constant H_DEFAULT. */
 	private static final int H_DEFAULT = 20;
 	
+	/** The blue sample rgb. */
 	private static byte[] blueSampleRgb = null;
 	
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 * @throws Exception the exception
+	 */
 	public static void main(String[] args) throws Exception
 	{
 		
@@ -146,8 +164,10 @@ public class ExcelToJrxml
 	}
 	
 	/**
-	 * @param cell
-	 * @return
+	 * Gets the string value.
+	 *
+	 * @param cell the cell
+	 * @return the string value
 	 */
 	private static String getStringValue(Cell cell)
 	{
@@ -215,11 +235,13 @@ public class ExcelToJrxml
 	}
 	
 	/**
-	 * @param doc
-	 * @param band
-	 * @param cell
-	 * @param value
-	 * @throws DOMException
+	 * Construct element.
+	 *
+	 * @param doc the doc
+	 * @param band the band
+	 * @param cell the cell
+	 * @param value the value
+	 * @throws DOMException the DOM exception
 	 */
 	static void constructElement(Document doc, Element band, Cell cell,
 		String value) throws DOMException
@@ -269,6 +291,12 @@ public class ExcelToJrxml
 		
 	}
 	
+	/**
+	 * Checks if is dynamic.
+	 *
+	 * @param cell the cell
+	 * @return true, if is dynamic
+	 */
 	private static boolean isDynamic(Cell cell)
 	{
 		XSSFColor fill =
@@ -280,6 +308,12 @@ public class ExcelToJrxml
 		
 	}
 	
+	/**
+	 * Checks if is ignored.
+	 *
+	 * @param cell the cell
+	 * @return true, if is ignored
+	 */
 	private static boolean isIgnored(Cell cell)
 	{
 		XSSFColor fill =
@@ -291,6 +325,12 @@ public class ExcelToJrxml
 		
 	}
 	
+	/**
+	 * Checks if is blue.
+	 *
+	 * @param cell the cell
+	 * @return true, if is blue
+	 */
 	private static boolean isBlue(Cell cell)
 	{
 		XSSFColor color =
@@ -304,6 +344,12 @@ public class ExcelToJrxml
 		
 	}
 	
+	/**
+	 * Checks if is green.
+	 *
+	 * @param cell the cell
+	 * @return true, if is green
+	 */
 	private static boolean isGreen(Cell cell)
 	{
 		XSSFColor color =
@@ -320,6 +366,12 @@ public class ExcelToJrxml
 		
 	}
 	
+	/**
+	 * Bytes to hex.
+	 *
+	 * @param bytes the bytes
+	 * @return the string
+	 */
 	private static String bytesToHex(byte[] bytes)
 	{
 		if (bytes == null)

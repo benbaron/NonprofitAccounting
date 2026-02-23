@@ -9,13 +9,24 @@ import java.util.Map;
 
 import nonprofitbookkeeping.model.supplemental.SupplementalLineKind;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SupplementalLinesTabs.
+ */
 public class SupplementalLinesTabs extends TabPane
 {
+	
+	/** The editors. */
 	private final Map<SupplementalLineKind, SupplementalLinesEditor> editors =
 		new EnumMap<>(SupplementalLineKind.class);
+	
+	/** The tabs. */
 	private final Map<SupplementalLineKind, Tab> tabs =
 		new EnumMap<>(SupplementalLineKind.class);
 
+	/**
+	 * Instantiates a new supplemental lines tabs.
+	 */
 	public SupplementalLinesTabs()
 	{
 		setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
@@ -38,6 +49,11 @@ public class SupplementalLinesTabs extends TabPane
 		}
 	}
 
+	/**
+	 * Sets the entry refs.
+	 *
+	 * @param entryRefs the new entry refs
+	 */
 	public void setEntryRefs(List<EntryRef> entryRefs)
 	{
 		for (SupplementalLinesEditor editor : this.editors.values())
@@ -46,6 +62,11 @@ public class SupplementalLinesTabs extends TabPane
 		}
 	}
 
+	/**
+	 * Sets the person refs.
+	 *
+	 * @param personRefs the new person refs
+	 */
 	public void setPersonRefs(List<PersonRef> personRefs)
 	{
 		for (SupplementalLinesEditor editor : this.editors.values())
@@ -54,11 +75,23 @@ public class SupplementalLinesTabs extends TabPane
 		}
 	}
 
+	/**
+	 * Editor.
+	 *
+	 * @param kind the kind
+	 * @return the supplemental lines editor
+	 */
 	public SupplementalLinesEditor editor(SupplementalLineKind kind)
 	{
 		return this.editors.get(kind);
 	}
 
+	/**
+	 * Sets the enabled.
+	 *
+	 * @param kind the kind
+	 * @param enabled the enabled
+	 */
 	public void setEnabled(SupplementalLineKind kind, boolean enabled)
 	{
 		Tab tab = this.tabs.get(kind);

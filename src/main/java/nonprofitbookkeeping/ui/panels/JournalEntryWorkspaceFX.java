@@ -79,6 +79,7 @@ import nonprofitbookkeeping.util.FormatUtils;
 import nonprofitbookkeeping.service.PersonService;
 import nonprofitbookkeeping.model.Person;
 
+// TODO: Auto-generated Javadoc
 /**
  * Shared workspace UI for creating or editing general journal entries.
  *
@@ -93,44 +94,99 @@ public class JournalEntryWorkspaceFX extends BorderPane
         /** Public row model so existing tests can reason about the table state. */
         public static class Line
         {
+                
+                /** The account. */
                 public final StringProperty account = new SimpleStringProperty("");
+                
+                /** The debit. */
                 public final ObjectProperty<BigDecimal> debit =
                                 new SimpleObjectProperty<>(BigDecimal.ZERO);
+                
+                /** The credit. */
                 public final ObjectProperty<BigDecimal> credit =
                                 new SimpleObjectProperty<>(BigDecimal.ZERO);
         }
 
+        /** The lines. */
         private final ObservableList<Line> lines = FXCollections.observableArrayList();
+        
+        /** The table. */
         private final TableView<Line> table = new TableView<>(this.lines);
+        
+        /** The date picker. */
         private final DatePicker datePicker = new DatePicker(LocalDate.now());
+        
+        /** The memo area. */
         private final TextArea memoArea = new TextArea();
+        
+        /** The to from field. */
         private final TextField toFromField = new TextField();
+        
+        /** The check number field. */
         private final TextField checkNumberField = new TextField();
+        
+        /** The clear bank field. */
         private final TextField clearBankField = new TextField();
+        
+        /** The budget tracking field. */
         private final TextField budgetTrackingField = new TextField();
+        
+        /** The associated fund name field. */
         private final TextField associatedFundNameField = new TextField();
 
+        /** The debit total label. */
         private final Label debitTotalLabel = new Label();
+        
+        /** The credit total label. */
         private final Label creditTotalLabel = new Label();
+        
+        /** The difference label. */
         private final Label differenceLabel = new Label();
+        
+        /** The status badge. */
         private final Label statusBadge = new Label();
+        
+        /** The validation message. */
         private final Label validationMessage = new Label();
 
+        /** The save button. */
         private final Button saveButton = new Button("Save");
+        
+        /** The add line button. */
         private final Button addLineButton = new Button("Add Line");
+        
+        /** The duplicate line button. */
         private final Button duplicateLineButton = new Button("Duplicate");
+        
+        /** The remove line button. */
         private final Button removeLineButton = new Button("Remove");
+        
+        /** The save error tooltip. */
         private final Tooltip saveErrorTooltip = new Tooltip();
 
+        /** The on save. */
         private final Consumer<AccountingTransaction> onSave;
+        
+        /** The chart of accounts. */
         private final ChartOfAccounts chartOfAccounts;
+        
+        /** The original. */
         private AccountingTransaction original;
+        
+        /** The accounts by name. */
         private final Map<String, Account> accountsByName;
+        
+        /** The supplemental tabs. */
         private final SupplementalLinesTabs supplementalTabs = new SupplementalLinesTabs();
 
+        /** The heading text. */
         private final String headingText;
 
-        /** Convenience constructor used when wiring inside dialogs. */
+        /**
+         * Convenience constructor used when wiring inside dialogs.
+         *
+         * @param onSave the on save
+         */
         public JournalEntryWorkspaceFX(Consumer<AccountingTransaction> onSave)
         {
                 this(null, onSave);
@@ -145,6 +201,9 @@ public class JournalEntryWorkspaceFX extends BorderPane
         /**
          * Creates a workspace for either a new entry (when {@code existing} is
          * {@code null}) or for editing an existing transaction.
+         *
+         * @param existing the existing
+         * @param onSave the on save
          */
         public JournalEntryWorkspaceFX(AccountingTransaction existing,
                         Consumer<AccountingTransaction> onSave)
@@ -153,7 +212,13 @@ public class JournalEntryWorkspaceFX extends BorderPane
                                 : "Edit Journal Entry");
         }
 
-        /** Internal constructor allowing a custom heading. */
+        /**
+         * Internal constructor allowing a custom heading.
+         *
+         * @param existing the existing
+         * @param onSave the on save
+         * @param headingText the heading text
+         */
         protected JournalEntryWorkspaceFX(AccountingTransaction existing,
                         Consumer<AccountingTransaction> onSave, String headingText)
         {
@@ -187,37 +252,61 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 markValidationPending();
         }
 
-        /** Returns the backing list of lines. Primarily used by tests. */
+        /**
+         * Returns the backing list of lines. Primarily used by tests.
+         *
+         * @return the lines
+         */
         public ObservableList<Line> getLines()
         {
                 return this.lines;
         }
 
-        /** Returns the save button node for integration tests. */
+        /**
+         * Returns the save button node for integration tests.
+         *
+         * @return the save button
+         */
         public Button getSaveButton()
         {
                 return this.saveButton;
         }
 
-        /** Exposes the add-line button primarily for UI tests. */
+        /**
+         * Exposes the add-line button primarily for UI tests.
+         *
+         * @return the adds the line button
+         */
         public Button getAddLineButton()
         {
                 return this.addLineButton;
         }
 
-        /** Exposes the remove-line button primarily for UI tests. */
+        /**
+         * Exposes the remove-line button primarily for UI tests.
+         *
+         * @return the removes the line button
+         */
         public Button getRemoveLineButton()
         {
                 return this.removeLineButton;
         }
 
-        /** Exposes the duplicate-line button primarily for UI tests. */
+        /**
+         * Exposes the duplicate-line button primarily for UI tests.
+         *
+         * @return the duplicate line button
+         */
         public Button getDuplicateLineButton()
         {
                 return this.duplicateLineButton;
         }
 
-        /** Returns the table of entry lines. */
+        /**
+         * Returns the table of entry lines.
+         *
+         * @return the table
+         */
         public TableView<Line> getTable()
         {
                 return this.table;
@@ -246,6 +335,11 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 this.memoArea.setId("memoArea");
         }
 
+        /**
+         * Builds the header.
+         *
+         * @return the node
+         */
         private Node buildHeader()
         {
                 Label heading = new Label(this.headingText);
@@ -262,6 +356,11 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 return box;
         }
 
+        /**
+         * Builds the content.
+         *
+         * @return the node
+         */
         private Node buildContent()
         {
                 HBox container = new HBox(18);
@@ -274,6 +373,11 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 return container;
         }
 
+        /**
+         * Builds the table section.
+         *
+         * @return the node
+         */
         private Node buildTableSection()
         {
                 VBox section = new VBox(10);
@@ -300,6 +404,11 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 return section;
         }
 
+        /**
+         * Builds the supplemental section.
+         *
+         * @return the node
+         */
         private Node buildSupplementalSection()
         {
                 VBox section = new VBox(8);
@@ -314,6 +423,11 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 return section;
         }
 
+        /**
+         * Builds the details section.
+         *
+         * @return the node
+         */
         private Node buildDetailsSection()
         {
                 VBox section = new VBox(12);
@@ -341,6 +455,11 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 return section;
         }
 
+        /**
+         * Builds the footer.
+         *
+         * @return the node
+         */
         private Node buildFooter()
         {
                 HBox footer = new HBox(20);
@@ -376,6 +495,13 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 return footer;
         }
 
+        /**
+         * Labelled value.
+         *
+         * @param labelText the label text
+         * @param valueLabel the value label
+         * @return the h box
+         */
         private static HBox labelledValue(String labelText, Label valueLabel)
         {
                 Label label = new Label(labelText + ":");
@@ -385,6 +511,14 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 return box;
         }
 
+        /**
+         * Adds the detail field.
+         *
+         * @param grid the grid
+         * @param row the row
+         * @param labelText the label text
+         * @param field the field
+         */
         private void addDetailField(GridPane grid, int row, String labelText, Node field)
         {
                 Label label = new Label(labelText);
@@ -409,6 +543,9 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 }
         }
 
+        /**
+         * Configure table.
+         */
         private void configureTable()
         {
                 this.table.setEditable(true);
@@ -465,6 +602,11 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 });
         }
 
+        /**
+         * Account cell factory.
+         *
+         * @return the callback
+         */
         private Callback<TableColumn<Line, String>, TableCell<Line, String>> accountCellFactory()
         {
                 ObservableList<String> choices = FXCollections.observableArrayList(
@@ -519,6 +661,13 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 };
         }
 
+        /**
+         * Amt col.
+         *
+         * @param title the title
+         * @param prop the prop
+         * @return the table column
+         */
         private TableColumn<Line, BigDecimal> amtCol(String title,
                         Callback<Line, Property<BigDecimal>> prop)
         {
@@ -531,6 +680,11 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 return c;
         }
 
+        /**
+         * Creates the currency converter.
+         *
+         * @return the string converter
+         */
         private static StringConverter<BigDecimal> createCurrencyConverter()
         {
                 return new StringConverter<>()
@@ -561,6 +715,9 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 };
         }
 
+        /**
+         * Attach listeners.
+         */
         private void attachListeners()
         {
                 this.lines.addListener((ListChangeListener<Line>) change -> {
@@ -577,6 +734,11 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 this.memoArea.textProperty().addListener((obs, o, n) -> markValidationPending());
         }
 
+        /**
+         * Watch line.
+         *
+         * @param line the line
+         */
         private void watchLine(Line line)
         {
                 line.account.addListener((obs, o, n) -> {
@@ -587,6 +749,9 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 line.credit.addListener((obs, o, n) -> refreshAfterEdit());
         }
 
+        /**
+         * Refresh after edit.
+         */
         private void refreshAfterEdit()
         {
                 recalcTotals();
@@ -595,6 +760,11 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 updateSupplementalTabAvailability();
         }
 
+        /**
+         * Load person refs.
+         *
+         * @return the list
+         */
         private List<PersonRef> loadPersonRefs()
         {
                 if (!Database.isInitialized())
@@ -611,6 +781,12 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 return refs;
         }
 
+        /**
+         * Load entry refs.
+         *
+         * @param txnId the txn id
+         * @return the list
+         */
         private List<EntryRef> loadEntryRefs(long txnId)
         {
                 if (!Database.isInitialized() || txnId <= 0)
@@ -655,6 +831,11 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 return refs;
         }
 
+        /**
+         * Load entry amounts by id.
+         *
+         * @return the map
+         */
         private Map<Long, BigDecimal> loadEntryAmountsById()
         {
                 if (!Database.isInitialized())
@@ -716,6 +897,9 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 return amounts;
         }
 
+        /**
+         * Update supplemental tab availability.
+         */
         private void updateSupplementalTabAvailability()
         {
                 Set<SupplementalLineKind> enabledKinds = EnumSet.noneOf(SupplementalLineKind.class);
@@ -737,6 +921,12 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 }
         }
 
+        /**
+         * Kinds for account.
+         *
+         * @param account the account
+         * @return the sets the
+         */
         private Set<SupplementalLineKind> kindsForAccount(Account account)
         {
                 if (account == null || account.getSupplementalLineKinds() == null
@@ -747,6 +937,9 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 return EnumSet.copyOf(account.getSupplementalLineKinds());
         }
 
+        /**
+         * Apply default accounts from settings.
+         */
         private void applyDefaultAccountsFromSettings()
         {
                 if (!Database.isInitialized())
@@ -798,6 +991,9 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 }
         }
 
+        /**
+         * Adds the line.
+         */
         private void addLine()
         {
                 Line line = new Line();
@@ -806,6 +1002,9 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 this.table.scrollTo(line);
         }
 
+        /**
+         * Duplicate selected line.
+         */
         private void duplicateSelectedLine()
         {
                 Line selected = this.table.getSelectionModel().getSelectedItem();
@@ -823,6 +1022,9 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 this.table.getSelectionModel().select(copy);
         }
 
+        /**
+         * Removes the selected lines.
+         */
         private void removeSelectedLines()
         {
                 List<Line> selected = new ArrayList<>(this.table.getSelectionModel().getSelectedItems());
@@ -840,6 +1042,9 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 }
         }
 
+        /**
+         * Recalc totals.
+         */
         private void recalcTotals()
         {
                 BigDecimal debit = BigDecimal.ZERO;
@@ -858,6 +1063,9 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 this.differenceLabel.setText(FormatUtils.formatCurrency(diff.abs()));
         }
 
+        /**
+         * Mark validation pending.
+         */
         private void markValidationPending()
         {
                 this.saveButton.setDisable(false);
@@ -867,6 +1075,11 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 this.statusBadge.setStyle("-fx-background-color: #666666; -fx-text-fill: white; -fx-background-radius: 12;");
         }
 
+        /**
+         * Show validation error.
+         *
+         * @param message the message
+         */
         private void showValidationError(String message)
         {
                 this.saveButton.setDisable(false);
@@ -877,6 +1090,9 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 this.statusBadge.setStyle("-fx-background-color: #cc3300; -fx-text-fill: white; -fx-background-radius: 12;");
         }
 
+        /**
+         * Show balanced state.
+         */
         private void showBalancedState()
         {
                 this.saveButton.setDisable(false);
@@ -886,6 +1102,11 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 this.statusBadge.setStyle("-fx-background-color: #2e7d32; -fx-text-fill: white; -fx-background-radius: 12;");
         }
 
+        /**
+         * Validate lines.
+         *
+         * @return the optional
+         */
         private Optional<String> validateLines()
         {
                 BigDecimal debit = BigDecimal.ZERO;
@@ -955,6 +1176,11 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 return Optional.empty();
         }
 
+        /**
+         * Validate supplemental lines.
+         *
+         * @return the optional
+         */
         private Optional<String> validateSupplementalLines()
         {
                 List<String> errors = new ArrayList<>();
@@ -997,6 +1223,12 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 return Optional.of(String.join("\n", errors));
         }
 
+        /**
+         * Expected amount for kind.
+         *
+         * @param kind the kind
+         * @return the big decimal
+         */
         private BigDecimal expectedAmountForKind(SupplementalLineKind kind)
         {
                 BigDecimal total = BigDecimal.ZERO;
@@ -1027,6 +1259,12 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 return total;
         }
 
+        /**
+         * Sum supplemental amount.
+         *
+         * @param kind the kind
+         * @return the big decimal
+         */
         private BigDecimal sumSupplementalAmount(SupplementalLineKind kind)
         {
                 SupplementalLinesEditor editor = this.supplementalTabs.editor(kind);
@@ -1046,6 +1284,12 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 return total;
         }
 
+        /**
+         * Checks if is asset kind.
+         *
+         * @param kind the kind
+         * @return true, if is asset kind
+         */
         private boolean isAssetKind(SupplementalLineKind kind)
         {
                 return kind == SupplementalLineKind.RECEIVABLE
@@ -1053,6 +1297,11 @@ public class JournalEntryWorkspaceFX extends BorderPane
                         || kind == SupplementalLineKind.OTHER_ASSET;
         }
 
+        /**
+         * Collect supplemental lines.
+         *
+         * @return the list
+         */
         private List<TxnSupplementalLineBase> collectSupplementalLines()
         {
                 List<TxnSupplementalLineBase> beans = new ArrayList<>();
@@ -1069,6 +1318,11 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 return beans;
         }
 
+        /**
+         * Load supplemental lines.
+         *
+         * @param tx the tx
+         */
         private void loadSupplementalLines(AccountingTransaction tx)
         {
                 Map<SupplementalLineKind, List<SupplementalLineRow>> grouped =
@@ -1097,6 +1351,11 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 }
         }
 
+        /**
+         * Adjust for account side.
+         *
+         * @param line the line
+         */
         private void adjustForAccountSide(Line line)
         {
                 Account account = resolveAccount(line.account.get());
@@ -1123,6 +1382,9 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 }
         }
 
+        /**
+         * Persist.
+         */
         private void persist()
         {
                 Optional<String> validationError = validateLines();
@@ -1205,6 +1467,11 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 this.onSave.accept(tx);
         }
 
+        /**
+         * Load from transaction.
+         *
+         * @param tx the tx
+         */
         private void loadFromTransaction(AccountingTransaction tx)
         {
                 this.datePicker.setValue(LocalDate.parse(tx.getDate()));
@@ -1248,6 +1515,12 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 updateSupplementalTabAvailability();
         }
 
+        /**
+         * Resolve account.
+         *
+         * @param token the token
+         * @return the account
+         */
         private Account resolveAccount(String token)
         {
                 if (token == null || token.isBlank())
@@ -1265,6 +1538,11 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 return this.chartOfAccounts.getAccount(token);
         }
 
+        /**
+         * Resolve chart of accounts.
+         *
+         * @return the chart of accounts
+         */
         private static ChartOfAccounts resolveChartOfAccounts()
         {
                 Company company = CurrentCompany.getCompany();
@@ -1286,6 +1564,12 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 return chart;
         }
 
+        /**
+         * Builds the accounts by name.
+         *
+         * @param chart the chart
+         * @return the map
+         */
         private static Map<String, Account> buildAccountsByName(ChartOfAccounts chart)
         {
                 return chart.createAccountNumberMap().asMap().values().stream().collect(
@@ -1293,6 +1577,12 @@ public class JournalEntryWorkspaceFX extends BorderPane
                                                 LinkedHashMap::new));
         }
 
+        /**
+         * Amount or zero.
+         *
+         * @param value the value
+         * @return the big decimal
+         */
         private static BigDecimal amountOrZero(BigDecimal value)
         {
                 return value != null ? value : BigDecimal.ZERO;

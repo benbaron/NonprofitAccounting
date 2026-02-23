@@ -15,6 +15,10 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Journal.
+ */
 @Getter // Automatically generates getter methods
 @Setter // Automatically generates setter methods
 @NoArgsConstructor // Generates a no-argument constructor
@@ -140,7 +144,9 @@ public class Journal implements Serializable
 	}
 
 	/**
-	 * @param any
+	 * Delete transaction.
+	 *
+	 * @param any the any
 	 */
         public void deleteTransaction(Timestamp any)
         {

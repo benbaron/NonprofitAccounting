@@ -17,6 +17,7 @@ import nonprofitbookkeeping.model.*;
 import nonprofitbookkeeping.model.CurrentCompany; // Explicit import for inner class usage
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 
+// TODO: Auto-generated Javadoc
 /**
  * JavaFX panel for displaying and managing journal transactions.
  * It provides a table view of {@link AccountingTransaction} objects and
@@ -27,12 +28,21 @@ import nonprofitbookkeeping.ui.helpers.AlertBox;
 public class JournalPanelFX extends BorderPane
 {
 	
+	/** The rows. */
 	private final ObservableList<AccountingTransaction> rows = FXCollections.observableArrayList();
+	
+	/** The table. */
 	private final TableView<AccountingTransaction> table = new TableView<>(this.rows);
 	
+	/** The company listener. */
 	private JournalPanelCompanyListener companyListener;
+	
+	/** The action tool bar. */
 	private ToolBar actionToolBar; // Field to store the toolbar
 	
+	/**
+	 * Instantiates a new journal panel FX.
+	 */
 	public JournalPanelFX()
 	{
 		setPadding(new Insets(10));
@@ -291,6 +301,11 @@ public class JournalPanelFX extends BorderPane
 		
 	}
 	
+	/**
+	 * Handle company change.
+	 *
+	 * @param isOpen the is open
+	 */
 	private void handleCompanyChange(boolean isOpen)
 	{
 		
@@ -331,16 +346,37 @@ public class JournalPanelFX extends BorderPane
 		
 	}
 	
+	/**
+	 * The listener interface for receiving journalPanelCompany events.
+	 * The class that is interested in processing a journalPanelCompany
+	 * event implements this interface, and the object created
+	 * with that class is registered with a component using the
+	 * component's <code>addJournalPanelCompanyListener</code> method. When
+	 * the journalPanelCompany event occurs, that object's appropriate
+	 * method is invoked.
+	 *
+	 * @see JournalPanelCompanyEvent
+	 */
 	private class JournalPanelCompanyListener implements CurrentCompany.CompanyChangeListener
 	{
+		
+		/** The panel. */
 		private JournalPanelFX panel;
 		
+		/**
+		 * Instantiates a new journal panel company listener.
+		 *
+		 * @param panel the panel
+		 */
 		public JournalPanelCompanyListener(JournalPanelFX panel)
 		{
 			this.panel = panel;
 			
 		}
 		
+		/**
+		 * Override @see nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener#companyChange(boolean) 
+		 */
 		@Override public void companyChange(boolean isOpen)
 		{
 			this.panel.handleCompanyChange(isOpen);

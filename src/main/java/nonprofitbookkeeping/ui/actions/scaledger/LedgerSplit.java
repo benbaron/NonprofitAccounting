@@ -2,6 +2,7 @@ package nonprofitbookkeeping.ui.actions.scaledger;
 
 import java.math.BigDecimal;
 
+// TODO: Auto-generated Javadoc
 /**
  * One accounting leg ("split") from a single ledger row.
  *
@@ -41,65 +42,128 @@ public class LedgerSplit
      */
     private String canonicalCategory;
 
+    /**
+     * Instantiates a new ledger split.
+     */
     public LedgerSplit()
     {
     }
 
+    /**
+     * Gets the amount.
+     *
+     * @return the amount
+     */
     public BigDecimal getAmount()
     {
         return this.amount;
     }
 
+    /**
+     * Sets the amount.
+     *
+     * @param amount the new amount
+     */
     public void setAmount(BigDecimal amount)
     {
         this.amount = amount;
     }
 
+    /**
+     * Gets the asset liability account.
+     *
+     * @return the asset liability account
+     */
     public String getAssetLiabilityAccount()
     {
         return this.assetLiabilityAccount;
     }
 
+    /**
+     * Sets the asset liability account.
+     *
+     * @param assetLiabilityAccount the new asset liability account
+     */
     public void setAssetLiabilityAccount(String assetLiabilityAccount)
     {
         this.assetLiabilityAccount = assetLiabilityAccount;
     }
 
+    /**
+     * Gets the income category.
+     *
+     * @return the income category
+     */
     public String getIncomeCategory()
     {
         return this.incomeCategory;
     }
 
+    /**
+     * Sets the income category.
+     *
+     * @param incomeCategory the new income category
+     */
     public void setIncomeCategory(String incomeCategory)
     {
         this.incomeCategory = incomeCategory;
     }
 
+    /**
+     * Gets the expense category.
+     *
+     * @return the expense category
+     */
     public String getExpenseCategory()
     {
         return this.expenseCategory;
     }
 
+    /**
+     * Sets the expense category.
+     *
+     * @param expenseCategory the new expense category
+     */
     public void setExpenseCategory(String expenseCategory)
     {
         this.expenseCategory = expenseCategory;
     }
 
+    /**
+     * Gets the fund.
+     *
+     * @return the fund
+     */
     public String getFund()
     {
         return this.fund;
     }
 
+    /**
+     * Sets the fund.
+     *
+     * @param fund the new fund
+     */
     public void setFund(String fund)
     {
         this.fund = fund;
     }
 
+    /**
+     * Gets the canonical category.
+     *
+     * @return the canonical category
+     */
     public String getCanonicalCategory()
     {
         return this.canonicalCategory;
     }
 
+    /**
+     * Sets the canonical category.
+     *
+     * @param canonicalCategory the new canonical category
+     */
     public void setCanonicalCategory(String canonicalCategory)
     {
         this.canonicalCategory = canonicalCategory;
@@ -110,9 +174,11 @@ public class LedgerSplit
      *  - assetLiabilityAccount
      *  - or incomeCategory
      *  - or expenseCategory
-     *
+     * 
      * The ledger UI is designed so that only one of these will be set
      * for a given split.
+     *
+     * @return the primary raw category
      */
     public String getPrimaryRawCategory()
     {
@@ -134,6 +200,8 @@ public class LedgerSplit
     /**
      * Convenience: true if this split is effectively empty
      * (no amount and no category).
+     *
+     * @return true, if is empty
      */
     public boolean isEmpty()
     {

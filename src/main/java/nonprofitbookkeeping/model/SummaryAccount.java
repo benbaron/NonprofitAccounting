@@ -8,6 +8,10 @@ import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SummaryAccount.
+ */
 @Getter          // Automatically generates getter methods
 @Setter          // Automatically generates setter methods
 @AllArgsConstructor // Generates a constructor with all fields

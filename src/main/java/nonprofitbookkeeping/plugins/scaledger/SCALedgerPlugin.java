@@ -22,6 +22,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// TODO: Auto-generated Javadoc
 /**
  * Plugin for handling SCA Ledger functionalities.
  * This plugin provides UI elements and actions to load, process, and save
@@ -32,15 +33,24 @@ import org.slf4j.LoggerFactory;
 public class SCALedgerPlugin implements Plugin
 {
 	
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER =
 		LoggerFactory.getLogger(SCALedgerPlugin.class);
+	
+	/** The Constant PLUGIN_NAME. */
 	public static final String PLUGIN_NAME = "SCA Ledger Tools";
 	
+	/** The application context. */
 	private ApplicationContext applicationContext;
 	
+	/** The sca beans. */
 	// To replace static state from BeanShell and NonCompanyFile
 	private Map<String, Object> scaBeans; // Formerly BeanShell.beans
+	
+	/** The current sca file. */
 	private File currentScaFile; // Formerly NonCompanyFile.currentFile
+	
+	/** The page viewer panel. */
 	private PageViewerPanel pageViewerPanel; // Added field
 	
 	// Potentially an instance of PageViewer (once it's not a stub)
@@ -188,6 +198,9 @@ public class SCALedgerPlugin implements Plugin
 		// handles broader context.
 	}
 	
+	/**
+	 * Override @see nonprofitbookkeeping.plugin.Plugin#shutdown() 
+	 */
 	@Override
 	public void shutdown()
 	{

@@ -18,22 +18,31 @@ import org.slf4j.LoggerFactory;
 
 import nonprofitbookkeeping.util.FormatUtils;
 
+// TODO: Auto-generated Javadoc
 /**
  * Service for loading and saving application settings.
  */
 public class SettingsService
 {
-private static final Logger LOGGER =
+	
+	/** The Constant LOGGER. */
+	private static final Logger LOGGER =
 		LoggerFactory.getLogger(SettingsService.class);
 	/** Database document name where settings are persisted. */
 	private static final String DOCUMENT_NAME = "settings";
+	
+	/** The Constant MAPPER. */
 	private static final ObjectMapper MAPPER = new ObjectMapper()
 		.enable(SerializationFeature.INDENT_OUTPUT);
 	
 	/** Settings cached in memory. */
 	private SettingsModel settings = new SettingsModel();
 	
-	/** Returns the current settings instance. */
+	/**
+	 * Returns the current settings instance.
+	 *
+	 * @return the settings
+	 */
 	public SettingsModel getSettings()
 	{
 		return this.settings;
@@ -176,7 +185,11 @@ private static final Logger LOGGER =
 		
 	}
 	
-	/** Convenience accessor used throughout the UI layer. */
+	/**
+	 * Convenience accessor used throughout the UI layer.
+	 *
+	 * @return the report period preset
+	 */
 	public ReportPeriodPreset resolveDefaultReportPeriod()
 	{
 		return ReportPeriodPreset.fromString(
@@ -185,7 +198,11 @@ private static final Logger LOGGER =
 		
 	}
 	
-	/** Provides the fiscal year start as a {@link MonthDay}. */
+	/**
+	 * Provides the fiscal year start as a {@link MonthDay}.
+	 *
+	 * @return the month day
+	 */
 	public MonthDay resolveFiscalYearStart()
 	{
 		MonthDay parsed = this.settings.getFiscalYearStartMonthDay();

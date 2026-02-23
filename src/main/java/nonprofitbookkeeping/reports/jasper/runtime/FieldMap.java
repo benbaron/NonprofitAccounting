@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+// TODO: Auto-generated Javadoc
 /**
  * In-memory representation of a single sheet's field mapping CSV.
  *
@@ -15,6 +16,7 @@ import java.util.Map;
 public final class FieldMap
 {
 	
+	/** The entries. */
 	private final List<FieldMapEntry> entries;
 	/**
 	 * Instantiates a new field map.
@@ -40,6 +42,8 @@ public final class FieldMap
 	
 	/**
 	 * All entries, in CSV order.
+	 *
+	 * @return the entries
 	 */
 	public List<FieldMapEntry> getEntries()
 	{

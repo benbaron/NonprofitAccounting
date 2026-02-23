@@ -11,6 +11,10 @@ import lombok.Setter;
 import lombok.AllArgsConstructor;
 import lombok.ToString;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Summary.
+ */
 @Getter          // Automatically generates getter methods
 @Setter          // Automatically generates setter methods
 @AllArgsConstructor // Generates a constructor with all fields

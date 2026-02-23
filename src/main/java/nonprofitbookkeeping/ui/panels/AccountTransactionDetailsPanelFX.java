@@ -38,6 +38,7 @@ import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.helpers.TableExportUtils;
 import nonprofitbookkeeping.model.ReportPeriodPreset;
 
+// TODO: Auto-generated Javadoc
 /**
  * A JavaFX {@link BorderPane} that displays transaction details for a selected account
  * within a specified date range. It allows users to choose an account and date range,
@@ -206,7 +207,12 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		
 	}
 	
-	/** Applies the default reporting period from settings. */
+	/**
+	 * Applies the default reporting period from settings.
+	 *
+	 * @param preset the preset
+	 * @param fiscalYearStart the fiscal year start
+	 */
 	public void applyDefaultPeriod(ReportPeriodPreset preset,
 		MonthDay fiscalYearStart)
 	{
@@ -223,7 +229,14 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		
 	}
 	
-	/** Configures visibility and actions for quick range presets. */
+	/**
+	 * Configures visibility and actions for quick range presets.
+	 *
+	 * @param showYearToDate the show year to date
+	 * @param showFullYear the show full year
+	 * @param showLastMonth the show last month
+	 * @param fiscalYearStart the fiscal year start
+	 */
 	public void configureQuickRanges(boolean showYearToDate,
 		boolean showFullYear, boolean showLastMonth,
 		MonthDay fiscalYearStart)
@@ -803,6 +816,12 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		 * @param date The transaction date string.
 		 * @param transactionId The transaction ID string.
 		 * @param description The transaction description.
+		 * @param toFrom the to from
+		 * @param checkNumber the check number
+		 * @param clearBank the clear bank
+		 * @param budgetTracking the budget tracking
+		 * @param fundName the fund name
+		 * @param fundNumber the fund number
 		 * @param debit The debit amount for this row.
 		 * @param credit The credit amount for this row.
 		 * @param runningBalance The running balance after this transaction.
@@ -919,6 +938,8 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		}
 		
 		/**
+		 * Gets the check number.
+		 *
 		 * @return check number string
 		 */
 		public String getCheckNumber()
@@ -938,6 +959,8 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		}
 		
 		/**
+		 * Gets the clear bank.
+		 *
 		 * @return clearing bank string
 		 */
 		public String getClearBank()
@@ -957,6 +980,8 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		}
 		
 		/**
+		 * Gets the budget tracking.
+		 *
 		 * @return budget tracking notes
 		 */
 		public String getBudgetTracking()
@@ -976,6 +1001,8 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		}
 		
 		/**
+		 * Gets the fund name.
+		 *
 		 * @return fund name string
 		 */
 		public String getFundName()
@@ -995,6 +1022,8 @@ public class AccountTransactionDetailsPanelFX extends BorderPane
 		}
 		
 		/**
+		 * Gets the fund number.
+		 *
 		 * @return fund number string
 		 */
 		public String getFundNumber()

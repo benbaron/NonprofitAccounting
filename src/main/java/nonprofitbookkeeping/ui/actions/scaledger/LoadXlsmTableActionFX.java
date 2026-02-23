@@ -21,6 +21,7 @@ import nonprofitbookkeeping.plugins.scaledger.SCALedgerPlugin; // Added
 import nonprofitbookkeeping.preferences.PreferencesManager;
 import nonprofitbookkeeping.ui.helpers.NpbkFileChooserFX;
 
+// TODO: Auto-generated Javadoc
 /**
  * JavaFX action handler for loading data from an Excel XLSM file.
  * This action prompts the user to select an .xlsm file using a {@link FileChooser}.

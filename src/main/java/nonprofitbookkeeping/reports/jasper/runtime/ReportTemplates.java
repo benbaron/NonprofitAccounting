@@ -8,6 +8,7 @@ import java.util.Map;
 
 import nonprofitbookkeeping.service.ReportService.ReportType;
 
+// TODO: Auto-generated Javadoc
 /**
  * Registry of available Jasper report templates.
  * Each entry maps a user facing display name to the JRXML template
@@ -15,7 +16,20 @@ import nonprofitbookkeeping.service.ReportService.ReportType;
  */
 public final class ReportTemplates
 {
-	/** Immutable holder for template metadata. */
+	
+	/**
+	 * Immutable holder for template metadata.
+	 *
+	 * @param displayName the display name
+	 * @param jrxmlPath the jrxml path
+	 * @param generatorClassName the generator class name
+	 * @param beanClassName the bean class name
+	 * @param beanName the bean name
+	 * @param reportType the report type
+	 * @param bundleId the bundle id
+	 * @param metadataResource the metadata resource
+	 * @param description the description
+	 */
 	public record TemplateInfo(String displayName,
 		String jrxmlPath,
 		String generatorClassName,
@@ -39,6 +53,7 @@ public final class ReportTemplates
 		
 	}
 	
+	/** The Constant TEMPLATES. */
 	private static final Map<String, TemplateInfo> TEMPLATES =
 		createTemplates();
 	

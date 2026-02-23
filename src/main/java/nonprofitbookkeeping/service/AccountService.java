@@ -14,6 +14,7 @@ import nonprofitbookkeeping.model.Ledger;
 
 import nonprofitbookkeeping.model.Account;
 
+// TODO: Auto-generated Javadoc
 /**
  * Service class for managing {@link Account} objects. Provides methods for
  * retrieving and manipulating accounts. Accounts are stored in an in-memory
@@ -53,6 +54,7 @@ public class AccountService
 	 * using {@link Account#totalAccountBalance(Ledger)}, and returns a list of
 	 * {@link AccountBalance} records.
 	 *
+	 * @param ledger the ledger
 	 * @return A {@code List<AccountBalance>} containing the ID, name, and balance
 	 *         for each account. Returns an empty list if no accounts are stored or available.
 	 */

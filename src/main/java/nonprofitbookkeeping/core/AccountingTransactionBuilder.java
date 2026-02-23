@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 
 package nonprofitbookkeeping.core;
 
@@ -13,11 +16,20 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AccountingTransactionBuilder.
+ */
 public class AccountingTransactionBuilder
 {
+	
+	/** The entries. */
 	final private Set<AccountingEntry> entries = new HashSet<>();
+	
+	/** The info. */
 	final private Map<String, String> info;
 	
+	/** The account. */
 	final private Account account;
 	
 	/**
@@ -91,6 +103,8 @@ public class AccountingTransactionBuilder
 	}
 
 	/**
+	 * Creates the Accounting Transaction Builder
+	 *
 	 * @return A new AccountingTransaction instance.
 	 */
 	public static AccountingTransactionBuilder create()

@@ -13,6 +13,7 @@ import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CompanyProfileModel;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+// TODO: Auto-generated Javadoc
 /**
  * JavaFX wizard for creating or editing a company profile.
  * Replaces the Swing {@code CreateCompanyPanel}.
@@ -301,7 +302,11 @@ public class CreateOrEditCompanyPanelFX extends BorderPane
                 }
         }
 
-        /** Enables or disables the demo data seeding option. */
+        /**
+         * Enables or disables the demo data seeding option.
+         *
+         * @param available the new demo seeding available
+         */
         public void setDemoSeedingAvailable(boolean available)
         {
                 this.demoDataBox.setDisable(!available);

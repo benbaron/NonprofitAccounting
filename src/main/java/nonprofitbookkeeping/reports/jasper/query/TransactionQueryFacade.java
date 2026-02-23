@@ -21,6 +21,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+// TODO: Auto-generated Javadoc
 /**
  * Facade that provides a configurable way to query transactions and map the
  * results into arbitrary JavaBeans (including the SCA report beans).
@@ -37,12 +38,26 @@ import java.util.stream.Collectors;
  */
 public class TransactionQueryFacade
 {
+	
+	/** The transaction supplier. */
 	private final Supplier<List<AccountingTransaction>> transactionSupplier;
+	
+	/** The transaction type filter. */
 	private String transactionTypeFilter;
+	
+	/** The start date filter. */
 	private LocalDate startDateFilter;
+	
+	/** The end date filter. */
 	private LocalDate endDateFilter;
+	
+	/** The account number filter. */
 	private Set<String> accountNumberFilter;
+	
+	/** The require all accounts. */
 	private boolean requireAllAccounts;
+	
+	/** The memo filter. */
 	private String memoFilter;
 	
 	
@@ -106,6 +121,9 @@ public class TransactionQueryFacade
 	
 	/**
 	 * Filters by memo substring.
+	 *
+	 * @param memoContains the memo contains
+	 * @return the transaction query facade
 	 */
 	public TransactionQueryFacade memoContains(String memoContains)
 	{
@@ -162,9 +180,9 @@ public class TransactionQueryFacade
 	 * Queries and immediately maps the resulting records into bean
 	 * instances.
 	 *
+	 * @param <T>    bean type
 	 * @param config configuration describing the desired filters
 	 * @param mapper mapping function to transform a record into a bean
-	 * @param <T>    bean type
 	 * @return mapped beans (null results are skipped)
 	 */
 	public <T> List<T> queryAndMap(QueryConfig config,
@@ -213,9 +231,9 @@ public class TransactionQueryFacade
 	/**
 	 * Filters and maps the provided transactions to bean instances.
 	 *
+	 * @param <T> bean type
 	 * @param transactions transactions to filter
 	 * @param mapper mapper to transform transactions into beans
-	 * @param <T> bean type
 	 * @return mapped beans
 	 */
 	public <T> List<T> mapToBeans(Collection<AccountingTransaction> transactions,
@@ -232,6 +250,13 @@ public class TransactionQueryFacade
 			.collect(Collectors.toList());
 	}
 	
+	/**
+	 * Scope entries.
+	 *
+	 * @param transaction the transaction
+	 * @param accounts the accounts
+	 * @return the list
+	 */
 	private static List<AccountingEntry> scopeEntries(
 		AccountingTransaction transaction, Set<String> accounts)
 	{
@@ -262,6 +287,13 @@ public class TransactionQueryFacade
 		
 	}
 	
+	/**
+	 * Matches.
+	 *
+	 * @param record the record
+	 * @param config the config
+	 * @return true, if successful
+	 */
 	private static boolean matches(TransactionRecord record, QueryConfig config)
 	{
 		return record != null && matchesDate(record, config) &&
@@ -273,6 +305,12 @@ public class TransactionQueryFacade
 		
 	}
 
+	/**
+	 * Matches configured filters.
+	 *
+	 * @param transaction the transaction
+	 * @return true, if successful
+	 */
 	private boolean matchesConfiguredFilters(AccountingTransaction transaction)
 	{
 		return matchesTransactionType(transaction) &&
@@ -282,6 +320,12 @@ public class TransactionQueryFacade
 		
 	}
 
+	/**
+	 * Matches transaction type.
+	 *
+	 * @param transaction the transaction
+	 * @return true, if successful
+	 */
 	private boolean matchesTransactionType(AccountingTransaction transaction)
 	{
 		
@@ -310,6 +354,12 @@ public class TransactionQueryFacade
 		
 	}
 
+	/**
+	 * Matches configured date.
+	 *
+	 * @param transaction the transaction
+	 * @return true, if successful
+	 */
 	private boolean matchesConfiguredDate(AccountingTransaction transaction)
 	{
 		Long timestamp = transaction.getBookingDateTimestamp();
@@ -337,6 +387,12 @@ public class TransactionQueryFacade
 		
 	}
 
+	/**
+	 * Matches configured accounts.
+	 *
+	 * @param transaction the transaction
+	 * @return true, if successful
+	 */
 	private boolean matchesConfiguredAccounts(AccountingTransaction transaction)
 	{
 		
@@ -373,6 +429,12 @@ public class TransactionQueryFacade
 		
 	}
 
+	/**
+	 * Matches configured memo.
+	 *
+	 * @param transaction the transaction
+	 * @return true, if successful
+	 */
 	private boolean matchesConfiguredMemo(AccountingTransaction transaction)
 	{
 		
@@ -392,6 +454,12 @@ public class TransactionQueryFacade
 		
 	}
 
+	/**
+	 * Normalize.
+	 *
+	 * @param value the value
+	 * @return the string
+	 */
 	private static String normalize(String value)
 	{
 		
@@ -405,6 +473,13 @@ public class TransactionQueryFacade
 		
 	}
 	
+	/**
+	 * Matches date.
+	 *
+	 * @param record the record
+	 * @param config the config
+	 * @return true, if successful
+	 */
 	private static boolean matchesDate(TransactionRecord record,
 		QueryConfig config)
 	{
@@ -433,6 +508,13 @@ public class TransactionQueryFacade
 		
 	}
 	
+	/**
+	 * Matches memo.
+	 *
+	 * @param record the record
+	 * @param memoSubstring the memo substring
+	 * @return true, if successful
+	 */
 	private static boolean matchesMemo(TransactionRecord record,
 		String memoSubstring)
 	{
@@ -453,6 +535,14 @@ public class TransactionQueryFacade
 		
 	}
 
+	/**
+	 * Matches accounts.
+	 *
+	 * @param record the record
+	 * @param accounts the accounts
+	 * @param requireAll the require all
+	 * @return true, if successful
+	 */
 	private static boolean matchesAccounts(TransactionRecord record,
 		Set<String> accounts,
 		boolean requireAll)
@@ -517,14 +607,33 @@ public class TransactionQueryFacade
 	 */
 	public static final class QueryConfig
 	{
+		
+		/** The transaction type. */
 		private final AccountSide transactionType;
+		
+		/** The start date. */
 		private final LocalDate startDate;
+		
+		/** The end date. */
 		private final LocalDate endDate;
+		
+		/** The account numbers. */
 		private final Set<String> accountNumbers;
+		
+		/** The require all accounts. */
 		private final boolean requireAllAccounts;
+		
+		/** The memo substring. */
 		private final String memoSubstring;
+		
+		/** The extra predicates. */
 		private final List<Predicate<TransactionRecord>> extraPredicates;
 		
+		/**
+		 * Instantiates a new query config.
+		 *
+		 * @param builder the builder
+		 */
 		private QueryConfig(Builder builder)
 		{
 			this.transactionType = builder.transactionType;
@@ -541,6 +650,11 @@ public class TransactionQueryFacade
 			
 		}
 		
+		/**
+		 * Builder.
+		 *
+		 * @return the builder
+		 */
 		public static Builder builder()
 		{
 			return new Builder();
@@ -551,14 +665,33 @@ public class TransactionQueryFacade
 		/** Builder for {@link QueryConfig}. */
 		public static final class Builder
 		{
+			
+			/** The transaction type. */
 			private AccountSide transactionType;
+			
+			/** The start date. */
 			private LocalDate startDate;
+			
+			/** The end date. */
 			private LocalDate endDate;
+			
+			/** The account numbers. */
 			private Set<String> accountNumbers;
+			
+			/** The require all accounts. */
 			private boolean requireAllAccounts;
+			
+			/** The memo substring. */
 			private String memoSubstring;
+			
+			/** The extra predicates. */
 			private List<Predicate<TransactionRecord>> extraPredicates;			
 
+			/**
+			 * Builds the.
+			 *
+			 * @return the query config
+			 */
 			public QueryConfig build()
 			{
 				return new QueryConfig(this);
@@ -572,10 +705,20 @@ public class TransactionQueryFacade
 	/**
 	 * Result of a transaction query that captures the parent transaction and
 	 * the entries that were used for filtering.
+	 *
+	 * @param transaction the transaction
+	 * @param entries the entries
 	 */
 	public record TransactionRecord(AccountingTransaction transaction,
 		List<AccountingEntry> entries)
 	{
+		
+		/**
+		 * Instantiates a new transaction record.
+		 *
+		 * @param transaction the transaction
+		 * @param entries the entries
+		 */
 		public TransactionRecord
 		{
 			entries = entries == null ? Collections.emptyList() : entries;

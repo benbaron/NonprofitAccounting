@@ -6,8 +6,11 @@ import java.time.LocalDate;
 
 public abstract class TxnSupplementalLineBase implements Serializable
 {
+	
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/** The id. */
 	private long id;
 	private long txnId;
 	private Long entryId;

@@ -168,7 +168,9 @@ public class Company implements Serializable
 	}
 	
 	/**
-	 * @param profile
+	 * Sets the company profile.
+	 *
+	 * @param profile the new company profile
 	 */
 	public void setCompanyProfile(CompanyProfileModel profile)
 	{

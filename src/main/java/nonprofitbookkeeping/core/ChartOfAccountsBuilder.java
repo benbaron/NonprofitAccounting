@@ -2,11 +2,14 @@ package nonprofitbookkeeping.core;
 
 import nonprofitbookkeeping.model.*;
 
+// TODO: Auto-generated Javadoc
 /**
- * 
+ * The Class ChartOfAccountsBuilder.
  */
 public class ChartOfAccountsBuilder
 {
+
+/** The chart. */
 private final ChartOfAccounts chart = new ChartOfAccounts();
 	
 	/**

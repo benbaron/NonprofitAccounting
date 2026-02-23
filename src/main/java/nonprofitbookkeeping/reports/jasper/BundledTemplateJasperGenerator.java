@@ -8,14 +8,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// TODO: Auto-generated Javadoc
 /**
  * Generator used when only bundle metadata is available on the classpath.
  */
 public class BundledTemplateJasperGenerator extends AbstractReportGenerator
 {
+	
+	/** The bundle. */
 	private final ReportBundles.Bundle bundle;
+	
+	/** The context. */
 	private final ReportContext context;
 	
+	/**
+	 * Instantiates a new bundled template jasper generator.
+	 *
+	 * @param bundle the bundle
+	 * @param context the context
+	 */
 	public BundledTemplateJasperGenerator(ReportBundles.Bundle bundle,
 		ReportContext context)
 	{
@@ -23,12 +34,18 @@ public class BundledTemplateJasperGenerator extends AbstractReportGenerator
 		this.context = context;
 	}
 	
+	/**
+	 * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getReportData() 
+	 */
 	@Override
 	protected List<?> getReportData()
 	{
 		return Collections.emptyList();
 	}
 	
+	/**
+	 * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getReportParameters() 
+	 */
 	@Override
 	protected Map<String, Object> getReportParameters()
 	{
@@ -52,6 +69,9 @@ public class BundledTemplateJasperGenerator extends AbstractReportGenerator
 		return params;
 	}
 	
+	/**
+	 * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getReportPath() 
+	 */
 	@Override
 	protected String getReportPath()
 	{
@@ -59,12 +79,20 @@ public class BundledTemplateJasperGenerator extends AbstractReportGenerator
 			this.bundle.jrxmlResource();
 	}
 	
+	/**
+	 * Override @see nonprofitbookkeeping.reports.jasper.AbstractReportGenerator#getBaseName() 
+	 */
 	@Override
 	public String getBaseName()
 	{
 		return baseNameFromBundle();
 	}
 	
+	/**
+	 * Base name from bundle.
+	 *
+	 * @return the string
+	 */
 	private String baseNameFromBundle()
 	{
 		

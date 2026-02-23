@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 import nonprofitbookkeeping.model.Grant;
 import nonprofitbookkeeping.persistence.JsonStorageRepository;
 
+// TODO: Auto-generated Javadoc
 /**
  * Service class for managing {@link Grant} objects.
  * This service provides an in-memory storage solution for grants
@@ -34,14 +35,20 @@ public class GrantsService
 	
 	/** Logical storage key used for persisting grants in the shared database. */
 	private static final String STORAGE_KEY = "grants";
+	
+	/** The Constant MAPPER. */
 	private static final ObjectMapper MAPPER = new ObjectMapper()
 		.enable(SerializationFeature.INDENT_OUTPUT);
+	
+	/** The Constant LIST_TYPE. */
 	private static final CollectionType LIST_TYPE =
 		MAPPER.getTypeFactory().constructCollectionType(List.class,
 			Grant.class);
 	
 	/** In-memory list to store {@link Grant} objects. */
 	private List<Grant> grants;
+	
+	/** The json repository. */
 	private final JsonStorageRepository jsonRepository =
 		new JsonStorageRepository();
 	
@@ -145,7 +152,6 @@ public class GrantsService
 	/**
 	 * Saves all grants to the persistent document store.
 	 *
-	 * @param companyDirectory retained for backwards compatibility but ignored by the method
 	 * @throws IOException if writing to the database fails
 	 */
 	public void saveGrants() throws IOException
@@ -181,7 +187,6 @@ public class GrantsService
 	 * Loads grants from the persistent document store.
 	 * Existing in-memory grants are cleared before loading new ones.
 	 *
-	 * @param companyDirectory retained for backwards compatibility but ignored by the method
 	 * @throws IOException if reading from the database fails
 	 */
 	public void loadGrants() throws IOException

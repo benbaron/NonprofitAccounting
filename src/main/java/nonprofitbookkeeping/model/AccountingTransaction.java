@@ -15,6 +15,10 @@ import nonprofitbookkeeping.model.supplemental.TxnSupplementalLineBase;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AccountingTransaction.
+ */
 public class AccountingTransaction implements Serializable
 {
 	/**
@@ -40,16 +44,26 @@ public class AccountingTransaction implements Serializable
 	/** A descriptive memo or note for the transaction. */
 	@JsonProperty private String memo; // Non-final
 
+	/** The to from. */
 	@JsonProperty private String toFrom; // Non-final
+	
+	/** The check number. */
 	@JsonProperty private String checkNumber; // Non-final
+	
+	/** The clear bank. */
 	@JsonProperty private String clearBank; // Non-final
+	
+	/** The budget tracking. */
 	@JsonProperty private String budgetTracking; // Non-final
+	
+	/** The associated fund name. */
 	@JsonProperty private String associatedFundName; // Non-final
 
+	/** The supplemental lines. */
 	@JsonProperty private List<TxnSupplementalLineBase> supplementalLines;
 	
-	/**  
-	 * Constructor AccountingTransaction
+	/**
+	 * Constructor AccountingTransaction.
 	 */
 	public AccountingTransaction()
 	{
@@ -294,6 +308,11 @@ public class AccountingTransaction implements Serializable
 		 this.date = date;
 	 }
 
+	/**
+	 * Gets the supplemental lines.
+	 *
+	 * @return the supplemental lines
+	 */
 	public List<TxnSupplementalLineBase> getSupplementalLines()
 	{
 		return this.supplementalLines == null
@@ -301,6 +320,11 @@ public class AccountingTransaction implements Serializable
 			: this.supplementalLines;
 	}
 
+	/**
+	 * Sets the supplemental lines.
+	 *
+	 * @param supplementalLines the new supplemental lines
+	 */
 	public void setSupplementalLines(List<TxnSupplementalLineBase> supplementalLines)
 	{
 		this.supplementalLines = supplementalLines == null
@@ -319,7 +343,9 @@ public class AccountingTransaction implements Serializable
 	}	
 	
 	/**
-	 * @return
+	 * Gets the id.
+	 *
+	 * @return the id
 	 */
 	public int getId()
 	{
@@ -327,7 +353,9 @@ public class AccountingTransaction implements Serializable
 	}
 	
 	/**
-	 * @param accountingEntry
+	 * Adds the entry.
+	 *
+	 * @param accountingEntry the accounting entry
 	 */
 	public void addEntry(AccountingEntry accountingEntry)
 	{
@@ -341,7 +369,9 @@ public class AccountingTransaction implements Serializable
 	}
 	
 	/**
-	 * @param i
+	 * Sets the id.
+	 *
+	 * @param i the new id
 	 */
 	public void setId(int i)
 	{
@@ -349,7 +379,9 @@ public class AccountingTransaction implements Serializable
 	}	
 	
 	/**
-	 * @param from
+	 * Sets the booking date timestamp.
+	 *
+	 * @param from the new booking date timestamp
 	 */
 	public void setBookingDateTimestamp(Timestamp from)
 	{
@@ -403,6 +435,8 @@ public class AccountingTransaction implements Serializable
 	}
 
 	/**
+	 * Gets the to from.
+	 *
 	 * @return the toFrom
 	 */
 	public String getToFrom()
@@ -412,6 +446,8 @@ public class AccountingTransaction implements Serializable
 	}
 
 	/**
+	 * Sets the to from.
+	 *
 	 * @param toFrom the toFrom to set
 	 */
 	public void setToFrom(String toFrom)
@@ -421,6 +457,8 @@ public class AccountingTransaction implements Serializable
 	}
 
 	/**
+	 * Gets the check number.
+	 *
 	 * @return the checkNumber
 	 */
 	public String getCheckNumber()
@@ -430,6 +468,8 @@ public class AccountingTransaction implements Serializable
 	}
 
 	/**
+	 * Sets the check number.
+	 *
 	 * @param checkNumber the checkNumber to set
 	 */
 	public void setCheckNumber(String checkNumber)
@@ -439,6 +479,8 @@ public class AccountingTransaction implements Serializable
 	}
 
 	/**
+	 * Gets the clear bank.
+	 *
 	 * @return the clearBank
 	 */
 	public String getClearBank()
@@ -448,6 +490,8 @@ public class AccountingTransaction implements Serializable
 	}
 
 	/**
+	 * Sets the clear bank.
+	 *
 	 * @param clearBank the clearBank to set
 	 */
 	public void setClearBank(String clearBank)
@@ -457,6 +501,8 @@ public class AccountingTransaction implements Serializable
 	}
 
 	/**
+	 * Gets the budget tracking.
+	 *
 	 * @return the budgetTracking
 	 */
 	public String getBudgetTracking()
@@ -466,6 +512,8 @@ public class AccountingTransaction implements Serializable
 	}
 
 	/**
+	 * Sets the budget tracking.
+	 *
 	 * @param budgetTracking the budgetTracking to set
 	 */
 	public void setBudgetTracking(String budgetTracking)
@@ -475,6 +523,8 @@ public class AccountingTransaction implements Serializable
 	}
 
 	/**
+	 * Gets the associated fund name.
+	 *
 	 * @return the associatedFundName
 	 */
 	public String getAssociatedFundName()
@@ -484,6 +534,8 @@ public class AccountingTransaction implements Serializable
 	}
 
 	/**
+	 * Sets the associated fund name.
+	 *
 	 * @param associatedFundName the associatedFundName to set
 	 */
 	public void setAssociatedFundName(String associatedFundName)
@@ -493,7 +545,9 @@ public class AccountingTransaction implements Serializable
 	}
 
 	/**
-	 * @return
+	 * Count account balance.
+	 *
+	 * @return the big decimal
 	 */
 	public static BigDecimal countAccountBalance()
 	{

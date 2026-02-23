@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+// TODO: Auto-generated Javadoc
 /**
  * Holds the mapping from dropdown labels in the ledger
  * to canonical chart-of-accounts strings.
@@ -34,8 +35,15 @@ import java.util.Map;
  */
 public class ChartTranslationMap
 {
+    
+    /** The raw to canonical. */
     private final Map<String,String> rawToCanonical;
 
+    /**
+     * Instantiates a new chart translation map.
+     *
+     * @param rawToCanonical the raw to canonical
+     */
     public ChartTranslationMap(Map<String,String> rawToCanonical)
     {
         // preserve insertion order, punctuation, spacing
@@ -45,6 +53,9 @@ public class ChartTranslationMap
     /**
      * Lookup canonical value for a ledger category string.
      * Returns null if not found.
+     *
+     * @param raw the raw
+     * @return the string
      */
     public String translate(String raw)
     {
@@ -55,6 +66,11 @@ public class ChartTranslationMap
         return this.rawToCanonical.get(raw);
     }
 
+    /**
+     * As map.
+     *
+     * @return the map
+     */
     public Map<String,String> asMap()
     {
         return Collections.unmodifiableMap(this.rawToCanonical);
@@ -62,6 +78,10 @@ public class ChartTranslationMap
 
     /**
      * Load a map from disk from a simple JSON object.
+     *
+     * @param jsonFile the json file
+     * @return the chart translation map
+     * @throws IOException Signals that an I/O exception has occurred.
      */
     public static ChartTranslationMap fromJsonFile(Path jsonFile) throws IOException
     {

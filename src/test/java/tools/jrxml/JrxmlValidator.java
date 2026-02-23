@@ -40,6 +40,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+// TODO: Auto-generated Javadoc
 /**
  * JRXML validator (v5.1):
  * 1) XML well-formedness (DOM parse; no network)
@@ -68,9 +69,11 @@ public class JrxmlValidator
 	
 	// ---------------------- Constants & simple helpers ----------------------
 	
+	/** The Constant JR_NS. */
 	private static final String JR_NS =
 		"http://jasperreports.sourceforge.net/jasperreports";
 	
+	/** The Constant TOP_LEVEL_ALLOWED. */
 	private static final Set<String> TOP_LEVEL_ALLOWED =
 		new LinkedHashSet<>(Arrays.asList(
 			"property", "import", "reportFont", "style", "subDataset",
@@ -82,6 +85,7 @@ public class JrxmlValidator
 			"lastPageFooter", "summary", "noData"
 		));
 	
+	/** The Constant PRINTABLES. */
 	private static final Set<String> PRINTABLES =
 		new LinkedHashSet<>(Arrays.asList(
 			"textField", "staticText", "rectangle", "line", "chart", "image",
@@ -90,11 +94,18 @@ public class JrxmlValidator
 			"table"
 		));
 	
+	/** The Constant SECTIONS. */
 	private static final List<String> SECTIONS = Arrays.asList(
 		"background", "title", "pageHeader", "columnHeader", "detail",
 		"columnFooter", "pageFooter", "lastPageFooter", "summary", "noData"
 	);
 	
+	/**
+	 * Ln.
+	 *
+	 * @param n the n
+	 * @return the string
+	 */
 	private static String ln(Node n)
 	{
 		return (n == null) ? null : n.getLocalName();
@@ -104,6 +115,13 @@ public class JrxmlValidator
 	// ---------------------- Aggressive (schema-fit) rewrites
 	// ----------------------
 	
+	/**
+	 * Ensure detail band.
+	 *
+	 * @param dom the dom
+	 * @param actions the actions
+	 * @return the element
+	 */
 	private static Element ensureDetailBand(Document dom, List<String> actions)
 	{
 		Element root = dom.getDocumentElement();
@@ -135,6 +153,13 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Ensure single band and merge.
+	 *
+	 * @param dom the dom
+	 * @param section the section
+	 * @param actions the actions
+	 */
 	private static void ensureSingleBandAndMerge(Document dom, Element section,
 		List<String> actions)
 	{
@@ -180,6 +205,14 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Move stray top level printables.
+	 *
+	 * @param dom the dom
+	 * @param root the root
+	 * @param detailBand the detail band
+	 * @param actions the actions
+	 */
 	private static void moveStrayTopLevelPrintables(Document dom, Element root,
 		Element detailBand, List<String> actions)
 	{
@@ -230,6 +263,13 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Wrap textish.
+	 *
+	 * @param dom the dom
+	 * @param inner the inner
+	 * @return the element
+	 */
 	private static Element wrapTextish(Document dom, Element inner)
 	{
 		Element st = dom.createElementNS(JR_NS, "staticText");
@@ -247,6 +287,13 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Normalize sections.
+	 *
+	 * @param dom the dom
+	 * @param root the root
+	 * @param actions the actions
+	 */
 	private static void normalizeSections(Document dom, Element root,
 		List<String> actions)
 	{
@@ -264,6 +311,13 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Ensure band heights.
+	 *
+	 * @param dom the dom
+	 * @param root the root
+	 * @param actions the actions
+	 */
 	private static void ensureBandHeights(Document dom, Element root,
 		List<String> actions)
 	{
@@ -283,6 +337,12 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Normalize to core namespace.
+	 *
+	 * @param dom the dom
+	 * @param actions the actions
+	 */
 	private static void normalizeToCoreNamespace(Document dom,
 		List<String> actions)
 	{
@@ -314,6 +374,12 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Drop doctype.
+	 *
+	 * @param dom the dom
+	 * @param actions the actions
+	 */
 	private static void dropDoctype(Document dom, List<String> actions)
 	{
 		
@@ -325,6 +391,13 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Next sibling element.
+	 *
+	 * @param el the el
+	 * @param localName the local name
+	 * @return the element
+	 */
 	private static Element nextSiblingElement(Element el, String localName)
 	{
 		
@@ -338,6 +411,14 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Validate against schema.
+	 *
+	 * @param dom the dom
+	 * @param schema the schema
+	 * @param r the r
+	 * @return true, if successful
+	 */
 	private static boolean validateAgainstSchema(Document dom, Schema schema,
 		ValidationReport r)
 	{
@@ -383,6 +464,13 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Write dom.
+	 *
+	 * @param dom the dom
+	 * @param out the out
+	 * @throws Exception the exception
+	 */
 	private static void writeDom(Document dom, File out) throws Exception
 	{
 		javax.xml.transform.TransformerFactory tf =
@@ -405,6 +493,12 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Aggressive rewrite.
+	 *
+	 * @param dom the dom
+	 * @return the list
+	 */
 	private static List<String> aggressiveRewrite(Document dom)
 	{
 		List<String> actions = new ArrayList<>();
@@ -422,6 +516,7 @@ public class JrxmlValidator
 	// ---------------------- Section-shape & namespace normalization
 	// ----------------------
 	
+	/** The Constant SECTION_TAGS. */
 	private static final Set<String> SECTION_TAGS =
 		new LinkedHashSet<>(Arrays.asList(
 			"background", "title", "pageHeader", "columnHeader",
@@ -429,6 +524,7 @@ public class JrxmlValidator
 			"noData"
 		));
 	
+	/** The Constant PRINTABLES_TAGS. */
 	private static final Set<String> PRINTABLES_TAGS =
 		new LinkedHashSet<>(Arrays.asList(
 			"staticText", "textField", "rectangle", "line", "image",
@@ -437,6 +533,12 @@ public class JrxmlValidator
 			"table", "chart"
 		));
 	
+	/**
+	 * Normalize namespace to JR.
+	 *
+	 * @param dom the dom
+	 * @return true, if successful
+	 */
 	private static boolean normalizeNamespaceToJR(Document dom)
 	{
 		Element root = dom.getDocumentElement();
@@ -460,6 +562,14 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Re ns deep.
+	 *
+	 * @param dom the dom
+	 * @param oldEl the old el
+	 * @param ns the ns
+	 * @return the element
+	 */
 	private static Element reNsDeep(Document dom, Element oldEl, String ns)
 	{
 		String local = oldEl.getLocalName() != null ? oldEl.getLocalName() :
@@ -512,6 +622,12 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Normalize sections to banded.
+	 *
+	 * @param dom the dom
+	 * @return the int
+	 */
 	private static int normalizeSectionsToBanded(Document dom)
 	{
 		Element root = dom.getDocumentElement();
@@ -549,6 +665,12 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Normalize sections to bandless.
+	 *
+	 * @param dom the dom
+	 * @return the int
+	 */
 	private static int normalizeSectionsToBandless(Document dom)
 	{
 		Element root = dom.getDocumentElement();
@@ -598,6 +720,12 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Checks for direct band.
+	 *
+	 * @param section the section
+	 * @return true, if successful
+	 */
 	private static boolean hasDirectBand(Element section)
 	{
 		NodeList kids = section.getChildNodes();
@@ -613,6 +741,13 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Collect direct children.
+	 *
+	 * @param parent the parent
+	 * @param locals the locals
+	 * @return the list
+	 */
 	private static List<Element> collectDirectChildren(Element parent,
 		Set<String> locals)
 	{
@@ -630,6 +765,12 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Move all children.
+	 *
+	 * @param from the from
+	 * @param to the to
+	 */
 	private static void moveAllChildren(Element from, Element to)
 	{
 		List<Node> list = new ArrayList<>();
@@ -643,6 +784,12 @@ public class JrxmlValidator
 	
 	// ---------------------- CLI ----------------------
 	
+	/**
+	 * Jrxmain.
+	 *
+	 * @param args the args
+	 * @throws Exception the exception
+	 */
 	public static void jrxmain(String[] args) throws Exception
 	{
 		Map<String, String> cli = parseArgs(args);
@@ -718,6 +865,12 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Parses the args.
+	 *
+	 * @param args the args
+	 * @return the map
+	 */
 	private static Map<String, String> parseArgs(String[] args)
 	{
 		Map<String, String> m = new HashMap<>();
@@ -780,6 +933,9 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Prints the help.
+	 */
 	private static void printHelp()
 	{
 		System.out.println("JRXML Validator v5.1");
@@ -807,6 +963,7 @@ public class JrxmlValidator
 		
 	}
 	
+	/** The Constant usage. */
 	static final String usage =
 		"Usage\n" +
 			"\n" +
@@ -828,6 +985,13 @@ public class JrxmlValidator
 	
 	// ---------------------- Schema loader ----------------------
 	
+	/**
+	 * Load schema.
+	 *
+	 * @param xsdPath the xsd path
+	 * @return the schema
+	 * @throws Exception the exception
+	 */
 	private static Schema loadSchema(String xsdPath) throws Exception
 	{
 		if (xsdPath == null)
@@ -848,6 +1012,13 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Collect files.
+	 *
+	 * @param cli the cli
+	 * @return the list
+	 * @throws Exception the exception
+	 */
 	private static List<File> collectFiles(Map<String, String> cli)
 		throws Exception
 	{
@@ -874,21 +1045,35 @@ public class JrxmlValidator
 	
 	// ---------------------- Validation ----------------------
 	
+	/** The Constant ESCAPED_CDATA_START. */
 	private static final Pattern ESCAPED_CDATA_START =
 		Pattern.compile("(?s).*?&lt;!\\[CDATA\\[.*");
+	
+	/** The Constant ESCAPED_CDATA_END. */
 	private static final Pattern ESCAPED_CDATA_END =
 		Pattern.compile("(?s).*?]]&gt;.*");
+	
+	/** The Constant RAW_AMP_IN_TEXT. */
 	private static final Pattern RAW_AMP_IN_TEXT =
 		Pattern.compile("(?s).*<text>.*&[^#a-zA-Z].*</text>.*");
 	
+	/** The Constant NAME_BAD_CHARS. */
 	private static final Pattern NAME_BAD_CHARS = Pattern.compile(".*[\\s-].*");
+	
+	/** The Constant NAME_LEADING_DIGIT. */
 	private static final Pattern NAME_LEADING_DIGIT =
 		Pattern.compile("^[0-9].*");
 	
+	/** The Constant REF_FIELD. */
 	private static final Pattern REF_FIELD = Pattern.compile("\\$F\\{([^}]+)}");
+	
+	/** The Constant REF_PARAM. */
 	private static final Pattern REF_PARAM = Pattern.compile("\\$P\\{([^}]+)}");
+	
+	/** The Constant REF_VAR. */
 	private static final Pattern REF_VAR = Pattern.compile("\\$V\\{([^}]+)}");
 	
+	/** The Constant BUILTIN_VARS. */
 	private static final Set<String> BUILTIN_VARS = new HashSet<>(Arrays.asList(
 		"PAGE_NUMBER", "COLUMN_NUMBER", "REPORT_COUNT", "PAGE_COUNT",
 		"COLUMN_COUNT",
@@ -897,6 +1082,20 @@ public class JrxmlValidator
 		"IS_IGNORE_PAGINATION"
 	));
 	
+	/**
+	 * Validate one.
+	 *
+	 * @param jrxml the jrxml
+	 * @param failOnWarn the fail on warn
+	 * @param schema the schema
+	 * @param doAggressive the do aggressive
+	 * @param writeFixes the write fixes
+	 * @param outDir the out dir
+	 * @param normalizeNamespace the normalize namespace
+	 * @param normalizeBanded the normalize banded
+	 * @param normalizeBandless the normalize bandless
+	 * @return the validation report
+	 */
 	private static ValidationReport validateOne(
 		File jrxml, boolean failOnWarn, Schema schema,
 		boolean doAggressive, boolean writeFixes, File outDir,
@@ -1151,6 +1350,13 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Parses the dom.
+	 *
+	 * @param f the f
+	 * @param report the report
+	 * @return the document
+	 */
 	private static Document parseDom(File f, ValidationReport report)
 	{
 		
@@ -1210,6 +1416,12 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Format sax.
+	 *
+	 * @param e the e
+	 * @return the string
+	 */
 	private static String formatSax(SAXParseException e)
 	{
 		return String.format("%s at line %d, col %d", e.getMessage(),
@@ -1220,6 +1432,13 @@ public class JrxmlValidator
 	// ---------------------- DOM-only preflight (no Jasper)
 	// ----------------------
 	
+	/**
+	 * Preflight structural checks.
+	 *
+	 * @param dom the dom
+	 * @param xmlText the xml text
+	 * @param r the r
+	 */
 	private static void preflightStructuralChecks(Document dom, String xmlText,
 		ValidationReport r)
 	{
@@ -1344,6 +1563,13 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Check no nested bands in section.
+	 *
+	 * @param secName the sec name
+	 * @param section the section
+	 * @param r the r
+	 */
 	private static void checkNoNestedBandsInSection(String secName,
 		Element section, ValidationReport r)
 	{
@@ -1363,6 +1589,13 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Count direct children.
+	 *
+	 * @param parent the parent
+	 * @param tag the tag
+	 * @return the int
+	 */
 	private static int countDirectChildren(Element parent, String tag)
 	{
 		int count = 0;
@@ -1384,12 +1617,26 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Checks for descendant tag.
+	 *
+	 * @param parent the parent
+	 * @param tag the tag
+	 * @return true, if successful
+	 */
 	private static boolean hasDescendantTag(Element parent, String tag)
 	{
 		return parent.getElementsByTagName(tag).getLength() > 0;
 		
 	}
 	
+	/**
+	 * First child element.
+	 *
+	 * @param parent the parent
+	 * @param tag the tag
+	 * @return the element
+	 */
 	private static Element firstChildElement(Element parent, String tag)
 	{
 		NodeList kids = parent.getChildNodes();
@@ -1412,6 +1659,12 @@ public class JrxmlValidator
 	
 	// ---------------------- Lints ----------------------
 	
+	/**
+	 * Lint named declarations.
+	 *
+	 * @param d the d
+	 * @param r the r
+	 */
 	private static void lintNamedDeclarations(JasperDesign d,
 		ValidationReport r)
 	{
@@ -1464,6 +1717,13 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Check name.
+	 *
+	 * @param kind the kind
+	 * @param name the name
+	 * @param r the r
+	 */
 	private static void checkName(String kind, String name, ValidationReport r)
 	{
 		
@@ -1487,6 +1747,12 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Lint empty bands.
+	 *
+	 * @param d the d
+	 * @param r the r
+	 */
 	private static void lintEmptyBands(JasperDesign d, ValidationReport r)
 	{
 		Map<BandTypeEnum, JRBand> bands = getAllBands(d);
@@ -1518,6 +1784,12 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Gets the all bands.
+	 *
+	 * @param d the d
+	 * @return the all bands
+	 */
 	private static Map<BandTypeEnum, JRBand> getAllBands(JasperDesign d)
 	{
 		Map<BandTypeEnum, JRBand> out = new LinkedHashMap<>();
@@ -1553,6 +1825,12 @@ public class JrxmlValidator
 	
 	// ---------------------- Expressions ----------------------
 	
+	/**
+	 * Analyze expression references.
+	 *
+	 * @param d the d
+	 * @param r the r
+	 */
 	private static void analyzeExpressionReferences(JasperDesign d,
 		ValidationReport r)
 	{
@@ -1610,6 +1888,13 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Find all.
+	 *
+	 * @param p the p
+	 * @param text the text
+	 * @param sink the sink
+	 */
 	private static void findAll(Pattern p, String text, Set<String> sink)
 	{
 		Matcher m = p.matcher(text);
@@ -1618,6 +1903,12 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Collect all expressions.
+	 *
+	 * @param d the d
+	 * @return the list
+	 */
 	private static List<JRExpression> collectAllExpressions(JasperDesign d)
 	{
 		List<JRExpression> out = new ArrayList<>();
@@ -1769,6 +2060,12 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Collect expressions deep.
+	 *
+	 * @param child the child
+	 * @param sink the sink
+	 */
 	private static void collectExpressionsDeep(JRChild child,
 		List<JRExpression> sink)
 	{
@@ -1866,6 +2163,12 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Expr of.
+	 *
+	 * @param text the text
+	 * @return the JR expression
+	 */
 	private static JRExpression exprOf(String text)
 	{
 		JRDesignExpression e = new JRDesignExpression();
@@ -1876,6 +2179,14 @@ public class JrxmlValidator
 	
 	// ---------------------- Helpers ----------------------
 	
+	/**
+	 * Find cause.
+	 *
+	 * @param <T> the generic type
+	 * @param t the t
+	 * @param cls the cls
+	 * @return the t
+	 */
 	private static <T extends Throwable> T findCause(Throwable t, Class<T> cls)
 	{
 		
@@ -1890,6 +2201,14 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Prints the context.
+	 *
+	 * @param f the f
+	 * @param line the line
+	 * @param radius the radius
+	 * @param r the r
+	 */
 	private static void printContext(File f, int line, int radius,
 		ValidationReport r)
 	{
@@ -1914,6 +2233,13 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Gets the expression reflective.
+	 *
+	 * @param obj the obj
+	 * @param methodName the method name
+	 * @return the expression reflective
+	 */
 	private static JRExpression getExpressionReflective(Object obj,
 		String methodName)
 	{
@@ -1931,6 +2257,13 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * List from array.
+	 *
+	 * @param <T> the generic type
+	 * @param arr the arr
+	 * @return the list
+	 */
 	private static <T> List<T> listFromArray(T[] arr)
 	{
 		if (arr == null || arr.length == 0)
@@ -1939,6 +2272,13 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * List from collection.
+	 *
+	 * @param <T> the generic type
+	 * @param c the c
+	 * @return the list
+	 */
 	private static <T> List<T> listFromCollection(Collection<? extends T> c)
 	{
 		if (c == null || c.isEmpty())
@@ -1947,6 +2287,12 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Extract line col from messages.
+	 *
+	 * @param t the t
+	 * @return the int[]
+	 */
 	private static int[] extractLineColFromMessages(Throwable t)
 	{
 		Pattern p = Pattern.compile(
@@ -1981,6 +2327,12 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Detect jackson unrecognized field hint.
+	 *
+	 * @param t the t
+	 * @return the string
+	 */
 	private static String detectJacksonUnrecognizedFieldHint(Throwable t)
 	{
 		String all = collectMessages(t);
@@ -2014,6 +2366,12 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Collect messages.
+	 *
+	 * @param t the t
+	 * @return the string
+	 */
 	private static String collectMessages(Throwable t)
 	{
 		StringBuilder sb = new StringBuilder();
@@ -2030,6 +2388,12 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Dump cause chain.
+	 *
+	 * @param r the r
+	 * @param t the t
+	 */
 	private static void dumpCauseChain(ValidationReport r, Throwable t)
 	{
 		
@@ -2041,6 +2405,12 @@ public class JrxmlValidator
 		
 	}
 	
+	/**
+	 * Adds the trace.
+	 *
+	 * @param r the r
+	 * @param t the t
+	 */
 	private static void addTrace(ValidationReport r, Throwable t)
 	{
 		StringBuilder sb = new StringBuilder();
@@ -2059,14 +2429,33 @@ public class JrxmlValidator
 	
 	// ---------------------- Reporting ----------------------
 	
+	/**
+	 * The Class ValidationReport.
+	 */
 	private static final class ValidationReport
 	{
+		
+		/** The file. */
 		private final File file;
+		
+		/** The fail on warn. */
 		private final boolean failOnWarn;
+		
+		/** The infos. */
 		private final List<String> infos = new ArrayList<>();
+		
+		/** The warns. */
 		private final List<String> warns = new ArrayList<>();
+		
+		/** The errs. */
 		private final List<String> errs = new ArrayList<>();
 		
+		/**
+		 * Instantiates a new validation report.
+		 *
+		 * @param f the f
+		 * @param failOnWarn the fail on warn
+		 */
 		ValidationReport(File f, boolean failOnWarn)
 		{
 			this.file = f;
@@ -2074,30 +2463,56 @@ public class JrxmlValidator
 			
 		}
 		
+		/**
+		 * Info.
+		 *
+		 * @param tag the tag
+		 * @param msg the msg
+		 */
 		void info(String tag, String msg)
 		{
 			this.infos.add("[" + tag + "] " + msg);
 			
 		}
 		
+		/**
+		 * Warn.
+		 *
+		 * @param tag the tag
+		 * @param msg the msg
+		 */
 		void warn(String tag, String msg)
 		{
 			this.warns.add("[" + tag + "] " + msg);
 			
 		}
 		
+		/**
+		 * Err.
+		 *
+		 * @param tag the tag
+		 * @param msg the msg
+		 */
 		void err(String tag, String msg)
 		{
 			this.errs.add("[" + tag + "] " + msg);
 			
 		}
 		
+		/**
+		 * Checks if is valid.
+		 *
+		 * @return true, if is valid
+		 */
 		boolean isValid()
 		{
 			return this.errs.isEmpty() && (!this.failOnWarn || this.warns.isEmpty());
 			
 		}
 		
+		/**
+		 * Prints the.
+		 */
 		void print()
 		{
 			System.out.println("\n=== " + this.file.getAbsolutePath() + " ===");

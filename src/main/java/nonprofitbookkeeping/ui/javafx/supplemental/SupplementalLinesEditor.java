@@ -26,19 +26,40 @@ import java.util.Map;
 import java.util.function.Function;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SupplementalLinesEditor.
+ */
 public class SupplementalLinesEditor extends VBox
 {
+	
+	/** The config. */
 	private final SupplementalLineConfig config;
+	
+	/** The rows. */
 	private final ObservableList<SupplementalLineRow> rows =
 		FXCollections.observableArrayList();
+	
+	/** The table. */
 	private final TableView<SupplementalLineRow> table =
 		new TableView<>(rows);
+	
+	/** The validation label. */
 	private final Label validationLabel = new Label();
+	
+	/** The entry refs. */
 	private final ObservableList<EntryRef> entryRefs =
 		FXCollections.observableArrayList();
+	
+	/** The person refs. */
 	private final ObservableList<PersonRef> personRefs =
 		FXCollections.observableArrayList();
 
+	/**
+	 * Instantiates a new supplemental lines editor.
+	 *
+	 * @param config the config
+	 */
 	public SupplementalLinesEditor(SupplementalLineConfig config)
 	{
 		this.config = config;
@@ -73,31 +94,61 @@ public class SupplementalLinesEditor extends VBox
 		VBox.setVgrow(this.table, Priority.ALWAYS);
 	}
 
+	/**
+	 * Sets the entry refs.
+	 *
+	 * @param refs the new entry refs
+	 */
 	public void setEntryRefs(List<EntryRef> refs)
 	{
 		this.entryRefs.setAll(refs);
 	}
 
+	/**
+	 * Sets the person refs.
+	 *
+	 * @param refs the new person refs
+	 */
 	public void setPersonRefs(List<PersonRef> refs)
 	{
 		this.personRefs.setAll(refs);
 	}
 
+	/**
+	 * Gets the rows.
+	 *
+	 * @return the rows
+	 */
 	public ObservableList<SupplementalLineRow> getRows()
 	{
 		return this.rows;
 	}
 
+	/**
+	 * Gets the config.
+	 *
+	 * @return the config
+	 */
 	public SupplementalLineConfig getConfig()
 	{
 		return this.config;
 	}
 
+	/**
+	 * Sets the rows.
+	 *
+	 * @param newRows the new rows
+	 */
 	public void setRows(Collection<SupplementalLineRow> newRows)
 	{
 		this.rows.setAll(newRows);
 	}
 
+	/**
+	 * Validate rows.
+	 *
+	 * @return the list
+	 */
 	public List<String> validateRows()
 	{
 		List<String> errors = new ArrayList<>();
@@ -144,6 +195,11 @@ public class SupplementalLinesEditor extends VBox
 		return errors;
 	}
 
+	/**
+	 * Validate and display.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean validateAndDisplay()
 	{
 		List<String> errors = validateRows();
@@ -156,6 +212,12 @@ public class SupplementalLinesEditor extends VBox
 		return false;
 	}
 
+	/**
+	 * Validate entry link sums.
+	 *
+	 * @param entryAmountLookup the entry amount lookup
+	 * @return the list
+	 */
 	public List<String> validateEntryLinkSums(Function<Long, BigDecimal> entryAmountLookup)
 	{
 		Map<Long, BigDecimal> sums = new HashMap<>();
@@ -191,6 +253,9 @@ public class SupplementalLinesEditor extends VBox
 		return errors;
 	}
 
+	/**
+	 * Builds the columns.
+	 */
 	private void buildColumns()
 	{
 		TableColumn<SupplementalLineRow, Long> entryCol =
@@ -267,10 +332,20 @@ public class SupplementalLinesEditor extends VBox
 		this.table.getColumns().add(notesCol);
 	}
 
+	/**
+	 * The Class EntryLinkCell.
+	 */
 	private static class EntryLinkCell extends TableCell<SupplementalLineRow, Long>
 	{
+		
+		/** The combo. */
 		private final ComboBox<EntryRef> combo;
 
+		/**
+		 * Instantiates a new entry link cell.
+		 *
+		 * @param entryRefs the entry refs
+		 */
 		EntryLinkCell(ObservableList<EntryRef> entryRefs)
 		{
 			this.combo = new ComboBox<>(entryRefs);
@@ -299,6 +374,9 @@ public class SupplementalLinesEditor extends VBox
 			});
 		}
 
+		/**
+		 * Override @see javafx.scene.control.TableCell#startEdit() 
+		 */
 		@Override
 		public void startEdit()
 		{
@@ -326,6 +404,9 @@ public class SupplementalLinesEditor extends VBox
 			}
 		}
 
+		/**
+		 * Override @see javafx.scene.control.TableCell#cancelEdit() 
+		 */
 		@Override
 		public void cancelEdit()
 		{
@@ -334,6 +415,9 @@ public class SupplementalLinesEditor extends VBox
 			setText(displayText(getItem()));
 		}
 
+		/**
+		 * Override @see javafx.scene.control.Cell#updateItem(java.lang.Object, boolean) 
+		 */
 		@Override
 		protected void updateItem(Long item, boolean empty)
 		{
@@ -357,6 +441,12 @@ public class SupplementalLinesEditor extends VBox
 			}
 		}
 
+		/**
+		 * Display text.
+		 *
+		 * @param entryId the entry id
+		 * @return the string
+		 */
 		private String displayText(Long entryId)
 		{
 			if (entryId == null)
@@ -367,10 +457,20 @@ public class SupplementalLinesEditor extends VBox
 		}
 	}
 
+	/**
+	 * The Class PersonLinkCell.
+	 */
 	private static class PersonLinkCell extends TableCell<SupplementalLineRow, Long>
 	{
+		
+		/** The combo. */
 		private final ComboBox<PersonRef> combo;
 
+		/**
+		 * Instantiates a new person link cell.
+		 *
+		 * @param personRefs the person refs
+		 */
 		PersonLinkCell(ObservableList<PersonRef> personRefs)
 		{
 			this.combo = new ComboBox<>(personRefs);
@@ -399,6 +499,9 @@ public class SupplementalLinesEditor extends VBox
 			});
 		}
 
+		/**
+		 * Override @see javafx.scene.control.TableCell#startEdit() 
+		 */
 		@Override
 		public void startEdit()
 		{
@@ -426,6 +529,9 @@ public class SupplementalLinesEditor extends VBox
 			}
 		}
 
+		/**
+		 * Override @see javafx.scene.control.TableCell#cancelEdit() 
+		 */
 		@Override
 		public void cancelEdit()
 		{
@@ -434,6 +540,9 @@ public class SupplementalLinesEditor extends VBox
 			setText(displayText(getItem()));
 		}
 
+		/**
+		 * Override @see javafx.scene.control.Cell#updateItem(java.lang.Object, boolean) 
+		 */
 		@Override
 		protected void updateItem(Long item, boolean empty)
 		{
@@ -457,6 +566,12 @@ public class SupplementalLinesEditor extends VBox
 			}
 		}
 
+		/**
+		 * Display text.
+		 *
+		 * @param personId the person id
+		 * @return the string
+		 */
 		private String displayText(Long personId)
 		{
 			if (personId == null)
@@ -467,11 +582,19 @@ public class SupplementalLinesEditor extends VBox
 		}
 	}
 
+	/**
+	 * The Class BigDecimalEditingCell.
+	 */
 	private static class BigDecimalEditingCell
 		extends TableCell<SupplementalLineRow, BigDecimal>
 	{
+		
+		/** The field. */
 		private final TextField field = new TextField();
 
+		/**
+		 * Instantiates a new big decimal editing cell.
+		 */
 		BigDecimalEditingCell()
 		{
 			this.field.setOnAction(event -> commitFromText());
@@ -484,6 +607,9 @@ public class SupplementalLinesEditor extends VBox
 			});
 		}
 
+		/**
+		 * Override @see javafx.scene.control.TableCell#startEdit() 
+		 */
 		@Override
 		public void startEdit()
 		{
@@ -493,6 +619,9 @@ public class SupplementalLinesEditor extends VBox
 			setText(null);
 		}
 
+		/**
+		 * Override @see javafx.scene.control.TableCell#cancelEdit() 
+		 */
 		@Override
 		public void cancelEdit()
 		{
@@ -501,6 +630,9 @@ public class SupplementalLinesEditor extends VBox
 			setText(getItem() == null ? "" : getItem().toPlainString());
 		}
 
+		/**
+		 * Override @see javafx.scene.control.Cell#updateItem(java.lang.Object, boolean) 
+		 */
 		@Override
 		protected void updateItem(BigDecimal item, boolean empty)
 		{
@@ -523,6 +655,9 @@ public class SupplementalLinesEditor extends VBox
 			}
 		}
 
+		/**
+		 * Commit from text.
+		 */
 		private void commitFromText()
 		{
 			if (!isEditing())
@@ -546,11 +681,19 @@ public class SupplementalLinesEditor extends VBox
 		}
 	}
 
+	/**
+	 * The Class DatePickerCell.
+	 */
 	private static class DatePickerCell extends TableCell<SupplementalLineRow, LocalDate>
 	{
+		
+		/** The picker. */
 		private final javafx.scene.control.DatePicker picker =
 			new javafx.scene.control.DatePicker();
 
+		/**
+		 * Instantiates a new date picker cell.
+		 */
 		DatePickerCell()
 		{
 			this.picker.setOnAction(event -> commitEdit(this.picker.getValue()));
@@ -563,6 +706,9 @@ public class SupplementalLinesEditor extends VBox
 			});
 		}
 
+		/**
+		 * Override @see javafx.scene.control.TableCell#startEdit() 
+		 */
 		@Override
 		public void startEdit()
 		{
@@ -572,6 +718,9 @@ public class SupplementalLinesEditor extends VBox
 			setText(null);
 		}
 
+		/**
+		 * Override @see javafx.scene.control.TableCell#cancelEdit() 
+		 */
 		@Override
 		public void cancelEdit()
 		{
@@ -580,6 +729,9 @@ public class SupplementalLinesEditor extends VBox
 			setText(getItem() == null ? "" : getItem().toString());
 		}
 
+		/**
+		 * Override @see javafx.scene.control.Cell#updateItem(java.lang.Object, boolean) 
+		 */
 		@Override
 		protected void updateItem(LocalDate item, boolean empty)
 		{

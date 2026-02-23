@@ -24,26 +24,51 @@ import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+// TODO: Auto-generated Javadoc
 /**
  * Action for generating a single-sheet Excel template report.
  */
 public class ExcelTemplateReportActionFX implements EventHandler<ActionEvent>
 {
+	
+	/** The owner. */
 	private final Stage owner;
+	
+	/** The report service. */
 	private final ExcelWorkbookPageReportService reportService =
 		new ExcelWorkbookPageReportService();
+	
+	/** The template field. */
 	private final TextField templateField = new TextField();
+	
+	/** The output field. */
 	private final TextField outputField = new TextField();
+	
+	/** The sheet field. */
 	private final TextField sheetField = new TextField();
+	
+	/** The field map field. */
 	private final TextField fieldMapField = new TextField();
+	
+	/** The bean class field. */
 	private final TextField beanClassField = new TextField();
+	
+	/** The sql area. */
 	private final TextArea sqlArea = new TextArea();
 
+	/**
+	 * Instantiates a new excel template report action FX.
+	 *
+	 * @param owner the owner
+	 */
 	public ExcelTemplateReportActionFX(Stage owner)
 	{
 		this.owner = owner;
 	}
 
+	/**
+	 * Override @see javafx.event.EventHandler#handle(javafx.event.Event) 
+	 */
 	@Override
 	public void handle(ActionEvent event)
 	{
@@ -146,6 +171,14 @@ public class ExcelTemplateReportActionFX implements EventHandler<ActionEvent>
 		});
 	}
 
+	/**
+	 * Builds the file picker row.
+	 *
+	 * @param target the target
+	 * @param buttonText the button text
+	 * @param handler the handler
+	 * @return the h box
+	 */
 	private HBox buildFilePickerRow(TextField target, String buttonText,
 		EventHandler<ActionEvent> handler)
 	{
@@ -156,6 +189,11 @@ public class ExcelTemplateReportActionFX implements EventHandler<ActionEvent>
 		return box;
 	}
 
+	/**
+	 * Choose template file.
+	 *
+	 * @param event the event
+	 */
 	private void chooseTemplateFile(ActionEvent event)
 	{
 		FileChooser chooser = new FileChooser();
@@ -172,6 +210,11 @@ public class ExcelTemplateReportActionFX implements EventHandler<ActionEvent>
 		}
 	}
 
+	/**
+	 * Choose output file.
+	 *
+	 * @param event the event
+	 */
 	private void chooseOutputFile(ActionEvent event)
 	{
 		FileChooser chooser = new FileChooser();
@@ -188,11 +231,24 @@ public class ExcelTemplateReportActionFX implements EventHandler<ActionEvent>
 		}
 	}
 
+	/**
+	 * Checks if is blank.
+	 *
+	 * @param value the value
+	 * @return true, if is blank
+	 */
 	private boolean isBlank(String value)
 	{
 		return value == null || value.trim().isEmpty();
 	}
 
+	/**
+	 * Validate inputs.
+	 *
+	 * @param templateFile the template file
+	 * @param outputFile the output file
+	 * @return true, if successful
+	 */
 	private boolean validateInputs(File templateFile, File outputFile)
 	{
 		if (!templateFile.exists() || !templateFile.isFile())
@@ -213,6 +269,12 @@ public class ExcelTemplateReportActionFX implements EventHandler<ActionEvent>
 		return true;
 	}
 
+	/**
+	 * Sets the initial directory.
+	 *
+	 * @param chooser the chooser
+	 * @param pathValue the path value
+	 */
 	private void setInitialDirectory(FileChooser chooser, String pathValue)
 	{
 		if (pathValue == null || pathValue.isBlank())
@@ -234,6 +296,11 @@ public class ExcelTemplateReportActionFX implements EventHandler<ActionEvent>
 		}
 	}
 
+	/**
+	 * Remember last directory.
+	 *
+	 * @param file the file
+	 */
 	private void rememberLastDirectory(File file)
 	{
 		if (file == null)
@@ -247,6 +314,11 @@ public class ExcelTemplateReportActionFX implements EventHandler<ActionEvent>
 		}
 	}
 
+	/**
+	 * Remember last write directory.
+	 *
+	 * @param file the file
+	 */
 	private void rememberLastWriteDirectory(File file)
 	{
 		if (file == null)

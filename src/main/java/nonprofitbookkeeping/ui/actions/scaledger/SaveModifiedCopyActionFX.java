@@ -12,6 +12,7 @@ import nonprofitbookkeeping.plugins.scaledger.SCALedgerPlugin;
 import nonprofitbookkeeping.plugins.scaledger.ui.PageViewerPanel; // Added
 import nonprofitbookkeeping.preferences.PreferencesManager;
 
+// TODO: Auto-generated Javadoc
 /**
  * JavaFX equivalent of the Swing {@code SaveModifiedCopyAction}. Saves the
  * edited XLSM workbook to a user-chosen location. Relies on

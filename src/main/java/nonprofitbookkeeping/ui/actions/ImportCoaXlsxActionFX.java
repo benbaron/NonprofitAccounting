@@ -18,22 +18,33 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// TODO: Auto-generated Javadoc
 /**
  * Handles the action of importing a Chart of Accounts from an XLSX file.
  */
 public class ImportCoaXlsxActionFX implements EventHandler<ActionEvent>
 {
 	
+	/** The Constant logger. */
 	private static final Logger logger =
 		LoggerFactory.getLogger(ImportCoaXlsxActionFX.class);
 	
+	/** The owner stage. */
 	private final Stage ownerStage;
 	
+	/**
+	 * Instantiates a new import coa xlsx action FX.
+	 *
+	 * @param ownerStage the owner stage
+	 */
 	public ImportCoaXlsxActionFX(Stage ownerStage)
 	{
 		this.ownerStage = ownerStage;
 	}
 	
+	/**
+	 * Override @see javafx.event.EventHandler#handle(javafx.event.Event) 
+	 */
 	@Override public void handle(ActionEvent event)
 	{
 		FileChooser fileChooser = new FileChooser();

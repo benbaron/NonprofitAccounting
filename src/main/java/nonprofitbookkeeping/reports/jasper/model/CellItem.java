@@ -5,6 +5,8 @@ package nonprofitbookkeeping.reports.jasper.model;
  */
 public final class CellItem
 {
+    
+    /** The row. */
     private final int row;
     private final int col;
     private final boolean dynamic;

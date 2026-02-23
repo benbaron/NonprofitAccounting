@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 
 package nonprofitbookkeeping.api;
 
@@ -5,12 +8,13 @@ import java.math.BigDecimal;
 
 import nonprofitbookkeeping.model.AccountSide;
 
+// TODO: Auto-generated Javadoc
 /**
- * 
+ * The Interface AccountDetails.
  */
 public interface AccountDetails
-{	
-
+{
+	
 	/**
 	 * Gets the account number.
 	 * @return The account number.
@@ -21,19 +25,20 @@ public interface AccountDetails
 	 * Gets the side where the account increases.
 	 * @return The side where the account increases.
 	 */
-        AccountSide getIncreaseSide();
-
-        /**
-         * Returns the effective increase side for this account.
-         * Implementations may override to provide a derived value, but by default
-         * this simply returns {@link #getIncreaseSide()}.
-         *
-         * @return the effective increase side
-         */
-        default AccountSide getEffectiveIncreaseSide()
-        {
-                return getIncreaseSide();
-        }
+	AccountSide getIncreaseSide();
+	
+	/**
+	 * Returns the effective increase side for this account.
+	 * Implementations may override to provide a derived value, but by default
+	 * this simply returns {@link #getIncreaseSide()}.
+	 *
+	 * @return the effective increase side
+	 */
+	default AccountSide getEffectiveIncreaseSide()
+	{
+		return getIncreaseSide();
+		
+	}
 	
 	/**
 	 * Gets the name of the account.
@@ -65,31 +70,31 @@ public interface AccountDetails
 	 * @return The name of the account.
 	 */
 	String getAccountName();
-
+	
 	/**
 	 * Gets the account code.
 	 * @return The account code.
 	 */
 	String getAccountCode();
-
+	
 	/**
 	 * Gets the account type.
 	 * @return The account type.
 	 */
 	String getAccountType();
-
-        /**
-         * Gets the parent account identifier.
-         * @return The parent account number or ID.
-         */
-        String getParentAccount();
-
+	
+	/**
+	 * Gets the parent account identifier.
+	 * @return The parent account number or ID.
+	 */
+	String getParentAccount();
+	
 	/**
 	 * Gets the currency of the account.
 	 * @return The currency of the account.
 	 */
 	String getCurrency();
-
+	
 	/**
 	 * Gets the opening balance of the account.
 	 * @return The opening balance of the account.
@@ -102,20 +107,23 @@ public interface AccountDetails
 	 * @param o The reference object with which to compare.
 	 * @return {@code true} if this object is the same as the obj argument; {@code false} otherwise.
 	 */
-	@Override boolean equals(java.lang.Object o);
+	@Override
+	boolean equals(java.lang.Object o);
 	
 	/**
 	 * Returns a hash code value for the object.
 	 * @return A hash code value for this object.
 	 */
-	@Override int hashCode();
+	@Override
+	int hashCode();
 	
 	
 	/**
 	 * Returns a string representation of the object.
 	 * @return A string representation of the object.
 	 */
-	@Override String toString();
+	@Override
+	String toString();
 	
 	
 }

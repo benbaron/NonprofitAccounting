@@ -3,6 +3,10 @@ package nonprofitbookkeeping.api;
 
 import nonprofitbookkeeping.model.CompanyProfileModel;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Interface CompanyCreatedCallback.
+ */
 @FunctionalInterface
 public interface CompanyCreatedCallback
 {

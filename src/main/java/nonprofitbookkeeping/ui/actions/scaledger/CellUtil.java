@@ -10,17 +10,29 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
 
+// TODO: Auto-generated Javadoc
 /**
  * Helpers for extracting typed values from POI cells,
  * with sane fallbacks, without throwing.
  */
 public final class CellUtil
 {
+	
+	/**
+	 * Instantiates a new cell util.
+	 */
 	private CellUtil()
 	{
 	
 	}
 	
+	/**
+	 * Read string.
+	 *
+	 * @param row the row
+	 * @param colIdx the col idx
+	 * @return the string
+	 */
 	public static String readString(Row row, int colIdx)
 	{
 		
@@ -58,6 +70,13 @@ public final class CellUtil
 		
 	}
 	
+	/**
+	 * Read date.
+	 *
+	 * @param row the row
+	 * @param colIdx the col idx
+	 * @return the local date
+	 */
 	public static LocalDate readDate(Row row, int colIdx)
 	{
 		
@@ -93,6 +112,13 @@ public final class CellUtil
 		
 	}
 	
+	/**
+	 * Read amount.
+	 *
+	 * @param row the row
+	 * @param colIdx the col idx
+	 * @return the big decimal
+	 */
 	public static BigDecimal readAmount(Row row, int colIdx)
 	{
 		

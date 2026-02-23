@@ -8,6 +8,7 @@ import java.util.List;
 import nonprofitbookkeeping.exception.ActionCancelledException;
 import nonprofitbookkeeping.exception.NoFileCreatedException;
 
+// TODO: Auto-generated Javadoc
 /**
  * Abstraction for JSON-backed persistence of domain objects.
  * <p>
@@ -27,7 +28,7 @@ public interface DataStorer
 	 * @return the deserialized object
 	 * @throws IOException if an error occurs while reading or parsing the file
 	 * @throws ActionCancelledException if file chooser is cancelled
-	 * @throws NoFileCreatedException 
+	 * @throws NoFileCreatedException the no file created exception
 	 */
 	<T> T loadData(Class<T> type, File file)
 		throws IOException, ActionCancelledException,
@@ -40,7 +41,7 @@ public interface DataStorer
 	 * @param file  the file to write to
 	 * @throws IOException if an error occurs while writing the file
 	 * @throws ActionCancelledException if file chooser is cancelled
-	 * @throws NoFileCreatedException 
+	 * @throws NoFileCreatedException the no file created exception
 	 */
 	void saveData(Object obj, File file)
 		throws IOException, ActionCancelledException,
