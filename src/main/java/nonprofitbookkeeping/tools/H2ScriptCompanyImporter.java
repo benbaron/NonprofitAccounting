@@ -2,7 +2,6 @@
 package nonprofitbookkeeping.tools;
 
 import nonprofitbookkeeping.core.Database;
-import org.h2.tools.RunScript;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -11,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * Imports company data that has been exported as a standard H2 SQL script.
@@ -18,18 +18,17 @@ import java.sql.SQLException;
  * The script is expected to have been produced by the dedicated migration
  * utility that converts legacy <code>.npbk</code> archives into H2 scripts.
  * It can therefore contain <code>DROP</code>, <code>CREATE</code>, and
- * <code>INSERT</code> statements that fully hydrate the database.  The method
- * simply streams the script into the active H2 connection using
- * {@link RunScript}.
+ * <code>INSERT</code> statements that fully hydrate the database. The method
+ * executes the script contents through JDBC.
  */
 public final class H2ScriptCompanyImporter
 {
-	
+
 	private H2ScriptCompanyImporter()
 	{
-	
+
 	}
-	
+
 	/**
 	 * Import the provided SQL script into the currently open H2 database.
 	 *
@@ -40,25 +39,36 @@ public final class H2ScriptCompanyImporter
 	public static void importScript(Path scriptFile)
 		throws IOException, SQLException
 	{
-		
+
 		if (scriptFile == null)
 		{
 			throw new IllegalArgumentException("scriptFile cannot be null");
 		}
-		
+
 		if (!Files.exists(scriptFile))
 		{
 			throw new IOException(
 				"Script not found: " + scriptFile.toAbsolutePath());
 		}
-		
+
 		try (Connection connection = Database.get().getConnection();
 			Reader reader =
 				Files.newBufferedReader(scriptFile, StandardCharsets.UTF_8))
 		{
-			RunScript.execute(connection, reader);
+			StringBuilder sql = new StringBuilder();
+			char[] buffer = new char[4096];
+			int read;
+			while ((read = reader.read(buffer)) != -1)
+			{
+				sql.append(buffer, 0, read);
+			}
+
+			try (Statement statement = connection.createStatement())
+			{
+				statement.execute(sql.toString());
+			}
 		}
-		
+
 	}
-	
+
 }
