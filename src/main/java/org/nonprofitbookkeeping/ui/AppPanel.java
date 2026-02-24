@@ -11,7 +11,6 @@ public interface AppPanel
     Node root();
 
     default void onSave() {}
-    default void onPostValidate() {}
     default void onNew() {}
     default void onCopy() {}
     default void onPaste() {}
