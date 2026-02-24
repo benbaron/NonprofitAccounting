@@ -173,3 +173,173 @@ ui_mix_map_template:
   acceptance:
     - "No placeholder alerts in selected flows"
     - "Selected route opens within 250ms on warm navigation"
+
+
+keys_guide:
+  purpose: "Defines key meanings and normalizes terminology across map_a, map_b, and ui_mix_map_template."
+  canonical_terms:
+    shell: "Top-level layout frame (menu/nav/inspector/container), not a single content panel."
+    route:
+      meaning: "A navigable target in a shell."
+      map_a_key: "route_id"
+      map_b_key: "panel_type"
+      canonical_name: "screen_id"
+    component: "Concrete Java class/pane that renders content for a route."
+    quality: "Implementation maturity label (skeleton, partially_wired, functional_*, etc.)."
+    notes: "Human-readable migration/replacement guidance."
+  map_a_key_definitions:
+    name: "Label for this map."
+    shell:
+      layout: "Ordered list of visible shell regions."
+      routing_key: "Enum/type used for route lookup in code."
+      navigation_groups: "How routes are grouped in current nav tree."
+    routes:
+      route_id: "Map A route identifier from AppPanelId (canonical: screen_id)."
+      class: "Current renderer class bound to that route."
+      quality: "Current implementation maturity for that route."
+      notes: "Behavioral/status notes for migration planning."
+    caveats: "Known shell-level constraints affecting all routes."
+  map_b_key_definitions:
+    name: "Label for this map."
+    shell:
+      layout: "High-level shell regions for Map B."
+      center_modes: "Center-area mode switching rules."
+      routing_key: "Enum/type used for tab/route lookup in code."
+    routes:
+      panel_type: "Map B route identifier from MainApplicationView.PanelType (canonical: screen_id)."
+      tab_title: "Current user-visible tab label."
+      quality: "Current implementation maturity for that route."
+      notes: "Behavioral/status notes for migration planning."
+    companion_components:
+      component: "Reusable source component candidates for migration."
+      quality: "Maturity of candidate component(s)."
+      notes: "Where/how to reuse in Map A migrations."
+
+ui_mix_map_grammar:
+  required_top_level_keys:
+    - shell_choice
+    - panel_selection
+  optional_top_level_keys:
+    - flow_priority
+    - inspector_behavior
+    - acceptance
+  shell_choice:
+    top_shell:
+      type: string
+      allowed_values:
+        - org.nonprofitbookkeeping.ui
+        - nonprofitbookkeeping.ui
+        - hybrid
+    nav_style:
+      type: string
+      allowed_values:
+        - left-tree
+        - tabbed
+        - hybrid
+    inspector:
+      type: string
+      allowed_values:
+        - required
+        - optional
+        - none
+  panel_selection_item:
+    required_keys:
+      - target_route
+      - source
+      - source_component
+      - keep_route_id
+    key_definitions:
+      target_route: "Destination route in target shell (Map A route_id or Map B panel_type)."
+      source: "Namespace providing the pane/component to reuse."
+      source_component: "Concrete component/class to embed or adapt."
+      keep_route_id: "If true, preserve current target route key and swap renderer only."
+      notes: "Optional implementation notes."
+  flow_priority_item:
+    required_keys:
+      - id
+      - must_work_first
+      - steps
+    key_definitions:
+      id: "Stable flow identifier."
+      must_work_first: "Marks top-priority flow for first implementation pass."
+      steps: "Ordered user actions to validate end-to-end flow."
+  inspector_behavior_item:
+    required_keys:
+      - context
+      - show
+    key_definitions:
+      context: "Selection/action context that triggers inspector update."
+      show: "Ordered sections/fields expected in inspector content."
+  acceptance_item:
+    type: string
+    meaning: "Testable acceptance statement for migrated behavior."
+  authoring_rules:
+    - "Use quoted strings for route/component names containing punctuation."
+    - "Use booleans (true/false) only for logical flags such as keep_route_id."
+    - "Treat target_route as the canonical screen_id regardless of map source naming."
+    - "When one source item maps to multiple target routes, create one panel_selection entry per target route."
+
+
+next_iteration_prompt_template:
+  purpose: "Copy/paste prompt you can send back with your updated mix map for the next implementation pass."
+  updated_map_location:
+    repository_path: "doc/user-manual/ui-map-spec.yaml"
+    map_key_name: "ui_mix_map_request"
+    note: "Keep map_a and map_b as references; place your edited request under ui_mix_map_request."
+  prompt: |
+    Please implement the next UI migration iteration using the updated map at:
+    - file: doc/user-manual/ui-map-spec.yaml
+    - key: ui_mix_map_request
+
+    Work only from ui_mix_map_request for requested behavior, and use ui_maps.map_a / ui_maps.map_b as source references.
+
+    Implementation expectations:
+    1) Replace or adapt the selected panes/components exactly as mapped in panel_selection.
+    2) Preserve existing route IDs when keep_route_id=true.
+    3) Implement the listed flow_priority items in order, starting with must_work_first=true flows.
+    4) Implement inspector_behavior contexts and displayed sections.
+    5) Satisfy all acceptance statements.
+
+    Validation and reporting:
+    - Run mvn test after making changes and report results.
+    - Provide a brief code review of the changes you made (risks, follow-ups, and any technical debt observed).
+    - If tests fail, include root cause and your proposed fix.
+
+    Output format:
+    - Summary of changed files
+    - Test results
+    - Code review findings
+    - Offer to fix any issues found
+  ui_mix_map_request_example:
+    shell_choice:
+      top_shell: "hybrid"
+      nav_style: "left-tree"
+      inspector: "required"
+    panel_selection:
+      - target_route: "LEDGER_REGISTER"
+        source: "nonprofitbookkeeping.ui"
+        source_component: "JournalPanelFX"
+        keep_route_id: true
+        notes: "Use as register center pane and preserve existing route wiring"
+      - target_route: "TXN_EDITOR"
+        source: "nonprofitbookkeeping.ui"
+        source_component: "JournalEntryWorkspaceFX"
+        keep_route_id: true
+        notes: "Open from ledger row double-click and New action"
+    flow_priority:
+      - id: "daily-cash-receipt"
+        must_work_first: true
+        steps:
+          - "Open ledger"
+          - "Create transaction"
+          - "Post/validate"
+          - "Return and verify entry"
+    inspector_behavior:
+      - context: "ledger-row-select"
+        show:
+          - "txn-summary"
+          - "drcr-preview"
+          - "audit-fields"
+    acceptance:
+      - "No placeholder alerts in selected flows"
+      - "Selected route opens within 250ms on warm navigation"
