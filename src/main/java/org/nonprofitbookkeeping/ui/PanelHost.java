@@ -4,8 +4,6 @@ import javafx.scene.layout.BorderPane;
 
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 /**
  * Represents the PanelHost component in the nonprofit bookkeeping application.
@@ -13,15 +11,7 @@ import java.util.function.Consumer;
 public class PanelHost extends BorderPane
 {
     private final Map<AppPanelId, AppPanel> panels = new EnumMap<>(AppPanelId.class);
-    private final Consumer<AppPanelId> navigator;
-    private final BiConsumer<String, String> inspector;
     private AppPanelId activeId;
-
-    public PanelHost(Consumer<AppPanelId> navigator, BiConsumer<String, String> inspector)
-    {
-        this.navigator = navigator;
-        this.inspector = inspector;
-    }
 
     public void show(AppPanelId id)
     {
@@ -37,7 +27,6 @@ public class PanelHost extends BorderPane
     }
 
     public void saveActive() { AppPanel p = getActive(); if (p != null) p.onSave(); }
-    public void postValidateActive() { AppPanel p = getActive(); if (p != null) p.onPostValidate(); }
     public void newItemActive() { AppPanel p = getActive(); if (p != null) p.onNew(); }
     public void copySelectionActive() { AppPanel p = getActive(); if (p != null) p.onCopy(); }
     public void pasteActive() { AppPanel p = getActive(); if (p != null) p.onPaste(); }
@@ -50,10 +39,8 @@ public class PanelHost extends BorderPane
         {
             case DASHBOARD -> new DashboardPanel();
 
-            case LEDGER_REGISTER -> new LedgerRegisterPanel(
-                () -> navigator.accept(AppPanelId.TXN_EDITOR), inspector);
-            case TXN_EDITOR -> new TransactionEditorPanel(
-                () -> navigator.accept(AppPanelId.LEDGER_REGISTER));
+            case LEDGER_REGISTER -> new LedgerRegisterPanel();
+            case TXN_EDITOR -> new TransactionEditorPanel();
 
             case SCHEDULES -> new SchedulesPanel();
 

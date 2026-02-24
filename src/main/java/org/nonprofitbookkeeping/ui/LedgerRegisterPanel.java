@@ -1,41 +1,24 @@
 package org.nonprofitbookkeeping.ui;
 
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
-import javafx.scene.control.ToolBar;
-import javafx.scene.input.MouseButton;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import nonprofitbookkeeping.model.AccountingTransaction;
-import nonprofitbookkeeping.ui.panels.JournalPanelFX;
-
-import java.math.BigDecimal;
-import java.util.function.BiConsumer;
 
 /**
- * Ledger register route backed by the migrated JournalPanelFX component.
+ * Represents the LedgerRegisterPanel component in the nonprofit bookkeeping application.
  */
 public class LedgerRegisterPanel implements AppPanel
 {
     private final BorderPane root = new BorderPane();
-    private final JournalPanelFX journalPanel = new JournalPanelFX();
-    private final Runnable openTxnEditor;
-    private final BiConsumer<String, String> inspector;
-    private TableView<AccountingTransaction> table;
+    private final TableView<Row> txnTable = new TableView<>();
 
-    public LedgerRegisterPanel(Runnable openTxnEditor, BiConsumer<String, String> inspector)
+    public LedgerRegisterPanel()
     {
-        this.openTxnEditor = openTxnEditor;
-        this.inspector = inspector;
-
         root.setPadding(new Insets(8));
 
         Label title = new Label("Ledger Register");
@@ -49,108 +32,86 @@ public class LedgerRegisterPanel implements AppPanel
 
         VBox header = new VBox(6, title, range, actions, new Separator());
         root.setTop(header);
-        root.setCenter(journalPanel);
+
+        buildTable();
+        root.setCenter(txnTable);
 
         newTxn.setOnAction(e -> onNew());
-        open.setOnAction(e -> openTxnEditor.run());
+        open.setOnAction(e -> openSelected());
 
-        Platform.runLater(this::wireJournalInteractions);
-    }
-
-    private void wireJournalInteractions()
-    {
-        table = findFirst(journalPanel, TableView.class);
-        ToolBar toolbar = findFirst(journalPanel, ToolBar.class);
-
-        if (toolbar != null)
-        {
-            for (Node item : toolbar.getItems())
-            {
-                if (item instanceof Button button && "New".equals(button.getText()))
+        txnTable.setRowFactory(tv -> {
+            TableRow<Row> r = new TableRow<>();
+            r.setOnMouseClicked(e -> {
+                if (r.isEmpty()) return;
+                if (e.getClickCount() == 2 && e.getButton() == javafx.scene.input.MouseButton.PRIMARY)
                 {
-                    button.setOnAction(e -> openTxnEditor.run());
+                    openRow(r.getItem());
                 }
-            }
-        }
-
-        if (table == null)
-        {
-            return;
-        }
-
-        table.setRowFactory(tv -> {
-            TableRow<AccountingTransaction> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                if (row.isEmpty())
+                if (e.getButton() == javafx.scene.input.MouseButton.SECONDARY)
                 {
-                    return;
-                }
-                AccountingTransaction tx = row.getItem();
-                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1)
-                {
-                    inspector.accept("Ledger Selection", inspectorBody(tx));
-                }
-                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2)
-                {
-                    openTxnEditor.run();
+                    ContextMenu cm = new ContextMenu();
+                    MenuItem details = new MenuItem("Show Details");
+                    details.setOnAction(ev -> showDetails(r.getItem()));
+                    cm.getItems().add(details);
+                    r.setContextMenu(cm);
                 }
             });
-            return row;
+            return r;
         });
+
+        txnTable.getItems().addAll(
+            new Row("2026-01-05", "Payee A", "Memo A", "Cash/Bank", "Posted"),
+            new Row("2026-01-12", "Payee B", "Memo B", "Cash/Bank", "Posted")
+        );
     }
 
-    private String inspectorBody(AccountingTransaction tx)
+    private void buildTable()
     {
-        return "txn-summary\n"
-            + "- id: " + tx.getId() + "\n"
-            + "- date: " + tx.getDate() + "\n"
-            + "- memo: " + safe(tx.getMemo()) + "\n\n"
-            + "drcr-preview\n"
-            + "- debit: " + safe(tx.getDebit()) + "\n"
-            + "- credit: " + safe(tx.getCredit()) + "\n\n"
-            + "audit-fields\n"
-            + "- to/from: " + safe(tx.getToFrom()) + "\n"
-            + "- check #: " + safe(tx.getCheckNumber()) + "\n"
-            + "- cleared bank: " + safe(tx.getClearBank());
+        txnTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+        txnTable.getColumns().add(col("Date", Row::date));
+        txnTable.getColumns().add(col("Payee", Row::payee));
+        txnTable.getColumns().add(col("Memo", Row::memo));
+        txnTable.getColumns().add(col("Bank", Row::bank));
+        txnTable.getColumns().add(col("Status", Row::status));
     }
 
-    private static String safe(String text)
+    private TableColumn<Row, String> col(String name, java.util.function.Function<Row, String> getter)
     {
-        return (text == null || text.isBlank()) ? "—" : text;
+        TableColumn<Row, String> c = new TableColumn<>(name);
+        c.setCellValueFactory(v -> new SimpleStringProperty(getter.apply(v.getValue())));
+        return c;
     }
 
-    private static String safe(BigDecimal value)
+    private void openSelected()
     {
-        return value == null ? "0" : value.toPlainString();
+        Row sel = txnTable.getSelectionModel().getSelectedItem();
+        if (sel != null) openRow(sel);
     }
 
-    @SuppressWarnings("unchecked")
-    private static <T> T findFirst(Node rootNode, Class<T> type)
+    private void openRow(Row row)
     {
-        if (type.isInstance(rootNode))
-        {
-            return (T) rootNode;
-        }
-        if (rootNode instanceof javafx.scene.Parent parent)
-        {
-            for (Node child : parent.getChildrenUnmodifiable())
-            {
-                T found = findFirst(child, type);
-                if (found != null)
-                {
-                    return found;
-                }
-            }
-        }
-        return null;
+        Alert a = new Alert(Alert.AlertType.INFORMATION, "Open in Transaction Editor (placeholder): " + row.date());
+        a.setHeaderText("Open Transaction");
+        a.showAndWait();
+    }
+
+    private void showDetails(Row row)
+    {
+        Alert a = new Alert(Alert.AlertType.INFORMATION,
+            "Details placeholder for txn:\nDate: " + row.date() + "\nPayee: " + row.payee() + "\nMemo: " + row.memo());
+        a.setHeaderText("Details");
+        a.showAndWait();
     }
 
     @Override public String title() { return "Ledger Register"; }
     @Override public Node root() { return root; }
 
-    @Override
-    public void onNew()
+    @Override public void onNew()
     {
-        openTxnEditor.run();
+        Alert a = new Alert(Alert.AlertType.INFORMATION, "New transaction (placeholder) -> opens Transaction Editor.");
+        a.setHeaderText("New Transaction");
+        a.showAndWait();
     }
+
+    public record Row(String date, String payee, String memo, String bank, String status) {}
 }
