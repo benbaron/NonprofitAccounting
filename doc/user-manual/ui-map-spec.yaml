@@ -1,6 +1,6 @@
-ui_maps:
+
 	
-	ui_mix_map_template:
+	ui_mix_map_request:
 	  shell_choice:
 	    top_shell: "hybrid"
 	        - Keep the top menu bar from org.nonprofitbookkeeping, add items from nonprofitbookkeeping into it
