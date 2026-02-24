@@ -10,9 +10,9 @@ import javafx.scene.layout.*;
  */
 public class MainWindow extends BorderPane
 {
-    private final PanelHost panelHost = new PanelHost();
     private final InspectorPane inspectorPane = new InspectorPane();
     private final NavigationPane nav = new NavigationPane(this::openPanel, this::openInspectorForSelection);
+    private final PanelHost panelHost = new PanelHost(this::openPanel, this::openInspectorForSelection);
     private DateRangeSelector dateRangeSelector;
 
     public MainWindow()
@@ -71,7 +71,7 @@ public class MainWindow extends BorderPane
 
         Menu run = new Menu("Run");
         run.getItems().addAll(
-            item("Post / Validate", null, () -> info("Posting not wired in UI yet.")),
+            item("Post / Validate", null, this::postValidateActivePanel),
             item("Recalculate summaries", null, () -> info("Recalculate not wired yet."))
         );
 
@@ -82,9 +82,7 @@ public class MainWindow extends BorderPane
         );
 
         Menu help = new Menu("Help");
-        help.getItems().addAll(
-            item("About", null, () -> info("SCA Ledger prototype shell."))
-        );
+        help.getItems().addAll(item("About", null, () -> info("SCA Ledger prototype shell.")));
 
         return new MenuBar(file, edit, search, run, tools, help);
     }
@@ -111,7 +109,6 @@ public class MainWindow extends BorderPane
         return tb;
     }
 
-    
     private void focusDateRangeSelector()
     {
         if (dateRangeSelector == null) return;
@@ -119,7 +116,7 @@ public class MainWindow extends BorderPane
         dateRangeSelector.presetBox().show();
     }
 
-private MenuItem item(String text, String accel, Runnable action)
+    private MenuItem item(String text, String accel, Runnable action)
     {
         MenuItem mi = new MenuItem(text);
         if (accel != null) mi.setAccelerator(KeyCombination.keyCombination(accel));
@@ -127,7 +124,6 @@ private MenuItem item(String text, String accel, Runnable action)
         return mi;
     }
 
-    // --- hooks ---
     public void openPanel(AppPanelId id)
     {
         panelHost.show(id);
@@ -147,7 +143,11 @@ private MenuItem item(String text, String accel, Runnable action)
     public void saveActivePanel()
     {
         panelHost.saveActive();
-        info("Save: " + panelHost.getActiveTitle());
+    }
+
+    public void postValidateActivePanel()
+    {
+        panelHost.postValidateActive();
     }
 
     public void newItemInActivePanel()
