@@ -1,0 +1,422 @@
+app: NonprofitBookkeeping.UI
+version: 1
+source_of_truth:
+  - src/main/java/org/nonprofitbookkeeping/ui/MainWindow.java
+  - src/main/java/org/nonprofitbookkeeping/ui/NavigationPane.java
+  - src/main/java/org/nonprofitbookkeeping/ui/PanelHost.java
+
+
+field_semantics:
+  id:
+    meaning: "Unique node identifier within this YAML map (not a Java class name)."
+    kind: "documentation key"
+    must_be_unique: true
+    resolution_rule: "May be referenced by parent, replaces, flows[*]_path entries, and diff_summary."
+  target:
+    meaning: "Action destination key. Usually references another id in this map, or a shell-level action key listed in target_registry."
+    kind: "id reference or action key"
+    resolution_rule: "If target is a panel/view, it should match some views.present/proposed id. If it is behavior, it should match target_registry. Navigable leaf panes in the left tree should use a self target (target == id)."
+  trigger:
+    meaning: "Interaction pattern that activates an action (UX event descriptor, not Java symbol)."
+    kind: "interaction token"
+    resolution_rule: "Should be chosen from trigger_registry for consistency."
+  panel_class:
+    meaning: "Fully-qualified Java class that implements or hosts the pane/view represented by this node."
+    kind: "runtime implementation reference"
+    resolution_rule: "Required for self-targeted pane nodes (target == id). For proposed nodes without implementation, use planned class name and add a migration note."
+
+target_registry:
+  active_panel_new: "Dispatches panelHost.newItemActive() from shell new action."
+  active_panel_save: "Dispatches panelHost.saveActive()."
+  active_panel_copy: "Dispatches panelHost.copySelectionActive()."
+  active_panel_paste: "Dispatches panelHost.pasteActive()."
+  inspector_search: "Opens inspector search placeholder."
+  inspector_journal: "Opens inspector journal placeholder."
+  inspector_info_open_not_wired: "Info message for unimplemented Open action."
+  inspector_info_export_not_wired: "Info message for unimplemented Export action."
+  inspector_info_undo_not_wired: "Info message for unimplemented Undo action."
+  inspector_info_redo_not_wired: "Info message for unimplemented Redo action."
+  inspector_info_cut_not_wired: "Info message for unimplemented Cut action."
+  inspector_info_go_to_not_wired: "Info message for unimplemented Go to action."
+  inspector_info_posting_not_wired: "Info message for unimplemented Post/Validate action."
+  inspector_info_recalc_not_wired: "Info message for unimplemented recalculate action."
+  inspector_info_tools_not_wired: "Info message for unimplemented tools action."
+  inspector_info_about: "About text shown in inspector."
+  toolbar_date_range_selector: "Moves focus to DateRangeSelector preset picker."
+  global_date_range: "Global date range control in toolbar."
+  app_exit: "Terminates application."
+  selection_driven_details: "Context details from right-clicked navigation item."
+  search_placeholder: "Search placeholder content in inspector."
+  journal_placeholder: "Journal placeholder content in inspector."
+
+trigger_registry:
+  click: "Primary click/tap interaction."
+  click_or_ctrl_n: "Menu click or keyboard accelerator Ctrl+N."
+  click_or_ctrl_s: "Menu click or keyboard accelerator Ctrl+S."
+  click_or_ctrl_z: "Menu click or keyboard accelerator Ctrl+Z."
+  click_or_ctrl_y: "Menu click or keyboard accelerator Ctrl+Y."
+  click_or_ctrl_x: "Menu click or keyboard accelerator Ctrl+X."
+  click_or_ctrl_c: "Menu click or keyboard accelerator Ctrl+C."
+  click_or_ctrl_v: "Menu click or keyboard accelerator Ctrl+V."
+  click_or_ctrl_f: "Menu click or keyboard accelerator Ctrl+F."
+  click_or_ctrl_g: "Menu click or keyboard accelerator Ctrl+G."
+  right_click_tree_item: "Secondary-click on selected navigation tree row."
+  find_actions: "Invoked from Find button/menu pathways."
+  toolbar_journal: "Invoked from toolbar Journal button."
+
+views:
+  present:
+    - id: app_shell
+      title: MainWindow shell
+      type: pane
+      route: shell://main
+      parent: null
+      menu_entry:
+        label: Application Shell
+        location: hidden
+      children:
+        - id: top_chrome
+          title: Top chrome
+          type: pane
+          menu_entry:
+            label: Top Chrome
+            location: hidden
+          children:
+            - id: file_menu
+              title: File
+              type: menu
+              menu_entry:
+                label: File
+                location: topbar
+                order: 1
+              actions:
+                - id: file_new
+                  label: New
+                  target: active_panel_new
+                  trigger: click_or_ctrl_n
+                - id: file_open
+                  label: Open…
+                  target: inspector_info_open_not_wired
+                  trigger: click
+                - id: file_save
+                  label: Save
+                  target: active_panel_save
+                  trigger: click_or_ctrl_s
+                - id: file_export
+                  label: Export…
+                  target: inspector_info_export_not_wired
+                  trigger: click
+                - id: file_exit
+                  label: Exit
+                  target: app_exit
+                  trigger: click
+            - id: edit_menu
+              title: Edit
+              type: menu
+              menu_entry:
+                label: Edit
+                location: topbar
+                order: 2
+              actions:
+                - id: edit_undo
+                  label: Undo
+                  target: inspector_info_undo_not_wired
+                  trigger: click_or_ctrl_z
+                - id: edit_redo
+                  label: Redo
+                  target: inspector_info_redo_not_wired
+                  trigger: click_or_ctrl_y
+                - id: edit_cut
+                  label: Cut
+                  target: inspector_info_cut_not_wired
+                  trigger: click_or_ctrl_x
+                - id: edit_copy
+                  label: Copy
+                  target: active_panel_copy
+                  trigger: click_or_ctrl_c
+                - id: edit_paste
+                  label: Paste
+                  target: active_panel_paste
+                  trigger: click_or_ctrl_v
+            - id: search_menu
+              title: Search
+              type: menu
+              menu_entry:
+                label: Search
+                location: topbar
+                order: 3
+              actions:
+                - id: search_find
+                  label: Find…
+                  target: inspector_search
+                  trigger: click_or_ctrl_f
+                - id: search_go_to
+                  label: Go to…
+                  target: inspector_info_go_to_not_wired
+                  trigger: click_or_ctrl_g
+                - id: search_date_range
+                  label: Date Range…
+                  target: toolbar_date_range_selector
+                  trigger: click
+            - id: run_menu
+              title: Run
+              type: menu
+              menu_entry:
+                label: Run
+                location: topbar
+                order: 4
+              actions:
+                - id: run_post_validate
+                  label: Post / Validate
+                  target: inspector_info_posting_not_wired
+                  trigger: click
+                - id: run_recalculate
+                  label: Recalculate summaries
+                  target: inspector_info_recalc_not_wired
+                  trigger: click
+            - id: tools_menu
+              title: Tools
+              type: menu
+              menu_entry:
+                label: Tools
+                location: topbar
+                order: 5
+              actions:
+                - id: tools_import_export
+                  label: Import/Export…
+                  target: inspector_info_tools_not_wired
+                  trigger: click
+                - id: tools_preferences
+                  label: Preferences…
+                  target: settings
+                  panel_class: org.nonprofitbookkeeping.ui.SettingsPanel
+                  trigger: click
+            - id: help_menu
+              title: Help
+              type: menu
+              menu_entry:
+                label: Help
+                location: topbar
+                order: 6
+              actions:
+                - id: help_about
+                  label: About
+                  target: inspector_info_about
+                  trigger: click
+            - id: toolbar
+              title: Toolbar
+              type: pane
+              menu_entry:
+                label: Toolbar
+                location: topbar
+              actions:
+                - id: tb_new
+                  label: New
+                  target: active_panel_new
+                  trigger: click
+                - id: tb_save
+                  label: Save
+                  target: active_panel_save
+                  trigger: click
+                - id: tb_find
+                  label: Find
+                  target: inspector_search
+                  trigger: click
+                - id: tb_journal
+                  label: Journal
+                  target: inspector_journal
+                  trigger: click
+                - id: tb_date_range
+                  label: Date range selector
+                  target: global_date_range
+                  trigger: click
+        - id: navigation_tree
+          title: Navigation tree
+          type: pane
+          menu_entry:
+            label: Left navigation
+            location: sidebar
+            order: 1
+          children:
+            - id: nav_operations
+              title: Operations
+              type: group
+              children:
+                - id: nav_ledger
+                  title: Ledger
+                  type: group
+                  children:
+                    - id: ledger_register
+                      title: Ledger Register
+                      type: pane
+                      target: ledger_register
+                      panel_class: org.nonprofitbookkeeping.ui.LedgerRegisterPanel
+                    - id: txn_editor
+                      title: Transaction Editor
+                      type: pane
+                      target: txn_editor
+                      panel_class: org.nonprofitbookkeeping.ui.TransactionEditorPanel
+                - id: schedules
+                  title: Outstanding / Schedules
+                  type: pane
+                  target: schedules
+                  panel_class: org.nonprofitbookkeeping.ui.SchedulesPanel
+                - id: nav_budget
+                  title: Budget
+                  type: group
+                  children:
+                    - id: budget_editor
+                      title: Budget Editor
+                      type: pane
+                      target: budget_editor
+                      panel_class: org.nonprofitbookkeeping.ui.BudgetEditorPanel
+                    - id: budget_vs_actual
+                      title: Budget vs Actual
+                      type: pane
+                      target: budget_vs_actual
+                      panel_class: org.nonprofitbookkeeping.ui.BudgetVsActualPanel
+                - id: nav_assets
+                  title: Assets
+                  type: group
+                  children:
+                    - id: assets_register
+                      title: Asset Register
+                      type: pane
+                      target: assets_register
+                      panel_class: org.nonprofitbookkeeping.ui.AssetsRegisterPanel
+                    - id: depreciation_runs
+                      title: Depreciation Runs
+                      type: pane
+                      target: depreciation_runs
+                      panel_class: org.nonprofitbookkeeping.ui.DepreciationRunsPanel
+            - id: nav_outputs
+              title: Outputs
+              type: group
+              children:
+                - id: report_library
+                  title: Reports Library
+                  type: pane
+                  target: report_library
+                  panel_class: org.nonprofitbookkeeping.ui.ReportLibraryPanel
+            - id: nav_reference
+              title: Reference
+              type: group
+              children:
+                - id: chart_of_accounts
+                  title: Chart of Accounts
+                  type: pane
+                  target: chart_of_accounts
+                  panel_class: org.nonprofitbookkeeping.ui.ChartOfAccountsPanel
+                - id: funds
+                  title: Funds
+                  type: pane
+                  target: funds
+                  panel_class: org.nonprofitbookkeeping.ui.FundsPanel
+            - id: nav_system
+              title: System
+              type: group
+              children:
+                - id: settings
+                  title: Settings
+                  type: pane
+                  target: settings
+                  panel_class: org.nonprofitbookkeeping.ui.SettingsPanel
+        - id: panel_host
+          title: Active panel host
+          type: pane
+          menu_entry:
+            label: Workspace
+            location: center
+          notes: "Default panel on startup is ledger_register. dashboard exists in PanelHost but is not reachable from the navigation tree."
+        - id: inspector
+          title: Inspector pane
+          type: pane
+          menu_entry:
+            label: Inspector
+            location: right_drawer
+          actions:
+            - id: context_details
+              label: Context details
+              target: selection_driven_details
+              trigger: right_click_tree_item
+            - id: search_view
+              label: Search view
+              target: search_placeholder
+              trigger: find_actions
+            - id: journal_view
+              label: Journal view
+              target: journal_placeholder
+              trigger: toolbar_journal
+
+  proposed:
+    - id: dashboard
+      title: Dashboard
+      type: pane
+      target: dashboard
+      panel_class: org.nonprofitbookkeeping.ui.DashboardPanel
+      parent: nav_operations
+      menu_entry:
+        label: Dashboard
+        location: sidebar
+        order: 0
+      migration_notes:
+        - "Add DASHBOARD to left navigation for discoverability and make it the startup panel."
+    - id: inventory
+      title: Inventory
+      type: pane
+      target: inventory
+      panel_class: org.nonprofitbookkeeping.ui.InventoryPanel
+      parent: nav_operations
+      menu_entry:
+        label: Inventory
+        location: sidebar
+      migration_notes:
+        - "InventoryPanel exists but is not registered in AppPanelId/PanelHost; either wire it in or remove it."
+    - id: reports_workspace
+      title: Reports Workspace
+      type: pane
+      target: reports_workspace
+      panel_class: org.nonprofitbookkeeping.ui.ReportLibraryPanel
+      parent: nav_outputs
+      replaces: report_library
+      migration_notes:
+        - "Keep report_library and add runnable report preview + parameter controls."
+    - id: settings_dialog
+      title: Preferences Dialog
+      type: modal
+      parent: app_shell
+      migration_notes:
+        - "Convert Tools > Preferences from panel navigation to modal if preferences are truly global."
+
+flows:
+  - id: post_journal_entry
+    actor: accountant
+    present_path:
+      - nav_operations
+      - nav_ledger
+      - ledger_register
+      - txn_editor
+      - run_menu
+      - run_post_validate
+    proposed_path:
+      - nav_operations
+      - dashboard
+      - txn_editor
+      - run_menu
+      - run_post_validate
+  - id: review_financial_reports
+    actor: finance_manager
+    present_path:
+      - nav_outputs
+      - report_library
+      - inspector
+    proposed_path:
+      - nav_outputs
+      - reports_workspace
+      - inspector
+
+diff_summary:
+  added: [dashboard, inventory, reports_workspace, settings_dialog]
+  removed: []
+  moved: []
+  renamed: []
