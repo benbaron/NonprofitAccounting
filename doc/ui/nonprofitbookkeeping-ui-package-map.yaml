@@ -1,0 +1,266 @@
+app: nonprofitbookkeeping.ui
+version: 1
+source_of_truth:
+  - src/main/java/nonprofitbookkeeping/ui/MainApplicationView.java
+  - src/main/java/nonprofitbookkeeping/ui/NonprofitBookkeepingFX.java
+
+field_semantics:
+  id:
+    meaning: "Unique node identifier within this YAML map (not a Java class name)."
+    kind: "documentation key"
+    must_be_unique: true
+    resolution_rule: "May be referenced by parent, replaces, flows[*]_path entries, and diff_summary."
+  target:
+    meaning: "Action destination key. Usually references another id in this map, or a shell-level action key listed in target_registry."
+    kind: "id reference or action key"
+    resolution_rule: "If target is a panel/view, it should match some views.present/proposed id. If it is behavior, it should match target_registry."
+  trigger:
+    meaning: "Interaction pattern that activates an action (UX event descriptor, not Java symbol)."
+    kind: "interaction token"
+    resolution_rule: "Should be chosen from trigger_registry for consistency."
+  panel_class:
+    meaning: "Fully-qualified Java class that implements or hosts the pane/view represented by this node."
+    kind: "runtime implementation reference"
+    resolution_rule: "Required for self-targeted pane nodes (target == id)."
+
+target_registry:
+  do_open_company: "Invokes doOpenCompany()."
+  do_close_company: "Invokes doCloseCompany()."
+  do_save_company: "Invokes doSaveCompany()."
+  start_create_wizard: "Invokes startCreateWizard()."
+  open_company_selection: "Shows CompanySelectionPanelFX in main center area."
+  open_workspace_tabs: "Shows TabPane workspace in main center area."
+  open_subwindow_documents: "Opens DocumentsPanelFX in a separate Stage via showPanel(Node,title)."
+  open_subwindow_inventory: "Opens InventoryPanelFX in a separate Stage via showPanel(Node,title)."
+  open_subwindow_funds: "Opens FundsPanelFX in a separate Stage via showPanel(Node,title)."
+  open_subwindow_reconciliation: "Opens LedgerReconcilePanelFX in a separate Stage via showPanel(Node,title)."
+  open_subwindow_donors: "Opens DonorsPanelFX in a separate Stage via showPanel(Node,title)."
+  open_subwindow_donations: "Opens DonationsPanelFX in a separate Stage via showPanel(Node,title)."
+  open_subwindow_grants: "Opens GrantsPanelFX in a separate Stage via showPanel(Node,title)."
+  open_subwindow_undeposited_funds: "Opens UndepositedFundsPanelFX in a separate Stage via showPanel(Node,title)."
+  open_subwindow_sales_cog: "Opens SalesAndCOGPanelFX in a separate Stage via showPanel(Node,title)."
+  open_subwindow_settings: "Opens SettingsPanelFX in a separate Stage via showPanel(Node,title)."
+  open_subwindow_help: "Opens HelpPanelFX in a separate Stage via showPanel(Node,title)."
+  open_subwindow_sql_query: "Opens SqlQueryPanelFX in a separate Stage via showPanel(Node,title)."
+  handle_open_or_create_database: "Invokes handleOpenOrCreateDatabase()."
+  handle_import_legacy_archive: "Invokes handleImportLegacyArchive()."
+  handle_import_script_into_database: "Invokes handleImportScriptIntoDatabase()."
+  plugin_add_menu_items: "Plugin hook plugin.addMenuItems(MenuBar)."
+  plugin_show_details: "Shows plugin metadata alert."
+
+trigger_registry:
+  click: "Primary click/tap interaction."
+  click_or_ctrl_o: "Menu click or keyboard accelerator Ctrl+O."
+  click_or_ctrl_w: "Menu click or keyboard accelerator Ctrl+W."
+  click_or_ctrl_s: "Menu click or keyboard accelerator Ctrl+S."
+  click_or_ctrl_j: "Menu click or keyboard accelerator Ctrl+J."
+
+views:
+  present:
+    - id: app_shell
+      title: NonprofitBookkeepingFX shell
+      type: pane
+      panel_class: nonprofitbookkeeping.ui.NonprofitBookkeepingFX
+      route: shell://javafx-main-stage
+      parent: null
+      children:
+        - id: main_application_view
+          title: MainApplicationView
+          type: pane
+          panel_class: nonprofitbookkeeping.ui.MainApplicationView
+          menu_entry:
+            label: Main workspace host
+            location: center
+          children:
+            - id: company_selection
+              title: Company Selection
+              type: pane
+              target: company_selection
+              panel_class: nonprofitbookkeeping.ui.panels.CompanySelectionPanelFX
+            - id: workspace_tabs
+              title: Workspace Tabs
+              type: tabpane
+              target: workspace_tabs
+              panel_class: javafx.scene.control.TabPane
+              children:
+                - id: dashboard_tab
+                  title: Dashboard
+                  type: tab
+                  target: dashboard_tab
+                  panel_class: nonprofitbookkeeping.ui.panels.skeletons.SkeletonDashboardPanel
+                - id: journal_tab
+                  title: Journal
+                  type: tab
+                  target: journal_tab
+                  panel_class: nonprofitbookkeeping.ui.panels.skeletons.SkeletonJournalPanel
+                - id: coa_tab
+                  title: Chart of Accounts
+                  type: tab
+                  target: coa_tab
+                  panel_class: nonprofitbookkeeping.ui.panels.CoaEditorPanelFX
+                - id: reports_tab
+                  title: Reports
+                  type: tab
+                  target: reports_tab
+                  panel_class: nonprofitbookkeeping.ui.panels.skeletons.SkeletonReportsPanel
+                - id: income_statement_tab
+                  title: Income Statement
+                  type: tab
+                  target: income_statement_tab
+                  panel_class: nonprofitbookkeeping.ui.panels.IncomeStatementPanelFX
+                - id: balance_sheet_tab
+                  title: Balance Sheet
+                  type: tab
+                  target: balance_sheet_tab
+                  panel_class: nonprofitbookkeeping.ui.panels.BalanceSheetPanelFX
+                - id: coa_table_tab
+                  title: Chart of Accounts Table
+                  type: tab
+                  target: coa_table_tab
+                  panel_class: nonprofitbookkeeping.ui.panels.ChartOfAccountsTablePanelFX
+                - id: account_details_tab
+                  title: Account Details
+                  type: tab
+                  target: account_details_tab
+                  panel_class: nonprofitbookkeeping.ui.panels.AccountTransactionDetailsPanelFX
+
+        - id: menubar
+          title: Menu Bar
+          type: pane
+          panel_class: javafx.scene.control.MenuBar
+          menu_entry:
+            label: Top menu
+            location: topbar
+          children:
+            - id: company_menu
+              title: Company
+              type: menu
+              menu_entry: { label: Company, location: topbar, order: 1 }
+              actions:
+                - { id: company_open, label: Open Company, target: do_open_company, trigger: click_or_ctrl_o }
+                - { id: company_close, label: Close Company, target: do_close_company, trigger: click_or_ctrl_w }
+                - { id: company_save, label: Save Company, target: do_save_company, trigger: click_or_ctrl_s }
+                - { id: company_import_coa_xlsx, label: Import COA (XLSX), target: import_coa_xlsx_action_fx, trigger: click }
+                - { id: company_export_coa_xlsx, label: Export COA (XLSX), target: export_coa_xlsx_action_fx, trigger: click }
+            - id: import_menu
+              title: Import
+              type: menu
+              menu_entry: { label: Import, location: topbar, order: 2 }
+              actions:
+                - { id: import_financial_file, label: Import Financial (OFX, QFX) File..., target: import_file_action_fx, trigger: click }
+                - { id: import_outlands_ledger, label: Import Outlands Ledger..., target: import_from_outlands_ledger_action_fx, trigger: click }
+                - { id: import_sca_ledger, label: Import SCA Ledger..., target: import_sca_ledger_action_fx, trigger: click }
+            - id: export_menu
+              title: Export
+              type: menu
+              menu_entry: { label: Export, location: topbar, order: 3 }
+              actions:
+                - { id: export_save_modified_sca_workbook, label: Save Modified SCA Workbook..., target: save_modified_copy_action_fx, trigger: click }
+                - { id: export_account_statement, label: Export Account Statement (OFX/QFX)..., target: export_file_action_fx, trigger: click }
+            - id: edit_menu
+              title: Edit
+              type: menu
+              menu_entry: { label: Edit, location: topbar, order: 4 }
+              actions:
+                - { id: edit_create_or_edit_company, label: Create or Edit Company, target: start_create_wizard, trigger: click }
+                - { id: edit_chart_of_accounts, label: Edit Chart of Accounts, target: coa_tab, trigger: click }
+                - { id: edit_journal, label: Edit Journal, target: journal_tab, trigger: click_or_ctrl_j }
+            - id: run_menu
+              title: Run
+              type: menu
+              menu_entry: { label: Run, location: topbar, order: 5 }
+              actions:
+                - { id: run_documents, label: Documents & Attachments, target: open_subwindow_documents, trigger: click }
+                - { id: run_inventory, label: Inventory & Depreciation, target: open_subwindow_inventory, trigger: click }
+                - { id: run_funds, label: Funds & Fund Accounting, target: open_subwindow_funds, trigger: click }
+                - { id: run_excel_template_report, label: Excel Template Report..., target: excel_template_report_action_fx, trigger: click }
+                - { id: run_reconcile, label: Reconcile, target: open_subwindow_reconciliation, trigger: click }
+            - id: panels_menu
+              title: Panels
+              type: menu
+              menu_entry: { label: Panels, location: topbar, order: 6 }
+              actions:
+                - { id: panel_donors, label: Donors, target: open_subwindow_donors, trigger: click }
+                - { id: panel_donations, label: Donations, target: open_subwindow_donations, trigger: click }
+                - { id: panel_grants, label: Grants, target: open_subwindow_grants, trigger: click }
+                - { id: panel_undeposited_funds, label: Undeposited Funds, target: open_subwindow_undeposited_funds, trigger: click }
+                - { id: panel_sales_cog, label: Sales & COG, target: open_subwindow_sales_cog, trigger: click }
+            - id: database_menu
+              title: Database
+              type: menu
+              menu_entry: { label: Database, location: topbar, order: 7 }
+              actions:
+                - { id: db_open_or_create_h2, label: Open/Create H2 DB..., target: handle_open_or_create_database, trigger: click }
+                - { id: db_import_legacy_archive, label: Import Legacy .npbk Archive..., target: handle_import_legacy_archive, trigger: click }
+                - { id: db_import_h2_script, label: Import H2 script into DB..., target: handle_import_script_into_database, trigger: click }
+                - { id: db_run_sql_query, label: Run SQL Query..., target: open_subwindow_sql_query, trigger: click }
+            - id: settings_menu
+              title: Settings
+              type: menu
+              menu_entry: { label: Settings, location: topbar, order: 8 }
+              actions:
+                - { id: settings_show, label: Show Settings, target: open_subwindow_settings, trigger: click }
+            - id: help_menu
+              title: Help
+              type: menu
+              menu_entry: { label: Help, location: topbar, order: 9 }
+              actions:
+                - { id: help_show, label: Help, target: open_subwindow_help, trigger: click }
+            - id: plugins_menu
+              title: Plugins
+              type: menu
+              menu_entry: { label: Plugins, location: topbar, order: 10 }
+              actions:
+                - { id: plugin_info_entry, label: <plugin-name>, target: plugin_show_details, trigger: click }
+                - { id: plugin_contributed_items, label: <plugin-contributed>, target: plugin_add_menu_items, trigger: click }
+              notes: "Actual plugin items are dynamic at runtime and depend on loadedPlugins."
+
+  proposed:
+    - id: integrated_run_panels
+      title: Integrated Run Panels
+      type: pane
+      target: integrated_run_panels
+      panel_class: nonprofitbookkeeping.ui.MainApplicationView
+      migration_notes:
+        - "Current Run/Panels/Settings/Help actions open new Stages via showPanel(Node,title); consider in-tab routing for better navigation continuity."
+    - id: reports_menu_explicit
+      title: Reports Menu (explicit)
+      type: menu
+      parent: menubar
+      migration_notes:
+        - "Class has a reports field/comment but no explicit Reports top menu in buildMenuBar(); add for discoverability of standard report outputs."
+
+flows:
+  - id: open_company_and_edit_journal
+    actor: accountant
+    present_path:
+      - company_selection
+      - company_menu
+      - company_open
+      - workspace_tabs
+      - edit_menu
+      - edit_journal
+      - journal_tab
+    proposed_path:
+      - company_selection
+      - company_menu
+      - company_open
+      - workspace_tabs
+      - journal_tab
+  - id: run_reconciliation
+    actor: accountant
+    present_path:
+      - run_menu
+      - run_reconcile
+      - open_subwindow_reconciliation
+    proposed_path:
+      - integrated_run_panels
+      - run_menu
+      - run_reconcile
+
+
+diff_summary:
+  added: [integrated_run_panels, reports_menu_explicit]
+  removed: []
+  moved: []
+  renamed: []
