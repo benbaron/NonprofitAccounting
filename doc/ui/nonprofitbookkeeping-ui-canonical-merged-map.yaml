@@ -1,0 +1,21 @@
+app: nonprofitbookkeeping.ui.merged
+version: 1
+canonical_map_name: nonprofitbookkeeping-ui-canonical-merged-map
+canonical_map_path: doc/ui/nonprofitbookkeeping-ui-canonical-merged-map.yaml
+
+namespace_maps:
+  org_nonprofitbookkeeping_ui:
+    namespace: org.nonprofitbookkeeping.ui
+    map_path: doc/ui/nonprofitbookkeeping-ui-map.yaml
+    source_root: src/main/java/org/nonprofitbookkeeping/ui
+  nonprofitbookkeeping_ui:
+    namespace: nonprofitbookkeeping.ui
+    map_path: doc/ui/nonprofitbookkeeping-ui-package-map.yaml
+    source_root: src/main/java/nonprofitbookkeeping/ui
+
+merge_contract:
+  precedence:
+    - explicit_user_scope
+    - explicit_map_reference
+    - panel_class_majority_fallback
+  cross_namespace_policy: explicit_opt_in_required
