@@ -13,7 +13,6 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.model.CurrentCompany;
 
-// TODO: Auto-generated Javadoc
 /**
  * Action class responsible for handling the closing of the current company file.
  * This action first attempts to persist (save) the current company's data

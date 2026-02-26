@@ -52,7 +52,6 @@ import nonprofitbookkeeping.ui.panels.skeletons.SkeletonJournalPanel;
 import nonprofitbookkeeping.plugins.scaledger.SCALedgerPlugin;
 import nonprofitbookkeeping.ui.actions.*;
 import nonprofitbookkeeping.ui.actions.scaledger.ImportFromOutlandsLedgerActionFX;
-import nonprofitbookkeeping.ui.actions.scaledger.LoadXlsmTableActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.SaveModifiedCopyActionFX;
 import nonprofitbookkeeping.plugins.scaledger.ui.PageViewerPanel;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
@@ -126,10 +125,9 @@ public class NonprofitBookkeepingFX extends Application
 	private MenuItem miSaveScaModifiedCopy;
 	
 	// Menus that need their state managed
+	
 	/** Top-level menu for running various tools and plugin features. */
 	private Menu run;
-	/** Top-level menu for generating and viewing reports. */
-	private Menu reports;
 	/** Top-level menu for accessing different data panels like Donors, Grants etc. */
 	private Menu panels;
 	/** Top-level menu dedicated to import workflows. */
@@ -169,17 +167,19 @@ public class NonprofitBookkeepingFX extends Application
 	
 	/**
 	 * Static inner class acting as a container for singleton service instances.
-	 * This provides a central point of access for various services used throughout the application.
+	 * This provides a central point of access for various services 
+	 * used throughout the application.
 	 */
 	private static final class ServiceContainer
 	{
-		
 		static InventoryService iss = null;
+		
 		/** Singleton instance of {@link ReportService}. */
 		static ReportService reportService = null;
-		/** Singleton instance of {@link ReportConfigurationService}. */
 		
+		/** Singleton instance of {@link ReportConfigurationService}. */		
 		static ReportConfigurationService reportConfigurationService = null;
+		
 		static DocumentStorageService dss = null;
 		static FundAccountingService fas = null;
 		static DonorService donorService = null;
@@ -195,8 +195,10 @@ public class NonprofitBookkeepingFX extends Application
 				/** Singleton instance of {@link InventoryService}. */
 				
 				iss = new InventoryService();
+				
 				/** Singleton instance of {@link ReportService}. */
 				reportService = new ReportService();
+				
 				/** Singleton instance of {@link ReportConfigurationService}. */
 				reportConfigurationService = new ReportConfigurationService();
 				dss = new DocumentStorageService();
@@ -259,16 +261,22 @@ public class NonprofitBookkeepingFX extends Application
 		stage.getIcons().addAll(
 			new Image(getClass().getResourceAsStream("../../cg-128px.png")));
 		this.primaryStage = stage;
-		
-		
+	
+		//-----------------------------------------
+		// Instantiate MainApplicationView
 		this.mainView = new MainApplicationView();
-		this.root = this.mainView; // Assign MainApplicationView to root
+		
+		//-----------------------------------------
+		// Assign MainApplicationView to root
+		this.root = this.mainView; 
+		
 		this.companySelectionPanel = this.mainView.getCompanySelectionPanel();
 		this.companySelectionPanel
 			.setOnCompanyOpenedHandler(this::handleCompanyOpened);
 		this.companySelectionPanel.setOnError(
 			message -> AlertBox.showError(this.primaryStage, message));
 		
+		//-----------------------------------------
 		// Instantiate ApplicationContextImpl
 		// Services are passed from the static ServiceContainer
 		MenuBar contextMenuBar = new MenuBar();
@@ -279,6 +287,7 @@ public class NonprofitBookkeepingFX extends Application
 			ServiceContainer.fas // FundAccountingService
 		);
 		
+		//-----------------------------------------
 		// Plugin Discovery and Initialization
 		LOGGER.info("Starting plugin initialization...");
 		List<Plugin> pluginsToLoad = new ArrayList<>();
@@ -345,6 +354,7 @@ public class NonprofitBookkeepingFX extends Application
 				}
 				
 			});
+		
 		this.primaryStage.setScene(scene);
 		applyGlobalSettings();
 		
@@ -745,6 +755,7 @@ public class NonprofitBookkeepingFX extends Application
 				this.companySelectionPanel.refreshCompanyList();
 			}
 			
+			// present company selection
 			if (this.mainView != null)
 			{
 				this.mainView.showCompanySelection();
@@ -806,6 +817,7 @@ public class NonprofitBookkeepingFX extends Application
 				this.companySelectionPanel.refreshCompanyList();
 			}
 			
+			// present company selection panel
 			if (this.mainView != null)
 			{
 				this.mainView.showCompanySelection();
@@ -978,6 +990,8 @@ public class NonprofitBookkeepingFX extends Application
 			
 		}
 		
+		
+		// apply account details
 		if (this.mainView != null)
 		{
 			this.mainView.applyAccountDetailsDefaults(
@@ -1139,6 +1153,7 @@ public class NonprofitBookkeepingFX extends Application
 		this.run.setDisable(!companyOpen || creatingCompany);
 		this.panels.setDisable(!companyOpen || creatingCompany);
 		
+		// present company open state
 		if (this.mainView != null)
 		{
 			this.mainView.updateCompanyOpenState(companyOpen);
@@ -1299,6 +1314,7 @@ public class NonprofitBookkeepingFX extends Application
 			this.companySelectionPanel.refreshCompanyList();
 		}
 		
+		// present main view panel
 		if (this.mainView != null)
 		{
 			this.mainView.showWorkspaceTabs();

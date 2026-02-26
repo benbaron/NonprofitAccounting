@@ -23,7 +23,6 @@ import nonprofitbookkeeping.model.Grant;
 import nonprofitbookkeeping.service.GrantsService;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 
-// TODO: Auto-generated Javadoc
 /**
  * JavaFX port of {@code GrantsPanel}. Displays grant records in a table with a
  * Refresh button backed by the database-centric {@link GrantsService}.
