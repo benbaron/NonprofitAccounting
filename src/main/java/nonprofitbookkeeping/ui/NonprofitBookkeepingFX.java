@@ -128,6 +128,8 @@ public class NonprofitBookkeepingFX extends Application
 	
 	/** Top-level menu for running various tools and plugin features. */
 	private Menu run;
+	/** Top-level menu for report navigation shortcuts. */
+	private Menu reports;
 	/** Top-level menu for accessing different data panels like Donors, Grants etc. */
 	private Menu panels;
 	/** Top-level menu dedicated to import workflows. */
@@ -471,6 +473,22 @@ public class NonprofitBookkeepingFX extends Application
 				new LedgerReconcilePanelFX(new ReconciliationService()),
 				"Reconciliation"));
 		bar.getMenus().add(this.run);
+
+		/* REPORTS */
+		this.reports = new Menu("Reports");
+		add(this.reports, "Reports Workspace",
+			e -> ((MainApplicationView) this.root)
+				.showPanel(MainApplicationView.PanelType.REPORTS));
+		add(this.reports, "Income Statement",
+			e -> ((MainApplicationView) this.root)
+				.showPanel(MainApplicationView.PanelType.INCOME_STATEMENT));
+		add(this.reports, "Balance Sheet",
+			e -> ((MainApplicationView) this.root)
+				.showPanel(MainApplicationView.PanelType.BALANCE_SHEET));
+		add(this.reports, "Account Details",
+			e -> ((MainApplicationView) this.root)
+				.showPanel(MainApplicationView.PanelType.ACCOUNT_DETAILS));
+		bar.getMenus().add(this.reports);
 		
 		
 		/* PANELS */

@@ -27,6 +27,14 @@ target_registry:
   do_open_company: "Invokes doOpenCompany()."
   do_close_company: "Invokes doCloseCompany()."
   do_save_company: "Invokes doSaveCompany()."
+  import_coa_xlsx_action_fx: "Invokes ImportCoaXlsxActionFX from Company menu."
+  export_coa_xlsx_action_fx: "Invokes ExportCoaXlsxActionFX from Company menu."
+  import_file_action_fx: "Invokes ImportFileActionFX for OFX/QFX imports."
+  import_from_outlands_ledger_action_fx: "Invokes ImportFromOutlandsLedgerActionFX workflow."
+  import_sca_ledger_action_fx: "Invokes ImportSCALedgerActionFX workflow."
+  save_modified_copy_action_fx: "Invokes SaveModifiedCopyActionFX for SCA workbooks."
+  export_file_action_fx: "Invokes ExportFileActionFX for account statements."
+  excel_template_report_action_fx: "Invokes ExcelTemplateReportActionFX."
   start_create_wizard: "Invokes startCreateWizard()."
   open_company_selection: "Shows CompanySelectionPanelFX in main center area."
   open_workspace_tabs: "Shows TabPane workspace in main center area."
@@ -190,11 +198,21 @@ views:
                 - { id: run_funds, label: Funds & Fund Accounting, target: open_subwindow_funds, trigger: click }
                 - { id: run_excel_template_report, label: Excel Template Report..., target: excel_template_report_action_fx, trigger: click }
                 - { id: run_reconcile, label: Reconcile, target: open_subwindow_reconciliation, trigger: click }
+
+            - id: reports_menu
+              title: Reports
+              type: menu
+              menu_entry: { label: Reports, location: topbar, order: 6 }
+              actions:
+                - { id: reports_workspace_entry, label: Reports Workspace, target: reports_tab, trigger: click }
+                - { id: reports_income_statement_entry, label: Income Statement, target: income_statement_tab, trigger: click }
+                - { id: reports_balance_sheet_entry, label: Balance Sheet, target: balance_sheet_tab, trigger: click }
+                - { id: reports_account_details_entry, label: Account Details, target: account_details_tab, trigger: click }
                 
             - id: panels_menu
               title: Panels
               type: menu
-              menu_entry: { label: Panels, location: topbar, order: 6 }
+              menu_entry: { label: Panels, location: topbar, order: 7 }
               actions:
                 - { id: panel_donors, label: Donors, target: open_subwindow_donors, trigger: click }
                 - { id: panel_donations, label: Donations, target: open_subwindow_donations, trigger: click }
@@ -205,7 +223,7 @@ views:
             - id: database_menu
               title: Database
               type: menu
-              menu_entry: { label: Database, location: topbar, order: 7 }
+              menu_entry: { label: Database, location: topbar, order: 8 }
               actions:
                 - { id: db_open_or_create_h2, label: Open/Create H2 DB..., target: handle_open_or_create_database, trigger: click }
                 - { id: db_import_legacy_archive, label: Import Legacy .npbk Archive..., target: handle_import_legacy_archive, trigger: click }
@@ -215,21 +233,21 @@ views:
             - id: settings_menu
               title: Settings
               type: menu
-              menu_entry: { label: Settings, location: topbar, order: 8 }
+              menu_entry: { label: Settings, location: topbar, order: 9 }
               actions:
                 - { id: settings_show, label: Show Settings, target: open_subwindow_settings, trigger: click }
                 
             - id: help_menu
               title: Help
               type: menu
-              menu_entry: { label: Help, location: topbar, order: 9 }
+              menu_entry: { label: Help, location: topbar, order: 10 }
               actions:
                 - { id: help_show, label: Help, target: open_subwindow_help, trigger: click }
                 
             - id: plugins_menu
               title: Plugins
               type: menu
-              menu_entry: { label: Plugins, location: topbar, order: 10 }
+              menu_entry: { label: Plugins, location: topbar, order: 11 }
               actions:
                 - { id: plugin_info_entry, label: <plugin-name>, target: plugin_show_details, trigger: click }
                 - { id: plugin_contributed_items, label: <plugin-contributed>, target: plugin_add_menu_items, trigger: click }
@@ -244,13 +262,6 @@ views:
       migration_notes:
         - "Current Run/Panels/Settings/Help actions open new Stages via showPanel(Node,title); consider in-tab routing for better navigation continuity."
         
-    - id: reports_menu_explicit
-      title: Reports Menu (explicit)
-      type: menu
-      parent: menubar
-      migration_notes:
-        - "Class has a reports field/comment but no explicit Reports top menu in buildMenuBar(); add for discoverability of standard report outputs."
-
 flows:
   - id: open_company_and_edit_journal
     actor: accountant
@@ -281,7 +292,7 @@ flows:
 
 
 diff_summary:
-  added: [integrated_run_panels, reports_menu_explicit]
+  added: [integrated_run_panels]
   removed: []
   moved: []
   renamed: []
