@@ -13,8 +13,7 @@ namespace_maps:
     map_path: doc/ui/nonprofitbookkeeping-ui-package-map.yaml
     source_root: src/main/java/nonprofitbookkeeping/ui
 
-app: NonprofitBookkeeping.UI
-version: 1
+display_name: NonprofitBookkeeping.UI
 source_of_truth:
   - src/main/java/org/nonprofitbookkeeping/ui/MainWindow.java
   - src/main/java/org/nonprofitbookkeeping/ui/NavigationPane.java
@@ -140,7 +139,7 @@ views:
                 - { id: file_save, label: Save, target: active_panel_save, trigger: click_or_ctrl_s }
                 - { id: file_export, label: Export…, target: inspector_info_export_not_wired, trigger: click }
                 - { id: file_exit, label: Exit, target: app_exit, trigger: click }
-                children:
+              children:
                 - id: company_menu
                   title: Company
                   type: menu
@@ -184,19 +183,19 @@ views:
                 - { id: run_funds, label: Funds & Fund Accounting, target: open_subwindow_funds, trigger: click }
                 - { id: run_excel_template_report, label: Excel Template Report..., target: excel_template_report_action_fx, trigger: click }
                 - { id: run_reconcile, label: Reconcile, target: open_subwindow_reconciliation, trigger: click }
-                children:
-                    - id: inventory
-                      title: Inventory
-                      type: pane
-                      target: inventory
-                      panel_class: org.nonprofitbookkeeping.ui.InventoryPanel
-                      parent: run_menu                
-                    - id: reports
-                      title: Reports
-                      type: pane
-                      target: reports_workspace
-                      panel_class: org.nonprofitbookkeeping.ui.ReportLibraryPanel
-                      parent: run_menu     
+              children:
+                - id: inventory
+                  title: Inventory
+                  type: pane
+                  target: inventory
+                  panel_class: org.nonprofitbookkeeping.ui.InventoryPanel
+                  parent: run_menu
+                - id: reports
+                  title: Reports
+                  type: pane
+                  target: reports_workspace
+                  panel_class: org.nonprofitbookkeeping.ui.ReportLibraryPanel
+                  parent: run_menu
                 
             - id: tools_menu
               title: Tools
