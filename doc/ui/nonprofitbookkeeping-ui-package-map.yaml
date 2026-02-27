@@ -63,6 +63,7 @@ views:
       panel_class: nonprofitbookkeeping.ui.NonprofitBookkeepingFX
       route: shell://javafx-main-stage
       parent: null
+      
       children:
         - id: main_application_view
           title: MainApplicationView
@@ -71,53 +72,63 @@ views:
           menu_entry:
             label: Main workspace host
             location: center
+            
           children:
             - id: company_selection
               title: Company Selection
               type: pane
               target: company_selection
               panel_class: nonprofitbookkeeping.ui.panels.CompanySelectionPanelFX
+              
             - id: workspace_tabs
               title: Workspace Tabs
               type: tabpane
               target: workspace_tabs
               panel_class: javafx.scene.control.TabPane
+              
               children:
                 - id: dashboard_tab
                   title: Dashboard
                   type: tab
                   target: dashboard_tab
                   panel_class: nonprofitbookkeeping.ui.panels.skeletons.SkeletonDashboardPanel
+                  
                 - id: journal_tab
                   title: Journal
                   type: tab
                   target: journal_tab
                   panel_class: nonprofitbookkeeping.ui.panels.skeletons.SkeletonJournalPanel
+                  
                 - id: coa_tab
                   title: Chart of Accounts
                   type: tab
                   target: coa_tab
                   panel_class: nonprofitbookkeeping.ui.panels.CoaEditorPanelFX
+                  
                 - id: reports_tab
                   title: Reports
                   type: tab
                   target: reports_tab
                   panel_class: nonprofitbookkeeping.ui.panels.skeletons.SkeletonReportsPanel
+                  
                 - id: income_statement_tab
                   title: Income Statement
                   type: tab
                   target: income_statement_tab
                   panel_class: nonprofitbookkeeping.ui.panels.IncomeStatementPanelFX
+                  
                 - id: balance_sheet_tab
                   title: Balance Sheet
                   type: tab
                   target: balance_sheet_tab
                   panel_class: nonprofitbookkeeping.ui.panels.BalanceSheetPanelFX
+                  
                 - id: coa_table_tab
                   title: Chart of Accounts Table
                   type: tab
                   target: coa_table_tab
                   panel_class: nonprofitbookkeeping.ui.panels.ChartOfAccountsTablePanelFX
+                  
                 - id: account_details_tab
                   title: Account Details
                   type: tab
@@ -142,6 +153,7 @@ views:
                 - { id: company_save, label: Save Company, target: do_save_company, trigger: click_or_ctrl_s }
                 - { id: company_import_coa_xlsx, label: Import COA (XLSX), target: import_coa_xlsx_action_fx, trigger: click }
                 - { id: company_export_coa_xlsx, label: Export COA (XLSX), target: export_coa_xlsx_action_fx, trigger: click }
+                
             - id: import_menu
               title: Import
               type: menu
@@ -150,6 +162,7 @@ views:
                 - { id: import_financial_file, label: Import Financial (OFX, QFX) File..., target: import_file_action_fx, trigger: click }
                 - { id: import_outlands_ledger, label: Import Outlands Ledger..., target: import_from_outlands_ledger_action_fx, trigger: click }
                 - { id: import_sca_ledger, label: Import SCA Ledger..., target: import_sca_ledger_action_fx, trigger: click }
+                
             - id: export_menu
               title: Export
               type: menu
@@ -157,6 +170,7 @@ views:
               actions:
                 - { id: export_save_modified_sca_workbook, label: Save Modified SCA Workbook..., target: save_modified_copy_action_fx, trigger: click }
                 - { id: export_account_statement, label: Export Account Statement (OFX/QFX)..., target: export_file_action_fx, trigger: click }
+                
             - id: edit_menu
               title: Edit
               type: menu
@@ -165,6 +179,7 @@ views:
                 - { id: edit_create_or_edit_company, label: Create or Edit Company, target: start_create_wizard, trigger: click }
                 - { id: edit_chart_of_accounts, label: Edit Chart of Accounts, target: coa_tab, trigger: click }
                 - { id: edit_journal, label: Edit Journal, target: journal_tab, trigger: click_or_ctrl_j }
+                
             - id: run_menu
               title: Run
               type: menu
@@ -175,6 +190,7 @@ views:
                 - { id: run_funds, label: Funds & Fund Accounting, target: open_subwindow_funds, trigger: click }
                 - { id: run_excel_template_report, label: Excel Template Report..., target: excel_template_report_action_fx, trigger: click }
                 - { id: run_reconcile, label: Reconcile, target: open_subwindow_reconciliation, trigger: click }
+                
             - id: panels_menu
               title: Panels
               type: menu
@@ -185,6 +201,7 @@ views:
                 - { id: panel_grants, label: Grants, target: open_subwindow_grants, trigger: click }
                 - { id: panel_undeposited_funds, label: Undeposited Funds, target: open_subwindow_undeposited_funds, trigger: click }
                 - { id: panel_sales_cog, label: Sales & COG, target: open_subwindow_sales_cog, trigger: click }
+                
             - id: database_menu
               title: Database
               type: menu
@@ -194,18 +211,21 @@ views:
                 - { id: db_import_legacy_archive, label: Import Legacy .npbk Archive..., target: handle_import_legacy_archive, trigger: click }
                 - { id: db_import_h2_script, label: Import H2 script into DB..., target: handle_import_script_into_database, trigger: click }
                 - { id: db_run_sql_query, label: Run SQL Query..., target: open_subwindow_sql_query, trigger: click }
+                
             - id: settings_menu
               title: Settings
               type: menu
               menu_entry: { label: Settings, location: topbar, order: 8 }
               actions:
                 - { id: settings_show, label: Show Settings, target: open_subwindow_settings, trigger: click }
+                
             - id: help_menu
               title: Help
               type: menu
               menu_entry: { label: Help, location: topbar, order: 9 }
               actions:
                 - { id: help_show, label: Help, target: open_subwindow_help, trigger: click }
+                
             - id: plugins_menu
               title: Plugins
               type: menu
@@ -223,6 +243,7 @@ views:
       panel_class: nonprofitbookkeeping.ui.MainApplicationView
       migration_notes:
         - "Current Run/Panels/Settings/Help actions open new Stages via showPanel(Node,title); consider in-tab routing for better navigation continuity."
+        
     - id: reports_menu_explicit
       title: Reports Menu (explicit)
       type: menu
