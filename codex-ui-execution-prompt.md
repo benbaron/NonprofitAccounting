@@ -5,6 +5,15 @@ Add the following section to the execution prompt used for UI-map work.
 ## Implementation Plan (mandatory)
 Before changing code, produce and follow this plan:
 
+### Current Status (mandatory)
+- At the start of each iteration, add a `Current Status` block with:
+  - resolved namespace,
+  - map validation state (pass/fail + unresolved references count),
+  - implementation progress (`not started` / `in progress` / `implemented` / `deferred`),
+  - latest test status (`not run` / `pass` / `fail`).
+- Update this block after every meaningful change set so reviewers can see iteration-to-iteration movement.
+- If status changes from pass to fail, include a one-line reason and next corrective action.
+
 1. **Namespace resolution**
    - Resolve the single UI namespace using the existing deterministic rules.
    - Print: `Resolved UI namespace: <namespace> (reason: <rule>)`.
