@@ -51,6 +51,33 @@ class MapDrivenRoutingTest extends ApplicationTest
         stage.show();
     }
 
+
+    @Test
+    void startsOnLedgerRegisterInTestHarness()
+    {
+        assertEquals("Ledger Register", host.getActiveTitle());
+    }
+
+    @Test
+    void dashboardAndReportsAliasRoutesAreDeterministic()
+    {
+        TreeItem<NavigationPane.NavItem> dashboard = findByLabel(tree.getRoot(), "Dashboard");
+        assertNotNull(dashboard);
+        assertEquals(AppPanelId.DASHBOARD, dashboard.getValue().panelId());
+
+        interact(() -> host.show(dashboard.getValue().panelId()));
+        WaitForAsyncUtils.waitForFxEvents();
+        assertEquals("Dashboard", host.getActiveTitle());
+
+        interact(() -> host.show(AppPanelId.REPORT_LIBRARY));
+        WaitForAsyncUtils.waitForFxEvents();
+        assertEquals("Reports Library", host.getActiveTitle());
+
+        interact(() -> host.show(AppPanelId.REPORTS_WORKSPACE));
+        WaitForAsyncUtils.waitForFxEvents();
+        assertEquals("Reports Library", host.getActiveTitle());
+    }
+
     @Test
     void runActionsRouteToMapTargets()
     {
