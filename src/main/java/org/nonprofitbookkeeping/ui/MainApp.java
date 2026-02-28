@@ -4,8 +4,6 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.net.URL;
-
 /**
  * Skeleton desktop application shell.
  *
@@ -23,12 +21,7 @@ public class MainApp extends Application
         MainWindow root = new MainWindow();
 
         Scene scene = new Scene(root, 1200, 800);
-
-        URL stylesheet = getClass().getResource("/themes/light.css");
-        if (stylesheet != null)
-        {
-            scene.getStylesheets().add(stylesheet.toExternalForm());
-        }
+        scene.getStylesheets().add(getClass().getResource("/ui/styles.css").toExternalForm());
 
         GlobalShortcuts.install(scene, root);
 
