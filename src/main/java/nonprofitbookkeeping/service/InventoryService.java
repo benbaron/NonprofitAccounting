@@ -341,7 +341,7 @@ public class InventoryService
 			{
 				bootstrap.loadItems(null);
 			}
-			catch (IOException ex)
+			catch (IOException | RuntimeException ex)
 			{
 				LOGGER.debug("Failed to load inventory; returning empty list",
 					ex);
