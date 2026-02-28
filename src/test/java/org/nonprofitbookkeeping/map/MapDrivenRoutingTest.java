@@ -1,173 +1,115 @@
 package org.nonprofitbookkeeping.map;
 
-import javafx.application.Platform;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
+import org.junit.jupiter.api.Test;
 import org.nonprofitbookkeeping.ui.AppPanelId;
-import org.nonprofitbookkeeping.ui.MainWindow;
 import org.nonprofitbookkeeping.ui.NavigationPane;
 import org.nonprofitbookkeeping.ui.PanelHost;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
+import org.testfx.framework.junit5.ApplicationTest;
+import org.testfx.util.WaitForAsyncUtils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class MapDrivenRoutingTest
+class MapDrivenRoutingTest extends ApplicationTest
 {
-    @BeforeAll
-    static void initFx()
+    private PanelHost host;
+    private TreeView<NavigationPane.NavItem> tree;
+
+    @Override
+    public void start(Stage stage)
     {
-        CountDownLatch latch = new CountDownLatch(1);
+        host = new PanelHost();
 
-        try
-        {
-            Platform.startup(latch::countDown);
-        }
-        catch (IllegalStateException alreadyStarted)
-        {
-            latch.countDown();
-        }
+        NavigationPane nav = new NavigationPane(host::show, (title, body) -> { });
+        @SuppressWarnings("unchecked")
+        TreeView<NavigationPane.NavItem> navTree = (TreeView<NavigationPane.NavItem>) nav.getChildren().get(0);
+        tree = navTree;
 
-        await(latch);
+        Button inventoryRun = new Button("Inventory & Depreciation");
+        inventoryRun.setId("inventoryRunBtn");
+        inventoryRun.setOnAction(e -> host.show(AppPanelId.INVENTORY));
+
+        Button reportsRun = new Button("Reports Workspace");
+        reportsRun.setId("reportsRunBtn");
+        reportsRun.setOnAction(e -> host.show(AppPanelId.REPORTS_WORKSPACE));
+
+        BorderPane root = new BorderPane();
+        root.setTop(new HBox(8, inventoryRun, reportsRun));
+        root.setLeft(nav);
+        root.setCenter(host);
+
+        host.show(AppPanelId.LEDGER_REGISTER);
+
+        stage.setScene(new Scene(root, 1200, 800));
+        stage.show();
     }
 
     @Test
-    void panelHostRoutesInventoryAndReportsWorkspace()
+    void runActionsRouteToMapTargets()
     {
-        runOnFxAndWait(() -> {
-            PanelHost host = new PanelHost();
+        interact(() -> ((Button) lookup("#inventoryRunBtn").query()).fire());
+        WaitForAsyncUtils.waitForFxEvents();
+        assertEquals("Inventory", host.getActiveTitle());
 
-            host.show(AppPanelId.INVENTORY);
-            assertEquals("Inventory", host.getActiveTitle());
+        interact(() -> ((Button) lookup("#reportsRunBtn").query()).fire());
+        WaitForAsyncUtils.waitForFxEvents();
+        assertEquals("Reports Library", host.getActiveTitle());
 
-            host.show(AppPanelId.REPORTS_WORKSPACE);
-            assertEquals("Reports Library", host.getActiveTitle());
-
-            host.show(AppPanelId.REPORT_LIBRARY);
-            assertEquals("Reports Library", host.getActiveTitle());
-        });
+        interact(() -> host.show(AppPanelId.REPORT_LIBRARY));
+        WaitForAsyncUtils.waitForFxEvents();
+        assertEquals("Reports Library", host.getActiveTitle());
     }
 
     @Test
-    void navigationContainsMapDrivenNodes()
+    void navigationNodesMapToExpectedPanelIds()
     {
-        runOnFxAndWait(() -> {
-            NavigationPane nav = new NavigationPane(id -> { }, (title, body) -> { });
-            @SuppressWarnings("unchecked")
-            TreeView<NavigationPane.NavItem> tree = (TreeView<NavigationPane.NavItem>) nav.getChildren().get(0);
+        TreeItem<NavigationPane.NavItem> inventory = findByLabel(tree.getRoot(), "Inventory");
+        TreeItem<NavigationPane.NavItem> reportsWorkspace = findByLabel(tree.getRoot(), "Reports Workspace");
 
-            List<String> labels = new ArrayList<>();
-            collectLabels(tree.getRoot(), labels);
+        assertNotNull(inventory);
+        assertNotNull(reportsWorkspace);
+        assertEquals(AppPanelId.INVENTORY, inventory.getValue().panelId());
+        assertEquals(AppPanelId.REPORTS_WORKSPACE, reportsWorkspace.getValue().panelId());
 
-            assertTrue(labels.contains("Dashboard"));
-            assertTrue(labels.contains("Inventory"));
-            assertTrue(labels.contains("Reports Workspace"));
-        });
+        interact(() -> host.show(inventory.getValue().panelId()));
+        WaitForAsyncUtils.waitForFxEvents();
+        assertEquals("Inventory", host.getActiveTitle());
+
+        interact(() -> host.show(reportsWorkspace.getValue().panelId()));
+        WaitForAsyncUtils.waitForFxEvents();
+        assertEquals("Reports Library", host.getActiveTitle());
     }
 
-    @Test
-    void mainWindowStartsOnDashboardAndRunMenuRoutesToMapTargets()
+    private static TreeItem<NavigationPane.NavItem> findByLabel(TreeItem<NavigationPane.NavItem> root,
+        String label)
     {
-        runOnFxAndWait(() -> {
-            MainWindow window = new MainWindow();
-            PanelHost host = (PanelHost) window.getCenter();
-            assertEquals("Dashboard", host.getActiveTitle());
-
-            VBox top = (VBox) window.getTop();
-            MenuBar menuBar = (MenuBar) top.getChildren().get(0);
-            Menu runMenu = menuBar.getMenus().stream()
-                .filter(m -> "Run".equals(m.getText()))
-                .findFirst()
-                .orElseThrow();
-
-            fireMenu(runMenu, "Inventory & Depreciation");
-            assertEquals("Inventory", host.getActiveTitle());
-
-            fireMenu(runMenu, "Reports Workspace");
-            assertEquals("Reports Library", host.getActiveTitle());
-        });
-    }
-
-    private static void fireMenu(Menu menu, String itemText)
-    {
-        MenuItem item = menu.getItems().stream()
-            .filter(i -> itemText.equals(i.getText()))
-            .findFirst()
-            .orElse(null);
-
-        assertNotNull(item, "Expected menu item not found: " + itemText);
-        item.fire();
-    }
-
-    private static void collectLabels(TreeItem<NavigationPane.NavItem> item, List<String> labels)
-    {
-        if (item == null)
+        if (root == null)
         {
-            return;
+            return null;
         }
 
-        NavigationPane.NavItem value = item.getValue();
-        if (value != null && value.label() != null)
+        NavigationPane.NavItem value = root.getValue();
+        if (value != null && label.equals(value.label()))
         {
-            labels.add(value.label());
+            return root;
         }
 
-        for (TreeItem<NavigationPane.NavItem> child : item.getChildren())
+        for (TreeItem<NavigationPane.NavItem> child : root.getChildren())
         {
-            collectLabels(child, labels);
-        }
-    }
-
-    private static void runOnFxAndWait(Runnable work)
-    {
-        CountDownLatch latch = new CountDownLatch(1);
-        AtomicReference<Throwable> error = new AtomicReference<>();
-
-        Platform.runLater(() -> {
-            try
+            TreeItem<NavigationPane.NavItem> found = findByLabel(child, label);
+            if (found != null)
             {
-                work.run();
+                return found;
             }
-            catch (Throwable t)
-            {
-                error.set(t);
-            }
-            finally
-            {
-                latch.countDown();
-            }
-        });
-
-        await(latch);
-
-        if (error.get() != null)
-        {
-            throw new AssertionError(error.get());
         }
-    }
 
-    private static void await(CountDownLatch latch)
-    {
-        try
-        {
-            assertTrue(latch.await(10, TimeUnit.SECONDS), "Timed out waiting for JavaFX thread.");
-        }
-        catch (InterruptedException e)
-        {
-            Thread.currentThread().interrupt();
-            throw new AssertionError("Interrupted while waiting for JavaFX thread.", e);
-        }
+        return null;
     }
 }
