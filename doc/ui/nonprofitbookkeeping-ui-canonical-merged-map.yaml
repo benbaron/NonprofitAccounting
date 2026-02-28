@@ -13,8 +13,7 @@ namespace_maps:
     map_path: doc/ui/nonprofitbookkeeping-ui-package-map.yaml
     source_root: src/main/java/nonprofitbookkeeping/ui
 
-app: NonprofitBookkeeping.UI
-version: 1
+display_name: NonprofitBookkeeping.UI
 source_of_truth:
   - src/main/java/org/nonprofitbookkeeping/ui/MainWindow.java
   - src/main/java/org/nonprofitbookkeeping/ui/NavigationPane.java
@@ -67,6 +66,18 @@ target_registry:
   do_open_company: "Invokes doOpenCompany()."
   do_close_company: "Invokes doCloseCompany()."
   do_save_company: "Invokes doSaveCompany()."
+  coa_tab: "Routes to the Chart of Accounts workspace tab in nonprofitbookkeeping.ui."
+  journal_tab: "Routes to the Journal workspace tab in nonprofitbookkeeping.ui."
+  settings: "Routes to the Settings panel target used by legacy map actions."
+  reports_workspace: "Routes to the reports workspace target used by run/report actions."
+  excel_template_report_action_fx: "Invokes ExcelTemplateReportActionFX."
+  import_file_action_fx: "Invokes ImportFileActionFX for OFX/QFX imports."
+  import_from_outlands_ledger_action_fx: "Invokes ImportFromOutlandsLedgerActionFX workflow."
+  import_sca_ledger_action_fx: "Invokes ImportSCALedgerActionFX workflow."
+  import_coa_xlsx_action_fx: "Invokes ImportCoaXlsxActionFX from Company menu."
+  export_coa_xlsx_action_fx: "Invokes ExportCoaXlsxActionFX from Company menu."
+  save_modified_copy_action_fx: "Invokes SaveModifiedCopyActionFX for SCA workbooks."
+  export_file_action_fx: "Invokes ExportFileActionFX for account statements."
   start_create_wizard: "Invokes startCreateWizard()."
   open_company_selection: "Shows CompanySelectionPanelFX in main center area."
   open_workspace_tabs: "Shows TabPane workspace in main center area."
@@ -140,7 +151,7 @@ views:
                 - { id: file_save, label: Save, target: active_panel_save, trigger: click_or_ctrl_s }
                 - { id: file_export, label: Export…, target: inspector_info_export_not_wired, trigger: click }
                 - { id: file_exit, label: Exit, target: app_exit, trigger: click }
-                children:
+              children:
                 - id: company_menu
                   title: Company
                   type: menu
@@ -184,19 +195,19 @@ views:
                 - { id: run_funds, label: Funds & Fund Accounting, target: open_subwindow_funds, trigger: click }
                 - { id: run_excel_template_report, label: Excel Template Report..., target: excel_template_report_action_fx, trigger: click }
                 - { id: run_reconcile, label: Reconcile, target: open_subwindow_reconciliation, trigger: click }
-                children:
-                    - id: inventory
-                      title: Inventory
-                      type: pane
-                      target: inventory
-                      panel_class: org.nonprofitbookkeeping.ui.InventoryPanel
-                      parent: run_menu                
-                    - id: reports
-                      title: Reports
-                      type: pane
-                      target: reports_workspace
-                      panel_class: org.nonprofitbookkeeping.ui.ReportLibraryPanel
-                      parent: run_menu     
+              children:
+                - id: inventory
+                  title: Inventory
+                  type: pane
+                  target: inventory
+                  panel_class: org.nonprofitbookkeeping.ui.InventoryPanel
+                  parent: run_menu
+                - id: reports
+                  title: Reports
+                  type: pane
+                  target: reports_workspace
+                  panel_class: org.nonprofitbookkeeping.ui.ReportLibraryPanel
+                  parent: run_menu
                 
             - id: tools_menu
               title: Tools
