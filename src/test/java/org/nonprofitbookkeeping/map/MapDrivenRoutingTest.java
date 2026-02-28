@@ -54,6 +54,9 @@ class MapDrivenRoutingTest
 
             host.show(AppPanelId.REPORTS_WORKSPACE);
             assertEquals("Reports Library", host.getActiveTitle());
+
+            host.show(AppPanelId.REPORT_LIBRARY);
+            assertEquals("Reports Library", host.getActiveTitle());
         });
     }
 
