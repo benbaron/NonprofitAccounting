@@ -43,6 +43,7 @@ public class PanelHost extends BorderPane
             case TXN_EDITOR -> new TransactionEditorPanel();
 
             case SCHEDULES -> new SchedulesPanel();
+            case INVENTORY -> new InventoryPanel();
 
             case BUDGET_EDITOR -> new BudgetEditorPanel();
             case BUDGET_VS_ACTUAL -> new BudgetVsActualPanel();
@@ -51,6 +52,7 @@ public class PanelHost extends BorderPane
             case DEPRECIATION_RUNS -> new DepreciationRunsPanel();
 
             case REPORT_LIBRARY -> new ReportLibraryPanel();
+            case REPORTS_WORKSPACE -> new ReportLibraryPanel();
 
             case CHART_OF_ACCOUNTS -> new ChartOfAccountsPanel();
             case FUNDS -> new FundsPanel();

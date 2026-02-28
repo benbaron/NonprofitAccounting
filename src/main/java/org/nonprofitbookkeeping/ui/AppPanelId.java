@@ -9,6 +9,7 @@ public enum AppPanelId
     TXN_EDITOR,
 
     SCHEDULES,
+    INVENTORY,
 
     BUDGET_EDITOR,
     BUDGET_VS_ACTUAL,
@@ -17,6 +18,7 @@ public enum AppPanelId
     DEPRECIATION_RUNS,
 
     REPORT_LIBRARY,
+    REPORTS_WORKSPACE,
 
     CHART_OF_ACCOUNTS,
     FUNDS,
