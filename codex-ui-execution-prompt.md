@@ -14,6 +14,17 @@ Before changing code, produce and follow this plan:
 - Update this block after every meaningful change set so reviewers can see iteration-to-iteration movement.
 - If status changes from pass to fail, include a one-line reason and next corrective action.
 
+Template:
+
+```md
+Current Status
+- Resolved namespace: <namespace> (reason: <rule>)
+- Map validation: <pass/fail>, unresolved refs: <count>
+- Implementation progress: <not started|in progress|implemented|deferred>
+- Latest tests: <not run|pass|fail>
+- If failing: <one-line reason> | Next action: <one-line corrective step>
+```
+
 1. **Namespace resolution**
    - Resolve the single UI namespace using the existing deterministic rules.
    - Print: `Resolved UI namespace: <namespace> (reason: <rule>)`.
