@@ -51,7 +51,6 @@ public class PanelHost extends BorderPane
             case ASSETS_REGISTER -> new AssetsRegisterPanel();
             case DEPRECIATION_RUNS -> new DepreciationRunsPanel();
 
-            case REPORT_LIBRARY -> new ReportLibraryPanel();
             case REPORTS_WORKSPACE -> new ReportLibraryPanel();
 
             case CHART_OF_ACCOUNTS -> new ChartOfAccountsPanel();
