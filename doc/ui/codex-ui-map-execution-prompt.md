@@ -48,6 +48,71 @@ If both maps are loaded for analysis, keep separate indexes and labels:
 - `map_index.org_nonprofitbookkeeping_ui`
 - `map_index.nonprofitbookkeeping_ui`
 
+### Implementation Plan (mandatory)
+Before changing code, produce and follow this plan:
+
+#### Current Status (mandatory)
+- At the start of each iteration, add a `Current Status` block with:
+  - resolved namespace,
+  - map validation state (pass/fail + unresolved references count),
+  - implementation progress (`not started` / `in progress` / `implemented` / `deferred`),
+  - latest test status (`not run` / `pass` / `fail`).
+- Update this block after every meaningful change set so reviewers can see iteration-to-iteration movement.
+- If status changes from pass to fail, include a one-line reason and next corrective action.
+
+Template:
+
+```md
+Current Status
+- Resolved namespace: <namespace> (reason: <rule>)
+- Map validation: <pass/fail>, unresolved refs: <count>
+- Implementation progress: <not started|in progress|implemented|deferred>
+- Latest tests: <not run|pass|fail>
+- If failing: <one-line reason> | Next action: <one-line corrective step>
+```
+
+1. **Namespace resolution**
+   - Resolve the single UI namespace using the existing deterministic rules.
+   - Print: `Resolved UI namespace: <namespace> (reason: <rule>).`
+
+2. **Contract parse + validation**
+   - Parse the canonical merged map first, then the referenced namespace map.
+   - Build indexes for: `id`, `target`, `trigger`, `panel_class`.
+   - Validate:
+     - `id` uniqueness per map,
+     - target resolution (`id` or `target_registry`),
+     - trigger resolution (`trigger_registry`),
+     - self-target panes include `panel_class`.
+   - If validation fails, create a **map-normalization step** first (registry fixes, duplicate cleanup) before runtime changes.
+
+3. **Scope lock**
+   - List selected map nodes and flows to implement.
+   - Explicitly list excluded nodes to avoid silent cross-namespace edits.
+
+4. **Implementation sequencing**
+   - **Step A:** map consistency updates (if needed).
+   - **Step B:** runtime wiring updates (menus/tabs/dialog routes).
+   - **Step C:** focused tests for changed routing/actions.
+   - **Step D:** docs/diff-summary updates.
+
+5. **Verification gates**
+   - Run map validation script:
+     - `python scripts/validate_ui_maps.py`
+   - Run project tests:
+     - `mvn test`
+   - For menu/tab routing changes, verify each new action maps to intended panel/action token.
+
+6. **Traceability output**
+   - Provide a table with:
+     - `map_node_id`, `target`, `trigger`, `panel_class`, `code_file_changed`, `status`.
+
+7. **Review + follow-up**
+   - Include a code review section with:
+     - regression risks,
+     - unresolved map/code divergence,
+     - proposed follow-up patches.
+   - Offer to implement follow-ups immediately.
+
 1. **Accept the map as contract**
    - Treat `field_semantics`, `target_registry`, `trigger_registry`, `views`, `flows`, and `diff_summary` as implementation guidance.
    - If there is conflict between map entries and runtime code, report the conflict and propose a minimal migration patch.
@@ -103,10 +168,12 @@ If both maps are loaded for analysis, keep separate indexes and labels:
    - Offer to implement the follow-up items immediately.
 
 ### Constraints
+- No cross-namespace edits unless explicitly requested.
 - Do not invent ids/targets/triggers when an existing one fits; prefer map consistency.
 - If you must add new ids/targets/triggers, update the relevant registry and explain why.
 - Keep naming consistent with existing map conventions.
 - Prefer explicit over implicit wiring.
+- Keep behavior changes minimal and attributable to specific map nodes.
 
 ### Deliverables
 - Code changes implementing requested map scope.
@@ -114,4 +181,3 @@ If both maps are loaded for analysis, keep separate indexes and labels:
 - Test results.
 - Traceability table.
 - Review findings + offer to fix.
-
