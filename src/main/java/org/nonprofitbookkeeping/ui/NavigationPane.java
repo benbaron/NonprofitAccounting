@@ -29,12 +29,14 @@ public class NavigationPane extends VBox
         root.setExpanded(true);
 
         TreeItem<NavItem> ops = group(root, "Operations");
+        add(ops, AppPanelId.DASHBOARD, "Dashboard");
 
         TreeItem<NavItem> ledger = group(ops, "Ledger");
         add(ledger, AppPanelId.LEDGER_REGISTER, "Ledger Register");
         add(ledger, AppPanelId.TXN_EDITOR, "Transaction Editor");
 
         add(ops, AppPanelId.SCHEDULES, "Outstanding / Schedules");
+        add(ops, AppPanelId.INVENTORY, "Inventory");
 
         TreeItem<NavItem> budget = group(ops, "Budget");
         add(budget, AppPanelId.BUDGET_EDITOR, "Budget Editor");
@@ -45,7 +47,7 @@ public class NavigationPane extends VBox
         add(assets, AppPanelId.DEPRECIATION_RUNS, "Depreciation Runs");
 
         TreeItem<NavItem> outputs = group(root, "Outputs");
-        add(outputs, AppPanelId.REPORT_LIBRARY, "Reports Library");
+        add(outputs, AppPanelId.REPORTS_WORKSPACE, "Reports Workspace");
 
         TreeItem<NavItem> ref = group(root, "Reference");
         add(ref, AppPanelId.CHART_OF_ACCOUNTS, "Chart of Accounts");

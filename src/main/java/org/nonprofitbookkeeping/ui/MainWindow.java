@@ -26,7 +26,7 @@ public class MainWindow extends BorderPane
         BorderPane.setMargin(nav, new Insets(8, 4, 8, 8));
         BorderPane.setMargin(inspectorPane, new Insets(8, 8, 8, 4));
 
-        openPanel(AppPanelId.LEDGER_REGISTER);
+        openPanel(AppPanelId.DASHBOARD);
     }
 
     private VBox buildTopChrome()
@@ -72,13 +72,16 @@ public class MainWindow extends BorderPane
         Menu run = new Menu("Run");
         run.getItems().addAll(
             item("Post / Validate", null, () -> info("Posting not wired in UI yet.")),
-            item("Recalculate summaries", null, () -> info("Recalculate not wired yet."))
+            item("Recalculate summaries", null, () -> info("Recalculate not wired yet.")),
+            new SeparatorMenuItem(),
+            item("Inventory & Depreciation", null, () -> openPanel(AppPanelId.INVENTORY)),
+            item("Reports Workspace", null, () -> openPanel(AppPanelId.REPORTS_WORKSPACE))
         );
 
         Menu tools = new Menu("Tools");
         tools.getItems().addAll(
             item("Import/Export…", null, () -> info("Tools not wired yet.")),
-            item("Preferences…", null, () -> openPanel(AppPanelId.SETTINGS))
+            item("Preferences…", null, this::openSettingsDialog)
         );
 
         Menu help = new Menu("Help");
@@ -119,7 +122,7 @@ public class MainWindow extends BorderPane
         dateRangeSelector.presetBox().show();
     }
 
-private MenuItem item(String text, String accel, Runnable action)
+    private MenuItem item(String text, String accel, Runnable action)
     {
         MenuItem mi = new MenuItem(text);
         if (accel != null) mi.setAccelerator(KeyCombination.keyCombination(accel));
@@ -173,6 +176,18 @@ private MenuItem item(String text, String accel, Runnable action)
     public void openInspectorJournal()
     {
         inspectorPane.show("Journal View", "Journal drawer placeholder.\n\nFrom any panel, this should show derived DR/CR lines for the current selection.");
+    }
+
+    private void openSettingsDialog()
+    {
+        SettingsPanel settingsPanel = new SettingsPanel();
+
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("Preferences");
+        dialog.getDialogPane().setContent(settingsPanel.root());
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        dialog.setResizable(true);
+        dialog.showAndWait();
     }
 
     private void info(String msg)
