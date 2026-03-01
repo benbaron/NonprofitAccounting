@@ -31,6 +31,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -126,16 +127,14 @@ public class NonprofitBookkeepingFX extends Application
 	
 	// Menus that need their state managed
 	
-	/** Top-level menu for running various tools and plugin features. */
-	private Menu run;
+	/** Top-level menu for runnable workflows and operational workspaces. */
+	private Menu runMenu;
 	/** Top-level menu for report navigation shortcuts. */
 	private Menu reports;
-	/** Top-level menu for accessing different data panels like Donors, Grants etc. */
-	private Menu panels;
-	/** Top-level menu dedicated to import workflows. */
-	private Menu importMenu;
-	/** Top-level menu dedicated to export workflows. */
-	private Menu exportMenu;
+	/** Top-level menu for donor, grant, and fund-development features. */
+	private Menu fundraisingMenu;
+	/** Top-level menu for technical and utility workflows. */
+	private Menu toolsMenu;
 	/** Top-level menu that lists available plugins. */
 	private Menu pluginsMenu;
 	
@@ -381,43 +380,41 @@ public class NonprofitBookkeepingFX extends Application
 		bar.getMenus().clear();
 		
 		/* FILE */
-		Menu companyMenu = new Menu("Company");
-		this.miOpen = add(companyMenu, "Open Company", e -> doOpenCompany());
+		Menu fileMenu = new Menu("File");
+		this.miOpen = add(fileMenu, "Open Company", e -> doOpenCompany());
 		this.miOpen.setAccelerator(
 			new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
-		this.miClose = add(companyMenu, "Close Company", e -> doCloseCompany());
+		this.miClose = add(fileMenu, "Close Company", e -> doCloseCompany());
 		this.miClose.setAccelerator(
 			new KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN));
-		this.miSave = add(companyMenu, "Save Company", e -> doSaveCompany());
+		this.miSave = add(fileMenu, "Save Company", e -> doSaveCompany());
 		this.miSave.setAccelerator(
 			new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
+		fileMenu.getItems().add(new SeparatorMenuItem());
 		
-		this.miImportCoaXlsx = add(companyMenu, "Import COA (XLSX)",
+		this.miImportCoaXlsx = add(fileMenu, "Import COA (XLSX)",
 			e -> new ImportCoaXlsxActionFX(this.primaryStage).handle(e));
-		this.miExportCoaXlsx = add(companyMenu, "Export COA (XLSX)",
+		this.miExportCoaXlsx = add(fileMenu, "Export COA (XLSX)",
 			e -> new ExportCoaXlsxActionFX(this.primaryStage).handle(e));
-		bar.getMenus().add(companyMenu);
-		
-		/* IMPORT */
-		this.importMenu = new Menu("Import");
+		fileMenu.getItems().add(new SeparatorMenuItem());
+
 		this.miImportFile =
-			add(this.importMenu, "Import Financial (OFX, QFX) File...",
+			add(fileMenu, "Import Financial File (OFX/QFX)...",
 				e -> new ImportFileActionFX(this.primaryStage).handle(e));
 		
 		this.miImportScaExcel = new MenuItem("Import Outlands Ledger...");
 		this.miImportScaExcel.setOnAction(
 			e -> new ImportFromOutlandsLedgerActionFX(this.primaryStage,
 				this.scaExcelViewerPanel).handle(e));
-		this.importMenu.getItems().add(this.miImportScaExcel);
+		fileMenu.getItems().add(this.miImportScaExcel);
 		
-		this.miPersistScaLedger = add(this.importMenu,
+		this.miPersistScaLedger = add(fileMenu,
 			"Import SCA Ledger...",
 			e -> new ImportSCALedgerActionFX(this.primaryStage)
 				.handle(e));
-		bar.getMenus().add(this.importMenu);
-		
-		/* EXPORT */
-		this.exportMenu = new Menu("Export");
+
+		fileMenu.getItems().add(new SeparatorMenuItem());
+
 		this.miSaveScaModifiedCopy =
 			new MenuItem("Save Modified SCA Workbook...");
 		
@@ -432,12 +429,12 @@ public class NonprofitBookkeepingFX extends Application
 			this.miSaveScaModifiedCopy.setDisable(true);
 		}
 		
-		this.exportMenu.getItems().add(this.miSaveScaModifiedCopy);
+		fileMenu.getItems().add(this.miSaveScaModifiedCopy);
 		
-		this.miExportStatementOfx = add(this.exportMenu,
+		this.miExportStatementOfx = add(fileMenu,
 			"Export Account Statement (OFX/QFX)...",
 			e -> new ExportFileActionFX(this.primaryStage).handle(e));
-		bar.getMenus().add(this.exportMenu);
+		bar.getMenus().add(fileMenu);
 		
 		/* EDIT */
 		Menu edit = new Menu("Edit");
@@ -456,29 +453,37 @@ public class NonprofitBookkeepingFX extends Application
 		bar.getMenus().add(edit);
 		
 		/* RUN */
-		this.run = new Menu("Run");
-		add(this.run, "Documents & Attachments",
-			e -> showPanel(new DocumentsPanelFX(ServiceContainer.dss),
-				"Documents"));
-		add(this.run, "Inventory & Depreciation",
-			e -> showPanel(new InventoryPanelFX(ServiceContainer.iss, null),
-				"Inventory"));
-		add(this.run, "Funds & Fund Accounting",
-			e -> showPanel(new FundsPanelFX(ServiceContainer.fas, null),
-				"Funds"));
-		add(this.run, "Excel Template Report...",
-			e -> new ExcelTemplateReportActionFX(this.primaryStage).handle(e));
-		add(this.run, "Reconcile",
+		this.runMenu = new Menu("Run");
+		add(this.runMenu, "Reports Workspace",
+			e -> ((MainApplicationView) this.root)
+				.showPanel(MainApplicationView.PanelType.REPORTS));
+		add(this.runMenu, "Reconcile Accounts",
 			e -> showPanel(
 				new LedgerReconcilePanelFX(new ReconciliationService()),
 				"Reconciliation"));
-		bar.getMenus().add(this.run);
+		add(this.runMenu, "Undeposited Funds",
+			e -> showPanel(
+				new UndepositedFundsPanelFX(
+					ServiceContainer.undepositedFundsService),
+				"Undeposited Funds"));
+		add(this.runMenu, "Sales & COGS",
+			e -> showPanel(
+				new SalesAndCOGPanelFX(ServiceContainer.salesService, null),
+				"Sales & COGS"));
+		this.runMenu.getItems().add(new SeparatorMenuItem());
+		add(this.runMenu, "Documents & Attachments",
+			e -> showPanel(new DocumentsPanelFX(ServiceContainer.dss),
+				"Documents"));
+		add(this.runMenu, "Inventory & Depreciation",
+			e -> showPanel(new InventoryPanelFX(ServiceContainer.iss, null),
+				"Inventory"));
+		this.runMenu.getItems().add(new SeparatorMenuItem());
+		add(this.runMenu, "Generate Excel Template Report...",
+			e -> new ExcelTemplateReportActionFX(this.primaryStage).handle(e));
+		bar.getMenus().add(this.runMenu);
 
 		/* REPORTS */
 		this.reports = new Menu("Reports");
-		add(this.reports, "Reports Workspace",
-			e -> ((MainApplicationView) this.root)
-				.showPanel(MainApplicationView.PanelType.REPORTS));
 		add(this.reports, "Income Statement",
 			e -> ((MainApplicationView) this.root)
 				.showPanel(MainApplicationView.PanelType.INCOME_STATEMENT));
@@ -491,30 +496,28 @@ public class NonprofitBookkeepingFX extends Application
 		bar.getMenus().add(this.reports);
 		
 		
-		/* PANELS */
-		this.panels = new Menu("Panels");
-		add(this.panels, "Donors",
+		/* FUNDRAISING */
+		this.fundraisingMenu = new Menu("Fundraising");
+		add(this.fundraisingMenu, "Donors",
 			e -> showPanel(
 				new DonorsPanelFX(ServiceContainer.donorService, null),
 				"Donors"));
-		add(this.panels, "Donations",
+		add(this.fundraisingMenu, "Donations",
 			e -> showPanel(new DonationsPanelFX(this.primaryStage),
 				"Donations"));
-		add(this.panels, "Grants",
+		add(this.fundraisingMenu, "Grants",
 			e -> showPanel(new GrantsPanelFX(ServiceContainer.grantsService),
 				"Grants"));
-		add(this.panels, "Undeposited Funds",
+		add(this.fundraisingMenu, "Funds & Fund Accounting",
 			e -> showPanel(
-				new UndepositedFundsPanelFX(
-					ServiceContainer.undepositedFundsService),
-				"Undeposited Funds"));
-		add(this.panels, "Sales & COG",
-			e -> showPanel(
-				new SalesAndCOGPanelFX(ServiceContainer.salesService, null),
-				"Sales & COG"));
-		bar.getMenus().add(this.panels);
+				new FundsPanelFX(ServiceContainer.fas, null),
+				"Funds"));
+		bar.getMenus().add(this.fundraisingMenu);
 		
-		bar.getMenus().add(createDatabaseMenu());
+		/* TOOLS */
+		this.toolsMenu = new Menu("Tools");
+		this.toolsMenu.getItems().add(createDatabaseMenu());
+		bar.getMenus().add(this.toolsMenu);
 		
 		/* SETTINGS */
 		Menu settings = new Menu("Settings");
@@ -535,12 +538,6 @@ public class NonprofitBookkeepingFX extends Application
 		});
 		bar.getMenus().add(settings);
 		
-		/* HELP */
-		Menu help = new Menu("Help");
-		add(help, "Help",
-			e -> showPanel(new HelpPanelFX(this.primaryStage), "Help"));
-		bar.getMenus().add(help);
-		
 		/* PLUGINS */
 		this.pluginsMenu = new Menu("Plugins");
 		
@@ -552,6 +549,12 @@ public class NonprofitBookkeepingFX extends Application
 		}
 		
 		bar.getMenus().add(this.pluginsMenu);
+		
+		/* HELP */
+		Menu help = new Menu("Help");
+		add(help, "Help",
+			e -> showPanel(new HelpPanelFX(this.primaryStage), "Help"));
+		bar.getMenus().add(help);
 		
 		// Add plugin menu items
 		LOGGER.info("Adding plugin menu items. Number of plugins: {}",
@@ -1168,8 +1171,20 @@ public class NonprofitBookkeepingFX extends Application
 				.setDisable(this.scaLedgerPlugin == null || creatingCompany);
 		}
 		
-		this.run.setDisable(!companyOpen || creatingCompany);
-		this.panels.setDisable(!companyOpen || creatingCompany);
+		if (this.runMenu != null)
+		{
+			this.runMenu.setDisable(!companyOpen || creatingCompany);
+		}
+
+		if (this.fundraisingMenu != null)
+		{
+			this.fundraisingMenu.setDisable(!companyOpen || creatingCompany);
+		}
+
+		if (this.toolsMenu != null)
+		{
+			this.toolsMenu.setDisable(!companyOpen || creatingCompany);
+		}
 		
 		// present company open state
 		if (this.mainView != null)
