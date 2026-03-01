@@ -78,6 +78,18 @@ public class MainWindow extends BorderPane
             item("Reports Workspace", null, () -> openPanel(AppPanelId.REPORTS_WORKSPACE))
         );
 
+        Menu database = new Menu("Database");
+        database.getItems().addAll(
+            item("Open/Create H2 DB...", null,
+                () -> info("Open/Create H2 DB is not wired in the new UI yet.")),
+            item("Import Legacy .npbk Archive...", null,
+                () -> info("Legacy archive import is not wired in the new UI yet.")),
+            item("Import H2 script into DB...", null,
+                () -> info("H2 script import is not wired in the new UI yet.")),
+            item("Run SQL Query...", null,
+                () -> info("SQL query workspace is not wired in the new UI yet."))
+        );
+
         Menu tools = new Menu("Tools");
         tools.getItems().addAll(
             item("Import/Export…", null, () -> info("Tools not wired yet.")),
@@ -89,7 +101,7 @@ public class MainWindow extends BorderPane
             item("About", null, () -> info("SCA Ledger prototype shell."))
         );
 
-        return new MenuBar(file, edit, search, run, tools, help);
+        return new MenuBar(file, edit, search, run, database, tools, help);
     }
 
     private ToolBar buildToolBar()
