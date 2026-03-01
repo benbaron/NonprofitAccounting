@@ -1102,6 +1102,8 @@ public class SkeletonJournalPanel extends BorderPane
 		}
 		
 		dialog.setScene(scene);
+		dialog.setMinWidth(1050);
+		dialog.setMinHeight(720);
 		dialog.setResizable(true);
 		dialog.showAndWait();
 		

@@ -38,6 +38,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
@@ -326,7 +327,14 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 root.getChildren().add(buildFooter());
 
                 VBox.setVgrow(root.getChildren().get(1), Priority.ALWAYS);
-                setCenter(root);
+
+                ScrollPane scrollPane = new ScrollPane(root);
+                scrollPane.setFitToWidth(true);
+                scrollPane.setFitToHeight(true);
+                scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+                scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+                scrollPane.setPannable(true);
+                setCenter(scrollPane);
 
                 this.supplementalTabs.setPersonRefs(loadPersonRefs());
 

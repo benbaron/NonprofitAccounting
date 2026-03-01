@@ -264,6 +264,8 @@ public class JournalPanelFX extends BorderPane
 		Dialog<Void> d = new Dialog<>();
 		d.setTitle(existing == null ? "New Transaction" : "Edit Transaction");
 		d.getDialogPane().setContent(pane);
+		d.getDialogPane().setPrefSize(1050, 720);
+		d.getDialogPane().setMinSize(980, 680);
 		d.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
 		d.showAndWait();
 		
