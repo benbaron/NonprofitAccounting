@@ -133,10 +133,10 @@ public class NonprofitBookkeepingFX extends Application
 	private Menu reports;
 	/** Top-level menu for donor, grant, and fund-development features. */
 	private Menu fundraisingMenu;
-	/** Top-level menu for technical and utility workflows. */
-	private Menu toolsMenu;
 	/** Top-level menu that lists available plugins. */
 	private Menu pluginsMenu;
+	/** Top-level database menu, exposed directly for startup workflows. */
+	private Menu databaseMenu;
 	
 	/** Reference to the loaded SCA Ledger plugin, if available. */
 	private SCALedgerPlugin scaLedgerPlugin;
@@ -482,6 +482,10 @@ public class NonprofitBookkeepingFX extends Application
 			e -> new ExcelTemplateReportActionFX(this.primaryStage).handle(e));
 		bar.getMenus().add(this.runMenu);
 
+		/* DATABASE */
+		this.databaseMenu = createDatabaseMenu();
+		bar.getMenus().add(this.databaseMenu);
+
 		/* REPORTS */
 		this.reports = new Menu("Reports");
 		add(this.reports, "Income Statement",
@@ -513,11 +517,6 @@ public class NonprofitBookkeepingFX extends Application
 				new FundsPanelFX(ServiceContainer.fas, null),
 				"Funds"));
 		bar.getMenus().add(this.fundraisingMenu);
-		
-		/* TOOLS */
-		this.toolsMenu = new Menu("Tools");
-		this.toolsMenu.getItems().add(createDatabaseMenu());
-		bar.getMenus().add(this.toolsMenu);
 		
 		/* SETTINGS */
 		Menu settings = new Menu("Settings");
@@ -1181,9 +1180,9 @@ public class NonprofitBookkeepingFX extends Application
 			this.fundraisingMenu.setDisable(!companyOpen || creatingCompany);
 		}
 
-		if (this.toolsMenu != null)
+		if (this.databaseMenu != null)
 		{
-			this.toolsMenu.setDisable(!companyOpen || creatingCompany);
+			this.databaseMenu.setDisable(creatingCompany);
 		}
 		
 		// present company open state
