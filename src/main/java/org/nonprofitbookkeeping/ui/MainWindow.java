@@ -4,6 +4,15 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.service.LegacyNpbkImportService;
+import nonprofitbookkeeping.tools.H2ScriptCompanyImporter;
+import nonprofitbookkeeping.ui.panels.SqlQueryPanelFX;
+
+import java.io.File;
+import java.nio.file.Path;
 
 /**
  * Represents the MainWindow component in the nonprofit bookkeeping application.
@@ -81,13 +90,13 @@ public class MainWindow extends BorderPane
         Menu database = new Menu("Database");
         database.getItems().addAll(
             item("Open/Create H2 DB...", null,
-                () -> info("Open/Create H2 DB is not wired in the new UI yet.")),
+                this::handleOpenOrCreateDatabase),
             item("Import Legacy .npbk Archive...", null,
-                () -> info("Legacy archive import is not wired in the new UI yet.")),
+                this::handleImportLegacyArchive),
             item("Import H2 script into DB...", null,
-                () -> info("H2 script import is not wired in the new UI yet.")),
+                this::handleImportH2Script),
             item("Run SQL Query...", null,
-                () -> info("SQL query workspace is not wired in the new UI yet."))
+                this::openSqlQueryDialog)
         );
 
         Menu tools = new Menu("Tools");
@@ -205,5 +214,156 @@ public class MainWindow extends BorderPane
     private void info(String msg)
     {
         inspectorPane.show("Info", msg);
+    }
+
+    private void handleOpenOrCreateDatabase()
+    {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Open or Create H2 Database");
+        chooser.getExtensionFilters().setAll(
+            new FileChooser.ExtensionFilter("H2 Database (*.mv.db)", "*.mv.db"),
+            new FileChooser.ExtensionFilter("All Files", "*.*"));
+
+        ButtonType openExisting = new ButtonType("Open Existing");
+        ButtonType createNew = new ButtonType("Create New");
+        Alert choice = new Alert(Alert.AlertType.CONFIRMATION);
+        choice.setTitle("Select Database Action");
+        choice.setHeaderText("Open an existing database or create a new one?");
+        choice.getButtonTypes().setAll(openExisting, createNew, ButtonType.CANCEL);
+
+        if (getScene() != null && getScene().getWindow() != null)
+        {
+            choice.initOwner(getScene().getWindow());
+        }
+
+        ButtonType selected = choice.showAndWait().orElse(ButtonType.CANCEL);
+        if (selected == ButtonType.CANCEL)
+        {
+            return;
+        }
+
+        File selectedFile = (selected == createNew)
+            ? chooser.showSaveDialog(getOwningStage())
+            : chooser.showOpenDialog(getOwningStage());
+
+        if (selectedFile == null)
+        {
+            return;
+        }
+
+        Path basePath = normalizeH2Base(selectedFile.toPath());
+        try
+        {
+            Database.init(basePath);
+            Database.get().ensureSchema();
+            info("Database ready: " + basePath.toAbsolutePath());
+        }
+        catch (Exception ex)
+        {
+            info("Failed to open/create DB: " + UiErrors.safeMessage(ex));
+        }
+    }
+
+    private void handleImportLegacyArchive()
+    {
+        if (!Database.isInitialized())
+        {
+            info("Open/Create an H2 database first.");
+            return;
+        }
+
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Import Legacy .npbk Archive");
+        chooser.getExtensionFilters().setAll(
+            new FileChooser.ExtensionFilter("Legacy archive (*.npbk, *.zip, *.json)",
+                "*.npbk", "*.zip", "*.json"),
+            new FileChooser.ExtensionFilter("All Files", "*.*"));
+
+        File file = chooser.showOpenDialog(getOwningStage());
+        if (file == null)
+        {
+            return;
+        }
+
+        try
+        {
+            long id = new LegacyNpbkImportService().importArchive(file.toPath());
+            info("Legacy archive imported. Company id=" + id);
+        }
+        catch (Exception ex)
+        {
+            info("Legacy import failed: " + UiErrors.safeMessage(ex));
+        }
+    }
+
+    private void handleImportH2Script()
+    {
+        if (!Database.isInitialized())
+        {
+            info("Open/Create an H2 database first.");
+            return;
+        }
+
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Import H2 SQL Script");
+        chooser.getExtensionFilters().setAll(
+            new FileChooser.ExtensionFilter("SQL script (*.sql)", "*.sql"),
+            new FileChooser.ExtensionFilter("All Files", "*.*"));
+
+        File file = chooser.showOpenDialog(getOwningStage());
+        if (file == null)
+        {
+            return;
+        }
+
+        try
+        {
+            H2ScriptCompanyImporter.importScript(file.toPath());
+            info("H2 script imported: " + file.getName());
+        }
+        catch (Exception ex)
+        {
+            info("H2 script import failed: " + UiErrors.safeMessage(ex));
+        }
+    }
+
+    private void openSqlQueryDialog()
+    {
+        if (!Database.isInitialized())
+        {
+            info("Open/Create an H2 database first.");
+            return;
+        }
+
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("Run SQL Query");
+        dialog.getDialogPane().setContent(new SqlQueryPanelFX());
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        dialog.getDialogPane().setPrefSize(960, 700);
+        dialog.setResizable(true);
+
+        if (getScene() != null && getScene().getWindow() != null)
+        {
+            dialog.initOwner(getScene().getWindow());
+        }
+
+        dialog.showAndWait();
+    }
+
+    private Stage getOwningStage()
+    {
+        return (getScene() != null && getScene().getWindow() instanceof Stage stage)
+            ? stage
+            : null;
+    }
+
+    private Path normalizeH2Base(Path filePath)
+    {
+        String path = filePath.toAbsolutePath().toString();
+        if (path.endsWith(".mv.db"))
+        {
+            path = path.substring(0, path.length() - ".mv.db".length());
+        }
+        return Path.of(path);
     }
 }
