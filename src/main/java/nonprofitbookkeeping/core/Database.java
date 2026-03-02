@@ -3,6 +3,10 @@ package nonprofitbookkeeping.core;
 
 import java.nio.file.Path;
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.List;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -109,6 +113,12 @@ public final class Database
 		
 		try (Connection c = getConnection(); Statement st = c.createStatement())
 		{
+			st.execute("""
+				    CREATE TABLE IF NOT EXISTS schema_migration_history(
+				      migration_key VARCHAR(128) PRIMARY KEY,
+				      applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+				    )
+				""");
 			st.execute("""
 				    CREATE TABLE IF NOT EXISTS company_profile(
 				      id INT PRIMARY KEY,
@@ -477,26 +487,6 @@ public final class Database
 				    FOREIGN KEY (parent_id) REFERENCES account(id) ON DELETE SET NULL
 				""");
 
-			st.execute("""
-				    INSERT INTO txn(id, txn_date, memo, created_at, updated_at)
-				    SELECT jt.id, CURRENT_DATE, jt.memo, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
-				    FROM journal_transaction jt
-				    WHERE NOT EXISTS (SELECT 1 FROM txn t WHERE t.id = jt.id)
-				""");
-			
-			st.execute("""
-				    INSERT INTO txn_split(txn_id, account_id, fund_id, amount_signed, notes, nmr_flag)
-				    SELECT je.txn_id, a.id, 1, CASE WHEN UPPER(COALESCE(je.account_side,'DEBIT')) = 'CREDIT' THEN -ABS(je.amount) ELSE ABS(je.amount) END, je.account_name, FALSE
-				    FROM journal_entry je
-				    JOIN account a ON a.account_number = je.account_number
-				    WHERE EXISTS (SELECT 1 FROM txn t WHERE t.id = je.txn_id)
-				      AND EXISTS (SELECT 1 FROM fund f WHERE f.id = 1)
-				      AND NOT EXISTS (SELECT 1 FROM txn_split ts WHERE ts.txn_id = je.txn_id AND ts.account_id = a.id AND ts.amount_signed = CASE WHEN UPPER(COALESCE(je.account_side,'DEBIT')) = 'CREDIT' THEN -ABS(je.amount) ELSE ABS(je.amount) END)
-				""");
-			
-			st.execute("INSERT INTO chart_of_accounts(name, version, status, created_at, updated_at) SELECT 'Default Legacy Chart','legacy','ACTIVE',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM chart_of_accounts)");
-			st.execute("UPDATE account SET chart_id = (SELECT MIN(id) FROM chart_of_accounts) WHERE chart_id IS NULL");
-			st.execute("INSERT INTO fund(id, code, name, fund_type, is_active, created_at, updated_at) SELECT 1, 'GENERAL', 'General Fund', 'UNRESTRICTED', TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM fund WHERE id = 1)");
 
 			st.execute("""
 				    CREATE TABLE IF NOT EXISTS donor(
@@ -534,8 +524,7 @@ public final class Database
 				"ALTER TABLE person ADD COLUMN IF NOT EXISTS phone VARCHAR(64);");
 			st.execute(
 				"CREATE INDEX IF NOT EXISTS person_name_idx ON person(name)");
-			st.execute("INSERT INTO counterparty(display_name, kind, email, phone, is_active) SELECT p.name, 'PERSON', p.email, p.phone, TRUE FROM person p WHERE NOT EXISTS (SELECT 1 FROM counterparty c WHERE c.display_name = p.name AND c.kind = 'PERSON')");
-			st.execute("INSERT INTO counterparty(display_name, kind, email, phone, is_active) SELECT d.name, 'DONOR', d.email, d.phone, TRUE FROM donor d WHERE d.name IS NOT NULL AND NOT EXISTS (SELECT 1 FROM counterparty c WHERE c.display_name = d.name AND c.kind = 'DONOR')");
+			runReconciledDataBackfill(c);
 			st.execute(
 				"""
 					    ALTER TABLE txn_supplemental_line
@@ -585,6 +574,113 @@ public final class Database
 				""");
 		}
 		
+	}
+
+	private void runReconciledDataBackfill(Connection c) throws SQLException
+	{
+		if (isMigrationApplied(c, "reconciled-backfill-v1"))
+		{
+			return;
+		}
+
+		try (Statement st = c.createStatement())
+		{
+			st.execute("INSERT INTO chart_of_accounts(name, version, status, created_at, updated_at) SELECT 'Default Legacy Chart','legacy','ACTIVE',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM chart_of_accounts)");
+			st.execute("INSERT INTO fund(id, code, name, fund_type, is_active, created_at, updated_at) SELECT 1, 'GENERAL', 'General Fund', 'UNRESTRICTED', TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM fund WHERE id = 1)");
+			st.execute("UPDATE account SET chart_id = (SELECT MIN(id) FROM chart_of_accounts) WHERE chart_id IS NULL");
+			st.execute("""
+				    INSERT INTO txn(id, txn_date, memo, created_at, updated_at)
+				    SELECT jt.id, CURRENT_DATE, jt.memo, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+				    FROM journal_transaction jt
+				    WHERE NOT EXISTS (SELECT 1 FROM txn t WHERE t.id = jt.id)
+				""");
+			st.execute("""
+				    INSERT INTO txn_split(txn_id, account_id, fund_id, amount_signed, notes, nmr_flag)
+				    SELECT je.txn_id, a.id, 1, CASE WHEN UPPER(COALESCE(je.account_side,'DEBIT')) = 'CREDIT' THEN -ABS(je.amount) ELSE ABS(je.amount) END, je.account_name, FALSE
+				    FROM journal_entry je
+				    JOIN account a ON a.account_number = je.account_number
+				    WHERE EXISTS (SELECT 1 FROM txn t WHERE t.id = je.txn_id)
+				      AND EXISTS (SELECT 1 FROM fund f WHERE f.id = 1)
+				      AND NOT EXISTS (SELECT 1 FROM txn_split ts WHERE ts.txn_id = je.txn_id AND ts.account_id = a.id AND ts.amount_signed = CASE WHEN UPPER(COALESCE(je.account_side,'DEBIT')) = 'CREDIT' THEN -ABS(je.amount) ELSE ABS(je.amount) END)
+				""");
+			st.execute("INSERT INTO counterparty(display_name, kind, email, phone, is_active) SELECT p.name, 'PERSON', p.email, p.phone, TRUE FROM person p WHERE NOT EXISTS (SELECT 1 FROM counterparty c WHERE c.display_name = p.name AND c.kind = 'PERSON')");
+			st.execute("INSERT INTO counterparty(display_name, kind, email, phone, is_active) SELECT d.name, 'DONOR', d.email, d.phone, TRUE FROM donor d WHERE d.name IS NOT NULL AND NOT EXISTS (SELECT 1 FROM counterparty c WHERE c.display_name = d.name AND c.kind = 'DONOR')");
+		}
+
+		updateTxnDatesFromLegacyText(c);
+		markMigrationApplied(c, "reconciled-backfill-v1");
+	}
+
+	private void updateTxnDatesFromLegacyText(Connection c) throws SQLException
+	{
+		try (PreparedStatement ps = c.prepareStatement("SELECT id, date_text FROM journal_transaction");
+			 PreparedStatement upd = c.prepareStatement("UPDATE txn SET txn_date = ? WHERE id = ?");
+			 ResultSet rs = ps.executeQuery())
+		{
+			while (rs.next())
+			{
+				long id = rs.getLong(1);
+				LocalDate parsed = parseLegacyDate(rs.getString(2));
+				if (parsed != null)
+				{
+					upd.setDate(1, Date.valueOf(parsed));
+					upd.setLong(2, id);
+					upd.addBatch();
+				}
+			}
+			upd.executeBatch();
+		}
+	}
+
+	private LocalDate parseLegacyDate(String raw)
+	{
+		if (raw == null || raw.isBlank())
+		{
+			return null;
+		}
+		String value = raw.trim();
+		List<DateTimeFormatter> formats = List.of(
+			DateTimeFormatter.ISO_LOCAL_DATE,
+			DateTimeFormatter.ofPattern("M/d/yyyy"),
+			DateTimeFormatter.ofPattern("MM/dd/yyyy"),
+			DateTimeFormatter.ofPattern("M-d-yyyy"),
+			DateTimeFormatter.ofPattern("MM-dd-yyyy")
+		);
+		for (DateTimeFormatter f : formats)
+		{
+			try
+			{
+				return LocalDate.parse(value, f);
+			}
+			catch (DateTimeParseException ignored)
+			{
+				// Try next pattern.
+			}
+		}
+		return null;
+	}
+
+	private boolean isMigrationApplied(Connection c, String key) throws SQLException
+	{
+		try (PreparedStatement ps = c.prepareStatement(
+			"SELECT 1 FROM schema_migration_history WHERE migration_key = ?"))
+		{
+			ps.setString(1, key);
+			try (ResultSet rs = ps.executeQuery())
+			{
+				return rs.next();
+			}
+		}
+	}
+
+	private void markMigrationApplied(Connection c, String key) throws SQLException
+	{
+		try (PreparedStatement ps = c.prepareStatement(
+			"INSERT INTO schema_migration_history(migration_key) VALUES (?)"))
+		{
+			ps.setString(1, key);
+			ps.executeUpdate();
+		}
 	}
 	
 }
