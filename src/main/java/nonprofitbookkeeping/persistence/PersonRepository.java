@@ -1,5 +1,7 @@
 package nonprofitbookkeeping.persistence;
 
+import jakarta.enterprise.context.ApplicationScoped;
+
 import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.Person;
 
@@ -14,6 +16,7 @@ import java.util.Optional;
 
 // TODO: Auto-generated Javadoc
 /** Repository for CRUD operations on the {@code person} table. */
+@ApplicationScoped
 public class PersonRepository
 {
 	

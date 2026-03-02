@@ -1,5 +1,7 @@
 package nonprofitbookkeeping.persistence;
 
+import jakarta.enterprise.context.ApplicationScoped;
+
 import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.UndepositedFundsItem;
 
@@ -11,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@ApplicationScoped
 public class UndepositedFundsRepository
 {
     private static final String INSERT_SQL =

@@ -1,6 +1,8 @@
 
 package nonprofitbookkeeping.persistence;
 
+import jakarta.enterprise.context.ApplicationScoped;
+
 import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.DonorContact;
 
@@ -19,6 +21,7 @@ import java.util.Optional;
  * so that UI edits and deletions affect the correct record even when names
  * change.
  */
+@ApplicationScoped
 public class DonorRepository
 {
 	
