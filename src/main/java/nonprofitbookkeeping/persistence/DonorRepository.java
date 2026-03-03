@@ -1,6 +1,8 @@
 
 package nonprofitbookkeeping.persistence;
 
+import jakarta.enterprise.context.ApplicationScoped;
+
 import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.DonorContact;
 
@@ -19,6 +21,7 @@ import java.util.Optional;
  * so that UI edits and deletions affect the correct record even when names
  * change.
  */
+@ApplicationScoped
 public class DonorRepository
 {
 	
@@ -37,6 +40,9 @@ public class DonorRepository
 	/** The Constant FIND_SQL. */
 	private static final String FIND_SQL =
 		"SELECT external_id, name, email, phone FROM donor WHERE external_id = ?";
+
+	private static final String FIND_NAME_SQL =
+		"SELECT name FROM donor WHERE external_id = ?";
 	
 	/** The Constant DELETE_ALL_SQL. */
 	private static final String DELETE_ALL_SQL = "DELETE FROM donor";
@@ -53,11 +59,17 @@ public class DonorRepository
 		try (Connection c = Database.get().getConnection();
 			PreparedStatement ps = c.prepareStatement(UPSERT_SQL))
 		{
+			String previousName = findNameByExternalId(c, donor.getId());
 			ps.setString(1, donor.getId());
 			ps.setString(2, donor.getName());
 			ps.setString(3, donor.getEmail());
 			ps.setString(4, donor.getPhone());
 			ps.executeUpdate();
+			if (previousName != null && !previousName.equals(donor.getName()))
+			{
+				CounterpartySyncAdapter.deleteDonor(c, previousName);
+			}
+			CounterpartySyncAdapter.syncDonor(c, donor);
 		}
 		
 	}
@@ -75,8 +87,14 @@ public class DonorRepository
 		try (Connection c = Database.get().getConnection();
 			PreparedStatement ps = c.prepareStatement(DELETE_SQL))
 		{
+			String donorName = findNameByExternalId(c, externalId);
 			ps.setString(1, externalId);
-			return ps.executeUpdate() > 0;
+			boolean deleted = ps.executeUpdate() > 0;
+			if (deleted)
+			{
+				CounterpartySyncAdapter.deleteDonor(c, donorName);
+			}
+			return deleted;
 		}
 		
 	}
@@ -151,36 +169,62 @@ public class DonorRepository
 		try (Connection c = Database.get().getConnection())
 		{
 			c.setAutoCommit(false);
-			
-			try (PreparedStatement deleteAll =
-				c.prepareStatement(DELETE_ALL_SQL))
+			try
 			{
-				deleteAll.executeUpdate();
-			}
-			
-			if (donors != null && !donors.isEmpty())
-			{
+				try (PreparedStatement deleteAll =
+					c.prepareStatement(DELETE_ALL_SQL))
+				{
+					deleteAll.executeUpdate();
+				}
+				CounterpartySyncAdapter.deleteKind(c, "DONOR");
 				
-				try (PreparedStatement insert = c.prepareStatement(UPSERT_SQL))
+				if (donors != null && !donors.isEmpty())
 				{
 					
-					for (DonorContact donor : donors)
+					try (PreparedStatement insert = c.prepareStatement(UPSERT_SQL))
 					{
-						insert.setString(1, donor.getId());
-						insert.setString(2, donor.getName());
-						insert.setString(3, donor.getEmail());
-						insert.setString(4, donor.getPhone());
-						insert.addBatch();
+						
+						for (DonorContact donor : donors)
+						{
+							insert.setString(1, donor.getId());
+							insert.setString(2, donor.getName());
+							insert.setString(3, donor.getEmail());
+							insert.setString(4, donor.getPhone());
+							insert.addBatch();
+							CounterpartySyncAdapter.syncDonor(c, donor);
+						}
+						
+						insert.executeBatch();
 					}
 					
-					insert.executeBatch();
 				}
 				
+				c.commit();
 			}
-			
-			c.commit();
+			catch (SQLException e)
+			{
+				c.rollback();
+				throw e;
+			}
+			finally
+			{
+				c.setAutoCommit(true);
+			}
 		}
 		
+	}
+
+	private static String findNameByExternalId(Connection c, String externalId)
+		throws SQLException
+	{
+		try (PreparedStatement ps = c.prepareStatement(FIND_NAME_SQL))
+		{
+			ps.setString(1, externalId);
+			try (ResultSet rs = ps.executeQuery())
+			{
+				return rs.next() ? rs.getString(1) : null;
+			}
+		}
 	}
 	
 	/**

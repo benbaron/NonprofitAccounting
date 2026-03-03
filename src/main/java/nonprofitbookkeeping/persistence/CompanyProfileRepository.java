@@ -1,6 +1,8 @@
 
 package nonprofitbookkeeping.persistence;
 
+import jakarta.enterprise.context.ApplicationScoped;
+
 import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.CompanyProfileModel;
 
@@ -11,6 +13,7 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 /** Repository for reading and writing the single company profile row. */
+@ApplicationScoped
 public class CompanyProfileRepository
 {
 	

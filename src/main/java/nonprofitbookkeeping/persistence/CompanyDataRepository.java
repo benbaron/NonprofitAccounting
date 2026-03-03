@@ -1,6 +1,8 @@
 
 package nonprofitbookkeeping.persistence;
 
+import jakarta.enterprise.context.ApplicationScoped;
+
 import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountingEntry;
@@ -19,6 +21,7 @@ import java.util.Map;
 /**
  * Persists and loads the core {@link Company} aggregates using normalized tables instead of the legacy blob store.
  */
+@ApplicationScoped
 public class CompanyDataRepository
 {
 	

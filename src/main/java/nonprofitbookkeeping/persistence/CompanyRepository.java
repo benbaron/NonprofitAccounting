@@ -1,6 +1,8 @@
 
 package nonprofitbookkeeping.persistence;
 
+import jakarta.enterprise.context.ApplicationScoped;
+
 import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.Company;
 
@@ -22,6 +24,7 @@ import java.util.Objects;
  * payload that is stored inside the {@code company_store} table alongside basic
  * metadata (name and last updated timestamp).
  */
+@ApplicationScoped
 public class CompanyRepository
 {
 	

@@ -1,6 +1,8 @@
 
 package nonprofitbookkeeping.persistence;
 
+import jakarta.enterprise.context.ApplicationScoped;
+
 import nonprofitbookkeeping.core.Database;
 
 import java.sql.Connection;
@@ -15,6 +17,7 @@ import java.util.Optional;
  * Values are stored by logical keys so multiple services can share the same underlying
  * storage table instead of writing individual JSON files to disk.
  */
+@ApplicationScoped
 public class JsonStorageRepository
 {
 	
