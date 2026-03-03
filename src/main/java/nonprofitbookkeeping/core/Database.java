@@ -27,6 +27,33 @@ public final class Database
 	/** The pass. */
 	private final String pass = "";
 	
+	private static final String MIGRATION_RECONCILED_BACKFILL_V1 = "reconciled-backfill-v1";
+
+	private static final String SQL_COUNTERPARTY_FROM_PERSON =
+		"INSERT INTO counterparty(display_name, kind, email, phone, is_active) " +
+		"SELECT p.name, 'PERSON', p.email, p.phone, TRUE FROM person p " +
+		"WHERE NOT EXISTS (SELECT 1 FROM counterparty c WHERE c.display_name = p.name AND c.kind = 'PERSON')";
+
+	private static final String SQL_COUNTERPARTY_FROM_DONOR =
+		"INSERT INTO counterparty(display_name, kind, email, phone, is_active) " +
+		"SELECT d.name, 'DONOR', d.email, d.phone, TRUE FROM donor d " +
+		"WHERE d.name IS NOT NULL AND NOT EXISTS " +
+		"(SELECT 1 FROM counterparty c WHERE c.display_name = d.name AND c.kind = 'DONOR')";
+
+	private static final String SQL_MIGRATION_EXISTS =
+		"SELECT 1 FROM schema_migration_history WHERE migration_key = ?";
+
+	private static final String SQL_MIGRATION_INSERT =
+		"INSERT INTO schema_migration_history(migration_key) VALUES (?)";
+
+	private static final List<DateTimeFormatter> LEGACY_DATE_FORMATS = List.of(
+		DateTimeFormatter.ISO_LOCAL_DATE,
+		DateTimeFormatter.ofPattern("M/d/yyyy"),
+		DateTimeFormatter.ofPattern("MM/dd/yyyy"),
+		DateTimeFormatter.ofPattern("M-d-yyyy"),
+		DateTimeFormatter.ofPattern("MM-dd-yyyy")
+	);
+
 	/**
 	 * Instantiates a new database.
 	 *
@@ -580,7 +607,7 @@ public final class Database
 	
 	private void runReconciledDataBackfill(Connection c) throws SQLException
 	{
-		if (isMigrationApplied(c, "reconciled-backfill-v1"))
+		if (isMigrationApplied(c, MIGRATION_RECONCILED_BACKFILL_V1))
 		{
 			return;
 		}
@@ -609,13 +636,13 @@ public final class Database
 			      AND NOT EXISTS (SELECT 1 FROM txn_split ts WHERE ts.txn_id = je.txn_id AND ts.account_id = a.id AND ts.amount_signed = CASE WHEN UPPER(COALESCE(je.account_side,'DEBIT')) = 'CREDIT' THEN -ABS(je.amount) ELSE ABS(je.amount) END)
 			""");
 			st.execute(
-				"INSERT INTO counterparty(display_name, kind, email, phone, is_active) SELECT p.name, 'PERSON', p.email, p.phone, TRUE FROM person p WHERE NOT EXISTS (SELECT 1 FROM counterparty c WHERE c.display_name = p.name AND c.kind = 'PERSON')");
+				SQL_COUNTERPARTY_FROM_PERSON);
 			st.execute(
-				"INSERT INTO counterparty(display_name, kind, email, phone, is_active) SELECT d.name, 'DONOR', d.email, d.phone, TRUE FROM donor d WHERE d.name IS NOT NULL AND NOT EXISTS (SELECT 1 FROM counterparty c WHERE c.display_name = d.name AND c.kind = 'DONOR')");
+				SQL_COUNTERPARTY_FROM_DONOR);
 		}
 		
 		updateTxnDatesFromLegacyText(c);
-		markMigrationApplied(c, "reconciled-backfill-v1");
+		markMigrationApplied(c, MIGRATION_RECONCILED_BACKFILL_V1);
 	}
 	
 	private void updateTxnDatesFromLegacyText(Connection c) throws SQLException
@@ -648,13 +675,7 @@ public final class Database
 			return null;
 		}
 		String value = raw.trim();
-		List<DateTimeFormatter> formats = List.of(
-			DateTimeFormatter.ISO_LOCAL_DATE,
-			DateTimeFormatter.ofPattern("M/d/yyyy"),
-			DateTimeFormatter.ofPattern("MM/dd/yyyy"),
-			DateTimeFormatter.ofPattern("M-d-yyyy"),
-			DateTimeFormatter.ofPattern("MM-dd-yyyy"));
-		for (DateTimeFormatter f : formats)
+		for (DateTimeFormatter f : LEGACY_DATE_FORMATS)
 		{
 			try
 			{
@@ -671,7 +692,7 @@ public final class Database
 	private boolean isMigrationApplied(Connection c, String key) throws SQLException
 	{
 		try (PreparedStatement ps = c.prepareStatement(
-			"SELECT 1 FROM schema_migration_history WHERE migration_key = ?"))
+			SQL_MIGRATION_EXISTS))
 		{
 			ps.setString(1, key);
 			try (ResultSet rs = ps.executeQuery())
@@ -684,7 +705,7 @@ public final class Database
 	private void markMigrationApplied(Connection c, String key) throws SQLException
 	{
 		try (PreparedStatement ps = c.prepareStatement(
-			"INSERT INTO schema_migration_history(migration_key) VALUES (?)"))
+			SQL_MIGRATION_INSERT))
 		{
 			ps.setString(1, key);
 			ps.executeUpdate();
