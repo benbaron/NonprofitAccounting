@@ -35,6 +35,9 @@ public class PersonRepository
 	/** The Constant UPDATE_SQL. */
 	private static final String UPDATE_SQL =
 		"UPDATE person SET name = ?, email = ?, phone = ? WHERE id = ?";
+
+	private static final String NAME_SQL =
+		"SELECT name FROM person WHERE id = ?";
 	
 	/** The Constant DELETE_SQL. */
 	private static final String DELETE_SQL =
@@ -117,8 +120,14 @@ public class PersonRepository
 		try (Connection c = Database.get().getConnection();
 			PreparedStatement ps = c.prepareStatement(DELETE_SQL))
 		{
+			String currentName = findNameById(c, id);
 			ps.setLong(1, id);
-			return ps.executeUpdate() > 0;
+			boolean deleted = ps.executeUpdate() > 0;
+			if (deleted)
+			{
+				CounterpartySyncAdapter.deletePerson(c, currentName);
+			}
+			return deleted;
 		}
 	}
 
@@ -147,6 +156,7 @@ public class PersonRepository
 					person.setId(keys.getLong(1));
 				}
 			}
+			CounterpartySyncAdapter.syncPerson(c, person);
 		}
 
 		return person;
@@ -163,11 +173,29 @@ public class PersonRepository
 		try (Connection c = Database.get().getConnection();
 			PreparedStatement ps = c.prepareStatement(UPDATE_SQL))
 		{
+			String oldName = findNameById(c, person.getId());
 			ps.setString(1, person.getName());
 			ps.setString(2, person.getEmail());
 			ps.setString(3, person.getPhone());
 			ps.setLong(4, person.getId());
 			ps.executeUpdate();
+			if (oldName != null && !oldName.equals(person.getName()))
+			{
+				CounterpartySyncAdapter.deletePerson(c, oldName);
+			}
+			CounterpartySyncAdapter.syncPerson(c, person);
+		}
+	}
+
+	private static String findNameById(Connection c, long id) throws SQLException
+	{
+		try (PreparedStatement ps = c.prepareStatement(NAME_SQL))
+		{
+			ps.setLong(1, id);
+			try (ResultSet rs = ps.executeQuery())
+			{
+				return rs.next() ? rs.getString(1) : null;
+			}
 		}
 	}
 
