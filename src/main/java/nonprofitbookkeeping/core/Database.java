@@ -43,11 +43,13 @@ public final class Database
 	private static final String SQL_MIGRATION_EXISTS =
 		"SELECT 1 FROM schema_migration_history WHERE migration_key = ?";
 
-	private static final String SQL_MIGRATION_INSERT =
-		"INSERT INTO schema_migration_history(migration_key) VALUES (?)";
+		private static final String SQL_MIGRATION_UPSERT =
+		"MERGE INTO schema_migration_history (migration_key, applied_at) KEY(migration_key) VALUES (?, CURRENT_TIMESTAMP)";
 
 	private static final List<DateTimeFormatter> LEGACY_DATE_FORMATS = List.of(
 		DateTimeFormatter.ISO_LOCAL_DATE,
+		DateTimeFormatter.BASIC_ISO_DATE,
+		DateTimeFormatter.ofPattern("yyyy/MM/dd"),
 		DateTimeFormatter.ofPattern("M/d/yyyy"),
 		DateTimeFormatter.ofPattern("MM/dd/yyyy"),
 		DateTimeFormatter.ofPattern("M-d-yyyy"),
@@ -705,7 +707,7 @@ public final class Database
 	private void markMigrationApplied(Connection c, String key) throws SQLException
 	{
 		try (PreparedStatement ps = c.prepareStatement(
-			SQL_MIGRATION_INSERT))
+			SQL_MIGRATION_UPSERT))
 		{
 			ps.setString(1, key);
 			ps.executeUpdate();
