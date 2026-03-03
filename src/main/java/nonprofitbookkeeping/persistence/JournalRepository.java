@@ -220,6 +220,9 @@ public class JournalRepository
 		
 		try
 		{
+			List<Integer> legacyTxnIds =
+				CanonicalJournalSyncAdapter.listLegacyTxnIds(c);
+			CanonicalJournalSyncAdapter.deleteLegacyTxnIds(c, legacyTxnIds);
 			
 			if (LOGGER.isDebugEnabled())
 			{
@@ -928,6 +931,7 @@ public class JournalRepository
 		}
 
 		insertSupplementalLines(c, txn);
+		CanonicalJournalSyncAdapter.syncTransaction(c, txn);
 		
 	}
 
