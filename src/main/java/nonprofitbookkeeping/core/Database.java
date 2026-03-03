@@ -43,8 +43,40 @@ public final class Database
 	private static final String SQL_MIGRATION_EXISTS =
 		"SELECT 1 FROM schema_migration_history WHERE migration_key = ?";
 
-		private static final String SQL_MIGRATION_UPSERT =
+	private static final String SQL_MIGRATION_UPSERT =
 		"MERGE INTO schema_migration_history (migration_key, applied_at) KEY(migration_key) VALUES (?, CURRENT_TIMESTAMP)";
+
+private static final String SQL_DEFAULT_CHART_INSERT =
+		"INSERT INTO chart_of_accounts(name, version, status, created_at, updated_at) " +
+		"SELECT 'Default Legacy Chart','legacy','ACTIVE',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP " +
+		"WHERE NOT EXISTS (SELECT 1 FROM chart_of_accounts)";
+
+	private static final String SQL_DEFAULT_FUND_INSERT =
+		"INSERT INTO fund(id, code, name, fund_type, is_active, created_at, updated_at) " +
+		"SELECT 1, 'GENERAL', 'General Fund', 'UNRESTRICTED', TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP " +
+		"WHERE NOT EXISTS (SELECT 1 FROM fund WHERE id = 1)";
+
+	private static final String SQL_ACCOUNT_CHART_UPDATE =
+		"UPDATE account SET chart_id = (SELECT MIN(id) FROM chart_of_accounts) WHERE chart_id IS NULL";
+
+	private static final String SQL_BACKFILL_TXN_INSERT =
+		"""
+		    INSERT INTO txn(id, txn_date, memo, created_at, updated_at)
+		    SELECT jt.id, CURRENT_DATE, jt.memo, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+		    FROM journal_transaction jt
+		    WHERE NOT EXISTS (SELECT 1 FROM txn t WHERE t.id = jt.id)
+		""";
+
+	private static final String SQL_BACKFILL_TXN_SPLIT_INSERT =
+		"""
+		    INSERT INTO txn_split(txn_id, account_id, fund_id, amount_signed, notes, nmr_flag)
+		    SELECT je.txn_id, a.id, 1, CASE WHEN UPPER(COALESCE(je.account_side,'DEBIT')) = 'CREDIT' THEN -ABS(je.amount) ELSE ABS(je.amount) END, je.account_name, FALSE
+		    FROM journal_entry je
+		    JOIN account a ON a.account_number = je.account_number
+		    WHERE EXISTS (SELECT 1 FROM txn t WHERE t.id = je.txn_id)
+		      AND EXISTS (SELECT 1 FROM fund f WHERE f.id = 1)
+		      AND NOT EXISTS (SELECT 1 FROM txn_split ts WHERE ts.txn_id = je.txn_id AND ts.account_id = a.id AND ts.amount_signed = CASE WHEN UPPER(COALESCE(je.account_side,'DEBIT')) = 'CREDIT' THEN -ABS(je.amount) ELSE ABS(je.amount) END)
+		""";
 
 	private static final List<DateTimeFormatter> LEGACY_DATE_FORMATS = List.of(
 		DateTimeFormatter.ISO_LOCAL_DATE,
@@ -617,26 +649,13 @@ public final class Database
 		try (Statement st = c.createStatement())
 		{
 			st.execute(
-				"INSERT INTO chart_of_accounts(name, version, status, created_at, updated_at) SELECT 'Default Legacy Chart','legacy','ACTIVE',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM chart_of_accounts)");
+				SQL_DEFAULT_CHART_INSERT);
 			st.execute(
-				"INSERT INTO fund(id, code, name, fund_type, is_active, created_at, updated_at) SELECT 1, 'GENERAL', 'General Fund', 'UNRESTRICTED', TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP WHERE NOT EXISTS (SELECT 1 FROM fund WHERE id = 1)");
+				SQL_DEFAULT_FUND_INSERT);
 			st.execute(
-				"UPDATE account SET chart_id = (SELECT MIN(id) FROM chart_of_accounts) WHERE chart_id IS NULL");
-			st.execute("""
-			    INSERT INTO txn(id, txn_date, memo, created_at, updated_at)
-			    SELECT jt.id, CURRENT_DATE, jt.memo, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
-			    FROM journal_transaction jt
-			    WHERE NOT EXISTS (SELECT 1 FROM txn t WHERE t.id = jt.id)
-			""");
-			st.execute("""
-			    INSERT INTO txn_split(txn_id, account_id, fund_id, amount_signed, notes, nmr_flag)
-			    SELECT je.txn_id, a.id, 1, CASE WHEN UPPER(COALESCE(je.account_side,'DEBIT')) = 'CREDIT' THEN -ABS(je.amount) ELSE ABS(je.amount) END, je.account_name, FALSE
-			    FROM journal_entry je
-			    JOIN account a ON a.account_number = je.account_number
-			    WHERE EXISTS (SELECT 1 FROM txn t WHERE t.id = je.txn_id)
-			      AND EXISTS (SELECT 1 FROM fund f WHERE f.id = 1)
-			      AND NOT EXISTS (SELECT 1 FROM txn_split ts WHERE ts.txn_id = je.txn_id AND ts.account_id = a.id AND ts.amount_signed = CASE WHEN UPPER(COALESCE(je.account_side,'DEBIT')) = 'CREDIT' THEN -ABS(je.amount) ELSE ABS(je.amount) END)
-			""");
+				SQL_ACCOUNT_CHART_UPDATE);
+			st.execute(SQL_BACKFILL_TXN_INSERT);
+			st.execute(SQL_BACKFILL_TXN_SPLIT_INSERT);
 			st.execute(
 				SQL_COUNTERPARTY_FROM_PERSON);
 			st.execute(
