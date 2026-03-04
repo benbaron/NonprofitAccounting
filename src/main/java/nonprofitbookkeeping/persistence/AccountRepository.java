@@ -1,6 +1,8 @@
 
 package nonprofitbookkeeping.persistence;
 
+import jakarta.enterprise.context.ApplicationScoped;
+
 import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountSide;
@@ -19,6 +21,7 @@ import java.util.Map;
  * inside the database. The APIs are intentionally simple to keep persistence logic
  * consistent across import/export operations.
  */
+@ApplicationScoped
 public class AccountRepository
 {
 	

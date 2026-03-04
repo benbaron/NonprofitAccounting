@@ -1,6 +1,8 @@
 
 package nonprofitbookkeeping.persistence;
 
+import jakarta.enterprise.context.ApplicationScoped;
+
 import nonprofitbookkeeping.core.Database;
 
 import java.sql.Connection;
@@ -17,6 +19,7 @@ import java.util.Optional;
  * persistence model stores those JSON payloads in the {@code document} table so that the
  * information lives inside the database and participates in regular database backups.</p>
  */
+@ApplicationScoped
 public class DocumentRepository
 {
 	

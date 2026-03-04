@@ -1,5 +1,7 @@
 package nonprofitbookkeeping.persistence.supplemental;
 
+import jakarta.enterprise.context.ApplicationScoped;
+
 import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.supplemental.SupplementalLineKind;
 
@@ -17,6 +19,7 @@ import java.util.List;
 /**
  * The Class TxnSupplementalLineRepository.
  */
+@ApplicationScoped
 public class TxnSupplementalLineRepository
 {
 	

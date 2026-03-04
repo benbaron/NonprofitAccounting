@@ -1,6 +1,8 @@
 
 package nonprofitbookkeeping.persistence;
 
+import jakarta.enterprise.context.ApplicationScoped;
+
 import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
@@ -66,6 +68,7 @@ import org.slf4j.LoggerFactory;
  *   existing child rows for a transaction id and re-inserts the current set.
  *   This is simple and avoids partial updates or stale rows.
  */
+@ApplicationScoped
 public class JournalRepository
 {
 	
@@ -217,6 +220,9 @@ public class JournalRepository
 		
 		try
 		{
+			List<Integer> legacyTxnIds =
+				CanonicalJournalSyncAdapter.listLegacyTxnIds(c);
+			CanonicalJournalSyncAdapter.deleteLegacyTxnIds(c, legacyTxnIds);
 			
 			if (LOGGER.isDebugEnabled())
 			{
@@ -925,6 +931,7 @@ public class JournalRepository
 		}
 
 		insertSupplementalLines(c, txn);
+		CanonicalJournalSyncAdapter.syncTransaction(c, txn);
 		
 	}
 
