@@ -1,5 +1,6 @@
 package nonprofitbookkeeping.ui;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
@@ -32,7 +33,10 @@ public class LedgerRegisterPanel extends BorderPane
 		setPadding(new Insets(8));
 
 		Label title = new Label("Ledger Register");
-		Label range = new Label("Date Range: All Dates");
+		Label range = new Label();
+		range.textProperty().bind(Bindings.createStringBinding(
+			() -> "Date Range: " + DateRangeContext.get(),
+			DateRangeContext.selectedProperty()));
 		title.getStyleClass().add("panel-title");
 
 		Button newTxn = new Button("+ New Transaction");
