@@ -52,7 +52,13 @@ public class MainApplicationView extends BorderPane
 		/** Represents the Chart of Accounts table panel. */
 		COA_TABLE,
 		/** Represents the Account Transaction Details panel. */
-		ACCOUNT_DETAILS
+		ACCOUNT_DETAILS,
+		/** Represents the Budget workspace panel. */
+		BUDGET,
+		/** Represents the Ledger workspace panel. */
+		LEDGER,
+		/** Represents the Assets workspace panel. */
+		ASSETS
 	}
 	
 	/** The TabPane used to display different application sections. */
@@ -76,6 +82,12 @@ public class MainApplicationView extends BorderPane
 	private Tab coaTableTab;
 	/** Tab for displaying Account Transaction Details. */
 	private Tab accountDetailsTab;
+	/** Tab for displaying Budget workspace. */
+	private Tab budgetTab;
+	/** Tab for displaying Ledger workspace. */
+	private Tab ledgerTab;
+	/** Tab for displaying Assets workspace. */
+	private Tab assetsTab;
 	/** Embedded Chart of Accounts editor panel. */
 	private CoaEditorPanelFX coaEditorPanel;
 	/** Panel used to select or create companies when none are open. */
@@ -127,6 +139,9 @@ public class MainApplicationView extends BorderPane
 			new BalanceSheetPanelFX());
 		this.coaTableTab = new Tab("Chart of Accounts Table",
 			new ChartOfAccountsTablePanelFX());
+		this.budgetTab = new Tab("Budget", new BudgetPanel());
+		this.ledgerTab = new Tab("Ledger", new LedgerPanel());
+		this.assetsTab = new Tab("Assets", new AssetsPanel());
 		
 		// Set tabs to be non-closable
 		this.dashboardTab.setClosable(false);
@@ -136,6 +151,9 @@ public class MainApplicationView extends BorderPane
 		this.incomeStatementTab.setClosable(false);
 		this.balanceSheetTab.setClosable(false);
 		this.coaTableTab.setClosable(false);
+		this.budgetTab.setClosable(false);
+		this.ledgerTab.setClosable(false);
+		this.assetsTab.setClosable(false);
 		
 		// Add new tab for Account Details
 		this.accountDetailsPanel = new AccountTransactionDetailsPanelFX();
@@ -149,6 +167,9 @@ public class MainApplicationView extends BorderPane
 			.addAll(this.dashboardTab,
 				this.journalTab,
 				this.coaTab,
+				this.budgetTab,
+				this.ledgerTab,
+				this.assetsTab,
 				this.coaTableTab,
 				this.reportsTab,
 				this.incomeStatementTab,
@@ -249,6 +270,18 @@ public class MainApplicationView extends BorderPane
 			case ACCOUNT_DETAILS:
 				this.tabPane.getSelectionModel().select(this.accountDetailsTab);
 				break;
+
+			case BUDGET:
+				this.tabPane.getSelectionModel().select(this.budgetTab);
+				break;
+
+			case LEDGER:
+				this.tabPane.getSelectionModel().select(this.ledgerTab);
+				break;
+
+			case ASSETS:
+				this.tabPane.getSelectionModel().select(this.assetsTab);
+				break;
 			
 			default:
 				// Optionally, log an error or select a default tab
@@ -273,6 +306,9 @@ public class MainApplicationView extends BorderPane
 		this.journalTab.setDisable(!companyOpen);
 		this.coaTab.setDisable(!companyOpen);
 		this.coaTableTab.setDisable(!companyOpen);
+		this.budgetTab.setDisable(!companyOpen);
+		this.ledgerTab.setDisable(!companyOpen);
+		this.assetsTab.setDisable(!companyOpen);
 		this.reportsTab.setDisable(!companyOpen);
 		this.incomeStatementTab.setDisable(!companyOpen);
 		this.balanceSheetTab.setDisable(!companyOpen);
