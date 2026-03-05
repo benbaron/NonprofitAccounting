@@ -2,6 +2,8 @@ package nonprofitbookkeeping.ui;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -17,6 +19,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import java.time.LocalDate;
+
 /**
  * Ledger register placeholder panel.
  */
@@ -24,6 +28,7 @@ public class LedgerRegisterPanel extends BorderPane
 {
 
 	private final TableView<Row> txnTable = new TableView<>();
+	private final ObservableList<Row> allRows = FXCollections.observableArrayList();
 
 	/**
 	 * Creates the ledger register panel.
@@ -74,10 +79,13 @@ public class LedgerRegisterPanel extends BorderPane
 			return r;
 		});
 
-		txnTable.getItems().addAll(
+		allRows.addAll(
 			new Row("2026-01-05", "Payee A", "Memo A", "Cash/Bank", "Posted"),
 			new Row("2026-01-12", "Payee B", "Memo B", "Cash/Bank", "Posted")
 		);
+		DateRangeContext.selectedProperty().addListener((obs, oldRange, newRange) ->
+			applyDateRangeFilter(newRange));
+		applyDateRangeFilter(DateRangeContext.get());
 	}
 
 	private void buildTable()
@@ -88,6 +96,39 @@ public class LedgerRegisterPanel extends BorderPane
 		txnTable.getColumns().add(col("Memo", Row::memo));
 		txnTable.getColumns().add(col("Bank", Row::bank));
 		txnTable.getColumns().add(col("Status", Row::status));
+	}
+
+	private void applyDateRangeFilter(DateRange range)
+	{
+		DateRange effectiveRange = range == null ? DateRange.ALL : range;
+		txnTable.getItems().setAll(allRows.stream()
+			.filter(row -> isWithinRange(row.date(), effectiveRange))
+			.toList());
+	}
+
+	private boolean isWithinRange(String dateText, DateRange range)
+	{
+		if (range == null || range.isAll())
+		{
+			return true;
+		}
+		try
+		{
+			LocalDate rowDate = LocalDate.parse(dateText);
+			if (range.startInclusive() != null && rowDate.isBefore(range.startInclusive()))
+			{
+				return false;
+			}
+			if (range.endInclusive() != null && rowDate.isAfter(range.endInclusive()))
+			{
+				return false;
+			}
+			return true;
+		}
+		catch (RuntimeException ex)
+		{
+			return true;
+		}
 	}
 
 	private TableColumn<Row, String> col(String name,
