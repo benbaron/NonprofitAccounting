@@ -1,7 +1,5 @@
 package org.nonprofitbookkeeping.ui;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,6 +25,7 @@ public class TransactionEditorPanel implements AppPanel
     private final Label status = new Label("Ready");
 
     private final Button save = new Button("Save");
+    private boolean dirty;
     private final Runnable onClose;
 
     public TransactionEditorPanel()
@@ -52,6 +51,8 @@ public class TransactionEditorPanel implements AppPanel
         buildSplitTable();
         root.setCenter(buildSplitEditor());
         root.setBottom(new VBox(new Separator(), status));
+
+        installDirtyTracking();
 
         save.setOnAction(e -> onSave());
         post.setOnAction(e -> validateOrPost());
@@ -152,6 +153,41 @@ public class TransactionEditorPanel implements AppPanel
             });
             return row;
         });
+    }
+
+    private void installDirtyTracking()
+    {
+        date.textProperty().addListener((obs, oldVal, newVal) -> markDirty());
+        payee.textProperty().addListener((obs, oldVal, newVal) -> markDirty());
+        memo.textProperty().addListener((obs, oldVal, newVal) -> markDirty());
+        bank.textProperty().addListener((obs, oldVal, newVal) -> markDirty());
+        splitTable.getItems().forEach(this::trackSplitRow);
+        splitTable.getItems().addListener((javafx.collections.ListChangeListener<SplitRow>) c -> {
+            markDirty();
+            while (c.next())
+            {
+                if (c.wasAdded())
+                {
+                    c.getAddedSubList().forEach(this::trackSplitRow);
+                }
+            }
+        });
+    }
+
+    private void trackSplitRow(SplitRow row)
+    {
+        row.accountProperty().addListener((obs, oldVal, newVal) -> markDirty());
+        row.fundProperty().addListener((obs, oldVal, newVal) -> markDirty());
+        row.amountProperty().addListener((obs, oldVal, newVal) -> markDirty());
+        row.activityProperty().addListener((obs, oldVal, newVal) -> markDirty());
+        row.merchantProperty().addListener((obs, oldVal, newVal) -> markDirty());
+        row.nmrProperty().addListener((obs, oldVal, newVal) -> markDirty());
+        row.notesProperty().addListener((obs, oldVal, newVal) -> markDirty());
+    }
+
+    private void markDirty()
+    {
+        dirty = true;
     }
 
     private Node buildSplitEditor()
@@ -257,12 +293,53 @@ public class TransactionEditorPanel implements AppPanel
     @Override
     public void onSave()
     {
+        for (SplitRow row : splitTable.getItems())
+        {
+            if (!isValidAmount(row.amountProperty().get()))
+            {
+                status.setText("Cannot save: invalid amount '" + row.amountProperty().get() + "'.");
+                return;
+            }
+        }
         status.setText(
             "Saved transaction draft for " + (payee.getText().isBlank() ? "(unnamed payee)" : payee.getText()));
+        dirty = false;
         if (onClose != null)
         {
             onClose.run();
         }
+    }
+
+    private boolean isValidAmount(String amount)
+    {
+        if (amount == null || amount.isBlank())
+        {
+            return true;
+        }
+        try
+        {
+            Double.parseDouble(amount);
+            return true;
+        }
+        catch (NumberFormatException ex)
+        {
+            return false;
+        }
+    }
+
+    boolean isDirtyForTest()
+    {
+        return dirty;
+    }
+
+    TableView<SplitRow> splitTableForTest()
+    {
+        return splitTable;
+    }
+
+    Label statusLabelForTest()
+    {
+        return status;
     }
 
     public void showAsDialog(Window owner, String title)

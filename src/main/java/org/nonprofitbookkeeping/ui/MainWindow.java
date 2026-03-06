@@ -40,6 +40,7 @@ import nonprofitbookkeeping.ui.panels.FundsPanelFX;
 import nonprofitbookkeeping.ui.panels.GrantsPanelFX;
 import nonprofitbookkeeping.ui.panels.HelpPanelFX;
 import nonprofitbookkeeping.ui.panels.InventoryPanelFX;
+import nonprofitbookkeeping.ui.panels.JournalPanelFX;
 import nonprofitbookkeeping.ui.panels.LedgerReconcilePanelFX;
 import nonprofitbookkeeping.ui.panels.SalesAndCOGPanelFX;
 import nonprofitbookkeeping.ui.panels.SettingsPanelFX;
@@ -130,7 +131,7 @@ public class MainWindow extends BorderPane
             item("Create or Edit Company", null, this::createOrEditCompany),
             item("Edit Chart of Accounts", null,
                 () -> openPanel(AppPanelId.CHART_OF_ACCOUNTS)),
-            item("Edit Journal", "Ctrl+J", this::openInspectorJournal)
+            item("Edit Journal", "Ctrl+J", this::openEditJournal)
         );
 
         Menu run = new Menu("Run");
@@ -289,6 +290,11 @@ public class MainWindow extends BorderPane
     public void openInspectorJournal()
     {
         inspectorPane.show("Journal View", "Journal drawer placeholder.\n\nFrom any panel, this should show derived DR/CR lines for the current selection.");
+    }
+
+    private void openEditJournal()
+    {
+        showLegacyPanel("Edit Journal", new JournalPanelFX());
     }
 
     private void info(String msg)
