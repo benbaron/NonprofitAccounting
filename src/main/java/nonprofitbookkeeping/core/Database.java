@@ -294,12 +294,40 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 			      to_from VARCHAR(255),
 			      check_number VARCHAR(64),
 			      clear_bank VARCHAR(64),
+			      bank_name VARCHAR(128),
+			      reconciled BOOLEAN DEFAULT FALSE,
 			      budget_tracking VARCHAR(512),
 			      associated_fund_name VARCHAR(128)
 			    )
 			""");
 		st.execute(
+			"ALTER TABLE journal_transaction ADD COLUMN IF NOT EXISTS bank_name VARCHAR(128);");
+		st.execute(
+			"ALTER TABLE journal_transaction ADD COLUMN IF NOT EXISTS reconciled BOOLEAN DEFAULT FALSE;");
+		st.execute(
 			"ALTER TABLE journal_transaction ALTER COLUMN budget_tracking VARCHAR(512);");
+		st.execute("""
+			    CREATE TABLE IF NOT EXISTS bank_statement(
+			      id BIGINT AUTO_INCREMENT PRIMARY KEY,
+			      bank_name VARCHAR(128) NOT NULL,
+			      account_label VARCHAR(128),
+			      statement_date DATE NOT NULL,
+			      statement_balance DECIMAL(18,2),
+			      ledger_balance DECIMAL(18,2),
+			      outstanding DECIMAL(18,2),
+			      bank_after_outstanding DECIMAL(18,2),
+			      difference DECIMAL(18,2),
+			      ledger_status VARCHAR(32),
+			      institution_name VARCHAR(255),
+			      institution_contact VARCHAR(255),
+			      account_number VARCHAR(64),
+			      account_type VARCHAR(64),
+			      signature_requirement VARCHAR(64),
+			      interest_bearing VARCHAR(32),
+			      currency VARCHAR(16),
+			      UNIQUE(bank_name, account_label, statement_date)
+			    )
+			""");
 		st.execute("""
 			    CREATE TABLE IF NOT EXISTS journal_entry(
 			      id BIGINT AUTO_INCREMENT PRIMARY KEY,

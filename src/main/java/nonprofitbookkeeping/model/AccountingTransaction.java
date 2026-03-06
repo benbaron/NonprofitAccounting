@@ -52,6 +52,12 @@ public class AccountingTransaction implements Serializable
 	
 	/** The clear bank. */
 	@JsonProperty private String clearBank; // Non-final
+
+	/** The bank name tied to checking transactions. */
+	@JsonProperty private String bank; // Non-final
+
+	/** Indicates if this transaction has been reconciled to a bank statement. */
+	@JsonProperty private boolean reconciled;
 	
 	/** The budget tracking. */
 	@JsonProperty private String budgetTracking; // Non-final
@@ -77,6 +83,8 @@ public class AccountingTransaction implements Serializable
 		this.toFrom = "";
 		this.checkNumber = "";
 		this.clearBank = "";
+		this.bank = "";
+		this.reconciled = false;
 		this.budgetTracking = "";
 		this.associatedFundName = "";		
 		this.supplementalLines = new ArrayList<>();
@@ -117,6 +125,8 @@ public class AccountingTransaction implements Serializable
 		this.toFrom = "";
 		this.checkNumber = "";
 		this.clearBank = "";
+		this.bank = "";
+		this.reconciled = false;
 		this.budgetTracking = "";
 		this.associatedFundName = "";
 		this.supplementalLines = new ArrayList<>();
@@ -498,6 +508,46 @@ public class AccountingTransaction implements Serializable
 	{
 		this.clearBank = clearBank;
 		
+	}
+
+	/**
+	 * Gets the bank name used for this transaction when applicable.
+	 *
+	 * @return the bank name
+	 */
+	public String getBank()
+	{
+		return this.bank;
+	}
+
+	/**
+	 * Sets the bank name used for this transaction when applicable.
+	 *
+	 * @param bank the bank name
+	 */
+	public void setBank(String bank)
+	{
+		this.bank = bank;
+	}
+
+	/**
+	 * Checks if the transaction is reconciled.
+	 *
+	 * @return true if reconciled
+	 */
+	public boolean isReconciled()
+	{
+		return this.reconciled;
+	}
+
+	/**
+	 * Sets whether the transaction is reconciled.
+	 *
+	 * @param reconciled the reconciled flag
+	 */
+	public void setReconciled(boolean reconciled)
+	{
+		this.reconciled = reconciled;
 	}
 
 	/**

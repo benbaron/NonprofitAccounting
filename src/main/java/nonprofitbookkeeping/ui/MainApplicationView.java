@@ -10,6 +10,7 @@ import nonprofitbookkeeping.ui.panels.BalanceSheetPanelFX;
 import nonprofitbookkeeping.ui.panels.ChartOfAccountsTablePanelFX;
 import nonprofitbookkeeping.ui.panels.CoaEditorPanelFX;
 import nonprofitbookkeeping.ui.panels.CompanySelectionPanelFX;
+import nonprofitbookkeeping.ui.panels.BankReconciliationPanelFX;
 import nonprofitbookkeeping.ui.panels.IncomeStatementPanelFX;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonDashboardPanel;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonJournalPanel;
@@ -58,7 +59,9 @@ public class MainApplicationView extends BorderPane
 		/** Represents the Ledger workspace panel. */
 		LEDGER,
 		/** Represents the Assets workspace panel. */
-		ASSETS
+		ASSETS,
+		/** Represents the bank reconciliation panel. */
+		BANK_RECONCILIATION
 	}
 	
 	/** The TabPane used to display different application sections. */
@@ -88,6 +91,8 @@ public class MainApplicationView extends BorderPane
 	private Tab ledgerTab;
 	/** Tab for displaying Assets workspace. */
 	private Tab assetsTab;
+	/** Tab for bank reconciliation. */
+	private Tab bankReconciliationTab;
 	/** Embedded Chart of Accounts editor panel. */
 	private CoaEditorPanelFX coaEditorPanel;
 	/** Panel used to select or create companies when none are open. */
@@ -142,6 +147,7 @@ public class MainApplicationView extends BorderPane
 		this.budgetTab = new Tab("Budget", new BudgetPanel());
 		this.ledgerTab = new Tab("Ledger", new LedgerPanel());
 		this.assetsTab = new Tab("Assets", new AssetsPanel());
+		this.bankReconciliationTab = new Tab("Bank Reconciliation", new BankReconciliationPanelFX());
 		
 		// Set tabs to be non-closable
 		this.dashboardTab.setClosable(false);
@@ -154,6 +160,7 @@ public class MainApplicationView extends BorderPane
 		this.budgetTab.setClosable(false);
 		this.ledgerTab.setClosable(false);
 		this.assetsTab.setClosable(false);
+		this.bankReconciliationTab.setClosable(false);
 		
 		// Add new tab for Account Details
 		this.accountDetailsPanel = new AccountTransactionDetailsPanelFX();
@@ -170,6 +177,7 @@ public class MainApplicationView extends BorderPane
 				this.budgetTab,
 				this.ledgerTab,
 				this.assetsTab,
+				this.bankReconciliationTab,
 				this.coaTableTab,
 				this.reportsTab,
 				this.incomeStatementTab,
@@ -282,6 +290,10 @@ public class MainApplicationView extends BorderPane
 			case ASSETS:
 				this.tabPane.getSelectionModel().select(this.assetsTab);
 				break;
+
+			case BANK_RECONCILIATION:
+				this.tabPane.getSelectionModel().select(this.bankReconciliationTab);
+				break;
 			
 			default:
 				// Optionally, log an error or select a default tab
@@ -309,6 +321,7 @@ public class MainApplicationView extends BorderPane
 		this.budgetTab.setDisable(!companyOpen);
 		this.ledgerTab.setDisable(!companyOpen);
 		this.assetsTab.setDisable(!companyOpen);
+		this.bankReconciliationTab.setDisable(!companyOpen);
 		this.reportsTab.setDisable(!companyOpen);
 		this.incomeStatementTab.setDisable(!companyOpen);
 		this.balanceSheetTab.setDisable(!companyOpen);
