@@ -336,8 +336,8 @@ public class JournalEntryWorkspaceFX extends BorderPane
 
                 root.getChildren().addAll(header, content, footer);
                 VBox.setVgrow(content, Priority.ALWAYS);
-                root.setMinWidth(980);
-                root.setMinHeight(700);
+                root.setMinWidth(100);
+                root.setMinHeight(100);
 
                 ScrollPane scrollPane = new ScrollPane(root);
                 scrollPane.setFitToWidth(false);
@@ -348,10 +348,10 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 setCenter(scrollPane);
 
                 root.prefWidthProperty().bind(Bindings.createDoubleBinding(
-                                () -> Math.max(980, scrollPane.getViewportBounds().getWidth()),
+                                () -> Math.max(1280, scrollPane.getViewportBounds().getWidth()),
                                 scrollPane.viewportBoundsProperty()));
                 root.prefHeightProperty().bind(Bindings.createDoubleBinding(
-                                () -> Math.max(700, scrollPane.getViewportBounds().getHeight()),
+                                () -> Math.max(760, scrollPane.getViewportBounds().getHeight()),
                                 scrollPane.viewportBoundsProperty()));
 
                 this.table.prefHeightProperty().bind(Bindings.max(220,
@@ -404,19 +404,26 @@ public class JournalEntryWorkspaceFX extends BorderPane
 
                 if (entryLines instanceof Region entryRegion)
                 {
-                        entryRegion.setMinHeight(260);
-                        entryRegion.setPrefHeight(340);
+                        entryRegion.setMinHeight(280);
                 }
                 if (supplemental instanceof Region supplementalRegion)
                 {
-                        supplementalRegion.setMinHeight(200);
-                        supplementalRegion.setPrefHeight(260);
+                        supplementalRegion.setMinHeight(180);
                 }
 
-                content.getChildren().addAll(details, entryLines, supplemental);
+                content.getChildren().addAll(sectionHeading("Entry Details"), details,
+                                sectionHeading("Entry Lines"), entryLines,
+                                sectionHeading("Supplemental Schedules"), supplemental);
                 VBox.setVgrow(entryLines, Priority.ALWAYS);
                 VBox.setVgrow(supplemental, Priority.SOMETIMES);
                 return content;
+        }
+
+        private Label sectionHeading(String text)
+        {
+                Label label = new Label(text);
+                label.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+                return label;
         }
 
         /**
@@ -471,27 +478,43 @@ public class JournalEntryWorkspaceFX extends BorderPane
         private Node buildDetailsSection()
         {
                 GridPane grid = new GridPane();
-                grid.setHgap(10);
+                grid.setHgap(12);
                 grid.setVgap(8);
-                ColumnConstraints labelColumn = new ColumnConstraints();
-                labelColumn.setMinWidth(Region.USE_PREF_SIZE);
-                labelColumn.setPrefWidth(Region.USE_PREF_SIZE);
-                labelColumn.setMaxWidth(Region.USE_PREF_SIZE);
-                labelColumn.setHgrow(Priority.NEVER);
-                ColumnConstraints fieldColumn = new ColumnConstraints();
-                fieldColumn.setHgrow(Priority.ALWAYS);
-                grid.getColumnConstraints().addAll(labelColumn, fieldColumn);
+
+                ColumnConstraints labelColumn1 = new ColumnConstraints();
+                labelColumn1.setMinWidth(Region.USE_PREF_SIZE);
+                labelColumn1.setPrefWidth(Region.USE_PREF_SIZE);
+                labelColumn1.setHgrow(Priority.NEVER);
+                ColumnConstraints fieldColumn1 = new ColumnConstraints();
+                fieldColumn1.setMinWidth(260);
+                fieldColumn1.setHgrow(Priority.ALWAYS);
+
+                ColumnConstraints labelColumn2 = new ColumnConstraints();
+                labelColumn2.setMinWidth(Region.USE_PREF_SIZE);
+                labelColumn2.setPrefWidth(Region.USE_PREF_SIZE);
+                labelColumn2.setHgrow(Priority.NEVER);
+                ColumnConstraints fieldColumn2 = new ColumnConstraints();
+                fieldColumn2.setMinWidth(260);
+                fieldColumn2.setHgrow(Priority.ALWAYS);
+
+                grid.getColumnConstraints().addAll(labelColumn1, fieldColumn1, labelColumn2, fieldColumn2);
 
                 int row = 0;
-                addDetailField(grid, row++, "Date", this.datePicker);
-                addDetailField(grid, row++, "Memo", this.memoArea);
-                addDetailField(grid, row++, "To / From", this.toFromField);
-                addDetailField(grid, row++, "Check #", this.checkNumberField);
-                addDetailField(grid, row++, "Clearing Bank", this.clearBankField);
-                addDetailField(grid, row++, "Bank", this.bankField);
-                addDetailField(grid, row++, "Reconciliation", this.reconciledCheckBox);
-                addDetailField(grid, row++, "Budget Tracking", this.budgetTrackingField);
-                addDetailField(grid, row++, "Fund Name", this.associatedFundNameField);
+                addDetailField(grid, row, 0, "Date", this.datePicker);
+                addDetailField(grid, row++, 2, "To / From", this.toFromField);
+
+                addDetailField(grid, row, 0, "Memo", this.memoArea);
+                GridPane.setColumnSpan(this.memoArea, 3);
+                row++;
+
+                addDetailField(grid, row, 0, "Check #", this.checkNumberField);
+                addDetailField(grid, row++, 2, "Clearing Bank", this.clearBankField);
+
+                addDetailField(grid, row, 0, "Bank", this.bankField);
+                addDetailField(grid, row++, 2, "Budget Tracking", this.budgetTrackingField);
+
+                addDetailField(grid, row, 0, "Reconciliation", this.reconciledCheckBox);
+                addDetailField(grid, row++, 2, "Fund Name", this.associatedFundNameField);
 
                 return grid;
         }
@@ -557,25 +580,31 @@ public class JournalEntryWorkspaceFX extends BorderPane
          *
          * @param grid the grid
          * @param row the row
+         * @param column the starting column
          * @param labelText the label text
          * @param field the field
          */
-        private void addDetailField(GridPane grid, int row, String labelText, Node field)
+        private void addDetailField(GridPane grid, int row, int column, String labelText, Node field)
         {
                 Label label = new Label(labelText);
                 label.setStyle("-fx-font-weight: bold;");
-                grid.add(label, 0, row);
-                grid.add(field, 1, row);
+                grid.add(label, column, row);
+                grid.add(field, column + 1, row);
                 GridPane.setHgrow(field, Priority.ALWAYS);
 
                 if (field instanceof TextArea ta)
                 {
-                        ta.setPrefRowCount(3);
+                        ta.setPrefRowCount(2);
                 }
 
                 if (field instanceof ComboBox<?> combo)
                 {
                         combo.setMaxWidth(Double.MAX_VALUE);
+                }
+
+                if (field instanceof TextField tf)
+                {
+                        tf.setPromptText(labelText);
                 }
 
                 if (field instanceof Region region)
