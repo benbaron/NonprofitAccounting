@@ -19,6 +19,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
@@ -35,11 +36,11 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
@@ -326,22 +327,37 @@ public class JournalEntryWorkspaceFX extends BorderPane
         {
                 setPadding(new Insets(18));
 
-                VBox root = new VBox(18);
+                VBox root = new VBox(16);
                 root.getStyleClass().add("journal-entry-workspace");
 
-                root.getChildren().add(buildHeader());
-                root.getChildren().add(buildContent());
-                root.getChildren().add(buildFooter());
+                Node header = buildHeader();
+                Node content = buildContent();
+                Node footer = buildFooter();
 
-                VBox.setVgrow(root.getChildren().get(1), Priority.ALWAYS);
+                root.getChildren().addAll(header, content, footer);
+                VBox.setVgrow(content, Priority.ALWAYS);
+                root.setMinWidth(980);
+                root.setMinHeight(700);
 
                 ScrollPane scrollPane = new ScrollPane(root);
-                scrollPane.setFitToWidth(true);
-                scrollPane.setFitToHeight(true);
-                scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+                scrollPane.setFitToWidth(false);
+                scrollPane.setFitToHeight(false);
+                scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
                 scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
                 scrollPane.setPannable(true);
                 setCenter(scrollPane);
+
+                root.prefWidthProperty().bind(Bindings.createDoubleBinding(
+                                () -> Math.max(980, scrollPane.getViewportBounds().getWidth()),
+                                scrollPane.viewportBoundsProperty()));
+                root.prefHeightProperty().bind(Bindings.createDoubleBinding(
+                                () -> Math.max(700, scrollPane.getViewportBounds().getHeight()),
+                                scrollPane.viewportBoundsProperty()));
+
+                this.table.prefHeightProperty().bind(Bindings.max(220,
+                                root.heightProperty().multiply(0.34)));
+                this.supplementalTabs.prefHeightProperty().bind(Bindings.max(180,
+                                root.heightProperty().multiply(0.26)));
 
                 this.supplementalTabs.setPersonRefs(loadPersonRefs());
 
@@ -386,8 +402,20 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 Node entryLines = buildTableSection();
                 Node supplemental = buildSupplementalSection();
 
+                if (entryLines instanceof Region entryRegion)
+                {
+                        entryRegion.setMinHeight(260);
+                        entryRegion.setPrefHeight(340);
+                }
+                if (supplemental instanceof Region supplementalRegion)
+                {
+                        supplementalRegion.setMinHeight(200);
+                        supplementalRegion.setPrefHeight(260);
+                }
+
                 content.getChildren().addAll(details, entryLines, supplemental);
                 VBox.setVgrow(entryLines, Priority.ALWAYS);
+                VBox.setVgrow(supplemental, Priority.SOMETIMES);
                 return content;
         }
 
@@ -413,6 +441,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 this.removeLineButton.setOnAction(e -> removeSelectedLines());
 
                 configureTable();
+                this.table.setMinHeight(220);
                 VBox.setVgrow(this.table, Priority.ALWAYS);
 
                 block.getChildren().addAll(toolbar, this.table);
@@ -428,6 +457,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
         {
                 VBox block = new VBox(8);
                 block.setAlignment(Pos.TOP_LEFT);
+                this.supplementalTabs.setMinHeight(180);
                 block.getChildren().add(this.supplementalTabs);
                 VBox.setVgrow(this.supplementalTabs, Priority.ALWAYS);
                 return block;
