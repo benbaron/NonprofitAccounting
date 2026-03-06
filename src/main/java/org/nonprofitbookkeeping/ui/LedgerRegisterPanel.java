@@ -99,6 +99,7 @@ public class LedgerRegisterPanel implements AppPanel
 
     private void openRow(Row row)
     {
+        TransactionDraftContext.setSelectedRow(row);
         TransactionEditorPanel editor = new TransactionEditorPanel(row, null);
         editor.showAsDialog(root.getScene() == null ? null : root.getScene().getWindow(),
             row.date().isBlank() ? "New Transaction" : "Edit Transaction");

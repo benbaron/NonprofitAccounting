@@ -4,14 +4,12 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.*;
-import javafx.stage.Stage;
 import javafx.stage.Window;
 
 /**
@@ -30,12 +28,10 @@ public class TransactionEditorPanel implements AppPanel
 
     private final Button save = new Button("Save");
     private final Runnable onClose;
-    private final BooleanProperty dirty = new SimpleBooleanProperty(false);
-    private boolean hydrating = false;
 
     public TransactionEditorPanel()
     {
-        this(null, null);
+        this(TransactionDraftContext.getSelectedRow(), null);
     }
 
     public TransactionEditorPanel(LedgerRegisterPanel.Row row, Runnable onClose)
@@ -61,15 +57,11 @@ public class TransactionEditorPanel implements AppPanel
         post.setOnAction(e -> validateOrPost());
         journal.setOnAction(e -> showJournal());
 
-        hydrating = true;
         loadFromDraft(row);
         if (row == null)
         {
             resetToBlankDraft();
         }
-
-        installDirtyTracking();
-        hydrating = false;
     }
 
     private Node buildHeaderForm()
@@ -79,10 +71,30 @@ public class TransactionEditorPanel implements AppPanel
         g.setVgap(8);
         g.setPadding(new Insets(8, 0, 8, 0));
 
-        installSelectAllOnDoubleClick(date);
-        installSelectAllOnDoubleClick(payee);
-        installSelectAllOnDoubleClick(memo);
-        installSelectAllOnDoubleClick(bank);
+        date.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2)
+            {
+                date.selectAll();
+            }
+        });
+        payee.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2)
+            {
+                payee.selectAll();
+            }
+        });
+        memo.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2)
+            {
+                memo.selectAll();
+            }
+        });
+        bank.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2)
+            {
+                bank.selectAll();
+            }
+        });
 
         int r = 0;
         g.add(new Label("Date"), 0, r);
@@ -132,8 +144,7 @@ public class TransactionEditorPanel implements AppPanel
         splitTable.setRowFactory(tv -> {
             TableRow<SplitRow> row = new TableRow<>();
             row.setOnMouseClicked(e -> {
-                if (!row.isEmpty() && e.getClickCount() == 2 &&
-                    e.getButton() == javafx.scene.input.MouseButton.PRIMARY)
+                if (!row.isEmpty() && e.getClickCount() == 2 && e.getButton() == javafx.scene.input.MouseButton.PRIMARY)
                 {
                     splitTable.getSelectionModel().select(row.getIndex());
                     splitTable.edit(row.getIndex(), splitTable.getColumns().get(0));
@@ -152,16 +163,12 @@ public class TransactionEditorPanel implements AppPanel
         Button removeLine = new Button("– Remove");
         ToolBar tb = new ToolBar(addLine, removeLine);
 
-        addLine.setOnAction(e -> {
-            splitTable.getItems().add(new SplitRow("", "", "0.00", "", "", "", ""));
-            markDirty();
-        });
+        addLine.setOnAction(e -> splitTable.getItems().add(new SplitRow("", "", "0.00", "", "", "", "")));
         removeLine.setOnAction(e -> {
             SplitRow sel = splitTable.getSelectionModel().getSelectedItem();
             if (sel != null)
             {
                 splitTable.getItems().remove(sel);
-                markDirty();
             }
         });
 
@@ -171,45 +178,29 @@ public class TransactionEditorPanel implements AppPanel
     }
 
     private TableColumn<SplitRow, String> col(String name,
-                                               java.util.function.Function<SplitRow, SimpleStringProperty> getter)
+                                               java.util.function.Function<SplitRow, SimpleStringProperty> prop)
     {
         TableColumn<SplitRow, String> c = new TableColumn<>(name);
-        c.setCellValueFactory(v -> getter.apply(v.getValue()));
+        c.setCellValueFactory(v -> prop.apply(v.getValue()));
         c.setCellFactory(TextFieldTableCell.forTableColumn());
-        c.setOnEditCommit(e -> markDirty());
         return c;
     }
 
     private void validateOrPost()
     {
-        ValidationResult validation = validateAmounts();
-        if (!validation.valid())
-        {
-            status.setText("Validation failed: " + validation.message());
-            return;
-        }
+        double total = splitTable.getItems().stream().map(SplitRow::amountProperty).map(SimpleStringProperty::get)
+            .mapToDouble(v -> {
+                try
+                {
+                    return Double.parseDouble(v == null || v.isBlank() ? "0" : v);
+                }
+                catch (NumberFormatException ex)
+                {
+                    return 0.0;
+                }
+            }).sum();
 
-        status.setText(String.format("Validated draft. Split total: %.2f", validation.total()));
-    }
-
-    private ValidationResult validateAmounts()
-    {
-        double total = 0.0;
-        for (int i = 0; i < splitTable.getItems().size(); i++)
-        {
-            String raw = splitTable.getItems().get(i).amountProperty().get();
-            String normalized = raw == null || raw.isBlank() ? "0" : raw.trim();
-            try
-            {
-                total += Double.parseDouble(normalized);
-            }
-            catch (NumberFormatException ex)
-            {
-                return new ValidationResult(false, 0,
-                    "Row " + (i + 1) + " amount is not numeric ('" + normalized + "')");
-            }
-        }
-        return new ValidationResult(true, total, "OK");
+        status.setText(String.format("Validated draft. Split total: %.2f", total));
     }
 
     private void showJournal()
@@ -251,46 +242,6 @@ public class TransactionEditorPanel implements AppPanel
         status.setText("New transaction draft");
     }
 
-    private void installDirtyTracking()
-    {
-        date.textProperty().addListener((obs, oldV, newV) -> markDirty());
-        payee.textProperty().addListener((obs, oldV, newV) -> markDirty());
-        memo.textProperty().addListener((obs, oldV, newV) -> markDirty());
-        bank.textProperty().addListener((obs, oldV, newV) -> markDirty());
-
-        splitTable.getItems().forEach(this::bindRowDirtyTracking);
-        splitTable.getItems().addListener((ListChangeListener<SplitRow>) change -> {
-            while (change.next())
-            {
-                if (change.wasAdded())
-                {
-                    change.getAddedSubList().forEach(this::bindRowDirtyTracking);
-                }
-            }
-            markDirty();
-        });
-
-    }
-
-    private void bindRowDirtyTracking(SplitRow row)
-    {
-        row.accountProperty().addListener((obs, oldV, newV) -> markDirty());
-        row.fundProperty().addListener((obs, oldV, newV) -> markDirty());
-        row.amountProperty().addListener((obs, oldV, newV) -> markDirty());
-        row.activityProperty().addListener((obs, oldV, newV) -> markDirty());
-        row.merchantProperty().addListener((obs, oldV, newV) -> markDirty());
-        row.nmrProperty().addListener((obs, oldV, newV) -> markDirty());
-        row.notesProperty().addListener((obs, oldV, newV) -> markDirty());
-    }
-
-    private void markDirty()
-    {
-        if (!hydrating)
-        {
-            dirty.set(true);
-        }
-    }
-
     @Override
     public String title()
     {
@@ -303,31 +254,9 @@ public class TransactionEditorPanel implements AppPanel
         return root;
     }
 
-    Label statusLabelForTest()
-    {
-        return status;
-    }
-
-    TableView<SplitRow> splitTableForTest()
-    {
-        return splitTable;
-    }
-
-    boolean isDirtyForTest()
-    {
-        return dirty.get();
-    }
-
     @Override
     public void onSave()
     {
-        ValidationResult validation = validateAmounts();
-        if (!validation.valid())
-        {
-            status.setText("Cannot save: " + validation.message());
-            return;
-        }
-
         status.setText(
             "Saved transaction draft for " + (payee.getText().isBlank() ? "(unnamed payee)" : payee.getText()));
         if (onClose != null)
@@ -345,55 +274,17 @@ public class TransactionEditorPanel implements AppPanel
             dialog.initOwner(owner);
         }
         dialog.getDialogPane().setContent(root());
-        ButtonType closeButtonType = ButtonType.CLOSE;
-        dialog.getDialogPane().getButtonTypes().add(closeButtonType);
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
         dialog.getDialogPane().setMinSize(980, 680);
         dialog.getDialogPane().setPrefSize(1200, 840);
         dialog.setResizable(true);
-
-        Node closeButton = dialog.getDialogPane().lookupButton(closeButtonType);
-        closeButton.addEventFilter(javafx.event.ActionEvent.ACTION, evt -> {
-            if (!confirmClose(dialog.getDialogPane().getScene() == null ? owner : dialog.getDialogPane().getScene().getWindow()))
-            {
-                evt.consume();
-            }
-        });
-
         dialog.setOnShown(e -> {
-            if (dialog.getDialogPane().getScene() != null &&
-                dialog.getDialogPane().getScene().getWindow() instanceof Stage stage)
+            if (dialog.getDialogPane().getScene() != null && dialog.getDialogPane().getScene().getWindow() instanceof javafx.stage.Stage stage)
             {
                 stage.setMaximized(true);
-                stage.setOnCloseRequest(we -> {
-                    if (!confirmClose(stage))
-                    {
-                        we.consume();
-                    }
-                });
             }
         });
         dialog.showAndWait();
-    }
-
-    private boolean confirmClose(Window owner)
-    {
-        if (!dirty.get())
-        {
-            return true;
-        }
-
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        if (owner != null)
-        {
-            confirm.initOwner(owner);
-        }
-        confirm.setHeaderText("Discard unsaved changes?");
-        confirm.setContentText("You have unsaved transaction edits. Close without saving?");
-
-        ButtonType discard = new ButtonType("Discard", ButtonBar.ButtonData.YES);
-        ButtonType keepEditing = new ButtonType("Keep Editing", ButtonBar.ButtonData.CANCEL_CLOSE);
-        confirm.getButtonTypes().setAll(discard, keepEditing);
-        return confirm.showAndWait().orElse(keepEditing) == discard;
     }
 
     public static final class SplitRow
@@ -418,14 +309,39 @@ public class TransactionEditorPanel implements AppPanel
             this.notes = new SimpleStringProperty(notes);
         }
 
-        public SimpleStringProperty accountProperty() { return account; }
-        public SimpleStringProperty fundProperty() { return fund; }
-        public SimpleStringProperty amountProperty() { return amount; }
-        public SimpleStringProperty activityProperty() { return activity; }
-        public SimpleStringProperty merchantProperty() { return merchant; }
-        public SimpleStringProperty nmrProperty() { return nmr; }
-        public SimpleStringProperty notesProperty() { return notes; }
-    }
+        public SimpleStringProperty accountProperty()
+        {
+            return account;
+        }
 
-    private record ValidationResult(boolean valid, double total, String message) {}
+        public SimpleStringProperty fundProperty()
+        {
+            return fund;
+        }
+
+        public SimpleStringProperty amountProperty()
+        {
+            return amount;
+        }
+
+        public SimpleStringProperty activityProperty()
+        {
+            return activity;
+        }
+
+        public SimpleStringProperty merchantProperty()
+        {
+            return merchant;
+        }
+
+        public SimpleStringProperty nmrProperty()
+        {
+            return nmr;
+        }
+
+        public SimpleStringProperty notesProperty()
+        {
+            return notes;
+        }
+    }
 }
