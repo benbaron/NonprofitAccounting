@@ -31,6 +31,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -129,6 +130,12 @@ public class JournalEntryWorkspaceFX extends BorderPane
         
         /** The clear bank field. */
         private final TextField clearBankField = new TextField();
+
+        /** The bank field. */
+        private final TextField bankField = new TextField();
+
+        /** Reconciled toggle. */
+        private final CheckBox reconciledCheckBox = new CheckBox("Reconciled");
         
         /** The budget tracking field. */
         private final TextField budgetTrackingField = new TextField();
@@ -464,6 +471,8 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 addDetailField(grid, row++, "To / From", this.toFromField);
                 addDetailField(grid, row++, "Check #", this.checkNumberField);
                 addDetailField(grid, row++, "Clearing Bank", this.clearBankField);
+                addDetailField(grid, row++, "Bank", this.bankField);
+                addDetailField(grid, row++, "Reconciliation", this.reconciledCheckBox);
                 addDetailField(grid, row++, "Budget Tracking", this.budgetTrackingField);
                 addDetailField(grid, row++, "Fund Name", this.associatedFundNameField);
 
@@ -1477,6 +1486,8 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 tx.setToFrom(this.toFromField.getText());
                 tx.setCheckNumber(this.checkNumberField.getText());
                 tx.setClearBank(this.clearBankField.getText());
+                tx.setBank(this.bankField.getText().isBlank() ? this.clearBankField.getText() : this.bankField.getText());
+                tx.setReconciled(this.reconciledCheckBox.isSelected());
                 tx.setBudgetTracking(this.budgetTrackingField.getText());
                 tx.setAssociatedFundName(this.associatedFundNameField.getText());
                 tx.setSupplementalLines(collectSupplementalLines());
@@ -1496,6 +1507,8 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 this.toFromField.setText(tx.getToFrom());
                 this.checkNumberField.setText(tx.getCheckNumber());
                 this.clearBankField.setText(tx.getClearBank());
+                this.bankField.setText(tx.getBank());
+                this.reconciledCheckBox.setSelected(tx.isReconciled());
                 this.budgetTrackingField.setText(tx.getBudgetTracking());
                 this.associatedFundNameField.setText(tx.getAssociatedFundName());
 
