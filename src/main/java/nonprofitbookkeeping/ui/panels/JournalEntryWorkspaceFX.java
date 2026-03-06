@@ -363,7 +363,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 heading.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
 
                 Label subtitle = new Label(
-                                "Capture debits and credits while monitoring balance status in real time.");
+                                "Capture and post journal entries in one continuous editor.");
                 subtitle.getStyleClass().add("journal-entry-subtitle");
                 subtitle.setStyle("-fx-text-fill: -fx-text-base-color;");
 
@@ -379,14 +379,16 @@ public class JournalEntryWorkspaceFX extends BorderPane
          */
         private Node buildContent()
         {
-                HBox container = new HBox(18);
-                container.setAlignment(Pos.TOP_LEFT);
-                VBox leftColumn = new VBox(12, buildTableSection(), buildSupplementalSection());
-                leftColumn.setAlignment(Pos.TOP_LEFT);
-                VBox.setVgrow(leftColumn.getChildren().get(0), Priority.ALWAYS);
-                container.getChildren().addAll(leftColumn, buildDetailsSection());
-                HBox.setHgrow(container.getChildren().get(0), Priority.ALWAYS);
-                return container;
+                VBox content = new VBox(14);
+                content.setAlignment(Pos.TOP_LEFT);
+
+                Node details = buildDetailsSection();
+                Node entryLines = buildTableSection();
+                Node supplemental = buildSupplementalSection();
+
+                content.getChildren().addAll(details, entryLines, supplemental);
+                VBox.setVgrow(entryLines, Priority.ALWAYS);
+                return content;
         }
 
         /**
@@ -396,11 +398,8 @@ public class JournalEntryWorkspaceFX extends BorderPane
          */
         private Node buildTableSection()
         {
-                VBox section = new VBox(10);
-                section.setAlignment(Pos.TOP_LEFT);
-
-                Label title = new Label("Entry Lines");
-                title.setStyle("-fx-font-weight: bold;");
+                VBox block = new VBox(10);
+                block.setAlignment(Pos.TOP_LEFT);
 
                 ToolBar toolbar = new ToolBar(this.addLineButton, this.duplicateLineButton,
                                 this.removeLineButton);
@@ -416,8 +415,8 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 configureTable();
                 VBox.setVgrow(this.table, Priority.ALWAYS);
 
-                section.getChildren().addAll(title, toolbar, this.table);
-                return section;
+                block.getChildren().addAll(toolbar, this.table);
+                return block;
         }
 
         /**
@@ -427,16 +426,11 @@ public class JournalEntryWorkspaceFX extends BorderPane
          */
         private Node buildSupplementalSection()
         {
-                VBox section = new VBox(8);
-                section.setAlignment(Pos.TOP_LEFT);
-
-                Label title = new Label("Supplemental Schedules");
-                title.setStyle("-fx-font-weight: bold;");
-
-                section.getChildren().addAll(title, this.supplementalTabs);
+                VBox block = new VBox(8);
+                block.setAlignment(Pos.TOP_LEFT);
+                block.getChildren().add(this.supplementalTabs);
                 VBox.setVgrow(this.supplementalTabs, Priority.ALWAYS);
-
-                return section;
+                return block;
         }
 
         /**
@@ -446,13 +440,6 @@ public class JournalEntryWorkspaceFX extends BorderPane
          */
         private Node buildDetailsSection()
         {
-                VBox section = new VBox(12);
-                section.setAlignment(Pos.TOP_LEFT);
-                section.setPrefWidth(300);
-
-                Label title = new Label("Details");
-                title.setStyle("-fx-font-weight: bold;");
-
                 GridPane grid = new GridPane();
                 grid.setHgap(10);
                 grid.setVgap(8);
@@ -476,9 +463,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 addDetailField(grid, row++, "Budget Tracking", this.budgetTrackingField);
                 addDetailField(grid, row++, "Fund Name", this.associatedFundNameField);
 
-                VBox.setVgrow(grid, Priority.ALWAYS);
-                section.getChildren().addAll(title, grid);
-                return section;
+                return grid;
         }
 
         /**
