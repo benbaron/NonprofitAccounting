@@ -1,5 +1,7 @@
 package org.nonprofitbookkeeping.ui;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -112,6 +114,16 @@ public class TransactionEditorPanel implements AppPanel
         g.getColumnConstraints().get(3).setHgrow(Priority.ALWAYS);
 
         return g;
+    }
+
+    private void installSelectAllOnDoubleClick(TextField field)
+    {
+        field.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2)
+            {
+                field.selectAll();
+            }
+        });
     }
 
     private void buildSplitTable()
