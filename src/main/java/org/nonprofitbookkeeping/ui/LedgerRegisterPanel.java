@@ -23,12 +23,13 @@ public class LedgerRegisterPanel implements AppPanel
 
         Label title = new Label("Ledger Register");
         Label range = new Label();
-        range.textProperty().bind(Bindings.createStringBinding(() -> "Date Range: " + DateRangeContext.get(), DateRangeContext.selectedProperty()));
+        range.textProperty().bind(Bindings.createStringBinding(() -> "Date Range: " + DateRangeContext.get(),
+            DateRangeContext.selectedProperty()));
         title.getStyleClass().add("panel-title");
 
         Button newTxn = new Button("+ New Transaction");
-        Button open = new Button("Open");
-        HBox actions = new HBox(8, newTxn, open);
+        Button edit = new Button("Edit Selected");
+        HBox actions = new HBox(8, newTxn, edit);
 
         VBox header = new VBox(6, title, range, actions, new Separator());
         root.setTop(header);
@@ -37,32 +38,37 @@ public class LedgerRegisterPanel implements AppPanel
         root.setCenter(txnTable);
 
         newTxn.setOnAction(e -> onNew());
-        open.setOnAction(e -> openSelected());
+        edit.setOnAction(e -> openSelected());
 
         txnTable.setRowFactory(tv -> {
             TableRow<Row> r = new TableRow<>();
             r.setOnMouseClicked(e -> {
-                if (r.isEmpty()) return;
+                if (r.isEmpty())
+                {
+                    return;
+                }
                 if (e.getClickCount() == 2 && e.getButton() == javafx.scene.input.MouseButton.PRIMARY)
                 {
+                    txnTable.getSelectionModel().select(r.getIndex());
                     openRow(r.getItem());
+                    return;
                 }
                 if (e.getButton() == javafx.scene.input.MouseButton.SECONDARY)
                 {
                     ContextMenu cm = new ContextMenu();
                     MenuItem details = new MenuItem("Show Details");
                     details.setOnAction(ev -> showDetails(r.getItem()));
-                    cm.getItems().add(details);
+                    MenuItem editItem = new MenuItem("Edit Transaction");
+                    editItem.setOnAction(ev -> openRow(r.getItem()));
+                    cm.getItems().addAll(editItem, details);
                     r.setContextMenu(cm);
                 }
             });
             return r;
         });
 
-        txnTable.getItems().addAll(
-            new Row("2026-01-05", "Payee A", "Memo A", "Cash/Bank", "Posted"),
-            new Row("2026-01-12", "Payee B", "Memo B", "Cash/Bank", "Posted")
-        );
+        txnTable.getItems().addAll(new Row("2026-01-05", "Payee A", "Memo A", "Cash/Bank", "Posted"),
+            new Row("2026-01-12", "Payee B", "Memo B", "Cash/Bank", "Posted"));
     }
 
     private void buildTable()
@@ -85,33 +91,48 @@ public class LedgerRegisterPanel implements AppPanel
     private void openSelected()
     {
         Row sel = txnTable.getSelectionModel().getSelectedItem();
-        if (sel != null) openRow(sel);
+        if (sel != null)
+        {
+            openRow(sel);
+        }
     }
 
     private void openRow(Row row)
     {
-        Alert a = new Alert(Alert.AlertType.INFORMATION, "Open in Transaction Editor (placeholder): " + row.date());
-        a.setHeaderText("Open Transaction");
-        a.showAndWait();
+        TransactionDraftContext.setSelectedRow(row);
+        TransactionEditorPanel editor = new TransactionEditorPanel(row, null);
+        editor.showAsDialog(root.getScene() == null ? null : root.getScene().getWindow(),
+            row.date().isBlank() ? "New Transaction" : "Edit Transaction");
     }
 
     private void showDetails(Row row)
     {
-        Alert a = new Alert(Alert.AlertType.INFORMATION,
-            "Details placeholder for txn:\nDate: " + row.date() + "\nPayee: " + row.payee() + "\nMemo: " + row.memo());
-        a.setHeaderText("Details");
+        String details = "Date: " + row.date() + "\n" + "Payee: " + row.payee() + "\n" + "Memo: " + row.memo()
+            + "\n" + "Bank: " + row.bank() + "\n" + "Status: " + row.status();
+        Alert a = new Alert(Alert.AlertType.INFORMATION, details);
+        a.setHeaderText("Transaction Details");
         a.showAndWait();
     }
 
-    @Override public String title() { return "Ledger Register"; }
-    @Override public Node root() { return root; }
-
-    @Override public void onNew()
+    @Override
+    public String title()
     {
-        Alert a = new Alert(Alert.AlertType.INFORMATION, "New transaction (placeholder) -> opens Transaction Editor.");
-        a.setHeaderText("New Transaction");
-        a.showAndWait();
+        return "Ledger Register";
     }
 
-    public record Row(String date, String payee, String memo, String bank, String status) {}
+    @Override
+    public Node root()
+    {
+        return root;
+    }
+
+    @Override
+    public void onNew()
+    {
+        openRow(new Row("", "", "", "", "Draft"));
+    }
+
+    public record Row(String date, String payee, String memo, String bank, String status)
+    {
+    }
 }
