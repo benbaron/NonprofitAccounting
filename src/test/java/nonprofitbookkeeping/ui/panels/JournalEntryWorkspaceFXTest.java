@@ -2,9 +2,12 @@ package nonprofitbookkeeping.ui.panels;
 
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.Parent;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.model.*;
 import nonprofitbookkeeping.ui.JavaFXTestBase;
@@ -16,6 +19,7 @@ import org.mockito.MockitoAnnotations;
 import org.testfx.framework.junit5.Start;
 import org.testfx.util.WaitForAsyncUtils;
 
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
@@ -192,6 +196,121 @@ public class JournalEntryWorkspaceFXTest extends JavaFXTestBase
                 assertEquals(new BigDecimal("75.00"), this.panel.getLines().get(1).credit.get());
 
                 verifyNoMoreInteractions(this.onSave);
+        }
+
+
+        @Test
+        public void detailsSectionUsesSimpleTwoColumnGrid_toAvoidLayoutRegression()
+        {
+                GridPane detailsGrid = findDetailsGrid(this.panel);
+                assertNotNull(detailsGrid, "Details grid should be present");
+                assertEquals(2, detailsGrid.getColumnConstraints().size(),
+                                "Details grid should keep exactly 2 columns (label + field) to avoid GridPane resize-loop regressions");
+        }
+
+
+
+        @Test
+        public void addDetailFieldOverloadsRemainCompatible()
+        {
+                final Throwable[] error = new Throwable[1];
+                final GridPane[] gridRef = new GridPane[1];
+                final Label[] leftLabelRef = new Label[1];
+                final Label[] rightLabelRef = new Label[1];
+
+                Platform.runLater(() -> {
+                        try
+                        {
+                                Method fourArg = JournalEntryWorkspaceFX.class.getDeclaredMethod(
+                                                "addDetailField", GridPane.class, int.class, String.class, javafx.scene.Node.class);
+                                Method fiveArg = JournalEntryWorkspaceFX.class.getDeclaredMethod(
+                                                "addDetailField", GridPane.class, int.class, int.class, String.class, javafx.scene.Node.class);
+                                fourArg.setAccessible(true);
+                                fiveArg.setAccessible(true);
+
+                                GridPane grid = new GridPane();
+                                Label leftField = new Label("left-value");
+                                Label rightField = new Label("right-value");
+
+                                fourArg.invoke(this.panel, grid, 0, "Left", leftField);
+                                fiveArg.invoke(this.panel, grid, 1, 2, "Right", rightField);
+
+                                gridRef[0] = grid;
+                                leftLabelRef[0] = findLabel(grid, "Left");
+                                rightLabelRef[0] = findLabel(grid, "Right");
+                        }
+                        catch (Throwable t)
+                        {
+                                error[0] = t;
+                        }
+                });
+                WaitForAsyncUtils.waitForFxEvents();
+
+                if (error[0] != null)
+                {
+                        fail(error[0]);
+                }
+
+                assertNotNull(gridRef[0]);
+                assertNotNull(leftLabelRef[0], "4-arg overload should add a label");
+                assertNotNull(rightLabelRef[0], "5-arg overload should add a label");
+
+                assertEquals(0, gridCol(leftLabelRef[0]));
+                assertEquals(0, gridRow(leftLabelRef[0]));
+                assertEquals(2, gridCol(rightLabelRef[0]));
+                assertEquals(1, gridRow(rightLabelRef[0]));
+        }
+
+        private GridPane findDetailsGrid(Parent root)
+        {
+                for (javafx.scene.Node node : root.getChildrenUnmodifiable())
+                {
+                        if (node instanceof GridPane grid && isDetailsGrid(grid))
+                        {
+                                return grid;
+                        }
+                        if (node instanceof Parent child)
+                        {
+                                GridPane nested = findDetailsGrid(child);
+                                if (nested != null)
+                                {
+                                        return nested;
+                                }
+                        }
+                }
+                return null;
+        }
+
+        private boolean isDetailsGrid(GridPane grid)
+        {
+                return grid.getChildren().stream()
+                                .filter(Label.class::isInstance)
+                                .map(Label.class::cast)
+                                .map(Label::getText)
+                                .anyMatch("Date"::equals);
+        }
+
+
+        private Label findLabel(GridPane grid, String text)
+        {
+                return grid.getChildren().stream()
+                                .filter(Label.class::isInstance)
+                                .map(Label.class::cast)
+                                .filter(label -> text.equals(label.getText()))
+                                .findFirst()
+                                .orElse(null);
+        }
+
+        private int gridCol(javafx.scene.Node node)
+        {
+                Integer col = GridPane.getColumnIndex(node);
+                return col == null ? 0 : col;
+        }
+
+        private int gridRow(javafx.scene.Node node)
+        {
+                Integer row = GridPane.getRowIndex(node);
+                return row == null ? 0 : row;
         }
 
         private DatePicker fetchDatePicker()
