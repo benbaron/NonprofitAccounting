@@ -161,9 +161,6 @@ public class JournalEntryWorkspaceFX extends BorderPane
 
         /** The save button. */
         private final Button saveButton = new Button("Save");
-
-        /** The cancel button. */
-        private final Button cancelButton = new Button("Cancel");
         
         /** The add line button. */
         private final Button addLineButton = new Button("Add Line");
@@ -176,24 +173,6 @@ public class JournalEntryWorkspaceFX extends BorderPane
         
         /** The save error tooltip. */
         private final Tooltip saveErrorTooltip = new Tooltip();
-
-        /** Read-only transaction number preview. */
-        private final TextField transactionNumberField = new TextField("(Auto-generated)");
-
-        /** Quick-add account selector. */
-        private final ComboBox<String> quickAccountCombo = new ComboBox<>();
-
-        /** Quick-add debit amount. */
-        private final TextField quickDebitField = new TextField();
-
-        /** Quick-add credit amount. */
-        private final TextField quickCreditField = new TextField();
-
-        /** Quick-add description. */
-        private final TextField quickDescriptionField = new TextField();
-
-        /** Quick-add action button. */
-        private final Button quickAddEntryButton = new Button("Add Entry");
 
         /** The on save. */
         private final Consumer<AccountingTransaction> onSave;
@@ -395,11 +374,16 @@ public class JournalEntryWorkspaceFX extends BorderPane
          */
         private Node buildHeader()
         {
-                Label heading = new Label("New Transaction");
+                Label heading = new Label(this.headingText);
                 heading.getStyleClass().add("journal-entry-heading");
-                heading.setStyle("-fx-font-size: 30px; -fx-font-weight: bold;");
+                heading.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
 
-                VBox box = new VBox(4, heading);
+                Label subtitle = new Label(
+                                "Capture and post journal entries in one continuous editor.");
+                subtitle.getStyleClass().add("journal-entry-subtitle");
+                subtitle.setStyle("-fx-text-fill: -fx-text-base-color;");
+
+                VBox box = new VBox(4, heading, subtitle);
                 box.getStyleClass().add("journal-entry-header");
                 return box;
         }
@@ -415,20 +399,23 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 content.setAlignment(Pos.TOP_LEFT);
 
                 Node details = buildDetailsSection();
-                Node quickEntry = buildQuickEntrySection();
                 Node entryLines = buildTableSection();
-                Node totals = buildTotalsSection();
+                Node supplemental = buildSupplementalSection();
 
                 if (entryLines instanceof Region entryRegion)
                 {
                         entryRegion.setMinHeight(280);
                 }
+                if (supplemental instanceof Region supplementalRegion)
+                {
+                        supplementalRegion.setMinHeight(180);
+                }
 
-                content.getChildren().addAll(sectionHeading("Transaction Information"), details,
-                                quickEntry, sectionHeading("Transaction Entries"), entryLines,
-                                totals, sectionHeading("Supplemental Schedules"),
-                                buildSupplementalSection());
+                content.getChildren().addAll(sectionHeading("Entry Details"), details,
+                                sectionHeading("Entry Lines"), entryLines,
+                                sectionHeading("Supplemental Schedules"), supplemental);
                 VBox.setVgrow(entryLines, Priority.ALWAYS);
+                VBox.setVgrow(supplemental, Priority.SOMETIMES);
                 return content;
         }
 
@@ -449,68 +436,22 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 VBox block = new VBox(10);
                 block.setAlignment(Pos.TOP_LEFT);
 
+                ToolBar toolbar = new ToolBar(this.addLineButton, this.duplicateLineButton,
+                                this.removeLineButton);
+                toolbar.setStyle("-fx-background-color: transparent;");
+
                 this.addLineButton.setGraphic(null);
                 this.addLineButton.getStyleClass().add("btn-add-line");
                 this.addLineButton.setOnAction(e -> addLine());
 
                 this.duplicateLineButton.setOnAction(e -> duplicateSelectedLine());
                 this.removeLineButton.setOnAction(e -> removeSelectedLines());
-                this.removeLineButton.setText("Remove Selected");
-                this.removeLineButton.setStyle("-fx-background-color: #d32f2f; -fx-text-fill: white;");
-
-                HBox topBar = new HBox(10, new Region(), this.removeLineButton);
-                HBox.setHgrow(topBar.getChildren().get(0), Priority.ALWAYS);
-                topBar.setAlignment(Pos.CENTER_RIGHT);
 
                 configureTable();
                 this.table.setMinHeight(220);
                 VBox.setVgrow(this.table, Priority.ALWAYS);
 
-                block.getChildren().addAll(topBar, this.table);
-                return block;
-        }
-
-        private Node buildQuickEntrySection()
-        {
-                VBox block = new VBox(10);
-                block.setStyle("-fx-background-color: #eef7ec; -fx-border-color: #4caf50; "
-                                + "-fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 12;");
-
-                Label heading = new Label("Add Transaction Entry");
-                heading.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
-
-                this.quickAccountCombo.getItems().setAll(this.accountsByName.keySet());
-                this.quickAccountCombo.setPromptText("Select account");
-                this.quickAccountCombo.setMaxWidth(Double.MAX_VALUE);
-
-                this.quickDebitField.setPromptText("0.00");
-                this.quickCreditField.setPromptText("0.00");
-                this.quickDescriptionField.setPromptText("Entry description (optional)");
-                this.quickAddEntryButton.setStyle("-fx-background-color: #2e7d32; -fx-text-fill: white;");
-                this.quickAddEntryButton.setOnAction(e -> addQuickEntry());
-
-                GridPane row1 = new GridPane();
-                row1.setHgap(10);
-                row1.setVgap(8);
-                ColumnConstraints c1 = new ColumnConstraints();
-                c1.setPercentWidth(45);
-                ColumnConstraints c2 = new ColumnConstraints();
-                c2.setPercentWidth(20);
-                ColumnConstraints c3 = new ColumnConstraints();
-                c3.setPercentWidth(20);
-                ColumnConstraints c4 = new ColumnConstraints();
-                c4.setPercentWidth(15);
-                row1.getColumnConstraints().addAll(c1, c2, c3, c4);
-
-                addDetailField(row1, 0, 0, "Account*", this.quickAccountCombo);
-                addDetailField(row1, 0, 2, "Debit", this.quickDebitField);
-                addDetailField(row1, 0, 4, "Credit", this.quickCreditField);
-
-                HBox row2 = new HBox(10, this.quickDescriptionField, this.quickAddEntryButton);
-                HBox.setHgrow(this.quickDescriptionField, Priority.ALWAYS);
-                row2.setAlignment(Pos.CENTER_LEFT);
-
-                block.getChildren().addAll(heading, row1, new Label("Description:"), row2);
+                block.getChildren().addAll(toolbar, this.table);
                 return block;
         }
 
@@ -549,40 +490,20 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 ColumnConstraints fieldColumn = new ColumnConstraints();
                 fieldColumn.setHgrow(Priority.ALWAYS);
 
-                ColumnConstraints labelColumn2 = new ColumnConstraints();
-                labelColumn2.setMinWidth(Region.USE_PREF_SIZE);
-                labelColumn2.setPrefWidth(Region.USE_PREF_SIZE);
-                labelColumn2.setMaxWidth(Region.USE_PREF_SIZE);
-                labelColumn2.setHgrow(Priority.NEVER);
-
-                ColumnConstraints fieldColumn2 = new ColumnConstraints();
-                fieldColumn2.setHgrow(Priority.ALWAYS);
-
-                grid.getColumnConstraints().addAll(labelColumn, fieldColumn, labelColumn2,
-                                fieldColumn2);
-
-                this.transactionNumberField.setEditable(false);
-                this.transactionNumberField.setFocusTraversable(false);
+                grid.getColumnConstraints().addAll(labelColumn, fieldColumn);
 
                 int row = 0;
-                addDetailField(grid, row, 0, "Transaction #:", this.transactionNumberField);
-                addDetailField(grid, row++, 2, "Date*:", this.datePicker);
-                addDetailField(grid, row, 0, "Description*:", this.memoArea);
-                addDetailField(grid, row++, 2, "Reference:", this.checkNumberField);
+                addDetailField(grid, row++, "Date", this.datePicker);
+                addDetailField(grid, row++, "To / From", this.toFromField);
+                addDetailField(grid, row++, "Memo", this.memoArea);
+                addDetailField(grid, row++, "Check #", this.checkNumberField);
+                addDetailField(grid, row++, "Clearing Bank", this.clearBankField);
+                addDetailField(grid, row++, "Bank", this.bankField);
+                addDetailField(grid, row++, "Reconciliation", this.reconciledCheckBox);
+                addDetailField(grid, row++, "Budget Tracking", this.budgetTrackingField);
+                addDetailField(grid, row++, "Fund Name", this.associatedFundNameField);
 
                 return grid;
-        }
-
-        private Node buildTotalsSection()
-        {
-                HBox totals = new HBox(18, labelledValue("Total Debits", this.debitTotalLabel),
-                                labelledValue("Total Credits", this.creditTotalLabel),
-                                labelledValue("Difference", this.differenceLabel), new Region(),
-                                labelledValue("Status", this.statusBadge));
-                HBox.setHgrow(totals.getChildren().get(3), Priority.ALWAYS);
-                totals.setPadding(new Insets(8));
-                totals.setStyle("-fx-border-color: #ddd; -fx-background-color: #f8f8f8; -fx-background-radius: 6;");
-                return totals;
         }
 
         /**
@@ -620,54 +541,9 @@ public class JournalEntryWorkspaceFX extends BorderPane
 
                 this.saveButton.setDefaultButton(true);
                 this.saveButton.setOnAction(e -> persist());
-                this.cancelButton.setCancelButton(true);
-                this.cancelButton.setOnAction(e -> resetEditorToOriginal());
-                this.cancelButton.setStyle("-fx-background-color: #d32f2f; -fx-text-fill: white;");
-                this.saveButton.setStyle("-fx-background-color: #2e7d32; -fx-text-fill: white;");
 
-                footer.getChildren().addAll(totals, spacer, this.saveButton, this.cancelButton);
+                footer.getChildren().addAll(totals, spacer, this.saveButton);
                 return footer;
-        }
-
-        private void addQuickEntry()
-        {
-                String accountName = this.quickAccountCombo.getValue();
-                if (accountName == null || accountName.isBlank())
-                {
-                        return;
-                }
-
-                BigDecimal debit = amountOrZero(FormatUtils.parseCurrency(this.quickDebitField.getText()));
-                BigDecimal credit = amountOrZero(FormatUtils.parseCurrency(this.quickCreditField.getText()));
-
-                Line line = new Line();
-                line.account.set(accountName);
-                line.debit.set(debit);
-                line.credit.set(credit);
-                this.lines.add(line);
-                this.table.getSelectionModel().select(line);
-                this.table.scrollTo(line);
-
-                this.quickDebitField.clear();
-                this.quickCreditField.clear();
-                this.quickDescriptionField.clear();
-        }
-
-        private void resetEditorToOriginal()
-        {
-                if (this.original != null)
-                {
-                        loadFromTransaction(this.original);
-                        return;
-                }
-
-                this.lines.clear();
-                addLine();
-                this.memoArea.clear();
-                this.checkNumberField.clear();
-                this.datePicker.setValue(LocalDate.now());
-                this.supplementalTabs.setEntryRefs(List.of());
-                updateSupplementalTabAvailability();
         }
 
         /**
@@ -695,7 +571,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
          * @param labelText the label text
          * @param field the field
          */
-        private void addDetailField(GridPane grid, int row, String labelText, Node field)
+        private void addDetailField(GridPane grid, int row, int column, String labelText, Node field)
         {
                 addDetailField(grid, row, 0, labelText, field);
         }
