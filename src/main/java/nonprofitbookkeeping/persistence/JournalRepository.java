@@ -314,7 +314,7 @@ public class JournalRepository
 		final String txnSql =
 			"""
 				    SELECT id, booking_ts, date_text, memo, to_from, check_number,
-				           clear_bank, budget_tracking, associated_fund_name
+				           clear_bank, bank_name, reconciled, budget_tracking, associated_fund_name
 				    FROM journal_transaction
 				    ORDER BY id
 				""";
@@ -343,6 +343,8 @@ public class JournalRepository
 				txn.setToFrom(rs1.getString("to_from"));
 				txn.setCheckNumber(rs1.getString("check_number"));
 				txn.setClearBank(rs1.getString("clear_bank"));
+				txn.setBank(rs1.getString("bank_name"));
+				txn.setReconciled(rs1.getBoolean("reconciled"));
 				txn.setBudgetTracking(rs1.getString("budget_tracking"));
 				txn.setAssociatedFundName(
 					rs1.getString("associated_fund_name"));
@@ -581,9 +583,9 @@ public class JournalRepository
 		final String upsertTxn =
 			"""
 				    MERGE INTO journal_transaction(id, booking_ts, date_text, memo, to_from, check_number,
-				                   clear_bank, budget_tracking, associated_fund_name)
+				                   clear_bank, bank_name, reconciled, budget_tracking, associated_fund_name)
 				            KEY(id)
-				            VALUES(?,?,?,?,?,?,?,?,?)
+				            VALUES(?,?,?,?,?,?,?,?,?,?,?)
 				""";
 		
 		PreparedStatement ps = null;
@@ -597,7 +599,7 @@ public class JournalRepository
 					"writeTransaction(): upsert journal_transaction SQL:\n{}",
 					upsertTxn);
 				LOGGER.debug(
-					"writeTransaction(): upsert params txn_id={} booking_ts={} date_text={} memo={} to_from={} check_number={} clear_bank={} budget_tracking={} associated_fund_name={}",
+					"writeTransaction(): upsert params txn_id={} booking_ts={} date_text={} memo={} to_from={} check_number={} clear_bank={} bank_name={} reconciled={} budget_tracking={} associated_fund_name={}",
 					txn.getId(),
 					txn.getBookingDateTimestamp(),
 					txn.getDate(),
@@ -605,6 +607,8 @@ public class JournalRepository
 					txn.getToFrom(),
 					txn.getCheckNumber(),
 					txn.getClearBank(),
+					txn.getBank(),
+					txn.isReconciled(),
 					txn.getBudgetTracking(),
 					txn.getAssociatedFundName());
 			}
@@ -620,6 +624,8 @@ public class JournalRepository
 			ps.setString(++i, txn.getToFrom());
 			ps.setString(++i, txn.getCheckNumber());
 			ps.setString(++i, txn.getClearBank());
+			ps.setString(++i, txn.getBank());
+			ps.setBoolean(++i, txn.isReconciled());
 			ps.setString(++i, txn.getBudgetTracking());
 			ps.setString(++i, txn.getAssociatedFundName());
 			

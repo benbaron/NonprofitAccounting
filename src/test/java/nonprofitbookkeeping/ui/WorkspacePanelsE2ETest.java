@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.RecordComponent;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -121,6 +123,47 @@ class WorkspacePanelsE2ETest
 		assertEquals(2, resetCount);
 	}
 
+
+	@Test
+	void endToEndDateRangeOneSidedBoundsFilterLedgerRows() throws Exception
+	{
+		LedgerRegisterPanel ledgerPanel = runOnFxThread(LedgerRegisterPanel::new);
+
+		runOnFxThread(() -> {
+			DateRangeContext.set(new DateRange(java.time.LocalDate.of(2026, 1, 10), null));
+			return null;
+		});
+		int startOnlyCount = runOnFxThread(() -> ledgerTable(ledgerPanel).getItems().size());
+		assertEquals(1, startOnlyCount,
+			"Start-only range should include rows on/after the start date");
+
+		runOnFxThread(() -> {
+			DateRangeContext.set(new DateRange(null, java.time.LocalDate.of(2026, 1, 10)));
+			return null;
+		});
+		int endOnlyCount = runOnFxThread(() -> ledgerTable(ledgerPanel).getItems().size());
+		assertEquals(1, endOnlyCount,
+			"End-only range should include rows on/before the end date");
+	}
+
+
+	@Test
+	void malformedDateRowDoesNotCrashAndRemainsVisible() throws Exception
+	{
+		LedgerRegisterPanel ledgerPanel = runOnFxThread(LedgerRegisterPanel::new);
+
+		runOnFxThread(() -> {
+			injectMalformedRow(ledgerPanel);
+			DateRangeContext.set(new DateRange(java.time.LocalDate.of(2026, 1, 1),
+				java.time.LocalDate.of(2026, 1, 31)));
+			return null;
+		});
+
+		int filteredCount = runOnFxThread(() -> ledgerTable(ledgerPanel).getItems().size());
+		assertEquals(3, filteredCount,
+			"Malformed date rows should not crash filtering and remain visible");
+	}
+
 	@Test
 	void transactionEditorHasExpectedSplitColumnsAndRows() throws Exception
 	{
@@ -162,6 +205,32 @@ class WorkspacePanelsE2ETest
 	{
 		assertInstanceOf(TableView.class, panel.getCenter());
 		return (TableView<?>) panel.getCenter();
+	}
+
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private static void injectMalformedRow(LedgerRegisterPanel panel) throws Exception
+	{
+		Field allRowsField = LedgerRegisterPanel.class.getDeclaredField("allRows");
+		allRowsField.setAccessible(true);
+		javafx.collections.ObservableList allRows =
+			(javafx.collections.ObservableList) allRowsField.get(panel);
+
+		Class<?> rowClass = Class.forName(
+			"nonprofitbookkeeping.ui.LedgerRegisterPanel$Row");
+		Class<?>[] sig = java.util.Arrays.stream(rowClass.getRecordComponents())
+			.map(RecordComponent::getType)
+			.toArray(Class[]::new);
+		java.lang.reflect.Constructor<?> ctor = rowClass.getDeclaredConstructor(sig);
+		ctor.setAccessible(true);
+		Object badRow = ctor.newInstance("not-a-date", "Bad Payee", "Bad Memo",
+			"Cash/Bank", "Posted");
+		allRows.add(badRow);
+
+		Field txnTableField = LedgerRegisterPanel.class.getDeclaredField("txnTable");
+		txnTableField.setAccessible(true);
+		TableView table = (TableView) txnTableField.get(panel);
+		table.getItems().add(badRow);
 	}
 
 	private static <T> T runOnFxThread(Callable<T> task) throws Exception
