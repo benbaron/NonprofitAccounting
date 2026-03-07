@@ -200,12 +200,12 @@ public class JournalEntryWorkspaceFXTest extends JavaFXTestBase
 
 
         @Test
-        public void detailsSectionUsesSimpleTwoColumnGrid_toAvoidLayoutRegression()
+        public void detailsSectionUsesFourColumnGrid_forNewTransactionLayout()
         {
                 GridPane detailsGrid = findDetailsGrid(this.panel);
                 assertNotNull(detailsGrid, "Details grid should be present");
-                assertEquals(2, detailsGrid.getColumnConstraints().size(),
-                                "Details grid should keep exactly 2 columns (label + field) to avoid GridPane resize-loop regressions");
+                assertEquals(4, detailsGrid.getColumnConstraints().size(),
+                                "Details grid should use 4 columns (two label+field pairs) for the updated transaction information layout");
         }
 
 
