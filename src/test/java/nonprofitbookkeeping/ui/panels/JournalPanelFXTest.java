@@ -21,6 +21,7 @@ import org.testfx.framework.junit5.Start;
 import org.testfx.util.WaitForAsyncUtils;
 
 import java.sql.Timestamp;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -136,6 +137,19 @@ public class JournalPanelFXTest extends JavaFXTestBase
 		verifyThat(table, containsRow(this.journalTransactions.get(1)));
 	}
 	
+
+	@Test public void testNewButton_OpensModalWithoutHanging()
+	{
+		clickOn("New");
+		DialogPane dialogPane = waitForModalDialogPane(Duration.ofSeconds(5));
+		assertNotNull(dialogPane, "New dialog should appear without hanging the UI event loop");
+		assertTrue(dialogPane.getScene().getWindow().isShowing());
+
+		Button closeButton = (Button) dialogPane.lookupButton(ButtonType.CLOSE);
+		clickOn(closeButton);
+		WaitForAsyncUtils.waitForFxEvents();
+	}
+
 	@Test public void testNewButton_OpensDialog_AndAddsTransactionOnSimulatedSave()
 	{
 		clickOn("New");
@@ -273,6 +287,22 @@ public class JournalPanelFXTest extends JavaFXTestBase
                         .deleteTransaction(eq(second.getBookingDateTimestamp()));
                 verifyThat(table, hasNumRows(0));
         }
+	
+
+	private DialogPane waitForModalDialogPane(Duration timeout)
+	{
+		long deadline = System.nanoTime() + timeout.toNanos();
+		while (System.nanoTime() < deadline)
+		{
+			DialogPane pane = getTopModalDialogPane();
+			if (pane != null)
+			{
+				return pane;
+			}
+			WaitForAsyncUtils.sleep(50, java.util.concurrent.TimeUnit.MILLISECONDS);
+		}
+		return null;
+	}
 	
 	private DialogPane getTopModalDialogPane()
 	{

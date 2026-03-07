@@ -481,40 +481,27 @@ public class JournalEntryWorkspaceFX extends BorderPane
                 grid.setHgap(12);
                 grid.setVgap(8);
 
-                ColumnConstraints labelColumn1 = new ColumnConstraints();
-                labelColumn1.setMinWidth(Region.USE_PREF_SIZE);
-                labelColumn1.setPrefWidth(Region.USE_PREF_SIZE);
-                labelColumn1.setHgrow(Priority.NEVER);
-                ColumnConstraints fieldColumn1 = new ColumnConstraints();
-                fieldColumn1.setMinWidth(260);
-                fieldColumn1.setHgrow(Priority.ALWAYS);
+                ColumnConstraints labelColumn = new ColumnConstraints();
+                labelColumn.setMinWidth(Region.USE_PREF_SIZE);
+                labelColumn.setPrefWidth(Region.USE_PREF_SIZE);
+                labelColumn.setMaxWidth(Region.USE_PREF_SIZE);
+                labelColumn.setHgrow(Priority.NEVER);
 
-                ColumnConstraints labelColumn2 = new ColumnConstraints();
-                labelColumn2.setMinWidth(Region.USE_PREF_SIZE);
-                labelColumn2.setPrefWidth(Region.USE_PREF_SIZE);
-                labelColumn2.setHgrow(Priority.NEVER);
-                ColumnConstraints fieldColumn2 = new ColumnConstraints();
-                fieldColumn2.setMinWidth(260);
-                fieldColumn2.setHgrow(Priority.ALWAYS);
+                ColumnConstraints fieldColumn = new ColumnConstraints();
+                fieldColumn.setHgrow(Priority.ALWAYS);
 
-                grid.getColumnConstraints().addAll(labelColumn1, fieldColumn1, labelColumn2, fieldColumn2);
+                grid.getColumnConstraints().addAll(labelColumn, fieldColumn);
 
                 int row = 0;
-                addDetailField(grid, row, 0, "Date", this.datePicker);
-                addDetailField(grid, row++, 2, "To / From", this.toFromField);
-
-                addDetailField(grid, row, 0, "Memo", this.memoArea);
-                GridPane.setColumnSpan(this.memoArea, 3);
-                row++;
-
-                addDetailField(grid, row, 0, "Check #", this.checkNumberField);
-                addDetailField(grid, row++, 2, "Clearing Bank", this.clearBankField);
-
-                addDetailField(grid, row, 0, "Bank", this.bankField);
-                addDetailField(grid, row++, 2, "Budget Tracking", this.budgetTrackingField);
-
-                addDetailField(grid, row, 0, "Reconciliation", this.reconciledCheckBox);
-                addDetailField(grid, row++, 2, "Fund Name", this.associatedFundNameField);
+                addDetailField(grid, row++, "Date", this.datePicker);
+                addDetailField(grid, row++, "To / From", this.toFromField);
+                addDetailField(grid, row++, "Memo", this.memoArea);
+                addDetailField(grid, row++, "Check #", this.checkNumberField);
+                addDetailField(grid, row++, "Clearing Bank", this.clearBankField);
+                addDetailField(grid, row++, "Bank", this.bankField);
+                addDetailField(grid, row++, "Reconciliation", this.reconciledCheckBox);
+                addDetailField(grid, row++, "Budget Tracking", this.budgetTrackingField);
+                addDetailField(grid, row++, "Fund Name", this.associatedFundNameField);
 
                 return grid;
         }

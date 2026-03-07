@@ -2,9 +2,12 @@ package nonprofitbookkeeping.ui.panels;
 
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.Parent;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import nonprofitbookkeeping.model.*;
 import nonprofitbookkeeping.ui.JavaFXTestBase;
@@ -192,6 +195,46 @@ public class JournalEntryWorkspaceFXTest extends JavaFXTestBase
                 assertEquals(new BigDecimal("75.00"), this.panel.getLines().get(1).credit.get());
 
                 verifyNoMoreInteractions(this.onSave);
+        }
+
+
+        @Test
+        public void detailsSectionUsesSimpleTwoColumnGrid_toAvoidLayoutRegression()
+        {
+                GridPane detailsGrid = findDetailsGrid(this.panel);
+                assertNotNull(detailsGrid, "Details grid should be present");
+                assertEquals(2, detailsGrid.getColumnConstraints().size(),
+                                "Details grid should keep exactly 2 columns (label + field) to avoid GridPane resize-loop regressions");
+        }
+
+
+        private GridPane findDetailsGrid(Parent root)
+        {
+                for (javafx.scene.Node node : root.getChildrenUnmodifiable())
+                {
+                        if (node instanceof GridPane grid && isDetailsGrid(grid))
+                        {
+                                return grid;
+                        }
+                        if (node instanceof Parent child)
+                        {
+                                GridPane nested = findDetailsGrid(child);
+                                if (nested != null)
+                                {
+                                        return nested;
+                                }
+                        }
+                }
+                return null;
+        }
+
+        private boolean isDetailsGrid(GridPane grid)
+        {
+                return grid.getChildren().stream()
+                                .filter(Label.class::isInstance)
+                                .map(Label.class::cast)
+                                .map(Label::getText)
+                                .anyMatch("Date"::equals);
         }
 
         private DatePicker fetchDatePicker()
