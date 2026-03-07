@@ -478,7 +478,7 @@ public class JournalEntryWorkspaceFX extends BorderPane
         private Node buildDetailsSection()
         {
                 GridPane grid = new GridPane();
-                grid.setHgap(10);
+                grid.setHgap(12);
                 grid.setVgap(8);
 
                 ColumnConstraints labelColumn = new ColumnConstraints();
@@ -567,15 +567,16 @@ public class JournalEntryWorkspaceFX extends BorderPane
          *
          * @param grid the grid
          * @param row the row
+         * @param column the starting column
          * @param labelText the label text
          * @param field the field
          */
-        private void addDetailField(GridPane grid, int row, String labelText, Node field)
+        private void addDetailField(GridPane grid, int row, int column, String labelText, Node field)
         {
                 Label label = new Label(labelText);
                 label.setStyle("-fx-font-weight: bold;");
-                grid.add(label, 0, row);
-                grid.add(field, 1, row);
+                grid.add(label, column, row);
+                grid.add(field, column + 1, row);
                 GridPane.setHgrow(field, Priority.ALWAYS);
 
                 if (field instanceof TextArea ta)
