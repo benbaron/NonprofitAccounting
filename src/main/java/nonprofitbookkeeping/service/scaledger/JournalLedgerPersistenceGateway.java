@@ -321,8 +321,8 @@ public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
             return;
         }
 
-        AccountRepository accountRepository = new AccountRepository();
-        List<Account> accounts = accountRepository.listAll();
+        AccountRepository accountRepository1 = new AccountRepository();
+        List<Account> accounts = accountRepository1.listAll();
         Map<String, Account> byNumber = new HashMap<>();
 
         for (Account account : accounts)
@@ -365,7 +365,7 @@ public class JournalLedgerPersistenceGateway implements LedgerPersistenceGateway
                 placeholder.setIncreaseSide(entry.getAccountSide());
             }
 
-            accountRepository.upsert(placeholder);
+            accountRepository1.upsert(placeholder);
             byNumber.put(accountNumber, placeholder);
             if (LOGGER.isDebugEnabled())
             {

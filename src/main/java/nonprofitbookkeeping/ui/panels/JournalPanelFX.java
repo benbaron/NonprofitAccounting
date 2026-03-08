@@ -7,17 +7,18 @@ import java.util.ArrayList;
 
 import javafx.collections.*;
 import javafx.geometry.Insets;
+import javafx.geometry.Rectangle2D;
+import javafx.stage.Screen;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.BorderPane;
-
 import javafx.scene.control.Button; // For casting items in toolbar
 import javafx.scene.control.ToolBar; // For the actionToolBar field
+import javafx.scene.layout.BorderPane;
+
 import nonprofitbookkeeping.model.*;
 import nonprofitbookkeeping.model.CurrentCompany; // Explicit import for inner class usage
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 
-// TODO: Auto-generated Javadoc
 /**
  * JavaFX panel for displaying and managing journal transactions.
  * It provides a table view of {@link AccountingTransaction} objects and
@@ -65,7 +66,7 @@ public class JournalPanelFX extends BorderPane
 	 * Sets a column resize policy and defines columns for ID, Date, Account, Debit, Credit, and Memo
 	 * using the helper methods {@link #col(String, String)} and {@link #num(String, String)}.
 	 */
-	private void buildTable()
+	@SuppressWarnings("unchecked") private void buildTable()
 	{
 		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 		this.table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -264,25 +265,32 @@ public class JournalPanelFX extends BorderPane
 		Dialog<Void> d = new Dialog<>();
 		d.setTitle(existing == null ? "New Transaction" : "Edit Transaction");
 		d.getDialogPane().setContent(pane);
-		d.getDialogPane().setPrefSize(1120, 780);
-		d.getDialogPane().setMinSize(960, 700);
 		d.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
 		d.setResizable(true);
-		pane.setMinSize(900, 620);
-		pane.setPrefSize(1100, 760);
+		
+		Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+		
+		double prefW = Math.min(1200, bounds.getWidth() * 0.92);
+		double prefH = Math.min(860, bounds.getHeight() * 0.90);
+		
+		double minW = Math.max(800, Math.min(980, bounds.getWidth() * 0.70));
+		double minH = Math.max(600, Math.min(720, bounds.getHeight() * 0.70));
+		
+		d.getDialogPane().setPrefSize(prefW, prefH);
+		d.getDialogPane().setMinSize(minW, minH);
+		
+		pane.setMinSize(
+			Math.max(760, minW - 40),
+			Math.max(520, minH - 80));
+		pane.setPrefSize(
+			Math.max(900, prefW - 20),
+			Math.max(620, prefH - 40));
+		
 		pane.prefWidthProperty().bind(d.getDialogPane().widthProperty().subtract(24));
 		pane.prefHeightProperty().bind(d.getDialogPane().heightProperty().subtract(80));
-		d.setOnShown(evt -> {
-			if (d.getDialogPane().getScene() != null &&
-				d.getDialogPane().getScene().getWindow() instanceof javafx.stage.Stage stage)
-			{
-				stage.setMaximized(true);
-			}
-		});
-		d.showAndWait();
 		
+		d.showAndWait();
 	}
-	
 	
 	/**
 	 * Refreshes the data displayed in the journal transaction {@link #table}.
