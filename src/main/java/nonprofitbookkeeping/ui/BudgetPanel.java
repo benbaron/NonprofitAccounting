@@ -3,6 +3,8 @@ package nonprofitbookkeeping.ui;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
+import org.nonprofitbookkeeping.ui.BudgetEditorPanel;
+import org.nonprofitbookkeeping.ui.BudgetVsActualPanel;
 
 /**
  * Budget workspace with budget subpanels.
