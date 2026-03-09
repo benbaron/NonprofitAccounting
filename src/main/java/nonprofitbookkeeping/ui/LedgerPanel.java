@@ -3,6 +3,7 @@ package nonprofitbookkeeping.ui;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
+import nonprofitbookkeeping.ui.adapters.OrgAppPanelTabAdapter;
 
 /**
  * Ledger workspace with ledger subpanels.
@@ -16,11 +17,10 @@ public class LedgerPanel extends BorderPane
 	public LedgerPanel()
 	{
 		TabPane subTabs = new TabPane();
-		Tab registerTab = new Tab("Ledger Register", new LedgerRegisterPanel());
-		Tab transactionEditorTab =
-			new Tab("Transaction Editor", new TransactionEditorPanel());
-		registerTab.setClosable(false);
-		transactionEditorTab.setClosable(false);
+		Tab registerTab = OrgAppPanelTabAdapter
+			.toTab(new org.nonprofitbookkeeping.ui.LedgerRegisterPanel());
+		Tab transactionEditorTab = OrgAppPanelTabAdapter
+			.toTab(new org.nonprofitbookkeeping.ui.TransactionEditorPanel());
 		subTabs.getTabs().addAll(registerTab, transactionEditorTab);
 		setCenter(subTabs);
 	}
