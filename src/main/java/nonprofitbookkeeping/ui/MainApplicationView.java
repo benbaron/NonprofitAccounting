@@ -2,9 +2,11 @@
 package nonprofitbookkeeping.ui;
 
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
+import javafx.geometry.Orientation;
 
 import nonprofitbookkeeping.ui.panels.BalanceSheetPanelFX;
 import nonprofitbookkeeping.ui.panels.ChartOfAccountsTablePanelFX;
@@ -82,8 +84,6 @@ public class MainApplicationView extends BorderPane
 	private Tab incomeStatementTab;
 	/** Tab for displaying Balance Sheet. */
 	private Tab balanceSheetTab;
-	/** Tab for displaying Chart of Accounts table. */
-	private Tab coaTableTab;
 	/** Tab for displaying Account Transaction Details. */
 	private Tab accountDetailsTab;
 	/** Tab for displaying Budget workspace. */
@@ -96,6 +96,8 @@ public class MainApplicationView extends BorderPane
 	private Tab bankReconciliationTab;
 	/** Embedded Chart of Accounts editor panel. */
 	private CoaEditorPanelFX coaEditorPanel;
+	/** Embedded Chart of Accounts tabular panel shown with the editor. */
+	private ChartOfAccountsTablePanelFX coaTablePanel;
 	/** Panel used to select or create companies when none are open. */
 	private final CompanySelectionPanelFX companySelectionPanel;
 	/** Journal panel instance to expose search helpers. */
@@ -136,15 +138,15 @@ public class MainApplicationView extends BorderPane
 			}
 			
 		}, () -> {});
-		this.coaTab = new Tab("Chart of Accounts", this.coaEditorPanel);
+		this.coaTablePanel = new ChartOfAccountsTablePanelFX();
+		this.coaTab = new Tab("Chart of Accounts",
+			createMergedCoaPanel(this.coaEditorPanel, this.coaTablePanel));
 		
 		this.reportsTab = new Tab("Reports", new SkeletonReportsPanel());
 		this.incomeStatementTab = new Tab("Income Statement",
 			new IncomeStatementPanelFX());
 		this.balanceSheetTab = new Tab("Balance Sheet",
 			new BalanceSheetPanelFX());
-		this.coaTableTab = new Tab("Chart of Accounts Table",
-			new ChartOfAccountsTablePanelFX());
 		this.budgetTab = new Tab("Budget", new BudgetPanel());
 		this.ledgerTab = new Tab("Ledger", new LedgerPanel());
 		this.assetsTab = new Tab("Assets", new AssetsPanel());
@@ -157,7 +159,6 @@ public class MainApplicationView extends BorderPane
 		this.reportsTab.setClosable(false);
 		this.incomeStatementTab.setClosable(false);
 		this.balanceSheetTab.setClosable(false);
-		this.coaTableTab.setClosable(false);
 		this.budgetTab.setClosable(false);
 		this.ledgerTab.setClosable(false);
 		this.assetsTab.setClosable(false);
@@ -179,7 +180,6 @@ public class MainApplicationView extends BorderPane
 				this.ledgerTab,
 				this.assetsTab,
 				this.bankReconciliationTab,
-				this.coaTableTab,
 				this.reportsTab,
 				this.incomeStatementTab,
 				this.balanceSheetTab,
@@ -189,6 +189,22 @@ public class MainApplicationView extends BorderPane
 		// Default to the company selection view until a company is opened.
 		setCenter(this.companySelectionPanel);
 		
+	}
+
+	/**
+	 * Creates a single workspace that combines the COA editor and table view.
+	 *
+	 * @param editor the ladder/tree editor panel
+	 * @param table the tabular panel
+	 * @return merged COA workspace container
+	 */
+	private SplitPane createMergedCoaPanel(CoaEditorPanelFX editor,
+		ChartOfAccountsTablePanelFX table)
+	{
+		SplitPane splitPane = new SplitPane(editor, table);
+		splitPane.setOrientation(Orientation.VERTICAL);
+		splitPane.setDividerPositions(0.58);
+		return splitPane;
 	}
 	
 	/**
@@ -273,7 +289,7 @@ public class MainApplicationView extends BorderPane
 				break;
 			
 			case COA_TABLE:
-				this.tabPane.getSelectionModel().select(this.coaTableTab);
+				this.tabPane.getSelectionModel().select(this.coaTab);
 				break;
 			
 			case ACCOUNT_DETAILS:
@@ -318,7 +334,6 @@ public class MainApplicationView extends BorderPane
 		this.dashboardTab.setDisable(!companyOpen);
 		this.journalTab.setDisable(!companyOpen);
 		this.coaTab.setDisable(!companyOpen);
-		this.coaTableTab.setDisable(!companyOpen);
 		this.budgetTab.setDisable(!companyOpen);
 		this.ledgerTab.setDisable(!companyOpen);
 		this.assetsTab.setDisable(!companyOpen);
@@ -346,7 +361,9 @@ public class MainApplicationView extends BorderPane
 					}
 					
 				}, () -> {});
-				this.coaTab.setContent(this.coaEditorPanel);
+				this.coaTablePanel = new ChartOfAccountsTablePanelFX();
+				this.coaTab.setContent(
+					createMergedCoaPanel(this.coaEditorPanel, this.coaTablePanel));
 			}
 			else
 			{
