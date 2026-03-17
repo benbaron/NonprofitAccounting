@@ -2,14 +2,11 @@
 package nonprofitbookkeeping.ui;
 
 import javafx.scene.control.MenuBar;
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
-import javafx.geometry.Orientation;
 
 import nonprofitbookkeeping.ui.panels.BalanceSheetPanelFX;
-import nonprofitbookkeeping.ui.panels.ChartOfAccountsTablePanelFX;
 import nonprofitbookkeeping.ui.panels.CoaEditorPanelFX;
 import nonprofitbookkeeping.ui.panels.CompanySelectionPanelFX;
 import nonprofitbookkeeping.ui.panels.BankReconciliationPanelFX;
@@ -96,8 +93,6 @@ public class MainApplicationView extends BorderPane
 	private Tab bankReconciliationTab;
 	/** Embedded Chart of Accounts editor panel. */
 	private CoaEditorPanelFX coaEditorPanel;
-	/** Embedded Chart of Accounts tabular panel shown with the editor. */
-	private ChartOfAccountsTablePanelFX coaTablePanel;
 	/** Panel used to select or create companies when none are open. */
 	private final CompanySelectionPanelFX companySelectionPanel;
 	/** Journal panel instance to expose search helpers. */
@@ -119,6 +114,7 @@ public class MainApplicationView extends BorderPane
 		this.menuBar = null; // Initialize menuBar, will be set via setter
 		
 		this.tabPane = new TabPane();
+		this.tabPane.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
 		this.companySelectionPanel = new CompanySelectionPanelFX();
 		
 		// Create Tab instances
@@ -138,9 +134,7 @@ public class MainApplicationView extends BorderPane
 			}
 			
 		}, () -> {});
-		this.coaTablePanel = new ChartOfAccountsTablePanelFX();
-		this.coaTab = new Tab("Chart of Accounts",
-			createMergedCoaPanel(this.coaEditorPanel, this.coaTablePanel));
+		this.coaTab = new Tab("Chart of Accounts", this.coaEditorPanel);
 		
 		this.reportsTab = new Tab("Reports", new SkeletonReportsPanel());
 		this.incomeStatementTab = new Tab("Income Statement",
@@ -191,22 +185,6 @@ public class MainApplicationView extends BorderPane
 		
 	}
 
-	/**
-	 * Creates a single workspace that combines the COA editor and table view.
-	 *
-	 * @param editor the ladder/tree editor panel
-	 * @param table the tabular panel
-	 * @return merged COA workspace container
-	 */
-	private SplitPane createMergedCoaPanel(CoaEditorPanelFX editor,
-		ChartOfAccountsTablePanelFX table)
-	{
-		SplitPane splitPane = new SplitPane(editor, table);
-		splitPane.setOrientation(Orientation.VERTICAL);
-		splitPane.setDividerPositions(0.58);
-		return splitPane;
-	}
-	
 	/**
 	 * Exposes the company selection panel for additional configuration.
 	 *
@@ -361,9 +339,7 @@ public class MainApplicationView extends BorderPane
 					}
 					
 				}, () -> {});
-				this.coaTablePanel = new ChartOfAccountsTablePanelFX();
-				this.coaTab.setContent(
-					createMergedCoaPanel(this.coaEditorPanel, this.coaTablePanel));
+				this.coaTab.setContent(this.coaEditorPanel);
 			}
 			else
 			{

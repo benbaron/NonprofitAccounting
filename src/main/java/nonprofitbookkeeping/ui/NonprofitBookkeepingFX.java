@@ -581,6 +581,12 @@ public class NonprofitBookkeepingFX extends Application
 			}
 			
 		}
+
+		// Keep Help pinned to the far right even when plugins add menus.
+		if (bar.getMenus().remove(help))
+		{
+			bar.getMenus().add(help);
+		}
 		
 		return bar;
 		
