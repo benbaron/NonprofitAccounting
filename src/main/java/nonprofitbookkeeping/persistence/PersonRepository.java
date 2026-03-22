@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-// TODO: Auto-generated Javadoc
 /** Repository for CRUD operations on the {@code person} table. */
 @ApplicationScoped
 public class PersonRepository

@@ -71,38 +71,44 @@ public class FileImportService
 	 * The account number designated for transactions that need further categorization after import.
 	 * This is a suspense account.
 	 */
-    public static final String NEEDS_CATEGORIZATION_ACCOUNT_NUMBER = "SUSPENSE-UNCATEGORIZED";
-    /** Key used in transaction info map to store the original Financial Institution Transaction ID (FITID). */
-    private static final String FITID_KEY = "IMPORT_ID";
-
-    /**
-     * Searches the entire {@link ChartOfAccounts} for an account whose name
-     * matches the provided value, ignoring case and trimming whitespace. Returns
-     * {@code null} if no matching account is found or if inputs are invalid.
-     *
-     * @param chart The chart of accounts to search.
-     * @param name  The account name to look up.
-     * @return The matching {@link Account} or {@code null} if none found.
-     */
-    public static Account findAccountIgnoreCase(ChartOfAccounts chart, String name)
-    {
-        if (chart == null || name == null)
-        {
-            return null;
-        }
-
-        String target = name.trim();
-
-        for (Account a : chart.getAccounts())
-        {
-            if (target.equalsIgnoreCase(a.getName().trim()))
-            {
-                return a;
-            }
-        }
-
-        return null;
-    }
+	public static final String NEEDS_CATEGORIZATION_ACCOUNT_NUMBER =
+		"SUSPENSE-UNCATEGORIZED";
+	/** Key used in transaction info map to store the original Financial Institution Transaction ID (FITID). */
+	private static final String FITID_KEY = "IMPORT_ID";
+	
+	/**
+	 * Searches the entire {@link ChartOfAccounts} for an account whose name
+	 * matches the provided value, ignoring case and trimming whitespace. Returns
+	 * {@code null} if no matching account is found or if inputs are invalid.
+	 *
+	 * @param chart The chart of accounts to search.
+	 * @param name  The account name to look up.
+	 * @return The matching {@link Account} or {@code null} if none found.
+	 */
+	public static Account findAccountIgnoreCase(ChartOfAccounts chart,
+		String name)
+	{
+		
+		if (chart == null || name == null)
+		{
+			return null;
+		}
+		
+		String target = name.trim();
+		
+		for (Account a : chart.getAccounts())
+		{
+			
+			if (target.equalsIgnoreCase(a.getName().trim()))
+			{
+				return a;
+			}
+			
+		}
+		
+		return null;
+		
+	}
 	
 	/**
 	 * Parses an OFX (Open Financial Exchange) file from an input stream and converts its transactions
@@ -114,134 +120,183 @@ public class FileImportService
 	 * @throws IOException If an I/O error occurs while reading the stream.
 	 * @throws OFXParseException If an error occurs during the parsing of the OFX content.
 	 */
-	static List<ImportedTransaction> parseOfx(InputStream inputStream)	throws IOException,
-				OFXParseException
+	static List<ImportedTransaction> parseOfx(InputStream inputStream)
+		throws IOException,
+		OFXParseException
 	{
 		List<ImportedTransaction> importedTransactions = new ArrayList<>();
 		String sanitizedOfx = sanitizeOfxPayload(inputStream);
 		validateOfxStructure(sanitizedOfx);
 		AggregateUnmarshaller<ResponseEnvelope> unmarshaller =
-				new AggregateUnmarshaller<>(ResponseEnvelope.class);
-
+			new AggregateUnmarshaller<>(ResponseEnvelope.class);
+		
 		try (InputStream sanitizedStream =
-				new ByteArrayInputStream(sanitizedOfx.getBytes(StandardCharsets.UTF_8)))
+			new ByteArrayInputStream(
+				sanitizedOfx.getBytes(StandardCharsets.UTF_8)))
 		{
 			ResponseEnvelope envelope = unmarshaller.unmarshal(sanitizedStream);
-
-			ResponseMessageSet bankMessageSet = envelope.getMessageSet(MessageSetType.banking);
-
+			
+			ResponseMessageSet bankMessageSet =
+				envelope.getMessageSet(MessageSetType.banking);
+			
 			if (bankMessageSet != null)
 			{
-				List<ResponseMessage> bankingResponses = bankMessageSet.getResponseMessages();
-
+				List<ResponseMessage> bankingResponses =
+					bankMessageSet.getResponseMessages();
+				
 				if (bankingResponses != null)
 				{
+					
 					for (ResponseMessage responseMessage : bankingResponses)
 					{
 						BankStatementResponseTransaction bankResponse =
 							(BankStatementResponseTransaction) responseMessage;
-
-						if (bankResponse != null && bankResponse.getWrappedMessage() != null)
+						
+						if (bankResponse != null &&
+							bankResponse.getWrappedMessage() != null)
 						{
-							BankStatementResponse statement = bankResponse.getWrappedMessage();
-							BankAccountDetails bankAccount = statement.getAccount();
-							String accountNumber = bankAccount.getAccountNumber();
-							String accountType = bankAccount.getAccountType() != null ?
-									bankAccount.getAccountType().toString() : "BANK";
+							BankStatementResponse statement =
+								bankResponse.getWrappedMessage();
+							BankAccountDetails bankAccount =
+								statement.getAccount();
+							String accountNumber =
+								bankAccount.getAccountNumber();
+							String accountType =
+								bankAccount.getAccountType() != null ?
+									bankAccount.getAccountType().toString() :
+									"BANK";
 							String currencyCode = statement.getCurrencyCode();
-							TransactionList transactionList = statement.getTransactionList();
-
+							TransactionList transactionList =
+								statement.getTransactionList();
+							
 							if (transactionList != null &&
-									transactionList.getTransactions() != null)
+								transactionList.getTransactions() != null)
 							{
-								for (Transaction ofxTransaction : transactionList.getTransactions())
+								
+								for (Transaction ofxTransaction : transactionList
+									.getTransactions())
 								{
 									importedTransactions.add(
 										mapToImportedTransaction(ofxTransaction,
-											accountNumber, accountType, currencyCode));
+											accountNumber, accountType,
+											currencyCode));
 								}
+								
 							}
+							
 						}
+						
 					}
+					
 				}
+				
 			}
-
-			ResponseMessageSet creditMessageSet = envelope.getMessageSet(MessageSetType.creditcard);
-
+			
+			ResponseMessageSet creditMessageSet =
+				envelope.getMessageSet(MessageSetType.creditcard);
+			
 			if (creditMessageSet != null)
 			{
-				List<ResponseMessage> creditResponses = creditMessageSet.getResponseMessages();
-
+				List<ResponseMessage> creditResponses =
+					creditMessageSet.getResponseMessages();
+				
 				if (creditResponses != null)
 				{
+					
 					for (ResponseMessage responseMessage : creditResponses)
 					{
 						CreditCardStatementResponseTransaction ccResponse =
 							(CreditCardStatementResponseTransaction) responseMessage;
-
-						// Using getMessage() as suggested by OFX4J patterns for TransactionWrapper
-						if (ccResponse != null && ccResponse.getMessage() != null)
+						
+						// Using getMessage() as suggested by OFX4J patterns for
+						// TransactionWrapper
+						if (ccResponse != null &&
+							ccResponse.getMessage() != null)
 						{
-							CreditCardStatementResponse statement = ccResponse.getMessage();
-							CreditCardAccountDetails ccAccount = statement.getAccount();
+							CreditCardStatementResponse statement =
+								ccResponse.getMessage();
+							CreditCardAccountDetails ccAccount =
+								statement.getAccount();
 							String accountNumber = ccAccount.getAccountNumber();
 							String accountType = "CREDITCARD";
 							String currencyCode = statement.getCurrencyCode();
-							TransactionList transactionList = statement.getTransactionList();
-
+							TransactionList transactionList =
+								statement.getTransactionList();
+							
 							if (transactionList != null &&
-									transactionList.getTransactions() != null)
+								transactionList.getTransactions() != null)
 							{
-								for (Transaction ofxTransaction : transactionList.getTransactions())
+								
+								for (Transaction ofxTransaction : transactionList
+									.getTransactions())
 								{
 									importedTransactions.add(
 										mapToImportedTransaction(ofxTransaction,
-											accountNumber, accountType, currencyCode));
+											accountNumber, accountType,
+											currencyCode));
 								}
+								
 							}
+							
 						}
+						
 					}
+					
 				}
+				
 			}
+			
 		}
-
+		
 		return importedTransactions;
+		
 	}
-
-        private static String sanitizeOfxPayload(InputStream rawInputStream) throws IOException
-        {
-                String ofxContent = new String(rawInputStream.readAllBytes(), StandardCharsets.UTF_8);
-
-                Matcher malformedMatcher = MALFORMED_COMMENT_PATTERN.matcher(ofxContent);
-                StringBuffer sanitizedBuffer = new StringBuffer();
-
-                while (malformedMatcher.find())
-                {
-                        malformedMatcher.appendReplacement(sanitizedBuffer, "");
-                }
-
-                malformedMatcher.appendTail(sanitizedBuffer);
-
-                return sanitizedBuffer.toString();
-        }
-
-        private static void validateOfxStructure(String sanitizedOfx) throws OFXParseException
-        {
-                String normalized = sanitizedOfx.toUpperCase();
-
-                if (normalized.contains("<ACCTTYPE>") && !normalized.contains("</ACCTTYPE>"))
-                {
-                        throw new OFXParseException("Malformed OFX content: missing closing </ACCTTYPE> tag.");
-                }
-
-                if (normalized.contains("<TRNAMT>") && !normalized.contains("</TRNAMT>"))
-                {
-                        throw new OFXParseException("Malformed OFX content: missing closing </TRNAMT> tag.");
-                }
-        }
-
-        private static final Pattern MALFORMED_COMMENT_PATTERN =
-                Pattern.compile("<!-(?!-)(.*?)->", Pattern.DOTALL);
+	
+	private static String sanitizeOfxPayload(InputStream rawInputStream)
+		throws IOException
+	{
+		String ofxContent =
+			new String(rawInputStream.readAllBytes(), StandardCharsets.UTF_8);
+		
+		Matcher malformedMatcher =
+			MALFORMED_COMMENT_PATTERN.matcher(ofxContent);
+		StringBuffer sanitizedBuffer = new StringBuffer();
+		
+		while (malformedMatcher.find())
+		{
+			malformedMatcher.appendReplacement(sanitizedBuffer, "");
+		}
+		
+		malformedMatcher.appendTail(sanitizedBuffer);
+		
+		return sanitizedBuffer.toString();
+		
+	}
+	
+	private static void validateOfxStructure(String sanitizedOfx)
+		throws OFXParseException
+	{
+		String normalized = sanitizedOfx.toUpperCase();
+		
+		if (normalized.contains("<ACCTTYPE>") &&
+			!normalized.contains("</ACCTTYPE>"))
+		{
+			throw new OFXParseException(
+				"Malformed OFX content: missing closing </ACCTTYPE> tag.");
+		}
+		
+		if (normalized.contains("<TRNAMT>") &&
+			!normalized.contains("</TRNAMT>"))
+		{
+			throw new OFXParseException(
+				"Malformed OFX content: missing closing </TRNAMT> tag.");
+		}
+		
+	}
+	
+	private static final Pattern MALFORMED_COMMENT_PATTERN =
+		Pattern.compile("<!-(?!-)(.*?)->", Pattern.DOTALL);
+	
 	/**
 	 * Maps an OFX4J {@link Transaction} object to this application's {@link ImportedTransaction} format.
 	 *
@@ -251,10 +306,11 @@ public class FileImportService
 	 * @param currencyCode The default currency code from the OFX statement, used if transaction has no specific currency.
 	 * @return A new {@link ImportedTransaction} object populated with data from the OFX transaction.
 	 */
-	private static ImportedTransaction mapToImportedTransaction(Transaction ofxTransaction,
-																String accountNumber,
-																String accountType,
-																String currencyCode)
+	private static ImportedTransaction mapToImportedTransaction(
+		Transaction ofxTransaction,
+		String accountNumber,
+		String accountType,
+		String currencyCode)
 	{
 		ImportedTransaction importedTx = new ImportedTransaction();
 		Date datePosted = ofxTransaction.getDatePosted();
@@ -262,7 +318,8 @@ public class FileImportService
 		if (datePosted != null)
 		{
 			importedTx
-				.setDatePosted(datePosted.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+				.setDatePosted(datePosted.toInstant()
+					.atZone(ZoneId.systemDefault()).toLocalDate());
 		}
 		
 		Double amount = ofxTransaction.getAmount();
@@ -288,6 +345,7 @@ public class FileImportService
 		importedTx.setOriginalAccountType(accountType);
 		importedTx.setOriginalAccountNumber(accountNumber);
 		return importedTx;
+		
 	}
 	
 	/**
@@ -303,8 +361,8 @@ public class FileImportService
 	 * @return A list of {@link ImportedTransaction} objects parsed from the QIF data.
 	 * @throws IOException If an I/O error occurs while reading the stream.
 	 */
-	static List<ImportedTransaction> parseQif(	InputStream inputStream,
-												String targetAccountTypeHint) throws IOException
+	static List<ImportedTransaction> parseQif(InputStream inputStream,
+		String targetAccountTypeHint) throws IOException
 	{
 		List<ImportedTransaction> importedTransactions = new ArrayList<>();
 		ImportedTransaction currentTx = null;
@@ -312,7 +370,8 @@ public class FileImportService
 		String qifAccountType = targetAccountTypeHint;
 		
 		try (BufferedReader reader =
-			new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)))
+			new BufferedReader(
+				new InputStreamReader(inputStream, StandardCharsets.UTF_8)))
 		{
 			
 			while ((line = reader.readLine()) != null)
@@ -367,7 +426,8 @@ public class FileImportService
 					case 'T':
 						try
 						{
-							currentTx.setAmount(new BigDecimal(value.replace(",", "")));
+							currentTx.setAmount(
+								new BigDecimal(value.replace(",", "")));
 						}
 						catch (NumberFormatException e)
 						{
@@ -383,7 +443,8 @@ public class FileImportService
 					
 					case 'M':
 						currentTx.setMemo(
-							(currentTx.getMemo() == null ? "" : currentTx.getMemo() + " ") + value);
+							(currentTx.getMemo() == null ? "" :
+								currentTx.getMemo() + " ") + value);
 						break;
 					
 					case 'N':
@@ -392,14 +453,16 @@ public class FileImportService
 					
 					case 'L':
 						currentTx.setMemo((currentTx.getMemo() == null ? "" :
-							currentTx.getMemo() + " [Category/Transfer: " + value + "]"));
+							currentTx.getMemo() + " [Category/Transfer: " +
+								value + "]"));
 						break;
 					
 					case '^':
 						if (isValidTransaction(currentTx))
 							importedTransactions.add(currentTx);
 						else
-							LOGGER.warn("Skipping incomplete QIF transaction: {}",
+							LOGGER.warn(
+								"Skipping incomplete QIF transaction: {}",
 								currentTx);
 						currentTx = null;
 						break;
@@ -418,19 +481,24 @@ public class FileImportService
 		}
 		
 		return importedTransactions;
+		
 	}
 	
 	/** Date formatter for QIF dates like "M/d/yy", defaulting to current year if year is ambiguous (e.g. "1/15/98" vs "1/15/20"). */
 	private static final DateTimeFormatter QIF_DATE_FORMATTER_MDY_YY =
 		new DateTimeFormatterBuilder().appendPattern("M/d/yy")
-			.parseDefaulting(ChronoField.YEAR_OF_ERA, LocalDate.now().getYear()) // Sensible default
-																					// for yy
+			.parseDefaulting(ChronoField.YEAR_OF_ERA, LocalDate.now().getYear()) // Sensible
+																					// default
+																					// for
+																					// yy
 			.toFormatter();
 	/** Date formatter for QIF dates like "M/d''yy" (e.g., "1/15''98"). */
 	private static final DateTimeFormatter QIF_DATE_FORMATTER_MD_YY_APOSTROPHE =
 		new DateTimeFormatterBuilder().appendPattern("M/d''yy")
-			.parseDefaulting(ChronoField.YEAR_OF_ERA, LocalDate.now().getYear()) // Sensible default
-																					// for yy
+			.parseDefaulting(ChronoField.YEAR_OF_ERA, LocalDate.now().getYear()) // Sensible
+																					// default
+																					// for
+																					// yy
 			.toFormatter();
 	/** Date formatter for QIF dates like "M/d/yyyy". */
 	private static final DateTimeFormatter QIF_DATE_FORMATTER_MDYYYY =
@@ -438,8 +506,10 @@ public class FileImportService
 	/** Date formatter for QIF dates like "d/M/yy". */
 	private static final DateTimeFormatter QIF_DATE_FORMATTER_DMY_YY =
 		new DateTimeFormatterBuilder().appendPattern("d/M/yy")
-			.parseDefaulting(ChronoField.YEAR_OF_ERA, LocalDate.now().getYear()) // Sensible default
-																					// for yy
+			.parseDefaulting(ChronoField.YEAR_OF_ERA, LocalDate.now().getYear()) // Sensible
+																					// default
+																					// for
+																					// yy
 			.toFormatter();
 	/** Date formatter for QIF dates like "d/M/yyyy". */
 	private static final DateTimeFormatter QIF_DATE_FORMATTER_DMYYYY =
@@ -455,7 +525,8 @@ public class FileImportService
 	 * @return The parsed {@link LocalDate}.
 	 * @throws DateTimeParseException if the date string cannot be parsed by any of the attempted formats.
 	 */
-	private static LocalDate parseQifDate(String dateStr) throws DateTimeParseException
+	private static LocalDate parseQifDate(String dateStr)
+		throws DateTimeParseException
 	{
 		
 		try
@@ -476,7 +547,8 @@ public class FileImportService
 		
 		try
 		{
-			return LocalDate.parse(dateStr, QIF_DATE_FORMATTER_MD_YY_APOSTROPHE);
+			return LocalDate.parse(dateStr,
+				QIF_DATE_FORMATTER_MD_YY_APOSTROPHE);
 		}
 		catch (DateTimeParseException ignored)
 		{
@@ -500,6 +572,7 @@ public class FileImportService
 		
 		// Fallback to default ISO parse if other formats fail
 		return LocalDate.parse(dateStr);
+		
 	}
 	
 	/**
@@ -511,7 +584,9 @@ public class FileImportService
 	 */
 	private static boolean isValidTransaction(ImportedTransaction tx)
 	{
-		return tx != null && tx.getDatePosted() != null && tx.getAmount() != null;
+		return tx != null && tx.getDatePosted() != null &&
+			tx.getAmount() != null;
+		
 	}
 	
 	/**
@@ -532,12 +607,11 @@ public class FileImportService
 	 * @throws IllegalArgumentException if the "needs categorization" account is not found in the chart of accounts.
 	 */
 	static
-			List<AccountingTransaction>
-			mapToAccountingTransactions(List<ImportedTransaction> importedTxns,
-										Account targetAccount, ChartOfAccounts chartOfAccounts,
-										Ledger existingLedger)
-	{
-		
+		List<AccountingTransaction>
+		mapToAccountingTransactions(List<ImportedTransaction> importedTxns,
+			Account targetAccount, ChartOfAccounts chartOfAccounts,
+			Ledger existingLedger)
+	{		
 		List<AccountingTransaction> accountingTransactions = new ArrayList<>();
 		Account needsCategorizationAccount =
 			chartOfAccounts.getAccount(NEEDS_CATEGORIZATION_ACCOUNT_NUMBER);
@@ -547,7 +621,8 @@ public class FileImportService
 			LOGGER.error(
 				"Critical: 'Needs Categorization' account ('{}') not found. Cannot map transactions.",
 				NEEDS_CATEGORIZATION_ACCOUNT_NUMBER);
-			throw new IllegalArgumentException("'Needs Categorization' account not found.");
+			throw new IllegalArgumentException(
+				"'Needs Categorization' account not found.");
 		}
 		
 		List<ImportedTransaction> nonDuplicateImportedTxns = new ArrayList<>();
@@ -585,23 +660,28 @@ public class FileImportService
 			}
 			
 			long bookingDateTimestamp =
-				impTxn.getDatePosted().atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
+				impTxn.getDatePosted().atStartOfDay(ZoneOffset.UTC).toInstant()
+					.toEpochMilli();
 			String memo =
-				impTxn.getDescription() != null ? impTxn.getDescription() : impTxn.getMemo();
+				impTxn.getDescription() != null ? impTxn.getDescription() :
+					impTxn.getMemo();
 			if (memo == null || memo.trim().isEmpty())
 				memo = "Imported Transaction";
 			
 			Map<String, String> info = new HashMap<>();
 			
-			if (impTxn.getTransactionId() != null && !impTxn.getTransactionId().isEmpty())
+			if (impTxn.getTransactionId() != null &&
+				!impTxn.getTransactionId().isEmpty())
 			{
 				info.put(FITID_KEY, impTxn.getTransactionId());
 			}
 			
 			if (impTxn.getOriginalAccountNumber() != null)
-				info.put("ORIGINAL_ACCOUNT_NUMBER", impTxn.getOriginalAccountNumber());
+				info.put("ORIGINAL_ACCOUNT_NUMBER",
+					impTxn.getOriginalAccountNumber());
 			if (impTxn.getOriginalAccountType() != null)
-				info.put("ORIGINAL_ACCOUNT_TYPE", impTxn.getOriginalAccountType());
+				info.put("ORIGINAL_ACCOUNT_TYPE",
+					impTxn.getOriginalAccountType());
 			if (impTxn.getMemo() != null && !impTxn.getMemo().equals(memo))
 				info.put("ORIGINAL_MEMO", impTxn.getMemo());
 			
@@ -641,19 +721,23 @@ public class FileImportService
 				
 			}
 			
-			entries.add(new AccountingEntry(entryAmount, targetAccount.getAccountNumber(),
+			entries.add(new AccountingEntry(entryAmount,
+				targetAccount.getAccountNumber(),
 				targetAccountSide, targetAccount.getName()));
 			entries
-				.add(new AccountingEntry(entryAmount, needsCategorizationAccount.getAccountNumber(),
+				.add(new AccountingEntry(entryAmount,
+					needsCategorizationAccount.getAccountNumber(),
 					needsCatAccountSide, needsCategorizationAccount.getName()));
 			
 			AccountingTransaction newAt =
-				new AccountingTransaction(targetAccount, entries, info, bookingDateTimestamp);
+				new AccountingTransaction(targetAccount, entries, info,
+					bookingDateTimestamp);
 			newAt.setMemo(memo);
 			accountingTransactions.add(newAt);
 		}
 		
 		return accountingTransactions;
+		
 	}
 	
 	/**
@@ -676,8 +760,9 @@ public class FileImportService
 	 * @param existingLedger The {@link Ledger} containing existing transactions to check against.
 	 * @return {@code true} if the imported transaction is deemed a potential duplicate, {@code false} otherwise.
 	 */
-	private static boolean isPotentialDuplicate(ImportedTransaction impTxn, Account targetAccount,
-												Ledger existingLedger)
+	private static boolean isPotentialDuplicate(ImportedTransaction impTxn,
+		Account targetAccount,
+		Ledger existingLedger)
 	{
 		
 		if (existingLedger == null || existingLedger.getTransactions() == null)
@@ -686,22 +771,28 @@ public class FileImportService
 		}
 		
 		// OFX Duplicate Check (Primary using FITID)
-		if (impTxn.getTransactionId() != null && !impTxn.getTransactionId().isEmpty() &&
-			impTxn.getOriginalAccountType() != null && // Ensure originalAccountType is not null
+		if (impTxn.getTransactionId() != null &&
+			!impTxn.getTransactionId().isEmpty() &&
+			impTxn.getOriginalAccountType() != null && // Ensure
+														// originalAccountType
+														// is not null
 			(impTxn.getOriginalAccountType().equals("BANK") ||
 				impTxn.getOriginalAccountType().equals("CREDITCARD")))
 		{ // FITID is strong for OFX
 			
-			for (AccountingTransaction existingTx : existingLedger.getTransactions())
+			for (AccountingTransaction existingTx : existingLedger
+				.getTransactions())
 			{
 				Map<String, String> info = existingTx.getInfo();
 				
-				if (info != null && impTxn.getTransactionId().equals(info.get(FITID_KEY)))
+				if (info != null &&
+					impTxn.getTransactionId().equals(info.get(FITID_KEY)))
 				{
 					LOGGER.info(
 						"Potential OFX duplicate (FITID match): Imported FITID={}, Existing Tx BookingDate={}",
 						impTxn.getTransactionId(),
-						Instant.ofEpochMilli(existingTx.getBookingDateTimestamp()));
+						Instant.ofEpochMilli(
+							existingTx.getBookingDateTimestamp()));
 					return true; // Found duplicate by FITID
 				}
 				
@@ -710,13 +801,16 @@ public class FileImportService
 		}
 		
 		// QIF/Fallback Heuristic Duplicate Check
-		// Exact match on Date, net Amount on targetAccount, and Payee/Description.
+		// Exact match on Date, net Amount on targetAccount, and
+		// Payee/Description.
 		if (impTxn.getDatePosted() == null || impTxn.getAmount() == null)
 		{
-			return false; // Cannot perform heuristic check without date or amount
+			return false; // Cannot perform heuristic check without date or
+							// amount
 		}
 		
-		for (AccountingTransaction existingTx : existingLedger.getTransactions())
+		for (AccountingTransaction existingTx : existingLedger
+			.getTransactions())
 		{
 			boolean targetAccountMatchInExistingTx = false;
 			BigDecimal existingTxAmountForTarget = BigDecimal.ZERO;
@@ -727,21 +821,27 @@ public class FileImportService
 				for (AccountingEntry entry : existingTx.getEntries())
 				{
 					
-					if (entry.getAccountNumber().equals(targetAccount.getAccountNumber()))
+					if (entry.getAccountNumber()
+						.equals(targetAccount.getAccountNumber()))
 					{
 						targetAccountMatchInExistingTx = true;
 						
-						// Calculate net effect on target account based on entry side relative to
+						// Calculate net effect on target account based on entry
+						// side relative to
 						// account's normal increase side
-						if (targetAccount.getIncreaseSide() == entry.getAccountSide())
-						{ // Matches normal increase (e.g., Debit for Asset, Credit for Liability)
+						if (targetAccount.getIncreaseSide() ==
+							entry.getAccountSide())
+						{ // Matches normal increase (e.g., Debit for Asset,
+							// Credit for Liability)
 							existingTxAmountForTarget =
-								existingTxAmountForTarget.add(entry.getAmount().abs());
+								existingTxAmountForTarget
+									.add(entry.getAmount().abs());
 						}
 						else
 						{ // Opposite of normal increase
 							existingTxAmountForTarget =
-								existingTxAmountForTarget.subtract(entry.getAmount().abs());
+								existingTxAmountForTarget
+									.subtract(entry.getAmount().abs());
 						}
 						
 					}
@@ -752,11 +852,13 @@ public class FileImportService
 			
 			if (!targetAccountMatchInExistingTx)
 			{
-				continue; // Skip if existing TX doesn't involve the target account
+				continue; // Skip if existing TX doesn't involve the target
+							// account
 			}
 			
-			LocalDate existingTxDate = Instant.ofEpochMilli(existingTx.getBookingDateTimestamp())
-				.atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate existingTxDate =
+				Instant.ofEpochMilli(existingTx.getBookingDateTimestamp())
+					.atZone(ZoneId.systemDefault()).toLocalDate();
 			
 			// Compare date
 			if (!impTxn.getDatePosted().equals(existingTxDate))
@@ -765,46 +867,62 @@ public class FileImportService
 			}
 			
 			// Compare amount:
-			// For bank accounts (DEBIT normal balance): positive imported amount is DEBIT,
+			// For bank accounts (DEBIT normal balance): positive imported
+			// amount is DEBIT,
 			// negative is CREDIT.
-			// For credit cards (CREDIT normal balance): positive imported amount (payment)
+			// For credit cards (CREDIT normal balance): positive imported
+			// amount (payment)
 			// is DEBIT, negative (charge) is CREDIT.
 			// The existingTxAmountForTarget represents the net change.
-			// We need to align the sign of impTxn.getAmount() with how it would affect the
+			// We need to align the sign of impTxn.getAmount() with how it would
+			// affect the
 			// target account's balance.
 			BigDecimal comparableImportedAmount = impTxn.getAmount();
 			
 			if (targetAccount.getAccountType() == AccountType.CREDITCARD ||
 				targetAccount.getAccountType() == AccountType.LIABILITY)
 			{
-				// For credit-normal accounts, OFX often has charges as negative.
-				// If our existingTxAmountForTarget reflects increase in liability as positive,
+				// For credit-normal accounts, OFX often has charges as
+				// negative.
+				// If our existingTxAmountForTarget reflects increase in
+				// liability as positive,
 				// then flip sign of imported.
-				// This logic is complex and depends on how amounts are signed in QIF/OFX vs.
+				// This logic is complex and depends on how amounts are signed
+				// in QIF/OFX vs.
 				// internal representation.
-				// A simpler heuristic for now: compare impTxn.getAmount() directly with
+				// A simpler heuristic for now: compare impTxn.getAmount()
+				// directly with
 				// existingTxAmountForTarget,
-				// ASSUMING that existingTxAmountForTarget correctly reflects the signed impact
+				// ASSUMING that existingTxAmountForTarget correctly reflects
+				// the signed impact
 				// on the account.
 			}
 			
-			if (comparableImportedAmount.compareTo(existingTxAmountForTarget) != 0)
+			if (comparableImportedAmount.compareTo(existingTxAmountForTarget) !=
+				0)
 			{
 				continue;
 			}
 			
 			// Compare description (payee/memo)
 			String impDescription =
-				(impTxn.getDescription() != null ? impTxn.getDescription() : "").trim();
+				(impTxn.getDescription() != null ? impTxn.getDescription() : "")
+					.trim();
 			String existingTxMemo =
-				(existingTx.getMemo() != null ? existingTx.getMemo() : "").trim();
+				(existingTx.getMemo() != null ? existingTx.getMemo() : "")
+					.trim();
 			
-			// Simple direct comparison for V1 heuristic. Could be more sophisticated (fuzzy
+			// Simple direct comparison for V1 heuristic. Could be more
+			// sophisticated (fuzzy
 			// match, check other entry descriptions).
-			if (!impDescription.equalsIgnoreCase(existingTxMemo)) // Using equalsIgnoreCase for more
-																	// lenient matching
+			if (!impDescription.equalsIgnoreCase(existingTxMemo)) // Using
+																	// equalsIgnoreCase
+																	// for more
+																	// lenient
+																	// matching
 			{
-				// Fallback: check if imported description matches the "other side" entry's memo
+				// Fallback: check if imported description matches the "other
+				// side" entry's memo
 				// in existing transaction
 				boolean otherSideMatch = false;
 				
@@ -814,11 +932,15 @@ public class FileImportService
 					for (AccountingEntry entry : existingTx.getEntries())
 					{
 						
-						if (!entry.getAccountNumber().equals(targetAccount.getAccountNumber()))
+						if (!entry.getAccountNumber()
+							.equals(targetAccount.getAccountNumber()))
 						{ // The "other" leg
-							String otherEntryMemo = entry.getTransaction() != null &&
-								entry.getTransaction().getMemo() != null ?
-									entry.getTransaction().getMemo().trim() : "";
+							String otherEntryMemo =
+								entry.getTransaction() != null &&
+									entry.getTransaction().getMemo() != null ?
+										entry.getTransaction().getMemo()
+											.trim() :
+										"";
 							
 							if (impDescription.equalsIgnoreCase(otherEntryMemo))
 							{
@@ -849,6 +971,7 @@ public class FileImportService
 		}
 		
 		return false;
+		
 	}
 	
 	/**
@@ -866,9 +989,10 @@ public class FileImportService
 	 *         Returns an empty list if the file is invalid, unsupported, cannot be parsed,
 	 *         or if critical setup (like the suspense account) is missing, or if all transactions are duplicates or invalid.
 	 */
-	public static List<AccountingTransaction> importOFXorQIFFile(	File file, Account targetAccountInCOA,
-	                                                             	ChartOfAccounts chartOfAccounts,
-	                                                             	Ledger ledger)
+	public static List<AccountingTransaction> importOFXorQIFFile(File file,
+		Account targetAccountInCOA,
+		ChartOfAccounts chartOfAccounts,
+		Ledger ledger)
 	{
 		
 		if (file == null || !file.exists())
@@ -886,13 +1010,15 @@ public class FileImportService
 		
 		if (chartOfAccounts == null)
 		{
-			LOGGER.warn("Chart of Accounts is null. Cannot process import mapping.");
+			LOGGER.warn(
+				"Chart of Accounts is null. Cannot process import mapping.");
 			return Collections.emptyList();
 		}
 		
 		if (ledger == null)
 		{
-			LOGGER.warn("Ledger is null. Cannot check for duplicates or save transactions.");
+			LOGGER.warn(
+				"Ledger is null. Cannot check for duplicates or save transactions.");
 			return Collections.emptyList();
 		}
 		
@@ -905,14 +1031,17 @@ public class FileImportService
 			if (fileName.endsWith(".ofx") || fileName.endsWith(".qfx"))
 			{
 				importedTxns = parseOfx(fis);
-				LOGGER.info("Successfully parsed {} transactions from OFX file: {}",
+				LOGGER.info(
+					"Successfully parsed {} transactions from OFX file: {}",
 					importedTxns.size(),
 					file.getAbsolutePath());
 			}
 			else if (fileName.endsWith(".qif"))
 			{
-				String accountTypeHint = targetAccountInCOA.getAccountType() != null ?
-					targetAccountInCOA.getAccountType().toUpperCase() : "BANK";
+				String accountTypeHint =
+					targetAccountInCOA.getAccountType() != null ?
+						targetAccountInCOA.getAccountType().toUpperCase() :
+						"BANK";
 				
 				if (AccountType.LIABILITY.name().equals(accountTypeHint) ||
 					"CREDITCARD".equals(accountTypeHint))
@@ -925,20 +1054,23 @@ public class FileImportService
 				}
 				
 				importedTxns = parseQif(fis, accountTypeHint);
-				LOGGER.info("Successfully parsed {} transactions from QIF file: {}",
+				LOGGER.info(
+					"Successfully parsed {} transactions from QIF file: {}",
 					importedTxns.size(),
 					file.getAbsolutePath());
 			}
 			else
 			{
-				LOGGER.warn("Unsupported file type for import: {}", file.getName());
+				LOGGER.warn("Unsupported file type for import: {}",
+					file.getName());
 				return Collections.emptyList();
 			}
 			
 		}
 		catch (OFXParseException e)
 		{
-			LOGGER.error("Failed to parse OFX file: {}", file.getAbsolutePath(), e);
+			LOGGER.error("Failed to parse OFX file: {}", file.getAbsolutePath(),
+				e);
 			return Collections.emptyList();
 		}
 		catch (IOException e)
@@ -956,7 +1088,8 @@ public class FileImportService
 		try
 		{
 			// Pass existingLedger to mapToAccountingTransactions
-			return mapToAccountingTransactions(importedTxns, targetAccountInCOA, chartOfAccounts,
+			return mapToAccountingTransactions(importedTxns, targetAccountInCOA,
+				chartOfAccounts,
 				ledger);
 		}
 		catch (IllegalArgumentException e)

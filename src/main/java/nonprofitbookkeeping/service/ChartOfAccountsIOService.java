@@ -29,7 +29,7 @@ import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountType;
 import nonprofitbookkeeping.model.supplemental.SupplementalLineKind;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Utility for persisting a {@link ChartOfAccounts} to / from either a human-readable
  * JSON document or an Excel spreadsheet (.xlsx). The JSON file format is:
