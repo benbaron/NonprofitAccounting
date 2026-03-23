@@ -1,7 +1,3 @@
-/**
- * nonprofit-scaledger-ribbon.zip_expanded Grant.java Grant
- */
-
 package nonprofitbookkeeping.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;

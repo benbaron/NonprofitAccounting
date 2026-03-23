@@ -9,7 +9,6 @@ import java.util.List;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-// TODO: Auto-generated Javadoc
 /**
  * Represents a fund within the nonprofit bookkeeping system.
  * A fund is a distinct financial entity used to track resources designated for specific purposes

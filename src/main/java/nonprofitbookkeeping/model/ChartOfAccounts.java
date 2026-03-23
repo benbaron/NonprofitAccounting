@@ -10,13 +10,13 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * Mutable container that holds every {@link Account} in the company and
  * supports parent/child relationships.
 */
 
-@Data public class ChartOfAccounts implements Serializable
+@Data
+public class ChartOfAccounts implements Serializable
 {
 	
 	/** The Constant serialVersionUID. */
@@ -26,7 +26,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	 * Flat list of <em>all</em> accounts, root and child alike.
 	 * This list is managed internally and holds all accounts in the chart.
 	 */
-	@JsonProperty private final List<Account> chartOfAccounts = new ArrayList<>();
+	@JsonProperty private final List<Account> chartOfAccounts =
+		new ArrayList<>();
 	
 	/* ------------------------------------------------------------------ */
 	/**
@@ -40,6 +41,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		return this.chartOfAccounts.stream()
 			.filter(a -> !a.hasParent())
 			.collect(Collectors.toCollection(ArrayList::new));
+		
 	}
 	
 	/* ------------------------------------------------------------------ */
@@ -54,8 +56,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	{
 		Objects.requireNonNull(parent, "parent cannot be null");
 		return this.chartOfAccounts.stream()
-			.filter(a -> parent.getAccountNumber().equals(a.getParentAccountId()))
+			.filter(
+				a -> parent.getAccountNumber().equals(a.getParentAccountId()))
 			.collect(Collectors.toCollection(ArrayList::new));
+		
 	}
 	
 	/* ------------------------------------------------------------------ */
@@ -70,6 +74,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		Objects.requireNonNull(root, "account");
 		root.setParentAccountId(null);
 		this.chartOfAccounts.add(root);
+		
 	}
 	
 	/* ------------------------------------------------------------------ */
@@ -85,6 +90,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		Objects.requireNonNull(child, "child");
 		child.setParentAccountId(parent.getAccountNumber());
 		this.chartOfAccounts.add(child);
+		
 	}
 	
 	/* ------------------------------------------------------------------ */
@@ -95,13 +101,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	 */
 	public void removeAccount(Account target)
 	{
+		
 		if (target == null)
 		{
 			return;
 		}
+		
 		/* remove children first (depth-first) */
 		getChildren(target).forEach(this::removeAccount);
 		this.chartOfAccounts.remove(target);
+		
 	}
 	
 	/* ------------------------------------------------------------------ */
@@ -147,6 +156,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		}
 		
 		return null;
+		
 	}
 	
 	/**
@@ -168,8 +178,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 			return null;
 		}
 		
-		AccountNumberMap accountMap = new AccountNumberMap(this.chartOfAccounts);
+		AccountNumberMap accountMap =
+			new AccountNumberMap(this.chartOfAccounts);
 		return accountMap.get(accountNumber);
+		
 	}
 	
 	/**
@@ -180,6 +192,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public AccountNumberMap createAccountNumberMap()
 	{
 		return new AccountNumberMap(this.chartOfAccounts);
+		
 	}
 	
 	/**
@@ -195,25 +208,27 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	 * @return A new {@code List<Account>} containing all accounts in the chart.
 	 *         Returns an empty list if the chart of accounts has no accounts.
 	 */
-        public List<Account> getAccounts()
-        {
-                // this.chartOfAccounts is final and initialized, so it won't be null.
-                return new ArrayList<>(this.chartOfAccounts);
-        }
-
-        /**
-         * Replaces the current accounts with the provided collection. Existing entries are removed first.
-         * @param accounts accounts to install, may be {@code null}
-         */
-        public void replaceAllAccounts(List<Account> accounts)
-        {
-                this.chartOfAccounts.clear();
-
-                if (accounts != null)
-                {
-                        this.chartOfAccounts.addAll(accounts);
-                }
-        }
+	public List<Account> getAccounts()
+	{
+		// this.chartOfAccounts is final and initialized, so it won't be null.
+		return new ArrayList<>(this.chartOfAccounts);
+		
+	}
+	
+	/**
+	 * Replaces the current accounts with the provided collection. Existing entries are removed first.
+	 * @param accounts accounts to install, may be {@code null}
+	 */
+	public void replaceAllAccounts(List<Account> accounts)
+	{
+		this.chartOfAccounts.clear();
+		
+		if (accounts != null)
+		{
+			this.chartOfAccounts.addAll(accounts);
+		}
+		
+	}
 	
 	/**
 	 * Removes an account (and its descendants) from the chart of accounts using its account number.
@@ -234,6 +249,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		}
 		
 		return false; // Account not found
+		
 	}
 	
 	

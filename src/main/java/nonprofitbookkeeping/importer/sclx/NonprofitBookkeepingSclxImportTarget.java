@@ -20,7 +20,31 @@ import nonprofitbookkeeping.model.supplemental.TxnSupplementalLineBase;
 import nonprofitbookkeeping.persistence.AccountRepository;
 import nonprofitbookkeeping.persistence.DocumentRepository;
 import nonprofitbookkeeping.persistence.PersonRepository;
+import nonprofitbookkeeping.persistence.impex.BankStatementRecordRepository;
+import nonprofitbookkeeping.persistence.impex.BudgetRecordRepository;
+import nonprofitbookkeeping.persistence.impex.BankingItemRecordRepository;
+import nonprofitbookkeeping.persistence.impex.OrganizationRecordRepository;
+import nonprofitbookkeeping.persistence.impex.ReportingPeriodRecordRepository;
+import nonprofitbookkeeping.persistence.impex.FundRecordRepository;
+import nonprofitbookkeeping.persistence.impex.EventRecordRepository;
+import nonprofitbookkeeping.persistence.impex.DocumentRecordRepository;
+import nonprofitbookkeeping.persistence.impex.OutstandingItemRecordRepository;
+import nonprofitbookkeeping.persistence.impex.OtherAssetItemRecordRepository;
+import nonprofitbookkeeping.persistence.impex.AssetRecordRepository;
+import nonprofitbookkeeping.persistence.impex.SupplyRecordRepository;
 import nonprofitbookkeeping.service.scaledger.JournalLedgerPersistenceGateway;
+import nonprofitbookkeeping.model.impex.BankStatementRecord;
+import nonprofitbookkeeping.model.impex.BudgetRecord;
+import nonprofitbookkeeping.model.impex.BankingItemRecord;
+import nonprofitbookkeeping.model.impex.OrganizationRecord;
+import nonprofitbookkeeping.model.impex.ReportingPeriodRecord;
+import nonprofitbookkeeping.model.impex.FundRecord;
+import nonprofitbookkeeping.model.impex.EventRecord;
+import nonprofitbookkeeping.model.impex.DocumentRecord;
+import nonprofitbookkeeping.model.impex.OutstandingItemRecord;
+import nonprofitbookkeeping.model.impex.OtherAssetItemRecord;
+import nonprofitbookkeeping.model.impex.AssetRecord;
+import nonprofitbookkeeping.model.impex.SupplyRecord;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -50,10 +74,9 @@ import java.util.Objects;
  *       related imported transaction can be found</li>
  * </ul>
  *
- * <p>Collections that do not yet have a stable first-class repository path in
- * the current archive are preserved as raw JSON documents through
- * {@link DocumentRepository}. This keeps the import materially complete without
- * pretending that an unfinished domain model already exists.
+ * <p>Collections that already have concrete import record support are imported
+ * as first-class records. Remaining collections without a stable repository
+ * path are still preserved through {@link DocumentRepository}.
  */
 public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
 {
@@ -63,6 +86,18 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
     private final AccountRepository accountRepository;
     private final PersonRepository personRepository;
     private final DocumentRepository documentRepository;
+    private final BankStatementRecordRepository bankStatementRecordRepository;
+    private final BudgetRecordRepository budgetRecordRepository;
+    private final BankingItemRecordRepository bankingItemRecordRepository;
+    private final OrganizationRecordRepository organizationRecordRepository;
+    private final ReportingPeriodRecordRepository reportingPeriodRecordRepository;
+    private final FundRecordRepository fundRecordRepository;
+    private final EventRecordRepository eventRecordRepository;
+    private final DocumentRecordRepository documentRecordRepository;
+    private final OutstandingItemRecordRepository outstandingItemRecordRepository;
+    private final OtherAssetItemRecordRepository otherAssetItemRecordRepository;
+    private final AssetRecordRepository assetRecordRepository;
+    private final SupplyRecordRepository supplyRecordRepository;
     private final ObjectMapper mapper;
 
     private SclxDocument document;
@@ -83,19 +118,55 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         this(new JournalLedgerPersistenceGateway(),
             new AccountRepository(),
             new PersonRepository(),
-            new DocumentRepository());
+            new DocumentRepository(),
+            new BankStatementRecordRepository(),
+            new BudgetRecordRepository(),
+            new BankingItemRecordRepository(),
+            new OrganizationRecordRepository(),
+            new ReportingPeriodRecordRepository(),
+            new FundRecordRepository(),
+            new EventRecordRepository(),
+            new DocumentRecordRepository(),
+            new OutstandingItemRecordRepository(),
+            new OtherAssetItemRecordRepository(),
+            new AssetRecordRepository(),
+            new SupplyRecordRepository());
     }
 
     public NonprofitBookkeepingSclxImportTarget(
         JournalLedgerPersistenceGateway journalGateway,
         AccountRepository accountRepository,
         PersonRepository personRepository,
-        DocumentRepository documentRepository)
+        DocumentRepository documentRepository,
+        BankStatementRecordRepository bankStatementRecordRepository,
+        BudgetRecordRepository budgetRecordRepository,
+        BankingItemRecordRepository bankingItemRecordRepository,
+        OrganizationRecordRepository organizationRecordRepository,
+        ReportingPeriodRecordRepository reportingPeriodRecordRepository,
+        FundRecordRepository fundRecordRepository,
+        EventRecordRepository eventRecordRepository,
+        DocumentRecordRepository documentRecordRepository,
+        OutstandingItemRecordRepository outstandingItemRecordRepository,
+        OtherAssetItemRecordRepository otherAssetItemRecordRepository,
+        AssetRecordRepository assetRecordRepository,
+        SupplyRecordRepository supplyRecordRepository)
     {
         this.journalGateway = Objects.requireNonNull(journalGateway, "journalGateway");
         this.accountRepository = Objects.requireNonNull(accountRepository, "accountRepository");
         this.personRepository = Objects.requireNonNull(personRepository, "personRepository");
         this.documentRepository = Objects.requireNonNull(documentRepository, "documentRepository");
+        this.bankStatementRecordRepository = Objects.requireNonNull(bankStatementRecordRepository, "bankStatementRecordRepository");
+        this.budgetRecordRepository = Objects.requireNonNull(budgetRecordRepository, "budgetRecordRepository");
+        this.bankingItemRecordRepository = Objects.requireNonNull(bankingItemRecordRepository, "bankingItemRecordRepository");
+        this.organizationRecordRepository = Objects.requireNonNull(organizationRecordRepository, "organizationRecordRepository");
+        this.reportingPeriodRecordRepository = Objects.requireNonNull(reportingPeriodRecordRepository, "reportingPeriodRecordRepository");
+        this.fundRecordRepository = Objects.requireNonNull(fundRecordRepository, "fundRecordRepository");
+        this.eventRecordRepository = Objects.requireNonNull(eventRecordRepository, "eventRecordRepository");
+        this.documentRecordRepository = Objects.requireNonNull(documentRecordRepository, "documentRecordRepository");
+        this.outstandingItemRecordRepository = Objects.requireNonNull(outstandingItemRecordRepository, "outstandingItemRecordRepository");
+        this.otherAssetItemRecordRepository = Objects.requireNonNull(otherAssetItemRecordRepository, "otherAssetItemRecordRepository");
+        this.assetRecordRepository = Objects.requireNonNull(assetRecordRepository, "assetRecordRepository");
+        this.supplyRecordRepository = Objects.requireNonNull(supplyRecordRepository, "supplyRecordRepository");
 
         this.mapper = new ObjectMapper();
         this.mapper.registerModule(new JavaTimeModule());
@@ -135,13 +206,37 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
     @Override
     public void importOrganization(SclxDocument.Organization organization)
     {
-        persistJsonDocument(DOC_PREFIX + "organization", organization);
+        if (organization == null)
+        {
+            return;
+        }
+
+        try
+        {
+            this.organizationRecordRepository.upsert(toOrganizationRecord(organization));
+        }
+        catch (SQLException ex)
+        {
+            throw new SclxImportException("Failed to import organization " + organization.organizationId(), ex);
+        }
     }
 
     @Override
     public void importReportingPeriod(SclxDocument.ReportingPeriod reportingPeriod)
     {
-        persistJsonDocument(DOC_PREFIX + "reportingPeriod", reportingPeriod);
+        if (reportingPeriod == null)
+        {
+            return;
+        }
+
+        try
+        {
+            this.reportingPeriodRecordRepository.upsert(toReportingPeriodRecord(reportingPeriod));
+        }
+        catch (SQLException ex)
+        {
+            throw new SclxImportException("Failed to import reporting period", ex);
+        }
     }
 
     @Override
@@ -175,39 +270,61 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
 
         for (SclxDocument.Fund fund : funds)
         {
-            if (fund != null && fund.fundId() != null && !fund.fundId().isBlank())
+            if (fund == null)
+            {
+                continue;
+            }
+
+            if (fund.fundId() != null && !fund.fundId().isBlank())
             {
                 this.fundNameById.put(fund.fundId(), firstNonBlank(fund.name(), fund.fundId()));
             }
-        }
 
-        persistJsonDocument(DOC_PREFIX + "funds", funds);
-    }
-
-    @Override
-    public void importBudgets(List<SclxDocument.Budget> budgets)
-    {
-        if (budgets == null || budgets.isEmpty())
-        {
-            return;
-        }
-
-        for (SclxDocument.Budget budget : budgets)
-        {
-            if (budget != null && budget.budgetId() != null && !budget.budgetId().isBlank())
+            try
             {
-                this.budgetNameById.put(budget.budgetId(), firstNonBlank(budget.name(), budget.budgetId()));
+                this.fundRecordRepository.upsert(toFundRecord(fund));
+            }
+            catch (SQLException ex)
+            {
+                throw new SclxImportException("Failed to import fund " + fund.fundId(), ex);
             }
         }
-
-        // The budget model in this archive is still a stub/demo placeholder.
-        // Preserve the raw payload accurately until the real production model
-        // is available.
-        persistJsonDocument(DOC_PREFIX + "budgets", budgets);
     }
 
-    @Override
-    public void importPeople(List<SclxDocument.Person> people)
+    
+@Override
+public void importBudgets(List<SclxDocument.Budget> budgets)
+{
+    if (budgets == null || budgets.isEmpty())
+    {
+        return;
+    }
+
+    for (SclxDocument.Budget budget : budgets)
+    {
+        if (budget == null)
+        {
+            continue;
+        }
+
+        if (budget.budgetId() != null && !budget.budgetId().isBlank())
+        {
+            this.budgetNameById.put(budget.budgetId(), firstNonBlank(budget.name(), budget.budgetId()));
+        }
+
+        try
+        {
+            this.budgetRecordRepository.upsert(toBudgetRecord(budget));
+        }
+        catch (SQLException ex)
+        {
+            throw new SclxImportException("Failed to import budget " + budget.budgetId(), ex);
+        }
+    }
+}
+
+@Override
+public void importPeople(List<SclxDocument.Person> people)
     {
         if (people == null || people.isEmpty())
         {
@@ -232,13 +349,53 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
     @Override
     public void importEvents(List<SclxDocument.Event> events)
     {
-        persistJsonDocument(DOC_PREFIX + "events", events);
+        if (events == null || events.isEmpty())
+        {
+            return;
+        }
+
+        for (SclxDocument.Event event : events)
+        {
+            if (event == null)
+            {
+                continue;
+            }
+
+            try
+            {
+                this.eventRecordRepository.upsert(toEventRecord(event));
+            }
+            catch (SQLException ex)
+            {
+                throw new SclxImportException("Failed to import event " + event.eventId(), ex);
+            }
+        }
     }
 
     @Override
     public void importDocuments(List<SclxDocument.Document> documents)
     {
-        persistJsonDocument(DOC_PREFIX + "documents", documents);
+        if (documents == null || documents.isEmpty())
+        {
+            return;
+        }
+
+        for (SclxDocument.Document document : documents)
+        {
+            if (document == null)
+            {
+                continue;
+            }
+
+            try
+            {
+                this.documentRecordRepository.upsert(toDocumentRecord(document));
+            }
+            catch (SQLException ex)
+            {
+                throw new SclxImportException("Failed to import document " + document.documentId(), ex);
+            }
+        }
     }
 
     @Override
@@ -276,13 +433,53 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
     @Override
     public void importOutstandingItems(List<SclxDocument.OutstandingItem> outstandingItems)
     {
-        persistJsonDocument(DOC_PREFIX + "outstandingItems", outstandingItems);
+        if (outstandingItems == null || outstandingItems.isEmpty())
+        {
+            return;
+        }
+
+        for (SclxDocument.OutstandingItem outstandingItem : outstandingItems)
+        {
+            if (outstandingItem == null)
+            {
+                continue;
+            }
+
+            try
+            {
+                this.outstandingItemRecordRepository.upsert(toOutstandingItemRecord(outstandingItem));
+            }
+            catch (SQLException ex)
+            {
+                throw new SclxImportException("Failed to import outstanding item " + outstandingItem.outstandingItemId(), ex);
+            }
+        }
     }
 
     @Override
     public void importOtherAssetItems(List<SclxDocument.OtherAssetItem> otherAssetItems)
     {
-        persistJsonDocument(DOC_PREFIX + "otherAssetItems", otherAssetItems);
+        if (otherAssetItems == null || otherAssetItems.isEmpty())
+        {
+            return;
+        }
+
+        for (SclxDocument.OtherAssetItem otherAssetItem : otherAssetItems)
+        {
+            if (otherAssetItem == null)
+            {
+                continue;
+            }
+
+            try
+            {
+                this.otherAssetItemRecordRepository.upsert(toOtherAssetItemRecord(otherAssetItem));
+            }
+            catch (SQLException ex)
+            {
+                throw new SclxImportException("Failed to import otherAssetItem " + otherAssetItem.otherAssetItemId(), ex);
+            }
+        }
     }
 
     @Override
@@ -316,26 +513,107 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
     @Override
     public void importAssets(List<SclxDocument.Asset> assets)
     {
-        persistJsonDocument(DOC_PREFIX + "assets", assets);
+        if (assets == null || assets.isEmpty())
+        {
+            return;
+        }
+
+        for (SclxDocument.Asset asset : assets)
+        {
+            if (asset == null)
+            {
+                continue;
+            }
+
+            try
+            {
+                this.assetRecordRepository.upsert(toAssetRecord(asset));
+            }
+            catch (SQLException ex)
+            {
+                throw new SclxImportException("Failed to import asset " + asset.assetId(), ex);
+            }
+        }
     }
 
     @Override
     public void importSupplies(List<SclxDocument.Supply> supplies)
     {
-        persistJsonDocument(DOC_PREFIX + "supplies", supplies);
+        if (supplies == null || supplies.isEmpty())
+        {
+            return;
+        }
+
+        for (SclxDocument.Supply supply : supplies)
+        {
+            if (supply == null)
+            {
+                continue;
+            }
+
+            try
+            {
+                this.supplyRecordRepository.upsert(toSupplyRecord(supply));
+            }
+            catch (SQLException ex)
+            {
+                throw new SclxImportException("Failed to import supply " + supply.supplyId(), ex);
+            }
+        }
     }
 
-    @Override
-    public void importBankingItems(List<SclxDocument.BankingItem> bankingItems)
+    
+@Override
+public void importBankingItems(List<SclxDocument.BankingItem> bankingItems)
+{
+    if (bankingItems == null || bankingItems.isEmpty())
     {
-        persistJsonDocument(DOC_PREFIX + "bankingItems", bankingItems);
+        return;
     }
 
-    @Override
-    public void importBankStatementImports(List<SclxDocument.BankStatementImport> bankStatementImports)
+    for (SclxDocument.BankingItem bankingItem : bankingItems)
     {
-        persistJsonDocument(DOC_PREFIX + "bankStatementImports", bankStatementImports);
+        if (bankingItem == null)
+        {
+            continue;
+        }
+
+        try
+        {
+            this.bankingItemRecordRepository.upsert(toBankingItemRecord(bankingItem));
+        }
+        catch (SQLException ex)
+        {
+            throw new SclxImportException("Failed to import bankingItem " + bankingItem.bankingItemId(), ex);
+        }
     }
+}
+
+@Override
+public void importBankStatementImports(List<SclxDocument.BankStatementImport> bankStatementImports)
+{
+    if (bankStatementImports == null || bankStatementImports.isEmpty())
+    {
+        return;
+    }
+
+    for (SclxDocument.BankStatementImport bankStatementImport : bankStatementImports)
+    {
+        if (bankStatementImport == null)
+        {
+            continue;
+        }
+
+        try
+        {
+            this.bankStatementRecordRepository.upsert(toBankStatementRecord(bankStatementImport));
+        }
+        catch (SQLException ex)
+        {
+            throw new SclxImportException("Failed to import bankStatementImport " + bankStatementImport.importId(), ex);
+        }
+    }
+}
 
     @Override
     public void completeImport(SclxImportResult result)
@@ -764,6 +1042,503 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
 
         return null;
     }
+
+
+private OrganizationRecord toOrganizationRecord(SclxDocument.Organization organization)
+{
+    return new OrganizationRecord(
+        organization.organizationId(),
+        organization.name(),
+        organization.parentOrganization(),
+        organization.baseCurrency(),
+        organization.fiscalYearStart(),
+        organization.fiscalYearEnd(),
+        safeMap(organization.extensions()));
+}
+
+private ReportingPeriodRecord toReportingPeriodRecord(SclxDocument.ReportingPeriod reportingPeriod)
+{
+    return new ReportingPeriodRecord(
+        reportingPeriod.startDate(),
+        reportingPeriod.endDate(),
+        reportingPeriod.label(),
+        reportingPeriod.fiscalYear(),
+        reportingPeriod.periodType(),
+        safeMap(reportingPeriod.extensions()));
+}
+
+private FundRecord toFundRecord(SclxDocument.Fund fund)
+{
+    return new FundRecord(
+        fund.fundId(),
+        fund.name(),
+        Boolean.TRUE.equals(fund.restricted()),
+        fund.description(),
+        safeMap(fund.extensions()));
+}
+
+private EventRecord toEventRecord(SclxDocument.Event event)
+{
+    return new EventRecord(
+        event.eventId(),
+        event.name(),
+        event.startDate(),
+        event.endDate(),
+        event.hostingOrganizationId(),
+        safeMap(event.extensions()));
+}
+
+private DocumentRecord toDocumentRecord(SclxDocument.Document document)
+{
+    return new DocumentRecord(
+        document.documentId(),
+        document.documentType(),
+        document.referenceNumber(),
+        document.documentDate(),
+        document.fileName(),
+        document.notes(),
+        safeMap(document.extensions()));
+}
+
+private OutstandingItemRecord toOutstandingItemRecord(SclxDocument.OutstandingItem src)
+{
+    OutstandingItemRecord.LedgerLinkRef ledgerLink = src.ledgerLink() == null
+        ? null
+        : new OutstandingItemRecord.LedgerLinkRef(src.ledgerLink().transactionId(), src.ledgerLink().lineId());
+
+    OutstandingItemRecord.WorkbookLinkRef workbookLink = src.workbookLink() == null
+        ? null
+        : new OutstandingItemRecord.WorkbookLinkRef(src.workbookLink().sheetKey(), src.workbookLink().ledgerRowIndex());
+
+    OutstandingItemRecord.LedgerLinkRef reversalLedgerLink = src.reversalLedgerLink() == null
+        ? null
+        : new OutstandingItemRecord.LedgerLinkRef(src.reversalLedgerLink().transactionId(), src.reversalLedgerLink().lineId());
+
+    return new OutstandingItemRecord(
+        src.outstandingItemId(),
+        src.kind(),
+        ledgerLink,
+        workbookLink,
+        src.dateSentOrReceived(),
+        src.incomingCheckOrTransferDate(),
+        src.transferIdOrCheckNumber(),
+        src.dateShowsOnStatement(),
+        src.personOrBusinessName(),
+        src.detailsNotes(),
+        src.fromToCardMerchant(),
+        src.accountForPaymentOrDeposit(),
+        src.amount(),
+        src.dateReversed(),
+        src.reversalReasonAndApproval(),
+        reversalLedgerLink,
+        src.status(),
+        safeMap(src.extensions()));
+}
+
+private OtherAssetItemRecord toOtherAssetItemRecord(SclxDocument.OtherAssetItem src)
+{
+    OtherAssetItemRecord.LedgerLinkRef ledgerLink = src.ledgerLink() == null
+        ? null
+        : new OtherAssetItemRecord.LedgerLinkRef(src.ledgerLink().transactionId(), src.ledgerLink().lineId());
+
+    OtherAssetItemRecord.WorkbookLinkRef workbookLink = src.workbookLink() == null
+        ? null
+        : new OtherAssetItemRecord.WorkbookLinkRef(src.workbookLink().sheetKey(), src.workbookLink().ledgerRowIndex());
+
+    OtherAssetItemRecord.LedgerLinkRef settlementLedgerLink = src.settlementLedgerLink() == null
+        ? null
+        : new OtherAssetItemRecord.LedgerLinkRef(src.settlementLedgerLink().transactionId(), src.settlementLedgerLink().lineId());
+
+    return new OtherAssetItemRecord(
+        src.otherAssetItemId(),
+        ledgerLink,
+        workbookLink,
+        src.paidTo(),
+        src.year(),
+        src.reason(),
+        src.type(),
+        src.typeCode(),
+        src.eventBudgetLabel(),
+        src.amountAsOfPriorYearEnd(),
+        src.paidReturnedOnLedgerRowIndex(),
+        settlementLedgerLink,
+        src.status(),
+        safeMap(src.extensions()));
+}
+
+private AssetRecord toAssetRecord(SclxDocument.Asset src)
+{
+    AssetRecord.GuardianRecord currentGuardian = src.currentGuardian() == null
+        ? null
+        : new AssetRecord.GuardianRecord(
+            src.currentGuardian().legalName(),
+            src.currentGuardian().email(),
+            src.currentGuardian().phone());
+
+    AssetRecord.GuardianshipDetailsRecord guardianshipDetails = src.guardianshipDetails() == null
+        ? null
+        : new AssetRecord.GuardianshipDetailsRecord(
+            src.guardianshipDetails().dateAsOf(),
+            src.guardianshipDetails().confirmed(),
+            src.guardianshipDetails().confirmationStatus(),
+            src.guardianshipDetails().notes());
+
+    AssetRecord.RemovalDetailsRecord removalDetails = src.removalDetails() == null
+        ? null
+        : new AssetRecord.RemovalDetailsRecord(
+            src.removalDetails().approvedBy(),
+            src.removalDetails().approvalDate(),
+            src.removalDetails().reason(),
+            src.removalDetails().numberRemoved(),
+            src.removalDetails().removed(),
+            src.removalDetails().removalType());
+
+    return new AssetRecord(
+        src.assetId(),
+        src.dateAcquired(),
+        src.description(),
+        src.itemCount(),
+        src.approxValueTotal(),
+        src.valuePerItem(),
+        src.itemType(),
+        src.usedFor(),
+        src.lotPaidTotal(),
+        src.lotItemCount(),
+        currentGuardian,
+        guardianshipDetails,
+        removalDetails,
+        safeMap(src.extensions()));
+}
+
+private SupplyRecord toSupplyRecord(SclxDocument.Supply src)
+{
+    SupplyRecord.GuardianRecord guardian = src.guardian() == null
+        ? null
+        : new SupplyRecord.GuardianRecord(
+            src.guardian().legalName(),
+            src.guardian().email(),
+            src.guardian().phone());
+
+    SupplyRecord.GuardianshipDetailsRecord guardianshipDetails = src.guardianshipDetails() == null
+        ? null
+        : new SupplyRecord.GuardianshipDetailsRecord(
+            src.guardianshipDetails().dateAsOf(),
+            src.guardianshipDetails().lastConfirmed(),
+            src.guardianshipDetails().returned(),
+            src.guardianshipDetails().notes());
+
+    SupplyRecord.RemovalDetailsRecord removalDetails = src.removalDetails() == null
+        ? null
+        : new SupplyRecord.RemovalDetailsRecord(
+            src.removalDetails().approvedBy(),
+            src.removalDetails().reason(),
+            src.removalDetails().numberRemoved(),
+            src.removalDetails().removed(),
+            src.removalDetails().removalType());
+
+    return new SupplyRecord(
+        src.supplyId(),
+        src.itemNumber(),
+        src.dateAcquired(),
+        src.description(),
+        src.count(),
+        src.approxValueTotal(),
+        src.valuePerItem(),
+        guardian,
+        guardianshipDetails,
+        removalDetails,
+        src.additionalNotes(),
+        safeMap(src.extensions()));
+}
+
+
+private BudgetRecord toBudgetRecord(SclxDocument.Budget budget)
+{
+    List<BudgetRecord.BudgetLineRecord> lines = new ArrayList<>();
+    if (budget.lines() != null)
+    {
+        for (SclxDocument.BudgetLine line : budget.lines())
+        {
+            if (line == null)
+            {
+                continue;
+            }
+
+            lines.add(new BudgetRecord.BudgetLineRecord(
+                line.eventName(),
+                line.budgetedAmount(),
+                parseBudgetRevenueCategory(line.revenueCategory()),
+                parseBudgetExpenseCategory(line.expenseCategory()),
+                line.accountId(),
+                line.notes(),
+                safeMap(line.extensions())));
+        }
+    }
+
+    return new BudgetRecord(
+        budget.budgetId(),
+        budget.name(),
+        budget.fiscalYear() == null ? 0 : budget.fiscalYear(),
+        budget.fundId(),
+        Boolean.TRUE.equals(budget.active()),
+        budget.description(),
+        lines,
+        safeMap(budget.extensions()));
+}
+
+private BankingItemRecord toBankingItemRecord(SclxDocument.BankingItem bankingItem)
+{
+    BankingItemRecord.OfxTransactionRecord ofx = null;
+    if (bankingItem.ofx() != null)
+    {
+        SclxDocument.OfxTransaction src = bankingItem.ofx();
+        ofx = new BankingItemRecord.OfxTransactionRecord(
+            src.fitId(),
+            src.transactionType(),
+            src.datePosted(),
+            src.dateUser(),
+            src.dateAvailable(),
+            src.checkNumber(),
+            src.referenceNumber(),
+            src.name(),
+            src.memo(),
+            src.payeeId(),
+            src.sic(),
+            src.serverTransactionId(),
+            src.correctFitId(),
+            src.correctAction(),
+            safeMap(src.extensions()));
+    }
+
+    return new BankingItemRecord(
+        bankingItem.bankingItemId(),
+        parseBankingItemKind(bankingItem.kind()),
+        bankingItem.bankAccountId(),
+        bankingItem.transactionId(),
+        List.of(),
+        deriveClearedDate(bankingItem),
+        bankingItem.amount(),
+        bankingItem.checkNumber(),
+        bankingItem.payee(),
+        bankingItem.depositDate(),
+        bankingItem.payer(),
+        null,
+        firstNonBlank(extractString(bankingItem.extensions(), "memo"), extractString(ofx == null ? null : ofx.extensions(), "memo")),
+        parseBankingItemSource(bankingItem.source()),
+        parseBankingItemStatus(bankingItem.status()),
+        bankingItem.importId(),
+        ofx,
+        safeMap(bankingItem.extensions()));
+}
+
+private BankStatementRecord toBankStatementRecord(SclxDocument.BankStatementImport src)
+{
+    BankStatementRecord.BankAccountRef bankAccount = null;
+    if (src.bankAccount() != null)
+    {
+        bankAccount = new BankStatementRecord.BankAccountRef(
+            src.bankAccount().bankId(),
+            src.bankAccount().accountId(),
+            src.bankAccount().accountType());
+    }
+
+    BankStatementRecord.BalanceSnapshot ledgerBalance = null;
+    if (src.ledgerBalance() != null)
+    {
+        ledgerBalance = new BankStatementRecord.BalanceSnapshot(
+            src.ledgerBalance().amount(),
+            src.ledgerBalance().asOf());
+    }
+
+    BankStatementRecord.BalanceSnapshot availableBalance = null;
+    if (src.availableBalance() != null)
+    {
+        availableBalance = new BankStatementRecord.BalanceSnapshot(
+            src.availableBalance().amount(),
+            src.availableBalance().asOf());
+    }
+
+    return new BankStatementRecord(
+        src.importId(),
+        parseSourceFormat(src.sourceFormat()),
+        src.sourceVersion(),
+        parseStatementKind(src.statementKind()),
+        bankAccount,
+        src.currency(),
+        src.statementStart(),
+        src.statementEnd(),
+        ledgerBalance,
+        availableBalance,
+        src.documentId(),
+        safeMap(src.extensions()));
+}
+
+private BudgetRecord.BudgetRevenueCategory parseBudgetRevenueCategory(String value)
+{
+    if (value == null || value.isBlank())
+    {
+        return BudgetRecord.BudgetRevenueCategory.GeneralRevenue;
+    }
+
+    try
+    {
+        return BudgetRecord.BudgetRevenueCategory.valueOf(value);
+    }
+    catch (IllegalArgumentException ex)
+    {
+        return BudgetRecord.BudgetRevenueCategory.GeneralRevenue;
+    }
+}
+
+private BudgetRecord.BudgetExpenseCategory parseBudgetExpenseCategory(String value)
+{
+    if (value == null || value.isBlank())
+    {
+        return BudgetRecord.BudgetExpenseCategory.Overhead;
+    }
+
+    try
+    {
+        return BudgetRecord.BudgetExpenseCategory.valueOf(value);
+    }
+    catch (IllegalArgumentException ex)
+    {
+        return BudgetRecord.BudgetExpenseCategory.Overhead;
+    }
+}
+
+private BankingItemRecord.BankingItemKind parseBankingItemKind(String value)
+{
+    if (value == null || value.isBlank())
+    {
+        return BankingItemRecord.BankingItemKind.ADJUSTMENT;
+    }
+
+    try
+    {
+        return BankingItemRecord.BankingItemKind.valueOf(value);
+    }
+    catch (IllegalArgumentException ex)
+    {
+        return BankingItemRecord.BankingItemKind.ADJUSTMENT;
+    }
+}
+
+private BankingItemRecord.BankingItemSource parseBankingItemSource(String value)
+{
+    if (value == null || value.isBlank())
+    {
+        return null;
+    }
+
+    try
+    {
+        return BankingItemRecord.BankingItemSource.valueOf(value);
+    }
+    catch (IllegalArgumentException ex)
+    {
+        return null;
+    }
+}
+
+private BankingItemRecord.BankingItemStatus parseBankingItemStatus(String value)
+{
+    if (value == null || value.isBlank())
+    {
+        return null;
+    }
+
+    try
+    {
+        return BankingItemRecord.BankingItemStatus.valueOf(value);
+    }
+    catch (IllegalArgumentException ex)
+    {
+        return null;
+    }
+}
+
+private BankStatementRecord.SourceFormat parseSourceFormat(String value)
+{
+    if (value == null || value.isBlank())
+    {
+        return BankStatementRecord.SourceFormat.OFX;
+    }
+
+    try
+    {
+        return BankStatementRecord.SourceFormat.valueOf(value);
+    }
+    catch (IllegalArgumentException ex)
+    {
+        return BankStatementRecord.SourceFormat.OFX;
+    }
+}
+
+private BankStatementRecord.StatementKind parseStatementKind(String value)
+{
+    if (value == null || value.isBlank())
+    {
+        return BankStatementRecord.StatementKind.BANK;
+    }
+
+    try
+    {
+        return BankStatementRecord.StatementKind.valueOf(value);
+    }
+    catch (IllegalArgumentException ex)
+    {
+        return BankStatementRecord.StatementKind.BANK;
+    }
+}
+
+private LocalDate deriveClearedDate(SclxDocument.BankingItem bankingItem)
+{
+    LocalDate fromExtensions = null;
+    String extensionDate = extractString(bankingItem.extensions(), "clearedDate");
+    if (extensionDate != null)
+    {
+        try
+        {
+            fromExtensions = LocalDate.parse(extensionDate);
+        }
+        catch (Exception ex)
+        {
+            fromExtensions = null;
+        }
+    }
+
+    if (fromExtensions != null)
+    {
+        return fromExtensions;
+    }
+    if (bankingItem.depositDate() != null)
+    {
+        return bankingItem.depositDate();
+    }
+    if (bankingItem.ofx() != null && bankingItem.ofx().datePosted() != null)
+    {
+        return bankingItem.ofx().datePosted();
+    }
+    return this.document != null && this.document.reportingPeriod() != null
+        ? this.document.reportingPeriod().endDate()
+        : LocalDate.now();
+}
+
+private Map<String, Object> safeMap(Map<String, Object> value)
+{
+    return value == null ? Map.of() : value;
+}
+
+private String extractString(Map<String, Object> map, String key)
+{
+    if (map == null || key == null)
+    {
+        return null;
+    }
+    Object value = map.get(key);
+    return value == null ? null : String.valueOf(value);
+}
 
     private void persistJsonDocument(String name, Object value)
     {
