@@ -2,6 +2,7 @@ package nonprofitbookkeeping.ui;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -16,13 +17,15 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import org.nonprofitbookkeeping.ui.AppPanel;
 
 /**
  * Transaction editor placeholder panel.
  */
-public class TransactionEditorPanel extends BorderPane
+public class TransactionEditorPanel implements AppPanel
 {
 
+	private final BorderPane root = new BorderPane();
 	private final TableView<SplitRow> splitTable = new TableView<>();
 
 	/**
@@ -30,7 +33,7 @@ public class TransactionEditorPanel extends BorderPane
 	 */
 	public TransactionEditorPanel()
 	{
-		setPadding(new Insets(8));
+		root.setPadding(new Insets(8));
 
 		Label title = new Label("Transaction Editor");
 		title.getStyleClass().add("panel-title");
@@ -40,10 +43,10 @@ public class TransactionEditorPanel extends BorderPane
 		Button journal = new Button("Journal View");
 		HBox actions = new HBox(8, save, post, journal);
 
-		setTop(new VBox(6, title, actions, new Separator(), buildHeaderForm()));
+		root.setTop(new VBox(6, title, actions, new Separator(), buildHeaderForm()));
 
 		buildSplitTable();
-		setCenter(buildSplitEditor());
+		root.setCenter(buildSplitEditor());
 
 		save.setOnAction(e -> onSave());
 		post.setOnAction(e -> validateOrPost());
@@ -151,7 +154,20 @@ public class TransactionEditorPanel extends BorderPane
 		a.showAndWait();
 	}
 
-	private void onSave()
+	@Override
+	public String title()
+	{
+		return "Transaction Editor";
+	}
+
+	@Override
+	public Node root()
+	{
+		return root;
+	}
+
+	@Override
+	public void onSave()
 	{
 		Alert a = new Alert(Alert.AlertType.INFORMATION, "Save (placeholder).");
 		a.setHeaderText("Save");

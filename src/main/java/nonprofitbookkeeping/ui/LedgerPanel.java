@@ -18,9 +18,9 @@ public class LedgerPanel extends BorderPane
 	{
 		TabPane subTabs = new TabPane();
 		Tab registerTab = OrgAppPanelTabAdapter
-			.toTab(new org.nonprofitbookkeeping.ui.LedgerRegisterPanel());
+			.toTab(new LedgerRegisterPanel());
 		Tab transactionEditorTab = OrgAppPanelTabAdapter
-			.toTab(new org.nonprofitbookkeeping.ui.TransactionEditorPanel());
+			.toTab(new TransactionEditorPanel());
 		subTabs.getTabs().addAll(registerTab, transactionEditorTab);
 		setCenter(subTabs);
 	}

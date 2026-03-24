@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
@@ -18,15 +19,17 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.nonprofitbookkeeping.ui.AppPanel;
 
 import java.time.LocalDate;
 
 /**
  * Ledger register placeholder panel.
  */
-public class LedgerRegisterPanel extends BorderPane
+public class LedgerRegisterPanel implements AppPanel
 {
 
+	private final BorderPane root = new BorderPane();
 	private final TableView<Row> txnTable = new TableView<>();
 	private final ObservableList<Row> allRows = FXCollections.observableArrayList();
 
@@ -35,7 +38,7 @@ public class LedgerRegisterPanel extends BorderPane
 	 */
 	public LedgerRegisterPanel()
 	{
-		setPadding(new Insets(8));
+		root.setPadding(new Insets(8));
 
 		Label title = new Label("Ledger Register");
 		Label range = new Label();
@@ -48,10 +51,10 @@ public class LedgerRegisterPanel extends BorderPane
 		Button open = new Button("Open");
 		HBox actions = new HBox(8, newTxn, open);
 
-		setTop(new VBox(6, title, range, actions, new Separator()));
+		root.setTop(new VBox(6, title, range, actions, new Separator()));
 
 		buildTable();
-		setCenter(txnTable);
+		root.setCenter(txnTable);
 
 		newTxn.setOnAction(e -> onNew());
 		open.setOnAction(e -> openSelected());
@@ -139,14 +142,6 @@ public class LedgerRegisterPanel extends BorderPane
 		return c;
 	}
 
-	private void onNew()
-	{
-		Alert a = new Alert(Alert.AlertType.INFORMATION,
-			"New transaction (placeholder) -> opens Transaction Editor.");
-		a.setHeaderText("New Transaction");
-		a.showAndWait();
-	}
-
 	private void openSelected()
 	{
 		Row sel = txnTable.getSelectionModel().getSelectedItem();
@@ -170,6 +165,27 @@ public class LedgerRegisterPanel extends BorderPane
 			"Details placeholder for txn:\nDate: " + row.date() + "\nPayee: " + row.payee()
 				+ "\nMemo: " + row.memo());
 		a.setHeaderText("Details");
+		a.showAndWait();
+	}
+
+	@Override
+	public String title()
+	{
+		return "Ledger Register";
+	}
+
+	@Override
+	public Node root()
+	{
+		return root;
+	}
+
+	@Override
+	public void onNew()
+	{
+		Alert a = new Alert(Alert.AlertType.INFORMATION,
+			"New transaction (placeholder) -> opens Transaction Editor.");
+		a.setHeaderText("New Transaction");
 		a.showAndWait();
 	}
 
