@@ -18,9 +18,9 @@ public class AssetsPanel extends BorderPane
 	{
 		TabPane subTabs = new TabPane();
 		Tab registerTab = OrgAppPanelTabAdapter
-			.toTab(new org.nonprofitbookkeeping.ui.AssetsRegisterPanel());
+			.toTab(new AssetsRegisterPanel());
 		Tab depreciationRunsTab = OrgAppPanelTabAdapter
-			.toTab(new org.nonprofitbookkeeping.ui.DepreciationRunsPanel());
+			.toTab(new DepreciationRunsPanel());
 		subTabs.getTabs().addAll(registerTab, depreciationRunsTab);
 		setCenter(subTabs);
 	}

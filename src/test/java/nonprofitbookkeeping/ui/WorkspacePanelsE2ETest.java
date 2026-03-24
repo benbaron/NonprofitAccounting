@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.BorderPane;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,7 +51,6 @@ class WorkspacePanelsE2ETest
 		assertTrue(latch.await(5, TimeUnit.SECONDS),
 			"JavaFX platform failed to start");
 	}
-
 
 	@BeforeEach
 	void resetDateRangeContext() throws Exception
@@ -123,7 +123,6 @@ class WorkspacePanelsE2ETest
 		assertEquals(2, resetCount);
 	}
 
-
 	@Test
 	void endToEndDateRangeOneSidedBoundsFilterLedgerRows() throws Exception
 	{
@@ -145,7 +144,6 @@ class WorkspacePanelsE2ETest
 		assertEquals(1, endOnlyCount,
 			"End-only range should include rows on/before the end date");
 	}
-
 
 	@Test
 	void malformedDateRowDoesNotCrashAndRemainsVisible() throws Exception
@@ -169,9 +167,10 @@ class WorkspacePanelsE2ETest
 	{
 		TransactionEditorPanel panel = runOnFxThread(TransactionEditorPanel::new);
 		TableView<?> table = runOnFxThread(() -> {
-			Node root = panel.getCenter();
+			Node root = panel.root();
 			assertNotNull(root);
-			return (TableView<?>) ((javafx.scene.layout.VBox) root).getChildren().get(2);
+			return (TableView<?>) ((javafx.scene.layout.VBox) ((BorderPane) root).getCenter())
+				.getChildren().get(2);
 		});
 
 		assertEquals(7, runOnFxThread(() -> table.getColumns().size()));
@@ -203,10 +202,9 @@ class WorkspacePanelsE2ETest
 
 	private static TableView<?> ledgerTable(LedgerRegisterPanel panel)
 	{
-		assertInstanceOf(TableView.class, panel.getCenter());
-		return (TableView<?>) panel.getCenter();
+		assertInstanceOf(TableView.class, ((BorderPane) panel.root()).getCenter());
+		return (TableView<?>) ((BorderPane) panel.root()).getCenter();
 	}
-
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private static void injectMalformedRow(LedgerRegisterPanel panel) throws Exception
