@@ -20,7 +20,6 @@ import nonprofitbookkeeping.model.SaleRecord;
 import nonprofitbookkeeping.service.SalesService;
 import nonprofitbookkeeping.util.FormatUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * JavaFX port of {@code SalesAndCOGPanel}. Maintains an in‑memory table of sale
  * transactions with calculated margin (Price – Cost).  In a full application
