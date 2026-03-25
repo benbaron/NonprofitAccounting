@@ -2,6 +2,9 @@ package nonprofitbookkeeping.importer.sclx;
 
 import java.util.Map;
 
+/**
+ * Options controlling SCLX import behavior.
+ */
 public record SclxImportOptions(
     boolean failOnUnknownVersion,
     boolean requireStrictFormat,
@@ -18,30 +21,37 @@ public record SclxImportOptions(
 
         if (accountImportMode == AccountImportMode.MAPPED && accountMapping.isEmpty())
         {
-            throw new IllegalArgumentException("accountMapping is required when accountImportMode=MAPPED");
+            throw new IllegalArgumentException("accountMapping is required when accountImportMode=MAPPED.");
         }
     }
 
     public static SclxImportOptions defaults()
     {
-        return new SclxImportOptions(true, true, true, true, null, AccountImportMode.AS_IS, Map.of());
+        return new SclxImportOptions(
+            true,
+            true,
+            true,
+            true,
+            null,
+            AccountImportMode.AS_IS,
+            Map.of());
+    }
+
+    public String resolveAccountReference(String sclxReference)
+    {
+        if (sclxReference == null || sclxReference.isBlank())
+        {
+            return sclxReference;
+        }
+        if (accountImportMode == AccountImportMode.MAPPED)
+        {
+            return accountMapping.getOrDefault(sclxReference, sclxReference);
+        }
+        return sclxReference;
     }
 
     public boolean hasCashAccountReference()
     {
         return cashAccountReference != null && !cashAccountReference.isBlank();
-    }
-
-    public String resolveAccountReference(String sclxAccountReference)
-    {
-        if (sclxAccountReference == null || sclxAccountReference.isBlank())
-        {
-            return sclxAccountReference;
-        }
-        if (accountImportMode == AccountImportMode.MAPPED)
-        {
-            return accountMapping.getOrDefault(sclxAccountReference, sclxAccountReference);
-        }
-        return sclxAccountReference;
     }
 }

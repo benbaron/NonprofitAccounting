@@ -1,24 +1,15 @@
-This source bundle adds concrete SCLX import/export classes for the existing
-NonprofitBookkeeping archive.
+This bundle adds a concrete SCLX import target plus a JavaFX panel/menu action to invoke it.
 
 Included:
-- updated importer options with cash-account and account-mapping controls
-- plain staged records for:
-  - BankStatementRecord
-  - BudgetRecord
-  - BankingItemRecord
-- dedicated repositories for those staged records
-- concrete NonprofitBookkeepingSclxImportTarget
-- concrete NonprofitBookkeepingSclxExportService
+- importer options and account-import mode
+- concrete staged records/repositories for budgets, banking items, bank statement imports
+- `NonprofitBookkeepingSclxImportTarget`
+- `SclxImportPanelFX`
+- `ImportSclxActionFX`
+- patched `NonprofitBookkeepingFX.java`
 
 Notes:
-- Transactions import through JournalLedgerPersistenceGateway.
-- Single-sided / unbalanced SCLX transactions are balanced to the configured Cash account.
-- Budgets, banking items, and bank statement imports are stored as concrete staged records.
-- Unsupported collections still fall back to DocumentRepository preservation.
-- The export service emits the core collections supported by the current archive and staged repositories.
-
-Dependencies assumed from the existing archive:
-- Jackson
-- H2 / Database.get()
-- existing model / persistence / service packages
+- The panel requires an initialized database and an open company.
+- Single-sided imported transactions are balanced to the configured Cash account reference.
+- In `MAPPED` mode, the account mapping file is read as Java properties (`key=value`).
+- This bundle is source-oriented and was not compile-checked against the full project classpath in the container.
