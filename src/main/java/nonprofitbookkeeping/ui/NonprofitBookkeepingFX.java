@@ -1,3 +1,4 @@
+
 package nonprofitbookkeeping.ui;
 
 import java.io.File;
@@ -76,7 +77,7 @@ public class NonprofitBookkeepingFX extends Application
 	private MainApplicationView mainView;
 	/** Shared company selection panel displayed when no company is open. */
 	private CompanySelectionPanelFX companySelectionPanel;
-
+	
 	/**
 	 * Enum representing the different operational states of the application,
 	 * primarily concerning whether a company file is open, being created, or not open.
@@ -90,10 +91,10 @@ public class NonprofitBookkeepingFX extends Application
 		/** A company file is open and active. */
 		COMPANY_OPEN
 	}
-
+	
 	/** Current operational state of the application. */
 	private AppState state = AppState.NO_COMPANY;
-
+	
 	// Menu items that need their state managed based on AppState
 	/** Menu item for opening a company. */
 	private MenuItem miOpen;
@@ -112,7 +113,7 @@ public class NonprofitBookkeepingFX extends Application
 	/** Menu item for exporting COA to XLSX. */
 	private MenuItem miExportCoaXlsx;
 	/** Menu item for exporting account statements to OFX/QFX. */
-
+	
 	private MenuItem miExportStatementOfx;
 	/** Menu item for importing financial files directly into the data model. */
 	private MenuItem miImportFile;
@@ -124,9 +125,9 @@ public class NonprofitBookkeepingFX extends Application
 	private MenuItem miPersistScaLedger;
 	/** Menu item for saving a modified copy of an SCA workbook. */
 	private MenuItem miSaveScaModifiedCopy;
-
+	
 	// Menus that need their state managed
-
+	
 	/** Top-level menu for runnable workflows and operational workspaces. */
 	private Menu runMenu;
 	/** Top-level menu for report navigation shortcuts. */
@@ -137,12 +138,12 @@ public class NonprofitBookkeepingFX extends Application
 	private Menu pluginsMenu;
 	/** Top-level database menu, exposed directly for startup workflows. */
 	private Menu databaseMenu;
-
+	
 	/** Reference to the loaded SCA Ledger plugin, if available. */
 	private SCALedgerPlugin scaLedgerPlugin;
 	/** Shared viewer used for SCA Excel imports. */
 	private final PageViewerPanel scaExcelViewerPanel = new PageViewerPanel();
-
+	
 	/** Logger for this class. */
 	private static final Logger LOGGER =
 		LoggerFactory.getLogger(NonprofitBookkeepingFX.class);
@@ -161,11 +162,11 @@ public class NonprofitBookkeepingFX extends Application
 	/** Service that imports legacy .npbk archives into the active database. */
 	private final LegacyNpbkImportService legacyNpbkImportService =
 		new LegacyNpbkImportService();
-
+	
 	/** Cached settings to avoid redundant database reads. */
 	private SettingsModel cachedSettings = new SettingsModel();
-
-
+	
+	
 	/**
 	 * Static inner class acting as a container for singleton service instances.
 	 * This provides a central point of access for various services 
@@ -174,32 +175,32 @@ public class NonprofitBookkeepingFX extends Application
 	private static final class ServiceContainer
 	{
 		static InventoryService iss = null;
-
+		
 		/** Singleton instance of {@link ReportService}. */
 		static ReportService reportService = null;
-
-		/** Singleton instance of {@link ReportConfigurationService}. */		
+		
+		/** Singleton instance of {@link ReportConfigurationService}. */
 		static ReportConfigurationService reportConfigurationService = null;
-
+		
 		static DocumentStorageService dss = null;
 		static FundAccountingService fas = null;
 		static DonorService donorService = null;
 		static GrantsService grantsService = null;
 		static UndepositedFundsService undepositedFundsService = null;
 		public static SalesService salesService;
-
+		
 		static
 		{
-
+			
 			try
 			{
 				/** Singleton instance of {@link InventoryService}. */
-
+				
 				iss = new InventoryService();
-
+				
 				/** Singleton instance of {@link ReportService}. */
 				reportService = new ReportService();
-
+				
 				/** Singleton instance of {@link ReportConfigurationService}. */
 				reportConfigurationService = new ReportConfigurationService();
 				dss = new DocumentStorageService();
@@ -207,17 +208,17 @@ public class NonprofitBookkeepingFX extends Application
 				donorService = new DonorService();
 				grantsService = new GrantsService();
 				undepositedFundsService = new UndepositedFundsService();
-
+				
 			}
 			catch (Exception e)
 			{
 				e.printStackTrace();
 			}
-
+			
 		}
-
+		
 	}
-
+	
 	/**
 	 * Main entry point for the JavaFX application.
 	 * Launches the JavaFX runtime and application.
@@ -226,9 +227,9 @@ public class NonprofitBookkeepingFX extends Application
 	public static void main(String[] args)
 	{
 		launch(args);
-
+		
 	}
-
+	
 	/**
 	 * The main entry point for this JavaFX application, called after the {@code init} method.
 	 * This method sets up the primary stage, initializes the main application view,
@@ -247,37 +248,37 @@ public class NonprofitBookkeepingFX extends Application
 			// Save data
 			doSaveCompany(); // Attempt to save company data
 		}));
-
+		
 		// Configure SLF4J logging bridge
 		SLF4JBridgeHandler.removeHandlersForRootLogger();
 		SLF4JBridgeHandler.install();
-
+		
 		System.setProperty("net.sf.jasperreports.debug", "true");
 		System.setProperty("net.sf.jasperreports.compile.class.debug", "true");
 		System.setProperty("net.sf.jasperreports.compile.keep.java.file",
 			"true");
 		System.setProperty("net.sf.jasperreports.compiler.temp.dir",
 			"C:/Users/benba/eclipse-workspace");
-
+		
 		stage.getIcons().addAll(
 			new Image(getClass().getResourceAsStream("../../cg-128px.png")));
 		this.primaryStage = stage;
-
-		//-----------------------------------------
+		
+		// -----------------------------------------
 		// Instantiate MainApplicationView
 		this.mainView = new MainApplicationView();
-
-		//-----------------------------------------
+		
+		// -----------------------------------------
 		// Assign MainApplicationView to root
-		this.root = this.mainView; 
-
+		this.root = this.mainView;
+		
 		this.companySelectionPanel = this.mainView.getCompanySelectionPanel();
 		this.companySelectionPanel
 			.setOnCompanyOpenedHandler(this::handleCompanyOpened);
 		this.companySelectionPanel.setOnError(
 			message -> AlertBox.showError(this.primaryStage, message));
-
-		//-----------------------------------------
+		
+		// -----------------------------------------
 		// Instantiate ApplicationContextImpl
 		// Services are passed from the static ServiceContainer
 		MenuBar contextMenuBar = new MenuBar();
@@ -287,8 +288,8 @@ public class NonprofitBookkeepingFX extends Application
 			ServiceContainer.dss, // DocumentStorageService
 			ServiceContainer.fas // FundAccountingService
 		);
-
-		//-----------------------------------------
+		
+		// -----------------------------------------
 		// Plugin Discovery and Initialization
 		LOGGER.info("Starting plugin initialization...");
 		List<Plugin> pluginsToLoad = new ArrayList<>();
@@ -296,21 +297,21 @@ public class NonprofitBookkeepingFX extends Application
 			.add(new nonprofitbookkeeping.plugins.scaledger.SCALedgerPlugin());
 		pluginsToLoad
 			.add(new nonprofitbookkeeping.plugins.sample.SamplePlugin());
-
+		
 		for (Plugin plugin : pluginsToLoad)
 		{
-
+			
 			try
 			{
 				LOGGER.info("Initializing plugin: {} - {}", plugin.getName(),
 					plugin.getDescription());
 				plugin.initialize(this.applicationContext);
-
+				
 				if (plugin instanceof SCALedgerPlugin scaPlugin)
 				{
 					this.scaLedgerPlugin = scaPlugin;
 				}
-
+				
 				this.loadedPlugins.add(plugin);
 				LOGGER.info("Plugin initialized successfully: {}",
 					plugin.getName());
@@ -321,17 +322,17 @@ public class NonprofitBookkeepingFX extends Application
 					plugin.getClass().getName(), e.getMessage(), e);
 				AlertBox.showError(this.primaryStage, "Plugin Load Error");
 			}
-
+			
 		}
-
+		
 		LOGGER.info("Plugin discovery complete. Loaded {} plugins.",
 			this.loadedPlugins.size());
-
+		
 		// MenuBar must be built *after* plugins are loaded so
 		// they can add their items.
 		MenuBar menuBar = buildMenuBar();
 		this.mainView.setMenuBar(menuBar);
-
+		
 		Scene scene = new Scene(this.mainView, 1000, 700); // Use mainView for
 															// the scene
 		ThemeManager.applyTheme(scene);
@@ -339,31 +340,31 @@ public class NonprofitBookkeepingFX extends Application
 			new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN),
 			() ->
 			{
-
+				
 				if (this.mainView != null)
 				{
 					this.mainView
 						.showPanel(MainApplicationView.PanelType.JOURNAL);
 					SkeletonJournalPanel panel =
 						this.mainView.getJournalPanel();
-
+					
 					if (panel != null)
 					{
 						panel.focusSearchField();
 					}
-
+					
 				}
-
+				
 			});
-
+			
 		this.primaryStage.setScene(scene);
 		applyGlobalSettings();
-
+		
 		setState(AppState.NO_COMPANY); // Set initial UI state
 		this.primaryStage.show();
-
+		
 	}
-
+	
 	/**
 	 * Builds the main {@link MenuBar} for the application.
 	 * This includes standard menus like File, Edit, Run, Reports, Panels, Settings, and Help.
@@ -378,7 +379,7 @@ public class NonprofitBookkeepingFX extends Application
 			this.applicationContext.getMenuBar() != null) ?
 				this.applicationContext.getMenuBar() : new MenuBar();
 		bar.getMenus().clear();
-
+		
 		/* FILE */
 		Menu fileMenu = new Menu("File");
 		this.miOpen = add(fileMenu, "Open Company", e -> doOpenCompany());
@@ -391,36 +392,37 @@ public class NonprofitBookkeepingFX extends Application
 		this.miSave.setAccelerator(
 			new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
 		fileMenu.getItems().add(new SeparatorMenuItem());
-
+		
 		this.miImportCoaXlsx = add(fileMenu, "Import COA (XLSX)",
 			e -> new ImportCoaXlsxActionFX(this.primaryStage).handle(e));
 		this.miExportCoaXlsx = add(fileMenu, "Export COA (XLSX)",
 			e -> new ExportCoaXlsxActionFX(this.primaryStage).handle(e));
 		fileMenu.getItems().add(new SeparatorMenuItem());
-
-\t\tthis.miImportFile =
-\t\t\tadd(fileMenu, "Import Financial File (OFX/QFX)...",
-\t\t\t\te -> new ImportFileActionFX(this.primaryStage).handle(e));
-\t\tthis.miImportSclx =
-\t\t\tadd(fileMenu, "Import SCLX...",
-\t\t\t\te -> new ImportSclxActionFX(this.primaryStage).handle(e));
-\t\t
-\t\tthis.miImportScaExcel = new MenuItem("Import Outlands Ledger...");
+		
+		this.miImportFile =
+			add(fileMenu, "Import Financial File (OFX/QFX)...",
+				e -> new ImportFileActionFX(this.primaryStage).handle(e));
+		
+		this.miImportSclx =
+			add(fileMenu, "Import SCLX...",
+				e -> new ImportSclxActionFX(this.primaryStage).handle(e));
+		
+		this.miImportScaExcel = new MenuItem("Import Outlands Ledger...");
 		this.miImportScaExcel.setOnAction(
 			e -> new ImportFromOutlandsLedgerActionFX(this.primaryStage,
 				this.scaExcelViewerPanel).handle(e));
 		fileMenu.getItems().add(this.miImportScaExcel);
-
+		
 		this.miPersistScaLedger = add(fileMenu,
 			"Import SCA Ledger...",
 			e -> new ImportSCALedgerActionFX(this.primaryStage)
 				.handle(e));
-
+		
 		fileMenu.getItems().add(new SeparatorMenuItem());
-
+		
 		this.miSaveScaModifiedCopy =
 			new MenuItem("Save Modified SCA Workbook...");
-
+		
 		if (this.scaLedgerPlugin != null)
 		{
 			this.miSaveScaModifiedCopy.setOnAction(
@@ -431,14 +433,14 @@ public class NonprofitBookkeepingFX extends Application
 		{
 			this.miSaveScaModifiedCopy.setDisable(true);
 		}
-
+		
 		fileMenu.getItems().add(this.miSaveScaModifiedCopy);
-
+		
 		this.miExportStatementOfx = add(fileMenu,
 			"Export Account Statement (OFX/QFX)...",
 			e -> new ExportFileActionFX(this.primaryStage).handle(e));
 		bar.getMenus().add(fileMenu);
-
+		
 		/* EDIT */
 		Menu edit = new Menu("Edit");
 		this.miEditCompany =
@@ -451,10 +453,10 @@ public class NonprofitBookkeepingFX extends Application
 				.showPanel(MainApplicationView.PanelType.JOURNAL));
 		this.miEditJournal.setAccelerator(
 			new KeyCodeCombination(KeyCode.J, KeyCombination.CONTROL_DOWN));
-
-
+		
+		
 		bar.getMenus().add(edit);
-
+		
 		/* RUN */
 		this.runMenu = new Menu("Run");
 		add(this.runMenu, "Reports Workspace",
@@ -484,11 +486,11 @@ public class NonprofitBookkeepingFX extends Application
 		add(this.runMenu, "Generate Excel Template Report...",
 			e -> new ExcelTemplateReportActionFX(this.primaryStage).handle(e));
 		bar.getMenus().add(this.runMenu);
-
+		
 		/* DATABASE */
 		this.databaseMenu = createDatabaseMenu();
 		bar.getMenus().add(this.databaseMenu);
-
+		
 		/* REPORTS */
 		this.reports = new Menu("Reports");
 		add(this.reports, "Income Statement",
@@ -501,8 +503,8 @@ public class NonprofitBookkeepingFX extends Application
 			e -> ((MainApplicationView) this.root)
 				.showPanel(MainApplicationView.PanelType.ACCOUNT_DETAILS));
 		bar.getMenus().add(this.reports);
-
-
+		
+		
 		/* FUNDRAISING */
 		this.fundraisingMenu = new Menu("Fundraising");
 		add(this.fundraisingMenu, "Donors",
@@ -520,7 +522,7 @@ public class NonprofitBookkeepingFX extends Application
 				new FundsPanelFX(ServiceContainer.fas, null),
 				"Funds"));
 		bar.getMenus().add(this.fundraisingMenu);
-
+		
 		/* SETTINGS */
 		Menu settings = new Menu("Settings");
 		add(settings, "Show Settings", e -> {
@@ -529,45 +531,45 @@ public class NonprofitBookkeepingFX extends Application
 				this.settingsService, () ->
 				{
 					applyGlobalSettings();
-
+					
 					if (CurrentCompany.isOpen())
 					{
 						scheduleAutosave();
 					}
-
+					
 				}),
 				"Settings");
 		});
 		bar.getMenus().add(settings);
-
+		
 		/* PLUGINS */
 		this.pluginsMenu = new Menu("Plugins");
-
+		
 		if (this.loadedPlugins == null || this.loadedPlugins.isEmpty())
 		{
 			MenuItem none = new MenuItem("No plugins available");
 			none.setDisable(true);
 			this.pluginsMenu.getItems().add(none);
 		}
-
+		
 		bar.getMenus().add(this.pluginsMenu);
-
+		
 		/* HELP */
 		Menu help = new Menu("Help");
 		add(help, "Help",
 			e -> showPanel(new HelpPanelFX(this.primaryStage), "Help"));
 		bar.getMenus().add(help);
-
+		
 		// Add plugin menu items
 		LOGGER.info("Adding plugin menu items. Number of plugins: {}",
 			(this.loadedPlugins != null ? this.loadedPlugins.size() : 0));
-
+		
 		if (this.loadedPlugins != null)
 		{
-
+			
 			for (Plugin plugin : this.loadedPlugins)
 			{
-
+				
 				try
 				{
 					LOGGER.info("Adding menu items for plugin: {}",
@@ -580,15 +582,15 @@ public class NonprofitBookkeepingFX extends Application
 					LOGGER.warn("Plugin {} failed to add its menu items: {}",
 						plugin.getName(), ex.getMessage(), ex);
 				}
-
+				
 			}
-
+			
 		}
-
+		
 		return bar;
-
+		
 	}
-
+	
 	/**
 	 * Adds the plugin info menu item.
 	 *
@@ -596,18 +598,18 @@ public class NonprofitBookkeepingFX extends Application
 	 */
 	private void addPluginInfoMenuItem(Plugin plugin)
 	{
-
+		
 		if (this.pluginsMenu == null || plugin == null)
 		{
 			return;
 		}
-
+		
 		MenuItem item = new MenuItem(plugin.getName());
 		item.setOnAction(e -> showPluginDetails(plugin));
 		this.pluginsMenu.getItems().add(item);
-
+		
 	}
-
+	
 	/**
 	 * Show plugin details.
 	 *
@@ -615,19 +617,19 @@ public class NonprofitBookkeepingFX extends Application
 	 */
 	private void showPluginDetails(Plugin plugin)
 	{
-
+		
 		if (plugin == null)
 		{
 			return;
 		}
-
+		
 		Alert alert = new Alert(Alert.AlertType.INFORMATION);
-
+		
 		if (this.primaryStage != null)
 		{
 			alert.initOwner(this.primaryStage);
 		}
-
+		
 		alert.setTitle("Plugin Information");
 		alert.setHeaderText(plugin.getName());
 		String description = Optional.ofNullable(plugin.getDescription())
@@ -635,9 +637,9 @@ public class NonprofitBookkeepingFX extends Application
 			.orElse("No description available.");
 		alert.setContentText(description);
 		alert.showAndWait();
-
+		
 	}
-
+	
 	/**
 	 * Helper method to create a {@link MenuItem}, set its label and action handler,
 	 * and add it to the specified {@link Menu}.
@@ -654,9 +656,9 @@ public class NonprofitBookkeepingFX extends Application
 		item.setOnAction(handler);
 		menu.getItems().add(item);
 		return item;
-
+		
 	}
-
+	
 	/**
 	 * Creates the database menu.
 	 *
@@ -673,9 +675,9 @@ public class NonprofitBookkeepingFX extends Application
 		add(db, "Run SQL Query...", e -> showPanel(new SqlQueryPanelFX(),
 			"SQL Query"));
 		return db;
-
+		
 	}
-
+	
 	/**
 	 * Handle open or create database.
 	 */
@@ -686,32 +688,32 @@ public class NonprofitBookkeepingFX extends Application
 		chooser.getExtensionFilters().setAll(
 			new FileChooser.ExtensionFilter("H2 Database (*.mv.db)", "*.mv.db"),
 			new FileChooser.ExtensionFilter("All Files", "*.*"));
-
+		
 		String lastDatabasePath = PreferencesManager.getLastDatabasePath();
-
+		
 		if (lastDatabasePath != null && !lastDatabasePath.trim().isEmpty())
 		{
-
+			
 			try
 			{
 				Path lastPath = Path.of(lastDatabasePath);
 				Path chooserDir = Files.isDirectory(lastPath) ? lastPath :
 					lastPath.getParent();
-
+				
 				if (chooserDir != null && Files.isDirectory(chooserDir))
 				{
 					chooser.setInitialDirectory(chooserDir.toFile());
 				}
-
+				
 			}
 			catch (InvalidPathException ex)
 			{
 				LOGGER.debug("Ignoring invalid DB path preference: {}",
 					lastDatabasePath, ex);
 			}
-
+			
 		}
-
+		
 		ButtonType openExisting = new ButtonType("Open Existing");
 		ButtonType createNew = new ButtonType("Create New");
 		Alert choiceDialog = new Alert(Alert.AlertType.CONFIRMATION);
@@ -720,32 +722,32 @@ public class NonprofitBookkeepingFX extends Application
 			"Would you like to open an existing database or create a new one?");
 		choiceDialog.getButtonTypes().setAll(openExisting, createNew,
 			ButtonType.CANCEL);
-
+		
 		Optional<ButtonType> selection = choiceDialog.showAndWait();
-
+		
 		if (selection.isEmpty() || selection.get() == ButtonType.CANCEL)
 		{
 			return;
 		}
-
+		
 		boolean creating = selection.get() == createNew;
 		File file = creating ? chooser.showSaveDialog(this.primaryStage) :
 			chooser.showOpenDialog(this.primaryStage);
-
+		
 		if (file == null)
 		{
 			return;
 		}
-
+		
 		Path base = normalizeH2Base(file.toPath());
-
+		
 		try
 		{
 			Path dataFile = resolveH2DataFile(base);
-
+			
 			if (!creating)
 			{
-
+				
 				if (Files.notExists(dataFile))
 				{
 					Alert alert = new Alert(Alert.AlertType.ERROR,
@@ -755,14 +757,14 @@ public class NonprofitBookkeepingFX extends Application
 					alert.showAndWait();
 					return;
 				}
-
+				
 			}
-
+			
 			if (base.getParent() != null)
 			{
 				Files.createDirectories(base.getParent());
 			}
-
+			
 			Database.init(base);
 			Database.get().ensureSchema();
 			PreferencesManager
@@ -772,18 +774,18 @@ public class NonprofitBookkeepingFX extends Application
 			a.setHeaderText("H2 Ready");
 			a.showAndWait();
 			setState(AppState.NO_COMPANY);
-
+			
 			if (this.companySelectionPanel != null)
 			{
 				this.companySelectionPanel.refreshCompanyList();
 			}
-
+			
 			// present company selection
 			if (this.mainView != null)
 			{
 				this.mainView.showCompanySelection();
 			}
-
+			
 		}
 		catch (Exception ex)
 		{
@@ -793,15 +795,15 @@ public class NonprofitBookkeepingFX extends Application
 			alert.setHeaderText("Database Error");
 			alert.showAndWait();
 		}
-
+		
 	}
-
+	
 	/**
 	 * Handle import legacy archive.
 	 */
 	private void handleImportLegacyArchive()
 	{
-
+		
 		if (!Database.isInitialized())
 		{
 			Alert alert = new Alert(Alert.AlertType.WARNING,
@@ -810,42 +812,42 @@ public class NonprofitBookkeepingFX extends Application
 			alert.showAndWait();
 			return;
 		}
-
+		
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Import Legacy .npbk Archive");
 		chooser.getExtensionFilters().setAll(
 			new FileChooser.ExtensionFilter("Legacy Archives (*.npbk, *.json)",
 				"*.npbk", "*.json"),
 			new FileChooser.ExtensionFilter("All Files", "*.*"));
-
+		
 		File file = chooser.showOpenDialog(this.primaryStage);
-
+		
 		if (file == null)
 		{
 			return;
 		}
-
+		
 		try
 		{
 			long id = this.legacyNpbkImportService.importArchive(file.toPath());
-
+			
 			Alert alert = new Alert(Alert.AlertType.INFORMATION,
 				"Imported legacy archive into the database.\nCompany record id: " +
 					id);
 			alert.setHeaderText("Legacy Import Complete");
 			alert.showAndWait();
-
+			
 			if (this.companySelectionPanel != null)
 			{
 				this.companySelectionPanel.refreshCompanyList();
 			}
-
+			
 			// present company selection panel
 			if (this.mainView != null)
 			{
 				this.mainView.showCompanySelection();
 			}
-
+			
 		}
 		catch (IllegalArgumentException | IllegalStateException ex)
 		{
@@ -861,15 +863,15 @@ public class NonprofitBookkeepingFX extends Application
 			alert.setHeaderText("Import Failed");
 			alert.showAndWait();
 		}
-
+		
 	}
-
+	
 	/**
 	 * Handle import script into database.
 	 */
 	private void handleImportScriptIntoDatabase()
 	{
-
+		
 		if (!Database.isInitialized())
 		{
 			Alert alert = new Alert(Alert.AlertType.WARNING,
@@ -878,16 +880,16 @@ public class NonprofitBookkeepingFX extends Application
 			alert.showAndWait();
 			return;
 		}
-
+		
 		FileChooser fc = new FileChooser();
 		fc.setTitle("Select company H2 SQL script");
 		fc.getExtensionFilters()
 			.add(new FileChooser.ExtensionFilter("SQL scripts", "*.sql"));
 		File file = fc.showOpenDialog(this.primaryStage);
-
+		
 		if (file == null)
 			return;
-
+		
 		try
 		{
 			H2ScriptCompanyImporter.importScript(file.toPath());
@@ -904,14 +906,14 @@ public class NonprofitBookkeepingFX extends Application
 			alert.setHeaderText("Import Error");
 			alert.showAndWait();
 		}
-
+		
 	}
-
+	
 	private static Path normalizeH2Base(Path chosen)
 	{
 		String fileName = chosen.getFileName() != null ?
 			chosen.getFileName().toString() : chosen.toString();
-
+		
 		if (fileName.endsWith(".mv.db"))
 		{
 			String trimmed =
@@ -919,11 +921,11 @@ public class NonprofitBookkeepingFX extends Application
 			Path parent = chosen.getParent();
 			return parent == null ? Path.of(trimmed) : parent.resolve(trimmed);
 		}
-
+		
 		return chosen;
-
+		
 	}
-
+	
 	/**
 	 * Resolve H 2 data file.
 	 *
@@ -934,18 +936,18 @@ public class NonprofitBookkeepingFX extends Application
 	{
 		String fileName = base.getFileName() != null ?
 			base.getFileName().toString() : base.toString();
-
+		
 		if (fileName.endsWith(".mv.db"))
 		{
 			return base;
 		}
-
+		
 		Path parent = base.getParent();
 		String candidate = fileName + ".mv.db";
 		return parent == null ? Path.of(candidate) : parent.resolve(candidate);
-
+		
 	}
-
+	
 	/**
 	 * Displays a given JavaFX {@link Node} (typically a panel or UI component) in a new,
 	 * non-modal {@link Stage} (window).
@@ -965,17 +967,17 @@ public class NonprofitBookkeepingFX extends Application
 		sub.setScene(scene);
 		sub.initOwner(this.primaryStage);
 		sub.show();
-
+		
 	}
-
+	
 	private void ensureSettingsLoaded()
 	{
-
+		
 		if (this.settingsLoaded || !Database.isInitialized())
 		{
 			return;
 		}
-
+		
 		try
 		{
 			this.settingsService.loadSettings(null);
@@ -986,9 +988,9 @@ public class NonprofitBookkeepingFX extends Application
 		{
 			LOGGER.debug("Unable to load settings", ex);
 		}
-
+		
 	}
-
+	
 	private void applyGlobalSettings()
 	{
 		SettingsModel settings = this.settingsService.getSettings();
@@ -998,22 +1000,21 @@ public class NonprofitBookkeepingFX extends Application
 				Locale.getDefault();
 		FormatUtils.configureLocale(locale, settings.getDefaultCurrency());
 		FormatUtils.setCurrencyFormat(settings.getCurrencyFormat());
-
+		
 		if (this.primaryStage != null)
 		{
 			String title = settings.getOrganizationName();
 			this.primaryStage.setTitle(title != null && !title.isBlank() ?
 				title + " - Nonprofit Bookkeeping" : "Nonprofit Bookkeeping");
-
+			
 			if (this.primaryStage.getScene() != null)
 			{
 				ThemeManager.applyTheme(this.primaryStage.getScene(),
 					settings.getTheme());
 			}
-
+			
 		}
-
-
+		
 		// apply account details
 		if (this.mainView != null)
 		{
@@ -1024,29 +1025,29 @@ public class NonprofitBookkeepingFX extends Application
 				settings.isEnableFullYearOption(),
 				settings.isEnableLastMonthOption());
 		}
-
+		
 	}
-
+	
 	/**
 	 * Schedule autosave.
 	 */
 	private void scheduleAutosave()
 	{
 		cancelAutosave();
-
+		
 		if (!CurrentCompany.isOpen())
 		{
 			return;
 		}
-
+		
 		SettingsModel settings = this.settingsService.getSettings();
-
+		
 		if (!settings.isAutosaveEnabled() ||
 			settings.getAutosaveIntervalMinutes() <= 0)
 		{
 			return;
 		}
-
+		
 		if (this.autosaveExecutor == null)
 		{
 			this.autosaveExecutor =
@@ -1057,39 +1058,39 @@ public class NonprofitBookkeepingFX extends Application
 					return t;
 				});
 		}
-
+		
 		long interval = settings.getAutosaveIntervalMinutes();
 		this.autosaveFuture =
 			this.autosaveExecutor.scheduleAtFixedRate(this::performAutosave,
 				interval, interval, TimeUnit.MINUTES);
-
+		
 	}
-
+	
 	/**
 	 * Cancel autosave.
 	 */
 	private void cancelAutosave()
 	{
-
+		
 		if (this.autosaveFuture != null)
 		{
 			this.autosaveFuture.cancel(false);
 			this.autosaveFuture = null;
 		}
-
+		
 	}
-
+	
 	/**
 	 * Perform autosave.
 	 */
 	private void performAutosave()
 	{
-
+		
 		if (!Database.isInitialized() || !CurrentCompany.isOpen())
 		{
 			return;
 		}
-
+		
 		try
 		{
 			CurrentCompany.persist();
@@ -1099,10 +1100,10 @@ public class NonprofitBookkeepingFX extends Application
 		{
 			LOGGER.warn("Autosave failed", ex);
 		}
-
+		
 	}
-
-
+	
+	
 	/**
 	 * Sets the application's operational state and updates the enabled/disabled status
 	 * of various menu items accordingly.
@@ -1113,105 +1114,105 @@ public class NonprofitBookkeepingFX extends Application
 	{
 		this.state = newState;
 		boolean databaseReady = Database.isInitialized();
-
+		
 		if (databaseReady)
 		{
 			ensureSettingsLoaded();
 		}
-
+		
 		boolean creatingCompany = (newState == AppState.CREATING_COMPANY);
 		boolean companyOpen = databaseReady && CurrentCompany.isOpen();
-
+		
 		if (!companyOpen)
 		{
 			cancelAutosave();
 		}
-
+		
 		this.miOpen
 			.setDisable(!databaseReady || creatingCompany || companyOpen);
 		this.miClose.setDisable(!companyOpen || creatingCompany);
 		this.miSave.setDisable(!companyOpen || creatingCompany);
 		this.miEditCompany.setDisable(!databaseReady || creatingCompany);
 		this.miEditCoa.setDisable(!companyOpen || creatingCompany);
-
+		
 		this.miEditJournal.setDisable(!companyOpen || creatingCompany);
 		this.miImportCoaXlsx.setDisable(!companyOpen || creatingCompany);
 		this.miExportCoaXlsx.setDisable(!companyOpen || creatingCompany);
-
-\t\tif (this.miImportFile != null)
-\t\t{
-\t\t\tthis.miImportFile.setDisable(!companyOpen || creatingCompany);
-\t\t}
-\t\t
-\t\tif (this.miImportSclx != null)
-\t\t{
-\t\t\tthis.miImportSclx.setDisable(!companyOpen || creatingCompany);
-\t\t}
-\t\t
-\t\tif (this.miPersistScaLedger != null)
+		
+		if (this.miImportFile != null)
+		{
+			this.miImportFile.setDisable(!companyOpen || creatingCompany);
+		}
+		
+		if (this.miImportSclx != null)
+		{
+			this.miImportSclx.setDisable(!companyOpen || creatingCompany);
+		}
+		
+		if (this.miPersistScaLedger != null)
 		{
 			this.miPersistScaLedger
 				.setDisable(!companyOpen || creatingCompany);
 		}
-
+		
 		if (this.miExportStatementOfx != null)
 		{
 			this.miExportStatementOfx
 				.setDisable(!companyOpen || creatingCompany);
 		}
-
+		
 		if (this.miLoadScaXlsm != null)
 		{
 			this.miLoadScaXlsm
 				.setDisable(this.scaLedgerPlugin == null || creatingCompany);
 		}
-
+		
 		if (this.miImportScaExcel != null)
 		{
 			this.miImportScaExcel
 				.setDisable(creatingCompany);
 		}
-
+		
 		if (this.miSaveScaModifiedCopy != null)
 		{
 			this.miSaveScaModifiedCopy
 				.setDisable(this.scaLedgerPlugin == null || creatingCompany);
 		}
-
+		
 		if (this.runMenu != null)
 		{
 			this.runMenu.setDisable(!companyOpen || creatingCompany);
 		}
-
+		
 		if (this.fundraisingMenu != null)
 		{
 			this.fundraisingMenu.setDisable(!companyOpen || creatingCompany);
 		}
-
+		
 		if (this.databaseMenu != null)
 		{
 			this.databaseMenu.setDisable(creatingCompany);
 		}
-
+		
 		// present company open state
 		if (this.mainView != null)
 		{
 			this.mainView.updateCompanyOpenState(companyOpen);
 		}
-
+		
 	}
-
+	
 	/**
 	 * Reload settings.
 	 */
 	private void reloadSettings()
 	{
-
+		
 		if (!Database.isInitialized())
 		{
 			return;
 		}
-
+		
 		try
 		{
 			this.settingsService.loadSettings(null);
@@ -1222,9 +1223,9 @@ public class NonprofitBookkeepingFX extends Application
 		{
 			LOGGER.debug("Unable to load settings", ex);
 		}
-
+		
 	}
-
+	
 	/**
 	 * Apply settings.
 	 *
@@ -1232,44 +1233,44 @@ public class NonprofitBookkeepingFX extends Application
 	 */
 	private void applySettings(SettingsModel settings)
 	{
-
+		
 		if (settings == null)
 		{
 			return;
 		}
-
+		
 		Locale locale = settings.getCurrencyLocale();
 		FormatUtils.setCurrencyLocale(locale);
 		FormatUtils.setCurrencyFormat(settings.getCurrencyFormat());
-
+		
 		if (this.primaryStage != null && this.primaryStage.getScene() != null)
 		{
 			ThemeManager.applyTheme(this.primaryStage.getScene(),
 				settings.getTheme());
 		}
-
+		
 	}
-
+	
 	/**
 	 * Configure autosave.
 	 */
 	private void configureAutosave()
 	{
 		cancelAutosave();
-
+		
 		if (this.cachedSettings == null)
 		{
 			return;
 		}
-
+		
 		int interval =
 			Math.max(0, this.cachedSettings.getAutosaveIntervalMinutes());
-
+		
 		if (interval <= 0)
 		{
 			return;
 		}
-
+		
 		if (this.autosaveExecutor == null || this.autosaveExecutor.isShutdown())
 		{
 			this.autosaveExecutor =
@@ -1280,13 +1281,14 @@ public class NonprofitBookkeepingFX extends Application
 					return t;
 				});
 		}
-
-		this.autosaveFuture = this.autosaveExecutor.scheduleAtFixedRate(() -> {			
+		
+		this.autosaveFuture = this.autosaveExecutor.scheduleAtFixedRate(() -> {
+			
 			if (!CurrentCompany.isOpen())
 			{
 				return;
 			}
-
+			
 			try
 			{
 				CurrentCompany.persist();
@@ -1295,12 +1297,12 @@ public class NonprofitBookkeepingFX extends Application
 			{
 				LOGGER.warn("Autosave failed", ex);
 			}
-
+			
 		}, interval, interval, TimeUnit.MINUTES);
-
+		
 	}
-
-
+	
+	
 	/**
 	 * Handle company opened.
 	 *
@@ -1308,28 +1310,28 @@ public class NonprofitBookkeepingFX extends Application
 	 */
 	private void handleCompanyOpened(Company company)
 	{
-
+		
 		if (company == null)
 		{
 			return;
 		}
-
+		
 		setState(AppState.COMPANY_OPEN);
 		ensureSettingsLoaded();
 		applyGlobalSettings();
 		scheduleAutosave();
-
+		
 		reloadSettings();
 		configureAutosave();
-
+		
 		if (company.getCompanyFile() != null && Database.isInitialized())
 		{
 			String path = company.getCompanyFile().getAbsolutePath();
 			this.cachedSettings.setLastOpenedFile(path);
 			PreferencesManager.setLastDatabasePath(path);
-
+			
 			File parent = company.getCompanyFile().getParentFile();
-
+			
 			if (parent != null)
 			{
 				String dir = parent.getAbsolutePath();
@@ -1337,7 +1339,7 @@ public class NonprofitBookkeepingFX extends Application
 				PreferencesManager.setLastDirectory(dir);
 				PreferencesManager.setLastWriteDirectory(dir);
 			}
-
+			
 			try
 			{
 				this.settingsService.saveSettings(null);
@@ -1346,23 +1348,23 @@ public class NonprofitBookkeepingFX extends Application
 			{
 				LOGGER.debug("Unable to persist updated file preferences", ex);
 			}
-
+			
 		}
-
+		
 		if (this.companySelectionPanel != null)
 		{
 			this.companySelectionPanel.refreshCompanyList();
 		}
-
+		
 		// present main view panel
 		if (this.mainView != null)
 		{
 			this.mainView.showWorkspaceTabs();
 			this.mainView.showPanel(MainApplicationView.PanelType.DASHBOARD);
 		}
-
+		
 	}
-
+	
 	/**
 	 * Handles the action to open a company file.
 	 * It instantiates and triggers {@link OpenCompanyFileActionFX}.
@@ -1372,7 +1374,7 @@ public class NonprofitBookkeepingFX extends Application
 	 */
 	private void doOpenCompany()
 	{
-
+		
 		if (!Database.isInitialized())
 		{
 			Alert alert = new Alert(Alert.AlertType.WARNING,
@@ -1382,7 +1384,7 @@ public class NonprofitBookkeepingFX extends Application
 			alert.showAndWait();
 			return;
 		}
-
+		
 		try
 		{
 			OpenCompanyFileActionFX openCompanyFileActionFX =
@@ -1395,9 +1397,9 @@ public class NonprofitBookkeepingFX extends Application
 			AlertBox.showError(this.primaryStage,
 				"Failed to open company: " + e.getMessage());
 		}
-
+		
 	}
-
+	
 	/**
 	 * Handles the action to close the currently open company file.
 	 * It instantiates and triggers {@link CloseCompanyFileAction}.
@@ -1408,47 +1410,47 @@ public class NonprofitBookkeepingFX extends Application
 	 */
 	private void doCloseCompany()
 	{
-
+		
 		try
 		{
 			CloseCompanyFileAction closeCompanyFileAction =
 				new CloseCompanyFileAction(this.primaryStage);
-
+			
 			if (closeCompanyFileAction.isClosed())
 			{
 				// After action, set state.
 				setState(AppState.NO_COMPANY);
 				cancelAutosave();
-
+				
 				if (this.companySelectionPanel != null)
 				{
 					this.companySelectionPanel.refreshCompanyList();
 				}
-
+				
 			}
 			else
 			{
 				return; // user cancelled closing
 			}
-
+			
 		}
-
+		
 		catch (Exception e) // Catch broad exceptions from action
 		{
 			AlertBox.showError(this.primaryStage,
 				"Failed to close company: " + e.getMessage());
 		}
-
+		
 		// Switch view back to dashboard
 		if (this.mainView != null)
 		{
 			this.mainView.showCompanySelection();
 		}
-
+		
 		cancelAutosave();
-
+		
 	}
-
+	
 	/**
 	 * Handles the action to save the currently open company file.
 	 * It instantiates and triggers {@link SaveCompanyFileAction}.
@@ -1457,14 +1459,14 @@ public class NonprofitBookkeepingFX extends Application
 	 */
 	private void doSaveCompany()
 	{
-
+		
 		if (!Database.isInitialized() || !CurrentCompany.isOpen())
 		{
 			AlertBox.showError(this.primaryStage,
 				"Open a company connected to the database before saving.");
 			return;
 		}
-
+		
 		try
 		{
 			SaveCompanyFileAction saveCompanyFileAction =
@@ -1476,9 +1478,9 @@ public class NonprofitBookkeepingFX extends Application
 			AlertBox.showError(this.primaryStage,
 				"Failed to save company: " + ex.getMessage());
 		}
-
+		
 	}
-
+	
 	/**
 	 * Handles the action to start the company creation/editing wizard.
 	 * It changes the application state to {@link AppState#CREATING_COMPANY},
@@ -1489,7 +1491,7 @@ public class NonprofitBookkeepingFX extends Application
 	 */
 	private void startCreateWizard()
 	{
-
+		
 		if (!Database.isInitialized())
 		{
 			Alert alert = new Alert(Alert.AlertType.WARNING,
@@ -1499,32 +1501,32 @@ public class NonprofitBookkeepingFX extends Application
 			alert.showAndWait();
 			return;
 		}
-
+		
 		AppState saved = getState();
 		setState(AppState.CREATING_COMPANY);
-
+		
 		try
 		{
 			CreateOrEditCompanyActionFX createOrEditCompanyActionFX =
 				new CreateOrEditCompanyActionFX(this.primaryStage);
-
+			
 			// If wizard completes and company is set in CurrentCompany:
 			if (CurrentCompany.getCompany() != null)
 			{ // Basic check
 				setState(AppState.COMPANY_OPEN);
-
+				
 				if (this.companySelectionPanel != null)
 				{
 					this.companySelectionPanel.refreshCompanyList();
 				}
-
+				
 			}
 			else
 			{
 				// Wizard was cancelled or failed without setting a company
 				setState(saved); // Revert to previous state
 			}
-
+			
 		}
 		catch (Exception e)
 		{
@@ -1533,9 +1535,9 @@ public class NonprofitBookkeepingFX extends Application
 			AlertBox.showError(this.primaryStage,
 				"Error during company setup: " + e.getMessage());
 		}
-
+		
 	}
-
+	
 	/**
 	 * Gets the current operational state of the application.
 	 * @return The current {@link AppState}.
@@ -1543,9 +1545,9 @@ public class NonprofitBookkeepingFX extends Application
 	private AppState getState()
 	{
 		return this.state;
-
+		
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 * Called when the application is shutting down.
@@ -1558,20 +1560,20 @@ public class NonprofitBookkeepingFX extends Application
 	public void stop() throws Exception
 	{
 		LOGGER.info("Application stopping. Shutting down plugins.");
-
+		
 		cancelAutosave();
-
+		
 		if (this.autosaveExecutor != null)
 		{
 			this.autosaveExecutor.shutdownNow();
 		}
-
+		
 		if (this.loadedPlugins != null)
 		{
-
+			
 			for (Plugin plugin : this.loadedPlugins)
 			{
-
+				
 				try
 				{
 					LOGGER.info("Shutting down plugin: {}", plugin.getName());
@@ -1582,14 +1584,14 @@ public class NonprofitBookkeepingFX extends Application
 					LOGGER.warn("Error shutting down plugin: {} - {}",
 						plugin.getName(), e.getMessage(), e);
 				}
-
+				
 			}
-
+			
 		}
-
+		
 		doSaveCompany();
 		super.stop();
-
+		
 	}
-
+	
 }
