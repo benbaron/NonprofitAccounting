@@ -117,6 +117,8 @@ public class NonprofitBookkeepingFX extends Application
 	private MenuItem miExportStatementOfx;
 	/** Menu item for importing financial files directly into the data model. */
 	private MenuItem miImportFile;
+	/** Menu item for importing an SCLX file into the data model. */
+	private MenuItem miImportSclx;
 	/** Menu item for loading an SCA XLSM workbook via the plugin. */
 	private MenuItem miLoadScaXlsm;
 	/** Menu item for importing an SCA Excel ledger via the plugin. */
@@ -398,15 +400,14 @@ public class NonprofitBookkeepingFX extends Application
 		this.miExportCoaXlsx = add(fileMenu, "Export COA (XLSX)",
 			e -> new ExportCoaXlsxActionFX(this.primaryStage).handle(e));
 		fileMenu.getItems().add(new SeparatorMenuItem());
-		
+
 		this.miImportFile =
 			add(fileMenu, "Import Financial File (OFX/QFX)...",
 				e -> new ImportFileActionFX(this.primaryStage).handle(e));
-		
 		this.miImportSclx =
 			add(fileMenu, "Import SCLX...",
 				e -> new ImportSclxActionFX(this.primaryStage).handle(e));
-		
+
 		this.miImportScaExcel = new MenuItem("Import Outlands Ledger...");
 		this.miImportScaExcel.setOnAction(
 			e -> new ImportFromOutlandsLedgerActionFX(this.primaryStage,

@@ -5,8 +5,11 @@ import nonprofitbookkeeping.model.impex.BudgetRecord;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Persists imported budget records as staged impex rows.
@@ -51,6 +54,16 @@ public class BudgetRecordRepository
             budget_id, line_ordinal, event_name, budgeted_amount, revenue_category,
             expense_category, account_id, notes
         ) VALUES(?,?,?,?,?,?,?,?)
+        """;
+    private static final String LIST_ALL_BUDGETS = """
+        SELECT budget_id, name, fiscal_year, fund_id, active, description
+        FROM imported_budget
+        """;
+    private static final String LIST_LINES_FOR_BUDGET = """
+        SELECT event_name, budgeted_amount, revenue_category, expense_category, account_id, notes
+        FROM imported_budget_line
+        WHERE budget_id = ?
+        ORDER BY line_ordinal
         """;
 
     public void upsert(BudgetRecord record) throws SQLException
@@ -112,6 +125,59 @@ public class BudgetRecordRepository
                 c.setAutoCommit(auto);
             }
         }
+    }
+
+    public List<BudgetRecord> listAll() throws SQLException
+    {
+        ensureSchema();
+        List<BudgetRecord> rows = new ArrayList<>();
+        try (Connection c = Database.get().getConnection();
+             PreparedStatement ps = c.prepareStatement(LIST_ALL_BUDGETS);
+             ResultSet rs = ps.executeQuery())
+        {
+            while (rs.next())
+            {
+                String budgetId = rs.getString("budget_id");
+                List<BudgetRecord.BudgetLineRecord> lines = listLines(c, budgetId);
+                rows.add(new BudgetRecord(
+                    budgetId,
+                    rs.getString("name"),
+                    rs.getObject("fiscal_year", Integer.class),
+                    rs.getString("fund_id"),
+                    rs.getObject("active", Boolean.class),
+                    rs.getString("description"),
+                    lines,
+                    java.util.Map.of(),
+                    null
+                ));
+            }
+        }
+        return rows;
+    }
+
+    private List<BudgetRecord.BudgetLineRecord> listLines(Connection c, String budgetId) throws SQLException
+    {
+        List<BudgetRecord.BudgetLineRecord> lines = new ArrayList<>();
+        try (PreparedStatement ps = c.prepareStatement(LIST_LINES_FOR_BUDGET))
+        {
+            ps.setString(1, budgetId);
+            try (ResultSet rs = ps.executeQuery())
+            {
+                while (rs.next())
+                {
+                    lines.add(new BudgetRecord.BudgetLineRecord(
+                        rs.getString("event_name"),
+                        rs.getBigDecimal("budgeted_amount"),
+                        rs.getString("revenue_category"),
+                        rs.getString("expense_category"),
+                        rs.getString("account_id"),
+                        rs.getString("notes"),
+                        java.util.Map.of()
+                    ));
+                }
+            }
+        }
+        return lines;
     }
 
     private void ensureSchema() throws SQLException
