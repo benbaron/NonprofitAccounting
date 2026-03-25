@@ -4,9 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nonprofitbookkeeping.importer.sclx.jackson.JacksonJsonNodeSupport;
 import nonprofitbookkeeping.model.impex.BankingItemRecord;
-import nonprofitbookkeeping.model.impex.BankingItemRecord.BankingItemKind;
-import nonprofitbookkeeping.model.impex.BankingItemRecord.BankingItemSource;
-import nonprofitbookkeeping.model.impex.BankingItemRecord.BankingItemStatus;
 import nonprofitbookkeeping.model.impex.BankingItemRecord.OfxTransactionRecord;
 
 /**
@@ -21,9 +18,10 @@ public final class BankingItemRecordMapper {
     }
 
     public BankingItemRecord fromSclx(JsonNode node) {
+        JsonNode ofxNode = node == null ? null : node.get("ofx");
         return new BankingItemRecord(
             JacksonJsonNodeSupport.text(node, "bankingItemId"),
-            JacksonJsonNodeSupport.enumValue(node, "kind", BankingItemKind.class),
+            JacksonJsonNodeSupport.text(node, "kind"),
             JacksonJsonNodeSupport.text(node, "bankAccountId"),
             JacksonJsonNodeSupport.text(node, "transactionId"),
             JacksonJsonNodeSupport.stringList(node, "lineIds"),
@@ -35,11 +33,12 @@ public final class BankingItemRecordMapper {
             JacksonJsonNodeSupport.text(node, "payer"),
             JacksonJsonNodeSupport.text(node, "depositId"),
             JacksonJsonNodeSupport.text(node, "memo"),
-            JacksonJsonNodeSupport.enumValue(node, "source", BankingItemSource.class),
-            JacksonJsonNodeSupport.enumValue(node, "status", BankingItemStatus.class),
+            JacksonJsonNodeSupport.text(node, "source"),
+            JacksonJsonNodeSupport.text(node, "status"),
             JacksonJsonNodeSupport.text(node, "importId"),
-            ofx(node == null ? null : node.get("ofx")),
-            JacksonJsonNodeSupport.objectMap(node, "extensions", objectMapper)
+            ofx(ofxNode),
+            JacksonJsonNodeSupport.objectMap(node, "extensions", objectMapper),
+            node == null ? null : node.toString()
         );
     }
 

@@ -13,6 +13,7 @@ import nonprofitbookkeeping.persistence.impex.BankingItemRecordRepository;
 import nonprofitbookkeeping.persistence.impex.BudgetRecordRepository;
 import nonprofitbookkeeping.service.FundAccountingService;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -109,7 +110,15 @@ public class NonprofitBookkeepingSclxExportService
             ));
         }
 
-        fundAccountingService.loadFunds(null);
+        try
+		{        	
+			fundAccountingService.loadFunds(null);
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+        
         List<SclxDocument.Fund> funds = fundAccountingService.listFunds().stream()
             .map(fund -> new SclxDocument.Fund(fund.getFundId(), fund.getName(), null, null, Map.of()))
             .toList();
