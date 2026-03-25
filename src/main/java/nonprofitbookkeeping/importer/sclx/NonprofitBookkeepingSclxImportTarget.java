@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package nonprofitbookkeeping.importer.sclx;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -49,6 +52,9 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
     private final Map<String, Long> personDbIdBySclxPersonId = new LinkedHashMap<>();
     private SclxImportOptions currentOptions = SclxImportOptions.defaults();
 
+    /**
+     * Instantiates a new nonprofit bookkeeping sclx import target.
+     */
     public NonprofitBookkeepingSclxImportTarget()
     {
         this(
@@ -64,6 +70,19 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         );
     }
 
+    /**
+     * Instantiates a new nonprofit bookkeeping sclx import target.
+     *
+     * @param accountRepository the account repository
+     * @param personRepository the person repository
+     * @param journalGateway the journal gateway
+     * @param supplementalRepository the supplemental repository
+     * @param budgetRecordRepository the budget record repository
+     * @param bankingItemRecordRepository the banking item record repository
+     * @param bankStatementRecordRepository the bank statement record repository
+     * @param documentRepository the document repository
+     * @param fundAccountingService the fund accounting service
+     */
     public NonprofitBookkeepingSclxImportTarget(
         AccountRepository accountRepository,
         PersonRepository personRepository,
@@ -86,6 +105,11 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         this.fundAccountingService = Objects.requireNonNull(fundAccountingService);
     }
 
+    /**
+     * Override @see nonprofitbookkeeping.importer.sclx.
+     * SclxImportTarget#beginImport(nonprofitbookkeeping.importer.sclx.SclxDocument, 
+     * nonprofitbookkeeping.importer.sclx.SclxImportOptions) 
+     */
     @Override
     public void beginImport(SclxDocument document, SclxImportOptions options)
     {
@@ -95,6 +119,11 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         personDbIdBySclxPersonId.clear();
     }
 
+    /**
+     * Override @see nonprofitbookkeeping.importer.
+     * sclx.SclxImportTarget#importOrganization(nonprofitbookkeeping.
+     * importer.sclx.SclxDocument.Organization) 
+     */
     @Override
     public void importOrganization(SclxDocument.Organization organization)
     {
@@ -400,6 +429,12 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         upsertDocumentJson("sclx.importSummary", result);
     }
 
+    /**
+     * Map transaction.
+     *
+     * @param source the source
+     * @return the accounting transaction
+     */
     private AccountingTransaction mapTransaction(SclxDocument.Transaction source)
     {
         LinkedHashSet<AccountingEntry> entries = new LinkedHashSet<>();
@@ -477,6 +512,12 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         return txn;
     }
 
+    /**
+     * Resolve person.
+     *
+     * @param source the source
+     * @return the person
+     */
     private Person resolvePerson(SclxDocument.Person source)
     {
         try
@@ -510,6 +551,13 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         }
     }
 
+    /**
+     * Resolve counterparty id.
+     *
+     * @param sclxPersonId the sclx person id
+     * @param counterpartyName the counterparty name
+     * @return the long
+     */
     private Long resolveCounterpartyId(String sclxPersonId, String counterpartyName)
     {
         if (sclxPersonId != null && personDbIdBySclxPersonId.containsKey(sclxPersonId))
@@ -539,6 +587,12 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         }
     }
 
+    /**
+     * Creates the supplemental bean.
+     *
+     * @param kind the kind
+     * @return the txn supplemental line base
+     */
     private TxnSupplementalLineBase createSupplementalBean(String kind)
     {
         return switch (kind)
@@ -553,6 +607,12 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         };
     }
 
+    /**
+     * Builds the supplemental notes.
+     *
+     * @param item the item
+     * @return the string
+     */
     private String buildSupplementalNotes(SclxDocument.SupplementalItem item)
     {
         List<String> parts = new ArrayList<>();
@@ -562,6 +622,12 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         return String.join("; ", parts);
     }
 
+    /**
+     * Parses the supplemental kind.
+     *
+     * @param value the value
+     * @return the supplemental line kind
+     */
     private SupplementalLineKind parseSupplementalKind(String value)
     {
         if (value == null || value.isBlank()) return null;
@@ -569,11 +635,25 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         catch (IllegalArgumentException ex) { return null; }
     }
 
+    /**
+     * Resolve account number.
+     *
+     * @param preferred the preferred
+     * @param fallback the fallback
+     * @return the string
+     */
     private String resolveAccountNumber(String preferred, String fallback)
     {
         return currentOptions.resolveAccountReference(firstNonBlank(preferred, fallback));
     }
 
+    /**
+     * Debit amount.
+     *
+     * @param debit the debit
+     * @param credit the credit
+     * @return the big decimal
+     */
     private BigDecimal debitAmount(BigDecimal debit, BigDecimal credit)
     {
         if (debit != null && debit.compareTo(BigDecimal.ZERO) > 0) return debit;
@@ -581,6 +661,12 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         return BigDecimal.ZERO;
     }
 
+    /**
+     * First line fund.
+     *
+     * @param source the source
+     * @return the string
+     */
     private String firstLineFund(SclxDocument.Transaction source)
     {
         if (source.lines() == null) return "";
@@ -594,6 +680,12 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         return "";
     }
 
+    /**
+     * First non blank.
+     *
+     * @param values the values
+     * @return the string
+     */
     private String firstNonBlank(String... values)
     {
         if (values == null) return null;
@@ -604,16 +696,35 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         return null;
     }
 
-    private boolean equalsIgnoreCase(String a, String b)
+    /**
+     * Equals ignore case.
+     *
+     * @param a the a
+     * @param b the b
+     * @return true, if successful
+     */
+    private static boolean equalsIgnoreCase(String a, String b)
     {
         return a != null && b != null && a.equalsIgnoreCase(b);
     }
 
+    /**
+     * Null to empty.
+     *
+     * @param value the value
+     * @return the string
+     */
     private String nullToEmpty(String value)
     {
         return value == null ? "" : value;
     }
 
+    /**
+     * Upsert document json.
+     *
+     * @param name the name
+     * @param value the value
+     */
     private void upsertDocumentJson(String name, Object value)
     {
         try
@@ -626,6 +737,12 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         }
     }
 
+    /**
+     * To json.
+     *
+     * @param value the value
+     * @return the string
+     */
     private String toJson(Object value)
     {
         try
@@ -638,6 +755,12 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         }
     }
 
+    /**
+     * Parses the source format.
+     *
+     * @param value the value
+     * @return the bank statement record. source format
+     */
     private BankStatementRecord.SourceFormat parseSourceFormat(String value)
     {
         if (value == null || value.isBlank()) return null;
@@ -645,6 +768,12 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         catch (IllegalArgumentException ex) { return BankStatementRecord.SourceFormat.OTHER; }
     }
 
+    /**
+     * Parses the statement kind.
+     *
+     * @param value the value
+     * @return the bank statement record. statement kind
+     */
     private BankStatementRecord.StatementKind parseStatementKind(String value)
     {
         if (value == null || value.isBlank()) return null;
