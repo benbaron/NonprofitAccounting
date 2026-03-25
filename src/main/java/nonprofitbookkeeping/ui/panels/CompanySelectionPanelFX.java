@@ -1,3 +1,4 @@
+
 package nonprofitbookkeeping.ui.panels;
 
 import java.io.IOException;
@@ -39,394 +40,453 @@ import nonprofitbookkeeping.ui.helpers.AlertBox;
  */
 public class CompanySelectionPanelFX extends BorderPane
 {
-        
-        /** The Constant UPDATED_FORMATTER. */
-        private static final DateTimeFormatter UPDATED_FORMATTER =
-                DateTimeFormatter.ofPattern("MMM d, yyyy h:mm a").withZone(ZoneId.systemDefault());
-        /** Callback invoked when a company has been successfully opened. */
-        @FunctionalInterface public interface OnCompanyOpenedHandler
-        {
-                
-                /**
-                 * On company opened.
-                 *
-                 * @param company the company
-                 */
-                void onCompanyOpened(Company company);
-        }
-
-        /** The repository. */
-        private final CompanyRepository repository = new CompanyRepository();
-        
-        /** The company list. */
-        private final ListView<CompanyRecord> companyList = new ListView<>();
-        
-        /** The company items. */
-        private final ObservableList<CompanyRecord> companyItems = FXCollections.observableArrayList();
-        
-        /** The preview area. */
-        private final TextArea previewArea = new TextArea();
-        
-        /** The demo company seeder. */
-        private final DemoCompanySeeder demoCompanySeeder = new DemoCompanySeeder();
-
-        /** The company opened handler. */
-        private OnCompanyOpenedHandler companyOpenedHandler;
-        
-        /** The error handler. */
-        private Consumer<String> errorHandler = msg -> AlertBox.showError(null, msg);
-
-        /**
-         * Instantiates a new company selection panel FX.
-         */
-        public CompanySelectionPanelFX()
-        {
-                setPadding(new Insets(10));
-                buildUI();
-                reloadCompanyList();
-        }
-
-        /**
-         * Instantiates a new company selection panel FX.
-         *
-         * @param companyOpenedHandler the company opened handler
-         */
-        public CompanySelectionPanelFX(OnCompanyOpenedHandler companyOpenedHandler)
-        {
-                this();
-                this.companyOpenedHandler = companyOpenedHandler;
-        }
-
-        /**
-         * Allows callers to override how error messages are surfaced.
-         *
-         * @param handler the new on error
-         */
-        public void setOnError(Consumer<String> handler)
-        {
-                if (handler != null)
-                {
-                        this.errorHandler = handler;
-                }
-        }
-
-        /**
-         * Sets the handler that will be notified when the user opens a company.
-         *
-         * @param handler the new on company opened handler
-         */
-        public void setOnCompanyOpenedHandler(OnCompanyOpenedHandler handler)
-        {
-                this.companyOpenedHandler = handler;
-        }
-
-        /**
-         * Builds the UI.
-         */
-        private void buildUI()
-        {
-                this.companyList.setItems(this.companyItems);
-                this.companyList.setCellFactory(list -> new ListCell<>()
-                {
-                        @Override protected void updateItem(CompanyRecord record, boolean empty)
-                        {
-                                super.updateItem(record, empty);
-
-                                if (empty || record == null)
-                                {
-                                        setText(null);
-                                }
-                                else
-                                {
-                                        String updatedText = record.updatedAt() == null ? "Unknown"
-                                                : UPDATED_FORMATTER.format(record.updatedAt());
-                                        setText(String.format("%s (ID: %d) — Updated %s",
-                                                record.name(), record.id(), updatedText));
-                                }
-                        }
-                });
-                this.companyList.getSelectionModel().selectedItemProperty()
-                        .addListener((obs, oldVal, newVal) -> showPreview(newVal));
-
-                this.previewArea.setEditable(false);
-                this.previewArea.setWrapText(true);
-
-                SplitPane splitPane = new SplitPane(this.companyList, this.previewArea);
-                splitPane.setDividerPositions(0.4);
-                setCenter(splitPane);
-
-                Button openBtn = new Button("Open Selected");
-                Button createBtn = new Button("Create New Company…");
-                Button demoBtn = new Button("Create Demo Company");
-                Button deleteBtn = new Button("Delete Selected");
-                openBtn.setOnAction(e -> openSelected());
-                createBtn.setOnAction(e -> createNew());
-                demoBtn.setOnAction(e -> createDemoCompany());
-                deleteBtn.setOnAction(e -> deleteSelected());
-
-                HBox buttons = new HBox(10, openBtn, createBtn, demoBtn, deleteBtn);
-                buttons.setPadding(new Insets(8));
-                HBox.setHgrow(openBtn, Priority.NEVER);
-                HBox.setHgrow(createBtn, Priority.NEVER);
-                setBottom(buttons);
-        }
-
-        /**
-         * Reload company list.
-         */
-        private void reloadCompanyList()
-        {
-                this.companyItems.clear();
-
-                if (!Database.isInitialized())
-                {
-                        this.previewArea.setText("Initialize the H2 database to manage companies.");
-                        return;
-                }
-
-                try
-                {
-                        this.companyItems.addAll(this.repository.listCompanies());
-                }
-                catch (SQLException e)
-                {
-                        this.errorHandler.accept("Failed to load companies: " + e.getMessage());
-                }
-
-                if (!this.companyItems.isEmpty())
-                {
-                        this.companyList.getSelectionModel().selectFirst();
-                }
-                else
-                {
-                        this.previewArea.setText("No companies available.");
-                }
-        }
-
-        /** Public hook allowing the surrounding UI to refresh the listing. */
-        public void refreshCompanyList()
-        {
-                reloadCompanyList();
-        }
-
-        /**
-         * Select company.
-         *
-         * @param companyId the company id
-         */
-        private void selectCompany(long companyId)
-        {
-                for (CompanyRecord record : this.companyItems)
-                {
-                        if (record != null && record.id() == companyId)
-                        {
-                                this.companyList.getSelectionModel().select(record);
-                                return;
-                        }
-                }
-        }
-
-        /**
-         * Show preview.
-         *
-         * @param record the record
-         */
-        private void showPreview(CompanyRecord record)
-        {
-                if (record == null)
-                {
-                        this.previewArea.clear();
-                        return;
-                }
-
-                try
-                {
-                        Company company = this.repository.load(record.id());
-                        StringBuilder sb = new StringBuilder();
-
-                        if (company.getCompanyProfileModel() != null)
-                        {
-                                sb.append("Name: ")
-                                        .append(nullToEmpty(company.getCompanyProfileModel().getCompanyName()))
-                                        .append('\n');
-                                sb.append("Base currency: ")
-                                        .append(nullToEmpty(company.getCompanyProfileModel().getBaseCurrency()))
-                                        .append('\n');
-                                sb.append("Fiscal year start: ")
-                                        .append(nullToEmpty(company.getCompanyProfileModel().getFiscalYearStart()))
-                                        .append('\n');
-                                sb.append("Default bank account: ")
-                                        .append(nullToEmpty(company.getCompanyProfileModel().getDefaultBankAccount()))
-                                        .append('\n');
-                        }
-
-                        sb.append("Accounts: ")
-                                .append(company.getChartOfAccounts() == null ? 0
-                                        : company.getChartOfAccounts().getAccounts().size())
-                                .append('\n');
-                        sb.append("Transactions: ")
-                                .append(company.getLedger() == null
-                                        || company.getLedger().getJournal() == null ? 0
-                                        : company.getLedger().getJournal().getJournalTransactions().size());
-
-                        this.previewArea.setText(sb.toString());
-                }
-                catch (IOException | SQLException e)
-                {
-                        this.previewArea.setText("Unable to preview company: " + e.getMessage());
-                }
-        }
-
-        /**
-         * Open selected.
-         */
-        void openSelected()
-        {
-                if (!Database.isInitialized())
-                {
-                        this.errorHandler.accept("Initialize the database before opening a company.");
-                        return;
-                }
-
-                CompanyRecord record = this.companyList.getSelectionModel().getSelectedItem();
-
-                if (record == null)
-                {
-                        this.errorHandler.accept("No company selected.");
-                        return;
-                }
-
-                try
-                {
-                        CurrentCompany.loadFromPersistent(record.id());
-                        PreferencesService.setLastUsedCompanyId(record.id());
-
-                        if (this.companyOpenedHandler != null)
-                        {
-                                this.companyOpenedHandler.onCompanyOpened(CurrentCompany.getCompany());
-                        }
-                }
-                catch (IOException e)
-                {
-                        this.errorHandler.accept("Failed to open company: " + e.getMessage());
-                }
-        }
-
-        /**
-         * Creates the new.
-         */
-        private void createNew()
-        {
-                if (!Database.isInitialized())
-                {
-                        this.errorHandler.accept("Initialize the database before creating a company.");
-                        return;
-                }
-
-                Stage owner = getScene() != null ? (Stage) getScene().getWindow() : null;
-                new CreateOrEditCompanyActionFX(owner);
-                reloadCompanyList();
-
-                if (this.companyOpenedHandler != null && CurrentCompany.getCompany() != null)
-                {
-                        this.companyOpenedHandler.onCompanyOpened(CurrentCompany.getCompany());
-                }
-        }
-
-        /**
-         * Creates the demo company.
-         */
-        private void createDemoCompany()
-        {
-                if (!Database.isInitialized())
-                {
-                        this.errorHandler.accept("Initialize the database before creating a demo company.");
-                        return;
-                }
-
-                Company demo = new Company();
-                this.demoCompanySeeder.seed(demo);
-
-                try
-                {
-                        long id = this.repository.save(null, demo);
-                        CurrentCompany.forceCompanyLoad(id, demo);
-                        PreferencesService.setLastUsedCompanyId(id);
-                        reloadCompanyList();
-                        selectCompany(id);
-
-                        if (this.companyOpenedHandler != null)
-                        {
-                                this.companyOpenedHandler.onCompanyOpened(demo);
-                        }
-                }
-                catch (IOException | SQLException ex)
-                {
-                        this.errorHandler.accept("Failed to create demo company: " + ex.getMessage());
-                }
-        }
-
-        /**
-         * Delete selected.
-         */
-        private void deleteSelected()
-        {
-                if (!Database.isInitialized())
-                {
-                        this.errorHandler.accept("Initialize the database before deleting companies.");
-                        return;
-                }
-
-                CompanyRecord record = this.companyList.getSelectionModel().getSelectedItem();
-
-                if (record == null)
-                {
-                        this.errorHandler.accept("Select a company to delete.");
-                        return;
-                }
-
-                Stage owner = getScene() != null ? (Stage) getScene().getWindow() : null;
-                Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-                        "Delete '" + record.name() + "'?", ButtonType.OK, ButtonType.CANCEL);
-
-                if (owner != null)
-                {
-                        confirm.initOwner(owner);
-                }
-
-                Optional<ButtonType> result = confirm.showAndWait();
-
-                if (result.isEmpty() || result.get() != ButtonType.OK)
-                {
-                        return;
-                }
-
-                try
-                {
-                        this.repository.delete(record.id());
-
-                        if (CurrentCompany.getCurrentCompanyId() != null
-                                && CurrentCompany.getCurrentCompanyId().equals(record.id()))
-                        {
-                                CurrentCompany.close();
-                        }
-
-                        reloadCompanyList();
-                }
-                catch (SQLException ex)
-                {
-                        this.errorHandler.accept("Failed to delete company: " + ex.getMessage());
-                }
-        }
-
-        /**
-         * Null to empty.
-         *
-         * @param value the value
-         * @return the string
-         */
-        private static String nullToEmpty(String value)
-        {
-                return value == null ? "" : value;
-        }
+	
+	/** The Constant UPDATED_FORMATTER. */
+	private static final DateTimeFormatter UPDATED_FORMATTER =
+		DateTimeFormatter.ofPattern("MMM d, yyyy h:mm a")
+			.withZone(ZoneId.systemDefault());
+	
+	/** Callback invoked when a company has been successfully opened. */
+	@FunctionalInterface
+	public interface OnCompanyOpenedHandler
+	{
+		
+		/**
+		 * On company opened.
+		 *
+		 * @param company the company
+		 */
+		void onCompanyOpened(Company company);
+		
+	}
+	
+	/** The repository. */
+	private final CompanyRepository repository = new CompanyRepository();
+	
+	/** The company list. */
+	private final ListView<CompanyRecord> companyList = new ListView<>();
+	
+	/** The company items. */
+	private final ObservableList<CompanyRecord> companyItems =
+		FXCollections.observableArrayList();
+	
+	/** The preview area. */
+	private final TextArea previewArea = new TextArea();
+	
+	/** The demo company seeder. */
+	private final DemoCompanySeeder demoCompanySeeder = new DemoCompanySeeder();
+	
+	/** The company opened handler. */
+	private OnCompanyOpenedHandler companyOpenedHandler;
+	
+	/** The error handler. */
+	private Consumer<String> errorHandler =
+		msg -> AlertBox.showError(null, msg);
+	
+	/**
+	 * Instantiates a new company selection panel FX.
+	 */
+	public CompanySelectionPanelFX()
+	{
+		setPadding(new Insets(10));
+		buildUI();
+		reloadCompanyList();
+		
+	}
+	
+	/**
+	 * Instantiates a new company selection panel FX.
+	 *
+	 * @param companyOpenedHandler the company opened handler
+	 */
+	public CompanySelectionPanelFX(OnCompanyOpenedHandler companyOpenedHandler)
+	{
+		this();
+		this.companyOpenedHandler = companyOpenedHandler;
+		
+	}
+	
+	/**
+	 * Allows callers to override how error messages are surfaced.
+	 *
+	 * @param handler the new on error
+	 */
+	public void setOnError(Consumer<String> handler)
+	{
+		
+		if (handler != null)
+		{
+			this.errorHandler = handler;
+		}
+		
+	}
+	
+	/**
+	 * Sets the handler that will be notified when the user opens a company.
+	 *
+	 * @param handler the new on company opened handler
+	 */
+	public void setOnCompanyOpenedHandler(OnCompanyOpenedHandler handler)
+	{
+		this.companyOpenedHandler = handler;
+		
+	}
+	
+	/**
+	 * Builds the UI.
+	 */
+	private void buildUI()
+	{
+		this.companyList.setItems(this.companyItems);
+		this.companyList.setCellFactory(list -> new ListCell<>()
+		{
+			@Override
+			protected void updateItem(CompanyRecord record, boolean empty)
+			{
+				super.updateItem(record, empty);
+				
+				if (empty || record == null)
+				{
+					setText(null);
+				}
+				else
+				{
+					String updatedText =
+						record.updatedAt() == null ? "Unknown" :
+							UPDATED_FORMATTER.format(record.updatedAt());
+					setText(String.format("%s (ID: %d) — Updated %s",
+						record.name(), record.id(), updatedText));
+				}
+				
+			}
+			
+		});
+		this.companyList.getSelectionModel().selectedItemProperty()
+			.addListener((obs, oldVal, newVal) -> showPreview(newVal));
+		
+		this.previewArea.setEditable(false);
+		this.previewArea.setWrapText(true);
+		
+		SplitPane splitPane = new SplitPane(this.companyList, this.previewArea);
+		splitPane.setDividerPositions(0.4);
+		setCenter(splitPane);
+		
+		Button openBtn = new Button("Open Selected");
+		Button createBtn = new Button("Create New Company…");
+		Button demoBtn = new Button("Create Demo Company");
+		Button deleteBtn = new Button("Delete Selected");
+		openBtn.setOnAction(e -> openSelected());
+		createBtn.setOnAction(e -> createNew());
+		demoBtn.setOnAction(e -> createDemoCompany());
+		deleteBtn.setOnAction(e -> deleteSelected());
+		
+		HBox buttons = new HBox(10, openBtn, createBtn, demoBtn, deleteBtn);
+		buttons.setPadding(new Insets(8));
+		HBox.setHgrow(openBtn, Priority.NEVER);
+		HBox.setHgrow(createBtn, Priority.NEVER);
+		setBottom(buttons);
+		
+	}
+	
+	/**
+	 * Reload company list.
+	 */
+	private void reloadCompanyList()
+	{
+		this.companyItems.clear();
+		
+		if (!Database.isInitialized())
+		{
+			this.previewArea
+				.setText("Initialize the H2 database to manage companies.");
+			return;
+		}
+		
+		try
+		{
+			this.companyItems.addAll(this.repository.listCompanies());
+		}
+		catch (SQLException e)
+		{
+			this.errorHandler
+				.accept("Failed to load companies: " + e.getMessage());
+		}
+		
+		if (!this.companyItems.isEmpty())
+		{
+			this.companyList.getSelectionModel().selectFirst();
+		}
+		else
+		{
+			this.previewArea.setText("No companies available.");
+		}
+		
+	}
+	
+	/** Public hook allowing the surrounding UI to refresh the listing. */
+	public void refreshCompanyList()
+	{
+		reloadCompanyList();
+		
+	}
+	
+	/**
+	 * Select company.
+	 *
+	 * @param companyId the company id
+	 */
+	private void selectCompany(long companyId)
+	{
+		
+		for (CompanyRecord record : this.companyItems)
+		{
+			
+			if (record != null && record.id() == companyId)
+			{
+				this.companyList.getSelectionModel().select(record);
+				return;
+			}
+			
+		}
+		
+	}
+	
+	/**
+	 * Show preview.
+	 *
+	 * @param record the record
+	 */
+	private void showPreview(CompanyRecord record)
+	{
+		
+		if (record == null)
+		{
+			this.previewArea.clear();
+			return;
+		}
+		
+		try
+		{
+			Company company = this.repository.load(record.id());
+			StringBuilder sb = new StringBuilder();
+			
+			if (company.getCompanyProfileModel() != null)
+			{
+				sb.append("Name: ")
+					.append(nullToEmpty(
+						company.getCompanyProfileModel().getCompanyName()))
+					.append('\n');
+				sb.append("Base currency: ")
+					.append(nullToEmpty(
+						company.getCompanyProfileModel().getBaseCurrency()))
+					.append('\n');
+				sb.append("Fiscal year start: ")
+					.append(nullToEmpty(
+						company.getCompanyProfileModel().getFiscalYearStart()))
+					.append('\n');
+				sb.append("Default bank account: ")
+					.append(nullToEmpty(company.getCompanyProfileModel()
+						.getDefaultBankAccount()))
+					.append('\n');
+			}
+			
+			sb.append("Accounts: ")
+				.append(company.getChartOfAccounts() == null ? 0 :
+					company.getChartOfAccounts().getAccounts().size())
+				.append('\n');
+			sb.append("Transactions: ")
+				.append(company.getLedger() == null ||
+					company.getLedger().getJournal() == null ? 0 :
+						company.getLedger().getJournal()
+							.getJournalTransactions().size());
+			
+			this.previewArea.setText(sb.toString());
+		}
+		catch (IOException | SQLException e)
+		{
+			this.previewArea
+				.setText("Unable to preview company: " + e.getMessage());
+		}
+		
+	}
+	
+	/**
+	 * Open selected.
+	 */
+	void openSelected()
+	{
+		
+		if (!Database.isInitialized())
+		{
+			this.errorHandler
+				.accept("Initialize the database before opening a company.");
+			return;
+		}
+		
+		CompanyRecord record =
+			this.companyList.getSelectionModel().getSelectedItem();
+		
+		if (record == null)
+		{
+			this.errorHandler.accept("No company selected.");
+			return;
+		}
+		
+		try
+		{
+			CurrentCompany.loadFromPersistent(record.id());
+			PreferencesService.setLastUsedCompanyId(record.id());
+			
+			if (this.companyOpenedHandler != null)
+			{
+				this.companyOpenedHandler
+					.onCompanyOpened(CurrentCompany.getCompany());
+			}
+			
+		}
+		catch (IOException e)
+		{
+			this.errorHandler
+				.accept("Failed to open company: " + e.getMessage());
+		}
+		
+	}
+	
+	/**
+	 * Creates the new.
+	 */
+	private void createNew()
+	{
+		
+		if (!Database.isInitialized())
+		{
+			this.errorHandler
+				.accept("Initialize the database before creating a company.");
+			return;
+		}
+		
+		Stage owner =
+			getScene() != null ? (Stage) getScene().getWindow() : null;
+		new CreateOrEditCompanyActionFX(owner);
+		reloadCompanyList();
+		
+		if (this.companyOpenedHandler != null &&
+			CurrentCompany.getCompany() != null)
+		{
+			this.companyOpenedHandler
+				.onCompanyOpened(CurrentCompany.getCompany());
+		}
+		
+	}
+	
+	/**
+	 * Creates the demo company.
+	 */
+	private void createDemoCompany()
+	{
+		
+		if (!Database.isInitialized())
+		{
+			this.errorHandler.accept(
+				"Initialize the database before creating a demo company.");
+			return;
+		}
+		
+		Company demo = new Company();
+		this.demoCompanySeeder.seed(demo);
+		
+		try
+		{
+			long id = this.repository.save(null, demo);
+			CurrentCompany.forceCompanyLoad(id, demo);
+			PreferencesService.setLastUsedCompanyId(id);
+			reloadCompanyList();
+			selectCompany(id);
+			
+			if (this.companyOpenedHandler != null)
+			{
+				this.companyOpenedHandler.onCompanyOpened(demo);
+			}
+			
+		}
+		catch (IOException | SQLException ex)
+		{
+			this.errorHandler
+				.accept("Failed to create demo company: " + ex.getMessage());
+		}
+		
+	}
+	
+	/**
+	 * Delete selected.
+	 */
+	private void deleteSelected()
+	{
+		
+		if (!Database.isInitialized())
+		{
+			this.errorHandler
+				.accept("Initialize the database before deleting companies.");
+			return;
+		}
+		
+		CompanyRecord record =
+			this.companyList.getSelectionModel().getSelectedItem();
+		
+		if (record == null)
+		{
+			this.errorHandler.accept("Select a company to delete.");
+			return;
+		}
+		
+		Stage owner =
+			getScene() != null ? (Stage) getScene().getWindow() : null;
+		Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+			"Delete '" + record.name() + "'?", ButtonType.OK,
+			ButtonType.CANCEL);
+		
+		if (owner != null)
+		{
+			confirm.initOwner(owner);
+		}
+		
+		Optional<ButtonType> result = confirm.showAndWait();
+		
+		if (result.isEmpty() || result.get() != ButtonType.OK)
+		{
+			return;
+		}
+		
+		try
+		{
+			this.repository.delete(record.id());
+			
+			if (CurrentCompany.getCurrentCompanyId() != null &&
+				CurrentCompany.getCurrentCompanyId().equals(record.id()))
+			{
+				CurrentCompany.close();
+			}
+			
+			reloadCompanyList();
+		}
+		catch (SQLException ex)
+		{
+			this.errorHandler
+				.accept("Failed to delete company: " + ex.getMessage());
+		}
+		
+	}
+	
+	/**
+	 * Null to empty.
+	 *
+	 * @param value the value
+	 * @return the string
+	 */
+	private static String nullToEmpty(String value)
+	{
+		return value == null ? "" : value;
+		
+	}
+	
 }
