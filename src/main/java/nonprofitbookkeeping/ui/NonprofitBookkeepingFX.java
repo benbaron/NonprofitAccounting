@@ -116,6 +116,8 @@ public class NonprofitBookkeepingFX extends Application
 	private MenuItem miExportStatementOfx;
 	/** Menu item for importing financial files directly into the data model. */
 	private MenuItem miImportFile;
+	/** Menu item for importing an SCLX file into the data model. */
+	private MenuItem miImportSclx;
 	/** Menu item for loading an SCA XLSM workbook via the plugin. */
 	private MenuItem miLoadScaXlsm;
 	/** Menu item for importing an SCA Excel ledger via the plugin. */
@@ -398,14 +400,14 @@ public class NonprofitBookkeepingFX extends Application
 			e -> new ExportCoaXlsxActionFX(this.primaryStage).handle(e));
 		fileMenu.getItems().add(new SeparatorMenuItem());
 
-\t\tthis.miImportFile =
-\t\t\tadd(fileMenu, "Import Financial File (OFX/QFX)...",
-\t\t\t\te -> new ImportFileActionFX(this.primaryStage).handle(e));
-\t\tthis.miImportSclx =
-\t\t\tadd(fileMenu, "Import SCLX...",
-\t\t\t\te -> new ImportSclxActionFX(this.primaryStage).handle(e));
-\t\t
-\t\tthis.miImportScaExcel = new MenuItem("Import Outlands Ledger...");
+		this.miImportFile =
+			add(fileMenu, "Import Financial File (OFX/QFX)...",
+				e -> new ImportFileActionFX(this.primaryStage).handle(e));
+		this.miImportSclx =
+			add(fileMenu, "Import SCLX...",
+				e -> new ImportSclxActionFX(this.primaryStage).handle(e));
+
+		this.miImportScaExcel = new MenuItem("Import Outlands Ledger...");
 		this.miImportScaExcel.setOnAction(
 			e -> new ImportFromOutlandsLedgerActionFX(this.primaryStage,
 				this.scaExcelViewerPanel).handle(e));
@@ -1138,17 +1140,17 @@ public class NonprofitBookkeepingFX extends Application
 		this.miImportCoaXlsx.setDisable(!companyOpen || creatingCompany);
 		this.miExportCoaXlsx.setDisable(!companyOpen || creatingCompany);
 
-\t\tif (this.miImportFile != null)
-\t\t{
-\t\t\tthis.miImportFile.setDisable(!companyOpen || creatingCompany);
-\t\t}
-\t\t
-\t\tif (this.miImportSclx != null)
-\t\t{
-\t\t\tthis.miImportSclx.setDisable(!companyOpen || creatingCompany);
-\t\t}
-\t\t
-\t\tif (this.miPersistScaLedger != null)
+		if (this.miImportFile != null)
+		{
+			this.miImportFile.setDisable(!companyOpen || creatingCompany);
+		}
+
+		if (this.miImportSclx != null)
+		{
+			this.miImportSclx.setDisable(!companyOpen || creatingCompany);
+		}
+
+		if (this.miPersistScaLedger != null)
 		{
 			this.miPersistScaLedger
 				.setDisable(!companyOpen || creatingCompany);
