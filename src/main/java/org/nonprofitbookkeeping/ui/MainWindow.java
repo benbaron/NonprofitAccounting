@@ -19,6 +19,7 @@ import nonprofitbookkeeping.service.SalesService;
 import nonprofitbookkeeping.service.SettingsService;
 import nonprofitbookkeeping.service.UndepositedFundsService;
 import nonprofitbookkeeping.plugins.scaledger.SCALedgerPlugin;
+import nonprofitbookkeeping.tools.H2ScriptCompanyExporter;
 import nonprofitbookkeeping.tools.H2ScriptCompanyImporter;
 import nonprofitbookkeeping.ui.actions.ExcelTemplateReportActionFX;
 import nonprofitbookkeeping.ui.actions.ExportCoaXlsxActionFX;
@@ -47,7 +48,10 @@ import nonprofitbookkeeping.ui.panels.SettingsPanelFX;
 import nonprofitbookkeeping.ui.panels.UndepositedFundsPanelFX;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
+import java.sql.SQLException;
+import java.util.Locale;
 import java.util.function.Supplier;
 
 /**
@@ -161,6 +165,8 @@ public class MainWindow extends BorderPane
                 this::handleImportLegacyArchive),
             item("Import H2 script into DB...", null,
                 this::handleImportH2Script),
+            item("Export DB to H2 script...", null,
+                this::handleExportH2Script),
             item("Run SQL Query...", null,
                 this::openSqlQueryDialog)
         );
@@ -427,6 +433,43 @@ public class MainWindow extends BorderPane
         catch (Exception ex)
         {
             info("H2 script import failed: " + UiErrors.safeMessage(ex));
+        }
+    }
+
+    private void handleExportH2Script()
+    {
+        if (!Database.isInitialized())
+        {
+            info("Open/Create an H2 database first.");
+            return;
+        }
+
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Export H2 SQL Script");
+        chooser.getExtensionFilters().setAll(
+            new FileChooser.ExtensionFilter("SQL script (*.sql)", "*.sql"),
+            new FileChooser.ExtensionFilter("All Files", "*.*"));
+
+        File file = chooser.showSaveDialog(getOwningStage());
+        if (file == null)
+        {
+            return;
+        }
+
+        Path outputPath = file.toPath();
+        if (!outputPath.getFileName().toString().toLowerCase(Locale.ROOT).endsWith(".sql"))
+        {
+            outputPath = outputPath.resolveSibling(outputPath.getFileName() + ".sql");
+        }
+
+        try
+        {
+            H2ScriptCompanyExporter.exportScript(outputPath);
+            info("H2 script exported: " + outputPath.toAbsolutePath());
+        }
+        catch (IOException | SQLException ex)
+        {
+            info("H2 script export failed: " + UiErrors.safeMessage(ex));
         }
     }
 
