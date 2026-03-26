@@ -382,7 +382,8 @@ public class NonprofitBookkeepingFX extends Application
 				this.applicationContext.getMenuBar() : new MenuBar();
 		bar.getMenus().clear();
 		
-		/* FILE */
+		/* FILE 
+		 * ----------------------- */
 		Menu fileMenu = new Menu("File");
 		this.miOpen = add(fileMenu, "Open Company", e -> doOpenCompany());
 		this.miOpen.setAccelerator(
@@ -442,7 +443,8 @@ public class NonprofitBookkeepingFX extends Application
 			e -> new ExportFileActionFX(this.primaryStage).handle(e));
 		bar.getMenus().add(fileMenu);
 		
-		/* EDIT */
+		/* EDIT 
+		 * ---------------- */
 		Menu edit = new Menu("Edit");
 		this.miEditCompany =
 			add(edit, "Create or Edit Company", e -> startCreateWizard());
@@ -455,10 +457,10 @@ public class NonprofitBookkeepingFX extends Application
 		this.miEditJournal.setAccelerator(
 			new KeyCodeCombination(KeyCode.J, KeyCombination.CONTROL_DOWN));
 		
-		
 		bar.getMenus().add(edit);
 		
-		/* RUN */
+		/* RUN 
+		 * ------------------ */
 		this.runMenu = new Menu("Run");
 		add(this.runMenu, "Reports Workspace",
 			e -> ((MainApplicationView) this.root)
@@ -488,11 +490,13 @@ public class NonprofitBookkeepingFX extends Application
 			e -> new ExcelTemplateReportActionFX(this.primaryStage).handle(e));
 		bar.getMenus().add(this.runMenu);
 		
-		/* DATABASE */
+		/* DATABASE 
+		 * -------------  */
 		this.databaseMenu = createDatabaseMenu();
 		bar.getMenus().add(this.databaseMenu);
 		
-		/* REPORTS */
+		/* REPORTS 
+		 * --------------- */
 		this.reports = new Menu("Reports");
 		add(this.reports, "Income Statement",
 			e -> ((MainApplicationView) this.root)
@@ -504,9 +508,9 @@ public class NonprofitBookkeepingFX extends Application
 			e -> ((MainApplicationView) this.root)
 				.showPanel(MainApplicationView.PanelType.ACCOUNT_DETAILS));
 		bar.getMenus().add(this.reports);
-		
-		
-		/* FUNDRAISING */
+				
+		/* FUNDRAISING 
+		 * ------------------*/
 		this.fundraisingMenu = new Menu("Fundraising");
 		add(this.fundraisingMenu, "Donors",
 			e -> showPanel(
@@ -524,7 +528,8 @@ public class NonprofitBookkeepingFX extends Application
 				"Funds"));
 		bar.getMenus().add(this.fundraisingMenu);
 		
-		/* SETTINGS */
+		/* SETTINGS 
+		 * ---------- */
 		Menu settings = new Menu("Settings");
 		add(settings, "Show Settings", e -> {
 			ensureSettingsLoaded();
@@ -555,12 +560,6 @@ public class NonprofitBookkeepingFX extends Application
 		
 		bar.getMenus().add(this.pluginsMenu);
 		
-		/* HELP */
-		Menu help = new Menu("Help");
-		add(help, "Help",
-			e -> showPanel(new HelpPanelFX(this.primaryStage), "Help"));
-		bar.getMenus().add(help);
-		
 		// Add plugin menu items
 		LOGGER.info("Adding plugin menu items. Number of plugins: {}",
 			(this.loadedPlugins != null ? this.loadedPlugins.size() : 0));
@@ -587,6 +586,12 @@ public class NonprofitBookkeepingFX extends Application
 			}
 			
 		}
+				
+		/* HELP */
+		Menu help = new Menu("Help");
+		add(help, "Help",
+			e -> showPanel(new HelpPanelFX(this.primaryStage), "Help"));
+		bar.getMenus().add(help);
 		
 		return bar;
 		
