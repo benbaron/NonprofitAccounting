@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
+import java.sql.SQLException;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.ArrayList;
@@ -58,6 +59,7 @@ import nonprofitbookkeeping.ui.actions.scaledger.SaveModifiedCopyActionFX;
 import nonprofitbookkeeping.plugins.scaledger.ui.PageViewerPanel;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 import nonprofitbookkeeping.ui.panels.*;
+import nonprofitbookkeeping.tools.H2ScriptCompanyExporter;
 import nonprofitbookkeeping.tools.H2ScriptCompanyImporter;
 
 
@@ -678,6 +680,7 @@ public class NonprofitBookkeepingFX extends Application
 			e -> handleImportLegacyArchive());
 		add(db, "Import H2 script into DB...",
 			e -> handleImportScriptIntoDatabase());
+		add(db, "Export DB to H2 script...", e -> handleExportScriptFromDatabase());
 		add(db, "Run SQL Query...", e -> showPanel(new SqlQueryPanelFX(),
 			"SQL Query"));
 		return db;
@@ -913,6 +916,57 @@ public class NonprofitBookkeepingFX extends Application
 			alert.showAndWait();
 		}
 		
+	}
+
+	/**
+	 * Handle export script from database.
+	 */
+	private void handleExportScriptFromDatabase()
+	{
+		if (!Database.isInitialized())
+		{
+			Alert alert = new Alert(Alert.AlertType.WARNING,
+				"Open/Create an H2 DB first.");
+			alert.setHeaderText("Database Not Ready");
+			alert.showAndWait();
+			return;
+		}
+
+		FileChooser chooser = new FileChooser();
+		chooser.setTitle("Export H2 SQL Script");
+		chooser.getExtensionFilters().setAll(
+			new FileChooser.ExtensionFilter("SQL scripts", "*.sql"),
+			new FileChooser.ExtensionFilter("All Files", "*.*"));
+		File file = chooser.showSaveDialog(this.primaryStage);
+
+		if (file == null)
+		{
+			return;
+		}
+
+		Path outputFile = file.toPath();
+		if (!outputFile.getFileName().toString().toLowerCase(Locale.ROOT)
+			.endsWith(".sql"))
+		{
+			outputFile = outputFile.resolveSibling(outputFile.getFileName() + ".sql");
+		}
+
+		try
+		{
+			H2ScriptCompanyExporter.exportScript(outputFile);
+			Alert alert = new Alert(Alert.AlertType.INFORMATION,
+				"Exported database script to:\n" + outputFile.toAbsolutePath());
+			alert.setHeaderText("Export Complete");
+			alert.showAndWait();
+		}
+		catch (IOException | SQLException ex)
+		{
+			LOGGER.error("Failed to export H2 script: {}", outputFile, ex);
+			Alert alert = new Alert(Alert.AlertType.ERROR,
+				"Export failed: " + ex.getMessage());
+			alert.setHeaderText("Export Error");
+			alert.showAndWait();
+		}
 	}
 	
 	private static Path normalizeH2Base(Path chosen)
