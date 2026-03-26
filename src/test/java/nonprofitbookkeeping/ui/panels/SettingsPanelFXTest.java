@@ -19,6 +19,7 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
 import nonprofitbookkeeping.model.SettingsModel;
 import nonprofitbookkeeping.service.SettingsService;
 import nonprofitbookkeeping.ui.JavaFXTestBase;
+import nonprofitbookkeeping.ui.UiThemePreference;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -204,8 +205,8 @@ public class SettingsPanelFXTest extends JavaFXTestBase
         {
                 selectTab("UI Preferences");
 
-                ComboBox<String> themeCombo = castComboBox(lookupComboBoxByLabel("Theme:"));
-                verifyThat(themeCombo, hasComboBoxValue("Dark"));
+                ComboBox<UiThemePreference> themeCombo = castComboBox(lookupComboBoxByLabel("Theme:"));
+                verifyThat(themeCombo, hasComboBoxValue(UiThemePreference.DARK));
 
                 ComboBox<Locale> languageCombo = castComboBox(lookupComboBoxByLabel("Language:"));
                 verifyThat(languageCombo, hasComboBoxValue(Locale.forLanguageTag("es-ES")));
@@ -213,12 +214,12 @@ public class SettingsPanelFXTest extends JavaFXTestBase
                 verifyThat(lookupTextFieldByLabel("Currency Format:"), hasTextInField("¤#,##0.00"));
 
                 Platform.runLater(() -> {
-                        themeCombo.setValue("Light");
+                        themeCombo.setValue(UiThemePreference.LIGHT);
                         languageCombo.setValue(Locale.forLanguageTag("fr-FR"));
                 });
                 WaitForAsyncUtils.waitForFxEvents();
 
-                verifyThat(themeCombo, hasComboBoxValue("Light"));
+                verifyThat(themeCombo, hasComboBoxValue(UiThemePreference.LIGHT));
                 verifyThat(languageCombo, hasComboBoxValue(Locale.forLanguageTag("fr-FR")));
         }
 
