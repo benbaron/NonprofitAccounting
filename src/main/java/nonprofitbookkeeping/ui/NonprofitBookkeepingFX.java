@@ -169,6 +169,7 @@ public class NonprofitBookkeepingFX extends Application
 	private final PluginInitializationService pluginInitializationService = new PluginInitializationService();
 	private final SettingsInitializationService settingsInitializationService = new SettingsInitializationService();
 	private final LegacyCommandRegistry commandRegistry = new LegacyCommandRegistry();
+	private boolean menuCommandsRegistered;
 	/** Tracks whether settings have been loaded from persistent storage. */
 	private boolean settingsLoaded;
 	/** Executor managing background autosave tasks. */
@@ -482,7 +483,7 @@ public class NonprofitBookkeepingFX extends Application
 		/* SETTINGS 
 		 * ---------- */
 		Menu settings = new Menu("Settings");
-add(settings, "Show Settings", "settings.show");
+		add(settings, "Show Settings", "settings.show");
 		bar.getMenus().add(settings);
 		
 		/* PLUGINS */
@@ -537,6 +538,11 @@ add(settings, "Show Settings", "settings.show");
 
 	private void registerMenuCommands()
 	{
+		if (menuCommandsRegistered)
+		{
+			return;
+		}
+
 		commandRegistry.register("file.openCompany", this::doOpenCompany)
 			.register("file.closeCompany", this::doCloseCompany)
 			.register("file.saveCompany", this::doSaveCompany)
@@ -570,6 +576,7 @@ add(settings, "Show Settings", "settings.show");
 			.register("database.importH2Script", this::handleImportScriptIntoDatabase)
 			.register("database.exportH2Script", this::handleExportScriptFromDatabase)
 			.register("database.sqlQuery", () -> showPanel(new SqlQueryPanelFX(), "SQL Query"));
+		menuCommandsRegistered = true;
 	}
 
 	private void showSettingsPanel()
