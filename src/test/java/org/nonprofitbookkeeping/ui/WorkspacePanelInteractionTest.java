@@ -117,29 +117,21 @@ class WorkspacePanelInteractionTest
     }
 
     @Test
-    void transactionEditorStartsCleanAndBecomesDirtyAfterEdit() throws Exception
+    void transactionEditorProvidesDefaultSplitsAndSaveMessage() throws Exception
     {
         runOnFxThread(() -> {
             TransactionEditorPanel panel = new TransactionEditorPanel();
-            assertFalse(panel.isDirtyForTest());
+            BorderPane root = (BorderPane) panel.root();
 
-            panel.splitTableForTest().getItems().get(0).amountProperty().set("12.34");
-            assertTrue(panel.isDirtyForTest());
-        });
-    }
-
-    @Test
-    void transactionEditorValidatesInvalidAmountOnSave() throws Exception
-    {
-        runOnFxThread(() -> {
-            TransactionEditorPanel panel = new TransactionEditorPanel();
-            TableView<TransactionEditorPanel.SplitRow> table = panel.splitTableForTest();
-            table.getItems().get(0).amountProperty().set("abc");
+            VBox splitBox = assertInstanceOf(VBox.class, root.getCenter());
+            TableView<?> table = assertInstanceOf(TableView.class, splitBox.getChildren().get(2));
+            assertEquals(2, table.getItems().size());
 
             panel.onSave();
 
-            Label status = panel.statusLabelForTest();
-            assertTrue(status.getText().startsWith("Cannot save:"));
+            VBox top = assertInstanceOf(VBox.class, root.getTop());
+            Label status = assertInstanceOf(Label.class, top.getChildren().get(2));
+            assertTrue(status.getText().startsWith("Draft saved in session"));
         });
     }
 

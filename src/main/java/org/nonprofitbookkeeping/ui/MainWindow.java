@@ -51,7 +51,7 @@ import java.util.Optional;
 /**
  * Represents the MainWindow component in the nonprofit bookkeeping application.
  */
-public class MainWindow extends BorderPane
+public class MainWindow extends BorderPane implements ShellOwner
 {
     private static final UiSessionState SESSION_STATE = new UiSessionState();
 
