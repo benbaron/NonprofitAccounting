@@ -70,6 +70,7 @@ public class MainWindow extends BorderPane
     private final Map<String, ViewPreset> viewPresets = new LinkedHashMap<>();
     private final Map<MenuItem, UserPrivilegeLevel> gatedMenuItems = new LinkedHashMap<>();
     private final Map<ButtonBase, UserPrivilegeLevel> gatedButtons = new LinkedHashMap<>();
+    private PluginBootstrap pluginBootstrap;
 
     public MainWindow()
     {
@@ -99,6 +100,22 @@ public class MainWindow extends BorderPane
 
         DrillThroughCoordinator.configureOpener(this::openPanel);
         openPanel(AppPanelId.LEDGER_REGISTER);
+    }
+
+
+    public void initializePlugins(javafx.stage.Stage stage)
+    {
+        if (stage == null || pluginBootstrap != null)
+        {
+            return;
+        }
+
+        if (!(getTop() instanceof VBox chrome) || chrome.getChildren().isEmpty() || !(chrome.getChildren().get(0) instanceof MenuBar menuBar))
+        {
+            return;
+        }
+
+        pluginBootstrap = PluginBootstrap.initialize(stage, menuBar);
     }
 
     static UiSessionState sharedSessionState()
