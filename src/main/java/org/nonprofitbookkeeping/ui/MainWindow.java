@@ -51,7 +51,7 @@ import java.util.Optional;
 /**
  * Represents the MainWindow component in the nonprofit bookkeeping application.
  */
-public class MainWindow extends BorderPane
+public class MainWindow extends BorderPane implements ShellOwner
 {
     private static final UiSessionState SESSION_STATE = new UiSessionState();
 
@@ -99,6 +99,25 @@ public class MainWindow extends BorderPane
 
         DrillThroughCoordinator.configureOpener(this::openPanel);
         openPanel(AppPanelId.LEDGER_REGISTER);
+    }
+
+
+    @Override
+    public NavigationPane navigationPane()
+    {
+        return nav;
+    }
+
+    @Override
+    public PanelHost panelHost()
+    {
+        return panelHost;
+    }
+
+    @Override
+    public InspectorPane inspectorPane()
+    {
+        return inspectorPane;
     }
 
     static UiSessionState sharedSessionState()
