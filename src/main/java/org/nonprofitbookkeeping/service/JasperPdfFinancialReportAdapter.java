@@ -7,11 +7,13 @@ import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.design.JRDesignBand;
+import net.sf.jasperreports.engine.design.JRDesignExpression;
+import net.sf.jasperreports.engine.design.JRDesignParameter;
+import net.sf.jasperreports.engine.design.JRDesignSection;
+import net.sf.jasperreports.engine.design.JRDesignTextField;
 import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -31,7 +33,8 @@ public class JasperPdfFinancialReportAdapter implements FinancialReportExportAda
     {
         try
         {
-            JasperDesign design = JRXmlLoader.load(new ByteArrayInputStream(template().getBytes(StandardCharsets.UTF_8)));
+            System.setProperty("java.awt.headless", "true");
+            JasperDesign design = design();
             var report = JasperCompileManager.compileReport(design);
 
             Map<String, Object> params = new LinkedHashMap<>();
@@ -48,42 +51,51 @@ public class JasperPdfFinancialReportAdapter implements FinancialReportExportAda
         }
     }
 
-    private static String template()
+    private static JasperDesign design() throws JRException
     {
-        return """
-                <?xml version="1.0" encoding="UTF-8"?>
-                <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
-                              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-                              name="financial_report"
-                              pageWidth="595" pageHeight="842" columnWidth="515"
-                              leftMargin="40" rightMargin="40" topMargin="30" bottomMargin="30"
-                              uuid="a6df5f0f-1f4d-4ccf-9f40-7341b9281264">
-                  <parameter name="REPORT_TITLE" class="java.lang.String"/>
-                  <parameter name="REPORT_BODY" class="java.lang.String"/>
-                  <title>
-                    <band height="24">
-                      <textField>
-                        <reportElement x="0" y="0" width="515" height="20"/>
-                        <textElement>
-                          <font size="14" isBold="true"/>
-                        </textElement>
-                        <textFieldExpression><![CDATA[$P{REPORT_TITLE}]]></textFieldExpression>
-                      </textField>
-                    </band>
-                  </title>
-                  <detail>
-                    <band height="760">
-                      <textField isStretchWithOverflow="true">
-                        <reportElement x="0" y="0" width="515" height="740"/>
-                        <textElement>
-                          <font size="10"/>
-                        </textElement>
-                        <textFieldExpression><![CDATA[$P{REPORT_BODY}]]></textFieldExpression>
-                      </textField>
-                    </band>
-                  </detail>
-                </jasperReport>
-                """;
+        JasperDesign design = new JasperDesign();
+        design.setName("financial_report");
+        design.setPageWidth(595);
+        design.setPageHeight(842);
+        design.setLeftMargin(40);
+        design.setRightMargin(40);
+        design.setTopMargin(30);
+        design.setBottomMargin(30);
+        design.setColumnWidth(515);
+
+        JRDesignParameter titleParam = new JRDesignParameter();
+        titleParam.setName("REPORT_TITLE");
+        titleParam.setValueClass(String.class);
+        design.addParameter(titleParam);
+
+        JRDesignParameter bodyParam = new JRDesignParameter();
+        bodyParam.setName("REPORT_BODY");
+        bodyParam.setValueClass(String.class);
+        design.addParameter(bodyParam);
+
+        JRDesignBand detailBand = new JRDesignBand();
+        detailBand.setHeight(760);
+
+        JRDesignTextField titleField = new JRDesignTextField();
+        titleField.setX(0);
+        titleField.setY(0);
+        titleField.setWidth(515);
+        titleField.setHeight(20);
+        titleField.setFontSize(14f);
+        titleField.setBold(true);
+        titleField.setExpression(new JRDesignExpression("$P{REPORT_TITLE}"));
+        detailBand.addElement(titleField);
+
+        JRDesignTextField bodyField = new JRDesignTextField();
+        bodyField.setX(0);
+        bodyField.setY(24);
+        bodyField.setWidth(515);
+        bodyField.setHeight(716);
+        bodyField.setFontSize(10f);
+        bodyField.setExpression(new JRDesignExpression("$P{REPORT_BODY}"));
+        detailBand.addElement(bodyField);
+
+        ((JRDesignSection) design.getDetailSection()).addBand(detailBand);
+        return design;
     }
 }
