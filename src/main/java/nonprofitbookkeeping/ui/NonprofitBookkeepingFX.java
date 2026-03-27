@@ -53,6 +53,12 @@ import nonprofitbookkeeping.util.FormatUtils;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonJournalPanel;
 import nonprofitbookkeeping.plugins.scaledger.SCALedgerPlugin;
 import nonprofitbookkeeping.ui.actions.*;
+import nonprofitbookkeeping.ui.adapters.LegacyWorkspaceNavigator;
+import nonprofitbookkeeping.ui.adapters.MainApplicationViewNavigatorAdapter;
+import nonprofitbookkeeping.ui.bootstrap.PluginInitializationService;
+import nonprofitbookkeeping.ui.bootstrap.SettingsInitializationService;
+import nonprofitbookkeeping.ui.bootstrap.StageDecoratorService;
+import nonprofitbookkeeping.ui.commands.LegacyCommandRegistry;
 import nonprofitbookkeeping.ui.actions.scaledger.ImportFromOutlandsLedgerActionFX;
 import nonprofitbookkeeping.ui.actions.ImportSclxActionFX;
 import nonprofitbookkeeping.ui.actions.scaledger.SaveModifiedCopyActionFX;
@@ -77,6 +83,8 @@ public class NonprofitBookkeepingFX extends Application
 	private BorderPane root; // Should be MainApplicationView
 	/** Strongly typed reference to the main workspace view. */
 	private MainApplicationView mainView;
+	/** Adapter abstraction over main workspace navigation. */
+	private LegacyWorkspaceNavigator workspaceNavigator;
 	/** Shared company selection panel displayed when no company is open. */
 	private CompanySelectionPanelFX companySelectionPanel;
 	
@@ -157,6 +165,11 @@ public class NonprofitBookkeepingFX extends Application
 	private ApplicationContext applicationContext;
 	/** Service responsible for persisting application settings. */
 	private final SettingsService settingsService = new SettingsService();
+	private final StageDecoratorService stageDecoratorService = new StageDecoratorService();
+	private final PluginInitializationService pluginInitializationService = new PluginInitializationService();
+	private final SettingsInitializationService settingsInitializationService = new SettingsInitializationService();
+	private final LegacyCommandRegistry commandRegistry = new LegacyCommandRegistry();
+	private boolean menuCommandsRegistered;
 	/** Tracks whether settings have been loaded from persistent storage. */
 	private boolean settingsLoaded;
 	/** Executor managing background autosave tasks. */
@@ -247,30 +260,16 @@ public class NonprofitBookkeepingFX extends Application
 	@Override
 	public void start(Stage stage)
 	{
-		// Add a shutdown hook to save company data when the application exits.
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-			// Save data
-			doSaveCompany(); // Attempt to save company data
-		}));
-		
-		// Configure SLF4J logging bridge
-		SLF4JBridgeHandler.removeHandlersForRootLogger();
-		SLF4JBridgeHandler.install();
-		
-		System.setProperty("net.sf.jasperreports.debug", "true");
-		System.setProperty("net.sf.jasperreports.compile.class.debug", "true");
-		System.setProperty("net.sf.jasperreports.compile.keep.java.file",
-			"true");
-		System.setProperty("net.sf.jasperreports.compiler.temp.dir",
-			"C:/Users/benba/eclipse-workspace");
-		
-		stage.getIcons().addAll(
-			new Image(getClass().getResourceAsStream("../../cg-128px.png")));
+		stageDecoratorService.installShutdownHook(this::doSaveCompany);
+		stageDecoratorService.configureLoggingBridge();
+		stageDecoratorService.configureRuntimeProperties();
+		stageDecoratorService.applyStageIcon(stage, getClass());
 		this.primaryStage = stage;
 		
 		// -----------------------------------------
 		// Instantiate MainApplicationView
 		this.mainView = new MainApplicationView();
+		this.workspaceNavigator = new MainApplicationViewNavigatorAdapter(this.mainView);
 		
 		// -----------------------------------------
 		// Assign MainApplicationView to root
@@ -301,36 +300,18 @@ public class NonprofitBookkeepingFX extends Application
 			.add(new nonprofitbookkeeping.plugins.scaledger.SCALedgerPlugin());
 		pluginsToLoad
 			.add(new nonprofitbookkeeping.plugins.sample.SamplePlugin());
-		
-		for (Plugin plugin : pluginsToLoad)
+		this.loadedPlugins = pluginInitializationService.initialize(
+			pluginsToLoad,
+			this.applicationContext,
+			LOGGER,
+			(plugin, exception) -> AlertBox.showError(this.primaryStage, "Plugin Load Error"));
+		for (Plugin plugin : this.loadedPlugins)
 		{
-			
-			try
+			if (plugin instanceof SCALedgerPlugin scaPlugin)
 			{
-				LOGGER.info("Initializing plugin: {} - {}", plugin.getName(),
-					plugin.getDescription());
-				plugin.initialize(this.applicationContext);
-				
-				if (plugin instanceof SCALedgerPlugin scaPlugin)
-				{
-					this.scaLedgerPlugin = scaPlugin;
-				}
-				
-				this.loadedPlugins.add(plugin);
-				LOGGER.info("Plugin initialized successfully: {}",
-					plugin.getName());
+				this.scaLedgerPlugin = scaPlugin;
 			}
-			catch (Exception e)
-			{
-				LOGGER.error("Failed to initialize plugin: {} - {}",
-					plugin.getClass().getName(), e.getMessage(), e);
-				AlertBox.showError(this.primaryStage, "Plugin Load Error");
-			}
-			
 		}
-		
-		LOGGER.info("Plugin discovery complete. Loaded {} plugins.",
-			this.loadedPlugins.size());
 		
 		// MenuBar must be built *after* plugins are loaded so
 		// they can add their items.
@@ -345,12 +326,12 @@ public class NonprofitBookkeepingFX extends Application
 			() ->
 			{
 				
-				if (this.mainView != null)
+				if (this.workspaceNavigator != null)
 				{
-					this.mainView
+					this.workspaceNavigator
 						.showPanel(MainApplicationView.PanelType.JOURNAL);
 					SkeletonJournalPanel panel =
-						this.mainView.getJournalPanel();
+						this.workspaceNavigator.journalPanel();
 					
 					if (panel != null)
 					{
@@ -383,33 +364,30 @@ public class NonprofitBookkeepingFX extends Application
 			this.applicationContext.getMenuBar() != null) ?
 				this.applicationContext.getMenuBar() : new MenuBar();
 		bar.getMenus().clear();
+		registerMenuCommands();
 		
 		/* FILE 
 		 * ----------------------- */
 		Menu fileMenu = new Menu("File");
-		this.miOpen = add(fileMenu, "Open Company", e -> doOpenCompany());
+		this.miOpen = add(fileMenu, "Open Company", "file.openCompany");
 		this.miOpen.setAccelerator(
 			new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
-		this.miClose = add(fileMenu, "Close Company", e -> doCloseCompany());
+		this.miClose = add(fileMenu, "Close Company", "file.closeCompany");
 		this.miClose.setAccelerator(
 			new KeyCodeCombination(KeyCode.W, KeyCombination.CONTROL_DOWN));
-		this.miSave = add(fileMenu, "Save Company", e -> doSaveCompany());
+		this.miSave = add(fileMenu, "Save Company", "file.saveCompany");
 		this.miSave.setAccelerator(
 			new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
 		fileMenu.getItems().add(new SeparatorMenuItem());
 		
-		this.miImportCoaXlsx = add(fileMenu, "Import COA (XLSX)",
-			e -> new ImportCoaXlsxActionFX(this.primaryStage).handle(e));
-		this.miExportCoaXlsx = add(fileMenu, "Export COA (XLSX)",
-			e -> new ExportCoaXlsxActionFX(this.primaryStage).handle(e));
+		this.miImportCoaXlsx = add(fileMenu, "Import COA (XLSX)", "file.importCoaXlsx");
+		this.miExportCoaXlsx = add(fileMenu, "Export COA (XLSX)", "file.exportCoaXlsx");
 		fileMenu.getItems().add(new SeparatorMenuItem());
 
 		this.miImportFile =
-			add(fileMenu, "Import Financial File (OFX/QFX)...",
-				e -> new ImportFileActionFX(this.primaryStage).handle(e));
+			add(fileMenu, "Import Financial File (OFX/QFX)...", "file.importFinancial");
 		this.miImportSclx =
-			add(fileMenu, "Import SCLX...",
-				e -> new ImportSclxActionFX(this.primaryStage).handle(e));
+			add(fileMenu, "Import SCLX...", "file.importSclx");
 
 		this.miImportScaExcel = new MenuItem("Import Outlands Ledger...");
 		this.miImportScaExcel.setOnAction(
@@ -419,8 +397,7 @@ public class NonprofitBookkeepingFX extends Application
 		
 		this.miPersistScaLedger = add(fileMenu,
 			"Import SCA Ledger...",
-			e -> new ImportSCALedgerActionFX(this.primaryStage)
-				.handle(e));
+			"file.importScaLedger");
 		
 		fileMenu.getItems().add(new SeparatorMenuItem());
 		
@@ -442,20 +419,18 @@ public class NonprofitBookkeepingFX extends Application
 		
 		this.miExportStatementOfx = add(fileMenu,
 			"Export Account Statement (OFX/QFX)...",
-			e -> new ExportFileActionFX(this.primaryStage).handle(e));
+			"file.exportStatementOfx");
 		bar.getMenus().add(fileMenu);
 		
 		/* EDIT 
 		 * ---------------- */
 		Menu edit = new Menu("Edit");
 		this.miEditCompany =
-			add(edit, "Create or Edit Company", e -> startCreateWizard());
+			add(edit, "Create or Edit Company", "edit.createOrEditCompany");
 		this.miEditCoa = add(edit, "Edit Chart of Accounts",
-			e -> ((MainApplicationView) this.root)
-				.showPanel(MainApplicationView.PanelType.COA));
+			"edit.showCoa");
 		this.miEditJournal =
-			add(edit, "Edit Journal", e -> ((MainApplicationView) this.root)
-				.showPanel(MainApplicationView.PanelType.JOURNAL));
+			add(edit, "Edit Journal", "edit.showJournal");
 		this.miEditJournal.setAccelerator(
 			new KeyCodeCombination(KeyCode.J, KeyCombination.CONTROL_DOWN));
 		
@@ -465,31 +440,15 @@ public class NonprofitBookkeepingFX extends Application
 		 * ------------------ */
 		this.runMenu = new Menu("Run");
 		add(this.runMenu, "Reports Workspace",
-			e -> ((MainApplicationView) this.root)
-				.showPanel(MainApplicationView.PanelType.REPORTS));
-		add(this.runMenu, "Reconcile Accounts",
-			e -> showPanel(
-				new LedgerReconcilePanelFX(new ReconciliationService()),
-				"Reconciliation"));
-		add(this.runMenu, "Undeposited Funds",
-			e -> showPanel(
-				new UndepositedFundsPanelFX(
-					ServiceContainer.undepositedFundsService),
-				"Undeposited Funds"));
-		add(this.runMenu, "Sales & COGS",
-			e -> showPanel(
-				new SalesAndCOGPanelFX(ServiceContainer.salesService, null),
-				"Sales & COGS"));
+			"run.reportsWorkspace");
+		add(this.runMenu, "Reconcile Accounts", "run.reconcile");
+		add(this.runMenu, "Undeposited Funds", "run.undepositedFunds");
+		add(this.runMenu, "Sales & COGS", "run.salesAndCogs");
 		this.runMenu.getItems().add(new SeparatorMenuItem());
-		add(this.runMenu, "Documents & Attachments",
-			e -> showPanel(new DocumentsPanelFX(ServiceContainer.dss),
-				"Documents"));
-		add(this.runMenu, "Inventory & Depreciation",
-			e -> showPanel(new InventoryPanelFX(ServiceContainer.iss, null),
-				"Inventory"));
+		add(this.runMenu, "Documents & Attachments", "run.documents");
+		add(this.runMenu, "Inventory & Depreciation", "run.inventory");
 		this.runMenu.getItems().add(new SeparatorMenuItem());
-		add(this.runMenu, "Generate Excel Template Report...",
-			e -> new ExcelTemplateReportActionFX(this.primaryStage).handle(e));
+		add(this.runMenu, "Generate Excel Template Report...", "run.generateExcelTemplate");
 		bar.getMenus().add(this.runMenu);
 		
 		/* DATABASE 
@@ -501,53 +460,30 @@ public class NonprofitBookkeepingFX extends Application
 		 * --------------- */
 		this.reports = new Menu("Reports");
 		add(this.reports, "Income Statement",
-			e -> ((MainApplicationView) this.root)
-				.showPanel(MainApplicationView.PanelType.INCOME_STATEMENT));
+			"reports.incomeStatement");
 		add(this.reports, "Balance Sheet",
-			e -> ((MainApplicationView) this.root)
-				.showPanel(MainApplicationView.PanelType.BALANCE_SHEET));
+			"reports.balanceSheet");
 		add(this.reports, "Account Details",
-			e -> ((MainApplicationView) this.root)
-				.showPanel(MainApplicationView.PanelType.ACCOUNT_DETAILS));
+			"reports.accountDetails");
 		bar.getMenus().add(this.reports);
 				
 		/* FUNDRAISING 
 		 * ------------------*/
 		this.fundraisingMenu = new Menu("Fundraising");
 		add(this.fundraisingMenu, "Donors",
-			e -> showPanel(
-				new DonorsPanelFX(ServiceContainer.donorService, null),
-				"Donors"));
+			"fundraising.donors");
 		add(this.fundraisingMenu, "Donations",
-			e -> showPanel(new DonationsPanelFX(this.primaryStage),
-				"Donations"));
+			"fundraising.donations");
 		add(this.fundraisingMenu, "Grants",
-			e -> showPanel(new GrantsPanelFX(ServiceContainer.grantsService),
-				"Grants"));
+			"fundraising.grants");
 		add(this.fundraisingMenu, "Funds & Fund Accounting",
-			e -> showPanel(
-				new FundsPanelFX(ServiceContainer.fas, null),
-				"Funds"));
+			"fundraising.funds");
 		bar.getMenus().add(this.fundraisingMenu);
 		
 		/* SETTINGS 
 		 * ---------- */
 		Menu settings = new Menu("Settings");
-		add(settings, "Show Settings", e -> {
-			ensureSettingsLoaded();
-			showPanel(new SettingsPanelFX(this.primaryStage,
-				this.settingsService, () ->
-				{
-					applyGlobalSettings();
-					
-					if (CurrentCompany.isOpen())
-					{
-						scheduleAutosave();
-					}
-					
-				}),
-				"Settings");
-		});
+		add(settings, "Show Settings", "settings.show");
 		bar.getMenus().add(settings);
 		
 		/* PLUGINS */
@@ -592,13 +528,75 @@ public class NonprofitBookkeepingFX extends Application
 		/* HELP */
 		Menu help = new Menu("Help");
 		add(help, "Help",
-			e -> showPanel(new HelpPanelFX(this.primaryStage), "Help"));
+			"help.show");
 		bar.getMenus().add(help);
 		
 		return bar;
 		
 	}
 	
+
+	private void registerMenuCommands()
+	{
+		if (menuCommandsRegistered)
+		{
+			return;
+		}
+
+		commandRegistry.register("file.openCompany", this::doOpenCompany)
+			.register("file.closeCompany", this::doCloseCompany)
+			.register("file.saveCompany", this::doSaveCompany)
+			.register("file.importCoaXlsx", () -> new ImportCoaXlsxActionFX(this.primaryStage).handle(new ActionEvent()))
+			.register("file.exportCoaXlsx", () -> new ExportCoaXlsxActionFX(this.primaryStage).handle(new ActionEvent()))
+			.register("file.importFinancial", () -> new ImportFileActionFX(this.primaryStage).handle(new ActionEvent()))
+			.register("file.importSclx", () -> new ImportSclxActionFX(this.primaryStage).handle(new ActionEvent()))
+			.register("file.importScaLedger", () -> new ImportSCALedgerActionFX(this.primaryStage).handle(new ActionEvent()))
+			.register("file.exportStatementOfx", () -> new ExportFileActionFX(this.primaryStage).handle(new ActionEvent()))
+			.register("edit.createOrEditCompany", this::startCreateWizard)
+			.register("edit.showCoa", () -> this.workspaceNavigator.showPanel(MainApplicationView.PanelType.COA))
+			.register("edit.showJournal", () -> this.workspaceNavigator.showPanel(MainApplicationView.PanelType.JOURNAL))
+			.register("run.reportsWorkspace", () -> this.workspaceNavigator.showPanel(MainApplicationView.PanelType.REPORTS))
+			.register("run.reconcile", () -> showPanel(new LedgerReconcilePanelFX(new ReconciliationService()), "Reconciliation"))
+			.register("run.undepositedFunds", () -> showPanel(new UndepositedFundsPanelFX(ServiceContainer.undepositedFundsService), "Undeposited Funds"))
+			.register("run.salesAndCogs", () -> showPanel(new SalesAndCOGPanelFX(ServiceContainer.salesService, null), "Sales & COGS"))
+			.register("run.documents", () -> showPanel(new DocumentsPanelFX(ServiceContainer.dss), "Documents"))
+			.register("run.inventory", () -> showPanel(new InventoryPanelFX(ServiceContainer.iss, null), "Inventory"))
+			.register("run.generateExcelTemplate", () -> new ExcelTemplateReportActionFX(this.primaryStage).handle(new ActionEvent()))
+			.register("reports.incomeStatement", () -> this.workspaceNavigator.showPanel(MainApplicationView.PanelType.INCOME_STATEMENT))
+			.register("reports.balanceSheet", () -> this.workspaceNavigator.showPanel(MainApplicationView.PanelType.BALANCE_SHEET))
+			.register("reports.accountDetails", () -> this.workspaceNavigator.showPanel(MainApplicationView.PanelType.ACCOUNT_DETAILS))
+			.register("fundraising.donors", () -> showPanel(new DonorsPanelFX(ServiceContainer.donorService, null), "Donors"))
+			.register("fundraising.donations", () -> showPanel(new DonationsPanelFX(this.primaryStage), "Donations"))
+			.register("fundraising.grants", () -> showPanel(new GrantsPanelFX(ServiceContainer.grantsService), "Grants"))
+			.register("fundraising.funds", () -> showPanel(new FundsPanelFX(ServiceContainer.fas, null), "Funds"))
+			.register("settings.show", this::showSettingsPanel)
+			.register("help.show", () -> showPanel(new HelpPanelFX(this.primaryStage), "Help"))
+			.register("database.openOrCreate", this::handleOpenOrCreateDatabase)
+			.register("database.importLegacy", this::handleImportLegacyArchive)
+			.register("database.importH2Script", this::handleImportScriptIntoDatabase)
+			.register("database.exportH2Script", this::handleExportScriptFromDatabase)
+			.register("database.sqlQuery", () -> showPanel(new SqlQueryPanelFX(), "SQL Query"));
+		menuCommandsRegistered = true;
+	}
+
+	private void showSettingsPanel()
+	{
+		ensureSettingsLoaded();
+		showPanel(new SettingsPanelFX(this.primaryStage, this.settingsService, () ->
+		{
+			applyGlobalSettings();
+			if (CurrentCompany.isOpen())
+			{
+				scheduleAutosave();
+			}
+		}), "Settings");
+	}
+
+	private MenuItem add(Menu menu, String label, String commandId)
+	{
+		return add(menu, label, e -> commandRegistry.resolve(commandId).run());
+	}
+
 	/**
 	 * Adds the plugin info menu item.
 	 *
@@ -675,14 +673,13 @@ public class NonprofitBookkeepingFX extends Application
 	private Menu createDatabaseMenu()
 	{
 		Menu db = new Menu("Database");
-		add(db, "Open/Create H2 DB...", e -> handleOpenOrCreateDatabase());
+		add(db, "Open/Create H2 DB...", "database.openOrCreate");
 		add(db, "Import Legacy .npbk Archive...",
-			e -> handleImportLegacyArchive());
+			"database.importLegacy");
 		add(db, "Import H2 script into DB...",
-			e -> handleImportScriptIntoDatabase());
-		add(db, "Export DB to H2 script...", e -> handleExportScriptFromDatabase());
-		add(db, "Run SQL Query...", e -> showPanel(new SqlQueryPanelFX(),
-			"SQL Query"));
+			"database.importH2Script");
+		add(db, "Export DB to H2 script...", "database.exportH2Script");
+		add(db, "Run SQL Query...", "database.sqlQuery");
 		return db;
 		
 	}
@@ -792,7 +789,7 @@ public class NonprofitBookkeepingFX extends Application
 			// present company selection
 			if (this.mainView != null)
 			{
-				this.mainView.showCompanySelection();
+				this.workspaceNavigator.showCompanySelection();
 			}
 			
 		}
@@ -854,7 +851,7 @@ public class NonprofitBookkeepingFX extends Application
 			// present company selection panel
 			if (this.mainView != null)
 			{
-				this.mainView.showCompanySelection();
+				this.workspaceNavigator.showCompanySelection();
 			}
 			
 		}
@@ -1032,23 +1029,17 @@ public class NonprofitBookkeepingFX extends Application
 	
 	private void ensureSettingsLoaded()
 	{
-		
-		if (this.settingsLoaded || !Database.isInitialized())
-		{
-			return;
-		}
-		
 		try
 		{
-			this.settingsService.loadSettings(null);
-			this.settingsLoaded = true;
-			applyGlobalSettings();
+			this.settingsLoaded = settingsInitializationService.ensureLoaded(
+				this.settingsLoaded,
+				this.settingsService,
+				this::applyGlobalSettings);
 		}
 		catch (IOException ex)
 		{
 			LOGGER.debug("Unable to load settings", ex);
 		}
-		
 	}
 	
 	private void applyGlobalSettings()
@@ -1257,7 +1248,7 @@ public class NonprofitBookkeepingFX extends Application
 		// present company open state
 		if (this.mainView != null)
 		{
-			this.mainView.updateCompanyOpenState(companyOpen);
+			this.workspaceNavigator.updateCompanyOpenState(companyOpen);
 		}
 		
 	}
@@ -1419,8 +1410,8 @@ public class NonprofitBookkeepingFX extends Application
 		// present main view panel
 		if (this.mainView != null)
 		{
-			this.mainView.showWorkspaceTabs();
-			this.mainView.showPanel(MainApplicationView.PanelType.DASHBOARD);
+			this.workspaceNavigator.showWorkspaceTabs();
+			this.workspaceNavigator.showPanel(MainApplicationView.PanelType.DASHBOARD);
 		}
 		
 	}
@@ -1504,7 +1495,7 @@ public class NonprofitBookkeepingFX extends Application
 		// Switch view back to dashboard
 		if (this.mainView != null)
 		{
-			this.mainView.showCompanySelection();
+			this.workspaceNavigator.showCompanySelection();
 		}
 		
 		cancelAutosave();
