@@ -27,7 +27,8 @@ class MapDrivenRoutingTest extends ApplicationTest
     {
         host = new PanelHost();
 
-        NavigationPane nav = new NavigationPane(host::show, (title, body) -> { });
+        NavigationPane nav = new NavigationPane(host::show, (title, body) -> { },
+            () -> new NavigationPane.InspectorContext("TEST", "Current Month", "(n/a)"));
         @SuppressWarnings("unchecked")
         TreeView<NavigationPane.NavItem> navTree = (TreeView<NavigationPane.NavItem>) nav.getChildren().get(0);
         tree = navTree;
@@ -38,7 +39,7 @@ class MapDrivenRoutingTest extends ApplicationTest
 
         Button reportsRun = new Button("Reports Workspace");
         reportsRun.setId("reportsRunBtn");
-        reportsRun.setOnAction(e -> host.show(AppPanelId.REPORTS_WORKSPACE));
+        reportsRun.setOnAction(e -> host.show(AppPanelId.REPORT_LIBRARY));
 
         BorderPane root = new BorderPane();
         root.setTop(new HBox(8, inventoryRun, reportsRun));
@@ -73,7 +74,7 @@ class MapDrivenRoutingTest extends ApplicationTest
         WaitForAsyncUtils.waitForFxEvents();
         assertEquals("Reports Library", host.getActiveTitle());
 
-        interact(() -> host.show(AppPanelId.REPORTS_WORKSPACE));
+        interact(() -> host.show(AppPanelId.REPORT_LIBRARY));
         WaitForAsyncUtils.waitForFxEvents();
         assertEquals("Reports Library", host.getActiveTitle());
     }
@@ -98,12 +99,12 @@ class MapDrivenRoutingTest extends ApplicationTest
     void navigationNodesMapToExpectedPanelIds()
     {
         TreeItem<NavigationPane.NavItem> inventory = findByLabel(tree.getRoot(), "Inventory");
-        TreeItem<NavigationPane.NavItem> reportsWorkspace = findByLabel(tree.getRoot(), "Reports Workspace");
+        TreeItem<NavigationPane.NavItem> reportsWorkspace = findByLabel(tree.getRoot(), "Reports Library");
 
         assertNotNull(inventory);
         assertNotNull(reportsWorkspace);
         assertEquals(AppPanelId.INVENTORY, inventory.getValue().panelId());
-        assertEquals(AppPanelId.REPORTS_WORKSPACE, reportsWorkspace.getValue().panelId());
+        assertEquals(AppPanelId.REPORT_LIBRARY, reportsWorkspace.getValue().panelId());
 
         interact(() -> host.show(inventory.getValue().panelId()));
         WaitForAsyncUtils.waitForFxEvents();
