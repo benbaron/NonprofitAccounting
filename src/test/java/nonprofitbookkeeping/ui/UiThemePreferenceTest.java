@@ -18,7 +18,14 @@ class UiThemePreferenceTest
 	void fromStoredValueAcceptsEnumNamesAndDefaultsSafely()
 	{
 		assertEquals(UiThemePreference.DARK, UiThemePreference.fromStoredValue("DARK"));
+		assertEquals(UiThemePreference.DARK, UiThemePreference.fromStoredValue(" dark "));
 		assertEquals(UiThemePreference.SYSTEM_DEFAULT, UiThemePreference.fromStoredValue(""));
 		assertEquals(UiThemePreference.SYSTEM_DEFAULT, UiThemePreference.fromStoredValue("unexpected"));
+	}
+
+	@Test
+	void persistedValueUsesStableEnumName()
+	{
+		assertEquals("DARK", UiThemePreference.DARK.persistedValue());
 	}
 }

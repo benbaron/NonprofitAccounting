@@ -23,7 +23,7 @@ public enum UiThemePreference
 
 	public String persistedValue()
 	{
-		return this.displayName;
+		return name();
 	}
 
 	public static UiThemePreference fromStoredValue(String value)
@@ -33,10 +33,12 @@ public enum UiThemePreference
 			return SYSTEM_DEFAULT;
 		}
 
+		String normalized = value.trim();
+
 		for (UiThemePreference candidate : values())
 		{
-			if (candidate.displayName.equalsIgnoreCase(value)
-				|| candidate.name().equalsIgnoreCase(value))
+			if (candidate.displayName.equalsIgnoreCase(normalized)
+				|| candidate.name().equalsIgnoreCase(normalized))
 			{
 				return candidate;
 			}
