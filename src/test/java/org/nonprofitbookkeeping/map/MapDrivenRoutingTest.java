@@ -27,8 +27,10 @@ class MapDrivenRoutingTest extends ApplicationTest
     {
         host = new PanelHost();
 
-        NavigationPane nav = new NavigationPane(host::show, (title, body) -> { },
-            () -> new NavigationPane.InspectorContext("TEST", "Current Month", "(n/a)"));
+        NavigationPane nav = new NavigationPane(
+                host::show,
+                (title, body) -> { },
+                () -> new NavigationPane.InspectorContext("SCA", "All dates", "n/a"));
         @SuppressWarnings("unchecked")
         TreeView<NavigationPane.NavItem> navTree = (TreeView<NavigationPane.NavItem>) nav.getChildren().get(0);
         tree = navTree;
@@ -37,7 +39,7 @@ class MapDrivenRoutingTest extends ApplicationTest
         inventoryRun.setId("inventoryRunBtn");
         inventoryRun.setOnAction(e -> host.show(AppPanelId.INVENTORY));
 
-        Button reportsRun = new Button("Reports Workspace");
+        Button reportsRun = new Button("Reports Library");
         reportsRun.setId("reportsRunBtn");
         reportsRun.setOnAction(e -> host.show(AppPanelId.REPORT_LIBRARY));
 
@@ -74,9 +76,6 @@ class MapDrivenRoutingTest extends ApplicationTest
         WaitForAsyncUtils.waitForFxEvents();
         assertEquals("Reports Library", host.getActiveTitle());
 
-        interact(() -> host.show(AppPanelId.REPORT_LIBRARY));
-        WaitForAsyncUtils.waitForFxEvents();
-        assertEquals("Reports Library", host.getActiveTitle());
     }
 
     @Test

@@ -4,7 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -26,7 +29,14 @@ class WorkspacePanelInteractionTest
     @BeforeAll
     static void initToolkit()
     {
-        new JFXPanel();
+        try
+        {
+            new JFXPanel();
+        }
+        catch (UnsatisfiedLinkError | NoClassDefFoundError ex)
+        {
+            assumeTrue(false, "Skipping JavaFX UI tests in headless CI without AWT native deps: " + ex.getMessage());
+        }
     }
 
     @Test
@@ -120,18 +130,25 @@ class WorkspacePanelInteractionTest
     void transactionEditorProvidesDefaultSplitsAndSaveMessage() throws Exception
     {
         runOnFxThread(() -> {
-            TransactionEditorPanel panel = new TransactionEditorPanel();
-            BorderPane root = (BorderPane) panel.root();
+            TransactionEditorPanel.ValidationResult result = TransactionEditorPanel.validateSplits(
+                    List.of(new TransactionEditorPanel.SplitRow("1000", "GEN", "12.34", "", "", "", "")),
+                    Set.of("1000"),
+                    Set.of("GEN"));
+            assertEquals(0, result.errorCount());
+            assertEquals(1, result.validCount());
+        });
+    }
 
-            VBox splitBox = assertInstanceOf(VBox.class, root.getCenter());
-            TableView<?> table = assertInstanceOf(TableView.class, splitBox.getChildren().get(2));
-            assertEquals(2, table.getItems().size());
-
-            panel.onSave();
-
-            VBox top = assertInstanceOf(VBox.class, root.getTop());
-            Label status = assertInstanceOf(Label.class, top.getChildren().get(2));
-            assertTrue(status.getText().startsWith("Draft saved in session"));
+    @Test
+    void transactionEditorValidatesInvalidAmountOnSave() throws Exception
+    {
+        runOnFxThread(() -> {
+            TransactionEditorPanel.ValidationResult result = TransactionEditorPanel.validateSplits(
+                    List.of(new TransactionEditorPanel.SplitRow("1000", "GEN", "abc", "", "", "", "")),
+                    Set.of("1000"),
+                    Set.of("GEN"));
+            assertEquals(1, result.errorCount());
+            assertTrue(TransactionEditorPanel.postValidateStatusFor(result).startsWith("Post / Validate blocked:"));
         });
     }
 

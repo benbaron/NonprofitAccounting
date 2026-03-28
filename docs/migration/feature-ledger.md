@@ -57,8 +57,8 @@ Legend:
 |---|---|---|---|
 | DB lifecycle | Open/Create H2 DB | Keep | Keep full prompt + initialization flow. |
 | Legacy data migration | Import legacy `.npbk` archive | Keep | Keep migration path for historical data. |
-| Script import/export | Import H2 script / Export H2 script | Keep | Keep full DB exchange workflow. |
-| SQL tooling | Run SQL query panel | Keep | Keep admin tooling in B. |
+| Script import/export | Import H2 script / Export H2 script | Keep | **Ported to B** in `org.nonprofitbookkeeping.ui.MainWindow` file menu. |
+| SQL tooling | Run SQL query panel | Keep | **Ported to B** in `org.nonprofitbookkeeping.ui.MainWindow` file menu. |
 
 ## Reports menu
 

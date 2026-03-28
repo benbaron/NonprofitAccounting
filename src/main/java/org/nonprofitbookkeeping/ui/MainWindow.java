@@ -3,6 +3,7 @@ package org.nonprofitbookkeeping.ui;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -17,11 +18,13 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.SplitPane;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import org.nonprofitbookkeeping.model.AppPreferencesState;
 import org.nonprofitbookkeeping.model.BankingDataFormat;
 import org.nonprofitbookkeeping.model.DatabaseSelectionState;
@@ -34,11 +37,17 @@ import org.nonprofitbookkeeping.service.CoaCsvMapper;
 import org.nonprofitbookkeeping.service.ImportExportOrchestrationService;
 import org.nonprofitbookkeeping.service.JournalLine;
 import org.nonprofitbookkeeping.service.LedgerQueryService;
+import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.tools.H2ScriptCompanyExporter;
+import nonprofitbookkeeping.tools.H2ScriptCompanyImporter;
+import nonprofitbookkeeping.ui.panels.SqlQueryPanelFX;
 
 import javafx.stage.FileChooser;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -123,6 +132,11 @@ public class MainWindow extends BorderPane implements ShellOwner
         return SESSION_STATE;
     }
 
+    InspectorPane inspectorPane()
+    {
+        return inspectorPane;
+    }
+
     static void resetSessionForTests(AppPreferencesState preferences, MultiCompanyState multiCompany)
     {
         SESSION_STATE.setPreferences(preferences);
@@ -162,6 +176,10 @@ public class MainWindow extends BorderPane implements ShellOwner
                 item("Database Wizard…", null, this::openDatabaseWizard),
                 item("Select Database File…", null, this::selectDatabaseFile),
                 item("Create New Database…", null, this::createNewDatabase),
+                new SeparatorMenuItem(),
+                item("Import H2 SQL Script…", null, this::importH2SqlScript),
+                item("Export H2 SQL Script…", null, this::exportH2SqlScript),
+                item("Run SQL Query…", null, this::openSqlQueryPanel),
                 new SeparatorMenuItem(),
                 item("Save", "Ctrl+S", this::saveActivePanel),
                 item("Export…", null, this::exportDataFromFileMenu),
@@ -747,6 +765,150 @@ public class MainWindow extends BorderPane implements ShellOwner
         applySelectedDatabasePath(path);
         initializeSampleCompany();
         info("Created database and initialized sample company.");
+    }
+
+    private void importH2SqlScript()
+    {
+        if (!ensureLegacyDatabaseReady())
+        {
+            return;
+        }
+
+        chooseFile("Select company H2 SQL script", "SQL scripts", "*.sql")
+                .ifPresent(path -> {
+                    try
+                    {
+                        H2ScriptCompanyImporter.importScript(path);
+                        Alert a = new Alert(Alert.AlertType.INFORMATION, "Imported company script into DB.");
+                        a.setHeaderText("Import complete");
+                        if (getScene() != null && getScene().getWindow() != null)
+                        {
+                            a.initOwner(getScene().getWindow());
+                        }
+                        a.showAndWait();
+                    }
+                    catch (Exception ex)
+                    {
+                        Alert alert = new Alert(Alert.AlertType.ERROR, "Import failed: " + UiErrors.safeMessage(ex));
+                        alert.setHeaderText("Import Error");
+                        if (getScene() != null && getScene().getWindow() != null)
+                        {
+                            alert.initOwner(getScene().getWindow());
+                        }
+                        alert.showAndWait();
+                    }
+                });
+    }
+
+    private void exportH2SqlScript()
+    {
+        if (!ensureLegacyDatabaseReady())
+        {
+            return;
+        }
+
+        Optional<Path> output = chooseSaveFile("Export H2 SQL Script", "SQL scripts", "*.sql");
+        if (output.isEmpty())
+        {
+            return;
+        }
+
+        Path outputFile = output.get();
+        if (!outputFile.getFileName().toString().toLowerCase(Locale.ROOT).endsWith(".sql"))
+        {
+            outputFile = outputFile.resolveSibling(outputFile.getFileName() + ".sql");
+        }
+
+        try
+        {
+            H2ScriptCompanyExporter.exportScript(outputFile);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION,
+                    "Exported database script to:\n" + outputFile.toAbsolutePath());
+            alert.setHeaderText("Export Complete");
+            if (getScene() != null && getScene().getWindow() != null)
+            {
+                alert.initOwner(getScene().getWindow());
+            }
+            alert.showAndWait();
+        }
+        catch (IOException | SQLException ex)
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Export failed: " + UiErrors.safeMessage(ex));
+            alert.setHeaderText("Export Error");
+            if (getScene() != null && getScene().getWindow() != null)
+            {
+                alert.initOwner(getScene().getWindow());
+            }
+            alert.showAndWait();
+        }
+    }
+
+    private void openSqlQueryPanel()
+    {
+        if (!ensureLegacyDatabaseReady())
+        {
+            return;
+        }
+
+        Stage sub = new Stage();
+        sub.setTitle("SQL Query");
+        BorderPane wrapper = new BorderPane(new SqlQueryPanelFX());
+        wrapper.setPadding(new Insets(8));
+        Scene scene = new Scene(wrapper, 900, 600);
+        sub.setScene(scene);
+        if (getScene() != null && getScene().getWindow() != null)
+        {
+            sub.initOwner(getScene().getWindow());
+        }
+        sub.show();
+    }
+
+    private boolean ensureLegacyDatabaseReady()
+    {
+        String selected = SESSION_STATE.databaseSelection().activeDatabasePath();
+        if (selected == null || selected.isBlank())
+        {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Open/Create an H2 DB first.");
+            alert.setHeaderText("Database Not Ready");
+            if (getScene() != null && getScene().getWindow() != null)
+            {
+                alert.initOwner(getScene().getWindow());
+            }
+            alert.showAndWait();
+            return false;
+        }
+
+        Path selectedPath = Path.of(selected);
+        Path legacyBase = normalizeLegacyH2Base(selectedPath);
+        try
+        {
+            Database.init(legacyBase);
+            Database.get().ensureSchema();
+            return true;
+        }
+        catch (RuntimeException | SQLException ex)
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not open database: " + UiErrors.safeMessage(ex));
+            alert.setHeaderText("Database Error");
+            if (getScene() != null && getScene().getWindow() != null)
+            {
+                alert.initOwner(getScene().getWindow());
+            }
+            alert.showAndWait();
+            return false;
+        }
+    }
+
+    private static Path normalizeLegacyH2Base(Path selectedPath)
+    {
+        String fileName = selectedPath.getFileName() == null ? selectedPath.toString() : selectedPath.getFileName().toString();
+        if (fileName.endsWith(".mv.db"))
+        {
+            String baseName = fileName.substring(0, fileName.length() - ".mv.db".length());
+            Path parent = selectedPath.getParent();
+            return parent == null ? Path.of(baseName) : parent.resolve(baseName);
+        }
+        return selectedPath;
     }
 
     private void addNewCompany()
