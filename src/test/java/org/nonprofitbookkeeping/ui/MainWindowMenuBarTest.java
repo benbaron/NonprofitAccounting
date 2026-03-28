@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -19,7 +18,6 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 class MainWindowMenuBarTest
 {
@@ -38,7 +36,7 @@ class MainWindowMenuBarTest
         Platform.runLater(() -> {
             try
             {
-                MainWindow window = new MainWindow(Stage::new);
+                MainWindow window = new MainWindow();
                 VBox top = (VBox) window.getTop();
                 MenuBar menuBar = (MenuBar) top.getChildren().get(0);
 
@@ -46,22 +44,21 @@ class MainWindowMenuBarTest
                     .map(Menu::getText)
                     .collect(Collectors.toList());
 
-                assertEquals(List.of("File", "Edit", "Run", "Database", "Reports", "Fundraising", "Settings", "Plugins", "Help"),
+                assertEquals(List.of("File", "Edit", "Search", "View", "Run", "Tools", "Account", "Help"),
                     menuNames);
 
                 Menu file = menuBar.getMenus().get(0);
-                assertTrue(hasItem(file, "Open Company"));
-                assertTrue(hasItem(file, "Import Outlands Ledger..."));
-                assertTrue(hasItem(file, "Import SCA Ledger..."));
-                assertTrue(hasItem(file, "Save Modified SCA Workbook..."));
+                assertTrue(hasItem(file, "New"));
+                assertTrue(hasItem(file, "Save"));
+                assertTrue(hasItem(file, "Exit"));
 
-                Menu edit = menuBar.getMenus().get(1);
-                assertTrue(hasItem(edit, "Create or Edit Company"));
+                Menu tools = menuBar.getMenus().get(5);
+                assertTrue(hasItem(tools, "Import CoA CSV…"));
+                assertTrue(hasItem(tools, "Import / Export Jobs…"));
 
-                Menu database = menuBar.getMenus().get(3);
-                assertTrue(hasItem(database, "Open/Create H2 DB..."));
-                assertTrue(hasItem(database, "Export DB to H2 script..."));
-                assertTrue(hasItem(database, "Run SQL Query..."));
+                Menu account = menuBar.getMenus().get(6);
+                assertTrue(hasItem(account, "Log In…"));
+                assertTrue(hasItem(account, "Company Wizard…"));
 
                 for (Menu menu : menuBar.getMenus())
                 {
@@ -89,40 +86,6 @@ class MainWindowMenuBarTest
         if (error[0] != null)
         {
             throw new AssertionError("MainWindow menu test failed", error[0]);
-        }
-    }
-
-    @Test
-    void hasLoadedScaWorkbookReflectsPluginFileState() throws Exception
-    {
-        CountDownLatch latch = new CountDownLatch(1);
-        Throwable[] error = new Throwable[1];
-
-        Platform.runLater(() -> {
-            try
-            {
-                MainWindow window = new MainWindow(Stage::new);
-                assertTrue(!window.hasLoadedScaWorkbook());
-
-                window.getScaLedgerPluginForTest()
-                    .setCurrentScaFile(new File("demo.xlsm"));
-
-                assertTrue(window.hasLoadedScaWorkbook());
-            }
-            catch (Throwable t)
-            {
-                error[0] = t;
-            }
-            finally
-            {
-                latch.countDown();
-            }
-        });
-
-        assertTrue(latch.await(20, TimeUnit.SECONDS));
-        if (error[0] != null)
-        {
-            throw new AssertionError("MainWindow SCA workbook state test failed", error[0]);
         }
     }
 

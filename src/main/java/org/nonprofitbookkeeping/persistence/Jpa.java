@@ -29,6 +29,8 @@ public class Jpa
     {
         Map<String, Object> overrides = new HashMap<>();
         overrides.put("jakarta.persistence.jdbc.url", jdbcUrlFor(databaseFile));
+        overrides.put("jakarta.persistence.jdbc.user", "sa");
+        overrides.put("jakarta.persistence.jdbc.password", "");
         this.emf = Persistence.createEntityManagerFactory("scaLedgerPU", overrides);
     }
 
