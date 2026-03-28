@@ -44,6 +44,7 @@ public class MainApp extends Application
         scene.getStylesheets().add(getClass().getResource("/ui/styles.css").toExternalForm());
 
         GlobalShortcuts.install(scene, root);
+        root.initializePlugins(stage);
 
         stage.setTitle("SCA Ledger (H2 + Jakarta) — Prototype");
         stage.setScene(scene);

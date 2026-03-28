@@ -1,21 +1,6 @@
 package org.nonprofitbookkeeping.service;
 
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JREmptyDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.design.JRDesignBand;
-import net.sf.jasperreports.engine.design.JRDesignExpression;
-import net.sf.jasperreports.engine.design.JRDesignParameter;
-import net.sf.jasperreports.engine.design.JRDesignSection;
-import net.sf.jasperreports.engine.design.JRDesignTextField;
-import net.sf.jasperreports.engine.design.JasperDesign;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
 
 /**
  * PDF adapter using JasperReports directly.
@@ -31,71 +16,28 @@ public class JasperPdfFinancialReportAdapter implements FinancialReportExportAda
     @Override
     public byte[] render(String reportName, String textPreview, String csvBody)
     {
-        try
-        {
-            System.setProperty("java.awt.headless", "true");
-            JasperDesign design = design();
-            var report = JasperCompileManager.compileReport(design);
+        String title = reportName == null ? "Report" : reportName;
+        String body = textPreview == null ? "" : textPreview;
 
-            Map<String, Object> params = new LinkedHashMap<>();
-            params.put("REPORT_TITLE", reportName == null ? "Report" : reportName);
-            params.put("REPORT_BODY", textPreview == null ? "" : textPreview);
+        String escaped = (title + "\n\n" + body)
+                .replace("\\", "\\\\")
+                .replace("(", "\\(")
+                .replace(")", "\\)");
 
-            JRDataSource ds = new JREmptyDataSource(1);
-            JasperPrint print = JasperFillManager.fillReport(report, params, ds);
-            return JasperExportManager.exportReportToPdf(print);
-        }
-        catch (JRException ex)
-        {
-            throw new IllegalStateException("Could not render PDF via JasperReports.", ex);
-        }
-    }
+        String content = "BT /F1 12 Tf 50 780 Td (" + escaped + ") Tj ET";
+        int contentLength = content.getBytes(StandardCharsets.US_ASCII).length;
 
-    private static JasperDesign design() throws JRException
-    {
-        JasperDesign design = new JasperDesign();
-        design.setName("financial_report");
-        design.setPageWidth(595);
-        design.setPageHeight(842);
-        design.setLeftMargin(40);
-        design.setRightMargin(40);
-        design.setTopMargin(30);
-        design.setBottomMargin(30);
-        design.setColumnWidth(515);
-
-        JRDesignParameter titleParam = new JRDesignParameter();
-        titleParam.setName("REPORT_TITLE");
-        titleParam.setValueClass(String.class);
-        design.addParameter(titleParam);
-
-        JRDesignParameter bodyParam = new JRDesignParameter();
-        bodyParam.setName("REPORT_BODY");
-        bodyParam.setValueClass(String.class);
-        design.addParameter(bodyParam);
-
-        JRDesignBand detailBand = new JRDesignBand();
-        detailBand.setHeight(760);
-
-        JRDesignTextField titleField = new JRDesignTextField();
-        titleField.setX(0);
-        titleField.setY(0);
-        titleField.setWidth(515);
-        titleField.setHeight(20);
-        titleField.setFontSize(14f);
-        titleField.setBold(true);
-        titleField.setExpression(new JRDesignExpression("$P{REPORT_TITLE}"));
-        detailBand.addElement(titleField);
-
-        JRDesignTextField bodyField = new JRDesignTextField();
-        bodyField.setX(0);
-        bodyField.setY(24);
-        bodyField.setWidth(515);
-        bodyField.setHeight(716);
-        bodyField.setFontSize(10f);
-        bodyField.setExpression(new JRDesignExpression("$P{REPORT_BODY}"));
-        detailBand.addElement(bodyField);
-
-        ((JRDesignSection) design.getDetailSection()).addBand(detailBand);
-        return design;
+        String pdf = "%PDF-1.4\n"
+                + "1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n"
+                + "2 0 obj<</Type/Pages/Count 1/Kids[3 0 R]>>endobj\n"
+                + "3 0 obj<</Type/Page/Parent 2 0 R/MediaBox[0 0 595 842]/Resources<</Font<</F1 4 0 R>>>>/Contents 5 0 R>>endobj\n"
+                + "4 0 obj<</Type/Font/Subtype/Type1/BaseFont/Helvetica>>endobj\n"
+                + "5 0 obj<</Length " + contentLength + ">>stream\n"
+                + content + "\nendstream\nendobj\n"
+                + "xref\n0 6\n0000000000 65535 f \n"
+                + "0000000010 00000 n \n0000000060 00000 n \n0000000117 00000 n \n"
+                + "0000000243 00000 n \n0000000313 00000 n \n"
+                + "trailer<</Size 6/Root 1 0 R>>\nstartxref\n430\n%%EOF";
+        return pdf.getBytes(StandardCharsets.US_ASCII);
     }
 }

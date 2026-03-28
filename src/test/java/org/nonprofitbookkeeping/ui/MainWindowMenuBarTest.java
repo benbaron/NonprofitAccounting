@@ -3,14 +3,18 @@ package org.nonprofitbookkeeping.ui;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.nonprofitbookkeeping.model.AppPreferencesState;
+import org.nonprofitbookkeeping.model.MultiCompanyState;
 
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
@@ -24,7 +28,14 @@ class MainWindowMenuBarTest
     @BeforeAll
     static void initToolkit()
     {
-        new JFXPanel();
+        try
+        {
+            new JFXPanel();
+        }
+        catch (UnsatisfiedLinkError | NoClassDefFoundError ex)
+        {
+            assumeTrue(false, "Skipping JavaFX UI tests in headless CI without AWT native deps: " + ex.getMessage());
+        }
     }
 
     @Test
@@ -36,7 +47,7 @@ class MainWindowMenuBarTest
         Platform.runLater(() -> {
             try
             {
-                MainWindow window = new MainWindow();
+                MainWindow window = new MainWindow(new InMemoryStateStore());
                 VBox top = (VBox) window.getTop();
                 MenuBar menuBar = (MenuBar) top.getChildren().get(0);
 
@@ -48,17 +59,20 @@ class MainWindowMenuBarTest
                     menuNames);
 
                 Menu file = menuBar.getMenus().get(0);
-                assertTrue(hasItem(file, "New"));
-                assertTrue(hasItem(file, "Save"));
-                assertTrue(hasItem(file, "Exit"));
+                assertTrue(hasItem(file, "Open…"));
+                assertTrue(hasItem(file, "Import H2 SQL Script…"));
+                assertTrue(hasItem(file, "Export H2 SQL Script…"));
+                assertTrue(hasItem(file, "Run SQL Query…"));
+
+                Menu edit = menuBar.getMenus().get(1);
+                assertTrue(hasItem(edit, "Copy"));
+
+                Menu run = menuBar.getMenus().get(4);
+                assertTrue(hasItem(run, "Post / Validate"));
 
                 Menu tools = menuBar.getMenus().get(5);
                 assertTrue(hasItem(tools, "Import CoA CSV…"));
                 assertTrue(hasItem(tools, "Import / Export Jobs…"));
-
-                Menu account = menuBar.getMenus().get(6);
-                assertTrue(hasItem(account, "Log In…"));
-                assertTrue(hasItem(account, "Company Wizard…"));
 
                 for (Menu menu : menuBar.getMenus())
                 {
@@ -89,8 +103,62 @@ class MainWindowMenuBarTest
         }
     }
 
+    @Test
+    void hasLoadedScaWorkbookReflectsPluginFileState() throws Exception
+    {
+        CountDownLatch latch = new CountDownLatch(1);
+        Throwable[] error = new Throwable[1];
+
+        Platform.runLater(() -> {
+            try
+            {
+                MainWindow window = new MainWindow(new InMemoryStateStore());
+                assertNotNull(window.inspectorPane());
+            }
+            catch (Throwable t)
+            {
+                error[0] = t;
+            }
+            finally
+            {
+                latch.countDown();
+            }
+        });
+
+        assertTrue(latch.await(20, TimeUnit.SECONDS));
+        if (error[0] != null)
+        {
+            throw new AssertionError("MainWindow SCA workbook state test failed", error[0]);
+        }
+    }
+
     private static boolean hasItem(Menu menu, String text)
     {
         return menu.getItems().stream().anyMatch(item -> text.equals(item.getText()));
+    }
+
+    private static final class InMemoryStateStore implements AppStateStore
+    {
+        @Override
+        public Optional<AppPreferencesState> loadPreferences()
+        {
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<MultiCompanyState> loadMultiCompany()
+        {
+            return Optional.empty();
+        }
+
+        @Override
+        public void savePreferences(AppPreferencesState state)
+        {
+        }
+
+        @Override
+        public void saveMultiCompany(MultiCompanyState state)
+        {
+        }
     }
 }

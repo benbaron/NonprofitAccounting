@@ -23,6 +23,7 @@ import nonprofitbookkeeping.model.ReportPeriodPreset;
 import nonprofitbookkeeping.model.SettingsModel;
 import nonprofitbookkeeping.service.SettingsService;
 import nonprofitbookkeeping.ui.ThemeManager;
+import nonprofitbookkeeping.ui.UiThemePreference;
 import nonprofitbookkeeping.util.FormatUtils;
 
 // TODO: Auto-generated Javadoc
@@ -57,7 +58,7 @@ public class SettingsPanelFX extends BorderPane
 	private ComboBox<String> expenseAccountBox;
 	
 	/** The theme combo. */
-	private ComboBox<String> themeCombo;
+	private ComboBox<UiThemePreference> themeCombo;
 	
 	/** The language combo. */
 	private ComboBox<Locale> languageCombo;
@@ -181,7 +182,7 @@ public class SettingsPanelFX extends BorderPane
 						this.primaryStage.getScene() != null)
 					{
 						ThemeManager.applyTheme(this.primaryStage.getScene(),
-							this.service.getSettings().getTheme());
+							UiThemePreference.fromStoredValue(this.service.getSettings().getTheme()));
 						FormatUtils.setCurrencyFormat(
 							this.service.getSettings().getCurrencyFormat());
 						String org =
@@ -645,14 +646,13 @@ public class SettingsPanelFX extends BorderPane
 		
 		grid.add(new Label("Theme:"), 0, 0);
 		this.themeCombo = new ComboBox<>();
-		this.themeCombo.getItems().addAll("Light", "Dark", "System");
-		this.themeCombo.setValue("System");
+		this.themeCombo.getItems().addAll(UiThemePreference.values());
+		this.themeCombo.setValue(UiThemePreference.SYSTEM_DEFAULT);
 		
 		if (this.service != null)
 		{
 			String theme = this.service.getSettings().getTheme();
-			if (theme != null)
-				this.themeCombo.setValue(theme);
+			this.themeCombo.setValue(UiThemePreference.fromStoredValue(theme));
 		}
 		
 		grid.add(this.themeCombo, 1, 0);
@@ -807,7 +807,7 @@ public class SettingsPanelFX extends BorderPane
 			m.setDefaultExpenseAccount(this.expenseAccountBox.getValue());
 		
 		if (this.themeCombo != null && this.themeCombo.getValue() != null)
-			m.setTheme(this.themeCombo.getValue());
+			m.setTheme(this.themeCombo.getValue().persistedValue());
 			
 		if (this.languageCombo != null && this.languageCombo.getValue() != null)
 		{
