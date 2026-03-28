@@ -127,7 +127,7 @@ class WorkspacePanelInteractionTest
     }
 
     @Test
-    void transactionEditorStartsCleanAndBecomesDirtyAfterEdit() throws Exception
+    void transactionEditorProvidesDefaultSplitsAndSaveMessage() throws Exception
     {
         runOnFxThread(() -> {
             TransactionEditorPanel.ValidationResult result = TransactionEditorPanel.validateSplits(
