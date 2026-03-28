@@ -11,7 +11,7 @@ public final class ThemeManager
 {
 	
 	/** The current theme. */
-	private static String currentTheme = "System";
+	private static UiThemePreference currentTheme = UiThemePreference.SYSTEM_DEFAULT;
 	
 	/** The Constant LIGHT_CSS. */
 	private static final String LIGHT_CSS =
@@ -33,7 +33,7 @@ public final class ThemeManager
 	 *
 	 * @return the current theme
 	 */
-	public static String getCurrentTheme()
+	public static UiThemePreference getCurrentTheme()
 	{
 		return currentTheme;
 	}
@@ -46,22 +46,26 @@ public final class ThemeManager
 	 */
 	public static void applyTheme(Scene scene, String theme)
 	{
-		currentTheme = theme == null ? "System" : theme;
+		applyTheme(scene, UiThemePreference.fromStoredValue(theme));
+	}
+
+	public static void applyTheme(Scene scene, UiThemePreference theme)
+	{
+		currentTheme = theme == null ? UiThemePreference.SYSTEM_DEFAULT : theme;
 		scene.getStylesheets().clear();
-		
-		switch(currentTheme.toLowerCase())
+
+		switch(currentTheme)
 		{
-			case "dark":
+			case DARK:
 				scene.getStylesheets().add(DARK_CSS);
 				break;
-				
-			case "light":
-			case "system":
+
+			case LIGHT:
+			case SYSTEM_DEFAULT:
 			default:
 				scene.getStylesheets().add(LIGHT_CSS);
 				break;
 		}
-		
 	}
 	
 	/**
