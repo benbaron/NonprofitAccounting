@@ -49,7 +49,6 @@ import nonprofitbookkeeping.plugin.Plugin;
 import nonprofitbookkeeping.preferences.PreferencesManager;
 import nonprofitbookkeeping.service.*;
 import nonprofitbookkeeping.model.SettingsModel;
-import nonprofitbookkeeping.util.FormatUtils;
 import nonprofitbookkeeping.ui.panels.skeletons.SkeletonJournalPanel;
 import nonprofitbookkeeping.plugins.scaledger.SCALedgerPlugin;
 import nonprofitbookkeeping.ui.actions.*;
@@ -57,6 +56,7 @@ import nonprofitbookkeeping.ui.adapters.LegacyWorkspaceNavigator;
 import nonprofitbookkeeping.ui.adapters.MainApplicationViewNavigatorAdapter;
 import nonprofitbookkeeping.ui.bootstrap.PluginInitializationService;
 import nonprofitbookkeeping.ui.bootstrap.SettingsInitializationService;
+import nonprofitbookkeeping.ui.bootstrap.SettingsStartupCoordinator;
 import nonprofitbookkeeping.ui.bootstrap.StageDecoratorService;
 import nonprofitbookkeeping.ui.commands.LegacyCommandRegistry;
 import nonprofitbookkeeping.ui.actions.scaledger.ImportFromOutlandsLedgerActionFX;
@@ -168,10 +168,11 @@ public class NonprofitBookkeepingFX extends Application
 	private final StageDecoratorService stageDecoratorService = new StageDecoratorService();
 	private final PluginInitializationService pluginInitializationService = new PluginInitializationService();
 	private final SettingsInitializationService settingsInitializationService = new SettingsInitializationService();
+	private final SettingsStartupCoordinator settingsStartupCoordinator =
+		new SettingsStartupCoordinator(this.settingsService,
+			this.settingsInitializationService);
 	private final LegacyCommandRegistry commandRegistry = new LegacyCommandRegistry();
 	private boolean menuCommandsRegistered;
-	/** Tracks whether settings have been loaded from persistent storage. */
-	private boolean settingsLoaded;
 	/** Executor managing background autosave tasks. */
 	private ScheduledExecutorService autosaveExecutor;
 	/** Handle to the currently scheduled autosave task. */
@@ -1031,52 +1032,19 @@ public class NonprofitBookkeepingFX extends Application
 	{
 		try
 		{
-			this.settingsLoaded = settingsInitializationService.ensureLoaded(
-				this.settingsLoaded,
-				this.settingsService,
-				this::applyGlobalSettings);
+			settingsStartupCoordinator.ensureSettingsLoaded(this.primaryStage,
+				this.mainView);
 		}
 		catch (IOException ex)
 		{
 			LOGGER.debug("Unable to load settings", ex);
 		}
 	}
-	
+
 	private void applyGlobalSettings()
 	{
-		SettingsModel settings = this.settingsService.getSettings();
-		Locale locale = settings.getLanguage() != null &&
-			!settings.getLanguage().isBlank() ?
-				Locale.forLanguageTag(settings.getLanguage()) :
-				Locale.getDefault();
-		FormatUtils.configureLocale(locale, settings.getDefaultCurrency());
-		FormatUtils.setCurrencyFormat(settings.getCurrencyFormat());
-		
-		if (this.primaryStage != null)
-		{
-			String title = settings.getOrganizationName();
-			this.primaryStage.setTitle(title != null && !title.isBlank() ?
-				title + " - Nonprofit Bookkeeping" : "Nonprofit Bookkeeping");
-			
-			if (this.primaryStage.getScene() != null)
-			{
-				ThemeManager.applyTheme(this.primaryStage.getScene(),
-					settings.getTheme());
-			}
-			
-		}
-		
-		// apply account details
-		if (this.mainView != null)
-		{
-			this.mainView.applyAccountDetailsDefaults(
-				this.settingsService.resolveDefaultReportPeriod(),
-				this.settingsService.resolveFiscalYearStart(),
-				settings.isEnableYearToDateOption(),
-				settings.isEnableFullYearOption(),
-				settings.isEnableLastMonthOption());
-		}
-		
+		settingsStartupCoordinator.applyGlobalSettings(this.primaryStage,
+			this.mainView);
 	}
 	
 	/**
@@ -1268,36 +1236,12 @@ public class NonprofitBookkeepingFX extends Application
 		{
 			this.settingsService.loadSettings(null);
 			this.cachedSettings = this.settingsService.getSettings();
-			applySettings(this.cachedSettings);
+			settingsStartupCoordinator.applySettings(this.primaryStage,
+				this.cachedSettings);
 		}
 		catch (IOException ex)
 		{
 			LOGGER.debug("Unable to load settings", ex);
-		}
-		
-	}
-	
-	/**
-	 * Apply settings.
-	 *
-	 * @param settings the settings
-	 */
-	private void applySettings(SettingsModel settings)
-	{
-		
-		if (settings == null)
-		{
-			return;
-		}
-		
-		Locale locale = settings.getCurrencyLocale();
-		FormatUtils.setCurrencyLocale(locale);
-		FormatUtils.setCurrencyFormat(settings.getCurrencyFormat());
-		
-		if (this.primaryStage != null && this.primaryStage.getScene() != null)
-		{
-			ThemeManager.applyTheme(this.primaryStage.getScene(),
-				settings.getTheme());
 		}
 		
 	}
