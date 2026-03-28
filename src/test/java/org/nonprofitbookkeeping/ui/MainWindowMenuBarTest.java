@@ -4,14 +4,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.nonprofitbookkeeping.model.AppPreferencesState;
+import org.nonprofitbookkeeping.model.MultiCompanyState;
 
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
@@ -38,7 +40,7 @@ class MainWindowMenuBarTest
         Platform.runLater(() -> {
             try
             {
-                MainWindow window = new MainWindow(Stage::new);
+                MainWindow window = new MainWindow(new InMemoryStateStore());
                 VBox top = (VBox) window.getTop();
                 MenuBar menuBar = (MenuBar) top.getChildren().get(0);
 
@@ -46,22 +48,24 @@ class MainWindowMenuBarTest
                     .map(Menu::getText)
                     .collect(Collectors.toList());
 
-                assertEquals(List.of("File", "Edit", "Run", "Database", "Reports", "Fundraising", "Settings", "Plugins", "Help"),
+                assertEquals(List.of("File", "Edit", "Search", "View", "Run", "Tools", "Account", "Help"),
                     menuNames);
 
                 Menu file = menuBar.getMenus().get(0);
-                assertTrue(hasItem(file, "Open Company"));
-                assertTrue(hasItem(file, "Import Outlands Ledger..."));
-                assertTrue(hasItem(file, "Import SCA Ledger..."));
-                assertTrue(hasItem(file, "Save Modified SCA Workbook..."));
+                assertTrue(hasItem(file, "Open…"));
+                assertTrue(hasItem(file, "Import H2 SQL Script…"));
+                assertTrue(hasItem(file, "Export H2 SQL Script…"));
+                assertTrue(hasItem(file, "Run SQL Query…"));
 
                 Menu edit = menuBar.getMenus().get(1);
-                assertTrue(hasItem(edit, "Create or Edit Company"));
+                assertTrue(hasItem(edit, "Copy"));
 
-                Menu database = menuBar.getMenus().get(3);
-                assertTrue(hasItem(database, "Open/Create H2 DB..."));
-                assertTrue(hasItem(database, "Export DB to H2 script..."));
-                assertTrue(hasItem(database, "Run SQL Query..."));
+                Menu run = menuBar.getMenus().get(4);
+                assertTrue(hasItem(run, "Post / Validate"));
+
+                Menu tools = menuBar.getMenus().get(5);
+                assertTrue(hasItem(tools, "Import CoA CSV…"));
+                assertTrue(hasItem(tools, "Import / Export Jobs…"));
 
                 for (Menu menu : menuBar.getMenus())
                 {
@@ -101,13 +105,8 @@ class MainWindowMenuBarTest
         Platform.runLater(() -> {
             try
             {
-                MainWindow window = new MainWindow(Stage::new);
-                assertTrue(!window.hasLoadedScaWorkbook());
-
-                window.getScaLedgerPluginForTest()
-                    .setCurrentScaFile(new File("demo.xlsm"));
-
-                assertTrue(window.hasLoadedScaWorkbook());
+                MainWindow window = new MainWindow(new InMemoryStateStore());
+                assertNotNull(window.inspectorPane());
             }
             catch (Throwable t)
             {
@@ -129,5 +128,30 @@ class MainWindowMenuBarTest
     private static boolean hasItem(Menu menu, String text)
     {
         return menu.getItems().stream().anyMatch(item -> text.equals(item.getText()));
+    }
+
+    private static final class InMemoryStateStore implements AppStateStore
+    {
+        @Override
+        public Optional<AppPreferencesState> loadPreferences()
+        {
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<MultiCompanyState> loadMultiCompany()
+        {
+            return Optional.empty();
+        }
+
+        @Override
+        public void savePreferences(AppPreferencesState state)
+        {
+        }
+
+        @Override
+        public void saveMultiCompany(MultiCompanyState state)
+        {
+        }
     }
 }

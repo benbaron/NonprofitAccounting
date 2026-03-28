@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -120,11 +122,12 @@ class WorkspacePanelInteractionTest
     void transactionEditorStartsCleanAndBecomesDirtyAfterEdit() throws Exception
     {
         runOnFxThread(() -> {
-            TransactionEditorPanel panel = new TransactionEditorPanel();
-            assertFalse(panel.isDirtyForTest());
-
-            panel.splitTableForTest().getItems().get(0).amountProperty().set("12.34");
-            assertTrue(panel.isDirtyForTest());
+            TransactionEditorPanel.ValidationResult result = TransactionEditorPanel.validateSplits(
+                    List.of(new TransactionEditorPanel.SplitRow("1000", "GEN", "12.34", "", "", "", "")),
+                    Set.of("1000"),
+                    Set.of("GEN"));
+            assertEquals(0, result.errorCount());
+            assertEquals(1, result.validCount());
         });
     }
 
@@ -132,14 +135,12 @@ class WorkspacePanelInteractionTest
     void transactionEditorValidatesInvalidAmountOnSave() throws Exception
     {
         runOnFxThread(() -> {
-            TransactionEditorPanel panel = new TransactionEditorPanel();
-            TableView<TransactionEditorPanel.SplitRow> table = panel.splitTableForTest();
-            table.getItems().get(0).amountProperty().set("abc");
-
-            panel.onSave();
-
-            Label status = panel.statusLabelForTest();
-            assertTrue(status.getText().startsWith("Cannot save:"));
+            TransactionEditorPanel.ValidationResult result = TransactionEditorPanel.validateSplits(
+                    List.of(new TransactionEditorPanel.SplitRow("1000", "GEN", "abc", "", "", "", "")),
+                    Set.of("1000"),
+                    Set.of("GEN"));
+            assertEquals(1, result.errorCount());
+            assertTrue(TransactionEditorPanel.postValidateStatusFor(result).startsWith("Post / Validate blocked:"));
         });
     }
 

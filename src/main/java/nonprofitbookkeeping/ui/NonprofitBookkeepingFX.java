@@ -1070,7 +1070,7 @@ public class NonprofitBookkeepingFX extends Application
 			if (this.primaryStage.getScene() != null)
 			{
 				ThemeManager.applyTheme(this.primaryStage.getScene(),
-					settings.getTheme());
+					UiThemePreference.fromStoredValue(settings.getTheme()));
 			}
 			
 		}
@@ -1306,7 +1306,7 @@ public class NonprofitBookkeepingFX extends Application
 		if (this.primaryStage != null && this.primaryStage.getScene() != null)
 		{
 			ThemeManager.applyTheme(this.primaryStage.getScene(),
-				settings.getTheme());
+				UiThemePreference.fromStoredValue(settings.getTheme()));
 		}
 		
 	}
