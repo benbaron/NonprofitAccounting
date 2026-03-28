@@ -1,7 +1,5 @@
 package org.nonprofitbookkeeping.persistence;
 
-import nonprofitbookkeeping.core.Database;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -24,44 +22,43 @@ public class Jpa
 
     public Jpa()
     {
-        this.emf = Persistence.createEntityManagerFactory("scaLedgerPU", properties());
+        this.emf = Persistence.createEntityManagerFactory("scaLedgerPU");
     }
 
-    private static Map<String, Object> properties()
+    public Jpa(Path databaseFile)
     {
-        Map<String, Object> props = new HashMap<>();
-        props.put("jakarta.persistence.jdbc.driver", "org.h2.Driver");
-        props.put("jakarta.persistence.jdbc.url", jdbcUrl());
-        props.put("jakarta.persistence.jdbc.user", jdbcUser());
-        props.put("jakarta.persistence.jdbc.password", jdbcPass());
-        props.put("hibernate.hbm2ddl.auto", "update");
-        props.put("hibernate.show_sql", "false");
-        return props;
-    }
-
-    private static String jdbcUrl()
-    {
-        if (Database.isInitialized())
-        {
-            return Database.get().getJdbcUrl();
-        }
-        Path defaultDb = Path.of(System.getProperty("user.home"), ".nonprofitbookkeeping", "nonprofitbookkeeping");
-        return "jdbc:h2:file:" + defaultDb.toAbsolutePath() + ";AUTO_SERVER=TRUE;MODE=MySQL";
-    }
-
-    private static String jdbcUser()
-    {
-        return Database.isInitialized() ? Database.get().getUser() : "sa";
-    }
-
-    private static String jdbcPass()
-    {
-        return Database.isInitialized() ? Database.get().getPass() : "";
+        Map<String, Object> overrides = new HashMap<>();
+        overrides.put("jakarta.persistence.jdbc.url", jdbcUrlFor(databaseFile));
+        overrides.put("jakarta.persistence.jdbc.user", "sa");
+        overrides.put("jakarta.persistence.jdbc.password", "");
+        this.emf = Persistence.createEntityManagerFactory("scaLedgerPU", overrides);
     }
 
     public EntityManager em()
     {
         return emf.createEntityManager();
+    }
+
+
+    private static String jdbcUrlFor(Path databaseFile)
+    {
+        if (databaseFile == null)
+        {
+            throw new IllegalArgumentException("databaseFile is required");
+        }
+
+        String raw = databaseFile.toString();
+        String normalized = raw;
+        if (raw.endsWith(".mv.db"))
+        {
+            normalized = raw.substring(0, raw.length() - ".mv.db".length());
+        }
+        else if (raw.endsWith(".db"))
+        {
+            normalized = raw.substring(0, raw.length() - ".db".length());
+        }
+
+        return "jdbc:h2:file:" + normalized + ";MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH;INIT=CREATE SCHEMA IF NOT EXISTS PUBLIC\\;SET SCHEMA PUBLIC";
     }
 
     public void close()

@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 
 import static com.google.common.base.Preconditions.*;
 
-// TODO: Auto-generated Javadoc
 /**
  * Represents an Accounting Entry.
  * The transaction reference is set automatically when an 

@@ -32,7 +32,8 @@ public class InventoryPanelFX extends BorderPane
 	/** Directory of the current company, may be null if none. */
 	private final File companyDirectory;
 	/** ObservableList to hold {@link InventoryRow} objects for display in the table. */
-	private final ObservableList<InventoryRow> rows = FXCollections.observableArrayList();
+	private final ObservableList<InventoryRow> rows =
+		FXCollections.observableArrayList();
 	/** TableView to display the list of inventory items. */
 	private final TableView<InventoryRow> table = new TableView<>();
 	
@@ -46,23 +47,24 @@ public class InventoryPanelFX extends BorderPane
 	 */
 	public InventoryPanelFX(InventoryService service, File companyDirectory)
 	{
-                this.service = service;
-                this.companyDirectory = companyDirectory;
-
-                try
-                {
-                        this.service.loadItems(this.companyDirectory);
-                }
-                catch (Exception ex)
-                {
-                        ex.printStackTrace();
-                }
+		this.service = service;
+		this.companyDirectory = companyDirectory;
+		
+		try
+		{
+			this.service.loadItems(this.companyDirectory);
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
 		
 		setPadding(new Insets(10));
 		buildTable();
 		setCenter(this.table);
 		setBottom(buildButtons());
 		refresh();
+		
 	}
 	
 	/**
@@ -73,6 +75,7 @@ public class InventoryPanelFX extends BorderPane
 	public InventoryPanelFX(InventoryService service)
 	{
 		this(service, null);
+		
 	}
 	
 	/* ------------------------------------------------------------------ */
@@ -86,20 +89,26 @@ public class InventoryPanelFX extends BorderPane
 	 * uses reflection and can lead to type safety warnings. "deprecation" might relate to older patterns.
 	 */
 	@SuppressWarnings(
-	{ "unchecked", "deprecation" }) private void buildTable()
+	{ "unchecked", "deprecation" })
+	private void buildTable()
 	{
 		TableColumn<InventoryRow, String> idCol = col("ID", "id");
 		TableColumn<InventoryRow, String> nameCol = col("Item", "name");
-		TableColumn<InventoryRow, BigDecimal> costCol = new TableColumn<>("Cost");
+		TableColumn<InventoryRow, BigDecimal> costCol =
+			new TableColumn<>("Cost");
 		costCol.setCellValueFactory(new PropertyValueFactory<>("cost"));
 		TableColumn<InventoryRow, String> dateCol = col("Acquired", "acquired");
-		TableColumn<InventoryRow, BigDecimal> depCol = new TableColumn<>("Accum. Depr.");
+		TableColumn<InventoryRow, BigDecimal> depCol =
+			new TableColumn<>("Accum. Depr.");
 		depCol.setCellValueFactory(new PropertyValueFactory<>("accDep"));
-		TableColumn<InventoryRow, BigDecimal> nbvCol = new TableColumn<>("Net Book Value");
+		TableColumn<InventoryRow, BigDecimal> nbvCol =
+			new TableColumn<>("Net Book Value");
 		nbvCol.setCellValueFactory(new PropertyValueFactory<>("netValue"));
-		this.table.getColumns().addAll(idCol, nameCol, costCol, dateCol, depCol, nbvCol);
+		this.table.getColumns().addAll(idCol, nameCol, costCol, dateCol, depCol,
+			nbvCol);
 		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		this.table.setItems(this.rows);
+		
 	}
 	
 	/**
@@ -116,6 +125,7 @@ public class InventoryPanelFX extends BorderPane
 		TableColumn<InventoryRow, String> c = new TableColumn<>(title);
 		c.setCellValueFactory(new PropertyValueFactory<>(prop));
 		return c;
+		
 	}
 	
 	/**
@@ -155,6 +165,7 @@ public class InventoryPanelFX extends BorderPane
 			save();
 		});
 		return new ToolBar(add, edit, del, new Separator(), depr);
+		
 	}
 	
 	/**
@@ -172,7 +183,8 @@ public class InventoryPanelFX extends BorderPane
 	{
 		Dialog<InventoryRow> dlg = new Dialog<>();
 		dlg.setTitle(existing == null ? "Add Item" : "Edit Item");
-		dlg.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+		dlg.getDialogPane().getButtonTypes().addAll(ButtonType.OK,
+			ButtonType.CANCEL);
 		TextField nameF = new TextField();
 		TextField costF = new TextField();
 		DatePicker dateP = new DatePicker(LocalDate.now());
@@ -181,7 +193,7 @@ public class InventoryPanelFX extends BorderPane
 		if (existing != null)
 		{
 			nameF.setText(existing.name);
-                       costF.setText(FormatUtils.formatCurrency(existing.cost));
+			costF.setText(FormatUtils.formatCurrency(existing.cost));
 			dateP.setValue(LocalDate.parse(existing.acquired));
 			lifeF.setText(existing.lifeYears + "");
 		}
@@ -205,13 +217,16 @@ public class InventoryPanelFX extends BorderPane
 					BigDecimal cost = new BigDecimal(costF.getText().trim());
 					int life = Integer.parseInt(lifeF.getText().trim());
 					InventoryItem item = new InventoryItem(
-						existing == null ? UUID.randomUUID().toString() : existing.id,
-						nameF.getText(), cost, dateP.getValue().toString(), life);
+						existing == null ? UUID.randomUUID().toString() :
+							existing.id,
+						nameF.getText(), cost, dateP.getValue().toString(),
+						life);
 					return new InventoryRow(item);
 				}
 				catch (Exception ex)
 				{
-					new Alert(Alert.AlertType.ERROR, "Invalid input").showAndWait();
+					new Alert(Alert.AlertType.ERROR, "Invalid input")
+						.showAndWait();
 				}
 				
 			}
@@ -226,6 +241,7 @@ public class InventoryPanelFX extends BorderPane
 			refresh();
 			save();
 		});
+		
 	}
 	
 	/**
@@ -239,22 +255,23 @@ public class InventoryPanelFX extends BorderPane
 		this.rows.clear();
 		List<InventoryItem> list = this.service.listItems();
 		list.forEach(i -> this.rows.add(new InventoryRow(i)));
+		
 	}
 	
 	/** Saves current inventory items to disk if a company directory is set. */
 	private void save()
 	{
 		
-                try
-                {
-                        this.service.saveItems(this.companyDirectory);
-                }
-                catch (Exception ex)
-                {
-                        ex.printStackTrace();
-                }
-
-        }
+		try
+		{
+			this.service.saveItems(this.companyDirectory);
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		
+	}
 	
 	/**
 	 * A data class (POJO) representing a row in the inventory {@link TableView}.
@@ -294,6 +311,7 @@ public class InventoryPanelFX extends BorderPane
 			this.accDep = i.getAccumulatedDepreciation();
 			this.netValue = i.getNetBookValue();
 			this.lifeYears = i.getLifeYears();
+			
 		}
 		
 		/**
@@ -303,6 +321,7 @@ public class InventoryPanelFX extends BorderPane
 		public String getId()
 		{
 			return this.id;
+			
 		}
 		
 		/**
@@ -312,6 +331,7 @@ public class InventoryPanelFX extends BorderPane
 		public String getName()
 		{
 			return this.name;
+			
 		}
 		
 		/**
@@ -321,6 +341,7 @@ public class InventoryPanelFX extends BorderPane
 		public String getAcquired()
 		{
 			return this.acquired;
+			
 		}
 		
 		/**
@@ -330,6 +351,7 @@ public class InventoryPanelFX extends BorderPane
 		public BigDecimal getCost()
 		{
 			return this.cost;
+			
 		}
 		
 		/**
@@ -339,6 +361,7 @@ public class InventoryPanelFX extends BorderPane
 		public BigDecimal getAccDep()
 		{
 			return this.accDep;
+			
 		}
 		
 		/**
@@ -348,6 +371,7 @@ public class InventoryPanelFX extends BorderPane
 		public BigDecimal getNetValue()
 		{
 			return this.netValue;
+			
 		}
 		
 		// lifeYears is not exposed via a getter, but used in toItem()
@@ -361,8 +385,10 @@ public class InventoryPanelFX extends BorderPane
 		 */
 		InventoryItem toItem()
 		{
-			return new InventoryItem(this.id, this.name, this.cost, this.acquired, this.lifeYears)
+			return new InventoryItem(this.id, this.name, this.cost,
+				this.acquired, this.lifeYears)
 				.withAccumDep(this.accDep);
+			
 		}
 		
 	}

@@ -232,10 +232,12 @@ public class JournalRepository
 			
 			st = c.createStatement();
 			
-			// Delete supplemental lines first (depends on journal_transaction/journal_entry).
+			// Delete supplemental lines first (depends on
+			// journal_transaction/journal_entry).
 			int s = st.executeUpdate("DELETE FROM txn_supplemental_line");
 			
-			// Delete all transaction_info next (depends on journal_transaction).
+			// Delete all transaction_info next (depends on
+			// journal_transaction).
 			int a = st.executeUpdate("DELETE FROM transaction_info");
 			
 			// Delete all journal entries next (depends on journal_transaction).
@@ -301,7 +303,8 @@ public class JournalRepository
 	 * @return the list
 	 * @throws SQLException the SQL exception
 	 */
-	public static List<AccountingTransaction> listTransactions() throws SQLException
+	public static List<AccountingTransaction> listTransactions()
+		throws SQLException
 	{
 		Map<Integer, AccountingTransaction> byId = new LinkedHashMap<>();
 		List<AccountingTransaction> transactions = new ArrayList<>();
@@ -507,23 +510,24 @@ public class JournalRepository
 				closeQuietly(c3,
 					"Connection (listTransactions transaction_info)");
 			}
-
+			
 			TxnSupplementalLineRepository supplementalRepo =
 				new TxnSupplementalLineRepository();
-
+			
 			for (AccountingTransaction txn : transactions)
 			{
 				List<TxnSupplementalLineRecord> records =
 					supplementalRepo.listByTxnId(txn.getId());
 				List<TxnSupplementalLineBase> beans = new ArrayList<>();
-
+				
 				for (TxnSupplementalLineRecord record : records)
 				{
 					beans.add(TxnSupplementalLineMapper.toBean(record));
 				}
-
+				
 				txn.setSupplementalLines(beans);
 			}
+			
 		}
 		
 		return transactions;
@@ -566,7 +570,8 @@ public class JournalRepository
 	 * @param txn the txn
 	 * @throws SQLException the SQL exception
 	 */
-	private static void writeTransaction(Connection c, AccountingTransaction txn)
+	private static void writeTransaction(Connection c,
+		AccountingTransaction txn)
 		throws SQLException
 	{
 		
@@ -935,12 +940,12 @@ public class JournalRepository
 			}
 			
 		}
-
+		
 		insertSupplementalLines(c, txn);
 		CanonicalJournalSyncAdapter.syncTransaction(c, txn);
 		
 	}
-
+	
 	/**
 	 * Insert supplemental lines.
 	 *
@@ -948,23 +953,27 @@ public class JournalRepository
 	 * @param txn the txn
 	 * @throws SQLException the SQL exception
 	 */
-	private static void insertSupplementalLines(Connection c, AccountingTransaction txn)
+	private static void insertSupplementalLines(Connection c,
+		AccountingTransaction txn)
 		throws SQLException
 	{
+		
 		if (txn == null)
 		{
 			return;
 		}
-
+		
 		List<TxnSupplementalLineRecord> records = new ArrayList<>();
-
+		
 		for (TxnSupplementalLineBase line : txn.getSupplementalLines())
 		{
 			records.add(TxnSupplementalLineMapper.toRecord(line));
 		}
-
-		TxnSupplementalLineRepository repo = new TxnSupplementalLineRepository();
+		
+		TxnSupplementalLineRepository repo =
+			new TxnSupplementalLineRepository();
 		repo.replaceForTxn(c, txn.getId(), records);
+		
 	}
 	
 	/**

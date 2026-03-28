@@ -18,9 +18,9 @@ public class BudgetPanel extends BorderPane
 	{
 		TabPane subTabs = new TabPane();
 		Tab editorTab = OrgAppPanelTabAdapter
-			.toTab(new org.nonprofitbookkeeping.ui.BudgetEditorPanel());
+			.toTab(new BudgetEditorPanel());
 		Tab budgetVsActualTab = OrgAppPanelTabAdapter
-			.toTab(new org.nonprofitbookkeeping.ui.BudgetVsActualPanel());
+			.toTab(new BudgetVsActualPanel());
 		subTabs.getTabs().addAll(editorTab, budgetVsActualTab);
 		setCenter(subTabs);
 	}

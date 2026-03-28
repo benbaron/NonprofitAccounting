@@ -29,7 +29,8 @@ public class AccountsPanelFX extends BorderPane
 	/** The TableView used to display account information. */
 	private final TableView<AccountRow> table = new TableView<>();
 	/** The ObservableList that backs the {@code table}, containing {@link AccountRow} objects. */
-	private final ObservableList<AccountRow> rows = FXCollections.observableArrayList();
+	private final ObservableList<AccountRow> rows =
+		FXCollections.observableArrayList();
 	
 	/** The company listener. */
 	private AccountsPanelCompanyListener companyListener;
@@ -63,6 +64,7 @@ public class AccountsPanelFX extends BorderPane
 		CurrentCompany.CompanyListener.addCompanyListener(this.companyListener);
 		
 		handleCompanyChange(CurrentCompany.isOpen());
+		
 	}
 	
 	/**
@@ -81,9 +83,11 @@ public class AccountsPanelFX extends BorderPane
 		TableColumn<AccountRow, String> codeCol = col("Account Code", "code");
 		TableColumn<AccountRow, String> nameCol = col("Account Name", "name");
 		TableColumn<AccountRow, String> typeCol = col("Type", "type");
-		TableColumn<AccountRow, String> parentCol = col("Parent Account", "parent");
+		TableColumn<AccountRow, String> parentCol =
+			col("Parent Account", "parent");
 		TableColumn<AccountRow, String> curCol = col("Currency", "currency");
-		TableColumn<AccountRow, BigDecimal> balCol = new TableColumn<>("Opening Balance");
+		TableColumn<AccountRow, BigDecimal> balCol =
+			new TableColumn<>("Opening Balance");
 		
 		balCol.setCellValueFactory(new PropertyValueFactory<>("opening"));
 		
@@ -93,6 +97,7 @@ public class AccountsPanelFX extends BorderPane
 				curCol, balCol);
 		this.table.setItems(this.rows);
 		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		
 	}
 	
 	/**
@@ -109,6 +114,7 @@ public class AccountsPanelFX extends BorderPane
 		TableColumn<AccountRow, T> c = new TableColumn<>(title);
 		c.setCellValueFactory(new PropertyValueFactory<>(prop));
 		return c;
+		
 	}
 	
 	/**
@@ -136,6 +142,7 @@ public class AccountsPanelFX extends BorderPane
 		
 		box.getChildren().addAll(add, edit, delete);
 		return box;
+		
 	}
 	
 	/**
@@ -182,7 +189,9 @@ public class AccountsPanelFX extends BorderPane
 	 */
 	private static void alert(String msg)
 	{
-		new Alert(Alert.AlertType.INFORMATION, msg, ButtonType.OK).showAndWait();
+		new Alert(Alert.AlertType.INFORMATION, msg, ButtonType.OK)
+			.showAndWait();
+		
 	}
 	
 	/**
@@ -221,37 +230,45 @@ public class AccountsPanelFX extends BorderPane
 	 *
 	 * @param companyIsOpen the company is open
 	 */
-       private void handleCompanyChange(boolean companyIsOpen)
-       {
-               if (companyIsOpen)
-               {
-                       refresh();
-                       if (this.actionButtonsBox != null)
-                       {
-                               this.actionButtonsBox.getChildren().forEach(node ->
-                               {
-                                       if (node instanceof Button)
-                                       {
-                                               ((Button) node).setDisable(false);
-                                       }
-                               });
-                       }
-               }
-               else
-               {
-                       this.rows.clear();
-                       if (this.actionButtonsBox != null)
-                       {
-                               this.actionButtonsBox.getChildren().forEach(node ->
-                               {
-                                       if (node instanceof Button)
-                                       {
-                                               ((Button) node).setDisable(true);
-                                       }
-                               });
-                       }
-               }
-       }
+	private void handleCompanyChange(boolean companyIsOpen)
+	{
+		
+		if (companyIsOpen)
+		{
+			refresh();
+			
+			if (this.actionButtonsBox != null)
+			{
+				this.actionButtonsBox.getChildren().forEach(node -> {
+					
+					if (node instanceof Button)
+					{
+						((Button) node).setDisable(false);
+					}
+					
+				});
+			}
+			
+		}
+		else
+		{
+			this.rows.clear();
+			
+			if (this.actionButtonsBox != null)
+			{
+				this.actionButtonsBox.getChildren().forEach(node -> {
+					
+					if (node instanceof Button)
+					{
+						((Button) node).setDisable(true);
+					}
+					
+				});
+			}
+			
+		}
+		
+	}
 	
 	/**
 	 * Should be called when this panel is no longer needed. It unregisters
@@ -263,7 +280,8 @@ public class AccountsPanelFX extends BorderPane
 		
 		if (this.companyListener != null)
 		{
-			CurrentCompany.CompanyListener.removeCompanyListener(this.companyListener);
+			CurrentCompany.CompanyListener
+				.removeCompanyListener(this.companyListener);
 			this.companyListener = null;
 		}
 		
@@ -275,7 +293,8 @@ public class AccountsPanelFX extends BorderPane
 	 *
 	 * @see AccountsPanelCompanyEvent
 	 */
-	private class AccountsPanelCompanyListener implements CurrentCompany.CompanyChangeListener
+	private class AccountsPanelCompanyListener
+		implements CurrentCompany.CompanyChangeListener
 	{
 		
 		/** The panel. */
@@ -289,14 +308,17 @@ public class AccountsPanelFX extends BorderPane
 		public AccountsPanelCompanyListener(AccountsPanelFX panel)
 		{
 			this.panel = panel;
+			
 		}
 		
 		/**
 		 * Override @see nonprofitbookkeeping.model.CurrentCompany.CompanyChangeListener#companyChange(boolean) 
 		 */
-		@Override public void companyChange(boolean isOpen)
+		@Override
+		public void companyChange(boolean isOpen)
 		{
 			this.panel.handleCompanyChange(isOpen);
+			
 		}
 		
 	}
@@ -306,9 +328,9 @@ public class AccountsPanelFX extends BorderPane
 	/**
 	 * The Class AccountRow.
 	 */
-	/* This class acts as a data bean for JavaFX's {@link PropertyValueFactory} to
-	 * populate table cells. It typically wraps an {@link Account} object or holds
-	 * data for a new/editable account row. */
+	/* This class acts as a data bean for JavaFX's {@link PropertyValueFactory}
+	 * to populate table cells. It typically wraps an {@link Account} object or
+	 * holds data for a new/editable account row. */
 	public static class AccountRow
 	{
 		/** The account code or number. Defaults to an empty string. */
@@ -323,7 +345,7 @@ public class AccountsPanelFX extends BorderPane
 		 * Direct {@link Account} reference might be complex for direct TableView editing
 		 * unless appropriate converters/cell factories are used.
 		 */
-                private String parentId;
+		private String parentId;
 		/** The opening balance of the account. Defaults to {@link BigDecimal#ZERO}. */
 		private BigDecimal opening = BigDecimal.ZERO;
 		/** The type of the account (e.g., Asset, Liability). This can be {@code null}. */
@@ -336,6 +358,7 @@ public class AccountsPanelFX extends BorderPane
 		 */
 		public AccountRow()
 		{
+		
 		}
 		
 		/**
@@ -345,13 +368,15 @@ public class AccountsPanelFX extends BorderPane
 		 */
 		public AccountRow(Account a)
 		{
-			Objects.requireNonNull(a, "Account cannot be null for AccountRow construction.");
+			Objects.requireNonNull(a,
+				"Account cannot be null for AccountRow construction.");
 			this.code = a.getAccountCode();
 			this.name = a.getName();
-                        this.type = a.getAccountType();
-                        this.parentId = a.getParentAccountId();
+			this.type = a.getAccountType();
+			this.parentId = a.getParentAccountId();
 			this.currency = a.getCurrency();
 			this.opening = a.getOpeningBalance();
+			
 		}
 		
 		/**
@@ -362,6 +387,7 @@ public class AccountsPanelFX extends BorderPane
 		public String getCode()
 		{
 			return this.code;
+			
 		}
 		
 		/**
@@ -372,6 +398,7 @@ public class AccountsPanelFX extends BorderPane
 		public void setCode(String s)
 		{
 			this.code = s;
+			
 		}
 		
 		/**
@@ -382,6 +409,7 @@ public class AccountsPanelFX extends BorderPane
 		public String getName()
 		{
 			return this.name;
+			
 		}
 		
 		/**
@@ -392,6 +420,7 @@ public class AccountsPanelFX extends BorderPane
 		public void setName(String s)
 		{
 			this.name = s;
+			
 		}
 		
 		/**
@@ -402,6 +431,7 @@ public class AccountsPanelFX extends BorderPane
 		public AccountType getType()
 		{
 			return this.type;
+			
 		}
 		
 		/**
@@ -412,27 +442,30 @@ public class AccountsPanelFX extends BorderPane
 		public void setType(AccountType s)
 		{
 			this.type = s;
+			
 		}
 		
-                /**
-                 * Gets the parent id.
-                 *
-                 * @return the parent id
-                 */
-                public String getParentId()
-                {
-                        return this.parentId;
-                }
-
-                /**
-                 * Sets the parent id.
-                 *
-                 * @param s the new parent id
-                 */
-                public void setParentId(String s)
-                {
-                        this.parentId = s;
-                }
+		/**
+		 * Gets the parent id.
+		 *
+		 * @return the parent id
+		 */
+		public String getParentId()
+		{
+			return this.parentId;
+			
+		}
+		
+		/**
+		 * Sets the parent id.
+		 *
+		 * @param s the new parent id
+		 */
+		public void setParentId(String s)
+		{
+			this.parentId = s;
+			
+		}
 		
 		/**
 		 * Gets the currency.
@@ -442,6 +475,7 @@ public class AccountsPanelFX extends BorderPane
 		public String getCurrency()
 		{
 			return this.currency;
+			
 		}
 		
 		/**
@@ -452,6 +486,7 @@ public class AccountsPanelFX extends BorderPane
 		public void setCurrency(String s)
 		{
 			this.currency = s;
+			
 		}
 		
 		/**
@@ -462,6 +497,7 @@ public class AccountsPanelFX extends BorderPane
 		public BigDecimal getOpening()
 		{
 			return this.opening;
+			
 		}
 		
 		/**
@@ -472,6 +508,7 @@ public class AccountsPanelFX extends BorderPane
 		public void setOpening(BigDecimal b)
 		{
 			this.opening = (b != null) ? b : BigDecimal.ZERO;
+			
 		}
 		
 	}

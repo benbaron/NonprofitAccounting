@@ -15,7 +15,6 @@ import nonprofitbookkeeping.model.supplemental.TxnSupplementalLineBase;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class AccountingTransaction.
  */
@@ -91,7 +90,6 @@ public class AccountingTransaction implements Serializable
 	}
 
 	/**
-	 * 
 	 * Constructs an AccountingTransaction with specified details.
 	 * Ensures that entries are not null and the transaction is balanced.
 	 * Note: The process of setting the transaction back onto its entries is commented out
