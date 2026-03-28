@@ -514,12 +514,6 @@ public class NonprofitBookkeepingFX extends Application
 			});
 			bar.getMenus().add(settings);
 
-			/* HELP
-			 * ----- */
-			Menu help = new Menu("Help");
-			add(help, "Show Help", "help.show");
-			bar.getMenus().add(help);
-			
 			/* PLUGINS */
 			this.pluginsMenu = new Menu("Plugins");
 		
@@ -557,12 +551,6 @@ public class NonprofitBookkeepingFX extends Application
 				
 			}
 			
-		}
-
-		// Keep Help pinned to the far right even when plugins add menus.
-		if (bar.getMenus().remove(help))
-		{
-			bar.getMenus().add(help);
 		}
 		
 		return bar;
