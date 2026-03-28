@@ -69,7 +69,10 @@ public class NavigationPane extends VBox
 
         TreeItem<NavItem> ref = group(root, "Reference");
         add(ref, AppPanelId.CHART_OF_ACCOUNTS, "Chart of Accounts");
-        add(ref, AppPanelId.FUNDS, "Funds");
+        TreeItem<NavItem> fundraising = group(ref, "Fundraising");
+        add(fundraising, AppPanelId.DONORS, "Donors");
+        add(fundraising, AppPanelId.GRANTS, "Grants");
+        add(fundraising, AppPanelId.FUNDS, "Funds");
 
         TreeItem<NavItem> sys = group(root, "System");
         add(sys, AppPanelId.SETTINGS, "Settings");

@@ -27,6 +27,8 @@ public enum AppPanelId
     REPORT_LIBRARY,
 
     CHART_OF_ACCOUNTS,
+    DONORS,
+    GRANTS,
     FUNDS,
     SETTINGS,
     DIAGNOSTICS,

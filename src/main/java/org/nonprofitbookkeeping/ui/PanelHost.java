@@ -40,6 +40,8 @@ public class PanelHost extends BorderPane
         FACTORIES.put(AppPanelId.REPORT_LIBRARY, ReportLibraryPanel::new);
 
         FACTORIES.put(AppPanelId.CHART_OF_ACCOUNTS, ChartOfAccountsPanel::new);
+        FACTORIES.put(AppPanelId.DONORS, FundraisingPanelFactory::createDonorsPanel);
+        FACTORIES.put(AppPanelId.GRANTS, FundraisingPanelFactory::createGrantsPanel);
         FACTORIES.put(AppPanelId.FUNDS, FundsPanel::new);
         FACTORIES.put(AppPanelId.SETTINGS, SettingsPanel::new);
         FACTORIES.put(AppPanelId.DIAGNOSTICS, DiagnosticsPanel::new);
