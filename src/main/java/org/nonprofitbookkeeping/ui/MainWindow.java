@@ -132,7 +132,20 @@ public class MainWindow extends BorderPane implements ShellOwner
         return SESSION_STATE;
     }
 
-    InspectorPane inspectorPane()
+    @Override
+    public NavigationPane navigationPane()
+    {
+        return nav;
+    }
+
+    @Override
+    public PanelHost panelHost()
+    {
+        return panelHost;
+    }
+
+    @Override
+    public InspectorPane inspectorPane()
     {
         return inspectorPane;
     }

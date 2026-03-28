@@ -499,10 +499,10 @@ public class NonprofitBookkeepingFX extends Application
 				}),
 				"Settings");
 		});
-		add(settings, "Reset Workspace Tabs to Default", e -> {
-			if (this.mainView != null)
-			{
-				this.mainView.resetTabOrderToDefault();
+			add(settings, "Reset Workspace Tabs to Default", e -> {
+				if (this.mainView != null)
+				{
+					this.mainView.resetTabOrderToDefault();
 				Alert alert = new Alert(Alert.AlertType.INFORMATION,
 					"Workspace tabs were reset to the default order.");
 				if (this.primaryStage != null)
@@ -511,11 +511,17 @@ public class NonprofitBookkeepingFX extends Application
 				}
 				alert.showAndWait();
 			}
-		});
-		bar.getMenus().add(settings);
-		
-		/* PLUGINS */
-		this.pluginsMenu = new Menu("Plugins");
+			});
+			bar.getMenus().add(settings);
+
+			/* HELP
+			 * ----- */
+			Menu help = new Menu("Help");
+			add(help, "Show Help", "help.show");
+			bar.getMenus().add(help);
+			
+			/* PLUGINS */
+			this.pluginsMenu = new Menu("Plugins");
 		
 		if (this.loadedPlugins == null || this.loadedPlugins.isEmpty())
 		{
