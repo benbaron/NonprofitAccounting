@@ -1,15 +1,13 @@
 
 package nonprofitbookkeeping.ui;
 
+import javafx.collections.ListChangeListener;
 import javafx.scene.control.MenuBar;
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
-import javafx.geometry.Orientation;
 
 import nonprofitbookkeeping.ui.panels.BalanceSheetPanelFX;
-import nonprofitbookkeeping.ui.panels.ChartOfAccountsTablePanelFX;
 import nonprofitbookkeeping.ui.panels.CoaEditorPanelFX;
 import nonprofitbookkeeping.ui.panels.CompanySelectionPanelFX;
 import nonprofitbookkeeping.ui.panels.BankReconciliationPanelFX;
@@ -22,9 +20,14 @@ import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.ReportPeriodPreset;
+import nonprofitbookkeeping.preferences.PreferencesManager;
 
 
 import java.time.MonthDay;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represents the main application view, structured as a {@link BorderPane}.
@@ -96,8 +99,6 @@ public class MainApplicationView extends BorderPane
 	private Tab bankReconciliationTab;
 	/** Embedded Chart of Accounts editor panel. */
 	private CoaEditorPanelFX coaEditorPanel;
-	/** Embedded Chart of Accounts tabular panel shown with the editor. */
-	private ChartOfAccountsTablePanelFX coaTablePanel;
 	/** Panel used to select or create companies when none are open. */
 	private final CompanySelectionPanelFX companySelectionPanel;
 	/** Journal panel instance to expose search helpers. */
@@ -119,6 +120,7 @@ public class MainApplicationView extends BorderPane
 		this.menuBar = null; // Initialize menuBar, will be set via setter
 		
 		this.tabPane = new TabPane();
+		this.tabPane.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
 		this.companySelectionPanel = new CompanySelectionPanelFX();
 		
 		// Create Tab instances
@@ -138,9 +140,7 @@ public class MainApplicationView extends BorderPane
 			}
 			
 		}, () -> {});
-		this.coaTablePanel = new ChartOfAccountsTablePanelFX();
-		this.coaTab = new Tab("Chart of Accounts",
-			createMergedCoaPanel(this.coaEditorPanel, this.coaTablePanel));
+		this.coaTab = new Tab("Chart of Accounts", this.coaEditorPanel);
 		
 		this.reportsTab = new Tab("Reports", new SkeletonReportsPanel());
 		this.incomeStatementTab = new Tab("Income Statement",
@@ -185,28 +185,124 @@ public class MainApplicationView extends BorderPane
 				this.balanceSheetTab,
 				this.accountDetailsTab
 			);
+		applyStoredTabOrder();
+		this.tabPane.getTabs().addListener((ListChangeListener<Tab>) c ->
+			persistTabOrder());
 		
 		// Default to the company selection view until a company is opened.
 		setCenter(this.companySelectionPanel);
 		
 	}
 
-	/**
-	 * Creates a single workspace that combines the COA editor and table view.
-	 *
-	 * @param editor the ladder/tree editor panel
-	 * @param table the tabular panel
-	 * @return merged COA workspace container
-	 */
-	private SplitPane createMergedCoaPanel(CoaEditorPanelFX editor,
-		ChartOfAccountsTablePanelFX table)
+	/** Resets workspace tabs to the default order and clears the stored preference. */
+	public void resetTabOrderToDefault()
 	{
-		SplitPane splitPane = new SplitPane(editor, table);
-		splitPane.setOrientation(Orientation.VERTICAL);
-		splitPane.setDividerPositions(0.58);
-		return splitPane;
+		PreferencesManager.clearWorkspaceTabOrder();
+		this.tabPane.getTabs().setAll(getDefaultTabOrder());
 	}
-	
+
+	private void applyStoredTabOrder()
+	{
+		String serializedOrder = PreferencesManager.getWorkspaceTabOrder();
+
+		if (serializedOrder == null || serializedOrder.isBlank())
+		{
+			return;
+		}
+
+		Map<String, Tab> byKey = getTabKeyMap();
+		List<Tab> reordered = new ArrayList<>();
+
+		for (String key : serializedOrder.split(","))
+		{
+			Tab tab = byKey.remove(key.trim());
+
+			if (tab != null)
+			{
+				reordered.add(tab);
+			}
+		}
+
+		// Include any tabs missing from serialized preferences.
+		reordered.addAll(byKey.values());
+
+		if (reordered.size() == this.tabPane.getTabs().size())
+		{
+			this.tabPane.getTabs().setAll(reordered);
+		}
+	}
+
+	private void persistTabOrder()
+	{
+		StringBuilder sb = new StringBuilder();
+
+		for (Tab tab : this.tabPane.getTabs())
+		{
+			String key = getTabPreferenceKey(tab);
+
+			if (key == null)
+			{
+				continue;
+			}
+
+			if (sb.length() > 0)
+			{
+				sb.append(',');
+			}
+
+			sb.append(key);
+		}
+
+		PreferencesManager.setWorkspaceTabOrder(sb.toString());
+	}
+
+	private List<Tab> getDefaultTabOrder()
+	{
+		List<Tab> defaultOrder = new ArrayList<>();
+		defaultOrder.add(this.dashboardTab);
+		defaultOrder.add(this.journalTab);
+		defaultOrder.add(this.coaTab);
+		defaultOrder.add(this.budgetTab);
+		defaultOrder.add(this.ledgerTab);
+		defaultOrder.add(this.assetsTab);
+		defaultOrder.add(this.bankReconciliationTab);
+		defaultOrder.add(this.reportsTab);
+		defaultOrder.add(this.incomeStatementTab);
+		defaultOrder.add(this.balanceSheetTab);
+		defaultOrder.add(this.accountDetailsTab);
+		return defaultOrder;
+	}
+
+	private Map<String, Tab> getTabKeyMap()
+	{
+		Map<String, Tab> byKey = new HashMap<>();
+		for (Tab tab : getDefaultTabOrder())
+		{
+			String key = getTabPreferenceKey(tab);
+			if (key != null)
+			{
+				byKey.put(key, tab);
+			}
+		}
+		return byKey;
+	}
+
+	private String getTabPreferenceKey(Tab tab)
+	{
+		if (tab == this.dashboardTab) return "dashboard";
+		if (tab == this.journalTab) return "journal";
+		if (tab == this.coaTab) return "coa";
+		if (tab == this.budgetTab) return "budget";
+		if (tab == this.ledgerTab) return "ledger";
+		if (tab == this.assetsTab) return "assets";
+		if (tab == this.bankReconciliationTab) return "bank_reconciliation";
+		if (tab == this.reportsTab) return "reports";
+		if (tab == this.incomeStatementTab) return "income_statement";
+		if (tab == this.balanceSheetTab) return "balance_sheet";
+		if (tab == this.accountDetailsTab) return "account_details";
+		return null;
+	}
+
 	/**
 	 * Exposes the company selection panel for additional configuration.
 	 *
@@ -361,9 +457,7 @@ public class MainApplicationView extends BorderPane
 					}
 					
 				}, () -> {});
-				this.coaTablePanel = new ChartOfAccountsTablePanelFX();
-				this.coaTab.setContent(
-					createMergedCoaPanel(this.coaEditorPanel, this.coaTablePanel));
+				this.coaTab.setContent(this.coaEditorPanel);
 			}
 			else
 			{

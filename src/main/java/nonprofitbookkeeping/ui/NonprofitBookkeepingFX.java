@@ -483,7 +483,34 @@ public class NonprofitBookkeepingFX extends Application
 		/* SETTINGS 
 		 * ---------- */
 		Menu settings = new Menu("Settings");
-		add(settings, "Show Settings", "settings.show");
+		add(settings, "Show Settings", e -> {
+			ensureSettingsLoaded();
+			showPanel(new SettingsPanelFX(this.primaryStage,
+				this.settingsService, () ->
+				{
+					applyGlobalSettings();
+					
+					if (CurrentCompany.isOpen())
+					{
+						scheduleAutosave();
+					}
+					
+				}),
+				"Settings");
+		});
+		add(settings, "Reset Workspace Tabs to Default", e -> {
+			if (this.mainView != null)
+			{
+				this.mainView.resetTabOrderToDefault();
+				Alert alert = new Alert(Alert.AlertType.INFORMATION,
+					"Workspace tabs were reset to the default order.");
+				if (this.primaryStage != null)
+				{
+					alert.initOwner(this.primaryStage);
+				}
+				alert.showAndWait();
+			}
+		});
 		bar.getMenus().add(settings);
 		
 		/* PLUGINS */
@@ -524,12 +551,12 @@ public class NonprofitBookkeepingFX extends Application
 			}
 			
 		}
-				
-		/* HELP */
-		Menu help = new Menu("Help");
-		add(help, "Help",
-			"help.show");
-		bar.getMenus().add(help);
+
+		// Keep Help pinned to the far right even when plugins add menus.
+		if (bar.getMenus().remove(help))
+		{
+			bar.getMenus().add(help);
+		}
 		
 		return bar;
 		
