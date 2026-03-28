@@ -55,7 +55,7 @@ public class PoiXlsxFinancialReportAdapter implements FinancialReportExportAdapt
             int maxCols = rows.stream().mapToInt(List::size).max().orElse(0);
             for (int c = 0; c < maxCols; c++)
             {
-                sheet.autoSizeColumn(c);
+                sheet.setColumnWidth(c, 20 * 256);
             }
 
             workbook.write(out);
