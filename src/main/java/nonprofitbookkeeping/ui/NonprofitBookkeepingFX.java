@@ -535,6 +535,19 @@ public class NonprofitBookkeepingFX extends Application
 				}),
 				"Settings");
 		});
+		add(settings, "Reset Workspace Tabs to Default", e -> {
+			if (this.mainView != null)
+			{
+				this.mainView.resetTabOrderToDefault();
+				Alert alert = new Alert(Alert.AlertType.INFORMATION,
+					"Workspace tabs were reset to the default order.");
+				if (this.primaryStage != null)
+				{
+					alert.initOwner(this.primaryStage);
+				}
+				alert.showAndWait();
+			}
+		});
 		bar.getMenus().add(settings);
 		
 		/* PLUGINS */

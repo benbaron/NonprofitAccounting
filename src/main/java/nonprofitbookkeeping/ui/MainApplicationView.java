@@ -1,6 +1,7 @@
 
 package nonprofitbookkeeping.ui;
 
+import javafx.collections.ListChangeListener;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -19,9 +20,14 @@ import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.ReportPeriodPreset;
+import nonprofitbookkeeping.preferences.PreferencesManager;
 
 
 import java.time.MonthDay;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represents the main application view, structured as a {@link BorderPane}.
@@ -179,10 +185,122 @@ public class MainApplicationView extends BorderPane
 				this.balanceSheetTab,
 				this.accountDetailsTab
 			);
+		applyStoredTabOrder();
+		this.tabPane.getTabs().addListener((ListChangeListener<Tab>) c ->
+			persistTabOrder());
 		
 		// Default to the company selection view until a company is opened.
 		setCenter(this.companySelectionPanel);
 		
+	}
+
+	/** Resets workspace tabs to the default order and clears the stored preference. */
+	public void resetTabOrderToDefault()
+	{
+		PreferencesManager.clearWorkspaceTabOrder();
+		this.tabPane.getTabs().setAll(getDefaultTabOrder());
+	}
+
+	private void applyStoredTabOrder()
+	{
+		String serializedOrder = PreferencesManager.getWorkspaceTabOrder();
+
+		if (serializedOrder == null || serializedOrder.isBlank())
+		{
+			return;
+		}
+
+		Map<String, Tab> byKey = getTabKeyMap();
+		List<Tab> reordered = new ArrayList<>();
+
+		for (String key : serializedOrder.split(","))
+		{
+			Tab tab = byKey.remove(key.trim());
+
+			if (tab != null)
+			{
+				reordered.add(tab);
+			}
+		}
+
+		// Include any tabs missing from serialized preferences.
+		reordered.addAll(byKey.values());
+
+		if (reordered.size() == this.tabPane.getTabs().size())
+		{
+			this.tabPane.getTabs().setAll(reordered);
+		}
+	}
+
+	private void persistTabOrder()
+	{
+		StringBuilder sb = new StringBuilder();
+
+		for (Tab tab : this.tabPane.getTabs())
+		{
+			String key = getTabPreferenceKey(tab);
+
+			if (key == null)
+			{
+				continue;
+			}
+
+			if (sb.length() > 0)
+			{
+				sb.append(',');
+			}
+
+			sb.append(key);
+		}
+
+		PreferencesManager.setWorkspaceTabOrder(sb.toString());
+	}
+
+	private List<Tab> getDefaultTabOrder()
+	{
+		List<Tab> defaultOrder = new ArrayList<>();
+		defaultOrder.add(this.dashboardTab);
+		defaultOrder.add(this.journalTab);
+		defaultOrder.add(this.coaTab);
+		defaultOrder.add(this.budgetTab);
+		defaultOrder.add(this.ledgerTab);
+		defaultOrder.add(this.assetsTab);
+		defaultOrder.add(this.bankReconciliationTab);
+		defaultOrder.add(this.reportsTab);
+		defaultOrder.add(this.incomeStatementTab);
+		defaultOrder.add(this.balanceSheetTab);
+		defaultOrder.add(this.accountDetailsTab);
+		return defaultOrder;
+	}
+
+	private Map<String, Tab> getTabKeyMap()
+	{
+		Map<String, Tab> byKey = new HashMap<>();
+		for (Tab tab : getDefaultTabOrder())
+		{
+			String key = getTabPreferenceKey(tab);
+			if (key != null)
+			{
+				byKey.put(key, tab);
+			}
+		}
+		return byKey;
+	}
+
+	private String getTabPreferenceKey(Tab tab)
+	{
+		if (tab == this.dashboardTab) return "dashboard";
+		if (tab == this.journalTab) return "journal";
+		if (tab == this.coaTab) return "coa";
+		if (tab == this.budgetTab) return "budget";
+		if (tab == this.ledgerTab) return "ledger";
+		if (tab == this.assetsTab) return "assets";
+		if (tab == this.bankReconciliationTab) return "bank_reconciliation";
+		if (tab == this.reportsTab) return "reports";
+		if (tab == this.incomeStatementTab) return "income_statement";
+		if (tab == this.balanceSheetTab) return "balance_sheet";
+		if (tab == this.accountDetailsTab) return "account_details";
+		return null;
 	}
 
 	/**
