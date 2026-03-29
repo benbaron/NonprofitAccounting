@@ -99,11 +99,17 @@ class MapDrivenRoutingTest extends ApplicationTest
     {
         TreeItem<NavigationPane.NavItem> inventory = findByLabel(tree.getRoot(), "Inventory");
         TreeItem<NavigationPane.NavItem> reportsWorkspace = findByLabel(tree.getRoot(), "Reports Library");
+        TreeItem<NavigationPane.NavItem> donors = findByLabel(tree.getRoot(), "Donors");
+        TreeItem<NavigationPane.NavItem> grants = findByLabel(tree.getRoot(), "Grants");
 
         assertNotNull(inventory);
         assertNotNull(reportsWorkspace);
+        assertNotNull(donors);
+        assertNotNull(grants);
         assertEquals(AppPanelId.INVENTORY, inventory.getValue().panelId());
         assertEquals(AppPanelId.REPORT_LIBRARY, reportsWorkspace.getValue().panelId());
+        assertEquals(AppPanelId.DONORS, donors.getValue().panelId());
+        assertEquals(AppPanelId.GRANTS, grants.getValue().panelId());
 
         interact(() -> host.show(inventory.getValue().panelId()));
         WaitForAsyncUtils.waitForFxEvents();

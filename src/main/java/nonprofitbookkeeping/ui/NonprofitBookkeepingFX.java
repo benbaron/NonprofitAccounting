@@ -177,6 +177,15 @@ public class NonprofitBookkeepingFX extends Application
 	private ScheduledExecutorService autosaveExecutor;
 	/** Handle to the currently scheduled autosave task. */
 	private ScheduledFuture<?> autosaveFuture;
+	/** Lifecycle events that may require autosave schedule reconciliation. */
+	private enum AutosaveLifecycleEvent
+	{
+		STARTUP,
+		COMPANY_OPENED,
+		COMPANY_CLOSED,
+		SETTINGS_SAVED,
+		SHUTDOWN
+	}
 	/** Service that imports legacy .npbk archives into the active database. */
 	private final LegacyNpbkImportService legacyNpbkImportService =
 		new LegacyNpbkImportService();
@@ -343,11 +352,12 @@ public class NonprofitBookkeepingFX extends Application
 				
 			});
 			
-		this.primaryStage.setScene(scene);
-		applyGlobalSettings();
-		
-		setState(AppState.NO_COMPANY); // Set initial UI state
-		this.primaryStage.show();
+			this.primaryStage.setScene(scene);
+			applyGlobalSettings();
+			
+			setState(AppState.NO_COMPANY); // Set initial UI state
+			onAutosaveLifecycleEvent(AutosaveLifecycleEvent.STARTUP);
+			this.primaryStage.show();
 		
 	}
 	
@@ -484,25 +494,21 @@ public class NonprofitBookkeepingFX extends Application
 		/* SETTINGS 
 		 * ---------- */
 		Menu settings = new Menu("Settings");
-		add(settings, "Show Settings", e -> {
-			ensureSettingsLoaded();
-			showPanel(new SettingsPanelFX(this.primaryStage,
-				this.settingsService, () ->
-				{
-					applyGlobalSettings();
-					
-					if (CurrentCompany.isOpen())
+			add(settings, "Show Settings", e -> {
+				ensureSettingsLoaded();
+				showPanel(new SettingsPanelFX(this.primaryStage,
+					this.settingsService, () ->
 					{
-						scheduleAutosave();
-					}
-					
-				}),
-				"Settings");
-		});
-		add(settings, "Reset Workspace Tabs to Default", e -> {
-			if (this.mainView != null)
-			{
-				this.mainView.resetTabOrderToDefault();
+						applyGlobalSettings();
+						onAutosaveLifecycleEvent(AutosaveLifecycleEvent.SETTINGS_SAVED);
+						
+					}),
+					"Settings");
+			});
+			add(settings, "Reset Workspace Tabs to Default", e -> {
+				if (this.mainView != null)
+				{
+					this.mainView.resetTabOrderToDefault();
 				Alert alert = new Alert(Alert.AlertType.INFORMATION,
 					"Workspace tabs were reset to the default order.");
 				if (this.primaryStage != null)
@@ -511,11 +517,11 @@ public class NonprofitBookkeepingFX extends Application
 				}
 				alert.showAndWait();
 			}
-		});
-		bar.getMenus().add(settings);
-		
-		/* PLUGINS */
-		this.pluginsMenu = new Menu("Plugins");
+			});
+			bar.getMenus().add(settings);
+
+			/* PLUGINS */
+			this.pluginsMenu = new Menu("Plugins");
 		
 		if (this.loadedPlugins == null || this.loadedPlugins.isEmpty())
 		{
@@ -551,12 +557,6 @@ public class NonprofitBookkeepingFX extends Application
 				
 			}
 			
-		}
-
-		// Keep Help pinned to the far right even when plugins add menus.
-		if (bar.getMenus().remove(help))
-		{
-			bar.getMenus().add(help);
 		}
 		
 		return bar;
@@ -613,10 +613,7 @@ public class NonprofitBookkeepingFX extends Application
 		showPanel(new SettingsPanelFX(this.primaryStage, this.settingsService, () ->
 		{
 			applyGlobalSettings();
-			if (CurrentCompany.isOpen())
-			{
-				scheduleAutosave();
-			}
+			onAutosaveLifecycleEvent(AutosaveLifecycleEvent.SETTINGS_SAVED);
 		}), "Settings");
 	}
 
@@ -1111,6 +1108,20 @@ public class NonprofitBookkeepingFX extends Application
 				interval, interval, TimeUnit.MINUTES);
 		
 	}
+
+	private void onAutosaveLifecycleEvent(AutosaveLifecycleEvent event)
+	{
+		if (event == AutosaveLifecycleEvent.SHUTDOWN)
+		{
+			cancelAutosave();
+			if (this.autosaveExecutor != null)
+			{
+				this.autosaveExecutor.shutdownNow();
+			}
+			return;
+		}
+		scheduleAutosave();
+	}
 	
 	/**
 	 * Cancel autosave.
@@ -1166,16 +1177,11 @@ public class NonprofitBookkeepingFX extends Application
 			ensureSettingsLoaded();
 		}
 		
-		boolean creatingCompany = (newState == AppState.CREATING_COMPANY);
-		boolean companyOpen = databaseReady && CurrentCompany.isOpen();
-		
-		if (!companyOpen)
-		{
-			cancelAutosave();
-		}
-		
-		this.miOpen
-			.setDisable(!databaseReady || creatingCompany || companyOpen);
+			boolean creatingCompany = (newState == AppState.CREATING_COMPANY);
+			boolean companyOpen = databaseReady && CurrentCompany.isOpen();
+			
+			this.miOpen
+				.setDisable(!databaseReady || creatingCompany || companyOpen);
 		this.miClose.setDisable(!companyOpen || creatingCompany);
 		this.miSave.setDisable(!companyOpen || creatingCompany);
 		this.miEditCompany.setDisable(!databaseReady || creatingCompany);
@@ -1274,58 +1280,6 @@ public class NonprofitBookkeepingFX extends Application
 	}
 	
 	/**
-	 * Configure autosave.
-	 */
-	private void configureAutosave()
-	{
-		cancelAutosave();
-		
-		if (this.cachedSettings == null)
-		{
-			return;
-		}
-		
-		int interval =
-			Math.max(0, this.cachedSettings.getAutosaveIntervalMinutes());
-		
-		if (interval <= 0)
-		{
-			return;
-		}
-		
-		if (this.autosaveExecutor == null || this.autosaveExecutor.isShutdown())
-		{
-			this.autosaveExecutor =
-				Executors.newSingleThreadScheduledExecutor(r ->
-				{
-					Thread t = new Thread(r, "npbk-autosave");
-					t.setDaemon(true);
-					return t;
-				});
-		}
-		
-		this.autosaveFuture = this.autosaveExecutor.scheduleAtFixedRate(() -> {
-			
-			if (!CurrentCompany.isOpen())
-			{
-				return;
-			}
-			
-			try
-			{
-				CurrentCompany.persist();
-			}
-			catch (IOException ex)
-			{
-				LOGGER.warn("Autosave failed", ex);
-			}
-			
-		}, interval, interval, TimeUnit.MINUTES);
-		
-	}
-	
-	
-	/**
 	 * Handle company opened.
 	 *
 	 * @param company the company
@@ -1338,13 +1292,12 @@ public class NonprofitBookkeepingFX extends Application
 			return;
 		}
 		
-		setState(AppState.COMPANY_OPEN);
-		ensureSettingsLoaded();
-		applyGlobalSettings();
-		scheduleAutosave();
-		
-		reloadSettings();
-		configureAutosave();
+			setState(AppState.COMPANY_OPEN);
+			ensureSettingsLoaded();
+			applyGlobalSettings();
+			
+			reloadSettings();
+			onAutosaveLifecycleEvent(AutosaveLifecycleEvent.COMPANY_OPENED);
 		
 		if (company.getCompanyFile() != null && Database.isInitialized())
 		{
@@ -1438,14 +1391,14 @@ public class NonprofitBookkeepingFX extends Application
 			CloseCompanyFileAction closeCompanyFileAction =
 				new CloseCompanyFileAction(this.primaryStage);
 			
-			if (closeCompanyFileAction.isClosed())
-			{
-				// After action, set state.
-				setState(AppState.NO_COMPANY);
-				cancelAutosave();
-				
-				if (this.companySelectionPanel != null)
+				if (closeCompanyFileAction.isClosed())
 				{
+					// After action, set state.
+					setState(AppState.NO_COMPANY);
+					onAutosaveLifecycleEvent(AutosaveLifecycleEvent.COMPANY_CLOSED);
+					
+					if (this.companySelectionPanel != null)
+					{
 					this.companySelectionPanel.refreshCompanyList();
 				}
 				
@@ -1465,13 +1418,11 @@ public class NonprofitBookkeepingFX extends Application
 		
 		// Switch view back to dashboard
 		if (this.mainView != null)
-		{
-			this.workspaceNavigator.showCompanySelection();
+			{
+				this.workspaceNavigator.showCompanySelection();
+			}
+			
 		}
-		
-		cancelAutosave();
-		
-	}
 	
 	/**
 	 * Handles the action to save the currently open company file.
@@ -1581,14 +1532,8 @@ public class NonprofitBookkeepingFX extends Application
 	@Override
 	public void stop() throws Exception
 	{
-		LOGGER.info("Application stopping. Shutting down plugins.");
-		
-		cancelAutosave();
-		
-		if (this.autosaveExecutor != null)
-		{
-			this.autosaveExecutor.shutdownNow();
-		}
+			LOGGER.info("Application stopping. Shutting down plugins.");
+			onAutosaveLifecycleEvent(AutosaveLifecycleEvent.SHUTDOWN);
 		
 		if (this.loadedPlugins != null)
 		{

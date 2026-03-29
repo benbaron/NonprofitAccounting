@@ -55,7 +55,7 @@ class MainWindowMenuBarTest
                     .map(Menu::getText)
                     .collect(Collectors.toList());
 
-                assertEquals(List.of("File", "Edit", "Search", "View", "Run", "Tools", "Account", "Help"),
+                assertEquals(List.of("File", "Edit", "Search", "View", "Run", "Database", "Tools", "Fundraising", "Account", "Help"),
                     menuNames);
 
                 Menu file = menuBar.getMenus().get(0);
@@ -70,9 +70,17 @@ class MainWindowMenuBarTest
                 Menu run = menuBar.getMenus().get(4);
                 assertTrue(hasItem(run, "Post / Validate"));
 
-                Menu tools = menuBar.getMenus().get(5);
+                Menu database = menuBar.getMenus().get(5);
+                assertTrue(hasItem(database, "Open/Create H2 Database…"));
+                assertTrue(hasItem(database, "Import Legacy .npbk Archive…"));
+
+                Menu tools = menuBar.getMenus().get(6);
                 assertTrue(hasItem(tools, "Import CoA CSV…"));
                 assertTrue(hasItem(tools, "Import / Export Jobs…"));
+
+                Menu fundraising = menuBar.getMenus().get(7);
+                assertTrue(hasItem(fundraising, "Donors"));
+                assertTrue(hasItem(fundraising, "Grants"));
 
                 for (Menu menu : menuBar.getMenus())
                 {

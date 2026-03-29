@@ -38,6 +38,9 @@ import org.nonprofitbookkeeping.service.ImportExportOrchestrationService;
 import org.nonprofitbookkeeping.service.JournalLine;
 import org.nonprofitbookkeeping.service.LedgerQueryService;
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.service.LegacyNpbkImportService;
 import nonprofitbookkeeping.tools.H2ScriptCompanyExporter;
 import nonprofitbookkeeping.tools.H2ScriptCompanyImporter;
 import nonprofitbookkeeping.ui.panels.SqlQueryPanelFX;
@@ -51,6 +54,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +70,7 @@ public class MainWindow extends BorderPane implements ShellOwner
 
     private final AppStateStore stateStore;
     private final ImportExportOrchestrationService importExportService = new ImportExportOrchestrationService();
+    private final LegacyNpbkImportService legacyNpbkImportService = new LegacyNpbkImportService();
     private final PanelHost panelHost = new PanelHost();
     private final InspectorPane inspectorPane = new InspectorPane();
     private final NavigationPane nav = new NavigationPane(this::openPanel, this::openInspectorForSelection, this::navigationInspectorContext);
@@ -132,7 +137,20 @@ public class MainWindow extends BorderPane implements ShellOwner
         return SESSION_STATE;
     }
 
-    InspectorPane inspectorPane()
+    @Override
+    public NavigationPane navigationPane()
+    {
+        return nav;
+    }
+
+    @Override
+    public PanelHost panelHost()
+    {
+        return panelHost;
+    }
+
+    @Override
+    public InspectorPane inspectorPane()
     {
         return inspectorPane;
     }
@@ -173,18 +191,24 @@ public class MainWindow extends BorderPane implements ShellOwner
         file.getItems().addAll(
                 item("New", "Ctrl+N", this::newItemInActivePanel),
                 item("Open…", null, () -> openPanel(AppPanelId.DASHBOARD)),
-                item("Database Wizard…", null, this::openDatabaseWizard),
-                item("Select Database File…", null, this::selectDatabaseFile),
-                item("Create New Database…", null, this::createNewDatabase),
-                new SeparatorMenuItem(),
-                item("Import H2 SQL Script…", null, this::importH2SqlScript),
-                item("Export H2 SQL Script…", null, this::exportH2SqlScript),
-                item("Run SQL Query…", null, this::openSqlQueryPanel),
                 new SeparatorMenuItem(),
                 item("Save", "Ctrl+S", this::saveActivePanel),
                 item("Export…", null, this::exportDataFromFileMenu),
                 new SeparatorMenuItem(),
                 item("Exit", null, () -> System.exit(0))
+        );
+
+        Menu database = new Menu("Database");
+        database.getItems().addAll(
+                item("Database Wizard…", null, this::openDatabaseWizard),
+                item("Open/Create H2 DB...", null, this::openOrCreateH2Db),
+                item("Select Database File…", null, this::selectDatabaseFile),
+                item("Create New Database…", null, this::createNewDatabase),
+                new SeparatorMenuItem(),
+                item("Import Legacy .npbk Archive...", null, this::importLegacyArchive),
+                item("Import H2 SQL Script…", null, this::importH2SqlScript),
+                item("Export H2 SQL Script…", null, this::exportH2SqlScript),
+                item("Run SQL Query…", null, this::openSqlQueryPanel)
         );
 
         Menu edit = new Menu("Edit");
@@ -241,7 +265,15 @@ public class MainWindow extends BorderPane implements ShellOwner
                 item("Log In…", null, this::login),
                 item("Log Out", null, this::logout),
                 item("Company Wizard…", null, this::openCompanyWizard),
-                item("Add Company…", null, this::addNewCompany)
+                item("Add Company…", null, this::addNewCompany),
+                item("Close Company", null, this::closeCompanySelection)
+        );
+
+        Menu fundraising = new Menu("Fundraising");
+        fundraising.getItems().addAll(
+                item("Donors", null, () -> openPanel(AppPanelId.DONORS)),
+                item("Grants", null, () -> openPanel(AppPanelId.GRANTS)),
+                item("Funds", null, () -> openPanel(AppPanelId.FUNDS))
         );
 
         Menu help = new Menu("Help");
@@ -250,7 +282,7 @@ public class MainWindow extends BorderPane implements ShellOwner
                 item("About", null, () -> info("SCA Ledger (H2 + Jakarta): operational workspace shell with panel run contracts and cross-panel inspectors."))
         );
 
-        return new MenuBar(file, edit, search, view, run, tools, account, help);
+        return new MenuBar(file, edit, search, view, run, database, tools, fundraising, account, help);
     }
 
     private ToolBar buildToolBar()
@@ -387,6 +419,8 @@ public class MainWindow extends BorderPane implements ShellOwner
             case BANK_TRANSACTIONS -> "Bank Transactions";
             case REPORT_LIBRARY -> "Reports Library";
             case CHART_OF_ACCOUNTS -> "Chart of Accounts";
+            case DONORS -> "Donors";
+            case GRANTS -> "Grants";
             case FUNDS -> "Funds";
             case SETTINGS -> "Settings";
             case DIAGNOSTICS -> "Diagnostics";
@@ -750,6 +784,38 @@ public class MainWindow extends BorderPane implements ShellOwner
                 .ifPresent(this::applySelectedDatabasePath);
     }
 
+    private void openOrCreateH2Db()
+    {
+        if (getScene() == null || getScene().getWindow() == null)
+        {
+            info("Open/Create H2 DB unavailable: window is not ready.");
+            return;
+        }
+
+        ButtonType openExisting = new ButtonType("Open Existing");
+        ButtonType createNew = new ButtonType("Create New");
+        Alert choiceDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        choiceDialog.setTitle("Select Database Action");
+        choiceDialog.setHeaderText("Would you like to open an existing database or create a new one?");
+        choiceDialog.getButtonTypes().setAll(openExisting, createNew, ButtonType.CANCEL);
+        choiceDialog.initOwner(getScene().getWindow());
+
+        Optional<ButtonType> selection = choiceDialog.showAndWait();
+        if (selection.isEmpty() || selection.get() == ButtonType.CANCEL)
+        {
+            return;
+        }
+
+        if (selection.get() == createNew)
+        {
+            createNewDatabase();
+            return;
+        }
+
+        chooseFile("Open H2 Database", "H2 Database (*.mv.db)", "*.mv.db")
+                .ifPresent(this::applySelectedDatabasePath);
+    }
+
     private void createNewDatabase()
     {
         Optional<Path> target = chooseSaveFile("Create Database", "Database Files", "*.mv.db");
@@ -798,6 +864,58 @@ public class MainWindow extends BorderPane implements ShellOwner
                         alert.showAndWait();
                     }
                 });
+    }
+
+    private void importLegacyArchive()
+    {
+        if (!ensureLegacyDatabaseReady())
+        {
+            return;
+        }
+
+        Optional<Path> archivePath = chooseFile(
+                "Import Legacy .npbk Archive",
+                "Legacy Archives (*.npbk, *.json)",
+                "*.npbk",
+                "*.json");
+        if (archivePath.isEmpty())
+        {
+            return;
+        }
+
+        try
+        {
+            long id = legacyNpbkImportService.importArchive(archivePath.get());
+            Alert alert = new Alert(Alert.AlertType.INFORMATION,
+                    "Imported legacy archive into the database.\nCompany record id: " + id);
+            alert.setHeaderText("Legacy Import Complete");
+            if (getScene() != null && getScene().getWindow() != null)
+            {
+                alert.initOwner(getScene().getWindow());
+            }
+            alert.showAndWait();
+        }
+        catch (IllegalArgumentException | IllegalStateException ex)
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR, UiErrors.safeMessage(ex));
+            alert.setHeaderText("Import Failed");
+            if (getScene() != null && getScene().getWindow() != null)
+            {
+                alert.initOwner(getScene().getWindow());
+            }
+            alert.showAndWait();
+        }
+        catch (Exception ex)
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR,
+                    "Failed to import legacy archive: " + UiErrors.safeMessage(ex));
+            alert.setHeaderText("Import Failed");
+            if (getScene() != null && getScene().getWindow() != null)
+            {
+                alert.initOwner(getScene().getWindow());
+            }
+            alert.showAndWait();
+        }
     }
 
     private void exportH2SqlScript()
@@ -997,7 +1115,17 @@ public class MainWindow extends BorderPane implements ShellOwner
         recents.remove(normalized);
         recents.add(0, normalized);
         SESSION_STATE.setMultiCompany(new MultiCompanyState(normalized, recents));
+        ensureCurrentCompanyOpen();
         stateStore.saveMultiCompany(SESSION_STATE.multiCompany());
+    }
+
+    private void closeCompanySelection()
+    {
+        List<String> recents = new ArrayList<>(SESSION_STATE.multiCompany().recentCompanyCodes());
+        SESSION_STATE.setMultiCompany(new MultiCompanyState("", recents));
+        CurrentCompany.forceCompanyLoad(null);
+        stateStore.saveMultiCompany(SESSION_STATE.multiCompany());
+        info("Closed active company.");
     }
 
     private void initializeSampleCompany()
@@ -1178,8 +1306,32 @@ public class MainWindow extends BorderPane implements ShellOwner
     {
         if (activeCompanyLabel != null)
         {
-            activeCompanyLabel.setText("Company: " + state.activeCompanyCode());
+            String activeCode = state.activeCompanyCode() == null || state.activeCompanyCode().isBlank()
+                    ? "(none)"
+                    : state.activeCompanyCode();
+            activeCompanyLabel.setText("Company: " + activeCode);
         }
+        refreshFundraisingPanelsForContextChange();
+    }
+
+    private void ensureCurrentCompanyOpen()
+    {
+        Company current = CurrentCompany.getCompany();
+        if (current == null)
+        {
+            current = new Company();
+        }
+        CurrentCompany.forceCompanyLoad(current);
+    }
+
+    void selectCompanyForTests(String companyCode)
+    {
+        applyCompanySelection(companyCode);
+    }
+
+    void closeCompanyForTests()
+    {
+        closeCompanySelection();
     }
 
     void applyDatabaseSelection(DatabaseSelectionState state)
@@ -1187,6 +1339,26 @@ public class MainWindow extends BorderPane implements ShellOwner
         if (activeDatabaseLabel != null)
         {
             activeDatabaseLabel.setText("DB: " + Path.of(state.activeDatabasePath()).getFileName());
+        }
+        refreshFundraisingPanelsForContextChange();
+    }
+
+    private void refreshFundraisingPanelsForContextChange()
+    {
+        EnumSet<AppPanelId> fundraisingPanels = EnumSet.of(
+                AppPanelId.DONORS,
+                AppPanelId.GRANTS,
+                AppPanelId.FUNDS);
+        AppPanelId activeBeforeRefresh = panelHost.activePanelId();
+
+        for (AppPanelId id : fundraisingPanels)
+        {
+            panelHost.invalidatePanel(id);
+        }
+
+        if (activeBeforeRefresh != null && fundraisingPanels.contains(activeBeforeRefresh))
+        {
+            openPanel(activeBeforeRefresh);
         }
     }
 

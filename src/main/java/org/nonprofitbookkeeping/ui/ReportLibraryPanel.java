@@ -67,10 +67,9 @@ public class ReportLibraryPanel implements AppPanel
         root.setTop(new VBox(6, title, range, actions, status, new Separator()));
 
         reportList.getItems().addAll(
-                "Trial Balance",
-                "General Ledger Detail",
                 "Balance Sheet",
-                "Income Statement"
+                "Income Statement",
+                "Account Details"
         );
         reportList.getSelectionModel().select(0);
 
@@ -128,18 +127,6 @@ public class ReportLibraryPanel implements AppPanel
 
         return switch (reportName)
         {
-            case "Trial Balance" -> {
-                FinancialReportService.TrialBalanceReport report = reports.trialBalance(end, null);
-                yield new RenderedReport(
-                        FinancialReportRenderer.renderTrialBalanceText(report),
-                        FinancialReportRenderer.renderTrialBalanceCsv(report));
-            }
-            case "General Ledger Detail" -> {
-                java.util.List<FinancialReportService.GeneralLedgerRow> rows = reports.generalLedgerDetail(start, end, null, 400);
-                yield new RenderedReport(
-                        FinancialReportRenderer.renderGeneralLedgerText(rows),
-                        FinancialReportRenderer.renderGeneralLedgerCsv(rows));
-            }
             case "Balance Sheet" -> {
                 FinancialReportService.BalanceSheetReport report = reports.balanceSheet(end, null);
                 yield new RenderedReport(
@@ -151,6 +138,13 @@ public class ReportLibraryPanel implements AppPanel
                 yield new RenderedReport(
                         FinancialReportRenderer.renderIncomeStatementText(report),
                         FinancialReportRenderer.renderIncomeStatementCsv(report));
+            }
+            case "Account Details" -> {
+                java.util.List<FinancialReportService.GeneralLedgerRow> rows =
+                        reports.generalLedgerDetail(start, end, null, 400);
+                yield new RenderedReport(
+                        FinancialReportRenderer.renderGeneralLedgerText(rows),
+                        FinancialReportRenderer.renderGeneralLedgerCsv(rows));
             }
             default -> new RenderedReport("Report not implemented: " + reportName, "");
         };

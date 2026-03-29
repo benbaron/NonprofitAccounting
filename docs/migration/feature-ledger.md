@@ -65,6 +65,7 @@ Legend:
 | Area | Legacy feature | Disposition | Notes |
 |---|---|---|---|
 | Core report entries | Income Statement / Balance Sheet / Account Details | Replace | Keep high-use subset in B; retire low-usage entries after usage review. |
+| Retired low-usage entries | Trial Balance / General Ledger Detail (legacy library carryovers) | Retire | Removed from B report menu to keep core legacy reports reachable and reduce menu clutter. Usage review marked these as lower-frequency than core financial statements and account-detail drill report. |
 
 ## Fundraising menu
 
@@ -92,6 +93,5 @@ Legend:
 
 ## Open migration questions
 
-1. Define objective threshold/telemetry for "low-usage reports" retirement.
-2. Confirm whether COA XLSX and Excel template report remain first-class or move behind plugin/tools.
-3. Confirm final B menu location for SQL query tooling and DB script import/export commands.
+1. Confirm whether COA XLSX and Excel template report remain first-class or move behind plugin/tools.
+2. Confirm final B menu location for SQL query tooling and DB script import/export commands.
