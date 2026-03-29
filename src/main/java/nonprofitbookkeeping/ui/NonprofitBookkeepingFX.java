@@ -71,9 +71,11 @@ import nonprofitbookkeeping.tools.H2ScriptCompanyImporter;
 
 /**
  * Main JavaFX application class for Nonprofit Bookkeeping.
- * This class initializes the primary stage, user interface (including menus and main content area),
- * loads plugins, manages application state, and handles core application actions like
- * opening, closing, and saving company files.
+ * <p>
+ * Legacy compatibility launcher retained during A/B migration.
+ * Runtime startup ownership now belongs to {@code org.nonprofitbookkeeping.ui.MainApp};
+ * this class delegates entrypoints to the B-shell.
+ * </p>
  */
 @Deprecated(forRemoval = false)
 public class NonprofitBookkeepingFX extends Application
@@ -258,14 +260,9 @@ public class NonprofitBookkeepingFX extends Application
 	}
 	
 	/**
-	 * The main entry point for this JavaFX application, called after the {@code init} method.
-	 * This method sets up the primary stage, initializes the main application view,
-	 * configures the menu bar, loads plugins, and displays the initial UI.
-	 * A shutdown hook is added to attempt saving company data on application exit.
-	 * SLF4J logging bridge is installed.
+	 * Delegates legacy start invocations to the authoritative B-shell startup.
 	 *
-	 * @param stage The primary {@link Stage} for this application, onto which
-	 *              the application scene can be set.
+	 * @param stage The primary {@link Stage} for this application.
 	 */
 	@Override
 	public void start(Stage stage)

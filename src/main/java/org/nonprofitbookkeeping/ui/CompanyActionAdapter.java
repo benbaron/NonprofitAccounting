@@ -1,17 +1,15 @@
 package org.nonprofitbookkeeping.ui;
 
-import javafx.stage.Stage;
-
 /**
  * Adapter for company lifecycle operations used by the B-shell.
  */
 interface CompanyActionAdapter
 {
-    void openCompany(Stage owner, Runnable onCompanyOpened);
+    void openCompany(Runnable onCompanyOpened);
 
-    void createOrEditCompany(Stage owner);
+    void createOrEditCompany();
 
-    void saveCompany(Stage owner);
+    void saveCompany();
 
-    boolean closeCompany(Stage owner);
+    boolean closeCompany();
 }

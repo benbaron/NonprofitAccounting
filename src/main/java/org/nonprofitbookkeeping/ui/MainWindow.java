@@ -106,18 +106,20 @@ public class MainWindow extends BorderPane implements ShellOwner
 
     public MainWindow()
     {
-        this(defaultStateStore(), new LegacyCompanyActionAdapter());
+        this(defaultStateStore(), null);
     }
 
     MainWindow(AppStateStore stateStore)
     {
-        this(stateStore, new LegacyCompanyActionAdapter());
+        this(stateStore, null);
     }
 
     MainWindow(AppStateStore stateStore, CompanyActionAdapter companyActionAdapter)
     {
         this.stateStore = stateStore;
-        this.companyActionAdapter = companyActionAdapter;
+        this.companyActionAdapter = companyActionAdapter == null
+                ? new LegacyCompanyActionAdapter(this::windowStage)
+                : companyActionAdapter;
 
         restoreState();
 
@@ -816,7 +818,7 @@ public class MainWindow extends BorderPane implements ShellOwner
         }
         try
         {
-            companyActionAdapter.openCompany(windowStage(), () -> handleCompanyOpened(CurrentCompany.getCompany()));
+            companyActionAdapter.openCompany(() -> handleCompanyOpened(CurrentCompany.getCompany()));
         }
         catch (RuntimeException ex)
         {
@@ -1195,7 +1197,7 @@ public class MainWindow extends BorderPane implements ShellOwner
             info("No company is currently open.");
             return;
         }
-        if (!companyActionAdapter.closeCompany(windowStage()))
+        if (!companyActionAdapter.closeCompany())
         {
             return;
         }
@@ -1222,7 +1224,7 @@ public class MainWindow extends BorderPane implements ShellOwner
 
         try
         {
-            companyActionAdapter.createOrEditCompany(windowStage());
+            companyActionAdapter.createOrEditCompany();
             if (CurrentCompany.getCompany() != null)
             {
                 handleCompanyOpened(CurrentCompany.getCompany());
@@ -1242,7 +1244,7 @@ public class MainWindow extends BorderPane implements ShellOwner
             info("No open company to save.");
             return;
         }
-        companyActionAdapter.saveCompany(windowStage());
+        companyActionAdapter.saveCompany();
         info("Company saved.");
     }
 

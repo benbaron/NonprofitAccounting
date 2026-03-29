@@ -11,27 +11,34 @@ import nonprofitbookkeeping.ui.actions.SaveCompanyFileAction;
  */
 final class LegacyCompanyActionAdapter implements CompanyActionAdapter
 {
-    @Override
-    public void openCompany(Stage owner, Runnable onCompanyOpened)
+    private final java.util.function.Supplier<Stage> stageSupplier;
+
+    LegacyCompanyActionAdapter(java.util.function.Supplier<Stage> stageSupplier)
     {
-        new OpenCompanyFileActionFX(owner, onCompanyOpened);
+        this.stageSupplier = stageSupplier;
     }
 
     @Override
-    public void createOrEditCompany(Stage owner)
+    public void openCompany(Runnable onCompanyOpened)
     {
-        new CreateOrEditCompanyActionFX(owner);
+        new OpenCompanyFileActionFX(stageSupplier.get(), onCompanyOpened);
     }
 
     @Override
-    public void saveCompany(Stage owner)
+    public void createOrEditCompany()
     {
-        new SaveCompanyFileAction(owner);
+        new CreateOrEditCompanyActionFX(stageSupplier.get());
     }
 
     @Override
-    public boolean closeCompany(Stage owner)
+    public void saveCompany()
     {
-        return new CloseCompanyFileAction(owner).isClosed();
+        new SaveCompanyFileAction(stageSupplier.get());
+    }
+
+    @Override
+    public boolean closeCompany()
+    {
+        return new CloseCompanyFileAction(stageSupplier.get()).isClosed();
     }
 }
