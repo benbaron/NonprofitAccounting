@@ -75,6 +75,7 @@ import nonprofitbookkeeping.tools.H2ScriptCompanyImporter;
  * loads plugins, manages application state, and handles core application actions like
  * opening, closing, and saving company files.
  */
+@Deprecated(forRemoval = false)
 public class NonprofitBookkeepingFX extends Application
 {
 	/** The primary stage of the JavaFX application. */
@@ -253,8 +254,7 @@ public class NonprofitBookkeepingFX extends Application
 	 */
 	public static void main(String[] args)
 	{
-		launch(args);
-		
+		org.nonprofitbookkeeping.ui.FxMain.main(args);
 	}
 	
 	/**
@@ -270,6 +270,7 @@ public class NonprofitBookkeepingFX extends Application
 	@Override
 	public void start(Stage stage)
 	{
+		// Legacy shell startup now delegates to the B-shell entrypoint.
 		new org.nonprofitbookkeeping.ui.MainApp().start(stage);
 	}
 	

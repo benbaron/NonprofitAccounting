@@ -44,10 +44,6 @@ import nonprofitbookkeeping.service.LegacyNpbkImportService;
 import nonprofitbookkeeping.service.SettingsService;
 import nonprofitbookkeeping.tools.H2ScriptCompanyExporter;
 import nonprofitbookkeeping.tools.H2ScriptCompanyImporter;
-import nonprofitbookkeeping.ui.actions.CloseCompanyFileAction;
-import nonprofitbookkeeping.ui.actions.CreateOrEditCompanyActionFX;
-import nonprofitbookkeeping.ui.actions.OpenCompanyFileActionFX;
-import nonprofitbookkeeping.ui.actions.SaveCompanyFileAction;
 import nonprofitbookkeeping.ui.panels.SqlQueryPanelFX;
 
 import javafx.stage.FileChooser;
@@ -81,6 +77,7 @@ public class MainWindow extends BorderPane implements ShellOwner
     private final ImportExportOrchestrationService importExportService = new ImportExportOrchestrationService();
     private final LegacyNpbkImportService legacyNpbkImportService = new LegacyNpbkImportService();
     private final SettingsService settingsService = new SettingsService();
+    private final CompanyActionAdapter companyActionAdapter;
     private final PanelHost panelHost = new PanelHost();
     private final InspectorPane inspectorPane = new InspectorPane();
     private final NavigationPane nav = new NavigationPane(this::openPanel, this::openInspectorForSelection, this::navigationInspectorContext);
@@ -109,12 +106,18 @@ public class MainWindow extends BorderPane implements ShellOwner
 
     public MainWindow()
     {
-        this(defaultStateStore());
+        this(defaultStateStore(), new LegacyCompanyActionAdapter());
     }
 
     MainWindow(AppStateStore stateStore)
     {
+        this(stateStore, new LegacyCompanyActionAdapter());
+    }
+
+    MainWindow(AppStateStore stateStore, CompanyActionAdapter companyActionAdapter)
+    {
         this.stateStore = stateStore;
+        this.companyActionAdapter = companyActionAdapter;
 
         restoreState();
 
@@ -813,7 +816,7 @@ public class MainWindow extends BorderPane implements ShellOwner
         }
         try
         {
-            new OpenCompanyFileActionFX(windowStage(), () -> handleCompanyOpened(CurrentCompany.getCompany()));
+            companyActionAdapter.openCompany(windowStage(), () -> handleCompanyOpened(CurrentCompany.getCompany()));
         }
         catch (RuntimeException ex)
         {
@@ -1192,8 +1195,7 @@ public class MainWindow extends BorderPane implements ShellOwner
             info("No company is currently open.");
             return;
         }
-        CloseCompanyFileAction closeCompanyFileAction = new CloseCompanyFileAction(windowStage());
-        if (!closeCompanyFileAction.isClosed())
+        if (!companyActionAdapter.closeCompany(windowStage()))
         {
             return;
         }
@@ -1220,7 +1222,7 @@ public class MainWindow extends BorderPane implements ShellOwner
 
         try
         {
-            new CreateOrEditCompanyActionFX(windowStage());
+            companyActionAdapter.createOrEditCompany(windowStage());
             if (CurrentCompany.getCompany() != null)
             {
                 handleCompanyOpened(CurrentCompany.getCompany());
@@ -1240,7 +1242,7 @@ public class MainWindow extends BorderPane implements ShellOwner
             info("No open company to save.");
             return;
         }
-        new SaveCompanyFileAction(windowStage());
+        companyActionAdapter.saveCompany(windowStage());
         info("Company saved.");
     }
 
