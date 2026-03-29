@@ -9,6 +9,7 @@ import nonprofitbookkeeping.ui.bootstrap.SettingsStartupCoordinator;
 import nonprofitbookkeeping.util.FormatUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -16,6 +17,7 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doNothing;
 
 class MainAppStartupSettingsIntegrationTest
 {
@@ -60,4 +62,27 @@ class MainAppStartupSettingsIntegrationTest
             return null;
         });
     }
+    @Test
+    void startupFallsBackToLightStylesheetWhenPrimaryStylesheetMissing() throws Exception
+    {
+        SettingsStartupCoordinator startupCoordinator = Mockito.mock(SettingsStartupCoordinator.class);
+        doNothing().when(startupCoordinator).ensureSettingsLoaded(Mockito.any(), Mockito.isNull());
+
+        MainApp app = new MainApp(startupCoordinator);
+
+        Stage stage = FxTestSupport.onFx(() -> {
+            Stage s = new Stage();
+            app.start(s);
+            return s;
+        });
+
+        assertTrue(stage.getScene().getStylesheets().stream()
+            .anyMatch(sheet -> sheet.contains("light.css")));
+
+        FxTestSupport.onFx(() -> {
+            stage.hide();
+            return null;
+        });
+    }
+
 }
