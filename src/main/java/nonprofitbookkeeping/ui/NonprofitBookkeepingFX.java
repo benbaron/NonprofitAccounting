@@ -1078,7 +1078,7 @@ public class NonprofitBookkeepingFX extends Application
 	{
 		cancelAutosave();
 		
-		if (!CurrentCompany.isOpen())
+		if (!Database.isInitialized() || !CurrentCompany.isOpen())
 		{
 			return;
 		}
@@ -1385,44 +1385,38 @@ public class NonprofitBookkeepingFX extends Application
 	 */
 	private void doCloseCompany()
 	{
-		
+		CloseCompanyFileAction closeCompanyFileAction;
 		try
 		{
-			CloseCompanyFileAction closeCompanyFileAction =
-				new CloseCompanyFileAction(this.primaryStage);
-			
-				if (closeCompanyFileAction.isClosed())
-				{
-					// After action, set state.
-					setState(AppState.NO_COMPANY);
-					onAutosaveLifecycleEvent(AutosaveLifecycleEvent.COMPANY_CLOSED);
-					
-					if (this.companySelectionPanel != null)
-					{
-					this.companySelectionPanel.refreshCompanyList();
-				}
-				
-			}
-			else
-			{
-				return; // user cancelled closing
-			}
-			
+			closeCompanyFileAction = new CloseCompanyFileAction(this.primaryStage);
 		}
-		
 		catch (Exception e) // Catch broad exceptions from action
 		{
 			AlertBox.showError(this.primaryStage,
 				"Failed to close company: " + e.getMessage());
+			return;
+		}
+
+		if (!closeCompanyFileAction.isClosed())
+		{
+			return; // user cancelled closing
+		}
+
+		setState(AppState.NO_COMPANY);
+		onAutosaveLifecycleEvent(AutosaveLifecycleEvent.COMPANY_CLOSED);
+
+		if (this.companySelectionPanel != null)
+		{
+			this.companySelectionPanel.refreshCompanyList();
 		}
 		
 		// Switch view back to dashboard
 		if (this.mainView != null)
-			{
-				this.workspaceNavigator.showCompanySelection();
-			}
-			
+		{
+			this.workspaceNavigator.showCompanySelection();
 		}
+		
+	}
 	
 	/**
 	 * Handles the action to save the currently open company file.
