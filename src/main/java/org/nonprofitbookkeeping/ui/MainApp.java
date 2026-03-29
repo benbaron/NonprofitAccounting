@@ -49,6 +49,7 @@ public class MainApp extends Application
         stage.setTitle("SCA Ledger (H2 + Jakarta) — Prototype");
         stage.setScene(scene);
         applyStartupSettings(stage);
+        stage.setOnCloseRequest(event -> root.onShutdown());
         stage.show();
     }
 
