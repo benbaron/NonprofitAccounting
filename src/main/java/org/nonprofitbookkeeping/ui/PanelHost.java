@@ -95,6 +95,22 @@ public class PanelHost extends BorderPane
         return activeId;
     }
 
+    void invalidatePanel(AppPanelId id)
+    {
+        if (id == null)
+        {
+            return;
+        }
+
+        panels.remove(id);
+
+        if (activeId == id)
+        {
+            activeId = null;
+            setCenter(null);
+        }
+    }
+
     private AppPanel getActive() { return activeId == null ? null : panels.get(activeId); }
 
     private AppPanel create(AppPanelId id)

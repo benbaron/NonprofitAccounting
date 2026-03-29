@@ -52,6 +52,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -1294,6 +1295,7 @@ public class MainWindow extends BorderPane implements ShellOwner
         {
             activeCompanyLabel.setText("Company: " + state.activeCompanyCode());
         }
+        refreshFundraisingPanelsForContextChange();
     }
 
     void applyDatabaseSelection(DatabaseSelectionState state)
@@ -1301,6 +1303,26 @@ public class MainWindow extends BorderPane implements ShellOwner
         if (activeDatabaseLabel != null)
         {
             activeDatabaseLabel.setText("DB: " + Path.of(state.activeDatabasePath()).getFileName());
+        }
+        refreshFundraisingPanelsForContextChange();
+    }
+
+    private void refreshFundraisingPanelsForContextChange()
+    {
+        EnumSet<AppPanelId> fundraisingPanels = EnumSet.of(
+                AppPanelId.DONORS,
+                AppPanelId.GRANTS,
+                AppPanelId.FUNDS);
+        AppPanelId activeBeforeRefresh = panelHost.activePanelId();
+
+        for (AppPanelId id : fundraisingPanels)
+        {
+            panelHost.invalidatePanel(id);
+        }
+
+        if (activeBeforeRefresh != null && fundraisingPanels.contains(activeBeforeRefresh))
+        {
+            openPanel(activeBeforeRefresh);
         }
     }
 
