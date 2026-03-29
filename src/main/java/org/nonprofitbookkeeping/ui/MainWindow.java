@@ -38,6 +38,8 @@ import org.nonprofitbookkeeping.service.ImportExportOrchestrationService;
 import org.nonprofitbookkeeping.service.JournalLine;
 import org.nonprofitbookkeeping.service.LedgerQueryService;
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.service.LegacyNpbkImportService;
 import nonprofitbookkeeping.tools.H2ScriptCompanyExporter;
 import nonprofitbookkeeping.tools.H2ScriptCompanyImporter;
@@ -263,7 +265,8 @@ public class MainWindow extends BorderPane implements ShellOwner
                 item("Log In…", null, this::login),
                 item("Log Out", null, this::logout),
                 item("Company Wizard…", null, this::openCompanyWizard),
-                item("Add Company…", null, this::addNewCompany)
+                item("Add Company…", null, this::addNewCompany),
+                item("Close Company", null, this::closeCompanySelection)
         );
 
         Menu fundraising = new Menu("Fundraising");
@@ -1112,7 +1115,17 @@ public class MainWindow extends BorderPane implements ShellOwner
         recents.remove(normalized);
         recents.add(0, normalized);
         SESSION_STATE.setMultiCompany(new MultiCompanyState(normalized, recents));
+        ensureCurrentCompanyOpen();
         stateStore.saveMultiCompany(SESSION_STATE.multiCompany());
+    }
+
+    private void closeCompanySelection()
+    {
+        List<String> recents = new ArrayList<>(SESSION_STATE.multiCompany().recentCompanyCodes());
+        SESSION_STATE.setMultiCompany(new MultiCompanyState("", recents));
+        CurrentCompany.forceCompanyLoad(null);
+        stateStore.saveMultiCompany(SESSION_STATE.multiCompany());
+        info("Closed active company.");
     }
 
     private void initializeSampleCompany()
@@ -1293,9 +1306,32 @@ public class MainWindow extends BorderPane implements ShellOwner
     {
         if (activeCompanyLabel != null)
         {
-            activeCompanyLabel.setText("Company: " + state.activeCompanyCode());
+            String activeCode = state.activeCompanyCode() == null || state.activeCompanyCode().isBlank()
+                    ? "(none)"
+                    : state.activeCompanyCode();
+            activeCompanyLabel.setText("Company: " + activeCode);
         }
         refreshFundraisingPanelsForContextChange();
+    }
+
+    private void ensureCurrentCompanyOpen()
+    {
+        Company current = CurrentCompany.getCompany();
+        if (current == null)
+        {
+            current = new Company();
+        }
+        CurrentCompany.forceCompanyLoad(current);
+    }
+
+    void selectCompanyForTests(String companyCode)
+    {
+        applyCompanySelection(companyCode);
+    }
+
+    void closeCompanyForTests()
+    {
+        closeCompanySelection();
     }
 
     void applyDatabaseSelection(DatabaseSelectionState state)
