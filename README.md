@@ -114,3 +114,7 @@ especially:
 - single-sided or net-unbalanced SCLX transactions are balanced to the configured Cash account
 - `BudgetRecord`, `BankingItemRecord`, and `BankStatementRecord` are imported concretely, not only archived as raw collection JSON
 - the repositories are intentionally staging-oriented so these records can later be merged/promoted into richer native models
+
+## Eclipse JavaFX launch
+
+For Eclipse-specific startup instructions for `org.nonprofitbookkeeping.ui.FxMain`, see `doc/eclipse-javafx-launch.md`.
