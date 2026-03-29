@@ -38,6 +38,8 @@ import org.nonprofitbookkeeping.service.ImportExportOrchestrationService;
 import org.nonprofitbookkeeping.service.JournalLine;
 import org.nonprofitbookkeeping.service.LedgerQueryService;
 import nonprofitbookkeeping.core.Database;
+import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.service.LegacyNpbkImportService;
 import nonprofitbookkeeping.tools.H2ScriptCompanyExporter;
 import nonprofitbookkeeping.tools.H2ScriptCompanyImporter;
@@ -52,6 +54,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -262,7 +265,15 @@ public class MainWindow extends BorderPane implements ShellOwner
                 item("Log In…", null, this::login),
                 item("Log Out", null, this::logout),
                 item("Company Wizard…", null, this::openCompanyWizard),
-                item("Add Company…", null, this::addNewCompany)
+                item("Add Company…", null, this::addNewCompany),
+                item("Close Company", null, this::closeCompanySelection)
+        );
+
+        Menu fundraising = new Menu("Fundraising");
+        fundraising.getItems().addAll(
+                item("Donors", null, () -> openPanel(AppPanelId.DONORS)),
+                item("Grants", null, () -> openPanel(AppPanelId.GRANTS)),
+                item("Funds", null, () -> openPanel(AppPanelId.FUNDS))
         );
 
         Menu fundraising = new Menu("Fundraising");
@@ -1111,7 +1122,17 @@ public class MainWindow extends BorderPane implements ShellOwner
         recents.remove(normalized);
         recents.add(0, normalized);
         SESSION_STATE.setMultiCompany(new MultiCompanyState(normalized, recents));
+        ensureCurrentCompanyOpen();
         stateStore.saveMultiCompany(SESSION_STATE.multiCompany());
+    }
+
+    private void closeCompanySelection()
+    {
+        List<String> recents = new ArrayList<>(SESSION_STATE.multiCompany().recentCompanyCodes());
+        SESSION_STATE.setMultiCompany(new MultiCompanyState("", recents));
+        CurrentCompany.forceCompanyLoad(null);
+        stateStore.saveMultiCompany(SESSION_STATE.multiCompany());
+        info("Closed active company.");
     }
 
     private void initializeSampleCompany()
@@ -1292,8 +1313,32 @@ public class MainWindow extends BorderPane implements ShellOwner
     {
         if (activeCompanyLabel != null)
         {
-            activeCompanyLabel.setText("Company: " + state.activeCompanyCode());
+            String activeCode = state.activeCompanyCode() == null || state.activeCompanyCode().isBlank()
+                    ? "(none)"
+                    : state.activeCompanyCode();
+            activeCompanyLabel.setText("Company: " + activeCode);
         }
+        refreshFundraisingPanelsForContextChange();
+    }
+
+    private void ensureCurrentCompanyOpen()
+    {
+        Company current = CurrentCompany.getCompany();
+        if (current == null)
+        {
+            current = new Company();
+        }
+        CurrentCompany.forceCompanyLoad(current);
+    }
+
+    void selectCompanyForTests(String companyCode)
+    {
+        applyCompanySelection(companyCode);
+    }
+
+    void closeCompanyForTests()
+    {
+        closeCompanySelection();
     }
 
     void applyDatabaseSelection(DatabaseSelectionState state)
@@ -1301,6 +1346,26 @@ public class MainWindow extends BorderPane implements ShellOwner
         if (activeDatabaseLabel != null)
         {
             activeDatabaseLabel.setText("DB: " + Path.of(state.activeDatabasePath()).getFileName());
+        }
+        refreshFundraisingPanelsForContextChange();
+    }
+
+    private void refreshFundraisingPanelsForContextChange()
+    {
+        EnumSet<AppPanelId> fundraisingPanels = EnumSet.of(
+                AppPanelId.DONORS,
+                AppPanelId.GRANTS,
+                AppPanelId.FUNDS);
+        AppPanelId activeBeforeRefresh = panelHost.activePanelId();
+
+        for (AppPanelId id : fundraisingPanels)
+        {
+            panelHost.invalidatePanel(id);
+        }
+
+        if (activeBeforeRefresh != null && fundraisingPanels.contains(activeBeforeRefresh))
+        {
+            openPanel(activeBeforeRefresh);
         }
     }
 

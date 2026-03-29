@@ -48,7 +48,7 @@ class ReportLibraryPanelExportIntegrationTest
         byte[] pdfBytes = Files.readAllBytes(pdf);
         byte[] xlsxBytes = Files.readAllBytes(xlsx);
 
-        assertTrue(textBody.contains("Trial Balance") || textBody.contains("General Ledger") || textBody.contains("Balance Sheet") || textBody.contains("Income Statement"));
+        assertTrue(textBody.contains("General Ledger") || textBody.contains("Balance Sheet") || textBody.contains("Income Statement"));
         assertTrue(csvBody.startsWith("account_code") || csvBody.startsWith("txn_date") || csvBody.startsWith("section"));
 
         String pdfHeader = new String(pdfBytes, 0, Math.min(pdfBytes.length, 8), StandardCharsets.US_ASCII);

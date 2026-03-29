@@ -1,6 +1,7 @@
 package org.nonprofitbookkeeping.ui;
 
 import javafx.scene.Node;
+import java.util.Objects;
 import nonprofitbookkeeping.service.GrantsService;
 import nonprofitbookkeeping.ui.panels.GrantsPanelFX;
 
@@ -9,7 +10,22 @@ import nonprofitbookkeeping.ui.panels.GrantsPanelFX;
  */
 public class GrantsPanel implements AppPanel
 {
-    private final GrantsPanelFX panel = new GrantsPanelFX(new GrantsService());
+    private final GrantsPanelFX panel;
+
+    public GrantsPanel()
+    {
+        this(new GrantsService());
+    }
+
+    public GrantsPanel(GrantsService grantsService)
+    {
+        this(new GrantsPanelFX(Objects.requireNonNull(grantsService, "grantsService")));
+    }
+
+    GrantsPanel(GrantsPanelFX panel)
+    {
+        this.panel = Objects.requireNonNull(panel, "panel");
+    }
 
     @Override
     public String title()
