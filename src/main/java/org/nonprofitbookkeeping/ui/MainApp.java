@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.net.URL;
 import nonprofitbookkeeping.service.SettingsService;
 import nonprofitbookkeeping.ui.bootstrap.SettingsInitializationService;
 import nonprofitbookkeeping.ui.bootstrap.SettingsStartupCoordinator;
@@ -41,7 +42,7 @@ public class MainApp extends Application
         MainWindow root = new MainWindow();
 
         Scene scene = new Scene(root, 1200, 800);
-        scene.getStylesheets().add(getClass().getResource("/ui/styles.css").toExternalForm());
+        applyStylesheet(scene);
 
         GlobalShortcuts.install(scene, root);
         root.initializePlugins(stage);
@@ -51,6 +52,24 @@ public class MainApp extends Application
         applyStartupSettings(stage);
         stage.setOnCloseRequest(event -> root.onShutdown());
         stage.show();
+    }
+
+    private void applyStylesheet(Scene scene)
+    {
+        URL stylesheetUrl = getClass().getResource("/ui/styles.css");
+        if (stylesheetUrl == null)
+        {
+            stylesheetUrl = getClass().getResource("/themes/light.css");
+        }
+
+        if (stylesheetUrl != null)
+        {
+            scene.getStylesheets().add(stylesheetUrl.toExternalForm());
+        }
+        else
+        {
+            LOGGER.warn("No UI stylesheet found on the classpath.");
+        }
     }
 
     private void applyStartupSettings(Stage stage)
