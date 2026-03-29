@@ -1502,6 +1502,11 @@ public class MainWindow extends BorderPane implements ShellOwner
         return panelHost;
     }
 
+    CompanyActionAdapter companyActionAdapterForTests()
+    {
+        return companyActionAdapter;
+    }
+
     // --- hooks ---
     public void openPanel(AppPanelId id)
     {
