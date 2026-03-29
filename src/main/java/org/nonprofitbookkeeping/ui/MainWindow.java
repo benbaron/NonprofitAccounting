@@ -41,6 +41,7 @@ import nonprofitbookkeeping.core.Database;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.service.LegacyNpbkImportService;
+import nonprofitbookkeeping.service.SettingsService;
 import nonprofitbookkeeping.tools.H2ScriptCompanyExporter;
 import nonprofitbookkeeping.tools.H2ScriptCompanyImporter;
 import nonprofitbookkeeping.ui.panels.SqlQueryPanelFX;
@@ -60,6 +61,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Represents the MainWindow component in the nonprofit bookkeeping application.
@@ -71,6 +76,8 @@ public class MainWindow extends BorderPane implements ShellOwner
     private final AppStateStore stateStore;
     private final ImportExportOrchestrationService importExportService = new ImportExportOrchestrationService();
     private final LegacyNpbkImportService legacyNpbkImportService = new LegacyNpbkImportService();
+    private final SettingsService settingsService = new SettingsService();
+    private final CompanyActionAdapter companyActionAdapter;
     private final PanelHost panelHost = new PanelHost();
     private final InspectorPane inspectorPane = new InspectorPane();
     private final NavigationPane nav = new NavigationPane(this::openPanel, this::openInspectorForSelection, this::navigationInspectorContext);
@@ -85,15 +92,34 @@ public class MainWindow extends BorderPane implements ShellOwner
     private final Map<MenuItem, UserPrivilegeLevel> gatedMenuItems = new LinkedHashMap<>();
     private final Map<ButtonBase, UserPrivilegeLevel> gatedButtons = new LinkedHashMap<>();
     private PluginBootstrap pluginBootstrap;
+    private ScheduledExecutorService autosaveExecutor;
+    private ScheduledFuture<?> autosaveFuture;
+
+    private enum AutosaveLifecycleEvent
+    {
+        STARTUP,
+        COMPANY_OPENED,
+        COMPANY_CLOSED,
+        SETTINGS_SAVED,
+        SHUTDOWN
+    }
 
     public MainWindow()
     {
-        this(defaultStateStore());
+        this(defaultStateStore(), null);
     }
 
     MainWindow(AppStateStore stateStore)
     {
+        this(stateStore, null);
+    }
+
+    MainWindow(AppStateStore stateStore, CompanyActionAdapter companyActionAdapter)
+    {
         this.stateStore = stateStore;
+        this.companyActionAdapter = companyActionAdapter == null
+                ? new LegacyCompanyActionAdapter(this::windowStage)
+                : companyActionAdapter;
 
         restoreState();
 
@@ -114,6 +140,7 @@ public class MainWindow extends BorderPane implements ShellOwner
 
         DrillThroughCoordinator.configureOpener(this::openPanel);
         openPanel(AppPanelId.LEDGER_REGISTER);
+        onAutosaveLifecycleEvent(AutosaveLifecycleEvent.STARTUP);
     }
 
 
@@ -191,8 +218,11 @@ public class MainWindow extends BorderPane implements ShellOwner
         file.getItems().addAll(
                 item("New", "Ctrl+N", this::newItemInActivePanel),
                 item("Open…", null, () -> openPanel(AppPanelId.DASHBOARD)),
+                item("Open Company…", null, this::openCompany),
                 new SeparatorMenuItem(),
                 item("Save", "Ctrl+S", this::saveActivePanel),
+                item("Save Company", null, this::saveCompany),
+                item("Close Company", null, this::closeCompanySelection),
                 item("Export…", null, this::exportDataFromFileMenu),
                 new SeparatorMenuItem(),
                 item("Exit", null, () -> System.exit(0))
@@ -215,6 +245,8 @@ public class MainWindow extends BorderPane implements ShellOwner
         edit.getItems().addAll(
                 disabledItem("Undo", "Ctrl+Z"),
                 disabledItem("Redo", "Ctrl+Y"),
+                new SeparatorMenuItem(),
+                item("Create or Edit Company…", null, this::startCreateOrEditCompanyWizard),
                 new SeparatorMenuItem(),
                 disabledItem("Cut", "Ctrl+X"),
                 item("Copy", "Ctrl+C", this::copySelection),
@@ -778,6 +810,34 @@ public class MainWindow extends BorderPane implements ShellOwner
         });
     }
 
+    private void openCompany()
+    {
+        if (!ensureLegacyDatabaseReady())
+        {
+            return;
+        }
+        try
+        {
+            companyActionAdapter.openCompany(() -> handleCompanyOpened(CurrentCompany.getCompany()));
+        }
+        catch (RuntimeException ex)
+        {
+            info("Could not open company: " + UiErrors.safeMessage(ex));
+        }
+    }
+
+    private void handleCompanyOpened(Company company)
+    {
+        if (company == null)
+        {
+            return;
+        }
+        String code = company.getName() == null || company.getName().isBlank()
+                ? "OPEN-COMPANY"
+                : company.getName().trim().toUpperCase(Locale.ROOT);
+        applyCompanySelection(code);
+    }
+
     private void selectDatabaseFile()
     {
         chooseFile("Select Database File", "Database Files", "*.mv.db", "*.db")
@@ -1117,20 +1177,75 @@ public class MainWindow extends BorderPane implements ShellOwner
         SESSION_STATE.setMultiCompany(new MultiCompanyState(normalized, recents));
         ensureCurrentCompanyOpen();
         stateStore.saveMultiCompany(SESSION_STATE.multiCompany());
+        onAutosaveLifecycleEvent(AutosaveLifecycleEvent.COMPANY_OPENED);
     }
 
     private void closeCompanySelection()
     {
+        closeCompanyWithAction();
+    }
+
+    private void closeCompanyWithAction()
+    {
+        if (!Database.isInitialized())
+        {
+            info("Database not ready. Open/Create an H2 DB first.");
+            return;
+        }
+        if (!CurrentCompany.isOpen())
+        {
+            info("No company is currently open.");
+            return;
+        }
+        if (!companyActionAdapter.closeCompany())
+        {
+            return;
+        }
+
         List<String> recents = new ArrayList<>(SESSION_STATE.multiCompany().recentCompanyCodes());
         SESSION_STATE.setMultiCompany(new MultiCompanyState("", recents));
         CurrentCompany.forceCompanyLoad(null);
         stateStore.saveMultiCompany(SESSION_STATE.multiCompany());
+        onAutosaveLifecycleEvent(AutosaveLifecycleEvent.COMPANY_CLOSED);
         info("Closed active company.");
     }
 
     private void initializeSampleCompany()
     {
         applyCompanySelection("SAMPLE-CO");
+    }
+
+    private void startCreateOrEditCompanyWizard()
+    {
+        if (!ensureLegacyDatabaseReady())
+        {
+            return;
+        }
+
+        try
+        {
+            companyActionAdapter.createOrEditCompany();
+            if (CurrentCompany.getCompany() != null)
+            {
+                handleCompanyOpened(CurrentCompany.getCompany());
+                info("Company setup completed.");
+            }
+        }
+        catch (RuntimeException ex)
+        {
+            info("Could not run company wizard: " + UiErrors.safeMessage(ex));
+        }
+    }
+
+    private void saveCompany()
+    {
+        if (!Database.isInitialized() || !CurrentCompany.isOpen())
+        {
+            info("No open company to save.");
+            return;
+        }
+        companyActionAdapter.saveCompany();
+        info("Company saved.");
     }
 
     private void refreshAuthStatus()
@@ -1387,6 +1502,11 @@ public class MainWindow extends BorderPane implements ShellOwner
         return panelHost;
     }
 
+    CompanyActionAdapter companyActionAdapterForTests()
+    {
+        return companyActionAdapter;
+    }
+
     // --- hooks ---
     public void openPanel(AppPanelId id)
     {
@@ -1421,7 +1541,93 @@ public class MainWindow extends BorderPane implements ShellOwner
         stateStore.saveMultiCompany(SESSION_STATE.multiCompany());
         stateStore.saveDatabaseSelection(SESSION_STATE.databaseSelection());
         stateStore.saveViewPresets(viewPresetStatesForPersistence());
+        onAutosaveLifecycleEvent(AutosaveLifecycleEvent.SETTINGS_SAVED);
         info("Save: " + panelHost.getActiveTitle());
+    }
+
+    public void onShutdown()
+    {
+        saveCompany();
+        onAutosaveLifecycleEvent(AutosaveLifecycleEvent.SHUTDOWN);
+    }
+
+    private Stage windowStage()
+    {
+        if (getScene() != null && getScene().getWindow() instanceof Stage stage)
+        {
+            return stage;
+        }
+        return null;
+    }
+
+    private void scheduleAutosave()
+    {
+        cancelAutosave();
+        if (!Database.isInitialized() || !CurrentCompany.isOpen())
+        {
+            return;
+        }
+
+        var settings = settingsService.getSettings();
+        if (!settings.isAutosaveEnabled() || settings.getAutosaveIntervalMinutes() <= 0)
+        {
+            return;
+        }
+
+        if (autosaveExecutor == null)
+        {
+            autosaveExecutor = Executors.newSingleThreadScheduledExecutor(r -> {
+                Thread t = new Thread(r, "b-shell-autosave-worker");
+                t.setDaemon(true);
+                return t;
+            });
+        }
+
+        long interval = settings.getAutosaveIntervalMinutes();
+        autosaveFuture = autosaveExecutor.scheduleAtFixedRate(
+                this::performAutosave,
+                interval,
+                interval,
+                TimeUnit.MINUTES);
+    }
+
+    private void cancelAutosave()
+    {
+        if (autosaveFuture != null)
+        {
+            autosaveFuture.cancel(false);
+            autosaveFuture = null;
+        }
+    }
+
+    private void performAutosave()
+    {
+        if (!Database.isInitialized() || !CurrentCompany.isOpen())
+        {
+            return;
+        }
+        try
+        {
+            CurrentCompany.persist();
+        }
+        catch (IOException ex)
+        {
+            info("Autosave failed: " + UiErrors.safeMessage(ex));
+        }
+    }
+
+    private void onAutosaveLifecycleEvent(AutosaveLifecycleEvent event)
+    {
+        if (event == AutosaveLifecycleEvent.SHUTDOWN)
+        {
+            cancelAutosave();
+            if (autosaveExecutor != null)
+            {
+                autosaveExecutor.shutdownNow();
+            }
+            return;
+        }
+        scheduleAutosave();
     }
 
     public void newItemInActivePanel()
