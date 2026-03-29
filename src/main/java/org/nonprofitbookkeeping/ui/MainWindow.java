@@ -276,6 +276,13 @@ public class MainWindow extends BorderPane implements ShellOwner
                 item("Funds", null, () -> openPanel(AppPanelId.FUNDS))
         );
 
+        Menu fundraising = new Menu("Fundraising");
+        fundraising.getItems().addAll(
+                item("Donors", null, () -> openPanel(AppPanelId.DONORS)),
+                item("Grants", null, () -> openPanel(AppPanelId.GRANTS)),
+                item("Funds", null, () -> openPanel(AppPanelId.FUNDS))
+        );
+
         Menu help = new Menu("Help");
         help.getItems().addAll(
                 item("Help Topics", null, () -> openPanel(AppPanelId.HELP)),
