@@ -2,6 +2,8 @@ package org.nonprofitbookkeeping.ui;
 
 import nonprofitbookkeeping.service.DonorService;
 import nonprofitbookkeeping.service.GrantsService;
+import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CurrentCompany;
 
 import java.io.File;
 
@@ -10,21 +12,32 @@ import java.io.File;
  */
 final class FundraisingPanelFactory
 {
-    private static final DonorService DONOR_SERVICE = new DonorService();
-    private static final GrantsService GRANTS_SERVICE = new GrantsService();
-
     private FundraisingPanelFactory()
     {
     }
 
     static DonorsPanel createDonorsPanel()
     {
-        File companyDirectory = null;
-        return new DonorsPanel(DONOR_SERVICE, companyDirectory);
+        return new DonorsPanel(new DonorService(), resolveActiveCompanyDirectory());
     }
 
     static GrantsPanel createGrantsPanel()
     {
-        return new GrantsPanel(GRANTS_SERVICE);
+        return new GrantsPanel(new GrantsService());
+    }
+
+    private static File resolveActiveCompanyDirectory()
+    {
+        Company company = CurrentCompany.getCompany();
+        if (company == null)
+        {
+            return null;
+        }
+        File parent = company.getParentFile();
+        if (parent != null)
+        {
+            return parent;
+        }
+        return company.getCompanyFile();
     }
 }
