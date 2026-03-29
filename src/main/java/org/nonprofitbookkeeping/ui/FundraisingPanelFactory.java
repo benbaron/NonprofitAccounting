@@ -40,4 +40,9 @@ final class FundraisingPanelFactory
         }
         return company.getCompanyFile();
     }
+
+    static File activeCompanyDirectoryForTests()
+    {
+        return resolveActiveCompanyDirectory();
+    }
 }
