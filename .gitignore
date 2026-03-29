@@ -22,6 +22,7 @@ local.properties
 
 # Locally stored "Eclipse launch configurations"
 *.launch
+!NonprofitAccounting - FxMain (Maven ui).launch
 
 # PyDev specific (Python IDE for Eclipse)
 *.pydevproject
