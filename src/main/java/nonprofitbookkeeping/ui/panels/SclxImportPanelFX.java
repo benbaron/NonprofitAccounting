@@ -145,6 +145,7 @@ public class SclxImportPanelFX extends VBox
         Path sclxPath = Path.of(this.sclxFileField.getText().trim());
         Map<String, String> mapping = loadAccountMappingIfNeeded();
         AccountImportMode mode = this.accountModeCombo.getValue() == null ? AccountImportMode.AS_IS : this.accountModeCombo.getValue();
+        ensureCashAccountReferenceSelectedWhenMissing();
 
         SclxImportOptions options = createImportOptions(mode, mapping);
         try
@@ -178,6 +179,21 @@ public class SclxImportPanelFX extends VBox
 
             this.outputArea.appendText("Import failed: " + ex.getMessage() + "\n");
             showError("SCLX Import Failed", ex.getMessage());
+        }
+    }
+
+    private void ensureCashAccountReferenceSelectedWhenMissing()
+    {
+        if (blankToNull(this.cashAccountField.getText()) != null)
+        {
+            return;
+        }
+
+        String selectedAccount = promptForCashAccountReference();
+        if (selectedAccount != null)
+        {
+            this.cashAccountField.setText(selectedAccount);
+            this.outputArea.appendText("Using cash account reference: " + selectedAccount + "\n");
         }
     }
 
