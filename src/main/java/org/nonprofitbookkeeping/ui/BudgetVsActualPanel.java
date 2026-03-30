@@ -1,12 +1,23 @@
 package org.nonprofitbookkeeping.ui;
 
-import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.nonprofitbookkeeping.service.FundBalanceRow;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represents the BudgetVsActualPanel component in the nonprofit bookkeeping application.
@@ -14,8 +25,8 @@ import javafx.scene.layout.VBox;
 public class BudgetVsActualPanel implements AppPanel
 {
     private final BorderPane root = new BorderPane();
-    private final TreeTableView<Row> table = new TreeTableView<>();
-    private final Label status = new Label("Run report to refresh values");
+    private final TableView<BudgetActualRow> table = new TableView<>();
+    private final Label status = new Label();
 
     public BudgetVsActualPanel()
     {
@@ -24,77 +35,65 @@ public class BudgetVsActualPanel implements AppPanel
         title.getStyleClass().add("panel-title");
 
         Button run = new Button("Run");
-        Button expandAll = new Button("Expand All");
-        Button collapseAll = new Button("Collapse All");
-        HBox actions = new HBox(8, run, expandAll, collapseAll);
+        run.setOnAction(e -> reload());
+        HBox actions = new HBox(8, run);
 
-        root.setTop(new VBox(6, title, actions, new Separator()));
+        root.setTop(new VBox(6, title, actions, status, new Separator()));
 
-        table.getColumns().add(col("Group / Account", Row::label));
-        table.getColumns().add(col("Budget", Row::budget));
-        table.getColumns().add(col("Actual", Row::actual));
-        table.getColumns().add(col("Variance", Row::variance));
-        table.setShowRoot(false);
+        TableColumn<BudgetActualRow, String> fund = new TableColumn<>("Fund");
+        fund.setCellValueFactory(v -> new SimpleStringProperty(v.getValue().fundCode()));
+        TableColumn<BudgetActualRow, String> name = new TableColumn<>("Name");
+        name.setCellValueFactory(v -> new SimpleStringProperty(v.getValue().fundName()));
+        TableColumn<BudgetActualRow, String> budget = new TableColumn<>("Budget");
+        budget.setCellValueFactory(v -> new SimpleStringProperty(v.getValue().budget().toPlainString()));
+        TableColumn<BudgetActualRow, String> actual = new TableColumn<>("Actual (Net)");
+        actual.setCellValueFactory(v -> new SimpleStringProperty(v.getValue().actual().toPlainString()));
+        TableColumn<BudgetActualRow, String> variance = new TableColumn<>("Variance (Actual-Budget)");
+        variance.setCellValueFactory(v -> new SimpleStringProperty(v.getValue().variance().toPlainString()));
+        table.getColumns().addAll(fund, name, budget, actual, variance);
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+        table.setPlaceholder(new Label("No posted activity found for the selected period."));
+
         root.setCenter(table);
-        root.setBottom(new VBox(new Separator(), status));
-
-        run.setOnAction(e -> runReport());
-        expandAll.setOnAction(e -> setExpandedOnChildren(true));
-        collapseAll.setOnAction(e -> setExpandedOnChildren(false));
-
-        runReport();
+        reload();
     }
 
-    private TreeTableColumn<Row, String> col(String name, java.util.function.Function<Row, String> getter)
+    private void reload()
     {
-        TreeTableColumn<Row, String> c = new TreeTableColumn<>(name);
-        c.setCellValueFactory(v -> new ReadOnlyStringWrapper(getter.apply(v.getValue().getValue())));
-        return c;
+        status.setText("Running Budget vs Actual snapshot from posted transactions...");
+        UiAsync.run("budget-vs-actual",
+                () -> mergeBudgetAndActual(
+                        UiServiceRegistry.fundBalance().balancesAsOf(LocalDate.now()),
+                        UiWorkspaceDataStore.budgetTargetsByFundCode()),
+                rows -> {
+                    table.getItems().setAll(rows);
+                    BigDecimal netActual = rows.stream().map(BudgetActualRow::actual).reduce(BigDecimal.ZERO, BigDecimal::add);
+                    BigDecimal netBudget = rows.stream().map(BudgetActualRow::budget).reduce(BigDecimal.ZERO, BigDecimal::add);
+                    BigDecimal netVariance = rows.stream().map(BudgetActualRow::variance).reduce(BigDecimal.ZERO, BigDecimal::add);
+                    status.setText("Loaded " + rows.size() + " fund row(s). Net actual = " + netActual.toPlainString()
+                            + ", net budget = " + netBudget.toPlainString()
+                            + ", net variance = " + netVariance.toPlainString());
+                },
+                ex -> status.setText("Could not compute Budget vs Actual view: " + UiErrors.safeMessage(ex)));
     }
 
-    private void runReport()
+    static List<BudgetActualRow> mergeBudgetAndActual(List<FundBalanceRow> actualRows,
+                                                      Map<String, BigDecimal> targetsByFund)
     {
-        TreeItem<Row> rootItem = new TreeItem<>(new Row("All", "", "", ""));
-
-        TreeItem<Row> admin = new TreeItem<>(new Row("Administration", "5700.00", "5850.00", "-150.00"));
-        admin.getChildren().add(new TreeItem<>(new Row("Office Rent", "4800.00", "4800.00", "0.00")));
-        admin.getChildren().add(new TreeItem<>(new Row("Utilities", "900.00", "1050.00", "-150.00")));
-
-        TreeItem<Row> programs = new TreeItem<>(new Row("Programs", "6200.00", "5900.00", "300.00"));
-        programs.getChildren().add(new TreeItem<>(new Row("Program Supplies", "3500.00", "3200.00", "300.00")));
-        programs.getChildren().add(new TreeItem<>(new Row("Volunteer Meals", "2700.00", "2700.00", "0.00")));
-
-        rootItem.getChildren().setAll(admin, programs);
-        table.setRoot(rootItem);
-        setExpandedOnChildren(true);
-        status.setText("Grouped report generated for " + DateRangeContext.get());
+        return actualRows.stream()
+                .map(r -> {
+                    BigDecimal budget = targetsByFund.getOrDefault(r.getFundCode(), BigDecimal.ZERO);
+                    BigDecimal actual = r.getBalance();
+                    return new BudgetActualRow(r.getFundCode(), r.getFundName(), budget, actual, actual.subtract(budget));
+                })
+                .sorted(Comparator.comparing(BudgetActualRow::fundCode))
+                .toList();
     }
 
-    private void setExpandedOnChildren(boolean expanded)
-    {
-        if (table.getRoot() == null)
-        {
-            return;
-        }
-        for (TreeItem<Row> item : table.getRoot().getChildren())
-        {
-            item.setExpanded(expanded);
-        }
-    }
-
-    @Override
-    public String title()
-    {
-        return "Budget vs Actual";
-    }
-
-    @Override
-    public Node root()
-    {
-        return root;
-    }
-
-    public record Row(String label, String budget, String actual, String variance)
+    record BudgetActualRow(String fundCode, String fundName, BigDecimal budget, BigDecimal actual, BigDecimal variance)
     {
     }
+
+    @Override public String title() { return "Budget vs Actual"; }
+    @Override public Node root() { return root; }
 }

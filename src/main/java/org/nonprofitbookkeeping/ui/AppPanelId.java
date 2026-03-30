@@ -9,22 +9,28 @@ public enum AppPanelId
     TXN_EDITOR,
 
     SCHEDULES,
-    INVENTORY,
 
     BUDGET_EDITOR,
     BUDGET_VS_ACTUAL,
 
     ASSETS_REGISTER,
     DEPRECIATION_RUNS,
+    INVENTORY,
 
-    /**
-     * @deprecated Use REPORTS_WORKSPACE. Kept as a temporary compatibility alias for cross-branch merges.
-     */
-    @Deprecated
+    RECONCILIATION_RUNS,
+    PERIOD_CLOSE_RUNS,
+    IMPORT_PREVIEW,
+    APPROVAL_AUDIT,
+    IMPORT_EXPORT_JOBS,
+    BANK_TRANSACTIONS,
+
     REPORT_LIBRARY,
-    REPORTS_WORKSPACE,
 
     CHART_OF_ACCOUNTS,
+    DONORS,
+    GRANTS,
     FUNDS,
-    SETTINGS
+    SETTINGS,
+    DIAGNOSTICS,
+    HELP
 }

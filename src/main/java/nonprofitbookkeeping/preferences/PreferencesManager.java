@@ -29,6 +29,8 @@ public class PreferencesManager
 		Preferences.userNodeForPackage(PreferencesManager.class);
 	/** Key for storing the last selected database file location. */
 	private static final String LAST_DATABASE_PATH_KEY = "last_database_path";
+	/** Key for storing custom workspace tab order. */
+	private static final String WORKSPACE_TAB_ORDER_KEY = "workspace_tab_order";
 	
 	static
 	{
@@ -138,6 +140,39 @@ public class PreferencesManager
 			prefs.put(LAST_DATABASE_PATH_KEY, path);
 		}
 		
+	}
+
+	/**
+	 * Returns the stored workspace tab order token string, if available.
+	 *
+	 * @return serialized tab order token string, or {@code null} when not set
+	 */
+	public static String getWorkspaceTabOrder()
+	{
+		return prefs.get(WORKSPACE_TAB_ORDER_KEY, null);
+	}
+
+	/**
+	 * Persists a serialized workspace tab order token string.
+	 * Passing null/blank clears any stored order.
+	 *
+	 * @param serializedOrder serialized tab order value
+	 */
+	public static void setWorkspaceTabOrder(String serializedOrder)
+	{
+		if (serializedOrder == null || serializedOrder.isBlank())
+		{
+			prefs.remove(WORKSPACE_TAB_ORDER_KEY);
+			return;
+		}
+
+		prefs.put(WORKSPACE_TAB_ORDER_KEY, serializedOrder);
+	}
+
+	/** Clears any saved workspace tab ordering preference. */
+	public static void clearWorkspaceTabOrder()
+	{
+		prefs.remove(WORKSPACE_TAB_ORDER_KEY);
 	}
 	
 }
