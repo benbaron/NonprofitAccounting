@@ -208,6 +208,8 @@ public class SclxImportPanelFX extends VBox
             "Supplemental Items: " + result.supplementalItemCount() + "\n" +
             "Banking Items: " + result.bankingItemCount() + "\n" +
             "Bank Statement Imports: " + result.bankStatementImportCount() + "\n\n");
+
+        refreshOpenCompanyFromPersistentData();
     }
 
     private Map<String, String> loadAccountMappingIfNeeded()
@@ -321,5 +323,22 @@ public class SclxImportPanelFX extends VBox
     {
         return ex.getMessage() != null &&
             ex.getMessage().contains("cashAccountReference is required to import single-sided or unbalanced SCLX transactions");
+    }
+
+    private void refreshOpenCompanyFromPersistentData()
+    {
+        try
+        {
+            CurrentCompany.refreshFromPersistentData();
+        }
+        catch (IOException ex)
+        {
+            this.outputArea.appendText(
+                "Import completed, but failed to refresh open company data. " +
+                    "Reopen the company if imported records do not appear.\n");
+            showError("Refresh Failed",
+                "Import completed, but failed to refresh open company data: " +
+                    ex.getMessage());
+        }
     }
 }
