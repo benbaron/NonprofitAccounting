@@ -3,6 +3,7 @@ package nonprofitbookkeeping.ui.panels;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
@@ -25,8 +26,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -140,37 +144,72 @@ public class SclxImportPanelFX extends VBox
         Map<String, String> mapping = loadAccountMappingIfNeeded();
         AccountImportMode mode = this.accountModeCombo.getValue() == null ? AccountImportMode.AS_IS : this.accountModeCombo.getValue();
 
+        if (!ensureCashAccountReferenceSelectedWhenMissing())
+        {
+            return;
+        }
+
         try
         {
-            SclxImportOptions options = new SclxImportOptions(
-                true,
-                true,
-                true,
-                true,
-                blankToNull(this.cashAccountField.getText()),
-                mode,
-                mapping);
-
-            SclxImportService service = new SclxImportService();
-            NonprofitBookkeepingSclxImportTarget target = new NonprofitBookkeepingSclxImportTarget();
-            SclxImportResult result = service.importFile(sclxPath, target, options);
-
-            this.outputArea.appendText(
-                "Import successful\n" +
-                "Version: " + result.version() + "\n" +
-                "Accounts: " + result.accountCount() + "\n" +
-                "People: " + result.personCount() + "\n" +
-                "Transactions: " + result.transactionCount() + "\n" +
-                "Transaction Lines: " + result.transactionLineCount() + "\n" +
-                "Supplemental Items: " + result.supplementalItemCount() + "\n" +
-                "Banking Items: " + result.bankingItemCount() + "\n" +
-                "Bank Statement Imports: " + result.bankStatementImportCount() + "\n\n");
+            runImportAttempt(sclxPath, mode, mapping);
         }
         catch (Exception ex)
         {
+            if (isMissingCashAccountReferenceError(ex) &&
+                promptForCashAccountReference())
+            {
+                this.outputArea.appendText(
+                    "Retrying import with selected cash account reference: " +
+                        this.cashAccountField.getText().trim() + "\n");
+                try
+                {
+                    runImportAttempt(sclxPath, mode, mapping);
+                    return;
+                }
+                catch (Exception retryEx)
+                {
+                    this.outputArea.appendText(
+                        "Import failed after retry: " +
+                            retryEx.getMessage() + "\n");
+                    showError("SCLX Import Failed", retryEx.getMessage());
+                    return;
+                }
+            }
+
             this.outputArea.appendText("Import failed: " + ex.getMessage() + "\n");
             showError("SCLX Import Failed", ex.getMessage());
         }
+    }
+
+    private void runImportAttempt(Path sclxPath,
+        AccountImportMode mode,
+        Map<String, String> mapping)
+    {
+        SclxImportOptions options = new SclxImportOptions(
+            true,
+            true,
+            true,
+            true,
+            blankToNull(this.cashAccountField.getText()),
+            mode,
+            mapping);
+
+        SclxImportService service = new SclxImportService();
+        NonprofitBookkeepingSclxImportTarget target = new NonprofitBookkeepingSclxImportTarget();
+        SclxImportResult result = service.importFile(sclxPath, target, options);
+
+        this.outputArea.appendText(
+            "Import successful\n" +
+            "Version: " + result.version() + "\n" +
+            "Accounts: " + result.accountCount() + "\n" +
+            "People: " + result.personCount() + "\n" +
+            "Transactions: " + result.transactionCount() + "\n" +
+            "Transaction Lines: " + result.transactionLineCount() + "\n" +
+            "Supplemental Items: " + result.supplementalItemCount() + "\n" +
+            "Banking Items: " + result.bankingItemCount() + "\n" +
+            "Bank Statement Imports: " + result.bankStatementImportCount() + "\n\n");
+
+        refreshOpenCompanyFromPersistentData();
     }
 
     private Map<String, String> loadAccountMappingIfNeeded()
@@ -216,5 +255,90 @@ public class SclxImportPanelFX extends VBox
     private String blankToNull(String value)
     {
         return value == null || value.isBlank() ? null : value.trim();
+    }
+
+    private boolean ensureCashAccountReferenceSelectedWhenMissing()
+    {
+        if (blankToNull(this.cashAccountField.getText()) != null)
+        {
+            return true;
+        }
+
+        if (!promptForCashAccountReference())
+        {
+            this.outputArea.appendText(
+                "Import canceled: cash account reference was not selected.\n");
+            return false;
+        }
+
+        this.outputArea.appendText(
+            "Using selected cash account reference: " +
+                this.cashAccountField.getText().trim() + "\n");
+        return true;
+    }
+
+    private boolean promptForCashAccountReference()
+    {
+        if (CurrentCompany.getCompany() == null ||
+            CurrentCompany.getCompany().getChartOfAccounts() == null)
+        {
+            showError("Cash Account Required",
+                "No chart of accounts is available to select a cash account.");
+            return false;
+        }
+
+        List<String> references = CurrentCompany.getCompany()
+            .getChartOfAccounts()
+            .getAccounts()
+            .stream()
+            .map(a -> a.getAccountNumber())
+            .filter(ref -> ref != null && !ref.isBlank())
+            .sorted(Comparator.naturalOrder())
+            .toList();
+
+        if (references.isEmpty())
+        {
+            showError("Cash Account Required",
+                "No account references are available in the chart of accounts.");
+            return false;
+        }
+
+        ChoiceDialog<String> dialog = new ChoiceDialog<>(references.get(0), references);
+        dialog.initOwner(this.owner);
+        dialog.setTitle("Select Cash Account Reference");
+        dialog.setHeaderText("Select a cash account reference for balancing transactions.");
+        dialog.setContentText("Account reference:");
+        Optional<String> selected = dialog.showAndWait();
+
+        if (selected.isEmpty())
+        {
+            return false;
+        }
+
+        this.cashAccountField.setText(selected.get());
+        return true;
+    }
+
+    private boolean isMissingCashAccountReferenceError(Exception ex)
+    {
+        return ex.getMessage() != null &&
+            ex.getMessage().contains("cashAccountReference is required to import single-sided or unbalanced SCLX transactions");
+    }
+
+    private void refreshOpenCompanyFromPersistentData()
+    {
+        try
+        {
+            CurrentCompany.refreshFromPersistentData();
+        }
+        catch (IOException ex)
+        {
+            this.outputArea.appendText(
+                "Import completed, but failed to refresh open company data. " +
+                    "Reopen the company if imported records do not appear.\n");
+            showError("Refresh Failed",
+                "Import completed, but failed to refresh open company data: " +
+                    ex.getMessage());
+        }
     }
 }
