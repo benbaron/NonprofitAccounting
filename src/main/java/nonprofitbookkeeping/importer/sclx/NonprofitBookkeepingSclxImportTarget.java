@@ -47,6 +47,8 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
     private final Map<String, Integer> importedTransactionIdsBySclxId = new LinkedHashMap<>();
     private final Map<Integer, Integer> importedTransactionIdsByLedgerRow = new LinkedHashMap<>();
     private final Map<String, Long> personDbIdBySclxPersonId = new LinkedHashMap<>();
+    private final Map<Integer, ReferenceLookup> outstandingReferenceByLedgerRow = new LinkedHashMap<>();
+    private List<SclxDocument.OutstandingItem> outstandingItemsForIndexLookup = List.of();
     private SclxImportOptions currentOptions = SclxImportOptions.defaults();
 
     public NonprofitBookkeepingSclxImportTarget()
@@ -93,6 +95,18 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         importedTransactionIdsBySclxId.clear();
         importedTransactionIdsByLedgerRow.clear();
         personDbIdBySclxPersonId.clear();
+        outstandingReferenceByLedgerRow.clear();
+        outstandingItemsForIndexLookup = document == null || document.outstandingItems() == null
+            ? List.of()
+            : List.copyOf(document.outstandingItems());
+        for (SclxDocument.OutstandingItem item : outstandingItemsForIndexLookup)
+        {
+            if (item == null || item.workbookLink() == null || item.workbookLink().ledgerRowIndex() == null)
+            {
+                continue;
+            }
+            outstandingReferenceByLedgerRow.put(item.workbookLink().ledgerRowIndex(), toReferenceLookup(item));
+        }
     }
 
     @Override
@@ -452,8 +466,9 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         txn.setEntries(entries);
         txn.setDate(source.transactionDate() == null ? (source.postingDate() == null ? "" : source.postingDate().toString()) : source.transactionDate().toString());
         txn.setMemo(source.description());
-        txn.setToFrom(source.reference());
-        txn.setCheckNumber(source.reference());
+        ReferenceLookup resolvedReference = resolveTransactionReference(source.reference());
+        txn.setToFrom(firstNonBlank(resolvedReference.toFrom(), source.reference()));
+        txn.setCheckNumber(firstNonBlank(resolvedReference.checkNumber(), source.reference()));
         txn.setClearBank(source.bankTiming());
         txn.setBank(source.bankTiming());
         txn.setBudgetTracking(source.budgetId());
@@ -604,6 +619,67 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         return null;
     }
 
+    private ReferenceLookup toReferenceLookup(SclxDocument.OutstandingItem item)
+    {
+        return new ReferenceLookup(
+            blankToNull(item.personOrBusinessName()),
+            blankToNull(item.transferIdOrCheckNumber()));
+    }
+
+    private ReferenceLookup resolveTransactionReference(String reference)
+    {
+        Integer numericRef = parseInteger(reference);
+        if (numericRef == null)
+        {
+            return ReferenceLookup.empty();
+        }
+
+        ReferenceLookup byLedgerRow = outstandingReferenceByLedgerRow.get(numericRef);
+        if (byLedgerRow != null && !byLedgerRow.isEmpty())
+        {
+            return byLedgerRow;
+        }
+
+        ReferenceLookup byZeroBasedIndex = outstandingByIndex(numericRef);
+        if (!byZeroBasedIndex.isEmpty())
+        {
+            return byZeroBasedIndex;
+        }
+
+        return outstandingByIndex(numericRef - 1);
+    }
+
+    private ReferenceLookup outstandingByIndex(int index)
+    {
+        if (index < 0 || index >= outstandingItemsForIndexLookup.size())
+        {
+            return ReferenceLookup.empty();
+        }
+        SclxDocument.OutstandingItem item = outstandingItemsForIndexLookup.get(index);
+        return item == null ? ReferenceLookup.empty() : toReferenceLookup(item);
+    }
+
+    private Integer parseInteger(String value)
+    {
+        if (value == null || value.isBlank())
+        {
+            return null;
+        }
+        try
+        {
+            return Integer.parseInt(value.trim());
+        }
+        catch (NumberFormatException ignored)
+        {
+            return null;
+        }
+    }
+
+    private String blankToNull(String value)
+    {
+        return value == null || value.isBlank() ? null : value;
+    }
+
     private boolean equalsIgnoreCase(String a, String b)
     {
         return a != null && b != null && a.equalsIgnoreCase(b);
@@ -650,5 +726,18 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         if (value == null || value.isBlank()) return null;
         try { return BankStatementRecord.StatementKind.valueOf(value); }
         catch (IllegalArgumentException ex) { return BankStatementRecord.StatementKind.OTHER; }
+    }
+
+    private record ReferenceLookup(String toFrom, String checkNumber)
+    {
+        private static ReferenceLookup empty()
+        {
+            return new ReferenceLookup(null, null);
+        }
+
+        private boolean isEmpty()
+        {
+            return toFrom == null && checkNumber == null;
+        }
     }
 }
