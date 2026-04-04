@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class NonprofitBookkeepingSclxImportTargetTest
 {
     @Test
-    void mapTransaction_populatesToFromAndCheckNumberFromSclxFields() throws Exception
+    void mapTransaction_resolvesToFromAndCheckNumberFromOutstandingItemLedgerRowIndex() throws Exception
     {
         NonprofitBookkeepingSclxImportTarget target = new NonprofitBookkeepingSclxImportTarget();
         SclxDocument document = new SclxDocument(
@@ -68,7 +68,7 @@ class NonprofitBookkeepingSclxImportTargetTest
             null,
             null,
             null,
-            "Erin Top-Level",
+            null,
             "POSTED",
             "MANUAL",
             "NOW",
@@ -129,7 +129,7 @@ class NonprofitBookkeepingSclxImportTargetTest
         Method getToFrom = mappedTxn.getClass().getMethod("getToFrom");
         Method getCheckNumber = mappedTxn.getClass().getMethod("getCheckNumber");
 
-        assertEquals("Erin Top-Level", getToFrom.invoke(mappedTxn));
+        assertEquals("Erin P.", getToFrom.invoke(mappedTxn));
         assertEquals("CHK-1201", getCheckNumber.invoke(mappedTxn));
     }
 }
