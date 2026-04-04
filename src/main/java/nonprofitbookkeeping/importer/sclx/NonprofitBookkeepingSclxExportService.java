@@ -269,6 +269,7 @@ private SclxDocument.Transaction toSclxTransaction(AccountingTransaction txn)
     String personDisplayName = blankToNull(txn.getToFrom());
     String personId = resolveExportPersonId(personDisplayName);
     String checkNumber = blankToNull(txn.getCheckNumber());
+    String reference = checkNumber;
     String checkNumberId = normalizeId("check-", checkNumber);
 
     List<SclxDocument.TransactionLine> lines = new ArrayList<>();
@@ -308,6 +309,7 @@ private SclxDocument.Transaction toSclxTransaction(AccountingTransaction txn)
         parseDate(txn.getDate()),
         parseDate(txn.getDate()),
         txn.getMemo(),
+        reference,
         checkNumber,
         checkNumberId,
         personId,

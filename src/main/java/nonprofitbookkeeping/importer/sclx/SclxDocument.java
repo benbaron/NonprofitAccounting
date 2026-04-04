@@ -159,6 +159,7 @@ public record SclxDocument(
         LocalDate transactionDate,
         LocalDate postingDate,
         String description,
+        String reference,
         String checkNumber,
         String checkNumberId,
         String personId,

@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class NonprofitBookkeepingSclxImportTargetTest
 {
     @Test
-    void mapTransaction_resolvesToFromAndCheckNumberFromOutstandingItemLedgerRowIndex() throws Exception
+    void mapTransaction_populatesToFromAndCheckNumberFromSclxFields() throws Exception
     {
         NonprofitBookkeepingSclxImportTarget target = new NonprofitBookkeepingSclxImportTarget();
         SclxDocument document = new SclxDocument(
@@ -63,7 +63,11 @@ class NonprofitBookkeepingSclxImportTargetTest
             LocalDate.of(2026, 12, 31),
             LocalDate.of(2026, 12, 31),
             "NSF original",
-            "57",
+            "CHK-1201",
+            null,
+            null,
+            null,
+            null,
             "POSTED",
             "MANUAL",
             "NOW",
@@ -114,7 +118,7 @@ class NonprofitBookkeepingSclxImportTargetTest
                     null,
                     List.of(),
                     Map.of())),
-            Map.of());
+            Map.of("workbook", Map.of("personOrBusinessName", "Erin P.")));
 
         Method method = NonprofitBookkeepingSclxImportTarget.class
             .getDeclaredMethod("mapTransaction", SclxDocument.Transaction.class);
