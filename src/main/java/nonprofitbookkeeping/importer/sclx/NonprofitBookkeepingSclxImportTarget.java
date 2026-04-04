@@ -422,6 +422,7 @@ private AccountingTransaction mapTransaction(SclxDocument.Transaction source)
         );
         entry.setFundNumber(line.fundId());
         entries.add(entry);
+
     }
 
     BigDecimal debitTotal = entries.stream()
@@ -615,6 +616,7 @@ private Person resolvePerson(SclxDocument.Person source)
     }
 
     private static boolean equalsIgnoreCase(String a, String b)
+
     {
         return a != null && b != null && a.equalsIgnoreCase(b);
     }
@@ -672,5 +674,18 @@ private Person resolvePerson(SclxDocument.Person source)
         if (value == null || value.isBlank()) return null;
         try { return BankStatementRecord.StatementKind.valueOf(value); }
         catch (IllegalArgumentException ex) { return BankStatementRecord.StatementKind.OTHER; }
+    }
+
+    private record ReferenceLookup(String toFrom, String checkNumber)
+    {
+        private static ReferenceLookup empty()
+        {
+            return new ReferenceLookup(null, null);
+        }
+
+        private boolean isEmpty()
+        {
+            return toFrom == null && checkNumber == null;
+        }
     }
 }
