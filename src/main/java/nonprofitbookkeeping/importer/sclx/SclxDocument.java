@@ -164,6 +164,7 @@ public record SclxDocument(
         String checkNumberId,
         String personId,
         String personDisplayName,
+        String personOrBusinessName,
         String status,
         String source,
         String bankTiming,

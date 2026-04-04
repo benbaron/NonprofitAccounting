@@ -314,6 +314,7 @@ private SclxDocument.Transaction toSclxTransaction(AccountingTransaction txn)
         checkNumberId,
         personId,
         personDisplayName,
+        personDisplayName,
         txn.isBalanced() ? "POSTED" : "WORKSHEET_NATIVE",
         txn.getInfo() == null ? null : txn.getInfo().get("sclx.source"),
         txn.getBank(),

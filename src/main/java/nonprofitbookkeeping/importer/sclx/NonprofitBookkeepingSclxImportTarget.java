@@ -460,7 +460,7 @@ private AccountingTransaction mapTransaction(SclxDocument.Transaction source)
     txn.setEntries(entries);
     txn.setDate(source.transactionDate() == null ? (source.postingDate() == null ? "" : source.postingDate().toString()) : source.transactionDate().toString());
     txn.setMemo(source.description());
-    txn.setToFrom(firstNonBlank(personOrBusinessName(source), source.personDisplayName()));
+    txn.setToFrom(firstNonBlank(source.personOrBusinessName(), workbookPersonOrBusinessName(source), source.personDisplayName()));
     txn.setCheckNumber(firstNonBlank(source.reference(), source.checkNumber(), source.checkNumberId()));
     txn.setClearBank(source.bankTiming());
     txn.setBank(source.bankTiming());
@@ -586,7 +586,7 @@ private Person resolvePerson(SclxDocument.Person source)
     }
 
 
-    private static String personOrBusinessName(SclxDocument.Transaction source)
+    private static String workbookPersonOrBusinessName(SclxDocument.Transaction source)
     {
         if (source.extensions() == null) return null;
         Object workbook = source.extensions().get("workbook");

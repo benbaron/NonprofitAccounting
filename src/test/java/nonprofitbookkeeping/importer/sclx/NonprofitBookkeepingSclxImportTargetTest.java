@@ -68,6 +68,7 @@ class NonprofitBookkeepingSclxImportTargetTest
             null,
             null,
             null,
+            "Erin Top-Level",
             "POSTED",
             "MANUAL",
             "NOW",
@@ -128,7 +129,7 @@ class NonprofitBookkeepingSclxImportTargetTest
         Method getToFrom = mappedTxn.getClass().getMethod("getToFrom");
         Method getCheckNumber = mappedTxn.getClass().getMethod("getCheckNumber");
 
-        assertEquals("Erin P.", getToFrom.invoke(mappedTxn));
+        assertEquals("Erin Top-Level", getToFrom.invoke(mappedTxn));
         assertEquals("CHK-1201", getCheckNumber.invoke(mappedTxn));
     }
 }
