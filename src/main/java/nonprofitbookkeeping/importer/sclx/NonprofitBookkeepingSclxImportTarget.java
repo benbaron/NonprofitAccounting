@@ -47,6 +47,7 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
     private final Map<String, Integer> importedTransactionIdsBySclxId = new LinkedHashMap<>();
     private final Map<Integer, Integer> importedTransactionIdsByLedgerRow = new LinkedHashMap<>();
     private final Map<String, Long> personDbIdBySclxPersonId = new LinkedHashMap<>();
+    private final Map<String, String> personDisplayNameBySclxPersonId = new LinkedHashMap<>();
     private SclxImportOptions currentOptions = SclxImportOptions.defaults();
 
     public NonprofitBookkeepingSclxImportTarget()
@@ -90,9 +91,10 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
     public void beginImport(SclxDocument document, SclxImportOptions options)
     {
         this.currentOptions = options == null ? SclxImportOptions.defaults() : options;
-        importedTransactionIdsBySclxId.clear();
-        importedTransactionIdsByLedgerRow.clear();
-        personDbIdBySclxPersonId.clear();
+        this.importedTransactionIdsBySclxId.clear();
+        this.importedTransactionIdsByLedgerRow.clear();
+        this.personDbIdBySclxPersonId.clear();
+        this.personDisplayNameBySclxPersonId.clear();
     }
 
     @Override
@@ -130,7 +132,7 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
             }
             try
             {
-                accountRepository.upsert(account);
+                this.accountRepository.upsert(account);
             }
             catch (SQLException ex)
             {
@@ -150,7 +152,7 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
             }
             try
             {
-                fundAccountingService.addFund(new Fund(source.name()));
+                this.fundAccountingService.addFund(new Fund(source.name()));
             }
             catch (IllegalArgumentException ignored)
             {
@@ -158,7 +160,7 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         }
         try
         {
-            fundAccountingService.saveFunds(null);
+            this.fundAccountingService.saveFunds(null);
         }
         catch (Exception ex)
         {
@@ -193,7 +195,7 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
             );
             try
             {
-                budgetRecordRepository.upsert(row);
+                this.budgetRecordRepository.upsert(row);
             }
             catch (SQLException ex)
             {
@@ -212,9 +214,13 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
                 continue;
             }
             Person person = resolvePerson(source);
-            if (source.personId() != null && person.getId() > 0)
+            if (source.personId() != null)
             {
-                personDbIdBySclxPersonId.put(source.personId(), person.getId());
+                if (person.getId() > 0)
+                {
+                    this.personDbIdBySclxPersonId.put(source.personId(), person.getId());
+                }
+                this.personDisplayNameBySclxPersonId.put(source.personId(), source.displayName());
             }
         }
     }
@@ -237,11 +243,11 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         for (SclxDocument.Transaction source : transactions)
         {
             AccountingTransaction txn = mapTransaction(source);
-            AccountingTransaction saved = journalGateway.saveTransactionWithEntries(txn);
-            importedTransactionIdsBySclxId.put(source.transactionId(), saved.getId());
+            AccountingTransaction saved = this.journalGateway.saveTransactionWithEntries(txn);
+            this.importedTransactionIdsBySclxId.put(source.transactionId(), saved.getId());
             if (source.workbookLink() != null && source.workbookLink().ledgerRowIndex() != null)
             {
-                importedTransactionIdsByLedgerRow.put(source.workbookLink().ledgerRowIndex(), saved.getId());
+                this.importedTransactionIdsByLedgerRow.put(source.workbookLink().ledgerRowIndex(), saved.getId());
             }
         }
     }
@@ -263,7 +269,7 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
     {
         for (SclxDocument.SupplementalItem item : supplementalItems)
         {
-            Integer txnId = item.ledgerRowIndex() == null ? null : importedTransactionIdsByLedgerRow.get(item.ledgerRowIndex());
+            Integer txnId = item.ledgerRowIndex() == null ? null : this.importedTransactionIdsByLedgerRow.get(item.ledgerRowIndex());
             if (txnId == null)
             {
                 continue;
@@ -281,10 +287,10 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
 
             try (Connection c = Database.get().getConnection())
             {
-                List<TxnSupplementalLineRecord> all = supplementalRepository.listByTxnId(txnId.longValue());
+                List<TxnSupplementalLineRecord> all = this.supplementalRepository.listByTxnId(txnId.longValue());
                 all.add(record);
                 c.setAutoCommit(false);
-                supplementalRepository.replaceForTxn(c, txnId.longValue(), all);
+                this.supplementalRepository.replaceForTxn(c, txnId.longValue(), all);
                 c.commit();
             }
             catch (SQLException ex)
@@ -350,7 +356,7 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
             );
             try
             {
-                bankingItemRecordRepository.upsert(row);
+                this.bankingItemRecordRepository.upsert(row);
             }
             catch (SQLException ex)
             {
@@ -385,7 +391,7 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
             );
             try
             {
-                bankStatementRecordRepository.upsert(row);
+                this.bankStatementRecordRepository.upsert(row);
             }
             catch (SQLException ex)
             {
@@ -400,88 +406,92 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         upsertDocumentJson("sclx.importSummary", result);
     }
 
-    private AccountingTransaction mapTransaction(SclxDocument.Transaction source)
+    
+private AccountingTransaction mapTransaction(SclxDocument.Transaction source)
+{
+    LinkedHashSet<AccountingEntry> entries = new LinkedHashSet<>();
+    for (SclxDocument.TransactionLine line : source.lines())
     {
-        LinkedHashSet<AccountingEntry> entries = new LinkedHashSet<>();
-        for (SclxDocument.TransactionLine line : source.lines())
-        {
-            BigDecimal amount = debitAmount(line.debit(), line.credit());
-            AccountSide side = line.debit() != null && line.debit().compareTo(BigDecimal.ZERO) > 0 ? AccountSide.DEBIT : AccountSide.CREDIT;
-            AccountingEntry entry = new AccountingEntry(
-                amount,
-                resolveAccountNumber(line.accountId(), line.accountId()),
-                side,
-                line.accountId()
-            );
-            entry.setFundNumber(line.fundId());
-            entries.add(entry);
-        }
-
-        BigDecimal debitTotal = entries.stream()
-            .filter(e -> e.getAccountSide() == AccountSide.DEBIT)
-            .map(AccountingEntry::getAmount)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-        BigDecimal creditTotal = entries.stream()
-            .filter(e -> e.getAccountSide() == AccountSide.CREDIT)
-            .map(AccountingEntry::getAmount)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-        BigDecimal delta = debitTotal.subtract(creditTotal);
-
-        if (delta.compareTo(BigDecimal.ZERO) != 0)
-        {
-            if (!currentOptions.allowSingleSidedTransactions())
-            {
-                throw new IllegalStateException("Unbalanced SCLX transaction " + source.transactionId());
-            }
-            if (!currentOptions.hasCashAccountReference())
-            {
-                throw new IllegalStateException("cashAccountReference is required to import single-sided or unbalanced SCLX transactions.");
-            }
-
-            if (delta.compareTo(BigDecimal.ZERO) > 0)
-            {
-                entries.add(new AccountingEntry(delta.abs(), currentOptions.cashAccountReference(), AccountSide.CREDIT, "Cash"));
-            }
-            else
-            {
-                entries.add(new AccountingEntry(delta.abs(), currentOptions.cashAccountReference(), AccountSide.DEBIT, "Cash"));
-            }
-        }
-
-        AccountingTransaction txn = new AccountingTransaction();
-        txn.setEntries(entries);
-        txn.setDate(source.transactionDate() == null ? (source.postingDate() == null ? "" : source.postingDate().toString()) : source.transactionDate().toString());
-        txn.setMemo(source.description());
-        txn.setToFrom(source.reference());
-        txn.setCheckNumber(source.reference());
-        txn.setClearBank(source.bankTiming());
-        txn.setBank(source.bankTiming());
-        txn.setBudgetTracking(source.budgetId());
-        txn.setAssociatedFundName(firstLineFund(source));
-        txn.setBookingDateTimestamp(source.postingDate() == null ? System.currentTimeMillis() : source.postingDate().atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli());
-
-        Map<String, String> info = new LinkedHashMap<>();
-        info.put("sclx.transactionId", nullToEmpty(source.transactionId()));
-        info.put("sclx.source", nullToEmpty(source.source()));
-        info.put("sclx.status", nullToEmpty(source.status()));
-        if (source.workbookLink() != null)
-        {
-            info.put("sclx.sheetKey", nullToEmpty(source.workbookLink().sheetKey()));
-            if (source.workbookLink().ledgerRowIndex() != null)
-            {
-                info.put("sclx.ledgerRowIndex", String.valueOf(source.workbookLink().ledgerRowIndex()));
-            }
-        }
-        txn.setInfo(info);
-        txn.setSupplementalLines(new ArrayList<>());
-        return txn;
+        BigDecimal amount = debitAmount(line.debit(), line.credit());
+        AccountSide side = line.debit() != null && line.debit().compareTo(BigDecimal.ZERO) > 0 ? AccountSide.DEBIT : AccountSide.CREDIT;
+        AccountingEntry entry = new AccountingEntry(
+            amount,
+            resolveAccountNumber(line.accountId(), line.accountId()),
+            side,
+            line.accountId()
+        );
+        entry.setFundNumber(line.fundId());
+        entries.add(entry);
     }
 
-    private Person resolvePerson(SclxDocument.Person source)
+    BigDecimal debitTotal = entries.stream()
+        .filter(e -> e.getAccountSide() == AccountSide.DEBIT)
+        .map(AccountingEntry::getAmount)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+    BigDecimal creditTotal = entries.stream()
+        .filter(e -> e.getAccountSide() == AccountSide.CREDIT)
+        .map(AccountingEntry::getAmount)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+    BigDecimal delta = debitTotal.subtract(creditTotal);
+
+    if (delta.compareTo(BigDecimal.ZERO) != 0)
+    {
+        if (!this.currentOptions.allowSingleSidedTransactions())
+        {
+            throw new IllegalStateException("Unbalanced SCLX transaction " + source.transactionId());
+        }
+        if (!this.currentOptions.hasCashAccountReference())
+        {
+            throw new IllegalStateException("cashAccountReference is required to import single-sided or unbalanced SCLX transactions.");
+        }
+
+        if (delta.compareTo(BigDecimal.ZERO) > 0)
+        {
+            entries.add(new AccountingEntry(delta.abs(), this.currentOptions.cashAccountReference(), AccountSide.CREDIT, "Cash"));
+        }
+        else
+        {
+            entries.add(new AccountingEntry(delta.abs(), this.currentOptions.cashAccountReference(), AccountSide.DEBIT, "Cash"));
+        }
+    }
+
+    AccountingTransaction txn = new AccountingTransaction();
+    txn.setEntries(entries);
+    txn.setDate(source.transactionDate() == null ? (source.postingDate() == null ? "" : source.postingDate().toString()) : source.transactionDate().toString());
+    txn.setMemo(source.description());
+    txn.setToFrom(source.personDisplayName());
+    txn.setCheckNumber(firstNonBlank(source.checkNumber(), source.checkNumberId()));
+    txn.setClearBank(source.bankTiming());
+    txn.setBank(source.bankTiming());
+    txn.setBudgetTracking(source.budgetId());
+    txn.setAssociatedFundName(firstLineFund(source));
+    txn.setBookingDateTimestamp(source.postingDate() == null ? System.currentTimeMillis() : source.postingDate().atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli());
+
+    Map<String, String> info = new LinkedHashMap<>();
+    info.put("sclx.transactionId", nullToEmpty(source.transactionId()));
+    info.put("sclx.source", nullToEmpty(source.source()));
+    info.put("sclx.status", nullToEmpty(source.status()));
+    info.put("sclx.checkNumberId", nullToEmpty(source.checkNumberId()));
+    info.put("sclx.personId", nullToEmpty(source.personId()));
+    info.put("sclx.personDisplayName", nullToEmpty(source.personDisplayName()));
+    if (source.workbookLink() != null)
+    {
+        info.put("sclx.sheetKey", nullToEmpty(source.workbookLink().sheetKey()));
+        if (source.workbookLink().ledgerRowIndex() != null)
+        {
+            info.put("sclx.ledgerRowIndex", String.valueOf(source.workbookLink().ledgerRowIndex()));
+        }
+    }
+    txn.setInfo(info);
+    txn.setSupplementalLines(new ArrayList<>());
+    return txn;
+}
+
+private Person resolvePerson(SclxDocument.Person source)
     {
         try
         {
-            for (Person existing : personRepository.list())
+            for (Person existing : this.personRepository.list())
             {
                 if (equalsIgnoreCase(existing.getName(), source.displayName()) ||
                     (source.email() != null && equalsIgnoreCase(existing.getEmail(), source.email())))
@@ -494,7 +504,7 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
                     {
                         existing.setPhone(source.phone());
                     }
-                    return personRepository.save(existing);
+                    return this.personRepository.save(existing);
                 }
             }
 
@@ -502,7 +512,7 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
             person.setName(source.displayName());
             person.setEmail(source.email());
             person.setPhone(source.phone());
-            return personRepository.save(person);
+            return this.personRepository.save(person);
         }
         catch (SQLException ex)
         {
@@ -512,9 +522,9 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
 
     private Long resolveCounterpartyId(String sclxPersonId, String counterpartyName)
     {
-        if (sclxPersonId != null && personDbIdBySclxPersonId.containsKey(sclxPersonId))
+        if (sclxPersonId != null && this.personDbIdBySclxPersonId.containsKey(sclxPersonId))
         {
-            return personDbIdBySclxPersonId.get(sclxPersonId);
+            return this.personDbIdBySclxPersonId.get(sclxPersonId);
         }
         if (counterpartyName == null || counterpartyName.isBlank())
         {
@@ -522,7 +532,7 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         }
         try
         {
-            for (Person existing : personRepository.list())
+            for (Person existing : this.personRepository.list())
             {
                 if (equalsIgnoreCase(existing.getName(), counterpartyName))
                 {
@@ -531,7 +541,7 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
             }
             Person person = new Person();
             person.setName(counterpartyName);
-            return personRepository.save(person).getId();
+            return this.personRepository.save(person).getId();
         }
         catch (SQLException ex)
         {
@@ -539,7 +549,7 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         }
     }
 
-    private TxnSupplementalLineBase createSupplementalBean(String kind)
+    private static TxnSupplementalLineBase createSupplementalBean(String kind)
     {
         return switch (kind)
         {
@@ -553,7 +563,7 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         };
     }
 
-    private String buildSupplementalNotes(SclxDocument.SupplementalItem item)
+    private static String buildSupplementalNotes(SclxDocument.SupplementalItem item)
     {
         List<String> parts = new ArrayList<>();
         if (item.subtypeCode() != null) parts.add("subtype=" + item.subtypeCode());
@@ -571,17 +581,17 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
 
     private String resolveAccountNumber(String preferred, String fallback)
     {
-        return currentOptions.resolveAccountReference(firstNonBlank(preferred, fallback));
+        return this.currentOptions.resolveAccountReference(firstNonBlank(preferred, fallback));
     }
 
-    private BigDecimal debitAmount(BigDecimal debit, BigDecimal credit)
+    private static BigDecimal debitAmount(BigDecimal debit, BigDecimal credit)
     {
         if (debit != null && debit.compareTo(BigDecimal.ZERO) > 0) return debit;
         if (credit != null && credit.compareTo(BigDecimal.ZERO) > 0) return credit;
         return BigDecimal.ZERO;
     }
 
-    private String firstLineFund(SclxDocument.Transaction source)
+    private static String firstLineFund(SclxDocument.Transaction source)
     {
         if (source.lines() == null) return "";
         for (SclxDocument.TransactionLine line : source.lines())
@@ -594,7 +604,7 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         return "";
     }
 
-    private String firstNonBlank(String... values)
+    private static String firstNonBlank(String... values)
     {
         if (values == null) return null;
         for (String value : values)
@@ -604,12 +614,12 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         return null;
     }
 
-    private boolean equalsIgnoreCase(String a, String b)
+    private static boolean equalsIgnoreCase(String a, String b)
     {
         return a != null && b != null && a.equalsIgnoreCase(b);
     }
 
-    private String nullToEmpty(String value)
+    private static String nullToEmpty(String value)
     {
         return value == null ? "" : value;
     }
@@ -618,7 +628,7 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
     {
         try
         {
-            documentRepository.upsert(name, toJson(value));
+            this.documentRepository.upsert(name, toJson(value));
         }
         catch (SQLException ex)
         {
@@ -626,7 +636,7 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         }
     }
 
-    private String toJson(Object value)
+    private static String toJson(Object value)
     {
         try
         {
@@ -638,14 +648,26 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         }
     }
 
-    private BankStatementRecord.SourceFormat parseSourceFormat(String value)
+    /**
+     * Parses the source format.
+     *
+     * @param value the value
+     * @return the bank statement record. source format
+     */
+    private static BankStatementRecord.SourceFormat parseSourceFormat(String value)
     {
         if (value == null || value.isBlank()) return null;
         try { return BankStatementRecord.SourceFormat.valueOf(value); }
         catch (IllegalArgumentException ex) { return BankStatementRecord.SourceFormat.OTHER; }
     }
 
-    private BankStatementRecord.StatementKind parseStatementKind(String value)
+    /**
+     * Parses the statement kind.
+     *
+     * @param value the value
+     * @return the bank statement record. statement kind
+     */
+    private static BankStatementRecord.StatementKind parseStatementKind(String value)
     {
         if (value == null || value.isBlank()) return null;
         try { return BankStatementRecord.StatementKind.valueOf(value); }
