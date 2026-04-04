@@ -175,6 +175,7 @@ public record SclxDocument(
         List<TransactionLine> lines,
         Map<String, Object> extensions)
     {
+
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)

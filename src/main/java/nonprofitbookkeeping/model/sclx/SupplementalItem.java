@@ -5,6 +5,10 @@ import javax.annotation.processing.Generated;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -32,6 +36,8 @@ public class SupplementalItem {
      * 
      */
     @JsonProperty("supplementalItemId")
+    @Size(min = 1)
+    @NotNull
     private String supplementalItemId;
     /**
      * 
@@ -39,6 +45,7 @@ public class SupplementalItem {
      * 
      */
     @JsonProperty("kind")
+    @NotNull
     private SupplementalKind kind;
     @JsonProperty("counterpartyName")
     private String counterpartyName;
@@ -62,6 +69,8 @@ public class SupplementalItem {
      * 
      */
     @JsonProperty("amountAsOf")
+    @Pattern(regexp = "^[0-9]+\\.[0-9]{2}$")
+    @NotNull
     private String amountAsOf;
     @JsonProperty("ledgerRowIndex")
     private Integer ledgerRowIndex;
@@ -71,8 +80,11 @@ public class SupplementalItem {
      * 
      */
     @JsonProperty("workbookLink")
+    @Valid
+    @NotNull
     private WorkbookLink workbookLink;
     @JsonProperty("extensions")
+    @Valid
     private Extensions extensions;
 
     /**

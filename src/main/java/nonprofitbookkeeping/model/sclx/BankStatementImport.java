@@ -9,6 +9,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -34,6 +38,8 @@ public class BankStatementImport {
      * 
      */
     @JsonProperty("importId")
+    @Size(min = 1)
+    @NotNull
     private String importId;
     /**
      * 
@@ -41,6 +47,7 @@ public class BankStatementImport {
      * 
      */
     @JsonProperty("sourceFormat")
+    @NotNull
     private BankStatementImport.SourceFormat sourceFormat;
     @JsonProperty("sourceVersion")
     private String sourceVersion;
@@ -50,6 +57,7 @@ public class BankStatementImport {
      * 
      */
     @JsonProperty("statementKind")
+    @NotNull
     private BankStatementImport.StatementKind statementKind;
     /**
      * 
@@ -57,8 +65,11 @@ public class BankStatementImport {
      * 
      */
     @JsonProperty("bankAccount")
+    @Valid
+    @NotNull
     private BankAccount__1 bankAccount;
     @JsonProperty("currency")
+    @Pattern(regexp = "^[A-Z]{3}$")
     private String currency;
     /**
      * 
@@ -66,6 +77,7 @@ public class BankStatementImport {
      * 
      */
     @JsonProperty("statementStart")
+    @NotNull
     private String statementStart;
     /**
      * 
@@ -73,14 +85,18 @@ public class BankStatementImport {
      * 
      */
     @JsonProperty("statementEnd")
+    @NotNull
     private String statementEnd;
     @JsonProperty("ledgerBalance")
+    @Valid
     private BalanceSnapshot ledgerBalance;
     @JsonProperty("availableBalance")
+    @Valid
     private BalanceSnapshot availableBalance;
     @JsonProperty("documentId")
     private String documentId;
     @JsonProperty("extensions")
+    @Valid
     private Extensions extensions;
 
     /**

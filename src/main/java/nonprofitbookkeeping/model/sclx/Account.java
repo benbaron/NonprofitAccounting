@@ -12,6 +12,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -38,6 +42,8 @@ public class Account {
      * 
      */
     @JsonProperty("Number")
+    @Size(min = 1)
+    @NotNull
     private String number;
     /**
      * 
@@ -45,6 +51,8 @@ public class Account {
      * 
      */
     @JsonProperty("Name")
+    @Size(min = 1)
+    @NotNull
     private String name;
     /**
      * 
@@ -52,6 +60,7 @@ public class Account {
      * 
      */
     @JsonProperty("Type")
+    @NotNull
     private Account.AccountType type;
     @JsonProperty("Parent")
     private String parent;
@@ -61,6 +70,7 @@ public class Account {
      * 
      */
     @JsonProperty("IncreaseSide")
+    @NotNull
     private Account.IncreaseSide increaseSide;
     /**
      * 
@@ -68,10 +78,12 @@ public class Account {
      * 
      */
     @JsonProperty("OpeningBalance")
+    @Pattern(regexp = "^-?[0-9]+\\.[0-9]{2}$")
+    @NotNull
     private String openingBalance;
     @JsonProperty("SupplementalKinds")
     @JsonDeserialize(as = java.util.LinkedHashSet.class)
-    private Set<SupplementalKind> supplementalKinds = new LinkedHashSet<SupplementalKind>();
+    private Set<@Valid SupplementalKind> supplementalKinds = new LinkedHashSet<SupplementalKind>();
     @JsonProperty("accountId")
     private String accountId;
     @JsonProperty("code")
@@ -82,8 +94,9 @@ public class Account {
     private Boolean active = true;
     @JsonProperty("reportingTags")
     @JsonDeserialize(as = java.util.LinkedHashSet.class)
-    private Set<String> reportingTags = new LinkedHashSet<String>();
+    private Set<@Valid String> reportingTags = new LinkedHashSet<String>();
     @JsonProperty("extensions")
+    @Valid
     private Extensions extensions;
 
     /**
@@ -93,7 +106,7 @@ public class Account {
     public Account() {
     }
 
-    public Account(String number, String name, Account.AccountType type, String parent, Account.IncreaseSide increaseSide, String openingBalance, Set<SupplementalKind> supplementalKinds, String accountId, String code, String subtype, Boolean active, Set<String> reportingTags, Extensions extensions) {
+    public Account(String number, String name, Account.AccountType type, String parent, Account.IncreaseSide increaseSide, String openingBalance, Set<@Valid SupplementalKind> supplementalKinds, String accountId, String code, String subtype, Boolean active, Set<@Valid String> reportingTags, Extensions extensions) {
         super();
         this.number = number;
         this.name = name;

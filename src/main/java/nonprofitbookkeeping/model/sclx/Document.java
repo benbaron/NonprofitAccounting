@@ -9,6 +9,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -29,6 +32,8 @@ public class Document {
      * 
      */
     @JsonProperty("documentId")
+    @Size(min = 1)
+    @NotNull
     private String documentId;
     /**
      * 
@@ -36,6 +41,7 @@ public class Document {
      * 
      */
     @JsonProperty("documentType")
+    @NotNull
     private Document.DocumentType documentType;
     @JsonProperty("referenceNumber")
     private String referenceNumber;
@@ -46,6 +52,7 @@ public class Document {
     @JsonProperty("notes")
     private String notes;
     @JsonProperty("extensions")
+    @Valid
     private Extensions extensions;
 
     /**

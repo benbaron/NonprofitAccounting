@@ -8,6 +8,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -35,6 +39,8 @@ public class Supply {
      * 
      */
     @JsonProperty("supplyId")
+    @Size(min = 1)
+    @NotNull
     private String supplyId;
     @JsonProperty("itemNumber")
     private String itemNumber;
@@ -45,24 +51,30 @@ public class Supply {
     @JsonProperty("count")
     private Integer count;
     @JsonProperty("approxValueTotal")
+    @Pattern(regexp = "^-?[0-9]+\\.[0-9]{2}$")
     private String approxValueTotal;
     @JsonProperty("valuePerItem")
+    @Pattern(regexp = "^-?[0-9]+\\.[0-9]{2}$")
     private String valuePerItem;
     @JsonProperty("guardian")
+    @Valid
     private Guardian guardian;
     @JsonProperty("guardianshipDetails")
+    @Valid
     private GuardianshipDetailsSupply guardianshipDetails;
     @JsonProperty("removalDetails")
+    @Valid
     private RemovalDetailsSupply removalDetails;
     @JsonProperty("additionalNotes")
     private String additionalNotes;
     @JsonProperty("relatedTransactionIds")
     @JsonDeserialize(as = java.util.LinkedHashSet.class)
-    private Set<String> relatedTransactionIds = new LinkedHashSet<String>();
+    private Set<@Valid String> relatedTransactionIds = new LinkedHashSet<String>();
     @JsonProperty("relatedLineIds")
     @JsonDeserialize(as = java.util.LinkedHashSet.class)
-    private Set<String> relatedLineIds = new LinkedHashSet<String>();
+    private Set<@Valid String> relatedLineIds = new LinkedHashSet<String>();
     @JsonProperty("extensions")
+    @Valid
     private Extensions extensions;
 
     /**
@@ -72,7 +84,7 @@ public class Supply {
     public Supply() {
     }
 
-    public Supply(String supplyId, String itemNumber, String dateAcquired, String description, Integer count, String approxValueTotal, String valuePerItem, Guardian guardian, GuardianshipDetailsSupply guardianshipDetails, RemovalDetailsSupply removalDetails, String additionalNotes, Set<String> relatedTransactionIds, Set<String> relatedLineIds, Extensions extensions) {
+    public Supply(String supplyId, String itemNumber, String dateAcquired, String description, Integer count, String approxValueTotal, String valuePerItem, Guardian guardian, GuardianshipDetailsSupply guardianshipDetails, RemovalDetailsSupply removalDetails, String additionalNotes, Set<@Valid String> relatedTransactionIds, Set<@Valid String> relatedLineIds, Extensions extensions) {
         super();
         this.supplyId = supplyId;
         this.itemNumber = itemNumber;

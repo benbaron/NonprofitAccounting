@@ -11,6 +11,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -36,6 +40,8 @@ public class Person {
      * 
      */
     @JsonProperty("personId")
+    @Size(min = 1)
+    @NotNull
     private String personId;
     /**
      * 
@@ -43,6 +49,8 @@ public class Person {
      * 
      */
     @JsonProperty("displayName")
+    @Size(min = 1)
+    @NotNull
     private String displayName;
     /**
      * 
@@ -50,12 +58,15 @@ public class Person {
      * 
      */
     @JsonProperty("kind")
+    @NotNull
     private Person.PersonKind kind;
+    @Email
     @JsonProperty("email")
     private String email;
     @JsonProperty("phone")
     private String phone;
     @JsonProperty("extensions")
+    @Valid
     private Extensions extensions;
     @JsonProperty("scaName")
     private String scaName;
@@ -64,11 +75,11 @@ public class Person {
     @JsonProperty("membershipExpiry")
     private String membershipExpiry;
     @JsonProperty("addresses")
-    private List<Address> addresses = new ArrayList<Address>();
+    private List<@Valid Address> addresses = new ArrayList<Address>();
     @JsonProperty("emails")
-    private List<String> emails = new ArrayList<String>();
+    private List<@Valid String> emails = new ArrayList<String>();
     @JsonProperty("phones")
-    private List<String> phones = new ArrayList<String>();
+    private List<@Valid String> phones = new ArrayList<String>();
 
     /**
      * No args constructor for use in serialization
@@ -77,7 +88,7 @@ public class Person {
     public Person() {
     }
 
-    public Person(String personId, String displayName, Person.PersonKind kind, String email, String phone, Extensions extensions, String scaName, String membershipNumber, String membershipExpiry, List<Address> addresses, List<String> emails, List<String> phones) {
+    public Person(String personId, String displayName, Person.PersonKind kind, String email, String phone, Extensions extensions, String scaName, String membershipNumber, String membershipExpiry, List<@Valid Address> addresses, List<@Valid String> emails, List<@Valid String> phones) {
         super();
         this.personId = personId;
         this.displayName = displayName;

@@ -7,6 +7,7 @@ import javax.annotation.processing.Generated;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import jakarta.validation.Valid;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -25,12 +26,13 @@ public class Approval {
     @JsonProperty("committeeApprovalRef")
     private String committeeApprovalRef;
     @JsonProperty("approvedBy")
-    private List<String> approvedBy = new ArrayList<String>();
+    private List<@Valid String> approvedBy = new ArrayList<String>();
     @JsonProperty("approvalDate")
     private String approvalDate;
     @JsonProperty("notes")
     private String notes;
     @JsonProperty("extensions")
+    @Valid
     private Extensions extensions;
 
     /**
@@ -40,7 +42,7 @@ public class Approval {
     public Approval() {
     }
 
-    public Approval(Boolean policyRequired, String committeeApprovalRef, List<String> approvedBy, String approvalDate, String notes, Extensions extensions) {
+    public Approval(Boolean policyRequired, String committeeApprovalRef, List<@Valid String> approvedBy, String approvalDate, String notes, Extensions extensions) {
         super();
         this.policyRequired = policyRequired;
         this.committeeApprovalRef = committeeApprovalRef;

@@ -9,6 +9,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -29,6 +33,8 @@ public class BudgetLine {
      * 
      */
     @JsonProperty("eventName")
+    @Size(min = 1)
+    @NotNull
     private String eventName;
     /**
      * 
@@ -36,6 +42,8 @@ public class BudgetLine {
      * 
      */
     @JsonProperty("budgetedAmount")
+    @Pattern(regexp = "^-?[0-9]+\\.[0-9]{2}$")
+    @NotNull
     private String budgetedAmount;
     /**
      * 
@@ -43,6 +51,7 @@ public class BudgetLine {
      * 
      */
     @JsonProperty("revenueCategory")
+    @NotNull
     private BudgetLine.BudgetRevenueCategory revenueCategory;
     /**
      * 
@@ -50,12 +59,14 @@ public class BudgetLine {
      * 
      */
     @JsonProperty("expenseCategory")
+    @NotNull
     private BudgetLine.BudgetExpenseCategory expenseCategory;
     @JsonProperty("accountId")
     private String accountId;
     @JsonProperty("notes")
     private String notes;
     @JsonProperty("extensions")
+    @Valid
     private Extensions extensions;
 
     /**

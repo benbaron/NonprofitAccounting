@@ -5,6 +5,10 @@ import javax.annotation.processing.Generated;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -34,6 +38,8 @@ public class Organization {
      * 
      */
     @JsonProperty("organizationId")
+    @Size(min = 1)
+    @NotNull
     private String organizationId;
     /**
      * 
@@ -41,6 +47,8 @@ public class Organization {
      * 
      */
     @JsonProperty("name")
+    @Size(min = 1)
+    @NotNull
     private String name;
     @JsonProperty("parentOrganization")
     private String parentOrganization;
@@ -50,6 +58,8 @@ public class Organization {
      * 
      */
     @JsonProperty("baseCurrency")
+    @Pattern(regexp = "^[A-Z]{3}$")
+    @NotNull
     private String baseCurrency;
     /**
      * 
@@ -57,6 +67,7 @@ public class Organization {
      * 
      */
     @JsonProperty("fiscalYearStart")
+    @NotNull
     private String fiscalYearStart;
     /**
      * 
@@ -64,8 +75,10 @@ public class Organization {
      * 
      */
     @JsonProperty("fiscalYearEnd")
+    @NotNull
     private String fiscalYearEnd;
     @JsonProperty("extensions")
+    @Valid
     private Extensions extensions;
     @JsonProperty("organizationType")
     private String organizationType;
@@ -80,6 +93,7 @@ public class Organization {
     @JsonProperty("sharesParent501c")
     private Boolean sharesParent501c;
     @JsonProperty("capitalizationThreshold")
+    @Pattern(regexp = "^-?[0-9]+\\.[0-9]{2}$")
     private String capitalizationThreshold;
     @JsonProperty("reportingQuarter")
     private Integer reportingQuarter;

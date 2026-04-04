@@ -5,6 +5,9 @@ import javax.annotation.processing.Generated;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -23,6 +26,8 @@ public class Fund {
      * 
      */
     @JsonProperty("fundId")
+    @Size(min = 1)
+    @NotNull
     private String fundId;
     /**
      * 
@@ -30,6 +35,8 @@ public class Fund {
      * 
      */
     @JsonProperty("name")
+    @Size(min = 1)
+    @NotNull
     private String name;
     /**
      * 
@@ -37,10 +44,12 @@ public class Fund {
      * 
      */
     @JsonProperty("restricted")
+    @NotNull
     private Boolean restricted;
     @JsonProperty("description")
     private String description;
     @JsonProperty("extensions")
+    @Valid
     private Extensions extensions;
 
     /**

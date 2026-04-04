@@ -9,6 +9,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -36,6 +41,8 @@ public class OtherAssetItem {
      * 
      */
     @JsonProperty("otherAssetItemId")
+    @Size(min = 1)
+    @NotNull
     private String otherAssetItemId;
     /**
      * 
@@ -43,8 +50,11 @@ public class OtherAssetItem {
      * 
      */
     @JsonProperty("ledgerLink")
+    @Valid
+    @NotNull
     private LedgerLink ledgerLink;
     @JsonProperty("workbookLink")
+    @Valid
     private WorkbookLink workbookLink;
     @JsonProperty("paidTo")
     private String paidTo;
@@ -58,6 +68,7 @@ public class OtherAssetItem {
      * 
      */
     @JsonProperty("type")
+    @NotNull
     private OtherAssetItem.OtherAssetItemType type;
     @JsonProperty("typeCode")
     private OtherAssetItem.TypeCode typeCode;
@@ -69,14 +80,19 @@ public class OtherAssetItem {
      * 
      */
     @JsonProperty("amountAsOfPriorYearEnd")
+    @Pattern(regexp = "^[0-9]+\\.[0-9]{2}$")
+    @NotNull
     private String amountAsOfPriorYearEnd;
     @JsonProperty("paidReturnedOnLedgerRowIndex")
+    @DecimalMin("1")
     private Integer paidReturnedOnLedgerRowIndex;
     @JsonProperty("settlementLedgerLink")
+    @Valid
     private LedgerLink settlementLedgerLink;
     @JsonProperty("status")
     private OtherAssetItem.OtherAssetItemStatus status;
     @JsonProperty("extensions")
+    @Valid
     private Extensions extensions;
 
     /**
