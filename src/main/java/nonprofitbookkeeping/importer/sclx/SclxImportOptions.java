@@ -11,6 +11,7 @@ public record SclxImportOptions(
     boolean trimEmptyCollections,
     boolean allowSingleSidedTransactions,
     String cashAccountReference,
+    String importRunId,
     AccountImportMode accountImportMode,
     Map<String, String> accountMapping)
 {
@@ -33,6 +34,7 @@ public record SclxImportOptions(
             true,
             true,
             null,
+            null,
             AccountImportMode.AS_IS,
             Map.of());
     }
@@ -53,5 +55,14 @@ public record SclxImportOptions(
     public boolean hasCashAccountReference()
     {
         return cashAccountReference != null && !cashAccountReference.isBlank();
+    }
+
+    public String effectiveImportRunId()
+    {
+        if (importRunId == null || importRunId.isBlank())
+        {
+            return "run-" + java.time.Instant.now().toString();
+        }
+        return importRunId;
     }
 }

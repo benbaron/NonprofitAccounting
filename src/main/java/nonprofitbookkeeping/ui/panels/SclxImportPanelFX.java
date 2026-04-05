@@ -191,6 +191,7 @@ public class SclxImportPanelFX extends VBox
             true,
             true,
             blankToNull(this.cashAccountField.getText()),
+            null,
             mode,
             mapping);
 
