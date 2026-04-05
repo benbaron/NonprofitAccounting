@@ -34,3 +34,27 @@ other H2 assets and imported directly through the application UI.
 
 This flow removes the legacy zip-reading code from the runtime codebase while
 still providing a path to preserve historical `.npbk` data.
+
+## Migrating Existing H2 Databases In-Place
+
+If you already have an older H2 database file (for example from a prior app
+level), you can upgrade it directly with the current codebase; no legacy
+application build is required.
+
+```
+./scripts/migrate_h2_schema.py path/to/company-db.mv.db
+```
+
+You can also emit a post-migration SQL snapshot in one step:
+
+```
+./scripts/migrate_h2_schema.py path/to/company-db.mv.db path/to/migrated.sql
+```
+
+The migrator runs the same `Database.ensureSchema()` upgrades used by the app
+at startup, then optionally writes an H2 `SCRIPT DROP TO` export.
+
+
+Requirements:
+- Python 3
+- Maven (`mvn`) or the project Maven wrapper (`mvnw`)

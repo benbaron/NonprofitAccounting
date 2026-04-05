@@ -68,13 +68,6 @@ public record SclxDocument(
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public record Compatibility(
-        String minimumReaderVersion,
-        Set<String> lossyDowngradeTo)
-    {
-    }
-
-    @JsonIgnoreProperties(ignoreUnknown = true)
     public record ReportingPeriod(
         LocalDate startDate,
         LocalDate endDate,
