@@ -242,6 +242,19 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
     }
 
     @Override
+    public void persistRawSource(String rawSourceJson, SclxImportOptions options)
+    {
+        if (rawSourceJson == null)
+        {
+            return;
+        }
+
+        SclxImportOptions effectiveOptions = options == null ? SclxImportOptions.defaults() : options;
+        String runId = effectiveOptions.effectiveImportRunId();
+        upsertDocumentContent("sclx.raw." + runId, rawSourceJson);
+    }
+
+    @Override
     public void beginImport(SclxDocument document, SclxImportOptions options)
     {
         this.currentOptions = options == null ? SclxImportOptions.defaults() : options;
@@ -1054,9 +1067,14 @@ private Person resolvePerson(SclxDocument.Person source)
 
     private void upsertDocumentJson(String name, Object value)
     {
+        upsertDocumentContent(name, toJson(value));
+    }
+
+    private void upsertDocumentContent(String name, String content)
+    {
         try
         {
-            this.documentRepository.upsert(name, toJson(value));
+            this.documentRepository.upsert(name, content);
         }
         catch (SQLException ex)
         {

@@ -12,6 +12,11 @@ import java.util.List;
  */
 public interface SclxImportTarget
 {
+    default void persistRawSource(String rawSourceJson, SclxImportOptions options)
+    {
+        // default no-op for targets that do not persist source payloads
+    }
+
     void beginImport(SclxDocument document, SclxImportOptions options);
 
     void importCompatibility(SclxDocument.Compatibility compatibility);

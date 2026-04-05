@@ -1,5 +1,8 @@
 package nonprofitbookkeeping.importer.sclx;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
@@ -32,8 +35,26 @@ public class SclxImportService
 
     public SclxImportResult importFile(Path path, SclxImportTarget target, SclxImportOptions options)
     {
+        Objects.requireNonNull(path, "path");
+        Objects.requireNonNull(target, "target");
+        Objects.requireNonNull(options, "options");
+
+        String rawSource = readRawSource(path);
         SclxDocument document = parser.parse(path);
+        target.persistRawSource(rawSource, options);
         return importDocument(document, target, options);
+    }
+
+    private static String readRawSource(Path path)
+    {
+        try
+        {
+            return Files.readString(path, StandardCharsets.UTF_8);
+        }
+        catch (IOException ex)
+        {
+            throw new SclxImportException("Failed to read raw SCLX source: " + path, ex);
+        }
     }
 
     public static SclxImportResult importDocument(SclxDocument document, SclxImportTarget target, SclxImportOptions options)
