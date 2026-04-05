@@ -43,16 +43,86 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
     private final BankStatementRecordRepository bankStatementRecordRepository;
     private final DocumentRepository documentRepository;
     private final FundAccountingService fundAccountingService;
+    private final nonprofitbookkeeping.persistence.sclx.OrganizationRepository sclxOrganizationRepository;
+    private final nonprofitbookkeeping.persistence.sclx.ReportingPeriodRepository sclxReportingPeriodRepository;
+    private final nonprofitbookkeeping.persistence.sclx.EventRepository sclxEventRepository;
+    private final nonprofitbookkeeping.persistence.sclx.DocumentRepository sclxDocumentRepository;
+    private final nonprofitbookkeeping.persistence.sclx.OutstandingItemRepository sclxOutstandingItemRepository;
+    private final nonprofitbookkeeping.persistence.sclx.OtherAssetItemRepository sclxOtherAssetItemRepository;
+    private final nonprofitbookkeeping.persistence.sclx.AssetRepository sclxAssetRepository;
+    private final nonprofitbookkeeping.persistence.sclx.SupplyRepository sclxSupplyRepository;
 
     private final Map<String, Integer> importedTransactionIdsBySclxId = new LinkedHashMap<>();
     private final Map<Integer, Integer> importedTransactionIdsByLedgerRow = new LinkedHashMap<>();
     private final Map<String, Long> personDbIdBySclxPersonId = new LinkedHashMap<>();
     private final Map<String, String> personDisplayNameBySclxPersonId = new LinkedHashMap<>();
+    private final Map<String, Integer> rawStagingWriteCounts = new LinkedHashMap<>();
+    private final List<String> importWarnings = new ArrayList<>();
     private SclxImportOptions currentOptions = SclxImportOptions.defaults();
+    private String currentImportRunId = SclxImportOptions.defaults().effectiveImportRunId();
 
-    public NonprofitBookkeepingSclxImportTarget()
+    public static final class Dependencies
     {
-        this(
+        private final AccountRepository accountRepository;
+        private final PersonRepository personRepository;
+        private final JournalLedgerPersistenceGateway journalGateway;
+        private final TxnSupplementalLineRepository supplementalRepository;
+        private final BudgetRecordRepository budgetRecordRepository;
+        private final BankingItemRecordRepository bankingItemRecordRepository;
+        private final BankStatementRecordRepository bankStatementRecordRepository;
+        private final DocumentRepository documentRepository;
+        private final FundAccountingService fundAccountingService;
+        private final nonprofitbookkeeping.persistence.sclx.OrganizationRepository sclxOrganizationRepository;
+        private final nonprofitbookkeeping.persistence.sclx.ReportingPeriodRepository sclxReportingPeriodRepository;
+        private final nonprofitbookkeeping.persistence.sclx.EventRepository sclxEventRepository;
+        private final nonprofitbookkeeping.persistence.sclx.DocumentRepository sclxDocumentRepository;
+        private final nonprofitbookkeeping.persistence.sclx.OutstandingItemRepository sclxOutstandingItemRepository;
+        private final nonprofitbookkeeping.persistence.sclx.OtherAssetItemRepository sclxOtherAssetItemRepository;
+        private final nonprofitbookkeeping.persistence.sclx.AssetRepository sclxAssetRepository;
+        private final nonprofitbookkeeping.persistence.sclx.SupplyRepository sclxSupplyRepository;
+
+        public Dependencies(
+            AccountRepository accountRepository,
+            PersonRepository personRepository,
+            JournalLedgerPersistenceGateway journalGateway,
+            TxnSupplementalLineRepository supplementalRepository,
+            BudgetRecordRepository budgetRecordRepository,
+            BankingItemRecordRepository bankingItemRecordRepository,
+            BankStatementRecordRepository bankStatementRecordRepository,
+            DocumentRepository documentRepository,
+            FundAccountingService fundAccountingService,
+            nonprofitbookkeeping.persistence.sclx.OrganizationRepository sclxOrganizationRepository,
+            nonprofitbookkeeping.persistence.sclx.ReportingPeriodRepository sclxReportingPeriodRepository,
+            nonprofitbookkeeping.persistence.sclx.EventRepository sclxEventRepository,
+            nonprofitbookkeeping.persistence.sclx.DocumentRepository sclxDocumentRepository,
+            nonprofitbookkeeping.persistence.sclx.OutstandingItemRepository sclxOutstandingItemRepository,
+            nonprofitbookkeeping.persistence.sclx.OtherAssetItemRepository sclxOtherAssetItemRepository,
+            nonprofitbookkeeping.persistence.sclx.AssetRepository sclxAssetRepository,
+            nonprofitbookkeeping.persistence.sclx.SupplyRepository sclxSupplyRepository)
+        {
+            this.accountRepository = Objects.requireNonNull(accountRepository);
+            this.personRepository = Objects.requireNonNull(personRepository);
+            this.journalGateway = Objects.requireNonNull(journalGateway);
+            this.supplementalRepository = Objects.requireNonNull(supplementalRepository);
+            this.budgetRecordRepository = Objects.requireNonNull(budgetRecordRepository);
+            this.bankingItemRecordRepository = Objects.requireNonNull(bankingItemRecordRepository);
+            this.bankStatementRecordRepository = Objects.requireNonNull(bankStatementRecordRepository);
+            this.documentRepository = Objects.requireNonNull(documentRepository);
+            this.fundAccountingService = Objects.requireNonNull(fundAccountingService);
+            this.sclxOrganizationRepository = Objects.requireNonNull(sclxOrganizationRepository);
+            this.sclxReportingPeriodRepository = Objects.requireNonNull(sclxReportingPeriodRepository);
+            this.sclxEventRepository = Objects.requireNonNull(sclxEventRepository);
+            this.sclxDocumentRepository = Objects.requireNonNull(sclxDocumentRepository);
+            this.sclxOutstandingItemRepository = Objects.requireNonNull(sclxOutstandingItemRepository);
+            this.sclxOtherAssetItemRepository = Objects.requireNonNull(sclxOtherAssetItemRepository);
+            this.sclxAssetRepository = Objects.requireNonNull(sclxAssetRepository);
+            this.sclxSupplyRepository = Objects.requireNonNull(sclxSupplyRepository);
+        }
+    }
+
+    private static Dependencies defaultDependencies()
+    {
+        return new Dependencies(
             new AccountRepository(),
             new PersonRepository(),
             new JournalLedgerPersistenceGateway(),
@@ -61,8 +131,41 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
             new BankingItemRecordRepository(),
             new BankStatementRecordRepository(),
             new DocumentRepository(),
-            new FundAccountingService()
-        );
+            new FundAccountingService(),
+            new nonprofitbookkeeping.persistence.sclx.OrganizationRepository(),
+            new nonprofitbookkeeping.persistence.sclx.ReportingPeriodRepository(),
+            new nonprofitbookkeeping.persistence.sclx.EventRepository(),
+            new nonprofitbookkeeping.persistence.sclx.DocumentRepository(),
+            new nonprofitbookkeeping.persistence.sclx.OutstandingItemRepository(),
+            new nonprofitbookkeeping.persistence.sclx.OtherAssetItemRepository(),
+            new nonprofitbookkeeping.persistence.sclx.AssetRepository(),
+            new nonprofitbookkeeping.persistence.sclx.SupplyRepository());
+    }
+
+    public NonprofitBookkeepingSclxImportTarget()
+    {
+        this(defaultDependencies());
+    }
+
+    public NonprofitBookkeepingSclxImportTarget(Dependencies dependencies)
+    {
+        this.accountRepository = dependencies.accountRepository;
+        this.personRepository = dependencies.personRepository;
+        this.journalGateway = dependencies.journalGateway;
+        this.supplementalRepository = dependencies.supplementalRepository;
+        this.budgetRecordRepository = dependencies.budgetRecordRepository;
+        this.bankingItemRecordRepository = dependencies.bankingItemRecordRepository;
+        this.bankStatementRecordRepository = dependencies.bankStatementRecordRepository;
+        this.documentRepository = dependencies.documentRepository;
+        this.fundAccountingService = dependencies.fundAccountingService;
+        this.sclxOrganizationRepository = dependencies.sclxOrganizationRepository;
+        this.sclxReportingPeriodRepository = dependencies.sclxReportingPeriodRepository;
+        this.sclxEventRepository = dependencies.sclxEventRepository;
+        this.sclxDocumentRepository = dependencies.sclxDocumentRepository;
+        this.sclxOutstandingItemRepository = dependencies.sclxOutstandingItemRepository;
+        this.sclxOtherAssetItemRepository = dependencies.sclxOtherAssetItemRepository;
+        this.sclxAssetRepository = dependencies.sclxAssetRepository;
+        this.sclxSupplyRepository = dependencies.sclxSupplyRepository;
     }
 
     public NonprofitBookkeepingSclxImportTarget(
@@ -74,17 +177,34 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         BankingItemRecordRepository bankingItemRecordRepository,
         BankStatementRecordRepository bankStatementRecordRepository,
         DocumentRepository documentRepository,
-        FundAccountingService fundAccountingService)
+        FundAccountingService fundAccountingService,
+        nonprofitbookkeeping.persistence.sclx.OrganizationRepository sclxOrganizationRepository,
+        nonprofitbookkeeping.persistence.sclx.ReportingPeriodRepository sclxReportingPeriodRepository,
+        nonprofitbookkeeping.persistence.sclx.EventRepository sclxEventRepository,
+        nonprofitbookkeeping.persistence.sclx.DocumentRepository sclxDocumentRepository,
+        nonprofitbookkeeping.persistence.sclx.OutstandingItemRepository sclxOutstandingItemRepository,
+        nonprofitbookkeeping.persistence.sclx.OtherAssetItemRepository sclxOtherAssetItemRepository,
+        nonprofitbookkeeping.persistence.sclx.AssetRepository sclxAssetRepository,
+        nonprofitbookkeeping.persistence.sclx.SupplyRepository sclxSupplyRepository)
     {
-        this.accountRepository = Objects.requireNonNull(accountRepository);
-        this.personRepository = Objects.requireNonNull(personRepository);
-        this.journalGateway = Objects.requireNonNull(journalGateway);
-        this.supplementalRepository = Objects.requireNonNull(supplementalRepository);
-        this.budgetRecordRepository = Objects.requireNonNull(budgetRecordRepository);
-        this.bankingItemRecordRepository = Objects.requireNonNull(bankingItemRecordRepository);
-        this.bankStatementRecordRepository = Objects.requireNonNull(bankStatementRecordRepository);
-        this.documentRepository = Objects.requireNonNull(documentRepository);
-        this.fundAccountingService = Objects.requireNonNull(fundAccountingService);
+        this(new Dependencies(
+            accountRepository,
+            personRepository,
+            journalGateway,
+            supplementalRepository,
+            budgetRecordRepository,
+            bankingItemRecordRepository,
+            bankStatementRecordRepository,
+            documentRepository,
+            fundAccountingService,
+            sclxOrganizationRepository,
+            sclxReportingPeriodRepository,
+            sclxEventRepository,
+            sclxDocumentRepository,
+            sclxOutstandingItemRepository,
+            sclxOtherAssetItemRepository,
+            sclxAssetRepository,
+            sclxSupplyRepository));
     }
 
     @Override
@@ -95,18 +215,41 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         this.importedTransactionIdsByLedgerRow.clear();
         this.personDbIdBySclxPersonId.clear();
         this.personDisplayNameBySclxPersonId.clear();
+        this.rawStagingWriteCounts.clear();
+        this.importWarnings.clear();
+        this.currentImportRunId = this.currentOptions.effectiveImportRunId();
     }
 
     @Override
     public void importOrganization(SclxDocument.Organization organization)
     {
-        upsertDocumentJson("sclx.organization", organization);
+        try
+        {
+            nonprofitbookkeeping.model.sclx.Organization row =
+                MAPPER.convertValue(organization, nonprofitbookkeeping.model.sclx.Organization.class);
+            this.sclxOrganizationRepository.save(runScopedId("organization"), row);
+            incrementRawStagingCount("organization");
+        }
+        catch (IllegalArgumentException | SQLException ex)
+        {
+            throw new IllegalStateException("Failed to persist SCLX organization", ex);
+        }
     }
 
     @Override
     public void importReportingPeriod(SclxDocument.ReportingPeriod reportingPeriod)
     {
-        upsertDocumentJson("sclx.reportingPeriod", reportingPeriod);
+        try
+        {
+            nonprofitbookkeeping.model.sclx.ReportingPeriod row =
+                MAPPER.convertValue(reportingPeriod, nonprofitbookkeeping.model.sclx.ReportingPeriod.class);
+            this.sclxReportingPeriodRepository.save(runScopedId("reportingPeriod"), row);
+            incrementRawStagingCount("reportingPeriod");
+        }
+        catch (IllegalArgumentException | SQLException ex)
+        {
+            throw new IllegalStateException("Failed to persist SCLX reporting period", ex);
+        }
     }
 
     @Override
@@ -228,13 +371,43 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
     @Override
     public void importEvents(List<SclxDocument.Event> events)
     {
-        upsertDocumentJson("sclx.events", events);
+        for (int i = 0; i < events.size(); i++)
+        {
+            SclxDocument.Event event = events.get(i);
+            String id = firstNonBlank(event.eventId(), "index-" + i);
+            try
+            {
+                nonprofitbookkeeping.model.sclx.Event row =
+                    MAPPER.convertValue(event, nonprofitbookkeeping.model.sclx.Event.class);
+                this.sclxEventRepository.save(runScopedId(id), row);
+                incrementRawStagingCount("events");
+            }
+            catch (IllegalArgumentException | SQLException ex)
+            {
+                throw new IllegalStateException("Failed to persist SCLX event " + id, ex);
+            }
+        }
     }
 
     @Override
     public void importDocuments(List<SclxDocument.Document> documents)
     {
-        upsertDocumentJson("sclx.documents", documents);
+        for (int i = 0; i < documents.size(); i++)
+        {
+            SclxDocument.Document document = documents.get(i);
+            String id = firstNonBlank(document.documentId(), "index-" + i);
+            try
+            {
+                nonprofitbookkeeping.model.sclx.Document row =
+                    MAPPER.convertValue(document, nonprofitbookkeeping.model.sclx.Document.class);
+                this.sclxDocumentRepository.save(runScopedId(id), row);
+                incrementRawStagingCount("documents");
+            }
+            catch (IllegalArgumentException | SQLException ex)
+            {
+                throw new IllegalStateException("Failed to persist SCLX document " + id, ex);
+            }
+        }
     }
 
     @Override
@@ -255,13 +428,43 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
     @Override
     public void importOutstandingItems(List<SclxDocument.OutstandingItem> outstandingItems)
     {
-        upsertDocumentJson("sclx.outstandingItems", outstandingItems);
+        for (int i = 0; i < outstandingItems.size(); i++)
+        {
+            SclxDocument.OutstandingItem item = outstandingItems.get(i);
+            String id = firstNonBlank(item.outstandingItemId(), "index-" + i);
+            try
+            {
+                nonprofitbookkeeping.model.sclx.OutstandingItem row =
+                    MAPPER.convertValue(item, nonprofitbookkeeping.model.sclx.OutstandingItem.class);
+                this.sclxOutstandingItemRepository.save(runScopedId(id), row);
+                incrementRawStagingCount("outstandingItems");
+            }
+            catch (IllegalArgumentException | SQLException ex)
+            {
+                throw new IllegalStateException("Failed to persist SCLX outstanding item " + id, ex);
+            }
+        }
     }
 
     @Override
     public void importOtherAssetItems(List<SclxDocument.OtherAssetItem> otherAssetItems)
     {
-        upsertDocumentJson("sclx.otherAssetItems", otherAssetItems);
+        for (int i = 0; i < otherAssetItems.size(); i++)
+        {
+            SclxDocument.OtherAssetItem item = otherAssetItems.get(i);
+            String id = firstNonBlank(item.otherAssetItemId(), "index-" + i);
+            try
+            {
+                nonprofitbookkeeping.model.sclx.OtherAssetItem row =
+                    MAPPER.convertValue(item, nonprofitbookkeeping.model.sclx.OtherAssetItem.class);
+                this.sclxOtherAssetItemRepository.save(runScopedId(id), row);
+                incrementRawStagingCount("otherAssetItems");
+            }
+            catch (IllegalArgumentException | SQLException ex)
+            {
+                throw new IllegalStateException("Failed to persist SCLX other-asset item " + id, ex);
+            }
+        }
     }
 
     @Override
@@ -272,6 +475,8 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
             Integer txnId = item.ledgerRowIndex() == null ? null : this.importedTransactionIdsByLedgerRow.get(item.ledgerRowIndex());
             if (txnId == null)
             {
+                this.importWarnings.add("Skipped supplemental item " + item.supplementalItemId() +
+                    " because no imported transaction was found for ledgerRowIndex=" + item.ledgerRowIndex());
                 continue;
             }
 
@@ -303,13 +508,43 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
     @Override
     public void importAssets(List<SclxDocument.Asset> assets)
     {
-        upsertDocumentJson("sclx.assets", assets);
+        for (int i = 0; i < assets.size(); i++)
+        {
+            SclxDocument.Asset item = assets.get(i);
+            String id = firstNonBlank(item.assetId(), "index-" + i);
+            try
+            {
+                nonprofitbookkeeping.model.sclx.Asset row =
+                    MAPPER.convertValue(item, nonprofitbookkeeping.model.sclx.Asset.class);
+                this.sclxAssetRepository.save(runScopedId(id), row);
+                incrementRawStagingCount("assets");
+            }
+            catch (IllegalArgumentException | SQLException ex)
+            {
+                throw new IllegalStateException("Failed to persist SCLX asset " + id, ex);
+            }
+        }
     }
 
     @Override
     public void importSupplies(List<SclxDocument.Supply> supplies)
     {
-        upsertDocumentJson("sclx.supplies", supplies);
+        for (int i = 0; i < supplies.size(); i++)
+        {
+            SclxDocument.Supply item = supplies.get(i);
+            String id = firstNonBlank(item.supplyId(), "index-" + i);
+            try
+            {
+                nonprofitbookkeeping.model.sclx.Supply row =
+                    MAPPER.convertValue(item, nonprofitbookkeeping.model.sclx.Supply.class);
+                this.sclxSupplyRepository.save(runScopedId(id), row);
+                incrementRawStagingCount("supplies");
+            }
+            catch (IllegalArgumentException | SQLException ex)
+            {
+                throw new IllegalStateException("Failed to persist SCLX supply " + id, ex);
+            }
+        }
     }
 
     @Override
@@ -403,7 +638,39 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
     @Override
     public void completeImport(SclxImportResult result)
     {
+        Map<String, Object> runSummary = new LinkedHashMap<>();
+        runSummary.put("importRunId", this.currentImportRunId);
+        runSummary.put("version", result.version());
+        runSummary.put("rawStagingWriteCounts", new LinkedHashMap<>(this.rawStagingWriteCounts));
+        runSummary.put("canonicalWriteCounts", buildCanonicalWriteCounts(result));
+        runSummary.put("warnings", List.copyOf(this.importWarnings));
+        upsertDocumentJson("sclx.importSummary." + this.currentImportRunId, runSummary);
         upsertDocumentJson("sclx.importSummary", result);
+    }
+
+    private Map<String, Integer> buildCanonicalWriteCounts(SclxImportResult result)
+    {
+        Map<String, Integer> counts = new LinkedHashMap<>();
+        counts.put("accounts", result.accountCount());
+        counts.put("funds", result.fundCount());
+        counts.put("budgets", result.budgetCount());
+        counts.put("people", result.personCount());
+        counts.put("transactions", result.transactionCount());
+        counts.put("transactionLines", result.transactionLineCount());
+        counts.put("supplementalItems", result.supplementalItemCount());
+        counts.put("bankingItems", result.bankingItemCount());
+        counts.put("bankStatementImports", result.bankStatementImportCount());
+        return counts;
+    }
+
+    private void incrementRawStagingCount(String key)
+    {
+        this.rawStagingWriteCounts.merge(key, 1, Integer::sum);
+    }
+
+    private String runScopedId(String baseId)
+    {
+        return this.currentImportRunId + "::" + firstNonBlank(baseId, "default");
     }
 
     
