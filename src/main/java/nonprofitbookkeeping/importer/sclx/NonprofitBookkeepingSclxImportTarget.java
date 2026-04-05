@@ -460,8 +460,8 @@ private AccountingTransaction mapTransaction(SclxDocument.Transaction source)
     txn.setEntries(entries);
     txn.setDate(source.transactionDate() == null ? (source.postingDate() == null ? "" : source.postingDate().toString()) : source.transactionDate().toString());
     txn.setMemo(source.description());
-    txn.setToFrom(source.personDisplayName());
-    txn.setCheckNumber(firstNonBlank(source.checkNumber(), source.checkNumberId()));
+    txn.setToFrom(firstNonBlank(source.personOrBusinessName(), workbookPersonOrBusinessName(source), source.personDisplayName()));
+    txn.setCheckNumber(firstNonBlank(source.reference(), source.checkNumber(), source.checkNumberId()));
     txn.setClearBank(source.bankTiming());
     txn.setBank(source.bankTiming());
     txn.setBudgetTracking(source.budgetId());
@@ -583,6 +583,16 @@ private Person resolvePerson(SclxDocument.Person source)
     private String resolveAccountNumber(String preferred, String fallback)
     {
         return this.currentOptions.resolveAccountReference(firstNonBlank(preferred, fallback));
+    }
+
+
+    private static String workbookPersonOrBusinessName(SclxDocument.Transaction source)
+    {
+        if (source.extensions() == null) return null;
+        Object workbook = source.extensions().get("workbook");
+        if (!(workbook instanceof Map<?, ?> workbookMap)) return null;
+        Object value = workbookMap.get("personOrBusinessName");
+        return value == null ? null : String.valueOf(value);
     }
 
     private static BigDecimal debitAmount(BigDecimal debit, BigDecimal credit)
