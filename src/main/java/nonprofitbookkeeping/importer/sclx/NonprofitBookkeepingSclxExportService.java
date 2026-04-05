@@ -228,7 +228,7 @@ public class NonprofitBookkeepingSclxExportService
             List.of(),
             List.of(),
             bankStatementImports,
-            Map.of()
+            Map.<String, Object>of()
         );
     }
 
