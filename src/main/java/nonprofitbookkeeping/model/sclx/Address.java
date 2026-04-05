@@ -5,6 +5,7 @@ import javax.annotation.processing.Generated;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import jakarta.validation.Valid;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -32,6 +33,7 @@ public class Address {
     @JsonProperty("country")
     private String country;
     @JsonProperty("extensions")
+    @Valid
     private Extensions extensions;
 
     /**

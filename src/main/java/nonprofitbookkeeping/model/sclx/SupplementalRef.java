@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -24,6 +26,7 @@ public class SupplementalRef {
      * 
      */
     @JsonProperty("recordType")
+    @NotNull
     private SupplementalRef.SupplementalRefType recordType;
     /**
      * 
@@ -31,6 +34,8 @@ public class SupplementalRef {
      * 
      */
     @JsonProperty("recordId")
+    @Size(min = 1)
+    @NotNull
     private String recordId;
 
     /**

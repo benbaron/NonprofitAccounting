@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import jakarta.validation.Valid;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -21,7 +22,7 @@ public class Compatibility {
     private String minimumReaderVersion;
     @JsonProperty("lossyDowngradeTo")
     @JsonDeserialize(as = java.util.LinkedHashSet.class)
-    private Set<String> lossyDowngradeTo = new LinkedHashSet<String>();
+    private Set<@Valid String> lossyDowngradeTo = new LinkedHashSet<String>();
 
     /**
      * No args constructor for use in serialization
@@ -30,7 +31,7 @@ public class Compatibility {
     public Compatibility() {
     }
 
-    public Compatibility(String minimumReaderVersion, Set<String> lossyDowngradeTo) {
+    public Compatibility(String minimumReaderVersion, Set<@Valid String> lossyDowngradeTo) {
         super();
         this.minimumReaderVersion = minimumReaderVersion;
         this.lossyDowngradeTo = lossyDowngradeTo;

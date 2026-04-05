@@ -7,6 +7,11 @@ import javax.annotation.processing.Generated;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -34,6 +39,8 @@ public class BankAccount {
      * 
      */
     @JsonProperty("bankAccountId")
+    @Size(min = 1)
+    @NotNull
     private String bankAccountId;
     /**
      * 
@@ -41,9 +48,12 @@ public class BankAccount {
      * 
      */
     @JsonProperty("accountName")
+    @Size(min = 1)
+    @NotNull
     private String accountName;
     @JsonProperty("institutionName")
     private String institutionName;
+    @Email
     @JsonProperty("institutionEmail")
     private String institutionEmail;
     @JsonProperty("institutionPhone")
@@ -53,6 +63,7 @@ public class BankAccount {
     @JsonProperty("accountType")
     private String accountType;
     @JsonProperty("currency")
+    @Pattern(regexp = "^[A-Z]{3}$")
     private String currency;
     @JsonProperty("interestBearing")
     private Boolean interestBearing;
@@ -63,8 +74,9 @@ public class BankAccount {
     @JsonProperty("chartAccountId")
     private String chartAccountId;
     @JsonProperty("authorizedSigners")
-    private List<BankAccountSigner> authorizedSigners = new ArrayList<BankAccountSigner>();
+    private List<@Valid BankAccountSigner> authorizedSigners = new ArrayList<BankAccountSigner>();
     @JsonProperty("extensions")
+    @Valid
     private Extensions extensions;
 
     /**
@@ -74,7 +86,7 @@ public class BankAccount {
     public BankAccount() {
     }
 
-    public BankAccount(String bankAccountId, String accountName, String institutionName, String institutionEmail, String institutionPhone, String accountNumberMasked, String accountType, String currency, Boolean interestBearing, String signatureRequirement, String accountHolderName, String chartAccountId, List<BankAccountSigner> authorizedSigners, Extensions extensions) {
+    public BankAccount(String bankAccountId, String accountName, String institutionName, String institutionEmail, String institutionPhone, String accountNumberMasked, String accountType, String currency, Boolean interestBearing, String signatureRequirement, String accountHolderName, String chartAccountId, List<@Valid BankAccountSigner> authorizedSigners, Extensions extensions) {
         super();
         this.bankAccountId = bankAccountId;
         this.accountName = accountName;

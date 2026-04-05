@@ -5,6 +5,8 @@ import javax.annotation.processing.Generated;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -21,8 +23,10 @@ public class AppraisalDetails {
     @JsonProperty("appraisalDate")
     private String appraisalDate;
     @JsonProperty("revisedValue")
+    @Pattern(regexp = "^-?[0-9]+\\.[0-9]{2}$")
     private String revisedValue;
     @JsonProperty("extensions")
+    @Valid
     private Extensions extensions;
 
     /**

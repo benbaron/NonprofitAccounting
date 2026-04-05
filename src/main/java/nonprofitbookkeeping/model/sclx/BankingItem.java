@@ -12,6 +12,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -43,6 +47,8 @@ public class BankingItem {
      * 
      */
     @JsonProperty("bankingItemId")
+    @Size(min = 1)
+    @NotNull
     private String bankingItemId;
     /**
      * 
@@ -50,6 +56,7 @@ public class BankingItem {
      * 
      */
     @JsonProperty("kind")
+    @NotNull
     private BankingItem.BankingItemKind kind;
     @JsonProperty("bankAccountId")
     private String bankAccountId;
@@ -57,13 +64,14 @@ public class BankingItem {
     private String transactionId;
     @JsonProperty("lineIds")
     @JsonDeserialize(as = java.util.LinkedHashSet.class)
-    private Set<String> lineIds = new LinkedHashSet<String>();
+    private Set<@Valid String> lineIds = new LinkedHashSet<String>();
     /**
      * 
      * (Required)
      * 
      */
     @JsonProperty("clearedDate")
+    @NotNull
     private String clearedDate;
     /**
      * 
@@ -71,6 +79,8 @@ public class BankingItem {
      * 
      */
     @JsonProperty("amount")
+    @Pattern(regexp = "^[0-9]+\\.[0-9]{2}$")
+    @NotNull
     private String amount;
     @JsonProperty("checkNumber")
     private String checkNumber;
@@ -91,8 +101,10 @@ public class BankingItem {
     @JsonProperty("importId")
     private String importId;
     @JsonProperty("ofx")
+    @Valid
     private OfxTransaction ofx;
     @JsonProperty("extensions")
+    @Valid
     private Extensions extensions;
 
     /**
@@ -102,7 +114,7 @@ public class BankingItem {
     public BankingItem() {
     }
 
-    public BankingItem(String bankingItemId, BankingItem.BankingItemKind kind, String bankAccountId, String transactionId, Set<String> lineIds, String clearedDate, String amount, String checkNumber, String payee, String depositDate, String payer, String depositId, String memo, BankingItem.BankingItemSource source, BankingItem.BankingItemStatus status, String importId, OfxTransaction ofx, Extensions extensions) {
+    public BankingItem(String bankingItemId, BankingItem.BankingItemKind kind, String bankAccountId, String transactionId, Set<@Valid String> lineIds, String clearedDate, String amount, String checkNumber, String payee, String depositDate, String payer, String depositId, String memo, BankingItem.BankingItemSource source, BankingItem.BankingItemStatus status, String importId, OfxTransaction ofx, Extensions extensions) {
         super();
         this.bankingItemId = bankingItemId;
         this.kind = kind;

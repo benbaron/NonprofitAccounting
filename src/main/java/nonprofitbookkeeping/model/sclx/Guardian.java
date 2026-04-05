@@ -5,6 +5,7 @@ import javax.annotation.processing.Generated;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import jakarta.validation.constraints.Email;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -17,6 +18,7 @@ public class Guardian {
 
     @JsonProperty("legalName")
     private String legalName;
+    @Email
     @JsonProperty("email")
     private String email;
     @JsonProperty("phone")

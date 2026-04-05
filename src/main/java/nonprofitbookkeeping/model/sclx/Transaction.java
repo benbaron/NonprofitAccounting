@@ -14,6 +14,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 
 /**
@@ -48,6 +51,8 @@ public class Transaction {
      * 
      */
     @JsonProperty("transactionId")
+    @Size(min = 1)
+    @NotNull
     private String transactionId;
     /**
      * 
@@ -55,6 +60,7 @@ public class Transaction {
      * 
      */
     @JsonProperty("transactionDate")
+    @NotNull
     private String transactionDate;
     /**
      * 
@@ -62,6 +68,7 @@ public class Transaction {
      * 
      */
     @JsonProperty("postingDate")
+    @NotNull
     private String postingDate;
     /**
      * 
@@ -69,6 +76,8 @@ public class Transaction {
      * 
      */
     @JsonProperty("description")
+    @Size(min = 1)
+    @NotNull
     private String description;
     @JsonProperty("reference")
     private String reference;
@@ -78,6 +87,7 @@ public class Transaction {
      * 
      */
     @JsonProperty("status")
+    @NotNull
     private Transaction.TransactionStatus status;
     /**
      * 
@@ -85,13 +95,15 @@ public class Transaction {
      * 
      */
     @JsonProperty("source")
+    @NotNull
     private Transaction.TransactionSource source;
     @JsonProperty("documentIds")
     @JsonDeserialize(as = java.util.LinkedHashSet.class)
-    private Set<String> documentIds = new LinkedHashSet<String>();
+    private Set<@Valid String> documentIds = new LinkedHashSet<String>();
     @JsonProperty("eventId")
     private String eventId;
     @JsonProperty("approval")
+    @Valid
     private Approval approval;
     @JsonProperty("bankTiming")
     private Transaction.TimingValue bankTiming;
@@ -105,10 +117,14 @@ public class Transaction {
      * 
      */
     @JsonProperty("lines")
-    private List<TransactionLine> lines = new ArrayList<TransactionLine>();
+    @Size(min = 1)
+    @NotNull
+    private List<@Valid TransactionLine> lines = new ArrayList<TransactionLine>();
     @JsonProperty("workbookLink")
+    @Valid
     private WorkbookLink workbookLink;
     @JsonProperty("extensions")
+    @Valid
     private Extensions extensions;
 
     /**
@@ -118,7 +134,7 @@ public class Transaction {
     public Transaction() {
     }
 
-    public Transaction(String transactionId, String transactionDate, String postingDate, String description, String reference, Transaction.TransactionStatus status, Transaction.TransactionSource source, Set<String> documentIds, String eventId, Approval approval, Transaction.TimingValue bankTiming, Transaction.TimingValue budgetTiming, String budgetId, List<TransactionLine> lines, WorkbookLink workbookLink, Extensions extensions) {
+    public Transaction(String transactionId, String transactionDate, String postingDate, String description, String reference, Transaction.TransactionStatus status, Transaction.TransactionSource source, Set<@Valid String> documentIds, String eventId, Approval approval, Transaction.TimingValue bankTiming, Transaction.TimingValue budgetTiming, String budgetId, List<@Valid TransactionLine> lines, WorkbookLink workbookLink, Extensions extensions) {
         super();
         this.transactionId = transactionId;
         this.transactionDate = transactionDate;

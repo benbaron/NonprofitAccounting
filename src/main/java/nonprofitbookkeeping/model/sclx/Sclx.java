@@ -1,5 +1,5 @@
 
-package nonprofitbookkeeping.model.sclx.generated;
+package nonprofitbookkeeping.model.sclx;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,6 +34,9 @@ import jakarta.validation.constraints.NotNull;
     "funds",
     "budgets",
     "people",
+    "bankAccounts",
+    "officeAssignments",
+    "committeeMemberships",
     "events",
     "documents",
     "transactions",
@@ -47,7 +50,7 @@ import jakarta.validation.constraints.NotNull;
     "extensions"
 })
 @Generated("jsonschema2pojo")
-public class SclxSchemaGenerated {
+public class Sclx {
 
     /**
      * 
@@ -129,6 +132,12 @@ public class SclxSchemaGenerated {
     @JsonProperty("people")
     @NotNull
     private List<@Valid Person> people = new ArrayList<Person>();
+    @JsonProperty("bankAccounts")
+    private List<@Valid BankAccount> bankAccounts = new ArrayList<BankAccount>();
+    @JsonProperty("officeAssignments")
+    private List<@Valid OfficeAssignment> officeAssignments = new ArrayList<OfficeAssignment>();
+    @JsonProperty("committeeMemberships")
+    private List<@Valid CommitteeMembership> committeeMemberships = new ArrayList<CommitteeMembership>();
     /**
      * 
      * (Required)
@@ -175,10 +184,10 @@ public class SclxSchemaGenerated {
      * No args constructor for use in serialization
      * 
      */
-    public SclxSchemaGenerated() {
+    public Sclx() {
     }
 
-    public SclxSchemaGenerated(String format, String version, Date exportedAt, Set<@Valid String> features, Compatibility compatibility, Organization organization, ReportingPeriod reportingPeriod, List<@Valid Account> chartOfAccounts, List<@Valid Fund> funds, List<@Valid Budget> budgets, List<@Valid Person> people, List<@Valid Event> events, List<@Valid Document> documents, List<@Valid Transaction> transactions, List<@Valid BankingItem> bankingItems, List<@Valid OutstandingItem> outstandingItems, List<@Valid OtherAssetItem> otherAssetItems, List<@Valid SupplementalItem> supplementalItems, List<@Valid Asset> assets, List<@Valid Supply> supplies, List<@Valid BankStatementImport> bankStatementImports, Extensions extensions) {
+    public Sclx(String format, String version, Date exportedAt, Set<@Valid String> features, Compatibility compatibility, Organization organization, ReportingPeriod reportingPeriod, List<@Valid Account> chartOfAccounts, List<@Valid Fund> funds, List<@Valid Budget> budgets, List<@Valid Person> people, List<@Valid BankAccount> bankAccounts, List<@Valid OfficeAssignment> officeAssignments, List<@Valid CommitteeMembership> committeeMemberships, List<@Valid Event> events, List<@Valid Document> documents, List<@Valid Transaction> transactions, List<@Valid BankingItem> bankingItems, List<@Valid OutstandingItem> outstandingItems, List<@Valid OtherAssetItem> otherAssetItems, List<@Valid SupplementalItem> supplementalItems, List<@Valid Asset> assets, List<@Valid Supply> supplies, List<@Valid BankStatementImport> bankStatementImports, Extensions extensions) {
         super();
         this.format = format;
         this.version = version;
@@ -191,6 +200,9 @@ public class SclxSchemaGenerated {
         this.funds = funds;
         this.budgets = budgets;
         this.people = people;
+        this.bankAccounts = bankAccounts;
+        this.officeAssignments = officeAssignments;
+        this.committeeMemberships = committeeMemberships;
         this.events = events;
         this.documents = documents;
         this.transactions = transactions;
@@ -404,6 +416,36 @@ public class SclxSchemaGenerated {
         this.people = people;
     }
 
+    @JsonProperty("bankAccounts")
+    public List<BankAccount> getBankAccounts() {
+        return bankAccounts;
+    }
+
+    @JsonProperty("bankAccounts")
+    public void setBankAccounts(List<BankAccount> bankAccounts) {
+        this.bankAccounts = bankAccounts;
+    }
+
+    @JsonProperty("officeAssignments")
+    public List<OfficeAssignment> getOfficeAssignments() {
+        return officeAssignments;
+    }
+
+    @JsonProperty("officeAssignments")
+    public void setOfficeAssignments(List<OfficeAssignment> officeAssignments) {
+        this.officeAssignments = officeAssignments;
+    }
+
+    @JsonProperty("committeeMemberships")
+    public List<CommitteeMembership> getCommitteeMemberships() {
+        return committeeMemberships;
+    }
+
+    @JsonProperty("committeeMemberships")
+    public void setCommitteeMemberships(List<CommitteeMembership> committeeMemberships) {
+        this.committeeMemberships = committeeMemberships;
+    }
+
     /**
      * 
      * (Required)
@@ -547,7 +589,7 @@ public class SclxSchemaGenerated {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(SclxSchemaGenerated.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
+        sb.append(Sclx.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
         sb.append("format");
         sb.append('=');
         sb.append(((this.format == null)?"<null>":this.format));
@@ -591,6 +633,18 @@ public class SclxSchemaGenerated {
         sb.append("people");
         sb.append('=');
         sb.append(((this.people == null)?"<null>":this.people));
+        sb.append(',');
+        sb.append("bankAccounts");
+        sb.append('=');
+        sb.append(((this.bankAccounts == null)?"<null>":this.bankAccounts));
+        sb.append(',');
+        sb.append("officeAssignments");
+        sb.append('=');
+        sb.append(((this.officeAssignments == null)?"<null>":this.officeAssignments));
+        sb.append(',');
+        sb.append("committeeMemberships");
+        sb.append('=');
+        sb.append(((this.committeeMemberships == null)?"<null>":this.committeeMemberships));
         sb.append(',');
         sb.append("events");
         sb.append('=');
@@ -642,46 +696,6 @@ public class SclxSchemaGenerated {
             sb.append(']');
         }
         return sb.toString();
-    }
-
-    @Override
-    public int hashCode() {
-        int result = 1;
-        result = ((result* 31)+((this.bankingItems == null)? 0 :this.bankingItems.hashCode()));
-        result = ((result* 31)+((this.reportingPeriod == null)? 0 :this.reportingPeriod.hashCode()));
-        result = ((result* 31)+((this.documents == null)? 0 :this.documents.hashCode()));
-        result = ((result* 31)+((this.chartOfAccounts == null)? 0 :this.chartOfAccounts.hashCode()));
-        result = ((result* 31)+((this.format == null)? 0 :this.format.hashCode()));
-        result = ((result* 31)+((this.transactions == null)? 0 :this.transactions.hashCode()));
-        result = ((result* 31)+((this.bankStatementImports == null)? 0 :this.bankStatementImports.hashCode()));
-        result = ((result* 31)+((this.version == null)? 0 :this.version.hashCode()));
-        result = ((result* 31)+((this.people == null)? 0 :this.people.hashCode()));
-        result = ((result* 31)+((this.features == null)? 0 :this.features.hashCode()));
-        result = ((result* 31)+((this.extensions == null)? 0 :this.extensions.hashCode()));
-        result = ((result* 31)+((this.assets == null)? 0 :this.assets.hashCode()));
-        result = ((result* 31)+((this.budgets == null)? 0 :this.budgets.hashCode()));
-        result = ((result* 31)+((this.supplementalItems == null)? 0 :this.supplementalItems.hashCode()));
-        result = ((result* 31)+((this.supplies == null)? 0 :this.supplies.hashCode()));
-        result = ((result* 31)+((this.organization == null)? 0 :this.organization.hashCode()));
-        result = ((result* 31)+((this.otherAssetItems == null)? 0 :this.otherAssetItems.hashCode()));
-        result = ((result* 31)+((this.exportedAt == null)? 0 :this.exportedAt.hashCode()));
-        result = ((result* 31)+((this.funds == null)? 0 :this.funds.hashCode()));
-        result = ((result* 31)+((this.compatibility == null)? 0 :this.compatibility.hashCode()));
-        result = ((result* 31)+((this.events == null)? 0 :this.events.hashCode()));
-        result = ((result* 31)+((this.outstandingItems == null)? 0 :this.outstandingItems.hashCode()));
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-        if ((other instanceof SclxSchemaGenerated) == false) {
-            return false;
-        }
-        SclxSchemaGenerated rhs = ((SclxSchemaGenerated) other);
-        return (((((((((((((((((((((((this.bankingItems == rhs.bankingItems)||((this.bankingItems!= null)&&this.bankingItems.equals(rhs.bankingItems)))&&((this.reportingPeriod == rhs.reportingPeriod)||((this.reportingPeriod!= null)&&this.reportingPeriod.equals(rhs.reportingPeriod))))&&((this.documents == rhs.documents)||((this.documents!= null)&&this.documents.equals(rhs.documents))))&&((this.chartOfAccounts == rhs.chartOfAccounts)||((this.chartOfAccounts!= null)&&this.chartOfAccounts.equals(rhs.chartOfAccounts))))&&((this.format == rhs.format)||((this.format!= null)&&this.format.equals(rhs.format))))&&((this.transactions == rhs.transactions)||((this.transactions!= null)&&this.transactions.equals(rhs.transactions))))&&((this.bankStatementImports == rhs.bankStatementImports)||((this.bankStatementImports!= null)&&this.bankStatementImports.equals(rhs.bankStatementImports))))&&((this.version == rhs.version)||((this.version!= null)&&this.version.equals(rhs.version))))&&((this.people == rhs.people)||((this.people!= null)&&this.people.equals(rhs.people))))&&((this.features == rhs.features)||((this.features!= null)&&this.features.equals(rhs.features))))&&((this.extensions == rhs.extensions)||((this.extensions!= null)&&this.extensions.equals(rhs.extensions))))&&((this.assets == rhs.assets)||((this.assets!= null)&&this.assets.equals(rhs.assets))))&&((this.budgets == rhs.budgets)||((this.budgets!= null)&&this.budgets.equals(rhs.budgets))))&&((this.supplementalItems == rhs.supplementalItems)||((this.supplementalItems!= null)&&this.supplementalItems.equals(rhs.supplementalItems))))&&((this.supplies == rhs.supplies)||((this.supplies!= null)&&this.supplies.equals(rhs.supplies))))&&((this.organization == rhs.organization)||((this.organization!= null)&&this.organization.equals(rhs.organization))))&&((this.otherAssetItems == rhs.otherAssetItems)||((this.otherAssetItems!= null)&&this.otherAssetItems.equals(rhs.otherAssetItems))))&&((this.exportedAt == rhs.exportedAt)||((this.exportedAt!= null)&&this.exportedAt.equals(rhs.exportedAt))))&&((this.funds == rhs.funds)||((this.funds!= null)&&this.funds.equals(rhs.funds))))&&((this.compatibility == rhs.compatibility)||((this.compatibility!= null)&&this.compatibility.equals(rhs.compatibility))))&&((this.events == rhs.events)||((this.events!= null)&&this.events.equals(rhs.events))))&&((this.outstandingItems == rhs.outstandingItems)||((this.outstandingItems!= null)&&this.outstandingItems.equals(rhs.outstandingItems))));
     }
 
 }

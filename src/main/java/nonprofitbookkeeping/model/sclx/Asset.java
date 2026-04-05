@@ -8,6 +8,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -38,6 +42,8 @@ public class Asset {
      * 
      */
     @JsonProperty("assetId")
+    @Size(min = 1)
+    @NotNull
     private String assetId;
     @JsonProperty("dateAcquired")
     private String dateAcquired;
@@ -46,32 +52,40 @@ public class Asset {
     @JsonProperty("itemCount")
     private Integer itemCount;
     @JsonProperty("approxValueTotal")
+    @Pattern(regexp = "^-?[0-9]+\\.[0-9]{2}$")
     private String approxValueTotal;
     @JsonProperty("valuePerItem")
+    @Pattern(regexp = "^-?[0-9]+\\.[0-9]{2}$")
     private String valuePerItem;
     @JsonProperty("itemType")
     private String itemType;
     @JsonProperty("usedFor")
     private String usedFor;
     @JsonProperty("lotPaidTotal")
+    @Pattern(regexp = "^-?[0-9]+\\.[0-9]{2}$")
     private String lotPaidTotal;
     @JsonProperty("lotItemCount")
     private Integer lotItemCount;
     @JsonProperty("currentGuardian")
+    @Valid
     private Guardian currentGuardian;
     @JsonProperty("guardianshipDetails")
+    @Valid
     private GuardianshipDetailsAsset guardianshipDetails;
     @JsonProperty("removalDetails")
+    @Valid
     private RemovalDetailsAsset removalDetails;
     @JsonProperty("relatedTransactionIds")
     @JsonDeserialize(as = java.util.LinkedHashSet.class)
-    private Set<String> relatedTransactionIds = new LinkedHashSet<String>();
+    private Set<@Valid String> relatedTransactionIds = new LinkedHashSet<String>();
     @JsonProperty("relatedLineIds")
     @JsonDeserialize(as = java.util.LinkedHashSet.class)
-    private Set<String> relatedLineIds = new LinkedHashSet<String>();
+    private Set<@Valid String> relatedLineIds = new LinkedHashSet<String>();
     @JsonProperty("extensions")
+    @Valid
     private Extensions extensions;
     @JsonProperty("appraisalDetails")
+    @Valid
     private AppraisalDetails appraisalDetails;
 
     /**
@@ -81,7 +95,7 @@ public class Asset {
     public Asset() {
     }
 
-    public Asset(String assetId, String dateAcquired, String description, Integer itemCount, String approxValueTotal, String valuePerItem, String itemType, String usedFor, String lotPaidTotal, Integer lotItemCount, Guardian currentGuardian, GuardianshipDetailsAsset guardianshipDetails, RemovalDetailsAsset removalDetails, Set<String> relatedTransactionIds, Set<String> relatedLineIds, Extensions extensions, AppraisalDetails appraisalDetails) {
+    public Asset(String assetId, String dateAcquired, String description, Integer itemCount, String approxValueTotal, String valuePerItem, String itemType, String usedFor, String lotPaidTotal, Integer lotItemCount, Guardian currentGuardian, GuardianshipDetailsAsset guardianshipDetails, RemovalDetailsAsset removalDetails, Set<@Valid String> relatedTransactionIds, Set<@Valid String> relatedLineIds, Extensions extensions, AppraisalDetails appraisalDetails) {
         super();
         this.assetId = assetId;
         this.dateAcquired = dateAcquired;

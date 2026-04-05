@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -28,6 +30,7 @@ public class ReportingPeriod {
      * 
      */
     @JsonProperty("startDate")
+    @NotNull
     private String startDate;
     /**
      * 
@@ -35,6 +38,7 @@ public class ReportingPeriod {
      * 
      */
     @JsonProperty("endDate")
+    @NotNull
     private String endDate;
     @JsonProperty("label")
     private String label;
@@ -43,6 +47,7 @@ public class ReportingPeriod {
     @JsonProperty("periodType")
     private ReportingPeriod.PeriodType periodType;
     @JsonProperty("extensions")
+    @Valid
     private Extensions extensions;
 
     /**

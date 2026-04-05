@@ -7,6 +7,9 @@ import javax.annotation.processing.Generated;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -28,6 +31,8 @@ public class Budget {
      * 
      */
     @JsonProperty("budgetId")
+    @Size(min = 1)
+    @NotNull
     private String budgetId;
     /**
      * 
@@ -35,6 +40,8 @@ public class Budget {
      * 
      */
     @JsonProperty("name")
+    @Size(min = 1)
+    @NotNull
     private String name;
     /**
      * 
@@ -42,6 +49,7 @@ public class Budget {
      * 
      */
     @JsonProperty("fiscalYear")
+    @NotNull
     private Integer fiscalYear;
     /**
      * 
@@ -49,6 +57,8 @@ public class Budget {
      * 
      */
     @JsonProperty("fundId")
+    @Size(min = 1)
+    @NotNull
     private String fundId;
     /**
      * 
@@ -56,12 +66,14 @@ public class Budget {
      * 
      */
     @JsonProperty("active")
+    @NotNull
     private Boolean active;
     @JsonProperty("description")
     private String description;
     @JsonProperty("lines")
-    private List<BudgetLine> lines = new ArrayList<BudgetLine>();
+    private List<@Valid BudgetLine> lines = new ArrayList<BudgetLine>();
     @JsonProperty("extensions")
+    @Valid
     private Extensions extensions;
 
     /**
@@ -71,7 +83,7 @@ public class Budget {
     public Budget() {
     }
 
-    public Budget(String budgetId, String name, Integer fiscalYear, String fundId, Boolean active, String description, List<BudgetLine> lines, Extensions extensions) {
+    public Budget(String budgetId, String name, Integer fiscalYear, String fundId, Boolean active, String description, List<@Valid BudgetLine> lines, Extensions extensions) {
         super();
         this.budgetId = budgetId;
         this.name = name;

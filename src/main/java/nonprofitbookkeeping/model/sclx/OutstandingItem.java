@@ -9,6 +9,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -40,6 +44,8 @@ public class OutstandingItem {
      * 
      */
     @JsonProperty("outstandingItemId")
+    @Size(min = 1)
+    @NotNull
     private String outstandingItemId;
     /**
      * 
@@ -47,6 +53,7 @@ public class OutstandingItem {
      * 
      */
     @JsonProperty("kind")
+    @NotNull
     private OutstandingItem.OutstandingItemKind kind;
     /**
      * 
@@ -54,8 +61,10 @@ public class OutstandingItem {
      * 
      */
     @JsonProperty("ledgerLink")
+    @NotNull
     private Object ledgerLink;
     @JsonProperty("workbookLink")
+    @Valid
     private WorkbookLink workbookLink;
     @JsonProperty("dateSentOrReceived")
     private String dateSentOrReceived;
@@ -79,6 +88,8 @@ public class OutstandingItem {
      * 
      */
     @JsonProperty("amount")
+    @Pattern(regexp = "^[0-9]+\\.[0-9]{2}$")
+    @NotNull
     private String amount;
     @JsonProperty("dateReversed")
     private String dateReversed;
@@ -89,6 +100,7 @@ public class OutstandingItem {
     @JsonProperty("status")
     private OutstandingItem.OutstandingItemStatus status;
     @JsonProperty("extensions")
+    @Valid
     private Extensions extensions;
 
     /**

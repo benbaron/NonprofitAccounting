@@ -5,6 +5,9 @@ import javax.annotation.processing.Generated;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -33,6 +36,8 @@ public class OfxTransaction {
      * 
      */
     @JsonProperty("fitId")
+    @Size(min = 1)
+    @NotNull
     private String fitId;
     /**
      * 
@@ -40,6 +45,8 @@ public class OfxTransaction {
      * 
      */
     @JsonProperty("transactionType")
+    @Size(min = 1)
+    @NotNull
     private String transactionType;
     /**
      * 
@@ -47,6 +54,7 @@ public class OfxTransaction {
      * 
      */
     @JsonProperty("datePosted")
+    @NotNull
     private String datePosted;
     @JsonProperty("dateUser")
     private String dateUser;
@@ -71,6 +79,7 @@ public class OfxTransaction {
     @JsonProperty("correctAction")
     private String correctAction;
     @JsonProperty("extensions")
+    @Valid
     private Extensions extensions;
 
     /**

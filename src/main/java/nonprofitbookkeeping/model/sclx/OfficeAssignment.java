@@ -5,6 +5,9 @@ import javax.annotation.processing.Generated;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -28,6 +31,8 @@ public class OfficeAssignment {
      * 
      */
     @JsonProperty("officeAssignmentId")
+    @Size(min = 1)
+    @NotNull
     private String officeAssignmentId;
     /**
      * 
@@ -35,6 +40,8 @@ public class OfficeAssignment {
      * 
      */
     @JsonProperty("personId")
+    @Size(min = 1)
+    @NotNull
     private String personId;
     @JsonProperty("organizationId")
     private String organizationId;
@@ -44,6 +51,8 @@ public class OfficeAssignment {
      * 
      */
     @JsonProperty("roleTitle")
+    @Size(min = 1)
+    @NotNull
     private String roleTitle;
     @JsonProperty("membershipNumber")
     private String membershipNumber;
@@ -59,8 +68,10 @@ public class OfficeAssignment {
      * 
      */
     @JsonProperty("active")
+    @NotNull
     private Boolean active;
     @JsonProperty("extensions")
+    @Valid
     private Extensions extensions;
 
     /**

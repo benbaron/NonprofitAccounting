@@ -6,6 +6,8 @@ import javax.annotation.processing.Generated;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -21,6 +23,8 @@ public class BalanceSnapshot {
      * 
      */
     @JsonProperty("amount")
+    @Pattern(regexp = "^-?[0-9]+\\.[0-9]{2}$")
+    @NotNull
     private String amount;
     /**
      * 
@@ -28,6 +32,7 @@ public class BalanceSnapshot {
      * 
      */
     @JsonProperty("asOf")
+    @NotNull
     private Date asOf;
 
     /**

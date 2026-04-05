@@ -5,6 +5,8 @@ import javax.annotation.processing.Generated;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -20,6 +22,8 @@ public class LedgerLink {
      * 
      */
     @JsonProperty("transactionId")
+    @Size(min = 1)
+    @NotNull
     private String transactionId;
     /**
      * 
@@ -27,6 +31,8 @@ public class LedgerLink {
      * 
      */
     @JsonProperty("lineId")
+    @Size(min = 1)
+    @NotNull
     private String lineId;
 
     /**

@@ -5,6 +5,9 @@ import javax.annotation.processing.Generated;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -20,6 +23,8 @@ public class WorkbookLink {
      * 
      */
     @JsonProperty("sheetKey")
+    @Size(min = 1)
+    @NotNull
     private String sheetKey;
     /**
      * 
@@ -27,6 +32,8 @@ public class WorkbookLink {
      * 
      */
     @JsonProperty("ledgerRowIndex")
+    @DecimalMin("1")
+    @NotNull
     private Integer ledgerRowIndex;
 
     /**

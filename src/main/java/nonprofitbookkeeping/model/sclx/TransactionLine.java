@@ -10,6 +10,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -43,6 +47,8 @@ public class TransactionLine {
      * 
      */
     @JsonProperty("lineId")
+    @Size(min = 1)
+    @NotNull
     private String lineId;
     /**
      * 
@@ -50,6 +56,8 @@ public class TransactionLine {
      * 
      */
     @JsonProperty("accountId")
+    @Size(min = 1)
+    @NotNull
     private String accountId;
     @JsonProperty("description")
     private String description;
@@ -59,6 +67,8 @@ public class TransactionLine {
      * 
      */
     @JsonProperty("debit")
+    @Pattern(regexp = "^[0-9]+\\.[0-9]{2}$")
+    @NotNull
     private String debit;
     /**
      * 
@@ -66,6 +76,8 @@ public class TransactionLine {
      * 
      */
     @JsonProperty("credit")
+    @Pattern(regexp = "^[0-9]+\\.[0-9]{2}$")
+    @NotNull
     private String credit;
     @JsonProperty("fundId")
     private String fundId;
@@ -87,16 +99,18 @@ public class TransactionLine {
     private Integer quantity;
     @JsonProperty("tags")
     @JsonDeserialize(as = java.util.LinkedHashSet.class)
-    private Set<String> tags = new LinkedHashSet<String>();
+    private Set<@Valid String> tags = new LinkedHashSet<String>();
     @JsonProperty("restrictionTag")
     private String restrictionTag;
     @JsonProperty("reportSection")
     private String reportSection;
     @JsonProperty("supplementalRefs")
-    private List<SupplementalRef> supplementalRefs = new ArrayList<SupplementalRef>();
+    private List<@Valid SupplementalRef> supplementalRefs = new ArrayList<SupplementalRef>();
     @JsonProperty("workbookLink")
+    @Valid
     private WorkbookLink workbookLink;
     @JsonProperty("extensions")
+    @Valid
     private Extensions extensions;
 
     /**
@@ -106,7 +120,7 @@ public class TransactionLine {
     public TransactionLine() {
     }
 
-    public TransactionLine(String lineId, String accountId, String description, String debit, String credit, String fundId, String budgetId, String eventId, String personId, String documentId, String memo, String usedFor, String itemNumber, Integer quantity, Set<String> tags, String restrictionTag, String reportSection, List<SupplementalRef> supplementalRefs, WorkbookLink workbookLink, Extensions extensions) {
+    public TransactionLine(String lineId, String accountId, String description, String debit, String credit, String fundId, String budgetId, String eventId, String personId, String documentId, String memo, String usedFor, String itemNumber, Integer quantity, Set<@Valid String> tags, String restrictionTag, String reportSection, List<@Valid SupplementalRef> supplementalRefs, WorkbookLink workbookLink, Extensions extensions) {
         super();
         this.lineId = lineId;
         this.accountId = accountId;
