@@ -3,12 +3,15 @@
  */
 package nonprofitbookkeeping.importer.sclx;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import nonprofitbookkeeping.model.*;
 import nonprofitbookkeeping.model.impex.BankStatementRecord;
 import nonprofitbookkeeping.model.impex.BankingItemRecord;
 import nonprofitbookkeeping.model.impex.BudgetRecord;
 import nonprofitbookkeeping.model.supplemental.TxnSupplementalLineBase;
 import nonprofitbookkeeping.persistence.AccountRepository;
+import nonprofitbookkeeping.persistence.DocumentRepository;
 import nonprofitbookkeeping.persistence.JournalRepository;
 import nonprofitbookkeeping.persistence.PersonRepository;
 import nonprofitbookkeeping.persistence.impex.BankStatementRecordRepository;
@@ -36,6 +39,7 @@ import java.util.Map;
  */
 public class NonprofitBookkeepingSclxExportService
 {
+    private static final ObjectMapper MAPPER = SclxParser.buildDefaultMapper();
     
     /** The account repository. */
     private final AccountRepository accountRepository;
@@ -54,6 +58,7 @@ public class NonprofitBookkeepingSclxExportService
     
     /** The bank statement record repository. */
     private final BankStatementRecordRepository bankStatementRecordRepository;
+    private final DocumentRepository documentRepository;
 
     /**
      * Instantiates a new nonprofit bookkeeping sclx export service.
@@ -66,7 +71,8 @@ public class NonprofitBookkeepingSclxExportService
             new FundAccountingService(),
             new BudgetRecordRepository(),
             new BankingItemRecordRepository(),
-            new BankStatementRecordRepository()
+            new BankStatementRecordRepository(),
+            new DocumentRepository()
         );
     }
 
@@ -79,6 +85,7 @@ public class NonprofitBookkeepingSclxExportService
      * @param budgetRecordRepository the budget record repository
      * @param bankingItemRecordRepository the banking item record repository
      * @param bankStatementRecordRepository the bank statement record repository
+     * @param documentRepository the document repository
      */
     public NonprofitBookkeepingSclxExportService(
         AccountRepository accountRepository,
@@ -86,7 +93,8 @@ public class NonprofitBookkeepingSclxExportService
         FundAccountingService fundAccountingService,
         BudgetRecordRepository budgetRecordRepository,
         BankingItemRecordRepository bankingItemRecordRepository,
-        BankStatementRecordRepository bankStatementRecordRepository)
+        BankStatementRecordRepository bankStatementRecordRepository,
+        DocumentRepository documentRepository)
     {
         this.accountRepository = accountRepository;
         this.personRepository = personRepository;
@@ -94,6 +102,21 @@ public class NonprofitBookkeepingSclxExportService
         this.budgetRecordRepository = budgetRecordRepository;
         this.bankingItemRecordRepository = bankingItemRecordRepository;
         this.bankStatementRecordRepository = bankStatementRecordRepository;
+        this.documentRepository = documentRepository;
+    }
+
+    public String exportJson(String importRunId) throws java.sql.SQLException
+    {
+        String runId = importRunId == null ? null : importRunId.trim();
+        if (runId != null && !runId.isEmpty())
+        {
+            java.util.Optional<String> raw = this.documentRepository.find("sclx.raw." + runId);
+            if (raw.isPresent())
+            {
+                return raw.get();
+            }
+        }
+        return toJson(exportDocument());
     }
 
     /**
@@ -226,6 +249,18 @@ public class NonprofitBookkeepingSclxExportService
             bankStatementImports,
             Map.of()
         );
+    }
+
+    private static String toJson(SclxDocument document)
+    {
+        try
+        {
+            return MAPPER.writeValueAsString(document);
+        }
+        catch (JsonProcessingException ex)
+        {
+            throw new IllegalStateException("Failed to serialize SCLX export document.", ex);
+        }
     }
 
     /**
