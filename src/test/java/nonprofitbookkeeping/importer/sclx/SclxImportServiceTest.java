@@ -65,12 +65,16 @@ class SclxImportServiceTest
             this.beginImportCalled = true;
         }
 
+        @Override public void importCompatibility(SclxDocument.Compatibility compatibility) {}
         @Override public void importOrganization(SclxDocument.Organization organization) {}
         @Override public void importReportingPeriod(SclxDocument.ReportingPeriod reportingPeriod) {}
         @Override public void importAccounts(List<SclxDocument.Account> accounts) {}
         @Override public void importFunds(List<SclxDocument.Fund> funds) {}
         @Override public void importBudgets(List<SclxDocument.Budget> budgets) {}
         @Override public void importPeople(List<SclxDocument.Person> people) {}
+        @Override public void importBankAccounts(List<SclxDocument.BankAccount> bankAccounts) {}
+        @Override public void importOfficeAssignments(List<SclxDocument.OfficeAssignment> officeAssignments) {}
+        @Override public void importCommitteeMemberships(List<SclxDocument.CommitteeMembership> committeeMemberships) {}
         @Override public void importEvents(List<SclxDocument.Event> events) {}
         @Override public void importDocuments(List<SclxDocument.Document> documents) {}
         @Override public void importTransactions(List<SclxDocument.Transaction> transactions) {}
