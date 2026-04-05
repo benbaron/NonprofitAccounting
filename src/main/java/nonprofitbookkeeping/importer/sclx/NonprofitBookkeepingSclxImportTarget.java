@@ -10,6 +10,7 @@ import nonprofitbookkeeping.model.impex.BudgetRecord;
 import nonprofitbookkeeping.model.supplemental.*;
 import nonprofitbookkeeping.persistence.AccountRepository;
 import nonprofitbookkeeping.persistence.DocumentRepository;
+import nonprofitbookkeeping.persistence.JsonStorageRepository;
 import nonprofitbookkeeping.persistence.PersonRepository;
 import nonprofitbookkeeping.persistence.impex.BankStatementRecordRepository;
 import nonprofitbookkeeping.persistence.impex.BankingItemRecordRepository;
@@ -58,6 +59,7 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
     private final Map<String, String> personDisplayNameBySclxPersonId = new LinkedHashMap<>();
     private final Map<String, Integer> rawStagingWriteCounts = new LinkedHashMap<>();
     private final List<String> importWarnings = new ArrayList<>();
+    private final JsonStorageRepository jsonStorageRepository = new JsonStorageRepository();
     private SclxImportOptions currentOptions = SclxImportOptions.defaults();
     private String currentImportRunId = SclxImportOptions.defaults().effectiveImportRunId();
 
@@ -914,6 +916,18 @@ private Person resolvePerson(SclxDocument.Person source)
         catch (SQLException ex)
         {
             throw new IllegalStateException("Failed to store document " + name, ex);
+        }
+    }
+
+    private void upsertRawPayload(String runId, SclxDocument document)
+    {
+        try
+        {
+            this.jsonStorageRepository.save("sclx.raw." + runId, toJson(document));
+        }
+        catch (SQLException ex)
+        {
+            throw new IllegalStateException("Failed to store raw SCLX payload for run " + runId, ex);
         }
     }
 
