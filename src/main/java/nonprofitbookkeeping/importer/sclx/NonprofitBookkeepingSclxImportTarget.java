@@ -221,7 +221,8 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         this.rawStagingWriteCounts.clear();
         this.importWarnings.clear();
         this.currentImportRunId = this.currentOptions.effectiveImportRunId();
-        upsertRawPayload(this.currentImportRunId, document);
+        upsertDocumentJson("sclx.raw." + this.currentImportRunId, document);
+        upsertDocumentJson("sclx.raw.latest", document);
     }
 
     @Override
