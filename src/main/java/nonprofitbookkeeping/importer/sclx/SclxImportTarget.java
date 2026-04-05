@@ -14,6 +14,8 @@ public interface SclxImportTarget
 {
     void beginImport(SclxDocument document, SclxImportOptions options);
 
+    void importCompatibility(SclxDocument.Compatibility compatibility);
+
     void importOrganization(SclxDocument.Organization organization);
 
     void importReportingPeriod(SclxDocument.ReportingPeriod reportingPeriod);
@@ -25,6 +27,12 @@ public interface SclxImportTarget
     void importBudgets(List<SclxDocument.Budget> budgets);
 
     void importPeople(List<SclxDocument.Person> people);
+
+    void importBankAccounts(List<SclxDocument.BankAccount> bankAccounts);
+
+    void importOfficeAssignments(List<SclxDocument.OfficeAssignment> officeAssignments);
+
+    void importCommitteeMemberships(List<SclxDocument.CommitteeMembership> committeeMemberships);
 
     void importEvents(List<SclxDocument.Event> events);
 

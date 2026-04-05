@@ -17,6 +17,12 @@ public class ExampleJdbcSclxImportTarget implements SclxImportTarget
     }
 
     @Override
+    public void importCompatibility(SclxDocument.Compatibility compatibility)
+    {
+        // TODO persist SCLX compatibility metadata for audit and reader checks
+    }
+
+    @Override
     public void importOrganization(SclxDocument.Organization organization)
     {
         // TODO map to Organization table or import staging table
@@ -50,6 +56,24 @@ public class ExampleJdbcSclxImportTarget implements SclxImportTarget
     public void importPeople(List<SclxDocument.Person> people)
     {
         // TODO upsert counterparties / people
+    }
+
+    @Override
+    public void importBankAccounts(List<SclxDocument.BankAccount> bankAccounts)
+    {
+        // TODO upsert bank accounts and authorized signers
+    }
+
+    @Override
+    public void importOfficeAssignments(List<SclxDocument.OfficeAssignment> officeAssignments)
+    {
+        // TODO upsert officer assignments
+    }
+
+    @Override
+    public void importCommitteeMemberships(List<SclxDocument.CommitteeMembership> committeeMemberships)
+    {
+        // TODO upsert committee memberships
     }
 
     @Override
