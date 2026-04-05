@@ -10,6 +10,7 @@ import nonprofitbookkeeping.model.impex.BudgetRecord;
 import nonprofitbookkeeping.model.supplemental.*;
 import nonprofitbookkeeping.persistence.AccountRepository;
 import nonprofitbookkeeping.persistence.DocumentRepository;
+import nonprofitbookkeeping.persistence.JsonStorageRepository;
 import nonprofitbookkeeping.persistence.PersonRepository;
 import nonprofitbookkeeping.persistence.impex.BankStatementRecordRepository;
 import nonprofitbookkeeping.persistence.impex.BankingItemRecordRepository;
@@ -62,6 +63,7 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
     private final Map<String, String> personDisplayNameBySclxPersonId = new LinkedHashMap<>();
     private final Map<String, Integer> rawStagingWriteCounts = new LinkedHashMap<>();
     private final List<String> importWarnings = new ArrayList<>();
+    private final JsonStorageRepository jsonStorageRepository = new JsonStorageRepository();
     private SclxImportOptions currentOptions = SclxImportOptions.defaults();
     private String currentImportRunId = SclxImportOptions.defaults().effectiveImportRunId();
 
@@ -243,6 +245,7 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
     public void beginImport(SclxDocument document, SclxImportOptions options)
     {
         this.currentOptions = options == null ? SclxImportOptions.defaults() : options;
+        this.currentRunScopeKey = buildRunScopeKey(document);
         this.importedTransactionIdsBySclxId.clear();
         this.importedTransactionIdsByLedgerRow.clear();
         this.personDbIdBySclxPersonId.clear();
@@ -250,6 +253,23 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         this.rawStagingWriteCounts.clear();
         this.importWarnings.clear();
         this.currentImportRunId = this.currentOptions.effectiveImportRunId();
+        upsertDocumentJson("sclx.raw." + this.currentImportRunId, document);
+        upsertDocumentJson("sclx.raw.latest", document);
+    }
+
+    @Override
+    public void importCompatibility(SclxDocument.Compatibility compatibility)
+    {
+        nonprofitbookkeeping.model.sclx.Compatibility bean =
+            MAPPER.convertValue(compatibility, nonprofitbookkeeping.model.sclx.Compatibility.class);
+        try
+        {
+            this.sclxCompatibilityRepository.save(this.currentRunScopeKey, bean);
+        }
+        catch (SQLException ex)
+        {
+            throw new IllegalStateException("Failed to persist SCLX compatibility for " + this.currentRunScopeKey, ex);
+        }
     }
 
     @Override
@@ -419,20 +439,22 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
     @Override
     public void importBankAccounts(List<SclxDocument.BankAccount> bankAccounts)
     {
-        for (int i = 0; i < bankAccounts.size(); i++)
+        for (SclxDocument.BankAccount bankAccount : bankAccounts)
         {
-            SclxDocument.BankAccount item = bankAccounts.get(i);
-            String id = firstNonBlank(item.bankAccountId(), "index-" + i);
+            if (bankAccount == null || bankAccount.bankAccountId() == null || bankAccount.bankAccountId().isBlank())
+            {
+                continue;
+            }
+            String scopedKey = scopedId("bankAccount", bankAccount.bankAccountId());
+            nonprofitbookkeeping.model.sclx.BankAccount bean =
+                MAPPER.convertValue(bankAccount, nonprofitbookkeeping.model.sclx.BankAccount.class);
             try
             {
-                nonprofitbookkeeping.model.sclx.BankAccount row =
-                    MAPPER.convertValue(item, nonprofitbookkeeping.model.sclx.BankAccount.class);
-                this.sclxBankAccountRepository.save(runScopedId(id), row);
-                incrementRawStagingCount("bankAccounts");
+                this.sclxBankAccountRepository.save(scopedKey, bean);
             }
-            catch (IllegalArgumentException | SQLException ex)
+            catch (SQLException ex)
             {
-                throw new IllegalStateException("Failed to persist SCLX bank account " + id, ex);
+                throw new IllegalStateException("Failed to persist SCLX bank account " + scopedKey, ex);
             }
         }
     }
@@ -440,20 +462,22 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
     @Override
     public void importOfficeAssignments(List<SclxDocument.OfficeAssignment> officeAssignments)
     {
-        for (int i = 0; i < officeAssignments.size(); i++)
+        for (SclxDocument.OfficeAssignment officeAssignment : officeAssignments)
         {
-            SclxDocument.OfficeAssignment item = officeAssignments.get(i);
-            String id = firstNonBlank(item.officeAssignmentId(), "index-" + i);
+            if (officeAssignment == null || officeAssignment.officeAssignmentId() == null || officeAssignment.officeAssignmentId().isBlank())
+            {
+                continue;
+            }
+            String scopedKey = scopedId("officeAssignment", officeAssignment.officeAssignmentId());
+            nonprofitbookkeeping.model.sclx.OfficeAssignment bean =
+                MAPPER.convertValue(officeAssignment, nonprofitbookkeeping.model.sclx.OfficeAssignment.class);
             try
             {
-                nonprofitbookkeeping.model.sclx.OfficeAssignment row =
-                    MAPPER.convertValue(item, nonprofitbookkeeping.model.sclx.OfficeAssignment.class);
-                this.sclxOfficeAssignmentRepository.save(runScopedId(id), row);
-                incrementRawStagingCount("officeAssignments");
+                this.sclxOfficeAssignmentRepository.save(scopedKey, bean);
             }
-            catch (IllegalArgumentException | SQLException ex)
+            catch (SQLException ex)
             {
-                throw new IllegalStateException("Failed to persist SCLX office assignment " + id, ex);
+                throw new IllegalStateException("Failed to persist SCLX office assignment " + scopedKey, ex);
             }
         }
     }
@@ -461,20 +485,22 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
     @Override
     public void importCommitteeMemberships(List<SclxDocument.CommitteeMembership> committeeMemberships)
     {
-        for (int i = 0; i < committeeMemberships.size(); i++)
+        for (SclxDocument.CommitteeMembership committeeMembership : committeeMemberships)
         {
-            SclxDocument.CommitteeMembership item = committeeMemberships.get(i);
-            String id = firstNonBlank(item.committeeMembershipId(), "index-" + i);
+            if (committeeMembership == null || committeeMembership.committeeMembershipId() == null || committeeMembership.committeeMembershipId().isBlank())
+            {
+                continue;
+            }
+            String scopedKey = scopedId("committeeMembership", committeeMembership.committeeMembershipId());
+            nonprofitbookkeeping.model.sclx.CommitteeMembership bean =
+                MAPPER.convertValue(committeeMembership, nonprofitbookkeeping.model.sclx.CommitteeMembership.class);
             try
             {
-                nonprofitbookkeeping.model.sclx.CommitteeMembership row =
-                    MAPPER.convertValue(item, nonprofitbookkeeping.model.sclx.CommitteeMembership.class);
-                this.sclxCommitteeMembershipRepository.save(runScopedId(id), row);
-                incrementRawStagingCount("committeeMemberships");
+                this.sclxCommitteeMembershipRepository.save(scopedKey, bean);
             }
-            catch (IllegalArgumentException | SQLException ex)
+            catch (SQLException ex)
             {
-                throw new IllegalStateException("Failed to persist SCLX committee membership " + id, ex);
+                throw new IllegalStateException("Failed to persist SCLX committee membership " + scopedKey, ex);
             }
         }
     }
@@ -1014,6 +1040,18 @@ private Person resolvePerson(SclxDocument.Person source)
         return value == null ? "" : value;
     }
 
+    private static String buildRunScopeKey(SclxDocument document)
+    {
+        String exportedAt = document == null || document.exportedAt() == null ? "unknown-export" : document.exportedAt().toString();
+        String version = document == null || document.version() == null || document.version().isBlank() ? "unknown-version" : document.version();
+        return "run-" + version + "-" + exportedAt + "-" + UUID.randomUUID();
+    }
+
+    private String scopedId(String section, String entryId)
+    {
+        return this.currentRunScopeKey + "::" + section + "::" + entryId;
+    }
+
     private void upsertDocumentJson(String name, Object value)
     {
         try
@@ -1023,6 +1061,18 @@ private Person resolvePerson(SclxDocument.Person source)
         catch (SQLException ex)
         {
             throw new IllegalStateException("Failed to store document " + name, ex);
+        }
+    }
+
+    private void upsertRawPayload(String runId, SclxDocument document)
+    {
+        try
+        {
+            this.jsonStorageRepository.save("sclx.raw." + runId, toJson(document));
+        }
+        catch (SQLException ex)
+        {
+            throw new IllegalStateException("Failed to store raw SCLX payload for run " + runId, ex);
         }
     }
 

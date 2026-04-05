@@ -391,7 +391,7 @@ private SclxDocument.BankingItem toSclxBankingItem(BankingItemRecord row)
             row.sourceFormat() == null ? null : row.sourceFormat().name(),
             row.sourceVersion(),
             row.statementKind() == null ? null : row.statementKind().name(),
-            row.bankAccount() == null ? null : new SclxDocument.BankAccountRef(
+            row.bankAccount() == null ? null : new SclxDocument.StatementBankAccount(
                 row.bankAccount().bankId(),
                 row.bankAccount().accountId(),
                 row.bankAccount().accountType()

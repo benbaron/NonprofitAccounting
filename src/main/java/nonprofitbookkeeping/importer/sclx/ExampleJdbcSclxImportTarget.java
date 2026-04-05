@@ -19,7 +19,7 @@ public class ExampleJdbcSclxImportTarget implements SclxImportTarget
     @Override
     public void importCompatibility(SclxDocument.Compatibility compatibility)
     {
-        // TODO persist SCLX compatibility metadata for audit and reader checks
+        // TODO persist compatibility metadata (reader minimum/downgrade hints)
     }
 
     @Override
@@ -61,19 +61,19 @@ public class ExampleJdbcSclxImportTarget implements SclxImportTarget
     @Override
     public void importBankAccounts(List<SclxDocument.BankAccount> bankAccounts)
     {
-        // TODO upsert bank accounts and authorized signers
+        // TODO upsert bank account metadata and signer definitions
     }
 
     @Override
     public void importOfficeAssignments(List<SclxDocument.OfficeAssignment> officeAssignments)
     {
-        // TODO upsert officer assignments
+        // TODO map office assignments / officer roster records
     }
 
     @Override
     public void importCommitteeMemberships(List<SclxDocument.CommitteeMembership> committeeMemberships)
     {
-        // TODO upsert committee memberships
+        // TODO map committee membership roster records
     }
 
     @Override

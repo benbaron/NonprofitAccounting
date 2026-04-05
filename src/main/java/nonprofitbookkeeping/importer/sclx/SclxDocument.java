@@ -49,6 +49,13 @@ public record SclxDocument(
     Map<String, Object> extensions)
 {
     @JsonIgnoreProperties(ignoreUnknown = true)
+    public record Compatibility(
+        String minimumReaderVersion,
+        Set<String> lossyDowngradeTo)
+    {
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public record Organization(
         String organizationId,
         String name,
@@ -164,8 +171,12 @@ public record SclxDocument(
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record BankAccountSigner(
         String personId,
+        String legalName,
+        String membershipNumber,
+        String membershipExpiry,
         String role,
-        Boolean canSignIndependently)
+        String status,
+        Map<String, Object> extensions)
     {
     }
 
@@ -456,7 +467,7 @@ public record SclxDocument(
         String sourceFormat,
         String sourceVersion,
         String statementKind,
-        BankAccountRef bankAccount,
+        StatementBankAccount bankAccount,
         String currency,
         LocalDate statementStart,
         LocalDate statementEnd,
@@ -468,7 +479,7 @@ public record SclxDocument(
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public record BankAccountRef(
+    public record StatementBankAccount(
         String bankId,
         String accountId,
         String accountType)
