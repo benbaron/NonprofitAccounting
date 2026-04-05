@@ -213,6 +213,7 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
     public void beginImport(SclxDocument document, SclxImportOptions options)
     {
         this.currentOptions = options == null ? SclxImportOptions.defaults() : options;
+        this.currentRunScopeKey = buildRunScopeKey(document);
         this.importedTransactionIdsBySclxId.clear();
         this.importedTransactionIdsByLedgerRow.clear();
         this.personDbIdBySclxPersonId.clear();
@@ -222,6 +223,21 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         this.currentImportRunId = this.currentOptions.effectiveImportRunId();
         upsertDocumentJson("sclx.raw." + this.currentImportRunId, document);
         upsertDocumentJson("sclx.raw.latest", document);
+    }
+
+    @Override
+    public void importCompatibility(SclxDocument.Compatibility compatibility)
+    {
+        nonprofitbookkeeping.model.sclx.Compatibility bean =
+            MAPPER.convertValue(compatibility, nonprofitbookkeeping.model.sclx.Compatibility.class);
+        try
+        {
+            this.sclxCompatibilityRepository.save(this.currentRunScopeKey, bean);
+        }
+        catch (SQLException ex)
+        {
+            throw new IllegalStateException("Failed to persist SCLX compatibility for " + this.currentRunScopeKey, ex);
+        }
     }
 
     @Override
@@ -368,6 +384,75 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
                     this.personDbIdBySclxPersonId.put(source.personId(), person.getId());
                 }
                 this.personDisplayNameBySclxPersonId.put(source.personId(), source.displayName());
+            }
+        }
+    }
+
+    @Override
+    public void importBankAccounts(List<SclxDocument.BankAccount> bankAccounts)
+    {
+        for (SclxDocument.BankAccount bankAccount : bankAccounts)
+        {
+            if (bankAccount == null || bankAccount.bankAccountId() == null || bankAccount.bankAccountId().isBlank())
+            {
+                continue;
+            }
+            String scopedKey = scopedId("bankAccount", bankAccount.bankAccountId());
+            nonprofitbookkeeping.model.sclx.BankAccount bean =
+                MAPPER.convertValue(bankAccount, nonprofitbookkeeping.model.sclx.BankAccount.class);
+            try
+            {
+                this.sclxBankAccountRepository.save(scopedKey, bean);
+            }
+            catch (SQLException ex)
+            {
+                throw new IllegalStateException("Failed to persist SCLX bank account " + scopedKey, ex);
+            }
+        }
+    }
+
+    @Override
+    public void importOfficeAssignments(List<SclxDocument.OfficeAssignment> officeAssignments)
+    {
+        for (SclxDocument.OfficeAssignment officeAssignment : officeAssignments)
+        {
+            if (officeAssignment == null || officeAssignment.officeAssignmentId() == null || officeAssignment.officeAssignmentId().isBlank())
+            {
+                continue;
+            }
+            String scopedKey = scopedId("officeAssignment", officeAssignment.officeAssignmentId());
+            nonprofitbookkeeping.model.sclx.OfficeAssignment bean =
+                MAPPER.convertValue(officeAssignment, nonprofitbookkeeping.model.sclx.OfficeAssignment.class);
+            try
+            {
+                this.sclxOfficeAssignmentRepository.save(scopedKey, bean);
+            }
+            catch (SQLException ex)
+            {
+                throw new IllegalStateException("Failed to persist SCLX office assignment " + scopedKey, ex);
+            }
+        }
+    }
+
+    @Override
+    public void importCommitteeMemberships(List<SclxDocument.CommitteeMembership> committeeMemberships)
+    {
+        for (SclxDocument.CommitteeMembership committeeMembership : committeeMemberships)
+        {
+            if (committeeMembership == null || committeeMembership.committeeMembershipId() == null || committeeMembership.committeeMembershipId().isBlank())
+            {
+                continue;
+            }
+            String scopedKey = scopedId("committeeMembership", committeeMembership.committeeMembershipId());
+            nonprofitbookkeeping.model.sclx.CommitteeMembership bean =
+                MAPPER.convertValue(committeeMembership, nonprofitbookkeeping.model.sclx.CommitteeMembership.class);
+            try
+            {
+                this.sclxCommitteeMembershipRepository.save(scopedKey, bean);
+            }
+            catch (SQLException ex)
+            {
+                throw new IllegalStateException("Failed to persist SCLX committee membership " + scopedKey, ex);
             }
         }
     }
@@ -905,6 +990,18 @@ private Person resolvePerson(SclxDocument.Person source)
     private static String nullToEmpty(String value)
     {
         return value == null ? "" : value;
+    }
+
+    private static String buildRunScopeKey(SclxDocument document)
+    {
+        String exportedAt = document == null || document.exportedAt() == null ? "unknown-export" : document.exportedAt().toString();
+        String version = document == null || document.version() == null || document.version().isBlank() ? "unknown-version" : document.version();
+        return "run-" + version + "-" + exportedAt + "-" + UUID.randomUUID();
+    }
+
+    private String scopedId(String section, String entryId)
+    {
+        return this.currentRunScopeKey + "::" + section + "::" + entryId;
     }
 
     private void upsertDocumentJson(String name, Object value)
