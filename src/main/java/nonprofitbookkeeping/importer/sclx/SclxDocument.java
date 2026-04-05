@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -25,12 +26,16 @@ public record SclxDocument(
     String format,
     String version,
     OffsetDateTime exportedAt,
+    Compatibility compatibility,
     Organization organization,
     ReportingPeriod reportingPeriod,
     List<Account> chartOfAccounts,
     List<Fund> funds,
     List<Budget> budgets,
     List<Person> people,
+    List<BankAccount> bankAccounts,
+    List<OfficeAssignment> officeAssignments,
+    List<CommitteeMembership> committeeMemberships,
     List<Event> events,
     List<Document> documents,
     List<Transaction> transactions,
@@ -43,6 +48,13 @@ public record SclxDocument(
     List<BankStatementImport> bankStatementImports,
     Map<String, Object> extensions)
 {
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public record Compatibility(
+        String minimumReaderVersion,
+        Set<String> lossyDowngradeTo)
+    {
+    }
+
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record Organization(
         String organizationId,
@@ -126,6 +138,68 @@ public record SclxDocument(
         String kind,
         String email,
         String phone,
+        Map<String, Object> extensions)
+    {
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public record BankAccount(
+        String bankAccountId,
+        String accountName,
+        String institutionName,
+        String institutionEmail,
+        String institutionPhone,
+        String accountNumberMasked,
+        String accountType,
+        String currency,
+        Boolean interestBearing,
+        String signatureRequirement,
+        String accountHolderName,
+        String chartAccountId,
+        List<BankAccountSigner> authorizedSigners,
+        Map<String, Object> extensions)
+    {
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public record BankAccountSigner(
+        String personId,
+        String legalName,
+        String membershipNumber,
+        String membershipExpiry,
+        String role,
+        String status,
+        Map<String, Object> extensions)
+    {
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public record OfficeAssignment(
+        String officeAssignmentId,
+        String personId,
+        String organizationId,
+        String roleTitle,
+        String membershipNumber,
+        String membershipExpiry,
+        String startDate,
+        String endDate,
+        Boolean active,
+        Map<String, Object> extensions)
+    {
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public record CommitteeMembership(
+        String committeeMembershipId,
+        String committeeType,
+        String personId,
+        String organizationId,
+        String roleTitle,
+        String membershipNumber,
+        String membershipExpiry,
+        String startDate,
+        String endDate,
+        Boolean active,
         Map<String, Object> extensions)
     {
     }
@@ -386,7 +460,7 @@ public record SclxDocument(
         String sourceFormat,
         String sourceVersion,
         String statementKind,
-        BankAccount bankAccount,
+        StatementBankAccount bankAccount,
         String currency,
         LocalDate statementStart,
         LocalDate statementEnd,
@@ -398,7 +472,7 @@ public record SclxDocument(
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public record BankAccount(
+    public record StatementBankAccount(
         String bankId,
         String accountId,
         String accountType)
