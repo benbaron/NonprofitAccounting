@@ -231,12 +231,16 @@ public class NonprofitBookkeepingSclxExportService
             "SCLX",
             "1.3",
             OffsetDateTime.now(ZoneOffset.UTC),
+            null,
             organization,
             reportingPeriod,
             accounts,
             funds,
             budgets,
             people,
+            List.of(),
+            List.of(),
+            List.of(),
             List.of(),
             List.of(),
             transactions,
@@ -247,7 +251,7 @@ public class NonprofitBookkeepingSclxExportService
             List.of(),
             List.of(),
             bankStatementImports,
-            Map.of()
+            Map.<String, Object>of()
         );
     }
 
@@ -422,7 +426,7 @@ private SclxDocument.BankingItem toSclxBankingItem(BankingItemRecord row)
             row.sourceFormat() == null ? null : row.sourceFormat().name(),
             row.sourceVersion(),
             row.statementKind() == null ? null : row.statementKind().name(),
-            row.bankAccount() == null ? null : new SclxDocument.BankAccount(
+            row.bankAccount() == null ? null : new SclxDocument.StatementBankAccount(
                 row.bankAccount().bankId(),
                 row.bankAccount().accountId(),
                 row.bankAccount().accountType()

@@ -68,6 +68,10 @@ public class SclxImportService
 
         target.beginImport(document, options);
 
+        if (document.compatibility() != null)
+        {
+            target.importCompatibility(document.compatibility());
+        }
         if (document.organization() != null)
         {
             target.importOrganization(document.organization());
@@ -81,6 +85,9 @@ public class SclxImportService
         target.importFunds(normalize(document.funds(), options));
         target.importBudgets(normalize(document.budgets(), options));
         target.importPeople(normalize(document.people(), options));
+        target.importBankAccounts(normalize(document.bankAccounts(), options));
+        target.importOfficeAssignments(normalize(document.officeAssignments(), options));
+        target.importCommitteeMemberships(normalize(document.committeeMemberships(), options));
         target.importEvents(normalize(document.events(), options));
         target.importDocuments(normalize(document.documents(), options));
         target.importTransactions(normalize(document.transactions(), options));
