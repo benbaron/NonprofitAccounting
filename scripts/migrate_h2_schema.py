@@ -15,7 +15,11 @@ from pathlib import Path
 
 
 def _quote_for_exec_plugin(value: str) -> str:
-    """Quote one argument for exec-maven-plugin's args parser."""
+    """Quote one argument for exec-maven-plugin's args parser.
+
+    We use double quotes (not single quotes) so this remains portable for
+    environments where single-quote shell semantics are not available.
+    """
     escaped = value.replace("\\", "\\\\").replace('"', '\\"')
     return f'"{escaped}"'
 
@@ -24,27 +28,22 @@ def _resolve_maven_command(project_dir: Path) -> list[str]:
     wrapper_candidates = ["mvnw", "mvnw.cmd", "mvnw.bat"]
     for wrapper in wrapper_candidates:
         wrapper_path = project_dir / wrapper
-        if not wrapper_path.exists():
-            continue
+        if wrapper_path.exists():
+            if os.name == "nt" and wrapper_path.suffix.lower() in {".cmd", ".bat"}:
+                return [str(wrapper_path)]
+            if os.name != "nt" and os.access(wrapper_path, os.X_OK):
+                return [str(wrapper_path)]
 
-        if os.name == "nt":
-            # On Windows, run wrappers through cmd to avoid CreateProcess issues
-            # when launching .cmd/.bat files directly from Python.
-            if wrapper_path.suffix.lower() in {".cmd", ".bat"}:
-                return ["cmd", "/c", str(wrapper_path)]
-            if wrapper_path.name == "mvnw":
-                return ["cmd", "/c", str(wrapper_path)]
+    # On Windows, the shell launcher can still invoke mvnw.cmd even when it's
+    # not directly executable as a POSIX binary.
+    if os.name == "nt":
+        cmd_wrapper = project_dir / "mvnw.cmd"
+        if cmd_wrapper.exists():
+            return [str(cmd_wrapper)]
 
-        if os.name != "nt" and os.access(wrapper_path, os.X_OK):
-            return [str(wrapper_path)]
-
-    mvn_path = shutil.which("mvn")
-    if mvn_path:
-        if os.name == "nt":
-            return ["cmd", "/c", mvn_path]
-        return [mvn_path]
-
-    raise FileNotFoundError("Could not find 'mvnw'/'mvnw.cmd'/'mvn' in PATH")
+    if shutil.which("mvn"):
+        return ["mvn"]
+    raise FileNotFoundError("Could not find 'mvnw' or 'mvn' in PATH")
 
 
 def main(argv: list[str]) -> int:

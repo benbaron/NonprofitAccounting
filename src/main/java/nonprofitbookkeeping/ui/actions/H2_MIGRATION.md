@@ -65,5 +65,3 @@ On Windows, run from PowerShell or Command Prompt with:
 ```
 python scripts/migrate_h2_schema.py path\to\company-db.mv.db [path\to\migrated.sql]
 ```
-
-If you previously saw `WinError 2`, pull the latest script revision; it now launches Maven wrappers through `cmd /c` on Windows.
