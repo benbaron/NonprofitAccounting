@@ -34,3 +34,48 @@ other H2 assets and imported directly through the application UI.
 
 This flow removes the legacy zip-reading code from the runtime codebase while
 still providing a path to preserve historical `.npbk` data.
+
+## Migrating Existing H2 Databases In-Place
+
+If you already have an older H2 database file (for example from a prior app
+level), you can upgrade it directly with the current codebase; no legacy
+application build is required.
+
+```
+./scripts/migrate_h2_schema.py path/to/company-db.mv.db
+```
+
+You can also emit a post-migration SQL snapshot in one step:
+
+```
+./scripts/migrate_h2_schema.py path/to/company-db.mv.db path/to/migrated.sql
+```
+
+The migrator runs the same `Database.ensureSchema()` upgrades used by the app
+at startup, then optionally writes an H2 `SCRIPT DROP TO` export.
+
+You can run the same migration flow directly in the app via:
+
+1. **Database → Migrate H2 DB to current level…**
+2. Select the target `*.mv.db` file.
+3. Choose whether to migrate only or migrate and export a post-migration SQL script.
+
+
+Requirements:
+- Python 3
+- Java 17+
+- Maven (`mvn`) or project Maven wrapper (`mvnw`) only when no built JAR is present in `target/`
+
+
+On Windows, run from PowerShell or Command Prompt with:
+
+```
+python scripts/migrate_h2_schema.py path\to\company-db.mv.db [path\to\migrated.sql]
+```
+
+If you previously saw `WinError 2`, pull the latest script revision; it now launches Maven wrappers through `cmd /c` on Windows.
+
+If startup fails, the script now prints the exact working directory and command it attempted. The missing path is usually one of: `mvnw.cmd`, `mvnw.bat`, or `mvn` on `PATH`.
+
+The script first tries to run the migrator directly from an already-built JAR in `target/`.
+If no runnable JAR is present, it falls back to `mvnw`/`mvn` to execute the migrator class.

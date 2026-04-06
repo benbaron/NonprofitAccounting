@@ -10,7 +10,6 @@ import nonprofitbookkeeping.model.impex.BudgetRecord;
 import nonprofitbookkeeping.model.supplemental.*;
 import nonprofitbookkeeping.persistence.AccountRepository;
 import nonprofitbookkeeping.persistence.DocumentRepository;
-import nonprofitbookkeeping.persistence.JsonStorageRepository;
 import nonprofitbookkeeping.persistence.PersonRepository;
 import nonprofitbookkeeping.persistence.impex.BankStatementRecordRepository;
 import nonprofitbookkeeping.persistence.impex.BankingItemRecordRepository;
@@ -63,7 +62,6 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
     private final Map<String, String> personDisplayNameBySclxPersonId = new LinkedHashMap<>();
     private final Map<String, Integer> rawStagingWriteCounts = new LinkedHashMap<>();
     private final List<String> importWarnings = new ArrayList<>();
-    private final JsonStorageRepository jsonStorageRepository = new JsonStorageRepository();
     private SclxImportOptions currentOptions = SclxImportOptions.defaults();
     private String currentImportRunId = SclxImportOptions.defaults().effectiveImportRunId();
 
@@ -258,7 +256,6 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
     public void beginImport(SclxDocument document, SclxImportOptions options)
     {
         this.currentOptions = options == null ? SclxImportOptions.defaults() : options;
-        this.currentRunScopeKey = buildRunScopeKey(document);
         this.importedTransactionIdsBySclxId.clear();
         this.importedTransactionIdsByLedgerRow.clear();
         this.personDbIdBySclxPersonId.clear();
@@ -266,23 +263,8 @@ public class NonprofitBookkeepingSclxImportTarget implements SclxImportTarget
         this.rawStagingWriteCounts.clear();
         this.importWarnings.clear();
         this.currentImportRunId = this.currentOptions.effectiveImportRunId();
-        upsertDocumentJson("sclx.raw." + this.currentImportRunId, document);
+        ensureRunRawPayload(this.currentImportRunId, document);
         upsertDocumentJson("sclx.raw.latest", document);
-    }
-
-    @Override
-    public void importCompatibility(SclxDocument.Compatibility compatibility)
-    {
-        nonprofitbookkeeping.model.sclx.Compatibility bean =
-            MAPPER.convertValue(compatibility, nonprofitbookkeeping.model.sclx.Compatibility.class);
-        try
-        {
-            this.sclxCompatibilityRepository.save(this.currentRunScopeKey, bean);
-        }
-        catch (SQLException ex)
-        {
-            throw new IllegalStateException("Failed to persist SCLX compatibility for " + this.currentRunScopeKey, ex);
-        }
     }
 
     @Override
@@ -1053,16 +1035,9 @@ private Person resolvePerson(SclxDocument.Person source)
         return value == null ? "" : value;
     }
 
-    private static String buildRunScopeKey(SclxDocument document)
-    {
-        String exportedAt = document == null || document.exportedAt() == null ? "unknown-export" : document.exportedAt().toString();
-        String version = document == null || document.version() == null || document.version().isBlank() ? "unknown-version" : document.version();
-        return "run-" + version + "-" + exportedAt + "-" + UUID.randomUUID();
-    }
-
     private String scopedId(String section, String entryId)
     {
-        return this.currentRunScopeKey + "::" + section + "::" + entryId;
+        return this.currentImportRunId + "::" + section + "::" + entryId;
     }
 
     private void upsertDocumentJson(String name, Object value)
@@ -1082,15 +1057,19 @@ private Person resolvePerson(SclxDocument.Person source)
         }
     }
 
-    private void upsertRawPayload(String runId, SclxDocument document)
+    private void ensureRunRawPayload(String runId, SclxDocument document)
     {
+        String key = "sclx.raw." + runId;
         try
         {
-            this.jsonStorageRepository.save("sclx.raw." + runId, toJson(document));
+            if (this.documentRepository.find(key).isEmpty())
+            {
+                upsertDocumentJson(key, document);
+            }
         }
         catch (SQLException ex)
         {
-            throw new IllegalStateException("Failed to store raw SCLX payload for run " + runId, ex);
+            throw new IllegalStateException("Failed to inspect existing raw SCLX payload for run " + runId, ex);
         }
     }
 

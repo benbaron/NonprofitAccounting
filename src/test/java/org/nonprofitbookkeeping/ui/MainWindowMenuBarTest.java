@@ -61,6 +61,7 @@ class MainWindowMenuBarTest
                 Menu database = menuBar.getMenus().get(3);
                 assertTrue(hasItem(database, "Open/Create H2 DB..."));
                 assertTrue(hasItem(database, "Export DB to H2 script..."));
+                assertTrue(hasItem(database, "Migrate H2 DB to current level..."));
                 assertTrue(hasItem(database, "Run SQL Query..."));
 
                 for (Menu menu : menuBar.getMenus())
