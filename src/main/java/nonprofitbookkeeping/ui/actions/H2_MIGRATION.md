@@ -58,3 +58,10 @@ at startup, then optionally writes an H2 `SCRIPT DROP TO` export.
 Requirements:
 - Python 3
 - Maven (`mvn`) or the project Maven wrapper (`mvnw`)
+
+
+On Windows, run from PowerShell or Command Prompt with:
+
+```
+python scripts/migrate_h2_schema.py path\to\company-db.mv.db [path\to\migrated.sql]
+```
