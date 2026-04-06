@@ -21,6 +21,7 @@ import nonprofitbookkeeping.service.UndepositedFundsService;
 import nonprofitbookkeeping.plugins.scaledger.SCALedgerPlugin;
 import nonprofitbookkeeping.tools.H2ScriptCompanyExporter;
 import nonprofitbookkeeping.tools.H2ScriptCompanyImporter;
+import nonprofitbookkeeping.tools.H2SchemaMigrator;
 import nonprofitbookkeeping.ui.actions.ExcelTemplateReportActionFX;
 import nonprofitbookkeeping.ui.actions.ExportCoaXlsxActionFX;
 import nonprofitbookkeeping.ui.actions.ExportFileActionFX;
@@ -167,6 +168,8 @@ public class MainWindow extends BorderPane
                 this::handleImportH2Script),
             item("Export DB to H2 script...", null,
                 this::handleExportH2Script),
+            item("Migrate H2 DB to current level...", null,
+                this::handleMigrateH2Database),
             item("Run SQL Query...", null,
                 this::openSqlQueryDialog)
         );
@@ -470,6 +473,76 @@ public class MainWindow extends BorderPane
         catch (IOException | SQLException ex)
         {
             info("H2 script export failed: " + UiErrors.safeMessage(ex));
+        }
+    }
+
+    private void handleMigrateH2Database()
+    {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Select H2 Database to Migrate");
+        chooser.getExtensionFilters().setAll(
+            new FileChooser.ExtensionFilter("H2 Database (*.mv.db)", "*.mv.db"),
+            new FileChooser.ExtensionFilter("All Files", "*.*"));
+
+        File dbFile = chooser.showOpenDialog(getOwningStage());
+        if (dbFile == null)
+        {
+            return;
+        }
+
+        Path dbPath = normalizeH2Base(dbFile.toPath());
+
+        Alert exportChoice = new Alert(Alert.AlertType.CONFIRMATION);
+        exportChoice.setTitle("Export Post-Migration Script?");
+        exportChoice.setHeaderText("Would you like to export a post-migration SQL script?");
+        ButtonType migrateOnly = new ButtonType("Migrate Only");
+        ButtonType migrateAndExport = new ButtonType("Migrate + Export SQL");
+        exportChoice.getButtonTypes().setAll(migrateOnly, migrateAndExport, ButtonType.CANCEL);
+
+        if (getScene() != null && getScene().getWindow() != null)
+        {
+            exportChoice.initOwner(getScene().getWindow());
+        }
+
+        ButtonType selected = exportChoice.showAndWait().orElse(ButtonType.CANCEL);
+        if (selected == ButtonType.CANCEL)
+        {
+            return;
+        }
+
+        Path scriptPath = null;
+        if (selected == migrateAndExport)
+        {
+            FileChooser scriptChooser = new FileChooser();
+            scriptChooser.setTitle("Save Post-Migration SQL Script");
+            scriptChooser.getExtensionFilters().setAll(
+                new FileChooser.ExtensionFilter("SQL script (*.sql)", "*.sql"),
+                new FileChooser.ExtensionFilter("All Files", "*.*"));
+
+            File outputFile = scriptChooser.showSaveDialog(getOwningStage());
+            if (outputFile == null)
+            {
+                return;
+            }
+
+            scriptPath = outputFile.toPath();
+            if (!scriptPath.getFileName().toString().toLowerCase(Locale.ROOT).endsWith(".sql"))
+            {
+                scriptPath = scriptPath.resolveSibling(scriptPath.getFileName() + ".sql");
+            }
+        }
+
+        try
+        {
+            H2SchemaMigrator.migrate(dbPath, scriptPath);
+            info(scriptPath == null
+                ? "Schema migration complete for " + dbPath.toAbsolutePath()
+                : "Schema migration complete for " + dbPath.toAbsolutePath()
+                    + "\nSQL exported to " + scriptPath.toAbsolutePath());
+        }
+        catch (Exception ex)
+        {
+            info("H2 schema migration failed: " + UiErrors.safeMessage(ex));
         }
     }
 
