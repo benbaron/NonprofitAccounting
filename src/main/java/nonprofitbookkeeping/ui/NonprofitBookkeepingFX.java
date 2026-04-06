@@ -778,11 +778,32 @@ public class NonprofitBookkeepingFX extends Application
 			}
 			
 			Database.init(base);
-			Database.get().ensureSchema();
+			H2SchemaMigrator.RepairResult repairResult = null;
+			try
+			{
+				Database.get().ensureSchema();
+			}
+			catch (SQLException ex)
+			{
+				if (!H2ScriptCompanyExporter.isFileCorruption(ex))
+				{
+					throw ex;
+				}
+
+				repairResult = H2SchemaMigrator.repairCorruptedDatabase(base);
+			}
 			PreferencesManager
 				.setLastDatabasePath(dataFile.toAbsolutePath().toString());
+			String openMessage = "Database initialized at: " + base.toAbsolutePath();
+			if (repairResult != null && !repairResult.backupFiles().isEmpty())
+			{
+				openMessage += "\n\nRecovered from corruption. Backups created:\n" +
+					String.join("\n", repairResult.backupFiles().stream()
+						.map(path -> path.toAbsolutePath().toString())
+						.toList());
+			}
 			Alert a = new Alert(Alert.AlertType.INFORMATION,
-				"Database initialized at: " + base.toAbsolutePath());
+				openMessage);
 			a.setHeaderText("H2 Ready");
 			a.showAndWait();
 			setState(AppState.NO_COMPANY);
@@ -1033,13 +1054,22 @@ public class NonprofitBookkeepingFX extends Application
 
 		try
 		{
-			H2SchemaMigrator.migrate(dbPath, scriptOutput);
+			H2SchemaMigrator.RepairResult repairResult =
+				H2SchemaMigrator.migrateWithRepairInfo(dbPath, scriptOutput);
 			Alert success = new Alert(Alert.AlertType.INFORMATION);
 			success.setHeaderText("Schema Migration Complete");
-			success.setContentText(scriptOutput == null
+			String message = scriptOutput == null
 				? "Migrated database:\n" + dbPath.toAbsolutePath()
 				: "Migrated database:\n" + dbPath.toAbsolutePath()
-					+ "\n\nExported SQL script:\n" + scriptOutput.toAbsolutePath());
+					+ "\n\nExported SQL script:\n" + scriptOutput.toAbsolutePath();
+			if (repairResult != null && !repairResult.backupFiles().isEmpty())
+			{
+				message += "\n\nRecovered from corruption. Backups created:\n" +
+					String.join("\n", repairResult.backupFiles().stream()
+						.map(path -> path.toAbsolutePath().toString())
+						.toList());
+			}
+			success.setContentText(message);
 			success.showAndWait();
 		}
 		catch (Exception ex)
