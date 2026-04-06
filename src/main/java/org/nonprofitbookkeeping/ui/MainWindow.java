@@ -367,8 +367,28 @@ public class MainWindow extends BorderPane
         try
         {
             Database.init(basePath);
-            Database.get().ensureSchema();
-            info("Database ready: " + basePath.toAbsolutePath());
+            H2SchemaMigrator.RepairResult repairResult = null;
+            try
+            {
+                Database.get().ensureSchema();
+            }
+            catch (SQLException ex)
+            {
+                if (!H2ScriptCompanyExporter.isFileCorruption(ex))
+                {
+                    throw ex;
+                }
+                repairResult = H2SchemaMigrator.repairCorruptedDatabase(basePath);
+            }
+            String message = "Database ready: " + basePath.toAbsolutePath();
+            if (repairResult != null && !repairResult.backupFiles().isEmpty())
+            {
+                message += "\nRecovered from corruption. Backups:\n" +
+                    String.join("\n", repairResult.backupFiles().stream()
+                        .map(path -> path.toAbsolutePath().toString())
+                        .toList());
+            }
+            info(message);
         }
         catch (Exception ex)
         {
@@ -534,11 +554,20 @@ public class MainWindow extends BorderPane
 
         try
         {
-            H2SchemaMigrator.migrate(dbPath, scriptPath);
-            info(scriptPath == null
+            H2SchemaMigrator.RepairResult repairResult =
+                H2SchemaMigrator.migrateWithRepairInfo(dbPath, scriptPath);
+            String message = scriptPath == null
                 ? "Schema migration complete for " + dbPath.toAbsolutePath()
                 : "Schema migration complete for " + dbPath.toAbsolutePath()
-                    + "\nSQL exported to " + scriptPath.toAbsolutePath());
+                    + "\nSQL exported to " + scriptPath.toAbsolutePath();
+            if (repairResult != null && !repairResult.backupFiles().isEmpty())
+            {
+                message += "\nRecovered from corruption. Backups:\n" +
+                    String.join("\n", repairResult.backupFiles().stream()
+                        .map(path -> path.toAbsolutePath().toString())
+                        .toList());
+            }
+            info(message);
         }
         catch (Exception ex)
         {

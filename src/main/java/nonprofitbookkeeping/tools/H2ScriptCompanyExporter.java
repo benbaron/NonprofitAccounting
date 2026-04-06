@@ -68,7 +68,7 @@ public final class H2ScriptCompanyExporter
 		}
 	}
 
-	static boolean isFileCorruption(Throwable throwable)
+	public static boolean isFileCorruption(Throwable throwable)
 	{
 		Throwable current = throwable;
 		while (current != null)

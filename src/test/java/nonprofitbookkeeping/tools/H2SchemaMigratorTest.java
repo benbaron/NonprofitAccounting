@@ -26,6 +26,15 @@ class H2SchemaMigratorTest
         assertEquals(base, H2SchemaMigrator.normalizeDbPath(base));
     }
 
+
+    @Test
+    void backupPathFor_appendsCorruptBackupSuffix()
+    {
+        Path backup = H2SchemaMigrator.backupPathFor(Path.of("/tmp/company.mv.db"));
+        assertTrue(backup.getFileName().toString().startsWith("company.mv.db.corrupt-"));
+        assertTrue(backup.getFileName().toString().contains(".corrupt-"));
+        assertTrue(backup.getFileName().toString().endsWith(".bak"));
+    }
     @Test
     void migrate_upgradesSchemaAndOptionallyWritesScript() throws Exception
     {
