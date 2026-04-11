@@ -1,117 +1,117 @@
 <mxfile host="app.diagrams.net" agent="codex">
   <diagram id="persistence-model" name="Persistence Model">
-    <mxGraphModel dx="1068" dy="2045" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2200" pageHeight="1400" math="0" shadow="0">
+    <mxGraphModel dx="1689" dy="931" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2200" pageHeight="1400" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=18;fontStyle=1" value="NonprofitAccounting Persistence Model (Canonical + Legacy)" vertex="1">
           <mxGeometry height="30" width="900" x="20" y="20" as="geometry" />
         </mxCell>
-        <mxCell id="canonicalHeader" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1" value="Canonical JPA Model" vertex="1">
-          <mxGeometry height="40" width="300" x="140" y="-40" as="geometry" />
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1" value="Canonical JPA Model" vertex="1">
+          <mxGeometry height="40" width="300" x="40" y="150" as="geometry" />
         </mxCell>
-        <mxCell id="legacyHeader" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1" value="Legacy JDBC Model" vertex="1">
-          <mxGeometry height="40" width="300" x="190" y="390" as="geometry" />
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1" value="Legacy JDBC Model" vertex="1">
+          <mxGeometry height="40" width="300" x="80" y="610" as="geometry" />
         </mxCell>
-        <mxCell id="coa" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf" value="chart_of_accounts&#xa;PK: id" vertex="1">
-          <mxGeometry height="70" width="180" x="930" y="-130" as="geometry" />
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf" value="chart_of_accounts&#xa;PK: id" vertex="1">
+          <mxGeometry height="70" width="180" x="930" y="190" as="geometry" />
         </mxCell>
-        <mxCell id="fund" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf" value="fund&#xa;PK: id&#xa;Unique: code" vertex="1">
-          <mxGeometry height="80" width="180" x="1190" y="210" as="geometry" />
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf" value="fund&#xa;PK: id&#xa;Unique: code" vertex="1">
+          <mxGeometry height="80" width="180" x="1140" y="430" as="geometry" />
         </mxCell>
-        <mxCell id="counterparty" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf" value="counterparty&#xa;PK: id" vertex="1">
-          <mxGeometry height="80" width="180" x="270" y="250" as="geometry" />
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf" value="counterparty&#xa;PK: id" vertex="1">
+          <mxGeometry height="80" width="180" x="220" y="470" as="geometry" />
         </mxCell>
-        <mxCell id="txnSplit" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf" value="txn_split&#xa;PK: id&#xa;FK txn_id -&gt; txn.id&#xa;FK account_id -&gt; account.id&#xa;FK fund_id -&gt; fund.id" vertex="1">
-          <mxGeometry height="105" width="270" x="930" y="70" as="geometry" />
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf" value="txn_split&#xa;PK: id&#xa;FK txn_id -&gt; txn.id&#xa;FK account_id -&gt; account.id&#xa;FK fund_id -&gt; fund.id" vertex="1">
+          <mxGeometry height="105" width="270" x="865" y="320" as="geometry" />
         </mxCell>
-        <mxCell id="jtxn" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450" value="journal_transaction&#xa;PK: id" vertex="1">
-          <mxGeometry height="80" width="220" x="299" y="497.5" as="geometry" />
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-8" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450" value="journal_transaction&#xa;PK: id" vertex="1">
+          <mxGeometry height="80" width="220" x="249" y="717.5" as="geometry" />
         </mxCell>
-        <mxCell id="jentry" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450" value="journal_entry&#xa;PK: id&#xa;FK txn_id -&gt; journal_transaction.id&#xa;FK account_number -&gt; account.account_number" vertex="1">
-          <mxGeometry height="95" width="300" x="900" y="482.5" as="geometry" />
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450" value="journal_entry&#xa;PK: id&#xa;FK txn_id -&gt; journal_transaction.id&#xa;FK account_number -&gt; account.account_number" vertex="1">
+          <mxGeometry height="95" width="300" x="850" y="702.5" as="geometry" />
         </mxCell>
-        <mxCell id="tinfo" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450" value="transaction_info&#xa;PK: (txn_id, k)&#xa;FK txn_id -&gt; journal_transaction.id" vertex="1">
-          <mxGeometry height="85" width="260" x="110" y="670" as="geometry" />
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-10" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450" value="transaction_info&#xa;PK: (txn_id, k)&#xa;FK txn_id -&gt; journal_transaction.id" vertex="1">
+          <mxGeometry height="85" width="260" x="60" y="890" as="geometry" />
         </mxCell>
-        <mxCell id="supp" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450" value="txn_supplemental_line&#xa;FK txn_id -&gt; journal_transaction.id&#xa;FK entry_id -&gt; journal_entry.id&#xa;FK counterparty_person_id -&gt; person.id" vertex="1">
-          <mxGeometry height="105" width="320" x="600" y="648" as="geometry" />
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450" value="txn_supplemental_line&#xa;FK txn_id -&gt; journal_transaction.id&#xa;FK entry_id -&gt; journal_entry.id&#xa;FK counterparty_person_id -&gt; person.id" vertex="1">
+          <mxGeometry height="105" width="320" x="550" y="868" as="geometry" />
         </mxCell>
-        <mxCell id="e1" edge="1" parent="1" source="account" style="endArrow=block;html=1;strokeColor=#6c8ebf" target="coa">
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-12" edge="1" parent="1" source="EEmgI6vhG9c4A2qyO5Vx-30" style="endArrow=block;html=1;strokeColor=#6c8ebf" target="EEmgI6vhG9c4A2qyO5Vx-4">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e2" edge="1" parent="1" source="txn" style="endArrow=block;html=1;strokeColor=#6c8ebf" target="counterparty">
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-13" edge="1" parent="1" source="EEmgI6vhG9c4A2qyO5Vx-28" style="endArrow=block;html=1;strokeColor=#6c8ebf" target="EEmgI6vhG9c4A2qyO5Vx-6">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e3" edge="1" parent="1" source="txn" style="endArrow=block;html=1;strokeColor=#6c8ebf" target="account">
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-14" edge="1" parent="1" source="EEmgI6vhG9c4A2qyO5Vx-28" style="endArrow=block;html=1;strokeColor=#6c8ebf" target="EEmgI6vhG9c4A2qyO5Vx-30">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e4" edge="1" parent="1" source="txnSplit" style="endArrow=block;html=1;strokeColor=#6c8ebf" target="txn">
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-15" edge="1" parent="1" source="EEmgI6vhG9c4A2qyO5Vx-7" style="endArrow=block;html=1;strokeColor=#6c8ebf" target="EEmgI6vhG9c4A2qyO5Vx-28">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e5" edge="1" parent="1" source="txnSplit" style="endArrow=block;html=1;strokeColor=#6c8ebf" target="account">
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-16" edge="1" parent="1" source="EEmgI6vhG9c4A2qyO5Vx-7" style="endArrow=block;html=1;strokeColor=#6c8ebf" target="EEmgI6vhG9c4A2qyO5Vx-30">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e6" edge="1" parent="1" source="txnSplit" style="endArrow=block;html=1;strokeColor=#6c8ebf" target="fund">
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-17" edge="1" parent="1" source="EEmgI6vhG9c4A2qyO5Vx-7" style="endArrow=block;html=1;strokeColor=#6c8ebf" target="EEmgI6vhG9c4A2qyO5Vx-5">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e7" edge="1" parent="1" source="jentry" style="endArrow=block;html=1;strokeColor=#b85450" target="jtxn">
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-18" edge="1" parent="1" source="EEmgI6vhG9c4A2qyO5Vx-9" style="endArrow=block;html=1;strokeColor=#b85450" target="EEmgI6vhG9c4A2qyO5Vx-8">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e8" edge="1" parent="1" source="sync" style="endArrow=block;html=1;strokeColor=#b85450" target="account">
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-19" edge="1" parent="1" source="EEmgI6vhG9c4A2qyO5Vx-32" style="endArrow=block;html=1;strokeColor=#b85450" target="EEmgI6vhG9c4A2qyO5Vx-30">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e9" edge="1" parent="1" source="tinfo" style="endArrow=block;html=1;strokeColor=#b85450" target="jtxn">
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-20" edge="1" parent="1" source="EEmgI6vhG9c4A2qyO5Vx-10" style="endArrow=block;html=1;strokeColor=#b85450" target="EEmgI6vhG9c4A2qyO5Vx-8">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e10" edge="1" parent="1" source="supp" style="endArrow=block;html=1;strokeColor=#b85450" target="jtxn">
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-21" edge="1" parent="1" source="EEmgI6vhG9c4A2qyO5Vx-11" style="endArrow=block;html=1;strokeColor=#b85450" target="EEmgI6vhG9c4A2qyO5Vx-8">
           <mxGeometry relative="1" as="geometry">
             <Array as="points" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="e11" edge="1" parent="1" source="supp" style="endArrow=block;html=1;strokeColor=#b85450" target="jentry">
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-22" edge="1" parent="1" source="EEmgI6vhG9c4A2qyO5Vx-11" style="endArrow=block;html=1;strokeColor=#b85450" target="EEmgI6vhG9c4A2qyO5Vx-9">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e12" edge="1" parent="1" source="jtxn" style="dashed=1;endArrow=block;html=1;strokeColor=#d6b656;fontColor=#7f6000" target="sync" value="dual-write/sync">
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-23" edge="1" parent="1" source="EEmgI6vhG9c4A2qyO5Vx-8" style="dashed=1;endArrow=block;html=1;strokeColor=#d6b656;fontColor=#7f6000" target="EEmgI6vhG9c4A2qyO5Vx-32" value="dual-write/sync">
           <mxGeometry relative="1" x="0.1013" y="-25" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="e13" edge="1" parent="1" source="jentry" style="dashed=1;endArrow=block;html=1;strokeColor=#d6b656" target="sync">
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-24" edge="1" parent="1" source="EEmgI6vhG9c4A2qyO5Vx-9" style="dashed=1;endArrow=block;html=1;strokeColor=#d6b656" target="EEmgI6vhG9c4A2qyO5Vx-32">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e14" edge="1" parent="1" source="sync" style="dashed=1;endArrow=block;html=1;strokeColor=#d6b656" target="txn">
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-25" edge="1" parent="1" source="EEmgI6vhG9c4A2qyO5Vx-32" style="dashed=1;endArrow=block;html=1;strokeColor=#d6b656" target="EEmgI6vhG9c4A2qyO5Vx-28">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e15" edge="1" parent="1" source="account" style="dashed=1;endArrow=block;html=1;strokeColor=#d6b656" target="txnSplit">
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-26" edge="1" parent="1" source="EEmgI6vhG9c4A2qyO5Vx-30" style="dashed=1;endArrow=block;html=1;strokeColor=#d6b656" target="EEmgI6vhG9c4A2qyO5Vx-7">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="n9LSgCYDv_YN8VOVDaS_-1" edge="1" parent="1" source="sync" style="dashed=1;endArrow=block;html=1;strokeColor=#d6b656" target="txn" value="">
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-27" edge="1" parent="1" source="EEmgI6vhG9c4A2qyO5Vx-32" style="dashed=1;endArrow=block;html=1;strokeColor=#d6b656" target="EEmgI6vhG9c4A2qyO5Vx-28" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1002" y="370" as="sourcePoint" />
-            <mxPoint x="1067" y="185" as="targetPoint" />
+            <mxPoint x="952" y="590" as="sourcePoint" />
+            <mxPoint x="1017" y="405" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="txn" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf" value="txn&#xa;PK: id&#xa;FK payee_id -&gt; counterparty.id&#xa;FK bank_account_id -&gt; account.id" vertex="1">
-          <mxGeometry height="95" width="260" x="110" y="115" as="geometry" />
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-28" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf" value="txn&#xa;PK: id&#xa;FK payee_id -&gt; counterparty.id&#xa;FK bank_account_id -&gt; account.id" vertex="1">
+          <mxGeometry height="95" width="260" x="60" y="335" as="geometry" />
         </mxCell>
-        <mxCell id="n9LSgCYDv_YN8VOVDaS_-2" edge="1" parent="1" source="txn" style="dashed=1;endArrow=block;html=1;strokeColor=#d6b656" target="account" value="">
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-29" edge="1" parent="1" source="EEmgI6vhG9c4A2qyO5Vx-28" style="dashed=1;endArrow=block;html=1;strokeColor=#d6b656" target="EEmgI6vhG9c4A2qyO5Vx-30" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="420" y="170" as="sourcePoint" />
-            <mxPoint x="950" y="140" as="targetPoint" />
+            <mxPoint x="370" y="390" as="sourcePoint" />
+            <mxPoint x="900" y="360" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="account" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf" value="account&#xa;PK legacy: account_number&#xa;Unique: id&#xa;chart_id, code, type, normal_balance" vertex="1">
-          <mxGeometry height="110" width="260" x="560" y="-40" as="geometry" />
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-30" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf" value="account&#xa;PK legacy: account_number&#xa;Unique: id&#xa;chart_id, code, type, normal_balance" vertex="1">
+          <mxGeometry height="110" width="260" x="510" y="180" as="geometry" />
         </mxCell>
-        <mxCell id="n9LSgCYDv_YN8VOVDaS_-3" edge="1" parent="1" source="jentry" style="endArrow=block;html=1;strokeColor=#b85450" target="sync" value="">
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-31" edge="1" parent="1" source="EEmgI6vhG9c4A2qyO5Vx-9" style="endArrow=block;html=1;strokeColor=#b85450" target="EEmgI6vhG9c4A2qyO5Vx-32" value="">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="878" y="483" as="sourcePoint" />
-            <mxPoint x="784" y="120" as="targetPoint" />
+            <mxPoint x="828" y="703" as="sourcePoint" />
+            <mxPoint x="734" y="340" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="sync" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656" value="CanonicalJournalSyncAdapter&#xa;syncs legacy journal_* -&gt; txn/txn_split" vertex="1">
-          <mxGeometry height="70" width="360" x="570" y="250" as="geometry" />
+        <mxCell id="EEmgI6vhG9c4A2qyO5Vx-32" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656" value="CanonicalJournalSyncAdapter&#xa;syncs legacy journal_* -&gt; txn/txn_split" vertex="1">
+          <mxGeometry height="70" width="360" x="520" y="470" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
