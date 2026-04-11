@@ -192,7 +192,7 @@ classDiagram
 - The model intentionally includes both canonical (`txn*`) and legacy (`journal_*`) storage because both are active.
 
 
-Draw.io source: [persistence-model.drawio](persistence-model.drawio)
+Draw.io source: [persistence-model-v2.drawio](persistence-model-v2.drawio)
 
 Draw.io pages:
 - **1) Context (Canonical + Legacy + Sync)**: high-level architecture and sync flow.
