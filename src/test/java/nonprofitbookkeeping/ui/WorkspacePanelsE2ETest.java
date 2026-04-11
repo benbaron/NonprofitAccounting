@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TreeTableView;
 import javafx.scene.layout.BorderPane;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +12,10 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.RecordComponent;
+import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -178,6 +183,37 @@ class WorkspacePanelsE2ETest
 	}
 
 	@Test
+	void budgetWorkspacePanelsProvideEntryAndReportTables() throws Exception
+	{
+		BudgetPanel panel = runOnFxThread(BudgetPanel::new);
+		runOnFxThread(() -> {
+			TabPane tabs = getTabPane(panel);
+			BorderPane editorRoot = (BorderPane) tabs.getTabs().get(0).getContent();
+			assertInstanceOf(TableView.class, editorRoot.getCenter());
+
+			BorderPane reportRoot = (BorderPane) tabs.getTabs().get(1).getContent();
+			assertInstanceOf(TreeTableView.class, reportRoot.getCenter());
+			return null;
+		});
+	}
+
+	@Test
+	void budgetSaveAndReportArePlumbedThroughStore() throws Exception
+	{
+		FakeBudgetWorkspaceStore store = new FakeBudgetWorkspaceStore();
+		runOnFxThread(() -> {
+			BudgetEditorPanel editor = new BudgetEditorPanel(store);
+			editor.onSave();
+			assertEquals(1, store.savedRows.size());
+
+			BudgetVsActualPanel report = new BudgetVsActualPanel(store);
+			TreeTableView<?> tree = (TreeTableView<?>) ((BorderPane) report.root()).getCenter();
+			assertEquals(1, tree.getRoot().getChildren().size());
+			return null;
+		});
+	}
+
+	@Test
 	void dateRangeContextNullNormalizesToAll() throws Exception
 	{
 		runOnFxThread(() -> {
@@ -260,6 +296,38 @@ class WorkspacePanelsE2ETest
 				throw (Exception) cause;
 			}
 			throw new RuntimeException(cause);
+		}
+	}
+
+	private static final class FakeBudgetWorkspaceStore extends BudgetWorkspaceStore
+	{
+		private List<BudgetEditorPanel.BudgetRow> savedRows = new ArrayList<>();
+
+		private FakeBudgetWorkspaceStore()
+		{
+			super(null);
+		}
+
+		@Override
+		public List<BudgetEditorPanel.BudgetRow> loadEditorRows() throws SQLException
+		{
+			return List.of(new BudgetEditorPanel.BudgetRow("Program Supplies", "General", "2026-Q1", "3500.00"));
+		}
+
+		@Override
+		public int saveEditorRows(List<BudgetEditorPanel.BudgetRow> rows) throws SQLException
+		{
+			savedRows = new ArrayList<>(rows);
+			return rows.size();
+		}
+
+		@Override
+		public List<BudgetVsActualPanel.GroupRow> loadBudgetVsActual() throws SQLException
+		{
+			return List.of(new BudgetVsActualPanel.GroupRow(
+				"General",
+				List.of(new BudgetVsActualPanel.AccountRow("Program Supplies",
+					new BigDecimal("3500.00"), BigDecimal.ZERO))));
 		}
 	}
 }
