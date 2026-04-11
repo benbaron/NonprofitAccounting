@@ -193,3 +193,13 @@ classDiagram
 
 
 Draw.io source: [persistence-model.drawio](persistence-model.drawio)
+
+Draw.io pages:
+- **1) Context (Canonical + Legacy + Sync)**: high-level architecture and sync flow.
+- **2) Table Detail (PK/FK/Index Focus)**: constraint/index-centric view for schema work.
+
+Style conventions in draw.io:
+- **Blue solid arrows** = enforced canonical FK paths.
+- **Red solid arrows** = enforced legacy FK paths.
+- **Yellow dashed arrows** = sync flow / dual-write bridge.
+- **Gray dashed** (legend only) = mapped/expected relation style when used.
