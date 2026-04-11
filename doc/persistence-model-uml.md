@@ -190,3 +190,6 @@ classDiagram
 - Solid links represent relationships confirmed as physical FK constraints in the deployed schema path.
 - Dotted links represent mappings present in Java entities but not enforced as FKs by `Database.ensureSchema()`.
 - The model intentionally includes both canonical (`txn*`) and legacy (`journal_*`) storage because both are active.
+
+
+Draw.io source: [persistence-model.drawio](persistence-model.drawio)
