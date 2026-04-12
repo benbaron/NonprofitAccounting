@@ -302,7 +302,7 @@
           <mxGeometry height="240" width="300" x="2050" y="510" as="geometry" />
         </mxCell>
         <mxCell id="11" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;chart_of_accounts&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;name&lt;br&gt;version&lt;br&gt;status&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
-          <mxGeometry height="128" width="300" x="1190" y="60" as="geometry" />
+          <mxGeometry height="128" width="300" x="1170" y="122" as="geometry" />
         </mxCell>
         <mxCell id="12" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;fund&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;code&lt;br&gt;name&lt;br&gt;fund_type&lt;br&gt;[FK] parent_id&lt;br&gt;is_active&lt;br&gt;effective_from&lt;br&gt;effective_to&lt;br&gt;restriction_text&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
           <mxGeometry height="198" width="300" x="680" y="1424" as="geometry" />
