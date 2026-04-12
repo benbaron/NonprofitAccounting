@@ -64,12 +64,12 @@
     </mxGraphModel>
   </diagram>
   <diagram id="domain---canonical-gl" name="Domain - Canonical GL">
-    <mxGraphModel dx="4411" dy="3042" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3600" pageHeight="2600" math="0" shadow="0">
+    <mxGraphModel dx="4494" dy="3093" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3600" pageHeight="2600" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;chart_of_accounts&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;name&lt;br&gt;version&lt;br&gt;status&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
-          <mxGeometry height="128" width="300" x="-670.0047010942554" y="565.0011109987707" as="geometry" />
+          <mxGeometry height="128" width="300" x="808.8333926847465" y="1164.9193532923543" as="geometry" />
         </mxCell>
         <mxCell id="3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;account&lt;/b&gt;&lt;br&gt;[PK] account_number&lt;br&gt;name&lt;br&gt;account_code&lt;br&gt;account_type&lt;br&gt;increase_side&lt;br&gt;parent_account_id&lt;br&gt;currency&lt;br&gt;opening_balance&lt;br&gt;supplemental_kinds" vertex="1">
           <mxGeometry height="170" width="300" x="-480.0016387812162" y="309.9980117526077" as="geometry" />
@@ -114,7 +114,7 @@
           <mxGeometry height="120" width="300" x="1380" y="540" as="geometry" />
         </mxCell>
         <mxCell id="17" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;fund_transfer&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;transfer_date&lt;br&gt;[FK] from_fund_id&lt;br&gt;[FK] to_fund_id&lt;br&gt;amount&lt;br&gt;memo&lt;br&gt;status&lt;br&gt;[FK] posted_txn_id&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
-          <mxGeometry height="184" width="300" x="-350" y="731.11" as="geometry" />
+          <mxGeometry height="184" width="300" x="-420" y="670" as="geometry" />
         </mxCell>
         <mxCell id="18" edge="1" parent="1" source="6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="5" value="payee_id → id">
           <mxGeometry relative="1" as="geometry" />
@@ -270,7 +270,7 @@
     </mxGraphModel>
   </diagram>
   <diagram id="logical-relationships-overlay" name="Logical Relationships Overlay">
-    <mxGraphModel dx="5500" dy="3648" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3600" pageHeight="2600" math="0" shadow="0">
+    <mxGraphModel dx="4494" dy="3093" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3600" pageHeight="2600" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -323,7 +323,7 @@
           <mxGeometry height="120" width="300" x="590" y="1130" as="geometry" />
         </mxCell>
         <mxCell id="18" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;schedule_kind&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;code&lt;br&gt;name" vertex="1">
-          <mxGeometry height="120" width="300" x="80" y="1130" as="geometry" />
+          <mxGeometry height="120" width="300" x="-10" y="980" as="geometry" />
         </mxCell>
         <mxCell id="19" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;report_section&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;name&lt;br&gt;report_type&lt;br&gt;sort_order" vertex="1">
           <mxGeometry height="120" width="300" x="50" y="100" as="geometry" />
@@ -341,10 +341,10 @@
           <mxGeometry height="120" width="300" x="220" y="600" as="geometry" />
         </mxCell>
         <mxCell id="24" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;account_subtype_schedule_default&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;subtype&lt;br&gt;[FK] schedule_kind_id" vertex="1">
-          <mxGeometry height="120" width="300" x="-160" y="892" as="geometry" />
+          <mxGeometry height="120" width="300" x="-320" y="1122" as="geometry" />
         </mxCell>
         <mxCell id="25" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;fund_transfer&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;transfer_date&lt;br&gt;[FK] from_fund_id&lt;br&gt;[FK] to_fund_id&lt;br&gt;amount&lt;br&gt;memo&lt;br&gt;status&lt;br&gt;[FK] posted_txn_id&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
-          <mxGeometry height="184" width="300" x="190" y="1431" as="geometry" />
+          <mxGeometry height="184" width="300" x="150" y="1290" as="geometry" />
         </mxCell>
         <mxCell id="26" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;donor&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;external_id&lt;br&gt;name&lt;br&gt;email&lt;br&gt;phone" vertex="1">
           <mxGeometry height="120" width="300" x="1590" y="2060" as="geometry" />
