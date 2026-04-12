@@ -63,6 +63,14 @@ class H2SchemaMigratorTest
                 assertTrue(rs.next());
                 assertEquals(1, rs.getInt(1));
             }
+            assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM ledger_record"));
+            assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM bank_id_record"));
+            assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM banking_transaction_record"));
+            assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM asset_record_detail"));
+            assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM inventory_asset_link"));
+            assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM depreciation_run"));
+            assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM depreciation_record"));
+            assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM grant_record"));
         }
 
         assertTrue(Files.exists(scriptPath));
