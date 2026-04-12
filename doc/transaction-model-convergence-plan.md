@@ -318,3 +318,9 @@ FROM l CROSS JOIN c;
 - During cutover, enforce write control by revoking DML grants on legacy base tables for app roles.
 - Keep a nightly reconciliation job using Deliverable C queries and alert on non-zero drift.
 - Decommission sequence: adapters -> reverse-sync -> legacy tables, only after two clean close cycles.
+
+## Execution status in repository
+- Forward migration SQL has been materialized at `scripts/sql/txn_convergence_forward.sql`.
+- Rollback SQL has been materialized at `scripts/sql/txn_convergence_rollback.sql`.
+- Validation SQL has been materialized at `scripts/sql/txn_convergence_validation.sql`.
+- Risk register has been materialized at `scripts/sql/txn_convergence_risk_register.md`.
