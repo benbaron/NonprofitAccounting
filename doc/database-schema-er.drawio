@@ -162,10 +162,10 @@
           <mxGeometry height="310" width="300" x="233.91" y="-390" as="geometry" />
         </mxCell>
         <mxCell id="4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;undeposited_funds_item&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;date_sent_received&lt;br&gt;date_transfer_or_check&lt;br&gt;date_on_statement&lt;br&gt;name_of_person_business&lt;br&gt;details_notes&lt;br&gt;from_to_card_merchant&lt;br&gt;account_for_payment_or_deposit&lt;br&gt;amount&lt;br&gt;date_reversed&lt;br&gt;reversal_approved_by" vertex="1">
-          <mxGeometry height="198" width="300" x="570" y="-380" as="geometry" />
+          <mxGeometry height="198" width="300" x="600" y="-390" as="geometry" />
         </mxCell>
         <mxCell id="5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;document&lt;/b&gt;&lt;br&gt;[PK] name&lt;br&gt;content" vertex="1">
-          <mxGeometry height="120" width="300" x="920.0000000000001" y="-390" as="geometry" />
+          <mxGeometry height="120" width="300" x="950.0000000000001" y="-360" as="geometry" />
         </mxCell>
         <mxCell id="6" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;json_storage&lt;/b&gt;&lt;br&gt;[PK] storage_key&lt;br&gt;payload" vertex="1">
           <mxGeometry height="120" width="300" x="1552.91" y="-250" as="geometry" />
@@ -174,13 +174,13 @@
           <mxGeometry height="120" width="300" x="580" y="-120" as="geometry" />
         </mxCell>
         <mxCell id="8" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;bank_id_record&lt;/b&gt;&lt;br&gt;[PK] bank_id_record_id&lt;br&gt;bank_id&lt;br&gt;bank_name&lt;br&gt;account_id&lt;br&gt;account_type&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
-          <mxGeometry height="142" width="300" x="700.0015188068394" y="415.9998014367105" as="geometry" />
+          <mxGeometry height="142" width="300" x="520.0015188068394" y="309.9998014367105" as="geometry" />
         </mxCell>
         <mxCell id="9" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;ledger_record&lt;/b&gt;&lt;br&gt;[PK] ledger_record_id&lt;br&gt;ledger_id&lt;br&gt;[FK] journal_entry_id&lt;br&gt;[FK] bank_id_record_id&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
           <mxGeometry height="128" width="300" x="93.90999999999994" y="460" as="geometry" />
         </mxCell>
         <mxCell id="10" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;banking_transaction_record&lt;/b&gt;&lt;br&gt;[PK] banking_record_id&lt;br&gt;[FK] bank_id_record_id&lt;br&gt;[FK] journal_txn_id&lt;br&gt;[FK] fund_id&lt;br&gt;transaction_date&lt;br&gt;transaction_id&lt;br&gt;transaction_type&lt;br&gt;cleared_state&lt;br&gt;amount&lt;br&gt;memo&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
-          <mxGeometry height="212" width="300" x="1349.9999999999998" y="558" as="geometry" />
+          <mxGeometry height="212" width="300" x="949.9999999999998" y="640" as="geometry" />
         </mxCell>
         <mxCell id="11" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;asset_record_detail&lt;/b&gt;&lt;br&gt;[PK] asset_record_id&lt;br&gt;asset_type&lt;br&gt;depreciation_method&lt;br&gt;details&lt;br&gt;date_acquired&lt;br&gt;date_sold&lt;br&gt;[FK] journal_txn_id&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
           <mxGeometry height="170" width="300" x="280" y="1470" as="geometry" />
@@ -195,10 +195,10 @@
           <mxGeometry height="170" width="300" x="279.99999999999994" y="1760" as="geometry" />
         </mxCell>
         <mxCell id="15" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;grant_record&lt;/b&gt;&lt;br&gt;[PK] grant_record_id&lt;br&gt;grant_id&lt;br&gt;grantor&lt;br&gt;amount&lt;br&gt;date_awarded_text&lt;br&gt;purpose&lt;br&gt;status&lt;br&gt;[FK] donor_id&lt;br&gt;[FK] person_id&lt;br&gt;[FK] fund_id&lt;br&gt;[FK] journal_txn_id&lt;br&gt;details&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
-          <mxGeometry height="240" width="300" x="1070" y="950" as="geometry" />
+          <mxGeometry height="240" width="300" x="950" y="960" as="geometry" />
         </mxCell>
         <mxCell id="16" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;sale_record&lt;/b&gt;&lt;br&gt;[PK] sale_id&lt;br&gt;sale_date_text&lt;br&gt;item&lt;br&gt;qty&lt;br&gt;unit_price&lt;br&gt;unit_cost&lt;br&gt;details&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
-          <mxGeometry height="170" width="300" x="957.9100000000001" y="120" as="geometry" />
+          <mxGeometry height="170" width="300" x="962.9100000000001" y="40" as="geometry" />
         </mxCell>
         <mxCell id="17" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;journal_transaction&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;booking_ts&lt;br&gt;date_text&lt;br&gt;memo&lt;br&gt;to_from&lt;br&gt;clear_bank&lt;br&gt;bank_name&lt;br&gt;reconciled&lt;br&gt;budget_tracking&lt;br&gt;associated_fund_name" vertex="1">
           <mxGeometry height="184" width="300" x="93.91334828322982" y="1116.0023402017334" as="geometry" />
@@ -270,248 +270,248 @@
     </mxGraphModel>
   </diagram>
   <diagram id="logical-relationships-overlay" name="Logical Relationships Overlay">
-    <mxGraphModel dx="1800" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3600" pageHeight="2600" math="0" shadow="0">
+    <mxGraphModel dx="1086" dy="599" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3600" pageHeight="2600" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="2" value="&lt;b&gt;schema_migration_history&lt;/b&gt;&lt;br&gt;[PK] migration_key&lt;br&gt;applied_at" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="20" y="20" width="300" height="120" as="geometry" />
+        <mxCell id="2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;schema_migration_history&lt;/b&gt;&lt;br&gt;[PK] migration_key&lt;br&gt;applied_at" vertex="1">
+          <mxGeometry height="120" width="300" x="20" y="20" as="geometry" />
         </mxCell>
-        <mxCell id="3" value="&lt;b&gt;company_profile&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;name&lt;br&gt;address&lt;br&gt;phone&lt;br&gt;email&lt;br&gt;fiscal_year_start&lt;br&gt;base_currency&lt;br&gt;starting_balance_date&lt;br&gt;chart_of_accounts_type&lt;br&gt;admin_username&lt;br&gt;admin_password&lt;br&gt;default_bank_account&lt;br&gt;enable_fund_accounting&lt;br&gt;enable_inventory&lt;br&gt;enable_multi_currency&lt;br&gt;legal_structure&lt;br&gt;tax_id&lt;br&gt;company_file_dir&lt;br&gt;company_file_name" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="360" y="20" width="300" height="310" as="geometry" />
+        <mxCell id="3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;company_profile&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;name&lt;br&gt;address&lt;br&gt;phone&lt;br&gt;email&lt;br&gt;fiscal_year_start&lt;br&gt;base_currency&lt;br&gt;starting_balance_date&lt;br&gt;chart_of_accounts_type&lt;br&gt;admin_username&lt;br&gt;admin_password&lt;br&gt;default_bank_account&lt;br&gt;enable_fund_accounting&lt;br&gt;enable_inventory&lt;br&gt;enable_multi_currency&lt;br&gt;legal_structure&lt;br&gt;tax_id&lt;br&gt;company_file_dir&lt;br&gt;company_file_name" vertex="1">
+          <mxGeometry height="310" width="300" x="360" y="20" as="geometry" />
         </mxCell>
-        <mxCell id="4" value="&lt;b&gt;account&lt;/b&gt;&lt;br&gt;[PK] account_number&lt;br&gt;name&lt;br&gt;account_code&lt;br&gt;account_type&lt;br&gt;increase_side&lt;br&gt;parent_account_id&lt;br&gt;currency&lt;br&gt;opening_balance&lt;br&gt;supplemental_kinds" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="700" y="20" width="300" height="170" as="geometry" />
+        <mxCell id="4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;account&lt;/b&gt;&lt;br&gt;[PK] account_number&lt;br&gt;name&lt;br&gt;account_code&lt;br&gt;account_type&lt;br&gt;increase_side&lt;br&gt;parent_account_id&lt;br&gt;currency&lt;br&gt;opening_balance&lt;br&gt;supplemental_kinds" vertex="1">
+          <mxGeometry height="170" width="300" x="700" y="20" as="geometry" />
         </mxCell>
-        <mxCell id="5" value="&lt;b&gt;account_fund&lt;/b&gt;&lt;br&gt;[PK,FK] account_number&lt;br&gt;[PK] fund_id" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="1040" y="20" width="300" height="120" as="geometry" />
+        <mxCell id="5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;account_fund&lt;/b&gt;&lt;br&gt;[PK,FK] account_number&lt;br&gt;[PK] fund_id" vertex="1">
+          <mxGeometry height="120" width="300" x="1040" y="20" as="geometry" />
         </mxCell>
-        <mxCell id="6" value="&lt;b&gt;journal_transaction&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;booking_ts&lt;br&gt;date_text&lt;br&gt;memo&lt;br&gt;to_from&lt;br&gt;clear_bank&lt;br&gt;bank_name&lt;br&gt;reconciled&lt;br&gt;budget_tracking&lt;br&gt;associated_fund_name" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="1380" y="20" width="300" height="184" as="geometry" />
+        <mxCell id="6" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;journal_transaction&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;booking_ts&lt;br&gt;date_text&lt;br&gt;memo&lt;br&gt;to_from&lt;br&gt;clear_bank&lt;br&gt;bank_name&lt;br&gt;reconciled&lt;br&gt;budget_tracking&lt;br&gt;associated_fund_name" vertex="1">
+          <mxGeometry height="184" width="300" x="1380" y="20" as="geometry" />
         </mxCell>
-        <mxCell id="7" value="&lt;b&gt;bank_statement&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;bank_name&lt;br&gt;account_label&lt;br&gt;statement_date&lt;br&gt;statement_balance&lt;br&gt;ledger_balance&lt;br&gt;outstanding&lt;br&gt;bank_after_outstanding&lt;br&gt;difference&lt;br&gt;ledger_status&lt;br&gt;institution_name&lt;br&gt;institution_contact&lt;br&gt;account_number&lt;br&gt;account_type&lt;br&gt;signature_requirement&lt;br&gt;interest_bearing&lt;br&gt;currency" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="20" y="280" width="300" height="282" as="geometry" />
+        <mxCell id="7" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;bank_statement&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;bank_name&lt;br&gt;account_label&lt;br&gt;statement_date&lt;br&gt;statement_balance&lt;br&gt;ledger_balance&lt;br&gt;outstanding&lt;br&gt;bank_after_outstanding&lt;br&gt;difference&lt;br&gt;ledger_status&lt;br&gt;institution_name&lt;br&gt;institution_contact&lt;br&gt;account_number&lt;br&gt;account_type&lt;br&gt;signature_requirement&lt;br&gt;interest_bearing&lt;br&gt;currency" vertex="1">
+          <mxGeometry height="282" width="300" x="20" y="280" as="geometry" />
         </mxCell>
-        <mxCell id="8" value="&lt;b&gt;journal_entry&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;[FK] txn_id&lt;br&gt;amount&lt;br&gt;[FK] account_number&lt;br&gt;account_side&lt;br&gt;account_name&lt;br&gt;fund_number" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="360" y="280" width="300" height="142" as="geometry" />
+        <mxCell id="8" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;journal_entry&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;[FK] txn_id&lt;br&gt;amount&lt;br&gt;[FK] account_number&lt;br&gt;account_side&lt;br&gt;account_name&lt;br&gt;fund_number" vertex="1">
+          <mxGeometry height="142" width="300" x="360" y="280" as="geometry" />
         </mxCell>
-        <mxCell id="9" value="&lt;b&gt;transaction_info&lt;/b&gt;&lt;br&gt;[PK,FK] txn_id&lt;br&gt;[PK] k&lt;br&gt;v" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="700" y="280" width="300" height="120" as="geometry" />
+        <mxCell id="9" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;transaction_info&lt;/b&gt;&lt;br&gt;[PK,FK] txn_id&lt;br&gt;[PK] k&lt;br&gt;v" vertex="1">
+          <mxGeometry height="120" width="300" x="700" y="280" as="geometry" />
         </mxCell>
-        <mxCell id="10" value="&lt;b&gt;txn_supplemental_line&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;[FK] txn_id&lt;br&gt;[FK] entry_id&lt;br&gt;line_kind&lt;br&gt;[FK] counterparty_person_id&lt;br&gt;description&lt;br&gt;reference&lt;br&gt;amount&lt;br&gt;due_date&lt;br&gt;start_date&lt;br&gt;end_date&lt;br&gt;notes&lt;br&gt;created_at&lt;br&gt;updated_at" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="1040" y="280" width="300" height="240" as="geometry" />
+        <mxCell id="10" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;txn_supplemental_line&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;[FK] txn_id&lt;br&gt;[FK] entry_id&lt;br&gt;line_kind&lt;br&gt;[FK] counterparty_person_id&lt;br&gt;description&lt;br&gt;reference&lt;br&gt;amount&lt;br&gt;due_date&lt;br&gt;start_date&lt;br&gt;end_date&lt;br&gt;notes&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
+          <mxGeometry height="240" width="300" x="1040" y="280" as="geometry" />
         </mxCell>
-        <mxCell id="11" value="&lt;b&gt;chart_of_accounts&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;name&lt;br&gt;version&lt;br&gt;status&lt;br&gt;created_at&lt;br&gt;updated_at" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="1380" y="280" width="300" height="128" as="geometry" />
+        <mxCell id="11" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;chart_of_accounts&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;name&lt;br&gt;version&lt;br&gt;status&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
+          <mxGeometry height="128" width="300" x="1380" y="280" as="geometry" />
         </mxCell>
-        <mxCell id="12" value="&lt;b&gt;fund&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;code&lt;br&gt;name&lt;br&gt;fund_type&lt;br&gt;[FK] parent_id&lt;br&gt;is_active&lt;br&gt;effective_from&lt;br&gt;effective_to&lt;br&gt;restriction_text&lt;br&gt;created_at&lt;br&gt;updated_at" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="20" y="540" width="300" height="198" as="geometry" />
+        <mxCell id="12" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;fund&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;code&lt;br&gt;name&lt;br&gt;fund_type&lt;br&gt;[FK] parent_id&lt;br&gt;is_active&lt;br&gt;effective_from&lt;br&gt;effective_to&lt;br&gt;restriction_text&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
+          <mxGeometry height="198" width="300" x="20" y="540" as="geometry" />
         </mxCell>
-        <mxCell id="13" value="&lt;b&gt;counterparty&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;display_name&lt;br&gt;kind&lt;br&gt;email&lt;br&gt;phone&lt;br&gt;is_active" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="360" y="540" width="300" height="128" as="geometry" />
+        <mxCell id="13" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;counterparty&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;display_name&lt;br&gt;kind&lt;br&gt;email&lt;br&gt;phone&lt;br&gt;is_active" vertex="1">
+          <mxGeometry height="128" width="300" x="360" y="540" as="geometry" />
         </mxCell>
-        <mxCell id="14" value="&lt;b&gt;txn&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;txn_date&lt;br&gt;[FK] payee_id&lt;br&gt;memo&lt;br&gt;[FK] bank_account_id&lt;br&gt;created_at&lt;br&gt;updated_at" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="700" y="540" width="300" height="142" as="geometry" />
+        <mxCell id="14" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;txn&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;txn_date&lt;br&gt;[FK] payee_id&lt;br&gt;memo&lt;br&gt;[FK] bank_account_id&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
+          <mxGeometry height="142" width="300" x="700" y="540" as="geometry" />
         </mxCell>
-        <mxCell id="15" value="&lt;b&gt;txn_split&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;[FK] txn_id&lt;br&gt;[FK] account_id&lt;br&gt;[FK] fund_id&lt;br&gt;[FK] activity_id&lt;br&gt;[FK] merchant_id&lt;br&gt;nmr_flag&lt;br&gt;notes&lt;br&gt;amount_signed" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="1040" y="540" width="300" height="170" as="geometry" />
+        <mxCell id="15" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;txn_split&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;[FK] txn_id&lt;br&gt;[FK] account_id&lt;br&gt;[FK] fund_id&lt;br&gt;[FK] activity_id&lt;br&gt;[FK] merchant_id&lt;br&gt;nmr_flag&lt;br&gt;notes&lt;br&gt;amount_signed" vertex="1">
+          <mxGeometry height="170" width="300" x="1040" y="540" as="geometry" />
         </mxCell>
-        <mxCell id="16" value="&lt;b&gt;activity&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;code&lt;br&gt;name&lt;br&gt;is_active" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="1380" y="540" width="300" height="120" as="geometry" />
+        <mxCell id="16" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;activity&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;code&lt;br&gt;name&lt;br&gt;is_active" vertex="1">
+          <mxGeometry height="120" width="300" x="1380" y="540" as="geometry" />
         </mxCell>
-        <mxCell id="17" value="&lt;b&gt;merchant&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;name&lt;br&gt;is_active" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="20" y="800" width="300" height="120" as="geometry" />
+        <mxCell id="17" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;merchant&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;name&lt;br&gt;is_active" vertex="1">
+          <mxGeometry height="120" width="300" x="20" y="800" as="geometry" />
         </mxCell>
-        <mxCell id="18" value="&lt;b&gt;schedule_kind&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;code&lt;br&gt;name" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="360" y="800" width="300" height="120" as="geometry" />
+        <mxCell id="18" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;schedule_kind&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;code&lt;br&gt;name" vertex="1">
+          <mxGeometry height="120" width="300" x="360" y="800" as="geometry" />
         </mxCell>
-        <mxCell id="19" value="&lt;b&gt;report_section&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;name&lt;br&gt;report_type&lt;br&gt;sort_order" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="700" y="800" width="300" height="120" as="geometry" />
+        <mxCell id="19" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;report_section&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;name&lt;br&gt;report_type&lt;br&gt;sort_order" vertex="1">
+          <mxGeometry height="120" width="300" x="700" y="800" as="geometry" />
         </mxCell>
-        <mxCell id="20" value="&lt;b&gt;account_alias&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;[FK] account_id&lt;br&gt;alias_text&lt;br&gt;source&lt;br&gt;is_active" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="1040" y="800" width="300" height="120" as="geometry" />
+        <mxCell id="20" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;account_alias&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;[FK] account_id&lt;br&gt;alias_text&lt;br&gt;source&lt;br&gt;is_active" vertex="1">
+          <mxGeometry height="120" width="300" x="1040" y="800" as="geometry" />
         </mxCell>
-        <mxCell id="21" value="&lt;b&gt;fund_alias&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;[FK] fund_id&lt;br&gt;alias_text&lt;br&gt;source&lt;br&gt;is_active" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="1380" y="800" width="300" height="120" as="geometry" />
+        <mxCell id="21" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;fund_alias&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;[FK] fund_id&lt;br&gt;alias_text&lt;br&gt;source&lt;br&gt;is_active" vertex="1">
+          <mxGeometry height="120" width="300" x="1380" y="800" as="geometry" />
         </mxCell>
-        <mxCell id="22" value="&lt;b&gt;account_report_section&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;[FK] account_id&lt;br&gt;[FK] report_section_id&lt;br&gt;sort_order&lt;br&gt;sign_policy" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="20" y="1060" width="300" height="120" as="geometry" />
+        <mxCell id="22" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;account_report_section&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;[FK] account_id&lt;br&gt;[FK] report_section_id&lt;br&gt;sort_order&lt;br&gt;sign_policy" vertex="1">
+          <mxGeometry height="120" width="300" x="20" y="1060" as="geometry" />
         </mxCell>
-        <mxCell id="23" value="&lt;b&gt;account_schedule_requirement&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;[FK] account_id&lt;br&gt;[FK] schedule_kind_id&lt;br&gt;is_required&lt;br&gt;notes" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="360" y="1060" width="300" height="120" as="geometry" />
+        <mxCell id="23" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;account_schedule_requirement&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;[FK] account_id&lt;br&gt;[FK] schedule_kind_id&lt;br&gt;is_required&lt;br&gt;notes" vertex="1">
+          <mxGeometry height="120" width="300" x="360" y="1060" as="geometry" />
         </mxCell>
-        <mxCell id="24" value="&lt;b&gt;account_subtype_schedule_default&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;subtype&lt;br&gt;[FK] schedule_kind_id" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="700" y="1060" width="300" height="120" as="geometry" />
+        <mxCell id="24" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;account_subtype_schedule_default&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;subtype&lt;br&gt;[FK] schedule_kind_id" vertex="1">
+          <mxGeometry height="120" width="300" x="700" y="1060" as="geometry" />
         </mxCell>
-        <mxCell id="25" value="&lt;b&gt;fund_transfer&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;transfer_date&lt;br&gt;[FK] from_fund_id&lt;br&gt;[FK] to_fund_id&lt;br&gt;amount&lt;br&gt;memo&lt;br&gt;status&lt;br&gt;[FK] posted_txn_id&lt;br&gt;created_at&lt;br&gt;updated_at" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="1040" y="1060" width="300" height="184" as="geometry" />
+        <mxCell id="25" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;fund_transfer&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;transfer_date&lt;br&gt;[FK] from_fund_id&lt;br&gt;[FK] to_fund_id&lt;br&gt;amount&lt;br&gt;memo&lt;br&gt;status&lt;br&gt;[FK] posted_txn_id&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
+          <mxGeometry height="184" width="300" x="1040" y="1060" as="geometry" />
         </mxCell>
-        <mxCell id="26" value="&lt;b&gt;donor&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;external_id&lt;br&gt;name&lt;br&gt;email&lt;br&gt;phone" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="1380" y="1060" width="300" height="120" as="geometry" />
+        <mxCell id="26" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;donor&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;external_id&lt;br&gt;name&lt;br&gt;email&lt;br&gt;phone" vertex="1">
+          <mxGeometry height="120" width="300" x="1380" y="1060" as="geometry" />
         </mxCell>
-        <mxCell id="27" value="&lt;b&gt;person&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;name&lt;br&gt;email&lt;br&gt;phone" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="20" y="1320" width="300" height="120" as="geometry" />
+        <mxCell id="27" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;person&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;name&lt;br&gt;email&lt;br&gt;phone" vertex="1">
+          <mxGeometry height="120" width="300" x="20" y="1320" as="geometry" />
         </mxCell>
-        <mxCell id="28" value="&lt;b&gt;undeposited_funds_item&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;date_sent_received&lt;br&gt;date_transfer_or_check&lt;br&gt;date_on_statement&lt;br&gt;name_of_person_business&lt;br&gt;details_notes&lt;br&gt;from_to_card_merchant&lt;br&gt;account_for_payment_or_deposit&lt;br&gt;amount&lt;br&gt;date_reversed&lt;br&gt;reversal_approved_by" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="360" y="1320" width="300" height="198" as="geometry" />
+        <mxCell id="28" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;undeposited_funds_item&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;date_sent_received&lt;br&gt;date_transfer_or_check&lt;br&gt;date_on_statement&lt;br&gt;name_of_person_business&lt;br&gt;details_notes&lt;br&gt;from_to_card_merchant&lt;br&gt;account_for_payment_or_deposit&lt;br&gt;amount&lt;br&gt;date_reversed&lt;br&gt;reversal_approved_by" vertex="1">
+          <mxGeometry height="198" width="300" x="360" y="1320" as="geometry" />
         </mxCell>
-        <mxCell id="29" value="&lt;b&gt;document&lt;/b&gt;&lt;br&gt;[PK] name&lt;br&gt;content" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="700" y="1320" width="300" height="120" as="geometry" />
+        <mxCell id="29" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;document&lt;/b&gt;&lt;br&gt;[PK] name&lt;br&gt;content" vertex="1">
+          <mxGeometry height="120" width="300" x="700" y="1320" as="geometry" />
         </mxCell>
-        <mxCell id="30" value="&lt;b&gt;json_storage&lt;/b&gt;&lt;br&gt;[PK] storage_key&lt;br&gt;payload" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="1040" y="1320" width="300" height="120" as="geometry" />
+        <mxCell id="30" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;json_storage&lt;/b&gt;&lt;br&gt;[PK] storage_key&lt;br&gt;payload" vertex="1">
+          <mxGeometry height="120" width="300" x="1040" y="1320" as="geometry" />
         </mxCell>
-        <mxCell id="31" value="&lt;b&gt;company_store&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;name&lt;br&gt;payload&lt;br&gt;updated_at" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="1380" y="1320" width="300" height="120" as="geometry" />
+        <mxCell id="31" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;company_store&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;name&lt;br&gt;payload&lt;br&gt;updated_at" vertex="1">
+          <mxGeometry height="120" width="300" x="1380" y="1320" as="geometry" />
         </mxCell>
-        <mxCell id="32" value="&lt;b&gt;bank_id_record&lt;/b&gt;&lt;br&gt;[PK] bank_id_record_id&lt;br&gt;bank_id&lt;br&gt;bank_name&lt;br&gt;account_id&lt;br&gt;account_type&lt;br&gt;created_at&lt;br&gt;updated_at" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="20" y="1580" width="300" height="142" as="geometry" />
+        <mxCell id="32" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;bank_id_record&lt;/b&gt;&lt;br&gt;[PK] bank_id_record_id&lt;br&gt;bank_id&lt;br&gt;bank_name&lt;br&gt;account_id&lt;br&gt;account_type&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
+          <mxGeometry height="142" width="300" x="20" y="1580" as="geometry" />
         </mxCell>
-        <mxCell id="33" value="&lt;b&gt;ledger_record&lt;/b&gt;&lt;br&gt;[PK] ledger_record_id&lt;br&gt;ledger_id&lt;br&gt;[FK] journal_entry_id&lt;br&gt;[FK] bank_id_record_id&lt;br&gt;created_at&lt;br&gt;updated_at" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="360" y="1580" width="300" height="128" as="geometry" />
+        <mxCell id="33" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;ledger_record&lt;/b&gt;&lt;br&gt;[PK] ledger_record_id&lt;br&gt;ledger_id&lt;br&gt;[FK] journal_entry_id&lt;br&gt;[FK] bank_id_record_id&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
+          <mxGeometry height="128" width="300" x="360" y="1580" as="geometry" />
         </mxCell>
-        <mxCell id="34" value="&lt;b&gt;banking_transaction_record&lt;/b&gt;&lt;br&gt;[PK] banking_record_id&lt;br&gt;[FK] bank_id_record_id&lt;br&gt;[FK] journal_txn_id&lt;br&gt;[FK] fund_id&lt;br&gt;transaction_date&lt;br&gt;transaction_id&lt;br&gt;transaction_type&lt;br&gt;cleared_state&lt;br&gt;amount&lt;br&gt;memo&lt;br&gt;created_at&lt;br&gt;updated_at" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="700" y="1580" width="300" height="212" as="geometry" />
+        <mxCell id="34" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;banking_transaction_record&lt;/b&gt;&lt;br&gt;[PK] banking_record_id&lt;br&gt;[FK] bank_id_record_id&lt;br&gt;[FK] journal_txn_id&lt;br&gt;[FK] fund_id&lt;br&gt;transaction_date&lt;br&gt;transaction_id&lt;br&gt;transaction_type&lt;br&gt;cleared_state&lt;br&gt;amount&lt;br&gt;memo&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
+          <mxGeometry height="212" width="300" x="700" y="1580" as="geometry" />
         </mxCell>
-        <mxCell id="35" value="&lt;b&gt;asset_record_detail&lt;/b&gt;&lt;br&gt;[PK] asset_record_id&lt;br&gt;asset_type&lt;br&gt;depreciation_method&lt;br&gt;details&lt;br&gt;date_acquired&lt;br&gt;date_sold&lt;br&gt;[FK] journal_txn_id&lt;br&gt;created_at&lt;br&gt;updated_at" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="1040" y="1580" width="300" height="170" as="geometry" />
+        <mxCell id="35" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;asset_record_detail&lt;/b&gt;&lt;br&gt;[PK] asset_record_id&lt;br&gt;asset_type&lt;br&gt;depreciation_method&lt;br&gt;details&lt;br&gt;date_acquired&lt;br&gt;date_sold&lt;br&gt;[FK] journal_txn_id&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
+          <mxGeometry height="170" width="300" x="1040" y="1580" as="geometry" />
         </mxCell>
-        <mxCell id="36" value="&lt;b&gt;inventory_asset_link&lt;/b&gt;&lt;br&gt;[PK] inventory_item_id&lt;br&gt;[PK,FK] asset_record_id&lt;br&gt;[FK] journal_txn_id&lt;br&gt;created_at&lt;br&gt;updated_at" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="1380" y="1580" width="300" height="120" as="geometry" />
+        <mxCell id="36" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;inventory_asset_link&lt;/b&gt;&lt;br&gt;[PK] inventory_item_id&lt;br&gt;[PK,FK] asset_record_id&lt;br&gt;[FK] journal_txn_id&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
+          <mxGeometry height="120" width="300" x="1380" y="1580" as="geometry" />
         </mxCell>
-        <mxCell id="37" value="&lt;b&gt;depreciation_run&lt;/b&gt;&lt;br&gt;[PK] depreciation_run_id&lt;br&gt;run_date&lt;br&gt;notes&lt;br&gt;created_at" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="20" y="1840" width="300" height="120" as="geometry" />
+        <mxCell id="37" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;depreciation_run&lt;/b&gt;&lt;br&gt;[PK] depreciation_run_id&lt;br&gt;run_date&lt;br&gt;notes&lt;br&gt;created_at" vertex="1">
+          <mxGeometry height="120" width="300" x="20" y="1840" as="geometry" />
         </mxCell>
-        <mxCell id="38" value="&lt;b&gt;depreciation_record&lt;/b&gt;&lt;br&gt;[PK] depreciation_record_id&lt;br&gt;[FK] depreciation_run_id&lt;br&gt;[FK] asset_record_id&lt;br&gt;net_depreciation&lt;br&gt;depreciation_date&lt;br&gt;depreciation_percentage&lt;br&gt;amortization_schedule&lt;br&gt;created_at&lt;br&gt;updated_at" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="360" y="1840" width="300" height="170" as="geometry" />
+        <mxCell id="38" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;depreciation_record&lt;/b&gt;&lt;br&gt;[PK] depreciation_record_id&lt;br&gt;[FK] depreciation_run_id&lt;br&gt;[FK] asset_record_id&lt;br&gt;net_depreciation&lt;br&gt;depreciation_date&lt;br&gt;depreciation_percentage&lt;br&gt;amortization_schedule&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
+          <mxGeometry height="170" width="300" x="360" y="1840" as="geometry" />
         </mxCell>
-        <mxCell id="39" value="&lt;b&gt;grant_record&lt;/b&gt;&lt;br&gt;[PK] grant_record_id&lt;br&gt;grant_id&lt;br&gt;grantor&lt;br&gt;amount&lt;br&gt;date_awarded_text&lt;br&gt;purpose&lt;br&gt;status&lt;br&gt;[FK] donor_id&lt;br&gt;[FK] person_id&lt;br&gt;[FK] fund_id&lt;br&gt;[FK] journal_txn_id&lt;br&gt;details&lt;br&gt;created_at&lt;br&gt;updated_at" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="700" y="1840" width="300" height="240" as="geometry" />
+        <mxCell id="39" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;grant_record&lt;/b&gt;&lt;br&gt;[PK] grant_record_id&lt;br&gt;grant_id&lt;br&gt;grantor&lt;br&gt;amount&lt;br&gt;date_awarded_text&lt;br&gt;purpose&lt;br&gt;status&lt;br&gt;[FK] donor_id&lt;br&gt;[FK] person_id&lt;br&gt;[FK] fund_id&lt;br&gt;[FK] journal_txn_id&lt;br&gt;details&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
+          <mxGeometry height="240" width="300" x="700" y="1840" as="geometry" />
         </mxCell>
-        <mxCell id="40" value="&lt;b&gt;sale_record&lt;/b&gt;&lt;br&gt;[PK] sale_id&lt;br&gt;sale_date_text&lt;br&gt;item&lt;br&gt;qty&lt;br&gt;unit_price&lt;br&gt;unit_cost&lt;br&gt;details&lt;br&gt;created_at&lt;br&gt;updated_at" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="1040" y="1840" width="300" height="170" as="geometry" />
+        <mxCell id="40" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;sale_record&lt;/b&gt;&lt;br&gt;[PK] sale_id&lt;br&gt;sale_date_text&lt;br&gt;item&lt;br&gt;qty&lt;br&gt;unit_price&lt;br&gt;unit_cost&lt;br&gt;details&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
+          <mxGeometry height="170" width="300" x="1040" y="1840" as="geometry" />
         </mxCell>
-        <mxCell id="41" value="account_number → account_number" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="5" target="4">
+        <mxCell id="41" edge="1" parent="1" source="5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="4" value="account_number → account_number">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="42" value="txn_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="8" target="6">
+        <mxCell id="42" edge="1" parent="1" source="8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="6" value="txn_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="43" value="account_number → account_number" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="8" target="4">
+        <mxCell id="43" edge="1" parent="1" source="8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="4" value="account_number → account_number">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="44" value="txn_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="9" target="6">
+        <mxCell id="44" edge="1" parent="1" source="9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="6" value="txn_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="45" value="txn_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="10" target="6">
+        <mxCell id="45" edge="1" parent="1" source="10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="6" value="txn_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="46" value="entry_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="10" target="8">
+        <mxCell id="46" edge="1" parent="1" source="10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="8" value="entry_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="47" value="payee_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="14" target="13">
+        <mxCell id="47" edge="1" parent="1" source="14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="13" value="payee_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="48" value="bank_account_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="14" target="4">
+        <mxCell id="48" edge="1" parent="1" source="14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="4" value="bank_account_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="49" value="txn_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="15" target="14">
+        <mxCell id="49" edge="1" parent="1" source="15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="14" value="txn_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="50" value="account_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="15" target="4">
+        <mxCell id="50" edge="1" parent="1" source="15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="4" value="account_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="51" value="fund_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="15" target="12">
+        <mxCell id="51" edge="1" parent="1" source="15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="12" value="fund_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="52" value="chart_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="4" target="11">
+        <mxCell id="52" edge="1" parent="1" source="4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="11" value="chart_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="53" value="parent_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="4" target="4">
+        <mxCell id="53" edge="1" parent="1" source="4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="4" value="parent_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="54" value="counterparty_person_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="10" target="27">
+        <mxCell id="54" edge="1" parent="1" source="10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="27" value="counterparty_person_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="55" value="journal_entry_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="33" target="8">
+        <mxCell id="55" edge="1" parent="1" source="33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="8" value="journal_entry_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="56" value="bank_id_record_id → bank_id_record_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="33" target="32">
+        <mxCell id="56" edge="1" parent="1" source="33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="32" value="bank_id_record_id → bank_id_record_id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="57" value="bank_id_record_id → bank_id_record_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="34" target="32">
+        <mxCell id="57" edge="1" parent="1" source="34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="32" value="bank_id_record_id → bank_id_record_id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="58" value="journal_txn_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="34" target="6">
+        <mxCell id="58" edge="1" parent="1" source="34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="6" value="journal_txn_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="59" value="fund_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="34" target="12">
+        <mxCell id="59" edge="1" parent="1" source="34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="12" value="fund_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="60" value="journal_txn_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="35" target="6">
+        <mxCell id="60" edge="1" parent="1" source="35" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="6" value="journal_txn_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="61" value="asset_record_id → asset_record_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="36" target="35">
+        <mxCell id="61" edge="1" parent="1" source="36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="35" value="asset_record_id → asset_record_id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="62" value="journal_txn_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="36" target="6">
+        <mxCell id="62" edge="1" parent="1" source="36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="6" value="journal_txn_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="63" value="depreciation_run_id → depreciation_run_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="38" target="37">
+        <mxCell id="63" edge="1" parent="1" source="38" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="37" value="depreciation_run_id → depreciation_run_id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="64" value="asset_record_id → asset_record_id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="38" target="35">
+        <mxCell id="64" edge="1" parent="1" source="38" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="35" value="asset_record_id → asset_record_id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="65" value="donor_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="39" target="26">
+        <mxCell id="65" edge="1" parent="1" source="39" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="26" value="donor_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="66" value="person_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="39" target="27">
+        <mxCell id="66" edge="1" parent="1" source="39" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="27" value="person_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="67" value="fund_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="39" target="12">
+        <mxCell id="67" edge="1" parent="1" source="39" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="12" value="fund_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="68" value="journal_txn_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" edge="1" parent="1" source="39" target="6">
+        <mxCell id="68" edge="1" parent="1" source="39" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="6" value="journal_txn_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="69" value="parent_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;dashed=1;dashPattern=8 6;endFill=0;strokeColor=#999999;fontSize=10;" edge="1" parent="1" source="12" target="12">
+        <mxCell id="69" edge="1" parent="1" source="12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;dashed=1;dashPattern=8 6;endFill=0;strokeColor=#999999;fontSize=10;" target="12" value="parent_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="70" value="account_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;dashed=1;dashPattern=8 6;endFill=0;strokeColor=#999999;fontSize=10;" edge="1" parent="1" source="20" target="4">
+        <mxCell id="70" edge="1" parent="1" source="20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;dashed=1;dashPattern=8 6;endFill=0;strokeColor=#999999;fontSize=10;" target="4" value="account_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="71" value="fund_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;dashed=1;dashPattern=8 6;endFill=0;strokeColor=#999999;fontSize=10;" edge="1" parent="1" source="21" target="12">
+        <mxCell id="71" edge="1" parent="1" source="21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;dashed=1;dashPattern=8 6;endFill=0;strokeColor=#999999;fontSize=10;" target="12" value="fund_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="72" value="activity_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;dashed=1;dashPattern=8 6;endFill=0;strokeColor=#999999;fontSize=10;" edge="1" parent="1" source="15" target="16">
+        <mxCell id="72" edge="1" parent="1" source="15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;dashed=1;dashPattern=8 6;endFill=0;strokeColor=#999999;fontSize=10;" target="16" value="activity_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="73" value="merchant_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;dashed=1;dashPattern=8 6;endFill=0;strokeColor=#999999;fontSize=10;" edge="1" parent="1" source="15" target="17">
+        <mxCell id="73" edge="1" parent="1" source="15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;dashed=1;dashPattern=8 6;endFill=0;strokeColor=#999999;fontSize=10;" target="17" value="merchant_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="74" value="from_fund_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;dashed=1;dashPattern=8 6;endFill=0;strokeColor=#999999;fontSize=10;" edge="1" parent="1" source="25" target="12">
+        <mxCell id="74" edge="1" parent="1" source="25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;dashed=1;dashPattern=8 6;endFill=0;strokeColor=#999999;fontSize=10;" target="12" value="from_fund_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="75" value="to_fund_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;dashed=1;dashPattern=8 6;endFill=0;strokeColor=#999999;fontSize=10;" edge="1" parent="1" source="25" target="12">
+        <mxCell id="75" edge="1" parent="1" source="25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;dashed=1;dashPattern=8 6;endFill=0;strokeColor=#999999;fontSize=10;" target="12" value="to_fund_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="76" value="posted_txn_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;dashed=1;dashPattern=8 6;endFill=0;strokeColor=#999999;fontSize=10;" edge="1" parent="1" source="25" target="14">
+        <mxCell id="76" edge="1" parent="1" source="25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;dashed=1;dashPattern=8 6;endFill=0;strokeColor=#999999;fontSize=10;" target="14" value="posted_txn_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="77" value="account_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;dashed=1;dashPattern=8 6;endFill=0;strokeColor=#999999;fontSize=10;" edge="1" parent="1" source="22" target="4">
+        <mxCell id="77" edge="1" parent="1" source="22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;dashed=1;dashPattern=8 6;endFill=0;strokeColor=#999999;fontSize=10;" target="4" value="account_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="78" value="report_section_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;dashed=1;dashPattern=8 6;endFill=0;strokeColor=#999999;fontSize=10;" edge="1" parent="1" source="22" target="19">
+        <mxCell id="78" edge="1" parent="1" source="22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;dashed=1;dashPattern=8 6;endFill=0;strokeColor=#999999;fontSize=10;" target="19" value="report_section_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="79" value="account_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;dashed=1;dashPattern=8 6;endFill=0;strokeColor=#999999;fontSize=10;" edge="1" parent="1" source="23" target="4">
+        <mxCell id="79" edge="1" parent="1" source="23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;dashed=1;dashPattern=8 6;endFill=0;strokeColor=#999999;fontSize=10;" target="4" value="account_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="80" value="schedule_kind_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;dashed=1;dashPattern=8 6;endFill=0;strokeColor=#999999;fontSize=10;" edge="1" parent="1" source="23" target="18">
+        <mxCell id="80" edge="1" parent="1" source="23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;dashed=1;dashPattern=8 6;endFill=0;strokeColor=#999999;fontSize=10;" target="18" value="schedule_kind_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="81" value="schedule_kind_id → id" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;dashed=1;dashPattern=8 6;endFill=0;strokeColor=#999999;fontSize=10;" edge="1" parent="1" source="24" target="18">
+        <mxCell id="81" edge="1" parent="1" source="24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;dashed=1;dashPattern=8 6;endFill=0;strokeColor=#999999;fontSize=10;" target="18" value="schedule_kind_id → id">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
       </root>
