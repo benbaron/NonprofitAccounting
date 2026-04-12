@@ -356,7 +356,7 @@
           <mxGeometry height="198" width="300" x="70" y="1316" as="geometry" />
         </mxCell>
         <mxCell id="29" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;document&lt;/b&gt;&lt;br&gt;[PK] name&lt;br&gt;content" vertex="1">
-          <mxGeometry height="120" width="300" x="80" y="1560" as="geometry" />
+          <mxGeometry height="120" width="300" x="70" y="1560" as="geometry" />
         </mxCell>
         <mxCell id="30" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;json_storage&lt;/b&gt;&lt;br&gt;[PK] storage_key&lt;br&gt;payload" vertex="1">
           <mxGeometry height="120" width="300" x="1380" y="40" as="geometry" />
