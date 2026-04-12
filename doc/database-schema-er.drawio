@@ -189,10 +189,10 @@
           <mxGeometry height="120" width="300" x="640" y="1240" as="geometry" />
         </mxCell>
         <mxCell id="13" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;depreciation_run&lt;/b&gt;&lt;br&gt;[PK] depreciation_run_id&lt;br&gt;run_date&lt;br&gt;notes&lt;br&gt;created_at" vertex="1">
-          <mxGeometry height="120" width="300" x="460" y="2030" as="geometry" />
+          <mxGeometry height="120" width="300" x="280" y="2030" as="geometry" />
         </mxCell>
         <mxCell id="14" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;depreciation_record&lt;/b&gt;&lt;br&gt;[PK] depreciation_record_id&lt;br&gt;[FK] depreciation_run_id&lt;br&gt;[FK] asset_record_id&lt;br&gt;net_depreciation&lt;br&gt;depreciation_date&lt;br&gt;depreciation_percentage&lt;br&gt;amortization_schedule&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
-          <mxGeometry height="170" width="300" x="459.99999999999994" y="1750" as="geometry" />
+          <mxGeometry height="170" width="300" x="279.99999999999994" y="1760" as="geometry" />
         </mxCell>
         <mxCell id="15" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;grant_record&lt;/b&gt;&lt;br&gt;[PK] grant_record_id&lt;br&gt;grant_id&lt;br&gt;grantor&lt;br&gt;amount&lt;br&gt;date_awarded_text&lt;br&gt;purpose&lt;br&gt;status&lt;br&gt;[FK] donor_id&lt;br&gt;[FK] person_id&lt;br&gt;[FK] fund_id&lt;br&gt;[FK] journal_txn_id&lt;br&gt;details&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
           <mxGeometry height="240" width="300" x="1070" y="950" as="geometry" />
