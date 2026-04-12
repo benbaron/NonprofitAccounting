@@ -19,19 +19,27 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import nonprofitbookkeeping.model.AccountingTransaction;
+import nonprofitbookkeeping.persistence.CompanyDataRepository;
 import org.nonprofitbookkeeping.ui.AppPanel;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.List;
 
 /**
- * Ledger register placeholder panel.
+ * Ledger register panel backed by persisted journal transactions.
  */
 public class LedgerRegisterPanel implements AppPanel
 {
 
 	private final BorderPane root = new BorderPane();
-	private final TableView<Row> txnTable = new TableView<>();
-	private final ObservableList<Row> allRows = FXCollections.observableArrayList();
+	private final TableView<AccountingTransaction> txnTable = new TableView<>();
+	private final ObservableList<AccountingTransaction> allRows =
+		FXCollections.observableArrayList();
+	private final Label status = new Label();
+	private final CompanyDataRepository companyDataRepository =
+		new CompanyDataRepository();
 
 	/**
 	 * Creates the ledger register panel.
@@ -49,18 +57,20 @@ public class LedgerRegisterPanel implements AppPanel
 
 		Button newTxn = new Button("+ New Transaction");
 		Button open = new Button("Open");
-		HBox actions = new HBox(8, newTxn, open);
+		Button refresh = new Button("Refresh");
+		HBox actions = new HBox(8, newTxn, open, refresh);
 
-		root.setTop(new VBox(6, title, range, actions, new Separator()));
+		root.setTop(new VBox(6, title, range, actions, status, new Separator()));
 
 		buildTable();
 		root.setCenter(txnTable);
 
 		newTxn.setOnAction(e -> onNew());
 		open.setOnAction(e -> openSelected());
+		refresh.setOnAction(e -> loadLiveData());
 
 		txnTable.setRowFactory(tv -> {
-			TableRow<Row> r = new TableRow<>();
+			TableRow<AccountingTransaction> r = new TableRow<>();
 			r.setOnMouseClicked(e -> {
 				if (r.isEmpty())
 				{
@@ -82,30 +92,44 @@ public class LedgerRegisterPanel implements AppPanel
 			return r;
 		});
 
-		allRows.addAll(
-			new Row("2026-01-05", "Payee A", "Memo A", "Cash/Bank", "Posted"),
-			new Row("2026-01-12", "Payee B", "Memo B", "Cash/Bank", "Posted")
-		);
 		DateRangeContext.selectedProperty().addListener((obs, oldRange, newRange) ->
 			applyDateRangeFilter(newRange));
-		applyDateRangeFilter(DateRangeContext.get());
+		loadLiveData();
 	}
 
 	private void buildTable()
 	{
 		txnTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-		txnTable.getColumns().add(col("Date", Row::date));
-		txnTable.getColumns().add(col("Payee", Row::payee));
-		txnTable.getColumns().add(col("Memo", Row::memo));
-		txnTable.getColumns().add(col("Bank", Row::bank));
-		txnTable.getColumns().add(col("Status", Row::status));
+		txnTable.getColumns().add(col("Date", tx -> safe(tx.getDate())));
+		txnTable.getColumns().add(col("Payee", tx -> safe(tx.getToFrom())));
+		txnTable.getColumns().add(col("Memo", tx -> safe(tx.getMemo())));
+		txnTable.getColumns().add(col("Bank", tx -> safe(tx.getBank())));
+		txnTable.getColumns().add(col("Status", tx -> tx.isReconciled() ? "Reconciled" : "Unreconciled"));
+	}
+
+	private void loadLiveData()
+	{
+		try
+		{
+			List<AccountingTransaction> transactions =
+				this.companyDataRepository.load().getLedger().getTransactions();
+			this.allRows.setAll(transactions);
+			applyDateRangeFilter(DateRangeContext.get());
+			status.setText("Loaded " + transactions.size() + " transaction(s) from database.");
+		}
+		catch (SQLException | IllegalStateException ex)
+		{
+			this.allRows.clear();
+			this.txnTable.getItems().clear();
+			status.setText("Unable to load live ledger data: " + ex.getMessage());
+		}
 	}
 
 	private void applyDateRangeFilter(DateRange range)
 	{
 		DateRange effectiveRange = range == null ? DateRange.ALL : range;
 		txnTable.getItems().setAll(allRows.stream()
-			.filter(row -> isWithinRange(row.date(), effectiveRange))
+			.filter(row -> isWithinRange(row.getDate(), effectiveRange))
 			.toList());
 	}
 
@@ -134,36 +158,35 @@ public class LedgerRegisterPanel implements AppPanel
 		}
 	}
 
-	private TableColumn<Row, String> col(String name,
-		java.util.function.Function<Row, String> getter)
+	private TableColumn<AccountingTransaction, String> col(String name,
+		java.util.function.Function<AccountingTransaction, String> getter)
 	{
-		TableColumn<Row, String> c = new TableColumn<>(name);
+		TableColumn<AccountingTransaction, String> c = new TableColumn<>(name);
 		c.setCellValueFactory(v -> new SimpleStringProperty(getter.apply(v.getValue())));
 		return c;
 	}
 
 	private void openSelected()
 	{
-		Row sel = txnTable.getSelectionModel().getSelectedItem();
+		AccountingTransaction sel = txnTable.getSelectionModel().getSelectedItem();
 		if (sel != null)
 		{
 			openRow(sel);
 		}
 	}
 
-	private void openRow(Row row)
+	private void openRow(AccountingTransaction row)
 	{
-		Alert a = new Alert(Alert.AlertType.INFORMATION,
-			"Open in Transaction Editor (placeholder): " + row.date());
-		a.setHeaderText("Open Transaction");
-		a.showAndWait();
+		LedgerSelectionContext.setSelectedTransaction(row);
+		LedgerSelectionContext.setSelectedSubpanel(LedgerSelectionContext.LedgerSubpanel.EDITOR);
 	}
 
-	private void showDetails(Row row)
+	private void showDetails(AccountingTransaction row)
 	{
 		Alert a = new Alert(Alert.AlertType.INFORMATION,
-			"Details placeholder for txn:\nDate: " + row.date() + "\nPayee: " + row.payee()
-				+ "\nMemo: " + row.memo());
+			"Date: " + safe(row.getDate()) + "\nPayee: " + safe(row.getToFrom())
+				+ "\nMemo: " + safe(row.getMemo()) + "\nEntries: "
+				+ (row.getEntries() == null ? 0 : row.getEntries().size()));
 		a.setHeaderText("Details");
 		a.showAndWait();
 	}
@@ -183,15 +206,16 @@ public class LedgerRegisterPanel implements AppPanel
 	@Override
 	public void onNew()
 	{
-		Alert a = new Alert(Alert.AlertType.INFORMATION,
-			"New transaction (placeholder) -> opens Transaction Editor.");
-		a.setHeaderText("New Transaction");
-		a.showAndWait();
+		AccountingTransaction draft = new AccountingTransaction();
+		draft.setDate(LocalDate.now().toString());
+		draft.setMemo("");
+		draft.setToFrom("");
+		LedgerSelectionContext.setSelectedTransaction(draft);
+		LedgerSelectionContext.setSelectedSubpanel(LedgerSelectionContext.LedgerSubpanel.EDITOR);
 	}
 
-	private record Row(String date, String payee, String memo, String bank,
-		String status)
+	private String safe(String value)
 	{
+		return value == null ? "" : value;
 	}
-
 }
