@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="codex" pages="4">
   <diagram id="domain---legacy-ledger" name="Domain - Legacy Ledger">
-    <mxGraphModel dx="870" dy="537" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3600" pageHeight="2600" math="0" shadow="0">
+    <mxGraphModel dx="1086" dy="599" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3600" pageHeight="2600" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -20,13 +20,13 @@
           <mxGeometry height="120" width="300" x="1140" y="640" as="geometry" />
         </mxCell>
         <mxCell id="7" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;txn_supplemental_line&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;[FK] txn_id&lt;br&gt;[FK] entry_id&lt;br&gt;line_kind&lt;br&gt;[FK] counterparty_person_id&lt;br&gt;description&lt;br&gt;reference&lt;br&gt;amount&lt;br&gt;due_date&lt;br&gt;start_date&lt;br&gt;end_date&lt;br&gt;notes&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
-          <mxGeometry height="240" width="300" x="431" y="911" as="geometry" />
+          <mxGeometry height="240" width="300" x="580" y="941" as="geometry" />
         </mxCell>
         <mxCell id="8" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;person&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;name&lt;br&gt;email&lt;br&gt;phone" vertex="1">
           <mxGeometry height="120" width="300" x="41" y="1001" as="geometry" />
         </mxCell>
         <mxCell id="9" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;donor&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;external_id&lt;br&gt;name&lt;br&gt;email&lt;br&gt;phone" vertex="1">
-          <mxGeometry height="120" width="300" x="630" y="70" as="geometry" />
+          <mxGeometry height="120" width="300" x="590" y="50" as="geometry" />
         </mxCell>
         <mxCell id="10" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;bank_statement&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;bank_name&lt;br&gt;account_label&lt;br&gt;statement_date&lt;br&gt;statement_balance&lt;br&gt;ledger_balance&lt;br&gt;outstanding&lt;br&gt;bank_after_outstanding&lt;br&gt;difference&lt;br&gt;ledger_status&lt;br&gt;institution_name&lt;br&gt;institution_contact&lt;br&gt;account_number&lt;br&gt;account_type&lt;br&gt;signature_requirement&lt;br&gt;interest_bearing&lt;br&gt;currency" vertex="1">
           <mxGeometry height="282" width="300" x="1040" y="280" as="geometry" />
@@ -64,7 +64,7 @@
     </mxGraphModel>
   </diagram>
   <diagram id="domain---canonical-gl" name="Domain - Canonical GL">
-    <mxGraphModel dx="4494" dy="3093" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3600" pageHeight="2600" math="0" shadow="0">
+    <mxGraphModel dx="4494" dy="493" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3600" pageHeight="2600" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -87,7 +87,7 @@
           <mxGeometry height="170" width="300" x="-570.0016387812161" y="319.99763465885866" as="geometry" />
         </mxCell>
         <mxCell id="8" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;activity&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;code&lt;br&gt;name&lt;br&gt;is_active" vertex="1">
-          <mxGeometry height="120" width="300" x="-460" y="-30" as="geometry" />
+          <mxGeometry height="120" width="300" x="-790" y="120" as="geometry" />
         </mxCell>
         <mxCell id="9" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;merchant&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;name&lt;br&gt;is_active" vertex="1">
           <mxGeometry height="120" width="300" x="720" y="270" as="geometry" />
@@ -137,11 +137,11 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="24" edge="1" parent="1" source="3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;" target="3" value="parent_id → id">
-          <mxGeometry relative="1" y="28" as="geometry">
-            <mxPoint x="-8" y="-20" as="offset" />
+          <mxGeometry relative="1" x="0.69" y="40" as="geometry">
+            <mxPoint as="offset" />
             <Array as="points">
-              <mxPoint x="-100" y="520" />
-              <mxPoint x="-180" y="520" />
+              <mxPoint x="-100" y="600" />
+              <mxPoint x="-180" y="600" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -205,10 +205,10 @@
           <mxGeometry height="142" width="300" x="93.90966650165356" y="800.0005559199508" as="geometry" />
         </mxCell>
         <mxCell id="19" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;fund&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;code&lt;br&gt;name&lt;br&gt;fund_type&lt;br&gt;[FK] parent_id&lt;br&gt;is_active&lt;br&gt;effective_from&lt;br&gt;effective_to&lt;br&gt;restriction_text&lt;br&gt;created_at&lt;br&gt;updated_at" vertex="1">
-          <mxGeometry height="198" width="300" x="1262.91" y="1590" as="geometry" />
+          <mxGeometry height="198" width="300" x="1242.91" y="1412" as="geometry" />
         </mxCell>
         <mxCell id="20" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="&lt;b&gt;donor&lt;/b&gt;&lt;br&gt;[PK] id&lt;br&gt;external_id&lt;br&gt;name&lt;br&gt;email&lt;br&gt;phone" vertex="1">
-          <mxGeometry height="120" width="300" x="890.0000000000001" y="1600" as="geometry" />
+          <mxGeometry height="120" width="300" x="850.0000000000001" y="1490" as="geometry" />
         </mxCell>
         <mxCell id="22" edge="1" parent="1" source="18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#666666;fontSize=10;noEdgeStyle=1;" target="17" value="txn_id → id">
           <mxGeometry relative="1" as="geometry" />
