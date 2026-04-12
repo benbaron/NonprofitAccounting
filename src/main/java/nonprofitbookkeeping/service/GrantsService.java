@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
 
 import nonprofitbookkeeping.model.Grant;
+import nonprofitbookkeeping.persistence.GrantRecordRepository;
 import nonprofitbookkeeping.persistence.JsonStorageRepository;
 
 // TODO: Auto-generated Javadoc
@@ -51,6 +52,10 @@ public class GrantsService
 	/** The json repository. */
 	private final JsonStorageRepository jsonRepository =
 		new JsonStorageRepository();
+
+	/** Canonical repository for relational grant rows. */
+	private final GrantRecordRepository grantRecordRepository =
+		new GrantRecordRepository();
 	
 	/**
 	 * Constructs a new GrantsService, initializing an empty list for storing grants.
@@ -171,9 +176,10 @@ public class GrantsService
 		
 		try
 		{
+			this.grantRecordRepository.replaceStandaloneGrants(getAllGrants());
 			String payload = MAPPER.writeValueAsString(getAllGrants());
 			this.jsonRepository.save(STORAGE_KEY, payload);
-			LOGGER.info("Grants saved to database storage key '{}'.",
+			LOGGER.info("Grants saved to grant_record and legacy storage key '{}'.",
 				STORAGE_KEY);
 		}
 		catch (SQLException e)
@@ -203,6 +209,14 @@ public class GrantsService
 		
 		try
 		{
+			List<Grant> relational = this.grantRecordRepository.listStandaloneGrants();
+			if (!relational.isEmpty())
+			{
+				this.grants.addAll(relational);
+				LOGGER.info("Grants loaded from grant_record table.");
+				return;
+			}
+
 			this.jsonRepository.load(STORAGE_KEY)
 				.ifPresent(payload ->
 				{

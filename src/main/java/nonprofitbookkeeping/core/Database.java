@@ -181,6 +181,7 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 			ensurePeopleAndCounterparty(st);
 			runReconciledDataBackfill(c);
 			ensureRemainingLegacyTables(st);
+			ensureOperationalLinkageTables(st);
 		}
 		
 	}
@@ -665,6 +666,208 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 			      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 			    )
 			""");
+	}
+
+	private void ensureOperationalLinkageTables(Statement st) throws SQLException
+	{
+		st.execute("""
+			    CREATE TABLE IF NOT EXISTS bank_id_record(
+			      bank_id_record_id VARCHAR(255) PRIMARY KEY,
+			      bank_id VARCHAR(255) NOT NULL,
+			      bank_name VARCHAR(255),
+			      account_id VARCHAR(255),
+			      account_type VARCHAR(64),
+			      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+			      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+			      UNIQUE(bank_id, account_id)
+			    )
+			""");
+		st.execute("""
+			    CREATE TABLE IF NOT EXISTS ledger_record(
+			      ledger_record_id VARCHAR(255) PRIMARY KEY,
+			      ledger_id VARCHAR(128) NOT NULL DEFAULT 'PRIMARY_LEDGER',
+			      journal_entry_id BIGINT,
+			      bank_id_record_id VARCHAR(255),
+			      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+			      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+			    )
+			""");
+		st.execute("""
+			    CREATE TABLE IF NOT EXISTS banking_transaction_record(
+			      banking_record_id VARCHAR(255) PRIMARY KEY,
+			      bank_id_record_id VARCHAR(255),
+			      journal_txn_id INT,
+			      fund_id BIGINT,
+			      transaction_date DATE,
+			      transaction_id VARCHAR(255),
+			      check_info VARCHAR(255),
+			      transaction_type VARCHAR(64),
+			      cleared_state VARCHAR(64),
+			      amount DECIMAL(19,2),
+			      memo VARCHAR(500),
+			      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+			      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+			    )
+			""");
+		st.execute("""
+			    CREATE TABLE IF NOT EXISTS asset_record_detail(
+			      asset_record_id VARCHAR(255) PRIMARY KEY,
+			      asset_type VARCHAR(128),
+			      depreciation_method VARCHAR(64),
+			      details CLOB,
+			      date_acquired DATE,
+			      date_sold DATE,
+			      journal_txn_id INT,
+			      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+			      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+			    )
+			""");
+		st.execute("""
+			    CREATE TABLE IF NOT EXISTS inventory_asset_link(
+			      inventory_item_id VARCHAR(255) NOT NULL,
+			      asset_record_id VARCHAR(255) NOT NULL,
+			      journal_txn_id INT,
+			      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+			      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+			      PRIMARY KEY(inventory_item_id, asset_record_id)
+			    )
+			""");
+		st.execute("""
+			    CREATE TABLE IF NOT EXISTS depreciation_run(
+			      depreciation_run_id VARCHAR(255) PRIMARY KEY,
+			      run_date DATE NOT NULL,
+			      notes VARCHAR(500),
+			      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+			    )
+			""");
+		st.execute("""
+			    CREATE TABLE IF NOT EXISTS depreciation_record(
+			      depreciation_record_id VARCHAR(255) PRIMARY KEY,
+			      depreciation_run_id VARCHAR(255),
+			      asset_record_id VARCHAR(255),
+			      net_depreciation DECIMAL(19,2),
+			      depreciation_date DATE,
+			      depreciation_percentage DECIMAL(9,4),
+			      amortization_schedule VARCHAR(64),
+			      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+			      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+			    )
+			""");
+		st.execute("""
+			    CREATE TABLE IF NOT EXISTS grant_record(
+			      grant_record_id VARCHAR(255) PRIMARY KEY,
+			      grant_id VARCHAR(255),
+			      grantor VARCHAR(255),
+			      amount DECIMAL(19,2),
+			      date_awarded_text VARCHAR(64),
+			      purpose VARCHAR(500),
+			      status VARCHAR(64),
+			      donor_id BIGINT,
+			      person_id BIGINT,
+			      fund_id BIGINT,
+			      journal_txn_id INT,
+			      details CLOB,
+			      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+			      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+			    )
+			""");
+		st.execute("""
+			    ALTER TABLE ledger_record
+			    ADD CONSTRAINT IF NOT EXISTS fk_ledger_record_journal_entry
+			    FOREIGN KEY (journal_entry_id) REFERENCES journal_entry(id) ON DELETE SET NULL
+			""");
+		st.execute("""
+			    ALTER TABLE ledger_record
+			    ADD CONSTRAINT IF NOT EXISTS fk_ledger_record_bank_id
+			    FOREIGN KEY (bank_id_record_id) REFERENCES bank_id_record(bank_id_record_id) ON DELETE SET NULL
+			""");
+		st.execute("""
+			    ALTER TABLE banking_transaction_record
+			    ADD CONSTRAINT IF NOT EXISTS fk_banking_txn_bank_id
+			    FOREIGN KEY (bank_id_record_id) REFERENCES bank_id_record(bank_id_record_id) ON DELETE SET NULL
+			""");
+		st.execute("""
+			    ALTER TABLE banking_transaction_record
+			    ADD CONSTRAINT IF NOT EXISTS fk_banking_txn_journal
+			    FOREIGN KEY (journal_txn_id) REFERENCES journal_transaction(id) ON DELETE SET NULL
+			""");
+		st.execute("""
+			    ALTER TABLE banking_transaction_record
+			    ADD CONSTRAINT IF NOT EXISTS fk_banking_txn_fund
+			    FOREIGN KEY (fund_id) REFERENCES fund(id) ON DELETE SET NULL
+			""");
+		st.execute("""
+			    ALTER TABLE asset_record_detail
+			    ADD CONSTRAINT IF NOT EXISTS fk_asset_record_journal
+			    FOREIGN KEY (journal_txn_id) REFERENCES journal_transaction(id) ON DELETE SET NULL
+			""");
+		st.execute("""
+			    ALTER TABLE inventory_asset_link
+			    ADD CONSTRAINT IF NOT EXISTS fk_inventory_asset_asset
+			    FOREIGN KEY (asset_record_id) REFERENCES asset_record_detail(asset_record_id) ON DELETE CASCADE
+			""");
+		st.execute("""
+			    ALTER TABLE inventory_asset_link
+			    ADD CONSTRAINT IF NOT EXISTS fk_inventory_asset_journal
+			    FOREIGN KEY (journal_txn_id) REFERENCES journal_transaction(id) ON DELETE SET NULL
+			""");
+		st.execute("""
+			    ALTER TABLE depreciation_record
+			    ADD CONSTRAINT IF NOT EXISTS fk_depreciation_record_run
+			    FOREIGN KEY (depreciation_run_id) REFERENCES depreciation_run(depreciation_run_id) ON DELETE SET NULL
+			""");
+		st.execute("""
+			    ALTER TABLE depreciation_record
+			    ADD CONSTRAINT IF NOT EXISTS fk_depreciation_record_asset
+			    FOREIGN KEY (asset_record_id) REFERENCES asset_record_detail(asset_record_id) ON DELETE SET NULL
+			""");
+		st.execute("""
+			    ALTER TABLE grant_record
+			    ADD CONSTRAINT IF NOT EXISTS fk_grant_record_donor
+			    FOREIGN KEY (donor_id) REFERENCES donor(id) ON DELETE SET NULL
+			""");
+		st.execute("""
+			    ALTER TABLE grant_record
+			    ADD CONSTRAINT IF NOT EXISTS fk_grant_record_person
+			    FOREIGN KEY (person_id) REFERENCES person(id) ON DELETE SET NULL
+			""");
+		st.execute("""
+			    ALTER TABLE grant_record
+			    ADD CONSTRAINT IF NOT EXISTS fk_grant_record_fund
+			    FOREIGN KEY (fund_id) REFERENCES fund(id) ON DELETE SET NULL
+			""");
+		st.execute("""
+			    ALTER TABLE grant_record
+			    ADD CONSTRAINT IF NOT EXISTS fk_grant_record_journal
+			    FOREIGN KEY (journal_txn_id) REFERENCES journal_transaction(id) ON DELETE SET NULL
+			""");
+		st.execute(
+			"ALTER TABLE grant_record ADD COLUMN IF NOT EXISTS grantor VARCHAR(255);");
+		st.execute(
+			"ALTER TABLE grant_record ADD COLUMN IF NOT EXISTS amount DECIMAL(19,2);");
+		st.execute(
+			"ALTER TABLE grant_record ADD COLUMN IF NOT EXISTS date_awarded_text VARCHAR(64);");
+		st.execute(
+			"ALTER TABLE grant_record ADD COLUMN IF NOT EXISTS purpose VARCHAR(500);");
+		st.execute(
+			"ALTER TABLE grant_record ADD COLUMN IF NOT EXISTS status VARCHAR(64);");
+		st.execute(
+			"CREATE INDEX IF NOT EXISTS grant_record_grant_id_idx ON grant_record(grant_id);");
+		st.execute("""
+			    CREATE TABLE IF NOT EXISTS sale_record(
+			      sale_id VARCHAR(255) PRIMARY KEY,
+			      sale_date_text VARCHAR(64),
+			      item VARCHAR(255),
+			      qty INT NOT NULL,
+			      unit_price DECIMAL(19,2),
+			      unit_cost DECIMAL(19,2),
+			      details CLOB,
+			      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+			      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+			    )
+			""");
+		st.execute(
+			"CREATE INDEX IF NOT EXISTS sale_record_date_idx ON sale_record(sale_date_text);");
 	}
 	
 	private void runReconciledDataBackfill(Connection c) throws SQLException
