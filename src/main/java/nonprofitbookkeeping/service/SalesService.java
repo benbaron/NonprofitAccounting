@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import nonprofitbookkeeping.model.SaleRecord;
 import nonprofitbookkeeping.persistence.DocumentRepository;
+import nonprofitbookkeeping.persistence.SaleRecordRepository;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +35,10 @@ public class SalesService
 	
 	/** In-memory list of sales. */
 	private final List<SaleRecord> sales;
+
+	/** Canonical relational repository for sales records. */
+	private final SaleRecordRepository saleRecordRepository =
+		new SaleRecordRepository();
 	
 	public SalesService()
 	{
@@ -79,9 +84,10 @@ public class SalesService
 		
 		try
 		{
+			this.saleRecordRepository.replaceAll(listSales());
 			String payload = MAPPER.writeValueAsString(listSales());
 			new DocumentRepository().upsert(DOCUMENT_NAME, payload);
-			LOGGER.info("Sales saved to database document '{}'.",
+			LOGGER.info("Sales saved to sale_record and legacy document '{}'.",
 				DOCUMENT_NAME);
 		}
 		catch (SQLException e)
@@ -98,6 +104,14 @@ public class SalesService
 		
 		try
 		{
+			List<SaleRecord> relational = this.saleRecordRepository.listAll();
+			if (!relational.isEmpty())
+			{
+				this.sales.addAll(relational);
+				LOGGER.info("Sales loaded from sale_record table.");
+				return;
+			}
+
 			new DocumentRepository().find(DOCUMENT_NAME)
 				.ifPresent(payload ->
 				{

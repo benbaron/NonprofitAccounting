@@ -757,6 +757,11 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 			    CREATE TABLE IF NOT EXISTS grant_record(
 			      grant_record_id VARCHAR(255) PRIMARY KEY,
 			      grant_id VARCHAR(255),
+			      grantor VARCHAR(255),
+			      amount DECIMAL(19,2),
+			      date_awarded_text VARCHAR(64),
+			      purpose VARCHAR(500),
+			      status VARCHAR(64),
 			      donor_id BIGINT,
 			      person_id BIGINT,
 			      fund_id BIGINT,
@@ -836,6 +841,33 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 			    ADD CONSTRAINT IF NOT EXISTS fk_grant_record_journal
 			    FOREIGN KEY (journal_txn_id) REFERENCES journal_transaction(id) ON DELETE SET NULL
 			""");
+		st.execute(
+			"ALTER TABLE grant_record ADD COLUMN IF NOT EXISTS grantor VARCHAR(255);");
+		st.execute(
+			"ALTER TABLE grant_record ADD COLUMN IF NOT EXISTS amount DECIMAL(19,2);");
+		st.execute(
+			"ALTER TABLE grant_record ADD COLUMN IF NOT EXISTS date_awarded_text VARCHAR(64);");
+		st.execute(
+			"ALTER TABLE grant_record ADD COLUMN IF NOT EXISTS purpose VARCHAR(500);");
+		st.execute(
+			"ALTER TABLE grant_record ADD COLUMN IF NOT EXISTS status VARCHAR(64);");
+		st.execute(
+			"CREATE INDEX IF NOT EXISTS grant_record_grant_id_idx ON grant_record(grant_id);");
+		st.execute("""
+			    CREATE TABLE IF NOT EXISTS sale_record(
+			      sale_id VARCHAR(255) PRIMARY KEY,
+			      sale_date_text VARCHAR(64),
+			      item VARCHAR(255),
+			      qty INT NOT NULL,
+			      unit_price DECIMAL(19,2),
+			      unit_cost DECIMAL(19,2),
+			      details CLOB,
+			      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+			      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+			    )
+			""");
+		st.execute(
+			"CREATE INDEX IF NOT EXISTS sale_record_date_idx ON sale_record(sale_date_text);");
 	}
 	
 	private void runReconciledDataBackfill(Connection c) throws SQLException

@@ -63,8 +63,8 @@ public class GrantRecordRepository
 	public List<Grant> listStandaloneGrants() throws SQLException
 	{
 		List<Grant> rows = new ArrayList<>();
-		String sql = """
-			SELECT grant_record_id, grant_id, details
+			String sql = """
+			SELECT grant_record_id, grant_id, grantor, amount, date_awarded_text, purpose, status, details
 			FROM grant_record
 			WHERE journal_txn_id IS NULL
 			  AND donor_id IS NULL
@@ -83,6 +83,26 @@ public class GrantRecordRepository
 				if (grant.getGrantId() == null || grant.getGrantId().isBlank())
 				{
 					grant.setGrantId(rs.getString("grant_id"));
+				}
+				if (grant.getGrantor() == null || grant.getGrantor().isBlank())
+				{
+					grant.setGrantor(rs.getString("grantor"));
+				}
+				if (grant.getAmount() == null)
+				{
+					grant.setAmount(rs.getBigDecimal("amount"));
+				}
+				if (grant.getDateAwarded() == null || grant.getDateAwarded().isBlank())
+				{
+					grant.setDateAwarded(rs.getString("date_awarded_text"));
+				}
+				if (grant.getPurpose() == null || grant.getPurpose().isBlank())
+				{
+					grant.setPurpose(rs.getString("purpose"));
+				}
+				if (grant.getStatus() == null || grant.getStatus().isBlank())
+				{
+					grant.setStatus(rs.getString("status"));
 				}
 				rows.add(grant);
 			}
@@ -106,12 +126,13 @@ public class GrantRecordRepository
 
 	private void insertRows(Connection c, List<Grant> grants) throws SQLException
 	{
-		String upsert = """
-			MERGE INTO grant_record(
-			  grant_record_id, grant_id, donor_id, person_id, fund_id, journal_txn_id, details, updated_at
-			) KEY(grant_record_id)
-			VALUES (?, ?, NULL, NULL, NULL, NULL, ?, CURRENT_TIMESTAMP)
-			""";
+			String upsert = """
+				MERGE INTO grant_record(
+				  grant_record_id, grant_id, grantor, amount, date_awarded_text, purpose, status,
+				  donor_id, person_id, fund_id, journal_txn_id, details, updated_at
+				) KEY(grant_record_id)
+				VALUES (?, ?, ?, ?, ?, ?, ?, NULL, NULL, NULL, NULL, ?, CURRENT_TIMESTAMP)
+				""";
 		try (PreparedStatement ps = c.prepareStatement(upsert))
 		{
 			for (Grant grant : grants)
@@ -120,11 +141,16 @@ public class GrantRecordRepository
 				{
 					continue;
 				}
-				ps.setString(1, grant.getGrantId());
-				ps.setString(2, grant.getGrantId());
-				ps.setString(3, toPayload(grant));
-				ps.addBatch();
-			}
+					ps.setString(1, grant.getGrantId());
+					ps.setString(2, grant.getGrantId());
+					ps.setString(3, grant.getGrantor());
+					ps.setBigDecimal(4, grant.getAmount());
+					ps.setString(5, grant.getDateAwarded());
+					ps.setString(6, grant.getPurpose());
+					ps.setString(7, grant.getStatus());
+					ps.setString(8, toPayload(grant));
+					ps.addBatch();
+				}
 			ps.executeBatch();
 		}
 	}
