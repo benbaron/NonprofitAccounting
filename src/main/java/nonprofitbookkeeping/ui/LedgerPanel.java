@@ -10,19 +10,32 @@ import nonprofitbookkeeping.ui.adapters.OrgAppPanelTabAdapter;
  */
 public class LedgerPanel extends BorderPane
 {
+	private final TabPane subTabs = new TabPane();
+	private final Tab registerTab;
+	private final Tab transactionEditorTab;
 
 	/**
 	 * Creates the ledger workspace.
 	 */
 	public LedgerPanel()
 	{
-		TabPane subTabs = new TabPane();
-		Tab registerTab = OrgAppPanelTabAdapter
+		this.registerTab = OrgAppPanelTabAdapter
 			.toTab(new LedgerRegisterPanel());
-		Tab transactionEditorTab = OrgAppPanelTabAdapter
+		this.transactionEditorTab = OrgAppPanelTabAdapter
 			.toTab(new TransactionEditorPanel());
-		subTabs.getTabs().addAll(registerTab, transactionEditorTab);
-		setCenter(subTabs);
+		this.subTabs.getTabs().addAll(this.registerTab, this.transactionEditorTab);
+		setCenter(this.subTabs);
+
+		LedgerSelectionContext.selectedSubpanelProperty().addListener((obs, oldValue, newValue) -> {
+			if (newValue == LedgerSelectionContext.LedgerSubpanel.EDITOR)
+			{
+				this.subTabs.getSelectionModel().select(this.transactionEditorTab);
+			}
+			else
+			{
+				this.subTabs.getSelectionModel().select(this.registerTab);
+			}
+		});
 	}
 
 }
