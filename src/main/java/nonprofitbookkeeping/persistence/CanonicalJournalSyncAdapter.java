@@ -101,7 +101,7 @@ final class CanonicalJournalSyncAdapter
         }
 
         Long payeeId = resolveCounterpartyId(c, txn.getToFrom());
-        Long bankAccountId = resolveBankAccountId(c, txn.getClearBank());
+        Long bankAccountId = resolveAccountId(c, txn.getClearBank(), null);
 
         try (PreparedStatement ps = c.prepareStatement(
             "MERGE INTO txn(id, txn_date, payee_id, memo, bank_account_id, created_at, updated_at) KEY(id) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)"))
@@ -143,15 +143,20 @@ final class CanonicalJournalSyncAdapter
         }
 
         Map<String, Long> fundCache = new HashMap<>();
+        Map<String, Long> accountCache = new HashMap<>();
         Long fallbackFundId = resolveFundId(c, txn.getAssociatedFundName(), fundCache);
 
         try (PreparedStatement ins = c.prepareStatement(
-            "INSERT INTO txn_split(txn_id, account_id, fund_id, amount_signed, notes, nmr_flag) " +
-                "SELECT ?, a.id, ?, ?, ?, FALSE FROM account a WHERE a.account_number = ?"))
+            "INSERT INTO txn_split(txn_id, account_id, fund_id, amount_signed, notes, nmr_flag) VALUES (?, ?, ?, ?, ?, FALSE)"))
         {
             for (AccountingEntry entry : txn.getEntries())
             {
                 if (entry == null || entry.getAccountNumber() == null || entry.getAmount() == null)
+                {
+                    continue;
+                }
+                Long accountId = resolveAccountId(c, entry.getAccountNumber(), accountCache);
+                if (accountId == null)
                 {
                     continue;
                 }
@@ -165,10 +170,10 @@ final class CanonicalJournalSyncAdapter
                     fundId = 1L;
                 }
                 ins.setInt(1, txn.getId());
-                ins.setLong(2, fundId);
-                ins.setBigDecimal(3, signedAmount(entry));
-                ins.setString(4, entry.getAccountName());
-                ins.setString(5, entry.getAccountNumber());
+                ins.setLong(2, accountId);
+                ins.setLong(3, fundId);
+                ins.setBigDecimal(4, signedAmount(entry));
+                ins.setString(5, entry.getAccountName());
                 ins.addBatch();
             }
             ins.executeBatch();
@@ -265,15 +270,19 @@ final class CanonicalJournalSyncAdapter
         }
     }
 
-    private static Long resolveBankAccountId(Connection c, String clearBank)
+    private static Long resolveAccountId(Connection c, String token, Map<String, Long> cache)
         throws SQLException
     {
-        if (clearBank == null || clearBank.isBlank())
+        if (token == null || token.isBlank())
         {
             return null;
         }
 
-        String value = clearBank.trim();
+        String value = token.trim();
+        if (cache != null && cache.containsKey(value))
+        {
+            return cache.get(value);
+        }
         String normalized = normalizeToken(value);
         Set<Long> candidates = new LinkedHashSet<>();
         candidates.addAll(queryIds(c, "SELECT id FROM account WHERE is_active = TRUE AND UPPER(account_number) = UPPER(?)", value));
@@ -317,9 +326,14 @@ final class CanonicalJournalSyncAdapter
             normalized));
         if (candidates.size() > 1)
         {
-            enqueueAliasReview(c, DOMAIN_ACCOUNT, clearBank, normalized, candidates, "AMBIGUOUS_IMPORT_MATCH");
+            enqueueAliasReview(c, DOMAIN_ACCOUNT, token, normalized, candidates, "AMBIGUOUS_IMPORT_MATCH");
         }
-        return candidates.size() == 1 ? candidates.iterator().next() : null;
+        Long resolved = candidates.size() == 1 ? candidates.iterator().next() : null;
+        if (cache != null)
+        {
+            cache.put(value, resolved);
+        }
+        return resolved;
     }
 
     private static List<Long> queryIds(Connection c, String sql, String value) throws SQLException
