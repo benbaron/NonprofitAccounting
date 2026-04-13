@@ -3,6 +3,8 @@ package nonprofitbookkeeping.persistence;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -26,6 +28,7 @@ import java.util.Set;
  */
 final class CanonicalJournalSyncAdapter
 {
+    private static final Logger log = LoggerFactory.getLogger(CanonicalJournalSyncAdapter.class);
     private static final String DOMAIN_ACCOUNT = "ACCOUNT";
     private static final String DOMAIN_FUND = "FUND";
 
@@ -158,6 +161,8 @@ final class CanonicalJournalSyncAdapter
                 Long accountId = resolveAccountId(c, entry.getAccountNumber(), accountCache);
                 if (accountId == null)
                 {
+                    log.warn("Skipping txn_split insert: unresolved account token='{}' txnId={} entryAccountName='{}'",
+                        entry.getAccountNumber(), txn.getId(), entry.getAccountName());
                     continue;
                 }
                 Long fundId = resolveFundId(c, entry.getFundNumber(), fundCache);
@@ -168,6 +173,8 @@ final class CanonicalJournalSyncAdapter
                 if (fundId == null)
                 {
                     fundId = 1L;
+                    log.warn("Using default fund_id=1 for txnId={} accountToken='{}' entryFundToken='{}'",
+                        txn.getId(), entry.getAccountNumber(), entry.getFundNumber());
                 }
                 ins.setInt(1, txn.getId());
                 ins.setLong(2, accountId);
