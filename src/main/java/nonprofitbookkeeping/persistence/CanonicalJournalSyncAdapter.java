@@ -241,10 +241,6 @@ final class CanonicalJournalSyncAdapter
         {
             enqueueAliasReview(c, DOMAIN_FUND, token, normalized, candidates, "AMBIGUOUS_IMPORT_MATCH");
         }
-        else if (candidates.isEmpty())
-        {
-            enqueueAliasReview(c, DOMAIN_FUND, token, normalized, candidates, "NO_MATCH");
-        }
 
         Long resolved = candidates.size() == 1 ? candidates.iterator().next() : null;
         cache.put(key, resolved);
@@ -338,10 +334,6 @@ final class CanonicalJournalSyncAdapter
         if (candidates.size() > 1)
         {
             enqueueAliasReview(c, DOMAIN_ACCOUNT, token, normalized, candidates, "AMBIGUOUS_IMPORT_MATCH");
-        }
-        else if (candidates.isEmpty())
-        {
-            enqueueAliasReview(c, DOMAIN_ACCOUNT, token, normalized, candidates, "NO_MATCH");
         }
         Long resolved = candidates.size() == 1 ? candidates.iterator().next() : null;
         if (cache != null)

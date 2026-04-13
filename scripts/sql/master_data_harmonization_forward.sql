@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS alias_review_queue (
   resolution_note VARCHAR(1000),
   CONSTRAINT chk_alias_review_queue_domain CHECK (alias_domain IN ('ACCOUNT','FUND')),
   CONSTRAINT chk_alias_review_queue_status CHECK (status IN ('OPEN','IN_PROGRESS','RESOLVED','REJECTED')),
-  CONSTRAINT chk_alias_review_queue_candidate_count CHECK (candidate_count >= 0)
+  CONSTRAINT chk_alias_review_queue_candidate_count CHECK (candidate_count >= 2)
 );
 
 CREATE INDEX IF NOT EXISTS ix_alias_review_queue_status ON alias_review_queue(status, alias_domain);

@@ -46,7 +46,7 @@ For each incoming token and domain:
 4. **Normalized active alias match**
 5. Decision:
    - exactly one candidate => auto-match
-   - zero candidates => reject with reason `NO_MATCH`; write to `alias_review_queue` for steward mapping
+   - zero candidates => reject with reason `NO_MATCH`
    - multiple candidates => reject with reason `AMBIGUOUS_MATCH`; write to `alias_review_queue`
 
 ### Pseudocode

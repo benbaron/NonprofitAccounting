@@ -136,6 +136,8 @@ Use the prompts below with GPT to drive focused design reviews. Each prompt name
 ### Prompt C — Section: Operational Banking Reconciliation (`bank_id_record`, `banking_transaction_record`, `ledger_record`, `bank_statement`)
 > Propose an improved reconciliation architecture using `bank_id_record`, `banking_transaction_record`, `ledger_record`, and `bank_statement`. Deliver a state machine for matching status, idempotent import strategy, and anomaly detection rules (duplicates, amount/date outliers, stale unmatched items). Include schema/index changes and retention guidance. Include explicit deliverables: forward migration SQL, rollback SQL, validation SQL, and a risk register.
 
+Reference response: `doc/prompt-c-operational-banking-reconciliation.md`.
+
 ### Prompt D — Section: Fund Transfer Integrity (`fund_transfer` + posted transactions)
 > Design strict integrity rules for inter-fund transfers using `fund_transfer` and linked posted entries in `txn`/`txn_split`. Specify required invariants (equal/opposite amounts, status transitions, posting atomicity), recommended constraints/triggers, and a repair script approach for historical mismatches. Include explicit deliverables: forward migration SQL, rollback SQL, validation SQL, and a risk register.
 
