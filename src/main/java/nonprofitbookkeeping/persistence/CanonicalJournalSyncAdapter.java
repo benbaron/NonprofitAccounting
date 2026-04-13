@@ -16,14 +16,19 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Synchronizes legacy journal rows with canonical JPA txn / txn_split tables.
  */
 final class CanonicalJournalSyncAdapter
 {
+    private static final String DOMAIN_ACCOUNT = "ACCOUNT";
+    private static final String DOMAIN_FUND = "FUND";
+
     private static final List<DateTimeFormatter> DATE_FORMATS = List.of(
         DateTimeFormatter.ISO_LOCAL_DATE,
         DateTimeFormatter.BASIC_ISO_DATE,
@@ -183,71 +188,49 @@ final class CanonicalJournalSyncAdapter
             return cache.get(key);
         }
 
-        Long resolved = null;
         String normalized = normalizeToken(key);
-        try (PreparedStatement byCode = c.prepareStatement("SELECT id FROM fund WHERE UPPER(code) = UPPER(?)");
-             PreparedStatement byName = c.prepareStatement("SELECT id FROM fund WHERE UPPER(name) = UPPER(?)");
-             PreparedStatement byAlias = c.prepareStatement(
-                 "SELECT f.id FROM fund_alias fa JOIN fund f ON f.id = fa.fund_id WHERE fa.is_active = TRUE AND UPPER(fa.alias_text) = UPPER(?)");
-             PreparedStatement byNormalizedCode = c.prepareStatement(
-                 "SELECT id FROM fund WHERE REPLACE(REPLACE(UPPER(code), ' ', ''), '-', '') = ?");
-             PreparedStatement byNormalizedName = c.prepareStatement(
-                 "SELECT id FROM fund WHERE REPLACE(REPLACE(UPPER(name), ' ', ''), '-', '') = ?"))
+        Set<Long> candidates = new LinkedHashSet<>();
+        candidates.addAll(queryIds(c, "SELECT id FROM fund WHERE is_active = TRUE AND UPPER(code) = UPPER(?)", key));
+        if (candidates.size() == 1)
         {
-            byCode.setString(1, key);
-            try (ResultSet rs = byCode.executeQuery())
-            {
-                if (rs.next())
-                {
-                    resolved = rs.getLong(1);
-                }
-            }
-            if (resolved == null)
-            {
-                byName.setString(1, key);
-                try (ResultSet rs = byName.executeQuery())
-                {
-                    if (rs.next())
-                    {
-                        resolved = rs.getLong(1);
-                    }
-                }
-            }
-            if (resolved == null)
-            {
-                byAlias.setString(1, key);
-                try (ResultSet rs = byAlias.executeQuery())
-                {
-                    if (rs.next())
-                    {
-                        resolved = rs.getLong(1);
-                    }
-                }
-            }
-            if (resolved == null)
-            {
-                byNormalizedCode.setString(1, normalized);
-                try (ResultSet rs = byNormalizedCode.executeQuery())
-                {
-                    if (rs.next())
-                    {
-                        resolved = rs.getLong(1);
-                    }
-                }
-            }
-            if (resolved == null)
-            {
-                byNormalizedName.setString(1, normalized);
-                try (ResultSet rs = byNormalizedName.executeQuery())
-                {
-                    if (rs.next())
-                    {
-                        resolved = rs.getLong(1);
-                    }
-                }
-            }
+            Long resolved = candidates.iterator().next();
+            cache.put(key, resolved);
+            return resolved;
+        }
+        candidates.addAll(queryIds(c, "SELECT id FROM fund WHERE is_active = TRUE AND UPPER(name) = UPPER(?)", key));
+        if (candidates.size() == 1)
+        {
+            Long resolved = candidates.iterator().next();
+            cache.put(key, resolved);
+            return resolved;
+        }
+        candidates.addAll(queryIds(c,
+            "SELECT f.id FROM fund_alias fa JOIN fund f ON f.id = fa.fund_id WHERE fa.is_active = TRUE AND f.is_active = TRUE AND UPPER(fa.alias_text) = UPPER(?)",
+            key));
+        if (candidates.size() == 1)
+        {
+            Long resolved = candidates.iterator().next();
+            cache.put(key, resolved);
+            return resolved;
+        }
+        candidates.addAll(queryIds(c,
+            "SELECT id FROM fund WHERE is_active = TRUE AND REPLACE(REPLACE(UPPER(code), ' ', ''), '-', '') = ?",
+            normalized));
+        if (candidates.size() == 1)
+        {
+            Long resolved = candidates.iterator().next();
+            cache.put(key, resolved);
+            return resolved;
+        }
+        candidates.addAll(queryIds(c,
+            "SELECT id FROM fund WHERE is_active = TRUE AND REPLACE(REPLACE(UPPER(name), ' ', ''), '-', '') = ?",
+            normalized));
+        if (candidates.size() > 1)
+        {
+            enqueueAliasReview(c, DOMAIN_FUND, token, normalized, candidates, "AMBIGUOUS_IMPORT_MATCH");
         }
 
+        Long resolved = candidates.size() == 1 ? candidates.iterator().next() : null;
         cache.put(key, resolved);
         return resolved;
     }
@@ -292,71 +275,97 @@ final class CanonicalJournalSyncAdapter
 
         String value = clearBank.trim();
         String normalized = normalizeToken(value);
-        try (PreparedStatement byNumber = c.prepareStatement("SELECT id FROM account WHERE UPPER(account_number) = UPPER(?)");
-             PreparedStatement byCode = c.prepareStatement("SELECT id FROM account WHERE UPPER(code) = UPPER(?)");
-             PreparedStatement byName = c.prepareStatement("SELECT id FROM account WHERE UPPER(name) = UPPER(?)");
-             PreparedStatement byAlias = c.prepareStatement(
-                 "SELECT a.id FROM account_alias aa JOIN account a ON a.id = aa.account_id WHERE aa.is_active = TRUE AND UPPER(aa.alias_text) = UPPER(?)");
-             PreparedStatement byNormalizedNumber = c.prepareStatement(
-                 "SELECT id FROM account WHERE REPLACE(REPLACE(UPPER(account_number), ' ', ''), '-', '') = ?");
-             PreparedStatement byNormalizedCode = c.prepareStatement(
-                 "SELECT id FROM account WHERE REPLACE(REPLACE(UPPER(code), ' ', ''), '-', '') = ?");
-             PreparedStatement byNormalizedName = c.prepareStatement(
-                 "SELECT id FROM account WHERE REPLACE(REPLACE(UPPER(name), ' ', ''), '-', '') = ?"))
+        Set<Long> candidates = new LinkedHashSet<>();
+        candidates.addAll(queryIds(c, "SELECT id FROM account WHERE is_active = TRUE AND UPPER(account_number) = UPPER(?)", value));
+        if (candidates.size() == 1)
         {
-            byNumber.setString(1, value);
-            try (ResultSet rs = byNumber.executeQuery())
+            return candidates.iterator().next();
+        }
+        candidates.addAll(queryIds(c, "SELECT id FROM account WHERE is_active = TRUE AND UPPER(code) = UPPER(?)", value));
+        if (candidates.size() == 1)
+        {
+            return candidates.iterator().next();
+        }
+        candidates.addAll(queryIds(c, "SELECT id FROM account WHERE is_active = TRUE AND UPPER(name) = UPPER(?)", value));
+        if (candidates.size() == 1)
+        {
+            return candidates.iterator().next();
+        }
+        candidates.addAll(queryIds(c,
+            "SELECT a.id FROM account_alias aa JOIN account a ON a.id = aa.account_id WHERE aa.is_active = TRUE AND a.is_active = TRUE AND UPPER(aa.alias_text) = UPPER(?)",
+            value));
+        if (candidates.size() == 1)
+        {
+            return candidates.iterator().next();
+        }
+        candidates.addAll(queryIds(c,
+            "SELECT id FROM account WHERE is_active = TRUE AND REPLACE(REPLACE(UPPER(account_number), ' ', ''), '-', '') = ?",
+            normalized));
+        if (candidates.size() == 1)
+        {
+            return candidates.iterator().next();
+        }
+        candidates.addAll(queryIds(c,
+            "SELECT id FROM account WHERE is_active = TRUE AND REPLACE(REPLACE(UPPER(code), ' ', ''), '-', '') = ?",
+            normalized));
+        if (candidates.size() == 1)
+        {
+            return candidates.iterator().next();
+        }
+        candidates.addAll(queryIds(c,
+            "SELECT id FROM account WHERE is_active = TRUE AND REPLACE(REPLACE(UPPER(name), ' ', ''), '-', '') = ?",
+            normalized));
+        if (candidates.size() > 1)
+        {
+            enqueueAliasReview(c, DOMAIN_ACCOUNT, clearBank, normalized, candidates, "AMBIGUOUS_IMPORT_MATCH");
+        }
+        return candidates.size() == 1 ? candidates.iterator().next() : null;
+    }
+
+    private static List<Long> queryIds(Connection c, String sql, String value) throws SQLException
+    {
+        List<Long> ids = new ArrayList<>();
+        try (PreparedStatement ps = c.prepareStatement(sql))
+        {
+            ps.setString(1, value);
+            try (ResultSet rs = ps.executeQuery())
             {
-                if (rs.next())
+                while (rs.next())
                 {
-                    return rs.getLong(1);
+                    ids.add(rs.getLong(1));
                 }
             }
-            byCode.setString(1, value);
-            try (ResultSet rs = byCode.executeQuery())
-            {
-                if (rs.next())
-                {
-                    return rs.getLong(1);
-                }
-            }
-            byName.setString(1, value);
-            try (ResultSet rs = byName.executeQuery())
-            {
-                if (rs.next())
-                {
-                    return rs.getLong(1);
-                }
-            }
-            byAlias.setString(1, value);
-            try (ResultSet rs = byAlias.executeQuery())
-            {
-                if (rs.next())
-                {
-                    return rs.getLong(1);
-                }
-            }
-            byNormalizedNumber.setString(1, normalized);
-            try (ResultSet rs = byNormalizedNumber.executeQuery())
-            {
-                if (rs.next())
-                {
-                    return rs.getLong(1);
-                }
-            }
-            byNormalizedCode.setString(1, normalized);
-            try (ResultSet rs = byNormalizedCode.executeQuery())
-            {
-                if (rs.next())
-                {
-                    return rs.getLong(1);
-                }
-            }
-            byNormalizedName.setString(1, normalized);
-            try (ResultSet rs = byNormalizedName.executeQuery())
-            {
-                return rs.next() ? rs.getLong(1) : null;
-            }
+        }
+        return ids;
+    }
+
+    private static void enqueueAliasReview(Connection c,
+                                           String domain,
+                                           String aliasText,
+                                           String normalizationKey,
+                                           Set<Long> candidateIds,
+                                           String reason)
+    {
+        String ids = candidateIds.stream().map(String::valueOf).reduce((a, b) -> a + "," + b).orElse("");
+        try (PreparedStatement ps = c.prepareStatement(
+            "INSERT INTO alias_review_queue(alias_domain, alias_id, alias_text, normalization_key, candidate_count, candidate_ids, reason, status) " +
+                "SELECT ?, NULL, ?, ?, ?, ?, ?, 'OPEN' WHERE NOT EXISTS (" +
+                "SELECT 1 FROM alias_review_queue q WHERE q.alias_domain = ? AND q.normalization_key = ? AND q.reason = ? AND q.status IN ('OPEN','IN_PROGRESS'))"))
+        {
+            ps.setString(1, domain);
+            ps.setString(2, aliasText);
+            ps.setString(3, normalizationKey);
+            ps.setInt(4, candidateIds.size());
+            ps.setString(5, ids);
+            ps.setString(6, reason);
+            ps.setString(7, domain);
+            ps.setString(8, normalizationKey);
+            ps.setString(9, reason);
+            ps.executeUpdate();
+        }
+        catch (SQLException ignored)
+        {
+            // Queue table may not be present before harmonization migration is applied.
         }
     }
 
