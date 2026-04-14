@@ -21,7 +21,7 @@ public class FUNDS_14JasperGenerator extends AbstractReportGenerator
         Map<String, String> overrides = new HashMap<>();
         overrides.put("general_fund_2_0", "cp.default_bank_account");
         overrides.put("end_of_period_all_non_dedicated_funds",
-            "(select sum(amount) from journal_entry)");
+            "(select sum(amount) from v_journal_entry)");
         overrides.put("contents_b59",
             "(select count(*) from account)");
 

@@ -20,7 +20,7 @@ public class NEWSLETTER_15JasperGenerator extends AbstractReportGenerator
     {
         Map<String, String> overrides = new HashMap<>();
         overrides.put("newsletter_name", "cp.name");
-        overrides.put("gross_income", "(select sum(amount) from journal_entry)");
+        overrides.put("gross_income", "(select sum(amount) from v_journal_entry)");
         overrides.put("rate_1_price_of_one_subscription",
             "cp.base_currency");
 

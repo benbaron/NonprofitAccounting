@@ -44,8 +44,8 @@ public class PRIMARY_ACCOUNT_2aJasperGenerator extends AbstractReportGenerator
         String sql = "select\n" +
             selectList + "\n" +
             "from account a\n" +
-            "left join journal_entry je on je.account_number = a.account_number\n" +
-            "left join journal_transaction jt on jt.id = je.txn_id";
+            "left join v_journal_entry je on je.account_number = a.account_number\n" +
+            "left join v_journal_transaction jt on jt.id = je.txn_id";
 
         return ReportDataFetcher.queryBeans(PRIMARY_ACCOUNT_2aBean.class, sql);
     }
