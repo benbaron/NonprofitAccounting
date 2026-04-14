@@ -20,9 +20,9 @@ public class INCOME_4JasperGenerator extends AbstractReportGenerator
     {
         Map<String, String> overrides = new HashMap<>();
         overrides.put("amount_internal",
-            "(select sum(amount) from journal_entry)");
+            "(select sum(amount) from v_journal_entry)");
         overrides.put("gross_gross_cost_net",
-            "(select sum(amount) from journal_entry)");
+            "(select sum(amount) from v_journal_entry)");
         overrides.put("contents_b59",
             "(select count(*) from account)");
 

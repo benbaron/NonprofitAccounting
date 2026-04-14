@@ -43,8 +43,8 @@ public class DEPR_DTL_8bJasperGenerator extends AbstractReportGenerator
 
         String sql = "select\n" +
             selectList + "\n" +
-            "from journal_transaction jt\n" +
-            "join journal_entry je on je.txn_id = jt.id";
+            "from v_journal_transaction jt\n" +
+            "join v_journal_entry je on je.txn_id = jt.id";
 
         return ReportDataFetcher.queryBeans(DEPR_DTL_8bBean.class, sql);
     }

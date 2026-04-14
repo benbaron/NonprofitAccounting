@@ -42,8 +42,8 @@ public class ASSET_DTL_5aJasperGenerator extends AbstractReportGenerator
 
         String sql = "select\n" +
             selectList + "\n" +
-            "from journal_transaction jt\n" +
-            "join journal_entry je on je.txn_id = jt.id\n" +
+            "from v_journal_transaction jt\n" +
+            "join v_journal_entry je on je.txn_id = jt.id\n" +
             "limit 1";
 
         List<AssetDtl5aReportBean> headerBeans =
@@ -63,8 +63,8 @@ public class ASSET_DTL_5aJasperGenerator extends AbstractReportGenerator
                         "    jt.memo as sending_branch_or_reason,\n" +
                         "    je.amount as amount,\n" +
                         "    row_number() over (order by jt.id, je.id) as rn\n" +
-                        "  from journal_transaction jt\n" +
-                        "  join journal_entry je on je.txn_id = jt.id\n" +
+                        "  from v_journal_transaction jt\n" +
+                        "  join v_journal_entry je on je.txn_id = jt.id\n" +
                         ")\n" +
                         "select\n" +
                         "  left_entry.sending_branch_or_reason as sending_branch_or_reason_left,\n" +
