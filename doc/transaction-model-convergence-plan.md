@@ -324,3 +324,4 @@ FROM l CROSS JOIN c;
 - Rollback SQL has been materialized at `scripts/sql/txn_convergence_rollback.sql`.
 - Validation SQL has been materialized at `scripts/sql/txn_convergence_validation.sql`.
 - Risk register has been materialized at `scripts/sql/txn_convergence_risk_register.md`.
+- PowerShell runner for H2 execution has been materialized at `scripts/sql/run-txn-convergence-h2.ps1`.

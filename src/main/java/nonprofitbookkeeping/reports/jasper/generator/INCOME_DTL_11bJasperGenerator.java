@@ -39,8 +39,8 @@ public class INCOME_DTL_11bJasperGenerator extends AbstractReportGenerator
 
         String sql = "select\n" +
             selectList + "\n" +
-            "from journal_transaction jt\n" +
-            "join journal_entry je on je.txn_id = jt.id";
+            "from v_journal_transaction jt\n" +
+            "join v_journal_entry je on je.txn_id = jt.id";
 
         return ReportDataFetcher.queryBeans(INCOME_DTL_11bBean.class, sql);
     }

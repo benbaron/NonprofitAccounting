@@ -141,6 +141,8 @@ Reference response: `doc/prompt-c-operational-banking-reconciliation.md`.
 ### Prompt D — Section: Fund Transfer Integrity (`fund_transfer` + posted transactions)
 > Design strict integrity rules for inter-fund transfers using `fund_transfer` and linked posted entries in `txn`/`txn_split`. Specify required invariants (equal/opposite amounts, status transitions, posting atomicity), recommended constraints/triggers, and a repair script approach for historical mismatches. Include explicit deliverables: forward migration SQL, rollback SQL, validation SQL, and a risk register.
 
+Reference response: `doc/prompt-d-fund-transfer-integrity.md`.
+
 ### Prompt E — Section: Reporting & Schedule Configuration (`report_section`, schedule tables)
 > Review `report_section`, `schedule_kind`, `account_report_section`, `account_schedule_requirement`, and `account_subtype_schedule_default`. Recommend a normalized model for statement mapping and schedule requirements that supports versioning and auditability. Provide migration SQL outline and validation queries. Include explicit deliverables: forward migration SQL, rollback SQL, validation SQL, and a risk register.
 
