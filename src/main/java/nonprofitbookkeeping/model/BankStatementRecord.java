@@ -2,6 +2,7 @@ package nonprofitbookkeeping.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class BankStatementRecord
 {
@@ -21,6 +22,13 @@ public class BankStatementRecord
 	private String signatureRequirement;
 	private String interestBearing;
 	private String currency;
+	private String bankIdRecordId;
+	private LocalDate periodStart;
+	private LocalDate periodEnd;
+	private String status;
+	private LocalDateTime importedAt;
+	private LocalDateTime closedAt;
+	private LocalDate retentionUntil;
 
 	public String getBankName(){ return this.bankName; }
 	public void setBankName(String bankName){ this.bankName = bankName; }
@@ -54,4 +62,18 @@ public class BankStatementRecord
 	public void setInterestBearing(String interestBearing){ this.interestBearing = interestBearing; }
 	public String getCurrency(){ return this.currency; }
 	public void setCurrency(String currency){ this.currency = currency; }
+	public String getBankIdRecordId(){ return this.bankIdRecordId; }
+	public void setBankIdRecordId(String bankIdRecordId){ this.bankIdRecordId = bankIdRecordId; }
+	public LocalDate getPeriodStart(){ return this.periodStart; }
+	public void setPeriodStart(LocalDate periodStart){ this.periodStart = periodStart; }
+	public LocalDate getPeriodEnd(){ return this.periodEnd; }
+	public void setPeriodEnd(LocalDate periodEnd){ this.periodEnd = periodEnd; }
+	public String getStatus(){ return this.status; }
+	public void setStatus(String status){ this.status = status; }
+	public LocalDateTime getImportedAt(){ return this.importedAt; }
+	public void setImportedAt(LocalDateTime importedAt){ this.importedAt = importedAt; }
+	public LocalDateTime getClosedAt(){ return this.closedAt; }
+	public void setClosedAt(LocalDateTime closedAt){ this.closedAt = closedAt; }
+	public LocalDate getRetentionUntil(){ return this.retentionUntil; }
+	public void setRetentionUntil(LocalDate retentionUntil){ this.retentionUntil = retentionUntil; }
 }

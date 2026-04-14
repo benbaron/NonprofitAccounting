@@ -221,6 +221,20 @@ public class ReconciliationService
                                 accountIdentifier,
                                 endingBalance);
                 }
+
+                try
+                {
+                        new OperationalReconciliationService()
+                                .reconcileFromBookingTimestamps(accountIdentifier,
+                                        statementDate, endingBalance, clearedIds);
+                }
+                catch (Exception ex)
+                {
+                        LOGGER.warn(
+                                "Operational reconciliation persistence skipped for account {}: {}",
+                                accountIdentifier,
+                                ex.getMessage());
+                }
         }
 
         /**
