@@ -76,6 +76,11 @@ class H2SchemaMigratorTest
             assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM grant_record"));
             assertDoesNotThrow(() -> st.executeQuery("SELECT grantor, amount, date_awarded_text, purpose, status FROM grant_record"));
             assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM sale_record"));
+            assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM config_release"));
+            assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM statement_section"));
+            assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM account_statement_mapping"));
+            assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM schedule_requirement_rule"));
+            assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM config_change_event"));
         }
 
         assertTrue(Files.exists(scriptPath));
