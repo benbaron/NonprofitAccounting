@@ -104,16 +104,23 @@ public final class BankingTransactionRepository
 
 	public static int markReconciled(String bankingRecordId) throws SQLException
 	{
+		return transitionMatchStatus(bankingRecordId, "RECONCILED");
+	}
+
+	public static int transitionMatchStatus(String bankingRecordId,
+		String matchStatus) throws SQLException
+	{
 		String sql = """
 			UPDATE banking_transaction_record
-			   SET match_status = 'RECONCILED',
+			   SET match_status = ?,
 			       matched_at = CURRENT_TIMESTAMP
 			 WHERE banking_record_id = ?
 		""";
 		try (Connection c = Database.get().getConnection();
 			 PreparedStatement ps = c.prepareStatement(sql))
 		{
-			ps.setString(1, bankingRecordId);
+			ps.setString(1, matchStatus);
+			ps.setString(2, bankingRecordId);
 			return ps.executeUpdate();
 		}
 	}
