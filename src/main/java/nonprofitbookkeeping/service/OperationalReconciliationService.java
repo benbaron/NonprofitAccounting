@@ -1,10 +1,14 @@
 package nonprofitbookkeeping.service;
 
 import nonprofitbookkeeping.model.LedgerMatchRecord;
+import nonprofitbookkeeping.model.BankStatementRecord;
 import nonprofitbookkeeping.persistence.BankingTransactionRepository;
+import nonprofitbookkeeping.persistence.BankStatementRepository;
 import nonprofitbookkeeping.persistence.LedgerMatchRepository;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -30,6 +34,22 @@ public class OperationalReconciliationService
 	public void markReconciled(String bankingRecordId) throws SQLException
 	{
 		BankingTransactionRepository.markReconciled(bankingRecordId);
+	}
+
+	public int reconcileFromBookingTimestamps(String accountIdentifier,
+		String statementDate, BigDecimal endingBalance,
+		List<Long> bookingTimestamps) throws SQLException
+	{
+		BankStatementRecord statement = new BankStatementRecord();
+		statement.setBankName(accountIdentifier);
+		statement.setAccountLabel(accountIdentifier);
+		statement.setStatementDate(LocalDate.parse(statementDate));
+		statement.setStatementBalance(endingBalance);
+		statement.setStatus("CLOSED");
+		statement.setClosedAt(LocalDateTime.now());
+		BankStatementRepository.upsert(statement);
+		return BankingTransactionRepository
+			.markReconciledByBookingTimestamps(bookingTimestamps);
 	}
 
 	public void voidMatch(String bankingRecordId, String ledgerRecordId)

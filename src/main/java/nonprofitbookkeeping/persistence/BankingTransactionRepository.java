@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class BankingTransactionRepository
 {
@@ -121,6 +122,45 @@ public final class BankingTransactionRepository
 		{
 			ps.setString(1, matchStatus);
 			ps.setString(2, bankingRecordId);
+			return ps.executeUpdate();
+		}
+	}
+
+	public static int markReconciledByBookingTimestamps(List<Long> bookingTimestamps)
+		throws SQLException
+	{
+		if (bookingTimestamps == null || bookingTimestamps.isEmpty())
+		{
+			return 0;
+		}
+		String placeholders = bookingTimestamps.stream()
+			.map(v -> "?")
+			.collect(Collectors.joining(","));
+		String sql = """
+			UPDATE banking_transaction_record
+			   SET match_status = 'RECONCILED',
+			       matched_at = CURRENT_TIMESTAMP
+			 WHERE journal_txn_id IN (
+			     SELECT id
+			       FROM journal_transaction
+			      WHERE booking_ts IN (%s)
+			 )
+		""".formatted(placeholders);
+		try (Connection c = Database.get().getConnection();
+			 PreparedStatement ps = c.prepareStatement(sql))
+		{
+			int i = 0;
+			for (Long bookingTimestamp : bookingTimestamps)
+			{
+				if (bookingTimestamp == null)
+				{
+					ps.setNull(++i, java.sql.Types.BIGINT);
+				}
+				else
+				{
+					ps.setLong(++i, bookingTimestamp);
+				}
+			}
 			return ps.executeUpdate();
 		}
 	}
