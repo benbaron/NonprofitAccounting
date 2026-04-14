@@ -38,8 +38,8 @@ public class INVENTORY_DTL_6JasperGenerator extends AbstractReportGenerator
 
         String sql = "select\n" +
             selectList + "\n" +
-            "from journal_transaction jt\n" +
-            "join journal_entry je on je.txn_id = jt.id";
+            "from v_journal_transaction jt\n" +
+            "join v_journal_entry je on je.txn_id = jt.id";
 
         return ReportDataFetcher.queryBeans(INVENTORY_DTL_6Bean.class, sql);
     }

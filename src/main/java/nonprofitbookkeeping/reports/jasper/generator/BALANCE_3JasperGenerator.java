@@ -24,7 +24,7 @@ public class BALANCE_3JasperGenerator extends AbstractReportGenerator
         overrides.put("contents_e_3",
             "(select sum(opening_balance) from account)");
         overrides.put("contents_e_4",
-            "(select sum(amount) from journal_entry)");
+            "(select sum(amount) from v_journal_entry)");
 
         String selectList;
         try

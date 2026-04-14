@@ -44,8 +44,8 @@ public class TRANSFER_OUT_10dJasperGenerator extends AbstractReportGenerator
 
         String sql = "select\n" +
             selectList + "\n" +
-            "from journal_transaction jt\n" +
-            "join journal_entry je on je.txn_id = jt.id";
+            "from v_journal_transaction jt\n" +
+            "join v_journal_entry je on je.txn_id = jt.id";
 
         return ReportDataFetcher.queryBeans(TRANSFER_OUT_10dBean.class, sql);
     }

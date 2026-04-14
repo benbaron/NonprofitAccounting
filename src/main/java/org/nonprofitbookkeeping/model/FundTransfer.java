@@ -51,6 +51,53 @@ public class FundTransfer
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt = Instant.now();
 
+    @Transient
+    private FundTransferStatus originalStatus;
+
+    @PostLoad
+    void captureOriginalStatus()
+    {
+        this.originalStatus = this.status;
+    }
+
+    @PrePersist
+    @PreUpdate
+    void validateIntegrity()
+    {
+        if (status == null)
+        {
+            throw new IllegalStateException("FundTransfer status is required.");
+        }
+        if (amount == null || amount.signum() <= 0)
+        {
+            throw new IllegalStateException("FundTransfer amount must be positive.");
+        }
+        if (fromFund == null || toFund == null)
+        {
+            throw new IllegalStateException("FundTransfer from/to fund references are required.");
+        }
+        Long fromFundId = fromFund.getId();
+        Long toFundId = toFund.getId();
+        if (fromFund == toFund || (fromFundId != null && fromFundId.equals(toFundId)))
+        {
+            throw new IllegalStateException("FundTransfer from/to funds must be distinct.");
+        }
+        if (status == FundTransferStatus.POSTED && postedTxn == null)
+        {
+            throw new IllegalStateException("POSTED FundTransfer requires postedTxn.");
+        }
+        if (status != FundTransferStatus.POSTED && postedTxn != null)
+        {
+            throw new IllegalStateException("Only POSTED FundTransfer can reference postedTxn.");
+        }
+        if (originalStatus != null && !FundTransferStatus.isTransitionAllowed(originalStatus, status))
+        {
+            throw new IllegalStateException(
+                "Illegal FundTransfer status transition: " + originalStatus + " -> " + status);
+        }
+        touchUpdatedAt();
+    }
+
     public Long getId() { return id; }
     public LocalDate getTransferDate() { return transferDate; }
     public void setTransferDate(LocalDate transferDate) { this.transferDate = transferDate; }
@@ -63,7 +110,16 @@ public class FundTransfer
     public String getMemo() { return memo; }
     public void setMemo(String memo) { this.memo = memo; }
     public FundTransferStatus getStatus() { return status; }
-    public void setStatus(FundTransferStatus status) { this.status = status; }
+    public void setStatus(FundTransferStatus status)
+    {
+        if (this.status != null && status != null
+            && !FundTransferStatus.isTransitionAllowed(this.status, status))
+        {
+            throw new IllegalStateException(
+                "Illegal FundTransfer status transition: " + this.status + " -> " + status);
+        }
+        this.status = status;
+    }
     public Txn getPostedTxn() { return postedTxn; }
     public void setPostedTxn(Txn postedTxn) { this.postedTxn = postedTxn; }
     public Instant getCreatedAt() { return createdAt; }

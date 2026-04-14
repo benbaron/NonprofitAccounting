@@ -40,8 +40,8 @@ public class EXPENSE_DTL_12bJasperGenerator extends AbstractReportGenerator
 
         String sql = "select\n" +
             selectList + "\n" +
-            "from journal_transaction jt\n" +
-            "join journal_entry je on je.txn_id = jt.id";
+            "from v_journal_transaction jt\n" +
+            "join v_journal_entry je on je.txn_id = jt.id";
 
         return ReportDataFetcher.queryBeans(EXPENSE_DTL_12bBean.class, sql);
     }
