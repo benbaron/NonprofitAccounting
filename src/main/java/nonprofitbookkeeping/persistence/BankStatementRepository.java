@@ -9,6 +9,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,9 +49,11 @@ public final class BankStatementRepository
 				bank_name, account_label, statement_date, statement_balance,
 				ledger_balance, outstanding, bank_after_outstanding, difference,
 				ledger_status, institution_name, institution_contact, account_number,
-				account_type, signature_requirement, interest_bearing, currency
+				account_type, signature_requirement, interest_bearing, currency,
+				bank_id_record_id, period_start, period_end, status, imported_at,
+				closed_at, retention_until
 			) KEY(bank_name, account_label, statement_date)
-			VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+			VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
 		""";
 		try (Connection c = Database.get().getConnection();
 			 PreparedStatement ps = c.prepareStatement(sql))
@@ -72,6 +75,13 @@ public final class BankStatementRepository
 			ps.setString(++i, row.getSignatureRequirement());
 			ps.setString(++i, row.getInterestBearing());
 			ps.setString(++i, row.getCurrency());
+			ps.setString(++i, row.getBankIdRecordId());
+			ps.setDate(++i, row.getPeriodStart() == null ? null : Date.valueOf(row.getPeriodStart()));
+			ps.setDate(++i, row.getPeriodEnd() == null ? null : Date.valueOf(row.getPeriodEnd()));
+			ps.setString(++i, row.getStatus() == null ? "OPEN" : row.getStatus());
+			ps.setTimestamp(++i, row.getImportedAt() == null ? null : Timestamp.valueOf(row.getImportedAt()));
+			ps.setTimestamp(++i, row.getClosedAt() == null ? null : Timestamp.valueOf(row.getClosedAt()));
+			ps.setDate(++i, row.getRetentionUntil() == null ? null : Date.valueOf(row.getRetentionUntil()));
 			ps.executeUpdate();
 		}
 	}
@@ -100,6 +110,18 @@ public final class BankStatementRepository
 		r.setSignatureRequirement(rs.getString("signature_requirement"));
 		r.setInterestBearing(rs.getString("interest_bearing"));
 		r.setCurrency(rs.getString("currency"));
+		r.setBankIdRecordId(rs.getString("bank_id_record_id"));
+		Date periodStart = rs.getDate("period_start");
+		r.setPeriodStart(periodStart == null ? null : periodStart.toLocalDate());
+		Date periodEnd = rs.getDate("period_end");
+		r.setPeriodEnd(periodEnd == null ? null : periodEnd.toLocalDate());
+		r.setStatus(rs.getString("status"));
+		Timestamp importedAt = rs.getTimestamp("imported_at");
+		r.setImportedAt(importedAt == null ? null : importedAt.toLocalDateTime());
+		Timestamp closedAt = rs.getTimestamp("closed_at");
+		r.setClosedAt(closedAt == null ? null : closedAt.toLocalDateTime());
+		Date retentionUntil = rs.getDate("retention_until");
+		r.setRetentionUntil(retentionUntil == null ? null : retentionUntil.toLocalDate());
 		return r;
 	}
 }

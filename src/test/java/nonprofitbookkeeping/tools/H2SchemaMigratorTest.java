@@ -66,6 +66,9 @@ class H2SchemaMigratorTest
             assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM ledger_record"));
             assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM bank_id_record"));
             assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM banking_transaction_record"));
+            assertDoesNotThrow(() -> st.executeQuery("SELECT match_status, source_fingerprint, anomaly_duplicate FROM banking_transaction_record"));
+            assertDoesNotThrow(() -> st.executeQuery("SELECT period_start, period_end, status FROM bank_statement"));
+            assertDoesNotThrow(() -> st.executeQuery("SELECT banking_record_id, match_group_id, link_status FROM ledger_record"));
             assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM asset_record_detail"));
             assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM inventory_asset_link"));
             assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM depreciation_run"));
