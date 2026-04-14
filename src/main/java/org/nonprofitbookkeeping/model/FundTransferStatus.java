@@ -6,6 +6,9 @@ package org.nonprofitbookkeeping.model;
 public enum FundTransferStatus
 {
     DRAFT,
+    APPROVED,
+    POSTING,
     POSTED,
-    VOID
+    FAILED,
+    VOIDED
 }
