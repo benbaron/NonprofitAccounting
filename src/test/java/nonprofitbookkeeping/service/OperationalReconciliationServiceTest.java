@@ -77,7 +77,8 @@ class OperationalReconciliationServiceTest
 
 		assertEquals(1, updated);
 		assertEquals("RECONCILED", readMatchStatus("btx-ops-2"));
-		assertEquals("CLOSED", readStatementStatus("bank-ops-1"));
+		assertEquals("CLOSED", readStatementStatus("Ops Bank"));
+		assertEquals("ops-account-1", readStatementAccountLabel("Ops Bank"));
 	}
 
 	private void seedBankId() throws Exception
@@ -150,6 +151,21 @@ class OperationalReconciliationServiceTest
 		try (Connection c = Database.get().getConnection();
 			 PreparedStatement ps = c.prepareStatement(
 				 "SELECT status FROM bank_statement WHERE bank_name = ? ORDER BY statement_date DESC LIMIT 1"))
+		{
+			ps.setString(1, bankName);
+			try (var rs = ps.executeQuery())
+			{
+				assertEquals(true, rs.next());
+				return rs.getString(1);
+			}
+		}
+	}
+
+	private String readStatementAccountLabel(String bankName) throws Exception
+	{
+		try (Connection c = Database.get().getConnection();
+			 PreparedStatement ps = c.prepareStatement(
+				 "SELECT account_label FROM bank_statement WHERE bank_name = ? ORDER BY statement_date DESC LIMIT 1"))
 		{
 			ps.setString(1, bankName);
 			try (var rs = ps.executeQuery())

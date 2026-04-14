@@ -2,7 +2,9 @@ package nonprofitbookkeeping.service;
 
 import nonprofitbookkeeping.model.LedgerMatchRecord;
 import nonprofitbookkeeping.model.BankStatementRecord;
+import nonprofitbookkeeping.model.BankIdentityRecord;
 import nonprofitbookkeeping.persistence.BankingTransactionRepository;
+import nonprofitbookkeeping.persistence.BankIdentityRepository;
 import nonprofitbookkeeping.persistence.BankStatementRepository;
 import nonprofitbookkeeping.persistence.LedgerMatchRepository;
 
@@ -11,6 +13,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public class OperationalReconciliationService
 {
@@ -40,9 +43,16 @@ public class OperationalReconciliationService
 		String statementDate, BigDecimal endingBalance,
 		List<Long> bookingTimestamps) throws SQLException
 	{
+		Optional<BankIdentityRecord> bankIdentity =
+			BankIdentityRepository.findByAccountOrRecordId(accountIdentifier);
+
 		BankStatementRecord statement = new BankStatementRecord();
-		statement.setBankName(accountIdentifier);
-		statement.setAccountLabel(accountIdentifier);
+		statement.setBankName(bankIdentity.map(BankIdentityRecord::getBankName)
+			.orElse(accountIdentifier));
+		statement.setAccountLabel(bankIdentity.map(BankIdentityRecord::getAccountId)
+			.orElse(accountIdentifier));
+		statement.setBankIdRecordId(bankIdentity.map(BankIdentityRecord::getBankIdRecordId)
+			.orElse(null));
 		statement.setStatementDate(LocalDate.parse(statementDate));
 		statement.setStatementBalance(endingBalance);
 		statement.setStatus("CLOSED");
