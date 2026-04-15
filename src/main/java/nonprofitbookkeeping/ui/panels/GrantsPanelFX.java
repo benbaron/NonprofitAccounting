@@ -3,6 +3,8 @@ package nonprofitbookkeeping.ui.panels;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import nonprofitbookkeeping.util.FormatUtils;
 import java.util.List;
 import java.util.UUID;
@@ -20,6 +22,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Separator;
 import nonprofitbookkeeping.model.Grant;
+import nonprofitbookkeeping.model.GrantTraceabilityRow;
+import nonprofitbookkeeping.service.GrantTraceabilityService;
 import nonprofitbookkeeping.service.GrantsService;
 import nonprofitbookkeeping.ui.helpers.AlertBox;
 
@@ -36,6 +40,8 @@ public class GrantsPanelFX extends BorderPane
 	
 	/** Service layer for grant data operations. */
 	private final GrantsService grantsService;
+	/** Traceability reporting service. */
+	private final GrantTraceabilityService traceabilityService;
 	/** ObservableList to hold {@link GrantRow} objects for display in the table. */
 	private final ObservableList<GrantRow> rows =
 		FXCollections.observableArrayList();
@@ -52,6 +58,7 @@ public class GrantsPanelFX extends BorderPane
 	public GrantsPanelFX(GrantsService service)
 	{
 		this.grantsService = service != null ? service : new GrantsService();
+		this.traceabilityService = new GrantTraceabilityService();
 		
 		setPadding(new Insets(10));
 		buildTable();
@@ -67,11 +74,13 @@ public class GrantsPanelFX extends BorderPane
 		Button add = new Button("Add Grant");
 		Button edit = new Button("Edit");
 		Button del = new Button("Delete");
+		Button alerts = new Button("Compliance Alerts");
 		
 		refresh.setTooltip(new Tooltip("Reload grants from storage."));
 		add.setTooltip(new Tooltip("Create a new grant record."));
 		edit.setTooltip(new Tooltip("Modify the selected grant."));
 		del.setTooltip(new Tooltip("Remove the selected grant."));
+		alerts.setTooltip(new Tooltip("Show grants with at-risk/late compliance or overdue reports."));
 		
 		refresh.setOnAction(e -> loadGrantData());
 		add.setOnAction(e -> grantDialog(null));
@@ -91,9 +100,10 @@ public class GrantsPanelFX extends BorderPane
 			}
 			
 		});
+		alerts.setOnAction(e -> showComplianceAlerts());
 		
 		setBottom(
-			new ToolBar(refresh, new Separator(), new HBox(5, add, edit, del)));
+			new ToolBar(refresh, alerts, new Separator(), new HBox(5, add, edit, del)));
 		
 		loadGrantData();
 		
@@ -120,8 +130,14 @@ public class GrantsPanelFX extends BorderPane
 			col("Date Awarded", "dateAwarded");
 		TableColumn<GrantRow, String> purpCol = col("Purpose", "purpose");
 		TableColumn<GrantRow, String> statusCol = col("Status", "status");
+		TableColumn<GrantRow, String> restrictionCol =
+			col("Restriction", "restrictionClass");
+		TableColumn<GrantRow, String> complianceCol =
+			col("Compliance", "complianceStatus");
+		TableColumn<GrantRow, String> dueCol =
+			col("Next Report Due", "nextReportDue");
 		this.table.getColumns().addAll(idCol, grantorCol, amtCol, dateCol,
-			purpCol, statusCol);
+			purpCol, statusCol, restrictionCol, complianceCol, dueCol);
 		this.table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		this.table.setItems(this.rows);
 		
@@ -191,6 +207,17 @@ public class GrantsPanelFX extends BorderPane
 		TextField dateF = new TextField();
 		TextField purposeF = new TextField();
 		TextField statusF = new TextField();
+		ComboBox<String> restrictionF = new ComboBox<>(
+			FXCollections.observableArrayList(
+				"RESTRICTED", "UNRESTRICTED", "BOARD_DESIGNATED"));
+		ComboBox<String> complianceF = new ComboBox<>(
+			FXCollections.observableArrayList(
+				"IN_GOOD_STANDING", "LATE_REPORT", "AT_RISK", "SUSPENDED", "CLOSED"));
+		TextField nextDueF = new TextField();
+		restrictionF.setEditable(false);
+		complianceF.setEditable(false);
+		restrictionF.getSelectionModel().select("RESTRICTED");
+		complianceF.getSelectionModel().select("IN_GOOD_STANDING");
 		
 		if (existing != null)
 		{
@@ -201,6 +228,15 @@ public class GrantsPanelFX extends BorderPane
 			dateF.setText(existing.getDateAwarded());
 			purposeF.setText(existing.getPurpose());
 			statusF.setText(existing.getStatus());
+			restrictionF.getSelectionModel()
+				.select(existing.getRestrictionClass() == null || existing.getRestrictionClass().isBlank()
+					? "RESTRICTED"
+					: existing.getRestrictionClass());
+			complianceF.getSelectionModel()
+				.select(existing.getComplianceStatus() == null || existing.getComplianceStatus().isBlank()
+					? "IN_GOOD_STANDING"
+					: existing.getComplianceStatus());
+			nextDueF.setText(existing.getNextReportDue());
 		}
 		
 		dlg.getDialogPane()
@@ -209,14 +245,18 @@ public class GrantsPanelFX extends BorderPane
 					new HBox(5, new Label("Amount:"), amountF),
 					new HBox(5, new Label("Date:"), dateF),
 					new HBox(5, new Label("Purpose:"), purposeF),
-					new HBox(5, new Label("Status:"), statusF)));
+					new HBox(5, new Label("Status:"), statusF),
+					new HBox(5, new Label("Restriction:"), restrictionF),
+					new HBox(5, new Label("Compliance:"), complianceF),
+					new HBox(5, new Label("Next Report Due (YYYY-MM-DD):"),
+						nextDueF)));
 		
 		dlg.setResultConverter(btn -> {
 			
-			if (btn != okType)
-			{
-				return null;
-			}
+				if (btn != okType)
+				{
+					return null;
+				}
 			
 			BigDecimal amount = FormatUtils.parseCurrency(amountF.getText());
 			
@@ -235,14 +275,33 @@ public class GrantsPanelFX extends BorderPane
 					return null;
 				}
 				
-			}
-			
-			return new Grant(
+				}
+
+				if (!isIsoDateOrBlank(dateF.getText()))
+				{
+					AlertBox.showError(
+						dlg.getDialogPane().getScene().getWindow(),
+						"Date must be blank or YYYY-MM-DD.");
+					return null;
+				}
+				if (!isIsoDateOrBlank(nextDueF.getText()))
+				{
+					AlertBox.showError(
+						dlg.getDialogPane().getScene().getWindow(),
+						"Next report due must be blank or YYYY-MM-DD.");
+					return null;
+				}
+				
+				Grant result = new Grant(
 				existing == null ? UUID.randomUUID().toString() :
 					existing.getGrantId(),
 				grantorF.getText(), amount, dateF.getText(), purposeF.getText(),
 				statusF.getText());
-		});
+				result.setRestrictionClass(restrictionF.getValue());
+				result.setComplianceStatus(complianceF.getValue());
+				result.setNextReportDue(nextDueF.getText());
+				return result;
+			});
 		
 		dlg.showAndWait().ifPresent(g -> {
 			
@@ -266,6 +325,56 @@ public class GrantsPanelFX extends BorderPane
 		loadGrantData();
 		this.table.refresh();
 		
+	}
+
+	private static boolean isIsoDateOrBlank(String value)
+	{
+		if (value == null || value.trim().isEmpty())
+		{
+			return true;
+		}
+		try
+		{
+			LocalDate.parse(value.trim());
+			return true;
+		}
+		catch (DateTimeParseException ex)
+		{
+			return false;
+		}
+	}
+
+	private void showComplianceAlerts()
+	{
+		try
+		{
+			List<GrantTraceabilityRow> alerts =
+				this.traceabilityService.listComplianceAlerts(LocalDate.now());
+			if (alerts.isEmpty())
+			{
+				AlertBox.showInfo(getScene().getWindow(),
+					"No compliance alerts as of today.");
+				return;
+			}
+			StringBuilder summary = new StringBuilder();
+			int max = Math.min(alerts.size(), 5);
+			for (int i = 0; i < max; i++)
+			{
+				GrantTraceabilityRow row = alerts.get(i);
+				summary.append(row.getGrantId())
+					.append(" (")
+					.append(row.getComplianceStatus())
+					.append(")\n");
+			}
+			AlertBox.showWarning(getScene().getWindow(),
+				"Compliance alerts: " + alerts.size() + "\n" + summary);
+		}
+		catch (IOException ex)
+		{
+			LOGGER.error("Failed to load compliance alerts", ex);
+			AlertBox.showError(getScene().getWindow(),
+				"Unable to load compliance alerts.");
+		}
 	}
 	
 	/** Saves grants to the company file if set. */
@@ -298,8 +407,12 @@ public class GrantsPanelFX extends BorderPane
 			amt = BigDecimal.ZERO;
 		}
 		
-		return new Grant(row.getGrantId(), row.getGrantor(), amt,
+		Grant mapped = new Grant(row.getGrantId(), row.getGrantor(), amt,
 			row.getDateAwarded(), row.getPurpose(), row.getStatus());
+		mapped.setRestrictionClass(row.getRestrictionClass());
+		mapped.setComplianceStatus(row.getComplianceStatus());
+		mapped.setNextReportDue(row.getNextReportDue());
+		return mapped;
 		
 	}
 	
@@ -321,6 +434,12 @@ public class GrantsPanelFX extends BorderPane
 		private final String purpose;
 		/** The current status of the grant (e.g., "Awarded", "Pending", "Closed"). */
 		private final String status;
+		/** Restriction class (RESTRICTED, UNRESTRICTED, BOARD_DESIGNATED). */
+		private final String restrictionClass;
+		/** Compliance status (IN_GOOD_STANDING, LATE_REPORT, ...). */
+		private final String complianceStatus;
+		/** Next report due date text. */
+		private final String nextReportDue;
 		
 		/**
 		 * Constructs a {@code GrantRow} from a {@link Grant} object.
@@ -336,6 +455,9 @@ public class GrantsPanelFX extends BorderPane
 			this.dateAwarded = g.getDateAwarded();
 			this.purpose = g.getPurpose();
 			this.status = g.getStatus();
+			this.restrictionClass = g.getRestrictionClass();
+			this.complianceStatus = g.getComplianceStatus();
+			this.nextReportDue = g.getNextReportDue();
 			
 		}
 		
@@ -397,6 +519,36 @@ public class GrantsPanelFX extends BorderPane
 		{
 			return this.status;
 			
+		}
+
+		/**
+		 * Gets the restriction class.
+		 *
+		 * @return restriction class value
+		 */
+		public String getRestrictionClass()
+		{
+			return this.restrictionClass;
+		}
+
+		/**
+		 * Gets the compliance status.
+		 *
+		 * @return compliance status value
+		 */
+		public String getComplianceStatus()
+		{
+			return this.complianceStatus;
+		}
+
+		/**
+		 * Gets the next report due date.
+		 *
+		 * @return next report due date text
+		 */
+		public String getNextReportDue()
+		{
+			return this.nextReportDue;
 		}
 		
 	}
