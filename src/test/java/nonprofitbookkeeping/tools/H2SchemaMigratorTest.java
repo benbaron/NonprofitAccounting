@@ -70,9 +70,14 @@ class H2SchemaMigratorTest
             assertDoesNotThrow(() -> st.executeQuery("SELECT period_start, period_end, status FROM bank_statement"));
             assertDoesNotThrow(() -> st.executeQuery("SELECT banking_record_id, match_group_id, link_status FROM ledger_record"));
             assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM asset_record_detail"));
+            assertDoesNotThrow(() -> st.executeQuery("SELECT asset_state, in_service_date, disposal_date, depreciable_basis, salvage_value, useful_life_months, posted_acquisition_txn_id, posted_disposal_txn_id FROM asset_record_detail"));
             assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM inventory_asset_link"));
+            assertDoesNotThrow(() -> st.executeQuery("SELECT link_type, is_primary_link, primary_asset_inventory_key FROM inventory_asset_link"));
             assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM depreciation_run"));
+            assertDoesNotThrow(() -> st.executeQuery("SELECT period_start, period_end, run_status, is_locked, locked_at, locked_by, posted_txn_id FROM depreciation_run"));
             assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM depreciation_record"));
+            assertDoesNotThrow(() -> st.executeQuery("SELECT period_start, period_end, sequence_in_run, posted_journal_txn_id, reversal_journal_txn_id FROM depreciation_record"));
+            assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM depreciation_run_event"));
             assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM grant_record"));
             assertDoesNotThrow(() -> st.executeQuery("SELECT grantor, amount, date_awarded_text, purpose, status FROM grant_record"));
             assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM sale_record"));

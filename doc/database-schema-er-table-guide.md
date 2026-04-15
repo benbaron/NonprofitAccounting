@@ -149,6 +149,8 @@ Reference response: `doc/prompt-d-fund-transfer-integrity.md`.
 ### Prompt F — Section: Asset & Depreciation Subsystem (`asset_record_detail`, `depreciation_run`, `depreciation_record`, `inventory_asset_link`)
 > Propose improvements to fixed-asset and depreciation tables for audit readiness. Include constraints for run immutability, asset lifecycle states, and linkage to posted accounting transactions. Provide a monthly close checklist and suggested indexes. Include explicit deliverables: forward migration SQL, rollback SQL, validation SQL, and a risk register.
 
+Reference response: `scripts/sql/asset_depreciation_audit_readiness_proposal.md`.
+
 ### Prompt G — Section: Grant/Donor/Program Traceability (`grant_record`, `donor`, `person`, `activity`, `fund`)
 > Recommend a grant traceability design that connects `grant_record` to donor/contact, restrictions, program activity, and financial postings. Provide a reference model for restricted-vs-unrestricted reporting and identify missing constraints/columns for compliance reporting. Include explicit deliverables: forward migration SQL, rollback SQL, validation SQL, and a risk register.
 
