@@ -1030,6 +1030,189 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 			    ADD CONSTRAINT IF NOT EXISTS fk_depreciation_record_asset
 			    FOREIGN KEY (asset_record_id) REFERENCES asset_record_detail(asset_record_id) ON DELETE SET NULL
 			""");
+		st.execute(
+			"ALTER TABLE asset_record_detail ADD COLUMN IF NOT EXISTS asset_state VARCHAR(30) DEFAULT 'DRAFT' NOT NULL;");
+		st.execute(
+			"ALTER TABLE asset_record_detail ADD COLUMN IF NOT EXISTS in_service_date DATE;");
+		st.execute(
+			"ALTER TABLE asset_record_detail ADD COLUMN IF NOT EXISTS disposal_date DATE;");
+		st.execute(
+			"ALTER TABLE asset_record_detail ADD COLUMN IF NOT EXISTS depreciable_basis DECIMAL(19,2);");
+		st.execute(
+			"ALTER TABLE asset_record_detail ADD COLUMN IF NOT EXISTS salvage_value DECIMAL(19,2) DEFAULT 0;");
+		st.execute(
+			"ALTER TABLE asset_record_detail ADD COLUMN IF NOT EXISTS useful_life_months INT;");
+		st.execute(
+			"ALTER TABLE asset_record_detail ADD COLUMN IF NOT EXISTS posted_acquisition_txn_id INT;");
+		st.execute(
+			"ALTER TABLE asset_record_detail ADD COLUMN IF NOT EXISTS posted_disposal_txn_id INT;");
+		st.execute("""
+			    ALTER TABLE asset_record_detail
+			    ADD CONSTRAINT IF NOT EXISTS chk_asset_record_state_domain
+			    CHECK (asset_state IN ('DRAFT','ACTIVE','HELD_FOR_SALE','DISPOSED','RETIRED'))
+			""");
+		st.execute("""
+			    ALTER TABLE asset_record_detail
+			    ADD CONSTRAINT IF NOT EXISTS chk_asset_record_disposal_state_consistency
+			    CHECK (
+			      (asset_state IN ('DISPOSED','RETIRED') AND disposal_date IS NOT NULL)
+			      OR
+			      (asset_state NOT IN ('DISPOSED','RETIRED') AND disposal_date IS NULL)
+			    )
+			""");
+		st.execute("""
+			    ALTER TABLE asset_record_detail
+			    ADD CONSTRAINT IF NOT EXISTS chk_asset_record_in_service_after_acquired
+			    CHECK (in_service_date IS NULL OR date_acquired IS NULL OR in_service_date >= date_acquired)
+			""");
+		st.execute("""
+			    ALTER TABLE asset_record_detail
+			    ADD CONSTRAINT IF NOT EXISTS fk_asset_record_posted_acquisition_journal
+			    FOREIGN KEY (posted_acquisition_txn_id) REFERENCES journal_transaction(id) ON DELETE SET NULL
+			""");
+		st.execute("""
+			    ALTER TABLE asset_record_detail
+			    ADD CONSTRAINT IF NOT EXISTS fk_asset_record_posted_disposal_journal
+			    FOREIGN KEY (posted_disposal_txn_id) REFERENCES journal_transaction(id) ON DELETE SET NULL
+			""");
+		st.execute("""
+			    CREATE INDEX IF NOT EXISTS ix_asset_record_state_service_disposal
+			    ON asset_record_detail(asset_state, in_service_date, disposal_date)
+			""");
+		st.execute("""
+			    CREATE INDEX IF NOT EXISTS ix_asset_record_posted_acquisition
+			    ON asset_record_detail(posted_acquisition_txn_id)
+			""");
+		st.execute(
+			"ALTER TABLE depreciation_run ADD COLUMN IF NOT EXISTS period_start DATE;");
+		st.execute(
+			"ALTER TABLE depreciation_run ADD COLUMN IF NOT EXISTS period_end DATE;");
+		st.execute(
+			"ALTER TABLE depreciation_run ADD COLUMN IF NOT EXISTS run_status VARCHAR(20) DEFAULT 'DRAFT' NOT NULL;");
+		st.execute(
+			"ALTER TABLE depreciation_run ADD COLUMN IF NOT EXISTS is_locked BOOLEAN DEFAULT FALSE NOT NULL;");
+		st.execute(
+			"ALTER TABLE depreciation_run ADD COLUMN IF NOT EXISTS locked_at TIMESTAMP;");
+		st.execute(
+			"ALTER TABLE depreciation_run ADD COLUMN IF NOT EXISTS locked_by VARCHAR(120);");
+		st.execute(
+			"ALTER TABLE depreciation_run ADD COLUMN IF NOT EXISTS posted_txn_id INT;");
+		st.execute("""
+			    ALTER TABLE depreciation_run
+			    ADD CONSTRAINT IF NOT EXISTS chk_depreciation_run_status_domain
+			    CHECK (run_status IN ('DRAFT','CALCULATED','POSTED','VOIDED'))
+			""");
+		st.execute("""
+			    ALTER TABLE depreciation_run
+			    ADD CONSTRAINT IF NOT EXISTS chk_depreciation_run_period_order
+			    CHECK (period_start IS NULL OR period_end IS NULL OR period_start <= period_end)
+			""");
+		st.execute("""
+			    ALTER TABLE depreciation_run
+			    ADD CONSTRAINT IF NOT EXISTS chk_depreciation_run_lock_metadata
+			    CHECK ((is_locked = FALSE) OR (is_locked = TRUE AND locked_at IS NOT NULL))
+			""");
+		st.execute("""
+			    ALTER TABLE depreciation_run
+			    ADD CONSTRAINT IF NOT EXISTS chk_depreciation_run_posted_link_by_status
+			    CHECK (
+			      (run_status = 'POSTED' AND posted_txn_id IS NOT NULL)
+			      OR
+			      (run_status <> 'POSTED' AND posted_txn_id IS NULL)
+			    )
+			""");
+		st.execute("""
+			    ALTER TABLE depreciation_run
+			    ADD CONSTRAINT IF NOT EXISTS fk_depreciation_run_posted_journal
+			    FOREIGN KEY (posted_txn_id) REFERENCES journal_transaction(id) ON DELETE SET NULL
+			""");
+		st.execute("""
+			    ALTER TABLE depreciation_run
+			    ADD CONSTRAINT IF NOT EXISTS uq_depreciation_run_period UNIQUE (period_start, period_end)
+			""");
+		st.execute("""
+			    CREATE INDEX IF NOT EXISTS ix_depreciation_run_status_period_end
+			    ON depreciation_run(run_status, period_end, created_at)
+			""");
+		st.execute("""
+			    CREATE INDEX IF NOT EXISTS ix_depreciation_run_posted_txn
+			    ON depreciation_run(posted_txn_id)
+			""");
+		st.execute(
+			"ALTER TABLE depreciation_record ADD COLUMN IF NOT EXISTS period_start DATE;");
+		st.execute(
+			"ALTER TABLE depreciation_record ADD COLUMN IF NOT EXISTS period_end DATE;");
+		st.execute(
+			"ALTER TABLE depreciation_record ADD COLUMN IF NOT EXISTS sequence_in_run INT;");
+		st.execute(
+			"ALTER TABLE depreciation_record ADD COLUMN IF NOT EXISTS posted_journal_txn_id INT;");
+		st.execute(
+			"ALTER TABLE depreciation_record ADD COLUMN IF NOT EXISTS reversal_journal_txn_id INT;");
+		st.execute("""
+			    ALTER TABLE depreciation_record
+			    ADD CONSTRAINT IF NOT EXISTS chk_depreciation_record_period_order
+			    CHECK (period_start IS NULL OR period_end IS NULL OR period_start <= period_end)
+			""");
+		st.execute("""
+			    ALTER TABLE depreciation_record
+			    ADD CONSTRAINT IF NOT EXISTS fk_depreciation_record_posted_journal
+			    FOREIGN KEY (posted_journal_txn_id) REFERENCES journal_transaction(id) ON DELETE SET NULL
+			""");
+		st.execute("""
+			    ALTER TABLE depreciation_record
+			    ADD CONSTRAINT IF NOT EXISTS fk_depreciation_record_reversal_journal
+			    FOREIGN KEY (reversal_journal_txn_id) REFERENCES journal_transaction(id) ON DELETE SET NULL
+			""");
+		st.execute("""
+			    ALTER TABLE depreciation_record
+			    ADD CONSTRAINT IF NOT EXISTS uq_depreciation_record_run_asset UNIQUE (depreciation_run_id, asset_record_id)
+			""");
+		st.execute("""
+			    CREATE INDEX IF NOT EXISTS ix_depreciation_record_asset_period
+			    ON depreciation_record(asset_record_id, period_end, depreciation_date)
+			""");
+		st.execute("""
+			    CREATE INDEX IF NOT EXISTS ix_depreciation_record_run_sequence
+			    ON depreciation_record(depreciation_run_id, sequence_in_run)
+			""");
+		st.execute(
+			"ALTER TABLE inventory_asset_link ADD COLUMN IF NOT EXISTS link_type VARCHAR(40) DEFAULT 'COMPONENT' NOT NULL;");
+		st.execute(
+			"ALTER TABLE inventory_asset_link ADD COLUMN IF NOT EXISTS is_primary_link BOOLEAN DEFAULT FALSE NOT NULL;");
+		st.execute("""
+			    ALTER TABLE inventory_asset_link
+			    ADD COLUMN IF NOT EXISTS primary_asset_inventory_key VARCHAR(255)
+			    GENERATED ALWAYS AS (CASE WHEN is_primary_link THEN inventory_item_id ELSE NULL END)
+			""");
+		st.execute("""
+			    ALTER TABLE inventory_asset_link
+			    ADD CONSTRAINT IF NOT EXISTS chk_inventory_asset_link_type_domain
+			    CHECK (link_type IN ('CAPITALIZED_FROM_INVENTORY','COMPONENT','DISPOSAL_SOURCE'))
+			""");
+		st.execute("""
+			    CREATE INDEX IF NOT EXISTS ix_inventory_asset_asset_inventory
+			    ON inventory_asset_link(asset_record_id, inventory_item_id)
+			""");
+		st.execute("""
+			    CREATE UNIQUE INDEX IF NOT EXISTS uq_inventory_primary_asset_link
+			    ON inventory_asset_link(primary_asset_inventory_key)
+			""");
+		st.execute("""
+			    CREATE TABLE IF NOT EXISTS depreciation_run_event(
+			      id BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+			      depreciation_run_id VARCHAR(255) NOT NULL,
+			      event_type VARCHAR(40) NOT NULL,
+			      event_detail VARCHAR(1000),
+			      actor VARCHAR(120),
+			      occurred_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+			      CONSTRAINT fk_depreciation_run_event_run
+			        FOREIGN KEY (depreciation_run_id) REFERENCES depreciation_run(depreciation_run_id) ON DELETE CASCADE
+			    )
+			""");
+		st.execute("""
+			    CREATE INDEX IF NOT EXISTS ix_depreciation_run_event_run_time
+			    ON depreciation_run_event(depreciation_run_id, occurred_at)
+			""");
 		st.execute("""
 			    ALTER TABLE grant_record
 			    ADD CONSTRAINT IF NOT EXISTS fk_grant_record_donor

@@ -2,13 +2,19 @@ package nonprofitbookkeeping.ui;
 
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import nonprofitbookkeeping.service.DepreciationRunLifecycleService;
 import org.nonprofitbookkeeping.ui.AppPanel;
+
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.UUID;
 
 /**
  * Depreciation run placeholder panel.
@@ -16,18 +22,27 @@ import org.nonprofitbookkeeping.ui.AppPanel;
 public class DepreciationRunsPanel implements AppPanel
 {
 	private final BorderPane root = new BorderPane();
+	private final DepreciationRunLifecycleService lifecycleService;
 
 	/**
 	 * Creates the depreciation runs panel.
 	 */
 	public DepreciationRunsPanel()
 	{
+		this(new DepreciationRunLifecycleService());
+	}
+
+	DepreciationRunsPanel(DepreciationRunLifecycleService lifecycleService)
+	{
+		this.lifecycleService = lifecycleService;
 		root.setPadding(new Insets(8));
 		Label title = new Label("Depreciation Runs");
 		title.getStyleClass().add("panel-title");
 
 		Button run = new Button("Run Depreciation");
 		Button preview = new Button("Preview Journal");
+		run.setOnAction(evt -> runDepreciation());
+		preview.setOnAction(evt -> showPreviewHint());
 		HBox actions = new HBox(8, run, preview);
 
 		root.setTop(new VBox(6, title, actions, new Separator()));
@@ -45,5 +60,50 @@ public class DepreciationRunsPanel implements AppPanel
 	public Node root()
 	{
 		return root;
+	}
+
+	private void runDepreciation()
+	{
+		LocalDate today = LocalDate.now();
+		LocalDate periodStart = today.withDayOfMonth(1);
+		LocalDate periodEnd = today;
+		String runId = "ui-run-" + UUID.randomUUID();
+		try
+		{
+			lifecycleService.createDraftRun(runId, periodStart, periodEnd,
+				"Created from depreciation panel");
+			lifecycleService.transitionStatus(runId, "CALCULATED", null, "ui-user",
+				"Generated from panel action");
+			showInfo("Depreciation run created", "Run " + runId + " created for " +
+				periodStart + " to " + periodEnd + " and marked CALCULATED.");
+		}
+		catch (SQLException | RuntimeException ex)
+		{
+			showError("Depreciation run failed", ex.getMessage());
+		}
+	}
+
+	private void showPreviewHint()
+	{
+		showInfo("Preview Journal",
+			"Journal preview wiring is next; lifecycle service is now connected for run creation.");
+	}
+
+	private void showInfo(String title, String content)
+	{
+		Alert alert = new Alert(Alert.AlertType.INFORMATION);
+		alert.setTitle(title);
+		alert.setHeaderText(null);
+		alert.setContentText(content);
+		alert.showAndWait();
+	}
+
+	private void showError(String title, String content)
+	{
+		Alert alert = new Alert(Alert.AlertType.ERROR);
+		alert.setTitle(title);
+		alert.setHeaderText(null);
+		alert.setContentText(content == null ? "Unknown error." : content);
+		alert.showAndWait();
 	}
 }
