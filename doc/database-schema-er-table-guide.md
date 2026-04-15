@@ -159,6 +159,8 @@ Reference response: `doc/prompt-g-grant-donor-program-traceability.md`.
 ### Prompt H — Section: Logical Relationship Hardening (dashed overlay edges)
 > Given a set of logical (non-FK) relationships across modules, prioritize which should become physical foreign keys vs remain logical. Return a decision matrix with criteria (write throughput, backfill cost, orphan risk, operational coupling), plus a phased enforcement plan using NOT VALID constraints or equivalent. Include explicit deliverables: forward migration SQL, rollback SQL, validation SQL, and a risk register.
 
+Reference response: `doc/prompt-h-logical-relationship-hardening.md`.
+
 ## Relationship Legend (from draw.io)
 
 - **Solid arrows**: Physical FK relationships enforced in schema DDL.
