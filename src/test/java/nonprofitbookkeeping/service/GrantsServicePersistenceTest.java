@@ -22,7 +22,11 @@ class GrantsServicePersistenceTest {
         TestDatabase.reset(this.tempDir);
 
         GrantsService service = new GrantsService();
-        service.addGrant(new Grant("G1", "Grantor", BigDecimal.ONE, "2024", "Purpose", "Open"));
+        Grant grant = new Grant("G1", "Grantor", BigDecimal.ONE, "2024", "Purpose", "Open");
+        grant.setRestrictionClass("UNRESTRICTED");
+        grant.setComplianceStatus("LATE_REPORT");
+        grant.setNextReportDue("2026-12-31");
+        service.addGrant(grant);
 
         service.saveGrants();
 
@@ -32,6 +36,9 @@ class GrantsServicePersistenceTest {
         List<Grant> grants = loadService.getAllGrants();
         assertEquals(1, grants.size());
         assertEquals("G1", grants.get(0).getGrantId());
+        assertEquals("UNRESTRICTED", grants.get(0).getRestrictionClass());
+        assertEquals("LATE_REPORT", grants.get(0).getComplianceStatus());
+        assertEquals("2026-12-31", grants.get(0).getNextReportDue());
     }
 
     @Test

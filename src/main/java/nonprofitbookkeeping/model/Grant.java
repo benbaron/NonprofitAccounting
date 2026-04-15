@@ -30,6 +30,12 @@ public class Grant
 	@JsonProperty String purpose = "";
 	/** The current status of the grant (e.g., "Awarded", "Pending", "Completed", "Closed"). */
 	@JsonProperty String status = "";
+	/** Restriction class used for restricted/unrestricted reporting. */
+	@JsonProperty String restrictionClass = "RESTRICTED";
+	/** Compliance lifecycle status for reporting obligations. */
+	@JsonProperty String complianceStatus = "IN_GOOD_STANDING";
+	/** Next reporting due date in string form (YYYY-MM-DD). */
+	@JsonProperty String nextReportDue = "";
 	
 	
 
@@ -174,6 +180,66 @@ public class Grant
 	{
 		this.status = status;
 		
+	}
+
+	/**
+	 * Gets the restriction class.
+	 *
+	 * @return restriction class value
+	 */
+	public String getRestrictionClass()
+	{
+		return this.restrictionClass;
+	}
+
+	/**
+	 * Sets the restriction class.
+	 *
+	 * @param restrictionClass restriction class value
+	 */
+	public void setRestrictionClass(String restrictionClass)
+	{
+		this.restrictionClass = restrictionClass;
+	}
+
+	/**
+	 * Gets the compliance status.
+	 *
+	 * @return compliance status value
+	 */
+	public String getComplianceStatus()
+	{
+		return this.complianceStatus;
+	}
+
+	/**
+	 * Sets the compliance status.
+	 *
+	 * @param complianceStatus compliance status value
+	 */
+	public void setComplianceStatus(String complianceStatus)
+	{
+		this.complianceStatus = complianceStatus;
+	}
+
+	/**
+	 * Gets the next report due date text.
+	 *
+	 * @return next report due date text
+	 */
+	public String getNextReportDue()
+	{
+		return this.nextReportDue;
+	}
+
+	/**
+	 * Sets the next report due date text.
+	 *
+	 * @param nextReportDue next report due date text
+	 */
+	public void setNextReportDue(String nextReportDue)
+	{
+		this.nextReportDue = nextReportDue;
 	}
 	
 	

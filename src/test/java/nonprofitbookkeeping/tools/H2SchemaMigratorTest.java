@@ -80,6 +80,10 @@ class H2SchemaMigratorTest
             assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM depreciation_run_event"));
             assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM grant_record"));
             assertDoesNotThrow(() -> st.executeQuery("SELECT grantor, amount, date_awarded_text, purpose, status FROM grant_record"));
+            assertDoesNotThrow(() -> st.executeQuery("SELECT award_date, period_start, period_end, restriction_class, compliance_status, reporting_frequency, next_report_due, closeout_date, canonical_txn_id, activity_id, counterparty_id, contact_person_id, grant_reference_number, compliance_notes FROM grant_record"));
+            assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM grant_posting_link"));
+            assertDoesNotThrow(() -> st.executeQuery("SELECT grant_record_id, posting_model, txn_split_id, journal_entry_id, posting_role, recognized_amount FROM grant_posting_link"));
+            assertDoesNotThrow(() -> st.executeQuery("SELECT * FROM v_grant_restriction_reporting"));
             assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM sale_record"));
             assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM config_release"));
             assertDoesNotThrow(() -> st.executeQuery("SELECT COUNT(*) FROM statement_section"));
