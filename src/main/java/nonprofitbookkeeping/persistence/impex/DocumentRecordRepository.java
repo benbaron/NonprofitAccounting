@@ -7,7 +7,11 @@ import nonprofitbookkeeping.model.impex.DocumentRecord;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Persists imported SCLX document records into a concrete staging table.
@@ -33,6 +37,10 @@ public class DocumentRecordRepository
         ) KEY(document_id)
         VALUES(?,?,?,?,?,?,?)
         """;
+    private static final String LIST_ALL_SQL = """
+        SELECT document_id, document_type, reference_number, document_date, file_name, notes
+        FROM imported_document_record
+        """;
 
     public void upsert(DocumentRecord row) throws SQLException
     {
@@ -51,6 +59,32 @@ public class DocumentRecordRepository
                 ps.setString(++i, JsonColumnCodec.toJson(row.extensions()));
                 ps.executeUpdate();
             }
+        }
+    }
+
+    public List<DocumentRecord> listAll() throws SQLException
+    {
+        try (Connection c = Database.get().getConnection())
+        {
+            ensureTable(c);
+            List<DocumentRecord> rows = new ArrayList<>();
+            try (Statement statement = c.createStatement();
+                 ResultSet rs = statement.executeQuery(LIST_ALL_SQL))
+            {
+                while (rs.next())
+                {
+                    rows.add(new DocumentRecord(
+                        rs.getString("document_id"),
+                        rs.getString("document_type"),
+                        rs.getString("reference_number"),
+                        rs.getDate("document_date") == null ? null : rs.getDate("document_date").toLocalDate(),
+                        rs.getString("file_name"),
+                        rs.getString("notes"),
+                        java.util.Map.of()
+                    ));
+                }
+            }
+            return rows;
         }
     }
 

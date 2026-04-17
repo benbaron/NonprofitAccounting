@@ -7,7 +7,11 @@ import nonprofitbookkeeping.model.impex.OrganizationRecord;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Persists imported SCLX organization records into a concrete staging table.
@@ -34,6 +38,10 @@ public class OrganizationRecordRepository
         ) KEY(organization_id)
         VALUES(?,?,?,?,?,?,?)
         """;
+    private static final String LIST_ALL_SQL = """
+        SELECT organization_id, name, parent_organization, base_currency, fiscal_year_start, fiscal_year_end
+        FROM imported_organization_record
+        """;
 
     public void upsert(OrganizationRecord row) throws SQLException
     {
@@ -52,6 +60,32 @@ public class OrganizationRecordRepository
                 ps.setString(++i, JsonColumnCodec.toJson(row.extensions()));
                 ps.executeUpdate();
             }
+        }
+    }
+
+    public List<OrganizationRecord> listAll() throws SQLException
+    {
+        try (Connection c = Database.get().getConnection())
+        {
+            ensureTable(c);
+            List<OrganizationRecord> rows = new ArrayList<>();
+            try (Statement statement = c.createStatement();
+                 ResultSet rs = statement.executeQuery(LIST_ALL_SQL))
+            {
+                while (rs.next())
+                {
+                    rows.add(new OrganizationRecord(
+                        rs.getString("organization_id"),
+                        rs.getString("name"),
+                        rs.getString("parent_organization"),
+                        rs.getString("base_currency"),
+                        rs.getDate("fiscal_year_start") == null ? null : rs.getDate("fiscal_year_start").toLocalDate(),
+                        rs.getDate("fiscal_year_end") == null ? null : rs.getDate("fiscal_year_end").toLocalDate(),
+                        java.util.Map.of()
+                    ));
+                }
+            }
+            return rows;
         }
     }
 
