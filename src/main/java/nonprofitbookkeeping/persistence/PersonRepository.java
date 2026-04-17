@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /** Repository for CRUD operations on the {@code person} table. */
@@ -21,22 +22,22 @@ public class PersonRepository
 	
 	/** The Constant LIST_SQL. */
 	private static final String LIST_SQL =
-		"SELECT id, name, email, phone FROM person ORDER BY name, id";
+		"SELECT id, name, email, phone, type FROM person ORDER BY name, id";
 	
 	/** The Constant FIND_SQL. */
 	private static final String FIND_SQL =
-		"SELECT id, name, email, phone FROM person WHERE id = ?";
+		"SELECT id, name, email, phone, type FROM person WHERE id = ?";
 	
 	/** The Constant INSERT_SQL. */
 	private static final String INSERT_SQL =
-		"INSERT INTO person(name, email, phone) VALUES (?,?,?)";
+		"INSERT INTO person(name, email, phone, type) VALUES (?,?,?,?)";
 	
 	/** The Constant UPDATE_SQL. */
 	private static final String UPDATE_SQL =
-		"UPDATE person SET name = ?, email = ?, phone = ? WHERE id = ?";
+		"UPDATE person SET name = ?, email = ?, phone = ?, type = ? WHERE id = ?";
 
-	private static final String NAME_SQL =
-		"SELECT name FROM person WHERE id = ?";
+	private static final String NAME_TYPE_SQL =
+		"SELECT name, type FROM person WHERE id = ?";
 	
 	/** The Constant DELETE_SQL. */
 	private static final String DELETE_SQL =
@@ -119,12 +120,13 @@ public class PersonRepository
 		try (Connection c = Database.get().getConnection();
 			PreparedStatement ps = c.prepareStatement(DELETE_SQL))
 		{
-			String currentName = findNameById(c, id);
+			Person current = findById(c, id);
 			ps.setLong(1, id);
 			boolean deleted = ps.executeUpdate() > 0;
 			if (deleted)
 			{
-				CounterpartySyncAdapter.deletePerson(c, currentName);
+				CounterpartySyncAdapter.deletePerson(c, current == null ? null : current.getName(),
+					current == null ? null : current.getType());
 			}
 			return deleted;
 		}
@@ -146,6 +148,7 @@ public class PersonRepository
 			ps.setString(1, person.getName());
 			ps.setString(2, person.getEmail());
 			ps.setString(3, person.getPhone());
+			ps.setString(4, normalizeType(person.getType()));
 			ps.executeUpdate();
 
 			try (ResultSet keys = ps.getGeneratedKeys())
@@ -172,28 +175,39 @@ public class PersonRepository
 		try (Connection c = Database.get().getConnection();
 			PreparedStatement ps = c.prepareStatement(UPDATE_SQL))
 		{
-			String oldName = findNameById(c, person.getId());
+			Person existing = findById(c, person.getId());
 			ps.setString(1, person.getName());
 			ps.setString(2, person.getEmail());
 			ps.setString(3, person.getPhone());
-			ps.setLong(4, person.getId());
+			ps.setString(4, normalizeType(person.getType()));
+			ps.setLong(5, person.getId());
 			ps.executeUpdate();
-			if (oldName != null && !oldName.equals(person.getName()))
+			if (existing != null
+				&& (!Objects.equals(existing.getName(), person.getName())
+				|| !normalizeType(existing.getType()).equals(normalizeType(person.getType()))))
 			{
-				CounterpartySyncAdapter.deletePerson(c, oldName);
+				CounterpartySyncAdapter.deletePerson(c, existing.getName(), existing.getType());
 			}
 			CounterpartySyncAdapter.syncPerson(c, person);
 		}
 	}
 
-	private static String findNameById(Connection c, long id) throws SQLException
+	private static Person findById(Connection c, long id) throws SQLException
 	{
-		try (PreparedStatement ps = c.prepareStatement(NAME_SQL))
+		try (PreparedStatement ps = c.prepareStatement(NAME_TYPE_SQL))
 		{
 			ps.setLong(1, id);
 			try (ResultSet rs = ps.executeQuery())
 			{
-				return rs.next() ? rs.getString(1) : null;
+				if (!rs.next())
+				{
+					return null;
+				}
+				Person person = new Person();
+				person.setId(id);
+				person.setName(rs.getString(1));
+				person.setType(rs.getString(2));
+				return person;
 			}
 		}
 	}
@@ -212,6 +226,12 @@ public class PersonRepository
 		person.setName(rs.getString("name"));
 		person.setEmail(rs.getString("email"));
 		person.setPhone(rs.getString("phone"));
+		person.setType(normalizeType(rs.getString("type")));
 		return person;
+	}
+
+	private static String normalizeType(String type)
+	{
+		return (type == null || type.isBlank()) ? "DONOR" : type.trim().toUpperCase();
 	}
 }

@@ -25,6 +25,9 @@ public class Person implements Serializable
 	/** The phone. */
 	private String phone;
 
+	/** The merged person record type (for example, DONOR). */
+	private String type = "DONOR";
+
 	/**
 	 * Gets the id.
 	 *
@@ -106,6 +109,26 @@ public class Person implements Serializable
 	}
 
 	/**
+	 * Gets the person type.
+	 *
+	 * @return the type
+	 */
+	public String getType()
+	{
+		return this.type;
+	}
+
+	/**
+	 * Sets the person type.
+	 *
+	 * @param type the new type
+	 */
+	public void setType(String type)
+	{
+		this.type = type;
+	}
+
+	/**
 	 * Override @see java.lang.Object#equals(java.lang.Object) 
 	 */
 	@Override
@@ -123,7 +146,8 @@ public class Person implements Serializable
 		return this.id == person.id
 			&& Objects.equals(this.name, person.name)
 			&& Objects.equals(this.email, person.email)
-			&& Objects.equals(this.phone, person.phone);
+			&& Objects.equals(this.phone, person.phone)
+			&& Objects.equals(this.type, person.type);
 	}
 
 	/**
@@ -132,6 +156,6 @@ public class Person implements Serializable
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(this.id, this.name, this.email, this.phone);
+		return Objects.hash(this.id, this.name, this.email, this.phone, this.type);
 	}
 }

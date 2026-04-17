@@ -32,7 +32,7 @@ final class CounterpartySyncAdapter
         {
             return;
         }
-        sync(c, person.getName(), "PERSON", person.getEmail(), person.getPhone());
+        sync(c, person.getName(), normalizeKind(person.getType()), person.getEmail(), person.getPhone());
     }
 
     static void syncDonor(Connection c, DonorContact donor) throws SQLException
@@ -46,7 +46,12 @@ final class CounterpartySyncAdapter
 
     static void deletePerson(Connection c, String name) throws SQLException
     {
-        delete(c, name, "PERSON");
+        deletePerson(c, name, "DONOR");
+    }
+
+    static void deletePerson(Connection c, String name, String type) throws SQLException
+    {
+        delete(c, name, normalizeKind(type));
     }
 
     static void deleteDonor(Connection c, String name) throws SQLException
@@ -88,5 +93,10 @@ final class CounterpartySyncAdapter
             ps.setString(2, kind);
             ps.executeUpdate();
         }
+    }
+
+    private static String normalizeKind(String type)
+    {
+        return (type == null || type.isBlank()) ? "DONOR" : type.trim().toUpperCase();
     }
 }

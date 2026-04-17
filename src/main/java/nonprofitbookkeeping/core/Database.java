@@ -33,8 +33,8 @@ public final class Database
 
 	private static final String SQL_COUNTERPARTY_FROM_PERSON =
 		"INSERT INTO counterparty(display_name, kind, email, phone, is_active) " +
-		"SELECT p.name, 'PERSON', p.email, p.phone, TRUE FROM person p " +
-		"WHERE NOT EXISTS (SELECT 1 FROM counterparty c WHERE c.display_name = p.name AND c.kind = 'PERSON')";
+		"SELECT p.name, UPPER(COALESCE(p.type, 'DONOR')), p.email, p.phone, TRUE FROM person p " +
+		"WHERE NOT EXISTS (SELECT 1 FROM counterparty c WHERE c.display_name = p.name AND c.kind = UPPER(COALESCE(p.type, 'DONOR')))";
 
 	private static final String SQL_COUNTERPARTY_FROM_DONOR =
 		"INSERT INTO counterparty(display_name, kind, email, phone, is_active) " +
@@ -868,11 +868,14 @@ private static final String SQL_DEFAULT_CHART_INSERT =
 			      id BIGINT AUTO_INCREMENT PRIMARY KEY,
 			      name VARCHAR(255) NOT NULL,
 			      email VARCHAR(255),
-			      phone VARCHAR(64)
+			      phone VARCHAR(64),
+			      type VARCHAR(32) NOT NULL DEFAULT 'DONOR'
 			    )
 			""");
 		st.execute("ALTER TABLE person ADD COLUMN IF NOT EXISTS email VARCHAR(255);");
 		st.execute("ALTER TABLE person ADD COLUMN IF NOT EXISTS phone VARCHAR(64);");
+		st.execute("ALTER TABLE person ADD COLUMN IF NOT EXISTS type VARCHAR(32) DEFAULT 'DONOR';");
+		st.execute("UPDATE person SET type = 'DONOR' WHERE type IS NULL OR TRIM(type) = '';");
 		st.execute("CREATE INDEX IF NOT EXISTS person_name_idx ON person(name)");
 		st.execute("""
 			    ALTER TABLE txn_supplemental_line
