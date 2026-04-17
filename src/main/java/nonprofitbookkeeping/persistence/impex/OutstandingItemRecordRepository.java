@@ -7,7 +7,11 @@ import nonprofitbookkeeping.model.impex.OutstandingItemRecord;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Persists imported SCLX outstanding-item records into a concrete staging table.
@@ -53,6 +57,17 @@ public class OutstandingItemRecordRepository
         ) KEY(outstanding_item_id)
         VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
         """;
+    private static final String LIST_ALL_SQL = """
+        SELECT
+            outstanding_item_id, kind, ledger_transaction_id, ledger_line_id,
+            workbook_sheet_key, workbook_row_index, date_sent_or_received,
+            incoming_check_or_transfer_date, transfer_id_or_check_number,
+            date_shows_on_statement, person_or_business_name, details_notes,
+            from_to_card_merchant, account_for_payment_or_deposit, amount,
+            date_reversed, reversal_reason_and_approval, reversal_transaction_id,
+            reversal_line_id, status
+        FROM imported_outstanding_item_record
+        """;
 
     public void upsert(OutstandingItemRecord row) throws SQLException
     {
@@ -92,11 +107,66 @@ public class OutstandingItemRecordRepository
         }
     }
 
+    public List<OutstandingItemRecord> listAll() throws SQLException
+    {
+        try (Connection c = Database.get().getConnection())
+        {
+            ensureTable(c);
+            List<OutstandingItemRecord> rows = new ArrayList<>();
+            try (Statement statement = c.createStatement();
+                 ResultSet rs = statement.executeQuery(LIST_ALL_SQL))
+            {
+                while (rs.next())
+                {
+                    rows.add(new OutstandingItemRecord(
+                        rs.getString("outstanding_item_id"),
+                        rs.getString("kind"),
+                        ledgerRef(rs.getString("ledger_transaction_id"), rs.getString("ledger_line_id")),
+                        workbookRef(rs.getString("workbook_sheet_key"), rs.getObject("workbook_row_index", Integer.class)),
+                        rs.getDate("date_sent_or_received") == null ? null : rs.getDate("date_sent_or_received").toLocalDate(),
+                        rs.getDate("incoming_check_or_transfer_date") == null ? null : rs.getDate("incoming_check_or_transfer_date").toLocalDate(),
+                        rs.getString("transfer_id_or_check_number"),
+                        rs.getDate("date_shows_on_statement") == null ? null : rs.getDate("date_shows_on_statement").toLocalDate(),
+                        rs.getString("person_or_business_name"),
+                        rs.getString("details_notes"),
+                        rs.getString("from_to_card_merchant"),
+                        rs.getString("account_for_payment_or_deposit"),
+                        rs.getBigDecimal("amount"),
+                        rs.getDate("date_reversed") == null ? null : rs.getDate("date_reversed").toLocalDate(),
+                        rs.getString("reversal_reason_and_approval"),
+                        ledgerRef(rs.getString("reversal_transaction_id"), rs.getString("reversal_line_id")),
+                        rs.getString("status"),
+                        java.util.Map.of()
+                    ));
+                }
+            }
+            return rows;
+        }
+    }
+
     private void ensureTable(Connection c) throws SQLException
     {
         try (PreparedStatement ps = c.prepareStatement(CREATE_SQL))
         {
             ps.execute();
         }
+    }
+
+    private static OutstandingItemRecord.LedgerLinkRef ledgerRef(String transactionId, String lineId)
+    {
+        if (transactionId == null && lineId == null)
+        {
+            return null;
+        }
+        return new OutstandingItemRecord.LedgerLinkRef(transactionId, lineId);
+    }
+
+    private static OutstandingItemRecord.WorkbookLinkRef workbookRef(String sheetKey, Integer ledgerRowIndex)
+    {
+        if (sheetKey == null && ledgerRowIndex == null)
+        {
+            return null;
+        }
+        return new OutstandingItemRecord.WorkbookLinkRef(sheetKey, ledgerRowIndex);
     }
 }

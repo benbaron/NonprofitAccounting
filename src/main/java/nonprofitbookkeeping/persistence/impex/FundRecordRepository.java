@@ -6,7 +6,11 @@ import nonprofitbookkeeping.model.impex.FundRecord;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Persists imported SCLX fund records into a concrete staging table.
@@ -30,6 +34,10 @@ public class FundRecordRepository
         ) KEY(fund_id)
         VALUES(?,?,?,?,?)
         """;
+    private static final String LIST_ALL_SQL = """
+        SELECT fund_id, name, restricted, description
+        FROM imported_fund_record
+        """;
 
     public void upsert(FundRecord row) throws SQLException
     {
@@ -46,6 +54,30 @@ public class FundRecordRepository
                 ps.setString(++i, JsonColumnCodec.toJson(row.extensions()));
                 ps.executeUpdate();
             }
+        }
+    }
+
+    public List<FundRecord> listAll() throws SQLException
+    {
+        try (Connection c = Database.get().getConnection())
+        {
+            ensureTable(c);
+            List<FundRecord> rows = new ArrayList<>();
+            try (Statement statement = c.createStatement();
+                 ResultSet rs = statement.executeQuery(LIST_ALL_SQL))
+            {
+                while (rs.next())
+                {
+                    rows.add(new FundRecord(
+                        rs.getString("fund_id"),
+                        rs.getString("name"),
+                        rs.getBoolean("restricted"),
+                        rs.getString("description"),
+                        java.util.Map.of()
+                    ));
+                }
+            }
+            return rows;
         }
     }
 

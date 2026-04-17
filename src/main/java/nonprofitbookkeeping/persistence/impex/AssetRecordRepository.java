@@ -7,7 +7,11 @@ import nonprofitbookkeeping.model.impex.AssetRecord;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Persists imported SCLX asset records into a concrete staging table.
@@ -56,6 +60,16 @@ public class AssetRecordRepository
         ) KEY(asset_id)
         VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
         """;
+    private static final String LIST_ALL_SQL = """
+        SELECT
+            asset_id, date_acquired, description, item_count, approx_value_total,
+            value_per_item, item_type, used_for, lot_paid_total, lot_item_count,
+            guardian_legal_name, guardian_email, guardian_phone,
+            guardianship_date_as_of, guardianship_confirmed, guardianship_confirmation_status,
+            guardianship_notes, removal_approved_by, removal_approval_date,
+            removal_reason, removal_number_removed, removal_removed, removal_type
+        FROM imported_asset_record
+        """;
 
     public void upsert(AssetRecord row) throws SQLException
     {
@@ -94,11 +108,97 @@ public class AssetRecordRepository
         }
     }
 
+    public List<AssetRecord> listAll() throws SQLException
+    {
+        try (Connection c = Database.get().getConnection())
+        {
+            ensureTable(c);
+            List<AssetRecord> rows = new ArrayList<>();
+            try (Statement statement = c.createStatement();
+                 ResultSet rs = statement.executeQuery(LIST_ALL_SQL))
+            {
+                while (rs.next())
+                {
+                    rows.add(new AssetRecord(
+                        rs.getString("asset_id"),
+                        rs.getDate("date_acquired") == null ? null : rs.getDate("date_acquired").toLocalDate(),
+                        rs.getString("description"),
+                        rs.getObject("item_count", Integer.class),
+                        rs.getBigDecimal("approx_value_total"),
+                        rs.getBigDecimal("value_per_item"),
+                        rs.getString("item_type"),
+                        rs.getString("used_for"),
+                        rs.getBigDecimal("lot_paid_total"),
+                        rs.getObject("lot_item_count", Integer.class),
+                        buildGuardian(rs),
+                        buildGuardianshipDetails(rs),
+                        buildRemovalDetails(rs),
+                        java.util.Map.of()
+                    ));
+                }
+            }
+            return rows;
+        }
+    }
+
     private void ensureTable(Connection c) throws SQLException
     {
         try (PreparedStatement ps = c.prepareStatement(CREATE_SQL))
         {
             ps.execute();
         }
+    }
+
+    private static AssetRecord.GuardianRecord buildGuardian(ResultSet rs) throws SQLException
+    {
+        String legalName = rs.getString("guardian_legal_name");
+        String email = rs.getString("guardian_email");
+        String phone = rs.getString("guardian_phone");
+        if (legalName == null && email == null && phone == null)
+        {
+            return null;
+        }
+        return new AssetRecord.GuardianRecord(legalName, email, phone);
+    }
+
+    private static AssetRecord.GuardianshipDetailsRecord buildGuardianshipDetails(ResultSet rs) throws SQLException
+    {
+        Date dateAsOf = rs.getDate("guardianship_date_as_of");
+        Boolean confirmed = rs.getObject("guardianship_confirmed", Boolean.class);
+        String confirmationStatus = rs.getString("guardianship_confirmation_status");
+        String notes = rs.getString("guardianship_notes");
+        if (dateAsOf == null && confirmed == null && confirmationStatus == null && notes == null)
+        {
+            return null;
+        }
+        return new AssetRecord.GuardianshipDetailsRecord(
+            dateAsOf == null ? null : dateAsOf.toLocalDate(),
+            confirmed,
+            confirmationStatus,
+            notes
+        );
+    }
+
+    private static AssetRecord.RemovalDetailsRecord buildRemovalDetails(ResultSet rs) throws SQLException
+    {
+        String approvedBy = rs.getString("removal_approved_by");
+        Date approvalDate = rs.getDate("removal_approval_date");
+        String reason = rs.getString("removal_reason");
+        Integer numberRemoved = rs.getObject("removal_number_removed", Integer.class);
+        Boolean removed = rs.getObject("removal_removed", Boolean.class);
+        String removalType = rs.getString("removal_type");
+        if (approvedBy == null && approvalDate == null && reason == null
+            && numberRemoved == null && removed == null && removalType == null)
+        {
+            return null;
+        }
+        return new AssetRecord.RemovalDetailsRecord(
+            approvedBy,
+            approvalDate == null ? null : approvalDate.toLocalDate(),
+            reason,
+            numberRemoved,
+            removed,
+            removalType
+        );
     }
 }

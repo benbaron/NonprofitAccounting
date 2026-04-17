@@ -7,7 +7,11 @@ import nonprofitbookkeeping.model.impex.EventRecord;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Persists imported SCLX event records into a concrete staging table.
@@ -32,6 +36,10 @@ public class EventRecordRepository
         ) KEY(event_id)
         VALUES(?,?,?,?,?,?)
         """;
+    private static final String LIST_ALL_SQL = """
+        SELECT event_id, name, start_date, end_date, hosting_organization_id
+        FROM imported_event_record
+        """;
 
     public void upsert(EventRecord row) throws SQLException
     {
@@ -49,6 +57,31 @@ public class EventRecordRepository
                 ps.setString(++i, JsonColumnCodec.toJson(row.extensions()));
                 ps.executeUpdate();
             }
+        }
+    }
+
+    public List<EventRecord> listAll() throws SQLException
+    {
+        try (Connection c = Database.get().getConnection())
+        {
+            ensureTable(c);
+            List<EventRecord> rows = new ArrayList<>();
+            try (Statement statement = c.createStatement();
+                 ResultSet rs = statement.executeQuery(LIST_ALL_SQL))
+            {
+                while (rs.next())
+                {
+                    rows.add(new EventRecord(
+                        rs.getString("event_id"),
+                        rs.getString("name"),
+                        rs.getDate("start_date") == null ? null : rs.getDate("start_date").toLocalDate(),
+                        rs.getDate("end_date") == null ? null : rs.getDate("end_date").toLocalDate(),
+                        rs.getString("hosting_organization_id"),
+                        java.util.Map.of()
+                    ));
+                }
+            }
+            return rows;
         }
     }
 
