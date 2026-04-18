@@ -2,6 +2,7 @@ package nonprofitbookkeeping.ui;
 
 import javafx.application.Platform;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -17,6 +18,7 @@ import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.supplemental.ReceivablesLine;
 import nonprofitbookkeeping.persistence.CompanyDataRepository;
 
 import java.lang.reflect.Field;
@@ -122,7 +124,7 @@ class WorkspacePanelsE2ETest
 		LedgerRegisterPanel ledgerPanel = runOnFxThread(LedgerRegisterPanel::new);
 
 		int initialCount = runOnFxThread(() -> ledgerTable(ledgerPanel).getItems().size());
-		assertEquals(2, initialCount);
+		assertEquals(4, initialCount);
 
 		runOnFxThread(() -> {
 			DateRangeContext.set(new DateRange(java.time.LocalDate.of(2026, 1, 1),
@@ -131,7 +133,7 @@ class WorkspacePanelsE2ETest
 		});
 
 		int filteredCount = runOnFxThread(() -> ledgerTable(ledgerPanel).getItems().size());
-		assertEquals(1, filteredCount,
+		assertEquals(2, filteredCount,
 			"Write date range to context and read filtered ledger rows (E2E)");
 
 		runOnFxThread(() -> {
@@ -140,7 +142,38 @@ class WorkspacePanelsE2ETest
 		});
 
 		int resetCount = runOnFxThread(() -> ledgerTable(ledgerPanel).getItems().size());
-		assertEquals(2, resetCount);
+		assertEquals(4, resetCount);
+	}
+
+	@Test
+	void ledgerStatusShowsTransactionAndRowCounts() throws Exception
+	{
+		seedLedgerTransactions();
+		LedgerRegisterPanel ledgerPanel = runOnFxThread(LedgerRegisterPanel::new);
+		String text = runOnFxThread(() -> {
+			Field statusField = LedgerRegisterPanel.class.getDeclaredField("status");
+			statusField.setAccessible(true);
+			return ((Label) statusField.get(ledgerPanel)).getText();
+		});
+		assertTrue(text.contains("2 transaction(s)"));
+		assertTrue(text.contains("4 row(s)"));
+	}
+
+	@Test
+	void ledgerSubrecordsKeepDetailInBackingRows() throws Exception
+	{
+		seedLedgerTransactionsWithSupplementalDetails();
+		LedgerRegisterPanel ledgerPanel = runOnFxThread(LedgerRegisterPanel::new);
+		String summary = runOnFxThread(() -> {
+			Object firstRow = ledgerTable(ledgerPanel).getItems().get(0);
+			java.lang.reflect.Method method = firstRow.getClass().getDeclaredMethod("subrecordSummary");
+			method.setAccessible(true);
+			return (String) method.invoke(firstRow);
+		});
+
+		assertTrue(summary.contains("RECEIVABLE#INV-2026-001"), summary);
+		assertTrue(summary.contains("Donor pledge"), summary);
+		assertTrue(summary.contains("125.5"), summary);
 	}
 
 	@Test
@@ -154,7 +187,7 @@ class WorkspacePanelsE2ETest
 			return null;
 		});
 		int startOnlyCount = runOnFxThread(() -> ledgerTable(ledgerPanel).getItems().size());
-		assertEquals(1, startOnlyCount,
+		assertEquals(2, startOnlyCount,
 			"Start-only range should include rows on/after the start date");
 
 		runOnFxThread(() -> {
@@ -162,7 +195,7 @@ class WorkspacePanelsE2ETest
 			return null;
 		});
 		int endOnlyCount = runOnFxThread(() -> ledgerTable(ledgerPanel).getItems().size());
-		assertEquals(1, endOnlyCount,
+		assertEquals(2, endOnlyCount,
 			"End-only range should include rows on/before the end date");
 	}
 
@@ -342,6 +375,19 @@ class WorkspacePanelsE2ETest
 		credit.setFundNumber("GENERAL");
 		transaction.setEntries(new LinkedHashSet<>(List.of(debit, credit)));
 		return transaction;
+	}
+
+	private void seedLedgerTransactionsWithSupplementalDetails() throws SQLException
+	{
+		Company company = new Company();
+		AccountingTransaction transaction = transaction(301, "2026-02-02", "Donor A", "Pledge", "Cash/Bank");
+		ReceivablesLine line = new ReceivablesLine();
+		line.setReference("INV-2026-001");
+		line.setDescription("Donor pledge");
+		line.setAmount(new BigDecimal("125.50"));
+		transaction.setSupplementalLines(List.of(line));
+		company.getLedger().getJournal().replaceAllTransactions(List.of(transaction));
+		new CompanyDataRepository().persist(company);
 	}
 
 	private static <T> T runOnFxThread(Callable<T> task) throws Exception
