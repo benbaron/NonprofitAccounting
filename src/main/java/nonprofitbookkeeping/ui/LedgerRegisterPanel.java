@@ -75,7 +75,7 @@ public class LedgerRegisterPanel implements AppPanel
 
 		newTxn.setOnAction(e -> onNew());
 		open.setOnAction(e -> openSelected());
-		refresh.setOnAction(e -> loadLiveData());
+		refresh.setOnAction(e -> refreshCurrentView());
 
 		txnTable.setRowFactory(tv -> {
 			TableRow<LedgerViewRow> r = new TableRow<>();
@@ -102,6 +102,8 @@ public class LedgerRegisterPanel implements AppPanel
 
 		DateRangeContext.selectedProperty().addListener((obs, oldRange, newRange) ->
 			applyDateRangeFilter(newRange));
+		LedgerSelectionContext.selectedTransactionProperty().addListener((obs, oldValue, newValue) ->
+			mergeUpdatedTransaction(newValue));
 		loadLiveData();
 	}
 
@@ -138,6 +140,13 @@ public class LedgerRegisterPanel implements AppPanel
 			this.txnTable.getItems().clear();
 			status.setText("Unable to load live ledger data: " + ex.getMessage());
 		}
+	}
+
+	private void refreshCurrentView()
+	{
+		applyDateRangeFilter(DateRangeContext.get());
+		status.setText("Refreshed " + allTransactions.size() + " transaction(s), "
+			+ txnTable.getItems().size() + " row(s) from current ledger view.");
 	}
 
 	private void applyDateRangeFilter(DateRange range)
@@ -233,6 +242,46 @@ public class LedgerRegisterPanel implements AppPanel
 	{
 		LedgerSelectionContext.setSelectedTransaction(row);
 		LedgerSelectionContext.setSelectedSubpanel(LedgerSelectionContext.LedgerSubpanel.EDITOR);
+	}
+
+	private void mergeUpdatedTransaction(AccountingTransaction transaction)
+	{
+		if (transaction == null)
+		{
+			return;
+		}
+		List<AccountingTransaction> merged = new ArrayList<>(allTransactions);
+		int existingIndex = findExistingTransactionIndex(merged, transaction);
+		if (existingIndex >= 0)
+		{
+			merged.set(existingIndex, transaction);
+		}
+		else
+		{
+			merged.add(transaction);
+		}
+		allTransactions.setAll(merged);
+		applyDateRangeFilter(DateRangeContext.get());
+	}
+
+	private int findExistingTransactionIndex(List<AccountingTransaction> transactions,
+		AccountingTransaction updated)
+	{
+		for (int i = 0; i < transactions.size(); i++)
+		{
+			AccountingTransaction existing = transactions.get(i);
+			if (updated.getId() > 0 && existing.getId() == updated.getId())
+			{
+				return i;
+			}
+			if (updated.getBookingDateTimestamp() != null &&
+				Objects.equals(existing.getBookingDateTimestamp(),
+					updated.getBookingDateTimestamp()))
+			{
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	private void showDetails(AccountingTransaction row)

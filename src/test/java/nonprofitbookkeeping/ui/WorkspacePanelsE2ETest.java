@@ -284,6 +284,52 @@ class WorkspacePanelsE2ETest
 	}
 
 	@Test
+	void transactionEditorRefreshStatusUsesIdLabelWhenTimestampFallbackMatches() throws Exception
+	{
+		seedLedgerTransactions();
+		TransactionEditorPanel panel = runOnFxThread(TransactionEditorPanel::new);
+		AccountingTransaction persisted = new CompanyDataRepository().load().getLedger()
+			.getTransactions().get(0);
+		AccountingTransaction selected = new AccountingTransaction();
+		selected.setId(0);
+		selected.setBookingDateTimestamp(persisted.getBookingDateTimestamp());
+		selected.setDate("2026-01-05");
+
+		String statusText = runOnFxThread(() -> {
+			LedgerSelectionContext.setSelectedTransaction(selected);
+			invokeRefreshFromSelection(panel);
+			Field statusField = TransactionEditorPanel.class.getDeclaredField("status");
+			statusField.setAccessible(true);
+			return ((Label) statusField.get(panel)).getText();
+		});
+
+		assertTrue(statusText.contains("Refreshed transaction #"),
+			"Expected ID label after timestamp fallback match, got: " + statusText);
+	}
+
+	@Test
+	void transactionEditorRefreshStatusFallsBackToDateLabelWhenUnidentified() throws Exception
+	{
+		seedLedgerTransactions();
+		TransactionEditorPanel panel = runOnFxThread(TransactionEditorPanel::new);
+		AccountingTransaction selected = new AccountingTransaction();
+		selected.setId(0);
+		selected.setBookingDateTimestamp(999999999999L);
+		selected.setDate("2026-03-07");
+
+		String statusText = runOnFxThread(() -> {
+			LedgerSelectionContext.setSelectedTransaction(selected);
+			invokeRefreshFromSelection(panel);
+			Field statusField = TransactionEditorPanel.class.getDeclaredField("status");
+			statusField.setAccessible(true);
+			return ((Label) statusField.get(panel)).getText();
+		});
+
+		assertTrue(statusText.contains("dated 2026-03-07"),
+			"Expected date label for unmatched ID-less transaction, got: " + statusText);
+	}
+
+	@Test
 	void budgetWorkspacePanelsProvideEntryAndReportTables() throws Exception
 	{
 		BudgetPanel panel = runOnFxThread(BudgetPanel::new);
@@ -348,6 +394,14 @@ class WorkspacePanelsE2ETest
 		java.lang.reflect.Method openSelected = LedgerRegisterPanel.class.getDeclaredMethod("openSelected");
 		openSelected.setAccessible(true);
 		openSelected.invoke(panel);
+	}
+
+	private static void invokeRefreshFromSelection(TransactionEditorPanel panel) throws Exception
+	{
+		java.lang.reflect.Method refresh = TransactionEditorPanel.class
+			.getDeclaredMethod("refreshFromSelection");
+		refresh.setAccessible(true);
+		refresh.invoke(panel);
 	}
 
 	private void seedLedgerTransactions() throws SQLException

@@ -36,6 +36,20 @@ public class LedgerPanel extends BorderPane
 				this.subTabs.getSelectionModel().select(this.registerTab);
 			}
 		});
+
+		this.subTabs.getSelectionModel().selectedItemProperty()
+			.addListener((obs, oldTab, newTab) -> {
+				if (newTab == this.transactionEditorTab)
+				{
+					LedgerSelectionContext
+						.setSelectedSubpanel(LedgerSelectionContext.LedgerSubpanel.EDITOR);
+				}
+				else if (newTab == this.registerTab)
+				{
+					LedgerSelectionContext
+						.setSelectedSubpanel(LedgerSelectionContext.LedgerSubpanel.REGISTER);
+				}
+			});
 	}
 
 }
