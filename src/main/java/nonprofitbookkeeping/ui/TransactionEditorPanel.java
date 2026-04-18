@@ -19,6 +19,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import nonprofitbookkeeping.model.AccountingEntry;
+import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.persistence.CompanyDataRepository;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.math.BigDecimal;
 
 /**
  * Transaction editor panel driven from selected ledger transaction.
@@ -124,7 +126,7 @@ public class TransactionEditorPanel implements AppPanel
 
 		Button refresh = new Button("Refresh From Selection");
 		ToolBar tb = new ToolBar(refresh);
-		refresh.setOnAction(e -> loadTransaction(LedgerSelectionContext.getSelectedTransaction()));
+		refresh.setOnAction(e -> refreshFromSelection());
 
 		VBox box = new VBox(6, lbl, tb, splitTable);
 		VBox.setVgrow(splitTable, Priority.ALWAYS);
@@ -165,16 +167,38 @@ public class TransactionEditorPanel implements AppPanel
 
 	private void validateOrPost()
 	{
-		Alert a = new Alert(Alert.AlertType.INFORMATION,
-			"Validate/Post not wired yet; showing live loaded transaction data only.");
-		a.setHeaderText("Post / Validate");
-		a.showAndWait();
+		AccountingTransaction selected = LedgerSelectionContext.getSelectedTransaction();
+		if (selected == null)
+		{
+			status.setText("Validate/Post failed: no transaction selected.");
+			return;
+		}
+		String validationError = validateTransaction(splitTable.getItems());
+		if (validationError != null)
+		{
+			status.setText("Validate/Post failed: " + validationError);
+			return;
+		}
+		if (saveTransaction())
+		{
+			status.setText("Validation passed and transaction saved.");
+		}
+		else
+		{
+			status.setText("Validation passed but save failed.");
+		}
 	}
 
 	private void showJournal()
 	{
+		if (root.getScene() != null && root.getScene().getRoot() instanceof MainApplicationView view)
+		{
+			view.showPanel(MainApplicationView.PanelType.JOURNAL);
+			status.setText("Opened Journal view for current transaction context.");
+			return;
+		}
 		Alert a = new Alert(Alert.AlertType.INFORMATION,
-			"Journal view uses selected transaction with " + splitTable.getItems().size() + " split(s).");
+			"Unable to navigate to Journal view in current context.");
 		a.setHeaderText("Journal View");
 		a.showAndWait();
 	}
@@ -193,6 +217,11 @@ public class TransactionEditorPanel implements AppPanel
 
 	@Override
 	public void onSave()
+	{
+		saveTransaction();
+	}
+
+	private boolean saveTransaction()
 	{
 		try
 		{
@@ -217,11 +246,75 @@ public class TransactionEditorPanel implements AppPanel
 
 			LedgerSelectionContext.setSelectedTransaction(txToSave);
 			status.setText("Saved transaction " + txToSave.getId() + " to database.");
+			return true;
 		}
 		catch (SQLException ex)
 		{
 			status.setText("Save failed: " + ex.getMessage());
 		}
+		catch (RuntimeException ex)
+		{
+			status.setText("Save failed: " + ex.getMessage());
+		}
+		return false;
+	}
+
+	private void refreshFromSelection()
+	{
+		AccountingTransaction selected = LedgerSelectionContext.getSelectedTransaction();
+		if (selected == null || selected.getId() <= 0)
+		{
+			loadTransaction(selected);
+			return;
+		}
+		try
+		{
+			List<AccountingTransaction> transactions =
+				this.companyDataRepository.load().getLedger().getJournal()
+					.getJournalTransactions();
+			AccountingTransaction match = transactions.stream()
+				.filter(tx -> tx.getId() == selected.getId())
+				.findFirst()
+				.orElse(selected);
+			LedgerSelectionContext.setSelectedTransaction(match);
+			loadTransaction(match);
+			status.setText("Refreshed transaction " + match.getId() + " from journal.");
+		}
+		catch (SQLException ex)
+		{
+			status.setText("Refresh failed: " + ex.getMessage());
+		}
+	}
+
+	private String validateTransaction(List<AccountingEntry> entries)
+	{
+		if (entries == null || entries.isEmpty())
+		{
+			return "no split entries.";
+		}
+		BigDecimal debits = BigDecimal.ZERO;
+		BigDecimal credits = BigDecimal.ZERO;
+		for (AccountingEntry entry : entries)
+		{
+			if (entry == null || entry.getAmount() == null || entry.getAccountSide() == null)
+			{
+				return "all split lines must include amount and side.";
+			}
+			if (entry.getAccountSide() == AccountSide.DEBIT)
+			{
+				debits = debits.add(entry.getAmount());
+			}
+			else if (entry.getAccountSide() == AccountSide.CREDIT)
+			{
+				credits = credits.add(entry.getAmount());
+			}
+		}
+		if (debits.compareTo(credits) != 0)
+		{
+			return "debits (" + debits.toPlainString() + ") and credits ("
+				+ credits.toPlainString() + ") must balance.";
+		}
+		return null;
 	}
 
 	private String safe(String value)
