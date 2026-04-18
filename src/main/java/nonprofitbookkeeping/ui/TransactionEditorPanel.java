@@ -272,10 +272,7 @@ public class TransactionEditorPanel implements AppPanel
 			List<AccountingTransaction> transactions =
 				this.companyDataRepository.load().getLedger().getJournal()
 					.getJournalTransactions();
-			AccountingTransaction match = transactions.stream()
-				.filter(tx -> tx.getId() == selected.getId())
-				.findFirst()
-				.orElse(selected);
+			AccountingTransaction match = findMatchingTransaction(transactions, selected);
 			LedgerSelectionContext.setSelectedTransaction(match);
 			loadTransaction(match);
 			status.setText("Refreshed transaction " + match.getId() + " from journal.");
@@ -284,6 +281,38 @@ public class TransactionEditorPanel implements AppPanel
 		{
 			status.setText("Refresh failed: " + ex.getMessage());
 		}
+	}
+
+	private AccountingTransaction findMatchingTransaction(
+		List<AccountingTransaction> transactions,
+		AccountingTransaction selected)
+	{
+		if (transactions == null || transactions.isEmpty() || selected == null)
+		{
+			return selected;
+		}
+		if (selected.getId() > 0)
+		{
+			for (AccountingTransaction tx : transactions)
+			{
+				if (tx.getId() == selected.getId())
+				{
+					return tx;
+				}
+			}
+		}
+		if (selected.getBookingDateTimestamp() != null)
+		{
+			for (AccountingTransaction tx : transactions)
+			{
+				if (java.util.Objects.equals(tx.getBookingDateTimestamp(),
+					selected.getBookingDateTimestamp()))
+				{
+					return tx;
+				}
+			}
+		}
+		return selected;
 	}
 
 	private String validateTransaction(List<AccountingEntry> entries)
