@@ -262,9 +262,9 @@ public class TransactionEditorPanel implements AppPanel
 	private void refreshFromSelection()
 	{
 		AccountingTransaction selected = LedgerSelectionContext.getSelectedTransaction();
-		if (selected == null || selected.getId() <= 0)
+		if (selected == null)
 		{
-			loadTransaction(selected);
+			loadTransaction(null);
 			return;
 		}
 		try
