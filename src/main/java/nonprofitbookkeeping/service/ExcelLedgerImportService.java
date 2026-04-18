@@ -1,7 +1,7 @@
 
 package nonprofitbookkeeping.service;
 
-import nonprofitbookkeeping.model.impex.ExcelLedgerRow;
+import nonprofitbookkeeping.model.records.ExcelLedgerRow;
 import org.apache.poi.ss.usermodel.*;
 
 import org.slf4j.Logger;

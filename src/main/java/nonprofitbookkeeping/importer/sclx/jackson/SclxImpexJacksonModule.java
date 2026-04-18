@@ -2,9 +2,9 @@
 package nonprofitbookkeeping.importer.sclx.jackson;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import nonprofitbookkeeping.model.impex.BankStatementRecord;
-import nonprofitbookkeeping.model.impex.BankingItemRecord;
-import nonprofitbookkeeping.model.impex.BudgetRecord;
+import nonprofitbookkeeping.model.records.BankStatementRecord;
+import nonprofitbookkeeping.model.records.BankingItemRecord;
+import nonprofitbookkeeping.model.records.BudgetRecord;
 
 /**
  * Registers Jackson adapters for the final impex records derived from SCLX.

@@ -13,7 +13,7 @@ import javax.swing.table.DefaultTableModel;
 
 import org.junit.jupiter.api.Test;
 
-import nonprofitbookkeeping.model.impex.ExcelLedgerRow;
+import nonprofitbookkeeping.model.records.ExcelLedgerRow;
 
 class ImportFromExcelActionFXTest
 {

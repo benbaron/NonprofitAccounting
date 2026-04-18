@@ -3,8 +3,8 @@ package nonprofitbookkeeping.importer.sclx.mapping;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nonprofitbookkeeping.importer.sclx.jackson.JacksonJsonNodeSupport;
-import nonprofitbookkeeping.model.impex.BudgetRecord;
-import nonprofitbookkeeping.model.impex.BudgetRecord.BudgetLineRecord;
+import nonprofitbookkeeping.model.records.BudgetRecord;
+import nonprofitbookkeeping.model.records.BudgetRecord.BudgetLineRecord;
 
 import java.util.ArrayList;
 import java.util.List;

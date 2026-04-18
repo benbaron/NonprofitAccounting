@@ -3,11 +3,11 @@ package nonprofitbookkeeping.importer.sclx.mapping;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nonprofitbookkeeping.importer.sclx.jackson.JacksonJsonNodeSupport;
-import nonprofitbookkeeping.model.impex.BankStatementRecord;
-import nonprofitbookkeeping.model.impex.BankStatementRecord.BalanceSnapshot;
-import nonprofitbookkeeping.model.impex.BankStatementRecord.BankAccountRef;
-import nonprofitbookkeeping.model.impex.BankStatementRecord.SourceFormat;
-import nonprofitbookkeeping.model.impex.BankStatementRecord.StatementKind;
+import nonprofitbookkeeping.model.records.BankStatementRecord;
+import nonprofitbookkeeping.model.records.BankStatementRecord.BalanceSnapshot;
+import nonprofitbookkeeping.model.records.BankStatementRecord.BankAccountRef;
+import nonprofitbookkeeping.model.records.BankStatementRecord.SourceFormat;
+import nonprofitbookkeeping.model.records.BankStatementRecord.StatementKind;
 
 /**
  * Maps one SCLX bankStatementImport node to a final BankStatementRecord.
