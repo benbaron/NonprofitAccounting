@@ -47,9 +47,9 @@ class NavigationPaneRecordServiceTest
         assertEquals(RecordServicePanelRegistry.all().size(), recordServices.getChildren().size());
 
         TreeItem<NavigationPane.NavItem> budgetService =
-            findByLabel(tree.getRoot(), "Budget · Budget Records (Workspace)");
+            findByLabel(tree.getRoot(), "Budget Records (Workspace)");
         TreeItem<NavigationPane.NavItem> documentService =
-            findByLabel(tree.getRoot(), "Admin · Document Records (Proposed)");
+            findByLabel(tree.getRoot(), "Document Records (Proposed)");
 
         assertNotNull(budgetService);
         assertNotNull(documentService);
@@ -73,9 +73,9 @@ class NavigationPaneRecordServiceTest
         });
 
         TreeItem<NavigationPane.NavItem> budgetService =
-            findByLabel(treeRef.get().getRoot(), "Budget · Budget Records (Workspace)");
+            findByLabel(treeRef.get().getRoot(), "Budget Records (Workspace)");
         TreeItem<NavigationPane.NavItem> documentService =
-            findByLabel(treeRef.get().getRoot(), "Admin · Document Records (Proposed)");
+            findByLabel(treeRef.get().getRoot(), "Document Records (Proposed)");
 
         runFx(() -> {
             budgetService.getValue().onOpen().run();

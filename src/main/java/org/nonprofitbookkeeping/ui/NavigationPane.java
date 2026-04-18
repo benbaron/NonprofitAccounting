@@ -8,6 +8,7 @@ import nonprofitbookkeeping.ui.RecordServicePanelRegistry;
 
 import java.util.Comparator;
 import java.util.EnumMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -68,10 +69,15 @@ public class NavigationPane extends VBox
         add(ref, AppPanelId.FUNDS, "Funds");
 
         TreeItem<NavItem> registry = group(root, "Record Services");
+        Map<String, TreeItem<NavItem>> registryCategories = new LinkedHashMap<>();
         RecordServicePanelRegistry.all().values().stream()
             .sorted(Comparator.comparing(RecordServicePanelRegistry.PanelBinding::category)
                 .thenComparing(RecordServicePanelRegistry.PanelBinding::displayName))
-            .forEach(binding -> addRecordService(registry, binding));
+            .forEach(binding -> {
+                TreeItem<NavItem> categoryNode =
+                    registryCategories.computeIfAbsent(binding.category(), c -> group(registry, c));
+                addRecordService(categoryNode, binding);
+            });
 
         TreeItem<NavItem> sys = group(root, "System");
         add(sys, AppPanelId.SETTINGS, "Settings");
@@ -143,7 +149,7 @@ public class NavigationPane extends VBox
     private void addRecordService(TreeItem<NavItem> parent, RecordServicePanelRegistry.PanelBinding binding)
     {
         String suffix = binding.proposedPanel() ? " (Proposed)" : " (Workspace)";
-        String label = binding.category() + " · " + binding.displayName() + suffix;
+        String label = binding.displayName() + suffix;
         TreeItem<NavItem> ti = new TreeItem<>(new NavItem(null, label, () -> openRecordServicePanel.accept(binding),
             binding.proposedPanel()));
         parent.getChildren().add(ti);

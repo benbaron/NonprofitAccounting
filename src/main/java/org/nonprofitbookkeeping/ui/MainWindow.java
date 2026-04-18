@@ -275,25 +275,13 @@ public class MainWindow extends BorderPane
             return;
         }
 
-        AppPanel panel = binding.panelFactory().get();
-        if (panel instanceof LedgerRegisterPanel)
+        if (binding.workspacePanelId() != null)
         {
-            openPanel(AppPanelId.LEDGER_REGISTER);
-        }
-        else if (panel instanceof BudgetEditorPanel)
-        {
-            openPanel(AppPanelId.BUDGET_EDITOR);
-        }
-        else if (panel instanceof BudgetVsActualPanel)
-        {
-            openPanel(AppPanelId.BUDGET_VS_ACTUAL);
-        }
-        else if (panel instanceof AssetsRegisterPanel)
-        {
-            openPanel(AppPanelId.ASSETS_REGISTER);
+            openPanel(binding.workspacePanelId());
         }
         else
         {
+            AppPanel panel = binding.panelFactory().get();
             showLegacyPanel(binding.displayName() + " (Workspace)", panel.root());
         }
     }
