@@ -17,7 +17,7 @@ import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.service.FileImportService;
 import nonprofitbookkeeping.service.ExcelLedgerImportService;
 import nonprofitbookkeeping.service.ReconciliationService;
-import nonprofitbookkeeping.model.impex.ExcelLedgerRow;
+import nonprofitbookkeeping.model.records.ExcelLedgerRow;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.core.AccountingTransactionBuilder;
 

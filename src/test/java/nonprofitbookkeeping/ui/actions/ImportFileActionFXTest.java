@@ -8,7 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import nonprofitbookkeeping.model.*;
-import nonprofitbookkeeping.model.impex.ExcelLedgerRow;
+import nonprofitbookkeeping.model.records.ExcelLedgerRow;
 import java.math.BigDecimal;
 import java.util.List;
 

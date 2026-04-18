@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nonprofitbookkeeping.importer.sclx.mapping.BankStatementRecordMapper;
-import nonprofitbookkeeping.model.impex.BankStatementRecord;
+import nonprofitbookkeeping.model.records.BankStatementRecord;
 
 import java.io.IOException;
 

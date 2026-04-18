@@ -7,7 +7,7 @@ import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Ledger;
-import nonprofitbookkeeping.model.impex.ImportedTransaction;
+import nonprofitbookkeeping.model.records.ImportedTransaction;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

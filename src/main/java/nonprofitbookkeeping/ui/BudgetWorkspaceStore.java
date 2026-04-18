@@ -1,7 +1,7 @@
 package nonprofitbookkeeping.ui;
 
-import nonprofitbookkeeping.model.impex.BudgetRecord;
-import nonprofitbookkeeping.persistence.impex.BudgetRecordRepository;
+import nonprofitbookkeeping.model.records.BudgetRecord;
+import nonprofitbookkeeping.persistence.records.BudgetRecordRepository;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;

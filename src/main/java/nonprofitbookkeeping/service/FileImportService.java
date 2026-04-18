@@ -23,7 +23,7 @@ import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.ChartOfAccounts;
 import nonprofitbookkeeping.model.Ledger; // Added
-import nonprofitbookkeeping.model.impex.ImportedTransaction;
+import nonprofitbookkeeping.model.records.ImportedTransaction;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
