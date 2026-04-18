@@ -14,6 +14,7 @@ import nonprofitbookkeeping.service.OtherAssetItemRecordService;
 import nonprofitbookkeeping.service.OutstandingItemRecordService;
 import nonprofitbookkeeping.service.ReportingPeriodRecordService;
 import nonprofitbookkeeping.service.SupplyRecordService;
+import org.nonprofitbookkeeping.ui.AppPanelId;
 import org.nonprofitbookkeeping.ui.AppPanel;
 
 import java.util.LinkedHashMap;
@@ -30,31 +31,32 @@ public final class RecordServicePanelRegistry
 
     static
     {
-        bind(AssetRecordService.class, false, AssetsRegisterPanel::new);
-        bind(BudgetRecordService.class, false, BudgetEditorPanel::new);
-        bind(FundRecordService.class, false, BudgetVsActualPanel::new);
+        bind(AssetRecordService.class, "Asset Records", "Assets", AppPanelId.ASSETS_REGISTER, false, AssetsRegisterPanel::new);
+        bind(SupplyRecordService.class, "Supply Records", "Assets", AppPanelId.ASSETS_REGISTER, false, AssetsRegisterPanel::new);
+        bind(OtherAssetItemRecordService.class, "Other Asset Records", "Assets", AppPanelId.ASSETS_REGISTER, false, AssetsRegisterPanel::new);
 
-        bind(BankStatementRecordService.class, false, LedgerRegisterPanel::new);
-        bind(BankingItemRecordService.class, false, LedgerRegisterPanel::new);
-        bind(ImportedTransactionService.class, false, LedgerRegisterPanel::new);
-        bind(ExcelLedgerRowService.class, false, LedgerRegisterPanel::new);
+        bind(BudgetRecordService.class, "Budget Records", "Budget", AppPanelId.BUDGET_EDITOR, false, BudgetEditorPanel::new);
+        bind(FundRecordService.class, "Fund Records", "Budget", AppPanelId.BUDGET_VS_ACTUAL, false, BudgetVsActualPanel::new);
 
-        bind(SupplyRecordService.class, false, AssetsRegisterPanel::new);
-        bind(OtherAssetItemRecordService.class, false, AssetsRegisterPanel::new);
+        bind(BankStatementRecordService.class, "Bank Statement Records", "Banking", AppPanelId.LEDGER_REGISTER, false, LedgerRegisterPanel::new);
+        bind(BankingItemRecordService.class, "Banking Item Records", "Banking", AppPanelId.LEDGER_REGISTER, false, LedgerRegisterPanel::new);
+        bind(ImportedTransactionService.class, "Imported Transaction Records", "Banking", AppPanelId.LEDGER_REGISTER, false,
+            LedgerRegisterPanel::new);
+        bind(ExcelLedgerRowService.class, "Excel Ledger Row Records", "Banking", AppPanelId.LEDGER_REGISTER, false, LedgerRegisterPanel::new);
 
-        bind(DocumentRecordService.class, true,
+        bind(DocumentRecordService.class, "Document Records", "Admin", null, true,
             () -> new ProposedRecordPanel("Document Records",
                 "Proposed panel: browse linked documents, metadata, and attachment status."));
-        bind(EventRecordService.class, true,
+        bind(EventRecordService.class, "Event Records", "Admin", null, true,
             () -> new ProposedRecordPanel("Event Records",
                 "Proposed panel: event schedule, host org linkage, and period rollups."));
-        bind(OrganizationRecordService.class, true,
+        bind(OrganizationRecordService.class, "Organization Records", "Admin", null, true,
             () -> new ProposedRecordPanel("Organization Records",
                 "Proposed panel: organization hierarchy and fiscal/calendar controls."));
-        bind(OutstandingItemRecordService.class, true,
+        bind(OutstandingItemRecordService.class, "Outstanding Item Records", "Banking", null, true,
             () -> new ProposedRecordPanel("Outstanding Items",
                 "Proposed panel: open checks/transfers with reconciliation lifecycle actions."));
-        bind(ReportingPeriodRecordService.class, true,
+        bind(ReportingPeriodRecordService.class, "Reporting Period Records", "Admin", null, true,
             () -> new ProposedRecordPanel("Reporting Periods",
                 "Proposed panel: fiscal periods, close/open workflow, and validation."));
     }
@@ -73,9 +75,15 @@ public final class RecordServicePanelRegistry
         return Map.copyOf(BINDINGS);
     }
 
-    private static void bind(Class<?> serviceType, boolean proposed, Supplier<AppPanel> panelFactory)
+    private static void bind(Class<?> serviceType,
+        String displayName,
+        String category,
+        AppPanelId workspacePanelId,
+        boolean proposed,
+        Supplier<AppPanel> panelFactory)
     {
-        BINDINGS.put(serviceType, new PanelBinding(serviceType, proposed, panelFactory));
+        BINDINGS.put(serviceType, new PanelBinding(serviceType, displayName, category, workspacePanelId, proposed,
+            panelFactory));
     }
 
     /**
@@ -83,6 +91,9 @@ public final class RecordServicePanelRegistry
      */
     public record PanelBinding(
         Class<?> serviceType,
+        String displayName,
+        String category,
+        AppPanelId workspacePanelId,
         boolean proposedPanel,
         Supplier<AppPanel> panelFactory)
     {

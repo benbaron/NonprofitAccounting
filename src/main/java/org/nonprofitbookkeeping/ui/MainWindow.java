@@ -22,6 +22,7 @@ import nonprofitbookkeeping.plugins.scaledger.SCALedgerPlugin;
 import nonprofitbookkeeping.tools.H2ScriptCompanyExporter;
 import nonprofitbookkeeping.tools.H2ScriptCompanyImporter;
 import nonprofitbookkeeping.tools.H2SchemaMigrator;
+import nonprofitbookkeeping.ui.RecordServicePanelRegistry;
 import nonprofitbookkeeping.ui.actions.ExcelTemplateReportActionFX;
 import nonprofitbookkeeping.ui.actions.ExportCoaXlsxActionFX;
 import nonprofitbookkeeping.ui.actions.ExportFileActionFX;
@@ -62,7 +63,8 @@ public class MainWindow extends BorderPane
 {
     private final PanelHost panelHost = new PanelHost();
     private final InspectorPane inspectorPane = new InspectorPane();
-    private final NavigationPane nav = new NavigationPane(this::openPanel, this::openInspectorForSelection);
+    private final NavigationPane nav =
+        new NavigationPane(this::openPanel, this::openInspectorForSelection, this::openRecordServicePanel);
     private final InventoryService inventoryService = new InventoryService();
     private final DocumentStorageService documentStorageService = new DocumentStorageService();
     private final FundAccountingService fundAccountingService = new FundAccountingService();
@@ -263,6 +265,25 @@ public class MainWindow extends BorderPane
     public void openInspectorForSelection(String title, String body)
     {
         inspectorPane.show(title, body);
+    }
+
+    void openRecordServicePanel(RecordServicePanelRegistry.PanelBinding binding)
+    {
+        if (binding.proposedPanel())
+        {
+            showLegacyPanel(binding.displayName() + " (Proposed)", binding.panelFactory().get().root());
+            return;
+        }
+
+        if (binding.workspacePanelId() != null)
+        {
+            openPanel(binding.workspacePanelId());
+        }
+        else
+        {
+            AppPanel panel = binding.panelFactory().get();
+            showLegacyPanel(binding.displayName() + " (Workspace)", panel.root());
+        }
     }
 
     public void closeInspector()
