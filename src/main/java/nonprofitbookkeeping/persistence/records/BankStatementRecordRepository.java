@@ -59,6 +59,10 @@ public class BankStatementRecordRepository
             document_id
         FROM imported_bank_statement
         """;
+    private static final String DELETE_BY_IMPORT_ID = """
+        DELETE FROM imported_bank_statement
+        WHERE import_id = ?
+        """;
 
     public void upsert(BankStatementRecord record) throws SQLException
     {
@@ -136,6 +140,17 @@ public class BankStatementRecordRepository
             }
         }
         return rows;
+    }
+
+    public int deleteByImportId(String importId) throws SQLException
+    {
+        ensureSchema();
+        try (Connection c = Database.get().getConnection();
+             PreparedStatement ps = c.prepareStatement(DELETE_BY_IMPORT_ID))
+        {
+            ps.setString(1, importId);
+            return ps.executeUpdate();
+        }
     }
 
     private void ensureSchema() throws SQLException

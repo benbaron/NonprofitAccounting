@@ -13,8 +13,8 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Architecture guard: top-level impex *Record types should have a matching
- * repository in persistence/impex.
+ * Architecture guard: top-level record types should have a matching
+ * repository in persistence/records.
  */
 class ImpexRecordCoverageTest
 {
@@ -23,9 +23,9 @@ class ImpexRecordCoverageTest
 	{
 		Path repoRoot = Path.of("").toAbsolutePath();
 		Path impexModelDir =
-			repoRoot.resolve("src/main/java/nonprofitbookkeeping/model/impex");
+			repoRoot.resolve("src/main/java/nonprofitbookkeeping/model/records");
 		Path impexRepoDir =
-			repoRoot.resolve("src/main/java/nonprofitbookkeeping/persistence/impex");
+			repoRoot.resolve("src/main/java/nonprofitbookkeeping/persistence/records");
 
 		try (Stream<Path> modelStream = Files.list(impexModelDir);
 		     Stream<Path> repoStream = Files.list(impexRepoDir))
@@ -50,7 +50,7 @@ class ImpexRecordCoverageTest
 				.collect(Collectors.toCollection(TreeSet::new));
 
 			assertTrue(missing.isEmpty(),
-				"Missing impex repositories for: " + missing);
+				"Missing record repositories for: " + missing);
 		}
 	}
 }

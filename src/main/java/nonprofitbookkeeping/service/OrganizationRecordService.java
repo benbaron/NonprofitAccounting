@@ -32,4 +32,9 @@ public class OrganizationRecordService
     {
         return repository.listAll();
     }
+
+    public int delete(String organizationId) throws SQLException
+    {
+        return repository.deleteById(organizationId);
+    }
 }

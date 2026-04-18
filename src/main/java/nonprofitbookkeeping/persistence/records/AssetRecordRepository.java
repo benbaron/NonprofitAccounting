@@ -70,6 +70,7 @@ public class AssetRecordRepository
             removal_reason, removal_number_removed, removal_removed, removal_type
         FROM imported_asset_record
         """;
+    private static final String DELETE_SQL = "DELETE FROM imported_asset_record WHERE asset_id = ?";
 
     public void upsert(AssetRecord row) throws SQLException
     {
@@ -138,6 +139,19 @@ public class AssetRecordRepository
                 }
             }
             return rows;
+        }
+    }
+
+    public int deleteById(String assetId) throws SQLException
+    {
+        try (Connection c = Database.get().getConnection())
+        {
+            ensureTable(c);
+            try (PreparedStatement ps = c.prepareStatement(DELETE_SQL))
+            {
+                ps.setString(1, assetId);
+                return ps.executeUpdate();
+            }
         }
     }
 

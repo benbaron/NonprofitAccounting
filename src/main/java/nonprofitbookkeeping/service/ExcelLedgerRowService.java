@@ -27,4 +27,12 @@ public class ExcelLedgerRowService
             return List.copyOf(rows);
         }
     }
+
+    public boolean delete(ExcelLedgerRow row)
+    {
+        synchronized (rows)
+        {
+            return rows.remove(row);
+        }
+    }
 }

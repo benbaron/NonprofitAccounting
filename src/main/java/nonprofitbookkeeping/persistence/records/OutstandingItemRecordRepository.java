@@ -68,6 +68,7 @@ public class OutstandingItemRecordRepository
             reversal_line_id, status
         FROM imported_outstanding_item_record
         """;
+    private static final String DELETE_SQL = "DELETE FROM imported_outstanding_item_record WHERE outstanding_item_id = ?";
 
     public void upsert(OutstandingItemRecord row) throws SQLException
     {
@@ -141,6 +142,19 @@ public class OutstandingItemRecordRepository
                 }
             }
             return rows;
+        }
+    }
+
+    public int deleteById(String outstandingItemId) throws SQLException
+    {
+        try (Connection c = Database.get().getConnection())
+        {
+            ensureTable(c);
+            try (PreparedStatement ps = c.prepareStatement(DELETE_SQL))
+            {
+                ps.setString(1, outstandingItemId);
+                return ps.executeUpdate();
+            }
         }
     }
 

@@ -32,4 +32,9 @@ public class EventRecordService
     {
         return repository.listAll();
     }
+
+    public int delete(String eventId) throws SQLException
+    {
+        return repository.deleteById(eventId);
+    }
 }

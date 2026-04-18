@@ -41,6 +41,7 @@ public class DocumentRecordRepository
         SELECT document_id, document_type, reference_number, document_date, file_name, notes
         FROM imported_document_record
         """;
+    private static final String DELETE_SQL = "DELETE FROM imported_document_record WHERE document_id = ?";
 
     public void upsert(DocumentRecord row) throws SQLException
     {
@@ -85,6 +86,19 @@ public class DocumentRecordRepository
                 }
             }
             return rows;
+        }
+    }
+
+    public int deleteById(String documentId) throws SQLException
+    {
+        try (Connection c = Database.get().getConnection())
+        {
+            ensureTable(c);
+            try (PreparedStatement ps = c.prepareStatement(DELETE_SQL))
+            {
+                ps.setString(1, documentId);
+                return ps.executeUpdate();
+            }
         }
     }
 

@@ -32,4 +32,9 @@ public class DocumentRecordService
     {
         return repository.listAll();
     }
+
+    public int delete(String documentId) throws SQLException
+    {
+        return repository.deleteById(documentId);
+    }
 }

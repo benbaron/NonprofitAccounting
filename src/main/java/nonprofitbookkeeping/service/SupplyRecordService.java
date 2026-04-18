@@ -32,4 +32,9 @@ public class SupplyRecordService
     {
         return repository.listAll();
     }
+
+    public int delete(String supplyId) throws SQLException
+    {
+        return repository.deleteById(supplyId);
+    }
 }

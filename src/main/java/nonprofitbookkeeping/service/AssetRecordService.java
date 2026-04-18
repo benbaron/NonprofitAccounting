@@ -32,4 +32,9 @@ public class AssetRecordService
     {
         return repository.listAll();
     }
+
+    public int delete(String assetId) throws SQLException
+    {
+        return repository.deleteById(assetId);
+    }
 }

@@ -49,6 +49,7 @@ public class BudgetRecordRepository
         """;
 
     private static final String DELETE_LINES = "DELETE FROM imported_budget_line WHERE budget_id = ?";
+    private static final String DELETE_BUDGET = "DELETE FROM imported_budget WHERE budget_id = ?";
     private static final String INSERT_LINE = """
         INSERT INTO imported_budget_line(
             budget_id, line_ordinal, event_name, budgeted_amount, revenue_category,
@@ -153,6 +154,41 @@ public class BudgetRecordRepository
             }
         }
         return rows;
+    }
+
+    public int deleteById(String budgetId) throws SQLException
+    {
+        ensureSchema();
+        try (Connection c = Database.get().getConnection())
+        {
+            boolean auto = c.getAutoCommit();
+            c.setAutoCommit(false);
+            try
+            {
+                try (PreparedStatement delLines = c.prepareStatement(DELETE_LINES))
+                {
+                    delLines.setString(1, budgetId);
+                    delLines.executeUpdate();
+                }
+                int deleted;
+                try (PreparedStatement delBudget = c.prepareStatement(DELETE_BUDGET))
+                {
+                    delBudget.setString(1, budgetId);
+                    deleted = delBudget.executeUpdate();
+                }
+                c.commit();
+                return deleted;
+            }
+            catch (SQLException ex)
+            {
+                c.rollback();
+                throw ex;
+            }
+            finally
+            {
+                c.setAutoCommit(auto);
+            }
+        }
     }
 
     private List<BudgetRecord.BudgetLineRecord> listLines(Connection c, String budgetId) throws SQLException

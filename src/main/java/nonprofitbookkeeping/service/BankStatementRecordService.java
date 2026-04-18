@@ -32,4 +32,9 @@ public class BankStatementRecordService
     {
         return repository.listAll();
     }
+
+    public int delete(String importId) throws SQLException
+    {
+        return repository.deleteByImportId(importId);
+    }
 }

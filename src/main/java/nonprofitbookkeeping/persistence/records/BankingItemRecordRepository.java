@@ -59,6 +59,10 @@ public class BankingItemRecordRepository
             ofx_fit_id, ofx_reference_number, ofx_name
         FROM imported_banking_item
         """;
+    private static final String DELETE_BY_ID = """
+        DELETE FROM imported_banking_item
+        WHERE banking_item_id = ?
+        """;
 
     public void upsert(BankingItemRecord record) throws SQLException
     {
@@ -156,6 +160,17 @@ public class BankingItemRecordRepository
             }
         }
         return rows;
+    }
+
+    public int deleteById(String bankingItemId) throws SQLException
+    {
+        ensureSchema();
+        try (Connection c = Database.get().getConnection();
+             PreparedStatement ps = c.prepareStatement(DELETE_BY_ID))
+        {
+            ps.setString(1, bankingItemId);
+            return ps.executeUpdate();
+        }
     }
 
     private void ensureSchema() throws SQLException

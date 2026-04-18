@@ -32,4 +32,9 @@ public class OutstandingItemRecordService
     {
         return repository.listAll();
     }
+
+    public int delete(String outstandingItemId) throws SQLException
+    {
+        return repository.deleteById(outstandingItemId);
+    }
 }

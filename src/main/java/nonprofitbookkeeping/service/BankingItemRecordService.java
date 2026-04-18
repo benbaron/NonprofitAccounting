@@ -32,4 +32,9 @@ public class BankingItemRecordService
     {
         return repository.listAll();
     }
+
+    public int delete(String bankingItemId) throws SQLException
+    {
+        return repository.deleteById(bankingItemId);
+    }
 }

@@ -32,4 +32,9 @@ public class FundRecordService
     {
         return repository.listAll();
     }
+
+    public int delete(String fundId) throws SQLException
+    {
+        return repository.deleteById(fundId);
+    }
 }

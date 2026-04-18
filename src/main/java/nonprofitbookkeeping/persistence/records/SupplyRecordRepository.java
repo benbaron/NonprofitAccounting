@@ -66,6 +66,7 @@ public class SupplyRecordRepository
             additional_notes
         FROM imported_supply_record
         """;
+    private static final String DELETE_SQL = "DELETE FROM imported_supply_record WHERE supply_id = ?";
 
     public void upsert(SupplyRecord row) throws SQLException
     {
@@ -129,6 +130,19 @@ public class SupplyRecordRepository
                 }
             }
             return rows;
+        }
+    }
+
+    public int deleteById(String supplyId) throws SQLException
+    {
+        try (Connection c = Database.get().getConnection())
+        {
+            ensureTable(c);
+            try (PreparedStatement ps = c.prepareStatement(DELETE_SQL))
+            {
+                ps.setString(1, supplyId);
+                return ps.executeUpdate();
+            }
         }
     }
 

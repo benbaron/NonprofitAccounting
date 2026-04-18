@@ -42,6 +42,7 @@ public class OrganizationRecordRepository
         SELECT organization_id, name, parent_organization, base_currency, fiscal_year_start, fiscal_year_end
         FROM imported_organization_record
         """;
+    private static final String DELETE_SQL = "DELETE FROM imported_organization_record WHERE organization_id = ?";
 
     public void upsert(OrganizationRecord row) throws SQLException
     {
@@ -86,6 +87,19 @@ public class OrganizationRecordRepository
                 }
             }
             return rows;
+        }
+    }
+
+    public int deleteById(String organizationId) throws SQLException
+    {
+        try (Connection c = Database.get().getConnection())
+        {
+            ensureTable(c);
+            try (PreparedStatement ps = c.prepareStatement(DELETE_SQL))
+            {
+                ps.setString(1, organizationId);
+                return ps.executeUpdate();
+            }
         }
     }
 

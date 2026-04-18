@@ -32,4 +32,9 @@ public class OtherAssetItemRecordService
     {
         return repository.listAll();
     }
+
+    public int delete(String otherAssetItemId) throws SQLException
+    {
+        return repository.deleteById(otherAssetItemId);
+    }
 }

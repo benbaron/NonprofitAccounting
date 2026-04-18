@@ -58,6 +58,7 @@ public class OtherAssetItemRecordRepository
             settlement_transaction_id, settlement_line_id, status
         FROM imported_other_asset_item_record
         """;
+    private static final String DELETE_SQL = "DELETE FROM imported_other_asset_item_record WHERE other_asset_item_id = ?";
 
     public void upsert(OtherAssetItemRecord row) throws SQLException
     {
@@ -122,6 +123,19 @@ public class OtherAssetItemRecordRepository
                 }
             }
             return rows;
+        }
+    }
+
+    public int deleteById(String otherAssetItemId) throws SQLException
+    {
+        try (Connection c = Database.get().getConnection())
+        {
+            ensureTable(c);
+            try (PreparedStatement ps = c.prepareStatement(DELETE_SQL))
+            {
+                ps.setString(1, otherAssetItemId);
+                return ps.executeUpdate();
+            }
         }
     }
 

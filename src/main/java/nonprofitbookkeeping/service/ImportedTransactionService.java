@@ -27,4 +27,12 @@ public class ImportedTransactionService
             return List.copyOf(transactions);
         }
     }
+
+    public boolean delete(ImportedTransaction transaction)
+    {
+        synchronized (transactions)
+        {
+            return transactions.remove(transaction);
+        }
+    }
 }

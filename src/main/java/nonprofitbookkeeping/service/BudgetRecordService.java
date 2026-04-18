@@ -32,4 +32,9 @@ public class BudgetRecordService
     {
         return repository.listAll();
     }
+
+    public int delete(String budgetId) throws SQLException
+    {
+        return repository.deleteById(budgetId);
+    }
 }

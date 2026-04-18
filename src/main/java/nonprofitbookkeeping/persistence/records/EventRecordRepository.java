@@ -40,6 +40,7 @@ public class EventRecordRepository
         SELECT event_id, name, start_date, end_date, hosting_organization_id
         FROM imported_event_record
         """;
+    private static final String DELETE_SQL = "DELETE FROM imported_event_record WHERE event_id = ?";
 
     public void upsert(EventRecord row) throws SQLException
     {
@@ -82,6 +83,19 @@ public class EventRecordRepository
                 }
             }
             return rows;
+        }
+    }
+
+    public int deleteById(String eventId) throws SQLException
+    {
+        try (Connection c = Database.get().getConnection())
+        {
+            ensureTable(c);
+            try (PreparedStatement ps = c.prepareStatement(DELETE_SQL))
+            {
+                ps.setString(1, eventId);
+                return ps.executeUpdate();
+            }
         }
     }
 

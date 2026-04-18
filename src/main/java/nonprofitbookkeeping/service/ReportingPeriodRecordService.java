@@ -32,4 +32,9 @@ public class ReportingPeriodRecordService
     {
         return repository.listAll();
     }
+
+    public int delete(ReportingPeriodRecord record) throws SQLException
+    {
+        return repository.delete(record);
+    }
 }

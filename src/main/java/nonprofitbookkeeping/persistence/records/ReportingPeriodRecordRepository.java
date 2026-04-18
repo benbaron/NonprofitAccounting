@@ -41,6 +41,7 @@ public class ReportingPeriodRecordRepository
         SELECT start_date, end_date, label, fiscal_year, period_type
         FROM imported_reporting_period_record
         """;
+    private static final String DELETE_SQL = "DELETE FROM imported_reporting_period_record WHERE period_key = ?";
 
     public void upsert(ReportingPeriodRecord row) throws SQLException
     {
@@ -89,6 +90,20 @@ public class ReportingPeriodRecordRepository
                 }
             }
             return rows;
+        }
+    }
+
+    public int delete(ReportingPeriodRecord row) throws SQLException
+    {
+        try (Connection c = Database.get().getConnection())
+        {
+            ensureTable(c);
+            try (PreparedStatement ps = c.prepareStatement(DELETE_SQL))
+            {
+                String periodKey = row.startDate() + ":" + row.endDate() + ":" + String.valueOf(row.label());
+                ps.setString(1, periodKey);
+                return ps.executeUpdate();
+            }
         }
     }
 

@@ -38,6 +38,7 @@ public class FundRecordRepository
         SELECT fund_id, name, restricted, description
         FROM imported_fund_record
         """;
+    private static final String DELETE_SQL = "DELETE FROM imported_fund_record WHERE fund_id = ?";
 
     public void upsert(FundRecord row) throws SQLException
     {
@@ -78,6 +79,19 @@ public class FundRecordRepository
                 }
             }
             return rows;
+        }
+    }
+
+    public int deleteById(String fundId) throws SQLException
+    {
+        try (Connection c = Database.get().getConnection())
+        {
+            ensureTable(c);
+            try (PreparedStatement ps = c.prepareStatement(DELETE_SQL))
+            {
+                ps.setString(1, fundId);
+                return ps.executeUpdate();
+            }
         }
     }
 
