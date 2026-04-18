@@ -92,7 +92,6 @@ public class ReportingPeriodRecordRepository
             return rows;
         }
     }
-
     public int delete(ReportingPeriodRecord row) throws SQLException
     {
         try (Connection c = Database.get().getConnection())

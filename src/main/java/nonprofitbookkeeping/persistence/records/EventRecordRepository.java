@@ -42,6 +42,7 @@ public class EventRecordRepository
         """;
     private static final String DELETE_SQL = "DELETE FROM imported_event_record WHERE event_id = ?";
 
+
     public void upsert(EventRecord row) throws SQLException
     {
         try (Connection c = Database.get().getConnection())
@@ -98,6 +99,7 @@ public class EventRecordRepository
             }
         }
     }
+
 
     private void ensureTable(Connection c) throws SQLException
     {

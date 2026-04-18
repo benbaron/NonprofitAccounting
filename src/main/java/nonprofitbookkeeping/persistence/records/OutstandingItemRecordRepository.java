@@ -158,7 +158,7 @@ public class OutstandingItemRecordRepository
         }
     }
 
-    private void ensureTable(Connection c) throws SQLException
+   private void ensureTable(Connection c) throws SQLException
     {
         try (PreparedStatement ps = c.prepareStatement(CREATE_SQL))
         {

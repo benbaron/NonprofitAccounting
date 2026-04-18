@@ -60,6 +60,7 @@ public class OtherAssetItemRecordRepository
         """;
     private static final String DELETE_SQL = "DELETE FROM imported_other_asset_item_record WHERE other_asset_item_id = ?";
 
+
     public void upsert(OtherAssetItemRecord row) throws SQLException
     {
         try (Connection c = Database.get().getConnection())
@@ -138,6 +139,7 @@ public class OtherAssetItemRecordRepository
             }
         }
     }
+
 
     private void ensureTable(Connection c) throws SQLException
     {

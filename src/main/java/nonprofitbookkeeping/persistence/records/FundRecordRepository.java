@@ -40,6 +40,7 @@ public class FundRecordRepository
         """;
     private static final String DELETE_SQL = "DELETE FROM imported_fund_record WHERE fund_id = ?";
 
+
     public void upsert(FundRecord row) throws SQLException
     {
         try (Connection c = Database.get().getConnection())
@@ -94,6 +95,7 @@ public class FundRecordRepository
             }
         }
     }
+
 
     private void ensureTable(Connection c) throws SQLException
     {

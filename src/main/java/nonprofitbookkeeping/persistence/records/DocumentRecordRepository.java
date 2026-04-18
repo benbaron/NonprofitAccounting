@@ -89,6 +89,7 @@ public class DocumentRecordRepository
         }
     }
 
+
     public int deleteById(String documentId) throws SQLException
     {
         try (Connection c = Database.get().getConnection())
@@ -101,6 +102,7 @@ public class DocumentRecordRepository
             }
         }
     }
+
 
     private void ensureTable(Connection c) throws SQLException
     {
