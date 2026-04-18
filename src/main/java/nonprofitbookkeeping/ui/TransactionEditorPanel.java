@@ -275,12 +275,31 @@ public class TransactionEditorPanel implements AppPanel
 			AccountingTransaction match = findMatchingTransaction(transactions, selected);
 			LedgerSelectionContext.setSelectedTransaction(match);
 			loadTransaction(match);
-			status.setText("Refreshed transaction " + match.getId() + " from journal.");
+			status.setText("Refreshed transaction " + transactionRefreshLabel(match)
+				+ " from journal.");
 		}
 		catch (SQLException ex)
 		{
 			status.setText("Refresh failed: " + ex.getMessage());
 		}
+	}
+
+	private String transactionRefreshLabel(AccountingTransaction transaction)
+	{
+		if (transaction == null)
+		{
+			return "(none)";
+		}
+		if (transaction.getId() > 0)
+		{
+			return "#" + transaction.getId();
+		}
+		String dateValue = safe(transaction.getDate());
+		if (!dateValue.isBlank())
+		{
+			return "dated " + dateValue;
+		}
+		return "(unidentified)";
 	}
 
 	private AccountingTransaction findMatchingTransaction(
