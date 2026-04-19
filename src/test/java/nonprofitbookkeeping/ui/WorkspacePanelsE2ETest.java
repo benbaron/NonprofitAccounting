@@ -2,6 +2,7 @@ package nonprofitbookkeeping.ui;
 
 import javafx.application.Platform;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -17,7 +18,10 @@ import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.records.BankingItemRecord;
+import nonprofitbookkeeping.model.supplemental.ReceivablesLine;
 import nonprofitbookkeeping.persistence.CompanyDataRepository;
+import nonprofitbookkeeping.service.BankingItemRecordService;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -122,7 +126,7 @@ class WorkspacePanelsE2ETest
 		LedgerRegisterPanel ledgerPanel = runOnFxThread(LedgerRegisterPanel::new);
 
 		int initialCount = runOnFxThread(() -> ledgerTable(ledgerPanel).getItems().size());
-		assertEquals(2, initialCount);
+		assertEquals(4, initialCount);
 
 		runOnFxThread(() -> {
 			DateRangeContext.set(new DateRange(java.time.LocalDate.of(2026, 1, 1),
@@ -131,7 +135,7 @@ class WorkspacePanelsE2ETest
 		});
 
 		int filteredCount = runOnFxThread(() -> ledgerTable(ledgerPanel).getItems().size());
-		assertEquals(1, filteredCount,
+		assertEquals(2, filteredCount,
 			"Write date range to context and read filtered ledger rows (E2E)");
 
 		runOnFxThread(() -> {
@@ -140,7 +144,38 @@ class WorkspacePanelsE2ETest
 		});
 
 		int resetCount = runOnFxThread(() -> ledgerTable(ledgerPanel).getItems().size());
-		assertEquals(2, resetCount);
+		assertEquals(4, resetCount);
+	}
+
+	@Test
+	void ledgerStatusShowsTransactionAndRowCounts() throws Exception
+	{
+		seedLedgerTransactions();
+		LedgerRegisterPanel ledgerPanel = runOnFxThread(LedgerRegisterPanel::new);
+		String text = runOnFxThread(() -> {
+			Field statusField = LedgerRegisterPanel.class.getDeclaredField("status");
+			statusField.setAccessible(true);
+			return ((Label) statusField.get(ledgerPanel)).getText();
+		});
+		assertTrue(text.contains("2 transaction(s)"));
+		assertTrue(text.contains("4 row(s)"));
+	}
+
+	@Test
+	void ledgerSubrecordsKeepDetailInBackingRows() throws Exception
+	{
+		seedLedgerTransactionsWithSupplementalDetails();
+		LedgerRegisterPanel ledgerPanel = runOnFxThread(LedgerRegisterPanel::new);
+		String summary = runOnFxThread(() -> {
+			Object firstRow = ledgerTable(ledgerPanel).getItems().get(0);
+			java.lang.reflect.Method method = firstRow.getClass().getDeclaredMethod("subrecordSummary");
+			method.setAccessible(true);
+			return (String) method.invoke(firstRow);
+		});
+
+		assertTrue(summary.contains("RECEIVABLE#INV-2026-001"), summary);
+		assertTrue(summary.contains("Donor pledge"), summary);
+		assertTrue(summary.contains("125.5"), summary);
 	}
 
 	@Test
@@ -154,7 +189,7 @@ class WorkspacePanelsE2ETest
 			return null;
 		});
 		int startOnlyCount = runOnFxThread(() -> ledgerTable(ledgerPanel).getItems().size());
-		assertEquals(1, startOnlyCount,
+		assertEquals(2, startOnlyCount,
 			"Start-only range should include rows on/after the start date");
 
 		runOnFxThread(() -> {
@@ -162,7 +197,7 @@ class WorkspacePanelsE2ETest
 			return null;
 		});
 		int endOnlyCount = runOnFxThread(() -> ledgerTable(ledgerPanel).getItems().size());
-		assertEquals(1, endOnlyCount,
+		assertEquals(2, endOnlyCount,
 			"End-only range should include rows on/before the end date");
 	}
 
@@ -251,6 +286,194 @@ class WorkspacePanelsE2ETest
 	}
 
 	@Test
+	void transactionEditorRefreshStatusUsesIdLabelWhenTimestampFallbackMatches() throws Exception
+	{
+		seedLedgerTransactions();
+		TransactionEditorPanel panel = runOnFxThread(TransactionEditorPanel::new);
+		AccountingTransaction persisted = new CompanyDataRepository().load().getLedger()
+			.getTransactions().get(0);
+		AccountingTransaction selected = new AccountingTransaction();
+		selected.setId(0);
+		selected.setBookingDateTimestamp(persisted.getBookingDateTimestamp());
+		selected.setDate("2026-01-05");
+
+		String statusText = runOnFxThread(() -> {
+			LedgerSelectionContext.setSelectedTransaction(selected);
+			invokeRefreshFromSelection(panel);
+			Field statusField = TransactionEditorPanel.class.getDeclaredField("status");
+			statusField.setAccessible(true);
+			return ((Label) statusField.get(panel)).getText();
+		});
+
+		assertTrue(statusText.contains("Refreshed transaction #"),
+			"Expected ID label after timestamp fallback match, got: " + statusText);
+	}
+
+	@Test
+	void transactionEditorRefreshStatusFallsBackToDateLabelWhenUnidentified() throws Exception
+	{
+		seedLedgerTransactions();
+		TransactionEditorPanel panel = runOnFxThread(TransactionEditorPanel::new);
+		AccountingTransaction selected = new AccountingTransaction();
+		selected.setId(0);
+		selected.setBookingDateTimestamp(999999999999L);
+		selected.setDate("2026-03-07");
+
+		String statusText = runOnFxThread(() -> {
+			LedgerSelectionContext.setSelectedTransaction(selected);
+			invokeRefreshFromSelection(panel);
+			Field statusField = TransactionEditorPanel.class.getDeclaredField("status");
+			statusField.setAccessible(true);
+			return ((Label) statusField.get(panel)).getText();
+		});
+
+		assertTrue(statusText.contains("dated 2026-03-07"),
+			"Expected date label for unmatched ID-less transaction, got: " + statusText);
+	}
+
+	@Test
+	void transactionEditorPersistsStableSplitIdsAndReloadsAssociatedMetadata() throws Exception
+	{
+		seedLedgerTransactions();
+		TransactionEditorPanel panel = runOnFxThread(TransactionEditorPanel::new);
+		AccountingTransaction transaction = new CompanyDataRepository().load().getLedger()
+			.getTransactions().get(0);
+
+		String firstSplitId = runOnFxThread(() -> {
+			LedgerSelectionContext.setSelectedTransaction(transaction);
+			TableView<?> table = splitTable(panel);
+			Object first = table.getItems().get(0);
+			first.getClass().getDeclaredMethod("setMerchant", String.class)
+				.invoke(first, "Merchant A");
+			String splitId = (String) first.getClass().getDeclaredMethod("getSplitId")
+				.invoke(first);
+			panel.onSave();
+			return splitId;
+		});
+
+		AccountingTransaction persisted = new CompanyDataRepository().load().getLedger()
+			.getTransactions().stream()
+			.filter(tx -> tx.getId() == transaction.getId())
+			.findFirst()
+			.orElseThrow();
+		String encodedSplitIds = persisted.getInfo().get("ledger.split.ids");
+		assertNotNull(encodedSplitIds);
+		assertTrue(encodedSplitIds.contains(firstSplitId),
+			"Persisted split IDs should contain the edited split id");
+
+		TransactionEditorPanel reloadedPanel = runOnFxThread(TransactionEditorPanel::new);
+		runOnFxThread(() -> {
+			LedgerSelectionContext.setSelectedTransaction(persisted);
+			invokeRefreshFromSelection(reloadedPanel);
+			Object first = splitTable(reloadedPanel).getItems().get(0);
+			String reloadedSplitId = (String) first.getClass().getDeclaredMethod("getSplitId")
+				.invoke(first);
+			String merchant = (String) first.getClass().getDeclaredMethod("getMerchant")
+				.invoke(first);
+			assertEquals(firstSplitId, reloadedSplitId);
+			assertEquals("Merchant A", merchant);
+			return null;
+		});
+	}
+
+	@Test
+	void transactionEditorSplitIdSetUpdatesWhenSplitRemovedAndAdded() throws Exception
+	{
+		seedLedgerTransactions();
+		TransactionEditorPanel panel = runOnFxThread(TransactionEditorPanel::new);
+		AccountingTransaction transaction = new CompanyDataRepository().load().getLedger()
+			.getTransactions().get(0);
+
+		String[] ids = runOnFxThread(() -> {
+			LedgerSelectionContext.setSelectedTransaction(transaction);
+			TableView<?> table = splitTable(panel);
+			Object first = table.getItems().get(0);
+			Object second = table.getItems().get(1);
+			String firstId = (String) first.getClass().getDeclaredMethod("getSplitId").invoke(first);
+			String removedId = (String) second.getClass().getDeclaredMethod("getSplitId").invoke(second);
+			((TableView<Object>) (TableView<?>) table).getItems().remove(1);
+
+			Object added = first.getClass().getDeclaredConstructor().newInstance();
+			String account = (String) first.getClass().getDeclaredMethod("getAccount").invoke(first);
+			String fund = (String) first.getClass().getDeclaredMethod("getFund").invoke(first);
+			added.getClass().getDeclaredMethod("setAccount", String.class).invoke(added, account);
+			added.getClass().getDeclaredMethod("setFund", String.class).invoke(added, fund);
+			added.getClass().getDeclaredMethod("setAmount", String.class).invoke(added, "10.00");
+			added.getClass().getDeclaredMethod("setSide", String.class).invoke(added, "CREDIT");
+			String addedId = (String) added.getClass().getDeclaredMethod("getSplitId").invoke(added);
+			((TableView<Object>) (TableView<?>) table).getItems().add(added);
+			panel.onSave();
+			return new String[]{firstId, removedId, addedId};
+		});
+
+		AccountingTransaction persisted = new CompanyDataRepository().load().getLedger()
+			.getTransactions().stream()
+			.filter(tx -> tx.getId() == transaction.getId())
+			.findFirst()
+			.orElseThrow();
+		String encoded = persisted.getInfo().get("ledger.split.ids");
+		assertNotNull(encoded);
+		assertTrue(encoded.contains(ids[0]), "Original retained split id should remain.");
+		assertTrue(encoded.contains(ids[2]), "Newly added split id should be persisted.");
+		assertTrue(!encoded.contains(ids[1]), "Removed split id should not remain persisted.");
+
+		BankingItemRecordService service = new BankingItemRecordService();
+		List<BankingItemRecord> current = service.listAll().stream()
+			.filter(r -> String.valueOf(transaction.getId()).equals(r.transactionId()))
+			.filter(r -> "LEDGER_EDITOR".equals(r.source()))
+			.toList();
+		assertEquals(2, current.size(), "Expected one banking-item record per remaining split.");
+		assertTrue(current.stream().noneMatch(r -> r.bankingItemId().contains(ids[1])),
+			"Removed split should not retain orphaned BankingItemRecord.");
+		assertTrue(current.stream().anyMatch(r -> r.bankingItemId().contains(ids[2])),
+			"Added split should have a BankingItemRecord.");
+	}
+
+	@Test
+	void transactionEditorRepeatedSplitRewritesDoNotAccumulateOrphans() throws Exception
+	{
+		seedLedgerTransactions();
+		TransactionEditorPanel panel = runOnFxThread(TransactionEditorPanel::new);
+		AccountingTransaction transaction = new CompanyDataRepository().load().getLedger()
+			.getTransactions().get(0);
+
+		runOnFxThread(() -> {
+			LedgerSelectionContext.setSelectedTransaction(transaction);
+			TableView<?> table = splitTable(panel);
+			Object first = table.getItems().get(0);
+			String account = (String) first.getClass().getDeclaredMethod("getAccount").invoke(first);
+			String fund = (String) first.getClass().getDeclaredMethod("getFund").invoke(first);
+
+			((TableView<Object>) (TableView<?>) table).getItems().remove(1);
+			Object added1 = first.getClass().getDeclaredConstructor().newInstance();
+			added1.getClass().getDeclaredMethod("setAccount", String.class).invoke(added1, account);
+			added1.getClass().getDeclaredMethod("setFund", String.class).invoke(added1, fund);
+			added1.getClass().getDeclaredMethod("setAmount", String.class).invoke(added1, "10.00");
+			added1.getClass().getDeclaredMethod("setSide", String.class).invoke(added1, "CREDIT");
+			((TableView<Object>) (TableView<?>) table).getItems().add(added1);
+			panel.onSave();
+
+			((TableView<Object>) (TableView<?>) table).getItems().remove(1);
+			Object added2 = first.getClass().getDeclaredConstructor().newInstance();
+			added2.getClass().getDeclaredMethod("setAccount", String.class).invoke(added2, account);
+			added2.getClass().getDeclaredMethod("setFund", String.class).invoke(added2, fund);
+			added2.getClass().getDeclaredMethod("setAmount", String.class).invoke(added2, "10.00");
+			added2.getClass().getDeclaredMethod("setSide", String.class).invoke(added2, "CREDIT");
+			((TableView<Object>) (TableView<?>) table).getItems().add(added2);
+			panel.onSave();
+			return null;
+		});
+
+		BankingItemRecordService service = new BankingItemRecordService();
+		List<BankingItemRecord> current = service.listAll().stream()
+			.filter(r -> String.valueOf(transaction.getId()).equals(r.transactionId()))
+			.filter(r -> "LEDGER_EDITOR".equals(r.source()))
+			.toList();
+		assertEquals(2, current.size(),
+			"Repeated rewrites should keep one banking-item record per live split only.");
+	}
+
+	@Test
 	void budgetWorkspacePanelsProvideEntryAndReportTables() throws Exception
 	{
 		BudgetPanel panel = runOnFxThread(BudgetPanel::new);
@@ -317,6 +540,21 @@ class WorkspacePanelsE2ETest
 		openSelected.invoke(panel);
 	}
 
+	private static void invokeRefreshFromSelection(TransactionEditorPanel panel) throws Exception
+	{
+		java.lang.reflect.Method refresh = TransactionEditorPanel.class
+			.getDeclaredMethod("refreshFromSelection");
+		refresh.setAccessible(true);
+		refresh.invoke(panel);
+	}
+
+	private static TableView<?> splitTable(TransactionEditorPanel panel)
+	{
+		Node root = panel.root();
+		return (TableView<?>) ((javafx.scene.layout.VBox) ((BorderPane) root).getCenter())
+			.getChildren().get(2);
+	}
+
 	private void seedLedgerTransactions() throws SQLException
 	{
 		Company company = new Company();
@@ -342,6 +580,19 @@ class WorkspacePanelsE2ETest
 		credit.setFundNumber("GENERAL");
 		transaction.setEntries(new LinkedHashSet<>(List.of(debit, credit)));
 		return transaction;
+	}
+
+	private void seedLedgerTransactionsWithSupplementalDetails() throws SQLException
+	{
+		Company company = new Company();
+		AccountingTransaction transaction = transaction(301, "2026-02-02", "Donor A", "Pledge", "Cash/Bank");
+		ReceivablesLine line = new ReceivablesLine();
+		line.setReference("INV-2026-001");
+		line.setDescription("Donor pledge");
+		line.setAmount(new BigDecimal("125.50"));
+		transaction.setSupplementalLines(List.of(line));
+		company.getLedger().getJournal().replaceAllTransactions(List.of(transaction));
+		new CompanyDataRepository().persist(company);
 	}
 
 	private static <T> T runOnFxThread(Callable<T> task) throws Exception
