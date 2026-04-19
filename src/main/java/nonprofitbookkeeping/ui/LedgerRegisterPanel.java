@@ -23,6 +23,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
+import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.supplemental.TxnSupplementalLineBase;
 import nonprofitbookkeeping.persistence.CompanyDataRepository;
 import org.nonprofitbookkeeping.ui.AppPanel;
@@ -64,9 +66,8 @@ public class LedgerRegisterPanel implements AppPanel
 		title.getStyleClass().add("panel-title");
 
 		Button newTxn = new Button("+ New Transaction");
-		Button open = new Button("Open");
 		Button refresh = new Button("Refresh");
-		HBox actions = new HBox(8, newTxn, open, refresh);
+		HBox actions = new HBox(8, newTxn, refresh);
 
 		root.setTop(new VBox(6, title, range, actions, status, new Separator()));
 
@@ -74,8 +75,7 @@ public class LedgerRegisterPanel implements AppPanel
 		root.setCenter(txnTable);
 
 		newTxn.setOnAction(e -> onNew());
-		open.setOnAction(e -> openSelected());
-		refresh.setOnAction(e -> refreshCurrentView());
+		refresh.setOnAction(e -> loadLiveData());
 
 		txnTable.setRowFactory(tv -> {
 			TableRow<LedgerViewRow> r = new TableRow<>();
@@ -102,8 +102,12 @@ public class LedgerRegisterPanel implements AppPanel
 
 		DateRangeContext.selectedProperty().addListener((obs, oldRange, newRange) ->
 			applyDateRangeFilter(newRange));
-		LedgerSelectionContext.selectedTransactionProperty().addListener((obs, oldValue, newValue) ->
-			mergeUpdatedTransaction(newValue));
+		LedgerSelectionContext.selectedSubpanelProperty().addListener((obs, oldPanel, newPanel) -> {
+			if (newPanel == LedgerSelectionContext.LedgerSubpanel.REGISTER)
+			{
+				loadLiveData();
+			}
+		});
 		loadLiveData();
 	}
 
@@ -136,17 +140,31 @@ public class LedgerRegisterPanel implements AppPanel
 		}
 		catch (SQLException | IllegalStateException ex)
 		{
+			if (loadFromCurrentCompanyFallback())
+			{
+				return;
+			}
 			this.allTransactions.clear();
 			this.txnTable.getItems().clear();
 			status.setText("Unable to load live ledger data: " + ex.getMessage());
 		}
 	}
 
-	private void refreshCurrentView()
+	private boolean loadFromCurrentCompanyFallback()
 	{
+		Company current = CurrentCompany.getCompany();
+		if (current == null || current.getLedger() == null)
+		{
+			return false;
+		}
+		List<AccountingTransaction> transactions =
+			current.getLedger().getTransactions();
+		this.allTransactions.setAll(transactions);
 		applyDateRangeFilter(DateRangeContext.get());
-		status.setText("Refreshed " + allTransactions.size() + " transaction(s), "
-			+ txnTable.getItems().size() + " row(s) from current ledger view.");
+		status.setText("Loaded " + transactions.size()
+			+ " transaction(s), " + txnTable.getItems().size()
+			+ " row(s) from in-memory journal.");
+		return true;
 	}
 
 	private void applyDateRangeFilter(DateRange range)
