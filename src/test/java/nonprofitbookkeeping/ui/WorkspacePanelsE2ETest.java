@@ -375,6 +375,48 @@ class WorkspacePanelsE2ETest
 	}
 
 	@Test
+	void transactionEditorSplitIdSetUpdatesWhenSplitRemovedAndAdded() throws Exception
+	{
+		seedLedgerTransactions();
+		TransactionEditorPanel panel = runOnFxThread(TransactionEditorPanel::new);
+		AccountingTransaction transaction = new CompanyDataRepository().load().getLedger()
+			.getTransactions().get(0);
+
+		String[] ids = runOnFxThread(() -> {
+			LedgerSelectionContext.setSelectedTransaction(transaction);
+			TableView<?> table = splitTable(panel);
+			Object first = table.getItems().get(0);
+			Object second = table.getItems().get(1);
+			String firstId = (String) first.getClass().getDeclaredMethod("getSplitId").invoke(first);
+			String removedId = (String) second.getClass().getDeclaredMethod("getSplitId").invoke(second);
+			((TableView<Object>) (TableView<?>) table).getItems().remove(1);
+
+			Object added = first.getClass().getDeclaredConstructor().newInstance();
+			String account = (String) first.getClass().getDeclaredMethod("getAccount").invoke(first);
+			String fund = (String) first.getClass().getDeclaredMethod("getFund").invoke(first);
+			added.getClass().getDeclaredMethod("setAccount", String.class).invoke(added, account);
+			added.getClass().getDeclaredMethod("setFund", String.class).invoke(added, fund);
+			added.getClass().getDeclaredMethod("setAmount", String.class).invoke(added, "10.00");
+			added.getClass().getDeclaredMethod("setSide", String.class).invoke(added, "CREDIT");
+			String addedId = (String) added.getClass().getDeclaredMethod("getSplitId").invoke(added);
+			((TableView<Object>) (TableView<?>) table).getItems().add(added);
+			panel.onSave();
+			return new String[]{firstId, removedId, addedId};
+		});
+
+		AccountingTransaction persisted = new CompanyDataRepository().load().getLedger()
+			.getTransactions().stream()
+			.filter(tx -> tx.getId() == transaction.getId())
+			.findFirst()
+			.orElseThrow();
+		String encoded = persisted.getInfo().get("ledger.split.ids");
+		assertNotNull(encoded);
+		assertTrue(encoded.contains(ids[0]), "Original retained split id should remain.");
+		assertTrue(encoded.contains(ids[2]), "Newly added split id should be persisted.");
+		assertTrue(!encoded.contains(ids[1]), "Removed split id should not remain persisted.");
+	}
+
+	@Test
 	void budgetWorkspacePanelsProvideEntryAndReportTables() throws Exception
 	{
 		BudgetPanel panel = runOnFxThread(BudgetPanel::new);
