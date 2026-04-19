@@ -18,8 +18,11 @@ import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.model.records.BankingItemRecord;
 import nonprofitbookkeeping.model.supplemental.ReceivablesLine;
 import nonprofitbookkeeping.persistence.CompanyDataRepository;
+import nonprofitbookkeeping.service.BankingItemRecordService;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -115,6 +118,42 @@ class WorkspacePanelsE2ETest
 			return selectedTabText(view);
 		});
 		assertEquals("Assets", assetsTab);
+	}
+
+	@Test
+	void transactionEditorCanInitializeWhenNoCompanyIsActive() throws Exception
+	{
+		runOnFxThread(() -> {
+			CurrentCompany.forceCompanyLoad(null);
+			TransactionEditorPanel panel = new TransactionEditorPanel();
+			assertNotNull(panel.root());
+			return null;
+		});
+	}
+
+	@Test
+	void ledgerRegisterCanLoadFromCurrentCompanyFallback() throws Exception
+	{
+		Company company = new Company();
+		company.getLedger().getJournal().replaceAllTransactions(List.of(
+			transaction(801, "2026-04-01", "Fallback A", "Memo A", "Bank"),
+			transaction(802, "2026-04-02", "Fallback B", "Memo B", "Bank")));
+
+		String statusText = runOnFxThread(() -> {
+			CurrentCompany.forceCompanyLoad(company);
+			LedgerRegisterPanel panel = new LedgerRegisterPanel();
+			java.lang.reflect.Method fallback =
+				LedgerRegisterPanel.class.getDeclaredMethod("loadFromCurrentCompanyFallback");
+			fallback.setAccessible(true);
+			boolean loaded = (Boolean) fallback.invoke(panel);
+			assertTrue(loaded);
+			Field statusField = LedgerRegisterPanel.class.getDeclaredField("status");
+			statusField.setAccessible(true);
+			return ((Label) statusField.get(panel)).getText();
+		});
+
+		assertTrue(statusText.contains("from in-memory journal"),
+			"Expected fallback status message, got: " + statusText);
 	}
 
 	@Test
@@ -414,6 +453,61 @@ class WorkspacePanelsE2ETest
 		assertTrue(encoded.contains(ids[0]), "Original retained split id should remain.");
 		assertTrue(encoded.contains(ids[2]), "Newly added split id should be persisted.");
 		assertTrue(!encoded.contains(ids[1]), "Removed split id should not remain persisted.");
+
+		BankingItemRecordService service = new BankingItemRecordService();
+		List<BankingItemRecord> current = service.listAll().stream()
+			.filter(r -> String.valueOf(transaction.getId()).equals(r.transactionId()))
+			.filter(r -> "LEDGER_EDITOR".equals(r.source()))
+			.toList();
+		assertEquals(2, current.size(), "Expected one banking-item record per remaining split.");
+		assertTrue(current.stream().noneMatch(r -> r.bankingItemId().contains(ids[1])),
+			"Removed split should not retain orphaned BankingItemRecord.");
+		assertTrue(current.stream().anyMatch(r -> r.bankingItemId().contains(ids[2])),
+			"Added split should have a BankingItemRecord.");
+	}
+
+	@Test
+	void transactionEditorRepeatedSplitRewritesDoNotAccumulateOrphans() throws Exception
+	{
+		seedLedgerTransactions();
+		TransactionEditorPanel panel = runOnFxThread(TransactionEditorPanel::new);
+		AccountingTransaction transaction = new CompanyDataRepository().load().getLedger()
+			.getTransactions().get(0);
+
+		runOnFxThread(() -> {
+			LedgerSelectionContext.setSelectedTransaction(transaction);
+			TableView<?> table = splitTable(panel);
+			Object first = table.getItems().get(0);
+			String account = (String) first.getClass().getDeclaredMethod("getAccount").invoke(first);
+			String fund = (String) first.getClass().getDeclaredMethod("getFund").invoke(first);
+
+			((TableView<Object>) (TableView<?>) table).getItems().remove(1);
+			Object added1 = first.getClass().getDeclaredConstructor().newInstance();
+			added1.getClass().getDeclaredMethod("setAccount", String.class).invoke(added1, account);
+			added1.getClass().getDeclaredMethod("setFund", String.class).invoke(added1, fund);
+			added1.getClass().getDeclaredMethod("setAmount", String.class).invoke(added1, "10.00");
+			added1.getClass().getDeclaredMethod("setSide", String.class).invoke(added1, "CREDIT");
+			((TableView<Object>) (TableView<?>) table).getItems().add(added1);
+			panel.onSave();
+
+			((TableView<Object>) (TableView<?>) table).getItems().remove(1);
+			Object added2 = first.getClass().getDeclaredConstructor().newInstance();
+			added2.getClass().getDeclaredMethod("setAccount", String.class).invoke(added2, account);
+			added2.getClass().getDeclaredMethod("setFund", String.class).invoke(added2, fund);
+			added2.getClass().getDeclaredMethod("setAmount", String.class).invoke(added2, "10.00");
+			added2.getClass().getDeclaredMethod("setSide", String.class).invoke(added2, "CREDIT");
+			((TableView<Object>) (TableView<?>) table).getItems().add(added2);
+			panel.onSave();
+			return null;
+		});
+
+		BankingItemRecordService service = new BankingItemRecordService();
+		List<BankingItemRecord> current = service.listAll().stream()
+			.filter(r -> String.valueOf(transaction.getId()).equals(r.transactionId()))
+			.filter(r -> "LEDGER_EDITOR".equals(r.source()))
+			.toList();
+		assertEquals(2, current.size(),
+			"Repeated rewrites should keep one banking-item record per live split only.");
 	}
 
 	@Test
