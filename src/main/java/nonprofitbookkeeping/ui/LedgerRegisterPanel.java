@@ -23,6 +23,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
+import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CurrentCompany;
 import nonprofitbookkeeping.model.supplemental.TxnSupplementalLineBase;
 import nonprofitbookkeeping.persistence.CompanyDataRepository;
 import org.nonprofitbookkeeping.ui.AppPanel;
@@ -138,17 +140,31 @@ public class LedgerRegisterPanel implements AppPanel
 		}
 		catch (SQLException | IllegalStateException ex)
 		{
+			if (loadFromCurrentCompanyFallback())
+			{
+				return;
+			}
 			this.allTransactions.clear();
 			this.txnTable.getItems().clear();
 			status.setText("Unable to load live ledger data: " + ex.getMessage());
 		}
 	}
 
-	private void refreshCurrentView()
+	private boolean loadFromCurrentCompanyFallback()
 	{
+		Company current = CurrentCompany.getCompany();
+		if (current == null || current.getLedger() == null)
+		{
+			return false;
+		}
+		List<AccountingTransaction> transactions =
+			current.getLedger().getTransactions();
+		this.allTransactions.setAll(transactions);
 		applyDateRangeFilter(DateRangeContext.get());
-		status.setText("Refreshed " + allTransactions.size() + " transaction(s), "
-			+ txnTable.getItems().size() + " row(s) from current ledger view.");
+		status.setText("Loaded " + transactions.size()
+			+ " transaction(s), " + txnTable.getItems().size()
+			+ " row(s) from in-memory journal.");
+		return true;
 	}
 
 	private void applyDateRangeFilter(DateRange range)

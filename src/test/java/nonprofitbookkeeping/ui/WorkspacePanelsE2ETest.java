@@ -132,6 +132,31 @@ class WorkspacePanelsE2ETest
 	}
 
 	@Test
+	void ledgerRegisterCanLoadFromCurrentCompanyFallback() throws Exception
+	{
+		Company company = new Company();
+		company.getLedger().getJournal().replaceAllTransactions(List.of(
+			transaction(801, "2026-04-01", "Fallback A", "Memo A", "Bank"),
+			transaction(802, "2026-04-02", "Fallback B", "Memo B", "Bank")));
+
+		String statusText = runOnFxThread(() -> {
+			CurrentCompany.forceCompanyLoad(company);
+			LedgerRegisterPanel panel = new LedgerRegisterPanel();
+			java.lang.reflect.Method fallback =
+				LedgerRegisterPanel.class.getDeclaredMethod("loadFromCurrentCompanyFallback");
+			fallback.setAccessible(true);
+			boolean loaded = (Boolean) fallback.invoke(panel);
+			assertTrue(loaded);
+			Field statusField = LedgerRegisterPanel.class.getDeclaredField("status");
+			statusField.setAccessible(true);
+			return ((Label) statusField.get(panel)).getText();
+		});
+
+		assertTrue(statusText.contains("from in-memory journal"),
+			"Expected fallback status message, got: " + statusText);
+	}
+
+	@Test
 	void endToEndDateRangeWriteReadFiltersLedgerRows() throws Exception
 	{
 		seedLedgerTransactions();
