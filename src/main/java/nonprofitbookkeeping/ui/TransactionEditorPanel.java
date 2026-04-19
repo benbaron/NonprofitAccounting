@@ -637,6 +637,10 @@ public class TransactionEditorPanel implements AppPanel
 		{
 			// no-op
 		}
+		catch (RuntimeException ignore)
+		{
+			// no-op (e.g., no active company yet)
+		}
 		try
 		{
 			FundAccountingService service = new FundAccountingService();
@@ -652,6 +656,10 @@ public class TransactionEditorPanel implements AppPanel
 		catch (IOException ignore)
 		{
 			// no-op
+		}
+		catch (RuntimeException ignore)
+		{
+			// no-op (e.g., persistence layer not initialized yet)
 		}
 		if (fundOptions.isEmpty())
 		{
