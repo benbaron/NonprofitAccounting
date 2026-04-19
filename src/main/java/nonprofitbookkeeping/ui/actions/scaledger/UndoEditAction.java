@@ -5,6 +5,8 @@ import javax.swing.*;
 import javax.swing.undo.UndoManager;
 
 import java.awt.event.ActionEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Represents a Swing Action intended to trigger an "undo" operation for the last edit
@@ -20,6 +22,8 @@ import java.awt.event.ActionEvent;
  */
 public class UndoEditAction extends AbstractAction
 {
+	private static final Logger LOGGER = LoggerFactory.getLogger(UndoEditAction.class);
+
 	/**
 	 * The unique identifier for this serializable class.
 	 */
@@ -44,6 +48,9 @@ public class UndoEditAction extends AbstractAction
 		}
 		else
 		{
+			LOGGER.info("Popup [INFORMATION] title='{}' content='{}'",
+				"Undo",
+				"Nothing to undo");
 			JOptionPane.showMessageDialog(null, "Nothing to undo", "Undo",
 				JOptionPane.INFORMATION_MESSAGE);
 		}
