@@ -40,7 +40,6 @@ public class PanelHost extends BorderPane
             case DASHBOARD -> new DashboardPanel();
 
             case LEDGER_REGISTER -> new LedgerRegisterPanel();
-            case TXN_EDITOR -> new TransactionEditorPanel();
 
             case SCHEDULES -> new SchedulesPanel();
             case INVENTORY -> new InventoryPanel();

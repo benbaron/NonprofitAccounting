@@ -45,11 +45,7 @@
 	      - route_id: "LEDGER_REGISTER"
 	        class: "LedgerRegisterPanel"
 	        quality: "skeleton"
-	        notes: "Demo rows and placeholder alerts for open/details/new"
-	      - route_id: "TXN_EDITOR"
-	        class: "TransactionEditorPanel"
-	        quality: "skeleton"
-	        notes: "Form and split grid shell; save/post/journal are placeholder alerts"
+	        notes: "Read-only register table with details context action; no transaction editor route"
 	      - route_id: "SCHEDULES"
 	        class: "SchedulesPanel"
 	        quality: "partially_wired"
@@ -144,8 +140,6 @@
         class: "LedgerRegisterPanel"
         quality: "skeleton"
         notes: "Demo rows and placeholder alerts for open/details/new"
-      - route_id: "TXN_EDITOR"
-        class: "TransactionEditorPanel"
         quality: "skeleton"
         notes: "Form and split grid shell; save/post/journal are placeholder alerts"
       - route_id: "SCHEDULES"
@@ -250,5 +244,3 @@
       - component: "CoaEditorPanelFX"
         quality: "functional_editor"
         notes: "Candidate when full COA editing is required"
-
-

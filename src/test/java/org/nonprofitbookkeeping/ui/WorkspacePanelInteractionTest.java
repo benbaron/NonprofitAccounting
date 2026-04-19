@@ -100,7 +100,7 @@ class WorkspacePanelInteractionTest
     }
 
     @Test
-    void ledgerRegisterRendersRowsAndActions() throws Exception
+    void ledgerRegisterRendersRowsAndReadOnlyActions() throws Exception
     {
         runOnFxThread(() -> {
             LedgerRegisterPanel panel = new LedgerRegisterPanel();
@@ -112,34 +112,7 @@ class WorkspacePanelInteractionTest
 
             VBox top = assertInstanceOf(VBox.class, root.getTop());
             HBox actions = assertInstanceOf(HBox.class, top.getChildren().get(2));
-            assertEquals(2, actions.getChildren().size());
-        });
-    }
-
-    @Test
-    void transactionEditorStartsCleanAndBecomesDirtyAfterEdit() throws Exception
-    {
-        runOnFxThread(() -> {
-            TransactionEditorPanel panel = new TransactionEditorPanel();
-            assertFalse(panel.isDirtyForTest());
-
-            panel.splitTableForTest().getItems().get(0).amountProperty().set("12.34");
-            assertTrue(panel.isDirtyForTest());
-        });
-    }
-
-    @Test
-    void transactionEditorValidatesInvalidAmountOnSave() throws Exception
-    {
-        runOnFxThread(() -> {
-            TransactionEditorPanel panel = new TransactionEditorPanel();
-            TableView<TransactionEditorPanel.SplitRow> table = panel.splitTableForTest();
-            table.getItems().get(0).amountProperty().set("abc");
-
-            panel.onSave();
-
-            Label status = panel.statusLabelForTest();
-            assertTrue(status.getText().startsWith("Cannot save:"));
+            assertEquals(1, actions.getChildren().size());
         });
     }
 

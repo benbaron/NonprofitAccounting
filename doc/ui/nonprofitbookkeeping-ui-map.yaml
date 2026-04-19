@@ -251,11 +251,6 @@ views:
                       type: pane
                       target: ledger_register
                       panel_class: org.nonprofitbookkeeping.ui.LedgerRegisterPanel
-                    - id: txn_editor
-                      title: Transaction Editor
-                      type: pane
-                      target: txn_editor
-                      panel_class: org.nonprofitbookkeeping.ui.TransactionEditorPanel
                 - id: schedules
                   title: Outstanding / Schedules
                   type: pane
@@ -395,13 +390,11 @@ flows:
       - nav_operations
       - nav_ledger
       - ledger_register
-      - txn_editor
       - run_menu
       - run_post_validate
     proposed_path:
       - nav_operations
       - dashboard
-      - txn_editor
       - run_menu
       - run_post_validate
   - id: review_financial_reports
