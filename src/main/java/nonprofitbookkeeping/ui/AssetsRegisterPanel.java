@@ -16,6 +16,16 @@ import javafx.scene.layout.VBox;
 import nonprofitbookkeeping.model.records.AssetRecord;
 import nonprofitbookkeeping.service.AssetRecordService;
 import org.nonprofitbookkeeping.ui.AppPanel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -30,6 +40,8 @@ import java.util.UUID;
  */
 public class AssetsRegisterPanel implements AppPanel
 {
+	private static final Logger LOG = LoggerFactory.getLogger(AssetsRegisterPanel.class);
+
 	private final BorderPane root = new BorderPane();
 	private final TableView<AssetRow> table = new TableView<>();
 	private final Label status = new Label("Ready");
@@ -92,8 +104,9 @@ public class AssetsRegisterPanel implements AppPanel
 			table.setItems(FXCollections.observableArrayList(records.stream().map(AssetRow::fromRecord).toList()));
 			status.setText("Loaded " + records.size() + " asset record(s)");
 		}
-		catch (SQLException ex)
+		catch (SQLException | RuntimeException ex)
 		{
+			LOG.warn("Asset register load failed", ex);
 			status.setText("Failed to load asset records: " + ex.getMessage());
 		}
 	}
@@ -127,8 +140,9 @@ public class AssetsRegisterPanel implements AppPanel
 		{
 			status.setText("Validation error: " + ex.getMessage());
 		}
-		catch (SQLException ex)
+		catch (SQLException | RuntimeException ex)
 		{
+			LOG.warn("Asset register save failed", ex);
 			status.setText("Failed to save asset records: " + ex.getMessage());
 		}
 	}
