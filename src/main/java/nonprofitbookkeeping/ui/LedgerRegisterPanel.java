@@ -262,6 +262,46 @@ public class LedgerRegisterPanel implements AppPanel
 		LedgerSelectionContext.setSelectedSubpanel(LedgerSelectionContext.LedgerSubpanel.EDITOR);
 	}
 
+	private void mergeUpdatedTransaction(AccountingTransaction transaction)
+	{
+		if (transaction == null)
+		{
+			return;
+		}
+		List<AccountingTransaction> merged = new ArrayList<>(allTransactions);
+		int existingIndex = findExistingTransactionIndex(merged, transaction);
+		if (existingIndex >= 0)
+		{
+			merged.set(existingIndex, transaction);
+		}
+		else
+		{
+			merged.add(transaction);
+		}
+		allTransactions.setAll(merged);
+		applyDateRangeFilter(DateRangeContext.get());
+	}
+
+	private int findExistingTransactionIndex(List<AccountingTransaction> transactions,
+		AccountingTransaction updated)
+	{
+		for (int i = 0; i < transactions.size(); i++)
+		{
+			AccountingTransaction existing = transactions.get(i);
+			if (updated.getId() > 0 && existing.getId() == updated.getId())
+			{
+				return i;
+			}
+			if (updated.getBookingDateTimestamp() != null &&
+				Objects.equals(existing.getBookingDateTimestamp(),
+					updated.getBookingDateTimestamp()))
+			{
+				return i;
+			}
+		}
+		return -1;
+	}
+
 	private void showDetails(AccountingTransaction row)
 	{
 		Alert a = new Alert(Alert.AlertType.INFORMATION,
