@@ -24,6 +24,7 @@ import javafx.scene.layout.VBox;
 import nonprofitbookkeeping.model.Account;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
+import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.Company;
 import nonprofitbookkeeping.model.Fund;
