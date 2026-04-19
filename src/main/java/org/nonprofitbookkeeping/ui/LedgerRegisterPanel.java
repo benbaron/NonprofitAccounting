@@ -99,10 +99,7 @@ public class LedgerRegisterPanel implements AppPanel
 
     private void openRow(Row row)
     {
-        TransactionDraftContext.setSelectedRow(row);
-        TransactionEditorPanel editor = new TransactionEditorPanel(row, null);
-        editor.showAsDialog(root.getScene() == null ? null : root.getScene().getWindow(),
-            row.date().isBlank() ? "New Transaction" : "Edit Transaction");
+        showDetails(row);
     }
 
     private void showDetails(Row row)
@@ -129,7 +126,10 @@ public class LedgerRegisterPanel implements AppPanel
     @Override
     public void onNew()
     {
-        openRow(new Row("", "", "", "", "Draft"));
+        Alert a = new Alert(Alert.AlertType.INFORMATION,
+            "Transaction editor has been removed.");
+        a.setHeaderText("Not Available");
+        a.showAndWait();
     }
 
     public record Row(String date, String payee, String memo, String bank, String status)

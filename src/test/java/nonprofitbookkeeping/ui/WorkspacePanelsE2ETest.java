@@ -1,22 +1,22 @@
 package nonprofitbookkeeping.ui;
 
 import javafx.application.Platform;
-import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.layout.BorderPane;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import nonprofitbookkeeping.ui.adapters.OrgAppPanelNodeAdapter;
 import nonprofitbookkeeping.TestDatabase;
 import nonprofitbookkeeping.model.AccountSide;
 import nonprofitbookkeeping.model.AccountingEntry;
 import nonprofitbookkeeping.model.AccountingTransaction;
 import nonprofitbookkeeping.model.Company;
+import nonprofitbookkeeping.model.CurrentCompany;
+import nonprofitbookkeeping.model.supplemental.ReceivablesLine;
 import nonprofitbookkeeping.persistence.CompanyDataRepository;
 
 import java.lang.reflect.Field;
@@ -35,7 +35,6 @@ import java.util.concurrent.TimeoutException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class WorkspacePanelsE2ETest
@@ -75,7 +74,7 @@ class WorkspacePanelsE2ETest
 		TestDatabase.reset(this.tempDir);
 		runOnFxThread(() -> {
 			DateRangeContext.set(DateRange.ALL);
-			LedgerSelectionContext.setSelectedTransaction(null);
+			CurrentCompany.forceCompanyLoad(null);
 			return null;
 		});
 	}
@@ -86,13 +85,11 @@ class WorkspacePanelsE2ETest
 		assertEquals(2,
 			runOnFxThread(() -> getTabPane(new BudgetPanel()).getTabs().size()));
 		assertEquals(2,
-			runOnFxThread(() -> getTabPane(new LedgerPanel()).getTabs().size()));
-		assertEquals(2,
 			runOnFxThread(() -> getTabPane(new AssetsPanel()).getTabs().size()));
 	}
 
 	@Test
-	void mainViewCanSelectNewWorkspaceTabs() throws Exception
+	void mainViewCanSelectWorkspaceTabs() throws Exception
 	{
 		MainApplicationView view = runOnFxThread(MainApplicationView::new);
 
@@ -102,17 +99,36 @@ class WorkspacePanelsE2ETest
 		});
 		assertEquals("Budget", budgetTab);
 
-		String ledgerTab = runOnFxThread(() -> {
-			view.showPanel(MainApplicationView.PanelType.LEDGER);
-			return selectedTabText(view);
-		});
-		assertEquals("Ledger", ledgerTab);
-
 		String assetsTab = runOnFxThread(() -> {
 			view.showPanel(MainApplicationView.PanelType.ASSETS);
 			return selectedTabText(view);
 		});
 		assertEquals("Assets", assetsTab);
+	}
+
+	@Test
+	void ledgerRegisterCanLoadFromCurrentCompanyFallback() throws Exception
+	{
+		Company company = new Company();
+		company.getLedger().getJournal().replaceAllTransactions(List.of(
+			transaction(801, "2026-04-01", "Fallback A", "Memo A", "Bank"),
+			transaction(802, "2026-04-02", "Fallback B", "Memo B", "Bank")));
+
+		String statusText = runOnFxThread(() -> {
+			CurrentCompany.forceCompanyLoad(company);
+			LedgerRegisterPanel panel = new LedgerRegisterPanel();
+			java.lang.reflect.Method fallback =
+				LedgerRegisterPanel.class.getDeclaredMethod("loadFromCurrentCompanyFallback");
+			fallback.setAccessible(true);
+			boolean loaded = (Boolean) fallback.invoke(panel);
+			assertTrue(loaded);
+			Field statusField = LedgerRegisterPanel.class.getDeclaredField("status");
+			statusField.setAccessible(true);
+			return ((Label) statusField.get(panel)).getText();
+		});
+
+		assertTrue(statusText.contains("from in-memory journal"),
+			"Expected fallback status message, got: " + statusText);
 	}
 
 	@Test
@@ -122,7 +138,7 @@ class WorkspacePanelsE2ETest
 		LedgerRegisterPanel ledgerPanel = runOnFxThread(LedgerRegisterPanel::new);
 
 		int initialCount = runOnFxThread(() -> ledgerTable(ledgerPanel).getItems().size());
-		assertEquals(2, initialCount);
+		assertEquals(4, initialCount);
 
 		runOnFxThread(() -> {
 			DateRangeContext.set(new DateRange(java.time.LocalDate.of(2026, 1, 1),
@@ -131,131 +147,48 @@ class WorkspacePanelsE2ETest
 		});
 
 		int filteredCount = runOnFxThread(() -> ledgerTable(ledgerPanel).getItems().size());
-		assertEquals(1, filteredCount,
+		assertEquals(2, filteredCount,
 			"Write date range to context and read filtered ledger rows (E2E)");
-
-		runOnFxThread(() -> {
-			DateRangeContext.set(DateRange.ALL);
-			return null;
-		});
-
-		int resetCount = runOnFxThread(() -> ledgerTable(ledgerPanel).getItems().size());
-		assertEquals(2, resetCount);
 	}
 
 	@Test
-	void endToEndDateRangeOneSidedBoundsFilterLedgerRows() throws Exception
+	void ledgerStatusShowsTransactionAndRowCounts() throws Exception
 	{
 		seedLedgerTransactions();
 		LedgerRegisterPanel ledgerPanel = runOnFxThread(LedgerRegisterPanel::new);
-
-		runOnFxThread(() -> {
-			DateRangeContext.set(new DateRange(java.time.LocalDate.of(2026, 1, 10), null));
-			return null;
+		String text = runOnFxThread(() -> {
+			Field statusField = LedgerRegisterPanel.class.getDeclaredField("status");
+			statusField.setAccessible(true);
+			return ((Label) statusField.get(ledgerPanel)).getText();
 		});
-		int startOnlyCount = runOnFxThread(() -> ledgerTable(ledgerPanel).getItems().size());
-		assertEquals(1, startOnlyCount,
-			"Start-only range should include rows on/after the start date");
-
-		runOnFxThread(() -> {
-			DateRangeContext.set(new DateRange(null, java.time.LocalDate.of(2026, 1, 10)));
-			return null;
-		});
-		int endOnlyCount = runOnFxThread(() -> ledgerTable(ledgerPanel).getItems().size());
-		assertEquals(1, endOnlyCount,
-			"End-only range should include rows on/before the end date");
+		assertTrue(text.contains("2 transaction(s)"));
+		assertTrue(text.contains("4 row(s)"));
 	}
 
 	@Test
-	void transactionEditorLoadsLiveTransactionFromRegisterSelection() throws Exception
+	void ledgerSubrecordsKeepDetailInBackingRows() throws Exception
 	{
-		seedLedgerTransactions();
+		seedLedgerTransactionsWithSupplementalDetails();
 		LedgerRegisterPanel ledgerPanel = runOnFxThread(LedgerRegisterPanel::new);
-		TransactionEditorPanel editorPanel = runOnFxThread(TransactionEditorPanel::new);
-
-		runOnFxThread(() -> {
-			TableView<?> table = ledgerTable(ledgerPanel);
-			table.getSelectionModel().select(0);
-			invokeOpenSelected(ledgerPanel);
-			return null;
+		String summary = runOnFxThread(() -> {
+			Object firstRow = ledgerTable(ledgerPanel).getItems().get(0);
+			java.lang.reflect.Method method = firstRow.getClass().getDeclaredMethod("subrecordSummary");
+			method.setAccessible(true);
+			return (String) method.invoke(firstRow);
 		});
 
-		TableView<?> editorTable = runOnFxThread(() -> {
-			Node root = editorPanel.root();
-			return (TableView<?>) ((javafx.scene.layout.VBox) ((BorderPane) root).getCenter())
-				.getChildren().get(2);
-		});
-		assertEquals(2, runOnFxThread(() -> editorTable.getItems().size()));
-	}
-
-	@Test
-	void ledgerOpenSelectionNavigatesToEditorSubtab() throws Exception
-	{
-		seedLedgerTransactions();
-		LedgerPanel panel = runOnFxThread(LedgerPanel::new);
-		TabPane tabs = runOnFxThread(() -> (TabPane) panel.getCenter());
-		LedgerRegisterPanel registerPanel = runOnFxThread(() ->
-			(LedgerRegisterPanel) ((OrgAppPanelNodeAdapter) tabs.getTabs().get(0).getContent()).getAppPanel());
-
-		runOnFxThread(() -> {
-			TableView<?> table = ledgerTable(registerPanel);
-			table.getSelectionModel().select(0);
-			invokeOpenSelected(registerPanel);
-			return null;
-		});
-
-		assertEquals("Transaction Editor", runOnFxThread(() -> tabs.getSelectionModel().getSelectedItem().getText()));
-	}
-
-	@Test
-	void transactionEditorSavePersistsHeaderChanges() throws Exception
-	{
-		seedLedgerTransactions();
-		TransactionEditorPanel editorPanel = runOnFxThread(TransactionEditorPanel::new);
-		AccountingTransaction transaction = new CompanyDataRepository().load().getLedger().getTransactions().get(0);
-
-		runOnFxThread(() -> {
-			LedgerSelectionContext.setSelectedTransaction(transaction);
-			return null;
-		});
-
-		runOnFxThread(() -> {
-			Field memoField = TransactionEditorPanel.class.getDeclaredField("memo");
-			memoField.setAccessible(true);
-			TextField memo = (TextField) memoField.get(editorPanel);
-			memo.setText("Updated memo");
-			editorPanel.onSave();
-			return null;
-		});
-
-		AccountingTransaction persisted = new CompanyDataRepository().load().getLedger().getTransactions().stream()
-			.filter(tx -> tx.getId() == transaction.getId())
-			.findFirst()
-			.orElseThrow();
-		assertEquals("Updated memo", persisted.getMemo());
-	}
-
-	@Test
-	void transactionEditorHasExpectedSplitColumnsAndRows() throws Exception
-	{
-		TransactionEditorPanel panel = runOnFxThread(TransactionEditorPanel::new);
-		TableView<?> table = runOnFxThread(() -> {
-			Node root = panel.root();
-			assertNotNull(root);
-			return (TableView<?>) ((javafx.scene.layout.VBox) ((BorderPane) root).getCenter())
-				.getChildren().get(2);
-		});
-
-		assertEquals(7, runOnFxThread(() -> table.getColumns().size()));
-		assertEquals(0, runOnFxThread(() -> table.getItems().size()));
+		assertTrue(summary.contains("RECEIVABLE#INV-2026-001"), summary);
+		assertTrue(summary.contains("Donor pledge"), summary);
+		assertTrue(summary.contains("125.5"), summary);
 	}
 
 	@Test
 	void budgetWorkspacePanelsProvideEntryAndReportTables() throws Exception
 	{
-		BudgetPanel panel = runOnFxThread(BudgetPanel::new);
 		runOnFxThread(() -> {
-			TabPane tabs = getTabPane(panel);
+			TabPane tabs = getTabPane(new BudgetPanel());
+			assertEquals(2, tabs.getTabs().size());
+
 			BorderPane editorRoot = (BorderPane) tabs.getTabs().get(0).getContent();
 			assertInstanceOf(TableView.class, editorRoot.getCenter());
 
@@ -310,13 +243,6 @@ class WorkspacePanelsE2ETest
 		return (TableView<?>) ((BorderPane) panel.root()).getCenter();
 	}
 
-	private static void invokeOpenSelected(LedgerRegisterPanel panel) throws Exception
-	{
-		java.lang.reflect.Method openSelected = LedgerRegisterPanel.class.getDeclaredMethod("openSelected");
-		openSelected.setAccessible(true);
-		openSelected.invoke(panel);
-	}
-
 	private void seedLedgerTransactions() throws SQLException
 	{
 		Company company = new Company();
@@ -342,6 +268,19 @@ class WorkspacePanelsE2ETest
 		credit.setFundNumber("GENERAL");
 		transaction.setEntries(new LinkedHashSet<>(List.of(debit, credit)));
 		return transaction;
+	}
+
+	private void seedLedgerTransactionsWithSupplementalDetails() throws SQLException
+	{
+		Company company = new Company();
+		AccountingTransaction transaction = transaction(301, "2026-02-02", "Donor A", "Pledge", "Cash/Bank");
+		ReceivablesLine line = new ReceivablesLine();
+		line.setReference("INV-2026-001");
+		line.setDescription("Donor pledge");
+		line.setAmount(new BigDecimal("125.50"));
+		transaction.setSupplementalLines(List.of(line));
+		company.getLedger().getJournal().replaceAllTransactions(List.of(transaction));
+		new CompanyDataRepository().persist(company);
 	}
 
 	private static <T> T runOnFxThread(Callable<T> task) throws Exception

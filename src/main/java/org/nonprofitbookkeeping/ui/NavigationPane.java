@@ -48,7 +48,6 @@ public class NavigationPane extends VBox
 
         TreeItem<NavItem> ledger = group(ops, "Ledger");
         add(ledger, AppPanelId.LEDGER_REGISTER, "Ledger Register");
-        add(ledger, AppPanelId.TXN_EDITOR, "Transaction Editor");
 
         add(ops, AppPanelId.SCHEDULES, "Outstanding / Schedules");
         add(ops, AppPanelId.INVENTORY, "Inventory");

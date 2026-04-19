@@ -6,7 +6,6 @@ public enum AppPanelId
     DASHBOARD,
 
     LEDGER_REGISTER,
-    TXN_EDITOR,
 
     SCHEDULES,
     INVENTORY,

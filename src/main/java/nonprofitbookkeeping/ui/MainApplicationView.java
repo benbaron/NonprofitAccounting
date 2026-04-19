@@ -59,8 +59,6 @@ public class MainApplicationView extends BorderPane
 		ACCOUNT_DETAILS,
 		/** Represents the Budget workspace panel. */
 		BUDGET,
-		/** Represents the Ledger workspace panel. */
-		LEDGER,
 		/** Represents the Assets workspace panel. */
 		ASSETS,
 		/** Represents the bank reconciliation panel. */
@@ -88,8 +86,6 @@ public class MainApplicationView extends BorderPane
 	private Tab accountDetailsTab;
 	/** Tab for displaying Budget workspace. */
 	private Tab budgetTab;
-	/** Tab for displaying Ledger workspace. */
-	private Tab ledgerTab;
 	/** Tab for displaying Assets workspace. */
 	private Tab assetsTab;
 	/** Tab for bank reconciliation. */
@@ -148,7 +144,6 @@ public class MainApplicationView extends BorderPane
 		this.balanceSheetTab = new Tab("Balance Sheet",
 			new BalanceSheetPanelFX());
 		this.budgetTab = new Tab("Budget", new BudgetPanel());
-		this.ledgerTab = new Tab("Ledger", new LedgerPanel());
 		this.assetsTab = new Tab("Assets", new AssetsPanel());
 		this.bankReconciliationTab = new Tab("Bank Reconciliation", new BankReconciliationPanelFX());
 		
@@ -160,7 +155,6 @@ public class MainApplicationView extends BorderPane
 		this.incomeStatementTab.setClosable(false);
 		this.balanceSheetTab.setClosable(false);
 		this.budgetTab.setClosable(false);
-		this.ledgerTab.setClosable(false);
 		this.assetsTab.setClosable(false);
 		this.bankReconciliationTab.setClosable(false);
 		
@@ -177,7 +171,6 @@ public class MainApplicationView extends BorderPane
 				this.journalTab,
 				this.coaTab,
 				this.budgetTab,
-				this.ledgerTab,
 				this.assetsTab,
 				this.bankReconciliationTab,
 				this.reportsTab,
@@ -300,10 +293,6 @@ public class MainApplicationView extends BorderPane
 				this.tabPane.getSelectionModel().select(this.budgetTab);
 				break;
 
-			case LEDGER:
-				this.tabPane.getSelectionModel().select(this.ledgerTab);
-				break;
-
 			case ASSETS:
 				this.tabPane.getSelectionModel().select(this.assetsTab);
 				break;
@@ -335,7 +324,6 @@ public class MainApplicationView extends BorderPane
 		this.journalTab.setDisable(!companyOpen);
 		this.coaTab.setDisable(!companyOpen);
 		this.budgetTab.setDisable(!companyOpen);
-		this.ledgerTab.setDisable(!companyOpen);
 		this.assetsTab.setDisable(!companyOpen);
 		this.bankReconciliationTab.setDisable(!companyOpen);
 		this.reportsTab.setDisable(!companyOpen);
